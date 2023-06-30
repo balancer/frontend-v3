@@ -15,7 +15,8 @@
     "prettier": "prettier --check '**/*.*(md|json|yaml|ts|js|tsx)' --loglevel warn",
     "prettier:fix": "pnpm run prettier --write",
     "typecheck": "tsc --project tsconfig.json --noEmit",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "generate:graphql": "graphql-codegen"
   },
   "dependencies": {
     "@types/node": "20.3.2",
@@ -23,12 +24,24 @@
     "@types/react-dom": "18.2.6",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.7",
+    "graphql": "^16.7.1",
+    "graphql-request": "^6.1.0",
+    "graphql-tag": "^2.12.6",
     "next": "13.4.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "5.1.6"
   },
   "devDependencies": {
+    "@graphql-codegen/add": "^5.0.0",
+    "@graphql-codegen/cli": "^4.0.1",
+    "@graphql-codegen/client-preset": "^4.0.1",
+    "@graphql-codegen/introspection": "^4.0.0",
+    "@graphql-codegen/schema-ast": "^4.0.0",
+    "@graphql-codegen/typescript-document-nodes": "^4.0.1",
+    "@graphql-codegen/typescript-graphql-request": "^5.0.0",
+    "@graphql-codegen/typescript-operations": "^4.0.1",
+    "@graphql-codegen/typescript-resolvers": "^4.0.1",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
     "eslint-config-prettier": "^8.8.0",
