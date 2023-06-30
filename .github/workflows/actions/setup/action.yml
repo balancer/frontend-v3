@@ -1,0 +1,14 @@
+name: 'Setup'
+description: 'Sets up the repository'
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+    - name: Install dependencies
+      shell: bash
+      run: pnpm i --frozen-lockfile

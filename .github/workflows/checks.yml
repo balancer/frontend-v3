@@ -1,0 +1,35 @@
+name: Checks
+
+on:
+  - pull_request
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - name: Run build
+        run: pnpm run build
+
+  Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - name: Run lint
+        run: pnpm run lint
+      - name: Run prettier
+        run: pnpm run prettier
+      - name: Run stylelint
+        run: pnpm run stylelint
+
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - name: Run typecheck
+        run: pnpm run typecheck
+      - name: Run tests
+        run: pnpm run test
