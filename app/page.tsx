@@ -1,10 +1,11 @@
-import { api } from '@/lib/services/api/api.client'
+import { api } from '@/app/_lib/services/api/api.client'
 import {
   GqlChain,
   GqlPoolFilterType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
-} from '@/lib/services/api/generated/types'
+} from '@/app/_lib/services/api/generated/types'
+import Link from 'next/link'
 
 export default async function Home() {
   const { poolGetPools: pools } = await api.GetPools({
@@ -26,7 +27,9 @@ export default async function Home() {
     <main>
       <ul>
         {pools.map(pool => (
-          <li key={pool.id}>{pool.name}</li>
+          <li key={pool.id}>
+            <Link href={`/pools/${pool.id}`}>{pool.name}</Link>
+          </li>
         ))}
       </ul>
     </main>
