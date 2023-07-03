@@ -1,7 +1,5 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with
-[`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
 ## Getting Started
+_This project uses `pnpm`, if you haven't already installed it you can find the documentation here: https://pnpm.io/installation_
 
 First, install dependencies:
 ```bash
