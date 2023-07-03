@@ -1,7 +1,10 @@
 ## Getting Started
-_This project uses `pnpm`, if you haven't already installed it you can find the documentation here: https://pnpm.io/installation_
+
+_This project uses `pnpm`, if you haven't already installed it you can find the
+documentation here: https://pnpm.io/installation_
 
 First, install dependencies:
+
 ```bash
 pnpm install
 ```
