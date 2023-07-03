@@ -4,12 +4,12 @@
   "rsc": true,
   "tailwind": {
     "config": "tailwind.config.js",
-    "css": "app/_assets/css/global.css",
+    "css": "assets/css/global.css",
     "baseColor": "zinc",
     "cssVariables": true
   },
   "aliases": {
-    "components": "@/app/_components/_base",
-    "utils": "@/app/_lib/utils"
+    "components": "@/components/_base",
+    "utils": "@/lib/utils"
   }
 }

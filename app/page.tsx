@@ -1,10 +1,10 @@
-import { api } from '@/app/_lib/services/api/api.client'
+import { api } from '@/lib/services/api/api.client'
 import {
   GqlChain,
   GqlPoolFilterType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
-} from '@/app/_lib/services/api/generated/types'
+} from '@/lib/services/api/generated/types'
 import Link from 'next/link'
 
 export default async function Home() {

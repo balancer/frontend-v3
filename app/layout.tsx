@@ -1,7 +1,7 @@
 import { Inter } from 'next/font/google'
-import './_assets/css/global.css'
+import '@/assets/css/global.css'
 import { Metadata } from 'next'
-import Navbar from './_components/navs/Navbar'
+import Navbar from '../components/navs/Navbar'
 
 const inter = Inter({ subsets: ['latin'] })
 
