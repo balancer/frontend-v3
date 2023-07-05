@@ -10,6 +10,6 @@
   },
   "aliases": {
     "components": "@/components/_base",
-    "utils": "@/lib/utils"
+    "utils": "@/lib/utils/styles"
   }
 }

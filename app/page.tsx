@@ -24,7 +24,7 @@ export default async function Home() {
   })
 
   return (
-    <main>
+    <main className="p-4">
       <ul>
         {pools.map(pool => (
           <li key={pool.id}>

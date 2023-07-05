@@ -1,9 +1,7 @@
-import { Inter } from 'next/font/google'
 import '@/assets/css/global.css'
 import { Metadata } from 'next'
 import Navbar from '../components/navs/Navbar'
-
-const inter = Inter({ subsets: ['latin'] })
+import { ThemeProvider } from '@/components/providers/ThemeProvider'
 
 export const metadata: Metadata = {
   title: 'Balancer DeFi Liquidity Pools',
@@ -21,9 +19,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Navbar />
-        {children}
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Navbar />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )
