@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+
 import { Button } from '../_base/ui/button'
 import { HiSun as Sun, HiMoon as Moon } from 'react-icons/hi'
 import { useTheme } from 'next-themes'

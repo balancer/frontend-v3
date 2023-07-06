@@ -3,6 +3,7 @@
 import '@rainbow-me/rainbowkit/styles.css'
 
 import {
+  darkTheme,
   getDefaultWallets,
   lightTheme,
   RainbowKitProvider,
@@ -21,6 +22,9 @@ import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { infuraProvider } from 'wagmi/providers/infura'
 import { merge } from 'lodash'
+import { twConfig } from '@/lib/utils/styles'
+import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
 
 const { chains, publicClient } = configureChains(
   [mainnet, polygon, optimism, arbitrum, polygonZkEvm, gnosis],
@@ -43,13 +47,30 @@ const wagmiConfig = createConfig({
   publicClient,
 })
 
-const customTheme = merge(lightTheme(), {
+const _lightTheme = merge(lightTheme(), {
   fonts: {
-    body: 'Inter, sans-serif',
+    body: twConfig.theme?.fontFamily?.sans,
+  },
+} as Theme)
+
+const _darkTheme = merge(darkTheme(), {
+  fonts: {
+    body: twConfig.theme?.fontFamily?.sans,
   },
 } as Theme)
 
 export function Web3Provider({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme()
+  const [customTheme, setCustomTheme] = useState(_lightTheme)
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      setCustomTheme(_darkTheme)
+    } else {
+      setCustomTheme(_lightTheme)
+    }
+  }, [theme])
+
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains} theme={customTheme}>
