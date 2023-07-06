@@ -49,13 +49,13 @@ const wagmiConfig = createConfig({
 
 const _lightTheme = merge(lightTheme(), {
   fonts: {
-    body: twConfig.theme?.fontFamily?.sans,
+    body: (twConfig.theme?.fontFamily?.sans as string[]).join(', '),
   },
 } as Theme)
 
 const _darkTheme = merge(darkTheme(), {
   fonts: {
-    body: twConfig.theme?.fontFamily?.sans,
+    body: (twConfig.theme?.fontFamily?.sans as string[]).join(', '),
   },
 } as Theme)
 
