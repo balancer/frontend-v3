@@ -1,7 +1,7 @@
 import '@/assets/css/global.css'
 import { Metadata } from 'next'
 import Navbar from '../components/navs/Navbar'
-import { ThemeProvider } from '@/components/providers/ThemeProvider'
+import { Providers } from './providers'
 
 export const metadata: Metadata = {
   title: 'Balancer DeFi Liquidity Pools',
@@ -18,12 +18,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <Providers>
           <Navbar />
           {children}
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   )
