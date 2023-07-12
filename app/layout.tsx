@@ -1,7 +1,7 @@
 import '@/assets/css/global.css'
 import { Metadata } from 'next'
-import Navbar from '../components/navs/Navbar'
 import { Providers } from './providers'
+import { Navbar } from '@/components/navs/Navbar'
 
 export const metadata: Metadata = {
   title: 'Balancer DeFi Liquidity Pools',
@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body suppressHydrationWarning>
         <Providers>
           <Navbar />
           {children}
