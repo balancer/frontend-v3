@@ -20,6 +20,7 @@
     "generate:graphql": "graphql-codegen"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.17",
     "@headlessui/react": "^1.7.15",
     "@hookform/resolvers": "^3.1.1",
     "@radix-ui/react-accordion": "^1.1.2",
@@ -84,6 +85,7 @@
     "@graphql-codegen/typescript-document-nodes": "^4.0.1",
     "@graphql-codegen/typescript-graphql-request": "^5.0.0",
     "@graphql-codegen/typescript-operations": "^4.0.1",
+    "@graphql-codegen/typescript-react-apollo": "^3.3.7",
     "@graphql-codegen/typescript-resolvers": "^4.0.1",
     "@types/lodash": "^4.14.195",
     "@types/react": "18.2.14",
