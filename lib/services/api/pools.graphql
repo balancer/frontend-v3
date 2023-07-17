@@ -5,7 +5,7 @@ query GetPools(
   $orderDirection: GqlPoolOrderDirection
   $where: GqlPoolFilter
 ) {
-  poolGetPools(
+  pools: poolGetPools(
     first: $first
     skip: $skip
     orderBy: $orderBy
