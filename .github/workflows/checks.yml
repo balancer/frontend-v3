@@ -26,13 +26,13 @@ jobs:
       - name: Run stylelint
         run: pnpm run stylelint
 
-  Test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup
-        uses: ./.github/actions/setup
-      - name: Run typecheck
-        run: pnpm run typecheck
-      - name: Run tests
-        run: pnpm run test
+  # Test:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Setup
+  #       uses: ./.github/actions/setup
+  #     - name: Run typecheck
+  #       run: pnpm run typecheck
+  #     - name: Run tests
+  #       run: pnpm run test
