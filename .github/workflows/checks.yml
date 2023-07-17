@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: ./actions/setup
+      - uses: ./.github/actions/setup
       - name: Run build
         run: pnpm run build
 
@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: ./actions/setup
+      - uses: ./.github/actions/setup
       - name: Run lint
         run: pnpm run lint
       - name: Run prettier
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: ./actions/setup
+      - uses: ./.github/actions/setup
       - name: Run typecheck
         run: pnpm run typecheck
       - name: Run tests
