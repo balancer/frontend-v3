@@ -1,6 +1,5 @@
-import { GraphQLClient } from 'graphql-request'
-import { GraphQLClientRequestHeaders } from 'graphql-request/build/cjs/types'
-import gql from 'graphql-tag'
+import { gql } from '@apollo/client'
+import * as Apollo from '@apollo/client'
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -21,6 +20,7 @@ export type Incremental<T> =
   | {
       [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never
     }
+const defaultOptions = {} as const
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string }
@@ -113,24 +113,27 @@ export type GqlLge = {
   adminAddress: Scalars['String']['output']
   adminIsMultisig: Scalars['Boolean']['output']
   bannerImageUrl: Scalars['String']['output']
+  collateralAddress: Scalars['String']['output']
   collateralAmount: Scalars['String']['output']
+  collateralDecimals: Scalars['Int']['output']
   collateralEndWeight: Scalars['Int']['output']
   collateralStartWeight: Scalars['Int']['output']
-  collateralTokenAddress: Scalars['String']['output']
   description: Scalars['String']['output']
   discordUrl: Scalars['String']['output']
-  endDate: Scalars['String']['output']
+  endTimestamp: Scalars['Int']['output']
   id: Scalars['ID']['output']
   mediumUrl: Scalars['String']['output']
   name: Scalars['String']['output']
-  startDate: Scalars['String']['output']
-  swapFeePercentage: Scalars['String']['output']
+  startTimestamp: Scalars['Int']['output']
+  swapFee: Scalars['String']['output']
   telegramUrl: Scalars['String']['output']
+  tokenAddress: Scalars['String']['output']
   tokenAmount: Scalars['String']['output']
-  tokenContractAddress: Scalars['String']['output']
+  tokenDecimals: Scalars['Int']['output']
   tokenEndWeight: Scalars['Int']['output']
   tokenIconUrl: Scalars['String']['output']
   tokenStartWeight: Scalars['Int']['output']
+  tokenSymbol: Scalars['String']['output']
   twitterUrl: Scalars['String']['output']
   websiteUrl: Scalars['String']['output']
 }
@@ -138,26 +141,33 @@ export type GqlLge = {
 export type GqlLgeCreateInput = {
   address: Scalars['String']['input']
   bannerImageUrl: Scalars['String']['input']
+  collateralAddress: Scalars['String']['input']
   collateralAmount: Scalars['String']['input']
   collateralEndWeight: Scalars['Int']['input']
   collateralStartWeight: Scalars['Int']['input']
-  collateralTokenAddress: Scalars['String']['input']
   description: Scalars['String']['input']
   discordUrl: Scalars['String']['input']
-  endDate: Scalars['String']['input']
+  endTimestamp: Scalars['Int']['input']
   id: Scalars['ID']['input']
   mediumUrl: Scalars['String']['input']
   name: Scalars['String']['input']
-  startDate: Scalars['String']['input']
-  swapFeePercentage: Scalars['String']['input']
+  startTimestamp: Scalars['Int']['input']
+  swapFee: Scalars['String']['input']
   telegramUrl: Scalars['String']['input']
+  tokenAddress: Scalars['String']['input']
   tokenAmount: Scalars['String']['input']
-  tokenContractAddress: Scalars['String']['input']
   tokenEndWeight: Scalars['Int']['input']
   tokenIconUrl: Scalars['String']['input']
   tokenStartWeight: Scalars['Int']['input']
   twitterUrl: Scalars['String']['input']
   websiteUrl: Scalars['String']['input']
+}
+
+export type GqlLgePriceData = {
+  __typename?: 'GqlLgePriceData'
+  price: Scalars['Float']['output']
+  timestamp: Scalars['Int']['output']
+  type: Scalars['String']['output']
 }
 
 export type GqlLgeUpdateInput = {
@@ -1121,6 +1131,7 @@ export type Mutation = {
   balancerMutationTest: Scalars['String']['output']
   cacheAverageBlockTime: Scalars['String']['output']
   lgeCreate: GqlLge
+  lgeSyncFromSanity: Scalars['String']['output']
   poolBlackListAddPool: Scalars['String']['output']
   poolBlackListRemovePool: Scalars['String']['output']
   poolDeletePool: Scalars['String']['output']
@@ -1171,7 +1182,6 @@ export type Mutation = {
 
 export type MutationLgeCreateArgs = {
   lge: GqlLgeCreateInput
-  signature: Scalars['String']['input']
 }
 
 export type MutationPoolBlackListAddPoolArgs = {
@@ -1251,6 +1261,7 @@ export type Query = {
   contentGetNewsItems: Array<GqlContentNewsItem>
   latestSyncedBlocks: GqlLatestSyncedBlocks
   lge: GqlLge
+  lgeGetChartData: Array<Maybe<GqlLgePriceData>>
   lges: Array<GqlLge>
   poolGetAllPoolsSnapshots: Array<GqlPoolSnapshot>
   poolGetBatchSwaps: Array<GqlPoolBatchSwap>
@@ -1288,6 +1299,10 @@ export type Query = {
 }
 
 export type QueryLgeArgs = {
+  id: Scalars['ID']['input']
+}
+
+export type QueryLgeGetChartDataArgs = {
   id: Scalars['ID']['input']
 }
 
@@ -1422,7 +1437,7 @@ export type GetPoolsQueryVariables = Exact<{
 
 export type GetPoolsQuery = {
   __typename?: 'Query'
-  poolGetPools: Array<{
+  pools: Array<{
     __typename?: 'GqlPoolMinimal'
     address: string
     chain: GqlChain
@@ -1495,7 +1510,7 @@ export const GetPoolsDocument = gql`
     $orderDirection: GqlPoolOrderDirection
     $where: GqlPoolFilter
   ) {
-    poolGetPools(
+    pools: poolGetPools(
       first: $first
       skip: $skip
       orderBy: $orderBy
@@ -1590,37 +1605,52 @@ export const GetPoolsDocument = gql`
   }
 `
 
-export type SdkFunctionWrapper = <T>(
-  action: (requestHeaders?: Record<string, string>) => Promise<T>,
-  operationName: string,
-  operationType?: string
-) => Promise<T>
-
-const defaultWrapper: SdkFunctionWrapper = (
-  action,
-  _operationName,
-  _operationType
-) => action()
-
-export function getSdk(
-  client: GraphQLClient,
-  withWrapper: SdkFunctionWrapper = defaultWrapper
+/**
+ * __useGetPoolsQuery__
+ *
+ * To run a query within a React component, call `useGetPoolsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPoolsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPoolsQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      skip: // value for 'skip'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGetPoolsQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetPoolsQuery, GetPoolsQueryVariables>
 ) {
-  return {
-    GetPools(
-      variables?: GetPoolsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders
-    ): Promise<GetPoolsQuery> {
-      return withWrapper(
-        wrappedRequestHeaders =>
-          client.request<GetPoolsQuery>(GetPoolsDocument, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
-          }),
-        'GetPools',
-        'query'
-      )
-    },
-  }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetPoolsQuery, GetPoolsQueryVariables>(
+    GetPoolsDocument,
+    options
+  )
 }
-export type Sdk = ReturnType<typeof getSdk>
+export function useGetPoolsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetPoolsQuery,
+    GetPoolsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetPoolsQuery, GetPoolsQueryVariables>(
+    GetPoolsDocument,
+    options
+  )
+}
+export type GetPoolsQueryHookResult = ReturnType<typeof useGetPoolsQuery>
+export type GetPoolsLazyQueryHookResult = ReturnType<
+  typeof useGetPoolsLazyQuery
+>
+export type GetPoolsQueryResult = Apollo.QueryResult<
+  GetPoolsQuery,
+  GetPoolsQueryVariables
+>
