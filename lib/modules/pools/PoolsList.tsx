@@ -12,7 +12,7 @@ import {
 } from '@/lib/services/api/generated/types'
 import { useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 export default function PoolsList() {
   const [numPerPage, setNumPerPage] = useState(10)
@@ -42,10 +42,15 @@ export default function PoolsList() {
     }
   )
 
-  useEffect(() => {
+  function handlePageChange(num: number) {
+    setPageNum(num)
     refetch({ first: numPerPage, skip: pageNum * numPerPage })
-    // eslint-disable-next-line
-  }, [numPerPage, pageNum])
+  }
+
+  function handleNumPerPageChange(perPage: number) {
+    setNumPerPage(perPage)
+    refetch({ first: numPerPage, skip: pageNum * numPerPage })
+  }
 
   return (
     <>
@@ -64,7 +69,7 @@ export default function PoolsList() {
             variant={pageNum === num ? 'default' : 'outline'}
             size="sm"
             key={num}
-            onClick={() => setPageNum(num)}
+            onClick={() => handlePageChange(num)}
           >
             {num + 1}
           </Button>
@@ -73,7 +78,7 @@ export default function PoolsList() {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => setPageNum(pageNum + 1)}
+          onClick={() => handlePageChange(pageNum + 1)}
         >
           Next
         </Button>
@@ -85,7 +90,7 @@ export default function PoolsList() {
           <Button
             variant={numPerPage === num ? 'default' : 'outline'}
             key={num}
-            onClick={() => setNumPerPage(num)}
+            onClick={() => handleNumPerPageChange(num)}
           >
             {num}
           </Button>
