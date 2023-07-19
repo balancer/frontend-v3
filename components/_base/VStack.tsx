@@ -32,7 +32,7 @@ const vStackVariants = cva('flex flex-col', {
 interface Props
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof vStackVariants> {
-  children: ReactNode
+  children?: ReactNode
 }
 
 export function VStack({
