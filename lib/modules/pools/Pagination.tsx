@@ -18,12 +18,16 @@ export function Pagination({ page, perPage }: Props) {
             key={num}
             asChild
           >
-            <Link href={`/?page=${num}&perPage=${perPage}`}>{num}</Link>
+            <Link href={`/?page=${num}&perPage=${perPage}`} scroll={false}>
+              {num}
+            </Link>
           </Button>
         ))}
 
         <Button variant="outline" size="sm" asChild>
-          <Link href={`/?page=${page + 1}&perPage=${perPage}`}>Next</Link>
+          <Link href={`/?page=${page + 1}&perPage=${perPage}`} scroll={false}>
+            Next
+          </Link>
         </Button>
       </div>
 
@@ -35,7 +39,9 @@ export function Pagination({ page, perPage }: Props) {
             key={num}
             asChild
           >
-            <Link href={`/?page=${page}&perPage=${num}`}>{num}</Link>
+            <Link href={`/?page=${page}&perPage=${num}`} scroll={false}>
+              {num}
+            </Link>
           </Button>
         ))}
       </div>
