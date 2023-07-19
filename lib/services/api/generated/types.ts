@@ -1,5 +1,6 @@
-import { gql } from '@apollo/client'
-import * as Apollo from '@apollo/client'
+import { GraphQLClient } from 'graphql-request'
+import { GraphQLClientRequestHeaders } from 'graphql-request/build/cjs/types'
+import gql from 'graphql-tag'
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -20,7 +21,6 @@ export type Incremental<T> =
   | {
       [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never
     }
-const defaultOptions = {} as const
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string }
@@ -1427,6 +1427,10 @@ export type QueryUserGetSwapsArgs = {
   skip?: InputMaybe<Scalars['Int']['input']>
 }
 
+export type GetPoolsCountQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetPoolsCountQuery = { __typename?: 'Query'; poolsCount: number }
+
 export type GetPoolsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>
   skip?: InputMaybe<Scalars['Int']['input']>
@@ -1502,6 +1506,11 @@ export type GetPoolsQuery = {
   }>
 }
 
+export const GetPoolsCountDocument = gql`
+  query GetPoolsCount {
+    poolsCount: poolGetPoolsCount
+  }
+`
 export const GetPoolsDocument = gql`
   query GetPools(
     $first: Int
@@ -1605,52 +1614,51 @@ export const GetPoolsDocument = gql`
   }
 `
 
-/**
- * __useGetPoolsQuery__
- *
- * To run a query within a React component, call `useGetPoolsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPoolsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetPoolsQuery({
- *   variables: {
- *      first: // value for 'first'
- *      skip: // value for 'skip'
- *      orderBy: // value for 'orderBy'
- *      orderDirection: // value for 'orderDirection'
- *      where: // value for 'where'
- *   },
- * });
- */
-export function useGetPoolsQuery(
-  baseOptions?: Apollo.QueryHookOptions<GetPoolsQuery, GetPoolsQueryVariables>
+export type SdkFunctionWrapper = <T>(
+  action: (requestHeaders?: Record<string, string>) => Promise<T>,
+  operationName: string,
+  operationType?: string
+) => Promise<T>
+
+const defaultWrapper: SdkFunctionWrapper = (
+  action,
+  _operationName,
+  _operationType
+) => action()
+
+export function getSdk(
+  client: GraphQLClient,
+  withWrapper: SdkFunctionWrapper = defaultWrapper
 ) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<GetPoolsQuery, GetPoolsQueryVariables>(
-    GetPoolsDocument,
-    options
-  )
+  return {
+    GetPoolsCount(
+      variables?: GetPoolsCountQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<GetPoolsCountQuery> {
+      return withWrapper(
+        wrappedRequestHeaders =>
+          client.request<GetPoolsCountQuery>(GetPoolsCountDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'GetPoolsCount',
+        'query'
+      )
+    },
+    GetPools(
+      variables?: GetPoolsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders
+    ): Promise<GetPoolsQuery> {
+      return withWrapper(
+        wrappedRequestHeaders =>
+          client.request<GetPoolsQuery>(GetPoolsDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'GetPools',
+        'query'
+      )
+    },
+  }
 }
-export function useGetPoolsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    GetPoolsQuery,
-    GetPoolsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<GetPoolsQuery, GetPoolsQueryVariables>(
-    GetPoolsDocument,
-    options
-  )
-}
-export type GetPoolsQueryHookResult = ReturnType<typeof useGetPoolsQuery>
-export type GetPoolsLazyQueryHookResult = ReturnType<
-  typeof useGetPoolsLazyQuery
->
-export type GetPoolsQueryResult = Apollo.QueryResult<
-  GetPoolsQuery,
-  GetPoolsQueryVariables
->
+export type Sdk = ReturnType<typeof getSdk>
