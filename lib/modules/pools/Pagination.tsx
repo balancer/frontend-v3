@@ -18,12 +18,12 @@ export function Pagination({ page, perPage }: Props) {
             key={num}
             asChild
           >
-            <Link href={`/?page=${num}`}>{num}</Link>
+            <Link href={`/?page=${num}&perPage=${perPage}`}>{num}</Link>
           </Button>
         ))}
 
         <Button variant="outline" size="sm" asChild>
-          <Link href={`/?page=${page + 1}`}>Next</Link>
+          <Link href={`/?page=${page + 1}&perPage=${perPage}`}>Next</Link>
         </Button>
       </div>
 
