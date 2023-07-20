@@ -4,6 +4,14 @@ import { ReactNode } from 'react'
 
 const variants = cva('flex flex-row', {
   variants: {
+    as: {
+      h1: 'text-4xl font-bold',
+      h2: 'text-3xl font-bold',
+      h3: 'text-2xl font-bold',
+      h4: 'text-xl font-bold',
+      h5: 'text-lg font-bold',
+      h6: 'text-base font-bold',
+    },
     size: {
       xs: 'text-xs',
       sm: 'text-sm',
@@ -87,6 +95,9 @@ const variants = cva('flex flex-row', {
       keep: 'break-keep',
     },
   },
+  defaultVariants: {
+    as: 'h1',
+  },
 })
 
 interface Props
@@ -95,8 +106,9 @@ interface Props
   children?: ReactNode
 }
 
-export function Text({
+export function Heading({
   children,
+  as,
   size,
   family,
   italic,
@@ -111,11 +123,14 @@ export function Text({
   className,
   ...props
 }: Props) {
+  const Tag = as || 'h1'
+
   return (
-    <p
+    <Tag
       className={cn(
         variants({
           size,
+          as,
           family,
           italic,
           weight,
@@ -132,6 +147,6 @@ export function Text({
       {...props}
     >
       {children}
-    </p>
+    </Tag>
   )
 }
