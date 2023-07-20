@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils/styles'
 import { VariantProps, cva } from 'class-variance-authority'
 import { ReactNode } from 'react'
 
-const variants = cva('flex flex-row', {
+const variants = cva('', {
   variants: {
     as: {
       h1: 'text-4xl font-bold',
