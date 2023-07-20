@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils/styles'
 import { VariantProps, cva } from 'class-variance-authority'
 import { ReactNode } from 'react'
 
-const gridVariants = cva('grid', {
+const variants = cva('grid', {
   variants: {
     cols: {
       1: 'grid-cols-1',
@@ -56,7 +56,7 @@ const gridVariants = cva('grid', {
 
 interface Props
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof gridVariants> {
+    VariantProps<typeof variants> {
   children?: ReactNode
 }
 
@@ -71,7 +71,7 @@ export function Grid({
 }: Props) {
   return (
     <div
-      className={cn(gridVariants({ cols, rows, gap, padd, className }))}
+      className={cn(variants({ cols, rows, gap, padd, className }))}
       {...props}
     >
       {children}

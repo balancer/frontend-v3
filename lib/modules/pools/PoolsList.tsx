@@ -66,7 +66,7 @@ export default function PoolsList() {
         <div>Page num: {pageNum}</div>
         {[0, 1, 2].map(num => (
           <Button
-            variant={pageNum === num ? 'default' : 'outline'}
+            variant={pageNum === num ? 'primary' : 'outline'}
             size="sm"
             key={num}
             onClick={() => handlePageChange(num)}
@@ -88,7 +88,7 @@ export default function PoolsList() {
         <div>No. per page:</div>
         {[10, 20, 30].map(num => (
           <Button
-            variant={numPerPage === num ? 'default' : 'outline'}
+            variant={numPerPage === num ? 'primary' : 'outline'}
             key={num}
             onClick={() => handleNumPerPageChange(num)}
           >

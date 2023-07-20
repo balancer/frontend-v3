@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils/styles'
 import { VariantProps, cva } from 'class-variance-authority'
 import { ReactNode } from 'react'
 
-const vStackVariants = cva('flex flex-col', {
+const variants = cva('flex flex-col', {
   variants: {
     align: {
       start: 'items-start',
@@ -31,7 +31,7 @@ const vStackVariants = cva('flex flex-col', {
 
 interface Props
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof vStackVariants> {
+    VariantProps<typeof variants> {
   children?: ReactNode
 }
 
@@ -45,7 +45,7 @@ export function VStack({
 }: Props) {
   return (
     <div
-      className={cn(vStackVariants({ align, spacing, padd, className }))}
+      className={cn(variants({ align, spacing, padd, className }))}
       {...props}
     >
       {children}

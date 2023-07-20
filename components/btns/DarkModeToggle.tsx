@@ -12,7 +12,7 @@ export default function DarkModeToggle() {
   }
 
   return (
-    <Button variant="outline" size="icon" onClick={toggleTheme}>
+    <Button variant="outline" shape="square" size="sm" onClick={toggleTheme}>
       <Sun
         className="
           h-[1.2rem] w-[1.2rem] rotate-0 scale-100 

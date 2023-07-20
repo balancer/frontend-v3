@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils/styles'
 import { VariantProps, cva } from 'class-variance-authority'
 import { ReactNode } from 'react'
 
-const centerVariants = cva('flex items-center justify-center', {
+const variants = cva('flex items-center justify-center', {
   variants: {
     padd: {
       none: 'p-0',
@@ -18,13 +18,13 @@ const centerVariants = cva('flex items-center justify-center', {
 
 interface Props
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof centerVariants> {
+    VariantProps<typeof variants> {
   children: ReactNode
 }
 
 export function Center({ children, padd, className, ...props }: Props) {
   return (
-    <div className={cn(centerVariants({ padd, className }))} {...props}>
+    <div className={cn(variants({ padd, className }))} {...props}>
       {children}
     </div>
   )

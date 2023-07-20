@@ -2,12 +2,17 @@ import { cn } from '@/lib/utils/styles'
 import { VariantProps, cva } from 'class-variance-authority'
 import { ReactNode } from 'react'
 
-const hStackVariants = cva('flex flex-row', {
+const variants = cva('flex flex-row', {
   variants: {
-    align: {
+    justify: {
       start: 'justify-start',
       center: 'justify-center',
       end: 'justify-end',
+    },
+    align: {
+      start: 'items-start',
+      center: 'items-center',
+      end: 'items-end',
     },
     spacing: {
       none: 'space-x-0',
@@ -23,6 +28,7 @@ const hStackVariants = cva('flex flex-row', {
     },
   },
   defaultVariants: {
+    justify: 'start',
     align: 'start',
     spacing: 'none',
     padd: 'none',
@@ -31,12 +37,13 @@ const hStackVariants = cva('flex flex-row', {
 
 interface Props
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof hStackVariants> {
+    VariantProps<typeof variants> {
   children?: ReactNode
 }
 
 export function HStack({
   children,
+  justify,
   align,
   spacing,
   padd,
@@ -45,7 +52,7 @@ export function HStack({
 }: Props) {
   return (
     <div
-      className={cn(hStackVariants({ align, spacing, padd, className }))}
+      className={cn(variants({ justify, align, spacing, padd, className }))}
       {...props}
     >
       {children}

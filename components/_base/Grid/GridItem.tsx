@@ -2,9 +2,9 @@ import { cn } from '@/lib/utils/styles'
 import { VariantProps, cva } from 'class-variance-authority'
 import { ReactNode } from 'react'
 
-const gridItemVariants = cva('grid', {
+const variants = cva('grid', {
   variants: {
-    span: {
+    colSpan: {
       1: 'col-span-1',
       2: 'col-span-2',
       3: 'col-span-3',
@@ -18,6 +18,20 @@ const gridItemVariants = cva('grid', {
       11: 'col-span-11',
       12: 'col-span-12',
     },
+    rowSpan: {
+      1: 'row-span-1',
+      2: 'row-span-2',
+      3: 'row-span-3',
+      4: 'row-span-4',
+      5: 'row-span-5',
+      6: 'row-span-6',
+      7: 'row-span-7',
+      8: 'row-span-8',
+      9: 'row-span-9',
+      10: 'row-span-10',
+      11: 'row-span-11',
+      12: 'row-span-12',
+    },
     padd: {
       none: 'p-0',
       sm: 'p-2',
@@ -26,20 +40,31 @@ const gridItemVariants = cva('grid', {
     },
   },
   defaultVariants: {
-    span: 1,
+    colSpan: 1,
+    rowSpan: 1,
     padd: 'none',
   },
 })
 
 interface Props
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof gridItemVariants> {
+    VariantProps<typeof variants> {
   children?: ReactNode
 }
 
-export function GridItem({ children, span, padd, className, ...props }: Props) {
+export function GridItem({
+  children,
+  colSpan,
+  rowSpan,
+  padd,
+  className,
+  ...props
+}: Props) {
   return (
-    <div className={cn(gridItemVariants({ span, padd, className }))} {...props}>
+    <div
+      className={cn(variants({ colSpan, rowSpan, padd, className }))}
+      {...props}
+    >
       {children}
     </div>
   )
