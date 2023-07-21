@@ -47,16 +47,68 @@ const wagmiConfig = createConfig({
   publicClient,
 })
 
-const _lightTheme = merge(lightTheme(), {
+type TwColor = { DEFAULT: string; foreground: string }
+
+const sharedConfig = {
   fonts: {
     body: (twConfig.theme?.fontFamily?.sans as string[]).join(', '),
   },
+  radii: {
+    connectButton: twConfig.theme?.borderRadius?.md,
+    actionButton: twConfig.theme?.borderRadius?.md,
+    menuButton: twConfig.theme?.borderRadius?.md,
+    modal: twConfig.theme?.borderRadius?.md,
+    modalMobile: twConfig.theme?.borderRadius?.md,
+  },
+  shadows: {
+    connectButton: twConfig.theme?.boxShadow?.md,
+    dialog: twConfig.theme?.boxShadow?.xl,
+    profileDetailsAction: twConfig.theme?.boxShadow?.md,
+    selectedOption: twConfig.theme?.boxShadow?.md,
+    selectedWallet: twConfig.theme?.boxShadow?.md,
+    walletLogo: twConfig.theme?.boxShadow?.md,
+  },
+  colors: {
+    accentColor: (twConfig.theme?.colors?.primary as TwColor).DEFAULT,
+    accentColorForeground: (twConfig.theme?.colors?.primary as TwColor)
+      .foreground,
+    // actionButtonBorder: '...',
+    // actionButtonBorderMobile: '...',
+    // actionButtonSecondaryBackground: '...',
+    // closeButton: '...',
+    // closeButtonBackground: '...',
+    // connectButtonBackground: '#000000',
+    // connectButtonBackgroundError: '...',
+    // connectButtonInnerBackground: '#000000',
+    // connectButtonText: '...',
+    // connectButtonTextError: '...',
+    // connectionIndicator: '...',
+    // downloadBottomCardBackground: '...',
+    // downloadTopCardBackground: '...',
+    // error: '...',
+    // generalBorder: '...',
+    // generalBorderDim: '...',
+    // menuItemBackground: '...',
+    // modalBackdrop: '...',
+    // modalBackground: '...',
+    // modalBorder: '...',
+    // modalText: '...',
+    // modalTextDim: '...',
+    // modalTextSecondary: '...',
+    // profileAction: '...',
+    // profileActionHover: '...',
+    // profileForeground: '...',
+    // selectedOptionBorder: '...',
+    // standby: '...',
+  },
+}
+
+const _lightTheme = merge(lightTheme(), {
+  ...sharedConfig,
 } as Theme)
 
 const _darkTheme = merge(darkTheme(), {
-  fonts: {
-    body: (twConfig.theme?.fontFamily?.sans as string[]).join(', '),
-  },
+  ...sharedConfig,
 } as Theme)
 
 export function Web3Provider({ children }: { children: React.ReactNode }) {
