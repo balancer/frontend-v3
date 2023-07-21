@@ -4,14 +4,15 @@ import Link from 'next/link'
 interface Props {
   page: number
   perPage: number
+  numResults: number
 }
 
-export function Pagination({ page, perPage }: Props) {
+export function Pagination({ page, perPage, numResults }: Props) {
   return (
     <>
       <div className="mt-4 flex items-center space-x-4">
         <div>Page num: {page}</div>
-        {[1, 2, 3].map(num => (
+        {[1, 2, 3, 4].map(num => (
           <Button
             variant={page === num ? 'default' : 'outline'}
             size="sm"
@@ -45,6 +46,7 @@ export function Pagination({ page, perPage }: Props) {
           </Button>
         ))}
       </div>
+      <div>num results: {numResults}</div>
     </>
   )
 }

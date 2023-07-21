@@ -12,27 +12,72 @@ query GetPools(
     orderDirection: $orderDirection
     where: $where
   ) {
+    ...GqlPoolMinimal
+  }
+  count: poolGetPoolsCount(
+    first: $first
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    where: $where
+  )
+}
+
+
+fragment GqlPoolMinimal on GqlPoolMinimal {
+  address
+  allTokens {
     address
-    allTokens {
-      address
-      weight
-    }
-    chain
-    createTime
-    decimals
-    displayTokens {
-      address
-    }
-    dynamicData {
-      totalLiquidity
-      lifetimeVolume
-      lifetimeSwapFees
-      volume24h
-      fees24h
-      holdersCount
-      swapFee
-      swapsCount
+    weight
+  }
+  chain
+  createTime
+  decimals
+  displayTokens {
+    address
+  }
+  dynamicData {
+    totalLiquidity
+    lifetimeVolume
+    lifetimeSwapFees
+    volume24h
+    fees24h
+    holdersCount
+    swapFee
+    swapsCount
+    apr {
       apr {
+        ... on GqlPoolAprTotal {
+          total
+        }
+        ... on GqlPoolAprRange {
+          min
+          max
+        }
+      }
+      hasRewardApr
+      thirdPartyApr {
+        ... on GqlPoolAprTotal {
+          total
+        }
+        ... on GqlPoolAprRange {
+          min
+          max
+        }
+      }
+      nativeRewardApr {
+        ... on GqlPoolAprTotal {
+          total
+        }
+        ... on GqlPoolAprRange {
+          min
+          max
+        }
+      }
+      swapApr
+      items {
+        id
+        title
         apr {
           ... on GqlPoolAprTotal {
             total
@@ -42,27 +87,7 @@ query GetPools(
             max
           }
         }
-        hasRewardApr
-        thirdPartyApr {
-          ... on GqlPoolAprTotal {
-            total
-          }
-          ... on GqlPoolAprRange {
-            min
-            max
-          }
-        }
-        nativeRewardApr {
-          ... on GqlPoolAprTotal {
-            total
-          }
-          ... on GqlPoolAprRange {
-            min
-            max
-          }
-        }
-        swapApr
-        items {
+        subItems {
           id
           title
           apr {
@@ -74,55 +99,42 @@ query GetPools(
               max
             }
           }
-          subItems {
-            id
-            title
-            apr {
-              ... on GqlPoolAprTotal {
-                total
-              }
-              ... on GqlPoolAprRange {
-                min
-                max
-              }
-            }
-          }
         }
       }
     }
-    factory
-    id
-    name
-    owner
-    # staking
-    symbol
-    type
-
-    # address
-    # baseToken
-    # createTime
-    # expiryTime
-    # factory
-    # holdersCount
-    # id
-    # isInRecoveryMode
-    # isPaused
-    # mainIndex
-    # managementFee
-    # name
-    # owner
-    # poolType
-    # poolTypeVersion
-    # principalToken
-    # swapEnabled
-    # swapFee
-    # swapsCount
-    # symbol
-    # tokensList
-    # totalLiquidity
-    # totalShares
-    # totalSwapFee
-    # totalSwapVolume
-    # totalWeight
   }
+  factory
+  id
+  name
+  owner
+  # staking
+  symbol
+  type
+
+  # address
+  # baseToken
+  # createTime
+  # expiryTime
+  # factory
+  # holdersCount
+  # id
+  # isInRecoveryMode
+  # isPaused
+  # mainIndex
+  # managementFee
+  # name
+  # owner
+  # poolType
+  # poolTypeVersion
+  # principalToken
+  # swapEnabled
+  # swapFee
+  # swapsCount
+  # symbol
+  # tokensList
+  # totalLiquidity
+  # totalShares
+  # totalSwapFee
+  # totalSwapVolume
+  # totalWeight
 }
