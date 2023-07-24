@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { getColumns } from './columns'
@@ -10,7 +9,7 @@ interface Props {
   pools: PoolsList
 }
 
-export default function PoolTable({ pools }: Props) {
+export function PoolsTable({ pools }: Props) {
   const columns = getColumns()
 
   return (

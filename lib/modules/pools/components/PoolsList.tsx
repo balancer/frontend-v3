@@ -13,7 +13,7 @@ import { useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { useState } from 'react'
 import { Pagination } from './Pagination'
 import { VStack } from '@/components/_base/VStack'
-import PoolTable from './PoolsTable.tsx/PoolsTable'
+import { PoolsTable } from './PoolsTable.tsx/PoolsTable'
 
 export default function PoolsList() {
   const [numPerPage, setNumPerPage] = useState(10)
@@ -55,7 +55,7 @@ export default function PoolsList() {
 
   return (
     <VStack spacing="md">
-      <PoolTable pools={pools} />
+      <PoolsTable pools={pools} />
       <Pagination
         pageNum={pageNum}
         numPerPage={numPerPage}
