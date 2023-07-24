@@ -19,6 +19,8 @@ const config: CodegenConfig = {
           BigInt: 'string',
           BigDecimal: 'string',
           Bytes: 'string',
+          AmountHumanReadable: 'string',
+          GqlBigNumber: 'string',
         },
       },
     },

@@ -28,12 +28,12 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean }
   Int: { input: number; output: number }
   Float: { input: number; output: number }
-  AmountHumanReadable: { input: any; output: any }
+  AmountHumanReadable: { input: string; output: string }
   BigDecimal: { input: string; output: string }
   BigInt: { input: string; output: string }
   Bytes: { input: string; output: string }
   Date: { input: any; output: any }
-  GqlBigNumber: { input: any; output: any }
+  GqlBigNumber: { input: string; output: string }
   JSON: { input: any; output: any }
 }
 
@@ -105,81 +105,6 @@ export type GqlLatestSyncedBlocks = {
   poolSyncBlock: Scalars['BigInt']['output']
   userStakeSyncBlock: Scalars['BigInt']['output']
   userWalletSyncBlock: Scalars['BigInt']['output']
-}
-
-export type GqlLge = {
-  __typename?: 'GqlLge'
-  address: Scalars['String']['output']
-  adminAddress: Scalars['String']['output']
-  adminIsMultisig: Scalars['Boolean']['output']
-  bannerImageUrl: Scalars['String']['output']
-  collateralAddress: Scalars['String']['output']
-  collateralAmount: Scalars['String']['output']
-  collateralDecimals: Scalars['Int']['output']
-  collateralEndWeight: Scalars['Int']['output']
-  collateralStartWeight: Scalars['Int']['output']
-  description: Scalars['String']['output']
-  discordUrl: Scalars['String']['output']
-  endTimestamp: Scalars['Int']['output']
-  id: Scalars['ID']['output']
-  mediumUrl: Scalars['String']['output']
-  name: Scalars['String']['output']
-  startTimestamp: Scalars['Int']['output']
-  swapFee: Scalars['String']['output']
-  telegramUrl: Scalars['String']['output']
-  tokenAddress: Scalars['String']['output']
-  tokenAmount: Scalars['String']['output']
-  tokenDecimals: Scalars['Int']['output']
-  tokenEndWeight: Scalars['Int']['output']
-  tokenIconUrl: Scalars['String']['output']
-  tokenStartWeight: Scalars['Int']['output']
-  tokenSymbol: Scalars['String']['output']
-  twitterUrl: Scalars['String']['output']
-  websiteUrl: Scalars['String']['output']
-}
-
-export type GqlLgeCreateInput = {
-  address: Scalars['String']['input']
-  bannerImageUrl: Scalars['String']['input']
-  collateralAddress: Scalars['String']['input']
-  collateralAmount: Scalars['String']['input']
-  collateralEndWeight: Scalars['Int']['input']
-  collateralStartWeight: Scalars['Int']['input']
-  description: Scalars['String']['input']
-  discordUrl: Scalars['String']['input']
-  endTimestamp: Scalars['Int']['input']
-  id: Scalars['ID']['input']
-  mediumUrl: Scalars['String']['input']
-  name: Scalars['String']['input']
-  startTimestamp: Scalars['Int']['input']
-  swapFee: Scalars['String']['input']
-  telegramUrl: Scalars['String']['input']
-  tokenAddress: Scalars['String']['input']
-  tokenAmount: Scalars['String']['input']
-  tokenEndWeight: Scalars['Int']['input']
-  tokenIconUrl: Scalars['String']['input']
-  tokenStartWeight: Scalars['Int']['input']
-  twitterUrl: Scalars['String']['input']
-  websiteUrl: Scalars['String']['input']
-}
-
-export type GqlLgePriceData = {
-  __typename?: 'GqlLgePriceData'
-  price: Scalars['Float']['output']
-  timestamp: Scalars['Int']['output']
-  type: Scalars['String']['output']
-}
-
-export type GqlLgeUpdateInput = {
-  description: Scalars['String']['input']
-  discordUrl: Scalars['String']['input']
-  id: Scalars['ID']['input']
-  mediumUrl: Scalars['String']['input']
-  name: Scalars['String']['input']
-  telegramUrl: Scalars['String']['input']
-  tokenIconUrl: Scalars['String']['input']
-  twitterUrl: Scalars['String']['input']
-  websiteUrl: Scalars['String']['input']
 }
 
 export type GqlPoolApr = {
@@ -1130,8 +1055,6 @@ export type Mutation = {
   __typename?: 'Mutation'
   balancerMutationTest: Scalars['String']['output']
   cacheAverageBlockTime: Scalars['String']['output']
-  lgeCreate: GqlLge
-  lgeSyncFromSanity: Scalars['String']['output']
   poolBlackListAddPool: Scalars['String']['output']
   poolBlackListRemovePool: Scalars['String']['output']
   poolDeletePool: Scalars['String']['output']
@@ -1178,10 +1101,6 @@ export type Mutation = {
   userSyncChangedWalletBalancesForAllPools: Scalars['String']['output']
   veBalSyncAllUserBalances: Scalars['String']['output']
   veBalSyncTotalSupply: Scalars['String']['output']
-}
-
-export type MutationLgeCreateArgs = {
-  lge: GqlLgeCreateInput
 }
 
 export type MutationPoolBlackListAddPoolArgs = {
@@ -1260,9 +1179,6 @@ export type Query = {
   blocksGetBlocksPerYear: Scalars['Float']['output']
   contentGetNewsItems: Array<GqlContentNewsItem>
   latestSyncedBlocks: GqlLatestSyncedBlocks
-  lge: GqlLge
-  lgeGetChartData: Array<Maybe<GqlLgePriceData>>
-  lges: Array<GqlLge>
   poolGetAllPoolsSnapshots: Array<GqlPoolSnapshot>
   poolGetBatchSwaps: Array<GqlPoolBatchSwap>
   poolGetFeaturedPoolGroups: Array<GqlPoolFeaturedPoolGroup>
@@ -1296,14 +1212,6 @@ export type Query = {
   userGetSwaps: Array<GqlPoolSwap>
   veBalGetTotalSupply: Scalars['AmountHumanReadable']['output']
   veBalGetUserBalance: Scalars['AmountHumanReadable']['output']
-}
-
-export type QueryLgeArgs = {
-  id: Scalars['ID']['input']
-}
-
-export type QueryLgeGetChartDataArgs = {
-  id: Scalars['ID']['input']
 }
 
 export type QueryPoolGetAllPoolsSnapshotsArgs = {
