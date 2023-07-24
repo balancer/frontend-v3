@@ -23,6 +23,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
       )
     },
   },
+
   {
     id: 'details',
     header: 'Details',
@@ -32,17 +33,17 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
           <div className="text-lg font-bold">{pool.name}</div>
           <div className="flex items-center">
             {pool.displayTokens.map(
-              token =>
-                token.logoURI && (
-                  <Image
-                    src={token.logoURI}
-                    key={token.address}
-                    width={30}
-                    height={30}
-                    alt={token.symbol}
-                    className="mr-1 rounded-full"
-                  />
-                )
+              token => token.address.slice(0, 6) + '... '
+              // token.logoURI && (
+              //   <Image
+              //     src={token.logoURI}
+              //     key={token.address}
+              //     width={30}
+              //     height={30}
+              //     alt={token.symbol}
+              //     className="mr-1 rounded-full"
+              //   />
+              // )
             )}
           </div>
         </div>
@@ -85,20 +86,20 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
         </div>
       )
     },
-    cell: ({ row: { original: pool } }) => {
-      const apr = pool.apr
+    cell: () => {
+      const apr = false //pool.dynamicData.apr
       if (!apr) {
         return <div className="text-right tabular-nums">-</div>
       }
 
-      if (apr.min === apr.max) {
-        const value = numeral(apr.min).divide(10000).format('0.[00]%')
-        return <div className="text-right tabular-nums">{value}</div>
-      }
+      // if (apr.min === apr.max) {
+      //   const value = numeral(apr.min).divide(10000).format('0.[00]%')
+      //   return <div className="text-right tabular-nums">{value}</div>
+      // }
 
-      const min = numeral(apr.min).divide(10000).format('0.[00]%')
-      const max = numeral(apr.max).divide(10000).format('0.[00]%')
-      return <div className="text-right tabular-nums">{`${min} - ${max}`}</div>
+      // const min = numeral(apr.min).divide(10000).format('0.[00]%')
+      // const max = numeral(apr.max).divide(10000).format('0.[00]%')
+      // return <div className="text-right tabular-nums">{`${min} - ${max}`}</div>
     },
   },
 ]

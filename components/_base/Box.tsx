@@ -39,6 +39,10 @@ const variants = cva('', {
       md: 'rounded-md',
       lg: 'rounded-lg',
     },
+    width: {
+      full: 'w-full',
+      auto: 'w-auto',
+    },
   },
   defaultVariants: {
     bg: 'default',
@@ -58,6 +62,7 @@ interface Props
 export function Box({
   children,
   bg,
+  width,
   padd,
   overflow,
   border,
@@ -68,7 +73,7 @@ export function Box({
   return (
     <div
       className={cn(
-        variants({ bg, padd, overflow, border, borderRadius, className })
+        variants({ bg, padd, overflow, border, width, borderRadius, className })
       )}
       {...props}
     >

@@ -10,10 +10,10 @@ import {
   GqlPoolOrderDirection,
 } from '@/lib/services/api/generated/types'
 import { useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import Link from 'next/link'
 import { useState } from 'react'
 import { Pagination } from './Pagination'
 import { VStack } from '@/components/_base/VStack'
+import PoolTable from './PoolsTable.tsx/PoolsTable'
 
 export default function PoolsList() {
   const [numPerPage, setNumPerPage] = useState(10)
@@ -55,13 +55,7 @@ export default function PoolsList() {
 
   return (
     <VStack spacing="md">
-      <ul>
-        {pools.map(pool => (
-          <li key={pool.id}>
-            <Link href={`/pools/${pool.id}`}>{pool.name}</Link>
-          </li>
-        ))}
-      </ul>
+      <PoolTable pools={pools} />
       <Pagination
         pageNum={pageNum}
         numPerPage={numPerPage}
