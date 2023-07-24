@@ -1,4 +1,4 @@
-import PoolsList from '@/lib/modules/pools/PoolsList'
+import PoolsList from '@/lib/modules/pools/components/PoolsList'
 
 export default async function Home() {
   return (

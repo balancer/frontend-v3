@@ -54,22 +54,20 @@ export default function PoolsList() {
   }
 
   return (
-    <>
-      <VStack spacing="md">
-        <ul>
-          {pools.map(pool => (
-            <li key={pool.id}>
-              <Link href={`/pools/${pool.id}`}>{pool.name}</Link>
-            </li>
-          ))}
-        </ul>
-        <Pagination
-          pageNum={pageNum}
-          numPerPage={numPerPage}
-          handlePageChange={handlePageChange}
-          handleNumPerPageChange={handleNumPerPageChange}
-        />
-      </VStack>
-    </>
+    <VStack spacing="md">
+      <ul>
+        {pools.map(pool => (
+          <li key={pool.id}>
+            <Link href={`/pools/${pool.id}`}>{pool.name}</Link>
+          </li>
+        ))}
+      </ul>
+      <Pagination
+        pageNum={pageNum}
+        numPerPage={numPerPage}
+        handlePageChange={handlePageChange}
+        handleNumPerPageChange={handleNumPerPageChange}
+      />
+    </VStack>
   )
 }
