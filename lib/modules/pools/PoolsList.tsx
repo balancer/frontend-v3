@@ -1,6 +1,5 @@
 'use client'
 
-import { Button } from '@/components/_base/Button'
 import {
   GetPoolsDocument,
   GetPoolsQuery,
@@ -13,6 +12,8 @@ import {
 import { useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import Link from 'next/link'
 import { useState } from 'react'
+import { Pagination } from './Pagination'
+import { VStack } from '@/components/_base/VStack'
 
 export default function PoolsList() {
   const [numPerPage, setNumPerPage] = useState(10)
@@ -54,48 +55,21 @@ export default function PoolsList() {
 
   return (
     <>
-      <ul>
-        {pools.map(pool => (
-          <li key={pool.id}>
-            <Link href={`/pools/${pool.id}`}>{pool.name}</Link>
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-4 flex items-center space-x-4">
-        <div>Page num: {pageNum}</div>
-        {[0, 1, 2].map(num => (
-          <Button
-            variant={pageNum === num ? 'primary' : 'outline'}
-            size="sm"
-            key={num}
-            onClick={() => handlePageChange(num)}
-          >
-            {num + 1}
-          </Button>
-        ))}
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => handlePageChange(pageNum + 1)}
-        >
-          Next
-        </Button>
-      </div>
-
-      <div className="mt-4 flex items-center space-x-4">
-        <div>No. per page:</div>
-        {[10, 20, 30].map(num => (
-          <Button
-            variant={numPerPage === num ? 'primary' : 'outline'}
-            key={num}
-            onClick={() => handleNumPerPageChange(num)}
-          >
-            {num}
-          </Button>
-        ))}
-      </div>
+      <VStack spacing="md">
+        <ul>
+          {pools.map(pool => (
+            <li key={pool.id}>
+              <Link href={`/pools/${pool.id}`}>{pool.name}</Link>
+            </li>
+          ))}
+        </ul>
+        <Pagination
+          pageNum={pageNum}
+          numPerPage={numPerPage}
+          handlePageChange={handlePageChange}
+          handleNumPerPageChange={handleNumPerPageChange}
+        />
+      </VStack>
     </>
   )
 }
