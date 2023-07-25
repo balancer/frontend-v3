@@ -104,7 +104,6 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
     },
     cell: row => {
       const value = row.getValue<GqlPoolApr>()
-      console.log(value)
 
       // const apr = false //pool.dynamicData.apr
       if (!(value.apr as GqlPoolAprTotal)?.total) {
