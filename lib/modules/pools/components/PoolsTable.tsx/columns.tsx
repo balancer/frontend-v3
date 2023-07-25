@@ -8,6 +8,7 @@ import { networkConfigFor } from '@/lib/config/app.config'
 import { Text } from '@/components/_base/Text'
 import { VStack } from '@/components/_base/VStack'
 import { HStack } from '@/components/_base/HStack'
+import { GqlPoolApr, GqlPoolAprTotal } from '@/lib/services/api/generated/types'
 
 export const getColumns = (): ColumnDef<PoolsListItem>[] => [
   {
@@ -93,7 +94,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
   },
   {
     id: 'apr',
-    accessorKey: 'apr',
+    accessorKey: 'dynamicData.apr',
     header: () => {
       return (
         <Text align="right" onClick={() => console.log('sort by APR')}>
@@ -101,20 +102,24 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
         </Text>
       )
     },
-    cell: () => {
-      const apr = false //pool.dynamicData.apr
-      if (!apr) {
-        return <div className="text-right tabular-nums">-</div>
+    cell: row => {
+      const value = row.getValue<GqlPoolApr>()
+      console.log(value)
+
+      // const apr = false //pool.dynamicData.apr
+      if (!(value.apr as GqlPoolAprTotal)?.total) {
+        return <Text align="right">-</Text>
       }
 
-      // if (apr.min === apr.max) {
-      //   const value = numeral(apr.min).divide(10000).format('0.[00]%')
-      //   return <div className="text-right tabular-nums">{value}</div>
-      // }
+      const apr = numeral((value.apr as GqlPoolAprTotal).total).format(
+        '0.[00]%'
+      )
 
-      // const min = numeral(apr.min).divide(10000).format('0.[00]%')
-      // const max = numeral(apr.max).divide(10000).format('0.[00]%')
-      // return <div className="text-right tabular-nums">{`${min} - ${max}`}</div>
+      return (
+        <Text align="right" numeric="tabular">
+          {apr}
+        </Text>
+      )
     },
   },
 ]
