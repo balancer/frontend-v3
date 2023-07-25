@@ -5,6 +5,9 @@ import numeral from 'numeral'
 import Image from 'next/image'
 import { PoolsListItem } from '../../types'
 import { networkConfigFor } from '@/lib/config/app.config'
+import { Text } from '@/components/_base/Text'
+import { VStack } from '@/components/_base/VStack'
+import { HStack } from '@/components/_base/HStack'
 
 export const getColumns = (): ColumnDef<PoolsListItem>[] => [
   {
@@ -29,9 +32,11 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
     header: 'Details',
     cell: ({ row: { original: pool } }) => {
       return (
-        <div className="flex flex-col">
-          <div className="text-lg font-bold">{pool.name}</div>
-          <div className="flex items-center">
+        <VStack>
+          <Text weight="bold" size="lg">
+            {pool.name}
+          </Text>
+          <HStack align="center">
             {pool.displayTokens.map(
               token => token.address.slice(0, 6) + '... '
               // token.logoURI && (
@@ -45,35 +50,45 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
               //   />
               // )
             )}
-          </div>
-        </div>
+          </HStack>
+        </VStack>
       )
     },
   },
   {
-    accessorKey: 'totalLiquidity',
+    id: 'totalLiquidity',
+    accessorKey: 'dynamicData.totalLiquidity',
     header: () => (
-      <div className="text-right" onClick={() => console.log('sort by TVL')}>
+      <Text align="right" onClick={() => console.log('sort by TVL')}>
         TVL
-      </div>
+      </Text>
     ),
-    cell: ({ row }) => {
-      const value = numeral(row.getValue('totalLiquidity')).format('($0,0a)')
+    cell: props => {
+      const value = numeral(props.getValue()).format('($0,0a)')
 
-      return <div className="text-right tabular-nums">{value}</div>
+      return (
+        <Text align="right" numeric="tabular">
+          {value}
+        </Text>
+      )
     },
   },
   {
-    accessorKey: 'volume24h',
+    id: 'volume24h',
+    accessorKey: 'dynamicData.volume24h',
     header: () => (
-      <div className="text-right" onClick={() => console.log('sort by Volume')}>
+      <Text align="right" onClick={() => console.log('sort by Volume')}>
         Volume (24h)
-      </div>
+      </Text>
     ),
-    cell: ({ row }) => {
-      const value = numeral(row.getValue('volume24h')).format('($0,0a)')
+    cell: props => {
+      const value = numeral(props.getValue()).format('($0,0a)')
 
-      return <div className="text-right tabular-nums">{value}</div>
+      return (
+        <Text align="right" numeric="tabular">
+          {value}
+        </Text>
+      )
     },
   },
   {
@@ -81,9 +96,9 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
     accessorKey: 'apr',
     header: () => {
       return (
-        <div className="text-right" onClick={() => console.log('sort by APR')}>
+        <Text align="right" onClick={() => console.log('sort by APR')}>
           APR
-        </div>
+        </Text>
       )
     },
     cell: () => {
