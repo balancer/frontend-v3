@@ -1,6 +1,5 @@
 import { cn } from '@/lib/utils/styles'
 import { VariantProps, cva } from 'class-variance-authority'
-import { ReactNode } from 'react'
 
 const variants = cva('flex flex-row', {
   variants: {
@@ -37,12 +36,9 @@ const variants = cva('flex flex-row', {
 
 interface Props
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof variants> {
-  children?: ReactNode
-}
+    VariantProps<typeof variants> {}
 
 export function HStack({
-  children,
   justify,
   align,
   spacing,
@@ -54,8 +50,6 @@ export function HStack({
     <div
       className={cn(variants({ justify, align, spacing, padd, className }))}
       {...props}
-    >
-      {children}
-    </div>
+    />
   )
 }

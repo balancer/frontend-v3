@@ -1,6 +1,5 @@
 import { cn } from '@/lib/utils/styles'
 import { VariantProps, cva } from 'class-variance-authority'
-import { ReactNode } from 'react'
 
 const variants = cva('', {
   variants: {
@@ -55,12 +54,9 @@ const variants = cva('', {
 
 interface Props
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof variants> {
-  children?: ReactNode
-}
+    VariantProps<typeof variants> {}
 
 export function Box({
-  children,
   bg,
   width,
   padd,
@@ -76,8 +72,6 @@ export function Box({
         variants({ bg, padd, overflow, border, width, borderRadius, className })
       )}
       {...props}
-    >
-      {children}
-    </div>
+    />
   )
 }
