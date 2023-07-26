@@ -1,3 +1,5 @@
+'use client'
+
 import { apolloClient } from '@/lib/services/api/apollo.client'
 import { GetAppGlobalDataDocument } from '@/lib/services/api/generated/graphql'
 import { useQuery } from '@apollo/client'
