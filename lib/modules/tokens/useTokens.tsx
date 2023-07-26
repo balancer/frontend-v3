@@ -1,7 +1,7 @@
 import { apolloClient } from '@/lib/services/api/apollo.client'
 import { GetAppGlobalDataDocument } from '@/lib/services/api/generated/graphql'
 import { useQuery } from '@apollo/client'
-import { ReactNode, createContext, useContext } from 'react'
+import { PropsWithChildren, createContext, useContext } from 'react'
 
 export const TokensContext = createContext<ReturnType<
   typeof _useTokens
@@ -16,7 +16,7 @@ function _useTokens() {
   return { tokens }
 }
 
-export function TokensProvider({ children }: { children: ReactNode }) {
+export function TokensProvider({ children }: PropsWithChildren) {
   const tokens = _useTokens()
   return (
     <TokensContext.Provider value={tokens}>{children}</TokensContext.Provider>
