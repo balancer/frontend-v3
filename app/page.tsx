@@ -1,6 +1,6 @@
 import PoolsList from '@/lib/modules/pools/components/PoolsList'
 import { ApolloPageWrapper } from '@/lib/services/api/ApolloPageWrapper'
-import { getApolloClient } from '@/lib/services/api/apollo.client'
+import { apolloClient } from '@/lib/services/api/apollo.client'
 import {
   GetPoolsDocument,
   GqlChain,
@@ -10,8 +10,7 @@ import {
 } from '@/lib/services/api/generated/graphql'
 
 export default async function Home() {
-  const client = getApolloClient()
-  await client.query({
+  await apolloClient().query({
     query: GetPoolsDocument,
     variables: {
       first: 10,

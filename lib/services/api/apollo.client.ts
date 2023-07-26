@@ -6,7 +6,7 @@ import {
   InMemoryCache,
 } from '@apollo/client'
 
-let apolloClient: ApolloClient<any>
+let _apolloClient: ApolloClient<any>
 
 const userMiddleware = new ApolloLink((operation, forward) => {
   // add the user address to the headers
@@ -75,10 +75,10 @@ function createApolloClient() {
   })
 }
 
-export function getApolloClient() {
-  if (!apolloClient) {
-    apolloClient = createApolloClient()
+export function apolloClient() {
+  if (!_apolloClient) {
+    _apolloClient = createApolloClient()
   }
 
-  return apolloClient
+  return _apolloClient
 }
