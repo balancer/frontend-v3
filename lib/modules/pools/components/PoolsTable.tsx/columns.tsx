@@ -8,7 +8,10 @@ import { networkConfigFor } from '@/lib/config/app.config'
 import { Text } from '@/components/_base/Text'
 import { VStack } from '@/components/_base/VStack'
 import { HStack } from '@/components/_base/HStack'
-import { GqlPoolApr, GqlPoolAprTotal } from '@/lib/services/api/generated/types'
+import {
+  GqlPoolApr,
+  GqlPoolAprTotal,
+} from '@/lib/services/api/generated/graphql'
 
 export const getColumns = (): ColumnDef<PoolsListItem>[] => [
   {
