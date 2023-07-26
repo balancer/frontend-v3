@@ -1,36 +1,10 @@
 'use client'
 
-import { ApolloLink, HttpLink } from '@apollo/client'
-import {
-  ApolloNextAppProvider,
-  NextSSRApolloClient,
-  NextSSRInMemoryCache,
-  SSRMultipartLink,
-} from '@apollo/experimental-nextjs-app-support/ssr'
+import { ApolloProvider } from '@apollo/client'
+import { getApolloClient } from '@/lib/services/api/apollo.client'
 
-function makeClient() {
-  const httpLink = new HttpLink({
-    uri: 'https://api-v3.balancer.fi/graphql',
-  })
+export function ApolloProviderWrapper({ children }: React.PropsWithChildren) {
+  const client = getApolloClient()
 
-  return new NextSSRApolloClient({
-    cache: new NextSSRInMemoryCache(),
-    link:
-      typeof window === 'undefined'
-        ? ApolloLink.from([
-            new SSRMultipartLink({
-              stripDefer: true,
-            }),
-            httpLink,
-          ])
-        : httpLink,
-  })
-}
-
-export function ApolloProvider({ children }: React.PropsWithChildren) {
-  return (
-    <ApolloNextAppProvider makeClient={makeClient}>
-      {children}
-    </ApolloNextAppProvider>
-  )
+  return <ApolloProvider client={client}>{children}</ApolloProvider>
 }

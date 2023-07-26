@@ -1,4 +1,4 @@
-import { GqlChain } from '../services/api/generated/types'
+import { GqlChain } from '@/lib/services/api/generated/graphql'
 
 interface NetworkConfig {
   chainId: number
