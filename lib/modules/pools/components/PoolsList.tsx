@@ -12,12 +12,19 @@ import {
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
 } from '@/lib/services/api/generated/graphql'
+import { useTokens } from '../../tokens/useTokens'
+import { apolloClient } from '@/lib/services/api/apollo.client'
 
 export default function PoolsList() {
   const [numPerPage, setNumPerPage] = useState(10)
   const [pageNum, setPageNum] = useState(0)
+  const client = apolloClient()
+
+  const { tokens } = useTokens()
+  console.log('tokens', tokens)
 
   const { data, refetch } = useQuery(GetPoolsDocument, {
+    client,
     variables: {
       first: numPerPage,
       skip: pageNum * numPerPage,

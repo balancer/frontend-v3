@@ -1,3 +1,6 @@
+import { apolloClient } from '@/lib/services/api/apollo.client'
+import { GetAppGlobalDataDocument } from '@/lib/services/api/generated/graphql'
+import { useQuery } from '@apollo/client'
 import { ReactNode, createContext, useContext } from 'react'
 
 export const TokensContext = createContext<ReturnType<
@@ -5,7 +8,10 @@ export const TokensContext = createContext<ReturnType<
 > | null>(null)
 
 function _useTokens() {
-  const tokens = ['some tokens']
+  const client = apolloClient()
+  const globalDataQuery = useQuery(GetAppGlobalDataDocument, { client })
+
+  const tokens = globalDataQuery.data?.tokenGetTokens || []
 
   return { tokens }
 }
