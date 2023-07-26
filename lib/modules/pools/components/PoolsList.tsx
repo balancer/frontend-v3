@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Pagination } from './Pagination'
 import { VStack } from '@/components/_base/VStack'
 import { PoolsTable } from './PoolsTable.tsx/PoolsTable'
@@ -35,15 +35,9 @@ export default function PoolsList() {
     },
   })
 
-  function handlePageChange(num: number) {
-    setPageNum(num)
+  useEffect(() => {
     refetch({ first: numPerPage, skip: pageNum * numPerPage })
-  }
-
-  function handleNumPerPageChange(perPage: number) {
-    setNumPerPage(perPage)
-    refetch({ first: numPerPage, skip: pageNum * numPerPage })
-  }
+  }, [numPerPage, pageNum, refetch])
 
   return (
     <VStack spacing="md">
@@ -51,8 +45,8 @@ export default function PoolsList() {
       <Pagination
         pageNum={pageNum}
         numPerPage={numPerPage}
-        handlePageChange={handlePageChange}
-        handleNumPerPageChange={handleNumPerPageChange}
+        handlePageChange={setPageNum}
+        handleNumPerPageChange={setNumPerPage}
       />
     </VStack>
   )
