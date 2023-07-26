@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client'
-import * as Apollo from '@apollo/client'
+/* eslint-disable */
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core'
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -20,7 +20,6 @@ export type Incremental<T> =
   | {
       [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never
     }
-const defaultOptions = {} as const
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string }
@@ -34,6 +33,7 @@ export type Scalars = {
   Bytes: { input: string; output: string }
   Date: { input: any; output: any }
   GqlBigNumber: { input: string; output: string }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any }
 }
 
@@ -1335,6 +1335,111 @@ export type QueryUserGetSwapsArgs = {
   skip?: InputMaybe<Scalars['Int']['input']>
 }
 
+export type GetAppGlobalDataQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetAppGlobalDataQuery = {
+  __typename?: 'Query'
+  blocksGetBlocksPerDay: number
+  blocksGetAverageBlockTime: number
+  tokenGetTokens: Array<{
+    __typename?: 'GqlToken'
+    address: string
+    name: string
+    symbol: string
+    decimals: number
+    chainId: number
+    logoURI?: string | null
+    priority: number
+    tradable: boolean
+  }>
+}
+
+export type GetAppGlobalPollingDataQueryVariables = Exact<{
+  [key: string]: never
+}>
+
+export type GetAppGlobalPollingDataQuery = {
+  __typename?: 'Query'
+  blocksGetBlocksPerDay: number
+  blocksGetAverageBlockTime: number
+  tokenGetCurrentPrices: Array<{
+    __typename?: 'GqlTokenPrice'
+    price: number
+    address: string
+  }>
+  protocolMetricsChain: {
+    __typename?: 'GqlProtocolMetricsChain'
+    totalLiquidity: string
+    totalSwapVolume: string
+    totalSwapFee: string
+    poolCount: string
+    swapFee24h: string
+    swapVolume24h: string
+  }
+}
+
+export type GetTokensQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetTokensQuery = {
+  __typename?: 'Query'
+  tokens: Array<{
+    __typename?: 'GqlToken'
+    address: string
+    name: string
+    symbol: string
+    decimals: number
+    chainId: number
+    logoURI?: string | null
+    priority: number
+    tradable: boolean
+  }>
+}
+
+export type GetTokenPricesQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetTokenPricesQuery = {
+  __typename?: 'Query'
+  tokenPrices: Array<{
+    __typename?: 'GqlTokenPrice'
+    price: number
+    address: string
+  }>
+}
+
+export type GetTokensDynamicDataQueryVariables = Exact<{
+  addresses: Array<Scalars['String']['input']> | Scalars['String']['input']
+}>
+
+export type GetTokensDynamicDataQuery = {
+  __typename?: 'Query'
+  dynamicData: Array<{
+    __typename?: 'GqlTokenDynamicData'
+    ath: number
+    atl: number
+    fdv?: string | null
+    high24h: number
+    id: string
+    low24h: number
+    marketCap?: string | null
+    price: number
+    priceChange24h: number
+    priceChangePercent7d?: number | null
+    priceChangePercent14d?: number | null
+    priceChangePercent24h: number
+    priceChangePercent30d?: number | null
+    tokenAddress: string
+    updatedAt: string
+  }>
+}
+
+export type GetBlocksPerDayQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetBlocksPerDayQuery = {
+  __typename?: 'Query'
+  blocksPerDay: number
+  avgBlockTime: number
+}
+
 export type GetPoolsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>
   skip?: InputMaybe<Scalars['Int']['input']>
@@ -1410,155 +1515,823 @@ export type GetPoolsQuery = {
   }>
 }
 
-export const GetPoolsDocument = gql`
-  query GetPools(
-    $first: Int
-    $skip: Int
-    $orderBy: GqlPoolOrderBy
-    $orderDirection: GqlPoolOrderDirection
-    $where: GqlPoolFilter
-  ) {
-    pools: poolGetPools(
-      first: $first
-      skip: $skip
-      orderBy: $orderBy
-      orderDirection: $orderDirection
-      where: $where
-    ) {
-      address
-      allTokens {
-        address
-        weight
-      }
-      chain
-      createTime
-      decimals
-      displayTokens {
-        address
-      }
-      dynamicData {
-        totalLiquidity
-        lifetimeVolume
-        lifetimeSwapFees
-        volume24h
-        fees24h
-        holdersCount
-        swapFee
-        swapsCount
-        apr {
-          apr {
-            ... on GqlPoolAprTotal {
-              total
-            }
-            ... on GqlPoolAprRange {
-              min
-              max
-            }
-          }
-          hasRewardApr
-          thirdPartyApr {
-            ... on GqlPoolAprTotal {
-              total
-            }
-            ... on GqlPoolAprRange {
-              min
-              max
-            }
-          }
-          nativeRewardApr {
-            ... on GqlPoolAprTotal {
-              total
-            }
-            ... on GqlPoolAprRange {
-              min
-              max
-            }
-          }
-          swapApr
-          items {
-            id
-            title
-            apr {
-              ... on GqlPoolAprTotal {
-                total
-              }
-              ... on GqlPoolAprRange {
-                min
-                max
-              }
-            }
-            subItems {
-              id
-              title
-              apr {
-                ... on GqlPoolAprTotal {
-                  total
-                }
-                ... on GqlPoolAprRange {
-                  min
-                  max
-                }
-              }
-            }
-          }
-        }
-      }
-      factory
-      id
-      name
-      owner
-      symbol
-      type
-    }
-  }
-`
-
-/**
- * __useGetPoolsQuery__
- *
- * To run a query within a React component, call `useGetPoolsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPoolsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetPoolsQuery({
- *   variables: {
- *      first: // value for 'first'
- *      skip: // value for 'skip'
- *      orderBy: // value for 'orderBy'
- *      orderDirection: // value for 'orderDirection'
- *      where: // value for 'where'
- *   },
- * });
- */
-export function useGetPoolsQuery(
-  baseOptions?: Apollo.QueryHookOptions<GetPoolsQuery, GetPoolsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<GetPoolsQuery, GetPoolsQueryVariables>(
-    GetPoolsDocument,
-    options
-  )
-}
-export function useGetPoolsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    GetPoolsQuery,
-    GetPoolsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<GetPoolsQuery, GetPoolsQueryVariables>(
-    GetPoolsDocument,
-    options
-  )
-}
-export type GetPoolsQueryHookResult = ReturnType<typeof useGetPoolsQuery>
-export type GetPoolsLazyQueryHookResult = ReturnType<
-  typeof useGetPoolsLazyQuery
+export const GetAppGlobalDataDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetAppGlobalData' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tokenGetTokens' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'chainId' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'logoURI' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'priority' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tradable' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'blocksGetBlocksPerDay' },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'blocksGetAverageBlockTime' },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetAppGlobalDataQuery,
+  GetAppGlobalDataQueryVariables
 >
-export type GetPoolsQueryResult = Apollo.QueryResult<
-  GetPoolsQuery,
-  GetPoolsQueryVariables
+export const GetAppGlobalPollingDataDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetAppGlobalPollingData' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tokenGetCurrentPrices' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'price' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'protocolMetricsChain' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'totalLiquidity' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'totalSwapVolume' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'totalSwapFee' },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'poolCount' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'swapFee24h' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'swapVolume24h' },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'blocksGetBlocksPerDay' },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'blocksGetAverageBlockTime' },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetAppGlobalPollingDataQuery,
+  GetAppGlobalPollingDataQueryVariables
 >
+export const GetTokensDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetTokens' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'tokens' },
+            name: { kind: 'Name', value: 'tokenGetTokens' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'chainId' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'logoURI' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'priority' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tradable' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetTokensQuery, GetTokensQueryVariables>
+export const GetTokenPricesDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetTokenPrices' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'tokenPrices' },
+            name: { kind: 'Name', value: 'tokenGetCurrentPrices' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'price' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetTokenPricesQuery, GetTokenPricesQueryVariables>
+export const GetTokensDynamicDataDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetTokensDynamicData' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'addresses' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: {
+                  kind: 'NamedType',
+                  name: { kind: 'Name', value: 'String' },
+                },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'dynamicData' },
+            name: { kind: 'Name', value: 'tokenGetTokensDynamicData' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'addresses' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'addresses' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'ath' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'atl' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'fdv' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'high24h' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'low24h' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'marketCap' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'price' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'priceChange24h' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'priceChangePercent7d' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'priceChangePercent14d' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'priceChangePercent24h' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'priceChangePercent30d' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'tokenAddress' },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetTokensDynamicDataQuery,
+  GetTokensDynamicDataQueryVariables
+>
+export const GetBlocksPerDayDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetBlocksPerDay' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'blocksPerDay' },
+            name: { kind: 'Name', value: 'blocksGetBlocksPerDay' },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'avgBlockTime' },
+            name: { kind: 'Name', value: 'blocksGetAverageBlockTime' },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetBlocksPerDayQuery,
+  GetBlocksPerDayQueryVariables
+>
+export const GetPoolsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetPools' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'skip' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'orderBy' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'GqlPoolOrderBy' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'orderDirection' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'GqlPoolOrderDirection' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'where' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'GqlPoolFilter' },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'pools' },
+            name: { kind: 'Name', value: 'poolGetPools' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'first' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'first' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'skip' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'skip' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderBy' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'orderBy' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderDirection' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'orderDirection' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'where' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'where' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'allTokens' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'weight' },
+                      },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'chain' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'createTime' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'displayTokens' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'address' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'dynamicData' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'totalLiquidity' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lifetimeVolume' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lifetimeSwapFees' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'volume24h' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'fees24h' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'holdersCount' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'swapFee' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'swapsCount' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'apr' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'apr' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'InlineFragment',
+                                    typeCondition: {
+                                      kind: 'NamedType',
+                                      name: {
+                                        kind: 'Name',
+                                        value: 'GqlPoolAprTotal',
+                                      },
+                                    },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'total',
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                  {
+                                    kind: 'InlineFragment',
+                                    typeCondition: {
+                                      kind: 'NamedType',
+                                      name: {
+                                        kind: 'Name',
+                                        value: 'GqlPoolAprRange',
+                                      },
+                                    },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'min' },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'max' },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'hasRewardApr' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'thirdPartyApr' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'InlineFragment',
+                                    typeCondition: {
+                                      kind: 'NamedType',
+                                      name: {
+                                        kind: 'Name',
+                                        value: 'GqlPoolAprTotal',
+                                      },
+                                    },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'total',
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                  {
+                                    kind: 'InlineFragment',
+                                    typeCondition: {
+                                      kind: 'NamedType',
+                                      name: {
+                                        kind: 'Name',
+                                        value: 'GqlPoolAprRange',
+                                      },
+                                    },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'min' },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'max' },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'nativeRewardApr' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'InlineFragment',
+                                    typeCondition: {
+                                      kind: 'NamedType',
+                                      name: {
+                                        kind: 'Name',
+                                        value: 'GqlPoolAprTotal',
+                                      },
+                                    },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'total',
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                  {
+                                    kind: 'InlineFragment',
+                                    typeCondition: {
+                                      kind: 'NamedType',
+                                      name: {
+                                        kind: 'Name',
+                                        value: 'GqlPoolAprRange',
+                                      },
+                                    },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'min' },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'max' },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'swapApr' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'items' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'id' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'title' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'apr' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'InlineFragment',
+                                          typeCondition: {
+                                            kind: 'NamedType',
+                                            name: {
+                                              kind: 'Name',
+                                              value: 'GqlPoolAprTotal',
+                                            },
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'total',
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                        {
+                                          kind: 'InlineFragment',
+                                          typeCondition: {
+                                            kind: 'NamedType',
+                                            name: {
+                                              kind: 'Name',
+                                              value: 'GqlPoolAprRange',
+                                            },
+                                          },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'min',
+                                                },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: {
+                                                  kind: 'Name',
+                                                  value: 'max',
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'subItems' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'id' },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'title',
+                                          },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'apr' },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'InlineFragment',
+                                                typeCondition: {
+                                                  kind: 'NamedType',
+                                                  name: {
+                                                    kind: 'Name',
+                                                    value: 'GqlPoolAprTotal',
+                                                  },
+                                                },
+                                                selectionSet: {
+                                                  kind: 'SelectionSet',
+                                                  selections: [
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'total',
+                                                      },
+                                                    },
+                                                  ],
+                                                },
+                                              },
+                                              {
+                                                kind: 'InlineFragment',
+                                                typeCondition: {
+                                                  kind: 'NamedType',
+                                                  name: {
+                                                    kind: 'Name',
+                                                    value: 'GqlPoolAprRange',
+                                                  },
+                                                },
+                                                selectionSet: {
+                                                  kind: 'SelectionSet',
+                                                  selections: [
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'min',
+                                                      },
+                                                    },
+                                                    {
+                                                      kind: 'Field',
+                                                      name: {
+                                                        kind: 'Name',
+                                                        value: 'max',
+                                                      },
+                                                    },
+                                                  ],
+                                                },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'factory' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'owner' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetPoolsQuery, GetPoolsQueryVariables>

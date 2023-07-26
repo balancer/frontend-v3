@@ -6,14 +6,10 @@ const config: CodegenConfig = {
       schema: 'https://api-v3.balancer.fi/graphql',
       plugins: ['schema-ast'],
     },
-    [`./lib/services/api/generated/types.ts`]: {
+    [`./lib/services/api/generated/`]: {
       schema: 'https://api-v3.balancer.fi/graphql',
       documents: ['./lib/services/api/**/*.graphql'],
-      plugins: [
-        'typescript',
-        'typescript-operations',
-        'typescript-react-apollo',
-      ],
+      preset: 'client',
       config: {
         scalars: {
           BigInt: 'string',
