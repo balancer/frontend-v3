@@ -1,4 +1,4 @@
-import { GetPoolsQuery } from '@/lib/services/api/generated/types'
+import { GetPoolsQuery } from '@/lib/services/api/generated/graphql'
 
 export type PoolsList = GetPoolsQuery['pools']
 

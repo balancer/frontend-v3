@@ -20,9 +20,7 @@
     "generate:graphql": "graphql-codegen"
   },
   "dependencies": {
-    "@apollo/client": "3.8.0-rc.1",
-    "@apollo/experimental-nextjs-app-support": "0.0.0-commit-473354a",
-    "@graphql-codegen/typescript-react-apollo": "^3.3.7",
+    "@apollo/client": "^3.7.17",
     "@headlessui/react": "^1.7.15",
     "@hookform/resolvers": "^3.1.1",
     "@radix-ui/react-accordion": "^1.1.2",
@@ -58,6 +56,7 @@
     "clsx": "^1.2.1",
     "cmdk": "^0.2.0",
     "date-fns": "^2.30.0",
+    "deepmerge": "^4.3.1",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.7",
     "framer-motion": "^10.13.0",
@@ -82,15 +81,11 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@graphql-codegen/add": "^5.0.0",
     "@graphql-codegen/cli": "^4.0.1",
     "@graphql-codegen/client-preset": "^4.0.1",
-    "@graphql-codegen/introspection": "^4.0.0",
     "@graphql-codegen/schema-ast": "^4.0.0",
     "@graphql-codegen/typescript-document-nodes": "^4.0.1",
-    "@graphql-codegen/typescript-graphql-request": "^5.0.0",
-    "@graphql-codegen/typescript-operations": "^4.0.1",
-    "@graphql-codegen/typescript-resolvers": "^4.0.1",
+    "@graphql-typed-document-node/core": "^3.2.0",
     "@types/lodash": "^4.14.195",
     "@types/numeral": "^2.0.2",
     "@types/react": "18.2.14",

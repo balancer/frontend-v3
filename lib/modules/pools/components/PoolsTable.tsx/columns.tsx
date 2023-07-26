@@ -8,7 +8,10 @@ import { networkConfigFor } from '@/lib/config/app.config'
 import { Text } from '@/components/_base/Text'
 import { VStack } from '@/components/_base/VStack'
 import { HStack } from '@/components/_base/HStack'
-import { GqlPoolApr, GqlPoolAprTotal } from '@/lib/services/api/generated/types'
+import {
+  GqlPoolApr,
+  GqlPoolAprTotal,
+} from '@/lib/services/api/generated/graphql'
 
 export const getColumns = (): ColumnDef<PoolsListItem>[] => [
   {
@@ -104,7 +107,6 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
     },
     cell: row => {
       const value = row.getValue<GqlPoolApr>()
-      console.log(value)
 
       // const apr = false //pool.dynamicData.apr
       if (!(value.apr as GqlPoolAprTotal)?.total) {
