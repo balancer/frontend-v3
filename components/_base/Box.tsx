@@ -1,75 +1,63 @@
-import { cn } from '@/lib/utils/styles'
+import {
+  bgColorVariants,
+  borderRadiusVariants,
+  borderVariants,
+  cn,
+  heightVariants,
+  marginVariants,
+  overflowVariants,
+  paddingVariants,
+  widthVariants,
+} from '@/lib/utils/styles'
 import { VariantProps, cva } from 'class-variance-authority'
 
 const variants = cva('', {
   variants: {
-    bg: {
-      default: 'bg-background text-background-foreground',
-      primary: 'bg-primary text-primary-foreground',
-      secondary: 'bg-secondary text-secondary-foreground',
-      muted: 'bg-muted text-muted-foreground',
-      accent: 'bg-accent text-accent-foreground',
-      destructive: 'bg-destructive text-destructive-foreground',
-    },
-    padd: {
-      none: 'p-0',
-      sm: 'p-2',
-      md: 'p-4',
-      lg: 'p-8',
-    },
-    overflow: {
-      hidden: 'overflow-hidden',
-      visible: 'overflow-visible',
-      scroll: 'overflow-scroll',
-      auto: 'overflow-auto',
-    },
-    border: {
-      none: 'border-0',
-      default: 'border border-border',
-      primary: 'border border-primary',
-      secondary: 'border border-secondary',
-      muted: 'border border-muted',
-      accent: 'border border-accent',
-      destructive: 'border border-destructive',
-    },
-    borderRadius: {
-      none: 'rounded-none',
-      sm: 'rounded-sm',
-      md: 'rounded-md',
-      lg: 'rounded-lg',
-    },
-    width: {
-      full: 'w-full',
-      auto: 'w-auto',
-    },
-  },
-  defaultVariants: {
-    bg: 'default',
-    padd: 'none',
-    overflow: 'auto',
-    border: 'none',
-    borderRadius: 'none',
+    bg: bgColorVariants,
+    padd: paddingVariants,
+    margin: marginVariants,
+    overflow: overflowVariants,
+    border: borderVariants,
+    borderRadius: borderRadiusVariants,
+    width: widthVariants,
+    height: heightVariants,
   },
 })
 
 interface Props
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof variants> {}
+    VariantProps<typeof variants> {
+  as?: 'div' | 'section' | 'article' | 'aside' | 'header' | 'footer' | 'main'
+}
 
 export function Box({
+  as,
   bg,
   width,
+  height,
   padd,
+  margin,
   overflow,
   border,
   borderRadius,
   className,
   ...props
 }: Props) {
+  const Comp = as || 'div'
   return (
-    <div
+    <Comp
       className={cn(
-        variants({ bg, padd, overflow, border, width, borderRadius, className })
+        variants({
+          bg,
+          width,
+          height,
+          padd,
+          margin,
+          overflow,
+          border,
+          borderRadius,
+          className,
+        })
       )}
       {...props}
     />
