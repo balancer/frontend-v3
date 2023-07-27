@@ -17,8 +17,11 @@ function _useTokens() {
 
   const tokens = globalDataQuery.data?.tokenGetTokens || []
 
-  function getToken(address: string): GqlToken | undefined {
-    return tokens.find(token => isSameAddress(token.address, address))
+  function getToken(address: string, chainId: number): GqlToken | undefined {
+    return tokens.find(
+      token =>
+        isSameAddress(token.address, address) && token.chainId === chainId
+    )
   }
 
   return { tokens, getToken }
