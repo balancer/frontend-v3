@@ -1,8 +1,12 @@
 'use client'
 
-import { GetAppGlobalDataDocument } from '@/lib/services/api/generated/graphql'
+import {
+  GetAppGlobalDataDocument,
+  GqlToken,
+} from '@/lib/services/api/generated/graphql'
 import { createContext, PropsWithChildren, useContext } from 'react'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import { isSameAddress } from '@/lib/utils/addresses'
 
 export const TokensContext = createContext<ReturnType<
   typeof _useTokens
@@ -13,7 +17,11 @@ function _useTokens() {
 
   const tokens = globalDataQuery.data?.tokenGetTokens || []
 
-  return { tokens }
+  function getToken(address: string): GqlToken | undefined {
+    return tokens.find(token => isSameAddress(token.address, address))
+  }
+
+  return { tokens, getToken }
 }
 
 export function TokensProvider({ children }: PropsWithChildren) {
