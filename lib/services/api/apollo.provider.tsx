@@ -1,8 +1,15 @@
 'use client'
 
-import { ApolloProvider } from '@apollo/client'
-import { apolloClient } from '@/lib/services/api/apollo.client'
+// eslint-disable-next-line max-len
+import { ApolloNextAppProvider } from '@apollo/experimental-nextjs-app-support/ssr'
+import { createApolloClient } from '@/lib/services/api/apollo.client'
+// eslint-disable-next-line max-len
+import { ApolloPrimeCacheProvider } from '@/lib/services/api/apollo.prime.cache.provider'
 
 export function ApolloProviderWrapper({ children }: React.PropsWithChildren) {
-  return <ApolloProvider client={apolloClient()}>{children}</ApolloProvider>
+  return (
+    <ApolloNextAppProvider makeClient={createApolloClient}>
+      <ApolloPrimeCacheProvider>{children}</ApolloPrimeCacheProvider>
+    </ApolloNextAppProvider>
+  )
 }

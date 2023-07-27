@@ -1,17 +1,15 @@
 'use client'
 
-import { apolloClient } from '@/lib/services/api/apollo.client'
 import { GetAppGlobalDataDocument } from '@/lib/services/api/generated/graphql'
-import { useQuery } from '@apollo/client'
-import { PropsWithChildren, createContext, useContext } from 'react'
+import { createContext, PropsWithChildren, useContext } from 'react'
+import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 
 export const TokensContext = createContext<ReturnType<
   typeof _useTokens
 > | null>(null)
 
 function _useTokens() {
-  const client = apolloClient()
-  const globalDataQuery = useQuery(GetAppGlobalDataDocument, { client })
+  const globalDataQuery = useQuery(GetAppGlobalDataDocument)
 
   const tokens = globalDataQuery.data?.tokenGetTokens || []
 
