@@ -1,6 +1,7 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
+import { Box } from '@/components/_base/Box'
 import PoolsList from '@/lib/modules/pools/components/PoolsList'
 import {
   GetPoolsDocument,
@@ -31,8 +32,8 @@ export default function Home() {
   })
 
   return (
-    <main className="p-4">
+    <Box as="main" padd="md">
       <PoolsList />
-    </main>
+    </Box>
   )
 }
