@@ -1,5 +1,6 @@
-import { ApolloClient, ApolloLink, HttpLink } from '@apollo/client'
+import { ApolloLink, HttpLink } from '@apollo/client'
 import {
+  NextSSRApolloClient,
   NextSSRInMemoryCache,
   SSRMultipartLink,
 } from '@apollo/experimental-nextjs-app-support/ssr'
@@ -23,7 +24,7 @@ export function createApolloClient() {
   //const keyArgs = ['where', ['poolIdIn']]
   const httpLink = new HttpLink({ uri: 'https://api-v3.balancer.fi/graphql' })
 
-  return new ApolloClient({
+  return new NextSSRApolloClient({
     ssrMode: typeof window === 'undefined',
     link:
       typeof window === 'undefined'
