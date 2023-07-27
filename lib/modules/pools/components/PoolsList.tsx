@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { Pagination } from './Pagination'
 import { VStack } from '@/components/_base/VStack'
 import { PoolsTable } from './PoolsTable.tsx/PoolsTable'
-import { useQuery } from '@apollo/client'
 import {
   GetPoolsDocument,
   GqlChain,
@@ -12,10 +11,15 @@ import {
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
 } from '@/lib/services/api/generated/graphql'
+import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import { useTokens } from '@/lib/modules/tokens/useTokens'
 
 export default function PoolsList() {
   const [numPerPage, setNumPerPage] = useState(10)
   const [pageNum, setPageNum] = useState(0)
+
+  const { tokens } = useTokens()
+  console.log('tokens', tokens)
 
   const { data, refetch } = useQuery(GetPoolsDocument, {
     variables: {

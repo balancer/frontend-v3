@@ -1,12 +1,9 @@
+import { ApolloLink, HttpLink } from '@apollo/client'
 import {
-  ApolloClient,
-  ApolloLink,
-  concat,
-  HttpLink,
-  InMemoryCache,
-} from '@apollo/client'
-
-let _apolloClient: ApolloClient<any>
+  NextSSRApolloClient,
+  NextSSRInMemoryCache,
+  SSRMultipartLink,
+} from '@apollo/experimental-nextjs-app-support/ssr'
 
 const userMiddleware = new ApolloLink((operation, forward) => {
   // add the user address to the headers
@@ -23,16 +20,23 @@ const userMiddleware = new ApolloLink((operation, forward) => {
   return forward(operation)
 })
 
-function createApolloClient() {
+export function createApolloClient() {
   //const keyArgs = ['where', ['poolIdIn']]
+  const httpLink = new HttpLink({ uri: 'https://api-v3.balancer.fi/graphql' })
 
-  return new ApolloClient({
+  return new NextSSRApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: concat(
-      userMiddleware,
-      new HttpLink({ uri: 'https://api-v3.balancer.fi/graphql' })
-    ),
-    cache: new InMemoryCache({
+    link:
+      typeof window === 'undefined'
+        ? ApolloLink.from([
+            userMiddleware,
+            new SSRMultipartLink({
+              stripDefer: true,
+            }),
+            httpLink,
+          ])
+        : ApolloLink.from([userMiddleware, httpLink]),
+    cache: new NextSSRInMemoryCache({
       typePolicies: {
         GqlToken: {
           keyFields: ['address'],
@@ -73,12 +77,4 @@ function createApolloClient() {
     }),
     queryDeduplication: true,
   })
-}
-
-export function apolloClient() {
-  if (!_apolloClient) {
-    _apolloClient = createApolloClient()
-  }
-
-  return _apolloClient
 }

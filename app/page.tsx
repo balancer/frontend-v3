@@ -1,6 +1,7 @@
+'use client'
+export const dynamic = 'force-dynamic'
+
 import PoolsList from '@/lib/modules/pools/components/PoolsList'
-import { ApolloPageWrapper } from '@/lib/services/api/ApolloPageWrapper'
-import { apolloClient } from '@/lib/services/api/apollo.client'
 import {
   GetPoolsDocument,
   GqlChain,
@@ -8,10 +9,10 @@ import {
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
 } from '@/lib/services/api/generated/graphql'
+import { useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 
-export default async function Home() {
-  await apolloClient().query({
-    query: GetPoolsDocument,
+export default function Home() {
+  useSuspenseQuery(GetPoolsDocument, {
     variables: {
       first: 10,
       skip: 0,
@@ -30,10 +31,8 @@ export default async function Home() {
   })
 
   return (
-    <ApolloPageWrapper>
-      <main className="p-4">
-        <PoolsList />
-      </main>
-    </ApolloPageWrapper>
+    <main className="p-4">
+      <PoolsList />
+    </main>
   )
 }
