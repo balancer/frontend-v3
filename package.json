@@ -17,7 +17,7 @@
     "prettier:fix": "pnpm run prettier --write",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "prepare": "husky install",
-    "generate:graphql": "graphql-codegen"
+    "generate:graphql": "DOTENV_CONFIG_PATH=./.env.local graphql-codegen -r dotenv/config"
   },
   "dependencies": {
     "@apollo/client": "3.8.0-rc.1",

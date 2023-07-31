@@ -8,7 +8,7 @@ interface NetworkConfig {
 }
 
 interface Config {
-  appEnv: 'dev' | 'stag' | 'prod'
+  appEnv: 'dev' | 'staging' | 'prod'
   apiUrl: string
   network: {
     [key in GqlChain]: NetworkConfig
@@ -16,8 +16,8 @@ interface Config {
 }
 
 export const config: Config = {
-  appEnv: (process.env.APP_ENV as Config['appEnv']) || 'dev',
-  apiUrl: process.env.API_URL || 'https://api-v3.balancer.fi/graphql',
+  appEnv: (process.env.NEXT_PUBLIC_APP_ENV as Config['appEnv']) || 'dev',
+  apiUrl: process.env.NEXT_PUBLIC_BALANCER_API_URL || '',
   network: {
     [GqlChain.Arbitrum]: {
       chainId: 42161,
