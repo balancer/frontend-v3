@@ -21,7 +21,7 @@ export default function PoolsList() {
   const { tokens } = useTokens()
   console.log('tokens', tokens)
 
-  const { data, refetch } = useQuery(GetPoolsDocument, {
+  const { data, refetch, loading, previousData } = useQuery(GetPoolsDocument, {
     variables: {
       first: numPerPage,
       skip: pageNum * numPerPage,
@@ -45,7 +45,10 @@ export default function PoolsList() {
 
   return (
     <VStack spacing="md">
-      <PoolsTable pools={data?.pools || []} />
+      <PoolsTable
+        pools={loading && previousData ? previousData.pools : data?.pools || []}
+        loading={loading}
+      />
       <Pagination
         pageNum={pageNum}
         numPerPage={numPerPage}
