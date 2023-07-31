@@ -1,20 +1,18 @@
-import { getAddress } from 'viem'
-
 export function isSameAddress(address1: string, address2: string): boolean {
   if (!address1 || !address2) return false
-  return getAddress(address1) === getAddress(address2)
+  return address1.toLowerCase() === address2.toLowerCase()
 }
 
 export function includesAddress(addresses: string[], address: string): boolean {
   if (!address) return false
-  addresses = addresses.map(a => (a ? getAddress(a) : ''))
-  return addresses.includes(getAddress(address))
+  addresses = addresses.map(a => (a ? a.toLowerCase() : ''))
+  return addresses.includes(address.toLowerCase())
 }
 
 export function indexOfAddress(addresses: string[], address: string): number {
   if (!address) return -1
-  addresses = addresses.map(a => (a ? getAddress(a) : ''))
-  return addresses.indexOf(getAddress(address))
+  addresses = addresses.map(a => (a ? a.toLowerCase() : ''))
+  return addresses.indexOf(address.toLowerCase())
 }
 
 /**
