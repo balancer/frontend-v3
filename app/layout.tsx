@@ -1,4 +1,3 @@
-import '@/assets/css/global.css'
 import { Metadata } from 'next'
 import { Providers } from './providers'
 import { Navbar } from '@/components/navs/Navbar'

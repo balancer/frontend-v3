@@ -5,13 +5,11 @@ import numeral from 'numeral'
 import Image from 'next/image'
 import { PoolsListItem } from '../../types'
 import { networkConfigFor } from '@/lib/config/app.config'
-import { Text } from '@/components/_base/Text'
-import { VStack } from '@/components/_base/VStack'
-import { HStack } from '@/components/_base/HStack'
 import {
   GqlPoolApr,
   GqlPoolAprTotal,
 } from '@/lib/services/api/generated/graphql'
+import { VStack, Text, HStack } from '@chakra-ui/react'
 
 export const getColumns = (): ColumnDef<PoolsListItem>[] => [
   {
@@ -37,9 +35,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
     cell: ({ row: { original: pool } }) => {
       return (
         <VStack>
-          <Text weight="bold" size="lg">
-            {pool.name}
-          </Text>
+          <Text>{pool.name}</Text>
           <HStack align="center">
             {pool.displayTokens.map(
               token => token.address.slice(0, 6) + '... '
@@ -63,7 +59,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
     id: 'totalLiquidity',
     accessorKey: 'dynamicData.totalLiquidity',
     header: () => (
-      <Text align="right" onClick={() => console.log('sort by TVL')}>
+      <Text textAlign="right" onClick={() => console.log('sort by TVL')}>
         TVL
       </Text>
     ),
@@ -71,7 +67,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
       const value = numeral(props.getValue()).format('($0,0a)')
 
       return (
-        <Text align="right" numeric="tabular">
+        <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
           {value}
         </Text>
       )
@@ -81,7 +77,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
     id: 'volume24h',
     accessorKey: 'dynamicData.volume24h',
     header: () => (
-      <Text align="right" onClick={() => console.log('sort by Volume')}>
+      <Text textAlign="right" onClick={() => console.log('sort by Volume')}>
         Volume (24h)
       </Text>
     ),
@@ -89,7 +85,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
       const value = numeral(props.getValue()).format('($0,0a)')
 
       return (
-        <Text align="right" numeric="tabular">
+        <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
           {value}
         </Text>
       )
@@ -100,7 +96,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
     accessorKey: 'dynamicData.apr',
     header: () => {
       return (
-        <Text align="right" onClick={() => console.log('sort by APR')}>
+        <Text textAlign="right" onClick={() => console.log('sort by APR')}>
           APR
         </Text>
       )
@@ -118,7 +114,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
       )
 
       return (
-        <Text align="right" numeric="tabular">
+        <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
           {apr}
         </Text>
       )

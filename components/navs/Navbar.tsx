@@ -1,13 +1,15 @@
+'use client'
 import Link from 'next/link'
 import DarkModeToggle from '../btns/DarkModeToggle'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { HStack } from '@chakra-ui/react'
 
 export function Navbar() {
   return (
-    <div className="flex items-center gap-4 p-4">
+    <HStack>
       <Link href="/">Pools</Link>
       <DarkModeToggle />
       <ConnectButton />
-    </div>
+    </HStack>
   )
 }

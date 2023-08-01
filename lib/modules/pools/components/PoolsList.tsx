@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { Pagination } from './Pagination'
-import { VStack } from '@/components/_base/VStack'
 import { PoolsTable } from './PoolsTable.tsx/PoolsTable'
 import {
   GetPoolsDocument,
@@ -13,6 +12,7 @@ import {
 } from '@/lib/services/api/generated/graphql'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { VStack } from '@chakra-ui/react'
 
 export default function PoolsList() {
   const [numPerPage, setNumPerPage] = useState(10)
@@ -44,7 +44,7 @@ export default function PoolsList() {
   }, [numPerPage, pageNum, refetch])
 
   return (
-    <VStack spacing="md">
+    <VStack>
       <PoolsTable
         pools={loading && previousData ? previousData.pools : data?.pools || []}
         loading={loading}
