@@ -36,7 +36,7 @@ export function useTokenBalances(
       functionName: 'balanceOf',
       args: [account || ''],
     })),
-    enabled: account !== null && filteredTokens.length > 0,
+    enabled: !!account && filteredTokens.length > 0,
     cacheTime: BALANCE_CACHE_TIME_MS,
     // This query key can collide, but we cannot very large keys as they
     // overflow the useQuery cache
