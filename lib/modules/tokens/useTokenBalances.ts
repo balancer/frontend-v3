@@ -37,7 +37,7 @@ export function useTokenBalances(
       args: [account || ''],
     })),
     enabled: account !== null && filteredTokens.length > 0,
-    //cacheTime: BALANCE_CACHE_TIME_MS,
+    cacheTime: BALANCE_CACHE_TIME_MS,
   })
 
   async function refetch() {
