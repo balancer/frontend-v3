@@ -1,7 +1,7 @@
 'use client'
 
 import {
-  GetAppGlobalDataDocument,
+  GetTokensDocument,
   GqlToken,
 } from '@/lib/services/api/generated/graphql'
 import { createContext, PropsWithChildren, useContext } from 'react'
@@ -13,9 +13,9 @@ export const TokensContext = createContext<ReturnType<
 > | null>(null)
 
 function _useTokens() {
-  const globalDataQuery = useQuery(GetAppGlobalDataDocument)
+  const { data } = useQuery(GetTokensDocument)
 
-  const tokens = globalDataQuery.data?.tokenGetTokens || []
+  const tokens = data?.tokens || []
 
   function getToken(address: string, chainId: number): GqlToken | undefined {
     return tokens.find(
