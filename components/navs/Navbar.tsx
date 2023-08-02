@@ -6,7 +6,7 @@ import { HStack } from '@chakra-ui/react'
 
 export function Navbar() {
   return (
-    <HStack>
+    <HStack padding="4">
       <Link href="/">Pools</Link>
       <DarkModeToggle />
       <ConnectButton />

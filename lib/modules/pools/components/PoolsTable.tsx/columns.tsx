@@ -34,11 +34,11 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
     header: 'Details',
     cell: ({ row: { original: pool } }) => {
       return (
-        <VStack>
+        <VStack align="start">
           <Text>{pool.name}</Text>
-          <HStack align="center">
+          <HStack>
             {pool.displayTokens.map(
-              token => token.address.slice(0, 6) + '... '
+              token => <Text>{token.address.slice(0, 6) + '... '}</Text>
               // token.logoURI && (
               //   <Image
               //     src={token.logoURI}

@@ -14,7 +14,7 @@ export function PoolsTable({ pools, loading }: Props) {
   const columns = getColumns()
 
   return (
-    <Box>
+    <Box w="full">
       <DataTable columns={columns} data={pools} />
       {loading && <Box>Loading...</Box>}
     </Box>

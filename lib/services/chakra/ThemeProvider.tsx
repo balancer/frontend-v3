@@ -1,10 +1,17 @@
 'use client'
 
-import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react'
+import { ChakraProvider, ChakraTheme, ColorModeScript, extendTheme } from '@chakra-ui/react'
 import { CacheProvider as ChakraCacheProvider } from '@chakra-ui/next-js'
 import { ReactNode } from 'react'
 
-export const theme = extendTheme()
+const customTheme: Partial<ChakraTheme> = {
+  config: {
+    initialColorMode: 'dark',
+    useSystemColorMode: false,
+  }
+}
+
+export const theme = extendTheme(customTheme)
 
 export default function ThemeProvider({ children }: { children: ReactNode }) {
   return (

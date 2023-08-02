@@ -32,7 +32,7 @@ export default function Home() {
   })
 
   return (
-    <Box>
+    <Box p="4">
       <PoolsList />
     </Box>
   )
