@@ -4,14 +4,11 @@ import { ColumnDef } from '@tanstack/react-table'
 import numeral from 'numeral'
 import Image from 'next/image'
 import { PoolsListItem } from '../../types'
-import { networkConfigFor } from '@/lib/config/app.config'
+import { getNetworkConfig } from '@/lib/config/app.config'
 import { Text } from '@/components/_base/Text'
 import { VStack } from '@/components/_base/VStack'
 import { HStack } from '@/components/_base/HStack'
-import {
-  GqlPoolApr,
-  GqlPoolAprTotal,
-} from '@/lib/services/api/generated/graphql'
+import { GqlPoolApr, GqlPoolAprTotal } from '@/lib/services/api/generated/graphql'
 
 export const getColumns = (): ColumnDef<PoolsListItem>[] => [
   {
@@ -19,14 +16,9 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
     accessorKey: 'chain.logoUrl',
     header: 'Network',
     cell: ({ row: { original: pool } }) => {
-      const networkConfig = networkConfigFor(pool.chain)
+      const networkConfig = getNetworkConfig(pool.chain)
       return (
-        <Image
-          src={networkConfig.iconPath}
-          width={30}
-          height={30}
-          alt={networkConfig.shortName}
-        />
+        <Image src={networkConfig.iconPath} width={30} height={30} alt={networkConfig.shortName} />
       )
     },
   },
@@ -113,9 +105,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
         return <Text align="right">-</Text>
       }
 
-      const apr = numeral((value.apr as GqlPoolAprTotal).total).format(
-        '0.[00]%'
-      )
+      const apr = numeral((value.apr as GqlPoolAprTotal).total).format('0.[00]%')
 
       return (
         <Text align="right" numeric="tabular">
