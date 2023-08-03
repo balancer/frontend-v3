@@ -8,11 +8,10 @@ import { createContext, PropsWithChildren, useContext } from 'react'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { isSameAddress } from '@/lib/utils/addresses'
 
-export const TokensContext = createContext<ReturnType<
-  typeof _useTokens
-> | null>(null)
+export type UseTokensResult = ReturnType<typeof _useTokens>
+export const TokensContext = createContext<UseTokensResult | null>(null)
 
-function _useTokens() {
+export function _useTokens() {
   const globalDataQuery = useQuery(GetAppGlobalDataDocument)
 
   const tokens = globalDataQuery.data?.tokenGetTokens || []
