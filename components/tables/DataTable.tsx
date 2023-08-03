@@ -44,7 +44,7 @@ export function DataTable<Data extends object>({ data, columns }: DataTableProps
                 >
                   {flexRender(header.column.columnDef.header, header.getContext())}
 
-                  <chakra.span pl="4">
+                  <chakra.span pl="md">
                     {header.column.getIsSorted() ? (
                       header.column.getIsSorted() === 'desc' ? (
                         <TriangleDownIcon aria-label="sorted descending" />

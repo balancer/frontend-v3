@@ -16,7 +16,7 @@ export function Pagination({
   handleNumPerPageChange,
 }: Props) {
   return (
-    <VStack align="start" spacing="4">
+    <VStack align="start" spacing="md">
       <HStack align="center" spacing="1">
         <Text size="xs">Page num: {pageNum + 1}</Text>
 
