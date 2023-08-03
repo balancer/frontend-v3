@@ -10,20 +10,13 @@ import {
   Theme,
 } from '@rainbow-me/rainbowkit'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
-import {
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  polygonZkEvm,
-  gnosis,
-} from 'wagmi/chains'
+import { mainnet, polygon, optimism, arbitrum, polygonZkEvm, gnosis } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { infuraProvider } from 'wagmi/providers/infura'
 import { merge } from 'lodash'
 import { useEffect, useState } from 'react'
-import { theme, ThemeTypings, useColorMode, useTheme } from '@chakra-ui/react'
+import { useColorMode, useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/services/chakra/theme'
 
 const { chains, publicClient } = configureChains(
@@ -48,32 +41,30 @@ const wagmiConfig = createConfig({
 })
 
 export function Web3Provider({ children }: { children: React.ReactNode }) {
-  const { colors } = useTheme<ThemeTypings>()
-  console.log('colors', colors)
+  const { colors, radii, shadows } = useTheme()
 
   const sharedConfig = {
     fonts: {
       body: balTheme.fonts?.body,
     },
     radii: {
-      // connectButton: twConfig.theme?.borderRadius?.md,
-      // actionButton: twConfig.theme?.borderRadius?.md,
-      // menuButton: twConfig.theme?.borderRadius?.md,
-      // modal: twConfig.theme?.borderRadius?.md,
-      // modalMobile: twConfig.theme?.borderRadius?.md,
+      connectButton: radii.md,
+      actionButton: radii.md,
+      menuButton: radii.md,
+      modal: radii.md,
+      modalMobile: radii.md,
     },
     shadows: {
-      // connectButton: twConfig.theme?.boxShadow?.md,
-      // dialog: twConfig.theme?.boxShadow?.xl,
-      // profileDetailsAction: twConfig.theme?.boxShadow?.md,
-      // selectedOption: twConfig.theme?.boxShadow?.md,
-      // selectedWallet: twConfig.theme?.boxShadow?.md,
-      // walletLogo: twConfig.theme?.boxShadow?.md,
+      connectButton: shadows.md,
+      dialog: shadows.xl,
+      profileDetailsAction: shadows.md,
+      selectedOption: shadows.md,
+      selectedWallet: shadows.md,
+      walletLogo: shadows.md,
     },
     colors: {
       accentColor: colors.primary[500],
-      // accentColorForeground: (twConfig.theme?.colors?.primary as TwColor)
-      //   .foreground,
+      // accentColorForeground: '...',
       // actionButtonBorder: '...',
       // actionButtonBorderMobile: '...',
       // actionButtonSecondaryBackground: '...',

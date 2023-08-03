@@ -5,10 +5,7 @@ import numeral from 'numeral'
 import Image from 'next/image'
 import { PoolsListItem } from '../../types'
 import { networkConfigFor } from '@/lib/config/app.config'
-import {
-  GqlPoolApr,
-  GqlPoolAprTotal,
-} from '@/lib/services/api/generated/graphql'
+import { GqlPoolApr, GqlPoolAprTotal } from '@/lib/services/api/generated/graphql'
 import { VStack, Text, HStack } from '@chakra-ui/react'
 
 export const getColumns = (): ColumnDef<PoolsListItem>[] => [
@@ -19,12 +16,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
     cell: ({ row: { original: pool } }) => {
       const networkConfig = networkConfigFor(pool.chain)
       return (
-        <Image
-          src={networkConfig.iconPath}
-          width={30}
-          height={30}
-          alt={networkConfig.shortName}
-        />
+        <Image src={networkConfig.iconPath} width={30} height={30} alt={networkConfig.shortName} />
       )
     },
   },
@@ -38,7 +30,9 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
           <Text>{pool.name}</Text>
           <HStack>
             {pool.displayTokens.map(
-              token => <Text>{token.address.slice(0, 6) + '... '}</Text>
+              token => (
+                <Text key={token.address}>{token.address.slice(0, 6) + '... '}</Text>
+              )
               // token.logoURI && (
               //   <Image
               //     src={token.logoURI}
@@ -109,9 +103,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
         return <Text align="right">-</Text>
       }
 
-      const apr = numeral((value.apr as GqlPoolAprTotal).total).format(
-        '0.[00]%'
-      )
+      const apr = numeral((value.apr as GqlPoolAprTotal).total).format('0.[00]%')
 
       return (
         <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>

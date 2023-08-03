@@ -3,5 +3,5 @@ module.exports = {
   arrowParens: "avoid",
   semi: false,
   proseWrap: "always",
-  printWidth: 80,
+  printWidth: 100,
 }
