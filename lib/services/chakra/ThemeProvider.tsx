@@ -17,10 +17,7 @@ export function ThemeProvider({
 
   return (
     <>
-      <ColorModeScript
-        initialColorMode={balTheme.config?.initialColorMode}
-        type="cookie"
-      />
+      <ColorModeScript initialColorMode={balTheme.config?.initialColorMode} type="cookie" />
       <ChakraCacheProvider>
         <ChakraProvider colorModeManager={colorModeManager} theme={theme}>
           {children}

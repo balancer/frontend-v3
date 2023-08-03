@@ -15,10 +15,7 @@ export type DataTableProps<Data extends object> = {
   columns: ColumnDef<Data, any>[]
 }
 
-export function DataTable<Data extends object>({
-  data,
-  columns,
-}: DataTableProps<Data>) {
+export function DataTable<Data extends object>({ data, columns }: DataTableProps<Data>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const table = useReactTable({
     columns,
@@ -45,10 +42,7 @@ export function DataTable<Data extends object>({
                   onClick={header.column.getToggleSortingHandler()}
                   isNumeric={meta?.isNumeric}
                 >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
+                  {flexRender(header.column.columnDef.header, header.getContext())}
 
                   <chakra.span pl="4">
                     {header.column.getIsSorted() ? (

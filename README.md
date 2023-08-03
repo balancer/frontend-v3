@@ -2,8 +2,8 @@
 
 ## Getting Started
 
-_This project uses `pnpm`, if you haven't already installed it you can find the
-documentation here: https://pnpm.io/installation_
+_This project uses `pnpm`, if you haven't already installed it you can find the documentation here:
+https://pnpm.io/installation_
 
 To setup the development environment, first clone the repo:
 
@@ -23,5 +23,4 @@ Then, run the development server:
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the
-result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

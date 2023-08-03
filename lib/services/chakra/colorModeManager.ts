@@ -16,9 +16,7 @@ function parseCookie(cookie: string, key: string): MaybeColorMode {
   return match?.[2] as MaybeColorMode
 }
 
-export function createColorModeManager(
-  initialCookieValue?: string
-): StorageManager {
+export function createColorModeManager(initialCookieValue?: string): StorageManager {
   return {
     ssr: true,
     type: 'cookie',
