@@ -1,29 +1,37 @@
 'use client'
 
-import { Button } from '../_base/Button'
-import { HiSun as Sun, HiMoon as Moon } from 'react-icons/hi'
-import { useTheme } from 'next-themes'
+import { MoonIcon, SunIcon } from '@chakra-ui/icons'
+import { Button, useColorMode } from '@chakra-ui/react'
+import { AnimatePresence, motion } from 'framer-motion'
 
 export default function DarkModeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { colorMode, toggleColorMode } = useColorMode()
 
-  function toggleTheme() {
-    setTheme(theme === 'dark' ? 'light' : 'dark')
+  const animationSun = {
+    initial: { rotate: 0, scale: 0, opacity: 0 },
+    animate: { rotate: 90, scale: 1, opacity: 1 },
+    exit: { rotate: 0, scale: 0, opacity: 0 },
+  }
+
+  const animationMoon = {
+    initial: { rotate: 90, scale: 0, opacity: 0 },
+    animate: { rotate: 0, scale: 1, opacity: 1 },
+    exit: { rotate: 90, scale: 0, opacity: 0 },
   }
 
   return (
-    <Button variant="outline" shape="square" size="sm" onClick={toggleTheme}>
-      <Sun
-        className="
-          h-[1.2rem] w-[1.2rem] rotate-0 scale-100 
-          transition-all dark:-rotate-90 dark:scale-0"
-      />
-      <Moon
-        className="
-          absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0
-          transition-all dark:rotate-0 dark:scale-100"
-      />
-      <span className="sr-only">Toggle theme</span>
+    <Button onClick={toggleColorMode}>
+      <AnimatePresence initial={false}>
+        {colorMode === 'light' ? (
+          <motion.i {...animationSun}>
+            <SunIcon />
+          </motion.i>
+        ) : (
+          <motion.i {...animationMoon}>
+            <MoonIcon />
+          </motion.i>
+        )}
+      </AnimatePresence>
     </Button>
   )
 }

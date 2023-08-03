@@ -3,6 +3,5 @@ module.exports = {
   arrowParens: "avoid",
   semi: false,
   proseWrap: "always",
-  printWidth: 80,
-  plugins: [require('prettier-plugin-tailwindcss')],
+  printWidth: 100,
 }

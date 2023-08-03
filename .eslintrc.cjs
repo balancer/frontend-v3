@@ -20,7 +20,7 @@ module.exports = {
     'prettier/prettier': 'warn',
     curly: ['error', 'multi-line'],
     'no-console': ['off'],
-    'max-len': ['warn', { ignoreComments: true, ignoreUrls: true }],
+    'max-len': ['warn', { code: 100, ignoreComments: true, ignoreUrls: true }],
     '@typescript-eslint/no-explicit-any': ['off'],
     'no-html-link-for-pages': ['off'],
   },
