@@ -40,7 +40,7 @@ export default function PoolsList() {
   }, [numPerPage, pageNum, refetch])
 
   return (
-    <VStack align="start" spacing="4">
+    <VStack align="start" spacing="md">
       <PoolsTable
         pools={loading && previousData ? previousData.pools : data?.pools || []}
         loading={loading}

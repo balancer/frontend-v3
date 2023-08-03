@@ -6,7 +6,9 @@ export const balTheme: ThemeOverride = {
     useSystemColorMode: false,
   },
   fonts: {
-    body: 'monospace, sans-serif',
+    body: `
+      ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif`,
   },
   colors: {
     primary: {
