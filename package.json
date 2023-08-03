@@ -17,7 +17,9 @@
     "prettier:fix": "pnpm run prettier --write",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "prepare": "husky install",
-    "generate:graphql": "DOTENV_CONFIG_PATH=./.env.local graphql-codegen -r dotenv/config"
+    "gen:graphql": "DOTENV_CONFIG_PATH=./.env.local graphql-codegen -r dotenv/config",
+    "gen:theme-typings": "chakra-cli tokens ./lib/services/chakra/theme.ts",
+    "postinstall": "npm run gen:theme-typings"
   },
   "dependencies": {
     "@apollo/client": "3.8.0-rc.1",
@@ -51,6 +53,8 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@chakra-ui/cli": "^2.4.1",
+    "@chakra-ui/styled-system": "^2.9.1",
     "@graphql-codegen/cli": "^4.0.1",
     "@graphql-codegen/client-preset": "^4.0.1",
     "@graphql-codegen/schema-ast": "^4.0.0",

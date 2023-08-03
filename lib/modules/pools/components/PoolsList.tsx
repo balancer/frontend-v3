@@ -19,7 +19,7 @@ export default function PoolsList() {
   const [pageNum, setPageNum] = useState(0)
 
   const { tokens } = useTokens()
-  console.log('tokens', tokens)
+  // console.log('tokens', tokens)
 
   const { data, refetch, loading, previousData } = useQuery(GetPoolsDocument, {
     variables: {
