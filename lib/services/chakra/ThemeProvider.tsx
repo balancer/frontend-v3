@@ -8,6 +8,7 @@ import {
 } from '@chakra-ui/react'
 import { CacheProvider as ChakraCacheProvider } from '@chakra-ui/next-js'
 import { ReactNode } from 'react'
+import { createColorModeManager } from '@/lib/services/chakra/colorModeManager'
 
 const customTheme: Partial<ChakraTheme> = {
   config: {
@@ -18,12 +19,25 @@ const customTheme: Partial<ChakraTheme> = {
 
 export const theme = extendTheme(customTheme)
 
-export default function ThemeProvider({ children }: { children: ReactNode }) {
+export function ThemeProvider({
+  children,
+  initialColorMode,
+}: {
+  children: ReactNode
+  initialColorMode?: string
+}) {
+  const colorModeManager = createColorModeManager(initialColorMode)
+
   return (
     <>
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+      <ColorModeScript
+        initialColorMode={customTheme.config?.initialColorMode}
+        type="cookie"
+      />
       <ChakraCacheProvider>
-        <ChakraProvider theme={theme}>{children}</ChakraProvider>
+        <ChakraProvider colorModeManager={colorModeManager} theme={theme}>
+          {children}
+        </ChakraProvider>
       </ChakraCacheProvider>
     </>
   )
