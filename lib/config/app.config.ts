@@ -31,6 +31,12 @@ export const config: Config = {
       shortName: 'Avalanche',
       iconPath: '/images/chains/AVALANCHE.svg',
     },
+    [GqlChain.Base]: {
+      chainId: 8453,
+      name: 'Base Mainnet',
+      shortName: 'Base',
+      iconPath: '/images/chains/BASE.svg',
+    },
     [GqlChain.Gnosis]: {
       chainId: 100,
       name: 'Gnosis Chain',
