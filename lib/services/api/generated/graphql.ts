@@ -46,6 +46,7 @@ export type GqlBalancePoolAprSubItem = {
 export enum GqlChain {
   Arbitrum = 'ARBITRUM',
   Avalanche = 'AVALANCHE',
+  Base = 'BASE',
   Fantom = 'FANTOM',
   Gnosis = 'GNOSIS',
   Mainnet = 'MAINNET',
@@ -1033,6 +1034,33 @@ export type GqlUserSwapVolumeFilter = {
   tokenOutIn?: InputMaybe<Array<Scalars['String']['input']>>
 }
 
+export type GqlVotingGauge = {
+  __typename?: 'GqlVotingGauge'
+  addedTimestamp?: Maybe<Scalars['Int']['output']>
+  address: Scalars['Bytes']['output']
+  isKilled: Scalars['Boolean']['output']
+  relativeWeightCap?: Maybe<Scalars['String']['output']>
+}
+
+export type GqlVotingGaugeToken = {
+  __typename?: 'GqlVotingGaugeToken'
+  address: Scalars['String']['output']
+  logoURI: Scalars['String']['output']
+  symbol: Scalars['String']['output']
+  weight?: Maybe<Scalars['String']['output']>
+}
+
+export type GqlVotingPool = {
+  __typename?: 'GqlVotingPool'
+  address: Scalars['Bytes']['output']
+  chain: GqlChain
+  gauge: GqlVotingGauge
+  id: Scalars['ID']['output']
+  symbol: Scalars['String']['output']
+  tokens: Array<GqlVotingGaugeToken>
+  type: GqlPoolMinimalType
+}
+
 export type Mutation = {
   __typename?: 'Mutation'
   balancerMutationTest: Scalars['String']['output']
@@ -1194,6 +1222,7 @@ export type Query = {
   userGetSwaps: Array<GqlPoolSwap>
   veBalGetTotalSupply: Scalars['AmountHumanReadable']['output']
   veBalGetUserBalance: Scalars['AmountHumanReadable']['output']
+  veBalGetVotingList: Array<GqlVotingPool>
 }
 
 export type QueryPoolGetAllPoolsSnapshotsArgs = {
