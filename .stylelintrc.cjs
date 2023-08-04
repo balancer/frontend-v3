@@ -9,11 +9,5 @@ module.exports = {
     // This line clampin technique only works with the webkit prefix.
     // https://css-tricks.com/line-clampin/
     'value-no-vendor-prefix': [true, { ignoreValues: ['box'] }],
-    'at-rule-no-unknown': [
-      true,
-      {
-        ignoreAtRules: ['tailwind']
-      }
-    ],
   },
 };

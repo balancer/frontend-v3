@@ -1,7 +1,6 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
-import { Box } from '@/components/_base/Box'
 import PoolsList from '@/lib/modules/pools/components/PoolsList'
 import {
   GetPoolsDocument,
@@ -11,6 +10,7 @@ import {
   GqlPoolOrderDirection,
 } from '@/lib/services/api/generated/graphql'
 import { useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import { Box } from '@chakra-ui/react'
 
 export default function Home() {
   useSuspenseQuery(GetPoolsDocument, {
@@ -32,7 +32,7 @@ export default function Home() {
   })
 
   return (
-    <Box as="main" padd="md">
+    <Box p="md">
       <PoolsList />
     </Box>
   )
