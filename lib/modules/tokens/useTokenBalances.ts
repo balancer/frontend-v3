@@ -16,10 +16,10 @@ export function useTokenBalances(
 ) {
   const networkConfig = useNetworkConfig()
   const containsEth = !!tokens.find(
-    token => token.address === networkConfig.eth.address
+    token => token.address === networkConfig.tokens.nativeAsset.address
   )
   const filteredTokens = tokens.filter(
-    token => token.address !== networkConfig.eth.address
+    token => token.address !== networkConfig.tokens.nativeAsset.address
   )
 
   const ethBalance = useBalance({
@@ -65,7 +65,7 @@ export function useTokenBalances(
 
   if (containsEth) {
     balances.push({
-      address: networkConfig.eth.address.toLowerCase(),
+      address: networkConfig.tokens.nativeAsset.address.toLowerCase(),
       amount: ethBalance.data?.formatted || '0',
       chainId: networkConfig.chainId,
     })

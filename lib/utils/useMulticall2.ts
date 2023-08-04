@@ -38,7 +38,7 @@ export function useMulticall2<T>({
         ],
     async () => {
       const data = await readContract({
-        address: networkConfig.multicall2,
+        address: networkConfig.contracts.multicall2,
         abi: Multicall2Abi,
         functionName: 'tryAggregate',
         args: [
