@@ -10,21 +10,13 @@ import {
   Theme,
 } from '@rainbow-me/rainbowkit'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
-import {
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  polygonZkEvm,
-  gnosis,
-} from 'wagmi/chains'
+import { arbitrum, gnosis, mainnet, optimism, polygon, polygonZkEvm } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { infuraProvider } from 'wagmi/providers/infura'
 import { merge } from 'lodash'
-import { twConfig } from '@/lib/utils/styles'
-import { useTheme } from 'next-themes'
-import { useEffect, useState } from 'react'
+import { useColorMode, useTheme } from '@chakra-ui/react'
+import { balTheme } from '@/lib/services/chakra/theme'
 
 const { chains, publicClient } = configureChains(
   [mainnet, polygon, optimism, arbitrum, polygonZkEvm, gnosis],
@@ -47,81 +39,72 @@ const wagmiConfig = createConfig({
   publicClient,
 })
 
-type TwColor = { DEFAULT: string; foreground: string }
-
-const sharedConfig = {
-  fonts: {
-    body: (twConfig.theme?.fontFamily?.sans as string[]).join(', '),
-  },
-  radii: {
-    connectButton: twConfig.theme?.borderRadius?.md,
-    actionButton: twConfig.theme?.borderRadius?.md,
-    menuButton: twConfig.theme?.borderRadius?.md,
-    modal: twConfig.theme?.borderRadius?.md,
-    modalMobile: twConfig.theme?.borderRadius?.md,
-  },
-  shadows: {
-    connectButton: twConfig.theme?.boxShadow?.md,
-    dialog: twConfig.theme?.boxShadow?.xl,
-    profileDetailsAction: twConfig.theme?.boxShadow?.md,
-    selectedOption: twConfig.theme?.boxShadow?.md,
-    selectedWallet: twConfig.theme?.boxShadow?.md,
-    walletLogo: twConfig.theme?.boxShadow?.md,
-  },
-  colors: {
-    accentColor: (twConfig.theme?.colors?.primary as TwColor).DEFAULT,
-    accentColorForeground: (twConfig.theme?.colors?.primary as TwColor)
-      .foreground,
-    // actionButtonBorder: '...',
-    // actionButtonBorderMobile: '...',
-    // actionButtonSecondaryBackground: '...',
-    // closeButton: '...',
-    // closeButtonBackground: '...',
-    // connectButtonBackground: '#000000',
-    // connectButtonBackgroundError: '...',
-    // connectButtonInnerBackground: '#000000',
-    // connectButtonText: '...',
-    // connectButtonTextError: '...',
-    // connectionIndicator: '...',
-    // downloadBottomCardBackground: '...',
-    // downloadTopCardBackground: '...',
-    // error: '...',
-    // generalBorder: '...',
-    // generalBorderDim: '...',
-    // menuItemBackground: '...',
-    // modalBackdrop: '...',
-    // modalBackground: '...',
-    // modalBorder: '...',
-    // modalText: '...',
-    // modalTextDim: '...',
-    // modalTextSecondary: '...',
-    // profileAction: '...',
-    // profileActionHover: '...',
-    // profileForeground: '...',
-    // selectedOptionBorder: '...',
-    // standby: '...',
-  },
-}
-
-const _lightTheme = merge(lightTheme(), {
-  ...sharedConfig,
-} as Theme)
-
-const _darkTheme = merge(darkTheme(), {
-  ...sharedConfig,
-} as Theme)
-
 export function Web3Provider({ children }: { children: React.ReactNode }) {
-  const { theme } = useTheme()
-  const [customTheme, setCustomTheme] = useState(_lightTheme)
+  const { colors, radii, shadows } = useTheme()
 
-  useEffect(() => {
-    if (theme === 'dark') {
-      setCustomTheme(_darkTheme)
-    } else {
-      setCustomTheme(_lightTheme)
-    }
-  }, [theme])
+  const sharedConfig = {
+    fonts: {
+      body: balTheme.fonts?.body,
+    },
+    radii: {
+      connectButton: radii.md,
+      actionButton: radii.md,
+      menuButton: radii.md,
+      modal: radii.md,
+      modalMobile: radii.md,
+    },
+    shadows: {
+      connectButton: shadows.md,
+      dialog: shadows.xl,
+      profileDetailsAction: shadows.md,
+      selectedOption: shadows.md,
+      selectedWallet: shadows.md,
+      walletLogo: shadows.md,
+    },
+    colors: {
+      accentColor: colors.primary[500],
+      // accentColorForeground: '...',
+      // actionButtonBorder: '...',
+      // actionButtonBorderMobile: '...',
+      // actionButtonSecondaryBackground: '...',
+      // closeButton: '...',
+      // closeButtonBackground: '...',
+      // connectButtonBackground: '#000000',
+      // connectButtonBackgroundError: '...',
+      // connectButtonInnerBackground: '#000000',
+      // connectButtonText: '...',
+      // connectButtonTextError: '...',
+      // connectionIndicator: '...',
+      // downloadBottomCardBackground: '...',
+      // downloadTopCardBackground: '...',
+      // error: '...',
+      // generalBorder: '...',
+      // generalBorderDim: '...',
+      // menuItemBackground: '...',
+      // modalBackdrop: '...',
+      // modalBackground: '...',
+      // modalBorder: '...',
+      // modalText: '...',
+      // modalTextDim: '...',
+      // modalTextSecondary: '...',
+      // profileAction: '...',
+      // profileActionHover: '...',
+      // profileForeground: '...',
+      // selectedOptionBorder: '...',
+      // standby: '...',
+    },
+  }
+
+  const _lightTheme = merge(lightTheme(), {
+    ...sharedConfig,
+  } as Theme)
+
+  const _darkTheme = merge(darkTheme(), {
+    ...sharedConfig,
+  } as Theme)
+
+  const { colorMode } = useColorMode()
+  const customTheme = colorMode === 'dark' ? _darkTheme : _lightTheme
 
   return (
     <WagmiConfig config={wagmiConfig}>

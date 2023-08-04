@@ -1,9 +1,9 @@
 'use client'
 
 import { getColumns } from './columns'
-import { DataTable } from '@/components/_base/DataTable'
 import { PoolsList } from '../../types'
-import { Box } from '@/components/_base/Box'
+import { Box } from '@chakra-ui/react'
+import { DataTable } from '@/components/tables/DataTable'
 
 interface Props {
   pools: PoolsList
@@ -14,7 +14,7 @@ export function PoolsTable({ pools, loading }: Props) {
   const columns = getColumns()
 
   return (
-    <Box width="full" style={{ position: 'relative' }}>
+    <Box w="full" style={{ position: 'relative' }}>
       <DataTable columns={columns} data={pools} />
       {loading && (
         <Box

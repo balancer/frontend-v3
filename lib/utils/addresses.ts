@@ -22,10 +22,7 @@ export function indexOfAddress(addresses: string[], address: string): number {
  * @param address An address to find in the map
  * @returns Item from map or undefined
  */
-export function selectByAddress<T>(
-  map: Record<string, T>,
-  address: string
-): T | undefined {
+export function selectByAddress<T>(map: Record<string, T>, address: string): T | undefined {
   const foundAddress = Object.keys(map).find(itemAddress => {
     if (isSameAddress(itemAddress, address)) {
       return true
