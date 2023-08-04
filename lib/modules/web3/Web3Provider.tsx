@@ -10,12 +10,11 @@ import {
   Theme,
 } from '@rainbow-me/rainbowkit'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
-import { mainnet, polygon, optimism, arbitrum, polygonZkEvm, gnosis } from 'wagmi/chains'
+import { arbitrum, gnosis, mainnet, optimism, polygon, polygonZkEvm } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { infuraProvider } from 'wagmi/providers/infura'
 import { merge } from 'lodash'
-import { useEffect, useState } from 'react'
 import { useColorMode, useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/services/chakra/theme'
 
@@ -105,15 +104,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   } as Theme)
 
   const { colorMode } = useColorMode()
-  const [customTheme, setCustomTheme] = useState(_lightTheme)
-
-  useEffect(() => {
-    if (colorMode === 'dark') {
-      setCustomTheme(_darkTheme)
-    } else {
-      setCustomTheme(_lightTheme)
-    }
-  }, [colorMode, _lightTheme, _darkTheme])
+  const customTheme = colorMode === 'dark' ? _darkTheme : _lightTheme
 
   return (
     <WagmiConfig config={wagmiConfig}>
