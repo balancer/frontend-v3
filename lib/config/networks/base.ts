@@ -1,20 +1,20 @@
 import { NetworkConfig } from '../config.types'
 
 const networkConfig: NetworkConfig = {
-  chainId: 100,
-  name: 'Gnosis Chain',
-  shortName: 'Gnosis',
-  iconPath: '/images/chains/GNOSIS.svg',
+  chainId: 8453,
+  name: 'Base Mainnet',
+  shortName: 'Base',
+  iconPath: '/images/chains/BASE.svg',
   tokens: {
     nativeAsset: {
-      name: 'xDAI',
+      name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-      symbol: 'xDAI',
+      symbol: 'ETH',
       decimals: 18,
     },
   },
   contracts: {
-    multicall2: '0xbb6fab6b627947dae0a75808250d8b2652952cb5',
+    multicall2: '0xca11bde05977b3631167028862be2a173976ca11',
   },
 }
 
