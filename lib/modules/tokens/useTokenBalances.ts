@@ -1,5 +1,5 @@
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import { TokenAmount, TokenBase } from '@/lib/modules/tokens/token-types'
+import { TokenAmount, TokenBase } from '@/lib/modules/tokens/token.types'
 import { useBalance } from 'wagmi'
 import { Address, formatUnits } from 'viem'
 import ERC20Abi from '@/lib/abi/ERC20.json'
