@@ -61,7 +61,7 @@ export function useTokenBalances(account: Address | undefined, tokens: TokenBase
   if (containsEth) {
     balances.push({
       chainId: networkConfig.chainId,
-      address: networkConfig.tokens.nativeAsset.address.toLowerCase(),
+      address: networkConfig.tokens.nativeAsset.address,
       decimals: 18,
       amount: ethBalance.data?.value || 0n,
       formatted: ethBalance.data?.formatted || '0',
