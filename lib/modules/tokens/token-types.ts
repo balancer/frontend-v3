@@ -6,8 +6,10 @@ export interface TokenBase {
   chainId: number
 }
 
-export interface TokenAmountHumanReadable {
+export interface TokenAmount {
   address: string
   chainId: number
-  amount: string
+  decimals: number
+  amount: bigint
+  formatted: string
 }

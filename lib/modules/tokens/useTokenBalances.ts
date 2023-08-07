@@ -1,8 +1,5 @@
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import {
-  TokenAmountHumanReadable,
-  TokenBase,
-} from '@/lib/modules/tokens/token-types'
+import { TokenAmount, TokenBase } from '@/lib/modules/tokens/token-types'
 import { useBalance } from 'wagmi'
 import { Address, formatUnits } from 'viem'
 import ERC20Abi from '@/lib/abi/ERC20.json'
@@ -10,10 +7,7 @@ import { useMulticall2 } from '@/lib/utils/useMulticall2'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
-export function useTokenBalances(
-  account: Address | undefined,
-  tokens: TokenBase[]
-) {
+export function useTokenBalances(account: Address | undefined, tokens: TokenBase[]) {
   const networkConfig = useNetworkConfig()
   const containsEth = !!tokens.find(
     token => token.address === networkConfig.tokens.nativeAsset.address
@@ -50,24 +44,27 @@ export function useTokenBalances(
     }
   }
 
-  const balances: TokenAmountHumanReadable[] = contractReads.data
+  const balances: TokenAmount[] = contractReads.data
     ? filteredTokens.map((token, index) => {
+        const amount = contractReads.data ? contractReads.data[index] : 0n
+
         return {
-          address: token.address,
-          amount:
-            contractReads.data && contractReads.data[index]
-              ? formatUnits(contractReads.data[index] || 0n, token.decimals)
-              : '0',
           chainId: networkConfig.chainId,
+          address: token.address,
+          amount: amount ? amount : 0n,
+          formatted: formatUnits(amount || 0n, token.decimals),
+          decimals: token.decimals,
         }
       })
     : []
 
   if (containsEth) {
     balances.push({
-      address: networkConfig.tokens.nativeAsset.address.toLowerCase(),
-      amount: ethBalance.data?.formatted || '0',
       chainId: networkConfig.chainId,
+      address: networkConfig.tokens.nativeAsset.address.toLowerCase(),
+      decimals: 18,
+      amount: ethBalance.data?.value || 0n,
+      formatted: ethBalance.data?.formatted || '0',
     })
   }
 
