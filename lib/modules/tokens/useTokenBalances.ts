@@ -9,12 +9,10 @@ const BALANCE_CACHE_TIME_MS = 30_000
 
 export function useTokenBalances(account: Address | undefined, tokens: TokenBase[]) {
   const networkConfig = useNetworkConfig()
-  const containsEth = !!tokens.find(
-    token => token.address === networkConfig.tokens.nativeAsset.address
-  )
   const filteredTokens = tokens.filter(
     token => token.address !== networkConfig.tokens.nativeAsset.address
   )
+  const containsEth = filteredTokens.length < tokens.length
 
   const ethBalance = useBalance({
     address: (account || '') as Address,
