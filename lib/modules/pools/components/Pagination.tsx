@@ -1,20 +1,11 @@
 'use client'
 
 import { HStack, VStack, Text, Button } from '@chakra-ui/react'
+import { usePools } from '../usePools'
 
-interface Props {
-  pageNum: number
-  numPerPage: number
-  handlePageChange(num: number): void
-  handleNumPerPageChange(num: number): void
-}
+export function Pagination() {
+  const { pageNum, setPageNum, numPerPage, setNumPerPage } = usePools()
 
-export function Pagination({
-  pageNum,
-  numPerPage,
-  handlePageChange,
-  handleNumPerPageChange,
-}: Props) {
   return (
     <VStack align="start" spacing="md">
       <HStack align="center" spacing="1">
@@ -25,13 +16,13 @@ export function Pagination({
             size="sm"
             variant={num === pageNum ? 'solid' : 'outline'}
             key={num}
-            onClick={() => handlePageChange(num)}
+            onClick={() => setPageNum(num)}
           >
             {num + 1}
           </Button>
         ))}
 
-        <Button size="sm" onClick={() => handlePageChange(pageNum + 1)}>
+        <Button size="sm" onClick={() => setPageNum(pageNum + 1)}>
           Next
         </Button>
       </HStack>
@@ -44,7 +35,7 @@ export function Pagination({
             size="sm"
             variant={num === numPerPage ? 'solid' : 'outline'}
             key={num}
-            onClick={() => handleNumPerPageChange(num)}
+            onClick={() => setNumPerPage(num)}
           >
             {num}
           </Button>
