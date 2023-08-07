@@ -9,13 +9,17 @@ export const config: Config = {
   networks,
 }
 
-const networkConfigsKeyedOnChainId = keyBy(config.networks, 'chainId')
+const networksByChainId = keyBy(config.networks, 'chainId')
 
-export function getNetworkConfig(chain: GqlChain | number | undefined): NetworkConfig {
-  if (chain === undefined) return config.networks.MAINNET
+/**
+ * Fetches network config by chainId or network name type from API (GqlChain). If chain
+ * param is not provided or incorrect, it will return mainnet config.
+ */
+export function getNetworkConfig(chain?: GqlChain | number): NetworkConfig {
+  if (!chain) return config.networks.MAINNET
 
   if (typeof chain === 'number') {
-    return networkConfigsKeyedOnChainId[chain] || config.networks.MAINNET
+    return networksByChainId[chain] || config.networks.MAINNET
   }
 
   return config.networks[chain]
