@@ -30,8 +30,9 @@ export function useTokenBalances(account: Address | undefined, tokens: TokenBase
     })),
     enabled: !!account && filteredTokens.length > 0,
     cacheTime: BALANCE_CACHE_TIME_MS,
-    // This query key can collide, but we cannot very large keys as they
-    // overflow the useQuery cache
+    // This query key can potentially collide, but if we allow wagmi to
+    // autogenerate a query key, it will overflow the useQuery cache if this
+    // list of tokens is large.
     queryKey: `balances:${account}:${networkConfig.chainId}:${tokens.length}`,
   })
 
