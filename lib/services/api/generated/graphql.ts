@@ -1068,6 +1068,7 @@ export type Mutation = {
   poolBlackListAddPool: Scalars['String']['output']
   poolBlackListRemovePool: Scalars['String']['output']
   poolDeletePool: Scalars['String']['output']
+  poolInitOnChainDataForAllPools: Scalars['String']['output']
   poolInitializeSnapshotsForPool: Scalars['String']['output']
   poolLoadOnChainDataForAllPools: Scalars['String']['output']
   poolLoadOnChainDataForPoolsWithActiveUpdates: Scalars['String']['output']
