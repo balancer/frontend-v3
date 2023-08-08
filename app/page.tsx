@@ -2,7 +2,7 @@
 export const dynamic = 'force-dynamic'
 
 import PoolsList from '@/lib/modules/pools/components/PoolsList'
-import { PoolsProvider, useSeedPoolsCacheQuery } from '@/lib/modules/pools/usePools'
+import { PoolsProvider, useSeedPoolsCacheQuery } from '@/lib/modules/pools/hooks/usePools'
 import { Box } from '@chakra-ui/react'
 
 export default function Home() {

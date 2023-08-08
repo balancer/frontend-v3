@@ -1,11 +1,11 @@
 'use client'
 
 import { getColumns } from './columns'
-import { PoolsList, PoolsListItem } from '../../types'
+import { PoolsList, PoolsListItem } from '../../pool.types'
 import { Box } from '@chakra-ui/react'
 import { DataTable } from '@/components/tables/DataTable'
-import { getPoolPath } from '../PoolLink'
 import { useRouter } from 'next/navigation'
+import { getPoolPath } from '../../pool.utils'
 
 interface Props {
   pools: PoolsList
@@ -17,10 +17,12 @@ export function PoolsTable({ pools, loading }: Props) {
   const router = useRouter()
 
   const rowClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolsListItem) => {
+    const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
+
     if (event.ctrlKey || event.metaKey) {
-      window.open(getPoolPath(pool), '_blank')
+      window.open(poolPath, '_blank')
     } else {
-      router.push(getPoolPath(pool))
+      router.push(poolPath)
     }
   }
 
