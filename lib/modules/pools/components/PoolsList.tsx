@@ -12,10 +12,17 @@ import {
 } from '@/lib/services/api/generated/graphql'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { VStack } from '@chakra-ui/react'
+import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
+import { useAccount } from 'wagmi'
+import { useTokens } from '@/lib/modules/tokens/useTokens'
 
 export default function PoolsList() {
   const [numPerPage, setNumPerPage] = useState(10)
   const [pageNum, setPageNum] = useState(0)
+
+  const { address } = useAccount()
+  const { tokens } = useTokens()
+  useTokenBalances(address, tokens)
 
   const { data, refetch, loading, previousData } = useQuery(GetPoolsDocument, {
     variables: {

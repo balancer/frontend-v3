@@ -1,9 +1,9 @@
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { TokenAmount, TokenBase } from '@/lib/modules/tokens/token.types'
-import { useBalance } from 'wagmi'
+import { useBalance, useQuery } from 'wagmi'
 import { Address, formatUnits } from 'viem'
-import ERC20Abi from '@/lib/abi/ERC20.json'
-import { useMulticall2 } from '@/lib/utils/useMulticall2'
+import { AbiERC20 } from '@/lib/abi/AbiERC20'
+import { multicall } from 'wagmi/actions'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
@@ -20,21 +20,27 @@ export function useTokenBalances(account: Address | undefined, tokens: TokenBase
     cacheTime: BALANCE_CACHE_TIME_MS,
   })
 
-  const contractReads = useMulticall2<bigint>({
-    abi: ERC20Abi,
-    calls: filteredTokens.map(token => ({
-      address: token.address as Address,
+  const contractReads = useQuery(
+    // This query key can potentially collide, but it will overflow the useQuery
+    // cache if this list of tokens is large.
+    [`useTokenBalances:${account}:${networkConfig.chainId}:${tokens.length}`],
+    async () => {
+      const data = await multicall({
+        contracts: filteredTokens.map(token => ({
+          abi: AbiERC20,
+          address: token.address as Address,
+          functionName: 'balanceOf',
+          args: [account || ''],
+        })),
+      })
 
-      functionName: 'balanceOf',
-      args: [account || ''],
-    })),
-    enabled: !!account && filteredTokens.length > 0,
-    cacheTime: BALANCE_CACHE_TIME_MS,
-    // This query key can potentially collide, but if we allow wagmi to
-    // autogenerate a query key, it will overflow the useQuery cache if this
-    // list of tokens is large.
-    queryKey: `balances:${account}:${networkConfig.chainId}:${tokens.length}`,
-  })
+      return data
+    },
+    {
+      enabled: !!account && filteredTokens.length > 0,
+      cacheTime: BALANCE_CACHE_TIME_MS,
+    }
+  )
 
   async function refetch() {
     return {
@@ -43,19 +49,18 @@ export function useTokenBalances(account: Address | undefined, tokens: TokenBase
     }
   }
 
-  const balances: TokenAmount[] = contractReads.data
-    ? filteredTokens.map((token, index) => {
-        const amount = contractReads.data ? contractReads.data[index] : 0n
+  const balances: TokenAmount[] = (contractReads.data || []).map((item, index) => {
+    const token = filteredTokens[index]
+    const amount = item.status === 'success' ? (item.result as bigint) : 0n
 
-        return {
-          chainId: networkConfig.chainId,
-          address: token.address,
-          amount: amount ? amount : 0n,
-          formatted: formatUnits(amount || 0n, token.decimals),
-          decimals: token.decimals,
-        }
-      })
-    : []
+    return {
+      chainId: networkConfig.chainId,
+      address: token.address,
+      amount: amount,
+      formatted: formatUnits(amount, token.decimals),
+      decimals: token.decimals,
+    }
+  })
 
   if (containsEth) {
     balances.push({
