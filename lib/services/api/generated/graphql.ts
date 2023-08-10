@@ -3091,12 +3091,7 @@ export type GetPoolsQuery = {
     owner?: string | null
     symbol: string
     type: GqlPoolMinimalType
-    allTokens: Array<{
-      __typename?: 'GqlPoolTokenExpanded'
-      address: string
-      weight?: string | null
-    }>
-    displayTokens: Array<{ __typename?: 'GqlPoolTokenDisplay'; address: string }>
+    displayTokens: Array<{ __typename?: 'GqlPoolTokenDisplay'; address: string; symbol: string }>
     dynamicData: {
       __typename?: 'GqlPoolDynamicData'
       totalLiquidity: string
@@ -5845,17 +5840,6 @@ export const GetPoolsDocument = {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'allTokens' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                    ],
-                  },
-                },
                 { kind: 'Field', name: { kind: 'Name', value: 'chain' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'createTime' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
@@ -5864,7 +5848,10 @@ export const GetPoolsDocument = {
                   name: { kind: 'Name', value: 'displayTokens' },
                   selectionSet: {
                     kind: 'SelectionSet',
-                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'address' } }],
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
+                    ],
                   },
                 },
                 {

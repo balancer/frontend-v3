@@ -8,6 +8,8 @@ import { usePools } from '../hooks/usePools'
 export default function PoolsList() {
   const { pools, loading } = usePools()
 
+  console.log('pools', pools)
+
   return (
     <VStack align="start" spacing="md">
       <PoolsTable pools={pools} loading={loading} />
