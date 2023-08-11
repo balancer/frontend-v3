@@ -4,23 +4,24 @@ import { useBalance, useQuery } from 'wagmi'
 import { Address, formatUnits } from 'viem'
 import { AbiERC20 } from '@/lib/abi/AbiERC20'
 import { multicall } from 'wagmi/actions'
+import { isSameAddress } from '@/lib/utils/addresses'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
 export function useTokenBalances(account: Address | undefined, tokens: TokenBase[]) {
   const networkConfig = useNetworkConfig()
   const filteredTokens = tokens.filter(
-    token => token.address !== networkConfig.tokens.nativeAsset.address
+    token => !isSameAddress(token.address, networkConfig.tokens.nativeAsset.address)
   )
-  const containsEth = filteredTokens.length < tokens.length
+  const containsNativeAsset = filteredTokens.length < tokens.length
 
-  const ethBalance = useBalance({
+  const nativeBalanceQuery = useBalance({
     address: (account || '') as Address,
-    enabled: account !== null && containsEth,
+    enabled: account !== null && containsNativeAsset,
     cacheTime: BALANCE_CACHE_TIME_MS,
   })
 
-  const contractReads = useQuery(
+  const balanceMulticall = useQuery(
     // This query key can potentially collide, but it will overflow the useQuery
     // cache if this list of tokens is large.
     [`useTokenBalances:${account}:${networkConfig.chainId}:${tokens.length}`],
@@ -30,7 +31,7 @@ export function useTokenBalances(account: Address | undefined, tokens: TokenBase
           abi: AbiERC20,
           address: token.address as Address,
           functionName: 'balanceOf',
-          args: [account || ''],
+          args: [(account || '') as Address],
         })),
       })
 
@@ -44,12 +45,12 @@ export function useTokenBalances(account: Address | undefined, tokens: TokenBase
 
   async function refetch() {
     return {
-      ethBalanceResponse: await ethBalance.refetch(),
-      multicallResponse: await contractReads.refetch(),
+      nativeBalanceResponse: await nativeBalanceQuery.refetch(),
+      multicallResponse: await balanceMulticall.refetch(),
     }
   }
 
-  const balances: TokenAmount[] = (contractReads.data || []).map((item, index) => {
+  const balances: TokenAmount[] = (balanceMulticall.data || []).map((item, index) => {
     const token = filteredTokens[index]
     const amount = item.status === 'success' ? (item.result as bigint) : 0n
 
@@ -62,22 +63,22 @@ export function useTokenBalances(account: Address | undefined, tokens: TokenBase
     }
   })
 
-  if (containsEth) {
+  if (containsNativeAsset) {
     balances.push({
       chainId: networkConfig.chainId,
       address: networkConfig.tokens.nativeAsset.address,
       decimals: 18,
-      amount: ethBalance.data?.value || 0n,
-      formatted: ethBalance.data?.formatted || '0',
+      amount: nativeBalanceQuery.data?.value || 0n,
+      formatted: nativeBalanceQuery.data?.formatted || '0',
     })
   }
 
   return {
-    data: balances,
-    isLoading: ethBalance.isLoading || contractReads.isLoading,
-    isError: ethBalance.isError || contractReads.isError,
-    error: ethBalance.error || contractReads.error,
-    isRefetching: ethBalance.isRefetching || contractReads.isRefetching,
+    balances,
+    isLoading: nativeBalanceQuery.isLoading || balanceMulticall.isLoading,
+    isError: nativeBalanceQuery.isError || balanceMulticall.isError,
+    error: nativeBalanceQuery.error || balanceMulticall.error,
+    isRefetching: nativeBalanceQuery.isRefetching || balanceMulticall.isRefetching,
     refetch,
   }
 }
