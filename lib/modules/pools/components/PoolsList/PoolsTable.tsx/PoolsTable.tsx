@@ -1,11 +1,11 @@
 'use client'
 
 import { getColumns } from './columns'
-import { PoolsList, PoolsListItem } from '../../pool.types'
+import { PoolsList, PoolsListItem } from '../../../pool.types'
 import { Box } from '@chakra-ui/react'
 import { DataTable } from '@/components/tables/DataTable'
 import { useRouter } from 'next/navigation'
-import { getPoolPath } from '../../pool.utils'
+import { getPoolPath } from '../../../pool.utils'
 
 interface Props {
   pools: PoolsList
