@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { PoolsListItem } from '../../pool.types'
 import { GqlPoolApr, GqlPoolAprTotal } from '@/lib/services/api/generated/graphql'
-import { VStack, Text, HStack } from '@chakra-ui/react'
+import { VStack, Text, HStack, Tag } from '@chakra-ui/react'
 
 export const getColumns = (): ColumnDef<PoolsListItem>[] => [
   {
@@ -29,21 +29,9 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
         <VStack align="start">
           <Text>{pool.name}</Text>
           <HStack>
-            {pool.displayTokens.map(
-              token => (
-                <Text key={token.address}>{token.address.slice(0, 6) + '... '}</Text>
-              )
-              // token.logoURI && (
-              //   <Image
-              //     src={token.logoURI}
-              //     key={token.address}
-              //     width={30}
-              //     height={30}
-              //     alt={token.symbol}
-              //     className="mr-1 rounded-full"
-              //   />
-              // )
-            )}
+            {pool.displayTokens.map(token => (
+              <Tag key={token.address}>{token.symbol}</Tag>
+            ))}
           </HStack>
         </VStack>
       )
