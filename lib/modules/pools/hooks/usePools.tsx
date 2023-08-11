@@ -5,7 +5,7 @@ import {
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
 } from '@/lib/services/api/generated/graphql'
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
+import { createContext, PropsWithChildren, useContext } from 'react'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import {
   defaultPoolNetworkFilters,
@@ -14,6 +14,7 @@ import {
   getPoolTypeArgs,
   usePoolFilters,
 } from './usePoolFilters'
+import { NUM_PER_PAGE, PAGE_NUM, usePoolPagination } from './usePoolPagination'
 
 export type UsePoolsResponse = ReturnType<typeof _usePools>
 export const PoolsContext = createContext<UsePoolsResponse | null>(null)
@@ -24,8 +25,8 @@ export const PoolsContext = createContext<UsePoolsResponse | null>(null)
 export const useSeedPoolsCacheQuery = () => {
   return useSuspenseQuery(GetPoolsDocument, {
     variables: {
-      first: 10,
-      skip: 0,
+      first: NUM_PER_PAGE,
+      skip: PAGE_NUM,
       orderBy: GqlPoolOrderBy.TotalLiquidity,
       orderDirection: GqlPoolOrderDirection.Desc,
       where: {
@@ -37,8 +38,7 @@ export const useSeedPoolsCacheQuery = () => {
 }
 
 function _usePools() {
-  const [numPerPage, setNumPerPage] = useState(10)
-  const [pageNum, setPageNum] = useState(0)
+  const pagination = usePoolPagination()
   const poolFilters = usePoolFilters()
 
   const {
@@ -46,10 +46,10 @@ function _usePools() {
     poolNetworkFilterState: [poolNetworkFilters],
   } = poolFilters
 
-  const { data, refetch, loading, previousData } = useQuery(GetPoolsDocument, {
+  const { data, loading, previousData } = useQuery(GetPoolsDocument, {
     variables: {
-      first: numPerPage,
-      skip: pageNum * numPerPage,
+      first: pagination.numPerPage,
+      skip: pagination.pageNum * pagination.numPerPage,
       orderBy: GqlPoolOrderBy.TotalLiquidity,
       orderDirection: GqlPoolOrderDirection.Desc,
       where: {
@@ -59,19 +59,12 @@ function _usePools() {
     },
   })
 
-  useEffect(() => {
-    refetch({ first: numPerPage, skip: pageNum * numPerPage })
-  }, [numPerPage, pageNum, refetch])
-
   const pools = loading && previousData ? previousData.pools : data?.pools || []
 
   return {
     pools,
     loading,
-    numPerPage,
-    setNumPerPage,
-    pageNum,
-    setPageNum,
+    pagination,
     poolFilters,
   }
 }
