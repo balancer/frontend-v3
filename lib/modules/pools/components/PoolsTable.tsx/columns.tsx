@@ -3,8 +3,8 @@
 import { ColumnDef } from '@tanstack/react-table'
 import numeral from 'numeral'
 import Image from 'next/image'
+import { getNetworkConfig } from '@/lib/config/app.config'
 import { PoolsListItem } from '../../pool.types'
-import { networkConfigFor } from '@/lib/config/app.config'
 import { GqlPoolApr, GqlPoolAprTotal } from '@/lib/services/api/generated/graphql'
 import { VStack, Text, HStack, Tag } from '@chakra-ui/react'
 
@@ -14,7 +14,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
     accessorKey: 'chain.logoUrl',
     header: 'Network',
     cell: ({ row: { original: pool } }) => {
-      const networkConfig = networkConfigFor(pool.chain)
+      const networkConfig = getNetworkConfig(pool.chain)
       return (
         <Image src={networkConfig.iconPath} width={30} height={30} alt={networkConfig.shortName} />
       )
