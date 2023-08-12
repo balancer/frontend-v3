@@ -1,18 +1,15 @@
 'use client'
 
 import { getColumns } from './columns'
-import { PoolsList, PoolsListItem } from '../../../pool.types'
+import { PoolsListItem } from '../../../pool.types'
 import { Box } from '@chakra-ui/react'
 import { DataTable } from '@/components/tables/DataTable'
 import { useRouter } from 'next/navigation'
 import { getPoolPath } from '../../../pool.utils'
+import { usePools } from '../../../hooks/usePools'
 
-interface Props {
-  pools: PoolsList
-  loading: boolean
-}
-
-export function PoolsTable({ pools, loading }: Props) {
+export function PoolsTable() {
+  const { pools, loading, sorting, setSorting } = usePools()
   const columns = getColumns()
   const router = useRouter()
 
@@ -28,7 +25,13 @@ export function PoolsTable({ pools, loading }: Props) {
 
   return (
     <Box w="full" style={{ position: 'relative' }}>
-      <DataTable columns={columns} data={pools} rowClickHandler={rowClickHandler} />
+      <DataTable
+        columns={columns}
+        data={pools}
+        sorting={sorting}
+        setSorting={setSorting}
+        rowClickHandler={rowClickHandler}
+      />
       {loading && (
         <Box
           style={{
