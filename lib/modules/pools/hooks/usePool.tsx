@@ -5,7 +5,7 @@ import { GetPoolDocument, GqlChain } from '@/lib/services/api/generated/graphql'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { BalancerVersion, FetchPoolProps } from '../pool.types'
-import { networkConfigFor } from '@/lib/config/app.config'
+import { getNetworkConfig } from '@/lib/config/app.config'
 
 export type UsePoolResponse = ReturnType<typeof _usePool>
 export const PoolContext = createContext<UsePoolResponse | null>(null)
@@ -14,7 +14,7 @@ export const PoolContext = createContext<UsePoolResponse | null>(null)
  * Uses useSuspenseQuery to seed the client cache with initial pool data on the SSR pass.
  */
 export const useSeedPoolCacheQuery = ({ id, chain, balancerVersion }: FetchPoolProps) => {
-  const { chainId } = networkConfigFor(chain)
+  const { chainId } = getNetworkConfig(chain)
 
   return useSuspenseQuery(GetPoolDocument, {
     variables: { id },
@@ -23,7 +23,7 @@ export const useSeedPoolCacheQuery = ({ id, chain, balancerVersion }: FetchPoolP
 }
 
 function _usePool({ id, chain, balancerVersion }: FetchPoolProps) {
-  const { chainId } = networkConfigFor(chain)
+  const { chainId } = getNetworkConfig(chain)
 
   const { data, refetch, loading } = useQuery(GetPoolDocument, {
     variables: { id },

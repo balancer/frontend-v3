@@ -13,15 +13,12 @@ query GetPools(
     where: $where
   ) {
     address
-    allTokens {
-      address
-      weight
-    }
     chain
     createTime
     decimals
     displayTokens {
       address
+      symbol
     }
     dynamicData {
       totalLiquidity
@@ -94,35 +91,7 @@ query GetPools(
     id
     name
     owner
-    # staking
     symbol
     type
-
-    # address
-    # baseToken
-    # createTime
-    # expiryTime
-    # factory
-    # holdersCount
-    # id
-    # isInRecoveryMode
-    # isPaused
-    # mainIndex
-    # managementFee
-    # name
-    # owner
-    # poolType
-    # poolTypeVersion
-    # principalToken
-    # swapEnabled
-    # swapFee
-    # swapsCount
-    # symbol
-    # tokensList
-    # totalLiquidity
-    # totalShares
-    # totalSwapFee
-    # totalSwapVolume
-    # totalWeight
   }
 }
