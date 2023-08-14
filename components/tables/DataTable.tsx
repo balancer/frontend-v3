@@ -13,9 +13,14 @@ import {
 export type DataTableProps<Data extends object> = {
   data: Data[]
   columns: ColumnDef<Data, any>[]
+  rowClickHandler?: (event: React.MouseEvent<HTMLElement>, rowData: Data) => void
 }
 
-export function DataTable<Data extends object>({ data, columns }: DataTableProps<Data>) {
+export function DataTable<Data extends object>({
+  data,
+  columns,
+  rowClickHandler,
+}: DataTableProps<Data>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const table = useReactTable({
     columns,
@@ -61,7 +66,11 @@ export function DataTable<Data extends object>({ data, columns }: DataTableProps
       </Thead>
       <Tbody>
         {table.getRowModel().rows.map(row => (
-          <Tr key={row.id}>
+          <Tr
+            key={row.id}
+            onClick={event => rowClickHandler && rowClickHandler(event, row.original)}
+            style={{ cursor: rowClickHandler ? 'pointer' : 'default' }}
+          >
             {row.getVisibleCells().map(cell => {
               // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
               const meta: any = cell.column.columnDef.meta
