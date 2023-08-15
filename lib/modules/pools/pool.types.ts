@@ -12,3 +12,12 @@ export interface FetchPoolProps {
   chain: GqlChain
   balancerVersion?: BalancerVersion
 }
+
+export enum PoolTypeFilter {
+  Weighted = 'Weighted',
+  Stable = 'Stable',
+  LiquidityBootstrapping = 'Liquidity Bootstrapping',
+}
+
+export type PoolTypeFilterForm = Record<PoolTypeFilter, boolean>
+export type PoolNetworkFilterForm = Record<GqlChain, boolean>

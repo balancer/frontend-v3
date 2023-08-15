@@ -3,10 +3,11 @@
 import { Pagination } from './Pagination'
 import { PoolsTable } from './PoolsTable.tsx/PoolsTable'
 import { VStack } from '@chakra-ui/react'
-import { usePools } from '../hooks/usePools'
+import { usePools } from '../../hooks/usePools'
+import { Filters } from './Filters'
 import { useAccount } from 'wagmi'
-import { useTokens } from '../../tokens/useTokens'
-import { useTokenBalances } from '../../tokens/useTokenBalances'
+import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
 
 export default function PoolsList() {
   const { pools, loading } = usePools()
@@ -17,6 +18,7 @@ export default function PoolsList() {
 
   return (
     <VStack align="start" spacing="md">
+      <Filters />
       <PoolsTable pools={pools} loading={loading} />
       <Pagination />
     </VStack>

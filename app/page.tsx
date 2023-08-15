@@ -1,7 +1,7 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
-import PoolsList from '@/lib/modules/pools/components/PoolsList'
+import PoolsList from '@/lib/modules/pools/components/PoolsList/PoolsList'
 import { PoolsProvider, useSeedPoolsCacheQuery } from '@/lib/modules/pools/hooks/usePools'
 import { Box } from '@chakra-ui/react'
 

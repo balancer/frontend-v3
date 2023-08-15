@@ -2,13 +2,18 @@
 
 import {
   GetPoolsDocument,
-  GqlChain,
-  GqlPoolFilterType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
 } from '@/lib/services/api/generated/graphql'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import {
+  defaultPoolNetworkFilters,
+  defaultPoolTypeFilters,
+  getPoolNetworkArgs,
+  getPoolTypeArgs,
+  usePoolFilters,
+} from './usePoolFilters'
 
 export type UsePoolsResponse = ReturnType<typeof _usePools>
 export const PoolsContext = createContext<UsePoolsResponse | null>(null)
@@ -24,13 +29,8 @@ export const useSeedPoolsCacheQuery = () => {
       orderBy: GqlPoolOrderBy.TotalLiquidity,
       orderDirection: GqlPoolOrderDirection.Desc,
       where: {
-        chainNotIn: [GqlChain.Fantom, GqlChain.Optimism],
-        poolTypeIn: [
-          GqlPoolFilterType.Weighted,
-          GqlPoolFilterType.Stable,
-          GqlPoolFilterType.PhantomStable,
-          GqlPoolFilterType.MetaStable,
-        ],
+        chainIn: getPoolNetworkArgs(defaultPoolNetworkFilters),
+        poolTypeIn: getPoolTypeArgs(defaultPoolTypeFilters),
       },
     },
   })
@@ -39,6 +39,12 @@ export const useSeedPoolsCacheQuery = () => {
 function _usePools() {
   const [numPerPage, setNumPerPage] = useState(10)
   const [pageNum, setPageNum] = useState(0)
+  const poolFilters = usePoolFilters()
+
+  const {
+    poolTypeFilterState: [poolTypeFilters],
+    poolNetworkFilterState: [poolNetworkFilters],
+  } = poolFilters
 
   const { data, refetch, loading, previousData } = useQuery(GetPoolsDocument, {
     variables: {
@@ -47,13 +53,8 @@ function _usePools() {
       orderBy: GqlPoolOrderBy.TotalLiquidity,
       orderDirection: GqlPoolOrderDirection.Desc,
       where: {
-        chainNotIn: [GqlChain.Fantom, GqlChain.Optimism],
-        poolTypeIn: [
-          GqlPoolFilterType.Weighted,
-          GqlPoolFilterType.Stable,
-          GqlPoolFilterType.PhantomStable,
-          GqlPoolFilterType.MetaStable,
-        ],
+        chainIn: getPoolNetworkArgs(poolNetworkFilters),
+        poolTypeIn: getPoolTypeArgs(poolTypeFilters),
       },
     },
   })
@@ -64,7 +65,15 @@ function _usePools() {
 
   const pools = loading && previousData ? previousData.pools : data?.pools || []
 
-  return { pools, loading, numPerPage, setNumPerPage, pageNum, setPageNum }
+  return {
+    pools,
+    loading,
+    numPerPage,
+    setNumPerPage,
+    pageNum,
+    setPageNum,
+    poolFilters,
+  }
 }
 
 export function PoolsProvider({ children }: PropsWithChildren) {
