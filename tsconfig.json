@@ -25,6 +25,5 @@
     "types": ["vitest/globals"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"],
-  "files": ["node_modules/jest-extended/types/index.d.ts"]
+  "exclude": ["node_modules"]
 }

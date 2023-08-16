@@ -4,16 +4,15 @@ import { Pagination } from './Pagination'
 import { PoolsTable } from './PoolsTable.tsx/PoolsTable'
 import { VStack } from '@chakra-ui/react'
 import { usePools } from '../hooks/usePools'
-import { useAccount } from 'wagmi'
-import { useTokens } from '../../tokens/useTokens'
 import { useTokenBalances } from '../../tokens/useTokenBalances'
 
 export default function PoolsList() {
   const { pools, loading } = usePools()
 
-  const { address } = useAccount()
-  const { tokens } = useTokens()
-  useTokenBalances(address, tokens)
+  const { balances } = useTokenBalances()
+
+  // Useful for testing until we actually use balances in the UI
+  if (balances.length > 1) console.log({ balances })
 
   return (
     <VStack align="start" spacing="md">

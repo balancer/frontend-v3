@@ -1,9 +1,9 @@
-import { TypedDocumentNode } from '@apollo/client'
+import { DocumentNode, TypedDocumentNode } from '@apollo/client'
 import { RequestHandler } from 'msw'
 
 import { server } from './server'
 
-export function getQueryName(document: TypedDocumentNode): string {
+export function getQueryName(document: TypedDocumentNode | DocumentNode): string {
   interface Node {
     name: { value: string }
   }

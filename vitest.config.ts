@@ -12,13 +12,14 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'happy-dom',
-    coverage: { reporter: ['text', 'lcov'] }, // lcov reporter is used by IDE coverage extensions
-    include: ['./**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    setupFiles: [
-      'test/vitest/setup-vitest.tsx',
-      // https://github.com/jest-community/jest-extended/tree/main/examples/typescript/all
-      'jest-extended/all',
+    coverage: {
+      reporter: process.env.SILENT_TESTS ? ['lcov'] : ['text', 'lcov'],
+    }, // lcov reporter is used by IDE coverage extensions
+    include: [
+      './**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
+      '!./**/*.integration.{test,spec}.*', // Exclude integration tests
     ],
+    setupFiles: ['test/vitest/setup-vitest.tsx', 'test/vitest/setup-msw.ts'],
     // disable if parsing CSS is slow
     css: true,
   },

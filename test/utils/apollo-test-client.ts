@@ -1,4 +1,5 @@
-import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
+import './apollo-setup'
+import { ApolloClient, DefaultOptions, HttpLink, InMemoryCache } from '@apollo/client'
 import { loadErrorMessages, loadDevMessages } from '@apollo/client/dev'
 import fetch from 'cross-fetch'
 
@@ -20,7 +21,20 @@ const link = new HttpLink({
   },
 })
 
+// Disable cache in unit tests
+const defaultOptions: DefaultOptions = {
+  watchQuery: {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'all',
+  },
+  query: {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'all',
+  },
+}
+
 export const apolloTestClient = new ApolloClient({
   cache,
   link,
+  defaultOptions,
 })

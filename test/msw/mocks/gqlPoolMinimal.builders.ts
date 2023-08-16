@@ -7,9 +7,7 @@ import {
 import { DeepPartial } from '@apollo/client/utilities'
 import { mock, mockDeep } from 'vitest-mock-extended'
 
-export function aGqlPoolMinimal(
-  ...options: Partial<GqlPoolMinimal>[]
-): GqlPoolMinimal {
+export function aGqlPoolMinimal(...options: Partial<GqlPoolMinimal>[]): GqlPoolMinimal {
   const defaultPool = mock<GqlPoolMinimal>()
 
   const defaultPool1: DeepPartial<GqlPoolMinimal> = {

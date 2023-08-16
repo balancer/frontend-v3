@@ -2,7 +2,7 @@ import { GetPoolsDocument } from '@/lib/services/api/generated/graphql'
 import { getQueryName, mockGQL } from '../utils'
 import { graphql } from 'msw'
 import { aGqlPoolMinimal } from './gqlPoolMinimal.builders'
-import { PoolsList } from '@/lib/modules/pools/types'
+import { PoolsList } from '@/lib/modules/pools/pool.types'
 
 export const defaultPoolListItem1 = aGqlPoolMinimal()
 export const defaultPoolList: PoolsList = [defaultPoolListItem1]

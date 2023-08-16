@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 
 import PoolsList from '@/lib/modules/pools/components/PoolsList'
 import { PoolsProvider, useSeedPoolsCacheQuery } from '@/lib/modules/pools/hooks/usePools'
+import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import { Box } from '@chakra-ui/react'
 
 export default function Home() {
@@ -10,9 +11,11 @@ export default function Home() {
 
   return (
     <PoolsProvider>
-      <Box p="md">
-        <PoolsList />
-      </Box>
+      <TokenBalancesProvider>
+        <Box p="md">
+          <PoolsList />
+        </Box>
+      </TokenBalancesProvider>
     </PoolsProvider>
   )
 }
