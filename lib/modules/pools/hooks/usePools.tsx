@@ -2,13 +2,19 @@
 
 import {
   GetPoolsDocument,
-  GqlChain,
-  GqlPoolFilterType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
 } from '@/lib/services/api/generated/graphql'
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
+import { createContext, PropsWithChildren, useContext } from 'react'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import {
+  defaultPoolNetworkFilters,
+  defaultPoolTypeFilters,
+  getPoolNetworkArgs,
+  getPoolTypeArgs,
+  usePoolFilters,
+} from './usePoolFilters'
+import { NUM_PER_PAGE, PAGE_NUM, usePoolPagination } from './usePoolPagination'
 
 export type UsePoolsResponse = ReturnType<typeof _usePools>
 export const PoolsContext = createContext<UsePoolsResponse | null>(null)
@@ -19,52 +25,48 @@ export const PoolsContext = createContext<UsePoolsResponse | null>(null)
 export const useSeedPoolsCacheQuery = () => {
   return useSuspenseQuery(GetPoolsDocument, {
     variables: {
-      first: 10,
-      skip: 0,
+      first: NUM_PER_PAGE,
+      skip: PAGE_NUM,
       orderBy: GqlPoolOrderBy.TotalLiquidity,
       orderDirection: GqlPoolOrderDirection.Desc,
       where: {
-        chainNotIn: [GqlChain.Fantom, GqlChain.Optimism],
-        poolTypeIn: [
-          GqlPoolFilterType.Weighted,
-          GqlPoolFilterType.Stable,
-          GqlPoolFilterType.PhantomStable,
-          GqlPoolFilterType.MetaStable,
-        ],
+        chainIn: getPoolNetworkArgs(defaultPoolNetworkFilters),
+        poolTypeIn: getPoolTypeArgs(defaultPoolTypeFilters),
       },
     },
   })
 }
 
 function _usePools() {
-  const [numPerPage, setNumPerPage] = useState(10)
-  const [pageNum, setPageNum] = useState(0)
+  const pagination = usePoolPagination()
+  const poolFilters = usePoolFilters()
 
-  const { data, refetch, loading, previousData } = useQuery(GetPoolsDocument, {
+  const {
+    poolTypeFilterState: [poolTypeFilters],
+    poolNetworkFilterState: [poolNetworkFilters],
+  } = poolFilters
+
+  const { data, loading, previousData } = useQuery(GetPoolsDocument, {
     variables: {
-      first: numPerPage,
-      skip: pageNum * numPerPage,
+      first: pagination.numPerPage,
+      skip: pagination.pageNum * pagination.numPerPage,
       orderBy: GqlPoolOrderBy.TotalLiquidity,
       orderDirection: GqlPoolOrderDirection.Desc,
       where: {
-        chainNotIn: [GqlChain.Fantom, GqlChain.Optimism],
-        poolTypeIn: [
-          GqlPoolFilterType.Weighted,
-          GqlPoolFilterType.Stable,
-          GqlPoolFilterType.PhantomStable,
-          GqlPoolFilterType.MetaStable,
-        ],
+        chainIn: getPoolNetworkArgs(poolNetworkFilters),
+        poolTypeIn: getPoolTypeArgs(poolTypeFilters),
       },
     },
   })
 
-  useEffect(() => {
-    refetch({ first: numPerPage, skip: pageNum * numPerPage })
-  }, [numPerPage, pageNum, refetch])
-
   const pools = loading && previousData ? previousData.pools : data?.pools || []
 
-  return { pools, loading, numPerPage, setNumPerPage, pageNum, setPageNum }
+  return {
+    pools,
+    loading,
+    pagination,
+    poolFilters,
+  }
 }
 
 export function PoolsProvider({ children }: PropsWithChildren) {

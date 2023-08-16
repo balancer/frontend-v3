@@ -1,10 +1,12 @@
 'use client'
 
 import { HStack, VStack, Text, Button } from '@chakra-ui/react'
-import { usePools } from '../hooks/usePools'
+import { usePools } from '../../hooks/usePools'
 
 export function Pagination() {
-  const { pageNum, setPageNum, numPerPage, setNumPerPage } = usePools()
+  const {
+    pagination: { pageNum, setPageNum, numPerPage, setNumPerPage },
+  } = usePools()
 
   return (
     <VStack align="start" spacing="md">
