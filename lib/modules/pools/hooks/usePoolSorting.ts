@@ -1,30 +1,36 @@
 import { GqlPoolOrderBy, GqlPoolOrderDirection } from '@/lib/services/api/generated/graphql'
 import { SortingState } from '@tanstack/react-table'
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export const DEFAULT_ORDER_BY = GqlPoolOrderBy.TotalLiquidity
 export const DEFAULT_ORDER_DIRECTION = GqlPoolOrderDirection.Desc
 
 export function usePoolSorting() {
   const [sorting, setSorting] = useState<SortingState>([])
+  const [orderBy, setOrderBy] = useState<GqlPoolOrderBy>(DEFAULT_ORDER_BY)
+  const [orderDirection, setOrderDirection] =
+    useState<GqlPoolOrderDirection>(DEFAULT_ORDER_DIRECTION)
 
-  const orderBy = useMemo(() => {
+  useEffect(() => {
     switch (sorting[0]?.id) {
       case 'totalLiquidity':
-        return GqlPoolOrderBy.TotalLiquidity
+        setOrderBy(GqlPoolOrderBy.TotalLiquidity)
+        break
       case 'volume24h':
-        return GqlPoolOrderBy.Volume24h
+        setOrderBy(GqlPoolOrderBy.Volume24h)
+        break
       case 'apr':
-        return GqlPoolOrderBy.Apr
+        setOrderBy(GqlPoolOrderBy.Apr)
+        break
       default:
-        return DEFAULT_ORDER_BY
+        setOrderBy(DEFAULT_ORDER_BY)
     }
-  }, [sorting])
 
-  const orderDirection = useMemo(() => {
-    if (!sorting[0]) return DEFAULT_ORDER_DIRECTION
-
-    return sorting[0]?.desc ? GqlPoolOrderDirection.Desc : GqlPoolOrderDirection.Asc
+    if (!sorting[0]) {
+      setOrderDirection(DEFAULT_ORDER_DIRECTION)
+    } else {
+      setOrderDirection(sorting[0]?.desc ? GqlPoolOrderDirection.Desc : GqlPoolOrderDirection.Asc)
+    }
   }, [sorting])
 
   return {
