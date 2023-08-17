@@ -64,3 +64,31 @@ From [react hooks testing library](https://react-hooks-testing-library.com/#the-
 
 > When to test hooks instead of components You have a complex hook that is difficult to test through
 > component interactions 👈 We will have this scenario in many cases
+
+## TODO
+
+- Improve builder/mock/fake namespaces and conventions
+  - For now, everything starting with a/some (i.e. **aTokenBase**, **someTokenAmounts** ) is a
+    builder that will be used by mocks (from a unit test itself or from MSW handlers).
+- Improve react-query dependency handling:
+  - wagmi depends on react-query and we use react-query in tests so we need to enforce that both use
+    the same version
+  - We are using [pnpm.overrides](https://pnpm.io/package_json#pnpmoverrides) option for that but
+    maybe there is a better solution
+- Improve wagmi account connection to test connection related edge-cases:
+  - We are using a global _vi.mock('wagmi')_ for now (see setup.vitest.tsx)
+- Add e2e smoke tests using playwright and anvil
+
+### Integration tests
+
+- Extend anvil setup to use other chains than mainnet
+- Push anvil cache to use in CI
+- Add automatic retries to Test-Integration GHA to avoid false positives due to connectivity
+  problems (see )
+- Use [createProxy](https://github.com/wagmi-dev/anvil.js/#createproxy) from @viem/anvil to boost
+  integration tests by using a different instance by vitest thread.
+
+## Credits
+
+Kudos to [wagmi](https://wagmi.sh/) and [viem](https://viem.sh/) repos where we got most of the
+ideas for anvil integration testing.
