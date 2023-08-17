@@ -3,13 +3,10 @@
 import { Pagination } from './Pagination'
 import { PoolsTable } from './PoolsTable.tsx/PoolsTable'
 import { VStack } from '@chakra-ui/react'
-import { usePools } from '@/lib/modules/pools/hooks/usePools'
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
 import { Filters } from './Filters'
 
 export default function PoolsList() {
-  const { pools, loading } = usePools()
-
   const { balances } = useTokenBalances()
 
   // Useful for testing until we actually use balances in the UI
@@ -18,7 +15,7 @@ export default function PoolsList() {
   return (
     <VStack align="start" spacing="md">
       <Filters />
-      <PoolsTable pools={pools} loading={loading} />
+      <PoolsTable />
       <Pagination />
     </VStack>
   )
