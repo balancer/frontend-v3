@@ -1,4 +1,4 @@
-import './apollo-setup'
+import './silence-devtools'
 import { ApolloClient, DefaultOptions, HttpLink, InMemoryCache } from '@apollo/client'
 import { loadErrorMessages, loadDevMessages } from '@apollo/client/dev'
 import fetch from 'cross-fetch'
