@@ -3,7 +3,7 @@
 import { Pagination } from './Pagination'
 import { PoolsTable } from './PoolsTable.tsx/PoolsTable'
 import { VStack } from '@chakra-ui/react'
-import { usePools } from '../../hooks/usePools'
+import { usePools } from '@/lib/modules/pools/hooks/usePools'
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
 import { Filters } from './Filters'
 
