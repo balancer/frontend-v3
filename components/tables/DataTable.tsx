@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Table, Thead, Tbody, Tr, Th, Td, chakra } from '@chakra-ui/react'
+import { Table, Thead, Tbody, Tr, Th, Td, HStack, Center } from '@chakra-ui/react'
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons'
 import {
   useReactTable,
@@ -8,20 +8,26 @@ import {
   ColumnDef,
   SortingState,
   getSortedRowModel,
+  OnChangeFn,
 } from '@tanstack/react-table'
 
 export type DataTableProps<Data extends object> = {
   data: Data[]
   columns: ColumnDef<Data, any>[]
+  sorting: SortingState
+  setSorting: OnChangeFn<SortingState>
   rowClickHandler?: (event: React.MouseEvent<HTMLElement>, rowData: Data) => void
+  rowMouseEnterHandler?: (event: React.MouseEvent<HTMLElement>, rowData: Data) => void
 }
 
 export function DataTable<Data extends object>({
   data,
   columns,
+  sorting,
+  setSorting,
   rowClickHandler,
+  rowMouseEnterHandler,
 }: DataTableProps<Data>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
   const table = useReactTable({
     columns,
     data,
@@ -31,6 +37,8 @@ export function DataTable<Data extends object>({
     state: {
       sorting,
     },
+    manualSorting: true,
+    sortDescFirst: true,
   })
 
   return (
@@ -47,17 +55,18 @@ export function DataTable<Data extends object>({
                   onClick={header.column.getToggleSortingHandler()}
                   isNumeric={meta?.isNumeric}
                 >
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-
-                  <chakra.span pl="md">
-                    {header.column.getIsSorted() ? (
-                      header.column.getIsSorted() === 'desc' ? (
-                        <TriangleDownIcon aria-label="sorted descending" />
-                      ) : (
-                        <TriangleUpIcon aria-label="sorted ascending" />
-                      )
-                    ) : null}
-                  </chakra.span>
+                  <HStack justify="end">
+                    <Center w="6" h="6">
+                      {header.column.getIsSorted() ? (
+                        header.column.getIsSorted() === 'desc' ? (
+                          <TriangleDownIcon aria-label="sorted descending" />
+                        ) : (
+                          <TriangleUpIcon aria-label="sorted ascending" />
+                        )
+                      ) : null}
+                    </Center>
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  </HStack>
                 </Th>
               )
             })}
@@ -70,6 +79,9 @@ export function DataTable<Data extends object>({
             key={row.id}
             onClick={event => rowClickHandler && rowClickHandler(event, row.original)}
             style={{ cursor: rowClickHandler ? 'pointer' : 'default' }}
+            onMouseEnter={event =>
+              rowMouseEnterHandler && rowMouseEnterHandler(event, row.original)
+            }
           >
             {row.getVisibleCells().map(cell => {
               // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly

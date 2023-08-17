@@ -1,10 +1,6 @@
 'use client'
 
-import {
-  GetPoolsDocument,
-  GqlPoolOrderBy,
-  GqlPoolOrderDirection,
-} from '@/lib/services/api/generated/graphql'
+import { GetPoolsDocument } from '@/lib/services/api/generated/graphql'
 import { createContext, PropsWithChildren, useContext } from 'react'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import {
@@ -15,6 +11,7 @@ import {
   usePoolFilters,
 } from './usePoolFilters'
 import { NUM_PER_PAGE, PAGE_NUM, usePoolPagination } from './usePoolPagination'
+import { DEFAULT_ORDER_BY, DEFAULT_ORDER_DIRECTION, usePoolSorting } from './usePoolSorting'
 
 export type UsePoolsResponse = ReturnType<typeof _usePools>
 export const PoolsContext = createContext<UsePoolsResponse | null>(null)
@@ -27,8 +24,8 @@ export const useSeedPoolsCacheQuery = () => {
     variables: {
       first: NUM_PER_PAGE,
       skip: PAGE_NUM,
-      orderBy: GqlPoolOrderBy.TotalLiquidity,
-      orderDirection: GqlPoolOrderDirection.Desc,
+      orderBy: DEFAULT_ORDER_BY,
+      orderDirection: DEFAULT_ORDER_DIRECTION,
       where: {
         chainIn: getPoolNetworkArgs(defaultPoolNetworkFilters),
         poolTypeIn: getPoolTypeArgs(defaultPoolTypeFilters),
@@ -40,6 +37,7 @@ export const useSeedPoolsCacheQuery = () => {
 function _usePools() {
   const pagination = usePoolPagination()
   const poolFilters = usePoolFilters()
+  const { sorting, setSorting, orderBy, orderDirection } = usePoolSorting()
 
   const {
     poolTypeFilterState: [poolTypeFilters],
@@ -50,8 +48,8 @@ function _usePools() {
     variables: {
       first: pagination.numPerPage,
       skip: pagination.pageNum * pagination.numPerPage,
-      orderBy: GqlPoolOrderBy.TotalLiquidity,
-      orderDirection: GqlPoolOrderDirection.Desc,
+      orderBy: orderBy,
+      orderDirection: orderDirection,
       where: {
         chainIn: getPoolNetworkArgs(poolNetworkFilters),
         poolTypeIn: getPoolTypeArgs(poolTypeFilters),
@@ -66,6 +64,8 @@ function _usePools() {
     loading,
     pagination,
     poolFilters,
+    sorting,
+    setSorting,
   }
 }
 

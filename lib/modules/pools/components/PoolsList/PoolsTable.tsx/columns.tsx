@@ -40,11 +40,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
   {
     id: 'totalLiquidity',
     accessorKey: 'dynamicData.totalLiquidity',
-    header: () => (
-      <Text textAlign="right" onClick={() => console.log('sort by TVL')}>
-        TVL
-      </Text>
-    ),
+    header: () => <Text textAlign="right">TVL</Text>,
     cell: props => {
       const value = numeral(props.getValue()).format('($0,0a)')
 
@@ -58,11 +54,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
   {
     id: 'volume24h',
     accessorKey: 'dynamicData.volume24h',
-    header: () => (
-      <Text textAlign="right" onClick={() => console.log('sort by Volume')}>
-        Volume (24h)
-      </Text>
-    ),
+    header: () => <Text textAlign="right">Volume (24h)</Text>,
     cell: props => {
       const value = numeral(props.getValue()).format('($0,0a)')
 
@@ -77,11 +69,7 @@ export const getColumns = (): ColumnDef<PoolsListItem>[] => [
     id: 'apr',
     accessorKey: 'dynamicData.apr',
     header: () => {
-      return (
-        <Text textAlign="right" onClick={() => console.log('sort by APR')}>
-          APR
-        </Text>
-      )
+      return <Text textAlign="right">APR</Text>
     },
     cell: row => {
       const value = row.getValue<GqlPoolApr>()

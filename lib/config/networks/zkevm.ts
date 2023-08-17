@@ -1,20 +1,20 @@
 import { NetworkConfig } from '../config.types'
 
 const networkConfig: NetworkConfig = {
-  chainId: 250,
-  name: 'Fantom Opera',
-  shortName: 'Fantom',
-  iconPath: '/images/chains/FANTOM.svg',
+  chainId: 1101,
+  name: 'Polygon zkEVM Mainnet',
+  shortName: 'zkEVM',
+  iconPath: '/images/chains/ZKEVM.svg',
   tokens: {
     nativeAsset: {
-      name: 'Fantom',
+      name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-      symbol: 'FTM',
+      symbol: 'ETH',
       decimals: 18,
     },
   },
   contracts: {
-    multicall2: '0x66335d7ad8011f6aa3f48aadcb523b62b38ed961',
+    multicall2: '0xca11bde05977b3631167028862be2a173976ca11',
   },
 }
 
