@@ -7,10 +7,11 @@ runs:
       uses: pnpm/action-setup@v2
       with:
         version: latest
-        node_version: 18
-        cache: pnpm
     - name: Install Node.js
       uses: actions/setup-node@v3
+      with:
+        cache: pnpm
+        node-version: 18
     - name: Install dependencies
       shell: bash
       run: pnpm i --frozen-lockfile
