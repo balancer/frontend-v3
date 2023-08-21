@@ -21,8 +21,8 @@ import { balTheme } from '@/lib/services/chakra/theme'
 export const supportedChains = [mainnet, polygon, optimism, arbitrum, polygonZkEvm, gnosis]
 
 const { chains, publicClient } = configureChains(supportedChains, [
-  alchemyProvider({ apiKey: 'VBeQgTCRqqPtuuEPsFzRdwKXzDyN6aFh' }),
-  infuraProvider({ apiKey: 'daaa68ec242643719749dd1caba2fc66' }),
+  alchemyProvider({ apiKey: process.env.NEXT_ALCHEMY_API_KEY as string }),
+  infuraProvider({ apiKey: process.env.NEXT_INFURA_API_KEY as string }),
   publicProvider(),
 ])
 

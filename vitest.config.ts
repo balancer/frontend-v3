@@ -9,6 +9,7 @@ export default defineConfig({
       '@': resolve(__dirname, '.'),
     },
   },
+  envPrefix: ['VITE', 'NEXT'],
   test: {
     globals: true,
     environment: 'happy-dom',
