@@ -1,5 +1,5 @@
 import { supportedChains } from '@/lib/modules/web3/Web3Provider'
-import { MockConnector } from '@wagmi/core/connectors/mock'
+import { MockConnector } from 'wagmi/connectors/mock'
 import { createPublicClient, createWalletClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
 import { Connector, CreateConfigParameters, WalletClient, createConfig } from 'wagmi'

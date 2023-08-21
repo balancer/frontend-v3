@@ -3,7 +3,7 @@ import { Address } from 'viem'
 import { AbiERC20 } from '@/lib/abi/AbiERC20'
 import { fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
 import { createWagmiTestConfig } from '@/test/utils/wagmi'
-import { readContracts } from '@wagmi/core'
+import { readContracts } from 'wagmi/actions'
 
 test('readContracts with allowFailure', async () => {
   //NOTE: Needed if we use wagmi outside hooks/components
