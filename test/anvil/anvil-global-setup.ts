@@ -2,11 +2,11 @@ import { CreateAnvilOptions, createAnvil } from '@viem/anvil'
 import { sleep } from '../utils/promises'
 
 export let forkUrl: string
-if (process.env.VITE_ANVIL_FORK_URL) {
-  forkUrl = process.env.VITE_ANVIL_FORK_URL
+if (process.env.VITE_ANVIL_FORK_RPC_URL) {
+  forkUrl = process.env.VITE_ANVIL_FORK_RPC_URL
 } else {
   forkUrl = 'https://cloudflare-eth.com'
-  console.warn(`\`VITE_ANVIL_FORK_URL\` not found. Falling back to \`${forkUrl}\`.`)
+  console.warn(`\`VITE_ANVIL_FORK_RPC_URL\` not found. Falling back to \`${forkUrl}\`.`)
 }
 
 const port = 8555
