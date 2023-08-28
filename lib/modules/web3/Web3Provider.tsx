@@ -17,6 +17,7 @@ import { infuraProvider } from 'wagmi/providers/infura'
 import { merge } from 'lodash'
 import { useColorMode, useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/services/chakra/theme'
+import { CustomAvatar } from './CustomAvatar'
 
 const { chains, publicClient } = configureChains(
   [mainnet, polygon, optimism, arbitrum, polygonZkEvm, gnosis],
@@ -108,7 +109,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
 
   return (
     <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains} theme={customTheme}>
+      <RainbowKitProvider chains={chains} theme={customTheme} avatar={CustomAvatar}>
         {children}
       </RainbowKitProvider>
     </WagmiConfig>
