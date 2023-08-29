@@ -17,29 +17,37 @@ const poolTypeFilters = {
   [PoolTypeFilter.LiquidityBootstrapping]: [GqlPoolFilterType.LiquidityBootstrapping],
 }
 
+const allPoolTypes = Object.values(poolTypeFilters).flat()
+
 export function getPoolTypeArgs(filters: PoolTypeFilterForm | null): GqlPoolFilterType[] {
   if (!filters) {
-    return Object.values(poolTypeFilters).flat() // All pool types
+    return allPoolTypes
   }
 
   const toggledPoolTypes = Object.keys(filters).filter(
     key => filters[key as PoolTypeFilter]
   ) as PoolTypeFilter[]
 
-  return toggledPoolTypes.reduce(
+  const typeFilters = toggledPoolTypes.reduce(
     (acc, toggledPoolType) => [...acc, ...poolTypeFilters[toggledPoolType]],
     [] as GqlPoolFilterType[]
   )
+
+  if (typeFilters.length === 0) return allPoolTypes
+  return typeFilters
 }
 
 export function getPoolNetworkArgs(filters: PoolNetworkFilterForm | null): GqlChain[] {
   if (!filters) return Object.keys(defaultPoolNetworkFilters) as GqlChain[]
 
-  return Object.keys(filters).filter(key => filters[key as GqlChain]) as GqlChain[]
+  const networkFilters = Object.keys(filters).filter(key => filters[key as GqlChain]) as GqlChain[]
+
+  if (networkFilters.length === 0) return Object.keys(filters) as GqlChain[]
+  return networkFilters
 }
 
 export const defaultPoolTypeFilters = Object.fromEntries(
-  Object.keys(poolTypeFilters).map(poolTypeFilter => [poolTypeFilter, true])
+  Object.keys(poolTypeFilters).map(poolTypeFilter => [poolTypeFilter, false])
 ) as PoolTypeFilterForm
 
 const unsuportedChains = [GqlChain.Fantom, GqlChain.Optimism]
@@ -47,7 +55,7 @@ const unsuportedChains = [GqlChain.Fantom, GqlChain.Optimism]
 export const defaultPoolNetworkFilters = Object.fromEntries(
   Object.keys(GqlChain)
     .filter(chain => !unsuportedChains.includes(chain.toUpperCase() as GqlChain))
-    .map(key => [key.toUpperCase(), true])
+    .map(key => [key.toUpperCase(), false])
 ) as PoolNetworkFilterForm
 
 export function usePoolFilters() {
