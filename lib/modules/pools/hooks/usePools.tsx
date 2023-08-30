@@ -1,7 +1,7 @@
 'use client'
 
 import { GetPoolsDocument, GetPoolsQuery } from '@/lib/services/api/generated/graphql'
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
+import { createContext, PropsWithChildren, useContext, useState } from 'react'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolFilters } from './usePoolFilters/usePoolFilters'
 import { usePoolPagination } from './usePoolPagination'
@@ -48,16 +48,6 @@ function _usePools(initPools: GetPoolsQuery) {
   })
 
   const pools = loading && previousData ? previousData.pools : data?.pools || []
-
-  useEffect(() => {
-    console.log({
-      loading,
-      previousData,
-      data,
-      poolNetworkFilters,
-      poolTypeFilters,
-    })
-  }, [loading, previousData, data, poolNetworkFilters, poolTypeFilters])
 
   return {
     pools,
