@@ -17,6 +17,7 @@ export enum PoolTypeFilter {
   Weighted = 'Weighted',
   Stable = 'Stable',
   LiquidityBootstrapping = 'Liquidity Bootstrapping',
+  CLP = 'CLP',
 }
 
 export type PoolTypeFilterForm = Record<PoolTypeFilter, boolean>

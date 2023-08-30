@@ -20,6 +20,7 @@ const poolTypeFilters = {
     GqlPoolFilterType.Gyroe,
   ],
   [PoolTypeFilter.LiquidityBootstrapping]: [GqlPoolFilterType.LiquidityBootstrapping],
+  [PoolTypeFilter.CLP]: [GqlPoolFilterType.Gyro, GqlPoolFilterType.Gyro3, GqlPoolFilterType.Gyroe],
 }
 
 const allPoolTypes = Object.values(poolTypeFilters).flat()
