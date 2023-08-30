@@ -1,9 +1,7 @@
 import { GqlPoolOrderBy, GqlPoolOrderDirection } from '@/lib/services/api/generated/graphql'
 import { SortingState } from '@tanstack/react-table'
 import { useEffect, useState } from 'react'
-
-export const DEFAULT_ORDER_BY = GqlPoolOrderBy.TotalLiquidity
-export const DEFAULT_ORDER_DIRECTION = GqlPoolOrderDirection.Desc
+import { DEFAULT_ORDER_BY, DEFAULT_ORDER_DIRECTION } from '../pool.constants'
 
 export function usePoolSorting() {
   const [sorting, setSorting] = useState<SortingState>([])

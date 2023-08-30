@@ -1,10 +1,6 @@
-'use client'
-
-import { useState } from 'react'
-import { PoolNetworkFilterForm, PoolTypeFilter, PoolTypeFilterForm } from '../pool.types'
 import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
-import { UNSUPPORTED_CHAINS } from '../../chains/chains.constants'
-
+import { PoolNetworkFilterForm, PoolTypeFilter, PoolTypeFilterForm } from '../../pool.types'
+import { UNSUPPORTED_CHAINS } from '@/lib/modules/chains/chains.constants'
 /**
  * POOL TYPE FILTER
  */
@@ -80,16 +76,3 @@ export const defaultPoolNetworkFilters = Object.fromEntries(
     .filter(chain => !UNSUPPORTED_CHAINS.includes(chain.toUpperCase() as GqlChain))
     .map(key => [key.toUpperCase(), false])
 ) as PoolNetworkFilterForm
-
-/**
- * Pool filters hook that provides the state.
- */
-export function usePoolFilters() {
-  const poolTypeFilterState = useState<PoolTypeFilterForm>(defaultPoolTypeFilters)
-  const poolNetworkFilterState = useState<PoolNetworkFilterForm>(defaultPoolNetworkFilters)
-
-  return {
-    poolTypeFilterState,
-    poolNetworkFilterState,
-  }
-}

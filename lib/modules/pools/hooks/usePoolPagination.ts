@@ -1,7 +1,5 @@
 import { useState } from 'react'
-
-export const NUM_PER_PAGE = 10
-export const PAGE_NUM = 0
+import { NUM_PER_PAGE, PAGE_NUM } from '../pool.constants'
 
 export function usePoolPagination() {
   const [numPerPage, setNumPerPage] = useState(NUM_PER_PAGE)

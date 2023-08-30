@@ -1,40 +1,23 @@
 'use client'
 
-import { GetPoolsDocument } from '@/lib/services/api/generated/graphql'
+import { GetPoolsDocument, GetPoolsQuery } from '@/lib/services/api/generated/graphql'
 import { createContext, PropsWithChildren, useContext } from 'react'
-import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import {
-  defaultPoolNetworkFilters,
-  defaultPoolTypeFilters,
-  getPoolNetworkArgs,
-  getPoolTypeArgs,
-  usePoolFilters,
-} from './usePoolFilters'
-import { NUM_PER_PAGE, PAGE_NUM, usePoolPagination } from './usePoolPagination'
-import { DEFAULT_ORDER_BY, DEFAULT_ORDER_DIRECTION, usePoolSorting } from './usePoolSorting'
+  useQuery,
+  useSuspenseQuery,
+  useWriteQuerry,
+} from '@apollo/experimental-nextjs-app-support/ssr'
+import { usePoolFilters } from './usePoolFilters/usePoolFilters'
+import { usePoolPagination } from './usePoolPagination'
+import { usePoolSorting } from './usePoolSorting'
+import { DEFAULT_ORDER_BY, NUM_PER_PAGE, PAGE_NUM } from '../pool.constants'
+import { getPoolNetworkArgs, getPoolTypeArgs } from './usePoolFilters/pool-filters'
+import { useApolloClient } from '@apollo/client'
 
 export type UsePoolsResponse = ReturnType<typeof _usePools>
 export const PoolsContext = createContext<UsePoolsResponse | null>(null)
 
-/**
- * Uses useSuspenseQuery to seed the client cache with initial pool data on the SSR pass.
- */
-export const useSeedPoolsCacheQuery = () => {
-  return useSuspenseQuery(GetPoolsDocument, {
-    variables: {
-      first: NUM_PER_PAGE,
-      skip: PAGE_NUM,
-      orderBy: DEFAULT_ORDER_BY,
-      orderDirection: DEFAULT_ORDER_DIRECTION,
-      where: {
-        chainIn: getPoolNetworkArgs(defaultPoolNetworkFilters),
-        poolTypeIn: getPoolTypeArgs(defaultPoolTypeFilters),
-      },
-    },
-  })
-}
-
-function _usePools() {
+function _usePools(initPools: GetPoolsQuery) {
   const pagination = usePoolPagination()
   const poolFilters = usePoolFilters()
   const { sorting, setSorting, orderBy, orderDirection } = usePoolSorting()
@@ -43,6 +26,21 @@ function _usePools() {
     poolTypeFilterState: [poolTypeFilters],
     poolNetworkFilterState: [poolNetworkFilters],
   } = poolFilters
+
+  useApolloClient().writeQuery({
+    query: GetPoolsDocument,
+    data: initPools,
+    variables: {
+      first: pagination.numPerPage,
+      skip: pagination.pageNum * pagination.numPerPage,
+      orderBy: orderBy,
+      orderDirection: orderDirection,
+      where: {
+        chainIn: getPoolNetworkArgs(poolNetworkFilters),
+        poolTypeIn: getPoolTypeArgs(poolTypeFilters),
+      },
+    },
+  })
 
   const { data, loading, previousData } = useQuery(GetPoolsDocument, {
     variables: {
@@ -69,9 +67,13 @@ function _usePools() {
   }
 }
 
-export function PoolsProvider({ children }: PropsWithChildren) {
-  const pools = _usePools()
-  return <PoolsContext.Provider value={pools}>{children}</PoolsContext.Provider>
+interface Props extends PropsWithChildren {
+  initPools: GetPoolsQuery
+}
+
+export function PoolsProvider({ initPools, children }: Props) {
+  const hook = _usePools(initPools)
+  return <PoolsContext.Provider value={hook}>{children}</PoolsContext.Provider>
 }
 
 export const usePools = () => useContext(PoolsContext) as UsePoolsResponse
