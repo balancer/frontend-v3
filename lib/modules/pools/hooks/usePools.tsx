@@ -1,13 +1,13 @@
 'use client'
 
 import { GetPoolsDocument, GetPoolsQuery } from '@/lib/services/api/generated/graphql'
-import { createContext, PropsWithChildren, useContext } from 'react'
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolFilters } from './usePoolFilters/usePoolFilters'
 import { usePoolPagination } from './usePoolPagination'
 import { usePoolSorting } from './usePoolSorting'
 import { getPoolNetworkArgs, getPoolTypeArgs } from './usePoolFilters/pool-filters'
-import { useApolloClient } from '@apollo/client'
+import { useApolloClient as apolloClient } from '@apollo/client'
 
 export type UsePoolsResponse = ReturnType<typeof _usePools>
 export const PoolsContext = createContext<UsePoolsResponse | null>(null)
@@ -15,6 +15,7 @@ export const PoolsContext = createContext<UsePoolsResponse | null>(null)
 function _usePools(initPools: GetPoolsQuery) {
   const pagination = usePoolPagination()
   const poolFilters = usePoolFilters()
+  const [mounted, setMounted] = useState(false)
   const { sorting, setSorting, orderBy, orderDirection } = usePoolSorting()
 
   const {
@@ -33,17 +34,30 @@ function _usePools(initPools: GetPoolsQuery) {
     },
   }
 
-  useApolloClient().writeQuery({
-    query: GetPoolsDocument,
-    data: initPools,
-    variables,
-  })
+  if (!mounted) {
+    apolloClient().writeQuery({
+      query: GetPoolsDocument,
+      data: initPools,
+      variables,
+    })
+    setMounted(true)
+  }
 
   const { data, loading, previousData } = useQuery(GetPoolsDocument, {
     variables,
   })
 
   const pools = loading && previousData ? previousData.pools : data?.pools || []
+
+  useEffect(() => {
+    console.log({
+      loading,
+      previousData,
+      data,
+      poolNetworkFilters,
+      poolTypeFilters,
+    })
+  }, [loading, previousData, data, poolNetworkFilters, poolTypeFilters])
 
   return {
     pools,
