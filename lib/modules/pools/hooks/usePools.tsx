@@ -2,15 +2,10 @@
 
 import { GetPoolsDocument, GetPoolsQuery } from '@/lib/services/api/generated/graphql'
 import { createContext, PropsWithChildren, useContext } from 'react'
-import {
-  useQuery,
-  useSuspenseQuery,
-  useWriteQuerry,
-} from '@apollo/experimental-nextjs-app-support/ssr'
+import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolFilters } from './usePoolFilters/usePoolFilters'
 import { usePoolPagination } from './usePoolPagination'
 import { usePoolSorting } from './usePoolSorting'
-import { DEFAULT_ORDER_BY, NUM_PER_PAGE, PAGE_NUM } from '../pool.constants'
 import { getPoolNetworkArgs, getPoolTypeArgs } from './usePoolFilters/pool-filters'
 import { useApolloClient } from '@apollo/client'
 
@@ -27,32 +22,25 @@ function _usePools(initPools: GetPoolsQuery) {
     poolNetworkFilterState: [poolNetworkFilters],
   } = poolFilters
 
+  const variables = {
+    first: pagination.numPerPage,
+    skip: pagination.pageNum * pagination.numPerPage,
+    orderBy: orderBy,
+    orderDirection: orderDirection,
+    where: {
+      chainIn: getPoolNetworkArgs(poolNetworkFilters),
+      poolTypeIn: getPoolTypeArgs(poolTypeFilters),
+    },
+  }
+
   useApolloClient().writeQuery({
     query: GetPoolsDocument,
     data: initPools,
-    variables: {
-      first: pagination.numPerPage,
-      skip: pagination.pageNum * pagination.numPerPage,
-      orderBy: orderBy,
-      orderDirection: orderDirection,
-      where: {
-        chainIn: getPoolNetworkArgs(poolNetworkFilters),
-        poolTypeIn: getPoolTypeArgs(poolTypeFilters),
-      },
-    },
+    variables,
   })
 
   const { data, loading, previousData } = useQuery(GetPoolsDocument, {
-    variables: {
-      first: pagination.numPerPage,
-      skip: pagination.pageNum * pagination.numPerPage,
-      orderBy: orderBy,
-      orderDirection: orderDirection,
-      where: {
-        chainIn: getPoolNetworkArgs(poolNetworkFilters),
-        poolTypeIn: getPoolTypeArgs(poolTypeFilters),
-      },
-    },
+    variables,
   })
 
   const pools = loading && previousData ? previousData.pools : data?.pools || []

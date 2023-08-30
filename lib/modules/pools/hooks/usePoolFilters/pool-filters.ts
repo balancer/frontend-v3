@@ -1,6 +1,7 @@
 import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
 import { PoolNetworkFilterForm, PoolTypeFilter, PoolTypeFilterForm } from '../../pool.types'
 import { UNSUPPORTED_CHAINS } from '@/lib/modules/chains/chains.constants'
+
 /**
  * POOL TYPE FILTER
  */

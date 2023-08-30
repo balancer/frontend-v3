@@ -1,12 +1,13 @@
 export const dynamic = 'force-dynamic'
 
-import PoolsPage from '@/lib/modules/pools/components/PoolsPage'
+import PoolsList from '@/lib/modules/pools/components/PoolsList/PoolsList'
 import {
   defaultPoolNetworkFilters,
   defaultPoolTypeFilters,
   getPoolNetworkArgs,
   getPoolTypeArgs,
 } from '@/lib/modules/pools/hooks/usePoolFilters/pool-filters'
+import { PoolsProvider } from '@/lib/modules/pools/hooks/usePools'
 import {
   DEFAULT_ORDER_BY,
   DEFAULT_ORDER_DIRECTION,
@@ -17,9 +18,6 @@ import { getClient } from '@/lib/services/api/apollo-server.client'
 import { GetPoolsDocument } from '@/lib/services/api/generated/graphql'
 
 export default async function Home() {
-  const chainIn = getPoolNetworkArgs(defaultPoolNetworkFilters)
-  const poolTypeIn = getPoolTypeArgs(defaultPoolTypeFilters)
-
   const initPools = await getClient().query({
     query: GetPoolsDocument,
     variables: {
@@ -28,11 +26,15 @@ export default async function Home() {
       orderBy: DEFAULT_ORDER_BY,
       orderDirection: DEFAULT_ORDER_DIRECTION,
       where: {
-        chainIn,
-        poolTypeIn,
+        chainIn: getPoolNetworkArgs(defaultPoolNetworkFilters),
+        poolTypeIn: getPoolTypeArgs(defaultPoolTypeFilters),
       },
     },
   })
 
-  return <PoolsPage initPools={initPools.data} />
+  return (
+    <PoolsProvider initPools={initPools.data}>
+      <PoolsList />
+    </PoolsProvider>
+  )
 }

@@ -14,7 +14,7 @@ export default function PoolsList() {
   useTokenBalances(address, tokens)
 
   return (
-    <VStack align="start" spacing="md">
+    <VStack align="start" spacing="md" p="md">
       <Filters />
       <PoolsTable />
       <Pagination />
