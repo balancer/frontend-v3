@@ -4,13 +4,14 @@ import {
   Button,
   Checkbox,
   Divider,
+  Heading,
   Popover,
   PopoverArrow,
   PopoverBody,
   PopoverCloseButton,
   PopoverContent,
-  PopoverHeader,
   PopoverTrigger,
+  Text,
   VStack,
 } from '@chakra-ui/react'
 import { usePools } from '../../hooks/usePools'
@@ -62,7 +63,7 @@ function PoolNetworkFilters() {
       isChecked={poolNetworkFilters[filter as GqlChain]}
       onChange={e => handleToggle(e, filter as PoolTypeFilter)}
     >
-      {filter}
+      <Text textTransform="capitalize">{filter.toLowerCase()}</Text>
     </Checkbox>
   ))
 }
@@ -76,11 +77,16 @@ export function Filters() {
       <PopoverContent>
         <PopoverArrow />
         <PopoverCloseButton />
-        <PopoverHeader>Pool filters</PopoverHeader>
         <PopoverBody>
           <VStack align="start">
+            <Heading as="h3" size="sm">
+              Pool types
+            </Heading>
             <PoolTypeFilters />
             <Divider />
+            <Heading as="h3" size="sm">
+              Networks
+            </Heading>
             <PoolNetworkFilters />
           </VStack>
         </PopoverBody>
