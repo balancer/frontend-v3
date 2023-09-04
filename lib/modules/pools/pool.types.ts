@@ -1,4 +1,4 @@
-import { GetPoolsQuery, GqlChain } from '@/lib/services/api/generated/graphql'
+import { GetPoolsQuery, GqlChain, GqlPoolOrderBy } from '@/lib/services/api/generated/graphql'
 
 export type PoolsList = GetPoolsQuery['pools']
 
@@ -13,12 +13,7 @@ export interface FetchPoolProps {
   balancerVersion?: BalancerVersion
 }
 
-export enum PoolTypeFilter {
-  Weighted = 'Weighted',
-  Stable = 'Stable',
-  LiquidityBootstrapping = 'Liquidity Bootstrapping',
-  CLP = 'CLP',
+export interface PoolsColumnSort {
+  id: GqlPoolOrderBy
+  desc: boolean
 }
-
-export type PoolTypeFilterForm = Record<PoolTypeFilter, boolean>
-export type PoolNetworkFilterForm = Record<GqlChain, boolean>

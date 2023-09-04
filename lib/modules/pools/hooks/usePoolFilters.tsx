@@ -1,17 +1,17 @@
 'use client'
 
 import { useState } from 'react'
-import { PoolNetworkFilterForm, PoolTypeFilter, PoolTypeFilterForm } from '../pool.types'
 import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
-import { UNSUPPORTED_CHAINS } from '../../chains/chains.constants'
+import { uniq } from 'lodash'
+import { useProjectConfig } from '@/lib/config/useProjectConfig'
 
 /**
  * POOL TYPE FILTER
  */
 // We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
-const poolTypeFilters = {
-  [PoolTypeFilter.Weighted]: [GqlPoolFilterType.Weighted],
-  [PoolTypeFilter.Stable]: [
+const poolTypeMap: { [key: string]: GqlPoolFilterType[] } = {
+  [GqlPoolFilterType.Weighted]: [GqlPoolFilterType.Weighted],
+  [GqlPoolFilterType.Stable]: [
     GqlPoolFilterType.Stable,
     GqlPoolFilterType.PhantomStable,
     GqlPoolFilterType.MetaStable,
@@ -19,77 +19,51 @@ const poolTypeFilters = {
     GqlPoolFilterType.Gyro3,
     GqlPoolFilterType.Gyroe,
   ],
-  [PoolTypeFilter.LiquidityBootstrapping]: [GqlPoolFilterType.LiquidityBootstrapping],
-  [PoolTypeFilter.CLP]: [GqlPoolFilterType.Gyro, GqlPoolFilterType.Gyro3, GqlPoolFilterType.Gyroe],
+  [GqlPoolFilterType.LiquidityBootstrapping]: [GqlPoolFilterType.LiquidityBootstrapping],
+  [GqlPoolFilterType.Gyro]: [
+    GqlPoolFilterType.Gyro,
+    GqlPoolFilterType.Gyro3,
+    GqlPoolFilterType.Gyroe,
+  ],
 }
 
-const allPoolTypes = Object.values(poolTypeFilters).flat()
-
-/**
- * Takes the pool type filter form and returns an array of GqlPoolFilterTypes.
- * If no filters are toggled, returns all pool types.
- * @param {PoolTypeFilterForm} filters A map of toggled pool types.
- * @returns Array of GqlPoolFilterTypes
- */
-export function getPoolTypeArgs(filters: PoolTypeFilterForm | null): GqlPoolFilterType[] {
-  if (!filters) return allPoolTypes
-
-  const toggledFilterTypes = Object.keys(filters).filter(
-    key => filters[key as PoolTypeFilter]
-  ) as PoolTypeFilter[]
-
-  const toggledPoolTypes = toggledFilterTypes.reduce(
-    (acc, toggledPoolType) => [...acc, ...poolTypeFilters[toggledPoolType]],
-    [] as GqlPoolFilterType[]
-  )
-
-  if (toggledPoolTypes.length === 0) return allPoolTypes
-  return toggledPoolTypes
-}
-
-// The default map of pool type filters, all set to false unless localstorage
-// values provided.
-export const defaultPoolTypeFilters = Object.fromEntries(
-  Object.keys(poolTypeFilters).map(poolTypeFilter => [poolTypeFilter, false])
-) as PoolTypeFilterForm
-
-/**
- * POOL NETWORK FILTER
- */
-
-/**
- * Takes the pool network filter form and returns an array of GqlChains.
- * If no filters are toggled, returns all chains.
- *
- * @param {PoolNetworkFilterForm} filters A map of toggled chains.
- * @returns Array of GqlChains
- */
-export function getPoolNetworkArgs(filters: PoolNetworkFilterForm | null): GqlChain[] {
-  if (!filters) return Object.keys(defaultPoolNetworkFilters) as GqlChain[]
-
-  const networkFilters = Object.keys(filters).filter(key => filters[key as GqlChain]) as GqlChain[]
-
-  if (networkFilters.length === 0) return Object.keys(filters) as GqlChain[]
-  return networkFilters
-}
-
-// The default map of pool network filters, all set to false unless localstorage
-// values provided.
-export const defaultPoolNetworkFilters = Object.fromEntries(
-  Object.keys(GqlChain)
-    .filter(chain => !UNSUPPORTED_CHAINS.includes(chain.toUpperCase() as GqlChain))
-    .map(key => [key.toUpperCase(), false])
-) as PoolNetworkFilterForm
+const poolTypeFilters = Object.keys(poolTypeMap) as GqlPoolFilterType[]
 
 /**
  * Pool filters hook that provides the state.
  */
 export function usePoolFilters() {
-  const poolTypeFilterState = useState<PoolTypeFilterForm>(defaultPoolTypeFilters)
-  const poolNetworkFilterState = useState<PoolNetworkFilterForm>(defaultPoolNetworkFilters)
+  const { supportedNetworks } = useProjectConfig()
+  const [poolTypes, setPoolTypes] = useState<GqlPoolFilterType[]>([])
+  const [networks, setNetworks] = useState<GqlChain[]>([])
+
+  function addPoolTypeFilter(poolType: GqlPoolFilterType) {
+    setPoolTypes(uniq([...poolTypes, poolType]))
+  }
+
+  function removePoolTypeFilter(poolType: GqlPoolFilterType) {
+    setPoolTypes(poolTypes.filter(type => type !== poolType))
+  }
+
+  function addNetworkFilter(network: GqlChain) {
+    setNetworks(uniq([...networks, network]))
+  }
+
+  function removeNetworkFilter(network: GqlChain) {
+    setNetworks(networks.filter(chain => chain !== network))
+  }
+
+  const mappedPoolTypes = poolTypes.map(poolType => poolTypeMap[poolType]).flat()
 
   return {
-    poolTypeFilterState,
-    poolNetworkFilterState,
+    poolTypes,
+    mappedPoolTypes,
+    networks,
+    poolTypeFilters,
+    networkFilters: supportedNetworks,
+    addPoolTypeFilter,
+    removePoolTypeFilter,
+    addNetworkFilter,
+    removeNetworkFilter,
   }
 }

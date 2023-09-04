@@ -1,38 +1,41 @@
 import * as React from 'react'
-import { Table, Thead, Tbody, Tr, Th, Td, HStack, Center } from '@chakra-ui/react'
+import { Center, HStack, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons'
 import {
-  useReactTable,
+  ColumnDef,
   flexRender,
   getCoreRowModel,
-  ColumnDef,
-  SortingState,
   getSortedRowModel,
-  OnChangeFn,
+  SortingState,
+  useReactTable,
 } from '@tanstack/react-table'
 
-export type DataTableProps<Data extends object> = {
+export type DataTableProps<Data extends object, Sorting extends SortingState> = {
   data: Data[]
   columns: ColumnDef<Data, any>[]
-  sorting: SortingState
-  setSorting: OnChangeFn<SortingState>
+  sorting: Sorting
+  setSorting: (sorting: Sorting) => void
   rowClickHandler?: (event: React.MouseEvent<HTMLElement>, rowData: Data) => void
   rowMouseEnterHandler?: (event: React.MouseEvent<HTMLElement>, rowData: Data) => void
 }
 
-export function DataTable<Data extends object>({
+export function DataTable<Data extends object, Sorting extends SortingState>({
   data,
   columns,
   sorting,
   setSorting,
   rowClickHandler,
   rowMouseEnterHandler,
-}: DataTableProps<Data>) {
+}: DataTableProps<Data, Sorting>) {
   const table = useReactTable({
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
+    onSortingChange: updaterOrValue => {
+      setSorting(
+        (typeof updaterOrValue === 'function' ? updaterOrValue(sorting) : sorting) as Sorting
+      )
+    },
     getSortedRowModel: getSortedRowModel(),
     state: {
       sorting,

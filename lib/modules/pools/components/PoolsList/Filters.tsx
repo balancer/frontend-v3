@@ -14,56 +14,62 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react'
-import { usePools } from '../../hooks/usePools'
-import { PoolTypeFilter } from '../../pool.types'
-import { GqlChain } from '@/lib/services/api/generated/graphql'
+import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
+import { usePoolList } from '@/lib/modules/pools/hooks/usePoolList'
+import { usePoolFilters } from '@/lib/modules/pools/hooks/usePoolFilters'
+import { useEffect } from 'react'
 
 function PoolTypeFilters() {
-  const {
-    poolFilters: { poolTypeFilterState },
-  } = usePools()
+  const { poolTypes, poolTypeFilters, addPoolTypeFilter, removePoolTypeFilter, mappedPoolTypes } =
+    usePoolFilters()
+  const { setPoolTypes } = usePoolList()
 
-  const [poolTypeFilters, setPoolTypeFilters] = poolTypeFilterState
-
-  function handleToggle(event: React.ChangeEvent<HTMLInputElement>, filter: PoolTypeFilter) {
-    setPoolTypeFilters({
-      ...poolTypeFilters,
-      [filter]: event.target.checked,
-    })
+  function handleToggle(checked: boolean, poolType: GqlPoolFilterType) {
+    if (checked) {
+      addPoolTypeFilter(poolType)
+    } else {
+      removePoolTypeFilter(poolType)
+    }
   }
 
-  return Object.keys(poolTypeFilters).map(filter => (
+  useEffect(() => {
+    setPoolTypes(mappedPoolTypes)
+  }, [mappedPoolTypes, setPoolTypes])
+
+  return poolTypeFilters.map(poolType => (
     <Checkbox
-      key={filter}
-      isChecked={poolTypeFilters[filter as PoolTypeFilter]}
-      onChange={e => handleToggle(e, filter as PoolTypeFilter)}
+      key={poolType}
+      isChecked={!!poolTypes.find(selected => selected === poolType)}
+      onChange={e => handleToggle(e.target.checked, poolType)}
     >
-      {filter}
+      {poolType}
     </Checkbox>
   ))
 }
 
 function PoolNetworkFilters() {
-  const {
-    poolFilters: { poolNetworkFilterState },
-  } = usePools()
+  const { networks, networkFilters, addNetworkFilter, removeNetworkFilter } = usePoolFilters()
+  const { setNetworks } = usePoolList()
 
-  const [poolNetworkFilters, setPoolNetworkFilters] = poolNetworkFilterState
-
-  function handleToggle(event: React.ChangeEvent<HTMLInputElement>, filter: PoolTypeFilter) {
-    setPoolNetworkFilters({
-      ...poolNetworkFilters,
-      [filter]: event.target.checked,
-    })
+  function handleToggle(checked: boolean, network: GqlChain) {
+    if (checked) {
+      addNetworkFilter(network)
+    } else {
+      removeNetworkFilter(network)
+    }
   }
 
-  return Object.keys(poolNetworkFilters).map(filter => (
+  useEffect(() => {
+    setNetworks(networks)
+  }, [networks, setNetworks])
+
+  return networkFilters.map(network => (
     <Checkbox
-      key={filter}
-      isChecked={poolNetworkFilters[filter as GqlChain]}
-      onChange={e => handleToggle(e, filter as PoolTypeFilter)}
+      key={network}
+      isChecked={!!networks.find(selected => selected === network)}
+      onChange={e => handleToggle(e.target.checked, network)}
     >
-      <Text textTransform="capitalize">{filter.toLowerCase()}</Text>
+      <Text textTransform="capitalize">{network.toLowerCase()}</Text>
     </Checkbox>
   ))
 }

@@ -6,10 +6,10 @@ import { Box } from '@chakra-ui/react'
 import { DataTable } from '@/components/tables/DataTable'
 import { useRouter } from 'next/navigation'
 import { getPoolPath } from '../../../pool.utils'
-import { usePools } from '../../../hooks/usePools'
+import { usePoolList } from '@/lib/modules/pools/hooks/usePoolList'
 
 export function PoolsTable() {
-  const { pools, loading, sorting, setSorting } = usePools()
+  const { pools, loading, sorting, setSort } = usePoolList()
   const columns = getColumns()
   const router = useRouter()
 
@@ -36,7 +36,7 @@ export function PoolsTable() {
         columns={columns}
         data={pools}
         sorting={sorting}
-        setSorting={setSorting}
+        setSorting={setSort}
         rowClickHandler={rowClickHandler}
         rowMouseEnterHandler={rowMouseEnterHandler}
       />

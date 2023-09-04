@@ -1,30 +1,28 @@
 'use client'
 
-import { HStack, VStack, Text, Button } from '@chakra-ui/react'
-import { usePools } from '../../hooks/usePools'
+import { Button, HStack, Text, VStack } from '@chakra-ui/react'
+import { usePoolList } from '@/lib/modules/pools/hooks/usePoolList'
 
 export function Pagination() {
-  const {
-    pagination: { pageNum, setPageNum, numPerPage, setNumPerPage },
-  } = usePools()
+  const { pageNumber, pageSize, setPageNumber, setPageSize } = usePoolList()
 
   return (
     <VStack align="start" spacing="md">
       <HStack align="center" spacing="1">
-        <Text size="xs">Page num: {pageNum + 1}</Text>
+        <Text size="xs">Page num: {pageNumber + 1}</Text>
 
         {[0, 1, 2].map(num => (
           <Button
             size="sm"
-            variant={num === pageNum ? 'solid' : 'outline'}
+            variant={num === pageNumber ? 'solid' : 'outline'}
             key={num}
-            onClick={() => setPageNum(num)}
+            onClick={() => setPageNumber(num)}
           >
             {num + 1}
           </Button>
         ))}
 
-        <Button size="sm" onClick={() => setPageNum(pageNum + 1)}>
+        <Button size="sm" onClick={() => setPageNumber(pageNumber + 1)}>
           Next
         </Button>
       </HStack>
@@ -35,9 +33,9 @@ export function Pagination() {
         {[10, 20, 30].map(num => (
           <Button
             size="sm"
-            variant={num === numPerPage ? 'solid' : 'outline'}
+            variant={num === pageSize ? 'solid' : 'outline'}
             key={num}
-            onClick={() => setNumPerPage(num)}
+            onClick={() => setPageSize(num)}
           >
             {num}
           </Button>
