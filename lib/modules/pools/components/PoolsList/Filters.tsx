@@ -5,6 +5,7 @@ import {
   Button,
   Checkbox,
   Divider,
+  HStack,
   Heading,
   Popover,
   PopoverArrow,
@@ -12,6 +13,9 @@ import {
   PopoverCloseButton,
   PopoverContent,
   PopoverTrigger,
+  Tag,
+  TagCloseButton,
+  TagLabel,
   Text,
   VStack,
 } from '@chakra-ui/react'
@@ -85,34 +89,52 @@ export function Filters() {
   const totalFilters = filters.poolTypes.length + filters.networks.length
 
   return (
-    <Popover>
-      <PopoverTrigger>
-        <Button>
-          Filters
-          {totalFilters > 0 && (
-            <Badge ml="2" colorScheme="blue">
-              {totalFilters}
-            </Badge>
-          )}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <PopoverArrow />
-        <PopoverCloseButton />
-        <PopoverBody>
-          <VStack align="start">
-            <Heading as="h3" size="sm">
-              Pool types
-            </Heading>
-            <PoolTypeFilters filters={filters} />
-            <Divider />
-            <Heading as="h3" size="sm">
-              Networks
-            </Heading>
-            <PoolNetworkFilters filters={filters} />
-          </VStack>
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
+    <>
+      <Popover>
+        <PopoverTrigger>
+          <Button>
+            Filters
+            {totalFilters > 0 && (
+              <Badge ml="2" colorScheme="blue">
+                {totalFilters}
+              </Badge>
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <PopoverArrow />
+          <PopoverCloseButton />
+          <PopoverBody>
+            <VStack align="start">
+              <Heading as="h3" size="sm">
+                Pool types
+              </Heading>
+              <PoolTypeFilters filters={filters} />
+              <Divider />
+              <Heading as="h3" size="sm">
+                Networks
+              </Heading>
+              <PoolNetworkFilters filters={filters} />
+            </VStack>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
+
+      <HStack spacing="sm">
+        {filters.poolTypes.map(poolType => (
+          <Tag key={poolType}>
+            <TagLabel>{poolType}</TagLabel>
+            <TagCloseButton onClick={() => filters.removePoolTypeFilter(poolType)} />
+          </Tag>
+        ))}
+
+        {filters.networks.map(network => (
+          <Tag key={network}>
+            <TagLabel>{network}</TagLabel>
+            <TagCloseButton onClick={() => filters.removeNetworkFilter(network)} />
+          </Tag>
+        ))}
+      </HStack>
+    </>
   )
 }
