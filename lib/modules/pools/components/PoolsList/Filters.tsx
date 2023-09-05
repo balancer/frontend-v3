@@ -1,9 +1,11 @@
 'use client'
 
 import {
+  Badge,
   Button,
   Checkbox,
   Divider,
+  HStack,
   Heading,
   Popover,
   PopoverArrow,
@@ -11,6 +13,9 @@ import {
   PopoverCloseButton,
   PopoverContent,
   PopoverTrigger,
+  Tag,
+  TagCloseButton,
+  TagLabel,
   Text,
   VStack,
 } from '@chakra-ui/react'
@@ -19,9 +24,13 @@ import { usePoolList } from '@/lib/modules/pools/hooks/usePoolList'
 import { usePoolFilters } from '@/lib/modules/pools/hooks/usePoolFilters'
 import { useEffect } from 'react'
 
-function PoolTypeFilters() {
+type FilterProps = {
+  filters: ReturnType<typeof usePoolFilters>
+}
+
+function PoolTypeFilters({ filters }: FilterProps) {
   const { poolTypes, poolTypeFilters, addPoolTypeFilter, removePoolTypeFilter, mappedPoolTypes } =
-    usePoolFilters()
+    filters
   const { setPoolTypes } = usePoolList()
 
   function handleToggle(checked: boolean, poolType: GqlPoolFilterType) {
@@ -47,8 +56,8 @@ function PoolTypeFilters() {
   ))
 }
 
-function PoolNetworkFilters() {
-  const { networks, networkFilters, addNetworkFilter, removeNetworkFilter } = usePoolFilters()
+function PoolNetworkFilters({ filters }: FilterProps) {
+  const { networks, networkFilters, addNetworkFilter, removeNetworkFilter } = filters
   const { setNetworks } = usePoolList()
 
   function handleToggle(checked: boolean, network: GqlChain) {
@@ -75,28 +84,57 @@ function PoolNetworkFilters() {
 }
 
 export function Filters() {
+  const filters = usePoolFilters()
+
+  const totalFilters = filters.poolTypes.length + filters.networks.length
+
   return (
-    <Popover>
-      <PopoverTrigger>
-        <Button>Filters</Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <PopoverArrow />
-        <PopoverCloseButton />
-        <PopoverBody>
-          <VStack align="start">
-            <Heading as="h3" size="sm">
-              Pool types
-            </Heading>
-            <PoolTypeFilters />
-            <Divider />
-            <Heading as="h3" size="sm">
-              Networks
-            </Heading>
-            <PoolNetworkFilters />
-          </VStack>
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
+    <>
+      <Popover>
+        <PopoverTrigger>
+          <Button>
+            Filters
+            {totalFilters > 0 && (
+              <Badge ml="2" colorScheme="blue">
+                {totalFilters}
+              </Badge>
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <PopoverArrow />
+          <PopoverCloseButton />
+          <PopoverBody>
+            <VStack align="start">
+              <Heading as="h3" size="sm">
+                Pool types
+              </Heading>
+              <PoolTypeFilters filters={filters} />
+              <Divider />
+              <Heading as="h3" size="sm">
+                Networks
+              </Heading>
+              <PoolNetworkFilters filters={filters} />
+            </VStack>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
+
+      <HStack spacing="sm">
+        {filters.poolTypes.map(poolType => (
+          <Tag key={poolType}>
+            <TagLabel>{poolType}</TagLabel>
+            <TagCloseButton onClick={() => filters.removePoolTypeFilter(poolType)} />
+          </Tag>
+        ))}
+
+        {filters.networks.map(network => (
+          <Tag key={network}>
+            <TagLabel>{network}</TagLabel>
+            <TagCloseButton onClick={() => filters.removeNetworkFilter(network)} />
+          </Tag>
+        ))}
+      </HStack>
+    </>
   )
 }
