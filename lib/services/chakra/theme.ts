@@ -24,6 +24,29 @@ export const balTheme: ThemeOverride = {
       '900': '#1d3992',
       '950': '#112055',
     },
+    sand: {
+      '50': '#F8F3ED',
+      '100': '#EBDCCC',
+      '200': '#DDC6AB',
+      '300': '#D0B08A',
+      '400': '#C39A6A',
+      '500': '#B68449',
+      '600': '#92693A',
+      '700': '#6D4F2C',
+      '800': '#49351D',
+      '900': '#241A0F',
+    },
+  },
+  components: {
+    Heading: {
+      variants: {
+        'heading-1': {
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          lineHeight: '3rem',
+        },
+      },
+    },
   },
   semanticTokens: {
     colors: {
