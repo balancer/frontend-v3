@@ -1,18 +1,18 @@
 'use client'
-export const dynamic = 'force-dynamic'
-
+import { PoolListProvider, usePoolListSeedCacheQuery } from '@/lib/modules/pools/hooks/usePoolList'
 import PoolsList from '@/lib/modules/pools/components/PoolsList/PoolsList'
-import { PoolsProvider, useSeedPoolsCacheQuery } from '@/lib/modules/pools/hooks/usePools'
 import { Box } from '@chakra-ui/react'
 
+export const dynamic = 'force-dynamic'
+
 export default function Home() {
-  useSeedPoolsCacheQuery()
+  usePoolListSeedCacheQuery()
 
   return (
-    <PoolsProvider>
+    <PoolListProvider>
       <Box p="md">
         <PoolsList />
       </Box>
-    </PoolsProvider>
+    </PoolListProvider>
   )
 }
