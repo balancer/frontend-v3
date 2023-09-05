@@ -71,6 +71,7 @@ function _usePoolFilters() {
     const url = new URL(window.location.href)
     const params = new URLSearchParams(url.search)
 
+    // On first render, we want to parse the URL query params and set the initial state.
     if (firstRender.current) {
       const poolTypes = params.get('poolTypes')
       const networks = params.get('networks')
@@ -81,6 +82,7 @@ function _usePoolFilters() {
       return
     }
 
+    // On subsequent renders, we want to update the URL query params.
     if (poolTypes.length > 0) params.set('poolTypes', poolTypes.join(','))
     else params.delete('poolTypes')
 
