@@ -1,15 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { PropsWithChildren, createContext, useState, useContext } from 'react'
 import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
 import { uniq } from 'lodash'
 import { useProjectConfig } from '@/lib/config/useProjectConfig'
 
-/**
- * POOL TYPE FILTER
- */
 // We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
-const poolTypeMap: { [key: string]: GqlPoolFilterType[] } = {
+const POOL_TYPE_MAP: { [key: string]: GqlPoolFilterType[] } = {
   [GqlPoolFilterType.Weighted]: [GqlPoolFilterType.Weighted],
   [GqlPoolFilterType.Stable]: [
     GqlPoolFilterType.Stable,
@@ -27,12 +24,12 @@ const poolTypeMap: { [key: string]: GqlPoolFilterType[] } = {
   ],
 }
 
-const poolTypeFilters = Object.keys(poolTypeMap) as GqlPoolFilterType[]
+const poolTypeFilters = Object.keys(POOL_TYPE_MAP) as GqlPoolFilterType[]
 
 /**
  * Pool filters hook that provides the state.
  */
-export function usePoolFilters() {
+function _usePoolFilters() {
   const { supportedNetworks } = useProjectConfig()
   const [poolTypes, setPoolTypes] = useState<GqlPoolFilterType[]>([])
   const [networks, setNetworks] = useState<GqlChain[]>([])
@@ -53,7 +50,9 @@ export function usePoolFilters() {
     setNetworks(networks.filter(chain => chain !== network))
   }
 
-  const mappedPoolTypes = poolTypes.map(poolType => poolTypeMap[poolType]).flat()
+  const mappedPoolTypes = poolTypes.map(poolType => POOL_TYPE_MAP[poolType]).flat()
+
+  const totalFilterCount = poolTypes.length + networks.length
 
   return {
     poolTypes,
@@ -61,9 +60,20 @@ export function usePoolFilters() {
     networks,
     poolTypeFilters,
     networkFilters: supportedNetworks,
+    totalFilterCount,
     addPoolTypeFilter,
     removePoolTypeFilter,
     addNetworkFilter,
     removeNetworkFilter,
   }
 }
+
+export type UsePoolFiltersResponse = ReturnType<typeof _usePoolFilters>
+export const PoolFiltersContext = createContext<UsePoolFiltersResponse | null>(null)
+
+export function PoolFiltersProvider({ children }: PropsWithChildren) {
+  const hook = _usePoolFilters()
+  return <PoolFiltersContext.Provider value={hook}>{children}</PoolFiltersContext.Provider>
+}
+
+export const usePoolFilters = () => useContext(PoolFiltersContext) as UsePoolFiltersResponse

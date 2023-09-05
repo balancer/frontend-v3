@@ -3,6 +3,8 @@
 import {
   Badge,
   Button,
+  ButtonProps,
+  forwardRef,
   Checkbox,
   Divider,
   HStack,
@@ -21,16 +23,12 @@ import {
 } from '@chakra-ui/react'
 import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
 import { usePoolList } from '@/lib/modules/pools/hooks/usePoolList'
-import { usePoolFilters } from '@/lib/modules/pools/hooks/usePoolFilters'
 import { useEffect } from 'react'
+import { PoolFiltersProvider, usePoolFilters } from '../../hooks/usePoolFilters'
 
-type FilterProps = {
-  filters: ReturnType<typeof usePoolFilters>
-}
-
-function PoolTypeFilters({ filters }: FilterProps) {
+function PoolTypeFilters() {
   const { poolTypes, poolTypeFilters, addPoolTypeFilter, removePoolTypeFilter, mappedPoolTypes } =
-    filters
+    usePoolFilters()
   const { setPoolTypes } = usePoolList()
 
   function handleToggle(checked: boolean, poolType: GqlPoolFilterType) {
@@ -56,8 +54,8 @@ function PoolTypeFilters({ filters }: FilterProps) {
   ))
 }
 
-function PoolNetworkFilters({ filters }: FilterProps) {
-  const { networks, networkFilters, addNetworkFilter, removeNetworkFilter } = filters
+function PoolNetworkFilters() {
+  const { networks, networkFilters, addNetworkFilter, removeNetworkFilter } = usePoolFilters()
   const { setNetworks } = usePoolList()
 
   function handleToggle(checked: boolean, network: GqlChain) {
@@ -83,24 +81,51 @@ function PoolNetworkFilters({ filters }: FilterProps) {
   ))
 }
 
-export function Filters() {
-  const filters = usePoolFilters()
-
-  const totalFilters = filters.poolTypes.length + filters.networks.length
+function FilterTags() {
+  const { poolTypes, networks, removePoolTypeFilter, removeNetworkFilter } = usePoolFilters()
 
   return (
-    <>
+    <HStack spacing="sm">
+      {poolTypes.map(poolType => (
+        <Tag key={poolType}>
+          <TagLabel>{poolType}</TagLabel>
+          <TagCloseButton onClick={() => removePoolTypeFilter(poolType)} />
+        </Tag>
+      ))}
+
+      {networks.map(network => (
+        <Tag key={network}>
+          <TagLabel>{network}</TagLabel>
+          <TagCloseButton onClick={() => removeNetworkFilter(network)} />
+        </Tag>
+      ))}
+    </HStack>
+  )
+}
+
+const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
+  const { totalFilterCount } = usePoolFilters()
+
+  return (
+    <Button ref={ref} {...props}>
+      Filters
+      {totalFilterCount > 0 && (
+        <Badge ml="2" colorScheme="blue">
+          {totalFilterCount}
+        </Badge>
+      )}
+    </Button>
+  )
+})
+
+export function Filters() {
+  return (
+    <PoolFiltersProvider>
       <Popover>
         <PopoverTrigger>
-          <Button>
-            Filters
-            {totalFilters > 0 && (
-              <Badge ml="2" colorScheme="blue">
-                {totalFilters}
-              </Badge>
-            )}
-          </Button>
+          <FilterButton />
         </PopoverTrigger>
+
         <PopoverContent>
           <PopoverArrow />
           <PopoverCloseButton />
@@ -109,32 +134,18 @@ export function Filters() {
               <Heading as="h3" size="sm">
                 Pool types
               </Heading>
-              <PoolTypeFilters filters={filters} />
+              <PoolTypeFilters />
               <Divider />
               <Heading as="h3" size="sm">
                 Networks
               </Heading>
-              <PoolNetworkFilters filters={filters} />
+              <PoolNetworkFilters />
             </VStack>
           </PopoverBody>
         </PopoverContent>
       </Popover>
 
-      <HStack spacing="sm">
-        {filters.poolTypes.map(poolType => (
-          <Tag key={poolType}>
-            <TagLabel>{poolType}</TagLabel>
-            <TagCloseButton onClick={() => filters.removePoolTypeFilter(poolType)} />
-          </Tag>
-        ))}
-
-        {filters.networks.map(network => (
-          <Tag key={network}>
-            <TagLabel>{network}</TagLabel>
-            <TagCloseButton onClick={() => filters.removeNetworkFilter(network)} />
-          </Tag>
-        ))}
-      </HStack>
-    </>
+      <FilterTags />
+    </PoolFiltersProvider>
   )
 }
