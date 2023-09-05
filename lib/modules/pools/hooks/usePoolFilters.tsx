@@ -50,6 +50,21 @@ function _usePoolFilters() {
     setNetworks(networks.filter(chain => chain !== network))
   }
 
+  function labelFor(poolType: GqlPoolFilterType) {
+    switch (poolType) {
+      case GqlPoolFilterType.Weighted:
+        return 'Weighted'
+      case GqlPoolFilterType.Stable:
+        return 'Stable'
+      case GqlPoolFilterType.LiquidityBootstrapping:
+        return 'Liquidity Bootstrapping'
+      case GqlPoolFilterType.Gyro:
+        return 'CLP'
+      default:
+        return poolType.toLowerCase()
+    }
+  }
+
   const mappedPoolTypes = poolTypes.map(poolType => POOL_TYPE_MAP[poolType]).flat()
 
   const totalFilterCount = poolTypes.length + networks.length
@@ -65,6 +80,7 @@ function _usePoolFilters() {
     removePoolTypeFilter,
     addNetworkFilter,
     removeNetworkFilter,
+    labelFor,
   }
 }
 
