@@ -5,5 +5,5 @@ export const PROJECT_CONFIG =
   process.env.NEXT_PUBLIC_PROJECT_ID === 'beets' ? ProjectConfigBeets : ProjectConfigBalancer
 
 export function useProjectConfig() {
-  return process.env.NEXT_PUBLIC_PROJECT_ID === 'beets' ? ProjectConfigBeets : ProjectConfigBalancer
+  return PROJECT_CONFIG
 }
