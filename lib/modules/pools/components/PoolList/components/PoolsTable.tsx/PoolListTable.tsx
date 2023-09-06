@@ -1,16 +1,16 @@
 'use client'
 
-import { getColumns } from './columns'
-import { PoolsListItem } from '../../../pool.types'
+import { getPoolListTableColumns } from './PoolListTable.columns'
+import { PoolsListItem } from '../../../../pool.types'
 import { Box } from '@chakra-ui/react'
 import { DataTable } from '@/components/tables/DataTable'
 import { useRouter } from 'next/navigation'
-import { getPoolPath } from '../../../pool.utils'
+import { getPoolPath } from '../../../../pool.utils'
 import { usePoolList } from '@/lib/modules/pools/hooks/usePoolList'
 
 export function PoolsTable() {
   const { pools, loading, sorting, setSort } = usePoolList()
-  const columns = getColumns()
+  const columns = getPoolListTableColumns()
   const router = useRouter()
 
   const rowClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolsListItem) => {
