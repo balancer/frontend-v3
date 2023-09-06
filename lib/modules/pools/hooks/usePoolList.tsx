@@ -106,6 +106,10 @@ export function _usePoolList() {
     })
   }
 
+  function setSearchText(text: string) {
+    searchTextVar(text)
+  }
+
   const { data, loading, previousData, refetch, networkStatus, error } = useQuery(
     GetPoolsDocument,
     {
@@ -140,6 +144,7 @@ export function _usePoolList() {
     searchText,
     setNetworks,
     setPoolTypes,
+    setSearchText,
   }
 }
 

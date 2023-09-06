@@ -24,7 +24,7 @@ import {
 import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
 import { usePoolList } from '@/lib/modules/pools/hooks/usePoolList'
 import { useEffect } from 'react'
-import { PoolFiltersProvider, usePoolFilters } from '../../hooks/usePoolFilters'
+import { PoolFiltersProvider, usePoolFilters } from '../../../hooks/usePoolFilters'
 
 function PoolTypeFilters() {
   const {
@@ -127,7 +127,7 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
   )
 })
 
-export function Filters() {
+export function PoolListFilters() {
   return (
     <PoolFiltersProvider>
       <Popover>

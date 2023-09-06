@@ -3,7 +3,7 @@
 import { Button, HStack, Text, VStack } from '@chakra-ui/react'
 import { usePoolList } from '@/lib/modules/pools/hooks/usePoolList'
 
-export function Pagination() {
+export function PoolListPagination() {
   const { pageNumber, pageSize, setPageNumber, setPageSize } = usePoolList()
 
   return (

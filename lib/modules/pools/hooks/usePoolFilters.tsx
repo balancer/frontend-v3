@@ -1,6 +1,6 @@
 'use client'
 
-import { PropsWithChildren, createContext, useState, useContext } from 'react'
+import { PropsWithChildren, createContext, useState, useContext, useEffect } from 'react'
 import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
 import { uniq } from 'lodash'
 import { useProjectConfig } from '@/lib/config/useProjectConfig'
@@ -26,9 +26,6 @@ const POOL_TYPE_MAP: { [key: string]: GqlPoolFilterType[] } = {
 
 const poolTypeFilters = Object.keys(POOL_TYPE_MAP) as GqlPoolFilterType[]
 
-/**
- * Pool filters hook that provides the state.
- */
 function _usePoolFilters() {
   const { supportedNetworks } = useProjectConfig()
   const [poolTypes, setPoolTypes] = useState<GqlPoolFilterType[]>([])
@@ -68,6 +65,32 @@ function _usePoolFilters() {
   const mappedPoolTypes = poolTypes.map(poolType => POOL_TYPE_MAP[poolType]).flat()
 
   const totalFilterCount = poolTypes.length + networks.length
+
+  // On first render, we want to parse the URL query params and set the initial state.
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    const params = new URLSearchParams(url.search)
+    const poolTypes = params.get('poolTypes')
+    const networks = params.get('networks')
+
+    if (poolTypes) setPoolTypes(poolTypes.split(',') as GqlPoolFilterType[])
+    if (networks) setNetworks(networks.split(',') as GqlChain[])
+  }, [])
+
+  // On subsequent renders when filters change, we want to update the URL query params.
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    const params = new URLSearchParams(url.search)
+
+    if (poolTypes.length > 0) params.set('poolTypes', poolTypes.join(','))
+    else params.delete('poolTypes')
+
+    if (networks.length > 0) params.set('networks', networks.join(','))
+    else params.delete('networks')
+
+    const searchParams = params.size > 0 ? `?${params.toString()}` : ''
+    window.history.pushState({}, '', `${url.pathname}${searchParams}`)
+  }, [poolTypes, networks])
 
   return {
     poolTypes,
