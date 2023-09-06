@@ -1,7 +1,7 @@
 'use client'
 
 import { getPoolListTableColumns } from './PoolListTable.columns'
-import { PoolsListItem } from '../../../pool.types'
+import { PoolListItem } from '../../../pool.types'
 import { Box } from '@chakra-ui/react'
 import { DataTable } from '@/components/tables/DataTable'
 import { useRouter } from 'next/navigation'
@@ -13,7 +13,7 @@ export function PoolsTable() {
   const columns = getPoolListTableColumns()
   const router = useRouter()
 
-  const rowClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolsListItem) => {
+  const rowClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
     const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
 
     if (event.ctrlKey || event.metaKey) {
@@ -25,7 +25,7 @@ export function PoolsTable() {
 
   // Prefetch pool page on row hover, otherwise there is a significant delay
   // between clicking the row and the pool page loading.
-  const rowMouseEnterHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolsListItem) => {
+  const rowMouseEnterHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
     const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
     router.prefetch(poolPath)
   }

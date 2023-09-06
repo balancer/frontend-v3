@@ -20,7 +20,6 @@ export function PoolList() {
         <PoolListFilters />
         <PoolListSearch />
       </HStack>
-
       <PoolsTable />
       <PoolListPagination />
     </VStack>
