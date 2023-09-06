@@ -24,7 +24,7 @@ import {
 import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { useEffect } from 'react'
-import { PoolFiltersProvider, usePoolFilters } from '../usePoolFilters'
+import { PoolFiltersProvider, usePoolListFilters } from '../usePoolListFilters'
 
 function PoolTypeFilters() {
   const {
@@ -34,7 +34,7 @@ function PoolTypeFilters() {
     removePoolTypeFilter,
     mappedPoolTypes,
     labelFor,
-  } = usePoolFilters()
+  } = usePoolListFilters()
   const { setPoolTypes } = usePoolList()
 
   function handleToggle(checked: boolean, poolType: GqlPoolFilterType) {
@@ -61,7 +61,7 @@ function PoolTypeFilters() {
 }
 
 function PoolNetworkFilters() {
-  const { networks, networkFilters, addNetworkFilter, removeNetworkFilter } = usePoolFilters()
+  const { networks, networkFilters, addNetworkFilter, removeNetworkFilter } = usePoolListFilters()
   const { setNetworks } = usePoolList()
 
   function handleToggle(checked: boolean, network: GqlChain) {
@@ -89,7 +89,7 @@ function PoolNetworkFilters() {
 
 function FilterTags() {
   const { poolTypes, networks, removePoolTypeFilter, removeNetworkFilter, labelFor } =
-    usePoolFilters()
+    usePoolListFilters()
 
   return (
     <HStack spacing="sm">
@@ -113,7 +113,7 @@ function FilterTags() {
 }
 
 const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
-  const { totalFilterCount } = usePoolFilters()
+  const { totalFilterCount } = usePoolListFilters()
 
   return (
     <Button ref={ref} {...props}>
