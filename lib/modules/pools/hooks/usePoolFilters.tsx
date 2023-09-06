@@ -1,6 +1,6 @@
 'use client'
 
-import { PropsWithChildren, createContext, useState, useContext, useEffect, useRef } from 'react'
+import { PropsWithChildren, createContext, useState, useContext, useEffect } from 'react'
 import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
 import { uniq } from 'lodash'
 import { useProjectConfig } from '@/lib/config/useProjectConfig'
@@ -66,30 +66,30 @@ function _usePoolFilters() {
 
   const totalFilterCount = poolTypes.length + networks.length
 
-  const firstRender = useRef(true)
+  // On first render, we want to parse the URL query params and set the initial state.
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    const params = new URLSearchParams(url.search)
+    const poolTypes = params.get('poolTypes')
+    const networks = params.get('networks')
+
+    if (poolTypes) setPoolTypes(poolTypes.split(',') as GqlPoolFilterType[])
+    if (networks) setNetworks(networks.split(',') as GqlChain[])
+  }, [])
+
+  // On subsequent renders when filters change, we want to update the URL query params.
   useEffect(() => {
     const url = new URL(window.location.href)
     const params = new URLSearchParams(url.search)
 
-    // On first render, we want to parse the URL query params and set the initial state.
-    if (firstRender.current) {
-      const poolTypes = params.get('poolTypes')
-      const networks = params.get('networks')
-      if (poolTypes) setPoolTypes(poolTypes.split(',') as GqlPoolFilterType[])
-      if (networks) setNetworks(networks.split(',') as GqlChain[])
-
-      firstRender.current = false
-      return
-    }
-
-    // On subsequent renders, we want to update the URL query params.
     if (poolTypes.length > 0) params.set('poolTypes', poolTypes.join(','))
     else params.delete('poolTypes')
 
     if (networks.length > 0) params.set('networks', networks.join(','))
     else params.delete('networks')
 
-    window.history.pushState({}, '', `${url.pathname}?${params.toString()}`)
+    const searchParams = params.size > 0 ? `?${params.toString()}` : ''
+    window.history.pushState({}, '', `${url.pathname}${searchParams}`)
   }, [poolTypes, networks])
 
   return {

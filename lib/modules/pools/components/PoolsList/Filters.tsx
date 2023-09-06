@@ -102,7 +102,9 @@ function FilterTags() {
 
       {networks.map(network => (
         <Tag key={network}>
-          <TagLabel>{network}</TagLabel>
+          <TagLabel>
+            <Text textTransform="capitalize">{network.toLowerCase()}</Text>
+          </TagLabel>
           <TagCloseButton onClick={() => removeNetworkFilter(network)} />
         </Tag>
       ))}
