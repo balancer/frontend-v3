@@ -26,7 +26,7 @@ const POOL_TYPE_MAP: { [key: string]: GqlPoolFilterType[] } = {
 
 const poolTypeFilters = Object.keys(POOL_TYPE_MAP) as GqlPoolFilterType[]
 
-function _usePoolFilters() {
+function _usePoolListFilters() {
   const { supportedNetworks } = useProjectConfig()
   const [poolTypes, setPoolTypes] = useState<GqlPoolFilterType[]>([])
   const [networks, setNetworks] = useState<GqlChain[]>([])
@@ -107,12 +107,13 @@ function _usePoolFilters() {
   }
 }
 
-export type UsePoolFiltersResponse = ReturnType<typeof _usePoolFilters>
-export const PoolFiltersContext = createContext<UsePoolFiltersResponse | null>(null)
+export type UsePoolListFiltersResponse = ReturnType<typeof _usePoolListFilters>
+export const PoolListFiltersContext = createContext<UsePoolListFiltersResponse | null>(null)
 
 export function PoolFiltersProvider({ children }: PropsWithChildren) {
-  const hook = _usePoolFilters()
-  return <PoolFiltersContext.Provider value={hook}>{children}</PoolFiltersContext.Provider>
+  const hook = _usePoolListFilters()
+  return <PoolListFiltersContext.Provider value={hook}>{children}</PoolListFiltersContext.Provider>
 }
 
-export const usePoolFilters = () => useContext(PoolFiltersContext) as UsePoolFiltersResponse
+export const usePoolListFilters = () =>
+  useContext(PoolListFiltersContext) as UsePoolListFiltersResponse

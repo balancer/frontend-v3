@@ -3,12 +3,12 @@
 import { ColumnDef } from '@tanstack/react-table'
 import numeral from 'numeral'
 import Image from 'next/image'
-import { PoolsListItem } from '../../../../pool.types'
 import { GqlPoolApr, GqlPoolAprTotal } from '@/lib/services/api/generated/graphql'
 import { VStack, Text, HStack, Tag } from '@chakra-ui/react'
 import { getNetworkConfig } from '@/lib/config/app.config'
+import { PoolListItem } from '../../../pool.types'
 
-export const getPoolListTableColumns = (): ColumnDef<PoolsListItem>[] => [
+export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => [
   {
     id: 'chainLogoUrl',
     accessorKey: 'chain.logoUrl',

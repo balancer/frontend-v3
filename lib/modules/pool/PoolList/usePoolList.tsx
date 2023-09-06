@@ -12,7 +12,7 @@ import {
 } from '@/lib/services/api/generated/graphql'
 import { PROJECT_CONFIG } from '@/lib/config/useProjectConfig'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { PoolsColumnSort } from '@/lib/modules/pools/pool.types'
+import { PoolsColumnSort } from '@/lib/modules/pool/pool.types'
 
 interface PoolsQueryVariables extends GetPoolsQueryVariables {
   first: number

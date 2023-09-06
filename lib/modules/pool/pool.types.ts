@@ -1,8 +1,8 @@
 import { GetPoolsQuery, GqlChain, GqlPoolOrderBy } from '@/lib/services/api/generated/graphql'
 
-export type PoolsList = GetPoolsQuery['pools']
+export type PoolList = GetPoolsQuery['pools']
 
-export type PoolsListItem = PoolsList[0]
+export type PoolListItem = PoolList[0]
 
 export type BalancerVersion = 'v2' | 'v3'
 

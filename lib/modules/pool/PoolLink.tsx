@@ -1,8 +1,8 @@
 'use client'
 
 import { Link, LinkProps } from '@chakra-ui/react'
-import { getPoolPath } from '../pool.utils'
-import { FetchPoolProps } from '../pool.types'
+import { FetchPoolProps } from './pool.types'
+import { getPoolPath } from './pool.utils'
 
 type Props = FetchPoolProps & LinkProps
 

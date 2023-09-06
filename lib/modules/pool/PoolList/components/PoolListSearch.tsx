@@ -1,8 +1,8 @@
 import { IconButton, Input, InputGroup, InputRightElement, useBoolean } from '@chakra-ui/react'
 import { debounce } from 'lodash'
 import { useEffect } from 'react'
-import { usePoolList } from '../../../hooks/usePoolList'
 import { HiOutlineX, HiOutlineSearch } from 'react-icons/hi'
+import { usePoolList } from '../usePoolList'
 
 export function PoolListSearch() {
   const [isSearching, { on, off }] = useBoolean()
