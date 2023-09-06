@@ -22,9 +22,9 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
-import { usePoolList } from '@/lib/modules/pools/hooks/usePoolList'
+import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { useEffect } from 'react'
-import { PoolFiltersProvider, usePoolFilters } from '../../../hooks/usePoolFilters'
+import { PoolFiltersProvider, usePoolFilters } from '../usePoolFilters'
 
 function PoolTypeFilters() {
   const {

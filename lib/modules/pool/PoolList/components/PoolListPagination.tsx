@@ -1,7 +1,7 @@
 'use client'
 
 import { Button, HStack, Text, VStack } from '@chakra-ui/react'
-import { usePoolList } from '@/lib/modules/pools/hooks/usePoolList'
+import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 
 export function PoolListPagination() {
   const { pageNumber, pageSize, setPageNumber, setPageSize } = usePoolList()

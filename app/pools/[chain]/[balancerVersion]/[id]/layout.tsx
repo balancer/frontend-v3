@@ -1,7 +1,7 @@
 'use client'
-import { BalancerVersion } from '@/lib/modules/pools/pool.types'
-import { ChainSlug, slugToChainMap } from '@/lib/modules/pools/pool.utils'
-import { PoolProvider, useSeedPoolCacheQuery } from '@/lib/modules/pools/hooks/usePool'
+import { BalancerVersion } from '@/lib/modules/pool/pool.types'
+import { ChainSlug, slugToChainMap } from '@/lib/modules/pool/pool.utils'
+import { PoolProvider, useSeedPoolCacheQuery } from '@/lib/modules/pool/usePool'
 import { PropsWithChildren } from 'react'
 
 interface Props extends PropsWithChildren {
