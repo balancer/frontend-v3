@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { getPoolPath } from '../../../pool.utils'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 
-export function PoolsTable() {
+export function PoolListTable() {
   const { pools, loading, sorting, setSort } = usePoolList()
   const columns = getPoolListTableColumns()
   const router = useRouter()

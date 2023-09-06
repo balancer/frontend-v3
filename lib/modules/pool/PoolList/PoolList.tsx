@@ -1,7 +1,7 @@
 'use client'
 
 import { PoolListPagination } from './components/PoolListPagination'
-import { PoolsTable } from './components/PoolsTable.tsx/PoolListTable'
+import { PoolListTable } from './components/PoolListTable/PoolListTable'
 import { HStack, VStack } from '@chakra-ui/react'
 import { PoolListFilters } from './components/PoolListFilters'
 import { useAccount } from 'wagmi'
@@ -20,7 +20,7 @@ export function PoolList() {
         <PoolListFilters />
         <PoolListSearch />
       </HStack>
-      <PoolsTable />
+      <PoolListTable />
       <PoolListPagination />
     </VStack>
   )
