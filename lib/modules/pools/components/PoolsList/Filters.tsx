@@ -27,8 +27,14 @@ import { useEffect } from 'react'
 import { PoolFiltersProvider, usePoolFilters } from '../../hooks/usePoolFilters'
 
 function PoolTypeFilters() {
-  const { poolTypes, poolTypeFilters, addPoolTypeFilter, removePoolTypeFilter, mappedPoolTypes } =
-    usePoolFilters()
+  const {
+    poolTypes,
+    poolTypeFilters,
+    addPoolTypeFilter,
+    removePoolTypeFilter,
+    mappedPoolTypes,
+    labelFor,
+  } = usePoolFilters()
   const { setPoolTypes } = usePoolList()
 
   function handleToggle(checked: boolean, poolType: GqlPoolFilterType) {
@@ -49,7 +55,7 @@ function PoolTypeFilters() {
       isChecked={!!poolTypes.find(selected => selected === poolType)}
       onChange={e => handleToggle(e.target.checked, poolType)}
     >
-      {poolType}
+      <Text textTransform="capitalize">{labelFor(poolType)}</Text>
     </Checkbox>
   ))
 }
@@ -82,20 +88,23 @@ function PoolNetworkFilters() {
 }
 
 function FilterTags() {
-  const { poolTypes, networks, removePoolTypeFilter, removeNetworkFilter } = usePoolFilters()
+  const { poolTypes, networks, removePoolTypeFilter, removeNetworkFilter, labelFor } =
+    usePoolFilters()
 
   return (
     <HStack spacing="sm">
       {poolTypes.map(poolType => (
         <Tag key={poolType}>
-          <TagLabel>{poolType}</TagLabel>
+          <TagLabel>{labelFor(poolType)}</TagLabel>
           <TagCloseButton onClick={() => removePoolTypeFilter(poolType)} />
         </Tag>
       ))}
 
       {networks.map(network => (
         <Tag key={network}>
-          <TagLabel>{network}</TagLabel>
+          <TagLabel>
+            <Text textTransform="capitalize">{network.toLowerCase()}</Text>
+          </TagLabel>
           <TagCloseButton onClick={() => removeNetworkFilter(network)} />
         </Tag>
       ))}
