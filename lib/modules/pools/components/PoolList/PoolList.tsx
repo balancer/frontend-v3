@@ -1,23 +1,23 @@
 'use client'
 
-import { Pagination } from './Pagination'
-import { PoolsTable } from './PoolsTable.tsx/PoolsTable'
+import { PoolListPagination } from './components/PoolListPagination'
+import { PoolsTable } from './components/PoolsTable.tsx/PoolListTable'
 import { VStack } from '@chakra-ui/react'
-import { Filters } from './Filters'
+import { PoolListFilters } from './components/PoolListFilters'
 import { useAccount } from 'wagmi'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
 
-export default function PoolsList() {
+export function PoolList() {
   const { address } = useAccount()
   const { tokens } = useTokens()
   useTokenBalances(address, tokens)
 
   return (
     <VStack align="start" spacing="md">
-      <Filters />
+      <PoolListFilters />
       <PoolsTable />
-      <Pagination />
+      <PoolListPagination />
     </VStack>
   )
 }
