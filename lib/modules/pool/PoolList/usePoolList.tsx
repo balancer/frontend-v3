@@ -40,11 +40,9 @@ export const DEFAULT_POOL_LIST_QUERY_VARS: PoolsQueryVariables = {
 }
 
 const poolListStateVar = makeVar<PoolsQueryVariables>(DEFAULT_POOL_LIST_QUERY_VARS)
-const searchTextVar = makeVar('')
 
 export function _usePoolList() {
   const state = useReactiveVar(poolListStateVar)
-  const searchText = useReactiveVar(searchTextVar)
 
   function setNewState(newState: Partial<PoolsQueryVariables>) {
     const state = poolListStateVar()
@@ -106,10 +104,6 @@ export function _usePoolList() {
     })
   }
 
-  function setSearchText(text: string) {
-    searchTextVar(text)
-  }
-
   const { data, loading, previousData, refetch, networkStatus, error } = useQuery(
     GetPoolsDocument,
     {
@@ -141,10 +135,8 @@ export function _usePoolList() {
     pageSize,
     sorting,
     setSort,
-    searchText,
     setNetworks,
     setPoolTypes,
-    setSearchText,
   }
 }
 

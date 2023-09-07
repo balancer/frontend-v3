@@ -25,6 +25,7 @@ import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphq
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { useEffect } from 'react'
 import { PoolFiltersProvider, usePoolListFilters } from '../usePoolListFilters'
+import { PoolListSearch } from './PoolListSearch'
 
 function PoolTypeFilters() {
   const {
@@ -130,31 +131,36 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
 export function PoolListFilters() {
   return (
     <PoolFiltersProvider>
-      <Popover>
-        <PopoverTrigger>
-          <FilterButton />
-        </PopoverTrigger>
+      <HStack alignItems="start">
+        <VStack>
+          <Popover>
+            <PopoverTrigger>
+              <FilterButton />
+            </PopoverTrigger>
+            <PopoverContent>
+              <PopoverArrow />
+              <PopoverCloseButton />
+              <PopoverBody>
+                <VStack align="start">
+                  <Heading as="h3" size="sm">
+                    Pool types
+                  </Heading>
+                  <PoolTypeFilters />
+                  <Divider />
+                  <Heading as="h3" size="sm">
+                    Networks
+                  </Heading>
+                  <PoolNetworkFilters />
+                </VStack>
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
 
-        <PopoverContent>
-          <PopoverArrow />
-          <PopoverCloseButton />
-          <PopoverBody>
-            <VStack align="start">
-              <Heading as="h3" size="sm">
-                Pool types
-              </Heading>
-              <PoolTypeFilters />
-              <Divider />
-              <Heading as="h3" size="sm">
-                Networks
-              </Heading>
-              <PoolNetworkFilters />
-            </VStack>
-          </PopoverBody>
-        </PopoverContent>
-      </Popover>
+          <FilterTags />
+        </VStack>
 
-      <FilterTags />
+        <PoolListSearch />
+      </HStack>
     </PoolFiltersProvider>
   )
 }

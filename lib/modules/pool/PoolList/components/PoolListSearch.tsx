@@ -3,15 +3,15 @@ import { debounce } from 'lodash'
 import { useEffect } from 'react'
 import { HiOutlineX, HiOutlineSearch } from 'react-icons/hi'
 import { usePoolList } from '../usePoolList'
+import { usePoolListFilters } from '../usePoolListFilters'
 
 export function PoolListSearch() {
   const [isSearching, { on, off }] = useBoolean()
-  const { refetch, state, searchText, setSearchText } = usePoolList()
+  const { refetch, state } = usePoolList()
+  const { searchText, setSearchText } = usePoolListFilters()
 
   const submitSearch = debounce(async () => {
-    console.log('submitSearch')
-
-    await refetch({ ...state, textSearch: searchText, skip: 0 })
+    if (searchText.length > 0) await refetch({ ...state, textSearch: searchText, skip: 0 })
     off()
   }, 250)
 

@@ -30,6 +30,7 @@ function _usePoolListFilters() {
   const { supportedNetworks } = useProjectConfig()
   const [poolTypes, setPoolTypes] = useState<GqlPoolFilterType[]>([])
   const [networks, setNetworks] = useState<GqlChain[]>([])
+  const [searchText, setSearchText] = useState<string>('')
 
   function addPoolTypeFilter(poolType: GqlPoolFilterType) {
     setPoolTypes(uniq([...poolTypes, poolType]))
@@ -70,11 +71,13 @@ function _usePoolListFilters() {
   useEffect(() => {
     const url = new URL(window.location.href)
     const params = new URLSearchParams(url.search)
-    const poolTypes = params.get('poolTypes')
-    const networks = params.get('networks')
+    const _poolTypes = params.get('poolTypes')
+    const _networks = params.get('networks')
+    const _searchText = params.get('search')
 
-    if (poolTypes) setPoolTypes(poolTypes.split(',') as GqlPoolFilterType[])
-    if (networks) setNetworks(networks.split(',') as GqlChain[])
+    if (_poolTypes) setPoolTypes(_poolTypes.split(',') as GqlPoolFilterType[])
+    if (_networks) setNetworks(_networks.split(',') as GqlChain[])
+    if (_searchText) setSearchText(_searchText)
   }, [])
 
   // On subsequent renders when filters change, we want to update the URL query params.
@@ -88,9 +91,12 @@ function _usePoolListFilters() {
     if (networks.length > 0) params.set('networks', networks.join(','))
     else params.delete('networks')
 
+    if (searchText.length > 0) params.set('search', searchText)
+    else params.delete('search')
+
     const searchParams = params.size > 0 ? `?${params.toString()}` : ''
     window.history.pushState({}, '', `${url.pathname}${searchParams}`)
-  }, [poolTypes, networks])
+  }, [poolTypes, networks, searchText])
 
   return {
     poolTypes,
@@ -99,6 +105,8 @@ function _usePoolListFilters() {
     poolTypeFilters,
     networkFilters: supportedNetworks,
     totalFilterCount,
+    searchText,
+    setSearchText,
     addPoolTypeFilter,
     removePoolTypeFilter,
     addNetworkFilter,
