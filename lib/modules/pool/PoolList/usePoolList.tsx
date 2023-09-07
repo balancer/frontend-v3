@@ -1,7 +1,7 @@
 'use client'
 
 import { makeVar, useReactiveVar } from '@apollo/client'
-import { createContext, ReactNode, useContext } from 'react'
+import { createContext, ReactNode, useCallback, useContext } from 'react'
 import {
   GetPoolsDocument,
   GetPoolsQueryVariables,
@@ -87,22 +87,26 @@ export function _usePoolList() {
     })
   }
 
-  function setNetworks(networks: GqlChain[]) {
-    setNewState({
-      where: {
-        chainIn: networks.length === 0 ? PROJECT_CONFIG.supportedNetworks : networks,
-      },
-    })
-  }
+  const setNetworks = useCallback(
+    (networks: GqlChain[]) =>
+      setNewState({
+        where: {
+          chainIn: networks.length === 0 ? PROJECT_CONFIG.supportedNetworks : networks,
+        },
+      }),
+    []
+  )
 
-  function setPoolTypes(poolTypes: GqlPoolFilterType[]) {
-    setNewState({
-      where: {
-        poolTypeIn:
-          poolTypes.length === 0 ? DEFAULT_POOL_LIST_QUERY_VARS.where?.poolTypeIn : poolTypes,
-      },
-    })
-  }
+  const setPoolTypes = useCallback(
+    (poolTypes: GqlPoolFilterType[]) =>
+      setNewState({
+        where: {
+          poolTypeIn:
+            poolTypes.length === 0 ? DEFAULT_POOL_LIST_QUERY_VARS.where?.poolTypeIn : poolTypes,
+        },
+      }),
+    []
+  )
 
   const { data, loading, previousData, refetch, networkStatus, error } = useQuery(
     GetPoolsDocument,
