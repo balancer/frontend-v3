@@ -131,36 +131,32 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
 export function PoolListFilters() {
   return (
     <PoolFiltersProvider>
-      <HStack alignItems="start">
-        <VStack>
-          <Popover>
-            <PopoverTrigger>
-              <FilterButton />
-            </PopoverTrigger>
-            <PopoverContent>
-              <PopoverArrow />
-              <PopoverCloseButton />
-              <PopoverBody>
-                <VStack align="start">
-                  <Heading as="h3" size="sm">
-                    Pool types
-                  </Heading>
-                  <PoolTypeFilters />
-                  <Divider />
-                  <Heading as="h3" size="sm">
-                    Networks
-                  </Heading>
-                  <PoolNetworkFilters />
-                </VStack>
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
-
-          <FilterTags />
-        </VStack>
-
+      <HStack>
+        <Popover>
+          <PopoverTrigger>
+            <FilterButton />
+          </PopoverTrigger>
+          <PopoverContent>
+            <PopoverArrow />
+            <PopoverCloseButton />
+            <PopoverBody>
+              <VStack align="start">
+                <Heading as="h3" size="sm">
+                  Pool types
+                </Heading>
+                <PoolTypeFilters />
+                <Divider />
+                <Heading as="h3" size="sm">
+                  Networks
+                </Heading>
+                <PoolNetworkFilters />
+              </VStack>
+            </PopoverBody>
+          </PopoverContent>
+        </Popover>
         <PoolListSearch />
       </HStack>
+      <FilterTags />
     </PoolFiltersProvider>
   )
 }
