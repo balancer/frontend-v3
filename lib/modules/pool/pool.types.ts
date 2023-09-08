@@ -1,4 +1,9 @@
-import { GetPoolsQuery, GqlChain, GqlPoolOrderBy } from '@/lib/services/api/generated/graphql'
+import {
+  GetPoolQuery,
+  GetPoolsQuery,
+  GqlChain,
+  GqlPoolOrderBy,
+} from '@/lib/services/api/generated/graphql'
 
 export type PoolList = GetPoolsQuery['pools']
 
@@ -11,6 +16,7 @@ export interface FetchPoolProps {
   // chain & balancerVersion are not used yet, but will be needed in the future.
   chain: GqlChain
   balancerVersion?: BalancerVersion
+  initPool: GetPoolQuery
 }
 
 export interface PoolsColumnSort {

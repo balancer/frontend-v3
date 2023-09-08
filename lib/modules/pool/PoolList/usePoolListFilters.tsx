@@ -29,7 +29,7 @@ const poolTypeFilters = Object.keys(POOL_TYPE_MAP) as GqlPoolFilterType[]
 function _usePoolListFilters() {
   const { supportedNetworks } = useProjectConfig()
   const [poolTypes, setPoolTypes] = useState<GqlPoolFilterType[]>([])
-  const [networks, setNetworks] = useState<GqlChain[]>([])
+  const [networks, setNetworks] = useState<GqlChain[]>([GqlChain.Mainnet])
   const [searchText, setSearchText] = useState<string>('')
 
   function addPoolTypeFilter(poolType: GqlPoolFilterType) {
