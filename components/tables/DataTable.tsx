@@ -25,6 +25,7 @@ export function DataTable<Data extends object, Sorting extends SortingState>({
   sorting,
   setSorting,
   rowClickHandler,
+  rowMouseEnterHandler,
 }: DataTableProps<Data, Sorting>) {
   const table = useReactTable({
     columns,
@@ -81,6 +82,9 @@ export function DataTable<Data extends object, Sorting extends SortingState>({
             key={row.id}
             onClick={event => rowClickHandler && rowClickHandler(event, row.original)}
             style={{ cursor: rowClickHandler ? 'pointer' : 'default' }}
+            onMouseEnter={event =>
+              rowMouseEnterHandler && rowMouseEnterHandler(event, row.original)
+            }
           >
             {row.getVisibleCells().map(cell => {
               // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
