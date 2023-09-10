@@ -25,6 +25,8 @@ export const useSeedPoolCacheQuery = ({ id, chain, balancerVersion }: FetchPoolP
 
 function _usePool({ id, chain, balancerVersion }: FetchPoolProps) {
   const { chainId } = getNetworkConfig(chain)
+  const { read } = useVaultContract();
+
 
   const { data, refetch, loading } = useQuery(GetPoolDocument, {
     variables: { id },

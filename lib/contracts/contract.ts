@@ -19,3 +19,4 @@ export function getContractConfig(contractPath: string, walletClient?: WalletCli
     publicClient,
   }
 }
+

@@ -2,6 +2,8 @@ import { getContract } from 'viem'
 import { WalletClient, usePublicClient } from 'wagmi'
 import { useNetworkConfig } from '../config/useNetworkConfig'
 import { getContractConfig } from './contract'
+import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 
 function getContractInstance(walletClient?: WalletClient) {
   let contractConfig = getContractConfig('balancer.vault', walletClient)
@@ -13,11 +15,17 @@ function getContractInstance(walletClient?: WalletClient) {
   return contract
 }
 
-export default function useVaultContract(walletClient?: WalletClient) {
-  const contractInstance = getContractInstance();
-  type readMethods = typeof contractInstance.read;
-  type writeMethods = typeof contractInstance.write;
+export default function useReadVaultContract(walletClient?: WalletClient) {
+  const contractInstance = getContractInstance()
 
+  type TReadMethods = keyof typeof contractInstance.read
+
+  function readQuery(readMethods: TReadMethods) {
+
+    const query = useQuery(['vaultRead', { readMethods }], async () => {
+      // const result = await contractInstance.read[readMethods]()
+    });
+  }
 }
 
 const VaultABI = [
