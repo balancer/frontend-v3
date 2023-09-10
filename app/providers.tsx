@@ -1,5 +1,5 @@
 import { TokensProvider } from '@/lib/modules/tokens/useTokens'
-import { Web3Provider } from '@/lib/modules/web3/Web3Provider'
+import { Web3Provider } from '@/lib/providers/Web3Provider'
 import { ApolloProviderWrapper } from '@/lib/services/api/apollo.provider'
 import { ThemeProvider } from '@/lib/services/chakra/ThemeProvider'
 import { ReactNode } from 'react'

@@ -6,6 +6,7 @@ import { createContext, PropsWithChildren, useContext } from 'react'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { BalancerVersion, FetchPoolProps } from './pool.types'
 import { getNetworkConfig } from '@/lib/config/app.config'
+import useVaultContract from '@/lib/contracts/Vault'
 
 export type UsePoolResponse = ReturnType<typeof _usePool>
 export const PoolContext = createContext<UsePoolResponse | null>(null)
