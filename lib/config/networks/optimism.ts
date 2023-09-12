@@ -13,6 +13,7 @@ const networkConfig: NetworkConfig = {
       decimals: 18,
     },
   },
+  minConfirmations: 1,
   contracts: {
     multicall2: '0x2dc0e2aa608532da689e89e237df582b783e552c',
     balancer: {}

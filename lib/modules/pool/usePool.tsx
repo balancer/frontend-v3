@@ -6,7 +6,6 @@ import { createContext, PropsWithChildren, useContext } from 'react'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { BalancerVersion, FetchPoolProps } from './pool.types'
 import { getNetworkConfig } from '@/lib/config/app.config'
-import useVaultContract from '@/lib/contracts/Vault'
 
 export type UsePoolResponse = ReturnType<typeof _usePool>
 export const PoolContext = createContext<UsePoolResponse | null>(null)
@@ -25,8 +24,6 @@ export const useSeedPoolCacheQuery = ({ id, chain, balancerVersion }: FetchPoolP
 
 function _usePool({ id, chain, balancerVersion }: FetchPoolProps) {
   const { chainId } = getNetworkConfig(chain)
-  const { read } = useVaultContract();
-
 
   const { data, refetch, loading } = useQuery(GetPoolDocument, {
     variables: { id },
