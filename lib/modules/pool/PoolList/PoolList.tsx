@@ -14,10 +14,8 @@ export function PoolList() {
   const { address } = useAccount()
   const { tokens } = useTokens()
   const vault = useRef(Vault.getContractInstance())
-  const { isLoading: isLoadingAuthorizer, data: authorizerAddress } = vault.current.query(
-    'getAuthorizer',
-    []
-  )
+  const { isLoading: isLoadingAuthorizer, data: authorizerAddress } =
+    vault.current.query('getAuthorizer')
 
   console.log('example', {
     isLoadingAuthorizer,

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
 import { PublicClient, WalletClient, useMutation, usePublicClient } from 'wagmi'
@@ -29,12 +30,13 @@ export function getContractConfig(contractPath: string, walletClient?: WalletCli
 type ArgumentsType<T> = T extends (...args: infer U) => any ? U : never
 type MutableTuple<T extends readonly any[]> = { -readonly [P in keyof T]: T[P] }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function useContractQuery<T, M>(contractId: string, contract: { read: M }) {
   type TReadMethods = keyof typeof contract.read
 
   function getQuery<K extends TReadMethods>(
     functionName: K,
-    functionArgs: MutableTuple<ArgumentsType<(typeof contract.read)[K]>>
+    functionArgs?: MutableTuple<ArgumentsType<(typeof contract.read)[K]>>
   ) {
     const callable = contract.read[functionName] as (...args: any[]) => any
     const query = useQuery({
@@ -64,7 +66,7 @@ async function confirmTransaction(
     }
 
     // 2. confirm the transaction
-    let isConfirmed = false
+    const isConfirmed = false
     while (!isConfirmed) {
       try {
         const confirmations = await publicClient.getTransactionConfirmations({
@@ -84,6 +86,7 @@ async function confirmTransaction(
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function useContractMutation<T, M>(contractId: string, contract: { write: M }) {
   const networkConfig = useNetworkConfig()
   const publicClient = usePublicClient()

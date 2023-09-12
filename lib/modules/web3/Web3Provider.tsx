@@ -17,7 +17,7 @@ import { infuraProvider } from 'wagmi/providers/infura'
 import { merge } from 'lodash'
 import { useColorMode, useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/services/chakra/theme'
-import { CustomAvatar } from '../modules/web3/CustomAvatar'
+import { CustomAvatar } from './CustomAvatar'
 
 const { chains, publicClient } = configureChains(
   [mainnet, polygon, optimism, arbitrum, polygonZkEvm, gnosis],
