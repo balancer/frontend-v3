@@ -4,7 +4,6 @@ import { makeVar, useReactiveVar } from '@apollo/client'
 import { createContext, ReactNode, useCallback, useContext } from 'react'
 import {
   GetPoolsDocument,
-  GetPoolsQueryVariables,
   GqlChain,
   GqlPoolFilterType,
   GqlPoolOrderBy,
@@ -12,40 +11,23 @@ import {
 } from '@/lib/services/api/generated/graphql'
 import { PROJECT_CONFIG } from '@/lib/config/useProjectConfig'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { PoolsColumnSort } from '@/lib/modules/pool/pool.types'
+import { PoolsColumnSort, PoolsQueryVariables } from '@/lib/modules/pool/pool.types'
+import { usePoolFilters } from './usePoolListFilters'
+import {
+  DEFAULT_POOL_LIST_QUERY_VARS,
+  getInitQueryVariables,
+  useQueryVarsWatcher,
+} from './usePoolList.helpers'
 
-interface PoolsQueryVariables extends GetPoolsQueryVariables {
-  first: number
-  skip: number
-}
-
-export const DEFAULT_POOL_LIST_QUERY_VARS: PoolsQueryVariables = {
-  first: 20,
-  skip: 0,
-  orderBy: GqlPoolOrderBy.TotalLiquidity,
-  orderDirection: GqlPoolOrderDirection.Desc,
-  where: {
-    poolTypeIn: [
-      GqlPoolFilterType.Weighted,
-      GqlPoolFilterType.Stable,
-      GqlPoolFilterType.PhantomStable,
-      GqlPoolFilterType.MetaStable,
-      GqlPoolFilterType.Gyro,
-      GqlPoolFilterType.Gyro3,
-      GqlPoolFilterType.Gyroe,
-    ],
-    chainIn: PROJECT_CONFIG.supportedNetworks,
-  },
-  textSearch: null,
-}
-
-const poolListStateVar = makeVar<PoolsQueryVariables>(DEFAULT_POOL_LIST_QUERY_VARS)
+const poolListStateVar = makeVar<PoolsQueryVariables>(getInitQueryVariables())
 
 export function _usePoolList() {
   const state = useReactiveVar(poolListStateVar)
+  const poolFilters = usePoolFilters()
 
   function setNewState(newState: Partial<PoolsQueryVariables>) {
     const state = poolListStateVar()
+    console.log('setNewState', newState)
 
     poolListStateVar({
       ...state,
@@ -125,6 +107,32 @@ export function _usePoolList() {
   const pageNumber = state.skip / state.first
   const pageSize = state.first
 
+  // When pool query variables change, update the URL query params.
+  useQueryVarsWatcher([
+    {
+      key: 'poolTypes',
+      value: poolFilters.poolTypes.join(','),
+    },
+    {
+      key: 'networks',
+      value: poolFilters.networks.join(','),
+    },
+    {
+      key: 'search',
+      value: poolFilters.searchText,
+    },
+    {
+      key: 'pageNumber',
+      value: pageNumber.toString(),
+      shouldSet: () => pageNumber !== 0,
+    },
+    {
+      key: 'pageSize',
+      value: pageSize.toString(),
+      shouldSet: () => pageSize !== 20,
+    },
+  ])
+
   return {
     state,
     pools,
@@ -141,12 +149,13 @@ export function _usePoolList() {
     setSort,
     setNetworks,
     setPoolTypes,
+    poolFilters,
   }
 }
 
 export function usePoolListSeedCacheQuery() {
   return useSuspenseQuery(GetPoolsDocument, {
-    variables: DEFAULT_POOL_LIST_QUERY_VARS,
+    variables: getInitQueryVariables(),
   })
 }
 

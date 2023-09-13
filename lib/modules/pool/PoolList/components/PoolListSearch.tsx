@@ -1,22 +1,26 @@
 import { IconButton, Input, InputGroup, InputRightElement, useBoolean } from '@chakra-ui/react'
 import { debounce } from 'lodash'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { HiOutlineX, HiOutlineSearch } from 'react-icons/hi'
 import { usePoolList } from '../usePoolList'
-import { usePoolListFilters } from '../usePoolListFilters'
 
 export function PoolListSearch() {
   const [isSearching, { on, off }] = useBoolean()
-  const { refetch, state } = usePoolList()
-  const { searchText, setSearchText } = usePoolListFilters()
+  const {
+    refetch,
+    state,
+    poolFilters: { searchText, setSearchText },
+  } = usePoolList()
 
   const submitSearch = debounce(async () => {
-    if (searchText.length > 0) await refetch({ ...state, textSearch: searchText, skip: 0 })
+    await refetch({ ...state, textSearch: searchText, skip: 0 })
     off()
   }, 250)
 
+  const firstUpdate = useRef(true)
   useEffect(() => {
-    submitSearch()
+    if (!firstUpdate.current) submitSearch()
+    firstUpdate.current = false
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText])
 
