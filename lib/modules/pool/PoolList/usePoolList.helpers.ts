@@ -69,22 +69,25 @@ export function getInitQueryVariables(): PoolsQueryVariables {
   const params = new URLSearchParams(url.search)
   const networks = params.get('networks')
   const poolTypes = params.get('poolTypes')
+  const searchText = params.get('search')
+  const pageNumber = params.get('pageNumber')
+  const pageSize = params.get('pageSize')
 
   let variables = DEFAULT_POOL_LIST_QUERY_VARS
 
-  function setNewVars(newVars: Partial<PoolsQueryVariables>) {
+  function setNewVars(vars: PoolsQueryVariables, newVars: Partial<PoolsQueryVariables>) {
     return {
-      ...variables,
+      ...vars,
       ...newVars,
       where: {
-        ...variables.where,
+        ...vars.where,
         ...newVars.where,
       },
     }
   }
 
   if (networks) {
-    variables = setNewVars({
+    variables = setNewVars(variables, {
       where: {
         chainIn: networks.split(',') as GqlChain[],
       },
@@ -97,10 +100,28 @@ export function getInitQueryVariables(): PoolsQueryVariables {
       .map(poolType => POOL_TYPE_MAP[poolType])
       .flat()
 
-    variables = setNewVars({
+    variables = setNewVars(variables, {
       where: {
         poolTypeIn: _poolTypes,
       },
+    })
+  }
+
+  if (searchText) {
+    variables = setNewVars(variables, {
+      textSearch: searchText,
+    })
+  }
+
+  if (pageNumber) {
+    variables = setNewVars(variables, {
+      skip: parseInt(pageNumber) * variables.first,
+    })
+  }
+
+  if (pageSize) {
+    variables = setNewVars(variables, {
+      first: parseInt(pageSize),
     })
   }
 
