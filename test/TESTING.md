@@ -56,13 +56,13 @@ extended one in frontend:
 
 That means that the more we test features by interacting with the component's UI the better.
 However, our context is special because we normally have complex logic with many edge cases that
-makes it challenging and cumbersome to tests from the UI. A general advise would be extracting that
+makes it challenging and cumbersome to test from the UI. A general advise would be extracting that
 logic to hook/s so that we can have tests that are faster and simpler to code, understand and
 maintain. Then leave component tests for the happy paths.
 
 From [react hooks testing library](https://react-hooks-testing-library.com/#the-solution):
 
-> When to test hooks instead of components You have a complex hook that is difficult to test through
+> When to test hooks instead of components: You have a complex hook that is difficult to test through
 > component interactions 👈 We will have this scenario in many cases
 
 ## TODO
