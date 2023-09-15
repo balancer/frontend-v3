@@ -12,6 +12,7 @@ export interface TokensConfig {
 
 export interface ContractsConfig {
   multicall2: Address
+  balancer: Record<string, Address>
 }
 
 export interface NetworkConfig {
@@ -21,6 +22,7 @@ export interface NetworkConfig {
   iconPath: string
   tokens: TokensConfig
   contracts: ContractsConfig
+  minConfirmations: number
 }
 
 export interface Config {

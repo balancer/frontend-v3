@@ -1,5 +1,5 @@
 import { TokensProvider } from '@/lib/modules/tokens/useTokens'
-import { createProductionConfig } from '@/lib/modules/web3/Web3Provider'
+import { createProductionConfig } from '@/lib/providers/Web3Provider'
 import { ApolloProvider } from '@apollo/client'
 import { RenderHookOptions, RenderOptions, render, renderHook } from '@testing-library/react'
 import { ReactElement } from 'react'
