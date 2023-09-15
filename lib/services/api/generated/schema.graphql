@@ -880,6 +880,7 @@ type GqlTokenCandlestickChartDataItem {
 }
 
 enum GqlTokenChartDataRange {
+  NINETY_DAY
   SEVEN_DAY
   THIRTY_DAY
 }
@@ -945,9 +946,15 @@ input GqlUserSwapVolumeFilter {
   tokenOutIn: [String!]
 }
 
+type GqlVeBalUserData {
+  balance: AmountHumanReadable!
+  rank: Int
+}
+
 type GqlVotingGauge {
   addedTimestamp: Int
   address: Bytes!
+  childGaugeAddress: Bytes
   isKilled: Boolean!
   relativeWeightCap: String
 }
@@ -1066,6 +1073,7 @@ type Query {
   userGetStaking: [GqlPoolStaking!]!
   userGetSwaps(first: Int = 10, poolId: String!, skip: Int = 0): [GqlPoolSwap!]!
   veBalGetTotalSupply: AmountHumanReadable!
+  veBalGetUser: GqlVeBalUserData!
   veBalGetUserBalance: AmountHumanReadable!
   veBalGetVotingList: [GqlVotingPool!]!
 }

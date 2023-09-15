@@ -1,21 +1,24 @@
 'use client'
+import {
+  PoolListProvider,
+  usePoolListSeedCacheQuery,
+} from '@/lib/modules/pool/PoolList/usePoolList'
+import { PoolList } from '@/lib/modules/pool/PoolList/PoolList'
+import { Box } from '@chakra-ui/react'
+import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
+
 export const dynamic = 'force-dynamic'
 
-import PoolsList from '@/lib/modules/pools/components/PoolsList/PoolsList'
-import { PoolsProvider, useSeedPoolsCacheQuery } from '@/lib/modules/pools/hooks/usePools'
-import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
-import { Box } from '@chakra-ui/react'
-
 export default function Home() {
-  useSeedPoolsCacheQuery()
+  usePoolListSeedCacheQuery()
 
   return (
-    <PoolsProvider>
+    <PoolListProvider>
       <TokenBalancesProvider>
         <Box p="md">
-          <PoolsList />
+          <PoolList />
         </Box>
       </TokenBalancesProvider>
-    </PoolsProvider>
+    </PoolListProvider>
   )
 }

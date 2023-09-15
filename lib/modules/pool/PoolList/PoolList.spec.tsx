@@ -1,21 +1,22 @@
 import { screen } from '@testing-library/react'
-import PoolsList from './PoolsList'
-import { PoolsList as PoolListType } from '@/lib/modules/pools/pool.types'
+import { PoolList } from './PoolList'
+import { PoolList as PoolListType } from '@/lib/modules/pool/pool.types'
 import { renderWithDefaultProviders } from '@/test/utils/custom-renderers'
 import { defaultPoolListItem1, mockPoolList } from '@/test/msw/mocks/PoolList.handlers'
 import { aGqlPoolMinimal } from '@/test/msw/mocks/gqlPoolMinimal.builders'
-import { PoolsProvider } from '../../hooks/usePools'
+
+import { PoolListProvider } from '@/lib/modules/pool/PoolList/usePoolList'
 import { TokenBalancesContext } from '@/lib/modules/tokens/useTokenBalances'
 import { defaultTokenBalances } from '@/lib/modules/tokens/useTokenBalances.mock'
 import { noop } from 'lodash'
 
 function renderPoolsList() {
   return renderWithDefaultProviders(
-    <PoolsProvider>
+    <PoolListProvider>
       <TokenBalancesContext.Provider value={defaultTokenBalances}>
-        <PoolsList />
+        <PoolList />
       </TokenBalancesContext.Provider>
-    </PoolsProvider>
+    </PoolListProvider>
   )
 }
 

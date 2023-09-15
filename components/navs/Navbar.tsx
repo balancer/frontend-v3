@@ -1,15 +1,15 @@
 'use client'
 import Link from 'next/link'
 import DarkModeToggle from '../btns/DarkModeToggle'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { HStack } from '@chakra-ui/react'
+import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 
 export function Navbar() {
   return (
     <HStack padding="md">
       <Link href="/">Pools</Link>
       <DarkModeToggle />
-      <ConnectButton />
+      <ConnectWallet />
     </HStack>
   )
 }

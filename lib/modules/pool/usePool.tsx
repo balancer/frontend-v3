@@ -2,9 +2,9 @@
 'use client'
 
 import { GetPoolDocument, GqlChain } from '@/lib/services/api/generated/graphql'
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
+import { createContext, PropsWithChildren, useContext } from 'react'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { BalancerVersion, FetchPoolProps } from '../pool.types'
+import { BalancerVersion, FetchPoolProps } from './pool.types'
 import { getNetworkConfig } from '@/lib/config/app.config'
 
 export type UsePoolResponse = ReturnType<typeof _usePool>
