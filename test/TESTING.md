@@ -62,8 +62,8 @@ maintain. Then leave component tests for the happy paths.
 
 From [react hooks testing library](https://react-hooks-testing-library.com/#the-solution):
 
-> When to test hooks instead of components: You have a complex hook that is difficult to test through
-> component interactions 👈 We will have this scenario in many cases
+> When to test hooks instead of components: You have a complex hook that is difficult to test
+> through component interactions 👈 We will have this scenario in many cases
 
 ## TODO
 
