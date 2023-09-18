@@ -33,8 +33,6 @@ function PoolTypeFilters() {
   } = usePoolList()
 
   useEffect(() => {
-    console.log('mappedPoolTypes', mappedPoolTypes)
-
     setPoolTypes(mappedPoolTypes)
   }, [mappedPoolTypes, setPoolTypes])
 

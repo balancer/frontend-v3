@@ -15,19 +15,20 @@ import { PoolsColumnSort, PoolsQueryVariables } from '@/lib/modules/pool/pool.ty
 import { usePoolFilters } from './usePoolListFilters'
 import {
   DEFAULT_POOL_LIST_QUERY_VARS,
-  getInitQueryVariables,
+  getInitQueryState,
   useQueryVarsWatcher,
 } from './usePoolList.helpers'
 
-const poolListStateVar = makeVar<PoolsQueryVariables>(getInitQueryVariables())
+const initQueryState = getInitQueryState()
+
+const poolListStateVar = makeVar<PoolsQueryVariables>(initQueryState.variables)
 
 export function _usePoolList() {
   const state = useReactiveVar(poolListStateVar)
-  const poolFilters = usePoolFilters()
+  const poolFilters = usePoolFilters(initQueryState)
 
   function setNewState(newState: Partial<PoolsQueryVariables>) {
     const state = poolListStateVar()
-    console.log('setNewState', newState)
 
     poolListStateVar({
       ...state,
@@ -107,7 +108,6 @@ export function _usePoolList() {
   const pageNumber = state.skip / state.first
   const pageSize = state.first
 
-  // When pool query variables change, update the URL query params.
   useQueryVarsWatcher([
     {
       key: 'poolTypes',
@@ -122,14 +122,14 @@ export function _usePoolList() {
       value: poolFilters.searchText,
     },
     {
-      key: 'pageNumber',
-      value: pageNumber.toString(),
-      shouldSet: () => pageNumber !== 0,
+      key: 'skip',
+      value: state.skip.toString(),
+      shouldSet: () => state.skip !== 0,
     },
     {
-      key: 'pageSize',
-      value: pageSize.toString(),
-      shouldSet: () => pageSize !== 20,
+      key: 'first',
+      value: state.first.toString(),
+      shouldSet: () => state.first !== 20,
     },
   ])
 
@@ -155,16 +155,15 @@ export function _usePoolList() {
 
 export function usePoolListSeedCacheQuery() {
   return useSuspenseQuery(GetPoolsDocument, {
-    variables: getInitQueryVariables(),
+    variables: initQueryState.variables,
   })
 }
 
 export const PoolListContext = createContext<ReturnType<typeof _usePoolList> | null>(null)
 
 export function PoolListProvider(props: { children: ReactNode }) {
-  const value = _usePoolList()
-
-  return <PoolListContext.Provider value={value}>{props.children}</PoolListContext.Provider>
+  const hook = _usePoolList()
+  return <PoolListContext.Provider value={hook}>{props.children}</PoolListContext.Provider>
 }
 
 export function usePoolList() {

@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
 import { uniq } from 'lodash'
+import { InitQueryState } from './usePoolList.helpers'
 
 // We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
 export const POOL_TYPE_MAP: { [key: string]: GqlPoolFilterType[] } = {
@@ -25,10 +26,12 @@ export const POOL_TYPE_MAP: { [key: string]: GqlPoolFilterType[] } = {
 
 const poolTypeFilters = Object.keys(POOL_TYPE_MAP) as GqlPoolFilterType[]
 
-export function usePoolFilters() {
-  const [networks, setNetworks] = useState<GqlChain[]>([])
-  const [poolTypes, setPoolTypes] = useState<GqlPoolFilterType[]>([])
-  const [searchText, setSearchText] = useState<string>('')
+export function usePoolFilters(initState: InitQueryState) {
+  const { urlParams } = initState
+
+  const [networks, setNetworks] = useState<GqlChain[]>(urlParams.networks)
+  const [poolTypes, setPoolTypes] = useState<GqlPoolFilterType[]>(urlParams.poolTypes)
+  const [searchText, setSearchText] = useState<string>(urlParams.searchText)
 
   // Set internal checked state
   function toggleNetwork(checked: boolean, network: GqlChain) {
@@ -69,18 +72,6 @@ export function usePoolFilters() {
   )
 
   const totalFilterCount = networks.length + poolTypes.length
-
-  useEffect(() => {
-    const url = new URL(window.location.href)
-    const params = new URLSearchParams(url.search)
-    const _poolTypes = params.get('poolTypes')
-    const _networks = params.get('networks')
-    const _searchText = params.get('search')
-
-    if (_poolTypes) setPoolTypes(_poolTypes.split(',') as GqlPoolFilterType[])
-    if (_networks) setNetworks(_networks.split(',') as GqlChain[])
-    if (_searchText) setSearchText(_searchText)
-  }, [])
 
   return {
     networks,

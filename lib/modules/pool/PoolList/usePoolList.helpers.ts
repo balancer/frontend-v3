@@ -59,19 +59,27 @@ function updateURLParams(vars: QueryVarToUrlParam[]) {
 
 export function useQueryVarsWatcher(vars: QueryVarToUrlParam[]) {
   return useEffect(() => {
-    console.log('useQueryVarsWatcher', vars)
     updateURLParams(vars)
   }, [vars])
 }
 
-export function getInitQueryVariables(): PoolsQueryVariables {
+export type InitQueryState = {
+  variables: PoolsQueryVariables
+  urlParams: {
+    poolTypes: GqlPoolFilterType[]
+    networks: GqlChain[]
+    searchText: string
+  }
+}
+
+export function getInitQueryState(): InitQueryState {
   const url = new URL(window.location.href)
   const params = new URLSearchParams(url.search)
   const networks = params.get('networks')
   const poolTypes = params.get('poolTypes')
   const searchText = params.get('search')
-  const pageNumber = params.get('pageNumber')
-  const pageSize = params.get('pageSize')
+  const skip = params.get('skip')
+  const first = params.get('first')
 
   let variables = DEFAULT_POOL_LIST_QUERY_VARS
 
@@ -113,17 +121,24 @@ export function getInitQueryVariables(): PoolsQueryVariables {
     })
   }
 
-  if (pageNumber) {
+  if (skip) {
     variables = setNewVars(variables, {
-      skip: parseInt(pageNumber) * variables.first,
+      skip: parseInt(skip),
     })
   }
 
-  if (pageSize) {
+  if (first) {
     variables = setNewVars(variables, {
-      first: parseInt(pageSize),
+      first: parseInt(first),
     })
   }
 
-  return variables
+  return {
+    variables,
+    urlParams: {
+      poolTypes: (poolTypes?.split(',') || []) as GqlPoolFilterType[],
+      networks: (networks?.split(',') || []) as GqlChain[],
+      searchText: searchText || '',
+    },
+  }
 }
