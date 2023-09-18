@@ -28,16 +28,20 @@ export function getContractConfig(contractPath: string, walletClient?: WalletCli
 // Create a type that maps method names to argument types
 type ArgumentsType<T> = T extends (...args: infer U) => any ? U : never
 type MutableTuple<T extends readonly any[]> = { -readonly [P in keyof T]: T[P] }
+type AnyFunction = (...args: any[]) => any
+type FunctionMap = Record<string, AnyFunction>
 
-export function useContractQuery<T, M>(contractId: string, contract: { read: M }) {
+export function useContractQuery<M extends FunctionMap>(contractId: string, contract: { read: M }) {
   type TReadMethods = keyof typeof contract.read
 
   function getQuery<K extends TReadMethods>(
     functionName: K,
     functionArgs: MutableTuple<ArgumentsType<(typeof contract.read)[K]>>
   ) {
-    const callable = contract.read[functionName] as (...args: any[]) => any
-    const query = useQuery({
+    const callable = contract.read[functionName] as (
+      ...args: any[]
+    ) => ReturnType<(typeof contract.read)[K]>
+    const query = useQuery<ReturnType<(typeof contract.read)[K]>>({
       queryKey: [contractId, { ...functionArgs }],
       queryFn: async () => {
         return callable(...(functionArgs as any[]))
