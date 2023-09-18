@@ -1,24 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
-import { getContract } from 'viem'
-import { WalletClient } from 'wagmi'
-import { getContractConfig, useContractMutation, useContractQuery } from './contract'
-import { vaultABI } from '../abi/generated'
+import { get } from 'lodash'
+import { useNetworkConfig } from '../config/useNetworkConfig'
 
-export class Vault {
-  static contractId = 'balancer.vault'
+const contractId = 'balancer.vault'
 
-  static getContractInstance(walletClient?: WalletClient) {
-    let contractConfig = getContractConfig(this.contractId, walletClient)
-    if (walletClient) contractConfig = getContractConfig(this.contractId)
-    const contract = getContract({
-      abi: vaultABI,
-      ...contractConfig,
-    })
+export function useVaultContractAddress() {
+  const networkConfig = useNetworkConfig()
 
-    const query = useContractQuery(this.contractId, contract)
-    const mutate = useContractMutation(this.contractId, contract)
-
-    return { ...contract, query, mutate }
-  }
+  const address = get(networkConfig.contracts, contractId)
+  return address
 }
