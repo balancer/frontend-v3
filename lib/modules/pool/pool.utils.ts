@@ -28,6 +28,6 @@ export const chainToSlugMap: Record<GqlChain, ChainSlug> = {
 
 export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlChain>
 
-export function getPoolPath({ id, chain, balancerVersion = 'v2' }: FetchPoolProps) {
-  return `/pools/${chainToSlugMap[chain]}/${balancerVersion}/${id}`
+export function getPoolPath({ id, chain, variant = 'v2' }: FetchPoolProps) {
+  return `/pools/${chainToSlugMap[chain]}/${variant}/${id}`
 }
