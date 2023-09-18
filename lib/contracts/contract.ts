@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
 import { PublicClient, WalletClient, useMutation, usePublicClient } from 'wagmi'
@@ -36,7 +37,7 @@ export function useContractQuery<M extends FunctionMap>(contractId: string, cont
 
   function getQuery<K extends TReadMethods>(
     functionName: K,
-    functionArgs: MutableTuple<ArgumentsType<(typeof contract.read)[K]>>
+    functionArgs?: MutableTuple<ArgumentsType<(typeof contract.read)[K]>>
   ) {
     const callable = contract.read[functionName] as (
       ...args: any[]
@@ -68,7 +69,7 @@ async function confirmTransaction(
     }
 
     // 2. confirm the transaction
-    let isConfirmed = false
+    const isConfirmed = false
     while (!isConfirmed) {
       try {
         const confirmations = await publicClient.getTransactionConfirmations({
@@ -88,6 +89,7 @@ async function confirmTransaction(
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function useContractMutation<T, M>(contractId: string, contract: { write: M }) {
   const networkConfig = useNetworkConfig()
   const publicClient = usePublicClient()
