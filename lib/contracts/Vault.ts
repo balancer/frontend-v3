@@ -2,7 +2,7 @@
 'use client'
 import { getContract } from 'viem'
 import { WalletClient } from 'wagmi'
-import { getContractConfig, useContractMutation, useContractQuery } from './contract'
+import { getContractConfig, useContractQuery } from './contract'
 import { vaultABI } from '../abi/generated'
 
 export class Vault {
@@ -17,8 +17,7 @@ export class Vault {
     })
 
     const query = useContractQuery(this.contractId, contract)
-    const mutate = useContractMutation(this.contractId, contract)
 
-    return { ...contract, query, mutate }
+    return { ...contract, query }
   }
 }
