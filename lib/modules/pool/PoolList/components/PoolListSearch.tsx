@@ -9,10 +9,12 @@ export function PoolListSearch() {
   const {
     refetch,
     state,
+    setPageNumber,
     poolFilters: { searchText, setSearchText },
   } = usePoolList()
 
   const submitSearch = debounce(async () => {
+    setPageNumber(0)
     await refetch({ ...state, textSearch: searchText, skip: 0 })
     off()
   }, 250)
