@@ -6,6 +6,7 @@ import { Box } from '@chakra-ui/react'
 import { DataTable } from '@/components/tables/DataTable'
 import { useRouter } from 'next/navigation'
 import { getPoolPath } from '../../pool.utils'
+import { useTranslations } from 'next-intl'
 
 interface Props {
   pools: PoolsList
@@ -13,7 +14,19 @@ interface Props {
 }
 
 export function PoolsTable({ pools, loading }: Props) {
-  const columns = getColumns()
+  const t = useTranslations('lib.modules.pools.components.poolsTable.columns')
+  const columnTranslations = {
+    network: t('network'),
+    details: t('details'),
+    totalLiquiditySort: t('totalLiquidity.sort'),
+    totalLiquidityName: t('totalLiquidity.name'),
+    volume24hSort: t('volume24h.sort'),
+    volume24hName: t('volume24h.name'),
+    aprSort: t('apr.sort'),
+    aprName: t('apr.name'),
+  }
+
+  const columns = getColumns(columnTranslations)
   const router = useRouter()
 
   const rowClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolsListItem) => {
