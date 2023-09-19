@@ -4,13 +4,13 @@ export type PoolList = GetPoolsQuery['pools']
 
 export type PoolListItem = PoolList[0]
 
-export type BalancerVersion = 'v2' | 'v3'
+export type PoolVariant = 'v2' | 'v3'
 
 export interface FetchPoolProps {
   id: string
-  // chain & balancerVersion are not used yet, but will be needed in the future.
+  // chain & variant are not used yet, but will be needed in the future.
   chain: GqlChain
-  balancerVersion?: BalancerVersion
+  variant?: PoolVariant
 }
 
 export interface PoolsColumnSort {

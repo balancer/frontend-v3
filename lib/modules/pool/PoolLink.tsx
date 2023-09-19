@@ -6,6 +6,6 @@ import { getPoolPath } from './pool.utils'
 
 type Props = FetchPoolProps & LinkProps
 
-export function PoolLink({ id, chain, balancerVersion, ...props }: Props) {
-  return <Link href={getPoolPath({ id, chain, balancerVersion })} {...props} />
+export function PoolLink({ id, chain, variant, ...props }: Props) {
+  return <Link href={getPoolPath({ id, chain, variant })} {...props} />
 }
