@@ -24,7 +24,7 @@ export const DEFAULT_POOL_LIST_QUERY_VARS: PoolsQueryVariables = {
       GqlPoolFilterType.Gyro3,
       GqlPoolFilterType.Gyroe,
     ],
-    chainIn: PROJECT_CONFIG.supportedNetworks, //[GqlChain.Base]
+    chainIn: PROJECT_CONFIG.supportedNetworks,
   },
   textSearch: null,
 }
@@ -36,6 +36,7 @@ export enum PoolListUrlParams {
   Skip = 'skip',
   First = 'first',
   SortBy = 'sortBy',
+  SortDir = 'sortDir',
 }
 
 function mutateParam(
@@ -90,6 +91,7 @@ export function getInitQueryState(): InitQueryState {
   const skip = params.get(PoolListUrlParams.Skip)
   const first = params.get(PoolListUrlParams.First)
   const sortBy = params.get(PoolListUrlParams.SortBy)
+  const sortDir = params.get(PoolListUrlParams.SortDir)
 
   let variables = DEFAULT_POOL_LIST_QUERY_VARS
 
@@ -146,6 +148,12 @@ export function getInitQueryState(): InitQueryState {
   if (sortBy) {
     variables = setNewVars(variables, {
       orderBy: sortBy as GqlPoolOrderBy,
+    })
+  }
+
+  if (sortDir) {
+    variables = setNewVars(variables, {
+      orderDirection: sortDir as GqlPoolOrderDirection,
     })
   }
 

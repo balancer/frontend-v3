@@ -144,6 +144,11 @@ export function _usePoolList() {
       value: state.orderBy || '',
       shouldSet: () => state.orderBy !== GqlPoolOrderBy.TotalLiquidity,
     },
+    {
+      key: PoolListUrlParams.SortDir,
+      value: state.orderDirection || '',
+      shouldSet: () => state.orderDirection !== GqlPoolOrderDirection.Desc,
+    },
   ])
 
   return {
