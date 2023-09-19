@@ -3,20 +3,21 @@ import { debounce } from 'lodash'
 import { useEffect, useRef } from 'react'
 import { HiOutlineX, HiOutlineSearch } from 'react-icons/hi'
 import { usePoolList } from '../usePoolList'
+import { sleep } from '@/lib/utils/time'
 
 export function PoolListSearch() {
   const [isSearching, { on, off }] = useBoolean()
   const {
-    refetch,
-    state,
-    setPageNumber,
+    setSearch,
     poolFilters: { searchText, setSearchText },
   } = usePoolList()
 
   const submitSearch = debounce(async () => {
-    setPageNumber(0)
-    await refetch({ ...state, textSearch: searchText, skip: 0 })
-    off()
+    if (isSearching) {
+      await sleep(250)
+      off()
+    }
+    setSearch(searchText)
   }, 250)
 
   const firstUpdate = useRef(true)

@@ -15,6 +15,7 @@ import { PoolsColumnSort, PoolsQueryVariables } from '@/lib/modules/pool/pool.ty
 import { usePoolFilters } from './usePoolListFilters'
 import {
   DEFAULT_POOL_LIST_QUERY_VARS,
+  PoolListUrlParams,
   getInitQueryState,
   useQueryVarsWatcher,
 } from './usePoolList.helpers'
@@ -70,6 +71,13 @@ export function _usePoolList() {
     })
   }
 
+  function setSearch(text: string) {
+    setNewState({
+      skip: 0,
+      textSearch: text,
+    })
+  }
+
   const setNetworks = useCallback(
     (networks: GqlChain[]) =>
       setNewState({
@@ -110,26 +118,31 @@ export function _usePoolList() {
 
   useQueryVarsWatcher([
     {
-      key: 'poolTypes',
+      key: PoolListUrlParams.PoolTypes,
       value: poolFilters.poolTypes.join(','),
     },
     {
-      key: 'networks',
+      key: PoolListUrlParams.Networks,
       value: poolFilters.networks.join(','),
     },
     {
-      key: 'search',
+      key: PoolListUrlParams.Search,
       value: poolFilters.searchText,
     },
     {
-      key: 'skip',
+      key: PoolListUrlParams.Skip,
       value: state.skip.toString(),
       shouldSet: () => state.skip !== 0,
     },
     {
-      key: 'first',
+      key: PoolListUrlParams.First,
       value: state.first.toString(),
       shouldSet: () => state.first !== 20,
+    },
+    {
+      key: PoolListUrlParams.SortBy,
+      value: state.orderBy || '',
+      shouldSet: () => state.orderBy !== GqlPoolOrderBy.TotalLiquidity,
     },
   ])
 
@@ -149,6 +162,7 @@ export function _usePoolList() {
     setSort,
     setNetworks,
     setPoolTypes,
+    setSearch,
     poolFilters,
   }
 }

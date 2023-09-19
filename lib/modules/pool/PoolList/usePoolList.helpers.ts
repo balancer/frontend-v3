@@ -29,6 +29,15 @@ export const DEFAULT_POOL_LIST_QUERY_VARS: PoolsQueryVariables = {
   textSearch: null,
 }
 
+export enum PoolListUrlParams {
+  Networks = 'networks',
+  PoolTypes = 'poolTypes',
+  Search = 'search',
+  Skip = 'skip',
+  First = 'first',
+  SortBy = 'sortBy',
+}
+
 function mutateParam(
   params: URLSearchParams,
   key: string,
@@ -75,11 +84,12 @@ export type InitQueryState = {
 export function getInitQueryState(): InitQueryState {
   const url = new URL(window.location.href)
   const params = new URLSearchParams(url.search)
-  const networks = params.get('networks')
-  const poolTypes = params.get('poolTypes')
-  const searchText = params.get('search')
-  const skip = params.get('skip')
-  const first = params.get('first')
+  const networks = params.get(PoolListUrlParams.Networks)
+  const poolTypes = params.get(PoolListUrlParams.PoolTypes)
+  const searchText = params.get(PoolListUrlParams.Search)
+  const skip = params.get(PoolListUrlParams.Skip)
+  const first = params.get(PoolListUrlParams.First)
+  const sortBy = params.get(PoolListUrlParams.SortBy)
 
   let variables = DEFAULT_POOL_LIST_QUERY_VARS
 
@@ -130,6 +140,12 @@ export function getInitQueryState(): InitQueryState {
   if (first) {
     variables = setNewVars(variables, {
       first: parseInt(first),
+    })
+  }
+
+  if (sortBy) {
+    variables = setNewVars(variables, {
+      orderBy: sortBy as GqlPoolOrderBy,
     })
   }
 
