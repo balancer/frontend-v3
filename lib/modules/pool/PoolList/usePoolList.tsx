@@ -18,7 +18,7 @@ import {
   PoolListUrlParams,
   getInitQueryState,
   useQueryVarsWatcher,
-} from './usePoolList.helpers'
+} from './queryVars'
 
 const initQueryState = getInitQueryState()
 

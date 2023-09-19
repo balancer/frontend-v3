@@ -9,6 +9,16 @@ import { PROJECT_CONFIG } from '@/lib/config/useProjectConfig'
 import { useEffect } from 'react'
 import { POOL_TYPE_MAP } from './usePoolListFilters'
 
+export enum PoolListUrlParams {
+  Networks = 'networks',
+  PoolTypes = 'poolTypes',
+  Search = 'search',
+  Skip = 'skip',
+  First = 'first',
+  SortBy = 'sortBy',
+  SortDir = 'sortDir',
+}
+
 export const DEFAULT_POOL_LIST_QUERY_VARS: PoolsQueryVariables = {
   first: 20,
   skip: 0,
@@ -29,17 +39,11 @@ export const DEFAULT_POOL_LIST_QUERY_VARS: PoolsQueryVariables = {
   textSearch: null,
 }
 
-export enum PoolListUrlParams {
-  Networks = 'networks',
-  PoolTypes = 'poolTypes',
-  Search = 'search',
-  Skip = 'skip',
-  First = 'first',
-  SortBy = 'sortBy',
-  SortDir = 'sortDir',
-}
-
-function mutateParam(
+/**
+ * Mutates a given URL param unless shouldSet is false.
+ * If shouldSet is false, the param will be deleted.
+ */
+function mutateUrlParam(
   params: URLSearchParams,
   key: string,
   value: string,
@@ -55,18 +59,24 @@ type QueryVarToUrlParam = {
   shouldSet?: () => boolean
 }
 
+/**
+ * Given a new set of query variables, iterate over them and update the URL params.
+ */
 function updateURLParams(vars: QueryVarToUrlParam[]) {
   const url = new URL(window.location.href)
   const params = new URLSearchParams(url.search)
 
   vars.forEach(({ key, value, shouldSet }) => {
-    mutateParam(params, key, value, shouldSet ? shouldSet() : undefined)
+    mutateUrlParam(params, key, value, shouldSet ? shouldSet() : undefined)
   })
 
   const searchParams = params.size > 0 ? `?${params.toString()}` : ''
   window.history.pushState({}, '', `${url.pathname}${searchParams}`)
 }
 
+/**
+ * Listens for changes in defined query variables and updates the URL params.
+ */
 export function useQueryVarsWatcher(vars: QueryVarToUrlParam[]) {
   return useEffect(() => {
     updateURLParams(vars)
@@ -82,16 +92,19 @@ export type InitQueryState = {
   }
 }
 
+/**
+ * Combines URL params state with default query variables.
+ */
 export function getInitQueryState(): InitQueryState {
   const url = new URL(window.location.href)
   const params = new URLSearchParams(url.search)
-  const networks = params.get(PoolListUrlParams.Networks)
-  const poolTypes = params.get(PoolListUrlParams.PoolTypes)
-  const searchText = params.get(PoolListUrlParams.Search)
-  const skip = params.get(PoolListUrlParams.Skip)
-  const first = params.get(PoolListUrlParams.First)
-  const sortBy = params.get(PoolListUrlParams.SortBy)
-  const sortDir = params.get(PoolListUrlParams.SortDir)
+  const urlNetworks = params.get(PoolListUrlParams.Networks)
+  const urlPoolTypes = params.get(PoolListUrlParams.PoolTypes)
+  const urlSearchText = params.get(PoolListUrlParams.Search)
+  const urlSkip = params.get(PoolListUrlParams.Skip)
+  const urlFirst = params.get(PoolListUrlParams.First)
+  const urlSortBy = params.get(PoolListUrlParams.SortBy)
+  const urlSortDir = params.get(PoolListUrlParams.SortDir)
 
   let variables = DEFAULT_POOL_LIST_QUERY_VARS
 
@@ -106,16 +119,16 @@ export function getInitQueryState(): InitQueryState {
     }
   }
 
-  if (networks) {
+  if (urlNetworks) {
     variables = setNewVars(variables, {
       where: {
-        chainIn: networks.split(',') as GqlChain[],
+        chainIn: urlNetworks.split(',') as GqlChain[],
       },
     })
   }
 
-  if (poolTypes) {
-    const _poolTypes = poolTypes
+  if (urlPoolTypes) {
+    const _poolTypes = urlPoolTypes
       .split(',')
       .map(poolType => POOL_TYPE_MAP[poolType])
       .flat()
@@ -127,42 +140,42 @@ export function getInitQueryState(): InitQueryState {
     })
   }
 
-  if (searchText) {
+  if (urlSearchText) {
     variables = setNewVars(variables, {
-      textSearch: searchText,
+      textSearch: urlSearchText,
     })
   }
 
-  if (skip) {
+  if (urlSkip) {
     variables = setNewVars(variables, {
-      skip: parseInt(skip),
+      skip: parseInt(urlSkip),
     })
   }
 
-  if (first) {
+  if (urlFirst) {
     variables = setNewVars(variables, {
-      first: parseInt(first),
+      first: parseInt(urlFirst),
     })
   }
 
-  if (sortBy) {
+  if (urlSortBy) {
     variables = setNewVars(variables, {
-      orderBy: sortBy as GqlPoolOrderBy,
+      orderBy: urlSortBy as GqlPoolOrderBy,
     })
   }
 
-  if (sortDir) {
+  if (urlSortDir) {
     variables = setNewVars(variables, {
-      orderDirection: sortDir as GqlPoolOrderDirection,
+      orderDirection: urlSortDir as GqlPoolOrderDirection,
     })
   }
 
   return {
     variables,
     urlParams: {
-      poolTypes: (poolTypes?.split(',') || []) as GqlPoolFilterType[],
-      networks: (networks?.split(',') || []) as GqlChain[],
-      searchText: searchText || '',
+      poolTypes: (urlPoolTypes?.split(',') || []) as GqlPoolFilterType[],
+      networks: (urlNetworks?.split(',') || []) as GqlChain[],
+      searchText: urlSearchText || '',
     },
   }
 }
