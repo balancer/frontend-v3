@@ -1,9 +1,10 @@
 'use client'
 
-import { PropsWithChildren, createContext, useState, useContext, useEffect } from 'react'
+import { PropsWithChildren, createContext, useState, useEffect } from 'react'
 import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
 import { uniq } from 'lodash'
 import { useProjectConfig } from '@/lib/config/useProjectConfig'
+import { useMandatoryContext } from '@/lib/utils/contexts'
 
 // We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
 const POOL_TYPE_MAP: { [key: string]: GqlPoolFilterType[] } = {
@@ -123,5 +124,5 @@ export function PoolFiltersProvider({ children }: PropsWithChildren) {
   return <PoolListFiltersContext.Provider value={hook}>{children}</PoolListFiltersContext.Provider>
 }
 
-export const usePoolListFilters = () =>
-  useContext(PoolListFiltersContext) as UsePoolListFiltersResponse
+export const usePoolListFilters = (): UsePoolListFiltersResponse =>
+  useMandatoryContext(PoolListFiltersContext, 'PoolListFilters')
