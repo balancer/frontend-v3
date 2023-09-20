@@ -9,24 +9,15 @@
   },
   "lib": {
     "modules": {
-      "pools": {
+      "PoolList": {
         "components": {
-          "poolsTable": {
+          "PoolListTable": {
             "columns": {
               "network": "Network",
               "details": "Details",
-              "totalLiquidity": {
-                "sort": "Sort by TVL",
-                "name": "TVL"
-              },
-              "volume24h": {
-                "sort": "Sort by volume",
-                "name": "Volume (24h)"
-              },
-              "apr": {
-                "sort": "Sort by APR",
-                "name": "APR"
-              }
+              "totalLiquidity": "TVL",
+              "volume24h": "Volume (24h)",
+              "apr": "APR"
             }
           }
         }
