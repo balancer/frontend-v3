@@ -7,15 +7,16 @@ import { PoolListFilters } from './components/PoolListFilters'
 import { useAccount } from 'wagmi'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
-import { Vault } from '@/lib/contracts/Vault'
-import { useRef } from 'react'
+import { useVaultGetAuthorizer } from '@/lib/abi/generated'
+import { useVaultContractAddress } from '@/lib/contracts/Vault'
 
 export function PoolList() {
   const { address } = useAccount()
   const { tokens } = useTokens()
-  const vault = useRef(Vault.getContractInstance())
-  const { isLoading: isLoadingAuthorizer, data: authorizerAddress } =
-    vault.current.query('getAuthorizer')
+  const vaultContractAddress = useVaultContractAddress()
+  const { data: authorizerAddress, isLoading: isLoadingAuthorizer } = useVaultGetAuthorizer({
+    address: vaultContractAddress,
+  })
 
   console.log('example', {
     isLoadingAuthorizer,
