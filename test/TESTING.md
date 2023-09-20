@@ -1,5 +1,8 @@
 # Testing overview
 
+Check [testing conventions](./TESTING_CONVENTIONS.md) if want to understand the reasoning behind our
+testing strategy and setup.
+
 ## Unit tests
 
 ```bash
@@ -92,3 +95,8 @@ From [react hooks testing library](https://react-hooks-testing-library.com/#the-
 
 Kudos to [wagmi](https://wagmi.sh/) and [viem](https://viem.sh/) repos where we got most of the
 ideas for anvil integration testing.
+
+## Testing conventions
+
+Check [testing conventions](./TESTING_CONVENTIONS.md) if want to understand the reasoning behind our
+testing strategy and setup.
