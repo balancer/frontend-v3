@@ -13,8 +13,8 @@ export async function generateMetadata({ params: { locale } }: { params: { local
   const t = createTranslator({ locale, messages })
 
   return {
-    title: t('app.[locale].layout.title'),
-    description: t('app.[locale].layout.description'),
+    title: t('RootLayout.title'),
+    description: t('RootLayout.description'),
   }
 }
 

@@ -10,13 +10,13 @@ import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { useTranslations } from 'next-intl'
 
 export function PoolListTable() {
-  const t = useTranslations('lib.modules.PoolList.components.PoolListTable.columns')
+  const t = useTranslations('PoolListTable')
   const columnTranslations = {
-    network: t('network'),
-    details: t('details'),
-    totalLiquidity: t('totalLiquidity'),
-    volume24h: t('volume24h'),
-    apr: t('apr'),
+    network: t('columns.network'),
+    details: t('columns.details'),
+    totalLiquidity: t('columns.totalLiquidity'),
+    volume24h: t('columns.volume24h'),
+    apr: t('columns.apr'),
   }
   const { pools, loading, sorting, setSort } = usePoolList()
   const columns = getPoolListTableColumns(columnTranslations)

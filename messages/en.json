@@ -1,32 +1,19 @@
 {
-  "app": {
-    "[locale]": {
-      "layout": {
-        "title": "Balancer DeFi Liquidity Pools",
-        "description": "Explore DeFi liquidity pools or create your own. Provide liquidity to accumulate yield from swap fees while retaining your token exposure as prices move."
-      }
+  "RootLayout": {
+    "title": "Balancer DeFi Liquidity Pools",
+    "description": "Explore DeFi liquidity pools or create your own. Provide liquidity to accumulate yield from swap fees while retaining your token exposure as prices move."
+  },
+  "PoolListTable": {
+    "columns": {
+      "network": "Network",
+      "details": "Details",
+      "totalLiquidity": "TVL",
+      "volume24h": "Volume (24h)",
+      "apr": "APR"
     }
   },
-  "lib": {
-    "modules": {
-      "PoolList": {
-        "components": {
-          "PoolListTable": {
-            "columns": {
-              "network": "Network",
-              "details": "Details",
-              "totalLiquidity": "TVL",
-              "volume24h": "Volume (24h)",
-              "apr": "APR"
-            }
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "navBar": {
-      "link": "Pools"
-    }
+
+  "Navbar": {
+    "link": "Pools"
   }
 }
