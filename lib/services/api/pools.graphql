@@ -4,6 +4,7 @@ query GetPools(
   $orderBy: GqlPoolOrderBy
   $orderDirection: GqlPoolOrderDirection
   $where: GqlPoolFilter
+  $textSearch: String
 ) {
   pools: poolGetPools(
     first: $first
@@ -11,6 +12,7 @@ query GetPools(
     orderBy: $orderBy
     orderDirection: $orderDirection
     where: $where
+    textSearch: $textSearch
   ) {
     address
     chain
@@ -94,4 +96,12 @@ query GetPools(
     symbol
     type
   }
+  count: poolGetPoolsCount(
+    first: $first
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    where: $where
+    textSearch: $textSearch
+  )
 }

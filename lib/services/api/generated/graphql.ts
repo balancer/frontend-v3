@@ -1034,10 +1034,17 @@ export type GqlUserSwapVolumeFilter = {
   tokenOutIn?: InputMaybe<Array<Scalars['String']['input']>>
 }
 
+export type GqlVeBalUserData = {
+  __typename?: 'GqlVeBalUserData'
+  balance: Scalars['AmountHumanReadable']['output']
+  rank?: Maybe<Scalars['Int']['output']>
+}
+
 export type GqlVotingGauge = {
   __typename?: 'GqlVotingGauge'
   addedTimestamp?: Maybe<Scalars['Int']['output']>
   address: Scalars['Bytes']['output']
+  childGaugeAddress?: Maybe<Scalars['Bytes']['output']>
   isKilled: Scalars['Boolean']['output']
   relativeWeightCap?: Maybe<Scalars['String']['output']>
 }
@@ -1222,6 +1229,7 @@ export type Query = {
   userGetStaking: Array<GqlPoolStaking>
   userGetSwaps: Array<GqlPoolSwap>
   veBalGetTotalSupply: Scalars['AmountHumanReadable']['output']
+  veBalGetUser: GqlVeBalUserData
   veBalGetUserBalance: Scalars['AmountHumanReadable']['output']
   veBalGetVotingList: Array<GqlVotingPool>
 }
@@ -3075,10 +3083,12 @@ export type GetPoolsQueryVariables = Exact<{
   orderBy?: InputMaybe<GqlPoolOrderBy>
   orderDirection?: InputMaybe<GqlPoolOrderDirection>
   where?: InputMaybe<GqlPoolFilter>
+  textSearch?: InputMaybe<Scalars['String']['input']>
 }>
 
 export type GetPoolsQuery = {
   __typename?: 'Query'
+  count: number
   pools: Array<{
     __typename?: 'GqlPoolMinimal'
     address: string
@@ -5801,6 +5811,11 @@ export const GetPoolsDocument = {
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'where' } },
           type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlPoolFilter' } },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'textSearch' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -5834,6 +5849,11 @@ export const GetPoolsDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'where' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'where' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'textSearch' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'textSearch' } },
               },
             ],
             selectionSet: {
@@ -6110,6 +6130,43 @@ export const GetPoolsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'type' } },
               ],
             },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'count' },
+            name: { kind: 'Name', value: 'poolGetPoolsCount' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'first' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'first' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'skip' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'skip' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderBy' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'orderBy' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'orderDirection' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'orderDirection' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'where' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'where' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'textSearch' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'textSearch' } },
+              },
+            ],
           },
         ],
       },

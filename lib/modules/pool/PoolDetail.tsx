@@ -1,7 +1,7 @@
 'use client'
-import { usePool } from '@/lib/modules/pools/hooks/usePool'
+import { usePool } from '@/lib/modules/pool/usePool'
 
-export default function PoolPage() {
+export function PoolDetail() {
   const { pool } = usePool()
 
   return (
