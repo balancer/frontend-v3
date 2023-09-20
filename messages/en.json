@@ -12,8 +12,12 @@
       "apr": "APR"
     }
   },
-
   "Navbar": {
     "link": "Pools"
+  },
+  "ConnectWallet": {
+    "loading": "Connecting...",
+    "connect": "Connect",
+    "unsupported": "Unsupported network"
   }
 }
