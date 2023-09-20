@@ -53,12 +53,18 @@ export function renderHookWithDefaultProviders<TResult, TProps>(
   })
 }
 
-export function renderWithDefaultProviders(
-  ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>
-) {
+export function renderWithDefaultProviders(ui: ReactElement, options?: RenderOptions) {
+  function MixedProviders({ children }: { children: ReactElement }): ReactElement {
+    const LocalProviders = options?.wrapper || EmptyWrapper
+
+    return (
+      <GlobalProviders>
+        <LocalProviders>{children}</LocalProviders>
+      </GlobalProviders>
+    )
+  }
   const result = render(ui, {
-    wrapper: GlobalProviders,
+    wrapper: MixedProviders,
     ...options,
   })
 

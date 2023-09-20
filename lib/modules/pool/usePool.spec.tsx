@@ -1,8 +1,4 @@
-import {
-  Wrapper,
-  WrapperProps,
-  renderHookWithDefaultProviders,
-} from '@/test/utils/custom-renderers'
+import { Wrapper, renderHookWithDefaultProviders } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
 import { PoolProvider, _usePool, usePool } from './usePool'
 import { GqlChain } from '@/lib/services/api/generated/graphql'
