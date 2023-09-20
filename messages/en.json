@@ -19,5 +19,10 @@
     "loading": "Connecting...",
     "connect": "Connect",
     "unsupported": "Unsupported network"
+  },
+  "PoolListPagination": {
+    "pageNum": "Page num",
+    "next": "Next",
+    "noPerPage": "No. per page"
   }
 }
