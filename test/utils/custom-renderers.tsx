@@ -2,13 +2,18 @@ import { TokensProvider } from '@/lib/modules/tokens/useTokens'
 import { createProductionConfig } from '@/lib/modules/web3/Web3Provider'
 import { ApolloProvider } from '@apollo/client'
 import { RenderHookOptions, RenderOptions, render, renderHook } from '@testing-library/react'
-import { ReactElement } from 'react'
+import { ReactElement, ReactNode } from 'react'
 import { Config, WagmiConfig } from 'wagmi'
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { createWagmiTestConfig } from './wagmi'
 
-function AllProviders({ children }: { children: React.ReactNode }): ReactElement {
+export type WrapperProps = { children: ReactNode }
+export type Wrapper = ({ children }: WrapperProps) => ReactNode
+
+export const EmptyWrapper = ({ children }: WrapperProps) => <>{children}</>
+
+function GlobalProviders({ children }: WrapperProps) {
   const defaultRouterOptions = {}
   let wagmiConfig: Config
   if (process.env.VITE_USE_PRODUCTION_WAGMI == 'true') {
@@ -32,7 +37,20 @@ export function renderHookWithDefaultProviders<TResult, TProps>(
   hook: (props: TProps) => TResult,
   options?: RenderHookOptions<TProps>
 ) {
-  return renderHook<TResult, TProps>(hook, { ...options, wrapper: AllProviders })
+  function MixedProviders({ children }: { children: ReactElement }): ReactElement {
+    const LocalProviders = options?.wrapper || EmptyWrapper
+
+    return (
+      <GlobalProviders>
+        <LocalProviders>{children}</LocalProviders>
+      </GlobalProviders>
+    )
+  }
+
+  return renderHook<TResult, TProps>(hook, {
+    ...options,
+    wrapper: MixedProviders,
+  })
 }
 
 export function renderWithDefaultProviders(
@@ -40,7 +58,7 @@ export function renderWithDefaultProviders(
   options?: Omit<RenderOptions, 'wrapper'>
 ) {
   const result = render(ui, {
-    wrapper: AllProviders,
+    wrapper: GlobalProviders,
     ...options,
   })
 

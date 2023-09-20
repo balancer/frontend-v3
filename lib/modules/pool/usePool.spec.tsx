@@ -1,4 +1,8 @@
-import { renderHookWithDefaultProviders } from '@/test/utils/custom-renderers'
+import {
+  Wrapper,
+  WrapperProps,
+  renderHookWithDefaultProviders,
+} from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
 import { PoolProvider, _usePool, usePool } from './usePool'
 import { GqlChain } from '@/lib/services/api/generated/graphql'
@@ -21,12 +25,15 @@ test.skip('fetches v2 pool without PoolProvider in wrapper', () => {
   renderHookWithDefaultProviders(() => usePool()) // Throws Error: usePool must be used within a PoolProvider context
 })
 
-test('fetches v2 pool without exposing _usePool', () => {
-  const wrapper = ({ children }: { children: React.ReactNode }) => (
+test('fetches v2 pool without exposing _usePool', async () => {
+  const wrapper: Wrapper = ({ children }) => (
     <PoolProvider id="test pool id" chain={GqlChain.Mainnet} variant="v2">
       {children}
     </PoolProvider>
   )
 
-  renderHookWithDefaultProviders(() => usePool(), { wrapper }) // Throws Error: usePool must be used within a PoolProvider context
+  const { result } = renderHookWithDefaultProviders(() => usePool(), { wrapper })
+  await waitFor(() => expect(result.current.loading).toBeFalsy())
+
+  expect(result.current.pool).toMatchObject(defaultPool)
 })
