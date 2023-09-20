@@ -24,5 +24,14 @@
     "pageNum": "Page num",
     "next": "Next",
     "noPerPage": "No. per page"
+  },
+  "PoolListFilters": {
+    "button": "Filters",
+    "poolTypes": "Pool types",
+    "networks": "Networks"
+  },
+  "PoolListSearch": {
+    "placeholder": "Search...",
+    "ariaLabel": "Search for a pool"
   }
 }
