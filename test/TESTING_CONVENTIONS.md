@@ -46,8 +46,8 @@ Simplifying a lot:
 - another layer that handles infrastructure code, the one that deals with network requests,
   file-systems, databases and so on: slow code 🐢
 
-> [!IMPORTANT] The domain can be tested with fast unit tests where the infrastructure (AKA I/O)
-> boundaries are replaced by "injected" mocks.
+> The domain can be tested with fast unit tests where the infrastructure (AKA I/O) boundaries are
+> replaced by "injected" mocks.
 
 In our context, the 2 most important types of infrastructure dependencies are:
 
