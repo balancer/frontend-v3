@@ -6,7 +6,7 @@ import { defaultTokenBase } from '@/test/msw/mocks/Tokens.handlers'
 test('fetches tokens', async () => {
   const { result } = renderHookWithDefaultProviders(() => _useTokens())
 
-  expect(result.current.tokens).toMatchInlineSnapshot('[]')
+  expect(result.current.tokens).toEqual([])
 
   await waitFor(() => expect(result.current.tokens.length).toBeGreaterThan(0))
 
