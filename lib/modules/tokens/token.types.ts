@@ -1,11 +1,10 @@
-import { GetTokensQuery } from '@/lib/services/api/generated/graphql'
-
-export type TokenList = GetTokensQuery['tokens']
-
-export type TokenBase = Pick<
-  TokenList[number],
-  'address' | 'name' | 'symbol' | 'decimals' | 'chainId'
->
+export interface TokenBase {
+  address: string
+  name: string
+  symbol: string
+  decimals: number
+  chainId: number
+}
 
 export interface TokenAmount {
   address: string
