@@ -1,7 +1,7 @@
 import { TokensProvider } from '@/lib/modules/tokens/useTokens'
 import { createProductionConfig } from '@/lib/modules/web3/Web3Provider'
 import { ApolloProvider } from '@apollo/client'
-import { RenderHookOptions, RenderOptions, render, renderHook } from '@testing-library/react'
+import { RenderHookOptions, renderHook } from '@testing-library/react'
 import { ReactElement, ReactNode } from 'react'
 import { Config, WagmiConfig } from 'wagmi'
 import { apolloTestClient } from './apollo-test-client'
@@ -51,22 +51,4 @@ export function renderHookWithDefaultProviders<TResult, TProps>(
     ...options,
     wrapper: MixedProviders,
   })
-}
-
-export function renderWithDefaultProviders(ui: ReactElement, options?: RenderOptions) {
-  function MixedProviders({ children }: { children: ReactElement }): ReactElement {
-    const LocalProviders = options?.wrapper || EmptyWrapper
-
-    return (
-      <GlobalProviders>
-        <LocalProviders>{children}</LocalProviders>
-      </GlobalProviders>
-    )
-  }
-  const result = render(ui, {
-    wrapper: MixedProviders,
-    ...options,
-  })
-
-  return { ...result }
 }
