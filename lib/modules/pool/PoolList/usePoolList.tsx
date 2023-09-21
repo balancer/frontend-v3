@@ -1,7 +1,7 @@
 'use client'
 
 import { makeVar, useReactiveVar } from '@apollo/client'
-import { createContext, ReactNode, useCallback, useContext } from 'react'
+import { createContext, ReactNode, useCallback } from 'react'
 import {
   GetPoolsDocument,
   GqlChain,
@@ -19,6 +19,7 @@ import {
   getInitQueryState,
   useQueryVarsWatcher,
 } from './queryVars'
+import { useMandatoryContext } from '@/lib/utils/contexts'
 
 const initQueryState = getInitQueryState()
 
@@ -186,5 +187,5 @@ export function PoolListProvider(props: { children: ReactNode }) {
 }
 
 export function usePoolList() {
-  return useContext(PoolListContext) as ReturnType<typeof _usePoolList>
+  return useMandatoryContext(PoolListContext, 'PoolList')
 }

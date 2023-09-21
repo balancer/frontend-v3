@@ -1,9 +1,10 @@
 'use client'
 
 import { GetTokensDocument, GqlToken } from '@/lib/services/api/generated/graphql'
-import { createContext, PropsWithChildren, useContext } from 'react'
-import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { isSameAddress } from '@/lib/utils/addresses'
+import { useMandatoryContext } from '@/lib/utils/contexts'
+import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import { PropsWithChildren, createContext } from 'react'
 
 export const TokensContext = createContext<ReturnType<typeof _useTokens> | null>(null)
 
@@ -24,4 +25,4 @@ export function TokensProvider({ children }: PropsWithChildren) {
   return <TokensContext.Provider value={tokens}>{children}</TokensContext.Provider>
 }
 
-export const useTokens = () => useContext(TokensContext) as ReturnType<typeof _useTokens>
+export const useTokens = () => useMandatoryContext(TokensContext, 'Tokens')

@@ -1,9 +1,9 @@
 'use client'
 
+import { InitQueryState } from './queryVars'
 import { useMemo, useState } from 'react'
 import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
 import { uniq } from 'lodash'
-import { InitQueryState } from './queryVars'
 
 // We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
 export const POOL_TYPE_MAP: { [key: string]: GqlPoolFilterType[] } = {
