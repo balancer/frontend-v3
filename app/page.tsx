@@ -5,7 +5,6 @@ import {
 } from '@/lib/modules/pool/PoolList/usePoolList'
 import { PoolList } from '@/lib/modules/pool/PoolList/PoolList'
 import { Box } from '@chakra-ui/react'
-import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,11 +13,9 @@ export default function Home() {
 
   return (
     <PoolListProvider>
-      <TokenBalancesProvider>
-        <Box p="md">
-          <PoolList />
-        </Box>
-      </TokenBalancesProvider>
+      <Box p="md">
+        <PoolList />
+      </Box>
     </PoolListProvider>
   )
 }

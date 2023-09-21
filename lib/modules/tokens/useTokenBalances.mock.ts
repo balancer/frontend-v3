@@ -1,10 +1,12 @@
-import { UseTokenBalancesResponse } from './useTokenBalances'
+import { useTokenBalances } from './useTokenBalances'
 import { TokenAmount } from './token.types'
 import { fakeGqlTokens } from '@/test/data/gql-tokens.fake'
 
 export const defaultTokenBalances = aTokenBalancesResponse(
   someTokenAmounts(fakeGqlTokens.map(token => token.address))
 )
+
+type UseTokenBalancesResponse = ReturnType<typeof useTokenBalances>
 
 export function aTokenBalancesResponse(mockedBalances?: TokenAmount[]): UseTokenBalancesResponse {
   return {

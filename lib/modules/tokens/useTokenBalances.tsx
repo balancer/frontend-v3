@@ -1,16 +1,14 @@
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { TokenAmount, TokenBase } from '@/lib/modules/tokens/token.types'
-import { useAccount, useBalance, useQuery } from 'wagmi'
+import { useBalance, useQuery } from 'wagmi'
 import { Address, formatUnits } from 'viem'
 import { AbiERC20 } from '@/lib/abi/AbiERC20'
 import { multicall } from 'wagmi/actions'
 import { isSameAddress } from '@/lib/utils/addresses'
-import { PropsWithChildren, createContext, useContext } from 'react'
-import { useTokens } from './useTokens'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
-export function _useTokenBalances(account: Address | undefined, tokens: TokenBase[]) {
+export function useTokenBalances(account: Address | undefined, tokens: TokenBase[]) {
   const networkConfig = useNetworkConfig()
   const filteredTokens = tokens.filter(
     token => !isSameAddress(token.address, networkConfig.tokens.nativeAsset.address)
@@ -83,22 +81,4 @@ export function _useTokenBalances(account: Address | undefined, tokens: TokenBas
     isRefetching: nativeBalanceQuery.isRefetching || balanceMulticall.isRefetching,
     refetch,
   }
-}
-
-export type UseTokenBalancesResponse = ReturnType<typeof _useTokenBalances>
-export const TokenBalancesContext = createContext<UseTokenBalancesResponse | null>(null)
-
-export function TokenBalancesProvider({ children }: PropsWithChildren) {
-  const { address } = useAccount()
-  const { tokens } = useTokens()
-  const result = _useTokenBalances(address, tokens)
-  return <TokenBalancesContext.Provider value={result}>{children}</TokenBalancesContext.Provider>
-}
-
-export function useTokenBalances() {
-  const context = useContext(TokenBalancesContext)
-  if (!context) {
-    throw new Error('useTokenBalances must be used within a TokenBalancesProvider context')
-  }
-  return context
 }
