@@ -2,14 +2,16 @@
 
 import { Button, HStack, Text, VStack } from '@chakra-ui/react'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
+import { useTranslations } from 'next-intl'
 
 export function PoolListPagination() {
   const { pageNumber, pageSize, setPageNumber, setPageSize } = usePoolList()
+  const t = useTranslations('PoolListPagination')
 
   return (
     <VStack align="start" spacing="md">
       <HStack align="center" spacing="1">
-        <Text size="xs">Page num: {pageNumber + 1}</Text>
+        <Text size="xs">{`${t('pageNum')}: ${pageNumber + 1}`}</Text>
 
         {[0, 1, 2].map(num => (
           <Button
@@ -23,12 +25,12 @@ export function PoolListPagination() {
         ))}
 
         <Button size="sm" onClick={() => setPageNumber(pageNumber + 1)}>
-          Next
+          {t('next')}
         </Button>
       </HStack>
 
       <HStack align="center" spacing="1">
-        <Text>No. per page:</Text>
+        <Text>{t('noPerPage')}:</Text>
 
         {[10, 20, 30].map(num => (
           <Button
