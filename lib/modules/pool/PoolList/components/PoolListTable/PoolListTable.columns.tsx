@@ -8,11 +8,19 @@ import { VStack, Text, HStack, Tag } from '@chakra-ui/react'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { PoolListItem } from '../../../pool.types'
 
-export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => [
+export interface ColumnTitles {
+  network: string
+  details: string
+  totalLiquidity: string
+  volume24h: string
+  apr: string
+}
+
+export const getPoolListTableColumns = (columnTitles: ColumnTitles): ColumnDef<PoolListItem>[] => [
   {
     id: 'chainLogoUrl',
     accessorKey: 'chain.logoUrl',
-    header: 'Network',
+    header: columnTitles.network,
     cell: ({ row: { original: pool } }) => {
       const networkConfig = getNetworkConfig(pool.chain)
       return (
@@ -23,7 +31,7 @@ export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => [
 
   {
     id: 'details',
-    header: 'Details',
+    header: columnTitles.details,
     cell: ({ row: { original: pool } }) => {
       return (
         <VStack align="start">
@@ -40,7 +48,7 @@ export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => [
   {
     id: 'totalLiquidity',
     accessorKey: 'dynamicData.totalLiquidity',
-    header: () => <Text textAlign="right">TVL</Text>,
+    header: () => <Text textAlign="right">{columnTitles.totalLiquidity}</Text>,
     cell: props => {
       const value = numeral(props.getValue()).format('($0,0a)')
 
@@ -54,7 +62,7 @@ export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => [
   {
     id: 'volume24h',
     accessorKey: 'dynamicData.volume24h',
-    header: () => <Text textAlign="right">Volume (24h)</Text>,
+    header: () => <Text textAlign="right">{columnTitles.volume24h}</Text>,
     cell: props => {
       const value = numeral(props.getValue()).format('($0,0a)')
 
@@ -69,7 +77,7 @@ export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => [
     id: 'apr',
     accessorKey: 'dynamicData.apr',
     header: () => {
-      return <Text textAlign="right">APR</Text>
+      return <Text textAlign="right">{columnTitles.apr}</Text>
     },
     cell: row => {
       const value = row.getValue<GqlPoolApr>()
