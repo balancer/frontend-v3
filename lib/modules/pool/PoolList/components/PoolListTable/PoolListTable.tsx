@@ -11,7 +11,7 @@ import { useTranslations } from 'next-intl'
 
 export function PoolListTable() {
   const t = useTranslations('PoolListTable')
-  const columnTranslations = {
+  const columnTitles = {
     network: t('columns.network'),
     details: t('columns.details'),
     totalLiquidity: t('columns.totalLiquidity'),
