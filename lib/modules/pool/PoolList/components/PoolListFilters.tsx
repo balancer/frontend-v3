@@ -137,7 +137,7 @@ export function PoolListFilters() {
       <HStack>
         <Popover>
           <PopoverTrigger>
-            <FilterButton buttonText={t('button')} />
+            <FilterButton label={t('label')} />
           </PopoverTrigger>
           <PopoverContent>
             <PopoverArrow />
