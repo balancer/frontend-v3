@@ -1,9 +1,9 @@
 import { GetPoolDocument } from '@/lib/services/api/generated/graphql'
 import { graphql } from 'msw'
 import { getQueryName, mockGQL } from '../utils'
-import { aGqlPoolElement } from './gqlPoolElement.builders'
+import { aGqlPoolElementMock } from '../builders/gqlPoolElement.builders'
 
-export const defaultPool = aGqlPoolElement()
+export const defaultPool = aGqlPoolElementMock()
 
 export function buildPoolHandler(pool = defaultPool) {
   return graphql.query(getQueryName(GetPoolDocument), (req, res, ctx) => {

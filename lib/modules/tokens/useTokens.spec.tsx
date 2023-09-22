@@ -1,7 +1,7 @@
 import { renderHookWithDefaultProviders } from '@/test/utils/custom-renderers'
 import { _useTokens } from './useTokens'
 import { waitFor } from '@testing-library/react'
-import { defaultTokenBase } from '@/test/msw/mocks/Tokens.handlers'
+import { defaultTokenBaseMock } from '@/test/msw/handlers/Tokens.handlers'
 
 test('fetches tokens', async () => {
   const { result } = renderHookWithDefaultProviders(() => _useTokens())
@@ -10,5 +10,5 @@ test('fetches tokens', async () => {
 
   await waitFor(() => expect(result.current.tokens.length).toBeGreaterThan(0))
 
-  expect(result.current.tokens).toMatchObject([defaultTokenBase])
+  expect(result.current.tokens).toMatchObject([defaultTokenBaseMock])
 })

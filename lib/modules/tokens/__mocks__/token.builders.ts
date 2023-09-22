@@ -1,8 +1,8 @@
-import { TokenAmount } from './token.types'
+import { TokenAmount } from '../token.types'
 import { TokenBase } from '@/lib/modules/tokens/token.types'
 import { fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
 
-export function aTokenAmount(options?: Partial<TokenAmount>) {
+export function aTokenAmountMock(options?: Partial<TokenAmount>) {
   const defaultTokenAmount = {
     address: '0xc67b12049c2d0cf6e476bc64c7f82fc6c63cffc5',
     amount: 0n,
@@ -13,11 +13,11 @@ export function aTokenAmount(options?: Partial<TokenAmount>) {
   return Object.assign({}, defaultTokenAmount, options)
 }
 
-export function someTokenAmounts(addresses: string[]) {
-  return addresses.map(address => aTokenAmount({ address }))
+export function someTokenAmountsMock(addresses: string[]) {
+  return addresses.map(address => aTokenAmountMock({ address }))
 }
 
-export function aTokenBase(...options: Partial<TokenBase>[]): TokenBase {
+export function aTokenBaseMock(...options: Partial<TokenBase>[]): TokenBase {
   const defaultToken: TokenBase = fakeTokenBySymbol('BAL')
   return Object.assign({}, defaultToken, ...options)
 }

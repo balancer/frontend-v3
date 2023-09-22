@@ -3,7 +3,7 @@ import { waitForLoadedUseQuery } from '@/test/utils/hooks'
 import { TokenBase } from './token.types'
 import { useEmptyTokenBalances } from './useEmptyTokenBalances'
 import { mockTokenBalancesResponse } from './__mocks__/useTokenBalances'
-import { aTokenAmount, aTokenBase } from './token.builders'
+import { aTokenAmountMock, aTokenBaseMock } from './__mocks__/token.builders'
 
 async function renderUseEmptyTokenBalances(tokens: TokenBase[]) {
   const account = '0xc128468b7ce63ea702c1f104d55a2566b13d3abc'
@@ -12,9 +12,9 @@ async function renderUseEmptyTokenBalances(tokens: TokenBase[]) {
   return result
 }
 
-const emptyBalance = aTokenAmount({ amount: 0n })
-const positiveBalance = aTokenAmount({ amount: 300n })
-const tokens = [aTokenBase(), aTokenBase()]
+const emptyBalance = aTokenAmountMock({ amount: 0n })
+const positiveBalance = aTokenAmountMock({ amount: 300n })
+const tokens = [aTokenBaseMock(), aTokenBaseMock()]
 
 describe('useEmptyTokenBalances', () => {
   test.skip('throws when user has a negative balance', async () => {
@@ -24,7 +24,7 @@ describe('useEmptyTokenBalances', () => {
   })
 
   test('when all tokens have balance', async () => {
-    const mockedBalances = [aTokenAmount({ amount: 100n }), aTokenAmount({ amount: 300n })]
+    const mockedBalances = [aTokenAmountMock({ amount: 100n }), aTokenAmountMock({ amount: 300n })]
     mockTokenBalancesResponse(mockedBalances)
     vi.mock('./useTokenBalances.tsx')
 

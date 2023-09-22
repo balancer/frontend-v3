@@ -1,10 +1,10 @@
 import { useTokenBalances as originalUseTokenBalances } from '../useTokenBalances'
 import { TokenAmount } from '../token.types'
 import { fakeGqlTokens } from '@/test/data/gql-tokens.fake'
-import { someTokenAmounts } from '../token.builders'
+import { someTokenAmountsMock } from './token.builders'
 
 export const defaultTokenBalances = aTokenBalancesResponse(
-  someTokenAmounts(fakeGqlTokens.map(token => token.address))
+  someTokenAmountsMock(fakeGqlTokens.map(token => token.address))
 )
 
 let mockedResponse = aTokenBalancesResponse()

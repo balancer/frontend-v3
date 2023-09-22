@@ -1,6 +1,6 @@
 import { PoolList as PoolListType } from '@/lib/modules/pool/pool.types'
-import { defaultPoolList, mockPoolList } from '@/test/msw/mocks/PoolList.handlers'
-import { aGqlPoolMinimal } from '@/test/msw/mocks/gqlPoolMinimal.builders'
+import { defaultPoolList, mockPoolList } from '@/test/msw/handlers/PoolList.handlers'
+import { aGqlPoolMinimalMock } from '@/test/msw/builders/gqlPoolMinimal.builders'
 import { renderHookWithDefaultProviders } from '@/test/utils/custom-renderers'
 
 import { _usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
@@ -19,7 +19,7 @@ test('Returns pool list', async () => {
 })
 
 test('Returns pool list with a custom mocked GQL pool', async () => {
-  const mockedList: PoolListType = [aGqlPoolMinimal({ name: 'FOO BAL' })]
+  const mockedList: PoolListType = [aGqlPoolMinimalMock({ name: 'FOO BAL' })]
 
   mockPoolList(mockedList)
 

@@ -2,7 +2,7 @@ import { Wrapper, renderHookWithDefaultProviders } from '@/test/utils/custom-ren
 import { waitFor } from '@testing-library/react'
 import { PoolProvider, _usePool, usePool } from './usePool'
 import { GqlChain } from '@/lib/services/api/generated/graphql'
-import { defaultPool } from '@/test/msw/mocks/Pool.handlers'
+import { defaultPool } from '@/test/msw/handlers/Pool.handlers'
 
 test('fetches v2 pool', async () => {
   const poolId = 'test pool id'

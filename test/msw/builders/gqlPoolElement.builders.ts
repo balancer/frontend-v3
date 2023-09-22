@@ -1,16 +1,11 @@
-import {
-  GqlChain,
-  GqlPoolApr,
-  GqlPoolMinimal,
-  GqlPoolMinimalType,
-} from '@/lib/services/api/generated/graphql'
+import { GqlChain, GqlPoolElement } from '@/lib/services/api/generated/graphql'
 import { DeepPartial } from '@apollo/client/utilities'
-import { mock, mockDeep } from 'vitest-mock-extended'
+import { mock } from 'vitest-mock-extended'
 
-export function aGqlPoolMinimal(...options: Partial<GqlPoolMinimal>[]): GqlPoolMinimal {
-  const defaultPool = mock<GqlPoolMinimal>()
+export function aGqlPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlPoolElement {
+  const defaultPool = mock<GqlPoolElement>()
 
-  const defaultPool1: DeepPartial<GqlPoolMinimal> = {
+  const defaultPool1: DeepPartial<GqlPoolElement> = {
     address: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56',
     allTokens: [
       {
@@ -42,34 +37,12 @@ export function aGqlPoolMinimal(...options: Partial<GqlPoolMinimal>[]): GqlPoolM
       holdersCount: '1917',
       swapFee: '0.01',
       swapsCount: '58991',
-      apr: anApr(),
     },
     factory: '0xa5bf2ddf098bb0ef6d120c98217dd6b141c74ee0',
     id: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014',
     name: 'Balancer 80 BAL 20 WETH',
     owner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
     symbol: 'B-80BAL-20WETH',
-    type: GqlPoolMinimalType.Weighted,
   }
   return Object.assign({}, defaultPool, defaultPool1, ...options)
-}
-
-export function anApr(): GqlPoolApr {
-  const mockedApr = mockDeep<GqlPoolApr>()
-  const defaultApr: GqlPoolApr = {
-    apr: { total: '0.005628271838682321' },
-    hasRewardApr: false,
-    thirdPartyApr: { total: '0' },
-    nativeRewardApr: { total: '0' },
-    swapApr: '0.005628271838682321',
-    items: [
-      {
-        id: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014-swap-apr',
-        title: 'Swap fees APR',
-        apr: { total: '0.005628271838682321' },
-        subItems: [],
-      },
-    ],
-  }
-  return Object.assign({}, mockedApr, defaultApr)
 }
