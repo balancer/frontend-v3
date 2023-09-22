@@ -114,12 +114,12 @@ function FilterTags() {
   )
 }
 
-const FilterButton = forwardRef<ButtonProps & { buttonText: string }, 'button'>((props, ref) => {
+const FilterButton = forwardRef<ButtonProps & { label: string }, 'button'>((props, ref) => {
   const { totalFilterCount } = usePoolListFilters()
 
   return (
     <Button ref={ref} {...props}>
-      {props.buttonText}
+      {props.label}
       {totalFilterCount > 0 && (
         <Badge ml="2" colorScheme="blue">
           {totalFilterCount}

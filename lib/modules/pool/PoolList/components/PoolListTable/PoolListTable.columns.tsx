@@ -16,13 +16,11 @@ export interface ColumnTitles {
   apr: string
 }
 
-export const getPoolListTableColumns = (
-  columnTranslations: ColumnTranslations
-): ColumnDef<PoolListItem>[] => [
+export const getPoolListTableColumns = (columnTitles: ColumnTitles): ColumnDef<PoolListItem>[] => [
   {
     id: 'chainLogoUrl',
     accessorKey: 'chain.logoUrl',
-    header: columnTranslations.network,
+    header: columnTitles.network,
     cell: ({ row: { original: pool } }) => {
       const networkConfig = getNetworkConfig(pool.chain)
       return (
@@ -33,7 +31,7 @@ export const getPoolListTableColumns = (
 
   {
     id: 'details',
-    header: columnTranslations.details,
+    header: columnTitles.details,
     cell: ({ row: { original: pool } }) => {
       return (
         <VStack align="start">
@@ -50,7 +48,7 @@ export const getPoolListTableColumns = (
   {
     id: 'totalLiquidity',
     accessorKey: 'dynamicData.totalLiquidity',
-    header: () => <Text textAlign="right">{columnTranslations.totalLiquidity}</Text>,
+    header: () => <Text textAlign="right">{columnTitles.totalLiquidity}</Text>,
     cell: props => {
       const value = numeral(props.getValue()).format('($0,0a)')
 
@@ -64,7 +62,7 @@ export const getPoolListTableColumns = (
   {
     id: 'volume24h',
     accessorKey: 'dynamicData.volume24h',
-    header: () => <Text textAlign="right">{columnTranslations.volume24h}</Text>,
+    header: () => <Text textAlign="right">{columnTitles.volume24h}</Text>,
     cell: props => {
       const value = numeral(props.getValue()).format('($0,0a)')
 
@@ -79,7 +77,7 @@ export const getPoolListTableColumns = (
     id: 'apr',
     accessorKey: 'dynamicData.apr',
     header: () => {
-      return <Text textAlign="right">{columnTranslations.apr}</Text>
+      return <Text textAlign="right">{columnTitles.apr}</Text>
     },
     cell: row => {
       const value = row.getValue<GqlPoolApr>()

@@ -19,7 +19,7 @@ export function PoolListTable() {
     apr: t('columns.apr'),
   }
   const { pools, loading, sorting, setSort } = usePoolList()
-  const columns = getPoolListTableColumns(columnTranslations)
+  const columns = getPoolListTableColumns(columnTitles)
   const router = useRouter()
 
   const rowClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {

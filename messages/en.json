@@ -26,7 +26,7 @@
     "noPerPage": "No. per page"
   },
   "PoolListFilters": {
-    "button": "Filters",
+    "label": "Filters",
     "poolTypes": "Pool types",
     "networks": "Networks"
   },
