@@ -8,7 +8,7 @@ import { VStack, Text, HStack, Tag } from '@chakra-ui/react'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { PoolListItem } from '../../../pool.types'
 
-export interface ColumnTranslations {
+export interface ColumnTitles {
   network: string
   details: string
   totalLiquidity: string
