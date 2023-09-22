@@ -6,7 +6,7 @@ import { useManagedVaultWrite } from './Vault'
 // Managed transactions, pass args via function
 export function WriteExampleTwo() {
   const {
-    write: setAuthorizer,
+    write: setAuthorizer, // AG: This alias can get tricker when your call has many args
     txStatus,
     simulate: { isError: willTxFail },
   } = useManagedVaultWrite('setAuthorizer')
