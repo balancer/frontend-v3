@@ -4,11 +4,14 @@ import { useEffect } from 'react'
 import { HiOutlineX, HiOutlineSearch } from 'react-icons/hi'
 import { usePoolList } from '../usePoolList'
 import { usePoolListFilters } from '../usePoolListFilters'
+import { useTranslations } from 'next-intl'
 
 export function PoolListSearch() {
   const [isSearching, { on, off }] = useBoolean()
   const { refetch, state } = usePoolList()
   const { searchText, setSearchText } = usePoolListFilters()
+
+  const t = useTranslations('PoolListSearch')
 
   const submitSearch = debounce(async () => {
     if (searchText.length > 0) await refetch({ ...state, textSearch: searchText, skip: 0 })
@@ -24,7 +27,7 @@ export function PoolListSearch() {
     <InputGroup size="md">
       <Input
         type="text"
-        placeholder="Search..."
+        placeholder={t('placeholder')}
         value={searchText}
         onChange={e => {
           setSearchText(e.target.value)
@@ -35,7 +38,7 @@ export function PoolListSearch() {
         <IconButton
           variant="ghost"
           size="sm"
-          aria-label="Search for a pool"
+          aria-label={t('ariaLabel')}
           icon={searchText !== '' ? <HiOutlineX /> : <HiOutlineSearch />}
           isLoading={isSearching}
           onClick={() => {

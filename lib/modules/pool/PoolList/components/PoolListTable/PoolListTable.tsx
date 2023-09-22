@@ -7,10 +7,19 @@ import { DataTable } from '@/components/tables/DataTable'
 import { useRouter } from 'next/navigation'
 import { getPoolPath } from '../../../pool.utils'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
+import { useTranslations } from 'next-intl'
 
 export function PoolListTable() {
+  const t = useTranslations('PoolListTable')
+  const columnTitles = {
+    network: t('columns.network'),
+    details: t('columns.details'),
+    totalLiquidity: t('columns.totalLiquidity'),
+    volume24h: t('columns.volume24h'),
+    apr: t('columns.apr'),
+  }
   const { pools, loading, sorting, setSort } = usePoolList()
-  const columns = getPoolListTableColumns()
+  const columns = getPoolListTableColumns(columnTitles)
   const router = useRouter()
 
   const rowClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {

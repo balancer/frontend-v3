@@ -1,4 +1,7 @@
-import { AppRouterContext, AppRouterInstance } from 'next/dist/shared/lib/app-router-context'
+import {
+  AppRouterContext,
+  AppRouterInstance,
+} from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { ReactNode } from 'react'
 
 export type AppRouterContextProviderMockProps = {
