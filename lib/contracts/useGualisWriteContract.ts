@@ -123,18 +123,23 @@ export type TransactionExecution = ReturnType<typeof useContractWrite>
 export type TransactionInfo = { simulation: TransactionSimulation; execution: TransactionExecution }
 
 export function useOnNewTxHash(transactionInfo: TransactionInfo) {
-  const { transactions, addTransaction } = useTransactions()
-  const { execution } = transactionInfo
+  const { addTransaction } = useTransactions()
   useEffect(
     () => {
-      if (execution.data?.hash) {
-        console.log('NEW TRANSACTION HASH!', execution.data.hash)
+      if (getHash(transactionInfo)) {
+        console.log('NEW TRANSACTION HASH!', getHash(transactionInfo))
         addTransaction(transactionInfo)
-        console.log('transactions length', transactions.length)
       }
     },
     // QUESTION: How do we avoid this?
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [execution.data?.hash]
+    [getHash(transactionInfo)]
   )
+}
+
+// Helpers for wagmi transactions
+// Functional vs Object oriented
+export function getHash(transactionInfo?: TransactionInfo): Address | undefined {
+  if (!transactionInfo) return
+  return transactionInfo.execution.data?.hash
 }

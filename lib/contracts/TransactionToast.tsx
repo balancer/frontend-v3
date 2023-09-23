@@ -1,30 +1,36 @@
-import { useToast, Button } from '@chakra-ui/react'
+'use client'
+
+import { useToast } from '@chakra-ui/react'
 import { useTransactions } from '../modules/web3/TransactionsProvider'
+import { last } from 'lodash'
+import { useEffect } from 'react'
+import { TransactionInfo, getHash } from './useGualisWriteContract'
 
 export function TransactionToasts() {
-  // const toast = useToast()
+  const toast = useToast()
 
   const { transactions } = useTransactions()
 
   console.log('TOASTER:', transactions.length)
 
-  // const showToast = () => {
-  //   toast({
-  //     title: 'Transaction',
-  //     description: 'desc',
-  //     status: 'success',
-  //     duration: 2000,
-  //     isClosable: true,
-  //   })
-  // }
+  const showToast = (transactionInfo?: TransactionInfo) => {
+    if (!transactionInfo) return
+    toast({
+      title: 'Transaction',
+      description: getHash(transactionInfo),
+      status: 'info',
+      duration: 2000,
+      isClosable: true,
+    })
+  }
 
-  // useEffect(() => (transactions.length > 0 ? showToast() : noop), [transactions])
+  useEffect(() => {
+    //usePrevious or some kind of subscription mechanism to react to state changes
+    // Example:
+    // onTxSuccess
+    // onTxFail
+    showToast(last(transactions))
+  }, [transactions])
 
-  return (
-    <>
-      Transactions #: {transactions.length}
-      <br></br>
-      {/* <Button onClick={showToast}>Show Toast</Button> */}
-    </>
-  )
+  return <>Transaction#: {transactions.length}</>
 }
