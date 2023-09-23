@@ -1,5 +1,3 @@
-'use client'
-
 import { useToast, Button } from '@chakra-ui/react'
 import { useTransactions } from '../modules/web3/TransactionsProvider'
 
@@ -7,6 +5,8 @@ export function TransactionToasts() {
   // const toast = useToast()
 
   const { transactions } = useTransactions()
+
+  console.log('TOASTER:', transactions.length)
 
   // const showToast = () => {
   //   toast({

@@ -115,17 +115,26 @@ export function useWriteContractWithSimulation(
   return { simulation, execution }
 }
 
-type TransactionSimulation = ReturnType<typeof usePrepareContractWrite>
-type TransactionExecution = ReturnType<typeof useContractWrite>
-type TransactionInfo = { simulation: TransactionSimulation; execution: TransactionExecution }
+// QUESTION: these are wagmi hooks related types: rename to match implementation detail?
+// TxWagmiSimulation, TxWagmiExecution, TxWagmiInfo
+// There will be other wagmi types like the one that useTransaction({hash}) returns
+export type TransactionSimulation = ReturnType<typeof usePrepareContractWrite>
+export type TransactionExecution = ReturnType<typeof useContractWrite>
+export type TransactionInfo = { simulation: TransactionSimulation; execution: TransactionExecution }
 
-export function useOnNewTxHash({ simulation, execution }: TransactionInfo) {
-  const { transactions, setTransactions } = useTransactions()
-  useEffect(() => {
-    if (execution.data?.hash) {
-      console.log('NEW TRANSACTION HASH!', execution.data.hash)
-      setTransactions([{ simulation, execution }])
-      // addTransaction(setAuthorizerExampleOneHash?.hash)
-    }
-  }, [execution.data?.hash])
+export function useOnNewTxHash(transactionInfo: TransactionInfo) {
+  const { transactions, addTransaction } = useTransactions()
+  const { execution } = transactionInfo
+  useEffect(
+    () => {
+      if (execution.data?.hash) {
+        console.log('NEW TRANSACTION HASH!', execution.data.hash)
+        addTransaction(transactionInfo)
+        console.log('transactions length', transactions.length)
+      }
+    },
+    // QUESTION: How do we avoid this?
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [execution.data?.hash]
+  )
 }
