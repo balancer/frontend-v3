@@ -5,11 +5,14 @@ import { Address, EncodeFunctionDataParameters } from 'viem'
 import { useAccount, useWaitForTransaction } from 'wagmi'
 import { vaultABI } from '../abi/generated'
 import {
+  getHash,
+  getHash2,
   useContractConfig,
   useOnNewTxHash,
   useWriteContractWithSimulation,
 } from './useGualisWriteContract'
 import { useTransactions } from '../modules/web3/TransactionsProvider'
+import { TransactionState } from './TransactionState'
 
 export function WriteExampleFive() {
   const balancerRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'
@@ -34,7 +37,6 @@ export function WriteExampleFive() {
     functionName: 'setRelayerApproval',
     args: approvalArgs,
   })
-
   // as any //This is safe because the typing is done in useContractConfig
   // as EncodeFunctionDataParameters & { address: Address }
   // TODO: make useContractConfig returning any if we need it
@@ -45,19 +47,9 @@ export function WriteExampleFive() {
   const { data: setRelayerApprovalResult } = execution
 
   // confirming (if needed)
-  const txStatus = useWaitForTransaction({ hash: setRelayerApprovalResult?.hash })
+  const txStatus = useWaitForTransaction({ hash: getHash2(execution) })
 
   useOnNewTxHash({ simulation, execution })
-
-  /*
-   AG: this could be extracted to a hook
-  */
-  // tracking globally
-  // useEffect(() => {
-  //   if (setRelayerApprovalResult?.hash) {
-  //     // addTransaction(setAuthorizerExampleOneHash?.hash)
-  //   }
-  // }, [setRelayerApprovalResult?.hash])
 
   function handleOnClick() {
     if (!simulation.isError) {
@@ -93,6 +85,12 @@ export function WriteExampleFive() {
   // <Box margin={2} padding={2}>{txStatus.isLoading ? 'txStatus loading' : 'txStatus not loading'}</Box>
   // <Box margin={2} padding={2}>txStatus {JSON.stringify(txStatus)}</Box>
 
+  function MaybeTransactionState() {
+    if (setRelayerApprovalResult?.hash) {
+      return <TransactionState hash={setRelayerApprovalResult.hash}></TransactionState>
+    }
+  }
+
   return (
     <Flex direction={{ base: 'column' }}>
       <Box margin={2} padding={2}>
@@ -102,6 +100,7 @@ export function WriteExampleFive() {
         {executionErrorLabel()}
         {txHash()}
       </Box>
+      <MaybeTransactionState></MaybeTransactionState>
       <Box margin={2} padding={2}>
         <Button disabled={!execution.write} onClick={handleOnClick}>
           Example Five

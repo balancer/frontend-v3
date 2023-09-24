@@ -104,11 +104,11 @@ export function useContractAddress(abi: Abi): Address {
 export function useWriteContractWithSimulation(
   contractConfig: EncodeFunctionDataParameters,
   enabled: boolean
-) {
+): TransactionInfo {
   const simulation = usePrepareContractWrite({
     ...contractConfig,
     enabled,
-  })
+  }) as TransactionSimulation // Avoid problems with narrow types
 
   const execution = useContractWrite(simulation.config)
 
@@ -139,7 +139,14 @@ export function useOnNewTxHash(transactionInfo: TransactionInfo) {
 
 // Helpers for wagmi transactions
 // Functional vs Object oriented
-export function getHash(transactionInfo?: TransactionInfo): Address | undefined {
-  if (!transactionInfo) return
-  return transactionInfo.execution.data?.hash
+export function getHash(transaction?: TransactionInfo): Address | undefined {
+  if (!transaction) return
+  if (transaction.execution) return transaction.execution.data?.hash
+  // TransactionExecution
+  // return transaction.data?.hash
+}
+
+export function getHash2(transaction?: TransactionExecution): Address | undefined {
+  if (!transaction) return
+  return transaction.data?.hash
 }
