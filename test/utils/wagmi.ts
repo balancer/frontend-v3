@@ -5,7 +5,7 @@ import { mainnet } from 'viem/chains'
 import { Connector, CreateConfigParameters, WalletClient, createConfig } from 'wagmi'
 import { testQueryClient } from './react-query'
 
-function createHttpClient(httpRpc: string) {
+function createTestHttpClient(httpRpc: string) {
   const publicClient = createPublicClient({
     batch: {
       multicall: { batchSize: 4096 }, // change depending on chain (some have limits)
@@ -21,7 +21,7 @@ function createHttpClient(httpRpc: string) {
 
 const testRpcUrl = process.env.VITE_TEST_RPC || 'http://127.0.0.1:8555'
 
-export const testPublicClient = createHttpClient(testRpcUrl)
+export const testPublicClient = createTestHttpClient(testRpcUrl)
 
 export const getMockWalletClient = () =>
   createWalletClient({
