@@ -1,7 +1,7 @@
 'use client'
 
 import { makeVar, useReactiveVar } from '@apollo/client'
-import { createContext, ReactNode, useCallback, useContext } from 'react'
+import { createContext, ReactNode, useCallback } from 'react'
 import {
   GetPoolsDocument,
   GetPoolsQueryVariables,
@@ -13,6 +13,7 @@ import {
 import { PROJECT_CONFIG } from '@/lib/config/useProjectConfig'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { PoolsColumnSort } from '@/lib/modules/pool/pool.types'
+import { useMandatoryContext } from '@/lib/utils/contexts'
 
 interface PoolsQueryVariables extends GetPoolsQueryVariables {
   first: number
@@ -159,5 +160,5 @@ export function PoolListProvider(props: { children: ReactNode }) {
 }
 
 export function usePoolList() {
-  return useContext(PoolListContext) as ReturnType<typeof _usePoolList>
+  return useMandatoryContext(PoolListContext, 'PoolList')
 }

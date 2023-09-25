@@ -26,6 +26,7 @@ import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { useEffect } from 'react'
 import { PoolFiltersProvider, usePoolListFilters } from '../usePoolListFilters'
 import { PoolListSearch } from './PoolListSearch'
+import { useTranslations } from 'next-intl'
 
 function PoolTypeFilters() {
   const {
@@ -113,12 +114,12 @@ function FilterTags() {
   )
 }
 
-const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
+const FilterButton = forwardRef<ButtonProps & { label: string }, 'button'>((props, ref) => {
   const { totalFilterCount } = usePoolListFilters()
 
   return (
     <Button ref={ref} {...props}>
-      Filters
+      {props.label}
       {totalFilterCount > 0 && (
         <Badge ml="2" colorScheme="blue">
           {totalFilterCount}
@@ -129,12 +130,14 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
 })
 
 export function PoolListFilters() {
+  const t = useTranslations('PoolListFilters')
+
   return (
     <PoolFiltersProvider>
       <HStack>
         <Popover>
           <PopoverTrigger>
-            <FilterButton />
+            <FilterButton label={t('label')} />
           </PopoverTrigger>
           <PopoverContent>
             <PopoverArrow />
@@ -142,12 +145,12 @@ export function PoolListFilters() {
             <PopoverBody>
               <VStack align="start">
                 <Heading as="h3" size="sm">
-                  Pool types
+                  {t('poolTypes')}
                 </Heading>
                 <PoolTypeFilters />
                 <Divider />
                 <Heading as="h3" size="sm">
-                  Networks
+                  {t('networks')}
                 </Heading>
                 <PoolNetworkFilters />
               </VStack>
