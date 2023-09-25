@@ -101,11 +101,18 @@ export function WriteExampleFive() {
         {txHash()}
       </Box>
       <MaybeTransactionState></MaybeTransactionState>
+
       <Box margin={2} padding={2}>
-        <Button disabled={!execution.write} onClick={handleOnClick}>
-          Example Five
+        <Button isDisabled={!execution.write}
+          isLoading={false}
+          loadingText='Approving'
+          onClick={handleOnClick}
+        >
+          {/* {isLoading ? 'Approving...' : 'Approve Relayer'} */}
+          Approve Relayer
         </Button>
       </Box>
     </Flex>
   )
 }
+
