@@ -1,7 +1,7 @@
 'use client'
-import { TransactionToasts } from '@/lib/contracts/TransactionToast'
-import { WriteExampleFive } from '@/lib/contracts/writeExampleFive'
-import { TransactionsProvider } from '@/lib/modules/web3/TransactionsProvider'
+import { TransactionToasts } from './TransactionToast'
+import { WriteContractExample } from './WriteContractExample'
+import { TransactionsProvider } from '@/lib/modules/transactions/TransactionsProvider'
 
 // export default function DebugPage() {
 //   return <WriteExampleFive></WriteExampleFive>
@@ -9,7 +9,7 @@ import { TransactionsProvider } from '@/lib/modules/web3/TransactionsProvider'
 export default function DebugPage() {
   return (
     <TransactionsProvider>
-      <WriteExampleFive></WriteExampleFive>
+      <WriteContractExample></WriteContractExample>
       <TransactionToasts></TransactionToasts>
     </TransactionsProvider>
   )

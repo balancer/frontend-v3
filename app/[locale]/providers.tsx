@@ -6,8 +6,6 @@ import { ReactNode } from 'react'
 import { cookies } from 'next/headers'
 import { COLOR_MODE_STORAGE_KEY } from '@/lib/services/chakra/colorModeManager'
 import { NextIntlClientProvider, AbstractIntlMessages } from 'next-intl'
-import ReactQueryProvider from '@/lib/providers/ReactQueryProvider'
-
 
 export function Providers({
   children,
@@ -23,13 +21,11 @@ export function Providers({
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       <ThemeProvider initialColorMode={initialColorMode}>
-        <ReactQueryProvider>
-          <Web3Provider>
-            <ApolloProviderWrapper>
-              <TokensProvider>{children}</TokensProvider>
-            </ApolloProviderWrapper>
-          </Web3Provider>
-        </ReactQueryProvider>
+        <Web3Provider>
+          <ApolloProviderWrapper>
+            <TokensProvider>{children}</TokensProvider>
+          </ApolloProviderWrapper>
+        </Web3Provider>
       </ThemeProvider>
     </NextIntlClientProvider>
   )

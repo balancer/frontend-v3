@@ -1,10 +1,10 @@
 'use client'
 
+import { TransactionInfo } from '@/lib/contracts/contracts.types'
+import { getHash } from '@/lib/contracts/wagmi-helpers'
+import { useTransactions } from '@/lib/modules/transactions/TransactionsProvider'
 import { useToast, Button } from '@chakra-ui/react'
-import { useTransactions } from '../modules/web3/TransactionsProvider'
 import { last } from 'lodash'
-import { TransactionInfo, getHash } from './useGualisWriteContract'
-
 
 /**
  *
@@ -26,8 +26,10 @@ export function TransactionToasts() {
     })
   }
 
-  return <>
-    Transaction#: {transactions.length}
-    <Button onClick={() => showToast(last(transactions))}>Show last transaction</Button>
-  </>
+  return (
+    <>
+      Transaction#: {transactions.length}
+      <Button onClick={() => showToast(last(transactions))}>Show last transaction</Button>
+    </>
+  )
 }
