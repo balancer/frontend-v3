@@ -7,6 +7,7 @@ import { PoolListFilters } from './components/PoolListFilters'
 import { useAccount } from 'wagmi'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
+import { WriteExampleThree } from '@/lib/contracts/writeExampleThree'
 
 export function PoolList() {
   const { address } = useAccount()
@@ -16,6 +17,7 @@ export function PoolList() {
 
   return (
     <VStack align="start" spacing="md">
+      <WriteExampleThree />
       <PoolListFilters />
       <PoolListTable />
       <PoolListPagination />

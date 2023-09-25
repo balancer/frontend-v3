@@ -1,20 +1,21 @@
 'use client'
 
-import { Button } from '@chakra-ui/react'
+import { Alert, Button, VStack } from '@chakra-ui/react'
 import { useManagedTransaction } from './contract'
 
 export function WriteExampleThree() {
   const {
-    simulate: { isError: willTxFail },
-    write: setAuthorizer,
-  } = useManagedTransaction('balancer.vault', 'joinPool')
+    execution: { write: setAuthorizer },
+    simulation: { error, isError: hasSimulationError },
+  } = useManagedTransaction('balancer.vault', 'setAuthorizer', { args: ['0xAuthorizer'] })
 
   function handleOnClick() {
-    if (!willTxFail) {
-      // can provide args here
-      setAuthorizer?.({ args: ['0xExampleAuthorizer'] })
-    }
+    setAuthorizer?.()
   }
-
-  return <Button onClick={handleOnClick}>Example Three</Button>
+  return (
+    <VStack>
+      {hasSimulationError && <Alert>{error?.toString()}</Alert>}
+      <Button onClick={handleOnClick}>Example Three</Button>
+    </VStack>
+  )
 }

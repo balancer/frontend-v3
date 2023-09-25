@@ -23,12 +23,9 @@ export function useContractAddress(contractId: string) {
 
 export function useManagedTransaction<
   T extends typeof GeneratedABIMap,
-  M extends keyof typeof GeneratedABIMap
->(
-  contractId: M,
-  functionName: InferFunctionName<T[M], string, WriteAbiMutability>,
-  args?: GetFunctionArgs<T[M], InferFunctionName<T[M], string, WriteAbiMutability>>
-) {
+  M extends keyof typeof GeneratedABIMap,
+  F extends InferFunctionName<T[M], string, WriteAbiMutability>
+>(contractId: M, functionName: F, args?: GetFunctionArgs<T[M], F>) {
   const address = useContractAddress(contractId)
   const [writeArgs, setWriteArgs] = useState(args)
 
@@ -55,18 +52,14 @@ export function useManagedTransaction<
     setWriteArgs(args)
   }, [JSON.stringify(args)])
 
-  const managedWrite = (
-    args?: GetFunctionArgs<T[M], InferFunctionName<T[M], string, WriteAbiMutability>>
-  ) => {
+  const managedWrite = (args?: GetFunctionArgs<T[M], F>) => {
     if (args) {
       setWriteArgs(args)
     }
-    writeQuery.write?.()
+    return writeQuery.write?.()
   }
 
-  const managedWriteAsync = async (
-    args?: GetFunctionArgs<T[M], InferFunctionName<T[M], string, WriteAbiMutability>>
-  ) => {
+  const managedWriteAsync = async (args?: GetFunctionArgs<T[M], F>) => {
     if (args) {
       setWriteArgs(args)
     }
@@ -75,9 +68,11 @@ export function useManagedTransaction<
 
   return {
     txStatus: transactionStatusQuery,
-    simulate: prepareQuery,
-    ...writeQuery,
-    write: managedWrite,
-    writeAsync: managedWriteAsync,
+    simulation: prepareQuery,
+    execution: {
+      ...writeQuery,
+      write: managedWrite,
+      writeAsync: managedWriteAsync,
+    },
   }
 }
