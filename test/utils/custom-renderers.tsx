@@ -7,6 +7,7 @@ import { Config, WagmiConfig } from 'wagmi'
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { createWagmiTestConfig } from './wagmi'
+import { NextIntlClientProvider } from 'next-intl'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -23,13 +24,15 @@ function GlobalProviders({ children }: WrapperProps) {
   }
 
   return (
-    <WagmiConfig config={wagmiConfig}>
-      <AppRouterContextProviderMock router={defaultRouterOptions}>
-        <ApolloProvider client={apolloTestClient}>
-          <TokensProvider>{children}</TokensProvider>
-        </ApolloProvider>
-      </AppRouterContextProviderMock>
-    </WagmiConfig>
+    <NextIntlClientProvider locale={'en'} messages={{}}>
+      <WagmiConfig config={wagmiConfig}>
+        <AppRouterContextProviderMock router={defaultRouterOptions}>
+          <ApolloProvider client={apolloTestClient}>
+            <TokensProvider>{children}</TokensProvider>
+          </ApolloProvider>
+        </AppRouterContextProviderMock>
+      </WagmiConfig>
+    </NextIntlClientProvider>
   )
 }
 
