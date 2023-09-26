@@ -19,6 +19,7 @@
     "prepare": "husky install",
     "gen:graphql": "DOTENV_CONFIG_PATH=./.env.local graphql-codegen -r dotenv/config",
     "gen:theme-typings": "chakra-cli tokens ./lib/services/chakra/theme.ts",
+    "gen:wagmi": "pnpm wagmi generate",
     "postinstall": "npm run gen:theme-typings"
   },
   "dependencies": {
@@ -67,7 +68,7 @@
     "@types/react": "18.2.14",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
-    "@wagmi/cli": "^1.5.0",
+    "@wagmi/cli": "^1.5.1",
     "autoprefixer": "^10.4.14",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",

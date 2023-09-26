@@ -1,16 +1,13 @@
 'use client'
 import { TransactionToasts } from './TransactionToast'
 import { WriteContractExample } from './WriteContractExample'
-import { TransactionsProvider } from '@/lib/modules/transactions/TransactionsProvider'
+import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
 
-// export default function DebugPage() {
-//   return <WriteExampleFive></WriteExampleFive>
-// }
 export default function DebugPage() {
   return (
-    <TransactionsProvider>
+    <RecentTransactionsProvider>
       <WriteContractExample></WriteContractExample>
       <TransactionToasts></TransactionToasts>
-    </TransactionsProvider>
+    </RecentTransactionsProvider>
   )
 }

@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 dependencies:
   '@apollo/client':
     specifier: 3.8.0-rc.1
@@ -137,8 +133,8 @@ devDependencies:
     specifier: ^5.60.1
     version: 5.60.1(eslint@8.43.0)(typescript@5.1.6)
   '@wagmi/cli':
-    specifier: ^1.5.0
-    version: 1.5.0(typescript@5.1.6)(wagmi@1.3.7)
+    specifier: ^1.5.1
+    version: 1.5.1(typescript@5.1.6)(wagmi@1.3.7)
   autoprefixer:
     specifier: ^10.4.14
     version: 10.4.14(postcss@8.4.24)
@@ -4094,8 +4090,8 @@ packages:
     dependencies:
       typescript: 5.1.6
 
-  /@wagmi/cli@1.5.0(typescript@5.1.6)(wagmi@1.3.7):
-    resolution: {integrity: sha512-3L1b/zgdkYPYsnBbtalRcEmSJWGy9hnZjCmkjAj5FDXfaslMmJFTJiNDDYpkpxCtL9iqjbYj0y3ECW7mDfJr7A==}
+  /@wagmi/cli@1.5.1(typescript@5.1.6)(wagmi@1.3.7):
+    resolution: {integrity: sha512-Ow7KDQsD2Mj1QovssihWsOoeI9qPlcXfsrTFXbb4s3jssW17NJHeJZ8+7b3LervJp5YDDMfhaCxxMTjFV/jZMQ==}
     engines: {node: '>=14'}
     hasBin: true
     peerDependencies:

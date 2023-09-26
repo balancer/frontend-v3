@@ -2,7 +2,7 @@
 
 import { TransactionInfo } from '@/lib/contracts/contracts.types'
 import { getHash } from '@/lib/contracts/wagmi-helpers'
-import { useTransactions } from '@/lib/modules/transactions/TransactionsProvider'
+import { useRecentTransactions } from '@/lib/modules/transactions/RecentTransactionsProvider'
 import { useToast, Button } from '@chakra-ui/react'
 import { last } from 'lodash'
 
@@ -13,7 +13,7 @@ import { last } from 'lodash'
 export function TransactionToasts() {
   const toast = useToast()
 
-  const { transactions } = useTransactions()
+  const { transactions } = useRecentTransactions()
 
   const showToast = (transactionInfo?: TransactionInfo) => {
     if (!transactionInfo) return

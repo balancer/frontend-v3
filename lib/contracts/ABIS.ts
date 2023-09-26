@@ -1,5 +1,5 @@
-import { vaultABI } from '../abi/generated'
+import { vaultV2ABI } from '../abi/generated'
 
 export const ABIS = {
-  vaultV2: vaultABI,
+  vaultV2: vaultV2ABI,
 }

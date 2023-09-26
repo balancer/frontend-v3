@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import { TransactionInfo } from './contracts.types'
 import { getHash } from './wagmi-helpers'
-import { useTransactions } from '@/lib/modules/transactions/TransactionsProvider'
+import { useRecentTransactions } from '@/lib/modules/transactions/RecentTransactionsProvider'
 
 export function useOnNewTxHash(transactionInfo: TransactionInfo) {
-  const { addTransaction } = useTransactions()
+  const { addTransaction } = useRecentTransactions()
   useEffect(
     () => {
       if (getHash(transactionInfo)) {
@@ -12,7 +12,7 @@ export function useOnNewTxHash(transactionInfo: TransactionInfo) {
         addTransaction(transactionInfo)
       }
     },
-    // QUESTION: How do we avoid this?
+    // TODO: This is wrong: we will improve it soon
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [getHash(transactionInfo)]
   )
