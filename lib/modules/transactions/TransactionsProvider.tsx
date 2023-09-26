@@ -4,10 +4,10 @@ import { TransactionInfo } from '@/lib/contracts/contract.types'
 import { useMandatoryContext } from '@/lib/utils/contexts'
 import React, { ReactNode, createContext, useState } from 'react'
 
-export type TransactionsResponse = ReturnType<typeof _useTransactions>
-export const TransactionsContext = createContext<TransactionsResponse | null>(null)
+export type RecentTransactionsResponse = ReturnType<typeof _useRecentTransactions>
+export const TransactionsContext = createContext<RecentTransactionsResponse | null>(null)
 
-export function _useTransactions() {
+export function _useRecentTransactions() {
   // This is an initial example to show how global transaction handling could work
   // we will need a more complex structure with grouped transactions
   const [transactions, setTransactions] = useState<TransactionInfo[]>([])
@@ -19,12 +19,12 @@ export function _useTransactions() {
   return { transactions, addTransaction }
 }
 
-export function TransactionsProvider({ children }: { children: ReactNode }) {
-  const transactions = _useTransactions()
+export function RecentTransactionsProvider({ children }: { children: ReactNode }) {
+  const transactions = _useRecentTransactions()
   return (
     <TransactionsContext.Provider value={transactions}>{children}</TransactionsContext.Provider>
   )
 }
 
-export const useTransactions = () =>
-  useMandatoryContext(TransactionsContext, 'TransactionsProvider')
+export const useRecentTransactions = () =>
+  useMandatoryContext(TransactionsContext, 'RecentTransactionsProvider')
