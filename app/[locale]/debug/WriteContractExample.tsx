@@ -1,7 +1,7 @@
 'use client'
 
 import { noUserAddress } from '@/lib/contracts/wagmi-helpers'
-import { Box, Button, Flex } from '@chakra-ui/react'
+import { Box, Button, VStack } from '@chakra-ui/react'
 import { useAccount } from 'wagmi'
 import { TransactionState } from './TransactionState'
 
@@ -45,7 +45,7 @@ export function WriteContractExample() {
   }
 
   return (
-    <Flex direction={{ base: 'column' }}>
+    <VStack>
       {setRelayerApprovalResult?.hash && (
         <TransactionState hash={setRelayerApprovalResult.hash}></TransactionState>
       )}
@@ -61,6 +61,6 @@ export function WriteContractExample() {
         )}
         {execution.isSuccess && <Button onClick={execution.reset}>Try again</Button>}
       </Box>
-    </Flex>
+    </VStack>
   )
 }
