@@ -15,10 +15,15 @@ export function WriteContractExample() {
   // These args can be dynamic (i.e. from html input)
   const approvalArgs = [userAddress || noUserAddress, balancerRelayer, true] as const
 
-  // const isEnabled = !!userAddress
-  const txInfo = useManagedTransaction('vaultV2', 'setRelayerApproval', {
-    args: approvalArgs,
-  })
+  const isEnabled = !!userAddress
+  const txInfo = useManagedTransaction(
+    'balancer.vaultV2',
+    'setRelayerApproval',
+    {
+      args: approvalArgs,
+    },
+    isEnabled
+  )
 
   const { simulation, execution } = txInfo
 

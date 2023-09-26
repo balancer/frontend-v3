@@ -21,7 +21,7 @@ export function useManagedTransaction<
   T extends typeof AbiMap,
   M extends keyof typeof AbiMap,
   F extends InferFunctionName<T[M], string, WriteAbiMutability>
->(contractId: M, functionName: F, args?: GetFunctionArgs<T[M], F>) {
+>(contractId: M, functionName: F, args?: GetFunctionArgs<T[M], F>, isEnabled = true) {
   const address = useContractAddress(contractId)
   const [writeArgs, setWriteArgs] = useState(args)
 
@@ -31,7 +31,7 @@ export function useManagedTransaction<
     functionName: functionName as InferFunctionName<any, string, WriteAbiMutability>,
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
     args: writeArgs as any,
-    enabled: true,
+    enabled: isEnabled,
   })
 
   const writeQuery = useContractWrite(prepareQuery.config)
