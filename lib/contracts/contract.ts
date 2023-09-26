@@ -30,7 +30,7 @@ export function useManagedTransaction<
     address,
     functionName: functionName as InferFunctionName<any, string, WriteAbiMutability>,
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
-    args: writeArgs as any,
+    args: writeArgs?.args as any,
     enabled: isEnabled,
   })
 
