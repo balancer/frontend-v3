@@ -5,10 +5,8 @@ import { Box, Button, VStack } from '@chakra-ui/react'
 import { useAccount } from 'wagmi'
 import { TransactionState } from './TransactionState'
 
-import { ABIS } from '@/lib/contracts/ABIS'
+import { useManagedTransaction } from '@/lib/contracts/contract'
 import { useOnNewTxHash } from '@/lib/contracts/useOnNewTxHash'
-import { useWriteContractConfig } from '@/lib/contracts/useWriteContractConfig'
-import { useWriteContractWithSimulation } from '@/lib/contracts/useWriteContractWithSimulation'
 
 export function WriteContractExample() {
   const balancerRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'
@@ -17,15 +15,10 @@ export function WriteContractExample() {
   // These args can be dynamic (i.e. from html input)
   const approvalArgs = [userAddress || noUserAddress, balancerRelayer, true] as const
 
-  const contractConfig = useWriteContractConfig({
-    abi: ABIS.vaultV2,
-    functionName: 'setRelayerApproval',
+  // const isEnabled = !!userAddress
+  const txInfo = useManagedTransaction('vaultV2', 'setRelayerApproval', {
     args: approvalArgs,
   })
-
-  const isEnabled = !!userAddress
-
-  const txInfo = useWriteContractWithSimulation(contractConfig as any, isEnabled)
 
   const { simulation, execution } = txInfo
 
