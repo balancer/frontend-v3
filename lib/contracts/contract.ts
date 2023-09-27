@@ -14,8 +14,17 @@ import {
 import { WriteAbiMutability } from './contract.types'
 import { AbiMap } from './AbiMap'
 import { TransactionExecution, TransactionSimulation } from './contracts.types'
+import { NetworkConfig } from '../config/config.types'
 
-export function useContractAddress(contractId: string) {
+type Paths<T, D extends string = '.'> = {
+  [K in keyof T]: K extends string
+    ? `${K}${T[K] extends object ? `${D}${Paths<T[K], D>}` : ''}`
+    : never
+}[keyof T]
+
+type ContractPath = Paths<NetworkConfig['contracts']>
+
+export function useContractAddress(contractId: ContractPath) {
   const networkConfig = useNetworkConfig()
 
   const address = get(networkConfig.contracts, contractId)
