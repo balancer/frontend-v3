@@ -12,11 +12,11 @@ export function generateStaticParams() {
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
   const messages = (await import(`../../messages/${locale}.json`)).default
   const t = createTranslator({ locale, messages })
-  const { name, projectId } = getProjectConfig()
+  const { projectName, projectId } = getProjectConfig()
   const iconUrl = `/images/icons/${projectId}.ico`
 
   return {
-    title: t('RootLayout.title', { name }),
+    title: t('RootLayout.title', { projectName }),
     description: t('RootLayout.description'),
     icons: {
       icon: [{ url: iconUrl }],
