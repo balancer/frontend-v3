@@ -5,7 +5,12 @@ import { Abi, GetFunctionArgs, InferFunctionName } from 'viem'
 import { useEffect, useState } from 'react'
 import { useNetworkConfig } from '../config/useNetworkConfig'
 import { get } from 'lodash'
-import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
+import {
+  UsePrepareContractWriteConfig,
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from 'wagmi'
 import { WriteAbiMutability } from './contract.types'
 import { AbiMap } from './AbiMap'
 import { TransactionExecution, TransactionSimulation } from './contracts.types'
@@ -21,7 +26,15 @@ export function useManagedTransaction<
   T extends typeof AbiMap,
   M extends keyof typeof AbiMap,
   F extends InferFunctionName<T[M], string, WriteAbiMutability>
->(contractId: M, functionName: F, args?: GetFunctionArgs<T[M], F>, isEnabled = true) {
+>(
+  contractId: M,
+  functionName: F,
+  args?: GetFunctionArgs<T[M], F>,
+  additionalConfig?: Omit<
+    UsePrepareContractWriteConfig<T[M], F, number>,
+    'abi' | 'address' | 'functionName' | 'args'
+  >
+) {
   const address = useContractAddress(contractId)
   const [writeArgs, setWriteArgs] = useState(args)
 
@@ -31,7 +44,7 @@ export function useManagedTransaction<
     functionName: functionName as InferFunctionName<any, string, WriteAbiMutability>,
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
     args: writeArgs?.args as any,
-    enabled: isEnabled,
+    ...(additionalConfig as any),
   })
 
   const writeQuery = useContractWrite(prepareQuery.config)

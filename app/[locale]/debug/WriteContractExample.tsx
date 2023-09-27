@@ -22,7 +22,12 @@ export function WriteContractExample() {
     {
       args: approvalArgs,
     },
-    isEnabled
+    {
+      enabled: isEnabled,
+      onSuccess: () => {
+        console.log('Test on success hook.')
+      },
+    }
   )
 
   const { simulation, execution } = txInfo
