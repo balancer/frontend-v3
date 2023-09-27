@@ -1,6 +1,6 @@
 {
   "RootLayout": {
-    "title": "Balancer DeFi Liquidity Pools",
+    "title": "{name} DeFi Liquidity Pools",
     "description": "Explore DeFi liquidity pools or create your own. Provide liquidity to accumulate yield from swap fees while retaining your token exposure as prices move."
   },
   "PoolListTable": {
