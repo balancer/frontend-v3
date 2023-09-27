@@ -1,9 +1,9 @@
 'use client'
 
-import { InitQueryState } from './queryVars'
 import { useMemo, useState } from 'react'
 import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
 import { uniq } from 'lodash'
+import { useSearchParams } from 'next/navigation'
 
 // We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
 export const POOL_TYPE_MAP: { [key: string]: GqlPoolFilterType[] } = {
@@ -26,12 +26,15 @@ export const POOL_TYPE_MAP: { [key: string]: GqlPoolFilterType[] } = {
 
 const poolTypeFilters = Object.keys(POOL_TYPE_MAP) as GqlPoolFilterType[]
 
-export function usePoolFilters(initState: InitQueryState) {
-  const { urlParams } = initState
+export function usePoolFilters() {
+  const searchParams = useSearchParams()
+  const urlNetworks = (searchParams.get('networks')?.split(',') || []) as GqlChain[]
+  const urlPoolTypes = (searchParams.get('poolTypes')?.split(',') || []) as GqlPoolFilterType[]
+  const urlSearchText = searchParams.get('searchText') || ''
 
-  const [networks, setNetworks] = useState<GqlChain[]>(urlParams.networks)
-  const [poolTypes, setPoolTypes] = useState<GqlPoolFilterType[]>(urlParams.poolTypes)
-  const [searchText, setSearchText] = useState<string>(urlParams.searchText)
+  const [networks, setNetworks] = useState<GqlChain[]>(urlNetworks)
+  const [poolTypes, setPoolTypes] = useState<GqlPoolFilterType[]>(urlPoolTypes)
+  const [searchText, setSearchText] = useState<string>(urlSearchText)
 
   // Set internal checked state
   function toggleNetwork(checked: boolean, network: GqlChain) {

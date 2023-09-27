@@ -20,14 +20,13 @@ import {
   useQueryVarsWatcher,
 } from './queryVars'
 import { useMandatoryContext } from '@/lib/utils/contexts'
+import { ReadonlyURLSearchParams } from 'next/navigation'
 
-const initQueryState = getInitQueryState()
-
-const poolListStateVar = makeVar<PoolsQueryVariables>(initQueryState.variables)
+const poolListStateVar = makeVar<PoolsQueryVariables>(DEFAULT_POOL_LIST_QUERY_VARS)
 
 export function _usePoolList() {
   const state = useReactiveVar(poolListStateVar)
-  const poolFilters = usePoolFilters(initQueryState)
+  const poolFilters = usePoolFilters()
 
   function setNewState(newState: Partial<PoolsQueryVariables>) {
     const state = poolListStateVar()
@@ -79,15 +78,15 @@ export function _usePoolList() {
     })
   }
 
-  const setNetworks = useCallback(
-    (networks: GqlChain[]) =>
-      setNewState({
-        where: {
-          chainIn: networks.length === 0 ? PROJECT_CONFIG.supportedNetworks : networks,
-        },
-      }),
-    []
-  )
+  const setNetworks = useCallback((networks: GqlChain[]) => {
+    console.log('set networks', networks)
+
+    setNewState({
+      where: {
+        chainIn: networks.length === 0 ? PROJECT_CONFIG.supportedNetworks : networks,
+      },
+    })
+  }, [])
 
   const setPoolTypes = useCallback(
     (poolTypes: GqlPoolFilterType[]) =>
@@ -173,9 +172,9 @@ export function _usePoolList() {
   }
 }
 
-export function usePoolListSeedCacheQuery() {
+export function usePoolListSeedCacheQuery(searchParams: ReadonlyURLSearchParams) {
   return useSuspenseQuery(GetPoolsDocument, {
-    variables: initQueryState.variables,
+    variables: getInitQueryState(searchParams),
   })
 }
 
