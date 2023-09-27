@@ -3,6 +3,7 @@ import { GqlChain } from '@/lib/services/api/generated/graphql'
 
 export const ProjectConfigBalancer: ProjectConfig = {
   projectId: 'balancer',
+  name: 'Balancer',
   supportedNetworks: [
     GqlChain.Mainnet,
     GqlChain.Arbitrum,
