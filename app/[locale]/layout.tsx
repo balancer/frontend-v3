@@ -3,19 +3,7 @@ import { Navbar } from '@/components/navs/Navbar'
 import { ReactNode } from 'react'
 import { notFound } from 'next/navigation'
 import { createTranslator } from 'next-intl'
-
-// cannot use a hook here
-import { ProjectConfigBeets } from '@/lib/config/projects/beets'
-import { ProjectConfigBalancer } from '@/lib/config/projects/balancer'
-
-const allProjects = {
-  [ProjectConfigBalancer.projectId]: { ...ProjectConfigBalancer },
-  [ProjectConfigBeets.projectId]: { ...ProjectConfigBeets },
-}
-
-const PROJECT_CONFIG = process.env.NEXT_PUBLIC_PROJECT_ID
-  ? allProjects[process.env.NEXT_PUBLIC_PROJECT_ID]
-  : ProjectConfigBalancer
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
 export function generateStaticParams() {
   return [{ locale: 'en' }]
@@ -24,7 +12,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
   const messages = (await import(`../../messages/${locale}.json`)).default
   const t = createTranslator({ locale, messages })
-  const { name, projectId } = PROJECT_CONFIG
+  const { name, projectId } = getProjectConfig()
   const iconUrl = `/images/icons/${projectId}.ico`
 
   return {

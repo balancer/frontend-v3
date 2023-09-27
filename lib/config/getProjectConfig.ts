@@ -10,6 +10,6 @@ export const PROJECT_CONFIG = process.env.NEXT_PUBLIC_PROJECT_ID
   ? allProjects[process.env.NEXT_PUBLIC_PROJECT_ID]
   : ProjectConfigBalancer
 
-export function useProjectConfig() {
+export function getProjectConfig() {
   return PROJECT_CONFIG
 }

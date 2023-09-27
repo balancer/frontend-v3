@@ -10,7 +10,7 @@ import {
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
 } from '@/lib/services/api/generated/graphql'
-import { PROJECT_CONFIG } from '@/lib/config/useProjectConfig'
+import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { PoolsColumnSort } from '@/lib/modules/pool/pool.types'
 import { useMandatoryContext } from '@/lib/utils/contexts'
