@@ -34,5 +34,6 @@ export interface Config {
 
 export interface ProjectConfig {
   projectId: 'beets' | 'balancer'
+  projectName: string
   supportedNetworks: GqlChain[]
 }
