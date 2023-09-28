@@ -1,6 +1,5 @@
 'use client'
 
-import { PoolListPagination } from './components/PoolListPagination'
 import { PoolListTable } from './components/PoolListTable/PoolListTable'
 import { VStack } from '@chakra-ui/react'
 import { PoolListFilters } from './components/PoolListFilters'
@@ -17,7 +16,6 @@ export function PoolList() {
     <VStack align="start" spacing="md">
       <PoolListFilters />
       <PoolListTable />
-      <PoolListPagination />
     </VStack>
   )
 }

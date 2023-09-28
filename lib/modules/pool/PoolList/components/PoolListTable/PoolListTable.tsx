@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { getPoolPath } from '../../../pool.utils'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { useTranslations } from 'next-intl'
+import { PaginationState } from '@tanstack/react-table'
 
 export function PoolListTable() {
   const t = useTranslations('PoolListTable')
@@ -18,7 +19,7 @@ export function PoolListTable() {
     volume24h: t('columns.volume24h'),
     apr: t('columns.apr'),
   }
-  const { pools, loading, sorting, setSort } = usePoolList()
+  const { pools, loading, sorting, setSort, count, refetch } = usePoolList()
   const columns = getPoolListTableColumns(columnTitles)
   const router = useRouter()
 
@@ -39,6 +40,9 @@ export function PoolListTable() {
     router.prefetch(poolPath)
   }
 
+  const onPaginationChangeHandler = (value: PaginationState) =>
+    refetch({ first: value.pageSize, skip: value.pageIndex * value.pageSize })
+
   return (
     <Box w="full" style={{ position: 'relative' }}>
       <DataTable
@@ -48,6 +52,8 @@ export function PoolListTable() {
         setSorting={setSort}
         rowClickHandler={rowClickHandler}
         rowMouseEnterHandler={rowMouseEnterHandler}
+        rowCount={count || -1}
+        onPaginationChangeHandler={onPaginationChangeHandler}
       />
       {loading && (
         <Box
