@@ -74,20 +74,6 @@ export function _usePoolList() {
     }
   }
 
-  function setPageSize(pageSize: number) {
-    setNewState({
-      skip: 0,
-      first: pageSize,
-    })
-  }
-
-  function setPageNumber(pageNumber: number) {
-    const state = poolListStateVar()
-    setNewState({
-      skip: pageNumber * state.first,
-    })
-  }
-
   const setNetworks = useCallback(
     (networks: GqlChain[]) =>
       setNewState({
@@ -123,9 +109,6 @@ export function _usePoolList() {
     ? [{ id: state.orderBy, desc: state.orderDirection === GqlPoolOrderDirection.Desc }]
     : []
 
-  const pageNumber = state.skip / state.first
-  const pageSize = state.first
-
   return {
     state,
     pools,
@@ -134,10 +117,6 @@ export function _usePoolList() {
     error,
     networkStatus,
     refetch,
-    setPageSize,
-    setPageNumber,
-    pageNumber,
-    pageSize,
     sorting,
     setSort,
     setNetworks,
