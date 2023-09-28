@@ -174,7 +174,6 @@ export function DataTable<Data extends object, Sorting extends SortingState>({
               />
             </Tooltip>
           </Flex>
-
           <Flex alignItems="center">
             <Text flexShrink="0" mr="8">
               Page{' '}
@@ -240,8 +239,6 @@ export function DataTable<Data extends object, Sorting extends SortingState>({
           </Flex>
         </Flex>
       )}
-      <div>{table.getRowModel().rows.length} Rows</div>
-      <pre>{JSON.stringify(table.getState().pagination, null, 2)}</pre>
     </>
   )
 }
