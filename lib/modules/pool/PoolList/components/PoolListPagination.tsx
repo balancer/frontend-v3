@@ -1,11 +1,11 @@
 'use client'
 
 import { Button, HStack, Text, VStack } from '@chakra-ui/react'
-import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { useTranslations } from 'next-intl'
+import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 
 export function PoolListPagination() {
-  const { pageNumber, pageSize, setPageNumber, setPageSize } = usePoolList()
+  const { pageNumber, pageSize, setPageNumber, setPageSize } = usePoolListQueryState()
   const t = useTranslations('PoolListPagination')
 
   return (

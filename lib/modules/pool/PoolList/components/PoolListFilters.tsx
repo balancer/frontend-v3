@@ -4,11 +4,11 @@ import {
   Badge,
   Button,
   ButtonProps,
-  forwardRef,
   Checkbox,
   Divider,
-  HStack,
+  forwardRef,
   Heading,
+  HStack,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -21,27 +21,22 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react'
-import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
-import { useEffect } from 'react'
 import { PoolListSearch } from './PoolListSearch'
 import { useProjectConfig } from '@/lib/config/useProjectConfig'
 import { useTranslations } from 'next-intl'
+import {
+  PoolTypeKey,
+  usePoolListQueryState,
+} from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 
 function PoolTypeFilters() {
-  const {
-    setPoolTypes,
-    poolFilters: { poolTypes, poolTypeFilters, mappedPoolTypes, togglePoolType, poolTypeLabel },
-  } = usePoolList()
-
-  useEffect(() => {
-    setPoolTypes(mappedPoolTypes)
-  }, [mappedPoolTypes, setPoolTypes])
+  const { togglePoolType, poolTypeFilters, poolTypes, poolTypeLabel } = usePoolListQueryState()
 
   return poolTypeFilters.map(poolType => (
     <Checkbox
       key={poolType}
       isChecked={!!poolTypes.find(selected => selected === poolType)}
-      onChange={e => togglePoolType(e.target.checked, poolType)}
+      onChange={e => togglePoolType(e.target.checked, poolType as PoolTypeKey)}
     >
       <Text textTransform="capitalize">{poolTypeLabel(poolType)}</Text>
     </Checkbox>
@@ -50,15 +45,7 @@ function PoolTypeFilters() {
 
 function PoolNetworkFilters() {
   const { supportedNetworks } = useProjectConfig()
-  const {
-    setNetworks,
-    poolFilters: { networks: toggledNetworks, toggleNetwork },
-  } = usePoolList()
-
-  // Set query state when toggled state changes
-  useEffect(() => {
-    setNetworks(toggledNetworks)
-  }, [toggledNetworks, setNetworks])
+  const { networks: toggledNetworks, toggleNetwork } = usePoolListQueryState()
 
   return supportedNetworks.map(network => (
     <Checkbox
@@ -72,9 +59,8 @@ function PoolNetworkFilters() {
 }
 
 function FilterTags() {
-  const {
-    poolFilters: { networks, toggleNetwork, poolTypes, togglePoolType, poolTypeLabel },
-  } = usePoolList()
+  const { networks, toggleNetwork, poolTypes, togglePoolType, poolTypeLabel } =
+    usePoolListQueryState()
 
   return (
     <HStack spacing="sm">
@@ -98,9 +84,7 @@ function FilterTags() {
 }
 
 const FilterButton = forwardRef<ButtonProps & { label: string }, 'button'>((props, ref) => {
-  const {
-    poolFilters: { totalFilterCount },
-  } = usePoolList()
+  const { totalFilterCount } = usePoolListQueryState()
 
   return (
     <Button ref={ref} {...props}>
