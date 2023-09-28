@@ -15,17 +15,6 @@ vi.mock('next/image', () => ({
   },
 }))
 
-// TODO: find a better way to mock connected/disconnected in component tests
-vi.mock('wagmi', async () => {
-  const actual = (await vi.importActual('wagmi')) as object
-  return {
-    ...actual,
-    useAccount: () => ({
-      address: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
-    }),
-  }
-})
-
 // waitFor global timeout
 // https://testing-library.com/docs/dom-testing-library/api-configuration/#asyncutiltimeout
 configure({ asyncUtilTimeout: 10_000 })
