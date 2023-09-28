@@ -1,13 +1,12 @@
 'use client'
 
-import { useMemo } from 'react'
 import {
   GqlChain,
   GqlPoolFilterType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
 } from '@/lib/services/api/generated/graphql'
-import { isEqual, uniq } from 'lodash'
+import { uniq } from 'lodash'
 import {
   createEnumDelimitedArrayParam,
   createEnumParam,
@@ -16,36 +15,15 @@ import {
   useQueryParams,
   withDefault,
 } from 'use-query-params'
-import { PROJECT_CONFIG } from '@/lib/config/useProjectConfig'
 import { PoolsColumnSort } from '@/lib/modules/pool/pool.types'
 
-// We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
-export const POOL_TYPE_MAP: { [key: string]: GqlPoolFilterType[] } = {
-  [GqlPoolFilterType.Weighted]: [GqlPoolFilterType.Weighted],
-  [GqlPoolFilterType.Stable]: [
-    GqlPoolFilterType.Stable,
-    GqlPoolFilterType.PhantomStable,
-    GqlPoolFilterType.MetaStable,
-    GqlPoolFilterType.Gyro,
-    GqlPoolFilterType.Gyro3,
-    GqlPoolFilterType.Gyroe,
-  ],
-  [GqlPoolFilterType.LiquidityBootstrapping]: [GqlPoolFilterType.LiquidityBootstrapping],
-  [GqlPoolFilterType.Gyro]: [
-    GqlPoolFilterType.Gyro,
-    GqlPoolFilterType.Gyro3,
-    GqlPoolFilterType.Gyroe,
-  ],
-}
-
-export type PoolTypeKey =
-  | GqlPoolFilterType.Weighted
-  | GqlPoolFilterType.Stable
-  | GqlPoolFilterType.LiquidityBootstrapping
-  | GqlPoolFilterType.Gyroe
-
-const poolTypeFilters = Object.keys(POOL_TYPE_MAP) as GqlPoolFilterType[]
-const defaultPoolTypes: PoolTypeKey[] = [GqlPoolFilterType.Weighted, GqlPoolFilterType.Stable]
+export const poolTypeFilters = [
+  GqlPoolFilterType.Weighted,
+  GqlPoolFilterType.Stable,
+  GqlPoolFilterType.LiquidityBootstrapping,
+  GqlPoolFilterType.Gyro,
+] as const
+export type PoolFilterType = (typeof poolTypeFilters)[number]
 
 export function usePoolListQueryState() {
   const [query, setQuery] = useQueryParams({
@@ -60,24 +38,26 @@ export function usePoolListQueryState() {
       GqlPoolOrderDirection.Desc
     ),
     poolTypes: withDefault(
-      createEnumDelimitedArrayParam([
-        GqlPoolFilterType.Weighted,
-        GqlPoolFilterType.Stable,
-        GqlPoolFilterType.LiquidityBootstrapping,
-        GqlPoolFilterType.Gyroe,
-      ]),
-      defaultPoolTypes
+      createEnumDelimitedArrayParam(
+        [
+          GqlPoolFilterType.Weighted,
+          GqlPoolFilterType.Stable,
+          GqlPoolFilterType.LiquidityBootstrapping,
+          GqlPoolFilterType.Gyro,
+        ],
+        ','
+      ),
+      []
     ),
     networks: withDefault(
-      createEnumDelimitedArrayParam(Object.entries(GqlChain).map(([, value]) => value)),
-      PROJECT_CONFIG.supportedNetworks
+      createEnumDelimitedArrayParam(
+        Object.entries(GqlChain).map(([, value]) => value),
+        ','
+      ),
+      []
     ),
     textSearch: withDefault(StringParam, null),
   })
-
-  const networks =
-    query.networks.length === PROJECT_CONFIG.supportedNetworks.length ? [] : query.networks
-  const poolTypes = isEqual(defaultPoolTypes, query.poolTypes) ? [] : query.poolTypes
 
   // Set internal checked state
   function toggleNetwork(checked: boolean, network: GqlChain) {
@@ -89,9 +69,9 @@ export function usePoolListQueryState() {
   }
 
   // Set internal checked state
-  function togglePoolType(checked: boolean, poolType: PoolTypeKey) {
+  function togglePoolType(checked: boolean, poolType: PoolFilterType) {
     if (checked) {
-      setQuery(latest => ({ poolTypes: uniq([...(latest.poolTypes || [])]) }))
+      setQuery(latest => ({ poolTypes: uniq([...latest.poolTypes, poolType]) }))
     } else {
       setQuery(latest => ({
         poolTypes: (latest.poolTypes || []).filter(type => type !== poolType),
@@ -148,13 +128,7 @@ export function usePoolListQueryState() {
     }
   }
 
-  const mappedPoolTypes = useMemo(
-    () => (query.poolTypes || []).map(poolType => POOL_TYPE_MAP[poolType]).flat(),
-    [query.poolTypes]
-  )
-
-  const totalFilterCount = networks.length + poolTypes.length
-
+  const totalFilterCount = query.networks.length + query.poolTypes.length
   const sorting: PoolsColumnSort[] = query.orderBy
     ? [{ id: query.orderBy, desc: query.orderDirection === GqlPoolOrderDirection.Desc }]
     : []
@@ -162,15 +136,9 @@ export function usePoolListQueryState() {
   const pageNumber = query.skip / query.first
   const pageSize = query.first
 
-  console.log(query.poolTypes, poolTypes)
-
   return {
     state: query,
-    networks,
     toggleNetwork,
-    poolTypes,
-    poolTypeFilters,
-    mappedPoolTypes,
     togglePoolType,
     poolTypeLabel,
     setSort,
@@ -182,5 +150,7 @@ export function usePoolListQueryState() {
     pageSize,
     sorting,
     totalFilterCount,
+    poolTypes: query.poolTypes,
+    networks: query.networks,
   }
 }

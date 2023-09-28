@@ -25,18 +25,19 @@ import { PoolListSearch } from './PoolListSearch'
 import { useProjectConfig } from '@/lib/config/useProjectConfig'
 import { useTranslations } from 'next-intl'
 import {
-  PoolTypeKey,
+  PoolFilterType,
+  poolTypeFilters,
   usePoolListQueryState,
 } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 
 function PoolTypeFilters() {
-  const { togglePoolType, poolTypeFilters, poolTypes, poolTypeLabel } = usePoolListQueryState()
+  const { togglePoolType, poolTypes, poolTypeLabel } = usePoolListQueryState()
 
   return poolTypeFilters.map(poolType => (
     <Checkbox
       key={poolType}
       isChecked={!!poolTypes.find(selected => selected === poolType)}
-      onChange={e => togglePoolType(e.target.checked, poolType as PoolTypeKey)}
+      onChange={e => togglePoolType(e.target.checked, poolType as PoolFilterType)}
     >
       <Text textTransform="capitalize">{poolTypeLabel(poolType)}</Text>
     </Checkbox>
