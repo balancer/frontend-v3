@@ -14,6 +14,6 @@ export function useOnNewTxHash(transactionInfo: TransactionInfo) {
     },
     // TODO: This is wrong: we will improve it soon
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [getHash(transactionInfo)]
+    [transactionInfo.execution.data?.hash]
   )
 }
