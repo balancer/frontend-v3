@@ -3,7 +3,7 @@
 import { PropsWithChildren, createContext, useState, useEffect } from 'react'
 import { GqlChain, GqlPoolFilterType } from '@/lib/services/api/generated/graphql'
 import { uniq } from 'lodash'
-import { useProjectConfig } from '@/lib/config/useProjectConfig'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { useMandatoryContext } from '@/lib/utils/contexts'
 
 // We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
@@ -28,7 +28,7 @@ const POOL_TYPE_MAP: { [key: string]: GqlPoolFilterType[] } = {
 const poolTypeFilters = Object.keys(POOL_TYPE_MAP) as GqlPoolFilterType[]
 
 function _usePoolListFilters() {
-  const { supportedNetworks } = useProjectConfig()
+  const { supportedNetworks } = getProjectConfig()
   const [poolTypes, setPoolTypes] = useState<GqlPoolFilterType[]>([])
   const [networks, setNetworks] = useState<GqlChain[]>([])
   const [searchText, setSearchText] = useState<string>('')
