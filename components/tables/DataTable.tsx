@@ -1,25 +1,5 @@
 import * as React from 'react'
-import {
-  Text,
-  Flex,
-  HStack,
-  IconButton,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  Select,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tooltip,
-  Tr,
-  chakra,
-} from '@chakra-ui/react'
-import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
+import { HStack, Table, Tbody, Td, Th, Thead, Tr, chakra } from '@chakra-ui/react'
 import {
   ColumnDef,
   flexRender,
@@ -30,6 +10,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { SortingIcon } from '@/components/icons/SortingIcon'
+import { Pagination } from '@/components/pagination/Pagination'
 
 export type DataTableProps<Data extends object> = {
   data: Data[]
@@ -154,90 +135,19 @@ export function DataTable<Data extends object>({
         </Tbody>
       </Table>
       {rowCount > pageSize && (
-        <HStack justifyContent="center" alignItems="center" m="4" gap="8">
-          <Flex>
-            <Tooltip label="First Page">
-              <IconButton
-                aria-label="first page"
-                onClick={() => table.setPageIndex(0)}
-                isDisabled={!table.getCanPreviousPage()}
-                icon={<ArrowLeftIcon h="3" w="3" />}
-                mr="4"
-              />
-            </Tooltip>
-            <Tooltip label="Previous Page">
-              <IconButton
-                aria-label="previous page"
-                onClick={() => table.previousPage()}
-                isDisabled={!table.getCanPreviousPage()}
-                icon={<ChevronLeftIcon h="6" w="6" />}
-              />
-            </Tooltip>
-          </Flex>
-          <Flex alignItems="center">
-            <Text flexShrink="0" mr="8">
-              Page{' '}
-              <Text fontWeight="bold" as="span">
-                {table.getState().pagination.pageIndex + 1}
-              </Text>{' '}
-              of{' '}
-              <Text fontWeight="bold" as="span">
-                {table.getPageCount()}
-              </Text>
-            </Text>
-            <Text flexShrink="0">Go to page:</Text>{' '}
-            <NumberInput
-              ml="2"
-              mr="8"
-              w="28"
-              min={1}
-              max={table.getPageCount()}
-              onChange={value => {
-                const page = value ? parseInt(value) - 1 : 0
-                table.setPageIndex(page)
-              }}
-              defaultValue={table.getState().pagination.pageIndex + 1}
-            >
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
-            <Select
-              w="32"
-              value={table.getState().pagination.pageSize}
-              onChange={e => {
-                table.setPageSize(Number(e.target.value))
-              }}
-            >
-              {[10, 20, 30, 40, 50].map(pageSize => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </Select>
-          </Flex>
-          <Flex>
-            <Tooltip label="Next Page">
-              <IconButton
-                aria-label="next page"
-                onClick={() => table.nextPage()}
-                isDisabled={!table.getCanNextPage()}
-                icon={<ChevronRightIcon h="6" w="6" />}
-              />
-            </Tooltip>
-            <Tooltip label="Last Page">
-              <IconButton
-                aria-label="last page"
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                isDisabled={!table.getCanNextPage()}
-                icon={<ArrowRightIcon h="3" w="3" />}
-                ml="4"
-              />
-            </Tooltip>
-          </Flex>
-        </HStack>
+        <Pagination
+          goToFirstPage={() => table.setPageIndex(0)}
+          gotoLastPage={() => table.setPageIndex(table.getPageCount() - 1)}
+          goToNextPage={() => table.nextPage()}
+          goToPreviousPage={() => table.previousPage()}
+          canPreviousPage={table.getCanPreviousPage()}
+          canNextPage={table.getCanNextPage()}
+          currentPageNumber={table.getState().pagination.pageIndex + 1}
+          totalPageCount={table.getPageCount()}
+          setPageIndex={table.setPageIndex}
+          setPageSize={table.setPageSize}
+          pageSize={table.getState().pagination.pageSize}
+        />
       )}
     </>
   )
