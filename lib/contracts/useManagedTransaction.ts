@@ -1,35 +1,18 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
-import { Abi, GetFunctionArgs, InferFunctionName } from 'viem'
 import { useEffect, useState } from 'react'
-import { useNetworkConfig } from '../config/useNetworkConfig'
-import { get } from 'lodash'
+import { Abi, GetFunctionArgs, InferFunctionName } from 'viem'
 import {
   UsePrepareContractWriteConfig,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
 } from 'wagmi'
-import { WriteAbiMutability } from './contract.types'
 import { AbiMap } from './AbiMap'
-import { TransactionExecution, TransactionSimulation } from './contracts.types'
-import { NetworkConfig } from '../config/config.types'
-
-type Paths<T, D extends string = '.'> = {
-  [K in keyof T]: K extends string
-    ? `${K}${T[K] extends object ? `${D}${Paths<T[K], D>}` : ''}`
-    : never
-}[keyof T]
-
-type ContractPath = Paths<NetworkConfig['contracts']>
-
-export function useContractAddress(contractId: ContractPath) {
-  const networkConfig = useNetworkConfig()
-
-  const address = get(networkConfig.contracts, contractId)
-  return address
-}
+import { WriteAbiMutability } from './contract.types'
+import { TransactionExecution, TransactionSimulation } from './contract.types'
+import { useContractAddress } from './useContractAddress'
 
 export function useManagedTransaction<
   T extends typeof AbiMap,

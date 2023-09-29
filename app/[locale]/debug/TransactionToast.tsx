@@ -1,7 +1,7 @@
 'use client'
 
-import { TransactionInfo } from '@/lib/contracts/contracts.types'
-import { getHash } from '@/lib/contracts/wagmi-helpers'
+import { TransactionInfo } from '@/lib/contracts/contract.types'
+import { getHashFromTransaction } from '@/lib/contracts/wagmi-helpers'
 import { useRecentTransactions } from '@/lib/modules/transactions/RecentTransactionsProvider'
 import { useToast, Button } from '@chakra-ui/react'
 import { last } from 'lodash'
@@ -19,7 +19,7 @@ export function TransactionToasts() {
     if (!transactionInfo) return
     toast({
       title: 'Transaction',
-      description: getHash(transactionInfo),
+      description: getHashFromTransaction(transactionInfo),
       status: 'info',
       duration: 2000,
       isClosable: true,

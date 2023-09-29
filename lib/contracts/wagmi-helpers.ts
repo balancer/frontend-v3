@@ -1,8 +1,8 @@
 // Helpers for wagmi transactions
 import { Address } from 'wagmi'
-import { TransactionInfo } from './contracts.types'
+import { TransactionInfo } from './contract.types'
 
-export function getHash(transaction?: TransactionInfo): Address | undefined {
+export function getHashFromTransaction(transaction?: TransactionInfo): Address | undefined {
   if (!transaction) return
   if (transaction.execution) return transaction.execution.data?.hash
 }

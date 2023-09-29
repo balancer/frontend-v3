@@ -5,7 +5,7 @@ import { Box, Button, VStack } from '@chakra-ui/react'
 import { useAccount } from 'wagmi'
 import { TransactionState } from './TransactionState'
 
-import { useManagedTransaction } from '@/lib/contracts/contract'
+import { useManagedTransaction } from '@/lib/contracts/useManagedTransaction'
 import { useOnNewTxHash } from '@/lib/contracts/useOnNewTxHash'
 
 export function WriteContractExample() {
