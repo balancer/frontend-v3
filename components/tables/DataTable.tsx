@@ -29,7 +29,7 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table'
-import { SortingIcon } from '@/components/tables/SortingIcon'
+import { SortingIcon } from '@/components/icons/SortingIcon'
 
 export type DataTableProps<Data extends object> = {
   data: Data[]
