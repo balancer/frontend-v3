@@ -22,7 +22,6 @@ export interface NetworkConfig {
   iconPath: string
   tokens: TokensConfig
   contracts: ContractsConfig
-  minConfirmations: number
 }
 
 export interface Config {
