@@ -8,7 +8,8 @@ import { useRouter } from 'next/navigation'
 import { getPoolPath } from '../../../pool.utils'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { useTranslations } from 'next-intl'
-import { PaginationState } from '@tanstack/react-table'
+import { PaginationState, SortingState } from '@tanstack/react-table'
+import { GqlPoolOrderBy, GqlPoolOrderDirection } from '@/lib/services/api/generated/graphql'
 
 export function PoolListTable() {
   const t = useTranslations('PoolListTable')
@@ -19,7 +20,7 @@ export function PoolListTable() {
     volume24h: t('columns.volume24h'),
     apr: t('columns.apr'),
   }
-  const { pools, loading, sorting, setSort, count, refetch } = usePoolList()
+  const { pools, loading, count, refetch } = usePoolList()
   const columns = getPoolListTableColumns(columnTitles)
   const router = useRouter()
 
@@ -43,17 +44,26 @@ export function PoolListTable() {
   const onPaginationChangeHandler = (value: PaginationState) =>
     refetch({ first: value.pageSize, skip: value.pageIndex * value.pageSize })
 
+  const onSortingChangeHandler = (value: SortingState) => {
+    if (!value.length) {
+      return
+    }
+    refetch({
+      orderBy: value[0].id as GqlPoolOrderBy,
+      orderDirection: value[0].desc ? GqlPoolOrderDirection.Desc : GqlPoolOrderDirection.Asc,
+    })
+  }
+
   return (
     <Box w="full" style={{ position: 'relative' }}>
       <DataTable
         columns={columns}
         data={pools}
-        sorting={sorting}
-        setSorting={setSort}
         rowClickHandler={rowClickHandler}
         rowMouseEnterHandler={rowMouseEnterHandler}
         rowCount={count || -1}
         onPaginationChangeHandler={onPaginationChangeHandler}
+        onSortingChangeHandler={onSortingChangeHandler}
       />
       {loading && (
         <Box

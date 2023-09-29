@@ -1,7 +1,6 @@
 import * as React from 'react'
 import {
   Text,
-  Center,
   Flex,
   HStack,
   IconButton,
@@ -18,15 +17,9 @@ import {
   Thead,
   Tooltip,
   Tr,
+  chakra,
 } from '@chakra-ui/react'
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  TriangleDownIcon,
-  TriangleUpIcon,
-} from '@chakra-ui/icons'
+import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
 import {
   ColumnDef,
   flexRender,
@@ -36,32 +29,33 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table'
+import { SortingIcon } from '@/components/tables/SortingIcon'
 
-export type DataTableProps<Data extends object, Sorting extends SortingState> = {
+export type DataTableProps<Data extends object> = {
   data: Data[]
   columns: ColumnDef<Data, any>[]
-  sorting: Sorting
-  setSorting: (sorting: Sorting) => void
   rowClickHandler?: (event: React.MouseEvent<HTMLElement>, rowData: Data) => void
   rowMouseEnterHandler?: (event: React.MouseEvent<HTMLElement>, rowData: Data) => void
   rowCount: number
   onPaginationChangeHandler?: (state: PaginationState) => void
+  onSortingChangeHandler?: (state: SortingState) => void
 }
 
-export function DataTable<Data extends object, Sorting extends SortingState>({
+export function DataTable<Data extends object>({
   data,
   columns,
-  sorting,
-  setSorting,
   rowClickHandler,
   rowMouseEnterHandler,
   rowCount,
   onPaginationChangeHandler,
-}: DataTableProps<Data, Sorting>) {
+  onSortingChangeHandler,
+}: DataTableProps<Data>) {
   const [{ pageIndex, pageSize }, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
     pageSize: 20,
   })
+
+  const [sorting, setSorting] = React.useState<SortingState>([])
 
   const pagination = React.useMemo(
     () => ({
@@ -76,15 +70,15 @@ export function DataTable<Data extends object, Sorting extends SortingState>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIndex, pageSize])
 
+  React.useEffect(() => {
+    onSortingChangeHandler && onSortingChangeHandler(sorting)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sorting])
+
   const table = useReactTable({
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
-    onSortingChange: updaterOrValue => {
-      setSorting(
-        (typeof updaterOrValue === 'function' ? updaterOrValue(sorting) : sorting) as Sorting
-      )
-    },
     getSortedRowModel: getSortedRowModel(),
     state: {
       sorting,
@@ -92,14 +86,16 @@ export function DataTable<Data extends object, Sorting extends SortingState>({
     },
     pageCount: Math.ceil(rowCount / pageSize),
     onPaginationChange: setPagination,
+    onSortingChange: setSorting,
     manualSorting: true,
+    enableSortingRemoval: false,
     sortDescFirst: true,
     manualPagination: true,
   })
 
   return (
     <>
-      <Table w="full">
+      <Table __css={{ tableLayout: 'fixed', width: 'full' }}>
         <Thead>
           {table.getHeaderGroups().map(headerGroup => (
             <Tr key={headerGroup.id}>
@@ -109,20 +105,24 @@ export function DataTable<Data extends object, Sorting extends SortingState>({
                 return (
                   <Th
                     key={header.id}
-                    onClick={header.column.getToggleSortingHandler()}
                     isNumeric={meta?.isNumeric}
+                    onClick={header.column.getToggleSortingHandler()}
+                    w={header.getSize()}
                   >
-                    <HStack justify="end">
-                      <Center w="6" h="6">
-                        {header.column.getIsSorted() ? (
-                          header.column.getIsSorted() === 'desc' ? (
-                            <TriangleDownIcon aria-label="sorted descending" />
-                          ) : (
-                            <TriangleUpIcon aria-label="sorted ascending" />
-                          )
-                        ) : null}
-                      </Center>
+                    <HStack
+                      style={
+                        header.column.getCanSort() ? { position: 'relative', right: '-20px' } : {}
+                      }
+                    >
                       {flexRender(header.column.columnDef.header, header.getContext())}
+                      {header.column.getCanSort() && (
+                        <chakra.span h="full" cursor="pointer">
+                          {{
+                            asc: <SortingIcon direction="asc" />,
+                            desc: <SortingIcon direction="desc" />,
+                          }[header.column.getIsSorted() as string] ?? <SortingIcon />}
+                        </chakra.span>
+                      )}
                     </HStack>
                   </Th>
                 )
@@ -135,7 +135,7 @@ export function DataTable<Data extends object, Sorting extends SortingState>({
             <Tr
               key={row.id}
               onClick={event => rowClickHandler && rowClickHandler(event, row.original)}
-              style={{ cursor: rowClickHandler ? 'pointer' : 'default' }}
+              cursor={rowClickHandler ? 'pointer' : 'default'}
               onMouseEnter={event =>
                 rowMouseEnterHandler && rowMouseEnterHandler(event, row.original)
               }
@@ -154,7 +154,7 @@ export function DataTable<Data extends object, Sorting extends SortingState>({
         </Tbody>
       </Table>
       {rowCount > pageSize && (
-        <Flex justifyContent="space-between" m="4" alignItems="center">
+        <HStack justifyContent="center" alignItems="center" m="4" gap="8">
           <Flex>
             <Tooltip label="First Page">
               <IconButton
@@ -237,7 +237,7 @@ export function DataTable<Data extends object, Sorting extends SortingState>({
               />
             </Tooltip>
           </Flex>
-        </Flex>
+        </HStack>
       )}
     </>
   )

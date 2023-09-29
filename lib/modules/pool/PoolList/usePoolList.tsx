@@ -12,7 +12,6 @@ import {
 } from '@/lib/services/api/generated/graphql'
 import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { PoolsColumnSort } from '@/lib/modules/pool/pool.types'
 import { useMandatoryContext } from '@/lib/utils/contexts'
 
 interface PoolsQueryVariables extends GetPoolsQueryVariables {
@@ -58,22 +57,6 @@ export function _usePoolList() {
     })
   }
 
-  function setSort(sortingState: PoolsColumnSort[]) {
-    if (sortingState.length > 0) {
-      setNewState({
-        orderBy: sortingState[0].id,
-        orderDirection: sortingState[0].desc
-          ? GqlPoolOrderDirection.Desc
-          : GqlPoolOrderDirection.Asc,
-      })
-    } else {
-      setNewState({
-        orderBy: GqlPoolOrderBy.TotalLiquidity,
-        orderDirection: GqlPoolOrderDirection.Desc,
-      })
-    }
-  }
-
   const setNetworks = useCallback(
     (networks: GqlChain[]) =>
       setNewState({
@@ -105,10 +88,6 @@ export function _usePoolList() {
 
   const pools = loading && previousData ? previousData.pools : data?.pools || []
 
-  const sorting: PoolsColumnSort[] = state.orderBy
-    ? [{ id: state.orderBy, desc: state.orderDirection === GqlPoolOrderDirection.Desc }]
-    : []
-
   return {
     state,
     pools,
@@ -117,8 +96,6 @@ export function _usePoolList() {
     error,
     networkStatus,
     refetch,
-    sorting,
-    setSort,
     setNetworks,
     setPoolTypes,
   }

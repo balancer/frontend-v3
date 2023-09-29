@@ -3,10 +3,11 @@
 import { ColumnDef } from '@tanstack/react-table'
 import numeral from 'numeral'
 import Image from 'next/image'
-import { GqlPoolApr, GqlPoolAprTotal } from '@/lib/services/api/generated/graphql'
+import { GqlPoolApr } from '@/lib/services/api/generated/graphql'
 import { VStack, Text, HStack, Tag } from '@chakra-ui/react'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { PoolListItem } from '../../../pool.types'
+import { getApr } from '@/lib/utils/apr'
 
 export interface ColumnTitles {
   network: string
@@ -19,19 +20,18 @@ export interface ColumnTitles {
 export const getPoolListTableColumns = (columnTitles: ColumnTitles): ColumnDef<PoolListItem>[] => [
   {
     id: 'chainLogoUrl',
-    accessorKey: 'chain.logoUrl',
-    header: columnTitles.network,
+    header: () => <Text>{columnTitles.network}</Text>,
     cell: ({ row: { original: pool } }) => {
       const networkConfig = getNetworkConfig(pool.chain)
       return (
-        <Image src={networkConfig.iconPath} width={30} height={30} alt={networkConfig.shortName} />
+        <Image src={networkConfig.iconPath} width="30" height="30" alt={networkConfig.shortName} />
       )
     },
+    size: 50,
   },
-
   {
     id: 'details',
-    header: columnTitles.details,
+    header: () => <Text>{columnTitles.details}</Text>,
     cell: ({ row: { original: pool } }) => {
       return (
         <VStack align="start">
@@ -48,7 +48,7 @@ export const getPoolListTableColumns = (columnTitles: ColumnTitles): ColumnDef<P
   {
     id: 'totalLiquidity',
     accessorKey: 'dynamicData.totalLiquidity',
-    header: () => <Text textAlign="right">{columnTitles.totalLiquidity}</Text>,
+    header: () => <Text ml="auto">{columnTitles.totalLiquidity}</Text>,
     cell: props => {
       const value = numeral(props.getValue()).format('($0,0a)')
 
@@ -58,11 +58,12 @@ export const getPoolListTableColumns = (columnTitles: ColumnTitles): ColumnDef<P
         </Text>
       )
     },
+    size: 75,
   },
   {
     id: 'volume24h',
     accessorKey: 'dynamicData.volume24h',
-    header: () => <Text textAlign="right">{columnTitles.volume24h}</Text>,
+    header: () => <Text ml="auto">{columnTitles.volume24h}</Text>,
     cell: props => {
       const value = numeral(props.getValue()).format('($0,0a)')
 
@@ -72,22 +73,15 @@ export const getPoolListTableColumns = (columnTitles: ColumnTitles): ColumnDef<P
         </Text>
       )
     },
+    size: 75,
   },
   {
     id: 'apr',
     accessorKey: 'dynamicData.apr',
-    header: () => {
-      return <Text textAlign="right">{columnTitles.apr}</Text>
-    },
+    header: () => <Text ml="auto">{columnTitles.apr}</Text>,
     cell: row => {
       const value = row.getValue<GqlPoolApr>()
-
-      // const apr = false //pool.dynamicData.apr
-      if (!(value.apr as GqlPoolAprTotal)?.total) {
-        return <Text align="right">-</Text>
-      }
-
-      const apr = numeral((value.apr as GqlPoolAprTotal).total).format('0.[00]%')
+      const apr = getApr(value.apr)
 
       return (
         <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
@@ -95,5 +89,6 @@ export const getPoolListTableColumns = (columnTitles: ColumnTitles): ColumnDef<P
         </Text>
       )
     },
+    size: 75,
   },
 ]
