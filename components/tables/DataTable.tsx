@@ -18,8 +18,10 @@ export type DataTableProps<Data extends object> = {
   rowClickHandler?: (event: React.MouseEvent<HTMLElement>, rowData: Data) => void
   rowMouseEnterHandler?: (event: React.MouseEvent<HTMLElement>, rowData: Data) => void
   rowCount: number
-  onPaginationChangeHandler?: (state: PaginationState) => void
-  onSortingChangeHandler?: (state: SortingState) => void
+  pagination: PaginationState
+  sorting: SortingState
+  setSorting: (state: SortingState) => void
+  setPagination: (state: PaginationState) => void
 }
 
 export function DataTable<Data extends object>({
@@ -28,34 +30,11 @@ export function DataTable<Data extends object>({
   rowClickHandler,
   rowMouseEnterHandler,
   rowCount,
-  onPaginationChangeHandler,
-  onSortingChangeHandler,
+  pagination,
+  sorting,
+  setPagination,
+  setSorting,
 }: DataTableProps<Data>) {
-  const [{ pageIndex, pageSize }, setPagination] = React.useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 20,
-  })
-
-  const [sorting, setSorting] = React.useState<SortingState>([])
-
-  const pagination = React.useMemo(
-    () => ({
-      pageIndex,
-      pageSize,
-    }),
-    [pageIndex, pageSize]
-  )
-
-  React.useEffect(() => {
-    onPaginationChangeHandler && onPaginationChangeHandler({ pageIndex, pageSize })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageIndex, pageSize])
-
-  React.useEffect(() => {
-    onSortingChangeHandler && onSortingChangeHandler(sorting)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sorting])
-
   const table = useReactTable({
     columns,
     data,
@@ -65,9 +44,19 @@ export function DataTable<Data extends object>({
       sorting,
       pagination,
     },
-    pageCount: Math.ceil(rowCount / pageSize),
-    onPaginationChange: setPagination,
-    onSortingChange: setSorting,
+    pageCount: Math.ceil(rowCount / pagination.pageSize),
+    onPaginationChange: updaterOrValue => {
+      setPagination(
+        (typeof updaterOrValue === 'function'
+          ? updaterOrValue(pagination)
+          : pagination) as PaginationState
+      )
+    },
+    onSortingChange: updaterOrValue => {
+      setSorting(
+        (typeof updaterOrValue === 'function' ? updaterOrValue(sorting) : sorting) as SortingState
+      )
+    },
     manualSorting: true,
     enableSortingRemoval: false,
     sortDescFirst: true,
@@ -76,7 +65,7 @@ export function DataTable<Data extends object>({
 
   return (
     <>
-      <Table __css={{ tableLayout: 'fixed', width: 'full' }}>
+      <Table style={{ tableLayout: 'fixed', width: 'full' }}>
         <Thead>
           {table.getHeaderGroups().map(headerGroup => (
             <Tr key={headerGroup.id}>
@@ -134,7 +123,7 @@ export function DataTable<Data extends object>({
           ))}
         </Tbody>
       </Table>
-      {rowCount > pageSize && (
+      {rowCount > pagination.pageSize && (
         <Pagination
           goToFirstPage={() => table.setPageIndex(0)}
           gotoLastPage={() => table.setPageIndex(table.getPageCount() - 1)}
