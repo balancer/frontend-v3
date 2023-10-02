@@ -1,17 +1,15 @@
 import { IconButton, Input, InputGroup, InputRightElement, useBoolean } from '@chakra-ui/react'
 import { debounce } from 'lodash'
-import { useEffect, useRef } from 'react'
-import { HiOutlineX, HiOutlineSearch } from 'react-icons/hi'
-import { usePoolList } from '../usePoolList'
+import { useEffect, useRef, useState } from 'react'
+import { HiOutlineSearch, HiOutlineX } from 'react-icons/hi'
 import { sleep } from '@/lib/utils/time'
 import { useTranslations } from 'next-intl'
+import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 
 export function PoolListSearch() {
   const [isSearching, { on, off }] = useBoolean()
-  const {
-    setSearch,
-    poolFilters: { searchText, setSearchText },
-  } = usePoolList()
+  const { searchText, setSearch } = usePoolListQueryState()
+  const [localSearchText, setLocalSearchText] = useState(searchText || '')
 
   const t = useTranslations('PoolListSearch')
 
@@ -20,7 +18,7 @@ export function PoolListSearch() {
       await sleep(250)
       off()
     }
-    setSearch(searchText)
+    setSearch(localSearchText)
   }, 250)
 
   const firstUpdate = useRef(true)
@@ -35,9 +33,9 @@ export function PoolListSearch() {
       <Input
         type="text"
         placeholder={t('placeholder')}
-        value={searchText}
+        value={searchText || ''}
         onChange={e => {
-          setSearchText(e.target.value)
+          setLocalSearchText(e.target.value)
           if (!isSearching) on()
         }}
       />
@@ -49,7 +47,7 @@ export function PoolListSearch() {
           icon={searchText !== '' ? <HiOutlineX /> : <HiOutlineSearch />}
           isLoading={isSearching}
           onClick={() => {
-            if (searchText !== '') setSearchText('')
+            if (searchText !== '') setLocalSearchText('')
           }}
         />
       </InputRightElement>
