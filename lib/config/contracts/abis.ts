@@ -1,1 +1,1 @@
-export { vaultV2ABI } from '@/src/generated'
+export { vaultV2ABI } from '@/lib/abi/generated'

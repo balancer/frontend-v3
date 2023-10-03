@@ -10,6 +10,7 @@ import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { useTranslations } from 'next-intl'
 import { PaginationState, SortingState } from '@tanstack/react-table'
 import { GqlPoolOrderBy, GqlPoolOrderDirection } from '@/lib/services/api/generated/graphql'
+//import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 
 export function PoolListTable() {
   const t = useTranslations('PoolListTable')
@@ -21,6 +22,7 @@ export function PoolListTable() {
     apr: t('columns.apr'),
   }
   const { pools, loading, count, refetch } = usePoolList()
+  //const { sorting, setSort } = usePoolListQueryState()
   const columns = getPoolListTableColumns(columnTitles)
   const router = useRouter()
 

@@ -1,7 +1,16 @@
 import { defineConfig, loadEnv } from '@wagmi/cli'
 import { etherscan } from '@wagmi/cli/plugins'
-import { mainnet } from 'wagmi'
+// import { react } from '@wagmi/cli/plugins'
 import mainnetNetworkConfig from './lib/config/networks/mainnet'
+
+import { erc20ABI } from 'wagmi'
+
+const CONTRACTS: Array<{ name: string; abi: any }> = [
+  {
+    name: 'erc20',
+    abi: erc20ABI,
+  },
+]
 
 export default defineConfig(() => {
   const env = loadEnv({
@@ -10,9 +19,10 @@ export default defineConfig(() => {
   })
 
   return {
-    out: 'src/generated.ts',
-    contracts: [],
+    out: 'lib/abi/generated.ts',
+    contracts: CONTRACTS,
     plugins: [
+      // react(),
       etherscan({
         apiKey: env.ETHERSCAN_API_KEY,
         chainId: 1,
