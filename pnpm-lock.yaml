@@ -3755,6 +3755,9 @@ packages:
   /@tanstack/query-core@4.29.19:
     resolution: {integrity: sha512-uPe1DukeIpIHpQi6UzIgBcXsjjsDaLnc7hF+zLBKnaUlh7jFE/A+P8t4cU4VzKPMFB/C970n/9SxtpO5hmIRgw==}
 
+  /@tanstack/query-core@4.35.0:
+    resolution: {integrity: sha512-4GMcKQuLZQi6RFBiBZNsLhl+hQGYScRZ5ZoVq8QAzfqz9M7vcGin/2YdSESwl7WaV+Qzsb5CZOAbMBes4lNTnA==}
+
   /@tanstack/query-persist-client-core@4.29.19:
     resolution: {integrity: sha512-rr6p3xwEZCz3cEDZsj3QGePf6PG44WxRUGQVcm2JFPZOq9TkG/0i5+hQ3STiHm1Fj6qwCH8xIi62L8kG0zRj/Q==}
     dependencies:
@@ -3765,16 +3768,16 @@ packages:
     dependencies:
       '@tanstack/query-persist-client-core': 4.29.19
 
-  /@tanstack/react-query-persist-client@4.29.19(@tanstack/react-query@4.29.19):
+  /@tanstack/react-query-persist-client@4.29.19(@tanstack/react-query@4.35.0):
     resolution: {integrity: sha512-LfcasTosdnI9K66HTP0Rk72Ypza3tCgrcF9bc2qFlKsBleYOYo8bz7/GiiOHj1SQH4GRQlKB+P4+/it+qlJg4g==}
     peerDependencies:
       '@tanstack/react-query': 4.29.19
     dependencies:
       '@tanstack/query-persist-client-core': 4.29.19
-      '@tanstack/react-query': 4.29.19(react-dom@18.2.0)(react@18.2.0)
+      '@tanstack/react-query': 4.35.0(react-dom@18.2.0)(react@18.2.0)
 
-  /@tanstack/react-query@4.29.19(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-XiTIOHHQ5Cw1WUlHaD4fmVUMhoWjuNJlAeJGq7eM4BraI5z7y8WkZO+NR8PSuRnQGblpuVdjClQbDFtwxTtTUw==}
+  /@tanstack/react-query@4.35.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-LLYDNnM9ewYHgjm2rzhk4KG/puN2rdoqCUD+N9+V7SwlsYwJk5ypX58rpkoZAhFyZ+KmFUJ7Iv2lIEOoUqydIg==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -3785,7 +3788,7 @@ packages:
       react-native:
         optional: true
     dependencies:
-      '@tanstack/query-core': 4.29.19
+      '@tanstack/query-core': 4.35.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       use-sync-external-store: 1.2.0(react@18.2.0)
@@ -9909,8 +9912,8 @@ packages:
         optional: true
     dependencies:
       '@tanstack/query-sync-storage-persister': 4.29.19
-      '@tanstack/react-query': 4.29.19(react-dom@18.2.0)(react@18.2.0)
-      '@tanstack/react-query-persist-client': 4.29.19(@tanstack/react-query@4.29.19)
+      '@tanstack/react-query': 4.35.0(react-dom@18.2.0)(react@18.2.0)
+      '@tanstack/react-query-persist-client': 4.29.19(@tanstack/react-query@4.35.0)
       '@wagmi/core': 1.3.6(react@18.2.0)(typescript@5.1.6)(viem@1.2.9)(zod@3.21.4)
       abitype: 0.8.7(typescript@5.1.6)(zod@3.21.4)
       react: 18.2.0

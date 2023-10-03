@@ -11,6 +11,7 @@ import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
 export function PoolList() {
   const { address } = useAccount()
   const { tokens } = useTokens()
+
   useTokenBalances(address, tokens)
 
   return (
