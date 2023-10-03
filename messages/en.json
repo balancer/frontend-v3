@@ -20,10 +20,11 @@
     "connect": "Connect",
     "unsupported": "Unsupported network"
   },
-  "PoolListPagination": {
-    "pageNum": "Page num",
-    "next": "Next",
-    "noPerPage": "No. per page"
+  "Pagination": {
+    "page": "Page ",
+    "of": " of ",
+    "goToPage": "Go to page: ",
+    "show": "Show"
   },
   "PoolListFilters": {
     "label": "Filters",

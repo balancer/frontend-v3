@@ -12,6 +12,7 @@ import {
   Select,
   Text,
 } from '@chakra-ui/react'
+import { useTranslations } from 'next-intl'
 
 interface Props {
   goToFirstPage: () => void
@@ -40,6 +41,8 @@ export function Pagination({
   setPageSize,
   pageSize,
 }: Props) {
+  const t = useTranslations('Pagination')
+
   return (
     <HStack justifyContent="center" alignItems="center" m="4" gap="8">
       <Flex>
@@ -63,16 +66,16 @@ export function Pagination({
       </Flex>
       <Flex alignItems="center">
         <Text flexShrink="0" mr="8">
-          Page{' '}
+          {t('page')}
           <Text fontWeight="bold" as="span">
             {currentPageNumber}
-          </Text>{' '}
-          of{' '}
+          </Text>
+          {t('of')}
           <Text fontWeight="bold" as="span">
             {totalPageCount}
           </Text>
         </Text>
-        <Text flexShrink="0">Go to page:</Text>{' '}
+        <Text flexShrink="0">{t('goToPage')}</Text>{' '}
         <NumberInput
           ml="2"
           mr="8"
@@ -100,7 +103,7 @@ export function Pagination({
         >
           {[10, 20, 30, 40, 50].map(pageSize => (
             <option key={pageSize} value={pageSize}>
-              Show {pageSize}
+              {`${t('show')} ${pageSize}`}
             </option>
           ))}
         </Select>
