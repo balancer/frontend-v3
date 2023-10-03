@@ -10,7 +10,7 @@ import {
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { PoolFilterType, usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/utils/contexts'
-import { PROJECT_CONFIG } from '@/lib/config/useProjectConfig'
+import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 
 // We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
 const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolFilterType[] } = {

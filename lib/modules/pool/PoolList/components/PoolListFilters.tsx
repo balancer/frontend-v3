@@ -22,7 +22,7 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { PoolListSearch } from './PoolListSearch'
-import { useProjectConfig } from '@/lib/config/useProjectConfig'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { useTranslations } from 'next-intl'
 import {
   PoolFilterType,
@@ -45,7 +45,7 @@ function PoolTypeFilters() {
 }
 
 function PoolNetworkFilters() {
-  const { supportedNetworks } = useProjectConfig()
+  const { supportedNetworks } = getProjectConfig()
   const { networks: toggledNetworks, toggleNetwork } = usePoolListQueryState()
 
   return supportedNetworks.map(network => (
