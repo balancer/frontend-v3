@@ -21,7 +21,7 @@ export function useManagedTransaction<
 >(
   contractId: M,
   functionName: F,
-  args?: GetFunctionArgs<T[M], F>,
+  args?: GetFunctionArgs<T[M], F> | null,
   additionalConfig?: Omit<
     UsePrepareContractWriteConfig<T[M], F, number>,
     'abi' | 'address' | 'functionName' | 'args'
@@ -70,9 +70,9 @@ export function useManagedTransaction<
   }
 
   return {
-    txStatus: transactionStatusQuery,
     simulation: prepareQuery as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
+    result: transactionStatusQuery,
     //TODO: should we move inside execution and change execution type in contract types?
     managedWrite,
     managedWriteAsync,

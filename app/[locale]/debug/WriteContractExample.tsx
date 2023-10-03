@@ -2,55 +2,71 @@
 
 import { noUserAddress } from '@/lib/contracts/wagmi-helpers'
 import { Box, Button, VStack } from '@chakra-ui/react'
-import { useAccount } from 'wagmi'
+import { Address, useAccount } from 'wagmi'
 import { TransactionState } from './TransactionState'
 
 import { useManagedTransaction } from '@/lib/contracts/useManagedTransaction'
-import { useOnNewTxHash } from '@/lib/contracts/useOnNewTxHash'
+import { useState } from 'react'
 
-export function WriteContractExample() {
-  const balancerRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'
-  const { address: userAddress } = useAccount()
 
-  // These args can be dynamic (i.e. from html input)
-  const approvalArgs = [userAddress || noUserAddress, balancerRelayer, true] as const
+const balancerRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'
 
-  const isEnabled = !!userAddress
-  const txInfo = useManagedTransaction(
+type TransactionStep = {
+  id: string,
+  getButtonLabel: (props?: any) => string,
+  execution: ReturnType<typeof useManagedTransaction>['execution'],
+  simulation: ReturnType<typeof useManagedTransaction>['simulation'],
+  result: ReturnType<typeof useManagedTransaction>['result'],
+}
+
+function useConstructRelayerApprovalTransactionStep(): TransactionStep {
+  const { address: userAddress } = useAccount();
+  const [approvalArgs,] = useState<[Address, Address, boolean]>([userAddress || noUserAddress, balancerRelayer, true]);
+  const { execution, simulation, result } = useManagedTransaction(
     'balancer.vaultV2',
     'setRelayerApproval',
+    { args: approvalArgs },
     {
-      args: approvalArgs,
-    },
-    {
-      enabled: isEnabled,
+      enabled: !!userAddress,
       onSuccess: () => {
         console.log('Test on success hook.')
       },
     }
   )
 
-  const { simulation, execution } = txInfo
+  function getButtonLabel(props?: any): string {
+    if (simulation.isLoading || execution.isLoading) {
+      return 'Loading'
+    }
+    return 'Approve Relayer'
+  }
 
-  const { data: setRelayerApprovalResult } = execution
+  return {
+    execution,
+    simulation,
+    getButtonLabel,
+    result,
+    id: 'relayer-approval'
+  }
+}
 
-  useOnNewTxHash(txInfo)
+export function WriteContractExample() {
+  const { address: userAddress } = useAccount()
+
+  // These args can be dynamic (i.e. from html input)
+  // const [approvalArgs, setApprovalArgs] = useState<[Address, Address, boolean]>([userAddress || noUserAddress, balancerRelayer, true]);
+  const { execution, simulation, getButtonLabel: getRelayerApprovalButtonLabel, result: approvalResult } = useConstructRelayerApprovalTransactionStep();
 
   function handleOnClick() {
     if (!simulation.isError) {
-      execution.write?.()
+      execution.write?.();
     }
-  }
-
-  function buttonLabel() {
-    if (simulation.isLoading || execution.isLoading) return 'Loading'
-    return 'Approve Relayer'
   }
 
   return (
     <VStack>
-      {setRelayerApprovalResult?.hash && (
-        <TransactionState hash={setRelayerApprovalResult.hash}></TransactionState>
+      {execution.data?.hash && (
+        <TransactionState result={approvalResult}></TransactionState>
       )}
       <Box margin={2} padding={2}>
         {!execution.isSuccess && (
@@ -59,7 +75,7 @@ export function WriteContractExample() {
             isLoading={execution.isLoading}
             onClick={handleOnClick}
           >
-            {buttonLabel()}
+            {getRelayerApprovalButtonLabel()}
           </Button>
         )}
         {execution.isSuccess && <Button onClick={execution.reset}>Try again</Button>}
