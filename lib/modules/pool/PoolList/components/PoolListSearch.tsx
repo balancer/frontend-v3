@@ -1,25 +1,30 @@
 import { IconButton, Input, InputGroup, InputRightElement, useBoolean } from '@chakra-ui/react'
 import { debounce } from 'lodash'
-import { useEffect } from 'react'
-import { HiOutlineX, HiOutlineSearch } from 'react-icons/hi'
-import { usePoolList } from '../usePoolList'
-import { usePoolListFilters } from '../usePoolListFilters'
+import { useEffect, useRef, useState } from 'react'
+import { HiOutlineSearch, HiOutlineX } from 'react-icons/hi'
+import { sleep } from '@/lib/utils/time'
 import { useTranslations } from 'next-intl'
+import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 
 export function PoolListSearch() {
   const [isSearching, { on, off }] = useBoolean()
-  const { refetch, state } = usePoolList()
-  const { searchText, setSearchText } = usePoolListFilters()
+  const { searchText, setSearch } = usePoolListQueryState()
+  const [localSearchText, setLocalSearchText] = useState(searchText || '')
 
   const t = useTranslations('PoolListSearch')
 
   const submitSearch = debounce(async () => {
-    if (searchText.length > 0) await refetch({ ...state, textSearch: searchText, skip: 0 })
-    off()
+    if (isSearching) {
+      await sleep(250)
+      off()
+    }
+    setSearch(localSearchText)
   }, 250)
 
+  const firstUpdate = useRef(true)
   useEffect(() => {
-    submitSearch()
+    if (!firstUpdate.current) submitSearch()
+    firstUpdate.current = false
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText])
 
@@ -28,9 +33,9 @@ export function PoolListSearch() {
       <Input
         type="text"
         placeholder={t('placeholder')}
-        value={searchText}
+        value={searchText || ''}
         onChange={e => {
-          setSearchText(e.target.value)
+          setLocalSearchText(e.target.value)
           if (!isSearching) on()
         }}
       />
@@ -42,7 +47,7 @@ export function PoolListSearch() {
           icon={searchText !== '' ? <HiOutlineX /> : <HiOutlineSearch />}
           isLoading={isSearching}
           onClick={() => {
-            if (searchText !== '') setSearchText('')
+            if (searchText !== '') setLocalSearchText('')
           }}
         />
       </InputRightElement>

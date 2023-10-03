@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@apollo/client':
     specifier: 3.8.0-rc.1
@@ -67,6 +71,9 @@ dependencies:
   next-intl:
     specifier: ^2.20.0
     version: 2.20.0(next@13.5.2)(react@18.2.0)
+  next-query-params:
+    specifier: ^4.2.3
+    version: 4.2.3(next@13.5.2)(react@18.2.0)(use-query-params@2.2.1)
   numeral:
     specifier: ^2.0.6
     version: 2.0.6
@@ -82,6 +89,9 @@ dependencies:
   typescript:
     specifier: 5.1.6
     version: 5.1.6
+  use-query-params:
+    specifier: ^2.2.1
+    version: 2.2.1(react-dom@18.2.0)(react@18.2.0)
   viem:
     specifier: ^1.2.9
     version: 1.2.9(typescript@5.1.6)(zod@3.21.4)
@@ -7924,6 +7934,19 @@ packages:
       use-intl: 2.20.0(react@18.2.0)
     dev: false
 
+  /next-query-params@4.2.3(next@13.5.2)(react@18.2.0)(use-query-params@2.2.1):
+    resolution: {integrity: sha512-hGNCYRH8YyA5ItiBGSKrtMl21b2MAqfPkdI1mvwloNVqSU142IaGzqHN+OTovyeLIpQfonY01y7BAHb/UH4POg==}
+    peerDependencies:
+      next: ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      use-query-params: ^2.0.0
+    dependencies:
+      next: 13.5.2(@babel/core@7.22.5)(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      tslib: 2.6.0
+      use-query-params: 2.2.1(react-dom@18.2.0)(react@18.2.0)
+    dev: false
+
   /next@13.5.2(@babel/core@7.22.5)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-vog4UhUaMYAzeqfiAAmgB/QWLW7p01/sg+2vn6bqc/CxHFYizMzLv6gjxKzl31EVFkfl/F+GbxlKizlkTE9RdA==}
     engines: {node: '>=16.14.0'}
@@ -8996,6 +9019,10 @@ packages:
       upper-case-first: 2.0.2
     dev: true
 
+  /serialize-query-params@2.0.2:
+    resolution: {integrity: sha512-1chMo1dST4pFA9RDXAtF0Rbjaut4is7bzFbI1Z26IuMub68pNCILku85aYmeFhvnY//BXUPUhoRMjYcsT93J/Q==}
+    dev: false
+
   /set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
 
@@ -9759,6 +9786,24 @@ packages:
       react: 18.2.0
     dev: false
 
+  /use-query-params@2.2.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-i6alcyLB8w9i3ZK3caNftdb+UnbfBRNPDnc89CNQWkGRmDrm/gfydHvMBfVsQJRq3NoHOM2dt/ceBWG2397v1Q==}
+    peerDependencies:
+      '@reach/router': ^1.2.1
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+      react-router-dom: '>=5'
+    peerDependenciesMeta:
+      '@reach/router':
+        optional: true
+      react-router-dom:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      serialize-query-params: 2.0.2
+    dev: false
+
   /use-sidecar@1.1.2(@types/react@18.2.14)(react@18.2.0):
     resolution: {integrity: sha512-epTbsLuzZ7lPClpz2TyryBfztm7m+28DlEv2ZCQ3MDr5ssiwyOwGH/e5F9CkfWjJ1t4clvI58yF822/GUkjjhw==}
     engines: {node: '>=10'}
@@ -10178,7 +10223,3 @@ packages:
     dependencies:
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
