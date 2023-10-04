@@ -65,7 +65,7 @@ export function DataTable<Data extends object>({
 
   return (
     <>
-      <Table style={{ tableLayout: 'fixed', width: 'full' }}>
+      <Table layout="fixed" w="full">
         <Thead>
           {table.getHeaderGroups().map(headerGroup => (
             <Tr key={headerGroup.id}>
