@@ -2,7 +2,6 @@ import { ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon, ArrowRightIcon } from
 import {
   HStack,
   Flex,
-  Tooltip,
   IconButton,
   NumberInput,
   NumberInputField,
@@ -46,23 +45,19 @@ export function Pagination({
   return (
     <HStack justifyContent="center" alignItems="center" m="4" gap="8">
       <Flex>
-        <Tooltip label="First Page">
-          <IconButton
-            aria-label="first page"
-            onClick={goToFirstPage}
-            isDisabled={!canPreviousPage}
-            icon={<ArrowLeftIcon h="3" w="3" />}
-            mr="4"
-          />
-        </Tooltip>
-        <Tooltip label="Previous Page">
-          <IconButton
-            aria-label="previous page"
-            onClick={goToPreviousPage}
-            isDisabled={!canPreviousPage}
-            icon={<ChevronLeftIcon h="6" w="6" />}
-          />
-        </Tooltip>
+        <IconButton
+          aria-label="first page"
+          onClick={goToFirstPage}
+          isDisabled={!canPreviousPage}
+          icon={<ArrowLeftIcon h="3" w="3" />}
+          mr="4"
+        />
+        <IconButton
+          aria-label="previous page"
+          onClick={goToPreviousPage}
+          isDisabled={!canPreviousPage}
+          icon={<ChevronLeftIcon h="6" w="6" />}
+        />
       </Flex>
       <Flex alignItems="center">
         <Text flexShrink="0" mr="8">
@@ -109,23 +104,19 @@ export function Pagination({
         </Select>
       </Flex>
       <Flex>
-        <Tooltip label="Next Page">
-          <IconButton
-            aria-label="next page"
-            onClick={goToNextPage}
-            isDisabled={!canNextPage}
-            icon={<ChevronRightIcon h="6" w="6" />}
-          />
-        </Tooltip>
-        <Tooltip label="Last Page">
-          <IconButton
-            aria-label="last page"
-            onClick={gotoLastPage}
-            isDisabled={!canNextPage}
-            icon={<ArrowRightIcon h="3" w="3" />}
-            ml="4"
-          />
-        </Tooltip>
+        <IconButton
+          aria-label="next page"
+          onClick={goToNextPage}
+          isDisabled={!canNextPage}
+          icon={<ChevronRightIcon h="6" w="6" />}
+        />
+        <IconButton
+          aria-label="last page"
+          onClick={gotoLastPage}
+          isDisabled={!canNextPage}
+          icon={<ArrowRightIcon h="3" w="3" />}
+          ml="4"
+        />
       </Flex>
     </HStack>
   )
