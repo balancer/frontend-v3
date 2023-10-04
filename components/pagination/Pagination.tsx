@@ -46,14 +46,14 @@ export function Pagination({
     <HStack justifyContent="center" alignItems="center" m="4" gap="8">
       <Flex>
         <IconButton
-          aria-label="first page"
+          aria-label={t('label.firstPage')}
           onClick={goToFirstPage}
           isDisabled={!canPreviousPage}
           icon={<ArrowLeftIcon h="3" w="3" />}
           mr="4"
         />
         <IconButton
-          aria-label="previous page"
+          aria-label={t('label.previousPage')}
           onClick={goToPreviousPage}
           isDisabled={!canPreviousPage}
           icon={<ChevronLeftIcon h="6" w="6" />}
@@ -105,13 +105,13 @@ export function Pagination({
       </Flex>
       <Flex>
         <IconButton
-          aria-label="next page"
+          aria-label={t('label.nextPage')}
           onClick={goToNextPage}
           isDisabled={!canNextPage}
           icon={<ChevronRightIcon h="6" w="6" />}
         />
         <IconButton
-          aria-label="last page"
+          aria-label={t('label.lastPage')}
           onClick={gotoLastPage}
           isDisabled={!canNextPage}
           icon={<ArrowRightIcon h="3" w="3" />}

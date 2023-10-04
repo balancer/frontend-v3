@@ -24,7 +24,13 @@
     "page": "Page ",
     "of": " of ",
     "goToPage": "Go to page: ",
-    "show": "Show"
+    "show": "Show",
+    "label": {
+      "firstPage": "first page",
+      "lastPage": "last page",
+      "previousPage": "previous page",
+      "nextPage": "next page"
+    }
   },
   "PoolListFilters": {
     "label": "Filters",
