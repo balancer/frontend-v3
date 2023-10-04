@@ -14,7 +14,7 @@ export function PoolListSearch() {
 
   const { register, reset, setValue, getFieldState } = useForm()
 
-  const changeHandler = (event: any) => {
+  const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value)
   }
 
