@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { HStack, Table, Tbody, Td, Th, Thead, Tr, chakra } from '@chakra-ui/react'
+import { Center, HStack, Table, Tbody, Td, Th, Thead, Tr, chakra } from '@chakra-ui/react'
 import {
   ColumnDef,
   flexRender,
@@ -22,6 +22,7 @@ export type DataTableProps<Data extends object> = {
   sorting: SortingState
   setSorting: (state: SortingState) => void
   setPagination: (state: PaginationState) => void
+  noResultsText: string
 }
 
 export function DataTable<Data extends object>({
@@ -34,6 +35,7 @@ export function DataTable<Data extends object>({
   sorting,
   setPagination,
   setSorting,
+  noResultsText,
 }: DataTableProps<Data>) {
   const table = useReactTable({
     columns,
@@ -62,6 +64,8 @@ export function DataTable<Data extends object>({
     sortDescFirst: true,
     manualPagination: true,
   })
+
+  const rows = table.getRowModel().rows
 
   return (
     <>
@@ -101,7 +105,7 @@ export function DataTable<Data extends object>({
           ))}
         </Thead>
         <Tbody>
-          {table.getRowModel().rows.map(row => (
+          {rows.map(row => (
             <Tr
               key={row.id}
               onClick={event => rowClickHandler && rowClickHandler(event, row.original)}
@@ -123,7 +127,12 @@ export function DataTable<Data extends object>({
           ))}
         </Tbody>
       </Table>
-      {rowCount > pagination.pageSize && (
+      {!rows.length && (
+        <Center w="full" h="200px">
+          {noResultsText}
+        </Center>
+      )}
+      {!!rows.length && rowCount > pagination.pageSize && (
         <Pagination
           goToFirstPage={() => table.setPageIndex(0)}
           gotoLastPage={() => table.setPageIndex(table.getPageCount() - 1)}
