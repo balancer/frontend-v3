@@ -34,7 +34,7 @@ export function PoolListSearch() {
         <InputGroup size="md">
           <Input
             id="search"
-            placeholder="Search..."
+            placeholder={t('placeholder')}
             {...register('search')}
             onChange={debouncedChangeHandler}
           />
