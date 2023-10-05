@@ -7,6 +7,8 @@ import { useEffect, useMemo } from 'react'
 import { debounce } from 'lodash'
 import { usePoolList } from '../usePoolList'
 
+const SEARCH = 'search'
+
 export function PoolListSearch() {
   const t = useTranslations('PoolListSearch')
   const { searchText, setSearch } = usePoolListQueryState()
@@ -33,9 +35,9 @@ export function PoolListSearch() {
       <FormControl>
         <InputGroup size="md">
           <Input
-            id="search"
+            id={SEARCH}
             placeholder={t('placeholder')}
-            {...register('search')}
+            {...register(SEARCH)}
             onChange={debouncedChangeHandler}
           />
           <InputRightElement>
@@ -44,10 +46,10 @@ export function PoolListSearch() {
               size="sm"
               aria-label={t('ariaLabel')}
               icon={searchText !== '' ? <HiOutlineX /> : <HiOutlineSearch />}
-              isLoading={getFieldState('search').isTouched && loading}
+              isLoading={getFieldState(SEARCH).isTouched && loading}
               onClick={() => {
                 setSearch('')
-                setValue('search', '')
+                setValue(SEARCH, '')
               }}
             />
           </InputRightElement>
