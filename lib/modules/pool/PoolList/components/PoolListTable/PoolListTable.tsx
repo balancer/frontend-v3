@@ -53,6 +53,7 @@ export function PoolListTable() {
         sorting={sorting}
         setPagination={setPagination}
         setSorting={setSorting}
+        noResultsText={t('noResultsText')}
       />
       {loading && (
         <Box
