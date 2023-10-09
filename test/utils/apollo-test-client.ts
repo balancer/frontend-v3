@@ -10,7 +10,7 @@ loadErrorMessages()
 const cache = new InMemoryCache()
 
 const link = new HttpLink({
-  uri: process.env.VITE_PUBLIC_BALANCER_API_URL || 'https://api-v3.balancer.fi/graphql', //Useful for returning real data before mocking the GQL operation
+  uri: process.env.NEXT_PUBLIC_BALANCER_API_URL, //Useful for returning real data before mocking the GQL operation
 
   // Use explicit cross-fetch so that outgoing requests
   // are captured and deferred until the Service Worker is ready.
