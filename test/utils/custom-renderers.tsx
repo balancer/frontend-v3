@@ -65,18 +65,18 @@ function GlobalProviders({ children }: WrapperProps) {
 }
 
 function ClientProvidersMock({ children }: React.PropsWithChildren) {
-  return <QueryParamProvider adapter={NextAdapterApp}>{children}</QueryParamProvider>
+  return <QueryParamProvider adapter={NextAdapterAppMock}>{children}</QueryParamProvider>
 }
 
 type Props = {
   children(adapter: QueryParamAdapter): ReactElement | null
 }
 
-function NextAdapterApp({ children }: Props) {
+function NextAdapterAppMock({ children }: Props) {
   const adapter = {
     replace: vi.fn(),
     push: vi.fn(),
-    location: { search: 'foo' },
+    location: { search: '' },
   }
   return children(adapter)
 }
