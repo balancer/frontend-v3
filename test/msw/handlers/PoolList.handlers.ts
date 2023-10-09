@@ -4,15 +4,15 @@ import { graphql } from 'msw'
 import { aGqlPoolMinimalMock } from '../builders/gqlPoolMinimal.builders'
 import { PoolList } from '@/lib/modules/pool/pool.types'
 
-export const defaultPoolListItem1 = aGqlPoolMinimalMock()
-export const defaultPoolList: PoolList = [defaultPoolListItem1]
+export const defaultPoolListItemMock = aGqlPoolMinimalMock()
+export const defaultPoolListMock: PoolList = [defaultPoolListItemMock]
 
-export function buildPoolListHandler(poolList = defaultPoolList) {
+export function buildPoolListHandler(poolList = defaultPoolListMock) {
   return graphql.query(getQueryName(GetPoolsDocument), (req, res, ctx) => {
     return res(ctx.data({ pools: poolList }))
   })
 }
 
-export function mockPoolList(poolList = defaultPoolList) {
+export function mockPoolList(poolList = defaultPoolListMock) {
   mockGQL(buildPoolListHandler(poolList))
 }

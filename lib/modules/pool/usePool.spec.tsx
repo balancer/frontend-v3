@@ -2,7 +2,7 @@ import { Wrapper, testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
 import { PoolProvider, _usePool, usePool } from './usePool'
 import { GqlChain } from '@/lib/services/api/generated/graphql'
-import { defaultPool } from '@/test/msw/handlers/Pool.handlers'
+import { defaultPoolMock } from '@/test/msw/handlers/Pool.handlers'
 
 test('fetches v2 pool', async () => {
   const poolId = 'test pool id'
@@ -13,7 +13,7 @@ test('fetches v2 pool', async () => {
 
   await waitFor(() => expect(result.current.loading).toBeFalsy())
 
-  expect(result.current.pool).toMatchObject(defaultPool)
+  expect(result.current.pool).toMatchObject(defaultPoolMock)
 })
 
 // Remove skip to check that it throws
@@ -31,5 +31,5 @@ test('fetches v2 pool without exposing _usePool', async () => {
   const { result } = testHook(() => usePool(), { wrapper })
   await waitFor(() => expect(result.current.loading).toBeFalsy())
 
-  expect(result.current.pool).toMatchObject(defaultPool)
+  expect(result.current.pool).toMatchObject(defaultPoolMock)
 })
