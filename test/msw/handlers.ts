@@ -1,5 +1,9 @@
-import { buildPoolListHandler } from './handlers/PoolList.handlers'
-import { buildTokenListHandler } from './handlers/Tokens.handlers'
-import { buildPoolHandler } from './handlers/Pool.handlers'
+import { buildPoolListMswHandler } from './handlers/PoolList.handlers'
+import { buildTokenListMswHandler } from './handlers/Tokens.handlers'
+import { buildPoolMswHandler } from './handlers/Pool.handlers'
 
-export const defaultHandlers = [buildPoolListHandler(), buildTokenListHandler(), buildPoolHandler()]
+export const defaultMswHandlers = [
+  buildPoolListMswHandler(),
+  buildTokenListMswHandler(),
+  buildPoolMswHandler(),
+]

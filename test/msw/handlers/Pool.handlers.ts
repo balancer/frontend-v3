@@ -5,12 +5,12 @@ import { aGqlPoolElementMock } from '../builders/gqlPoolElement.builders'
 
 export const defaultPoolMock = aGqlPoolElementMock()
 
-export function buildPoolHandler(pool = defaultPoolMock) {
+export function buildPoolMswHandler(pool = defaultPoolMock) {
   return graphql.query(getQueryName(GetPoolDocument), (req, res, ctx) => {
     return res(ctx.data({ pool: pool }))
   })
 }
 
 export function mockPool(pool = defaultPoolMock) {
-  mockGQL(buildPoolHandler(pool))
+  mockGQL(buildPoolMswHandler(pool))
 }

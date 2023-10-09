@@ -1,13 +1,13 @@
-import { server } from '@/test/msw/server'
+import { mswServer } from '@/test/msw/server'
 
 // MSW SETUP that we only use for unit tests (not for integration tests)
 // Establish API mocking before all tests.
-beforeAll(() => server.listen())
+beforeAll(() => mswServer.listen())
 beforeEach(() => {
-  return server.listen()
+  return mswServer.listen()
 })
 // Reset any request handlers that we may add during the tests,
 // so they don't affect other tests.
-afterEach(() => server.resetHandlers())
+afterEach(() => mswServer.resetHandlers())
 // Clean up after the tests are finished.
-afterAll(() => server.close())
+afterAll(() => mswServer.close())

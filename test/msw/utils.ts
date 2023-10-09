@@ -1,8 +1,18 @@
 import { DocumentNode, TypedDocumentNode } from '@apollo/client'
 import { RequestHandler } from 'msw'
 
-import { server } from './server'
+import { mswServer } from './server'
 
+/**
+ *  Used by MSW handlers to know the names of the queries to mock.
+ *
+ * @param document Document from generated graphql.ts.
+ * @returns Name of the query to mock in MSW handler
+ *
+ * Examples: getQueryName(GetPoolDocument) returns 'GetPool'
+ *           getQueryName(GetTokensDocument) returns 'GetTokens'
+ *
+ */
 export function getQueryName(document: TypedDocumentNode | DocumentNode): string {
   interface Node {
     name: { value: string }
@@ -15,6 +25,6 @@ export function getQueryName(document: TypedDocumentNode | DocumentNode): string
 }
 
 export function mockGQL(handlers: Array<RequestHandler> | RequestHandler) {
-  if (Array.isArray(handlers)) return server.use(...handlers)
-  server.use(handlers)
+  if (Array.isArray(handlers)) return mswServer.use(...handlers)
+  mswServer.use(handlers)
 }

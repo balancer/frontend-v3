@@ -7,12 +7,12 @@ import { PoolList } from '@/lib/modules/pool/pool.types'
 export const defaultPoolListItemMock = aGqlPoolMinimalMock()
 export const defaultPoolListMock: PoolList = [defaultPoolListItemMock]
 
-export function buildPoolListHandler(poolList = defaultPoolListMock) {
+export function buildPoolListMswHandler(poolList = defaultPoolListMock) {
   return graphql.query(getQueryName(GetPoolsDocument), (req, res, ctx) => {
     return res(ctx.data({ pools: poolList }))
   })
 }
 
 export function mockPoolList(poolList = defaultPoolListMock) {
-  mockGQL(buildPoolListHandler(poolList))
+  mockGQL(buildPoolListMswHandler(poolList))
 }
