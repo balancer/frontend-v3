@@ -10,16 +10,9 @@ import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 
 export function PoolListTable() {
-  const columnTitles = {
-    network: 'Network',
-    details: 'Details',
-    totalLiquidity: 'TVL',
-    volume24h: 'Volume (24h)',
-    apr: 'APR',
-  }
   const { pools, loading, count } = usePoolList()
   const { pagination, sorting, setPagination, setSorting } = usePoolListQueryState()
-  const columns = getPoolListTableColumns(columnTitles)
+  const columns = getPoolListTableColumns()
   const router = useRouter()
 
   const rowClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
