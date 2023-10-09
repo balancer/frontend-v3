@@ -43,7 +43,7 @@ export function PoolListSearch() {
               variant="ghost"
               size="sm"
               aria-label="search for a pool"
-              icon={searchText !== '' ? <HiOutlineX /> : <HiOutlineSearch />}
+              icon={searchText ? <HiOutlineX /> : <HiOutlineSearch />}
               isLoading={getFieldState(SEARCH).isTouched && loading}
               onClick={() => {
                 setSearch('')
