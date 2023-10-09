@@ -33,7 +33,7 @@ export const { connectors } = getDefaultWallets({
   chains,
 })
 
-export function createProductionConfig() {
+export function createWagmiConfig() {
   return createConfig({
     autoConnect: true,
     connectors,
@@ -109,7 +109,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   const customTheme = colorMode === 'dark' ? _darkTheme : _lightTheme
 
   return (
-    <WagmiConfig config={createProductionConfig()}>
+    <WagmiConfig config={createWagmiConfig()}>
       <RainbowKitProvider chains={chains} theme={customTheme} avatar={CustomAvatar}>
         {children}
       </RainbowKitProvider>

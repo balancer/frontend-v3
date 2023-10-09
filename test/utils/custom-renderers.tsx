@@ -1,5 +1,5 @@
 import { TokensProvider } from '@/lib/modules/tokens/useTokens'
-import { createProductionConfig } from '@/lib/modules/web3/Web3Provider'
+import { createWagmiConfig } from '@/lib/modules/web3/Web3Provider'
 import { ApolloProvider } from '@apollo/client'
 import { RenderHookOptions, renderHook } from '@testing-library/react'
 import { ReactElement, ReactNode } from 'react'
@@ -44,7 +44,7 @@ function GlobalProviders({ children }: WrapperProps) {
   const defaultRouterOptions = {}
   let wagmiConfig: Config
   if (process.env.VITE_USE_PRODUCTION_WAGMI == 'true') {
-    wagmiConfig = createProductionConfig() as Config
+    wagmiConfig = createWagmiConfig() as Config
   } else {
     wagmiConfig = createWagmiTestConfig() as Config
   }
