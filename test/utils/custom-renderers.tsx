@@ -9,13 +9,14 @@ import { AppRouterContextProviderMock } from './app-router-context-provider-mock
 import { createWagmiTestConfig } from './wagmi'
 import { NextIntlClientProvider } from 'next-intl'
 import { QueryParamAdapter, QueryParamProvider } from 'use-query-params'
+import { waitFor } from '@testing-library/react'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
 
 export const EmptyWrapper = ({ children }: WrapperProps) => <>{children}</>
 
-export function renderHookWithDefaultProviders<TResult, TProps>(
+export function testHook<TResult, TProps>(
   hook: (props: TProps) => TResult,
   options?: RenderHookOptions<TProps>
 ) {
@@ -29,10 +30,14 @@ export function renderHookWithDefaultProviders<TResult, TProps>(
     )
   }
 
-  return renderHook<TResult, TProps>(hook, {
+  const result = renderHook<TResult, TProps>(hook, {
     ...options,
     wrapper: MixedProviders,
   })
+  return {
+    ...result,
+    waitForLoadedUseQuery,
+  }
 }
 
 function GlobalProviders({ children }: WrapperProps) {
@@ -74,4 +79,19 @@ function NextAdapterApp({ children }: Props) {
     location: { search: 'foo' },
   }
   return children(adapter)
+}
+
+/**
+ *
+ * Helper to await for useQuery to finish loading when testing hooks
+ *
+ * @param hookResult is the result of calling renderHookWithDefaultProviders
+ *
+ *  Example:
+ *    const { result, waitForLoadedUseQuery } = testHook(() => _useMyHookUnderTest())
+ *    await waitForLoadedUseQuery(result)
+ *
+ */
+export async function waitForLoadedUseQuery(hookResult: { current: { loading: boolean } }) {
+  await waitFor(() => expect(hookResult.current.loading).toBeFalsy())
 }

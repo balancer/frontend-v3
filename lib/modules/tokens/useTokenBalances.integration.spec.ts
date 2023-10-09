@@ -1,5 +1,5 @@
 import { allFakeGqlTokens, fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
-import { renderHookWithDefaultProviders } from '@/test/utils/custom-renderers'
+import { testHook } from '@/test/utils/custom-renderers'
 import { act, waitFor } from '@testing-library/react'
 import { TokenBase } from './token.types'
 import { useTokenBalances } from './useTokenBalances'
@@ -8,9 +8,7 @@ const defaultTestAccount = '0x512fce9B07Ce64590849115EE6B32fd40eC0f5F3'
 
 test('fetches balance for native asset token', async () => {
   const nativeAssetBasicToken: TokenBase = fakeTokenBySymbol('ETH')
-  const { result } = renderHookWithDefaultProviders(() =>
-    useTokenBalances(defaultTestAccount, [nativeAssetBasicToken])
-  )
+  const { result } = testHook(() => useTokenBalances(defaultTestAccount, [nativeAssetBasicToken]))
 
   expect(result.current.balances).toMatchInlineSnapshot(`
     [
@@ -42,9 +40,7 @@ test('fetches balance for native asset token', async () => {
 test('fetches token balance', async () => {
   const balBasicToken: TokenBase = fakeTokenBySymbol('BAL')
 
-  const { result } = renderHookWithDefaultProviders(() =>
-    useTokenBalances(defaultTestAccount, [balBasicToken])
-  )
+  const { result } = testHook(() => useTokenBalances(defaultTestAccount, [balBasicToken]))
 
   expect(result.current.balances).toMatchInlineSnapshot('[]')
 
@@ -66,9 +62,7 @@ test('fetches token balance', async () => {
 test('refetches balances', async () => {
   const balBasicToken: TokenBase = fakeTokenBySymbol('BAL')
 
-  const { result } = renderHookWithDefaultProviders(() =>
-    useTokenBalances(defaultTestAccount, [balBasicToken])
-  )
+  const { result } = testHook(() => useTokenBalances(defaultTestAccount, [balBasicToken]))
 
   await waitFor(() => expect(result.current.isLoading).toBeFalsy())
 
@@ -96,7 +90,7 @@ test('Should not return balances when user is not connected (account is empty) '
   const nativeAssetToken: TokenBase = fakeTokenBySymbol('ETH')
 
   const testAccount = undefined
-  const { result } = renderHookWithDefaultProviders(() =>
+  const { result } = testHook(() =>
     useTokenBalances(testAccount, [balBasicToken, nativeAssetToken])
   )
 
@@ -117,7 +111,7 @@ test('Should not return balances when user is not connected (account is empty) '
 
 test.skip('Debug: should return balances of 50 tokens', async () => {
   const numberOfTokens = 50
-  const { result } = renderHookWithDefaultProviders(() =>
+  const { result } = testHook(() =>
     useTokenBalances(defaultTestAccount, allFakeGqlTokens.slice(0, numberOfTokens))
   )
 
