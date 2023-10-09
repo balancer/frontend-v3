@@ -10,7 +10,8 @@
       "totalLiquidity": "TVL",
       "volume24h": "Volume (24h)",
       "apr": "APR"
-    }
+    },
+    "noResultsText": "No matching pools found"
   },
   "Navbar": {
     "link": "Pools"
@@ -20,10 +21,17 @@
     "connect": "Connect",
     "unsupported": "Unsupported network"
   },
-  "PoolListPagination": {
-    "pageNum": "Page num",
-    "next": "Next",
-    "noPerPage": "No. per page"
+  "Pagination": {
+    "page": "Page ",
+    "of": " of ",
+    "goToPage": "Go to page: ",
+    "show": "Show",
+    "label": {
+      "firstPage": "first page",
+      "lastPage": "last page",
+      "previousPage": "previous page",
+      "nextPage": "next page"
+    }
   },
   "PoolListFilters": {
     "label": "Filters",

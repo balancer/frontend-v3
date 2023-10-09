@@ -15,7 +15,7 @@ import {
   useQueryParams,
   withDefault,
 } from 'use-query-params'
-import { PoolsColumnSort } from '@/lib/modules/pool/pool.types'
+import { PaginationState, SortingState } from '@tanstack/react-table'
 
 export const poolTypeFilters = [
   GqlPoolFilterType.Weighted,
@@ -79,10 +79,11 @@ export function usePoolListQueryState() {
     }
   }
 
-  function setSort(sortingState: PoolsColumnSort[]) {
+  function setSorting(sortingState: SortingState) {
     if (sortingState.length > 0) {
       setQuery({
-        orderBy: sortingState[0].id,
+        skip: 0, // always sort from top (or bottom)
+        orderBy: sortingState[0].id as GqlPoolOrderBy,
         orderDirection: sortingState[0].desc
           ? GqlPoolOrderDirection.Desc
           : GqlPoolOrderDirection.Asc,
@@ -95,22 +96,15 @@ export function usePoolListQueryState() {
     }
   }
 
-  function setPageSize(pageSize: number) {
+  function setPagination(pagination: PaginationState) {
     setQuery({
-      skip: 0,
-      first: pageSize,
+      first: pagination.pageSize,
+      skip: pagination.pageIndex * pagination.pageSize,
     })
-  }
-
-  function setPageNumber(pageNumber: number) {
-    setQuery(latest => ({ skip: pageNumber * latest.first }))
   }
 
   function setSearch(text: string) {
-    setQuery({
-      skip: 0,
-      textSearch: text,
-    })
+    setQuery(latest => ({ skip: text.length > 0 ? 0 : latest.skip, textSearch: text }))
   }
 
   function poolTypeLabel(poolType: GqlPoolFilterType) {
@@ -129,25 +123,25 @@ export function usePoolListQueryState() {
   }
 
   const totalFilterCount = query.networks.length + query.poolTypes.length
-  const sorting: PoolsColumnSort[] = query.orderBy
-    ? [{ id: query.orderBy, desc: query.orderDirection === GqlPoolOrderDirection.Desc }]
+  const sorting: SortingState = query.orderBy
+    ? [{ id: query.orderBy as string, desc: query.orderDirection === GqlPoolOrderDirection.Desc }]
     : []
 
-  const pageNumber = query.skip / query.first
-  const pageSize = query.first
+  const pagination: PaginationState = {
+    pageIndex: query.skip / query.first,
+    pageSize: query.first,
+  }
 
   return {
     state: query,
     toggleNetwork,
     togglePoolType,
     poolTypeLabel,
-    setSort,
-    setPageSize,
-    setPageNumber,
+    setSorting,
+    setPagination,
     setSearch,
     searchText: query.textSearch,
-    pageNumber,
-    pageSize,
+    pagination,
     sorting,
     totalFilterCount,
     poolTypes: query.poolTypes,

@@ -19,8 +19,8 @@ export function PoolListTable() {
     volume24h: t('columns.volume24h'),
     apr: t('columns.apr'),
   }
-  const { pools, loading } = usePoolList()
-  const { sorting, setSort } = usePoolListQueryState()
+  const { pools, loading, count } = usePoolList()
+  const { pagination, sorting, setPagination, setSorting } = usePoolListQueryState()
   const columns = getPoolListTableColumns(columnTitles)
   const router = useRouter()
 
@@ -46,10 +46,14 @@ export function PoolListTable() {
       <DataTable
         columns={columns}
         data={pools}
-        sorting={sorting}
-        setSorting={setSort}
         rowClickHandler={rowClickHandler}
         rowMouseEnterHandler={rowMouseEnterHandler}
+        rowCount={count || -1}
+        pagination={pagination}
+        sorting={sorting}
+        setPagination={setPagination}
+        setSorting={setSorting}
+        noResultsText={t('noResultsText')}
       />
       {loading && (
         <Box

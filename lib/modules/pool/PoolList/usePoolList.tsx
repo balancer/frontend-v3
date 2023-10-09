@@ -63,7 +63,7 @@ export function _usePoolList() {
 
   return {
     pools,
-    count: data?.count,
+    count: data?.count || previousData?.count,
     loading,
     error,
     networkStatus,
