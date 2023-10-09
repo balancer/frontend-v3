@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { getPoolPath } from '../../../pool.utils'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { useTranslations } from 'next-intl'
+import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 
 export function PoolListTable() {
   const t = useTranslations('PoolListTable')
@@ -18,7 +19,8 @@ export function PoolListTable() {
     volume24h: t('columns.volume24h'),
     apr: t('columns.apr'),
   }
-  const { pools, loading, sorting, setSort } = usePoolList()
+  const { pools, loading, count } = usePoolList()
+  const { pagination, sorting, setPagination, setSorting } = usePoolListQueryState()
   const columns = getPoolListTableColumns(columnTitles)
   const router = useRouter()
 
@@ -44,10 +46,14 @@ export function PoolListTable() {
       <DataTable
         columns={columns}
         data={pools}
-        sorting={sorting}
-        setSorting={setSort}
         rowClickHandler={rowClickHandler}
         rowMouseEnterHandler={rowMouseEnterHandler}
+        rowCount={count || -1}
+        pagination={pagination}
+        sorting={sorting}
+        setPagination={setPagination}
+        setSorting={setSorting}
+        noResultsText={t('noResultsText')}
       />
       {loading && (
         <Box

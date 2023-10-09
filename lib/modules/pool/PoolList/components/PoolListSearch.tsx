@@ -1,51 +1,60 @@
-import { IconButton, Input, InputGroup, InputRightElement, useBoolean } from '@chakra-ui/react'
-import { debounce } from 'lodash'
-import { useEffect } from 'react'
-import { HiOutlineX, HiOutlineSearch } from 'react-icons/hi'
-import { usePoolList } from '../usePoolList'
-import { usePoolListFilters } from '../usePoolListFilters'
+import { useForm } from 'react-hook-form'
+import { FormControl, IconButton, Input, InputGroup, InputRightElement } from '@chakra-ui/react'
+import { HiOutlineSearch, HiOutlineX } from 'react-icons/hi'
 import { useTranslations } from 'next-intl'
+import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
+import { useEffect, useMemo } from 'react'
+import { debounce } from 'lodash'
+import { usePoolList } from '../usePoolList'
+
+const SEARCH = 'search'
 
 export function PoolListSearch() {
-  const [isSearching, { on, off }] = useBoolean()
-  const { refetch, state } = usePoolList()
-  const { searchText, setSearchText } = usePoolListFilters()
-
   const t = useTranslations('PoolListSearch')
+  const { searchText, setSearch } = usePoolListQueryState()
+  const { loading } = usePoolList()
 
-  const submitSearch = debounce(async () => {
-    if (searchText.length > 0) await refetch({ ...state, textSearch: searchText, skip: 0 })
-    off()
-  }, 250)
+  const { register, reset, setValue, getFieldState } = useForm()
+
+  const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value)
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedChangeHandler = useMemo(() => debounce(changeHandler, 300), [])
 
   useEffect(() => {
-    submitSearch()
+    reset({
+      search: searchText,
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchText])
+  }, [reset])
 
   return (
-    <InputGroup size="md">
-      <Input
-        type="text"
-        placeholder={t('placeholder')}
-        value={searchText}
-        onChange={e => {
-          setSearchText(e.target.value)
-          if (!isSearching) on()
-        }}
-      />
-      <InputRightElement>
-        <IconButton
-          variant="ghost"
-          size="sm"
-          aria-label={t('ariaLabel')}
-          icon={searchText !== '' ? <HiOutlineX /> : <HiOutlineSearch />}
-          isLoading={isSearching}
-          onClick={() => {
-            if (searchText !== '') setSearchText('')
-          }}
-        />
-      </InputRightElement>
-    </InputGroup>
+    <form>
+      <FormControl>
+        <InputGroup size="md">
+          <Input
+            id={SEARCH}
+            placeholder={t('placeholder')}
+            {...register(SEARCH)}
+            onChange={debouncedChangeHandler}
+          />
+          <InputRightElement>
+            <IconButton
+              variant="ghost"
+              size="sm"
+              aria-label={t('ariaLabel')}
+              icon={searchText !== '' ? <HiOutlineX /> : <HiOutlineSearch />}
+              isLoading={getFieldState(SEARCH).isTouched && loading}
+              onClick={() => {
+                setSearch('')
+                setValue(SEARCH, '')
+              }}
+            />
+          </InputRightElement>
+        </InputGroup>
+      </FormControl>
+    </form>
   )
 }

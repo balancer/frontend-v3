@@ -8,33 +8,12 @@ import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { createWagmiTestConfig } from './wagmi'
 import { NextIntlClientProvider } from 'next-intl'
+import { QueryParamAdapter, QueryParamProvider } from 'use-query-params'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
 
 export const EmptyWrapper = ({ children }: WrapperProps) => <>{children}</>
-
-function GlobalProviders({ children }: WrapperProps) {
-  const defaultRouterOptions = {}
-  let wagmiConfig: Config
-  if (process.env.VITE_USE_PRODUCTION_WAGMI == 'true') {
-    wagmiConfig = createProductionConfig() as Config
-  } else {
-    wagmiConfig = createWagmiTestConfig() as Config
-  }
-
-  return (
-    <NextIntlClientProvider locale={'en'} messages={{}}>
-      <WagmiConfig config={wagmiConfig}>
-        <AppRouterContextProviderMock router={defaultRouterOptions}>
-          <ApolloProvider client={apolloTestClient}>
-            <TokensProvider>{children}</TokensProvider>
-          </ApolloProvider>
-        </AppRouterContextProviderMock>
-      </WagmiConfig>
-    </NextIntlClientProvider>
-  )
-}
 
 export function renderHookWithDefaultProviders<TResult, TProps>(
   hook: (props: TProps) => TResult,
@@ -54,4 +33,45 @@ export function renderHookWithDefaultProviders<TResult, TProps>(
     ...options,
     wrapper: MixedProviders,
   })
+}
+
+function GlobalProviders({ children }: WrapperProps) {
+  const defaultRouterOptions = {}
+  let wagmiConfig: Config
+  if (process.env.VITE_USE_PRODUCTION_WAGMI == 'true') {
+    wagmiConfig = createProductionConfig() as Config
+  } else {
+    wagmiConfig = createWagmiTestConfig() as Config
+  }
+
+  return (
+    <NextIntlClientProvider locale={'en'} messages={{}}>
+      <WagmiConfig config={wagmiConfig}>
+        <AppRouterContextProviderMock router={defaultRouterOptions}>
+          <ClientProvidersMock>
+            <ApolloProvider client={apolloTestClient}>
+              <TokensProvider>{children}</TokensProvider>
+            </ApolloProvider>
+          </ClientProvidersMock>
+        </AppRouterContextProviderMock>
+      </WagmiConfig>
+    </NextIntlClientProvider>
+  )
+}
+
+function ClientProvidersMock({ children }: React.PropsWithChildren) {
+  return <QueryParamProvider adapter={NextAdapterApp}>{children}</QueryParamProvider>
+}
+
+type Props = {
+  children(adapter: QueryParamAdapter): ReactElement | null
+}
+
+function NextAdapterApp({ children }: Props) {
+  const adapter = {
+    replace: vi.fn(),
+    push: vi.fn(),
+    location: { search: 'foo' },
+  }
+  return children(adapter)
 }

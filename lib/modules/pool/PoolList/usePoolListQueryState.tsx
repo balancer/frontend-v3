@@ -1,0 +1,150 @@
+'use client'
+
+import {
+  GqlChain,
+  GqlPoolFilterType,
+  GqlPoolOrderBy,
+  GqlPoolOrderDirection,
+} from '@/lib/services/api/generated/graphql'
+import { uniq } from 'lodash'
+import {
+  createEnumDelimitedArrayParam,
+  createEnumParam,
+  NumberParam,
+  StringParam,
+  useQueryParams,
+  withDefault,
+} from 'use-query-params'
+import { PaginationState, SortingState } from '@tanstack/react-table'
+
+export const poolTypeFilters = [
+  GqlPoolFilterType.Weighted,
+  GqlPoolFilterType.Stable,
+  GqlPoolFilterType.LiquidityBootstrapping,
+  GqlPoolFilterType.Gyro,
+] as const
+export type PoolFilterType = (typeof poolTypeFilters)[number]
+
+export function usePoolListQueryState() {
+  const [query, setQuery] = useQueryParams({
+    first: withDefault(NumberParam, 20),
+    skip: withDefault(NumberParam, 0),
+    orderBy: withDefault(
+      createEnumParam(Object.entries(GqlPoolOrderBy).map(([, value]) => value)),
+      GqlPoolOrderBy.TotalLiquidity
+    ),
+    orderDirection: withDefault(
+      createEnumParam(Object.entries(GqlPoolOrderDirection).map(([, value]) => value)),
+      GqlPoolOrderDirection.Desc
+    ),
+    poolTypes: withDefault(
+      createEnumDelimitedArrayParam(
+        [
+          GqlPoolFilterType.Weighted,
+          GqlPoolFilterType.Stable,
+          GqlPoolFilterType.LiquidityBootstrapping,
+          GqlPoolFilterType.Gyro,
+        ],
+        ','
+      ),
+      []
+    ),
+    networks: withDefault(
+      createEnumDelimitedArrayParam(
+        Object.entries(GqlChain).map(([, value]) => value),
+        ','
+      ),
+      []
+    ),
+    textSearch: withDefault(StringParam, null),
+  })
+
+  // Set internal checked state
+  function toggleNetwork(checked: boolean, network: GqlChain) {
+    if (checked) {
+      setQuery(latest => ({ networks: uniq([...latest.networks, network]) }))
+    } else {
+      setQuery(latest => ({ networks: latest.networks.filter(chain => chain !== network) }))
+    }
+  }
+
+  // Set internal checked state
+  function togglePoolType(checked: boolean, poolType: PoolFilterType) {
+    if (checked) {
+      setQuery(latest => ({ poolTypes: uniq([...latest.poolTypes, poolType]) }))
+    } else {
+      setQuery(latest => ({
+        poolTypes: (latest.poolTypes || []).filter(type => type !== poolType),
+      }))
+    }
+  }
+
+  function setSorting(sortingState: SortingState) {
+    if (sortingState.length > 0) {
+      setQuery({
+        skip: 0, // always sort from top (or bottom)
+        orderBy: sortingState[0].id as GqlPoolOrderBy,
+        orderDirection: sortingState[0].desc
+          ? GqlPoolOrderDirection.Desc
+          : GqlPoolOrderDirection.Asc,
+      })
+    } else {
+      setQuery({
+        orderBy: GqlPoolOrderBy.TotalLiquidity,
+        orderDirection: GqlPoolOrderDirection.Desc,
+      })
+    }
+  }
+
+  function setPagination(pagination: PaginationState) {
+    setQuery({
+      first: pagination.pageSize,
+      skip: pagination.pageIndex * pagination.pageSize,
+    })
+  }
+
+  function setSearch(text: string) {
+    setQuery(latest => ({ skip: text.length > 0 ? 0 : latest.skip, textSearch: text }))
+  }
+
+  function poolTypeLabel(poolType: GqlPoolFilterType) {
+    switch (poolType) {
+      case GqlPoolFilterType.Weighted:
+        return 'Weighted'
+      case GqlPoolFilterType.Stable:
+        return 'Stable'
+      case GqlPoolFilterType.LiquidityBootstrapping:
+        return 'Liquidity Bootstrapping'
+      case GqlPoolFilterType.Gyro:
+        return 'CLP'
+      default:
+        return poolType.toLowerCase()
+    }
+  }
+
+  const totalFilterCount = query.networks.length + query.poolTypes.length
+  const sorting: SortingState = query.orderBy
+    ? [{ id: query.orderBy as string, desc: query.orderDirection === GqlPoolOrderDirection.Desc }]
+    : []
+
+  const pagination: PaginationState = {
+    pageIndex: query.skip / query.first,
+    pageSize: query.first,
+  }
+
+  return {
+    state: query,
+    toggleNetwork,
+    togglePoolType,
+    poolTypeLabel,
+    setSorting,
+    setPagination,
+    setSearch,
+    searchText: query.textSearch,
+    pagination,
+    sorting,
+    totalFilterCount,
+    poolTypes: query.poolTypes,
+    networks: query.networks,
+  }
+}
