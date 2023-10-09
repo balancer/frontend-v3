@@ -11,7 +11,6 @@ import {
   Select,
   Text,
 } from '@chakra-ui/react'
-import { useTranslations } from 'next-intl'
 
 interface Props {
   goToFirstPage: () => void
@@ -40,20 +39,18 @@ export function Pagination({
   setPageSize,
   pageSize,
 }: Props) {
-  const t = useTranslations('Pagination')
-
   return (
     <HStack justifyContent="center" alignItems="center" m="4" gap="8">
       <Flex>
         <IconButton
-          aria-label={t('label.firstPage')}
+          aria-label="first page"
           onClick={goToFirstPage}
           isDisabled={!canPreviousPage}
           icon={<ArrowLeftIcon h="3" w="3" />}
           mr="4"
         />
         <IconButton
-          aria-label={t('label.previousPage')}
+          aria-label="previous page"
           onClick={goToPreviousPage}
           isDisabled={!canPreviousPage}
           icon={<ChevronLeftIcon h="6" w="6" />}
@@ -61,16 +58,16 @@ export function Pagination({
       </Flex>
       <Flex alignItems="center">
         <Text flexShrink="0" mr="8">
-          {t('page')}
+          Page{' '}
           <Text fontWeight="bold" as="span">
             {currentPageNumber}
-          </Text>
-          {t('of')}
+          </Text>{' '}
+          of{' '}
           <Text fontWeight="bold" as="span">
             {totalPageCount}
           </Text>
         </Text>
-        <Text flexShrink="0">{t('goToPage')}</Text>{' '}
+        <Text flexShrink="0">Goto page:</Text>{' '}
         <NumberInput
           ml="2"
           mr="8"
@@ -98,20 +95,20 @@ export function Pagination({
         >
           {[10, 20, 30, 40, 50].map(pageSize => (
             <option key={pageSize} value={pageSize}>
-              {`${t('show')} ${pageSize}`}
+              {`Show ${pageSize}`}
             </option>
           ))}
         </Select>
       </Flex>
       <Flex>
         <IconButton
-          aria-label={t('label.nextPage')}
+          aria-label="next page"
           onClick={goToNextPage}
           isDisabled={!canNextPage}
           icon={<ChevronRightIcon h="6" w="6" />}
         />
         <IconButton
-          aria-label={t('label.lastPage')}
+          aria-label="last page"
           onClick={gotoLastPage}
           isDisabled={!canNextPage}
           icon={<ArrowRightIcon h="3" w="3" />}

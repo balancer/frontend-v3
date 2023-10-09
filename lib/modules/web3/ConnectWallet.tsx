@@ -1,10 +1,8 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { Box, Button, HStack, Img } from '@chakra-ui/react'
 import { CustomAvatar } from './CustomAvatar'
-import { useTranslations } from 'next-intl'
 
 export function ConnectWallet() {
-  const t = useTranslations('ConnectWallet')
   return (
     <ConnectButton.Custom>
       {({
@@ -30,9 +28,9 @@ export function ConnectWallet() {
               onClick={openConnectModal}
               type="button"
               isLoading={isLoading || !mounted}
-              loadingText={t('loading')}
+              loadingText="Connect"
             >
-              {t('connect')}
+              Connect
             </Button>
           )
         }
@@ -40,7 +38,7 @@ export function ConnectWallet() {
         if (chain.unsupported) {
           return (
             <Button onClick={openChainModal} type="button">
-              {t('unsupported')}
+              Unsupported network
             </Button>
           )
         }
