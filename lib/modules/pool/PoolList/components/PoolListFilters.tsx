@@ -67,7 +67,7 @@ function FilterTags() {
       {poolTypes.map(poolType => (
         <Tag key={poolType}>
           <TagLabel>{poolTypeLabel(poolType)}</TagLabel>
-          <TagCloseButton onClick={() => togglePoolType(false, poolType as PoolFilterType)} />
+          <TagCloseButton onClick={() => togglePoolType(false, poolType)} />
         </Tag>
       ))}
 

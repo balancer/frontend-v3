@@ -45,8 +45,6 @@ const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolFilterType[] } = {
   ],
 }
 
-const allPoolTypes = poolTypeFilters.map(poolType => POOL_TYPE_MAP[poolType]).flat()
-
 export function usePoolListQueryState() {
   const [query, setQuery] = useQueryParams({
     first: withDefault(NumberParam, 20),
@@ -59,7 +57,7 @@ export function usePoolListQueryState() {
       createEnumParam(Object.entries(GqlPoolOrderDirection).map(([, value]) => value)),
       GqlPoolOrderDirection.Desc
     ),
-    poolTypes: withDefault(createEnumDelimitedArrayParam(allPoolTypes, ','), []),
+    poolTypes: withDefault(createEnumDelimitedArrayParam([...poolTypeFilters], ','), []),
     networks: withDefault(
       createEnumDelimitedArrayParam(
         Object.entries(GqlChain).map(([, value]) => value),
