@@ -23,7 +23,27 @@ export const poolTypeFilters = [
   GqlPoolFilterType.LiquidityBootstrapping,
   GqlPoolFilterType.Gyro,
 ] as const
+
 export type PoolFilterType = (typeof poolTypeFilters)[number]
+
+// We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
+const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolFilterType[] } = {
+  [GqlPoolFilterType.Weighted]: [GqlPoolFilterType.Weighted],
+  [GqlPoolFilterType.Stable]: [
+    GqlPoolFilterType.Stable,
+    GqlPoolFilterType.PhantomStable,
+    GqlPoolFilterType.MetaStable,
+    GqlPoolFilterType.Gyro,
+    GqlPoolFilterType.Gyro3,
+    GqlPoolFilterType.Gyroe,
+  ],
+  [GqlPoolFilterType.LiquidityBootstrapping]: [GqlPoolFilterType.LiquidityBootstrapping],
+  [GqlPoolFilterType.Gyro]: [
+    GqlPoolFilterType.Gyro,
+    GqlPoolFilterType.Gyro3,
+    GqlPoolFilterType.Gyroe,
+  ],
+}
 
 export function usePoolListQueryState() {
   const [query, setQuery] = useQueryParams({
@@ -37,18 +57,7 @@ export function usePoolListQueryState() {
       createEnumParam(Object.entries(GqlPoolOrderDirection).map(([, value]) => value)),
       GqlPoolOrderDirection.Desc
     ),
-    poolTypes: withDefault(
-      createEnumDelimitedArrayParam(
-        [
-          GqlPoolFilterType.Weighted,
-          GqlPoolFilterType.Stable,
-          GqlPoolFilterType.LiquidityBootstrapping,
-          GqlPoolFilterType.Gyro,
-        ],
-        ','
-      ),
-      []
-    ),
+    poolTypes: withDefault(createEnumDelimitedArrayParam([...poolTypeFilters], ','), []),
     networks: withDefault(
       createEnumDelimitedArrayParam(
         Object.entries(GqlChain).map(([, value]) => value),
@@ -132,6 +141,12 @@ export function usePoolListQueryState() {
     pageSize: query.first,
   }
 
+  const mappedPoolTypes = (
+    query.poolTypes.length > 0 ? query.poolTypes : Object.keys(POOL_TYPE_MAP)
+  )
+    .map(poolType => POOL_TYPE_MAP[poolType as keyof typeof POOL_TYPE_MAP])
+    .flat()
+
   return {
     state: query,
     toggleNetwork,
@@ -146,5 +161,6 @@ export function usePoolListQueryState() {
     totalFilterCount,
     poolTypes: query.poolTypes,
     networks: query.networks,
+    mappedPoolTypes,
   }
 }
