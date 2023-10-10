@@ -162,6 +162,5 @@ export function usePoolListQueryState() {
     poolTypes: query.poolTypes,
     networks: query.networks,
     mappedPoolTypes,
-    poolTypeFilters,
   }
 }
