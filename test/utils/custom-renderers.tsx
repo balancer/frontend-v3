@@ -7,7 +7,6 @@ import { Config, WagmiConfig } from 'wagmi'
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { createWagmiTestConfig } from './wagmi'
-import { NextIntlClientProvider } from 'next-intl'
 import { QueryParamAdapter, QueryParamProvider } from 'use-query-params'
 import { waitFor } from '@testing-library/react'
 
@@ -50,17 +49,15 @@ function GlobalProviders({ children }: WrapperProps) {
   }
 
   return (
-    <NextIntlClientProvider locale={'en'} messages={{}}>
-      <WagmiConfig config={wagmiConfig}>
-        <AppRouterContextProviderMock router={defaultRouterOptions}>
-          <ClientProvidersMock>
-            <ApolloProvider client={apolloTestClient}>
-              <TokensProvider>{children}</TokensProvider>
-            </ApolloProvider>
-          </ClientProvidersMock>
-        </AppRouterContextProviderMock>
-      </WagmiConfig>
-    </NextIntlClientProvider>
+    <WagmiConfig config={wagmiConfig}>
+      <AppRouterContextProviderMock router={defaultRouterOptions}>
+        <ClientProvidersMock>
+          <ApolloProvider client={apolloTestClient}>
+            <TokensProvider>{children}</TokensProvider>
+          </ApolloProvider>
+        </ClientProvidersMock>
+      </AppRouterContextProviderMock>
+    </WagmiConfig>
   )
 }
 

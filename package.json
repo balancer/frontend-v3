@@ -49,7 +49,6 @@
     "graphql-tag": "^2.12.6",
     "lodash": "^4.17.21",
     "next": "13.5.2",
-    "next-intl": "^2.20.0",
     "next-query-params": "^4.2.3",
     "numeral": "^2.0.6",
     "react": "18.2.0",

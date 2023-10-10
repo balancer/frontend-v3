@@ -9,18 +9,10 @@ import { getNetworkConfig } from '@/lib/config/app.config'
 import { PoolListItem } from '../../../pool.types'
 import { getApr } from '@/lib/utils/apr'
 
-export interface ColumnTitles {
-  network: string
-  details: string
-  totalLiquidity: string
-  volume24h: string
-  apr: string
-}
-
-export const getPoolListTableColumns = (columnTitles: ColumnTitles): ColumnDef<PoolListItem>[] => [
+export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => [
   {
     id: 'chainLogoUrl',
-    header: () => <Text>{columnTitles.network}</Text>,
+    header: () => <Text>Network</Text>,
     cell: ({ row: { original: pool } }) => {
       const networkConfig = getNetworkConfig(pool.chain)
       return (
@@ -31,7 +23,7 @@ export const getPoolListTableColumns = (columnTitles: ColumnTitles): ColumnDef<P
   },
   {
     id: 'details',
-    header: () => <Text>{columnTitles.details}</Text>,
+    header: () => <Text>Details</Text>,
     cell: ({ row: { original: pool } }) => {
       return (
         <VStack align="start">
@@ -48,7 +40,7 @@ export const getPoolListTableColumns = (columnTitles: ColumnTitles): ColumnDef<P
   {
     id: 'totalLiquidity',
     accessorKey: 'dynamicData.totalLiquidity',
-    header: () => <Text ml="auto">{columnTitles.totalLiquidity}</Text>,
+    header: () => <Text ml="auto">TVL</Text>,
     cell: props => {
       const value = numeral(props.getValue()).format('($0,0a)')
 
@@ -63,7 +55,7 @@ export const getPoolListTableColumns = (columnTitles: ColumnTitles): ColumnDef<P
   {
     id: 'volume24h',
     accessorKey: 'dynamicData.volume24h',
-    header: () => <Text ml="auto">{columnTitles.volume24h}</Text>,
+    header: () => <Text ml="auto">Volume (24h)</Text>,
     cell: props => {
       const value = numeral(props.getValue()).format('($0,0a)')
 
@@ -78,7 +70,7 @@ export const getPoolListTableColumns = (columnTitles: ColumnTitles): ColumnDef<P
   {
     id: 'apr',
     accessorKey: 'dynamicData.apr',
-    header: () => <Text ml="auto">{columnTitles.apr}</Text>,
+    header: () => <Text ml="auto">APR</Text>,
     cell: row => {
       const value = row.getValue<GqlPoolApr>()
       const apr = getApr(value.apr)

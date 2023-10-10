@@ -23,7 +23,6 @@ import {
 } from '@chakra-ui/react'
 import { PoolListSearch } from './PoolListSearch'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import { useTranslations } from 'next-intl'
 import {
   PoolFilterType,
   poolTypeFilters,
@@ -84,12 +83,12 @@ function FilterTags() {
   )
 }
 
-const FilterButton = forwardRef<ButtonProps & { label: string }, 'button'>((props, ref) => {
+const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
   const { totalFilterCount } = usePoolListQueryState()
 
   return (
     <Button ref={ref} {...props}>
-      {props.label}
+      Filters
       {totalFilterCount > 0 && (
         <Badge ml="2" colorScheme="blue">
           {totalFilterCount}
@@ -100,14 +99,12 @@ const FilterButton = forwardRef<ButtonProps & { label: string }, 'button'>((prop
 })
 
 export function PoolListFilters() {
-  const t = useTranslations('PoolListFilters')
-
   return (
     <>
       <HStack>
         <Popover>
           <PopoverTrigger>
-            <FilterButton label={t('label')} />
+            <FilterButton />
           </PopoverTrigger>
           <PopoverContent>
             <PopoverArrow />
@@ -115,12 +112,12 @@ export function PoolListFilters() {
             <PopoverBody>
               <VStack align="start">
                 <Heading as="h3" size="sm">
-                  {t('poolTypes')}
+                  Pool types
                 </Heading>
                 <PoolTypeFilters />
                 <Divider />
                 <Heading as="h3" size="sm">
-                  {t('networks')}
+                  Networks
                 </Heading>
                 <PoolNetworkFilters />
               </VStack>

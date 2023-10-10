@@ -1,7 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { FormControl, IconButton, Input, InputGroup, InputRightElement } from '@chakra-ui/react'
 import { HiOutlineSearch, HiOutlineX } from 'react-icons/hi'
-import { useTranslations } from 'next-intl'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 import { useEffect, useMemo } from 'react'
 import { debounce } from 'lodash'
@@ -10,7 +9,6 @@ import { usePoolList } from '../usePoolList'
 const SEARCH = 'search'
 
 export function PoolListSearch() {
-  const t = useTranslations('PoolListSearch')
   const { searchText, setSearch } = usePoolListQueryState()
   const { loading } = usePoolList()
 
@@ -36,7 +34,7 @@ export function PoolListSearch() {
         <InputGroup size="md">
           <Input
             id={SEARCH}
-            placeholder={t('placeholder')}
+            placeholder="Search..."
             {...register(SEARCH)}
             onChange={debouncedChangeHandler}
           />
@@ -44,8 +42,8 @@ export function PoolListSearch() {
             <IconButton
               variant="ghost"
               size="sm"
-              aria-label={t('ariaLabel')}
-              icon={searchText !== '' ? <HiOutlineX /> : <HiOutlineSearch />}
+              aria-label="search for a pool"
+              icon={searchText ? <HiOutlineX /> : <HiOutlineSearch />}
               isLoading={getFieldState(SEARCH).isTouched && loading}
               onClick={() => {
                 setSearch('')
