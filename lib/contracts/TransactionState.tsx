@@ -1,9 +1,9 @@
 'use client'
 
-import { Address } from 'viem'
 import { useWaitForTransaction } from 'wagmi'
+import { TransactionResult } from './contract.types'
 
-export function TransactionState({ hash }: { hash: Address }) {
+export function TransactionState({ hash }: TransactionResult) {
   const { data, isError, isLoading } = useWaitForTransaction({
     hash,
   })

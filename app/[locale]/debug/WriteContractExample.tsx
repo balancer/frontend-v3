@@ -7,21 +7,17 @@ import { TransactionState } from './TransactionState'
 
 import { useManagedTransaction } from '@/lib/contracts/useManagedTransaction'
 import { useState } from 'react'
-
+import { TransactionStep } from '@/lib/contracts/contract.types'
 
 const balancerRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'
 
-type TransactionStep = {
-  id: string,
-  getButtonLabel: (props?: any) => string,
-  execution: ReturnType<typeof useManagedTransaction>['execution'],
-  simulation: ReturnType<typeof useManagedTransaction>['simulation'],
-  result: ReturnType<typeof useManagedTransaction>['result'],
-}
-
 function useConstructRelayerApprovalTransactionStep(): TransactionStep {
-  const { address: userAddress } = useAccount();
-  const [approvalArgs,] = useState<[Address, Address, boolean]>([userAddress || noUserAddress, balancerRelayer, true]);
+  const { address: userAddress } = useAccount()
+  const [approvalArgs] = useState<[Address, Address, boolean]>([
+    userAddress || noUserAddress,
+    balancerRelayer,
+    true,
+  ])
   const { execution, simulation, result } = useManagedTransaction(
     'balancer.vaultV2',
     'setRelayerApproval',
@@ -34,7 +30,7 @@ function useConstructRelayerApprovalTransactionStep(): TransactionStep {
     }
   )
 
-  function getButtonLabel(props?: any): string {
+  function getButtonLabel(): string {
     if (simulation.isLoading || execution.isLoading) {
       return 'Loading'
     }
@@ -46,28 +42,29 @@ function useConstructRelayerApprovalTransactionStep(): TransactionStep {
     simulation,
     getButtonLabel,
     result,
-    id: 'relayer-approval'
+    id: 'relayer-approval',
   }
 }
 
 export function WriteContractExample() {
-  const { address: userAddress } = useAccount()
-
   // These args can be dynamic (i.e. from html input)
   // const [approvalArgs, setApprovalArgs] = useState<[Address, Address, boolean]>([userAddress || noUserAddress, balancerRelayer, true]);
-  const { execution, simulation, getButtonLabel: getRelayerApprovalButtonLabel, result: approvalResult } = useConstructRelayerApprovalTransactionStep();
+  const {
+    execution,
+    simulation,
+    getButtonLabel: getRelayerApprovalButtonLabel,
+    result: approvalResult,
+  } = useConstructRelayerApprovalTransactionStep()
 
   function handleOnClick() {
     if (!simulation.isError) {
-      execution.write?.();
+      execution.write?.()
     }
   }
 
   return (
     <VStack>
-      {execution.data?.hash && (
-        <TransactionState result={approvalResult}></TransactionState>
-      )}
+      {execution.data?.hash && <TransactionState result={approvalResult}></TransactionState>}
       <Box margin={2} padding={2}>
         {!execution.isSuccess && (
           <Button
