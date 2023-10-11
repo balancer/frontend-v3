@@ -120,7 +120,7 @@ export function testManagedTransaction<
 }
 
 /**
- * Call this function to
+ * Called from integration tests to setup a connection with the default anvil test account (defaultTestUserAccount)
  */
 export async function useConnectTestAccount() {
   function useConnectWithAccount() {
