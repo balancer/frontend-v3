@@ -8,20 +8,10 @@ type TransactionLabels = {
   stepTooltip: string
 }
 
-type BuildTransactionLabels = (args?: any, transactionInfo?: TransactionInfo) => TransactionLabels
-
-/**
- * Examples to illustrate a potential api based on functions to decouple label responsibility
- * These functions can then be passed when composing the whole set of steps for a given transaction flow
- */
-export const buildRelayerApprovalLabels: BuildTransactionLabels = () => {
-  return {
-    label: 'Sign relayer approval',
-    loadingLabel: 'Confirm in wallet',
-    confirmingLabel: 'Signing relayer approval',
-    stepTooltip: 'Your signature is required to use the relayer.',
-  }
-}
+export type BuildTransactionLabels = (
+  args?: any,
+  transactionInfo?: TransactionInfo
+) => TransactionLabels
 
 enum ApprovalAction {
   AddLiquidity,
