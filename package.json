@@ -35,7 +35,7 @@
     "@chakra-ui/react": "^2.8.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@rainbow-me/rainbowkit": "^1.0.6",
+    "@rainbow-me/rainbowkit": "^1.1.1",
     "@tanstack/react-table": "^8.9.3",
     "@types/node": "20.3.2",
     "@types/react-dom": "18.2.6",
@@ -58,8 +58,9 @@
     "typescript": "5.1.6",
     "use-query-params": "^2.2.1",
     "viem": "^1.2.9",
-    "wagmi": "^1.3.10",
-    "zod": "^3.21.4"
+    "wagmi": "^1.4.3",
+    "zod": "^3.21.4",
+    "@tanstack/react-query": "^4.29.19"
   },
   "devDependencies": {
     "@chakra-ui/cli": "^2.4.1",
@@ -70,7 +71,6 @@
     "@graphql-codegen/typescript-document-nodes": "^4.0.1",
     "@graphql-codegen/typescript-msw": "^1.1.6",
     "@graphql-typed-document-node/core": "^3.2.0",
-    "@tanstack/react-query": "^4.29.19",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/react-hooks": "^8.0.1",
