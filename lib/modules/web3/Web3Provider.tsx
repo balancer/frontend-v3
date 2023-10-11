@@ -18,6 +18,7 @@ import { merge } from 'lodash'
 import { useColorMode, useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/services/chakra/theme'
 import { CustomAvatar } from './CustomAvatar'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
 export const supportedChains = [mainnet, polygon, optimism, arbitrum, polygonZkEvm, gnosis]
 
@@ -28,7 +29,7 @@ const { chains, publicClient } = configureChains(supportedChains, [
 ])
 
 export const { connectors } = getDefaultWallets({
-  appName: 'Balancer',
+  appName: getProjectConfig().projectName,
   projectId: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string,
   chains,
 })
