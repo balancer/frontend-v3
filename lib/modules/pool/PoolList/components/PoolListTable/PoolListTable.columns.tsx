@@ -7,7 +7,7 @@ import { GqlPoolApr } from '@/lib/services/api/generated/graphql'
 import { VStack, Text, HStack, Tag } from '@chakra-ui/react'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { PoolListItem } from '../../../pool.types'
-import { getApr } from '@/lib/utils/apr'
+import { getAprLabel } from '../../../pool.utils'
 
 export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => [
   {
@@ -73,7 +73,7 @@ export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => [
     header: () => <Text ml="auto">APR</Text>,
     cell: row => {
       const value = row.getValue<GqlPoolApr>()
-      const apr = getApr(value.apr)
+      const apr = getAprLabel(value.apr)
 
       return (
         <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
