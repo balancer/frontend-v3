@@ -22,8 +22,8 @@ import { CustomAvatar } from './CustomAvatar'
 export const supportedChains = [mainnet, polygon, optimism, arbitrum, polygonZkEvm, gnosis]
 
 const { chains, publicClient } = configureChains(supportedChains, [
-  alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string }),
   infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string }),
+  alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string }),
   publicProvider(),
 ])
 
