@@ -29,7 +29,7 @@ const { chains, publicClient } = configureChains(supportedChains, [
 
 export const { connectors } = getDefaultWallets({
   appName: 'Balancer',
-  projectId: '1b6b722470b504a53cf011e1e629a9eb', // WalletConnect Cloud ID
+  projectId: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string,
   chains,
 })
 
