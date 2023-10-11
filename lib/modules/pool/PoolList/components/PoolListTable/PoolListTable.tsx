@@ -1,6 +1,6 @@
 'use client'
 
-import { getPoolListTableColumns } from './PoolListTable.columns'
+import { getPoolListTableColumns, columnTitles as columnTitlesObj } from './PoolListTable.columns'
 import { PoolListItem } from '../../../pool.types'
 import { Box } from '@chakra-ui/react'
 import { DataTable } from '@/components/tables/DataTable'
@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { getPoolPath } from '../../../pool.utils'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
+import { PoolListCard } from './PoolListCard'
 
 export function PoolListTable() {
   const { pools, loading, count } = usePoolList()
@@ -32,6 +33,9 @@ export function PoolListTable() {
     router.prefetch(poolPath)
   }
 
+  const columnTitles = Object.values(columnTitlesObj)
+  const columnIds = columns.map(column => column.id)
+
   return (
     <Box w="full" style={{ position: 'relative' }}>
       <DataTable
@@ -45,6 +49,15 @@ export function PoolListTable() {
         setPagination={setPagination}
         setSorting={setSorting}
         noResultsText="No matching pools found"
+        customRowCard={PoolListCard}
+        customRowCardProps={{
+          templateColumns: 'repeat(3, 1fr)',
+          templateAreas: `"network        details   details"
+                          "totalLiquidity volume24h apr"`,
+          columnTitles,
+          columnIds,
+          bg: 'lightgrey',
+        }}
       />
       {loading && (
         <Box

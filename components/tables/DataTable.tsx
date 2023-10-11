@@ -1,5 +1,16 @@
 import * as React from 'react'
-import { Center, HStack, Table, Tbody, Td, Th, Thead, Tr, chakra } from '@chakra-ui/react'
+import {
+  Center,
+  HStack,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  chakra,
+  useBreakpointValue,
+} from '@chakra-ui/react'
 import {
   ColumnDef,
   flexRender,
@@ -23,6 +34,8 @@ export type DataTableProps<Data extends object> = {
   setSorting: (state: SortingState) => void
   setPagination: (state: PaginationState) => void
   noResultsText: string
+  customRowCard?: any
+  customRowCardProps?: any
 }
 
 export function DataTable<Data extends object>({
@@ -36,7 +49,12 @@ export function DataTable<Data extends object>({
   setPagination,
   setSorting,
   noResultsText,
+  customRowCard,
+  customRowCardProps,
 }: DataTableProps<Data>) {
+  const isMobile = useBreakpointValue({ base: true, lg: false })
+  const CustomRowCard = customRowCard
+
   const table = useReactTable({
     columns,
     data,
@@ -70,7 +88,7 @@ export function DataTable<Data extends object>({
   return (
     <>
       <Table layout="fixed" w="full">
-        <Thead>
+        <Thead hidden={isMobile}>
           {table.getHeaderGroups().map(headerGroup => (
             <Tr key={headerGroup.id}>
               {headerGroup.headers.map(header => {
@@ -114,15 +132,24 @@ export function DataTable<Data extends object>({
                 rowMouseEnterHandler && rowMouseEnterHandler(event, row.original)
               }
             >
-              {row.getVisibleCells().map(cell => {
-                // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-                const meta: any = cell.column.columnDef.meta
-                return (
-                  <Td key={cell.id} isNumeric={meta?.isNumeric}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </Td>
-                )
-              })}
+              {isMobile ? (
+                <CustomRowCard
+                  cells={row
+                    .getVisibleCells()
+                    .map(cell => flexRender(cell.column.columnDef.cell, cell.getContext()))}
+                  {...customRowCardProps}
+                />
+              ) : (
+                row.getVisibleCells().map(cell => {
+                  // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                  const meta: any = cell.column.columnDef.meta
+                  return (
+                    <Td key={cell.id} isNumeric={meta?.isNumeric}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </Td>
+                  )
+                })
+              )}
             </Tr>
           ))}
         </Tbody>
@@ -132,7 +159,7 @@ export function DataTable<Data extends object>({
           {noResultsText}
         </Center>
       )}
-      {!!rows.length && rowCount > pagination.pageSize && (
+      {!isMobile && !!rows.length && rowCount > pagination.pageSize && (
         <Pagination
           goToFirstPage={() => table.setPageIndex(0)}
           gotoLastPage={() => table.setPageIndex(table.getPageCount() - 1)}
