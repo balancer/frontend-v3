@@ -11,11 +11,10 @@ To setup the development environment, first clone the repo:
 git clone https://github.com/balancer/frontend-v3.git && cd frontend-v3
 ```
 
-Make sure that `.env.local` file exists in the root directory of the project and that it has
-`NEXT_PUBLIC_BALANCER_API_URL` defined. Example:
+Copy and rename the `.env.example` file to `.env.local`:
 
 ```bash
-NEXT_PUBLIC_BALANCER_API_URL=https://api-v3.balancer.fi/graphql
+cp .env.example .env.local
 ```
 
 Next, install dependencies:
