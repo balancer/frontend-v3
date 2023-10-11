@@ -6,9 +6,10 @@ import { useMandatoryContext } from '@/lib/utils/contexts'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { PropsWithChildren, createContext } from 'react'
 
-export const TokensContext = createContext<ReturnType<typeof _useTokens> | null>(null)
+export type UseTokensResult = ReturnType<typeof _useTokens>
+export const TokensContext = createContext<UseTokensResult | null>(null)
 
-function _useTokens() {
+export function _useTokens() {
   const { data } = useQuery(GetTokensDocument)
 
   const tokens = data?.tokens || []
@@ -25,4 +26,4 @@ export function TokensProvider({ children }: PropsWithChildren) {
   return <TokensContext.Provider value={tokens}>{children}</TokensContext.Provider>
 }
 
-export const useTokens = () => useMandatoryContext(TokensContext, 'Tokens')
+export const useTokens = (): UseTokensResult => useMandatoryContext(TokensContext, 'Tokens')

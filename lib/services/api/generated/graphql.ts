@@ -964,6 +964,7 @@ export type GqlTokenCandlestickChartDataItem = {
 }
 
 export enum GqlTokenChartDataRange {
+  NinetyDay = 'NINETY_DAY',
   SevenDay = 'SEVEN_DAY',
   ThirtyDay = 'THIRTY_DAY',
 }
