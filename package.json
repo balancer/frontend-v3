@@ -30,7 +30,6 @@
   "dependencies": {
     "@apollo/client": "3.8.0-rc.1",
     "@apollo/experimental-nextjs-app-support": "^0.4.1",
-    "@balancer-labs/sdk": "^1.1.5",
     "@chakra-ui/icons": "^2.1.0",
     "@chakra-ui/next-js": "^2.1.5",
     "@chakra-ui/react": "^2.8.0",
