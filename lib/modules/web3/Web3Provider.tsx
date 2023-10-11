@@ -18,27 +18,29 @@ import { merge } from 'lodash'
 import { useColorMode, useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/services/chakra/theme'
 import { CustomAvatar } from './CustomAvatar'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
-const { chains, publicClient } = configureChains(
-  [mainnet, polygon, optimism, arbitrum, polygonZkEvm, gnosis],
-  [
-    alchemyProvider({ apiKey: 'VBeQgTCRqqPtuuEPsFzRdwKXzDyN6aFh' }),
-    infuraProvider({ apiKey: 'daaa68ec242643719749dd1caba2fc66' }),
-    publicProvider(),
-  ]
-)
+export const supportedChains = [mainnet, polygon, optimism, arbitrum, polygonZkEvm, gnosis]
 
-const { connectors } = getDefaultWallets({
-  appName: 'Balancer',
-  projectId: '1b6b722470b504a53cf011e1e629a9eb', // WalletConnect Cloud ID
+const { chains, publicClient } = configureChains(supportedChains, [
+  infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string }),
+  alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string }),
+  publicProvider(),
+])
+
+export const { connectors } = getDefaultWallets({
+  appName: getProjectConfig().projectName,
+  projectId: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string,
   chains,
 })
 
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors,
-  publicClient,
-})
+export function createWagmiConfig() {
+  return createConfig({
+    autoConnect: true,
+    connectors,
+    publicClient,
+  })
+}
 
 export function Web3Provider({ children }: { children: React.ReactNode }) {
   const { colors, radii, shadows } = useTheme()
@@ -108,7 +110,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   const customTheme = colorMode === 'dark' ? _darkTheme : _lightTheme
 
   return (
-    <WagmiConfig config={wagmiConfig}>
+    <WagmiConfig config={createWagmiConfig()}>
       <RainbowKitProvider chains={chains} theme={customTheme} avatar={CustomAvatar}>
         {children}
       </RainbowKitProvider>

@@ -2,11 +2,7 @@
 import { usePool } from '@/lib/modules/pool/usePool'
 
 export function PoolDetail() {
-  const { pool } = usePool()
+  const { pool, loading } = usePool()
 
-  return (
-    <>
-      {pool.name}: {pool.id}
-    </>
-  )
+  return <>{loading ? 'Loading...' : `${pool?.name}:${pool?.id}`}</>
 }

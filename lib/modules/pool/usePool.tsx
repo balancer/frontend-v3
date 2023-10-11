@@ -23,7 +23,7 @@ export const useSeedPoolCacheQuery = ({ id, chain, variant }: FetchPoolProps) =>
   })
 }
 
-function _usePool({ id, chain, variant }: FetchPoolProps) {
+export function _usePool({ id, chain, variant }: FetchPoolProps) {
   const { chainId } = getNetworkConfig(chain)
 
   const { data, refetch, loading } = useQuery(GetPoolDocument, {
@@ -31,7 +31,7 @@ function _usePool({ id, chain, variant }: FetchPoolProps) {
     context: { headers: { ChainId: chainId } },
   })
 
-  if (!data?.pool) throw new Error(`Pool not found for id: ${id}`)
+  if (!loading && !data?.pool) throw new Error(`Pool not found for id: ${id}`)
 
   const pool = data?.pool
 

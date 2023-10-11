@@ -4,6 +4,7 @@ import { useConstructRelayerApprovalStep } from './steps/relayerApproval'
 import { TransactionStepButton } from './TransactionStepButton'
 
 export function JoinExample() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { transactionStep, setApprovalArgs } = useConstructRelayerApprovalStep()
 
   //setApprovalArgs allows changing arguments

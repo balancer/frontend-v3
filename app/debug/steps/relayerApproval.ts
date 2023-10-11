@@ -1,5 +1,5 @@
 import { Address, useAccount } from 'wagmi'
-import { TransactionStep, TransactionStepHook } from '../TransactionStep'
+import { TransactionStep } from '../TransactionStep'
 import { useState } from 'react'
 import { noUserAddress } from '@/lib/contracts/wagmi-helpers'
 import { useManagedTransaction } from '@/lib/contracts/useManagedTransaction'

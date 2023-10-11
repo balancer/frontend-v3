@@ -20,19 +20,30 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Run lint
-        run: pnpm run lint
+        run: pnpm lint
       - name: Run prettier
-        run: pnpm run prettier
+        run: pnpm prettier
       - name: Run stylelint
-        run: pnpm run stylelint
+        run: pnpm stylelint
 
-  # Test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Setup
-  #       uses: ./.github/actions/setup
-  #     - name: Run typecheck
-  #       run: pnpm run typecheck
-  #     - name: Run tests
-  #       run: pnpm run test
+  Unit-Test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Run typecheck
+        run: pnpm typecheck
+      - name: Run unit tests
+        run: pnpm test:unit
+
+  Integration-Test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Set up foundry (includes anvil)
+        uses: foundry-rs/foundry-toolchain@v1
+      - name: Run integration tests
+        run: pnpm test:integration

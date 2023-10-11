@@ -880,6 +880,7 @@ type GqlTokenCandlestickChartDataItem {
 }
 
 enum GqlTokenChartDataRange {
+  NINETY_DAY
   SEVEN_DAY
   THIRTY_DAY
 }

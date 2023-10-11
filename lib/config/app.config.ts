@@ -3,9 +3,16 @@ import { keyBy } from 'lodash'
 import { Config, NetworkConfig } from './config.types'
 import networks from './networks'
 
+if (!process.env.NEXT_PUBLIC_BALANCER_API_URL) {
+  throw new Error(
+    `NEXT_PUBLIC_BALANCER_API_URL is missing in your .env vars.
+    Please follow the instructions to create .env.local from README.md`
+  )
+}
+
 export const config: Config = {
   appEnv: (process.env.NEXT_PUBLIC_APP_ENV as Config['appEnv']) || 'dev',
-  apiUrl: process.env.NEXT_PUBLIC_BALANCER_API_URL || '',
+  apiUrl: process.env.NEXT_PUBLIC_BALANCER_API_URL,
   networks,
 }
 
