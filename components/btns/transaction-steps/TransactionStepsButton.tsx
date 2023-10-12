@@ -15,7 +15,7 @@ export default function TransactionStepsButton({ children, steps, ...rest }: Pro
   // that still need to be executed
   const activeStep = requiredSteps[0];
 
-  const currentStepError = activeStep.execution.error || activeStep.simulation.error;
+  // const currentStepError = activeStep.execution.error || activeStep.simulation.error;
   return (
     <>
       {/* also render transaction state herre*/}
