@@ -1,16 +1,14 @@
 'use client'
 
 import { Box, Button, VStack } from '@chakra-ui/react'
-import { TransactionState } from './TransactionState'
-import {} from '@/lib/contracts/contract.types'
-import { TransactionStep } from './TransactionStep'
+import { TransactionState } from '@/app/debug/TransactionState'
+import { TransactionStep } from './lib'
 
 interface Props {
-  transactionStep: TransactionStep
+  step: TransactionStep
 }
 
-export function TransactionStepButton({ transactionStep }: Props) {
-  const { simulation, execution, result } = transactionStep.transactionInfo
+export function TransactionStepButton({ step: { simulation, execution, result, getLabels } }: Props) {
 
   function handleOnClick() {
     if (!simulation.isError) {
@@ -28,7 +26,7 @@ export function TransactionStepButton({ transactionStep }: Props) {
             isLoading={execution.isLoading}
             onClick={handleOnClick}
           >
-            {transactionStep.getLabels().label}
+            {getLabels().label}
           </Button>
         )}
         {execution.isSuccess && <Button onClick={execution.reset}>Try again</Button>}

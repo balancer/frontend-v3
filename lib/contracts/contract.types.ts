@@ -13,10 +13,4 @@ export type TransactionInfo = {
 
 export type AbiItem = Abi[number]
 export type WriteAbiMutability = 'payable' | 'nonpayable'
-export type TransactionStep = {
-  id: string
-  getButtonLabel: (props?: any) => string
-  execution: ReturnType<typeof useManagedTransaction>['execution']
-  simulation: ReturnType<typeof useManagedTransaction>['simulation']
-  result: ReturnType<typeof useManagedTransaction>['result']
-}
+

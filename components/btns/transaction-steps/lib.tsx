@@ -12,7 +12,10 @@ type StepId = 'batchRelayerApproval' | 'tokenApproval'
 export type TransactionStep = {
   stepId: StepId
   getLabels: (args?: any) => TransactionLabels
-  transactionInfo: TransactionInfo
+  simulation: TransactionInfo['simulation']
+  execution: TransactionInfo['execution']
+  result: TransactionInfo['result']
+  isComplete: boolean
 }
 
 // Allows adding extra properties like set state callbacks to TransactionStep
