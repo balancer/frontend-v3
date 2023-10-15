@@ -1,27 +1,56 @@
-import { Alert, Button, ButtonProps } from "@chakra-ui/react";
-import React from "react"
+import { Alert, Button, ButtonProps, VStack } from "@chakra-ui/react";
+import React, { useEffect } from "react"
 import { TransactionStep } from "./lib";
 import { TransactionStepButton } from "./TransactionStepButton";
+import { ReactNode } from "react";
 
 type Props = {
   // the order of the steps is important, and must be provided in the order of desired execution
-  steps: TransactionStep[]
+  steps: TransactionStep[],
+
+  // when the flow is complete, this callback function will be executed 
+  // this is useful for actions such as navigating the user on a successful
+  // completion, closing a modal, etc
+  // IMPORTANT: This is executed automatically
+  onComplete?: () => void;
+
+  // callback to execute on the button that will be shown to users once the
+  // flow is complete
+  onCompleteClick: () => void;
+
+  // label to show on the completed flow button 
+  completedButtonLabel: string
+
+  // custom content to render in the success alert box 
+  completedAlertContent: ReactNode
 }
 
-export default function TransactionStepsButton({ children, steps, ...rest }: Props & ButtonProps) {
+export default function TransactionStepsButton({ children, steps, completedButtonLabel, onCompleteClick, onComplete, completedAlertContent, ...rest }: Props & ButtonProps) {
   const requiredSteps = steps.filter(step => !step.isComplete);
   const areAllStepsComplete = steps.every(step => step.isComplete);
   // since the order is expect, the active step is simply the first step in the remainder of steps 
   // that still need to be executed
   const activeStep = requiredSteps[0];
+  const showCompletedContent = areAllStepsComplete && completedAlertContent !== undefined;
 
-  // const currentStepError = activeStep.execution.error || activeStep.simulation.error;
+  useEffect(() => {
+    if (areAllStepsComplete) {
+      onComplete?.();
+    }
+  }, [areAllStepsComplete]);
+
   return (
     <>
-      {/* also render transaction state herre*/}
       {
         areAllStepsComplete &&
-        <Alert width='fit-content'>Completed Flow</Alert >
+        <VStack width='full'>
+          {
+
+            showCompletedContent &&
+            <Alert rounded='md' status='success'>{completedAlertContent}</Alert>
+          }
+          <Button width='full' onClick={onCompleteClick}>{completedButtonLabel}</Button>
+        </VStack>
       }
       {
         activeStep &&

@@ -1,14 +1,17 @@
 'use client'
 
-import { Box, Button, VStack } from '@chakra-ui/react'
-import { TransactionState } from '@/app/debug/TransactionState'
+import { Alert, Button, VStack } from '@chakra-ui/react'
 import { TransactionStep } from './lib'
+import { TransactionState } from '@/components/other/TransactionState'
+import { useAccount } from 'wagmi'
+import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 
 interface Props {
   step: TransactionStep
 }
 
 export function TransactionStepButton({ step: { simulation, execution, result, getLabels } }: Props) {
+  const { isConnected } = useAccount();
 
   function handleOnClick() {
     if (!simulation.isError) {
@@ -16,21 +19,28 @@ export function TransactionStepButton({ step: { simulation, execution, result, g
     }
   }
 
+  const isTransactButtonVisible = isConnected && !execution.isSuccess;
+  const hasError = simulation.isError || execution.isError;
+
   return (
-    <VStack>
+    <VStack width='full'>
+      {hasError && <Alert rounded='md' status='error'>{(execution.error as any)?.shortMessage || (simulation.error as any)?.shortMessage}</Alert>}
       {execution.data?.hash && <TransactionState result={result}></TransactionState>}
-      <Box margin={2} padding={2}>
-        {!execution.isSuccess && (
-          <Button
-            isDisabled={!execution.write}
-            isLoading={execution.isLoading}
-            onClick={handleOnClick}
-          >
-            {getLabels().label}
-          </Button>
-        )}
-        {execution.isSuccess && <Button onClick={execution.reset}>Try again</Button>}
-      </Box>
+      {
+        !isTransactButtonVisible &&
+        <ConnectWallet />
+      }
+      {isTransactButtonVisible && (
+        <Button
+          width='full'
+          isDisabled={!execution.write}
+          isLoading={execution.isLoading}
+          onClick={handleOnClick}
+        >
+          {getLabels().label}
+        </Button>
+      )}
+      {execution.isSuccess && <Button width='full' onClick={execution.reset}>Try again</Button>}
     </VStack>
   )
 }

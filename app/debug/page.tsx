@@ -7,7 +7,7 @@ export default function DebugPage() {
   return (
     <RecentTransactionsProvider>
       <JoinExample></JoinExample>
-      <TransactionToasts></TransactionToasts>
+      {/* <TransactionToasts></TransactionToasts> */}
     </RecentTransactionsProvider>
   )
 }
