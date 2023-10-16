@@ -42,12 +42,6 @@ export function TransactionStepButton({
           return transactionLabels.ready
       }
     }
-    if (transactionState === TransactionState.Loading && !relevantLabel) {
-      return 'Waiting for wallet action'
-    }
-    if (transactionState === TransactionState.Confirming && !relevantLabel) {
-      return 'Confirming transaction'
-    }
     return relevantLabel
   }
 
