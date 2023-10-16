@@ -29,7 +29,7 @@ export function useManagedTransaction<
   >
 ) {
   const address = useContractAddress(contractId)
-  const { addTransaction } = useRecentTransactions();
+  const { addTransaction } = useRecentTransactions()
   const [writeArgs, setWriteArgs] = useState(args)
 
   const prepareQuery = usePrepareContractWrite({
@@ -66,14 +66,14 @@ export function useManagedTransaction<
     if (args) {
       setWriteArgs(args)
     }
-    writeQuery.write?.();
+    writeQuery.write?.()
   }
 
   const managedWriteAsync = async (args?: GetFunctionArgs<T[M], F>) => {
     if (args) {
       setWriteArgs(args)
     }
-    await writeQuery.writeAsync?.();
+    await writeQuery.writeAsync?.()
   }
 
   return {

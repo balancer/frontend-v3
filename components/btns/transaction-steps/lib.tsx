@@ -1,7 +1,14 @@
-import { ManagedTransactionPayload, TransactionInfo } from '@/lib/contracts/contract.types'
+import { ManagedTransactionPayload } from '@/lib/contracts/contract.types'
+
+export enum TransactionState {
+  Ready = 'ready',
+  Confirming = 'confirming',
+  Loading = 'loading',
+  Error = 'error',
+}
 
 export type TransactionLabels = {
-  default: string
+  ready: string
   loading?: string
   confirming?: string
   tooltip: string
@@ -13,7 +20,7 @@ type StepId = 'batchRelayerApproval' | 'tokenApproval'
 export type TransactionStep = {
   stepId: StepId
   getLabels: (args?: any) => TransactionLabels
-  isComplete: boolean,
+  isComplete: boolean
 } & ManagedTransactionPayload
 
 // Allows adding extra properties like set state callbacks to TransactionStep
@@ -21,20 +28,16 @@ export type TransactionStepHook = {
   transactionStep: TransactionStep
 }
 
-export enum TransactionState {
-  Ready = 'ready',
-  Confirming = 'confirming',
-  Loading = 'loading',
-  Error = 'error'
-}
-
-
-export function getTransactionState({ simulation, execution, result }: ManagedTransactionPayload): TransactionState {
+export function getTransactionState({
+  simulation,
+  execution,
+  result,
+}: ManagedTransactionPayload): TransactionState {
   if (execution.isLoading || simulation.isLoading) {
     return TransactionState.Loading
   }
   if (result.isLoading) {
-    return TransactionState.Confirming;
+    return TransactionState.Confirming
   }
   if (!simulation.isError && !execution.isError && !execution.data) {
     return TransactionState.Ready
@@ -44,4 +47,3 @@ export function getTransactionState({ simulation, execution, result }: ManagedTr
   }
   return TransactionState.Ready
 }
-

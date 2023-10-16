@@ -10,7 +10,7 @@ const balancerRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'
 export function useConstructRelayerApprovalStep() {
   const { address: userAddress } = useAccount()
   // fetch relayer approval and set this flag
-  const hasRelayerApproval = false;
+  const hasRelayerApproval = false
   // These args can be dynamic (i.e. from html input) and should be passed as args to the useConstructRelayerApprovalStep hook though setApprovalArgs
   const [approvalArgs, setApprovalArgs] = useState<[Address, Address, boolean]>([
     userAddress || noUserAddress,
@@ -21,7 +21,7 @@ export function useConstructRelayerApprovalStep() {
   // update relayer approval args
   useEffect(() => {
     if (userAddress) {
-      setApprovalArgs([userAddress, balancerRelayer, true]);
+      setApprovalArgs([userAddress, balancerRelayer, true])
     }
   }, [userAddress])
 
@@ -41,7 +41,7 @@ export function useConstructRelayerApprovalStep() {
     ...transaction,
     getLabels: buildRelayerApprovalLabels,
     stepId: 'batchRelayerApproval',
-    isComplete: hasRelayerApproval
+    isComplete: hasRelayerApproval,
   }
   return {
     step,
@@ -55,9 +55,9 @@ export function useConstructRelayerApprovalStep() {
  */
 export const buildRelayerApprovalLabels: BuildTransactionLabels = () => {
   return {
-    default: 'Sign relayer approval',
+    ready: 'Sign relayer approval',
     confirming: 'Signing relayer approval',
     tooltip: 'Your signature is required to use the relayer.',
-    description: "bing"
+    description: 'bing',
   }
 }

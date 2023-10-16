@@ -2,7 +2,7 @@
 
 import TransactionStepsButton from '@/components/btns/transaction-steps/TransactionStepsButton'
 import { useConstructRelayerApprovalStep } from './steps/relayerApproval'
-import { Flex, Text, VStack } from '@chakra-ui/react';
+import { Flex, Text, VStack } from '@chakra-ui/react'
 
 export function JoinExample() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -15,19 +15,19 @@ export function JoinExample() {
   // return <TransactionStepButton transactionStep={transactionStep}></TransactionStepButton>
 
   function handleJoinCompleted() {
-    console.log('Join completed');
+    console.log('Join completed')
   }
 
   return (
-    <VStack width='full'>
+    <VStack width="full">
       <Flex>
         <TransactionStepsButton
           completedAlertContent="Successfully joined pool"
           onCompleteClick={handleJoinCompleted}
-          completedButtonLabel='Return to pool'
+          completedButtonLabel="Return to pool"
           steps={[relayerApprovalStep]}
         />
       </Flex>
     </VStack>
-  );
+  )
 }

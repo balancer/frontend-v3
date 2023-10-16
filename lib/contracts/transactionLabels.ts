@@ -26,9 +26,9 @@ interface ApproveTokenParams {
  */
 export const buildTokenApprovalLabels: BuildTransactionLabels = (args: ApproveTokenParams) => {
   return {
-    default: `Approve ${args.normalizedAmount} for ${args.actionType}`,
+    ready: `Approve ${args.normalizedAmount} for ${args.actionType}`,
     tooltip: `You must approve ${args.token.symbol} to ${args.actionType} this token.
     Approvals are required once per token, per wallet.`,
-    description: "bing"
+    description: 'bing',
   }
 }

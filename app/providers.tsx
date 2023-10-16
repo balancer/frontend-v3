@@ -17,9 +17,7 @@ export function Providers({ children }: { children: ReactNode }) {
         <Web3Provider>
           <ApolloProviderWrapper>
             <TokensProvider>
-              <RecentTransactionsProvider>
-                {children}
-              </RecentTransactionsProvider>
+              <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
             </TokensProvider>
           </ApolloProviderWrapper>
         </Web3Provider>
