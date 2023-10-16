@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import { TransactionInfo } from '@/lib/contracts/contract.types'
@@ -34,6 +35,7 @@ export function _useRecentTransactions() {
     })
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   function handleTransactionConfirmation(info: TransactionInfo) {}
 
   function addTransaction(transactionInfo: TransactionInfo) {

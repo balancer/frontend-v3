@@ -46,6 +46,7 @@ export default function TransactionStepsButton({
     if (areAllStepsComplete) {
       onComplete?.()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areAllStepsComplete])
 
   return (

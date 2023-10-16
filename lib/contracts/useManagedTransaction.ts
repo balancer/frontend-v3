@@ -49,19 +49,19 @@ export function useManagedTransaction<
     result: transactionStatusQuery,
   }
 
-  // when the transaction is successfully submitted to the chain 
+  // when the transaction is successfully submitted to the chain
   // start monitoring the hash
   //
-  // when the transaction has an execution error, update that within 
+  // when the transaction has an execution error, update that within
   // the global transaction cache too
   useEffect(() => {
     if (transactionPackage?.execution?.data?.hash) {
       // add transaction here
     }
-  }, [transactionPackage.execution?.data?.hash]);
+  }, [transactionPackage.execution?.data?.hash])
 
-  // when the transaction has an execution error, update that within 
-  // the global transaction cache 
+  // when the transaction has an execution error, update that within
+  // the global transaction cache
   // this can either be an execution error or a confirmation error
   useEffect(() => {
     if (transactionPackage?.execution?.error) {
@@ -70,13 +70,14 @@ export function useManagedTransaction<
     if (transactionPackage?.result?.error) {
       // monitor confirmation error here
     }
-  }, [transactionPackage.execution?.error, transactionPackage.result?.error]);
+  }, [transactionPackage.execution?.error, transactionPackage.result?.error])
 
   // on successful submission to chain, add tx to cache
   useEffect(() => {
     if (writeQuery.data?.hash) {
-      // addTransaction(writeQuery.data?.hash)
+      addTransaction(transactionPackage)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [writeQuery.data?.hash])
 
   // if parent changes args, update here
