@@ -13,6 +13,7 @@ import { AbiMap } from './AbiMap'
 import { WriteAbiMutability } from './contract.types'
 import { TransactionExecution, TransactionSimulation } from './contract.types'
 import { useContractAddress } from './useContractAddress'
+import { useRecentTransactions } from '../modules/transactions/RecentTransactionsProvider'
 
 export function useManagedTransaction<
   T extends typeof AbiMap,
@@ -28,6 +29,7 @@ export function useManagedTransaction<
   >
 ) {
   const address = useContractAddress(contractId)
+  const { addTransaction } = useRecentTransactions();
   const [writeArgs, setWriteArgs] = useState(args)
 
   const prepareQuery = usePrepareContractWrite({
@@ -41,6 +43,11 @@ export function useManagedTransaction<
 
   const writeQuery = useContractWrite(prepareQuery.config)
   const transactionStatusQuery = useWaitForTransaction({ hash: writeQuery.data?.hash })
+  const transactionPackage = {
+    simulation: prepareQuery as TransactionSimulation,
+    execution: writeQuery as TransactionExecution,
+    result: transactionStatusQuery,
+  }
 
   // on successful submission to chain, add tx to cache
   useEffect(() => {
@@ -59,20 +66,18 @@ export function useManagedTransaction<
     if (args) {
       setWriteArgs(args)
     }
-    return writeQuery.write?.()
+    writeQuery.write?.();
   }
 
   const managedWriteAsync = async (args?: GetFunctionArgs<T[M], F>) => {
     if (args) {
       setWriteArgs(args)
     }
-    return await writeQuery.writeAsync?.()
+    await writeQuery.writeAsync?.();
   }
 
   return {
-    simulation: prepareQuery as TransactionSimulation,
-    execution: writeQuery as TransactionExecution,
-    result: transactionStatusQuery,
+    ...transactionPackage,
     //TODO: should we move inside execution and change execution type in contract types?
     managedWrite,
     managedWriteAsync,

@@ -1,31 +1,34 @@
 'use client'
 
 import { Alert, Button, VStack } from '@chakra-ui/react'
-import { TransactionStep } from './lib'
-import { TransactionState } from '@/components/other/TransactionState'
+import { TransactionStep, getTransactionState } from './lib'
 import { useAccount } from 'wagmi'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
+import { TransactionStateData } from '@/components/other/TransactionState'
 
 interface Props {
   step: TransactionStep
 }
 
-export function TransactionStepButton({ step: { simulation, execution, result, getLabels } }: Props) {
+export function TransactionStepButton({ step: { simulation, execution, result, getLabels, managedWrite } }: Props) {
   const { isConnected } = useAccount();
 
   function handleOnClick() {
     if (!simulation.isError) {
-      execution.write?.()
+      managedWrite();
     }
   }
 
   const isTransactButtonVisible = isConnected && !execution.isSuccess;
   const hasError = simulation.isError || execution.isError;
+  const transactionState = getTransactionState({ simulation, execution, result });
+
+  console.log('state', transactionState);
 
   return (
     <VStack width='full'>
       {hasError && <Alert rounded='md' status='error'>{(execution.error as any)?.shortMessage || (simulation.error as any)?.shortMessage}</Alert>}
-      {execution.data?.hash && <TransactionState result={result}></TransactionState>}
+      {execution.data?.hash && <TransactionStateData result={result}></TransactionStateData>}
       {
         !isTransactButtonVisible &&
         <ConnectWallet />

@@ -33,11 +33,14 @@ export default function TransactionStepsButton({ children, steps, completedButto
   const activeStep = requiredSteps[0];
   const showCompletedContent = areAllStepsComplete && completedAlertContent !== undefined;
 
+  // side effect, automatically execute the onComplete 
+  // callback once everything is complete
   useEffect(() => {
     if (areAllStepsComplete) {
       onComplete?.();
     }
   }, [areAllStepsComplete]);
+
 
   return (
     <>

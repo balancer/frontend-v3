@@ -5,9 +5,6 @@ import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTra
 
 export default function DebugPage() {
   return (
-    <RecentTransactionsProvider>
-      <JoinExample></JoinExample>
-      {/* <TransactionToasts></TransactionToasts> */}
-    </RecentTransactionsProvider>
+    <JoinExample></JoinExample>
   )
 }

@@ -55,9 +55,9 @@ export function useConstructRelayerApprovalStep() {
  */
 export const buildRelayerApprovalLabels: BuildTransactionLabels = () => {
   return {
-    label: 'Sign relayer approval',
-    loadingLabel: 'Confirm in wallet',
-    confirmingLabel: 'Signing relayer approval',
-    stepTooltip: 'Your signature is required to use the relayer.',
+    default: 'Sign relayer approval',
+    confirming: 'Signing relayer approval',
+    tooltip: 'Your signature is required to use the relayer.',
+    description: "bing"
   }
 }

@@ -2,6 +2,7 @@
 
 import { TransactionInfo } from '@/lib/contracts/contract.types'
 import { useMandatoryContext } from '@/lib/utils/contexts'
+import { useToast } from '@chakra-ui/react'
 import React, { ReactNode, createContext, useState } from 'react'
 
 export type RecentTransactionsResponse = ReturnType<typeof _useRecentTransactions>
@@ -11,9 +12,35 @@ export function _useRecentTransactions() {
   // This is an initial example to show how global transaction handling could work
   // we will need a more complex structure with grouped transactions
   const [transactions, setTransactions] = useState<TransactionInfo[]>([])
+  const toast = useToast();
+
+  function handleTransactionAdded(info: TransactionInfo) {
+    toast({
+      title: 'Transaction added',
+      description: "Added a transaction",
+      status: 'success',
+      duration: 9000,
+      isClosable: true,
+    })
+  }
+
+  function handleTransactionError(info: TransactionInfo) {
+    toast({
+      title: "Transaction Error",
+      description: "Bingbong",
+      status: 'success',
+      duration: 9000,
+      isClosable: true,
+    })
+  }
+
+  function handleTransactionConfirmation(info: TransactionInfo) {
+
+  }
 
   function addTransaction(transactionInfo: TransactionInfo) {
     setTransactions([...transactions, transactionInfo])
+    handleTransactionAdded(transactionInfo);
   }
 
   return { transactions, addTransaction }
