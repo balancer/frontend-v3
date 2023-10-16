@@ -2,7 +2,7 @@
 
 import TransactionStepsButton from '@/components/btns/transaction-steps/TransactionStepsButton'
 import { useConstructRelayerApprovalStep } from './steps/relayerApproval'
-import { Flex, Text, VStack } from '@chakra-ui/react'
+import { Flex, VStack } from '@chakra-ui/react'
 
 export function JoinExample() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

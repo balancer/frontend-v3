@@ -14,13 +14,6 @@ export function TransactionStepButton({
   step: { simulation, execution, result, getLabels, managedWrite },
 }: Props) {
   const { isConnected } = useAccount()
-
-  function handleOnClick() {
-    if (!simulation.isError) {
-      managedWrite()
-    }
-  }
-
   const isTransactButtonVisible = isConnected
   const transactionState = getTransactionState({ simulation, execution, result })
   const isButtonLoading =
@@ -28,6 +21,12 @@ export function TransactionStepButton({
     transactionState === TransactionState.Confirming
   const hasSimulationError = !execution.write || simulation.isError
   const isButtonDisabled = transactionState === TransactionState.Loading || hasSimulationError
+
+  function handleOnClick() {
+    if (!simulation.isError) {
+      managedWrite()
+    }
+  }
 
   function getButtonLabel() {
     // sensible defaults for loading / confirm if not provided

@@ -26,7 +26,6 @@ type Props = {
 }
 
 export default function TransactionStepsButton({
-  children,
   steps,
   completedButtonLabel,
   onCompleteClick,
