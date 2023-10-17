@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import { TransactionBundle } from '@/lib/contracts/contract.types'
@@ -15,6 +14,7 @@ export function _useRecentTransactions() {
   const [transactions, setTransactions] = useState<TransactionBundle[]>([])
   const toast = useToast()
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function handleTransactionAdded(_bundle: TransactionBundle) {
     toast({
       title: 'Transaction added',
@@ -25,6 +25,7 @@ export function _useRecentTransactions() {
     })
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function handleTransactionError(_bundle: TransactionBundle) {
     toast({
       title: 'Transaction Error',
@@ -35,8 +36,10 @@ export function _useRecentTransactions() {
     })
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  function handleTransactionConfirmation(_bundle: TransactionBundle) { }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function handleTransactionConfirmation(_bundle: TransactionBundle) {
+    //Non empty function
+  }
 
   function addTransaction(bundle: TransactionBundle) {
     setTransactions([...transactions, bundle])
