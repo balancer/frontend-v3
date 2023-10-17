@@ -25,7 +25,7 @@ type Props = {
   completedAlertContent: ReactNode
 }
 
-export default function TransactionStepsButton({
+export default function TransactionFlow({
   steps,
   completedButtonLabel,
   onCompleteClick,

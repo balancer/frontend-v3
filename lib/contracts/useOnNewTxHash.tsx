@@ -1,18 +1,18 @@
 import { useEffect } from 'react'
-import { TransactionInfo } from './contract.types'
+import { TransactionBundle } from './contract.types'
 import { getHashFromTransaction } from './wagmi-helpers'
 import { useRecentTransactions } from '@/lib/modules/transactions/RecentTransactionsProvider'
 
-export function useOnNewTxHash(transactionInfo: TransactionInfo) {
+export function useOnNewTxHash(transactionBundle: TransactionBundle) {
   const { addTransaction } = useRecentTransactions()
   useEffect(
     () => {
-      if (getHashFromTransaction(transactionInfo)) {
-        console.log('NEW TRANSACTION HASH!', getHashFromTransaction(transactionInfo))
-        addTransaction(transactionInfo)
+      if (getHashFromTransaction(transactionBundle)) {
+        console.log('NEW TRANSACTION HASH!', getHashFromTransaction(transactionBundle))
+        addTransaction(transactionBundle)
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [getHashFromTransaction(transactionInfo)]
+    [getHashFromTransaction(transactionBundle)]
   )
 }

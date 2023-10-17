@@ -1,12 +1,12 @@
 'use client'
 
-import TransactionStepsButton from '@/components/btns/transaction-steps/TransactionStepsButton'
+import TransactionFlow from '@/components/btns/transaction-steps/TransactionFlow'
 import { useConstructRelayerApprovalStep } from './steps/relayerApproval'
 import { Flex, VStack } from '@chakra-ui/react'
 
 export function JoinExample() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { step: relayerApprovalStep, setApprovalArgs } = useConstructRelayerApprovalStep()
+  const { step: relayerApprovalStep } = useConstructRelayerApprovalStep()
 
   //setApprovalArgs allows changing arguments
   // TODO: Should we extract useState here??'
@@ -21,7 +21,7 @@ export function JoinExample() {
   return (
     <VStack width="full">
       <Flex>
-        <TransactionStepsButton
+        <TransactionFlow
           completedAlertContent="Successfully joined pool"
           onCompleteClick={handleJoinCompleted}
           completedButtonLabel="Return to pool"

@@ -43,7 +43,7 @@ export function useManagedTransaction<
 
   const writeQuery = useContractWrite(prepareQuery.config)
   const transactionStatusQuery = useWaitForTransaction({ hash: writeQuery.data?.hash })
-  const transactionPackage = {
+  const bundle = {
     simulation: prepareQuery as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
     result: transactionStatusQuery,
@@ -55,27 +55,27 @@ export function useManagedTransaction<
   // when the transaction has an execution error, update that within
   // the global transaction cache too
   useEffect(() => {
-    if (transactionPackage?.execution?.data?.hash) {
+    if (bundle?.execution?.data?.hash) {
       // add transaction here
     }
-  }, [transactionPackage.execution?.data?.hash])
+  }, [bundle.execution?.data?.hash])
 
   // when the transaction has an execution error, update that within
   // the global transaction cache
   // this can either be an execution error or a confirmation error
   useEffect(() => {
-    if (transactionPackage?.execution?.error) {
+    if (bundle?.execution?.error) {
       // monitor execution error here
     }
-    if (transactionPackage?.result?.error) {
+    if (bundle?.result?.error) {
       // monitor confirmation error here
     }
-  }, [transactionPackage.execution?.error, transactionPackage.result?.error])
+  }, [bundle.execution?.error, bundle.result?.error])
 
   // on successful submission to chain, add tx to cache
   useEffect(() => {
     if (writeQuery.data?.hash) {
-      addTransaction(transactionPackage)
+      addTransaction(bundle)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [writeQuery.data?.hash])
@@ -101,7 +101,7 @@ export function useManagedTransaction<
   }
 
   return {
-    ...transactionPackage,
+    ...bundle,
     //TODO: should we move inside execution and change execution type in contract types?
     managedWrite,
     managedWriteAsync,

@@ -1,10 +1,10 @@
 import { TransactionLabels } from '@/components/btns/transaction-steps/lib'
 import { TokenBase } from '../modules/tokens/token.types'
-import { TransactionInfo } from './contract.types'
+import { TransactionBundle } from './contract.types'
 
 export type BuildTransactionLabels = (
   args?: any,
-  transactionInfo?: TransactionInfo
+  transactionBundle?: TransactionBundle
 ) => TransactionLabels
 
 enum ApprovalAction {
