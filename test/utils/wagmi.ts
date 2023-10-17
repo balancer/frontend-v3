@@ -1,9 +1,15 @@
 import { supportedChains } from '@/lib/modules/web3/Web3Provider'
 import { MockConnector } from 'wagmi/connectors/mock'
-import { createPublicClient, createWalletClient, http } from 'viem'
+import { Hex, createPublicClient, createWalletClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
 import { Connector, CreateConfigParameters, WalletClient, createConfig } from 'wagmi'
 import { testQueryClient } from './react-query'
+import { privateKeyToAccount } from 'viem/accounts'
+
+const defaultAnvilTestPrivateKey =
+  '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
+
+export const defaultTestUserAccount = privateKeyToAccount(defaultAnvilTestPrivateKey as Hex).address
 
 function createTestHttpClient(httpRpc: string) {
   const publicClient = createPublicClient({
@@ -27,8 +33,8 @@ export const getMockWalletClient = () =>
   createWalletClient({
     transport: http(testRpcUrl),
     chain: mainnet,
-    account: '0xba100000625a3754423978a60c9317c58a424e3d',
-    key: '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
+    account: defaultTestUserAccount,
+    key: defaultAnvilTestPrivateKey,
     pollingInterval: 1_000,
   })
 
