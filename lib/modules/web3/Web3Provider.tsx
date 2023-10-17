@@ -30,7 +30,7 @@ const { chains, publicClient } = configureChains(supportedChains, [
 
 export const { connectors } = getDefaultWallets({
   appName: getProjectConfig().projectName,
-  projectId: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string,
+  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID as string,
   chains,
 })
 
