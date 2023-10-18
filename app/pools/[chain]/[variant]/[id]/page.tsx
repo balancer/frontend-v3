@@ -2,7 +2,7 @@
 import { FetchPoolProps } from '@/lib/modules/pool/pool.types'
 import { ChainSlug, slugToChainMap } from '@/lib/modules/pool/pool.utils'
 import { PoolProvider, useSeedPoolCacheQuery } from '@/lib/modules/pool/usePool'
-import { PoolDetail } from '@/lib/modules/pool/PoolDetail'
+import { PoolDetail } from '@/lib/modules/pool/PoolDetail/PoolDetail'
 
 interface Props {
   params: Omit<FetchPoolProps, 'chain'> & { chain: ChainSlug }
