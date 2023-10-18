@@ -182,7 +182,7 @@ export function usePoolCharts() {
   const { pool } = usePool()
 
   const [activeTab, setActiveTab] = useState(poolChartTabs[0].value)
-  const [chartValue, setChatValue] = useState(0)
+  const [chartValue, setChartValue] = useState(0)
   const [chartDate, setChartDate] = useState('')
   const [activePeriod, setActivePeriod] = useState(GqlPoolSnapshotDataRange.ThirtyDays)
 
@@ -248,7 +248,7 @@ export function usePoolCharts() {
       const chartHoverDate = chartData?.[dataIndex]?.[0]
       if (!chartHoverValue || !chartHoverDate) return
 
-      setChatValue(Number(chartHoverValue))
+      setChartValue(Number(chartHoverValue))
       setChartDate(format(new Date(Number(chartHoverDate) * 1000), 'dd MMM yyyy'))
     },
     [chartData]
@@ -256,7 +256,7 @@ export function usePoolCharts() {
 
   const handleMouseLeave = useCallback(() => {
     const lastChartData = chartData?.[chartData.length - 1]
-    setChatValue(Number(lastChartData?.[1]))
+    setChartValue(Number(lastChartData?.[1]))
     setChartDate(format(new Date(Number(lastChartData?.[0]) * 1000), 'dd MMM yyyy'))
   }, [chartData])
 
