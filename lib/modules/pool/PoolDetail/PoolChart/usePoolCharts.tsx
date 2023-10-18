@@ -8,7 +8,7 @@ import {
 } from '@/lib/services/api/generated/graphql'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { useCallback, useMemo, useState } from 'react'
-import { usePool } from '../../usePool'
+import { useParams } from 'next/navigation'
 
 export enum PoolChartTab {
   VOLUME = 'volume',
@@ -179,14 +179,13 @@ export function usePoolSnapshots(
 }
 
 export function usePoolCharts() {
-  const { pool } = usePool()
-
   const [activeTab, setActiveTab] = useState(poolChartTabs[0].value)
   const [chartValue, setChartValue] = useState(0)
   const [chartDate, setChartDate] = useState('')
   const [activePeriod, setActivePeriod] = useState(GqlPoolSnapshotDataRange.ThirtyDays)
 
-  const { data, loading } = usePoolSnapshots(pool?.id, activePeriod)
+  const { id: poolId } = useParams()
+  const { data, loading } = usePoolSnapshots(poolId as string, activePeriod)
 
   const chartData = useMemo(() => {
     const snapshots = data?.snapshots
