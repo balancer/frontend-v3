@@ -1,4 +1,5 @@
 import { config } from '@/lib/config/app.config'
+import { userAddressVar } from '@/lib/modules/user/useUserData'
 import { ApolloLink, HttpLink } from '@apollo/client'
 import {
   NextSSRApolloClient,
@@ -7,13 +8,11 @@ import {
 } from '@apollo/experimental-nextjs-app-support/ssr'
 
 const userMiddleware = new ApolloLink((operation, forward) => {
-  // add the user address to the headers
   operation.setContext(({ headers = {} }) => {
     return {
       headers: {
         ...headers,
-        // AccountAddress: SET ACCOUNT ADDRESS,
-        // ChainId: SET CHAIN ID,
+        AccountAddress: userAddressVar(),
       },
     }
   })
@@ -22,7 +21,6 @@ const userMiddleware = new ApolloLink((operation, forward) => {
 })
 
 export function createApolloClient() {
-  //const keyArgs = ['where', ['poolIdIn']]
   const httpLink = new HttpLink({ uri: config.apiUrl })
 
   return new NextSSRApolloClient({

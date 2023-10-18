@@ -137,6 +137,8 @@ export type GqlPoolBase = {
   owner?: Maybe<Scalars['Bytes']['output']>
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
+  type: Scalars['String']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -233,7 +235,9 @@ export type GqlPoolElement = GqlPoolBase & {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolToken>
+  type: Scalars['String']['output']
   unitSeconds: Scalars['BigInt']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -252,6 +256,7 @@ export type GqlPoolFilter = {
   categoryNotIn?: InputMaybe<Array<GqlPoolFilterCategory>>
   chainIn?: InputMaybe<Array<GqlChain>>
   chainNotIn?: InputMaybe<Array<GqlChain>>
+  createTime?: InputMaybe<GqlPoolTimePeriod>
   filterIn?: InputMaybe<Array<Scalars['String']['input']>>
   filterNotIn?: InputMaybe<Array<Scalars['String']['input']>>
   idIn?: InputMaybe<Array<Scalars['String']['input']>>
@@ -309,6 +314,7 @@ export type GqlPoolGyro = GqlPoolBase & {
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolTokenUnion>
   type: Scalars['String']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -373,7 +379,9 @@ export type GqlPoolLinear = GqlPoolBase & {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolToken>
+  type: Scalars['String']['output']
   upperTarget: Scalars['BigInt']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
   wrappedIndex: Scalars['Int']['output']
 }
@@ -453,6 +461,8 @@ export type GqlPoolLiquidityBootstrapping = GqlPoolBase & {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolTokenUnion>
+  type: Scalars['String']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -474,6 +484,8 @@ export type GqlPoolMetaStable = GqlPoolBase & {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolToken>
+  type: Scalars['String']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -498,6 +510,7 @@ export type GqlPoolMinimal = {
 
 export enum GqlPoolMinimalType {
   Element = 'ELEMENT',
+  Fx = 'FX',
   Gyro = 'GYRO',
   Gyro3 = 'GYRO3',
   Gyroe = 'GYROE',
@@ -552,6 +565,8 @@ export type GqlPoolPhantomStable = GqlPoolBase & {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolTokenUnion>
+  type: Scalars['String']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -616,6 +631,8 @@ export type GqlPoolStable = GqlPoolBase & {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolToken>
+  type: Scalars['String']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -645,6 +662,7 @@ export type GqlPoolStakingGauge = {
   rewards: Array<GqlPoolStakingGaugeReward>
   status: GqlPoolStakingGaugeStatus
   version: Scalars['Int']['output']
+  workingSupply: Scalars['String']['output']
 }
 
 export type GqlPoolStakingGaugeReward = {
@@ -691,6 +709,11 @@ export type GqlPoolSwapFilter = {
   poolIdIn?: InputMaybe<Array<Scalars['String']['input']>>
   tokenInIn?: InputMaybe<Array<Scalars['String']['input']>>
   tokenOutIn?: InputMaybe<Array<Scalars['String']['input']>>
+}
+
+export type GqlPoolTimePeriod = {
+  gt?: InputMaybe<Scalars['Int']['input']>
+  lt?: InputMaybe<Scalars['Int']['input']>
 }
 
 export type GqlPoolToken = GqlPoolTokenBase & {
@@ -814,6 +837,8 @@ export type GqlPoolWeighted = GqlPoolBase & {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolTokenUnion>
+  type: Scalars['String']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -3304,6 +3329,54 @@ export type GqlTokenDynamicDataFragment = {
   low24h: number
   updatedAt: string
 } & { ' $fragmentName'?: 'GqlTokenDynamicDataFragment' }
+
+export type GetUserDataQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetUserDataQuery = {
+  __typename?: 'Query'
+  veBALUserBalance: string
+  balances: Array<{
+    __typename?: 'GqlUserPoolBalance'
+    poolId: string
+    tokenAddress: string
+    tokenPrice: number
+    totalBalance: string
+    stakedBalance: string
+    walletBalance: string
+  }>
+  staking: Array<{
+    __typename?: 'GqlPoolStaking'
+    id: string
+    type: GqlPoolStakingType
+    address: string
+    gauge?: {
+      __typename?: 'GqlPoolStakingGauge'
+      id: string
+      gaugeAddress: string
+      version: number
+      status: GqlPoolStakingGaugeStatus
+      otherGauges?: Array<{
+        __typename?: 'GqlPoolStakingOtherGauge'
+        gaugeAddress: string
+        version: number
+        status: GqlPoolStakingGaugeStatus
+        id: string
+        rewards: Array<{
+          __typename?: 'GqlPoolStakingGaugeReward'
+          id: string
+          tokenAddress: string
+          rewardPerSecond: string
+        }>
+      }> | null
+      rewards: Array<{
+        __typename?: 'GqlPoolStakingGaugeReward'
+        id: string
+        rewardPerSecond: string
+        tokenAddress: string
+      }>
+    } | null
+  }>
+}
 
 export const GqlPoolTokenFragmentDoc = {
   kind: 'Document',
@@ -6613,3 +6686,105 @@ export const GetTradeSelectedTokenDataDocument = {
   GetTradeSelectedTokenDataQuery,
   GetTradeSelectedTokenDataQueryVariables
 >
+export const GetUserDataDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetUserData' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'balances' },
+            name: { kind: 'Name', value: 'userGetPoolBalances' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'poolId' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenAddress' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenPrice' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'stakedBalance' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'walletBalance' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'staking' },
+            name: { kind: 'Name', value: 'userGetStaking' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'gauge' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'gaugeAddress' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'version' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'otherGauges' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'gaugeAddress' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'version' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'rewards' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'tokenAddress' } },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'rewardPerSecond' },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'rewards' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'rewardPerSecond' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'tokenAddress' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'veBALUserBalance' },
+            name: { kind: 'Name', value: 'veBalGetUserBalance' },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetUserDataQuery, GetUserDataQueryVariables>
