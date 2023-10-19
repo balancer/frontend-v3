@@ -1,5 +1,16 @@
 import * as React from 'react'
-import { Center, HStack, Table, Tbody, Td, Th, Thead, Tr, chakra } from '@chakra-ui/react'
+import {
+  Center,
+  HStack,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  chakra,
+} from '@chakra-ui/react'
 import {
   ColumnDef,
   flexRender,
@@ -11,6 +22,7 @@ import {
 } from '@tanstack/react-table'
 import { SortingIcon } from '@/components/icons/SortingIcon'
 import { Pagination } from '@/components/pagination/Pagination'
+import { useMobile } from '@/lib/hooks/useMobile'
 
 export type DataTableProps<Data extends object> = {
   data: Data[]
@@ -37,6 +49,8 @@ export function DataTable<Data extends object>({
   setSorting,
   noResultsText,
 }: DataTableProps<Data>) {
+  const isMobile = useMobile()
+
   const table = useReactTable({
     columns,
     data,
@@ -69,64 +83,66 @@ export function DataTable<Data extends object>({
 
   return (
     <>
-      <Table layout="fixed" w="full">
-        <Thead>
-          {table.getHeaderGroups().map(headerGroup => (
-            <Tr key={headerGroup.id}>
-              {headerGroup.headers.map(header => {
-                // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-                const meta: any = header.column.columnDef.meta
-                return (
-                  <Th
-                    key={header.id}
-                    isNumeric={meta?.isNumeric}
-                    onClick={header.column.getToggleSortingHandler()}
-                    w={header.getSize()}
-                  >
-                    <HStack
-                      style={
-                        header.column.getCanSort() ? { position: 'relative', right: '-20px' } : {}
-                      }
+      <TableContainer pr="20px">
+        <Table>
+          <Thead>
+            {table.getHeaderGroups().map(headerGroup => (
+              <Tr key={headerGroup.id}>
+                {headerGroup.headers.map(header => {
+                  // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                  const meta: any = header.column.columnDef.meta
+                  return (
+                    <Th
+                      key={header.id}
+                      isNumeric={meta?.isNumeric}
+                      onClick={header.column.getToggleSortingHandler()}
+                      px={isMobile ? 3 : 'unset'}
                     >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                      {header.column.getCanSort() && (
-                        <chakra.span h="full" cursor="pointer">
-                          {{
-                            asc: <SortingIcon direction="asc" />,
-                            desc: <SortingIcon direction="desc" />,
-                          }[header.column.getIsSorted() as string] ?? <SortingIcon />}
-                        </chakra.span>
-                      )}
-                    </HStack>
-                  </Th>
-                )
-              })}
-            </Tr>
-          ))}
-        </Thead>
-        <Tbody>
-          {rows.map(row => (
-            <Tr
-              key={row.id}
-              onClick={event => rowClickHandler && rowClickHandler(event, row.original)}
-              cursor={rowClickHandler ? 'pointer' : 'default'}
-              onMouseEnter={event =>
-                rowMouseEnterHandler && rowMouseEnterHandler(event, row.original)
-              }
-            >
-              {row.getVisibleCells().map(cell => {
-                // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-                const meta: any = cell.column.columnDef.meta
-                return (
-                  <Td key={cell.id} isNumeric={meta?.isNumeric}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </Td>
-                )
-              })}
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
+                      <HStack
+                        style={
+                          header.column.getCanSort() ? { position: 'relative', right: '-20px' } : {}
+                        }
+                      >
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {header.column.getCanSort() && (
+                          <chakra.span h="full" cursor="pointer">
+                            {{
+                              asc: <SortingIcon direction="asc" />,
+                              desc: <SortingIcon direction="desc" />,
+                            }[header.column.getIsSorted() as string] ?? <SortingIcon />}
+                          </chakra.span>
+                        )}
+                      </HStack>
+                    </Th>
+                  )
+                })}
+              </Tr>
+            ))}
+          </Thead>
+          <Tbody>
+            {rows.map(row => (
+              <Tr
+                key={row.id}
+                onClick={event => rowClickHandler && rowClickHandler(event, row.original)}
+                cursor={rowClickHandler ? 'pointer' : 'default'}
+                onMouseEnter={event =>
+                  rowMouseEnterHandler && rowMouseEnterHandler(event, row.original)
+                }
+              >
+                {row.getVisibleCells().map(cell => {
+                  // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                  const meta: any = cell.column.columnDef.meta
+                  return (
+                    <Td key={cell.id} isNumeric={meta?.isNumeric} px={isMobile ? 2 : 'unset'}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </Td>
+                  )
+                })}
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
       {!rows.length && (
         <Center w="full" h="200px">
           {noResultsText}
