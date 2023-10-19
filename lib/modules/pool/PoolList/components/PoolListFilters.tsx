@@ -100,7 +100,7 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
 
 export function PoolListFilters() {
   return (
-    <>
+    <VStack align="flex-start">
       <HStack>
         <Popover>
           <PopoverTrigger>
@@ -127,6 +127,6 @@ export function PoolListFilters() {
         <PoolListSearch />
       </HStack>
       <FilterTags />
-    </>
+    </VStack>
   )
 }
