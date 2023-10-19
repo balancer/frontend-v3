@@ -22,6 +22,8 @@ export function PoolListGrid() {
     setPageSize,
   } = PaginationHelpers(count || 0, pagination, setPagination)
 
+  const showPagination = pools.length && count && count > pagination.pageSize
+
   return (
     <>
       <Grid templateColumns={{ base: '1fr', lg: 'repeat(4, 1fr)' }} w="full" gap="4">
@@ -29,7 +31,7 @@ export function PoolListGrid() {
           <PoolListCard key={pool.id} pool={pool} />
         ))}
       </Grid>
-      {pools.length && count && count > pagination.pageSize && (
+      {showPagination && (
         <Pagination
           goToFirstPage={goToFirstPage}
           gotoLastPage={goToLastPage}
