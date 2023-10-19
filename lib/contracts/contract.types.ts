@@ -5,7 +5,8 @@ import { useManagedTransaction } from './useManagedTransaction'
 export type TransactionSimulation = ReturnType<typeof usePrepareContractWrite>
 export type TransactionExecution = ReturnType<typeof useContractWrite>
 export type TransactionResult = ReturnType<typeof useWaitForTransaction>
-export type TransactionInfo = {
+export type ManagedTransactionPayload = ReturnType<typeof useManagedTransaction>
+export type TransactionBundle = {
   simulation: TransactionSimulation
   execution: TransactionExecution
   result: TransactionResult
@@ -13,10 +14,3 @@ export type TransactionInfo = {
 
 export type AbiItem = Abi[number]
 export type WriteAbiMutability = 'payable' | 'nonpayable'
-export type TransactionStep = {
-  id: string
-  getButtonLabel: (props?: any) => string
-  execution: ReturnType<typeof useManagedTransaction>['execution']
-  simulation: ReturnType<typeof useManagedTransaction>['simulation']
-  result: ReturnType<typeof useManagedTransaction>['result']
-}

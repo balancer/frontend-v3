@@ -1,21 +1,31 @@
 import { Address, useAccount } from 'wagmi'
-import { TransactionStep } from '../TransactionStep'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { noUserAddress } from '@/lib/contracts/wagmi-helpers'
 import { useManagedTransaction } from '@/lib/contracts/useManagedTransaction'
 import { BuildTransactionLabels } from '@/lib/contracts/transactionLabels'
+import { TransactionStep } from '@/components/btns/transaction-steps/lib'
 
 const balancerRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'
 
 export function useConstructRelayerApprovalStep() {
   const { address: userAddress } = useAccount()
+  // fetch relayer approval and set this flag
+  const hasRelayerApproval = false
   // These args can be dynamic (i.e. from html input) and should be passed as args to the useConstructRelayerApprovalStep hook though setApprovalArgs
   const [approvalArgs, setApprovalArgs] = useState<[Address, Address, boolean]>([
     userAddress || noUserAddress,
     balancerRelayer,
     true,
   ])
-  const transactionInfo = useManagedTransaction(
+
+  // update relayer approval args
+  useEffect(() => {
+    if (userAddress) {
+      setApprovalArgs([userAddress, balancerRelayer, true])
+    }
+  }, [userAddress])
+
+  const transaction = useManagedTransaction(
     'balancer.vaultV2',
     'setRelayerApproval',
     { args: approvalArgs },
@@ -27,13 +37,14 @@ export function useConstructRelayerApprovalStep() {
     }
   )
 
-  const transactionStep: TransactionStep = {
-    transactionInfo,
+  const step: TransactionStep = {
+    ...transaction,
     getLabels: buildRelayerApprovalLabels,
     stepId: 'batchRelayerApproval',
+    isComplete: hasRelayerApproval,
   }
   return {
-    transactionStep,
+    step,
     setApprovalArgs,
   }
 }
@@ -44,9 +55,9 @@ export function useConstructRelayerApprovalStep() {
  */
 export const buildRelayerApprovalLabels: BuildTransactionLabels = () => {
   return {
-    label: 'Sign relayer approval',
-    loadingLabel: 'Confirm in wallet',
-    confirmingLabel: 'Signing relayer approval',
-    stepTooltip: 'Your signature is required to use the relayer.',
+    ready: 'Sign relayer approval',
+    confirming: 'Signing relayer approval',
+    tooltip: 'Your signature is required to use the relayer.',
+    description: 'bing',
   }
 }

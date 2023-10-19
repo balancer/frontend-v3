@@ -6,6 +6,7 @@ import { ReactNode } from 'react'
 import { cookies } from 'next/headers'
 import { COLOR_MODE_STORAGE_KEY } from '@/lib/services/chakra/colorModeManager'
 import { ClientProviders } from '@/app/client-providers'
+import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
 
 export function Providers({ children }: { children: ReactNode }) {
   const initialColorMode = cookies().get(COLOR_MODE_STORAGE_KEY)?.value
@@ -15,7 +16,9 @@ export function Providers({ children }: { children: ReactNode }) {
       <ClientProviders>
         <Web3Provider>
           <ApolloProviderWrapper>
-            <TokensProvider>{children}</TokensProvider>
+            <TokensProvider>
+              <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+            </TokensProvider>
           </ApolloProviderWrapper>
         </Web3Provider>
       </ClientProviders>
