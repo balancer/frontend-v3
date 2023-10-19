@@ -1,7 +1,8 @@
 'use client'
 
-import { TransactionInfo } from '@/lib/contracts/contract.types'
+import { TransactionBundle } from '@/lib/contracts/contract.types'
 import { useMandatoryContext } from '@/lib/utils/contexts'
+import { useToast } from '@chakra-ui/react'
 import React, { ReactNode, createContext, useState } from 'react'
 
 export type RecentTransactionsResponse = ReturnType<typeof _useRecentTransactions>
@@ -10,10 +11,39 @@ export const TransactionsContext = createContext<RecentTransactionsResponse | nu
 export function _useRecentTransactions() {
   // This is an initial example to show how global transaction handling could work
   // we will need a more complex structure with grouped transactions
-  const [transactions, setTransactions] = useState<TransactionInfo[]>([])
+  const [transactions, setTransactions] = useState<TransactionBundle[]>([])
+  const toast = useToast()
 
-  function addTransaction(transactionInfo: TransactionInfo) {
-    setTransactions([...transactions, transactionInfo])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function handleTransactionAdded(_bundle: TransactionBundle) {
+    toast({
+      title: 'Transaction added',
+      description: 'Added a transaction',
+      status: 'success',
+      duration: 9000,
+      isClosable: true,
+    })
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function handleTransactionError(_bundle: TransactionBundle) {
+    toast({
+      title: 'Transaction Error',
+      description: 'Bingbong',
+      status: 'success',
+      duration: 9000,
+      isClosable: true,
+    })
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function handleTransactionConfirmation(_bundle: TransactionBundle) {
+    //Non empty function
+  }
+
+  function addTransaction(bundle: TransactionBundle) {
+    setTransactions([...transactions, bundle])
+    handleTransactionAdded(bundle)
   }
 
   return { transactions, addTransaction }

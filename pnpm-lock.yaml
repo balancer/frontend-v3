@@ -4224,7 +4224,7 @@ packages:
   /@tanstack/react-query-persist-client@4.29.19(@tanstack/react-query@4.36.1):
     resolution: {integrity: sha512-LfcasTosdnI9K66HTP0Rk72Ypza3tCgrcF9bc2qFlKsBleYOYo8bz7/GiiOHj1SQH4GRQlKB+P4+/it+qlJg4g==}
     peerDependencies:
-      '@tanstack/react-query': 4.29.19
+      '@tanstack/react-query': ^4.29.19
     dependencies:
       '@tanstack/query-persist-client-core': 4.29.19
       '@tanstack/react-query': 4.36.1(react-dom@18.2.0)(react@18.2.0)

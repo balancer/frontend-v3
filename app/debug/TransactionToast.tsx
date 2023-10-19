@@ -1,6 +1,6 @@
 'use client'
 
-import { TransactionInfo } from '@/lib/contracts/contract.types'
+import { TransactionBundle } from '@/lib/contracts/contract.types'
 import { getHashFromTransaction } from '@/lib/contracts/wagmi-helpers'
 import { useRecentTransactions } from '@/lib/modules/transactions/RecentTransactionsProvider'
 import { useToast, Button } from '@chakra-ui/react'
@@ -15,11 +15,11 @@ export function TransactionToasts() {
 
   const { transactions } = useRecentTransactions()
 
-  const showToast = (transactionInfo?: TransactionInfo) => {
-    if (!transactionInfo) return
+  const showToast = (transactionBundle?: TransactionBundle) => {
+    if (!transactionBundle) return
     toast({
       title: 'Transaction',
-      description: getHashFromTransaction(transactionInfo),
+      description: getHashFromTransaction(transactionBundle),
       status: 'info',
       duration: 2000,
       isClosable: true,

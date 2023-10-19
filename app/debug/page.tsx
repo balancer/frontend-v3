@@ -1,13 +1,6 @@
 'use client'
-import { TransactionToasts } from './TransactionToast'
-import { WriteContractExample } from './WriteContractExample'
-import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
+import { JoinExample } from './JoinExample'
 
 export default function DebugPage() {
-  return (
-    <RecentTransactionsProvider>
-      <WriteContractExample></WriteContractExample>
-      <TransactionToasts></TransactionToasts>
-    </RecentTransactionsProvider>
-  )
+  return <JoinExample></JoinExample>
 }
