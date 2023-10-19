@@ -1,14 +1,18 @@
 import { TokensProvider } from '@/lib/modules/tokens/useTokens'
 import { createWagmiConfig } from '@/lib/modules/web3/Web3Provider'
 import { ApolloProvider } from '@apollo/client'
-import { RenderHookOptions, renderHook } from '@testing-library/react'
+import { RenderHookOptions, act, renderHook } from '@testing-library/react'
 import { ReactElement, ReactNode } from 'react'
-import { Config, WagmiConfig } from 'wagmi'
+import { Config, UsePrepareContractWriteConfig, WagmiConfig, useAccount, useConnect } from 'wagmi'
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
-import { createWagmiTestConfig } from './wagmi'
+import { createWagmiTestConfig, mainnetMockConnector } from './wagmi'
 import { QueryParamAdapter, QueryParamProvider } from 'use-query-params'
 import { waitFor } from '@testing-library/react'
+import { GetFunctionArgs, InferFunctionName } from 'viem'
+import { WriteAbiMutability } from '@/lib/contracts/contract.types'
+import { AbiMap } from '@/lib/contracts/AbiMap'
+import { useManagedTransaction } from '@/lib/contracts/useManagedTransaction'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -91,4 +95,45 @@ function NextAdapterAppMock({ children }: Props) {
  */
 export async function waitForLoadedUseQuery(hookResult: { current: { loading: boolean } }) {
   await waitFor(() => expect(hookResult.current.loading).toBeFalsy())
+}
+
+/**
+ * Wrapper over testHook to test useManagedTransaction hook with full TS inference
+ */
+export function testManagedTransaction<
+  T extends typeof AbiMap,
+  M extends keyof typeof AbiMap,
+  F extends InferFunctionName<T[M], string, WriteAbiMutability>
+>(
+  contractId: M,
+  functionName: F,
+  args?: GetFunctionArgs<T[M], F>,
+  additionalConfig?: Omit<
+    UsePrepareContractWriteConfig<T[M], F, number>,
+    'abi' | 'address' | 'functionName' | 'args'
+  >
+) {
+  const { result } = testHook(() =>
+    useManagedTransaction(contractId, functionName, args, additionalConfig)
+  )
+  return result
+}
+
+/**
+ * Called from integration tests to setup a connection with the default anvil test account (defaultTestUserAccount)
+ */
+export async function useConnectTestAccount() {
+  function useConnectWithAccount() {
+    const config = { connector: mainnetMockConnector }
+    return {
+      account: useAccount(),
+      connect: useConnect(config),
+    }
+  }
+  const { result } = testHook(() => useConnectWithAccount())
+
+  await act(async () => result.current.connect.connect())
+  await waitFor(() =>
+    expect(result.current.connect.isSuccess && result.current.account.isConnected).toBeTruthy()
+  )
 }
