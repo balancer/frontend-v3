@@ -7,22 +7,22 @@ import { useAccount } from 'wagmi'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
 import { PoolListGrid } from './components/PoolListGrid/PoolListGrid'
-import { PoolListViewType, ViewType } from './components/PoolListViewType'
+import { PoolListViewType } from './components/PoolListViewType'
+import { usePoolListViewType } from './usePoolListViewType'
 import React from 'react'
 
 export function PoolList() {
   const { address } = useAccount()
   const { tokens } = useTokens()
+  const { viewType } = usePoolListViewType()
 
   useTokenBalances(address, tokens)
-
-  const [viewType, setViewType] = React.useState<ViewType>('list')
 
   return (
     <VStack align="start" spacing="md">
       <HStack justifyContent="space-between" w="full">
         <PoolListFilters />
-        <PoolListViewType setViewType={setViewType} />
+        <PoolListViewType />
       </HStack>
       {viewType === 'list' && <PoolListTable />}
       {viewType === 'grid' && <PoolListGrid />}
