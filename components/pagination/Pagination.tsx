@@ -47,12 +47,12 @@ export function Pagination({
         w={{ base: 'full', lg: '75%' }}
         mt={{ base: '4', lg: '8' }}
         templateColumns={{
-          base: 'repeat(4, 1fr)',
+          base: '2fr repeat(2, 1fr)',
           lg: 'repeat(5, 1fr)',
         }}
         templateAreas={{
-          base: `"left left page right"
-                 "goto goto goto size"`,
+          base: `"left page right"
+                 "goto goto size"`,
           lg: `"left goto page size right"`,
         }}
         gap={{ base: '2', lg: '4' }}
