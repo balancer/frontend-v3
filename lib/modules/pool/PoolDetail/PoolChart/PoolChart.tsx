@@ -21,6 +21,7 @@ export function PoolChart() {
     options,
     handleAxisMoved,
     handleMouseLeave,
+    tabsList,
   } = usePoolCharts()
 
   return (
@@ -34,7 +35,11 @@ export function PoolChart() {
     >
       <HStack justifyContent="space-between">
         <HStack gap="16px">
-          <PoolChartTypeTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+          <PoolChartTypeTabs
+            tabsList={tabsList}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
           <PoolChartPeriodSelector activePeriod={activePeriod} setActivePeriod={setActivePeriod} />
         </HStack>
         <Stack gap="0" textAlign="right">
@@ -43,7 +48,7 @@ export function PoolChart() {
         </Stack>
       </HStack>
       {loading && <Loading />}
-      {chartData && (
+      {chartData.length > 0 ? (
         <Box onMouseLeave={handleMouseLeave}>
           <ReactECharts
             option={options}
@@ -52,6 +57,8 @@ export function PoolChart() {
             }}
           />
         </Box>
+      ) : (
+        <Text p="lg">Empty pool snapshots list</Text>
       )}
     </Stack>
   )

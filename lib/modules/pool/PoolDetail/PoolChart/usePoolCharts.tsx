@@ -9,27 +9,13 @@ import {
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
+import { usePool } from '../../usePool'
 
 export enum PoolChartTab {
   VOLUME = 'volume',
   TVL = 'tvl',
   FEES = 'fees',
 }
-
-export const poolChartTabs = [
-  {
-    value: PoolChartTab.VOLUME,
-    label: 'Volume',
-  },
-  {
-    value: PoolChartTab.TVL,
-    label: 'TVL',
-  },
-  {
-    value: PoolChartTab.FEES,
-    label: 'Fees',
-  },
-]
 
 export type PoolChartPeriod = {
   value: GqlPoolSnapshotDataRange
@@ -63,6 +49,11 @@ export interface PoolChartTypeOptions {
   areaStyle?: {
     color: string | echarts.graphic.LinearGradient
   }
+}
+
+export interface PoolChartTypeTab {
+  value: PoolChartTab
+  label: string
 }
 
 export const poolChartTypeOptions: Record<PoolChartTab, PoolChartTypeOptions> = {
@@ -165,8 +156,44 @@ export const defaultPoolChartOptions = {
   },
 }
 
+export function formPoolTabsList({
+  variant,
+  poolType,
+}: {
+  variant: string
+  poolType: string
+}): PoolChartTypeTab[] {
+  if (poolType === 'LIQUIDITY_BOOTSTRAPPING' && variant === 'v2') {
+    return [
+      {
+        value: PoolChartTab.VOLUME,
+        label: 'Volume',
+      },
+      {
+        value: PoolChartTab.TVL,
+        label: 'TVL',
+      },
+    ]
+  }
+
+  return [
+    {
+      value: PoolChartTab.VOLUME,
+      label: 'Volume',
+    },
+    {
+      value: PoolChartTab.TVL,
+      label: 'TVL',
+    },
+    {
+      value: PoolChartTab.FEES,
+      label: 'Fees',
+    },
+  ]
+}
+
 export function usePoolSnapshots(
-  poolId = '',
+  poolId: string,
   range: GqlPoolSnapshotDataRange = GqlPoolSnapshotDataRange.ThirtyDays
 ) {
   return useQuery(GetPoolSnapshotsDocument, {
@@ -179,17 +206,27 @@ export function usePoolSnapshots(
 }
 
 export function usePoolCharts() {
-  const [activeTab, setActiveTab] = useState(poolChartTabs[0].value)
+  const { pool } = usePool()
+  const { id: poolId, variant } = useParams()
+
+  const tabsList = useMemo(() => {
+    const poolType = pool?.type
+    if (!poolType) return []
+    if (typeof variant !== 'string') return []
+    console.log({ variant, poolType })
+    return formPoolTabsList({ variant, poolType })
+  }, [pool?.type, variant])
+
+  const [activeTab, setActiveTab] = useState(tabsList[0].value)
   const [chartValue, setChartValue] = useState(0)
   const [chartDate, setChartDate] = useState('')
   const [activePeriod, setActivePeriod] = useState(GqlPoolSnapshotDataRange.ThirtyDays)
 
-  const { id: poolId } = useParams()
   const { data, loading } = usePoolSnapshots(poolId as string, activePeriod)
 
   const chartData = useMemo(() => {
     const snapshots = data?.snapshots
-    if (!snapshots) return
+    if (!snapshots) return []
 
     if (activeTab === PoolChartTab.TVL) {
       return snapshots.map(snapshot => {
@@ -255,6 +292,8 @@ export function usePoolCharts() {
 
   const handleMouseLeave = useCallback(() => {
     const lastChartData = chartData?.[chartData.length - 1]
+    console.log({ lastChartData })
+    if (!lastChartData) return
     setChartValue(Number(lastChartData?.[1]))
     setChartDate(format(new Date(Number(lastChartData?.[0]) * 1000), 'dd MMM yyyy'))
   }, [chartData])
@@ -271,5 +310,6 @@ export function usePoolCharts() {
     handleAxisMoved,
     handleMouseLeave,
     chartData,
+    tabsList,
   }
 }

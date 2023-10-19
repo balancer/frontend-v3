@@ -1,17 +1,18 @@
 import { Tab, TabList, Tabs } from '@chakra-ui/react'
-import { PoolChartTab, poolChartTabs } from './usePoolCharts'
+import { PoolChartTab, PoolChartTypeTab } from './usePoolCharts'
 import { Dispatch, SetStateAction } from 'react'
 
 interface PoolChartTypeTabsProps {
+  tabsList: PoolChartTypeTab[]
   activeTab: string
   setActiveTab: Dispatch<SetStateAction<PoolChartTab>>
 }
 
-export function PoolChartTypeTabs({ setActiveTab }: PoolChartTypeTabsProps) {
+export function PoolChartTypeTabs({ setActiveTab, tabsList }: PoolChartTypeTabsProps) {
   return (
     <Tabs width="fit-content">
       <TabList>
-        {poolChartTabs.map(tab => (
+        {tabsList.map(tab => (
           <Tab onClick={() => setActiveTab(tab.value)} key={tab.value}>
             {tab.label}
           </Tab>
