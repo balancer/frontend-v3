@@ -4,22 +4,23 @@ import { ColumnDef } from '@tanstack/react-table'
 import numeral from 'numeral'
 import Image from 'next/image'
 import { GqlPoolApr } from '@/lib/services/api/generated/graphql'
-import { VStack, Text, HStack, Tag } from '@chakra-ui/react'
+import { VStack, Text, HStack, Tag, Icon } from '@chakra-ui/react'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { PoolListItem } from '../../../pool.types'
 import { getAprLabel } from '../../../pool.utils'
+import { FiGlobe } from 'react-icons/fi'
 
 export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => [
   {
     id: 'chainLogoUrl',
-    header: () => <Text>Network</Text>,
+    header: () => <Icon as={FiGlobe} boxSize="5" />,
     cell: ({ row: { original: pool } }) => {
       const networkConfig = getNetworkConfig(pool.chain)
       return (
         <Image src={networkConfig.iconPath} width="30" height="30" alt={networkConfig.shortName} />
       )
     },
-    size: 50,
+    size: 10,
   },
   {
     id: 'details',
