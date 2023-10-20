@@ -8,7 +8,7 @@ import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
 import { PoolListGrid } from './components/PoolListGrid/PoolListGrid'
 import { PoolListViewType } from './components/PoolListViewType'
-import { usePoolListViewType } from './usePoolListViewType'
+import { usePoolListViewType } from './components/usePoolListViewType'
 import React from 'react'
 
 export function PoolList() {
