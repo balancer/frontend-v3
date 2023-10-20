@@ -211,9 +211,8 @@ export function usePoolCharts() {
 
   const tabsList = useMemo(() => {
     const poolType = pool?.type
-    if (!poolType) return []
-    if (typeof variant !== 'string') return []
-    console.log({ variant, poolType })
+    if (!poolType || typeof variant !== 'string') return []
+
     return formPoolTabsList({ variant, poolType })
   }, [pool?.type, variant])
 
