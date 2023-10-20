@@ -5,8 +5,8 @@ import ReactECharts from 'echarts-for-react'
 import { PoolChartTypeTabs } from './PoolChartTypeTabs'
 import { usePoolCharts } from './usePoolCharts'
 import { PoolChartPeriodSelector } from './PoolChartPeriodSelector'
-import Loading from '@/app/pools/[chain]/[variant]/[id]/loading'
 import numeral from 'numeral'
+import Loading from '@/app/(app)/pools/loading'
 
 export function PoolChart() {
   const {
