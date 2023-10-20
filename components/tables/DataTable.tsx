@@ -22,7 +22,7 @@ import {
 } from '@tanstack/react-table'
 import { SortingIcon } from '@/components/icons/SortingIcon'
 import { Pagination } from '@/components/pagination/Pagination'
-import { useMobile } from '@/lib/hooks/useMobile'
+import { useBreakpoints } from '@/lib/hooks/useBreakpoints'
 
 export type DataTableProps<Data extends object> = {
   data: Data[]
@@ -49,7 +49,7 @@ export function DataTable<Data extends object>({
   setSorting,
   noResultsText,
 }: DataTableProps<Data>) {
-  const isMobile = useMobile()
+  const { isMobile } = useBreakpoints()
 
   const table = useReactTable({
     columns,
