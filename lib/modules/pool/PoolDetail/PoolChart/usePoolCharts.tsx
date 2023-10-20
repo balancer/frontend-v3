@@ -10,6 +10,7 @@ import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { usePool } from '../../usePool'
+import { PoolType, PoolVariant } from '../../pool.types'
 
 export enum PoolChartTab {
   VOLUME = 'volume',
@@ -156,14 +157,14 @@ export const defaultPoolChartOptions = {
   },
 }
 
-export function formPoolTabsList({
+export function getPoolTabsList({
   variant,
   poolType,
 }: {
-  variant: string
-  poolType: string
+  variant: PoolVariant
+  poolType: PoolType
 }): PoolChartTypeTab[] {
-  if (poolType === 'LIQUIDITY_BOOTSTRAPPING' && variant === 'v2') {
+  if (poolType === PoolType.LIQUIDITY_BOOTSTRAPPING && variant === PoolVariant.v2) {
     return [
       {
         value: PoolChartTab.VOLUME,
@@ -206,14 +207,14 @@ export function usePoolSnapshots(
 }
 
 export function usePoolCharts() {
-  const { pool } = usePool()
+  const { pool, loading: isLoadingPool } = usePool()
   const { id: poolId, variant } = useParams()
 
   const tabsList = useMemo(() => {
     const poolType = pool?.type
     if (!poolType || typeof variant !== 'string') return []
 
-    return formPoolTabsList({ variant, poolType })
+    return getPoolTabsList({ variant: variant as PoolVariant, poolType: poolType as PoolType })
   }, [pool?.type, variant])
 
   const [activeTab, setActiveTab] = useState(tabsList[0].value)
@@ -221,7 +222,11 @@ export function usePoolCharts() {
   const [chartDate, setChartDate] = useState('')
   const [activePeriod, setActivePeriod] = useState(GqlPoolSnapshotDataRange.ThirtyDays)
 
-  const { data, loading } = usePoolSnapshots(poolId as string, activePeriod)
+  const { data, loading: isLoadingSnapshots } = usePoolSnapshots(poolId as string, activePeriod)
+
+  const isLoading = useMemo(() => {
+    return isLoadingPool || isLoadingSnapshots
+  }, [isLoadingPool, isLoadingSnapshots])
 
   const chartData = useMemo(() => {
     const snapshots = data?.snapshots
@@ -298,7 +303,7 @@ export function usePoolCharts() {
   }, [chartData])
 
   return {
-    loading,
+    isLoading,
     activeTab,
     setActiveTab,
     activePeriod,

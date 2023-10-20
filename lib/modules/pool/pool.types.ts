@@ -9,7 +9,14 @@ export type PoolList = GetPoolsQuery['pools']
 
 export type PoolListItem = PoolList[0]
 
-export type PoolVariant = 'v2' | 'v3'
+export enum PoolVariant {
+  v2 = 'v2',
+  v3 = 'v3',
+}
+
+export enum PoolType {
+  'LIQUIDITY_BOOTSTRAPPING' = 'LIQUIDITY_BOOTSTRAPPING',
+}
 
 export interface FetchPoolProps {
   id: string

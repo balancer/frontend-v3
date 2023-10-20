@@ -16,7 +16,7 @@ export function PoolChart() {
     setActivePeriod,
     chartValue,
     chartDate,
-    loading,
+    isLoading,
     chartData,
     options,
     handleAxisMoved,
@@ -47,7 +47,7 @@ export function PoolChart() {
           <Text>{chartDate}</Text>
         </Stack>
       </HStack>
-      {loading && <Loading />}
+      {isLoading && <Loading />}
       {chartData.length > 0 ? (
         <Box onMouseLeave={handleMouseLeave}>
           <ReactECharts
