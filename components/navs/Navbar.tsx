@@ -7,7 +7,8 @@ import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 export function Navbar() {
   return (
     <HStack padding="md">
-      <Link href="/">Pools</Link>
+      <Link href="/">Home</Link>
+      <Link href="/pools">Pools</Link>
       <DarkModeToggle />
       <ConnectWallet />
     </HStack>

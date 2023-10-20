@@ -20,7 +20,7 @@ test('relayer successful relayer approval transaction', async () => {
 
   expect(typeof result.current.execution.data?.hash).toBe('string')
 
-  await waitFor(() => expect(result.current.txStatus.isSuccess).toBeTruthy())
+  await waitFor(() => expect(result.current.result.isSuccess).toBeTruthy())
 
-  expect(typeof result.current.txStatus.data?.gasUsed).toBe('bigint')
+  expect(typeof result.current.result.data?.gasUsed).toBe('bigint')
 })

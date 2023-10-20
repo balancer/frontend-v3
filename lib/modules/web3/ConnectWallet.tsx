@@ -28,9 +28,9 @@ export function ConnectWallet() {
               onClick={openConnectModal}
               type="button"
               isLoading={isLoading || !mounted}
-              loadingText="Connect"
+              loadingText="Connect Wallet"
             >
-              Connect
+              Connect Wallet
             </Button>
           )
         }
