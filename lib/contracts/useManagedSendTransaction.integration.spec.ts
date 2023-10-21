@@ -28,7 +28,7 @@ import {
   calculateBalanceDeltas,
   getBalances,
   setupTokens,
-} from '../../app/debug/steps/helper'
+} from '@/test/integration/helper'
 
 type TxInput = {
   poolJoin: PoolJoin
