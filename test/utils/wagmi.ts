@@ -1,8 +1,17 @@
 import { supportedChains } from '@/lib/modules/web3/Web3Provider'
 import { MockConnector } from 'wagmi/connectors/mock'
-import { Hex, createPublicClient, createWalletClient, http } from 'viem'
+import {
+  Hex,
+  createClient,
+  createPublicClient,
+  createWalletClient,
+  http,
+  publicActions,
+  testActions,
+  walletActions,
+} from 'viem'
 import { mainnet } from 'viem/chains'
-import { Connector, CreateConfigParameters, WalletClient, createConfig } from 'wagmi'
+import { CreateConfigParameters, WalletClient, createConfig } from 'wagmi'
 import { testQueryClient } from './react-query'
 import { privateKeyToAccount } from 'viem/accounts'
 
@@ -12,15 +21,20 @@ const defaultAnvilTestPrivateKey =
 export const defaultTestUserAccount = privateKeyToAccount(defaultAnvilTestPrivateKey as Hex).address
 
 function createTestHttpClient(httpRpc: string) {
-  const publicClient = createPublicClient({
+  const testClient = createClient({
     batch: {
       multicall: { batchSize: 4096 }, // change depending on chain (some have limits)
     },
     // TODO: improve client to work with other different networks
     chain: mainnet,
+    // account: defaultTestUserAccount,
     transport: http(httpRpc),
   })
-  return Object.assign(publicClient, {
+    .extend(testActions({ mode: 'anvil' }))
+    .extend(publicActions)
+    .extend(walletActions)
+
+  return Object.assign(testClient, {
     chains: supportedChains,
   })
 }
@@ -53,7 +67,7 @@ export const mainnetMockConnector = new MockConnector({
 export function createWagmiTestConfig({ ...config }: SetupClient = {}) {
   return createConfig({
     autoConnect: true,
-    connectors: [mainnetMockConnector as unknown as Connector],
+    connectors: [mainnetMockConnector],
     publicClient: testPublicClient,
     queryClient: testQueryClient,
     ...config,

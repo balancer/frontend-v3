@@ -58,7 +58,7 @@
     "typescript": "5.1.6",
     "use-query-params": "^2.2.1",
     "viem": "^1.2.9",
-    "wagmi": "^1.4.3",
+    "wagmi": "^1.4.4",
     "zod": "^3.21.4",
     "@tanstack/react-query": "^4.29.19"
   },
