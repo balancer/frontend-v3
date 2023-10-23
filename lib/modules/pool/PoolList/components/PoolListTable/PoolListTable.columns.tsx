@@ -58,7 +58,7 @@ export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
           </Text>
         )
       },
-      size: 150,
+      size: 175,
     },
     {
       id: 'volume24h',
@@ -73,7 +73,7 @@ export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
           </Text>
         )
       },
-      size: 150,
+      size: 175,
     },
     {
       id: 'apr',
@@ -89,7 +89,7 @@ export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
           </Text>
         )
       },
-      size: 150,
+      size: 175,
     },
   ]
 }
