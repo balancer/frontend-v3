@@ -5,22 +5,35 @@ import { TransactionState, TransactionStep, getTransactionState } from './lib'
 import { useAccount } from 'wagmi'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { TransactionStateData } from '@/components/other/TransactionState'
+import { useState } from 'react'
+import { useEffect } from 'react'
 
 interface Props {
   step: TransactionStep
 }
 
-export function TransactionStepButton({
+const BUTTON_LABEL_DEFAULTS: Record<TransactionState, string> = {
+  [TransactionState.Loading]: 'Confirm in wallet',
+  [TransactionState.Confirming]: 'Confirming transaction',
+  [TransactionState.Error]: 'IMPLEMENT LABEL',
+  [TransactionState.Ready]: 'IMPLEMENT LABEL',
+}
+
+export default function TransactionStepButton({
   step: { simulation, execution, result, getLabels, managedWrite },
 }: Props) {
-  const { isConnected } = useAccount()
-  const isTransactButtonVisible = isConnected
+  const { isConnected, isConnecting } = useAccount()
+  const [isTransactButtonVisible, setIsTransactionButtonVisible] = useState(false)
+
   const transactionState = getTransactionState({ simulation, execution, result })
   const isButtonLoading =
     transactionState === TransactionState.Loading ||
     transactionState === TransactionState.Confirming
-  const hasSimulationError = !execution.write || simulation.isError
+  const hasSimulationError = (!execution.write && !execution.isIdle) || simulation.isError
   const isButtonDisabled = transactionState === TransactionState.Loading || hasSimulationError
+  const transactionLabels = getLabels()
+  const currentButtonLabel =
+    transactionLabels[transactionState] || BUTTON_LABEL_DEFAULTS[transactionState]
 
   function handleOnClick() {
     if (!simulation.isError) {
@@ -28,22 +41,9 @@ export function TransactionStepButton({
     }
   }
 
-  function getButtonLabel() {
-    // sensible defaults for loading / confirm if not provided
-    const transactionLabels = getLabels()
-    const relevantLabel = transactionLabels[transactionState]
-    if (!relevantLabel) {
-      switch (transactionState) {
-        case TransactionState.Loading:
-          return 'Confirm in wallet'
-        case TransactionState.Confirming:
-          return 'Confirming transaction'
-        case TransactionState.Error:
-          return transactionLabels.ready
-      }
-    }
-    return relevantLabel
-  }
+  useEffect(() => {
+    setIsTransactionButtonVisible(isConnected && !isConnecting)
+  }, [isConnected, isConnecting])
 
   return (
     <VStack width="full">
@@ -60,9 +60,8 @@ export function TransactionStepButton({
           isDisabled={isButtonDisabled}
           isLoading={isButtonLoading}
           onClick={handleOnClick}
-          loadingText={getButtonLabel()}
         >
-          {getButtonLabel()}
+          {currentButtonLabel}
         </Button>
       )}
     </VStack>
