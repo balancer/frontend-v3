@@ -1,7 +1,7 @@
 import { Alert, Button, ButtonProps, VStack } from '@chakra-ui/react'
 import React, { useEffect } from 'react'
 import { TransactionStep } from './lib'
-import TransactionStepButton from './TransactionStepButton'
+import { TransactionStepButton } from './TransactionStepButton'
 import { ReactNode } from 'react'
 
 type Props = {
