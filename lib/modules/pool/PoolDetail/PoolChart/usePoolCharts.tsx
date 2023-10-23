@@ -4,13 +4,14 @@ import * as echarts from 'echarts/core'
 import numeral from 'numeral'
 import {
   GetPoolSnapshotsDocument,
+  GqlPoolFilterType,
   GqlPoolSnapshotDataRange,
 } from '@/lib/services/api/generated/graphql'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { usePool } from '../../usePool'
-import { PoolType, PoolVariant } from '../../pool.types'
+import { PoolVariant } from '../../pool.types'
 
 export enum PoolChartTab {
   VOLUME = 'volume',
@@ -162,9 +163,9 @@ export function getPoolTabsList({
   poolType,
 }: {
   variant: PoolVariant
-  poolType: PoolType
+  poolType: GqlPoolFilterType
 }): PoolChartTypeTab[] {
-  if (poolType === PoolType.LIQUIDITY_BOOTSTRAPPING && variant === PoolVariant.v2) {
+  if (poolType === GqlPoolFilterType.LiquidityBootstrapping && variant === PoolVariant.v2) {
     return [
       {
         value: PoolChartTab.VOLUME,
@@ -214,7 +215,10 @@ export function usePoolCharts() {
     const poolType = pool?.type
     if (!poolType || typeof variant !== 'string') return []
 
-    return getPoolTabsList({ variant: variant as PoolVariant, poolType: poolType as PoolType })
+    return getPoolTabsList({
+      variant: variant as PoolVariant,
+      poolType: poolType as GqlPoolFilterType,
+    })
   }, [pool?.type, variant])
 
   const [activeTab, setActiveTab] = useState(tabsList[0].value)
@@ -224,9 +228,7 @@ export function usePoolCharts() {
 
   const { data, loading: isLoadingSnapshots } = usePoolSnapshots(poolId as string, activePeriod)
 
-  const isLoading = useMemo(() => {
-    return isLoadingPool || isLoadingSnapshots
-  }, [isLoadingPool, isLoadingSnapshots])
+  const isLoading = isLoadingPool || isLoadingSnapshots
 
   const chartData = useMemo(() => {
     const snapshots = data?.snapshots
@@ -296,8 +298,8 @@ export function usePoolCharts() {
 
   const handleMouseLeave = useCallback(() => {
     const lastChartData = chartData?.[chartData.length - 1]
-    console.log({ lastChartData })
     if (!lastChartData) return
+
     setChartValue(Number(lastChartData?.[1]))
     setChartDate(format(new Date(Number(lastChartData?.[0]) * 1000), 'dd MMM yyyy'))
   }, [chartData])

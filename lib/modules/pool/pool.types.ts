@@ -14,10 +14,6 @@ export enum PoolVariant {
   v3 = 'v3',
 }
 
-export enum PoolType {
-  'LIQUIDITY_BOOTSTRAPPING' = 'LIQUIDITY_BOOTSTRAPPING',
-}
-
 export interface FetchPoolProps {
   id: string
   // chain & variant are not used yet, but will be needed in the future.

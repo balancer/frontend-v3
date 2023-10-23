@@ -1,5 +1,4 @@
 'use client'
-
 import { Box, HStack, Stack, Text } from '@chakra-ui/react'
 import ReactECharts from 'echarts-for-react'
 import { PoolChartTypeTabs } from './PoolChartTypeTabs'
