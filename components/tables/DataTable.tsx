@@ -83,19 +83,20 @@ export function DataTable<Data extends object>({
   return (
     <>
       <TableContainer pr="20px">
-        <Table layout="fixed">
+        <Table layout="fixed" minW="768px">
           <Thead>
             {table.getHeaderGroups().map(headerGroup => (
               <Tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => {
                   // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
                   const meta: any = header.column.columnDef.meta
+                  const width = header.getSize()
                   return (
                     <Th
                       key={header.id}
                       isNumeric={meta?.isNumeric}
                       onClick={header.column.getToggleSortingHandler()}
-                      w={`${header.getSize()}px`}
+                      w={width === 9999 ? 'auto' : `${width}px`} // use '9999' in your column definition, for one column only!!
                       p={noColumnPadding && noColumnPadding.includes(header.id) ? '0' : ''}
                     >
                       <HStack

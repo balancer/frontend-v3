@@ -10,13 +10,7 @@ import { PoolListItem } from '../../../pool.types'
 import { getAprLabel } from '../../../pool.utils'
 import { FiGlobe } from 'react-icons/fi'
 
-const DEFAULT_WINDOW_MARGIN = 70
-
-export const getPoolListTableColumns = (
-  width: number,
-  isMobile: boolean
-): ColumnDef<PoolListItem>[] => {
-  const innerWidth = isMobile ? 768 : width
+export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
   return [
     {
       id: 'chainLogoUrl',
@@ -32,7 +26,7 @@ export const getPoolListTableColumns = (
           />
         )
       },
-      size: Math.round((innerWidth - DEFAULT_WINDOW_MARGIN) * 0.03),
+      size: 30,
     },
     {
       id: 'details',
@@ -40,8 +34,8 @@ export const getPoolListTableColumns = (
       cell: ({ row: { original: pool } }) => {
         return (
           <VStack align="start">
-            <Text>{pool.name}</Text>
-            <HStack>
+            <Text isTruncated>{pool.name}</Text>
+            <HStack wrap="wrap">
               {pool.displayTokens.map(token => (
                 <Tag key={token.address}>{token.symbol}</Tag>
               ))}
@@ -49,7 +43,7 @@ export const getPoolListTableColumns = (
           </VStack>
         )
       },
-      size: Math.round((innerWidth - DEFAULT_WINDOW_MARGIN) * (isMobile ? 0.55 : 0.67)),
+      size: 9999, // use '9999' so we can set {width: 'auto'} in DataTable
     },
     {
       id: 'totalLiquidity',
@@ -64,7 +58,7 @@ export const getPoolListTableColumns = (
           </Text>
         )
       },
-      size: Math.round((innerWidth - DEFAULT_WINDOW_MARGIN) * (isMobile ? 0.14 : 0.1)),
+      size: 150,
     },
     {
       id: 'volume24h',
@@ -79,7 +73,7 @@ export const getPoolListTableColumns = (
           </Text>
         )
       },
-      size: Math.round((innerWidth - DEFAULT_WINDOW_MARGIN) * (isMobile ? 0.14 : 0.1)),
+      size: 150,
     },
     {
       id: 'apr',
@@ -95,7 +89,7 @@ export const getPoolListTableColumns = (
           </Text>
         )
       },
-      size: Math.round((innerWidth - DEFAULT_WINDOW_MARGIN) * (isMobile ? 0.14 : 0.1)),
+      size: 150,
     },
   ]
 }
