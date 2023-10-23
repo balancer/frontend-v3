@@ -42,6 +42,9 @@ export function _usePoolList() {
 
 export function usePoolListSeedCacheQuery() {
   const { state, mappedPoolTypes } = usePoolListQueryState()
+  // We store the search params in a ref so that they do not update.
+  // This ensure that the suspense query will only get called once. during
+  // the server side rendering pass.
   const storedState = useRef(state).current
   const storedMappedPoolTypes = useRef(mappedPoolTypes).current
 
