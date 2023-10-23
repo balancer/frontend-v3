@@ -45,28 +45,36 @@ const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolFilterType[] } = {
   ],
 }
 
+export const poolListQueryParamsConfigMap = {
+  first: withDefault(NumberParam, 20),
+  skip: withDefault(NumberParam, 0),
+  orderBy: withDefault(
+    createEnumParam(Object.entries(GqlPoolOrderBy).map(([, value]) => value)),
+    GqlPoolOrderBy.TotalLiquidity
+  ),
+  orderDirection: withDefault(
+    createEnumParam(Object.entries(GqlPoolOrderDirection).map(([, value]) => value)),
+    GqlPoolOrderDirection.Desc
+  ),
+  poolTypes: withDefault(createEnumDelimitedArrayParam([...poolTypeFilters], ','), []),
+  networks: withDefault(
+    createEnumDelimitedArrayParam(
+      Object.entries(GqlChain).map(([, value]) => value),
+      ','
+    ),
+    []
+  ),
+  textSearch: withDefault(StringParam, null),
+}
+
+export function poolListQueryMapPoolFiltersToTypes(poolFilters: PoolFilterType[]) {
+  return (poolFilters.length > 0 ? poolFilters : Object.keys(POOL_TYPE_MAP))
+    .map(poolType => POOL_TYPE_MAP[poolType as keyof typeof POOL_TYPE_MAP])
+    .flat()
+}
+
 export function usePoolListQueryState() {
-  const [query, setQuery] = useQueryParams({
-    first: withDefault(NumberParam, 20),
-    skip: withDefault(NumberParam, 0),
-    orderBy: withDefault(
-      createEnumParam(Object.entries(GqlPoolOrderBy).map(([, value]) => value)),
-      GqlPoolOrderBy.TotalLiquidity
-    ),
-    orderDirection: withDefault(
-      createEnumParam(Object.entries(GqlPoolOrderDirection).map(([, value]) => value)),
-      GqlPoolOrderDirection.Desc
-    ),
-    poolTypes: withDefault(createEnumDelimitedArrayParam([...poolTypeFilters], ','), []),
-    networks: withDefault(
-      createEnumDelimitedArrayParam(
-        Object.entries(GqlChain).map(([, value]) => value),
-        ','
-      ),
-      []
-    ),
-    textSearch: withDefault(StringParam, null),
-  })
+  const [query, setQuery] = useQueryParams(poolListQueryParamsConfigMap)
 
   // Set internal checked state
   function toggleNetwork(checked: boolean, network: GqlChain) {
@@ -141,11 +149,7 @@ export function usePoolListQueryState() {
     pageSize: query.first,
   }
 
-  const mappedPoolTypes = (
-    query.poolTypes.length > 0 ? query.poolTypes : Object.keys(POOL_TYPE_MAP)
-  )
-    .map(poolType => POOL_TYPE_MAP[poolType as keyof typeof POOL_TYPE_MAP])
-    .flat()
+  const mappedPoolTypes = poolListQueryMapPoolFiltersToTypes(query.poolTypes)
 
   return {
     state: query,

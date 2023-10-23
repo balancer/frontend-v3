@@ -3,9 +3,14 @@
 import { createContext, ReactNode } from 'react'
 import { GetPoolsDocument } from '@/lib/services/api/generated/graphql'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { usePoolListQueryState } from './usePoolListQueryState'
+import {
+  poolListQueryMapPoolFiltersToTypes,
+  poolListQueryParamsConfigMap,
+  usePoolListQueryState,
+} from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/utils/contexts'
 import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
+import { decodeQueryParams } from 'use-query-params'
 
 export function _usePoolList() {
   const { state, mappedPoolTypes } = usePoolListQueryState()
@@ -40,20 +45,22 @@ export function _usePoolList() {
   }
 }
 
-export function usePoolListSeedCacheQuery() {
-  const { state, mappedPoolTypes } = usePoolListQueryState()
+export function usePoolListSeedCacheQuery(searchParams: any) {
+  const decoded = decodeQueryParams(poolListQueryParamsConfigMap, searchParams)
+  const networks = decoded.networks || []
+  const mappedPoolTypes = poolListQueryMapPoolFiltersToTypes(decoded.poolTypes || [])
 
   return useSuspenseQuery(GetPoolsDocument, {
     variables: {
-      first: state.first,
-      skip: state.skip,
-      orderBy: state.orderBy,
-      orderDirection: state.orderDirection,
+      first: decoded.first,
+      skip: decoded.skip,
+      orderBy: decoded.orderBy,
+      orderDirection: decoded.orderDirection,
       where: {
         poolTypeIn: mappedPoolTypes,
-        chainIn: state.networks.length > 0 ? state.networks : PROJECT_CONFIG.supportedNetworks,
+        chainIn: networks.length > 0 ? networks : PROJECT_CONFIG.supportedNetworks,
       },
-      textSearch: state.textSearch,
+      textSearch: decoded.textSearch,
     },
   })
 }
