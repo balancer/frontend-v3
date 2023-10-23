@@ -22,7 +22,6 @@ import {
 } from '@tanstack/react-table'
 import { SortingIcon } from '@/components/icons/SortingIcon'
 import { Pagination } from '@/components/pagination/Pagination'
-import { useBreakpoints } from '@/lib/hooks/useBreakpoints'
 
 export type DataTableProps<Data extends object> = {
   data: Data[]
@@ -49,8 +48,6 @@ export function DataTable<Data extends object>({
   setSorting,
   noResultsText,
 }: DataTableProps<Data>) {
-  const { isMobile } = useBreakpoints()
-
   const table = useReactTable({
     columns,
     data,
@@ -96,7 +93,6 @@ export function DataTable<Data extends object>({
                       key={header.id}
                       isNumeric={meta?.isNumeric}
                       onClick={header.column.getToggleSortingHandler()}
-                      px={isMobile ? 3 : 'unset'}
                     >
                       <HStack
                         style={
@@ -133,7 +129,7 @@ export function DataTable<Data extends object>({
                   // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
                   const meta: any = cell.column.columnDef.meta
                   return (
-                    <Td key={cell.id} isNumeric={meta?.isNumeric} px={isMobile ? 2 : 'unset'}>
+                    <Td key={cell.id} isNumeric={meta?.isNumeric}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </Td>
                   )
