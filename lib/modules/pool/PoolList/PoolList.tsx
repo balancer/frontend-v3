@@ -6,16 +6,9 @@ import { PoolListFilters } from './components/PoolListFilters'
 import { useAccount } from 'wagmi'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
-import {
-  PoolListProvider,
-  usePoolListSeedCacheQuery,
-} from '@/lib/modules/pool/PoolList/usePoolList'
-import { NextSearchParams } from '@/lib/global/global.types'
+import { PoolListProvider } from '@/lib/modules/pool/PoolList/usePoolList'
 
-export function PoolList({ searchParams }: { searchParams: NextSearchParams }) {
-  console.log('search params', searchParams)
-  usePoolListSeedCacheQuery(searchParams)
-
+export function PoolList() {
   const { address } = useAccount()
   const { tokens } = useTokens()
 
