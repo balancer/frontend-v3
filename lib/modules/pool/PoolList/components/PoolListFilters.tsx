@@ -63,7 +63,7 @@ function FilterTags() {
     usePoolListQueryState()
 
   return (
-    <HStack spacing="sm">
+    <HStack spacing="sm" wrap="wrap">
       {poolTypes.map(poolType => (
         <Tag key={poolType}>
           <TagLabel>{poolTypeLabel(poolType)}</TagLabel>
@@ -100,8 +100,8 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
 
 export function PoolListFilters() {
   return (
-    <VStack align="flex-start">
-      <HStack>
+    <VStack align="flex-start" w="full">
+      <HStack w="full">
         <Popover>
           <PopoverTrigger>
             <FilterButton />
