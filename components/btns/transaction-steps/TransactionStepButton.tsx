@@ -2,9 +2,9 @@
 
 import { Alert, Button, VStack } from '@chakra-ui/react'
 import { TransactionState, TransactionStep, getTransactionState } from './lib'
-import { useAccount } from 'wagmi'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { TransactionStateData } from '@/components/other/TransactionState'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 interface Props {
   step: TransactionStep
@@ -13,13 +13,13 @@ interface Props {
 export function TransactionStepButton({
   step: { simulation, execution, result, getLabels, managedWrite },
 }: Props) {
-  const { isConnected } = useAccount()
+  const { isConnected } = useUserAccount()
   const isTransactButtonVisible = isConnected
   const transactionState = getTransactionState({ simulation, execution, result })
   const isButtonLoading =
     transactionState === TransactionState.Loading ||
     transactionState === TransactionState.Confirming
-  const hasSimulationError = !execution.write || simulation.isError
+  const hasSimulationError = (!execution.write && !execution.isIdle) || simulation.isError
   const isButtonDisabled = transactionState === TransactionState.Loading || hasSimulationError
 
   function handleOnClick() {

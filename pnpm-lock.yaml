@@ -13,7 +13,10 @@ dependencies:
     version: 3.8.0-rc.1(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
   '@apollo/experimental-nextjs-app-support':
     specifier: ^0.4.1
-    version: 0.4.3(@apollo/client@3.8.0-rc.1)(next@13.5.2)(react@18.2.0)
+    version: 0.4.1(@apollo/client@3.8.0-rc.1)(next@13.5.2)(react@18.2.0)
+  '@chakra-ui/hooks':
+    specifier: ^2.2.1
+    version: 2.2.1(react@18.2.0)
   '@chakra-ui/icons':
     specifier: ^2.1.0
     version: 2.1.1(@chakra-ui/system@2.6.1)(react@18.2.0)
@@ -1163,8 +1166,20 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@chakra-ui/icon@3.2.0(@chakra-ui/system@2.6.1)(react@18.2.0):
-    resolution: {integrity: sha512-xxjGLvlX2Ys4H0iHrI16t74rG9EBcpFvJ3Y3B7KMQTrnW34Kf7Da/UC8J67Gtx85mTHW020ml85SVPKORWNNKQ==}
+  /@chakra-ui/hooks@2.2.1(react@18.2.0):
+    resolution: {integrity: sha512-RQbTnzl6b1tBjbDPf9zGRo9rf/pQMholsOudTxjy4i9GfTfz6kgp5ValGjQm2z7ng6Z31N1cnjZ1AlSzQ//ZfQ==}
+    peerDependencies:
+      react: '>=18 || ^18.0.0'
+    dependencies:
+      '@chakra-ui/react-utils': 2.0.12(react@18.2.0)
+      '@chakra-ui/utils': 2.0.15
+      compute-scroll-into-view: 3.0.3
+      copy-to-clipboard: 3.3.3
+      react: 18.2.0
+    dev: false
+
+  /@chakra-ui/icon@3.1.0(@chakra-ui/system@2.6.0)(react@18.2.0):
+    resolution: {integrity: sha512-t6v0lGCXRbwUJycN8A/nDTuLktMP+LRjKbYJnd2oL6Pm2vOl99XwEQ5cAEyEa4XoseYNEgXiLR+2TfvgfNFvcw==}
     peerDependencies:
       '@chakra-ui/system': '>=2.0.0'
       react: '>=18 || ^18.0.0'
@@ -6197,6 +6212,10 @@ packages:
     resolution: {integrity: sha512-gk/Z852D2Wtb//0I+kRFNKKE9dIIVirjoqPoA1wJU+XePVXZfGeBpk45+A1rKO4Q43prqWBNY/MiIeRLbPWUaA==}
     engines: {node: '>=4.0.0'}
     dev: true
+
+  /compute-scroll-into-view@3.0.3:
+    resolution: {integrity: sha512-nadqwNxghAGTamwIqQSG433W6OADZx2vCo3UXHNrzTRHK/htu+7+L0zhjEoaeaQVNAi3YgqWDv8+tzf0hRfR+A==}
+    dev: false
 
   /compute-scroll-into-view@3.0.3:
     resolution: {integrity: sha512-nadqwNxghAGTamwIqQSG433W6OADZx2vCo3UXHNrzTRHK/htu+7+L0zhjEoaeaQVNAi3YgqWDv8+tzf0hRfR+A==}
