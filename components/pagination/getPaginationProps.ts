@@ -1,6 +1,6 @@
 import { PaginationState } from '@tanstack/react-table'
 
-export function PaginationHelpers(
+export function getPaginationProps(
   totalRowCount: number,
   pagination: PaginationState,
   setPagination: (pagination: PaginationState) => void

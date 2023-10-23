@@ -5,7 +5,7 @@ import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { PoolListCard } from './PoolListCard'
 import { Pagination } from '@/components/pagination/Pagination'
 import { usePoolListQueryState } from '../../usePoolListQueryState'
-import { PaginationHelpers } from '@/components/pagination/PaginationHelpers'
+import { getPaginationProps } from '@/components/pagination/getPaginationProps'
 import { PoolListItem } from '../../../pool.types'
 import { getPoolPath } from '../../../pool.utils'
 import { useRouter } from 'next/navigation'
@@ -14,19 +14,7 @@ export function PoolListGrid() {
   const router = useRouter()
   const { pools, count } = usePoolList()
   const { pagination, setPagination } = usePoolListQueryState()
-  const {
-    totalPageCount,
-    canPreviousPage,
-    canNextPage,
-    currentPageNumber,
-    pageSize,
-    goToFirstPage,
-    goToLastPage,
-    goToNextPage,
-    goToPreviousPage,
-    setPageIndex,
-    setPageSize,
-  } = PaginationHelpers(count || 0, pagination, setPagination)
+  const paginationProps = getPaginationProps(count || 0, pagination, setPagination)
 
   const showPagination = pools.length && count && count > pagination.pageSize
   const cardClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
@@ -58,21 +46,7 @@ export function PoolListGrid() {
           />
         ))}
       </Grid>
-      {showPagination && (
-        <Pagination
-          goToFirstPage={goToFirstPage}
-          gotoLastPage={goToLastPage}
-          goToNextPage={goToNextPage}
-          goToPreviousPage={goToPreviousPage}
-          canPreviousPage={canPreviousPage}
-          canNextPage={canNextPage}
-          currentPageNumber={currentPageNumber}
-          totalPageCount={totalPageCount}
-          setPageIndex={setPageIndex}
-          setPageSize={setPageSize}
-          pageSize={pageSize}
-        />
-      )}
+      {showPagination && <Pagination {...paginationProps} />}
     </>
   )
 }

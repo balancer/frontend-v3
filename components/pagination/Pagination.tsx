@@ -16,7 +16,7 @@ import {
 
 interface Props {
   goToFirstPage: () => void
-  gotoLastPage: () => void
+  goToLastPage: () => void
   goToNextPage: () => void
   goToPreviousPage: () => void
   canPreviousPage: boolean
@@ -30,7 +30,7 @@ interface Props {
 
 export function Pagination({
   goToFirstPage,
-  gotoLastPage,
+  goToLastPage,
   goToNextPage,
   goToPreviousPage,
   canPreviousPage,
@@ -133,7 +133,7 @@ export function Pagination({
           />
           <IconButton
             aria-label="last page"
-            onClick={gotoLastPage}
+            onClick={goToLastPage}
             isDisabled={!canNextPage}
             icon={<ArrowRightIcon h="3" w="3" />}
             ml="2"

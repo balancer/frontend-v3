@@ -156,7 +156,7 @@ export function DataTable<Data extends object>({
       {!!rows.length && rowCount > pagination.pageSize && (
         <Pagination
           goToFirstPage={() => table.setPageIndex(0)}
-          gotoLastPage={() => table.setPageIndex(table.getPageCount() - 1)}
+          goToLastPage={() => table.setPageIndex(table.getPageCount() - 1)}
           goToNextPage={() => table.nextPage()}
           goToPreviousPage={() => table.previousPage()}
           canPreviousPage={table.getCanPreviousPage()}
