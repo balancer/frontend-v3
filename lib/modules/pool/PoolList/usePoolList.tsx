@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, ReactNode } from 'react'
+import { createContext, ReactNode, useRef } from 'react'
 import { GetPoolsDocument } from '@/lib/services/api/generated/graphql'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolListQueryState } from './usePoolListQueryState'
@@ -42,18 +42,21 @@ export function _usePoolList() {
 
 export function usePoolListSeedCacheQuery() {
   const { state, mappedPoolTypes } = usePoolListQueryState()
+  const storedState = useRef(state).current
+  const storedMappedPoolTypes = useRef(mappedPoolTypes).current
 
   return useSuspenseQuery(GetPoolsDocument, {
     variables: {
-      first: state.first,
-      skip: state.skip,
-      orderBy: state.orderBy,
-      orderDirection: state.orderDirection,
+      first: storedState.first,
+      skip: storedState.skip,
+      orderBy: storedState.orderBy,
+      orderDirection: storedState.orderDirection,
       where: {
-        poolTypeIn: mappedPoolTypes,
-        chainIn: state.networks.length > 0 ? state.networks : PROJECT_CONFIG.supportedNetworks,
+        poolTypeIn: storedMappedPoolTypes,
+        chainIn:
+          storedState.networks.length > 0 ? storedState.networks : PROJECT_CONFIG.supportedNetworks,
       },
-      textSearch: state.textSearch,
+      textSearch: storedState.textSearch,
     },
   })
 }
