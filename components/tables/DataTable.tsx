@@ -34,6 +34,7 @@ export type DataTableProps<Data extends object> = {
   setSorting: (state: SortingState) => void
   setPagination: (state: PaginationState) => void
   noResultsText: string
+  noColumnPadding?: string[]
 }
 
 export function DataTable<Data extends object>({
@@ -47,6 +48,7 @@ export function DataTable<Data extends object>({
   setPagination,
   setSorting,
   noResultsText,
+  noColumnPadding,
 }: DataTableProps<Data>) {
   const table = useReactTable({
     columns,
@@ -81,7 +83,7 @@ export function DataTable<Data extends object>({
   return (
     <>
       <TableContainer pr="20px">
-        <Table>
+        <Table layout="fixed">
           <Thead>
             {table.getHeaderGroups().map(headerGroup => (
               <Tr key={headerGroup.id}>
@@ -93,13 +95,15 @@ export function DataTable<Data extends object>({
                       key={header.id}
                       isNumeric={meta?.isNumeric}
                       onClick={header.column.getToggleSortingHandler()}
+                      w={`${header.getSize()}px`}
+                      p={noColumnPadding && noColumnPadding.includes(header.id) ? '0' : ''}
                     >
                       <HStack
                         style={
                           header.column.getCanSort() ? { position: 'relative', right: '-20px' } : {}
                         }
                       >
-                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {flexRender(header.column.columnDef.header, header.getContext())} -{' '}
                         {header.column.getCanSort() && (
                           <chakra.span h="full" cursor="pointer">
                             {{
@@ -129,7 +133,11 @@ export function DataTable<Data extends object>({
                   // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
                   const meta: any = cell.column.columnDef.meta
                   return (
-                    <Td key={cell.id} isNumeric={meta?.isNumeric}>
+                    <Td
+                      key={cell.id}
+                      isNumeric={meta?.isNumeric}
+                      px={noColumnPadding && noColumnPadding.includes(cell.column.id) ? '0' : '6'}
+                    >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </Td>
                   )

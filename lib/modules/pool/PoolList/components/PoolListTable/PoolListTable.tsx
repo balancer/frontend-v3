@@ -8,11 +8,15 @@ import { useRouter } from 'next/navigation'
 import { getPoolPath } from '../../../pool.utils'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
+import { useWindowSize } from 'rooks'
+import { useBreakpoints } from '@/lib/hooks/useBreakpoints'
 
 export function PoolListTable() {
   const { pools, loading, count } = usePoolList()
   const { pagination, sorting, setPagination, setSorting } = usePoolListQueryState()
-  const columns = getPoolListTableColumns()
+  const { innerWidth } = useWindowSize()
+  const { isMobile } = useBreakpoints()
+  const columns = getPoolListTableColumns(innerWidth || 0, isMobile || false)
   const router = useRouter()
 
   const rowClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
@@ -45,6 +49,7 @@ export function PoolListTable() {
         setPagination={setPagination}
         setSorting={setSorting}
         noResultsText="No matching pools found"
+        noColumnPadding={['chainLogoUrl']}
       />
       {loading && (
         <Box
