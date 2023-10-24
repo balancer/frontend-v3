@@ -11,6 +11,9 @@ export function useUserAccount() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // The usage of isFirstRender helps to overcome nextjs hydration mismatch
+  // errors where the state of the user account on the server pass is different
+  // than the state on the client side rehydration.
   return {
     ...query,
     isLoading: query.isConnecting || isFirstRender,
