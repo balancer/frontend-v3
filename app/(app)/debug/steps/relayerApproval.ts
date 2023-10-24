@@ -1,14 +1,15 @@
-import { Address, useAccount } from 'wagmi'
+import { Address } from 'wagmi'
 import { useEffect, useState } from 'react'
 import { noUserAddress } from '@/lib/contracts/wagmi-helpers'
 import { useManagedTransaction } from '@/lib/contracts/useManagedTransaction'
 import { BuildTransactionLabels } from '@/lib/contracts/transactionLabels'
 import { TransactionStep } from '@/components/btns/transaction-steps/lib'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 const balancerRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'
 
 export function useConstructRelayerApprovalStep() {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useUserAccount()
   // fetch relayer approval and set this flag
   const hasRelayerApproval = false
   // These args can be dynamic (i.e. from html input) and should be passed as args to the useConstructRelayerApprovalStep hook though setApprovalArgs
