@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import { useAccount } from 'wagmi'
 import { useEffect } from 'react'
 import { useBoolean } from '@chakra-ui/hooks'
