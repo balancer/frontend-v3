@@ -2,30 +2,28 @@
 
 import { GetUserDataDocument } from '@/lib/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/utils/contexts'
-import { makeVar, useLazyQuery } from '@apollo/client'
-import { PropsWithChildren, createContext, useEffect } from 'react'
-import { useAccount } from 'wagmi'
+import { useLazyQuery } from '@apollo/client'
+import { DependencyList, PropsWithChildren, createContext, useEffect } from 'react'
+import { useUserAccount } from '../web3/useUserAccount'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 
 export type UseUserDataResponse = ReturnType<typeof _useUserData>
 export const UserDataContext = createContext<UseUserDataResponse | null>(null)
 
-// Global user address variable for setting in Apollo headers.
-export const userAddressVar = makeVar<string | undefined>(undefined)
-
 export function _useUserData() {
-  const { address } = useAccount()
+  const { userAddress } = useUserAccount()
+  const { supportedNetworks } = getProjectConfig()
 
-  const [getUserData, { data }] = useLazyQuery(GetUserDataDocument)
-
-  useEffect(() => {
-    if (address !== userAddressVar()) {
-      userAddressVar(address)
-    }
-    getUserData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address])
+  const { data, loading } = useQuery(GetUserDataDocument, {
+    variables: {
+      chains: supportedNetworks,
+      address: userAddress,
+    },
+  })
 
   return {
+    loading,
     balances: data?.balances || [],
     staking: data?.staking || [],
     vebalBalance: data?.veBALUserBalance || '0',

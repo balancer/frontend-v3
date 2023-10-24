@@ -1,5 +1,5 @@
-query GetUserData {
-  balances: userGetPoolBalances {
+query GetUserData($address: String, $chains: [GqlChain!]) {
+  balances: userGetPoolBalances(address: $address, chains: $chains) {
     poolId
     chain
     tokenAddress

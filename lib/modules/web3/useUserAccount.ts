@@ -2,6 +2,10 @@
 import { useAccount } from 'wagmi'
 import { useEffect } from 'react'
 import { useBoolean } from '@chakra-ui/hooks'
+import { makeVar } from '@apollo/client'
+
+// Global user address variable for setting in Apollo headers.
+export const userAddressVar = makeVar<string | undefined>(undefined)
 
 export function useUserAccount() {
   const query = useAccount()
@@ -11,6 +15,12 @@ export function useUserAccount() {
     setFirstRender.off()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (query.address !== userAddressVar()) {
+      userAddressVar(query.address)
+    }
+  }, [query.address])
 
   // The usage of isFirstRender helps to overcome nextjs hydration mismatch
   // errors where the state of the user account on the server pass is different
