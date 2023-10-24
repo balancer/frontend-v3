@@ -5,12 +5,14 @@ import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQu
 import { useEffect, useMemo } from 'react'
 import { debounce } from 'lodash'
 import { usePoolList } from '../usePoolList'
+import { useBreakpoints } from '@/lib/hooks/useBreakpoints'
 
 const SEARCH = 'search'
 
 export function PoolListSearch() {
   const { searchText, setSearch } = usePoolListQueryState()
   const { loading } = usePoolList()
+  const { isMobile } = useBreakpoints()
 
   const { register, reset, setValue, getFieldState } = useForm()
 
@@ -29,7 +31,7 @@ export function PoolListSearch() {
   }, [reset])
 
   return (
-    <form>
+    <form style={isMobile ? { width: '100%' } : {}}>
       <FormControl>
         <InputGroup size="md">
           <Input
