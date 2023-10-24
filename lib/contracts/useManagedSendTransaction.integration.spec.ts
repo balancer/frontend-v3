@@ -3,7 +3,7 @@
 import { beforeAll, describe, expect, test } from 'vitest'
 // dotenv.config()
 
-import { Address, Hex, parseUnits } from 'viem'
+import { Address, parseUnits } from 'viem'
 
 import { SdkTransactionConfig } from '@/lib/contracts/contract.types'
 import { useManagedSendTransaction } from '@/lib/contracts/useManagedSendTransaction'
@@ -19,7 +19,6 @@ import {
   Token,
   TokenAmount,
   UnbalancedJoinInput,
-  getPoolAddress,
 } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/dist/actions'
@@ -29,14 +28,8 @@ import {
   getBalances,
   setupTokens,
 } from '@/test/integration/helper'
-
-type TxInput = {
-  poolJoin: PoolJoin
-  joinInput: JoinInput
-  slippage: Slippage
-  poolInput: PoolStateInput
-  checkNativeBalance: boolean
-}
+import { MockApi } from '../balancer-api/MockApi'
+import { TxInput, buildSdkJoinTxConfig } from '@/app/(app)/debug2/steps/joinPool'
 
 const chainId = ChainId.MAINNET
 const port = 8555
@@ -65,7 +58,7 @@ describe('weighted join test', () => {
     txInput = {
       poolJoin: new PoolJoin(),
       slippage: Slippage.fromPercentage('1'), // 1%
-      poolInput,
+      poolStateInput: poolInput,
       joinInput: {} as JoinInput,
       checkNativeBalance: false,
     }
@@ -75,10 +68,10 @@ describe('weighted join test', () => {
   })
 
   test.only('Refactored: with config update', async () => {
-    const pool = buildPool(txInput.poolInput, true, chainId)
+    const pool = buildPool(txInput.poolStateInput, true, chainId)
 
     await setupTokens(client, testAddress, pool, [
-      ...txInput.poolInput.tokens.map(t => parseUnits('100', t.decimals)),
+      ...txInput.poolStateInput.tokens.map(t => parseUnits('100', t.decimals)),
       parseUnits('100', 18),
     ])
 
@@ -103,7 +96,7 @@ describe('weighted join test', () => {
     const balanceBefore = await getBalances(tokensForBalanceCheck)
 
     // First simulation
-    const { queryResult, config } = await buildSdkTransactionConfig(callInput)
+    const { queryResult, config } = await buildSdkJoinTxConfig(callInput)
 
     const firstHook = testHook(() => {
       return useManagedSendTransaction(config)
@@ -118,7 +111,7 @@ describe('weighted join test', () => {
     // Second simulation
     callInput.joinInput.amountsIn = poolTokens.map(t => TokenAmount.fromHumanAmount(t, '2'))
 
-    const { queryResult: queryResult2, config: config2 } = await buildSdkTransactionConfig(
+    const { queryResult: queryResult2, config: config2 } = await buildSdkJoinTxConfig(
       callInput
     )
     // El doble aproximado
@@ -150,55 +143,4 @@ describe('weighted join test', () => {
     ]
     expect(expectedDeltas).to.deep.eq(balanceDeltas)
   })
-
-  async function buildSdkTransactionConfig(txIp: TxInput) {
-    const { poolJoin, poolInput, joinInput, slippage } = txIp
-
-    const queryResult = await poolJoin.query(joinInput, poolInput)
-
-    const { call, to, value, maxAmountsIn, minBptOut } = poolJoin.buildCall({
-      ...queryResult,
-      slippage,
-      sender: testAddress,
-      recipient: testAddress,
-    })
-
-    const config: SdkTransactionConfig = {
-      account: testAddress,
-      chainId: ChainId.MAINNET,
-      data: call,
-      to,
-      value,
-    }
-
-    return { maxAmountsIn, minBptOut, queryResult, config }
-  }
 })
-
-/*********************** Mock To Represent API Requirements **********************/
-
-export class MockApi {
-  public async getPool(id: Hex): Promise<PoolStateInput> {
-    const tokens = [
-      {
-        address: '0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f' as Address, // wjAURA
-        decimals: 18,
-        index: 0,
-      },
-      {
-        address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' as Address, // WETH
-        decimals: 18,
-        index: 1,
-      },
-    ]
-
-    return {
-      id,
-      address: getPoolAddress(id) as Address,
-      type: 'Weighted',
-      tokens,
-    }
-  }
-}
-
-/******************************************************************************/

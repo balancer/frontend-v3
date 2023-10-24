@@ -77,6 +77,8 @@ export const getBalances = async (tokens: Address[]): Promise<Promise<bigint[]>>
 
 type Pool = ReturnType<typeof buildPool>
 
+// This is just a testing util
+// TODO: verify that checkNativeBalance is only for testing
 export function buildPool(poolInput: PoolStateInput, checkNativeBalance = true, chainId: ChainId) {
   function poolTokens() {
     return poolInput.tokens.map(t => new Token(chainId, t.address, t.decimals))

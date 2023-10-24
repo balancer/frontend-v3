@@ -8,3 +8,10 @@ export function getHashFromTransaction(transactionBundle?: TransactionBundle): A
 }
 
 export const noUserAddress = '0xNoUser' // We use this value to avoid TS inference problems in wagmi hooks
+export const nullAddress = '0xNull'
+
+export function isValidUserAddress(userAddress?: Address) {
+  if (!userAddress) return false
+  if (userAddress === noUserAddress) return false
+  return true
+}

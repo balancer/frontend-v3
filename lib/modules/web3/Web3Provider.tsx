@@ -22,7 +22,7 @@ import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
 export const supportedChains = [mainnet, polygon, optimism, arbitrum, polygonZkEvm, gnosis]
 
-const { chains, publicClient } = configureChains(supportedChains, [
+export const { chains, publicClient } = configureChains(supportedChains, [
   infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string }),
   alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string }),
   publicProvider(),

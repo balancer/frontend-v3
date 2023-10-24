@@ -15,7 +15,7 @@ export type TransactionLabels = {
   description: string
 }
 
-type StepId = 'batchRelayerApproval' | 'tokenApproval'
+type StepId = 'batchRelayerApproval' | 'tokenApproval' | 'joinPool'
 
 export type TransactionStep = {
   stepId: StepId

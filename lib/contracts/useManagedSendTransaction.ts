@@ -10,7 +10,8 @@ import {
   UsePrepareSendTransactionConfig as UsePrepareSendTransactionConfig,
 } from './contract.types'
 
-export function useManagedSendTransaction(config: UsePrepareSendTransactionConfig) {
+export function useManagedSendTransaction(config: UsePrepareSendTransactionConfig | null) {
+  if (!config) return
   const { addTransaction } = useRecentTransactions()
   const [txConfig, setTxConfig] = useState(config)
 
