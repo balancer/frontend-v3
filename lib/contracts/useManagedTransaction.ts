@@ -10,10 +10,10 @@ import {
   useWaitForTransaction,
 } from 'wagmi'
 import { AbiMap } from './AbiMap'
-import { WriteAbiMutability } from './contract.types'
-import { TransactionExecution, TransactionSimulation } from './contract.types'
+import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
 import { useContractAddress } from './useContractAddress'
 import { useRecentTransactions } from '../modules/transactions/RecentTransactionsProvider'
+import { ManagedResult } from '@/components/btns/transaction-steps/lib'
 
 export function useManagedTransaction<
   T extends typeof AbiMap,
@@ -102,8 +102,7 @@ export function useManagedTransaction<
 
   return {
     ...bundle,
-    //TODO: should we move inside execution and change execution type in contract types?
-    managedWrite,
-    managedWriteAsync,
-  }
+    managedRun: managedWrite,
+    managedRunAsync: managedWriteAsync,
+  } satisfies ManagedResult
 }

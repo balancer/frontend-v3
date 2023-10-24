@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { noUserAddress } from '@/lib/contracts/wagmi-helpers'
 import { useManagedTransaction } from '@/lib/contracts/useManagedTransaction'
 import { BuildTransactionLabels } from '@/lib/contracts/transactionLabels'
-import { TransactionStep } from '@/components/btns/transaction-steps/lib'
+import { FlowStep } from '@/components/btns/transaction-steps/lib'
 
 const balancerRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'
 
@@ -37,7 +37,7 @@ export function useConstructRelayerApprovalStep() {
     }
   )
 
-  const step: TransactionStep = {
+  const step: FlowStep = {
     ...transaction,
     getLabels: buildRelayerApprovalLabels,
     stepId: 'batchRelayerApproval',

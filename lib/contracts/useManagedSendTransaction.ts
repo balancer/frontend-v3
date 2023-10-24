@@ -1,17 +1,17 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
+import { ManagedResult } from '@/components/btns/transaction-steps/lib'
 import { useEffect, useState } from 'react'
 import { usePrepareSendTransaction, useSendTransaction, useWaitForTransaction } from 'wagmi'
 import { useRecentTransactions } from '../modules/transactions/RecentTransactionsProvider'
 import {
   TransactionExecution,
   TransactionSimulation,
-  UsePrepareSendTransactionConfig as UsePrepareSendTransactionConfig,
+  UsePrepareSendTransactionConfig,
 } from './contract.types'
 
-export function useManagedSendTransaction(config: UsePrepareSendTransactionConfig | null) {
-  if (!config) return
+export function useManagedSendTransaction(config?: UsePrepareSendTransactionConfig) {
   const { addTransaction } = useRecentTransactions()
   const [txConfig, setTxConfig] = useState(config)
 
@@ -69,8 +69,8 @@ export function useManagedSendTransaction(config: UsePrepareSendTransactionConfi
 
   return {
     ...bundle,
-    sendTransaction: writeQuery.sendTransaction,
-    sendTransactionAsync: writeQuery.sendTransactionAsync,
+    managedRun: writeQuery.sendTransaction,
+    managedRunAsync: writeQuery.sendTransactionAsync,
     setTxConfig,
-  }
+  } satisfies ManagedResult
 }

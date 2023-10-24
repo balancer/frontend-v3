@@ -13,6 +13,7 @@ import {
 import { Dictionary, keyBy } from 'lodash'
 import { Address } from 'wagmi'
 import { SdkTransactionConfig } from '@/lib/contracts/contract.types'
+
 export class JoinPayload {
   slippage: Slippage = Slippage.fromPercentage('1')
   checkNativeBalance = false

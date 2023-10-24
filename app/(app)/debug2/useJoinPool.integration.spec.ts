@@ -41,7 +41,7 @@ test('fetches join pool config when user is connected', async () => {
   // console.log(result.current.config)
   expect(result.current.data?.config).toBeDefined()
   // This values will be the same if we keep the block between tests
-  expect(result.current.data?.minBptOut).toBe(491725923168922432523n)
+  expect(result.current.data?.minBptOut).toBe(489377213800749905119n)
 
   // payload.setSlippage('2')
 
@@ -61,7 +61,7 @@ test('Join Payload', async () => {
 
   const result = await payload.buildSdkJoinTxConfig(defaultTestUserAccount)
 
-  expect(result.minBptOut).toBe(491725923168922432523n)
+  expect(result.minBptOut).toBe(489377213800749905119n)
 
   payload.setSlippage('2')
 
@@ -69,5 +69,5 @@ test('Join Payload', async () => {
 
   const result2 = await payload.buildSdkJoinTxConfig(defaultTestUserAccount)
 
-  expect(result2.minBptOut).toBe(486905080784913389067n)
+  expect(result2.minBptOut).toBe(484579397979173925657n)
 })

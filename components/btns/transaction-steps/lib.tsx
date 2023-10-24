@@ -1,4 +1,4 @@
-import { ManagedTransactionPayload } from '@/lib/contracts/contract.types'
+import { TransactionBundle } from '@/lib/contracts/contract.types'
 
 export enum TransactionState {
   Ready = 'ready',
@@ -13,15 +13,32 @@ export type TransactionLabels = {
   confirming?: string
   tooltip: string
   description: string
+  error?: string
 }
 
 type StepId = 'batchRelayerApproval' | 'tokenApproval' | 'joinPool'
+
+export type ManagedResult = TransactionBundle & ManagedRunnable
+
+/* This type unifies wagmi writeTransaction and sendTransaction types:
+  managedRun is the union of write and sendTransaction functions
+  managedRunAsync is the union of writeAsync and sendTransactionAsync functions
+*/
+type ManagedRunnable = {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  managedRun?: Function
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  managedRunAsync?: Function
+  setTxConfig?: any
+}
+
+export type FlowStep = TransactionStep & ManagedResult
 
 export type TransactionStep = {
   stepId: StepId
   getLabels: (args?: any) => TransactionLabels
   isComplete: boolean
-} & ManagedTransactionPayload
+}
 
 // Allows adding extra properties like set state callbacks to TransactionStep
 export type TransactionStepHook = {
@@ -32,7 +49,7 @@ export function getTransactionState({
   simulation,
   execution,
   result,
-}: ManagedTransactionPayload): TransactionState {
+}: TransactionBundle): TransactionState {
   if (execution.isLoading || simulation.isLoading) {
     return TransactionState.Loading
   }

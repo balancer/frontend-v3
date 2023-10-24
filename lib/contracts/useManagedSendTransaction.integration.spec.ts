@@ -1,134 +1,102 @@
 // import dotenv from 'dotenv'
 // pnpm test -- weightedJoin.integration.test.ts
-import { beforeAll, describe, expect, test } from 'vitest'
-// dotenv.config()
+import { describe, expect, test } from 'vitest'
 
 import { Address, parseUnits } from 'viem'
 
-import { SdkTransactionConfig } from '@/lib/contracts/contract.types'
+import { JoinPayload } from '@/app/(app)/debug2/JoinPayload'
 import { useManagedSendTransaction } from '@/lib/contracts/useManagedSendTransaction'
-import { testHook } from '@/test/utils/custom-renderers'
-import { defaultTestUserAccount, testPublicClient } from '@/test/utils/wagmi'
-import {
-  ChainId,
-  JoinInput,
-  JoinKind,
-  PoolJoin,
-  PoolStateInput,
-  Slippage,
-  Token,
-  TokenAmount,
-  UnbalancedJoinInput,
-} from '@balancer/sdk'
-import { act, waitFor } from '@testing-library/react'
-import { SendTransactionResult } from 'wagmi/dist/actions'
 import {
   buildPool,
   calculateBalanceDeltas,
   getBalances,
   setupTokens,
 } from '@/test/integration/helper'
+import { testHook } from '@/test/utils/custom-renderers'
+import { defaultTestUserAccount, testPublicClient } from '@/test/utils/wagmi'
+import { ChainId } from '@balancer/sdk'
+import { act, waitFor } from '@testing-library/react'
+import { SendTransactionResult } from 'wagmi/dist/actions'
 import { MockApi } from '../balancer-api/MockApi'
-import { TxInput, buildSdkJoinTxConfig } from '@/app/(app)/debug2/steps/joinPool'
+import { chains } from '../modules/web3/Web3Provider'
 
 const chainId = ChainId.MAINNET
 const port = 8555
 const rpcUrl = `http://127.0.0.1:${port}/`
+
+//TODO: create setup to globally change this values for integration tests
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
+chains[0].rpcUrls.public.http[0] = rpcUrl
+
 const poolId = '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512' // Balancer 50COMP-50wstETH
 
 const testAddress: Address = defaultTestUserAccount
 
-describe('weighted join test', () => {
-  let txInput: TxInput
-  let bptToken: Token
+async function getPoolInput() {
+  // const client = buildTestClient(mainnet, port)
+  // setup mock api
+  const api = new MockApi()
 
+  // get pool state from api
+  return await api.getPool(poolId)
+}
+
+describe('weighted join test', () => {
   //   const anvil = startAnvilInPort(port)
 
   //   afterAll(() => anvil.stop())
   const client = testPublicClient
 
-  beforeAll(async () => {
-    // const client = buildTestClient(mainnet, port)
-    // setup mock api
-    const api = new MockApi()
-
-    // get pool state from api
-    const poolInput = await api.getPool(poolId)
-
-    txInput = {
-      poolJoin: new PoolJoin(),
-      slippage: Slippage.fromPercentage('1'), // 1%
-      poolStateInput: poolInput,
-      joinInput: {} as JoinInput,
-      checkNativeBalance: false,
-    }
-
-    // setup BPT token
-    bptToken = new Token(chainId, poolInput.address, 18, 'BPT')
-  })
-
   test.only('Refactored: with config update', async () => {
-    const pool = buildPool(txInput.poolStateInput, true, chainId)
+    const poolInput = await getPoolInput()
+    const pool = buildPool(poolInput, true, chainId)
 
     await setupTokens(client, testAddress, pool, [
-      ...txInput.poolStateInput.tokens.map(t => parseUnits('100', t.decimals)),
+      ...poolInput.tokens.map(t => parseUnits('100', t.decimals)),
       parseUnits('100', 18),
     ])
 
+    const payload = new JoinPayload(ChainId['MAINNET'], poolInput)
+
     const poolTokens = pool.poolTokens()
-    const amountsIn = poolTokens.map(t => TokenAmount.fromHumanAmount(t, '1'))
-
-    // perform join query to get expected bpt out
-    const joinInput: UnbalancedJoinInput = {
-      amountsIn,
-      chainId,
-      rpcUrl,
-      kind: JoinKind.Unbalanced,
-      useNativeAssetAsWrappedAmountIn: true,
-    }
-
-    const callInput = {
-      ...txInput,
-      joinInput,
-    }
+    poolTokens.forEach(t => payload.setAmountIn(t.address, '1'))
 
     const tokensForBalanceCheck = pool.tokensForBalanceCheck()
     const balanceBefore = await getBalances(tokensForBalanceCheck)
 
     // First simulation
-    const { queryResult, config } = await buildSdkJoinTxConfig(callInput)
+    const { queryResult, config } = await payload.buildSdkJoinTxConfig(defaultTestUserAccount)
 
-    const firstHook = testHook(() => {
+    const { result } = testHook(() => {
       return useManagedSendTransaction(config)
     })
 
-    const { result } = firstHook
-
-    await waitFor(() => expect(result.current.sendTransactionAsync).toBeDefined())
-    //TODO: estudiar por que esto va cambiando en el fork. NO deberia ser dinamico??
+    await waitFor(() => expect(result.current.managedRunAsync).toBeDefined())
     expect(queryResult.bptOut.amount).toBeGreaterThan(260000000000000000000n)
 
     // Second simulation
-    callInput.joinInput.amountsIn = poolTokens.map(t => TokenAmount.fromHumanAmount(t, '2'))
+    poolTokens.forEach(t => payload.setAmountIn(t.address, '2'))
 
-    const { queryResult: queryResult2, config: config2 } = await buildSdkJoinTxConfig(
-      callInput
+    const { queryResult: queryResult2, config: config2 } = await payload.buildSdkJoinTxConfig(
+      defaultTestUserAccount
     )
     // El doble aproximado
     expect(queryResult2.bptOut.amount).toBeGreaterThan(520000000000000000000n)
 
     act(() => result.current.setTxConfig(config2))
 
-    await waitFor(() => expect(result.current.sendTransactionAsync).toBeDefined())
+    await waitFor(() => expect(result.current.managedRunAsync).toBeDefined())
 
-    const foo = await act(async () => {
-      const res = (await result.current.sendTransactionAsync?.()) as SendTransactionResult
+    const res = await act(async () => {
+      const res = (await result.current.managedRunAsync?.()) as SendTransactionResult
       expect(res.hash).toBeDefined()
       return res
     })
 
     const transactionReceipt = await client.waitForTransactionReceipt({
-      hash: foo.hash,
+      hash: res.hash,
     })
 
     expect(transactionReceipt.status).to.eq('success')

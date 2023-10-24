@@ -12,7 +12,7 @@ test('relayer successful relayer approval transaction', async () => {
 
   await waitFor(() => expect(result.current.simulation.isSuccess).toBeTruthy())
 
-  await act(() => result.current.managedWriteAsync())
+  await act(() => result.current.managedRunAsync())
 
   await waitFor(() => expect(result.current.execution.isSuccess).toBeTruthy())
 

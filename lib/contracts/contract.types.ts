@@ -6,19 +6,18 @@ import {
   useWaitForTransaction,
 } from 'wagmi'
 import { Abi, Address } from 'viem'
-import { useManagedTransaction } from './useManagedTransaction'
 import { ChainId } from '@balancer/sdk'
 
 export type TransactionSimulation =
   | ReturnType<typeof usePrepareContractWrite>
   | ReturnType<typeof usePrepareSendTransaction>
+
 export type TransactionExecution =
   | ReturnType<typeof useContractWrite>
   | ReturnType<typeof useSendTransaction>
 export type TransactionResult =
   | ReturnType<typeof useWaitForTransaction>
   | ReturnType<typeof useWaitForTransaction>
-export type ManagedTransactionPayload = ReturnType<typeof useManagedTransaction>
 export type TransactionBundle = {
   simulation: TransactionSimulation
   execution: TransactionExecution
