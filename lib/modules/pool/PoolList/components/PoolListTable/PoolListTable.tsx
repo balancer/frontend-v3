@@ -45,6 +45,7 @@ export function PoolListTable() {
         setPagination={setPagination}
         setSorting={setSorting}
         noResultsText="No matching pools found"
+        noColumnPadding={['chainLogoUrl']}
       />
       {loading && (
         <Box

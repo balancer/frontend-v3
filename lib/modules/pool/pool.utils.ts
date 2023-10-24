@@ -1,6 +1,6 @@
 import { GqlChain, GqlPoolAprValue } from '@/lib/services/api/generated/graphql'
 import { invert } from 'lodash'
-import { FetchPoolProps } from './pool.types'
+import { FetchPoolProps, PoolVariant } from './pool.types'
 import numeral from 'numeral'
 
 // URL slug for each chain
@@ -37,7 +37,7 @@ export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlCha
  * @param {String} variant Pool variant, defaults to v2.
  * @returns {String} Path to pool detail page.
  */
-export function getPoolPath({ id, chain, variant = 'v2' }: FetchPoolProps) {
+export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolProps) {
   return `/pools/${chainToSlugMap[chain]}/${variant}/${id}`
 }
 

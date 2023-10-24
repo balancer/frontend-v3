@@ -1,5 +1,16 @@
 import * as React from 'react'
-import { Center, HStack, Table, Tbody, Td, Th, Thead, Tr, chakra } from '@chakra-ui/react'
+import {
+  Center,
+  HStack,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  chakra,
+} from '@chakra-ui/react'
 import {
   ColumnDef,
   flexRender,
@@ -23,6 +34,7 @@ export type DataTableProps<Data extends object> = {
   setSorting: (state: SortingState) => void
   setPagination: (state: PaginationState) => void
   noResultsText: string
+  noColumnPadding?: string[]
 }
 
 export function DataTable<Data extends object>({
@@ -36,6 +48,7 @@ export function DataTable<Data extends object>({
   setPagination,
   setSorting,
   noResultsText,
+  noColumnPadding,
 }: DataTableProps<Data>) {
   const table = useReactTable({
     columns,
@@ -69,64 +82,72 @@ export function DataTable<Data extends object>({
 
   return (
     <>
-      <Table layout="fixed" w="full">
-        <Thead>
-          {table.getHeaderGroups().map(headerGroup => (
-            <Tr key={headerGroup.id}>
-              {headerGroup.headers.map(header => {
-                // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-                const meta: any = header.column.columnDef.meta
-                return (
-                  <Th
-                    key={header.id}
-                    isNumeric={meta?.isNumeric}
-                    onClick={header.column.getToggleSortingHandler()}
-                    w={header.getSize()}
-                  >
-                    <HStack
-                      style={
-                        header.column.getCanSort() ? { position: 'relative', right: '-20px' } : {}
-                      }
+      <TableContainer pr="20px">
+        <Table layout="fixed" minW="768px">
+          <Thead>
+            {table.getHeaderGroups().map(headerGroup => (
+              <Tr key={headerGroup.id}>
+                {headerGroup.headers.map(header => {
+                  // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                  const meta: any = header.column.columnDef.meta
+                  const width = header.getSize()
+                  return (
+                    <Th
+                      key={header.id}
+                      isNumeric={meta?.isNumeric}
+                      onClick={header.column.getToggleSortingHandler()}
+                      w={width === 9999 ? 'auto' : `${width}px`} // use '9999' in your column definition, for one column only!!
+                      p={noColumnPadding && noColumnPadding.includes(header.id) ? '0' : ''}
                     >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                      {header.column.getCanSort() && (
-                        <chakra.span h="full" cursor="pointer">
-                          {{
-                            asc: <SortingIcon direction="asc" />,
-                            desc: <SortingIcon direction="desc" />,
-                          }[header.column.getIsSorted() as string] ?? <SortingIcon />}
-                        </chakra.span>
-                      )}
-                    </HStack>
-                  </Th>
-                )
-              })}
-            </Tr>
-          ))}
-        </Thead>
-        <Tbody>
-          {rows.map(row => (
-            <Tr
-              key={row.id}
-              onClick={event => rowClickHandler && rowClickHandler(event, row.original)}
-              cursor={rowClickHandler ? 'pointer' : 'default'}
-              onMouseEnter={event =>
-                rowMouseEnterHandler && rowMouseEnterHandler(event, row.original)
-              }
-            >
-              {row.getVisibleCells().map(cell => {
-                // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-                const meta: any = cell.column.columnDef.meta
-                return (
-                  <Td key={cell.id} isNumeric={meta?.isNumeric}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </Td>
-                )
-              })}
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
+                      <HStack
+                        style={
+                          header.column.getCanSort() ? { position: 'relative', right: '-20px' } : {}
+                        }
+                      >
+                        {flexRender(header.column.columnDef.header, header.getContext())} -{' '}
+                        {header.column.getCanSort() && (
+                          <chakra.span h="full" cursor="pointer">
+                            {{
+                              asc: <SortingIcon direction="asc" />,
+                              desc: <SortingIcon direction="desc" />,
+                            }[header.column.getIsSorted() as string] ?? <SortingIcon />}
+                          </chakra.span>
+                        )}
+                      </HStack>
+                    </Th>
+                  )
+                })}
+              </Tr>
+            ))}
+          </Thead>
+          <Tbody>
+            {rows.map(row => (
+              <Tr
+                key={row.id}
+                onClick={event => rowClickHandler && rowClickHandler(event, row.original)}
+                cursor={rowClickHandler ? 'pointer' : 'default'}
+                onMouseEnter={event =>
+                  rowMouseEnterHandler && rowMouseEnterHandler(event, row.original)
+                }
+              >
+                {row.getVisibleCells().map(cell => {
+                  // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
+                  const meta: any = cell.column.columnDef.meta
+                  return (
+                    <Td
+                      key={cell.id}
+                      isNumeric={meta?.isNumeric}
+                      px={noColumnPadding && noColumnPadding.includes(cell.column.id) ? '0' : '6'}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </Td>
+                  )
+                })}
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
       {!rows.length && (
         <Center w="full" h="200px">
           {noResultsText}
@@ -135,7 +156,7 @@ export function DataTable<Data extends object>({
       {!!rows.length && rowCount > pagination.pageSize && (
         <Pagination
           goToFirstPage={() => table.setPageIndex(0)}
-          gotoLastPage={() => table.setPageIndex(table.getPageCount() - 1)}
+          goToLastPage={() => table.setPageIndex(table.getPageCount() - 1)}
           goToNextPage={() => table.nextPage()}
           goToPreviousPage={() => table.previousPage()}
           canPreviousPage={table.getCanPreviousPage()}
