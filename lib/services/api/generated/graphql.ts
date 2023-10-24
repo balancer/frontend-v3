@@ -137,6 +137,8 @@ export type GqlPoolBase = {
   owner?: Maybe<Scalars['Bytes']['output']>
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
+  type: Scalars['String']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -233,7 +235,9 @@ export type GqlPoolElement = GqlPoolBase & {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolToken>
+  type: Scalars['String']['output']
   unitSeconds: Scalars['BigInt']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -252,6 +256,7 @@ export type GqlPoolFilter = {
   categoryNotIn?: InputMaybe<Array<GqlPoolFilterCategory>>
   chainIn?: InputMaybe<Array<GqlChain>>
   chainNotIn?: InputMaybe<Array<GqlChain>>
+  createTime?: InputMaybe<GqlPoolTimePeriod>
   filterIn?: InputMaybe<Array<Scalars['String']['input']>>
   filterNotIn?: InputMaybe<Array<Scalars['String']['input']>>
   idIn?: InputMaybe<Array<Scalars['String']['input']>>
@@ -309,6 +314,7 @@ export type GqlPoolGyro = GqlPoolBase & {
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolTokenUnion>
   type: Scalars['String']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -373,7 +379,9 @@ export type GqlPoolLinear = GqlPoolBase & {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolToken>
+  type: Scalars['String']['output']
   upperTarget: Scalars['BigInt']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
   wrappedIndex: Scalars['Int']['output']
 }
@@ -453,6 +461,8 @@ export type GqlPoolLiquidityBootstrapping = GqlPoolBase & {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolTokenUnion>
+  type: Scalars['String']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -474,6 +484,8 @@ export type GqlPoolMetaStable = GqlPoolBase & {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolToken>
+  type: Scalars['String']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -498,6 +510,7 @@ export type GqlPoolMinimal = {
 
 export enum GqlPoolMinimalType {
   Element = 'ELEMENT',
+  Fx = 'FX',
   Gyro = 'GYRO',
   Gyro3 = 'GYRO3',
   Gyroe = 'GYROE',
@@ -552,6 +565,8 @@ export type GqlPoolPhantomStable = GqlPoolBase & {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolTokenUnion>
+  type: Scalars['String']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -616,6 +631,8 @@ export type GqlPoolStable = GqlPoolBase & {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolToken>
+  type: Scalars['String']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -645,6 +662,7 @@ export type GqlPoolStakingGauge = {
   rewards: Array<GqlPoolStakingGaugeReward>
   status: GqlPoolStakingGaugeStatus
   version: Scalars['Int']['output']
+  workingSupply: Scalars['String']['output']
 }
 
 export type GqlPoolStakingGaugeReward = {
@@ -691,6 +709,11 @@ export type GqlPoolSwapFilter = {
   poolIdIn?: InputMaybe<Array<Scalars['String']['input']>>
   tokenInIn?: InputMaybe<Array<Scalars['String']['input']>>
   tokenOutIn?: InputMaybe<Array<Scalars['String']['input']>>
+}
+
+export type GqlPoolTimePeriod = {
+  gt?: InputMaybe<Scalars['Int']['input']>
+  lt?: InputMaybe<Scalars['Int']['input']>
 }
 
 export type GqlPoolToken = GqlPoolTokenBase & {
@@ -814,6 +837,8 @@ export type GqlPoolWeighted = GqlPoolBase & {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   tokens: Array<GqlPoolTokenUnion>
+  type: Scalars['String']['output']
+  version: Scalars['Int']['output']
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
@@ -1471,6 +1496,7 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
+        type: string
         tokens: Array<
           { __typename?: 'GqlPoolToken' } & {
             ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -1817,6 +1843,7 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
+        type: string
         tokens: Array<
           { __typename?: 'GqlPoolToken' } & {
             ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -1986,6 +2013,7 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
+        type: string
         tokens: Array<
           | ({ __typename?: 'GqlPoolToken' } & {
               ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -2163,6 +2191,7 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
+        type: string
         tokens: Array<
           { __typename?: 'GqlPoolToken' } & {
             ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -2333,6 +2362,7 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
+        type: string
         tokens: Array<
           | ({ __typename?: 'GqlPoolToken' } & {
               ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -2510,6 +2540,7 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
+        type: string
         tokens: Array<
           { __typename?: 'GqlPoolToken' } & {
             ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -2679,6 +2710,7 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
+        type: string
         tokens: Array<
           | ({ __typename?: 'GqlPoolToken' } & {
               ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -4173,6 +4205,7 @@ export const GetPoolDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'factory' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'createTime' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'type' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'dynamicData' },
