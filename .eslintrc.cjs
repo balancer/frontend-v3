@@ -23,5 +23,17 @@ module.exports = {
     'max-len': ['warn', { code: 100, ignoreComments: true, ignoreUrls: true }],
     '@typescript-eslint/no-explicit-any': ['off'],
     'no-html-link-for-pages': ['off'],
+    'no-restricted-imports': [
+      'error',
+      {
+        patterns: [
+          {
+            group: ['wagmi'],
+            importNames: ['useAccount'],
+            message: 'Use useUserAccount instead to avoid hydration issues',
+          },
+        ],
+      },
+    ],
   },
 }

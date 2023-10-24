@@ -12,6 +12,7 @@ const integrationTestOptions: Partial<InlineConfig> = {
   // Avoid msw in integration tests
   setupFiles: setupFilesWithoutMswSetup(),
   globalSetup: ['./test/anvil/anvil-global-setup.ts'],
+  testTimeout: 15_000,
   // Consider disabling threads if we detect problems with anvil
   // threads: false,
 }

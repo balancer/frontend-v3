@@ -1496,6 +1496,7 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
+        type: string
         tokens: Array<
           { __typename?: 'GqlPoolToken' } & {
             ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -1842,6 +1843,7 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
+        type: string
         tokens: Array<
           { __typename?: 'GqlPoolToken' } & {
             ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -2011,6 +2013,7 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
+        type: string
         tokens: Array<
           | ({ __typename?: 'GqlPoolToken' } & {
               ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -2188,6 +2191,7 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
+        type: string
         tokens: Array<
           { __typename?: 'GqlPoolToken' } & {
             ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -2358,6 +2362,7 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
+        type: string
         tokens: Array<
           | ({ __typename?: 'GqlPoolToken' } & {
               ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -2535,6 +2540,7 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
+        type: string
         tokens: Array<
           { __typename?: 'GqlPoolToken' } & {
             ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -2704,6 +2710,7 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
+        type: string
         tokens: Array<
           | ({ __typename?: 'GqlPoolToken' } & {
               ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -4246,6 +4253,7 @@ export const GetPoolDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'factory' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'createTime' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'type' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'dynamicData' },

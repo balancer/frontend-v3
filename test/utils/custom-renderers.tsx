@@ -13,6 +13,7 @@ import { GetFunctionArgs, InferFunctionName } from 'viem'
 import { WriteAbiMutability } from '@/lib/contracts/contract.types'
 import { AbiMap } from '@/lib/contracts/AbiMap'
 import { useManagedTransaction } from '@/lib/contracts/useManagedTransaction'
+import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -57,7 +58,9 @@ function GlobalProviders({ children }: WrapperProps) {
       <AppRouterContextProviderMock router={defaultRouterOptions}>
         <ClientProvidersMock>
           <ApolloProvider client={apolloTestClient}>
-            <TokensProvider>{children}</TokensProvider>
+            <TokensProvider>
+              <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+            </TokensProvider>
           </ApolloProvider>
         </ClientProvidersMock>
       </AppRouterContextProviderMock>

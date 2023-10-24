@@ -3,12 +3,13 @@ import { waitFor } from '@testing-library/react'
 import { PoolProvider, _usePool, usePool } from './usePool'
 import { GqlChain } from '@/lib/services/api/generated/graphql'
 import { defaultPoolMock } from '@/test/msw/handlers/Pool.handlers'
+import { PoolVariant } from './pool.types'
 
 test('fetches v2 pool', async () => {
   const poolId = 'test pool id'
 
   const { result } = testHook(() =>
-    _usePool({ id: poolId, chain: GqlChain.Mainnet, variant: 'v2' })
+    _usePool({ id: poolId, chain: GqlChain.Mainnet, variant: PoolVariant.v2 })
   )
 
   await waitFor(() => expect(result.current.loading).toBeFalsy())
@@ -23,7 +24,7 @@ test.skip('fetches v2 pool without PoolProvider in wrapper', () => {
 
 test('fetches v2 pool without exposing _usePool', async () => {
   const wrapper: Wrapper = ({ children }) => (
-    <PoolProvider id="test pool id" chain={GqlChain.Mainnet} variant="v2">
+    <PoolProvider id="test pool id" chain={GqlChain.Mainnet} variant={PoolVariant.v2}>
       {children}
     </PoolProvider>
   )
