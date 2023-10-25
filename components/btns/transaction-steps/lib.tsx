@@ -18,13 +18,13 @@ export type TransactionLabels = {
 
 type StepId = 'batchRelayerApproval' | 'tokenApproval' | 'joinPool'
 
-export type ManagedResult = TransactionBundle & ManagedRunnable
+export type ManagedResult = TransactionBundle & Executable
 
 /* This type unifies wagmi writeTransaction and sendTransaction types:
   managedRun is the union of write and sendTransaction functions
   managedRunAsync is the union of writeAsync and sendTransactionAsync functions
 */
-type ManagedRunnable = {
+type Executable = {
   // eslint-disable-next-line @typescript-eslint/ban-types
   execute?: Function
   // eslint-disable-next-line @typescript-eslint/ban-types
