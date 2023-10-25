@@ -45,7 +45,7 @@ export async function getSdkTestUtils({
     poolStateInput,
     approveToken,
     getErc20Balance,
-    getBalances,
+    getPoolTokenBalances,
     getPoolTokens,
     calculateBalanceDeltas,
     setupTokens,
@@ -81,7 +81,9 @@ export async function getSdkTestUtils({
     })
   }
 
-  async function getBalances(tokens = getTokensForBalanceCheck(true)): Promise<Promise<bigint[]>> {
+  async function getPoolTokenBalances(
+    tokens = getTokensForBalanceCheck(true)
+  ): Promise<Promise<bigint[]>> {
     const balances: Promise<bigint>[] = []
     for (let i = 0; i < tokens.length; i++) {
       if (tokens[i] === ZERO_ADDRESS) {
@@ -122,7 +124,7 @@ export async function getSdkTestUtils({
     const { gasUsed, effectiveGasPrice } = transactionReceipt
     const gasPrice = gasUsed * effectiveGasPrice
 
-    const balancesAfter = await getBalances()
+    const balancesAfter = await getPoolTokenBalances()
 
     const tokensForBalanceCheck = getTokensForBalanceCheck(true)
 

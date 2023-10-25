@@ -8,7 +8,7 @@ import { JoinPayload } from '@/app/(app)/debug2/JoinPayload'
 import { useManagedSendTransaction } from '@/lib/contracts/useManagedSendTransaction'
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import { testHook } from '@/test/utils/custom-renderers'
-import { defaultTestUserAccount, testPublicClient } from '@/test/utils/wagmi'
+import { defaultTestUserAccount, testPublicClient as testClient } from '@/test/utils/wagmi'
 import { ChainId } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/dist/actions'
@@ -20,8 +20,6 @@ const rpcUrl = `http://127.0.0.1:${port}/`
 
 const account = defaultTestUserAccount
 
-//TODO: create setup to globally change this values for integration tests
-
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 chains[0].rpcUrls.public.http[0] = rpcUrl
@@ -29,21 +27,19 @@ chains[0].rpcUrls.public.http[0] = rpcUrl
 const utils = await getSdkTestUtils({
   account,
   chainId,
-  client: testPublicClient,
+  client: testClient,
   poolId: '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512', // Balancer 50COMP-50wstETH,
 })
 
-const { getPoolTokens, poolStateInput, getBalances } = utils
+const { getPoolTokens, poolStateInput, getPoolTokenBalances } = utils
 
 const poolTokens = getPoolTokens()
 
 describe('weighted join test', () => {
   //   const anvil = startAnvilInPort(port)
-
   //   afterAll(() => anvil.stop())
-  const client = testPublicClient
 
-  test.only('Refactored: with config update', async () => {
+  test('Sends transaction after updating amount inputs', async () => {
     await utils.setupTokens([
       ...getPoolTokens().map(t => parseUnits('100', t.decimals)),
       parseUnits('100', 18),
@@ -53,7 +49,7 @@ describe('weighted join test', () => {
 
     poolTokens.forEach(t => payload.setAmountIn(t.address, '1'))
 
-    const balanceBefore = await getBalances()
+    const balanceBefore = await getPoolTokenBalances()
 
     // First simulation
     const { queryResult, config } = await payload.buildSdkJoinTxConfig(account)
@@ -84,7 +80,7 @@ describe('weighted join test', () => {
       return res
     })
 
-    const transactionReceipt = await client.waitForTransactionReceipt({
+    const transactionReceipt = await testClient.waitForTransactionReceipt({
       hash: res.hash,
     })
 
