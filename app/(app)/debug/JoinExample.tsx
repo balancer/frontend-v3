@@ -1,7 +1,7 @@
 'use client'
 
 import TransactionFlow from '@/components/btns/transaction-steps/TransactionFlow'
-import { useConstructRelayerApprovalStep } from './steps/relayerApproval'
+import { useConstructRelayerApprovalStep } from '@/lib/modules/steps/relayerApproval'
 import { Flex, VStack } from '@chakra-ui/react'
 
 export function JoinExample() {

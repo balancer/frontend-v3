@@ -7,6 +7,7 @@ import {
   ZERO_ADDRESS,
   replaceWrapped,
 } from '@balancer/sdk'
+import { version } from 'punycode'
 import {
   Address,
   Client,
@@ -26,6 +27,12 @@ import {
 } from 'viem'
 import { erc20ABI } from 'wagmi'
 
+/*
+  Given chain, user account and poolId
+  Returns a set of helper functions to:
+  - Prepare the anvil state where the integration tests are running (i.e. set balances of tokens in the pool)
+  - Check the new state of the pool after the test updates (i.e check the balances of the tokens in the pool)
+*/
 export async function getSdkTestUtils({
   client,
   account,
@@ -44,7 +51,6 @@ export async function getSdkTestUtils({
   return {
     poolStateInput,
     approveToken,
-    getErc20Balance,
     getPoolTokenBalances,
     getPoolTokens,
     calculateBalanceDeltas,

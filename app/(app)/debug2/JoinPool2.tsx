@@ -1,7 +1,7 @@
 'use client'
 
 import TransactionFlow from '@/components/btns/transaction-steps/TransactionFlow'
-import { useConstructJoinPoolStep } from './steps/joinPool'
+import { useConstructJoinPoolStep } from '@/lib/modules/steps/join/useConstructJoinPoolStep'
 import { Flex, VStack } from '@chakra-ui/react'
 
 export function JoinPool2() {
