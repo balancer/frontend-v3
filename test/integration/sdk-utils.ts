@@ -28,6 +28,7 @@ import {
 } from 'viem'
 import { erc20ABI } from 'wagmi'
 import { defaultTestUserAccount, testPublicClient } from '../utils/wagmi'
+import { isSameAddress } from '@/lib/utils/addresses'
 
 export function getDefaultSdkTestUtils(poolId: Address, account = defaultTestUserAccount) {
   return getSdkTestUtils({
@@ -302,21 +303,31 @@ export async function getSdkTestUtils({
 
   async function setupToken(
     humanBalance: `${number}`,
-    token: MinimalToken,
+    token: Address | Token,
     isVyperMapping?: false,
     slot?: number
   ): Promise<void> {
     await client.impersonateAccount({ address: account })
 
+    let _token: Token
+    if (token instanceof String) {
+      const foundToken = getPoolTokens().find(t => isSameAddress(token as Address, t.address))
+      if (!foundToken) throw new Error(`Token with address: ${token} not found`)
+      _token = foundToken
+    } else {
+      _token = token as Token
+    }
+
+    const tokenAddress = _token.address
+
     let _slot: number
     if (slot) _slot = slot
-    else _slot = await findTokenBalanceSlot(account, token.address, isVyperMapping)
+    else _slot = await findTokenBalanceSlot(account, tokenAddress, isVyperMapping)
     console.log(`slot: ${_slot}`)
 
-    const tokenAddress = token.address
     // Set initial account balance for the token that will be used to join pool
-    const balance = parseUnits(humanBalance, token.decimals)
-    await setTokenBalance(token.address, _slot, balance, false)
+    const balance = parseUnits(humanBalance, _token.decimals)
+    await setTokenBalance(tokenAddress, _slot, balance, false)
 
     // Approve appropriate allowances so that vault contract can move tokens
     await approveToken(account, tokenAddress)

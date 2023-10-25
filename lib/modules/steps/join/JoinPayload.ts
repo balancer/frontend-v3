@@ -26,7 +26,7 @@ export class JoinPayload {
   constructor(
     private chainId: ChainId,
     private poolStateInput: PoolStateInput = NullPoolState,
-    private joinType: JoinType = 'unbalanced'
+    public joinType: JoinType = 'unbalanced'
   ) {
     const amountsInList = poolStateInput?.tokens
       .map(t => new Token(chainId, t.address, t.decimals))
