@@ -3,11 +3,11 @@ import {
   BALANCER_VAULT,
   ChainId,
   MAX_UINT256,
+  MinimalToken,
   Token,
   ZERO_ADDRESS,
   replaceWrapped,
 } from '@balancer/sdk'
-import { version } from 'punycode'
 import {
   Address,
   Client,
@@ -21,11 +21,22 @@ import {
   hexToBigInt,
   keccak256,
   pad,
+  parseUnits,
   toBytes,
   toHex,
   trim,
 } from 'viem'
 import { erc20ABI } from 'wagmi'
+import { defaultTestUserAccount, testPublicClient } from '../utils/wagmi'
+
+export function getDefaultSdkTestUtils(poolId: Address, account = defaultTestUserAccount) {
+  return getSdkTestUtils({
+    client: testPublicClient,
+    account,
+    chainId: ChainId.MAINNET,
+    poolId,
+  })
+}
 
 /*
   Given chain, user account and poolId
@@ -54,6 +65,7 @@ export async function getSdkTestUtils({
     getPoolTokenBalances,
     getPoolTokens,
     calculateBalanceDeltas,
+    setupToken,
     setupTokens,
   }
 
@@ -286,5 +298,27 @@ export async function getSdkTestUtils({
       // Approve appropriate allowances so that vault contract can move tokens
       await approveToken(account, tokens[i])
     }
+  }
+
+  async function setupToken(
+    humanBalance: `${number}`,
+    token: MinimalToken,
+    isVyperMapping?: false,
+    slot?: number
+  ): Promise<void> {
+    await client.impersonateAccount({ address: account })
+
+    let _slot: number
+    if (slot) _slot = slot
+    else _slot = await findTokenBalanceSlot(account, token.address, isVyperMapping)
+    console.log(`slot: ${_slot}`)
+
+    const tokenAddress = token.address
+    // Set initial account balance for the token that will be used to join pool
+    const balance = parseUnits(humanBalance, token.decimals)
+    await setTokenBalance(token.address, _slot, balance, false)
+
+    // Approve appropriate allowances so that vault contract can move tokens
+    await approveToken(account, tokenAddress)
   }
 }
