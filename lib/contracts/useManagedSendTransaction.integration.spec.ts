@@ -6,7 +6,7 @@ import { parseUnits } from 'viem'
 
 import { JoinPayload } from '@/app/(app)/debug2/JoinPayload'
 import { useManagedSendTransaction } from '@/lib/contracts/useManagedSendTransaction'
-import { getSdkTestUtils } from '@/test/integration/sdk-helpers'
+import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import { testHook } from '@/test/utils/custom-renderers'
 import { defaultTestUserAccount, testPublicClient } from '@/test/utils/wagmi'
 import { ChainId } from '@balancer/sdk'
