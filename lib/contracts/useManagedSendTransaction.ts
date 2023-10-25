@@ -69,8 +69,8 @@ export function useManagedSendTransaction(config?: UsePrepareSendTransactionConf
 
   return {
     ...bundle,
-    managedRun: writeQuery.sendTransaction,
-    managedRunAsync: writeQuery.sendTransactionAsync,
+    execute: writeQuery.sendTransaction,
+    executeAsync: writeQuery.sendTransactionAsync,
     setTxConfig,
   } satisfies ManagedResult
 }

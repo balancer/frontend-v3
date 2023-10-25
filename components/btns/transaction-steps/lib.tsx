@@ -26,9 +26,9 @@ export type ManagedResult = TransactionBundle & ManagedRunnable
 */
 type ManagedRunnable = {
   // eslint-disable-next-line @typescript-eslint/ban-types
-  managedRun?: Function
+  execute?: Function
   // eslint-disable-next-line @typescript-eslint/ban-types
-  managedRunAsync?: Function
+  executeAsync?: Function
   setTxConfig?: any
 }
 

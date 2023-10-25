@@ -102,7 +102,7 @@ export function useManagedTransaction<
 
   return {
     ...bundle,
-    managedRun: managedWrite,
-    managedRunAsync: managedWriteAsync,
+    execute: managedWrite,
+    executeAsync: managedWriteAsync,
   } satisfies ManagedResult
 }

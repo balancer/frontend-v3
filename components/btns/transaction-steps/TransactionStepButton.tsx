@@ -10,7 +10,7 @@ interface Props {
 }
 
 export function TransactionStepButton({
-  step: { simulation, execution, result, getLabels, managedRun },
+  step: { simulation, execution, result, getLabels, execute: managedRun },
 }: Props) {
   const { isConnected } = useUserAccount()
   const isTransactButtonVisible = isConnected

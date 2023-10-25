@@ -73,7 +73,7 @@ describe('weighted join test', () => {
       return useManagedSendTransaction(config)
     })
 
-    await waitFor(() => expect(result.current.managedRunAsync).toBeDefined())
+    await waitFor(() => expect(result.current.executeAsync).toBeDefined())
     expect(queryResult.bptOut.amount).toBeGreaterThan(260000000000000000000n)
 
     // Second simulation
@@ -87,10 +87,10 @@ describe('weighted join test', () => {
 
     act(() => result.current.setTxConfig(config2))
 
-    await waitFor(() => expect(result.current.managedRunAsync).toBeDefined())
+    await waitFor(() => expect(result.current.executeAsync).toBeDefined())
 
     const res = await act(async () => {
-      const res = (await result.current.managedRunAsync?.()) as SendTransactionResult
+      const res = (await result.current.executeAsync?.()) as SendTransactionResult
       expect(res.hash).toBeDefined()
       return res
     })
