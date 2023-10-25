@@ -5,6 +5,7 @@ import {
   JoinKind,
   PoolJoin,
   PoolStateInput,
+  SingleAssetJoinInput,
   Slippage,
   Token,
   TokenAmount,
@@ -13,13 +14,20 @@ import {
 import { Dictionary, keyBy } from 'lodash'
 import { Address } from 'wagmi'
 import { SdkTransactionConfig } from '@/lib/contracts/contract.types'
+import { isSameAddress } from '@/lib/utils/addresses'
+
+type JoinType = 'unbalanced' | 'singleAsset'
 
 export class JoinPayload {
   slippage: Slippage = Slippage.fromPercentage('1')
   checkNativeBalance = false
   amountsInByTokenAddress: Dictionary<TokenAmount> = {}
 
-  constructor(private chainId: ChainId, private poolStateInput: PoolStateInput = NullPoolState) {
+  constructor(
+    private chainId: ChainId,
+    private poolStateInput: PoolStateInput = NullPoolState,
+    private joinType: JoinType = 'unbalanced'
+  ) {
     const amountsInList = poolStateInput?.tokens
       .map(t => new Token(chainId, t.address, t.decimals))
       .map(t => TokenAmount.fromHumanAmount(t, '1'))
@@ -27,9 +35,21 @@ export class JoinPayload {
     this.amountsInByTokenAddress = keyBy(amountsInList, a => a.token.address)
   }
 
+  get poolId() {
+    return this.poolStateInput.id
+  }
+
+  getToken(tokenAddress: Address) {
+    const token = this.poolStateInput.tokens.find(t => isSameAddress(t.address, tokenAddress))
+    return token
+  }
+
   public get queryKey() {
-    const { amountsIn } = this.getJoinInput()
-    return `${this.poolStateInput.id}:${this.chainId}:${this.slippage}${amountsIn}`
+    // FIX THIS
+    // const { amountsIn } = this.getJoinInput()
+    return `${this.poolStateInput.id}:${this.chainId}:${this.slippage}${JSON.stringify(
+      this.getJoinInput()
+    )}`
   }
 
   public setSlippage(slippagePercentage: `${number}`) {
@@ -44,13 +64,43 @@ export class JoinPayload {
     )
   }
 
-  getJoinInput(): UnbalancedJoinInput {
+  getJoinInput() {
+    if (this.joinType === 'unbalanced') return this.getUnbalancedJoinInput()
+    if (this.joinType === 'singleAsset') return this.getSingleAssetJoinInput()
+    return this.getUnbalancedJoinInput()
+  }
+
+  getJoinInputBase() {
     return {
-      amountsIn: Object.values(this.amountsInByTokenAddress),
       chainId: this.chainId,
       rpcUrl: chains[0].rpcUrls.public.http[0], //TODO: create helper to get by current chain? or useNetwork() or similar wagmi hook?
+    }
+  }
+
+  getUnbalancedJoinInput(): UnbalancedJoinInput {
+    return {
+      ...this.getJoinInputBase(),
+      amountsIn: Object.values(this.amountsInByTokenAddress),
       kind: JoinKind.Unbalanced,
       useNativeAssetAsWrappedAmountIn: true,
+    }
+  }
+
+  //TODO: create type for human amount
+  // getSingleAssetJoinInput(tokenIn: Address, humanAmount: `${number}`): SingleAssetJoinInput {
+  getSingleAssetJoinInput(): SingleAssetJoinInput {
+    // setup BPT token
+    const bptToken = new Token(this.chainId, this.poolStateInput.address, 18, 'BPT')
+    const bptOut = TokenAmount.fromHumanAmount(bptToken, '1')
+    // const tokenIn = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' // Native asset in eth
+    const tokenIn = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' // WETH asset in eth
+
+    // perform join query to get expected bpt out
+    return {
+      ...this.getJoinInputBase(),
+      bptOut,
+      tokenIn,
+      kind: JoinKind.SingleAsset,
     }
   }
 
