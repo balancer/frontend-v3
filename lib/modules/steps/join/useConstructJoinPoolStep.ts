@@ -42,8 +42,10 @@ export function useConstructJoinPoolStep(poolId: Address) {
   return {
     step,
     joinPayload,
-    isLoading: transaction?.simulation.isLoading || transaction?.execution.isLoading,
-    error: transaction?.simulation.error || transaction?.execution.error,
+    isLoading:
+      transaction?.simulation.isLoading || transaction?.execution.isLoading || joinQuery.isLoading,
+    error: transaction?.simulation.error || transaction?.execution.error || joinQuery.error,
+    joinQuery,
   }
 }
 

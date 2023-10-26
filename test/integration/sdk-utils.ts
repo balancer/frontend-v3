@@ -30,15 +30,6 @@ import {
 import { erc20ABI } from 'wagmi'
 import { defaultTestUserAccount, testPublicClient } from '../utils/wagmi'
 
-export function getDefaultSdkTestUtils(poolId: Address, account = defaultTestUserAccount) {
-  return getSdkTestUtils({
-    client: testPublicClient,
-    account,
-    chainId: ChainId.MAINNET,
-    poolId,
-  })
-}
-
 /*
   Given chain, user account and poolId
   Returns a set of helper functions to:
@@ -46,14 +37,14 @@ export function getDefaultSdkTestUtils(poolId: Address, account = defaultTestUse
   - Check the new state of the pool after the test updates (i.e check the balances of the tokens in the pool)
 */
 export async function getSdkTestUtils({
-  client,
-  account,
-  chainId,
+  client = testPublicClient,
+  chainId = ChainId.MAINNET,
+  account = defaultTestUserAccount,
   poolId,
 }: {
-  client: Client & PublicActions & WalletActions & TestActions
-  account: Address
-  chainId: ChainId
+  client?: Client & PublicActions & WalletActions & TestActions
+  account?: Address
+  chainId?: ChainId
   poolId: Address
 }) {
   const api = new MockApi()
@@ -278,7 +269,7 @@ export async function getSdkTestUtils({
     isVyperMapping: boolean[] = Array(getPoolTokens().length).fill(false),
     slots?: number[]
   ): Promise<void> {
-    await client.impersonateAccount({ address: account })
+    // await client.impersonateAccount({ address: account })
 
     const tokens = getPoolTokens().map(token => token.address)
 
@@ -298,18 +289,19 @@ export async function getSdkTestUtils({
   }
 
   async function setupToken(
-    // humanBalance: `${number}`,
     humanBalance: HumanAmount,
     tokenAddress: Address,
     isVyperMapping = false,
     slot?: number
   ): Promise<void> {
-    await client.impersonateAccount({ address: account })
+    if (process.env.NODE_ENV === 'test') {
+      await client.impersonateAccount({ address: account })
+    }
 
     let _slot: number
     if (slot) _slot = slot
     else _slot = await findTokenBalanceSlot(account, tokenAddress, isVyperMapping)
-    console.log(`slot: ${_slot}`)
+    // console.log(`slot: ${_slot}`)
 
     // Set initial account balance for the token that will be used to join pool
     const balance = toEvmTokenBalance(humanBalance, tokenAddress)

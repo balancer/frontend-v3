@@ -15,13 +15,13 @@ export function JoinPool2() {
   return (
     <VStack width="full">
       <Flex>
-        FOO: {joinStep.simulation.error?.name}
         <TransactionFlow
           completedAlertContent="Successfully joined pool"
           onCompleteClick={handleJoinCompleted}
           completedButtonLabel="Return to pool"
           steps={[joinStep]}
         />
+        {/* <Button onClick={() => joinQuery.refetch()}>Refetch</Button> */}
       </Flex>
     </VStack>
   )
