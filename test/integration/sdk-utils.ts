@@ -293,32 +293,31 @@ export async function getSdkTestUtils({
     }
 
     for (let i = 0; i < tokens.length; i++) {
-      // Set initial account balance for each token that will be used to join pool
-      await setTokenBalance(tokens[i], _slots[i], balances[i], isVyperMapping[i])
-
-      // Approve appropriate allowances so that vault contract can move tokens
-      await approveToken(account, tokens[i])
+      await setupToken(balances[i], tokens[i], isVyperMapping[i], _slots[i])
     }
   }
 
   async function setupToken(
-    humanBalance: `${number}`,
-    token: Address | Token,
-    isVyperMapping?: false,
+    // humanBalance: `${number}`,
+    humanBalance: bigint,
+    token: Address,
+    isVyperMapping = false,
     slot?: number
   ): Promise<void> {
     await client.impersonateAccount({ address: account })
 
-    let _token: Token
-    if (token instanceof String) {
-      const foundToken = getPoolTokens().find(t => isSameAddress(token as Address, t.address))
-      if (!foundToken) throw new Error(`Token with address: ${token} not found`)
-      _token = foundToken
-    } else {
-      _token = token as Token
-    }
+    // let _token: Token
+    // if (token instanceof String) {
+    //   const foundToken = getPoolTokens().find(t => isSameAddress(token as Address, t.address))
+    //   if (!foundToken) throw new Error(`Token with address: ${token} not found`)
+    //   _token = foundToken
+    // } else {
+    //   _token = token as Token
+    // }
 
-    const tokenAddress = _token.address
+    // const tokenAddress = _token.address
+
+    const tokenAddress = token
 
     let _slot: number
     if (slot) _slot = slot
@@ -326,7 +325,8 @@ export async function getSdkTestUtils({
     console.log(`slot: ${_slot}`)
 
     // Set initial account balance for the token that will be used to join pool
-    const balance = parseUnits(humanBalance, _token.decimals)
+    // const balance = parseUnits(humanBalance, _token.decimals)
+    const balance = humanBalance
     await setTokenBalance(tokenAddress, _slot, balance, false)
 
     // Approve appropriate allowances so that vault contract can move tokens

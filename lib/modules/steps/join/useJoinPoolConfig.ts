@@ -4,7 +4,6 @@ import { noUserAddress } from '@/lib/contracts/wagmi-helpers'
 import { Address, useQuery } from 'wagmi'
 import { JoinPayload } from './JoinPayload'
 import { getDefaultSdkTestUtils } from '@/test/integration/sdk-utils'
-import { parseUnits } from 'viem'
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
 export function useJoinPoolConfig(joinPayload: JoinPayload, account?: Address) {
