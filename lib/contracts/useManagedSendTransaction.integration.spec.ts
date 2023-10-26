@@ -7,7 +7,7 @@ import { useManagedSendTransaction } from '@/lib/contracts/useManagedSendTransac
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import { testHook } from '@/test/utils/custom-renderers'
 import { defaultTestUserAccount, testPublicClient as testClient } from '@/test/utils/wagmi'
-import { ChainId } from '@balancer/sdk'
+import { ChainId, HumanAmount } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/dist/actions'
 import { chains } from '../modules/web3/Web3Provider'
@@ -37,10 +37,7 @@ describe('weighted join test', () => {
   //   afterAll(() => anvil.stop())
 
   test('Sends transaction after updating amount inputs', async () => {
-    await utils.setupTokens([
-      ...getPoolTokens().map(t => parseUnits('100', t.decimals)),
-      parseUnits('100', 18),
-    ])
+    await utils.setupTokens([...getPoolTokens().map(() => '100' as HumanAmount), '100'])
 
     const payload = new JoinPayload(chainId, poolStateInput)
 

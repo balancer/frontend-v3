@@ -1,9 +1,10 @@
 import { MockApi } from '@/lib/balancer-api/MockApi'
+import { HumanAmount } from '@/lib/contracts/contract.types'
+import { isSameAddress } from '@/lib/utils/addresses'
 import {
   BALANCER_VAULT,
   ChainId,
   MAX_UINT256,
-  MinimalToken,
   Token,
   ZERO_ADDRESS,
   replaceWrapped,
@@ -28,7 +29,6 @@ import {
 } from 'viem'
 import { erc20ABI } from 'wagmi'
 import { defaultTestUserAccount, testPublicClient } from '../utils/wagmi'
-import { isSameAddress } from '@/lib/utils/addresses'
 
 export function getDefaultSdkTestUtils(poolId: Address, account = defaultTestUserAccount) {
   return getSdkTestUtils({
@@ -274,7 +274,7 @@ export async function getSdkTestUtils({
    * @param isVyperMapping Whether the storage uses Vyper or Solidity mapping
    */
   async function setupTokens(
-    balances: bigint[],
+    humanBalances: HumanAmount[],
     isVyperMapping: boolean[] = Array(getPoolTokens().length).fill(false),
     slots?: number[]
   ): Promise<void> {
@@ -293,31 +293,18 @@ export async function getSdkTestUtils({
     }
 
     for (let i = 0; i < tokens.length; i++) {
-      await setupToken(balances[i], tokens[i], isVyperMapping[i], _slots[i])
+      await setupToken(humanBalances[i], tokens[i], isVyperMapping[i], _slots[i])
     }
   }
 
   async function setupToken(
     // humanBalance: `${number}`,
-    humanBalance: bigint,
-    token: Address,
+    humanBalance: HumanAmount,
+    tokenAddress: Address,
     isVyperMapping = false,
     slot?: number
   ): Promise<void> {
     await client.impersonateAccount({ address: account })
-
-    // let _token: Token
-    // if (token instanceof String) {
-    //   const foundToken = getPoolTokens().find(t => isSameAddress(token as Address, t.address))
-    //   if (!foundToken) throw new Error(`Token with address: ${token} not found`)
-    //   _token = foundToken
-    // } else {
-    //   _token = token as Token
-    // }
-
-    // const tokenAddress = _token.address
-
-    const tokenAddress = token
 
     let _slot: number
     if (slot) _slot = slot
@@ -325,11 +312,16 @@ export async function getSdkTestUtils({
     console.log(`slot: ${_slot}`)
 
     // Set initial account balance for the token that will be used to join pool
-    // const balance = parseUnits(humanBalance, _token.decimals)
-    const balance = humanBalance
+    const balance = toEvmTokenBalance(humanBalance, tokenAddress)
     await setTokenBalance(tokenAddress, _slot, balance, false)
 
     // Approve appropriate allowances so that vault contract can move tokens
     await approveToken(account, tokenAddress)
+  }
+
+  function toEvmTokenBalance(humanBalance: HumanAmount, tokenAddress: Address): bigint {
+    const foundToken = getPoolTokens().find(t => isSameAddress(tokenAddress, t.address))
+    if (!foundToken) throw new Error(`Token with address: ${tokenAddress} not found`)
+    return parseUnits(humanBalance, foundToken.decimals)
   }
 }
