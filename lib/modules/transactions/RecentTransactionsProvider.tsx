@@ -36,8 +36,6 @@ const TransactionStatusToastStatusMapping: Record<TransactionStatus, AlertStatus
 }
 
 export function _useRecentTransactions() {
-  // This is an initial example to show how global transaction handling could work
-  // we will need a more complex structure with grouped transactions
   const [transactions, setTransactions] = useState<Record<string, TrackedTransaction>>({})
   const toast = useToast()
   const publicClient = usePublicClient()
