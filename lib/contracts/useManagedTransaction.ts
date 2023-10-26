@@ -51,18 +51,6 @@ export function useManagedTransaction<
     result: transactionStatusQuery,
   }
 
-  // // when the transaction has an execution error, update that within
-  // // the global transaction cache
-  // // this can either be an execution error or a confirmation error
-  // useEffect(() => {
-  //   if (bundle?.execution?.error) {
-  //     // monitor execution error here
-  //   }
-  //   if (bundle?.result?.error) {
-  //     // monitor confirmation error here
-  //   }
-  // }, [bundle.execution?.error, bundle.result?.error])
-
   // on successful submission to chain, add tx to cache
   useEffect(() => {
     if (writeQuery.data?.hash) {
@@ -71,6 +59,7 @@ export function useManagedTransaction<
         label: labels.confirming || 'Confirming transaction',
         description: labels.description,
         status: 'confirming',
+        timestamp: Date.now(),
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

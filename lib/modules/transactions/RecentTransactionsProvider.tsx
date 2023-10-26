@@ -1,15 +1,21 @@
 'use client'
 
-import { TransactionBundle } from '@/lib/contracts/contract.types'
 import { useMandatoryContext } from '@/lib/utils/contexts'
 import { AlertStatus, ToastId, useToast } from '@chakra-ui/react'
-import React, { ReactNode, createContext, useEffect, useState } from 'react'
+import { keyBy, orderBy, take } from 'lodash'
+import React, { ReactNode, createContext, useCallback, useEffect, useState } from 'react'
 import { Hash } from 'viem'
+import { usePublicClient } from 'wagmi'
 
 export type RecentTransactionsResponse = ReturnType<typeof _useRecentTransactions>
 export const TransactionsContext = createContext<RecentTransactionsResponse | null>(null)
+const NUM_RECENT_TRANSACTIONS = 5
 
-type TransactionStatus = 'confirming' | 'confirmed' | 'reverted'
+// confirming = transaction has not been mined
+// confirmed = transaction has been mined and is present on chain
+// reverted = transaction has been mined and is present on chain - but the execution was reverted
+// rejected = transaction was rejected by the rpc / other execution error prior to submission to chain
+type TransactionStatus = 'confirming' | 'confirmed' | 'reverted' | 'rejected'
 
 type TrackedTransaction = {
   hash: Hash
@@ -17,6 +23,7 @@ type TrackedTransaction = {
   description?: string
   status: TransactionStatus
   toastId?: ToastId
+  timestamp: number
 }
 
 type UpdateTrackedTransaction = Pick<TrackedTransaction, 'label' | 'description' | 'status'>
@@ -25,6 +32,7 @@ const TransactionStatusToastStatusMapping: Record<TransactionStatus, AlertStatus
   confirmed: 'success',
   confirming: 'loading',
   reverted: 'error',
+  rejected: 'error',
 }
 
 export function _useRecentTransactions() {
@@ -32,13 +40,52 @@ export function _useRecentTransactions() {
   // we will need a more complex structure with grouped transactions
   const [transactions, setTransactions] = useState<Record<string, TrackedTransaction>>({})
   const toast = useToast()
+  const publicClient = usePublicClient()
+
+  // when loading transactions from the localStorage cache and we identify any unconfirmed
+  // transactions, we should fetch the receipt of the transactions
+  const waitForUnconfirmedTransactions = useCallback(
+    async (transactions: Record<string, TrackedTransaction>) => {
+      const unconfirmedTransactions = Object.values(transactions).filter(
+        tx => tx.status === 'confirming'
+      )
+
+      const updatePayload = {
+        ...transactions,
+      }
+      // we cannot use a wagmi hook here as useWaitForTransaction does not support a list of hashes
+      // nor can we render multiple useWaitForTransaction hooks
+      // so we use the underlying viem call to get the transactions confirmation status
+      for (const tx of unconfirmedTransactions) {
+        const receipt = await publicClient.waitForTransactionReceipt({ hash: tx.hash })
+        if (receipt?.status === 'success') {
+          updatePayload[tx.hash] = {
+            ...tx,
+            status: 'confirmed',
+          }
+        } else {
+          updatePayload[tx.hash] = {
+            ...tx,
+            status: 'reverted',
+          }
+        }
+        setTransactions(updatePayload)
+      }
+    },
+    [publicClient]
+  )
 
   // fetch recent transactions from local storage
   useEffect(() => {
-    const recentTransactions = localStorage.getItem('balancer.recentTransactions')
-    if (recentTransactions) {
-      setTransactions(JSON.parse(recentTransactions))
+    const _recentTransactions = localStorage.getItem('balancer.recentTransactions')
+    if (_recentTransactions) {
+      const recentTransactions = JSON.parse(_recentTransactions)
+      setTransactions(recentTransactions)
+      // confirm the status of any past confirming transactions
+      // on load
+      waitForUnconfirmedTransactions(recentTransactions)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -62,7 +109,17 @@ export function _useRecentTransactions() {
       ...transactions,
       [trackedTransaction.hash]: { ...trackedTransaction, toastId },
     }
-    setTransactions(updatedTrackedTransactions)
+
+    // keep only the 'n' most recent transactions
+    const mostRecentTransactions = keyBy(
+      take(
+        orderBy(Object.values(updatedTrackedTransactions), 'timestamp', 'desc'),
+        NUM_RECENT_TRANSACTIONS
+      ),
+      'hash'
+    )
+
+    setTransactions(mostRecentTransactions)
     updateLocalStorage(updatedTrackedTransactions)
   }
 
@@ -74,6 +131,7 @@ export function _useRecentTransactions() {
     // seems like we couldn't find this transaction in the cache
     // TODO discuss behaviour around this
     if (!cachedTransaction) {
+      console.log({ hash, transactions })
       throw new Error('Cannot update a cached tracked transaction that does not exist.')
     }
 
@@ -107,11 +165,6 @@ export function _useRecentTransactions() {
       'balancer.recentTransactions',
       JSON.stringify(customUpdate || transactions)
     )
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function handleTransactionConfirmation(_bundle: TransactionBundle) {
-    //Non empty function
   }
 
   function addTrackedTransaction(trackedTransaction: TrackedTransaction) {

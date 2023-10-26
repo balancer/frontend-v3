@@ -15,6 +15,7 @@ export type TransactionLabels = {
   description?: string
   reverted?: string
   confirmed?: string
+  rejected?: string
 }
 
 type StepId = 'batchRelayerApproval' | 'tokenApproval'
