@@ -14,6 +14,7 @@ import { WriteAbiMutability } from './contract.types'
 import { TransactionExecution, TransactionSimulation } from './contract.types'
 import { useContractAddress } from './useContractAddress'
 import { useRecentTransactions } from '../modules/transactions/RecentTransactionsProvider'
+import { TransactionLabels } from '@/components/btns/transaction-steps/lib'
 
 export function useManagedTransaction<
   T extends typeof AbiMap,
@@ -22,6 +23,7 @@ export function useManagedTransaction<
 >(
   contractId: M,
   functionName: F,
+  labels: TransactionLabels,
   args?: GetFunctionArgs<T[M], F> | null,
   additionalConfig?: Omit<
     UsePrepareContractWriteConfig<T[M], F, number>,
@@ -29,7 +31,7 @@ export function useManagedTransaction<
   >
 ) {
   const address = useContractAddress(contractId)
-  const { addTransaction } = useRecentTransactions()
+  const { addTrackedTransaction, updateTrackedTransaction } = useRecentTransactions()
   const [writeArgs, setWriteArgs] = useState(args)
 
   const prepareQuery = usePrepareContractWrite({
@@ -49,36 +51,37 @@ export function useManagedTransaction<
     result: transactionStatusQuery,
   }
 
-  // when the transaction is successfully submitted to the chain
-  // start monitoring the hash
-  //
-  // when the transaction has an execution error, update that within
-  // the global transaction cache too
-  useEffect(() => {
-    if (bundle?.execution?.data?.hash) {
-      // add transaction here
-    }
-  }, [bundle.execution?.data?.hash])
-
-  // when the transaction has an execution error, update that within
-  // the global transaction cache
-  // this can either be an execution error or a confirmation error
-  useEffect(() => {
-    if (bundle?.execution?.error) {
-      // monitor execution error here
-    }
-    if (bundle?.result?.error) {
-      // monitor confirmation error here
-    }
-  }, [bundle.execution?.error, bundle.result?.error])
-
   // on successful submission to chain, add tx to cache
   useEffect(() => {
     if (writeQuery.data?.hash) {
-      addTransaction(bundle)
+      addTrackedTransaction({
+        hash: writeQuery.data.hash,
+        label: labels.confirming || 'Confirming transaction',
+        description: labels.description,
+        status: 'confirming',
+        timestamp: Date.now(),
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [writeQuery.data?.hash])
+
+  // on confirmation
+  useEffect(() => {
+    if (bundle.result.data?.transactionHash) {
+      if (bundle.result.data.status === 'reverted') {
+        updateTrackedTransaction(bundle.result.data.transactionHash, {
+          label: labels.reverted,
+          status: 'reverted',
+        })
+      } else {
+        updateTrackedTransaction(bundle.result.data.transactionHash, {
+          label: labels.confirmed,
+          status: 'confirmed',
+        })
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bundle.result.data?.transactionHash])
 
   // if parent changes args, update here
   useEffect(() => {

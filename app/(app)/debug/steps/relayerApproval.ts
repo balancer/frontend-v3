@@ -29,6 +29,7 @@ export function useConstructRelayerApprovalStep() {
   const transaction = useManagedTransaction(
     'balancer.vaultV2',
     'setRelayerApproval',
+    buildRelayerApprovalLabels(),
     { args: approvalArgs },
     {
       enabled: !!userAddress,
@@ -58,7 +59,8 @@ export const buildRelayerApprovalLabels: BuildTransactionLabels = () => {
   return {
     ready: 'Sign relayer approval',
     confirming: 'Signing relayer approval',
+    confirmed: 'Signed relayer approval',
+    reverted: 'Failed to approve relayer',
     tooltip: 'Your signature is required to use the relayer.',
-    description: 'bing',
   }
 }
