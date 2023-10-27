@@ -13,10 +13,10 @@ async function buildJoinConfig() {
 }
 
 test('fetches join pool config when user is not connected', async () => {
-  const payload = await buildJoinConfig()
+  const builder = await buildJoinConfig()
   const account = undefined
   const { result } = testHook(() => {
-    return useJoinPoolConfig(payload, account)
+    return useJoinPoolConfig(builder, account)
   })
 
   await waitFor(() => expect(result.current.isLoading).toBeFalsy())
@@ -25,13 +25,13 @@ test('fetches join pool config when user is not connected', async () => {
 })
 
 test('fetches join pool config when user is connected', async () => {
-  const payload = await buildJoinConfig()
+  const builder = await buildJoinConfig()
 
-  payload.setAmountIn('0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f', '1')
-  payload.setAmountIn('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '1')
+  builder.setAmountIn('0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f', '1')
+  builder.setAmountIn('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '1')
 
   const account = defaultTestUserAccount
-  const { result } = testHook(() => useJoinPoolConfig(payload, account))
+  const { result } = testHook(() => useJoinPoolConfig(builder, account))
 
   await waitFor(() => expect(result.current.isLoading).toBeFalsy())
 

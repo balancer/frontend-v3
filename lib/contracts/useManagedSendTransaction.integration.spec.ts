@@ -39,14 +39,14 @@ describe('weighted join test', () => {
   test('Sends transaction after updating amount inputs', async () => {
     await utils.setupTokens([...getPoolTokens().map(() => '100' as HumanAmount), '100'])
 
-    const payload = new JoinConfigBuilder(chainId, poolStateInput)
+    const builder = new JoinConfigBuilder(chainId, poolStateInput)
 
-    poolTokens.forEach(t => payload.setAmountIn(t.address, '1'))
+    poolTokens.forEach(t => builder.setAmountIn(t.address, '1'))
 
     const balanceBefore = await getPoolTokenBalances()
 
     // First simulation
-    const { queryResult, config } = await payload.buildSdkJoinTxConfig(account)
+    const { queryResult, config } = await builder.buildSdkJoinTxConfig(account)
 
     const { result } = testHook(() => {
       return useManagedSendTransaction(buildJoinPoolLabels(), config)
@@ -56,9 +56,9 @@ describe('weighted join test', () => {
     expect(queryResult.bptOut.amount).toBeGreaterThan(200000000000000000000n)
 
     // Second simulation
-    poolTokens.forEach(t => payload.setAmountIn(t.address, '2'))
+    poolTokens.forEach(t => builder.setAmountIn(t.address, '2'))
 
-    const { queryResult: queryResult2, config: config2 } = await payload.buildSdkJoinTxConfig(
+    const { queryResult: queryResult2, config: config2 } = await builder.buildSdkJoinTxConfig(
       defaultTestUserAccount
     )
     // Double approximately
