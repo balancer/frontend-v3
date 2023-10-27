@@ -1,9 +1,7 @@
 import { describe, expect, test } from 'vitest'
 
-import { parseUnits } from 'viem'
-
-import { JoinPayload } from '@/lib/modules/steps/join/JoinPayload'
 import { useManagedSendTransaction } from '@/lib/contracts/useManagedSendTransaction'
+import { JoinConfigBuilder } from '@/lib/modules/steps/join/JoinConfigBuilder'
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import { testHook } from '@/test/utils/custom-renderers'
 import { defaultTestUserAccount, testPublicClient as testClient } from '@/test/utils/wagmi'
@@ -39,7 +37,7 @@ describe('weighted join test', () => {
   test('Sends transaction after updating amount inputs', async () => {
     await utils.setupTokens([...getPoolTokens().map(() => '100' as HumanAmount), '100'])
 
-    const payload = new JoinPayload(chainId, poolStateInput)
+    const payload = new JoinConfigBuilder(chainId, poolStateInput)
 
     poolTokens.forEach(t => payload.setAmountIn(t.address, '1'))
 

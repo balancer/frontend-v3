@@ -3,13 +3,13 @@ import { testHook } from '@/test/utils/custom-renderers'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { ChainId } from '@balancer/sdk'
 import { waitFor } from '@testing-library/react'
-import { JoinPayload } from './JoinPayload'
+import { JoinConfigBuilder } from './JoinConfigBuilder'
 import { useJoinPoolConfig } from './useJoinPoolConfig'
 
 async function buildPayload() {
   const poolId = '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512' // Balancer 50COMP-50wstETH
   const poolStateInput = await new MockApi().getPool(poolId)
-  return new JoinPayload(ChainId.MAINNET, poolStateInput)
+  return new JoinConfigBuilder(ChainId.MAINNET, poolStateInput)
 }
 
 test('fetches join pool config when user is not connected', async () => {

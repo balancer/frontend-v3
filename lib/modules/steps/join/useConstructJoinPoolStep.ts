@@ -5,7 +5,7 @@ import { useManagedSendTransaction } from '@/lib/contracts/useManagedSendTransac
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useEffect } from 'react'
 import { Address } from 'wagmi'
-import { JoinPayload } from './JoinPayload'
+import { JoinConfigBuilder } from './JoinConfigBuilder'
 import { useJoinPoolConfig } from './useJoinPoolConfig'
 import { usePoolStateInput } from '@/lib/balancer-api/usePoolStateInput'
 
@@ -17,7 +17,7 @@ export function useConstructJoinPoolStep(poolId: Address) {
 
   const poolStateQuery = usePoolStateInput(poolId)
 
-  const joinPayload = new JoinPayload(chainId, poolStateQuery.data)
+  const joinPayload = new JoinConfigBuilder(chainId, poolStateQuery.data, 'unbalanced')
 
   joinPayload.setAmountIn('0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f', '1')
   joinPayload.setAmountIn('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '1')

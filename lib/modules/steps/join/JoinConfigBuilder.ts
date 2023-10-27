@@ -1,7 +1,11 @@
+import { getNetworkConfig } from '@/lib/config/app.config'
+import { SdkTransactionConfig } from '@/lib/contracts/contract.types'
 import { nullAddress } from '@/lib/contracts/wagmi-helpers'
 import { chains } from '@/lib/modules/web3/Web3Provider'
+import { isSameAddress } from '@/lib/utils/addresses'
 import {
   ChainId,
+  HumanAmount,
   JoinKind,
   PoolJoin,
   PoolStateInput,
@@ -13,12 +17,19 @@ import {
 } from '@balancer/sdk'
 import { Dictionary, keyBy } from 'lodash'
 import { Address } from 'wagmi'
-import { SdkTransactionConfig } from '@/lib/contracts/contract.types'
-import { isSameAddress } from '@/lib/utils/addresses'
 
-type JoinType = 'unbalanced' | 'singleAsset'
+type JoinType = 'unbalanced' | 'unbalancedNativeAsset' | 'singleAsset'
 
-export class JoinPayload {
+/*
+  Class to build Join configs with balancer SDK
+  Those configs are passed to useManagedSendTransaction hook to send the a Join transaction
+
+  Usage:
+  - Create an instance of JoinConfigBuilder
+  - Setup the Join state with methods like this.setAmountsIn()
+  - Generate the final join config with this.buildSdkJoinTxConfig()
+*/
+export class JoinConfigBuilder {
   slippage: Slippage = Slippage.fromPercentage('1')
   checkNativeBalance = false
   amountsInByTokenAddress: Dictionary<TokenAmount> = {}
@@ -30,7 +41,7 @@ export class JoinPayload {
   ) {
     const amountsInList = poolStateInput?.tokens
       .map(t => new Token(chainId, t.address, t.decimals))
-      .map(t => TokenAmount.fromHumanAmount(t, '1'))
+      .map(t => TokenAmount.fromHumanAmount(t, '0'))
 
     this.amountsInByTokenAddress = keyBy(amountsInList, a => a.token.address)
   }
@@ -45,18 +56,18 @@ export class JoinPayload {
   }
 
   public get queryKey() {
-    // FIX THIS
+    // REVIEW THIS
     // const { amountsIn } = this.getJoinInput()
     return `${this.poolStateInput.id}:${this.chainId}:${this.slippage}${JSON.stringify(
-      this.getJoinInput()
+      this.getJoinInputForSDK()
     )}`
   }
 
-  public setSlippage(slippagePercentage: `${number}`) {
+  public setSlippage(slippagePercentage: HumanAmount) {
     this.slippage = Slippage.fromPercentage(slippagePercentage)
   }
 
-  public setAmountIn(tokenAddress: Address, humanAmount: `${number}`) {
+  public setAmountIn(tokenAddress: Address, humanAmount: HumanAmount): void {
     if (this.poolStateInput.tokens.length === 0) return
     this.amountsInByTokenAddress[tokenAddress] = TokenAmount.fromHumanAmount(
       this.amountsInByTokenAddress[tokenAddress].token,
@@ -64,8 +75,19 @@ export class JoinPayload {
     )
   }
 
-  getJoinInput() {
+  get nativeAssetToken() {
+    return getNetworkConfig(this.chainId).tokens.nativeAsset
+  }
+
+  get nativeAssetAddress(): Address {
+    return this.nativeAssetToken.address
+  }
+
+  getJoinInputForSDK() {
     if (this.joinType === 'unbalanced') return this.getUnbalancedJoinInput()
+    if (this.joinType === 'unbalancedNativeAsset') {
+      return this.getUnbalancedJoinInput({ useNativeAssetAsWrappedAmountIn: true })
+    }
     if (this.joinType === 'singleAsset') return this.getSingleAssetJoinInput()
     return this.getUnbalancedJoinInput()
   }
@@ -77,22 +99,21 @@ export class JoinPayload {
     }
   }
 
-  getUnbalancedJoinInput(): UnbalancedJoinInput {
+  getUnbalancedJoinInput({ useNativeAssetAsWrappedAmountIn = false } = {}): UnbalancedJoinInput {
     return {
       ...this.getJoinInputBase(),
-      amountsIn: Object.values(this.amountsInByTokenAddress),
+      amountsIn: Object.values(this.amountsInByTokenAddress).filter(a => a.amount !== 0n),
       kind: JoinKind.Unbalanced,
-      useNativeAssetAsWrappedAmountIn: true,
+      useNativeAssetAsWrappedAmountIn,
     }
   }
 
-  //TODO: create type for human amount
-  // getSingleAssetJoinInput(tokenIn: Address, humanAmount: `${number}`): SingleAssetJoinInput {
+  // WIP
+  // getSingleAssetJoinInput(tokenIn: Address, humanAmount: HumanAmount): SingleAssetJoinInput {
   getSingleAssetJoinInput(): SingleAssetJoinInput {
     // setup BPT token
     const bptToken = new Token(this.chainId, this.poolStateInput.address, 18, 'BPT')
     const bptOut = TokenAmount.fromHumanAmount(bptToken, '1')
-    // const tokenIn = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' // Native asset in eth
     const tokenIn = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' // WETH asset in eth
 
     // perform join query to get expected bpt out
@@ -105,7 +126,7 @@ export class JoinPayload {
   }
 
   public async buildSdkJoinTxConfig(account: Address) {
-    const joinInput = this.getJoinInput()
+    const joinInput = this.getJoinInputForSDK()
 
     const poolJoin = new PoolJoin()
     const queryResult = await poolJoin.query(joinInput, this.poolStateInput)

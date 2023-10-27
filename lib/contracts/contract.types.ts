@@ -39,5 +39,3 @@ export type UsePrepareSendTransactionConfig = Exclude<
   Parameters<typeof usePrepareSendTransaction>[0],
   undefined
 >
-
-export type HumanAmount = `${number}`
