@@ -1,36 +1,45 @@
 'use client'
 
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import TransactionFlow from '@/components/btns/transaction-steps/TransactionFlow'
+import { useConstructJoinPoolStep } from '@/lib/modules/steps/join/useConstructJoinPoolStep'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Flex, VStack } from '@chakra-ui/react'
-import { JoinConfigBuilder } from '@/lib/modules/steps/join/JoinConfigBuilder'
-import { useJoinPoolConfig } from '@/lib/modules/steps/join/useJoinPoolConfig'
-import { usePoolStateInput } from '@/lib/balancer-api/usePoolStateInput'
+import { useEffect, useState } from 'react'
+import { useBalance } from 'wagmi'
+import { FetchBalanceResult } from 'wagmi/dist/actions'
 
 export function JoinPool() {
-  const { address: userAddress } = useUserAccount()
-  const { chainId } = useNetworkConfig()
-
   const poolId = '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512' // Balancer 50COMP-50wstETH
+  // const { step: tokenApprovalStep } = useConstructApproveTokenStep()
+  const { step: joinStep } = useConstructJoinPoolStep(poolId)
 
-  const poolStateQuery = usePoolStateInput(poolId)
+  const { address } = useUserAccount()
+  const wstETHAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
 
-  const joinPayload = new JoinConfigBuilder(chainId, poolStateQuery.data)
+  const [wstETHBalance, setWstETHBalance] = useState<FetchBalanceResult | null>(null)
+  const { data } = useBalance({ address, token: wstETHAddress })
 
-  joinPayload.setAmountIn('0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f', '1')
-  joinPayload.setAmountIn('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '1')
+  useEffect(() => {
+    if (data) setWstETHBalance(data)
+  }, [data])
 
-  const joinQuery = useJoinPoolConfig(joinPayload, userAddress)
+  function handleJoinCompleted() {
+    console.log('Join completed')
+  }
 
   return (
     <VStack width="full">
       <Flex>
-        {joinQuery.isLoading ? 'Loading ' : ''}
-        {userAddress
-          ? `Pool with account ${joinQuery.data?.config.account}.
-          Min Bpt out: ${joinQuery?.data?.minBptOut}`
-          : 'Not connected'}
+        <TransactionFlow
+          completedAlertContent="Successfully joined pool"
+          onCompleteClick={handleJoinCompleted}
+          completedButtonLabel="Return to pool"
+          steps={[joinStep]}
+        />
+        {/* <Button onClick={() => joinQuery.refetch()}>Refetch</Button> */}
       </Flex>
+
+      <Flex>wsETH User Balance: {wstETHBalance ? `${wstETHBalance.formatted}` : '-'}</Flex>
     </VStack>
   )
 }

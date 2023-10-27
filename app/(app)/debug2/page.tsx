@@ -1,6 +1,6 @@
 'use client'
-import { JoinPool2 } from './JoinPool2'
+import { JoinPool } from './JoinPool'
 
 export default function DebugPage() {
-  return <JoinPool2></JoinPool2>
+  return <JoinPool></JoinPool>
 }
