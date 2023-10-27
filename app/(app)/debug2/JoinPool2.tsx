@@ -2,7 +2,6 @@
 
 import TransactionFlow from '@/components/btns/transaction-steps/TransactionFlow'
 import { useConstructJoinPoolStep } from '@/lib/modules/steps/join/useConstructJoinPoolStep'
-import { useConstructApproveTokenStep } from '@/lib/modules/steps/useConstructApproveTokenStep'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Flex, VStack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'

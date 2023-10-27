@@ -30,7 +30,7 @@ export function useConstructJoinPoolStep(poolId: Address) {
 
   // if (!txConfig) return null
 
-  const transaction = useManagedSendTransaction(joinQuery.data?.config)
+  const transaction = useManagedSendTransaction(buildJoinPoolLabels(), joinQuery.data?.config)
 
   const step: FlowStep = {
     ...transaction,

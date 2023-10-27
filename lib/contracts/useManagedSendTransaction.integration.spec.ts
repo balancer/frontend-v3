@@ -91,6 +91,6 @@ describe('weighted join test', () => {
       queryResult2.bptOut.amount,
     ]
     // Wait for the sdk to be completed
-    // expect(expectedDeltas).to.deep.eq(balanceDeltas)
+    expect(expectedDeltas).to.deep.eq(balanceDeltas)
   })
 })

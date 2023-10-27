@@ -16,6 +16,7 @@ export type TransactionLabels = {
   reverted?: string
   confirmed?: string
   rejected?: string
+  error?: string
 }
 
 type StepId = 'batchRelayerApproval' | 'tokenApproval' | 'joinPool'

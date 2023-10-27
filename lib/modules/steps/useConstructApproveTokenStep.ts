@@ -1,18 +1,16 @@
-import { Address } from 'wagmi'
-import { useEffect, useState } from 'react'
-import { nullAddress } from '@/lib/contracts/wagmi-helpers'
-import { useManagedTransaction } from '@/lib/contracts/useManagedTransaction'
-import { BuildTransactionLabels } from '@/lib/contracts/transactionLabels'
 import { FlowStep } from '@/components/btns/transaction-steps/lib'
+import { BuildTransactionLabels } from '@/lib/contracts/transactionLabels'
+import { useContractAddress } from '@/lib/contracts/useContractAddress'
+import { useManagedTransaction } from '@/lib/contracts/useManagedTransaction'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { MAX_BIGINT } from '@/lib/utils/bigint'
-import { useContractAddress } from '@/lib/contracts/useContractAddress'
+import { useEffect } from 'react'
 
 export function useConstructApproveTokenStep() {
   const { address: userAddress } = useUserAccount()
   const spender = useContractAddress('balancer.vaultV2')
 
-  const spenderv2 = '0xBA12222222228d8Ba445958a75a0704d566BF2C8'
+  // const spenderv2 = '0xBA12222222228d8Ba445958a75a0704d566BF2C8'
 
   // const [tokenAllowanceArgs, setTokenAllowanceArgs] = useState<[Address, bigint]>([
   //   spender || nullAddress,
@@ -29,6 +27,7 @@ export function useConstructApproveTokenStep() {
   const transaction = useManagedTransaction(
     'balancer.wsETH',
     'approve',
+    buildTokenAllowanceLabels(),
     // { args: tokenAllowanceArgs },
     { args: ['0xBA12222222228d8Ba445958a75a0704d566BF2C8', MAX_BIGINT] },
     {
