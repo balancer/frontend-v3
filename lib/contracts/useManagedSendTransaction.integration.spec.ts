@@ -9,6 +9,7 @@ import { ChainId, HumanAmount } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/dist/actions'
 import { chains } from '../modules/web3/Web3Provider'
+import { buildJoinPoolLabels } from '../modules/steps/join/useConstructJoinPoolStep'
 
 const chainId = ChainId.MAINNET
 const port = 8555
@@ -47,7 +48,7 @@ describe('weighted join test', () => {
     const { queryResult, config } = await payload.buildSdkJoinTxConfig(account)
 
     const { result } = testHook(() => {
-      return useManagedSendTransaction(config)
+      return useManagedSendTransaction(buildJoinPoolLabels(), config)
     })
 
     await waitFor(() => expect(result.current.executeAsync).toBeDefined())
@@ -72,20 +73,24 @@ describe('weighted join test', () => {
       return res
     })
 
-    const transactionReceipt = await testClient.waitForTransactionReceipt({
-      hash: res.hash,
-    })
+    const transactionReceipt = await act(async () =>
+      testClient.waitForTransactionReceipt({
+        hash: res.hash,
+      })
+    )
 
     expect(transactionReceipt.status).to.eq('success')
 
-    const balanceDeltas = await utils.calculateBalanceDeltas(balanceBefore, transactionReceipt)
+    const balanceDeltas = await act(async () =>
+      utils.calculateBalanceDeltas(balanceBefore, transactionReceipt)
+    )
 
     // Confirm final balance changes match query result
     const expectedDeltas = [
       ...queryResult2.amountsIn.map(a => a.amount),
       queryResult2.bptOut.amount,
     ]
-    //TODO:
+    // Wait for the sdk to be completed
     // expect(expectedDeltas).to.deep.eq(balanceDeltas)
   })
 })

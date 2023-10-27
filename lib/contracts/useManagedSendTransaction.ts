@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
-import { ManagedResult } from '@/components/btns/transaction-steps/lib'
+import { ManagedResult, TransactionLabels } from '@/components/btns/transaction-steps/lib'
 import { useEffect, useState } from 'react'
 import { usePrepareSendTransaction, useSendTransaction, useWaitForTransaction } from 'wagmi'
 import { useRecentTransactions } from '../modules/transactions/RecentTransactionsProvider'
@@ -11,8 +11,11 @@ import {
   UsePrepareSendTransactionConfig,
 } from './contract.types'
 
-export function useManagedSendTransaction(config?: UsePrepareSendTransactionConfig) {
-  const { addTransaction } = useRecentTransactions()
+export function useManagedSendTransaction(
+  labels: TransactionLabels,
+  config?: UsePrepareSendTransactionConfig
+) {
+  const { addTrackedTransaction, updateTrackedTransaction } = useRecentTransactions()
   const [txConfig, setTxConfig] = useState(config)
 
   const prepareQuery = usePrepareSendTransaction(txConfig)
@@ -56,10 +59,34 @@ export function useManagedSendTransaction(config?: UsePrepareSendTransactionConf
   // on successful submission to chain, add tx to cache
   useEffect(() => {
     if (writeQuery.data?.hash) {
-      addTransaction(bundle)
+      addTrackedTransaction({
+        hash: writeQuery.data.hash,
+        label: labels.confirming || 'Confirming transaction',
+        description: labels.description,
+        status: 'confirming',
+        timestamp: Date.now(),
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [writeQuery.data?.hash])
+
+  // on confirmation
+  useEffect(() => {
+    if (bundle.result.data?.transactionHash) {
+      if (bundle.result.data.status === 'reverted') {
+        updateTrackedTransaction(bundle.result.data.transactionHash, {
+          label: labels.reverted,
+          status: 'reverted',
+        })
+      } else {
+        updateTrackedTransaction(bundle.result.data.transactionHash, {
+          label: labels.confirmed,
+          status: 'confirmed',
+        })
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bundle.result.data?.transactionHash])
 
   // if parent changes args, update here
   useEffect(() => {

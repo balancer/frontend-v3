@@ -21,6 +21,7 @@ import { WriteAbiMutability } from '@/lib/contracts/contract.types'
 import { AbiMap } from '@/lib/contracts/AbiMap'
 import { useManagedTransaction } from '@/lib/contracts/useManagedTransaction'
 import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
+import { TransactionLabels } from '@/components/btns/transaction-steps/lib'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -124,7 +125,7 @@ export function testManagedTransaction<
   >
 ) {
   const { result } = testHook(() =>
-    useManagedTransaction(contractId, functionName, args, additionalConfig)
+    useManagedTransaction(contractId, functionName, {} as TransactionLabels, args, additionalConfig)
   )
   return result
 }

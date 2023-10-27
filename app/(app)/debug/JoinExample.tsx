@@ -3,6 +3,7 @@
 import TransactionFlow from '@/components/btns/transaction-steps/TransactionFlow'
 import { useConstructRelayerApprovalStep } from '@/lib/modules/steps/relayerApproval'
 import { Flex, VStack } from '@chakra-ui/react'
+import RecentTransactions from './RecentTransactions'
 
 export function JoinExample() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -20,6 +21,7 @@ export function JoinExample() {
 
   return (
     <VStack width="full">
+      <RecentTransactions />
       <Flex>
         <TransactionFlow
           completedAlertContent="Successfully joined pool"
