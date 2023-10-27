@@ -24,8 +24,8 @@ type StepId = 'batchRelayerApproval' | 'tokenApproval' | 'joinPool'
 export type ManagedResult = TransactionBundle & Executable
 
 /* This type unifies wagmi writeTransaction and sendTransaction types:
-  managedRun is the union of write and sendTransaction functions
-  managedRunAsync is the union of writeAsync and sendTransactionAsync functions
+  execute is the union of write and sendTransaction functions
+  executeAsync is the union of writeAsync and sendTransactionAsync functions
 */
 type Executable = {
   // eslint-disable-next-line @typescript-eslint/ban-types

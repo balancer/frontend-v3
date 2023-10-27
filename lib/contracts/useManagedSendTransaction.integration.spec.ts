@@ -25,7 +25,7 @@ const utils = await getSdkTestUtils({
   account,
   chainId,
   client: testClient,
-  poolId: '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512', // Balancer 50COMP-50wstETH,
+  poolId: '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512', // Balancer Weighted wjAura and WETH,
 })
 
 const { getPoolTokens, poolStateInput, getPoolTokenBalances } = utils

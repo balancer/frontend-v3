@@ -12,7 +12,10 @@ export interface TokensConfig {
 
 export interface ContractsConfig {
   multicall2: Address
-  balancer: { vaultV2?: Address; wsETH?: Address }
+  balancer: {
+    vaultV2?: Address
+    wsETH?: Address // TODO: This is a temporary workaround until we find a generic way to
+  }
 }
 
 export interface NetworkConfig {

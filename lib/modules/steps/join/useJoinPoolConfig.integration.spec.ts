@@ -6,14 +6,14 @@ import { waitFor } from '@testing-library/react'
 import { JoinConfigBuilder } from './JoinConfigBuilder'
 import { useJoinPoolConfig } from './useJoinPoolConfig'
 
-async function buildPayload() {
-  const poolId = '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512' // Balancer 50COMP-50wstETH
+async function buildJoinConfig() {
+  const poolId = '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512' // Balancer Weighted wjAura and WETH
   const poolStateInput = await new MockApi().getPool(poolId)
   return new JoinConfigBuilder(ChainId.MAINNET, poolStateInput)
 }
 
 test('fetches join pool config when user is not connected', async () => {
-  const payload = await buildPayload()
+  const payload = await buildJoinConfig()
   const account = undefined
   const { result } = testHook(() => {
     return useJoinPoolConfig(payload, account)
@@ -25,7 +25,7 @@ test('fetches join pool config when user is not connected', async () => {
 })
 
 test('fetches join pool config when user is connected', async () => {
-  const payload = await buildPayload()
+  const payload = await buildJoinConfig()
 
   payload.setAmountIn('0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f', '1')
   payload.setAmountIn('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '1')
