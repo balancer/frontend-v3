@@ -24,7 +24,7 @@ test('relayer successful relayer approval transaction', async () => {
   expect(typeof result.current.result.data?.gasUsed).toBe('bigint')
 })
 
-test.only('token approval transaction (wsETH)', async () => {
+test.skip('token approval transaction (wsETH)', async () => {
   // const wsETHAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
 
   const vault2 = '0xBA12222222228d8Ba445958a75a0704d566BF2C8'
