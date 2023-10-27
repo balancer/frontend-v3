@@ -17,6 +17,8 @@ const networkConfig: NetworkConfig = {
     multicall2: '0x5ba1e12693dc8f9c48aad8770482f4739beed696',
     balancer: {
       vaultV2: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
+      // TODO: generic erc20 address
+      wsETH: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     },
   },
 }

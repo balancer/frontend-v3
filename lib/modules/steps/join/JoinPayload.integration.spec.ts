@@ -40,3 +40,24 @@ test('build Single Asset Join Config', async () => {
   expect(result.minBptOut).toBeGreaterThanOrEqual(1000000000000000000n)
   console.log(result.config)
 })
+
+test.only('build Balanced Join Config with ETH', async () => {
+  const poolStateInput = await getPoolState()
+  const payload = new JoinPayload(ChainId.MAINNET, poolStateInput, 'unbalanced')
+
+  const ethAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+
+  payload.setAmountIn(ethAddress, '1')
+
+  const result = await payload.buildSdkJoinTxConfig(defaultTestUserAccount)
+
+  expect(result.minBptOut).toBeGreaterThan(400000000000000000000n)
+
+  payload.setSlippage('2')
+
+  expect(payload.slippage.bps).toBe(200)
+
+  const result2 = await payload.buildSdkJoinTxConfig(defaultTestUserAccount)
+
+  expect(result2.minBptOut).toBeGreaterThan(400000000000000000000n)
+})

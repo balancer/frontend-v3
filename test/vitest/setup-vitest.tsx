@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import { apolloTestClient } from '../utils/apollo-test-client'
 import { configure } from '@testing-library/react'
+import '@/lib/utils/bigint'
 
 if (process.env.VITE_USE_PRODUCTION_WAGMI == 'true') {
   console.log('🚨  Running tests with production wagmi config  🚨')
