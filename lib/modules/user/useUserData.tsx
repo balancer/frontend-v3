@@ -2,8 +2,7 @@
 
 import { GetUserDataDocument } from '@/lib/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/utils/contexts'
-import { useLazyQuery } from '@apollo/client'
-import { DependencyList, PropsWithChildren, createContext, useEffect } from 'react'
+import { PropsWithChildren, createContext } from 'react'
 import { useUserAccount } from '../web3/useUserAccount'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
