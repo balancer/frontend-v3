@@ -1,9 +1,9 @@
 import { MockApi } from '@/lib/balancer-api/MockApi'
-import { HumanAmount } from '@/lib/contracts/contract.types'
 import { isSameAddress } from '@/lib/utils/addresses'
 import {
   BALANCER_VAULT,
   ChainId,
+  HumanAmount,
   MAX_UINT256,
   Token,
   ZERO_ADDRESS,
