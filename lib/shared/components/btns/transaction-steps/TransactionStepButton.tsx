@@ -1,6 +1,6 @@
 'use client'
 
-import { TransactionStateData } from '@/components/other/TransactionState'
+import { TransactionStateData } from '@/lib/shared/components/other/TransactionState'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Alert, Button, VStack } from '@chakra-ui/react'

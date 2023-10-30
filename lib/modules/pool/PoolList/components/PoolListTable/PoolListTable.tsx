@@ -3,7 +3,7 @@
 import { getPoolListTableColumns } from './PoolListTable.columns'
 import { PoolListItem } from '../../../pool.types'
 import { Box } from '@chakra-ui/react'
-import { DataTable } from '@/components/tables/DataTable'
+import { DataTable } from '@/lib/shared/components/tables/DataTable'
 import { useRouter } from 'next/navigation'
 import { getPoolPath } from '../../../pool.utils'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'

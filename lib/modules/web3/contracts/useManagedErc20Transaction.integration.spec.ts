@@ -1,4 +1,4 @@
-import { TransactionLabels } from '@/components/btns/transaction-steps/lib'
+import { TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'

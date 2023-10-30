@@ -1,4 +1,4 @@
-import { FlowStep } from '@/components/btns/transaction-steps/lib'
+import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'

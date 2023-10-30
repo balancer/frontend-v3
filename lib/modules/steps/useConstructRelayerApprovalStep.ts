@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { noUserAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
-import { FlowStep } from '@/components/btns/transaction-steps/lib'
+import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 const balancerRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'

@@ -1,4 +1,4 @@
-import { TransactionLabels } from '@/components/btns/transaction-steps/lib'
+import { TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { TokenBase } from '../../tokens/token.types'
 import { TransactionBundle } from './contract.types'
 

@@ -1,4 +1,4 @@
-import { FlowStep } from '@/components/btns/transaction-steps/lib'
+import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
 import { useManagedErc20Transaction } from '@/lib/modules/web3/contracts/useManagedErc20Transaction'

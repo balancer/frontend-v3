@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import { Providers } from './providers'
-import { Navbar } from '@/components/navs/Navbar'
+import { Navbar } from '@/lib/shared/components/navs/Navbar'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import '@/lib/shared/utils/bigint'
 
