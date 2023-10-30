@@ -11,8 +11,9 @@ import {
   usePrepareContractWrite,
   useWaitForTransaction,
 } from 'wagmi'
-import { useRecentTransactions } from '../modules/transactions/RecentTransactionsProvider'
 import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
+import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
+import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 
 type Erc20Abi = typeof erc20ABI
 export function useManagedErc20Transaction<
@@ -27,7 +28,6 @@ export function useManagedErc20Transaction<
     'abi' | 'address' | 'functionName' | 'args'
   >
 ) {
-  const { addTrackedTransaction, updateTrackedTransaction } = useRecentTransactions()
   const [writeArgs, setWriteArgs] = useState(args)
 
   const prepareQuery = usePrepareContractWrite({
@@ -48,36 +48,14 @@ export function useManagedErc20Transaction<
   }
 
   // on successful submission to chain, add tx to cache
-  useEffect(() => {
-    if (writeQuery.data?.hash) {
-      addTrackedTransaction({
-        hash: writeQuery.data.hash,
-        label: labels.confirming || 'Confirming transaction',
-        description: labels.description,
-        status: 'confirming',
-        timestamp: Date.now(),
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [writeQuery.data?.hash])
+  useOnTransactionSubmission(labels, writeQuery.data?.hash)
 
-  // on confirmation
-  useEffect(() => {
-    if (bundle.result.data?.transactionHash) {
-      if (bundle.result.data.status === 'reverted') {
-        updateTrackedTransaction(bundle.result.data.transactionHash, {
-          label: labels.reverted,
-          status: 'reverted',
-        })
-      } else {
-        updateTrackedTransaction(bundle.result.data.transactionHash, {
-          label: labels.confirmed,
-          status: 'confirmed',
-        })
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bundle.result.data?.transactionHash])
+  // on confirmation, update tx in tx cache
+  useOnTransactionConfirmation(
+    labels,
+    bundle.result.data?.status,
+    bundle.result.data?.transactionHash
+  )
 
   // if parent changes args, update here
   useEffect(() => {

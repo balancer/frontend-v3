@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
+import { ManagedResult, TransactionLabels } from '@/components/btns/transaction-steps/lib'
 import { useEffect, useState } from 'react'
 import { Abi, GetFunctionArgs, InferFunctionName } from 'viem'
 import {
@@ -12,9 +13,8 @@ import {
 import { AbiMap } from './AbiMap'
 import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
 import { useContractAddress } from './useContractAddress'
-import { useRecentTransactions } from '../modules/transactions/RecentTransactionsProvider'
-import { ManagedResult } from '@/components/btns/transaction-steps/lib'
-import { TransactionLabels } from '@/components/btns/transaction-steps/lib'
+import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
+import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 
 export function useManagedTransaction<
   T extends typeof AbiMap,
@@ -31,7 +31,6 @@ export function useManagedTransaction<
   >
 ) {
   const address = useContractAddress(contractId)
-  const { addTrackedTransaction, updateTrackedTransaction } = useRecentTransactions()
   const [writeArgs, setWriteArgs] = useState(args)
 
   const prepareQuery = usePrepareContractWrite({
@@ -52,36 +51,14 @@ export function useManagedTransaction<
   }
 
   // on successful submission to chain, add tx to cache
-  useEffect(() => {
-    if (writeQuery.data?.hash) {
-      addTrackedTransaction({
-        hash: writeQuery.data.hash,
-        label: labels.confirming || 'Confirming transaction',
-        description: labels.description,
-        status: 'confirming',
-        timestamp: Date.now(),
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [writeQuery.data?.hash])
+  useOnTransactionSubmission(labels, writeQuery.data?.hash)
 
-  // on confirmation
-  useEffect(() => {
-    if (bundle.result.data?.transactionHash) {
-      if (bundle.result.data.status === 'reverted') {
-        updateTrackedTransaction(bundle.result.data.transactionHash, {
-          label: labels.reverted,
-          status: 'reverted',
-        })
-      } else {
-        updateTrackedTransaction(bundle.result.data.transactionHash, {
-          label: labels.confirmed,
-          status: 'confirmed',
-        })
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bundle.result.data?.transactionHash])
+  // on confirmation, update tx in tx cache
+  useOnTransactionConfirmation(
+    labels,
+    bundle.result.data?.status,
+    bundle.result.data?.transactionHash
+  )
 
   // if parent changes args, update here
   useEffect(() => {
