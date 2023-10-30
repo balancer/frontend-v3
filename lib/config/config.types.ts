@@ -1,5 +1,5 @@
 import { Address } from 'viem'
-import { GqlChain } from '../services/api/generated/graphql'
+import { GqlChain } from '../shared/services/api/generated/graphql'
 
 export interface TokensConfig {
   nativeAsset: {

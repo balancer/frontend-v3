@@ -3,7 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import numeral from 'numeral'
 import Image from 'next/image'
-import { GqlPoolApr } from '@/lib/services/api/generated/graphql'
+import { GqlPoolApr } from '@/lib/shared/services/api/generated/graphql'
 import { VStack, Text, HStack, Tag, Icon } from '@chakra-ui/react'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { PoolListItem } from '../../../pool.types'

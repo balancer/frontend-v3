@@ -1,8 +1,8 @@
 import { Address } from 'wagmi'
 import { useEffect, useState } from 'react'
-import { noUserAddress } from '@/lib/contracts/wagmi-helpers'
-import { useManagedTransaction } from '@/lib/contracts/useManagedTransaction'
-import { BuildTransactionLabels } from '@/lib/contracts/transactionLabels'
+import { noUserAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
+import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
+import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { FlowStep } from '@/components/btns/transaction-steps/lib'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 

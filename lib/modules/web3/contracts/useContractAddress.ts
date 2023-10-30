@@ -1,8 +1,8 @@
 'use client'
 
 import { get } from 'lodash'
-import { NetworkConfig } from '../config/config.types'
-import { useNetworkConfig } from '../config/useNetworkConfig'
+import { NetworkConfig } from '../../../config/config.types'
+import { useNetworkConfig } from '../../../config/useNetworkConfig'
 
 type Paths<T, D extends string = '.'> = {
   [K in keyof T]: K extends string

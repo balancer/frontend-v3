@@ -1,8 +1,8 @@
 import { getNetworkConfig } from '@/lib/config/app.config'
-import { SdkTransactionConfig } from '@/lib/contracts/contract.types'
-import { nullAddress } from '@/lib/contracts/wagmi-helpers'
+import { SdkTransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
+import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { chains } from '@/lib/modules/web3/Web3Provider'
-import { isSameAddress } from '@/lib/utils/addresses'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 import {
   ChainId,
   HumanAmount,

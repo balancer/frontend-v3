@@ -1,5 +1,5 @@
 import { TransactionLabels } from '@/components/btns/transaction-steps/lib'
-import { TokenBase } from '../modules/tokens/token.types'
+import { TokenBase } from '../../tokens/token.types'
 import { TransactionBundle } from './contract.types'
 
 export type BuildTransactionLabels = (

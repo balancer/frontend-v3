@@ -1,5 +1,5 @@
-import { MockApi } from '@/lib/balancer-api/MockApi'
-import { isSameAddress } from '@/lib/utils/addresses'
+import { MockApi } from '@/lib/shared/hooks/balancer-api/MockApi'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 import {
   BALANCER_VAULT,
   ChainId,

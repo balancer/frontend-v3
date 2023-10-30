@@ -16,7 +16,7 @@ import { publicProvider } from 'wagmi/providers/public'
 import { infuraProvider } from 'wagmi/providers/infura'
 import { merge } from 'lodash'
 import { useColorMode, useTheme } from '@chakra-ui/react'
-import { balTheme } from '@/lib/services/chakra/theme'
+import { balTheme } from '@/lib/shared/services/chakra/theme'
 import { CustomAvatar } from './CustomAvatar'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 

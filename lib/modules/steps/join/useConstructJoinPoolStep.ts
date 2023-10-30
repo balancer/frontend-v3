@@ -1,13 +1,13 @@
 import { FlowStep } from '@/components/btns/transaction-steps/lib'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import { BuildTransactionLabels } from '@/lib/contracts/transactionLabels'
-import { useManagedSendTransaction } from '@/lib/contracts/useManagedSendTransaction'
+import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
+import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useEffect } from 'react'
 import { Address } from 'wagmi'
 import { JoinConfigBuilder } from './JoinConfigBuilder'
 import { useJoinPoolConfig } from './useJoinPoolConfig'
-import { usePoolStateInput } from '@/lib/balancer-api/usePoolStateInput'
+import { usePoolStateInput } from '@/lib/shared/hooks/balancer-api/usePoolStateInput'
 
 export function useConstructJoinPoolStep(poolId: Address) {
   // const [joinPayload, setJoinPayload] = useState<JoinPayload | null>(null)

@@ -1,4 +1,4 @@
-import { TransactionBundle } from '@/lib/contracts/contract.types'
+import { TransactionBundle } from '@/lib/modules/web3/contracts/contract.types'
 
 export enum TransactionState {
   Ready = 'ready',

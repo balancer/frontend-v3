@@ -6,7 +6,7 @@
  * page, such as token data.
  */
 import { useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { GetAppGlobalDataDocument } from '@/lib/services/api/generated/graphql'
+import { GetAppGlobalDataDocument } from '@/lib/shared/services/api/generated/graphql'
 
 export function ApolloPrimeCacheProvider({ children }: React.PropsWithChildren) {
   useSuspenseQuery(GetAppGlobalDataDocument)

@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { Providers } from './providers'
 import { Navbar } from '@/components/navs/Navbar'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import '@/lib/utils/bigint'
+import '@/lib/shared/utils/bigint'
 
 const { projectName, projectId } = getProjectConfig()
 const iconUrl = `/images/icons/${projectId}.ico`

@@ -17,9 +17,9 @@ import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } f
 import { QueryParamAdapter, QueryParamProvider } from 'use-query-params'
 import { waitFor } from '@testing-library/react'
 import { GetFunctionArgs, InferFunctionName } from 'viem'
-import { WriteAbiMutability } from '@/lib/contracts/contract.types'
-import { AbiMap } from '@/lib/contracts/AbiMap'
-import { useManagedTransaction } from '@/lib/contracts/useManagedTransaction'
+import { WriteAbiMutability } from '@/lib/modules/web3/contracts/contract.types'
+import { AbiMap } from '@/lib/modules/web3/contracts/AbiMap'
+import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
 import { TransactionLabels } from '@/components/btns/transaction-steps/lib'
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { TransactionResult } from '@/lib/contracts/contract.types'
+import { TransactionResult } from '@/lib/modules/web3/contracts/contract.types'
 
 // Example component to illustrate how to render transaction info given a tx hash
 export function TransactionStateData({ result }: { result: TransactionResult }) {

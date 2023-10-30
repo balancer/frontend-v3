@@ -2,9 +2,9 @@ import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { TokenAmount, TokenBase } from '@/lib/modules/tokens/token.types'
 import { useBalance, useQuery } from 'wagmi'
 import { Address, formatUnits } from 'viem'
-import { AbiERC20 } from '@/lib/abi/AbiERC20'
+import { AbiERC20 } from '@/lib/modules/web3/contracts/abi/AbiERC20'
 import { multicall } from 'wagmi/actions'
-import { isSameAddress } from '@/lib/utils/addresses'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
