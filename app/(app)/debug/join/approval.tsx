@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 import { useBalance } from 'wagmi'
 import { FetchBalanceResult } from 'wagmi/dist/actions'
 
-export function JoinPool() {
+export function Approval() {
   const poolId = '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512' // Balancer Weighted wjAura and WETH
   const wETHAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
   const { step: tokenApprovalStep } = useConstructApproveTokenStep(wETHAddress)
