@@ -4,11 +4,11 @@ import { ColumnDef } from '@tanstack/react-table'
 import numeral from 'numeral'
 import Image from 'next/image'
 import { GqlPoolApr } from '@/lib/services/api/generated/graphql'
-import { VStack, Text, HStack, Tag, Icon } from '@chakra-ui/react'
+import { VStack, Text, HStack, Tag, Icon, Box } from '@chakra-ui/react'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { PoolListItem } from '../../../pool.types'
-import { getAprLabel } from '../../../pool.utils'
 import { FiGlobe } from 'react-icons/fi'
+import AprTooltip from '@/components/tooltips/apr-tooltip/AprTooltip'
 
 export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
   return [
@@ -80,16 +80,11 @@ export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
       accessorKey: 'dynamicData.apr',
       header: () => <Text ml="auto">APR</Text>,
       cell: row => {
-        const value = row.getValue<GqlPoolApr>()
-        const apr = getAprLabel(value.apr)
+        const data = row.getValue<GqlPoolApr>()
 
-        return (
-          <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
-            {apr}
-          </Text>
-        )
+        return <AprTooltip data={data} textProps={{ marginLeft: 'auto' }} />
       },
-      size: 175,
+      size: 250,
     },
   ]
 }
