@@ -9,8 +9,11 @@ import { getNetworkConfig } from '@/lib/config/app.config'
 import { PoolListItem } from '../../../pool.types'
 import { getAprLabel } from '../../../pool.utils'
 import { FiGlobe } from 'react-icons/fi'
+import { useUserData } from '@/lib/modules/user/useUserData'
 
 export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
+  const { getUserBalanceUSD } = useUserData()
+
   return [
     {
       id: 'chainLogoUrl',
@@ -44,6 +47,20 @@ export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
         )
       },
       size: 9999, // use '9999' so we can set {width: 'auto'} in DataTable
+    },
+    {
+      id: 'myLiquidity',
+      header: () => <Text ml="auto">My liquidity</Text>,
+      cell: ({ row: { original: pool } }) => {
+        const value = numeral(getUserBalanceUSD(pool.id, pool.chain)).format('($0,0a)')
+
+        return (
+          <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
+            {value}
+          </Text>
+        )
+      },
+      size: 175,
     },
     {
       id: 'totalLiquidity',

@@ -1,6 +1,6 @@
 'use client'
 
-import { GetUserDataDocument } from '@/lib/services/api/generated/graphql'
+import { GetUserDataDocument, GqlChain } from '@/lib/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/utils/contexts'
 import { PropsWithChildren, createContext } from 'react'
 import { useUserAccount } from '../web3/useUserAccount'
@@ -21,11 +21,20 @@ export function _useUserData() {
     },
   })
 
+  function getUserBalanceUSD(poolId: string, chain: GqlChain): number {
+    const balance = data?.balances?.find(
+      balance => balance.poolId === poolId && balance.chain === chain,
+    )
+
+    return balance ? Number(balance.totalBalance) * balance.tokenPrice : 0
+  }
+
   return {
     loading,
     balances: data?.balances || [],
     staking: data?.staking || [],
     vebalBalance: data?.veBALUserBalance || '0',
+    getUserBalanceUSD,
   }
 }
 
