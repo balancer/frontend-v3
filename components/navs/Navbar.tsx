@@ -9,6 +9,7 @@ export function Navbar() {
     <HStack padding="md">
       <Link href="/">Home</Link>
       <Link href="/pools">Pools</Link>
+      <Link href="/debug">Debug</Link>
       <DarkModeToggle />
       <ConnectWallet />
     </HStack>

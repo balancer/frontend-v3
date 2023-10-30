@@ -3,10 +3,17 @@ import { createWagmiConfig } from '@/lib/modules/web3/Web3Provider'
 import { ApolloProvider } from '@apollo/client'
 import { RenderHookOptions, act, renderHook } from '@testing-library/react'
 import { ReactElement, ReactNode } from 'react'
-import { Config, UsePrepareContractWriteConfig, WagmiConfig, useAccount, useConnect } from 'wagmi'
+import {
+  Config,
+  UsePrepareContractWriteConfig,
+  WagmiConfig,
+  useAccount,
+  useConnect,
+  useWalletClient,
+} from 'wagmi'
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
-import { createWagmiTestConfig, mainnetMockConnector } from './wagmi'
+import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
 import { QueryParamAdapter, QueryParamProvider } from 'use-query-params'
 import { waitFor } from '@testing-library/react'
 import { GetFunctionArgs, InferFunctionName } from 'viem'
@@ -127,17 +134,27 @@ export function testManagedTransaction<
  * Called from integration tests to setup a connection with the default anvil test account (defaultTestUserAccount)
  */
 export async function useConnectTestAccount() {
-  function useConnectWithAccount() {
+  function useConnectWallet() {
     const config = { connector: mainnetMockConnector }
     return {
       account: useAccount(),
       connect: useConnect(config),
+      walletClient: useWalletClient(),
     }
   }
-  const { result } = testHook(() => useConnectWithAccount())
+  const { result } = testHook(useConnectWallet)
 
   await act(async () => result.current.connect.connect())
   await waitFor(() =>
     expect(result.current.connect.isSuccess && result.current.account.isConnected).toBeTruthy()
   )
+  expect(result.current.walletClient).toBeDefined()
+
+  expect(result.current.connect.data?.account).toBe(defaultTestUserAccount)
+
+  return {
+    account: result.current.account,
+    connect: result.current.connect,
+    walletClient: result.current.walletClient,
+  }
 }

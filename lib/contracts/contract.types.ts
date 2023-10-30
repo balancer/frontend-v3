@@ -1,11 +1,23 @@
-import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
-import { Abi } from 'viem'
-import { useManagedTransaction } from './useManagedTransaction'
+import {
+  useContractWrite,
+  usePrepareContractWrite,
+  usePrepareSendTransaction,
+  useSendTransaction,
+  useWaitForTransaction,
+} from 'wagmi'
+import { Abi, Address } from 'viem'
+import { ChainId } from '@balancer/sdk'
 
-export type TransactionSimulation = ReturnType<typeof usePrepareContractWrite>
-export type TransactionExecution = ReturnType<typeof useContractWrite>
-export type TransactionResult = ReturnType<typeof useWaitForTransaction>
-export type ManagedTransactionPayload = ReturnType<typeof useManagedTransaction>
+export type TransactionSimulation =
+  | ReturnType<typeof usePrepareContractWrite>
+  | ReturnType<typeof usePrepareSendTransaction>
+
+export type TransactionExecution =
+  | ReturnType<typeof useContractWrite>
+  | ReturnType<typeof useSendTransaction>
+export type TransactionResult =
+  | ReturnType<typeof useWaitForTransaction>
+  | ReturnType<typeof useWaitForTransaction>
 export type TransactionBundle = {
   simulation: TransactionSimulation
   execution: TransactionExecution
@@ -14,3 +26,16 @@ export type TransactionBundle = {
 
 export type AbiItem = Abi[number]
 export type WriteAbiMutability = 'payable' | 'nonpayable'
+
+export type SdkTransactionConfig = {
+  account: Address
+  chainId: ChainId
+  data: Address
+  to: Address
+  value?: bigint
+}
+
+export type UsePrepareSendTransactionConfig = Exclude<
+  Parameters<typeof usePrepareSendTransaction>[0],
+  undefined
+>

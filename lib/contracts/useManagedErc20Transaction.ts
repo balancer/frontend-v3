@@ -3,39 +3,36 @@
 
 import { ManagedResult, TransactionLabels } from '@/components/btns/transaction-steps/lib'
 import { useEffect, useState } from 'react'
-import { Abi, GetFunctionArgs, InferFunctionName } from 'viem'
+import { Address, GetFunctionArgs, InferFunctionName } from 'viem'
 import {
   UsePrepareContractWriteConfig,
+  erc20ABI,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
 } from 'wagmi'
-import { AbiMap } from './AbiMap'
 import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
-import { useContractAddress } from './useContractAddress'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 
-export function useManagedTransaction<
-  T extends typeof AbiMap,
-  M extends keyof typeof AbiMap,
-  F extends InferFunctionName<T[M], string, WriteAbiMutability>
+type Erc20Abi = typeof erc20ABI
+export function useManagedErc20Transaction<
+  F extends InferFunctionName<Erc20Abi, string, WriteAbiMutability>
 >(
-  contractId: M,
+  tokenAddress: Address,
   functionName: F,
   labels: TransactionLabels,
-  args?: GetFunctionArgs<T[M], F> | null,
+  args?: GetFunctionArgs<Erc20Abi, F> | null,
   additionalConfig?: Omit<
-    UsePrepareContractWriteConfig<T[M], F, number>,
+    UsePrepareContractWriteConfig<Erc20Abi, F, number>,
     'abi' | 'address' | 'functionName' | 'args'
   >
 ) {
-  const address = useContractAddress(contractId)
   const [writeArgs, setWriteArgs] = useState(args)
 
   const prepareQuery = usePrepareContractWrite({
-    abi: AbiMap[contractId] as Abi,
-    address,
+    abi: erc20ABI,
+    address: tokenAddress,
     functionName: functionName as InferFunctionName<any, string, WriteAbiMutability>,
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
     args: writeArgs?.args as any,
@@ -66,14 +63,14 @@ export function useManagedTransaction<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(args)])
 
-  const managedWrite = (args?: GetFunctionArgs<T[M], F>) => {
+  const managedWrite = (args?: GetFunctionArgs<Erc20Abi, F>) => {
     if (args) {
       setWriteArgs(args)
     }
     writeQuery.write?.()
   }
 
-  const managedWriteAsync = async (args?: GetFunctionArgs<T[M], F>) => {
+  const managedWriteAsync = async (args?: GetFunctionArgs<Erc20Abi, F>) => {
     if (args) {
       setWriteArgs(args)
     }

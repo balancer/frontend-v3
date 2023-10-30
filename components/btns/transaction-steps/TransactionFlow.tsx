@@ -1,12 +1,12 @@
 import { Alert, Button, ButtonProps, VStack } from '@chakra-ui/react'
 import React, { useEffect } from 'react'
-import { TransactionStep } from './lib'
+import { FlowStep } from './lib'
 import { TransactionStepButton } from './TransactionStepButton'
 import { ReactNode } from 'react'
 
 type Props = {
   // the order of the steps is important, and must be provided in the order of desired execution
-  steps: TransactionStep[]
+  steps: FlowStep[]
 
   // when the flow is complete, this callback function will be executed
   // this is useful for actions such as navigating the user on a successful

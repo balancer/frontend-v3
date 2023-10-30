@@ -1,17 +1,16 @@
 'use client'
 
-import { Alert, Button, VStack } from '@chakra-ui/react'
-import { TransactionState, TransactionStep, getTransactionState } from './lib'
-import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { TransactionStateData } from '@/components/other/TransactionState'
+import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-
+import { Alert, Button, VStack } from '@chakra-ui/react'
+import { FlowStep, TransactionState, getTransactionState } from './lib'
 interface Props {
-  step: TransactionStep
+  step: FlowStep
 }
 
 export function TransactionStepButton({
-  step: { simulation, execution, result, getLabels, managedWrite },
+  step: { simulation, execution, result, getLabels, execute: managedRun },
 }: Props) {
   const { isConnected } = useUserAccount()
   const isTransactButtonVisible = isConnected
@@ -19,12 +18,12 @@ export function TransactionStepButton({
   const isButtonLoading =
     transactionState === TransactionState.Loading ||
     transactionState === TransactionState.Confirming
-  const hasSimulationError = (!execution.write && !execution.isIdle) || simulation.isError
+  const hasSimulationError = (!execution.isIdle && !execution.data) || simulation.isError
   const isButtonDisabled = transactionState === TransactionState.Loading || hasSimulationError
 
   function handleOnClick() {
     if (!simulation.isError) {
-      managedWrite()
+      managedRun?.()
     }
   }
 

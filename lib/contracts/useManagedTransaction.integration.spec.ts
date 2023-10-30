@@ -1,11 +1,9 @@
-import { testManagedTransaction, useConnectTestAccount } from '@/test/utils/custom-renderers'
+import { testManagedTransaction } from '@/test/utils/custom-renderers'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { waitFor } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
 
 test('relayer successful relayer approval transaction', async () => {
-  await useConnectTestAccount()
-
   const balancerRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'
 
   const result = testManagedTransaction('balancer.vaultV2', 'setRelayerApproval', {
@@ -14,7 +12,7 @@ test('relayer successful relayer approval transaction', async () => {
 
   await waitFor(() => expect(result.current.simulation.isSuccess).toBeTruthy())
 
-  await act(() => result.current.managedWriteAsync())
+  await act(() => result.current.executeAsync())
 
   await waitFor(() => expect(result.current.execution.isSuccess).toBeTruthy())
 

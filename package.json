@@ -30,6 +30,7 @@
   "dependencies": {
     "@apollo/client": "3.8.0-rc.1",
     "@apollo/experimental-nextjs-app-support": "^0.4.1",
+    "@balancer/sdk": "github:balancer/b-sdk#join2",
     "@chakra-ui/hooks": "^2.2.1",
     "@chakra-ui/icons": "^2.1.0",
     "@chakra-ui/next-js": "^2.1.5",
@@ -64,7 +65,7 @@
     "typescript": "5.1.6",
     "use-query-params": "^2.2.1",
     "viem": "^1.2.9",
-    "wagmi": "^1.4.3",
+    "wagmi": "^1.4.4",
     "zod": "^3.21.4"
   },
   "devDependencies": {
