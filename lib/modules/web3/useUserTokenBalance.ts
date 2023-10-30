@@ -1,6 +1,7 @@
 import { useIsMounted } from './useIsMounted'
 import { Address, useBalance } from 'wagmi'
 import { useUserAccount } from './useUserAccount'
+import { prettyPrintBalance } from '@/lib/utils/balances'
 
 export function useUserTokenBalance(tokenAddress: Address) {
   const { mounted } = useIsMounted()
@@ -12,7 +13,7 @@ export function useUserTokenBalance(tokenAddress: Address) {
   })
 
   if (mounted && address) {
-    return { isLoading, formattedBalance: `${balance?.formatted} ${balance?.symbol}` }
+    return { isLoading, balance, formattedBalance: prettyPrintBalance(balance) }
   }
-  return { isLoading: true, balance: undefined }
+  return { isLoading: true, balance, formattedBalance: '-' }
 }

@@ -25,7 +25,7 @@ export function JoinExample() {
   return (
     <VStack width="full">
       <RecentTransactions />
-      <Flex>WETH balance: {formattedBalance ? formattedBalance : '-'}</Flex>
+      <Flex>WETH balance: {formattedBalance}</Flex>
       <Flex>
         <TransactionFlow
           completedAlertContent="Successfully joined pool"
