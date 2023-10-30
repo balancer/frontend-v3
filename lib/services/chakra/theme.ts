@@ -53,7 +53,7 @@ export const balTheme: ThemeOverride = {
       primary: { _light: 'primary.500', _dark: 'primary.500' },
       'chakra-body-text': { _light: 'gray.800', _dark: 'whiteAlpha.900' },
       'chakra-body-bg': { _light: 'white', _dark: 'gray.800' },
-      'chakra-border-color': { _light: 'red', _dark: 'blue' },
+      'chakra-border-color': { _light: 'gray.200', _dark: 'whiteAlpha.300' },
       'chakra-inverse-text': { _light: 'white', _dark: 'gray.800' },
       'chakra-subtle-bg': { _light: 'gray.100', _dark: 'gray.700' },
       'chakra-subtle-text': { _light: 'gray.600', _dark: 'gray.400' },
