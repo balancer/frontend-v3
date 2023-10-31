@@ -1,6 +1,6 @@
 'use client'
 
-import TransactionFlow from '@/components/btns/transaction-steps/TransactionFlow'
+import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
 import { useConstructRelayerApprovalStep } from '@/lib/modules/steps/useConstructRelayerApprovalStep'
 import { Flex, VStack } from '@chakra-ui/react'
 import RecentTransactions from '../RecentTransactions'

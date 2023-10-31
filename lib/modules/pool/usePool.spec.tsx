@@ -1,7 +1,7 @@
 import { Wrapper, testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
 import { PoolProvider, _usePool, usePool } from './usePool'
-import { GqlChain } from '@/lib/services/api/generated/graphql'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { defaultPoolMock } from '@/test/msw/handlers/Pool.handlers'
 import { PoolVariant } from './pool.types'
 

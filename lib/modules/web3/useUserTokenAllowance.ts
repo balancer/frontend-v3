@@ -1,8 +1,8 @@
-import { useErc20Read } from '@/lib/contracts/useErc20Read'
-import { nullAddress } from '@/lib/contracts/wagmi-helpers'
 import { Address } from 'wagmi'
 import { useUserAccount } from './useUserAccount'
 import { useIsMounted } from './useIsMounted'
+import { nullAddress } from './contracts/wagmi-helpers'
+import { useErc20Read } from './contracts/useErc20Read'
 
 export function useUserTokenAllowance(tokenAddress: Address, spenderAddress: Address) {
   const { mounted } = useIsMounted()

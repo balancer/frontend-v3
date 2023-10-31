@@ -1,4 +1,4 @@
-import { GqlChain, GqlPoolElement } from '@/lib/services/api/generated/graphql'
+import { GqlChain, GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 import { DeepPartial } from '@apollo/client/utilities'
 import { mock } from 'vitest-mock-extended'
 

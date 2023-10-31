@@ -1,7 +1,7 @@
 'use client'
 
-import TransactionFlow from '@/components/btns/transaction-steps/TransactionFlow'
 import { poolId, vaultV2Address, wETHAddress } from '@/lib/debug-helpers'
+import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
 import { useConstructJoinPoolStep } from '@/lib/modules/steps/join/useConstructJoinPoolStep'
 import { useConstructApproveTokenStep } from '@/lib/modules/steps/useConstructApproveTokenStep'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'

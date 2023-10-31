@@ -1,6 +1,6 @@
 'use client'
 
-import { noUserAddress } from '@/lib/contracts/wagmi-helpers'
+import { noUserAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { Address, useQuery } from 'wagmi'
 import { JoinConfigBuilder } from './JoinConfigBuilder'
 

@@ -1,4 +1,4 @@
-import { GqlPoolSnapshotDataRange } from '@/lib/services/api/generated/graphql'
+import { GqlPoolSnapshotDataRange } from '@/lib/shared/services/api/generated/graphql'
 import { Select } from '@chakra-ui/react'
 import { Dispatch, SetStateAction } from 'react'
 import { poolChartPeriods } from './usePoolCharts'
