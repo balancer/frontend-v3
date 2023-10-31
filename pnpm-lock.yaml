@@ -16,7 +16,7 @@ dependencies:
     version: 0.4.3(@apollo/client@3.8.0-rc.1)(next@13.5.2)(react@18.2.0)
   '@balancer/sdk':
     specifier: github:balancer/b-sdk#join2
-    version: github.com/balancer/b-sdk/e99a9dff2c2518705a0b42e03788d8de9a0fbc48(typescript@5.1.6)(zod@3.22.4)
+    version: github.com/balancer/b-sdk/eb64fbf8f3adac00526e1887f10ce481fac3ffd9(typescript@5.1.6)(zod@3.22.4)
   '@chakra-ui/hooks':
     specifier: ^2.2.1
     version: 2.2.1(react@18.2.0)
@@ -203,8 +203,8 @@ devDependencies:
     specifier: ^4.2.1
     version: 4.2.1(eslint-config-prettier@8.10.0)(eslint@8.43.0)(prettier@2.8.8)
   happy-dom:
-    specifier: ^10.5.2
-    version: 10.11.2
+    specifier: ^12.10.3
+    version: 12.10.3
   husky:
     specifier: ^8.0.3
     version: 8.0.3
@@ -231,7 +231,7 @@ devDependencies:
     version: 3.0.0(prettier@2.8.8)(stylelint@15.11.0)
   vitest:
     specifier: ^0.34.4
-    version: 0.34.6(happy-dom@10.11.2)
+    version: 0.34.6(happy-dom@12.10.3)
   vitest-mock-extended:
     specifier: ^1.2.1
     version: 1.3.1(typescript@5.1.6)(vitest@0.34.6)
@@ -4774,7 +4774,7 @@ packages:
       std-env: 3.4.3
       test-exclude: 6.0.0
       v8-to-istanbul: 9.1.3
-      vitest: 0.34.6(happy-dom@10.11.2)
+      vitest: 0.34.6(happy-dom@12.10.3)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -7748,8 +7748,8 @@ packages:
     resolution: {integrity: sha512-59LZHPdGZVh695Ud9lRzPBVTtlX9ZCV150Er2W43ro37wVof0ctenSaskPPjN7lVTIN8mSZt8PHUNKZuNQUuxw==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
-  /happy-dom@10.11.2:
-    resolution: {integrity: sha512-rzgmLjLkhyaOdFEyU8CWXzbgyCyM7wJHLqhaoeEVSTyur1fjcUaiNTHx+D4CPaLvx16tGy+SBPd9TVnP/kzL3w==}
+  /happy-dom@12.10.3:
+    resolution: {integrity: sha512-JzUXOh0wdNGY54oKng5hliuBkq/+aT1V3YpTM+lrN/GoLQTANZsMaIvmHiHe612rauHvPJnDZkZ+5GZR++1Abg==}
     dependencies:
       css.escape: 1.5.1
       entities: 4.5.0
@@ -9519,7 +9519,7 @@ packages:
       on-exit-leak-free: 2.1.2
       pino-abstract-transport: 1.1.0
       pino-std-serializers: 6.2.2
-      process-warning: 2.2.0
+      process-warning: 2.3.0
       quick-format-unescaped: 4.0.4
       real-require: 0.2.0
       safe-stable-stringify: 2.4.3
@@ -9623,8 +9623,8 @@ packages:
   /process-warning@1.0.0:
     resolution: {integrity: sha512-du4wfLyj4yCZq1VupnVSZmRsPJsNuxoDQFdCFHLaYiEbFBD7QE0a+I4D7hOxrVnh78QE/YipFAj9lXHiXocV+Q==}
 
-  /process-warning@2.2.0:
-    resolution: {integrity: sha512-/1WZ8+VQjR6avWOgHeEPd7SDQmFQ1B5mC1eRXsCm5TarlNmx/wCsa5GEaxGm05BORRtyG/Ex/3xq3TuRvq57qg==}
+  /process-warning@2.3.0:
+    resolution: {integrity: sha512-N6mp1+2jpQr3oCFMz6SeHRGbv6Slb20bRhj4v3xR99HqNToAcOe1MFOp4tytyzOfJn+QtN8Rf7U/h2KAn4kC6g==}
     dev: false
 
   /process@0.11.10:
@@ -11226,10 +11226,10 @@ packages:
     dependencies:
       ts-essentials: 9.4.1(typescript@5.1.6)
       typescript: 5.1.6
-      vitest: 0.34.6(happy-dom@10.11.2)
+      vitest: 0.34.6(happy-dom@12.10.3)
     dev: true
 
-  /vitest@0.34.6(happy-dom@10.11.2):
+  /vitest@0.34.6(happy-dom@12.10.3):
     resolution: {integrity: sha512-+5CALsOvbNKnS+ZHMXtuUC7nL8/7F1F2DnHGjSsszX8zCjWSSviphCb/NuS9Nzf4Q03KyyDRBAXhF/8lffME4Q==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -11273,7 +11273,7 @@ packages:
       cac: 6.7.14
       chai: 4.3.10
       debug: 4.3.4
-      happy-dom: 10.11.2
+      happy-dom: 12.10.3
       local-pkg: 0.4.3
       magic-string: 0.30.5
       pathe: 1.1.1
@@ -11665,9 +11665,9 @@ packages:
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
 
-  github.com/balancer/b-sdk/e99a9dff2c2518705a0b42e03788d8de9a0fbc48(typescript@5.1.6)(zod@3.22.4):
-    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/e99a9dff2c2518705a0b42e03788d8de9a0fbc48}
-    id: github.com/balancer/b-sdk/e99a9dff2c2518705a0b42e03788d8de9a0fbc48
+  github.com/balancer/b-sdk/eb64fbf8f3adac00526e1887f10ce481fac3ffd9(typescript@5.1.6)(zod@3.22.4):
+    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/eb64fbf8f3adac00526e1887f10ce481fac3ffd9}
+    id: github.com/balancer/b-sdk/eb64fbf8f3adac00526e1887f10ce481fac3ffd9
     name: '@balancer/sdk'
     version: 0.2.0
     dependencies:
