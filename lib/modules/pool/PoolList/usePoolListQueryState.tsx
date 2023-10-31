@@ -5,7 +5,7 @@ import {
   GqlPoolFilterType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
-} from '@/lib/services/api/generated/graphql'
+} from '@/lib/shared/services/api/generated/graphql'
 import { uniq } from 'lodash'
 import {
   createEnumDelimitedArrayParam,

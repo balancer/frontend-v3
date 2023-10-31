@@ -1,5 +1,5 @@
 import { ProjectConfig } from '@/lib/config/config.types'
-import { GqlChain } from '@/lib/services/api/generated/graphql'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 export const ProjectConfigBalancer: ProjectConfig = {
   projectId: 'balancer',

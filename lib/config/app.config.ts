@@ -1,4 +1,4 @@
-import { GqlChain } from '@/lib/services/api/generated/graphql'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { keyBy } from 'lodash'
 import { Config, NetworkConfig } from './config.types'
 import networks from './networks'

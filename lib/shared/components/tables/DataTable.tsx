@@ -20,8 +20,8 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table'
-import { SortingIcon } from '@/components/icons/SortingIcon'
-import { Pagination } from '@/components/pagination/Pagination'
+import { SortingIcon } from '@/lib/shared/components/icons/SortingIcon'
+import { Pagination } from '@/lib/shared/components/pagination/Pagination'
 
 export type DataTableProps<Data extends object> = {
   data: Data[]

@@ -1,6 +1,6 @@
 'use client'
 
-import { MockApi } from '@/lib/balancer-api/MockApi'
+import { MockApi } from '@/lib/shared/hooks/balancer-api/MockApi'
 import { Address, useQuery } from 'wagmi'
 
 const POOL_STATE_CACHE__TIME_MS = 30_000

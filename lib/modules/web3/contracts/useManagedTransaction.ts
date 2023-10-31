@@ -1,7 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
-import { ManagedResult, TransactionLabels } from '@/components/btns/transaction-steps/lib'
+import {
+  ManagedResult,
+  TransactionLabels,
+} from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useEffect, useState } from 'react'
 import { Abi, GetFunctionArgs, InferFunctionName } from 'viem'
 import {

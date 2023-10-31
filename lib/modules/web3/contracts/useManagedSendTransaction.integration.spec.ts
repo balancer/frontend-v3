@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { describe, expect, test } from 'vitest'
 
-import { useManagedSendTransaction } from '@/lib/contracts/useManagedSendTransaction'
+import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import { JoinConfigBuilder } from '@/lib/modules/steps/join/JoinConfigBuilder'
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import { testHook } from '@/test/utils/custom-renderers'
@@ -9,8 +9,8 @@ import { defaultTestUserAccount, testPublicClient as testClient } from '@/test/u
 import { ChainId, HumanAmount } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/dist/actions'
-import { chains } from '../modules/web3/Web3Provider'
-import { buildJoinPoolLabels } from '../modules/steps/join/useConstructJoinPoolStep'
+import { chains } from '../Web3Provider'
+import { buildJoinPoolLabels } from '../../steps/join/useConstructJoinPoolStep'
 
 const chainId = ChainId.MAINNET
 const port = 8555

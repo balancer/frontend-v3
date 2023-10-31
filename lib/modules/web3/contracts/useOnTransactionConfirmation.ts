@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Address } from 'viem'
-import { useRecentTransactions } from '../modules/transactions/RecentTransactionsProvider'
-import { TransactionLabels } from '@/components/btns/transaction-steps/lib'
+import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
+import { TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
 
 export function useOnTransactionConfirmation(
   labels: TransactionLabels,

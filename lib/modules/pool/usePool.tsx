@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-import { GetPoolDocument } from '@/lib/services/api/generated/graphql'
+import { GetPoolDocument } from '@/lib/shared/services/api/generated/graphql'
 import { createContext, PropsWithChildren } from 'react'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { FetchPoolProps } from './pool.types'
 import { getNetworkConfig } from '@/lib/config/app.config'
-import { useMandatoryContext } from '@/lib/utils/contexts'
+import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 
 export type UsePoolResponse = ReturnType<typeof _usePool>
 export const PoolContext = createContext<UsePoolResponse | null>(null)

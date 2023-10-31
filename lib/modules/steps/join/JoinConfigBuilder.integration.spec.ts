@@ -1,4 +1,4 @@
-import { MockApi } from '@/lib/balancer-api/MockApi'
+import { MockApi } from '@/lib/shared/hooks/balancer-api/MockApi'
 import { JoinConfigBuilder } from './JoinConfigBuilder'
 import { ChainId } from '@balancer/sdk'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'

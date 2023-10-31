@@ -1,6 +1,6 @@
 'use client'
 
-import { useMandatoryContext } from '@/lib/utils/contexts'
+import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { AlertStatus, ToastId, useToast } from '@chakra-ui/react'
 import { keyBy, orderBy, take } from 'lodash'
 import React, { ReactNode, createContext, useCallback, useEffect, useState } from 'react'
