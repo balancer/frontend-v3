@@ -1,17 +1,18 @@
 'use client'
 
+import { poolId, vaultV2Address, wETHAddress } from '@/lib/debug-helpers'
 import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
 import { useConstructJoinPoolStep } from '@/lib/modules/steps/join/useConstructJoinPoolStep'
 import { useConstructApproveTokenStep } from '@/lib/modules/steps/useConstructApproveTokenStep'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useUserTokenAllowance } from '@/lib/modules/web3/useUserTokenAllowance'
 import { Flex, VStack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useBalance } from 'wagmi'
 import { FetchBalanceResult } from 'wagmi/dist/actions'
+import RecentTransactions from '../RecentTransactions'
 
-export function Approval() {
-  const poolId = '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512' // Balancer Weighted wjAura and WETH
-  const wETHAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+export function JoinWithTokenApproval() {
   const { step: tokenApprovalStep } = useConstructApproveTokenStep(wETHAddress)
   const { step: joinStep } = useConstructJoinPoolStep(poolId)
 
@@ -19,6 +20,7 @@ export function Approval() {
 
   const [wstETHBalance, setWstETHBalance] = useState<FetchBalanceResult | null>(null)
   const { data } = useBalance({ address, token: wETHAddress })
+  const { allowance } = useUserTokenAllowance(wETHAddress, vaultV2Address)
 
   useEffect(() => {
     if (data) setWstETHBalance(data)
@@ -30,6 +32,8 @@ export function Approval() {
 
   return (
     <VStack width="full">
+      <RecentTransactions />
+
       <Flex>
         <TransactionFlow
           completedAlertContent="Successfully joined pool"
@@ -40,7 +44,8 @@ export function Approval() {
         {/* <Button onClick={() => joinQuery.refetch()}>Refetch</Button> */}
       </Flex>
 
-      <Flex>wsETH User Balance: {wstETHBalance ? `${wstETHBalance.formatted}` : '-'}</Flex>
+      <Flex>WETH Balance: {wstETHBalance ? `${wstETHBalance.formatted}` : '-'}</Flex>
+      <Flex>WETH Allowance: {allowance >= 0 ? `${allowance}` : '-'}</Flex>
     </VStack>
   )
 }

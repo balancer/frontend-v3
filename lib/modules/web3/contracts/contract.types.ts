@@ -26,6 +26,7 @@ export type TransactionBundle = {
 
 export type AbiItem = Abi[number]
 export type WriteAbiMutability = 'payable' | 'nonpayable'
+export type ReadAbiMutability = 'view'
 
 export type SdkTransactionConfig = {
   account: Address
