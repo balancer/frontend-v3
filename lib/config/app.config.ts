@@ -31,3 +31,5 @@ export function getNetworkConfig(chain?: GqlChain | number): NetworkConfig {
 
   return config.networks[chain]
 }
+
+export const DELEGATE_OWNER = '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b'
