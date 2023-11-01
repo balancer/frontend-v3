@@ -1,5 +1,4 @@
 import { config } from '@/lib/config/app.config'
-import { userAddressVar } from '@/lib/modules/web3/useUserAccount'
 import { ApolloLink, HttpLink } from '@apollo/client'
 import {
   NextSSRApolloClient,
@@ -12,7 +11,7 @@ const userMiddleware = new ApolloLink((operation, forward) => {
     return {
       headers: {
         ...headers,
-        AccountAddress: userAddressVar(),
+        // AccountAddress: userAddressVar(),
       },
     }
   })

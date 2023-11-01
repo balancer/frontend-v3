@@ -1,11 +1,11 @@
 'use client'
 
-import { GetUserDataDocument, GqlChain } from '@/lib/services/api/generated/graphql'
-import { useMandatoryContext } from '@/lib/utils/contexts'
 import { PropsWithChildren, createContext } from 'react'
 import { useUserAccount } from '../web3/useUserAccount'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import { GetUserDataDocument, GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 
 export type UseUserDataResponse = ReturnType<typeof _useUserData>
 export const UserDataContext = createContext<UseUserDataResponse | null>(null)
@@ -23,7 +23,7 @@ export function _useUserData() {
 
   function getUserBalanceUSD(poolId: string, chain: GqlChain): number {
     const balance = data?.balances?.find(
-      balance => balance.poolId === poolId && balance.chain === chain,
+      balance => balance.poolId === poolId && balance.chain === chain
     )
 
     return balance ? Number(balance.totalBalance) * balance.tokenPrice : 0
