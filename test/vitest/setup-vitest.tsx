@@ -1,8 +1,8 @@
-import '@/lib/shared/utils/bigint';
-import '@testing-library/jest-dom';
-import { configure } from '@testing-library/react';
-import fetch from "cross-fetch";
-import { apolloTestClient } from '../utils/apollo-test-client';
+import '@/lib/shared/utils/bigint'
+import '@testing-library/jest-dom'
+import { configure } from '@testing-library/react'
+import fetch from 'cross-fetch'
+import { apolloTestClient } from '../utils/apollo-test-client'
 
 /*
 Using the default node-fetch in node 18 causes a viem exception in integration tests
