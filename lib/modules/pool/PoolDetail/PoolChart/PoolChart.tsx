@@ -5,7 +5,6 @@ import { PoolChartTypeTabs } from './PoolChartTypeTabs'
 import { usePoolCharts } from './usePoolCharts'
 import { PoolChartPeriodSelector } from './PoolChartPeriodSelector'
 import numeral from 'numeral'
-import Loading from '@/app/(app)/pools/loading'
 
 export function PoolChart() {
   const {
@@ -46,7 +45,7 @@ export function PoolChart() {
           <Text>{chartDate}</Text>
         </Stack>
       </HStack>
-      {isLoading && <Loading />}
+      {isLoading && <div>Loading...</div>}
       {chartData.length > 0 ? (
         <Box onMouseLeave={handleMouseLeave}>
           <ReactECharts
