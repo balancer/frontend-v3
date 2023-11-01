@@ -1,5 +1,5 @@
 import { Address } from 'viem'
-import { GqlChain } from '../services/api/generated/graphql'
+import { GqlChain } from '../shared/services/api/generated/graphql'
 
 export interface TokensConfig {
   nativeAsset: {
@@ -12,7 +12,9 @@ export interface TokensConfig {
 
 export interface ContractsConfig {
   multicall2: Address
-  balancer: { vaultV2?: Address }
+  balancer: {
+    vaultV2?: Address
+  }
 }
 
 export interface NetworkConfig {

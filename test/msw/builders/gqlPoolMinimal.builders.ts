@@ -3,7 +3,7 @@ import {
   GqlPoolApr,
   GqlPoolMinimal,
   GqlPoolMinimalType,
-} from '@/lib/services/api/generated/graphql'
+} from '@/lib/shared/services/api/generated/graphql'
 import { DeepPartial } from '@apollo/client/utilities'
 import { mock, mockDeep } from 'vitest-mock-extended'
 

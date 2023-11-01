@@ -19,7 +19,7 @@ export default defineConfig(() => {
   })
 
   return {
-    out: 'lib/abi/generated.ts',
+    out: 'lib/modules/web3/contracts/abi/generated.ts',
     contracts: CONTRACTS,
     plugins: [
       // react(),

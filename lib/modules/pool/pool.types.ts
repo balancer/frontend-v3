@@ -3,7 +3,7 @@ import {
   GetPoolsQueryVariables,
   GqlChain,
   GqlPoolOrderBy,
-} from '@/lib/services/api/generated/graphql'
+} from '@/lib/shared/services/api/generated/graphql'
 
 export type PoolList = GetPoolsQuery['pools']
 

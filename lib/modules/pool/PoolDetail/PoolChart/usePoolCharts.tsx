@@ -6,7 +6,7 @@ import {
   GetPoolSnapshotsDocument,
   GqlPoolFilterType,
   GqlPoolSnapshotDataRange,
-} from '@/lib/services/api/generated/graphql'
+} from '@/lib/shared/services/api/generated/graphql'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'

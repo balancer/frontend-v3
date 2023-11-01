@@ -1,6 +1,15 @@
+import '@/lib/shared/utils/bigint'
 import '@testing-library/jest-dom'
-import { apolloTestClient } from '../utils/apollo-test-client'
 import { configure } from '@testing-library/react'
+import fetch from 'cross-fetch'
+import { apolloTestClient } from '../utils/apollo-test-client'
+
+/*
+Using the default node-fetch in node 18 causes a viem exception in integration tests
+(Expected signal to be an instanceof AbortSignal)
+Replacing fetch with cross-fetch implementation solves the issue
+*/
+global.fetch = fetch
 
 if (process.env.VITE_USE_PRODUCTION_WAGMI == 'true') {
   console.log('🚨  Running tests with production wagmi config  🚨')

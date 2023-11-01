@@ -1,4 +1,4 @@
-import { GqlChain, GqlPoolAprValue } from '@/lib/services/api/generated/graphql'
+import { GqlChain, GqlPoolAprValue } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolVariant } from './pool.types'
 import numeral from 'numeral'

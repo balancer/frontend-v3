@@ -1,8 +1,8 @@
 'use client'
 
-import { GetTokensDocument, GqlToken } from '@/lib/services/api/generated/graphql'
-import { isSameAddress } from '@/lib/utils/addresses'
-import { useMandatoryContext } from '@/lib/utils/contexts'
+import { GetTokensDocument, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { PropsWithChildren, createContext } from 'react'
 
