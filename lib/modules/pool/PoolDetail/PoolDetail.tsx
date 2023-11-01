@@ -7,7 +7,7 @@ export function PoolDetail() {
   const { pool, loading } = usePool()
 
   return (
-    <Stack p="40px">
+    <Stack p="40px" maxW="maxContent" mx="auto">
       {loading && <Text>Loading...</Text>}
       <Text>
         {pool?.name}: {pool?.id}

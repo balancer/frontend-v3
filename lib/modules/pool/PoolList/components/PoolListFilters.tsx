@@ -102,6 +102,7 @@ export function PoolListFilters() {
   return (
     <VStack align="flex-start" w="full">
       <HStack w="full">
+        <PoolListSearch />
         <Popover>
           <PopoverTrigger>
             <FilterButton />
@@ -109,9 +110,9 @@ export function PoolListFilters() {
           <PopoverContent>
             <PopoverArrow />
             <PopoverCloseButton />
-            <PopoverBody>
+            <PopoverBody p="md">
               <VStack align="start">
-                <Heading as="h3" size="sm">
+                <Heading as="h3" size="sm" mb="1.5">
                   Pool types
                 </Heading>
                 <PoolTypeFilters />
@@ -124,7 +125,6 @@ export function PoolListFilters() {
             </PopoverBody>
           </PopoverContent>
         </Popover>
-        <PoolListSearch />
       </HStack>
       <FilterTags />
     </VStack>
