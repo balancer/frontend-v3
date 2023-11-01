@@ -8,32 +8,32 @@ query GetUserData($address: String, $chains: [GqlChain!]) {
     stakedBalance
     walletBalance
   }
-  staking: userGetStaking {
-    id
-    type
-    address
-    gauge {
-      id
-      gaugeAddress
-      version
-      status
-      otherGauges {
-        gaugeAddress
-        version
-        status
-        id
-        rewards {
-          id
-          tokenAddress
-          rewardPerSecond
-        }
-      }
-      rewards {
-        id
-        rewardPerSecond
-        tokenAddress
-      }
-    }
-  }
-  veBALUserBalance: veBalGetUserBalance
+  # staking: userGetStaking {
+  #   id
+  #   type
+  #   address
+  #   gauge {
+  #     id
+  #     gaugeAddress
+  #     version
+  #     status
+  #     otherGauges {
+  #       gaugeAddress
+  #       version
+  #       status
+  #       id
+  #       rewards {
+  #         id
+  #         tokenAddress
+  #         rewardPerSecond
+  #       }
+  #     }
+  #     rewards {
+  #       id
+  #       rewardPerSecond
+  #       tokenAddress
+  #     }
+  #   }
+  # }
+  # veBALUserBalance: veBalGetUserBalance
 }
