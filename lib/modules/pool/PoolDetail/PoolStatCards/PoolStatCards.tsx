@@ -1,7 +1,6 @@
 import { Card, CardBody, HStack, Text } from '@chakra-ui/react'
 
 import { usePoolStats } from './usePoolStats'
-import Loading from '@/app/(app)/pools/loading'
 
 export function PoolStatCards() {
   const { stats, loading } = usePoolStats()
@@ -9,7 +8,7 @@ export function PoolStatCards() {
   return (
     <HStack maxWidth="900px">
       {loading ? (
-        <Loading />
+        <div>Loading...</div>
       ) : (
         stats.map(stat => {
           return (

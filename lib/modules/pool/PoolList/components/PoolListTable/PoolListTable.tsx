@@ -27,7 +27,7 @@ export function PoolListTable() {
 
   // Prefetch pool page on row hover, otherwise there is a significant delay
   // between clicking the row and the pool page loading.
-  const rowMouseEnterHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
+  const prefetchPoolPage = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
     const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
     router.prefetch(poolPath)
   }
@@ -38,7 +38,7 @@ export function PoolListTable() {
         columns={columns}
         data={pools}
         rowClickHandler={rowClickHandler}
-        rowMouseEnterHandler={rowMouseEnterHandler}
+        rowMouseEnterHandler={prefetchPoolPage}
         rowCount={count || -1}
         pagination={pagination}
         sorting={sorting}
