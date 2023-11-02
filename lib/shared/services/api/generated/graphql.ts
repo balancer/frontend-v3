@@ -3354,6 +3354,25 @@ export type GqlTokenDynamicDataFragment = {
   updatedAt: string
 } & { ' $fragmentName'?: 'GqlTokenDynamicDataFragment' }
 
+export type GetUserDataQueryVariables = Exact<{
+  address?: InputMaybe<Scalars['String']['input']>
+  chains?: InputMaybe<Array<GqlChain> | GqlChain>
+}>
+
+export type GetUserDataQuery = {
+  __typename?: 'Query'
+  balances: Array<{
+    __typename?: 'GqlUserPoolBalance'
+    poolId: string
+    chain: GqlChain
+    tokenAddress: string
+    tokenPrice: number
+    totalBalance: string
+    stakedBalance: string
+    walletBalance: string
+  }>
+}
+
 export const GqlPoolTokenFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -6664,3 +6683,65 @@ export const GetTradeSelectedTokenDataDocument = {
   GetTradeSelectedTokenDataQuery,
   GetTradeSelectedTokenDataQueryVariables
 >
+export const GetUserDataDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetUserData' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'address' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'chains' } },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'balances' },
+            name: { kind: 'Name', value: 'userGetPoolBalances' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'address' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'address' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'chains' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'chains' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'poolId' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'chain' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenAddress' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenPrice' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'stakedBalance' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'walletBalance' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetUserDataQuery, GetUserDataQueryVariables>
