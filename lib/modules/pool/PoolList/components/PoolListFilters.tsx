@@ -6,6 +6,8 @@ import {
   ButtonProps,
   Checkbox,
   Divider,
+  FormControl,
+  FormControlProps,
   forwardRef,
   Heading,
   HStack,
@@ -15,11 +17,14 @@ import {
   PopoverCloseButton,
   PopoverContent,
   PopoverTrigger,
+  Switch,
   Tag,
   TagCloseButton,
   TagLabel,
   Text,
   VStack,
+  FormLabel,
+  Stack,
 } from '@chakra-ui/react'
 import { PoolListSearch } from './PoolListSearch'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
@@ -28,6 +33,9 @@ import {
   poolTypeFilters,
   usePoolListQueryState,
 } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
+import { useUserData } from '@/lib/modules/user/useUserData'
+import { usePoolList } from '../usePoolList'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 function PoolTypeFilters() {
   const { togglePoolType, poolTypes, poolTypeLabel } = usePoolListQueryState()
@@ -98,34 +106,63 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
   )
 })
 
+const MyPoolsSwitch = forwardRef<FormControlProps, 'switch'>((props, ref) => {
+  const { poolIds, setPoolIds } = usePoolList()
+  const { balances } = useUserData()
+
+  const isFilteredByUserPools = poolIds && poolIds?.length > 0
+
+  function toggleMyPools() {
+    if (isFilteredByUserPools) {
+      setPoolIds(undefined)
+    } else {
+      setPoolIds([...balances.map(balance => balance.poolId)])
+    }
+  }
+
+  return (
+    <FormControl display="flex" alignItems="center" ref={ref} {...props}>
+      <FormLabel htmlFor="my-pools" mb="0">
+        My pools
+      </FormLabel>
+      <Switch id="my-pools" onChange={toggleMyPools} />
+    </FormControl>
+  )
+})
+
 export function PoolListFilters() {
+  const { isConnected } = useUserAccount()
+
   return (
     <VStack align="flex-start" w="full">
-      <HStack w="full">
-        <Popover>
-          <PopoverTrigger>
-            <FilterButton />
-          </PopoverTrigger>
-          <PopoverContent>
-            <PopoverArrow />
-            <PopoverCloseButton />
-            <PopoverBody>
-              <VStack align="start">
-                <Heading as="h3" size="sm">
-                  Pool types
-                </Heading>
-                <PoolTypeFilters />
-                <Divider />
-                <Heading as="h3" size="sm">
-                  Networks
-                </Heading>
-                <PoolNetworkFilters />
-              </VStack>
-            </PopoverBody>
-          </PopoverContent>
-        </Popover>
-        <PoolListSearch />
-      </HStack>
+      <Stack direction={['column', 'row']} w="full" alignItems="center" spacing="md">
+        <HStack w="full" spacing="md">
+          <Popover>
+            <PopoverTrigger>
+              <FilterButton />
+            </PopoverTrigger>
+            <PopoverContent>
+              <PopoverArrow />
+              <PopoverCloseButton />
+              <PopoverBody>
+                <VStack align="start">
+                  <Heading as="h3" size="sm">
+                    Pool types
+                  </Heading>
+                  <PoolTypeFilters />
+                  <Divider />
+                  <Heading as="h3" size="sm">
+                    Networks
+                  </Heading>
+                  <PoolNetworkFilters />
+                </VStack>
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
+          <PoolListSearch w="full" />
+        </HStack>
+        {isConnected && <MyPoolsSwitch w="56" />}
+      </Stack>
       <FilterTags />
     </VStack>
   )

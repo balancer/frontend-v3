@@ -32,8 +32,8 @@ export function _useUserData() {
   return {
     loading,
     balances: data?.balances || [],
-    staking: data?.staking || [],
-    vebalBalance: data?.veBALUserBalance || '0',
+    // staking: data?.staking || [],
+    // vebalBalance: data?.veBALUserBalance || '0',
     getUserBalanceUSD,
   }
 }

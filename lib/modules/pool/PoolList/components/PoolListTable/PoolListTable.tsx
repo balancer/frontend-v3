@@ -1,6 +1,6 @@
 'use client'
 
-import { getPoolListTableColumns } from './PoolListTable.columns'
+import { usePoolListTableColumns } from './PoolListTable.columns'
 import { PoolListItem } from '../../../pool.types'
 import { Box } from '@chakra-ui/react'
 import { DataTable } from '@/lib/shared/components/tables/DataTable'
@@ -12,7 +12,7 @@ import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQu
 export function PoolListTable() {
   const { pools, loading, count } = usePoolList()
   const { pagination, sorting, setPagination, setSorting } = usePoolListQueryState()
-  const columns = getPoolListTableColumns()
+  const columns = usePoolListTableColumns()
   const router = useRouter()
 
   const rowClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {

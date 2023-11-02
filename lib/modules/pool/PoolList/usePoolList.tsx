@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, ReactNode, useRef } from 'react'
+import { createContext, ReactNode, useRef, useState } from 'react'
 import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolListQueryState } from './usePoolListQueryState'
@@ -9,6 +9,7 @@ import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 
 export function _usePoolList() {
   const { state, mappedPoolTypes } = usePoolListQueryState()
+  const [poolIds, setPoolIds] = useState<string[] | undefined>(undefined)
 
   const { data, loading, previousData, refetch, networkStatus, error } = useQuery(
     GetPoolsDocument,
@@ -21,6 +22,7 @@ export function _usePoolList() {
         where: {
           poolTypeIn: mappedPoolTypes,
           chainIn: state.networks.length > 0 ? state.networks : PROJECT_CONFIG.supportedNetworks,
+          idIn: poolIds,
         },
         textSearch: state.textSearch,
       },
@@ -36,7 +38,9 @@ export function _usePoolList() {
     loading,
     error,
     networkStatus,
+    poolIds,
     refetch,
+    setPoolIds,
   }
 }
 

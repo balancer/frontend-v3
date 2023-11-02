@@ -11,7 +11,7 @@ import { getAprLabel } from '../../../pool.utils'
 import { FiGlobe } from 'react-icons/fi'
 import { useUserData } from '@/lib/modules/user/useUserData'
 
-export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
+export const usePoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
   const { getUserBalanceUSD } = useUserData()
 
   return [
@@ -52,11 +52,12 @@ export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
       id: 'myLiquidity',
       header: () => <Text ml="auto">My liquidity</Text>,
       cell: ({ row: { original: pool } }) => {
-        const value = numeral(getUserBalanceUSD(pool.id, pool.chain)).format('($0,0a)')
+        const balance = getUserBalanceUSD(pool.id, pool.chain)
+        const value = numeral(balance).format('($0,0a)')
 
         return (
           <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
-            {value}
+            {balance > 0 ? value : '-'}
           </Text>
         )
       },

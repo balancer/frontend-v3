@@ -1,18 +1,25 @@
 import { useForm } from 'react-hook-form'
-import { FormControl, IconButton, Input, InputGroup, InputRightElement } from '@chakra-ui/react'
+import {
+  FormControl,
+  IconButton,
+  Input,
+  InputGroup,
+  InputRightElement,
+  forwardRef,
+  Box,
+  BoxProps,
+} from '@chakra-ui/react'
 import { HiOutlineSearch, HiOutlineX } from 'react-icons/hi'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 import { useEffect, useMemo } from 'react'
 import { debounce } from 'lodash'
 import { usePoolList } from '../usePoolList'
-import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 const SEARCH = 'search'
 
-export function PoolListSearch() {
+export const PoolListSearch = forwardRef<BoxProps, 'div'>((props, ref) => {
   const { searchText, setSearch } = usePoolListQueryState()
   const { loading } = usePoolList()
-  const { isMobile } = useBreakpoints()
 
   const { register, reset, setValue, getFieldState } = useForm()
 
@@ -31,30 +38,32 @@ export function PoolListSearch() {
   }, [reset])
 
   return (
-    <form style={isMobile ? { width: '100%' } : {}}>
-      <FormControl>
-        <InputGroup size="md">
-          <Input
-            id={SEARCH}
-            placeholder="Search..."
-            {...register(SEARCH)}
-            onChange={debouncedChangeHandler}
-          />
-          <InputRightElement>
-            <IconButton
-              variant="ghost"
-              size="sm"
-              aria-label="search for a pool"
-              icon={searchText ? <HiOutlineX /> : <HiOutlineSearch />}
-              isLoading={getFieldState(SEARCH).isTouched && loading}
-              onClick={() => {
-                setSearch('')
-                setValue(SEARCH, '')
-              }}
+    <Box ref={ref} {...props}>
+      <form>
+        <FormControl>
+          <InputGroup size="md">
+            <Input
+              id={SEARCH}
+              placeholder="Search..."
+              {...register(SEARCH)}
+              onChange={debouncedChangeHandler}
             />
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
-    </form>
+            <InputRightElement>
+              <IconButton
+                variant="ghost"
+                size="sm"
+                aria-label="search for a pool"
+                icon={searchText ? <HiOutlineX /> : <HiOutlineSearch />}
+                isLoading={getFieldState(SEARCH).isTouched && loading}
+                onClick={() => {
+                  setSearch('')
+                  setValue(SEARCH, '')
+                }}
+              />
+            </InputRightElement>
+          </InputGroup>
+        </FormControl>
+      </form>
+    </Box>
   )
-}
+})
