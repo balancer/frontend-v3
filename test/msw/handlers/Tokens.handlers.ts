@@ -1,4 +1,4 @@
-import { GetTokensDocument } from '@/lib/services/api/generated/graphql'
+import { GetTokensDocument } from '@/lib/shared/services/api/generated/graphql'
 import { getQueryName, mockGQL } from '../utils'
 import { graphql } from 'msw'
 import { MswTokenList } from '@/lib/modules/tokens/__mocks__/token.test.types'

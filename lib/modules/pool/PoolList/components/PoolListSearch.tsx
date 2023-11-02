@@ -5,7 +5,7 @@ import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQu
 import { useEffect, useMemo } from 'react'
 import { debounce } from 'lodash'
 import { usePoolList } from '../usePoolList'
-import { useBreakpoints } from '@/lib/hooks/useBreakpoints'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 const SEARCH = 'search'
 

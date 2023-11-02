@@ -3,12 +3,12 @@
 import { ColumnDef } from '@tanstack/react-table'
 import numeral from 'numeral'
 import Image from 'next/image'
-import { GqlPoolApr } from '@/lib/services/api/generated/graphql'
-import { VStack, Text, HStack, Tag, Icon, Box } from '@chakra-ui/react'
+import { GqlPoolApr } from '@/lib/shared/services/api/generated/graphql'
+import { VStack, Text, HStack, Tag, Icon } from '@chakra-ui/react'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { PoolListItem } from '../../../pool.types'
 import { FiGlobe } from 'react-icons/fi'
-import AprTooltip from '@/components/tooltips/apr-tooltip/AprTooltip'
+import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 
 export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
   return [

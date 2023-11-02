@@ -1,4 +1,4 @@
-import { GqlChain } from '@/lib/services/api/generated/graphql'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { keyBy } from 'lodash'
 import { Config, NetworkConfig } from './config.types'
 import networks from './networks'
@@ -31,3 +31,5 @@ export function getNetworkConfig(chain?: GqlChain | number): NetworkConfig {
 
   return config.networks[chain]
 }
+
+export const DELEGATE_OWNER = '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b'

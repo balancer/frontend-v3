@@ -10,7 +10,7 @@ import { PoolListViewType } from './components/PoolListViewType'
 import { usePoolListViewType } from './components/usePoolListViewType'
 import React from 'react'
 import { PoolListSortType } from './components/PoolListSortType'
-import { useBreakpoints } from '@/lib/hooks/useBreakpoints'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { useUserAccount } from '../../web3/useUserAccount'
 
 export function PoolList() {
