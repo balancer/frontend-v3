@@ -33,7 +33,7 @@
     "@chakra-ui/hooks": "^2.2.1",
     "@chakra-ui/icons": "^2.1.0",
     "@chakra-ui/next-js": "^2.1.5",
-    "@chakra-ui/react": "^2.8.0",
+    "@chakra-ui/react": "^2.8.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@nikolovlazar/chakra-ui-prose": "^1.2.1",
