@@ -1,15 +1,16 @@
 'use client'
 import Link from 'next/link'
-import { Flex, Text } from '@chakra-ui/react'
+import { Stack, Text } from '@chakra-ui/react'
 
 export function Footer() {
   return (
-    <Flex
+    <Stack
       mt="2xl"
-      h="20"
       bg="chakra-subtle-bg"
+      px="lg"
+      py="xl"
       align="center"
-      p="md"
+      direction={{ base: 'column', md: 'row' }}
       gap="md"
       position="sticky"
       top="100vh"
@@ -24,6 +25,6 @@ export function Footer() {
       <Link href="cookies-policy">
         <Text fontSize="sm">Cookies policy</Text>
       </Link>
-    </Flex>
+    </Stack>
   )
 }
