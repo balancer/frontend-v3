@@ -5,6 +5,7 @@ import { Box, Stack, HStack, Show } from '@chakra-ui/react'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import BalancerLogo from '@/lib/shared/components/svg/BalancerLogo.svg'
 import BalancerLogotype from '@/lib/shared/components/svg/BalancerLogotype.svg'
+import Image from 'next/image'
 
 export function Navbar() {
   return (
@@ -22,10 +23,10 @@ export function Navbar() {
         <Link href="/">
           <Box display="flex" gap="1.5">
             <Show below="md">
-              <BalancerLogo width="24px" />
+              <Image src={BalancerLogo} alt="Balancer logo" width={24} />
             </Show>
             <Show above="md">
-              <BalancerLogotype width="106px" />
+              <Image src={BalancerLogotype} alt="Balancer logo type" width={106} />
             </Show>
           </Box>
         </Link>
