@@ -6,6 +6,7 @@ import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { GetUserDataDocument, GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { bn, toUSDNumber } from '@/lib/shared/utils/numbers'
 
 export type UseUserDataResponse = ReturnType<typeof _useUserData>
 export const UserDataContext = createContext<UseUserDataResponse | null>(null)
@@ -21,12 +22,18 @@ export function _useUserData() {
     },
   })
 
-  function getUserBalanceUSD(poolId: string, chain: GqlChain): number {
+  function getUserBalanceUSD(poolId: string, chain: GqlChain): string {
     const balance = data?.balances?.find(
       balance => balance.poolId === poolId && balance.chain === chain
     )
-
-    return balance ? Number(balance.totalBalance) * balance.tokenPrice : 0
+      
+    if (balance && poolId === '0x8159462d255c1d24915cb51ec361f700174cd99400000000000000000000075d') {
+      const a = bn(balance.totalBalance).times(balance.tokenPrice).toFixed(2)
+      console.log(a);
+      
+    }
+  
+    return balance ? bn(balance.totalBalance).times(balance.tokenPrice).toFixed(2) : '0'
   }
 
   return {

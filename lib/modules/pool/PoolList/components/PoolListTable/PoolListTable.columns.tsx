@@ -10,6 +10,7 @@ import { PoolListItem } from '../../../pool.types'
 import { getAprLabel } from '../../../pool.utils'
 import { FiGlobe } from 'react-icons/fi'
 import { useUserData } from '@/lib/modules/user/useUserData'
+import { FIAT_FORMAT, bn } from '@/lib/shared/utils/numbers'
 
 export const usePoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
   const { getUserBalanceUSD } = useUserData()
@@ -53,11 +54,11 @@ export const usePoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
       header: () => <Text ml="auto">My liquidity</Text>,
       cell: ({ row: { original: pool } }) => {
         const balance = getUserBalanceUSD(pool.id, pool.chain)
-        const value = numeral(balance).format('($0,0a)')
+        const value = numeral(balance).format(FIAT_FORMAT)
 
         return (
           <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
-            {balance > 0 ? value : '-'}
+            {value}
           </Text>
         )
       },
@@ -68,7 +69,7 @@ export const usePoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
       accessorKey: 'dynamicData.totalLiquidity',
       header: () => <Text ml="auto">TVL</Text>,
       cell: props => {
-        const value = numeral(props.getValue()).format('($0,0a)')
+        const value = numeral(props.getValue()).format(FIAT_FORMAT)
 
         return (
           <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
@@ -83,7 +84,7 @@ export const usePoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
       accessorKey: 'dynamicData.volume24h',
       header: () => <Text ml="auto">Volume (24h)</Text>,
       cell: props => {
-        const value = numeral(props.getValue()).format('($0,0a)')
+        const value = numeral(props.getValue()).format(FIAT_FORMAT)
 
         return (
           <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
