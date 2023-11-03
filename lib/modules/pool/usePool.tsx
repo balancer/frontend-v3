@@ -23,7 +23,6 @@ export const useSeedPoolCacheQuery = ({ id, chain, variant }: FetchPoolProps) =>
       headers: { ChainId: chainId },
       fetchPolicy: 'cache-first',
       fetchOptions: {
-        cache: 'force-cache',
         next: { revalidate: 1 },
       },
     },
