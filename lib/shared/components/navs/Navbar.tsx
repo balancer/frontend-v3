@@ -3,9 +3,8 @@ import Link from 'next/link'
 import DarkModeToggle from '../btns/DarkModeToggle'
 import { Box, Stack, HStack, Show } from '@chakra-ui/react'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
-import BalancerLogo from '@/lib/assets/images/BalancerLogo.svg'
-import BalancerLogotype from '@/lib/assets/images/BalancerLogotype.svg'
-import Image from 'next/image'
+import { BalancerLogo } from '../imgs/BalancerLogo'
+import { BalancerLogoType } from '../imgs/BalancerLogoType'
 
 export function Navbar() {
   return (
@@ -23,10 +22,10 @@ export function Navbar() {
         <Link href="/">
           <Box display="flex" gap="1.5">
             <Show below="md">
-              <Image src={BalancerLogo} alt="Balancer logo" width={24} />
+              <BalancerLogo width="24px" />
             </Show>
             <Show above="md">
-              <Image src={BalancerLogotype} alt="Balancer logo type" width={106} />
+              <BalancerLogoType width="106px" />
             </Show>
           </Box>
         </Link>
