@@ -63,7 +63,7 @@ export function usePoolListSeedCacheQuery() {
     },
     context: {
       fetchOptions: {
-        next: { revalidate: 10 },
+        next: { revalidate: 1 },
       },
     },
   })

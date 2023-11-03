@@ -19,7 +19,12 @@ export const useSeedPoolCacheQuery = ({ id, chain, variant }: FetchPoolProps) =>
 
   return useSuspenseQuery(GetPoolDocument, {
     variables: { id },
-    context: { headers: { ChainId: chainId } },
+    context: {
+      headers: { ChainId: chainId },
+      fetchOptions: {
+        next: { revalidate: 1 },
+      },
+    },
   })
 }
 
