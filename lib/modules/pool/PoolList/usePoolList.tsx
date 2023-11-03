@@ -61,6 +61,11 @@ export function usePoolListSeedCacheQuery() {
       },
       textSearch: storedState.textSearch,
     },
+    context: {
+      fetchOptions: {
+        next: { revalidate: 10 },
+      },
+    },
   })
 }
 
