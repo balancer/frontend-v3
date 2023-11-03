@@ -447,3 +447,30 @@ query GetPoolTokensDynamicData($addresses: [String!]!) {
     ...GqlTokenDynamicData
   }
 }
+
+query GetPoolJoinsExitsSwaps($first: Int, $skip: Int, $where: GqlPoolSwapFilter, $poolId: String!) {
+  swaps: poolGetSwaps(first: $first, skip: $skip, where: $where) {
+    id
+    poolId
+    timestamp
+    tokenAmountIn
+    tokenAmountOut
+    tokenIn
+    tokenOut
+    tx
+    userAddress
+    valueUSD
+  }
+  joinExits: poolGetJoinExits(first: $first, skip: $skip, where: { poolIdIn: [$poolId] }) {
+    id
+    timestamp
+    tx
+    type
+    poolId
+    valueUSD
+    amounts {
+      address
+      amount
+    }
+  }
+}
