@@ -6,8 +6,6 @@ import {
 import { PoolList } from '@/lib/modules/pool/PoolList/PoolList'
 import { Box } from '@chakra-ui/react'
 
-export const dynamic = 'force-dynamic'
-
 export default function Home() {
   usePoolListSeedCacheQuery()
 
