@@ -13,7 +13,7 @@ dependencies:
     version: 3.8.0-rc.1(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
   '@balancer/sdk':
     specifier: github:balancer/b-sdk#join2
-    version: github.com/balancer/b-sdk/eb64fbf8f3adac00526e1887f10ce481fac3ffd9(typescript@5.1.6)(zod@3.22.4)
+    version: github.com/balancer/b-sdk/f06b6c602ea541259f9e592e5fcee2072b97ca19(typescript@5.1.6)(zod@3.22.4)
   '@chakra-ui/hooks':
     specifier: ^2.2.1
     version: 2.2.1(react@18.2.0)
@@ -125,8 +125,8 @@ dependencies:
 
 devDependencies:
   '@apollo/experimental-nextjs-app-support':
-    specifier: ^0.5.0
-    version: 0.5.0(@apollo/client@3.8.0-rc.1)(next@14.0.1)(react@18.2.0)
+    specifier: ^0.5.1
+    version: 0.5.1(@apollo/client@3.8.0-rc.1)(next@14.0.1)(react@18.2.0)
   '@chakra-ui/cli':
     specifier: ^2.4.1
     version: 2.4.1
@@ -291,10 +291,10 @@ packages:
       tslib: 2.6.2
       zen-observable-ts: 1.2.5
 
-  /@apollo/experimental-nextjs-app-support@0.5.0(@apollo/client@3.8.0-rc.1)(next@14.0.1)(react@18.2.0):
-    resolution: {integrity: sha512-VU/rRoIRcZxX2oxZp+rheF8bXwfiknJJq6nYr553H7qE68TKDTxWDV/HatUWBHHVnk5tJiHvk+N4ihuMh3YviQ==}
+  /@apollo/experimental-nextjs-app-support@0.5.1(@apollo/client@3.8.0-rc.1)(next@14.0.1)(react@18.2.0):
+    resolution: {integrity: sha512-gQiFY/zntVAhPTTFfFFOogp4TKVMpbPsydv3gyMR5E0IK6WgtITTcl/uuWlnfL92+enk5mfrtoQ+0p+t2a9u2A==}
     peerDependencies:
-      '@apollo/client': '>=3.8.0-rc || ^3.8.0'
+      '@apollo/client': '>=3.8.0-rc || ^3.8.0 || >=3.9.0-alpha || >=3.9.0-beta || >=3.9.0-rc'
       next: ^13.4.1 || ^14.0.0
       react: ^18 || ^18.0.0
     dependencies:
@@ -4108,7 +4108,7 @@ packages:
   /@tanstack/react-query-persist-client@4.36.1(@tanstack/react-query@4.36.1):
     resolution: {integrity: sha512-32I5b9aAu4NCiXZ7Te/KEQLfHbYeTNriVPrKYcvEThnZ9tlW01vLcSoxpUIsMYRsembvJUUAkzYBAiZHLOd6pQ==}
     peerDependencies:
-      '@tanstack/react-query': ^4.29.19
+      '@tanstack/react-query': ^4.36.1
     dependencies:
       '@tanstack/query-persist-client-core': 4.36.1
       '@tanstack/react-query': 4.36.1(react-dom@18.2.0)(react@18.2.0)
@@ -11559,9 +11559,9 @@ packages:
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
 
-  github.com/balancer/b-sdk/eb64fbf8f3adac00526e1887f10ce481fac3ffd9(typescript@5.1.6)(zod@3.22.4):
-    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/eb64fbf8f3adac00526e1887f10ce481fac3ffd9}
-    id: github.com/balancer/b-sdk/eb64fbf8f3adac00526e1887f10ce481fac3ffd9
+  github.com/balancer/b-sdk/f06b6c602ea541259f9e592e5fcee2072b97ca19(typescript@5.1.6)(zod@3.22.4):
+    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/f06b6c602ea541259f9e592e5fcee2072b97ca19}
+    id: github.com/balancer/b-sdk/f06b6c602ea541259f9e592e5fcee2072b97ca19
     name: '@balancer/sdk'
     version: 0.2.0
     dependencies:
