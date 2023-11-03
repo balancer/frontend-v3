@@ -6,7 +6,7 @@ import {
 import { PoolList } from '@/lib/modules/pool/PoolList/PoolList'
 import { Box } from '@chakra-ui/react'
 
-export default function Home() {
+export default function Pools() {
   usePoolListSeedCacheQuery()
 
   return (
