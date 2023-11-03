@@ -24,7 +24,7 @@ export function Navbar() {
       <HStack padding="md" spacing="lg">
         <Link href="/">
           <Box display="flex" gap="1.5">
-            { isMobile ? <BalancerLogo width="24px" /> : <BalancerLogoType width="106px" />}
+            {isMobile ? <BalancerLogo width="24px" /> : <BalancerLogoType width="106px" />}
           </Box>
         </Link>
         <Link href="/pools">Pools</Link>
