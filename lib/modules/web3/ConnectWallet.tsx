@@ -47,14 +47,7 @@ export function ConnectWallet() {
           <HStack spacing="sm">
             <Button onClick={openChainModal} display="flex" alignItems="center" type="button">
               {chain.hasIcon && (
-                <Box
-                  backgroundImage={chain.iconBackground}
-                  width={6}
-                  height={6}
-                  borderRadius="full"
-                  overflow="hidden"
-                  marginRight="sm"
-                >
+                <Box width={6} height={6} borderRadius="full" overflow="hidden" marginRight="sm">
                   {chain.iconUrl && (
                     <Img
                       alt={chain.name ?? 'Chain icon'}
