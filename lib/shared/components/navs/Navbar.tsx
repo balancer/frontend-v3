@@ -3,8 +3,8 @@ import Link from 'next/link'
 import DarkModeToggle from '../btns/DarkModeToggle'
 import { Box, Stack, HStack, Show } from '@chakra-ui/react'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
-import BalancerLogo from '@/lib/shared/components/svg/BalancerLogo.svg'
-import BalancerLogotype from '@/lib/shared/components/svg/BalancerLogotype.svg'
+import BalancerLogo from '@/lib/assets/images/BalancerLogo.svg'
+import BalancerLogotype from '@/lib/assets/images/BalancerLogotype.svg'
 import Image from 'next/image'
 
 export function Navbar() {
