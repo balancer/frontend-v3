@@ -22,7 +22,8 @@ export const useSeedPoolCacheQuery = ({ id, chain, variant }: FetchPoolProps) =>
     context: {
       headers: { ChainId: chainId },
       fetchOptions: {
-        next: { revalidate: 1 },
+        cache: 'force-cache',
+        next: { revalidate: 1000 },
       },
     },
   })
