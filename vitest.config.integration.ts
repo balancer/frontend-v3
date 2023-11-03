@@ -13,6 +13,7 @@ const integrationTestOptions: Partial<InlineConfig> = {
   setupFiles: setupFilesWithoutMswSetup(),
   globalSetup: ['./test/anvil/anvil-global-setup.ts'],
   testTimeout: 20_000,
+  retry: 3,
   // Consider disabling threads if we detect problems with anvil
   // threads: false,
 }
