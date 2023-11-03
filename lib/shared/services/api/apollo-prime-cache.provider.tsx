@@ -9,7 +9,13 @@ import { useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { GetAppGlobalDataDocument } from '@/lib/shared/services/api/generated/graphql'
 
 export function ApolloPrimeCacheProvider({ children }: React.PropsWithChildren) {
-  useSuspenseQuery(GetAppGlobalDataDocument)
+  useSuspenseQuery(GetAppGlobalDataDocument, {
+    context: {
+      fetchOptions: {
+        next: { revalidate: 1 },
+      },
+    },
+  })
 
   return <>{children}</>
 }
