@@ -5,7 +5,8 @@ export let forkUrl: string
 if (process.env.VITE_ANVIL_FORK_RPC_URL) {
   forkUrl = process.env.VITE_ANVIL_FORK_RPC_URL
 } else {
-  forkUrl = 'https://cloudflare-eth.com'
+  forkUrl = 'https://eth.llamarpc.com '
+  // forkUrl = 'https://cloudflare-eth.com'
   console.warn(`\`VITE_ANVIL_FORK_RPC_URL\` not found. Falling back to \`${forkUrl}\`.`)
 }
 
