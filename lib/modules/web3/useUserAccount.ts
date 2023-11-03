@@ -13,7 +13,7 @@ export function useUserAccount() {
     ...query,
     isLoading: !mounted || query.isConnecting,
     isConnecting: !mounted || query.isConnecting,
-    userAddress: mounted && query.address,
+    userAddress: mounted ? query.address : undefined,
     isConnected: mounted && !!query.address,
   }
 }

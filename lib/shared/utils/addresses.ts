@@ -42,3 +42,9 @@ export function selectByAddress<T>(map: Record<string, T>, address: string): T |
 export function removeAddress(address: string, addresses: string[]): string[] {
   return addresses.filter(a => !isSameAddress(a, address))
 }
+
+export function shortenLabel(str: string, segLength = 4) {
+  const firstSegment = str.substring(0, segLength + 2)
+  const lastSegment = str.substring(str.length, str.length - segLength)
+  return `${firstSegment}...${lastSegment}`
+}

@@ -959,6 +959,7 @@ export enum GqlSorSwapType {
 export type GqlToken = {
   __typename?: 'GqlToken'
   address: Scalars['String']['output']
+  chain: GqlChain
   chainId: Scalars['Int']['output']
   decimals: Scalars['Int']['output']
   description?: Maybe<Scalars['String']['output']>
@@ -1027,6 +1028,7 @@ export type GqlTokenDynamicData = {
 export type GqlTokenPrice = {
   __typename?: 'GqlTokenPrice'
   address: Scalars['String']['output']
+  chain: GqlChain
   price: Scalars['Float']['output']
 }
 
@@ -1046,6 +1048,7 @@ export enum GqlTokenType {
 
 export type GqlUserPoolBalance = {
   __typename?: 'GqlUserPoolBalance'
+  chain: GqlChain
   poolId: Scalars['String']['output']
   stakedBalance: Scalars['AmountHumanReadable']['output']
   tokenAddress: Scalars['String']['output']
@@ -1338,6 +1341,10 @@ export type QueryTokenGetCandlestickChartDataArgs = {
   range: GqlTokenChartDataRange
 }
 
+export type QueryTokenGetCurrentPricesArgs = {
+  chains?: InputMaybe<Array<GqlChain>>
+}
+
 export type QueryTokenGetHistoricalPricesArgs = {
   addresses: Array<Scalars['String']['input']>
 }
@@ -1361,12 +1368,21 @@ export type QueryTokenGetTokenDynamicDataArgs = {
   address: Scalars['String']['input']
 }
 
+export type QueryTokenGetTokensArgs = {
+  chains?: InputMaybe<Array<GqlChain>>
+}
+
 export type QueryTokenGetTokensDataArgs = {
   addresses: Array<Scalars['String']['input']>
 }
 
 export type QueryTokenGetTokensDynamicDataArgs = {
   addresses: Array<Scalars['String']['input']>
+}
+
+export type QueryUserGetPoolBalancesArgs = {
+  address?: InputMaybe<Scalars['String']['input']>
+  chains?: InputMaybe<Array<GqlChain>>
 }
 
 export type QueryUserGetPoolJoinExitsArgs = {
@@ -1428,6 +1444,7 @@ export type GetTokensQuery = {
     name: string
     symbol: string
     decimals: number
+    chain: GqlChain
     chainId: number
     logoURI?: string | null
     priority: number
@@ -4036,6 +4053,7 @@ export const GetTokensDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'chain' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'chainId' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'logoURI' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'priority' } },
