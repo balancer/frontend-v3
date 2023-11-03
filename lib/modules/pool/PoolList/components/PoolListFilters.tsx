@@ -9,6 +9,7 @@ import {
   forwardRef,
   Heading,
   HStack,
+  Icon,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -28,6 +29,7 @@ import {
   poolTypeFilters,
   usePoolListQueryState,
 } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
+import { IoFilter } from 'react-icons/io5'
 
 function PoolTypeFilters() {
   const { togglePoolType, poolTypes, poolTypeLabel } = usePoolListQueryState()
@@ -87,7 +89,8 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
   const { totalFilterCount } = usePoolListQueryState()
 
   return (
-    <Button ref={ref} {...props}>
+    <Button ref={ref} {...props} display="flex" gap="2">
+      <Icon as={IoFilter} boxSize={4} />
       Filters
       {totalFilterCount > 0 && (
         <Badge ml="2" colorScheme="blue">
