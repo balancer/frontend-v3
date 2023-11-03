@@ -3,10 +3,13 @@ import Link from 'next/link'
 import DarkModeToggle from '../btns/DarkModeToggle'
 import { Box, Stack, HStack, Show } from '@chakra-ui/react'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
-import BalancerLogo from '@/lib/shared/components/svg/BalancerLogo.svg'
-import BalancerLogotype from '@/lib/shared/components/svg/BalancerLogotype.svg'
+import { BalancerLogo } from '../imgs/BalancerLogo'
+import { BalancerLogoType } from '../imgs/BalancerLogoType'
+import { useBreakpoints } from '../../hooks/useBreakpoints'
 
 export function Navbar() {
+  const { isMobile } = useBreakpoints()
+
   return (
     <Stack
       flexDirection={{ base: 'column', md: 'row' }}
@@ -21,12 +24,7 @@ export function Navbar() {
       <HStack padding="md" spacing="lg">
         <Link href="/">
           <Box display="flex" gap="1.5">
-            <Show below="md">
-              <BalancerLogo width="24px" />
-            </Show>
-            <Show above="md">
-              <BalancerLogotype width="106px" />
-            </Show>
+            {isMobile ? <BalancerLogo width="24px" /> : <BalancerLogoType width="106px" />}
           </Box>
         </Link>
         <Link href="/pools">Pools</Link>
