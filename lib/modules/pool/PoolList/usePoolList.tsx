@@ -5,27 +5,13 @@ import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 
 export function _usePoolList() {
-  const { state, mappedPoolTypes } = usePoolListQueryState()
+  const { queryVariables } = usePoolListQueryState()
 
   const { data, loading, previousData, refetch, networkStatus, error } = useQuery(
     GetPoolsDocument,
-    {
-      variables: {
-        first: state.first,
-        skip: state.skip,
-        orderBy: state.orderBy,
-        orderDirection: state.orderDirection,
-        where: {
-          poolTypeIn: mappedPoolTypes,
-          chainIn: state.networks.length > 0 ? state.networks : PROJECT_CONFIG.supportedNetworks,
-        },
-        textSearch: state.textSearch,
-      },
-      notifyOnNetworkStatusChange: true,
-    }
+    { variables: queryVariables, notifyOnNetworkStatusChange: true }
   )
 
   const pools = loading && previousData ? previousData.pools : data?.pools || []
@@ -41,29 +27,17 @@ export function _usePoolList() {
 }
 
 export function usePoolListSeedCacheQuery() {
-  const { state, mappedPoolTypes } = usePoolListQueryState()
+  const { queryVariables } = usePoolListQueryState()
   // We store the search params in a ref so that they do not update.
   // This ensure that the suspense query will only get called once. during
   // the server side rendering pass.
-  const storedState = useRef(state).current
-  const storedMappedPoolTypes = useRef(mappedPoolTypes).current
+  const storedVariables = useRef(queryVariables).current
 
   return useSuspenseQuery(GetPoolsDocument, {
-    variables: {
-      first: storedState.first,
-      skip: storedState.skip,
-      orderBy: storedState.orderBy,
-      orderDirection: storedState.orderDirection,
-      where: {
-        poolTypeIn: storedMappedPoolTypes,
-        chainIn:
-          storedState.networks.length > 0 ? storedState.networks : PROJECT_CONFIG.supportedNetworks,
-      },
-      textSearch: storedState.textSearch,
-    },
+    variables: storedVariables,
     context: {
       fetchOptions: {
-        next: { revalidate: 1 },
+        next: { revalidate: 30 },
       },
     },
   })

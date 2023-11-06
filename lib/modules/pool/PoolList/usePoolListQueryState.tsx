@@ -16,6 +16,7 @@ import {
   withDefault,
 } from 'use-query-params'
 import { PaginationState, SortingState } from '@tanstack/react-table'
+import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 
 export const poolTypeFilters = [
   GqlPoolFilterType.Weighted,
@@ -147,6 +148,18 @@ export function usePoolListQueryState() {
     .map(poolType => POOL_TYPE_MAP[poolType as keyof typeof POOL_TYPE_MAP])
     .flat()
 
+  const queryVariables = {
+    first: query.first,
+    skip: query.skip,
+    orderBy: query.orderBy,
+    orderDirection: query.orderDirection,
+    where: {
+      poolTypeIn: mappedPoolTypes,
+      chainIn: query.networks.length > 0 ? query.networks : PROJECT_CONFIG.supportedNetworks,
+    },
+    textSearch: query.textSearch,
+  }
+
   return {
     state: query,
     toggleNetwork,
@@ -162,5 +175,6 @@ export function usePoolListQueryState() {
     poolTypes: query.poolTypes,
     networks: query.networks,
     mappedPoolTypes,
+    queryVariables,
   }
 }
