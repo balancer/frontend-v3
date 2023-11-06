@@ -3,6 +3,7 @@ import { FetchPoolProps } from '@/lib/modules/pool/pool.types'
 import { ChainSlug, slugToChainMap } from '@/lib/modules/pool/pool.utils'
 import { PoolProvider, useSeedPoolCacheQuery } from '@/lib/modules/pool/usePool'
 import { PoolDetail } from '@/lib/modules/pool/PoolDetail/PoolDetail'
+import { Box } from '@chakra-ui/react'
 
 interface Props {
   params: Omit<FetchPoolProps, 'chain'> & { chain: ChainSlug }
@@ -11,10 +12,14 @@ interface Props {
 export default function PoolPage({ params: { id, chain, variant } }: Props) {
   const _chain = slugToChainMap[chain]
 
-  useSeedPoolCacheQuery({ id, chain: _chain, variant })
+  const { data } = useSeedPoolCacheQuery({ id, chain: _chain, variant })
+
+  if (!data.pool) {
+    return <Box>Pool with id not found ({id})</Box>
+  }
 
   return (
-    <PoolProvider id={id} chain={_chain} variant={variant}>
+    <PoolProvider id={id} chain={_chain} variant={variant} initialQuery={data}>
       <PoolDetail />
     </PoolProvider>
   )

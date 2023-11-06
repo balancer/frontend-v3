@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-import { GetPoolDocument } from '@/lib/shared/services/api/generated/graphql'
+import { GetPoolDocument, GetPoolQuery } from '@/lib/shared/services/api/generated/graphql'
 import { createContext, PropsWithChildren } from 'react'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { FetchPoolProps } from './pool.types'
@@ -23,7 +23,12 @@ export const useSeedPoolCacheQuery = ({ id, chain, variant }: FetchPoolProps) =>
   })
 }
 
-export function _usePool({ id, chain, variant }: FetchPoolProps) {
+export function _usePool({
+  id,
+  chain,
+  variant,
+  initialQuery,
+}: FetchPoolProps & { initialQuery: GetPoolQuery }) {
   const { chainId } = getNetworkConfig(chain)
 
   const { data, refetch, loading } = useQuery(GetPoolDocument, {
@@ -31,15 +36,19 @@ export function _usePool({ id, chain, variant }: FetchPoolProps) {
     context: { headers: { ChainId: chainId } },
   })
 
-  if (!loading && !data?.pool) throw new Error(`Pool not found for id: ${id}`)
-
-  const pool = data?.pool
+  const pool = data?.pool || initialQuery.pool
 
   return { pool, loading, refetch }
 }
 
-export function PoolProvider({ id, chain, variant, children }: PropsWithChildren<FetchPoolProps>) {
-  const hook = _usePool({ id, chain, variant })
+export function PoolProvider({
+  id,
+  chain,
+  variant,
+  initialQuery,
+  children,
+}: PropsWithChildren<FetchPoolProps & { initialQuery: GetPoolQuery }>) {
+  const hook = _usePool({ id, chain, variant, initialQuery })
   return <PoolContext.Provider value={hook}>{children}</PoolContext.Provider>
 }
 
