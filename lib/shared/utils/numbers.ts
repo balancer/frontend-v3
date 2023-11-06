@@ -2,6 +2,7 @@
 
 import { MAX_UINT256 } from '@balancer/sdk'
 import BigNumber from 'bignumber.js'
+import numeral from 'numeral'
 
 // Allows calling JSON.stringify with bigints
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#use_within_json
@@ -18,4 +19,9 @@ export const FIAT_FORMAT = '($0,00a)'
 export function bn(val: string | number | bigint): BigNumber {
   const number = typeof val === 'string' ? val : val ? val.toString() : '0'
   return new BigNumber(number)
+}
+
+export function fiatFormat(val: string | number | bigint): string {
+  const number = typeof val === 'string' ? val : val ? val.toString() : '0'
+  return numeral(val).format(FIAT_FORMAT)
 }
