@@ -35,7 +35,7 @@ export function PoolListTable() {
 
   return (
     <Box w="full" style={{ position: 'relative' }}>
-      <Link href={getPoolPath({ id: pools[0].id, chain: pools[0].chain })}>
+      <Link href={getPoolPath({ id: pools[0].id, chain: pools[0].chain })} prefetch={true}>
         Test pool detail link
       </Link>
       <DataTable
