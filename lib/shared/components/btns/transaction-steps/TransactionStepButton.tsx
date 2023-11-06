@@ -60,6 +60,8 @@ export function TransactionStepButton({
           isLoading={isButtonLoading}
           onClick={handleOnClick}
           loadingText={getButtonLabel()}
+          color="white"
+          bgColor="blue.500"
         >
           {getButtonLabel()}
         </Button>
