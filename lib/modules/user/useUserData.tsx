@@ -27,14 +27,6 @@ export function _useUserData() {
       balance => balance.poolId === poolId && balance.chain === chain
     )
 
-    if (
-      balance &&
-      poolId === '0x8159462d255c1d24915cb51ec361f700174cd99400000000000000000000075d'
-    ) {
-      const a = bn(balance.totalBalance).times(balance.tokenPrice).toFixed(2)
-      console.log(a)
-    }
-
     return balance ? bn(balance.totalBalance).times(balance.tokenPrice).toFixed(2) : '0'
   }
 
