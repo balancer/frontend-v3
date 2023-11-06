@@ -20,9 +20,7 @@ export function _usePool({ id, chain, variant }: FetchPoolProps) {
     context: { headers: { ChainId: chainId } },
   })
 
-  if (!loading && !data?.pool) throw new Error(`Pool not found for id: ${id}`)
-
-  const pool = data?.pool
+  const pool = data!.pool!
 
   return { pool, loading, refetch }
 }

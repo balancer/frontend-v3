@@ -20,6 +20,10 @@ export default async function PoolPage({ params: { id, chain, variant } }: Props
     context: { headers: { ChainId: chainId } },
   })
 
+  if (!data) {
+    return <div>Pool does not exist</div>
+  }
+
   return (
     <PoolProvider id={id} chain={_chain} variant={variant} pool={data}>
       <PoolDetail />
