@@ -8,6 +8,7 @@ query GetUserData($address: String, $chains: [GqlChain!]) {
     stakedBalance
     walletBalance
   }
+  # TODO: Uncomment when these queries support user address/chain as input
   # staking: userGetStaking {
   #   id
   #   type
