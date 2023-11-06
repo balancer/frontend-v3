@@ -6,7 +6,7 @@ import {
   SSRMultipartLink,
 } from '@apollo/experimental-nextjs-app-support/ssr'
 
-const userMiddleware = new ApolloLink((operation, forward) => {
+/*const userMiddleware = new ApolloLink((operation, forward) => {
   // add the user address to the headers
   operation.setContext(({ headers = {} }) => {
     return {
@@ -19,7 +19,7 @@ const userMiddleware = new ApolloLink((operation, forward) => {
   })
 
   return forward(operation)
-})
+})*/
 
 export function createApolloClient() {
   //const keyArgs = ['where', ['poolIdIn']]
@@ -30,13 +30,12 @@ export function createApolloClient() {
     link:
       typeof window === 'undefined'
         ? ApolloLink.from([
-            userMiddleware,
             new SSRMultipartLink({
               stripDefer: true,
             }),
             httpLink,
           ])
-        : ApolloLink.from([userMiddleware, httpLink]),
+        : httpLink,
     cache: new NextSSRInMemoryCache({
       typePolicies: {
         GqlToken: {

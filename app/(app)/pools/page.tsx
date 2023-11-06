@@ -8,7 +8,6 @@ import { Box } from '@chakra-ui/react'
 
 export default function Pools() {
   usePoolListSeedCacheQuery()
-
   return (
     <PoolListProvider>
       <Box p="md">

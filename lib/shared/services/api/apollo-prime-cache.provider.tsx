@@ -1,3 +1,4 @@
+'use client'
 /**
  * Apollo Prime Cache Provider
  *
@@ -5,17 +6,29 @@
  * for the entire application. This is useful for data that is needed on every
  * page, such as token data.
  */
-import { useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { GetAppGlobalDataDocument } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GetAppGlobalDataDocument,
+  GetAppGlobalDataQuery,
+} from '@/lib/shared/services/api/generated/graphql'
+import { useRef } from 'react'
+import { useApolloClient } from '@apollo/client'
 
-export function ApolloPrimeCacheProvider({ children }: React.PropsWithChildren) {
-  useSuspenseQuery(GetAppGlobalDataDocument, {
-    context: {
-      fetchOptions: {
-        next: { revalidate: 1 },
-      },
-    },
-  })
+interface Props extends React.PropsWithChildren {
+  data: GetAppGlobalDataQuery
+}
+
+export function ApolloPrimeCacheProvider({ children, data }: Props) {
+  const loaded = useRef(false)
+  const client = useApolloClient()
+
+  if (!loaded.current) {
+    client.writeQuery({
+      query: GetAppGlobalDataDocument,
+      data: data,
+    })
+
+    loaded.current = true
+  }
 
   return <>{children}</>
 }
