@@ -31,6 +31,11 @@ export default async function Pools() {
       },
       textSearch: null,
     },
+    context: {
+      fetchOptions: {
+        next: { revalidate: 30 },
+      },
+    },
   })
 
   console.log('count', data.count)
