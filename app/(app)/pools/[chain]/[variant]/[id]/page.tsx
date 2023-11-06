@@ -14,6 +14,8 @@ export default function PoolPage({ params: { id, chain, variant } }: Props) {
 
   const { data } = useSeedPoolCacheQuery({ id, chain: _chain, variant })
 
+  console.log('pool id', data.pool.id)
+
   if (!data.pool) {
     return <Box>Pool does not exist ({id})</Box>
   }

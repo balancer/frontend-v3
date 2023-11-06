@@ -142,11 +142,11 @@ export function usePoolListQueryState() {
     pageSize: query.first,
   }
 
-  const mappedPoolTypes = (
-    query.poolTypes.length > 0 ? query.poolTypes : Object.keys(POOL_TYPE_MAP)
+  const mappedPoolTypes = uniq(
+    (query.poolTypes.length > 0 ? query.poolTypes : Object.keys(POOL_TYPE_MAP))
+      .map(poolType => POOL_TYPE_MAP[poolType as keyof typeof POOL_TYPE_MAP])
+      .flat()
   )
-    .map(poolType => POOL_TYPE_MAP[poolType as keyof typeof POOL_TYPE_MAP])
-    .flat()
 
   const queryVariables = {
     first: query.first,
