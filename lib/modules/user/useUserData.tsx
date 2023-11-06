@@ -6,7 +6,7 @@ import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { GetUserDataDocument, GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { bn, toUSDNumber } from '@/lib/shared/utils/numbers'
+import { bn } from '@/lib/shared/utils/numbers'
 
 export type UseUserDataResponse = ReturnType<typeof _useUserData>
 export const UserDataContext = createContext<UseUserDataResponse | null>(null)
