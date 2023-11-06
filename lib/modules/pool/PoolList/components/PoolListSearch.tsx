@@ -11,8 +11,8 @@ import {
 } from '@chakra-ui/react'
 import { HiOutlineSearch, HiOutlineX } from 'react-icons/hi'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
-import { useEffect, useMemo } from 'react'
-import { debounce } from 'lodash'
+import { useEffect } from 'react'
+import { useDebounce } from '@/lib/shared/hooks/useDebounce'
 import { usePoolList } from '../usePoolList'
 
 const SEARCH = 'search'
@@ -27,8 +27,7 @@ export const PoolListSearch = forwardRef<BoxProps, 'div'>((props, ref) => {
     setSearch(event.target.value)
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedChangeHandler = useMemo(() => debounce(changeHandler, 300), [])
+  const debouncedChangeHandler = useDebounce(changeHandler, 300)
 
   useEffect(() => {
     reset({
