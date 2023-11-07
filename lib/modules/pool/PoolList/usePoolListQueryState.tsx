@@ -9,65 +9,27 @@ import {
 import { uniq } from 'lodash'
 import { PaginationState, SortingState } from '@tanstack/react-table'
 import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
+import { useQueryState } from 'next-usequerystate'
 import {
-  parseAsArrayOf,
-  parseAsInteger,
-  parseAsStringEnum,
-  useQueryState,
-} from 'next-usequerystate'
-
-export const poolTypeFilters = [
-  GqlPoolFilterType.Weighted,
-  GqlPoolFilterType.Stable,
-  GqlPoolFilterType.LiquidityBootstrapping,
-  GqlPoolFilterType.Gyro,
-] as const
-
-export type PoolFilterType = (typeof poolTypeFilters)[number]
-
-// We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
-const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolFilterType[] } = {
-  [GqlPoolFilterType.Weighted]: [GqlPoolFilterType.Weighted],
-  [GqlPoolFilterType.Stable]: [
-    GqlPoolFilterType.Stable,
-    GqlPoolFilterType.PhantomStable,
-    GqlPoolFilterType.MetaStable,
-    GqlPoolFilterType.Gyro,
-    GqlPoolFilterType.Gyro3,
-    GqlPoolFilterType.Gyroe,
-  ],
-  [GqlPoolFilterType.LiquidityBootstrapping]: [GqlPoolFilterType.LiquidityBootstrapping],
-  [GqlPoolFilterType.Gyro]: [
-    GqlPoolFilterType.Gyro,
-    GqlPoolFilterType.Gyro3,
-    GqlPoolFilterType.Gyroe,
-  ],
-}
+  POOL_TYPE_MAP,
+  PoolFilterType,
+  poolListQueryStateParsers,
+} from '@/lib/modules/pool/pool.types'
 
 export function usePoolListQueryState() {
-  const [first, setFirst] = useQueryState('first', parseAsInteger.withDefault(20))
-  const [skip, setSkip] = useQueryState('skip', parseAsInteger.withDefault(0))
-  const [orderBy, setOrderBy] = useQueryState(
-    'orderBy',
-    parseAsStringEnum<GqlPoolOrderBy>(Object.values(GqlPoolOrderBy)) // pass a list of allowed values
-      .withDefault(GqlPoolOrderBy.TotalLiquidity)
-  )
+  const [first, setFirst] = useQueryState('first', poolListQueryStateParsers.first)
+  const [skip, setSkip] = useQueryState('skip', poolListQueryStateParsers.skip)
+  const [orderBy, setOrderBy] = useQueryState('orderBy', poolListQueryStateParsers.orderBy)
   const [orderDirection, setOrderDirection] = useQueryState(
     'orderBy',
-    parseAsStringEnum<GqlPoolOrderDirection>(Object.values(GqlPoolOrderDirection)) // pass a list of allowed values
-      .withDefault(GqlPoolOrderDirection.Desc)
+    poolListQueryStateParsers.orderDirection
   )
-  const [poolTypes, setPoolTypes] = useQueryState(
-    'poolTypes',
-    parseAsArrayOf(parseAsStringEnum<PoolFilterType>(Object.values(poolTypeFilters))).withDefault(
-      []
-    )
+  const [poolTypes, setPoolTypes] = useQueryState('poolTypes', poolListQueryStateParsers.poolTypes)
+  const [networks, setNetworks] = useQueryState('networks', poolListQueryStateParsers.networks)
+  const [textSearch, setTextSearch] = useQueryState(
+    'textSearch',
+    poolListQueryStateParsers.textSearch
   )
-  const [networks, setNetworks] = useQueryState(
-    'networks',
-    parseAsArrayOf(parseAsStringEnum<GqlChain>(Object.values(GqlChain))).withDefault([])
-  )
-  const [textSearch, setTextSearch] = useQueryState('textSearch')
 
   // Set internal checked state
   function toggleNetwork(checked: boolean, network: GqlChain) {

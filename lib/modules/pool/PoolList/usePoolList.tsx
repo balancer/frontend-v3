@@ -4,15 +4,11 @@ import { createContext, ReactNode, useRef } from 'react'
 import {
   GetPoolsDocument,
   GetPoolsQuery,
-  GqlPoolFilterType,
-  GqlPoolOrderBy,
-  GqlPoolOrderDirection,
+  GetPoolsQueryVariables,
 } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { useApolloClient } from '@apollo/client'
-import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 
 export function _usePoolList() {
@@ -54,30 +50,19 @@ export function usePoolListSeedCacheQuery() {
 
 export const PoolListContext = createContext<ReturnType<typeof _usePoolList> | null>(null)
 
-export function PoolListProvider({ children, data }: { children: ReactNode; data: GetPoolsQuery }) {
+export function PoolListProvider({
+  children,
+  data,
+  variables,
+}: {
+  children: ReactNode
+  data: GetPoolsQuery
+  variables: GetPoolsQueryVariables
+}) {
   useSeedApolloCache({
     query: GetPoolsDocument,
     data: data,
-    variables: {
-      first: 20,
-      skip: 0,
-      orderBy: GqlPoolOrderBy.TotalLiquidity,
-      orderDirection: GqlPoolOrderDirection.Desc,
-      where: {
-        poolTypeIn: [
-          GqlPoolFilterType.Weighted,
-          GqlPoolFilterType.Stable,
-          GqlPoolFilterType.PhantomStable,
-          GqlPoolFilterType.MetaStable,
-          GqlPoolFilterType.Gyro,
-          GqlPoolFilterType.Gyro3,
-          GqlPoolFilterType.Gyroe,
-          GqlPoolFilterType.LiquidityBootstrapping,
-        ],
-        chainIn: PROJECT_CONFIG.supportedNetworks,
-      },
-      textSearch: null,
-    },
+    variables,
   })
 
   const hook = _usePoolList()
