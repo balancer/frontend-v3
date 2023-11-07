@@ -11,7 +11,6 @@ export function usePoolInfo() {
   const { pool } = usePool()
 
   const poolOwnerData = useMemo(() => {
-    if (!pool) return
     const { owner } = pool
     if (!owner) return
 
@@ -30,7 +29,6 @@ export function usePoolInfo() {
   }, [pool])
 
   const poolDetails = useMemo(() => {
-    if (!pool) return []
     const { name, symbol, createTime, address, dynamicData, type } = pool
 
     return [

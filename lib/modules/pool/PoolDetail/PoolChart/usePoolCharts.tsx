@@ -208,7 +208,7 @@ export function usePoolSnapshots(
 }
 
 export function usePoolCharts() {
-  const { pool, loading: isLoadingPool } = usePool()
+  const { pool } = usePool()
   const { id: poolId, variant } = useParams()
 
   const tabsList = useMemo(() => {
@@ -227,8 +227,6 @@ export function usePoolCharts() {
   const [activePeriod, setActivePeriod] = useState(GqlPoolSnapshotDataRange.ThirtyDays)
 
   const { data, loading: isLoadingSnapshots } = usePoolSnapshots(poolId as string, activePeriod)
-
-  const isLoading = isLoadingPool || isLoadingSnapshots
 
   const chartData = useMemo(() => {
     const snapshots = data?.snapshots
@@ -305,7 +303,7 @@ export function usePoolCharts() {
   }, [chartData])
 
   return {
-    isLoading,
+    isLoading: isLoadingSnapshots,
     activeTab,
     setActiveTab,
     activePeriod,

@@ -3,10 +3,9 @@ import { usePool } from '../../usePool'
 import numeral from 'numeral'
 
 export function useUserPoolData() {
-  const { pool, loading } = usePool()
+  const { pool } = usePool()
 
   const poolComposition = useMemo(() => {
-    if (!pool) return []
     const { tokens } = pool
 
     // TO_DO add proper token type

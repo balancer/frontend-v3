@@ -3,7 +3,7 @@ import { usePool } from '../../usePool'
 import numeral from 'numeral'
 
 export function usePoolComposition() {
-  const { pool, loading } = usePool()
+  const { pool } = usePool()
 
   const poolComposition = useMemo(() => {
     if (!pool) return []
@@ -23,5 +23,5 @@ export function usePoolComposition() {
     })
   }, [pool])
 
-  return { poolComposition, loading }
+  return { poolComposition }
 }
