@@ -16,7 +16,12 @@ import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 export type UsePoolResponse = ReturnType<typeof _usePool>
 export const PoolContext = createContext<UsePoolResponse | null>(null)
 
-export function _usePool({ id, chain, variant }: FetchPoolProps) {
+export function _usePool({
+  id,
+  chain,
+  variant,
+  initialData,
+}: FetchPoolProps & { initialData: GetPoolQuery }) {
   const { chainId } = getNetworkConfig(chain)
 
   const { data, refetch, loading } = useQuery(GetPoolDocument, {
@@ -24,7 +29,7 @@ export function _usePool({ id, chain, variant }: FetchPoolProps) {
     context: { headers: { ChainId: chainId } },
   })
 
-  const pool = data!.pool!
+  const pool = data?.pool || initialData.pool
 
   return { pool, loading, refetch }
 }
@@ -43,7 +48,7 @@ export function PoolProvider({
     variables,
   })
 
-  const hook = _usePool({ id, chain, variant })
+  const hook = _usePool({ id, chain, variant, initialData: data })
   return <PoolContext.Provider value={hook}>{children}</PoolContext.Provider>
 }
 
