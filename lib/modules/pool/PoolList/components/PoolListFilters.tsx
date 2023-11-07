@@ -32,6 +32,7 @@ import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQu
 import { IoFilter } from 'react-icons/io5'
 import { PoolFilterType, poolTypeFilters } from '@/lib/modules/pool/pool.types'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useUserData } from '@/lib/modules/user/useUserData'
 
 function PoolTypeFilters() {
   const { togglePoolType, poolTypes, poolTypeLabel } = usePoolListQueryState()
@@ -104,17 +105,20 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
 })
 
 const MyPoolsSwitch = forwardRef<FormControlProps, 'switch'>((props, ref) => {
-  // const { poolIds, setPoolIds } = usePoolList()
-  // const { balances } = useUserData()
+  const {
+    state: { poolIds },
+    setPoolIds,
+  } = usePoolListQueryState()
+  const { balances } = useUserData()
 
-  // const isFilteredByUserPools = poolIds && poolIds?.length > 0
+  const isFilteredByUserPools = poolIds && poolIds?.length > 0
 
   function toggleMyPools() {
-    // if (isFilteredByUserPools) {
-    //   // setPoolIds(undefined)
-    // } else {
-    //   // setPoolIds([...balances.map(balance => balance.poolId)])
-    // }
+    if (isFilteredByUserPools) {
+      setPoolIds(undefined)
+    } else {
+      setPoolIds([...balances.map(balance => balance.poolId)])
+    }
   }
 
   return (
@@ -143,6 +147,7 @@ export function PoolListFilters() {
             <PopoverCloseButton />
             <PopoverBody p="md">
               <VStack align="start">
+                {isConnected && <MyPoolsSwitch w="56" />}
                 <Heading as="h3" size="sm" mb="1.5">
                   Pool types
                 </Heading>
@@ -156,7 +161,6 @@ export function PoolListFilters() {
             </PopoverBody>
           </PopoverContent>
         </Popover>
-        {isConnected && <MyPoolsSwitch w="56" />}
       </HStack>
       <FilterTags />
     </VStack>

@@ -15,6 +15,7 @@ import {
   PoolFilterType,
   poolListQueryStateParsers,
 } from '@/lib/modules/pool/pool.types'
+import { useEffect, useMemo, useState } from 'react'
 
 export function usePoolListQueryState() {
   const [first, setFirst] = useQueryState('first', poolListQueryStateParsers.first)
@@ -30,6 +31,7 @@ export function usePoolListQueryState() {
     'textSearch',
     poolListQueryStateParsers.textSearch
   )
+  const [poolIds, setPoolIds] = useState<string[] | undefined>(undefined)
 
   // Set internal checked state
   function toggleNetwork(checked: boolean, network: GqlChain) {
@@ -106,17 +108,25 @@ export function usePoolListQueryState() {
       .flat()
   )
 
-  const queryVariables = {
-    first,
-    skip,
-    orderBy,
-    orderDirection,
-    where: {
-      poolTypeIn: mappedPoolTypes,
-      chainIn: networks.length > 0 ? networks : PROJECT_CONFIG.supportedNetworks,
-    },
-    textSearch,
-  }
+  const queryVariables = useMemo(
+    () => ({
+      first,
+      skip,
+      orderBy,
+      orderDirection,
+      where: {
+        poolTypeIn: mappedPoolTypes,
+        chainIn: networks.length > 0 ? networks : PROJECT_CONFIG.supportedNetworks,
+        idIn: poolIds,
+      },
+      textSearch,
+    }),
+    [first, skip, orderBy, orderDirection, mappedPoolTypes, networks, poolIds, textSearch]
+  )
+
+  useEffect(() => {
+    console.log(queryVariables)
+  }, [queryVariables])
 
   return {
     state: {
@@ -127,6 +137,7 @@ export function usePoolListQueryState() {
       poolTypes,
       networks,
       textSearch,
+      poolIds,
     },
     toggleNetwork,
     togglePoolType,
@@ -134,6 +145,7 @@ export function usePoolListQueryState() {
     setSorting,
     setPagination,
     setSearch,
+    setPoolIds,
     searchText: textSearch,
     pagination,
     sorting,
