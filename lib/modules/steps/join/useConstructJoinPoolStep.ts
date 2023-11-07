@@ -22,6 +22,7 @@ export function useConstructJoinPoolStep(poolId: Address, initialWethAmount: Hum
   const joinBuilder = new JoinConfigBuilder(chainId, poolStateQuery.data, 'unbalanced')
 
   //TODO: useState with joinBuilder???
+  console.log('updating weth amount', wethHumanAmount)
   joinBuilder.setAmountIn('0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f', '1')
   joinBuilder.setAmountIn(wETHAddress, wethHumanAmount)
 

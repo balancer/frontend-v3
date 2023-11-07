@@ -52,7 +52,6 @@ export function JoinWithTokenApproval() {
           <InputLeftAddon children="WETH amount" />
           <Input type="text" placeholder="WETH amount" onChange={debouncedChangeHandler} />
         </InputGroup>
-        {/* <div>WETH amount (in EVM bigint): {String(wethEvmAmount)}</div> */}
       </Stack>
 
       <Flex height="10"></Flex>
