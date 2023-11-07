@@ -2,8 +2,8 @@ import { useForm } from 'react-hook-form'
 import { FormControl, IconButton, Input, InputGroup, InputRightElement } from '@chakra-ui/react'
 import { HiOutlineSearch, HiOutlineX } from 'react-icons/hi'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
-import { useEffect, useMemo } from 'react'
-import { debounce } from 'lodash'
+import { useEffect } from 'react'
+import { useDebounce } from '@/lib/shared/hooks/useDebounce'
 import { usePoolList } from '../usePoolList'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
@@ -20,8 +20,7 @@ export function PoolListSearch() {
     setSearch(event.target.value)
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedChangeHandler = useMemo(() => debounce(changeHandler, 300), [])
+  const debouncedChangeHandler = useDebounce(changeHandler, 300)
 
   useEffect(() => {
     reset({

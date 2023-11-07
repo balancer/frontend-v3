@@ -13,7 +13,7 @@ dependencies:
     version: 3.8.0-rc.1(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
   '@balancer/sdk':
     specifier: github:balancer/b-sdk#join2
-    version: github.com/balancer/b-sdk/eb64fbf8f3adac00526e1887f10ce481fac3ffd9(typescript@5.1.6)(zod@3.22.4)
+    version: github.com/balancer/b-sdk/f06b6c602ea541259f9e592e5fcee2072b97ca19(typescript@5.1.6)(zod@3.22.4)
   '@chakra-ui/hooks':
     specifier: ^2.2.1
     version: 2.2.1(react@18.2.0)
@@ -24,7 +24,7 @@ dependencies:
     specifier: ^2.1.5
     version: 2.1.5(@chakra-ui/react@2.8.1)(@emotion/react@11.11.1)(next@14.0.1)(react@18.2.0)
   '@chakra-ui/react':
-    specifier: ^2.8.0
+    specifier: ^2.8.1
     version: 2.8.1(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.34)(framer-motion@10.16.4)(react-dom@18.2.0)(react@18.2.0)
   '@emotion/react':
     specifier: ^11.11.1
@@ -32,6 +32,9 @@ dependencies:
   '@emotion/styled':
     specifier: ^11.11.0
     version: 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.34)(react@18.2.0)
+  '@nikolovlazar/chakra-ui-prose':
+    specifier: ^1.2.1
+    version: 1.2.1(@chakra-ui/react@2.8.1)(@chakra-ui/system@2.6.1)(react@18.2.0)
   '@rainbow-me/rainbowkit':
     specifier: ^1.1.1
     version: 1.1.2(@types/react@18.2.34)(react-dom@18.2.0)(react@18.2.0)(viem@1.18.1)(wagmi@1.4.5)
@@ -3809,6 +3812,18 @@ packages:
     os: [win32]
     requiresBuild: true
     optional: true
+
+  /@nikolovlazar/chakra-ui-prose@1.2.1(@chakra-ui/react@2.8.1)(@chakra-ui/system@2.6.1)(react@18.2.0):
+    resolution: {integrity: sha512-I8EZiKDGkOnzBOkPquLWir1gvHoKpo7x23O+VusK2WhPcWtgR7p56On+e/QPMCitMbV4xW997ecivCohOxGk9Q==}
+    peerDependencies:
+      '@chakra-ui/react': '>=1.8.6'
+      '@chakra-ui/system': '>=1.11.2'
+      react: '>=17.0.2 || ^18.0.0'
+    dependencies:
+      '@chakra-ui/react': 2.8.1(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.34)(framer-motion@10.16.4)(react-dom@18.2.0)(react@18.2.0)
+      '@chakra-ui/system': 2.6.1(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
+      react: 18.2.0
+    dev: false
 
   /@noble/curves@1.2.0:
     resolution: {integrity: sha512-oYclrNgRaM9SsBUBVbb8M6DTV7ZHRTKugureoYEncY5c65HOmRzvSiTE3y5CYaPYJA/GVkrhXEoF0M3Ya9PMnw==}
@@ -11559,9 +11574,9 @@ packages:
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
 
-  github.com/balancer/b-sdk/eb64fbf8f3adac00526e1887f10ce481fac3ffd9(typescript@5.1.6)(zod@3.22.4):
-    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/eb64fbf8f3adac00526e1887f10ce481fac3ffd9}
-    id: github.com/balancer/b-sdk/eb64fbf8f3adac00526e1887f10ce481fac3ffd9
+  github.com/balancer/b-sdk/f06b6c602ea541259f9e592e5fcee2072b97ca19(typescript@5.1.6)(zod@3.22.4):
+    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/f06b6c602ea541259f9e592e5fcee2072b97ca19}
+    id: github.com/balancer/b-sdk/f06b6c602ea541259f9e592e5fcee2072b97ca19
     name: '@balancer/sdk'
     version: 0.2.0
     dependencies:

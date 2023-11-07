@@ -13,7 +13,7 @@ export default function Home() {
 
   return (
     <PoolListProvider>
-      <Box p="md">
+      <Box p="md" maxW="maxContent" mx="auto" mt="xl">
         <PoolList />
       </Box>
     </PoolListProvider>
