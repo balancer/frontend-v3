@@ -5,7 +5,7 @@ import { PoolListItem } from '../../../pool.types'
 import { Box } from '@chakra-ui/react'
 import { DataTable } from '@/lib/shared/components/tables/DataTable'
 import { useRouter } from 'next/navigation'
-import { getPoolPath } from '../../../pool.utils'
+import { chainToSlugMap, getPoolPath } from '../../../pool.utils'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 import Link from 'next/link'
@@ -37,6 +37,12 @@ export function PoolListTable() {
     <Box w="full" style={{ position: 'relative' }}>
       <Link href={getPoolPath({ id: pools[0].id, chain: pools[0].chain })} prefetch={true}>
         Test pool detail link
+      </Link>
+      <Link
+        href={`/pools/ethereum/v2/0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014`}
+        prefetch={true}
+      >
+        Test pool detail link static url
       </Link>
       <DataTable
         columns={columns}
