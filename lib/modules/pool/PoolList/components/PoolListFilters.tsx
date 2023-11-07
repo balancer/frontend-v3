@@ -33,6 +33,7 @@ import { IoFilter } from 'react-icons/io5'
 import { PoolFilterType, poolTypeFilters } from '@/lib/modules/pool/pool.types'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useUserData } from '@/lib/modules/user/useUserData'
+import { usePoolList } from '../usePoolList'
 
 function PoolTypeFilters() {
   const { togglePoolType, poolTypes, poolTypeLabel } = usePoolListQueryState()
@@ -105,10 +106,7 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
 })
 
 const MyPoolsSwitch = forwardRef<FormControlProps, 'switch'>((props, ref) => {
-  const {
-    state: { poolIds },
-    setPoolIds,
-  } = usePoolListQueryState()
+  const { poolIds, setPoolIds } = usePoolList()
   const { balances } = useUserData()
 
   const isFilteredByUserPools = poolIds && poolIds?.length > 0

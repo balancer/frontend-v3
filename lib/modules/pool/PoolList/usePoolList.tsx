@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, ReactNode } from 'react'
+import { createContext, ReactNode, useState } from 'react'
 import {
   GetPoolsDocument,
   GetPoolsQuery,
@@ -13,10 +13,19 @@ import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 
 export function _usePoolList() {
   const { queryVariables } = usePoolListQueryState()
+  const [poolIds, setPoolIds] = useState<string[] | undefined>(undefined)
+
+  const variables = {
+    ...queryVariables,
+    where: {
+      ...queryVariables.where,
+      idIn: poolIds,
+    },
+  }
 
   const { data, loading, previousData, refetch, networkStatus, error } = useQuery(
     GetPoolsDocument,
-    { variables: queryVariables, notifyOnNetworkStatusChange: true }
+    { variables, notifyOnNetworkStatusChange: true }
   )
 
   const pools = loading && previousData ? previousData.pools : data?.pools || []
@@ -27,6 +36,8 @@ export function _usePoolList() {
     loading,
     error,
     networkStatus,
+    poolIds,
+    setPoolIds,
     refetch,
   }
 }
