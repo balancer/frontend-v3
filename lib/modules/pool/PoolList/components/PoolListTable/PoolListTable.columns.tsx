@@ -1,7 +1,6 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import numeral from 'numeral'
 import Image from 'next/image'
 import { GqlPoolApr } from '@/lib/shared/services/api/generated/graphql'
 import { VStack, Text, HStack, Tag, Icon } from '@chakra-ui/react'
@@ -10,12 +9,14 @@ import { PoolListItem } from '../../../pool.types'
 import { getAprLabel } from '../../../pool.utils'
 import { FiGlobe } from 'react-icons/fi'
 import { useUserData } from '@/lib/modules/user/useUserData'
-import { FIAT_FORMAT, bn, fiatFormat } from '@/lib/shared/utils/numbers'
+import { fiatFormat } from '@/lib/shared/utils/numbers'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 export const usePoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
   const { getUserBalanceUSD } = useUserData()
+  const { isConnected } = useUserAccount()
 
-  return [
+  const columns: ColumnDef<PoolListItem>[] = [
     {
       id: 'chainLogoUrl',
       header: () => <Icon as={FiGlobe} boxSize="6" ml="1" />,
@@ -48,21 +49,6 @@ export const usePoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
         )
       },
       size: 9999, // use '9999' so we can set {width: 'auto'} in DataTable
-    },
-    {
-      id: 'myLiquidity',
-      header: () => <Text ml="auto">My liquidity</Text>,
-      cell: ({ row: { original: pool } }) => {
-        const balance = getUserBalanceUSD(pool.id, pool.chain)
-        const value = fiatFormat(balance)
-
-        return (
-          <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
-            {value}
-          </Text>
-        )
-      },
-      size: 175,
     },
     {
       id: 'totalLiquidity',
@@ -110,4 +96,25 @@ export const usePoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
       size: 175,
     },
   ]
+
+  if (isConnected) {
+    // Insert 'My liquidity' column before 'TVL' if wallet is connected
+    columns.splice(2, 0, {
+      id: 'myLiquidity',
+      header: () => <Text ml="auto">My liquidity</Text>,
+      cell: ({ row: { original: pool } }) => {
+        const balance = getUserBalanceUSD(pool.id, pool.chain)
+        const value = fiatFormat(balance)
+
+        return (
+          <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
+            {value}
+          </Text>
+        )
+      },
+      size: 175,
+    })
+  }
+
+  return columns
 }
