@@ -16,6 +16,7 @@ const integrationTestOptions: Partial<InlineConfig> = {
   retry: 3,
   // Consider disabling threads if we detect problems with anvil
   // threads: false,
+  retry: 3,
 }
 
 const integrationConfig = vitestUnitConfig

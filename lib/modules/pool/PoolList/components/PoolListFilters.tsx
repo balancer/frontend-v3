@@ -25,19 +25,13 @@ import {
   Text,
   VStack,
   FormLabel,
-  Stack,
 } from '@chakra-ui/react'
 import { PoolListSearch } from './PoolListSearch'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import {
-  PoolFilterType,
-  poolTypeFilters,
-  usePoolListQueryState,
-} from '@/lib/modules/pool/PoolList/usePoolListQueryState'
-import { useUserData } from '@/lib/modules/user/useUserData'
-import { usePoolList } from '../usePoolList'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 import { IoFilter } from 'react-icons/io5'
+import { PoolFilterType, poolTypeFilters } from '@/lib/modules/pool/pool.types'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 function PoolTypeFilters() {
   const { togglePoolType, poolTypes, poolTypeLabel } = usePoolListQueryState()
@@ -110,17 +104,17 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
 })
 
 const MyPoolsSwitch = forwardRef<FormControlProps, 'switch'>((props, ref) => {
-  const { poolIds, setPoolIds } = usePoolList()
-  const { balances } = useUserData()
+  // const { poolIds, setPoolIds } = usePoolList()
+  // const { balances } = useUserData()
 
-  const isFilteredByUserPools = poolIds && poolIds?.length > 0
+  // const isFilteredByUserPools = poolIds && poolIds?.length > 0
 
   function toggleMyPools() {
-    if (isFilteredByUserPools) {
-      setPoolIds(undefined)
-    } else {
-      setPoolIds([...balances.map(balance => balance.poolId)])
-    }
+    // if (isFilteredByUserPools) {
+    //   // setPoolIds(undefined)
+    // } else {
+    //   // setPoolIds([...balances.map(balance => balance.poolId)])
+    // }
   }
 
   return (

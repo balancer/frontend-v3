@@ -1,33 +1,22 @@
 'use client'
 
-import { createContext, ReactNode, useRef, useState } from 'react'
-import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
-import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import { createContext, ReactNode } from 'react'
+import {
+  GetPoolsDocument,
+  GetPoolsQuery,
+  GetPoolsQueryVariables,
+} from '@/lib/shared/services/api/generated/graphql'
+import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
+import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 
 export function _usePoolList() {
-  const { state, mappedPoolTypes } = usePoolListQueryState()
-  const [poolIds, setPoolIds] = useState<string[] | undefined>(undefined)
+  const { queryVariables } = usePoolListQueryState()
 
   const { data, loading, previousData, refetch, networkStatus, error } = useQuery(
     GetPoolsDocument,
-    {
-      variables: {
-        first: state.first,
-        skip: state.skip,
-        orderBy: state.orderBy,
-        orderDirection: state.orderDirection,
-        where: {
-          poolTypeIn: mappedPoolTypes,
-          chainIn: state.networks.length > 0 ? state.networks : PROJECT_CONFIG.supportedNetworks,
-          idIn: poolIds,
-        },
-        textSearch: state.textSearch,
-      },
-      notifyOnNetworkStatusChange: true,
-    }
+    { variables: queryVariables, notifyOnNetworkStatusChange: true }
   )
 
   const pools = loading && previousData ? previousData.pools : data?.pools || []
@@ -38,41 +27,29 @@ export function _usePoolList() {
     loading,
     error,
     networkStatus,
-    poolIds,
     refetch,
-    setPoolIds,
   }
-}
-
-export function usePoolListSeedCacheQuery() {
-  const { state, mappedPoolTypes } = usePoolListQueryState()
-  // We store the search params in a ref so that they do not update.
-  // This ensure that the suspense query will only get called once. during
-  // the server side rendering pass.
-  const storedState = useRef(state).current
-  const storedMappedPoolTypes = useRef(mappedPoolTypes).current
-
-  return useSuspenseQuery(GetPoolsDocument, {
-    variables: {
-      first: storedState.first,
-      skip: storedState.skip,
-      orderBy: storedState.orderBy,
-      orderDirection: storedState.orderDirection,
-      where: {
-        poolTypeIn: storedMappedPoolTypes,
-        chainIn:
-          storedState.networks.length > 0 ? storedState.networks : PROJECT_CONFIG.supportedNetworks,
-      },
-      textSearch: storedState.textSearch,
-    },
-  })
 }
 
 export const PoolListContext = createContext<ReturnType<typeof _usePoolList> | null>(null)
 
-export function PoolListProvider(props: { children: ReactNode }) {
+export function PoolListProvider({
+  children,
+  data,
+  variables,
+}: {
+  children: ReactNode
+  data: GetPoolsQuery
+  variables: GetPoolsQueryVariables
+}) {
+  useSeedApolloCache({
+    query: GetPoolsDocument,
+    data: data,
+    variables,
+  })
+
   const hook = _usePoolList()
-  return <PoolListContext.Provider value={hook}>{props.children}</PoolListContext.Provider>
+  return <PoolListContext.Provider value={hook}>{children}</PoolListContext.Provider>
 }
 
 export function usePoolList() {

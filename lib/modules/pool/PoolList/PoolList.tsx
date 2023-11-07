@@ -1,7 +1,7 @@
 'use client'
 
 import { PoolListTable } from './components/PoolListTable/PoolListTable'
-import { HStack, Stack, VStack } from '@chakra-ui/react'
+import { Box, HStack, Stack, VStack } from '@chakra-ui/react'
 import { PoolListFilters } from './components/PoolListFilters'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
@@ -22,16 +22,18 @@ export function PoolList() {
   useTokenBalances(address, tokens)
 
   return (
-    <VStack align="start" spacing="md">
-      <Stack direction={['column-reverse', 'row']} w="full" alignItems="flex-start">
-        <PoolListFilters />
-        <HStack justifyContent={isMobile ? 'space-between' : 'flex-end'} w="full">
-          {(viewType === 'grid' || isMobile) && <PoolListSortType />}
-          <PoolListViewType />
-        </HStack>
-      </Stack>
-      {viewType === 'list' && <PoolListTable />}
-      {viewType === 'grid' && <PoolListGrid />}
-    </VStack>
+    <Box p="md">
+      <VStack align="start" spacing="md">
+        <Stack direction={['column-reverse', 'row']} w="full" alignItems="flex-start">
+          <PoolListFilters />
+          <HStack justifyContent={isMobile ? 'space-between' : 'flex-end'} w="full">
+            {(viewType === 'grid' || isMobile) && <PoolListSortType />}
+            <PoolListViewType />
+          </HStack>
+        </Stack>
+        {viewType === 'list' && <PoolListTable />}
+        {viewType === 'grid' && <PoolListGrid />}
+      </VStack>
+    </Box>
   )
 }

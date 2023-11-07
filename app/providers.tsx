@@ -7,24 +7,21 @@ import { cookies } from 'next/headers'
 import { UserDataProvider } from '@/lib/modules/user/useUserData'
 import { COLOR_MODE_STORAGE_KEY } from '@/lib/shared/services/chakra/colorModeManager'
 import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
-import { UrlParamProvider } from '@/lib/shared/providers/UrlParamProvider'
 
 export function Providers({ children }: { children: ReactNode }) {
   const initialColorMode = cookies().get(COLOR_MODE_STORAGE_KEY)?.value
 
   return (
     <ThemeProvider initialColorMode={initialColorMode}>
-      <UrlParamProvider>
-        <Web3Provider>
-          <ApolloProviderWrapper>
-            <TokensProvider>
-              <UserDataProvider>
-                <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
-              </UserDataProvider>
-            </TokensProvider>
-          </ApolloProviderWrapper>
-        </Web3Provider>
-      </UrlParamProvider>
+      <Web3Provider>
+        <ApolloProviderWrapper>
+          <TokensProvider>
+            <UserDataProvider>
+              <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+            </UserDataProvider>
+          </TokensProvider>
+        </ApolloProviderWrapper>
+      </Web3Provider>
     </ThemeProvider>
   )
 }
