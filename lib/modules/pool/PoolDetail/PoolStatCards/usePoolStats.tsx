@@ -5,7 +5,8 @@ import { useMemo } from 'react'
 export function usePoolStats() {
   const { pool } = usePool()
   const stats = useMemo(() => {
-    const data = pool?.dynamicData
+    const data = pool.dynamicData
+
     if (!data) return []
 
     return [

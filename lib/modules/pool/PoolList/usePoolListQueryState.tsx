@@ -7,113 +7,72 @@ import {
   GqlPoolOrderDirection,
 } from '@/lib/shared/services/api/generated/graphql'
 import { uniq } from 'lodash'
-import {
-  createEnumDelimitedArrayParam,
-  createEnumParam,
-  NumberParam,
-  StringParam,
-  useQueryParams,
-  withDefault,
-} from 'use-query-params'
 import { PaginationState, SortingState } from '@tanstack/react-table'
-
-export const poolTypeFilters = [
-  GqlPoolFilterType.Weighted,
-  GqlPoolFilterType.Stable,
-  GqlPoolFilterType.LiquidityBootstrapping,
-  GqlPoolFilterType.Gyro,
-] as const
-
-export type PoolFilterType = (typeof poolTypeFilters)[number]
-
-// We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
-const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolFilterType[] } = {
-  [GqlPoolFilterType.Weighted]: [GqlPoolFilterType.Weighted],
-  [GqlPoolFilterType.Stable]: [
-    GqlPoolFilterType.Stable,
-    GqlPoolFilterType.PhantomStable,
-    GqlPoolFilterType.MetaStable,
-    GqlPoolFilterType.Gyro,
-    GqlPoolFilterType.Gyro3,
-    GqlPoolFilterType.Gyroe,
-  ],
-  [GqlPoolFilterType.LiquidityBootstrapping]: [GqlPoolFilterType.LiquidityBootstrapping],
-  [GqlPoolFilterType.Gyro]: [
-    GqlPoolFilterType.Gyro,
-    GqlPoolFilterType.Gyro3,
-    GqlPoolFilterType.Gyroe,
-  ],
-}
+import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
+import { useQueryState } from 'next-usequerystate'
+import {
+  POOL_TYPE_MAP,
+  PoolFilterType,
+  poolListQueryStateParsers,
+} from '@/lib/modules/pool/pool.types'
 
 export function usePoolListQueryState() {
-  const [query, setQuery] = useQueryParams({
-    first: withDefault(NumberParam, 20),
-    skip: withDefault(NumberParam, 0),
-    orderBy: withDefault(
-      createEnumParam(Object.entries(GqlPoolOrderBy).map(([, value]) => value)),
-      GqlPoolOrderBy.TotalLiquidity
-    ),
-    orderDirection: withDefault(
-      createEnumParam(Object.entries(GqlPoolOrderDirection).map(([, value]) => value)),
-      GqlPoolOrderDirection.Desc
-    ),
-    poolTypes: withDefault(createEnumDelimitedArrayParam([...poolTypeFilters], ','), []),
-    networks: withDefault(
-      createEnumDelimitedArrayParam(
-        Object.entries(GqlChain).map(([, value]) => value),
-        ','
-      ),
-      []
-    ),
-    textSearch: withDefault(StringParam, null),
-  })
+  const [first, setFirst] = useQueryState('first', poolListQueryStateParsers.first)
+  const [skip, setSkip] = useQueryState('skip', poolListQueryStateParsers.skip)
+  const [orderBy, setOrderBy] = useQueryState('orderBy', poolListQueryStateParsers.orderBy)
+  const [orderDirection, setOrderDirection] = useQueryState(
+    'orderBy',
+    poolListQueryStateParsers.orderDirection
+  )
+  const [poolTypes, setPoolTypes] = useQueryState('poolTypes', poolListQueryStateParsers.poolTypes)
+  const [networks, setNetworks] = useQueryState('networks', poolListQueryStateParsers.networks)
+  const [textSearch, setTextSearch] = useQueryState(
+    'textSearch',
+    poolListQueryStateParsers.textSearch
+  )
 
   // Set internal checked state
   function toggleNetwork(checked: boolean, network: GqlChain) {
     if (checked) {
-      setQuery(latest => ({ networks: uniq([...latest.networks, network]) }))
+      setNetworks(current => uniq([...current, network]))
     } else {
-      setQuery(latest => ({ networks: latest.networks.filter(chain => chain !== network) }))
+      setNetworks(current => current.filter(chain => chain !== network))
     }
   }
 
   // Set internal checked state
   function togglePoolType(checked: boolean, poolType: PoolFilterType) {
     if (checked) {
-      setQuery(latest => ({ poolTypes: uniq([...latest.poolTypes, poolType]) }))
+      setPoolTypes(current => uniq([...current, poolType]))
     } else {
-      setQuery(latest => ({
-        poolTypes: (latest.poolTypes || []).filter(type => type !== poolType),
-      }))
+      setPoolTypes(current => current.filter(type => type !== poolType))
     }
   }
 
   function setSorting(sortingState: SortingState) {
     if (sortingState.length > 0) {
-      setQuery({
-        skip: 0, // always sort from top (or bottom)
-        orderBy: sortingState[0].id as GqlPoolOrderBy,
-        orderDirection: sortingState[0].desc
-          ? GqlPoolOrderDirection.Desc
-          : GqlPoolOrderDirection.Asc,
-      })
+      setSkip(0)
+      setOrderBy(sortingState[0].id as GqlPoolOrderBy)
+      setOrderDirection(
+        sortingState[0].desc ? GqlPoolOrderDirection.Desc : GqlPoolOrderDirection.Asc
+      )
     } else {
-      setQuery({
-        orderBy: GqlPoolOrderBy.TotalLiquidity,
-        orderDirection: GqlPoolOrderDirection.Desc,
-      })
+      setOrderBy(GqlPoolOrderBy.TotalLiquidity)
+      setOrderDirection(GqlPoolOrderDirection.Desc)
     }
   }
 
   function setPagination(pagination: PaginationState) {
-    setQuery({
-      first: pagination.pageSize,
-      skip: pagination.pageIndex * pagination.pageSize,
-    })
+    setFirst(pagination.pageSize)
+    setSkip(pagination.pageIndex * pagination.pageSize)
   }
 
   function setSearch(text: string) {
-    setQuery(latest => ({ skip: text.length > 0 ? 0 : latest.skip, textSearch: text }))
+    if (text.length > 0) {
+      setSkip(0)
+    }
+
+    setTextSearch(text)
   }
 
   function poolTypeLabel(poolType: GqlPoolFilterType) {
@@ -131,36 +90,57 @@ export function usePoolListQueryState() {
     }
   }
 
-  const totalFilterCount = query.networks.length + query.poolTypes.length
-  const sorting: SortingState = query.orderBy
-    ? [{ id: query.orderBy as string, desc: query.orderDirection === GqlPoolOrderDirection.Desc }]
+  const totalFilterCount = networks.length + poolTypes.length
+  const sorting: SortingState = orderBy
+    ? [{ id: orderBy as string, desc: orderDirection === GqlPoolOrderDirection.Desc }]
     : []
 
   const pagination: PaginationState = {
-    pageIndex: query.skip / query.first,
-    pageSize: query.first,
+    pageIndex: skip / first,
+    pageSize: first,
   }
 
-  const mappedPoolTypes = (
-    query.poolTypes.length > 0 ? query.poolTypes : Object.keys(POOL_TYPE_MAP)
+  const mappedPoolTypes = uniq(
+    (poolTypes.length > 0 ? poolTypes : Object.keys(POOL_TYPE_MAP))
+      .map(poolType => POOL_TYPE_MAP[poolType as keyof typeof POOL_TYPE_MAP])
+      .flat()
   )
-    .map(poolType => POOL_TYPE_MAP[poolType as keyof typeof POOL_TYPE_MAP])
-    .flat()
+
+  const queryVariables = {
+    first,
+    skip,
+    orderBy,
+    orderDirection,
+    where: {
+      poolTypeIn: mappedPoolTypes,
+      chainIn: networks.length > 0 ? networks : PROJECT_CONFIG.supportedNetworks,
+    },
+    textSearch,
+  }
 
   return {
-    state: query,
+    state: {
+      first,
+      skip,
+      orderBy,
+      orderDirection,
+      poolTypes,
+      networks,
+      textSearch,
+    },
     toggleNetwork,
     togglePoolType,
     poolTypeLabel,
     setSorting,
     setPagination,
     setSearch,
-    searchText: query.textSearch,
+    searchText: textSearch,
     pagination,
     sorting,
     totalFilterCount,
-    poolTypes: query.poolTypes,
-    networks: query.networks,
+    poolTypes,
+    networks,
     mappedPoolTypes,
+    queryVariables,
   }
 }
