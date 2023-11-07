@@ -5,6 +5,7 @@ import { Stack, Text } from '@chakra-ui/react'
 import { PoolInfoTable } from './PoolInfoTable/PoolInfoTable'
 import { PoolStatCards } from './PoolStatCards/PoolStatCards'
 import { PoolComposition } from './PoolComposition/PoolComposition'
+import { UserPoolData } from './UserPoolData/UserPoolData'
 
 export function PoolDetail() {
   const { pool, loading } = usePool()
@@ -16,6 +17,7 @@ export function PoolDetail() {
         {pool?.name}: {pool?.id}
       </Text>
       <PoolStatCards />
+      <UserPoolData />
       <PoolChart />
       <PoolComposition />
       <PoolInfoTable />
