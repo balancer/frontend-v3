@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-import { GetPoolDocument, GetPoolQuery } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GetPoolDocument,
+  GetPoolQuery,
+  GetPoolQueryVariables,
+} from '@/lib/shared/services/api/generated/graphql'
 import { createContext, PropsWithChildren } from 'react'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { FetchPoolProps } from './pool.types'
@@ -30,12 +34,13 @@ export function PoolProvider({
   chain,
   variant,
   children,
-  initialQueryData,
-}: PropsWithChildren<FetchPoolProps> & { initialQueryData: GetPoolQuery }) {
+  data,
+  variables,
+}: PropsWithChildren<FetchPoolProps> & { data: GetPoolQuery; variables: GetPoolQueryVariables }) {
   useSeedApolloCache({
     query: GetPoolDocument,
-    data: initialQueryData,
-    variables: { id },
+    data,
+    variables,
   })
 
   const hook = _usePool({ id, chain, variant })

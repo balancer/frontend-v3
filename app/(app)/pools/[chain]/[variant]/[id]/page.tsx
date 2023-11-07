@@ -14,10 +14,11 @@ interface Props {
 export default async function PoolPage({ params: { id, chain, variant } }: Props) {
   const _chain = slugToChainMap[chain]
   const { chainId } = getNetworkConfig(_chain)
+  const variables = { id }
 
   const { data } = await getApolloServerClient().query({
     query: GetPoolDocument,
-    variables: { id },
+    variables,
     context: { headers: { ChainId: chainId } },
   })
 
@@ -26,7 +27,7 @@ export default async function PoolPage({ params: { id, chain, variant } }: Props
   }
 
   return (
-    <PoolProvider id={id} chain={_chain} variant={variant} initialQueryData={data}>
+    <PoolProvider id={id} chain={_chain} variant={variant} data={data} variables={variables}>
       <PoolDetail />
     </PoolProvider>
   )
