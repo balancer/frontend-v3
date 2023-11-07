@@ -21,6 +21,7 @@ import { WriteAbiMutability } from '@/lib/modules/web3/contracts/contract.types'
 import { AbiMap } from '@/lib/modules/web3/contracts/AbiMap'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
+import { UserDataProvider } from '@/lib/modules/user/useUserData'
 import { TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
 
 export type WrapperProps = { children: ReactNode }
@@ -67,7 +68,9 @@ function GlobalProviders({ children }: WrapperProps) {
         <ClientProvidersMock>
           <ApolloProvider client={apolloTestClient}>
             <TokensProvider>
-              <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+              <UserDataProvider>
+                <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+              </UserDataProvider>
             </TokensProvider>
           </ApolloProvider>
         </ClientProvidersMock>
