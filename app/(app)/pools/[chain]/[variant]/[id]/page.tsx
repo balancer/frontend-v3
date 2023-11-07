@@ -22,7 +22,7 @@ export default async function PoolPage({ params: { id, chain, variant } }: Props
   })
 
   if (!data.pool) {
-    return <Box>Pool does not exist ({id})</Box>
+    return <Box>Pool with id not found ({id})</Box>
   }
 
   return (
