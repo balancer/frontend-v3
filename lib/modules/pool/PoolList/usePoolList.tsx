@@ -1,12 +1,12 @@
 'use client'
 
-import { createContext, ReactNode, useRef } from 'react'
+import { createContext, ReactNode } from 'react'
 import {
   GetPoolsDocument,
   GetPoolsQuery,
   GetPoolsQueryVariables,
 } from '@/lib/shared/services/api/generated/graphql'
-import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'

@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import DarkModeToggle from '../btns/DarkModeToggle'
-import { Box, Stack, HStack, Show } from '@chakra-ui/react'
+import { Box, Stack, HStack } from '@chakra-ui/react'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { BalancerLogo } from '../imgs/BalancerLogo'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'

@@ -42,8 +42,6 @@ export type DataTableProps<Data extends object> = {
 export function DataTable<Data extends object>({
   data,
   columns,
-  rowClickHandler,
-  rowMouseEnterHandler,
   rowCount,
   pagination,
   sorting,
@@ -132,7 +130,7 @@ export function DataTable<Data extends object>({
                   rowMouseEnterHandler && rowMouseEnterHandler(event, row.original)
                 }*/
               >
-                {row.getVisibleCells().map((cell, idx) => {
+                {row.getVisibleCells().map(cell => {
                   // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
                   const meta: any = cell.column.columnDef.meta
                   const pool = row.original as any
