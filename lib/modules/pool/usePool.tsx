@@ -12,18 +12,6 @@ import { useApolloClient } from '@apollo/client'
 export type UsePoolResponse = ReturnType<typeof _usePool>
 export const PoolContext = createContext<UsePoolResponse | null>(null)
 
-/**
- * Uses useSuspenseQuery to seed the client cache with initial pool data on the SSR pass.
- */
-export const useSeedPoolCacheQuery = ({ id, chain, variant }: FetchPoolProps) => {
-  const { chainId } = getNetworkConfig(chain)
-
-  return useSuspenseQuery(GetPoolDocument, {
-    variables: { id },
-    context: { headers: { ChainId: chainId } },
-  })
-}
-
 export function _usePool({ id, chain, variant }: FetchPoolProps) {
   const { chainId } = getNetworkConfig(chain)
 
@@ -48,7 +36,6 @@ export function PoolProvider({
   const client = useApolloClient()
 
   if (!loaded.current) {
-    console.log('loading data')
     client.writeQuery({
       query: GetPoolDocument,
       data: initialQuery,
