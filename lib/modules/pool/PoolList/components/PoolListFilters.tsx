@@ -9,6 +9,7 @@ import {
   forwardRef,
   Heading,
   HStack,
+  Icon,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -24,6 +25,7 @@ import {
 import { PoolListSearch } from './PoolListSearch'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
+import { IoFilter } from 'react-icons/io5'
 import { PoolFilterType, poolTypeFilters } from '@/lib/modules/pool/pool.types'
 
 function PoolTypeFilters() {
@@ -84,7 +86,8 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
   const { totalFilterCount } = usePoolListQueryState()
 
   return (
-    <Button ref={ref} {...props}>
+    <Button ref={ref} {...props} display="flex" gap="2">
+      <Icon as={IoFilter} boxSize={4} />
       Filters
       {totalFilterCount > 0 && (
         <Badge ml="2" colorScheme="blue">
@@ -99,6 +102,7 @@ export function PoolListFilters() {
   return (
     <VStack align="flex-start" w="full">
       <HStack w="full">
+        <PoolListSearch />
         <Popover>
           <PopoverTrigger>
             <FilterButton />
@@ -106,9 +110,9 @@ export function PoolListFilters() {
           <PopoverContent>
             <PopoverArrow />
             <PopoverCloseButton />
-            <PopoverBody>
+            <PopoverBody p="md">
               <VStack align="start">
-                <Heading as="h3" size="sm">
+                <Heading as="h3" size="sm" mb="1.5">
                   Pool types
                 </Heading>
                 <PoolTypeFilters />
@@ -121,7 +125,6 @@ export function PoolListFilters() {
             </PopoverBody>
           </PopoverContent>
         </Popover>
-        <PoolListSearch />
       </HStack>
       <FilterTags />
     </VStack>

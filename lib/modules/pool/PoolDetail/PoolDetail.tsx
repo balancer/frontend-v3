@@ -10,7 +10,7 @@ export function PoolDetail() {
   const { pool } = usePool()
 
   return (
-    <Stack p="40px">
+    <Stack p="40px" maxW="maxContent" mx="auto">
       <Text>
         {pool.name}: {pool.id}
       </Text>

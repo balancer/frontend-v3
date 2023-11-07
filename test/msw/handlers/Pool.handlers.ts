@@ -4,6 +4,7 @@ import { getQueryName, mockGQL } from '../utils'
 import { aGqlPoolElementMock } from '../builders/gqlPoolElement.builders'
 
 export const defaultPoolMock = aGqlPoolElementMock()
+export const defaultPoolResponseMock = { pool: defaultPoolMock }
 
 export function buildPoolMswHandler(pool = defaultPoolMock) {
   return graphql.query(getQueryName(GetPoolDocument), (req, res, ctx) => {
