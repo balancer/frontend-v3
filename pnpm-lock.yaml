@@ -13,7 +13,7 @@ dependencies:
     version: 3.8.0-rc.1(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
   '@balancer/sdk':
     specifier: github:balancer/b-sdk#join2
-    version: github.com/balancer/b-sdk/f06b6c602ea541259f9e592e5fcee2072b97ca19(typescript@5.1.6)(zod@3.22.4)
+    version: github.com/balancer/b-sdk/053b5f31566570c6a49cbfaf5a869e95354ee574(typescript@5.1.6)(zod@3.22.4)
   '@chakra-ui/hooks':
     specifier: ^2.2.1
     version: 2.2.1(react@18.2.0)
@@ -89,9 +89,9 @@ dependencies:
   next:
     specifier: 14.0.1
     version: 14.0.1(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
-  next-query-params:
-    specifier: ^4.2.3
-    version: 4.2.3(next@14.0.1)(react@18.2.0)(use-query-params@2.2.1)
+  next-usequerystate:
+    specifier: ^1.9.2
+    version: 1.9.2(next@14.0.1)
   nextjs-toploader:
     specifier: ^1.6.4
     version: 1.6.4(next@14.0.1)(react-dom@18.2.0)(react@18.2.0)
@@ -113,9 +113,6 @@ dependencies:
   typescript:
     specifier: 5.1.6
     version: 5.1.6
-  use-query-params:
-    specifier: ^2.2.1
-    version: 2.2.1(react-dom@18.2.0)(react@18.2.0)
   viem:
     specifier: ^1.18.1
     version: 1.18.1(typescript@5.1.6)(zod@3.22.4)
@@ -8818,6 +8815,10 @@ packages:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
     dev: false
 
+  /mitt@3.0.1:
+    resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
+    dev: false
+
   /mlly@1.4.2:
     resolution: {integrity: sha512-i/Ykufi2t1EZ6NaPLdfnZk2AX8cs0d+mTzVKuPfqPKPatxLApaBoxJQ9x1/uckXtrS/U5oisPMDkNs0yQTaBRg==}
     dependencies:
@@ -8898,17 +8899,13 @@ packages:
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
-  /next-query-params@4.2.3(next@14.0.1)(react@18.2.0)(use-query-params@2.2.1):
-    resolution: {integrity: sha512-hGNCYRH8YyA5ItiBGSKrtMl21b2MAqfPkdI1mvwloNVqSU142IaGzqHN+OTovyeLIpQfonY01y7BAHb/UH4POg==}
+  /next-usequerystate@1.9.2(next@14.0.1):
+    resolution: {integrity: sha512-iL2+gRiNedTdAMF9xQcYWJoWBFdfyHr3e4rDz33wcuU29rb1uU6u6UKGtF+GyNMRaAK5sDuBDd6qo5Toc68spw==}
     peerDependencies:
-      next: ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      use-query-params: ^2.0.0
+      next: ^13.4 || ^14
     dependencies:
+      mitt: 3.0.1
       next: 14.0.1(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
-      react: 18.2.0
-      tslib: 2.6.2
-      use-query-params: 2.2.1(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
   /next@14.0.1(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0):
@@ -10102,10 +10099,6 @@ packages:
       upper-case-first: 2.0.2
     dev: true
 
-  /serialize-query-params@2.0.2:
-    resolution: {integrity: sha512-1chMo1dST4pFA9RDXAtF0Rbjaut4is7bzFbI1Z26IuMub68pNCILku85aYmeFhvnY//BXUPUhoRMjYcsT93J/Q==}
-    dev: false
-
   /server-only@0.0.1:
     resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
     dev: true
@@ -10951,24 +10944,6 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /use-query-params@2.2.1(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-i6alcyLB8w9i3ZK3caNftdb+UnbfBRNPDnc89CNQWkGRmDrm/gfydHvMBfVsQJRq3NoHOM2dt/ceBWG2397v1Q==}
-    peerDependencies:
-      '@reach/router': ^1.2.1
-      react: '>=16.8.0 || ^18.0.0'
-      react-dom: '>=16.8.0 || ^18.0.0'
-      react-router-dom: '>=5'
-    peerDependenciesMeta:
-      '@reach/router':
-        optional: true
-      react-router-dom:
-        optional: true
-    dependencies:
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      serialize-query-params: 2.0.2
-    dev: false
-
   /use-sidecar@1.1.2(@types/react@18.2.34)(react@18.2.0):
     resolution: {integrity: sha512-epTbsLuzZ7lPClpz2TyryBfztm7m+28DlEv2ZCQ3MDr5ssiwyOwGH/e5F9CkfWjJ1t4clvI58yF822/GUkjjhw==}
     engines: {node: '>=10'}
@@ -11585,9 +11560,9 @@ packages:
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
 
-  github.com/balancer/b-sdk/f06b6c602ea541259f9e592e5fcee2072b97ca19(typescript@5.1.6)(zod@3.22.4):
-    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/f06b6c602ea541259f9e592e5fcee2072b97ca19}
-    id: github.com/balancer/b-sdk/f06b6c602ea541259f9e592e5fcee2072b97ca19
+  github.com/balancer/b-sdk/053b5f31566570c6a49cbfaf5a869e95354ee574(typescript@5.1.6)(zod@3.22.4):
+    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/053b5f31566570c6a49cbfaf5a869e95354ee574}
+    id: github.com/balancer/b-sdk/053b5f31566570c6a49cbfaf5a869e95354ee574
     name: '@balancer/sdk'
     version: 0.2.0
     dependencies:

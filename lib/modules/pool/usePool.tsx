@@ -2,12 +2,12 @@
 'use client'
 
 import { GetPoolDocument, GetPoolQuery } from '@/lib/shared/services/api/generated/graphql'
-import { createContext, PropsWithChildren, useRef } from 'react'
-import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import { createContext, PropsWithChildren } from 'react'
+import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { FetchPoolProps } from './pool.types'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { useApolloClient } from '@apollo/client'
+import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 
 export type UsePoolResponse = ReturnType<typeof _usePool>
 export const PoolContext = createContext<UsePoolResponse | null>(null)
@@ -30,20 +30,13 @@ export function PoolProvider({
   chain,
   variant,
   children,
-  initialQuery,
-}: PropsWithChildren<FetchPoolProps> & { initialQuery: GetPoolQuery }) {
-  const loaded = useRef(false)
-  const client = useApolloClient()
-
-  if (!loaded.current) {
-    client.writeQuery({
-      query: GetPoolDocument,
-      data: initialQuery,
-      variables: { id },
-    })
-
-    loaded.current = true
-  }
+  initialQueryData,
+}: PropsWithChildren<FetchPoolProps> & { initialQueryData: GetPoolQuery }) {
+  useSeedApolloCache({
+    query: GetPoolDocument,
+    data: initialQueryData,
+    variables: { id },
+  })
 
   const hook = _usePool({ id, chain, variant })
   return <PoolContext.Provider value={hook}>{children}</PoolContext.Provider>

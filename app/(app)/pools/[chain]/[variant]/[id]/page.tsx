@@ -26,7 +26,7 @@ export default async function PoolPage({ params: { id, chain, variant } }: Props
   }
 
   return (
-    <PoolProvider id={id} chain={_chain} variant={variant} initialQuery={data}>
+    <PoolProvider id={id} chain={_chain} variant={variant} initialQueryData={data}>
       <PoolDetail />
     </PoolProvider>
   )

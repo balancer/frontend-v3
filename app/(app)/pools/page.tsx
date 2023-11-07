@@ -1,4 +1,3 @@
-import PoolListWrapper from '@/lib/modules/pool/PoolList/PoolListWrapper'
 import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
 import {
   GetPoolsDocument,
@@ -7,8 +6,11 @@ import {
   GqlPoolOrderDirection,
 } from '@/lib/shared/services/api/generated/graphql'
 import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
+import { PoolList } from '@/lib/modules/pool/PoolList/PoolList'
+import { PoolListProvider } from '@/lib/modules/pool/PoolList/usePoolList'
 
 export default async function Pools() {
+  console.log('rsc pass')
   const { data } = await getApolloServerClient().query({
     query: GetPoolsDocument,
     variables: {
@@ -31,14 +33,11 @@ export default async function Pools() {
       },
       textSearch: null,
     },
-    context: {
-      fetchOptions: {
-        next: { revalidate: 30 },
-      },
-    },
   })
 
-  console.log('count', data.count)
-
-  return <PoolListWrapper data={data} />
+  return (
+    <PoolListProvider data={data}>
+      <PoolList />
+    </PoolListProvider>
+  )
 }

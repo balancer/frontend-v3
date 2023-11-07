@@ -1,10 +1,19 @@
 'use client'
 
 import { createContext, ReactNode, useRef } from 'react'
-import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GetPoolsDocument,
+  GetPoolsQuery,
+  GqlPoolFilterType,
+  GqlPoolOrderBy,
+  GqlPoolOrderDirection,
+} from '@/lib/shared/services/api/generated/graphql'
 import { useQuery, useSuspenseQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { useApolloClient } from '@apollo/client'
+import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
+import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 
 export function _usePoolList() {
   const { queryVariables } = usePoolListQueryState()
@@ -45,9 +54,34 @@ export function usePoolListSeedCacheQuery() {
 
 export const PoolListContext = createContext<ReturnType<typeof _usePoolList> | null>(null)
 
-export function PoolListProvider(props: { children: ReactNode }) {
+export function PoolListProvider({ children, data }: { children: ReactNode; data: GetPoolsQuery }) {
+  useSeedApolloCache({
+    query: GetPoolsDocument,
+    data: data,
+    variables: {
+      first: 20,
+      skip: 0,
+      orderBy: GqlPoolOrderBy.TotalLiquidity,
+      orderDirection: GqlPoolOrderDirection.Desc,
+      where: {
+        poolTypeIn: [
+          GqlPoolFilterType.Weighted,
+          GqlPoolFilterType.Stable,
+          GqlPoolFilterType.PhantomStable,
+          GqlPoolFilterType.MetaStable,
+          GqlPoolFilterType.Gyro,
+          GqlPoolFilterType.Gyro3,
+          GqlPoolFilterType.Gyroe,
+          GqlPoolFilterType.LiquidityBootstrapping,
+        ],
+        chainIn: PROJECT_CONFIG.supportedNetworks,
+      },
+      textSearch: null,
+    },
+  })
+
   const hook = _usePoolList()
-  return <PoolListContext.Provider value={hook}>{props.children}</PoolListContext.Provider>
+  return <PoolListContext.Provider value={hook}>{children}</PoolListContext.Provider>
 }
 
 export function usePoolList() {
