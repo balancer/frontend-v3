@@ -1,6 +1,6 @@
 import { Wrapper, testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
-import { PoolProvider, _usePool, usePool, useSeedPoolCacheQuery } from './usePool'
+import { PoolProvider, _usePool, usePool } from './usePool'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { defaultPoolMock, defaultPoolResponseMock } from '@/test/msw/handlers/Pool.handlers'
 import { PoolVariant } from './pool.types'
@@ -12,7 +12,7 @@ test('fetches v2 pool', async () => {
       id: poolId,
       chain: GqlChain.Mainnet,
       variant: PoolVariant.v2,
-      initialQuery: defaultPoolResponseMock,
+      initialData: defaultPoolResponseMock,
     })
   })
 
@@ -32,7 +32,8 @@ test('fetches v2 pool without exposing _usePool', async () => {
       id="test pool id"
       chain={GqlChain.Mainnet}
       variant={PoolVariant.v2}
-      initialQuery={defaultPoolResponseMock}
+      data={defaultPoolResponseMock}
+      variables={{ id: poolId }}
     >
       {children}
     </PoolProvider>
