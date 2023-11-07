@@ -31,23 +31,6 @@ export function _usePoolList() {
   }
 }
 
-export function usePoolListSeedCacheQuery() {
-  const { queryVariables } = usePoolListQueryState()
-  // We store the search params in a ref so that they do not update.
-  // This ensure that the suspense query will only get called once. during
-  // the server side rendering pass.
-  const storedVariables = useRef(queryVariables).current
-
-  return useSuspenseQuery(GetPoolsDocument, {
-    variables: storedVariables,
-    context: {
-      fetchOptions: {
-        next: { revalidate: 30 },
-      },
-    },
-  })
-}
-
 export const PoolListContext = createContext<ReturnType<typeof _usePoolList> | null>(null)
 
 export function PoolListProvider({
