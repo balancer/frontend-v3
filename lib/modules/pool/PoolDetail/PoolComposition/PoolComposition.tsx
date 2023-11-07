@@ -1,6 +1,7 @@
 import {
   Card,
   CardBody,
+  HStack,
   Table,
   TableContainer,
   Tbody,
@@ -19,7 +20,12 @@ export function PoolComposition() {
   const { poolComposition } = usePoolComposition()
 
   return (
-    <Card maxWidth="900px">
+    <Card variant="gradient" width="full">
+      <HStack p="5">
+        <Text variant="heading" fontWeight="bold" as="h2" fontSize="xl">
+          My liquidity
+        </Text>
+      </HStack>
       <CardBody>
         <Text fontSize="24px" fontWeight="bold">
           Pool Composition

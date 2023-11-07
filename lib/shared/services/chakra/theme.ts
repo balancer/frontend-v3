@@ -1,5 +1,6 @@
 import { ThemeOverride, ThemeTypings, extendTheme } from '@chakra-ui/react'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
+import { cardTheme } from '../../components/containers/GradientCard'
 
 export const balTheme: ThemeOverride = {
   styles: {
@@ -14,11 +15,14 @@ export const balTheme: ThemeOverride = {
     useSystemColorMode: false,
   },
   fonts: {
-    body: `
-      ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif`,
+    heading: `'Satoshi', sans-serif`,
+    body: `'Satoshi', sans-serif`,
   },
   colors: {
+    noise: 'rgba(243, 241, 336, 0.3)',
+    background: '#F3F1EC',
+    elevatedBackground: '#F6F3ED',
+    borderColor: 'rgba(229, 211, 190, 0.6)',
     primary: {
       '50': '#eaf6ff',
       '100': '#daedff',
@@ -44,6 +48,25 @@ export const balTheme: ThemeOverride = {
       '800': '#49351D',
       '900': '#241A0F',
     },
+    badge: '#EBE9E0',
+    text: {
+      primary: '#414853',
+      secondary: '#728097',
+    },
+    gradients: {
+      text: {
+        heading: {
+          from: '#707883',
+          to: '#2D4C7E',
+        },
+      },
+      button: {
+        sand: {
+          from: '#E5D3BE',
+          to: '#E6C6A0',
+        },
+      },
+    },
   },
   components: {
     Heading: {
@@ -52,6 +75,46 @@ export const balTheme: ThemeOverride = {
           fontSize: '1rem',
           fontWeight: 'bold',
           lineHeight: '3rem',
+        },
+      },
+    },
+    Text: {
+      variants: {
+        heading: {
+          bgGradient: 'linear(to-l, gradients.text.heading.from, gradients.text.heading.to)',
+          bgClip: 'text',
+        },
+        primary: {
+          color: 'text.primary',
+        },
+        secondary: {
+          color: 'text.secondary',
+        },
+      },
+    },
+    Button: {
+      variants: {
+        selector: {
+          backgroundColor: 'transparent',
+          height: 'fit-content',
+          width: 'fit-content',
+          px: '2',
+          py: '1.5',
+          fontSize: 'xs',
+          color: 'text.secondary',
+          fontWeight: 'medium',
+          borderRadius: '4px',
+        },
+        activeSelector: {
+          bgGradient: 'linear(to-l, gradients.button.sand.from, gradients.button.sand.to)',
+          height: 'fit-content',
+          width: 'fit-content',
+          px: '2',
+          py: '1.5',
+          fontSize: 'xs',
+          color: 'text.primary',
+          fontWeight: 'bold',
+          borderRadius: '4px',
         },
       },
     },
@@ -109,6 +172,15 @@ const proseTheme = withProse({
   },
 })
 
-const theme = extendTheme(balTheme, proseTheme) as ThemeTypings
+const theme = extendTheme(
+  {
+    ...balTheme,
+    components: {
+      ...balTheme.components,
+      Card: cardTheme,
+    },
+  },
+  proseTheme
+) as ThemeTypings
 
 export default theme

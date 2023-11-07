@@ -4,6 +4,8 @@ import { Navbar } from '@/lib/shared/components/navs/Navbar'
 import { Footer } from '@/lib/shared/components/navs/Footer'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import '@/lib/shared/utils/bigint'
+import Noise from './noise'
+import { satoshiFont } from '@/lib/assets/fonts/satoshi/satoshi'
 
 const { projectName, projectId } = getProjectConfig()
 const iconUrl = `/images/icons/${projectId}.ico`
@@ -24,11 +26,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning>
+      <body className={satoshiFont.className} suppressHydrationWarning>
         <Providers>
-          <Navbar />
-          {children}
-          <Footer />
+          <Noise>
+            <Navbar />
+            {children}
+            <Footer />
+          </Noise>
         </Providers>
       </body>
     </html>
