@@ -23,5 +23,5 @@ export function bn(val: string | number | bigint): BigNumber {
 
 export function fiatFormat(val: string | number | bigint): string {
   const number = typeof val === 'string' ? val : val ? val.toString() : '0'
-  return numeral(val).format(FIAT_FORMAT)
+  return numeral(number).format(FIAT_FORMAT)
 }
