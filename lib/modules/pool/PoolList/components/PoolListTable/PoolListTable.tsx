@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation'
 import { getPoolPath } from '../../../pool.utils'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
-import Link from 'next/link'
 
 export function PoolListTable() {
   const { pools, loading, count } = usePoolList()
@@ -35,9 +34,6 @@ export function PoolListTable() {
 
   return (
     <Box w="full" style={{ position: 'relative' }}>
-      <Link href={getPoolPath({ id: pools[0].id, chain: pools[0].chain })} prefetch={true}>
-        Test pool detail link
-      </Link>
       <DataTable
         columns={columns}
         data={pools}
