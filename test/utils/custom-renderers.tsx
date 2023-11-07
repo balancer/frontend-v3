@@ -14,7 +14,6 @@ import {
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
-import { QueryParamAdapter, QueryParamProvider } from 'use-query-params'
 import { waitFor } from '@testing-library/react'
 import { GetFunctionArgs, InferFunctionName } from 'viem'
 import { WriteAbiMutability } from '@/lib/modules/web3/contracts/contract.types'
@@ -77,11 +76,11 @@ function GlobalProviders({ children }: WrapperProps) {
 }
 
 function ClientProvidersMock({ children }: React.PropsWithChildren) {
-  return <QueryParamProvider adapter={NextAdapterAppMock}>{children}</QueryParamProvider>
+  return <>children</>
 }
 
 type Props = {
-  children(adapter: QueryParamAdapter): ReactElement | null
+  children(adapter: any): ReactElement | null
 }
 
 function NextAdapterAppMock({ children }: Props) {

@@ -102,7 +102,8 @@ export class JoinConfigBuilder {
   getUnbalancedJoinInput({ useNativeAssetAsWrappedAmountIn = false } = {}): UnbalancedJoinInput {
     return {
       ...this.getJoinInputBase(),
-      amountsIn: Object.values(this.amountsInByTokenAddress).filter(a => a.amount !== 0n),
+      //amountsIn: Object.values(this.amountsInByTokenAddress).filter(a => a.amount !== 0n),
+      amountsIn: [],
       kind: JoinKind.Unbalanced,
       useNativeAssetAsWrappedAmountIn,
     }
@@ -119,7 +120,11 @@ export class JoinConfigBuilder {
     // perform join query to get expected bpt out
     return {
       ...this.getJoinInputBase(),
-      bptOut,
+      bptOut: {
+        address: '0x0',
+        decimals: 0,
+        rawAmount: 0n,
+      },
       tokenIn,
       kind: JoinKind.SingleAsset,
     }
