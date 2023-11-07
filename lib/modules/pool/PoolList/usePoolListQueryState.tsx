@@ -21,7 +21,7 @@ export function usePoolListQueryState() {
   const [skip, setSkip] = useQueryState('skip', poolListQueryStateParsers.skip)
   const [orderBy, setOrderBy] = useQueryState('orderBy', poolListQueryStateParsers.orderBy)
   const [orderDirection, setOrderDirection] = useQueryState(
-    'orderBy',
+    'orderDirection',
     poolListQueryStateParsers.orderDirection
   )
   const [poolTypes, setPoolTypes] = useQueryState('poolTypes', poolListQueryStateParsers.poolTypes)
