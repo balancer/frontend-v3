@@ -16,8 +16,8 @@ export const MAX_BIGINT = BigInt(MAX_UINT256)
 
 export const FIAT_FORMAT = '($0,00a)'
 
-export function bn(val: string | number | bigint): BigNumber {
-  const number = typeof val === 'string' ? val : val ? val.toString() : '0'
+export function bn(val: string | number | bigint | BigNumber): BigNumber {
+  const number = val.toString()
   return new BigNumber(number)
 }
 
