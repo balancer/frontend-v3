@@ -1,94 +1,82 @@
 import { ThemeOverride, ThemeTypings, extendTheme } from '@chakra-ui/react'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
-import { darken } from '@chakra-ui/theme-tools'
-
-// const colors = {
-//   primary: {
-//     '50': '#eaf6ff',
-//     '100': '#daedff',
-//     '200': '#bcddff',
-//     '300': '#93c6ff',
-//     '400': '#68a1ff',
-//     '500': '#457dff',
-//     '600': '#2554ff',
-//     '700': '#2048e9',
-//     '800': '#183bbb',
-//     '900': '#1d3992',
-//     '950': '#112055',
-//   },
-//   sand: {
-//     '50': '#f8f7f4',
-//     '100': '#f3f1ec',
-//     '200': '#ddd8cb',
-//     '300': '#c8bda9',
-//     '400': '#b19f86',
-//     '500': '#a18a6e',
-//     '600': '#947a62',
-//     '700': '#7c6452',
-//     '800': '#655247',
-//     '900': '#53443b',
-//     '950': '#2c231e',
-//   },
-//   salmon: {
-//     '50': '#fef4f2',
-//     '100': '#fde7e3',
-//     '200': '#fcd4cc',
-//     '300': '#f9b5a8',
-//     '400': '#f48975',
-//     '500': '#ea6249',
-//     '600': '#d7462b',
-//     '700': '#b43821',
-//     '800': '#95321f',
-//     '900': '#7c2e20',
-//     '950': '#43150c',
-//   },
-//   lavender: {
-//     '50': '#f5f4fe',
-//     '100': '#ecebfc',
-//     '200': '#dbdafa',
-//     '300': '#b3aef5',
-//     '400': '#9f95f0',
-//     '500': '#7f6ae8',
-//     '600': '#6c4add',
-//     '700': '#5c38c9',
-//     '800': '#4d2ea9',
-//     '900': '#40288a',
-//     '950': '#26175e',
-//   },
-//   green: {
-//     '50': '#eafff6',
-//     '100': '#cdfee7',
-//     '200': '#a0fad4',
-//     '300': '#63f2be',
-//     '400': '#25e2a4',
-//     '500': '#00d395',
-//     '600': '#00a474',
-//     '700': '#008361',
-//     '800': '#00674e',
-//     '900': '#005541',
-//     '950': '#003026',
-//   },
-//   orange: {
-//     '500': '#7452FF',
-//   },
-// }
-
-// Use the above customization with this format: colors.orange['500']
-// or use the default Chakra colors: 'orange.500'
+import { darken, lighten } from '@chakra-ui/theme-tools'
 
 const tokens = {
   colors: {
     light: {
-      'bg-default': 'hsla(43,23%,94%,1)',
-      'text-body': 'linear-gradient(45deg, #333 0%, #707883 100%)',
-      'text-link': 'orange.500',
-      'gradient-dusk': 'gradient.dusk',
+      // Background colors
+      colorBgBase: 'hsla(43,23%,92%,1)',
+
+      colorCardBgLevel0: 'hsla(43,23%,92%,1)',
+      colorCardBgLevel1: 'hsla(43,23%,93%,1)',
+      colorCardBgLevel2: 'hsla(43,23%,94%,1)',
+      colorCardBgLevel3: 'hsla(43,23%,95%,1)',
+      colorCardBgLevel4: 'hsla(43,23%,96%,1)',
+      colorCardBgLevel5: 'hsla(43,23%,97%,1)',
+      colorCardBgLevel6: 'hsla(43,23%,98%,1)',
+      colorCardBgLevel7: 'hsla(43,23%,99%,1)',
+      colorCardBgLevel8: 'hsla(43,23%,100%,1)',
+
+      colorBgSpecial: 'linear-gradient(90deg, #8F86FD 0%, #A66CF3 33%, #F48975 100%)',
+
+      // Button colors
+      colorButtonBgPrimary:
+        'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
+      colorButtonBgSecondary: 'linear-gradient(152deg, #E5D3BE 20.87%, #E6C6A0 86.96%)',
+      colorButtonBgTertiary:
+        'linear-gradient(0deg, rgba(63, 69, 80, 0.80) -16.28%, rgba(85, 94, 108, 0.80) 97.67%)',
+
+      colorButtonBorderTopTertiary: 'gray.800',
+
+      // Font colors
+      colorFontPrimary:
+        'linear-gradient(45deg, rgba(45, 76, 126, 1) 0%, rgba(45, 76, 126, 0.75) 100%)',
+      colorFontSecondary: 'linear-gradient(45deg, #728097 0%, #909BAD 100%)',
+      colorFontSpecial: 'linear-gradient(90deg, #8F86FD 0%, #A66CF3 33%, #F48975 100%)',
+      colorFontLink: 'linear-gradient(45deg, #333 0%, #707883 100%)',
     },
     dark: {
-      'bg-default': 'hsla(217,12%,29%,1)',
-      'text-body': 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
-      'text-link': 'orange.500',
-      'gradient-dusk': 'gradient.dusky',
+      // Background colors
+      colorBgBase: 'hsla(217,12%,29%,1)',
+
+      colorCardBgLevel0: 'hsla(216, 12%, 25%, 1)',
+      colorCardBgLevel1: 'hsla(216, 12%, 26%, 1)',
+      colorCardBgLevel2: 'hsla(216, 12%, 27%, 1)',
+      colorCardBgLevel3: 'hsla(216, 12%, 28%, 1)',
+      colorCardBgLevel4: 'hsla(216, 12%, 29%, 1)',
+      colorCardBgLevel5: 'hsla(216, 12%, 30%, 1)',
+      colorCardBgLevel6: 'hsla(216, 12%, 31%, 1)',
+      colorCardBgLevel7: 'hsla(216, 12%, 32%, 1)',
+      colorCardBgLevel8: 'hsla(216, 12%, 33%, 1)',
+
+      colorBgSpecial: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
+
+      // Button colors
+      colorButtonBgPrimary:
+        'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
+      colorButtonBgSecondary: 'linear-gradient(152deg, #E5D3BE 20.87%, #E6C6A0 86.96%)',
+      colorButtonBgTertiary:
+        'linear-gradient(0deg, rgba(63, 69, 80, 0.80) -16.28%, rgba(85, 94, 108, 0.80) 97.67%)',
+
+      colorButtonBorderTopTertiary: 'gray.500',
+
+      // Font colors
+      colorFontPrimary: 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
+      colorFontSecondary: 'linear-gradient(45deg, #909BAD 0%, #728097 100%)',
+      colorFontSpecial:
+        'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
+      colorFontLink: 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
+    },
+  },
+  shadows: {
+    light: {
+      shadowInnerBase:
+        '0px 2px 4px 0px rgba(0, 0, 0, 0.05) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.05) inset, 0px 10px 20px 0px rgba(0, 0, 0, 0.05) inset',
+    },
+    dark: {
+      shadowInnerBase:
+        '0px 2px 4px 0px rgba(0, 0, 0, 0.10) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.10) inset, 0px 10px 20px 0px rgba(0, 0, 0, 0.10) inset',
     },
   },
 }
@@ -118,6 +106,18 @@ export const balTheme: ThemeOverride = {
       '800': '#183bbb',
       '900': '#1d3992',
       '950': '#112055',
+    },
+    gray: {
+      '50': '#F7FAFC',
+      '100': '#EDF2F7',
+      '200': '#E2E8F0',
+      '300': '#CBD5E0',
+      '400': '#A0AEC0',
+      '500': '#718096',
+      '600': '#4A5568',
+      '700': '#2D3748',
+      '800': '#1A202C',
+      '900': '#171923',
     },
     sand: {
       '50': '#F8F3ED',
@@ -171,7 +171,7 @@ export const balTheme: ThemeOverride = {
       '950': '#003026',
     },
     gradient: {
-      dusk: 'linear(to-tr, lavender.300 5%, #D7CBE7 50%, #EAA879 95%)',      
+      dusk: 'linear(to-tr, lavender.300 5%, #D7CBE7 50%, #EAA879 95%)',
       sand: 'linear(to-t, #E6C6A0 0%, #E5D3BE 100%)',
     },
   },
@@ -188,30 +188,90 @@ export const balTheme: ThemeOverride = {
         _light: 'gray.500',
         _dark: 'whiteAlpha.400',
       },
-      // Text styles
-      'text-body': {
-        default: tokens.colors.light['text-body'],
-        _dark: tokens.colors.dark['text-body'],
+      // Background colors
+      colorBgBase: {
+        default: tokens.colors.light['colorBgBase'],
+        _dark: tokens.colors.dark['colorBgBase'],
       },
-      'text-gradient-dusk': {
-        default: tokens.colors.light['gradient-dusk'],
-        _dark: tokens.colors.dark['gradient-dusk'],
+      colorCardBgLevel0: {
+        default: tokens.colors.light['colorCardBgLevel0'],
+        _dark: tokens.colors.dark['colorCardBgLevel0'],
       },
-      'text-dark': '#414853',
-      'text-light': '#F3F1EC',
-      'text-link': {
-        default: tokens.colors.light['text-link'],
-        _dark: tokens.colors.dark['text-link'],
+      colorCardBgLevel1: {
+        default: tokens.colors.light['colorCardBgLevel1'],
+        _dark: tokens.colors.dark['colorCardBgLevel1'],
       },
-      // Backgrounds
-      'bg-default': {
-        default: tokens.colors.light['bg-default'],
-        _dark: tokens.colors.dark['bg-default'],
+      colorCardBgLevel2: {
+        default: tokens.colors.light['colorCardBgLevel2'],
+        _dark: tokens.colors.dark['colorCardBgLevel2'],
       },
-      'bg-gradient-dusk': {
-        default: tokens.colors.light['gradient-dusk'],
-        _dark: tokens.colors.dark['gradient-dusk'],
+      colorCardBgLevel3: {
+        default: tokens.colors.light['colorCardBgLevel3'],
+        _dark: tokens.colors.dark['colorCardBgLevel3'],
       },
+      colorCardBgLevel4: {
+        default: tokens.colors.light['colorCardBgLevel4'],
+        _dark: tokens.colors.dark['colorCardBgLevel4'],
+      },
+      colorCardBgLevel5: {
+        default: tokens.colors.light['colorCardBgLevel5'],
+        _dark: tokens.colors.dark['colorCardBgLevel5'],
+      },
+      colorCardBgLevel6: {
+        default: tokens.colors.light['colorCardBgLevel6'],
+        _dark: tokens.colors.dark['colorCardBgLevel6'],
+      },
+      colorCardBgLevel7: {
+        default: tokens.colors.light['colorCardBgLevel7'],
+        _dark: tokens.colors.dark['colorCardBgLevel7'],
+      },
+      colorCardBgLevel8: {
+        default: tokens.colors.light['colorCardBgLevel8'],
+        _dark: tokens.colors.dark['colorCardBgLevel8'],
+      },
+
+      colorBgSpecial: {
+        default: tokens.colors.light['colorBgSpecial'],
+        _dark: tokens.colors.dark['colorBgSpecial'],
+      },
+
+      // Button colors
+      colorButtonBgPrimary: {
+        default: tokens.colors.light['colorButtonBgPrimary'],
+        _dark: tokens.colors.dark['colorButtonBgPrimary'],
+      },
+      colorButtonBgSecondary: {
+        default: tokens.colors.light['colorButtonBgSecondary'],
+        _dark: tokens.colors.dark['colorButtonBgSecondary'],
+      },
+      colorButtonBgTertiary: {
+        default: tokens.colors.light['colorButtonBgTertiary'],
+        _dark: tokens.colors.dark['colorButtonBgTertiary'],
+      },
+      colorButtonBorderTopTertiary: {
+        default: tokens.colors.light['colorButtonBorderTopTertiary'],
+        _dark: tokens.colors.dark['colorButtonBorderTopTertiary'],
+      },
+
+      // Text colors
+      colorFontPrimary: {
+        default: tokens.colors.light['colorFontPrimary'],
+        _dark: tokens.colors.dark['colorFontPrimary'],
+      },
+      colorFontSecondary: {
+        default: tokens.colors.light['colorFontSecondary'],
+        _dark: tokens.colors.dark['colorFontSecondary'],
+      },
+      colorFontSpecial: {
+        default: tokens.colors.light['colorFontSpecial'],
+        _dark: tokens.colors.dark['colorFontSpecial'],
+      },
+      colorFontLink: {
+        default: tokens.colors.light['colorFontLink'],
+        _dark: tokens.colors.dark['colorFontLink'],
+      },
+      colorFontDark: '#414853',
+      colorFontLight: '#F3F1EC',
     },
     space: {
       sm: '0.5rem',
@@ -219,6 +279,15 @@ export const balTheme: ThemeOverride = {
       lg: '1.5rem',
       xl: '2rem',
       '2xl': '4rem',
+    },
+    shadows: {
+      innerSm: 'inset 0 0 4px 0 rgba(0, 0, 0, 0.06)',
+      innerBase: {
+        default: tokens.shadows.light['shadowInnerBase'],
+        _dark: tokens.shadows.dark['shadowInnerBase'],
+      },
+      innerMd: 'inset 0 0 6px 0 rgba(0, 0, 0, 0.1)',
+      innerLg: 'inset 0 0 8px 0 rgba(0, 0, 0, 0.15)',
     },
     sizes: {
       maxContent: '1320px',
@@ -244,17 +313,14 @@ export const balTheme: ThemeOverride = {
         minHeight: '100vh',
       },
       body: {
-        background: 'bg-default',
-      },
-      p: {
-        background: 'text-body',
-        backgroundClip: 'text',
-        '--webkitBackgroundClip': 'text',
-        '--webkitTextFillColor': 'transparent',
+        background: 'colorBgBase',
       },
       'p + ul': {
         mt: '1',
       },
+      // li: {
+      //   color: 'red',
+      // },
       // 'body:before': {
       //   background: `linear-gradient(45deg, rgba(243,241,236,0.5), rgba(223,218,205,0.5)),
       //   url(/images/patterns/texture.svg) repeat`,
@@ -287,14 +353,18 @@ export const balTheme: ThemeOverride = {
         mb: 'sm',
         display: 'block',
         width: 'fit-content',
-        background: 'text-body',
+        background: 'colorFontPrimary',
         backgroundClip: 'text',
       },
       variants: {
-        'gradient-dusk': props => ({
-          bgGradient: props.theme.colors.gradient.dusk,
-          bgClip: 'text',
-        }),
+        secondary: {
+          background: 'colorFontSecondary',
+          backgroundClip: 'text',
+        },
+        special: {
+          background: 'colorFontSpecial',
+          backgroundClip: 'text',
+        },
         sand: props => ({
           bgGradient: props.theme.colors.gradient.sand,
           bgClip: 'text',
@@ -335,7 +405,19 @@ export const balTheme: ThemeOverride = {
       },
     },
     Text: {
+      baseStyle: {
+        background: 'colorFontPrimary',
+        backgroundClip: 'text',
+      },
       variants: {
+        secondary: {
+          background: 'colorFontSecondary',
+          backgroundClip: 'text',
+        },
+        special: {
+          background: 'colorFontSpecial',
+          backgroundClip: 'text',
+        },
         eyebrow: {
           textTransform: 'uppercase',
           fontSize: 'xs',
@@ -343,6 +425,12 @@ export const balTheme: ThemeOverride = {
           letterSpacing: '1px',
           width: 'fit-content',
         },
+      },
+    },
+    Link: {
+      baseStyle: {
+        background: 'colorFontPrimary',
+        backgroundClip: 'text',
       },
     },
     Button: {
@@ -358,28 +446,101 @@ export const balTheme: ThemeOverride = {
         solid: {
           color: 'text-body',
         },
-        dusk: props => ({
-          bgGradient: props.theme.colors.gradient.dusk,
+        primary: {
+          background: 'colorButtonBgPrimary',
           borderTop: '2px solid',
           borderColor: 'lavender.200',
-          color: 'text-dark',
-        }),
+          color: 'colorFontDark',
+        },
+        secondary: {
+          background: 'colorButtonBgSecondary',
+          borderTop: '2px solid',
+          borderBottom: '2px solid',
+          borderTopColor: '#F4EBE1',
+          borderBottomColor: darken('#F4EBE1', 25),
+          color: 'colorFontDark',
+        },
+        tertiary: {
+          background: 'colorButtonBgTertiary',
+          borderTop: '2px solid',
+          borderColor: 'colorButtonBorderTopTertiary',
+          color: 'colorFontPrimary',
+        },
         'tx-gas': {
           bgGradient: 'linear(to-tr, blue.300 0%, #D7CBE7 50%, #EAA879 100%)',
           borderTop: '2px solid',
           borderColor: 'lavender.200',
           color: 'black',
         },
-        sand: props => ({
-          bgGradient: props.theme.colors.gradient.sand,
-          borderTop: '2px solid',
-          borderBottom: '2px solid',
-          borderTopColor: '#F4EBE1',
-          borderBottomColor: darken('#F4EBE1', 25),
-          color: 'text-dark',
-        }),
       },
     },
+    Card: {
+      baseStyle: {
+        container: {
+          background: 'colorCardBgLevel0',
+        },
+      },
+      variants: {
+        level0: {
+          container: {
+            background: 'colorCardBgLevel0',
+          },
+        },
+        level1: {
+          container: {
+            background: 'colorCardBgLevel1',
+          },
+        },
+        level2: {
+          container: {
+            background: 'colorCardBgLevel2',
+          },
+        },
+        level3: {
+          container: {
+            background: 'colorCardBgLevel3',
+          },
+        },
+        level4: {
+          container: {
+            background: 'colorCardBgLevel4',
+          },
+        },
+        level5: {
+          container: {
+            background: 'colorCardBgLevel5',
+          },
+        },
+        level6: {
+          container: {
+            background: 'colorCardBgLevel6',
+          },
+        },
+        level7: {
+          container: {
+            background: 'colorCardBgLevel7',
+          },
+        },
+        level8: {
+          container: {
+            background: 'colorCardBgLevel8',
+          },
+        },
+      },
+    },
+    Input: {
+      baseStyle: {
+        field: {
+          background: 'colorCardBgLevel8',
+        },
+      },
+    },
+    // List: {
+    //   baseStyle: {
+    //     background: 'red',
+    //     backgroundClip: 'text',
+    //   },
+    // },
   },
 }
 
