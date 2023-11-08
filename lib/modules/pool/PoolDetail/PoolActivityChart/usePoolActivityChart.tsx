@@ -258,26 +258,26 @@ export function usePoolActivityChart() {
   useEffect(() => {
     const instance = eChartsRef.current?.getEchartsInstance()
     if (!instance) return
+
     const { joinOption, exitOption, swapOption } = options
-    if (activeTab === PoolActivityChartTab.ADDS) {
-      instance?.setOption({
-        series: [{ data: joinOption.data }, { data: [] }, { data: [] }],
-      })
-    }
-    if (activeTab === PoolActivityChartTab.REMOVES) {
-      instance?.setOption({
-        series: [{ data: [] }, { data: exitOption.data }, { data: [] }],
-      })
-    }
-    if (activeTab === PoolActivityChartTab.SWAPS) {
-      instance?.setOption({
-        series: [{ data: [] }, { data: [] }, { data: swapOption.data }],
-      })
-    }
-    if (activeTab === PoolActivityChartTab.ALL) {
-      instance?.setOption({
-        series: [joinOption, exitOption, swapOption],
-      })
+
+    switch (activeTab) {
+      case PoolActivityChartTab.ADDS:
+        return instance.setOption({
+          series: [{ data: joinOption.data }, { data: [] }, { data: [] }],
+        })
+      case PoolActivityChartTab.REMOVES:
+        return instance.setOption({
+          series: [{ data: [] }, { data: exitOption.data }, { data: [] }],
+        })
+      case PoolActivityChartTab.SWAPS:
+        return instance.setOption({
+          series: [{ data: [] }, { data: [] }, { data: swapOption.data }],
+        })
+      default:
+        return instance.setOption({
+          series: [joinOption, exitOption, swapOption],
+        })
     }
   }, [activeTab, chartData, options])
 
