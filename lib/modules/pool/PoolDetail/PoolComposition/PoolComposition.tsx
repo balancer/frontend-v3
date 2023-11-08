@@ -11,6 +11,7 @@ import {
   Tr,
 } from '@chakra-ui/react'
 import { usePoolComposition } from './usePoolComposition'
+import { TokenBreakdown } from './TokenBreakdown'
 
 const tableHeads = ['Token', 'Balance', 'Value', 'Token %']
 
@@ -34,15 +35,8 @@ export function PoolComposition() {
               </Tr>
             </Thead>
             <Tbody>
-              {poolComposition.map(detail => {
-                return (
-                  <Tr key={detail.symbol}>
-                    <Td>{detail.symbol}</Td>
-                    <Td>{detail.balance}</Td>
-                    <Td>{detail.value}</Td>
-                    <Td>{detail.weight}</Td>
-                  </Tr>
-                )
+              {poolComposition.map(token => {
+                return <TokenBreakdown token={token} key={token.symbol} />
               })}
             </Tbody>
           </Table>

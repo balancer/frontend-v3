@@ -19,6 +19,7 @@ export function usePoolComposition() {
         value: balance,
         // TODO add a real weight and target weight
         weight: numeral(weight).format('(%0,0)'),
+        nestedTokens: token.pool.tokens,
       }
     })
   }, [pool])
