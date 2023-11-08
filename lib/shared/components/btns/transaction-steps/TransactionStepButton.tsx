@@ -18,7 +18,7 @@ export function TransactionStepButton({
   const isButtonLoading =
     transactionState === TransactionState.Loading ||
     transactionState === TransactionState.Confirming
-  const hasSimulationError = (!execution.isIdle && !execution.data) || simulation.isError
+  const hasSimulationError = (!simulation.isIdle && !simulation.data) || simulation.isError
   const isButtonDisabled = transactionState === TransactionState.Loading || hasSimulationError
 
   function handleOnClick() {
