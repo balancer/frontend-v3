@@ -9,6 +9,7 @@ import { PoolVariant } from '../../pool.types'
 import {
   GetPoolJoinsExitsSwapsDocument,
   GqlPoolFilterType,
+  GqlPoolJoinExitType,
 } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 
@@ -66,8 +67,14 @@ const defOptions = {
   tooltip: {
     formatter: (params: any) => {
       const data = Array.isArray(params) ? params[0] : params
+
       return `
         <div style="display: flex; flex-direction: column; justify-content: center;">
+          <div style="font-size: 14px; font-weight: 500; color: ${
+            theme.colors.gray[500]
+          }; margin-bottom: 5px;">
+            Type: ${data.seriesName}
+          </div>
           <div style="font-size: 14px; font-weight: 500; color: ${
             theme.colors.gray[500]
           }; margin-bottom: 5px;">
@@ -108,8 +115,8 @@ export function usePoolJoinsExitsSwaps(poolId: string) {
 
 export enum PoolActivityChartTab {
   ALL = 'all',
-  JOINS = 'joins',
-  EXITS = 'exits',
+  ADDS = 'adds',
+  REMOVES = 'removes',
   SWAPS = 'swaps',
 }
 
@@ -128,12 +135,12 @@ export function getPoolActivityTabsList({
   if (poolType === GqlPoolFilterType.LiquidityBootstrapping && variant === PoolVariant.v2) {
     return [
       {
-        value: PoolActivityChartTab.JOINS,
-        label: 'Joins',
+        value: PoolActivityChartTab.ADDS,
+        label: 'Adds',
       },
       {
-        value: PoolActivityChartTab.EXITS,
-        label: 'Exits',
+        value: PoolActivityChartTab.REMOVES,
+        label: 'Removes',
       },
     ]
   }
@@ -144,12 +151,12 @@ export function getPoolActivityTabsList({
       label: 'All',
     },
     {
-      value: PoolActivityChartTab.JOINS,
-      label: 'Joins',
+      value: PoolActivityChartTab.ADDS,
+      label: 'Adds',
     },
     {
-      value: PoolActivityChartTab.EXITS,
-      label: 'Exits',
+      value: PoolActivityChartTab.REMOVES,
+      label: 'Removes',
     },
     {
       value: PoolActivityChartTab.SWAPS,
@@ -162,7 +169,7 @@ export function usePoolActivityChart() {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
 
   const { id: poolId, variant } = useParams()
-  const { pool, loading: isLoadingPool } = usePool()
+  const { pool } = usePool()
 
   const tabsList = useMemo(() => {
     const poolType = pool?.type
@@ -179,23 +186,23 @@ export function usePoolActivityChart() {
   const { data: response } = usePoolJoinsExitsSwaps(poolId as string)
 
   const chartData = useMemo(() => {
-    if (!response) return { joins: [], exits: [], swaps: [] }
+    if (!response) return { adds: [], removes: [], swaps: [] }
     const { joinExits, swaps } = response
 
     const data = joinExits.reduce(
-      (acc: Record<'joins' | 'exits' | 'swaps', [number, string][]>, item) => {
+      (acc: Record<'adds' | 'removes' | 'swaps', [number, string][]>, item) => {
         const { type, timestamp, valueUSD } = item
         const usdValue = valueUSD ?? ''
-        if (type === 'Join') {
-          acc.joins.push([timestamp, usdValue])
+        if (type === GqlPoolJoinExitType.Join) {
+          acc.adds.push([timestamp, usdValue])
         }
-        if (type === 'Exit') {
-          acc.exits.push([timestamp, usdValue])
+        if (type === GqlPoolJoinExitType.Exit) {
+          acc.removes.push([timestamp, usdValue])
         }
 
         return acc
       },
-      { joins: [], exits: [], swaps: [] }
+      { adds: [], removes: [], swaps: [] }
     )
 
     swaps.forEach(item => {
@@ -210,7 +217,7 @@ export function usePoolActivityChart() {
   const options = useMemo(() => {
     return {
       joinOption: {
-        name: 'Join',
+        name: 'Add',
         itemStyle: {
           color: theme.colors.green[500],
         },
@@ -218,11 +225,11 @@ export function usePoolActivityChart() {
           focus: 'self',
         },
         symbolSize: getSymbolSize,
-        data: chartData.joins,
+        data: chartData.adds,
         type: 'scatter',
       },
       exitOption: {
-        name: 'Exit',
+        name: 'Remove',
         itemStyle: {
           color: theme.colors.red[500],
         },
@@ -230,7 +237,7 @@ export function usePoolActivityChart() {
           focus: 'self',
         },
         symbolSize: getSymbolSize,
-        data: chartData.exits,
+        data: chartData.removes,
         type: 'scatter',
       },
       swapOption: {
@@ -252,13 +259,12 @@ export function usePoolActivityChart() {
     const instance = eChartsRef.current?.getEchartsInstance()
     if (!instance) return
     const { joinOption, exitOption, swapOption } = options
-    if (activeTab === PoolActivityChartTab.JOINS) {
+    if (activeTab === PoolActivityChartTab.ADDS) {
       instance?.setOption({
         series: [{ data: joinOption.data }, { data: [] }, { data: [] }],
       })
     }
-    if (activeTab === PoolActivityChartTab.EXITS) {
-      console.log('exitOption', exitOption)
+    if (activeTab === PoolActivityChartTab.REMOVES) {
       instance?.setOption({
         series: [{ data: [] }, { data: exitOption.data }, { data: [] }],
       })
