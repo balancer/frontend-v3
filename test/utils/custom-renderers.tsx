@@ -1,8 +1,14 @@
 import { TokensProvider } from '@/lib/modules/tokens/useTokens'
+import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
 import { createWagmiConfig } from '@/lib/modules/web3/Web3Provider'
+import { AbiMap } from '@/lib/modules/web3/contracts/AbiMap'
+import { WriteAbiMutability } from '@/lib/modules/web3/contracts/contract.types'
+import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
+import { TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { ApolloProvider } from '@apollo/client'
-import { RenderHookOptions, act, renderHook } from '@testing-library/react'
+import { RenderHookOptions, act, renderHook, waitFor } from '@testing-library/react'
 import { ReactElement, ReactNode } from 'react'
+import { GetFunctionArgs, InferFunctionName } from 'viem'
 import {
   Config,
   UsePrepareContractWriteConfig,
@@ -14,14 +20,6 @@ import {
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
-import { QueryParamAdapter, QueryParamProvider } from 'use-query-params'
-import { waitFor } from '@testing-library/react'
-import { GetFunctionArgs, InferFunctionName } from 'viem'
-import { WriteAbiMutability } from '@/lib/modules/web3/contracts/contract.types'
-import { AbiMap } from '@/lib/modules/web3/contracts/AbiMap'
-import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
-import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
-import { TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -64,33 +62,14 @@ function GlobalProviders({ children }: WrapperProps) {
   return (
     <WagmiConfig config={wagmiConfig}>
       <AppRouterContextProviderMock router={defaultRouterOptions}>
-        <ClientProvidersMock>
-          <ApolloProvider client={apolloTestClient}>
-            <TokensProvider>
-              <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
-            </TokensProvider>
-          </ApolloProvider>
-        </ClientProvidersMock>
+        <ApolloProvider client={apolloTestClient}>
+          <TokensProvider>
+            <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+          </TokensProvider>
+        </ApolloProvider>
       </AppRouterContextProviderMock>
     </WagmiConfig>
   )
-}
-
-function ClientProvidersMock({ children }: React.PropsWithChildren) {
-  return <QueryParamProvider adapter={NextAdapterAppMock}>{children}</QueryParamProvider>
-}
-
-type Props = {
-  children(adapter: QueryParamAdapter): ReactElement | null
-}
-
-function NextAdapterAppMock({ children }: Props) {
-  const adapter = {
-    replace: vi.fn(),
-    push: vi.fn(),
-    location: { search: '' },
-  }
-  return children(adapter)
 }
 
 /**

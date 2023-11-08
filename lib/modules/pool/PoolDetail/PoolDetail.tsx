@@ -8,13 +8,12 @@ import { PoolComposition } from './PoolComposition/PoolComposition'
 import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
 
 export function PoolDetail() {
-  const { pool, loading } = usePool()
+  const { pool } = usePool()
 
   return (
-    <Stack p="40px">
-      {loading && <Text>Loading...</Text>}
+    <Stack p="40px" maxW="maxContent" mx="auto">
       <Text>
-        {pool?.name}: {pool?.id}
+        {pool.name}: {pool.id}
       </Text>
       <PoolStatCards />
       <PoolChart />

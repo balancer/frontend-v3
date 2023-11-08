@@ -1,6 +1,14 @@
 import { ThemeOverride, ThemeTypings, extendTheme } from '@chakra-ui/react'
+import { withProse } from '@nikolovlazar/chakra-ui-prose'
 
 export const balTheme: ThemeOverride = {
+  styles: {
+    global: {
+      'body > div[data-rk]': {
+        minHeight: '100vh',
+      },
+    },
+  },
   config: {
     initialColorMode: 'light',
     useSystemColorMode: false,
@@ -67,6 +75,7 @@ export const balTheme: ThemeOverride = {
       md: '1rem',
       lg: '1.5rem',
       xl: '2rem',
+      '2xl': '4rem',
     },
     sizes: {
       maxContent: '1320px',
@@ -85,6 +94,21 @@ export const balTheme: ThemeOverride = {
   },
 }
 
-const theme = extendTheme(balTheme) as ThemeTypings
+const proseTheme = withProse({
+  baseStyle: {
+    h1: {
+      fontWeight: 'bold',
+      letterSpacing: '-1px',
+      marginBottom: '0',
+    },
+    h2: {
+      fontWeight: 'bold',
+      letterSpacing: '-1px',
+      marginBottom: { base: '0', sm: '0' },
+    },
+  },
+})
+
+const theme = extendTheme(balTheme, proseTheme) as ThemeTypings
 
 export default theme

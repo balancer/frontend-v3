@@ -3,6 +3,9 @@ name: Checks
 on:
   - pull_request
 
+env:
+  NEXT_PUBLIC_BALANCER_API_URL: https://api-v3.balancer.fi/graphql
+
 jobs:
   Build:
     runs-on: ubuntu-latest

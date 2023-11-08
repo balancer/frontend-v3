@@ -2,15 +2,19 @@ import { Wrapper, testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
 import { PoolProvider, _usePool, usePool } from './usePool'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { defaultPoolMock } from '@/test/msw/handlers/Pool.handlers'
+import { defaultPoolMock, defaultPoolResponseMock } from '@/test/msw/handlers/Pool.handlers'
 import { PoolVariant } from './pool.types'
 
+const poolId = 'test pool id'
 test('fetches v2 pool', async () => {
-  const poolId = 'test pool id'
-
-  const { result } = testHook(() =>
-    _usePool({ id: poolId, chain: GqlChain.Mainnet, variant: PoolVariant.v2 })
-  )
+  const { result } = testHook(() => {
+    return _usePool({
+      id: poolId,
+      chain: GqlChain.Mainnet,
+      variant: PoolVariant.v2,
+      initialData: defaultPoolResponseMock,
+    })
+  })
 
   await waitFor(() => expect(result.current.loading).toBeFalsy())
 
@@ -24,7 +28,13 @@ test.skip('fetches v2 pool without PoolProvider in wrapper', () => {
 
 test('fetches v2 pool without exposing _usePool', async () => {
   const wrapper: Wrapper = ({ children }) => (
-    <PoolProvider id="test pool id" chain={GqlChain.Mainnet} variant={PoolVariant.v2}>
+    <PoolProvider
+      id="test pool id"
+      chain={GqlChain.Mainnet}
+      variant={PoolVariant.v2}
+      data={defaultPoolResponseMock}
+      variables={{ id: poolId }}
+    >
       {children}
     </PoolProvider>
   )

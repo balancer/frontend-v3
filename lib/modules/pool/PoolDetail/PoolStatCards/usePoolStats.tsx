@@ -3,9 +3,10 @@ import { usePool } from '../../usePool'
 import { useMemo } from 'react'
 
 export function usePoolStats() {
-  const { pool, loading } = usePool()
+  const { pool } = usePool()
   const stats = useMemo(() => {
-    const data = pool?.dynamicData
+    const data = pool.dynamicData
+
     if (!data) return []
 
     return [
@@ -29,5 +30,5 @@ export function usePoolStats() {
     ]
   }, [pool])
 
-  return { stats, loading }
+  return { stats }
 }
