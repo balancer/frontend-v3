@@ -1,5 +1,5 @@
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import { wETHAddress } from '@/lib/debug-helpers'
+import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
@@ -10,11 +10,13 @@ import { Address } from 'wagmi'
 import { JoinConfigBuilder } from './JoinConfigBuilder'
 import { useJoinPoolConfig } from './useJoinPoolConfig'
 import { useState } from 'react'
+import { useActiveStep } from '../useActiveStep'
 
 export function useConstructJoinPoolStep(poolId: Address, initialWethAmount: HumanAmount = '1') {
   const [wethHumanAmount, setWethHumanAmount] = useState<HumanAmount>(initialWethAmount)
 
   const { address: userAddress } = useUserAccount()
+  const { isActiveStep, activateStep } = useActiveStep()
   const { chainId } = useNetworkConfig()
 
   const poolStateQuery = usePoolStateInput(poolId)
@@ -22,19 +24,21 @@ export function useConstructJoinPoolStep(poolId: Address, initialWethAmount: Hum
   const joinBuilder = new JoinConfigBuilder(chainId, poolStateQuery.data, 'unbalanced')
 
   //TODO: useState with joinBuilder???
-  console.log('updating weth amount', wethHumanAmount)
-  joinBuilder.setAmountIn('0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f', '1')
+  // console.log('updating weth amount', wethHumanAmount)
   joinBuilder.setAmountIn(wETHAddress, wethHumanAmount)
+  joinBuilder.setAmountIn(wjAuraAddress, '1')
 
-  const joinQuery = useJoinPoolConfig(joinBuilder, userAddress)
+  const joinQuery = useJoinPoolConfig(joinBuilder, isActiveStep, userAddress)
 
   const transaction = useManagedSendTransaction(buildJoinPoolLabels(), joinQuery.data?.config)
 
   const step: FlowStep = {
     ...transaction,
     getLabels: buildJoinPoolLabels,
-    stepId: 'joinPool',
-    isComplete: false,
+    id: `joinPool${poolId}`,
+    stepType: 'joinPool',
+    isComplete: () => false,
+    activateStep,
   }
 
   return {

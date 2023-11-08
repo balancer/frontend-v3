@@ -7,10 +7,17 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { MAX_BIGINT } from '@/lib/shared/utils/bigint'
 import { useEffect, useState } from 'react'
 import { Address } from 'viem'
+import { useUserTokenAllowance } from '../web3/useUserTokenAllowance'
+import { vaultV2Address, wETHAddress } from '@/lib/debug-helpers'
+import { useActiveStep } from './useActiveStep'
 
 export function useConstructApproveTokenStep(tokenAddress: Address) {
   const { address: userAddress } = useUserAccount()
+  const { isActiveStep, activateStep } = useActiveStep()
   const spender = useContractAddress('balancer.vaultV2')
+
+  // TODO: Pass allowances from outside
+  const { allowance, isLoadingAllowance } = useUserTokenAllowance(tokenAddress, vaultV2Address)
 
   const [tokenApprovalArgs, setTokenApprovalArgs] = useState<[Address, bigint]>([
     spender || nullAddress,
@@ -30,18 +37,20 @@ export function useConstructApproveTokenStep(tokenAddress: Address) {
     buildTokenApprovalLabels(),
     { args: tokenApprovalArgs },
     {
-      enabled: !!userAddress && !!spender,
+      enabled: isActiveStep && !!spender && !isLoadingAllowance,
     }
   )
-
-  // fetch token approval and set this flag
-  const hasTokenApproval = () => transaction.result.isSuccess
+  const hasTokenApproval = () => {
+    return transaction.result.isSuccess || allowance === MAX_BIGINT //TODO: This will depend on the allowance amount set by the user
+  } //TODO: This will depend on the allowance amount set by the user
 
   const step: FlowStep = {
     ...transaction,
-    getLabels: buildTokenApprovalLabels,
-    stepId: 'tokenApproval',
-    isComplete: hasTokenApproval(),
+    getLabels: () => buildTokenApprovalLabels(tokenAddress), //TODO: avoid callback type and accept result instead??
+    id: tokenAddress,
+    stepType: 'tokenApproval',
+    isComplete: hasTokenApproval,
+    activateStep,
   }
 
   return {
@@ -50,10 +59,12 @@ export function useConstructApproveTokenStep(tokenAddress: Address) {
   }
 }
 
-export const buildTokenApprovalLabels: BuildTransactionLabels = () => {
+export const buildTokenApprovalLabels: BuildTransactionLabels = tokenAddress => {
+  //TODO: refactor
+  const tokenSymbol = tokenAddress === wETHAddress ? 'WETH' : 'wjAura'
   return {
-    ready: 'Approve token allowance',
-    confirming: 'Approving token allowance',
+    ready: `Approve token allowance ${tokenSymbol}`,
+    confirming: `Approving token allowance ${tokenSymbol}`,
     tooltip: 'foo',
     description: 'Token approval completed',
   }

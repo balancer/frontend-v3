@@ -19,7 +19,7 @@ export type TransactionLabels = {
   error?: string
 }
 
-type StepId = 'batchRelayerApproval' | 'tokenApproval' | 'joinPool'
+type StepType = 'batchRelayerApproval' | 'tokenApproval' | 'joinPool'
 
 export type ManagedResult = TransactionBundle & Executable
 
@@ -38,9 +38,11 @@ type Executable = {
 export type FlowStep = TransactionStep & ManagedResult
 
 export type TransactionStep = {
-  stepId: StepId
+  id: string
+  stepType: StepType
   getLabels: (args?: any) => TransactionLabels
-  isComplete: boolean
+  isComplete: () => boolean
+  activateStep: () => void
 }
 
 // Allows adding extra properties like set state callbacks to TransactionStep
