@@ -15,7 +15,9 @@ import {
   PoolFilterType,
   poolListQueryStateParsers,
 } from '@/lib/modules/pool/pool.types'
-import { useEffect, useMemo, useState } from 'react'
+import { makeVar, useReactiveVar } from '@apollo/client'
+
+const poolIdsVar = makeVar<string[] | undefined>(undefined)
 
 export function usePoolListQueryState() {
   const [first, setFirst] = useQueryState('first', poolListQueryStateParsers.first)
@@ -31,7 +33,7 @@ export function usePoolListQueryState() {
     'textSearch',
     poolListQueryStateParsers.textSearch
   )
-  const [poolIds, setPoolIds] = useState<string[] | undefined>(undefined)
+  const poolIds = useReactiveVar(poolIdsVar)
 
   // Set internal checked state
   function toggleNetwork(checked: boolean, network: GqlChain) {
@@ -77,6 +79,10 @@ export function usePoolListQueryState() {
     setTextSearch(text)
   }
 
+  function setPoolIds(ids: string[] | undefined) {
+    poolIdsVar(ids)
+  }
+
   function poolTypeLabel(poolType: GqlPoolFilterType) {
     switch (poolType) {
       case GqlPoolFilterType.Weighted:
@@ -108,25 +114,17 @@ export function usePoolListQueryState() {
       .flat()
   )
 
-  const queryVariables = useMemo(
-    () => ({
-      first,
-      skip,
-      orderBy,
-      orderDirection,
-      where: {
-        poolTypeIn: mappedPoolTypes,
-        chainIn: networks.length > 0 ? networks : PROJECT_CONFIG.supportedNetworks,
-        idIn: poolIds,
-      },
-      textSearch,
-    }),
-    [first, skip, orderBy, orderDirection, mappedPoolTypes, networks, poolIds, textSearch]
-  )
-
-  useEffect(() => {
-    console.log(queryVariables)
-  }, [queryVariables])
+  const queryVariables = {
+    first,
+    skip,
+    orderBy,
+    orderDirection,
+    where: {
+      poolTypeIn: mappedPoolTypes,
+      chainIn: networks.length > 0 ? networks : PROJECT_CONFIG.supportedNetworks,
+      idIn: poolIds,
+    },
+  }
 
   return {
     state: {
