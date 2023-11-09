@@ -9,11 +9,11 @@ import PoolMyLiquidity from './PoolMyLiquidity/PoolMyLiquidity'
 import PoolIncentives from './PoolIncentives/PoolIncentives'
 
 export function PoolDetail() {
-  const { pool, loading } = usePool()
+  const { pool } = usePool()
 
   return (
     <Stack width="full" px="md" mx="auto">
-      {loading && <Text>Loading...</Text>}
+      {/* {loading && <Text>Loading...</Text>} */}
 
       <VStack width="full" spacing="5">
         <PoolStats />

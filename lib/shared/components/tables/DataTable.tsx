@@ -22,6 +22,8 @@ import {
 } from '@tanstack/react-table'
 import { SortingIcon } from '@/lib/shared/components/icons/SortingIcon'
 import { Pagination } from '@/lib/shared/components/pagination/Pagination'
+import { getPoolPath } from '@/lib/modules/pool/pool.utils'
+import Link from 'next/link'
 
 export type DataTableProps<Data extends object> = {
   data: Data[]
@@ -40,8 +42,6 @@ export type DataTableProps<Data extends object> = {
 export function DataTable<Data extends object>({
   data,
   columns,
-  rowClickHandler,
-  rowMouseEnterHandler,
   rowCount,
   pagination,
   sorting,
@@ -124,15 +124,17 @@ export function DataTable<Data extends object>({
             {rows.map(row => (
               <Tr
                 key={row.id}
-                onClick={event => rowClickHandler && rowClickHandler(event, row.original)}
+                /*onClick={event => rowClickHandler && rowClickHandler(event, row.original)}
                 cursor={rowClickHandler ? 'pointer' : 'default'}
                 onMouseEnter={event =>
                   rowMouseEnterHandler && rowMouseEnterHandler(event, row.original)
-                }
+                }*/
               >
                 {row.getVisibleCells().map(cell => {
                   // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
                   const meta: any = cell.column.columnDef.meta
+                  const pool = row.original as any
+
                   return (
                     <Td
                       key={cell.id}
@@ -140,6 +142,15 @@ export function DataTable<Data extends object>({
                       px={noColumnPadding && noColumnPadding.includes(cell.column.id) ? '0' : '6'}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {cell.id.includes('_detail') && (
+                        <Link
+                          href={getPoolPath({ id: pool.id, chain: pool.chain })}
+                          prefetch={true}
+                          style={{ color: '#2299DD' }}
+                        >
+                          Pre-Fetched Link
+                        </Link>
+                      )}
                     </Td>
                   )
                 })}

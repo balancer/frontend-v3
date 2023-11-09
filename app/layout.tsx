@@ -6,6 +6,7 @@ import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import '@/lib/shared/utils/bigint'
 import Noise from './noise'
 import { satoshiFont } from '@/lib/assets/fonts/satoshi/satoshi'
+import NextTopLoader from 'nextjs-toploader'
 
 const { projectName, projectId } = getProjectConfig()
 const iconUrl = `/images/icons/${projectId}.ico`
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={satoshiFont.className} suppressHydrationWarning>
+        <NextTopLoader showSpinner={false} />
         <Providers>
           <Noise>
             <Navbar />
