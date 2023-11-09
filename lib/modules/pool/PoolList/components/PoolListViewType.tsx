@@ -15,8 +15,8 @@ export function PoolListViewType() {
       <IconButton
         icon={<FiGrid />}
         aria-label="grid"
-        onClick={() => setViewType('grid')}
-        isDisabled={viewType === 'grid'}
+        onClick={() => setViewType('cards')}
+        isDisabled={viewType === 'cards'}
       />
     </HStack>
   )

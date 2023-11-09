@@ -48,6 +48,13 @@ export const poolTypeFilters = [
 
 export type PoolFilterType = (typeof poolTypeFilters)[number]
 
+export type SortingState = PoolsColumnSort[]
+
+export interface PaginationState {
+  pageIndex: number
+  pageSize: number
+}
+
 // We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
 export const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolFilterType[] } = {
   [GqlPoolFilterType.Weighted]: [GqlPoolFilterType.Weighted],

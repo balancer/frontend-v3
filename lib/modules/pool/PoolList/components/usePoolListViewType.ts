@@ -1,6 +1,6 @@
 import { makeVar, useReactiveVar } from '@apollo/client'
 
-export type ViewType = 'list' | 'grid'
+export type ViewType = 'list' | 'cards'
 
 export const viewTypeStateVar = makeVar<ViewType>('list')
 

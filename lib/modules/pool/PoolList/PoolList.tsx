@@ -5,7 +5,7 @@ import { Box, HStack, Stack, VStack } from '@chakra-ui/react'
 import { PoolListFilters } from './components/PoolListFilters'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
-import { PoolListGrid } from './components/PoolListGrid/PoolListGrid'
+import { PoolListCards } from './components/PoolListCards/PoolListCards'
 import { PoolListViewType } from './components/PoolListViewType'
 import { usePoolListViewType } from './components/usePoolListViewType'
 import React from 'react'
@@ -27,12 +27,12 @@ export function PoolList() {
         <Stack direction={['column-reverse', 'row']} w="full" alignItems="flex-start">
           <PoolListFilters />
           <HStack justifyContent={isMobile ? 'space-between' : 'flex-end'} w="full">
-            {(viewType === 'grid' || isMobile) && <PoolListSortType />}
+            {(viewType === 'cards' || isMobile) && <PoolListSortType />}
             <PoolListViewType />
           </HStack>
         </Stack>
         {viewType === 'list' && <PoolListTable />}
-        {viewType === 'grid' && <PoolListGrid />}
+        {viewType === 'cards' && <PoolListCards />}
       </VStack>
     </Box>
   )
