@@ -92,9 +92,12 @@ dependencies:
   next:
     specifier: 14.0.1
     version: 14.0.1(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
-  next-query-params:
-    specifier: ^4.2.3
-    version: 4.2.3(next@14.0.1)(react@18.2.0)(use-query-params@2.2.1)
+  next-usequerystate:
+    specifier: ^1.9.2
+    version: 1.9.2(next@14.0.1)
+  nextjs-toploader:
+    specifier: ^1.6.4
+    version: 1.6.4(next@14.0.1)(react-dom@18.2.0)(react@18.2.0)
   numeral:
     specifier: ^2.0.6
     version: 2.0.6
@@ -113,9 +116,6 @@ dependencies:
   typescript:
     specifier: 5.1.6
     version: 5.1.6
-  use-query-params:
-    specifier: ^2.2.1
-    version: 2.2.1(react-dom@18.2.0)(react@18.2.0)
   viem:
     specifier: ^1.18.1
     version: 1.18.1(typescript@5.1.6)(zod@3.22.4)
@@ -128,8 +128,8 @@ dependencies:
 
 devDependencies:
   '@apollo/experimental-nextjs-app-support':
-    specifier: ^0.5.0
-    version: 0.5.0(@apollo/client@3.8.0-rc.1)(next@14.0.1)(react@18.2.0)
+    specifier: ^0.5.1
+    version: 0.5.1(@apollo/client@3.8.0-rc.1)(next@14.0.1)(react@18.2.0)
   '@chakra-ui/cli':
     specifier: ^2.4.1
     version: 2.4.1
@@ -294,10 +294,10 @@ packages:
       tslib: 2.6.2
       zen-observable-ts: 1.2.5
 
-  /@apollo/experimental-nextjs-app-support@0.5.0(@apollo/client@3.8.0-rc.1)(next@14.0.1)(react@18.2.0):
-    resolution: {integrity: sha512-VU/rRoIRcZxX2oxZp+rheF8bXwfiknJJq6nYr553H7qE68TKDTxWDV/HatUWBHHVnk5tJiHvk+N4ihuMh3YviQ==}
+  /@apollo/experimental-nextjs-app-support@0.5.1(@apollo/client@3.8.0-rc.1)(next@14.0.1)(react@18.2.0):
+    resolution: {integrity: sha512-gQiFY/zntVAhPTTFfFFOogp4TKVMpbPsydv3gyMR5E0IK6WgtITTcl/uuWlnfL92+enk5mfrtoQ+0p+t2a9u2A==}
     peerDependencies:
-      '@apollo/client': '>=3.8.0-rc || ^3.8.0'
+      '@apollo/client': '>=3.8.0-rc || ^3.8.0 || >=3.9.0-alpha || >=3.9.0-beta || >=3.9.0-rc'
       next: ^13.4.1 || ^14.0.0
       react: ^18 || ^18.0.0
     dependencies:
@@ -4123,7 +4123,7 @@ packages:
   /@tanstack/react-query-persist-client@4.36.1(@tanstack/react-query@4.36.1):
     resolution: {integrity: sha512-32I5b9aAu4NCiXZ7Te/KEQLfHbYeTNriVPrKYcvEThnZ9tlW01vLcSoxpUIsMYRsembvJUUAkzYBAiZHLOd6pQ==}
     peerDependencies:
-      '@tanstack/react-query': ^4.29.19
+      '@tanstack/react-query': ^4.36.1
     dependencies:
       '@tanstack/query-persist-client-core': 4.36.1
       '@tanstack/react-query': 4.36.1(react-dom@18.2.0)(react@18.2.0)
@@ -4359,6 +4359,10 @@ packages:
   /@types/normalize-package-data@2.4.3:
     resolution: {integrity: sha512-ehPtgRgaULsFG8x0NeYJvmyH1hmlfsNLujHe9dQEia/7MAJYdzMSi19JtchUHjmBA6XC/75dK55mzZH+RyieSg==}
     dev: true
+
+  /@types/nprogress@0.2.2:
+    resolution: {integrity: sha512-2wLrSJXLztGmr7wXwM0hA/wuIOY9DznVdd+ZFofHOiXcj9JnVt+2ZeLRJ7v5ZVlmheSkUOSg3Q3O4Ce7yji79A==}
+    dev: false
 
   /@types/numeral@2.0.4:
     resolution: {integrity: sha512-lIsqeNjP4xtPplUyVrfYR08aZtkdMQyyet+8zd9xD8HVgNGcLdKhtb6A1qDQ15n+AgAMZQwimlaaNOktLQpb2A==}
@@ -8826,6 +8830,10 @@ packages:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
     dev: false
 
+  /mitt@3.0.1:
+    resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
+    dev: false
+
   /mlly@1.4.2:
     resolution: {integrity: sha512-i/Ykufi2t1EZ6NaPLdfnZk2AX8cs0d+mTzVKuPfqPKPatxLApaBoxJQ9x1/uckXtrS/U5oisPMDkNs0yQTaBRg==}
     dependencies:
@@ -8906,17 +8914,13 @@ packages:
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
-  /next-query-params@4.2.3(next@14.0.1)(react@18.2.0)(use-query-params@2.2.1):
-    resolution: {integrity: sha512-hGNCYRH8YyA5ItiBGSKrtMl21b2MAqfPkdI1mvwloNVqSU142IaGzqHN+OTovyeLIpQfonY01y7BAHb/UH4POg==}
+  /next-usequerystate@1.9.2(next@14.0.1):
+    resolution: {integrity: sha512-iL2+gRiNedTdAMF9xQcYWJoWBFdfyHr3e4rDz33wcuU29rb1uU6u6UKGtF+GyNMRaAK5sDuBDd6qo5Toc68spw==}
     peerDependencies:
-      next: ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      use-query-params: ^2.0.0
+      next: ^13.4 || ^14
     dependencies:
+      mitt: 3.0.1
       next: 14.0.1(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
-      react: 18.2.0
-      tslib: 2.6.2
-      use-query-params: 2.2.1(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
   /next@14.0.1(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0):
@@ -8956,6 +8960,21 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
+
+  /nextjs-toploader@1.6.4(next@14.0.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-KYLQ+0MvGdFk9JwOQfRtaYBAsyuX67Ca5QTa51RGNO4gQx64KLSE+ryHjUQ5LcDczHotp0l32GgksQW9vucUkw==}
+    peerDependencies:
+      next: '>= 6.0.0'
+      react: '>= 16.0.0 || ^18.0.0'
+      react-dom: '>= 16.0.0 || ^18.0.0'
+    dependencies:
+      '@types/nprogress': 0.2.2
+      next: 14.0.1(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
+      nprogress: 0.2.0
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
 
   /no-case@3.0.4:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
@@ -9043,6 +9062,10 @@ packages:
     dependencies:
       path-key: 4.0.0
     dev: true
+
+  /nprogress@0.2.0:
+    resolution: {integrity: sha512-I19aIingLgR1fmhftnbWWO3dXc0hSxqHQHQb3H8m+K3TnEn/iSeTZZOyvKXWqQESMwuUVnatlCnZdLBZZt2VSA==}
+    dev: false
 
   /nullthrows@1.1.1:
     resolution: {integrity: sha512-2vPPEi+Z7WqML2jZYddDIfy5Dqb0r2fze2zTxNNknZaFpVHU3mFB3R+DWeJWGVx0ecvttSGlJTI+WG+8Z4cDWw==}
@@ -10091,10 +10114,6 @@ packages:
       upper-case-first: 2.0.2
     dev: true
 
-  /serialize-query-params@2.0.2:
-    resolution: {integrity: sha512-1chMo1dST4pFA9RDXAtF0Rbjaut4is7bzFbI1Z26IuMub68pNCILku85aYmeFhvnY//BXUPUhoRMjYcsT93J/Q==}
-    dev: false
-
   /server-only@0.0.1:
     resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
     dev: true
@@ -10938,24 +10957,6 @@ packages:
       '@types/react': 18.2.34
       react: 18.2.0
       tslib: 2.6.2
-    dev: false
-
-  /use-query-params@2.2.1(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-i6alcyLB8w9i3ZK3caNftdb+UnbfBRNPDnc89CNQWkGRmDrm/gfydHvMBfVsQJRq3NoHOM2dt/ceBWG2397v1Q==}
-    peerDependencies:
-      '@reach/router': ^1.2.1
-      react: '>=16.8.0 || ^18.0.0'
-      react-dom: '>=16.8.0 || ^18.0.0'
-      react-router-dom: '>=5'
-    peerDependenciesMeta:
-      '@reach/router':
-        optional: true
-      react-router-dom:
-        optional: true
-    dependencies:
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      serialize-query-params: 2.0.2
     dev: false
 
   /use-sidecar@1.1.2(@types/react@18.2.34)(react@18.2.0):

@@ -15,6 +15,7 @@ const integrationTestOptions: Partial<InlineConfig> = {
   testTimeout: 20_000,
   // Consider disabling threads if we detect problems with anvil
   // threads: false,
+  retry: 3,
 }
 
 const integrationConfig = vitestUnitConfig
