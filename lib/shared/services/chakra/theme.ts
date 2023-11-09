@@ -104,7 +104,7 @@ export const balTheme = {
     colors: {
       noise: 'rgba(243, 241, 336, 0.3)',
       background: '#F3F1EC',
-      elevatedBackground: '#F6F3ED',
+      elevatedBackground: '#FEF9F3',
       borderColor: 'rgba(229, 211, 190, 0.6)',
       badge: '#EBE9E0',
       text: {
