@@ -1,17 +1,18 @@
 import { Button, HStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 
-type Option = {
+export type ButtonGroupOption = {
   id: string
   label: string
 }
 
 type Props = {
-  value: Option
-  options: Option[]
+  value: ButtonGroupOption
+  options: ButtonGroupOption[]
+  onChange: (option: ButtonGroupOption) => void
 }
 
-export default function ButtonGroup({ value, options }: Props) {
+export default function ButtonGroup({ value, options, onChange }: Props) {
   return (
     <HStack
       rounded="md"
@@ -25,6 +26,8 @@ export default function ButtonGroup({ value, options }: Props) {
         const isActive = value.id === option.id
         return (
           <Button
+            onClick={() => onChange(option)}
+            key={`button-group-option-${option.id}`}
             variant={isActive ? 'buttonGroupActive' : 'buttonGroupInactive'}
             id={`button-group-${option.id}`}
           >

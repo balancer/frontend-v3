@@ -79,8 +79,12 @@ export const balTheme = {
           py: '1.5',
           fontSize: 'xs',
           color: 'text.secondary',
-          fontWeight: 'medium',
+          fontWeight: 'bold',
           borderRadius: '4px',
+          _hover: {
+            bgGradient: 'linear(to-l, gradients.button.sand.from, gradients.button.sand.to)',
+            color: 'text.primary',
+          },
         },
         buttonGroupActive: {
           bgGradient: 'linear(to-l, gradients.button.sand.from, gradients.button.sand.to)',

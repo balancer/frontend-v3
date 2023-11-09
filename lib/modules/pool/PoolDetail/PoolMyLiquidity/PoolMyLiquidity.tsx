@@ -1,4 +1,6 @@
-import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
+import ButtonGroup, {
+  ButtonGroupOption,
+} from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import GradientText from '@/lib/shared/components/text/GradientText'
 import { Box, Card, HStack, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
@@ -23,13 +25,18 @@ const TABS = [
 ]
 export default function PoolMyLiquidity() {
   const [activeTab, setActiveTab] = useState(TABS[0])
+
+  function handleTabChanged(option: ButtonGroupOption) {
+    setActiveTab(option)
+  }
+
   return (
     <Card variant="gradient" width="full" height="320px">
       <HStack p="5" justifyContent="space-between">
         <Text variant="heading" fontWeight="bold" as="h2" fontSize="xl">
           My liquidity
         </Text>
-        <ButtonGroup value={activeTab} options={TABS} />
+        <ButtonGroup value={activeTab} options={TABS} onChange={handleTabChanged} />
       </HStack>
     </Card>
   )
