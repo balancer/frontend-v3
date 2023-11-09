@@ -1,10 +1,12 @@
 import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
-import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
+import { GetPoolsDocument, GetTimestampDocument } from '@/lib/shared/services/api/generated/graphql'
 import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { PoolList } from '@/lib/modules/pool/PoolList/PoolList'
 import { PoolListProvider } from '@/lib/modules/pool/PoolList/usePoolList'
 import { POOL_TYPE_MAP, poolListQueryStateParsers } from '@/lib/modules/pool/pool.types'
 import { uniq } from 'lodash'
+
+export const revalidate = 30
 
 interface Props {
   searchParams: {
@@ -41,6 +43,10 @@ export default async function Pools({ searchParams }: Props) {
     textSearch: poolListQueryStateParsers.textSearch.parseServerSide(searchParams.textSearch),
   }
 
+  const { data: tsData } = await getApolloServerClient().query({
+    query: GetTimestampDocument,
+  })
+
   const { data } = await getApolloServerClient().query({
     query: GetPoolsDocument,
     variables,
@@ -48,6 +54,7 @@ export default async function Pools({ searchParams }: Props) {
 
   return (
     <PoolListProvider data={data} variables={variables}>
+      {tsData.timestamp}
       <PoolList />
     </PoolListProvider>
   )
