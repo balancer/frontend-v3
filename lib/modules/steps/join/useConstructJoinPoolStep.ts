@@ -25,13 +25,6 @@ export function useConstructJoinPoolStep(poolId: Address, initialWethAmount: Hum
   const { allowances } = useTokenAllowances()
 
   const joinBuilder = new JoinConfigBuilder(chainId, allowances, poolStateQuery.data, 'unbalanced')
-
-  // function updateWethAmountHandler(newAmount: HumanAmount) {
-  //   setWethHumanAmount(newAmount)
-  // }
-
-  //TODO: useState with joinBuilder???
-  // console.log('updating weth amount', wethHumanAmount)
   joinBuilder.setAmountIn(wETHAddress, wethHumanAmount)
   joinBuilder.setAmountIn(wjAuraAddress, '1')
 
@@ -40,19 +33,6 @@ export function useConstructJoinPoolStep(poolId: Address, initialWethAmount: Hum
   const labels = buildJoinPoolLabels(poolId)
 
   const transaction = useManagedSendTransaction(labels, joinQuery.data?.config)
-
-  // useEffect(() => {
-  //   console.log({ queryidle: joinQuery.isIdle })
-  //   console.log({ querydata: joinQuery.data })
-  //   console.log({ queryallowances: allowances })
-  //   transaction.setTxConfig(joinQuery.data?.config)
-  // }, [joinQuery.isFetched])
-
-  // useEffect(() => {
-  //   console.log({ txidle: transaction.simulation.isIdle })
-  //   console.log({ transactiondata: transaction.simulation.data })
-  //   console.log({ txallowances: allowances })
-  // }, [transaction.simulation.isFetched])
 
   const step: FlowStep = {
     ...transaction,
