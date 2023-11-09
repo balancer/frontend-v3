@@ -2,7 +2,6 @@ import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import GradientText from '@/lib/shared/components/text/GradientText'
 import { Box, Card, HStack, Text, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 
@@ -62,7 +61,7 @@ export default function PoolMyLiquidity() {
                 </VStack>
               </HStack>
             </Box>
-            <VStack p="4" py='2' pb='4' width="full">
+            <VStack p="4" py="2" pb="4" width="full">
               <TokenRow address="0x3" />
               <TokenRow address="0x3" />
             </VStack>

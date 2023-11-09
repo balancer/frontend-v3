@@ -5,7 +5,6 @@ import { PoolChartTypeTabs } from './PoolChartTypeTabs'
 import { usePoolCharts } from './usePoolCharts'
 import { PoolChartPeriodSelector } from './PoolChartPeriodSelector'
 import numeral from 'numeral'
-import GradientText from '@/lib/shared/components/text/GradientText'
 
 export function PoolChart() {
   const {
@@ -26,7 +25,7 @@ export function PoolChart() {
   return (
     <Card variant="gradient">
       <HStack p="5">
-        <Text variant='heading' fontWeight="bold" as="h2" fontSize="xl">
+        <Text variant="heading" fontWeight="bold" as="h2" fontSize="xl">
           My liquidity
         </Text>
       </HStack>

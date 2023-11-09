@@ -1,7 +1,6 @@
 'use client'
-import { usePool } from '@/lib/modules/pool/usePool'
 import { PoolChart } from './PoolChart/PoolChart'
-import { HStack, Stack, Text, VStack } from '@chakra-ui/react'
+import { HStack, Stack, VStack } from '@chakra-ui/react'
 import { PoolInfoTable } from './PoolInfoTable/PoolInfoTable'
 import { PoolComposition } from './PoolComposition/PoolComposition'
 import PoolStats from './PoolStats/PoolStats'
@@ -9,8 +8,6 @@ import PoolMyLiquidity from './PoolMyLiquidity/PoolMyLiquidity'
 import PoolIncentives from './PoolIncentives/PoolIncentives'
 
 export function PoolDetail() {
-  const { pool } = usePool()
-
   return (
     <Stack width="full" px="md" mx="auto">
       {/* {loading && <Text>Loading...</Text>} */}

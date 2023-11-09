@@ -1,5 +1,5 @@
 import { Button, HStack } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React from 'react'
 
 export type ButtonGroupOption = {
   id: string

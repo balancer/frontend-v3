@@ -1,4 +1,3 @@
-import GradientText from '@/lib/shared/components/text/GradientText'
 import { Badge, BadgeProps, Text } from '@chakra-ui/react'
 import React from 'react'
 

@@ -1,4 +1,4 @@
-import { ThemeOverride, ThemeTypings, extendTheme } from '@chakra-ui/react'
+import { ThemeTypings, extendTheme } from '@chakra-ui/react'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
 import { cardTheme } from '../../components/containers/GradientCard'
 

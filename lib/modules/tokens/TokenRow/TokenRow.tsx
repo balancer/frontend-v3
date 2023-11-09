@@ -9,10 +9,10 @@ export default function TokenRow({ address }: Props) {
   return (
     <HStack width="full" justifyContent="space-between">
       <HStack>
-        <Circle size='32px' bg='red.500' />
+        <Circle size="32px" bg="red.500" />
         <VStack spacing="0" alignItems="flex-start">
           <Text fontWeight="bold" variant="heading" fontSize="1rem">
-            SYM
+            {address}
           </Text>
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
             Token Symbol

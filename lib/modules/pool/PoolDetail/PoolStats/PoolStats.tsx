@@ -1,7 +1,5 @@
 import React from 'react'
-import { PoolStatCards } from '../PoolStatCards/PoolStatCards'
 import { Box, Card, HStack, Text, VStack } from '@chakra-ui/react'
-import GradientText from '@/lib/shared/components/text/GradientText'
 import PoolBadges from '../PoolBadges/PoolBadges'
 
 export default function PoolStats() {
