@@ -13,7 +13,7 @@ dependencies:
     version: 3.8.0-rc.1(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
   '@balancer/sdk':
     specifier: github:balancer/b-sdk#join2
-    version: github.com/balancer/b-sdk/f06b6c602ea541259f9e592e5fcee2072b97ca19(typescript@5.1.6)(zod@3.22.4)
+    version: github.com/balancer/b-sdk/053b5f31566570c6a49cbfaf5a869e95354ee574(typescript@5.1.6)(zod@3.22.4)
   '@chakra-ui/hooks':
     specifier: ^2.2.1
     version: 2.2.1(react@18.2.0)
@@ -113,6 +113,9 @@ dependencies:
   react-icons:
     specifier: ^4.10.1
     version: 4.11.0(react@18.2.0)
+  theme-tools:
+    specifier: link:@types/@chakra-ui/theme-tools
+    version: link:@types/@chakra-ui/theme-tools
   typescript:
     specifier: 5.1.6
     version: 5.1.6
@@ -11575,9 +11578,9 @@ packages:
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
 
-  github.com/balancer/b-sdk/f06b6c602ea541259f9e592e5fcee2072b97ca19(typescript@5.1.6)(zod@3.22.4):
-    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/f06b6c602ea541259f9e592e5fcee2072b97ca19}
-    id: github.com/balancer/b-sdk/f06b6c602ea541259f9e592e5fcee2072b97ca19
+  github.com/balancer/b-sdk/053b5f31566570c6a49cbfaf5a869e95354ee574(typescript@5.1.6)(zod@3.22.4):
+    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/053b5f31566570c6a49cbfaf5a869e95354ee574}
+    id: github.com/balancer/b-sdk/053b5f31566570c6a49cbfaf5a869e95354ee574
     name: '@balancer/sdk'
     version: 0.2.0
     dependencies:
