@@ -21,7 +21,7 @@ import { Input } from '@chakra-ui/react'
 export function JoinWithTokenApproval() {
   const { step: tokenApprovalStep } = useConstructApproveTokenStep(wETHAddress)
   const { step: tokenApprovalStep2 } = useConstructApproveTokenStep(wjAuraAddress)
-  const { step: joinStep, setWethHumanAmount } = useConstructJoinPoolStep(poolId)
+  const { step: joinStep, updateWethAmountHandler } = useConstructJoinPoolStep(poolId)
   const steps = [tokenApprovalStep, tokenApprovalStep2, joinStep]
 
   const { address } = useUserAccount()
@@ -58,7 +58,7 @@ export function JoinWithTokenApproval() {
   }
 
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setWethHumanAmount(event.target.value as HumanAmount)
+    updateWethAmountHandler(event.target.value as HumanAmount)
   }
 
   const debouncedChangeHandler = useDebounce(changeHandler, 300)

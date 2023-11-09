@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
@@ -9,7 +10,7 @@ import { HumanAmount } from '@balancer/sdk'
 import { Address } from 'wagmi'
 import { JoinConfigBuilder } from './JoinConfigBuilder'
 import { useJoinPoolConfig } from './useJoinPoolConfig'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useActiveStep } from '../useActiveStep'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 
@@ -26,10 +27,6 @@ export function useConstructJoinPoolStep(poolId: Address, initialWethAmount: Hum
 
   const joinBuilder = new JoinConfigBuilder(chainId, allowances, poolStateQuery.data, 'unbalanced')
 
-  // function updateWethAmountHandler(newAmount: HumanAmount) {
-  //   setWethHumanAmount(newAmount)
-  // }
-
   //TODO: useState with joinBuilder???
   // console.log('updating weth amount', wethHumanAmount)
   joinBuilder.setAmountIn(wETHAddress, wethHumanAmount)
@@ -41,18 +38,14 @@ export function useConstructJoinPoolStep(poolId: Address, initialWethAmount: Hum
 
   const transaction = useManagedSendTransaction(labels, joinQuery.data?.config)
 
-  // useEffect(() => {
-  //   console.log({ queryidle: joinQuery.isIdle })
-  //   console.log({ querydata: joinQuery.data })
-  //   console.log({ queryallowances: allowances })
-  //   transaction.setTxConfig(joinQuery.data?.config)
-  // }, [joinQuery.isFetched])
+  function updateWethAmountHandler(newAmount: HumanAmount) {
+    setWethHumanAmount(newAmount)
+    transaction.setTxConfig(joinQuery.data?.config)
+  }
 
-  // useEffect(() => {
-  //   console.log({ txidle: transaction.simulation.isIdle })
-  //   console.log({ transactiondata: transaction.simulation.data })
-  //   console.log({ txallowances: allowances })
-  // }, [transaction.simulation.isFetched])
+  useEffect(() => {
+    transaction.setTxConfig(joinQuery.data?.config)
+  }, [joinQuery.isFetched])
 
   const step: FlowStep = {
     ...transaction,
@@ -71,7 +64,7 @@ export function useConstructJoinPoolStep(poolId: Address, initialWethAmount: Hum
       transaction?.simulation.isLoading || transaction?.execution.isLoading || joinQuery.isLoading,
     error: transaction?.simulation.error || transaction?.execution.error || joinQuery.error,
     joinQuery,
-    setWethHumanAmount,
+    updateWethAmountHandler,
   }
 }
 
