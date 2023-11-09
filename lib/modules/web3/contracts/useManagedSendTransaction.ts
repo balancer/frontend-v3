@@ -17,9 +17,9 @@ import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 
 export function useManagedSendTransaction(
   labels: TransactionLabels,
-  config?: UsePrepareSendTransactionConfig
+  txConfig?: UsePrepareSendTransactionConfig
 ) {
-  const [txConfig, setTxConfig] = useState(config)
+  // const [txConfig, setTxConfig] = useState(config)
 
   const prepareQuery = usePrepareSendTransaction(txConfig)
 
@@ -70,15 +70,15 @@ export function useManagedSendTransaction(
   )
 
   // if parent changes args, update here
-  useEffect(() => {
-    setTxConfig(txConfig)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(txConfig)])
+  // useEffect(() => {
+  //   setTxConfig(txConfig)
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [JSON.stringify(txConfig)])
 
   return {
     ...bundle,
     execute: writeQuery.sendTransaction,
     executeAsync: writeQuery.sendTransactionAsync,
-    setTxConfig,
+    // setTxConfig,
   } satisfies ManagedResult
 }

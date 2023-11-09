@@ -28,8 +28,12 @@ export function JoinWithTokenApproval() {
 
   const [wethBalance, setWethBalance] = useState<FetchBalanceResult | null>(null)
   const [wjAURABalance, setWjAURABalance] = useState<FetchBalanceResult | null>(null)
-  const { data: wethBalanceData } = useBalance({ address, token: wETHAddress })
-  const { data: wjAURABalanceData } = useBalance({ address, token: wjAuraAddress })
+  const { data: wethBalanceData } = useBalance({ address, token: wETHAddress, enabled: !!address })
+  const { data: wjAURABalanceData } = useBalance({
+    address,
+    token: wjAuraAddress,
+    enabled: !!address,
+  })
   const { allowances, refetchAllowances } = useTokenAllowances()
   const allowance = allowances[wETHAddress]
   const allowance2 = allowances[wjAuraAddress]
@@ -68,12 +72,7 @@ export function JoinWithTokenApproval() {
       <Stack spacing={3}>
         <InputGroup>
           <InputLeftAddon children="WETH amount" />
-          <Input
-            type="text"
-            placeholder="WETH amount"
-            value={1}
-            onChange={debouncedChangeHandler}
-          />
+          <Input type="text" placeholder="WETH amount" onChange={debouncedChangeHandler} />
         </InputGroup>
         <InputGroup>
           <InputLeftAddon children="wjAura amount" />
