@@ -11,7 +11,7 @@ export function Providers({ children }: { children: ReactNode }) {
   const initialColorMode = cookies().get(COLOR_MODE_STORAGE_KEY)?.value
 
   return (
-    <ThemeProvider initialColorMode={initialColorMode}>
+    <ThemeProvider initialColorMode={initialColorMode as 'light' | 'dark' | 'system'}>
       <Web3Provider>
         <ApolloProviderWrapper>
           <TokensProvider>
