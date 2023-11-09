@@ -2,7 +2,7 @@ import { ThemeOverride, ThemeTypings, extendTheme } from '@chakra-ui/react'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
 import { cardTheme } from '../../components/containers/GradientCard'
 
-export const balTheme: ThemeOverride = {
+export const balTheme = {
   styles: {
     global: {
       'body > div[data-rk]': {
@@ -19,10 +19,6 @@ export const balTheme: ThemeOverride = {
     body: `'Satoshi', sans-serif`,
   },
   colors: {
-    noise: 'rgba(243, 241, 336, 0.3)',
-    background: '#F3F1EC',
-    elevatedBackground: '#F6F3ED',
-    borderColor: 'rgba(229, 211, 190, 0.6)',
     primary: {
       '50': '#eaf6ff',
       '100': '#daedff',
@@ -47,25 +43,6 @@ export const balTheme: ThemeOverride = {
       '700': '#6D4F2C',
       '800': '#49351D',
       '900': '#241A0F',
-    },
-    badge: '#EBE9E0',
-    text: {
-      primary: '#414853',
-      secondary: '#728097',
-    },
-    gradients: {
-      text: {
-        heading: {
-          from: '#707883',
-          to: '#2D4C7E',
-        },
-      },
-      button: {
-        sand: {
-          from: '#E5D3BE',
-          to: '#E6C6A0',
-        },
-      },
     },
   },
   components: {
@@ -94,7 +71,7 @@ export const balTheme: ThemeOverride = {
     },
     Button: {
       variants: {
-        selector: {
+        buttonGroupInactive: {
           backgroundColor: 'transparent',
           height: 'fit-content',
           width: 'fit-content',
@@ -105,7 +82,7 @@ export const balTheme: ThemeOverride = {
           fontWeight: 'medium',
           borderRadius: '4px',
         },
-        activeSelector: {
+        buttonGroupActive: {
           bgGradient: 'linear(to-l, gradients.button.sand.from, gradients.button.sand.to)',
           height: 'fit-content',
           width: 'fit-content',
@@ -121,6 +98,15 @@ export const balTheme: ThemeOverride = {
   },
   semanticTokens: {
     colors: {
+      noise: 'rgba(243, 241, 336, 0.3)',
+      background: '#F3F1EC',
+      elevatedBackground: '#F6F3ED',
+      borderColor: 'rgba(229, 211, 190, 0.6)',
+      badge: '#EBE9E0',
+      text: {
+        primary: '#414853',
+        secondary: '#728097',
+      },
       primary: { _light: 'primary.500', _dark: 'primary.500' },
       'chakra-body-text': { _light: 'gray.800', _dark: 'whiteAlpha.900' },
       'chakra-body-bg': { _light: 'white', _dark: 'gray.800' },
@@ -131,6 +117,20 @@ export const balTheme: ThemeOverride = {
       'chakra-placeholder-color': {
         _light: 'gray.500',
         _dark: 'whiteAlpha.400',
+      },
+      gradients: {
+        text: {
+          heading: {
+            from: '#707883',
+            to: '#2D4C7E',
+          },
+        },
+        button: {
+          sand: {
+            from: '#E5D3BE',
+            to: '#E6C6A0',
+          },
+        },
       },
     },
     space: {
