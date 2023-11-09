@@ -2,21 +2,21 @@
 /* eslint-disable react/no-children-prop */
 'use client'
 
-import { poolId, vaultV2Address, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
+import { poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { useConstructJoinPoolStep } from '@/lib/modules/steps/join/useConstructJoinPoolStep'
 import { useConstructApproveTokenStep } from '@/lib/modules/steps/useConstructApproveTokenStep'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { useUserTokenAllowance } from '@/lib/modules/web3/useUserTokenAllowance'
+import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
 import { Flex, Heading, InputGroup, InputLeftAddon, Stack, VStack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useBalance } from 'wagmi'
 import { FetchBalanceResult } from 'wagmi/dist/actions'
 import RecentTransactions from '../RecentTransactions'
 
-import { Input } from '@chakra-ui/react'
-import { HumanAmount } from '@balancer/sdk'
+import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { useDebounce } from '@/lib/shared/hooks/useDebounce'
+import { HumanAmount } from '@balancer/sdk'
+import { Input } from '@chakra-ui/react'
 
 export function JoinWithTokenApproval() {
   const { step: tokenApprovalStep } = useConstructApproveTokenStep(wETHAddress)
@@ -30,14 +30,9 @@ export function JoinWithTokenApproval() {
   const [wjAURABalance, setWjAURABalance] = useState<FetchBalanceResult | null>(null)
   const { data: wethBalanceData } = useBalance({ address, token: wETHAddress })
   const { data: wjAURABalanceData } = useBalance({ address, token: wjAuraAddress })
-  const { allowance, refetch: refetchTokenAllowance } = useUserTokenAllowance(
-    wETHAddress,
-    vaultV2Address
-  )
-  const { allowance: allowance2, refetch: refetchTokenAllowance2 } = useUserTokenAllowance(
-    wjAuraAddress,
-    vaultV2Address
-  )
+  const { allowances, refetchAllowances } = useTokenAllowances()
+  const allowance = allowances[wETHAddress]
+  const allowance2 = allowances[wjAuraAddress]
 
   useEffect(() => {
     if (wethBalanceData) setWethBalance(wethBalanceData)
@@ -48,10 +43,10 @@ export function JoinWithTokenApproval() {
 
   // Do we export this hook as part of flow step?
   useEffect(() => {
-    if (tokenApprovalStep.execution.isSuccess) refetchTokenAllowance()
+    if (tokenApprovalStep.execution.isSuccess) refetchAllowances()
   }, [tokenApprovalStep.execution.isSuccess])
   useEffect(() => {
-    if (tokenApprovalStep2.execution.isSuccess) refetchTokenAllowance2()
+    if (tokenApprovalStep2.execution.isSuccess) refetchAllowances()
   }, [tokenApprovalStep2.execution.isSuccess])
 
   function handleJoinCompleted() {

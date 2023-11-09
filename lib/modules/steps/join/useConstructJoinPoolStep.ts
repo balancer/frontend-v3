@@ -11,6 +11,7 @@ import { JoinConfigBuilder } from './JoinConfigBuilder'
 import { useJoinPoolConfig } from './useJoinPoolConfig'
 import { useState } from 'react'
 import { useActiveStep } from '../useActiveStep'
+import { useTokenAllowances } from '../../web3/useTokenAllowances'
 
 export function useConstructJoinPoolStep(poolId: Address, initialWethAmount: HumanAmount = '1') {
   const [wethHumanAmount, setWethHumanAmount] = useState<HumanAmount>(initialWethAmount)
@@ -21,7 +22,9 @@ export function useConstructJoinPoolStep(poolId: Address, initialWethAmount: Hum
 
   const poolStateQuery = usePoolStateInput(poolId)
 
-  const joinBuilder = new JoinConfigBuilder(chainId, poolStateQuery.data, 'unbalanced')
+  const { allowances } = useTokenAllowances()
+
+  const joinBuilder = new JoinConfigBuilder(chainId, allowances, poolStateQuery.data, 'unbalanced')
 
   //TODO: useState with joinBuilder???
   // console.log('updating weth amount', wethHumanAmount)
@@ -34,7 +37,7 @@ export function useConstructJoinPoolStep(poolId: Address, initialWethAmount: Hum
 
   const step: FlowStep = {
     ...transaction,
-    getLabels: buildJoinPoolLabels,
+    getLabels: () => buildJoinPoolLabels(poolId),
     id: `joinPool${poolId}`,
     stepType: 'joinPool',
     isComplete: () => false,
@@ -52,11 +55,11 @@ export function useConstructJoinPoolStep(poolId: Address, initialWethAmount: Hum
   }
 }
 
-export const buildJoinPoolLabels: BuildTransactionLabels = () => {
+export const buildJoinPoolLabels: BuildTransactionLabels = (poolId: Address) => {
   return {
     ready: 'Join pool',
     confirming: 'Confirm pool join',
     tooltip: 'bing',
-    description: 'bong',
+    description: `🎉 Joined pool ${poolId}`,
   }
 }

@@ -17,6 +17,7 @@ import {
 } from '@balancer/sdk'
 import { Dictionary, keyBy } from 'lodash'
 import { Address } from 'wagmi'
+import { TokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 
 type JoinType = 'unbalanced' | 'unbalancedNativeAsset' | 'singleAsset'
 
@@ -36,6 +37,7 @@ export class JoinConfigBuilder {
 
   constructor(
     private chainId: ChainId,
+    private tokenAllowances: TokenAllowances,
     private poolStateInput: PoolStateInput = NullPoolState,
     public joinType: JoinType = 'unbalanced'
   ) {
@@ -53,6 +55,12 @@ export class JoinConfigBuilder {
   getToken(tokenAddress: Address) {
     const token = this.poolStateInput.tokens.find(t => isSameAddress(t.address, tokenAddress))
     return token
+  }
+
+  hasTokenAllowance() {
+    // TODO: depending on the user input this rule will be different
+    // Here we will check that the user has enough allowance for the current Join operation
+    return Object.values(this.tokenAllowances).every(a => a > 0n)
   }
 
   public get queryKey() {
