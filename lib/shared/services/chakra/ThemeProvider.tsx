@@ -11,13 +11,16 @@ export function ThemeProvider({
   initialColorMode,
 }: {
   children: ReactNode
-  initialColorMode?: string
+  initialColorMode?: 'light' | 'dark' | 'system'
 }) {
   const colorModeManager = createColorModeManager(initialColorMode)
 
   return (
     <>
-      <ColorModeScript initialColorMode={balTheme.config?.initialColorMode} type="cookie" />
+      <ColorModeScript
+        initialColorMode={balTheme.config?.initialColorMode as 'light' | 'dark' | 'system'}
+        type="cookie"
+      />
       <ChakraCacheProvider>
         <ChakraProvider colorModeManager={colorModeManager} theme={theme}>
           {children}
