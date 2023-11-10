@@ -7,16 +7,15 @@ import { getPoolPath } from '../../../pool.utils'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 import { PaginatedTable } from '@/lib/shared/components/tables/PaginatedTable'
-import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
-import { Pagination } from '@/lib/shared/components/pagination/Pagination'
 import { PoolListTableHeader } from './PoolListTableHeader'
 import { PoolListTableRow } from './PoolListTableRow'
+import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
 
 export function PoolListTable() {
   const { pools, loading, count } = usePoolList()
   const { pagination, setPagination } = usePoolListQueryState()
   const paginationProps = getPaginationProps(count || 0, pagination, setPagination)
-  const showPagination = pools.length && count && count > pagination.pageSize
+  const showPagination = !!pools.length && !!count && count > pagination.pageSize
   const router = useRouter()
 
   const rowClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
@@ -45,8 +44,9 @@ export function PoolListTable() {
         renderTableRow={(item: any, index) => {
           return <PoolListTableRow key={index} pool={item} />
         }}
+        showPagination={showPagination}
+        paginationProps={paginationProps}
       />
-      {showPagination && <Pagination {...paginationProps} />}
       {loading && (
         <Box
           style={{
