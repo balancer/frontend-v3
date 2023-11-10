@@ -20,14 +20,7 @@ export function PaginatedTable({
   return (
     <Box {...rest}>
       {renderTableHeader()}
-      <Box
-        mb={4}
-        borderBottomLeftRadius="md"
-        borderBottomRightRadius="md"
-        overflow="hidden"
-        shadow="lg"
-        pr="4"
-      >
+      <Box mb="4" overflow="hidden" pr="4">
         {isLoadingRows && (
           <Flex justifyContent={'center'} py={32}>
             <Spinner size="xl" />
