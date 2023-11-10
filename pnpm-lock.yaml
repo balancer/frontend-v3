@@ -12,16 +12,8 @@ dependencies:
     specifier: 3.8.0-rc.1
     version: 3.8.0-rc.1(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
   '@balancer/sdk':
-<<<<<<< HEAD
-    specifier: github:balancer/b-sdk#join2
-    version: github.com/balancer/b-sdk/053b5f31566570c6a49cbfaf5a869e95354ee574(typescript@5.1.6)(zod@3.22.4)
-  '@chakra-ui/anatomy':
-    specifier: ^2.2.1
-    version: 2.2.1
-=======
     specifier: github:balancer/b-sdk#join3
     version: github.com/balancer/b-sdk/4a9f425013f3dca79fd89c7b8ca6ab1cfc417242(typescript@5.1.6)(zod@3.22.4)
->>>>>>> origin/main
   '@chakra-ui/hooks':
     specifier: ^2.2.1
     version: 2.2.1(react@18.2.0)
@@ -4134,7 +4126,7 @@ packages:
   /@tanstack/react-query-persist-client@4.36.1(@tanstack/react-query@4.36.1):
     resolution: {integrity: sha512-32I5b9aAu4NCiXZ7Te/KEQLfHbYeTNriVPrKYcvEThnZ9tlW01vLcSoxpUIsMYRsembvJUUAkzYBAiZHLOd6pQ==}
     peerDependencies:
-      '@tanstack/react-query': ^4.29.19
+      '@tanstack/react-query': ^4.36.1
     dependencies:
       '@tanstack/query-persist-client-core': 4.36.1
       '@tanstack/react-query': 4.36.1(react-dom@18.2.0)(react@18.2.0)
@@ -11586,15 +11578,9 @@ packages:
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
 
-<<<<<<< HEAD
-  github.com/balancer/b-sdk/053b5f31566570c6a49cbfaf5a869e95354ee574(typescript@5.1.6)(zod@3.22.4):
-    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/053b5f31566570c6a49cbfaf5a869e95354ee574}
-    id: github.com/balancer/b-sdk/053b5f31566570c6a49cbfaf5a869e95354ee574
-=======
   github.com/balancer/b-sdk/4a9f425013f3dca79fd89c7b8ca6ab1cfc417242(typescript@5.1.6)(zod@3.22.4):
     resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/4a9f425013f3dca79fd89c7b8ca6ab1cfc417242}
     id: github.com/balancer/b-sdk/4a9f425013f3dca79fd89c7b8ca6ab1cfc417242
->>>>>>> origin/main
     name: '@balancer/sdk'
     version: 0.2.0
     dependencies:
