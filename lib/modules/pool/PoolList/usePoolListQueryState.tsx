@@ -13,9 +13,9 @@ import {
   POOL_TYPE_MAP,
   PoolFilterType,
   poolListQueryStateParsers,
-  PaginationState,
   SortingState,
 } from '@/lib/modules/pool/pool.types'
+import { PaginationState } from '@/lib/shared/components/pagination/pagination.types'
 
 export function usePoolListQueryState() {
   const [first, setFirst] = useQueryState('first', poolListQueryStateParsers.first)
