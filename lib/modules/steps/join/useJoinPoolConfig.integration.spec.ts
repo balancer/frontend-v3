@@ -26,7 +26,7 @@ test('fetches join pool config when user is not connected', async () => {
   expect(result.current.data).toBeUndefined()
 })
 
-test.only('fetches join pool config when user is connected', async () => {
+test('fetches join pool config when user is connected', async () => {
   const builder = await buildJoinConfig()
 
   builder.setAmountIn(wETHAddress, '1')

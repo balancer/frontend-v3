@@ -18,6 +18,7 @@ import {
 import { Dictionary, keyBy } from 'lodash'
 import { Address } from 'wagmi'
 import { TokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
+import { wETHAddress } from '@/lib/debug-helpers'
 
 type JoinType = 'unbalanced' | 'unbalancedNativeAsset' | 'singleAsset'
 
@@ -122,7 +123,7 @@ export class JoinConfigBuilder {
     // setup BPT token
     const bptToken = new Token(this.chainId, this.poolStateInput.address, 18, 'BPT')
     const bptOut = TokenAmount.fromHumanAmount(bptToken, '1')
-    const tokenIn = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' // WETH asset in eth
+    const tokenIn = wETHAddress
 
     // perform join query to get expected bpt out
     return {
