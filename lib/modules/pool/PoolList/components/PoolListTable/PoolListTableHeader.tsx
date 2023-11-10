@@ -21,30 +21,37 @@ export function PoolListTableHeader() {
           <Icon as={FiGlobe} boxSize="6" ml="1" />
         </GridItem>
         <GridItem>
-          <Text fontSize="md" fontWeight="semibold" color="beets.base.100">
-            Pool details
-          </Text>
+          <Text>Pool name</Text>
         </GridItem>
-        <GridItem textAlign="right">
+        <GridItem justifySelf="end">
           <PoolListSortLink
             title="TVL"
-            orderDirection={sortingObj.id === GqlPoolOrderBy.TotalLiquidity && sortingObj.desc}
+            isCurrentSort={sortingObj.id === GqlPoolOrderBy.TotalLiquidity}
+            orderDirection={
+              sortingObj.id === GqlPoolOrderBy.TotalLiquidity && sortingObj.desc ? 'desc' : 'asc'
+            }
             onClick={() =>
               setSorting([{ id: GqlPoolOrderBy.TotalLiquidity, desc: !sorting[0].desc }])
             }
           />
         </GridItem>
-        <GridItem textAlign="right" display="block">
+        <GridItem justifySelf="end">
           <PoolListSortLink
             title="Volume (24h)"
-            orderDirection={sortingObj.id === GqlPoolOrderBy.Volume24h && sortingObj.desc}
+            isCurrentSort={sortingObj.id === GqlPoolOrderBy.Volume24h}
+            orderDirection={
+              sortingObj.id === GqlPoolOrderBy.Volume24h && sortingObj.desc ? 'desc' : 'asc'
+            }
             onClick={() => setSorting([{ id: GqlPoolOrderBy.Volume24h, desc: !sorting[0].desc }])}
           />
         </GridItem>
-        <GridItem textAlign="right">
+        <GridItem justifySelf="end">
           <PoolListSortLink
             title="APR"
-            orderDirection={sortingObj.id === GqlPoolOrderBy.Apr && sortingObj.desc}
+            isCurrentSort={sortingObj.id === GqlPoolOrderBy.Apr}
+            orderDirection={
+              sortingObj.id === GqlPoolOrderBy.Apr && sortingObj.desc ? 'desc' : 'asc'
+            }
             onClick={() => setSorting([{ id: GqlPoolOrderBy.Apr, desc: !sorting[0].desc }])}
           />
         </GridItem>

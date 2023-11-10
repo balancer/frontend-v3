@@ -5,11 +5,14 @@ import { getPoolPath } from '@/lib/modules/pool/pool.utils'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import Image from 'next/image'
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
-//import AprTooltip from '~/components/apr-tooltip/AprTooltip';
+import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
+import { memo } from 'react'
 
 interface Props extends BoxProps {
   pool: PoolListItem
 }
+
+const MemoizedAprTooltip = memo(AprTooltip)
 
 export function PoolListTableRow({ pool, ...rest }: Props) {
   const networkConfig = getNetworkConfig(pool.chain)
@@ -41,13 +44,8 @@ export function PoolListTableRow({ pool, ...rest }: Props) {
           <GridItem area="volume" textAlign="right">
             <Text>{numeral(pool.dynamicData.volume24h).format('$0,0')}</Text>
           </GridItem>
-          <GridItem area="apr" textAlign="right">
-            APR
-            {/* <MemoizedAprTooltip
-                                data={pool.dynamicData.apr}
-                                textProps={{ fontWeight: 'normal', fontSize: { base: 'xl', lg: 'md' } }}
-                                poolId={pool.id}
-                            /> */}
+          <GridItem area="apr" justifySelf="end">
+            <MemoizedAprTooltip data={pool.dynamicData.apr} poolId={pool.id} />
           </GridItem>
         </Grid>
       </Link>
