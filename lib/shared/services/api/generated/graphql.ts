@@ -1397,25 +1397,6 @@ export type GetTimestampQueryVariables = Exact<{ [key: string]: never }>
 
 export type GetTimestampQuery = { __typename?: 'Query'; timestamp: string }
 
-export type GetAppGlobalDataQueryVariables = Exact<{ [key: string]: never }>
-
-export type GetAppGlobalDataQuery = {
-  __typename?: 'Query'
-  blocksGetBlocksPerDay: number
-  blocksGetAverageBlockTime: number
-  tokenGetTokens: Array<{
-    __typename?: 'GqlToken'
-    address: string
-    name: string
-    symbol: string
-    decimals: number
-    chainId: number
-    logoURI?: string | null
-    priority: number
-    tradable: boolean
-  }>
-}
-
 export type GetAppGlobalPollingDataQueryVariables = Exact<{ [key: string]: never }>
 
 export type GetAppGlobalPollingDataQuery = {
@@ -3977,40 +3958,6 @@ export const GetTimestampDocument = {
     },
   ],
 } as unknown as DocumentNode<GetTimestampQuery, GetTimestampQueryVariables>
-export const GetAppGlobalDataDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetAppGlobalData' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'tokenGetTokens' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'chainId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'logoURI' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'priority' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'tradable' } },
-              ],
-            },
-          },
-          { kind: 'Field', name: { kind: 'Name', value: 'blocksGetBlocksPerDay' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'blocksGetAverageBlockTime' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GetAppGlobalDataQuery, GetAppGlobalDataQueryVariables>
 export const GetAppGlobalPollingDataDocument = {
   kind: 'Document',
   definitions: [
