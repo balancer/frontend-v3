@@ -18,8 +18,6 @@ const integrationTestOptions: Partial<InlineConfig> = {
   retry: 3,
   exclude: [
     // Exclude Join tests until SDK public API is ready
-    // 'lib/modules/steps/join/JoinConfigBuilder.integration.spec.ts',
-    'lib/modules/steps/join/useJoinPoolConfig.integration.spec.ts',
     'lib/modules/web3/contracts/useManagedSendTransaction.integration.spec.ts',
     'node_modules',
     'dist',

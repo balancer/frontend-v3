@@ -24,8 +24,6 @@ test('build Unbalanced Join Config', async () => {
   builder.setSlippage('2')
   const result = await builder.buildSdkJoinTxConfig(defaultTestUserAccount)
 
-  console.log({ result })
-
   expect(result.minBptOut).toBeGreaterThan(400000000000000000000n)
 })
 
