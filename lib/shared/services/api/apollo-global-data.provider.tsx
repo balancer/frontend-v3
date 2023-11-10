@@ -10,7 +10,7 @@ import { GetTokensDocument } from '@/lib/shared/services/api/generated/graphql'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { TokensProvider } from '@/lib/modules/tokens/useTokens'
 
-export async function ApolloPrimeGlobalCacheProvider({ children }: React.PropsWithChildren) {
+export async function ApolloGlobalDataProvider({ children }: React.PropsWithChildren) {
   const client = getApolloServerClient()
 
   const tokensQueryVariables = {
