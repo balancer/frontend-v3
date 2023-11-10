@@ -1,7 +1,9 @@
 import { getNetworkConfig } from '@/lib/config/app.config'
+import { wETHAddress } from '@/lib/debug-helpers'
+import { chains } from '@/lib/modules/web3/Web3Provider'
 import { SdkTransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { chains } from '@/lib/modules/web3/Web3Provider'
+import { TokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import {
   ChainId,
@@ -11,15 +13,11 @@ import {
   PoolStateInput,
   SingleAssetJoinInput,
   Slippage,
-  Token,
-  TokenAmount,
   UnbalancedJoinInput,
 } from '@balancer/sdk'
 import { Dictionary, keyBy } from 'lodash'
-import { Address } from 'wagmi'
-import { TokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
-import { wETHAddress } from '@/lib/debug-helpers'
 import { parseUnits } from 'viem'
+import { Address } from 'wagmi'
 
 // TODO: this should be imported from the SDK
 export type InputAmount = {
