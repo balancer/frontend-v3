@@ -359,7 +359,9 @@ type GqlPoolLinearNested {
   tokens: [GqlPoolToken!]!
   totalLiquidity: BigDecimal!
   totalShares: BigDecimal!
+  type: String!
   upperTarget: BigInt!
+  version: Int!
   wrappedIndex: Int!
 }
 
@@ -536,6 +538,8 @@ type GqlPoolPhantomStableNested {
   tokens: [GqlPoolTokenPhantomStableNestedUnion!]!
   totalLiquidity: BigDecimal!
   totalShares: BigDecimal!
+  type: String!
+  version: Int!
 }
 
 type GqlPoolSnapshot {

@@ -1,9 +1,9 @@
-import { ApolloClientProviderWrapper } from '@/lib/shared/services/api/apollo-client.provider'
-import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
-import { GetAppGlobalDataDocument } from '@/lib/shared/services/api/generated/graphql'
+'use client'
 
-export async function ApolloProviderWrapper({ children }: React.PropsWithChildren) {
-  const { data } = await getApolloServerClient().query({ query: GetAppGlobalDataDocument })
+// eslint-disable-next-line max-len
+import { ApolloNextAppProvider } from '@apollo/experimental-nextjs-app-support/ssr'
+import { createApolloClient } from '@/lib/shared/services/api/apollo.client'
 
-  return <ApolloClientProviderWrapper data={data}>{children}</ApolloClientProviderWrapper>
+export function ApolloProvider({ children }: React.PropsWithChildren) {
+  return <ApolloNextAppProvider makeClient={createApolloClient}>{children}</ApolloNextAppProvider>
 }
