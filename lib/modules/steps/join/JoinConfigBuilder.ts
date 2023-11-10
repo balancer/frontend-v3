@@ -19,6 +19,14 @@ import { Dictionary, keyBy } from 'lodash'
 import { Address } from 'wagmi'
 import { TokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { wETHAddress } from '@/lib/debug-helpers'
+import { parseUnits } from 'viem'
+
+// TODO: this should be imported from the SDK
+export type InputAmount = {
+  address: Address
+  decimals: number
+  rawAmount: bigint
+}
 
 type JoinType = 'unbalanced' | 'unbalancedNativeAsset' | 'singleAsset'
 
@@ -34,7 +42,7 @@ type JoinType = 'unbalanced' | 'unbalancedNativeAsset' | 'singleAsset'
 export class JoinConfigBuilder {
   slippage: Slippage = Slippage.fromPercentage('1')
   checkNativeBalance = false
-  amountsInByTokenAddress: Dictionary<TokenAmount> = {}
+  amountsInByTokenAddress: Dictionary<InputAmount> = {}
 
   constructor(
     private chainId: ChainId,
@@ -42,11 +50,14 @@ export class JoinConfigBuilder {
     private poolStateInput: PoolStateInput = NullPoolState,
     public joinType: JoinType = 'unbalanced'
   ) {
-    const amountsInList = poolStateInput?.tokens
-      .map(t => new Token(chainId, t.address, t.decimals))
-      .map(t => TokenAmount.fromHumanAmount(t, '0'))
+    const initialTokenAmount = 0n
+    const amountsInList: InputAmount[] = poolStateInput?.tokens.map(t => ({
+      address: t.address,
+      decimals: t.decimals,
+      rawAmount: initialTokenAmount,
+    }))
 
-    this.amountsInByTokenAddress = keyBy(amountsInList, a => a.token.address)
+    this.amountsInByTokenAddress = keyBy(amountsInList, a => a.address)
   }
 
   get poolId() {
@@ -78,10 +89,15 @@ export class JoinConfigBuilder {
 
   public setAmountIn(tokenAddress: Address, humanAmount: HumanAmount): void {
     if (this.poolStateInput.tokens.length === 0) return
-    this.amountsInByTokenAddress[tokenAddress] = TokenAmount.fromHumanAmount(
-      this.amountsInByTokenAddress[tokenAddress].token,
+    this.amountsInByTokenAddress[tokenAddress].rawAmount = this.toRawAmount(
+      tokenAddress,
       humanAmount
     )
+  }
+
+  toRawAmount(tokenAddress: Address, humanAmount: HumanAmount) {
+    const decimals = this.amountsInByTokenAddress[tokenAddress].decimals
+    return parseUnits(humanAmount, decimals)
   }
 
   get nativeAssetToken() {
@@ -101,7 +117,7 @@ export class JoinConfigBuilder {
     return this.getUnbalancedJoinInput()
   }
 
-  getJoinInputBase() {
+  private getJoinInputBase() {
     return {
       chainId: this.chainId,
       rpcUrl: chains[0].rpcUrls.public.http[0], //TODO: create helper to get by current chain? or useNetwork() or similar wagmi hook?
@@ -121,9 +137,15 @@ export class JoinConfigBuilder {
   // getSingleAssetJoinInput(tokenIn: Address, humanAmount: HumanAmount): SingleAssetJoinInput {
   getSingleAssetJoinInput(): SingleAssetJoinInput {
     // setup BPT token
-    const bptToken = new Token(this.chainId, this.poolStateInput.address, 18, 'BPT')
-    const bptOut = TokenAmount.fromHumanAmount(bptToken, '1')
     const tokenIn = wETHAddress
+    const humanBtpOutAmount = '1'
+    const btpOutDecimals = 18
+
+    const bptOut: InputAmount = {
+      rawAmount: parseUnits(humanBtpOutAmount, btpOutDecimals),
+      decimals: btpOutDecimals,
+      address: this.poolStateInput.address,
+    }
 
     // perform join query to get expected bpt out
     return {
@@ -138,6 +160,7 @@ export class JoinConfigBuilder {
     const joinInput = this.getJoinInputForSDK()
 
     const poolJoin = new PoolJoin()
+
     const queryResult = await poolJoin.query(joinInput, this.poolStateInput)
 
     const { call, to, value, maxAmountsIn, minBptOut } = poolJoin.buildCall({
