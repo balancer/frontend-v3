@@ -1,4 +1,4 @@
-import { GetAppGlobalDataDocument } from '@/lib/shared/services/api/generated/graphql'
+import { GetAppGlobalPollingDataDocument } from '@/lib/shared/services/api/generated/graphql'
 import { getQueryName, mockGQL } from '../utils'
 import { graphql } from 'msw'
 import { anAppGlobalData } from '@/lib/modules/tokens/__mocks__/AppGlobalData.builders'
@@ -6,7 +6,7 @@ import { anAppGlobalData } from '@/lib/modules/tokens/__mocks__/AppGlobalData.bu
 export const defaultAppGlobalDataMock = anAppGlobalData()
 
 export function buildAppGlobalDataMswHandler(appGlobalData = defaultAppGlobalDataMock) {
-  return graphql.query(getQueryName(GetAppGlobalDataDocument), (req, res, ctx) => {
+  return graphql.query(getQueryName(GetAppGlobalPollingDataDocument), (req, res, ctx) => {
     return res(ctx.data(appGlobalData))
   })
 }

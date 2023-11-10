@@ -1,12 +1,18 @@
 import { testHook } from '@/test/utils/custom-renderers'
 import { _useTokens } from './useTokens'
 import { waitFor } from '@testing-library/react'
-import { defaultTokenBaseMock } from '@/test/msw/handlers/Tokens.handlers'
+import {
+  defaultGetTokensQueryMock,
+  defaultGetTokensQueryVariablesMock,
+  defaultTokenBaseMock,
+} from '@/test/msw/handlers/Tokens.handlers'
 
 test('fetches tokens', async () => {
-  const { result } = testHook(() => _useTokens())
+  const initialData = defaultGetTokensQueryMock
+  const variables = defaultGetTokensQueryVariablesMock
+  const { result } = testHook(() => _useTokens(initialData, variables))
 
-  expect(result.current.tokens).toEqual([])
+  expect(result.current.tokens).toEqual(initialData.tokens)
 
   await waitFor(() => expect(result.current.tokens.length).toBeGreaterThan(0))
 
