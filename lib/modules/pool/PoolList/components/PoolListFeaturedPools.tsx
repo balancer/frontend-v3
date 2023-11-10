@@ -65,14 +65,14 @@ export function PoolListFeaturedPools() {
         alignContent="stretch"
         templateColumns={{
           base: 'repeat(2, 1fr)',
-          lg: 'repeat(4, 1fr)', // align with PoolListGrid
+          lg: 'repeat(4, 1fr)', // align with PoolListCards
         }}
         templateAreas={{
           base: `"primary primary"
                "one     two"
                "three   four"`,
           lg: `"primary primary one   two"
-             "primary primary three four"`, // align with PoolListGrid
+             "primary primary three four"`, // align with PoolListCards
         }}
       >
         <GridItem area="primary">{primaryPool && <FeaturedPoolCard pool={primaryPool} />}</GridItem>
