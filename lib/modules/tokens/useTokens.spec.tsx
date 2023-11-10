@@ -5,7 +5,7 @@ import {
   defaultGetTokensQueryMock,
   defaultGetTokensQueryVariablesMock,
   defaultTokenBaseMock,
-} from '@/test/msw/handlers/Tokens.handlers'
+} from './__mocks__/token.builders'
 
 test('fetches tokens', async () => {
   const initialData = defaultGetTokensQueryMock

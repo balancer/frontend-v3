@@ -4,6 +4,19 @@ import { fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
 import { TokenAllowances } from '../../web3/useTokenAllowances'
 import { MAX_BIGINT } from '@/lib/shared/utils/bigint'
 import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
+import {
+  GetTokensQuery,
+  GetTokensQueryVariables,
+} from '@/lib/shared/services/api/generated/graphql'
+import { mock } from 'vitest-mock-extended'
+import { MswTokenList } from './token.test.types'
+
+export const defaultTokenBaseMock = aTokenBaseMock({ symbol: 'TEST-TOKEN' })
+export const defaultTokenListMock: MswTokenList = [defaultTokenBaseMock as MswTokenList[0]]
+
+export const defaultGetTokensQueryMock: GetTokensQuery = mock<GetTokensQuery>()
+export const defaultGetTokensQueryVariablesMock: GetTokensQueryVariables =
+  mock<GetTokensQueryVariables>()
 
 export function aTokenAmountMock(options?: Partial<TokenAmount>) {
   const defaultTokenAmount = {

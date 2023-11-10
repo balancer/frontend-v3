@@ -24,7 +24,7 @@ import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } f
 import {
   defaultGetTokensQueryMock,
   defaultGetTokensQueryVariablesMock,
-} from '../msw/handlers/Tokens.handlers'
+} from '@/lib/modules/tokens/__mocks__/token.builders'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
