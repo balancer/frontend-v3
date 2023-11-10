@@ -1,6 +1,7 @@
 import { ThemeTypings, extendTheme } from '@chakra-ui/react'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
-import { darken, lighten } from '@chakra-ui/theme-tools'
+import { darken } from '@chakra-ui/theme-tools'
+import { cardTheme } from '../../components/containers/GradientCard'
 
 const tokens = {
   colors: {
@@ -81,7 +82,7 @@ const tokens = {
   },
 }
 
-export const balTheme: ThemeOverride = {
+export const balTheme = {
   config: {
     initialColorMode: 'light',
     useSystemColorMode: false,
@@ -429,7 +430,7 @@ export const balTheme: ThemeOverride = {
           background: 'colorFontSpecial',
           backgroundClip: 'text',
         },
-        sand: props => ({
+        sand: (props: any) => ({
           bgGradient: props.theme.colors.gradient.sand,
           bgClip: 'text',
         }),
