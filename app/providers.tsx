@@ -1,5 +1,5 @@
 import { Web3Provider } from '@/lib/modules/web3/Web3Provider'
-import { ApolloProvider } from '@/lib/shared/services/api/apollo.provider'
+import { ApolloClientProvider } from '@/lib/shared/services/api/apollo-client-provider'
 import { ThemeProvider } from '@/lib/shared/services/chakra/ThemeProvider'
 import { ReactNode } from 'react'
 import { cookies } from 'next/headers'
@@ -13,11 +13,11 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider initialColorMode={initialColorMode}>
       <Web3Provider>
-        <ApolloProvider>
+        <ApolloClientProvider>
           <ApolloGlobalDataProvider>
             <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
           </ApolloGlobalDataProvider>
-        </ApolloProvider>
+        </ApolloClientProvider>
       </Web3Provider>
     </ThemeProvider>
   )
