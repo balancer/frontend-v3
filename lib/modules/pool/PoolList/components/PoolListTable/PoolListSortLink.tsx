@@ -25,7 +25,7 @@ const getColor = (
 export default function PoolListSortLink({ title, orderDirection, isCurrentSort, ...rest }: Props) {
   return (
     <Button
-      _hover={{ backgroundColor: 'transparent', color: 'beets.highlight' }}
+      _hover={{ backgroundColor: 'transparent' }}
       padding="0"
       height="fit-content"
       variant="ghost"
