@@ -1236,12 +1236,10 @@ export type Query = {
   poolGetJoinExits: Array<GqlPoolJoinExit>
   poolGetLinearPools: Array<GqlPoolLinear>
   poolGetPool: GqlPoolBase
-  poolGetPoolFilters: Array<GqlPoolFilterDefinition>
   poolGetPools: Array<GqlPoolMinimal>
   poolGetPoolsCount: Scalars['Int']['output']
   poolGetSnapshots: Array<GqlPoolSnapshot>
   poolGetSwaps: Array<GqlPoolSwap>
-  poolGetUserSwapVolume: Array<GqlPoolUserSwapVolume>
   protocolMetricsAggregated: GqlProtocolMetricsAggregated
   protocolMetricsChain: GqlProtocolMetricsChain
   sorGetBatchSwapForTokensIn: GqlSorGetBatchSwapForTokensInResponse
@@ -1314,12 +1312,6 @@ export type QueryPoolGetSwapsArgs = {
   first?: InputMaybe<Scalars['Int']['input']>
   skip?: InputMaybe<Scalars['Int']['input']>
   where?: InputMaybe<GqlPoolSwapFilter>
-}
-
-export type QueryPoolGetUserSwapVolumeArgs = {
-  first?: InputMaybe<Scalars['Int']['input']>
-  skip?: InputMaybe<Scalars['Int']['input']>
-  where?: InputMaybe<GqlUserSwapVolumeFilter>
 }
 
 export type QueryProtocolMetricsAggregatedArgs = {
@@ -1399,6 +1391,29 @@ export type QueryUserGetSwapsArgs = {
   first?: InputMaybe<Scalars['Int']['input']>
   poolId: Scalars['String']['input']
   skip?: InputMaybe<Scalars['Int']['input']>
+}
+
+export type GetTimestampQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetTimestampQuery = { __typename?: 'Query'; timestamp: string }
+
+export type GetAppGlobalDataQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetAppGlobalDataQuery = {
+  __typename?: 'Query'
+  blocksGetBlocksPerDay: number
+  blocksGetAverageBlockTime: number
+  tokenGetTokens: Array<{
+    __typename?: 'GqlToken'
+    address: string
+    name: string
+    symbol: string
+    decimals: number
+    chainId: number
+    logoURI?: string | null
+    priority: number
+    tradable: boolean
+  }>
 }
 
 export type GetAppGlobalPollingDataQueryVariables = Exact<{ [key: string]: never }>
@@ -3942,6 +3957,60 @@ export const GqlTokenDynamicDataFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<GqlTokenDynamicDataFragment, unknown>
+export const GetTimestampDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetTimestamp' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'timestamp' },
+            name: { kind: 'Name', value: 'balancerQueryTest' },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetTimestampQuery, GetTimestampQueryVariables>
+export const GetAppGlobalDataDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetAppGlobalData' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tokenGetTokens' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'chainId' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'logoURI' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'priority' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tradable' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'blocksGetBlocksPerDay' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'blocksGetAverageBlockTime' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetAppGlobalDataQuery, GetAppGlobalDataQueryVariables>
 export const GetAppGlobalPollingDataDocument = {
   kind: 'Document',
   definitions: [
