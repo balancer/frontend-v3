@@ -1,9 +1,11 @@
 /**
  * Apollo Global Data Provider
  *
- * This component is used to prime the Apollo cache with data that is needed
- * for the entire application. This is useful for data that is needed on every
- * page, such as token data.
+ * This component is used to fetch data that is needed for the entire
+ * application during the RSC render pass. The data is then passed to the client
+ * providers that should then call `useSeedApolloCache` to seed the apollo cache
+ * prior to the useQuery call, ensuring the data is already present on the first
+ * client render pass.
  */
 import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
 import { GetTokensDocument } from '@/lib/shared/services/api/generated/graphql'
