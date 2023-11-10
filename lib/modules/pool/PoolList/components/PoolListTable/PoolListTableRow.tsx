@@ -4,10 +4,11 @@ import numeral from 'numeral'
 import { getPoolPath } from '@/lib/modules/pool/pool.utils'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import Image from 'next/image'
+import { PoolListItem } from '@/lib/modules/pool/pool.types'
 //import AprTooltip from '~/components/apr-tooltip/AprTooltip';
 
 interface Props extends BoxProps {
-  pool: any
+  pool: PoolListItem
 }
 
 export function PoolListTableRow({ pool, ...rest }: Props) {
