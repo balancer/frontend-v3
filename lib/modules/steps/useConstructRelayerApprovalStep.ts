@@ -7,7 +7,7 @@ import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useActiveStep } from './useActiveStep'
 
-const balancerRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'
+const batchRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'
 
 export function useConstructRelayerApprovalStep() {
   const { address: userAddress } = useUserAccount()
@@ -18,14 +18,14 @@ export function useConstructRelayerApprovalStep() {
   // These args can be dynamic (i.e. from html input) and should be passed as args to the useConstructRelayerApprovalStep hook though setApprovalArgs
   const [approvalArgs, setApprovalArgs] = useState<[Address, Address, boolean]>([
     userAddress || noUserAddress,
-    balancerRelayer,
+    batchRelayer,
     true,
   ])
 
   // update relayer approval args
   useEffect(() => {
     if (userAddress) {
-      setApprovalArgs([userAddress, balancerRelayer, true])
+      setApprovalArgs([userAddress, batchRelayer, true])
     }
   }, [userAddress])
 
@@ -45,6 +45,7 @@ export function useConstructRelayerApprovalStep() {
   const step: FlowStep = {
     ...transaction,
     getLabels: buildRelayerApprovalLabels,
+    id: 'batchRelayerApproval',
     stepType: 'batchRelayerApproval',
     isComplete: () => hasRelayerApproval,
     activateStep,
