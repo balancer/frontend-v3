@@ -401,7 +401,9 @@ export type GqlPoolLinearNested = {
   tokens: Array<GqlPoolToken>
   totalLiquidity: Scalars['BigDecimal']['output']
   totalShares: Scalars['BigDecimal']['output']
+  type: Scalars['String']['output']
   upperTarget: Scalars['BigInt']['output']
+  version: Scalars['Int']['output']
   wrappedIndex: Scalars['Int']['output']
 }
 
@@ -586,6 +588,8 @@ export type GqlPoolPhantomStableNested = {
   tokens: Array<GqlPoolTokenPhantomStableNestedUnion>
   totalLiquidity: Scalars['BigDecimal']['output']
   totalShares: Scalars['BigDecimal']['output']
+  type: Scalars['String']['output']
+  version: Scalars['Int']['output']
 }
 
 export type GqlPoolSnapshot = {
@@ -1232,12 +1236,10 @@ export type Query = {
   poolGetJoinExits: Array<GqlPoolJoinExit>
   poolGetLinearPools: Array<GqlPoolLinear>
   poolGetPool: GqlPoolBase
-  poolGetPoolFilters: Array<GqlPoolFilterDefinition>
   poolGetPools: Array<GqlPoolMinimal>
   poolGetPoolsCount: Scalars['Int']['output']
   poolGetSnapshots: Array<GqlPoolSnapshot>
   poolGetSwaps: Array<GqlPoolSwap>
-  poolGetUserSwapVolume: Array<GqlPoolUserSwapVolume>
   protocolMetricsAggregated: GqlProtocolMetricsAggregated
   protocolMetricsChain: GqlProtocolMetricsChain
   sorGetBatchSwapForTokensIn: GqlSorGetBatchSwapForTokensInResponse
@@ -1310,12 +1312,6 @@ export type QueryPoolGetSwapsArgs = {
   first?: InputMaybe<Scalars['Int']['input']>
   skip?: InputMaybe<Scalars['Int']['input']>
   where?: InputMaybe<GqlPoolSwapFilter>
-}
-
-export type QueryPoolGetUserSwapVolumeArgs = {
-  first?: InputMaybe<Scalars['Int']['input']>
-  skip?: InputMaybe<Scalars['Int']['input']>
-  where?: InputMaybe<GqlUserSwapVolumeFilter>
 }
 
 export type QueryProtocolMetricsAggregatedArgs = {
@@ -1396,6 +1392,10 @@ export type QueryUserGetSwapsArgs = {
   poolId: Scalars['String']['input']
   skip?: InputMaybe<Scalars['Int']['input']>
 }
+
+export type GetTimestampQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetTimestampQuery = { __typename?: 'Query'; timestamp: string }
 
 export type GetAppGlobalDataQueryVariables = Exact<{ [key: string]: never }>
 
@@ -3955,6 +3955,26 @@ export const GqlTokenDynamicDataFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<GqlTokenDynamicDataFragment, unknown>
+export const GetTimestampDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetTimestamp' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'timestamp' },
+            name: { kind: 'Name', value: 'balancerQueryTest' },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetTimestampQuery, GetTimestampQueryVariables>
 export const GetAppGlobalDataDocument = {
   kind: 'Document',
   definitions: [
