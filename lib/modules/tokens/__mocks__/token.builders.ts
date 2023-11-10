@@ -1,6 +1,9 @@
 import { TokenAmount } from '../token.types'
 import { TokenBase } from '@/lib/modules/tokens/token.types'
 import { fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
+import { TokenAllowances } from '../../web3/useTokenAllowances'
+import { MAX_BIGINT } from '@/lib/shared/utils/bigint'
+import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 
 export function aTokenAmountMock(options?: Partial<TokenAmount>) {
   const defaultTokenAmount = {
@@ -20,4 +23,9 @@ export function someTokenAmountsMock(addresses: string[]) {
 export function aTokenBaseMock(...options: Partial<TokenBase>[]): TokenBase {
   const defaultToken: TokenBase = fakeTokenBySymbol('BAL')
   return Object.assign({}, defaultToken, ...options)
+}
+
+export const someTokenAllowancesMock: TokenAllowances = {
+  [wETHAddress]: MAX_BIGINT,
+  [wjAuraAddress]: MAX_BIGINT,
 }

@@ -64,7 +64,7 @@ describe('weighted join test', () => {
     // Double approximately
     expect(queryResult2.bptOut.amount).toBeGreaterThan(520000000000000000000n)
 
-    act(() => result.current.setTxConfig(config2))
+    // act(() => result.current.setTxConfig(config2))
 
     await waitFor(() => expect(result.current.executeAsync).toBeDefined())
 
