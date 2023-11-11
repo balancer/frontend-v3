@@ -4,7 +4,7 @@ import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddr
 import { useManagedErc20Transaction } from '@/lib/modules/web3/contracts/useManagedErc20Transaction'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { MAX_BIGINT } from '@/lib/shared/utils/bigint'
+import { MAX_BIGINT } from '@/lib/shared/hooks/useNumbers'
 import { useEffect, useState } from 'react'
 import { Address } from 'viem'
 

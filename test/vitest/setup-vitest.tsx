@@ -1,4 +1,4 @@
-import '@/lib/shared/utils/bigint'
+import '@/lib/shared/hooks/useNumbers'
 import '@testing-library/jest-dom'
 import { configure } from '@testing-library/react'
 import fetch from 'cross-fetch'

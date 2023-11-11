@@ -6,6 +6,7 @@ import { cookies } from 'next/headers'
 import { COLOR_MODE_STORAGE_KEY } from '@/lib/shared/services/chakra/colorModeManager'
 import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
 import { ApolloGlobalDataProvider } from '@/lib/shared/services/api/apollo-global-data.provider'
+import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
 
 export function Providers({ children }: { children: ReactNode }) {
   const initialColorMode = cookies().get(COLOR_MODE_STORAGE_KEY)?.value
@@ -15,7 +16,9 @@ export function Providers({ children }: { children: ReactNode }) {
       <Web3Provider>
         <ApolloClientProvider>
           <ApolloGlobalDataProvider>
-            <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+            <UserSettingsProvider>
+              <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+            </UserSettingsProvider>
           </ApolloGlobalDataProvider>
         </ApolloClientProvider>
       </Web3Provider>

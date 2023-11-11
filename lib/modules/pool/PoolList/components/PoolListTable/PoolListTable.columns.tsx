@@ -1,7 +1,6 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import numeral from 'numeral'
 import Image from 'next/image'
 import { GqlPoolApr } from '@/lib/shared/services/api/generated/graphql'
 import { VStack, Text, HStack, Tag, Icon } from '@chakra-ui/react'
@@ -9,8 +8,11 @@ import { getNetworkConfig } from '@/lib/config/app.config'
 import { PoolListItem } from '../../../pool.types'
 import { getAprLabel } from '../../../pool.utils'
 import { FiGlobe } from 'react-icons/fi'
+import { useNumbers } from '@/lib/shared/hooks/useNumbers'
 
-export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
+export const usePoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
+  const { toCurrency } = useNumbers()
+
   return [
     {
       id: 'chainLogoUrl',
@@ -50,7 +52,7 @@ export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
       accessorKey: 'dynamicData.totalLiquidity',
       header: () => <Text ml="auto">TVL</Text>,
       cell: props => {
-        const value = numeral(props.getValue()).format('($0,0a)')
+        const value = toCurrency(props.getValue() as string)
 
         return (
           <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
@@ -65,7 +67,7 @@ export const getPoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
       accessorKey: 'dynamicData.volume24h',
       header: () => <Text ml="auto">Volume (24h)</Text>,
       cell: props => {
-        const value = numeral(props.getValue()).format('($0,0a)')
+        const value = toCurrency(props.getValue() as string)
 
         return (
           <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
