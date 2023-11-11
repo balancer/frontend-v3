@@ -1,10 +1,11 @@
 'use client'
 
-import { useUserSettings, SupportedCurrency } from '@/lib/modules/user/settings/useUserSettings'
+import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { MAX_UINT256 } from '@balancer/sdk'
 import BigNumber from 'bignumber.js'
 import numeral from 'numeral'
 import { useFxRates } from './useFxRates'
+import { symbolForCurrency } from '../utils/currencies'
 
 // Allows calling JSON.stringify with bigints
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#use_within_json
@@ -28,23 +29,6 @@ export function bn(val: Numberish): BigNumber {
 function fiatFormat(val: Numberish): string {
   const number = val.toString()
   return numeral(number).format(FIAT_FORMAT)
-}
-
-function symbolForCurrency(currency: SupportedCurrency): string {
-  switch (currency) {
-    case SupportedCurrency.USD:
-      return '$'
-    case SupportedCurrency.EUR:
-      return '€'
-    case SupportedCurrency.GBP:
-      return '£'
-    case SupportedCurrency.JPY:
-      return '¥'
-    case SupportedCurrency.CNY:
-      return '¥'
-    default:
-      return '$'
-  }
 }
 
 export function useNumbers() {

@@ -14,7 +14,8 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { HiOutlineCog6Tooth } from 'react-icons/hi2'
-import { SupportedCurrency, useUserSettings } from './useUserSettings'
+import { useUserSettings } from './useUserSettings'
+import { SupportedCurrency } from '@/lib/shared/utils/currencies'
 
 export function UserSettings() {
   const { currency, setCurrency } = useUserSettings()

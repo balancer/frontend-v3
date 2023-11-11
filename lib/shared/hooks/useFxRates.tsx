@@ -2,8 +2,7 @@
 
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { createContext, PropsWithChildren } from 'react'
-import { SupportedCurrency } from '@/lib/modules/user/settings/useUserSettings'
-import { FxRates } from '../utils/currencies'
+import { FxRates, SupportedCurrency } from '../utils/currencies'
 
 export type UseFxRatesResult = ReturnType<typeof _useFxRates>
 export const FxRatesContext = createContext<UseFxRatesResult | null>(null)

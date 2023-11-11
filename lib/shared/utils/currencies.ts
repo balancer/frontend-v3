@@ -1,8 +1,31 @@
-import { SupportedCurrency } from '@/lib/modules/user/settings/useUserSettings'
+export enum SupportedCurrency {
+  USD = 'USD',
+  EUR = 'EUR',
+  GBP = 'GBP',
+  JPY = 'JPY',
+  CNY = 'CNY',
+}
 
 export type FxRates = Record<SupportedCurrency, number>
 type FxRatesResponse = {
   data: FxRates
+}
+
+export function symbolForCurrency(currency: SupportedCurrency): string {
+  switch (currency) {
+    case SupportedCurrency.USD:
+      return '$'
+    case SupportedCurrency.EUR:
+      return '€'
+    case SupportedCurrency.GBP:
+      return '£'
+    case SupportedCurrency.JPY:
+      return '¥'
+    case SupportedCurrency.CNY:
+      return '¥'
+    default:
+      return '$'
+  }
 }
 
 export async function getFxRates(): Promise<FxRates | undefined> {

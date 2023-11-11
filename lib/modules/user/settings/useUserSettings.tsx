@@ -1,16 +1,9 @@
 'use client'
 
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { SupportedCurrency } from '@/lib/shared/utils/currencies'
 import { PropsWithChildren, createContext } from 'react'
 import { useLocalStorage } from 'usehooks-ts'
-
-export enum SupportedCurrency {
-  USD = 'USD',
-  EUR = 'EUR',
-  GBP = 'GBP',
-  JPY = 'JPY',
-  CNY = 'CNY',
-}
 
 export type UseUserSettingsResult = ReturnType<typeof _useUserSettings>
 export const UserSettingsContext = createContext<UseUserSettingsResult | null>(null)
