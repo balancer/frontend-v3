@@ -15,6 +15,7 @@ export default function PoolListSortLink({ title, isDesc, isCurrentSort, ...rest
       _hover={{ backgroundColor: isCurrentSort ? 'lightblue' : 'transparent' }}
       bgColor={isCurrentSort ? 'lightblue' : undefined}
       p={isCurrentSort ? '2' : '0'}
+      pr="2"
       height="fit-content"
       variant="ghost"
       userSelect="none"

@@ -15,6 +15,7 @@ export function PoolListTableHeader() {
   return (
     <Grid
       mx="4"
+      pr="6"
       py="3"
       alignItems="center"
       templateColumns={'50px 1fr 150px 175px 175px'}
