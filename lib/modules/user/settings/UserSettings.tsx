@@ -39,10 +39,10 @@ export function UserSettings() {
             <Heading size="sm">Currency</Heading>
             <Select
               onChange={e => setCurrency(e.target.value as SupportedCurrency)}
-              defaultValue={SupportedCurrency.USD}
+              value={currency}
             >
               {options.map(option => (
-                <option key={option} value={option} selected={currency === option}>
+                <option key={option} value={option}>
                   {option}
                 </option>
               ))}
