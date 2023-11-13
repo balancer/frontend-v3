@@ -7,13 +7,7 @@ interface Props extends ButtonProps {
   isCurrentSort: boolean
 }
 
-const getColor = (isCurrentSort: boolean, isDesc: boolean, chevronType: string) => {
-  if (isCurrentSort && ((isDesc && chevronType === 'down') || (!isDesc && chevronType === 'up'))) {
-    return 'blue'
-  } else {
-    return 'lightgrey'
-  }
-}
+const getColor = (isCurrentSort: boolean) => (isCurrentSort ? 'blue' : 'lightgrey')
 
 export default function PoolListSortLink({ title, isDesc, isCurrentSort, ...rest }: Props) {
   return (
@@ -24,17 +18,15 @@ export default function PoolListSortLink({ title, isDesc, isCurrentSort, ...rest
       height="fit-content"
       variant="ghost"
       userSelect="none"
-      borderRadius="xl"
+      borderRadius="2xl"
       {...rest}
     >
       <HStack>
         <Text>{title}</Text>
         <VStack alignContent="center" gap="0">
-          {(!isCurrentSort || !isDesc) && (
-            <FiChevronUp size="15" color={getColor(isCurrentSort, isDesc, 'up')} />
-          )}
+          {(!isCurrentSort || !isDesc) && <FiChevronUp size="15" color={getColor(isCurrentSort)} />}
           {(!isCurrentSort || isDesc) && (
-            <FiChevronDown size="15" color={getColor(isCurrentSort, isDesc, 'down')} />
+            <FiChevronDown size="15" color={getColor(isCurrentSort)} />
           )}
         </VStack>
       </HStack>
