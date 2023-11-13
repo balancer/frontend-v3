@@ -49,6 +49,9 @@ export function PoolListTable() {
         border="1px solid"
         borderColor="gray.100"
         borderRadius="16px"
+        overflowX="auto"
+        w="full"
+        alignItems="flex-start"
       />
       {loading && (
         <Box

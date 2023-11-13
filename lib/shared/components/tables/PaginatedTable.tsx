@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, BoxProps, Flex, Spinner } from '@chakra-ui/react'
+import { Box, BoxProps, Flex, Spinner, VStack } from '@chakra-ui/react'
 import { Pagination } from '@/lib/shared/components/pagination/Pagination'
 
 interface Props<T> extends BoxProps {
@@ -24,25 +24,25 @@ export function PaginatedTable({
 
   return (
     <>
-      <Box {...rest}>
+      <VStack {...rest}>
         {renderTableHeader()}
-        <Box mb="4" overflow="hidden" pr="4">
-          {isLoadingRows && (
-            <Flex justifyContent={'center'} py={32}>
-              <Spinner size="xl" />
-            </Flex>
-          )}
-          {!isLoadingRows && items.length === 0 && (
-            <Box height="md" display="flex" alignItems="center" justifyContent="center">
-              No results found for your search criteria.
+        {isLoadingRows && (
+          <Flex justifyContent={'center'} py={32}>
+            <Spinner size="xl" />
+          </Flex>
+        )}
+        {!isLoadingRows && items.length === 0 && (
+          <Box height="md" display="flex" alignItems="center" justifyContent="center">
+            No results found for your search criteria.
+          </Box>
+        )}
+        {!isLoadingRows &&
+          items.map((item, index) => (
+            <Box key={`${item.id}-${index}`} w="full">
+              {renderTableRow(item, index)}
             </Box>
-          )}
-          {!isLoadingRows &&
-            items.map((item, index) => (
-              <Box key={`${item.id}-${index}`}>{renderTableRow(item, index)}</Box>
-            ))}
-        </Box>
-      </Box>
+          ))}
+      </VStack>
       {showPagination && <Pagination {...paginationProps} />}
     </>
   )

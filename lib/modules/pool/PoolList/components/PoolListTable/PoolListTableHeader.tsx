@@ -13,49 +13,49 @@ export function PoolListTableHeader() {
   const sortingObj = sorting[0]
 
   return (
-    <>
-      <Grid
-        mx="4"
-        py="3"
-        alignItems="center"
-        templateColumns={'50px 1fr 200px 200px 200px'}
-        gap="0"
-        borderBottom="1px solid"
-        borderColor="gray.100"
-      >
-        <GridItem>
-          <Icon as={FiGlobe} boxSize="6" ml="1" />
-        </GridItem>
-        <GridItem>
-          <Text>Pool name</Text>
-        </GridItem>
-        <GridItem justifySelf="end">
-          <PoolListSortLink
-            title="TVL"
-            isCurrentSort={sortingObj.id === GqlPoolOrderBy.TotalLiquidity}
-            isDesc={setIsDesc(GqlPoolOrderBy.TotalLiquidity, sortingObj)}
-            onClick={() =>
-              setSorting([{ id: GqlPoolOrderBy.TotalLiquidity, desc: !sorting[0].desc }])
-            }
-          />
-        </GridItem>
-        <GridItem justifySelf="end">
-          <PoolListSortLink
-            title="Volume (24h)"
-            isCurrentSort={sortingObj.id === GqlPoolOrderBy.Volume24h}
-            isDesc={setIsDesc(GqlPoolOrderBy.Volume24h, sortingObj)}
-            onClick={() => setSorting([{ id: GqlPoolOrderBy.Volume24h, desc: !sorting[0].desc }])}
-          />
-        </GridItem>
-        <GridItem justifySelf="end">
-          <PoolListSortLink
-            title="APR"
-            isCurrentSort={sortingObj.id === GqlPoolOrderBy.Apr}
-            isDesc={setIsDesc(GqlPoolOrderBy.Apr, sortingObj)}
-            onClick={() => setSorting([{ id: GqlPoolOrderBy.Apr, desc: !sorting[0].desc }])}
-          />
-        </GridItem>
-      </Grid>
-    </>
+    <Grid
+      mx="4"
+      py="3"
+      alignItems="center"
+      templateColumns={'50px 1fr 150px 175px 175px'}
+      gap="0"
+      borderBottom="1px solid"
+      borderColor="gray.100"
+      w="full"
+      minW="800px"
+    >
+      <GridItem>
+        <Icon as={FiGlobe} boxSize="6" ml="1" />
+      </GridItem>
+      <GridItem>
+        <Text>Pool name</Text>
+      </GridItem>
+      <GridItem justifySelf="end">
+        <PoolListSortLink
+          title="TVL"
+          isCurrentSort={sortingObj.id === GqlPoolOrderBy.TotalLiquidity}
+          isDesc={setIsDesc(GqlPoolOrderBy.TotalLiquidity, sortingObj)}
+          onClick={() =>
+            setSorting([{ id: GqlPoolOrderBy.TotalLiquidity, desc: !sorting[0].desc }])
+          }
+        />
+      </GridItem>
+      <GridItem justifySelf="end">
+        <PoolListSortLink
+          title="Volume (24h)"
+          isCurrentSort={sortingObj.id === GqlPoolOrderBy.Volume24h}
+          isDesc={setIsDesc(GqlPoolOrderBy.Volume24h, sortingObj)}
+          onClick={() => setSorting([{ id: GqlPoolOrderBy.Volume24h, desc: !sorting[0].desc }])}
+        />
+      </GridItem>
+      <GridItem justifySelf="end">
+        <PoolListSortLink
+          title="APR"
+          isCurrentSort={sortingObj.id === GqlPoolOrderBy.Apr}
+          isDesc={setIsDesc(GqlPoolOrderBy.Apr, sortingObj)}
+          onClick={() => setSorting([{ id: GqlPoolOrderBy.Apr, desc: !sorting[0].desc }])}
+        />
+      </GridItem>
+    </Grid>
   )
 }

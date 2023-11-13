@@ -20,12 +20,13 @@ export function PoolListTableRow({ pool, ...rest }: Props) {
     <Box {...rest}>
       <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
         <Grid
-          pl="4"
+          mx="4"
           height="63.5px"
-          gridTemplateColumns={'50px 1fr 200px 200px 200px'}
+          gridTemplateColumns={'50px 1fr 150px 175px 175px'}
           gap="0"
           gridTemplateAreas={`"network details tvl volume apr"`}
           alignItems="center"
+          minW="800px"
         >
           <GridItem area="network">
             <Image
