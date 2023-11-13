@@ -14,6 +14,9 @@ dependencies:
   '@balancer/sdk':
     specifier: github:balancer/b-sdk#join2
     version: github.com/balancer/b-sdk/f85169d346b24bfa17007c05f81fcde5fc99fe3d(typescript@5.1.6)(zod@3.22.4)
+  '@chakra-ui/anatomy':
+    specifier: ^2.2.2
+    version: 2.2.2
   '@chakra-ui/hooks':
     specifier: ^2.2.1
     version: 2.2.1(react@18.2.0)
@@ -943,6 +946,10 @@ packages:
 
   /@chakra-ui/anatomy@2.2.1:
     resolution: {integrity: sha512-bbmyWTGwQo+aHYDMtLIj7k7hcWvwE7GFVDViLFArrrPhfUTDdQTNqhiDp1N7eh2HLyjNhc2MKXV8s2KTQqkmTg==}
+    dev: false
+
+  /@chakra-ui/anatomy@2.2.2:
+    resolution: {integrity: sha512-MV6D4VLRIHr4PkW4zMyqfrNS1mPlCTiCXwvYGtDFQYr+xHFfonhAuf9WjsSc0nyp2m0OdkSLnzmVKkZFLo25Tg==}
     dev: false
 
   /@chakra-ui/avatar@2.3.0(@chakra-ui/system@2.6.1)(react@18.2.0):

@@ -1,6 +1,7 @@
-import { ThemeOverride, ThemeTypings, extendTheme } from '@chakra-ui/react'
+import { ThemeTypings, extendTheme } from '@chakra-ui/react'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
-import { darken, lighten } from '@chakra-ui/theme-tools'
+import { darken } from '@chakra-ui/theme-tools'
+import { cardTheme } from '../../components/containers/GradientCard'
 
 const tokens = {
   colors: {
@@ -81,17 +82,14 @@ const tokens = {
   },
 }
 
-export const balTheme: ThemeOverride = {
+export const balTheme = {
   config: {
     initialColorMode: 'light',
     useSystemColorMode: false,
   },
   fonts: {
-    heading: `ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif`,
-    body: `
-      ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif`,
+    heading: `'Satoshi', sans-serif`,
+    body: `'Satoshi', sans-serif`,
   },
   colors: {
     primary: {
@@ -174,9 +172,62 @@ export const balTheme: ThemeOverride = {
       dusk: 'linear(to-tr, lavender.300 5%, #D7CBE7 50%, #EAA879 95%)',
       sand: 'linear(to-t, #E6C6A0 0%, #E5D3BE 100%)',
     },
+    Text: {
+      variants: {
+        heading: {
+          bgGradient: 'linear(to-l, gradients.text.heading.from, gradients.text.heading.to)',
+          bgClip: 'text',
+        },
+        primary: {
+          color: 'text.primary',
+        },
+        secondary: {
+          color: 'text.secondary',
+        },
+      },
+    },
+    Button: {
+      variants: {
+        buttonGroupInactive: {
+          backgroundColor: 'transparent',
+          height: 'fit-content',
+          width: 'fit-content',
+          px: '2',
+          py: '1.5',
+          fontSize: 'xs',
+          color: 'text.secondary',
+          fontWeight: 'bold',
+          borderRadius: '4px',
+          _hover: {
+            bgGradient: 'linear(to-l, gradients.button.sand.from, gradients.button.sand.to)',
+            color: 'text.primary',
+          },
+        },
+        buttonGroupActive: {
+          bgGradient: 'linear(to-l, gradients.button.sand.from, gradients.button.sand.to)',
+          height: 'fit-content',
+          width: 'fit-content',
+          px: '2',
+          py: '1.5',
+          fontSize: 'xs',
+          color: 'text.primary',
+          fontWeight: 'bold',
+          borderRadius: '4px',
+        },
+      },
+    },
   },
   semanticTokens: {
     colors: {
+      noise: 'rgba(243, 241, 336, 0.3)',
+      background: '#F3F1EC',
+      elevatedBackground: '#FEF9F3',
+      borderColor: 'rgba(229, 211, 190, 0.6)',
+      badge: '#EBE9E0',
+      text: {
+        primary: '#414853',
+        secondary: '#728097',
+      },
       primary: { _light: 'primary.500', _dark: 'primary.500' },
       'chakra-body-text': { _light: 'gray.800', _dark: 'whiteAlpha.900' },
       'chakra-body-bg': { _light: 'white', _dark: 'gray.800' },
@@ -187,6 +238,20 @@ export const balTheme: ThemeOverride = {
       'chakra-placeholder-color': {
         _light: 'gray.500',
         _dark: 'whiteAlpha.400',
+      },
+      gradients: {
+        text: {
+          heading: {
+            from: '#707883',
+            to: '#2D4C7E',
+          },
+        },
+        button: {
+          sand: {
+            from: '#E5D3BE',
+            to: '#E6C6A0',
+          },
+        },
       },
       // Background colors
       colorBgBase: {
@@ -365,7 +430,7 @@ export const balTheme: ThemeOverride = {
           background: 'colorFontSpecial',
           backgroundClip: 'text',
         },
-        sand: props => ({
+        sand: (props: any) => ({
           bgGradient: props.theme.colors.gradient.sand,
           bgClip: 'text',
         }),
@@ -559,6 +624,15 @@ const proseTheme = withProse({
   },
 })
 
-const theme = extendTheme(balTheme, proseTheme) as ThemeTypings
+const theme = extendTheme(
+  {
+    ...balTheme,
+    components: {
+      ...balTheme.components,
+      Card: cardTheme,
+    },
+  },
+  proseTheme
+) as ThemeTypings
 
 export default theme
