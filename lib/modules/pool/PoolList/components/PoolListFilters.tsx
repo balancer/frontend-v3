@@ -105,7 +105,7 @@ export function PoolListFilters() {
         <PoolListSearch />
         <Popover>
           <PopoverTrigger>
-            <FilterButton />
+            <FilterButton w="108px" />
           </PopoverTrigger>
           <PopoverContent>
             <PopoverArrow />
