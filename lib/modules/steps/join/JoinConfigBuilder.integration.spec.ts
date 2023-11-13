@@ -1,4 +1,4 @@
-import { poolId, wETHAddress } from '@/lib/debug-helpers'
+import { poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { MockApi } from '@/lib/shared/hooks/balancer-api/MockApi'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { ChainId } from '@balancer/sdk'
@@ -18,8 +18,8 @@ test('build Unbalanced Join Config', async () => {
     'unbalanced'
   )
 
-  builder.setAmountIn('0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f', '1')
-  builder.setAmountIn('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '1')
+  builder.setAmountIn(wETHAddress, '1')
+  builder.setAmountIn(wjAuraAddress, '1')
 
   builder.setSlippage('2')
   const result = await builder.buildSdkJoinTxConfig(defaultTestUserAccount)
@@ -36,8 +36,8 @@ test('build Unbalanced Join Config', async () => {
     'unbalanced'
   )
 
-  builder.setAmountIn('0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f', '1')
-  builder.setAmountIn('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '1')
+  builder.setAmountIn(wETHAddress, '1')
+  builder.setAmountIn(wjAuraAddress, '1')
 
   builder.setSlippage('2')
   const result = await builder.buildSdkJoinTxConfig(defaultTestUserAccount)
