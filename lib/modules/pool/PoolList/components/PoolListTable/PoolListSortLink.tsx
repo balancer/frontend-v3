@@ -3,26 +3,19 @@ import { FiChevronDown, FiChevronUp } from 'react-icons/fi'
 
 interface Props extends ButtonProps {
   title: string
-  orderDirection: 'asc' | 'desc'
+  isDesc: boolean
   isCurrentSort: boolean
 }
 
-const getColor = (
-  isCurrentSort: boolean,
-  orderDirection: 'asc' | 'desc',
-  isChevronDown: boolean
-) => {
-  if (
-    isCurrentSort &&
-    ((orderDirection === 'desc' && isChevronDown) || (orderDirection === 'asc' && !isChevronDown))
-  ) {
+const getColor = (isCurrentSort: boolean, isDesc: boolean, chevronType: string) => {
+  if (isCurrentSort && ((isDesc && chevronType === 'down') || (!isDesc && chevronType === 'up'))) {
     return 'blue'
   } else {
     return 'lightgrey'
   }
 }
 
-export default function PoolListSortLink({ title, orderDirection, isCurrentSort, ...rest }: Props) {
+export default function PoolListSortLink({ title, isDesc, isCurrentSort, ...rest }: Props) {
   return (
     <Button
       _hover={{ backgroundColor: 'transparent' }}
@@ -35,8 +28,12 @@ export default function PoolListSortLink({ title, orderDirection, isCurrentSort,
       <HStack>
         <Text>{title}</Text>
         <VStack alignContent="center" gap="0">
-          <FiChevronUp size="15" color={getColor(isCurrentSort, orderDirection, false)} />
-          <FiChevronDown size="15" color={getColor(isCurrentSort, orderDirection, true)} />
+          {(!isCurrentSort || !isDesc) && (
+            <FiChevronUp size="15" color={getColor(isCurrentSort, isDesc, 'up')} />
+          )}
+          {(!isCurrentSort || isDesc) && (
+            <FiChevronDown size="15" color={getColor(isCurrentSort, isDesc, 'down')} />
+          )}
         </VStack>
       </HStack>
     </Button>

@@ -3,6 +3,10 @@ import PoolListSortLink from './PoolListSortLink'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { FiGlobe } from 'react-icons/fi'
+import { PoolsColumnSort } from '@/lib/modules/pool/pool.types'
+
+const setIsDesc = (id: GqlPoolOrderBy, currentSortingObj: PoolsColumnSort) =>
+  currentSortingObj.id === id ? !currentSortingObj.desc : true
 
 export function PoolListTableHeader() {
   const { sorting, setSorting } = usePoolListQueryState()
@@ -27,9 +31,7 @@ export function PoolListTableHeader() {
           <PoolListSortLink
             title="TVL"
             isCurrentSort={sortingObj.id === GqlPoolOrderBy.TotalLiquidity}
-            orderDirection={
-              sortingObj.id === GqlPoolOrderBy.TotalLiquidity && sortingObj.desc ? 'desc' : 'asc'
-            }
+            isDesc={setIsDesc(GqlPoolOrderBy.TotalLiquidity, sortingObj)}
             onClick={() =>
               setSorting([{ id: GqlPoolOrderBy.TotalLiquidity, desc: !sorting[0].desc }])
             }
@@ -39,9 +41,7 @@ export function PoolListTableHeader() {
           <PoolListSortLink
             title="Volume (24h)"
             isCurrentSort={sortingObj.id === GqlPoolOrderBy.Volume24h}
-            orderDirection={
-              sortingObj.id === GqlPoolOrderBy.Volume24h && sortingObj.desc ? 'desc' : 'asc'
-            }
+            isDesc={setIsDesc(GqlPoolOrderBy.Volume24h, sortingObj)}
             onClick={() => setSorting([{ id: GqlPoolOrderBy.Volume24h, desc: !sorting[0].desc }])}
           />
         </GridItem>
@@ -49,9 +49,7 @@ export function PoolListTableHeader() {
           <PoolListSortLink
             title="APR"
             isCurrentSort={sortingObj.id === GqlPoolOrderBy.Apr}
-            orderDirection={
-              sortingObj.id === GqlPoolOrderBy.Apr && sortingObj.desc ? 'desc' : 'asc'
-            }
+            isDesc={setIsDesc(GqlPoolOrderBy.Apr, sortingObj)}
             onClick={() => setSorting([{ id: GqlPoolOrderBy.Apr, desc: !sorting[0].desc }])}
           />
         </GridItem>
