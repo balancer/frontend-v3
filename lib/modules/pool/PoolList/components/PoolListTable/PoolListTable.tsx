@@ -1,9 +1,6 @@
 'use client'
 
-import { PoolListItem } from '../../../pool.types'
 import { Box } from '@chakra-ui/react'
-import { useRouter } from 'next/navigation'
-import { getPoolPath } from '../../../pool.utils'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 import { PaginatedTable } from '@/lib/shared/components/tables/PaginatedTable'
@@ -17,25 +14,7 @@ export function PoolListTable() {
   const { pagination, setPagination } = usePoolListQueryState()
   const paginationProps = getPaginationProps(count || 0, pagination, setPagination)
   const showPagination = !!pools.length && !!count && count > pagination.pageSize
-  const router = useRouter()
   const { isMobile } = useBreakpoints()
-
-  const rowClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
-    const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
-
-    if (event.ctrlKey || event.metaKey) {
-      window.open(poolPath, '_blank')
-    } else {
-      router.push(poolPath)
-    }
-  }
-
-  // Prefetch pool page on row hover, otherwise there is a significant delay
-  // between clicking the row and the pool page loading.
-  const prefetchPoolPage = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
-    const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
-    router.prefetch(poolPath)
-  }
 
   return (
     <Box w="full" style={{ position: 'relative' }}>
