@@ -15,11 +15,13 @@ export function PoolListTableHeader() {
   return (
     <>
       <Grid
-        px="4"
+        mx="4"
         py="3"
         alignItems="center"
         templateColumns={'50px 1fr 200px 200px 200px'}
         gap="0"
+        borderBottom="1px solid"
+        borderColor="gray.100"
       >
         <GridItem>
           <Icon as={FiGlobe} boxSize="6" ml="1" />

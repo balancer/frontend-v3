@@ -46,6 +46,9 @@ export function PoolListTable() {
         }}
         showPagination={showPagination}
         paginationProps={paginationProps}
+        border="1px solid"
+        borderColor="gray.100"
+        borderRadius="16px"
       />
       {loading && (
         <Box

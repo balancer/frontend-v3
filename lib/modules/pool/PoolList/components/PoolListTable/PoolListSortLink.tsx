@@ -18,11 +18,13 @@ const getColor = (isCurrentSort: boolean, isDesc: boolean, chevronType: string) 
 export default function PoolListSortLink({ title, isDesc, isCurrentSort, ...rest }: Props) {
   return (
     <Button
-      _hover={{ backgroundColor: 'transparent' }}
-      padding="0"
+      _hover={{ backgroundColor: isCurrentSort ? 'lightblue' : 'transparent' }}
+      bgColor={isCurrentSort ? 'lightblue' : undefined}
+      p={isCurrentSort ? '2' : '0'}
       height="fit-content"
       variant="ghost"
       userSelect="none"
+      borderRadius="xl"
       {...rest}
     >
       <HStack>
