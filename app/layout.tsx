@@ -33,9 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <Noise>
             <Navbar />
-            <Box mx="5%" mt="2%">
-              {children}
-            </Box>
+            {children}
             <Footer />
           </Noise>
         </Providers>
