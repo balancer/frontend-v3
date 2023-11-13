@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { usePool } from '../../usePool'
 
-import numeral from 'numeral'
 import { format } from 'date-fns'
 import { DELEGATE_OWNER } from '@/lib/config/app.config'
 import { zeroAddress } from 'viem'

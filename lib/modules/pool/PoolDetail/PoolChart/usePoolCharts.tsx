@@ -1,7 +1,6 @@
 import { theme } from '@chakra-ui/react'
 import { format } from 'date-fns'
 import * as echarts from 'echarts/core'
-import numeral from 'numeral'
 import {
   GetPoolSnapshotsDocument,
   GqlPoolFilterType,
