@@ -6,6 +6,7 @@ import { format } from 'date-fns'
 import { DELEGATE_OWNER } from '@/lib/config/app.config'
 import { zeroAddress } from 'viem'
 import { shortenLabel } from '@/lib/shared/utils/addresses'
+import { feePercentFormat } from '@/lib/shared/hooks/useNumbers'
 
 export function usePoolInfo() {
   const { pool } = usePool()
@@ -48,7 +49,7 @@ export function usePoolInfo() {
       },
       {
         title: 'Swap fees',
-        value: numeral(dynamicData.swapFee).format('(0,0%)'),
+        value: feePercentFormat(dynamicData.swapFee),
       },
       {
         title: 'Pool Manager',

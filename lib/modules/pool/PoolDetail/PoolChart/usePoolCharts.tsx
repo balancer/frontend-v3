@@ -12,6 +12,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { usePool } from '../../usePool'
 import { PoolVariant } from '../../pool.types'
+import { NumberFormatter, useNumbers } from '@/lib/shared/hooks/useNumbers'
 
 export enum PoolChartTab {
   VOLUME = 'volume',
@@ -89,7 +90,7 @@ export const poolChartTypeOptions: Record<PoolChartTab, PoolChartTypeOptions> = 
   },
 }
 
-export const defaultPoolChartOptions = {
+export const getDefaultPoolChartOptions = (currencyFormatter: NumberFormatter) => ({
   grid: {
     left: '2.5%',
     right: 0,
@@ -133,7 +134,7 @@ export const defaultPoolChartOptions = {
     splitNumber: 4,
     axisLabel: {
       formatter: (value: number) => {
-        return numeral(value).format('($0,0a)')
+        return currencyFormatter(value)
       },
       interval: 'auto',
       showMaxLabel: false,
@@ -156,7 +157,7 @@ export const defaultPoolChartOptions = {
       },
     },
   },
-}
+})
 
 export function getPoolTabsList({
   variant,
@@ -210,6 +211,7 @@ export function usePoolSnapshots(
 export function usePoolCharts() {
   const { pool, loading: isLoadingPool } = usePool()
   const { id: poolId, variant } = useParams()
+  const { toCurrency } = useNumbers()
 
   const tabsList = useMemo(() => {
     const poolType = pool?.type
@@ -251,11 +253,13 @@ export function usePoolCharts() {
     })
   }, [data?.snapshots, activeTab])
 
+  const defaultChartOptions = getDefaultPoolChartOptions(toCurrency)
+
   const options = useMemo(() => {
     const activeTabOptions = poolChartTypeOptions[activeTab]
 
     return {
-      ...defaultPoolChartOptions,
+      ...defaultChartOptions,
       series: [
         {
           type: activeTabOptions.type,
@@ -282,7 +286,7 @@ export function usePoolCharts() {
         },
       ],
     }
-  }, [chartData, activeTab])
+  }, [chartData, activeTab, defaultChartOptions])
 
   const handleAxisMoved = useCallback(
     ({ dataIndex }: { dataIndex: number }) => {
