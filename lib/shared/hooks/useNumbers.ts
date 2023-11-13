@@ -35,7 +35,7 @@ export function useNumbers() {
   const { currency } = useUserSettings()
   const { getFxRate, hasFxRates } = useFxRates()
 
-  function _toUserCurrency(val: Numberish): string {
+  function toUserCurrency(val: Numberish): string {
     const amount = val.toString()
     const fxRate = getFxRate(currency)
 
@@ -45,7 +45,7 @@ export function useNumbers() {
   function toCurrency(val: Numberish): string {
     const amount = val.toString()
     const symbol = hasFxRates ? symbolForCurrency(currency) : '$'
-    const convertedAmount = _toUserCurrency(amount)
+    const convertedAmount = toUserCurrency(amount)
 
     return symbol + fiatFormat(convertedAmount)
   }
