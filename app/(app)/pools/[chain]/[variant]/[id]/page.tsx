@@ -7,6 +7,8 @@ import { GetPoolDocument } from '@/lib/shared/services/api/generated/graphql'
 import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
 import { getNetworkConfig } from '@/lib/config/app.config'
 
+export const revalidate = 30
+
 interface Props {
   params: Omit<FetchPoolProps, 'chain'> & { chain: ChainSlug }
 }

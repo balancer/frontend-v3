@@ -4,6 +4,8 @@ import { Navbar } from '@/lib/shared/components/navs/Navbar'
 import { Footer } from '@/lib/shared/components/navs/Footer'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import '@/lib/shared/utils/bigint'
+import Noise from './noise'
+import { satoshiFont } from '@/lib/assets/fonts/satoshi/satoshi'
 import NextTopLoader from 'nextjs-toploader'
 import { Box } from '@chakra-ui/react'
 
@@ -26,14 +28,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning>
+      <body className={satoshiFont.className} suppressHydrationWarning>
         <NextTopLoader showSpinner={false} />
         <Providers>
-          <Navbar />
-          <Box mx="5%" mt="2%">
-            {children}
-          </Box>
-          <Footer />
+          <Noise>
+            <Navbar />
+            <Box mx="5%" mt="2%">
+              {children}
+            </Box>
+            <Footer />
+          </Noise>
         </Providers>
       </body>
     </html>

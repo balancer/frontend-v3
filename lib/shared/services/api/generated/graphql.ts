@@ -401,7 +401,9 @@ export type GqlPoolLinearNested = {
   tokens: Array<GqlPoolToken>
   totalLiquidity: Scalars['BigDecimal']['output']
   totalShares: Scalars['BigDecimal']['output']
+  type: Scalars['String']['output']
   upperTarget: Scalars['BigInt']['output']
+  version: Scalars['Int']['output']
   wrappedIndex: Scalars['Int']['output']
 }
 
@@ -586,6 +588,8 @@ export type GqlPoolPhantomStableNested = {
   tokens: Array<GqlPoolTokenPhantomStableNestedUnion>
   totalLiquidity: Scalars['BigDecimal']['output']
   totalShares: Scalars['BigDecimal']['output']
+  type: Scalars['String']['output']
+  version: Scalars['Int']['output']
 }
 
 export type GqlPoolSnapshot = {
@@ -1232,12 +1236,10 @@ export type Query = {
   poolGetJoinExits: Array<GqlPoolJoinExit>
   poolGetLinearPools: Array<GqlPoolLinear>
   poolGetPool: GqlPoolBase
-  poolGetPoolFilters: Array<GqlPoolFilterDefinition>
   poolGetPools: Array<GqlPoolMinimal>
   poolGetPoolsCount: Scalars['Int']['output']
   poolGetSnapshots: Array<GqlPoolSnapshot>
   poolGetSwaps: Array<GqlPoolSwap>
-  poolGetUserSwapVolume: Array<GqlPoolUserSwapVolume>
   protocolMetricsAggregated: GqlProtocolMetricsAggregated
   protocolMetricsChain: GqlProtocolMetricsChain
   sorGetBatchSwapForTokensIn: GqlSorGetBatchSwapForTokensInResponse
@@ -1310,12 +1312,6 @@ export type QueryPoolGetSwapsArgs = {
   first?: InputMaybe<Scalars['Int']['input']>
   skip?: InputMaybe<Scalars['Int']['input']>
   where?: InputMaybe<GqlPoolSwapFilter>
-}
-
-export type QueryPoolGetUserSwapVolumeArgs = {
-  first?: InputMaybe<Scalars['Int']['input']>
-  skip?: InputMaybe<Scalars['Int']['input']>
-  where?: InputMaybe<GqlUserSwapVolumeFilter>
 }
 
 export type QueryProtocolMetricsAggregatedArgs = {
@@ -1397,24 +1393,9 @@ export type QueryUserGetSwapsArgs = {
   skip?: InputMaybe<Scalars['Int']['input']>
 }
 
-export type GetAppGlobalDataQueryVariables = Exact<{ [key: string]: never }>
+export type GetTimestampQueryVariables = Exact<{ [key: string]: never }>
 
-export type GetAppGlobalDataQuery = {
-  __typename?: 'Query'
-  blocksGetBlocksPerDay: number
-  blocksGetAverageBlockTime: number
-  tokenGetTokens: Array<{
-    __typename?: 'GqlToken'
-    address: string
-    name: string
-    symbol: string
-    decimals: number
-    chainId: number
-    logoURI?: string | null
-    priority: number
-    tradable: boolean
-  }>
-}
+export type GetTimestampQuery = { __typename?: 'Query'; timestamp: string }
 
 export type GetAppGlobalPollingDataQueryVariables = Exact<{ [key: string]: never }>
 
@@ -1434,7 +1415,9 @@ export type GetAppGlobalPollingDataQuery = {
   }
 }
 
-export type GetTokensQueryVariables = Exact<{ [key: string]: never }>
+export type GetTokensQueryVariables = Exact<{
+  chains: Array<GqlChain> | GqlChain
+}>
 
 export type GetTokensQuery = {
   __typename?: 'Query'
@@ -3955,40 +3938,26 @@ export const GqlTokenDynamicDataFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<GqlTokenDynamicDataFragment, unknown>
-export const GetAppGlobalDataDocument = {
+export const GetTimestampDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'query',
-      name: { kind: 'Name', value: 'GetAppGlobalData' },
+      name: { kind: 'Name', value: 'GetTimestamp' },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'tokenGetTokens' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'chainId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'logoURI' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'priority' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'tradable' } },
-              ],
-            },
+            alias: { kind: 'Name', value: 'timestamp' },
+            name: { kind: 'Name', value: 'balancerQueryTest' },
           },
-          { kind: 'Field', name: { kind: 'Name', value: 'blocksGetBlocksPerDay' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'blocksGetAverageBlockTime' } },
         ],
       },
     },
   ],
-} as unknown as DocumentNode<GetAppGlobalDataQuery, GetAppGlobalDataQueryVariables>
+} as unknown as DocumentNode<GetTimestampQuery, GetTimestampQueryVariables>
 export const GetAppGlobalPollingDataDocument = {
   kind: 'Document',
   definitions: [
@@ -4039,6 +4008,22 @@ export const GetTokensDocument = {
       kind: 'OperationDefinition',
       operation: 'query',
       name: { kind: 'Name', value: 'GetTokens' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'chains' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
+              },
+            },
+          },
+        },
+      ],
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
@@ -4046,6 +4031,13 @@ export const GetTokensDocument = {
             kind: 'Field',
             alias: { kind: 'Name', value: 'tokens' },
             name: { kind: 'Name', value: 'tokenGetTokens' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'chains' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'chains' } },
+              },
+            ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [

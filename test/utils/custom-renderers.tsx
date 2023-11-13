@@ -13,6 +13,7 @@ import {
   Config,
   UsePrepareContractWriteConfig,
   WagmiConfig,
+  // eslint-disable-next-line no-restricted-imports
   useAccount,
   useConnect,
   useWalletClient,
@@ -20,6 +21,10 @@ import {
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
+import {
+  defaultGetTokensQueryMock,
+  defaultGetTokensQueryVariablesMock,
+} from '../msw/handlers/Tokens.handlers'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -63,7 +68,10 @@ function GlobalProviders({ children }: WrapperProps) {
     <WagmiConfig config={wagmiConfig}>
       <AppRouterContextProviderMock router={defaultRouterOptions}>
         <ApolloProvider client={apolloTestClient}>
-          <TokensProvider>
+          <TokensProvider
+            data={defaultGetTokensQueryMock}
+            variables={defaultGetTokensQueryVariablesMock}
+          >
             <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
           </TokensProvider>
         </ApolloProvider>
