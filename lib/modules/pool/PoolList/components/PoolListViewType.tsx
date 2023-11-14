@@ -1,22 +1,22 @@
 import { HStack, IconButton } from '@chakra-ui/react'
 import { FiList, FiGrid } from 'react-icons/fi'
-import { usePoolListViewType } from './usePoolListViewType'
+import { usePoolListViewType, ViewType } from './usePoolListViewType'
 
 export function PoolListViewType() {
-  const { viewType, setViewType } = usePoolListViewType()
+  const { setViewType, isCardsView, isTableView } = usePoolListViewType()
   return (
     <HStack>
       <IconButton
         icon={<FiList />}
         aria-label="list"
-        onClick={() => setViewType('list')}
-        isDisabled={viewType === 'list'}
+        onClick={() => setViewType(ViewType.Table)}
+        isDisabled={isTableView}
       />
       <IconButton
         icon={<FiGrid />}
         aria-label="grid"
-        onClick={() => setViewType('grid')}
-        isDisabled={viewType === 'grid'}
+        onClick={() => setViewType(ViewType.Cards)}
+        isDisabled={isCardsView}
       />
     </HStack>
   )
