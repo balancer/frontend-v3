@@ -52,11 +52,13 @@ export const usePoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
       accessorKey: 'dynamicData.totalLiquidity',
       header: () => <Text ml="auto">TVL</Text>,
       cell: props => {
-        const value = toCurrency(props.getValue() as string)
+        const totalLiquidity = props.getValue() as string
+        const formattedValue = toCurrency(totalLiquidity)
+        const value = toCurrency(totalLiquidity, { abbreviated: false })
 
         return (
-          <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
-            {value}
+          <Text title={value} textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
+            {formattedValue}
           </Text>
         )
       },
@@ -67,11 +69,13 @@ export const usePoolListTableColumns = (): ColumnDef<PoolListItem>[] => {
       accessorKey: 'dynamicData.volume24h',
       header: () => <Text ml="auto">Volume (24h)</Text>,
       cell: props => {
-        const value = toCurrency(props.getValue() as string)
+        const volume24h = props.getValue() as string
+        const formattedValue = toCurrency(volume24h)
+        const value = toCurrency(volume24h, { abbreviated: false })
 
         return (
-          <Text textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
-            {value}
+          <Text title={value} textAlign="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
+            {formattedValue}
           </Text>
         )
       },
