@@ -17,8 +17,10 @@ BigInt.prototype.toJSON = function () {
 
 export const MAX_BIGINT = BigInt(MAX_UINT256)
 
-export const FIAT_FORMAT = '0[.][00]a'
-export const TOKEN_FORMAT = '0[.][00]a'
+export const FIAT_FORMAT_A = '0.00a'
+export const FIAT_FORMAT = '0.00a'
+export const TOKEN_FORMAT_A = '0[.][00]a'
+export const TOKEN_FORMAT = '0[.][00]'
 export const APR_FORMAT = '0.[00]%'
 export const FEE_FORMAT = '0.[0000]%'
 export const WEIGHT_FORMAT = '(%0,0)'
@@ -28,6 +30,8 @@ export const WEIGHT_FORMAT = '(%0,0)'
 export const APR_UPPER_THRESHOLD = 1_000_000
 export const APR_LOWER_THRESHOLD = 0.0000001
 
+const NUMERAL_DECIMAL_LIMIT = 17
+
 export type Numberish = string | number | bigint | BigNumber
 export type NumberFormatter = (val: Numberish) => string
 
@@ -35,14 +39,16 @@ export function bn(val: Numberish): BigNumber {
   return new BigNumber(val.toString())
 }
 
-export function fiatFormat(val: Numberish): string {
-  const number = bn(val).toPrecision(6)
-  return numeral(number).format(FIAT_FORMAT)
+type FormatOpts = { abbreviated?: boolean }
+
+export function fiatFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
+  const format = abbreviated ? FIAT_FORMAT_A : FIAT_FORMAT
+  return numeral(bn(val).toFixed(NUMERAL_DECIMAL_LIMIT)).format(format)
 }
 
-export function tokenFormat(val: Numberish): string {
-  const number = bn(val).toPrecision(6)
-  return numeral(number).format(TOKEN_FORMAT)
+export function tokenFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
+  const format = abbreviated ? TOKEN_FORMAT_A : TOKEN_FORMAT
+  return numeral(bn(val).toFixed(NUMERAL_DECIMAL_LIMIT)).format(format)
 }
 
 export function aprFormat(apr: Numberish): string {
@@ -71,13 +77,17 @@ export function useNumbers() {
     return bn(amount).times(fxRate).toString()
   }
 
-  type CurrencyOpts = { withSymbol?: boolean }
+  type CurrencyOpts = { withSymbol?: boolean; abbreviated?: boolean }
 
-  function toCurrency(usdVal: Numberish, { withSymbol = true }: CurrencyOpts = {}): string {
+  function toCurrency(
+    usdVal: Numberish,
+    { withSymbol = true, abbreviated = true }: CurrencyOpts = {}
+  ): string {
     const symbol = hasFxRates ? symbolForCurrency(currency) : '$'
     const convertedAmount = toUserCurrency(usdVal)
+    const formattedAmount = fiatFormat(convertedAmount, { abbreviated })
 
-    return withSymbol ? symbol + fiatFormat(convertedAmount) : fiatFormat(convertedAmount)
+    return withSymbol ? symbol + formattedAmount : formattedAmount
   }
 
   return { toCurrency }
