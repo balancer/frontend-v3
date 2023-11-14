@@ -1,12 +1,12 @@
 import { Box, Grid, GridItem, GridProps, Text } from '@chakra-ui/react'
 import Link from 'next/link'
-import numeral from 'numeral'
 import { getPoolPath } from '@/lib/modules/pool/pool.utils'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import Image from 'next/image'
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
+import { useNumbers } from '@/lib/shared/hooks/useNumbers'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -17,6 +17,8 @@ const MemoizedAprTooltip = memo(AprTooltip)
 
 export function PoolListTableRow({ pool, key, ...rest }: Props) {
   const networkConfig = getNetworkConfig(pool.chain)
+  const { toCurrency } = useNumbers()
+
   return (
     <Box key={key}>
       <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
@@ -33,10 +35,20 @@ export function PoolListTableRow({ pool, key, ...rest }: Props) {
             <Text>{pool.name}</Text>
           </GridItem>
           <GridItem area="tvl">
-            <Text textAlign="right">{numeral(pool.dynamicData.totalLiquidity).format('$0,0')}</Text>
+            <Text
+              title={toCurrency(pool.dynamicData.totalLiquidity, { abbreviated: false })}
+              textAlign="right"
+            >
+              {toCurrency(pool.dynamicData.totalLiquidity)}
+            </Text>
           </GridItem>
           <GridItem area="volume" textAlign="right">
-            <Text>{numeral(pool.dynamicData.volume24h).format('$0,0')}</Text>
+            <Text
+              title={toCurrency(pool.dynamicData.volume24h, { abbreviated: false })}
+              textAlign="right"
+            >
+              {toCurrency(pool.dynamicData.volume24h)}
+            </Text>
           </GridItem>
           <GridItem area="apr" justifySelf="end">
             <MemoizedAprTooltip data={pool.dynamicData.apr} poolId={pool.id} />
