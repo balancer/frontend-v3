@@ -31,7 +31,7 @@ export function PoolListTable() {
         loading={loading}
         renderTableHeader={() => <PoolListTableHeader {...rowProps} />}
         renderTableRow={(item: any, index) => {
-          return <PoolListTableRow key={index} pool={item} {...rowProps} />
+          return <PoolListTableRow keyValue={index} pool={item} {...rowProps} />
         }}
         showPagination={showPagination}
         paginationProps={paginationProps}
