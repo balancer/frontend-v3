@@ -27,20 +27,19 @@ export function _useTokens(
   const { data: tokenPricesData } = useQuery(GetTokenPricesDocument)
 
   const tokens = tokensData?.tokens || initTokenData.tokens
-  const tokenPrices = tokenPricesData?.tokenPrices || initTokenPricesData.tokenPrices
+  const prices = tokenPricesData?.tokenPrices || initTokenPricesData.tokenPrices
 
   function getToken(address: string, chain: GqlChain): GqlToken | undefined {
     return tokens.find(token => isSameAddress(token.address, address) && token.chain === chain)
   }
 
   function priceForToken(token: GqlToken): number {
-    const tokenPrice = tokenPrices.find(
-      tokenPrice =>
-        isSameAddress(tokenPrice.address, token.address) && tokenPrice.chain === token.chain
+    const price = prices.find(
+      price => isSameAddress(price.address, token.address) && price.chain === token.chain
     )
-    if (!tokenPrice) return 0
+    if (!price) return 0
 
-    return tokenPrice.price
+    return price.price
   }
 
   function priceFor(address: string, chain: GqlChain): number {
@@ -50,7 +49,7 @@ export function _useTokens(
     return priceForToken(token)
   }
 
-  return { tokens, getToken, priceFor, priceForToken }
+  return { tokens, prices, getToken, priceFor, priceForToken }
 }
 
 export function TokensProvider({
