@@ -15,16 +15,16 @@ export function createColorModeManager(initialCookieValue?: string): StorageMana
   return {
     ssr: true,
     type: 'cookie',
-    get(init?): MaybeColorMode {
+    get(initColorMode?): MaybeColorMode {
       if (initialCookieValue) {
         return initialCookieValue as MaybeColorMode
       }
 
       if (!globalThis?.document) {
-        return init
+        return initColorMode
       }
 
-      return (Cookies.get(COOKIE_KEYS.UserSettings.ColorMode) as ColorMode) || init
+      return (Cookies.get(COOKIE_KEYS.UserSettings.ColorMode) as ColorMode) || initColorMode
     },
     set(value) {
       Cookies.set(COOKIE_KEYS.UserSettings.ColorMode, value)
