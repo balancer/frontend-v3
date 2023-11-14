@@ -1,4 +1,5 @@
 import {
+  GetTokenPricesQuery,
   GetTokensDocument,
   GetTokensQuery,
   GetTokensQueryVariables,
@@ -13,6 +14,7 @@ export const defaultTokenBaseMock = aTokenBaseMock({ symbol: 'TEST-TOKEN' })
 export const defaultTokenListMock: MswTokenList = [defaultTokenBaseMock as MswTokenList[0]]
 
 export const defaultGetTokensQueryMock: GetTokensQuery = mock<GetTokensQuery>()
+export const defaultGetTokenPricesQueryMock: GetTokenPricesQuery = mock<GetTokenPricesQuery>()
 export const defaultGetTokensQueryVariablesMock: GetTokensQueryVariables =
   mock<GetTokensQueryVariables>()
 

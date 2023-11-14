@@ -23,6 +23,7 @@ import { AppRouterContextProviderMock } from './app-router-context-provider-mock
 import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
 import {
   defaultGetTokensQueryMock,
+  defaultGetTokenPricesQueryMock,
   defaultGetTokensQueryVariablesMock,
 } from '../msw/handlers/Tokens.handlers'
 
@@ -69,7 +70,8 @@ function GlobalProviders({ children }: WrapperProps) {
       <AppRouterContextProviderMock router={defaultRouterOptions}>
         <ApolloProvider client={apolloTestClient}>
           <TokensProvider
-            data={defaultGetTokensQueryMock}
+            tokensData={defaultGetTokensQueryMock}
+            tokenPricesData={defaultGetTokenPricesQueryMock}
             variables={defaultGetTokensQueryVariablesMock}
           >
             <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
