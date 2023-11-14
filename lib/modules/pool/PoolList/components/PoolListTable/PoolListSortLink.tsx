@@ -13,6 +13,8 @@ export default function PoolListSortLink({ title, isDesc, isCurrentSort, ...rest
   return (
     <Button
       _hover={{ backgroundColor: isCurrentSort ? 'lightblue' : 'transparent' }}
+      _focus={{ outline: 'none' }}
+      _active={{ backgroundColor: 'transparent' }}
       bgColor={isCurrentSort ? 'lightblue' : undefined}
       p={isCurrentSort ? '2' : '0'}
       pr="2"
