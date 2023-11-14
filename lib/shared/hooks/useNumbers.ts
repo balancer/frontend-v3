@@ -32,8 +32,7 @@ export type Numberish = string | number | bigint | BigNumber
 export type NumberFormatter = (val: Numberish) => string
 
 export function bn(val: Numberish): BigNumber {
-  const number = val.toString()
-  return new BigNumber(number)
+  return new BigNumber(val.toString())
 }
 
 function fiatFormat(val: Numberish): string {
