@@ -40,6 +40,11 @@ function fiatFormat(val: Numberish): string {
   return numeral(number).format(FIAT_FORMAT)
 }
 
+export function tokenFormat(val: Numberish): string {
+  const number = bn(val).toPrecision(6)
+  return numeral(number).format(TOKEN_FORMAT)
+}
+
 export function aprFormat(apr: Numberish): string {
   if (bn(apr).lt(APR_LOWER_THRESHOLD)) return '0%'
   if (bn(apr).gt(APR_UPPER_THRESHOLD)) return '-'
@@ -49,11 +54,6 @@ export function aprFormat(apr: Numberish): string {
 
 export function feePercentFormat(fee: Numberish): string {
   return numeral(fee.toString()).format(FEE_FORMAT)
-}
-
-export function tokenFormat(val: Numberish): string {
-  const number = bn(val).toPrecision(6)
-  return numeral(number).format(TOKEN_FORMAT)
 }
 
 export function weightFormat(val: Numberish): string {
