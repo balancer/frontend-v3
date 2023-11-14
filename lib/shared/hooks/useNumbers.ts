@@ -35,7 +35,7 @@ export function bn(val: Numberish): BigNumber {
   return new BigNumber(val.toString())
 }
 
-function fiatFormat(val: Numberish): string {
+export function fiatFormat(val: Numberish): string {
   const number = bn(val).toPrecision(6)
   return numeral(number).format(FIAT_FORMAT)
 }
@@ -64,8 +64,8 @@ export function useNumbers() {
   const { currency } = useUserSettings()
   const { getFxRate, hasFxRates } = useFxRates()
 
-  function toUserCurrency(val: Numberish): string {
-    const amount = val.toString()
+  function toUserCurrency(usdVal: Numberish): string {
+    const amount = usdVal.toString()
     const fxRate = getFxRate(currency)
 
     return bn(amount).times(fxRate).toString()
@@ -73,9 +73,9 @@ export function useNumbers() {
 
   type CurrencyOpts = { withSymbol?: boolean }
 
-  function toCurrency(val: Numberish, { withSymbol = true }: CurrencyOpts = {}): string {
+  function toCurrency(usdVal: Numberish, { withSymbol = true }: CurrencyOpts = {}): string {
     const symbol = hasFxRates ? symbolForCurrency(currency) : '$'
-    const convertedAmount = toUserCurrency(val)
+    const convertedAmount = toUserCurrency(usdVal)
 
     return withSymbol ? symbol + fiatFormat(convertedAmount) : fiatFormat(convertedAmount)
   }
