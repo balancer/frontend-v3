@@ -1,7 +1,7 @@
 import { GqlChain, GqlPoolAprValue } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolVariant } from './pool.types'
-import numeral from 'numeral'
+import { aprFormat } from '@/lib/shared/hooks/useNumbers'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -42,26 +42,15 @@ export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolPr
 }
 
 /**
- * Formats APR value into percentage string.
- * @param {String} apr APR value from API.
- * @returns {String} Formatted APR value.
- */
-const formatApr = (apr: string) => {
-  if (parseFloat(apr) < 0.0000001) return '0%'
-
-  return numeral(apr).format('0.[00]%')
-}
-
-/**
  * Returns formatted APR value from GraphQL response.
  * @param {GqlPoolAprValue} apr APR value from GraphQL response.
  * @returns {String} Formatted APR value.
  */
 export function getAprLabel(apr: GqlPoolAprValue): string {
   if (apr.__typename === 'GqlPoolAprRange') {
-    return `${formatApr(apr.min)} - ${formatApr(apr.max)}`
+    return `${aprFormat(apr.min)} - ${aprFormat(apr.max)}`
   } else if (apr.__typename === 'GqlPoolAprTotal') {
-    return formatApr(apr.total)
+    return aprFormat(apr.total)
   } else {
     return '-'
   }

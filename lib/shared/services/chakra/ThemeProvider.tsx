@@ -3,8 +3,8 @@
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { CacheProvider as ChakraCacheProvider } from '@chakra-ui/next-js'
 import { ReactNode } from 'react'
-import { createColorModeManager } from '@/lib/shared/services/chakra/colorModeManager'
 import theme, { balTheme } from './theme'
+import { createColorModeManager } from './colorModeManager'
 
 export function ThemeProvider({
   children,

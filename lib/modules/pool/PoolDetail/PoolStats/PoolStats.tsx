@@ -1,8 +1,14 @@
 import React from 'react'
 import { Box, Card, HStack, Text, VStack } from '@chakra-ui/react'
 import PoolBadges from '../PoolBadges/PoolBadges'
+import { useNumbers } from '@/lib/shared/hooks/useNumbers'
+import { usePool } from '../../usePool'
+import { getAprLabel } from '../../pool.utils'
 
 export default function PoolStats() {
+  const { pool } = usePool()
+  const { toCurrency } = useNumbers()
+
   return (
     <Card
       variant="gradient"
@@ -22,7 +28,7 @@ export default function PoolStats() {
             TVL
           </Text>
           <Text variant="heading" fontWeight="bold" fontSize="2xl">
-            $192.3k
+            {toCurrency(pool.dynamicData.totalLiquidity)}
           </Text>
         </VStack>
         <VStack spacing="0">
@@ -30,7 +36,7 @@ export default function PoolStats() {
             Volume (24h)
           </Text>
           <Text variant="heading" fontWeight="bold" fontSize="2xl">
-            $24.8k
+            {toCurrency(pool.dynamicData.volume24h)}
           </Text>
         </VStack>
         <VStack spacing="0">
@@ -38,7 +44,7 @@ export default function PoolStats() {
             Revenue (24h)
           </Text>
           <Text variant="heading" fontWeight="bold" fontSize="2xl">
-            $1.4k
+            {toCurrency(pool.dynamicData.fees24h)}
           </Text>
         </VStack>
         <VStack spacing="0">
@@ -46,7 +52,7 @@ export default function PoolStats() {
             APR
           </Text>
           <Text variant="heading" fontWeight="bold" fontSize="2xl">
-            3.68%
+            {getAprLabel(pool.dynamicData.apr.apr)}
           </Text>
         </VStack>
       </HStack>
