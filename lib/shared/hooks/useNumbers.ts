@@ -17,10 +17,10 @@ BigInt.prototype.toJSON = function () {
 
 export const MAX_BIGINT = BigInt(MAX_UINT256)
 
-export const FIAT_FORMAT_A = '0.00a'
-export const FIAT_FORMAT = '0.00a'
-export const TOKEN_FORMAT_A = '0[.][00]a'
-export const TOKEN_FORMAT = '0[.][00]'
+export const FIAT_FORMAT_A = '0,0.00a'
+export const FIAT_FORMAT = '0,0.00'
+export const TOKEN_FORMAT_A = '0,0.[0000]a'
+export const TOKEN_FORMAT = '0,0.[0000]'
 export const APR_FORMAT = '0.[00]%'
 export const FEE_FORMAT = '0.[0000]%'
 export const WEIGHT_FORMAT = '(%0,0)'
