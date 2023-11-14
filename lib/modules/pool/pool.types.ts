@@ -69,6 +69,12 @@ export const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolFilterType[] } = {
   ],
 }
 
+export const orderByHash: { [key: string]: string } = {
+  totalLiquidity: 'TVL',
+  volume24h: 'Volume (24h)',
+  apr: 'APR',
+}
+
 export const poolListQueryStateParsers = {
   first: parseAsInteger.withDefault(20),
   skip: parseAsInteger.withDefault(0),
