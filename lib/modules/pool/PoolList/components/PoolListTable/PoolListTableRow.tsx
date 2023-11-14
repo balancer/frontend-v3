@@ -1,4 +1,4 @@
-import { Box, BoxProps, Grid, GridItem, Text } from '@chakra-ui/react'
+import { Box, Grid, GridItem, GridProps, Text } from '@chakra-ui/react'
 import Link from 'next/link'
 import numeral from 'numeral'
 import { getPoolPath } from '@/lib/modules/pool/pool.utils'
@@ -8,26 +8,19 @@ import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
 
-interface Props extends BoxProps {
+interface Props extends GridProps {
   pool: PoolListItem
+  key: number
 }
 
 const MemoizedAprTooltip = memo(AprTooltip)
 
-export function PoolListTableRow({ pool, ...rest }: Props) {
+export function PoolListTableRow({ pool, key, ...rest }: Props) {
   const networkConfig = getNetworkConfig(pool.chain)
   return (
-    <Box {...rest}>
+    <Box key={key}>
       <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
-        <Grid
-          px={{ base: '0', md: '4' }}
-          height="63.5px"
-          gridTemplateColumns={'50px 1fr 150px 175px 175px'}
-          gap="0"
-          gridTemplateAreas={`"network details tvl volume apr"`}
-          alignItems="center"
-          minW="800px"
-        >
+        <Grid {...rest} height="63.5px" gridTemplateAreas={`"network details tvl volume apr"`}>
           <GridItem area="network">
             <Image
               src={networkConfig.iconPath}

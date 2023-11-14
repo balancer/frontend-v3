@@ -15,7 +15,7 @@ export function PoolList() {
   useTokenBalances(address, tokens)
 
   return (
-    <VStack align="start" spacing="100">
+    <VStack align="start" spacing="2xl">
       <PoolListFeaturedPools />
       <PoolListPools />
     </VStack>

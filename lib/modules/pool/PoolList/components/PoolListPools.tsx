@@ -7,7 +7,7 @@ import { PoolListTable } from './PoolListTable/PoolListTable'
 import { usePoolListViewType } from './usePoolListViewType'
 
 export function PoolListPools() {
-  const { viewType } = usePoolListViewType()
+  const { isTableView, isCardsView } = usePoolListViewType()
 
   return (
     <VStack align="start" spacing="md" w="full">
@@ -17,12 +17,12 @@ export function PoolListPools() {
       <Stack direction={['column-reverse', 'row']} w="full" alignItems="flex-start">
         <PoolListFilters />
         <HStack justifyContent="flex-end" w="full">
-          {viewType === 'cards' && <PoolListSortType />}
+          {isCardsView && <PoolListSortType />}
           <PoolListViewType />
         </HStack>
       </Stack>
-      {viewType === 'list' && <PoolListTable />}
-      {viewType === 'cards' && <PoolListCards />}
+      {isTableView && <PoolListTable />}
+      {isCardsView && <PoolListCards />}
     </VStack>
   )
 }

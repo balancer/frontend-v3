@@ -9,6 +9,14 @@ import { PoolListTableRow } from './PoolListTableRow'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
+const rowProps = {
+  px: [0, 4],
+  gridTemplateColumns: '50px 1fr 150px 175px 175px',
+  alignItems: 'center',
+  gap: 0,
+  minW: '800px',
+}
+
 export function PoolListTable() {
   const { pools, loading, count } = usePoolList()
   const { pagination, setPagination } = usePoolListQueryState()
@@ -21,9 +29,9 @@ export function PoolListTable() {
       <PaginatedTable
         items={pools}
         loading={loading}
-        renderTableHeader={() => <PoolListTableHeader />}
+        renderTableHeader={() => <PoolListTableHeader {...rowProps} />}
         renderTableRow={(item: any, index) => {
-          return <PoolListTableRow key={index} pool={item} />
+          return <PoolListTableRow key={index} pool={item} {...rowProps} />
         }}
         showPagination={showPagination}
         paginationProps={paginationProps}

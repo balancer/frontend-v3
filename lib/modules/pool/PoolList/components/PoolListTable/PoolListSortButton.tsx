@@ -9,7 +9,7 @@ interface Props extends ButtonProps {
 
 const getColor = (isCurrentSort: boolean) => (isCurrentSort ? 'blue' : 'lightgrey')
 
-export default function PoolListSortLink({ title, isDesc, isCurrentSort, ...rest }: Props) {
+export default function PoolListSortButton({ title, isDesc, isCurrentSort, ...rest }: Props) {
   return (
     <Button
       _hover={{ backgroundColor: isCurrentSort ? 'lightblue' : 'transparent' }}

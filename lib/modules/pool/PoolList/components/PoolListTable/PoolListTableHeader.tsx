@@ -1,5 +1,5 @@
 import { Grid, GridItem, Icon, Text } from '@chakra-ui/react'
-import PoolListSortLink from './PoolListSortLink'
+import PoolListSortButton from './PoolListSortButton'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { FiGlobe } from 'react-icons/fi'
@@ -9,22 +9,12 @@ import { orderByHash } from '@/lib/modules/pool/pool.types'
 const setIsDesc = (id: GqlPoolOrderBy, currentSortingObj: PoolsColumnSort) =>
   currentSortingObj.id === id ? !currentSortingObj.desc : true
 
-export function PoolListTableHeader() {
+export function PoolListTableHeader({ ...rest }) {
   const { sorting, setSorting } = usePoolListQueryState()
   const sortingObj = sorting[0]
 
   return (
-    <Grid
-      px={{ base: '0', md: '4' }}
-      py="3"
-      alignItems="center"
-      templateColumns={'50px 1fr 150px 175px 175px'}
-      gap="0"
-      borderBottom="1px solid"
-      borderColor="gray.100"
-      w="full"
-      minW="800px"
-    >
+    <Grid {...rest} py="3" borderBottom="1px solid" borderColor="gray.100" w="full">
       <GridItem>
         <Icon as={FiGlobe} boxSize="6" ml="1" />
       </GridItem>
@@ -34,7 +24,7 @@ export function PoolListTableHeader() {
       {[GqlPoolOrderBy.TotalLiquidity, GqlPoolOrderBy.Volume24h, GqlPoolOrderBy.Apr].map(
         (orderByItem, index) => (
           <GridItem key={index} justifySelf="end">
-            <PoolListSortLink
+            <PoolListSortButton
               title={orderByHash[orderByItem]}
               isCurrentSort={sortingObj.id === orderByItem}
               isDesc={sortingObj.desc}
