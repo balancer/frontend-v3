@@ -24,10 +24,7 @@ type ProviderProps = PropsWithChildren<{
 
 export function UserSettingsProvider({ initCurrency, children }: ProviderProps) {
   const getInitCurrency = () => {
-    if (
-      initCurrency &&
-      Object.values(SupportedCurrency).includes(initCurrency as SupportedCurrency)
-    ) {
+    if (initCurrency) {
       return initCurrency as SupportedCurrency
     }
 
