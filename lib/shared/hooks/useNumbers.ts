@@ -72,12 +72,14 @@ export function useNumbers() {
     return bn(amount).times(fxRate).toString()
   }
 
-  function toCurrency(val: Numberish): string {
+  type CurrencyOpts = { withSymbol?: boolean }
+
+  function toCurrency(val: Numberish, { withSymbol = true }: CurrencyOpts = {}): string {
     const amount = val.toString()
     const symbol = hasFxRates ? symbolForCurrency(currency) : '$'
     const convertedAmount = toUserCurrency(amount)
 
-    return symbol + fiatFormat(convertedAmount)
+    return withSymbol ? symbol + fiatFormat(convertedAmount) : fiatFormat(convertedAmount)
   }
 
   return { toCurrency }
