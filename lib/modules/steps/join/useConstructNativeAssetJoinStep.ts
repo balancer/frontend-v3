@@ -10,9 +10,14 @@ import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transaction
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { useActiveStep } from '../useActiveStep'
+import { HumanAmount } from '@balancer/sdk'
+import { useState } from 'react'
 
-export function useConstructNativeAssetJoinStep(poolId: Address) {
-  // const [joinPayload, setJoinPayload] = useState<JoinPayload | null>(null)
+export function useConstructNativeAssetJoinStep(
+  poolId: Address,
+  initialWethAmount: HumanAmount = '0'
+) {
+  const [wethHumanAmount, setWethHumanAmount] = useState<HumanAmount>(initialWethAmount)
 
   const { address: userAddress } = useUserAccount()
   const { chainId } = useNetworkConfig()
@@ -28,7 +33,7 @@ export function useConstructNativeAssetJoinStep(poolId: Address) {
     'unbalancedNativeAsset'
   )
 
-  joinBuilder.setAmountIn(wETHAddress, '1')
+  joinBuilder.setAmountIn(wETHAddress, wethHumanAmount)
 
   const joinQuery = useJoinPoolConfig(joinBuilder, isActiveStep, userAddress)
 
@@ -51,6 +56,7 @@ export function useConstructNativeAssetJoinStep(poolId: Address) {
     error: transaction?.simulation.error || transaction?.execution.error || joinQuery.error,
     isError: transaction?.simulation.error || transaction?.execution.error || joinQuery.error,
     joinQuery,
+    setWethHumanAmount,
   }
 }
 

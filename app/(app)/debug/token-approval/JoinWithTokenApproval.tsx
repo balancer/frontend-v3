@@ -65,6 +65,8 @@ export function JoinWithTokenApproval() {
 
   return (
     <VStack width="full">
+      <Heading>Example: Join with token approval</Heading>
+
       <RecentTransactions />
 
       <Flex height="10"></Flex>

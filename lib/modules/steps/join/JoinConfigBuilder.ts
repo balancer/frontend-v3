@@ -70,7 +70,13 @@ export class JoinConfigBuilder {
   hasTokenAllowance() {
     // TODO: depending on the user input this rule will be different
     // Here we will check that the user has enough allowance for the current Join operation
-    return Object.values(this.tokenAllowances).every(a => a > 0n)
+    if (this.joinType === 'unbalanced') {
+      return Object.values(this.tokenAllowances).every(a => a > 0n)
+    }
+    if (this.joinType === 'unbalancedNativeAsset') {
+      return this.tokenAllowances[wETHAddress] > 0n
+    }
+    return false
   }
 
   public get queryKey() {
