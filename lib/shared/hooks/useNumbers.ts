@@ -70,6 +70,9 @@ export function useNumbers() {
   const { currency } = useUserSettings()
   const { getFxRate, hasFxRates } = useFxRates()
 
+  /**
+   * Converts a USD value to the user's currency value.
+   */
   function toUserCurrency(usdVal: Numberish): string {
     const amount = usdVal.toString()
     const fxRate = getFxRate(currency)
@@ -79,6 +82,9 @@ export function useNumbers() {
 
   type CurrencyOpts = { withSymbol?: boolean; abbreviated?: boolean }
 
+  /**
+   * Converts a USD value to the user's currency and formats in fiat style.
+   */
   function toCurrency(
     usdVal: Numberish,
     { withSymbol = true, abbreviated = true }: CurrencyOpts = {}
