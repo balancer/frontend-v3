@@ -75,9 +75,8 @@ export function useNumbers() {
   type CurrencyOpts = { withSymbol?: boolean }
 
   function toCurrency(val: Numberish, { withSymbol = true }: CurrencyOpts = {}): string {
-    const amount = val.toString()
     const symbol = hasFxRates ? symbolForCurrency(currency) : '$'
-    const convertedAmount = toUserCurrency(amount)
+    const convertedAmount = toUserCurrency(val)
 
     return withSymbol ? symbol + fiatFormat(convertedAmount) : fiatFormat(convertedAmount)
   }
