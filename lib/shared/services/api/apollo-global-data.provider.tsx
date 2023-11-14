@@ -8,7 +8,10 @@
  * client render pass.
  */
 import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
-import { GetTokensDocument } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GetTokenPricesDocument,
+  GetTokensDocument,
+} from '@/lib/shared/services/api/generated/graphql'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { TokensProvider } from '@/lib/modules/tokens/useTokens'
 
@@ -24,8 +27,16 @@ export async function ApolloGlobalDataProvider({ children }: React.PropsWithChil
     variables: tokensQueryVariables,
   })
 
+  const { data: tokenPricesQueryData } = await client.query({
+    query: GetTokenPricesDocument,
+  })
+
   return (
-    <TokensProvider data={tokensQueryData} variables={tokensQueryVariables}>
+    <TokensProvider
+      tokensData={tokensQueryData}
+      tokenPricesData={tokenPricesQueryData}
+      variables={tokensQueryVariables}
+    >
       {children}
     </TokensProvider>
   )
