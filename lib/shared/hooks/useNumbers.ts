@@ -28,7 +28,7 @@ export const WEIGHT_FORMAT = '(%0,0)'
 export const APR_UPPER_THRESHOLD = 1_000_000
 export const APR_LOWER_THRESHOLD = 0.0000001
 
-type Numberish = string | number | bigint | BigNumber
+export type Numberish = string | number | bigint | BigNumber
 export type NumberFormatter = (val: Numberish) => string
 
 export function bn(val: Numberish): BigNumber {
