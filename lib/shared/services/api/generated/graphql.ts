@@ -1304,6 +1304,7 @@ export type QueryPoolGetPoolsArgs = {
   orderDirection?: InputMaybe<GqlPoolOrderDirection>
   skip?: InputMaybe<Scalars['Int']['input']>
   textSearch?: InputMaybe<Scalars['String']['input']>
+  userAddress?: InputMaybe<Scalars['String']['input']>
   where?: InputMaybe<GqlPoolFilter>
 }
 
@@ -1313,6 +1314,7 @@ export type QueryPoolGetPoolsCountArgs = {
   orderDirection?: InputMaybe<GqlPoolOrderDirection>
   skip?: InputMaybe<Scalars['Int']['input']>
   textSearch?: InputMaybe<Scalars['String']['input']>
+  userAddress?: InputMaybe<Scalars['String']['input']>
   where?: InputMaybe<GqlPoolFilter>
 }
 
@@ -1458,7 +1460,9 @@ export type GetTokensQuery = {
   }>
 }
 
-export type GetTokenPricesQueryVariables = Exact<{ [key: string]: never }>
+export type GetTokenPricesQueryVariables = Exact<{
+  chains: Array<GqlChain> | GqlChain
+}>
 
 export type GetTokenPricesQuery = {
   __typename?: 'Query'
@@ -4093,6 +4097,22 @@ export const GetTokenPricesDocument = {
       kind: 'OperationDefinition',
       operation: 'query',
       name: { kind: 'Name', value: 'GetTokenPrices' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'chains' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
+              },
+            },
+          },
+        },
+      ],
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
@@ -4100,6 +4120,13 @@ export const GetTokenPricesDocument = {
             kind: 'Field',
             alias: { kind: 'Name', value: 'tokenPrices' },
             name: { kind: 'Name', value: 'tokenGetCurrentPrices' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'chains' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'chains' } },
+              },
+            ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [

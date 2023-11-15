@@ -33,6 +33,7 @@ export async function ApolloGlobalDataProvider({ children }: React.PropsWithChil
 
   const { data: tokenPricesQueryData } = await client.query({
     query: GetTokenPricesDocument,
+    variables: tokensQueryVariables,
   })
 
   const exchangeRates = await getFxRates()
