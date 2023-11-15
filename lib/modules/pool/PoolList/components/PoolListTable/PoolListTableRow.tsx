@@ -10,17 +10,17 @@ import { useNumbers } from '@/lib/shared/hooks/useNumbers'
 
 interface Props extends GridProps {
   pool: PoolListItem
-  key: number
+  keyValue: number
 }
 
 const MemoizedAprTooltip = memo(AprTooltip)
 
-export function PoolListTableRow({ pool, key, ...rest }: Props) {
+export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
   const networkConfig = getNetworkConfig(pool.chain)
   const { toCurrency } = useNumbers()
 
   return (
-    <Box key={key}>
+    <Box key={keyValue}>
       <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
         <Grid {...rest} height="63.5px" gridTemplateAreas={`"network details tvl volume apr"`}>
           <GridItem area="network">
