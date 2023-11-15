@@ -1,12 +1,8 @@
 import { HStack, IconButton, Select } from '@chakra-ui/react'
 import { FiArrowDown, FiArrowUp } from 'react-icons/fi'
-import { usePoolListQueryState } from '../usePoolListQueryState'
-
-const sortTypeHash: { [key: string]: string } = {
-  totalLiquidity: 'TVL',
-  volume24h: 'Volume (24h)',
-  apr: 'APR',
-}
+import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
+import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
+import { orderByHash } from '@/lib/modules/pool/pool.types'
 
 export function PoolListSortType() {
   const { sorting, setSorting } = usePoolListQueryState()
@@ -17,12 +13,12 @@ export function PoolListSortType() {
         w="32"
         value={sorting[0].id}
         onChange={e => {
-          setSorting([{ id: e.target.value, desc: sorting[0].desc }])
+          setSorting([{ id: e.target.value as GqlPoolOrderBy, desc: sorting[0].desc }])
         }}
       >
         {['totalLiquidity', 'volume24h', 'apr'].map(sortType => (
           <option key={sortType} value={sortType}>
-            {sortTypeHash[sortType]}
+            {orderByHash[sortType]}
           </option>
         ))}
       </Select>

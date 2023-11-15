@@ -10,12 +10,11 @@ import { PoolListItem } from '../../../pool.types'
 import { getPoolPath } from '../../../pool.utils'
 import { useRouter } from 'next/navigation'
 
-export function PoolListGrid() {
+export function PoolListCards() {
   const router = useRouter()
   const { pools, count } = usePoolList()
   const { pagination, setPagination } = usePoolListQueryState()
   const paginationProps = getPaginationProps(count || 0, pagination, setPagination)
-
   const showPagination = pools.length && count && count > pagination.pageSize
   const cardClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
     const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
