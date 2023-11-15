@@ -37,6 +37,7 @@ query GetTokenPrices {
   tokenPrices: tokenGetCurrentPrices {
     price
     address
+    chain
   }
 }
 
