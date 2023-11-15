@@ -4,7 +4,7 @@ import { waitFor } from '@testing-library/react'
 import { useErc20Read } from './useErc20Read'
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import { poolId, vaultV2Address, wETHAddress } from '@/lib/debug-helpers'
-import { MAX_BIGINT } from '@/lib/shared/utils/bigint'
+import { MAX_BIGINT } from '@/lib/shared/hooks/useNumbers'
 
 const utils = await getSdkTestUtils({ poolId })
 // setupToken approves WETH with MAX_BIGINT allowance

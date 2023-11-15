@@ -14,6 +14,10 @@ import {
 } from '@/lib/shared/services/api/generated/graphql'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { TokensProvider } from '@/lib/modules/tokens/useTokens'
+import { FiatFxRatesProvider } from '../../hooks/useFxRates'
+import { getFxRates } from '../../utils/currencies'
+
+export const revalidate = 60
 
 export async function ApolloGlobalDataProvider({ children }: React.PropsWithChildren) {
   const client = getApolloServerClient()
@@ -31,13 +35,15 @@ export async function ApolloGlobalDataProvider({ children }: React.PropsWithChil
     query: GetTokenPricesDocument,
   })
 
+  const exchangeRates = await getFxRates()
+
   return (
     <TokensProvider
       tokensData={tokensQueryData}
       tokenPricesData={tokenPricesQueryData}
       variables={tokensQueryVariables}
     >
-      {children}
+      <FiatFxRatesProvider data={exchangeRates}>{children}</FiatFxRatesProvider>
     </TokensProvider>
   )
 }

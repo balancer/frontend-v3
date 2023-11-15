@@ -3,10 +3,11 @@ import { Providers } from './providers'
 import { Navbar } from '@/lib/shared/components/navs/Navbar'
 import { Footer } from '@/lib/shared/components/navs/Footer'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import '@/lib/shared/utils/bigint'
+import '@/lib/shared/hooks/useNumbers'
 import Noise from './noise'
 import { satoshiFont } from '@/lib/assets/fonts/satoshi/satoshi'
 import NextTopLoader from 'nextjs-toploader'
+import { Box } from '@chakra-ui/react'
 
 const { projectName, projectId } = getProjectConfig()
 const iconUrl = `/images/icons/${projectId}.ico`

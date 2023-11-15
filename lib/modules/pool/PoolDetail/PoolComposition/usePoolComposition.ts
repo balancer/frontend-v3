@@ -1,26 +1,32 @@
 import { useMemo } from 'react'
 import { usePool } from '../../usePool'
-import numeral from 'numeral'
+import { tokenFormat, weightFormat } from '@/lib/shared/hooks/useNumbers'
+import { GqlPoolToken } from '@/lib/shared/services/api/generated/graphql'
+
+type CompositionRow = {
+  symbol: string
+  balance: string
+  value: string
+  targetWeight: string
+}
 
 export function usePoolComposition() {
   const { pool, loading } = usePool()
 
   const poolComposition = useMemo(() => {
-    if (!pool) return []
-    const { tokens } = pool
+    return pool.tokens
+      .map(token => {
+        if (!token) return null
+        const _token = token as GqlPoolToken
 
-    // TO_DO add proper token type
-    return tokens.map((token: any) => {
-      const { symbol, balance, weight } = token
-      return {
-        symbol: symbol,
-        balance: numeral(balance).format('(0,0)'),
-        // TO_DO add fiat value
-        value: balance,
-        // TODO add a real weight and target weight
-        weight: numeral(weight).format('(%0,0)'),
-      }
-    })
+        return {
+          symbol: _token.symbol,
+          balance: tokenFormat(_token.balance),
+          value: 'TBD',
+          targetWeight: _token.weight ? weightFormat(_token.weight) : '',
+        }
+      })
+      .filter(Boolean) as CompositionRow[]
   }, [pool])
 
   return { poolComposition, loading }
