@@ -5,8 +5,10 @@
   "repository": "balancer/frontend-v3",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "PROTOCOL=bal next dev",
+    "dev-beets": "PROTOCOL=beets next dev",
+    "build": "PROTOCOL=bal next build",
+    "build-beets": "PROTOCOL=beets next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
