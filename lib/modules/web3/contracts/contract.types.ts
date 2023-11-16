@@ -6,7 +6,7 @@ import {
   useSendTransaction,
   useWaitForTransaction,
 } from 'wagmi'
-import { Abi, Address, ContractFunctionConfig, GetFunctionArgs, InferFunctionName } from 'viem'
+import { Abi, Address, ContractFunctionConfig, GetFunctionArgs } from 'viem'
 import { ChainId } from '@balancer/sdk'
 
 export type TransactionSimulation =

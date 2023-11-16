@@ -643,12 +643,12 @@ export const erc20ABI = [
  */
 export function useVaultV2Read<
   TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof vaultV2ABI, TFunctionName>,
+  TSelectData = ReadContractResult<typeof vaultV2ABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof vaultV2ABI, TFunctionName, TSelectData>,
     'abi' | 'address'
-  > & { chainId?: keyof typeof vaultV2Address } = {} as any,
+  > & { chainId?: keyof typeof vaultV2Address } = {} as any
 ) {
   return useContractRead({
     abi: vaultV2ABI,
@@ -662,12 +662,12 @@ export function useVaultV2Read<
  */
 export function useErc20Read<
   TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>,
+  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
     'abi'
-  > = {} as any,
+  > = {} as any
 ) {
   return useContractRead({ abi: erc20ABI, ...config } as UseContractReadConfig<
     typeof erc20ABI,
