@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Card, HStack, Text, VStack } from '@chakra-ui/react'
+import { Box, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import PoolBadges from '../PoolBadges/PoolBadges'
 import { useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { usePool } from '../../usePool'
@@ -23,37 +23,29 @@ export default function PoolStats() {
         <PoolBadges />
       </Box>
       <HStack width="full" justifyContent="space-evenly">
-        <VStack spacing="0">
-          <Text variant="heading" fontWeight="medium">
+        <VStack spacing="sm">
+          <Heading size="h6" fontWeight="medium">
             TVL
-          </Text>
-          <Text variant="heading" fontWeight="bold" fontSize="2xl">
-            {toCurrency(pool.dynamicData.totalLiquidity)}
-          </Text>
+          </Heading>
+          <Heading fontSize="2xl">{toCurrency(pool.dynamicData.totalLiquidity)}</Heading>
         </VStack>
-        <VStack spacing="0">
-          <Text variant="heading" fontWeight="medium">
+        <VStack spacing="sm">
+          <Heading size="h6" fontWeight="medium">
             Volume (24h)
-          </Text>
-          <Text variant="heading" fontWeight="bold" fontSize="2xl">
-            {toCurrency(pool.dynamicData.volume24h)}
-          </Text>
+          </Heading>
+          <Heading fontSize="2xl">{toCurrency(pool.dynamicData.volume24h)}</Heading>
         </VStack>
-        <VStack spacing="0">
-          <Text variant="heading" fontWeight="medium">
+        <VStack spacing="sm">
+          <Heading size="h6" fontWeight="medium">
             Revenue (24h)
-          </Text>
-          <Text variant="heading" fontWeight="bold" fontSize="2xl">
-            {toCurrency(pool.dynamicData.fees24h)}
-          </Text>
+          </Heading>
+          <Heading fontSize="2xl">{toCurrency(pool.dynamicData.fees24h)}</Heading>
         </VStack>
-        <VStack spacing="0">
-          <Text variant="heading" fontWeight="medium">
+        <VStack spacing="sm">
+          <Heading size="h6" fontWeight="medium">
             APR
-          </Text>
-          <Text variant="heading" fontWeight="bold" fontSize="2xl">
-            {getAprLabel(pool.dynamicData.apr.apr)}
-          </Text>
+          </Heading>
+          <Heading fontSize="2xl">{getAprLabel(pool.dynamicData.apr.apr)}</Heading>
         </VStack>
       </HStack>
     </Card>

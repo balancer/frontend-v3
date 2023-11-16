@@ -2,7 +2,7 @@ import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { Box, Card, HStack, Text, VStack } from '@chakra-ui/react'
+import { Box, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 
 const TABS = [
@@ -41,17 +41,17 @@ export default function PoolIncentives() {
             <Box width="full" borderBottomWidth={1} borderColor="borderColor">
               <HStack py="3" px="4" width="full" justifyContent="space-between">
                 <VStack spacing="0" alignItems="flex-start">
-                  <Text variant="heading" fontWeight="bold" as="h3" fontSize="1rem">
+                  <Heading fontWeight="bold" as="h6" fontSize="1rem">
                     Pool incentives this week
-                  </Text>
+                  </Heading>
                   <Text variant="secondary" fontSize="0.85rem">
                     Gauge votes
                   </Text>
                 </VStack>
                 <VStack spacing="0" alignItems="flex-end">
-                  <Text variant="heading" fontWeight="bold" as="h3" fontSize="1rem">
+                  <Heading fontWeight="bold" as="h6" fontSize="1rem">
                     $3,000.00
-                  </Text>
+                  </Heading>
                   <Text variant="secondary" fontSize="0.85rem">
                     1.34%
                   </Text>

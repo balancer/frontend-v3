@@ -101,9 +101,9 @@ export const balTheme = {
     initialColorMode: 'light',
     useSystemColorMode: false,
   },
-  text: {
-    heading: `'Satoshi', sans-serif`,
-    body: `'Satoshi', sans-serif`,
+  fonts: {
+    heading: `inherit`,
+    body: `inherit`,
   },
   colors: {
     primary: {
@@ -234,40 +234,54 @@ export const balTheme = {
           default: tokens.colors.light.background.special,
           _dark: tokens.colors.dark.background.special,
         },
+        button: {
+          primary: {
+            default: tokens.colors.light.button.background.primary,
+            _dark: tokens.colors.dark.button.background.primary,
+          },
+          secondary: {
+            default: tokens.colors.light.button.background.secondary,
+            _dark: tokens.colors.dark.button.background.secondary,
+          },
+          tertiary: {
+            default: tokens.colors.light.button.background.tertiary,
+            _dark: tokens.colors.dark.button.background.tertiary,
+          },
+        },
         card: {
-          colorCardBgLevel0: {
+          level0: {
             default: tokens.colors.light.background.card.level0,
             _dark: tokens.colors.dark.background.card.level0,
           },
-          colorCardBgLevel1: {
+          level1: {
             default: tokens.colors.light.background.card.level1,
             _dark: tokens.colors.dark.background.card.level1,
           },
-          colorCardBgLevel2: {
+          level2: {
             default: tokens.colors.light.background.card.level2,
             _dark: tokens.colors.dark.background.card.level2,
           },
-          colorCardBgLevel3: {
+          level3: {
             default: tokens.colors.light.background.card.level3,
             _dark: tokens.colors.dark.background.card.level3,
           },
-          colorCardBgLevel4: {
+          level4: {
             default: tokens.colors.light.background.card.level4,
             _dark: tokens.colors.dark.background.card.level4,
           },
-          colorCardBgLevel5: {
+          level5: {
             default: tokens.colors.light.background.card.level5,
             _dark: tokens.colors.dark.background.card.level5,
           },
-          colorCardBgLevel6: {
+          level6: {
             default: tokens.colors.light.background.card.level6,
             _dark: tokens.colors.dark.background.card.level6,
           },
-          colorCardBgLevel7: {
+          level7: {
             default: tokens.colors.light.background.card.level7,
             _dark: tokens.colors.dark.background.card.level7,
           },
-          colorCardBgLevel8: {
+          level8: {
             default: tokens.colors.light.background.card.level8,
             _dark: tokens.colors.dark.background.card.level8,
           },
@@ -275,20 +289,8 @@ export const balTheme = {
       },
 
       // Button colors
-      button: {
-        primary: {
-          default: tokens.colors.light.button.background.primary,
-          _dark: tokens.colors.dark.button.background.primary,
-        },
-        secondary: {
-          default: tokens.colors.light.button.background.secondary,
-          _dark: tokens.colors.dark.button.background.secondary,
-        },
-        tertiary: {
-          default: tokens.colors.light.button.background.tertiary,
-          _dark: tokens.colors.dark.button.background.tertiary,
-        },
-        border: {
+      border: {
+        button: {
           tertiary: {
             default: tokens.colors.light.button.border.tertiary,
             _dark: tokens.colors.dark.button.border.tertiary,
@@ -297,7 +299,7 @@ export const balTheme = {
       },
 
       // Text colors
-      text: {
+      font: {
         primary: {
           default: tokens.colors.light.text.primary,
           _dark: tokens.colors.dark.text.primary,
@@ -314,7 +316,7 @@ export const balTheme = {
           default: tokens.colors.light.text.link,
           _dark: tokens.colors.dark.text.link,
         },
-        dark: '#414853',
+        dark: '#414853  ',
         light: '#F3F1EC',
       },
     },
@@ -394,20 +396,18 @@ export const balTheme = {
     Heading: {
       baseStyle: {
         fontWeight: 'bold',
-        letterSpacing: '-1px',
-        mb: 'sm',
         display: 'block',
         width: 'fit-content',
-        background: 'colorFontPrimary',
+        background: 'font.primary',
         backgroundClip: 'text',
       },
       variants: {
         secondary: {
-          background: 'colorFontSecondary',
+          background: 'font.secondary',
           backgroundClip: 'text',
         },
         special: {
-          background: 'colorFontSpecial',
+          background: 'font.special',
           backgroundClip: 'text',
         },
         sand: (props: any) => ({
@@ -455,16 +455,16 @@ export const balTheme = {
     },
     Text: {
       baseStyle: {
-        background: 'colorFontPrimary',
+        background: 'font.primary',
         backgroundClip: 'text',
       },
       variants: {
         secondary: {
-          background: 'colorFontSecondary',
+          background: 'font.secondary',
           backgroundClip: 'text',
         },
         special: {
-          background: 'colorFontSpecial',
+          background: 'font.special',
           backgroundClip: 'text',
         },
         eyebrow: {
@@ -478,7 +478,7 @@ export const balTheme = {
     },
     Link: {
       baseStyle: {
-        background: 'colorFontPrimary',
+        background: 'font.primary',
         backgroundClip: 'text',
       },
     },
@@ -513,7 +513,7 @@ export const balTheme = {
           background: 'colorButtonBgTertiary',
           borderTop: '2px solid',
           borderColor: 'colorButtonBorderTopTertiary',
-          color: 'colorFontPrimary',
+          color: 'font.primary',
         },
         'tx-gas': {
           bgGradient: 'linear(to-tr, blue.300 0%, #D7CBE7 50%, #EAA879 100%)',
@@ -528,24 +528,28 @@ export const balTheme = {
           px: '2',
           py: '1.5',
           fontSize: 'xs',
-          color: 'text.secondary',
+          color: '#414853',
           fontWeight: 'bold',
           borderRadius: '4px',
           _hover: {
-            bgGradient: 'button.background.secondary',
-            color: 'text.primary',
+            background: 'background.button.secondary',
+            color: '##728097',
+            transform: 'none',
           },
         },
         buttonGroupActive: {
-          bgGradient: 'button.background.secondary',
+          background: 'background.button.secondary',
           height: 'fit-content',
           width: 'fit-content',
           px: '2',
           py: '1.5',
           fontSize: 'xs',
-          color: 'text.primary',
+          color: '##728097',
           fontWeight: 'bold',
           borderRadius: '4px',
+          _hover: {
+            transform: 'none',
+          },
         },
       },
     },
