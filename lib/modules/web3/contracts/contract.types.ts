@@ -7,7 +7,7 @@ import {
   useWaitForTransaction,
 } from 'wagmi'
 import { Abi, Address, ContractFunctionConfig, GetFunctionArgs } from 'viem'
-import { ChainId } from '@balancer/sdk'
+import { SupportedChainId } from '@/lib/config/config.types'
 
 export type TransactionSimulation =
   | ReturnType<typeof usePrepareContractWrite>
@@ -31,7 +31,7 @@ export type ReadAbiMutability = 'view'
 
 export type SdkTransactionConfig = {
   account: Address
-  chainId: ChainId
+  chainId: SupportedChainId
   data: Address
   to: Address
   value?: bigint
