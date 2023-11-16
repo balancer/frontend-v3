@@ -430,11 +430,7 @@ export const balTheme = {
           background: 'colorFontSpecial',
           backgroundClip: 'text',
         },
-<<<<<<< HEAD
         sand: (props: any) => ({
-=======
-        sand: props => ({
->>>>>>> origin/ui/theming
           bgGradient: props.theme.colors.gradient.sand,
           bgClip: 'text',
         }),
