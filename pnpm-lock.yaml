@@ -14,12 +14,9 @@ dependencies:
   '@balancer/sdk':
     specifier: github:balancer/b-sdk#join3
     version: github.com/balancer/b-sdk/4a9f425013f3dca79fd89c7b8ca6ab1cfc417242(typescript@5.1.6)(zod@3.22.4)
-<<<<<<< HEAD
   '@chakra-ui/anatomy':
     specifier: ^2.2.2
     version: 2.2.2
-=======
->>>>>>> origin/ui/theming
   '@chakra-ui/hooks':
     specifier: ^2.2.1
     version: 2.2.1(react@18.2.0)
@@ -4145,7 +4142,7 @@ packages:
   /@tanstack/react-query-persist-client@4.36.1(@tanstack/react-query@4.36.1):
     resolution: {integrity: sha512-32I5b9aAu4NCiXZ7Te/KEQLfHbYeTNriVPrKYcvEThnZ9tlW01vLcSoxpUIsMYRsembvJUUAkzYBAiZHLOd6pQ==}
     peerDependencies:
-      '@tanstack/react-query': ^4.29.19
+      '@tanstack/react-query': ^4.36.1
     dependencies:
       '@tanstack/query-persist-client-core': 4.36.1
       '@tanstack/react-query': 4.36.1(react-dom@18.2.0)(react@18.2.0)
