@@ -1,13 +1,13 @@
 import { vaultV2Address, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { testHook } from '@/test/utils/custom-renderers'
 import { act, waitFor } from '@testing-library/react'
-import { _useTokenAllowances } from './useTokenAllowances'
+import { useTokenAllowances } from './useTokenAllowances'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { Address } from 'viem'
 
-function useTokenAllowances(tokenAddresses: Address[]) {
+function testTokenAllowances(tokenAddresses: Address[]) {
   const { result } = testHook(() =>
-    _useTokenAllowances(defaultTestUserAccount, vaultV2Address, tokenAddresses)
+    useTokenAllowances(defaultTestUserAccount, vaultV2Address, tokenAddresses)
   )
   return result
 }
@@ -15,7 +15,7 @@ function useTokenAllowances(tokenAddresses: Address[]) {
 const tokenAddresses = [wETHAddress, wjAuraAddress]
 
 test('fetches token allowances', async () => {
-  const result = useTokenAllowances(tokenAddresses)
+  const result = testTokenAllowances(tokenAddresses)
   await waitFor(() => expect(result.current.isAllowancesLoading).toBeFalsy())
 
   expect(result.current.allowances).toMatchInlineSnapshot(`
@@ -27,7 +27,7 @@ test('fetches token allowances', async () => {
 })
 
 test('allows refetching allowances', async () => {
-  const result = useTokenAllowances(tokenAddresses)
+  const result = testTokenAllowances(tokenAddresses)
 
   await waitFor(() => expect(result.current.isAllowancesLoading).toBeFalsy())
 
