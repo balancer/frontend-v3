@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "lint:fix": "next lint --fix",
+    "lint:fix": "next lint --fix && pnpm run prettier:fix",
     "lint:all": "pnpm run lint && pnpm run stylelint && pnpm run prettier && pnpm run typecheck",
     "stylelint": "stylelint '**/*.css'",
     "stylelint:fix": "pnpm run stylelint -- --fix",
