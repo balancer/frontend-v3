@@ -1,11 +1,12 @@
 import {
+  erc20ABI,
   useContractWrite,
   usePrepareContractWrite,
   usePrepareSendTransaction,
   useSendTransaction,
   useWaitForTransaction,
 } from 'wagmi'
-import { Abi, Address } from 'viem'
+import { Abi, Address, ContractFunctionConfig, GetFunctionArgs } from 'viem'
 import { ChainId } from '@balancer/sdk'
 
 export type TransactionSimulation =
@@ -40,3 +41,20 @@ export type UsePrepareSendTransactionConfig = Exclude<
   Parameters<typeof usePrepareSendTransaction>[0],
   undefined
 >
+
+export type Erc20Abi = typeof erc20ABI
+
+// TODO: see if we can improve the TS DX further with this type
+// export type WagmiContractConfig = {
+//   address: Address
+//   abi: Erc20Abi
+//   functionName: InferFunctionName<Erc20Abi, string, ReadAbiMutability>
+//   args: GetFunctionArgs<Erc20Abi, string>['args']
+// }
+
+export type WagmiReadContract<T extends string> = ContractFunctionConfig<
+  Erc20Abi,
+  T,
+  ReadAbiMutability
+> &
+  GetFunctionArgs<Erc20Abi, T>
