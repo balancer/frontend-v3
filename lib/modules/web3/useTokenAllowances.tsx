@@ -1,14 +1,9 @@
-import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { PropsWithChildren, createContext } from 'react'
 import { Address, erc20ABI, useContractReads } from 'wagmi'
 import { WagmiReadContract } from './contracts/contract.types'
-import { useContractAddress } from './contracts/useContractAddress'
-import { emptyAddress } from './contracts/wagmi-helpers'
-import { useUserAccount } from './useUserAccount'
 
 export type TokenAllowances = Record<Address, bigint>
 
-export function _useTokenAllowances(
+export function useTokenAllowances(
   userAccount: Address,
   spenderAddress: Address,
   tokenAddresses: Address[]
@@ -32,28 +27,4 @@ export function _useTokenAllowances(
     allowances: result.data,
     refetchAllowances: result.refetch,
   }
-}
-
-type UseTokenAllowancesResponse = ReturnType<typeof _useTokenAllowances>
-export const TokenAllowancesContext = createContext<UseTokenAllowancesResponse | null>(null)
-
-export function TokenAllowancesProvider({
-  children,
-  tokenAddresses,
-}: PropsWithChildren<{
-  tokenAddresses: Address[]
-}>) {
-  const { userAddress } = useUserAccount()
-  const spenderAddress = useContractAddress('balancer.vaultV2')
-  const hook = _useTokenAllowances(
-    userAddress || emptyAddress,
-    spenderAddress || emptyAddress,
-    tokenAddresses
-  )
-
-  return <TokenAllowancesContext.Provider value={hook}>{children}</TokenAllowancesContext.Provider>
-}
-
-export function useTokenAllowances() {
-  return useMandatoryContext(TokenAllowancesContext, 'TokenAllowances')
 }
