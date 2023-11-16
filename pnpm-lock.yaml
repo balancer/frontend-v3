@@ -65,6 +65,9 @@ dependencies:
   '@uidotdev/usehooks':
     specifier: ^2.0.1
     version: 2.4.0(react-dom@18.2.0)(react@18.2.0)
+  bignumber.js:
+    specifier: ^9.1.2
+    version: 9.1.2
   date-fns:
     specifier: ^2.30.0
     version: 2.30.0
@@ -95,6 +98,9 @@ dependencies:
   graphql-tag:
     specifier: ^2.12.6
     version: 2.12.6(graphql@16.8.1)
+  js-cookie:
+    specifier: ^3.0.5
+    version: 3.0.5
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
@@ -172,6 +178,9 @@ devDependencies:
   '@testing-library/react-hooks':
     specifier: ^8.0.1
     version: 8.0.1(@types/react@18.2.34)(react-dom@18.2.0)(react@18.2.0)
+  '@types/js-cookie':
+    specifier: ^3.0.6
+    version: 3.0.6
   '@types/lodash':
     specifier: ^4.14.195
     version: 4.14.200
@@ -4327,6 +4336,10 @@ packages:
       pretty-format: 29.7.0
     dev: true
 
+  /@types/js-cookie@3.0.6:
+    resolution: {integrity: sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ==}
+    dev: true
+
   /@types/js-levenshtein@1.1.2:
     resolution: {integrity: sha512-/NCbMABw2uacuyE16Iwka1EzREDD50/W2ggRBad0y1WHBvAkvR9OEINxModVY7D428gXBe0igeVX7bUc9GaslQ==}
     dev: true
@@ -8340,6 +8353,11 @@ packages:
   /jose@4.15.4:
     resolution: {integrity: sha512-W+oqK4H+r5sITxfxpSU+MMdr/YSWGvgZMQDIsNoBDGGy4i7GBPTtvFKibQzW06n3U3TqHjhvBJsirShsEJ6eeQ==}
     dev: true
+
+  /js-cookie@3.0.5:
+    resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}
+    engines: {node: '>=14'}
+    dev: false
 
   /js-levenshtein@1.1.6:
     resolution: {integrity: sha512-X2BB11YZtrRqY4EnQcLX5Rh373zbK4alC1FW7D7MBhL2gtcC17cTnr6DmfHZeS0s2rTHjUTMMHfG7gO8SSdw+g==}

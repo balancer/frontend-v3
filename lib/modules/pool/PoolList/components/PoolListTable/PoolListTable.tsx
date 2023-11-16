@@ -1,51 +1,46 @@
 'use client'
 
-import { getPoolListTableColumns } from './PoolListTable.columns'
-import { PoolListItem } from '../../../pool.types'
 import { Box } from '@chakra-ui/react'
-import { DataTable } from '@/lib/shared/components/tables/DataTable'
-import { useRouter } from 'next/navigation'
-import { getPoolPath } from '../../../pool.utils'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
+import { PaginatedTable } from '@/lib/shared/components/tables/PaginatedTable'
+import { PoolListTableHeader } from './PoolListTableHeader'
+import { PoolListTableRow } from './PoolListTableRow'
+import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+
+const rowProps = {
+  px: [0, 4],
+  gridTemplateColumns: '50px 1fr 150px 175px 175px',
+  alignItems: 'center',
+  gap: 0,
+  minW: '800px',
+}
 
 export function PoolListTable() {
   const { pools, loading, count } = usePoolList()
-  const { pagination, sorting, setPagination, setSorting } = usePoolListQueryState()
-  const columns = getPoolListTableColumns()
-  const router = useRouter()
-
-  const rowClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
-    const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
-
-    if (event.ctrlKey || event.metaKey) {
-      window.open(poolPath, '_blank')
-    } else {
-      router.push(poolPath)
-    }
-  }
-
-  // Prefetch pool page on row hover, otherwise there is a significant delay
-  // between clicking the row and the pool page loading.
-  const prefetchPoolPage = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
-    const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
-    router.prefetch(poolPath)
-  }
+  const { pagination, setPagination } = usePoolListQueryState()
+  const paginationProps = getPaginationProps(count || 0, pagination, setPagination)
+  const showPagination = !!pools.length && !!count && count > pagination.pageSize
+  const { isMobile } = useBreakpoints()
 
   return (
     <Box w="full" style={{ position: 'relative' }}>
-      <DataTable
-        columns={columns}
-        data={pools}
-        rowClickHandler={rowClickHandler}
-        rowMouseEnterHandler={prefetchPoolPage}
-        rowCount={count || -1}
-        pagination={pagination}
-        sorting={sorting}
-        setPagination={setPagination}
-        setSorting={setSorting}
-        noResultsText="No matching pools found"
-        noColumnPadding={['chainLogoUrl']}
+      <PaginatedTable
+        items={pools}
+        loading={loading}
+        renderTableHeader={() => <PoolListTableHeader {...rowProps} />}
+        renderTableRow={(item: any, index) => {
+          return <PoolListTableRow keyValue={index} pool={item} {...rowProps} />
+        }}
+        showPagination={showPagination}
+        paginationProps={paginationProps}
+        border="1px solid"
+        borderColor="gray.100"
+        borderRadius="16px"
+        overflowX={isMobile ? 'auto' : 'hidden'}
+        w="full"
+        alignItems="flex-start"
       />
       {loading && (
         <Box

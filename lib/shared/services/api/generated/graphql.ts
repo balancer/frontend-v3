@@ -144,6 +144,7 @@ export type GqlPoolBase = {
 
 export type GqlPoolBatchSwap = {
   __typename?: 'GqlPoolBatchSwap'
+  chain: GqlChain
   id: Scalars['ID']['output']
   swaps: Array<GqlPoolBatchSwapSwap>
   timestamp: Scalars['Int']['output']
@@ -335,6 +336,7 @@ export type GqlPoolInvestOption = {
 export type GqlPoolJoinExit = {
   __typename?: 'GqlPoolJoinExit'
   amounts: Array<GqlPoolJoinExitAmount>
+  chain: GqlChain
   id: Scalars['ID']['output']
   poolId: Scalars['String']['output']
   sender: Scalars['String']['output']
@@ -351,6 +353,7 @@ export type GqlPoolJoinExitAmount = {
 }
 
 export type GqlPoolJoinExitFilter = {
+  chainIn?: InputMaybe<Array<GqlChain>>
   poolIdIn?: InputMaybe<Array<Scalars['String']['input']>>
 }
 
@@ -595,6 +598,7 @@ export type GqlPoolPhantomStableNested = {
 export type GqlPoolSnapshot = {
   __typename?: 'GqlPoolSnapshot'
   amounts: Array<Scalars['String']['output']>
+  chain: GqlChain
   fees24h: Scalars['String']['output']
   holdersCount: Scalars['String']['output']
   id: Scalars['ID']['output']
@@ -653,6 +657,7 @@ export type GqlPoolStablePhantomPoolData = {
 export type GqlPoolStaking = {
   __typename?: 'GqlPoolStaking'
   address: Scalars['String']['output']
+  chain: GqlChain
   gauge?: Maybe<GqlPoolStakingGauge>
   id: Scalars['ID']['output']
   type: GqlPoolStakingType
@@ -697,6 +702,7 @@ export enum GqlPoolStakingType {
 
 export type GqlPoolSwap = {
   __typename?: 'GqlPoolSwap'
+  chain: GqlChain
   id: Scalars['ID']['output']
   poolId: Scalars['String']['output']
   timestamp: Scalars['Int']['output']
@@ -710,6 +716,7 @@ export type GqlPoolSwap = {
 }
 
 export type GqlPoolSwapFilter = {
+  chainIn?: InputMaybe<Array<GqlChain>>
   poolIdIn?: InputMaybe<Array<Scalars['String']['input']>>
   tokenInIn?: InputMaybe<Array<Scalars['String']['input']>>
   tokenOutIn?: InputMaybe<Array<Scalars['String']['input']>>
@@ -1266,6 +1273,7 @@ export type Query = {
 }
 
 export type QueryPoolGetAllPoolsSnapshotsArgs = {
+  chains?: InputMaybe<Array<GqlChain>>
   range: GqlPoolSnapshotDataRange
 }
 
@@ -1281,7 +1289,12 @@ export type QueryPoolGetJoinExitsArgs = {
   where?: InputMaybe<GqlPoolJoinExitFilter>
 }
 
+export type QueryPoolGetLinearPoolsArgs = {
+  chains?: InputMaybe<Array<GqlChain>>
+}
+
 export type QueryPoolGetPoolArgs = {
+  chain?: InputMaybe<GqlChain>
   id: Scalars['String']['input']
 }
 
@@ -1291,6 +1304,7 @@ export type QueryPoolGetPoolsArgs = {
   orderDirection?: InputMaybe<GqlPoolOrderDirection>
   skip?: InputMaybe<Scalars['Int']['input']>
   textSearch?: InputMaybe<Scalars['String']['input']>
+  userAddress?: InputMaybe<Scalars['String']['input']>
   where?: InputMaybe<GqlPoolFilter>
 }
 
@@ -1300,10 +1314,12 @@ export type QueryPoolGetPoolsCountArgs = {
   orderDirection?: InputMaybe<GqlPoolOrderDirection>
   skip?: InputMaybe<Scalars['Int']['input']>
   textSearch?: InputMaybe<Scalars['String']['input']>
+  userAddress?: InputMaybe<Scalars['String']['input']>
   where?: InputMaybe<GqlPoolFilter>
 }
 
 export type QueryPoolGetSnapshotsArgs = {
+  chain?: InputMaybe<GqlChain>
   id: Scalars['String']['input']
   range: GqlPoolSnapshotDataRange
 }
@@ -1382,12 +1398,21 @@ export type QueryUserGetPoolBalancesArgs = {
 }
 
 export type QueryUserGetPoolJoinExitsArgs = {
+  address?: InputMaybe<Scalars['String']['input']>
+  chain?: InputMaybe<GqlChain>
   first?: InputMaybe<Scalars['Int']['input']>
   poolId: Scalars['String']['input']
   skip?: InputMaybe<Scalars['Int']['input']>
 }
 
+export type QueryUserGetStakingArgs = {
+  address?: InputMaybe<Scalars['String']['input']>
+  chains?: InputMaybe<Array<GqlChain>>
+}
+
 export type QueryUserGetSwapsArgs = {
+  address?: InputMaybe<Scalars['String']['input']>
+  chain?: InputMaybe<GqlChain>
   first?: InputMaybe<Scalars['Int']['input']>
   poolId: Scalars['String']['input']
   skip?: InputMaybe<Scalars['Int']['input']>
@@ -1396,25 +1421,6 @@ export type QueryUserGetSwapsArgs = {
 export type GetTimestampQueryVariables = Exact<{ [key: string]: never }>
 
 export type GetTimestampQuery = { __typename?: 'Query'; timestamp: string }
-
-export type GetAppGlobalDataQueryVariables = Exact<{ [key: string]: never }>
-
-export type GetAppGlobalDataQuery = {
-  __typename?: 'Query'
-  blocksGetBlocksPerDay: number
-  blocksGetAverageBlockTime: number
-  tokenGetTokens: Array<{
-    __typename?: 'GqlToken'
-    address: string
-    name: string
-    symbol: string
-    decimals: number
-    chainId: number
-    logoURI?: string | null
-    priority: number
-    tradable: boolean
-  }>
-}
 
 export type GetAppGlobalPollingDataQueryVariables = Exact<{ [key: string]: never }>
 
@@ -1434,7 +1440,9 @@ export type GetAppGlobalPollingDataQuery = {
   }
 }
 
-export type GetTokensQueryVariables = Exact<{ [key: string]: never }>
+export type GetTokensQueryVariables = Exact<{
+  chains: Array<GqlChain> | GqlChain
+}>
 
 export type GetTokensQuery = {
   __typename?: 'Query'
@@ -1452,11 +1460,18 @@ export type GetTokensQuery = {
   }>
 }
 
-export type GetTokenPricesQueryVariables = Exact<{ [key: string]: never }>
+export type GetTokenPricesQueryVariables = Exact<{
+  chains: Array<GqlChain> | GqlChain
+}>
 
 export type GetTokenPricesQuery = {
   __typename?: 'Query'
-  tokenPrices: Array<{ __typename?: 'GqlTokenPrice'; price: number; address: string }>
+  tokenPrices: Array<{
+    __typename?: 'GqlTokenPrice'
+    price: number
+    address: string
+    chain: GqlChain
+  }>
 }
 
 export type GetTokensDynamicDataQueryVariables = Exact<{
@@ -3975,40 +3990,6 @@ export const GetTimestampDocument = {
     },
   ],
 } as unknown as DocumentNode<GetTimestampQuery, GetTimestampQueryVariables>
-export const GetAppGlobalDataDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetAppGlobalData' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'tokenGetTokens' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'chainId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'logoURI' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'priority' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'tradable' } },
-              ],
-            },
-          },
-          { kind: 'Field', name: { kind: 'Name', value: 'blocksGetBlocksPerDay' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'blocksGetAverageBlockTime' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GetAppGlobalDataQuery, GetAppGlobalDataQueryVariables>
 export const GetAppGlobalPollingDataDocument = {
   kind: 'Document',
   definitions: [
@@ -4059,6 +4040,22 @@ export const GetTokensDocument = {
       kind: 'OperationDefinition',
       operation: 'query',
       name: { kind: 'Name', value: 'GetTokens' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'chains' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
+              },
+            },
+          },
+        },
+      ],
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
@@ -4066,6 +4063,13 @@ export const GetTokensDocument = {
             kind: 'Field',
             alias: { kind: 'Name', value: 'tokens' },
             name: { kind: 'Name', value: 'tokenGetTokens' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'chains' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'chains' } },
+              },
+            ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
@@ -4093,6 +4097,22 @@ export const GetTokenPricesDocument = {
       kind: 'OperationDefinition',
       operation: 'query',
       name: { kind: 'Name', value: 'GetTokenPrices' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'chains' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
+              },
+            },
+          },
+        },
+      ],
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
@@ -4100,11 +4120,19 @@ export const GetTokenPricesDocument = {
             kind: 'Field',
             alias: { kind: 'Name', value: 'tokenPrices' },
             name: { kind: 'Name', value: 'tokenGetCurrentPrices' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'chains' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'chains' } },
+              },
+            ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'price' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'chain' } },
               ],
             },
           },

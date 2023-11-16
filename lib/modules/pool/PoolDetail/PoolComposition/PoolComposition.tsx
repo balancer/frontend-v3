@@ -46,7 +46,8 @@ export function PoolComposition() {
                     <Td>{detail.symbol}</Td>
                     <Td>{detail.balance}</Td>
                     <Td>{detail.value}</Td>
-                    <Td>{detail.weight}</Td>
+                    {/* TODO if pool is weighted */}
+                    {/* <Td>{detail.weight}</Td> */}
                   </Tr>
                 )
               })}

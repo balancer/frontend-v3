@@ -115,6 +115,7 @@ interface GqlPoolBase {
 }
 
 type GqlPoolBatchSwap {
+  chain: GqlChain!
   id: ID!
   swaps: [GqlPoolBatchSwapSwap!]!
   timestamp: Int!
@@ -296,6 +297,7 @@ type GqlPoolInvestOption {
 
 type GqlPoolJoinExit {
   amounts: [GqlPoolJoinExitAmount!]!
+  chain: GqlChain!
   id: ID!
   poolId: String!
   sender: String!
@@ -311,6 +313,7 @@ type GqlPoolJoinExitAmount {
 }
 
 input GqlPoolJoinExitFilter {
+  chainIn: [GqlChain!]
   poolIdIn: [String!]
 }
 
@@ -544,6 +547,7 @@ type GqlPoolPhantomStableNested {
 
 type GqlPoolSnapshot {
   amounts: [String!]!
+  chain: GqlChain!
   fees24h: String!
   holdersCount: String!
   id: ID!
@@ -599,6 +603,7 @@ type GqlPoolStablePhantomPoolData {
 
 type GqlPoolStaking {
   address: String!
+  chain: GqlChain!
   gauge: GqlPoolStakingGauge
   id: ID!
   type: GqlPoolStakingType!
@@ -639,6 +644,7 @@ enum GqlPoolStakingType {
 }
 
 type GqlPoolSwap {
+  chain: GqlChain!
   id: ID!
   poolId: String!
   timestamp: Int!
@@ -652,6 +658,7 @@ type GqlPoolSwap {
 }
 
 input GqlPoolSwapFilter {
+  chainIn: [GqlChain!]
   poolIdIn: [String!]
   tokenInIn: [String!]
   tokenOutIn: [String!]
@@ -1073,15 +1080,15 @@ type Query {
   blocksGetBlocksPerYear: Float!
   contentGetNewsItems: [GqlContentNewsItem!]!
   latestSyncedBlocks: GqlLatestSyncedBlocks!
-  poolGetAllPoolsSnapshots(range: GqlPoolSnapshotDataRange!): [GqlPoolSnapshot!]!
+  poolGetAllPoolsSnapshots(chains: [GqlChain!], range: GqlPoolSnapshotDataRange!): [GqlPoolSnapshot!]!
   poolGetBatchSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolBatchSwap!]!
   poolGetFeaturedPoolGroups: [GqlPoolFeaturedPoolGroup!]!
   poolGetJoinExits(first: Int, skip: Int, where: GqlPoolJoinExitFilter): [GqlPoolJoinExit!]!
-  poolGetLinearPools: [GqlPoolLinear!]!
-  poolGetPool(id: String!): GqlPoolBase!
-  poolGetPools(first: Int, orderBy: GqlPoolOrderBy, orderDirection: GqlPoolOrderDirection, skip: Int, textSearch: String, where: GqlPoolFilter): [GqlPoolMinimal!]!
-  poolGetPoolsCount(first: Int, orderBy: GqlPoolOrderBy, orderDirection: GqlPoolOrderDirection, skip: Int, textSearch: String, where: GqlPoolFilter): Int!
-  poolGetSnapshots(id: String!, range: GqlPoolSnapshotDataRange!): [GqlPoolSnapshot!]!
+  poolGetLinearPools(chains: [GqlChain!]): [GqlPoolLinear!]!
+  poolGetPool(chain: GqlChain, id: String!): GqlPoolBase!
+  poolGetPools(first: Int, orderBy: GqlPoolOrderBy, orderDirection: GqlPoolOrderDirection, skip: Int, textSearch: String, userAddress: String, where: GqlPoolFilter): [GqlPoolMinimal!]!
+  poolGetPoolsCount(first: Int, orderBy: GqlPoolOrderBy, orderDirection: GqlPoolOrderDirection, skip: Int, textSearch: String, userAddress: String, where: GqlPoolFilter): Int!
+  poolGetSnapshots(chain: GqlChain, id: String!, range: GqlPoolSnapshotDataRange!): [GqlPoolSnapshot!]!
   poolGetSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolSwap!]!
   protocolMetricsAggregated(chainIds: [String!]!): GqlProtocolMetricsAggregated!
   protocolMetricsChain: GqlProtocolMetricsChain!
@@ -1099,9 +1106,9 @@ type Query {
   tokenGetTokensData(addresses: [String!]!): [GqlTokenData!]!
   tokenGetTokensDynamicData(addresses: [String!]!): [GqlTokenDynamicData!]!
   userGetPoolBalances(address: String, chains: [GqlChain!]): [GqlUserPoolBalance!]!
-  userGetPoolJoinExits(first: Int = 10, poolId: String!, skip: Int = 0): [GqlPoolJoinExit!]!
-  userGetStaking: [GqlPoolStaking!]!
-  userGetSwaps(first: Int = 10, poolId: String!, skip: Int = 0): [GqlPoolSwap!]!
+  userGetPoolJoinExits(address: String, chain: GqlChain, first: Int = 10, poolId: String!, skip: Int = 0): [GqlPoolJoinExit!]!
+  userGetStaking(address: String, chains: [GqlChain!]): [GqlPoolStaking!]!
+  userGetSwaps(address: String, chain: GqlChain, first: Int = 10, poolId: String!, skip: Int = 0): [GqlPoolSwap!]!
   veBalGetTotalSupply: AmountHumanReadable!
   veBalGetUser: GqlVeBalUserData!
   veBalGetUserBalance: AmountHumanReadable!

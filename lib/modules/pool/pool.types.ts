@@ -48,6 +48,8 @@ export const poolTypeFilters = [
 
 export type PoolFilterType = (typeof poolTypeFilters)[number]
 
+export type SortingState = PoolsColumnSort[]
+
 // We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
 export const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolFilterType[] } = {
   [GqlPoolFilterType.Weighted]: [GqlPoolFilterType.Weighted],
@@ -65,6 +67,12 @@ export const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolFilterType[] } = {
     GqlPoolFilterType.Gyro3,
     GqlPoolFilterType.Gyroe,
   ],
+}
+
+export const orderByHash: { [key: string]: string } = {
+  totalLiquidity: 'TVL',
+  volume24h: 'Volume (24h)',
+  apr: 'APR',
 }
 
 export const poolListQueryStateParsers = {

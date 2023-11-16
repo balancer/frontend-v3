@@ -4,9 +4,10 @@ import ReactECharts from 'echarts-for-react'
 import { PoolChartTypeTabs } from './PoolChartTypeTabs'
 import { usePoolCharts } from './usePoolCharts'
 import { PoolChartPeriodSelector } from './PoolChartPeriodSelector'
-import numeral from 'numeral'
+import { useNumbers } from '@/lib/shared/hooks/useNumbers'
 
 export function PoolChart() {
+  const { toCurrency } = useNumbers()
   const {
     activeTab,
     setActiveTab,
@@ -50,7 +51,7 @@ export function PoolChart() {
             />
           </HStack>
           <Stack gap="0" textAlign="right">
-            <Text fontSize="24px">{numeral(chartValue).format('($0,0)')}</Text>
+            <Text fontSize="24px">{toCurrency(chartValue)}</Text>
             <Text>{chartDate}</Text>
           </Stack>
         </HStack>
