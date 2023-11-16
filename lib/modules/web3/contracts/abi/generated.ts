@@ -1,3 +1,6 @@
+import { useContractRead, UseContractReadConfig } from 'wagmi'
+import { ReadContractResult } from 'wagmi/actions'
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VaultV2
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -628,3 +631,47 @@ export const erc20ABI = [
     outputs: [{ name: '', type: 'bool' }],
   },
 ] as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// React
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link vaultV2ABI}__.
+ *
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xBA12222222228d8Ba445958a75a0704d566BF2C8)
+ */
+export function useVaultV2Read<
+  TFunctionName extends string,
+  TSelectData = ReadContractResult<typeof vaultV2ABI, TFunctionName>,
+>(
+  config: Omit<
+    UseContractReadConfig<typeof vaultV2ABI, TFunctionName, TSelectData>,
+    'abi' | 'address'
+  > & { chainId?: keyof typeof vaultV2Address } = {} as any,
+) {
+  return useContractRead({
+    abi: vaultV2ABI,
+    address: vaultV2Address[1],
+    ...config,
+  } as UseContractReadConfig<typeof vaultV2ABI, TFunctionName, TSelectData>)
+}
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc20ABI}__.
+ */
+export function useErc20Read<
+  TFunctionName extends string,
+  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>,
+>(
+  config: Omit<
+    UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
+    'abi'
+  > = {} as any,
+) {
+  return useContractRead({ abi: erc20ABI, ...config } as UseContractReadConfig<
+    typeof erc20ABI,
+    TFunctionName,
+    TSelectData
+  >)
+}
