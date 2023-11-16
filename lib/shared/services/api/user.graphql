@@ -1,0 +1,30 @@
+query GetUserData($address: String, $chains: [GqlChain!]) {
+  staking: userGetStaking(address: $address, chains: $chains) {
+    id
+    type
+    address
+    gauge {
+      id
+      gaugeAddress
+      version
+      status
+      otherGauges {
+        gaugeAddress
+        version
+        status
+        id
+        rewards {
+          id
+          tokenAddress
+          rewardPerSecond
+        }
+      }
+      rewards {
+        id
+        rewardPerSecond
+        tokenAddress
+      }
+    }
+  }
+  veBALUserBalance: veBalGetUserBalance
+}

@@ -266,6 +266,7 @@ export type GqlPoolFilter = {
   poolTypeNotIn?: InputMaybe<Array<GqlPoolFilterType>>
   tokensIn?: InputMaybe<Array<Scalars['String']['input']>>
   tokensNotIn?: InputMaybe<Array<Scalars['String']['input']>>
+  userAddress?: InputMaybe<Scalars['String']['input']>
 }
 
 export enum GqlPoolFilterCategory {
@@ -1304,7 +1305,6 @@ export type QueryPoolGetPoolsArgs = {
   orderDirection?: InputMaybe<GqlPoolOrderDirection>
   skip?: InputMaybe<Scalars['Int']['input']>
   textSearch?: InputMaybe<Scalars['String']['input']>
-  userAddress?: InputMaybe<Scalars['String']['input']>
   where?: InputMaybe<GqlPoolFilter>
 }
 
@@ -1314,7 +1314,6 @@ export type QueryPoolGetPoolsCountArgs = {
   orderDirection?: InputMaybe<GqlPoolOrderDirection>
   skip?: InputMaybe<Scalars['Int']['input']>
   textSearch?: InputMaybe<Scalars['String']['input']>
-  userAddress?: InputMaybe<Scalars['String']['input']>
   where?: InputMaybe<GqlPoolFilter>
 }
 
@@ -3368,6 +3367,48 @@ export type GqlTokenDynamicDataFragment = {
   low24h: number
   updatedAt: string
 } & { ' $fragmentName'?: 'GqlTokenDynamicDataFragment' }
+
+export type GetUserDataQueryVariables = Exact<{
+  address?: InputMaybe<Scalars['String']['input']>
+  chains?: InputMaybe<Array<GqlChain> | GqlChain>
+}>
+
+export type GetUserDataQuery = {
+  __typename?: 'Query'
+  veBALUserBalance: string
+  staking: Array<{
+    __typename?: 'GqlPoolStaking'
+    id: string
+    type: GqlPoolStakingType
+    address: string
+    gauge?: {
+      __typename?: 'GqlPoolStakingGauge'
+      id: string
+      gaugeAddress: string
+      version: number
+      status: GqlPoolStakingGaugeStatus
+      otherGauges?: Array<{
+        __typename?: 'GqlPoolStakingOtherGauge'
+        gaugeAddress: string
+        version: number
+        status: GqlPoolStakingGaugeStatus
+        id: string
+        rewards: Array<{
+          __typename?: 'GqlPoolStakingGaugeReward'
+          id: string
+          tokenAddress: string
+          rewardPerSecond: string
+        }>
+      }> | null
+      rewards: Array<{
+        __typename?: 'GqlPoolStakingGaugeReward'
+        id: string
+        rewardPerSecond: string
+        tokenAddress: string
+      }>
+    } | null
+  }>
+}
 
 export const GqlPoolTokenFragmentDoc = {
   kind: 'Document',
@@ -6712,3 +6753,119 @@ export const GetTradeSelectedTokenDataDocument = {
   GetTradeSelectedTokenDataQuery,
   GetTradeSelectedTokenDataQueryVariables
 >
+export const GetUserDataDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetUserData' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'address' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'chains' } },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'staking' },
+            name: { kind: 'Name', value: 'userGetStaking' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'address' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'address' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'chains' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'chains' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'gauge' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'gaugeAddress' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'version' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'otherGauges' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'gaugeAddress' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'version' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'rewards' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'tokenAddress' } },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'rewardPerSecond' },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'rewards' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'rewardPerSecond' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'tokenAddress' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'veBALUserBalance' },
+            name: { kind: 'Name', value: 'veBalGetUserBalance' },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetUserDataQuery, GetUserDataQueryVariables>
