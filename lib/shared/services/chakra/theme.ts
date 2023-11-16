@@ -10,7 +10,7 @@ const tokens = {
         // Background colors
         base: 'hsla(43,23%,92%,1)',
         special: 'linear-gradient(90deg, #8F86FD 0%, #A66CF3 33%, #F48975 100%)',
-        cards: {
+        card: {
           level0: 'hsla(43,23%,92%,1)',
           level1: 'hsla(43,23%,93%,1)',
           level2: 'hsla(43,23%,94%,1)',
@@ -24,7 +24,7 @@ const tokens = {
       },
 
       // Button colors
-      buttons: {
+      button: {
         background: {
           primary: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
           secondary: 'linear-gradient(152deg, #E5D3BE 20.87%, #E6C6A0 86.96%)',
@@ -37,7 +37,7 @@ const tokens = {
       },
 
       // Font colors
-      fonts: {
+      text: {
         primary: 'linear-gradient(45deg, rgba(45, 76, 126, 1) 0%, rgba(45, 76, 126, 0.75) 100%)',
         secondary: 'linear-gradient(45deg, #728097 0%, #909BAD 100%)',
         special: 'linear-gradient(90deg, #8F86FD 0%, #A66CF3 33%, #F48975 100%)',
@@ -49,7 +49,7 @@ const tokens = {
       background: {
         base: 'hsla(217,12%,29%,1)',
         special: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
-        cards: {
+        card: {
           level0: 'hsla(216, 12%, 25%, 1)',
           level1: 'hsla(216, 12%, 26%, 1)',
           level2: 'hsla(216, 12%, 27%, 1)',
@@ -63,7 +63,7 @@ const tokens = {
       },
 
       // Button colors
-      buttons: {
+      button: {
         background: {
           primary: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
           secondary: 'linear-gradient(152deg, #E5D3BE 20.87%, #E6C6A0 86.96%)',
@@ -76,7 +76,7 @@ const tokens = {
       },
 
       // Font colors
-      fonts: {
+      text: {
         primary: 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
         secondary: 'linear-gradient(45deg, #909BAD 0%, #728097 100%)',
         special: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
@@ -101,7 +101,7 @@ export const balTheme = {
     initialColorMode: 'light',
     useSystemColorMode: false,
   },
-  fonts: {
+  text: {
     heading: `'Satoshi', sans-serif`,
     body: `'Satoshi', sans-serif`,
   },
@@ -234,85 +234,85 @@ export const balTheme = {
           default: tokens.colors.light.background.special,
           _dark: tokens.colors.dark.background.special,
         },
-        cards: {
+        card: {
           colorCardBgLevel0: {
-            default: tokens.colors.light.background.cards.level0,
-            _dark: tokens.colors.dark.background.cards.level0,
+            default: tokens.colors.light.background.card.level0,
+            _dark: tokens.colors.dark.background.card.level0,
           },
           colorCardBgLevel1: {
-            default: tokens.colors.light.background.cards.level1,
-            _dark: tokens.colors.dark.background.cards.level1,
+            default: tokens.colors.light.background.card.level1,
+            _dark: tokens.colors.dark.background.card.level1,
           },
           colorCardBgLevel2: {
-            default: tokens.colors.light.background.cards.level2,
-            _dark: tokens.colors.dark.background.cards.level2,
+            default: tokens.colors.light.background.card.level2,
+            _dark: tokens.colors.dark.background.card.level2,
           },
           colorCardBgLevel3: {
-            default: tokens.colors.light.background.cards.level3,
-            _dark: tokens.colors.dark.background.cards.level3,
+            default: tokens.colors.light.background.card.level3,
+            _dark: tokens.colors.dark.background.card.level3,
           },
           colorCardBgLevel4: {
-            default: tokens.colors.light.background.cards.level4,
-            _dark: tokens.colors.dark.background.cards.level4,
+            default: tokens.colors.light.background.card.level4,
+            _dark: tokens.colors.dark.background.card.level4,
           },
           colorCardBgLevel5: {
-            default: tokens.colors.light.background.cards.level5,
-            _dark: tokens.colors.dark.background.cards.level5,
+            default: tokens.colors.light.background.card.level5,
+            _dark: tokens.colors.dark.background.card.level5,
           },
           colorCardBgLevel6: {
-            default: tokens.colors.light.background.cards.level6,
-            _dark: tokens.colors.dark.background.cards.level6,
+            default: tokens.colors.light.background.card.level6,
+            _dark: tokens.colors.dark.background.card.level6,
           },
           colorCardBgLevel7: {
-            default: tokens.colors.light.background.cards.level7,
-            _dark: tokens.colors.dark.background.cards.level7,
+            default: tokens.colors.light.background.card.level7,
+            _dark: tokens.colors.dark.background.card.level7,
           },
           colorCardBgLevel8: {
-            default: tokens.colors.light.background.cards.level8,
-            _dark: tokens.colors.dark.background.cards.level8,
+            default: tokens.colors.light.background.card.level8,
+            _dark: tokens.colors.dark.background.card.level8,
           },
         },
       },
 
       // Button colors
-      buttons: {
+      button: {
         primary: {
-          default: tokens.colors.light.buttons.background.primary,
-          _dark: tokens.colors.dark.buttons.background.primary,
+          default: tokens.colors.light.button.background.primary,
+          _dark: tokens.colors.dark.button.background.primary,
         },
         secondary: {
-          default: tokens.colors.light.buttons.background.secondary,
-          _dark: tokens.colors.dark.buttons.background.secondary,
+          default: tokens.colors.light.button.background.secondary,
+          _dark: tokens.colors.dark.button.background.secondary,
         },
         tertiary: {
-          default: tokens.colors.light.buttons.background.tertiary,
-          _dark: tokens.colors.dark.buttons.background.tertiary,
+          default: tokens.colors.light.button.background.tertiary,
+          _dark: tokens.colors.dark.button.background.tertiary,
         },
         border: {
           tertiary: {
-            default: tokens.colors.light.buttons.border.tertiary,
-            _dark: tokens.colors.dark.buttons.border.tertiary,
+            default: tokens.colors.light.button.border.tertiary,
+            _dark: tokens.colors.dark.button.border.tertiary,
           },
         },
       },
 
       // Text colors
-      font: {
+      text: {
         primary: {
-          default: tokens.colors.light.fonts.primary,
-          _dark: tokens.colors.dark.fonts.primary,
+          default: tokens.colors.light.text.primary,
+          _dark: tokens.colors.dark.text.primary,
         },
         secondary: {
-          default: tokens.colors.light.fonts.secondary,
-          _dark: tokens.colors.dark.fonts.secondary,
+          default: tokens.colors.light.text.secondary,
+          _dark: tokens.colors.dark.text.secondary,
         },
         special: {
-          default: tokens.colors.light.fonts.special,
-          _dark: tokens.colors.dark.fonts.special,
+          default: tokens.colors.light.text.special,
+          _dark: tokens.colors.dark.text.special,
         },
         link: {
-          default: tokens.colors.light.fonts.link,
-          _dark: tokens.colors.dark.fonts.link,
+          default: tokens.colors.light.text.link,
+          _dark: tokens.colors.dark.text.link,
         },
         dark: '#414853',
         light: '#F3F1EC',
@@ -532,12 +532,12 @@ export const balTheme = {
           fontWeight: 'bold',
           borderRadius: '4px',
           _hover: {
-            bgGradient: 'linear(to-l, gradients.button.sand.from, gradients.button.sand.to)',
+            bgGradient: 'button.background.secondary',
             color: 'text.primary',
           },
         },
         buttonGroupActive: {
-          bgGradient: 'linear(to-l, gradients.button.sand.from, gradients.button.sand.to)',
+          bgGradient: 'button.background.secondary',
           height: 'fit-content',
           width: 'fit-content',
           px: '2',
