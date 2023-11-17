@@ -35,7 +35,7 @@ export function useTokenBalances(tokens: GqlToken[]) {
 
   const tokenBalancesQuery = useContractReads({
     contracts,
-    allowFailure: false,
+    allowFailure: true,
     enabled: !!userAddress,
     cacheTime: BALANCE_CACHE_TIME_MS,
   })
@@ -46,12 +46,13 @@ export function useTokenBalances(tokens: GqlToken[]) {
 
   const balances: TokenAmount[] = (tokenBalancesQuery.data || []).map((balance, index) => {
     const token = _tokens[index]
+    const amount = balance.status === 'success' ? (balance.result as bigint) : 0n
 
     return {
       chainId: networkConfig.chainId,
       address: token.address,
-      amount: balance,
-      formatted: formatUnits(balance, token.decimals),
+      amount,
+      formatted: formatUnits(amount, token.decimals),
       decimals: token.decimals,
     }
   })
