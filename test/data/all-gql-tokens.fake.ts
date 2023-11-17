@@ -1,9 +1,10 @@
-import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { TokenBase } from '@/lib/modules/tokens/token.types'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 /* TBD:
  Maybe adding a command to reload this file (with 10 tokens for each chain) from a real request
  */
-export const allFakeGqlTokens: GqlToken[] = [
+export const allFakeGqlTokens = [
   {
     __typename: 'GqlToken',
     address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
@@ -109,7 +110,7 @@ export const allFakeGqlTokens: GqlToken[] = [
   },
 ]
 
-export function fakeTokenBySymbol(symbol: string) {
+export function fakeTokenBySymbol(symbol: string): TokenBase {
   const token = allFakeGqlTokens.find(token => token.symbol === symbol)
   if (!token) {
     console.log(

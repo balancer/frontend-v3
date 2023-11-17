@@ -4,15 +4,14 @@ import { useUserAccount } from '../web3/useUserAccount'
 import { Erc20Abi } from '../web3/contracts/contract.types'
 import { Address, erc20ABI, useBalance, useContractReads } from 'wagmi'
 import { useTokens } from './useTokens'
-import { TokenAmount } from './token.types'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { TokenAmount, TokenBase } from './token.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { ContractFunctionConfig, formatUnits } from 'viem'
 import { isLoadingQueries, isRefetchingQueries } from '@/lib/shared/utils/queries'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
-export function useTokenBalances(tokens: GqlToken[]) {
+export function useTokenBalances(tokens: TokenBase[]) {
   const { userAddress } = useUserAccount()
   const { exclNativeAssetFilter, nativeAssetFilter } = useTokens()
   const networkConfig = useNetworkConfig()

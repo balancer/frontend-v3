@@ -15,6 +15,7 @@ import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { createContext, PropsWithChildren } from 'react'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import { TokenBase } from './token.types'
 
 export type UseTokensResult = ReturnType<typeof _useTokens>
 export const TokensContext = createContext<UseTokensResult | null>(null)
@@ -33,14 +34,14 @@ export function _useTokens(
   const tokens = [...new Set(tokensData?.tokens || initTokenData.tokens)]
   const prices = tokenPricesData?.tokenPrices || initTokenPricesData.tokenPrices
 
-  const nativeAssetFilter = (token: GqlToken | string) => {
+  const nativeAssetFilter = (token: TokenBase | string) => {
     if (typeof token === 'string') {
       return isSameAddress(token, networkConfig.tokens.nativeAsset.address)
     }
     return isSameAddress(token.address, networkConfig.tokens.nativeAsset.address)
   }
 
-  const exclNativeAssetFilter = (token: GqlToken | string) => {
+  const exclNativeAssetFilter = (token: TokenBase | string) => {
     if (typeof token === 'string') {
       return !isSameAddress(token, networkConfig.tokens.nativeAsset.address)
     }
