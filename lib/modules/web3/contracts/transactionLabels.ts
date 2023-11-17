@@ -1,6 +1,6 @@
 import { TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { TokenBase } from '../../tokens/token.types'
 import { TransactionBundle } from './contract.types'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 
 export type BuildTransactionLabels = (
   args?: any,
@@ -15,7 +15,7 @@ enum ApprovalAction {
 }
 
 interface ApproveTokenParams {
-  token: TokenBase
+  token: GqlToken
   normalizedAmount: string
   spender: string //Gauge Address
   actionType: ApprovalAction
