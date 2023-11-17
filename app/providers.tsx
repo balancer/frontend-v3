@@ -7,7 +7,6 @@ import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTra
 import { ApolloGlobalDataProvider } from '@/lib/shared/services/api/apollo-global-data.provider'
 import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
 import { COOKIE_KEYS } from '@/lib/modules/cookies/cookie.constants'
-import { UserDataProvider } from '@/lib/modules/user/useUserData'
 
 export function Providers({ children }: { children: ReactNode }) {
   const initialColorMode = cookies().get(COOKIE_KEYS.UserSettings.ColorMode)?.value
@@ -18,11 +17,9 @@ export function Providers({ children }: { children: ReactNode }) {
       <Web3Provider>
         <ApolloClientProvider>
           <ApolloGlobalDataProvider>
-            <UserDataProvider>
-              <UserSettingsProvider initCurrency={initCurrency}>
-                <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
-              </UserSettingsProvider>
-            </UserDataProvider>
+            <UserSettingsProvider initCurrency={initCurrency}>
+              <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+            </UserSettingsProvider>
           </ApolloGlobalDataProvider>
         </ApolloClientProvider>
       </Web3Provider>

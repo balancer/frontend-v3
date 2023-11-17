@@ -5,7 +5,7 @@ import {
   defaultGetTokenPricesQueryMock,
   defaultGetTokensQueryMock,
   defaultGetTokensQueryVariablesMock,
-  defaultTokenBaseMock,
+  defaultTokenMock,
 } from './__mocks__/token.builders'
 
 test('fetches tokens', async () => {
@@ -19,5 +19,5 @@ test('fetches tokens', async () => {
 
   await waitFor(() => expect(result.current.tokens.length).toBeGreaterThan(0))
 
-  expect(result.current.tokens).toMatchObject([defaultTokenBaseMock])
+  expect(result.current.tokens).toMatchObject([defaultTokenMock])
 })

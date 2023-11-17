@@ -14,6 +14,7 @@ import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { createContext, PropsWithChildren } from 'react'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
 export type UseTokensResult = ReturnType<typeof _useTokens>
 export const TokensContext = createContext<UseTokensResult | null>(null)
@@ -23,14 +24,36 @@ export function _useTokens(
   initTokenPricesData: GetTokenPricesQuery,
   variables: GetTokensQueryVariables
 ) {
+  const networkConfig = useNetworkConfig()
+
   const { data: tokensData } = useQuery(GetTokensDocument, { variables })
   const { data: tokenPricesData } = useQuery(GetTokenPricesDocument)
 
-  const tokens = tokensData?.tokens || initTokenData.tokens
+  // 'new Set' for temp removal of duplicates, should be fixed in API
+  const tokens = [...new Set(tokensData?.tokens || initTokenData.tokens)]
   const prices = tokenPricesData?.tokenPrices || initTokenPricesData.tokenPrices
+
+  const nativeAssetFilter = (token: GqlToken | string) => {
+    if (typeof token === 'string') {
+      return isSameAddress(token, networkConfig.tokens.nativeAsset.address)
+    }
+    return isSameAddress(token.address, networkConfig.tokens.nativeAsset.address)
+  }
+
+  const exclNativeAssetFilter = (token: GqlToken | string) => {
+    if (typeof token === 'string') {
+      return !isSameAddress(token, networkConfig.tokens.nativeAsset.address)
+    }
+    return !isSameAddress(token.address, networkConfig.tokens.nativeAsset.address)
+  }
 
   function getToken(address: string, chain: GqlChain): GqlToken | undefined {
     return tokens.find(token => isSameAddress(token.address, address) && token.chain === chain)
+  }
+
+  function getTokensByChain(chain: number | GqlChain): GqlToken[] {
+    const key = typeof chain === 'number' ? 'chainId' : 'chain'
+    return tokens.filter(token => token[key] === chain)
   }
 
   function priceForToken(token: GqlToken): number {
@@ -49,7 +72,16 @@ export function _useTokens(
     return priceForToken(token)
   }
 
-  return { tokens, prices, getToken, priceFor, priceForToken }
+  return {
+    tokens,
+    prices,
+    getToken,
+    priceFor,
+    priceForToken,
+    getTokensByChain,
+    exclNativeAssetFilter,
+    nativeAssetFilter,
+  }
 }
 
 export function TokensProvider({
