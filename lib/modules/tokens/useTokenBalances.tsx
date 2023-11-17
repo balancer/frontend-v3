@@ -7,7 +7,7 @@ import { useTokens } from './useTokens'
 import { TokenAmount, TokenBase } from './token.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { ContractFunctionConfig, formatUnits } from 'viem'
-import { isLoadingQueries, isRefetchingQueries } from '@/lib/shared/utils/queries'
+import { isLoadingQueries, isRefetchingQueries, refetchQueries } from '@/lib/shared/utils/queries'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
@@ -40,7 +40,7 @@ export function useTokenBalances(tokens: TokenBase[]) {
   })
 
   async function refetchBalances() {
-    return Promise.all([tokenBalancesQuery.refetch, nativeBalanceQuery.refetch])
+    return refetchQueries(tokenBalancesQuery, nativeBalanceQuery)
   }
 
   const balances: TokenAmount[] = (tokenBalancesQuery.data || []).map((balance, index) => {
