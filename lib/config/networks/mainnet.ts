@@ -19,6 +19,7 @@ const networkConfig: NetworkConfig = {
       vaultV2: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
     },
   },
+  etherscanUrl: 'https://etherscan.io/',
 }
 
 export default networkConfig

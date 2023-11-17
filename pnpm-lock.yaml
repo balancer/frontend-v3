@@ -148,6 +148,9 @@ devDependencies:
   '@chakra-ui/styled-system':
     specifier: ^2.9.1
     version: 2.9.1
+  '@ethersproject/constants':
+    specifier: ^5.7.0
+    version: 5.7.0
   '@graphql-codegen/cli':
     specifier: ^5.0.0
     version: 5.0.0(@types/node@20.3.2)(graphql@16.8.1)(typescript@5.1.6)
@@ -241,6 +244,9 @@ devDependencies:
   prettier:
     specifier: ^2.8.8
     version: 2.8.8
+  react-jazzicon:
+    specifier: ^1.0.4
+    version: 1.0.4(react-dom@18.2.0)(react@18.2.0)
   stylelint:
     specifier: ^15.9.0
     version: 15.11.0(typescript@5.1.6)
@@ -2873,6 +2879,30 @@ packages:
     resolution: {integrity: sha512-s2UHCoiXfxMvmfzqoN+vrQ84ahUSYde9qNO1MdxmoEhyHWsfmwOpFlwYV+ePJEVc7gFnATGUi376WowX1N7tFg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
+  /@ethersproject/bignumber@5.7.0:
+    resolution: {integrity: sha512-n1CAdIHRWjSucQO3MC1zPSVgV/6dy/fjL9pMrPP9peL+QxEg9wOsVqwD4+818B6LUEtaXzVHQiuivzRoxPxUGw==}
+    dependencies:
+      '@ethersproject/bytes': 5.7.0
+      '@ethersproject/logger': 5.7.0
+      bn.js: 5.2.1
+    dev: true
+
+  /@ethersproject/bytes@5.7.0:
+    resolution: {integrity: sha512-nsbxwgFXWh9NyYWo+U8atvmMsSdKJprTcICAkvbBffT75qDocbuggBU0SJiVK2MuTrp0q+xvLkTnGMPK1+uA9A==}
+    dependencies:
+      '@ethersproject/logger': 5.7.0
+    dev: true
+
+  /@ethersproject/constants@5.7.0:
+    resolution: {integrity: sha512-DHI+y5dBNvkpYUMiRQyxRBYBefZkJfo70VUkUAsRjcPs47muV9evftfZ0PJVCXYbAiCgght0DtcF9srFQmIgWA==}
+    dependencies:
+      '@ethersproject/bignumber': 5.7.0
+    dev: true
+
+  /@ethersproject/logger@5.7.0:
+    resolution: {integrity: sha512-0odtFdXu/XHtjQXJYA3u9G0G8btm0ND5Cu8M7i5vhEcE8/HmF4Lbdqanwyv4uQTr2tx6b7fQRmgLrsnpQlmnig==}
+    dev: true
+
   /@graphql-codegen/add@5.0.0(graphql@16.8.1):
     resolution: {integrity: sha512-ynWDOsK2yxtFHwcJTB9shoSkUd7YXd6ZE57f0nk7W5cu/nAgxZZpEsnTPEpZB/Mjf14YRGe2uJHQ7AfElHjqUQ==}
     peerDependencies:
@@ -4145,7 +4175,7 @@ packages:
   /@tanstack/react-query-persist-client@4.36.1(@tanstack/react-query@4.36.1):
     resolution: {integrity: sha512-32I5b9aAu4NCiXZ7Te/KEQLfHbYeTNriVPrKYcvEThnZ9tlW01vLcSoxpUIsMYRsembvJUUAkzYBAiZHLOd6pQ==}
     peerDependencies:
-      '@tanstack/react-query': ^4.29.19
+      '@tanstack/react-query': ^4.36.1
     dependencies:
       '@tanstack/query-persist-client-core': 4.36.1
       '@tanstack/react-query': 4.36.1(react-dom@18.2.0)(react@18.2.0)
@@ -8838,6 +8868,10 @@ packages:
       '@types/node': 20.3.2
     dev: true
 
+  /mersenne-twister@1.1.0:
+    resolution: {integrity: sha512-mUYWsMKNrm4lfygPkL3OfGzOPTR2DBlTkBNHM//F6hGp8cLThY897crAlk3/Jo17LEOOjQUrNAx6DvgO77QJkA==}
+    dev: true
+
   /micromatch@4.0.5:
     resolution: {integrity: sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==}
     engines: {node: '>=8.6'}
@@ -9786,6 +9820,17 @@ packages:
 
   /react-is@18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
+    dev: true
+
+  /react-jazzicon@1.0.4(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-/3kWv5vtAhI18GBFoqjpxRTtL+EImuB73PAC02r/zJQ6E+PAUmoBx8edYvTCIYHwS01uFf6N3elTDqSrVPwg4w==}
+    peerDependencies:
+      react: '>=17.0.0 || ^18.0.0'
+      react-dom: '>=17.0.0 || ^18.0.0'
+    dependencies:
+      mersenne-twister: 1.1.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: true
 
   /react-refresh@0.14.0:

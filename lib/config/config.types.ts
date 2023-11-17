@@ -27,6 +27,7 @@ export interface NetworkConfig {
   iconPath: string
   tokens: TokensConfig
   contracts: ContractsConfig
+  etherscanUrl?: string
 }
 
 export interface Config {

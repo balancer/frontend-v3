@@ -31,7 +31,7 @@ export function _usePool({
 
   const pool = data?.pool || initialData.pool
 
-  return { pool, loading, refetch }
+  return { pool, chain, loading, refetch }
 }
 
 export function PoolProvider({
