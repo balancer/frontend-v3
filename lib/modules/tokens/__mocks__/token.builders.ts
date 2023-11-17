@@ -1,6 +1,23 @@
-import { TokenAmount } from '../token.types'
-import { TokenBase } from '@/lib/modules/tokens/token.types'
+import { TokenAmount, TokenBase } from '../token.types'
 import { fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
+import { TokenAllowances } from '../../web3/useTokenAllowances'
+import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
+import {
+  GetTokenPricesQuery,
+  GetTokensQuery,
+  GetTokensQueryVariables,
+} from '@/lib/shared/services/api/generated/graphql'
+import { mock } from 'vitest-mock-extended'
+import { MswTokenList } from './token.test.types'
+import { MAX_BIGINT } from '@/lib/shared/hooks/useNumbers'
+
+export const defaultTokenMock = aTokenMock({ symbol: 'TEST-TOKEN' })
+export const defaultTokenListMock: MswTokenList = [defaultTokenMock as MswTokenList[0]]
+
+export const defaultGetTokensQueryMock: GetTokensQuery = mock<GetTokensQuery>()
+export const defaultGetTokensQueryVariablesMock: GetTokensQueryVariables =
+  mock<GetTokensQueryVariables>()
+export const defaultGetTokenPricesQueryMock: GetTokenPricesQuery = mock<GetTokenPricesQuery>()
 
 export function aTokenAmountMock(options?: Partial<TokenAmount>) {
   const defaultTokenAmount = {
@@ -17,7 +34,12 @@ export function someTokenAmountsMock(addresses: string[]) {
   return addresses.map(address => aTokenAmountMock({ address }))
 }
 
-export function aTokenBaseMock(...options: Partial<TokenBase>[]): TokenBase {
+export function aTokenMock(...options: Partial<TokenBase>[]): TokenBase {
   const defaultToken: TokenBase = fakeTokenBySymbol('BAL')
   return Object.assign({}, defaultToken, ...options)
+}
+
+export const someTokenAllowancesMock: TokenAllowances = {
+  [wETHAddress]: MAX_BIGINT,
+  [wjAuraAddress]: MAX_BIGINT,
 }

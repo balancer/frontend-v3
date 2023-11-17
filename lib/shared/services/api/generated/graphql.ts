@@ -266,6 +266,7 @@ export type GqlPoolFilter = {
   poolTypeNotIn?: InputMaybe<Array<GqlPoolFilterType>>
   tokensIn?: InputMaybe<Array<Scalars['String']['input']>>
   tokensNotIn?: InputMaybe<Array<Scalars['String']['input']>>
+  userAddress?: InputMaybe<Scalars['String']['input']>
 }
 
 export enum GqlPoolFilterCategory {
@@ -1304,7 +1305,6 @@ export type QueryPoolGetPoolsArgs = {
   orderDirection?: InputMaybe<GqlPoolOrderDirection>
   skip?: InputMaybe<Scalars['Int']['input']>
   textSearch?: InputMaybe<Scalars['String']['input']>
-  userAddress?: InputMaybe<Scalars['String']['input']>
   where?: InputMaybe<GqlPoolFilter>
 }
 
@@ -1314,7 +1314,6 @@ export type QueryPoolGetPoolsCountArgs = {
   orderDirection?: InputMaybe<GqlPoolOrderDirection>
   skip?: InputMaybe<Scalars['Int']['input']>
   textSearch?: InputMaybe<Scalars['String']['input']>
-  userAddress?: InputMaybe<Scalars['String']['input']>
   where?: InputMaybe<GqlPoolFilter>
 }
 

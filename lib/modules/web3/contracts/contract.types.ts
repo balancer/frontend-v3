@@ -1,12 +1,13 @@
 import {
+  erc20ABI,
   useContractWrite,
   usePrepareContractWrite,
   usePrepareSendTransaction,
   useSendTransaction,
   useWaitForTransaction,
 } from 'wagmi'
-import { Abi, Address } from 'viem'
-import { ChainId } from '@balancer/sdk'
+import { Abi, Address, ContractFunctionConfig, GetFunctionArgs } from 'viem'
+import { SupportedChainId } from '@/lib/config/config.types'
 
 export type TransactionSimulation =
   | ReturnType<typeof usePrepareContractWrite>
@@ -30,7 +31,7 @@ export type ReadAbiMutability = 'view'
 
 export type SdkTransactionConfig = {
   account: Address
-  chainId: ChainId
+  chainId: SupportedChainId
   data: Address
   to: Address
   value?: bigint
@@ -40,3 +41,5 @@ export type UsePrepareSendTransactionConfig = Exclude<
   Parameters<typeof usePrepareSendTransaction>[0],
   undefined
 >
+
+export type Erc20Abi = typeof erc20ABI

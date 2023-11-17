@@ -12,5 +12,6 @@ export const ProjectConfigBalancer: ProjectConfig = {
     GqlChain.Gnosis,
     GqlChain.Polygon,
     GqlChain.Zkevm,
+    GqlChain.Optimism,
   ],
 }

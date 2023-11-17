@@ -7,7 +7,6 @@ import '@/lib/shared/hooks/useNumbers'
 import Noise from './noise'
 import { satoshiFont } from '@/lib/assets/fonts/satoshi/satoshi'
 import NextTopLoader from 'nextjs-toploader'
-import { Box } from '@chakra-ui/react'
 
 const { projectName, projectId } = getProjectConfig()
 const iconUrl = `/images/icons/${projectId}.ico`

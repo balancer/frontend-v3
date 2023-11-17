@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   webpack: config => {
     config.resolve.fallback = { fs: false, net: false, tls: false }
@@ -30,6 +31,7 @@ const nextConfig = {
       },
     ],
   },
+  pageExtensions: ['tsx', `${process.env.PROTOCOL}.tsx`],
 }
 
 module.exports = nextConfig

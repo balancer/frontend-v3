@@ -22,10 +22,10 @@ import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
 import {
-  defaultGetTokensQueryMock,
   defaultGetTokenPricesQueryMock,
+  defaultGetTokensQueryMock,
   defaultGetTokensQueryVariablesMock,
-} from '../msw/handlers/Tokens.handlers'
+} from '@/lib/modules/tokens/__mocks__/token.builders'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode

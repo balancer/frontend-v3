@@ -1,10 +1,10 @@
 import { getNetworkConfig } from '@/lib/config/app.config'
+import { SupportedChainId } from '@/lib/config/config.types'
 import { SdkTransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { chains } from '@/lib/modules/web3/Web3Provider'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import {
-  ChainId,
   HumanAmount,
   JoinKind,
   PoolJoin,
@@ -35,7 +35,7 @@ export class JoinConfigBuilder {
   amountsInByTokenAddress: Dictionary<TokenAmount> = {}
 
   constructor(
-    private chainId: ChainId,
+    private chainId: SupportedChainId,
     private poolStateInput: PoolStateInput = NullPoolState,
     public joinType: JoinType = 'unbalanced'
   ) {

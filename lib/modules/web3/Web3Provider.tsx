@@ -10,7 +10,16 @@ import {
   Theme,
 } from '@rainbow-me/rainbowkit'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
-import { arbitrum, gnosis, mainnet, optimism, polygon, polygonZkEvm } from 'wagmi/chains'
+import {
+  arbitrum,
+  base,
+  fantom,
+  gnosis,
+  mainnet,
+  optimism,
+  polygon,
+  polygonZkEvm,
+} from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { infuraProvider } from 'wagmi/providers/infura'
@@ -20,7 +29,16 @@ import { balTheme } from '@/lib/shared/services/chakra/theme'
 import { CustomAvatar } from './CustomAvatar'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
-export const supportedChains = [mainnet, polygon, optimism, arbitrum, polygonZkEvm, gnosis]
+export const supportedChains = [
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  polygonZkEvm,
+  gnosis,
+  base,
+  fantom,
+]
 
 export const { chains, publicClient } = configureChains(supportedChains, [
   infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string }),
