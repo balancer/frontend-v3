@@ -18,9 +18,22 @@ export function TokenIcon({ token, alt, size = 36, ...rest }: Props & Omit<Image
     seed: token.address,
   })
 
+  function getIconSrc(): string | undefined {
+    if (!token.logoURI) return undefined
+
+    try {
+      new URL(token.logoURI)
+      return token.logoURI
+    } catch (error) {
+      return undefined
+    }
+  }
+
+  const iconSrc = getIconSrc()
+
   return (
     <Image
-      src={hasError || !token.logoURI ? fallbackSVG.toDataUriSync() : token.logoURI}
+      src={hasError || !iconSrc ? fallbackSVG.toDataUriSync() : iconSrc}
       alt={alt}
       width={size}
       height={size}

@@ -29,6 +29,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'assets-cdn.trustwallet.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'beethoven-assets.s3.eu-central-1.amazonaws.com',
+      },
     ],
   },
   pageExtensions: ['tsx', `${process.env.PROTOCOL}.tsx`],
