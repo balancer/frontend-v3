@@ -1,4 +1,4 @@
-import { TokenAmount } from '../token.types'
+import { TokenAmount, TokenBase } from '../token.types'
 import { fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
 import { TokenAllowances } from '../../web3/useTokenAllowances'
 import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
@@ -35,7 +35,7 @@ export function someTokenAmountsMock(addresses: string[]) {
   return addresses.map(address => aTokenAmountMock({ address }))
 }
 
-export function aTokenMock(...options: Partial<GqlToken>[]): GqlToken {
+export function aTokenMock(...options: Partial<GqlToken>[]): TokenBase {
   const defaultToken = fakeTokenBySymbol('BAL')
   return Object.assign({}, defaultToken, ...options)
 }
