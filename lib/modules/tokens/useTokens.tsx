@@ -16,6 +16,7 @@ import { createContext, PropsWithChildren } from 'react'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { TokenBase } from './token.types'
+import { uniq } from 'lodash'
 
 export type UseTokensResult = ReturnType<typeof _useTokens>
 export const TokensContext = createContext<UseTokensResult | null>(null)
@@ -30,8 +31,8 @@ export function _useTokens(
   const { data: tokensData } = useQuery(GetTokensDocument, { variables })
   const { data: tokenPricesData } = useQuery(GetTokenPricesDocument)
 
-  // 'new Set' for temp removal of duplicates, should be fixed in API
-  const tokens = [...new Set(tokensData?.tokens || initTokenData.tokens)]
+  // 'uniq' for temp removal of duplicates, should be fixed in API
+  const tokens = uniq(tokensData?.tokens || initTokenData.tokens)
   const prices = tokenPricesData?.tokenPrices || initTokenPricesData.tokenPrices
 
   const nativeAssetFilter = (token: TokenBase | string) => {
