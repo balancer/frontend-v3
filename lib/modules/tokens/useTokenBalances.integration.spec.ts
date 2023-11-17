@@ -3,8 +3,6 @@ import { testHook } from '@/test/utils/custom-renderers'
 import { act, waitFor } from '@testing-library/react'
 import { useTokenBalances } from './useTokenBalances'
 
-// const defaultTestAccount = '0x512fce9B07Ce64590849115EE6B32fd40eC0f5F3'
-
 test('fetches balance for native asset token', async () => {
   const nativeAssetBasicToken = fakeTokenBySymbol('ETH')
   const { result } = testHook(() => useTokenBalances([nativeAssetBasicToken]))
