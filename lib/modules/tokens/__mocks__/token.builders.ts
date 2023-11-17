@@ -6,7 +6,6 @@ import {
   GetTokenPricesQuery,
   GetTokensQuery,
   GetTokensQueryVariables,
-  GqlToken,
 } from '@/lib/shared/services/api/generated/graphql'
 import { mock } from 'vitest-mock-extended'
 import { MswTokenList } from './token.test.types'
@@ -35,8 +34,8 @@ export function someTokenAmountsMock(addresses: string[]) {
   return addresses.map(address => aTokenAmountMock({ address }))
 }
 
-export function aTokenMock(...options: Partial<GqlToken>[]): TokenBase {
-  const defaultToken = fakeTokenBySymbol('BAL')
+export function aTokenMock(...options: Partial<TokenBase>[]): TokenBase {
+  const defaultToken: TokenBase = fakeTokenBySymbol('BAL')
   return Object.assign({}, defaultToken, ...options)
 }
 
