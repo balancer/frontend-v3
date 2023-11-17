@@ -1,10 +1,6 @@
-export interface TokenBase {
-  address: string
-  name: string
-  symbol: string
-  decimals: number
-  chainId: number
-}
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+
+export type TokenBase = Pick<GqlToken, 'address' | 'name' | 'symbol' | 'decimals' | 'chainId'>
 
 export interface TokenAmount {
   address: string

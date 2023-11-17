@@ -22,7 +22,7 @@ const config: CodegenConfig = {
     },
   },
   hooks: {
-    afterAllFileWrite: ['eslint --fix --ext .ts,.tsx'],
+    afterAllFileWrite: ['pnpm run lint:fix'],
   },
 }
 

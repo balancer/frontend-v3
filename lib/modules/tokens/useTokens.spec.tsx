@@ -5,8 +5,9 @@ import {
   defaultGetTokenPricesQueryMock,
   defaultGetTokensQueryMock,
   defaultGetTokensQueryVariablesMock,
-  defaultTokenBaseMock,
+  defaultTokenMock,
 } from './__mocks__/token.builders'
+import { uniq } from 'lodash'
 
 test('fetches tokens', async () => {
   const initTokensData = defaultGetTokensQueryMock
@@ -14,10 +15,10 @@ test('fetches tokens', async () => {
   const variables = defaultGetTokensQueryVariablesMock
   const { result } = testHook(() => _useTokens(initTokensData, initTokenPricesData, variables))
 
-  expect(result.current.tokens).toEqual(initTokensData.tokens)
+  expect(result.current.tokens).toEqual(uniq(initTokensData.tokens))
   expect(result.current.prices).toEqual(initTokenPricesData.tokenPrices)
 
   await waitFor(() => expect(result.current.tokens.length).toBeGreaterThan(0))
 
-  expect(result.current.tokens).toMatchObject([defaultTokenBaseMock])
+  expect(result.current.tokens).toMatchObject([defaultTokenMock])
 })
