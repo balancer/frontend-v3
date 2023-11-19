@@ -31,7 +31,7 @@ export default function TokenRow({ address, value, customRender }: Props) {
           </Text>
         </VStack>
       </HStack>
-      <HStack spacing='8'>
+      <HStack spacing="8">
         <VStack spacing="1" alignItems="flex-end">
           <Heading fontWeight="bold" as="h6" fontSize="1rem">
             {value || 0.0}
