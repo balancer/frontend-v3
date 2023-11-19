@@ -192,7 +192,7 @@ export const balTheme = {
       // noise: 'rgba(243, 241, 336, 0.3)',
       // background: '#F3F1EC',
       // elevatedBackground: '#FEF9F3',
-      // borderColor: 'rgba(229, 211, 190, 0.6)',
+      borderColor: 'rgba(229, 211, 190, 0.6)',
       // badge: '#EBE9E0',
       // text: {
       //   primary: '#414853',
@@ -360,7 +360,7 @@ export const balTheme = {
         minHeight: '100vh',
       },
       body: {
-        background: 'colorBgBase',
+        background: 'background.base',
       },
       'p + ul': {
         mt: '1',
@@ -496,23 +496,23 @@ export const balTheme = {
           color: 'text-body',
         },
         primary: {
-          background: 'colorButtonBgPrimary',
+          background: 'background.button.primary',
           borderTop: '2px solid',
           borderColor: 'lavender.200',
-          color: 'colorFontDark',
+          color: 'font.dark',
         },
         secondary: {
-          background: 'colorButtonBgSecondary',
+          background: 'background.button.secondary',
           borderTop: '2px solid',
           borderBottom: '2px solid',
           borderTopColor: '#F4EBE1',
           borderBottomColor: darken('#F4EBE1', 25),
-          color: 'colorFontDark',
+          color: 'font.dark',
         },
         tertiary: {
-          background: 'colorButtonBgTertiary',
+          background: 'background.button.tertiary',
           borderTop: '2px solid',
-          borderColor: 'colorButtonBorderTopTertiary',
+          borderColor: 'border.button.tertiary',
           color: 'font.primary',
         },
         'tx-gas': {
@@ -556,53 +556,53 @@ export const balTheme = {
     Card: {
       baseStyle: {
         container: {
-          background: 'colorCardBgLevel0',
+          background: 'background.card.level0',
         },
       },
       variants: {
         level0: {
           container: {
-            background: 'colorCardBgLevel0',
+            background: 'background.card.level0',
           },
         },
         level1: {
           container: {
-            background: 'colorCardBgLevel1',
+            background: 'background.card.level1',
           },
         },
         level2: {
           container: {
-            background: 'colorCardBgLevel2',
+            background: 'background.card.level2',
           },
         },
         level3: {
           container: {
-            background: 'colorCardBgLevel3',
+            background: 'background.card.level3',
           },
         },
         level4: {
           container: {
-            background: 'colorCardBgLevel4',
+            background: 'background.card.level4',
           },
         },
         level5: {
           container: {
-            background: 'colorCardBgLevel5',
+            background: 'background.card.level5',
           },
         },
         level6: {
           container: {
-            background: 'colorCardBgLevel6',
+            background: 'background.card.level6',
           },
         },
         level7: {
           container: {
-            background: 'colorCardBgLevel7',
+            background: 'background.card.level7',
           },
         },
         level8: {
           container: {
-            background: 'colorCardBgLevel8',
+            background: 'background.card.level8',
           },
         },
       },
@@ -610,7 +610,7 @@ export const balTheme = {
     Input: {
       baseStyle: {
         field: {
-          background: 'colorCardBgLevel8',
+          background: 'background.card.level8',
         },
       },
     },

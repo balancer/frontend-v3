@@ -1,30 +1,40 @@
-import { Circle, HStack, Heading, Text, VStack } from '@chakra-ui/react'
+import { HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import { Address } from 'viem'
+import { useTokens } from '../useTokens'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import TokenAvatar from '@/lib/shared/components/token/TokenAvatar'
+import { useNumbers } from '@/lib/shared/hooks/useNumbers'
 
 type Props = {
   address: Address
+  value: number
 }
 
-export default function TokenRow({ address }: Props) {
+export default function TokenRow({ address, value }: Props) {
+  const { getToken, priceFor } = useTokens()
+  const { toCurrency } = useNumbers()
+  const token = getToken(address, 'MAINNET' as GqlChain)
+  const totalTokenValue = priceFor(address, 'MAINNET' as GqlChain)
+
   return (
     <HStack width="full" justifyContent="space-between">
       <HStack>
-        <Circle size="32px" bg="red.500" />
-        <VStack spacing="0" alignItems="flex-start">
+        <TokenAvatar address={address} size="sm" bg="red.500" />
+        <VStack spacing="1" alignItems="flex-start">
           <Heading fontWeight="bold" as="h6" fontSize="1rem">
-            {address}
+            {token?.symbol}
           </Heading>
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-            Token Symbol
+            {token?.name}
           </Text>
         </VStack>
       </HStack>
-      <VStack spacing="0" alignItems="flex-end">
+      <VStack spacing="1" alignItems="flex-end">
         <Heading fontWeight="bold" as="h6" fontSize="1rem">
-          420.69
+          {value || 0.0}
         </Heading>
         <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-          $420.420
+          {toCurrency(totalTokenValue)}
         </Text>
       </VStack>
     </HStack>

@@ -67,6 +67,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.47.0",
     "react-icons": "^4.10.1",
+    "react-jazzicon": "^1.0.4",
     "typescript": "5.1.6",
     "viem": "^1.18.1",
     "wagmi": "^1.4.5",
