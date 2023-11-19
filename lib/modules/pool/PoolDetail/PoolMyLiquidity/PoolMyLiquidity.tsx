@@ -37,7 +37,7 @@ export default function PoolMyLiquidity() {
     <Card variant="gradient" width="full" height="320px">
       <VStack spacing="0" width="full">
         <HStack width="full" p="4" justifyContent="space-between">
-          <Heading fontWeight="bold" as="h2" fontSize="xl">
+          <Heading fontWeight="bold" size="h5">
             My liquidity
           </Heading>
           <ButtonGroup value={activeTab} options={TABS} onChange={handleTabChanged} />
@@ -48,7 +48,7 @@ export default function PoolMyLiquidity() {
               <Box width="full" borderBottomWidth={1} borderColor="borderColor">
                 <HStack py="4" px="4" width="full" justifyContent="space-between">
                   <VStack spacing="1" alignItems="flex-start">
-                    <Heading fontWeight="bold" as="h6" fontSize="1rem">
+                    <Heading fontWeight="bold" size="h6">
                       My balance
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">
@@ -56,7 +56,7 @@ export default function PoolMyLiquidity() {
                     </Text>
                   </VStack>
                   <VStack spacing="1" alignItems="flex-end">
-                    <Heading fontWeight="bold" as="h6" fontSize="1rem">
+                    <Heading fontWeight="bold" size="h6">
                       $0.00
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">

@@ -23,8 +23,6 @@ export function PoolDetail() {
           <PoolChart />
         </HStack>
       </VStack>
-
-      <PoolInfoTable />
     </Stack>
   )
 }
