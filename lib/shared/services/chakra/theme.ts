@@ -1,7 +1,6 @@
 import { ThemeTypings, extendTheme } from '@chakra-ui/react'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
 import { darken } from '@chakra-ui/theme-tools'
-import { cardTheme } from '../../components/containers/GradientCard'
 
 const tokens = {
   colors: {
@@ -9,8 +8,41 @@ const tokens = {
       background: {
         // Background colors
         base: 'hsla(43,23%,92%,1)',
+        baseWithOpacity: 'hsla(43,23%,92%,0.4)',
         special: 'linear-gradient(90deg, #8F86FD 0%, #A66CF3 33%, #F48975 100%)',
-        card: {
+      },
+
+      // Button colors
+      button: {
+        background: {
+          primary: 'linear-gradient(90deg, #8076FE 0%, #E38C4F 100%)',
+          secondary: 'linear-gradient(152deg, #E5D3BE 20.87%, #E6C6A0 86.96%)',
+          tertiary:
+            'linear-gradient(0deg, rgba(63, 69, 80, 0.80) -16.28%, rgba(85, 94, 108, 0.80) 97.67%)',
+        },
+        border: {
+          tertiary: 'gray.500',
+          disabled: '#B4BDC8',
+        },
+        text: {
+          disabled: '#B4BDC8',
+        },
+      },
+
+      // Font colors
+      text: {
+        primary: 'linear-gradient(45deg, rgba(45, 76, 126, 1) 0%, rgba(45, 76, 126, 0.75) 100%)',
+        secondary: 'linear-gradient(45deg, #728097 0%, #909BAD 100%)',
+        special: 'linear-gradient(90deg, #8F86FD 0%, #A66CF3 33%, #F48975 100%)',
+        link: 'linear-gradient(45deg, #333 0%, #707883 100%)',
+      },
+
+      // card colors
+      card: {
+        border: {
+          card: 'red',
+        },
+        background: {
           level0: 'hsla(43,23%,92%,1)',
           level1: 'hsla(43,23%,93%,1)',
           level2: 'hsla(43,23%,94%,1)',
@@ -22,46 +54,14 @@ const tokens = {
           level8: 'hsla(43,23%,100%,1)',
         },
       },
-
-      // Button colors
-      button: {
-        background: {
-          primary: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
-          secondary: 'linear-gradient(152deg, #E5D3BE 20.87%, #E6C6A0 86.96%)',
-          tertiary:
-            'linear-gradient(0deg, rgba(63, 69, 80, 0.80) -16.28%, rgba(85, 94, 108, 0.80) 97.67%)',
-        },
-        border: {
-          tertiary: 'gray.800',
-        },
-      },
-
-      // Font colors
-      text: {
-        primary: 'linear-gradient(45deg, rgba(45, 76, 126, 1) 0%, rgba(45, 76, 126, 0.75) 100%)',
-        secondary: 'linear-gradient(45deg, #728097 0%, #909BAD 100%)',
-        special: 'linear-gradient(90deg, #8F86FD 0%, #A66CF3 33%, #F48975 100%)',
-        link: 'linear-gradient(45deg, #333 0%, #707883 100%)',
-      },
     },
     dark: {
       // Background colors
       background: {
         base: 'hsla(217,12%,29%,1)',
+        baseWithOpacity: 'hsla(217,12%,29%,0.95)',
         special: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
-        card: {
-          level0: 'hsla(216, 12%, 25%, 1)',
-          level1: 'hsla(216, 12%, 26%, 1)',
-          level2: 'hsla(216, 12%, 27%, 1)',
-          level3: 'hsla(216, 12%, 28%, 1)',
-          level4: 'hsla(216, 12%, 29%, 1)',
-          level5: 'hsla(216, 12%, 30%, 1)',
-          level6: 'hsla(216, 12%, 31%, 1)',
-          level7: 'hsla(216, 12%, 32%, 1)',
-          level8: 'hsla(216, 12%, 33%, 1)',
-        },
       },
-
       // Button colors
       button: {
         background: {
@@ -72,6 +72,10 @@ const tokens = {
         },
         border: {
           tertiary: 'gray.500',
+          disabled: '#B4BDC8',
+        },
+        text: {
+          disabled: '#B4BDC8',
         },
       },
 
@@ -81,6 +85,24 @@ const tokens = {
         secondary: 'linear-gradient(45deg, #909BAD 0%, #728097 100%)',
         special: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
         link: 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
+      },
+
+      // card colors
+      card: {
+        border: {
+          card: '#4F5764',
+        },
+        background: {
+          level0: 'hsla(216, 12%, 25%, 1)',
+          level1: 'hsla(216, 12%, 26%, 1)',
+          level2: 'hsla(216, 12%, 27%, 1)',
+          level3: 'hsla(216, 12%, 28%, 1)',
+          level4: 'hsla(216, 12%, 29%, 1)',
+          level5: 'hsla(216, 12%, 30%, 1)',
+          level6: 'hsla(216, 12%, 31%, 1)',
+          level7: 'hsla(216, 12%, 32%, 1)',
+          level8: 'hsla(216, 12%, 33%, 1)',
+        },
       },
     },
   },
@@ -189,15 +211,12 @@ export const balTheme = {
   },
   semanticTokens: {
     colors: {
-      // noise: 'rgba(243, 241, 336, 0.3)',
-      // background: '#F3F1EC',
-      // elevatedBackground: '#FEF9F3',
-      borderColor: 'rgba(229, 211, 190, 0.6)',
-      // badge: '#EBE9E0',
-      // text: {
-      //   primary: '#414853',
-      //   secondary: '#728097',
-      // },
+      lightBorderColor: 'rgba(229, 211, 190, 0.6)',
+      darkBorderColor: '#4F5764',
+      borderColor: {
+        _light: 'lightBorderColor',
+        _dark: 'darkBorderColor',
+      },
       primary: { _light: 'primary.500', _dark: 'primary.500' },
       'chakra-body-text': { _light: 'gray.800', _dark: 'whiteAlpha.900' },
       'chakra-body-bg': { _light: 'white', _dark: 'gray.800' },
@@ -230,6 +249,10 @@ export const balTheme = {
           default: tokens.colors.light.background.base,
           _dark: tokens.colors.dark.background.base,
         },
+        baseWithOpacity: {
+          default: tokens.colors.light.background.baseWithOpacity,
+          _dark: tokens.colors.dark.background.baseWithOpacity,
+        },
         special: {
           default: tokens.colors.light.background.special,
           _dark: tokens.colors.dark.background.special,
@@ -250,40 +273,57 @@ export const balTheme = {
         },
         card: {
           level0: {
-            default: tokens.colors.light.background.card.level0,
-            _dark: tokens.colors.dark.background.card.level0,
+            default: tokens.colors.light.card.background.level0,
+            _dark: tokens.colors.dark.card.background.level0,
           },
           level1: {
-            default: tokens.colors.light.background.card.level1,
-            _dark: tokens.colors.dark.background.card.level1,
+            default: tokens.colors.light.card.background.level1,
+            _dark: tokens.colors.dark.card.background.level1,
           },
           level2: {
-            default: tokens.colors.light.background.card.level2,
-            _dark: tokens.colors.dark.background.card.level2,
+            default: tokens.colors.light.card.background.level2,
+            _dark: tokens.colors.dark.card.background.level2,
           },
           level3: {
-            default: tokens.colors.light.background.card.level3,
-            _dark: tokens.colors.dark.background.card.level3,
+            default: tokens.colors.light.card.background.level3,
+            _dark: tokens.colors.dark.card.background.level3,
           },
           level4: {
-            default: tokens.colors.light.background.card.level4,
-            _dark: tokens.colors.dark.background.card.level4,
+            default: tokens.colors.light.card.background.level4,
+            _dark: tokens.colors.dark.card.background.level4,
           },
           level5: {
-            default: tokens.colors.light.background.card.level5,
-            _dark: tokens.colors.dark.background.card.level5,
+            default: tokens.colors.light.card.background.level5,
+            _dark: tokens.colors.dark.card.background.level5,
           },
           level6: {
-            default: tokens.colors.light.background.card.level6,
-            _dark: tokens.colors.dark.background.card.level6,
+            default: tokens.colors.light.card.background.level6,
+            _dark: tokens.colors.dark.card.background.level6,
           },
           level7: {
-            default: tokens.colors.light.background.card.level7,
-            _dark: tokens.colors.dark.background.card.level7,
+            default: tokens.colors.light.card.background.level7,
+            _dark: tokens.colors.dark.card.background.level7,
           },
           level8: {
-            default: tokens.colors.light.background.card.level8,
-            _dark: tokens.colors.dark.background.card.level8,
+            default: tokens.colors.light.card.background.level8,
+            _dark: tokens.colors.dark.card.background.level8,
+          },
+        },
+      },
+
+      backgroundImage: {
+        card: {
+          gradient: {
+            default: `radial-gradient(
+                farthest-corner at 80px 0px,
+                rgba(235, 220, 204, 0.3) 0%,
+                rgba(255, 255, 255, 0.0) 100%
+              )`,
+            _dark: `radial-gradient(
+                farthest-corner at 80px 0px,
+                rgba(180, 189, 200, 0.3) 0%,
+                rgba(255, 255, 255, 0.0) 100%
+              )`,
           },
         },
       },
@@ -294,6 +334,10 @@ export const balTheme = {
           tertiary: {
             default: tokens.colors.light.button.border.tertiary,
             _dark: tokens.colors.dark.button.border.tertiary,
+          },
+          disabled: {
+            default: tokens.colors.light.button.border.disabled,
+            _dark: tokens.colors.dark.button.border.disabled,
           },
         },
       },
@@ -316,7 +360,17 @@ export const balTheme = {
           default: tokens.colors.light.text.link,
           _dark: tokens.colors.dark.text.link,
         },
-        dark: '#414853  ',
+        button: {
+          disabled: {
+            default: tokens.colors.light.button.text.disabled,
+            _dark: tokens.colors.dark.button.text.disabled,
+          },
+          primary: {
+            default: '#F3F1EC',
+            _dark: '#414853',
+          },
+        },
+        dark: '#414853',
         light: '#F3F1EC',
       },
     },
@@ -365,20 +419,6 @@ export const balTheme = {
       'p + ul': {
         mt: '1',
       },
-      // li: {
-      //   color: 'red',
-      // },
-      // 'body:before': {
-      //   background: `linear-gradient(45deg, rgba(243,241,236,0.5), rgba(223,218,205,0.5)),
-      //   url(/images/patterns/texture.svg) repeat`,
-      //   content: '" "',
-      //   width: '100vw',
-      //   height: '100%',
-      //   position: 'absolute',
-      //   zIndex: '-1',
-      //   filter: 'brightness(200%) contrast(100%)',
-      //   opacity: '0.1',
-      // },
     },
   },
   components: {
@@ -495,11 +535,21 @@ export const balTheme = {
         solid: {
           color: 'text-body',
         },
+        disabled: {
+          minWidth: '100px',
+          background: 'transparent',
+          color: 'font.button.disabled',
+          borderWidth: 1,
+          borderColor: 'border.button.disabled',
+          _hover: {
+            borderColor: 'border.button.disabled',
+            transform: 'none',
+          },
+        },
         primary: {
+          minWidth: '100px',
           background: 'background.button.primary',
-          borderTop: '2px solid',
-          borderColor: 'lavender.200',
-          color: 'font.dark',
+          color: 'font.button.primary',
         },
         secondary: {
           background: 'background.button.secondary',
@@ -507,7 +557,7 @@ export const balTheme = {
           borderBottom: '2px solid',
           borderTopColor: '#F4EBE1',
           borderBottomColor: darken('#F4EBE1', 25),
-          color: 'font.dark',
+          color: 'font.button.secondary',
         },
         tertiary: {
           background: 'background.button.tertiary',
@@ -536,6 +586,12 @@ export const balTheme = {
             color: '##728097',
             transform: 'none',
           },
+          _dark: {
+            color: 'gray.300',
+            _hover: {
+              color: 'background.card.level5',
+            },
+          },
         },
         buttonGroupActive: {
           background: 'background.button.secondary',
@@ -550,6 +606,9 @@ export const balTheme = {
           _hover: {
             transform: 'none',
           },
+          _dark: {
+            color: 'background.card.level5',
+          },
         },
       },
     },
@@ -563,46 +622,105 @@ export const balTheme = {
         level0: {
           container: {
             background: 'background.card.level0',
+            borderColor: 'rgba(229, 211, 190, 0.6)',
+            _dark: {
+              borderColor: 'darkBorderColor',
+            },
           },
         },
         level1: {
           container: {
             background: 'background.card.level1',
+            borderColor: 'lightBorderColor',
+            _dark: {
+              borderColor: 'darkBorderColor',
+            },
           },
         },
         level2: {
           container: {
             background: 'background.card.level2',
+            borderColor: 'lightBorderColor',
+            _dark: {
+              borderColor: 'darkBorderColor',
+            },
           },
         },
         level3: {
           container: {
             background: 'background.card.level3',
+            borderColor: 'lightBorderColor',
+            _dark: {
+              borderColor: 'darkBorderColor',
+            },
           },
         },
         level4: {
           container: {
             background: 'background.card.level4',
+            borderColor: 'lightBorderColor',
+            _dark: {
+              borderColor: 'darkBorderColor',
+            },
           },
         },
         level5: {
           container: {
             background: 'background.card.level5',
+            borderColor: 'lightBorderColor',
+            _dark: {
+              borderColor: 'darkBorderColor',
+            },
           },
         },
         level6: {
           container: {
             background: 'background.card.level6',
+            borderColor: 'lightBorderColor',
+            _dark: {
+              borderColor: 'darkBorderColor',
+            },
           },
         },
         level7: {
           container: {
             background: 'background.card.level7',
+            borderColor: 'lightBorderColor',
+            _dark: {
+              borderColor: 'darkBorderColor',
+            },
           },
         },
         level8: {
           container: {
             background: 'background.card.level8',
+            borderColor: 'lightBorderColor',
+            _dark: {
+              borderColor: 'darkBorderColor',
+            },
+          },
+        },
+        gradient: {
+          container: {
+            width: 'full',
+            height: 'full',
+            rounded: '2xl',
+            _light: {
+              backgroundColor: 'transparent',
+              backgroundImage: `radial-gradient(
+                      farthest-corner at 80px 0px,
+                      rgba(235, 220, 204, 0.3) 0%,
+                      rgba(255, 255, 255, 0.0) 100%
+                    )`,
+            },
+            _dark: {
+              backgroundColor: 'transparent',
+              backgroundImage: `radial-gradient(
+                  farthest-corner at 80px 0px,
+                  rgba(180, 189, 200, 0.1) 0%,
+                  rgba(255, 255, 255, 0.0) 100%
+                )`,
+            },
           },
         },
       },
@@ -614,12 +732,6 @@ export const balTheme = {
         },
       },
     },
-    // List: {
-    //   baseStyle: {
-    //     background: 'red',
-    //     backgroundClip: 'text',
-    //   },
-    // },
   },
 }
 
@@ -638,15 +750,6 @@ const proseTheme = withProse({
   },
 })
 
-const theme = extendTheme(
-  {
-    ...balTheme,
-    components: {
-      ...balTheme.components,
-      Card: cardTheme,
-    },
-  },
-  proseTheme
-) as ThemeTypings
+const theme = extendTheme(balTheme, proseTheme) as ThemeTypings
 
 export default theme

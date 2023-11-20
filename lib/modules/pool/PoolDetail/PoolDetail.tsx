@@ -1,7 +1,5 @@
 'use client'
-import { PoolChart } from './PoolChart/PoolChart'
 import { HStack, Stack, VStack } from '@chakra-ui/react'
-import { PoolInfoTable } from './PoolInfoTable/PoolInfoTable'
 import { PoolComposition } from './PoolComposition/PoolComposition'
 import PoolStats from './PoolStats/PoolStats'
 import PoolMyLiquidity from './PoolMyLiquidity/PoolMyLiquidity'
@@ -20,7 +18,6 @@ export function PoolDetail() {
         </HStack>
         <HStack width="full" spacing="4">
           <PoolComposition />
-          <PoolChart />
         </HStack>
       </VStack>
     </Stack>
