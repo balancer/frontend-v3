@@ -12,7 +12,7 @@ import {
   Tr,
 } from '@chakra-ui/react'
 
-import { usePoolInfo } from './usePoolInfo'
+import { usePoolInfo } from '@/lib/modules/pool/PoolDetail/PoolInfoTable/usePoolInfo'
 
 export function PoolInfoTable() {
   const { poolDetails } = usePoolInfo()

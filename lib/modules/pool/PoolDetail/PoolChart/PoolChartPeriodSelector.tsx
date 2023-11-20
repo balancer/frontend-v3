@@ -1,7 +1,7 @@
 import { GqlPoolSnapshotDataRange } from '@/lib/shared/services/api/generated/graphql'
 import { Select } from '@chakra-ui/react'
 import { Dispatch, SetStateAction } from 'react'
-import { poolChartPeriods } from './usePoolCharts'
+import { poolChartPeriods } from '@/lib/modules/pool/PoolDetail/PoolChart/usePoolCharts'
 
 interface PoolChartPeriodSelectorProps {
   activePeriod: string

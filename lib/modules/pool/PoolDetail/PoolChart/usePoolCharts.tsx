@@ -9,8 +9,8 @@ import {
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { usePool } from '../../usePool'
-import { PoolVariant } from '../../pool.types'
+import { usePool } from '@/lib/modules/pool/usePool'
+import { PoolVariant } from '@/lib/modules/pool/pool.types'
 import { NumberFormatter, useNumbers } from '@/lib/shared/hooks/useNumbers'
 
 export enum PoolChartTab {

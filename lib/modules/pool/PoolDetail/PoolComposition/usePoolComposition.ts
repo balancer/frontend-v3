@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { usePool } from '../../usePool'
+import { usePool } from '@/lib/modules/pool/usePool'
 import { tokenFormat, weightFormat } from '@/lib/shared/hooks/useNumbers'
 import { GqlPoolToken } from '@/lib/shared/services/api/generated/graphql'
 

@@ -1,9 +1,9 @@
 'use client'
 import { Box, Card, HStack, Stack, Text } from '@chakra-ui/react'
 import ReactECharts from 'echarts-for-react'
-import { PoolChartTypeTabs } from './PoolChartTypeTabs'
-import { usePoolCharts } from './usePoolCharts'
-import { PoolChartPeriodSelector } from './PoolChartPeriodSelector'
+import { PoolChartTypeTabs } from '@/lib/modules/pool/PoolDetail/PoolChart/PoolChartTypeTabs'
+import { usePoolCharts } from '@/lib/modules/pool/PoolDetail/PoolChart/usePoolCharts'
+import { PoolChartPeriodSelector } from '@/lib/modules/pool/PoolDetail/PoolChart/PoolChartPeriodSelector'
 import { useNumbers } from '@/lib/shared/hooks/useNumbers'
 
 export function PoolChart() {

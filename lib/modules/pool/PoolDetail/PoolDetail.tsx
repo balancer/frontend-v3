@@ -1,11 +1,11 @@
 'use client'
-import { PoolChart } from './PoolChart/PoolChart'
+import { PoolChart } from '@/lib/modules/pool/PoolDetail/PoolChart/PoolChart'
 import { HStack, Stack, VStack } from '@chakra-ui/react'
-import { PoolInfoTable } from './PoolInfoTable/PoolInfoTable'
-import { PoolComposition } from './PoolComposition/PoolComposition'
-import PoolStats from './PoolStats/PoolStats'
-import PoolMyLiquidity from './PoolMyLiquidity/PoolMyLiquidity'
-import PoolIncentives from './PoolIncentives/PoolIncentives'
+import { PoolInfoTable } from '@/lib/modules/pool/PoolDetail/PoolInfoTable/PoolInfoTable'
+import { PoolComposition } from '@/lib/modules/pool/PoolDetail/PoolComposition/PoolComposition'
+import PoolStats from '@/lib/modules/pool/PoolDetail/PoolStats'
+import PoolMyLiquidity from '@/lib/modules/pool/PoolDetail/PoolMyLiquidity'
+import PoolIncentives from '@/lib/modules/pool/PoolDetail/PoolIncentives'
 
 export function PoolDetail() {
   return (
