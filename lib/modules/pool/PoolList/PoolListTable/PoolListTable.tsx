@@ -3,11 +3,11 @@
 import { Box } from '@chakra-ui/react'
 import { usePoolList } from '../usePoolList'
 import { usePoolListQueryState } from '../usePoolListQueryState'
-import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
-import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { PaginatedTable } from '@/lib/shared/components/tables/PaginatedTable'
 import { PoolListTableHeader } from './PoolListTableHeader'
 import { PoolListTableRow } from './PoolListTableRow'
+import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 const rowProps = {
   px: [0, 4],
