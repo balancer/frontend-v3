@@ -4,7 +4,7 @@ import { HiOutlineSearch, HiOutlineX } from 'react-icons/hi'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 import { useEffect } from 'react'
 import { useDebounce } from '@/lib/shared/hooks/useDebounce'
-import { usePoolList } from '../usePoolList'
+import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 const SEARCH = 'search'

@@ -2,12 +2,12 @@
 
 import { Grid } from '@chakra-ui/react'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
-import { PoolListCard } from './PoolListCard'
+import { PoolListCard } from '@/lib/modules/pool/PoolList/PoolListCards/PoolListCard'
 import { Pagination } from '@/lib/shared/components/pagination/Pagination'
-import { usePoolListQueryState } from '../../usePoolListQueryState'
+import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
-import { PoolListItem } from '../../../pool.types'
-import { getPoolPath } from '../../../pool.utils'
+import { PoolListItem } from '@/lib/modules/pool/pool.types'
+import { getPoolPath } from '@/lib/modules/pool/pool.utils'
 import { useRouter } from 'next/navigation'
 
 export function PoolListCards() {

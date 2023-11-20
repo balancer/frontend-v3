@@ -1,6 +1,9 @@
 import { HStack, IconButton } from '@chakra-ui/react'
 import { FiList, FiGrid } from 'react-icons/fi'
-import { usePoolListViewType, ViewType } from './usePoolListViewType'
+import {
+  usePoolListViewType,
+  ViewType,
+} from '@/lib/modules/pool/PoolList/PoolListViewType/usePoolListViewType'
 
 export function PoolListViewType() {
   const { setViewType, isCardsView, isTableView } = usePoolListViewType()

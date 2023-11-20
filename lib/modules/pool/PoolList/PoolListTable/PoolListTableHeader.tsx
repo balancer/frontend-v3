@@ -1,5 +1,5 @@
 import { Grid, GridItem, Icon, Text } from '@chakra-ui/react'
-import PoolListSortButton from './PoolListSortButton'
+import PoolListSortButton from '@/lib/modules/pool/PoolList/PoolListTable/PoolListSortButton'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { FiGlobe } from 'react-icons/fi'

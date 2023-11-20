@@ -1,10 +1,10 @@
 import { Heading, Stack, HStack, VStack } from '@chakra-ui/react'
-import { PoolListFilters } from './PoolListFilters'
-import { PoolListSortType } from './PoolListSortType'
-import { PoolListViewType } from './PoolListViewType'
-import { PoolListCards } from './PoolListCards/PoolListCards'
-import { PoolListTable } from './PoolListTable/PoolListTable'
-import { usePoolListViewType } from './usePoolListViewType'
+import { PoolListFilters } from '@/lib/modules/pool/PoolList/PoolListFilters'
+import { PoolListSortType } from '@/lib/modules/pool/PoolList/PoolListSortType'
+import { PoolListViewType } from '@/lib/modules/pool/PoolList/PoolListViewType/PoolListViewType'
+import { PoolListCards } from '@/lib/modules/pool/PoolList/PoolListCards/PoolListCards'
+import { PoolListTable } from '@/lib/modules/pool/PoolList/PoolListTable/PoolListTable'
+import { usePoolListViewType } from '@/lib/modules/pool/PoolList/PoolListViewType/usePoolListViewType'
 
 export function PoolListPools() {
   const { isTableView, isCardsView } = usePoolListViewType()
