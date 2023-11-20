@@ -1,9 +1,9 @@
 import React from 'react'
 import { Box, Card, HStack, Text, VStack } from '@chakra-ui/react'
-import PoolBadges from '@/lib/modules/pool/PoolDetail/PoolBadges'
 import { useNumbers } from '@/lib/shared/hooks/useNumbers'
-import { usePool } from '@/lib/modules/pool/usePool'
-import { getAprLabel } from '@/lib/modules/pool/pool.utils'
+import { getAprLabel } from '../pool.utils'
+import { usePool } from '../usePool'
+import PoolBadges from './PoolBadges'
 
 export default function PoolStats() {
   const { pool } = usePool()

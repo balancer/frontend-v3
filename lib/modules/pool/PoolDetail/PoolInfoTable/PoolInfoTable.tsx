@@ -11,8 +11,7 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react'
-
-import { usePoolInfo } from '@/lib/modules/pool/PoolDetail/PoolInfoTable/usePoolInfo'
+import { usePoolInfo } from './usePoolInfo'
 
 export function PoolInfoTable() {
   const { poolDetails } = usePoolInfo()

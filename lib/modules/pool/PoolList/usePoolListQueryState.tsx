@@ -9,13 +9,13 @@ import {
 import { uniq } from 'lodash'
 import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { useQueryState } from 'next-usequerystate'
+import { PaginationState } from '@tanstack/react-table'
 import {
-  POOL_TYPE_MAP,
-  PoolFilterType,
   poolListQueryStateParsers,
+  PoolFilterType,
   SortingState,
-} from '@/lib/modules/pool/pool.types'
-import { PaginationState } from '@/lib/shared/components/pagination/pagination.types'
+  POOL_TYPE_MAP,
+} from '../pool.types'
 
 export function usePoolListQueryState() {
   const [first, setFirst] = useQueryState('first', poolListQueryStateParsers.first)

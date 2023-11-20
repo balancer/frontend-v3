@@ -1,12 +1,12 @@
 import { Box, Grid, GridItem, GridProps, Text } from '@chakra-ui/react'
 import Link from 'next/link'
-import { getPoolPath } from '@/lib/modules/pool/pool.utils'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import Image from 'next/image'
-import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
 import { useNumbers } from '@/lib/shared/hooks/useNumbers'
+import { PoolListItem } from '../../pool.types'
+import { getPoolPath } from '../../pool.utils'
 
 interface Props extends GridProps {
   pool: PoolListItem

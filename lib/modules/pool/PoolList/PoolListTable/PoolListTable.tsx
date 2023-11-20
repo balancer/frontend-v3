@@ -1,13 +1,13 @@
 'use client'
 
 import { Box } from '@chakra-ui/react'
-import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
-import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
-import { PaginatedTable } from '@/lib/shared/components/tables/PaginatedTable'
-import { PoolListTableHeader } from '@/lib/modules/pool/PoolList/PoolListTable/PoolListTableHeader'
-import { PoolListTableRow } from '@/lib/modules/pool/PoolList/PoolListTable/PoolListTableRow'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { PaginatedTable } from '@/lib/shared/components/tables/PaginatedTable'
+import { usePoolList } from '../usePoolList'
+import { usePoolListQueryState } from '../usePoolListQueryState'
+import { PoolListTableHeader } from './PoolListTableHeader'
+import { PoolListTableRow } from './PoolListTableRow'
 
 const rowProps = {
   px: [0, 4],

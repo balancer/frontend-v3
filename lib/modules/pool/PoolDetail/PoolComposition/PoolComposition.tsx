@@ -11,7 +11,7 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react'
-import { usePoolComposition } from '@/lib/modules/pool/PoolDetail/PoolComposition/usePoolComposition'
+import { usePoolComposition } from './usePoolComposition'
 
 const tableHeads = ['Token', 'Balance', 'Value', 'Token %']
 

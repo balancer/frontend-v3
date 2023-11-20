@@ -1,9 +1,9 @@
-import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { Box, Card, HStack, Text, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
+import TokenRow from '../../tokens/TokenRow/TokenRow'
 
 const TABS = [
   {

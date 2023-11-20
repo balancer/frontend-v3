@@ -1,10 +1,9 @@
 import { Grid, GridItem, Icon, Text } from '@chakra-ui/react'
-import PoolListSortButton from '@/lib/modules/pool/PoolList/PoolListTable/PoolListSortButton'
-import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { FiGlobe } from 'react-icons/fi'
-import { PoolsColumnSort } from '@/lib/modules/pool/pool.types'
-import { orderByHash } from '@/lib/modules/pool/pool.types'
+import { PoolsColumnSort, orderByHash } from '../../pool.types'
+import { usePoolListQueryState } from '../usePoolListQueryState'
+import PoolListSortButton from './PoolListSortButton'
 
 const setIsDesc = (id: GqlPoolOrderBy, currentSortingObj: PoolsColumnSort) =>
   currentSortingObj.id === id ? !currentSortingObj.desc : true

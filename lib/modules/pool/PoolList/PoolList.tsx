@@ -2,8 +2,8 @@
 
 import { VStack } from '@chakra-ui/react'
 import React from 'react'
-import { PoolListFeaturedPools } from '@/lib/modules/pool/PoolList/PoolListFeaturedPools'
-import { PoolListPools } from '@/lib/modules/pool/PoolList/PoolListPools'
+import { PoolListFeaturedPools } from './PoolListFeaturedPools'
+import { PoolListPools } from './PoolListPools'
 
 export function PoolList() {
   return (

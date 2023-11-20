@@ -8,10 +8,10 @@ import {
 } from '@/lib/shared/services/api/generated/graphql'
 import { createContext, PropsWithChildren } from 'react'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { FetchPoolProps } from '@/lib/modules/pool/pool.types'
 import { getNetworkConfig } from '@/lib/config/app.config'
-import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
+import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { FetchPoolProps } from './pool.types'
 
 export type UsePoolResponse = ReturnType<typeof _usePool>
 export const PoolContext = createContext<UsePoolResponse | null>(null)

@@ -7,9 +7,9 @@ import {
   GetPoolsQueryVariables,
 } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
-import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
+import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { usePoolListQueryState } from './usePoolListQueryState'
 
 export function _usePoolList() {
   const { queryVariables } = usePoolListQueryState()
