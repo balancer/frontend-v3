@@ -1,9 +1,9 @@
 import { Wrapper, testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
+import { _usePool, usePool, PoolProvider } from './usePool'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { defaultPoolMock, defaultPoolResponseMock } from '@/test/msw/handlers/Pool.handlers'
 import { PoolVariant } from './pool.types'
-import { _usePool, usePool, PoolProvider } from './usePool'
 
 const poolId = 'test pool id'
 test('fetches v2 pool', async () => {

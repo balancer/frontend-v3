@@ -1,11 +1,11 @@
 'use client'
-import { HStack, Stack, VStack } from '@chakra-ui/react'
 import { PoolChart } from './PoolChart/PoolChart'
-import { PoolComposition } from './PoolComposition/PoolComposition'
-import PoolIncentives from './PoolIncentives'
+import { HStack, Stack, VStack } from '@chakra-ui/react'
 import { PoolInfoTable } from './PoolInfoTable/PoolInfoTable'
-import PoolMyLiquidity from './PoolMyLiquidity'
+import { PoolComposition } from './PoolComposition/PoolComposition'
 import PoolStats from './PoolStats'
+import PoolMyLiquidity from './PoolMyLiquidity'
+import PoolIncentives from './PoolIncentives'
 
 export function PoolDetail() {
   return (

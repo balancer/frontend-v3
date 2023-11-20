@@ -1,6 +1,5 @@
 'use client'
 
-import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import {
   Badge,
   Button,
@@ -23,10 +22,11 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react'
-import { IoFilter } from 'react-icons/io5'
-import { poolTypeFilters, PoolFilterType } from '../pool.types'
 import { PoolListSearch } from './PoolListSearch'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { usePoolListQueryState } from './usePoolListQueryState'
+import { IoFilter } from 'react-icons/io5'
+import { PoolFilterType, poolTypeFilters } from '../pool.types'
 
 function PoolTypeFilters() {
   const { togglePoolType, poolTypes, poolTypeLabel } = usePoolListQueryState()

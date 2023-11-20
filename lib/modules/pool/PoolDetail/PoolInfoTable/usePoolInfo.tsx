@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
+import { usePool } from '../../usePool'
 import { format } from 'date-fns'
 import { DELEGATE_OWNER } from '@/lib/config/app.config'
 import { zeroAddress } from 'viem'
-import { feePercentFormat } from '@/lib/shared/hooks/useNumbers'
 import { shortenLabel } from '@/lib/shared/utils/addresses'
-import { usePool } from '../../usePool'
+import { feePercentFormat } from '@/lib/shared/hooks/useNumbers'
 
 export function usePoolInfo() {
   const { pool } = usePool()

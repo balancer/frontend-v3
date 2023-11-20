@@ -1,9 +1,9 @@
 import { Heading, Stack, HStack, VStack } from '@chakra-ui/react'
-import { PoolListCards } from './PoolListCards/PoolListCards'
 import { PoolListFilters } from './PoolListFilters'
 import { PoolListSortType } from './PoolListSortType'
-import { PoolListTable } from './PoolListTable/PoolListTable'
 import { PoolListViewType } from './PoolListViewType/PoolListViewType'
+import { PoolListCards } from './PoolListCards/PoolListCards'
+import { PoolListTable } from './PoolListTable/PoolListTable'
 import { usePoolListViewType } from './PoolListViewType/usePoolListViewType'
 
 export function PoolListPools() {

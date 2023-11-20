@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { GqlPoolToken } from '@/lib/shared/services/api/generated/graphql'
-import { tokenFormat, weightFormat } from '@/lib/shared/hooks/useNumbers'
 import { usePool } from '../../usePool'
+import { tokenFormat, weightFormat } from '@/lib/shared/hooks/useNumbers'
+import { GqlPoolToken } from '@/lib/shared/services/api/generated/graphql'
 
 type CompositionRow = {
   symbol: string

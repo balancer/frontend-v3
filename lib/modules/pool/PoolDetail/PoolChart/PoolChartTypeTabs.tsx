@@ -1,6 +1,6 @@
 import { Tab, TabList, Tabs } from '@chakra-ui/react'
-import { Dispatch, SetStateAction } from 'react'
 import { PoolChartTypeTab, PoolChartTab } from './usePoolCharts'
+import { Dispatch, SetStateAction } from 'react'
 
 interface PoolChartTypeTabsProps {
   tabsList: PoolChartTypeTab[]
