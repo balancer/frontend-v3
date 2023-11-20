@@ -232,6 +232,7 @@ input GqlPoolFilter {
   poolTypeNotIn: [GqlPoolFilterType!]
   tokensIn: [String!]
   tokensNotIn: [String!]
+  userAddress: String
 }
 
 enum GqlPoolFilterCategory {
@@ -751,7 +752,15 @@ union GqlPoolTokenPhantomStableNestedUnion = GqlPoolToken | GqlPoolTokenLinear
 
 union GqlPoolTokenUnion = GqlPoolToken | GqlPoolTokenLinear | GqlPoolTokenPhantomStable
 
-union GqlPoolUnion = GqlPoolElement | GqlPoolGyro | GqlPoolLinear | GqlPoolLiquidityBootstrapping | GqlPoolMetaStable | GqlPoolPhantomStable | GqlPoolStable | GqlPoolWeighted
+union GqlPoolUnion =
+    GqlPoolElement
+  | GqlPoolGyro
+  | GqlPoolLinear
+  | GqlPoolLiquidityBootstrapping
+  | GqlPoolMetaStable
+  | GqlPoolPhantomStable
+  | GqlPoolStable
+  | GqlPoolWeighted
 
 type GqlPoolUserSwapVolume {
   swapVolumeUSD: BigDecimal!
@@ -1080,35 +1089,88 @@ type Query {
   blocksGetBlocksPerYear: Float!
   contentGetNewsItems: [GqlContentNewsItem!]!
   latestSyncedBlocks: GqlLatestSyncedBlocks!
-  poolGetAllPoolsSnapshots(chains: [GqlChain!], range: GqlPoolSnapshotDataRange!): [GqlPoolSnapshot!]!
+  poolGetAllPoolsSnapshots(
+    chains: [GqlChain!]
+    range: GqlPoolSnapshotDataRange!
+  ): [GqlPoolSnapshot!]!
   poolGetBatchSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolBatchSwap!]!
   poolGetFeaturedPoolGroups: [GqlPoolFeaturedPoolGroup!]!
   poolGetJoinExits(first: Int, skip: Int, where: GqlPoolJoinExitFilter): [GqlPoolJoinExit!]!
   poolGetLinearPools(chains: [GqlChain!]): [GqlPoolLinear!]!
   poolGetPool(chain: GqlChain, id: String!): GqlPoolBase!
-  poolGetPools(first: Int, orderBy: GqlPoolOrderBy, orderDirection: GqlPoolOrderDirection, skip: Int, textSearch: String, userAddress: String, where: GqlPoolFilter): [GqlPoolMinimal!]!
-  poolGetPoolsCount(first: Int, orderBy: GqlPoolOrderBy, orderDirection: GqlPoolOrderDirection, skip: Int, textSearch: String, userAddress: String, where: GqlPoolFilter): Int!
-  poolGetSnapshots(chain: GqlChain, id: String!, range: GqlPoolSnapshotDataRange!): [GqlPoolSnapshot!]!
+  poolGetPools(
+    first: Int
+    orderBy: GqlPoolOrderBy
+    orderDirection: GqlPoolOrderDirection
+    skip: Int
+    textSearch: String
+    where: GqlPoolFilter
+  ): [GqlPoolMinimal!]!
+  poolGetPoolsCount(
+    first: Int
+    orderBy: GqlPoolOrderBy
+    orderDirection: GqlPoolOrderDirection
+    skip: Int
+    textSearch: String
+    where: GqlPoolFilter
+  ): Int!
+  poolGetSnapshots(
+    chain: GqlChain
+    id: String!
+    range: GqlPoolSnapshotDataRange!
+  ): [GqlPoolSnapshot!]!
   poolGetSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolSwap!]!
   protocolMetricsAggregated(chainIds: [String!]!): GqlProtocolMetricsAggregated!
   protocolMetricsChain: GqlProtocolMetricsChain!
-  sorGetBatchSwapForTokensIn(swapOptions: GqlSorSwapOptionsInput!, tokenOut: String!, tokensIn: [GqlTokenAmountHumanReadable!]!): GqlSorGetBatchSwapForTokensInResponse!
-  sorGetSwaps(swapAmount: BigDecimal!, swapOptions: GqlSorSwapOptionsInput!, swapType: GqlSorSwapType!, tokenIn: String!, tokenOut: String!): GqlSorGetSwapsResponse!
-  tokenGetCandlestickChartData(address: String!, range: GqlTokenChartDataRange!): [GqlTokenCandlestickChartDataItem!]!
+  sorGetBatchSwapForTokensIn(
+    swapOptions: GqlSorSwapOptionsInput!
+    tokenOut: String!
+    tokensIn: [GqlTokenAmountHumanReadable!]!
+  ): GqlSorGetBatchSwapForTokensInResponse!
+  sorGetSwaps(
+    swapAmount: BigDecimal!
+    swapOptions: GqlSorSwapOptionsInput!
+    swapType: GqlSorSwapType!
+    tokenIn: String!
+    tokenOut: String!
+  ): GqlSorGetSwapsResponse!
+  tokenGetCandlestickChartData(
+    address: String!
+    range: GqlTokenChartDataRange!
+  ): [GqlTokenCandlestickChartDataItem!]!
   tokenGetCurrentPrices(chains: [GqlChain!]): [GqlTokenPrice!]!
   tokenGetHistoricalPrices(addresses: [String!]!): [GqlHistoricalTokenPrice!]!
-  tokenGetPriceChartData(address: String!, range: GqlTokenChartDataRange!): [GqlTokenPriceChartDataItem!]!
+  tokenGetPriceChartData(
+    address: String!
+    range: GqlTokenChartDataRange!
+  ): [GqlTokenPriceChartDataItem!]!
   tokenGetProtocolTokenPrice: AmountHumanReadable!
-  tokenGetRelativePriceChartData(range: GqlTokenChartDataRange!, tokenIn: String!, tokenOut: String!): [GqlTokenPriceChartDataItem!]!
+  tokenGetRelativePriceChartData(
+    range: GqlTokenChartDataRange!
+    tokenIn: String!
+    tokenOut: String!
+  ): [GqlTokenPriceChartDataItem!]!
   tokenGetTokenData(address: String!): GqlTokenData
   tokenGetTokenDynamicData(address: String!): GqlTokenDynamicData
   tokenGetTokens(chains: [GqlChain!]): [GqlToken!]!
   tokenGetTokensData(addresses: [String!]!): [GqlTokenData!]!
   tokenGetTokensDynamicData(addresses: [String!]!): [GqlTokenDynamicData!]!
   userGetPoolBalances(address: String, chains: [GqlChain!]): [GqlUserPoolBalance!]!
-  userGetPoolJoinExits(address: String, chain: GqlChain, first: Int = 10, poolId: String!, skip: Int = 0): [GqlPoolJoinExit!]!
+  userGetPoolJoinExits(
+    address: String
+    chain: GqlChain
+    first: Int = 10
+    poolId: String!
+    skip: Int = 0
+  ): [GqlPoolJoinExit!]!
   userGetStaking(address: String, chains: [GqlChain!]): [GqlPoolStaking!]!
-  userGetSwaps(address: String, chain: GqlChain, first: Int = 10, poolId: String!, skip: Int = 0): [GqlPoolSwap!]!
+  userGetSwaps(
+    address: String
+    chain: GqlChain
+    first: Int = 10
+    poolId: String!
+    skip: Int = 0
+  ): [GqlPoolSwap!]!
   veBalGetTotalSupply: AmountHumanReadable!
   veBalGetUser: GqlVeBalUserData!
   veBalGetUserBalance: AmountHumanReadable!
