@@ -213,6 +213,7 @@ export const balTheme = {
     colors: {
       lightBorderColor: 'rgba(229, 211, 190, 0.6)',
       darkBorderColor: '#4F5764',
+      lightBadge: '#EBE9E0',
       borderColor: {
         _light: 'lightBorderColor',
         _dark: 'darkBorderColor',
