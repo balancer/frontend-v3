@@ -5,16 +5,19 @@ import { Address, useQuery } from 'wagmi'
 import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
-export function useJoinPoolConfig(joinConfigBuilder: AddLiquidityConfigBuilder, account?: Address) {
-  const joinQuery = useQuery(
-    [`useJoinPool:${account}:${joinConfigBuilder.queryKey}`],
+export function useAddLiquidityPoolConfig(
+  addLiquidityConfigBuilder: AddLiquidityConfigBuilder,
+  account?: Address
+) {
+  const addLiquidityQuery = useQuery(
+    [`useJoinPool:${account}:${addLiquidityConfigBuilder.queryKey}`],
     async () => {
-      return await joinConfigBuilder.buildSdkAddLiquidityTxConfig(account || noUserAddress)
+      return await addLiquidityConfigBuilder.buildSdkAddLiquidityTxConfig(account || noUserAddress)
     },
     {
       enabled: !!account,
     }
   )
 
-  return joinQuery
+  return addLiquidityQuery
 }
