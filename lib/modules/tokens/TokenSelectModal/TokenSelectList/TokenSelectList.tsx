@@ -14,9 +14,16 @@ type Props = {
   tokens: GqlToken[]
   listHeight: number
   searchTerm?: string
+  onTokenSelect: (token: GqlToken) => void
 }
 
-export function TokenSelectList({ tokens, listHeight, searchTerm, ...rest }: Props & BoxProps) {
+export function TokenSelectList({
+  tokens,
+  listHeight,
+  searchTerm,
+  onTokenSelect,
+  ...rest
+}: Props & BoxProps) {
   const { balanceFor, isBalancesLoading } = useTokenBalances(tokens)
   const { isConnected } = useUserAccount()
   const { usdValueForToken } = useTokens()
@@ -64,6 +71,7 @@ export function TokenSelectList({ tokens, listHeight, searchTerm, ...rest }: Pro
           return (
             <TokenSelectListRow
               key={token.address + token.chain + index}
+              onClick={() => onTokenSelect(token)}
               token={token}
               userBalance={userBalance}
               isBalancesLoading={isBalancesLoading}

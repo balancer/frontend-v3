@@ -21,6 +21,7 @@ type Props = {
   onClose(): void
   onOpen(): void
   finalFocusRef: RefObject<HTMLInputElement>
+  onTokenSelect: (token: GqlToken) => void
 }
 
 export function TokenSelectModal({
@@ -28,11 +29,21 @@ export function TokenSelectModal({
   isOpen,
   onClose,
   finalFocusRef,
+  onTokenSelect,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const [searchTerm, setSearchTerm] = useState('')
 
   const initialFocusRef = useRef(null)
+
+  function closeOnSelect(token: GqlToken) {
+    onClose()
+
+    setTimeout(() => {
+      onTokenSelect(token)
+      setSearchTerm('')
+    })
+  }
 
   return (
     <Modal
@@ -55,7 +66,12 @@ export function TokenSelectModal({
             />
           </Box>
           <Box p="md" pr="0">
-            <TokenSelectList tokens={tokens} listHeight={500} searchTerm={searchTerm} />
+            <TokenSelectList
+              tokens={tokens}
+              listHeight={500}
+              searchTerm={searchTerm}
+              onTokenSelect={closeOnSelect}
+            />
           </Box>
         </ModalBody>
       </ModalContent>
