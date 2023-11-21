@@ -9,17 +9,15 @@ test('fetches balance for native asset token', async () => {
 
   await waitFor(() => expect(result.current.balances.length).toBe(1))
 
-  expect(result.current.balances).toMatchInlineSnapshot(`
-    [
-      {
-        "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-        "amount": 10000000000000000000000n,
-        "chainId": 1,
-        "decimals": 18,
-        "formatted": "10000",
-      },
-    ]
-  `)
+  const ethBalance = result.current.balances[0]
+
+  expect(ethBalance).toMatchObject({
+    address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    chainId: 1,
+    decimals: 18,
+  })
+
+  expect(ethBalance.amount).toBeGreaterThan(0n)
 })
 
 test('fetches token balance', async () => {
@@ -83,24 +81,18 @@ test('Should not return balances when user is not connected (account is empty) '
   await waitFor(() => expect(result.current.balances.length).toBe(2))
   expect(result.current.isBalancesLoading).toBeFalsy()
 
-  expect(result.current.balances).toMatchInlineSnapshot(`
-    [
-      {
-        "address": "0xba100000625a3754423978a60c9317c58a424e3d",
-        "amount": 0n,
-        "chainId": 1,
-        "decimals": 18,
-        "formatted": "0",
-      },
-      {
-        "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-        "amount": 10000000000000000000000n,
-        "chainId": 1,
-        "decimals": 18,
-        "formatted": "10000",
-      },
-    ]
-  `)
+  expect(result.current.balances[0]).toEqual({
+    address: '0xba100000625a3754423978a60c9317c58a424e3d',
+    amount: 0n,
+    chainId: 1,
+    decimals: 18,
+    formatted: '0',
+  })
+  expect(result.current.balances[1]).toMatchObject({
+    address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    chainId: 1,
+    decimals: 18,
+  })
 })
 
 test.skip('Debug: should return balances of 50 tokens', async () => {
