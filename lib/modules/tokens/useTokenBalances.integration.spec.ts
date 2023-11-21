@@ -3,6 +3,11 @@ import { testHook } from '@/test/utils/custom-renderers'
 import { act, waitFor } from '@testing-library/react'
 import { useTokenBalances } from './useTokenBalances'
 
+/*
+THIS TEST ARE EXCLUDED IN vitest.config.ts until we fix the issues with useQuery key overflow
+  exclude: ['lib/modules/tokens/useTokenBalances.integration.spec.ts', 'node_modules', 'dist'],
+*/
+
 test('fetches balance for native asset token', async () => {
   const nativeAssetBasicToken = fakeTokenBySymbol('ETH')
   const { result } = testHook(() => useTokenBalances([nativeAssetBasicToken]))
