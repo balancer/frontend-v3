@@ -10,6 +10,7 @@ import {
 import { mock } from 'vitest-mock-extended'
 import { MswTokenList } from './token.test.types'
 import { MAX_BIGINT } from '@/lib/shared/hooks/useNumbers'
+import { AmountToApprove } from '../../pool/join/approvals'
 
 export const defaultTokenMock = aTokenMock({ symbol: 'TEST-TOKEN' })
 export const defaultTokenListMock: MswTokenList = [defaultTokenMock as MswTokenList[0]]
@@ -42,4 +43,9 @@ export function aTokenMock(...options: Partial<TokenBase>[]): TokenBase {
 export const someTokenAllowancesMock: TokenAllowances = {
   [wETHAddress]: MAX_BIGINT,
   [wjAuraAddress]: MAX_BIGINT,
+}
+
+export function anAmountToApproveMock(options: Partial<AmountToApprove>): AmountToApprove {
+  const defaultAmount = { tokenAddress: wETHAddress, amount: 1n }
+  return Object.assign({}, defaultAmount, options)
 }

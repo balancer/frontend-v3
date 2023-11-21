@@ -9,6 +9,7 @@ export interface TokensConfig {
     symbol: string
     decimals: number
   }
+  doubleApprovalRequired?: string[]
 }
 
 export interface ContractsConfig {
