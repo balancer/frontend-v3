@@ -14,6 +14,8 @@ import { useHotkeys } from 'react-hotkeys-hook'
 
 type Props = {
   tokens: GqlToken[]
+  excludeNativeAsset?: boolean
+  pinNativeAsset?: boolean
   listHeight: number
   searchTerm?: string
   onTokenSelect: (token: GqlToken) => void
@@ -21,6 +23,8 @@ type Props = {
 
 export function TokenSelectList({
   tokens,
+  excludeNativeAsset = false,
+  pinNativeAsset = false,
   listHeight,
   searchTerm,
   onTokenSelect,
@@ -29,7 +33,7 @@ export function TokenSelectList({
   const [activeIndex, setActiveIndex] = useState(0)
   const { balanceFor, isBalancesLoading } = useTokenBalances(tokens)
   const { isConnected } = useUserAccount()
-  const { usdValueForToken } = useTokens()
+  const { usdValueForToken, exclNativeAssetFilter, nativeAssetFilter } = useTokens()
 
   const symbolMatch = (token: GqlToken, searchTerm: string) =>
     token.symbol.toLowerCase().includes(searchTerm.toLowerCase())
@@ -37,18 +41,28 @@ export function TokenSelectList({
   const nameMatch = (token: GqlToken, searchTerm: string) =>
     token.name.toLowerCase().includes(searchTerm.toLowerCase())
 
-  const filteredTokens = searchTerm
-    ? tokens.filter(token => {
+  const getFilteredTokens = () => {
+    let filteredTokens = tokens
+
+    if (excludeNativeAsset) {
+      filteredTokens = filteredTokens.filter(exclNativeAssetFilter)
+    }
+
+    if (searchTerm) {
+      filteredTokens = filteredTokens.filter(token => {
         return (
           isSameAddress(token.address, searchTerm) ||
           symbolMatch(token, searchTerm) ||
           nameMatch(token, searchTerm)
         )
       })
-    : tokens
+    }
 
-  const orderedTokens = orderBy(
-    filteredTokens,
+    return filteredTokens
+  }
+
+  let orderedTokens = orderBy(
+    getFilteredTokens(),
     [
       token => {
         const userBalance = balanceFor(token)
@@ -59,6 +73,14 @@ export function TokenSelectList({
     ],
     ['desc', 'desc']
   )
+
+  if (pinNativeAsset) {
+    const nativeAsset = orderedTokens.find(nativeAssetFilter)
+
+    if (nativeAsset) {
+      orderedTokens = [nativeAsset, ...orderedTokens.filter(exclNativeAssetFilter)]
+    }
+  }
 
   const decrementActiveIndex = () => setActiveIndex(prev => Math.max(prev - 1, 0))
   const incrementActiveIndex = () =>

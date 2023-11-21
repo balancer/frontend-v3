@@ -25,6 +25,7 @@ export default function TokenSelectPage() {
       </Button>
       <TokenSelectModal
         tokens={getTokensByChain(1)}
+        pinNativeAsset
         finalFocusRef={tokenSelectBtn}
         isOpen={tokenSelectDisclosure.isOpen}
         onOpen={tokenSelectDisclosure.onOpen}

@@ -17,6 +17,8 @@ import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 
 type Props = {
   tokens: GqlToken[]
+  excludeNativeAsset?: boolean
+  pinNativeAsset?: boolean
   isOpen: boolean
   onClose(): void
   onOpen(): void
@@ -26,6 +28,8 @@ type Props = {
 
 export function TokenSelectModal({
   tokens,
+  excludeNativeAsset = false,
+  pinNativeAsset = false,
   isOpen,
   onClose,
   finalFocusRef,
@@ -69,6 +73,8 @@ export function TokenSelectModal({
           <Box p="md" pr="0">
             <TokenSelectList
               tokens={tokens}
+              excludeNativeAsset={excludeNativeAsset}
+              pinNativeAsset={pinNativeAsset}
               listHeight={500}
               searchTerm={searchTerm}
               onTokenSelect={closeOnSelect}
