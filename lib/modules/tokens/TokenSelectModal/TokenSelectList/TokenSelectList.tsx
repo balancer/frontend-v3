@@ -9,6 +9,8 @@ import { useTokenBalances } from '../../useTokenBalances'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { orderBy } from 'lodash'
 import { useTokens } from '../../useTokens'
+import { useState } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 type Props = {
   tokens: GqlToken[]
@@ -24,6 +26,7 @@ export function TokenSelectList({
   onTokenSelect,
   ...rest
 }: Props & BoxProps) {
+  const [activeIndex, setActiveIndex] = useState(0)
   const { balanceFor, isBalancesLoading } = useTokenBalances(tokens)
   const { isConnected } = useUserAccount()
   const { usdValueForToken } = useTokens()
@@ -57,6 +60,16 @@ export function TokenSelectList({
     ['desc', 'desc']
   )
 
+  useHotkeys('up', () => setActiveIndex(prev => Math.max(prev - 1, 0)))
+  useHotkeys('shift+tab', () => setActiveIndex(prev => Math.max(prev - 1, 0)))
+  useHotkeys('down', () => setActiveIndex(prev => Math.min(prev + 1, orderedTokens.length - 1)))
+  useHotkeys('tab', () => setActiveIndex(prev => Math.min(prev + 1, orderedTokens.length - 1)))
+  useHotkeys('enter', () => onTokenSelect(orderedTokens[activeIndex]), [activeIndex])
+
+  function keyFor(token: GqlToken, index: number) {
+    return `${token.address}:${token.chain}:${index}`
+  }
+
   return (
     <Box height={listHeight} {...rest}>
       <VirtualList
@@ -64,19 +77,21 @@ export function TokenSelectList({
         height={listHeight}
         itemCount={orderedTokens.length}
         itemSize={60}
+        scrollToIndex={activeIndex >= 8 ? activeIndex - 7 : 0}
+        style={{ overflowY: 'scroll' }}
         renderItem={({ index, style }) => {
           const token = orderedTokens[index]
           const userBalance = isConnected ? balanceFor(token) : undefined
 
           return (
             <TokenSelectListRow
-              key={token.address + token.chain + index}
+              key={keyFor(token, index)}
+              active={index === activeIndex}
               onClick={() => onTokenSelect(token)}
               token={token}
               userBalance={userBalance}
               isBalancesLoading={isBalancesLoading}
               style={style}
-              pr="md"
             />
           )
         }}

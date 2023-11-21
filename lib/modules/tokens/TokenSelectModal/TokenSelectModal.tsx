@@ -60,9 +60,10 @@ export function TokenSelectModal({
         <ModalBody p={0}>
           <Box px="md">
             <Input
+              ref={initialFocusRef}
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              placeholder="Search name, symbol or address"
+              placeholder="Search by name, symbol or address"
             />
           </Box>
           <Box p="md" pr="0">
