@@ -32,6 +32,10 @@ module.exports = {
             importNames: ['useAccount'],
             message: 'Use useUserAccount instead to avoid hydration issues',
           },
+          {
+            group: ['wagmi/dist'],
+            message: 'Invalid import: remove dist from import path',
+          },
         ],
       },
     ],
