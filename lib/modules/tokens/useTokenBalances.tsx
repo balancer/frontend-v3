@@ -7,7 +7,7 @@ import { TokenAmount, TokenBase } from './token.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { formatUnits } from 'viem'
 import { isLoadingQueries, isRefetchingQueries, refetchQueries } from '@/lib/shared/utils/queries'
-import { multicall } from 'wagmi/dist/actions'
+import { multicall } from 'wagmi/actions'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
