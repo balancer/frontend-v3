@@ -3,13 +3,13 @@ import { Address } from 'viem'
 import { useTokens } from '../useTokens'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import TokenAvatar from '@/lib/shared/components/token/TokenAvatar'
-import { useNumbers } from '@/lib/shared/hooks/useNumbers'
+import { Numberish, tokenFormat, useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { ReactNode } from 'react'
 
 type Props = {
   address: Address
   chain: GqlChain
-  value: number
+  value: Numberish
   customRender?: (token: GqlToken) => ReactNode | ReactNode[]
 }
 
@@ -17,7 +17,7 @@ export default function TokenRow({ address, value, customRender, chain }: Props)
   const { getToken, priceFor } = useTokens()
   const { toCurrency } = useNumbers()
   const token = getToken(address, chain)
-  const totalTokenValue = priceFor(address, chain)
+  const totalTokenValue = priceFor(address, chain) * parseFloat(value as string)
 
   return (
     <HStack width="full" justifyContent="space-between">
@@ -35,7 +35,7 @@ export default function TokenRow({ address, value, customRender, chain }: Props)
       <HStack spacing="8">
         <VStack spacing="1" alignItems="flex-end">
           <Heading fontWeight="bold" as="h6" fontSize="1rem">
-            {value || 0.0}
+            {tokenFormat(value) || 0.0}
           </Heading>
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
             {toCurrency(totalTokenValue)}

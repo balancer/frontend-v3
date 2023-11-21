@@ -3,9 +3,22 @@ import { Box, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { usePool } from '../../usePool'
 import { Address } from 'viem'
+import { GqlPoolToken } from '@/lib/shared/services/api/generated/graphql'
+import { useNumbers, weightFormat } from '@/lib/shared/hooks/useNumbers'
+import { useTokens } from '@/lib/modules/tokens/useTokens'
+import Image from 'next/image'
 
 export function PoolComposition() {
   const { pool, chain } = usePool()
+  const { toCurrency } = useNumbers()
+  const { priceFor } = useTokens()
+
+  function getTokenWeightByBalance(token: GqlPoolToken) {
+    return (
+      (priceFor(token.address, chain) * parseFloat(token.balance)) /
+      parseFloat(pool.dynamicData.totalLiquidity)
+    )
+  }
 
   return (
     <Card variant="gradient" width="full" height="320px">
@@ -30,32 +43,39 @@ export function PoolComposition() {
                   </VStack>
                   <VStack spacing="1" alignItems="flex-end">
                     <Heading fontWeight="bold" size="h6">
-                      $0.00
+                      {toCurrency(pool.dynamicData.totalLiquidity)}
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">
-                      8.69%
+                      8.69% (TODO INTEGRATE)
                     </Text>
                   </VStack>
                 </HStack>
               </Box>
               <VStack spacing="4" p="4" py="2" pb="4" width="full">
-                {pool.allTokens.map(token => {
+                {(pool.tokens as GqlPoolToken[]).map(poolToken => {
                   return (
                     <TokenRow
                       chain={chain}
-                      key={`my-liquidity-token-${token.address}`}
-                      address={token.address as Address}
-                      // TODO: Fill pool balances
-                      value={0}
-                      customRender={token => {
+                      key={`my-liquidity-token-${poolToken.address}`}
+                      address={poolToken.address as Address}
+                      value={poolToken.balance}
+                      customRender={() => {
                         return (
-                          <VStack spacing="1" alignItems="flex-end">
+                          <VStack minWidth="100px" spacing="1" alignItems="flex-end">
                             <Heading fontWeight="bold" as="h6" fontSize="1rem">
-                              50.4%
+                              {weightFormat(getTokenWeightByBalance(poolToken))}
                             </Heading>
-                            <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                              50%
-                            </Text>
+                            <HStack spacing="1">
+                              <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+                                {weightFormat(poolToken.weight || '0')}
+                              </Text>
+                              <Image
+                                src="/images/icons/bullseye.svg"
+                                width="16"
+                                height="16"
+                                alt="Token weight - Bullseye"
+                              />
+                            </HStack>
                           </VStack>
                         )
                       }}

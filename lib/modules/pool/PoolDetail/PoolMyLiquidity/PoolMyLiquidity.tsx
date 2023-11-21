@@ -66,7 +66,7 @@ export default function PoolMyLiquidity() {
                 </HStack>
               </Box>
               <VStack spacing="4" p="4" py="2" pb="4" width="full">
-                {pool.allTokens.map(token => {
+                {pool.displayTokens.map(token => {
                   return (
                     <TokenRow
                       chain={chain}
