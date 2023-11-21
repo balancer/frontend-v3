@@ -2,7 +2,6 @@ import { allFakeGqlTokens, fakeTokenBySymbol } from '@/test/data/all-gql-tokens.
 import { testHook } from '@/test/utils/custom-renderers'
 import { act, waitFor } from '@testing-library/react'
 import { useTokenBalances } from './useTokenBalances'
-import { apolloTestClient } from '@/test/utils/apollo-test-client'
 
 test('fetches balance for native asset token', async () => {
   const nativeAssetBasicToken = fakeTokenBySymbol('ETH')
