@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, BoxProps } from '@chakra-ui/react'
+import { Box, BoxProps, Center, Text } from '@chakra-ui/react'
 import VirtualList from 'react-tiny-virtual-list'
 import { TokenSelectListRow } from './TokenSelectListRow'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
@@ -75,32 +75,46 @@ export function TokenSelectList({
     return `${token.address}:${token.chain}:${index}`
   }
 
+  function getScrollToIndex() {
+    if (orderedTokens.length === 0) return undefined
+
+    return activeIndex >= 8 ? activeIndex - 7 : 0
+  }
+
   return (
     <Box height={listHeight} {...rest}>
-      <VirtualList
-        width="100%"
-        height={listHeight}
-        itemCount={orderedTokens.length}
-        itemSize={60}
-        scrollToIndex={activeIndex >= 8 ? activeIndex - 7 : 0}
-        style={{ overflowY: 'scroll' }}
-        renderItem={({ index, style }) => {
-          const token = orderedTokens[index]
-          const userBalance = isConnected ? balanceFor(token) : undefined
+      {orderedTokens.length === 0 ? (
+        <Center h="60">
+          <Text color="gray.500" fontSize="sm">
+            No tokens found
+          </Text>
+        </Center>
+      ) : (
+        <VirtualList
+          width="100%"
+          height={listHeight}
+          itemCount={orderedTokens.length}
+          itemSize={60}
+          scrollToIndex={getScrollToIndex()}
+          style={{ overflowY: 'scroll' }}
+          renderItem={({ index, style }) => {
+            const token = orderedTokens[index]
+            const userBalance = isConnected ? balanceFor(token) : undefined
 
-          return (
-            <TokenSelectListRow
-              key={keyFor(token, index)}
-              active={index === activeIndex}
-              onClick={() => onTokenSelect(token)}
-              token={token}
-              userBalance={userBalance}
-              isBalancesLoading={isBalancesLoading}
-              style={style}
-            />
-          )
-        }}
-      />
+            return (
+              <TokenSelectListRow
+                key={keyFor(token, index)}
+                active={index === activeIndex}
+                onClick={() => onTokenSelect(token)}
+                token={token}
+                userBalance={userBalance}
+                isBalancesLoading={isBalancesLoading}
+                style={style}
+              />
+            )
+          }}
+        />
+      )}
     </Box>
   )
 }
