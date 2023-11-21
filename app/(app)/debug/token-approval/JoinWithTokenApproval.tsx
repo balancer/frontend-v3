@@ -9,7 +9,7 @@ import { useUserTokenAllowance } from '@/lib/modules/web3/useUserTokenAllowance'
 import { Flex, VStack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useBalance } from 'wagmi'
-import { FetchBalanceResult } from 'wagmi/dist/actions'
+import { FetchBalanceResult } from 'wagmi/actions'
 import RecentTransactions from '../RecentTransactions'
 
 export function JoinWithTokenApproval() {
