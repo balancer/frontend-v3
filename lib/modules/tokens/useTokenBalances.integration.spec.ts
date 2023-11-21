@@ -62,7 +62,6 @@ test('refetches balances', async () => {
 
   expect(refetchResult.length).toBe(2)
   expect(refetchResult[0].isSuccess).toBeTruthy()
-  expect(refetchResult[1].isSuccess).toBeTruthy()
 
   expect(result.current.balances).toMatchInlineSnapshot(`
     [

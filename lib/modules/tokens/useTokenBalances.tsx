@@ -67,7 +67,7 @@ export function useTokenBalances(tokens: TokenBase[]) {
   async function refetchBalances() {
     if (includesNativeAsset) return refetchQueries(tokenBalancesQuery, nativeBalanceQuery)
 
-    return tokenBalancesQuery.refetch()
+    return refetchQueries(tokenBalancesQuery)
   }
 
   const balances: TokenAmount[] = (tokenBalancesQuery.data || []).map((balance, index) => {
