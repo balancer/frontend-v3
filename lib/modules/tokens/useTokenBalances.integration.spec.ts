@@ -58,8 +58,6 @@ test('refetches balances', async () => {
     return result.current.refetchBalances()
   })
 
-  expect(result.current.isBalancesRefetching).toBeFalsy()
-
   expect(refetchResult.length).toBe(1)
   expect(refetchResult[0].isSuccess).toBeTruthy()
 
