@@ -7,11 +7,12 @@ import { zeroAddress } from 'viem'
 interface Props extends AvatarProps {
   address?: string | null
   logoURI?: string
+  chain: GqlChain
 }
 
-function TokenAvatar({ address, size, logoURI, ...rest }: Props) {
+function TokenAvatar({ address, size, logoURI, chain, ...rest }: Props) {
   const { getToken } = useTokens()
-  const token = address ? getToken(address, 'MAINNET' as GqlChain) : null
+  const token = address ? getToken(address, chain) : null
 
   return (
     <Avatar

@@ -8,20 +8,21 @@ import { ReactNode } from 'react'
 
 type Props = {
   address: Address
+  chain: GqlChain
   value: number
   customRender?: (token: GqlToken) => ReactNode | ReactNode[]
 }
 
-export default function TokenRow({ address, value, customRender }: Props) {
+export default function TokenRow({ address, value, customRender, chain }: Props) {
   const { getToken, priceFor } = useTokens()
   const { toCurrency } = useNumbers()
-  const token = getToken(address, 'MAINNET' as GqlChain)
-  const totalTokenValue = priceFor(address, 'MAINNET' as GqlChain)
+  const token = getToken(address, chain)
+  const totalTokenValue = priceFor(address, chain)
 
   return (
     <HStack width="full" justifyContent="space-between">
       <HStack>
-        <TokenAvatar address={address} size="sm" bg="red.500" />
+        <TokenAvatar chain={chain} address={address} size="sm" bg="red.500" />
         <VStack spacing="1" alignItems="flex-start">
           <Heading fontWeight="bold" as="h6" fontSize="1rem">
             {token?.symbol}

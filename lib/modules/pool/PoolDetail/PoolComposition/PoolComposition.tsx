@@ -1,14 +1,11 @@
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import ButtonGroup, {
-  ButtonGroupOption,
-} from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { Box, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { usePool } from '../../usePool'
 import { Address } from 'viem'
 
 export function PoolComposition() {
-  const { pool } = usePool()
+  const { pool, chain } = usePool()
 
   return (
     <Card variant="gradient" width="full" height="320px">
@@ -45,6 +42,7 @@ export function PoolComposition() {
                 {pool.allTokens.map(token => {
                   return (
                     <TokenRow
+                      chain={chain}
                       key={`my-liquidity-token-${token.address}`}
                       address={token.address as Address}
                       // TODO: Fill pool balances

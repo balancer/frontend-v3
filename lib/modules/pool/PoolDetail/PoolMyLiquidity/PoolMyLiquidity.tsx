@@ -27,7 +27,7 @@ const TABS = [
 ]
 export default function PoolMyLiquidity() {
   const [activeTab, setActiveTab] = useState(TABS[0])
-  const { pool } = usePool()
+  const { pool, chain } = usePool()
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
@@ -69,6 +69,7 @@ export default function PoolMyLiquidity() {
                 {pool.allTokens.map(token => {
                   return (
                     <TokenRow
+                      chain={chain}
                       key={`my-liquidity-token-${token.address}`}
                       address={token.address as Address}
                       // TODO: Fill pool balances
