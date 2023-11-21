@@ -16,6 +16,7 @@ import { createContext, PropsWithChildren } from 'react'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { TokenBase } from './token.types'
+import { Numberish, bn } from '@/lib/shared/hooks/useNumbers'
 
 export type UseTokensResult = ReturnType<typeof _useTokens>
 export const TokensContext = createContext<UseTokensResult | null>(null)
@@ -65,6 +66,10 @@ export function _useTokens(
     return price.price
   }
 
+  function usdValueForToken(token: GqlToken, amount: Numberish): string {
+    return bn(amount).times(priceForToken(token)).toFixed(2)
+  }
+
   function priceFor(address: string, chain: GqlChain): number {
     const token = getToken(address, chain)
     if (!token) return 0
@@ -81,6 +86,7 @@ export function _useTokens(
     getTokensByChain,
     exclNativeAssetFilter,
     nativeAssetFilter,
+    usdValueForToken,
   }
 }
 

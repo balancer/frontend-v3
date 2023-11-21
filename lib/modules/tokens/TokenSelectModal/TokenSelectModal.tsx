@@ -51,7 +51,7 @@ export function TokenSelectModal({
             <Input
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              placeholder="Search name, sybol or address"
+              placeholder="Search name, symbol or address"
             />
           </Box>
           <Box p="md" pr="0">

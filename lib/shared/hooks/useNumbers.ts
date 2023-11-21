@@ -41,14 +41,18 @@ export function bn(val: Numberish): BigNumber {
 
 type FormatOpts = { abbreviated?: boolean }
 
+export function toSafeValue(val: Numberish): string {
+  return bn(val).toFixed(NUMERAL_DECIMAL_LIMIT)
+}
+
 export function fiatFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
   const format = abbreviated ? FIAT_FORMAT_A : FIAT_FORMAT
-  return numeral(bn(val).toFixed(NUMERAL_DECIMAL_LIMIT)).format(format)
+  return numeral(toSafeValue(val)).format(format)
 }
 
 export function tokenFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
   const format = abbreviated ? TOKEN_FORMAT_A : TOKEN_FORMAT
-  return numeral(bn(val).toFixed(NUMERAL_DECIMAL_LIMIT)).format(format)
+  return numeral(toSafeValue(val)).format(format)
 }
 
 export function aprFormat(apr: Numberish): string {

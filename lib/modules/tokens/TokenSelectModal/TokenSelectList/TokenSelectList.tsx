@@ -6,7 +6,9 @@ import { TokenSelectListRow } from './TokenSelectListRow'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useTokenBalances } from '../../useTokenBalances'
-import { useEffect } from 'react'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { orderBy } from 'lodash'
+import { useTokens } from '../../useTokens'
 
 type Props = {
   tokens: GqlToken[]
@@ -15,7 +17,9 @@ type Props = {
 }
 
 export function TokenSelectList({ tokens, listHeight, searchTerm, ...rest }: Props & BoxProps) {
-  const { balanceFor, balances, isBalancesLoading } = useTokenBalances(tokens)
+  const { balanceFor, isBalancesLoading } = useTokenBalances(tokens)
+  const { isConnected } = useUserAccount()
+  const { usdValueForToken } = useTokens()
 
   const symbolMatch = (token: GqlToken, searchTerm: string) =>
     token.symbol.toLowerCase().includes(searchTerm.toLowerCase())
@@ -33,21 +37,29 @@ export function TokenSelectList({ tokens, listHeight, searchTerm, ...rest }: Pro
       })
     : tokens
 
-  useEffect(() => {
-    console.log(balances)
-  }, [balances])
+  const orderedTokens = orderBy(
+    filteredTokens,
+    [
+      token => {
+        const userBalance = balanceFor(token)
+        return userBalance ? Number(usdValueForToken(token, userBalance?.formatted || 0)) : 0
+      },
+      'priority',
+      'symbol',
+    ],
+    ['desc', 'desc']
+  )
 
   return (
     <Box height={listHeight} {...rest}>
       <VirtualList
         width="100%"
         height={listHeight}
-        itemCount={filteredTokens.length}
+        itemCount={orderedTokens.length}
         itemSize={60}
         renderItem={({ index, style }) => {
-          const token = filteredTokens[index]
-          const userBalance = balanceFor(token)
-          console.log(userBalance)
+          const token = orderedTokens[index]
+          const userBalance = isConnected ? balanceFor(token) : undefined
 
           return (
             <TokenSelectListRow
@@ -56,6 +68,7 @@ export function TokenSelectList({ tokens, listHeight, searchTerm, ...rest }: Pro
               userBalance={userBalance}
               isBalancesLoading={isBalancesLoading}
               style={style}
+              pr="md"
             />
           )
         }}
