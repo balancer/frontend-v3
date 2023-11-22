@@ -1,17 +1,5 @@
 'use client'
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  HStack,
-  Heading,
-  Stack,
-  Text,
-  VStack,
-} from '@chakra-ui/react'
+import { HStack, Stack, VStack } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
 import PoolStats from './PoolStats'
 import PoolMyLiquidity from './PoolMyLiquidity'
