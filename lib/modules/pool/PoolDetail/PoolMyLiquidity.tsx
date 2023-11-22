@@ -4,7 +4,7 @@ import ButtonGroup, {
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { Box, Button, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import { usePool } from '../../usePool'
+import { usePool } from '../usePool'
 import { Address } from 'viem'
 
 const TABS = [
