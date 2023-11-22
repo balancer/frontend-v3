@@ -8,15 +8,24 @@ import { useTokenBalances } from '../useTokenBalances'
 import { tokenFormat, useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { TbWallet } from 'react-icons/tb'
 import { blockInvalidNumberInput, useTokenInput } from './useTokenInput'
+import { useEffect } from 'react'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
   weight?: string
+  toggleTokenSelect?: () => void
 }
 
-function TokenInputSelector({ token, weight }: TokenInputSelectorProps) {
+function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSelectorProps) {
   return (
-    <Box py="xs" px="sm" bg="sand.50" borderRadius="md">
+    <Box
+      py="xs"
+      px="sm"
+      bg="sand.50"
+      borderRadius="md"
+      onClick={toggleTokenSelect}
+      cursor={toggleTokenSelect ? 'pointer' : 'default'}
+    >
       <HStack>
         {token?.logoURI && <Image src={token?.logoURI} alt={token.symbol} width={24} height={24} />}
         <Text fontWeight="bold">{token?.symbol}</Text>
@@ -36,8 +45,16 @@ function TokenInputFooter({ token, updateValue }: TokenInputFooterProps) {
   const { usdValueForToken } = useTokens()
   const { toCurrency } = useNumbers()
 
-  const userBalance = token ? balanceFor(token.address)?.formatted || '0' : '0'
+  const balance = token ? balanceFor(token?.address) : undefined
+  const userBalance = token ? balance?.formatted || '0' : '0'
   const usdValue = userBalance && token ? usdValueForToken(token, userBalance) : '0'
+
+  useEffect(() => {
+    console.log('token', token)
+  }, [token])
+  useEffect(() => {
+    console.log('balance', balance)
+  }, [balance])
 
   return (
     <HStack h="4" w="full" justify="space-between">
@@ -69,15 +86,19 @@ type Props = {
   onChange?: (event: { currentTarget: { value: string } }) => void
   value?: string
   hideFooter?: boolean
+  toggleTokenSelect?: () => void
 }
 
 export const TokenInput = forwardRef(
-  ({ address, chain, weight, value, hideFooter = false, onChange }: Props, ref) => {
+  (
+    { address, chain, weight, value, onChange, toggleTokenSelect, hideFooter = false }: Props,
+    ref
+  ) => {
     const { getToken } = useTokens()
     const token = getToken(address, chain)
     const { handleOnChange, updateValue } = useTokenInput(token, onChange)
 
-    const tokenInputSelector = TokenInputSelector({ token, weight })
+    const tokenInputSelector = TokenInputSelector({ token, weight, toggleTokenSelect })
     const footer = hideFooter ? undefined : TokenInputFooter({ token, updateValue })
 
     return (

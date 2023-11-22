@@ -2,15 +2,22 @@
 
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
-import { Heading, Text, VStack } from '@chakra-ui/react'
+import { Heading, Text, VStack, useDisclosure } from '@chakra-ui/react'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useState } from 'react'
+import { TokenSelectModal } from '@/lib/modules/tokens/TokenSelectModal/TokenSelectModal'
 
 export default function TokenInputPage() {
   const [currentValue, setCurrentValue] = useState('')
-  const { getToken } = useTokens()
+  const { getToken, getTokensByChain } = useTokens()
+  const tokenSelectDisclosure = useDisclosure()
+  const [token, setToken] = useState<GqlToken>(
+    getToken('0x6B175474E89094C44Da98b954EedeAC495271d0F', 1) as GqlToken
+  )
 
-  const token = getToken('0x6B175474E89094C44Da98b954EedeAC495271d0F', 1) as GqlToken
+  function handleTokenSelect(token: GqlToken) {
+    setToken(token)
+  }
 
   return (
     <VStack width="xl" align="start" p="md">
@@ -21,6 +28,16 @@ export default function TokenInputPage() {
         chain={token.chain}
         value={currentValue}
         onChange={e => setCurrentValue(e.currentTarget.value)}
+        toggleTokenSelect={() => {
+          tokenSelectDisclosure.onOpen()
+        }}
+      />
+      <TokenSelectModal
+        tokens={getTokensByChain(1)}
+        isOpen={tokenSelectDisclosure.isOpen}
+        onOpen={tokenSelectDisclosure.onOpen}
+        onClose={tokenSelectDisclosure.onClose}
+        onTokenSelect={handleTokenSelect}
       />
     </VStack>
   )
