@@ -12,8 +12,8 @@ dependencies:
     specifier: 3.8.0-rc.1
     version: 3.8.0-rc.1(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
   '@balancer/sdk':
-    specifier: github:balancer/b-sdk#join3
-    version: github.com/balancer/b-sdk/4a9f425013f3dca79fd89c7b8ca6ab1cfc417242(typescript@5.1.6)(zod@3.22.4)
+    specifier: github:balancer/b-sdk#join2
+    version: github.com/balancer/b-sdk/97cee6aa57f73fe4bd4daa2046b2df9b0278df0b(typescript@5.1.6)(zod@3.22.4)
   '@chakra-ui/anatomy':
     specifier: ^2.2.2
     version: 2.2.2
@@ -11991,11 +11991,12 @@ packages:
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
 
-  github.com/balancer/b-sdk/4a9f425013f3dca79fd89c7b8ca6ab1cfc417242(typescript@5.1.6)(zod@3.22.4):
-    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/4a9f425013f3dca79fd89c7b8ca6ab1cfc417242}
-    id: github.com/balancer/b-sdk/4a9f425013f3dca79fd89c7b8ca6ab1cfc417242
+  github.com/balancer/b-sdk/97cee6aa57f73fe4bd4daa2046b2df9b0278df0b(typescript@5.1.6)(zod@3.22.4):
+    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/97cee6aa57f73fe4bd4daa2046b2df9b0278df0b}
+    id: github.com/balancer/b-sdk/97cee6aa57f73fe4bd4daa2046b2df9b0278df0b
     name: '@balancer/sdk'
-    version: 0.2.0
+    version: 0.3.1
+    engines: {node: '>=18.x'}
     dependencies:
       async-retry: 1.3.3
       decimal.js-light: 2.5.1
