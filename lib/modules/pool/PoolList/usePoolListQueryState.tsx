@@ -31,6 +31,19 @@ export function usePoolListQueryState() {
     'textSearch',
     poolListQueryStateParsers.textSearch
   )
+  const [userAddress, setUserAddress] = useQueryState(
+    'userAddress',
+    poolListQueryStateParsers.userAddress
+  )
+
+  // Set internal checked state
+  function toggleUserAddress(checked: boolean, address: string) {
+    if (checked) {
+      setUserAddress(address)
+    } else {
+      setUserAddress('')
+    }
+  }
 
   // Set internal checked state
   function toggleNetwork(checked: boolean, network: GqlChain) {
@@ -115,6 +128,7 @@ export function usePoolListQueryState() {
     where: {
       poolTypeIn: mappedPoolTypes,
       chainIn: networks.length > 0 ? networks : PROJECT_CONFIG.supportedNetworks,
+      userAddress,
     },
     textSearch,
   }
@@ -129,6 +143,7 @@ export function usePoolListQueryState() {
       networks,
       textSearch,
     },
+    toggleUserAddress,
     toggleNetwork,
     togglePoolType,
     poolTypeLabel,
