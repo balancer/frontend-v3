@@ -8,6 +8,7 @@ import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { formatUnits } from 'viem'
 import { isLoadingQueries, isRefetchingQueries, refetchQueries } from '@/lib/shared/utils/queries'
 import { multicall } from 'wagmi/actions'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
@@ -96,10 +97,17 @@ export function useTokenBalances(tokens: TokenBase[]) {
     })
   }
 
+  function balanceFor(token: TokenBase | string): TokenAmount | undefined {
+    const address = typeof token === 'string' ? token : token.address
+
+    return balances.find(balance => isSameAddress(balance.address, address))
+  }
+
   return {
     balances,
     isBalancesLoading: isLoadingQueries(tokenBalancesQuery, nativeBalanceQuery),
     isBalancesRefetching: isRefetchingQueries(tokenBalancesQuery, nativeBalanceQuery),
     refetchBalances,
+    balanceFor,
   }
 }

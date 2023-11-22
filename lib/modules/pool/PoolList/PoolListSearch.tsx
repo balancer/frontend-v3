@@ -1,10 +1,10 @@
 import { useForm } from 'react-hook-form'
 import { FormControl, IconButton, Input, InputGroup, InputRightElement } from '@chakra-ui/react'
 import { HiOutlineSearch, HiOutlineX } from 'react-icons/hi'
-import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
+import { usePoolListQueryState } from './usePoolListQueryState'
 import { useEffect } from 'react'
 import { useDebounce } from '@/lib/shared/hooks/useDebounce'
-import { usePoolList } from '../usePoolList'
+import { usePoolList } from './usePoolList'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 const SEARCH = 'search'

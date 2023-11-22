@@ -14,7 +14,7 @@ import {
   PoolFilterType,
   poolListQueryStateParsers,
   SortingState,
-} from '@/lib/modules/pool/pool.types'
+} from '../pool.types'
 import { PaginationState } from '@/lib/shared/components/pagination/pagination.types'
 
 export function usePoolListQueryState() {
