@@ -43,10 +43,8 @@ export function TokenSelectModal({
   function closeOnSelect(token: GqlToken) {
     onClose()
 
-    setTimeout(() => {
-      onTokenSelect(token)
-      setSearchTerm('')
-    })
+    onTokenSelect(token)
+    setSearchTerm('')
   }
 
   return (
