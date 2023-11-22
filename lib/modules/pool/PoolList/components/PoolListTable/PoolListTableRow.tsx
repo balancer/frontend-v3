@@ -7,6 +7,7 @@ import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
 import { useNumbers } from '@/lib/shared/hooks/useNumbers'
+import { useUserData } from '@/lib/shared/hooks/user/useUserData'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -18,11 +19,16 @@ const MemoizedAprTooltip = memo(AprTooltip)
 export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
   const networkConfig = getNetworkConfig(pool.chain)
   const { toCurrency } = useNumbers()
+  const { usdBalanceForPool } = useUserData()
 
   return (
     <Box key={keyValue}>
       <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
-        <Grid {...rest} height="63.5px" gridTemplateAreas={`"network details tvl volume apr"`}>
+        <Grid
+          {...rest}
+          height="63.5px"
+          gridTemplateAreas={`"network details my_liquidity tvl volume apr"`}
+        >
           <GridItem area="network">
             <Image
               src={networkConfig.iconPath}
@@ -33,6 +39,9 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
           </GridItem>
           <GridItem area="details">
             <Text>{pool.name}</Text>
+          </GridItem>
+          <GridItem area="my_liquidity">
+            <Text>{toCurrency(usdBalanceForPool(pool.id), { abbreviated: false })}</Text>
           </GridItem>
           <GridItem area="tvl">
             <Text

@@ -11,7 +11,7 @@ import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 const rowProps = {
   px: [0, 4],
-  gridTemplateColumns: '50px 1fr 150px 175px 175px',
+  gridTemplateColumns: '50px 1fr 150px 175px 175px 175px',
   alignItems: 'center',
   gap: 0,
   minW: '800px',
