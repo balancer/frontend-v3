@@ -37,7 +37,7 @@ export const BalInput = forwardRef(
     ref
   ) => {
     return (
-      <Box shadow="md" borderRadius="md" p="sm" ref={ref} {...boxProps}>
+      <Box shadow="md" borderRadius="md" p="sm" bg="white" border="white" ref={ref} {...boxProps}>
         <VStack align="start">
           {headerSlot && headerSlot}
           <InputGroup border="transparent" background="transparent" {...inputGroupProps}>
