@@ -4,10 +4,10 @@ import { Grid } from '@chakra-ui/react'
 import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { PoolListCard } from './PoolListCard'
 import { Pagination } from '@/lib/shared/components/pagination/Pagination'
-import { usePoolListQueryState } from '../../usePoolListQueryState'
+import { usePoolListQueryState } from '../usePoolListQueryState'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
-import { PoolListItem } from '../../../pool.types'
-import { getPoolPath } from '../../../pool.utils'
+import { PoolListItem } from '../../pool.types'
+import { getPoolPath } from '../../pool.utils'
 import { useRouter } from 'next/navigation'
 
 export function PoolListCards() {
