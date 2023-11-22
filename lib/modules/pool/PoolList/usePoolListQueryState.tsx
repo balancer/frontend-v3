@@ -7,14 +7,15 @@ import {
   GqlPoolOrderDirection,
 } from '@/lib/shared/services/api/generated/graphql'
 import { uniq } from 'lodash'
-import { PaginationState, SortingState } from '@tanstack/react-table'
 import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { useQueryState } from 'next-usequerystate'
 import {
   POOL_TYPE_MAP,
   PoolFilterType,
   poolListQueryStateParsers,
-} from '@/lib/modules/pool/pool.types'
+  SortingState,
+} from '../pool.types'
+import { PaginationState } from '@/lib/shared/components/pagination/pagination.types'
 
 export function usePoolListQueryState() {
   const [first, setFirst] = useQueryState('first', poolListQueryStateParsers.first)
@@ -52,7 +53,7 @@ export function usePoolListQueryState() {
   function setSorting(sortingState: SortingState) {
     if (sortingState.length > 0) {
       setSkip(0)
-      setOrderBy(sortingState[0].id as GqlPoolOrderBy)
+      setOrderBy(sortingState[0].id)
       setOrderDirection(
         sortingState[0].desc ? GqlPoolOrderDirection.Desc : GqlPoolOrderDirection.Asc
       )
@@ -92,7 +93,7 @@ export function usePoolListQueryState() {
 
   const totalFilterCount = networks.length + poolTypes.length
   const sorting: SortingState = orderBy
-    ? [{ id: orderBy as string, desc: orderDirection === GqlPoolOrderDirection.Desc }]
+    ? [{ id: orderBy, desc: orderDirection === GqlPoolOrderDirection.Desc }]
     : []
 
   const pagination: PaginationState = {

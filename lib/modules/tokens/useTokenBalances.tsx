@@ -1,84 +1,113 @@
+'use client'
+
+import { useUserAccount } from '../web3/useUserAccount'
+import { Address, erc20ABI, useBalance, useQuery } from 'wagmi'
+import { useTokens } from './useTokens'
+import { TokenAmount, TokenBase } from './token.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import { TokenAmount, TokenBase } from '@/lib/modules/tokens/token.types'
-import { useBalance, useQuery } from 'wagmi'
-import { Address, formatUnits } from 'viem'
-import { AbiERC20 } from '@/lib/modules/web3/contracts/abi/AbiERC20'
+import { formatUnits } from 'viem'
+import { isLoadingQueries, isRefetchingQueries, refetchQueries } from '@/lib/shared/utils/queries'
 import { multicall } from 'wagmi/actions'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
-export function useTokenBalances(account: Address | undefined, tokens: TokenBase[]) {
+export function useTokenBalances(tokens: TokenBase[]) {
+  const { userAddress } = useUserAccount()
+  const { exclNativeAssetFilter, nativeAssetFilter } = useTokens()
   const networkConfig = useNetworkConfig()
-  const filteredTokens = tokens.filter(
-    token => !isSameAddress(token.address, networkConfig.tokens.nativeAsset.address)
-  )
-  const containsNativeAsset = filteredTokens.length < tokens.length
+
+  const includesNativeAsset = tokens.some(nativeAssetFilter)
+  const _tokens = tokens.filter(exclNativeAssetFilter)
 
   const nativeBalanceQuery = useBalance({
-    address: (account || '') as Address,
-    enabled: account !== null && containsNativeAsset,
+    address: userAddress,
+    enabled: !!userAddress && includesNativeAsset,
     cacheTime: BALANCE_CACHE_TIME_MS,
   })
 
-  const balanceMulticall = useQuery(
+  // TODO: Revert to useReadContracts when it's supported in wagmi, and remove multicall.
+  // Onces it's supported in wagmi we can then manually set the queryKey to
+  // avoid the overflow issue.
+  // const contracts: ContractFunctionConfig<Erc20Abi, 'balanceOf'>[] = _tokens.map(token => ({
+  //   address: token.address as Address,
+  //   abi: erc20ABI,
+  //   functionName: 'balanceOf',
+  //   args: [userAddress as Address],
+  // }))
+
+  // const tokenBalancesQuery = useReadContracts({
+  //   contracts,
+  //   allowFailure: true,
+  //   enabled: !!userAddress,
+  //   cacheTime: BALANCE_CACHE_TIME_MS,
+  // })
+
+  const tokenBalancesQuery = useQuery(
     // This query key can potentially collide, but it will overflow the useQuery
     // cache if this list of tokens is large.
-    [`useTokenBalances:${account}:${networkConfig.chainId}:${tokens.length}`],
+    [`useTokenBalances:${userAddress}:${networkConfig.chainId}:${tokens.length}`],
     async () => {
       const data = await multicall({
-        contracts: filteredTokens.map(token => ({
-          abi: AbiERC20,
+        contracts: _tokens.map(token => ({
+          abi: erc20ABI,
           address: token.address as Address,
           functionName: 'balanceOf',
-          args: [(account || '') as Address],
+          args: [(userAddress || '') as Address],
         })),
       })
 
       return data
     },
     {
-      enabled: !!account && filteredTokens.length > 0,
+      enabled: !!userAddress && _tokens.length > 0,
       cacheTime: BALANCE_CACHE_TIME_MS,
     }
   )
 
-  async function refetch() {
-    return {
-      nativeBalanceResponse: await nativeBalanceQuery.refetch(),
-      multicallResponse: await balanceMulticall.refetch(),
-    }
+  async function refetchBalances() {
+    if (includesNativeAsset) return refetchQueries(tokenBalancesQuery, nativeBalanceQuery)
+
+    return refetchQueries(tokenBalancesQuery)
   }
 
-  const balances: TokenAmount[] = (balanceMulticall.data || []).map((item, index) => {
-    const token = filteredTokens[index]
-    const amount = item.status === 'success' ? (item.result as bigint) : 0n
+  const balances: TokenAmount[] = (tokenBalancesQuery.data || []).map((balance, index) => {
+    const token = _tokens[index]
+    const amount = balance.status === 'success' ? (balance.result as bigint) : 0n
 
     return {
       chainId: networkConfig.chainId,
       address: token.address,
-      amount: amount,
+      amount,
       formatted: formatUnits(amount, token.decimals),
       decimals: token.decimals,
     }
   })
 
-  if (containsNativeAsset) {
+  if (includesNativeAsset && nativeBalanceQuery.data) {
     balances.push({
       chainId: networkConfig.chainId,
       address: networkConfig.tokens.nativeAsset.address,
-      decimals: 18,
-      amount: nativeBalanceQuery.data?.value || 0n,
-      formatted: nativeBalanceQuery.data?.formatted || '0',
+      amount: nativeBalanceQuery.data.value,
+      formatted: formatUnits(
+        nativeBalanceQuery.data.value,
+        networkConfig.tokens.nativeAsset.decimals
+      ),
+      decimals: networkConfig.tokens.nativeAsset.decimals,
     })
+  }
+
+  function balanceFor(token: TokenBase | string): TokenAmount | undefined {
+    const address = typeof token === 'string' ? token : token.address
+
+    return balances.find(balance => isSameAddress(balance.address, address))
   }
 
   return {
     balances,
-    isLoading: nativeBalanceQuery.isLoading || balanceMulticall.isLoading,
-    isError: nativeBalanceQuery.isError || balanceMulticall.isError,
-    error: nativeBalanceQuery.error || balanceMulticall.error,
-    isRefetching: nativeBalanceQuery.isRefetching || balanceMulticall.isRefetching,
-    refetch,
+    isBalancesLoading: isLoadingQueries(tokenBalancesQuery, nativeBalanceQuery),
+    isBalancesRefetching: isRefetchingQueries(tokenBalancesQuery, nativeBalanceQuery),
+    refetchBalances,
+    balanceFor,
   }
 }

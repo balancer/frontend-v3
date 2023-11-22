@@ -6,6 +6,7 @@ import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { BalancerLogo } from '../imgs/BalancerLogo'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { useBreakpoints } from '../../hooks/useBreakpoints'
+import { UserSettings } from '@/lib/modules/user/settings/UserSettings'
 
 export function Navbar() {
   const { isMobile } = useBreakpoints()
@@ -18,6 +19,7 @@ export function Navbar() {
       as="nav"
     >
       <HStack padding="md" order={{ md: '2' }}>
+        <UserSettings />
         <DarkModeToggle />
         <ConnectWallet />
       </HStack>

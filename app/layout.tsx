@@ -3,7 +3,9 @@ import { Providers } from './providers'
 import { Navbar } from '@/lib/shared/components/navs/Navbar'
 import { Footer } from '@/lib/shared/components/navs/Footer'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import '@/lib/shared/utils/bigint'
+import '@/lib/shared/hooks/useNumbers'
+import Noise from './noise'
+import { satoshiFont } from '@/lib/assets/fonts/satoshi/satoshi'
 import NextTopLoader from 'nextjs-toploader'
 
 const { projectName, projectId } = getProjectConfig()
@@ -25,12 +27,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning>
+      <body className={satoshiFont.className} suppressHydrationWarning>
         <NextTopLoader showSpinner={false} />
         <Providers>
-          <Navbar />
-          {children}
-          <Footer />
+          <Noise>
+            <Navbar />
+            {children}
+            <Footer />
+          </Noise>
         </Providers>
       </body>
     </html>
