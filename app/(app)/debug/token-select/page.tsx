@@ -1,6 +1,7 @@
 'use client'
 
 import { TokenSelectModal } from '@/lib/modules/tokens/TokenSelectModal/TokenSelectModal'
+import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { Button, useDisclosure, Text } from '@chakra-ui/react'
@@ -17,7 +18,7 @@ export default function TokenSelectPage() {
   }
 
   return (
-    <div>
+    <TokenBalancesProvider tokens={getTokensByChain(1)}>
       <h1>TokenSelectPage</h1>
       <Text>Selected token: {selectedToken?.symbol}</Text>
       <Button ref={tokenSelectBtn} onClick={tokenSelectDisclosure.onOpen}>
@@ -32,6 +33,6 @@ export default function TokenSelectPage() {
         onClose={tokenSelectDisclosure.onClose}
         onTokenSelect={handleTokenSelect}
       />
-    </div>
+    </TokenBalancesProvider>
   )
 }
