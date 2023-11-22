@@ -14,7 +14,7 @@ export type TokenApprovalLabelArgs = {
 }
 export const buildTokenApprovalLabels: BuildTransactionLabels = (args: TokenApprovalLabelArgs) => {
   return {
-    ready: readyApprovalLabelFor(args.actionType, args.symbol),
+    init: readyApprovalLabelFor(args.actionType, args.symbol),
     confirming:
       args.actionType === 'Unapprove' ? `Unapproving ${args.symbol}` : `Approving ${args.symbol}`,
     tooltip: tooltipApprovalLabelFor(args.actionType, args.symbol),

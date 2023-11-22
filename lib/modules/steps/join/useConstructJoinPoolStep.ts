@@ -51,7 +51,7 @@ export function useConstructJoinPoolStep(poolId: Address) {
 
 export const buildJoinPoolLabels: BuildTransactionLabels = () => {
   return {
-    ready: 'Join pool',
+    init: 'Join pool',
     confirming: 'Confirm pool join',
     tooltip: 'bing',
     description: 'bong',

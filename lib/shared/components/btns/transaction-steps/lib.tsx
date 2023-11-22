@@ -8,7 +8,7 @@ export enum TransactionState {
 }
 
 export type TransactionLabels = {
-  ready: string
+  init: string
   loading?: string
   confirming?: string
   tooltip: string
