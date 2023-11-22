@@ -24,9 +24,9 @@ import {
 } from '@chakra-ui/react'
 import { PoolListSearch } from './PoolListSearch'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
+import { usePoolListQueryState } from './usePoolListQueryState'
 import { IoFilter } from 'react-icons/io5'
-import { PoolFilterType, poolTypeFilters } from '@/lib/modules/pool/pool.types'
+import { PoolFilterType, poolTypeFilters } from '../pool.types'
 
 function PoolTypeFilters() {
   const { togglePoolType, poolTypes, poolTypeLabel } = usePoolListQueryState()

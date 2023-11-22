@@ -1,4 +1,4 @@
-import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
+import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
@@ -7,20 +7,23 @@ import React, { useState } from 'react'
 
 const TABS = [
   {
-    id: 'pool',
-    label: 'Pool',
+    id: 'all',
+    label: 'All',
   },
   {
-    id: 'unclaimed',
-    label: 'Unclaimed',
+    id: 'unstaked',
+    label: 'Unstaked',
   },
   {
-    id: 'my-total',
-    label: 'My total',
+    id: 'staked',
+    label: 'Staked',
+  },
+  {
+    id: 'third-parties',
+    label: '3rd parties',
   },
 ]
-
-export default function PoolIncentives() {
+export default function PoolMyLiquidity() {
   const [activeTab, setActiveTab] = useState(TABS[0])
 
   function handleTabChanged(option: ButtonGroupOption) {
@@ -31,7 +34,7 @@ export default function PoolIncentives() {
     <Card variant="gradient" width="full" height="320px">
       <HStack p="5" justifyContent="space-between">
         <Text variant="heading" fontWeight="bold" as="h2" fontSize="xl">
-          Incentives
+          My liquidity
         </Text>
         <ButtonGroup value={activeTab} options={TABS} onChange={handleTabChanged} />
       </HStack>
@@ -42,18 +45,18 @@ export default function PoolIncentives() {
               <HStack py="3" px="4" width="full" justifyContent="space-between">
                 <VStack spacing="0" alignItems="flex-start">
                   <Text variant="heading" fontWeight="bold" as="h3" fontSize="1rem">
-                    Pool incentives this week
+                    My balance
                   </Text>
                   <Text variant="secondary" fontSize="0.85rem">
-                    Gauge votes
+                    APR range
                   </Text>
                 </VStack>
                 <VStack spacing="0" alignItems="flex-end">
                   <Text variant="heading" fontWeight="bold" as="h3" fontSize="1rem">
-                    $3,000.00
+                    $0.00
                   </Text>
                   <Text variant="secondary" fontSize="0.85rem">
-                    1.34%
+                    8.69%-12.34%
                   </Text>
                 </VStack>
               </HStack>

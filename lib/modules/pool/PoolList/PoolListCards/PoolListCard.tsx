@@ -1,5 +1,5 @@
 import { Card, CardHeader } from '@chakra-ui/react'
-import { PoolListItem } from '../../../pool.types'
+import { PoolListItem } from '../../pool.types'
 
 interface Props {
   pool: PoolListItem
