@@ -41,7 +41,11 @@ export function bn(val: Numberish): BigNumber {
 
 type FormatOpts = { abbreviated?: boolean }
 
-export function toSafeValue(val: Numberish): string {
+/**
+ * Converts a number to a string format within the decimal limit that numeral
+ * can handle.
+ */
+function toSafeValue(val: Numberish): string {
   return bn(val).toFixed(NUMERAL_DECIMAL_LIMIT)
 }
 
