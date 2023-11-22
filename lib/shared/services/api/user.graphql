@@ -1,0 +1,10 @@
+query GetUserData($chains: [GqlChain!]!, $address: String!) {
+  balances: userGetPoolBalances(chains: $chains, address: $address) {
+    poolId
+    tokenAddress
+    tokenPrice
+    totalBalance
+    stakedBalance
+    walletBalance
+  }
+}
