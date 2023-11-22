@@ -42,23 +42,35 @@ export const BalInput = forwardRef(
           {headerSlot && headerSlot}
           <InputGroup border="transparent" background="transparent" {...inputGroupProps}>
             {leftSlot && <InputLeftAddon bg="transparent">{leftSlot}</InputLeftAddon>}
-            <Input
-              border="transparent"
-              bg="transparent"
-              p="0"
-              fontSize="lg"
-              fontWeight="medium"
-              _hover={{
-                borderColor: 'transparent',
-                boxShadow: 'none',
-              }}
-              _focus={{
-                outline: 'none',
-                borderColor: 'transparent',
-                boxShadow: 'none',
-              }}
-              {...inputProps}
-            />
+            <Box position="relative">
+              <Input
+                border="transparent"
+                bg="transparent"
+                p="0"
+                fontSize="lg"
+                fontWeight="medium"
+                _hover={{
+                  borderColor: 'transparent',
+                  boxShadow: 'none',
+                }}
+                _focus={{
+                  outline: 'none',
+                  borderColor: 'transparent',
+                  boxShadow: 'none',
+                }}
+                {...inputProps}
+              />
+              <Box
+                position="absolute"
+                bgGradient="linear(to-r, transparent, white 70%)"
+                w="8"
+                h="full"
+                top={0}
+                right={0}
+                zIndex={9999}
+              ></Box>
+            </Box>
+
             {rightSlot && (
               <InputRightAddon bg="transparent" p="0">
                 {rightSlot}

@@ -7,6 +7,7 @@ import { useTokens } from '../useTokens'
 import { useTokenBalances } from '../useTokenBalances'
 import { tokenFormat, useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { TbWallet } from 'react-icons/tb'
+import { blockInvalidNumberInput, useTokenInput } from './useTokenInput'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
@@ -27,9 +28,10 @@ function TokenInputSelector({ token, weight }: TokenInputSelectorProps) {
 
 type TokenInputFooterProps = {
   token: GqlToken | undefined
+  updateValue: (value: string) => void
 }
 
-function TokenInputFooter({ token }: TokenInputFooterProps) {
+function TokenInputFooter({ token, updateValue }: TokenInputFooterProps) {
   const { balanceFor, isBalancesLoading } = useTokenBalances(token ? [token] : [])
   const { usdValueForToken } = useTokens()
   const { toCurrency } = useNumbers()
@@ -47,7 +49,7 @@ function TokenInputFooter({ token }: TokenInputFooterProps) {
       {isBalancesLoading ? (
         <Skeleton w="12" h="full" />
       ) : (
-        <HStack>
+        <HStack cursor="pointer" onClick={() => updateValue(userBalance)}>
           <Text fontSize="sm" color="red.500">
             {tokenFormat(userBalance)}
           </Text>
@@ -64,16 +66,35 @@ type Props = {
   address: string
   chain: GqlChain | number
   weight?: string
+  onChange?: (event: { currentTarget: { value: string } }) => void
+  value?: string
+  hideFooter?: boolean
 }
 
-export const TokenInput = forwardRef(({ address, chain, weight }: Props, ref) => {
-  const { getToken } = useTokens()
-  const token = getToken(address, chain)
+export const TokenInput = forwardRef(
+  ({ address, chain, weight, value, hideFooter = false, onChange }: Props, ref) => {
+    const { getToken } = useTokens()
+    const token = getToken(address, chain)
+    const { handleOnChange, updateValue } = useTokenInput(token, onChange)
 
-  const tokenInputSelector = TokenInputSelector({ token, weight })
-  const footer = TokenInputFooter({ token })
+    const tokenInputSelector = TokenInputSelector({ token, weight })
+    const footer = hideFooter ? undefined : TokenInputFooter({ token, updateValue })
 
-  return (
-    <BalInput ref={ref} placeholder="0.00" footerSlot={footer} rightSlot={tokenInputSelector} />
-  )
-})
+    return (
+      <BalInput
+        ref={ref}
+        value={value}
+        type="number"
+        placeholder="0.00"
+        inputMode="decimal"
+        autoComplete="off"
+        autoCorrect="off"
+        min={0}
+        footerSlot={footer}
+        rightSlot={tokenInputSelector}
+        onChange={handleOnChange}
+        onKeyDown={blockInvalidNumberInput}
+      />
+    )
+  }
+)
