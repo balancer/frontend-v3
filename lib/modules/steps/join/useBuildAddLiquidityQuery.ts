@@ -5,7 +5,7 @@ import { Address, useQuery } from 'wagmi'
 import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
-export function useAddLiquidityPoolConfig(
+export function useBuildAddLiquidityQuery(
   addLiquidityConfigBuilder: AddLiquidityConfigBuilder,
   account?: Address
 ) {

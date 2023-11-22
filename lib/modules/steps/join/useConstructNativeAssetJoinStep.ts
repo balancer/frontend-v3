@@ -5,7 +5,7 @@ import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { usePoolStateInput } from '@/lib/shared/hooks/balancer-api/usePoolStateInput'
 import { Address } from 'wagmi'
 import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
-import { useAddLiquidityPoolConfig } from './useAddLiquidityPoolConfig'
+import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
 import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 
@@ -25,7 +25,7 @@ export function useConstructNativeAssetJoinStep(poolId: Address) {
 
   joinBuilder.setAmountIn(wETHAddress, '1')
 
-  const joinQuery = useAddLiquidityPoolConfig(joinBuilder, userAddress)
+  const joinQuery = useBuildAddLiquidityQuery(joinBuilder, userAddress)
 
   const transaction = useManagedSendTransaction(buildJoinPoolLabels(), joinQuery.data?.config)
 
