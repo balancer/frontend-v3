@@ -7,7 +7,7 @@ test('Token approval labels for add liquidity', () => {
     {
       "confirming": "Approving WETH",
       "description": "Token WETH approval completed",
-      "ready": "Approve WETH for adding liquidity",
+      "init": "Approve WETH for adding liquidity",
       "tooltip": "You must approve WETH to add liquidity for this token on Balancer.
     Approvals are required once per token, per wallet.",
     }
@@ -21,7 +21,7 @@ test('Token approval labels for unapprove', () => {
     {
       "confirming": "Unapproving WETH",
       "description": "Token WETH approval completed",
-      "ready": "Unapprove WETH",
+      "init": "Unapprove WETH",
       "tooltip": "You must unapprove WETH before a new approval value can be set.",
     }
   `)

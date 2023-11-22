@@ -1,7 +1,7 @@
 import { TransactionBundle } from '@/lib/modules/web3/contracts/contract.types'
 
 export enum TransactionState {
-  Ready = 'ready',
+  Ready = 'init',
   Confirming = 'confirming',
   Loading = 'loading',
   Error = 'error',
