@@ -11,14 +11,7 @@ import Image from 'next/image'
 export function PoolComposition() {
   const { pool, chain } = usePool()
   const { toCurrency } = useNumbers()
-  const { priceFor } = useTokens()
-
-  function getTokenWeightByBalance(token: GqlPoolToken) {
-    return (
-      (priceFor(token.address, chain) * parseFloat(token.balance)) /
-      parseFloat(pool.dynamicData.totalLiquidity)
-    )
-  }
+  const { getPoolTokenWeightByBalance } = useTokens()
 
   return (
     <Card variant="gradient" width="full" height="320px">
@@ -63,7 +56,13 @@ export function PoolComposition() {
                         return (
                           <VStack minWidth="100px" spacing="1" alignItems="flex-end">
                             <Heading fontWeight="bold" as="h6" fontSize="1rem">
-                              {weightFormat(getTokenWeightByBalance(poolToken))}
+                              {weightFormat(
+                                getPoolTokenWeightByBalance(
+                                  pool.dynamicData.totalLiquidity,
+                                  poolToken,
+                                  chain
+                                )
+                              )}
                             </Heading>
                             <HStack spacing="1">
                               <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">

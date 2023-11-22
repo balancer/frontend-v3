@@ -14,10 +14,11 @@ type Props = {
 }
 
 export default function TokenRow({ address, value, customRender, chain }: Props) {
-  const { getToken, priceFor } = useTokens()
+  const { getToken, calculateTokensValue } = useTokens()
   const { toCurrency } = useNumbers()
   const token = getToken(address, chain)
-  const totalTokenValue = priceFor(address, chain) * parseFloat(value as string)
+
+  const totalValue = calculateTokensValue(address, value, chain)
 
   return (
     <HStack width="full" justifyContent="space-between">
@@ -38,7 +39,7 @@ export default function TokenRow({ address, value, customRender, chain }: Props)
             {tokenFormat(value) || 0.0}
           </Heading>
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-            {toCurrency(totalTokenValue)}
+            {toCurrency(totalValue)}
           </Text>
         </VStack>
         {customRender && token && customRender(token)}
