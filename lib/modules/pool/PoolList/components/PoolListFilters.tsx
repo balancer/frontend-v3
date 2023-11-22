@@ -27,6 +27,18 @@ import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 import { IoFilter } from 'react-icons/io5'
 import { PoolFilterType, poolTypeFilters } from '@/lib/modules/pool/pool.types'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+
+function UserPoolFilter() {
+  const { toggleUserAddress } = usePoolListQueryState()
+  const { address: userAddress } = useUserAccount()
+
+  return (
+    <Checkbox onChange={e => toggleUserAddress(e.target.checked, userAddress as string)}>
+      <Text>Only show invested pools</Text>
+    </Checkbox>
+  )
+}
 
 function PoolTypeFilters() {
   const { togglePoolType, poolTypes, poolTypeLabel } = usePoolListQueryState()
@@ -112,6 +124,11 @@ export function PoolListFilters() {
             <PopoverCloseButton />
             <PopoverBody p="md">
               <VStack align="start">
+                <Heading as="h3" size="sm" mb="1.5">
+                  My Liquidity
+                </Heading>
+                <UserPoolFilter />
+                <Divider />
                 <Heading as="h3" size="sm" mb="1.5">
                   Pool types
                 </Heading>
