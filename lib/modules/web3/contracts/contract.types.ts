@@ -6,7 +6,7 @@ import {
   useSendTransaction,
   useWaitForTransaction,
 } from 'wagmi'
-import { Abi, Address, ContractFunctionConfig, GetFunctionArgs } from 'viem'
+import { Abi, Address } from 'viem'
 import { SupportedChainId } from '@/lib/config/config.types'
 
 export type TransactionSimulation =

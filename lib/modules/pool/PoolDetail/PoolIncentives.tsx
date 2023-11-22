@@ -1,4 +1,4 @@
-import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
+import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
@@ -9,23 +9,20 @@ import { Address } from 'viem'
 
 const TABS = [
   {
-    id: 'all',
-    label: 'All',
+    id: 'pool',
+    label: 'Pool',
   },
   {
-    id: 'unstaked',
-    label: 'Unstaked',
+    id: 'unclaimed',
+    label: 'Unclaimed',
   },
   {
-    id: 'staked',
-    label: 'Staked',
-  },
-  {
-    id: 'third-parties',
-    label: '3rd parties',
+    id: 'my-total',
+    label: 'My total',
   },
 ]
-export default function PoolMyLiquidity() {
+
+export default function PoolIncentives() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain } = usePool()
 
@@ -38,7 +35,7 @@ export default function PoolMyLiquidity() {
       <VStack spacing="0" width="full">
         <HStack width="full" p="4" justifyContent="space-between">
           <Heading fontWeight="bold" size="h5">
-            My liquidity
+            Incentives
           </Heading>
           <ButtonGroup value={activeTab} options={TABS} onChange={handleTabChanged} />
         </HStack>
@@ -49,18 +46,18 @@ export default function PoolMyLiquidity() {
                 <HStack py="4" px="4" width="full" justifyContent="space-between">
                   <VStack spacing="1" alignItems="flex-start">
                     <Heading fontWeight="bold" size="h6">
-                      My balance
+                      Pool incentives this week
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">
-                      APR range
+                      Gauge votes
                     </Text>
                   </VStack>
                   <VStack spacing="1" alignItems="flex-end">
                     <Heading fontWeight="bold" size="h6">
-                      $0.00
+                      $3000.00
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">
-                      8.69%-12.34%
+                      8.69%
                     </Text>
                   </VStack>
                 </HStack>
@@ -80,15 +77,9 @@ export default function PoolMyLiquidity() {
               </VStack>
             </VStack>
             <HStack p="4" width="full" justifyContent="flex-start">
-              <Button variant="primary">Add</Button>
+              <Button variant="secondary">Vote</Button>
               <Button variant="disabled" isDisabled>
-                Remove
-              </Button>
-              <Button variant="disabled" isDisabled>
-                Stake
-              </Button>
-              <Button variant="disabled" isDisabled>
-                Unstake
+                Incentivize
               </Button>
             </HStack>
           </Card>

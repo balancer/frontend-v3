@@ -8,7 +8,7 @@ import { testHook } from '@/test/utils/custom-renderers'
 import { defaultTestUserAccount, testPublicClient as testClient } from '@/test/utils/wagmi'
 import { ChainId, HumanAmount } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
-import { SendTransactionResult } from 'wagmi/dist/actions'
+import { SendTransactionResult } from 'wagmi/actions'
 import { chains } from '../Web3Provider'
 import { buildJoinPoolLabels } from '../../steps/join/useConstructJoinPoolStep'
 

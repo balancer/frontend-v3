@@ -16,6 +16,8 @@ const integrationTestOptions: Partial<InlineConfig> = {
   // Consider disabling threads if we detect problems with anvil
   // threads: false,
   retry: 3,
+  // Uncomment the next line to exclude test for debug reasons
+  // exclude: ['lib/modules/tokens/useTokenBalances.integration.spec.ts', 'node_modules', 'dist'],
 }
 
 const integrationConfig = vitestUnitConfig

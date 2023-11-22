@@ -8,6 +8,6 @@ export function isRefetchingQueries(...queries: Pick<UseQueryResult, 'isRefetchi
   return queries.some(query => query.isRefetching)
 }
 
-export function refetchQueries(...queries: Pick<UseQueryResult, 'refetch'>[]) {
-  return Promise.all(queries.map(query => query.refetch))
+export function refetchQueries(...queries: Pick<UseQueryResult, 'isFetched' | 'refetch'>[]) {
+  return Promise.all(queries.map(query => query.refetch()))
 }

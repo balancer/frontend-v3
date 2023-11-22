@@ -1,4 +1,4 @@
-import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
+import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
@@ -9,20 +9,23 @@ import { Address } from 'viem'
 
 const TABS = [
   {
-    id: 'pool',
-    label: 'Pool',
+    id: 'all',
+    label: 'All',
   },
   {
-    id: 'unclaimed',
-    label: 'Unclaimed',
+    id: 'unstaked',
+    label: 'Unstaked',
   },
   {
-    id: 'my-total',
-    label: 'My total',
+    id: 'staked',
+    label: 'Staked',
+  },
+  {
+    id: 'third-parties',
+    label: '3rd parties',
   },
 ]
-
-export default function PoolIncentives() {
+export default function PoolMyLiquidity() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain } = usePool()
 
@@ -35,7 +38,7 @@ export default function PoolIncentives() {
       <VStack spacing="0" width="full">
         <HStack width="full" p="4" justifyContent="space-between">
           <Heading fontWeight="bold" size="h5">
-            Incentives
+            My liquidity
           </Heading>
           <ButtonGroup value={activeTab} options={TABS} onChange={handleTabChanged} />
         </HStack>
@@ -46,18 +49,18 @@ export default function PoolIncentives() {
                 <HStack py="4" px="4" width="full" justifyContent="space-between">
                   <VStack spacing="1" alignItems="flex-start">
                     <Heading fontWeight="bold" size="h6">
-                      Pool incentives this week
+                      My balance
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">
-                      Gauge votes
+                      APR range
                     </Text>
                   </VStack>
                   <VStack spacing="1" alignItems="flex-end">
                     <Heading fontWeight="bold" size="h6">
-                      $3000.00
+                      $0.00
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">
-                      8.69%
+                      8.69%-12.34%
                     </Text>
                   </VStack>
                 </HStack>
@@ -77,9 +80,15 @@ export default function PoolIncentives() {
               </VStack>
             </VStack>
             <HStack p="4" width="full" justifyContent="flex-start">
-              <Button variant="secondary">Vote</Button>
+              <Button variant="primary">Add</Button>
               <Button variant="disabled" isDisabled>
-                Incentivize
+                Remove
+              </Button>
+              <Button variant="disabled" isDisabled>
+                Stake
+              </Button>
+              <Button variant="disabled" isDisabled>
+                Unstake
               </Button>
             </HStack>
           </Card>

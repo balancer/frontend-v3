@@ -9,6 +9,7 @@ export default function Debug() {
       <Link href="/debug/relayer-approval">Relayer approval</Link>
       <Link href="/debug/native-asset">Native asset (ETH) join</Link>
       <Link href="/debug/token-approval">Join with token approval</Link>
+      <Link href="/debug/token-select">Token select</Link>
     </VStack>
   )
 }

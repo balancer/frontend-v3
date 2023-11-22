@@ -1,8 +1,8 @@
 'use client'
 
 import { Box } from '@chakra-ui/react'
-import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
-import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
+import { usePoolList } from '../usePoolList'
+import { usePoolListQueryState } from '../usePoolListQueryState'
 import { PaginatedTable } from '@/lib/shared/components/tables/PaginatedTable'
 import { PoolListTableHeader } from './PoolListTableHeader'
 import { PoolListTableRow } from './PoolListTableRow'

@@ -1,9 +1,9 @@
 'use client'
 import { HStack, Stack, VStack } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
-import PoolStats from './PoolStats/PoolStats'
-import PoolMyLiquidity from './PoolMyLiquidity/PoolMyLiquidity'
-import PoolIncentives from './PoolIncentives/PoolIncentives'
+import PoolStats from './PoolStats'
+import PoolMyLiquidity from './PoolMyLiquidity'
+import PoolIncentives from './PoolIncentives'
 
 export function PoolDetail() {
   return (

@@ -11,7 +11,6 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react'
-
 import { usePoolInfo } from './usePoolInfo'
 
 export function PoolInfoTable() {
