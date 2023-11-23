@@ -158,5 +158,6 @@ export function usePoolListQueryState() {
     networks,
     mappedPoolTypes,
     queryVariables,
+    userAddress,
   }
 }

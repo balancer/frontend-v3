@@ -30,11 +30,14 @@ import { PoolFilterType, poolTypeFilters } from '@/lib/modules/pool/pool.types'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 function UserPoolFilter() {
-  const { toggleUserAddress } = usePoolListQueryState()
-  const { address: userAddress } = useUserAccount()
+  const { userAddress, toggleUserAddress } = usePoolListQueryState()
+  const { address } = useUserAccount()
 
   return (
-    <Checkbox onChange={e => toggleUserAddress(e.target.checked, userAddress as string)}>
+    <Checkbox
+      isChecked={userAddress === address}
+      onChange={e => toggleUserAddress(e.target.checked, address as string)}
+    >
       <Text>Only show invested pools</Text>
     </Checkbox>
   )
