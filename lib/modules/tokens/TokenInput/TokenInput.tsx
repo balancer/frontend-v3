@@ -1,4 +1,5 @@
 'use client'
+
 import { Box, HStack, Skeleton, Text, forwardRef } from '@chakra-ui/react'
 import { BalInput } from '../../../shared/components/inputs/BalInput/BalInput'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
@@ -8,7 +9,7 @@ import { useTokenBalances } from '../useTokenBalances'
 import { tokenFormat, useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { TbWallet } from 'react-icons/tb'
 import { blockInvalidNumberInput, useTokenInput } from './useTokenInput'
-import { useEffect } from 'react'
+import { HiChevronDown } from 'react-icons/hi'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
@@ -26,10 +27,15 @@ function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSele
       onClick={toggleTokenSelect}
       cursor={toggleTokenSelect ? 'pointer' : 'default'}
     >
-      <HStack>
+      <HStack spacing="xs">
         {token?.logoURI && <Image src={token?.logoURI} alt={token.symbol} width={24} height={24} />}
         <Text fontWeight="bold">{token?.symbol}</Text>
         {weight && <Text fontWeight="normal">{weight}%</Text>}
+        {toggleTokenSelect && (
+          <Box fontSize="xl" color="sand.500">
+            <HiChevronDown />
+          </Box>
+        )}
       </HStack>
     </Box>
   )
@@ -41,20 +47,13 @@ type TokenInputFooterProps = {
 }
 
 function TokenInputFooter({ token, updateValue }: TokenInputFooterProps) {
-  const { balanceFor, isBalancesLoading } = useTokenBalances(token ? [token] : [])
+  const { balanceFor, isBalancesLoading } = useTokenBalances()
   const { usdValueForToken } = useTokens()
   const { toCurrency } = useNumbers()
 
   const balance = token ? balanceFor(token?.address) : undefined
   const userBalance = token ? balance?.formatted || '0' : '0'
   const usdValue = userBalance && token ? usdValueForToken(token, userBalance) : '0'
-
-  useEffect(() => {
-    console.log('token', token)
-  }, [token])
-  useEffect(() => {
-    console.log('balance', balance)
-  }, [balance])
 
   return (
     <HStack h="4" w="full" justify="space-between">
@@ -83,9 +82,9 @@ type Props = {
   address: string
   chain: GqlChain | number
   weight?: string
-  onChange?: (event: { currentTarget: { value: string } }) => void
   value?: string
   hideFooter?: boolean
+  onChange?: (event: { currentTarget: { value: string } }) => void
   toggleTokenSelect?: () => void
 }
 

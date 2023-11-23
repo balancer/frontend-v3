@@ -6,6 +6,7 @@ import { Heading, Text, VStack, useDisclosure } from '@chakra-ui/react'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useState } from 'react'
 import { TokenSelectModal } from '@/lib/modules/tokens/TokenSelectModal/TokenSelectModal'
+import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 
 export default function TokenInputPage() {
   const [currentValue, setCurrentValue] = useState('')
@@ -15,30 +16,34 @@ export default function TokenInputPage() {
     getToken('0x6B175474E89094C44Da98b954EedeAC495271d0F', 1) as GqlToken
   )
 
+  const tokens = getTokensByChain(1)
+
   function handleTokenSelect(token: GqlToken) {
     setToken(token)
   }
 
   return (
-    <VStack width="xl" align="start" p="md">
-      <Heading>Token Input</Heading>
-      <Text>Current value: {currentValue}</Text>
-      <TokenInput
-        address={token.address}
-        chain={token.chain}
-        value={currentValue}
-        onChange={e => setCurrentValue(e.currentTarget.value)}
-        toggleTokenSelect={() => {
-          tokenSelectDisclosure.onOpen()
-        }}
-      />
-      <TokenSelectModal
-        tokens={getTokensByChain(1)}
-        isOpen={tokenSelectDisclosure.isOpen}
-        onOpen={tokenSelectDisclosure.onOpen}
-        onClose={tokenSelectDisclosure.onClose}
-        onTokenSelect={handleTokenSelect}
-      />
-    </VStack>
+    <TokenBalancesProvider tokens={tokens}>
+      <VStack width="xl" align="start" p="md">
+        <Heading>Token Input</Heading>
+        <Text>Current value: {currentValue}</Text>
+        <TokenInput
+          address={token.address}
+          chain={token.chain}
+          value={currentValue}
+          onChange={e => setCurrentValue(e.currentTarget.value)}
+          toggleTokenSelect={() => {
+            tokenSelectDisclosure.onOpen()
+          }}
+        />
+        <TokenSelectModal
+          tokens={tokens}
+          isOpen={tokenSelectDisclosure.isOpen}
+          onOpen={tokenSelectDisclosure.onOpen}
+          onClose={tokenSelectDisclosure.onClose}
+          onTokenSelect={handleTokenSelect}
+        />
+      </VStack>
+    </TokenBalancesProvider>
   )
 }
