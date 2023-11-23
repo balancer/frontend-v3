@@ -3,8 +3,7 @@ import PoolListSortButton from './PoolListSortButton'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { FiGlobe } from 'react-icons/fi'
-import { PoolsColumnSort } from '../../pool.types'
-import { orderByHash } from '../../pool.types'
+import { PoolsColumnSort, orderByHash } from '../../pool.types'
 
 const setIsDesc = (id: GqlPoolOrderBy, currentSortingObj: PoolsColumnSort) =>
   currentSortingObj.id === id ? !currentSortingObj.desc : true
