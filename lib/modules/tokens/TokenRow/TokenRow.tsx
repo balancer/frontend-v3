@@ -1,32 +1,49 @@
-import { Circle, HStack, Text, VStack } from '@chakra-ui/react'
+import { HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import { Address } from 'viem'
+import { useTokens } from '../useTokens'
+import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import TokenAvatar from '@/lib/shared/components/token/TokenAvatar'
+import { Numberish, tokenFormat, useNumbers } from '@/lib/shared/hooks/useNumbers'
+import { ReactNode } from 'react'
 
 type Props = {
   address: Address
+  chain: GqlChain
+  value: Numberish
+  customRender?: (token: GqlToken) => ReactNode | ReactNode[]
 }
 
-export default function TokenRow({ address }: Props) {
+export default function TokenRow({ address, value, customRender, chain }: Props) {
+  const { getToken, calculateTokensValue } = useTokens()
+  const { toCurrency } = useNumbers()
+  const token = getToken(address, chain)
+
+  const totalValue = calculateTokensValue(address, value, chain)
+
   return (
     <HStack width="full" justifyContent="space-between">
       <HStack>
-        <Circle size="32px" bg="red.500" />
-        <VStack spacing="0" alignItems="flex-start">
-          <Text fontWeight="bold" variant="heading" fontSize="1rem">
-            {address}
-          </Text>
+        <TokenAvatar chain={chain} address={address} size="sm" bg="red.500" />
+        <VStack spacing="1" alignItems="flex-start">
+          <Heading fontWeight="bold" as="h6" fontSize="1rem">
+            {token?.symbol}
+          </Heading>
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-            Token Symbol
+            {token?.name}
           </Text>
         </VStack>
       </HStack>
-      <VStack spacing="0" alignItems="flex-end">
-        <Text fontWeight="bold" variant="heading" fontSize="1rem">
-          420.69
-        </Text>
-        <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-          $420.420
-        </Text>
-      </VStack>
+      <HStack spacing="8">
+        <VStack spacing="1" alignItems="flex-end">
+          <Heading fontWeight="bold" as="h6" fontSize="1rem">
+            {tokenFormat(value) || 0.0}
+          </Heading>
+          <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+            {toCurrency(totalValue)}
+          </Text>
+        </VStack>
+        {customRender && token && customRender(token)}
+      </HStack>
     </HStack>
   )
 }

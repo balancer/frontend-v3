@@ -7,12 +7,13 @@ import {
   GetTokensQuery,
   GetTokensQueryVariables,
   GqlChain,
+  GqlPoolToken,
   GqlToken,
 } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { createContext, PropsWithChildren } from 'react'
+import { createContext, PropsWithChildren, useCallback } from 'react'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { TokenBase } from './token.types'
@@ -78,6 +79,25 @@ export function _useTokens(
     return priceForToken(token)
   }
 
+  const getPoolTokenWeightByBalance = useCallback(
+    (poolTotalLiquidity: string, token: GqlPoolToken, chain: GqlChain) => {
+      return (
+        (priceFor(token.address, chain) * parseFloat(token.balance)) /
+        parseFloat(poolTotalLiquidity)
+      )
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  )
+
+  const calculateTokensValue = useCallback(
+    (tokenAddress: string, tokenAmount: Numberish, chain: GqlChain) => {
+      return priceFor(tokenAddress, chain) * parseFloat(tokenAmount as string)
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  )
+
   return {
     tokens,
     prices,
@@ -88,6 +108,8 @@ export function _useTokens(
     exclNativeAssetFilter,
     nativeAssetFilter,
     usdValueForToken,
+    getPoolTokenWeightByBalance,
+    calculateTokensValue,
   }
 }
 

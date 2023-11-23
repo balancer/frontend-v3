@@ -5,6 +5,7 @@ import {
   GetPoolDocument,
   GetPoolQuery,
   GetPoolQueryVariables,
+  GqlChain,
 } from '@/lib/shared/services/api/generated/graphql'
 import { createContext, PropsWithChildren } from 'react'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
@@ -13,7 +14,9 @@ import { getNetworkConfig } from '@/lib/config/app.config'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 
-export type UsePoolResponse = ReturnType<typeof _usePool>
+export type UsePoolResponse = ReturnType<typeof _usePool> & {
+  chain: GqlChain
+}
 export const PoolContext = createContext<UsePoolResponse | null>(null)
 
 export function _usePool({
@@ -49,7 +52,11 @@ export function PoolProvider({
   })
 
   const hook = _usePool({ id, chain, variant, initialData: data })
-  return <PoolContext.Provider value={hook}>{children}</PoolContext.Provider>
+  const payload = {
+    ...hook,
+    chain,
+  }
+  return <PoolContext.Provider value={payload}>{children}</PoolContext.Provider>
 }
 
 export const usePool = (): UsePoolResponse => useMandatoryContext(PoolContext, 'Pool')
