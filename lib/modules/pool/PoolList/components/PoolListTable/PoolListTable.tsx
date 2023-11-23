@@ -1,13 +1,19 @@
 'use client'
 
 import { Box } from '@chakra-ui/react'
-import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
 import { PaginatedTable } from '@/lib/shared/components/tables/PaginatedTable'
 import { PoolListTableHeader } from './PoolListTableHeader'
 import { PoolListTableRow } from './PoolListTableRow'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { DecoratedPoolListItem } from '../../../pool.types'
+
+interface Props {
+  pools: DecoratedPoolListItem[]
+  count: number
+  loading: boolean
+}
 
 const rowProps = {
   px: [0, 4],
@@ -17,8 +23,7 @@ const rowProps = {
   minW: '800px',
 }
 
-export function PoolListTable() {
-  const { pools, loading, count } = usePoolList()
+export function PoolListTable({ pools, count, loading }: Props) {
   const { pagination, setPagination } = usePoolListQueryState()
   const paginationProps = getPaginationProps(count || 0, pagination, setPagination)
   const showPagination = !!pools.length && !!count && count > pagination.pageSize

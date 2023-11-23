@@ -1,20 +1,23 @@
 'use client'
 
 import { Grid } from '@chakra-ui/react'
-import { usePoolList } from '@/lib/modules/pool/PoolList/usePoolList'
 import { PoolListCard } from './PoolListCard'
 import { Pagination } from '@/lib/shared/components/pagination/Pagination'
 import { usePoolListQueryState } from '../../usePoolListQueryState'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
-import { PoolListItem } from '../../../pool.types'
+import { DecoratedPoolListItem, PoolListItem } from '../../../pool.types'
 import { getPoolPath } from '../../../pool.utils'
 import { useRouter } from 'next/navigation'
 
-export function PoolListCards() {
+interface Props {
+  pools: DecoratedPoolListItem[]
+  count: number
+}
+
+export function PoolListCards({ pools, count }: Props) {
   const router = useRouter()
-  const { pools, count } = usePoolList()
   const { pagination, setPagination } = usePoolListQueryState()
-  const paginationProps = getPaginationProps(count || 0, pagination, setPagination)
+  const paginationProps = getPaginationProps(count, pagination, setPagination)
   const showPagination = pools.length && count && count > pagination.pageSize
   const cardClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
     const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
