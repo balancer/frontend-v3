@@ -1,13 +1,13 @@
 'use client'
 
 import { Box } from '@chakra-ui/react'
-import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
+import { usePoolListQueryState } from '../usePoolListQueryState'
 import { PaginatedTable } from '@/lib/shared/components/tables/PaginatedTable'
 import { PoolListTableHeader } from './PoolListTableHeader'
 import { PoolListTableRow } from './PoolListTableRow'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { DecoratedPoolListItem } from '../../../pool.types'
+import { DecoratedPoolListItem } from '../../pool.types'
 
 interface Props {
   pools: DecoratedPoolListItem[]

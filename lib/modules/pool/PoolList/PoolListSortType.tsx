@@ -1,8 +1,8 @@
 import { HStack, IconButton, Select } from '@chakra-ui/react'
 import { FiArrowDown, FiArrowUp } from 'react-icons/fi'
-import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQueryState'
+import { usePoolListQueryState } from './usePoolListQueryState'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
-import { orderByHash } from '@/lib/modules/pool/pool.types'
+import { orderByHash } from '../pool.types'
 
 export function PoolListSortType() {
   const { sorting, setSorting } = usePoolListQueryState()

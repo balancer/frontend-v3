@@ -58,7 +58,7 @@ export function useConstructRelayerApprovalStep() {
  */
 export const buildRelayerApprovalLabels: BuildTransactionLabels = () => {
   return {
-    ready: 'Sign relayer approval',
+    init: 'Sign relayer approval',
     confirming: 'Signing relayer approval',
     confirmed: 'Signed relayer approval',
     reverted: 'Failed to approve relayer',

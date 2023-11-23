@@ -1,6 +1,14 @@
+import { getNativeAssetAddress } from '@/lib/config/app.config'
+import { SupportedChainId } from '@/lib/config/config.types'
+import { Address } from 'viem'
+
 export function isSameAddress(address1: string, address2: string): boolean {
   if (!address1 || !address2) return false
   return address1.toLowerCase() === address2.toLowerCase()
+}
+
+export function isNativeAsset(chainId: SupportedChainId, tokenAddress: Address) {
+  return isSameAddress(getNativeAssetAddress(chainId), tokenAddress)
 }
 
 export function includesAddress(addresses: string[], address: string): boolean {

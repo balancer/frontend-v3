@@ -2,8 +2,6 @@ import { Address } from 'viem'
 import { GqlChain } from '../shared/services/api/generated/graphql'
 import { supportedChains } from '../modules/web3/Web3Provider'
 
-export type SupportedChainId = (typeof supportedChains)[number]['id']
-
 export interface TokensConfig {
   nativeAsset: {
     name: string
@@ -11,6 +9,7 @@ export interface TokensConfig {
     symbol: string
     decimals: number
   }
+  doubleApprovalRequired?: string[]
 }
 
 export interface ContractsConfig {
@@ -20,6 +19,7 @@ export interface ContractsConfig {
   }
 }
 
+export type SupportedChainId = (typeof supportedChains)[number]['id']
 export interface NetworkConfig {
   chainId: SupportedChainId
   name: string

@@ -8,10 +8,18 @@ import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { formatUnits } from 'viem'
 import { isLoadingQueries, isRefetchingQueries, refetchQueries } from '@/lib/shared/utils/queries'
 import { multicall } from 'wagmi/actions'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { PropsWithChildren, createContext } from 'react'
+import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import crypto from 'crypto'
+import { orderBy } from 'lodash'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
-export function useTokenBalances(tokens: TokenBase[]) {
+export type UseTokenBalancesResponse = ReturnType<typeof _useTokenBalances>
+export const TokenBalancesContext = createContext<UseTokenBalancesResponse | null>(null)
+
+export function _useTokenBalances(tokens: TokenBase[]) {
   const { userAddress } = useUserAccount()
   const { exclNativeAssetFilter, nativeAssetFilter } = useTokens()
   const networkConfig = useNetworkConfig()
@@ -42,10 +50,20 @@ export function useTokenBalances(tokens: TokenBase[]) {
   //   cacheTime: BALANCE_CACHE_TIME_MS,
   // })
 
+  // Generates a consistent hash key for the query based on the tokens provided.
+  function hashKey() {
+    const hash = crypto.createHash('sha256')
+    const orderedTokens = orderBy(tokens, 'address')
+      .map(t => t.address)
+      .join('')
+    hash.update(orderedTokens)
+    return hash.digest('hex')
+  }
+
   const tokenBalancesQuery = useQuery(
     // This query key can potentially collide, but it will overflow the useQuery
     // cache if this list of tokens is large.
-    [`useTokenBalances:${userAddress}:${networkConfig.chainId}:${tokens.length}`],
+    [`useTokenBalances:${userAddress}:${networkConfig.chainId}:${hashKey()}`],
     async () => {
       const data = await multicall({
         contracts: _tokens.map(token => ({
@@ -96,10 +114,29 @@ export function useTokenBalances(tokens: TokenBase[]) {
     })
   }
 
+  function balanceFor(token: TokenBase | string): TokenAmount | undefined {
+    const address = typeof token === 'string' ? token : token.address
+
+    return balances.find(balance => isSameAddress(balance.address, address))
+  }
+
   return {
     balances,
     isBalancesLoading: isLoadingQueries(tokenBalancesQuery, nativeBalanceQuery),
     isBalancesRefetching: isRefetchingQueries(tokenBalancesQuery, nativeBalanceQuery),
     refetchBalances,
+    balanceFor,
   }
 }
+
+type ProviderProps = PropsWithChildren<{
+  tokens: TokenBase[]
+}>
+
+export function TokenBalancesProvider({ tokens, children }: ProviderProps) {
+  const hook = _useTokenBalances(tokens)
+  return <TokenBalancesContext.Provider value={hook}>{children}</TokenBalancesContext.Provider>
+}
+
+export const useTokenBalances = (): UseTokenBalancesResponse =>
+  useMandatoryContext(TokenBalancesContext, 'TokenBalances')
