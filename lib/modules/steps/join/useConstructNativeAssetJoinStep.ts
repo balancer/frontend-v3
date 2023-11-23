@@ -4,8 +4,8 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { usePoolStateInput } from '@/lib/shared/hooks/balancer-api/usePoolStateInput'
 import { Address } from 'wagmi'
-import { JoinConfigBuilder } from './JoinConfigBuilder'
-import { useJoinPoolConfig } from './useJoinPoolConfig'
+import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
 import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
@@ -21,7 +21,7 @@ export function useConstructNativeAssetJoinStep(poolId: Address) {
   const { activateStep, isActiveStep } = useActiveStep()
   const { allowances } = useTokenAllowances()
 
-  const joinBuilder = new JoinConfigBuilder(
+  const joinBuilder = new AddLiquidityConfigBuilder(
     chainId,
     allowances,
     poolStateQuery.data,
@@ -30,7 +30,7 @@ export function useConstructNativeAssetJoinStep(poolId: Address) {
 
   joinBuilder.setAmountIn(wETHAddress, '1')
 
-  const joinQuery = useJoinPoolConfig(joinBuilder, isActiveStep, userAddress)
+  const joinQuery = useBuildAddLiquidityQuery(joinBuilder, isActiveStep, userAddress)
 
   const transaction = useManagedSendTransaction(buildJoinPoolLabels(), joinQuery.data?.config)
 
@@ -56,7 +56,7 @@ export function useConstructNativeAssetJoinStep(poolId: Address) {
 
 export const buildJoinPoolLabels: BuildTransactionLabels = () => {
   return {
-    ready: 'Join pool',
+    init: 'Join pool',
     confirming: 'Confirm pool join',
     tooltip: '',
     description: 'Pool joined with ETH (native asset)',

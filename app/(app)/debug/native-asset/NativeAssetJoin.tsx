@@ -7,7 +7,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Flex, VStack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useBalance } from 'wagmi'
-import { FetchBalanceResult } from 'wagmi/dist/actions'
+import { FetchBalanceResult } from 'wagmi/actions'
 import RecentTransactions from '../RecentTransactions'
 
 export function NativeAssetJoin() {

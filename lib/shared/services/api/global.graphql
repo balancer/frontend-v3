@@ -33,10 +33,11 @@ query GetTokens($chains: [GqlChain!]!) {
   }
 }
 
-query GetTokenPrices {
-  tokenPrices: tokenGetCurrentPrices {
+query GetTokenPrices($chains: [GqlChain!]!) {
+  tokenPrices: tokenGetCurrentPrices(chains: $chains) {
     price
     address
+    chain
   }
 }
 

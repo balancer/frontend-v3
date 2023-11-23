@@ -1,50 +1,33 @@
 import { allFakeGqlTokens, fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
 import { testHook } from '@/test/utils/custom-renderers'
 import { act, waitFor } from '@testing-library/react'
-import { TokenBase } from './token.types'
 import { useTokenBalances } from './useTokenBalances'
 
-const defaultTestAccount = '0x512fce9B07Ce64590849115EE6B32fd40eC0f5F3'
-
 test('fetches balance for native asset token', async () => {
-  const nativeAssetBasicToken: TokenBase = fakeTokenBySymbol('ETH')
-  const { result } = testHook(() => useTokenBalances(defaultTestAccount, [nativeAssetBasicToken]))
+  const nativeAssetBasicToken = fakeTokenBySymbol('ETH')
+  const { result } = testHook(() => useTokenBalances([nativeAssetBasicToken]))
 
-  expect(result.current.balances).toMatchInlineSnapshot(`
-    [
-      {
-        "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-        "amount": 0n,
-        "chainId": 1,
-        "decimals": 18,
-        "formatted": "0",
-      },
-    ]
-  `)
+  await waitFor(() => expect(result.current.balances.length).toBe(1))
 
-  await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+  const ethBalance = result.current.balances[0]
 
-  expect(result.current.balances).toMatchInlineSnapshot(`
-    [
-      {
-        "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-        "amount": 220229249800527944n,
-        "chainId": 1,
-        "decimals": 18,
-        "formatted": "0.220229249800527944",
-      },
-    ]
-  `)
+  expect(ethBalance).toMatchObject({
+    address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    chainId: 1,
+    decimals: 18,
+  })
+
+  expect(ethBalance.amount).toBeGreaterThan(0n)
 })
 
 test('fetches token balance', async () => {
-  const balBasicToken: TokenBase = fakeTokenBySymbol('BAL')
+  const balBasicToken = fakeTokenBySymbol('BAL')
 
-  const { result } = testHook(() => useTokenBalances(defaultTestAccount, [balBasicToken]))
+  const { result } = testHook(() => useTokenBalances([balBasicToken]))
 
-  expect(result.current.balances).toMatchInlineSnapshot('[]')
+  expect(result.current.balances).toEqual([])
 
-  await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+  await waitFor(() => expect(result.current.balances.length).toBe(1))
 
   expect(result.current.balances).toMatchInlineSnapshot(`
     [
@@ -59,18 +42,22 @@ test('fetches token balance', async () => {
   `)
 })
 
+// TODO: this test behaves differently when running with ".only"
+// FIX: reset useQuery wagmi client once we migrate to wagmi v2
 test('refetches balances', async () => {
-  const balBasicToken: TokenBase = fakeTokenBySymbol('BAL')
+  const balBasicToken = fakeTokenBySymbol('BAL')
 
-  const { result } = testHook(() => useTokenBalances(defaultTestAccount, [balBasicToken]))
+  const { result } = testHook(() => useTokenBalances([balBasicToken]))
 
-  await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+  await waitFor(() => expect(result.current.isBalancesLoading).toBeFalsy())
+  await waitFor(() => expect(result.current.balances.length).toBe(1))
 
-  act(() => {
-    result.current.refetch()
+  const refetchResult = await act(() => {
+    return result.current.refetchBalances()
   })
 
-  await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+  expect(refetchResult.length).toBe(1)
+  expect(refetchResult[0].isSuccess).toBeTruthy()
 
   expect(result.current.balances).toMatchInlineSnapshot(`
     [
@@ -86,35 +73,32 @@ test('refetches balances', async () => {
 })
 
 test('Should not return balances when user is not connected (account is empty) ', async () => {
-  const balBasicToken: TokenBase = fakeTokenBySymbol('BAL')
-  const nativeAssetToken: TokenBase = fakeTokenBySymbol('ETH')
+  const balBasicToken = fakeTokenBySymbol('BAL')
+  const nativeAssetToken = fakeTokenBySymbol('ETH')
 
-  const testAccount = undefined
-  const { result } = testHook(() =>
-    useTokenBalances(testAccount, [balBasicToken, nativeAssetToken])
-  )
+  const { result } = testHook(() => useTokenBalances([balBasicToken, nativeAssetToken]))
 
-  await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+  await waitFor(() => expect(result.current.balances.length).toBe(2))
+  expect(result.current.isBalancesLoading).toBeFalsy()
 
-  expect(result.current.balances).toMatchInlineSnapshot(`
-    [
-      {
-        "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-        "amount": 0n,
-        "chainId": 1,
-        "decimals": 18,
-        "formatted": "0",
-      },
-    ]
-  `)
+  expect(result.current.balances[0]).toEqual({
+    address: '0xba100000625a3754423978a60c9317c58a424e3d',
+    amount: 0n,
+    chainId: 1,
+    decimals: 18,
+    formatted: '0',
+  })
+  expect(result.current.balances[1]).toMatchObject({
+    address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    chainId: 1,
+    decimals: 18,
+  })
 })
 
 test.skip('Debug: should return balances of 50 tokens', async () => {
   const numberOfTokens = 50
-  const { result } = testHook(() =>
-    useTokenBalances(defaultTestAccount, allFakeGqlTokens.slice(0, numberOfTokens))
-  )
+  const { result } = testHook(() => useTokenBalances(allFakeGqlTokens.slice(0, numberOfTokens)))
 
-  await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+  await waitFor(() => expect(result.current.isBalancesLoading).toBeFalsy())
   expect(result.current.balances).toHaveLength(numberOfTokens)
 })

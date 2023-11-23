@@ -39,7 +39,7 @@ export function createApolloClient() {
     cache: new NextSSRInMemoryCache({
       typePolicies: {
         GqlToken: {
-          keyFields: ['address'],
+          keyFields: ['address', 'chainId'],
         },
         GqlTokenPrice: {
           keyFields: ['address'],

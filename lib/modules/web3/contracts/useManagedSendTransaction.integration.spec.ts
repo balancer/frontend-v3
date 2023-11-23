@@ -2,13 +2,13 @@
 import { describe, expect, test } from 'vitest'
 
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { JoinConfigBuilder } from '@/lib/modules/steps/join/JoinConfigBuilder'
+import { AddLiquidityConfigBuilder } from '@/lib/modules/steps/join/AddLiquidityConfigBuilderDELETE'
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import { testHook } from '@/test/utils/custom-renderers'
 import { defaultTestUserAccount, testPublicClient as testClient } from '@/test/utils/wagmi'
 import { ChainId, HumanAmount } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
-import { SendTransactionResult } from 'wagmi/dist/actions'
+import { SendTransactionResult } from 'wagmi/actions'
 import { chains } from '../Web3Provider'
 import { buildJoinPoolLabels } from '../../steps/join/useConstructJoinPoolStep'
 import { poolId } from '@/lib/debug-helpers'
@@ -40,14 +40,14 @@ describe('weighted join test', () => {
   test('Sends transaction after updating amount inputs', async () => {
     await utils.setupTokens([...getPoolTokens().map(() => '100' as HumanAmount), '100'])
 
-    const builder = new JoinConfigBuilder(chainId, poolStateInput)
+    const builder = new AddLiquidityConfigBuilder(chainId, poolStateInput)
 
     poolTokens.forEach(t => builder.setAmountIn(t.address, '1'))
 
     const balanceBefore = await getPoolTokenBalances()
 
     // First simulation
-    const { queryResult, config } = await builder.buildSdkJoinTxConfig(account)
+    const { queryResult, config } = await builder.buildSdkAddLiquidityTxConfig(account)
 
     const { result } = testHook(() => {
       return useManagedSendTransaction(buildJoinPoolLabels(), config)
@@ -59,9 +59,8 @@ describe('weighted join test', () => {
     // Second simulation
     poolTokens.forEach(t => builder.setAmountIn(t.address, '2'))
 
-    const { queryResult: queryResult2, config: config2 } = await builder.buildSdkJoinTxConfig(
-      defaultTestUserAccount
-    )
+    const { queryResult: queryResult2, config: config2 } =
+      await builder.buildSdkAddLiquidityTxConfig(defaultTestUserAccount)
     // Double approximately
     expect(queryResult2.bptOut.amount).toBeGreaterThan(520000000000000000000n)
 

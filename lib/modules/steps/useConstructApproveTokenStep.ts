@@ -63,7 +63,7 @@ export const buildTokenApprovalLabels: BuildTransactionLabels = tokenAddress => 
   //TODO: refactor
   const tokenSymbol = tokenAddress === wETHAddress ? 'WETH' : 'wjAura'
   return {
-    ready: `Approve token allowance ${tokenSymbol}`,
+    init: `Approve token allowance ${tokenSymbol}`,
     confirming: `Approving token allowance ${tokenSymbol}`,
     tooltip: 'foo',
     description: 'Token approval completed',

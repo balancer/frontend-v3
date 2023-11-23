@@ -16,12 +16,8 @@ const integrationTestOptions: Partial<InlineConfig> = {
   // Consider disabling threads if we detect problems with anvil
   // threads: false,
   retry: 3,
-  exclude: [
-    // Exclude Join tests until SDK public API is ready
-    'lib/modules/web3/contracts/useManagedSendTransaction.integration.spec.ts',
-    'node_modules',
-    'dist',
-  ],
+  // Uncomment the next line to exclude test for debug reasons
+  // exclude: ['lib/modules/tokens/useTokenBalances.integration.spec.ts', 'node_modules', 'dist'],
 }
 
 const integrationConfig = vitestUnitConfig

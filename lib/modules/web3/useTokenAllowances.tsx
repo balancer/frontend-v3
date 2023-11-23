@@ -1,49 +1,36 @@
-import { Address } from 'wagmi'
-import { useUserTokenAllowance } from './useUserTokenAllowance'
-import { vaultV2Address, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import { ReactNode, createContext } from 'react'
-import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { zipObject } from 'lodash'
+import { ContractFunctionConfig } from 'viem'
+import { Address, erc20ABI, useContractReads } from 'wagmi'
+import { Erc20Abi } from './contracts/contract.types'
 
 export type TokenAllowances = Record<Address, bigint>
 
-/*
-  DEBUG: this is a demo hook with harcoded token addreses until we decide how to provide the pool allowances
-*/
-export function _useTokenAllowances(spenderAddress: Address) {
-  const { allowance, refetch: refetchTokenAllowance } = useUserTokenAllowance(
-    wETHAddress,
-    spenderAddress
-  )
-  const { allowance: allowance2, refetch: refetchTokenAllowance2 } = useUserTokenAllowance(
-    wjAuraAddress,
-    spenderAddress
+export function useTokenAllowances(
+  userAccount: Address,
+  spenderAddress: Address,
+  tokenAddresses: Address[]
+) {
+  const contracts: ContractFunctionConfig<Erc20Abi, 'allowance'>[] = tokenAddresses.map(
+    tokenAddress => ({
+      address: tokenAddress,
+      abi: erc20ABI,
+      functionName: 'allowance',
+      args: [spenderAddress, userAccount],
+    })
   )
 
-  const allowances = {
-    [wETHAddress]: allowance,
-    [wjAuraAddress]: allowance2,
-  }
+  const result = useContractReads({
+    contracts,
+    allowFailure: false,
+    enabled: !!spenderAddress && !!userAccount,
+  })
+
+  const allowancesByTokenAddress = result.data ? zipObject(tokenAddresses, result.data) : {}
 
   return {
-    allowances,
-    // QUESTION: do we want individual functions to refetch by token?
-    // Probably yes: in order to check it after the token approval has been completed
-    // For now we keep it simple
-    refetchAllowances: async () => {
-      await Promise.all([refetchTokenAllowance(), refetchTokenAllowance2()])
-    },
+    isAllowancesLoading: result.isLoading,
+    isAllowancesRefetching: result.isRefetching,
+    allowances: allowancesByTokenAddress,
+    refetchAllowances: result.refetch,
   }
-}
-
-export const TokenAllowancesContext = createContext<ReturnType<typeof _useTokenAllowances> | null>(
-  null
-)
-
-export function TokenAllowancesProvider({ children }: { children: ReactNode }) {
-  const hook = _useTokenAllowances(vaultV2Address)
-  return <TokenAllowancesContext.Provider value={hook}>{children}</TokenAllowancesContext.Provider>
-}
-
-export function useTokenAllowances() {
-  return useMandatoryContext(TokenAllowancesContext, 'TokenAllowances')
 }

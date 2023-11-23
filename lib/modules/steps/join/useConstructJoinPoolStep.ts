@@ -6,12 +6,12 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { usePoolStateInput } from '@/lib/shared/hooks/balancer-api/usePoolStateInput'
 import { HumanAmount } from '@balancer/sdk'
-import { Address } from 'wagmi'
-import { JoinConfigBuilder } from './JoinConfigBuilder'
-import { useJoinPoolConfig } from './useJoinPoolConfig'
 import { useState } from 'react'
-import { useActiveStep } from '../useActiveStep'
+import { Address } from 'wagmi'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
+import { useActiveStep } from '../useActiveStep'
+import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
 
 export function useConstructJoinPoolStep(poolId: Address, initialWethAmount: HumanAmount = '0') {
   const [wethHumanAmount, setWethHumanAmount] = useState<HumanAmount>(initialWethAmount)
@@ -22,13 +22,18 @@ export function useConstructJoinPoolStep(poolId: Address, initialWethAmount: Hum
 
   const poolStateQuery = usePoolStateInput(poolId)
 
-  const { allowances } = useTokenAllowances()
+  const { allowances } = useTokenAllowances(userAddress)
 
-  const joinBuilder = new JoinConfigBuilder(chainId, allowances, poolStateQuery.data, 'unbalanced')
+  const joinBuilder = new AddLiquidityConfigBuilder(
+    chainId,
+    allowances,
+    poolStateQuery.data,
+    'unbalanced'
+  )
   joinBuilder.setAmountIn(wETHAddress, wethHumanAmount)
   joinBuilder.setAmountIn(wjAuraAddress, '1')
 
-  const joinQuery = useJoinPoolConfig(joinBuilder, isActiveStep, userAddress)
+  const joinQuery = useBuildAddLiquidityQuery(joinBuilder, isActiveStep, userAddress)
 
   const labels = buildJoinPoolLabels(poolId)
 
@@ -57,7 +62,7 @@ export function useConstructJoinPoolStep(poolId: Address, initialWethAmount: Hum
 
 export const buildJoinPoolLabels: BuildTransactionLabels = (poolId: Address) => {
   return {
-    ready: 'Join pool',
+    init: 'Join pool',
     confirming: 'Confirm pool join',
     tooltip: 'bing',
     description: `🎉 Joined pool ${poolId}`,

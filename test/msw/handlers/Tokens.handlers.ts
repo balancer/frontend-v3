@@ -1,14 +1,31 @@
-import { GetTokensDocument } from '@/lib/shared/services/api/generated/graphql'
+import {
+  defaultGetTokenPricesQueryMock,
+  defaultTokenListMock,
+} from '@/lib/modules/tokens/__mocks__/token.builders'
+import {
+  GetTokenPricesDocument,
+  GetTokensDocument,
+} from '@/lib/shared/services/api/generated/graphql'
 import { graphql } from 'msw'
 import { getQueryName, mockGQL } from '../utils'
-import { defaultTokenListMock } from '@/lib/modules/tokens/__mocks__/token.builders'
+import { GQLResponse } from './msw-helpers'
 
 export function buildTokenListMswHandler(tokenList = defaultTokenListMock) {
-  return graphql.query(getQueryName(GetTokensDocument), (req, res, ctx) => {
-    return res(ctx.data({ tokens: tokenList }))
+  return graphql.query(getQueryName(GetTokensDocument), () => {
+    return GQLResponse({ tokens: tokenList })
   })
 }
 
 export function mockTokenList(tokenList = defaultTokenListMock) {
   mockGQL(buildTokenListMswHandler(tokenList))
+}
+
+export function buildTokenPricesMswHandler(tokenList = defaultGetTokenPricesQueryMock) {
+  return graphql.query(getQueryName(GetTokenPricesDocument), () => {
+    return GQLResponse({ tokens: tokenList })
+  })
+}
+
+export function mockTokenPricesList(tokenPricesList = defaultGetTokenPricesQueryMock) {
+  mockGQL(buildTokenPricesMswHandler(tokenPricesList))
 }

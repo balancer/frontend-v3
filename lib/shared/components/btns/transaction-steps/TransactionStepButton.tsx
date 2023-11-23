@@ -40,7 +40,7 @@ export function TransactionStepButton({
         case TransactionState.Confirming:
           return 'Confirming transaction'
         case TransactionState.Error:
-          return transactionLabels.ready
+          return transactionLabels.init
       }
     }
     return relevantLabel

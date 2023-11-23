@@ -144,6 +144,7 @@ export type GqlPoolBase = {
 
 export type GqlPoolBatchSwap = {
   __typename?: 'GqlPoolBatchSwap'
+  chain: GqlChain
   id: Scalars['ID']['output']
   swaps: Array<GqlPoolBatchSwapSwap>
   timestamp: Scalars['Int']['output']
@@ -265,6 +266,7 @@ export type GqlPoolFilter = {
   poolTypeNotIn?: InputMaybe<Array<GqlPoolFilterType>>
   tokensIn?: InputMaybe<Array<Scalars['String']['input']>>
   tokensNotIn?: InputMaybe<Array<Scalars['String']['input']>>
+  userAddress?: InputMaybe<Scalars['String']['input']>
 }
 
 export enum GqlPoolFilterCategory {
@@ -335,6 +337,7 @@ export type GqlPoolInvestOption = {
 export type GqlPoolJoinExit = {
   __typename?: 'GqlPoolJoinExit'
   amounts: Array<GqlPoolJoinExitAmount>
+  chain: GqlChain
   id: Scalars['ID']['output']
   poolId: Scalars['String']['output']
   sender: Scalars['String']['output']
@@ -351,6 +354,7 @@ export type GqlPoolJoinExitAmount = {
 }
 
 export type GqlPoolJoinExitFilter = {
+  chainIn?: InputMaybe<Array<GqlChain>>
   poolIdIn?: InputMaybe<Array<Scalars['String']['input']>>
 }
 
@@ -595,6 +599,7 @@ export type GqlPoolPhantomStableNested = {
 export type GqlPoolSnapshot = {
   __typename?: 'GqlPoolSnapshot'
   amounts: Array<Scalars['String']['output']>
+  chain: GqlChain
   fees24h: Scalars['String']['output']
   holdersCount: Scalars['String']['output']
   id: Scalars['ID']['output']
@@ -653,6 +658,7 @@ export type GqlPoolStablePhantomPoolData = {
 export type GqlPoolStaking = {
   __typename?: 'GqlPoolStaking'
   address: Scalars['String']['output']
+  chain: GqlChain
   gauge?: Maybe<GqlPoolStakingGauge>
   id: Scalars['ID']['output']
   type: GqlPoolStakingType
@@ -697,6 +703,7 @@ export enum GqlPoolStakingType {
 
 export type GqlPoolSwap = {
   __typename?: 'GqlPoolSwap'
+  chain: GqlChain
   id: Scalars['ID']['output']
   poolId: Scalars['String']['output']
   timestamp: Scalars['Int']['output']
@@ -710,6 +717,7 @@ export type GqlPoolSwap = {
 }
 
 export type GqlPoolSwapFilter = {
+  chainIn?: InputMaybe<Array<GqlChain>>
   poolIdIn?: InputMaybe<Array<Scalars['String']['input']>>
   tokenInIn?: InputMaybe<Array<Scalars['String']['input']>>
   tokenOutIn?: InputMaybe<Array<Scalars['String']['input']>>
@@ -1266,6 +1274,7 @@ export type Query = {
 }
 
 export type QueryPoolGetAllPoolsSnapshotsArgs = {
+  chains?: InputMaybe<Array<GqlChain>>
   range: GqlPoolSnapshotDataRange
 }
 
@@ -1281,7 +1290,12 @@ export type QueryPoolGetJoinExitsArgs = {
   where?: InputMaybe<GqlPoolJoinExitFilter>
 }
 
+export type QueryPoolGetLinearPoolsArgs = {
+  chains?: InputMaybe<Array<GqlChain>>
+}
+
 export type QueryPoolGetPoolArgs = {
+  chain?: InputMaybe<GqlChain>
   id: Scalars['String']['input']
 }
 
@@ -1304,6 +1318,7 @@ export type QueryPoolGetPoolsCountArgs = {
 }
 
 export type QueryPoolGetSnapshotsArgs = {
+  chain?: InputMaybe<GqlChain>
   id: Scalars['String']['input']
   range: GqlPoolSnapshotDataRange
 }
@@ -1382,12 +1397,21 @@ export type QueryUserGetPoolBalancesArgs = {
 }
 
 export type QueryUserGetPoolJoinExitsArgs = {
+  address?: InputMaybe<Scalars['String']['input']>
+  chain?: InputMaybe<GqlChain>
   first?: InputMaybe<Scalars['Int']['input']>
   poolId: Scalars['String']['input']
   skip?: InputMaybe<Scalars['Int']['input']>
 }
 
+export type QueryUserGetStakingArgs = {
+  address?: InputMaybe<Scalars['String']['input']>
+  chains?: InputMaybe<Array<GqlChain>>
+}
+
 export type QueryUserGetSwapsArgs = {
+  address?: InputMaybe<Scalars['String']['input']>
+  chain?: InputMaybe<GqlChain>
   first?: InputMaybe<Scalars['Int']['input']>
   poolId: Scalars['String']['input']
   skip?: InputMaybe<Scalars['Int']['input']>
@@ -1435,11 +1459,18 @@ export type GetTokensQuery = {
   }>
 }
 
-export type GetTokenPricesQueryVariables = Exact<{ [key: string]: never }>
+export type GetTokenPricesQueryVariables = Exact<{
+  chains: Array<GqlChain> | GqlChain
+}>
 
 export type GetTokenPricesQuery = {
   __typename?: 'Query'
-  tokenPrices: Array<{ __typename?: 'GqlTokenPrice'; price: number; address: string }>
+  tokenPrices: Array<{
+    __typename?: 'GqlTokenPrice'
+    price: number
+    address: string
+    chain: GqlChain
+  }>
 }
 
 export type GetTokensDynamicDataQueryVariables = Exact<{
@@ -4065,6 +4096,22 @@ export const GetTokenPricesDocument = {
       kind: 'OperationDefinition',
       operation: 'query',
       name: { kind: 'Name', value: 'GetTokenPrices' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'chains' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
+              },
+            },
+          },
+        },
+      ],
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
@@ -4072,11 +4119,19 @@ export const GetTokenPricesDocument = {
             kind: 'Field',
             alias: { kind: 'Name', value: 'tokenPrices' },
             name: { kind: 'Name', value: 'tokenGetCurrentPrices' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'chains' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'chains' } },
+              },
+            ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'price' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'chain' } },
               ],
             },
           },

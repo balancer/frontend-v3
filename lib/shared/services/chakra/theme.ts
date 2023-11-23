@@ -339,6 +339,9 @@ export const balTheme = {
       colorFontLight: '#F3F1EC',
     },
     space: {
+      none: '0',
+      xxs: '0.125rem',
+      xs: '0.25rem',
       sm: '0.5rem',
       md: '1rem',
       lg: '1.5rem',
