@@ -41,14 +41,15 @@ export const BalInput = forwardRef(
       <Box
         shadow="md"
         borderRadius="md"
-        p="md"
-        bg="white"
+        px="sm"
+        py="0"
+        bg="transparent"
         border="white"
         w="full"
         ref={ref}
         {...boxProps}
       >
-        <VStack align="start" spacing="md">
+        <VStack align="start" spacing="sm">
           {headerSlot && headerSlot}
           <InputGroup border="transparent" background="transparent" {...inputGroupProps}>
             {leftSlot && <InputLeftAddon bg="transparent">{leftSlot}</InputLeftAddon>}
@@ -57,7 +58,7 @@ export const BalInput = forwardRef(
                 border="transparent"
                 bg="transparent"
                 p="0"
-                fontSize="xl"
+                fontSize="md"
                 value={value}
                 title={String(value)}
                 fontWeight="medium"

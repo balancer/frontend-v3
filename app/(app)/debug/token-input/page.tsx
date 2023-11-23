@@ -7,9 +7,11 @@ import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useState } from 'react'
 import { TokenSelectModal } from '@/lib/modules/tokens/TokenSelectModal/TokenSelectModal'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
+import { BalInput } from '@/lib/shared/components/inputs/BalInput'
 
 export default function TokenInputPage() {
   const [currentValue, setCurrentValue] = useState('')
+  const [normalValue, setNormalValue] = useState('')
   const { getToken, getTokensByChain } = useTokens()
   const tokenSelectDisclosure = useDisclosure()
   const [token, setToken] = useState<GqlToken>(
@@ -25,6 +27,14 @@ export default function TokenInputPage() {
   return (
     <TokenBalancesProvider tokens={tokens}>
       <VStack width="sm" align="start" p="md">
+        <Heading>Normal input</Heading>
+        <Text>Current value: {normalValue}</Text>
+        <BalInput
+          value={normalValue}
+          type="text"
+          onChange={e => setNormalValue(e.currentTarget.value)}
+        />
+
         <Heading>Token Input</Heading>
         <Text>Current value: {currentValue}</Text>
         <TokenInput

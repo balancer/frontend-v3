@@ -43,17 +43,18 @@ function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSele
 
 type TokenInputFooterProps = {
   token: GqlToken | undefined
+  value?: string
   updateValue: (value: string) => void
 }
 
-function TokenInputFooter({ token, updateValue }: TokenInputFooterProps) {
+function TokenInputFooter({ token, value, updateValue }: TokenInputFooterProps) {
   const { balanceFor, isBalancesLoading } = useTokenBalances()
   const { usdValueForToken } = useTokens()
   const { toCurrency } = useNumbers()
 
   const balance = token ? balanceFor(token?.address) : undefined
   const userBalance = token ? balance?.formatted || '0' : '0'
-  const usdValue = userBalance && token ? usdValueForToken(token, userBalance) : '0'
+  const usdValue = value && token ? usdValueForToken(token, value) : '0'
 
   return (
     <HStack h="4" w="full" justify="space-between">
@@ -108,7 +109,7 @@ export const TokenInput = forwardRef(
     const { handleOnChange, updateValue } = useTokenInput(token, onChange)
 
     const tokenInputSelector = TokenInputSelector({ token, weight, toggleTokenSelect })
-    const footer = hideFooter ? undefined : TokenInputFooter({ token, updateValue })
+    const footer = hideFooter ? undefined : TokenInputFooter({ token, value, updateValue })
 
     return (
       <BalInput
@@ -120,6 +121,7 @@ export const TokenInput = forwardRef(
         autoComplete="off"
         autoCorrect="off"
         min={0}
+        size="lg"
         footerSlot={footer}
         rightSlot={tokenInputSelector}
         boxProps={boxProps}
