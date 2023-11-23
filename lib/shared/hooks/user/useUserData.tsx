@@ -36,8 +36,6 @@ export function _useUserData(variables: GetUserDataQueryVariables) {
   function usdBalanceForPool(poolId: string): number {
     const balance = data?.balances.find(balance => balance.poolId === poolId)
 
-    console.log({ balance })
-
     if (!balance) {
       return 0
     }
