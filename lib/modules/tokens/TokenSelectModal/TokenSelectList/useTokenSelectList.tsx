@@ -11,7 +11,7 @@ export function useTokenSelectList(
   searchTerm?: string
 ) {
   const { usdValueForToken, exclNativeAssetFilter, nativeAssetFilter } = useTokens()
-  const { balanceFor } = useTokenBalances(tokens)
+  const { balanceFor } = useTokenBalances()
 
   const symbolMatch = (token: GqlToken, searchTerm: string) =>
     token.symbol.toLowerCase().includes(searchTerm.toLowerCase())

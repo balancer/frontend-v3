@@ -1,6 +1,6 @@
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { keyBy } from 'lodash'
-import { Config, NetworkConfig } from './config.types'
+import { Config, NetworkConfig, SupportedChainId } from './config.types'
 import networks from './networks'
 
 if (!process.env.NEXT_PUBLIC_BALANCER_API_URL) {
@@ -30,6 +30,10 @@ export function getNetworkConfig(chain?: GqlChain | number): NetworkConfig {
   }
 
   return config.networks[chain]
+}
+
+export function getNativeAssetAddress(chainId: SupportedChainId) {
+  return getNetworkConfig(chainId).tokens.nativeAsset.address
 }
 
 export const DELEGATE_OWNER = '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b'
