@@ -26,6 +26,7 @@ export type Props = {
 export const BalInput = forwardRef(
   (
     {
+      value,
       rightSlot,
       leftSlot,
       headerSlot,
@@ -40,14 +41,14 @@ export const BalInput = forwardRef(
       <Box
         shadow="md"
         borderRadius="md"
-        p="sm"
+        p="md"
         bg="white"
         border="white"
         w="full"
         ref={ref}
         {...boxProps}
       >
-        <VStack align="start">
+        <VStack align="start" spacing="md">
           {headerSlot && headerSlot}
           <InputGroup border="transparent" background="transparent" {...inputGroupProps}>
             {leftSlot && <InputLeftAddon bg="transparent">{leftSlot}</InputLeftAddon>}
@@ -56,7 +57,9 @@ export const BalInput = forwardRef(
                 border="transparent"
                 bg="transparent"
                 p="0"
-                fontSize="lg"
+                fontSize="xl"
+                value={value}
+                title={String(value)}
                 fontWeight="medium"
                 _hover={{
                   borderColor: 'transparent',
