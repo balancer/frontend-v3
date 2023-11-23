@@ -52,7 +52,7 @@ export function useConstructApproveTokenStep(tokenAddress: Address) {
 
 export const buildTokenApprovalLabels: BuildTransactionLabels = () => {
   return {
-    ready: 'Approve token allowance',
+    init: 'Approve token allowance',
     confirming: 'Approving token allowance',
     tooltip: 'foo',
     description: 'Token approval completed',

@@ -49,7 +49,7 @@ export function useConstructNativeAssetJoinStep(poolId: Address) {
 
 export const buildJoinPoolLabels: BuildTransactionLabels = () => {
   return {
-    ready: 'Join pool',
+    init: 'Join pool',
     confirming: 'Confirm pool join',
     tooltip: '',
     description: 'Pool joined with ETH (native asset)',
