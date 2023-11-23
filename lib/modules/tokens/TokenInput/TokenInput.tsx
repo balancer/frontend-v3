@@ -1,7 +1,7 @@
 'use client'
 
-import { Box, HStack, Skeleton, Text, forwardRef } from '@chakra-ui/react'
-import { BalInput } from '../../../shared/components/inputs/BalInput/BalInput'
+import { Box, BoxProps, HStack, Skeleton, Text, forwardRef } from '@chakra-ui/react'
+import { BalInput } from '../../../shared/components/inputs/BalInput'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import Image from 'next/image'
 import { useTokens } from '../useTokens'
@@ -84,13 +84,23 @@ type Props = {
   weight?: string
   value?: string
   hideFooter?: boolean
+  boxProps?: BoxProps
   onChange?: (event: { currentTarget: { value: string } }) => void
   toggleTokenSelect?: () => void
 }
 
 export const TokenInput = forwardRef(
   (
-    { address, chain, weight, value, onChange, toggleTokenSelect, hideFooter = false }: Props,
+    {
+      address,
+      chain,
+      weight,
+      value,
+      boxProps,
+      onChange,
+      toggleTokenSelect,
+      hideFooter = false,
+    }: Props,
     ref
   ) => {
     const { getToken } = useTokens()
@@ -112,6 +122,7 @@ export const TokenInput = forwardRef(
         min={0}
         footerSlot={footer}
         rightSlot={tokenInputSelector}
+        boxProps={boxProps}
         onChange={handleOnChange}
         onKeyDown={blockInvalidNumberInput}
       />

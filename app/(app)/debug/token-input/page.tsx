@@ -24,7 +24,7 @@ export default function TokenInputPage() {
 
   return (
     <TokenBalancesProvider tokens={tokens}>
-      <VStack width="xl" align="start" p="md">
+      <VStack width="sm" align="start" p="md">
         <Heading>Token Input</Heading>
         <Text>Current value: {currentValue}</Text>
         <TokenInput
