@@ -104,7 +104,7 @@ export function usePoolListQueryState() {
     }
   }
 
-  const totalFilterCount = networks.length + poolTypes.length
+  const totalFilterCount = networks.length + poolTypes.length + (userAddress ? 1 : 0)
   const sorting: SortingState = orderBy
     ? [{ id: orderBy, desc: orderDirection === GqlPoolOrderDirection.Desc }]
     : []
