@@ -28,14 +28,24 @@ import { usePoolListQueryState } from '@/lib/modules/pool/PoolList/usePoolListQu
 import { IoFilter } from 'react-icons/io5'
 import { PoolFilterType, poolTypeFilters } from '@/lib/modules/pool/pool.types'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useEffect, useState } from 'react'
 
 function UserPoolFilter() {
   const { userAddress, toggleUserAddress } = usePoolListQueryState()
   const { address } = useUserAccount()
+  const [checked, setChecked] = useState(false)
+
+  useEffect(() => {
+    if (userAddress === address) {
+      setChecked(true)
+    } else {
+      setChecked(false)
+    }
+  }, [userAddress])
 
   return (
     <Checkbox
-      isChecked={userAddress === address}
+      isChecked={checked}
       onChange={e => toggleUserAddress(e.target.checked, address as string)}
     >
       <Text>Only show invested pools</Text>
