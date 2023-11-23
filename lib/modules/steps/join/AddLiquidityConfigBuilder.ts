@@ -8,10 +8,12 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import {
   AddLiquidity,
   AddLiquidityKind,
+  AddLiquiditySingleTokenInput,
   AddLiquidityUnbalancedInput,
   HumanAmount,
   PoolStateInput,
   Slippage,
+  Token,
 } from '@balancer/sdk'
 import { Dictionary, keyBy } from 'lodash'
 import { parseUnits } from 'viem'
@@ -109,7 +111,7 @@ export class AddLiquidityConfigBuilder {
     if (this.addLiquidityType === 'unbalancedNativeAsset') {
       return this.getUnbalancedAddLiquidityInput({ useNativeAssetAsWrappedAmountIn: true })
     }
-    if (this.addLiquidityType === 'singleAsset') return this.getAddLiquiditySingleTokenInput()
+    if (this.addLiquidityType === 'singleToken') return this.getAddLiquiditySingleTokenInput()
     return this.getUnbalancedAddLiquidityInput()
   }
 
