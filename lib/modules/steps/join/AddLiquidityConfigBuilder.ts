@@ -75,7 +75,7 @@ export class AddLiquidityConfigBuilder {
     // REVIEW THIS
     // const { amountsIn } = this.getJoinInput()
     return `${this.poolStateInput.id}:${this.chainId}:${this.slippage}${JSON.stringify(
-      this.getJoinInputForSDK()
+      this.getAddLiquidityInputForSDK()
     )}`
   }
 

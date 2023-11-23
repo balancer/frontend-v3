@@ -2,7 +2,7 @@
 import { describe, expect, test } from 'vitest'
 
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { AddLiquidityConfigBuilder } from '@/lib/modules/steps/join/AddLiquidityConfigBuilderDELETE'
+import { AddLiquidityConfigBuilder } from '@/lib/modules/steps/join/AddLiquidityConfigBuilder'
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import { testHook } from '@/test/utils/custom-renderers'
 import { defaultTestUserAccount, testPublicClient as testClient } from '@/test/utils/wagmi'
@@ -12,6 +12,7 @@ import { SendTransactionResult } from 'wagmi/actions'
 import { chains } from '../Web3Provider'
 import { buildJoinPoolLabels } from '../../steps/join/useConstructJoinPoolStep'
 import { poolId } from '@/lib/debug-helpers'
+import { someTokenAllowancesMock } from '../../tokens/__mocks__/token.builders'
 
 const chainId = ChainId.MAINNET
 const port = 8555
@@ -40,7 +41,7 @@ describe('weighted join test', () => {
   test('Sends transaction after updating amount inputs', async () => {
     await utils.setupTokens([...getPoolTokens().map(() => '100' as HumanAmount), '100'])
 
-    const builder = new AddLiquidityConfigBuilder(chainId, poolStateInput)
+    const builder = new AddLiquidityConfigBuilder(chainId, someTokenAllowancesMock, poolStateInput)
 
     poolTokens.forEach(t => builder.setAmountIn(t.address, '1'))
 

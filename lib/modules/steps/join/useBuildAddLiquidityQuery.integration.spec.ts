@@ -7,15 +7,16 @@ import { waitFor } from '@testing-library/react'
 
 import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
+import { someTokenAllowancesMock } from '../../tokens/__mocks__/token.builders'
 
-async function buildJoinConfig() {
+async function buildQuery() {
   const poolStateInput = await new MockApi().getPool(poolId) // Balancer Weighted wjAura and WETH
-  return new AddLiquidityConfigBuilder(ChainId.MAINNET, poolStateInput)
+  return new AddLiquidityConfigBuilder(ChainId.MAINNET, someTokenAllowancesMock, poolStateInput)
 }
 const enabled = true
 
 test('fetches join pool config when user is not connected', async () => {
-  const builder = await buildJoinConfig()
+  const builder = await buildQuery()
   const account = undefined
   const { result } = testHook(() => {
     return useBuildAddLiquidityQuery(builder, enabled, account)
@@ -27,7 +28,7 @@ test('fetches join pool config when user is not connected', async () => {
 })
 
 test('fetches join pool config when user is connected', async () => {
-  const builder = await buildJoinConfig()
+  const builder = await buildQuery()
 
   builder.setAmountIn(wETHAddress, '1')
   builder.setAmountIn(wjAuraAddress, '1')
