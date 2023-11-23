@@ -29,7 +29,7 @@ export function TokenSelectList({
   ...rest
 }: Props & BoxProps) {
   const [activeIndex, setActiveIndex] = useState(0)
-  const { balanceFor, isBalancesLoading } = useTokenBalances(tokens)
+  const { balanceFor, isBalancesLoading } = useTokenBalances()
   const { isConnected } = useUserAccount()
   const { orderedTokens } = useTokenSelectList(
     tokens,
