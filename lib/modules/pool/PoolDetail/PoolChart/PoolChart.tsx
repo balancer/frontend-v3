@@ -1,5 +1,5 @@
 'use client'
-import { Box, Card, HStack, Stack, Text } from '@chakra-ui/react'
+import { Box, Card, HStack, Heading, Stack, Text } from '@chakra-ui/react'
 import ReactECharts from 'echarts-for-react'
 import { PoolChartTypeTabs } from './PoolChartTypeTabs'
 import { usePoolCharts } from './usePoolCharts'
@@ -26,9 +26,9 @@ export function PoolChart() {
   return (
     <Card variant="gradient">
       <HStack p="5">
-        <Text variant="heading" fontWeight="bold" as="h2" fontSize="xl">
+        <Heading fontWeight="bold" as="h2" fontSize="xl">
           My liquidity
-        </Text>
+        </Heading>
       </HStack>
       <Stack
         px="lg"

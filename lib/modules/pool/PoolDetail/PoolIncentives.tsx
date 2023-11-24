@@ -2,8 +2,10 @@ import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { Box, Card, HStack, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
+import { Address } from 'viem'
+import { usePool } from '../usePool'
 
 const TABS = [
   {
@@ -22,49 +24,67 @@ const TABS = [
 
 export default function PoolIncentives() {
   const [activeTab, setActiveTab] = useState(TABS[0])
+  const { pool, chain } = usePool()
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
   }
 
   return (
-    <Card variant="gradient" width="full" height="320px">
-      <HStack p="5" justifyContent="space-between">
-        <Text variant="heading" fontWeight="bold" as="h2" fontSize="xl">
-          Incentives
-        </Text>
-        <ButtonGroup value={activeTab} options={TABS} onChange={handleTabChanged} />
-      </HStack>
-      <Box p="4" pt="0">
-        <Card borderWidth={1} borderColor="borderColor" bg="sand.50" shadow="none">
-          <VStack width="full">
-            <Box width="full" borderBottomWidth={1} borderColor="borderColor">
-              <HStack py="3" px="4" width="full" justifyContent="space-between">
-                <VStack spacing="0" alignItems="flex-start">
-                  <Text variant="heading" fontWeight="bold" as="h3" fontSize="1rem">
-                    Pool incentives this week
-                  </Text>
-                  <Text variant="secondary" fontSize="0.85rem">
-                    Gauge votes
-                  </Text>
-                </VStack>
-                <VStack spacing="0" alignItems="flex-end">
-                  <Text variant="heading" fontWeight="bold" as="h3" fontSize="1rem">
-                    $3,000.00
-                  </Text>
-                  <Text variant="secondary" fontSize="0.85rem">
-                    1.34%
-                  </Text>
-                </VStack>
-              </HStack>
-            </Box>
-            <VStack p="4" py="2" pb="4" width="full">
-              <TokenRow address="0x3" />
-              <TokenRow address="0x3" />
+    <Card variant="gradient" width="full" minHeight="320px">
+      <VStack spacing="0" width="full">
+        <HStack width="full" p="4" justifyContent="space-between">
+          <Heading fontWeight="bold" size="h5">
+            Incentives
+          </Heading>
+          <ButtonGroup value={activeTab} options={TABS} onChange={handleTabChanged} />
+        </HStack>
+        <Box width="full" p="4" pt="0">
+          <Card borderWidth={1} variant="level5" shadow="none">
+            <VStack width="full">
+              <Box width="full" borderBottomWidth={1} borderColor="borderColor">
+                <HStack py="4" px="4" width="full" justifyContent="space-between">
+                  <VStack spacing="1" alignItems="flex-start">
+                    <Heading fontWeight="bold" size="h6">
+                      Pool incentives this week
+                    </Heading>
+                    <Text variant="secondary" fontSize="0.85rem">
+                      Gauge votes
+                    </Text>
+                  </VStack>
+                  <VStack spacing="1" alignItems="flex-end">
+                    <Heading fontWeight="bold" size="h6">
+                      $3000.00
+                    </Heading>
+                    <Text variant="secondary" fontSize="0.85rem">
+                      8.69%
+                    </Text>
+                  </VStack>
+                </HStack>
+              </Box>
+              <VStack spacing="4" p="4" py="2" pb="4" width="full">
+                {pool.displayTokens.map(token => {
+                  return (
+                    <TokenRow
+                      chain={chain}
+                      key={`my-liquidity-token-${token.address}`}
+                      address={token.address as Address}
+                      // TODO: Fill pool balances
+                      value={0}
+                    />
+                  )
+                })}
+              </VStack>
             </VStack>
-          </VStack>
-        </Card>
-      </Box>
+            <HStack p="4" width="full" justifyContent="flex-start">
+              <Button variant="secondary">Vote</Button>
+              <Button variant="disabled" isDisabled>
+                Incentivize
+              </Button>
+            </HStack>
+          </Card>
+        </Box>
+      </VStack>
     </Card>
   )
 }
