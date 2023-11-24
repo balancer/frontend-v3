@@ -30,8 +30,8 @@ export default function TokenInputPage() {
         <Card p="md" variant="level3" shadow="2xl">
           <VStack spacing="md" w="full">
             <TokenInput
-              address={token.address}
-              chain={token.chain}
+              address={token?.address}
+              chain={token?.chain}
               value={currentValue}
               onChange={e => setCurrentValue(e.currentTarget.value)}
               toggleTokenSelect={() => {

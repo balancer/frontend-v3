@@ -41,7 +41,9 @@ function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSele
     >
       <HStack spacing="xs">
         {token?.logoURI && <Image src={token?.logoURI} alt={token.symbol} width={24} height={24} />}
-        <Text fontWeight="bold">{token?.symbol}</Text>
+        <Text fontWeight="bold">
+          {token ? token?.symbol : toggleTokenSelect ? 'Select token' : 'No token'}
+        </Text>
         {weight && <Text fontWeight="normal">{weight}%</Text>}
         {toggleTokenSelect && (
           <Box fontSize="xl" color="sand.500">
@@ -79,7 +81,7 @@ function TokenInputFooter({ token, value, updateValue }: TokenInputFooterProps) 
         <Skeleton w="12" h="full" />
       ) : (
         <HStack cursor="pointer" onClick={() => updateValue(userBalance)}>
-          <Text fontSize="sm" variant="special">
+          <Text fontSize="sm" color="salmon.500">
             {tokenFormat(userBalance)}
           </Text>
           <Box color="sand.300">
@@ -92,8 +94,8 @@ function TokenInputFooter({ token, value, updateValue }: TokenInputFooterProps) 
 }
 
 type Props = {
-  address: string
-  chain: GqlChain | number
+  address?: string
+  chain?: GqlChain | number
   weight?: string
   value?: string
   hideFooter?: boolean
@@ -118,7 +120,7 @@ export const TokenInput = forwardRef(
     ref
   ) => {
     const { getToken } = useTokens()
-    const token = getToken(address, chain)
+    const token = address && chain ? getToken(address, chain) : undefined
     const { handleOnChange, updateValue } = useTokenInput(token, onChange)
 
     const tokenInputSelector = TokenInputSelector({ token, weight, toggleTokenSelect })
