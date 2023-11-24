@@ -2,16 +2,14 @@
 
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
-import { Heading, Text, VStack, useDisclosure } from '@chakra-ui/react'
+import { Button, Card, Heading, Text, VStack, useDisclosure } from '@chakra-ui/react'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useState } from 'react'
 import { TokenSelectModal } from '@/lib/modules/tokens/TokenSelectModal/TokenSelectModal'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
-import { BalInput } from '@/lib/shared/components/inputs/BalInput'
 
 export default function TokenInputPage() {
   const [currentValue, setCurrentValue] = useState('')
-  const [normalValue, setNormalValue] = useState('')
   const { getToken, getTokensByChain } = useTokens()
   const tokenSelectDisclosure = useDisclosure()
   const [token, setToken] = useState<GqlToken>(
@@ -27,25 +25,25 @@ export default function TokenInputPage() {
   return (
     <TokenBalancesProvider tokens={tokens}>
       <VStack width="sm" align="start" p="md">
-        <Heading>Normal input</Heading>
-        <Text>Current value: {normalValue}</Text>
-        <BalInput
-          value={normalValue}
-          type="text"
-          onChange={e => setNormalValue(e.currentTarget.value)}
-        />
-
         <Heading>Token Input</Heading>
         <Text>Current value: {currentValue}</Text>
-        <TokenInput
-          address={token.address}
-          chain={token.chain}
-          value={currentValue}
-          onChange={e => setCurrentValue(e.currentTarget.value)}
-          toggleTokenSelect={() => {
-            tokenSelectDisclosure.onOpen()
-          }}
-        />
+        <Card p="md" variant="level3" shadow="2xl">
+          <VStack spacing="md" w="full">
+            <TokenInput
+              address={token.address}
+              chain={token.chain}
+              value={currentValue}
+              onChange={e => setCurrentValue(e.currentTarget.value)}
+              toggleTokenSelect={() => {
+                tokenSelectDisclosure.onOpen()
+              }}
+            />
+            <Button variant="primary" w="full">
+              Submit
+            </Button>
+          </VStack>
+        </Card>
+
         <TokenSelectModal
           tokens={tokens}
           isOpen={tokenSelectDisclosure.isOpen}

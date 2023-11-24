@@ -1,7 +1,19 @@
 'use client'
 
-import { Box, BoxProps, HStack, Skeleton, Text, forwardRef } from '@chakra-ui/react'
-import { BalInput } from '../../../shared/components/inputs/BalInput'
+import {
+  Box,
+  BoxProps,
+  Card,
+  HStack,
+  Input,
+  InputGroup,
+  InputProps,
+  InputRightAddon,
+  Skeleton,
+  Text,
+  VStack,
+  forwardRef,
+} from '@chakra-ui/react'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import Image from 'next/image'
 import { useTokens } from '../useTokens'
@@ -19,11 +31,11 @@ type TokenInputSelectorProps = {
 
 function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSelectorProps) {
   return (
-    <Box
+    <Card
       py="xs"
       px="sm"
-      bg="sand.50"
-      borderRadius="md"
+      variant="level4"
+      shadow="md"
       onClick={toggleTokenSelect}
       cursor={toggleTokenSelect ? 'pointer' : 'default'}
     >
@@ -37,7 +49,7 @@ function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSele
           </Box>
         )}
       </HStack>
-    </Box>
+    </Card>
   )
 }
 
@@ -67,7 +79,7 @@ function TokenInputFooter({ token, value, updateValue }: TokenInputFooterProps) 
         <Skeleton w="12" h="full" />
       ) : (
         <HStack cursor="pointer" onClick={() => updateValue(userBalance)}>
-          <Text fontSize="sm" color="red.500">
+          <Text fontSize="sm" variant="special">
             {tokenFormat(userBalance)}
           </Text>
           <Box color="sand.300">
@@ -101,7 +113,8 @@ export const TokenInput = forwardRef(
       onChange,
       toggleTokenSelect,
       hideFooter = false,
-    }: Props,
+      ...inputProps
+    }: InputProps & Props,
     ref
   ) => {
     const { getToken } = useTokens()
@@ -112,22 +125,65 @@ export const TokenInput = forwardRef(
     const footer = hideFooter ? undefined : TokenInputFooter({ token, value, updateValue })
 
     return (
-      <BalInput
+      <Box
+        borderRadius="md"
+        p="md"
+        shadow="innerBase"
+        bg="background.card.level1"
+        border="white"
+        w="full"
         ref={ref}
-        value={value}
-        type="number"
-        placeholder="0.00"
-        inputMode="decimal"
-        autoComplete="off"
-        autoCorrect="off"
-        min={0}
-        size="lg"
-        footerSlot={footer}
-        rightSlot={tokenInputSelector}
-        boxProps={boxProps}
-        onChange={handleOnChange}
-        onKeyDown={blockInvalidNumberInput}
-      />
+        {...boxProps}
+      >
+        <VStack align="start" spacing="md">
+          <InputGroup border="transparent" background="transparent">
+            <Box w="full" position="relative">
+              <Input
+                type="number"
+                placeholder="0.00"
+                autoComplete="off"
+                autoCorrect="off"
+                min={0}
+                border="transparent"
+                bg="transparent"
+                p="0"
+                fontSize="xl"
+                fontWeight="medium"
+                value={value}
+                title={String(value)}
+                onChange={handleOnChange}
+                onKeyDown={blockInvalidNumberInput}
+                _hover={{
+                  borderColor: 'transparent',
+                  boxShadow: 'none',
+                }}
+                _focus={{
+                  outline: 'none',
+                  borderColor: 'transparent',
+                  boxShadow: 'none',
+                }}
+                {...inputProps}
+              />
+              <Box
+                position="absolute"
+                bgGradient="linear(to-r, transparent, background.card.level1 70%)"
+                w="8"
+                h="full"
+                top={0}
+                right={0}
+                zIndex={9999}
+              ></Box>
+            </Box>
+
+            {tokenInputSelector && (
+              <InputRightAddon bg="transparent" border="none" p="0" pl="1">
+                {tokenInputSelector}
+              </InputRightAddon>
+            )}
+          </InputGroup>
+          {footer && footer}
+        </VStack>
+      </Box>
     )
   }
 )
