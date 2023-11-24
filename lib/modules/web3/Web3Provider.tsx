@@ -12,6 +12,7 @@ import {
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 import {
   arbitrum,
+  avalanche,
   base,
   fantom,
   gnosis,
@@ -30,6 +31,7 @@ import { CustomAvatar } from './CustomAvatar'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
 export const supportedChains = [
+  avalanche,
   mainnet,
   polygon,
   optimism,
