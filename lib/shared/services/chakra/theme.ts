@@ -361,6 +361,10 @@ export const balTheme = {
           default: tokens.colors.light.text.link,
           _dark: tokens.colors.dark.text.link,
         },
+        accordionHeading: {
+          default: tokens.colors.light.button.background.primary,
+          _dark: tokens.colors.dark.button.background.primary,
+        },
         button: {
           disabled: {
             default: tokens.colors.light.button.text.disabled,
@@ -426,6 +430,36 @@ export const balTheme = {
     },
   },
   components: {
+    Accordion: {
+      variants: {
+        gradient: {
+          icon: {
+            color: 'sand.300',
+          },
+          button: {
+            px: '5',
+            py: '6',
+            fontWeight: 'bold',
+            fontSize: '1.25rem',
+            rounded: 'lg',
+            borderWidth: 0,
+            border: 'none',
+            background: 'lightBadge',
+            _dark: {
+              background: 'background.card.level3',
+            },
+          },
+          container: {
+            border: 'none',
+            borderWidth: 0,
+            mb: '4',
+          },
+          root: {
+            border: 'none',
+          },
+        },
+      },
+    },
     // Section is a custom component
     Section: {
       baseStyle: {
@@ -461,6 +495,12 @@ export const balTheme = {
         gradient: {
           bgGradient: 'linear(to-l, gradients.text.heading.from, gradients.text.heading.to)',
           bgClip: 'text',
+        },
+        accordionHeading: {
+          background: 'font.accordionHeading',
+          backgroundClip: 'text',
+          fontSize: '1.25rem',
+          textAlign: 'left',
         },
       },
       sizes: {

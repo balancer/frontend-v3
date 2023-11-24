@@ -55,8 +55,8 @@ export function _useTokens(
   }
 
   function getTokensByChain(chain: number | GqlChain): GqlToken[] {
-    const key = typeof chain === 'number' ? 'chainId' : 'chain'
-    return tokens.filter(token => token[key] === chain)
+    const chainKey = typeof chain === 'number' ? 'chainId' : 'chain'
+    return tokens.filter(token => token[chainKey] === chain)
   }
 
   function priceForToken(token: GqlToken): number {
