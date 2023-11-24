@@ -1,51 +1,44 @@
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { wETHAddress } from '@/lib/debug-helpers'
 import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
 import { useManagedErc20Transaction } from '@/lib/modules/web3/contracts/useManagedErc20Transaction'
-import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
+import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { MAX_BIGINT } from '@/lib/shared/hooks/useNumbers'
-import { useEffect, useState } from 'react'
 import { Address } from 'viem'
-import { useUserTokenAllowance } from '../web3/useUserTokenAllowance'
-import { vaultV2Address, wETHAddress } from '@/lib/debug-helpers'
 import { useActiveStep } from './useActiveStep'
+import { useTokenAllowances } from '../web3/useTokenAllowances'
+import { useEffect } from 'react'
 
-export function useConstructApproveTokenStep(tokenAddress: Address) {
-  const { address: userAddress } = useUserAccount()
+export function useConstructApproveTokenStep(tokenAddress: Address, amountToAllow: bigint) {
   const { isActiveStep, activateStep } = useActiveStep()
   const spender = useContractAddress('balancer.vaultV2')
+  const { refetchAllowances, allowances, isAllowancesLoading } = useTokenAllowances()
 
-  // TODO: Pass allowances from outside
-  const { allowance, isLoadingAllowance } = useUserTokenAllowance(tokenAddress, vaultV2Address)
-
-  const [tokenApprovalArgs, setTokenApprovalArgs] = useState<[Address, bigint]>([
-    spender || nullAddress,
-    0n,
-  ])
-
-  // update token approval args
-  useEffect(() => {
-    if (userAddress && spender) {
-      setTokenApprovalArgs([spender, MAX_BIGINT])
-    }
-  }, [userAddress, spender])
-
-  const transaction = useManagedErc20Transaction(
+  const approvalTransaction = useManagedErc20Transaction(
     tokenAddress,
     'approve',
     buildTokenApprovalLabels(),
-    { args: tokenApprovalArgs },
+    { args: [spender || emptyAddress, MAX_BIGINT] }, //By default we set MAX_BIGINT
     {
-      enabled: isActiveStep && !!spender && !isLoadingAllowance,
+      enabled: isActiveStep && !!spender && !isAllowancesLoading && !!amountToAllow,
     }
   )
+
   const hasTokenApproval = () => {
-    return transaction.result.isSuccess || allowance === MAX_BIGINT //TODO: This will depend on the allowance amount set by the user
-  } //TODO: This will depend on the allowance amount set by the user
+    return approvalTransaction.result.isSuccess || allowances[tokenAddress] > amountToAllow //TODO: We need to include slippage in this calculation
+  }
+
+  useEffect(() => {
+    // refetch allowances after the approval transaction was executed
+    if (approvalTransaction.result.isSuccess) {
+      refetchAllowances()
+    }
+  }, [approvalTransaction.result.isSuccess])
 
   const step: FlowStep = {
-    ...transaction,
+    ...approvalTransaction,
     getLabels: () => buildTokenApprovalLabels(tokenAddress), //TODO: avoid callback type and accept result instead??
     id: tokenAddress,
     stepType: 'tokenApproval',
@@ -53,10 +46,7 @@ export function useConstructApproveTokenStep(tokenAddress: Address) {
     activateStep,
   }
 
-  return {
-    step,
-    // setTokenApprovalArgs,
-  }
+  return step
 }
 
 export const buildTokenApprovalLabels: BuildTransactionLabels = tokenAddress => {

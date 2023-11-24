@@ -4,7 +4,6 @@
 
 import { poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { useConstructJoinPoolStep } from '@/lib/modules/steps/join/useConstructJoinPoolStep'
-import { useConstructApproveTokenStep } from '@/lib/modules/steps/useConstructApproveTokenStep'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
 import { Flex, Heading, InputGroup, InputLeftAddon, Stack, VStack } from '@chakra-ui/react'
@@ -13,18 +12,28 @@ import { useBalance } from 'wagmi'
 import { FetchBalanceResult } from 'wagmi/actions'
 import RecentTransactions from '../RecentTransactions'
 
-import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
+import { AmountToApprove } from '@/lib/modules/pool/join/approvals'
+import { useConstructTokenApprovals } from '@/lib/modules/pool/join/useTokenApprovals'
+import { usePoolStateInput } from '@/lib/shared/hooks/balancer-api/usePoolStateInput'
 import { useDebounce } from '@/lib/shared/hooks/useDebounce'
 import { HumanAmount } from '@balancer/sdk'
 import { Input } from '@chakra-ui/react'
+import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 
 export function JoinWithTokenApproval() {
-  const { step: tokenApprovalStep } = useConstructApproveTokenStep(wETHAddress)
-  const { step: tokenApprovalStep2 } = useConstructApproveTokenStep(wjAuraAddress)
-  const { step: joinStep, setWethHumanAmount } = useConstructJoinPoolStep(poolId)
-  const steps = [tokenApprovalStep, tokenApprovalStep2, joinStep]
-
+  const poolStateQuery = usePoolStateInput(poolId)
   const { address } = useUserAccount()
+  const { allowances } = useTokenAllowances()
+
+  //This would come from the user form --> MAKE FORM DYNAMIC FROM THE given pool tokens
+  const amountsToApprove: AmountToApprove[] = [
+    { amount: 10000000n, tokenAddress: wETHAddress },
+    { tokenAddress: wjAuraAddress, amount: 10000000n },
+  ]
+
+  const { tokenApprovalSteps } = useConstructTokenApprovals(amountsToApprove)
+  const { step: joinStep, setWethHumanAmount } = useConstructJoinPoolStep(poolStateQuery)
+  const steps = [...tokenApprovalSteps, joinStep]
 
   const [wethBalance, setWethBalance] = useState<FetchBalanceResult | null>(null)
   const [wjAURABalance, setWjAURABalance] = useState<FetchBalanceResult | null>(null)
@@ -34,9 +43,6 @@ export function JoinWithTokenApproval() {
     token: wjAuraAddress,
     enabled: !!address,
   })
-  const { allowances, refetchAllowances } = useTokenAllowances()
-  const allowance = allowances[wETHAddress]
-  const allowance2 = allowances[wjAuraAddress]
 
   useEffect(() => {
     if (wethBalanceData) setWethBalance(wethBalanceData)
@@ -44,14 +50,6 @@ export function JoinWithTokenApproval() {
   useEffect(() => {
     if (wjAURABalanceData) setWjAURABalance(wjAURABalanceData)
   }, [JSON.stringify(wjAURABalanceData)])
-
-  // Do we export this hook as part of flow step?
-  useEffect(() => {
-    if (tokenApprovalStep.execution.isSuccess) refetchAllowances()
-  }, [tokenApprovalStep.execution.isSuccess])
-  useEffect(() => {
-    if (tokenApprovalStep2.execution.isSuccess) refetchAllowances()
-  }, [tokenApprovalStep2.execution.isSuccess])
 
   function handleJoinCompleted() {
     console.log('Join completed')
@@ -95,8 +93,13 @@ export function JoinWithTokenApproval() {
         <Heading size="sm">Debug Data</Heading>
         <Flex>WETH Balance: {wethBalance ? `${wethBalance.formatted}` : '-'}</Flex>
         <Flex>wjAURA Balance: {wjAURABalance ? `${wjAURABalance.formatted}` : '-'}</Flex>
-        <Flex>WETH Allowance: {allowance >= 0 ? `${allowance}` : '-'}</Flex>
-        <Flex>wjAURA Allowance: {allowance2 >= 0 ? `${allowance2}` : '-'}</Flex>
+        <Flex>
+          WETH Allowance: {allowances[wETHAddress] >= 0 ? `${allowances[wETHAddress]}` : '-'}
+        </Flex>
+        <Flex>
+          wjAURA Allowance: {allowances[wjAuraAddress] >= 0 ? `${allowances[wjAuraAddress]}` : '-'}
+        </Flex>
+        <Flex>Allowances: {JSON.stringify(allowances)}</Flex>
       </VStack>
     </VStack>
   )
