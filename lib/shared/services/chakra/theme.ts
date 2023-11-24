@@ -1,6 +1,93 @@
 import { ThemeTypings, extendTheme } from '@chakra-ui/react'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
-import { darken } from '@chakra-ui/theme-tools'
+import tinycolor from 'tinycolor2'
+
+const balColors = {
+  primary: {
+    '50': '#eaf6ff',
+    '100': '#daedff',
+    '200': '#bcddff',
+    '300': '#93c6ff',
+    '400': '#68a1ff',
+    '500': '#457dff',
+    '600': '#2554ff',
+    '700': '#2048e9',
+    '800': '#183bbb',
+    '900': '#1d3992',
+    '950': '#112055',
+  },
+  gray: {
+    '50': '#F7FAFC',
+    '100': '#EDF2F7',
+    '200': '#E2E8F0',
+    '300': '#CBD5E0',
+    '400': '#A0AEC0',
+    '500': '#718096',
+    '600': '#4A5568',
+    '700': '#2D3748',
+    '800': '#1A202C',
+    '900': '#171923',
+  },
+  sand: {
+    '50': '#F8F3ED',
+    '100': '#EBDCCC',
+    '200': '#DDC6AB',
+    '300': '#D0B08A',
+    '400': '#C39A6A',
+    '500': '#B68449',
+    '600': '#92693A',
+    '700': '#6D4F2C',
+    '800': '#49351D',
+    '900': '#241A0F',
+  },
+  salmon: {
+    '50': '#fef4f2',
+    '100': '#fde7e3',
+    '200': '#fcd4cc',
+    '300': '#f9b5a8',
+    '400': '#f48975',
+    '500': '#ea6249',
+    '600': '#d7462b',
+    '700': '#b43821',
+    '800': '#95321f',
+    '900': '#7c2e20',
+    '950': '#43150c',
+  },
+  lavender: {
+    '50': '#f5f4fe',
+    '100': '#ecebfc',
+    '200': '#dbdafa',
+    '300': '#b3aef5',
+    '400': '#9f95f0',
+    '500': '#7f6ae8',
+    '600': '#6c4add',
+    '700': '#5c38c9',
+    '800': '#4d2ea9',
+    '900': '#40288a',
+    '950': '#26175e',
+  },
+  green: {
+    '50': '#eafff6',
+    '100': '#cdfee7',
+    '200': '#a0fad4',
+    '300': '#63f2be',
+    '400': '#25e2a4',
+    '500': '#00d395',
+    '600': '#00a474',
+    '700': '#008361',
+    '800': '#00674e',
+    '900': '#005541',
+    '950': '#003026',
+  },
+  gradient: {
+    dusk: 'linear(to-tr, lavender.300 5%, #D7CBE7 50%, #EAA879 95%)',
+    sand: 'linear(to-t, #E6C6A0 0%, #E5D3BE 100%)',
+    dawnLight: 'linear-gradient(90deg, #8F86FD 0%, #A66CF3 33%, #F48975 100%)',
+    dawnDark: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
+    sunsetLight: 'linear-gradient(90deg, #F06147 0%, #EA9A43 100%)',
+    sunsetDark: 'linear-gradient(90deg, #F06147 0%, #EA9A43 100%)',
+  },    
+}
 
 const tokens = {
   colors: {
@@ -9,7 +96,8 @@ const tokens = {
         // Background colors
         base: 'hsla(43,23%,92%,1)',
         baseWithOpacity: 'hsla(43,23%,92%,0.4)',
-        special: 'linear-gradient(90deg, #8F86FD 0%, #A66CF3 33%, #F48975 100%)',
+        special: balColors.gradient.dawnLight,
+        specialSecondary: balColors.gradient.sunsetLight,
       },
 
       // Button colors
@@ -33,11 +121,11 @@ const tokens = {
       text: {
         primary: 'linear-gradient(45deg, rgba(45, 76, 126, 1) 0%, rgba(45, 76, 126, 0.75) 100%)',
         secondary: 'linear-gradient(45deg, #728097 0%, #909BAD 100%)',
-        special: 'linear-gradient(90deg, #8F86FD 0%, #A66CF3 33%, #F48975 100%)',
-        link: 'linear-gradient(45deg, #333 0%, #707883 100%)',
+        special: balColors.gradient.dawnLight,
+        specialSecondary: balColors.gradient.sunsetLight,
+        link: 'linear-gradient(45deg, #333 0%, #707883 100%)',        
       },
 
-      // card colors
       card: {
         border: {
           card: 'red',
@@ -54,13 +142,21 @@ const tokens = {
           level8: 'hsla(43,23%,100%,1)',
         },
       },
+      // Input colors
+      input: {
+        border: '#ff0000',
+        bg: 'hsla(43,23%,96%,1)',
+        bgHover: 'hsla(43,23%,98%,1)',
+        bgFocus: 'hsla(43,23%,100%,1)',
+      },
     },
     dark: {
       // Background colors
       background: {
         base: 'hsla(217,12%,29%,1)',
         baseWithOpacity: 'hsla(217,12%,29%,0.95)',
-        special: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
+        special: balColors.gradient.dawnDark,
+        specialSecondary: balColors.gradient.sunsetDark,
       },
       // Button colors
       button: {
@@ -84,6 +180,7 @@ const tokens = {
         primary: 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
         secondary: 'linear-gradient(45deg, #909BAD 0%, #728097 100%)',
         special: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
+        specialSecondary: 'linear-gradient(180deg, #EA9A43 0%, #F06147 100%)',
         link: 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
       },
 
@@ -103,6 +200,12 @@ const tokens = {
           level7: 'hsla(216, 12%, 32%, 1)',
           level8: 'hsla(216, 12%, 33%, 1)',
         },
+      },
+      input: {
+        border: 'red.500',   
+        bg: 'hsla(216, 12%, 25%, 1)',
+        bgHover: 'hsla(216, 12%, 25%, 1)',
+        bgFocus: 'hsla(216, 12%, 21%, 1)',         
       },
     },
   },
@@ -128,86 +231,7 @@ export const balTheme = {
     body: `inherit`,
   },
   colors: {
-    primary: {
-      '50': '#eaf6ff',
-      '100': '#daedff',
-      '200': '#bcddff',
-      '300': '#93c6ff',
-      '400': '#68a1ff',
-      '500': '#457dff',
-      '600': '#2554ff',
-      '700': '#2048e9',
-      '800': '#183bbb',
-      '900': '#1d3992',
-      '950': '#112055',
-    },
-    gray: {
-      '50': '#F7FAFC',
-      '100': '#EDF2F7',
-      '200': '#E2E8F0',
-      '300': '#CBD5E0',
-      '400': '#A0AEC0',
-      '500': '#718096',
-      '600': '#4A5568',
-      '700': '#2D3748',
-      '800': '#1A202C',
-      '900': '#171923',
-    },
-    sand: {
-      '50': '#F8F3ED',
-      '100': '#EBDCCC',
-      '200': '#DDC6AB',
-      '300': '#D0B08A',
-      '400': '#C39A6A',
-      '500': '#B68449',
-      '600': '#92693A',
-      '700': '#6D4F2C',
-      '800': '#49351D',
-      '900': '#241A0F',
-    },
-    salmon: {
-      '50': '#fef4f2',
-      '100': '#fde7e3',
-      '200': '#fcd4cc',
-      '300': '#f9b5a8',
-      '400': '#f48975',
-      '500': '#ea6249',
-      '600': '#d7462b',
-      '700': '#b43821',
-      '800': '#95321f',
-      '900': '#7c2e20',
-      '950': '#43150c',
-    },
-    lavender: {
-      '50': '#f5f4fe',
-      '100': '#ecebfc',
-      '200': '#dbdafa',
-      '300': '#b3aef5',
-      '400': '#9f95f0',
-      '500': '#7f6ae8',
-      '600': '#6c4add',
-      '700': '#5c38c9',
-      '800': '#4d2ea9',
-      '900': '#40288a',
-      '950': '#26175e',
-    },
-    green: {
-      '50': '#eafff6',
-      '100': '#cdfee7',
-      '200': '#a0fad4',
-      '300': '#63f2be',
-      '400': '#25e2a4',
-      '500': '#00d395',
-      '600': '#00a474',
-      '700': '#008361',
-      '800': '#00674e',
-      '900': '#005541',
-      '950': '#003026',
-    },
-    gradient: {
-      dusk: 'linear(to-tr, lavender.300 5%, #D7CBE7 50%, #EAA879 95%)',
-      sand: 'linear(to-t, #E6C6A0 0%, #E5D3BE 100%)',
-    },
+    ...balColors,
   },
   semanticTokens: {
     colors: {
@@ -258,6 +282,10 @@ export const balTheme = {
           default: tokens.colors.light.background.special,
           _dark: tokens.colors.dark.background.special,
         },
+        specialSecondary: {
+          default: tokens.colors.light.background.specialSecondary,
+          _dark: tokens.colors.dark.background.specialSecondary,
+        },        
         button: {
           primary: {
             default: tokens.colors.light.button.background.primary,
@@ -311,7 +339,24 @@ export const balTheme = {
           },
         },
       },
-
+      input: {
+        border: {
+          default: tokens.colors.light.input.border,
+          _dark: tokens.colors.dark.input.border,
+        },
+        bg: {
+          default: tokens.colors.light.input.bg,
+          _dark: tokens.colors.dark.input.bg,
+        },
+        bgHover: {
+          default: tokens.colors.light.input.bgHover,
+          _dark: tokens.colors.dark.input.bgHover,
+        },
+        bgFocus: {
+          default: tokens.colors.light.input.bgFocus,
+          _dark: tokens.colors.dark.input.bgFocus,
+        },                                        
+      },
       backgroundImage: {
         card: {
           gradient: {
@@ -356,6 +401,10 @@ export const balTheme = {
         special: {
           default: tokens.colors.light.text.special,
           _dark: tokens.colors.dark.text.special,
+        },
+        specialSecondary: {
+          default: tokens.colors.light.text.specialSecondary,
+          _dark: tokens.colors.dark.text.specialSecondary,
         },
         link: {
           default: tokens.colors.light.text.link,
@@ -424,6 +473,39 @@ export const balTheme = {
       body: {
         background: 'background.base',
       },
+      '::-webkit-scrollbar': {
+        width: '10px',
+      },
+      '.chakra-ui-light ::-webkit-scrollbar, .chakra-ui-dark ::-webkit-scrollbar': {
+        width: '6px',
+      },      
+      '::-webkit-scrollbar-track': {
+        boxShadow: 'inset 0 0 6px rgba(0, 0, 0, 0.3)',
+      },
+      '::-webkit-scrollbar-thumb': {
+        boxShadow: 'inset 0 0 6px rgba(0, 0, 0, 0.3)',
+        transition: 'all 0.3s ease-in-out',
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',        
+        borderRadius: '16px',
+        // border: '3px solid transparent',
+        // backgroundClip: 'content-box',
+      },
+      '::-webkit-scrollbar-thumb:hover': {
+        transition: 'all 0.3s ease',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+        // border: 'none',
+      },
+      '.chakra-ui-light ::-webkit-scrollbar-thumb, .chakra-ui-dark ::-webkit-scrollbar-thumb': {
+        // border: 'none',
+      },
+      '.chakra-ui-dark::-webkit-scrollbar-thumb, .chakra-ui-dark ::-webkit-scrollbar-thumb': {
+        backgroundColor: 'rgba(255, 255, 255, 0.4)',        
+      },
+      '.chakra-ui-dark::-webkit-scrollbar-thumb:hover, .chakra-ui-dark ::-webkit-scrollbar-thumb:hover': {
+        backgroundColor: 'rgba(255, 255, 255, 0.6)',
+        // backgroundColor: 'pink',
+        // border: 'none',
+      },      
       'p + ul': {
         mt: '1',
       },
@@ -460,6 +542,38 @@ export const balTheme = {
         },
       },
     },
+    Input: {
+      baseStyle: {
+        field: {
+          // background: 'white', // Set the default background color
+          shadow: 'innerBase',
+          border: '1px solid',
+          borderColor: 'input.border',
+          bg: 'input.bg',
+          _hover: {
+            bg: 'input.bgHover', // Background color on hover
+          },
+          _focus: {
+            bg: 'input.bgFocus', // Background color on focus
+            borderColor: 'primary.400',
+          },
+          _disabled: {
+            shadow: 'none',
+            _hover: {
+              bg: 'red.500', // Background color on hover
+            },
+          },
+        },
+      },
+      variants: {
+        search: {
+          field: {
+            border: '1px solid',
+            borderColor: 'input.border',
+          },
+        },
+      },
+    },    
     // Section is a custom component
     Section: {
       baseStyle: {
@@ -488,6 +602,10 @@ export const balTheme = {
           background: 'font.special',
           backgroundClip: 'text',
         },
+        specialSecondary: {
+          background: 'font.specialSecondary',
+          backgroundClip: 'text',
+        },        
         sand: (props: any) => ({
           bgGradient: props.theme.colors.gradient.sand,
           bgClip: 'text',
@@ -551,6 +669,10 @@ export const balTheme = {
           background: 'font.special',
           backgroundClip: 'text',
         },
+        specialSecondary: {
+          background: 'font.specialSecondary',
+          backgroundClip: 'text',
+        },        
         eyebrow: {
           textTransform: 'uppercase',
           fontSize: 'xs',
@@ -600,7 +722,7 @@ export const balTheme = {
           borderTop: '2px solid',
           borderBottom: '2px solid',
           borderTopColor: '#F4EBE1',
-          borderBottomColor: darken('#F4EBE1', 25),
+          // borderBottomColor: darken('#F4EBE1', 25),
           color: 'font.button.secondary',
         },
         tertiary: {
@@ -766,13 +888,6 @@ export const balTheme = {
                 )`,
             },
           },
-        },
-      },
-    },
-    Input: {
-      baseStyle: {
-        field: {
-          background: 'background.card.level8',
         },
       },
     },

@@ -27,10 +27,16 @@ import {
   SliderFilledTrack,
   SliderThumb,
   Tag,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from '@chakra-ui/react'
 
 import { darken } from '@chakra-ui/theme-tools'
 import Section from '@/lib/shared/components/layout/Section'
+import tinycolor from 'tinycolor2'
+
 
 export default function Components() {
   return (
@@ -68,8 +74,90 @@ export default function Components() {
           <ListItem>
             <a href="#forms">Form fields</a>
           </ListItem>
+          <ListItem>
+            <a href="#alerts">Alerts</a>
+          </ListItem>
         </UnorderedList>
       </Box>
+
+      <Section variant="subsection">
+        <Heading size="h3">Gradients</Heading>
+
+        <Stack direction="column" spacing="8" mb="8">
+          <Center bg={tinycolor('#FF0000').darken(15).toString()} w="100%" h="16">
+            Color tester
+          </Center>
+        </Stack>
+
+        <Stack direction="column" spacing="8" mb="8">
+          <Center bg="background.special" w="100%" h="16">
+            Background special
+          </Center>
+        </Stack>
+        <Stack direction="column" spacing="8" mb="8">
+          <Center bg="background.specialSecondary" w="100%" h="16">
+            Background special secondary
+          </Center>
+        </Stack>
+      </Section>
+
+      <Section>
+        <Box bg="white" p="4" color="black" shadow="innerBase">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum in porro aliquam. Molestiae
+          ducimus eligendi ut aliquid possimus voluptate commodi officia, blanditiis nihil alias ab
+          quas voluptas ex accusantium facere.
+        </Box>
+      </Section>
+
+      <Box mb="8">
+        <Text variant="eyebrow" mb="4">
+          Input
+        </Text>
+        <Input placeholder="Placeholder text" />
+      </Box>
+
+      <Box mb="8">
+        <Text variant="eyebrow" mb="4">
+          Disabled input
+        </Text>
+        <Input isDisabled placeholder="Placeholder text" />
+      </Box>
+
+      <Section>
+        <Heading as="h1" variant="gradient-dusk" size="h1-hero">
+          Alerts
+        </Heading>
+        <Section variant="subsection">
+          <Alert status="error">
+            <AlertIcon />
+            <AlertTitle>Your browser is outdated!</AlertTitle>
+            <AlertDescription>Your Chakra experience may be degraded.</AlertDescription>
+          </Alert>
+        </Section>
+
+        <Section variant="subsection">
+          <Alert status="success">
+            <AlertIcon />
+            <AlertTitle>Your browser is outdated!</AlertTitle>
+            <AlertDescription>Your Chakra experience may be degraded.</AlertDescription>
+          </Alert>
+        </Section>
+        <Section variant="subsection">
+          <Alert status="warning">
+            <AlertIcon />
+            <AlertTitle>Your browser is outdated!</AlertTitle>
+            <AlertDescription>Your Chakra experience may be degraded.</AlertDescription>
+          </Alert>
+        </Section>
+
+        <Section variant="subsection">
+          <Alert status="info">
+            <AlertIcon />
+            <AlertTitle>Your browser is outdated!</AlertTitle>
+            <AlertDescription>A tip or piece of information.</AlertDescription>
+          </Alert>
+        </Section>
+      </Section>
 
       <Section id="colors">
         <Heading as="h1" variant="gradient-dusk" size="h1-hero">
@@ -485,9 +573,14 @@ export default function Components() {
         <Section variant="subsection">
           <Heading size="h3">Gradients</Heading>
 
-          <Stack direction="column" spacing="8">
-            <Center bg="colorBgSpecial" w="100%" h="16">
+          <Stack direction="column" spacing="8" mb="8">
+            <Center bg="background.special" w="100%" h="16">
               Background special
+            </Center>
+          </Stack>
+          <Stack direction="column" spacing="8" mb="8">
+            <Center bg="background.specialSecondary" w="100%" h="16">
+              Background special secondary
             </Center>
           </Stack>
         </Section>
@@ -500,7 +593,7 @@ export default function Components() {
 
         <Box mb="8">
           <Text variant="eyebrow">H1 Hero</Text>
-          <Heading as="h1" variant="h1 " size="h1">
+          <Heading as="h1" variant="specialSecondary " size="h1">
             Hero heading 1
           </Heading>
         </Box>
@@ -566,6 +659,14 @@ export default function Components() {
         <Box mb="8">
           <Text variant="eyebrow">Text special</Text>
           <Text variant="special" maxW="container.md">
+            Body text lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora quidem ipsa
+            magnam dignissimos impedit odit tempore, necessitatibus provident cupiditate. Explicabo
+            iusto incidunt illum molestiae, dolores quam odit cupiditate id quibusdam!
+          </Text>
+        </Box>
+        <Box mb="8">
+          <Text variant="eyebrow">Text special secondary</Text>
+          <Text variant="specialSecondary" maxW="container.md">
             Body text lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora quidem ipsa
             magnam dignissimos impedit odit tempore, necessitatibus provident cupiditate. Explicabo
             iusto incidunt illum molestiae, dolores quam odit cupiditate id quibusdam!
