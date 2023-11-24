@@ -5,6 +5,8 @@ import { Address, useQuery } from 'wagmi'
 
 const POOL_STATE_CACHE__TIME_MS = 30_000
 
+export type PoolStateInputResult = ReturnType<typeof usePoolStateInput>
+
 export function usePoolStateInput(poolId: Address) {
   return useQuery(
     [`usePoolState:${poolId}`],

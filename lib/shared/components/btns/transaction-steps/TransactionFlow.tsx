@@ -33,11 +33,12 @@ export default function TransactionFlow({
   completedAlertContent,
   ...rest
 }: Props & ButtonProps) {
-  const requiredSteps = steps.filter(step => !step.isComplete)
-  const areAllStepsComplete = steps.every(step => step.isComplete)
+  const requiredSteps = steps.filter(step => !step.isComplete())
+  const areAllStepsComplete = steps.every(step => step.isComplete())
   // since the order is expect, the active step is simply the first step in the remainder of steps
   // that still need to be executed
   const activeStep = requiredSteps[0]
+  // console.log('Active step is: ', activeStep.id)
   const showCompletedContent = areAllStepsComplete && completedAlertContent !== undefined
 
   // side effect, automatically execute the onComplete
@@ -48,6 +49,13 @@ export default function TransactionFlow({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areAllStepsComplete])
+
+  // notify step activation
+  useEffect(() => {
+    // console.log('Chaging activeStep to', activeStep.id)
+    activeStep.activateStep() //TODO: also deactivate previous steps (is that necessary, we could skip it if we use enabled with completed but thats dangerous, this is probably easier)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeStep.id])
 
   return (
     <>

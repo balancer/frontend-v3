@@ -1,22 +1,25 @@
+import { poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { MockApi } from '@/lib/shared/hooks/balancer-api/MockApi'
 import { testHook } from '@/test/utils/custom-renderers'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { ChainId, TokenAmount } from '@balancer/sdk'
 import { waitFor } from '@testing-library/react'
+
 import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
+import { someTokenAllowancesMock } from '../../tokens/__mocks__/token.builders'
 
-async function buildJoinConfig() {
-  const poolId = '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512' // Balancer Weighted wjAura and WETH
-  const poolStateInput = await new MockApi().getPool(poolId)
-  return new AddLiquidityConfigBuilder(ChainId.MAINNET, poolStateInput)
+async function buildQuery() {
+  const poolStateInput = await new MockApi().getPool(poolId) // Balancer Weighted wjAura and WETH
+  return new AddLiquidityConfigBuilder(ChainId.MAINNET, someTokenAllowancesMock, poolStateInput)
 }
+const enabled = true
 
 test('fetches join pool config when user is not connected', async () => {
-  const builder = await buildJoinConfig()
+  const builder = await buildQuery()
   const account = undefined
   const { result } = testHook(() => {
-    return useBuildAddLiquidityQuery(builder, account)
+    return useBuildAddLiquidityQuery(builder, enabled, account)
   })
 
   await waitFor(() => expect(result.current.isLoading).toBeFalsy())
@@ -25,13 +28,13 @@ test('fetches join pool config when user is not connected', async () => {
 })
 
 test('fetches join pool config when user is connected', async () => {
-  const builder = await buildJoinConfig()
+  const builder = await buildQuery()
 
-  builder.setAmountIn('0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f', '1')
-  builder.setAmountIn('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '1')
+  builder.setAmountIn(wETHAddress, '1')
+  builder.setAmountIn(wjAuraAddress, '1')
 
   const account = defaultTestUserAccount
-  const { result } = testHook(() => useBuildAddLiquidityQuery(builder, account))
+  const { result } = testHook(() => useBuildAddLiquidityQuery(builder, enabled, account))
 
   await waitFor(() => expect(result.current.isLoading).toBeFalsy())
 

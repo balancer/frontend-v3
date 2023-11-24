@@ -18,8 +18,10 @@ export function TransactionStepButton({
   const isButtonLoading =
     transactionState === TransactionState.Loading ||
     transactionState === TransactionState.Confirming
-  const hasSimulationError = (!execution.isIdle && !execution.data) || simulation.isError
-  const isButtonDisabled = transactionState === TransactionState.Loading || hasSimulationError
+  const hasSimulationError = simulation.isError
+  const isIdle = isConnected && simulation.isIdle && !simulation.data
+  const isButtonDisabled =
+    transactionState === TransactionState.Loading || hasSimulationError || isIdle
 
   function handleOnClick() {
     if (!simulation.isError) {
@@ -60,6 +62,8 @@ export function TransactionStepButton({
           isLoading={isButtonLoading}
           onClick={handleOnClick}
           loadingText={getButtonLabel()}
+          color="white"
+          bgColor="blue.500"
         >
           {getButtonLabel()}
         </Button>

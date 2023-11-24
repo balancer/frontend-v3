@@ -5,7 +5,7 @@ import {
   ManagedResult,
   TransactionLabels,
 } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { usePrepareSendTransaction, useSendTransaction, useWaitForTransaction } from 'wagmi'
 import {
   TransactionExecution,
@@ -17,10 +17,8 @@ import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 
 export function useManagedSendTransaction(
   labels: TransactionLabels,
-  config?: UsePrepareSendTransactionConfig
+  txConfig?: UsePrepareSendTransactionConfig
 ) {
-  const [txConfig, setTxConfig] = useState(config)
-
   const prepareQuery = usePrepareSendTransaction(txConfig)
 
   const writeQuery = useSendTransaction({
@@ -69,16 +67,9 @@ export function useManagedSendTransaction(
     bundle.result.data?.transactionHash
   )
 
-  // if parent changes args, update here
-  useEffect(() => {
-    setTxConfig(txConfig)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(txConfig)])
-
   return {
     ...bundle,
     execute: writeQuery.sendTransaction,
     executeAsync: writeQuery.sendTransactionAsync,
-    setTxConfig,
   } satisfies ManagedResult
 }
