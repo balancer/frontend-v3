@@ -1,16 +1,17 @@
 import { wjAuraAddress } from '@/lib/debug-helpers'
-import { testHook } from '@/test/utils/custom-renderers'
+import { DefaultTokenAllowancesTestProvider, testHook } from '@/test/utils/custom-renderers'
 import { act, waitFor } from '@testing-library/react'
 import { useConstructApproveTokenStep } from '../useConstructApproveTokenStep'
 
 test('useConstructApprovalTokenStep returns a config when step is active', async () => {
-  const { result } = testHook(() => {
-    return useConstructApproveTokenStep(wjAuraAddress)
+  const amountToAllow = 10n
+  const { result } = testHook(() => useConstructApproveTokenStep(wjAuraAddress, amountToAllow), {
+    wrapper: DefaultTokenAllowancesTestProvider,
   })
 
-  act(() => result.current.step.activateStep())
+  act(() => result.current.activateStep())
 
-  await waitFor(() => expect(result.current.step.simulation.data).toBeDefined())
+  await waitFor(() => expect(result.current.simulation.data).toBeDefined())
 
-  expect(result.current.step.simulation.data?.mode).toBe('prepared')
+  expect(result.current.simulation.data?.mode).toBe('prepared')
 })

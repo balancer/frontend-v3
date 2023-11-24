@@ -1,6 +1,6 @@
 'use client'
 
-import { noUserAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
+import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { Address, useQuery } from 'wagmi'
 import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 
@@ -13,7 +13,7 @@ export function useBuildAddLiquidityQuery(
   const addLiquidityQuery = useQuery(
     [`useJoinPool:${account}:${addLiquidityConfigBuilder.queryKey}`],
     async () => {
-      return await addLiquidityConfigBuilder.buildSdkAddLiquidityTxConfig(account || noUserAddress)
+      return await addLiquidityConfigBuilder.buildSdkAddLiquidityTxConfig(account || emptyAddress)
     },
     {
       enabled: enabled && !!account && addLiquidityConfigBuilder.hasTokenAllowance(),
