@@ -8,7 +8,7 @@ import { PoolAccordion } from './PoolAccordion/PoolAccordion'
 
 export function PoolDetail() {
   return (
-    <Stack width="full" px="md" mx="auto">
+    <Stack width="full">
       {/* {loading && <Text>Loading...</Text>} */}
 
       <VStack width="full" spacing="16">

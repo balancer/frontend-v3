@@ -5,7 +5,6 @@ import { Stack, Text } from '@chakra-ui/react'
 export function Footer() {
   return (
     <Stack
-      mt="2xl"
       bg="chakra-subtle-bg"
       px="lg"
       py="xl"
