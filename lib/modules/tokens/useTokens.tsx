@@ -49,8 +49,9 @@ export function _useTokens(
     return !isSameAddress(token.address, networkConfig.tokens.nativeAsset.address)
   }
 
-  function getToken(address: string, chain: GqlChain): GqlToken | undefined {
-    return tokens.find(token => isSameAddress(token.address, address) && token.chain === chain)
+  function getToken(address: string, chain: GqlChain | number): GqlToken | undefined {
+    const key = typeof chain === 'number' ? 'chainId' : 'chain'
+    return tokens.find(token => isSameAddress(token.address, address) && token[key] === chain)
   }
 
   function getTokensByChain(chain: number | GqlChain): GqlToken[] {
