@@ -616,6 +616,13 @@ export const balTheme = {
         },
       },
     },
+    Modal: {
+      baseStyle: {
+        dialog: {
+          background: 'background.card.level3',
+        },
+      },
+    },
     Card: {
       baseStyle: {
         container: {

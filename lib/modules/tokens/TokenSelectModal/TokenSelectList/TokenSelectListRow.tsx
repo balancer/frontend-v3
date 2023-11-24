@@ -32,12 +32,13 @@ export function TokenSelectListRow({
   const fiatValue = userBalance && !isBalancesLoading ? toCurrency(usdValue) : '-'
 
   const boxStyles: BoxProps = {
-    bg: active ? 'gray.100' : 'transparent',
+    bg: active ? 'background.card.level5' : 'transparent',
+    shadow: active ? 'md' : 'none',
     borderRadius: 'md',
     p: 'sm',
     cursor: 'pointer',
     _hover: {
-      bg: active ? 'gray.200' : 'gray.50',
+      bg: active ? 'background.card.level6' : 'background.card.level4',
     },
     transition: 'all 0.2s ease-in-out',
   }
