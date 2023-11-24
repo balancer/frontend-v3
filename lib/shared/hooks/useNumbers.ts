@@ -17,6 +17,7 @@ BigInt.prototype.toJSON = function () {
 
 export const MAX_BIGINT = BigInt(MAX_UINT256)
 
+export const INTEGER_FORMAT = '0,0'
 export const FIAT_FORMAT_A = '0,0.00a'
 export const FIAT_FORMAT = '0,0.00'
 export const TOKEN_FORMAT_A = '0,0.[0000]a'
@@ -40,6 +41,10 @@ export function bn(val: Numberish): BigNumber {
 }
 
 type FormatOpts = { abbreviated?: boolean }
+
+export function integerFormat(val: Numberish): string {
+  return numeral(toSafeValue(val)).format(INTEGER_FORMAT)
+}
 
 /**
  * Converts a number to a string format within the decimal limit that numeral
