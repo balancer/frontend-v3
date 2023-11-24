@@ -16,6 +16,7 @@ import { usePoolStateInput } from '@/lib/shared/hooks/balancer-api/usePoolStateI
 import { useDebounce } from '@/lib/shared/hooks/useDebounce'
 import { HumanAmount } from '@balancer/sdk'
 import { Input } from '@chakra-ui/react'
+import { useEffect } from 'react'
 
 export function JoinWithTokenApproval() {
   const poolStateQuery = usePoolStateInput(poolId)
@@ -42,6 +43,16 @@ export function JoinWithTokenApproval() {
   }
 
   const debouncedChangeHandler = useDebounce(changeHandler, 300)
+
+  // TODO: clean this useEffect
+  let wethBalance = balanceFor(wETHAddress)?.formatted
+  let wjAuraBalance = balanceFor(wjAuraAddress)?.formatted
+  useEffect(() => {
+    if (!isBalancesLoading) {
+      wethBalance = balanceFor(wETHAddress)?.formatted
+      wjAuraBalance = balanceFor(wjAuraAddress)?.formatted
+    }
+  }, [isBalancesLoading])
 
   return (
     <VStack width="full">
@@ -73,12 +84,8 @@ export function JoinWithTokenApproval() {
 
       <VStack background="gray.100" p="4" rounded="md" mt="xl">
         <Heading size="sm">Debug Data</Heading>
-        <Flex>
-          WETH Balance: {!isBalancesLoading ? `${balanceFor(wETHAddress)?.formatted}` : '-'}
-        </Flex>
-        <Flex>
-          wjAURA Balance: {!isBalancesLoading ? `${balanceFor(wjAuraAddress)?.formatted}` : '-'}
-        </Flex>
+        <Flex>WETH Balance: {wethBalance ? `${wethBalance}` : '-'}</Flex>
+        <Flex>wjAURA Balance: {wjAuraBalance ? `${wjAuraBalance}` : '-'}</Flex>
         <Flex>
           WETH Allowance: {allowances[wETHAddress] >= 0 ? `${allowances[wETHAddress]}` : '-'}
         </Flex>

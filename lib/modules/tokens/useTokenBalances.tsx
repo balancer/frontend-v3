@@ -121,9 +121,6 @@ export function _useTokenBalances(tokens: TokenBase[]) {
     return balances.find(balance => isSameAddress(balance.address, address))
   }
 
-  // TODO: if I remove this line balances are not updated in join approval example
-  console.log('balances', balanceFor(wETHAddress))
-
   return {
     balances,
     isBalancesLoading: isLoadingQueries(tokenBalancesQuery, nativeBalanceQuery),
