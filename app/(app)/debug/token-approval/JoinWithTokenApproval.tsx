@@ -4,25 +4,21 @@
 
 import { poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { useConstructJoinPoolStep } from '@/lib/modules/steps/join/useConstructJoinPoolStep'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
 import { Flex, Heading, InputGroup, InputLeftAddon, Stack, VStack } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
-import { useBalance } from 'wagmi'
-import { FetchBalanceResult } from 'wagmi/actions'
 import RecentTransactions from '../RecentTransactions'
 
 import { AmountToApprove } from '@/lib/modules/pool/join/approvals'
 import { useConstructTokenApprovals } from '@/lib/modules/pool/join/useTokenApprovals'
+import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
+import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { usePoolStateInput } from '@/lib/shared/hooks/balancer-api/usePoolStateInput'
 import { useDebounce } from '@/lib/shared/hooks/useDebounce'
 import { HumanAmount } from '@balancer/sdk'
 import { Input } from '@chakra-ui/react'
-import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 
 export function JoinWithTokenApproval() {
   const poolStateQuery = usePoolStateInput(poolId)
-  const { address } = useUserAccount()
   const { allowances } = useTokenAllowances()
 
   //This would come from the user form --> MAKE FORM DYNAMIC FROM THE given pool tokens
@@ -35,21 +31,7 @@ export function JoinWithTokenApproval() {
   const { step: joinStep, setWethHumanAmount } = useConstructJoinPoolStep(poolStateQuery)
   const steps = [...tokenApprovalSteps, joinStep]
 
-  const [wethBalance, setWethBalance] = useState<FetchBalanceResult | null>(null)
-  const [wjAURABalance, setWjAURABalance] = useState<FetchBalanceResult | null>(null)
-  const { data: wethBalanceData } = useBalance({ address, token: wETHAddress, enabled: !!address })
-  const { data: wjAURABalanceData } = useBalance({
-    address,
-    token: wjAuraAddress,
-    enabled: !!address,
-  })
-
-  useEffect(() => {
-    if (wethBalanceData) setWethBalance(wethBalanceData)
-  }, [wethBalanceData])
-  useEffect(() => {
-    if (wjAURABalanceData) setWjAURABalance(wjAURABalanceData)
-  }, [JSON.stringify(wjAURABalanceData)])
+  const { balanceFor, isBalancesLoading } = useTokenBalances()
 
   function handleJoinCompleted() {
     console.log('Join completed')
@@ -91,8 +73,12 @@ export function JoinWithTokenApproval() {
 
       <VStack background="gray.100" p="4" rounded="md" mt="xl">
         <Heading size="sm">Debug Data</Heading>
-        <Flex>WETH Balance: {wethBalance ? `${wethBalance.formatted}` : '-'}</Flex>
-        <Flex>wjAURA Balance: {wjAURABalance ? `${wjAURABalance.formatted}` : '-'}</Flex>
+        <Flex>
+          WETH Balance: {!isBalancesLoading ? `${balanceFor(wETHAddress)?.formatted}` : '-'}
+        </Flex>
+        <Flex>
+          wjAURA Balance: {!isBalancesLoading ? `${balanceFor(wjAuraAddress)?.formatted}` : '-'}
+        </Flex>
         <Flex>
           WETH Allowance: {allowances[wETHAddress] >= 0 ? `${allowances[wETHAddress]}` : '-'}
         </Flex>

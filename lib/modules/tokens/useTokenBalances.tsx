@@ -13,6 +13,7 @@ import { PropsWithChildren, createContext } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import crypto from 'crypto'
 import { orderBy } from 'lodash'
+import { wETHAddress } from '@/lib/debug-helpers'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
@@ -119,6 +120,9 @@ export function _useTokenBalances(tokens: TokenBase[]) {
 
     return balances.find(balance => isSameAddress(balance.address, address))
   }
+
+  // TODO: if I remove this line balances are not updated in join approval example
+  console.log('balances', balanceFor(wETHAddress))
 
   return {
     balances,
