@@ -6,7 +6,8 @@ export function Footer() {
   return (
     <Stack
       mt="2xl"
-      bg="chakra-subtle-bg"
+      borderTop="1px solid"
+      borderColor="border.button.tertiary"
       px="lg"
       py="xl"
       align="center"
@@ -16,16 +17,16 @@ export function Footer() {
       top="100vh"
       as="footer"
     >
-      <Link href="terms-of-use" prefetch={true}>
+      <Link href="/terms-of-use" prefetch={true}>
         <Text fontSize="sm">Terms of use</Text>
       </Link>
-      <Link href="privacy-policy" prefetch={true}>
+      <Link href="/privacy-policy" prefetch={true}>
         <Text fontSize="sm">Privacy policy</Text>
       </Link>
-      <Link href="cookies-policy" prefetch={true}>
+      <Link href="/cookies-policy" prefetch={true}>
         <Text fontSize="sm">Cookies policy</Text>
       </Link>
-      <Link href="components" prefetch={true}>
+      <Link href="/components" prefetch={true}>
         <Text fontSize="sm">Components</Text>
       </Link>
     </Stack>
