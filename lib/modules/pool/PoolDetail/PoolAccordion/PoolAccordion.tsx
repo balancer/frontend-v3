@@ -6,8 +6,11 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  HStack,
   Heading,
+  VStack,
 } from '@chakra-ui/react'
+import { PoolAttributes } from '../PoolInfoTable/PoolInfoTable'
 
 export function PoolAccordion() {
   return (
@@ -20,7 +23,10 @@ export function PoolAccordion() {
           <AccordionIcon />
         </AccordionButton>
         <AccordionPanel>
-          <Heading variant="accordionHeading">Accordion Content</Heading>
+          <HStack width="full">
+            <PoolAttributes />
+            <VStack></VStack>
+          </HStack>
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem>

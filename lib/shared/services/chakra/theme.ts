@@ -436,6 +436,10 @@ export const balTheme = {
           icon: {
             color: 'sand.300',
           },
+          panel: {
+            px: '0',
+            py: '6',
+          },
           button: {
             px: '5',
             py: '6',
@@ -660,6 +664,7 @@ export const balTheme = {
       baseStyle: {
         container: {
           background: 'background.card.level0',
+          rounded: 'lg',
         },
       },
       variants: {
