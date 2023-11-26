@@ -11,6 +11,8 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { PoolAttributes } from '../PoolInfoTable/PoolInfoTable'
+import { PoolRisks } from '../PoolRisks/PoolRisks'
+import { PoolContracts } from '../PoolContracts/PoolContracts'
 
 export function PoolAccordion() {
   return (
@@ -25,7 +27,10 @@ export function PoolAccordion() {
         <AccordionPanel>
           <HStack width="full">
             <PoolAttributes />
-            <VStack></VStack>
+            <VStack>
+              <PoolRisks />
+              <PoolContracts />
+            </VStack>
           </HStack>
         </AccordionPanel>
       </AccordionItem>
