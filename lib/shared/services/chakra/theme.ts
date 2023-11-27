@@ -781,6 +781,13 @@ export const balTheme = {
         },
       },
     },
+    List: {
+      baseStyle: {
+        item: {
+          color: 'lavender.300'
+        }
+      }
+    }
   },
 }
 

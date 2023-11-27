@@ -8,7 +8,7 @@ export function PoolAttributes() {
   const { poolDetails } = usePoolInfo()
 
   return (
-    <Card width="full" variant="level3" px="6" py="5">
+    <Card width="full" variant="level3" px="6" py="5" minHeight="400px">
       <VStack alignItems="flex-start" spacing="4" width="full">
         <Heading variant="h4" fontSize="1.25rem">
           Pool attributes
