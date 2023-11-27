@@ -148,6 +148,7 @@ export const TokenInput = forwardRef(
                 min={0}
                 border="transparent"
                 bg="transparent"
+                shadow="none"
                 p="0"
                 fontSize="xl"
                 fontWeight="medium"
