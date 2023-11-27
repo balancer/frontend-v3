@@ -12,6 +12,7 @@ import {
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 import {
   arbitrum,
+  avalanche,
   base,
   fantom,
   gnosis,
@@ -31,13 +32,14 @@ import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
 export const supportedChains = [
   mainnet,
-  polygon,
-  optimism,
   arbitrum,
-  polygonZkEvm,
-  gnosis,
   base,
+  avalanche,
   fantom,
+  gnosis,
+  optimism,
+  polygon,
+  polygonZkEvm,
 ]
 
 export const { chains, publicClient } = configureChains(supportedChains, [

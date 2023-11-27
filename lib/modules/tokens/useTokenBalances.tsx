@@ -13,6 +13,7 @@ import { PropsWithChildren, createContext } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import crypto from 'crypto'
 import { orderBy } from 'lodash'
+import { wETHAddress } from '@/lib/debug-helpers'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 

@@ -7,7 +7,7 @@ import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTr
 import { TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { ApolloProvider } from '@apollo/client'
 import { RenderHookOptions, act, renderHook, waitFor } from '@testing-library/react'
-import { ReactElement, ReactNode } from 'react'
+import { PropsWithChildren, ReactElement, ReactNode } from 'react'
 import { GetFunctionArgs, InferFunctionName } from 'viem'
 import {
   Config,
@@ -26,6 +26,8 @@ import {
   defaultGetTokensQueryMock,
   defaultGetTokensQueryVariablesMock,
 } from '@/lib/modules/tokens/__mocks__/token.builders'
+import { vaultV2Address, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
+import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -147,3 +149,13 @@ export async function useConnectTestAccount() {
     walletClient: result.current.walletClient,
   }
 }
+
+export const DefaultTokenAllowancesTestProvider = ({ children }: PropsWithChildren) => (
+  <TokenAllowancesProvider
+    spenderAddress={vaultV2Address}
+    tokenAddresses={[wETHAddress, wjAuraAddress]}
+    userAddress={defaultTestUserAccount}
+  >
+    {children}
+  </TokenAllowancesProvider>
+)

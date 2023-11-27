@@ -3,7 +3,6 @@ import { MockConnector } from 'wagmi/connectors/mock'
 import {
   Hex,
   createClient,
-  createPublicClient,
   createWalletClient,
   http,
   publicActions,

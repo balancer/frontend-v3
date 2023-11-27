@@ -12,7 +12,7 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
     // TODO: added height for now to get a scrollbar
     <Card
       h="400"
-      bg="lightblue"
+      variant="gradient"
       onClick={event => cardClickHandler && cardClickHandler(event, pool)}
       cursor={cardClickHandler ? 'pointer' : 'default'}
       onMouseEnter={event => cardMouseEnterHandler && cardMouseEnterHandler(event, pool)}

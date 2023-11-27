@@ -1,16 +1,16 @@
-import { TokenAmount, TokenBase } from '../token.types'
-import { fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
-import { TokenAllowances } from '../../web3/useTokenAllowances'
 import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
+import { MAX_BIGINT } from '@/lib/shared/hooks/useNumbers'
 import {
   GetTokenPricesQuery,
   GetTokensQuery,
   GetTokensQueryVariables,
 } from '@/lib/shared/services/api/generated/graphql'
+import { fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
 import { mock } from 'vitest-mock-extended'
-import { MswTokenList } from './token.test.types'
-import { MAX_BIGINT } from '@/lib/shared/hooks/useNumbers'
 import { AmountToApprove } from '../../pool/join/approvals'
+import { TokenAllowances } from '../../web3/useTokenAllowances'
+import { TokenAmount, TokenBase } from '../token.types'
+import { MswTokenList } from './token.test.types'
 
 export const defaultTokenMock = aTokenMock({ symbol: 'TEST-TOKEN' })
 export const defaultTokenListMock: MswTokenList = [defaultTokenMock as MswTokenList[0]]

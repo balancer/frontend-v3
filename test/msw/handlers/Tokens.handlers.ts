@@ -1,13 +1,13 @@
 import {
+  defaultGetTokenPricesQueryMock,
+  defaultTokenListMock,
+} from '@/lib/modules/tokens/__mocks__/token.builders'
+import {
   GetTokenPricesDocument,
   GetTokensDocument,
 } from '@/lib/shared/services/api/generated/graphql'
 import { graphql } from 'msw'
 import { getQueryName, mockGQL } from '../utils'
-import {
-  defaultGetTokenPricesQueryMock,
-  defaultTokenListMock,
-} from '@/lib/modules/tokens/__mocks__/token.builders'
 import { GQLResponse } from './msw-helpers'
 
 export function buildTokenListMswHandler(tokenList = defaultTokenListMock) {

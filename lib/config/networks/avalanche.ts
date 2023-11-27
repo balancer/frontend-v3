@@ -1,7 +1,7 @@
 import { NetworkConfig } from '../config.types'
 
 const networkConfig: NetworkConfig = {
-  chainId: 1,
+  chainId: 43114,
   name: 'Avalanche Mainnet',
   shortName: 'Avalanche',
   iconPath: '/images/chains/AVALANCHE.svg',
