@@ -52,7 +52,7 @@ const balColors = {
     '800': '#9a3412',
     '900': '#7c2d12',
     '950': '#431407',
-  },  
+  },
   red: {
     '50': '#fef4f2',
     '100': '#fde7e3',
@@ -108,11 +108,12 @@ const balColors = {
     sunsetDark: 'linear-gradient(45deg, #F06147 0%, #EA9A43 100%)',
     sandLight: 'linear-gradient(180deg, #E5D3BE 0%, #E6C6A0 100%)',
     sandDark: 'linear-gradient(180deg, #E5D3BE 0%, #E6C6A0 100%)',
-  },    
+  },
 }
 
 // Function to create a color with opacity
-const createBackgroundOpacity = (baseColor: string, opacity: number) => `hsla(${baseColor}, ${opacity})`
+const createBackgroundOpacity = (baseColor: string, opacity: number) =>
+  `hsla(${baseColor}, ${opacity})`
 
 const tokens = {
   colors: {
@@ -129,7 +130,9 @@ const tokens = {
         background: {
           primary: balColors.gradient.dawnLight,
           secondary: balColors.gradient.sandLight,
-          tertiary: `linear-gradient(180deg, ${tinycolor(balColors.base.light).lighten(8)} 0%, ${balColors.base.light} 100%)`,
+          tertiary: `linear-gradient(180deg, ${tinycolor(balColors.base.light).lighten(8)} 0%, ${
+            balColors.base.light
+          } 100%)`,
         },
         border: {
           tertiary: tinycolor(balColors.base.light).lighten(15),
@@ -186,11 +189,13 @@ const tokens = {
       button: {
         background: {
           primary: balColors.gradient.dawnDark,
-          secondary: balColors.gradient.sandDark,          
-          tertiary: `linear-gradient(180deg, ${tinycolor(balColors.base.dark).lighten(8)} 0%, ${balColors.base.dark} 100%)`,
+          secondary: balColors.gradient.sandDark,
+          tertiary: `linear-gradient(180deg, ${tinycolor(balColors.base.dark).lighten(8)} 0%, ${
+            balColors.base.dark
+          } 100%)`,
         },
         border: {
-          tertiary: tinycolor(balColors.base.dark).lighten(15),          
+          tertiary: tinycolor(balColors.base.dark).lighten(15),
           disabled: 'gray.500',
         },
         text: {
@@ -199,7 +204,7 @@ const tokens = {
       },
 
       // Font colors
-      text: {        
+      text: {
         primary: 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
         secondary: 'linear-gradient(45deg, #909BAD 0%, #728097 100%)',
         special: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
@@ -226,10 +231,10 @@ const tokens = {
         },
       },
       input: {
-        border: 'red.500',   
+        border: 'red.500',
         bg: 'hsla(216, 12%, 25%, 1)',
         bgHover: 'hsla(216, 12%, 25%, 1)',
-        bgFocus: 'hsla(216, 12%, 21%, 1)',         
+        bgFocus: 'hsla(216, 12%, 21%, 1)',
       },
     },
   },
@@ -314,7 +319,7 @@ export const balTheme = {
         specialSecondary: {
           default: tokens.colors.light.background.specialSecondary,
           _dark: tokens.colors.dark.background.specialSecondary,
-        },        
+        },
         button: {
           primary: {
             default: tokens.colors.light.button.background.primary,
@@ -384,7 +389,7 @@ export const balTheme = {
         bgFocus: {
           default: tokens.colors.light.input.bgFocus,
           _dark: tokens.colors.dark.input.bgFocus,
-        },                                        
+        },
       },
       backgroundImage: {
         card: {
@@ -442,7 +447,7 @@ export const balTheme = {
         linkHover: {
           default: tokens.colors.light.text.linkHover,
           _dark: tokens.colors.dark.text.linkHover,
-        },        
+        },
         accordionHeading: {
           default: tokens.colors.light.button.background.primary,
           _dark: tokens.colors.dark.button.background.primary,
@@ -511,34 +516,35 @@ export const balTheme = {
       },
       '.chakra-ui-light ::-webkit-scrollbar, .chakra-ui-dark ::-webkit-scrollbar': {
         width: '6px',
-      },      
+      },
       '::-webkit-scrollbar-track': {
         boxShadow: 'inset 0 0 6px rgba(0, 0, 0, 0.3)',
       },
       '::-webkit-scrollbar-thumb': {
         boxShadow: 'inset 0 0 6px rgba(0, 0, 0, 0.3)',
         transition: 'all 0.3s ease-in-out',
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',        
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
         borderRadius: '16px',
         // border: '3px solid transparent',
         // backgroundClip: 'content-box',
       },
       '::-webkit-scrollbar-thumb:hover': {
         transition: 'all 0.3s ease',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         // border: 'none',
       },
       '.chakra-ui-light ::-webkit-scrollbar-thumb, .chakra-ui-dark ::-webkit-scrollbar-thumb': {
         // border: 'none',
       },
       '.chakra-ui-dark::-webkit-scrollbar-thumb, .chakra-ui-dark ::-webkit-scrollbar-thumb': {
-        backgroundColor: 'rgba(255, 255, 255, 0.4)',        
+        backgroundColor: 'rgba(255, 255, 255, 0.4)',
       },
-      '.chakra-ui-dark::-webkit-scrollbar-thumb:hover, .chakra-ui-dark ::-webkit-scrollbar-thumb:hover': {
-        backgroundColor: 'rgba(255, 255, 255, 0.6)',
-        // backgroundColor: 'pink',
-        // border: 'none',
-      },      
+      '.chakra-ui-dark::-webkit-scrollbar-thumb:hover, .chakra-ui-dark ::-webkit-scrollbar-thumb:hover':
+        {
+          backgroundColor: 'rgba(255, 255, 255, 0.6)',
+          // backgroundColor: 'pink',
+          // border: 'none',
+        },
       'p + ul': {
         mt: '1',
       },
@@ -606,7 +612,7 @@ export const balTheme = {
           },
         },
       },
-    },    
+    },
     // Section is a custom component
     Section: {
       baseStyle: {
@@ -638,7 +644,7 @@ export const balTheme = {
         specialSecondary: {
           background: 'font.specialSecondary',
           backgroundClip: 'text',
-        },        
+        },
         sand: (props: any) => ({
           bgGradient: props.theme.colors.gradient.sand,
           bgClip: 'text',
@@ -705,7 +711,7 @@ export const balTheme = {
         specialSecondary: {
           background: 'font.specialSecondary',
           backgroundClip: 'text',
-        },        
+        },
         eyebrow: {
           textTransform: 'uppercase',
           fontSize: 'xs',
@@ -723,13 +729,13 @@ export const balTheme = {
         _hover: {
           background: 'font.linkHover',
           backgroundClip: 'text',
-        }
+        },
       },
     },
     Button: {
       baseStyle: {
         borderRadius: 'lg',
-        color: 'text-body',        
+        color: 'text-body',
         _hover: {
           borderColor: 'transparent',
           transform: 'translateY(1px)',
