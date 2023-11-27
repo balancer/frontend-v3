@@ -11,6 +11,8 @@ import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/actions'
 import { chains } from '../Web3Provider'
 import { buildJoinPoolLabels } from '../../steps/join/useConstructJoinPoolStep'
+import { poolId } from '@/lib/debug-helpers'
+import { someTokenAllowancesMock } from '../../tokens/__mocks__/token.builders'
 
 const chainId = ChainId.MAINNET
 const port = 8555
@@ -25,7 +27,7 @@ const utils = await getSdkTestUtils({
   account,
   chainId,
   client: testClient,
-  poolId: '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512', // Balancer Weighted wjAura and WETH,
+  poolId, // Balancer Weighted wjAura and WETH,
 })
 
 const { getPoolTokens, poolStateInput, getPoolTokenBalances } = utils
@@ -39,7 +41,7 @@ describe('weighted join test', () => {
   test('Sends transaction after updating amount inputs', async () => {
     await utils.setupTokens([...getPoolTokens().map(() => '100' as HumanAmount), '100'])
 
-    const builder = new AddLiquidityConfigBuilder(chainId, poolStateInput)
+    const builder = new AddLiquidityConfigBuilder(chainId, someTokenAllowancesMock, poolStateInput)
 
     poolTokens.forEach(t => builder.setAmountIn(t.address, '1'))
 
@@ -63,7 +65,7 @@ describe('weighted join test', () => {
     // Double approximately
     expect(queryResult2.bptOut.amount).toBeGreaterThan(520000000000000000000n)
 
-    act(() => result.current.setTxConfig(config2))
+    // act(() => result.current.setTxConfig(config2))
 
     await waitFor(() => expect(result.current.executeAsync).toBeDefined())
 

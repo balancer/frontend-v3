@@ -1,25 +1,32 @@
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
+import { chains } from '@/lib/modules/web3/Web3Provider'
 import { SdkTransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { chains } from '@/lib/modules/web3/Web3Provider'
+import { TokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import {
-  HumanAmount,
+  AddLiquidity,
   AddLiquidityKind,
-  AddLiquidityUnbalancedInput,
   AddLiquiditySingleTokenInput,
+  AddLiquidityUnbalancedInput,
+  HumanAmount,
+  PoolStateInput,
   Slippage,
   Token,
-  PoolStateInput,
-  InputAmount,
-  AddLiquidity,
 } from '@balancer/sdk'
 import { Dictionary, keyBy } from 'lodash'
 import { parseUnits } from 'viem'
 import { Address } from 'wagmi'
 
-type AddLiquidityType = 'unbalanced' | 'unbalancedNativeAsset' | 'singleAsset'
+// TODO: this should be imported from the SDK
+export type InputAmount = {
+  address: Address
+  decimals: number
+  rawAmount: bigint
+}
+
+type AddLiquidityType = 'unbalanced' | 'unbalancedNativeAsset' | 'singleToken'
 
 /*
   Class to build AddLiquidity configs with balancer SDK
@@ -38,6 +45,7 @@ export class AddLiquidityConfigBuilder {
 
   constructor(
     private chainId: SupportedChainId,
+    private tokenAllowances: TokenAllowances,
     private poolStateInput: PoolStateInput = NullPoolState,
     public addLiquidityType: AddLiquidityType = 'unbalanced'
   ) {
@@ -57,6 +65,12 @@ export class AddLiquidityConfigBuilder {
   getToken(tokenAddress: Address) {
     const token = this.poolStateInput.tokens.find(t => isSameAddress(t.address, tokenAddress))
     return token
+  }
+
+  hasTokenAllowance() {
+    // TODO: depending on the user input this rule will be different
+    // Here we will check that the user has enough allowance for the current Join operation
+    return Object.values(this.tokenAllowances).every(a => a > 0n)
   }
 
   public get queryKey() {
@@ -79,6 +93,11 @@ export class AddLiquidityConfigBuilder {
     )
   }
 
+  toRawAmount(tokenAddress: Address, humanAmount: HumanAmount) {
+    const decimals = this.amountsInByTokenAddress[tokenAddress].decimals
+    return parseUnits(humanAmount, decimals)
+  }
+
   get nativeAssetToken() {
     return getNetworkConfig(this.chainId).tokens.nativeAsset
   }
@@ -92,7 +111,7 @@ export class AddLiquidityConfigBuilder {
     if (this.addLiquidityType === 'unbalancedNativeAsset') {
       return this.getUnbalancedAddLiquidityInput({ useNativeAssetAsWrappedAmountIn: true })
     }
-    if (this.addLiquidityType === 'singleAsset') return this.getAddLiquiditySingleTokenInput()
+    if (this.addLiquidityType === 'singleToken') return this.getAddLiquiditySingleTokenInput()
     return this.getUnbalancedAddLiquidityInput()
   }
 

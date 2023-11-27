@@ -16,6 +16,7 @@ export default function Noise({ children }: { children: ReactNode | ReactNode[] 
         width="full"
         height="full"
         maxWidth="full"
+        p="0"
       >
         {children}
       </Container>

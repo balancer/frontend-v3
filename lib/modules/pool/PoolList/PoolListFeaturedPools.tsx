@@ -43,7 +43,7 @@ interface FeaturedPoolCardProps {
 
 function FeaturedPoolCard({ pool }: FeaturedPoolCardProps) {
   return (
-    <Card bg={pool.primary ? 'pink' : 'lightblue'} h="full">
+    <Card variant="gradient" h="full" w="full">
       {pool.id.slice(0, 8)}
     </Card>
   )
@@ -54,13 +54,10 @@ export function PoolListFeaturedPools() {
   const primaryPool = featuredPools.find(pool => pool.primary)
 
   return (
-    <VStack align="start" spacing="md" w="full">
-      <Heading as="h2" size="lg">
-        Featured pools
-      </Heading>
+    <VStack align="start" w="full">
       <Grid
         w="full"
-        h="400px"
+        h="600px"
         gap="4"
         alignContent="stretch"
         templateColumns={{
@@ -75,7 +72,16 @@ export function PoolListFeaturedPools() {
              "primary primary three four"`, // align with PoolListCards
         }}
       >
-        <GridItem area="primary">{primaryPool && <FeaturedPoolCard pool={primaryPool} />}</GridItem>
+        <GridItem area="primary">
+          {primaryPool && (
+            <VStack align="start" w="full" h="full" spacing="xl">
+              <Heading as="h2" size="xl" variant="special">
+                Featured pools on<br></br> Balancer protocol
+              </Heading>
+              <FeaturedPoolCard pool={primaryPool} />
+            </VStack>
+          )}
+        </GridItem>
         {poolsWithoutPrimary.map((pool, index) => (
           <GridItem key={index} area={indexAreaHash[index + 1]}>
             <FeaturedPoolCard pool={pool} />

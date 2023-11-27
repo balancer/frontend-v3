@@ -1,51 +1,99 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/no-children-prop */
 'use client'
 
-import { poolId, vaultV2Address, wETHAddress } from '@/lib/debug-helpers'
-import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
+import { poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { useConstructJoinPoolStep } from '@/lib/modules/steps/join/useConstructJoinPoolStep'
-import { useConstructApproveTokenStep } from '@/lib/modules/steps/useConstructApproveTokenStep'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { useUserTokenAllowance } from '@/lib/modules/web3/useUserTokenAllowance'
-import { Flex, VStack } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
-import { useBalance } from 'wagmi'
-import { FetchBalanceResult } from 'wagmi/actions'
+import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
+import { Flex, Heading, InputGroup, InputLeftAddon, Stack, VStack } from '@chakra-ui/react'
 import RecentTransactions from '../RecentTransactions'
 
+import { AmountToApprove } from '@/lib/modules/pool/join/approvals'
+import { useConstructTokenApprovals } from '@/lib/modules/pool/join/useTokenApprovals'
+import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
+import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
+import { usePoolStateInput } from '@/lib/shared/hooks/balancer-api/usePoolStateInput'
+import { useDebounce } from '@/lib/shared/hooks/useDebounce'
+import { HumanAmount } from '@balancer/sdk'
+import { Input } from '@chakra-ui/react'
+import { useEffect } from 'react'
+
 export function JoinWithTokenApproval() {
-  const { step: tokenApprovalStep } = useConstructApproveTokenStep(wETHAddress)
-  const { step: joinStep } = useConstructJoinPoolStep(poolId)
+  const poolStateQuery = usePoolStateInput(poolId)
+  const { allowances } = useTokenAllowances()
 
-  const { address } = useUserAccount()
+  //This would come from the user form --> MAKE FORM DYNAMIC FROM THE given pool tokens
+  const amountsToApprove: AmountToApprove[] = [
+    { amount: 10000000n, tokenAddress: wETHAddress },
+    { tokenAddress: wjAuraAddress, amount: 10000000n },
+  ]
 
-  const [wstETHBalance, setWstETHBalance] = useState<FetchBalanceResult | null>(null)
-  const { data } = useBalance({ address, token: wETHAddress })
-  const { allowance } = useUserTokenAllowance(wETHAddress, vaultV2Address)
+  const { tokenApprovalSteps } = useConstructTokenApprovals(amountsToApprove)
+  const { step: joinStep, setWethHumanAmount } = useConstructJoinPoolStep(poolStateQuery)
+  const steps = [...tokenApprovalSteps, joinStep]
 
-  useEffect(() => {
-    if (data) setWstETHBalance(data)
-  }, [data])
+  const { balanceFor, isBalancesLoading } = useTokenBalances()
 
   function handleJoinCompleted() {
     console.log('Join completed')
   }
 
+  const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setWethHumanAmount(event.target.value as HumanAmount)
+  }
+
+  const debouncedChangeHandler = useDebounce(changeHandler, 300)
+
+  // TODO: clean this useEffect
+  let wethBalance = balanceFor(wETHAddress)?.formatted
+  let wjAuraBalance = balanceFor(wjAuraAddress)?.formatted
+  useEffect(() => {
+    if (!isBalancesLoading) {
+      wethBalance = balanceFor(wETHAddress)?.formatted
+      wjAuraBalance = balanceFor(wjAuraAddress)?.formatted
+    }
+  }, [isBalancesLoading])
+
   return (
     <VStack width="full">
       <RecentTransactions />
+
+      <Flex height="10"></Flex>
+
+      <Stack spacing={3}>
+        <InputGroup>
+          <InputLeftAddon children="WETH amount" />
+          <Input type="text" placeholder="WETH amount" onChange={debouncedChangeHandler} />
+        </InputGroup>
+        <InputGroup>
+          <InputLeftAddon children="wjAura amount" />
+          <Input type="text" placeholder="wjAura amount" disabled value={1} />
+        </InputGroup>
+      </Stack>
+
+      <Flex height="10"></Flex>
 
       <Flex>
         <TransactionFlow
           completedAlertContent="Successfully joined pool"
           onCompleteClick={handleJoinCompleted}
           completedButtonLabel="Return to pool"
-          steps={[tokenApprovalStep, joinStep]}
+          steps={steps}
         />
-        {/* <Button onClick={() => joinQuery.refetch()}>Refetch</Button> */}
       </Flex>
 
-      <Flex>WETH Balance: {wstETHBalance ? `${wstETHBalance.formatted}` : '-'}</Flex>
-      <Flex>WETH Allowance: {allowance >= 0 ? `${allowance}` : '-'}</Flex>
+      <VStack background="gray.100" p="4" rounded="md" mt="xl">
+        <Heading size="sm">Debug Data</Heading>
+        <Flex>WETH Balance: {wethBalance ? `${wethBalance}` : '-'}</Flex>
+        <Flex>wjAURA Balance: {wjAuraBalance ? `${wjAuraBalance}` : '-'}</Flex>
+        <Flex>
+          WETH Allowance: {allowances[wETHAddress] >= 0 ? `${allowances[wETHAddress]}` : '-'}
+        </Flex>
+        <Flex>
+          wjAURA Allowance: {allowances[wjAuraAddress] >= 0 ? `${allowances[wjAuraAddress]}` : '-'}
+        </Flex>
+        <Flex>Allowances: {JSON.stringify(allowances)}</Flex>
+      </VStack>
     </VStack>
   )
 }

@@ -8,6 +8,8 @@ import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
 import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
+import { useTokenAllowances } from '../../web3/useTokenAllowances'
+import { useActiveStep } from '../useActiveStep'
 
 export function useConstructNativeAssetJoinStep(poolId: Address) {
   // const [joinPayload, setJoinPayload] = useState<JoinPayload | null>(null)
@@ -16,24 +18,29 @@ export function useConstructNativeAssetJoinStep(poolId: Address) {
   const { chainId } = useNetworkConfig()
 
   const poolStateQuery = usePoolStateInput(poolId)
+  const { activateStep, isActiveStep } = useActiveStep()
+  const { allowances } = useTokenAllowances()
 
   const joinBuilder = new AddLiquidityConfigBuilder(
     chainId,
+    allowances,
     poolStateQuery.data,
     'unbalancedNativeAsset'
   )
 
   joinBuilder.setAmountIn(wETHAddress, '1')
 
-  const joinQuery = useBuildAddLiquidityQuery(joinBuilder, userAddress)
+  const joinQuery = useBuildAddLiquidityQuery(joinBuilder, isActiveStep, userAddress)
 
   const transaction = useManagedSendTransaction(buildJoinPoolLabels(), joinQuery.data?.config)
 
   const step: FlowStep = {
     ...transaction,
     getLabels: buildJoinPoolLabels,
-    stepId: 'joinPool',
-    isComplete: false,
+    stepType: 'joinPool',
+    id: `nativeJoin${poolId}`,
+    isComplete: () => false,
+    activateStep,
   }
 
   return {
