@@ -140,6 +140,9 @@ dependencies:
   react-tiny-virtual-list:
     specifier: ^2.2.0
     version: 2.2.0(react@18.2.0)
+  tinycolor2:
+    specifier: ^1.6.0
+    version: 1.6.0
   typescript:
     specifier: 5.1.6
     version: 5.1.6
@@ -205,6 +208,9 @@ devDependencies:
   '@types/testing-library__jest-dom':
     specifier: ^5.14.9
     version: 5.14.9
+  '@types/tinycolor2':
+    specifier: ^1.4.6
+    version: 1.4.6
   '@typescript-eslint/eslint-plugin':
     specifier: ^5.60.1
     version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.43.0)(typescript@5.1.6)
@@ -4788,6 +4794,10 @@ packages:
     resolution: {integrity: sha512-FSYhIjFlfOpGSRyVoMBMuS3ws5ehFQODymf3vlI7U1K8c7PHwWwFY7VREfmsuzHSOnoKs/9/Y983ayOs7eRzqw==}
     dependencies:
       '@types/jest': 29.5.6
+    dev: true
+
+  /@types/tinycolor2@1.4.6:
+    resolution: {integrity: sha512-iEN8J0BoMnsWBqjVbWH/c0G0Hh7O21lpR2/+PrvAVgWdzL7eexIFm4JN/Wn10PTcmNdtS6U67r499mlWMXOxNw==}
     dev: true
 
   /@types/trusted-types@2.0.4:
@@ -11115,6 +11125,10 @@ packages:
   /tinybench@2.5.1:
     resolution: {integrity: sha512-65NKvSuAVDP/n4CqH+a9w2kTlLReS9vhsAP06MWx+/89nMinJyB2icyl58RIcqCmIggpojIGeuJGhjU1aGMBSg==}
     dev: true
+
+  /tinycolor2@1.6.0:
+    resolution: {integrity: sha512-XPaBkWQJdsf3pLKJV9p4qN/S+fm2Oj8AIPo1BTUhg5oxkvm9+SVEGFdhyOz7tTdUTfvxMiAs4sp6/eZO2Ew+pw==}
+    dev: false
 
   /tinypool@0.7.0:
     resolution: {integrity: sha512-zSYNUlYSMhJ6Zdou4cJwo/p7w5nmAH17GRfU/ui3ctvjXFErXXkruT4MWW6poDeXgCaIBlGLrfU6TbTXxyGMww==}

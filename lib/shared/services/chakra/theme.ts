@@ -1,81 +1,205 @@
 import { ThemeTypings, extendTheme } from '@chakra-ui/react'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
-import { darken } from '@chakra-ui/theme-tools'
+import tinycolor from 'tinycolor2'
+
+const balColors = {
+  primary: {
+    '50': '#eaf6ff',
+    '100': '#daedff',
+    '200': '#bcddff',
+    '300': '#93c6ff',
+    '400': '#68a1ff',
+    '500': '#457dff',
+    '600': '#2554ff',
+    '700': '#2048e9',
+    '800': '#183bbb',
+    '900': '#1d3992',
+    '950': '#112055',
+  },
+  gray: {
+    '50': '#F7FAFC',
+    '100': '#EDF2F7',
+    '200': '#E2E8F0',
+    '300': '#CBD5E0',
+    '400': '#A0AEC0',
+    '500': '#718096',
+    '600': '#4A5568',
+    '700': '#2D3748',
+    '800': '#1A202C',
+    '900': '#171923',
+  },
+  brown: {
+    '50': '#F8F3ED',
+    '100': '#EBDCCC',
+    '200': '#DDC6AB',
+    '300': '#D0B08A',
+    '400': '#C39A6A',
+    '500': '#B68449',
+    '600': '#92693A',
+    '700': '#6D4F2C',
+    '800': '#49351D',
+    '900': '#241A0F',
+  },
+  orange: {
+    '50': '#fff7ed',
+    '100': '#ffedd5',
+    '200': '#fed7aa',
+    '300': '#fdba74',
+    '400': '#fb923c',
+    '500': '#f97316',
+    '600': '#ea580c',
+    '700': '#c2410c',
+    '800': '#9a3412',
+    '900': '#7c2d12',
+    '950': '#431407',
+  },
+  red: {
+    '50': '#fef4f2',
+    '100': '#fde7e3',
+    '200': '#fcd4cc',
+    '300': '#f9b5a8',
+    '400': '#f48975',
+    '500': '#ea6249',
+    '600': '#d7462b',
+    '700': '#b43821',
+    '800': '#95321f',
+    '900': '#7c2e20',
+    '950': '#43150c',
+  },
+  purple: {
+    '50': '#f5f4fe',
+    '100': '#ecebfc',
+    '200': '#dbdafa',
+    '300': '#b3aef5',
+    '400': '#9f95f0',
+    '500': '#7f6ae8',
+    '600': '#6c4add',
+    '700': '#5c38c9',
+    '800': '#4d2ea9',
+    '900': '#40288a',
+    '950': '#26175e',
+  },
+  green: {
+    '50': '#eafff6',
+    '100': '#cdfee7',
+    '200': '#a0fad4',
+    '300': '#63f2be',
+    '400': '#25e2a4',
+    '500': '#00d395',
+    '600': '#00a474',
+    '700': '#008361',
+    '800': '#00674e',
+    '900': '#005541',
+    '950': '#003026',
+  },
+  // sand: 'hsla(43,23%,91%,1)',
+  base: {
+    light: 'hsla(43,23%,91%,1)',
+    hslLight: '90,23%,92%',
+    dark: 'hsla(217,12%,25%,1)',
+    hslDark: '217,12%,25%',
+  },
+  gradient: {
+    // dusk: 'linear(to-tr, purple.300 5%, #D7CBE7 50%, #EAA879 95%)',
+    // sand: 'linear(to-t, #E6C6A0 0%, #E5D3BE 100%)',
+    dawnLight: 'linear-gradient(90deg, #8F86FD 0%, #A66CF3 40%, #F48975 100%)',
+    dawnDark: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
+    sunsetLight: 'linear-gradient(45deg, #F06147 0%, #EA9A43 100%)',
+    sunsetDark: 'linear-gradient(45deg, #F06147 0%, #EA9A43 100%)',
+    sandLight: 'linear-gradient(180deg, #E5D3BE 0%, #E6C6A0 100%)',
+    sandDark: 'linear-gradient(180deg, #E5D3BE 0%, #E6C6A0 100%)',
+  },
+}
+
+// Function to create a color with opacity
+const createBackgroundOpacity = (baseColor: string, opacity: number) =>
+  `hsla(${baseColor}, ${opacity})`
 
 const tokens = {
   colors: {
     light: {
       background: {
         // Background colors
-        base: 'hsla(43,23%,92%,1)',
-        baseWithOpacity: 'hsla(43,23%,92%,0.4)',
-        special: 'linear-gradient(90deg, #8F86FD 0%, #A66CF3 33%, #F48975 100%)',
+        base: balColors.base.light,
+        baseWithOpacity: createBackgroundOpacity(balColors.base.hslLight, 0.4),
+        special: balColors.gradient.dawnLight,
+        specialSecondary: balColors.gradient.sunsetLight,
       },
-
       // Button colors
       button: {
         background: {
-          primary: 'linear-gradient(90deg, #8076FE 0%, #E38C4F 100%)',
-          secondary: 'linear-gradient(152deg, #E5D3BE 20.87%, #E6C6A0 86.96%)',
-          tertiary:
-            'linear-gradient(0deg, rgba(63, 69, 80, 0.80) -16.28%, rgba(85, 94, 108, 0.80) 97.67%)',
+          primary: balColors.gradient.dawnLight,
+          secondary: balColors.gradient.sandLight,
+          tertiary: `linear-gradient(180deg, ${tinycolor(balColors.base.light).lighten(8)} 0%, ${
+            balColors.base.light
+          } 100%)`,
         },
         border: {
-          tertiary: 'gray.500',
-          disabled: '#B4BDC8',
+          tertiary: tinycolor(balColors.base.light).lighten(15),
+          disabled: 'gray.400',
         },
         text: {
-          disabled: '#B4BDC8',
+          disabled: 'gray.400',
         },
       },
 
       // Font colors
       text: {
-        primary: 'linear-gradient(45deg, rgba(45, 76, 126, 1) 0%, rgba(45, 76, 126, 0.75) 100%)',
+        primary: `linear-gradient(45deg, ${balColors.gray['700']} 0%, ${balColors.gray['500']} 100%)`,
         secondary: 'linear-gradient(45deg, #728097 0%, #909BAD 100%)',
-        special: 'linear-gradient(90deg, #8F86FD 0%, #A66CF3 33%, #F48975 100%)',
-        link: 'linear-gradient(45deg, #333 0%, #707883 100%)',
+        special: balColors.gradient.dawnLight,
+        specialSecondary: balColors.gradient.sunsetLight,
+        link: `linear-gradient(45deg, ${balColors.purple['700']} 0%, ${balColors.purple['500']} 100%)`,
+        linkHover: `linear-gradient(45deg, ${balColors.purple['900']} 0%, ${balColors.purple['700']} 100%)`,
       },
 
-      // card colors
       card: {
         border: {
           card: 'red',
         },
         background: {
-          level0: 'hsla(43,23%,92%,1)',
-          level1: 'hsla(43,23%,93%,1)',
-          level2: 'hsla(43,23%,94%,1)',
-          level3: 'hsla(43,23%,95%,1)',
-          level4: 'hsla(43,23%,96%,1)',
-          level5: 'hsla(43,23%,97%,1)',
-          level6: 'hsla(43,23%,98%,1)',
-          level7: 'hsla(43,23%,99%,1)',
-          level8: 'hsla(43,23%,100%,1)',
+          level0: balColors.base.light,
+          level1: tinycolor(balColors.base.light).lighten(1),
+          level2: tinycolor(balColors.base.light).lighten(2),
+          level3: tinycolor(balColors.base.light).lighten(3),
+          level4: tinycolor(balColors.base.light).lighten(4),
+          level5: tinycolor(balColors.base.light).lighten(5),
+          level6: tinycolor(balColors.base.light).lighten(6),
+          level7: tinycolor(balColors.base.light).lighten(7),
+          level8: tinycolor(balColors.base.light).lighten(8),
         },
+      },
+      // Input colors
+      input: {
+        border: '#ff0000',
+        bg: 'hsla(43,23%,96%,1)',
+        bgHover: 'hsla(43,23%,98%,1)',
+        bgFocus: 'hsla(43,23%,100%,1)',
       },
     },
     dark: {
       // Background colors
       background: {
-        base: 'hsla(217,12%,29%,1)',
-        baseWithOpacity: 'hsla(217,12%,29%,0.95)',
-        special: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
+        base: balColors.base.dark,
+        baseWithOpacity: createBackgroundOpacity(balColors.base.hslDark, 0.94),
+        special: balColors.gradient.dawnDark,
+        specialSecondary: balColors.gradient.sunsetDark,
       },
       // Button colors
       button: {
         background: {
-          primary: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
-          secondary: 'linear-gradient(152deg, #E5D3BE 20.87%, #E6C6A0 86.96%)',
-          tertiary:
-            'linear-gradient(0deg, rgba(63, 69, 80, 0.80) -16.28%, rgba(85, 94, 108, 0.80) 97.67%)',
+          primary: balColors.gradient.dawnDark,
+          secondary: balColors.gradient.sandDark,
+          tertiary: `linear-gradient(180deg, ${tinycolor(balColors.base.dark).lighten(8)} 0%, ${
+            balColors.base.dark
+          } 100%)`,
         },
         border: {
-          tertiary: 'gray.500',
-          disabled: '#B4BDC8',
+          tertiary: tinycolor(balColors.base.dark).lighten(15),
+          disabled: 'gray.500',
         },
         text: {
-          disabled: '#B4BDC8',
+          disabled: 'gray.500',
         },
       },
 
@@ -84,7 +208,9 @@ const tokens = {
         primary: 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
         secondary: 'linear-gradient(45deg, #909BAD 0%, #728097 100%)',
         special: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
-        link: 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
+        specialSecondary: 'linear-gradient(180deg, #EA9A43 0%, #F06147 100%)',
+        link: `linear-gradient(45deg, ${balColors.purple['400']} 0%, ${balColors.purple['200']} 100%)`,
+        linkHover: `linear-gradient(45deg, ${balColors.purple['200']} 0%, ${balColors.purple['50']} 100%)`,
       },
 
       // card colors
@@ -93,16 +219,22 @@ const tokens = {
           card: '#4F5764',
         },
         background: {
-          level0: 'hsla(216, 12%, 25%, 1)',
-          level1: 'hsla(216, 12%, 26%, 1)',
-          level2: 'hsla(216, 12%, 27%, 1)',
-          level3: 'hsla(216, 12%, 28%, 1)',
-          level4: 'hsla(216, 12%, 29%, 1)',
-          level5: 'hsla(216, 12%, 30%, 1)',
-          level6: 'hsla(216, 12%, 31%, 1)',
-          level7: 'hsla(216, 12%, 32%, 1)',
-          level8: 'hsla(216, 12%, 33%, 1)',
+          level0: balColors.base.dark,
+          level1: tinycolor(balColors.base.dark).lighten(1),
+          level2: tinycolor(balColors.base.dark).lighten(2),
+          level3: tinycolor(balColors.base.dark).lighten(3),
+          level4: tinycolor(balColors.base.dark).lighten(4),
+          level5: tinycolor(balColors.base.dark).lighten(5),
+          level6: tinycolor(balColors.base.dark).lighten(6),
+          level7: tinycolor(balColors.base.dark).lighten(7),
+          level8: tinycolor(balColors.base.dark).lighten(8),
         },
+      },
+      input: {
+        border: 'red.500',
+        bg: 'hsla(216, 12%, 25%, 1)',
+        bgHover: 'hsla(216, 12%, 25%, 1)',
+        bgFocus: 'hsla(216, 12%, 21%, 1)',
       },
     },
   },
@@ -116,6 +248,11 @@ const tokens = {
         '0px 2px 4px 0px rgba(0, 0, 0, 0.10) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.10) inset, 0px 10px 20px 0px rgba(0, 0, 0, 0.10) inset',
     },
   },
+  transition: {
+    default: 'all 0.3s ease-in-out',
+    fast: 'all 0.2s ease-in-out',
+    slow: 'all 0.5s ease-in-out',
+  },
 }
 
 export const balTheme = {
@@ -128,86 +265,7 @@ export const balTheme = {
     body: `inherit`,
   },
   colors: {
-    primary: {
-      '50': '#eaf6ff',
-      '100': '#daedff',
-      '200': '#bcddff',
-      '300': '#93c6ff',
-      '400': '#68a1ff',
-      '500': '#457dff',
-      '600': '#2554ff',
-      '700': '#2048e9',
-      '800': '#183bbb',
-      '900': '#1d3992',
-      '950': '#112055',
-    },
-    gray: {
-      '50': '#F7FAFC',
-      '100': '#EDF2F7',
-      '200': '#E2E8F0',
-      '300': '#CBD5E0',
-      '400': '#A0AEC0',
-      '500': '#718096',
-      '600': '#4A5568',
-      '700': '#2D3748',
-      '800': '#1A202C',
-      '900': '#171923',
-    },
-    sand: {
-      '50': '#F8F3ED',
-      '100': '#EBDCCC',
-      '200': '#DDC6AB',
-      '300': '#D0B08A',
-      '400': '#C39A6A',
-      '500': '#B68449',
-      '600': '#92693A',
-      '700': '#6D4F2C',
-      '800': '#49351D',
-      '900': '#241A0F',
-    },
-    salmon: {
-      '50': '#fef4f2',
-      '100': '#fde7e3',
-      '200': '#fcd4cc',
-      '300': '#f9b5a8',
-      '400': '#f48975',
-      '500': '#ea6249',
-      '600': '#d7462b',
-      '700': '#b43821',
-      '800': '#95321f',
-      '900': '#7c2e20',
-      '950': '#43150c',
-    },
-    lavender: {
-      '50': '#f5f4fe',
-      '100': '#ecebfc',
-      '200': '#dbdafa',
-      '300': '#b3aef5',
-      '400': '#9f95f0',
-      '500': '#7f6ae8',
-      '600': '#6c4add',
-      '700': '#5c38c9',
-      '800': '#4d2ea9',
-      '900': '#40288a',
-      '950': '#26175e',
-    },
-    green: {
-      '50': '#eafff6',
-      '100': '#cdfee7',
-      '200': '#a0fad4',
-      '300': '#63f2be',
-      '400': '#25e2a4',
-      '500': '#00d395',
-      '600': '#00a474',
-      '700': '#008361',
-      '800': '#00674e',
-      '900': '#005541',
-      '950': '#003026',
-    },
-    gradient: {
-      dusk: 'linear(to-tr, lavender.300 5%, #D7CBE7 50%, #EAA879 95%)',
-      sand: 'linear(to-t, #E6C6A0 0%, #E5D3BE 100%)',
-    },
+    ...balColors,
   },
   semanticTokens: {
     colors: {
@@ -257,6 +315,10 @@ export const balTheme = {
         special: {
           default: tokens.colors.light.background.special,
           _dark: tokens.colors.dark.background.special,
+        },
+        specialSecondary: {
+          default: tokens.colors.light.background.specialSecondary,
+          _dark: tokens.colors.dark.background.specialSecondary,
         },
         button: {
           primary: {
@@ -311,7 +373,24 @@ export const balTheme = {
           },
         },
       },
-
+      input: {
+        border: {
+          default: tokens.colors.light.input.border,
+          _dark: tokens.colors.dark.input.border,
+        },
+        bg: {
+          default: tokens.colors.light.input.bg,
+          _dark: tokens.colors.dark.input.bg,
+        },
+        bgHover: {
+          default: tokens.colors.light.input.bgHover,
+          _dark: tokens.colors.dark.input.bgHover,
+        },
+        bgFocus: {
+          default: tokens.colors.light.input.bgFocus,
+          _dark: tokens.colors.dark.input.bgFocus,
+        },
+      },
       backgroundImage: {
         card: {
           gradient: {
@@ -357,9 +436,17 @@ export const balTheme = {
           default: tokens.colors.light.text.special,
           _dark: tokens.colors.dark.text.special,
         },
+        specialSecondary: {
+          default: tokens.colors.light.text.specialSecondary,
+          _dark: tokens.colors.dark.text.specialSecondary,
+        },
         link: {
           default: tokens.colors.light.text.link,
           _dark: tokens.colors.dark.text.link,
+        },
+        linkHover: {
+          default: tokens.colors.light.text.linkHover,
+          _dark: tokens.colors.dark.text.linkHover,
         },
         accordionHeading: {
           default: tokens.colors.light.button.background.primary,
@@ -424,6 +511,40 @@ export const balTheme = {
       body: {
         background: 'background.base',
       },
+      '::-webkit-scrollbar': {
+        width: '10px',
+      },
+      '.chakra-ui-light ::-webkit-scrollbar, .chakra-ui-dark ::-webkit-scrollbar': {
+        width: '6px',
+      },
+      '::-webkit-scrollbar-track': {
+        boxShadow: 'inset 0 0 6px rgba(0, 0, 0, 0.3)',
+      },
+      '::-webkit-scrollbar-thumb': {
+        boxShadow: 'inset 0 0 6px rgba(0, 0, 0, 0.3)',
+        transition: 'all 0.3s ease-in-out',
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        borderRadius: '16px',
+        // border: '3px solid transparent',
+        // backgroundClip: 'content-box',
+      },
+      '::-webkit-scrollbar-thumb:hover': {
+        transition: 'all 0.3s ease',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        // border: 'none',
+      },
+      '.chakra-ui-light ::-webkit-scrollbar-thumb, .chakra-ui-dark ::-webkit-scrollbar-thumb': {
+        // border: 'none',
+      },
+      '.chakra-ui-dark::-webkit-scrollbar-thumb, .chakra-ui-dark ::-webkit-scrollbar-thumb': {
+        backgroundColor: 'rgba(255, 255, 255, 0.4)',
+      },
+      '.chakra-ui-dark::-webkit-scrollbar-thumb:hover, .chakra-ui-dark ::-webkit-scrollbar-thumb:hover':
+        {
+          backgroundColor: 'rgba(255, 255, 255, 0.6)',
+          // backgroundColor: 'pink',
+          // border: 'none',
+        },
       'p + ul': {
         mt: '1',
       },
@@ -434,7 +555,7 @@ export const balTheme = {
       variants: {
         gradient: {
           icon: {
-            color: 'sand.300',
+            color: 'brown.300',
           },
           button: {
             px: '5',
@@ -456,6 +577,38 @@ export const balTheme = {
           },
           root: {
             border: 'none',
+          },
+        },
+      },
+    },
+    Input: {
+      baseStyle: {
+        field: {
+          // background: 'white', // Set the default background color
+          shadow: 'innerBase',
+          border: '1px solid',
+          borderColor: 'input.border',
+          bg: 'input.bg',
+          _hover: {
+            bg: 'input.bgHover', // Background color on hover
+          },
+          _focus: {
+            bg: 'input.bgFocus', // Background color on focus
+            borderColor: 'primary.400',
+          },
+          _disabled: {
+            shadow: 'none',
+            _hover: {
+              bg: 'red.500', // Background color on hover
+            },
+          },
+        },
+      },
+      variants: {
+        search: {
+          field: {
+            border: '1px solid',
+            borderColor: 'input.border',
           },
         },
       },
@@ -486,6 +639,10 @@ export const balTheme = {
         },
         special: {
           background: 'font.special',
+          backgroundClip: 'text',
+        },
+        specialSecondary: {
+          background: 'font.specialSecondary',
           backgroundClip: 'text',
         },
         sand: (props: any) => ({
@@ -551,6 +708,10 @@ export const balTheme = {
           background: 'font.special',
           backgroundClip: 'text',
         },
+        specialSecondary: {
+          background: 'font.specialSecondary',
+          backgroundClip: 'text',
+        },
         eyebrow: {
           textTransform: 'uppercase',
           fontSize: 'xs',
@@ -562,8 +723,13 @@ export const balTheme = {
     },
     Link: {
       baseStyle: {
-        background: 'font.primary',
+        background: 'font.link',
         backgroundClip: 'text',
+        transition: tokens.transition.slow,
+        _hover: {
+          background: 'font.linkHover',
+          backgroundClip: 'text',
+        },
       },
     },
     Button: {
@@ -598,10 +764,9 @@ export const balTheme = {
         secondary: {
           background: 'background.button.secondary',
           borderTop: '2px solid',
-          borderBottom: '2px solid',
           borderTopColor: '#F4EBE1',
-          borderBottomColor: darken('#F4EBE1', 25),
-          color: 'font.button.secondary',
+          // borderBottomColor: darken('#F4EBE1', 25),
+          color: 'font.dark',
         },
         tertiary: {
           background: 'background.button.tertiary',
@@ -612,7 +777,7 @@ export const balTheme = {
         'tx-gas': {
           bgGradient: 'linear(to-tr, blue.300 0%, #D7CBE7 50%, #EAA879 100%)',
           borderTop: '2px solid',
-          borderColor: 'lavender.200',
+          borderColor: 'purple.200',
           color: 'black',
         },
         buttonGroupInactive: {
@@ -766,13 +931,6 @@ export const balTheme = {
                 )`,
             },
           },
-        },
-      },
-    },
-    Input: {
-      baseStyle: {
-        field: {
-          background: 'background.card.level8',
         },
       },
     },
