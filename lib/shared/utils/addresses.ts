@@ -1,8 +1,7 @@
-import { getNativeAssetAddress } from '@/lib/config/app.config'
+import { getNativeAssetAddress, getNetworkConfig } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { Address } from 'viem'
 import { GqlChain } from '../services/api/generated/graphql'
-import { ChainToEtherscanBaseUrlMap } from './etherscan'
 
 export function isSameAddress(address1: string, address2: string): boolean {
   if (!address1 || !address2) return false
@@ -60,5 +59,6 @@ export function shortenLabel(str: string, segLength = 4) {
 }
 
 export function getEtherscanLinkForAddress(address: Address, chain: GqlChain) {
-  return `${ChainToEtherscanBaseUrlMap[chain]}/address/${address}`
+  const networkConfig = getNetworkConfig(chain)
+  return `${networkConfig.etherscan}/address/${address}`
 }
