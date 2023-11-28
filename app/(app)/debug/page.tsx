@@ -16,6 +16,9 @@ export default function Debug() {
       <Link as={NextLink} href="/debug/token-select" color="blue">
         Token select
       </Link>
+      <Link as={NextLink} href="/debug/token-input" color="blue">
+        Token input
+      </Link>
     </VStack>
   )
 }

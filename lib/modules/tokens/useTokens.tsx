@@ -50,13 +50,13 @@ export function _useTokens(
   }
 
   function getToken(address: string, chain: GqlChain | number): GqlToken | undefined {
-    const key = typeof chain === 'number' ? 'chainId' : 'chain'
-    return tokens.find(token => isSameAddress(token.address, address) && token[key] === chain)
+    const chainKey = typeof chain === 'number' ? 'chainId' : 'chain'
+    return tokens.find(token => isSameAddress(token.address, address) && token[chainKey] === chain)
   }
 
   function getTokensByChain(chain: number | GqlChain): GqlToken[] {
-    const key = typeof chain === 'number' ? 'chainId' : 'chain'
-    return tokens.filter(token => token[key] === chain)
+    const chainKey = typeof chain === 'number' ? 'chainId' : 'chain'
+    return tokens.filter(token => token[chainKey] === chain)
   }
 
   function priceForToken(token: GqlToken): number {
