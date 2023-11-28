@@ -1,61 +1,65 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { wETHAddress } from '@/lib/debug-helpers'
-import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
 import { useManagedErc20Transaction } from '@/lib/modules/web3/contracts/useManagedErc20Transaction'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { MAX_BIGINT } from '@/lib/shared/hooks/useNumbers'
-import { Address } from 'viem'
-import { useActiveStep } from './useActiveStep'
-import { useTokenAllowances } from '../web3/useTokenAllowances'
 import { useEffect } from 'react'
+import { Address } from 'viem'
+import { TokenApprovalLabelArgs, buildTokenApprovalLabels } from '../pool/join/approval-labels'
+import { useTokenAllowances } from '../web3/useTokenAllowances'
+import { useActiveStep } from './useActiveStep'
+import { CompletedApprovalState } from '../pool/join/useCompletedApprovalsState'
 
-export function useConstructApproveTokenStep(tokenAddress: Address, amountToAllow: bigint) {
+export function useConstructApproveTokenStep(
+  tokenAddress: Address,
+  { completedApprovals, saveCompletedApprovals }: CompletedApprovalState
+) {
   const { isActiveStep, activateStep } = useActiveStep()
   const spender = useContractAddress('balancer.vaultV2')
-  const { refetchAllowances, allowances, isAllowancesLoading } = useTokenAllowances()
+  const { refetchAllowances, isAllowancesLoading } = useTokenAllowances()
+
+  const labelArgs: TokenApprovalLabelArgs = {
+    actionType: 'AddLiquidity',
+    // TODO: refactor when we have token info from consumer
+    symbol: tokenAddress === wETHAddress ? 'WETH' : 'wjAura',
+  }
+  const tokenApprovalLabels = buildTokenApprovalLabels(labelArgs)
 
   const approvalTransaction = useManagedErc20Transaction(
     tokenAddress,
     'approve',
-    buildTokenApprovalLabels(),
+    tokenApprovalLabels,
     { args: [spender || emptyAddress, MAX_BIGINT] }, //By default we set MAX_BIGINT
     {
-      enabled: isActiveStep && !!spender && !isAllowancesLoading && !!amountToAllow,
+      enabled: isActiveStep && !!spender && !isAllowancesLoading,
     }
   )
 
-  const hasTokenApproval = () => {
-    return approvalTransaction.result.isSuccess || allowances[tokenAddress] > amountToAllow //TODO: We need to include slippage in this calculation
+  const isCompleted =
+    (completedApprovals.includes(tokenAddress) && approvalTransaction.result.isSuccess) ||
+    tokenAddress === emptyAddress
+
+  const step: FlowStep = {
+    ...approvalTransaction,
+    getLabels: () => tokenApprovalLabels, //TODO: avoid callback type and accept result instead??
+    id: tokenAddress,
+    stepType: 'tokenApproval',
+    isComplete: () => isCompleted,
+    activateStep,
   }
 
   useEffect(() => {
     // refetch allowances after the approval transaction was executed
-    if (approvalTransaction.result.isSuccess) {
-      refetchAllowances()
+    async function saveExecutedApproval() {
+      if (approvalTransaction.result.isSuccess) {
+        await refetchAllowances()
+        saveCompletedApprovals(tokenAddress)
+      }
     }
+    saveExecutedApproval()
   }, [approvalTransaction.result.isSuccess])
 
-  const step: FlowStep = {
-    ...approvalTransaction,
-    getLabels: () => buildTokenApprovalLabels(tokenAddress), //TODO: avoid callback type and accept result instead??
-    id: tokenAddress,
-    stepType: 'tokenApproval',
-    isComplete: hasTokenApproval,
-    activateStep,
-  }
-
   return step
-}
-
-export const buildTokenApprovalLabels: BuildTransactionLabels = tokenAddress => {
-  //TODO: refactor
-  const tokenSymbol = tokenAddress === wETHAddress ? 'WETH' : 'wjAura'
-  return {
-    init: `Approve token allowance ${tokenSymbol}`,
-    confirming: `Approving token allowance ${tokenSymbol}`,
-    tooltip: 'foo',
-    description: 'Token approval completed',
-  }
 }

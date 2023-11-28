@@ -4,6 +4,7 @@ export enum TransactionState {
   Ready = 'init',
   Confirming = 'confirming',
   Loading = 'loading',
+  Preparing = 'preparing',
   Error = 'error',
 }
 
@@ -17,6 +18,7 @@ export type TransactionLabels = {
   confirmed?: string
   rejected?: string
   error?: string
+  preparing?: string
 }
 
 type StepType = 'batchRelayerApproval' | 'tokenApproval' | 'joinPool'
@@ -55,7 +57,10 @@ export function getTransactionState({
   execution,
   result,
 }: TransactionBundle): TransactionState {
-  if (execution.isLoading || simulation.isLoading) {
+  if (simulation.isLoading) {
+    return TransactionState.Preparing
+  }
+  if (execution.isLoading) {
     return TransactionState.Loading
   }
   if (result.isLoading) {

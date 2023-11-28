@@ -9,7 +9,7 @@ export function useActiveStep() {
 
   const activateStep = () => setIsActiveStep(true)
   return {
-    isActiveStep: isActiveStep && !!userAddress, // An step cannot be active if the user is not connected
+    isActiveStep: isActiveStep && !!userAddress, // A step cannot be active if the user is not connected
     setIsActiveStep,
     activateStep,
   }
