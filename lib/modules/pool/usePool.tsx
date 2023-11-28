@@ -35,9 +35,9 @@ export function _usePool({
 
   const pool = data?.pool || initialData.pool
 
-  const gqlPool = buildGqlPoolHelpers(pool, chain)
+  const poolHelpers = buildGqlPoolHelpers(pool, chain)
 
-  return { pool, gqlPool, loading, refetch }
+  return { pool, poolHelpers, loading, refetch }
 }
 
 export function PoolProvider({
