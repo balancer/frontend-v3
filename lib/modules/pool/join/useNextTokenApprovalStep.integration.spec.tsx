@@ -29,21 +29,25 @@ const amountsToApprove: AmountToApprove[] = [
   { tokenAddress: wjAuraAddress, amount: 2n },
 ]
 
-test('useJoinApprovals', async () => {
+// Unskip once we refactor tests state to be isolated
+test.skip('useNextTokenApprovalStep builds 2 sequential token approval steps', async () => {
+  await resetForkState()
+
   const result = testUseTokenApprovals(amountsToApprove)
   await waitFor(() => expect(result.current.isAllowancesLoading).toBeFalsy())
 
   expect(result.current.tokenApprovalStep.getLabels()).toMatchInlineSnapshot(`
     {
-      "confirming": "Approving token allowance WETH",
-      "description": "Token approval completed",
-      "init": "Approve token allowance WETH",
-      "tooltip": "foo",
+      "confirming": "Approving WETH",
+      "description": "Token WETH approval completed",
+      "init": "Approve WETH for adding liquidity",
+      "tooltip": "You must approve WETH to add liquidity for this token on Balancer.
+    Approvals are required once per token, per wallet.",
     }
   `)
 
   act(() => result.current.tokenApprovalStep.activateStep())
-  // await sleep(2000)
+  console.log(result.current.tokenApprovalStep.simulation.isIdle)
   await waitFor(() => expect(result.current.tokenApprovalStep.simulation.isSuccess).toBeTruthy())
   await act(() => result.current.tokenApprovalStep.executeAsync?.())
 
@@ -58,6 +62,4 @@ test('useJoinApprovals', async () => {
   await act(() => result.current.tokenApprovalStep.executeAsync?.())
 
   await waitFor(() => expect(result.current.tokenApprovalStep.isComplete()).toBeFalsy())
-
-  await resetForkState()
 })
