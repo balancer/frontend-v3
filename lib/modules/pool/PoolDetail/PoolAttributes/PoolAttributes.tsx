@@ -1,11 +1,11 @@
 import { Box, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
-import { usePoolInfo } from './usePoolInfo'
+import useFormattedPoolAttributes from './useFormattedPoolAttributes'
 import { upperFirst } from 'lodash'
 
 const CAPITALISED_FIELDS = ['Pool type']
 
 export function PoolAttributes() {
-  const { poolDetails } = usePoolInfo()
+  const formattedAttributes = useFormattedPoolAttributes()
 
   return (
     <Card width="full" variant="level3" px="6" py="5" minHeight="400px">
@@ -24,17 +24,17 @@ export function PoolAttributes() {
               Details
             </Heading>
           </HStack>
-          {poolDetails.map(detail => {
-            let formattedValue = detail?.value
-            if (CAPITALISED_FIELDS.includes(detail?.title || '')) {
-              formattedValue = upperFirst(detail?.value.toLowerCase())
+          {formattedAttributes.map(attribute => {
+            let formattedValue = attribute?.value
+            if (CAPITALISED_FIELDS.includes(attribute?.title || '')) {
+              formattedValue = upperFirst(attribute?.value.toLowerCase())
             }
 
             return (
-              detail && (
-                <HStack width="full" spacing="8" key={`pool-detail-${detail.title}`}>
+              attribute && (
+                <HStack width="full" spacing="8" key={`pool-attribute-${attribute.title}`}>
                   <Box minWidth="150px">
-                    <Text variant="secondary">{detail.title}</Text>
+                    <Text variant="secondary">{attribute.title}</Text>
                   </Box>
                   <Text variant="secondary">{formattedValue}</Text>
                 </HStack>
