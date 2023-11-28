@@ -39,6 +39,7 @@ export default function TransactionFlow({
   // since the order is expect, the active step is simply the first step in the remainder of steps
   // that still need to be executed
   const activeStep = requiredSteps[0]
+  // console.log('Active step is: ', activeStep.id)
   const showCompletedContent = areAllStepsComplete && completedAlertContent !== undefined
 
   // side effect, automatically execute the onComplete

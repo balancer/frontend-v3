@@ -43,11 +43,15 @@ export function TokenSelectList({
     setActiveIndex(prev => Math.min(prev + 1, orderedTokens.length - 1))
   const hotkeyOpts = { enableOnFormTags: true }
 
+  const selectActiveToken = () => {
+    onTokenSelect(orderedTokens[activeIndex])
+  }
+
   useHotkeys('up', decrementActiveIndex, hotkeyOpts)
   useHotkeys('shift+tab', decrementActiveIndex, hotkeyOpts)
   useHotkeys('down', incrementActiveIndex, hotkeyOpts)
   useHotkeys('tab', incrementActiveIndex, hotkeyOpts)
-  useHotkeys('enter', () => onTokenSelect(orderedTokens[activeIndex]), [activeIndex], hotkeyOpts)
+  useHotkeys('enter', selectActiveToken, [orderedTokens, activeIndex], hotkeyOpts)
 
   function keyFor(token: GqlToken, index: number) {
     return `${token.address}:${token.chain}:${index}`

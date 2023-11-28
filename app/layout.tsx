@@ -7,6 +7,7 @@ import '@/lib/shared/hooks/useNumbers'
 import Noise from './noise'
 import { satoshiFont } from '@/lib/assets/fonts/satoshi/satoshi'
 import NextTopLoader from 'nextjs-toploader'
+import { Container } from '@chakra-ui/react'
 
 const { projectName, projectId } = getProjectConfig()
 const iconUrl = `/images/icons/${projectId}.ico`
@@ -32,7 +33,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <Noise>
             <Navbar />
-            {children}
+            <Container maxW="maxContent" py="2xl">
+              {children}
+            </Container>
             <Footer />
           </Noise>
         </Providers>

@@ -50,7 +50,7 @@ export function TokenSelectListRow({
     <Box {...boxStyles} {...rest}>
       <HStack height="full" spacing="md" justify="space-between" maxW="full">
         <HStack height="full" spacing="md" maxW="full">
-          <TokenIcon token={token} alt={token.symbol} />
+          <TokenIcon address={token.address} chain={token.chain} alt={token.symbol} />
           <VStack height="full" align="start" justify="center" spacing="none" maxW="full">
             <Text {...textStyles}>{token.symbol}</Text>
             <Text title={token.name} fontSize="sm" w="40" isTruncated={true} {...textStyles}>

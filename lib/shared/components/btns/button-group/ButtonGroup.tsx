@@ -17,9 +17,10 @@ export default function ButtonGroup({ value, options, onChange }: Props) {
     <HStack
       rounded="md"
       p="1"
-      backgroundColor="elevatedBackground"
+      backgroundColor="background.card.level5"
       spacing="1"
       borderColor="borderColor"
+      shadow="sm"
       borderWidth={1}
     >
       {options.map(option => {
