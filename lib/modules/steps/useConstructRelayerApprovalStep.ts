@@ -5,7 +5,7 @@ import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTr
 import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { useActiveStep } from './useActiveStep'
+import { useActiveStep } from '../../shared/hooks/transaction-flows/useActiveStep'
 
 const batchRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'
 

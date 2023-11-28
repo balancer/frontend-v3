@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useUserAccount } from '../web3/useUserAccount'
+import { useUserAccount } from '../../../modules/web3/useUserAccount'
 
 // Each step is disabled by default and will be activated by the TransactionFlow component
 export function useActiveStep() {

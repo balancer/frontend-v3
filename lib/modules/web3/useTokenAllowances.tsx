@@ -1,10 +1,9 @@
+import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { zipObject } from 'lodash'
+import { PropsWithChildren, createContext } from 'react'
 import { ContractFunctionConfig } from 'viem'
 import { Address, erc20ABI, useContractReads } from 'wagmi'
 import { Erc20Abi } from './contracts/contract.types'
-import { PropsWithChildren, createContext } from 'react'
-import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 
 export type TokenAllowances = Record<Address, bigint>
 
@@ -13,12 +12,7 @@ export function _useTokenAllowances(
   spenderAddress: Address,
   tokenAddresses: Address[]
 ) {
-  //TODO: this line is added for testing purposes: delete it once we decide how to make refetch allowances more efficient
-  const filteredTokenAddresses = tokenAddresses.filter(tokenAddress =>
-    [wETHAddress, wjAuraAddress].includes(tokenAddress)
-  )
-
-  const contracts: ContractFunctionConfig<Erc20Abi, 'allowance'>[] = filteredTokenAddresses.map(
+  const contracts: ContractFunctionConfig<Erc20Abi, 'allowance'>[] = tokenAddresses.map(
     tokenAddress => ({
       address: tokenAddress,
       abi: erc20ABI,

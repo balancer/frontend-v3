@@ -10,10 +10,10 @@ import { Address } from 'viem'
 import {
   TokenApprovalLabelArgs,
   buildTokenApprovalLabels,
-} from '../tokens/approvals/approval-labels'
-import { useTokenAllowances } from '../web3/useTokenAllowances'
-import { useActiveStep } from './useActiveStep'
-import { CompletedApprovalState } from '../tokens/approvals/useCompletedApprovalsState'
+} from '../../tokens/approvals/approval-labels'
+import { useTokenAllowances } from '../../web3/useTokenAllowances'
+import { useActiveStep } from '../../../shared/hooks/transaction-flows/useActiveStep'
+import { CompletedApprovalState } from '../../tokens/approvals/useCompletedApprovalsState'
 
 export function useConstructApproveTokenStep(
   tokenAddress: Address,
@@ -46,7 +46,7 @@ export function useConstructApproveTokenStep(
 
   const step: FlowStep = {
     ...approvalTransaction,
-    getLabels: () => tokenApprovalLabels, //TODO: avoid callback type and accept result instead??
+    transactionLabels: tokenApprovalLabels,
     id: tokenAddress,
     stepType: 'tokenApproval',
     isComplete: () => isCompleted,

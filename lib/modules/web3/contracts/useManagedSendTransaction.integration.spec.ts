@@ -2,7 +2,7 @@
 import { describe, expect, test } from 'vitest'
 
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { AddLiquidityConfigBuilder } from '@/lib/modules/steps/join/AddLiquidityConfigBuilder'
+import { AddLiquidityConfigBuilder } from '@/lib/modules/pool/add-liquidity/AddLiquidityConfigBuilder'
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import { testHook } from '@/test/utils/custom-renderers'
 import { defaultTestUserAccount, testPublicClient as testClient } from '@/test/utils/wagmi'
@@ -10,7 +10,7 @@ import { ChainId, HumanAmount } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/actions'
 import { chains } from '../Web3Provider'
-import { buildJoinPoolLabels } from '../../steps/join/useConstructJoinPoolStep'
+import { buildAddLiquidityLabels } from '../../pool/add-liquidity/useConstructAddLiquidityStep'
 import { poolId } from '@/lib/debug-helpers'
 import { someTokenAllowancesMock } from '../../tokens/__mocks__/token.builders'
 
@@ -51,7 +51,7 @@ describe('weighted join test', () => {
     const { queryResult, config } = await builder.buildSdkAddLiquidityTxConfig(account)
 
     const { result } = testHook(() => {
-      return useManagedSendTransaction(buildJoinPoolLabels(), config)
+      return useManagedSendTransaction(buildAddLiquidityLabels(), config)
     })
 
     await waitFor(() => expect(result.current.executeAsync).toBeDefined())
