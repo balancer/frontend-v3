@@ -942,7 +942,7 @@ export const balTheme = {
     List: {
       baseStyle: {
         item: {
-          color: 'lavender.300',
+          color: 'purple.300',
         },
       },
     },
