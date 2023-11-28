@@ -60,5 +60,5 @@ export function shortenLabel(str: string, segLength = 4) {
 
 export function getAddressBlockExplorerLink(address: Address, chain: GqlChain) {
   const networkConfig = getNetworkConfig(chain)
-  return `${networkConfig.etherscan}/address/${address}`
+  return `${networkConfig.blockExplorerBaseUrl}/address/${address}`
 }
