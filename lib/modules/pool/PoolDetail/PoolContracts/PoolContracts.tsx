@@ -17,7 +17,10 @@ export function PoolContracts() {
             <Box minWidth="150px">
               <Text variant="secondary">Pool</Text>
             </Box>
-            <Link target="_blank" href={getAddressBlockExplorerLink(pool.address as Address, chain)}>
+            <Link
+              target="_blank"
+              href={getAddressBlockExplorerLink(pool.address as Address, chain)}
+            >
               <HStack>
                 <Text variant="secondary">{shortenLabel(pool.address)}</Text>
                 <ExternalLinkIcon color="gray.400" width="1rem" height="1rem" />
