@@ -58,7 +58,7 @@ export function shortenLabel(str: string, segLength = 4) {
   return `${firstSegment}...${lastSegment}`
 }
 
-export function getEtherscanLinkForAddress(address: Address, chain: GqlChain) {
+export function getAddressBlockExplorerLink(address: Address, chain: GqlChain) {
   const networkConfig = getNetworkConfig(chain)
   return `${networkConfig.etherscan}/address/${address}`
 }

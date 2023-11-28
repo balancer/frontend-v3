@@ -1,6 +1,6 @@
 import { Box, Card, HStack, Heading, Link, Text, VStack } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
-import { getEtherscanLinkForAddress, shortenLabel } from '@/lib/shared/utils/addresses'
+import { getAddressBlockExplorerLink, shortenLabel } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
 import { ExternalLinkIcon } from '@chakra-ui/icons'
 
@@ -17,7 +17,7 @@ export function PoolContracts() {
             <Box minWidth="150px">
               <Text variant="secondary">Pool</Text>
             </Box>
-            <Link target="_blank" href={getEtherscanLinkForAddress(pool.address as Address, chain)}>
+            <Link target="_blank" href={getAddressBlockExplorerLink(pool.address as Address, chain)}>
               <HStack>
                 <Text variant="secondary">{shortenLabel(pool.address)}</Text>
                 <ExternalLinkIcon color="gray.400" width="1rem" height="1rem" />
@@ -31,7 +31,7 @@ export function PoolContracts() {
               </Box>
               <Link
                 target="_blank"
-                href={getEtherscanLinkForAddress(
+                href={getAddressBlockExplorerLink(
                   pool.staking.gauge?.gaugeAddress as Address,
                   chain
                 )}
