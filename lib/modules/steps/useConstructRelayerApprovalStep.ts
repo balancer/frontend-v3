@@ -44,7 +44,7 @@ export function useConstructRelayerApprovalStep() {
 
   const step: FlowStep = {
     ...transaction,
-    getLabels: buildRelayerApprovalLabels,
+    transactionLabels: buildRelayerApprovalLabels(),
     id: 'batchRelayerApproval',
     stepType: 'batchRelayerApproval',
     isComplete: () => hasRelayerApproval,
