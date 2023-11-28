@@ -1,30 +1,11 @@
-import { Card, Heading, ListItem, Text, UnorderedList, VStack } from '@chakra-ui/react'
+import { Card, Heading, Link, ListItem, Text, UnorderedList, VStack } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
 import { GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
-
-const RISK_MAP = {
-  WEIGHTED: 'Weighted pool risks',
-  BALANCER: 'General balancer protocol risks',
-  MUTABLE: 'Mutable attributes risks',
-}
-type Attributes = keyof typeof RISK_MAP
-
-function determinePoolRisks(pool: GqlPoolElement) {
-  // includes default risks
-  const poolRisks: Attributes[] = ['BALANCER']
-
-  if (pool.type === 'WEIGHTED') {
-    poolRisks.push('WEIGHTED')
-  }
-  if (pool.owner !== '0xxx') {
-    poolRisks.push('MUTABLE')
-  }
-  return poolRisks
-}
+import { getPoolRisks, risksTitle } from './usePoolRisks'
 
 export function PoolRisks() {
   const { pool } = usePool()
-  const risks = determinePoolRisks(pool as GqlPoolElement)
+  const risks = getPoolRisks(pool as GqlPoolElement)
 
   return (
     <Card minHeight="175px" width="full" variant="level3" px="6" py="5">
@@ -33,12 +14,16 @@ export function PoolRisks() {
           Pool risks
         </Heading>
         <VStack width="full" alignItems="flex-start">
-          <Text variant="secondary">
-            Liquidity providers in this pool face the following risks:
-          </Text>
+          <Text variant="secondary">{risksTitle()}</Text>
           <UnorderedList>
             {risks.map(risk => (
-              <ListItem key={`pool-risk-${risk}`}>{RISK_MAP[risk]}</ListItem>
+              <Link
+                key={`pool-risk-${risk.path.replaceAll('//', '')}`}
+                href={risk.path}
+                target="_blank"
+              >
+                <ListItem>{risk.title}</ListItem>
+              </Link>
             ))}
           </UnorderedList>
         </VStack>
