@@ -1,8 +1,6 @@
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { isEmpty } from 'lodash'
-import { useState } from 'react'
-import { Address } from 'viem'
 import { useConstructApproveTokenStep } from '../../steps/useConstructApproveTokenStep'
 import { emptyAddress } from '../../web3/contracts/wagmi-helpers'
 import { AmountToApprove, filterRequiredTokenApprovals } from './approvals'
