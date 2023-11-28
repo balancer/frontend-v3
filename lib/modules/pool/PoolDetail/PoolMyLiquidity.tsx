@@ -1,3 +1,5 @@
+'use client'
+
 import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
@@ -6,6 +8,8 @@ import { Box, Button, Card, HStack, Heading, Text, VStack } from '@chakra-ui/rea
 import React, { useState } from 'react'
 import { usePool } from '../usePool'
 import { Address } from 'viem'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 const TABS = [
   {
@@ -28,6 +32,7 @@ const TABS = [
 export default function PoolMyLiquidity() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain } = usePool()
+  const pathname = usePathname()
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
@@ -80,7 +85,9 @@ export default function PoolMyLiquidity() {
               </VStack>
             </VStack>
             <HStack p="4" width="full" justifyContent="flex-start">
-              <Button variant="primary">Add</Button>
+              <Button as="a" href={`${pathname}/add-liquidity`} variant="primary">
+                Add
+              </Button>
               <Button variant="disabled" isDisabled>
                 Remove
               </Button>
