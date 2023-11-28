@@ -1,3 +1,7 @@
-export default async function AddLiquidityPage() {
-  return <div>Add liquidity</div>
+'use client'
+
+import { Box } from '@chakra-ui/react'
+
+export default function AddLiquidityPage() {
+  return <Box>content</Box>
 }
