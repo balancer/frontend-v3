@@ -35,6 +35,8 @@ export function TransactionStepButton({
     const relevantLabel = transactionLabels[transactionState]
     if (!relevantLabel) {
       switch (transactionState) {
+        case TransactionState.Preparing:
+          return 'Preparing'
         case TransactionState.Loading:
           return 'Confirm in wallet'
         case TransactionState.Confirming:

@@ -27,6 +27,10 @@ import {
   SliderFilledTrack,
   SliderThumb,
   Tag,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from '@chakra-ui/react'
 
 import { darken } from '@chakra-ui/theme-tools'
@@ -62,6 +66,9 @@ export default function Components() {
             <a href="#shadows">Shadows</a>
           </ListItem>
           <ListItem>
+            <a href="#alerts">Alerts</a>
+          </ListItem>
+          <ListItem>
             <a href="#cards">Cards</a>
           </ListItem>
 
@@ -71,7 +78,7 @@ export default function Components() {
         </UnorderedList>
       </Box>
 
-      <Section id="colors">
+      <Section id="colors" fontWeight="bold">
         <Heading as="h1" variant="gradient-dusk" size="h1-hero">
           Colors
         </Heading>
@@ -100,7 +107,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontDark'}
+              color={'font.dark'}
             >
               100
             </Center>
@@ -113,7 +120,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontDark'}
+              color={'font.dark'}
             >
               200
             </Center>
@@ -126,7 +133,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontDark'}
+              color={'font.dark'}
             >
               300
             </Center>
@@ -139,7 +146,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontDark'}
+              color={'font.dark'}
             >
               400
             </Center>
@@ -152,7 +159,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontLight'}
+              color={'font.light'}
             >
               500
             </Center>
@@ -165,7 +172,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontLight'}
+              color={'font.light'}
             >
               600
             </Center>
@@ -178,7 +185,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontLight'}
+              color={'font.light'}
             >
               700
             </Center>
@@ -190,7 +197,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontLight'}
+              color={'font.light'}
             >
               800
             </Center>
@@ -202,7 +209,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontLight'}
+              color={'font.light'}
             >
               900
             </Center>
@@ -233,7 +240,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontDark'}
+              color={'font.dark'}
             >
               100
             </Center>
@@ -246,7 +253,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontDark'}
+              color={'font.dark'}
             >
               200
             </Center>
@@ -259,7 +266,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontDark'}
+              color={'font.dark'}
             >
               300
             </Center>
@@ -272,7 +279,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontDark'}
+              color={'font.dark'}
             >
               400
             </Center>
@@ -285,7 +292,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontLight'}
+              color={'font.light'}
             >
               500
             </Center>
@@ -298,7 +305,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontLight'}
+              color={'font.light'}
             >
               600
             </Center>
@@ -311,7 +318,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontLight'}
+              color={'font.light'}
             >
               700
             </Center>
@@ -323,7 +330,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontLight'}
+              color={'font.light'}
             >
               800
             </Center>
@@ -335,7 +342,7 @@ export default function Components() {
               w="100%"
               h="16"
               fontSize="xs"
-              color={'colorFontLight'}
+              color={'font.light'}
             >
               900
             </Center>
@@ -343,106 +350,240 @@ export default function Components() {
         </Section>
 
         <Section variant="subsection">
-          <Heading size="h4">Sand</Heading>
+          <Heading size="h4">Brown</Heading>
           <Stack direction="row">
-            <Center bg="sand.50" w="100%" h="16" fontSize="xs" color={'black'}>
+            <Center bg="brown.50" w="100%" h="16" fontSize="xs" color={'black'}>
               50
             </Center>
-            <Center bg="sand.100" w="100%" h="16" fontSize="xs" color={'black'}>
+            <Center bg="brown.100" w="100%" h="16" fontSize="xs" color={'black'}>
               100
             </Center>
-            <Center bg="sand.200" w="100%" h="16" fontSize="xs" color={'black'}>
+            <Center bg="brown.200" w="100%" h="16" fontSize="xs" color={'black'}>
               200
             </Center>
-            <Center bg="sand.300" w="100%" h="16" fontSize="xs" color={'black'}>
+            <Center bg="brown.300" w="100%" h="16" fontSize="xs" color={'black'}>
               300
             </Center>
-            <Center bg="sand.400" w="100%" h="16" fontSize="xs" color={'black'}>
+            <Center bg="brown.400" w="100%" h="16" fontSize="xs" color={'black'}>
               400
             </Center>
-            <Center bg="sand.500" w="100%" h="16" fontSize="xs" color={'white'}>
+            <Center bg="brown.500" w="100%" h="16" fontSize="xs" color={'white'}>
               500
             </Center>
-            <Center bg="sand.600" w="100%" h="16" fontSize="xs" color={'white'}>
+            <Center bg="brown.600" w="100%" h="16" fontSize="xs" color={'white'}>
               600
             </Center>
-            <Center bg="sand.700" w="100%" h="16" fontSize="xs" color={'white'}>
+            <Center bg="brown.700" w="100%" h="16" fontSize="xs" color={'white'}>
               700
             </Center>
-            <Center bg="sand.800" w="100%" h="16" fontSize="xs" color={'white'}>
+            <Center bg="brown.800" w="100%" h="16" fontSize="xs" color={'white'}>
               800
             </Center>
-            <Center bg="sand.900" w="100%" h="16" fontSize="xs" color={'white'}>
+            <Center bg="brown.900" w="100%" h="16" fontSize="xs" color={'white'}>
+              900
+            </Center>
+          </Stack>
+        </Section>
+
+        <Section variant="subsection">
+          <Heading size="h4">Orange</Heading>
+          <Stack direction="row">
+            <Center
+              bg="orange.50"
+              _hover={{
+                bg: darken('orange.50', 10),
+              }}
+              w="100%"
+              h="16"
+              fontSize="xs"
+              color={'black'}
+            >
+              50
+            </Center>
+
+            <Center
+              bg="orange.100"
+              _hover={{
+                bg: darken('orange.100', 10),
+              }}
+              w="100%"
+              h="16"
+              fontSize="xs"
+              color={'font.dark'}
+            >
+              100
+            </Center>
+
+            <Center
+              bg="orange.200"
+              _hover={{
+                bg: darken('orange.200', 10),
+              }}
+              w="100%"
+              h="16"
+              fontSize="xs"
+              color={'font.dark'}
+            >
+              200
+            </Center>
+
+            <Center
+              bg="orange.300"
+              _hover={{
+                bg: darken('orange.300', 10),
+              }}
+              w="100%"
+              h="16"
+              fontSize="xs"
+              color={'font.dark'}
+            >
+              300
+            </Center>
+
+            <Center
+              bg="orange.400"
+              _hover={{
+                bg: darken('orange.400', 10),
+              }}
+              w="100%"
+              h="16"
+              fontSize="xs"
+              color={'font.dark'}
+            >
+              400
+            </Center>
+
+            <Center
+              bg="orange.500"
+              _hover={{
+                bg: darken('orange.500', 10),
+              }}
+              w="100%"
+              h="16"
+              fontSize="xs"
+              color={'font.light'}
+            >
+              500
+            </Center>
+
+            <Center
+              bg="orange.600"
+              _hover={{
+                bg: darken('orange.600', 10),
+              }}
+              w="100%"
+              h="16"
+              fontSize="xs"
+              color={'font.light'}
+            >
+              600
+            </Center>
+
+            <Center
+              bg="orange.700"
+              _hover={{
+                bg: darken('orange.700', 10),
+              }}
+              w="100%"
+              h="16"
+              fontSize="xs"
+              color={'font.light'}
+            >
+              700
+            </Center>
+            <Center
+              bg="orange.800"
+              _hover={{
+                bg: darken('orange.800', 10),
+              }}
+              w="100%"
+              h="16"
+              fontSize="xs"
+              color={'font.light'}
+            >
+              800
+            </Center>
+            <Center
+              bg="orange.900"
+              _hover={{
+                bg: darken('orange.900', 10),
+              }}
+              w="100%"
+              h="16"
+              fontSize="xs"
+              color={'font.light'}
+            >
+              900
+            </Center>
+          </Stack>
+        </Section>
+
+        <Section variant="subsection">
+          <Heading size="h4">Red</Heading>
+          <Stack direction="row">
+            <Center bg="red.50" w="100%" h="16" fontSize="xs" color={'black'}>
+              50
+            </Center>
+            <Center bg="red.100" w="100%" h="16" fontSize="xs" color={'black'}>
+              100
+            </Center>
+            <Center bg="red.200" w="100%" h="16" fontSize="xs" color={'black'}>
+              200
+            </Center>
+            <Center bg="red.300" w="100%" h="16" fontSize="xs" color={'black'}>
+              300
+            </Center>
+            <Center bg="red.400" w="100%" h="16" fontSize="xs" color={'black'}>
+              400
+            </Center>
+            <Center bg="red.500" w="100%" h="16" fontSize="xs" color={'white'}>
+              500
+            </Center>
+            <Center bg="red.600" w="100%" h="16" fontSize="xs" color={'white'}>
+              600
+            </Center>
+            <Center bg="red.700" w="100%" h="16" fontSize="xs" color={'white'}>
+              700
+            </Center>
+            <Center bg="red.800" w="100%" h="16" fontSize="xs" color={'white'}>
+              800
+            </Center>
+            <Center bg="red.900" w="100%" h="16" fontSize="xs" color={'white'}>
               900
             </Center>
           </Stack>
         </Section>
         <Section variant="subsection">
-          <Heading size="h4">Salmon</Heading>
+          <Heading size="h4">Purple</Heading>
           <Stack direction="row">
-            <Center bg="salmon.50" w="100%" h="16" fontSize="xs" color={'black'}>
+            <Center bg="purple.50" w="100%" h="16" fontSize="xs" color={'black'}>
               50
             </Center>
-            <Center bg="salmon.100" w="100%" h="16" fontSize="xs" color={'black'}>
+            <Center bg="purple.100" w="100%" h="16" fontSize="xs" color={'black'}>
               100
             </Center>
-            <Center bg="salmon.200" w="100%" h="16" fontSize="xs" color={'black'}>
+            <Center bg="purple.200" w="100%" h="16" fontSize="xs" color={'black'}>
               200
             </Center>
-            <Center bg="salmon.300" w="100%" h="16" fontSize="xs" color={'black'}>
+            <Center bg="purple.300" w="100%" h="16" fontSize="xs" color={'black'}>
               300
             </Center>
-            <Center bg="salmon.400" w="100%" h="16" fontSize="xs" color={'black'}>
+            <Center bg="purple.400" w="100%" h="16" fontSize="xs" color={'black'}>
               400
             </Center>
-            <Center bg="salmon.500" w="100%" h="16" fontSize="xs" color={'white'}>
+            <Center bg="purple.500" w="100%" h="16" fontSize="xs" color={'white'}>
               500
             </Center>
-            <Center bg="salmon.600" w="100%" h="16" fontSize="xs" color={'white'}>
+            <Center bg="purple.600" w="100%" h="16" fontSize="xs" color={'white'}>
               600
             </Center>
-            <Center bg="salmon.700" w="100%" h="16" fontSize="xs" color={'white'}>
+            <Center bg="purple.700" w="100%" h="16" fontSize="xs" color={'white'}>
               700
             </Center>
-            <Center bg="salmon.800" w="100%" h="16" fontSize="xs" color={'white'}>
+            <Center bg="purple.800" w="100%" h="16" fontSize="xs" color={'white'}>
               800
             </Center>
-            <Center bg="salmon.900" w="100%" h="16" fontSize="xs" color={'white'}>
-              900
-            </Center>
-          </Stack>
-        </Section>
-        <Section variant="subsection">
-          <Heading size="h4">Lavendar</Heading>
-          <Stack direction="row">
-            <Center bg="lavender.50" w="100%" h="16" fontSize="xs" color={'black'}>
-              50
-            </Center>
-            <Center bg="lavender.100" w="100%" h="16" fontSize="xs" color={'black'}>
-              100
-            </Center>
-            <Center bg="lavender.200" w="100%" h="16" fontSize="xs" color={'black'}>
-              200
-            </Center>
-            <Center bg="lavender.300" w="100%" h="16" fontSize="xs" color={'black'}>
-              300
-            </Center>
-            <Center bg="lavender.400" w="100%" h="16" fontSize="xs" color={'black'}>
-              400
-            </Center>
-            <Center bg="lavender.500" w="100%" h="16" fontSize="xs" color={'white'}>
-              500
-            </Center>
-            <Center bg="lavender.600" w="100%" h="16" fontSize="xs" color={'white'}>
-              600
-            </Center>
-            <Center bg="lavender.700" w="100%" h="16" fontSize="xs" color={'white'}>
-              700
-            </Center>
-            <Center bg="lavender.800" w="100%" h="16" fontSize="xs" color={'white'}>
-              800
-            </Center>
-            <Center bg="lavender.900" w="100%" h="16" fontSize="xs" color={'white'}>
+            <Center bg="purple.900" w="100%" h="16" fontSize="xs" color={'white'}>
               900
             </Center>
           </Stack>
@@ -485,9 +626,14 @@ export default function Components() {
         <Section variant="subsection">
           <Heading size="h3">Gradients</Heading>
 
-          <Stack direction="column" spacing="8">
-            <Center bg="colorBgSpecial" w="100%" h="16">
+          <Stack direction="column" spacing="8" mb="8">
+            <Center bg="background.special" w="100%" h="16">
               Background special
+            </Center>
+          </Stack>
+          <Stack direction="column" spacing="8" mb="8">
+            <Center bg="background.specialSecondary" w="100%" h="16">
+              Background special secondary
             </Center>
           </Stack>
         </Section>
@@ -500,7 +646,7 @@ export default function Components() {
 
         <Box mb="8">
           <Text variant="eyebrow">H1 Hero</Text>
-          <Heading as="h1" variant="h1 " size="h1">
+          <Heading as="h1" variant="specialSecondary " size="h1">
             Hero heading 1
           </Heading>
         </Box>
@@ -564,8 +710,22 @@ export default function Components() {
           </Text>
         </Box>
         <Box mb="8">
+          <Text variant="eyebrow">Text error</Text>
+          <Text variant="secondary" maxW="container.md">
+            Body text lorem ipsum dolor sit amet consectetur adipisicing elit.
+          </Text>
+        </Box>
+        <Box mb="8">
           <Text variant="eyebrow">Text special</Text>
           <Text variant="special" maxW="container.md">
+            Body text lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora quidem ipsa
+            magnam dignissimos impedit odit tempore, necessitatibus provident cupiditate. Explicabo
+            iusto incidunt illum molestiae, dolores quam odit cupiditate id quibusdam!
+          </Text>
+        </Box>
+        <Box mb="8">
+          <Text variant="eyebrow">Text special secondary</Text>
+          <Text variant="specialSecondary" maxW="container.md">
             Body text lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora quidem ipsa
             magnam dignissimos impedit odit tempore, necessitatibus provident cupiditate. Explicabo
             iusto incidunt illum molestiae, dolores quam odit cupiditate id quibusdam!
@@ -596,11 +756,16 @@ export default function Components() {
         </Box>
         <Box mb="8">
           <Text variant="eyebrow">Link</Text>
-          <Tag my="2" colorScheme="red">
-            To do
-          </Tag>
           <Box>
-            <Link href="cookies-policy">Cookies policy</Link>
+            <Link bg="font.link" backgroundClip="text" href="/cookies-policy">
+              Cookies policy
+            </Link>
+          </Box>
+        </Box>
+        <Box mb="8">
+          <Text variant="eyebrow">External link</Text>
+          <Box>
+            <a href="https://aura.finance/">Learn more on Aura</a>
           </Box>
         </Box>
         <Box mb="8">
@@ -658,46 +823,46 @@ export default function Components() {
           Border Radius
         </Heading>
         <Stack direction="row" flexWrap="wrap" mb="8">
-          <Center h="20" w="20" borderRadius="none" bg="colorCardBgLevel8" shadow="xl">
+          <Center h="20" w="20" borderRadius="none" bg="background.card.level5" shadow="xl">
             none
           </Center>
-          <Center h="20" w="20" borderRadius="sm" bg="colorCardBgLevel8" shadow="xl">
+          <Center h="20" w="20" borderRadius="sm" bg="background.card.level5" shadow="xl">
             <Box>
               <Center>sm</Center>
               <Center fontSize="xs">2px</Center>
             </Box>
           </Center>
-          <Center h="20" w="20" borderRadius="base" bg="colorCardBgLevel8" shadow="xl">
+          <Center h="20" w="20" borderRadius="base" bg="background.card.level5" shadow="xl">
             <Box>
               <Center>base</Center>
               <Center fontSize="xs">4px</Center>
             </Box>
           </Center>
-          <Center h="20" w="20" borderRadius="lg" bg="colorCardBgLevel8" shadow="xl">
+          <Center h="20" w="20" borderRadius="lg" bg="background.card.level5" shadow="xl">
             <Box>
               <Center>lg</Center>
               <Center fontSize="xs">8px</Center>
             </Box>
           </Center>
-          <Center h="20" w="20" borderRadius="xl" bg="colorCardBgLevel8" shadow="xl">
+          <Center h="20" w="20" borderRadius="xl" bg="background.card.level5" shadow="xl">
             <Box>
               <Center>xl</Center>
               <Center fontSize="xs">12px</Center>
             </Box>
           </Center>
-          <Center h="20" w="20" borderRadius="2xl" bg="colorCardBgLevel8" shadow="xl">
+          <Center h="20" w="20" borderRadius="2xl" bg="background.card.level5" shadow="xl">
             <Box>
               <Center>2xl</Center>
               <Center fontSize="xs">16px</Center>
             </Box>
           </Center>
-          <Center h="20" w="20" borderRadius="3xl" bg="colorCardBgLevel8" shadow="xl">
+          <Center h="20" w="20" borderRadius="3xl" bg="background.card.level5" shadow="xl">
             <Box>
               <Center>3xl</Center>
               <Center fontSize="xs">20px</Center>
             </Box>
           </Center>
-          <Center h="20" w="20" borderRadius="full" bg="colorCardBgLevel8" shadow="xl">
+          <Center h="20" w="20" borderRadius="full" bg="background.card.level5" shadow="xl">
             <Box>
               <Center>full</Center>
               <Center fontSize="xs">9999px</Center>
@@ -782,79 +947,115 @@ export default function Components() {
           Shadows
         </Heading>
         <Stack direction="row" flexWrap="wrap" mb="8">
-          <Card variant="level8" shadow="xs">
+          <Card variant="level5" shadow="xs">
             <CardBody>
               <Text>xs</Text>
             </CardBody>
           </Card>
-          <Card variant="level8" shadow="sm">
+          <Card variant="level5" shadow="sm">
             <CardBody>
               <Text>sm</Text>
             </CardBody>
           </Card>
-          <Card shadow="base" variant="level8">
+          <Card shadow="base" variant="level5">
             <CardBody>
               <Text>base</Text>
             </CardBody>
           </Card>
-          <Card shadow="md" variant="level8">
+          <Card shadow="md" variant="level5">
             <CardBody>
               <Text>md</Text>
             </CardBody>
           </Card>
-          <Card shadow="lg" variant="level8">
+          <Card shadow="lg" variant="level5">
             <CardBody>
               <Text>lg</Text>
             </CardBody>
           </Card>
-          <Card shadow="xl" variant="level8">
+          <Card shadow="xl" variant="level5">
             <CardBody>
               <Text>xl</Text>
             </CardBody>
           </Card>
-          <Card shadow="2xl" variant="level8">
+          <Card shadow="2xl" variant="level5">
             <CardBody>
               <Text>2xl</Text>
             </CardBody>
           </Card>
-          <Card shadow="dark-lg" variant="level8">
+          <Card shadow="dark-lg" variant="level5">
             <CardBody>
               <Text>dark-lg</Text>
             </CardBody>
           </Card>
         </Stack>
         <Stack direction="row" flexWrap="wrap">
-          <Card shadow="outline" variant="level8">
+          <Card shadow="outline" variant="level5">
             <CardBody>
               <Text>outline</Text>
             </CardBody>
           </Card>
-          <Card shadow="innerBase" variant="level8">
+          <Card shadow="innerBase" variant="level5">
             <CardBody>
               <Text>inner base</Text>
             </CardBody>
           </Card>
-          <Card shadow="inner" variant="level8">
+          <Card shadow="inner" variant="level5">
             <CardBody>
               <Text>inner</Text>
             </CardBody>
           </Card>
-          <Card shadow="innerSm" variant="level8">
+          <Card shadow="innerSm" variant="level5">
             <CardBody>
               <Text>innerSm</Text>
             </CardBody>
           </Card>
-          <Card shadow="innerMd" variant="level8">
+          <Card shadow="innerMd" variant="level5">
             <CardBody>
               <Text>innerMd</Text>
             </CardBody>
           </Card>
-          <Card shadow="innerLg" variant="level8">
+          <Card shadow="innerLg" variant="level5">
             <CardBody>
               <Text>innerLg</Text>
             </CardBody>
           </Card>
         </Stack>
+      </Section>
+
+      <Section id="alerts">
+        <Heading as="h1" variant="gradient-dusk" size="h1-hero">
+          Alerts
+        </Heading>
+        <Section variant="subsection">
+          <Alert status="error">
+            <AlertIcon />
+            <AlertTitle>Your browser is outdated!</AlertTitle>
+            <AlertDescription>Your Chakra experience may be degraded.</AlertDescription>
+          </Alert>
+        </Section>
+
+        <Section variant="subsection">
+          <Alert status="success">
+            <AlertIcon />
+            <AlertTitle>Your browser is outdated!</AlertTitle>
+            <AlertDescription>Your Chakra experience may be degraded.</AlertDescription>
+          </Alert>
+        </Section>
+        <Section variant="subsection">
+          <Alert status="warning">
+            <AlertIcon />
+            <AlertTitle>Your browser is outdated!</AlertTitle>
+            <AlertDescription>Your Chakra experience may be degraded.</AlertDescription>
+          </Alert>
+        </Section>
+
+        <Section variant="subsection">
+          <Alert status="info">
+            <AlertIcon />
+            <AlertTitle>Your browser is outdated!</AlertTitle>
+            <AlertDescription>A tip or piece of information.</AlertDescription>
+          </Alert>
+        </Section>
       </Section>
 
       <Section id="cards">
@@ -865,7 +1066,7 @@ export default function Components() {
           <CardHeader>
             <Flex>
               <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-                <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
+                <Avatar name="Avatar name" src="https://placehold.co/80" />
 
                 <Box>
                   <Heading size="sm">Title</Heading>
@@ -881,11 +1082,7 @@ export default function Components() {
               incidunt illum molestiae, dolores quam odit cupiditate id quibusdam!
             </Text>
           </CardBody>
-          <Image
-            objectFit="cover"
-            src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-            alt="Chakra UI"
-          />
+          <Image objectFit="cover" src="https://placehold.co/400x200" alt="Chakra UI" />
 
           <CardFooter
             justify="space-between"

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Alert, Button, ButtonProps, VStack } from '@chakra-ui/react'
 import React, { useEffect } from 'react'
 import { FlowStep } from './lib'
@@ -47,14 +48,12 @@ export default function TransactionFlow({
     if (areAllStepsComplete) {
       onComplete?.()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areAllStepsComplete])
 
   // notify step activation
   useEffect(() => {
     // console.log('Chaging activeStep to', activeStep.id)
     activeStep.activateStep() //TODO: also deactivate previous steps (is that necessary, we could skip it if we use enabled with completed but thats dangerous, this is probably easier)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeStep.id])
 
   return (

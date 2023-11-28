@@ -9,7 +9,7 @@ import { Flex, Heading, InputGroup, InputLeftAddon, Stack, VStack } from '@chakr
 import RecentTransactions from '../RecentTransactions'
 
 import { AmountToApprove } from '@/lib/modules/pool/join/approvals'
-import { useConstructTokenApprovals } from '@/lib/modules/pool/join/useTokenApprovals'
+import { useNextTokenApprovalStep } from '@/lib/modules/pool/join/useNextTokenApprovalStep'
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { usePoolStateInput } from '@/lib/shared/hooks/balancer-api/usePoolStateInput'
@@ -24,13 +24,13 @@ export function JoinWithTokenApproval() {
 
   //This would come from the user form --> MAKE FORM DYNAMIC FROM THE given pool tokens
   const amountsToApprove: AmountToApprove[] = [
-    { amount: 10000000n, tokenAddress: wETHAddress },
+    { tokenAddress: wETHAddress, amount: 10000000n },
     { tokenAddress: wjAuraAddress, amount: 10000000n },
   ]
 
-  const { tokenApprovalSteps } = useConstructTokenApprovals(amountsToApprove)
+  const { tokenApprovalStep } = useNextTokenApprovalStep(amountsToApprove)
   const { step: joinStep, setWethHumanAmount } = useConstructJoinPoolStep(poolStateQuery)
-  const steps = [...tokenApprovalSteps, joinStep]
+  const steps = [tokenApprovalStep, joinStep]
 
   const { balanceFor, isBalancesLoading } = useTokenBalances()
 
