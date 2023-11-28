@@ -8,8 +8,8 @@ import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/Tran
 import { Flex, Heading, InputGroup, InputLeftAddon, Stack, VStack } from '@chakra-ui/react'
 import RecentTransactions from '../RecentTransactions'
 
-import { AmountToApprove } from '@/lib/modules/pool/join/approvals'
-import { useNextTokenApprovalStep } from '@/lib/modules/pool/join/useNextTokenApprovalStep'
+import { AmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
+import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNextTokenApprovalStep'
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { usePoolStateInput } from '@/lib/shared/hooks/balancer-api/usePoolStateInput'

@@ -7,7 +7,7 @@ import {
 } from '@/lib/shared/services/api/generated/graphql'
 import { fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
 import { mock } from 'vitest-mock-extended'
-import { AmountToApprove } from '../../pool/join/approvals'
+import { AmountToApprove } from '../approvals/approval-rules'
 import { TokenAllowances } from '../../web3/useTokenAllowances'
 import { TokenAmount, TokenBase } from '../token.types'
 import { MswTokenList } from './token.test.types'

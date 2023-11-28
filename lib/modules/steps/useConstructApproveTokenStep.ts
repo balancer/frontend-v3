@@ -7,10 +7,13 @@ import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { MAX_BIGINT } from '@/lib/shared/hooks/useNumbers'
 import { useEffect } from 'react'
 import { Address } from 'viem'
-import { TokenApprovalLabelArgs, buildTokenApprovalLabels } from '../pool/join/approval-labels'
+import {
+  TokenApprovalLabelArgs,
+  buildTokenApprovalLabels,
+} from '../tokens/approvals/approval-labels'
 import { useTokenAllowances } from '../web3/useTokenAllowances'
 import { useActiveStep } from './useActiveStep'
-import { CompletedApprovalState } from '../pool/join/useCompletedApprovalsState'
+import { CompletedApprovalState } from '../tokens/approvals/useCompletedApprovalsState'
 
 export function useConstructApproveTokenStep(
   tokenAddress: Address,

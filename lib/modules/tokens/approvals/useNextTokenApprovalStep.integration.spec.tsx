@@ -3,7 +3,7 @@ import { DefaultTokenAllowancesTestProvider, testHook } from '@/test/utils/custo
 import { testPublicClient } from '@/test/utils/wagmi'
 import { waitFor } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
-import { AmountToApprove } from './approvals'
+import { AmountToApprove } from './approval-rules'
 import { useNextTokenApprovalStep } from './useNextTokenApprovalStep'
 
 //TODO: Extract to helper

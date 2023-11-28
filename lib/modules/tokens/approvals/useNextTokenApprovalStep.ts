@@ -1,12 +1,10 @@
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { isEmpty } from 'lodash'
-import { useState } from 'react'
-import { Address } from 'viem'
 import { useConstructApproveTokenStep } from '../../steps/useConstructApproveTokenStep'
-import { emptyAddress } from '../../web3/contracts/wagmi-helpers'
-import { AmountToApprove, filterRequiredTokenApprovals } from './approvals'
+import { AmountToApprove, filterRequiredTokenApprovals } from './approval-rules'
 import { useCompletedApprovalsState } from './useCompletedApprovalsState'
+import { emptyAddress } from '../../web3/contracts/wagmi-helpers'
 
 /*
   Returns the next Token Approval Step to be rendered by the TransactionFlow component
