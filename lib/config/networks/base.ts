@@ -5,7 +5,7 @@ const networkConfig: NetworkConfig = {
   name: 'Base Mainnet',
   shortName: 'Base',
   iconPath: '/images/chains/BASE.svg',
-  etherscan: 'https://basescan.org',
+  blockExplorerBaseUrl: 'https://basescan.org',
   tokens: {
     nativeAsset: {
       name: 'Ether',

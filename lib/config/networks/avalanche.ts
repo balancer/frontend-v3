@@ -5,7 +5,7 @@ const networkConfig: NetworkConfig = {
   name: 'Avalanche Mainnet',
   shortName: 'Avalanche',
   iconPath: '/images/chains/AVALANCHE.svg',
-  etherscan: 'https://snowtrace.io',
+  blockExplorerBaseUrl: 'https://snowtrace.io',
   tokens: {
     nativeAsset: {
       name: 'Avalanche',
