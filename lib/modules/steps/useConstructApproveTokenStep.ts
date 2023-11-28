@@ -10,11 +10,11 @@ import { Address } from 'viem'
 import { TokenApprovalLabelArgs, buildTokenApprovalLabels } from '../pool/join/approval-labels'
 import { useTokenAllowances } from '../web3/useTokenAllowances'
 import { useActiveStep } from './useActiveStep'
+import { CompletedApprovalState } from '../pool/join/useCompletedApprovalsState'
 
 export function useConstructApproveTokenStep(
   tokenAddress: Address,
-  completedApprovals: Address[],
-  saveCompletedApprovals: (address: Address) => void
+  { completedApprovals, saveCompletedApprovals }: CompletedApprovalState
 ) {
   const { isActiveStep, activateStep } = useActiveStep()
   const spender = useContractAddress('balancer.vaultV2')

@@ -6,6 +6,7 @@ import { Address } from 'viem'
 import { useConstructApproveTokenStep } from '../../steps/useConstructApproveTokenStep'
 import { emptyAddress } from '../../web3/contracts/wagmi-helpers'
 import { AmountToApprove, filterRequiredTokenApprovals } from './approvals'
+import { useCompletedApprovalsState } from './useCompletedApprovalsState'
 
 /*
   Returns the next Token Approval Step to be rendered by the TransactionFlow component
@@ -24,10 +25,7 @@ export function useNextTokenApprovalStep(amountsToApprove: AmountToApprove[]) {
     currentTokenAllowances,
   })
 
-  const [completedApprovals, setCompletedApprovals] = useState<Address[]>([])
-  const saveCompletedApprovals = (address: Address) => {
-    setCompletedApprovals([...completedApprovals, address])
-  }
+  const completedTokenApprovalsState = useCompletedApprovalsState()
 
   const tokenAddressToApprove = isEmpty(filteredAmountsToApprove)
     ? emptyAddress
@@ -35,8 +33,7 @@ export function useNextTokenApprovalStep(amountsToApprove: AmountToApprove[]) {
 
   const tokenApprovalStep = useConstructApproveTokenStep(
     tokenAddressToApprove,
-    completedApprovals,
-    saveCompletedApprovals
+    completedTokenApprovalsState
   )
 
   return {
