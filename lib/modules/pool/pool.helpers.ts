@@ -1,8 +1,13 @@
 import { dateToUnixTimestamp } from '@/lib/shared/hooks/useTime'
-import { GqlPoolBase, GqlPoolFilterType } from '@/lib/shared/services/api/generated/graphql'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
+import {
+  GetPoolQuery,
+  GqlChain,
+  GqlPoolBase,
+  GqlPoolFilterType,
+} from '@/lib/shared/services/api/generated/graphql'
+import { getAddressBlockExplorerLink, isSameAddress } from '@/lib/shared/utils/addresses'
 import BigNumber from 'bignumber.js'
-import { getAddress } from 'viem'
+import { Address, getAddress } from 'viem'
 
 /**
  * METHODS
@@ -116,4 +121,25 @@ export function createdAfterTimestamp(pool: GqlPoolBase): boolean {
 
   // Epoch timestamp is bigger if the date is older
   return pool.createTime > creationTimestampLimit
+}
+
+type Pool = GetPoolQuery['pool']
+export function buildGqlPoolHelpers(pool: Pool, chain: GqlChain) {
+  function getBlockExplorerPoolLink() {
+    return getAddressBlockExplorerLink(pool.address as Address, chain)
+  }
+
+  function getBlockExplorerGaugeLink() {
+    return getAddressBlockExplorerLink(pool?.staking?.gauge?.gaugeAddress as Address, chain)
+  }
+
+  function hasGaugeAddress() {
+    return !!pool?.staking?.gauge?.gaugeAddress
+  }
+
+  function getGaugeAddress() {
+    return pool?.staking?.gauge?.gaugeAddress || ''
+  }
+
+  return { getBlockExplorerPoolLink, getBlockExplorerGaugeLink, hasGaugeAddress, getGaugeAddress }
 }

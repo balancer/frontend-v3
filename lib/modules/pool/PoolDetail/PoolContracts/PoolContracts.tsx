@@ -1,11 +1,10 @@
+import { shortenLabel } from '@/lib/shared/utils/addresses'
+import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { Box, Card, HStack, Heading, Link, Text, VStack } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
-import { getAddressBlockExplorerLink, shortenLabel } from '@/lib/shared/utils/addresses'
-import { Address } from 'viem'
-import { ExternalLinkIcon } from '@chakra-ui/icons'
 
 export function PoolContracts() {
-  const { pool, chain } = usePool()
+  const { pool, poolHelpers } = usePool()
   return (
     <Card minHeight="175px" width="full" variant="level3" px="6" py="5">
       <VStack alignItems="flex-start" spacing="4" width="full">
@@ -17,30 +16,21 @@ export function PoolContracts() {
             <Box minWidth="150px">
               <Text variant="secondary">Pool</Text>
             </Box>
-            <Link
-              target="_blank"
-              href={getAddressBlockExplorerLink(pool.address as Address, chain)}
-            >
+            <Link target="_blank" href={poolHelpers.getBlockExplorerPoolLink()}>
               <HStack>
                 <Text variant="secondary">{shortenLabel(pool.address)}</Text>
                 <ExternalLinkIcon color="gray.400" width="1rem" height="1rem" />
               </HStack>
             </Link>
           </HStack>
-          {pool.staking?.gauge?.gaugeAddress && (
+          {poolHelpers.hasGaugeAddress() && (
             <HStack width="full" spacing="8">
               <Box minWidth="150px">
                 <Text variant="secondary">Gauge</Text>
               </Box>
-              <Link
-                target="_blank"
-                href={getAddressBlockExplorerLink(
-                  pool.staking.gauge?.gaugeAddress as Address,
-                  chain
-                )}
-              >
+              <Link target="_blank" href={poolHelpers.getBlockExplorerGaugeLink()}>
                 <HStack>
-                  <Text variant="secondary">{shortenLabel(pool.staking.gauge?.gaugeAddress)}</Text>
+                  <Text variant="secondary">{shortenLabel(poolHelpers.getGaugeAddress())}</Text>
                   <ExternalLinkIcon color="gray.400" width="1rem" height="1rem" />
                 </HStack>
               </Link>
