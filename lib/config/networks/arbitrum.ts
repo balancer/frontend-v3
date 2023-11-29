@@ -5,6 +5,7 @@ const networkConfig: NetworkConfig = {
   name: 'Arbitrum One',
   shortName: 'Arbitrum',
   iconPath: '/images/chains/ARBITRUM.svg',
+  blockExplorerBaseUrl: 'https://arbiscan.io',
   tokens: {
     nativeAsset: {
       name: 'Ether',

@@ -25,6 +25,7 @@ export interface NetworkConfig {
   name: string
   shortName: string
   iconPath: string
+  blockExplorerBaseUrl: string
   tokens: TokensConfig
   contracts: ContractsConfig
 }

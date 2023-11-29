@@ -5,8 +5,9 @@ import { DELEGATE_OWNER } from '@/lib/config/app.config'
 import { zeroAddress } from 'viem'
 import { shortenLabel } from '@/lib/shared/utils/addresses'
 import { feePercentFormat } from '@/lib/shared/hooks/useNumbers'
+import { upperFirst } from 'lodash'
 
-export function usePoolInfo() {
+export function useFormattedPoolAttributes() {
   const { pool } = usePool()
 
   const poolOwnerData = useMemo(() => {
@@ -28,7 +29,7 @@ export function usePoolInfo() {
     }
   }, [pool])
 
-  const poolDetails = useMemo(() => {
+  const foramttedPoolAttributes = useMemo(() => {
     if (!pool) return []
     const { name, symbol, createTime, address, dynamicData, type } = pool
 
@@ -43,7 +44,7 @@ export function usePoolInfo() {
       },
       {
         title: 'Pool type',
-        value: type,
+        value: upperFirst(type.toLowerCase()),
       },
       {
         title: 'Swap fees',
@@ -70,7 +71,5 @@ export function usePoolInfo() {
     ]
   }, [pool, poolOwnerData])
 
-  return {
-    poolDetails,
-  }
+  return foramttedPoolAttributes
 }

@@ -557,6 +557,10 @@ export const balTheme = {
           icon: {
             color: 'brown.300',
           },
+          panel: {
+            px: '0',
+            py: '6',
+          },
           button: {
             px: '5',
             py: '6',
@@ -821,10 +825,18 @@ export const balTheme = {
         },
       },
     },
+    Modal: {
+      baseStyle: {
+        dialog: {
+          background: 'background.card.level3',
+        },
+      },
+    },
     Card: {
       baseStyle: {
         container: {
           background: 'background.card.level0',
+          rounded: 'lg',
         },
       },
       variants: {
@@ -931,6 +943,13 @@ export const balTheme = {
                 )`,
             },
           },
+        },
+      },
+    },
+    List: {
+      baseStyle: {
+        item: {
+          color: 'purple.300',
         },
       },
     },

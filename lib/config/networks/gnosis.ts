@@ -5,6 +5,7 @@ const networkConfig: NetworkConfig = {
   name: 'Gnosis Chain',
   shortName: 'Gnosis',
   iconPath: '/images/chains/GNOSIS.svg',
+  blockExplorerBaseUrl: 'https://gnosisscan.io',
   tokens: {
     nativeAsset: {
       name: 'xDAI',
