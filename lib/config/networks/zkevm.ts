@@ -5,6 +5,7 @@ const networkConfig: NetworkConfig = {
   name: 'Polygon zkEVM Mainnet',
   shortName: 'zkEVM',
   iconPath: '/images/chains/ZKEVM.svg',
+  blockExplorerBaseUrl: 'https://zkevm.polygonscan.com',
   tokens: {
     nativeAsset: {
       name: 'Ether',
