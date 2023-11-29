@@ -19,7 +19,7 @@ export function PoolListTableHeader({ ...rest }) {
         <Icon as={FiGlobe} boxSize="6" ml="1" />
       </GridItem>
       <GridItem>
-        <Text>Pool name</Text>
+        <Text>Pool tokens</Text>
       </GridItem>
       {[GqlPoolOrderBy.TotalLiquidity, GqlPoolOrderBy.Volume24h, GqlPoolOrderBy.Apr].map(
         (orderByItem, index) => (
