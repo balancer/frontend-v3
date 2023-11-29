@@ -2,6 +2,7 @@ import {
   GqlChain,
   GqlPoolElement,
   GqlPoolFilterType,
+  GqlPoolMinimalType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { isMetaStable, isStable, isWeighted } from '../../pool.helpers'
 import { zeroAddress } from 'viem'
@@ -83,10 +84,10 @@ const mutableRisks = getLink(RiskKey.Mutable)
 export function getPoolRisks(pool: GqlPoolElement): Risk[] {
   const result: Risk[] = []
 
-  if (isWeighted(pool.type as GqlPoolFilterType)) result.push(weightedRisks)
+  if (isWeighted(pool.type as GqlPoolMinimalType)) result.push(weightedRisks)
   if (isStable(pool.type as GqlPoolFilterType)) result.push(stableRisks)
   //   if (isComposableStable(pool.poolType)) result.push(composableRisks)
-  if (isMetaStable(pool.type as GqlPoolFilterType)) result.push(metaStableRisks)
+  if (isMetaStable(pool.type as GqlPoolMinimalType)) result.push(metaStableRisks)
 
   //   if (isBoosted(pool)) {
   //     result.push(boostedRisks)
