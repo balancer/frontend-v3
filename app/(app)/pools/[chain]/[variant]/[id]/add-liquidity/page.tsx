@@ -1,7 +1,10 @@
 'use client'
 
-import { Box } from '@chakra-ui/react'
+import { PoolActionsLayout } from '@/lib/modules/pool/actions/PoolActionsLayout'
+import { usePool } from '@/lib/modules/pool/usePool'
 
 export default function AddLiquidityPage() {
-  return <Box>content</Box>
+  const { pool } = usePool()
+
+  return <PoolActionsLayout pool={pool}>Content</PoolActionsLayout>
 }
