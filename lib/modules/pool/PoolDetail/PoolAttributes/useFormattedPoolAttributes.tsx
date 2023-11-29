@@ -7,7 +7,7 @@ import { shortenLabel } from '@/lib/shared/utils/addresses'
 import { feePercentFormat } from '@/lib/shared/hooks/useNumbers'
 import { upperFirst } from 'lodash'
 
-export default function useFormattedPoolAttributes() {
+export function useFormattedPoolAttributes() {
   const { pool } = usePool()
 
   const poolOwnerData = useMemo(() => {

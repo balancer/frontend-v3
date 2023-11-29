@@ -1,5 +1,5 @@
 import { Box, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
-import useFormattedPoolAttributes from './useFormattedPoolAttributes'
+import { useFormattedPoolAttributes } from './useFormattedPoolAttributes'
 
 export function PoolAttributes() {
   const formattedAttributes = useFormattedPoolAttributes()
