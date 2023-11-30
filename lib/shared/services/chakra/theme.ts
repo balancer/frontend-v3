@@ -487,6 +487,8 @@ export const balTheme = {
     },
     sizes: {
       maxContent: '1320px',
+      screenHeight: '100vh',
+      screenWidth: '100vw',
     },
     radii: {
       default: 'md',

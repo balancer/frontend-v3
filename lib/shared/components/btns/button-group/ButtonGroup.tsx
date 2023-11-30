@@ -1,4 +1,4 @@
-import { Button, HStack } from '@chakra-ui/react'
+import { Button, ButtonProps, HStack } from '@chakra-ui/react'
 import React from 'react'
 
 export type ButtonGroupOption = {
@@ -10,9 +10,10 @@ type Props = {
   value: ButtonGroupOption
   options: ButtonGroupOption[]
   onChange: (option: ButtonGroupOption) => void
+  size?: ButtonProps['size']
 }
 
-export default function ButtonGroup({ value, options, onChange }: Props) {
+export default function ButtonGroup({ value, options, onChange, size }: Props) {
   return (
     <HStack
       rounded="md"
@@ -31,6 +32,7 @@ export default function ButtonGroup({ value, options, onChange }: Props) {
             key={`button-group-option-${option.id}`}
             variant={isActive ? 'buttonGroupActive' : 'buttonGroupInactive'}
             id={`button-group-${option.id}`}
+            size={size}
           >
             {option.label}
           </Button>
