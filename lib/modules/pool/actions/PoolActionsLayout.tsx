@@ -4,12 +4,12 @@ import { Navbar } from '@/lib/shared/components/navs/Navbar'
 import { GetPoolQuery } from '@/lib/shared/services/api/generated/graphql'
 import { Box, VStack, Card } from '@chakra-ui/react'
 import { PropsWithChildren } from 'react'
+import { PoolActionsNav } from './PoolActionsNav'
+import { usePool } from '../usePool'
 
-type Props = PropsWithChildren<{
-  pool: GetPoolQuery['pool']
-}>
+export function PoolActionsLayout({ children }: PropsWithChildren) {
+  const { pool } = usePool()
 
-export function PoolActionsLayout({ pool, children }: Props) {
   return (
     <Box pos="absolute" top={0} left={0} w="full" h="full" bg="transparent" zIndex={100}>
       <VStack
@@ -33,6 +33,7 @@ export function PoolActionsLayout({ pool, children }: Props) {
             borderTopRadius="2xl"
             p="md"
           >
+            <PoolActionsNav />
             {children}
           </Card>
         </Box>

@@ -8,7 +8,6 @@ import { Box, Button, Card, HStack, Heading, Text, VStack } from '@chakra-ui/rea
 import React, { useState } from 'react'
 import { usePool } from '../usePool'
 import { Address } from 'viem'
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const TABS = [
