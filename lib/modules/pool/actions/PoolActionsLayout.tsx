@@ -1,7 +1,6 @@
 'use client'
 
 import { Navbar } from '@/lib/shared/components/navs/Navbar'
-import { GetPoolQuery } from '@/lib/shared/services/api/generated/graphql'
 import { Box, VStack, Card } from '@chakra-ui/react'
 import { PropsWithChildren } from 'react'
 import { PoolActionsNav } from './PoolActionsNav'
