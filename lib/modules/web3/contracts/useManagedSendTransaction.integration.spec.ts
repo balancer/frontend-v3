@@ -1,14 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { describe, expect, test } from 'vitest'
 
-<<<<<<< Updated upstream
-import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { AddLiquidityConfigBuilder } from '@/lib/modules/steps/join/AddLiquidityConfigBuilder'
-=======
 import { poolId } from '@/lib/debug-helpers'
-import { AddLiquidityConfigBuilder } from '@/lib/modules/pool/actions/add-liquidity/AddLiquidityConfigBuilder'
+import { AddLiquidityConfigBuilder } from '@/lib/modules/steps/join/AddLiquidityConfigBuilder'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
->>>>>>> Stashed changes
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import { testHook } from '@/test/utils/custom-renderers'
 import {
@@ -19,13 +14,7 @@ import {
 import { ChainId, HumanAmount } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/actions'
-<<<<<<< Updated upstream
-import { chains } from '../Web3Provider'
 import { buildJoinPoolLabels } from '../../steps/join/useConstructJoinPoolStep'
-import { poolId } from '@/lib/debug-helpers'
-=======
-import { buildAddLiquidityLabels } from '../../pool/actions/add-liquidity/useConstructAddLiquidityStep'
->>>>>>> Stashed changes
 import { someTokenAllowancesMock } from '../../tokens/__mocks__/token.builders'
 
 const chainId = ChainId.MAINNET
