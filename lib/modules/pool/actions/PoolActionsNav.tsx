@@ -10,6 +10,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
+import Link from 'next/link'
 
 const TABS = [
   {
@@ -41,11 +42,12 @@ export function PoolActionsNav() {
       </Card>
       <ButtonGroup value={activeTab} options={TABS} onChange={toggleFlow} size="lg" />
       <IconButton
-        as="a"
+        as={Link}
         href={getPoolPath(pool)}
         isRound={true}
         variant="outline"
         aria-label="Close"
+        prefetch={true}
         icon={<CloseIcon />}
       />
     </HStack>

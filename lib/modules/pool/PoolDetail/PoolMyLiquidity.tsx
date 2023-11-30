@@ -9,6 +9,7 @@ import React, { useState } from 'react'
 import { usePool } from '../usePool'
 import { Address } from 'viem'
 import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 
 const TABS = [
   {
@@ -84,10 +85,21 @@ export default function PoolMyLiquidity() {
               </VStack>
             </VStack>
             <HStack p="4" width="full" justifyContent="flex-start">
-              <Button as="a" href={`${pathname}/add-liquidity`} variant="primary">
+              <Button
+                as={Link}
+                href={`${pathname}/add-liquidity`}
+                variant="primary"
+                prefetch={true}
+              >
                 Add
               </Button>
-              <Button variant="disabled" isDisabled>
+              <Button
+                as={Link}
+                href={`${pathname}/remove-liquidity`}
+                variant="disabled"
+                isDisabled
+                prefetch={true}
+              >
                 Remove
               </Button>
               <Button variant="disabled" isDisabled>
