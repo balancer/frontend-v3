@@ -14,43 +14,37 @@ export function PoolListTokensTag({ pool }: Props) {
   if (pool && isWeighted(pool.type)) {
     return (
       <HStack spacing="1">
-        {pool.displayTokens.map(token => {
-          return (
-            <>
-              <Tag key={token.address} borderRadius="full" p="2">
-                <HStack>
-                  <TokenIcon
-                    chain={pool.chain}
-                    address={token.address}
-                    size={24}
-                    alt={token?.symbol || token.address}
-                  />
-                  <Text>{token.symbol}</Text>
-                  <Text>{numeral(token.weight).format('%')}</Text>
-                </HStack>
-              </Tag>
-            </>
-          )
-        })}
+        {pool.displayTokens.map(token => (
+          <Tag key={token.address} borderRadius="full" p="2">
+            <HStack>
+              <TokenIcon
+                chain={pool.chain}
+                address={token.address}
+                size={24}
+                alt={token?.symbol || token.address}
+              />
+              <Text>{token.symbol}</Text>
+              <Text>{numeral(token.weight).format('%')}</Text>
+            </HStack>
+          </Tag>
+        ))}
       </HStack>
     )
   } else if (pool && isMetaStable(pool.type)) {
     return (
       <Tag borderRadius="full" p="2">
         <HStack>
-          {pool.displayTokens.map(token => {
-            return (
-              <HStack key={token.address} spacing="1">
-                <TokenIcon
-                  chain={pool.chain}
-                  address={token.address}
-                  size={24}
-                  alt={token?.symbol || token.address}
-                />
-                <Text>{token.symbol}</Text>
-              </HStack>
-            )
-          })}
+          {pool.displayTokens.map(token => (
+            <HStack key={token.address} spacing="1">
+              <TokenIcon
+                chain={pool.chain}
+                address={token.address}
+                size={24}
+                alt={token?.symbol || token.address}
+              />
+              <Text>{token.symbol}</Text>
+            </HStack>
+          ))}
         </HStack>
       </Tag>
     )
@@ -58,17 +52,15 @@ export function PoolListTokensTag({ pool }: Props) {
     return (
       <Tag borderRadius="full" p="2">
         <HStack spacing="1">
-          {pool.displayTokens.map(token => {
-            return (
-              <TokenIcon
-                key={token.address}
-                chain={pool.chain}
-                address={token.address}
-                size={24}
-                alt={token?.symbol || token.address}
-              />
-            )
-          })}
+          {pool.displayTokens.map(token => (
+            <TokenIcon
+              key={token.address}
+              chain={pool.chain}
+              address={token.address}
+              size={24}
+              alt={token?.symbol || token.address}
+            />
+          ))}
           <Text>{pool.name}</Text>
         </HStack>
       </Tag>
