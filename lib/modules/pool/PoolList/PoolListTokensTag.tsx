@@ -1,69 +1,115 @@
 'use client'
 
-import { isMetaStable, isStable, isWeighted } from '../pool.helpers'
-import { HStack, Tag, Text } from '@chakra-ui/react'
+import { isGyro, isMetaStable, isPhantomStable, isStable, isWeighted } from '../pool.helpers'
+import { Box, HStack, Tag, Text } from '@chakra-ui/react'
 import { TokenIcon } from '../../tokens/TokenIcon'
 import { PoolListItem } from '../pool.types'
-import numeral from 'numeral'
+import { toPercentageFormatted } from '@/lib/shared/utils/numbers'
+import { GqlChain, GqlPoolTokenDisplay } from '@/lib/shared/services/api/generated/graphql'
 
 interface Props {
   pool: PoolListItem
 }
 
+function PoolTokenIcon({
+  token,
+  chain,
+  border,
+}: {
+  token: GqlPoolTokenDisplay
+  chain: GqlChain
+  border?: string
+}) {
+  return (
+    <TokenIcon
+      chain={chain}
+      address={token.address}
+      size={24}
+      alt={token?.symbol || token.address}
+      border={border}
+    />
+  )
+}
+
+function NestedTokens({
+  nestedTokens,
+  chain,
+}: {
+  nestedTokens: GqlPoolTokenDisplay[]
+  chain: GqlChain
+}) {
+  return nestedTokens.map((nestedToken, idx) => (
+    <Box key={nestedToken.address} ml={idx > 0 ? -3 : 0} zIndex={9999 - idx}>
+      <PoolTokenIcon token={nestedToken} chain={chain} border="1px solid black" />
+    </Box>
+  ))
+}
+
 export function PoolListTokensTag({ pool }: Props) {
-  if (pool && isWeighted(pool.type)) {
-    return (
-      <HStack spacing="1">
-        {pool.displayTokens.map(token => (
-          <Tag key={token.address} borderRadius="full" p="2">
-            <HStack>
-              <TokenIcon
-                chain={pool.chain}
-                address={token.address}
-                size={24}
-                alt={token?.symbol || token.address}
-              />
-              <Text>{token.symbol}</Text>
-              <Text>{numeral(token.weight).format('%')}</Text>
-            </HStack>
-          </Tag>
-        ))}
-      </HStack>
-    )
-  } else if (pool && isMetaStable(pool.type)) {
-    return (
-      <Tag borderRadius="full" p="2">
-        <HStack>
-          {pool.displayTokens.map(token => (
-            <HStack key={token.address} spacing="1">
-              <TokenIcon
-                chain={pool.chain}
-                address={token.address}
-                size={24}
-                alt={token?.symbol || token.address}
-              />
-              <Text>{token.symbol}</Text>
-            </HStack>
-          ))}
-        </HStack>
-      </Tag>
-    )
-  } else if (pool && isStable(pool.type)) {
-    return (
-      <Tag borderRadius="full" p="2">
+  if (pool) {
+    if (isWeighted(pool.type)) {
+      return (
         <HStack spacing="1">
-          {pool.displayTokens.map(token => (
-            <TokenIcon
-              key={token.address}
-              chain={pool.chain}
-              address={token.address}
-              size={24}
-              alt={token?.symbol || token.address}
-            />
-          ))}
-          <Text>{pool.name}</Text>
+          {pool.displayTokens.map(token => {
+            return (
+              <Tag key={token.address} borderRadius="full" p="2">
+                <HStack>
+                  {token.nestedTokens ? (
+                    <NestedTokens nestedTokens={token.nestedTokens} chain={pool.chain} />
+                  ) : (
+                    <PoolTokenIcon token={token} chain={pool.chain} />
+                  )}
+                  <Text>{token.nestedTokens ? token.name : token.symbol}</Text>
+                  <Text>{toPercentageFormatted(token.weight || '')}</Text>
+                </HStack>
+              </Tag>
+            )
+          })}
         </HStack>
-      </Tag>
-    )
+      )
+    } else if (isMetaStable(pool.type) || isGyro(pool.type)) {
+      return (
+        <Tag borderRadius="full" p="2">
+          <HStack>
+            {pool.displayTokens.map(token => (
+              <HStack key={token.address} spacing="1">
+                <PoolTokenIcon token={token} chain={pool.chain} />
+                <Text>{token.symbol}</Text>
+              </HStack>
+            ))}
+          </HStack>
+        </Tag>
+      )
+    } else if (isStable(pool.type)) {
+      return (
+        <Tag borderRadius="full" p="2">
+          <HStack spacing="2">
+            {pool.displayTokens.map(token => (
+              <PoolTokenIcon key={token.address} token={token} chain={pool.chain} />
+            ))}
+            <Text>{pool.name}</Text>
+          </HStack>
+        </Tag>
+      )
+    } else if (isPhantomStable(pool.type)) {
+      return (
+        <Tag borderRadius="full" p="2">
+          <HStack spacing="1">
+            {pool.displayTokens.map(token => {
+              return (
+                <HStack key={token.address}>
+                  {token.nestedTokens ? (
+                    <NestedTokens nestedTokens={token.nestedTokens} chain={pool.chain} />
+                  ) : (
+                    <PoolTokenIcon token={token} chain={pool.chain} />
+                  )}
+                  <Text>{token.nestedTokens ? token.name : token.symbol}</Text>
+                </HStack>
+              )
+            })}
+          </HStack>
+        </Tag>
+      )
+    }
   }
 }
