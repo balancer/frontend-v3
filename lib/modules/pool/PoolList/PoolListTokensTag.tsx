@@ -10,7 +10,7 @@ interface Props {
   pool: PoolListItem
 }
 
-export function PoolTokensTag({ pool }: Props) {
+export function PoolListTokensTag({ pool }: Props) {
   if (pool && isWeighted(pool.type)) {
     return (
       <HStack spacing="1">
