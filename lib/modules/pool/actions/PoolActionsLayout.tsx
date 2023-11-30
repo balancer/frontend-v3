@@ -1,7 +1,7 @@
 'use client'
 
 import { Navbar } from '@/lib/shared/components/navs/Navbar'
-import { Box, VStack, Card } from '@chakra-ui/react'
+import { Box, VStack, Card, Text } from '@chakra-ui/react'
 import { PropsWithChildren } from 'react'
 import { PoolActionsNav } from './PoolActionsNav'
 import { usePool } from '../usePool'
@@ -21,7 +21,7 @@ export function PoolActionsLayout({ children }: PropsWithChildren) {
         backdropFilter="blur(3px) hue-rotate(90deg)"
         zIndex={101}
       >
-        <Navbar leftSlot={<div>{pool.name}</div>} />
+        <Navbar leftSlot={<Text color="white">{pool.name}</Text>} />
         <Box w="full" px="md" flexGrow="1">
           <Card
             variant="level1"
