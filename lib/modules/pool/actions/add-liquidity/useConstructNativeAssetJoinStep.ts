@@ -8,8 +8,8 @@ import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
 import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { useTokenAllowances } from '../../web3/useTokenAllowances'
-import { useActiveStep } from '../../../shared/hooks/transaction-flows/useActiveStep'
+import { useTokenAllowances } from '../../../web3/useTokenAllowances'
+import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
 
 export function useConstructNativeAssetJoinStep(poolId: Address) {
   // const [joinPayload, setJoinPayload] = useState<JoinPayload | null>(null)

@@ -3,7 +3,7 @@
 'use client'
 
 import { poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import { useConstructAddLiquidityStep } from '@/lib/modules/pool/add-liquidity/useConstructAddLiquidityStep'
+import { useConstructAddLiquidityStep } from '@/lib/modules/pool/actions/add-liquidity/useConstructAddLiquidityStep'
 import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
 import { Flex, Heading, InputGroup, InputLeftAddon, Stack, VStack } from '@chakra-ui/react'
 import RecentTransactions from '../RecentTransactions'

@@ -10,10 +10,10 @@ import { Address } from 'viem'
 import {
   TokenApprovalLabelArgs,
   buildTokenApprovalLabels,
-} from '../../tokens/approvals/approval-labels'
-import { useTokenAllowances } from '../../web3/useTokenAllowances'
-import { useActiveStep } from '../../../shared/hooks/transaction-flows/useActiveStep'
-import { CompletedApprovalState } from '../../tokens/approvals/useCompletedApprovalsState'
+} from '../../../tokens/approvals/approval-labels'
+import { useTokenAllowances } from '../../../web3/useTokenAllowances'
+import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
+import { CompletedApprovalState } from '../../../tokens/approvals/useCompletedApprovalsState'
 
 export function useConstructApproveTokenStep(
   tokenAddress: Address,

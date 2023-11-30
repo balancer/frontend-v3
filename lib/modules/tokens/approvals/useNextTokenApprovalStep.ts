@@ -1,7 +1,7 @@
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { isEmpty } from 'lodash'
-import { useConstructApproveTokenStep } from '../../pool/add-liquidity/useConstructApproveTokenStep'
+import { useConstructApproveTokenStep } from '../../pool/actions/add-liquidity/useConstructApproveTokenStep'
 import { emptyAddress } from '../../web3/contracts/wagmi-helpers'
 import { AmountToApprove, filterRequiredTokenApprovals } from './approval-rules'
 import { useCompletedApprovalsState } from './useCompletedApprovalsState'

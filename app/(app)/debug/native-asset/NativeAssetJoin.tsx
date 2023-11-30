@@ -2,7 +2,7 @@
 
 import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
 import { poolId, wETHAddress } from '@/lib/debug-helpers'
-import { useConstructNativeAssetJoinStep } from '@/lib/modules/pool/add-liquidity/useConstructNativeAssetJoinStep'
+import { useConstructNativeAssetJoinStep } from '@/lib/modules/pool/actions/add-liquidity/useConstructNativeAssetJoinStep'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Flex, VStack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
