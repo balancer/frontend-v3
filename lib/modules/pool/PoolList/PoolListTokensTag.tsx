@@ -39,7 +39,7 @@ function NestedTokens({
   chain: GqlChain
 }) {
   return nestedTokens.map((nestedToken, idx) => (
-    <Box key={nestedToken.address} ml={idx > 0 ? -3 : 0} zIndex={9999 - idx}>
+    <Box key={nestedToken.address} ml={idx > 0 ? -3.5 : 0} zIndex={9999 - idx}>
       <PoolTokenIcon token={nestedToken} chain={chain} border="1px solid black" />
     </Box>
   ))
@@ -84,8 +84,10 @@ export function PoolListTokensTag({ pool }: Props) {
       return (
         <Tag borderRadius="full" p="2">
           <HStack spacing="2">
-            {pool.displayTokens.map(token => (
-              <PoolTokenIcon key={token.address} token={token} chain={pool.chain} />
+            {pool.displayTokens.map((token, idx) => (
+              <Box key={token.address} ml={idx > 0 ? -1.5 : 0}>
+                <PoolTokenIcon token={token} chain={pool.chain} />
+              </Box>
             ))}
             <Text>{pool.name}</Text>
           </HStack>
