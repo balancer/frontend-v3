@@ -23,7 +23,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
   return (
     <Box key={keyValue}>
       <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
-        <Grid {...rest} height="63.5px" gridTemplateAreas={`"network details tvl volume apr"`}>
+        <Grid {...rest} minH="63.5px" gridTemplateAreas={`"network details tvl volume apr"`}>
           <GridItem area="network">
             <Image
               src={networkConfig.iconPath}
