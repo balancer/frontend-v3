@@ -3335,7 +3335,22 @@ export type GetPoolsQuery = {
     owner?: string | null
     symbol: string
     type: GqlPoolMinimalType
-    displayTokens: Array<{ __typename?: 'GqlPoolTokenDisplay'; address: string; symbol: string }>
+    displayTokens: Array<{
+      __typename?: 'GqlPoolTokenDisplay'
+      id: string
+      address: string
+      name: string
+      weight?: string | null
+      symbol: string
+      nestedTokens?: Array<{
+        __typename?: 'GqlPoolTokenDisplay'
+        id: string
+        address: string
+        name: string
+        weight?: string | null
+        symbol: string
+      }> | null
+    }>
     dynamicData: {
       __typename?: 'GqlPoolDynamicData'
       totalLiquidity: string
@@ -6139,8 +6154,25 @@ export const GetPoolsDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'nestedTokens' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
+                          ],
+                        },
+                      },
                     ],
                   },
                 },

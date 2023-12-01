@@ -19,8 +19,18 @@ query GetPools(
     createTime
     decimals
     displayTokens {
+      id
       address
+      name
+      weight
       symbol
+      nestedTokens {
+        id
+        address
+        name
+        weight
+        symbol
+      }
     }
     dynamicData {
       totalLiquidity
