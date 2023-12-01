@@ -28,6 +28,10 @@ export default function AddLiquidityPage() {
     amountsInVar(amountsIn)
   }
 
+  useEffect(() => {
+    setInitialAmountsIn()
+  }, [])
+
   function currentValueFor(tokenAddress: string) {
     const amountIn = amountsIn.find(amountIn => amountIn[tokenAddress])
     return amountIn ? amountIn[tokenAddress] : ''
@@ -35,17 +39,18 @@ export default function AddLiquidityPage() {
 
   function setAmountIn(tokenAddress: string, amount: string) {
     const state = amountsInVar()
-    amountsInVar(
-      state.map(amountIn => ({
-        ...amountIn,
+
+    amountsInVar([
+      ...state.filter(amountIn => !Object.keys(amountIn).includes(tokenAddress)),
+      {
         [tokenAddress]: amount,
-      }))
-    )
+      },
+    ])
   }
 
-  useEffect(() => {
-    setInitialAmountsIn()
-  }, [])
+  function submit() {
+    console.log(amountsIn)
+  }
 
   const tokens = pool.allTokens.map(t => getToken(t.address, pool.chain))
   const validTokens = tokens.filter((t): t is GqlToken => !!t)
@@ -73,8 +78,8 @@ export default function AddLiquidityPage() {
                   />
                 )
               })}
-              <Button variant="primary" w="full" size="lg">
-                Submit
+              <Button variant="primary" w="full" size="lg" onClick={submit}>
+                Next
               </Button>
             </VStack>
           </Card>
