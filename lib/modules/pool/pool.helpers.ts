@@ -3,7 +3,7 @@ import {
   GetPoolQuery,
   GqlChain,
   GqlPoolBase,
-  GqlPoolFilterType,
+  GqlPoolMinimalType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { getAddressBlockExplorerLink, isSameAddress } from '@/lib/shared/utils/addresses'
 import BigNumber from 'bignumber.js'
@@ -16,25 +16,25 @@ export function addressFor(poolId: string): string {
   return getAddress(poolId.slice(0, 42))
 }
 
-export function isLinear(poolType: GqlPoolFilterType): boolean {
-  return poolType === GqlPoolFilterType.Linear
+export function isLinear(poolType: GqlPoolMinimalType): boolean {
+  return poolType === GqlPoolMinimalType.Linear
 }
 
-export function isStable(poolType: GqlPoolFilterType): boolean {
-  return poolType === GqlPoolFilterType.Stable
+export function isStable(poolType: GqlPoolMinimalType): boolean {
+  return poolType === GqlPoolMinimalType.Stable
 }
 
-export function isMetaStable(poolType: GqlPoolFilterType): boolean {
-  return poolType === GqlPoolFilterType.MetaStable
+export function isMetaStable(poolType: GqlPoolMinimalType): boolean {
+  return poolType === GqlPoolMinimalType.MetaStable
 }
 
-export function isStablePhantom(poolType: GqlPoolFilterType): boolean {
-  return poolType === GqlPoolFilterType.PhantomStable
+export function isPhantomStable(poolType: GqlPoolMinimalType): boolean {
+  return poolType === GqlPoolMinimalType.PhantomStable
 }
 
 // TODO: verify
-// export function isComposableStable(poolType: GqlPoolFilterType): boolean {
-//   return poolType === GqlPoolFilterType.ComposableStable
+// export function isComposableStable(poolType: GqlPoolMinimalType): boolean {
+//   return poolType === GqlPoolMinimalType.ComposableStable
 // }
 
 // TODO: verify
@@ -43,12 +43,12 @@ export function isStablePhantom(poolType: GqlPoolFilterType): boolean {
 // }
 
 // TODO: verify
-// export function isComposableStableLike(poolType: GqlPoolFilterType): boolean {
-//   return isStablePhantom(poolType) || isComposableStable(poolType)
+// export function isComposableStableLike(poolType: GqlPoolMinimalType): boolean {
+//   return isPhantomStable(poolType) || isComposableStable(poolType)
 // }
 
-export function isFx(poolType: GqlPoolFilterType | string): boolean {
-  return poolType === 'FX'
+export function isFx(poolType: GqlPoolMinimalType | string): boolean {
+  return poolType === GqlPoolMinimalType.Fx
 }
 
 // TODO: verify how to determine boosted pool from api
@@ -57,38 +57,38 @@ export function isBoosted(pool: GqlPoolBase) {
   //   return !!Object.keys(poolMetadata(pool.id)?.features || {}).includes(PoolFeature.Boosted)
 }
 
-export function isGyro(pool: GqlPoolBase) {
-  return [GqlPoolFilterType.Gyro, GqlPoolFilterType.Gyro3, GqlPoolFilterType.Gyroe].includes(
-    pool.type as GqlPoolFilterType
+export function isGyro(poolType: GqlPoolMinimalType) {
+  return [GqlPoolMinimalType.Gyro, GqlPoolMinimalType.Gyro3, GqlPoolMinimalType.Gyroe].includes(
+    poolType
   )
 }
 
 export function isUnknownType(poolType: any): boolean {
-  return !Object.values(GqlPoolFilterType).includes(poolType)
+  return !Object.values(GqlPoolMinimalType).includes(poolType)
 }
 
-export function isLiquidityBootstrapping(poolType: GqlPoolFilterType): boolean {
-  return poolType === GqlPoolFilterType.LiquidityBootstrapping
+export function isLiquidityBootstrapping(poolType: GqlPoolMinimalType): boolean {
+  return poolType === GqlPoolMinimalType.LiquidityBootstrapping
 }
 
-export function isLBP(poolType: GqlPoolFilterType): boolean {
+export function isLBP(poolType: GqlPoolMinimalType): boolean {
   return isLiquidityBootstrapping(poolType)
 }
 
-export function isWeighted(poolType: GqlPoolFilterType): boolean {
-  return poolType === GqlPoolFilterType.Weighted
+export function isWeighted(poolType: GqlPoolMinimalType): boolean {
+  return poolType === GqlPoolMinimalType.Weighted
 }
 
-export function isManaged(poolType: GqlPoolFilterType): boolean {
+export function isManaged(poolType: GqlPoolMinimalType): boolean {
   // Correct terminology is managed pools but subgraph still returns poolType = "Investment"
-  return poolType === GqlPoolFilterType.Investment
+  return poolType === GqlPoolMinimalType.Investment
 }
 
-export function isWeightedLike(poolType: GqlPoolFilterType): boolean {
+export function isWeightedLike(poolType: GqlPoolMinimalType): boolean {
   return isWeighted(poolType) || isManaged(poolType) || isLiquidityBootstrapping(poolType)
 }
 
-export function isSwappingHaltable(poolType: GqlPoolFilterType): boolean {
+export function isSwappingHaltable(poolType: GqlPoolMinimalType): boolean {
   return isManaged(poolType) || isLiquidityBootstrapping(poolType)
 }
 

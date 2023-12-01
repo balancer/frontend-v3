@@ -33,6 +33,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'beethoven-assets.s3.eu-central-1.amazonaws.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.ankr.com',
+      },
     ],
   },
   pageExtensions: ['tsx', `${process.env.PROTOCOL}.tsx`],

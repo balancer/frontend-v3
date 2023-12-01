@@ -3,7 +3,7 @@ import { MockApi } from '@/lib/shared/hooks/balancer-api/MockApi'
 import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { ChainId } from '@balancer/sdk'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
-import { someTokenAllowancesMock } from '../../tokens/__mocks__/token.builders'
+import { someTokenAllowancesMock } from '../../../tokens/__mocks__/token.builders'
 
 async function getPoolState() {
   return await new MockApi().getPool(poolId) // Balancer Weighted wjAura and WETH

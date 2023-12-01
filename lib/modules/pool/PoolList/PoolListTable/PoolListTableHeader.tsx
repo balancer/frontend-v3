@@ -14,12 +14,12 @@ export function PoolListTableHeader({ ...rest }) {
   const sortingObj = sorting[0]
 
   return (
-    <Grid {...rest} py="3" borderBottom="1px solid" borderColor="gray.100" w="full">
+    <Grid {...rest} py="3" w="full">
       <GridItem>
         <Icon as={FiGlobe} boxSize="6" ml="1" />
       </GridItem>
       <GridItem>
-        <Text>Pool name</Text>
+        <Text>Pool tokens</Text>
       </GridItem>
       {[GqlPoolOrderBy.TotalLiquidity, GqlPoolOrderBy.Volume24h, GqlPoolOrderBy.Apr].map(
         (orderByItem, index) => (

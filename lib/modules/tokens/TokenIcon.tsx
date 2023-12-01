@@ -13,6 +13,7 @@ type Props = {
   fallbackSrc?: string
   alt: string
   size?: number
+  border?: string
 }
 
 export function TokenIcon({
@@ -21,6 +22,7 @@ export function TokenIcon({
   logoURI,
   alt,
   size = 36,
+  border,
   ...rest
 }: Props & Omit<ImageProps, 'src'>) {
   const [hasError, setHasError] = useState(false)
@@ -59,7 +61,7 @@ export function TokenIcon({
       alt={alt}
       width={size}
       height={size}
-      style={{ borderRadius: '100%' }}
+      style={{ borderRadius: '100%', border }}
       onError={() => !hasError && setHasError(true)}
       {...rest}
     />
