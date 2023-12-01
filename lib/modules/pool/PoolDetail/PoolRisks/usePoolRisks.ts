@@ -1,7 +1,6 @@
 import {
   GqlChain,
   GqlPoolElement,
-  GqlPoolFilterType,
   GqlPoolMinimalType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { isMetaStable, isStable, isWeighted } from '../../pool.helpers'
@@ -85,7 +84,7 @@ export function getPoolRisks(pool: GqlPoolElement): Risk[] {
   const result: Risk[] = []
 
   if (isWeighted(pool.type as GqlPoolMinimalType)) result.push(weightedRisks)
-  if (isStable(pool.type as GqlPoolFilterType)) result.push(stableRisks)
+  if (isStable(pool.type as GqlPoolMinimalType)) result.push(stableRisks)
   //   if (isComposableStable(pool.poolType)) result.push(composableRisks)
   if (isMetaStable(pool.type as GqlPoolMinimalType)) result.push(metaStableRisks)
 
