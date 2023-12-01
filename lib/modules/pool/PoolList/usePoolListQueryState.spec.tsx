@@ -7,13 +7,13 @@ function updateUrlQueryString(queryString: `?${string}`) {
 
 describe('Pool list state query', () => {
   it('calculates pagination based on first and ', () => {
-    updateUrlQueryString('?first=100&skip=2')
+    updateUrlQueryString('?first=50&skip=150')
     const { result } = testHook(() => usePoolListQueryState())
 
     expect(result.current.pagination).toMatchInlineSnapshot(`
       {
-        "pageIndex": 0.02,
-        "pageSize": 100,
+        "pageIndex": 3,
+        "pageSize": 50,
       }
     `)
   })
