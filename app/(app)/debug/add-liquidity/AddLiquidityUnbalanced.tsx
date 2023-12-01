@@ -3,13 +3,13 @@
 'use client'
 
 import { poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import { useConstructJoinPoolStep } from '@/lib/modules/steps/join/useConstructJoinPoolStep'
+import { useConstructAddLiquidityStep } from '@/lib/modules/pool/actions/add-liquidity/useConstructAddLiquidityStep'
 import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
 import { Flex, Heading, InputGroup, InputLeftAddon, Stack, VStack } from '@chakra-ui/react'
 import RecentTransactions from '../RecentTransactions'
 
-import { AmountToApprove } from '@/lib/modules/pool/join/approvals'
-import { useNextTokenApprovalStep } from '@/lib/modules/pool/join/useNextTokenApprovalStep'
+import { AmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
+import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNextTokenApprovalStep'
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { usePoolStateInput } from '@/lib/shared/hooks/balancer-api/usePoolStateInput'
@@ -29,7 +29,7 @@ export function JoinWithTokenApproval() {
   ]
 
   const { tokenApprovalStep } = useNextTokenApprovalStep(amountsToApprove)
-  const { step: joinStep, setWethHumanAmount } = useConstructJoinPoolStep(poolStateQuery)
+  const { step: joinStep, setWethHumanAmount } = useConstructAddLiquidityStep(poolStateQuery)
   const steps = [tokenApprovalStep, joinStep]
 
   const { balanceFor, isBalancesLoading } = useTokenBalances()

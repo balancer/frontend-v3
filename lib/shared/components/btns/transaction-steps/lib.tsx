@@ -42,7 +42,7 @@ export type FlowStep = TransactionStep & ManagedResult
 export type TransactionStep = {
   id: string
   stepType: StepType
-  getLabels: (args?: any) => TransactionLabels
+  transactionLabels: TransactionLabels
   isComplete: () => boolean
   activateStep: () => void
 }

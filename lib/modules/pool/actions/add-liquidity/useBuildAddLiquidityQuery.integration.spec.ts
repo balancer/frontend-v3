@@ -7,7 +7,7 @@ import { waitFor } from '@testing-library/react'
 
 import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
-import { someTokenAllowancesMock } from '../../tokens/__mocks__/token.builders'
+import { someTokenAllowancesMock } from '../../../tokens/__mocks__/token.builders'
 
 async function buildQuery() {
   const poolStateInput = await new MockApi().getPool(poolId) // Balancer Weighted wjAura and WETH
