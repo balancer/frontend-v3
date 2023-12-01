@@ -3,7 +3,6 @@ import {
   GetPoolQuery,
   GqlChain,
   GqlPoolBase,
-  GqlPoolFilterType,
   GqlPoolMinimalType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { getAddressBlockExplorerLink, isSameAddress } from '@/lib/shared/utils/addresses'
@@ -34,8 +33,8 @@ export function isPhantomStable(poolType: GqlPoolMinimalType): boolean {
 }
 
 // TODO: verify
-// export function isComposableStable(poolType: GqlPoolFilterType): boolean {
-//   return poolType === GqlPoolFilterType.ComposableStable
+// export function isComposableStable(poolType: GqlPoolMinimalType): boolean {
+//   return poolType === GqlPoolMinimalType.ComposableStable
 // }
 
 // TODO: verify
@@ -44,7 +43,7 @@ export function isPhantomStable(poolType: GqlPoolMinimalType): boolean {
 // }
 
 // TODO: verify
-// export function isComposableStableLike(poolType: GqlPoolFilterType): boolean {
+// export function isComposableStableLike(poolType: GqlPoolMinimalType): boolean {
 //   return isPhantomStable(poolType) || isComposableStable(poolType)
 // }
 
@@ -65,7 +64,7 @@ export function isGyro(poolType: GqlPoolMinimalType) {
 }
 
 export function isUnknownType(poolType: any): boolean {
-  return !Object.values(GqlPoolFilterType).includes(poolType)
+  return !Object.values(GqlPoolMinimalType).includes(poolType)
 }
 
 export function isLiquidityBootstrapping(poolType: GqlPoolMinimalType): boolean {
