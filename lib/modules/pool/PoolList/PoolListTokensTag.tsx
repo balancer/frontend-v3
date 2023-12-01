@@ -49,7 +49,7 @@ export function PoolListTokensTag({ pool }: Props) {
   if (pool) {
     if (isWeighted(pool.type)) {
       return (
-        <HStack spacing="1">
+        <HStack spacing="1" wrap="wrap">
           {pool.displayTokens.map(token => {
             return (
               <Tag key={token.address} borderRadius="full" p="2">
