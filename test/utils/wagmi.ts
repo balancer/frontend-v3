@@ -1,4 +1,4 @@
-import { supportedChains } from '@/lib/modules/web3/Web3Provider'
+import { chains, supportedChains } from '@/lib/modules/web3/Web3Provider'
 import { MockConnector } from 'wagmi/connectors/mock'
 import {
   Hex,
@@ -71,4 +71,10 @@ export function createWagmiTestConfig({ ...config }: SetupClient = {}) {
     queryClient: testQueryClient,
     ...config,
   })
+}
+
+export function setWagmiDefaultRpcUrlForTests(rpcUrl: string) {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  chains[0].rpcUrls.public.http[0] = rpcUrl
 }

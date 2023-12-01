@@ -1,27 +1,28 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { describe, expect, test } from 'vitest'
 
+import { poolId } from '@/lib/debug-helpers'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { AddLiquidityConfigBuilder } from '@/lib/modules/pool/actions/add-liquidity/AddLiquidityConfigBuilder'
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import { testHook } from '@/test/utils/custom-renderers'
-import { defaultTestUserAccount, testPublicClient as testClient } from '@/test/utils/wagmi'
+import {
+  defaultTestUserAccount,
+  setWagmiDefaultRpcUrlForTests,
+  testPublicClient as testClient,
+} from '@/test/utils/wagmi'
 import { ChainId, HumanAmount } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/actions'
-import { chains } from '../Web3Provider'
 import { buildAddLiquidityLabels } from '../../pool/actions/add-liquidity/useConstructAddLiquidityStep'
-import { poolId } from '@/lib/debug-helpers'
 import { someTokenAllowancesMock } from '../../tokens/__mocks__/token.builders'
+import { AddLiquidityConfigBuilder } from '../../pool/actions/add-liquidity/AddLiquidityConfigBuilder'
 
 const chainId = ChainId.MAINNET
 const port = 8555
 const rpcUrl = `http://127.0.0.1:${port}/`
 const account = defaultTestUserAccount
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-ignore
-chains[0].rpcUrls.public.http[0] = rpcUrl
+setWagmiDefaultRpcUrlForTests(rpcUrl)
 
 const utils = await getSdkTestUtils({
   account,
