@@ -955,6 +955,11 @@ export const balTheme = {
         },
       },
     },
+    Tag: {
+      baseStyle: {
+        bg: 'background: #EFEDE6',
+      },
+    },
   },
 }
 

@@ -8,8 +8,8 @@ import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
 import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { useTokenAllowances } from '../../web3/useTokenAllowances'
-import { useActiveStep } from '../useActiveStep'
+import { useTokenAllowances } from '../../../web3/useTokenAllowances'
+import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
 
 export function useConstructNativeAssetJoinStep(poolId: Address) {
   // const [joinPayload, setJoinPayload] = useState<JoinPayload | null>(null)
@@ -32,11 +32,11 @@ export function useConstructNativeAssetJoinStep(poolId: Address) {
 
   const joinQuery = useBuildAddLiquidityQuery(joinBuilder, isActiveStep, userAddress)
 
-  const transaction = useManagedSendTransaction(buildJoinPoolLabels(), joinQuery.data?.config)
+  const transaction = useManagedSendTransaction(buildAddLiquidityLabels(), joinQuery.data?.config)
 
   const step: FlowStep = {
     ...transaction,
-    getLabels: buildJoinPoolLabels,
+    transactionLabels: buildAddLiquidityLabels(),
     stepType: 'joinPool',
     id: `nativeJoin${poolId}`,
     isComplete: () => false,
@@ -54,11 +54,11 @@ export function useConstructNativeAssetJoinStep(poolId: Address) {
   }
 }
 
-export const buildJoinPoolLabels: BuildTransactionLabels = () => {
+export const buildAddLiquidityLabels: BuildTransactionLabels = () => {
   return {
-    init: 'Join pool',
-    confirming: 'Confirm pool join',
+    init: 'Add pool liquidity',
+    confirming: 'Confirm add pool liquidity',
     tooltip: '',
-    description: 'Pool joined with ETH (native asset)',
+    description: 'Pool liquidity added with ETH (native asset)',
   }
 }

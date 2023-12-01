@@ -3,7 +3,7 @@ import { DefaultTokenAllowancesTestProvider, testHook } from '@/test/utils/custo
 import { testPublicClient } from '@/test/utils/wagmi'
 import { waitFor } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
-import { AmountToApprove } from './approvals'
+import { AmountToApprove } from './approval-rules'
 import { useNextTokenApprovalStep } from './useNextTokenApprovalStep'
 
 //TODO: Extract to helper
@@ -36,7 +36,7 @@ test.skip('useNextTokenApprovalStep builds 2 sequential token approval steps', a
   const result = testUseTokenApprovals(amountsToApprove)
   await waitFor(() => expect(result.current.isAllowancesLoading).toBeFalsy())
 
-  expect(result.current.tokenApprovalStep.getLabels()).toMatchInlineSnapshot(`
+  expect(result.current.tokenApprovalStep.transactionLabels).toMatchInlineSnapshot(`
     {
       "confirming": "Approving WETH",
       "description": "Token WETH approval completed",

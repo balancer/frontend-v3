@@ -10,7 +10,7 @@ interface Props {
 }
 
 export function TransactionStepButton({
-  step: { simulation, execution, result, getLabels, execute: managedRun },
+  step: { simulation, execution, result, transactionLabels, execute: managedRun },
 }: Props) {
   const { isConnected } = useUserAccount()
   const isTransactButtonVisible = isConnected
@@ -31,7 +31,6 @@ export function TransactionStepButton({
 
   function getButtonLabel() {
     // sensible defaults for loading / confirm if not provided
-    const transactionLabels = getLabels()
     const relevantLabel = transactionLabels[transactionState]
     if (!relevantLabel) {
       switch (transactionState) {
