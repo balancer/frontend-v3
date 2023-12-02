@@ -14,11 +14,11 @@ type Props = {
 }
 
 export default function TokenRow({ address, value, customRender, chain }: Props) {
-  const { getToken, calculateTokensValue } = useTokens()
+  const { getToken, usdValueForToken } = useTokens()
   const { toCurrency } = useNumbers()
   const token = getToken(address, chain)
 
-  const totalValue = calculateTokensValue(address, value, chain)
+  const totalValue = token ? usdValueForToken(token, value) : '0'
 
   return (
     <HStack width="full" justifyContent="space-between">
