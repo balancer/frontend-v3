@@ -54,7 +54,9 @@ export function _useAddLiquidity() {
         const token = validTokens.find(token =>
           isSameAddress(token?.address, Object.keys(amountIn)[0])
         )
+
         if (!token) return '0'
+        if (!amountIn[token.address]) return '0'
         return usdValueForToken(token, amountIn[token.address])
       }),
     [amountsIn, usdValueForToken, validTokens]
@@ -62,18 +64,19 @@ export function _useAddLiquidity() {
 
   const totalUSDValue = safeSum(usdAmountsIn)
 
+  // When the amounts in change we should fetch the expected output.
   useEffect(() => {
     queryAddLiquidity()
   }, [amountsIn])
 
   // TODO: Call underlying SDK query function
   function queryAddLiquidity() {
-    console.log('amountsIn', amountsIn)
+    // console.log('amountsIn', amountsIn)
   }
 
   // TODO: Call underlying SDK execution function
   function addLiquidity() {
-    console.log('amountsIn', amountsIn)
+    // console.log('amountsIn', amountsIn)
   }
 
   return { amountsIn, tokens, validTokens, totalUSDValue, setAmountIn }
