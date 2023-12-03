@@ -12,8 +12,9 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
 
-type AmountIn = {
-  [tokenAddress: string]: string
+export type AmountIn = {
+  tokenAddress: string
+  value: string
 }
 
 export const amountsInVar = makeVar<AmountIn[]>([])
@@ -25,7 +26,8 @@ export function _useAddLiquidity() {
 
   function setInitialAmountsIn() {
     const amountsIn = pool.allTokens.map(token => ({
-      [token.address]: '',
+      tokenAddress: token.address,
+      value: '',
     }))
     amountsInVar(amountsIn)
   }
@@ -34,13 +36,14 @@ export function _useAddLiquidity() {
     setInitialAmountsIn()
   }, [])
 
-  function setAmountIn(tokenAddress: string, amount: string) {
+  function setAmountIn(tokenAddress: string, value: string) {
     const state = amountsInVar()
 
     amountsInVar([
-      ...state.filter(amountIn => !Object.keys(amountIn).includes(tokenAddress)),
+      ...state.filter(amountIn => !isSameAddress(amountIn.tokenAddress, tokenAddress)),
       {
-        [tokenAddress]: amount,
+        tokenAddress,
+        value,
       },
     ])
   }
@@ -52,12 +55,13 @@ export function _useAddLiquidity() {
     () =>
       amountsIn.map(amountIn => {
         const token = validTokens.find(token =>
-          isSameAddress(token?.address, Object.keys(amountIn)[0])
+          isSameAddress(token?.address, amountIn.tokenAddress)
         )
 
         if (!token) return '0'
-        if (!amountIn[token.address]) return '0'
-        return usdValueForToken(token, amountIn[token.address])
+        console.log('amountIn', amountIn)
+
+        return usdValueForToken(token, amountIn.value)
       }),
     [amountsIn, usdValueForToken, validTokens]
   )
@@ -71,15 +75,22 @@ export function _useAddLiquidity() {
 
   // TODO: Call underlying SDK query function
   function queryAddLiquidity() {
-    // console.log('amountsIn', amountsIn)
+    console.log('amountsIn', amountsIn)
   }
 
   // TODO: Call underlying SDK execution function
-  function addLiquidity() {
-    // console.log('amountsIn', amountsIn)
+  function executeAddLiquidity() {
+    console.log('amountsIn', amountsIn)
   }
 
-  return { amountsIn, tokens, validTokens, totalUSDValue, setAmountIn }
+  return {
+    amountsIn,
+    tokens,
+    validTokens,
+    totalUSDValue,
+    setAmountIn,
+    executeAddLiquidity,
+  }
 }
 
 export function AddLiquidityProvider({ children }: PropsWithChildren) {

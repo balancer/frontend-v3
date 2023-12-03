@@ -9,6 +9,8 @@ import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { AddLiquidityModal } from './AddLiquidityModal'
 import { priceImpactFormat, useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { NumberText } from '@/lib/shared/components/typography/NumberText'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 
 export function AddLiquidityForm() {
   const { amountsIn, totalUSDValue, setAmountIn, tokens, validTokens } = useAddLiquidity()
@@ -17,8 +19,8 @@ export function AddLiquidityForm() {
   const nextBtn = useRef(null)
 
   function currentValueFor(tokenAddress: string) {
-    const amountIn = amountsIn.find(amountIn => amountIn[tokenAddress])
-    return amountIn ? amountIn[tokenAddress] : ''
+    const amountIn = amountsIn.find(amountIn => isSameAddress(amountIn.tokenAddress, tokenAddress))
+    return amountIn ? amountIn.value : ''
   }
 
   function submit() {
@@ -55,9 +57,7 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Total</Text>
                 <HStack>
-                  <Text color="GrayText" style={{ fontVariantNumeric: 'tabular-nums ' }}>
-                    {toCurrency(totalUSDValue)}
-                  </Text>
+                  <NumberText color="GrayText">{toCurrency(totalUSDValue)}</NumberText>
                   <Tooltip label="Total" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
@@ -66,9 +66,7 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
-                  <Text color="GrayText" style={{ fontVariantNumeric: 'tabular-nums ' }}>
-                    {priceImpactFormat(0)}
-                  </Text>
+                  <NumberText color="GrayText">{priceImpactFormat(0)}</NumberText>
                   <Tooltip label="Price impact" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>

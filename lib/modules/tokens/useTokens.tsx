@@ -70,6 +70,7 @@ export function _useTokens(
   }
 
   const usdValueForToken = useCallback((token: GqlToken, amount: Numberish) => {
+    if (amount === '') return '0'
     return bn(amount).times(priceForToken(token)).toFixed(2)
   }, [])
 
