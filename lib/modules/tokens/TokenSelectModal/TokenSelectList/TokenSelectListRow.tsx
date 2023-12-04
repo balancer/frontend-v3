@@ -7,6 +7,7 @@ import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { tokenFormat, useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { useTokens } from '../../useTokens'
+import { NumberText } from '@/lib/shared/components/typography/NumberText'
 
 type Props = {
   token: GqlToken
@@ -61,16 +62,12 @@ export function TokenSelectListRow({
         </HStack>
         {isConnected && (
           <VStack align="end" justify="center" spacing="none">
-            <Text
-              title={userBalance?.amount.toString()}
-              style={{ fontVariantNumeric: 'tabular-nums ' }}
-              {...textStyles}
-            >
+            <NumberText title={userBalance?.amount.toString()} {...textStyles}>
               {tokenBalance}
-            </Text>
-            <Text fontSize="sm" style={{ fontVariantNumeric: 'tabular-nums ' }} {...textStyles}>
+            </NumberText>
+            <NumberText fontSize="sm" {...textStyles}>
               {fiatValue}
-            </Text>
+            </NumberText>
           </VStack>
         )}
       </HStack>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import {
@@ -68,9 +69,10 @@ export function _useTokens(
     return price.price
   }
 
-  function usdValueForToken(token: GqlToken, amount: Numberish): string {
+  const usdValueForToken = useCallback((token: GqlToken, amount: Numberish) => {
+    if (amount === '') return '0'
     return bn(amount).times(priceForToken(token)).toFixed(2)
-  }
+  }, [])
 
   function priceFor(address: string, chain: GqlChain): number {
     const token = getToken(address, chain)
@@ -86,15 +88,6 @@ export function _useTokens(
         parseFloat(poolTotalLiquidity)
       )
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  )
-
-  const calculateTokensValue = useCallback(
-    (tokenAddress: string, tokenAmount: Numberish, chain: GqlChain) => {
-      return priceFor(tokenAddress, chain) * parseFloat(tokenAmount as string)
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
@@ -109,7 +102,6 @@ export function _useTokens(
     nativeAssetFilter,
     usdValueForToken,
     getPoolTokenWeightByBalance,
-    calculateTokensValue,
   }
 }
 
