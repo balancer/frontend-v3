@@ -1,11 +1,7 @@
-import {
-  GqlChain,
-  GqlPoolElement,
-  GqlPoolStaking,
-  GqlPoolStakingGauge,
-} from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 import { DeepPartial } from '@apollo/client/utilities'
 import { mock } from 'vitest-mock-extended'
+import { aGqlStakingMock } from './gqlStaking.builders'
 
 export function aGqlPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlPoolElement {
   const defaultPool = mock<GqlPoolElement>()
@@ -48,6 +44,7 @@ export function aGqlPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlP
     name: 'Balancer 80 BAL 20 WETH',
     owner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
     symbol: 'B-80BAL-20WETH',
+    staking: aGqlStakingMock(),
   }
   return Object.assign({}, defaultPool, defaultPool1, ...options)
 }

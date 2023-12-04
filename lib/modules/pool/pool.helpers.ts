@@ -124,22 +124,18 @@ export function createdAfterTimestamp(pool: GqlPoolBase): boolean {
 }
 
 type Pool = GetPoolQuery['pool']
-export function buildGqlPoolHelpers(pool: Pool, chain: GqlChain) {
-  function getBlockExplorerPoolLink() {
-    return getAddressBlockExplorerLink(pool.address as Address, chain)
-  }
-
-  function getBlockExplorerGaugeLink() {
-    return getAddressBlockExplorerLink(pool?.staking?.gauge?.gaugeAddress as Address, chain)
-  }
+export function usePoolHelpers(pool: Pool, chain: GqlChain) {
+  const gaugeExplorerLink = getAddressBlockExplorerLink(
+    pool?.staking?.gauge?.gaugeAddress as Address,
+    chain
+  )
+  const poolExplorerLink = getAddressBlockExplorerLink(pool.address as Address, chain)
 
   function hasGaugeAddress() {
     return !!pool?.staking?.gauge?.gaugeAddress
   }
 
-  function getGaugeAddress() {
-    return pool?.staking?.gauge?.gaugeAddress || ''
-  }
+  const gaugeAddress = pool?.staking?.gauge?.gaugeAddress || ''
 
-  return { getBlockExplorerPoolLink, getBlockExplorerGaugeLink, hasGaugeAddress, getGaugeAddress }
+  return { poolExplorerLink, gaugeExplorerLink, hasGaugeAddress, gaugeAddress }
 }
