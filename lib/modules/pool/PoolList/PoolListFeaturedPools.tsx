@@ -1,31 +1,38 @@
-import { Card, Grid, GridItem, Heading, VStack } from '@chakra-ui/react'
+import { Card, Center, Grid, GridItem, HStack, Heading, Text, VStack } from '@chakra-ui/react'
+import Image from 'next/image'
 
 interface FeaturedPools {
   id: string
+  chain: string
   imageUrl: string
   primary?: boolean
 }
 
 const featuredPools: FeaturedPools[] = [
   {
-    id: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014',
+    id: '0x1e19cf2d73a72ef1332c882f20534b6519be0276000200000000000000000112',
+    chain: 'MAINNET',
     imageUrl: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
     primary: true,
   },
   {
-    id: '0x1e19cf2d73a72ef1332c882f20534b6519be0276000200000000000000000112',
+    id: '0x32df62dc3aed2cd6224193052ce665dc181658410002000000000000000003bd',
+    chain: 'ARBITRUM',
     imageUrl: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
   },
   {
-    id: '0x93d199263632a4ef4bb438f1feb99e57b4b5f0bd0000000000000000000005c2',
+    id: '0x4683e340a8049261057d5ab1b29c8d840e75695e00020000000000000000005a',
+    chain: 'GNOSIS',
     imageUrl: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
   },
   {
     id: '0x42ed016f826165c2e5976fe5bc3df540c5ad0af700000000000000000000058b',
+    chain: 'MAINNET',
     imageUrl: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
   },
   {
-    id: '0x1ee442b5326009bb18f2f472d3e0061513d1a0ff000200000000000000000464',
+    id: '0x93d199263632a4ef4bb438f1feb99e57b4b5f0bd0000000000000000000005c2',
+    chain: 'MAINNET',
     imageUrl: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
   },
 ]
@@ -44,7 +51,19 @@ interface FeaturedPoolCardProps {
 function FeaturedPoolCard({ pool }: FeaturedPoolCardProps) {
   return (
     <Card variant="gradient" h="full" w="full">
-      {pool.id.slice(0, 8)}
+      <VStack justifyContent="space-between" h="full">
+        <HStack justifyContent="space-between" w="full">
+          <Text>pool type</Text>
+          <Text>TVL</Text>
+        </HStack>
+        <Image src={pool.imageUrl} width="24" height="24" alt="pool name" />
+        <Center>
+          <VStack>
+            <Text>Pool Name</Text>
+            <Text>APR</Text>
+          </VStack>
+        </Center>
+      </VStack>
     </Card>
   )
 }
