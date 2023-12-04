@@ -1,6 +1,6 @@
 'use client'
 
-import { isGyro, isMetaStable, isPhantomStable, isStable, isWeighted } from '../pool.helpers'
+import { isGyro, isLBP, isMetaStable, isPhantomStable, isStable, isWeighted } from '../pool.helpers'
 import { Box, HStack, Tag, Text } from '@chakra-ui/react'
 import { TokenIcon } from '../../tokens/TokenIcon'
 import { PoolListItem } from '../pool.types'
@@ -47,7 +47,7 @@ function NestedTokens({
 
 export function PoolListTokensTag({ pool }: Props) {
   if (pool) {
-    if (isWeighted(pool.type)) {
+    if (isWeighted(pool.type) || isLBP(pool.type)) {
       return (
         <HStack spacing="1" wrap="wrap">
           {pool.displayTokens.map(token => {
