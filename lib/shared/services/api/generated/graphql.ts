@@ -3346,6 +3346,7 @@ export type GetPoolsQuery = {
       holdersCount: string
       swapFee: string
       swapsCount: string
+      totalShares: string
       apr: {
         __typename?: 'GqlPoolApr'
         hasRewardApr: boolean
@@ -6181,6 +6182,7 @@ export const GetPoolsDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'holdersCount' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'swapFee' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'swapsCount' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'totalShares' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'apr' },
