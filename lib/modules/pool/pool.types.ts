@@ -17,10 +17,6 @@ export type PoolList = GetPoolsQuery['pools']
 
 export type PoolListItem = PoolList[0]
 
-export interface DecoratedPoolListItem extends PoolListItem {
-  myLiquidity: number
-}
-
 export enum PoolVariant {
   v2 = 'v2',
   v3 = 'v3',

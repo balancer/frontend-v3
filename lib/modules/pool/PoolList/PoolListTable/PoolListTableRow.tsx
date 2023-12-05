@@ -3,13 +3,13 @@ import Link from 'next/link'
 import { getPoolPath } from '../../pool.utils'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import Image from 'next/image'
-import { DecoratedPoolListItem } from '../../pool.types'
+import { PoolListItem } from '../../pool.types'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
 import { useNumbers } from '@/lib/shared/hooks/useNumbers'
 
 interface Props extends GridProps {
-  pool: DecoratedPoolListItem
+  pool: PoolListItem
   keyValue: number
 }
 
