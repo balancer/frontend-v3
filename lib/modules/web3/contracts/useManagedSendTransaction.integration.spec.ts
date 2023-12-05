@@ -18,11 +18,7 @@ import { someTokenAllowancesMock } from '../../tokens/__mocks__/token.builders'
 import { AddLiquidityConfigBuilder } from '../../pool/actions/add-liquidity/AddLiquidityConfigBuilder'
 
 const chainId = ChainId.MAINNET
-const port = 8555
-const rpcUrl = `http://127.0.0.1:${port}/`
 const account = defaultTestUserAccount
-
-setWagmiDefaultRpcUrlForTests(rpcUrl)
 
 const utils = await getSdkTestUtils({
   account,

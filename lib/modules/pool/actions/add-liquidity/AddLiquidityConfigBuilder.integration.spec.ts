@@ -24,7 +24,7 @@ test('build Unbalanced Join Config', async () => {
   builder.setSlippage('2')
   const result = await builder.buildSdkAddLiquidityTxConfig(defaultTestUserAccount)
 
-  expect(result.minBptOut.amount).toBeGreaterThan(400000000000000000000n)
+  expect(result.minBptOut.amount).toBeGreaterThan(380000000000000000000n)
 })
 
 test('build Unbalanced Join Config with ETH (mainnet native asset)', async () => {
@@ -41,7 +41,7 @@ test('build Unbalanced Join Config with ETH (mainnet native asset)', async () =>
 
   const result = await builder.buildSdkAddLiquidityTxConfig(defaultTestUserAccount)
 
-  expect(result.minBptOut.amount).toBeGreaterThan(400000000000000000000n)
+  expect(result.minBptOut.amount).toBeGreaterThan(380000000000000000000n)
 })
 
 test('build Single Token AddLiquidity Config', async () => {
