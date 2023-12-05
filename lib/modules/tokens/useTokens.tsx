@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import {
@@ -7,12 +8,13 @@ import {
   GetTokensQuery,
   GetTokensQueryVariables,
   GqlChain,
+  GqlPoolToken,
   GqlToken,
 } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { createContext, PropsWithChildren } from 'react'
+import { createContext, PropsWithChildren, useCallback } from 'react'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { TokenBase } from './token.types'
@@ -48,13 +50,14 @@ export function _useTokens(
     return !isSameAddress(token.address, networkConfig.tokens.nativeAsset.address)
   }
 
-  function getToken(address: string, chain: GqlChain): GqlToken | undefined {
-    return tokens.find(token => isSameAddress(token.address, address) && token.chain === chain)
+  function getToken(address: string, chain: GqlChain | number): GqlToken | undefined {
+    const chainKey = typeof chain === 'number' ? 'chainId' : 'chain'
+    return tokens.find(token => isSameAddress(token.address, address) && token[chainKey] === chain)
   }
 
   function getTokensByChain(chain: number | GqlChain): GqlToken[] {
-    const key = typeof chain === 'number' ? 'chainId' : 'chain'
-    return tokens.filter(token => token[key] === chain)
+    const chainKey = typeof chain === 'number' ? 'chainId' : 'chain'
+    return tokens.filter(token => token[chainKey] === chain)
   }
 
   function priceForToken(token: GqlToken): number {
@@ -66,9 +69,10 @@ export function _useTokens(
     return price.price
   }
 
-  function usdValueForToken(token: GqlToken, amount: Numberish): string {
+  const usdValueForToken = useCallback((token: GqlToken, amount: Numberish) => {
+    if (amount === '') return '0'
     return bn(amount).times(priceForToken(token)).toFixed(2)
-  }
+  }, [])
 
   function priceFor(address: string, chain: GqlChain): number {
     const token = getToken(address, chain)
@@ -76,6 +80,16 @@ export function _useTokens(
 
     return priceForToken(token)
   }
+
+  const getPoolTokenWeightByBalance = useCallback(
+    (poolTotalLiquidity: string, token: GqlPoolToken, chain: GqlChain) => {
+      return (
+        (priceFor(token.address, chain) * parseFloat(token.balance)) /
+        parseFloat(poolTotalLiquidity)
+      )
+    },
+    []
+  )
 
   return {
     tokens,
@@ -87,6 +101,7 @@ export function _useTokens(
     exclNativeAssetFilter,
     nativeAssetFilter,
     usdValueForToken,
+    getPoolTokenWeightByBalance,
   }
 }
 

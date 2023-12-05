@@ -1698,6 +1698,7 @@ export type GetPoolQuery = {
         symbol: string
         createTime: number
         type: string
+        chain: GqlChain
         tokens: Array<
           { __typename?: 'GqlPoolToken' } & {
             ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -1870,6 +1871,7 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
+        chain: GqlChain
         tokens: Array<
           | ({ __typename?: 'GqlPoolToken' } & {
               ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -2045,6 +2047,7 @@ export type GetPoolQuery = {
         symbol: string
         createTime: number
         type: string
+        chain: GqlChain
         tokens: Array<
           { __typename?: 'GqlPoolToken' } & {
             ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -2215,6 +2218,7 @@ export type GetPoolQuery = {
         symbol: string
         createTime: number
         type: string
+        chain: GqlChain
         tokens: Array<
           | ({ __typename?: 'GqlPoolToken' } & {
               ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -2393,6 +2397,7 @@ export type GetPoolQuery = {
         symbol: string
         createTime: number
         type: string
+        chain: GqlChain
         tokens: Array<
           { __typename?: 'GqlPoolToken' } & {
             ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -2564,6 +2569,7 @@ export type GetPoolQuery = {
         symbol: string
         createTime: number
         type: string
+        chain: GqlChain
         tokens: Array<
           | ({ __typename?: 'GqlPoolToken' } & {
               ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -2742,6 +2748,7 @@ export type GetPoolQuery = {
         symbol: string
         createTime: number
         type: string
+        chain: GqlChain
         tokens: Array<
           { __typename?: 'GqlPoolToken' } & {
             ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -2912,6 +2919,7 @@ export type GetPoolQuery = {
         symbol: string
         createTime: number
         type: string
+        chain: GqlChain
         tokens: Array<
           | ({ __typename?: 'GqlPoolToken' } & {
               ' $fragmentRefs'?: { GqlPoolTokenFragment: GqlPoolTokenFragment }
@@ -3335,7 +3343,22 @@ export type GetPoolsQuery = {
     owner?: string | null
     symbol: string
     type: GqlPoolMinimalType
-    displayTokens: Array<{ __typename?: 'GqlPoolTokenDisplay'; address: string; symbol: string }>
+    displayTokens: Array<{
+      __typename?: 'GqlPoolTokenDisplay'
+      id: string
+      address: string
+      name: string
+      weight?: string | null
+      symbol: string
+      nestedTokens?: Array<{
+        __typename?: 'GqlPoolTokenDisplay'
+        id: string
+        address: string
+        name: string
+        weight?: string | null
+        symbol: string
+      }> | null
+    }>
     dynamicData: {
       __typename?: 'GqlPoolDynamicData'
       totalLiquidity: string
@@ -4448,6 +4471,7 @@ export const GetPoolDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'createTime' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'chain' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'dynamicData' },
@@ -6145,8 +6169,25 @@ export const GetPoolsDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'nestedTokens' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
+                          ],
+                        },
+                      },
                     ],
                   },
                 },

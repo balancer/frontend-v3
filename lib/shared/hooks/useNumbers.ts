@@ -17,6 +17,7 @@ BigInt.prototype.toJSON = function () {
 
 export const MAX_BIGINT = BigInt(MAX_UINT256)
 
+export const INTEGER_FORMAT = '0,0'
 export const FIAT_FORMAT_A = '0,0.00a'
 export const FIAT_FORMAT = '0,0.00'
 export const TOKEN_FORMAT_A = '0,0.[0000]a'
@@ -24,6 +25,7 @@ export const TOKEN_FORMAT = '0,0.[0000]'
 export const APR_FORMAT = '0.[00]%'
 export const FEE_FORMAT = '0.[0000]%'
 export const WEIGHT_FORMAT = '(%0,0)'
+export const PRICE_IMPACT_FORMAT = '0.00%'
 
 // Do not display APR values greater than this amount; they are likely to be nonsensical
 // These can arise from pools with extremely low balances (e.g., completed LBPs)
@@ -40,6 +42,10 @@ export function bn(val: Numberish): BigNumber {
 }
 
 type FormatOpts = { abbreviated?: boolean }
+
+export function integerFormat(val: Numberish): string {
+  return numeral(toSafeValue(val)).format(INTEGER_FORMAT)
+}
 
 /**
  * Converts a number to a string format within the decimal limit that numeral
@@ -72,6 +78,17 @@ export function feePercentFormat(fee: Numberish): string {
 
 export function weightFormat(val: Numberish): string {
   return numeral(val.toString()).format(WEIGHT_FORMAT)
+}
+
+export function priceImpactFormat(val: Numberish): string {
+  return numeral(val.toString()).format(PRICE_IMPACT_FORMAT)
+}
+
+/**
+ * Sums and array of string numbers
+ */
+export function safeSum(amounts: string[]): string {
+  return amounts.reduce((a, b) => bn(a).plus(b), bn(0)).toString()
 }
 
 export function useNumbers() {

@@ -4,6 +4,7 @@ export enum TransactionState {
   Ready = 'init',
   Confirming = 'confirming',
   Loading = 'loading',
+  Preparing = 'preparing',
   Error = 'error',
 }
 
@@ -17,9 +18,10 @@ export type TransactionLabels = {
   confirmed?: string
   rejected?: string
   error?: string
+  preparing?: string
 }
 
-type StepId = 'batchRelayerApproval' | 'tokenApproval' | 'joinPool'
+type StepType = 'batchRelayerApproval' | 'tokenApproval' | 'joinPool'
 
 export type ManagedResult = TransactionBundle & Executable
 
@@ -38,9 +40,11 @@ type Executable = {
 export type FlowStep = TransactionStep & ManagedResult
 
 export type TransactionStep = {
-  stepId: StepId
-  getLabels: (args?: any) => TransactionLabels
-  isComplete: boolean
+  id: string
+  stepType: StepType
+  transactionLabels: TransactionLabels
+  isComplete: () => boolean
+  activateStep: () => void
 }
 
 // Allows adding extra properties like set state callbacks to TransactionStep
@@ -53,7 +57,10 @@ export function getTransactionState({
   execution,
   result,
 }: TransactionBundle): TransactionState {
-  if (execution.isLoading || simulation.isLoading) {
+  if (simulation.isLoading) {
+    return TransactionState.Preparing
+  }
+  if (execution.isLoading) {
     return TransactionState.Loading
   }
   if (result.isLoading) {

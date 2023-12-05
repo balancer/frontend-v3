@@ -5,6 +5,7 @@ const networkConfig: NetworkConfig = {
   name: 'Fantom Opera',
   shortName: 'Fantom',
   iconPath: '/images/chains/FANTOM.svg',
+  blockExplorerBaseUrl: 'https://ftmscan.com',
   tokens: {
     nativeAsset: {
       name: 'Fantom',

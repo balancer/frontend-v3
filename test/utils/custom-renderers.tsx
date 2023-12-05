@@ -1,13 +1,23 @@
+import { poolId, vaultV2Address, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
+import { PoolVariant } from '@/lib/modules/pool/pool.types'
+import { PoolProvider } from '@/lib/modules/pool/usePool'
+import {
+  defaultGetTokenPricesQueryMock,
+  defaultGetTokensQueryMock,
+  defaultGetTokensQueryVariablesMock,
+} from '@/lib/modules/tokens/__mocks__/token.builders'
 import { TokensProvider } from '@/lib/modules/tokens/useTokens'
 import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
 import { createWagmiConfig } from '@/lib/modules/web3/Web3Provider'
 import { AbiMap } from '@/lib/modules/web3/contracts/AbiMap'
 import { WriteAbiMutability } from '@/lib/modules/web3/contracts/contract.types'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
+import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
 import { TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { GqlChain, GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 import { ApolloProvider } from '@apollo/client'
 import { RenderHookOptions, act, renderHook, waitFor } from '@testing-library/react'
-import { ReactElement, ReactNode } from 'react'
+import { PropsWithChildren, ReactElement, ReactNode } from 'react'
 import { GetFunctionArgs, InferFunctionName } from 'viem'
 import {
   Config,
@@ -18,14 +28,10 @@ import {
   useConnect,
   useWalletClient,
 } from 'wagmi'
+import { aGqlPoolElementMock } from '../msw/builders/gqlPoolElement.builders'
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
-import {
-  defaultGetTokenPricesQueryMock,
-  defaultGetTokensQueryMock,
-  defaultGetTokensQueryVariablesMock,
-} from '@/lib/modules/tokens/__mocks__/token.builders'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -147,3 +153,33 @@ export async function useConnectTestAccount() {
     walletClient: result.current.walletClient,
   }
 }
+
+export const DefaultTokenAllowancesTestProvider = ({ children }: PropsWithChildren) => (
+  <TokenAllowancesProvider
+    spenderAddress={vaultV2Address}
+    tokenAddresses={[wETHAddress, wjAuraAddress]}
+    userAddress={defaultTestUserAccount}
+  >
+    {children}
+  </TokenAllowancesProvider>
+)
+
+/* Builds a PoolProvider that injects the provided pool data*/
+export const buildDefaultPoolTestProvider =
+  (pool: GqlPoolElement) =>
+  // eslint-disable-next-line react/display-name
+  ({ children }: PropsWithChildren) => {
+    return (
+      <PoolProvider
+        id={poolId}
+        chain={GqlChain.Mainnet}
+        variant={PoolVariant.v2}
+        data={{ pool }}
+        variables={{ id: poolId }}
+      >
+        {children}
+      </PoolProvider>
+    )
+  }
+
+export const DefaultPoolTestProvider = buildDefaultPoolTestProvider(aGqlPoolElementMock())

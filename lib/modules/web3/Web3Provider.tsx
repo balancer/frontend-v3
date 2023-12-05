@@ -12,6 +12,7 @@ import {
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 import {
   arbitrum,
+  avalanche,
   base,
   fantom,
   gnosis,
@@ -23,21 +24,23 @@ import {
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { infuraProvider } from 'wagmi/providers/infura'
-import { merge } from 'lodash'
+import { keyBy, merge } from 'lodash'
 import { useColorMode, useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/shared/services/chakra/theme'
 import { CustomAvatar } from './CustomAvatar'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import { SupportedChainId } from '@/lib/config/config.types'
 
 export const supportedChains = [
   mainnet,
-  polygon,
-  optimism,
   arbitrum,
-  polygonZkEvm,
-  gnosis,
   base,
+  avalanche,
   fantom,
+  gnosis,
+  optimism,
+  polygon,
+  polygonZkEvm,
 ]
 
 export const { chains, publicClient } = configureChains(supportedChains, [
@@ -45,6 +48,12 @@ export const { chains, publicClient } = configureChains(supportedChains, [
   alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string }),
   publicProvider(),
 ])
+
+const chainsByKey = keyBy(chains, 'id')
+
+export function getDefaultRpcUrl(chainId: SupportedChainId) {
+  return chainsByKey[chainId].rpcUrls.default.http[0]
+}
 
 export const { connectors } = getDefaultWallets({
   appName: getProjectConfig().projectName,

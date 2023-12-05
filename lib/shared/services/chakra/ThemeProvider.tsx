@@ -22,7 +22,7 @@ export function ThemeProvider({
         type="cookie"
       />
       <ChakraCacheProvider>
-        <ChakraProvider colorModeManager={colorModeManager} theme={theme}>
+        <ChakraProvider colorModeManager={colorModeManager} theme={theme} cssVarsRoot="body">
           {children}
         </ChakraProvider>
       </ChakraCacheProvider>

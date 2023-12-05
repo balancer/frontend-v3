@@ -5,6 +5,7 @@ const networkConfig: NetworkConfig = {
   name: 'Optimism Mainnet',
   shortName: 'Optimism',
   iconPath: '/images/chains/OPTIMISM.svg',
+  blockExplorerBaseUrl: 'https://optimistic.etherscan.io',
   tokens: {
     nativeAsset: {
       name: 'Ether',

@@ -7,6 +7,7 @@ import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { tokenFormat, useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { useTokens } from '../../useTokens'
+import { NumberText } from '@/lib/shared/components/typography/NumberText'
 
 type Props = {
   token: GqlToken
@@ -32,12 +33,13 @@ export function TokenSelectListRow({
   const fiatValue = userBalance && !isBalancesLoading ? toCurrency(usdValue) : '-'
 
   const boxStyles: BoxProps = {
-    bg: active ? 'gray.100' : 'transparent',
+    bg: active ? 'background.card.level5' : 'transparent',
+    shadow: active ? 'md' : 'none',
     borderRadius: 'md',
     p: 'sm',
     cursor: 'pointer',
     _hover: {
-      bg: active ? 'gray.200' : 'gray.50',
+      bg: active ? 'background.card.level6' : 'background.card.level4',
     },
     transition: 'all 0.2s ease-in-out',
   }
@@ -50,7 +52,7 @@ export function TokenSelectListRow({
     <Box {...boxStyles} {...rest}>
       <HStack height="full" spacing="md" justify="space-between" maxW="full">
         <HStack height="full" spacing="md" maxW="full">
-          <TokenIcon token={token} alt={token.symbol} />
+          <TokenIcon address={token.address} chain={token.chain} alt={token.symbol} />
           <VStack height="full" align="start" justify="center" spacing="none" maxW="full">
             <Text {...textStyles}>{token.symbol}</Text>
             <Text title={token.name} fontSize="sm" w="40" isTruncated={true} {...textStyles}>
@@ -60,16 +62,12 @@ export function TokenSelectListRow({
         </HStack>
         {isConnected && (
           <VStack align="end" justify="center" spacing="none">
-            <Text
-              title={userBalance?.amount.toString()}
-              style={{ fontVariantNumeric: 'tabular-nums ' }}
-              {...textStyles}
-            >
+            <NumberText title={userBalance?.amount.toString()} {...textStyles}>
               {tokenBalance}
-            </Text>
-            <Text fontSize="sm" style={{ fontVariantNumeric: 'tabular-nums ' }} {...textStyles}>
+            </NumberText>
+            <NumberText fontSize="sm" {...textStyles}>
               {fiatValue}
-            </Text>
+            </NumberText>
           </VStack>
         )}
       </HStack>

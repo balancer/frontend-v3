@@ -7,6 +7,7 @@ import { PoolListItem } from '../../pool.types'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
 import { useNumbers } from '@/lib/shared/hooks/useNumbers'
+import { PoolListTokensTag } from '../PoolListTokensTag'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -46,9 +47,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
               alt={networkConfig.shortName}
             />
           </GridItem>
-          <GridItem area="details">
-            <Text>{pool.name}</Text>
-          </GridItem>
+          <GridItem area="details">{pool && <PoolListTokensTag pool={pool} />}</GridItem>
           <GridItem area="my_liquidity">
             <Text textAlign="right">{formattedUsdBalance}</Text>
           </GridItem>
