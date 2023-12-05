@@ -21,7 +21,7 @@ export function PoolListTableHeader({ ...rest }) {
         <Text>Pool name</Text>
       </GridItem>
       <GridItem>
-        <Text>My Liquidity</Text>
+        <Text textAlign="right">My Liquidity</Text>
       </GridItem>
       {[GqlPoolOrderBy.TotalLiquidity, GqlPoolOrderBy.Volume24h, GqlPoolOrderBy.Apr].map(
         (orderByItem, index) => (

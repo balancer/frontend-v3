@@ -50,7 +50,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
             <Text>{pool.name}</Text>
           </GridItem>
           <GridItem area="my_liquidity">
-            <Text>{formattedUsdBalance}</Text>
+            <Text textAlign="right">{formattedUsdBalance}</Text>
           </GridItem>
           <GridItem area="tvl">
             <Text
