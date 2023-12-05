@@ -19,7 +19,7 @@ const rowProps = {
   px: [0, 4],
   gridTemplateColumns: '50px 1fr 150px 175px 175px 175px',
   alignItems: 'center',
-  gap: 0,
+  gap: 'lg',
   minW: '800px',
 }
 
@@ -40,9 +40,6 @@ export function PoolListTable({ pools, count, loading }: Props) {
         }}
         showPagination={showPagination}
         paginationProps={paginationProps}
-        border="1px solid"
-        borderColor="gray.100"
-        borderRadius="16px"
         overflowX={isMobile ? 'auto' : 'hidden'}
         w="full"
         alignItems="flex-start"
