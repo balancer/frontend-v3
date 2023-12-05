@@ -511,6 +511,7 @@ export type GqlPoolMinimal = {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   type: GqlPoolMinimalType
+  userBalance?: Maybe<GqlPoolUserBalance>
   version: Scalars['Int']['output']
 }
 
@@ -863,6 +864,13 @@ export type GqlPoolUnion =
   | GqlPoolPhantomStable
   | GqlPoolStable
   | GqlPoolWeighted
+
+export type GqlPoolUserBalance = {
+  __typename?: 'GqlPoolUserBalance'
+  stakedBalance: Scalars['AmountHumanReadable']['output']
+  totalBalance: Scalars['AmountHumanReadable']['output']
+  walletBalance: Scalars['AmountHumanReadable']['output']
+}
 
 export type GqlPoolUserSwapVolume = {
   __typename?: 'GqlPoolUserSwapVolume'
@@ -3392,6 +3400,12 @@ export type GetPoolsQuery = {
         }>
       }
     }
+    userBalance?: {
+      __typename?: 'GqlPoolUserBalance'
+      totalBalance: string
+      stakedBalance: string
+      walletBalance: string
+    } | null
   }>
 }
 
@@ -6430,6 +6444,18 @@ export const GetPoolsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'owner' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'userBalance' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'stakedBalance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'walletBalance' } },
+                    ],
+                  },
+                },
               ],
             },
           },
