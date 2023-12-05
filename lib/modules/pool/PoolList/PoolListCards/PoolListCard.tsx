@@ -1,6 +1,7 @@
-import { Card, HStack, VStack } from '@chakra-ui/react'
+import { Card, HStack, VStack, Text } from '@chakra-ui/react'
 import { PoolListItem } from '../../pool.types'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
+import { convertSnakeToTitleCase } from '@/lib/shared/utils/strings'
 
 interface Props {
   pool: PoolListItem
@@ -21,6 +22,10 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
       <VStack align="start">
         <HStack>
           <NetworkIcon chain={pool.chain} />
+          <VStack align="start" spacing="none">
+            <Text color="GrayText">{convertSnakeToTitleCase(pool.type)}</Text>
+            <Text noOfLines={1}>{pool.name}</Text>
+          </VStack>
         </HStack>
       </VStack>
     </Card>
