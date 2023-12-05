@@ -4,6 +4,9 @@ import { getNetworkConfig } from '@/lib/config/app.config'
 import Image from 'next/image'
 import { toPercentageFormatted } from '@/lib/shared/utils/numbers'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
+import { useNumbers } from '@/lib/shared/hooks/useNumbers'
+import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
+import { memo } from 'react'
 
 interface Props {
   pool: PoolListItem
@@ -32,13 +35,15 @@ function PoolTokens({ pool }: { pool: PoolListItem }) {
   }
 }
 
+const MemoizedAprTooltip = memo(AprTooltip)
+
 export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: Props) {
   const networkConfig = getNetworkConfig(pool.chain)
+  const { toCurrency } = useNumbers()
 
   return (
     // TODO: added height for now to get a scrollbar
     <Card
-      h="400"
       variant="gradient"
       onClick={event => cardClickHandler && cardClickHandler(event, pool)}
       cursor={cardClickHandler ? 'pointer' : 'default'}
@@ -76,22 +81,52 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
         <Grid w="full" h="full" templateColumns="1fr 1fr" gap="4">
           <GridItem>
             <Card h="full" variant="gradient">
-              TEXT
+              <VStack alignItems="flex-start" w="full" py="4" px="3" gap="0">
+                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+                  TVL:
+                </Text>
+                <Text fontWeight="bold" fontSize="1rem">
+                  {toCurrency(pool.dynamicData.totalLiquidity)}
+                </Text>
+              </VStack>
             </Card>
           </GridItem>
           <GridItem>
             <Card h="full" variant="gradient">
-              TEXT
+              <VStack alignItems="flex-start" w="full" py="4" px="3" gap="0">
+                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+                  Vol(24h):
+                </Text>
+                <Text fontWeight="bold" fontSize="1rem">
+                  {toCurrency(pool.dynamicData.volume24h)}
+                </Text>
+              </VStack>
             </Card>
           </GridItem>
           <GridItem>
             <Card h="full" variant="gradient">
-              TEXT
+              <VStack alignItems="flex-start" w="full" py="4" px="3" gap="0">
+                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+                  My Liquidity:
+                </Text>
+                <Text fontWeight="bold" fontSize="1rem">
+                  --
+                </Text>
+              </VStack>
             </Card>
           </GridItem>
           <GridItem>
             <Card h="full" variant="gradient">
-              TEXT
+              <VStack alignItems="flex-start" w="full" py="4" px="3" gap="0">
+                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+                  APR:
+                </Text>
+                <MemoizedAprTooltip
+                  data={pool.dynamicData.apr}
+                  poolId={pool.id}
+                  textProps={{ fontSize: '1rem', fontWeight: 'bold' }}
+                />
+              </VStack>
             </Card>
           </GridItem>
         </Grid>
