@@ -7,14 +7,14 @@ import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useState } from 'react'
 import { TokenSelectModal } from '@/lib/modules/tokens/TokenSelectModal/TokenSelectModal'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
+import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
+import { daiAddress } from '@/lib/debug-helpers'
 
 export default function TokenInputPage() {
   const [currentValue, setCurrentValue] = useState('')
   const { getToken, getTokensByChain } = useTokens()
   const tokenSelectDisclosure = useDisclosure()
-  const [token, setToken] = useState<GqlToken>(
-    getToken('0x6B175474E89094C44Da98b954EedeAC495271d0F', 1) as GqlToken
-  )
+  const [token, setToken] = useState<GqlToken>(getToken(daiAddress, 1) as GqlToken)
 
   const tokens = getTokensByChain(1)
 
@@ -27,6 +27,7 @@ export default function TokenInputPage() {
       <VStack width="sm" align="start" p="md">
         <Heading>Token Input</Heading>
         <Text>Current value: {currentValue}</Text>
+        <ConnectWallet />
         <Card p="md" variant="level3" shadow="2xl">
           <VStack spacing="md" w="full">
             <TokenInput
