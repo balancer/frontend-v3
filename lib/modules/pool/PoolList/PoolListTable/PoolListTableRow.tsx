@@ -19,15 +19,16 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
   const networkConfig = getNetworkConfig(pool.chain)
   const { toCurrency } = useNumbers()
 
-  const formattedUsdBalance = pool.userBalance
-    ? toCurrency(
-        (parseFloat(pool.dynamicData.totalLiquidity) / parseFloat(pool.dynamicData.totalShares)) *
-          parseFloat(pool.userBalance?.totalBalance),
-        {
-          abbreviated: false,
-        }
-      )
-    : '-'
+  const formattedUsdBalance =
+    pool.userBalance && pool.userBalance?.totalBalance !== '0.0'
+      ? toCurrency(
+          (parseFloat(pool.dynamicData.totalLiquidity) / parseFloat(pool.dynamicData.totalShares)) *
+            parseFloat(pool.userBalance?.totalBalance),
+          {
+            abbreviated: false,
+          }
+        )
+      : '-'
 
   return (
     <Box key={keyValue}>
