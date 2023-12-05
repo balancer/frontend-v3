@@ -95,6 +95,11 @@ query GetPools(
     owner
     symbol
     type
+    userBalance {
+      totalBalance
+      stakedBalance
+      walletBalance
+    }
   }
   count: poolGetPoolsCount(
     first: $first

@@ -511,6 +511,7 @@ export type GqlPoolMinimal = {
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
   type: GqlPoolMinimalType
+  userBalance?: Maybe<GqlPoolUserBalance>
   version: Scalars['Int']['output']
 }
 
@@ -659,9 +660,19 @@ export type GqlPoolStaking = {
   __typename?: 'GqlPoolStaking'
   address: Scalars['String']['output']
   chain: GqlChain
+  farm?: Maybe<GqlPoolStakingMasterChefFarm>
   gauge?: Maybe<GqlPoolStakingGauge>
   id: Scalars['ID']['output']
+  reliquary?: Maybe<GqlPoolStakingReliquaryFarm>
   type: GqlPoolStakingType
+}
+
+export type GqlPoolStakingFarmRewarder = {
+  __typename?: 'GqlPoolStakingFarmRewarder'
+  address: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  rewardPerSecond: Scalars['String']['output']
+  tokenAddress: Scalars['String']['output']
 }
 
 export type GqlPoolStakingGauge = {
@@ -688,6 +699,13 @@ export enum GqlPoolStakingGaugeStatus {
   Preferred = 'PREFERRED',
 }
 
+export type GqlPoolStakingMasterChefFarm = {
+  __typename?: 'GqlPoolStakingMasterChefFarm'
+  beetsPerBlock: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  rewarders?: Maybe<Array<GqlPoolStakingFarmRewarder>>
+}
+
 export type GqlPoolStakingOtherGauge = {
   __typename?: 'GqlPoolStakingOtherGauge'
   gaugeAddress: Scalars['String']['output']
@@ -697,8 +715,30 @@ export type GqlPoolStakingOtherGauge = {
   version: Scalars['Int']['output']
 }
 
+export type GqlPoolStakingReliquaryFarm = {
+  __typename?: 'GqlPoolStakingReliquaryFarm'
+  beetsPerSecond: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  levels?: Maybe<Array<GqlPoolStakingReliquaryFarmLevel>>
+  totalBalance: Scalars['String']['output']
+  totalWeightedBalance: Scalars['String']['output']
+}
+
+export type GqlPoolStakingReliquaryFarmLevel = {
+  __typename?: 'GqlPoolStakingReliquaryFarmLevel'
+  allocationPoints: Scalars['Int']['output']
+  apr: Scalars['BigDecimal']['output']
+  balance: Scalars['BigDecimal']['output']
+  id: Scalars['ID']['output']
+  level: Scalars['Int']['output']
+  requiredMaturity: Scalars['Int']['output']
+}
+
 export enum GqlPoolStakingType {
+  FreshBeets = 'FRESH_BEETS',
   Gauge = 'GAUGE',
+  MasterChef = 'MASTER_CHEF',
+  Reliquary = 'RELIQUARY',
 }
 
 export type GqlPoolSwap = {
@@ -825,6 +865,13 @@ export type GqlPoolUnion =
   | GqlPoolStable
   | GqlPoolWeighted
 
+export type GqlPoolUserBalance = {
+  __typename?: 'GqlPoolUserBalance'
+  stakedBalance: Scalars['AmountHumanReadable']['output']
+  totalBalance: Scalars['AmountHumanReadable']['output']
+  walletBalance: Scalars['AmountHumanReadable']['output']
+}
+
 export type GqlPoolUserSwapVolume = {
   __typename?: 'GqlPoolUserSwapVolume'
   swapVolumeUSD: Scalars['BigDecimal']['output']
@@ -896,6 +943,47 @@ export type GqlProtocolMetricsChain = {
   totalSwapFee: Scalars['BigDecimal']['output']
   totalSwapVolume: Scalars['BigDecimal']['output']
   yieldCapture24h: Scalars['BigDecimal']['output']
+}
+
+export type GqlRelicSnapshot = {
+  __typename?: 'GqlRelicSnapshot'
+  balance: Scalars['String']['output']
+  entryTimestamp: Scalars['Int']['output']
+  farmId: Scalars['String']['output']
+  level: Scalars['Int']['output']
+  relicId: Scalars['Int']['output']
+}
+
+export type GqlReliquaryFarmLevelSnapshot = {
+  __typename?: 'GqlReliquaryFarmLevelSnapshot'
+  balance: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  level: Scalars['String']['output']
+}
+
+export type GqlReliquaryFarmSnapshot = {
+  __typename?: 'GqlReliquaryFarmSnapshot'
+  dailyDeposited: Scalars['String']['output']
+  dailyWithdrawn: Scalars['String']['output']
+  farmId: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  levelBalances: Array<GqlReliquaryFarmLevelSnapshot>
+  relicCount: Scalars['String']['output']
+  timestamp: Scalars['Int']['output']
+  tokenBalances: Array<GqlReliquaryTokenBalanceSnapshot>
+  totalBalance: Scalars['String']['output']
+  totalLiquidity: Scalars['String']['output']
+  userCount: Scalars['String']['output']
+}
+
+export type GqlReliquaryTokenBalanceSnapshot = {
+  __typename?: 'GqlReliquaryTokenBalanceSnapshot'
+  address: Scalars['String']['output']
+  balance: Scalars['String']['output']
+  decimals: Scalars['Int']['output']
+  id: Scalars['ID']['output']
+  name: Scalars['String']['output']
+  symbol: Scalars['String']['output']
 }
 
 export type GqlSorGetBatchSwapForTokensInResponse = {
@@ -1058,6 +1146,14 @@ export enum GqlTokenType {
   WhiteListed = 'WHITE_LISTED',
 }
 
+export type GqlUserFbeetsBalance = {
+  __typename?: 'GqlUserFbeetsBalance'
+  id: Scalars['String']['output']
+  stakedBalance: Scalars['AmountHumanReadable']['output']
+  totalBalance: Scalars['AmountHumanReadable']['output']
+  walletBalance: Scalars['AmountHumanReadable']['output']
+}
+
 export type GqlUserPoolBalance = {
   __typename?: 'GqlUserPoolBalance'
   chain: GqlChain
@@ -1067,6 +1163,47 @@ export type GqlUserPoolBalance = {
   tokenPrice: Scalars['Float']['output']
   totalBalance: Scalars['AmountHumanReadable']['output']
   walletBalance: Scalars['AmountHumanReadable']['output']
+}
+
+export type GqlUserPoolSnapshot = {
+  __typename?: 'GqlUserPoolSnapshot'
+  farmBalance: Scalars['AmountHumanReadable']['output']
+  fees24h: Scalars['AmountHumanReadable']['output']
+  gaugeBalance: Scalars['AmountHumanReadable']['output']
+  percentShare: Scalars['Float']['output']
+  timestamp: Scalars['Int']['output']
+  totalBalance: Scalars['AmountHumanReadable']['output']
+  totalValueUSD: Scalars['AmountHumanReadable']['output']
+  walletBalance: Scalars['AmountHumanReadable']['output']
+}
+
+export type GqlUserPortfolioSnapshot = {
+  __typename?: 'GqlUserPortfolioSnapshot'
+  farmBalance: Scalars['AmountHumanReadable']['output']
+  fees24h: Scalars['AmountHumanReadable']['output']
+  gaugeBalance: Scalars['AmountHumanReadable']['output']
+  pools: Array<GqlUserPoolSnapshot>
+  timestamp: Scalars['Int']['output']
+  totalBalance: Scalars['AmountHumanReadable']['output']
+  totalFees: Scalars['AmountHumanReadable']['output']
+  totalValueUSD: Scalars['AmountHumanReadable']['output']
+  walletBalance: Scalars['AmountHumanReadable']['output']
+}
+
+export type GqlUserRelicSnapshot = {
+  __typename?: 'GqlUserRelicSnapshot'
+  relicCount: Scalars['Int']['output']
+  relicSnapshots: Array<GqlRelicSnapshot>
+  timestamp: Scalars['Int']['output']
+  totalBalance: Scalars['String']['output']
+}
+
+export enum GqlUserSnapshotDataRange {
+  AllTime = 'ALL_TIME',
+  NinetyDays = 'NINETY_DAYS',
+  OneHundredEightyDays = 'ONE_HUNDRED_EIGHTY_DAYS',
+  OneYear = 'ONE_YEAR',
+  ThirtyDays = 'THIRTY_DAYS',
 }
 
 export type GqlUserSwapVolumeFilter = {
@@ -1112,6 +1249,8 @@ export type GqlVotingPool = {
 export type Mutation = {
   __typename?: 'Mutation'
   balancerMutationTest: Scalars['String']['output']
+  beetsPoolLoadReliquarySnapshotsForAllFarms: Scalars['String']['output']
+  beetsSyncFbeetsRatio: Scalars['String']['output']
   cacheAverageBlockTime: Scalars['String']['output']
   poolBlackListAddPool: Scalars['String']['output']
   poolBlackListRemovePool: Scalars['String']['output']
@@ -1154,6 +1293,7 @@ export type Mutation = {
   userInitStakedBalances: Scalars['String']['output']
   userInitWalletBalancesForAllPools: Scalars['String']['output']
   userInitWalletBalancesForPool: Scalars['String']['output']
+  userLoadAllRelicSnapshots: Scalars['String']['output']
   userSyncBalance: Scalars['String']['output']
   userSyncBalanceAllPools: Scalars['String']['output']
   userSyncChangedStakedBalances: Scalars['String']['output']
@@ -1232,6 +1372,8 @@ export type MutationUserSyncBalanceArgs = {
 export type Query = {
   __typename?: 'Query'
   balancerQueryTest: Scalars['String']['output']
+  beetsGetFbeetsRatio: Scalars['String']['output']
+  beetsPoolGetReliquaryFarmSnapshots: Array<GqlReliquaryFarmSnapshot>
   blocksGetAverageBlockTime: Scalars['Float']['output']
   blocksGetBlocksPerDay: Scalars['Float']['output']
   blocksGetBlocksPerSecond: Scalars['Float']['output']
@@ -1263,14 +1405,23 @@ export type Query = {
   tokenGetTokens: Array<GqlToken>
   tokenGetTokensData: Array<GqlTokenData>
   tokenGetTokensDynamicData: Array<GqlTokenDynamicData>
+  userGetFbeetsBalance: GqlUserFbeetsBalance
   userGetPoolBalances: Array<GqlUserPoolBalance>
   userGetPoolJoinExits: Array<GqlPoolJoinExit>
+  userGetPoolSnapshots: Array<GqlUserPoolSnapshot>
+  userGetPortfolioSnapshots: Array<GqlUserPortfolioSnapshot>
+  userGetRelicSnapshots: Array<GqlUserRelicSnapshot>
   userGetStaking: Array<GqlPoolStaking>
   userGetSwaps: Array<GqlPoolSwap>
   veBalGetTotalSupply: Scalars['AmountHumanReadable']['output']
   veBalGetUser: GqlVeBalUserData
   veBalGetUserBalance: Scalars['AmountHumanReadable']['output']
   veBalGetVotingList: Array<GqlVotingPool>
+}
+
+export type QueryBeetsPoolGetReliquaryFarmSnapshotsArgs = {
+  id: Scalars['String']['input']
+  range: GqlPoolSnapshotDataRange
 }
 
 export type QueryPoolGetAllPoolsSnapshotsArgs = {
@@ -1330,7 +1481,11 @@ export type QueryPoolGetSwapsArgs = {
 }
 
 export type QueryProtocolMetricsAggregatedArgs = {
-  chainIds: Array<Scalars['String']['input']>
+  chains?: InputMaybe<Array<GqlChain>>
+}
+
+export type QueryProtocolMetricsChainArgs = {
+  chain?: InputMaybe<GqlChain>
 }
 
 export type QuerySorGetBatchSwapForTokensInArgs = {
@@ -1402,6 +1557,21 @@ export type QueryUserGetPoolJoinExitsArgs = {
   first?: InputMaybe<Scalars['Int']['input']>
   poolId: Scalars['String']['input']
   skip?: InputMaybe<Scalars['Int']['input']>
+}
+
+export type QueryUserGetPoolSnapshotsArgs = {
+  chain: GqlChain
+  poolId: Scalars['String']['input']
+  range: GqlUserSnapshotDataRange
+}
+
+export type QueryUserGetPortfolioSnapshotsArgs = {
+  days: Scalars['Int']['input']
+}
+
+export type QueryUserGetRelicSnapshotsArgs = {
+  farmId: Scalars['String']['input']
+  range: GqlUserSnapshotDataRange
 }
 
 export type QueryUserGetStakingArgs = {
@@ -3207,6 +3377,12 @@ export type GetPoolsQuery = {
         }>
       }
     }
+    userBalance?: {
+      __typename?: 'GqlPoolUserBalance'
+      totalBalance: string
+      stakedBalance: string
+      walletBalance: string
+    } | null
   }>
 }
 
@@ -6245,6 +6421,18 @@ export const GetPoolsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'owner' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'userBalance' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'stakedBalance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'walletBalance' } },
+                    ],
+                  },
+                },
               ],
             },
           },
