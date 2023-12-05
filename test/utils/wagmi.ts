@@ -13,6 +13,8 @@ import { mainnet } from 'viem/chains'
 import { CreateConfigParameters, WalletClient, createConfig } from 'wagmi'
 import { testQueryClient } from './react-query'
 import { privateKeyToAccount } from 'viem/accounts'
+import { SupportedChainId } from '@/lib/config/config.types'
+import { keyBy } from 'lodash'
 
 const defaultAnvilTestPrivateKey =
   '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
@@ -73,8 +75,9 @@ export function createWagmiTestConfig({ ...config }: SetupClient = {}) {
   })
 }
 
-export function setWagmiDefaultRpcUrlForTests(rpcUrl: string) {
+export function setWagmiDefaultRpcUrlForTests(chainId: SupportedChainId, rpcUrl: string) {
+  const chainsByKey = keyBy(chains, 'id')
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  chains[0].rpcUrls.public.http[0] = rpcUrl
+  chainsByKey[chainId].rpcUrls.default.http[0] = rpcUrl
 }
