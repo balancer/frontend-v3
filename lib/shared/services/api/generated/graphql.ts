@@ -3946,8 +3946,8 @@ export type GetPoolTokensDynamicDataQuery = {
 export type GetPoolJoinsExitsSwapsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>
   skip?: InputMaybe<Scalars['Int']['input']>
-  where?: InputMaybe<GqlPoolSwapFilter>
   poolId: Scalars['String']['input']
+  chainId: GqlChain
 }>
 
 export type GetPoolJoinsExitsSwapsQuery = {
@@ -8345,15 +8345,18 @@ export const GetPoolJoinsExitsSwapsDocument = {
         },
         {
           kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'where' } },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlPoolSwapFilter' } },
-        },
-        {
-          kind: 'VariableDefinition',
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'poolId' } },
           type: {
             kind: 'NonNullType',
             type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'chainId' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
           },
         },
       ],
@@ -8378,7 +8381,27 @@ export const GetPoolJoinsExitsSwapsDocument = {
               {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'where' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'where' } },
+                value: {
+                  kind: 'ObjectValue',
+                  fields: [
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'poolIdIn' },
+                      value: {
+                        kind: 'ListValue',
+                        values: [{ kind: 'Variable', name: { kind: 'Name', value: 'poolId' } }],
+                      },
+                    },
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'chainIn' },
+                      value: {
+                        kind: 'ListValue',
+                        values: [{ kind: 'Variable', name: { kind: 'Name', value: 'chainId' } }],
+                      },
+                    },
+                  ],
+                },
               },
             ],
             selectionSet: {
@@ -8424,6 +8447,14 @@ export const GetPoolJoinsExitsSwapsDocument = {
                       value: {
                         kind: 'ListValue',
                         values: [{ kind: 'Variable', name: { kind: 'Name', value: 'poolId' } }],
+                      },
+                    },
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'chainIn' },
+                      value: {
+                        kind: 'ListValue',
+                        values: [{ kind: 'Variable', name: { kind: 'Name', value: 'chainId' } }],
                       },
                     },
                   ],

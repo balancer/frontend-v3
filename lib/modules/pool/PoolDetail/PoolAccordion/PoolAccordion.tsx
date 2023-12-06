@@ -13,6 +13,7 @@ import { PoolAttributes } from '../PoolAttributes/PoolAttributes'
 import { PoolRisks } from '../PoolRisks/PoolRisks'
 import { PoolContracts } from '../PoolContracts/PoolContracts'
 import { PoolChart } from '../PoolChart/PoolChart'
+import { PoolActivityChart } from '../PoolActivityChart/PoolActivityChart'
 
 export function PoolAccordion() {
   return (
@@ -42,7 +43,7 @@ export function PoolAccordion() {
           <AccordionIcon />
         </AccordionButton>
         <AccordionPanel>
-          <PoolChart />
+          <PoolActivityChart />
         </AccordionPanel>
       </AccordionItem>
     </Accordion>
