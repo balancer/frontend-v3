@@ -1,4 +1,3 @@
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { poolId } from '@/lib/debug-helpers'
 import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
@@ -13,20 +12,14 @@ import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
 
 export function useConstructAddLiquidityStep(
   poolStateQuery: PoolStateInputResult,
-  humanAmountsIn: HumanAmountIn[]
+  humanAmountsIn: HumanAmountIn[],
+  builder: AddLiquidityConfigBuilder
 ) {
   const { address: userAddress } = useUserAccount()
   const { isActiveStep, activateStep } = useActiveStep()
-  const { chainId } = useNetworkConfig()
-
-  const addLiquidityBuilder = new AddLiquidityConfigBuilder(
-    chainId,
-    poolStateQuery.data,
-    'unbalanced'
-  )
 
   const addLiquidityQuery = useBuildAddLiquidityQuery(
-    addLiquidityBuilder,
+    builder,
     humanAmountsIn,
     isActiveStep,
     userAddress
@@ -47,7 +40,7 @@ export function useConstructAddLiquidityStep(
 
   return {
     step,
-    joinPayload: addLiquidityBuilder,
+    // joinPayload: builder,
     isLoading:
       transaction?.simulation.isLoading ||
       transaction?.execution.isLoading ||

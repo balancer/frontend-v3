@@ -18,6 +18,7 @@ import { keyBy } from 'lodash'
 import { parseUnits } from 'viem'
 import { Address } from 'wagmi'
 import { HumanAmountIn } from './add-liquidity.types'
+import { AmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 
 // TODO: this should be imported from the SDK
 export type InputAmount = {
@@ -109,6 +110,17 @@ export class AddLiquidityConfigBuilder {
     humanAmountsIn: HumanAmountIn[]
     useNativeAssetAsWrappedAmountIn?: boolean
   }): AddLiquidityUnbalancedInput {
+    const amountsIn = this.toSdkAmountsIn(humanAmountsIn)
+
+    return {
+      ...this.getAddLiquidityInputBase(),
+      amountsIn,
+      kind: AddLiquidityKind.Unbalanced,
+      useNativeAssetAsWrappedAmountIn,
+    }
+  }
+
+  toSdkAmountsIn(humanAmountsIn: HumanAmountIn[]) {
     const amountsInList: InputAmount[] = this.poolStateInput?.tokens.map(t => {
       return {
         rawAmount: 0n,
@@ -116,7 +128,6 @@ export class AddLiquidityConfigBuilder {
         address: t.address,
       }
     })
-
     const amountsInByTokenAddress = keyBy(amountsInList, a => a.address)
 
     // from humanAmountsIn to SDK AmountsIn
@@ -128,13 +139,7 @@ export class AddLiquidityConfigBuilder {
       amountsInByTokenAddress[tokenAddress].rawAmount = parseUnits(humanAmount, decimals)
     })
     const amountsIn = Object.values(amountsInByTokenAddress)
-
-    return {
-      ...this.getAddLiquidityInputBase(),
-      amountsIn,
-      kind: AddLiquidityKind.Unbalanced,
-      useNativeAssetAsWrappedAmountIn,
-    }
+    return amountsIn
   }
 
   // WIP
@@ -182,6 +187,16 @@ export class AddLiquidityConfigBuilder {
     }
 
     return { maxAmountsIn, minBptOut, queryResult, config }
+  }
+
+  getAmountsToApprove(humanAmountsIn: HumanAmountIn[]): AmountToApprove[] {
+    // sdkAmountsIn could be cached or passed as prop when going to preview
+    return this.toSdkAmountsIn(humanAmountsIn).map(({ address, rawAmount }) => {
+      return {
+        tokenAddress: address,
+        amount: rawAmount,
+      }
+    })
   }
 }
 
