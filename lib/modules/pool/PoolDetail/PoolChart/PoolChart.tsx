@@ -4,10 +4,10 @@ import ReactECharts from 'echarts-for-react'
 import { PoolChartTypeTabs } from './PoolChartTypeTabs'
 import { usePoolCharts } from './usePoolCharts'
 import { PoolChartPeriodSelector } from './PoolChartPeriodSelector'
-import { useNumbers } from '@/lib/shared/hooks/useNumbers'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 export function PoolChart() {
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
   const {
     activeTab,
     setActiveTab,

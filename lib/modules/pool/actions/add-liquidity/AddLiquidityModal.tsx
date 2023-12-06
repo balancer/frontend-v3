@@ -19,12 +19,13 @@ import {
 } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
-import { priceImpactFormat, tokenFormat, useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { usePool } from '../../usePool'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { priceImpactFormat, tokenFormat } from '@/lib/shared/utils/numbers'
 
 type Props = {
   isOpen: boolean
@@ -44,7 +45,7 @@ function TokenAmountRow({
 }) {
   const { pool } = usePool()
   const { getToken, usdValueForToken } = useTokens()
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
 
   const token = getToken(tokenAddress, pool.chain)
   const usdValue = token ? usdValueForToken(token, value) : undefined
@@ -74,7 +75,7 @@ export function AddLiquidityModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
   const { amountsIn, totalUSDValue, executeAddLiquidity } = useAddLiquidity()
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
   const { pool } = usePool()
 
   return (

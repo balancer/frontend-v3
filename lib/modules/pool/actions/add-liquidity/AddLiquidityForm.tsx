@@ -7,14 +7,15 @@ import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import { Button, Card, Center, HStack, Heading, VStack, Text, Tooltip } from '@chakra-ui/react'
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { AddLiquidityModal } from './AddLiquidityModal'
-import { priceImpactFormat, useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { priceImpactFormat } from '@/lib/shared/utils/numbers'
 
 export function AddLiquidityForm() {
   const { amountsIn, totalUSDValue, setAmountIn, tokens, validTokens } = useAddLiquidity()
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
   const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
 

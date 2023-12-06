@@ -2,9 +2,10 @@ import { HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { useTokens } from '../useTokens'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { Numberish, tokenFormat, useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { ReactNode } from 'react'
 import { TokenIcon } from '../TokenIcon'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { Numberish, tokenFormat } from '@/lib/shared/utils/numbers'
 
 type Props = {
   address: Address
@@ -15,7 +16,7 @@ type Props = {
 
 export default function TokenRow({ address, value, customRender, chain }: Props) {
   const { getToken, usdValueForToken } = useTokens()
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
   const token = getToken(address, chain)
 
   const totalValue = token ? usdValueForToken(token, value) : '0'
