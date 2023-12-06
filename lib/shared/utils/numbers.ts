@@ -3,6 +3,7 @@
 import { MAX_UINT256 } from '@balancer/sdk'
 import BigNumber from 'bignumber.js'
 import numeral from 'numeral'
+import { KeyboardEvent } from 'react'
 
 // Allows calling JSON.stringify with bigints
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#use_within_json
@@ -91,4 +92,9 @@ export function priceImpactFormat(val: Numberish): string {
 // Sums an array of numbers safely using bignumber.js.
 export function safeSum(amounts: Numberish[]): string {
   return amounts.reduce((a, b) => bn(a).plus(b.toString()), bn(0)).toString()
+}
+
+// Prevents invalid characters from being entered into a number input.
+export function blockInvalidNumberInput(event: KeyboardEvent<HTMLInputElement>): void {
+  ;['e', 'E', '+', '-'].includes(event.key) && event.preventDefault()
 }
