@@ -25,14 +25,7 @@ export async function calculatePriceImpact(
     return NullPriceImpactAmount
   }
 
-  const allowances = {} // TODO: use later
-
-  const addLiquidityBuilder = new AddLiquidityConfigBuilder(
-    chainId,
-    allowances,
-    poolStateInput,
-    'unbalanced'
-  )
+  const addLiquidityBuilder = new AddLiquidityConfigBuilder(chainId, poolStateInput, 'unbalanced')
 
   const addLiquidityInput = addLiquidityBuilder.getUnbalancedAddLiquidityInput({ humanAmountsIn })
 

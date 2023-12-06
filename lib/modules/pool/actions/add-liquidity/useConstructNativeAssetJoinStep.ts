@@ -1,15 +1,15 @@
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { wETHAddress } from '@/lib/debug-helpers'
+import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
+import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { usePoolStateInput } from '@/lib/shared/hooks/balancer-api/usePoolStateInput'
 import { Address } from 'wagmi'
+import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
 import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
-import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
-import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { useTokenAllowances } from '../../../web3/useTokenAllowances'
-import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
+import { HumanAmountIn } from './add-liquidity.types'
 
 export function useConstructNativeAssetJoinStep(poolId: Address) {
   // const [joinPayload, setJoinPayload] = useState<JoinPayload | null>(null)
@@ -19,18 +19,21 @@ export function useConstructNativeAssetJoinStep(poolId: Address) {
 
   const poolStateQuery = usePoolStateInput(poolId)
   const { activateStep, isActiveStep } = useActiveStep()
-  const { allowances } = useTokenAllowances()
 
   const joinBuilder = new AddLiquidityConfigBuilder(
     chainId,
-    allowances,
     poolStateQuery.data,
     'unbalancedNativeAsset'
   )
 
-  joinBuilder.setAmountIn(wETHAddress, '1')
+  const humanAmountsIn: HumanAmountIn[] = [{ tokenAddress: wETHAddress, humanAmount: '1' }]
 
-  const joinQuery = useBuildAddLiquidityQuery(joinBuilder, isActiveStep, userAddress)
+  const joinQuery = useBuildAddLiquidityQuery(
+    joinBuilder,
+    humanAmountsIn,
+    isActiveStep,
+    userAddress
+  )
 
   const transaction = useManagedSendTransaction(buildAddLiquidityLabels(), joinQuery.data?.config)
 

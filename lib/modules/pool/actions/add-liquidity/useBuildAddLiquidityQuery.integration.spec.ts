@@ -7,13 +7,12 @@ import { waitFor } from '@testing-library/react'
 
 import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
-import { someTokenAllowancesMock } from '../../../tokens/__mocks__/token.builders'
 import { Address } from 'viem'
 import { HumanAmountIn } from './add-liquidity.types'
 
 async function buildQuery() {
   const poolStateInput = await new MockApi().getPool(poolId) // Balancer Weighted wjAura and WETH
-  return new AddLiquidityConfigBuilder(ChainId.MAINNET, someTokenAllowancesMock, poolStateInput)
+  return new AddLiquidityConfigBuilder(ChainId.MAINNET, poolStateInput)
 }
 
 async function testUseBuildAddLiquidityQuery(humanAmountsIn: HumanAmountIn[], account?: Address) {

@@ -45,7 +45,6 @@ export class AddLiquidityConfigBuilder {
 
   constructor(
     private chainId: SupportedChainId,
-    private tokenAllowances: TokenAllowances = {},
     private poolStateInput: PoolStateInput = NullPoolState,
     public addLiquidityType: AddLiquidityType = 'unbalanced'
   ) {

@@ -16,7 +16,8 @@ import { usePoolStateInput } from '@/lib/shared/hooks/balancer-api/usePoolStateI
 import { useDebounce } from '@/lib/shared/hooks/useDebounce'
 import { HumanAmount } from '@balancer/sdk'
 import { Input } from '@chakra-ui/react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { HumanAmountIn } from '@/lib/modules/pool/actions/add-liquidity/add-liquidity.types'
 
 export function JoinWithTokenApproval() {
   const poolStateQuery = usePoolStateInput(poolId)
@@ -29,7 +30,14 @@ export function JoinWithTokenApproval() {
   ]
 
   const { tokenApprovalStep } = useNextTokenApprovalStep(amountsToApprove)
-  const { step: joinStep, setWethHumanAmount } = useConstructAddLiquidityStep(poolStateQuery)
+  const initialWethAmount = '0'
+  const [wethHumanAmount, setWethHumanAmount] = useState<HumanAmount>(initialWethAmount)
+
+  const humanAmountsIn: HumanAmountIn[] = [
+    { tokenAddress: wETHAddress, humanAmount: wethHumanAmount },
+  ]
+
+  const { step: joinStep } = useConstructAddLiquidityStep(poolStateQuery, humanAmountsIn)
   const steps = [tokenApprovalStep, joinStep]
 
   const { balanceFor, isBalancesLoading } = useTokenBalances()

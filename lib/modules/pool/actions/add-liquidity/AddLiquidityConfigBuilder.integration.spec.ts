@@ -3,7 +3,6 @@ import { MockApi } from '@/lib/shared/hooks/balancer-api/MockApi'
 import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { ChainId } from '@balancer/sdk'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
-import { someTokenAllowancesMock } from '../../../tokens/__mocks__/token.builders'
 import { HumanAmountIn } from './add-liquidity.types'
 
 async function getPoolState() {
@@ -12,12 +11,7 @@ async function getPoolState() {
 
 test('build Unbalanced Join Config', async () => {
   const poolStateInput = await getPoolState()
-  const builder = new AddLiquidityConfigBuilder(
-    ChainId.MAINNET,
-    someTokenAllowancesMock,
-    poolStateInput,
-    'unbalanced'
-  )
+  const builder = new AddLiquidityConfigBuilder(ChainId.MAINNET, poolStateInput, 'unbalanced')
 
   const humanAmountsIn: HumanAmountIn[] = [
     { humanAmount: '1', tokenAddress: wETHAddress },
@@ -34,7 +28,6 @@ test('build Unbalanced Join Config with ETH (mainnet native asset)', async () =>
   const poolStateInput = await getPoolState()
   const builder = new AddLiquidityConfigBuilder(
     ChainId.MAINNET,
-    someTokenAllowancesMock,
     poolStateInput,
     'unbalancedNativeAsset'
   )
@@ -50,12 +43,7 @@ test('build Unbalanced Join Config with ETH (mainnet native asset)', async () =>
 test('build Single Token AddLiquidity Config', async () => {
   const poolStateInput = await getPoolState()
 
-  const builder = new AddLiquidityConfigBuilder(
-    ChainId.MAINNET,
-    someTokenAllowancesMock,
-    poolStateInput,
-    'singleToken'
-  )
+  const builder = new AddLiquidityConfigBuilder(ChainId.MAINNET, poolStateInput, 'singleToken')
 
   // We need to rethink this use case when the SDK is ready
   const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '1', tokenAddress: wETHAddress }]
