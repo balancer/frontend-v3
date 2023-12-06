@@ -30,7 +30,7 @@ export function PoolListPools() {
         </HStack>
       </Stack>
       {isTableView && <PoolListTable pools={pools} count={count || 0} loading={loading} />}
-      {isCardsView && <PoolListCards pools={pools} count={count || 0} />}
+      {isCardsView && <PoolListCards pools={pools} count={count || 0} loading={loading} />}
     </VStack>
   )
 }
