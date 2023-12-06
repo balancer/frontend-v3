@@ -3,14 +3,14 @@ import Link from 'next/link'
 import { getPoolPath } from '../../pool.utils'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import Image from 'next/image'
-import { PoolListItem } from '../../pool.types'
+import { DecoratedPoolListItem } from '../../pool.types'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
 import { useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { PoolListTokensTag } from '../PoolListTokensTag'
 
 interface Props extends GridProps {
-  pool: PoolListItem
+  pool: DecoratedPoolListItem
   keyValue: number
 }
 
@@ -19,17 +19,6 @@ const MemoizedAprTooltip = memo(AprTooltip)
 export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
   const networkConfig = getNetworkConfig(pool.chain)
   const { toCurrency } = useNumbers()
-
-  const formattedUsdBalance =
-    pool.userBalance && pool.userBalance?.totalBalance !== '0.0'
-      ? toCurrency(
-          (parseFloat(pool.dynamicData.totalLiquidity) / parseFloat(pool.dynamicData.totalShares)) *
-            parseFloat(pool.userBalance?.totalBalance),
-          {
-            abbreviated: false,
-          }
-        )
-      : '-'
 
   return (
     <Box key={keyValue}>
@@ -49,7 +38,9 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
           </GridItem>
           <GridItem area="details">{pool && <PoolListTokensTag pool={pool} />}</GridItem>
           <GridItem area="my_liquidity">
-            <Text textAlign="right">{formattedUsdBalance}</Text>
+            <Text textAlign="right">
+              {toCurrency(pool.userBalance?.totalBalanceUsd || 0, { abbreviated: false })}
+            </Text>
           </GridItem>
           <GridItem area="tvl">
             <Text
