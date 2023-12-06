@@ -48,7 +48,7 @@ function UserPoolFilter() {
       isChecked={checked}
       onChange={e => toggleUserAddress(e.target.checked, address as string)}
     >
-      <Text>Only show invested pools</Text>
+      <Text>Only show my pools</Text>
     </Checkbox>
   )
 }
