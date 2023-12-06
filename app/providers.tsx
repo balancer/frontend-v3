@@ -11,13 +11,14 @@ import { COOKIE_KEYS } from '@/lib/modules/cookies/cookie.constants'
 export function Providers({ children }: { children: ReactNode }) {
   const initialColorMode = cookies().get(COOKIE_KEYS.UserSettings.ColorMode)?.value
   const initCurrency = cookies().get(COOKIE_KEYS.UserSettings.Currency)?.value
+  const initSlippage = cookies().get(COOKIE_KEYS.UserSettings.Slippage)?.value
 
   return (
     <ThemeProvider initialColorMode={initialColorMode as 'light' | 'dark' | 'system'}>
       <Web3Provider>
         <ApolloClientProvider>
           <ApolloGlobalDataProvider>
-            <UserSettingsProvider initCurrency={initCurrency}>
+            <UserSettingsProvider initCurrency={initCurrency} initSlippage={initSlippage}>
               <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
             </UserSettingsProvider>
           </ApolloGlobalDataProvider>

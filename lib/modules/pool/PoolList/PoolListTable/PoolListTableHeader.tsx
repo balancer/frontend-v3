@@ -1,4 +1,4 @@
-import { Grid, GridItem, Icon, Text, Center, VStack } from '@chakra-ui/react'
+import { Grid, GridItem, Icon, Text, VStack } from '@chakra-ui/react'
 import PoolListSortButton from './PoolListSortButton'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'

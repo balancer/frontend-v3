@@ -1,5 +1,4 @@
 import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import { MAX_BIGINT } from '@/lib/shared/hooks/useNumbers'
 import {
   GetTokenPricesQuery,
   GetTokensQuery,
@@ -17,6 +16,7 @@ import { MswTokenList } from './token.test.types'
 import { emptyAddress } from '../../web3/contracts/wagmi-helpers'
 import { MinimalToken } from '@balancer/sdk'
 import { Address } from 'viem'
+import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 
 export const defaultTokenMock = aTokenMock({ symbol: 'TEST-TOKEN' })
 export const defaultTokenListMock: MswTokenList = [defaultTokenMock as MswTokenList[0]]

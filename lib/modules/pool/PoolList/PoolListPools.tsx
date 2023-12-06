@@ -6,7 +6,7 @@ import { PoolListCards } from './PoolListCards/PoolListCards'
 import { PoolListTable } from './PoolListTable/PoolListTable'
 import { usePoolListViewType } from './PoolListViewType/usePoolListViewType'
 import { usePoolList } from './usePoolList'
-import { integerFormat } from '@/lib/shared/hooks/useNumbers'
+import { integerFormat } from '@/lib/shared/utils/numbers'
 
 export function PoolListPools() {
   const { isTableView, isCardsView } = usePoolListViewType()
