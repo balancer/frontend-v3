@@ -12,6 +12,7 @@ import {
 import { PoolAttributes } from '../PoolAttributes/PoolAttributes'
 import { PoolRisks } from '../PoolRisks/PoolRisks'
 import { PoolContracts } from '../PoolContracts/PoolContracts'
+import { PoolChart } from '../PoolChart/PoolChart'
 
 export function PoolAccordion() {
   return (
@@ -19,7 +20,7 @@ export function PoolAccordion() {
       <AccordionItem>
         <AccordionButton>
           <Box width="full">
-            <Heading variant="accordionHeading">Pool Activity</Heading>
+            <Heading variant="accordionHeading">Pool Details</Heading>
           </Box>
           <AccordionIcon />
         </AccordionButton>
@@ -36,23 +37,12 @@ export function PoolAccordion() {
       <AccordionItem>
         <AccordionButton>
           <Box width="full">
-            <Heading variant="accordionHeading">APR Calculator</Heading>
+            <Heading variant="accordionHeading">Pool Activity</Heading>
           </Box>
           <AccordionIcon />
         </AccordionButton>
         <AccordionPanel>
-          <Heading variant="accordionHeading">Accordion Content</Heading>
-        </AccordionPanel>
-      </AccordionItem>
-      <AccordionItem>
-        <AccordionButton>
-          <Box width="full">
-            <Heading variant="accordionHeading">Pool Details</Heading>
-          </Box>
-          <AccordionIcon />
-        </AccordionButton>
-        <AccordionPanel>
-          <Heading variant="accordionHeading">Accordion Content</Heading>
+          <PoolChart />
         </AccordionPanel>
       </AccordionItem>
     </Accordion>
