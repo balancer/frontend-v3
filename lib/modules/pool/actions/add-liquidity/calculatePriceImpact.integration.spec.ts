@@ -3,7 +3,7 @@ import { balAddress, poolId, wETHAddress } from '@/lib/debug-helpers'
 import { GetPoolQuery, GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { aGqlPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { testHook } from '@/test/utils/custom-renderers'
-import { ChainId, HumanAmount } from '@balancer/sdk'
+import { ChainId, HumanAmount, PoolStateInput } from '@balancer/sdk'
 import { waitFor } from '@testing-library/react'
 import {
   aPhantomStablePoolStateInputMock,
@@ -13,6 +13,16 @@ import { PoolVariant } from '../../pool.types'
 import { _usePool } from '../../usePool'
 import { HumanAmountIn } from './add-liquidity.types'
 import { NullPriceImpactAmount, calculatePriceImpact } from './calculatePriceImpact'
+import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+
+function getAddLiquidityBuilder(poolStateInput: PoolStateInput) {
+  const addLiquidityBuilder = new AddLiquidityConfigBuilder(
+    ChainId.MAINNET,
+    poolStateInput,
+    'unbalanced'
+  )
+  return addLiquidityBuilder
+}
 
 test('fetches unbalanced price impact for weighted pool', async () => {
   const poolStateInput = aPoolStateInputMock()
@@ -22,7 +32,10 @@ test('fetches unbalanced price impact for weighted pool', async () => {
     { humanAmount: '1', tokenAddress: balAddress },
   ]
 
-  const priceImpact = await calculatePriceImpact(ChainId.MAINNET, poolStateInput, humanAmountsIn)
+  const priceImpact = await calculatePriceImpact(
+    getAddLiquidityBuilder(poolStateInput),
+    humanAmountsIn
+  )
   expect(priceImpact).toMatchInlineSnapshot(`
     PriceImpactAmount {
       "amount": 7983577274771660n,
@@ -45,7 +58,10 @@ test('fetches unbalanced price impact for stable pool', async () => {
     }
   })
 
-  const priceImpact = await calculatePriceImpact(ChainId.MAINNET, poolStateInput, humanAmountsIn)
+  const priceImpact = await calculatePriceImpact(
+    getAddLiquidityBuilder(poolStateInput),
+    humanAmountsIn
+  )
 
   expect(priceImpact).toMatchInlineSnapshot(`
     PriceImpactAmount {
@@ -65,7 +81,10 @@ test('returns NullPriceImpactAmount when amounts in are zero or empty', async ()
     { humanAmount: '', tokenAddress: balAddress },
   ]
 
-  const priceImpact = await calculatePriceImpact(ChainId.MAINNET, poolStateInput, humanAmountsIn)
+  const priceImpact = await calculatePriceImpact(
+    getAddLiquidityBuilder(poolStateInput),
+    humanAmountsIn
+  )
   expect(priceImpact).toEqual(NullPriceImpactAmount)
 })
 
@@ -90,7 +109,10 @@ test('WITH REAL POOL FROM API', async () => {
     },
   ]
 
-  const priceImpact = await calculatePriceImpact(ChainId.MAINNET, poolStateInput, humanAmountsIn)
+  const priceImpact = await calculatePriceImpact(
+    getAddLiquidityBuilder(poolStateInput),
+    humanAmountsIn
+  )
   expect(priceImpact).toEqual(
     expect.objectContaining({
       amount: expect.any(BigInt),

@@ -25,6 +25,8 @@ import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { usePool } from '../../usePool'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { Address } from 'wagmi'
+import { HumanAmount } from '@balancer/sdk'
 
 type Props = {
   isOpen: boolean
@@ -35,11 +37,11 @@ type Props = {
 
 function TokenAmountRow({
   tokenAddress,
-  value,
+  humanAmount,
   symbol,
 }: {
-  tokenAddress: string
-  value: string
+  tokenAddress: Address
+  humanAmount: HumanAmount | ''
   symbol?: string
 }) {
   const { pool } = usePool()
@@ -47,7 +49,7 @@ function TokenAmountRow({
   const { toCurrency } = useNumbers()
 
   const token = getToken(tokenAddress, pool.chain)
-  const usdValue = token ? usdValueForToken(token, value) : undefined
+  const usdValue = token ? usdValueForToken(token, humanAmount) : undefined
 
   return (
     <HStack w="full" justify="space-between">
@@ -58,7 +60,7 @@ function TokenAmountRow({
           size={28}
           alt={token?.symbol || 'Token icon'}
         />
-        <NumberText>{tokenFormat(value)}</NumberText>
+        <NumberText>{tokenFormat(humanAmount)}</NumberText>
         <Text>{symbol || token?.symbol}</Text>
       </HStack>
       <NumberText>{usdValue ? toCurrency(usdValue) : '-'}</NumberText>
@@ -114,7 +116,11 @@ export function AddLiquidityModal({
                   <Text color="GrayText">{"You'll get (if no slippage)"}</Text>
                   <Text color="GrayText">{pool.symbol}</Text>
                 </HStack>
-                <TokenAmountRow tokenAddress={pool.address} value="0" symbol="LP Token" />
+                <TokenAmountRow
+                  tokenAddress={pool.address as Address}
+                  humanAmount="0"
+                  symbol="LP Token"
+                />
               </VStack>
             </Card>
 

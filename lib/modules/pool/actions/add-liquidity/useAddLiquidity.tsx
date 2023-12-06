@@ -7,13 +7,15 @@ import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { makeVar, useReactiveVar } from '@apollo/client'
-import { HumanAmount } from '@balancer/sdk'
+import { AddLiquidityQueryOutput, HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
 import { HumanAmountIn } from './add-liquidity.types'
 import { PriceImpactAmount, calculatePriceImpact } from './calculatePriceImpact'
+import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { queryAddLiquidity } from './queryAddLiquidity'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -73,24 +75,39 @@ export function _useAddLiquidity() {
 
   const [priceImpact, setPriceImpact] = useState<PriceImpactAmount | null>(null)
 
+  const addLiquidityConfigBuilder = new AddLiquidityConfigBuilder(
+    chainId,
+    poolStateInput,
+    'unbalanced'
+  )
+
   async function queryPriceImpact() {
-    const priceImpactAmount = await calculatePriceImpact(chainId, poolStateInput, amountsIn)
+    const priceImpactAmount = await calculatePriceImpact(addLiquidityConfigBuilder, amountsIn)
 
     setPriceImpact(priceImpactAmount)
   }
   const debouncedQueryPriceImpact = useDebouncedCallback(queryPriceImpact, 300)
 
+  const formattedPriceImpact = priceImpact ? priceImpactFormat(priceImpact.decimal) : '-'
+
+  const [addLiquidityQuery, setAddLiquidityQuery] = useState<AddLiquidityQueryOutput | null>(null)
+  async function queryBptOut() {
+    const queryResult = await queryAddLiquidity(addLiquidityConfigBuilder, amountsIn)
+
+    setAddLiquidityQuery(queryResult)
+  }
+  const debouncedQueryBptOut = useDebouncedCallback(queryBptOut, 300)
+
   // When the amounts in change we fetch the new price impact
   useEffect(() => {
     debouncedQueryPriceImpact()
+    debouncedQueryBptOut()
   }, [amountsIn])
 
   // TODO: Call underlying SDK execution function
   function executeAddLiquidity() {
     console.log('amountsIn', amountsIn)
   }
-
-  const formattedPriceImpact = priceImpact ? priceImpactFormat(priceImpact.decimal) : '-'
 
   return {
     amountsIn,
@@ -99,6 +116,7 @@ export function _useAddLiquidity() {
     totalUSDValue,
     priceImpact,
     formattedPriceImpact,
+    addLiquidityQuery,
     setAmountIn,
     executeAddLiquidity,
   }

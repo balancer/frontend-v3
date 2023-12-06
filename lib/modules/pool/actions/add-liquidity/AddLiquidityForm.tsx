@@ -13,10 +13,18 @@ import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Address } from 'wagmi'
 import { HumanAmount } from '@balancer/sdk'
+import { humanizeObject } from '@/lib/debug-helpers'
 
 export function AddLiquidityForm() {
-  const { amountsIn, totalUSDValue, setAmountIn, tokens, validTokens, formattedPriceImpact } =
-    useAddLiquidity()
+  const {
+    amountsIn,
+    totalUSDValue,
+    setAmountIn,
+    tokens,
+    validTokens,
+    formattedPriceImpact,
+    addLiquidityQuery,
+  } = useAddLiquidity()
   const { toCurrency } = useNumbers()
   const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
@@ -73,6 +81,17 @@ export function AddLiquidityForm() {
                 <HStack>
                   <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
                   <Tooltip label="Price impact" fontSize="sm">
+                    <InfoOutlineIcon color="GrayText" />
+                  </Tooltip>
+                </HStack>
+              </HStack>
+              <HStack justify="space-between" w="full">
+                <Text color="GrayText">Bpt out (debug)</Text>
+                <HStack>
+                  <NumberText color="GrayText">
+                    {humanizeObject(addLiquidityQuery?.bptOut || {})}
+                  </NumberText>
+                  <Tooltip label="Bpt our" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
                 </HStack>

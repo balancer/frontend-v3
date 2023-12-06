@@ -1,7 +1,7 @@
-import { SupportedChainId } from '@/lib/config/config.types'
-import { PoolStateInput, PriceImpact } from '@balancer/sdk'
+import { PriceImpact } from '@balancer/sdk'
 import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { HumanAmountIn } from './add-liquidity.types'
+import { areEmptyAmounts } from './add-liquidity.helpers'
 
 // TODO: ask SDK team to expose PriceImpactAmount
 export type PriceImpactAmount = Awaited<ReturnType<typeof PriceImpact.addLiquidityUnbalanced>>
@@ -14,24 +14,21 @@ export const NullPriceImpactAmount: PriceImpactAmount = {
 }
 
 export async function calculatePriceImpact(
-  chainId: SupportedChainId,
-  poolStateInput: PoolStateInput,
+  addLiquidityConfigBuilder: AddLiquidityConfigBuilder,
   humanAmountsIn: HumanAmountIn[]
 ) {
-  const isEmptyAmount = (amountIn: HumanAmountIn) =>
-    !amountIn.humanAmount || amountIn.humanAmount === '0'
-  if (humanAmountsIn.every(isEmptyAmount)) {
+  if (areEmptyAmounts(humanAmountsIn)) {
     // Avoid price impact calculation when there are no amounts in
     return NullPriceImpactAmount
   }
 
-  const addLiquidityBuilder = new AddLiquidityConfigBuilder(chainId, poolStateInput, 'unbalanced')
-
-  const addLiquidityInput = addLiquidityBuilder.getUnbalancedAddLiquidityInput({ humanAmountsIn })
+  const addLiquidityInput = addLiquidityConfigBuilder.getUnbalancedAddLiquidityInput({
+    humanAmountsIn,
+  })
 
   const priceImpactABA: PriceImpactAmount = await PriceImpact.addLiquidityUnbalanced(
     addLiquidityInput,
-    poolStateInput
+    addLiquidityConfigBuilder.poolStateInput
   )
   return priceImpactABA
 }

@@ -3,7 +3,6 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
 import { SdkTransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { TokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import {
   AddLiquidity,
@@ -15,7 +14,7 @@ import {
   Slippage,
   Token,
 } from '@balancer/sdk'
-import { Dictionary, keyBy } from 'lodash'
+import { keyBy } from 'lodash'
 import { parseUnits } from 'viem'
 import { Address } from 'wagmi'
 import { HumanAmountIn } from './add-liquidity.types'
@@ -45,19 +44,9 @@ export class AddLiquidityConfigBuilder {
 
   constructor(
     private chainId: SupportedChainId,
-    private poolStateInput: PoolStateInput = NullPoolState,
+    public poolStateInput: PoolStateInput = NullPoolState,
     public addLiquidityType: AddLiquidityType = 'unbalanced'
-  ) {
-    // const amountsInList: InputAmount[] = poolStateInput?.tokens.map(t => {
-    //   return {
-    //     rawAmount: 0n,
-    //     decimals: t.decimals,
-    //     address: t.address,
-    //   }
-    // })
-    // console.log('Construyendo config builder: ', amountsInList)
-    // this.amountsInByTokenAddress = keyBy(amountsInList, a => a.address)
-  }
+  ) {}
 
   get poolId() {
     return this.poolStateInput.id
@@ -77,15 +66,6 @@ export class AddLiquidityConfigBuilder {
   public setSlippage(slippagePercentage: HumanAmount) {
     this.slippage = Slippage.fromPercentage(slippagePercentage)
   }
-
-  // public setAmountIn(tokenAddress: Address, humanAmount: HumanAmount | ''): void {
-  //   console.log({ amountsInByTokenAddress: this.amountsInByTokenAddress })
-  //   if (this.poolStateInput.tokens.length === 0) return
-  //   this.amountsInByTokenAddress[tokenAddress].rawAmount = parseUnits(
-  //     humanAmount,
-  //     this.amountsInByTokenAddress[tokenAddress].decimals
-  //   )
-  // }
 
   get nativeAssetToken() {
     return getNetworkConfig(this.chainId).tokens.nativeAsset
