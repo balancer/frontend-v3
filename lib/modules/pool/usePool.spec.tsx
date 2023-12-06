@@ -1,46 +1,56 @@
-import { Wrapper, testHook } from '@/test/utils/custom-renderers'
-import { waitFor } from '@testing-library/react'
-import { PoolProvider, _usePool, usePool } from './usePool'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { GetPoolQuery, GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { defaultPoolMock, defaultPoolResponseMock } from '@/test/msw/handlers/Pool.handlers'
+import { testHook } from '@/test/utils/custom-renderers'
+import { waitFor } from '@testing-library/react'
 import { PoolVariant } from './pool.types'
+import { _usePool } from './usePool'
+import { defaultGaugeAddressMock } from '@/test/msw/builders/gqlStaking.builders'
 
-const poolId = 'test pool id'
-test('fetches v2 pool', async () => {
+async function testUsePool({
+  initialData = defaultPoolResponseMock,
+}: {
+  initialData?: GetPoolQuery
+} = {}) {
   const { result } = testHook(() => {
     return _usePool({
       id: poolId,
       chain: GqlChain.Mainnet,
       variant: PoolVariant.v2,
-      initialData: defaultPoolResponseMock,
+      initialData,
     })
   })
 
-  await waitFor(() => expect(result.current.loading).toBeFalsy())
+  await waitFor(() => expect(result.current.pool).toBeDefined())
+  return result
+}
 
+const poolId = 'test pool id'
+test('fetches v2 pool', async () => {
+  const result = await testUsePool()
   expect(result.current.pool).toMatchObject(defaultPoolMock)
 })
 
-// Remove skip to check that it throws
-test.skip('fetches v2 pool without PoolProvider in wrapper', () => {
-  testHook(() => usePool()) // Throws Error: usePool must be used within a PoolProvider context
-})
+describe('Gql pool helpers', () => {
+  test('returns pool explorer link', async () => {
+    const result = await testUsePool()
 
-test('fetches v2 pool without exposing _usePool', async () => {
-  const wrapper: Wrapper = ({ children }) => (
-    <PoolProvider
-      id="test pool id"
-      chain={GqlChain.Mainnet}
-      variant={PoolVariant.v2}
-      data={defaultPoolResponseMock}
-      variables={{ id: poolId }}
-    >
-      {children}
-    </PoolProvider>
-  )
+    expect(result.current.poolExplorerLink).toBe(
+      'https://etherscan.io/address/0x5c6ee304399dbdb9c8ef030ab642b10820db8f56'
+    )
+  })
 
-  const { result } = testHook(() => usePool(), { wrapper })
-  await waitFor(() => expect(result.current.loading).toBeFalsy())
+  test('returns gauge explorer link when the pool', async () => {
+    const result = await testUsePool()
 
-  expect(result.current.pool).toMatchObject(defaultPoolMock)
+    expect(result.current.gaugeExplorerLink).toBe(
+      `https://etherscan.io/address/0x-test-gauge-address`
+    )
+  })
+
+  test('knows if there is gauge', async () => {
+    const result = await testUsePool()
+
+    expect(result.current.hasGaugeAddress).toBeTruthy()
+    expect(result.current.gaugeAddress).toBe(defaultGaugeAddressMock)
+  })
 })

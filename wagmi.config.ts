@@ -1,6 +1,5 @@
 import { defineConfig, loadEnv } from '@wagmi/cli'
-import { etherscan } from '@wagmi/cli/plugins'
-// import { react } from '@wagmi/cli/plugins'
+import { etherscan, react } from '@wagmi/cli/plugins'
 import mainnetNetworkConfig from './lib/config/networks/mainnet'
 
 import { erc20ABI } from 'wagmi'
@@ -22,7 +21,16 @@ export default defineConfig(() => {
     out: 'lib/modules/web3/contracts/abi/generated.ts',
     contracts: CONTRACTS,
     plugins: [
-      // react(),
+      react({
+        useContractRead: true,
+        useContractFunctionRead: false,
+        useContractWrite: false,
+        useContractFunctionWrite: false,
+        usePrepareContractWrite: false,
+        usePrepareContractFunctionWrite: false,
+        useContractItemEvent: false,
+        useContractEvent: false,
+      }),
       etherscan({
         apiKey: env.ETHERSCAN_API_KEY,
         chainId: 1,

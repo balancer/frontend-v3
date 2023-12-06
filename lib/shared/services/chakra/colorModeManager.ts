@@ -1,38 +1,33 @@
+import { COOKIE_KEYS } from '@/lib/modules/cookies/cookie.constants'
 import { ColorMode } from '@chakra-ui/react'
-
-export const COLOR_MODE_STORAGE_KEY = 'chakra-ui-color-mode'
+import Cookies from 'js-cookie'
 
 type MaybeColorMode = ColorMode | undefined
 
 interface StorageManager {
   type: 'cookie' | 'localStorage'
   ssr?: boolean
-  get(init?: ColorMode): MaybeColorMode
+  get(initColorMode?: ColorMode): MaybeColorMode
   set(value: ColorMode | 'system'): void
-}
-
-function parseCookie(cookie: string, key: string): MaybeColorMode {
-  const match = cookie.match(new RegExp(`(^| )${key}=([^;]+)`))
-  return match?.[2] as MaybeColorMode
 }
 
 export function createColorModeManager(initialCookieValue?: string): StorageManager {
   return {
     ssr: true,
     type: 'cookie',
-    get(init?): MaybeColorMode {
+    get(initColorMode?): MaybeColorMode {
       if (initialCookieValue) {
         return initialCookieValue as MaybeColorMode
       }
 
       if (!globalThis?.document) {
-        return init
+        return initColorMode
       }
 
-      return parseCookie(document.cookie, COLOR_MODE_STORAGE_KEY) || init
+      return (Cookies.get(COOKIE_KEYS.UserSettings.ColorMode) as ColorMode) || initColorMode
     },
     set(value) {
-      document.cookie = `${COLOR_MODE_STORAGE_KEY}=${value}; max-age=31536000; path=/`
+      Cookies.set(COOKIE_KEYS.UserSettings.ColorMode, value)
     },
   }
 }

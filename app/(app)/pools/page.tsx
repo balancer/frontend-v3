@@ -6,6 +6,8 @@ import { PoolListProvider } from '@/lib/modules/pool/PoolList/usePoolList'
 import { POOL_TYPE_MAP, poolListQueryStateParsers } from '@/lib/modules/pool/pool.types'
 import { uniq } from 'lodash'
 
+export const revalidate = 30
+
 interface Props {
   searchParams: {
     first?: string

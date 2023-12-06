@@ -1,25 +1,29 @@
 'use client'
-import { usePool } from '@/lib/modules/pool/usePool'
-import { PoolChart } from './PoolChart/PoolChart'
-import { Stack, Text } from '@chakra-ui/react'
-import { PoolInfoTable } from './PoolInfoTable/PoolInfoTable'
-import { PoolStatCards } from './PoolStatCards/PoolStatCards'
+import { HStack, Stack, VStack } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
-import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
+import PoolStats from './PoolStats'
+import PoolMyLiquidity from './PoolMyLiquidity'
+import PoolIncentives from './PoolIncentives'
+import { PoolAccordion } from './PoolAccordion/PoolAccordion'
 
 export function PoolDetail() {
-  const { pool } = usePool()
-
   return (
-    <Stack p="40px" maxW="maxContent" mx="auto">
-      <Text>
-        {pool.name}: {pool.id}
-      </Text>
-      <PoolStatCards />
-      <PoolChart />
-      <PoolActivityChart />
-      <PoolComposition />
-      <PoolInfoTable />
+    <Stack width="full">
+      {/* {loading && <Text>Loading...</Text>} */}
+
+      <VStack width="full" spacing="16">
+        <VStack width="full" spacing="5">
+          <PoolStats />
+          <HStack width="full" spacing="4">
+            <PoolMyLiquidity />
+            <PoolIncentives />
+          </HStack>
+          <HStack width="full" spacing="4">
+            <PoolComposition />
+          </HStack>
+        </VStack>
+        <PoolAccordion />
+      </VStack>
     </Stack>
   )
 }

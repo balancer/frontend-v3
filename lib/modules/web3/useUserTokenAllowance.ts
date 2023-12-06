@@ -17,7 +17,7 @@ export function useUserTokenAllowance(tokenAddress: Address, spenderAddress: Add
 
   // TODO: fix type inference
   if (mounted && query.data) {
-    return { ...query, allowance: query.data as bigint }
+    return { ...query, allowance: query.data as bigint, isLoadingAllowance: query.isLoading }
   }
-  return { ...query, allowance: 0n }
+  return { ...query, allowance: 0n, isLoadingAllowance: query.isLoading }
 }

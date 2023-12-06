@@ -1,16 +1,5 @@
-query GetAppGlobalData {
-  tokenGetTokens {
-    address
-    name
-    symbol
-    decimals
-    chainId
-    logoURI
-    priority
-    tradable
-  }
-  blocksGetBlocksPerDay
-  blocksGetAverageBlockTime
+query GetTimestamp {
+  timestamp: balancerQueryTest
 }
 
 query GetAppGlobalPollingData {
@@ -30,8 +19,8 @@ query GetAppGlobalPollingData {
   blocksGetAverageBlockTime
 }
 
-query GetTokens {
-  tokens: tokenGetTokens {
+query GetTokens($chains: [GqlChain!]!) {
+  tokens: tokenGetTokens(chains: $chains) {
     address
     name
     symbol
@@ -44,10 +33,11 @@ query GetTokens {
   }
 }
 
-query GetTokenPrices {
-  tokenPrices: tokenGetCurrentPrices {
+query GetTokenPrices($chains: [GqlChain!]!) {
+  tokenPrices: tokenGetCurrentPrices(chains: $chains) {
     price
     address
+    chain
   }
 }
 

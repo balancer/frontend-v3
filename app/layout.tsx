@@ -3,8 +3,10 @@ import { Providers } from './providers'
 import { Navbar } from '@/lib/shared/components/navs/Navbar'
 import { Footer } from '@/lib/shared/components/navs/Footer'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import '@/lib/shared/utils/bigint'
+import Noise from './noise'
+import { satoshiFont } from '@/lib/assets/fonts/satoshi/satoshi'
 import NextTopLoader from 'nextjs-toploader'
+import { Container } from '@chakra-ui/react'
 
 const { projectName, projectId } = getProjectConfig()
 const iconUrl = `/images/icons/${projectId}.ico`
@@ -25,12 +27,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning>
+      <body className={satoshiFont.className} suppressHydrationWarning>
         <NextTopLoader showSpinner={false} />
         <Providers>
-          <Navbar />
-          {children}
-          <Footer />
+          <Noise>
+            <Navbar />
+            <Container maxW="maxContent" py="2xl">
+              {children}
+            </Container>
+            <Footer />
+          </Noise>
         </Providers>
       </body>
     </html>

@@ -10,7 +10,7 @@ interface Props {
 }
 
 export function TransactionStepButton({
-  step: { simulation, execution, result, getLabels, execute: managedRun },
+  step: { simulation, execution, result, transactionLabels, execute: managedRun },
 }: Props) {
   const { isConnected } = useUserAccount()
   const isTransactButtonVisible = isConnected
@@ -18,8 +18,10 @@ export function TransactionStepButton({
   const isButtonLoading =
     transactionState === TransactionState.Loading ||
     transactionState === TransactionState.Confirming
-  const hasSimulationError = (!execution.isIdle && !execution.data) || simulation.isError
-  const isButtonDisabled = transactionState === TransactionState.Loading || hasSimulationError
+  const hasSimulationError = simulation.isError
+  const isIdle = isConnected && simulation.isIdle && !simulation.data
+  const isButtonDisabled =
+    transactionState === TransactionState.Loading || hasSimulationError || isIdle
 
   function handleOnClick() {
     if (!simulation.isError) {
@@ -29,16 +31,17 @@ export function TransactionStepButton({
 
   function getButtonLabel() {
     // sensible defaults for loading / confirm if not provided
-    const transactionLabels = getLabels()
     const relevantLabel = transactionLabels[transactionState]
     if (!relevantLabel) {
       switch (transactionState) {
+        case TransactionState.Preparing:
+          return 'Preparing'
         case TransactionState.Loading:
           return 'Confirm in wallet'
         case TransactionState.Confirming:
           return 'Confirming transaction'
         case TransactionState.Error:
-          return transactionLabels.ready
+          return transactionLabels.init
       }
     }
     return relevantLabel
@@ -60,6 +63,8 @@ export function TransactionStepButton({
           isLoading={isButtonLoading}
           onClick={handleOnClick}
           loadingText={getButtonLabel()}
+          color="white"
+          bgColor="blue.500"
         >
           {getButtonLabel()}
         </Button>

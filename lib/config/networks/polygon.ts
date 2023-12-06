@@ -5,6 +5,7 @@ const networkConfig: NetworkConfig = {
   name: 'Polygon Mainnet',
   shortName: 'Polygon',
   iconPath: '/images/chains/POLYGON.svg',
+  blockExplorerBaseUrl: 'https://polygonscan.com',
   tokens: {
     nativeAsset: {
       name: 'Matic',

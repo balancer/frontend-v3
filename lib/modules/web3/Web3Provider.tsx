@@ -10,23 +10,50 @@ import {
   Theme,
 } from '@rainbow-me/rainbowkit'
 import { configureChains, createConfig, WagmiConfig } from 'wagmi'
-import { arbitrum, gnosis, mainnet, optimism, polygon, polygonZkEvm } from 'wagmi/chains'
+import {
+  arbitrum,
+  avalanche,
+  base,
+  fantom,
+  gnosis,
+  mainnet,
+  optimism,
+  polygon,
+  polygonZkEvm,
+} from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { infuraProvider } from 'wagmi/providers/infura'
-import { merge } from 'lodash'
+import { keyBy, merge } from 'lodash'
 import { useColorMode, useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/shared/services/chakra/theme'
 import { CustomAvatar } from './CustomAvatar'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import { SupportedChainId } from '@/lib/config/config.types'
 
-export const supportedChains = [mainnet, polygon, optimism, arbitrum, polygonZkEvm, gnosis]
+export const supportedChains = [
+  mainnet,
+  arbitrum,
+  base,
+  avalanche,
+  fantom,
+  gnosis,
+  optimism,
+  polygon,
+  polygonZkEvm,
+]
 
 export const { chains, publicClient } = configureChains(supportedChains, [
   infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string }),
   alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string }),
   publicProvider(),
 ])
+
+const chainsByKey = keyBy(chains, 'id')
+
+export function getDefaultRpcUrl(chainId: SupportedChainId) {
+  return chainsByKey[chainId].rpcUrls.default.http[0]
+}
 
 export const { connectors } = getDefaultWallets({
   appName: getProjectConfig().projectName,

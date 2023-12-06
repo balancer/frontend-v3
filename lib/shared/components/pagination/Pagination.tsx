@@ -40,9 +40,10 @@ export function Pagination({
   setPageIndex,
   setPageSize,
   pageSize,
+  ...rest
 }: Props) {
   return (
-    <Center w="full">
+    <Center w="full" {...rest}>
       <Grid
         w={{ base: 'full', lg: '75%' }}
         mt={{ base: '4', lg: '8' }}
@@ -64,6 +65,7 @@ export function Pagination({
             isDisabled={!canPreviousPage}
             icon={<ArrowLeftIcon h="3" w="3" />}
             mr="2"
+            size="sm"
           />
 
           <IconButton
@@ -71,17 +73,18 @@ export function Pagination({
             onClick={goToPreviousPage}
             isDisabled={!canPreviousPage}
             icon={<ChevronLeftIcon h="6" w="6" />}
+            size="sm"
           />
         </GridItem>
         <GridItem area="page" alignSelf="center">
           <Center>
-            <Text flexShrink="0" mr="8">
+            <Text flexShrink="0" mr="8" fontSize="sm" color="GrayText">
               Page{' '}
-              <Text fontWeight="bold" as="span">
+              <Text fontWeight="bold" as="span" color="GrayText">
                 {currentPageNumber}
               </Text>{' '}
               of{' '}
-              <Text fontWeight="bold" as="span">
+              <Text fontWeight="bold" as="span" color="GrayText">
                 {totalPageCount}
               </Text>
             </Text>
@@ -89,7 +92,9 @@ export function Pagination({
         </GridItem>
         <GridItem area="goto" justifySelf={{ base: 'start', lg: 'end' }}>
           <HStack alignContent="space-between">
-            <Text flexShrink="0">Goto page:</Text>{' '}
+            <Text flexShrink="0" color="GrayText" fontSize="sm">
+              Goto page:
+            </Text>{' '}
             <NumberInput
               ml="2"
               w="28"
@@ -100,6 +105,7 @@ export function Pagination({
                 setPageIndex(page)
               }}
               defaultValue={currentPageNumber}
+              size="sm"
             >
               <NumberInputField />
               <NumberInputStepper>
@@ -113,6 +119,7 @@ export function Pagination({
           <Select
             w="32"
             value={pageSize}
+            size="sm"
             onChange={e => {
               setPageSize(Number(e.target.value))
             }}
@@ -129,12 +136,14 @@ export function Pagination({
             aria-label="next page"
             onClick={goToNextPage}
             isDisabled={!canNextPage}
+            size="sm"
             icon={<ChevronRightIcon h="6" w="6" />}
           />
           <IconButton
             aria-label="last page"
             onClick={goToLastPage}
             isDisabled={!canNextPage}
+            size="sm"
             icon={<ArrowRightIcon h="3" w="3" />}
             ml="2"
           />
