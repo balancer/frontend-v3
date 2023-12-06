@@ -2,8 +2,11 @@
 
 import {
   Button,
+  HStack,
   Heading,
   Input,
+  InputGroup,
+  InputRightElement,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -13,11 +16,13 @@ import {
   PopoverTrigger,
   Select,
   VStack,
+  Text,
 } from '@chakra-ui/react'
 import { HiOutlineCog6Tooth } from 'react-icons/hi2'
 import { useUserSettings } from './useUserSettings'
 import { SupportedCurrency } from '@/lib/shared/utils/currencies'
-import { useEffect } from 'react'
+import { FiPercent } from 'react-icons/fi'
+import { blockInvalidNumberInput } from '@/lib/shared/utils/numbers'
 
 function CurrencySelect() {
   const { currency, setCurrency } = useUserSettings()
@@ -36,12 +41,38 @@ function CurrencySelect() {
 
 function SlippageInput() {
   const { slippage, setSlippage } = useUserSettings()
+  const presetOpts = ['0.5', '1', '2']
 
-  useEffect(() => {
-    console.log('slippage', slippage)
-  }, [slippage])
-
-  return <Input value={slippage} onChange={e => setSlippage(e.currentTarget.value)} />
+  return (
+    <VStack align="start" w="full">
+      <InputGroup>
+        <Input
+          value={slippage}
+          type="number"
+          autoComplete="off"
+          autoCorrect="off"
+          min={0}
+          onChange={e => setSlippage(e.currentTarget.value)}
+          onKeyDown={blockInvalidNumberInput}
+        />
+        <InputRightElement pointerEvents="none">
+          <FiPercent color="GrayText" />
+        </InputRightElement>
+      </InputGroup>
+      <HStack>
+        {presetOpts.map(preset => (
+          <Button
+            key={preset}
+            size="xs"
+            variant={slippage === preset ? 'outline' : 'solid'}
+            onClick={() => setSlippage(preset)}
+          >
+            <Text>{preset}%</Text>
+          </Button>
+        ))}
+      </HStack>
+    </VStack>
+  )
 }
 
 export function UserSettings() {

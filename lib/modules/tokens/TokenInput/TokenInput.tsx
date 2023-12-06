@@ -19,10 +19,10 @@ import Image from 'next/image'
 import { useTokens } from '../useTokens'
 import { useTokenBalances } from '../useTokenBalances'
 import { TbWallet } from 'react-icons/tb'
-import { blockInvalidNumberInput, useTokenInput } from './useTokenInput'
+import { useTokenInput } from './useTokenInput'
 import { HiChevronDown } from 'react-icons/hi'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { tokenFormat } from '@/lib/shared/utils/numbers'
+import { blockInvalidNumberInput, tokenFormat } from '@/lib/shared/utils/numbers'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined

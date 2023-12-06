@@ -7,7 +7,7 @@ import { useCookieState } from '../../cookies/useCookieState'
 import { COOKIE_KEYS } from '../../cookies/cookie.constants'
 
 const DEFAULT_CURRENCY = SupportedCurrency.USD
-const DEFAULT_SLIPPAGE = '0.005' // 0.5%
+const DEFAULT_SLIPPAGE = '0.5' // 0.5%
 
 export type UseUserSettingsResult = ReturnType<typeof _useUserSettings>
 export const UserSettingsContext = createContext<UseUserSettingsResult | null>(null)
