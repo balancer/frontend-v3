@@ -1,19 +1,19 @@
 'use client'
 
-import { useDisclosure } from '@chakra-ui/hooks'
-import { useAddLiquidity } from './useAddLiquidity'
-import { useRef } from 'react'
-import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
-import { Button, Card, Center, HStack, Heading, VStack, Text, Tooltip } from '@chakra-ui/react'
-import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
-import { AddLiquidityModal } from './AddLiquidityModal'
-import { useNumbers } from '@/lib/shared/hooks/useNumbers'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { Address } from 'wagmi'
-import { HumanAmount } from '@balancer/sdk'
 import { humanizeObject } from '@/lib/debug-helpers'
+import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
+import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
+import { NumberText } from '@/lib/shared/components/typography/NumberText'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { HumanAmount } from '@balancer/sdk'
+import { useDisclosure } from '@chakra-ui/hooks'
+import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { Button, Card, Center, HStack, Heading, Text, Tooltip, VStack } from '@chakra-ui/react'
+import { useRef } from 'react'
+import { Address } from 'wagmi'
+import { AddLiquidityModal } from './AddLiquidityModal'
+import { useAddLiquidity } from './useAddLiquidity'
 
 export function AddLiquidityForm() {
   const {
@@ -25,7 +25,8 @@ export function AddLiquidityForm() {
     formattedPriceImpact,
     addLiquidityQuery,
   } = useAddLiquidity()
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
+
   const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
 

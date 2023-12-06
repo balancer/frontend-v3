@@ -463,6 +463,7 @@ type GqlPoolMinimal {
   staking: GqlPoolStaking
   symbol: String!
   type: GqlPoolMinimalType!
+  userBalance: GqlPoolUserBalance
   version: Int!
 }
 
@@ -787,7 +788,21 @@ union GqlPoolTokenPhantomStableNestedUnion = GqlPoolToken | GqlPoolTokenLinear
 
 union GqlPoolTokenUnion = GqlPoolToken | GqlPoolTokenLinear | GqlPoolTokenPhantomStable
 
-union GqlPoolUnion = GqlPoolElement | GqlPoolGyro | GqlPoolLinear | GqlPoolLiquidityBootstrapping | GqlPoolMetaStable | GqlPoolPhantomStable | GqlPoolStable | GqlPoolWeighted
+union GqlPoolUnion =
+    GqlPoolElement
+  | GqlPoolGyro
+  | GqlPoolLinear
+  | GqlPoolLiquidityBootstrapping
+  | GqlPoolMetaStable
+  | GqlPoolPhantomStable
+  | GqlPoolStable
+  | GqlPoolWeighted
+
+type GqlPoolUserBalance {
+  stakedBalance: AmountHumanReadable!
+  totalBalance: AmountHumanReadable!
+  walletBalance: AmountHumanReadable!
+}
 
 type GqlPoolUserSwapVolume {
   swapVolumeUSD: BigDecimal!
@@ -1196,33 +1211,77 @@ type Mutation {
 type Query {
   balancerQueryTest: String!
   beetsGetFbeetsRatio: String!
-  beetsPoolGetReliquaryFarmSnapshots(id: String!, range: GqlPoolSnapshotDataRange!): [GqlReliquaryFarmSnapshot!]!
+  beetsPoolGetReliquaryFarmSnapshots(
+    id: String!
+    range: GqlPoolSnapshotDataRange!
+  ): [GqlReliquaryFarmSnapshot!]!
   blocksGetAverageBlockTime: Float!
   blocksGetBlocksPerDay: Float!
   blocksGetBlocksPerSecond: Float!
   blocksGetBlocksPerYear: Float!
   contentGetNewsItems: [GqlContentNewsItem!]!
   latestSyncedBlocks: GqlLatestSyncedBlocks!
-  poolGetAllPoolsSnapshots(chains: [GqlChain!], range: GqlPoolSnapshotDataRange!): [GqlPoolSnapshot!]!
+  poolGetAllPoolsSnapshots(
+    chains: [GqlChain!]
+    range: GqlPoolSnapshotDataRange!
+  ): [GqlPoolSnapshot!]!
   poolGetBatchSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolBatchSwap!]!
   poolGetFeaturedPoolGroups: [GqlPoolFeaturedPoolGroup!]!
   poolGetJoinExits(first: Int, skip: Int, where: GqlPoolJoinExitFilter): [GqlPoolJoinExit!]!
   poolGetLinearPools(chains: [GqlChain!]): [GqlPoolLinear!]!
   poolGetPool(chain: GqlChain, id: String!): GqlPoolBase!
-  poolGetPools(first: Int, orderBy: GqlPoolOrderBy, orderDirection: GqlPoolOrderDirection, skip: Int, textSearch: String, where: GqlPoolFilter): [GqlPoolMinimal!]!
-  poolGetPoolsCount(first: Int, orderBy: GqlPoolOrderBy, orderDirection: GqlPoolOrderDirection, skip: Int, textSearch: String, where: GqlPoolFilter): Int!
-  poolGetSnapshots(chain: GqlChain, id: String!, range: GqlPoolSnapshotDataRange!): [GqlPoolSnapshot!]!
+  poolGetPools(
+    first: Int
+    orderBy: GqlPoolOrderBy
+    orderDirection: GqlPoolOrderDirection
+    skip: Int
+    textSearch: String
+    where: GqlPoolFilter
+  ): [GqlPoolMinimal!]!
+  poolGetPoolsCount(
+    first: Int
+    orderBy: GqlPoolOrderBy
+    orderDirection: GqlPoolOrderDirection
+    skip: Int
+    textSearch: String
+    where: GqlPoolFilter
+  ): Int!
+  poolGetSnapshots(
+    chain: GqlChain
+    id: String!
+    range: GqlPoolSnapshotDataRange!
+  ): [GqlPoolSnapshot!]!
   poolGetSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolSwap!]!
   protocolMetricsAggregated(chains: [GqlChain!]): GqlProtocolMetricsAggregated!
   protocolMetricsChain(chain: GqlChain): GqlProtocolMetricsChain!
-  sorGetBatchSwapForTokensIn(swapOptions: GqlSorSwapOptionsInput!, tokenOut: String!, tokensIn: [GqlTokenAmountHumanReadable!]!): GqlSorGetBatchSwapForTokensInResponse!
-  sorGetSwaps(swapAmount: BigDecimal!, swapOptions: GqlSorSwapOptionsInput!, swapType: GqlSorSwapType!, tokenIn: String!, tokenOut: String!): GqlSorGetSwapsResponse!
-  tokenGetCandlestickChartData(address: String!, range: GqlTokenChartDataRange!): [GqlTokenCandlestickChartDataItem!]!
+  sorGetBatchSwapForTokensIn(
+    swapOptions: GqlSorSwapOptionsInput!
+    tokenOut: String!
+    tokensIn: [GqlTokenAmountHumanReadable!]!
+  ): GqlSorGetBatchSwapForTokensInResponse!
+  sorGetSwaps(
+    swapAmount: BigDecimal!
+    swapOptions: GqlSorSwapOptionsInput!
+    swapType: GqlSorSwapType!
+    tokenIn: String!
+    tokenOut: String!
+  ): GqlSorGetSwapsResponse!
+  tokenGetCandlestickChartData(
+    address: String!
+    range: GqlTokenChartDataRange!
+  ): [GqlTokenCandlestickChartDataItem!]!
   tokenGetCurrentPrices(chains: [GqlChain!]): [GqlTokenPrice!]!
   tokenGetHistoricalPrices(addresses: [String!]!): [GqlHistoricalTokenPrice!]!
-  tokenGetPriceChartData(address: String!, range: GqlTokenChartDataRange!): [GqlTokenPriceChartDataItem!]!
+  tokenGetPriceChartData(
+    address: String!
+    range: GqlTokenChartDataRange!
+  ): [GqlTokenPriceChartDataItem!]!
   tokenGetProtocolTokenPrice: AmountHumanReadable!
-  tokenGetRelativePriceChartData(range: GqlTokenChartDataRange!, tokenIn: String!, tokenOut: String!): [GqlTokenPriceChartDataItem!]!
+  tokenGetRelativePriceChartData(
+    range: GqlTokenChartDataRange!
+    tokenIn: String!
+    tokenOut: String!
+  ): [GqlTokenPriceChartDataItem!]!
   tokenGetTokenData(address: String!): GqlTokenData
   tokenGetTokenDynamicData(address: String!): GqlTokenDynamicData
   tokenGetTokens(chains: [GqlChain!]): [GqlToken!]!
@@ -1230,12 +1289,28 @@ type Query {
   tokenGetTokensDynamicData(addresses: [String!]!): [GqlTokenDynamicData!]!
   userGetFbeetsBalance: GqlUserFbeetsBalance!
   userGetPoolBalances(address: String, chains: [GqlChain!]): [GqlUserPoolBalance!]!
-  userGetPoolJoinExits(address: String, chain: GqlChain, first: Int = 10, poolId: String!, skip: Int = 0): [GqlPoolJoinExit!]!
-  userGetPoolSnapshots(chain: GqlChain!, poolId: String!, range: GqlUserSnapshotDataRange!): [GqlUserPoolSnapshot!]!
+  userGetPoolJoinExits(
+    address: String
+    chain: GqlChain
+    first: Int = 10
+    poolId: String!
+    skip: Int = 0
+  ): [GqlPoolJoinExit!]!
+  userGetPoolSnapshots(
+    chain: GqlChain!
+    poolId: String!
+    range: GqlUserSnapshotDataRange!
+  ): [GqlUserPoolSnapshot!]!
   userGetPortfolioSnapshots(days: Int!): [GqlUserPortfolioSnapshot!]!
   userGetRelicSnapshots(farmId: String!, range: GqlUserSnapshotDataRange!): [GqlUserRelicSnapshot!]!
   userGetStaking(address: String, chains: [GqlChain!]): [GqlPoolStaking!]!
-  userGetSwaps(address: String, chain: GqlChain, first: Int = 10, poolId: String!, skip: Int = 0): [GqlPoolSwap!]!
+  userGetSwaps(
+    address: String
+    chain: GqlChain
+    first: Int = 10
+    poolId: String!
+    skip: Int = 0
+  ): [GqlPoolSwap!]!
   veBalGetTotalSupply: AmountHumanReadable!
   veBalGetUser: GqlVeBalUserData!
   veBalGetUserBalance: AmountHumanReadable!

@@ -4,13 +4,14 @@ import React from 'react'
 import { usePool } from '../../usePool'
 import { Address } from 'viem'
 import { GqlPoolToken } from '@/lib/shared/services/api/generated/graphql'
-import { useNumbers, weightFormat } from '@/lib/shared/hooks/useNumbers'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import Image from 'next/image'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { weightFormat } from '@/lib/shared/utils/numbers'
 
 export function PoolComposition() {
   const { pool, chain } = usePool()
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
   const { getPoolTokenWeightByBalance } = useTokens()
 
   return (

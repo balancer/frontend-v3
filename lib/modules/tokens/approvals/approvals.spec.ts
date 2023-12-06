@@ -1,7 +1,7 @@
 import { SupportedChainId } from '@/lib/config/config.types'
 import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import { MAX_BIGINT } from '@/lib/shared/hooks/useNumbers'
 import { filterRequiredTokenApprovals, isDoubleApprovalRequired } from './approval-rules'
+import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 
 const chainId: SupportedChainId = 1
 

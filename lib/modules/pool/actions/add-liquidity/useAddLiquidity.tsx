@@ -2,19 +2,19 @@
 'use client'
 
 import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { priceImpactFormat, safeSum } from '@/lib/shared/hooks/useNumbers'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { priceImpactFormat, safeSum } from '@/lib/shared/utils/numbers'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { AddLiquidityQueryOutput, HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
+import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { HumanAmountIn } from './add-liquidity.types'
 import { PriceImpactAmount, calculatePriceImpact } from './calculatePriceImpact'
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { queryAddLiquidity } from './queryAddLiquidity'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
