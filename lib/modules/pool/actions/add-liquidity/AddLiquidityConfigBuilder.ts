@@ -163,6 +163,7 @@ export class AddLiquidityConfigBuilder {
     const addLiquidityInput = this.getAddLiquidityInputForSDK(humanAmountsIn)
 
     const addLiquidity = new AddLiquidity()
+    // TODO: we probably don't need this query when building the call as we already used it (check queryAddLiquidity) during the Add Liquidity form management
     const queryResult = await addLiquidity.query(addLiquidityInput, this.poolStateInput)
 
     const { call, to, value, maxAmountsIn, minBptOut } = addLiquidity.buildCall({
