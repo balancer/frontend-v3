@@ -11,7 +11,8 @@ import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { usePool } from '../../usePool'
 import { PoolVariant } from '../../pool.types'
-import { NumberFormatter, useNumbers } from '@/lib/shared/hooks/useNumbers'
+import { NumberFormatter } from '@/lib/shared/utils/numbers'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 export enum PoolChartTab {
   VOLUME = 'volume',
@@ -210,7 +211,7 @@ export function usePoolSnapshots(
 export function usePoolCharts() {
   const { pool, loading: isLoadingPool } = usePool()
   const { id: poolId, variant } = useParams()
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
 
   const tabsList = useMemo(() => {
     const poolType = pool?.type

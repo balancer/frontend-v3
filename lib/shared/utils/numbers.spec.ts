@@ -1,4 +1,4 @@
-import { fiatFormat, tokenFormat } from './useNumbers'
+import { fiatFormat, tokenFormat } from './numbers'
 
 test('Stringifies bigints', () => {
   expect(JSON.stringify(12345n)).toBe('"12345"')

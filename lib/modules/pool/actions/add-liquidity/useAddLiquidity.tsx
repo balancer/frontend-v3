@@ -7,8 +7,8 @@ import { makeVar, useReactiveVar } from '@apollo/client'
 import { usePool } from '../../usePool'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { safeSum } from '@/lib/shared/hooks/useNumbers'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { safeSum } from '@/lib/shared/utils/numbers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)

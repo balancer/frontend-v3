@@ -4,9 +4,9 @@ import { getPoolPath } from '../../pool.utils'
 import { PoolListItem } from '../../pool.types'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
-import { useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { PoolListTokensTag } from '../PoolListTokensTag'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -16,7 +16,7 @@ interface Props extends GridProps {
 const MemoizedAprTooltip = memo(AprTooltip)
 
 export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
 
   return (
     <Box key={keyValue}>

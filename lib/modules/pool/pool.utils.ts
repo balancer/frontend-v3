@@ -1,7 +1,7 @@
 import { GqlChain, GqlPoolAprValue } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolVariant } from './pool.types'
-import { aprFormat } from '@/lib/shared/hooks/useNumbers'
+import { aprFormat } from '@/lib/shared/utils/numbers'
 
 // URL slug for each chain
 export enum ChainSlug {

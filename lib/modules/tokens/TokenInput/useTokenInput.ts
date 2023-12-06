@@ -1,5 +1,5 @@
-import { Numberish } from '@/lib/shared/hooks/useNumbers'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { Numberish } from '@/lib/shared/utils/numbers'
 import { ChangeEvent, KeyboardEvent } from 'react'
 
 export function blockInvalidNumberInput(event: KeyboardEvent<HTMLInputElement>): void {
