@@ -7,20 +7,23 @@ import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import { Button, Card, Center, HStack, Heading, VStack, Text, Tooltip } from '@chakra-ui/react'
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { AddLiquidityModal } from './AddLiquidityModal'
-import { priceImpactFormat, useNumbers } from '@/lib/shared/hooks/useNumbers'
+import { useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { Address } from 'wagmi'
+import { HumanAmount } from '@balancer/sdk'
 
 export function AddLiquidityForm() {
-  const { amountsIn, totalUSDValue, setAmountIn, tokens, validTokens } = useAddLiquidity()
+  const { amountsIn, totalUSDValue, setAmountIn, tokens, validTokens, formattedPriceImpact } =
+    useAddLiquidity()
   const { toCurrency } = useNumbers()
   const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
 
   function currentValueFor(tokenAddress: string) {
     const amountIn = amountsIn.find(amountIn => isSameAddress(amountIn.tokenAddress, tokenAddress))
-    return amountIn ? amountIn.value : ''
+    return amountIn ? amountIn.humanAmount : ''
   }
 
   function submit() {
@@ -47,7 +50,9 @@ export function AddLiquidityForm() {
                     address={token.address}
                     chain={token.chain}
                     value={currentValueFor(token.address)}
-                    onChange={e => setAmountIn(token.address, e.currentTarget.value)}
+                    onChange={e =>
+                      setAmountIn(token.address as Address, e.currentTarget.value as HumanAmount)
+                    }
                   />
                 )
               })}
@@ -66,7 +71,7 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
-                  <NumberText color="GrayText">{priceImpactFormat(0)}</NumberText>
+                  <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
                   <Tooltip label="Price impact" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>

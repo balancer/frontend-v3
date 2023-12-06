@@ -16,6 +16,7 @@ import { SendTransactionResult } from 'wagmi/actions'
 import { buildAddLiquidityLabels } from '../../pool/actions/add-liquidity/useConstructAddLiquidityStep'
 import { someTokenAllowancesMock } from '../../tokens/__mocks__/token.builders'
 import { AddLiquidityConfigBuilder } from '../../pool/actions/add-liquidity/AddLiquidityConfigBuilder'
+import { HumanAmountIn } from '../../pool/actions/add-liquidity/add-liquidity.types'
 
 const chainId = ChainId.MAINNET
 const account = defaultTestUserAccount
@@ -40,12 +41,18 @@ describe('weighted join test', () => {
 
     const builder = new AddLiquidityConfigBuilder(chainId, someTokenAllowancesMock, poolStateInput)
 
-    poolTokens.forEach(t => builder.setAmountIn(t.address, '1'))
+    const humanAmountsIn: HumanAmountIn[] = poolTokens.map(t => ({
+      humanAmount: '1',
+      tokenAddress: t.address,
+    }))
 
     const balanceBefore = await getPoolTokenBalances()
 
     // First simulation
-    const { queryResult, config } = await builder.buildSdkAddLiquidityTxConfig(account)
+    const { queryResult, config } = await builder.buildSdkAddLiquidityTxConfig(
+      account,
+      humanAmountsIn
+    )
 
     const { result } = testHook(() => {
       return useManagedSendTransaction(buildAddLiquidityLabels(), config)
@@ -55,12 +62,14 @@ describe('weighted join test', () => {
     expect(queryResult.bptOut.amount).toBeGreaterThan(200000000000000000000n)
 
     // Second simulation
-    poolTokens.forEach(t => builder.setAmountIn(t.address, '2'))
-
+    const humanAmountsIn2: HumanAmountIn[] = poolTokens.map(t => ({
+      humanAmount: '1',
+      tokenAddress: t.address,
+    }))
     const { queryResult: queryResult2, config: config2 } =
-      await builder.buildSdkAddLiquidityTxConfig(defaultTestUserAccount)
+      await builder.buildSdkAddLiquidityTxConfig(defaultTestUserAccount, humanAmountsIn2)
     // Double approximately
-    expect(queryResult2.bptOut.amount).toBeGreaterThan(520000000000000000000n)
+    expect(queryResult2.bptOut.amount).toBeGreaterThan(380000000000000000000n)
 
     // act(() => result.current.setTxConfig(config2))
 

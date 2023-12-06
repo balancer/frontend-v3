@@ -19,3 +19,7 @@ export const poolId: Address = '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200
 export function humanizeJson(input: object) {
   return JSON.stringify(input, null, 4)
 }
+
+export function printJson(input: object) {
+  return console.log(humanizeJson(input))
+}

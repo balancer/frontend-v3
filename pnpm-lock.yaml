@@ -13,7 +13,7 @@ dependencies:
     version: 3.8.0-rc.1(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
   '@balancer/sdk':
     specifier: github:balancer/b-sdk#price-impact-with-dist
-    version: github.com/balancer/b-sdk/63d9e2c6ec8320fe74ef854717dfd32d08c13811(typescript@5.1.6)(zod@3.22.4)
+    version: github.com/balancer/b-sdk/b3c89775e2ddc86b2aa5dfed8af2cd37479a29bf(typescript@5.1.6)(zod@3.22.4)
   '@chakra-ui/anatomy':
     specifier: ^2.2.2
     version: 2.2.2
@@ -146,6 +146,9 @@ dependencies:
   typescript:
     specifier: 5.1.6
     version: 5.1.6
+  use-debounce:
+    specifier: ^10.0.0
+    version: 10.0.0(react@18.2.0)
   viem:
     specifier: ^1.18.1
     version: 1.18.1(typescript@5.1.6)(zod@3.22.4)
@@ -11689,6 +11692,15 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /use-debounce@10.0.0(react@18.2.0):
+    resolution: {integrity: sha512-XRjvlvCB46bah9IBXVnq/ACP2lxqXyZj0D9hj4K5OzNroMDpTEBg8Anuh1/UfRTRs7pLhQ+RiNxxwZu9+MVl1A==}
+    engines: {node: '>= 16.0.0'}
+    peerDependencies:
+      react: '>=16.8.0 || ^18.0.0'
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /use-sidecar@1.1.2(@types/react@18.2.34)(react@18.2.0):
     resolution: {integrity: sha512-epTbsLuzZ7lPClpz2TyryBfztm7m+28DlEv2ZCQ3MDr5ssiwyOwGH/e5F9CkfWjJ1t4clvI58yF822/GUkjjhw==}
     engines: {node: '>=10'}
@@ -12297,9 +12309,9 @@ packages:
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
 
-  github.com/balancer/b-sdk/63d9e2c6ec8320fe74ef854717dfd32d08c13811(typescript@5.1.6)(zod@3.22.4):
-    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/63d9e2c6ec8320fe74ef854717dfd32d08c13811}
-    id: github.com/balancer/b-sdk/63d9e2c6ec8320fe74ef854717dfd32d08c13811
+  github.com/balancer/b-sdk/b3c89775e2ddc86b2aa5dfed8af2cd37479a29bf(typescript@5.1.6)(zod@3.22.4):
+    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/b3c89775e2ddc86b2aa5dfed8af2cd37479a29bf}
+    id: github.com/balancer/b-sdk/b3c89775e2ddc86b2aa5dfed8af2cd37479a29bf
     name: '@balancer/sdk'
     version: 0.3.1
     engines: {node: '>=18.x'}

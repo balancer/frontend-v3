@@ -20,6 +20,8 @@ export type UsePoolResponse = ReturnType<typeof _usePool> & {
 }
 export const PoolContext = createContext<UsePoolResponse | null>(null)
 
+export type Pool = GetPoolQuery['pool']
+
 export function _usePool({
   id,
   chain,
@@ -33,7 +35,7 @@ export function _usePool({
     context: { headers: { ChainId: chainId } },
   })
 
-  const pool = data?.pool || initialData.pool
+  const pool: Pool = data?.pool || initialData.pool
 
   return { pool, loading, refetch, ...usePoolHelpers(pool, chain) }
 }

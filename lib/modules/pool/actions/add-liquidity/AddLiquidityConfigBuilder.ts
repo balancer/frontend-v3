@@ -18,6 +18,7 @@ import {
 import { Dictionary, keyBy } from 'lodash'
 import { parseUnits } from 'viem'
 import { Address } from 'wagmi'
+import { HumanAmountIn } from './add-liquidity.types'
 
 // TODO: this should be imported from the SDK
 export type InputAmount = {
@@ -41,21 +42,22 @@ export class AddLiquidityConfigBuilder {
   inputAmount: InputAmount[] = []
   slippage: Slippage = Slippage.fromPercentage('1')
   checkNativeBalance = false
-  amountsInByTokenAddress: Dictionary<InputAmount> = {}
 
   constructor(
     private chainId: SupportedChainId,
-    private tokenAllowances: TokenAllowances,
+    private tokenAllowances: TokenAllowances = {},
     private poolStateInput: PoolStateInput = NullPoolState,
     public addLiquidityType: AddLiquidityType = 'unbalanced'
   ) {
-    const amountsInList: InputAmount[] = poolStateInput?.tokens.map(t => ({
-      rawAmount: 0n,
-      decimals: t.decimals,
-      address: t.address,
-    }))
-
-    this.amountsInByTokenAddress = keyBy(amountsInList, a => a.address)
+    // const amountsInList: InputAmount[] = poolStateInput?.tokens.map(t => {
+    //   return {
+    //     rawAmount: 0n,
+    //     decimals: t.decimals,
+    //     address: t.address,
+    //   }
+    // })
+    // console.log('Construyendo config builder: ', amountsInList)
+    // this.amountsInByTokenAddress = keyBy(amountsInList, a => a.address)
   }
 
   get poolId() {
@@ -67,36 +69,24 @@ export class AddLiquidityConfigBuilder {
     return token
   }
 
-  hasTokenAllowance() {
-    // TODO: depending on the user input this rule will be different
-    // Here we will check that the user has enough allowance for the current Join operation
-    return Object.values(this.tokenAllowances).every(a => a > 0n)
-  }
-
   public get queryKey() {
     // REVIEW THIS
     // const { amountsIn } = this.getJoinInput()
-    return `${this.poolStateInput.id}:${this.chainId}:${this.slippage}${JSON.stringify(
-      this.getAddLiquidityInputForSDK()
-    )}`
+    return `${this.chainId}:${this.slippage}${JSON.stringify(this.poolStateInput)}`
   }
 
   public setSlippage(slippagePercentage: HumanAmount) {
     this.slippage = Slippage.fromPercentage(slippagePercentage)
   }
 
-  public setAmountIn(tokenAddress: Address, humanAmount: HumanAmount): void {
-    if (this.poolStateInput.tokens.length === 0) return
-    this.amountsInByTokenAddress[tokenAddress].rawAmount = parseUnits(
-      humanAmount,
-      this.amountsInByTokenAddress[tokenAddress].decimals
-    )
-  }
-
-  toRawAmount(tokenAddress: Address, humanAmount: HumanAmount) {
-    const decimals = this.amountsInByTokenAddress[tokenAddress].decimals
-    return parseUnits(humanAmount, decimals)
-  }
+  // public setAmountIn(tokenAddress: Address, humanAmount: HumanAmount | ''): void {
+  //   console.log({ amountsInByTokenAddress: this.amountsInByTokenAddress })
+  //   if (this.poolStateInput.tokens.length === 0) return
+  //   this.amountsInByTokenAddress[tokenAddress].rawAmount = parseUnits(
+  //     humanAmount,
+  //     this.amountsInByTokenAddress[tokenAddress].decimals
+  //   )
+  // }
 
   get nativeAssetToken() {
     return getNetworkConfig(this.chainId).tokens.nativeAsset
@@ -106,28 +96,63 @@ export class AddLiquidityConfigBuilder {
     return this.nativeAssetToken.address
   }
 
-  getAddLiquidityInputForSDK() {
-    if (this.addLiquidityType === 'unbalanced') return this.getUnbalancedAddLiquidityInput()
+  getAddLiquidityInputForSDK(humanAmountsIn: HumanAmountIn[]) {
+    if (this.addLiquidityType === 'unbalanced') {
+      return this.getUnbalancedAddLiquidityInput({ humanAmountsIn })
+    }
     if (this.addLiquidityType === 'unbalancedNativeAsset') {
-      return this.getUnbalancedAddLiquidityInput({ useNativeAssetAsWrappedAmountIn: true })
+      return this.getUnbalancedAddLiquidityInput({
+        humanAmountsIn,
+        useNativeAssetAsWrappedAmountIn: true,
+      })
     }
     if (this.addLiquidityType === 'singleToken') return this.getAddLiquiditySingleTokenInput()
-    return this.getUnbalancedAddLiquidityInput()
+    // Default
+    return this.getUnbalancedAddLiquidityInput({ humanAmountsIn })
   }
 
   getAddLiquidityInputBase() {
     return {
       chainId: this.chainId,
-      rpcUrl: getDefaultRpcUrl(this.chainId),
+      rpcUrl: this.getDefaultRpcUrl(),
     }
   }
 
+  getDefaultRpcUrl() {
+    // console.log('default rpc url', getDefaultRpcUrl(this.chainId))
+    return getDefaultRpcUrl(this.chainId)
+  }
+
   getUnbalancedAddLiquidityInput({
+    humanAmountsIn,
     useNativeAssetAsWrappedAmountIn = false,
-  } = {}): AddLiquidityUnbalancedInput {
+  }: {
+    humanAmountsIn: HumanAmountIn[]
+    useNativeAssetAsWrappedAmountIn?: boolean
+  }): AddLiquidityUnbalancedInput {
+    const amountsInList: InputAmount[] = this.poolStateInput?.tokens.map(t => {
+      return {
+        rawAmount: 0n,
+        decimals: t.decimals,
+        address: t.address,
+      }
+    })
+
+    const amountsInByTokenAddress = keyBy(amountsInList, a => a.address)
+
+    // from humanAmountsIn to SDK AmountsIn
+    humanAmountsIn.forEach(({ tokenAddress, humanAmount }) => {
+      if (!amountsInByTokenAddress[tokenAddress]) {
+        throw new Error(`Provided token address ${tokenAddress} not found in pool tokens`)
+      }
+      const decimals = amountsInByTokenAddress[tokenAddress].decimals
+      amountsInByTokenAddress[tokenAddress].rawAmount = parseUnits(humanAmount, decimals)
+    })
+    const amountsIn = Object.values(amountsInByTokenAddress)
+
     return {
       ...this.getAddLiquidityInputBase(),
-      amountsIn: Object.values(this.amountsInByTokenAddress),
+      amountsIn,
       kind: AddLiquidityKind.Unbalanced,
       useNativeAssetAsWrappedAmountIn,
     }
@@ -155,8 +180,8 @@ export class AddLiquidityConfigBuilder {
     }
   }
 
-  public async buildSdkAddLiquidityTxConfig(account: Address) {
-    const addLiquidityInput = this.getAddLiquidityInputForSDK()
+  public async buildSdkAddLiquidityTxConfig(account: Address, humanAmountsIn: HumanAmountIn[]) {
+    const addLiquidityInput = this.getAddLiquidityInputForSDK(humanAmountsIn)
 
     const addLiquidity = new AddLiquidity()
     const queryResult = await addLiquidity.query(addLiquidityInput, this.poolStateInput)
