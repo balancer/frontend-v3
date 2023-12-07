@@ -15,7 +15,7 @@ export interface TokensConfig {
 export interface ContractsConfig {
   multicall2: Address
   balancer: {
-    vaultV2?: Address
+    vaultV2: Address
   }
 }
 
