@@ -48,137 +48,6 @@ import { IoCloseCircle } from 'react-icons/io5'
 export default function Components() {
   return (
     <Box p="mx" maxW="maxContent" mx="auto" mt="xl">
-      <Section>
-        <Card maxW="lg">
-          <CardBody>
-            <Image
-              src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-              alt="Green double couch with wooden legs"
-              borderRadius="lg"
-            />
-            <Stack mt="6" spacing="3">
-              <Heading size="md">Living room Sofa</Heading>
-              <Text>
-                This sofa is perfect for modern tropical spaces, baroque inspired spaces, earthy
-                toned spaces and for people who love a chic design with a sprinkle of vintage
-                design.
-              </Text>
-              <Text color="blue.600" fontSize="2xl">
-                $450
-              </Text>
-            </Stack>
-          </CardBody>
-          <Divider />
-          <CardFooter>
-            <ButtonGroup spacing="2">
-              <Button variant="solid" colorScheme="blue">
-                Buy now
-              </Button>
-              <Button variant="ghost" colorScheme="blue">
-                Add to cart
-              </Button>
-            </ButtonGroup>
-          </CardFooter>
-        </Card>
-      </Section>
-      <Section>
-        <Flex gap="4" flexWrap="wrap">
-          <Button variant="primary" minW="160px">
-            Primary
-          </Button>
-          <Button variant="secondary" minW="160px">
-            Secondary
-          </Button>
-          <Button variant="tertiary" minW="160px">
-            Tertiary
-          </Button>
-        </Flex>
-      </Section>
-      <Section maxW="sm">
-        <Section variant="subsection">
-          <Box>
-            <FormControl>
-              <FormLabel>Input label</FormLabel>
-              <InputGroup>
-                <Input
-                  type="text"
-                  placeholder="Placeholder"
-                  bg="input.bgDefault"
-                  border="1px solid"
-                  borderColor="input.borderDefault"
-                  _hover={{ bg: 'input.bgHover', borderColor: 'input.borderHover' }}
-                  _focus={{
-                    bg: 'input.bgFocus',
-                    borderColor: 'input.borderFocus',
-                  }}
-                  _focusVisible={{
-                    bg: 'input.bgFocus',
-                    borderColor: 'input.borderFocus',
-                    shadow: 'input.innerFocus',
-                    color: 'input.fontFocus',
-                  }}
-                />
-                <InputRightElement>
-                  {/* <IoCloseCircle color="input.clearIcon" />  */}
-                  {/* This doesn't work, but color="yellow" does work... */}
-                </InputRightElement>
-              </InputGroup>
-              <FormHelperText fontWeight="medium" color="input.fontHint">
-                Hint text that is displayed on focus of the input
-              </FormHelperText>
-            </FormControl>
-          </Box>
-        </Section>
-        <Section variant="subsection">
-          <FormControl isInvalid>
-            <FormLabel>Input label</FormLabel>
-            <Input
-              placeholder="Placeholder"
-              type="text"
-              defaultValue="500.00"
-              border="1px solid"
-              borderColor="yellow" // Not working
-              shadow="input.innerError" // Not working
-              errorBorderColor="red.400" // This works but I'd like to set it to 'inner.borderError' to also get the dark mode style
-              _hover={{ bg: 'input.bgHover' }}
-              _focusVisible={{
-                shadow: 'input.innerError', // Working
-                bg: 'input.bgFocus',
-              }}
-            />
-            <FormErrorMessage fontWeight="medium" color="input.fontHintError">
-              Exceeds wallet balance
-            </FormErrorMessage>
-          </FormControl>
-        </Section>
-        <Section variant="subsection">
-          <Box>
-            <FormControl isDisabled>
-              <FormLabel>Disabled input label</FormLabel>
-              <Input
-                type="email"
-                isDisabled
-                placeholder="Placeholder"
-                bg="input.bgDefault"
-                border="1px solid"
-                // boxShadow="input.innerBase"
-                borderColor="input.borderDefault"
-                _hover={{ bg: 'input.bgHover', borderColor: 'input.borderHover' }}
-                _focus={{
-                  bg: 'input.bgFocus',
-                  borderColor: 'input.borderFocus',
-                }}
-                _focusVisible={{
-                  bg: 'input.bgFocus',
-                  borderColor: 'input.borderFocus',
-                  shadow: 'input.innerFocus',
-                }}
-              />
-            </FormControl>
-          </Box>
-        </Section>
-      </Section>
-
       <Box as="section" mb="24">
         <Heading as="h1" variant="gradient-dusk" size="h1-hero">
           Components
@@ -1250,6 +1119,108 @@ export default function Components() {
         <Heading as="h1" variant="gradient-dusk" size="h1-hero">
           Form fields
         </Heading>
+
+        <Box mb="8">
+          <Heading as="h3" variant="gradient-dusk" size="h3">
+            Custom input fields
+          </Heading>
+          <Text>
+            For some reason, I haven't been able to get some of these styles into the theme, so I've
+            listed all the code below
+          </Text>
+        </Box>
+
+        <Section maxW="sm">
+          <Section variant="subsection">
+            <Box>
+              <FormControl>
+                <FormLabel>Input label</FormLabel>
+                <InputGroup>
+                  <Input
+                    type="text"
+                    placeholder="Placeholder"
+                    bg="input.bgDefault"
+                    border="1px solid"
+                    borderColor="input.borderDefault"
+                    _hover={{ bg: 'input.bgHover', borderColor: 'input.borderHover' }}
+                    _focus={{
+                      bg: 'input.bgFocus',
+                      borderColor: 'input.borderFocus',
+                    }}
+                    _focusVisible={{
+                      bg: 'input.bgFocus',
+                      borderColor: 'input.borderFocus',
+                      shadow: 'input.innerFocus',
+                      color: 'input.fontFocus',
+                    }}
+                  />
+                  <InputRightElement>
+                    {/* <IoCloseCircle color="input.clearIcon" />  */}
+                    {/* This doesn't work, but color="yellow" does work... */}
+                  </InputRightElement>
+                </InputGroup>
+                <FormHelperText fontWeight="medium" color="input.fontHint">
+                  Hint text that is displayed on focus of the input
+                </FormHelperText>
+              </FormControl>
+            </Box>
+          </Section>
+          <Section variant="subsection">
+            <FormControl isInvalid>
+              <FormLabel>Input label</FormLabel>
+              <Input
+                placeholder="Placeholder"
+                type="text"
+                defaultValue="500.00"
+                border="1px solid"
+                borderColor="yellow" // Not working
+                shadow="input.innerError" // Not working
+                errorBorderColor="red.400" // This works but I'd like to set it to 'inner.borderError' to also get the dark mode style
+                _hover={{ bg: 'input.bgHover' }}
+                _focusVisible={{
+                  shadow: 'input.innerError', // Working
+                  bg: 'input.bgFocus',
+                }}
+              />
+              <FormErrorMessage fontWeight="medium" color="input.fontHintError">
+                Exceeds wallet balance
+              </FormErrorMessage>
+            </FormControl>
+          </Section>
+          <Section variant="subsection">
+            <Box>
+              <FormControl isDisabled>
+                <FormLabel>Disabled input label</FormLabel>
+                <Input
+                  type="email"
+                  isDisabled
+                  placeholder="Placeholder"
+                  bg="input.bgDefault"
+                  border="1px solid"
+                  // boxShadow="input.innerBase"
+                  borderColor="input.borderDefault"
+                  _hover={{ bg: 'input.bgHover', borderColor: 'input.borderHover' }}
+                  _focus={{
+                    bg: 'input.bgFocus',
+                    borderColor: 'input.borderFocus',
+                  }}
+                  _focusVisible={{
+                    bg: 'input.bgFocus',
+                    borderColor: 'input.borderFocus',
+                    shadow: 'input.innerFocus',
+                  }}
+                />
+              </FormControl>
+            </Box>
+          </Section>
+        </Section>
+
+        <Box mb="8">
+          <Heading as="h3" variant="gradient-dusk" size="h3">
+            Theme inputs
+          </Heading>
+          <Text>This is how it comes out of the theme.</Text>
+        </Box>
 
         <Box mb="8">
           <Text variant="eyebrow" mb="4">

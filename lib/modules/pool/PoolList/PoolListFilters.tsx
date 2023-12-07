@@ -86,7 +86,7 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
   const { totalFilterCount } = usePoolListQueryState()
 
   return (
-    <Button ref={ref} {...props} display="flex" gap="2">
+    <Button ref={ref} {...props} display="flex" gap="2" variant="tertiary">
       <Icon as={IoFilter} boxSize={4} />
       Filters
       {totalFilterCount > 0 && (
