@@ -18,7 +18,9 @@ import { keyBy } from 'lodash'
 import { parseUnits } from 'viem'
 import { Address } from 'wagmi'
 import { HumanAmountIn } from './add-liquidity.types'
-import { AmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
+import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
+import { areEmptyAmounts } from './add-liquidity.helpers'
+import { HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
 
 // TODO: this should be imported from the SDK
 export type InputAmount = {
@@ -56,6 +58,10 @@ export class AddLiquidityConfigBuilder {
   getToken(tokenAddress: Address) {
     const token = this.poolStateInput.tokens.find(t => isSameAddress(t.address, tokenAddress))
     return token
+  }
+
+  get poolTokenAddresses(): Address[] {
+    return this.poolStateInput.tokens.map(t => t.address)
   }
 
   public get queryKey() {
@@ -120,7 +126,7 @@ export class AddLiquidityConfigBuilder {
     }
   }
 
-  toSdkAmountsIn(humanAmountsIn: HumanAmountIn[]) {
+  toSdkAmountsIn(humanAmountsIn: HumanAmountIn[]): InputAmount[] {
     const amountsInList: InputAmount[] = this.poolStateInput?.tokens.map(t => {
       return {
         rawAmount: 0n,
@@ -189,14 +195,24 @@ export class AddLiquidityConfigBuilder {
     return { maxAmountsIn, minBptOut, queryResult, config }
   }
 
-  getAmountsToApprove(humanAmountsIn: HumanAmountIn[]): AmountToApprove[] {
-    // sdkAmountsIn could be cached or passed as prop when going to preview
-    return this.toSdkAmountsIn(humanAmountsIn).map(({ address, rawAmount }) => {
+  getAmountsToApprove(
+    humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[]
+  ): TokenAmountToApprove[] {
+    // TODO: sdkAmountsIn could be cached or passed as prop when going to preview
+    return this.toSdkAmountsIn(humanAmountsInWithTokenInfo).map(({ address, rawAmount }, index) => {
+      const humanAmountWithInfo = humanAmountsInWithTokenInfo[index]
       return {
         tokenAddress: address,
-        amount: rawAmount,
+        humanAmount: humanAmountWithInfo.humanAmount || '0',
+        rawAmount,
+        tokenSymbol: humanAmountWithInfo.symbol,
       }
     })
+  }
+
+  canExecuteAddLiquidity(humanAmountsIn: HumanAmountIn[]) {
+    // TODO: do we need to render reasons why the transaction cannot be performed?
+    return !areEmptyAmounts(humanAmountsIn)
   }
 }
 

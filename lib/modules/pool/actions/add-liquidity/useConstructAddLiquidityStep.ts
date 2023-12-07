@@ -3,7 +3,6 @@ import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transaction
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { PoolStateInputResult } from '@/lib/shared/hooks/balancer-api/usePoolStateInput'
 import { Address } from 'wagmi'
 import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
 import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
@@ -11,7 +10,6 @@ import { HumanAmountIn } from './add-liquidity.types'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
 
 export function useConstructAddLiquidityStep(
-  poolStateQuery: PoolStateInputResult,
   humanAmountsIn: HumanAmountIn[],
   builder: AddLiquidityConfigBuilder
 ) {

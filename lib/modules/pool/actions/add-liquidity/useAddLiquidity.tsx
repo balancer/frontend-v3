@@ -104,11 +104,6 @@ export function _useAddLiquidity() {
     debouncedQueryBptOut()
   }, [amountsIn])
 
-  // TODO: Call underlying SDK execution function
-  function executeAddLiquidity() {
-    console.log('amountsIn', amountsIn)
-  }
-
   return {
     amountsIn,
     tokens,
@@ -118,7 +113,7 @@ export function _useAddLiquidity() {
     formattedPriceImpact,
     addLiquidityQuery,
     setAmountIn,
-    executeAddLiquidity,
+    builder: addLiquidityConfigBuilder,
   }
 }
 

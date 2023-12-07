@@ -1,7 +1,17 @@
 'use client'
 
+import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
+import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
+import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
+import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { NumberText } from '@/lib/shared/components/typography/NumberText'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { priceImpactFormat, tokenFormat } from '@/lib/shared/utils/numbers'
+import { HumanAmount } from '@balancer/sdk'
+import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
-  Button,
   Card,
   HStack,
   Heading,
@@ -18,16 +28,10 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
-import { useAddLiquidity } from './useAddLiquidity'
-import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
-import { usePool } from '../../usePool'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { Address } from 'wagmi'
-import { HumanAmount } from '@balancer/sdk'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { priceImpactFormat, tokenFormat } from '@/lib/shared/utils/numbers'
+import { usePool } from '../../usePool'
+import { AddLiquidityFlowButton, HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
+import { useAddLiquidity } from './useAddLiquidity'
 
 type Props = {
   isOpen: boolean
@@ -76,9 +80,19 @@ export function AddLiquidityModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { amountsIn, totalUSDValue, executeAddLiquidity } = useAddLiquidity()
+  const { amountsIn, totalUSDValue, builder } = useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
+  // TODO: move userAddress up
+  const spenderAddress = useContractAddress('balancer.vaultV2') || emptyAddress
+  const { userAddress } = useUserAccount()
+  const { getToken } = useTokens()
+  const humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[] = amountsIn.map(humanAmountIn => {
+    return {
+      ...humanAmountIn,
+      ...getToken(humanAmountIn.tokenAddress, pool.chain),
+    } as HumanAmountInWithTokenInfo
+  })
 
   return (
     <Modal
@@ -141,9 +155,16 @@ export function AddLiquidityModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <Button w="full" size="lg" variant="primary" onClick={executeAddLiquidity}>
-            Add liquidity
-          </Button>
+          <TokenAllowancesProvider
+            userAddress={userAddress || emptyAddress}
+            spenderAddress={spenderAddress}
+            tokenAddresses={builder.poolTokenAddresses}
+          >
+            <AddLiquidityFlowButton
+              builder={builder}
+              humanAmountsInWithTokenInfo={humanAmountsInWithTokenInfo}
+            ></AddLiquidityFlowButton>
+          </TokenAllowancesProvider>
         </ModalFooter>
       </ModalContent>
     </Modal>
