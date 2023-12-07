@@ -1,3 +1,4 @@
+import { getChainId } from '@/lib/config/app.config'
 import { dateToUnixTimestamp } from '@/lib/shared/hooks/useTime'
 import {
   GetPoolQuery,
@@ -9,7 +10,6 @@ import { getAddressBlockExplorerLink, isSameAddress } from '@/lib/shared/utils/a
 import { MinimalToken, PoolStateInput } from '@balancer/sdk'
 import BigNumber from 'bignumber.js'
 import { Address, Hex, getAddress } from 'viem'
-import { getChainId } from '../chains/chain.helpers'
 
 /**
  * METHODS
