@@ -1,4 +1,4 @@
-import { Grid, GridItem, Icon, Text } from '@chakra-ui/react'
+import { Grid, GridItem, Icon, Text, VStack } from '@chakra-ui/react'
 import PoolListSortButton from './PoolListSortButton'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
@@ -16,10 +16,12 @@ export function PoolListTableHeader({ ...rest }) {
   return (
     <Grid {...rest} py="3" w="full">
       <GridItem>
-        <Icon as={FiGlobe} boxSize="6" ml="1" />
+        <VStack align="start" w="full">
+          <Icon as={FiGlobe} boxSize="6" ml="1" color="GrayText" />
+        </VStack>
       </GridItem>
       <GridItem>
-        <Text>Pool tokens</Text>
+        <Text fontWeight="bold">Pool name</Text>
       </GridItem>
       {[GqlPoolOrderBy.TotalLiquidity, GqlPoolOrderBy.Volume24h, GqlPoolOrderBy.Apr].map(
         (orderByItem, index) => (

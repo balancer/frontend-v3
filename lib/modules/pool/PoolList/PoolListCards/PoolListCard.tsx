@@ -1,12 +1,11 @@
 import { Card, HStack, VStack, Text, Box, Grid, GridItem } from '@chakra-ui/react'
 import { PoolListItem, poolTypeHash } from '../../pool.types'
-import { getNetworkConfig } from '@/lib/config/app.config'
-import Image from 'next/image'
-import { toPercentageFormatted } from '@/lib/shared/utils/numbers'
+import { weightFormat } from '@/lib/shared/utils/numbers'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
-import { useNumbers } from '@/lib/shared/hooks/useNumbers'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
+import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 interface Props {
   pool: PoolListItem
@@ -24,7 +23,7 @@ function PoolTokens({ pool }: { pool: PoolListItem }) {
             <HStack key={token.address}>
               <Text fontWeight="bold" fontSize="1rem">
                 {token.nestedTokens ? token.name : token.symbol}
-                {token.weight && ` ${toPercentageFormatted(token.weight || '')}`}
+                {token.weight && ` ${weightFormat(token.weight || '')}`}
                 {idx <= displayTokens.length - 2 && ' / '}
               </Text>
             </HStack>
@@ -38,27 +37,21 @@ function PoolTokens({ pool }: { pool: PoolListItem }) {
 const MemoizedAprTooltip = memo(AprTooltip)
 
 export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: Props) {
-  const networkConfig = getNetworkConfig(pool.chain)
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
 
   return (
-    // TODO: added height for now to get a scrollbar
     <Card
       variant="gradient"
       onClick={event => cardClickHandler && cardClickHandler(event, pool)}
       cursor={cardClickHandler ? 'pointer' : 'default'}
       onMouseEnter={event => cardMouseEnterHandler && cardMouseEnterHandler(event, pool)}
+      p="md"
     >
       <VStack alignItems="flex-start" py="4" px="3" h="full">
         <HStack alignItems="flex-start">
-          <Image
-            src={networkConfig.iconPath}
-            width="45"
-            height="45"
-            alt={networkConfig.shortName}
-            style={{ borderRadius: '100%', backgroundColor: 'white', padding: '2px' }}
-          />
+          <NetworkIcon chain={pool.chain} />
           <VStack alignItems="flex-start" gap="0" w="full">
+            {/* <Text color="GrayText"> */}
             <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
               {poolTypeHash[pool.type]}
             </Text>

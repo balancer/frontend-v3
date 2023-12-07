@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, BoxProps, Flex, Spinner, StackDivider, VStack } from '@chakra-ui/react'
+import { Box, BoxProps, Card, Flex, Spinner, VStack } from '@chakra-ui/react'
 import { Pagination } from '@/lib/shared/components/pagination/Pagination'
 
 interface Props<T> extends BoxProps {
@@ -23,8 +23,8 @@ export function PaginatedTable({
   const isLoadingRows = loading && items.length === 0
 
   return (
-    <>
-      <VStack {...rest} divider={<StackDivider borderColor="gray.200" />}>
+    <Card variant="level0" p="md" shadow="xl" {...rest}>
+      <VStack spacing="md" w="full">
         {renderTableHeader()}
         {isLoadingRows && (
           <Flex justifyContent={'center'} py={32}>
@@ -43,7 +43,7 @@ export function PaginatedTable({
             </Box>
           ))}
       </VStack>
-      {showPagination && <Pagination {...paginationProps} />}
-    </>
+      {showPagination && <Pagination p="md" {...paginationProps} />}
+    </Card>
   )
 }

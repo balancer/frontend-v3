@@ -18,10 +18,11 @@ import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import Image from 'next/image'
 import { useTokens } from '../useTokens'
 import { useTokenBalances } from '../useTokenBalances'
-import { tokenFormat, useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { TbWallet } from 'react-icons/tb'
-import { blockInvalidNumberInput, useTokenInput } from './useTokenInput'
+import { useTokenInput } from './useTokenInput'
 import { HiChevronDown } from 'react-icons/hi'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { blockInvalidNumberInput, tokenFormat } from '@/lib/shared/utils/numbers'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
@@ -64,7 +65,7 @@ type TokenInputFooterProps = {
 function TokenInputFooter({ token, value, updateValue }: TokenInputFooterProps) {
   const { balanceFor, isBalancesLoading } = useTokenBalances()
   const { usdValueForToken } = useTokens()
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
 
   const balance = token ? balanceFor(token?.address) : undefined
   const userBalance = token ? balance?.formatted || '0' : '0'

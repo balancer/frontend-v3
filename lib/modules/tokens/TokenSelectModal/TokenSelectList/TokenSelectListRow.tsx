@@ -5,9 +5,10 @@ import { TokenIcon } from '../../TokenIcon'
 import { TokenAmount } from '../../token.types'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { tokenFormat, useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { useTokens } from '../../useTokens'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { tokenFormat } from '@/lib/shared/utils/numbers'
 
 type Props = {
   token: GqlToken
@@ -24,7 +25,7 @@ export function TokenSelectListRow({
   ...rest
 }: Props & BoxProps) {
   const { isConnected } = useUserAccount()
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
   const { usdValueForToken } = useTokens()
 
   const tokenBalance = userBalance && !isBalancesLoading ? tokenFormat(userBalance.formatted) : '-'

@@ -1,6 +1,6 @@
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
-import { chains } from '@/lib/modules/web3/Web3Provider'
+import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
 import { SdkTransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { TokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
@@ -50,9 +50,9 @@ export class AddLiquidityConfigBuilder {
     public addLiquidityType: AddLiquidityType = 'unbalanced'
   ) {
     const amountsInList: InputAmount[] = poolStateInput?.tokens.map(t => ({
-      address: t.address,
-      decimals: t.decimals,
       rawAmount: 0n,
+      decimals: t.decimals,
+      address: t.address,
     }))
 
     this.amountsInByTokenAddress = keyBy(amountsInList, a => a.address)
@@ -118,7 +118,7 @@ export class AddLiquidityConfigBuilder {
   getAddLiquidityInputBase() {
     return {
       chainId: this.chainId,
-      rpcUrl: chains[0].rpcUrls.public.http[0], //TODO: create helper to get by current chain? or useNetwork() or similar wagmi hook?
+      rpcUrl: getDefaultRpcUrl(this.chainId),
     }
   }
 

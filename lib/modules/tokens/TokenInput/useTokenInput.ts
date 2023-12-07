@@ -1,10 +1,6 @@
-import { Numberish } from '@/lib/shared/hooks/useNumbers'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { ChangeEvent, KeyboardEvent } from 'react'
-
-export function blockInvalidNumberInput(event: KeyboardEvent<HTMLInputElement>): void {
-  ;['e', 'E', '+', '-'].includes(event.key) && event.preventDefault()
-}
+import { Numberish } from '@/lib/shared/utils/numbers'
+import { ChangeEvent } from 'react'
 
 export function overflowProtected(value: Numberish, decimalLimit: number): string {
   const stringValue = value.toString()
