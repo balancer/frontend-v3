@@ -3943,6 +3943,40 @@ export type GetPoolTokensDynamicDataQuery = {
   >
 }
 
+export type GetPoolJoinsExitsSwapsQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']['input']>
+  skip?: InputMaybe<Scalars['Int']['input']>
+  poolId: Scalars['String']['input']
+  chainId: GqlChain
+}>
+
+export type GetPoolJoinsExitsSwapsQuery = {
+  __typename?: 'Query'
+  swaps: Array<{
+    __typename?: 'GqlPoolSwap'
+    id: string
+    poolId: string
+    timestamp: number
+    tokenAmountIn: string
+    tokenAmountOut: string
+    tokenIn: string
+    tokenOut: string
+    tx: string
+    userAddress: string
+    valueUSD: number
+  }>
+  joinExits: Array<{
+    __typename?: 'GqlPoolJoinExit'
+    id: string
+    timestamp: number
+    tx: string
+    type: GqlPoolJoinExitType
+    poolId: string
+    valueUSD?: string | null
+    amounts: Array<{ __typename?: 'GqlPoolJoinExitAmount'; address: string; amount: string }>
+  }>
+}
+
 export type GetPoolsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>
   skip?: InputMaybe<Scalars['Int']['input']>
@@ -8291,6 +8325,170 @@ export const GetPoolTokensDynamicDataDocument = {
     },
   ],
 } as unknown as DocumentNode<GetPoolTokensDynamicDataQuery, GetPoolTokensDynamicDataQueryVariables>
+export const GetPoolJoinsExitsSwapsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetPoolJoinsExitsSwaps' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'first' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'skip' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'poolId' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'chainId' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'swaps' },
+            name: { kind: 'Name', value: 'poolGetSwaps' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'first' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'first' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'skip' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'skip' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'where' },
+                value: {
+                  kind: 'ObjectValue',
+                  fields: [
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'poolIdIn' },
+                      value: {
+                        kind: 'ListValue',
+                        values: [{ kind: 'Variable', name: { kind: 'Name', value: 'poolId' } }],
+                      },
+                    },
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'chainIn' },
+                      value: {
+                        kind: 'ListValue',
+                        values: [{ kind: 'Variable', name: { kind: 'Name', value: 'chainId' } }],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'poolId' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'timestamp' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenAmountIn' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenAmountOut' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenIn' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tx' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'userAddress' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'valueUSD' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'joinExits' },
+            name: { kind: 'Name', value: 'poolGetJoinExits' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'first' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'first' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'skip' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'skip' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'where' },
+                value: {
+                  kind: 'ObjectValue',
+                  fields: [
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'poolIdIn' },
+                      value: {
+                        kind: 'ListValue',
+                        values: [{ kind: 'Variable', name: { kind: 'Name', value: 'poolId' } }],
+                      },
+                    },
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'chainIn' },
+                      value: {
+                        kind: 'ListValue',
+                        values: [{ kind: 'Variable', name: { kind: 'Name', value: 'chainId' } }],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'timestamp' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tx' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'poolId' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'valueUSD' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'amounts' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetPoolJoinsExitsSwapsQuery, GetPoolJoinsExitsSwapsQueryVariables>
 export const GetPoolsDocument = {
   kind: 'Document',
   definitions: [
