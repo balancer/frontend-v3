@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client'
+import * as echarts from 'echarts/core'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { format } from 'date-fns'
 import numeral from 'numeral'
-import { theme } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
 import { PoolVariant } from '../../pool.types'
 import {
@@ -13,7 +13,7 @@ import {
   GqlPoolJoinExitType,
 } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
-import { balColors } from '@/lib/shared/services/chakra/theme'
+import { balColors, balTheme } from '@/lib/shared/services/chakra/theme'
 
 const toolTipTheme = {
   heading: 'font-weight: bold; color: #E5D3BE',
@@ -186,9 +186,7 @@ export function usePoolActivityChart() {
 
   const [activeTab, setActiveTab] = useState(tabsList[0])
 
-  const { data: response, ...rest } = usePoolJoinsExitsSwaps(poolId as string, chain)
-
-  console.log('da', { response, poolId, rest })
+  const { data: response } = usePoolJoinsExitsSwaps(poolId as string, chain)
 
   const chartData = useMemo(() => {
     if (!response) return { adds: [], removes: [], swaps: [] }
@@ -224,7 +222,16 @@ export function usePoolActivityChart() {
       joinOption: {
         name: 'Add',
         itemStyle: {
-          color: theme.colors.green[500],
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            {
+              offset: 0,
+              color: balTheme.semanticTokens.colors.chart.pool.scatter.add.from,
+            },
+            {
+              offset: 1,
+              color: balTheme.semanticTokens.colors.chart.pool.scatter.add.to,
+            },
+          ]),
         },
         emphasis: {
           focus: 'self',
@@ -236,7 +243,16 @@ export function usePoolActivityChart() {
       exitOption: {
         name: 'Remove',
         itemStyle: {
-          color: theme.colors.red[500],
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            {
+              offset: 0,
+              color: balTheme.semanticTokens.colors.chart.pool.scatter.remove.from,
+            },
+            {
+              offset: 1,
+              color: balTheme.semanticTokens.colors.chart.pool.scatter.remove.to,
+            },
+          ]),
         },
         emphasis: {
           focus: 'self',
@@ -248,7 +264,16 @@ export function usePoolActivityChart() {
       swapOption: {
         name: 'Swap',
         itemStyle: {
-          color: theme.colors.blue[500],
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            {
+              offset: 0,
+              color: balTheme.semanticTokens.colors.chart.pool.scatter.swap.from,
+            },
+            {
+              offset: 1,
+              color: balTheme.semanticTokens.colors.chart.pool.scatter.swap.to,
+            },
+          ]),
         },
         emphasis: {
           focus: 'self',

@@ -465,6 +465,25 @@ export const balTheme = {
         dark: '#414853',
         light: '#F3F1EC',
       },
+
+      chart: {
+        pool: {
+          scatter: {
+            add: {
+              from: 'rgba(0, 211, 149, 100%)',
+              to: 'rgba(0, 211, 149, 20%)',
+            },
+            remove: {
+              from: 'rgba(239, 68, 68, 100%)',
+              to: 'rgba(239, 68, 68, 20%)',
+            },
+            swap: {
+              from: 'rgba(109, 173, 249, 100%)',
+              to: 'rgba(109, 173, 249, 20%)',
+            },
+          },
+        },
+      },
     },
     space: {
       none: '0',
