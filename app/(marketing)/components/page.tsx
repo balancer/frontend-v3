@@ -6,7 +6,6 @@ import {
   Heading,
   Box,
   Button,
-  ButtonGroup,
   Flex,
   Input,
   InputGroup,
@@ -23,7 +22,6 @@ import {
   CardHeader,
   CardBody,
   Link,
-  Divider,
   CardFooter,
   Image,
   Slider,
@@ -43,7 +41,6 @@ import {
 
 import { darken } from '@chakra-ui/theme-tools'
 import Section from '@/lib/shared/components/layout/Section'
-import { IoCloseCircle } from 'react-icons/io5'
 
 export default function Components() {
   return (
@@ -1125,8 +1122,8 @@ export default function Components() {
             Custom input fields
           </Heading>
           <Text>
-            For some reason, I haven't been able to get some of these styles into the theme, so I've
-            listed all the code below
+            For some reason, I haven&apos;t been able to get some of these styles into the theme, so
+            I&apos;ve listed all the code below
           </Text>
         </Box>
 
