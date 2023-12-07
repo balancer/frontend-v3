@@ -8,7 +8,6 @@ import {
 } from '@/lib/shared/services/api/generated/graphql'
 import { Address, formatUnits, PublicClient } from 'viem'
 import { cloneDeep, keyBy, sumBy } from 'lodash'
-import { ContractFunctionConfig } from 'viem/types/contract'
 import {
   balancerV2ComposableStablePoolV5ABI,
   balancerV2Erc4626LinearPoolV3ABI,
@@ -148,10 +147,7 @@ async function getBalanceDataForPool({
 }> {
   pool.allTokens.map(token => token)
   const poolIds: string[] = [pool.id]
-  const calls: { poolId: string; type: 'balances' | 'supply'; call: ContractFunctionConfig }[] = [
-    getSupplyCall(pool),
-    getBalancesCall(pool.id, vaultV2Address),
-  ]
+  const calls = [getSupplyCall(pool), getBalancesCall(pool.id, vaultV2Address)]
 
   for (const token of pool.tokens) {
     if (token.__typename === 'GqlPoolTokenLinear') {
@@ -183,7 +179,7 @@ async function getBalanceDataForPool({
     if (calls[i].type === 'balances') {
       balances.push({
         poolId: calls[i].poolId,
-        balances: response[i].error ? [] : ((response[i].result as any)[1] as bigint[]),
+        balances: response[i].error ? [] : (response[i].result as any)[1],
       })
     } else if (calls[i].type === 'supply') {
       supplies.push({
@@ -199,10 +195,7 @@ async function getBalanceDataForPool({
   }
 }
 
-function getBalancesCall(
-  poolId: string,
-  vaultV2Address: Address
-): { poolId: string; type: 'balances'; call: ContractFunctionConfig } {
+function getBalancesCall(poolId: string, vaultV2Address: Address) {
   return {
     poolId,
     type: 'balances',
@@ -210,34 +203,52 @@ function getBalancesCall(
       abi: balancerV2VaultABI,
       address: vaultV2Address,
       functionName: 'getPoolTokens',
-      args: [poolId],
-    },
+      args: [poolId as Address],
+    } as const,
   }
 }
 
-function getSupplyCall(pool: GqlPoolUnion | GqlPoolPhantomStableNested | GqlPoolLinearNested): {
-  poolId: string
-  type: 'supply'
-  call: ContractFunctionConfig
-} {
+function getSupplyCall(pool: GqlPoolUnion | GqlPoolPhantomStableNested | GqlPoolLinearNested) {
   const isLinear = pool.__typename === 'GqlPoolLinear' || pool.__typename == 'GqlPoolLinearNested'
   const isPhantomStable =
     pool.__typename === 'GqlPoolPhantomStable' || pool.__typename == 'GqlPoolPhantomStableNested'
 
-  return {
+  const poolAddress = pool.address as Address
+
+  const context = {
     poolId: pool.id,
     type: 'supply',
+  }
+
+  if (isLinear) {
+    return {
+      ...context,
+      call: {
+        abi: balancerV2Erc4626LinearPoolV3ABI,
+        address: poolAddress,
+        functionName: 'getVirtualSupply',
+      } as const,
+    }
+  }
+  if (isPhantomStable) {
+    return {
+      ...context,
+      call: {
+        // composable stable pool has actual and total supply functions exposed
+        abi: balancerV2ComposableStablePoolV5ABI,
+        address: poolAddress,
+        functionName: 'getActualSupply',
+      } as const,
+    }
+  }
+  // Default
+  return {
+    ...context,
     call: {
-      abi: isLinear
-        ? balancerV2Erc4626LinearPoolV3ABI
-        : // composable stable pool has actual and total supply functions exposed
-          balancerV2ComposableStablePoolV5ABI,
-      address: pool.address as Address,
-      functionName: isPhantomStable
-        ? 'getActualSupply'
-        : isLinear
-        ? 'getVirtualSupply'
-        : 'totalSupply',
-    },
+      // composable stable pool has actual and total supply functions exposed
+      abi: balancerV2ComposableStablePoolV5ABI,
+      address: poolAddress,
+      functionName: 'totalSupply',
+    } as const,
   }
 }
