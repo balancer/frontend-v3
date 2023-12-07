@@ -9,6 +9,7 @@ export function aGqlPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlP
   const defaultPool = mock<GqlPoolElement>()
 
   const defaultPool1: DeepPartial<GqlPoolElement> = {
+    __typename: 'GqlPoolElement',
     address: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56',
     tokens: someMinimalTokensMock([balAddress, wETHAddress]),
     allTokens: [

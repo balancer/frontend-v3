@@ -24,11 +24,15 @@ export const defaultTokenListMock: MswTokenList = [defaultTokenMock as MswTokenL
 export const defaultTokenPriceMock = aTokenPriceMock()
 export const defaultTokenPriceListMock = [defaultTokenPriceMock]
 
-export const defaultGetTokensQueryMock: GetTokensQuery = { tokens: defaultTokenListMock }
+export const defaultGetTokensQueryMock: GetTokensQuery = {
+  __typename: 'Query',
+  tokens: defaultTokenListMock,
+}
 
 export const defaultGetTokensQueryVariablesMock: GetTokensQueryVariables =
   mock<GetTokensQueryVariables>()
 export const defaultGetTokenPricesQueryMock: GetTokenPricesQuery = {
+  __typename: 'Query',
   tokenPrices: defaultTokenPriceListMock,
 }
 
@@ -72,7 +76,12 @@ export function aTokenExpandedMock(
 }
 
 export function aTokenPriceMock(...options: Partial<GqlTokenPrice>[]): GqlTokenPrice {
-  const defaultPrice: GqlTokenPrice = { address: emptyAddress, chain: GqlChain.Mainnet, price: 10 }
+  const defaultPrice: GqlTokenPrice = {
+    __typename: 'GqlTokenPrice',
+    address: emptyAddress,
+    chain: GqlChain.Mainnet,
+    price: 10,
+  }
   return Object.assign({}, defaultPrice, ...options)
 }
 
