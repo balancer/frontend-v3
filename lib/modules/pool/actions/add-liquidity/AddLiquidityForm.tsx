@@ -1,6 +1,5 @@
 'use client'
 
-import { humanizeObject } from '@/lib/debug-helpers'
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
@@ -23,7 +22,7 @@ export function AddLiquidityForm() {
     tokens,
     validTokens,
     formattedPriceImpact,
-    addLiquidityQuery,
+    bptOutUnits,
     builder,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
@@ -93,9 +92,7 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Bpt out (debug)</Text>
                 <HStack>
-                  <NumberText color="GrayText">
-                    {humanizeObject(addLiquidityQuery?.bptOut || {})}
-                  </NumberText>
+                  <NumberText color="GrayText">{bptOutUnits}</NumberText>
                   <Tooltip label="Bpt our" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>

@@ -8,7 +8,7 @@ import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { priceImpactFormat, tokenFormat } from '@/lib/shared/utils/numbers'
+import { tokenFormat } from '@/lib/shared/utils/numbers'
 import { HumanAmount } from '@balancer/sdk'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
@@ -80,7 +80,7 @@ export function AddLiquidityModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { amountsIn, totalUSDValue, builder } = useAddLiquidity()
+  const { amountsIn, totalUSDValue, builder, formattedPriceImpact, bptOutUnits } = useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
   // TODO: move userAddress up
@@ -133,7 +133,7 @@ export function AddLiquidityModal({
                 </HStack>
                 <TokenAmountRow
                   tokenAddress={pool.address as Address}
-                  humanAmount="0"
+                  humanAmount={bptOutUnits}
                   symbol="LP Token"
                 />
               </VStack>
@@ -144,7 +144,7 @@ export function AddLiquidityModal({
                 <HStack justify="space-between" w="full">
                   <Text>Price impact</Text>
                   <HStack>
-                    <NumberText color="GrayText">{priceImpactFormat(0)}</NumberText>
+                    <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
                     <Tooltip label="Price impact" fontSize="sm">
                       <InfoOutlineIcon color="GrayText" />
                     </Tooltip>

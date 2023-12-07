@@ -10,7 +10,7 @@ import { makeVar, useReactiveVar } from '@apollo/client'
 import { AddLiquidityQueryOutput, HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
-import { Address } from 'viem'
+import { Address, formatUnits } from 'viem'
 import { usePool } from '../../usePool'
 import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { HumanAmountIn } from './add-liquidity.types'
@@ -90,13 +90,17 @@ export function _useAddLiquidity() {
 
   const formattedPriceImpact = priceImpact ? priceImpactFormat(priceImpact.decimal) : '-'
 
-  const [addLiquidityQuery, setAddLiquidityQuery] = useState<AddLiquidityQueryOutput | null>(null)
+  const [addLiquidityQuery, setAddLiquidityQuery] = useState<AddLiquidityQueryOutput | null>(null) //TODO: rename to queryBptOut if that's the only thing we need from the query result
   async function queryBptOut() {
     const queryResult = await queryAddLiquidity(addLiquidityConfigBuilder, amountsIn)
 
     setAddLiquidityQuery(queryResult)
   }
   const debouncedQueryBptOut = useDebouncedCallback(queryBptOut, 300)
+
+  const bptOutUnits: HumanAmount = addLiquidityQuery?.bptOut
+    ? (formatUnits(addLiquidityQuery?.bptOut.amount, 18) as HumanAmount)
+    : '0'
 
   // When the amounts in change we fetch the new price impact
   useEffect(() => {
@@ -112,6 +116,7 @@ export function _useAddLiquidity() {
     priceImpact,
     formattedPriceImpact,
     addLiquidityQuery,
+    bptOutUnits,
     setAmountIn,
     builder: addLiquidityConfigBuilder,
   }
