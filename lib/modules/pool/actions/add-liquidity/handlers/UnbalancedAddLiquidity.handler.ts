@@ -75,15 +75,13 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
       recipient: account,
     })
 
-    const config: SdkTransactionConfig = {
+    return {
       account,
       chainId: this.service.chainId,
       data: call,
       to,
       value,
     }
-
-    return config
   }
 
   /**
