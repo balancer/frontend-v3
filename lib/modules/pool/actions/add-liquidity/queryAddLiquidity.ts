@@ -1,10 +1,10 @@
 import { AddLiquidity, AddLiquidityQueryOutput } from '@balancer/sdk'
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { AddLiquidityService } from './AddLiquidityService'
 import { HumanAmountIn } from './add-liquidity.types'
 import { areEmptyAmounts } from './add-liquidity.helpers'
 
 export async function queryAddLiquidity(
-  addLiquidityBuilder: AddLiquidityConfigBuilder,
+  addLiquidityBuilder: AddLiquidityService,
   humanAmountsIn: HumanAmountIn[]
 ): Promise<AddLiquidityQueryOutput | null> {
   if (areEmptyAmounts(humanAmountsIn)) {

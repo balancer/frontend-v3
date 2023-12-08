@@ -1,5 +1,5 @@
 import { PriceImpact } from '@balancer/sdk'
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { AddLiquidityService } from './AddLiquidityService'
 import { HumanAmountIn } from './add-liquidity.types'
 import { areEmptyAmounts } from './add-liquidity.helpers'
 
@@ -14,7 +14,7 @@ export const NullPriceImpactAmount: PriceImpactAmount = {
 }
 
 export async function calculatePriceImpact(
-  addLiquidityConfigBuilder: AddLiquidityConfigBuilder,
+  AddLiquidityService: AddLiquidityService,
   humanAmountsIn: HumanAmountIn[]
 ) {
   if (areEmptyAmounts(humanAmountsIn)) {
@@ -22,13 +22,13 @@ export async function calculatePriceImpact(
     return NullPriceImpactAmount
   }
 
-  const addLiquidityInput = addLiquidityConfigBuilder.getUnbalancedAddLiquidityInput({
+  const addLiquidityInput = AddLiquidityService.getUnbalancedAddLiquidityInput({
     humanAmountsIn,
   })
 
   const priceImpactABA: PriceImpactAmount = await PriceImpact.addLiquidityUnbalanced(
     addLiquidityInput,
-    addLiquidityConfigBuilder.poolStateInput
+    AddLiquidityService.poolStateInput
   )
   return priceImpactABA
 }

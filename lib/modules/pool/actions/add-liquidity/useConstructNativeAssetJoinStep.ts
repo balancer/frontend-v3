@@ -7,7 +7,7 @@ import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { usePoolStateInput } from '@/lib/shared/hooks/balancer-api/usePoolStateInput'
 import { Address } from 'wagmi'
 import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { AddLiquidityService } from './AddLiquidityService'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
 import { HumanAmountIn } from './add-liquidity.types'
 
@@ -20,11 +20,7 @@ export function useConstructNativeAssetJoinStep(poolId: Address) {
   const poolStateQuery = usePoolStateInput(poolId)
   const { activateStep, isActiveStep } = useActiveStep()
 
-  const joinBuilder = new AddLiquidityConfigBuilder(
-    chainId,
-    poolStateQuery.data,
-    'unbalancedNativeAsset'
-  )
+  const joinBuilder = new AddLiquidityService(chainId, poolStateQuery.data, 'unbalancedNativeAsset')
 
   const humanAmountsIn: HumanAmountIn[] = [{ tokenAddress: wETHAddress, humanAmount: '1' }]
 

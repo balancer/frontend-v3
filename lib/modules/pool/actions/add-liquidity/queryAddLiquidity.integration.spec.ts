@@ -2,7 +2,7 @@ import { balAddress, wETHAddress } from '@/lib/debug-helpers'
 
 import { mainnet } from 'wagmi'
 import { aPoolStateInputMock } from '../../__mocks__/pool.builders'
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { AddLiquidityService } from './AddLiquidityService'
 import { HumanAmountIn } from './add-liquidity.types'
 import { queryAddLiquidity } from './queryAddLiquidity'
 
@@ -14,11 +14,7 @@ test('queries unbalanced add liquidity', async () => {
     { humanAmount: '1', tokenAddress: balAddress },
   ]
 
-  const addLiquidityBuilder = new AddLiquidityConfigBuilder(
-    mainnet.id,
-    poolStateInput,
-    'unbalanced'
-  )
+  const addLiquidityBuilder = new AddLiquidityService(mainnet.id, poolStateInput, 'unbalanced')
 
   const queryResult = await queryAddLiquidity(addLiquidityBuilder, humanAmountsIn)
   expect(queryResult?.bptOut).toMatchInlineSnapshot(`

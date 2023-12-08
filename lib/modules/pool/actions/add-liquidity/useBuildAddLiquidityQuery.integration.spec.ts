@@ -5,14 +5,14 @@ import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { ChainId, TokenAmount } from '@balancer/sdk'
 import { waitFor } from '@testing-library/react'
 
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { AddLiquidityService } from './AddLiquidityService'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
 import { Address } from 'viem'
 import { HumanAmountIn } from './add-liquidity.types'
 
 async function buildQuery() {
   const poolStateInput = await new MockApi().getPool(poolId) // Balancer Weighted wjAura and WETH
-  return new AddLiquidityConfigBuilder(ChainId.MAINNET, poolStateInput)
+  return new AddLiquidityService(ChainId.MAINNET, poolStateInput)
 }
 
 async function testUseBuildAddLiquidityQuery(humanAmountsIn: HumanAmountIn[], account?: Address) {

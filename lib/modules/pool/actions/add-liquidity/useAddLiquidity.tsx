@@ -12,7 +12,7 @@ import { PropsWithChildren, createContext, useEffect, useMemo, useState } from '
 import { useDebouncedCallback } from 'use-debounce'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { AddLiquidityService } from './AddLiquidityService'
 import { HumanAmountIn } from './add-liquidity.types'
 import { PriceImpactAmount, calculatePriceImpact } from './calculatePriceImpact'
 import { queryAddLiquidity } from './queryAddLiquidity'
@@ -75,14 +75,10 @@ export function _useAddLiquidity() {
 
   const [priceImpact, setPriceImpact] = useState<PriceImpactAmount | null>(null)
 
-  const addLiquidityConfigBuilder = new AddLiquidityConfigBuilder(
-    chainId,
-    poolStateInput,
-    'unbalanced'
-  )
+  const AddLiquidityService = new AddLiquidityService(chainId, poolStateInput, 'unbalanced')
 
   async function queryPriceImpact() {
-    const priceImpactAmount = await calculatePriceImpact(addLiquidityConfigBuilder, amountsIn)
+    const priceImpactAmount = await calculatePriceImpact(AddLiquidityService, amountsIn)
 
     setPriceImpact(priceImpactAmount)
   }
@@ -92,7 +88,7 @@ export function _useAddLiquidity() {
 
   const [addLiquidityQuery, setAddLiquidityQuery] = useState<AddLiquidityQueryOutput | null>(null)
   async function queryBptOut() {
-    const queryResult = await queryAddLiquidity(addLiquidityConfigBuilder, amountsIn)
+    const queryResult = await queryAddLiquidity(AddLiquidityService, amountsIn)
 
     setAddLiquidityQuery(queryResult)
   }

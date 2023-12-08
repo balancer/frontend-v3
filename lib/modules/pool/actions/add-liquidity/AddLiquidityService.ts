@@ -33,11 +33,11 @@ type AddLiquidityType = 'unbalanced' | 'unbalancedNativeAsset' | 'singleToken'
   Those configs are passed to useManagedSendTransaction hook to send the an AddLiquidity transaction
 
   Usage:
-  - Create an instance of AddLiquidityConfigBuilder
+  - Create an instance of AddLiquidityService
   - Setup the AddLiquidity state with methods like this.setAmountsIn()
   - Generate the final AddLiquidity config with this.buildSdkAddLiquidityTxConfig()
 */
-export class AddLiquidityConfigBuilder {
+export class AddLiquidityService {
   slippage: Slippage = Slippage.fromPercentage('1')
 
   constructor(

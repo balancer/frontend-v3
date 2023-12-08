@@ -7,7 +7,7 @@ import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { PoolStateInputResult } from '@/lib/shared/hooks/balancer-api/usePoolStateInput'
 import { Address } from 'wagmi'
 import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { AddLiquidityService } from './AddLiquidityService'
 import { HumanAmountIn } from './add-liquidity.types'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
 
@@ -19,11 +19,7 @@ export function useConstructAddLiquidityStep(
   const { isActiveStep, activateStep } = useActiveStep()
   const { chainId } = useNetworkConfig()
 
-  const addLiquidityBuilder = new AddLiquidityConfigBuilder(
-    chainId,
-    poolStateQuery.data,
-    'unbalanced'
-  )
+  const addLiquidityBuilder = new AddLiquidityService(chainId, poolStateQuery.data, 'unbalanced')
 
   const addLiquidityQuery = useBuildAddLiquidityQuery(
     addLiquidityBuilder,

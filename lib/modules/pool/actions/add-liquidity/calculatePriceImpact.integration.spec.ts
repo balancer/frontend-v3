@@ -13,14 +13,10 @@ import { PoolVariant } from '../../pool.types'
 import { _usePool } from '../../usePool'
 import { HumanAmountIn } from './add-liquidity.types'
 import { NullPriceImpactAmount, calculatePriceImpact } from './calculatePriceImpact'
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { AddLiquidityService } from './AddLiquidityService'
 
 function getAddLiquidityBuilder(poolStateInput: PoolStateInput) {
-  const addLiquidityBuilder = new AddLiquidityConfigBuilder(
-    ChainId.MAINNET,
-    poolStateInput,
-    'unbalanced'
-  )
+  const addLiquidityBuilder = new AddLiquidityService(ChainId.MAINNET, poolStateInput, 'unbalanced')
   return addLiquidityBuilder
 }
 

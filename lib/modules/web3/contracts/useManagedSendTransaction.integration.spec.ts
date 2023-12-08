@@ -10,7 +10,7 @@ import { ChainId, HumanAmount } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/actions'
 import { buildAddLiquidityLabels } from '../../pool/actions/add-liquidity/useConstructAddLiquidityStep'
-import { AddLiquidityConfigBuilder } from '../../pool/actions/add-liquidity/AddLiquidityConfigBuilder'
+import { AddLiquidityService } from '../../pool/actions/add-liquidity/AddLiquidityService'
 import { HumanAmountIn } from '../../pool/actions/add-liquidity/add-liquidity.types'
 
 const chainId = ChainId.MAINNET
@@ -34,7 +34,7 @@ describe('weighted join test', () => {
   test('Sends transaction after updating amount inputs', async () => {
     await utils.setupTokens([...getPoolTokens().map(() => '100' as HumanAmount), '100'])
 
-    const builder = new AddLiquidityConfigBuilder(chainId, poolStateInput)
+    const builder = new AddLiquidityService(chainId, poolStateInput)
 
     const humanAmountsIn: HumanAmountIn[] = poolTokens.map(t => ({
       humanAmount: '1',

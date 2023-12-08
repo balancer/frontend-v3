@@ -3,12 +3,12 @@
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { Dictionary } from 'lodash'
 import { Address, useQuery } from 'wagmi'
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { AddLiquidityService } from './AddLiquidityService'
 import { HumanAmountIn } from './add-liquidity.types'
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
 export function useBuildAddLiquidityQuery(
-  addLiquidityConfigBuilder: AddLiquidityConfigBuilder,
+  AddLiquidityService: AddLiquidityService,
   humanAmountsIn: HumanAmountIn[],
   enabled: boolean,
   account?: Address
@@ -18,9 +18,9 @@ export function useBuildAddLiquidityQuery(
   const allowances = {}
 
   const addLiquidityQuery = useQuery(
-    [`useJoinPool:${account}:${addLiquidityConfigBuilder.queryKey}`],
+    [`useJoinPool:${account}:${AddLiquidityService.queryKey}`],
     async () => {
-      return await addLiquidityConfigBuilder.buildSdkAddLiquidityTxConfig(
+      return await AddLiquidityService.buildSdkAddLiquidityTxConfig(
         account || emptyAddress,
         humanAmountsIn
       )

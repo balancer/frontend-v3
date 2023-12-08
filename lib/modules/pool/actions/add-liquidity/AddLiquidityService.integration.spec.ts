@@ -1,6 +1,6 @@
 import { poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { MockApi } from '@/lib/shared/hooks/balancer-api/MockApi'
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { AddLiquidityService } from './AddLiquidityService'
 import { ChainId } from '@balancer/sdk'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { HumanAmountIn } from './add-liquidity.types'
@@ -11,7 +11,7 @@ async function getPoolState() {
 
 test('build Unbalanced Join Config', async () => {
   const poolStateInput = await getPoolState()
-  const builder = new AddLiquidityConfigBuilder(ChainId.MAINNET, poolStateInput, 'unbalanced')
+  const builder = new AddLiquidityService(ChainId.MAINNET, poolStateInput, 'unbalanced')
 
   const humanAmountsIn: HumanAmountIn[] = [
     { humanAmount: '1', tokenAddress: wETHAddress },
@@ -26,11 +26,7 @@ test('build Unbalanced Join Config', async () => {
 
 test('build Unbalanced Join Config with ETH (mainnet native asset)', async () => {
   const poolStateInput = await getPoolState()
-  const builder = new AddLiquidityConfigBuilder(
-    ChainId.MAINNET,
-    poolStateInput,
-    'unbalancedNativeAsset'
-  )
+  const builder = new AddLiquidityService(ChainId.MAINNET, poolStateInput, 'unbalancedNativeAsset')
 
   // The user chose ETH in the UI but we need to pass WETH in amountsIn
   const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '1', tokenAddress: wETHAddress }]
@@ -43,7 +39,7 @@ test('build Unbalanced Join Config with ETH (mainnet native asset)', async () =>
 test('build Single Token AddLiquidity Config', async () => {
   const poolStateInput = await getPoolState()
 
-  const builder = new AddLiquidityConfigBuilder(ChainId.MAINNET, poolStateInput, 'singleToken')
+  const builder = new AddLiquidityService(ChainId.MAINNET, poolStateInput, 'singleToken')
 
   // We need to rethink this use case when the SDK is ready
   const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '1', tokenAddress: wETHAddress }]
