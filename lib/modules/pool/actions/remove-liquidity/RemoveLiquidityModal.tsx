@@ -67,7 +67,7 @@ function TokenAmountRow({
   )
 }
 
-export function AddLiquidityModal({
+export function RemoveLiquidityModal({
   isOpen,
   onClose,
   finalFocusRef,
