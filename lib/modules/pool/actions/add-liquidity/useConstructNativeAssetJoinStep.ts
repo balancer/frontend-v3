@@ -11,6 +11,10 @@ import { AddLiquidityService } from './AddLiquidityService'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
 import { HumanAmountIn } from './add-liquidity.types'
 
+/**
+ * TODO: Remove, this shouldn't be required, we don't need a separate handler
+ * for native asset joins.
+ */
 export function useConstructNativeAssetJoinStep(poolId: Address) {
   // const [joinPayload, setJoinPayload] = useState<JoinPayload | null>(null)
 
