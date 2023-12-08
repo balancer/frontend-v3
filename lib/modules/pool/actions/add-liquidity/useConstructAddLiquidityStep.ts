@@ -30,7 +30,7 @@ export function useConstructAddLiquidityStep(
 
   const transactionLabels = buildAddLiquidityLabels(poolId)
 
-  const transaction = useManagedSendTransaction(transactionLabels, addLiquidityQuery.data?.config)
+  const transaction = useManagedSendTransaction(transactionLabels, addLiquidityQuery.data)
 
   const step: FlowStep = {
     ...transaction,

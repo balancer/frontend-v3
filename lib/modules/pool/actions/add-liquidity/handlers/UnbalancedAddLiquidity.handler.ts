@@ -59,7 +59,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     humanAmountsIn,
     account,
     slippagePercent,
-  }: AddLiquidityInputs): Promise<any> {
+  }: AddLiquidityInputs): Promise<SdkTransactionConfig> {
     if (!account || !slippagePercent) throw new Error('Missing account or slippage')
 
     const addLiquidity = new AddLiquidity()
@@ -68,7 +68,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     // TODO: we probably don't need this query when building the call as we already used it (check queryAddLiquidity) during the Add Liquidity form management
     const queryResult = await addLiquidity.query(addLiquidityInput, this.service.poolStateInput)
 
-    const { call, to, value, maxAmountsIn, minBptOut } = addLiquidity.buildCall({
+    const { call, to, value } = addLiquidity.buildCall({
       ...queryResult,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
@@ -83,7 +83,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
       value,
     }
 
-    return { maxAmountsIn, minBptOut, queryResult, config }
+    return config
   }
 
   /**

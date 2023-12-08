@@ -1,3 +1,4 @@
+import { SdkTransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { AddLiquidityService } from '../AddLiquidityService'
 import { AddLiquidityInputs, AddLiquidityOutputs } from '../add-liquidity.types'
 
@@ -15,5 +16,5 @@ export abstract class AddLiquidityHandler {
   // Calculate the price impact of adding liquidity
   abstract calculatePriceImpact(inputs: AddLiquidityInputs): Promise<number>
   // Build tx payload for adding liquidity
-  abstract buildAddLiqudityTx(inputs: AddLiquidityInputs): Promise<any>
+  abstract buildAddLiqudityTx(inputs: AddLiquidityInputs): Promise<SdkTransactionConfig>
 }

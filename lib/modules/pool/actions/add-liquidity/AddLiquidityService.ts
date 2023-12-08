@@ -1,11 +1,12 @@
 import { SupportedChainId } from '@/lib/config/config.types'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { PoolStateInput, Slippage } from '@balancer/sdk'
+import { PoolStateInput } from '@balancer/sdk'
 import { Address } from 'wagmi'
 import { AddLiquidityInputs, AddLiquidityOutputs } from './add-liquidity.types'
 import { AddLiquidityHandler } from './handlers/AddLiquidity.handler'
 import { UnbalancedAddLiquidityHandler } from './handlers/UnbalancedAddLiquidity.handler'
 import { getNetworkConfig } from '@/lib/config/app.config'
+import { SdkTransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 
 // TODO: this should be imported from the SDK
 export type InputAmount = {
@@ -59,7 +60,7 @@ export class AddLiquidityService {
     return this.handler.calculatePriceImpact(inputs)
   }
 
-  buildAddLiqudityTx(inputs: AddLiquidityInputs): Promise<any> {
+  buildAddLiqudityTx(inputs: AddLiquidityInputs): Promise<SdkTransactionConfig> {
     return this.handler.buildAddLiqudityTx(inputs)
   }
 }
