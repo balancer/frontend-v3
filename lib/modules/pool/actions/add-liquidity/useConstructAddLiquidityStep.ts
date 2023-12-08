@@ -19,10 +19,10 @@ export function useConstructAddLiquidityStep(
   const { isActiveStep, activateStep } = useActiveStep()
   const { chainId } = useNetworkConfig()
 
-  const addLiquidityBuilder = new AddLiquidityService(chainId, poolStateQuery.data, 'unbalanced')
+  const addLiquidityService = new AddLiquidityService(chainId, poolStateQuery.data, 'unbalanced')
 
   const addLiquidityQuery = useBuildAddLiquidityQuery(
-    addLiquidityBuilder,
+    addLiquidityService,
     humanAmountsIn,
     isActiveStep,
     userAddress
@@ -43,7 +43,7 @@ export function useConstructAddLiquidityStep(
 
   return {
     step,
-    joinPayload: addLiquidityBuilder,
+    joinPayload: addLiquidityService,
     isLoading:
       transaction?.simulation.isLoading ||
       transaction?.execution.isLoading ||

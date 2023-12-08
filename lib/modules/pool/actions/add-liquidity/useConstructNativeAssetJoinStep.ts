@@ -20,18 +20,18 @@ export function useConstructNativeAssetJoinStep(poolId: Address) {
   const poolStateQuery = usePoolStateInput(poolId)
   const { activateStep, isActiveStep } = useActiveStep()
 
-  const joinBuilder = new AddLiquidityService(chainId, poolStateQuery.data, 'unbalancedNativeAsset')
+  const addLiquidityService = new AddLiquidityService(chainId, poolStateQuery.data, 'unbalanced')
 
   const humanAmountsIn: HumanAmountIn[] = [{ tokenAddress: wETHAddress, humanAmount: '1' }]
 
   const joinQuery = useBuildAddLiquidityQuery(
-    joinBuilder,
+    addLiquidityService,
     humanAmountsIn,
     isActiveStep,
     userAddress
   )
 
-  const transaction = useManagedSendTransaction(buildAddLiquidityLabels(), joinQuery.data?.config)
+  const transaction = useManagedSendTransaction(buildAddLiquidityLabels(), joinQuery.data)
 
   const step: FlowStep = {
     ...transaction,
@@ -44,7 +44,7 @@ export function useConstructNativeAssetJoinStep(poolId: Address) {
 
   return {
     step,
-    joinPayload: joinBuilder,
+    joinPayload: addLiquidityService,
     isLoading:
       transaction?.simulation.isLoading || transaction?.execution.isLoading || joinQuery.isLoading,
     error: transaction?.simulation.error || transaction?.execution.error || joinQuery.error,
