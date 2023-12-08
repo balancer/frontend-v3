@@ -3,6 +3,7 @@ query GetPool($id: String!) {
     id
     address
     name
+    version
     owner
     decimals
     factory
@@ -42,6 +43,8 @@ query GetPool($id: String!) {
       fees24hAthTimestamp
       fees24hAtl
       fees24hAtlTimestamp
+      yieldCapture24h
+      yieldCapture48h
       apr {
         hasRewardApr
         thirdPartyApr {
@@ -108,6 +111,7 @@ query GetPool($id: String!) {
       decimals
       isNested
       isPhantomBpt
+      isMainToken
     }
     displayTokens {
       id
@@ -126,12 +130,14 @@ query GetPool($id: String!) {
     staking {
       id
       type
+      chain
       address
       gauge {
         id
         gaugeAddress
         version
         status
+        workingSupply
         otherGauges {
           gaugeAddress
           version
@@ -225,6 +231,8 @@ query GetPool($id: String!) {
           totalBalance
           pool {
             id
+            type
+            version
             name
             symbol
             address
@@ -267,6 +275,8 @@ query GetPool($id: String!) {
           totalBalance
           pool {
             id
+            type
+            version
             name
             symbol
             address
@@ -278,6 +288,7 @@ query GetPool($id: String!) {
             nestingType
             swapFee
             amp
+            bptPriceRate
             tokens {
               ... on GqlPoolToken {
                 id
@@ -307,6 +318,8 @@ query GetPool($id: String!) {
                 totalBalance
                 pool {
                   id
+                  type
+                  version
                   name
                   symbol
                   address
@@ -397,6 +410,7 @@ query GetPool($id: String!) {
     ... on GqlPoolPhantomStable {
       amp
       nestingType
+      bptPriceRate
       tokens {
         ... on GqlPoolToken {
           id
@@ -427,6 +441,8 @@ query GetPool($id: String!) {
           pool {
             id
             name
+            type
+            version
             symbol
             address
             owner
@@ -468,6 +484,8 @@ query GetPool($id: String!) {
           totalBalance
           pool {
             id
+            type
+            version
             name
             symbol
             address
@@ -479,6 +497,7 @@ query GetPool($id: String!) {
             nestingType
             swapFee
             amp
+            bptPriceRate
             tokens {
               ... on GqlPoolToken {
                 id
@@ -508,6 +527,8 @@ query GetPool($id: String!) {
                 totalBalance
                 pool {
                   id
+                  type
+                  version
                   name
                   symbol
                   address
@@ -547,6 +568,7 @@ query GetPool($id: String!) {
       wrappedIndex
       lowerTarget
       upperTarget
+      bptPriceRate
       tokens {
         ... on GqlPoolToken {
           id
@@ -594,6 +616,8 @@ query GetPool($id: String!) {
           totalBalance
           pool {
             id
+            type
+            version
             name
             symbol
             address
@@ -636,6 +660,8 @@ query GetPool($id: String!) {
           totalBalance
           pool {
             id
+            type
+            version
             name
             symbol
             address
@@ -647,6 +673,7 @@ query GetPool($id: String!) {
             nestingType
             swapFee
             amp
+            bptPriceRate
             tokens {
               ... on GqlPoolToken {
                 id
@@ -676,6 +703,8 @@ query GetPool($id: String!) {
                 totalBalance
                 pool {
                   id
+                  type
+                  version
                   name
                   symbol
                   address
@@ -744,6 +773,8 @@ query GetPool($id: String!) {
           totalBalance
           pool {
             id
+            type
+            version
             name
             symbol
             address
@@ -786,6 +817,8 @@ query GetPool($id: String!) {
           totalBalance
           pool {
             id
+            type
+            version
             name
             symbol
             address
@@ -797,6 +830,7 @@ query GetPool($id: String!) {
             nestingType
             swapFee
             amp
+            bptPriceRate
             tokens {
               ... on GqlPoolToken {
                 id
@@ -826,6 +860,8 @@ query GetPool($id: String!) {
                 totalBalance
                 pool {
                   id
+                  type
+                  version
                   name
                   symbol
                   address
