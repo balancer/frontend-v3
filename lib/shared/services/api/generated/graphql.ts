@@ -4029,9 +4029,9 @@ export type GetPoolJoinsExitsSwapsQueryVariables = Exact<{
 }>
 
 export type GetPoolJoinsExitsSwapsQuery = {
-  __typename?: 'Query'
+  __typename: 'Query'
   swaps: Array<{
-    __typename?: 'GqlPoolSwap'
+    __typename: 'GqlPoolSwap'
     id: string
     poolId: string
     timestamp: number
@@ -4044,14 +4044,14 @@ export type GetPoolJoinsExitsSwapsQuery = {
     valueUSD: number
   }>
   joinExits: Array<{
-    __typename?: 'GqlPoolJoinExit'
+    __typename: 'GqlPoolJoinExit'
     id: string
     timestamp: number
     tx: string
     type: GqlPoolJoinExitType
     poolId: string
     valueUSD?: string | null
-    amounts: Array<{ __typename?: 'GqlPoolJoinExitAmount'; address: string; amount: string }>
+    amounts: Array<{ __typename: 'GqlPoolJoinExitAmount'; address: string; amount: string }>
   }>
 }
 
