@@ -23,7 +23,7 @@ export function AddLiquidityForm() {
     tokens,
     validTokens,
     formattedPriceImpact,
-    addLiquidityQuery,
+    bptOut,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
 
@@ -89,9 +89,7 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Bpt out (debug)</Text>
                 <HStack>
-                  <NumberText color="GrayText">
-                    {humanizeObject(addLiquidityQuery?.bptOut || {})}
-                  </NumberText>
+                  <NumberText color="GrayText">{humanizeObject({ bptOut } || {})}</NumberText>
                   <Tooltip label="Bpt our" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>

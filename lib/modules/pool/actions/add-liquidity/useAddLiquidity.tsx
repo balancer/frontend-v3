@@ -7,15 +7,13 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { priceImpactFormat, safeSum } from '@/lib/shared/utils/numbers'
 import { makeVar, useReactiveVar } from '@apollo/client'
-import { AddLiquidityQueryOutput, HumanAmount } from '@balancer/sdk'
+import { HumanAmount, TokenAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
 import { AddLiquidityService } from './AddLiquidityService'
 import { HumanAmountIn } from './add-liquidity.types'
-import { PriceImpactAmount, calculatePriceImpact } from './calculatePriceImpact'
-import { queryAddLiquidity } from './queryAddLiquidity'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -24,8 +22,13 @@ export const amountsInVar = makeVar<HumanAmountIn[]>([])
 
 export function _useAddLiquidity() {
   const amountsIn = useReactiveVar(amountsInVar)
+  const [priceImpact, setPriceImpact] = useState<number | null>(null)
+  const [bptOut, setBptOut] = useState<TokenAmount | null>(null)
+
   const { pool, poolStateInput, chainId } = usePool()
   const { getToken, usdValueForToken } = useTokens()
+
+  const addLiquidityService = new AddLiquidityService(chainId, poolStateInput, 'unbalanced')
 
   function setInitialAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -56,7 +59,6 @@ export function _useAddLiquidity() {
 
   const tokens = pool.allTokens.map(token => getToken(token.address, pool.chain))
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
-
   const usdAmountsIn = useMemo(
     () =>
       amountsIn.map(amountIn => {
@@ -70,29 +72,26 @@ export function _useAddLiquidity() {
       }),
     [amountsIn, usdValueForToken, validTokens]
   )
-
   const totalUSDValue = safeSum(usdAmountsIn)
-
-  const [priceImpact, setPriceImpact] = useState<PriceImpactAmount | null>(null)
-
-  const AddLiquidityService = new AddLiquidityService(chainId, poolStateInput, 'unbalanced')
+  const formattedPriceImpact = priceImpact ? priceImpactFormat(priceImpact) : '-'
 
   async function queryPriceImpact() {
-    const priceImpactAmount = await calculatePriceImpact(AddLiquidityService, amountsIn)
+    const _priceImpact = await addLiquidityService.calculatePriceImpact({
+      humanAmountsIn: amountsIn,
+    })
 
-    setPriceImpact(priceImpactAmount)
+    setPriceImpact(_priceImpact)
   }
+
+  async function queryExpectedOutput() {
+    const { bptOut } = await addLiquidityService.queryAddLiquidity({ humanAmountsIn: amountsIn })
+
+    setBptOut(bptOut)
+  }
+
+  // Debounced queries
   const debouncedQueryPriceImpact = useDebouncedCallback(queryPriceImpact, 300)
-
-  const formattedPriceImpact = priceImpact ? priceImpactFormat(priceImpact.decimal) : '-'
-
-  const [addLiquidityQuery, setAddLiquidityQuery] = useState<AddLiquidityQueryOutput | null>(null)
-  async function queryBptOut() {
-    const queryResult = await queryAddLiquidity(AddLiquidityService, amountsIn)
-
-    setAddLiquidityQuery(queryResult)
-  }
-  const debouncedQueryBptOut = useDebouncedCallback(queryBptOut, 300)
+  const debouncedQueryBptOut = useDebouncedCallback(queryExpectedOutput, 300)
 
   // When the amounts in change we fetch the new price impact
   useEffect(() => {
@@ -112,7 +111,7 @@ export function _useAddLiquidity() {
     totalUSDValue,
     priceImpact,
     formattedPriceImpact,
-    addLiquidityQuery,
+    bptOut,
     setAmountIn,
     executeAddLiquidity,
   }
