@@ -38,9 +38,7 @@ type AddLiquidityType = 'unbalanced' | 'unbalancedNativeAsset' | 'singleToken'
   - Generate the final AddLiquidity config with this.buildSdkAddLiquidityTxConfig()
 */
 export class AddLiquidityConfigBuilder {
-  inputAmount: InputAmount[] = []
   slippage: Slippage = Slippage.fromPercentage('1')
-  checkNativeBalance = false
 
   constructor(
     private chainId: SupportedChainId,
