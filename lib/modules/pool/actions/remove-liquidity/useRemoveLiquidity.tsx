@@ -6,7 +6,7 @@ import { makeVar, useReactiveVar } from '@apollo/client'
 import { usePool } from '../../usePool'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { safeSum } from '@/lib/shared/hooks/useNumbers'
+import { safeSum } from '@/lib/shared/utils/numbers'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
@@ -24,7 +24,7 @@ export function _useRemoveLiquidity() {
   const { pool } = usePool()
   const { getToken, usdValueForToken } = useTokens()
 
-  function setInitialAmountsOut() {
+  function setAmountsOut() {
     const amountsOut = pool.allTokens.map(token => ({
       tokenAddress: token.address,
       value: '',
@@ -33,7 +33,7 @@ export function _useRemoveLiquidity() {
   }
 
   useEffect(() => {
-    setInitialAmountsOut()
+    setAmountsOut()
   }, [])
 
   function setAmountOut(tokenAddress: string, value: string) {
