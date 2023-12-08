@@ -25,13 +25,7 @@ const NullPoolState: PoolStateInput = {
 }
 
 /*
-  Class to build AddLiquidity configs with balancer SDK
-  Those configs are passed to useManagedSendTransaction hook to send the an AddLiquidity transaction
-
-  Usage:
-  - Create an instance of AddLiquidityService
-  - Setup the AddLiquidity state with methods like this.setAmountsIn()
-  - Generate the final AddLiquidity config with this.buildSdkAddLiquidityTxConfig()
+  AddLiquidityService provides a fixed interface to add liquidity handlers.
 */
 export class AddLiquidityService {
   handler: AddLiquidityHandler
