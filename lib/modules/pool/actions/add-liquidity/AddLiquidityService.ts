@@ -29,7 +29,6 @@ const NullPoolState: PoolStateInput = {
 */
 export class AddLiquidityService {
   handler: AddLiquidityHandler
-  slippage: Slippage = Slippage.fromPercentage('1')
 
   constructor(
     public readonly chainId: SupportedChainId,
