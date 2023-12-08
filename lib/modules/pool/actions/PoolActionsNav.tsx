@@ -14,11 +14,11 @@ import Link from 'next/link'
 
 const TABS = [
   {
-    id: 'add-liquidity',
+    value: 'add-liquidity',
     label: 'Add',
   },
   {
-    id: 'remove-liquidity',
+    value: 'remove-liquidity',
     label: 'Remove',
   },
 ]
@@ -31,8 +31,8 @@ export function PoolActionsNav() {
   const router = useRouter()
 
   function toggleFlow(option: ButtonGroupOption) {
-    if (pathname.includes(option.id)) return
-    router.push(`${getPoolPath(pool)}/${option.id}`)
+    if (pathname.includes(option.value)) return
+    router.push(`${getPoolPath(pool)}/${option.value}`)
   }
 
   return (
@@ -40,7 +40,7 @@ export function PoolActionsNav() {
       <Card variant="level3" p="sm">
         <Image src={networkConfig.iconPath} width="24" height="24" alt={networkConfig.shortName} />
       </Card>
-      <ButtonGroup value={activeTab} options={TABS} onChange={toggleFlow} size="lg" />
+      <ButtonGroup currentOption={activeTab} options={TABS} onChange={toggleFlow} size="lg" />
       <IconButton
         as={Link}
         href={getPoolPath(pool)}
