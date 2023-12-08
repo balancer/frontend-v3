@@ -2,7 +2,7 @@
 
 import { useDisclosure } from '@chakra-ui/hooks'
 import { useRemoveLiquidity } from './useRemoveLiquidity'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import {
   Button,
@@ -14,6 +14,10 @@ import {
   Text,
   Tooltip,
   Icon,
+  Box,
+  Radio,
+  RadioGroup,
+  Stack,
 } from '@chakra-ui/react'
 import { RemoveLiquidityModal } from './RemoveLiquidityModal'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -28,6 +32,8 @@ import ButtonGroup, {
 import { InputWithSlider } from '@/lib/shared/components/inputs/InputWithSlider/InputWithSlider'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { Address } from 'viem'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import React from 'react'
 
 const TABS = [
   {
@@ -40,12 +46,96 @@ const TABS = [
   },
 ]
 
+function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | undefined)[] }) {
+  return (
+    <Card variant="level8" p="md" shadow="lg" w="full">
+      <VStack mr="sm">
+        <HStack w="full" justifyContent="space-between">
+          <Text fontWeight="bold" fontSize="1rem">
+            You&apos;ll get at least
+          </Text>
+          <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+            With max slippage: 0.50%
+          </Text>
+        </HStack>
+        {tokens.map(
+          token =>
+            token && (
+              <TokenRow
+                chain={token.chain}
+                key={token.address}
+                address={token.address as Address}
+                value={0}
+              />
+            )
+        )}
+      </VStack>
+    </Card>
+  )
+}
+
+interface RemoveLiquiditySingleTokenProps {
+  tokens: (GqlToken | undefined)[]
+  setSingleToken: (value: string) => void
+  singleToken: string
+}
+
+function RemoveLiquiditySingleToken({
+  tokens,
+  singleToken,
+  setSingleToken,
+}: RemoveLiquiditySingleTokenProps) {
+  return (
+    <VStack w="full">
+      <HStack w="full" justifyContent="space-between">
+        <Text fontWeight="bold" fontSize="1rem">
+          Choose a token to receive
+        </Text>
+      </HStack>
+      <Box
+        borderRadius="md"
+        p="md"
+        shadow="innerBase"
+        bg="background.card.level1"
+        border="white"
+        w="full"
+      >
+        <Box position="relative">
+          <RadioGroup onChange={setSingleToken} value={singleToken}>
+            <Stack mr="sm">
+              {tokens.map(
+                token =>
+                  token && (
+                    <HStack key={token.address}>
+                      <Radio value={token.address} />
+                      <TokenRow chain={token.chain} address={token.address as Address} value={0} />
+                    </HStack>
+                  )
+              )}
+            </Stack>
+          </RadioGroup>
+          <Box
+            position="absolute"
+            bgGradient="linear(to-r, transparent, background.card.level1 95%)"
+            w="8"
+            h="full"
+            top={0}
+            right={0}
+            zIndex={9999}
+          ></Box>
+        </Box>
+      </Box>
+    </VStack>
+  )
+}
+
 export function RemoveLiquidityForm() {
   const { amountsOut, totalUSDValue, setAmountOut, tokens, validTokens } = useRemoveLiquidity()
   const { toCurrency } = useCurrency()
   const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
-  const activeTab = TABS[0]
+  const [activeTab, setActiveTab] = useState(TABS[0])
+  const [singleToken, setSingleToken] = useState('')
 
   function currentValueFor(tokenAddress: string) {
     const amountOut = amountsOut.find(amountOut =>
@@ -59,10 +149,15 @@ export function RemoveLiquidityForm() {
     previewDisclosure.onOpen()
   }
 
-  function toggleFlow(option: ButtonGroupOption) {
-    console.log({ option })
-    return option
+  function toggleTab(option: ButtonGroupOption) {
+    setActiveTab(option)
   }
+
+  useEffect(() => {
+    if (activeTab === TABS[0]) {
+      setSingleToken('')
+    }
+  }, [activeTab])
 
   return (
     <TokenBalancesProvider tokens={validTokens}>
@@ -79,7 +174,7 @@ export function RemoveLiquidityForm() {
               <ButtonGroup
                 currentOption={activeTab}
                 options={TABS}
-                onChange={toggleFlow}
+                onChange={toggleTab}
                 size="lg"
               />
               <Tooltip label="Remove liquidity type" fontSize="sm">
@@ -88,29 +183,14 @@ export function RemoveLiquidityForm() {
             </HStack>
             <VStack w="full">
               <InputWithSlider />
-              <Card variant="level8" p="md" shadow="lg" w="full">
-                <VStack>
-                  <HStack w="full" justifyContent="space-between">
-                    <Text fontWeight="bold" fontSize="1rem">
-                      You&apos;ll get at least
-                    </Text>
-                    <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                      With max slippage: 0.50%
-                    </Text>
-                  </HStack>
-                  {tokens.map(
-                    token =>
-                      token && (
-                        <TokenRow
-                          chain={token.chain}
-                          key={`my-liquidity-token-${token.address}`}
-                          address={token.address as Address}
-                          value={0}
-                        />
-                      )
-                  )}
-                </VStack>
-              </Card>
+              {activeTab === TABS[0] && <RemoveLiquidityProportional tokens={tokens} />}
+              {activeTab === TABS[1] && (
+                <RemoveLiquiditySingleToken
+                  tokens={tokens}
+                  singleToken={singleToken}
+                  setSingleToken={setSingleToken}
+                />
+              )}
             </VStack>
             <VStack spacing="sm" align="start" w="full">
               <HStack justify="space-between" w="full">
