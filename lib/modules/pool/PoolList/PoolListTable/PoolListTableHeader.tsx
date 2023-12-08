@@ -9,7 +9,7 @@ const setIsDesc = (id: GqlPoolOrderBy, currentSortingObj: PoolsColumnSort) =>
   currentSortingObj.id === id ? !currentSortingObj.desc : true
 
 export function PoolListTableHeader({ ...rest }) {
-  const { sorting, setSorting } = usePoolListQueryState()
+  const { sorting, setSorting, userAddress } = usePoolListQueryState()
   const sortingObj = sorting[0]
 
   return (
@@ -22,11 +22,13 @@ export function PoolListTableHeader({ ...rest }) {
       <GridItem>
         <Text fontWeight="bold">Pool name</Text>
       </GridItem>
-      <GridItem>
-        <Text textAlign="right" fontWeight="bold">
-          My Liquidity
-        </Text>
-      </GridItem>
+      {userAddress && (
+        <GridItem>
+          <Text textAlign="right" fontWeight="bold">
+            My Liquidity
+          </Text>
+        </GridItem>
+      )}
       {[GqlPoolOrderBy.TotalLiquidity, GqlPoolOrderBy.Volume24h, GqlPoolOrderBy.Apr].map(
         (orderByItem, index) => (
           <GridItem key={index} justifySelf="end">

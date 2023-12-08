@@ -15,19 +15,19 @@ interface Props {
   loading: boolean
 }
 
-const rowProps = {
-  px: [0, 4],
-  gridTemplateColumns: '50px 1fr 150px 175px 175px 175px',
-  alignItems: 'center',
-  gap: 'lg',
-  minW: '800px',
-}
-
 export function PoolListTable({ pools, count, loading }: Props) {
-  const { pagination, setPagination } = usePoolListQueryState()
+  const { pagination, setPagination, userAddress } = usePoolListQueryState()
   const paginationProps = getPaginationProps(count || 0, pagination, setPagination)
   const showPagination = !!pools.length && !!count && count > pagination.pageSize
   const { isMobile } = useBreakpoints()
+
+  const rowProps = {
+    px: [0, 4],
+    gridTemplateColumns: `50px 1fr ${userAddress ? '150px' : ''} 175px 175px 175px`,
+    alignItems: 'center',
+    gap: 'lg',
+    minW: '800px',
+  }
 
   return (
     <Box w="full" style={{ position: 'relative' }}>
