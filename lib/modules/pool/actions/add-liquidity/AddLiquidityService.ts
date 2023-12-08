@@ -25,6 +25,14 @@ export type InputAmount = {
 
 type AddLiquidityType = 'unbalanced' | 'nested'
 
+// Null object used to avoid conditional checks during hook loading state
+const NullPoolState: PoolStateInput = {
+  id: nullAddress,
+  address: nullAddress,
+  type: 'Null',
+  tokens: [],
+}
+
 /*
   Class to build AddLiquidity configs with balancer SDK
   Those configs are passed to useManagedSendTransaction hook to send the an AddLiquidity transaction
@@ -139,12 +147,4 @@ export class AddLiquidityService {
 
     return { maxAmountsIn, minBptOut, queryResult, config }
   }
-}
-
-// Null object used to avoid conditional checks during hook loading state
-const NullPoolState: PoolStateInput = {
-  id: nullAddress,
-  address: nullAddress,
-  type: 'Null',
-  tokens: [],
 }
