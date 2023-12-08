@@ -2,7 +2,7 @@ import { ThemeTypings, extendTheme } from '@chakra-ui/react'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
 import tinycolor from 'tinycolor2'
 
-const balColors = {
+export const balColors = {
   primary: {
     '50': '#eaf6ff',
     '100': '#daedff',
@@ -115,7 +115,7 @@ const balColors = {
 const createBackgroundOpacity = (baseColor: string, opacity: number) =>
   `hsla(${baseColor}, ${opacity})`
 
-const tokens = {
+export const tokens = {
   colors: {
     light: {
       background: {
@@ -464,6 +464,25 @@ export const balTheme = {
         },
         dark: '#414853',
         light: '#F3F1EC',
+      },
+
+      chart: {
+        pool: {
+          scatter: {
+            add: {
+              from: 'rgba(0, 211, 149, 100%)',
+              to: 'rgba(0, 211, 149, 20%)',
+            },
+            remove: {
+              from: 'rgba(239, 68, 68, 100%)',
+              to: 'rgba(239, 68, 68, 20%)',
+            },
+            swap: {
+              from: 'rgba(109, 173, 249, 100%)',
+              to: 'rgba(109, 173, 249, 20%)',
+            },
+          },
+        },
       },
     },
     space: {
