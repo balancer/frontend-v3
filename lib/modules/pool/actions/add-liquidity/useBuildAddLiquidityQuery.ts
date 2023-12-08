@@ -8,7 +8,7 @@ import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
 export function useBuildAddLiquidityQuery(
-  AddLiquidityService: AddLiquidityService,
+  addLiquidityService: AddLiquidityService,
   humanAmountsIn: HumanAmountIn[],
   enabled: boolean,
   account?: Address
@@ -18,9 +18,9 @@ export function useBuildAddLiquidityQuery(
   const allowances = {}
 
   const addLiquidityQuery = useQuery(
-    [`useJoinPool:${account}:${JSON.stringify(humanAmountsIn)}`],
+    [`useJoinPool:${account}:${JSON.stringify(humanAmountsIn)}:${slippage}`],
     async () => {
-      return await AddLiquidityService.buildAddLiqudityTx({
+      return await addLiquidityService.buildAddLiqudityTx({
         account,
         humanAmountsIn,
         slippagePercent: slippage,
