@@ -1,4 +1,3 @@
-import { getNetworkConfig } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
 import { SdkTransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
@@ -59,14 +58,6 @@ export class AddLiquidityService {
 
   public setSlippage(slippagePercentage: HumanAmount) {
     this.slippage = Slippage.fromPercentage(slippagePercentage)
-  }
-
-  get nativeAssetToken() {
-    return getNetworkConfig(this.chainId).tokens.nativeAsset
-  }
-
-  get nativeAssetAddress(): Address {
-    return this.nativeAssetToken.address
   }
 
   getAddLiquidityInputForSDK(humanAmountsIn: HumanAmountIn[]) {
