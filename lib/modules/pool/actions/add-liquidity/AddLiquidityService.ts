@@ -61,10 +61,12 @@ export class AddLiquidityService {
   }
 
   getAddLiquidityInputForSDK(humanAmountsIn: HumanAmountIn[]) {
-    if (this.addLiquidityType === 'unbalanced') {
-      return this.getUnbalancedAddLiquidityInput({ humanAmountsIn })
+    switch (this.addLiquidityType) {
+      case 'unbalanced':
+        return this.getUnbalancedAddLiquidityInput({ humanAmountsIn })
+      default:
+        return this.getUnbalancedAddLiquidityInput({ humanAmountsIn })
     }
-    return this.getUnbalancedAddLiquidityInput({ humanAmountsIn })
   }
 
   getAddLiquidityInputBase() {
