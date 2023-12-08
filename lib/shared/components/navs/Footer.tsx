@@ -6,7 +6,7 @@ export function Footer() {
   return (
     <Stack
       borderTop="1px solid"
-      borderColor="border.button.tertiary"
+      borderColor="border.base"
       px="lg"
       py="xl"
       align="center"

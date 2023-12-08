@@ -35,6 +35,8 @@ export function PoolListTable() {
         }}
         showPagination={showPagination}
         paginationProps={paginationProps}
+        border="1px solid"
+        borderColor="border.base"
         overflowX={isMobile ? 'auto' : 'hidden'}
         w="full"
         alignItems="flex-start"
