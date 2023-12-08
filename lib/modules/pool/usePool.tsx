@@ -13,7 +13,7 @@ import { FetchPoolProps } from './pool.types'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
-import { buildGqlPoolHelpers } from './pool.helpers'
+import { usePoolHelpers } from './pool.helpers'
 
 export type UsePoolResponse = ReturnType<typeof _usePool> & {
   chain: GqlChain
@@ -35,9 +35,7 @@ export function _usePool({
 
   const pool = data?.pool || initialData.pool
 
-  const poolHelpers = buildGqlPoolHelpers(pool, chain)
-
-  return { pool, poolHelpers, loading, refetch }
+  return { pool, loading, refetch, ...usePoolHelpers(pool, chain) }
 }
 
 export function PoolProvider({

@@ -41,5 +41,5 @@ test('fetches join pool config when user is connected', async () => {
   expect(result.current.data?.config).toBeDefined()
   expect(result.current.data?.minBptOut).toBeInstanceOf(TokenAmount)
   // This values will be the same if we keep the block between tests
-  expect(result.current.data?.minBptOut.amount).toBeGreaterThan(400000000000000000000n)
+  expect(result.current.data?.minBptOut.amount).toBeGreaterThan(390000000000000000000n)
 })

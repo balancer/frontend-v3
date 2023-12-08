@@ -1,5 +1,7 @@
-import { Card, CardHeader } from '@chakra-ui/react'
+import { Card, HStack, VStack, Text } from '@chakra-ui/react'
 import { PoolListItem } from '../../pool.types'
+import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
+import { convertSnakeToTitleCase } from '@/lib/shared/utils/strings'
 
 interface Props {
   pool: PoolListItem
@@ -9,15 +11,23 @@ interface Props {
 
 export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: Props) {
   return (
-    // TODO: added height for now to get a scrollbar
     <Card
       h="400"
       variant="gradient"
       onClick={event => cardClickHandler && cardClickHandler(event, pool)}
       cursor={cardClickHandler ? 'pointer' : 'default'}
       onMouseEnter={event => cardMouseEnterHandler && cardMouseEnterHandler(event, pool)}
+      p="md"
     >
-      <CardHeader>{pool.name}</CardHeader>
+      <VStack align="start">
+        <HStack>
+          <NetworkIcon chain={pool.chain} />
+          <VStack align="start" spacing="none">
+            <Text color="GrayText">{convertSnakeToTitleCase(pool.type)}</Text>
+            <Text noOfLines={1}>{pool.name}</Text>
+          </VStack>
+        </HStack>
+      </VStack>
     </Card>
   )
 }

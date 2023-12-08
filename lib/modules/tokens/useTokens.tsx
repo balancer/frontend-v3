@@ -18,7 +18,7 @@ import { createContext, PropsWithChildren, useCallback } from 'react'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { TokenBase } from './token.types'
-import { Numberish, bn } from '@/lib/shared/hooks/useNumbers'
+import { Numberish, bn } from '@/lib/shared/utils/numbers'
 
 export type UseTokensResult = ReturnType<typeof _useTokens>
 export const TokensContext = createContext<UseTokensResult | null>(null)

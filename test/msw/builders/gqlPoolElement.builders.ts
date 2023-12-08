@@ -1,24 +1,23 @@
-import {
-  GqlChain,
-  GqlPoolElement,
-  GqlPoolStaking,
-  GqlPoolStakingGauge,
-} from '@/lib/shared/services/api/generated/graphql'
+import { someMinimalTokensMock } from '@/lib/modules/tokens/__mocks__/token.builders'
+import { GqlChain, GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 import { DeepPartial } from '@apollo/client/utilities'
 import { mock } from 'vitest-mock-extended'
+import { aGqlStakingMock } from './gqlStaking.builders'
+import { balAddress, wETHAddress } from '@/lib/debug-helpers'
 
 export function aGqlPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlPoolElement {
   const defaultPool = mock<GqlPoolElement>()
 
   const defaultPool1: DeepPartial<GqlPoolElement> = {
     address: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56',
+    tokens: someMinimalTokensMock([balAddress, wETHAddress]),
     allTokens: [
       {
-        address: '0xba100000625a3754423978a60c9317c58a424e3d',
+        address: balAddress,
         weight: '0.8',
       },
       {
-        address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        address: wETHAddress,
         weight: '0.2',
       },
     ],
@@ -27,10 +26,10 @@ export function aGqlPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlP
     decimals: 18,
     displayTokens: [
       {
-        address: '0xba100000625a3754423978a60c9317c58a424e3d',
+        address: balAddress,
       },
       {
-        address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        address: wETHAddress,
       },
     ],
     dynamicData: {
@@ -48,6 +47,8 @@ export function aGqlPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlP
     name: 'Balancer 80 BAL 20 WETH',
     owner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
     symbol: 'B-80BAL-20WETH',
+    staking: aGqlStakingMock(),
+    type: 'WEIGHTED',
   }
   return Object.assign({}, defaultPool, defaultPool1, ...options)
 }

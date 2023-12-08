@@ -9,15 +9,15 @@ import { usePool } from '../usePool'
 
 const TABS = [
   {
-    id: 'pool',
+    value: 'pool',
     label: 'Pool',
   },
   {
-    id: 'unclaimed',
+    value: 'unclaimed',
     label: 'Unclaimed',
   },
   {
-    id: 'my-total',
+    value: 'my-total',
     label: 'My total',
   },
 ]
@@ -37,7 +37,7 @@ export default function PoolIncentives() {
           <Heading fontWeight="bold" size="h5">
             Incentives
           </Heading>
-          <ButtonGroup value={activeTab} options={TABS} onChange={handleTabChanged} />
+          <ButtonGroup currentOption={activeTab} options={TABS} onChange={handleTabChanged} />
         </HStack>
         <Box width="full" p="4" pt="0">
           <Card borderWidth={1} variant="level5" shadow="none">
