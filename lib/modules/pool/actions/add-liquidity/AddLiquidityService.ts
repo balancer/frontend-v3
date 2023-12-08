@@ -3,7 +3,6 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
 import { SdkTransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
 import {
   AddLiquidity,
   AddLiquidityKind,
@@ -44,15 +43,6 @@ export class AddLiquidityService {
     public addLiquidityType: AddLiquidityType = 'unbalanced'
   ) {}
 
-  get poolId() {
-    return this.poolStateInput.id
-  }
-
-  getToken(tokenAddress: Address) {
-    const token = this.poolStateInput.tokens.find(t => isSameAddress(t.address, tokenAddress))
-    return token
-  }
-
   public get queryKey() {
     // REVIEW THIS
     // const { amountsIn } = this.getJoinInput()
@@ -75,14 +65,6 @@ export class AddLiquidityService {
     if (this.addLiquidityType === 'unbalanced') {
       return this.getUnbalancedAddLiquidityInput({ humanAmountsIn })
     }
-    // if (this.addLiquidityType === 'unbalancedNativeAsset') {
-    //   return this.getUnbalancedAddLiquidityInput({
-    //     humanAmountsIn,
-    //     useNativeAssetAsWrappedAmountIn: true,
-    //   })
-    // }
-    // if (this.addLiquidityType === 'singleToken') return this.getAddLiquiditySingleTokenInput()
-    // Default
     return this.getUnbalancedAddLiquidityInput({ humanAmountsIn })
   }
 
@@ -132,28 +114,6 @@ export class AddLiquidityService {
       useNativeAssetAsWrappedAmountIn,
     }
   }
-
-  // WIP
-  // getAddLiquiditySingleTokenInput(tokenIn: Address, humanAmount: HumanAmount): AddLiquiditySingleTokenInput {
-  // getAddLiquiditySingleTokenInput(): AddLiquiditySingleTokenInput {
-  //   // setup BPT token
-  //   const bptToken = new Token(this.chainId, this.poolStateInput.address, 18, 'BPT')
-  //   const bptOut: InputAmount = {
-  //     address: bptToken.address,
-  //     decimals: bptToken.decimals,
-  //     rawAmount: parseUnits('1', bptToken.decimals),
-  //   }
-  //   const tokenIn = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' // WETH asset in eth
-
-  //   // perform AddLiquidity query to get expected bpt out
-  //   return {
-  //     ...this.getAddLiquidityInputBase(),
-
-  //     bptOut,
-  //     tokenIn,
-  //     kind: AddLiquidityKind.SingleToken,
-  //   }
-  // }
 
   public async buildSdkAddLiquidityTxConfig(account: Address, humanAmountsIn: HumanAmountIn[]) {
     const addLiquidityInput = this.getAddLiquidityInputForSDK(humanAmountsIn)
