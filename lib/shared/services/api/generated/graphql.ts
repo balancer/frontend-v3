@@ -4105,6 +4105,7 @@ export type GetPoolsQuery = {
       holdersCount: string
       swapFee: string
       swapsCount: string
+      totalShares: string
       apr: {
         __typename: 'GqlPoolApr'
         hasRewardApr: boolean
@@ -4136,6 +4137,12 @@ export type GetPoolsQuery = {
         }>
       }
     }
+    userBalance?: {
+      __typename?: 'GqlPoolUserBalance'
+      totalBalance: string
+      stakedBalance: string
+      walletBalance: string
+    } | null
   }>
 }
 
@@ -8778,6 +8785,7 @@ export const GetPoolsDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'holdersCount' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'swapFee' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'swapsCount' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'totalShares' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'apr' },
@@ -9018,6 +9026,18 @@ export const GetPoolsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'owner' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'userBalance' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'stakedBalance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'walletBalance' } },
+                    ],
+                  },
+                },
               ],
             },
           },

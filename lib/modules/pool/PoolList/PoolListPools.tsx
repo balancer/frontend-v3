@@ -10,7 +10,7 @@ import { integerFormat } from '@/lib/shared/utils/numbers'
 
 export function PoolListPools() {
   const { isTableView, isCardsView } = usePoolListViewType()
-  const { count } = usePoolList()
+  const { pools, loading, count } = usePoolList()
 
   return (
     <VStack align="start" spacing="md" w="full">
@@ -22,7 +22,6 @@ export function PoolListPools() {
           ({integerFormat(count || 0)})
         </Heading>
       </HStack>
-
       <Stack direction={['column-reverse', 'row']} w="full" alignItems="flex-start">
         <PoolListFilters />
         <HStack justifyContent="flex-end" w="full">
@@ -30,8 +29,8 @@ export function PoolListPools() {
           <PoolListViewType />
         </HStack>
       </Stack>
-      {isTableView && <PoolListTable />}
-      {isCardsView && <PoolListCards />}
+      {isTableView && <PoolListTable pools={pools} count={count || 0} loading={loading} />}
+      {isCardsView && <PoolListCards pools={pools} count={count || 0} loading={loading} />}
     </VStack>
   )
 }

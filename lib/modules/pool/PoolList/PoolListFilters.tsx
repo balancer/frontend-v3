@@ -27,6 +27,31 @@ import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { IoFilter } from 'react-icons/io5'
 import { PoolFilterType, poolTypeFilters } from '../pool.types'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useEffect, useState } from 'react'
+
+function UserPoolFilter() {
+  const { userAddress, toggleUserAddress } = usePoolListQueryState()
+  const { address } = useUserAccount()
+  const [checked, setChecked] = useState(false)
+
+  useEffect(() => {
+    if (userAddress === address) {
+      setChecked(true)
+    } else {
+      setChecked(false)
+    }
+  }, [userAddress])
+
+  return (
+    <Checkbox
+      isChecked={checked}
+      onChange={e => toggleUserAddress(e.target.checked, address as string)}
+    >
+      <Text>Only show my pools</Text>
+    </Checkbox>
+  )
+}
 
 function PoolTypeFilters() {
   const { togglePoolType, poolTypes, poolTypeLabel } = usePoolListQueryState()
@@ -112,6 +137,11 @@ export function PoolListFilters() {
             <PopoverCloseButton />
             <PopoverBody p="md">
               <VStack align="start">
+                <Heading as="h3" size="sm" mb="1.5">
+                  My Liquidity
+                </Heading>
+                <UserPoolFilter />
+                <Divider />
                 <Heading as="h3" size="sm" mb="1.5">
                   Pool types
                 </Heading>

@@ -3,14 +3,13 @@ import PoolListSortButton from './PoolListSortButton'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { FiGlobe } from 'react-icons/fi'
-import { PoolsColumnSort } from '../../pool.types'
-import { orderByHash } from '../../pool.types'
+import { PoolsColumnSort, orderByHash } from '../../pool.types'
 
 const setIsDesc = (id: GqlPoolOrderBy, currentSortingObj: PoolsColumnSort) =>
   currentSortingObj.id === id ? !currentSortingObj.desc : true
 
 export function PoolListTableHeader({ ...rest }) {
-  const { sorting, setSorting } = usePoolListQueryState()
+  const { sorting, setSorting, userAddress } = usePoolListQueryState()
   const sortingObj = sorting[0]
 
   return (
@@ -23,6 +22,13 @@ export function PoolListTableHeader({ ...rest }) {
       <GridItem>
         <Text fontWeight="bold">Pool name</Text>
       </GridItem>
+      {userAddress && (
+        <GridItem>
+          <Text textAlign="right" fontWeight="bold">
+            My Liquidity
+          </Text>
+        </GridItem>
+      )}
       {[GqlPoolOrderBy.TotalLiquidity, GqlPoolOrderBy.Volume24h, GqlPoolOrderBy.Apr].map(
         (orderByItem, index) => (
           <GridItem key={index} justifySelf="end">
