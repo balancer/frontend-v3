@@ -1,95 +1,126 @@
 'use client'
 
-import { createContext, PropsWithChildren, useEffect, useMemo } from 'react'
+import { createContext, PropsWithChildren } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { usePool } from '../../usePool'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { safeSum } from '@/lib/shared/utils/numbers'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { GqlToken, GqlTokenAmountHumanReadable } from '@/lib/shared/services/api/generated/graphql'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
 
-export type AmountOut = {
-  tokenAddress: string
-  value: string
+type RemoveLiquidityType = 'PROPORTIONAL' | 'SINGLE_ASSET'
+
+interface RemoveLiquidityState {
+  type: RemoveLiquidityType
+  singleToken: GqlTokenAmountHumanReadable | null
+  proportionalPercent: number
+  selectedOptions: { [poolTokenIndex: string]: string }
+  proportionalAmounts: GqlTokenAmountHumanReadable[] | null
 }
 
-export const amountsOutVar = makeVar<AmountOut[]>([])
+export const removeliquidityStateVar = makeVar<RemoveLiquidityState>({
+  type: 'PROPORTIONAL',
+  proportionalPercent: 50,
+  singleToken: null,
+  selectedOptions: {},
+  proportionalAmounts: null,
+})
 
 export function _useRemoveLiquidity() {
-  const amountsOut = useReactiveVar(amountsOutVar)
   const { pool } = usePool()
   const { getToken, usdValueForToken } = useTokens()
 
-  function setAmountsOut() {
-    const amountsOut = pool.allTokens.map(token => ({
-      tokenAddress: token.address,
-      value: '',
-    }))
-    amountsOutVar(amountsOut)
+  async function setProportionalPercent(value: number) {
+    removeliquidityStateVar({ ...removeliquidityStateVar(), proportionalPercent: value })
   }
 
-  useEffect(() => {
-    setAmountsOut()
-  }, [])
+  function setProportional() {
+    removeliquidityStateVar({
+      ...removeliquidityStateVar(),
+      type: 'PROPORTIONAL',
+      singleToken: null,
+    })
+  }
 
-  function setAmountOut(tokenAddress: string, value: string) {
-    const state = amountsOutVar()
+  function setProportionalAmounts(proportionalAmounts: GqlTokenAmountHumanReadable[]) {
+    removeliquidityStateVar({ ...removeliquidityStateVar(), proportionalAmounts })
+  }
 
-    amountsOutVar([
-      ...state.filter(amountOut => !isSameAddress(amountOut.tokenAddress, tokenAddress)),
-      {
-        tokenAddress,
-        value,
+  function setSingleToken(address: string) {
+    removeliquidityStateVar({
+      ...removeliquidityStateVar(),
+      type: 'SINGLE_ASSET',
+      singleToken: { address, amount: '' },
+    })
+  }
+
+  function setSingleTokenAmount(tokenAmount: GqlTokenAmountHumanReadable) {
+    removeliquidityStateVar({
+      ...removeliquidityStateVar(),
+      singleToken: tokenAmount,
+    })
+  }
+
+  function setSelectedOption(poolTokenIndex: number, tokenAddress: string) {
+    const state = removeliquidityStateVar()
+
+    removeliquidityStateVar({
+      ...state,
+      selectedOptions: {
+        ...state.selectedOptions,
+        [`${poolTokenIndex}`]: tokenAddress,
       },
-    ])
+    })
   }
+
+  function clearRemoveLiquidityState() {
+    removeliquidityStateVar({
+      type: 'PROPORTIONAL',
+      proportionalPercent: 50,
+      singleToken: null,
+      selectedOptions: {},
+      proportionalAmounts: null,
+    })
+  }
+
+  const removeliquidityState = useReactiveVar(removeliquidityStateVar)
 
   const tokens = pool.allTokens.map(token => getToken(token.address, pool.chain))
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
 
-  const usdAmountsOut = useMemo(
-    () =>
-      amountsOut.map(amountOut => {
-        const token = validTokens.find(token =>
-          isSameAddress(token?.address, amountOut.tokenAddress)
-        )
+  // // When the amounts in change we should fetch the expected output.
+  // useEffect(() => {
+  //   queryRemoveLiquidity()
+  // }, [amountsOut])
 
-        if (!token) return '0'
-        console.log('amountOut', amountOut)
+  // // TODO: Call underlying SDK query function
+  // function queryRemoveLiquidity() {
+  //   console.log('amountsOut', amountsOut)
+  // }
 
-        return usdValueForToken(token, amountOut.value)
-      }),
-    [amountsOut, usdValueForToken, validTokens]
-  )
-
-  const totalUSDValue = safeSum(usdAmountsOut)
-
-  // When the amounts in change we should fetch the expected output.
-  useEffect(() => {
-    queryRemoveLiquidity()
-  }, [amountsOut])
-
-  // TODO: Call underlying SDK query function
-  function queryRemoveLiquidity() {
-    console.log('amountsOut', amountsOut)
-  }
-
-  // TODO: Call underlying SDK execution function
-  function executeRemoveLiquidity() {
-    console.log('amountsOut', amountsOut)
-  }
+  // // TODO: Call underlying SDK execution function
+  // function executeRemoveLiquidity() {
+  //   console.log('amountsOut', amountsOut)
+  // }
 
   return {
-    amountsOut,
     tokens,
     validTokens,
-    totalUSDValue,
-    setAmountOut,
-    executeRemoveLiquidity,
+    selectedRemoveLiquidityType: removeliquidityState.type,
+    singleToken: removeliquidityState.singleToken,
+    proportionalPercent: removeliquidityState.proportionalPercent,
+    selectedOptions: removeliquidityState.selectedOptions,
+    proportionalAmounts: removeliquidityState.proportionalAmounts,
+    setProportionalPercent,
+    setProportional,
+    setSingleToken,
+    setSingleTokenAmount,
+    setSelectedOption,
+    clearRemoveLiquidityState,
+    setProportionalAmounts,
+    //executeRemoveLiquidity,
   }
 }
 

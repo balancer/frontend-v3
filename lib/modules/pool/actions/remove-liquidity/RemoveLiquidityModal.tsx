@@ -5,6 +5,7 @@ import {
   Card,
   HStack,
   Heading,
+  Icon,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -18,53 +19,18 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
-import { useRemoveLiquidity } from './useRemoveLiquidity'
-import { priceImpactFormat, tokenFormat } from '@/lib/shared/utils/numbers'
-import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
+import { priceImpactFormat } from '@/lib/shared/utils/numbers'
 import { usePool } from '../../usePool'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { FiArrowLeft } from 'react-icons/fi'
+import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
+import { Address } from 'viem'
 
 type Props = {
   isOpen: boolean
   onClose(): void
   onOpen(): void
   finalFocusRef?: RefObject<HTMLInputElement>
-}
-
-function TokenAmountRow({
-  tokenAddress,
-  value,
-  symbol,
-}: {
-  tokenAddress: string
-  value: string
-  symbol?: string
-}) {
-  const { pool } = usePool()
-  const { getToken, usdValueForToken } = useTokens()
-  const { toCurrency } = useCurrency()
-
-  const token = getToken(tokenAddress, pool.chain)
-  const usdValue = token ? usdValueForToken(token, value) : undefined
-
-  return (
-    <HStack w="full" justify="space-between">
-      <HStack>
-        <TokenIcon
-          address={token?.address}
-          chain={token?.chain}
-          size={28}
-          alt={token?.symbol || 'Token icon'}
-        />
-        <NumberText>{tokenFormat(value)}</NumberText>
-        <Text>{symbol || token?.symbol}</Text>
-      </HStack>
-      <NumberText>{usdValue ? toCurrency(usdValue) : '-'}</NumberText>
-    </HStack>
-  )
 }
 
 export function RemoveLiquidityModal({
@@ -74,8 +40,7 @@ export function RemoveLiquidityModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { amountsOut, totalUSDValue, executeRemoveLiquidity } = useRemoveLiquidity()
-  const { toCurrency } = useCurrency()
+  // const { executeRemoveLiquidity } = useRemoveLiquidity()
   const { pool } = usePool()
 
   return (
@@ -90,41 +55,54 @@ export function RemoveLiquidityModal({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          <Heading fontWeight="bold" size="h5">
-            Add liquidity
-          </Heading>
+          <HStack>
+            <Icon as={FiArrowLeft} aria-label="back" />
+            <Heading fontWeight="bold" size="h5">
+              Remove liquidity
+            </Heading>
+          </HStack>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="md" align="start">
-            <Card variant="level0" p="md" shadow="sm" w="full">
+            <Card variant="level0" p="md" w="full">
+              <VStack align="start" spacing="md">
+                <Text fontWeight="bold" fontSize="1rem">
+                  You&apos;re removing
+                </Text>
+                <TokenRow address={pool.address as Address} chain={pool.chain} value="0" />
+              </VStack>
+            </Card>
+            <Card variant="level0" p="md" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
-                  <Text color="GrayText">{"You're removing"}</Text>
-                  <NumberText fontSize="lg">{toCurrency(totalUSDValue)}</NumberText>
+                  <Text fontWeight="bold" fontSize="1rem">
+                    You&apos;ll get at least
+                  </Text>
+                  <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+                    With max slippage: 0.50%
+                  </Text>
                 </HStack>
-                {amountsOut.map(amountOut => (
-                  <TokenAmountRow key={amountOut.tokenAddress} {...amountOut} />
+                {pool.displayTokens.map(token => (
+                  <TokenRow
+                    key={token.address}
+                    address={token.address as Address}
+                    chain={pool.chain}
+                    value={0}
+                  />
                 ))}
               </VStack>
             </Card>
-
-            <Card variant="level0" p="md" shadow="sm" w="full">
+            <Card variant="level0" p="md" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
-                  <Text color="GrayText">{"You'll get (if no slippage)"}</Text>
-                  <Text color="GrayText">{pool.symbol}</Text>
-                </HStack>
-                <TokenAmountRow tokenAddress={pool.address} value="0" symbol="LP Token" />
-              </VStack>
-            </Card>
-
-            <Card variant="level0" p="md" shadow="sm" w="full">
-              <VStack align="start" spacing="md">
-                <HStack justify="space-between" w="full">
-                  <Text>Price impact</Text>
+                  <Text fontWeight="medium" variant="secondary">
+                    Price impact
+                  </Text>
                   <HStack>
-                    <NumberText color="GrayText">{priceImpactFormat(0)}</NumberText>
+                    <Text fontWeight="medium" variant="secondary">
+                      {priceImpactFormat(0)}
+                    </Text>
                     <Tooltip label="Price impact" fontSize="sm">
                       <InfoOutlineIcon color="GrayText" />
                     </Tooltip>
@@ -135,8 +113,13 @@ export function RemoveLiquidityModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <Button w="full" size="lg" variant="primary" onClick={executeRemoveLiquidity}>
-            Remove liquidity
+          <Button
+            w="full"
+            size="lg"
+            variant="primary"
+            // onClick={executeRemoveLiquidity}
+          >
+            Confirm remove
           </Button>
         </ModalFooter>
       </ModalContent>

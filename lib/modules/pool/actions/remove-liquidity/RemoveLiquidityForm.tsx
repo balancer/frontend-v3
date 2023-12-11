@@ -21,10 +21,9 @@ import {
 } from '@chakra-ui/react'
 import { RemoveLiquidityModal } from './RemoveLiquidityModal'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { priceImpactFormat } from '@/lib/shared/utils/numbers'
+import { integerPercentageFormat, priceImpactFormat } from '@/lib/shared/utils/numbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { FiSettings } from 'react-icons/fi'
 import ButtonGroup, {
   ButtonGroupOption,
@@ -32,7 +31,7 @@ import ButtonGroup, {
 import { InputWithSlider } from '@/lib/shared/components/inputs/InputWithSlider/InputWithSlider'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { Address } from 'viem'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlToken, GqlTokenAmountHumanReadable } from '@/lib/shared/services/api/generated/graphql'
 import React from 'react'
 
 const TABS = [
@@ -50,7 +49,7 @@ function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | undefined
   return (
     <Card variant="level8" p="md" shadow="lg" w="full">
       <VStack mr="sm">
-        <HStack w="full" justifyContent="space-between">
+        <HStack w="full" justify="space-between">
           <Text fontWeight="bold" fontSize="1rem">
             You&apos;ll get at least
           </Text>
@@ -77,7 +76,7 @@ function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | undefined
 interface RemoveLiquiditySingleTokenProps {
   tokens: (GqlToken | undefined)[]
   setSingleToken: (value: string) => void
-  singleToken: string
+  singleToken: GqlTokenAmountHumanReadable | null
 }
 
 function RemoveLiquiditySingleToken({
@@ -87,7 +86,7 @@ function RemoveLiquiditySingleToken({
 }: RemoveLiquiditySingleTokenProps) {
   return (
     <VStack w="full">
-      <HStack w="full" justifyContent="space-between">
+      <HStack w="full" justify="space-between">
         <Text fontWeight="bold" fontSize="1rem">
           Choose a token to receive
         </Text>
@@ -101,7 +100,7 @@ function RemoveLiquiditySingleToken({
         w="full"
       >
         <Box position="relative">
-          <RadioGroup onChange={setSingleToken} value={singleToken}>
+          <RadioGroup onChange={setSingleToken} value={singleToken?.address}>
             <Stack mr="sm">
               {tokens.map(
                 token =>
@@ -130,22 +129,20 @@ function RemoveLiquiditySingleToken({
 }
 
 export function RemoveLiquidityForm() {
-  const { amountsOut, totalUSDValue, setAmountOut, tokens, validTokens } = useRemoveLiquidity()
+  const {
+    tokens,
+    validTokens,
+    proportionalPercent,
+    setProportionalPercent,
+    singleToken,
+    setSingleToken,
+  } = useRemoveLiquidity()
   const { toCurrency } = useCurrency()
   const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
   const [activeTab, setActiveTab] = useState(TABS[0])
-  const [singleToken, setSingleToken] = useState('')
-
-  function currentValueFor(tokenAddress: string) {
-    const amountOut = amountsOut.find(amountOut =>
-      isSameAddress(amountOut.tokenAddress, tokenAddress)
-    )
-    return amountOut ? amountOut.value : ''
-  }
 
   function submit() {
-    console.log(amountsOut)
     previewDisclosure.onOpen()
   }
 
@@ -164,7 +161,7 @@ export function RemoveLiquidityForm() {
       <Center h="full" w="full" maxW="lg" mx="auto">
         <Card variant="level3" shadow="xl" w="full" p="md">
           <VStack spacing="lg" align="start">
-            <HStack justifyContent="space-between" w="full">
+            <HStack justify="space-between" w="full">
               <Heading fontWeight="bold" size="h5">
                 Remove liquidity
               </Heading>
@@ -182,7 +179,13 @@ export function RemoveLiquidityForm() {
               </Tooltip>
             </HStack>
             <VStack w="full">
-              <InputWithSlider />
+              <InputWithSlider
+                value={proportionalPercent.toString()}
+                setValue={setProportionalPercent}
+              >
+                <Text>Amount</Text>
+                <Text>{integerPercentageFormat(proportionalPercent / 100)}</Text>
+              </InputWithSlider>
               {activeTab === TABS[0] && <RemoveLiquidityProportional tokens={tokens} />}
               {activeTab === TABS[1] && (
                 <RemoveLiquiditySingleToken
@@ -196,7 +199,7 @@ export function RemoveLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Total</Text>
                 <HStack>
-                  <NumberText color="GrayText">{toCurrency(totalUSDValue)}</NumberText>
+                  <NumberText color="GrayText">{toCurrency(0)}</NumberText>
                   <Tooltip label="Total" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
