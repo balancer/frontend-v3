@@ -41,6 +41,7 @@ query GetPools(
       holdersCount
       swapFee
       swapsCount
+      totalShares
       apr {
         apr {
           ... on GqlPoolAprTotal {

@@ -25,12 +25,14 @@ export function ConnectWallet() {
         if (!isConnected) {
           return (
             <Button
+              variant="secondary"
+              size="sm"
               onClick={openConnectModal}
               type="button"
               isLoading={isLoading || !mounted}
-              loadingText="Connect Wallet"
+              loadingText="Connect wallet"
             >
-              Connect Wallet
+              Connect wallet
             </Button>
           )
         }

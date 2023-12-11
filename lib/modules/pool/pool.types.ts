@@ -6,7 +6,9 @@ import {
   GqlPoolMinimalType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
+  GqlPoolUserBalance,
 } from '@/lib/shared/services/api/generated/graphql'
+import { HumanAmount } from '@balancer/sdk'
 import {
   parseAsArrayOf,
   parseAsInteger,
@@ -17,6 +19,13 @@ import {
 export type PoolList = GetPoolsQuery['pools']
 
 export type PoolListItem = PoolList[0]
+
+interface GqlPoolUserBalanceExtended extends GqlPoolUserBalance {
+  totalBalanceUsd?: HumanAmount
+}
+export interface DecoratedPoolListItem extends PoolListItem {
+  userBalance?: GqlPoolUserBalanceExtended | null
+}
 
 export enum PoolVariant {
   v2 = 'v2',
@@ -106,4 +115,5 @@ export const poolListQueryStateParsers = {
   ).withDefault([]),
   networks: parseAsArrayOf(parseAsStringEnum<GqlChain>(Object.values(GqlChain))).withDefault([]),
   textSearch: parseAsString,
+  userAddress: parseAsString,
 }

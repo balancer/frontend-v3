@@ -1,5 +1,5 @@
 import { Card, HStack, VStack, Text, Box, Grid, GridItem } from '@chakra-ui/react'
-import { PoolListItem, poolTypeHash } from '../../pool.types'
+import { DecoratedPoolListItem, poolTypeHash } from '../../pool.types'
 import { weightFormat } from '@/lib/shared/utils/numbers'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
@@ -8,12 +8,15 @@ import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 interface Props {
-  pool: PoolListItem
-  cardClickHandler?: (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => void
-  cardMouseEnterHandler?: (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => void
+  pool: DecoratedPoolListItem
+  cardClickHandler?: (event: React.MouseEvent<HTMLElement>, pool: DecoratedPoolListItem) => void
+  cardMouseEnterHandler?: (
+    event: React.MouseEvent<HTMLElement>,
+    pool: DecoratedPoolListItem
+  ) => void
 }
 
-function PoolTokens({ pool }: { pool: PoolListItem }) {
+function PoolTokens({ pool }: { pool: DecoratedPoolListItem }) {
   if (pool) {
     const displayTokens = pool.displayTokens
     return (
