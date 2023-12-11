@@ -4138,7 +4138,7 @@ export type GetPoolsQuery = {
       }
     }
     userBalance?: {
-      __typename?: 'GqlPoolUserBalance'
+      __typename: 'GqlPoolUserBalance'
       totalBalance: string
       stakedBalance: string
       walletBalance: string
