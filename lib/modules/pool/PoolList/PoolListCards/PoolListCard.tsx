@@ -52,7 +52,7 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
       onMouseEnter={event => cardMouseEnterHandler && cardMouseEnterHandler(event, pool)}
       p="md"
     >
-      <VStack alignItems="flex-start" py="4" px="3" h="full">
+      <VStack alignItems="flex-start" p="md" h="full">
         <HStack alignItems="flex-start">
           <NetworkIcon chain={pool.chain} />
           <VStack alignItems="flex-start" gap="0" w="full">
@@ -79,7 +79,7 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
         <Grid w="full" h="full" templateColumns="1fr 1fr" templateRows="1fr 1fr" gap="4">
           <GridItem>
             <Card h="full" variant="gradient">
-              <VStack alignItems="flex-start" w="full" py="4" px="3" gap="0">
+              <VStack alignItems="flex-start" w="full" p="md" gap="0">
                 <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
                   TVL:
                 </Text>
@@ -91,7 +91,7 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
           </GridItem>
           <GridItem>
             <Card h="full" variant="gradient">
-              <VStack alignItems="flex-start" w="full" py="4" px="3" gap="0">
+              <VStack alignItems="flex-start" w="full" p="md" gap="0">
                 <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
                   Vol(24h):
                 </Text>
@@ -103,7 +103,7 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
           </GridItem>
           <GridItem>
             <Card h="full" variant="gradient">
-              <VStack alignItems="flex-start" w="full" py="4" px="3" gap="0">
+              <VStack alignItems="flex-start" w="full" p="md" gap="0">
                 <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
                   APR:
                 </Text>
@@ -118,7 +118,7 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
           {userAddress && (
             <GridItem>
               <Card h="full" variant="gradient">
-                <VStack alignItems="flex-start" w="full" py="4" px="3" gap="0">
+                <VStack alignItems="flex-start" w="full" p="md" gap="0">
                   <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
                     My Liquidity:
                   </Text>
