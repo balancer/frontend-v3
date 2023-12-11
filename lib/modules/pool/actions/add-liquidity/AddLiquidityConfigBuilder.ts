@@ -139,7 +139,11 @@ export class AddLiquidityConfigBuilder {
     // from humanAmountsIn to SDK AmountsIn
     humanAmountsIn.forEach(({ tokenAddress, humanAmount }) => {
       if (!amountsInByTokenAddress[tokenAddress]) {
-        throw new Error(`Provided token address ${tokenAddress} not found in pool tokens`)
+        throw new Error(
+          `Provided token address ${tokenAddress} not found in pool tokens: [${Object.keys(
+            amountsInByTokenAddress
+          ).join(' ,\n ')}]`
+        )
       }
       const decimals = amountsInByTokenAddress[tokenAddress].decimals
       amountsInByTokenAddress[tokenAddress].rawAmount = parseUnits(humanAmount, decimals)

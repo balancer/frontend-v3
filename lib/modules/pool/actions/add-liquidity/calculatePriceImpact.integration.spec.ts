@@ -4,7 +4,7 @@ import { GetPoolQuery, GqlChain } from '@/lib/shared/services/api/generated/grap
 import { aGqlPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { testHook } from '@/test/utils/custom-renderers'
 import { ChainId, HumanAmount, PoolStateInput } from '@balancer/sdk'
-import { waitFor } from '@testing-library/react'
+import { act, waitFor } from '@testing-library/react'
 import {
   aPhantomStablePoolStateInputMock,
   aPoolStateInputMock,
@@ -14,6 +14,7 @@ import { _usePool } from '../../usePool'
 import { HumanAmountIn } from './add-liquidity.types'
 import { NullPriceImpactAmount, calculatePriceImpact } from './calculatePriceImpact'
 import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { sleep } from '@/test/utils/promises'
 
 function getAddLiquidityBuilder(poolStateInput: PoolStateInput) {
   const addLiquidityBuilder = new AddLiquidityConfigBuilder(
@@ -98,6 +99,8 @@ test('WITH REAL POOL FROM API', async () => {
     })
   })
 
+  // Wait for API request
+  await act(() => sleep(1000))
   await waitFor(() => expect(result.current.loading).toBeFalsy())
 
   const poolStateInput = result.current.poolStateInput
