@@ -63,7 +63,7 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
         </HStack>
         <HStack py="6">
           {pool.displayTokens.map((token, idx) => (
-            <Box key={token.address} ml={idx > 0 ? -5 : 0} zIndex={9999 - idx}>
+            <Box key={token.address} ml={idx > 0 ? -5 : 0} zIndex={9 - idx}>
               <TokenIcon
                 chain={pool.chain}
                 address={token.address}
