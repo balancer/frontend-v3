@@ -15,13 +15,13 @@ export default function PoolListSortButton({ title, isDesc, isCurrentSort, ...re
       _hover={{ backgroundColor: isCurrentSort ? 'lightblue' : 'transparent' }}
       _focus={{ outline: 'none' }}
       _active={{ backgroundColor: 'transparent' }}
-      bgColor={isCurrentSort ? 'lightblue' : undefined}
+      bgColor={isCurrentSort ? 'background.card.level6' : undefined}
       p={isCurrentSort ? '2' : '0'}
       pr="2"
       height="fit-content"
       variant="ghost"
       userSelect="none"
-      borderRadius="2xl"
+      borderRadius="md"
       {...rest}
     >
       <HStack>

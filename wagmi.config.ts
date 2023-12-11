@@ -36,8 +36,20 @@ export default defineConfig(() => {
         chainId: 1,
         contracts: [
           {
-            name: 'VaultV2',
+            name: 'BalancerV2Vault',
             address: mainnetNetworkConfig.contracts.balancer.vaultV2,
+          },
+          {
+            name: 'BalancerV2ComposableStablePoolV5',
+            address: '0xdacf5fa19b1f720111609043ac67a9818262850c',
+          },
+          {
+            name: 'BalancerV2ERC4626LinearPoolV3',
+            address: '0x6667c6fa9f2b3fc1cc8d85320b62703d938e4385',
+          },
+          {
+            name: 'BalancerV2WeightedPoolV4',
+            address: '0x3ff3a210e57cfe679d9ad1e9ba6453a716c56a2e',
           },
         ],
       }),
