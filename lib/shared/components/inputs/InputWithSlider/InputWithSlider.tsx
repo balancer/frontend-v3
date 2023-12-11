@@ -6,7 +6,6 @@ import {
   HStack,
   Input,
   InputProps,
-  Text,
   forwardRef,
   Slider,
   SliderTrack,
@@ -18,17 +17,18 @@ import { blockInvalidNumberInput } from '@/lib/shared/utils/numbers'
 type Props = {
   value?: string
   boxProps?: BoxProps
-  onChange?: (event: { currentTarget: { value: string } }) => void
+  setValue?: any
 }
 
 export const InputWithSlider = forwardRef(
-  ({ value, boxProps, onChange, ...inputProps }: InputProps & Props, ref) => {
+  ({ value, boxProps, setValue, children, ...inputProps }: InputProps & Props, ref) => {
     return (
       <>
-        <HStack w="full" justifyContent="space-between">
-          <Text>Amount</Text>
-          <Text>100%</Text>
-        </HStack>
+        {children && (
+          <HStack w="full" justifyContent="space-between">
+            {children}
+          </HStack>
+        )}
         <Box
           borderRadius="md"
           p="md"
@@ -78,7 +78,7 @@ export const InputWithSlider = forwardRef(
               ></Box>
             </Box>
             <Box w="50%" alignSelf="center">
-              <Slider aria-label="slider" defaultValue={30}>
+              <Slider aria-label="slider" defaultValue={100} onChange={setValue}>
                 <SliderTrack>
                   <SliderFilledTrack />
                 </SliderTrack>
