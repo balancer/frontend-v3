@@ -7,10 +7,10 @@ import { PoolListTableHeader } from './PoolListTableHeader'
 import { PoolListTableRow } from './PoolListTableRow'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { PoolListItem } from '../../pool.types'
+import { DecoratedPoolListItem } from '../../pool.types'
 
 interface Props {
-  pools: PoolListItem[]
+  pools: DecoratedPoolListItem[]
   count: number
   loading: boolean
 }
@@ -35,7 +35,7 @@ export function PoolListTable({ pools, count, loading }: Props) {
         items={pools}
         loading={loading}
         renderTableHeader={() => <PoolListTableHeader {...rowProps} />}
-        renderTableRow={(item: PoolListItem, index) => {
+        renderTableRow={(item: DecoratedPoolListItem, index) => {
           return <PoolListTableRow keyValue={index} pool={item} {...rowProps} />
         }}
         showPagination={showPagination}

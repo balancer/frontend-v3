@@ -1,12 +1,15 @@
 import { Card, HStack, VStack, Text } from '@chakra-ui/react'
-import { PoolListItem } from '../../pool.types'
+import { DecoratedPoolListItem } from '../../pool.types'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { convertSnakeToTitleCase } from '@/lib/shared/utils/strings'
 
 interface Props {
-  pool: PoolListItem
-  cardClickHandler?: (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => void
-  cardMouseEnterHandler?: (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => void
+  pool: DecoratedPoolListItem
+  cardClickHandler?: (event: React.MouseEvent<HTMLElement>, pool: DecoratedPoolListItem) => void
+  cardMouseEnterHandler?: (
+    event: React.MouseEvent<HTMLElement>,
+    pool: DecoratedPoolListItem
+  ) => void
 }
 
 export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: Props) {
