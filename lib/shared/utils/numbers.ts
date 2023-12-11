@@ -24,6 +24,7 @@ export const APR_FORMAT = '0.[00]%'
 export const FEE_FORMAT = '0.[0000]%'
 export const WEIGHT_FORMAT = '(%0,0)'
 export const PRICE_IMPACT_FORMAT = '0.00%'
+export const INTEGER_PERCENTAGE_FORMAT = '0%'
 
 // Do not display APR values greater than this amount; they are likely to be nonsensical
 // These can arise from pools with extremely low balances (e.g., completed LBPs)
@@ -87,6 +88,11 @@ export function weightFormat(val: Numberish): string {
 // Formats a price impact value as a percentage.
 export function priceImpactFormat(val: Numberish): string {
   return numeral(val.toString()).format(PRICE_IMPACT_FORMAT)
+}
+
+// Formats an integer value as a percentage.
+export function integerPercentageFormat(val: Numberish): string {
+  return numeral(val.toString()).format(INTEGER_PERCENTAGE_FORMAT)
 }
 
 // Sums an array of numbers safely using bignumber.js.
