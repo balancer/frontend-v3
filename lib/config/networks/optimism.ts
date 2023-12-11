@@ -16,7 +16,9 @@ const networkConfig: NetworkConfig = {
   },
   contracts: {
     multicall2: '0x2dc0e2aa608532da689e89e237df582b783e552c',
-    balancer: {},
+    balancer: {
+      vaultV2: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
+    },
   },
 }
 

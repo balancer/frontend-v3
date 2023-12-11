@@ -7,16 +7,13 @@ export default function Debug() {
   return (
     <VStack padding="lg" margin="lg">
       <Heading size="md">Demos</Heading>
-      <Link as={NextLink} href="/debug/add-liquidity" color="blue">
-        Add liquidity (unbalanced example)
-      </Link>
-      {/* <Link
+      <Link
         as={NextLink}
         href="pools/ethereum/v2/0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512/add-liquidity"
         color="blue"
       >
-        Add liquidity (unbalanced example)
-      </Link> */}
+        Add liquidity in wjAura-weth (unbalanced)
+      </Link>
       <Link as={NextLink} href="/debug/relayer-approval" color="blue">
         Relayer approval
       </Link>

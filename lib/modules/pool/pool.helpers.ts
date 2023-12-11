@@ -133,9 +133,7 @@ export function usePoolHelpers(pool: Pool, chain: GqlChain) {
   )
   const poolExplorerLink = getAddressBlockExplorerLink(pool.address as Address, chain)
 
-  function hasGaugeAddress() {
-    return !!pool?.staking?.gauge?.gaugeAddress
-  }
+  const hasGaugeAddress = !!pool?.staking?.gauge?.gaugeAddress
 
   const gaugeAddress = pool?.staking?.gauge?.gaugeAddress || ''
 

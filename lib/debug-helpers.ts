@@ -16,7 +16,7 @@ export const poolId: Address = '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200
 /*
   Used to pretty print objects when debugging
 */
-export function humanizeObject(input: object) {
+export function humanizeObject(input?: object | null) {
   return JSON.stringify(input, null, 4)
 }
 

@@ -50,6 +50,10 @@ export function _useTokens(
     return !isSameAddress(token.address, networkConfig.tokens.nativeAsset.address)
   }
 
+  /*
+    It can return undefined when the token address belongs to a pool token (not included in the provided tokens)
+    // TODO: should we avoid calling getToken with pool tokens?
+   */
   function getToken(address: string, chain: GqlChain | number): GqlToken | undefined {
     const chainKey = typeof chain === 'number' ? 'chainId' : 'chain'
     return tokens.find(token => isSameAddress(token.address, address) && token[chainKey] === chain)

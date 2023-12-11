@@ -1,6 +1,5 @@
 'use client'
 
-import { humanizeObject } from '@/lib/debug-helpers'
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
@@ -23,7 +22,8 @@ export function AddLiquidityForm() {
     tokens,
     validTokens,
     formattedPriceImpact,
-    addLiquidityQuery,
+    bptOutUnits,
+    builder,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
 
@@ -35,9 +35,12 @@ export function AddLiquidityForm() {
     return amountIn ? amountIn.humanAmount : ''
   }
 
+  const canExecuteAddLiquidity = builder.canExecuteAddLiquidity(amountsIn)
+
   function submit() {
-    console.log(amountsIn)
-    previewDisclosure.onOpen()
+    if (canExecuteAddLiquidity) {
+      previewDisclosure.onOpen()
+    }
   }
 
   return (
@@ -89,9 +92,7 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Bpt out (debug)</Text>
                 <HStack>
-                  <NumberText color="GrayText">
-                    {humanizeObject(addLiquidityQuery?.bptOut || {})}
-                  </NumberText>
+                  <NumberText color="GrayText">{bptOutUnits}</NumberText>
                   <Tooltip label="Bpt our" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
@@ -99,9 +100,18 @@ export function AddLiquidityForm() {
               </HStack>
             </VStack>
 
-            <Button ref={nextBtn} variant="secondary" w="full" size="lg" onClick={submit}>
-              Next
-            </Button>
+            <Tooltip label={canExecuteAddLiquidity ? '' : 'cannot execute add liquidity'}>
+              <Button
+                ref={nextBtn}
+                variant="secondary"
+                w="full"
+                size="lg"
+                isDisabled={!canExecuteAddLiquidity}
+                onClick={submit}
+              >
+                Next
+              </Button>
+            </Tooltip>
           </VStack>
         </Card>
         <AddLiquidityModal
