@@ -6,6 +6,7 @@ import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { usePoolListQueryState } from '../usePoolListQueryState'
 
 interface Props {
   pool: DecoratedPoolListItem
@@ -41,6 +42,7 @@ const MemoizedAprTooltip = memo(AprTooltip)
 
 export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: Props) {
   const { toCurrency } = useCurrency()
+  const { userAddress } = usePoolListQueryState()
 
   return (
     <Card
@@ -74,7 +76,7 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
             </Box>
           ))}
         </HStack>
-        <Grid w="full" h="full" templateColumns="1fr 1fr" gap="4">
+        <Grid w="full" h="full" templateColumns="1fr 1fr" templateRows="1fr 1fr" gap="4">
           <GridItem>
             <Card h="full" variant="gradient">
               <VStack alignItems="flex-start" w="full" py="4" px="3" gap="0">
@@ -103,18 +105,6 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
             <Card h="full" variant="gradient">
               <VStack alignItems="flex-start" w="full" py="4" px="3" gap="0">
                 <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                  My Liquidity:
-                </Text>
-                <Text fontWeight="bold" fontSize="1rem">
-                  --
-                </Text>
-              </VStack>
-            </Card>
-          </GridItem>
-          <GridItem>
-            <Card h="full" variant="gradient">
-              <VStack alignItems="flex-start" w="full" py="4" px="3" gap="0">
-                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
                   APR:
                 </Text>
                 <MemoizedAprTooltip
@@ -125,6 +115,20 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
               </VStack>
             </Card>
           </GridItem>
+          {userAddress && (
+            <GridItem>
+              <Card h="full" variant="gradient">
+                <VStack alignItems="flex-start" w="full" py="4" px="3" gap="0">
+                  <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+                    My Liquidity:
+                  </Text>
+                  <Text fontWeight="bold" fontSize="1rem">
+                    {toCurrency(pool.userBalance?.totalBalanceUsd || 0, { abbreviated: false })}
+                  </Text>
+                </VStack>
+              </Card>
+            </GridItem>
+          )}
         </Grid>
       </VStack>
     </Card>
