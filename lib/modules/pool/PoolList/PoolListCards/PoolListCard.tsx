@@ -56,7 +56,6 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
         <HStack alignItems="flex-start">
           <NetworkIcon chain={pool.chain} />
           <VStack alignItems="flex-start" gap="0" w="full">
-            {/* <Text color="GrayText"> */}
             <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
               {poolTypeHash[pool.type]}
             </Text>
