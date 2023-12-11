@@ -4,7 +4,7 @@ import { Hex, PoolStateInput, getPoolAddress } from '@balancer/sdk'
 import { Address } from 'wagmi'
 
 export class MockApi {
-  public async getPool(id: Hex): Promise<PoolStateInput> {
+  public getPool(id: Hex): PoolStateInput {
     const tokens = [
       {
         address: '0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f' as Address, // wjAURA

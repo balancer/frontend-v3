@@ -59,12 +59,13 @@ export function TransactionStepButton({
       {isTransactButtonVisible && (
         <Button
           width="full"
+          w="full"
+          size="lg"
+          variant="primary"
           isDisabled={isButtonDisabled}
           isLoading={isButtonLoading}
           onClick={handleOnClick}
           loadingText={getButtonLabel()}
-          color="white"
-          bgColor="blue.500"
         >
           {getButtonLabel()}
         </Button>

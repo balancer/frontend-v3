@@ -65,7 +65,7 @@ export default function TransactionFlow({
               {completedAlertContent}
             </Alert>
           )}
-          <Button width="full" onClick={onCompleteClick}>
+          <Button w="full" size="lg" variant="primary" onClick={onCompleteClick}>
             {completedButtonLabel}
           </Button>
         </VStack>

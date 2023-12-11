@@ -1,35 +1,40 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { createContext, PropsWithChildren, useEffect, useMemo } from 'react'
-import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { makeVar, useReactiveVar } from '@apollo/client'
-import { usePool } from '../../usePool'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { safeSum } from '@/lib/shared/utils/numbers'
+import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { priceImpactFormat, safeSum } from '@/lib/shared/utils/numbers'
+import { makeVar, useReactiveVar } from '@apollo/client'
+import { AddLiquidityQueryOutput, HumanAmount } from '@balancer/sdk'
+import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
+import { useDebouncedCallback } from 'use-debounce'
+import { Address, formatUnits } from 'viem'
+import { usePool } from '../../usePool'
+import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { HumanAmountIn } from './add-liquidity.types'
+import { PriceImpactAmount, calculatePriceImpact } from './calculatePriceImpact'
+import { queryAddLiquidity } from './queryAddLiquidity'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
 
-export type AmountIn = {
-  tokenAddress: string
-  value: string
-}
-
-export const amountsInVar = makeVar<AmountIn[]>([])
+export const amountsInVar = makeVar<HumanAmountIn[]>([])
 
 export function _useAddLiquidity() {
   const amountsIn = useReactiveVar(amountsInVar)
-  const { pool } = usePool()
+  const { pool, poolStateInput, chainId } = usePool()
   const { getToken, usdValueForToken } = useTokens()
 
   function setInitialAmountsIn() {
-    const amountsIn = pool.allTokens.map(token => ({
-      tokenAddress: token.address,
-      value: '',
-    }))
+    const amountsIn = pool.allTokens.map(
+      token =>
+        ({
+          tokenAddress: token.address,
+          humanAmount: '',
+        } as HumanAmountIn)
+    )
     amountsInVar(amountsIn)
   }
 
@@ -37,14 +42,14 @@ export function _useAddLiquidity() {
     setInitialAmountsIn()
   }, [])
 
-  function setAmountIn(tokenAddress: string, value: string) {
+  function setAmountIn(tokenAddress: Address, humanAmount: HumanAmount) {
     const state = amountsInVar()
 
     amountsInVar([
       ...state.filter(amountIn => !isSameAddress(amountIn.tokenAddress, tokenAddress)),
       {
         tokenAddress,
-        value,
+        humanAmount,
       },
     ])
   }
@@ -60,37 +65,60 @@ export function _useAddLiquidity() {
         )
 
         if (!token) return '0'
-        console.log('amountIn', amountIn)
 
-        return usdValueForToken(token, amountIn.value)
+        return usdValueForToken(token, amountIn.humanAmount)
       }),
     [amountsIn, usdValueForToken, validTokens]
   )
 
   const totalUSDValue = safeSum(usdAmountsIn)
 
-  // When the amounts in change we should fetch the expected output.
+  const [priceImpact, setPriceImpact] = useState<PriceImpactAmount | null>(null)
+
+  const addLiquidityConfigBuilder = new AddLiquidityConfigBuilder(
+    chainId,
+    poolStateInput,
+    'unbalanced'
+  )
+
+  async function queryPriceImpact() {
+    const priceImpactAmount = await calculatePriceImpact(addLiquidityConfigBuilder, amountsIn)
+
+    setPriceImpact(priceImpactAmount)
+  }
+  const debouncedQueryPriceImpact = useDebouncedCallback(queryPriceImpact, 300)
+
+  const formattedPriceImpact = priceImpact ? priceImpactFormat(priceImpact.decimal) : '-'
+
+  const [addLiquidityQuery, setAddLiquidityQuery] = useState<AddLiquidityQueryOutput | null>(null) //TODO: rename to queryBptOut if that's the only thing we need from the query result
+  async function queryBptOut() {
+    const queryResult = await queryAddLiquidity(addLiquidityConfigBuilder, amountsIn)
+
+    setAddLiquidityQuery(queryResult)
+  }
+  const debouncedQueryBptOut = useDebouncedCallback(queryBptOut, 300)
+
+  const bptOutUnits: HumanAmount = addLiquidityQuery?.bptOut
+    ? (formatUnits(addLiquidityQuery?.bptOut.amount, 18) as HumanAmount)
+    : '0'
+
+  // When the amounts in change we fetch the new price impact
   useEffect(() => {
-    queryAddLiquidity()
+    debouncedQueryPriceImpact()
+    debouncedQueryBptOut()
   }, [amountsIn])
-
-  // TODO: Call underlying SDK query function
-  function queryAddLiquidity() {
-    console.log('amountsIn', amountsIn)
-  }
-
-  // TODO: Call underlying SDK execution function
-  function executeAddLiquidity() {
-    console.log('amountsIn', amountsIn)
-  }
 
   return {
     amountsIn,
     tokens,
     validTokens,
     totalUSDValue,
+    priceImpact,
+    formattedPriceImpact,
+    addLiquidityQuery,
+    bptOutUnits,
     setAmountIn,
-    executeAddLiquidity,
+    builder: addLiquidityConfigBuilder,
   }
 }
 
