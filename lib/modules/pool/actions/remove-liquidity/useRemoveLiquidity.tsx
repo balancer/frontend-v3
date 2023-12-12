@@ -10,7 +10,7 @@ import { GqlToken, GqlTokenAmountHumanReadable } from '@/lib/shared/services/api
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
 
-type RemoveLiquidityType = 'PROPORTIONAL' | 'SINGLE_ASSET'
+type RemoveLiquidityType = 'PROPORTIONAL' | 'SINGLE_TOKEN'
 
 interface RemoveLiquidityState {
   type: RemoveLiquidityType
@@ -22,7 +22,7 @@ interface RemoveLiquidityState {
 
 export const removeliquidityStateVar = makeVar<RemoveLiquidityState>({
   type: 'PROPORTIONAL',
-  proportionalPercent: 50,
+  proportionalPercent: 100,
   singleToken: null,
   selectedOptions: {},
   proportionalAmounts: null,
@@ -51,7 +51,7 @@ export function _useRemoveLiquidity() {
   function setSingleToken(address: string) {
     removeliquidityStateVar({
       ...removeliquidityStateVar(),
-      type: 'SINGLE_ASSET',
+      type: 'SINGLE_TOKEN',
       singleToken: { address, amount: '' },
     })
   }
@@ -78,7 +78,7 @@ export function _useRemoveLiquidity() {
   function clearRemoveLiquidityState() {
     removeliquidityStateVar({
       type: 'PROPORTIONAL',
-      proportionalPercent: 50,
+      proportionalPercent: 100,
       singleToken: null,
       selectedOptions: {},
       proportionalAmounts: null,
