@@ -25,6 +25,7 @@ import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { FiArrowLeft } from 'react-icons/fi'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { Address } from 'viem'
+import { useRemoveLiquidity } from './useRemoveLiquidity'
 
 type Props = {
   isOpen: boolean
@@ -40,8 +41,14 @@ export function RemoveLiquidityModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  // const { executeRemoveLiquidity } = useRemoveLiquidity()
+  const {
+    //executeRemoveLiquidity,
+    selectedRemoveLiquidityType,
+    singleToken,
+  } = useRemoveLiquidity()
   const { pool } = usePool()
+
+  console.log({ selectedRemoveLiquidityType, singleToken, pool })
 
   return (
     <Modal
@@ -83,14 +90,18 @@ export function RemoveLiquidityModal({
                     With max slippage: 0.50%
                   </Text>
                 </HStack>
-                {pool.displayTokens.map(token => (
-                  <TokenRow
-                    key={token.address}
-                    address={token.address as Address}
-                    chain={pool.chain}
-                    value={0}
-                  />
-                ))}
+                {selectedRemoveLiquidityType === 'PROPORTIONAL' &&
+                  pool.displayTokens.map(token => (
+                    <TokenRow
+                      key={token.address}
+                      address={token.address as Address}
+                      chain={pool.chain}
+                      value={0}
+                    />
+                  ))}
+                {selectedRemoveLiquidityType === 'SINGLE_TOKEN' && singleToken && (
+                  <TokenRow address={singleToken.address as Address} chain={pool.chain} value={0} />
+                )}
               </VStack>
             </Card>
             <Card variant="level0" p="md" w="full">
