@@ -29,10 +29,7 @@ export function _useAddLiquidity() {
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
 
-  const { handler, getAmountsToApprove, poolTokenAddresses } = selectAddLiquidityHandler({
-    pool,
-    poolStateInput,
-  })
+  const { handler, helpers } = selectAddLiquidityHandler(pool)
 
   function setInitialAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -122,8 +119,10 @@ export function _useAddLiquidity() {
     setAmountIn,
     canExecuteAddLiquidity,
     buildAddLiquidityTx: handler.buildAddLiquidityTx,
-    poolTokenAddresses,
-    getAmountsToApprove,
+    helpers,
+    // TODO: refactor to avoid exposing helpers
+    // poolTokenAddresses: () => helpers.poolTokenAddresses,
+    // getAmountsToApprove: () => helpers.getAmountsToApprove,
     poolStateInput,
   }
 }

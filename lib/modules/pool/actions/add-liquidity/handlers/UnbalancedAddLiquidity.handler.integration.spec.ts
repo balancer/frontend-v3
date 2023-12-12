@@ -1,22 +1,17 @@
 import networkConfig from '@/lib/config/networks/mainnet'
-import { balAddress, poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import { MockApi } from '@/lib/shared/hooks/balancer-api/MockApi'
+import { balAddress, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
-import { ChainId, HumanAmount } from '@balancer/sdk'
+import { HumanAmount } from '@balancer/sdk'
+import { Address } from 'viem'
 import { aPhantomStablePoolStateInputMock } from '../../../__mocks__/pool.builders'
 import { Pool } from '../../../usePool'
 import { HumanAmountIn } from '../add-liquidity.types'
 import { selectAddLiquidityHandler } from '../selectAddLiquidityHandler'
 
-const wjAuraWethPoolMock = new MockApi().getPool(poolId) // Balancer Weighted wjAura and WETH
-
 function selectUnbalancedHandler() {
   //TODO: refactor mock builders to build poolStateInput and pool at the same time
-  return selectAddLiquidityHandler({
-    poolStateInput: wjAuraWethPoolMock,
-    pool: aWjAuraWethPoolElementMock(),
-  }).handler
+  return selectAddLiquidityHandler(aWjAuraWethPoolElementMock()).handler
 }
 
 describe('When adding unbalanced liquidity for a weighted  pool', () => {
@@ -81,19 +76,16 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
 
 describe('When adding unbalanced liquidity for an stable pool', () => {
   test('calculates price impact', async () => {
-    const poolStateInput = aPhantomStablePoolStateInputMock() // wstETH-rETH-sfrxETH
+    const pool = aPhantomStablePoolStateInputMock() as Pool // wstETH-rETH-sfrxETH
 
-    const handler = selectAddLiquidityHandler({
-      poolStateInput,
-      pool: poolStateInput as Pool,
-    }).handler
+    const { handler } = selectAddLiquidityHandler(pool)
 
     // wstETH-rETH-sfrxETH has 3 tokens + BPT token:
     // we use 0, 10, 100, 1000 as amounts
-    const humanAmountsIn: HumanAmountIn[] = poolStateInput.tokens.map((token, i) => {
+    const humanAmountsIn: HumanAmountIn[] = pool.tokens.map((token, i) => {
       return {
         humanAmount: (10 ** i).toString() as HumanAmount,
-        tokenAddress: token.address,
+        tokenAddress: token.address as Address,
       }
     })
 

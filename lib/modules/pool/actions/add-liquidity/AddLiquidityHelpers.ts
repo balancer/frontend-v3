@@ -1,11 +1,12 @@
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { PoolStateInput } from '@balancer/sdk'
 import { keyBy } from 'lodash'
 import { parseUnits } from 'viem'
 import { Address } from 'wagmi'
+import { toPoolStateInput } from '../../pool.helpers'
+import { Pool } from '../../usePool'
 import { HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
 import { HumanAmountIn } from './add-liquidity.types'
 
@@ -17,33 +18,34 @@ export type InputAmount = {
 }
 
 // Null object used to avoid conditional checks during hook loading state
-const NullPoolState: PoolStateInput = {
+const NullPool: Pool = {
   id: nullAddress,
   address: nullAddress,
   type: 'Null',
   tokens: [],
-}
+} as unknown as Pool
 
 /*
   AddLiquidityHelpers provides a set of helpers to explore the pool state
   Consumed by add liquidity handlers
 */
 export class AddLiquidityHelpers {
-  constructor(
-    public readonly chain: GqlChain,
-    public poolStateInput: PoolStateInput = NullPoolState
-  ) {}
+  constructor(public pool: Pool = NullPool) {}
+
+  public get poolStateInput(): PoolStateInput {
+    return toPoolStateInput(this.pool)
+  }
 
   public get networkConfig() {
-    return getNetworkConfig(this.chain)
+    return getNetworkConfig(this.pool.chain)
   }
 
   public get chainId() {
-    return getChainId(this.chain)
+    return getChainId(this.pool.chain)
   }
 
   public get poolTokenAddresses(): Address[] {
-    return this.poolStateInput.tokens.map(t => t.address)
+    return this.pool.tokens.map(t => t.address as Address)
   }
 
   public getAmountsToApprove(
@@ -61,11 +63,11 @@ export class AddLiquidityHelpers {
   }
 
   public toInputAmounts(humanAmountsIn: HumanAmountIn[]): InputAmount[] {
-    const amountsInList: InputAmount[] = this.poolStateInput?.tokens.map(t => {
+    const amountsInList: InputAmount[] = this.pool.tokens.map(t => {
       return {
         rawAmount: 0n,
         decimals: t.decimals,
-        address: t.address,
+        address: t.address as Address,
       }
     })
 

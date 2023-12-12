@@ -1,4 +1,3 @@
-import { PoolStateInput } from '@balancer/sdk'
 import { Pool } from '../../usePool'
 import { AddLiquidityHelpers } from './AddLiquidityHelpers'
 import { AddLiquidityHandler } from './handlers/AddLiquidity.handler'
@@ -6,13 +5,8 @@ import { buildUnbalancedAddLiquidityHandler } from './handlers/UnbalancedAddLiqu
 
 type AddLiquidityType = 'unbalanced' | 'nested'
 
-export type PoolData = {
-  pool: Pool
-  poolStateInput: PoolStateInput
-}
-
-export function selectAddLiquidityHandler({ pool, poolStateInput }: PoolData) {
-  const helpers = new AddLiquidityHelpers(pool.chain, poolStateInput)
+export function selectAddLiquidityHandler(pool: Pool) {
+  const helpers = new AddLiquidityHelpers(pool)
   // TODO: Depending on the pool attributes we will return a different handler
   let handler: AddLiquidityHandler
   if (pool) {
@@ -23,8 +17,7 @@ export function selectAddLiquidityHandler({ pool, poolStateInput }: PoolData) {
 
   return {
     handler,
-    getAmountsToApprove: helpers.getAmountsToApprove,
-    poolTokenAddresses: helpers.poolTokenAddresses,
+    helpers,
   }
 }
 

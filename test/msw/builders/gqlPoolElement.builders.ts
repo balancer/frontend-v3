@@ -6,7 +6,8 @@ import { GqlChain, GqlPoolElement, GqlPoolToken } from '@/lib/shared/services/ap
 import { DeepPartial } from '@apollo/client/utilities'
 import { mock } from 'vitest-mock-extended'
 import { aGqlStakingMock } from './gqlStaking.builders'
-import { balAddress, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
+import { balAddress, poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
+import { getPoolAddress } from '@balancer/sdk'
 
 export function aWjAuraWethPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlPoolElement {
   const tokens = [
@@ -15,6 +16,8 @@ export function aWjAuraWethPoolElementMock(...options: Partial<GqlPoolElement>[]
   ]
 
   const options2 = {
+    id: poolId,
+    address: getPoolAddress(poolId),
     allTokens: tokens,
     tokens: tokens as unknown as GqlPoolToken[],
     ...options,

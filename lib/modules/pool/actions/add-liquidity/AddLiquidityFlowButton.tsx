@@ -12,9 +12,9 @@ type Props = {
   humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[]
 }
 export function AddLiquidityFlowButton({ humanAmountsInWithTokenInfo }: Props) {
-  const { getAmountsToApprove } = useAddLiquidity()
+  const { helpers } = useAddLiquidity()
   const { tokenApprovalStep, initialAmountsToApprove } = useNextTokenApprovalStep(
-    getAmountsToApprove(humanAmountsInWithTokenInfo)
+    helpers.getAmountsToApprove(humanAmountsInWithTokenInfo)
   )
 
   const { step: addLiquidityStep } = useConstructAddLiquidityStep(humanAmountsInWithTokenInfo)
