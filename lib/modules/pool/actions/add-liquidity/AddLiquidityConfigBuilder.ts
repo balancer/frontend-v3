@@ -1,7 +1,7 @@
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
-import { SdkTransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
+import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import {
@@ -188,7 +188,7 @@ export class AddLiquidityConfigBuilder {
       recipient: account,
     })
 
-    const config: SdkTransactionConfig = {
+    const config: TransactionConfig = {
       account,
       chainId: this.chainId,
       data: call,

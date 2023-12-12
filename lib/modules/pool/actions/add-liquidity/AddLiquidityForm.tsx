@@ -23,7 +23,7 @@ export function AddLiquidityForm() {
     validTokens,
     formattedPriceImpact,
     bptOutUnits,
-    builder,
+    canExecuteAddLiquidity,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
 
@@ -35,10 +35,11 @@ export function AddLiquidityForm() {
     return amountIn ? amountIn.humanAmount : ''
   }
 
-  const canExecuteAddLiquidity = builder.canExecuteAddLiquidity(amountsIn)
+  //TODO: refactor
+  const canExecuteAddLiquidity2 = canExecuteAddLiquidity(amountsIn)
 
   function submit() {
-    if (canExecuteAddLiquidity) {
+    if (canExecuteAddLiquidity2) {
       previewDisclosure.onOpen()
     }
   }
@@ -100,13 +101,13 @@ export function AddLiquidityForm() {
               </HStack>
             </VStack>
 
-            <Tooltip label={canExecuteAddLiquidity ? '' : 'cannot execute add liquidity'}>
+            <Tooltip label={canExecuteAddLiquidity2 ? '' : 'cannot execute add liquidity'}>
               <Button
                 ref={nextBtn}
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={!canExecuteAddLiquidity}
+                isDisabled={!canExecuteAddLiquidity2}
                 onClick={submit}
               >
                 Next

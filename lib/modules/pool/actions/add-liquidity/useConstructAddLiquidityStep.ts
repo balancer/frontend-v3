@@ -5,27 +5,19 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { Address } from 'wagmi'
 import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { HumanAmountIn } from './add-liquidity.types'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
 
-export function useConstructAddLiquidityStep(
-  humanAmountsIn: HumanAmountIn[],
-  builder: AddLiquidityConfigBuilder
-) {
+export function useConstructAddLiquidityStep(humanAmountsIn: HumanAmountIn[]) {
   const { address: userAddress } = useUserAccount()
   const { isActiveStep, activateStep } = useActiveStep()
 
-  const addLiquidityQuery = useBuildAddLiquidityQuery(
-    builder,
-    humanAmountsIn,
-    isActiveStep,
-    userAddress
-  )
+  //TODO: add slippage
+  const addLiquidityQuery = useBuildAddLiquidityQuery(humanAmountsIn, isActiveStep, userAddress)
 
   const transactionLabels = buildAddLiquidityLabels(poolId)
 
-  const transaction = useManagedSendTransaction(transactionLabels, addLiquidityQuery.data?.config)
+  const transaction = useManagedSendTransaction(transactionLabels, addLiquidityQuery.data)
 
   const step: FlowStep = {
     ...transaction,
@@ -38,7 +30,6 @@ export function useConstructAddLiquidityStep(
 
   return {
     step,
-    // joinPayload: builder,
     isLoading:
       transaction?.simulation.isLoading ||
       transaction?.execution.isLoading ||

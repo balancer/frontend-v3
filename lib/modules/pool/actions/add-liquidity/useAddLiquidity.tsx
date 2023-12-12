@@ -7,15 +7,14 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { priceImpactFormat, safeSum } from '@/lib/shared/utils/numbers'
 import { makeVar, useReactiveVar } from '@apollo/client'
-import { AddLiquidityQueryOutput, HumanAmount } from '@balancer/sdk'
+import { HumanAmount, TokenAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { Address, formatUnits } from 'viem'
 import { usePool } from '../../usePool'
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
+import { AddLiquidityService } from './AddLiquidityService'
 import { HumanAmountIn } from './add-liquidity.types'
-import { PriceImpactAmount, calculatePriceImpact } from './calculatePriceImpact'
-import { queryAddLiquidity } from './queryAddLiquidity'
+import { areEmptyAmounts } from './add-liquidity.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -24,8 +23,14 @@ export const amountsInVar = makeVar<HumanAmountIn[]>([])
 
 export function _useAddLiquidity() {
   const amountsIn = useReactiveVar(amountsInVar)
+  const [priceImpact, setPriceImpact] = useState<number | null>(null)
+  const [bptOut, setBptOut] = useState<TokenAmount | null>(null)
+
   const { pool, poolStateInput, chainId } = usePool()
   const { getToken, usdValueForToken } = useTokens()
+
+  const addLiquidityService = new AddLiquidityService(chainId, poolStateInput, 'unbalanced')
+  const handler = addLiquidityService.handler
 
   function setInitialAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -56,7 +61,6 @@ export function _useAddLiquidity() {
 
   const tokens = pool.allTokens.map(token => getToken(token.address, pool.chain))
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
-
   const usdAmountsIn = useMemo(
     () =>
       amountsIn.map(amountIn => {
@@ -70,43 +74,39 @@ export function _useAddLiquidity() {
       }),
     [amountsIn, usdValueForToken, validTokens]
   )
-
   const totalUSDValue = safeSum(usdAmountsIn)
-
-  const [priceImpact, setPriceImpact] = useState<PriceImpactAmount | null>(null)
-
-  const addLiquidityConfigBuilder = new AddLiquidityConfigBuilder(
-    chainId,
-    poolStateInput,
-    'unbalanced'
-  )
+  const formattedPriceImpact = priceImpact ? priceImpactFormat(priceImpact) : '-'
 
   async function queryPriceImpact() {
-    const priceImpactAmount = await calculatePriceImpact(addLiquidityConfigBuilder, amountsIn)
+    const _priceImpact = await addLiquidityService.calculatePriceImpact({
+      humanAmountsIn: amountsIn,
+    })
 
-    setPriceImpact(priceImpactAmount)
+    setPriceImpact(_priceImpact)
   }
+
+  async function queryExpectedOutput() {
+    const { bptOut } = await addLiquidityService.queryAddLiquidity({ humanAmountsIn: amountsIn })
+
+    setBptOut(bptOut)
+  }
+
+  // Debounced queries
   const debouncedQueryPriceImpact = useDebouncedCallback(queryPriceImpact, 300)
-
-  const formattedPriceImpact = priceImpact ? priceImpactFormat(priceImpact.decimal) : '-'
-
-  const [addLiquidityQuery, setAddLiquidityQuery] = useState<AddLiquidityQueryOutput | null>(null) //TODO: rename to queryBptOut if that's the only thing we need from the query result
-  async function queryBptOut() {
-    const queryResult = await queryAddLiquidity(addLiquidityConfigBuilder, amountsIn)
-
-    setAddLiquidityQuery(queryResult)
-  }
-  const debouncedQueryBptOut = useDebouncedCallback(queryBptOut, 300)
-
-  const bptOutUnits: HumanAmount = addLiquidityQuery?.bptOut
-    ? (formatUnits(addLiquidityQuery?.bptOut.amount, 18) as HumanAmount)
-    : '0'
+  const debouncedQueryBptOut = useDebouncedCallback(queryExpectedOutput, 300)
 
   // When the amounts in change we fetch the new price impact
   useEffect(() => {
     debouncedQueryPriceImpact()
     debouncedQueryBptOut()
   }, [amountsIn])
+
+  function canExecuteAddLiquidity(humanAmountsIn: HumanAmountIn[]) {
+    // TODO: do we need to render reasons why the transaction cannot be performed?
+    return !areEmptyAmounts(humanAmountsIn)
+  }
+
+  const bptOutUnits: HumanAmount = bptOut ? (formatUnits(bptOut.amount, 18) as HumanAmount) : '0'
 
   return {
     amountsIn,
@@ -115,10 +115,11 @@ export function _useAddLiquidity() {
     totalUSDValue,
     priceImpact,
     formattedPriceImpact,
-    addLiquidityQuery,
+    bptOut,
     bptOutUnits,
     setAmountIn,
-    builder: addLiquidityConfigBuilder,
+    canExecuteAddLiquidity,
+    handler,
   }
 }
 
