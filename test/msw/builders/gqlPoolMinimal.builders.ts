@@ -1,6 +1,8 @@
 import {
+  GqlBalancePoolAprItem,
   GqlChain,
   GqlPoolApr,
+  GqlPoolAprValue,
   GqlPoolMinimal,
   GqlPoolMinimalType,
 } from '@/lib/shared/services/api/generated/graphql'
@@ -57,19 +59,36 @@ export function aGqlPoolMinimalMock(...options: Partial<GqlPoolMinimal>[]): GqlP
 export function anAprMock(): GqlPoolApr {
   const mockedApr = mockDeep<GqlPoolApr>()
   const defaultApr: GqlPoolApr = {
-    apr: { total: '0.005628271838682321' },
+    __typename: 'GqlPoolApr',
+    apr: aGplPoolAprValueMock(),
     hasRewardApr: false,
-    thirdPartyApr: { total: '0' },
-    nativeRewardApr: { total: '0' },
+    thirdPartyApr: aGplPoolAprValueMock(),
+    nativeRewardApr: aGplPoolAprValueMock(),
     swapApr: '0.005628271838682321',
     items: [
       {
+        __typename: 'GqlBalancePoolAprItem',
         id: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014-swap-apr',
         title: 'Swap fees APR',
-        apr: { total: '0.005628271838682321' },
-        subItems: [],
+        apr: aGplPoolAprValueMock(),
       },
     ],
   }
   return Object.assign({}, mockedApr, defaultApr)
+}
+
+export function aGplPoolAprValueMock(): GqlPoolAprValue {
+  return {
+    __typename: 'GqlPoolAprTotal',
+    total: '0.005628271838682321',
+  }
+}
+
+export function aGqlBalancePoolAprItemMock(): GqlBalancePoolAprItem {
+  return {
+    __typename: 'GqlBalancePoolAprItem',
+    apr: aGplPoolAprValueMock(),
+    id: '1',
+    title: 'Swap fees APR',
+  }
 }

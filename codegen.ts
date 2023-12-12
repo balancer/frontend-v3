@@ -11,6 +11,7 @@ const config: CodegenConfig = {
       documents: ['./lib/shared/services/api/**/*.graphql'],
       preset: 'client',
       config: {
+        nonOptionalTypename: true,
         scalars: {
           BigInt: 'string',
           BigDecimal: 'string',

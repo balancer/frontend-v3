@@ -38,6 +38,20 @@ export function PoolListSearch() {
             placeholder="Search..."
             {...register(SEARCH)}
             onChange={debouncedChangeHandler}
+            bg="input.bgDefault"
+            border="1px solid"
+            borderColor="input.borderDefault"
+            _hover={{ bg: 'input.bgHover', borderColor: 'input.borderHover' }}
+            _focus={{
+              bg: 'input.bgFocus',
+              borderColor: 'input.borderFocus',
+            }}
+            _focusVisible={{
+              bg: 'input.bgFocus',
+              borderColor: 'input.borderFocus',
+              shadow: 'input.innerFocus',
+              color: 'input.fontFocus',
+            }}
           />
           <InputRightElement>
             <IconButton

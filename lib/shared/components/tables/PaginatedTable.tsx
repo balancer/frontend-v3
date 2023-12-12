@@ -23,7 +23,7 @@ export function PaginatedTable({
   const isLoadingRows = loading && items.length === 0
 
   return (
-    <Card variant="level0" p="md" shadow="xl" {...rest}>
+    <Card variant="level2" p="md" shadow="xl" {...rest}>
       <VStack spacing="md" w="full">
         {renderTableHeader()}
         {isLoadingRows && (

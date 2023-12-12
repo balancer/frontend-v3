@@ -174,7 +174,10 @@ export const buildDefaultPoolTestProvider =
         id={poolId}
         chain={GqlChain.Mainnet}
         variant={PoolVariant.v2}
-        data={{ pool }}
+        data={{
+          __typename: 'Query',
+          pool,
+        }}
         variables={{ id: poolId }}
       >
         {children}

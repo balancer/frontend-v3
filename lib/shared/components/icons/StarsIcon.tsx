@@ -10,7 +10,7 @@ function StarsIcon({ gradFrom = 'yellow', gradTo = 'pink' }: Props) {
   const gradientId = `stars-gradient-${gradFrom}-${gradTo}`
 
   return (
-    <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="15" height="16" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient
           id={gradientId}

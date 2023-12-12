@@ -9,13 +9,13 @@ import {
 } from '@/lib/shared/services/api/generated/graphql'
 import { fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
 import { mock } from 'vitest-mock-extended'
-import { AmountToApprove } from '../approvals/approval-rules'
+import { TokenAmountToApprove } from '../approvals/approval-rules'
 import { TokenAllowances } from '../../web3/useTokenAllowances'
 import { TokenAmount, TokenBase } from '../token.types'
 import { MswTokenList } from './token.test.types'
 import { emptyAddress } from '../../web3/contracts/wagmi-helpers'
 import { MinimalToken } from '@balancer/sdk'
-import { Address } from 'viem'
+import { Address, parseUnits } from 'viem'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 
 export const defaultTokenMock = aTokenMock({ symbol: 'TEST-TOKEN' })
@@ -24,11 +24,15 @@ export const defaultTokenListMock: MswTokenList = [defaultTokenMock as MswTokenL
 export const defaultTokenPriceMock = aTokenPriceMock()
 export const defaultTokenPriceListMock = [defaultTokenPriceMock]
 
-export const defaultGetTokensQueryMock: GetTokensQuery = { tokens: defaultTokenListMock }
+export const defaultGetTokensQueryMock: GetTokensQuery = {
+  __typename: 'Query',
+  tokens: defaultTokenListMock,
+}
 
 export const defaultGetTokensQueryVariablesMock: GetTokensQueryVariables =
   mock<GetTokensQueryVariables>()
 export const defaultGetTokenPricesQueryMock: GetTokenPricesQuery = {
+  __typename: 'Query',
   tokenPrices: defaultTokenPriceListMock,
 }
 
@@ -72,7 +76,12 @@ export function aTokenExpandedMock(
 }
 
 export function aTokenPriceMock(...options: Partial<GqlTokenPrice>[]): GqlTokenPrice {
-  const defaultPrice: GqlTokenPrice = { address: emptyAddress, chain: GqlChain.Mainnet, price: 10 }
+  const defaultPrice: GqlTokenPrice = {
+    __typename: 'GqlTokenPrice',
+    address: emptyAddress,
+    chain: GqlChain.Mainnet,
+    price: 10,
+  }
   return Object.assign({}, defaultPrice, ...options)
 }
 
@@ -81,7 +90,14 @@ export const someTokenAllowancesMock: TokenAllowances = {
   [wjAuraAddress]: MAX_BIGINT,
 }
 
-export function anAmountToApproveMock(options: Partial<AmountToApprove>): AmountToApprove {
-  const defaultAmount = { tokenAddress: wETHAddress, amount: 1n }
+export function anAmountToApproveMock(
+  options: Partial<TokenAmountToApprove>
+): TokenAmountToApprove {
+  const defaultAmount = {
+    tokenAddress: wETHAddress,
+    rawAmount: parseUnits('1', 18),
+    humanAmount: '1',
+    tokenSymbol: 'Test token symbol',
+  }
   return Object.assign({}, defaultAmount, options)
 }

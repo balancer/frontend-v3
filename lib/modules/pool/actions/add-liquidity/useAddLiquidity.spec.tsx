@@ -24,11 +24,11 @@ test('returns amountsIn with empty input amount by default', async () => {
   expect(result.current.amountsIn).toEqual([
     {
       tokenAddress: balAddress,
-      value: '',
+      humanAmount: '',
     },
     {
       tokenAddress: wETHAddress,
-      value: '',
+      humanAmount: '',
     },
   ])
 })
