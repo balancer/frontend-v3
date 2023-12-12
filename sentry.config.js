@@ -7,7 +7,6 @@ const sentryWebpackPluginOptions = {
   silent: true,
   org: 'balancer-labs',
   project: 'frontend-v3',
-  configFile: '~/lib/config/sentry',
 }
 
 /** @type {import('@sentry/nextjs/types/config/types').UserSentryOptions} */
