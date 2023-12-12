@@ -28,14 +28,9 @@ export function useConstructNativeAssetJoinStep(poolId: Address) {
 
   const humanAmountsIn: HumanAmountIn[] = [{ tokenAddress: wETHAddress, humanAmount: '1' }]
 
-  const joinQuery = useBuildAddLiquidityQuery(
-    joinBuilder,
-    humanAmountsIn,
-    isActiveStep,
-    userAddress
-  )
+  const joinQuery = useBuildAddLiquidityQuery(humanAmountsIn, isActiveStep, userAddress)
 
-  const transaction = useManagedSendTransaction(buildAddLiquidityLabels(), joinQuery.data?.config)
+  const transaction = useManagedSendTransaction(buildAddLiquidityLabels(), joinQuery.data)
 
   const step: FlowStep = {
     ...transaction,
