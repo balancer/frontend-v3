@@ -33,6 +33,7 @@ import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
 import { AddLiquidityProvider } from '@/lib/modules/pool/actions/add-liquidity/useAddLiquidity'
+import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -81,7 +82,9 @@ function GlobalProviders({ children }: WrapperProps) {
             tokenPricesData={defaultGetTokenPricesQueryMock}
             variables={defaultGetTokensQueryVariablesMock}
           >
-            <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+            <UserSettingsProvider initCurrency={'USD'} initSlippage={'0.2'}>
+              <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+            </UserSettingsProvider>
           </TokensProvider>
         </ApolloProvider>
       </AppRouterContextProviderMock>
