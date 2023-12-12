@@ -1,5 +1,5 @@
 const { withSentryConfig } = require("@sentry/nextjs")
-const { sentryOptions, sentryWebpackPluginOptions } = require('./lib/config/sentry/sentry.config')
+const { sentryOptions, sentryWebpackPluginOptions } = require('./sentry.config')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
