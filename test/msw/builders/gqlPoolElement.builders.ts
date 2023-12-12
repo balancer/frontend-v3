@@ -1,9 +1,27 @@
-import { someMinimalTokensMock } from '@/lib/modules/tokens/__mocks__/token.builders'
-import { GqlChain, GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
+import {
+  aTokenExpandedMock,
+  someMinimalTokensMock,
+} from '@/lib/modules/tokens/__mocks__/token.builders'
+import { GqlChain, GqlPoolElement, GqlPoolToken } from '@/lib/shared/services/api/generated/graphql'
 import { DeepPartial } from '@apollo/client/utilities'
 import { mock } from 'vitest-mock-extended'
 import { aGqlStakingMock } from './gqlStaking.builders'
-import { balAddress, wETHAddress } from '@/lib/debug-helpers'
+import { balAddress, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
+
+export function aWjAuraWethPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlPoolElement {
+  const tokens = [
+    aTokenExpandedMock({ address: wjAuraAddress }),
+    aTokenExpandedMock({ address: wETHAddress }),
+  ]
+
+  const options2 = {
+    allTokens: tokens,
+    tokens: tokens as unknown as GqlPoolToken[],
+    ...options,
+  }
+
+  return aGqlPoolElementMock(options2)
+}
 
 export function aGqlPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlPoolElement {
   const defaultPool = mock<GqlPoolElement>()

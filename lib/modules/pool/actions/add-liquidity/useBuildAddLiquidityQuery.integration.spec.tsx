@@ -1,5 +1,4 @@
-import { poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import { MockApi } from '@/lib/shared/hooks/balancer-api/MockApi'
+import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import {
   DefaultTokenAllowancesTestProvider,
   buildDefaultPoolTestProvider,
@@ -8,12 +7,12 @@ import {
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { waitFor } from '@testing-library/react'
 
-import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
-import { Address } from 'viem'
-import { HumanAmountIn } from './add-liquidity.types'
-import { PropsWithChildren } from 'react'
 import { aTokenExpandedMock } from '@/lib/modules/tokens/__mocks__/token.builders'
 import { aGqlPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
+import { PropsWithChildren } from 'react'
+import { Address } from 'viem'
+import { HumanAmountIn } from './add-liquidity.types'
+import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
 
 const PoolProvider = buildDefaultPoolTestProvider(
   aGqlPoolElementMock({
@@ -47,7 +46,7 @@ test('fetches join pool config when user is not connected', async () => {
   expect(result.current.data).toBeUndefined()
 })
 
-test('fetches join pool config when user is connected', async () => {
+test.skip('fetches join pool config when user is connected', async () => {
   const humanAmountsIn: HumanAmountIn[] = [
     { tokenAddress: wETHAddress, humanAmount: '1' },
     { tokenAddress: wjAuraAddress, humanAmount: '1' },

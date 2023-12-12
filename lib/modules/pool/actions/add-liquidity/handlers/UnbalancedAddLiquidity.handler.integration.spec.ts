@@ -1,45 +1,40 @@
 import networkConfig from '@/lib/config/networks/mainnet'
 import { balAddress, poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { MockApi } from '@/lib/shared/hooks/balancer-api/MockApi'
+import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
-import { ChainId, HumanAmount, PoolStateInput } from '@balancer/sdk'
-import {
-  aPhantomStablePoolStateInputMock,
-  aPoolStateInputMock,
-} from '../../../__mocks__/pool.builders'
-import { AddLiquidityHelpers } from '../AddLiquidityHelpers'
+import { ChainId, HumanAmount } from '@balancer/sdk'
+import { aPhantomStablePoolStateInputMock } from '../../../__mocks__/pool.builders'
+import { Pool } from '../../../usePool'
 import { HumanAmountIn } from '../add-liquidity.types'
-import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
+import { selectAddLiquidityHandler } from '../selectAddLiquidityHandler'
 
-function getPoolState() {
-  return new MockApi().getPool(poolId) // Balancer Weighted wjAura and WETH
-}
+const wjAuraWethPoolMock = new MockApi().getPool(poolId) // Balancer Weighted wjAura and WETH
 
-async function buildUnbalancedHandler(poolStateInput: PoolStateInput = getPoolState()) {
-  const handler = new UnbalancedAddLiquidityHandler(
-    new AddLiquidityHelpers(ChainId.MAINNET, poolStateInput)
-  )
-  return handler
+function selectUnbalancedHandler() {
+  //TODO: refactor mock builders to build poolStateInput and pool at the same time
+  return selectAddLiquidityHandler({
+    poolStateInput: wjAuraWethPoolMock,
+    pool: aWjAuraWethPoolElementMock(),
+    chainId: ChainId.MAINNET,
+  }).handler
 }
 
 describe('When adding unbalanced liquidity for a weighted  pool', () => {
   test('calculates price impact', async () => {
-    const poolStateInput = aPoolStateInputMock()
-    const handler = await buildUnbalancedHandler(poolStateInput)
+    const handler = selectUnbalancedHandler()
 
     const humanAmountsIn: HumanAmountIn[] = [
       { humanAmount: '1', tokenAddress: wETHAddress },
-      { humanAmount: '1', tokenAddress: balAddress },
+      { humanAmount: '1', tokenAddress: wjAuraAddress },
     ]
 
     const priceImpact = await handler.calculatePriceImpact({ humanAmountsIn })
-    expect(priceImpact).toMatchInlineSnapshot(`0.00798357727477166`)
+    expect(priceImpact).toMatchInlineSnapshot(`0.002368782867485742`)
   })
 
   test('returns NullPriceImpactAmount when amounts in are zero or empty', async () => {
-    const poolStateInput = aPoolStateInputMock()
-
-    const handler = await buildUnbalancedHandler(poolStateInput)
+    const handler = selectUnbalancedHandler()
 
     const humanAmountsIn: HumanAmountIn[] = [
       { humanAmount: '0', tokenAddress: wETHAddress },
@@ -57,7 +52,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
       { humanAmount: '1', tokenAddress: wjAuraAddress },
     ]
 
-    const handler = await buildUnbalancedHandler()
+    const handler = selectUnbalancedHandler()
 
     const result = await handler.queryAddLiquidity({
       humanAmountsIn,
@@ -72,7 +67,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
       { humanAmount: '1', tokenAddress: wjAuraAddress },
     ]
 
-    const handler = await buildUnbalancedHandler()
+    const handler = selectUnbalancedHandler()
 
     const result = await handler.buildAddLiquidityTx({
       humanAmountsIn,
@@ -88,7 +83,12 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
 describe('When adding unbalanced liquidity for an stable pool', () => {
   test('calculates price impact', async () => {
     const poolStateInput = aPhantomStablePoolStateInputMock() // wstETH-rETH-sfrxETH
-    const handler = await buildUnbalancedHandler(poolStateInput)
+
+    const handler = selectAddLiquidityHandler({
+      poolStateInput,
+      pool: poolStateInput as Pool,
+      chainId: ChainId.MAINNET,
+    }).handler
 
     // wstETH-rETH-sfrxETH has 3 tokens + BPT token:
     // we use 0, 10, 100, 1000 as amounts

@@ -12,10 +12,9 @@ import { PropsWithChildren, createContext, useEffect, useMemo, useState } from '
 import { useDebouncedCallback } from 'use-debounce'
 import { Address, formatUnits } from 'viem'
 import { usePool } from '../../usePool'
-import { AddLiquidityHelpers } from './AddLiquidityHelpers'
-import { HumanAmountIn } from './add-liquidity.types'
 import { areEmptyAmounts } from './add-liquidity.helpers'
-import { buildAddLiquidityHandler } from './chooseAddLiquidityHandler'
+import { HumanAmountIn } from './add-liquidity.types'
+import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -30,9 +29,11 @@ export function _useAddLiquidity() {
   const { pool, poolStateInput, chainId } = usePool()
   const { getToken, usdValueForToken } = useTokens()
 
-  const addLiquidityHelpers = new AddLiquidityHelpers(chainId, poolStateInput)
-  // TODO: Add other handlers
-  const handler = buildAddLiquidityHandler('unbalanced', addLiquidityHelpers)
+  const { handler, getAmountsToApprove } = selectAddLiquidityHandler({
+    chainId,
+    pool,
+    poolStateInput,
+  })
 
   function setInitialAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -122,7 +123,7 @@ export function _useAddLiquidity() {
     setAmountIn,
     canExecuteAddLiquidity,
     handler,
-    addLiquidityHelpers,
+    getAmountsToApprove,
   }
 }
 

@@ -151,7 +151,7 @@ export function usePoolHelpers(pool: Pool, chain: GqlChain) {
   }
 }
 
-function toPoolStateInput(pool: Pool): PoolStateInput {
+export function toPoolStateInput(pool: Pool): PoolStateInput {
   return {
     id: pool.id as Hex,
     address: pool.address as Address,
