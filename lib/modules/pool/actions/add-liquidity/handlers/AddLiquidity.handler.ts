@@ -1,5 +1,4 @@
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
-import { AddLiquidityHelpers } from '../AddLiquidityHelpers'
 import { AddLiquidityInputs, AddLiquidityOutputs, PriceImpactAmount } from '../add-liquidity.types'
 
 /**
@@ -8,17 +7,16 @@ import { AddLiquidityInputs, AddLiquidityOutputs, PriceImpactAmount } from '../a
  * outputs. The outputs should not be return types from the SDK. This is to
  * allow handlers to be developed in the future that may not use the SDK.
  */
-export abstract class AddLiquidityHandler {
-  constructor(public readonly helpers: AddLiquidityHelpers) {}
-
+export interface AddLiquidityHandler {
   // Query the SDK for the expected output of adding liquidity
-  abstract queryAddLiquidity(inputs: AddLiquidityInputs): Promise<AddLiquidityOutputs>
+  queryAddLiquidity(inputs: AddLiquidityInputs): Promise<AddLiquidityOutputs>
   // Calculate the price impact of adding liquidity
-  abstract calculatePriceImpact(inputs: AddLiquidityInputs): Promise<number>
+  calculatePriceImpact(inputs: AddLiquidityInputs): Promise<number>
   // Build tx payload for adding liquidity
-  abstract buildAddLiquidityTx(inputs: AddLiquidityInputs): Promise<TransactionConfig>
+  buildAddLiquidityTx(inputs: AddLiquidityInputs): Promise<TransactionConfig>
 
-  abstract get queryKey(): string
+  // TODO: remove from handler and move to hook
+  queryKey(): string
 }
 
 export const NullPriceImpactAmount: PriceImpactAmount = {
