@@ -41,6 +41,7 @@ function UserPoolFilter() {
     } else {
       setChecked(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAddress])
 
   return (
