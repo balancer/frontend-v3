@@ -1,5 +1,5 @@
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
-import { AddLiquidityInputs, AddLiquidityOutputs, PriceImpactAmount } from '../add-liquidity.types'
+import { AddLiquidityInputs, AddLiquidityOutputs } from '../add-liquidity.types'
 
 /**
  * AddLiquidityHandler is an interface that defines the methods that must be implemented by a handler.
@@ -14,11 +14,4 @@ export interface AddLiquidityHandler {
   calculatePriceImpact(inputs: AddLiquidityInputs): Promise<number>
   // Build tx payload for adding liquidity
   buildAddLiquidityTx(inputs: AddLiquidityInputs): Promise<TransactionConfig>
-}
-
-export const NullPriceImpactAmount: PriceImpactAmount = {
-  amount: 0n,
-  bps: 0,
-  decimal: 0,
-  percentage: 0,
 }
