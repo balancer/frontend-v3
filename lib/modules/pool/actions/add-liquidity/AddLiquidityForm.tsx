@@ -35,11 +35,8 @@ export function AddLiquidityForm() {
     return amountIn ? amountIn.humanAmount : ''
   }
 
-  //TODO: refactor
-  const canExecuteAddLiquidity2 = canExecuteAddLiquidity(amountsIn)
-
   function submit() {
-    if (canExecuteAddLiquidity2) {
+    if (canExecuteAddLiquidity(amountsIn)) {
       previewDisclosure.onOpen()
     }
   }
