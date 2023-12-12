@@ -1,13 +1,13 @@
-import { getNetworkConfig } from '@/lib/config/app.config'
-import { SupportedChainId } from '@/lib/config/config.types'
+import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
+import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { PoolStateInput } from '@balancer/sdk'
+import { keyBy } from 'lodash'
+import { parseUnits } from 'viem'
 import { Address } from 'wagmi'
 import { HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
-import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { HumanAmountIn } from './add-liquidity.types'
-import { parseUnits } from 'viem'
-import { keyBy } from 'lodash'
 
 // TODO: this should be imported from the SDK
 export type InputAmount = {
@@ -30,12 +30,16 @@ const NullPoolState: PoolStateInput = {
 */
 export class AddLiquidityHelpers {
   constructor(
-    public readonly chainId: SupportedChainId,
+    public readonly chain: GqlChain,
     public poolStateInput: PoolStateInput = NullPoolState
   ) {}
 
   public get networkConfig() {
-    return getNetworkConfig(this.chainId)
+    return getNetworkConfig(this.chain)
+  }
+
+  public get chainId() {
+    return getChainId(this.chain)
   }
 
   public get poolTokenAddresses(): Address[] {

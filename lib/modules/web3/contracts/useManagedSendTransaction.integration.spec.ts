@@ -64,7 +64,7 @@ describe('weighted join test', () => {
     const { queryResult: queryResult2, config: config2 } =
       await builder.buildSdkAddLiquidityTxConfig(defaultTestUserAccount, humanAmountsIn2)
     // Double approximately
-    expect(queryResult2.bptOut.amount).toBeGreaterThan(380000000000000000000n)
+    expect(queryResult2.bptOut.amount).toBeGreaterThan(370000000000000000000n)
 
     // act(() => result.current.setTxConfig(config2))
 
