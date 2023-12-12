@@ -26,11 +26,10 @@ export function _useAddLiquidity() {
   const [priceImpact, setPriceImpact] = useState<number | null>(null)
   const [bptOut, setBptOut] = useState<TokenAmount | null>(null)
 
-  const { pool, poolStateInput, chainId } = usePool()
+  const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
 
-  const { handler, getAmountsToApprove } = selectAddLiquidityHandler({
-    chainId,
+  const { handler, getAmountsToApprove, poolTokenAddresses } = selectAddLiquidityHandler({
     pool,
     poolStateInput,
   })
@@ -122,8 +121,10 @@ export function _useAddLiquidity() {
     bptOutUnits,
     setAmountIn,
     canExecuteAddLiquidity,
-    handler,
+    buildAddLiquidityTx: handler.buildAddLiquidityTx,
+    poolTokenAddresses,
     getAmountsToApprove,
+    poolStateInput,
   }
 }
 

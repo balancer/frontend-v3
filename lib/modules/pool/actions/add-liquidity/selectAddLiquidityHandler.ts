@@ -21,7 +21,11 @@ export function selectAddLiquidityHandler({ pool, poolStateInput }: PoolData) {
     handler = buildAddLiquidityHandler('unbalanced', helpers)
   }
 
-  return { handler, getAmountsToApprove: helpers.getAmountsToApprove }
+  return {
+    handler,
+    getAmountsToApprove: helpers.getAmountsToApprove,
+    poolTokenAddresses: helpers.poolTokenAddresses,
+  }
 }
 
 export function buildAddLiquidityHandler(

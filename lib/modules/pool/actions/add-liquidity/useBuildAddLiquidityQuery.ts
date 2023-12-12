@@ -4,6 +4,7 @@ import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { Dictionary } from 'lodash'
 import { Address, useQuery } from 'wagmi'
 import { HumanAmountIn } from './add-liquidity.types'
+import { usePool } from '../../usePool'
 import { useAddLiquidity } from './useAddLiquidity'
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
@@ -13,17 +14,24 @@ export function useBuildAddLiquidityQuery(
   account?: Address
 ) {
   // const { allowances } = useTokenAllowances()
+  const { poolStateInput, chainId } = usePool()
+  const { buildAddLiquidityTx } = useAddLiquidity()
   const allowances = {}
 
-  const { handler } = useAddLiquidity()
+  //TODO: move to common place (abstract??)
+  function queryKey(): string {
+    // REVIEW THIS
+    // return `${chainId}:${JSON.stringify(poolStateInput)}:${slippage}`
+    return `${chainId}:${JSON.stringify(poolStateInput)}`
+  }
 
   const addLiquidityQuery = useQuery(
-    [`useJoinPool:${account}:${handler.queryKey}`],
+    [`useJoinPool:${account}:${queryKey()}`],
     async () => {
       //TODO: set slippage from the UI
       // const defaultSlippage = Slippage.fromPercentage('0.2')
       const defaultSlippage = '0.2'
-      return await handler.buildAddLiquidityTx({
+      return await buildAddLiquidityTx({
         humanAmountsIn,
         account: account || emptyAddress,
         slippagePercent: defaultSlippage,

@@ -14,9 +14,6 @@ export interface AddLiquidityHandler {
   calculatePriceImpact(inputs: AddLiquidityInputs): Promise<number>
   // Build tx payload for adding liquidity
   buildAddLiquidityTx(inputs: AddLiquidityInputs): Promise<TransactionConfig>
-
-  // TODO: remove from handler and move to hook
-  queryKey(): string
 }
 
 export const NullPriceImpactAmount: PriceImpactAmount = {

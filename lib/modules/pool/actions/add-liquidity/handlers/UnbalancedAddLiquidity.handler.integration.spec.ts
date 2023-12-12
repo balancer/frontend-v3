@@ -86,7 +86,6 @@ describe('When adding unbalanced liquidity for an stable pool', () => {
     const handler = selectAddLiquidityHandler({
       poolStateInput,
       pool: poolStateInput as Pool,
-      chainId: ChainId.MAINNET,
     }).handler
 
     // wstETH-rETH-sfrxETH has 3 tokens + BPT token:

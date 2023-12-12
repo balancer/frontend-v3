@@ -32,7 +32,6 @@ export function buildUnbalancedAddLiquidityHandler(
     queryAddLiquidity,
     calculatePriceImpact,
     buildAddLiquidityTx,
-    queryKey,
   }
 
   async function queryAddLiquidity({
@@ -94,14 +93,6 @@ export function buildUnbalancedAddLiquidityHandler(
       to,
       value,
     }
-  }
-
-  //TODO: move to common place (abstract??)
-  function queryKey(): string {
-    // REVIEW THIS
-    // const { amountsIn } = this.getJoinInput()
-    // return `${this.service.chainId}:${this.slippage}${JSON.stringify(this.service.poolStateInput)}`
-    return `${addLiquidityHelpers.chainId}:${JSON.stringify(addLiquidityHelpers.poolStateInput)}`
   }
 
   /**
