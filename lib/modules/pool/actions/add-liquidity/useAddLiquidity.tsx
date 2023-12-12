@@ -12,9 +12,10 @@ import { PropsWithChildren, createContext, useEffect, useMemo, useState } from '
 import { useDebouncedCallback } from 'use-debounce'
 import { Address, formatUnits } from 'viem'
 import { usePool } from '../../usePool'
-import { AddLiquidityService } from './AddLiquidityService'
+import { AddLiquidityHelpers } from './AddLiquidityHelpers'
 import { HumanAmountIn } from './add-liquidity.types'
 import { areEmptyAmounts } from './add-liquidity.helpers'
+import { buildAddLiquidityHandler } from './chooseAddLiquidityHandler'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -29,8 +30,9 @@ export function _useAddLiquidity() {
   const { pool, poolStateInput, chainId } = usePool()
   const { getToken, usdValueForToken } = useTokens()
 
-  const addLiquidityService = new AddLiquidityService(chainId, poolStateInput, 'unbalanced')
-  const handler = addLiquidityService.handler
+  const addLiquidityHelpers = new AddLiquidityHelpers(chainId, poolStateInput)
+  // TODO: Add other handlers
+  const handler = buildAddLiquidityHandler('unbalanced', addLiquidityHelpers)
 
   function setInitialAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -78,7 +80,7 @@ export function _useAddLiquidity() {
   const formattedPriceImpact = priceImpact ? priceImpactFormat(priceImpact) : '-'
 
   async function queryPriceImpact() {
-    const _priceImpact = await addLiquidityService.calculatePriceImpact({
+    const _priceImpact = await handler.calculatePriceImpact({
       humanAmountsIn: amountsIn,
     })
 
@@ -86,7 +88,7 @@ export function _useAddLiquidity() {
   }
 
   async function queryExpectedOutput() {
-    const { bptOut } = await addLiquidityService.queryAddLiquidity({ humanAmountsIn: amountsIn })
+    const { bptOut } = await handler.queryAddLiquidity({ humanAmountsIn: amountsIn })
 
     setBptOut(bptOut)
   }
@@ -120,6 +122,7 @@ export function _useAddLiquidity() {
     setAmountIn,
     canExecuteAddLiquidity,
     handler,
+    addLiquidityHelpers,
   }
 }
 

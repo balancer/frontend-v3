@@ -6,7 +6,7 @@ import {
   PriceImpact,
   Slippage,
 } from '@balancer/sdk'
-import { AddLiquidityService } from '../AddLiquidityService'
+import { AddLiquidityHelpers } from '../AddLiquidityHelpers'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 import {
   AddLiquidityInputs,
@@ -31,13 +31,13 @@ import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-ru
  * asset instead of the wrapped native asset.
  */
 export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
-  constructor(public readonly service: AddLiquidityService) {}
+  constructor(public readonly helpers: AddLiquidityHelpers) {}
 
   async queryAddLiquidity({ humanAmountsIn }: AddLiquidityInputs): Promise<AddLiquidityOutputs> {
     const addLiquidity = new AddLiquidity()
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
-    const { bptOut } = await addLiquidity.query(addLiquidityInput, this.service.poolStateInput)
+    const { bptOut } = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
     return { bptOut }
   }
 
@@ -51,7 +51,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
 
     const priceImpactABA: PriceImpactAmount = await PriceImpact.addLiquidityUnbalanced(
       addLiquidityInput,
-      this.service.poolStateInput
+      this.helpers.poolStateInput
     )
 
     return priceImpactABA.decimal
@@ -68,7 +68,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
     // TODO: we probably don't need this query when building the call as we already used it (check queryAddLiquidity) during the Add Liquidity form management
-    const queryResult = await addLiquidity.query(addLiquidityInput, this.service.poolStateInput)
+    const queryResult = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
 
     const { call, to, value } = addLiquidity.buildCall({
       ...queryResult,
@@ -79,7 +79,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
 
     return {
       account,
-      chainId: this.service.chainId,
+      chainId: this.helpers.chainId,
       data: call,
       to,
       value,
@@ -91,71 +91,32 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     // REVIEW THIS
     // const { amountsIn } = this.getJoinInput()
     // return `${this.service.chainId}:${this.slippage}${JSON.stringify(this.service.poolStateInput)}`
-    return `${this.service.chainId}:${JSON.stringify(this.service.poolStateInput)}`
-  }
-  //TODO: move to common place (abstract??)
-  public getAmountsToApprove(
-    humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[]
-  ): TokenAmountToApprove[] {
-    // TODO: sdkAmountsIn could be cached or passed as prop when going to preview
-    return this.toInputAmounts(humanAmountsInWithTokenInfo).map(({ address, rawAmount }, index) => {
-      const humanAmountWithInfo = humanAmountsInWithTokenInfo[index]
-      return {
-        tokenAddress: address,
-        humanAmount: humanAmountWithInfo.humanAmount || '0',
-        rawAmount,
-        tokenSymbol: humanAmountWithInfo.symbol,
-      }
-    })
+    return `${this.helpers.chainId}:${JSON.stringify(this.helpers.poolStateInput)}`
   }
 
   // TODO: already implemented in abstract parent
   public get poolTokenAddresses(): Address[] {
-    return this.service.poolStateInput.tokens.map(t => t.address)
+    return this.helpers.poolStateInput.tokens.map(t => t.address)
   }
 
   /**
    * PRIVATE METHODS
    */
   private isNativeAssetIn(humanAmountsIn: HumanAmountIn[]): boolean {
-    const nativeAssetAddress = this.service.networkConfig.tokens.nativeAsset.address
+    const nativeAssetAddress = this.helpers.networkConfig.tokens.nativeAsset.address
 
     return humanAmountsIn.some(amountIn => isSameAddress(amountIn.tokenAddress, nativeAssetAddress))
   }
 
   private constructSdkInput(humanAmountsIn: HumanAmountIn[]): AddLiquidityUnbalancedInput {
-    const amountsIn = this.toInputAmounts(humanAmountsIn)
+    const amountsIn = this.helpers.toInputAmounts(humanAmountsIn)
 
     return {
-      chainId: this.service.chainId,
-      rpcUrl: getDefaultRpcUrl(this.service.chainId),
+      chainId: this.helpers.chainId,
+      rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
       amountsIn,
       kind: AddLiquidityKind.Unbalanced,
       useNativeAssetAsWrappedAmountIn: this.isNativeAssetIn(humanAmountsIn),
     }
-  }
-
-  private toInputAmounts(humanAmountsIn: HumanAmountIn[]): InputAmount[] {
-    const amountsInList: InputAmount[] = this.service.poolStateInput?.tokens.map(t => {
-      return {
-        rawAmount: 0n,
-        decimals: t.decimals,
-        address: t.address,
-      }
-    })
-
-    const amountsInByTokenAddress = keyBy(amountsInList, a => a.address)
-
-    // from humanAmountsIn to SDK AmountsIn
-    humanAmountsIn.forEach(({ tokenAddress, humanAmount }) => {
-      if (!amountsInByTokenAddress[tokenAddress]) {
-        throw new Error(`Provided token address ${tokenAddress} not found in pool tokens`)
-      }
-      const decimals = amountsInByTokenAddress[tokenAddress].decimals
-      amountsInByTokenAddress[tokenAddress].rawAmount = parseUnits(humanAmount, decimals)
-    })
-
-    const amountsIn = Object.values(amountsInByTokenAddress)
-    return amountsIn
   }
 }

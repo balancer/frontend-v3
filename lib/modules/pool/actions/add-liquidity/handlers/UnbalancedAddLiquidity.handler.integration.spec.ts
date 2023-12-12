@@ -1,16 +1,15 @@
+import networkConfig from '@/lib/config/networks/mainnet'
 import { balAddress, poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { MockApi } from '@/lib/shared/hooks/balancer-api/MockApi'
-import { AddLiquidityConfigBuilder } from '../AddLiquidityConfigBuilder'
-import { ChainId, HumanAmount, PoolStateInput } from '@balancer/sdk'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
-import { HumanAmountIn } from '../add-liquidity.types'
-import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
-import { AddLiquidityService } from '../AddLiquidityService'
-import networkConfig from '@/lib/config/networks/mainnet'
+import { ChainId, HumanAmount, PoolStateInput } from '@balancer/sdk'
 import {
   aPhantomStablePoolStateInputMock,
   aPoolStateInputMock,
 } from '../../../__mocks__/pool.builders'
+import { AddLiquidityHelpers } from '../AddLiquidityHelpers'
+import { HumanAmountIn } from '../add-liquidity.types'
+import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
 
 function getPoolState() {
   return new MockApi().getPool(poolId) // Balancer Weighted wjAura and WETH
@@ -18,7 +17,7 @@ function getPoolState() {
 
 async function buildUnbalancedHandler(poolStateInput: PoolStateInput = getPoolState()) {
   const handler = new UnbalancedAddLiquidityHandler(
-    new AddLiquidityService(ChainId.MAINNET, poolStateInput, 'unbalanced')
+    new AddLiquidityHelpers(ChainId.MAINNET, poolStateInput)
   )
   return handler
 }
