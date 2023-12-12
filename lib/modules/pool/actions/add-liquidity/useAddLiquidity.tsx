@@ -15,6 +15,7 @@ import { usePool } from '../../usePool'
 import { areEmptyAmounts } from './add-liquidity.helpers'
 import { HumanAmountIn } from './add-liquidity.types'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
+import { HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -107,6 +108,14 @@ export function _useAddLiquidity() {
 
   const bptOutUnits: HumanAmount = bptOut ? (formatUnits(bptOut.amount, 18) as HumanAmount) : '0'
 
+  // TODO: we need this constants to avoid losing this reference when exposing a class method
+  // Alternative 1: refactor AddLiquidityHelpers from class to builder function
+  // Alternative 2: expose helpers and access its methods from consumers
+  // Alternative 3: Instantiate helpers outside this provider
+  const poolTokenAddresses = helpers.poolTokenAddresses
+  const getAmountsToApprove = (humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[]) =>
+    helpers.getAmountsToApprove(humanAmountsInWithTokenInfo)
+
   return {
     amountsIn,
     tokens,
@@ -120,9 +129,8 @@ export function _useAddLiquidity() {
     canExecuteAddLiquidity,
     buildAddLiquidityTx: handler.buildAddLiquidityTx,
     helpers,
-    // TODO: refactor to avoid exposing helpers
-    // poolTokenAddresses: () => helpers.poolTokenAddresses,
-    // getAmountsToApprove: () => helpers.getAmountsToApprove,
+    poolTokenAddresses,
+    getAmountsToApprove,
     poolStateInput,
   }
 }
