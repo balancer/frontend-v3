@@ -68,6 +68,9 @@ dependencies:
   '@uidotdev/usehooks':
     specifier: ^2.0.1
     version: 2.4.0(react-dom@18.2.0)(react@18.2.0)
+  '@vercel/speed-insights':
+    specifier: ^1.0.1
+    version: 1.0.1
   bignumber.js:
     specifier: ^9.1.2
     version: 9.1.2
@@ -5195,6 +5198,11 @@ packages:
       '@vanilla-extract/css': ^1.0.0
     dependencies:
       '@vanilla-extract/css': 1.9.1
+    dev: false
+
+  /@vercel/speed-insights@1.0.1:
+    resolution: {integrity: sha512-cm8KTTsDgS1AbWsgIEZuMoyPUjclzeqJihyLp0tnA21B/x9iTE8hu2S5zM+/DBzihuHxWL1dx9pCWk22ctMFWQ==}
+    requiresBuild: true
     dev: false
 
   /@viem/anvil@0.0.6:
