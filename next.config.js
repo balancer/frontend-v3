@@ -1,4 +1,4 @@
-const { withSentryConfig } = require("@sentry/nextjs")
+const { withSentryConfig } = require('@sentry/nextjs')
 const { sentryOptions, sentryWebpackPluginOptions } = require('./sentry.config')
 
 /** @type {import('next').NextConfig} */
@@ -24,8 +24,4 @@ const nextConfig = {
   pageExtensions: ['tsx', `${process.env.PROTOCOL}.tsx`],
 }
 
-module.exports = withSentryConfig(
-  nextConfig,
-  sentryWebpackPluginOptions,
-  sentryOptions
-);
+module.exports = withSentryConfig(nextConfig, sentryWebpackPluginOptions, sentryOptions)
