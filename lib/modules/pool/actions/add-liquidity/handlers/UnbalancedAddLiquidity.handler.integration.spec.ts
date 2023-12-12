@@ -105,32 +105,33 @@ describe('When adding unbalanced liquidity for an stable pool', () => {
   })
 })
 
-test.skip('build Single Token AddLiquidity Config', async () => {
-  const poolStateInput = await getPoolState()
+// TODO: Refactor Single token logic and tests
+// test.skip('build Single Token AddLiquidity Config', async () => {
+//   const poolStateInput = await getPoolState()
 
-  const builder = new AddLiquidityConfigBuilder(ChainId.MAINNET, poolStateInput, 'singleToken')
+//   const builder = new AddLiquidityConfigBuilder(ChainId.MAINNET, poolStateInput, 'singleToken')
 
-  // We need to rethink this use case when the SDK is ready
-  const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '1', tokenAddress: wETHAddress }]
+//   // We need to rethink this use case when the SDK is ready
+//   const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '1', tokenAddress: wETHAddress }]
 
-  const result = await builder.query(defaultTestUserAccount, humanAmountsIn)
+//   const result = await builder.query(defaultTestUserAccount, humanAmountsIn)
 
-  expect(result.minBptOut.amount).toBeGreaterThanOrEqual(1000000000000000000n)
-})
+//   expect(result.minBptOut.amount).toBeGreaterThanOrEqual(1000000000000000000n)
+// })
 
-// TODO: Refactor this test
-test.skip('build Unbalanced Join Config with ETH (mainnet native asset)', async () => {
-  const poolStateInput = await getPoolState()
-  const builder = new AddLiquidityConfigBuilder(
-    ChainId.MAINNET,
-    poolStateInput,
-    'unbalancedNativeAsset'
-  )
+// TODO: Refactor native asset config and test
+// test.skip('build Unbalanced Join Config with ETH (mainnet native asset)', async () => {
+//   const poolStateInput = await getPoolState()
+//   const builder = new AddLiquidityConfigBuilder(
+//     ChainId.MAINNET,
+//     poolStateInput,
+//     'unbalancedNativeAsset'
+//   )
 
-  // The user chose ETH in the UI but we need to pass WETH in amountsIn
-  const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '1', tokenAddress: wETHAddress }]
+//   // The user chose ETH in the UI but we need to pass WETH in amountsIn
+//   const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '1', tokenAddress: wETHAddress }]
 
-  const result = await builder.buildSdkAddLiquidityTxConfig(defaultTestUserAccount, humanAmountsIn)
+//   const result = await builder.buildSdkAddLiquidityTxConfig(defaultTestUserAccount, humanAmountsIn)
 
-  expect(result.minBptOut.amount).toBeGreaterThan(380000000000000000000n)
-})
+//   expect(result.minBptOut.amount).toBeGreaterThan(380000000000000000000n)
+// })

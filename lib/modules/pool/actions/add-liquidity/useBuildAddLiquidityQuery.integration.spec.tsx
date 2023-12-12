@@ -1,29 +1,40 @@
 import { poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { MockApi } from '@/lib/shared/hooks/balancer-api/MockApi'
-import { DefaultTokenAllowancesTestProvider, testHook } from '@/test/utils/custom-renderers'
+import {
+  DefaultTokenAllowancesTestProvider,
+  buildDefaultPoolTestProvider,
+  testHook,
+} from '@/test/utils/custom-renderers'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
-import { ChainId, TokenAmount } from '@balancer/sdk'
 import { waitFor } from '@testing-library/react'
 
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
 import { Address } from 'viem'
 import { HumanAmountIn } from './add-liquidity.types'
+import { PropsWithChildren } from 'react'
+import { aTokenExpandedMock } from '@/lib/modules/tokens/__mocks__/token.builders'
+import { aGqlPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 
-async function buildQuery() {
-  const poolStateInput = await new MockApi().getPool(poolId) // Balancer Weighted wjAura and WETH
-  return new AddLiquidityConfigBuilder(ChainId.MAINNET, poolStateInput)
-}
+const PoolProvider = buildDefaultPoolTestProvider(
+  aGqlPoolElementMock({
+    allTokens: [
+      aTokenExpandedMock({ address: wjAuraAddress }),
+      aTokenExpandedMock({ address: wETHAddress }),
+    ],
+  })
+)
+
+export const Providers = ({ children }: PropsWithChildren) => (
+  <PoolProvider>
+    <DefaultTokenAllowancesTestProvider>{children}</DefaultTokenAllowancesTestProvider>
+  </PoolProvider>
+)
 
 async function testUseBuildAddLiquidityQuery(humanAmountsIn: HumanAmountIn[], account?: Address) {
   const enabled = true
-  const builder = await buildQuery()
-  const { result } = testHook(
-    () => useBuildAddLiquidityQuery(builder, humanAmountsIn, enabled, account),
-    {
-      wrapper: DefaultTokenAllowancesTestProvider,
-    }
-  )
+  const { result } = testHook(() => useBuildAddLiquidityQuery(humanAmountsIn, enabled, account), {
+    wrapper: Providers,
+  })
   return result
 }
 
@@ -44,10 +55,7 @@ test('fetches join pool config when user is connected', async () => {
 
   const result = await testUseBuildAddLiquidityQuery(humanAmountsIn, defaultTestUserAccount)
 
-  await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+  await waitFor(() => expect(result.current.data?.to).toBeDefined())
 
-  expect(result.current.data?.config).toBeDefined()
-  expect(result.current.data?.minBptOut).toBeInstanceOf(TokenAmount)
-  // This values will be the same if we keep the block between tests
-  expect(result.current.data?.minBptOut.amount).toBeGreaterThan(380000000000000000000n)
+  expect(result.current.data?.account).toBe(defaultTestUserAccount)
 })
