@@ -80,7 +80,7 @@ export function AddLiquidityModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { amountsIn, totalUSDValue, builder, formattedPriceImpact, bptOutUnits } = useAddLiquidity()
+  const { amountsIn, totalUSDValue, helpers, formattedPriceImpact, bptOutUnits } = useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
   // TODO: move userAddress up
@@ -133,7 +133,7 @@ export function AddLiquidityModal({
                 </HStack>
                 <TokenAmountRow
                   tokenAddress={pool.address as Address}
-                  humanAmount={bptOutUnits}
+                  humanAmount={bptOutUnits as HumanAmount}
                   symbol="LP Token"
                 />
               </VStack>
@@ -158,11 +158,11 @@ export function AddLiquidityModal({
           <TokenAllowancesProvider
             userAddress={userAddress || emptyAddress}
             spenderAddress={spenderAddress}
-            tokenAddresses={builder.poolTokenAddresses}
+            tokenAddresses={helpers.poolTokenAddresses}
           >
             <AddLiquidityFlowButton
-              builder={builder}
               humanAmountsInWithTokenInfo={humanAmountsInWithTokenInfo}
+              poolId={pool.id}
             ></AddLiquidityFlowButton>
           </TokenAllowancesProvider>
         </ModalFooter>

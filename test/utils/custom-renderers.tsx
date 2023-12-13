@@ -32,6 +32,8 @@ import { aGqlPoolElementMock } from '../msw/builders/gqlPoolElement.builders'
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
+import { AddLiquidityProvider } from '@/lib/modules/pool/actions/add-liquidity/useAddLiquidity'
+import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -80,7 +82,9 @@ function GlobalProviders({ children }: WrapperProps) {
             tokenPricesData={defaultGetTokenPricesQueryMock}
             variables={defaultGetTokensQueryVariablesMock}
           >
-            <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+            <UserSettingsProvider initCurrency={'USD'} initSlippage={'0.2'}>
+              <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+            </UserSettingsProvider>
           </TokensProvider>
         </ApolloProvider>
       </AppRouterContextProviderMock>
@@ -155,18 +159,20 @@ export async function useConnectTestAccount() {
 }
 
 export const DefaultTokenAllowancesTestProvider = ({ children }: PropsWithChildren) => (
-  <TokenAllowancesProvider
-    spenderAddress={vaultV2Address}
-    tokenAddresses={[wETHAddress, wjAuraAddress]}
-    userAddress={defaultTestUserAccount}
-  >
-    {children}
-  </TokenAllowancesProvider>
+  <AddLiquidityProvider>
+    <TokenAllowancesProvider
+      spenderAddress={vaultV2Address}
+      tokenAddresses={[wETHAddress, wjAuraAddress]}
+      userAddress={defaultTestUserAccount}
+    >
+      {children}
+    </TokenAllowancesProvider>
+  </AddLiquidityProvider>
 )
 
 /* Builds a PoolProvider that injects the provided pool data*/
 export const buildDefaultPoolTestProvider =
-  (pool: GqlPoolElement) =>
+  (pool: GqlPoolElement = aGqlPoolElementMock()) =>
   // eslint-disable-next-line react/display-name
   ({ children }: PropsWithChildren) => {
     return (
