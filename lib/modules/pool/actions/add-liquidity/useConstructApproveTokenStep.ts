@@ -34,7 +34,7 @@ export function useConstructApproveTokenStep(
     tokenAddress,
     'approve',
     tokenApprovalLabels,
-    { args: [spender || emptyAddress, MAX_BIGINT] }, //By default we set MAX_BIGINT
+    { args: [spender, MAX_BIGINT] }, //By default we set MAX_BIGINT
     {
       enabled: isActiveStep && !!spender && !isAllowancesLoading,
     }

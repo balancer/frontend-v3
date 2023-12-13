@@ -10,7 +10,6 @@ import { areEmptyAmounts } from '../add-liquidity.helpers'
 import { HumanAmountIn } from '../add-liquidity.types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
-import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 
 const debounceMillis = 250
 
@@ -19,14 +18,14 @@ export function useAddLiquidityPriceImpactQuery(
   humanAmountsIn: HumanAmountIn[],
   poolId: string
 ) {
-  const { address: userAddress } = useUserAccount()
+  const { userAddress } = useUserAccount()
   const { slippage } = useUserSettings()
   const [priceImpact, setPriceImpact] = useState<number | null>(null)
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, debounceMillis)
 
   function queryKey(): string {
     return generateAddLiquidityQueryKey({
-      userAddress: userAddress || emptyAddress,
+      userAddress,
       poolId,
       slippage,
       humanAmountsIn: debouncedHumanAmountsIn as unknown as HumanAmountIn[],

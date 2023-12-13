@@ -14,9 +14,6 @@ export default function Debug() {
       >
         Add liquidity in wjAura-weth (unbalanced)
       </Link>
-      <Link as={NextLink} href="/debug/relayer-approval" color="blue">
-        Relayer approval
-      </Link>
       <Link as={NextLink} href="/debug/token-select" color="blue">
         Token select
       </Link>

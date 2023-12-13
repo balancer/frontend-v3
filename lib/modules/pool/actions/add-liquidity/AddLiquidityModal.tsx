@@ -3,7 +3,6 @@
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
-import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
@@ -84,7 +83,7 @@ export function AddLiquidityModal({
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
   // TODO: move userAddress up
-  const spenderAddress = useContractAddress('balancer.vaultV2') || emptyAddress
+  const spenderAddress = useContractAddress('balancer.vaultV2')
   const { userAddress } = useUserAccount()
   const { getToken } = useTokens()
   const humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[] = amountsIn.map(humanAmountIn => {
@@ -156,7 +155,7 @@ export function AddLiquidityModal({
         </ModalBody>
         <ModalFooter>
           <TokenAllowancesProvider
-            userAddress={userAddress || emptyAddress}
+            userAddress={userAddress}
             spenderAddress={spenderAddress}
             tokenAddresses={helpers.poolTokenAddresses}
           >

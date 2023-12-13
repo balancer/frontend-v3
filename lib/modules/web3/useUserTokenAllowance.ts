@@ -1,18 +1,17 @@
 import { Address } from 'wagmi'
 import { useUserAccount } from './useUserAccount'
 import { useIsMounted } from './useIsMounted'
-import { nullAddress } from './contracts/wagmi-helpers'
 import { useErc20Read } from './contracts/useErc20Read'
 
 export function useUserTokenAllowance(tokenAddress: Address, spenderAddress: Address) {
   const { mounted } = useIsMounted()
-  const { address } = useUserAccount()
+  const { userAddress, isConnected } = useUserAccount()
 
   const query = useErc20Read(
     tokenAddress,
     'allowance',
-    { args: [address || nullAddress, spenderAddress] },
-    { enabled: !!address }
+    { args: [userAddress, spenderAddress] },
+    { enabled: isConnected }
   )
 
   // TODO: fix type inference
