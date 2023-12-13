@@ -4,6 +4,7 @@ import { PropsWithChildren, createContext } from 'react'
 import { ContractFunctionConfig } from 'viem'
 import { Address, erc20ABI, useContractReads } from 'wagmi'
 import { Erc20Abi } from './contracts/contract.types'
+import { useConnectedUser } from '../user/settings/useConnectedUser'
 
 export type TokenAllowances = Record<Address, bigint>
 
@@ -43,13 +44,12 @@ export const TokenAllowancesContext = createContext<UseTokenAllowancesResponse |
 export function TokenAllowancesProvider({
   children,
   tokenAddresses,
-  userAddress,
   spenderAddress,
 }: PropsWithChildren<{
   tokenAddresses: Address[]
-  userAddress: Address
   spenderAddress: Address
 }>) {
+  const userAddress = useConnectedUser()
   const hook = _useTokenAllowances(userAddress, spenderAddress, tokenAddresses)
 
   return <TokenAllowancesContext.Provider value={hook}>{children}</TokenAllowancesContext.Provider>

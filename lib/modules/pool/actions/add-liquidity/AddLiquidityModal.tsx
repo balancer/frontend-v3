@@ -3,9 +3,7 @@
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
-import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { tokenFormat } from '@/lib/shared/utils/numbers'
@@ -32,6 +30,7 @@ import { Address } from 'wagmi'
 import { usePool } from '../../usePool'
 import { AddLiquidityFlowButton, HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
 import { useAddLiquidity } from './useAddLiquidity'
+import { useConnectedUser } from '@/lib/modules/user/settings/useConnectedUser'
 
 type Props = {
   isOpen: boolean
@@ -83,9 +82,7 @@ export function AddLiquidityModal({
   const { amountsIn, totalUSDValue, helpers, formattedPriceImpact, bptOutUnits } = useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
-  // TODO: move userAddress up
-  const spenderAddress = useContractAddress('balancer.vaultV2') || emptyAddress
-  const { userAddress } = useUserAccount()
+  const spenderAddress = useContractAddress('balancer.vaultV2')
   const { getToken } = useTokens()
   const humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[] = amountsIn.map(humanAmountIn => {
     return {
@@ -156,7 +153,6 @@ export function AddLiquidityModal({
         </ModalBody>
         <ModalFooter>
           <TokenAllowancesProvider
-            userAddress={userAddress || emptyAddress}
             spenderAddress={spenderAddress}
             tokenAddresses={helpers.poolTokenAddresses}
           >

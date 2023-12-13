@@ -34,6 +34,7 @@ import { AppRouterContextProviderMock } from './app-router-context-provider-mock
 import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
 import { AddLiquidityProvider } from '@/lib/modules/pool/actions/add-liquidity/useAddLiquidity'
 import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
+import { ConnectedUserProvider } from '@/lib/modules/user/settings/useConnectedUser'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -82,9 +83,11 @@ function GlobalProviders({ children }: WrapperProps) {
             tokenPricesData={defaultGetTokenPricesQueryMock}
             variables={defaultGetTokensQueryVariablesMock}
           >
-            <UserSettingsProvider initCurrency={'USD'} initSlippage={'0.2'}>
-              <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
-            </UserSettingsProvider>
+            <ConnectedUserProvider>
+              <UserSettingsProvider initCurrency={'USD'} initSlippage={'0.2'}>
+                <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+              </UserSettingsProvider>
+            </ConnectedUserProvider>
           </TokensProvider>
         </ApolloProvider>
       </AppRouterContextProviderMock>
@@ -163,7 +166,6 @@ export const DefaultTokenAllowancesTestProvider = ({ children }: PropsWithChildr
     <TokenAllowancesProvider
       spenderAddress={vaultV2Address}
       tokenAddresses={[wETHAddress, wjAuraAddress]}
-      userAddress={defaultTestUserAccount}
     >
       {children}
     </TokenAllowancesProvider>

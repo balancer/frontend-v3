@@ -1,8 +1,7 @@
 'use client'
 
+import { useConnectedUser } from '@/lib/modules/user/settings/useConnectedUser'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { integerFormat } from '@/lib/shared/utils/numbers'
 import { AddLiquidityQueryOutput, TokenAmount } from '@balancer/sdk'
 import { useState } from 'react'
@@ -21,7 +20,7 @@ export function useAddLiquidityBtpOutQuery(
   humanAmountsIn: HumanAmountIn[],
   poolId: string
 ) {
-  const { address: userAddress } = useUserAccount()
+  const userAddress = useConnectedUser()
   const { slippage } = useUserSettings()
   const [bptOut, setBptOut] = useState<TokenAmount | null>(null)
   const [lastSdkQueryOutput, setLastSdkQueryOutput] = useState<AddLiquidityQueryOutput | undefined>(
@@ -31,7 +30,7 @@ export function useAddLiquidityBtpOutQuery(
 
   function queryKey(): string {
     return generateAddLiquidityQueryKey({
-      userAddress: userAddress || emptyAddress,
+      userAddress: userAddress,
       poolId,
       slippage,
       humanAmountsIn: debouncedHumanAmountsIn as unknown as HumanAmountIn[],
@@ -58,7 +57,7 @@ export function useAddLiquidityBtpOutQuery(
       return await queryBptOut()
     },
     {
-      enabled: !!userAddress && !areEmptyAmounts(humanAmountsIn),
+      enabled: !areEmptyAmounts(humanAmountsIn),
     }
   )
 

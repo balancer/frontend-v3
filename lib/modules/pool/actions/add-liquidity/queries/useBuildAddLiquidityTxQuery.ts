@@ -1,8 +1,8 @@
 'use client'
 
+import { useConnectedUser } from '@/lib/modules/user/settings/useConnectedUser'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Dictionary } from 'lodash'
 import { useQuery } from 'wagmi'
 import { HumanAmountIn } from '../add-liquidity.types'
@@ -15,7 +15,7 @@ export function useBuildAddLiquidityQuery(
   enabled: boolean,
   poolId: string
 ) {
-  const { address: userAddress } = useUserAccount()
+  const userAddress = useConnectedUser()
 
   const { buildAddLiquidityTx } = useAddLiquidity()
   const { slippage } = useUserSettings()
@@ -23,7 +23,7 @@ export function useBuildAddLiquidityQuery(
 
   function queryKey(): string {
     return generateAddLiquidityQueryKey({
-      userAddress: userAddress || emptyAddress,
+      userAddress: userAddress,
       poolId,
       slippage,
       humanAmountsIn,
@@ -35,13 +35,13 @@ export function useBuildAddLiquidityQuery(
     async () => {
       const inputs = {
         humanAmountsIn,
-        account: userAddress || emptyAddress,
+        account: userAddress,
         slippagePercent: slippage,
       }
       return await buildAddLiquidityTx(inputs)
     },
     {
-      enabled: enabled && !!userAddress && allowances && hasTokenAllowance(allowances),
+      enabled: enabled && allowances && hasTokenAllowance(allowances),
     }
   )
 
