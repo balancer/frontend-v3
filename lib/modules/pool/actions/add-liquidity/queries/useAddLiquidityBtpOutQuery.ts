@@ -4,7 +4,7 @@ import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { integerFormat } from '@/lib/shared/utils/numbers'
-import { TokenAmount } from '@balancer/sdk'
+import { AddLiquidityQueryOutput, TokenAmount } from '@balancer/sdk'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { formatUnits } from 'viem'
@@ -24,6 +24,9 @@ export function useAddLiquidityBtpOutQuery(
   const { address: userAddress } = useUserAccount()
   const { slippage } = useUserSettings()
   const [bptOut, setBptOut] = useState<TokenAmount | null>(null)
+  const [lastSdkQueryOutput, setLastSdkQueryOutput] = useState<AddLiquidityQueryOutput | undefined>(
+    undefined
+  )
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, debounceMillis)
 
   function queryKey(): string {
@@ -36,9 +39,16 @@ export function useAddLiquidityBtpOutQuery(
   }
 
   async function queryBptOut() {
-    const { bptOut } = await handler.queryAddLiquidity({ humanAmountsIn })
+    const queryResult = await handler.queryAddLiquidity({ humanAmountsIn })
+
+    const { bptOut } = queryResult
 
     setBptOut(bptOut)
+
+    // Only SDK handlers will return this output
+    if (queryResult.sdkQueryOutput) {
+      setLastSdkQueryOutput(queryResult.sdkQueryOutput)
+    }
     return bptOut
   }
 
@@ -54,5 +64,5 @@ export function useAddLiquidityBtpOutQuery(
 
   const bptOutUnits = bptOut ? integerFormat(formatUnits(bptOut.amount, 18)) : '-'
 
-  return { bptOut, bptOutUnits, isBptOutQueryLoading: query.isLoading }
+  return { bptOut, bptOutUnits, isBptOutQueryLoading: query.isLoading, lastSdkQueryOutput }
 }

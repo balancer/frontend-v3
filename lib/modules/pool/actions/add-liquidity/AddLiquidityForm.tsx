@@ -39,7 +39,7 @@ export function AddLiquidityForm() {
   const isDisabled = isAddLiquidityDisabled(amountsIn)
 
   function submit() {
-    if (isDisabled) {
+    if (!isDisabled) {
       previewDisclosure.onOpen()
     }
   }

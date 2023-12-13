@@ -38,7 +38,7 @@ export function useBuildAddLiquidityQuery(
         account: userAddress || emptyAddress,
         slippagePercent: slippage,
       }
-      return await buildAddLiquidityTx({ inputs })
+      return await buildAddLiquidityTx(inputs)
     },
     {
       enabled: enabled && !!userAddress && allowances && hasTokenAllowance(allowances),

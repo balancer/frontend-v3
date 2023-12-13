@@ -13,7 +13,7 @@ import { Address } from 'viem'
 import { usePool } from '../../usePool'
 import { AddLiquidityHelpers } from './AddLiquidityHelpers'
 import { areEmptyAmounts } from './add-liquidity.helpers'
-import { HumanAmountIn } from './add-liquidity.types'
+import { AddLiquidityInputs, HumanAmountIn } from './add-liquidity.types'
 import { useAddLiquidityBtpOutQuery } from './queries/useAddLiquidityBtpOutQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
@@ -81,11 +81,8 @@ export function _useAddLiquidity() {
     pool.id
   )
 
-  const { bptOut, bptOutUnits, isBptOutQueryLoading } = useAddLiquidityBtpOutQuery(
-    handler,
-    amountsIn,
-    pool.id
-  )
+  const { bptOut, bptOutUnits, isBptOutQueryLoading, lastSdkQueryOutput } =
+    useAddLiquidityBtpOutQuery(handler, amountsIn, pool.id)
 
   function isAddLiquidityDisabled(humanAmountsIn: HumanAmountIn[]) {
     // TODO: do we need to render reasons why the transaction cannot be performed?
@@ -99,6 +96,12 @@ export function _useAddLiquidity() {
     */
   const helpers = new AddLiquidityHelpers(pool)
 
+  function buildAddLiquidityTx(inputs: AddLiquidityInputs) {
+    // There are edge cases where we will never call setLastSdkQueryOutput so that lastSdkQueryOutput will be undefined.
+    // That`s expected as sdkQueryOutput is an optional input
+    return handler.buildAddLiquidityTx({ inputs, sdkQueryOutput: lastSdkQueryOutput })
+  }
+
   return {
     amountsIn,
     tokens,
@@ -111,7 +114,7 @@ export function _useAddLiquidity() {
     bptOutUnits,
     setAmountIn,
     isAddLiquidityDisabled,
-    buildAddLiquidityTx: handler.buildAddLiquidityTx,
+    buildAddLiquidityTx,
     helpers,
     poolStateInput,
   }
