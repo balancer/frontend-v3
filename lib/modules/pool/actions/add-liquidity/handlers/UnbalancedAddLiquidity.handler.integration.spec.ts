@@ -27,7 +27,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
     expect(priceImpact).toBeGreaterThan(0.002)
   })
 
-  test('returns NullPriceImpactAmount when amounts in are zero or empty', async () => {
+  test('returns zero price impact when amounts in are zero or empty', async () => {
     const handler = selectUnbalancedHandler()
 
     const humanAmountsIn: HumanAmountIn[] = [
