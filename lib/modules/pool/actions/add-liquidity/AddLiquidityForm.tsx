@@ -36,10 +36,8 @@ export function AddLiquidityForm() {
     return amountIn ? amountIn.humanAmount : ''
   }
 
-  const isDisabled = isAddLiquidityDisabled(amountsIn)
-
   function submit() {
-    if (!isDisabled) {
+    if (!isAddLiquidityDisabled) {
       previewDisclosure.onOpen()
     }
   }
@@ -103,13 +101,13 @@ export function AddLiquidityForm() {
               </HStack>
             </VStack>
 
-            <Tooltip label={isDisabled ? 'cannot execute add liquidity' : ''}>
+            <Tooltip label={isAddLiquidityDisabled ? 'cannot execute add liquidity' : ''}>
               <Button
                 ref={nextBtn}
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={isDisabled}
+                isDisabled={isAddLiquidityDisabled}
                 onClick={submit}
               >
                 Next
