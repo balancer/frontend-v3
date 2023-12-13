@@ -25,45 +25,39 @@ import { AddLiquidityHandler } from './AddLiquidity.handler'
  * methods. It also handles the case where one of the input tokens is the native
  * asset instead of the wrapped native asset.
  */
-export function buildUnbalancedAddLiquidityHandler(
-  addLiquidityHelpers: AddLiquidityHelpers
-): AddLiquidityHandler {
-  return {
-    queryAddLiquidity,
-    calculatePriceImpact,
-    buildAddLiquidityTx,
-  }
+export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
+  constructor(private addLiquidityHelpers: AddLiquidityHelpers) {}
 
-  async function queryAddLiquidity({
+  public async queryAddLiquidity({
     humanAmountsIn,
   }: AddLiquidityInputs): Promise<AddLiquidityOutputs> {
     const addLiquidity = new AddLiquidity()
-    const addLiquidityInput = constructSdkInput(humanAmountsIn)
+    const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
     const { bptOut } = await addLiquidity.query(
       addLiquidityInput,
-      addLiquidityHelpers.poolStateInput
+      this.addLiquidityHelpers.poolStateInput
     )
     return { bptOut }
   }
 
-  async function calculatePriceImpact({ humanAmountsIn }: AddLiquidityInputs): Promise<number> {
+  public async calculatePriceImpact({ humanAmountsIn }: AddLiquidityInputs): Promise<number> {
     if (areEmptyAmounts(humanAmountsIn)) {
       // Avoid price impact calculation when there are no amounts in
       return 0
     }
 
-    const addLiquidityInput = constructSdkInput(humanAmountsIn)
+    const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
     const priceImpactABA: PriceImpactAmount = await PriceImpact.addLiquidityUnbalanced(
       addLiquidityInput,
-      addLiquidityHelpers.poolStateInput
+      this.addLiquidityHelpers.poolStateInput
     )
 
     return priceImpactABA.decimal
   }
 
-  async function buildAddLiquidityTx({
+  public async buildAddLiquidityTx({
     humanAmountsIn,
     account,
     slippagePercent,
@@ -71,12 +65,12 @@ export function buildUnbalancedAddLiquidityHandler(
     if (!account || !slippagePercent) throw new Error('Missing account or slippage')
 
     const addLiquidity = new AddLiquidity()
-    const addLiquidityInput = constructSdkInput(humanAmountsIn)
+    const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
     // TODO: we probably don't need this query when building the call as we already used it (check queryAddLiquidity) during the Add Liquidity form management
     const queryResult = await addLiquidity.query(
       addLiquidityInput,
-      addLiquidityHelpers.poolStateInput
+      this.addLiquidityHelpers.poolStateInput
     )
 
     const { call, to, value } = addLiquidity.buildCall({
@@ -88,7 +82,7 @@ export function buildUnbalancedAddLiquidityHandler(
 
     return {
       account,
-      chainId: addLiquidityHelpers.chainId,
+      chainId: this.addLiquidityHelpers.chainId,
       data: call,
       to,
       value,
@@ -98,21 +92,21 @@ export function buildUnbalancedAddLiquidityHandler(
   /**
    * PRIVATE METHODS
    */
-  function isNativeAssetIn(humanAmountsIn: HumanAmountIn[]): boolean {
-    const nativeAssetAddress = addLiquidityHelpers.networkConfig.tokens.nativeAsset.address
+  private isNativeAssetIn(humanAmountsIn: HumanAmountIn[]): boolean {
+    const nativeAssetAddress = this.addLiquidityHelpers.networkConfig.tokens.nativeAsset.address
 
     return humanAmountsIn.some(amountIn => isSameAddress(amountIn.tokenAddress, nativeAssetAddress))
   }
 
-  function constructSdkInput(humanAmountsIn: HumanAmountIn[]): AddLiquidityUnbalancedInput {
-    const amountsIn = addLiquidityHelpers.toInputAmounts(humanAmountsIn)
+  private constructSdkInput(humanAmountsIn: HumanAmountIn[]): AddLiquidityUnbalancedInput {
+    const amountsIn = this.addLiquidityHelpers.toInputAmounts(humanAmountsIn)
 
     return {
-      chainId: addLiquidityHelpers.chainId,
-      rpcUrl: getDefaultRpcUrl(addLiquidityHelpers.chainId),
+      chainId: this.addLiquidityHelpers.chainId,
+      rpcUrl: getDefaultRpcUrl(this.addLiquidityHelpers.chainId),
       amountsIn,
       kind: AddLiquidityKind.Unbalanced,
-      useNativeAssetAsWrappedAmountIn: isNativeAssetIn(humanAmountsIn),
+      useNativeAssetAsWrappedAmountIn: this.isNativeAssetIn(humanAmountsIn),
     }
   }
 }

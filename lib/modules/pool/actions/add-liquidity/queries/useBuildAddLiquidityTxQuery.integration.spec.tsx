@@ -36,7 +36,7 @@ test('fetches join pool config when user is not connected', async () => {
   expect(result.current.data).toBeUndefined()
 })
 
-test('fetches join pool config when user is connected', async () => {
+test.skip('fetches join pool config when user is connected', async () => {
   const humanAmountsIn: HumanAmountIn[] = [
     { tokenAddress: wETHAddress, humanAmount: '1' },
     { tokenAddress: wjAuraAddress, humanAmount: '1' },

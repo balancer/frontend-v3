@@ -3,7 +3,7 @@ import { Pool } from '../../usePool'
 import { AddLiquidityHelpers } from './AddLiquidityHelpers'
 import { AddLiquidityHandler } from './handlers/AddLiquidity.handler'
 import { buildTwammAddLiquidityHandler } from './handlers/TwammAddLiquidity.handler'
-import { buildUnbalancedAddLiquidityHandler } from './handlers/UnbalancedAddLiquidity.handler'
+import { UnbalancedAddLiquidityHandler } from './handlers/UnbalancedAddLiquidity.handler'
 
 export function selectAddLiquidityHandler(pool: Pool) {
   const helpers = new AddLiquidityHelpers(pool)
@@ -13,7 +13,7 @@ export function selectAddLiquidityHandler(pool: Pool) {
     // This is just an example to illustrate how edge-case handlers would receive different inputs but return a common contract
     handler = buildTwammAddLiquidityHandler(getChainId(pool.chain))
   } else {
-    handler = buildUnbalancedAddLiquidityHandler(helpers)
+    handler = new UnbalancedAddLiquidityHandler(helpers)
   }
 
   return {
