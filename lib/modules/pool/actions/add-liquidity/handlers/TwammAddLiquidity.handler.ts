@@ -10,15 +10,11 @@ import { AddLiquidityHandler } from './AddLiquidity.handler'
  * AddLiquidityHandler interface for TWAMM adds.
  * This is just a fake example to show how to implement edge-case handlers.
  */
-export function buildTwammAddLiquidityHandler(chainId: SupportedChainId): AddLiquidityHandler {
-  return {
-    queryAddLiquidity,
-    calculatePriceImpact,
-    buildAddLiquidityTx,
-  }
+export class TwammAddLiquidityHandler implements AddLiquidityHandler {
+  constructor(private chainId: SupportedChainId) {}
 
   // TODO: This is a non-sense example implementation
-  async function queryAddLiquidity({
+  public async queryAddLiquidity({
     humanAmountsIn,
   }: AddLiquidityInputs): Promise<AddLiquidityOutputs> {
     const tokenAmount = TokenAmount.fromHumanAmount(
@@ -30,12 +26,12 @@ export function buildTwammAddLiquidityHandler(chainId: SupportedChainId): AddLiq
   }
 
   // TODO: This is a non-sense example implementation
-  async function calculatePriceImpact({ humanAmountsIn }: AddLiquidityInputs): Promise<number> {
+  public async calculatePriceImpact({ humanAmountsIn }: AddLiquidityInputs): Promise<number> {
     return Number(humanAmountsIn[0].humanAmount)
   }
 
   // TODO: This is a non-sense example implementation
-  async function buildAddLiquidityTx({
+  public async buildAddLiquidityTx({
     humanAmountsIn,
     account,
     slippagePercent,
@@ -46,7 +42,7 @@ export function buildTwammAddLiquidityHandler(chainId: SupportedChainId): AddLiq
 
     return {
       account,
-      chainId,
+      chainId: this.chainId,
       data: '0xTwammExample',
       to: emptyAddress,
       value,
