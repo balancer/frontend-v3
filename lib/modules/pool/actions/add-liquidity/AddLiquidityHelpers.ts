@@ -26,8 +26,8 @@ const NullPool: Pool = {
 } as unknown as Pool
 
 /*
-  AddLiquidityHelpers provides a set of helpers to explore the pool state
-  Consumed by add liquidity handlers
+  AddLiquidityHelpers provides helper methods to traverse the pool state and prepare data structures needed by add liquidity handlers
+  to implement the AddLiquidityHandler interface
 */
 export class AddLiquidityHelpers {
   constructor(public pool: Pool = NullPool) {}
