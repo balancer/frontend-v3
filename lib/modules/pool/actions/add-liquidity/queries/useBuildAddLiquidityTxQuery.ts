@@ -1,28 +1,33 @@
 'use client'
 
-import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { Dictionary } from 'lodash'
-import { Address, useQuery } from 'wagmi'
-import { HumanAmountIn } from './add-liquidity.types'
-import { usePool } from '../../usePool'
-import { useAddLiquidity } from './useAddLiquidity'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
+import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { Dictionary } from 'lodash'
+import { useQuery } from 'wagmi'
+import { HumanAmountIn } from '../add-liquidity.types'
+import { useAddLiquidity } from '../useAddLiquidity'
+import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
 export function useBuildAddLiquidityQuery(
   humanAmountsIn: HumanAmountIn[],
   enabled: boolean,
-  account?: Address
+  poolId: string
 ) {
-  // const { allowances } = useTokenAllowances()
-  const { poolStateInput, chainId } = usePool()
+  const { address: userAddress } = useUserAccount()
+
   const { buildAddLiquidityTx } = useAddLiquidity()
   const { slippage } = useUserSettings()
   const allowances = {}
 
-  // TODO: improve queryKey management
   function queryKey(): string {
-    return `${account}:${chainId}:${JSON.stringify(poolStateInput)}:${slippage}`
+    return generateAddLiquidityQueryKey({
+      userAddress: userAddress || emptyAddress,
+      poolId,
+      slippage,
+      humanAmountsIn,
+    })
   }
 
   const addLiquidityQuery = useQuery(
@@ -30,12 +35,12 @@ export function useBuildAddLiquidityQuery(
     async () => {
       return await buildAddLiquidityTx({
         humanAmountsIn,
-        account: account || emptyAddress,
+        account: userAddress || emptyAddress,
         slippagePercent: slippage,
       })
     },
     {
-      enabled: enabled && !!account && allowances && hasTokenAllowance(allowances),
+      enabled: enabled && !!userAddress && allowances && hasTokenAllowance(allowances),
     }
   )
 

@@ -5,17 +5,19 @@ import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { priceImpactFormat, safeSum } from '@/lib/shared/utils/numbers'
+import { safeSum } from '@/lib/shared/utils/numbers'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { HumanAmount, TokenAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { Address, formatUnits } from 'viem'
 import { usePool } from '../../usePool'
+import { HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
 import { areEmptyAmounts } from './add-liquidity.helpers'
 import { HumanAmountIn } from './add-liquidity.types'
+import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
-import { HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
+import { useAddLiquidityBtpOutQuery } from './queries/useAddLiquidityBtpOutQuery'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -24,8 +26,6 @@ export const amountsInVar = makeVar<HumanAmountIn[]>([])
 
 export function _useAddLiquidity() {
   const amountsIn = useReactiveVar(amountsInVar)
-  const [priceImpact, setPriceImpact] = useState<number | null>(null)
-  const [bptOut, setBptOut] = useState<TokenAmount | null>(null)
 
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
@@ -75,38 +75,23 @@ export function _useAddLiquidity() {
     [amountsIn, usdValueForToken, validTokens]
   )
   const totalUSDValue = safeSum(usdAmountsIn)
-  const formattedPriceImpact = priceImpact ? priceImpactFormat(priceImpact) : '-'
 
-  async function queryPriceImpact() {
-    const _priceImpact = await handler.calculatePriceImpact({
-      humanAmountsIn: amountsIn,
-    })
+  const { formattedPriceImpact, isPriceImpactLoading } = useAddLiquidityPriceImpactQuery(
+    handler,
+    amountsIn,
+    pool.id
+  )
 
-    setPriceImpact(_priceImpact)
-  }
-
-  async function queryExpectedOutput() {
-    const { bptOut } = await handler.queryAddLiquidity({ humanAmountsIn: amountsIn })
-
-    setBptOut(bptOut)
-  }
-
-  // Debounced queries
-  const debouncedQueryPriceImpact = useDebouncedCallback(queryPriceImpact, 300)
-  const debouncedQueryBptOut = useDebouncedCallback(queryExpectedOutput, 300)
-
-  // When the amounts in change we fetch the new price impact
-  useEffect(() => {
-    debouncedQueryPriceImpact()
-    debouncedQueryBptOut()
-  }, [amountsIn])
+  const { bptOut, bptOutUnits, isBptOutQueryLoading } = useAddLiquidityBtpOutQuery(
+    handler,
+    amountsIn,
+    pool.id
+  )
 
   function canExecuteAddLiquidity(humanAmountsIn: HumanAmountIn[]) {
     // TODO: do we need to render reasons why the transaction cannot be performed?
     return !areEmptyAmounts(humanAmountsIn)
   }
-
-  const bptOutUnits: HumanAmount = bptOut ? (formatUnits(bptOut.amount, 18) as HumanAmount) : '0'
 
   // TODO: we need this constants to avoid losing this reference when exposing a class method
   // Alternative 1: refactor AddLiquidityHelpers from class to builder function
@@ -121,9 +106,10 @@ export function _useAddLiquidity() {
     tokens,
     validTokens,
     totalUSDValue,
-    priceImpact,
     formattedPriceImpact,
+    isPriceImpactLoading,
     bptOut,
+    isBptOutQueryLoading,
     bptOutUnits,
     setAmountIn,
     canExecuteAddLiquidity,

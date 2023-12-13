@@ -6,7 +6,7 @@ import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { Address } from 'wagmi'
 import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
 import { HumanAmountIn } from './add-liquidity.types'
-import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
+import { useBuildAddLiquidityQuery } from './queries/useBuildAddLiquidityTxQuery'
 
 export function useConstructAddLiquidityStep(humanAmountsIn: HumanAmountIn[]) {
   const { address: userAddress } = useUserAccount()

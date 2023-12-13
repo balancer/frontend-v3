@@ -22,6 +22,7 @@ export function AddLiquidityForm() {
     tokens,
     validTokens,
     formattedPriceImpact,
+    isPriceImpactLoading,
     bptOutUnits,
     canExecuteAddLiquidity,
   } = useAddLiquidity()
@@ -83,14 +84,16 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
-                  <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
+                  <NumberText color="GrayText">
+                    {isPriceImpactLoading ? 'Loading...' : formattedPriceImpact}
+                  </NumberText>
                   <Tooltip label="Price impact" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
                 </HStack>
               </HStack>
               <HStack justify="space-between" w="full">
-                <Text color="GrayText">Bpt out (debug)</Text>
+                <Text color="GrayText">Bpt out</Text>
                 <HStack>
                   <NumberText color="GrayText">{bptOutUnits}</NumberText>
                   <Tooltip label="Bpt our" fontSize="sm">
