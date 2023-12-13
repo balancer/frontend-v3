@@ -13,6 +13,9 @@ const networkConfig: NetworkConfig = {
       symbol: 'xDAI',
       decimals: 18,
     },
+    defaultSwapTokens: {
+      tokenIn: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    },
   },
   contracts: {
     multicall2: '0xbb6fab6b627947dae0a75808250d8b2652952cb5',

@@ -9,9 +9,12 @@ const networkConfig: NetworkConfig = {
   tokens: {
     nativeAsset: {
       name: 'Matic',
-      address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+      address: '0x0000000000000000000000000000000000001010',
       symbol: 'MATIC',
       decimals: 18,
+    },
+    defaultSwapTokens: {
+      tokenIn: '0x0000000000000000000000000000000000001010',
     },
   },
   contracts: {

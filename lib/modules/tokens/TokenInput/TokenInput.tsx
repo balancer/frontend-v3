@@ -15,7 +15,6 @@ import {
   forwardRef,
 } from '@chakra-ui/react'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import Image from 'next/image'
 import { useTokens } from '../useTokens'
 import { useTokenBalances } from '../useTokenBalances'
 import { TbWallet } from 'react-icons/tb'
@@ -23,6 +22,8 @@ import { useTokenInput } from './useTokenInput'
 import { HiChevronDown } from 'react-icons/hi'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { blockInvalidNumberInput, tokenFormat } from '@/lib/shared/utils/numbers'
+import { TokenIcon } from '../TokenIcon'
+import { useEffect } from 'react'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
@@ -31,6 +32,7 @@ type TokenInputSelectorProps = {
 }
 
 function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSelectorProps) {
+  const label = token ? token?.symbol : toggleTokenSelect ? 'Select token' : 'No token'
   return (
     <Card
       py="xs"
@@ -41,9 +43,11 @@ function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSele
       cursor={toggleTokenSelect ? 'pointer' : 'default'}
     >
       <HStack spacing="xs">
-        {token?.logoURI && <Image src={token?.logoURI} alt={token.symbol} width={24} height={24} />}
-        <Text fontWeight="bold">
-          {token ? token?.symbol : toggleTokenSelect ? 'Select token' : 'No token'}
+        {token && (
+          <TokenIcon logoURI={token?.logoURI} alt={token?.symbol || 'token icon'} size={24} />
+        )}
+        <Text title={label} fontWeight="bold" noOfLines={1} maxW="36">
+          {label}
         </Text>
         {weight && <Text fontWeight="normal">{weight}%</Text>}
         {toggleTokenSelect && (
@@ -123,6 +127,10 @@ export const TokenInput = forwardRef(
     const { getToken } = useTokens()
     const token = address && chain ? getToken(address, chain) : undefined
     const { handleOnChange, updateValue } = useTokenInput(token, onChange)
+
+    useEffect(() => {
+      console.log('Address changed in input', address)
+    }, [address])
 
     const tokenInputSelector = TokenInputSelector({ token, weight, toggleTokenSelect })
     const footer = hideFooter ? undefined : TokenInputFooter({ token, value, updateValue })

@@ -59,10 +59,13 @@ export function _useTokens(
     return tokens.find(token => isSameAddress(token.address, address) && token[chainKey] === chain)
   }
 
-  function getTokensByChain(chain: number | GqlChain): GqlToken[] {
-    const chainKey = typeof chain === 'number' ? 'chainId' : 'chain'
-    return tokens.filter(token => token[chainKey] === chain)
-  }
+  const getTokensByChain = useCallback(
+    (chain: number | GqlChain): GqlToken[] => {
+      const chainKey = typeof chain === 'number' ? 'chainId' : 'chain'
+      return tokens.filter(token => token[chainKey] === chain)
+    },
+    [tokens]
+  )
 
   function priceForToken(token: GqlToken): number {
     const price = prices.find(

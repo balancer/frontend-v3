@@ -10,6 +10,10 @@ export interface TokensConfig {
     decimals: number
   }
   doubleApprovalRequired?: string[]
+  defaultSwapTokens?: {
+    tokenIn?: Address
+    tokenOut?: Address
+  }
 }
 
 export interface ContractsConfig {
