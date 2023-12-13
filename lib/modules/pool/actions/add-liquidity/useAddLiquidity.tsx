@@ -92,12 +92,12 @@ export function _useAddLiquidity() {
     return areEmptyAmounts(humanAmountsIn)
   }
 
-  const helpers = new AddLiquidityHelpers(pool)
   /* We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
     helper is a class and if we return its methods we would lose the this binding, getting a:
     TypeError: Cannot read property getAmountsToApprove of undefined
     when trying to access the returned method
     */
+  const helpers = new AddLiquidityHelpers(pool)
 
   return {
     amountsIn,
