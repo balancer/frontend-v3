@@ -9,6 +9,7 @@ import { toPoolStateInput } from '../../pool.helpers'
 import { Pool } from '../../usePool'
 import { HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
 import { HumanAmountIn } from './add-liquidity.types'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 
 // TODO: this should be imported from the SDK
 export type InputAmount = {
@@ -88,5 +89,11 @@ export class AddLiquidityHelpers {
 
     const amountsIn = Object.values(amountsInByTokenAddress)
     return amountsIn
+  }
+
+  public isNativeAssetIn(humanAmountsIn: HumanAmountIn[]): boolean {
+    const nativeAssetAddress = this.networkConfig.tokens.nativeAsset.address
+
+    return humanAmountsIn.some(amountIn => isSameAddress(amountIn.tokenAddress, nativeAssetAddress))
   }
 }

@@ -92,12 +92,6 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   /**
    * PRIVATE METHODS
    */
-  private isNativeAssetIn(humanAmountsIn: HumanAmountIn[]): boolean {
-    const nativeAssetAddress = this.addLiquidityHelpers.networkConfig.tokens.nativeAsset.address
-
-    return humanAmountsIn.some(amountIn => isSameAddress(amountIn.tokenAddress, nativeAssetAddress))
-  }
-
   private constructSdkInput(humanAmountsIn: HumanAmountIn[]): AddLiquidityUnbalancedInput {
     const amountsIn = this.addLiquidityHelpers.toInputAmounts(humanAmountsIn)
 
@@ -106,7 +100,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
       rpcUrl: getDefaultRpcUrl(this.addLiquidityHelpers.chainId),
       amountsIn,
       kind: AddLiquidityKind.Unbalanced,
-      useNativeAssetAsWrappedAmountIn: this.isNativeAssetIn(humanAmountsIn),
+      useNativeAssetAsWrappedAmountIn: this.addLiquidityHelpers.isNativeAssetIn(humanAmountsIn),
     }
   }
 }
