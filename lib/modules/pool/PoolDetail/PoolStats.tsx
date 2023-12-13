@@ -4,6 +4,7 @@ import PoolBadges from './PoolBadges'
 import { usePool } from '../usePool'
 import { getAprLabel } from '../pool.utils'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import TriWeightChart from './PoolWeightCharts/TriWeightChart'
 
 export default function PoolStats() {
   const { pool } = usePool()
@@ -35,6 +36,7 @@ export default function PoolStats() {
           </Heading>
           <Heading fontSize="2xl">{toCurrency(pool.dynamicData.volume24h)}</Heading>
         </VStack>
+        <TriWeightChart />
         <VStack spacing="sm">
           <Heading size="h6" fontWeight="medium">
             Revenue (24h)
