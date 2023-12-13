@@ -26,6 +26,7 @@ import { FiArrowLeft } from 'react-icons/fi'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { Address } from 'viem'
 import { useRemoveLiquidity } from './useRemoveLiquidity'
+import RemoveLiquidityBptRow from './RemoveLiquidityBptRow'
 
 type Props = {
   isOpen: boolean
@@ -46,9 +47,7 @@ export function RemoveLiquidityModal({
     selectedRemoveLiquidityType,
     singleToken,
   } = useRemoveLiquidity()
-  const { pool } = usePool()
-
-  console.log({ selectedRemoveLiquidityType, singleToken, pool })
+  const { pool, bptPrice } = usePool()
 
   return (
     <Modal
@@ -77,7 +76,7 @@ export function RemoveLiquidityModal({
                 <Text fontWeight="bold" fontSize="1rem">
                   You&apos;re removing
                 </Text>
-                <TokenRow address={pool.address as Address} chain={pool.chain} value="0" />
+                <RemoveLiquidityBptRow pool={pool} amount={0} bptPrice={bptPrice} />
               </VStack>
             </Card>
             <Card variant="level0" p="md" w="full">
