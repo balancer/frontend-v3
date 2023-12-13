@@ -34,6 +34,7 @@ export function AddLiquidityForm() {
     formattedPriceImpact,
     isPriceImpactLoading,
     bptOutUnits,
+    isBptOutQueryLoading,
     isAddLiquidityDisabled,
     addLiquidityDisabledReason,
   } = useAddLiquidity()
@@ -104,7 +105,9 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Bpt out</Text>
                 <HStack>
-                  <NumberText color="GrayText">{bptOutUnits}</NumberText>
+                  <NumberText color="GrayText">
+                    {isBptOutQueryLoading ? <Skeleton w="12" h="full" /> : bptOutUnits}
+                  </NumberText>
                   <Tooltip label="Bpt out" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
