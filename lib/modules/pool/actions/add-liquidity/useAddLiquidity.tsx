@@ -84,10 +84,8 @@ export function _useAddLiquidity() {
   const { bptOut, bptOutUnits, isBptOutQueryLoading, lastSdkQueryOutput } =
     useAddLiquidityBtpOutQuery(handler, amountsIn, pool.id)
 
-  function isAddLiquidityDisabled(humanAmountsIn: HumanAmountIn[]) {
-    // TODO: do we need to render reasons why the transaction cannot be performed?
-    return areEmptyAmounts(humanAmountsIn)
-  }
+  // TODO: we will need to render reasons why the transaction cannot be performed so instead of a boolean this will become an object
+  const isAddLiquidityDisabled = areEmptyAmounts(amountsIn)
 
   /* We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
     helper is a class and if we return its methods we would lose the this binding, getting a:
