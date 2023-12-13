@@ -17,6 +17,7 @@ import {
   PriceImpactAmount,
 } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
+import { Pool } from '../../../usePool'
 
 /**
  * UnbalancedAddLiquidityHandler is a handler that implements the
@@ -26,7 +27,10 @@ import { AddLiquidityHandler } from './AddLiquidity.handler'
  * asset instead of the wrapped native asset.
  */
 export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
-  constructor(private addLiquidityHelpers: AddLiquidityHelpers) {}
+  addLiquidityHelpers: AddLiquidityHelpers
+  constructor(pool: Pool) {
+    this.addLiquidityHelpers = new AddLiquidityHelpers(pool)
+  }
 
   public async queryAddLiquidity({
     humanAmountsIn,

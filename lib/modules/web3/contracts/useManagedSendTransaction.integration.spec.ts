@@ -35,7 +35,7 @@ describe('weighted join test', () => {
   test('Sends transaction after updating amount inputs', async () => {
     await utils.setupTokens([...getPoolTokens().map(() => '100' as HumanAmount), '100'])
 
-    const { handler } = selectAddLiquidityHandler(aWjAuraWethPoolElementMock())
+    const handler = selectAddLiquidityHandler(aWjAuraWethPoolElementMock())
 
     const humanAmountsIn: HumanAmountIn[] = poolTokens.map(t => ({
       humanAmount: '1',

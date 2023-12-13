@@ -11,7 +11,7 @@ import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
-import { HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
+import { AddLiquidityHelpers } from './AddLiquidityHelpers'
 import { areEmptyAmounts } from './add-liquidity.helpers'
 import { HumanAmountIn } from './add-liquidity.types'
 import { useAddLiquidityBtpOutQuery } from './queries/useAddLiquidityBtpOutQuery'
@@ -29,7 +29,7 @@ export function _useAddLiquidity() {
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
 
-  const { handler, helpers } = selectAddLiquidityHandler(pool)
+  const handler = selectAddLiquidityHandler(pool)
 
   function setInitialAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -92,13 +92,12 @@ export function _useAddLiquidity() {
     return areEmptyAmounts(humanAmountsIn)
   }
 
-  // TODO: we need this constants to avoid losing this reference when exposing a class method
-  // Alternative 1: refactor AddLiquidityHelpers from class to builder function
-  // Alternative 2: expose helpers and access its methods from consumers
-  // Alternative 3: Instantiate helpers outside this provider
-  const poolTokenAddresses = helpers.poolTokenAddresses
-  const getAmountsToApprove = (humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[]) =>
-    helpers.getAmountsToApprove(humanAmountsInWithTokenInfo)
+  const helpers = new AddLiquidityHelpers(pool)
+  /* We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
+    helper is a class and if we return its methods we would lose the this binding, getting a:
+    TypeError: Cannot read property getAmountsToApprove of undefined
+    when trying to access the returned method
+    */
 
   return {
     amountsIn,
@@ -114,8 +113,6 @@ export function _useAddLiquidity() {
     isAddLiquidityDisabled,
     buildAddLiquidityTx: handler.buildAddLiquidityTx,
     helpers,
-    poolTokenAddresses,
-    getAmountsToApprove,
     poolStateInput,
   }
 }

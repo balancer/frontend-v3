@@ -39,7 +39,7 @@ test('returns add liquidity helpers', async () => {
   const result = await testUseAddLiquidity()
 
   expect(result.current.helpers.chainId).toBe(mainnet.id)
-  expect(result.current.poolTokenAddresses).toEqual([balAddress, wETHAddress])
+  expect(result.current.helpers.poolTokenAddresses).toEqual([balAddress, wETHAddress])
 
   const humanAmountsIn = [
     { tokenAddress: balAddress, humanAmount: '1', symbol: 'BAL' },

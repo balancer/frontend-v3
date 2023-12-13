@@ -11,7 +11,7 @@ import { selectAddLiquidityHandler } from '../selectAddLiquidityHandler'
 
 function selectUnbalancedHandler() {
   //TODO: refactor mock builders to build poolStateInput and pool at the same time
-  return selectAddLiquidityHandler(aWjAuraWethPoolElementMock()).handler
+  return selectAddLiquidityHandler(aWjAuraWethPoolElementMock())
 }
 
 describe('When adding unbalanced liquidity for a weighted  pool', () => {
@@ -83,7 +83,7 @@ describe('When adding unbalanced liquidity for an stable pool', () => {
   test('calculates price impact', async () => {
     const pool = aPhantomStablePoolStateInputMock() as Pool // wstETH-rETH-sfrxETH
 
-    const { handler } = selectAddLiquidityHandler(pool)
+    const handler = selectAddLiquidityHandler(pool)
 
     // wstETH-rETH-sfrxETH has 3 tokens + BPT token:
     // we use 0, 10, 100, 1000 as amounts

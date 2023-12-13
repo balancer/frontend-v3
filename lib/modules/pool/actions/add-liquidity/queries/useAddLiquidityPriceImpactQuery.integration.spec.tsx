@@ -9,7 +9,7 @@ import { selectAddLiquidityHandler } from '../selectAddLiquidityHandler'
 import { useAddLiquidityPriceImpactQuery } from './useAddLiquidityPriceImpactQuery'
 
 async function testQuery(humanAmountsIn: HumanAmountIn[]) {
-  const { handler } = selectAddLiquidityHandler(aWjAuraWethPoolElementMock())
+  const handler = selectAddLiquidityHandler(aWjAuraWethPoolElementMock())
   const { result } = testHook(() =>
     useAddLiquidityPriceImpactQuery(handler, humanAmountsIn, defaultTestUserAccount)
   )

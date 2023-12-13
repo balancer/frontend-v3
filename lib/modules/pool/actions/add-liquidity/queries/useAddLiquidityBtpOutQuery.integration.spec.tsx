@@ -9,7 +9,7 @@ import { selectAddLiquidityHandler } from '../selectAddLiquidityHandler'
 import { useAddLiquidityBtpOutQuery } from './useAddLiquidityBtpOutQuery'
 
 async function testQuery(humanAmountsIn: HumanAmountIn[]) {
-  const { handler } = selectAddLiquidityHandler(aWjAuraWethPoolElementMock())
+  const handler = selectAddLiquidityHandler(aWjAuraWethPoolElementMock())
   const { result } = testHook(() =>
     useAddLiquidityBtpOutQuery(handler, humanAmountsIn, defaultTestUserAccount)
   )
