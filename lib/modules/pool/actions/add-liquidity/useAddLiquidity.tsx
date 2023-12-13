@@ -88,9 +88,9 @@ export function _useAddLiquidity() {
     pool.id
   )
 
-  function canExecuteAddLiquidity(humanAmountsIn: HumanAmountIn[]) {
+  function isAddLiquidityDisabled(humanAmountsIn: HumanAmountIn[]) {
     // TODO: do we need to render reasons why the transaction cannot be performed?
-    return !areEmptyAmounts(humanAmountsIn)
+    return areEmptyAmounts(humanAmountsIn)
   }
 
   // TODO: we need this constants to avoid losing this reference when exposing a class method
@@ -112,7 +112,7 @@ export function _useAddLiquidity() {
     isBptOutQueryLoading,
     bptOutUnits,
     setAmountIn,
-    canExecuteAddLiquidity,
+    isAddLiquidityDisabled,
     buildAddLiquidityTx: handler.buildAddLiquidityTx,
     helpers,
     poolTokenAddresses,
