@@ -136,6 +136,7 @@ export function RemoveLiquidityForm() {
     setProportionalPercent,
     singleToken,
     setSingleToken,
+    setProportional,
   } = useRemoveLiquidity()
   const { toCurrency } = useCurrency()
   const previewDisclosure = useDisclosure()
@@ -151,8 +152,9 @@ export function RemoveLiquidityForm() {
   }
 
   useEffect(() => {
+    // actively choosing a single token will set the correct selectedRemoveLiquidityType
     if (activeTab === TABS[0]) {
-      setSingleToken('')
+      setProportional()
     }
   }, [activeTab])
 
