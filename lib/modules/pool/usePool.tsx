@@ -50,8 +50,12 @@ export function _usePool({
   // fallbacks to ensure the pool is always present. We prefer the pool with on chain data
   const pool = poolWithOnChainData || data?.pool || initialData.pool
 
+  const bptPrice =
+    parseFloat(pool.dynamicData.totalLiquidity) / parseFloat(pool.dynamicData.totalShares)
+
   return {
     pool,
+    bptPrice,
     loading,
     // TODO: we assume here that we never need to reload the entire pool.
     // this assumption may need to be questioned
