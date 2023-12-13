@@ -2,10 +2,16 @@
 'use client'
 
 import { getNetworkConfig } from '@/lib/config/app.config'
-import { GqlChain, GqlSorSwapType } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GetSorSwapsDocument,
+  GetSorSwapsQuery,
+  GqlChain,
+  GqlSorSwapType,
+} from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { makeVar, useReactiveVar } from '@apollo/client'
+import { makeVar, useLazyQuery, useReactiveVar } from '@apollo/client'
 import { PropsWithChildren, createContext, useEffect, useState } from 'react'
+import { isAddress } from 'viem'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -15,6 +21,9 @@ type SwapState = {
   tokenOut: string
   swapType: GqlSorSwapType
   swapAmount: string | null
+  swapOptions: {
+    maxPools: number
+  }
 }
 
 const swapStateVar = makeVar<SwapState>({
@@ -22,6 +31,9 @@ const swapStateVar = makeVar<SwapState>({
   tokenOut: '',
   swapType: GqlSorSwapType.ExactIn,
   swapAmount: null,
+  swapOptions: {
+    maxPools: 8,
+  },
 })
 
 export function _useSwap() {
@@ -31,8 +43,54 @@ export function _useSwap() {
   const [tokenOutAmount, _setTokenOutAmount] = useState<string>('')
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>()
   const [selectedChain, setSelectedChain] = useState<GqlChain>(GqlChain.Mainnet)
+  const [swapOutput, setSwapOutput] = useState<GetSorSwapsQuery['swaps']>()
 
   const networkConfig = getNetworkConfig(selectedChain)
+
+  const shouldFetchSwap =
+    isAddress(swapState.tokenIn) && isAddress(swapState.tokenOut) && swapState.swapType
+
+  const [
+    fetchSwapsQuery,
+    { stopPolling: tradeStopPolling, startPolling, networkStatus, loading, error },
+  ] = useLazyQuery(GetSorSwapsDocument, {
+    fetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+  })
+
+  async function fetchSwaps() {
+    console.log('fetchSwaps')
+
+    const state = swapStateVar()
+
+    if (!shouldFetchSwap) return
+
+    const { data } = await fetchSwapsQuery({
+      fetchPolicy: 'no-cache',
+      variables: {
+        chain: selectedChain,
+        tokenIn: state.tokenIn,
+        tokenOut: state.tokenOut,
+        swapType: state.swapType,
+        swapAmount: state.swapAmount || '0',
+        swapOptions: state.swapOptions,
+      },
+    })
+
+    setSwapOutput(data?.swaps)
+  }
+
+  useEffect(() => {
+    console.log('swapOutput', swapOutput)
+  }, [swapOutput])
+
+  useEffect(() => {
+    console.log('swapState', swapState)
+  }, [swapState])
+
+  useEffect(() => {
+    console.log('shouldFetchSwap', shouldFetchSwap)
+  }, [shouldFetchSwap])
 
   function setTokenIn(tokenAddress: string) {
     swapStateVar({
@@ -48,21 +106,28 @@ export function _useSwap() {
     })
   }
 
-  function setSwapType(swapType: GqlSorSwapType) {
-    swapStateVar({
-      ...swapState,
-      swapType,
-    })
-  }
-
   function setTokenInAmount(amount: string, userTriggered = true) {
     _setTokenInAmount(amount)
-    if (userTriggered) setSwapType(GqlSorSwapType.ExactIn)
+    if (userTriggered) {
+      swapStateVar({
+        ...swapState,
+        swapType: GqlSorSwapType.ExactIn,
+        swapAmount: amount,
+      })
+      fetchSwaps()
+    }
   }
 
   function setTokenOutAmount(amount: string, userTriggered = true) {
     _setTokenOutAmount(amount)
-    if (userTriggered) setSwapType(GqlSorSwapType.ExactOut)
+    if (userTriggered) {
+      swapStateVar({
+        ...swapState,
+        swapType: GqlSorSwapType.ExactOut,
+        swapAmount: amount,
+      })
+      fetchSwaps()
+    }
   }
 
   function setDefaultTokens() {
@@ -77,17 +142,19 @@ export function _useSwap() {
 
   // On first render, set default tokens
   useEffect(() => {
+    console.log('setDefaultTokens')
+
     setDefaultTokens()
   }, [])
 
   // On selected chain change, set default tokens
   useEffect(() => {
+    console.log('setDefaultTokens')
     setDefaultTokens()
   }, [selectedChain])
 
-  useEffect(() => {
-    console.log('swapState.swapType', swapState.swapType)
-  }, [swapState.swapType])
+  const isLoading = loading
+  const isDisabled = isLoading || !swapOutput || swapOutput.swaps.length === 0
 
   return {
     ...swapState,
@@ -95,13 +162,14 @@ export function _useSwap() {
     tokenOutAmount,
     tokenSelectKey,
     selectedChain,
+    isLoading,
+    isDisabled,
     setTokenSelectKey,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
     setTokenIn,
     setTokenOut,
-    setSwapType,
   }
 }
 

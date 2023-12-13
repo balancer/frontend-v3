@@ -3,7 +3,7 @@
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { GqlChain, GqlSorSwapType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { HumanAmount } from '@balancer/sdk'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
@@ -34,31 +34,25 @@ export function SwapForm() {
     tokenOutAmount,
     selectedChain,
     tokenSelectKey,
+    isLoading,
+    isDisabled,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
     setTokenSelectKey,
     setTokenIn,
     setTokenOut,
-    setSwapType,
   } = useSwap()
   const { toCurrency } = useCurrency()
   const { getTokensByChain } = useTokens()
   const tokenSelectDisclosure = useDisclosure()
 
-  const isDisabled = false
-
   const networkOptions = PROJECT_CONFIG.supportedNetworks
 
-  const tokens = useMemo(() => getTokensByChain(selectedChain), [selectedChain, getTokensByChain])
-
-  function submit() {
-    console.log('submit')
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const tokens = useMemo(() => getTokensByChain(selectedChain), [selectedChain])
 
   function handleTokenSelect(token: GqlToken) {
-    console.log('handleTokenSelect', token)
-
     if (tokenSelectKey === 'tokenIn') {
       setTokenIn(token.address)
     } else if (tokenSelectKey === 'tokenOut') {
@@ -71,6 +65,10 @@ export function SwapForm() {
   function openTokenSelectModal(tokenSelectKey: 'tokenIn' | 'tokenOut') {
     setTokenSelectKey(tokenSelectKey)
     tokenSelectDisclosure.onOpen()
+  }
+
+  function submit() {
+    console.log('submit')
   }
 
   return (
@@ -138,7 +136,8 @@ export function SwapForm() {
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={!isDisabled}
+                isDisabled={isDisabled}
+                isLoading={isLoading}
                 onClick={submit}
               >
                 Swap

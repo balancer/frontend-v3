@@ -23,7 +23,6 @@ import { HiChevronDown } from 'react-icons/hi'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { blockInvalidNumberInput, tokenFormat } from '@/lib/shared/utils/numbers'
 import { TokenIcon } from '../TokenIcon'
-import { useEffect } from 'react'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
@@ -127,10 +126,6 @@ export const TokenInput = forwardRef(
     const { getToken } = useTokens()
     const token = address && chain ? getToken(address, chain) : undefined
     const { handleOnChange, updateValue } = useTokenInput(token, onChange)
-
-    useEffect(() => {
-      console.log('Address changed in input', address)
-    }, [address])
 
     const tokenInputSelector = TokenInputSelector({ token, weight, toggleTokenSelect })
     const footer = hideFooter ? undefined : TokenInputFooter({ token, value, updateValue })
