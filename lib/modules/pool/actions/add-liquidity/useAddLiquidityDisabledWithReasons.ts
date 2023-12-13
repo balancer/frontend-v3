@@ -10,13 +10,6 @@ type IsDisabledIWithReasons = {
   addLiquidityDisabledReason?: string
 }
 
-function disabled(reason: string): IsDisabledIWithReasons {
-  return {
-    isAddLiquidityDisabled: true,
-    addLiquidityDisabledReason: reason,
-  }
-}
-
 export function useAddLiquidityDisabledWithReasons(
   amountsIn: HumanAmountIn[]
 ): IsDisabledIWithReasons {
@@ -31,4 +24,11 @@ export function useAddLiquidityDisabledWithReasons(
   }
 
   return { isAddLiquidityDisabled: false }
+}
+
+function disabled(reason: string): IsDisabledIWithReasons {
+  return {
+    isAddLiquidityDisabled: true,
+    addLiquidityDisabledReason: reason,
+  }
 }
