@@ -22,7 +22,7 @@ import { TbWallet } from 'react-icons/tb'
 import { useTokenInput } from './useTokenInput'
 import { HiChevronDown } from 'react-icons/hi'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { blockInvalidNumberInput, tokenFormat } from '@/lib/shared/utils/numbers'
+import { blockInvalidNumberInput, fNum } from '@/lib/shared/utils/numbers'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
@@ -83,7 +83,7 @@ function TokenInputFooter({ token, value, updateValue }: TokenInputFooterProps) 
       ) : (
         <HStack cursor="pointer" onClick={() => updateValue(userBalance)}>
           <Text fontSize="sm" color="salmon.500">
-            {tokenFormat(userBalance)}
+            {fNum(userBalance, 'token')}
           </Text>
           <Box color="sand.300">
             <TbWallet />

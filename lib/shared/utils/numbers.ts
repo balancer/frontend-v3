@@ -98,3 +98,27 @@ export function safeSum(amounts: Numberish[]): string {
 export function blockInvalidNumberInput(event: KeyboardEvent<HTMLInputElement>): void {
   ;['e', 'E', '+', '-'].includes(event.key) && event.preventDefault()
 }
+
+type NumberFormat = 'integer' | 'fiat' | 'token' | 'apr' | 'feePercent' | 'weight' | 'priceImpact'
+
+// General number formatting function.
+export function fNum(val: Numberish, format: NumberFormat, opts?: FormatOpts): string {
+  switch (format) {
+    case 'integer':
+      return integerFormat(val)
+    case 'fiat':
+      return fiatFormat(val, opts)
+    case 'token':
+      return tokenFormat(val, opts)
+    case 'apr':
+      return aprFormat(val)
+    case 'feePercent':
+      return feePercentFormat(val)
+    case 'weight':
+      return weightFormat(val)
+    case 'priceImpact':
+      return priceImpactFormat(val)
+    default:
+      throw new Error(`Number format not implemented: ${format}`)
+  }
+}

@@ -8,7 +8,7 @@ import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { tokenFormat } from '@/lib/shared/utils/numbers'
+import { fNum } from '@/lib/shared/utils/numbers'
 import { HumanAmount } from '@balancer/sdk'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
@@ -65,7 +65,7 @@ function TokenAmountRow({
           size={28}
           alt={token?.symbol || 'Token icon'}
         />
-        <NumberText>{tokenFormat(humanAmount)}</NumberText>
+        <NumberText>{fNum(humanAmount, 'token')}</NumberText>
         <Text>{symbol || token?.symbol}</Text>
       </HStack>
       <NumberText>{usdValue ? toCurrency(usdValue) : '-'}</NumberText>

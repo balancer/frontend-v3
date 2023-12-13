@@ -5,7 +5,7 @@ import { Box, HStack, Tag, Text } from '@chakra-ui/react'
 import { TokenIcon } from '../../tokens/TokenIcon'
 import { PoolListItem } from '../pool.types'
 import { GqlChain, GqlPoolTokenDisplay } from '@/lib/shared/services/api/generated/graphql'
-import { weightFormat } from '@/lib/shared/utils/numbers'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 interface Props {
   pool: PoolListItem
@@ -60,7 +60,7 @@ export function PoolListTokensTag({ pool }: Props) {
                     <PoolTokenIcon token={token} chain={pool.chain} />
                   )}
                   <Text>{token.nestedTokens ? token.name : token.symbol}</Text>
-                  <Text>{weightFormat(token.weight || '')}</Text>
+                  <Text>{fNum(token.weight || '', 'weight')}</Text>
                 </HStack>
               </Tag>
             )

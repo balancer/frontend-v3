@@ -5,7 +5,7 @@ import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { ReactNode } from 'react'
 import { TokenIcon } from '../TokenIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { Numberish, tokenFormat } from '@/lib/shared/utils/numbers'
+import { Numberish, fNum } from '@/lib/shared/utils/numbers'
 
 type Props = {
   address: Address
@@ -37,7 +37,7 @@ export default function TokenRow({ address, value, customRender, chain }: Props)
       <HStack spacing="8">
         <VStack spacing="1" alignItems="flex-end">
           <Heading fontWeight="bold" as="h6" fontSize="1rem">
-            {tokenFormat(value) || 0.0}
+            {fNum(value, 'token')}
           </Heading>
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
             {toCurrency(totalValue)}

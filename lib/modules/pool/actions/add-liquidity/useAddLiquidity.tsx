@@ -5,7 +5,7 @@ import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { priceImpactFormat, safeSum } from '@/lib/shared/utils/numbers'
+import { fNum, safeSum } from '@/lib/shared/utils/numbers'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { AddLiquidityQueryOutput, HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
@@ -88,7 +88,7 @@ export function _useAddLiquidity() {
   }
   const debouncedQueryPriceImpact = useDebouncedCallback(queryPriceImpact, 300)
 
-  const formattedPriceImpact = priceImpact ? priceImpactFormat(priceImpact.decimal) : '-'
+  const formattedPriceImpact = priceImpact ? fNum(priceImpact.decimal, 'priceImpact') : '-'
 
   const [addLiquidityQuery, setAddLiquidityQuery] = useState<AddLiquidityQueryOutput | null>(null) //TODO: rename to queryBptOut if that's the only thing we need from the query result
   async function queryBptOut() {

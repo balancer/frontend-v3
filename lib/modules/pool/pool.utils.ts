@@ -1,7 +1,7 @@
 import { GqlChain, GqlPoolAprValue } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolVariant } from './pool.types'
-import { aprFormat } from '@/lib/shared/utils/numbers'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -48,9 +48,9 @@ export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolPr
  */
 export function getAprLabel(apr: GqlPoolAprValue): string {
   if (apr.__typename === 'GqlPoolAprRange') {
-    return `${aprFormat(apr.min)} - ${aprFormat(apr.max)}`
+    return `${fNum(apr.min, 'apr')} - ${fNum(apr.max, 'apr')}`
   } else if (apr.__typename === 'GqlPoolAprTotal') {
-    return aprFormat(apr.total)
+    return fNum(apr.total, 'apr')
   } else {
     return '-'
   }
