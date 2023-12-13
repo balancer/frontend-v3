@@ -1,4 +1,4 @@
-import { HumanAmount, PriceImpact, TokenAmount } from '@balancer/sdk'
+import { AddLiquidityQueryOutput, HumanAmount, PriceImpact, TokenAmount } from '@balancer/sdk'
 import { Address } from 'wagmi'
 
 // TODO: this type should be exposed by the SDK
@@ -15,6 +15,16 @@ export type AddLiquidityInputs = {
   slippagePercent?: string
 }
 
+// sdkQueryOutput is optional because it will be only used in cases where we use the SDK to query/build the transaction
+// We will probably need a more abstract interface to be used by edge cases
 export type AddLiquidityOutputs = {
   bptOut: TokenAmount
+  sdkQueryOutput?: AddLiquidityQueryOutput
+}
+
+// sdkQueryOutput is optional because it will be only used in cases where we use the SDK to query/build the transaction
+// We will probably need a more abstract interface to be used by edge cases
+export type BuildLiquidityInputs = {
+  inputs: AddLiquidityInputs
+  sdkQueryOutput?: AddLiquidityQueryOutput
 }

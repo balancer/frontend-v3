@@ -1,6 +1,6 @@
 'use client'
 
-import { MAX_UINT256, TokenAmount } from '@balancer/sdk'
+import { MAX_UINT256 } from '@balancer/sdk'
 import BigNumber from 'bignumber.js'
 import numeral from 'numeral'
 import { KeyboardEvent } from 'react'

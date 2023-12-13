@@ -1,9 +1,10 @@
 'use client'
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
+import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { integerFormat } from '@/lib/shared/utils/numbers'
-import { HumanAmount, TokenAmount } from '@balancer/sdk'
+import { TokenAmount } from '@balancer/sdk'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { formatUnits } from 'viem'
@@ -12,7 +13,6 @@ import { areEmptyAmounts } from '../add-liquidity.helpers'
 import { HumanAmountIn } from '../add-liquidity.types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
-import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 
 const debounceMillis = 300
 

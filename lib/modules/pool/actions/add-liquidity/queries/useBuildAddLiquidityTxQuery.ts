@@ -33,11 +33,12 @@ export function useBuildAddLiquidityQuery(
   const addLiquidityQuery = useQuery(
     [queryKey()],
     async () => {
-      return await buildAddLiquidityTx({
+      const inputs = {
         humanAmountsIn,
         account: userAddress || emptyAddress,
         slippagePercent: slippage,
-      })
+      }
+      return await buildAddLiquidityTx({ inputs })
     },
     {
       enabled: enabled && !!userAddress && allowances && hasTokenAllowance(allowances),

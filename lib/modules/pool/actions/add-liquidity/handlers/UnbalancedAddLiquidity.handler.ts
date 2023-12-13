@@ -1,6 +1,5 @@
 import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
 import {
   AddLiquidity,
   AddLiquidityKind,
@@ -13,6 +12,7 @@ import { areEmptyAmounts } from '../add-liquidity.helpers'
 import {
   AddLiquidityInputs,
   AddLiquidityOutputs,
+  BuildLiquidityInputs,
   HumanAmountIn,
   PriceImpactAmount,
 } from '../add-liquidity.types'
@@ -34,11 +34,11 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     const addLiquidity = new AddLiquidity()
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
-    const { bptOut } = await addLiquidity.query(
+    const sdkQueryOutput = await addLiquidity.query(
       addLiquidityInput,
       this.addLiquidityHelpers.poolStateInput
     )
-    return { bptOut }
+    return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
   }
 
   public async calculatePriceImpact({ humanAmountsIn }: AddLiquidityInputs): Promise<number> {
@@ -57,24 +57,19 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     return priceImpactABA.decimal
   }
 
-  public async buildAddLiquidityTx({
-    humanAmountsIn,
-    account,
-    slippagePercent,
-  }: AddLiquidityInputs): Promise<TransactionConfig> {
+  /*
+    sdkQueryOutput is the result of the query that we run in the add liquidity form
+  */
+  public async buildAddLiquidityTx(buildInputs: BuildLiquidityInputs): Promise<TransactionConfig> {
+    const { account, slippagePercent } = buildInputs.inputs
+    const sdkQueryOutput = buildInputs.sdkQueryOutput
     if (!account || !slippagePercent) throw new Error('Missing account or slippage')
+    if (!sdkQueryOutput) throw new Error('Missing sdkQueryOutput')
 
     const addLiquidity = new AddLiquidity()
-    const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
-
-    // TODO: we probably don't need this query when building the call as we already used it (check queryAddLiquidity) during the Add Liquidity form management
-    const queryResult = await addLiquidity.query(
-      addLiquidityInput,
-      this.addLiquidityHelpers.poolStateInput
-    )
 
     const { call, to, value } = addLiquidity.buildCall({
-      ...queryResult,
+      ...sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,

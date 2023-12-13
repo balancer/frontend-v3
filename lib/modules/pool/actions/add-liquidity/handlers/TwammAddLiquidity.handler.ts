@@ -2,7 +2,11 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { Token, TokenAmount } from '@balancer/sdk'
-import { AddLiquidityInputs, AddLiquidityOutputs } from '../add-liquidity.types'
+import {
+  AddLiquidityInputs,
+  AddLiquidityOutputs,
+  BuildLiquidityInputs,
+} from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 
 /**
@@ -31,11 +35,8 @@ export class TwammAddLiquidityHandler implements AddLiquidityHandler {
   }
 
   // TODO: This is a non-sense example implementation
-  public async buildAddLiquidityTx({
-    humanAmountsIn,
-    account,
-    slippagePercent,
-  }: AddLiquidityInputs): Promise<TransactionConfig> {
+  public async buildAddLiquidityTx(buildInputs: BuildLiquidityInputs): Promise<TransactionConfig> {
+    const { humanAmountsIn, account, slippagePercent } = buildInputs.inputs
     if (!account || !slippagePercent) throw new Error('Missing account or slippage')
 
     const value = BigInt(humanAmountsIn[0].humanAmount)

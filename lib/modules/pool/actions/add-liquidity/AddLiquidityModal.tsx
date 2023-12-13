@@ -133,7 +133,7 @@ export function AddLiquidityModal({
                 </HStack>
                 <TokenAmountRow
                   tokenAddress={pool.address as Address}
-                  humanAmount={bptOutUnits}
+                  humanAmount={bptOutUnits as HumanAmount}
                   symbol="LP Token"
                 />
               </VStack>

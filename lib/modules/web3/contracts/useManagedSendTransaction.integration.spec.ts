@@ -42,30 +42,17 @@ describe('weighted join test', () => {
       tokenAddress: t.address,
     }))
 
-    const balanceBefore = await getPoolTokenBalances()
-
-    // First simulation
-    const config = await handler.buildAddLiquidityTx({
+    const inputs = {
       humanAmountsIn,
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
-    })
+    }
+    const { sdkQueryOutput } = await handler.queryAddLiquidity(inputs)
+
+    const txConfig = await handler.buildAddLiquidityTx({ inputs, sdkQueryOutput })
 
     const { result } = testHook(() => {
-      return useManagedSendTransaction(buildAddLiquidityLabels(), config)
-    })
-
-    await waitFor(() => expect(result.current.executeAsync).toBeDefined())
-
-    // Second simulation
-    const humanAmountsIn2: HumanAmountIn[] = poolTokens.map(t => ({
-      humanAmount: '1',
-      tokenAddress: t.address,
-    }))
-    const config2 = await handler.buildAddLiquidityTx({
-      humanAmountsIn: humanAmountsIn2,
-      account: defaultTestUserAccount,
-      slippagePercent: '0.2',
+      return useManagedSendTransaction(buildAddLiquidityLabels(), txConfig)
     })
 
     await waitFor(() => expect(result.current.executeAsync).toBeDefined())
