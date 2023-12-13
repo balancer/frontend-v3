@@ -162,6 +162,7 @@ export function AddLiquidityModal({
           >
             <AddLiquidityFlowButton
               humanAmountsInWithTokenInfo={humanAmountsInWithTokenInfo}
+              poolId={pool.id}
             ></AddLiquidityFlowButton>
           </TokenAllowancesProvider>
         </ModalFooter>

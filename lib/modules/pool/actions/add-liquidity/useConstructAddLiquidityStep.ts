@@ -1,19 +1,16 @@
-import { poolId } from '@/lib/debug-helpers'
 import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { Address } from 'wagmi'
 import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
 import { HumanAmountIn } from './add-liquidity.types'
 import { useBuildAddLiquidityQuery } from './queries/useBuildAddLiquidityTxQuery'
 
-export function useConstructAddLiquidityStep(humanAmountsIn: HumanAmountIn[]) {
-  const { address: userAddress } = useUserAccount()
+export function useConstructAddLiquidityStep(humanAmountsIn: HumanAmountIn[], poolId: string) {
   const { isActiveStep, activateStep } = useActiveStep()
 
   //TODO: add slippage
-  const addLiquidityQuery = useBuildAddLiquidityQuery(humanAmountsIn, isActiveStep, userAddress)
+  const addLiquidityQuery = useBuildAddLiquidityQuery(humanAmountsIn, isActiveStep, poolId)
 
   const transactionLabels = buildAddLiquidityLabels(poolId)
 
@@ -22,8 +19,8 @@ export function useConstructAddLiquidityStep(humanAmountsIn: HumanAmountIn[]) {
   const step: FlowStep = {
     ...transaction,
     transactionLabels,
-    id: `joinPool${poolId}`,
-    stepType: 'joinPool',
+    id: `addLiquidityPool${poolId}`,
+    stepType: 'addLiquidity',
     isComplete: () => false,
     activateStep,
   }

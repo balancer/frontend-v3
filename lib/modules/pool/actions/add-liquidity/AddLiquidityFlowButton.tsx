@@ -10,14 +10,18 @@ export type HumanAmountInWithTokenInfo = HumanAmountIn & GqlToken
 
 type Props = {
   humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[]
+  poolId: string
 }
-export function AddLiquidityFlowButton({ humanAmountsInWithTokenInfo }: Props) {
+export function AddLiquidityFlowButton({ humanAmountsInWithTokenInfo, poolId }: Props) {
   const { helpers } = useAddLiquidity()
   const { tokenApprovalStep, initialAmountsToApprove } = useNextTokenApprovalStep(
     helpers.getAmountsToApprove(humanAmountsInWithTokenInfo)
   )
 
-  const { step: addLiquidityStep } = useConstructAddLiquidityStep(humanAmountsInWithTokenInfo)
+  const { step: addLiquidityStep } = useConstructAddLiquidityStep(
+    humanAmountsInWithTokenInfo,
+    poolId
+  )
   const steps = [tokenApprovalStep, addLiquidityStep]
 
   function handleJoinCompleted() {
