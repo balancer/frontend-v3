@@ -12,11 +12,11 @@ import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
 import { AddLiquidityHelpers } from './AddLiquidityHelpers'
-import { areEmptyAmounts } from './add-liquidity.helpers'
 import { AddLiquidityInputs, HumanAmountIn } from './add-liquidity.types'
 import { useAddLiquidityBtpOutQuery } from './queries/useAddLiquidityBtpOutQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
+import { useAddLiquidityDisabledWithReasons } from './useAddLiquidityDisabledWithReasons'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -84,8 +84,8 @@ export function _useAddLiquidity() {
   const { bptOut, bptOutUnits, isBptOutQueryLoading, lastSdkQueryOutput } =
     useAddLiquidityBtpOutQuery(handler, amountsIn, pool.id)
 
-  // TODO: we will need to render reasons why the transaction cannot be performed so instead of a boolean this will become an object
-  const isAddLiquidityDisabled = areEmptyAmounts(amountsIn)
+  const { isAddLiquidityDisabled, addLiquidityDisabledReason } =
+    useAddLiquidityDisabledWithReasons(amountsIn)
 
   /* We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
     helper is a class and if we return its methods we would lose the this binding, getting a:
@@ -112,6 +112,7 @@ export function _useAddLiquidity() {
     bptOutUnits,
     setAmountIn,
     isAddLiquidityDisabled,
+    addLiquidityDisabledReason,
     buildAddLiquidityTx,
     helpers,
     poolStateInput,
