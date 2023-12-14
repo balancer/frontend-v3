@@ -28,7 +28,7 @@ async function testQuery(humanAmountsIn: HumanAmountIn[]) {
   return result
 }
 
-test('fetches join pool config when user is not connected', async () => {
+test('does not build add liquidity config when user is not connected', async () => {
   const result = await testQuery([])
 
   await waitFor(() => expect(result.current.isLoading).toBeFalsy())
@@ -36,7 +36,7 @@ test('fetches join pool config when user is not connected', async () => {
   expect(result.current.data).toBeUndefined()
 })
 
-test.skip('fetches join pool config when user is connected', async () => {
+test.skip('builds add liquidity config when user is connected', async () => {
   const humanAmountsIn: HumanAmountIn[] = [
     { tokenAddress: wETHAddress, humanAmount: '1' },
     { tokenAddress: wjAuraAddress, humanAmount: '1' },

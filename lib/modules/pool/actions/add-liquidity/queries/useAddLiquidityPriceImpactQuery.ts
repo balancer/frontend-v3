@@ -2,15 +2,14 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { priceImpactFormat } from '@/lib/shared/utils/numbers'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { useQuery } from 'wagmi'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
-import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { areEmptyAmounts } from '../../LiquidityActionHelpers'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 const debounceMillis = 250
 
@@ -19,14 +18,14 @@ export function useAddLiquidityPriceImpactQuery(
   humanAmountsIn: HumanAmountIn[],
   poolId: string
 ) {
-  const { address: userAddress } = useUserAccount()
+  const { userAddress } = useUserAccount()
   const { slippage } = useUserSettings()
   const [priceImpact, setPriceImpact] = useState<number | null>(null)
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, debounceMillis)
 
   function queryKey(): string {
     return generateAddLiquidityQueryKey({
-      userAddress: userAddress || emptyAddress,
+      userAddress,
       poolId,
       slippage,
       humanAmountsIn: debouncedHumanAmountsIn as unknown as HumanAmountIn[],
@@ -51,7 +50,7 @@ export function useAddLiquidityPriceImpactQuery(
       enabled: !!userAddress && !areEmptyAmounts(humanAmountsIn),
     }
   )
-  const formattedPriceImpact = priceImpact ? priceImpactFormat(priceImpact) : '-'
+  const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
   return { priceImpact, formattedPriceImpact, isPriceImpactLoading: query.isLoading }
 }

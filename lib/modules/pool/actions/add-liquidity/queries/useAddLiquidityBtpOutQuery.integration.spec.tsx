@@ -27,6 +27,6 @@ test('queries btp out for add liquidity', async () => {
   await waitFor(() => expect(result.current.bptOut).not.toBeNull())
 
   expect(result.current.bptOut).toBeDefined()
-  expect(result.current.bptOutUnits).toBe('33,427')
+  expect(result.current.bptOutUnits).toBe('33.4271k')
   expect(result.current.isBptOutQueryLoading).toBeFalsy()
 })

@@ -3,7 +3,7 @@
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useFxRates } from './useFxRates'
 import { symbolForCurrency } from '../utils/currencies'
-import { Numberish, bn, fiatFormat } from '../utils/numbers'
+import { Numberish, bn, fNum } from '../utils/numbers'
 
 type CurrencyOpts = { withSymbol?: boolean; abbreviated?: boolean }
 
@@ -26,7 +26,7 @@ export function useCurrency() {
   ): string {
     const symbol = hasFxRates ? symbolForCurrency(currency) : '$'
     const convertedAmount = toUserCurrency(usdVal)
-    const formattedAmount = fiatFormat(convertedAmount, { abbreviated })
+    const formattedAmount = fNum('fiat', convertedAmount, { abbreviated })
 
     return withSymbol ? symbol + formattedAmount : formattedAmount
   }

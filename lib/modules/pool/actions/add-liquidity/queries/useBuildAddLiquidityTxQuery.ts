@@ -9,13 +9,13 @@ import { useAddLiquidity } from '../useAddLiquidity'
 import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
 import { HumanAmountIn } from '../../liquidity-types'
 
-// Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
+// Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
 export function useBuildAddLiquidityQuery(
   humanAmountsIn: HumanAmountIn[],
   enabled: boolean,
   poolId: string
 ) {
-  const { address: userAddress } = useUserAccount()
+  const { userAddress, isConnected } = useUserAccount()
 
   const { buildAddLiquidityTx } = useAddLiquidity()
   const { slippage } = useUserSettings()
@@ -23,7 +23,7 @@ export function useBuildAddLiquidityQuery(
 
   function queryKey(): string {
     return generateAddLiquidityQueryKey({
-      userAddress: userAddress || emptyAddress,
+      userAddress,
       poolId,
       slippage,
       humanAmountsIn,
@@ -35,13 +35,13 @@ export function useBuildAddLiquidityQuery(
     async () => {
       const inputs = {
         humanAmountsIn,
-        account: userAddress || emptyAddress,
+        account: userAddress,
         slippagePercent: slippage,
       }
       return await buildAddLiquidityTx(inputs)
     },
     {
-      enabled: enabled && !!userAddress && allowances && hasTokenAllowance(allowances),
+      enabled: enabled && isConnected && allowances && hasTokenAllowance(allowances),
     }
   )
 
