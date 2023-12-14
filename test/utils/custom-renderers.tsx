@@ -1,4 +1,5 @@
 import { poolId, vaultV2Address, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
+import { AddLiquidityProvider } from '@/lib/modules/pool/actions/add-liquidity/useAddLiquidity'
 import { PoolVariant } from '@/lib/modules/pool/pool.types'
 import { PoolProvider } from '@/lib/modules/pool/usePool'
 import {
@@ -8,6 +9,7 @@ import {
 } from '@/lib/modules/tokens/__mocks__/token.builders'
 import { TokensProvider } from '@/lib/modules/tokens/useTokens'
 import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
+import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
 import { createWagmiConfig } from '@/lib/modules/web3/Web3Provider'
 import { AbiMap } from '@/lib/modules/web3/contracts/AbiMap'
 import { WriteAbiMutability } from '@/lib/modules/web3/contracts/contract.types'
@@ -32,8 +34,6 @@ import { aGqlPoolElementMock } from '../msw/builders/gqlPoolElement.builders'
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
-import { AddLiquidityProvider } from '@/lib/modules/pool/actions/add-liquidity/useAddLiquidity'
-import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -158,7 +158,7 @@ export async function useConnectTestAccount() {
   }
 }
 
-export const DefaultTokenAllowancesTestProvider = ({ children }: PropsWithChildren) => (
+export const DefaultAddLiquidityTestProvider = ({ children }: PropsWithChildren) => (
   <AddLiquidityProvider>
     <TokenAllowancesProvider
       spenderAddress={vaultV2Address}

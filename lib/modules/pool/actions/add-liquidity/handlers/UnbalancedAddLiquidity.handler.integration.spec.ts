@@ -6,8 +6,8 @@ import { HumanAmount } from '@balancer/sdk'
 import { Address } from 'viem'
 import { aPhantomStablePoolStateInputMock } from '../../../__mocks__/pool.builders'
 import { Pool } from '../../../usePool'
-import { HumanAmountIn } from '../add-liquidity.types'
 import { selectAddLiquidityHandler } from '../selectAddLiquidityHandler'
+import { HumanAmountIn } from '../../liquidity-types'
 
 function selectUnbalancedHandler() {
   //TODO: refactor mock builders to build poolStateInput and pool at the same time

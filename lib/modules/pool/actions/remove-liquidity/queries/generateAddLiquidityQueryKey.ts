@@ -7,7 +7,8 @@ type Props = {
   humanAmountsIn: HumanAmountIn[]
 }
 
-export function generateAddLiquidityQueryKey({
+// Should we share the same function for add and remove liquidity?
+export function generateRemoveLiquidityQueryKey({
   userAddress,
   poolId,
   slippage,

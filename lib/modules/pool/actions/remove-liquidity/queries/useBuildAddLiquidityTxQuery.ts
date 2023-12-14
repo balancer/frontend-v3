@@ -5,8 +5,8 @@ import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Dictionary } from 'lodash'
 import { useQuery } from 'wagmi'
-import { useAddLiquidity } from '../useAddLiquidity'
-import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
+import { useRemoveLiquidity } from '../useRemoveLiquidity'
+import { generateRemoveLiquidityQueryKey } from './generateAddLiquidityQueryKey'
 import { HumanAmountIn } from '../../liquidity-types'
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
@@ -17,12 +17,12 @@ export function useBuildAddLiquidityQuery(
 ) {
   const { address: userAddress } = useUserAccount()
 
-  const { buildAddLiquidityTx } = useAddLiquidity()
+  const { buildAddLiquidityTx } = useRemoveLiquidity()
   const { slippage } = useUserSettings()
   const allowances = {}
 
   function queryKey(): string {
-    return generateAddLiquidityQueryKey({
+    return generateRemoveLiquidityQueryKey({
       userAddress: userAddress || emptyAddress,
       poolId,
       slippage,

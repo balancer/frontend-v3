@@ -4,9 +4,9 @@ import { waitFor } from '@testing-library/react'
 
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
-import { HumanAmountIn } from '../add-liquidity.types'
 import { selectAddLiquidityHandler } from '../selectAddLiquidityHandler'
 import { useAddLiquidityPriceImpactQuery } from './useAddLiquidityPriceImpactQuery'
+import { HumanAmountIn } from '../../liquidity-types'
 
 async function testQuery(humanAmountsIn: HumanAmountIn[]) {
   const handler = selectAddLiquidityHandler(aWjAuraWethPoolElementMock())

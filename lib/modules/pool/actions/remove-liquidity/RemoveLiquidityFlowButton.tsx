@@ -3,7 +3,7 @@ import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/Tran
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { Text, VStack } from '@chakra-ui/react'
 import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
-import { useAddLiquidity } from './useAddLiquidity'
+import { useRemoveLiquidity } from './useRemoveLiquidity'
 import { HumanAmountIn } from '../liquidity-types'
 
 export type HumanAmountInWithTokenInfo = HumanAmountIn & GqlToken
@@ -12,8 +12,8 @@ type Props = {
   humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[]
   poolId: string
 }
-export function AddLiquidityFlowButton({ humanAmountsInWithTokenInfo, poolId }: Props) {
-  const { helpers } = useAddLiquidity()
+export function RemoveLiquidityFlowButton({ humanAmountsInWithTokenInfo, poolId }: Props) {
+  const { helpers } = useRemoveLiquidity()
   const { tokenApprovalStep, initialAmountsToApprove } = useNextTokenApprovalStep(
     helpers.getAmountsToApprove(humanAmountsInWithTokenInfo)
   )
@@ -24,8 +24,8 @@ export function AddLiquidityFlowButton({ humanAmountsInWithTokenInfo, poolId }: 
   )
   const steps = [tokenApprovalStep, addLiquidityStep]
 
-  function handleJoinCompleted() {
-    console.log('Join completed')
+  function handleRemoveCompleted() {
+    console.log('Remove completed')
   }
 
   // TODO: define UI for approval steps
@@ -41,8 +41,8 @@ export function AddLiquidityFlowButton({ humanAmountsInWithTokenInfo, poolId }: 
           : 'All tokens have enough allowance'}
       </Text>
       <TransactionFlow
-        completedAlertContent="Successfully added liquidity"
-        onCompleteClick={handleJoinCompleted}
+        completedAlertContent="Successfully removed liquidity"
+        onCompleteClick={handleRemoveCompleted}
         completedButtonLabel="Return to pool"
         steps={steps}
       />

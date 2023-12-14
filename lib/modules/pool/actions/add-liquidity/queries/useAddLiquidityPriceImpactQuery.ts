@@ -6,11 +6,11 @@ import { priceImpactFormat } from '@/lib/shared/utils/numbers'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { useQuery } from 'wagmi'
-import { areEmptyAmounts } from '../add-liquidity.helpers'
-import { HumanAmountIn } from '../add-liquidity.types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
+import { HumanAmountIn } from '../../liquidity-types'
+import { areEmptyAmounts } from '../../LiquidityActionHelpers'
 
 const debounceMillis = 250
 

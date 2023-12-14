@@ -153,6 +153,7 @@ export function usePoolHelpers(pool: Pool, chain: GqlChain) {
 
 export function toPoolStateInput(pool: Pool): PoolStateInput {
   // TODO: double check if we need an extra request to get PoolStateInput to get index token field
+  // Add index in GQL query instead of this
   const tokens = pool.tokens.map((t, index) => {
     return { ...t, index }
   })

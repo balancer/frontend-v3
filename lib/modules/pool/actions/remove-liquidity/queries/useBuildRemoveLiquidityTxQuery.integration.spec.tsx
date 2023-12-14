@@ -1,22 +1,19 @@
 import { poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import {
-  DefaultAddLiquidityTestProvider,
-  buildDefaultPoolTestProvider,
-  testHook,
-} from '@/test/utils/custom-renderers'
+import { buildDefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { waitFor } from '@testing-library/react'
 
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { PropsWithChildren } from 'react'
 import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityTxQuery'
+import { RemoveLiquidityProvider } from '../useRemoveLiquidity'
 import { HumanAmountIn } from '../../liquidity-types'
 
 const PoolProvider = buildDefaultPoolTestProvider(aWjAuraWethPoolElementMock())
 
 export const Providers = ({ children }: PropsWithChildren) => (
   <PoolProvider>
-    <DefaultAddLiquidityTestProvider>{children}</DefaultAddLiquidityTestProvider>
+    <RemoveLiquidityProvider>{children}</RemoveLiquidityProvider>
   </PoolProvider>
 )
 

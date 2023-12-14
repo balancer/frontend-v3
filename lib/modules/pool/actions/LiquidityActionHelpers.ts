@@ -5,11 +5,11 @@ import { PoolStateInput } from '@balancer/sdk'
 import { keyBy } from 'lodash'
 import { parseUnits } from 'viem'
 import { Address } from 'wagmi'
-import { toPoolStateInput } from '../../pool.helpers'
-import { Pool } from '../../usePool'
-import { HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
-import { HumanAmountIn } from './add-liquidity.types'
+import { toPoolStateInput } from '../pool.helpers'
+import { Pool } from '../usePool'
+import { HumanAmountInWithTokenInfo } from './remove-liquidity/RemoveLiquidityFlowButton'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { HumanAmountIn } from './liquidity-types'
 
 // TODO: this should be imported from the SDK
 export type InputAmount = {
@@ -27,10 +27,10 @@ const NullPool: Pool = {
 } as unknown as Pool
 
 /*
-  AddLiquidityHelpers provides helper methods to traverse the pool state and prepare data structures needed by add liquidity handlers
-  to implement the AddLiquidityHandler interface
+  This class provides helper methods to traverse the pool state and prepare data structures needed by add/remove liquidity  handlers
+  to implement the Add/RemoveLiquidityHandler interface
 */
-export class AddLiquidityHelpers {
+export class LiquidityActionHelpers {
   constructor(public pool: Pool = NullPool) {}
 
   public get poolStateInput(): PoolStateInput {
@@ -97,3 +97,9 @@ export class AddLiquidityHelpers {
     return humanAmountsIn.some(amountIn => isSameAddress(amountIn.tokenAddress, nativeAssetAddress))
   }
 }
+
+export const isEmptyAmount = (amountIn: HumanAmountIn) =>
+  !amountIn.humanAmount || amountIn.humanAmount === '0'
+
+export const areEmptyAmounts = (humanAmountsIn: HumanAmountIn[]) =>
+  humanAmountsIn.every(isEmptyAmount)

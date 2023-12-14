@@ -11,25 +11,24 @@ import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
-import { AddLiquidityInputs } from './add-liquidity.types'
-import { useAddLiquidityBtpOutQuery } from './queries/useAddLiquidityBtpOutQuery'
-import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
-import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
-import { HumanAmountIn } from '../liquidity-types'
 import { LiquidityActionHelpers, areEmptyAmounts } from '../LiquidityActionHelpers'
+import { RemoveLiquidityInputs } from './remove-liquidity.types'
+import { useRemoveLiquidityBtpOutQuery } from './queries/useRemoveLiquidityBtInQuery'
+import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
+import { HumanAmountIn } from '../liquidity-types'
 
-export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
-export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
+export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
+export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
 
 export const amountsInVar = makeVar<HumanAmountIn[]>([])
 
-export function _useAddLiquidity() {
+export function _useRemoveLiquidity() {
   const amountsIn = useReactiveVar(amountsInVar)
 
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
 
-  const handler = selectAddLiquidityHandler(pool)
+  const handler = selectRemoveLiquidityHandler(pool)
 
   function setInitialAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -75,14 +74,12 @@ export function _useAddLiquidity() {
   )
   const totalUSDValue = safeSum(usdAmountsIn)
 
-  const { formattedPriceImpact, isPriceImpactLoading } = useAddLiquidityPriceImpactQuery(
-    handler,
-    amountsIn,
-    pool.id
-  )
-
-  const { bptOut, bptOutUnits, isBptOutQueryLoading, lastSdkQueryOutput } =
-    useAddLiquidityBtpOutQuery(handler, amountsIn, pool.id)
+  const {
+    bptIn: bptOut,
+    bptOutUnits,
+    isBptOutQueryLoading,
+    lastSdkQueryOutput,
+  } = useRemoveLiquidityBtpOutQuery(handler, amountsIn, pool.id)
 
   // TODO: we will need to render reasons why the transaction cannot be performed so instead of a boolean this will become an object
   const isAddLiquidityDisabled = areEmptyAmounts(amountsIn)
@@ -94,10 +91,10 @@ export function _useAddLiquidity() {
     */
   const helpers = new LiquidityActionHelpers(pool)
 
-  function buildAddLiquidityTx(inputs: AddLiquidityInputs) {
+  function buildAddLiquidityTx(inputs: RemoveLiquidityInputs) {
     // There are edge cases where we will never call setLastSdkQueryOutput so that lastSdkQueryOutput will be undefined.
     // That`s expected as sdkQueryOutput is an optional input
-    return handler.buildAddLiquidityTx({ inputs, sdkQueryOutput: lastSdkQueryOutput })
+    return handler.buildRemoveLiquidityTx({ inputs, sdkQueryOutput: lastSdkQueryOutput })
   }
 
   return {
@@ -105,8 +102,6 @@ export function _useAddLiquidity() {
     tokens,
     validTokens,
     totalUSDValue,
-    formattedPriceImpact,
-    isPriceImpactLoading,
     bptOut,
     isBptOutQueryLoading,
     bptOutUnits,
@@ -118,10 +113,10 @@ export function _useAddLiquidity() {
   }
 }
 
-export function AddLiquidityProvider({ children }: PropsWithChildren) {
-  const hook = _useAddLiquidity()
-  return <AddLiquidityContext.Provider value={hook}>{children}</AddLiquidityContext.Provider>
+export function RemoveLiquidityProvider({ children }: PropsWithChildren) {
+  const hook = _useRemoveLiquidity()
+  return <RemoveLiquidityContext.Provider value={hook}>{children}</RemoveLiquidityContext.Provider>
 }
 
-export const useAddLiquidity = (): UseAddLiquidityResponse =>
-  useMandatoryContext(AddLiquidityContext, 'AddLiquidity')
+export const useRemoveLiquidity = (): UseRemoveLiquidityResponse =>
+  useMandatoryContext(RemoveLiquidityContext, 'RemoveLiquidity')
