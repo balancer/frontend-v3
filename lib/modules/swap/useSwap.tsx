@@ -78,6 +78,17 @@ export function _useSwap() {
     })
 
     setSwapOutput(data?.swaps)
+    setReturnAmount(data?.swaps, state.swapType)
+  }
+
+  function setReturnAmount(swap: GetSorSwapsQuery['swaps'] | undefined, swapType: GqlSorSwapType) {
+    if (!swap) return
+
+    if (swapType === GqlSorSwapType.ExactIn) {
+      setTokenOutAmount(swap?.returnAmount || '0', { userTriggered: false })
+    } else {
+      setTokenInAmount(swap?.returnAmount || '0', { userTriggered: false })
+    }
   }
 
   useEffect(() => {
@@ -114,7 +125,10 @@ export function _useSwap() {
     })
   }
 
-  function setTokenInAmount(amount: string, userTriggered = true) {
+  function setTokenInAmount(
+    amount: string,
+    { userTriggered = true }: { userTriggered?: boolean } = {}
+  ) {
     _setTokenInAmount(amount)
     if (userTriggered) {
       swapStateVar({
@@ -126,7 +140,10 @@ export function _useSwap() {
     }
   }
 
-  function setTokenOutAmount(amount: string, userTriggered = true) {
+  function setTokenOutAmount(
+    amount: string,
+    { userTriggered = true }: { userTriggered?: boolean } = {}
+  ) {
     _setTokenOutAmount(amount)
     if (userTriggered) {
       swapStateVar({
@@ -150,14 +167,11 @@ export function _useSwap() {
 
   // On first render, set default tokens
   useEffect(() => {
-    console.log('setDefaultTokens')
-
     setDefaultTokens()
   }, [])
 
   // On selected chain change, set default tokens
   useEffect(() => {
-    console.log('setDefaultTokens')
     setDefaultTokens()
   }, [selectedChain])
 
