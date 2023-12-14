@@ -106,6 +106,14 @@ export function _useSwap() {
     })
   }
 
+  function switchTokens() {
+    swapStateVar({
+      ...swapState,
+      tokenIn: swapState.tokenOut,
+      tokenOut: swapState.tokenIn,
+    })
+  }
+
   function setTokenInAmount(amount: string, userTriggered = true) {
     _setTokenInAmount(amount)
     if (userTriggered) {
@@ -170,6 +178,7 @@ export function _useSwap() {
     setTokenOutAmount,
     setTokenIn,
     setTokenOut,
+    switchTokens,
   }
 }
 

@@ -17,6 +17,7 @@ import {
   Button,
   useDisclosure,
   Select,
+  IconButton,
 } from '@chakra-ui/react'
 import { useMemo } from 'react'
 import { useSwap } from './useSwap'
@@ -26,6 +27,7 @@ import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { CgArrowsExchangeV } from 'react-icons/cg'
 
 export function SwapForm() {
   const {
@@ -43,6 +45,7 @@ export function SwapForm() {
     setTokenSelectKey,
     setTokenIn,
     setTokenOut,
+    switchTokens,
   } = useSwap()
   const { toCurrency } = useCurrency()
   const { getTokensByChain } = useTokens()
@@ -107,6 +110,13 @@ export function SwapForm() {
                 value={tokenInAmount}
                 onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
                 toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
+              />
+              <IconButton
+                size="sm"
+                fontSize="2xl"
+                aria-label="Switch tokens"
+                icon={<CgArrowsExchangeV />}
+                onClick={switchTokens}
               />
               <TokenInput
                 address={tokenOut}
