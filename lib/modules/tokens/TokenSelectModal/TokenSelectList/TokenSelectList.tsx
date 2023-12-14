@@ -78,7 +78,7 @@ export function TokenSelectList({
           itemCount={orderedTokens.length}
           itemSize={60}
           scrollToIndex={getScrollToIndex()}
-          style={{ overflowY: 'scroll' }}
+          style={{ overflowY: 'scroll', paddingRight: '0.5rem' }}
           renderItem={({ index, style }) => {
             const token = orderedTokens[index]
             const userBalance = isConnected ? balanceFor(token) : undefined
