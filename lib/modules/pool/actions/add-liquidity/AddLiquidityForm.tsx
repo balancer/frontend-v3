@@ -8,7 +8,17 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { HumanAmount } from '@balancer/sdk'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { Button, Card, Center, HStack, Heading, Text, Tooltip, VStack } from '@chakra-ui/react'
+import {
+  Button,
+  Card,
+  Center,
+  HStack,
+  Heading,
+  Skeleton,
+  Text,
+  Tooltip,
+  VStack,
+} from '@chakra-ui/react'
 import { useRef } from 'react'
 import { Address } from 'wagmi'
 import { AddLiquidityModal } from './AddLiquidityModal'
@@ -24,7 +34,9 @@ export function AddLiquidityForm() {
     formattedPriceImpact,
     isPriceImpactLoading,
     bptOutUnits,
+    isBptOutQueryLoading,
     isAddLiquidityDisabled,
+    addLiquidityDisabledReason,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
 
@@ -83,7 +95,7 @@ export function AddLiquidityForm() {
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
                   <NumberText color="GrayText">
-                    {isPriceImpactLoading ? 'Loading...' : formattedPriceImpact}
+                    {isPriceImpactLoading ? <Skeleton w="12" h="full" /> : formattedPriceImpact}
                   </NumberText>
                   <Tooltip label="Price impact" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
@@ -93,15 +105,17 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Bpt out</Text>
                 <HStack>
-                  <NumberText color="GrayText">{bptOutUnits}</NumberText>
-                  <Tooltip label="Bpt our" fontSize="sm">
+                  <NumberText color="GrayText">
+                    {isBptOutQueryLoading ? <Skeleton w="12" h="full" /> : bptOutUnits}
+                  </NumberText>
+                  <Tooltip label="Bpt out" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
                 </HStack>
               </HStack>
             </VStack>
 
-            <Tooltip label={isAddLiquidityDisabled ? 'cannot execute add liquidity' : ''}>
+            <Tooltip label={isAddLiquidityDisabled ? addLiquidityDisabledReason : ''}>
               <Button
                 ref={nextBtn}
                 variant="secondary"

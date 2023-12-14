@@ -21,7 +21,7 @@ export function useAddLiquidityBtpOutQuery(
   humanAmountsIn: HumanAmountIn[],
   poolId: string
 ) {
-  const { address: userAddress } = useUserAccount()
+  const { userAddress } = useUserAccount()
   const { slippage } = useUserSettings()
   const [bptOut, setBptOut] = useState<TokenAmount | null>(null)
   const [lastSdkQueryOutput, setLastSdkQueryOutput] = useState<AddLiquidityQueryOutput | undefined>(
@@ -31,7 +31,7 @@ export function useAddLiquidityBtpOutQuery(
 
   function queryKey(): string {
     return generateAddLiquidityQueryKey({
-      userAddress: userAddress || emptyAddress,
+      userAddress,
       poolId,
       slippage,
       humanAmountsIn: debouncedHumanAmountsIn as unknown as HumanAmountIn[],

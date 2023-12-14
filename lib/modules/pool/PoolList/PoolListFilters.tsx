@@ -33,11 +33,11 @@ import { useEffect, useState } from 'react'
 
 function UserPoolFilter() {
   const { userAddress, toggleUserAddress } = usePoolListQueryState()
-  const { address } = useUserAccount()
+  const { userAddress: connectedUserAddress } = useUserAccount()
   const [checked, setChecked] = useState(false)
 
   useEffect(() => {
-    if (userAddress === address) {
+    if (userAddress === connectedUserAddress) {
       setChecked(true)
     } else {
       setChecked(false)
@@ -48,7 +48,7 @@ function UserPoolFilter() {
   return (
     <Checkbox
       isChecked={checked}
-      onChange={e => toggleUserAddress(e.target.checked, address as string)}
+      onChange={e => toggleUserAddress(e.target.checked, connectedUserAddress as string)}
     >
       <Text>Only show my pools</Text>
     </Checkbox>
