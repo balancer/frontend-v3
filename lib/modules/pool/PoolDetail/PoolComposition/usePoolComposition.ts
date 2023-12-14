@@ -21,9 +21,9 @@ export function usePoolComposition() {
 
         return {
           symbol: _token.symbol,
-          balance: fNum(_token.balance, 'token'),
+          balance: fNum('token', _token.balance),
           value: 'TBD',
-          targetWeight: _token.weight ? fNum(_token.weight, 'weight') : '',
+          targetWeight: _token.weight ? fNum('weight', _token.weight) : '',
         }
       })
       .filter(Boolean) as CompositionRow[]

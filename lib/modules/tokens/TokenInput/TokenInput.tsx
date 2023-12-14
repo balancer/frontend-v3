@@ -83,7 +83,7 @@ function TokenInputFooter({ token, value, updateValue }: TokenInputFooterProps) 
       ) : (
         <HStack cursor="pointer" onClick={() => updateValue(userBalance)}>
           <Text fontSize="sm" color="salmon.500">
-            {fNum(userBalance, 'token')}
+            {fNum('token', userBalance)}
           </Text>
           <Box color="sand.300">
             <TbWallet />

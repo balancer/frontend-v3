@@ -60,7 +60,7 @@ export function PoolListTokensTag({ pool }: Props) {
                     <PoolTokenIcon token={token} chain={pool.chain} />
                   )}
                   <Text>{token.nestedTokens ? token.name : token.symbol}</Text>
-                  <Text>{fNum(token.weight || '', 'weight')}</Text>
+                  <Text>{fNum('weight', token.weight || '')}</Text>
                 </HStack>
               </Tag>
             )

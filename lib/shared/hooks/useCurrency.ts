@@ -26,7 +26,7 @@ export function useCurrency() {
   ): string {
     const symbol = hasFxRates ? symbolForCurrency(currency) : '$'
     const convertedAmount = toUserCurrency(usdVal)
-    const formattedAmount = fNum(convertedAmount, 'fiat', { abbreviated })
+    const formattedAmount = fNum('fiat', convertedAmount, { abbreviated })
 
     return withSymbol ? symbol + formattedAmount : formattedAmount
   }

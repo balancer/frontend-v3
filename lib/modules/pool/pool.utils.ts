@@ -48,9 +48,9 @@ export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolPr
  */
 export function getAprLabel(apr: GqlPoolAprValue): string {
   if (apr.__typename === 'GqlPoolAprRange') {
-    return `${fNum(apr.min, 'apr')} - ${fNum(apr.max, 'apr')}`
+    return `${fNum('apr', apr.min)} - ${fNum('apr', apr.max)}`
   } else if (apr.__typename === 'GqlPoolAprTotal') {
-    return fNum(apr.total, 'apr')
+    return fNum('apr', apr.total)
   } else {
     return '-'
   }

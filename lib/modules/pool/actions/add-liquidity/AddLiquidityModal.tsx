@@ -65,7 +65,7 @@ function TokenAmountRow({
           size={28}
           alt={token?.symbol || 'Token icon'}
         />
-        <NumberText>{fNum(humanAmount, 'token')}</NumberText>
+        <NumberText>{fNum('token', humanAmount)}</NumberText>
         <Text>{symbol || token?.symbol}</Text>
       </HStack>
       <NumberText>{usdValue ? toCurrency(usdValue) : '-'}</NumberText>

@@ -48,7 +48,7 @@ export function useFormattedPoolAttributes() {
       },
       {
         title: 'Swap fees',
-        value: fNum(dynamicData.swapFee, 'feePercent'),
+        value: fNum('feePercent', dynamicData.swapFee),
       },
       {
         title: 'Pool Manager',

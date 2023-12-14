@@ -19,7 +19,7 @@ export function PoolListPools() {
           Liquidity pools
         </Heading>
         <Heading size="lg" opacity=".5">
-          ({fNum(count || 0, 'integer')})
+          ({fNum('integer', count || 0)})
         </Heading>
       </HStack>
       <Stack direction={['column-reverse', 'row']} w="full" alignItems="flex-start">

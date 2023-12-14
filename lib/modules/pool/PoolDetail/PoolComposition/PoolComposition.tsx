@@ -58,17 +58,17 @@ export function PoolComposition() {
                           <VStack minWidth="100px" spacing="1" alignItems="flex-end">
                             <Heading fontWeight="bold" as="h6" fontSize="1rem">
                               {fNum(
+                                'weight',
                                 getPoolTokenWeightByBalance(
                                   pool.dynamicData.totalLiquidity,
                                   poolToken,
                                   chain
-                                ),
-                                'weight'
+                                )
                               )}
                             </Heading>
                             <HStack spacing="1">
                               <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                                {fNum(poolToken.weight || '0', 'weight')}
+                                {fNum('weight', poolToken.weight || '0')}
                               </Text>
                               <Image
                                 src="/images/icons/bullseye.svg"

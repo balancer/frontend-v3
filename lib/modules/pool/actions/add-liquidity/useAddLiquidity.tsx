@@ -88,7 +88,7 @@ export function _useAddLiquidity() {
   }
   const debouncedQueryPriceImpact = useDebouncedCallback(queryPriceImpact, 300)
 
-  const formattedPriceImpact = priceImpact ? fNum(priceImpact.decimal, 'priceImpact') : '-'
+  const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact.decimal) : '-'
 
   const [addLiquidityQuery, setAddLiquidityQuery] = useState<AddLiquidityQueryOutput | null>(null) //TODO: rename to queryBptOut if that's the only thing we need from the query result
   async function queryBptOut() {

@@ -37,7 +37,7 @@ export default function TokenRow({ address, value, customRender, chain }: Props)
       <HStack spacing="8">
         <VStack spacing="1" alignItems="flex-end">
           <Heading fontWeight="bold" as="h6" fontSize="1rem">
-            {fNum(value, 'token')}
+            {fNum('token', value)}
           </Heading>
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
             {toCurrency(totalValue)}

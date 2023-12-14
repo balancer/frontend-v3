@@ -26,7 +26,7 @@ function PoolNameLabel({ pool }: { pool: DecoratedPoolListItem }) {
           return (
             <>
               {token.nestedTokens ? token.name : token.symbol}
-              {token.weight && ` ${fNum(token.weight || '', 'weight')}`}
+              {token.weight && ` ${fNum('weight', token.weight || '')}`}
               {idx <= displayTokens.length - 2 && ' / '}
             </>
           )

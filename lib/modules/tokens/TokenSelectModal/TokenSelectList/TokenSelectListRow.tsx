@@ -29,7 +29,7 @@ export function TokenSelectListRow({
   const { usdValueForToken } = useTokens()
 
   const tokenBalance =
-    userBalance && !isBalancesLoading ? fNum(userBalance.formatted, 'token') : '-'
+    userBalance && !isBalancesLoading ? fNum('token', userBalance.formatted) : '-'
   const usdValue =
     userBalance && !isBalancesLoading ? usdValueForToken(token, userBalance.formatted) : '0'
   const fiatValue = userBalance && !isBalancesLoading ? toCurrency(usdValue) : '-'
