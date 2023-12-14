@@ -1,16 +1,16 @@
 import { Box, Grid, GridItem, GridProps, Text } from '@chakra-ui/react'
 import Link from 'next/link'
-import { getPoolPath } from '../../pool.utils'
-import { DecoratedPoolListItem } from '../../pool.types'
+import { getPoolPath, usdValueOfBpt } from '../../pool.utils'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
 import { PoolListTokensTag } from '../PoolListTokensTag'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
+import { PoolListItem } from '../../pool.types'
 
 interface Props extends GridProps {
-  pool: DecoratedPoolListItem
+  pool: PoolListItem
   keyValue: number
 }
 
@@ -19,6 +19,8 @@ const MemoizedAprTooltip = memo(AprTooltip)
 export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
   const { userAddress } = usePoolListQueryState()
   const { toCurrency } = useCurrency()
+
+  const useUsdBalance = usdValueOfBpt(pool, pool.userBalance?.totalBalance)
 
   return (
     <Box key={keyValue}>
@@ -30,9 +32,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
           <GridItem>{pool && <PoolListTokensTag pool={pool} />}</GridItem>
           {userAddress && (
             <GridItem>
-              <Text textAlign="right">
-                {toCurrency(pool.userBalance?.totalBalanceUsd || 0, { abbreviated: false })}
-              </Text>
+              <Text textAlign="right">{toCurrency(useUsdBalance, { abbreviated: false })}</Text>
             </GridItem>
           )}
           <GridItem>

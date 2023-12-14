@@ -1,5 +1,5 @@
 import { Card, HStack, VStack, Text, Grid, GridItem } from '@chakra-ui/react'
-import { DecoratedPoolListItem, poolTypeHash } from '../../pool.types'
+import { PoolListItem, poolTypeHash } from '../../pool.types'
 import { fNum } from '@/lib/shared/utils/numbers'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
@@ -7,17 +7,15 @@ import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
+import { usdValueOfBpt } from '../../pool.utils'
 
 interface Props {
-  pool: DecoratedPoolListItem
-  cardClickHandler?: (event: React.MouseEvent<HTMLElement>, pool: DecoratedPoolListItem) => void
-  cardMouseEnterHandler?: (
-    event: React.MouseEvent<HTMLElement>,
-    pool: DecoratedPoolListItem
-  ) => void
+  pool: PoolListItem
+  cardClickHandler?: (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => void
+  cardMouseEnterHandler?: (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => void
 }
 
-function PoolNameLabel({ pool }: { pool: DecoratedPoolListItem }) {
+function PoolNameLabel({ pool }: { pool: PoolListItem }) {
   if (pool) {
     const displayTokens = pool.displayTokens
     return (
@@ -108,7 +106,7 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
                     My Liquidity:
                   </Text>
                   <Text fontWeight="bold" fontSize="1rem">
-                    {toCurrency(pool.userBalance?.totalBalanceUsd || 0, { abbreviated: false })}
+                    {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
                   </Text>
                 </VStack>
               </Card>
