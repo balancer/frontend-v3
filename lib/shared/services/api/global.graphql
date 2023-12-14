@@ -1,7 +1,3 @@
-query GetTimestamp {
-  timestamp: balancerQueryTest
-}
-
 query GetAppGlobalPollingData {
   tokenGetCurrentPrices {
     price
