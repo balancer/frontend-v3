@@ -3,7 +3,7 @@ import { useMemo, useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 
-export default function TriWeightChart() {
+export default function BoostedPoolWeightChart() {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
 
   const chartOption = useMemo(() => {
