@@ -6,7 +6,7 @@ import { PoolListCards } from './PoolListCards/PoolListCards'
 import { PoolListTable } from './PoolListTable/PoolListTable'
 import { usePoolListViewType } from './PoolListViewType/usePoolListViewType'
 import { usePoolList } from './usePoolList'
-import { integerFormat } from '@/lib/shared/utils/numbers'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 export function PoolListPools() {
   const { isTableView, isCardsView } = usePoolListViewType()
@@ -19,7 +19,7 @@ export function PoolListPools() {
           Liquidity pools
         </Heading>
         <Heading size="lg" opacity=".5">
-          ({integerFormat(count || 0)})
+          ({fNum('integer', count || 0)})
         </Heading>
       </HStack>
       <Stack direction={['column-reverse', 'row']} w="full" alignItems="flex-start">

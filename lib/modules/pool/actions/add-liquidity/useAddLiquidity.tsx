@@ -12,12 +12,10 @@ import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
 import { AddLiquidityHelpers } from './AddLiquidityHelpers'
-import { areEmptyAmounts } from './add-liquidity.helpers'
 import { AddLiquidityInputs, HumanAmountIn } from './add-liquidity.types'
 import { useAddLiquidityBtpOutQuery } from './queries/useAddLiquidityBtpOutQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useAddLiquidityDisabledWithReasons } from './useAddLiquidityDisabledWithReasons'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
@@ -30,7 +28,6 @@ export function _useAddLiquidity() {
 
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
-  const { isConnected } = useUserAccount()
 
   const handler = selectAddLiquidityHandler(pool)
 

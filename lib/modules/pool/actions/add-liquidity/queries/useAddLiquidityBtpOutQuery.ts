@@ -1,9 +1,7 @@
 'use client'
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { integerFormat } from '@/lib/shared/utils/numbers'
 import { AddLiquidityQueryOutput, TokenAmount } from '@balancer/sdk'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
@@ -13,6 +11,7 @@ import { areEmptyAmounts } from '../add-liquidity.helpers'
 import { HumanAmountIn } from '../add-liquidity.types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 const debounceMillis = 300
 
@@ -62,7 +61,7 @@ export function useAddLiquidityBtpOutQuery(
     }
   )
 
-  const bptOutUnits = bptOut ? integerFormat(formatUnits(bptOut.amount, 18)) : '-'
+  const bptOutUnits = bptOut ? fNum('token', formatUnits(bptOut.amount, 18)) : '-'
 
   return { bptOut, bptOutUnits, isBptOutQueryLoading: query.isLoading, lastSdkQueryOutput }
 }

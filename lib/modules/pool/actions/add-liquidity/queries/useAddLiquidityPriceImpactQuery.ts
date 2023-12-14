@@ -2,7 +2,6 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { priceImpactFormat } from '@/lib/shared/utils/numbers'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { useQuery } from 'wagmi'
@@ -10,6 +9,7 @@ import { areEmptyAmounts } from '../add-liquidity.helpers'
 import { HumanAmountIn } from '../add-liquidity.types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 const debounceMillis = 250
 
@@ -50,7 +50,7 @@ export function useAddLiquidityPriceImpactQuery(
       enabled: !!userAddress && !areEmptyAmounts(humanAmountsIn),
     }
   )
-  const formattedPriceImpact = priceImpact ? priceImpactFormat(priceImpact) : '-'
+  const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
   return { priceImpact, formattedPriceImpact, isPriceImpactLoading: query.isLoading }
 }

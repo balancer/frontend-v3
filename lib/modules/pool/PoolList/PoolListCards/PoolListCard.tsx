@@ -1,6 +1,6 @@
 import { Card, HStack, VStack, Text, Grid, GridItem } from '@chakra-ui/react'
 import { DecoratedPoolListItem, poolTypeHash } from '../../pool.types'
-import { weightFormat } from '@/lib/shared/utils/numbers'
+import { fNum } from '@/lib/shared/utils/numbers'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
@@ -26,7 +26,7 @@ function PoolNameLabel({ pool }: { pool: DecoratedPoolListItem }) {
           return (
             <>
               {token.nestedTokens ? token.name : token.symbol}
-              {token.weight && ` ${weightFormat(token.weight || '')}`}
+              {token.weight && ` ${fNum('weight', token.weight || '')}`}
               {idx <= displayTokens.length - 2 && ' / '}
             </>
           )
