@@ -21,7 +21,6 @@ import {
 } from '@chakra-ui/react'
 import { useMemo } from 'react'
 import { useSwap } from './useSwap'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useTokens } from '../tokens/useTokens'
 import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
 import { fNum } from '@/lib/shared/utils/numbers'
@@ -47,7 +46,6 @@ export function SwapForm() {
     setTokenOut,
     switchTokens,
   } = useSwap()
-  const { toCurrency } = useCurrency()
   const { getTokensByChain } = useTokens()
   const tokenSelectDisclosure = useDisclosure()
 
