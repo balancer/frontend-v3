@@ -123,35 +123,6 @@ export type GqlGraphTraversalConfigInput = {
   poolIdsToInclude?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
-/** Configuration options for SOR V2 */
-export type GqlGraphTraversalConfigInput = {
-  /**
-   * Max number of paths to return (can be less)
-   *
-   * Default: 5
-   */
-  approxPathsToReturn?: InputMaybe<Scalars['Int']['input']>
-  /**
-   * The max hops in a path.
-   *
-   * Default: 6
-   */
-  maxDepth?: InputMaybe<Scalars['Int']['input']>
-  /**
-   * Limit non boosted hop tokens in a boosted path.
-   *
-   * Default: 2
-   */
-  maxNonBoostedHopTokensInBoostedPath?: InputMaybe<Scalars['Int']['input']>
-  /**
-   * Limit of "non-boosted" pools for efficiency.
-   *
-   * Default: 6
-   */
-  maxNonBoostedPathDepth?: InputMaybe<Scalars['Int']['input']>
-  poolIdsToInclude?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
-}
-
 export type GqlHistoricalTokenPrice = {
   __typename: 'GqlHistoricalTokenPrice'
   address: Scalars['String']['output']
@@ -1540,10 +1511,6 @@ export type QueryPoolGetGyroPoolsArgs = {
   chains?: InputMaybe<Array<GqlChain>>
 }
 
-export type QueryPoolGetGyroPoolsArgs = {
-  chains?: InputMaybe<Array<GqlChain>>
-}
-
 export type QueryPoolGetJoinExitsArgs = {
   first?: InputMaybe<Scalars['Int']['input']>
   skip?: InputMaybe<Scalars['Int']['input']>
@@ -1601,14 +1568,6 @@ export type QuerySorGetBatchSwapForTokensInArgs = {
   swapOptions: GqlSorSwapOptionsInput
   tokenOut: Scalars['String']['input']
   tokensIn: Array<GqlTokenAmountHumanReadable>
-}
-
-export type QuerySorGetCowSwapsArgs = {
-  chain: GqlChain
-  swapAmount: Scalars['BigDecimal']['input']
-  swapType: GqlSorSwapType
-  tokenIn: Scalars['String']['input']
-  tokenOut: Scalars['String']['input']
 }
 
 export type QuerySorGetCowSwapsArgs = {
@@ -4319,403 +4278,6 @@ export type GqlTokenDynamicDataFragment = {
   updatedAt: string
 } & { ' $fragmentName'?: 'GqlTokenDynamicDataFragment' }
 
-export type GqlSorGetSwapsResponseFragment = {
-  __typename: 'GqlSorGetSwapsResponse'
-  tokenIn: string
-  tokenOut: string
-  swapAmount: string
-  tokenAddresses: Array<string>
-  swapType: GqlSorSwapType
-  marketSp: string
-  returnAmount: string
-  returnAmountScaled: string
-  returnAmountFromSwaps?: string | null
-  returnAmountConsideringFees: string
-  swapAmountScaled: string
-  swapAmountForSwaps?: string | null
-  tokenInAmount: string
-  tokenOutAmount: string
-  effectivePrice: string
-  effectivePriceReversed: string
-  priceImpact: string
-  swaps: Array<{
-    __typename: 'GqlSorSwap'
-    poolId: string
-    amount: string
-    userData: string
-    assetInIndex: number
-    assetOutIndex: number
-  }>
-  routes: Array<
-    { __typename: 'GqlSorSwapRoute' } & {
-      ' $fragmentRefs'?: { GqlSorSwapRouteFragment: GqlSorSwapRouteFragment }
-    }
-  >
-} & { ' $fragmentName'?: 'GqlSorGetSwapsResponseFragment' }
-
-export type GqlSorSwapRouteFragment = {
-  __typename: 'GqlSorSwapRoute'
-  tokenIn: string
-  tokenOut: string
-  tokenInAmount: string
-  tokenOutAmount: string
-  share: number
-  hops: Array<
-    { __typename: 'GqlSorSwapRouteHop' } & {
-      ' $fragmentRefs'?: { GqlSorSwapRouteHopFragment: GqlSorSwapRouteHopFragment }
-    }
-  >
-} & { ' $fragmentName'?: 'GqlSorSwapRouteFragment' }
-
-export type GqlSorSwapRouteHopFragment = {
-  __typename: 'GqlSorSwapRouteHop'
-  poolId: string
-  tokenIn: string
-  tokenOut: string
-  tokenInAmount: string
-  tokenOutAmount: string
-  pool: {
-    __typename: 'GqlPoolMinimal'
-    id: string
-    name: string
-    type: GqlPoolMinimalType
-    symbol: string
-    dynamicData: { __typename: 'GqlPoolDynamicData'; totalLiquidity: string }
-    allTokens: Array<{
-      __typename: 'GqlPoolTokenExpanded'
-      address: string
-      isNested: boolean
-      isPhantomBpt: boolean
-      weight?: string | null
-    }>
-  }
-} & { ' $fragmentName'?: 'GqlSorSwapRouteHopFragment' }
-
-export type GetTradeSelectedTokenDataQueryVariables = Exact<{
-  tokenIn: Scalars['String']['input']
-  tokenOut: Scalars['String']['input']
-}>
-
-export type GetTradeSelectedTokenDataQuery = {
-  __typename: 'Query'
-  tokenInData?: {
-    __typename: 'GqlTokenData'
-    id: string
-    tokenAddress: string
-    description?: string | null
-    discordUrl?: string | null
-    telegramUrl?: string | null
-    twitterUsername?: string | null
-  } | null
-  tokenOutData?: {
-    __typename: 'GqlTokenData'
-    id: string
-    tokenAddress: string
-    description?: string | null
-    discordUrl?: string | null
-    telegramUrl?: string | null
-    twitterUsername?: string | null
-  } | null
-  tokenInDynamicData?:
-    | ({ __typename: 'GqlTokenDynamicData' } & {
-        ' $fragmentRefs'?: { GqlTokenDynamicDataFragment: GqlTokenDynamicDataFragment }
-      })
-    | null
-  tokenOutDynamicData?:
-    | ({ __typename: 'GqlTokenDynamicData' } & {
-        ' $fragmentRefs'?: { GqlTokenDynamicDataFragment: GqlTokenDynamicDataFragment }
-      })
-    | null
-}
-
-export type GqlTokenDynamicDataFragment = {
-  __typename: 'GqlTokenDynamicData'
-  id: string
-  tokenAddress: string
-  ath: number
-  atl: number
-  marketCap?: string | null
-  fdv?: string | null
-  priceChange24h: number
-  priceChangePercent24h: number
-  priceChangePercent7d?: number | null
-  priceChangePercent14d?: number | null
-  priceChangePercent30d?: number | null
-  high24h: number
-  low24h: number
-  updatedAt: string
-} & { ' $fragmentName'?: 'GqlTokenDynamicDataFragment' }
-
-export const GqlSorSwapRouteHopFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'GqlSorSwapRouteHop' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlSorSwapRouteHop' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'poolId' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'pool' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'dynamicData' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'totalLiquidity' } },
-                    ],
-                  },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'allTokens' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'isNested' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'isPhantomBpt' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenIn' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenInAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOutAmount' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GqlSorSwapRouteHopFragment, unknown>
-export const GqlSorSwapRouteFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'GqlSorSwapRoute' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlSorSwapRoute' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenIn' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenInAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOutAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'share' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'hops' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'GqlSorSwapRouteHop' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'GqlSorSwapRouteHop' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlSorSwapRouteHop' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'poolId' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'pool' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'dynamicData' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'totalLiquidity' } },
-                    ],
-                  },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'allTokens' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'isNested' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'isPhantomBpt' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenIn' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenInAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOutAmount' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GqlSorSwapRouteFragment, unknown>
-export const GqlSorGetSwapsResponseFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'GqlSorGetSwapsResponse' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlSorGetSwapsResponse' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenIn' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'swapAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenAddresses' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'swapType' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'marketSp' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'swaps' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'poolId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'userData' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'assetInIndex' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'assetOutIndex' } },
-              ],
-            },
-          },
-          { kind: 'Field', name: { kind: 'Name', value: 'returnAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'returnAmountScaled' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'returnAmountFromSwaps' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'returnAmountConsideringFees' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'swapAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'swapAmountScaled' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'swapAmountForSwaps' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenInAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOutAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'effectivePrice' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'effectivePriceReversed' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceImpact' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'routes' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'GqlSorSwapRoute' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'GqlSorSwapRouteHop' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlSorSwapRouteHop' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'poolId' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'pool' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'dynamicData' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'totalLiquidity' } },
-                    ],
-                  },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'allTokens' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'isNested' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'isPhantomBpt' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenIn' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenInAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOutAmount' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'GqlSorSwapRoute' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlSorSwapRoute' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenIn' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenInAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOutAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'share' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'hops' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'GqlSorSwapRouteHop' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GqlSorGetSwapsResponseFragment, unknown>
 export const GqlTokenDynamicDataFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -9247,6 +8809,14 @@ export const GetSorSwapsDocument = {
         },
         {
           kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'chain' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'swapOptions' } },
           type: {
             kind: 'NonNullType',
@@ -9284,6 +8854,11 @@ export const GetSorSwapsDocument = {
               },
               {
                 kind: 'Argument',
+                name: { kind: 'Name', value: 'chain' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'chain' } },
+              },
+              {
+                kind: 'Argument',
                 name: { kind: 'Name', value: 'swapOptions' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'swapOptions' } },
               },
@@ -9291,135 +8866,29 @@ export const GetSorSwapsDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'GqlSorGetSwapsResponse' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'GqlSorSwapRouteHop' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlSorSwapRouteHop' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'poolId' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'pool' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenIn' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'swapAmount' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'swapAmountForSwaps' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'returnAmount' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'returnAmountFromSwaps' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'returnAmountConsideringFees' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'marketSp' } },
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'dynamicData' },
+                  name: { kind: 'Name', value: 'swaps' },
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'totalLiquidity' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'assetInIndex' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'assetOutIndex' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'poolId' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'userData' } },
                     ],
                   },
                 },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'allTokens' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'isNested' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'isPhantomBpt' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenIn' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenInAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOutAmount' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'GqlSorSwapRoute' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlSorSwapRoute' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenIn' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenInAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOutAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'share' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'hops' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'GqlSorSwapRouteHop' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'GqlSorGetSwapsResponse' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlSorGetSwapsResponse' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenIn' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'swapAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenAddresses' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'swapType' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'marketSp' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'swaps' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'poolId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'userData' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'assetInIndex' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'assetOutIndex' } },
-              ],
-            },
-          },
-          { kind: 'Field', name: { kind: 'Name', value: 'returnAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'returnAmountScaled' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'returnAmountFromSwaps' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'returnAmountConsideringFees' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'swapAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'swapAmountScaled' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'swapAmountForSwaps' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenInAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenOutAmount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'effectivePrice' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'effectivePriceReversed' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceImpact' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'routes' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'GqlSorSwapRoute' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenAddresses' } },
               ],
             },
           },
@@ -9428,219 +8897,3 @@ export const GetSorSwapsDocument = {
     },
   ],
 } as unknown as DocumentNode<GetSorSwapsQuery, GetSorSwapsQueryVariables>
-export const GetTokenRelativePriceChartDataDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetTokenRelativePriceChartData' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'tokenIn' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'tokenOut' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'range' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlTokenChartDataRange' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            alias: { kind: 'Name', value: 'prices' },
-            name: { kind: 'Name', value: 'tokenGetRelativePriceChartData' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'tokenIn' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'tokenIn' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'tokenOut' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'tokenOut' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'range' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'range' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'price' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'timestamp' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  GetTokenRelativePriceChartDataQuery,
-  GetTokenRelativePriceChartDataQueryVariables
->
-export const GetTradeSelectedTokenDataDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetTradeSelectedTokenData' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'tokenIn' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'tokenOut' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            alias: { kind: 'Name', value: 'tokenInData' },
-            name: { kind: 'Name', value: 'tokenGetTokenData' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'address' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'tokenIn' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'tokenAddress' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'discordUrl' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'telegramUrl' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'twitterUsername' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            alias: { kind: 'Name', value: 'tokenOutData' },
-            name: { kind: 'Name', value: 'tokenGetTokenData' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'address' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'tokenOut' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'tokenAddress' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'discordUrl' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'telegramUrl' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'twitterUsername' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            alias: { kind: 'Name', value: 'tokenInDynamicData' },
-            name: { kind: 'Name', value: 'tokenGetTokenDynamicData' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'address' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'tokenIn' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'GqlTokenDynamicData' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            alias: { kind: 'Name', value: 'tokenOutDynamicData' },
-            name: { kind: 'Name', value: 'tokenGetTokenDynamicData' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'address' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'tokenOut' } },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'GqlTokenDynamicData' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'GqlTokenDynamicData' },
-      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlTokenDynamicData' } },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'tokenAddress' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'ath' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'atl' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'marketCap' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'fdv' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceChange24h' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceChangePercent24h' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceChangePercent7d' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceChangePercent14d' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceChangePercent30d' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'high24h' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'low24h' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  GetTradeSelectedTokenDataQuery,
-  GetTradeSelectedTokenDataQueryVariables
->
