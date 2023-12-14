@@ -50,10 +50,7 @@ export function _useSwap() {
   const shouldFetchSwap =
     isAddress(swapState.tokenIn) && isAddress(swapState.tokenOut) && swapState.swapType
 
-  const [
-    fetchSwapsQuery,
-    { stopPolling: tradeStopPolling, startPolling, networkStatus, loading, error },
-  ] = useLazyQuery(GetSorSwapsDocument, {
+  const [fetchSwapsQuery, { loading }] = useLazyQuery(GetSorSwapsDocument, {
     fetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
   })
