@@ -2,8 +2,8 @@
 'use client'
 
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { HumanAmountIn } from './add-liquidity.types'
-import { areEmptyAmounts } from './add-liquidity.helpers'
+import { HumanAmountIn } from '../liquidity-types'
+import { areEmptyAmounts } from '../LiquidityActionHelpers'
 
 type IsDisabledIWithReasons = {
   isAddLiquidityDisabled: boolean

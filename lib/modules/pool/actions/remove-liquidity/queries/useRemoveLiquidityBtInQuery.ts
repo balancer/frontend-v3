@@ -3,7 +3,6 @@
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { integerFormat } from '@/lib/shared/utils/numbers'
 import { RemoveLiquidityQueryOutput, TokenAmount } from '@balancer/sdk'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
@@ -13,6 +12,7 @@ import { generateRemoveLiquidityQueryKey } from './generateAddLiquidityQueryKey'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { HumanAmountIn } from '../../liquidity-types'
 import { areEmptyAmounts } from '../../LiquidityActionHelpers'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 const debounceMillis = 300
 
@@ -21,7 +21,7 @@ export function useRemoveLiquidityBtpOutQuery(
   humanAmountsIn: HumanAmountIn[],
   poolId: string
 ) {
-  const { address: userAddress } = useUserAccount()
+  const { userAddress } = useUserAccount()
   const { slippage } = useUserSettings()
   const [bptIn, setBptIn] = useState<TokenAmount | null>(null)
   const [lastSdkQueryOutput, setLastSdkQueryOutput] = useState<
@@ -62,7 +62,7 @@ export function useRemoveLiquidityBtpOutQuery(
     }
   )
 
-  const bptOutUnits = bptIn ? integerFormat(formatUnits(bptIn.amount, 18)) : '-'
+  const bptOutUnits = bptIn ? fNum('integer', formatUnits(bptIn.amount, 18)) : '-'
 
   return { bptIn: bptIn, bptOutUnits, isBptOutQueryLoading: query.isLoading, lastSdkQueryOutput }
 }

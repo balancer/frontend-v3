@@ -15,7 +15,7 @@ export function useBuildAddLiquidityQuery(
   enabled: boolean,
   poolId: string
 ) {
-  const { address: userAddress } = useUserAccount()
+  const { userAddress } = useUserAccount()
 
   const { buildAddLiquidityTx } = useRemoveLiquidity()
   const { slippage } = useUserSettings()
