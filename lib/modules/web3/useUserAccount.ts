@@ -1,9 +1,7 @@
 // eslint-disable-next-line no-restricted-imports
-import { Address, useAccount } from 'wagmi'
+import { useAccount } from 'wagmi'
+import { emptyAddress } from './contracts/wagmi-helpers'
 import { useIsMounted } from './useIsMounted'
-
-// Used when the user is not connected to avoid undefined value to make TS compile
-const NOT_CONNECTED_USER: Address = '0x_NOT_CONNECTED_USER'
 
 export function useUserAccount() {
   const { mounted } = useIsMounted()
@@ -19,7 +17,8 @@ export function useUserAccount() {
     ...queryWithoutAddress,
     isLoading: !mounted || query.isConnecting,
     isConnecting: !mounted || query.isConnecting,
-    userAddress: mounted ? query.address || NOT_CONNECTED_USER : NOT_CONNECTED_USER,
+    // We use an emptyAddress when the user is not connected to avoid undefined value and satisfy the TS compiler
+    userAddress: mounted ? query.address || emptyAddress : emptyAddress,
     isConnected: mounted && !!query.address,
   }
 }
