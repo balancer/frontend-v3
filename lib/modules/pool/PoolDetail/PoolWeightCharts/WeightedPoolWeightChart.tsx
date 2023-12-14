@@ -1,7 +1,8 @@
-import { Box, HStack, VStack, Text, Button } from '@chakra-ui/react'
+import { Box, HStack, VStack, Text } from '@chakra-ui/react'
 import { useMemo, useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
+import Image from 'next/image'
 import { usePool } from '../../usePool'
 import * as echarts from 'echarts/core'
 
@@ -37,11 +38,10 @@ const colors = [
 ]
 
 export default function WeightedPoolWeightChart() {
-  const { pool } = usePool()
+  const { pool, chain } = usePool()
 
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const chartOption = useMemo(() => {
-    console.log('pool', pool.tokens)
     return {
       tooltip: {
         trigger: 'item',
@@ -90,7 +90,28 @@ export default function WeightedPoolWeightChart() {
 
   return (
     <VStack spacing="6">
-      <Box width="250px" height="250px" mt="-8">
+      <Box width="250px" height="250px" mt="-8" position="relative">
+        <Box
+          rounded="full"
+          bg="white"
+          position="absolute"
+          top="50%"
+          transform="translateY(0)"
+          left="95px"
+          zIndex={4}
+          width="60px"
+          height="60px"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Image
+            src={`/images/chains/${chain}.svg`}
+            alt={`Chain icon for ${chain.toLowerCase()}`}
+            width={45}
+            height={45}
+          />
+        </Box>
         <Box width="full" height="full">
           <ReactECharts option={chartOption} onEvents={{}} ref={eChartsRef} />
         </Box>
