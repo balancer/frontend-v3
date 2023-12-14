@@ -41,7 +41,7 @@ export function _useSwap() {
 
   const [tokenInAmount, _setTokenInAmount] = useState<string>('')
   const [tokenOutAmount, _setTokenOutAmount] = useState<string>('')
-  const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>()
+  const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
   const [selectedChain, setSelectedChain] = useState<GqlChain>(GqlChain.Mainnet)
   const [swapOutput, setSwapOutput] = useState<GetSorSwapsQuery['swaps']>()
 

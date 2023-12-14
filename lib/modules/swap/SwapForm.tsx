@@ -23,8 +23,9 @@ import { useSwap } from './useSwap'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useTokens } from '../tokens/useTokens'
 import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
-import { priceImpactFormat } from '@/lib/shared/utils/numbers'
+import { fNum } from '@/lib/shared/utils/numbers'
 import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 
 export function SwapForm() {
   const {
@@ -49,8 +50,14 @@ export function SwapForm() {
 
   const networkOptions = PROJECT_CONFIG.supportedNetworks
 
+  const tokenMap = { tokenIn, tokenOut }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const tokens = useMemo(() => getTokensByChain(selectedChain), [selectedChain])
+  const tokenSelectTokens = tokens.filter(
+    token =>
+      !isSameAddress(token.address, tokenMap[tokenSelectKey === 'tokenIn' ? 'tokenOut' : 'tokenIn'])
+  )
 
   function handleTokenSelect(token: GqlToken) {
     if (tokenSelectKey === 'tokenIn') {
@@ -123,7 +130,7 @@ export function SwapForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
-                  <NumberText color="GrayText">{priceImpactFormat(0)}</NumberText>
+                  <NumberText color="GrayText">{fNum('priceImpact', 0)}</NumberText>
                   <Tooltip label="Price impact" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
@@ -147,7 +154,7 @@ export function SwapForm() {
         </Card>
       </Center>
       <TokenSelectModal
-        tokens={tokens}
+        tokens={tokenSelectTokens}
         isOpen={tokenSelectDisclosure.isOpen}
         onOpen={tokenSelectDisclosure.onOpen}
         onClose={tokenSelectDisclosure.onClose}
