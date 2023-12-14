@@ -2,24 +2,25 @@ import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNext
 import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { Text, VStack } from '@chakra-ui/react'
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { HumanAmountIn } from './add-liquidity.types'
 import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
+import { useAddLiquidity } from './useAddLiquidity'
 
 export type HumanAmountInWithTokenInfo = HumanAmountIn & GqlToken
 
 type Props = {
-  builder: AddLiquidityConfigBuilder
   humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[]
+  poolId: string
 }
-export function AddLiquidityFlowButton({ builder, humanAmountsInWithTokenInfo }: Props) {
+export function AddLiquidityFlowButton({ humanAmountsInWithTokenInfo, poolId }: Props) {
+  const { helpers } = useAddLiquidity()
   const { tokenApprovalStep, initialAmountsToApprove } = useNextTokenApprovalStep(
-    builder.getAmountsToApprove(humanAmountsInWithTokenInfo)
+    helpers.getAmountsToApprove(humanAmountsInWithTokenInfo)
   )
 
   const { step: addLiquidityStep } = useConstructAddLiquidityStep(
     humanAmountsInWithTokenInfo,
-    builder
+    poolId
   )
   const steps = [tokenApprovalStep, addLiquidityStep]
 

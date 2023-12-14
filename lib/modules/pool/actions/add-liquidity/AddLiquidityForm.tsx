@@ -22,8 +22,9 @@ export function AddLiquidityForm() {
     tokens,
     validTokens,
     formattedPriceImpact,
+    isPriceImpactLoading,
     bptOutUnits,
-    builder,
+    isAddLiquidityDisabled,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
 
@@ -35,10 +36,8 @@ export function AddLiquidityForm() {
     return amountIn ? amountIn.humanAmount : ''
   }
 
-  const canExecuteAddLiquidity = builder.canExecuteAddLiquidity(amountsIn)
-
   function submit() {
-    if (canExecuteAddLiquidity) {
+    if (!isAddLiquidityDisabled) {
       previewDisclosure.onOpen()
     }
   }
@@ -83,14 +82,16 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
-                  <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
+                  <NumberText color="GrayText">
+                    {isPriceImpactLoading ? 'Loading...' : formattedPriceImpact}
+                  </NumberText>
                   <Tooltip label="Price impact" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
                 </HStack>
               </HStack>
               <HStack justify="space-between" w="full">
-                <Text color="GrayText">Bpt out (debug)</Text>
+                <Text color="GrayText">Bpt out</Text>
                 <HStack>
                   <NumberText color="GrayText">{bptOutUnits}</NumberText>
                   <Tooltip label="Bpt our" fontSize="sm">
@@ -100,13 +101,13 @@ export function AddLiquidityForm() {
               </HStack>
             </VStack>
 
-            <Tooltip label={canExecuteAddLiquidity ? '' : 'cannot execute add liquidity'}>
+            <Tooltip label={isAddLiquidityDisabled ? 'cannot execute add liquidity' : ''}>
               <Button
                 ref={nextBtn}
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={!canExecuteAddLiquidity}
+                isDisabled={isAddLiquidityDisabled}
                 onClick={submit}
               >
                 Next
