@@ -129,15 +129,6 @@ export function SwapForm() {
 
             <VStack spacing="sm" align="start" w="full">
               <HStack justify="space-between" w="full">
-                <Text color="GrayText">Total</Text>
-                <HStack>
-                  <NumberText color="GrayText">{toCurrency(0)}</NumberText>
-                  <Tooltip label="Total" fontSize="sm">
-                    <InfoOutlineIcon color="GrayText" />
-                  </Tooltip>
-                </HStack>
-              </HStack>
-              <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
                   <NumberText color="GrayText">{fNum('priceImpact', 0)}</NumberText>
