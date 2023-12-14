@@ -1,5 +1,7 @@
-/** @type {import('next').NextConfig} */
+const { withSentryConfig } = require('@sentry/nextjs')
+const { sentryOptions, sentryWebpackPluginOptions } = require('./sentry.config')
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: config => {
     config.resolve.fallback = { fs: false, net: false, tls: false }
@@ -22,4 +24,4 @@ const nextConfig = {
   pageExtensions: ['tsx', `${process.env.PROTOCOL}.tsx`],
 }
 
-module.exports = nextConfig
+module.exports = withSentryConfig(nextConfig, sentryWebpackPluginOptions, sentryOptions)

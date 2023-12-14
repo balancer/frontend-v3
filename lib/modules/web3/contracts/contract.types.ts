@@ -29,7 +29,7 @@ export type AbiItem = Abi[number]
 export type WriteAbiMutability = 'payable' | 'nonpayable'
 export type ReadAbiMutability = 'view'
 
-export type SdkTransactionConfig = {
+export type TransactionConfig = {
   account: Address
   chainId: SupportedChainId
   data: Address

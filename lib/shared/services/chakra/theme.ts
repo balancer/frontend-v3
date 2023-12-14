@@ -848,7 +848,7 @@ export const balTheme = {
             shadow: 'input.innerFocus',
           },
           _focusVisible: {
-            color: 'white',
+            color: 'chakra-body-text',
             shadow: 'input.innerFocus',
           },
           _invalid: {
