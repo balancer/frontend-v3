@@ -5,17 +5,18 @@ import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { fNum, safeSum } from '@/lib/shared/utils/numbers'
+import { safeSum } from '@/lib/shared/utils/numbers'
 import { makeVar, useReactiveVar } from '@apollo/client'
-import { AddLiquidityQueryOutput, HumanAmount } from '@balancer/sdk'
-import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
-import { useDebouncedCallback } from 'use-debounce'
-import { Address, formatUnits } from 'viem'
+import { HumanAmount } from '@balancer/sdk'
+import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
+import { Address } from 'viem'
 import { usePool } from '../../usePool'
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
-import { HumanAmountIn } from './add-liquidity.types'
-import { PriceImpactAmount, calculatePriceImpact } from './calculatePriceImpact'
-import { queryAddLiquidity } from './queryAddLiquidity'
+import { AddLiquidityHelpers } from './AddLiquidityHelpers'
+import { AddLiquidityInputs, HumanAmountIn } from './add-liquidity.types'
+import { useAddLiquidityBtpOutQuery } from './queries/useAddLiquidityBtpOutQuery'
+import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
+import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
+import { useAddLiquidityDisabledWithReasons } from './useAddLiquidityDisabledWithReasons'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -24,8 +25,11 @@ export const amountsInVar = makeVar<HumanAmountIn[]>([])
 
 export function _useAddLiquidity() {
   const amountsIn = useReactiveVar(amountsInVar)
-  const { pool, poolStateInput, chainId } = usePool()
+
+  const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
+
+  const handler = selectAddLiquidityHandler(pool)
 
   function setInitialAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -56,7 +60,6 @@ export function _useAddLiquidity() {
 
   const tokens = pool.allTokens.map(token => getToken(token.address, pool.chain))
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
-
   const usdAmountsIn = useMemo(
     () =>
       amountsIn.map(amountIn => {
@@ -70,55 +73,49 @@ export function _useAddLiquidity() {
       }),
     [amountsIn, usdValueForToken, validTokens]
   )
-
   const totalUSDValue = safeSum(usdAmountsIn)
 
-  const [priceImpact, setPriceImpact] = useState<PriceImpactAmount | null>(null)
-
-  const addLiquidityConfigBuilder = new AddLiquidityConfigBuilder(
-    chainId,
-    poolStateInput,
-    'unbalanced'
+  const { formattedPriceImpact, isPriceImpactLoading } = useAddLiquidityPriceImpactQuery(
+    handler,
+    amountsIn,
+    pool.id
   )
 
-  async function queryPriceImpact() {
-    const priceImpactAmount = await calculatePriceImpact(addLiquidityConfigBuilder, amountsIn)
+  const { bptOut, bptOutUnits, isBptOutQueryLoading, lastSdkQueryOutput } =
+    useAddLiquidityBtpOutQuery(handler, amountsIn, pool.id)
 
-    setPriceImpact(priceImpactAmount)
+  const { isAddLiquidityDisabled, addLiquidityDisabledReason } =
+    useAddLiquidityDisabledWithReasons(amountsIn)
+
+  /* We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
+    helper is a class and if we return its methods we would lose the this binding, getting a:
+    TypeError: Cannot read property getAmountsToApprove of undefined
+    when trying to access the returned method
+    */
+  const helpers = new AddLiquidityHelpers(pool)
+
+  function buildAddLiquidityTx(inputs: AddLiquidityInputs) {
+    // There are edge cases where we will never call setLastSdkQueryOutput so that lastSdkQueryOutput will be undefined.
+    // That`s expected as sdkQueryOutput is an optional input
+    return handler.buildAddLiquidityTx({ inputs, sdkQueryOutput: lastSdkQueryOutput })
   }
-  const debouncedQueryPriceImpact = useDebouncedCallback(queryPriceImpact, 300)
-
-  const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact.decimal) : '-'
-
-  const [addLiquidityQuery, setAddLiquidityQuery] = useState<AddLiquidityQueryOutput | null>(null) //TODO: rename to queryBptOut if that's the only thing we need from the query result
-  async function queryBptOut() {
-    const queryResult = await queryAddLiquidity(addLiquidityConfigBuilder, amountsIn)
-
-    setAddLiquidityQuery(queryResult)
-  }
-  const debouncedQueryBptOut = useDebouncedCallback(queryBptOut, 300)
-
-  const bptOutUnits: HumanAmount = addLiquidityQuery?.bptOut
-    ? (formatUnits(addLiquidityQuery?.bptOut.amount, 18) as HumanAmount)
-    : '0'
-
-  // When the amounts in change we fetch the new price impact
-  useEffect(() => {
-    debouncedQueryPriceImpact()
-    debouncedQueryBptOut()
-  }, [amountsIn])
 
   return {
     amountsIn,
     tokens,
     validTokens,
     totalUSDValue,
-    priceImpact,
     formattedPriceImpact,
-    addLiquidityQuery,
+    isPriceImpactLoading,
+    bptOut,
+    isBptOutQueryLoading,
     bptOutUnits,
     setAmountIn,
-    builder: addLiquidityConfigBuilder,
+    isAddLiquidityDisabled,
+    addLiquidityDisabledReason,
+    buildAddLiquidityTx,
+    helpers,
+    poolStateInput,
   }
 }
 

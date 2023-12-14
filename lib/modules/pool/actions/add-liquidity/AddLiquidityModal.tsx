@@ -3,7 +3,6 @@
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
-import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
@@ -80,11 +79,11 @@ export function AddLiquidityModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { amountsIn, totalUSDValue, builder, formattedPriceImpact, bptOutUnits } = useAddLiquidity()
+  const { amountsIn, totalUSDValue, helpers, formattedPriceImpact, bptOutUnits } = useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
   // TODO: move userAddress up
-  const spenderAddress = useContractAddress('balancer.vaultV2') || emptyAddress
+  const spenderAddress = useContractAddress('balancer.vaultV2')
   const { userAddress } = useUserAccount()
   const { getToken } = useTokens()
   const humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[] = amountsIn.map(humanAmountIn => {
@@ -133,7 +132,7 @@ export function AddLiquidityModal({
                 </HStack>
                 <TokenAmountRow
                   tokenAddress={pool.address as Address}
-                  humanAmount={bptOutUnits}
+                  humanAmount={bptOutUnits as HumanAmount}
                   symbol="LP Token"
                 />
               </VStack>
@@ -156,13 +155,13 @@ export function AddLiquidityModal({
         </ModalBody>
         <ModalFooter>
           <TokenAllowancesProvider
-            userAddress={userAddress || emptyAddress}
+            userAddress={userAddress}
             spenderAddress={spenderAddress}
-            tokenAddresses={builder.poolTokenAddresses}
+            tokenAddresses={helpers.poolTokenAddresses}
           >
             <AddLiquidityFlowButton
-              builder={builder}
               humanAmountsInWithTokenInfo={humanAmountsInWithTokenInfo}
+              poolId={pool.id}
             ></AddLiquidityFlowButton>
           </TokenAllowancesProvider>
         </ModalFooter>
