@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { formatUnits } from 'viem'
 import { useQuery } from 'wagmi'
-import { generateRemoveLiquidityQueryKey } from './generateAddLiquidityQueryKey'
+import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { HumanAmountIn } from '../../liquidity-types'
 import { areEmptyAmounts } from '../../LiquidityActionHelpers'
@@ -64,5 +64,5 @@ export function useRemoveLiquidityBtpOutQuery(
 
   const bptOutUnits = bptIn ? fNum('integer', formatUnits(bptIn.amount, 18)) : '-'
 
-  return { bptIn: bptIn, bptOutUnits, isBptOutQueryLoading: query.isLoading, lastSdkQueryOutput }
+  return { bptIn: bptIn, bptOutUnits, isBptInQueryLoading: query.isLoading, lastSdkQueryOutput }
 }

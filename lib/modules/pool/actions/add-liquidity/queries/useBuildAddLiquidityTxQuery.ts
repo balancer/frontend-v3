@@ -1,7 +1,6 @@
 'use client'
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Dictionary } from 'lodash'
 import { useQuery } from 'wagmi'

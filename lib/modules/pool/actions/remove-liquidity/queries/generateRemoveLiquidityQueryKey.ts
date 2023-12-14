@@ -14,5 +14,5 @@ export function generateRemoveLiquidityQueryKey({
   slippage,
   humanAmountsIn,
 }: Props): string {
-  return `${userAddress}:${poolId}:${slippage}:${JSON.stringify(humanAmountsIn)}`
+  return `remove_liquidity:${userAddress}:${poolId}:${slippage}:${JSON.stringify(humanAmountsIn)}`
 }

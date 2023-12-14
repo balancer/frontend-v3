@@ -16,6 +16,7 @@ import { RemoveLiquidityInputs } from './remove-liquidity.types'
 import { useRemoveLiquidityBtpOutQuery } from './queries/useRemoveLiquidityBtInQuery'
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
 import { HumanAmountIn } from '../liquidity-types'
+import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -74,12 +75,14 @@ export function _useRemoveLiquidity() {
   )
   const totalUSDValue = safeSum(usdAmountsIn)
 
-  const {
-    bptIn: bptOut,
-    bptOutUnits,
-    isBptOutQueryLoading,
-    lastSdkQueryOutput,
-  } = useRemoveLiquidityBtpOutQuery(handler, amountsIn, pool.id)
+  const { priceImpact, isPriceImpactLoading } = useRemoveLiquidityPriceImpactQuery(
+    handler,
+    amountsIn,
+    pool.id
+  )
+
+  const { bptIn, bptOutUnits, isBptInQueryLoading, lastSdkQueryOutput } =
+    useRemoveLiquidityBtpOutQuery(handler, amountsIn, pool.id)
 
   // TODO: we will need to render reasons why the transaction cannot be performed so instead of a boolean this will become an object
   const isAddLiquidityDisabled = areEmptyAmounts(amountsIn)
@@ -102,8 +105,10 @@ export function _useRemoveLiquidity() {
     tokens,
     validTokens,
     totalUSDValue,
-    bptOut,
-    isBptOutQueryLoading,
+    priceImpact,
+    isPriceImpactLoading,
+    bptIn,
+    isBptInQueryLoading,
     bptOutUnits,
     setAmountIn,
     isAddLiquidityDisabled,

@@ -6,7 +6,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Dictionary } from 'lodash'
 import { useQuery } from 'wagmi'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
-import { generateRemoveLiquidityQueryKey } from './generateAddLiquidityQueryKey'
+import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
 import { HumanAmountIn } from '../../liquidity-types'
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction

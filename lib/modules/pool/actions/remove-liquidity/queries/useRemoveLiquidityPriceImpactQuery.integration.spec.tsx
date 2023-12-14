@@ -5,27 +5,27 @@ import { waitFor } from '@testing-library/react'
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { selectRemoveLiquidityHandler } from '../selectRemoveLiquidityHandler'
-import { useRemoveLiquidityBtpOutQuery } from './useRemoveLiquidityBtInQuery'
+import { useRemoveLiquidityPriceImpactQuery } from './useRemoveLiquidityPriceImpactQuery'
 import { HumanAmountIn } from '../../liquidity-types'
 
 async function testQuery(humanAmountsIn: HumanAmountIn[]) {
   const handler = selectRemoveLiquidityHandler(aWjAuraWethPoolElementMock())
   const { result } = testHook(() =>
-    useRemoveLiquidityBtpOutQuery(handler, humanAmountsIn, defaultTestUserAccount)
+    useRemoveLiquidityPriceImpactQuery(handler, humanAmountsIn, defaultTestUserAccount)
   )
   return result
 }
 
-test('queries btp in for remove liquidity', async () => {
+test('queries price impact for add liquidity', async () => {
   const humanAmountsIn: HumanAmountIn[] = [
-    { tokenAddress: wETHAddress, humanAmount: '100' },
+    { tokenAddress: wETHAddress, humanAmount: '1' },
     { tokenAddress: wjAuraAddress, humanAmount: '1' },
   ]
 
   const result = await testQuery(humanAmountsIn)
 
-  await waitFor(() => expect(result.current.bptIn).not.toBeNull())
+  await waitFor(() => expect(result.current.priceImpact).toBeDefined())
 
-  expect(result.current.bptIn?.decimalScale).toBe(1000000000000000000n)
-  expect(result.current.isBptInQueryLoading).toBeFalsy()
+  expect(result.current.priceImpact).toBeCloseTo(0.002368782867485742)
+  expect(result.current.isPriceImpactLoading).toBeFalsy()
 })

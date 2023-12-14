@@ -1,13 +1,14 @@
 import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
+  PriceImpact,
   RemoveLiquidity,
   RemoveLiquidityKind,
   RemoveLiquidityUnbalancedInput,
   Slippage,
 } from '@balancer/sdk'
 import { Pool } from '../../../usePool'
-import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
+import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
 import {
   BuildLiquidityInputs,
   RemoveLiquidityInputs,
@@ -15,6 +16,7 @@ import {
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
 import { HumanAmountIn } from '../../liquidity-types'
+import { PriceImpactAmount } from '../../add-liquidity/add-liquidity.types'
 
 /**
  * UnbalancedAddLiquidityHandler is a handler that implements the
@@ -24,9 +26,9 @@ import { HumanAmountIn } from '../../liquidity-types'
  * asset instead of the wrapped native asset.
  */
 export class UnbalancedRemoveLiquidityHandler implements RemoveLiquidityHandler {
-  addLiquidityHelpers: LiquidityActionHelpers
+  helpers: LiquidityActionHelpers
   constructor(pool: Pool) {
-    this.addLiquidityHelpers = new LiquidityActionHelpers(pool)
+    this.helpers = new LiquidityActionHelpers(pool)
   }
 
   public async queryRemoveLiquidity({
@@ -37,9 +39,25 @@ export class UnbalancedRemoveLiquidityHandler implements RemoveLiquidityHandler 
 
     const sdkQueryOutput = await removeLiquidity.query(
       removeLiquidityInput,
-      this.addLiquidityHelpers.poolStateInput
+      this.helpers.poolStateInput
     )
     return { bptIn: sdkQueryOutput.bptIn, sdkQueryOutput }
+  }
+
+  public async calculatePriceImpact({ humanAmountsIn }: RemoveLiquidityInputs): Promise<number> {
+    if (areEmptyAmounts(humanAmountsIn)) {
+      // Avoid price impact calculation when there are no amounts in
+      return 0
+    }
+
+    const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
+
+    const priceImpactABA: PriceImpactAmount = await PriceImpact.removeLiquidity(
+      addLiquidityInput,
+      this.helpers.poolStateInput
+    )
+
+    return priceImpactABA.decimal
   }
 
   /*
@@ -64,7 +82,7 @@ export class UnbalancedRemoveLiquidityHandler implements RemoveLiquidityHandler 
 
     return {
       account,
-      chainId: this.addLiquidityHelpers.chainId,
+      chainId: this.helpers.chainId,
       data: call,
       to,
       value,
@@ -75,15 +93,15 @@ export class UnbalancedRemoveLiquidityHandler implements RemoveLiquidityHandler 
    * PRIVATE METHODS
    */
   private constructSdkInput(humanAmountsIn: HumanAmountIn[]): RemoveLiquidityUnbalancedInput {
-    const amountsOut = this.addLiquidityHelpers.toInputAmounts(humanAmountsIn)
+    const amountsOut = this.helpers.toInputAmounts(humanAmountsIn)
 
     return {
-      chainId: this.addLiquidityHelpers.chainId,
-      rpcUrl: getDefaultRpcUrl(this.addLiquidityHelpers.chainId),
+      chainId: this.helpers.chainId,
+      rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
       amountsOut,
       kind: RemoveLiquidityKind.Unbalanced,
       //TODO: review this case
-      toNativeAsset: this.addLiquidityHelpers.isNativeAssetIn(humanAmountsIn),
+      toNativeAsset: this.helpers.isNativeAssetIn(humanAmountsIn),
     }
   }
 }

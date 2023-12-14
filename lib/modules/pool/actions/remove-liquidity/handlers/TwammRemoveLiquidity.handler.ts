@@ -30,6 +30,11 @@ export class TwammRemoveLiquidityHandler implements RemoveLiquidityHandler {
   }
 
   // TODO: This is a non-sense example implementation
+  public async calculatePriceImpact({ humanAmountsIn }: RemoveLiquidityInputs): Promise<number> {
+    return Number(humanAmountsIn[0].humanAmount)
+  }
+
+  // TODO: This is a non-sense example implementation
   public async buildRemoveLiquidityTx(
     buildInputs: BuildLiquidityInputs
   ): Promise<TransactionConfig> {

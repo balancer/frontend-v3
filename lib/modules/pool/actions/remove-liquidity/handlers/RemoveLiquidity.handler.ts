@@ -15,6 +15,7 @@ export interface RemoveLiquidityHandler {
   // Query the SDK for the expected output of removing liquidity
   queryRemoveLiquidity(inputs: RemoveLiquidityInputs): Promise<RemoveLiquidityOutputs>
   // Calculate the price impact of removing liquidity
+  calculatePriceImpact(inputs: RemoveLiquidityInputs): Promise<number>
   // Build tx payload for removing liquidity
   buildRemoveLiquidityTx(inputs: BuildLiquidityInputs): Promise<TransactionConfig>
 }
