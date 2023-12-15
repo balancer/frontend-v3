@@ -119,7 +119,11 @@ export function _useSwap() {
       ...swapState,
       tokenIn: swapState.tokenOut,
       tokenOut: swapState.tokenIn,
+      swapType: GqlSorSwapType.ExactIn,
+      swapAmount: null,
     })
+    setTokenInAmount('', { userTriggered: false })
+    setTokenOutAmount('', { userTriggered: false })
   }
 
   function setTokenInAmount(

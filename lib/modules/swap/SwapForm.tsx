@@ -14,7 +14,6 @@ import {
   VStack,
   Text,
   Tooltip,
-  Button,
   useDisclosure,
   Select,
   IconButton,
@@ -27,6 +26,7 @@ import { fNum } from '@/lib/shared/utils/numbers'
 import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { CgArrowsExchangeV } from 'react-icons/cg'
+import { SwapFlowButton } from './SwapFlowButton'
 
 export function SwapForm() {
   const {
@@ -36,8 +36,6 @@ export function SwapForm() {
     tokenOutAmount,
     selectedChain,
     tokenSelectKey,
-    isLoading,
-    isDisabled,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
@@ -73,10 +71,6 @@ export function SwapForm() {
   function openTokenSelectModal(tokenSelectKey: 'tokenIn' | 'tokenOut') {
     setTokenSelectKey(tokenSelectKey)
     tokenSelectDisclosure.onOpen()
-  }
-
-  function submit() {
-    console.log('submit')
   }
 
   return (
@@ -137,18 +131,7 @@ export function SwapForm() {
               </HStack>
             </VStack>
 
-            <Tooltip label={isDisabled ? '' : 'cannot execute swap'}>
-              <Button
-                variant="secondary"
-                w="full"
-                size="lg"
-                isDisabled={isDisabled}
-                isLoading={isLoading}
-                onClick={submit}
-              >
-                Swap
-              </Button>
-            </Tooltip>
+            <SwapFlowButton />
           </VStack>
         </Card>
       </Center>
