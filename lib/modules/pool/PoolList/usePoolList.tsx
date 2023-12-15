@@ -10,7 +10,6 @@ import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
-import { DecoratedPoolListItem } from '../pool.types'
 
 export function _usePoolList() {
   const { queryVariables } = usePoolListQueryState()
@@ -20,24 +19,7 @@ export function _usePoolList() {
     { variables: queryVariables, notifyOnNetworkStatusChange: true }
   )
 
-  let pools: DecoratedPoolListItem[]
-  pools = loading && previousData ? previousData.pools : data?.pools || []
-
-  pools = pools.map(pool => {
-    if (pool.userBalance) {
-      const bptPrice =
-        parseFloat(pool.dynamicData.totalLiquidity) / parseFloat(pool.dynamicData.totalShares)
-      return {
-        ...pool,
-        userBalance: {
-          ...pool.userBalance,
-          totalBalanceUsd: `${bptPrice * parseFloat(pool.userBalance.totalBalance)}`,
-        },
-      }
-    } else {
-      return pool
-    }
-  })
+  const pools = loading && previousData ? previousData.pools : data?.pools || []
 
   return {
     pools,

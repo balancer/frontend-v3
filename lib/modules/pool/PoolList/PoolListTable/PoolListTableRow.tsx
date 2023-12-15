@@ -1,16 +1,16 @@
 import { Box, Grid, GridItem, GridProps, Text } from '@chakra-ui/react'
 import Link from 'next/link'
 import { getPoolPath } from '../../pool.utils'
-import { DecoratedPoolListItem } from '../../pool.types'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
 import { PoolListTokensTag } from '../PoolListTokensTag'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
+import { PoolListItem } from '../../pool.types'
 
 interface Props extends GridProps {
-  pool: DecoratedPoolListItem
+  pool: PoolListItem
   keyValue: number
 }
 
@@ -31,7 +31,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
           {userAddress && (
             <GridItem>
               <Text textAlign="right">
-                {toCurrency(pool.userBalance?.totalBalanceUsd || 0, { abbreviated: false })}
+                {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
               </Text>
             </GridItem>
           )}
