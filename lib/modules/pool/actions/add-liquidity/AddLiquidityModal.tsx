@@ -1,7 +1,16 @@
 'use client'
 
+import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
+import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
+import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { NumberText } from '@/lib/shared/components/typography/NumberText'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { fNum } from '@/lib/shared/utils/numbers'
+import { HumanAmount } from '@balancer/sdk'
+import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
-  Button,
   Card,
   HStack,
   Heading,
@@ -18,14 +27,10 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
-import { useAddLiquidity } from './useAddLiquidity'
-import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
+import { Address } from 'wagmi'
 import { usePool } from '../../usePool'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { priceImpactFormat, tokenFormat } from '@/lib/shared/utils/numbers'
+import { AddLiquidityFlowButton, HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
+import { useAddLiquidity } from './useAddLiquidity'
 
 type Props = {
   isOpen: boolean
@@ -36,11 +41,11 @@ type Props = {
 
 function TokenAmountRow({
   tokenAddress,
-  value,
+  humanAmount,
   symbol,
 }: {
-  tokenAddress: string
-  value: string
+  tokenAddress: Address
+  humanAmount: HumanAmount | ''
   symbol?: string
 }) {
   const { pool } = usePool()
@@ -48,7 +53,7 @@ function TokenAmountRow({
   const { toCurrency } = useCurrency()
 
   const token = getToken(tokenAddress, pool.chain)
-  const usdValue = token ? usdValueForToken(token, value) : undefined
+  const usdValue = token ? usdValueForToken(token, humanAmount) : undefined
 
   return (
     <HStack w="full" justify="space-between">
@@ -59,7 +64,7 @@ function TokenAmountRow({
           size={28}
           alt={token?.symbol || 'Token icon'}
         />
-        <NumberText>{tokenFormat(value)}</NumberText>
+        <NumberText>{fNum('token', humanAmount)}</NumberText>
         <Text>{symbol || token?.symbol}</Text>
       </HStack>
       <NumberText>{usdValue ? toCurrency(usdValue) : '-'}</NumberText>
@@ -74,9 +79,19 @@ export function AddLiquidityModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { amountsIn, totalUSDValue, executeAddLiquidity } = useAddLiquidity()
+  const { amountsIn, totalUSDValue, helpers, formattedPriceImpact, bptOutUnits } = useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
+  // TODO: move userAddress up
+  const spenderAddress = useContractAddress('balancer.vaultV2')
+  const { userAddress } = useUserAccount()
+  const { getToken } = useTokens()
+  const humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[] = amountsIn.map(humanAmountIn => {
+    return {
+      ...humanAmountIn,
+      ...getToken(humanAmountIn.tokenAddress, pool.chain),
+    } as HumanAmountInWithTokenInfo
+  })
 
   return (
     <Modal
@@ -115,7 +130,11 @@ export function AddLiquidityModal({
                   <Text color="GrayText">{"You'll get (if no slippage)"}</Text>
                   <Text color="GrayText">{pool.symbol}</Text>
                 </HStack>
-                <TokenAmountRow tokenAddress={pool.address} value="0" symbol="LP Token" />
+                <TokenAmountRow
+                  tokenAddress={pool.address as Address}
+                  humanAmount={bptOutUnits as HumanAmount}
+                  symbol="LP Token"
+                />
               </VStack>
             </Card>
 
@@ -124,7 +143,7 @@ export function AddLiquidityModal({
                 <HStack justify="space-between" w="full">
                   <Text>Price impact</Text>
                   <HStack>
-                    <NumberText color="GrayText">{priceImpactFormat(0)}</NumberText>
+                    <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
                     <Tooltip label="Price impact" fontSize="sm">
                       <InfoOutlineIcon color="GrayText" />
                     </Tooltip>
@@ -135,9 +154,16 @@ export function AddLiquidityModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <Button w="full" size="lg" variant="primary" onClick={executeAddLiquidity}>
-            Add liquidity
-          </Button>
+          <TokenAllowancesProvider
+            userAddress={userAddress}
+            spenderAddress={spenderAddress}
+            tokenAddresses={helpers.poolTokenAddresses}
+          >
+            <AddLiquidityFlowButton
+              humanAmountsInWithTokenInfo={humanAmountsInWithTokenInfo}
+              poolId={pool.id}
+            ></AddLiquidityFlowButton>
+          </TokenAllowancesProvider>
         </ModalFooter>
       </ModalContent>
     </Modal>

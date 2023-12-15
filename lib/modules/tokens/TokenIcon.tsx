@@ -61,7 +61,7 @@ export function TokenIcon({
       alt={alt}
       width={size}
       height={size}
-      style={{ borderRadius: '100%', border, backgroundColor: 'white' }}
+      style={{ borderRadius: '100%', border, backgroundColor: 'white', width: size, height: size }}
       onError={() => !hasError && setHasError(true)}
       {...rest}
     />

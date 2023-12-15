@@ -51,11 +51,58 @@ enum GqlContentNewsItemSource {
   twitter
 }
 
+type GqlCowSwapApiResponse {
+  marketSp: String!
+  returnAmount: String!
+  returnAmountConsideringFees: String!
+  returnAmountFromSwaps: String!
+  swapAmount: String!
+  swapAmountForSwaps: String!
+  swaps: [GqlSwap!]!
+  tokenAddresses: [String!]!
+  tokenIn: String!
+  tokenOut: String!
+}
+
 type GqlFeaturePoolGroupItemExternalLink {
   buttonText: String!
   buttonUrl: String!
   id: ID!
   image: String!
+}
+
+"""
+Configuration options for SOR V2
+"""
+input GqlGraphTraversalConfigInput {
+  """
+  Max number of paths to return (can be less)
+
+  Default: 5
+  """
+  approxPathsToReturn: Int
+
+  """
+  The max hops in a path.
+
+  Default: 6
+  """
+  maxDepth: Int
+
+  """
+  Limit non boosted hop tokens in a boosted path.
+
+  Default: 2
+  """
+  maxNonBoostedHopTokensInBoostedPath: Int
+
+  """
+  Limit of "non-boosted" pools for efficiency.
+
+  Default: 6
+  """
+  maxNonBoostedPathDepth: Int
+  poolIdsToInclude: [String]
 }
 
 type GqlHistoricalTokenPrice {
@@ -265,23 +312,38 @@ type GqlPoolGyro implements GqlPoolBase {
   allTokens: [GqlPoolTokenExpanded!]!
   alpha: String!
   beta: String!
+  c: String!
   chain: GqlChain!
   createTime: Int!
+  dSq: String!
   decimals: Int!
   displayTokens: [GqlPoolTokenDisplay!]!
   dynamicData: GqlPoolDynamicData!
   factory: Bytes
   id: ID!
   investConfig: GqlPoolInvestConfig!
+  lambda: String!
   name: String!
   nestingType: GqlPoolNestingType!
   owner: Bytes!
+  root3Alpha: String!
+  s: String!
+  sqrtAlpha: String!
+  sqrtBeta: String!
   staking: GqlPoolStaking
   symbol: String!
+  tauAlphaX: String!
+  tauAlphaY: String!
+  tauBetaX: String!
+  tauBetaY: String!
   tokens: [GqlPoolTokenUnion!]!
   type: String!
+  u: String!
+  v: String!
   version: Int!
+  w: String!
   withdrawConfig: GqlPoolWithdrawConfig!
+  z: String!
 }
 
 type GqlPoolInvestConfig {
@@ -496,6 +558,7 @@ enum GqlPoolOrderBy {
   fees24h
   totalLiquidity
   totalShares
+  userbalanceUsd
   volume24h
 }
 
@@ -800,8 +863,11 @@ union GqlPoolUnion =
 
 type GqlPoolUserBalance {
   stakedBalance: AmountHumanReadable!
+  stakedBalanceUsd: Float!
   totalBalance: AmountHumanReadable!
+  totalBalanceUsd: Float!
   walletBalance: AmountHumanReadable!
+  walletBalanceUsd: Float!
 }
 
 type GqlPoolUserSwapVolume {
@@ -971,6 +1037,14 @@ type GqlSorSwapRouteHop {
 enum GqlSorSwapType {
   EXACT_IN
   EXACT_OUT
+}
+
+type GqlSwap {
+  amount: String!
+  assetInIndex: Int!
+  assetOutIndex: Int!
+  poolId: String!
+  userData: String!
 }
 
 type GqlToken {
@@ -1209,7 +1283,6 @@ type Mutation {
 }
 
 type Query {
-  balancerQueryTest: String!
   beetsGetFbeetsRatio: String!
   beetsPoolGetReliquaryFarmSnapshots(
     id: String!
@@ -1227,6 +1300,7 @@ type Query {
   ): [GqlPoolSnapshot!]!
   poolGetBatchSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolBatchSwap!]!
   poolGetFeaturedPoolGroups: [GqlPoolFeaturedPoolGroup!]!
+  poolGetGyroPools(chains: [GqlChain!]): [GqlPoolGyro!]!
   poolGetJoinExits(first: Int, skip: Int, where: GqlPoolJoinExitFilter): [GqlPoolJoinExit!]!
   poolGetLinearPools(chains: [GqlChain!]): [GqlPoolLinear!]!
   poolGetPool(chain: GqlChain, id: String!): GqlPoolBase!
@@ -1259,7 +1333,15 @@ type Query {
     tokenOut: String!
     tokensIn: [GqlTokenAmountHumanReadable!]!
   ): GqlSorGetBatchSwapForTokensInResponse!
+  sorGetCowSwaps(
+    chain: GqlChain!
+    swapAmount: BigDecimal!
+    swapType: GqlSorSwapType!
+    tokenIn: String!
+    tokenOut: String!
+  ): GqlCowSwapApiResponse!
   sorGetSwaps(
+    chain: GqlChain
     swapAmount: BigDecimal!
     swapOptions: GqlSorSwapOptionsInput!
     swapType: GqlSorSwapType!

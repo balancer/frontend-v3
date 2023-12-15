@@ -23,7 +23,7 @@ export function PoolContracts() {
               </HStack>
             </Link>
           </HStack>
-          {hasGaugeAddress() && (
+          {hasGaugeAddress && (
             <HStack width="full" spacing="8">
               <Box minWidth="150px">
                 <Text variant="secondary">Gauge</Text>

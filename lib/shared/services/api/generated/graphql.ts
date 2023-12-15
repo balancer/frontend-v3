@@ -72,12 +72,55 @@ export enum GqlContentNewsItemSource {
   Twitter = 'twitter',
 }
 
+export type GqlCowSwapApiResponse = {
+  __typename: 'GqlCowSwapApiResponse'
+  marketSp: Scalars['String']['output']
+  returnAmount: Scalars['String']['output']
+  returnAmountConsideringFees: Scalars['String']['output']
+  returnAmountFromSwaps: Scalars['String']['output']
+  swapAmount: Scalars['String']['output']
+  swapAmountForSwaps: Scalars['String']['output']
+  swaps: Array<GqlSwap>
+  tokenAddresses: Array<Scalars['String']['output']>
+  tokenIn: Scalars['String']['output']
+  tokenOut: Scalars['String']['output']
+}
+
 export type GqlFeaturePoolGroupItemExternalLink = {
   __typename: 'GqlFeaturePoolGroupItemExternalLink'
   buttonText: Scalars['String']['output']
   buttonUrl: Scalars['String']['output']
   id: Scalars['ID']['output']
   image: Scalars['String']['output']
+}
+
+/** Configuration options for SOR V2 */
+export type GqlGraphTraversalConfigInput = {
+  /**
+   * Max number of paths to return (can be less)
+   *
+   * Default: 5
+   */
+  approxPathsToReturn?: InputMaybe<Scalars['Int']['input']>
+  /**
+   * The max hops in a path.
+   *
+   * Default: 6
+   */
+  maxDepth?: InputMaybe<Scalars['Int']['input']>
+  /**
+   * Limit non boosted hop tokens in a boosted path.
+   *
+   * Default: 2
+   */
+  maxNonBoostedHopTokensInBoostedPath?: InputMaybe<Scalars['Int']['input']>
+  /**
+   * Limit of "non-boosted" pools for efficiency.
+   *
+   * Default: 6
+   */
+  maxNonBoostedPathDepth?: InputMaybe<Scalars['Int']['input']>
+  poolIdsToInclude?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>
 }
 
 export type GqlHistoricalTokenPrice = {
@@ -301,23 +344,38 @@ export type GqlPoolGyro = GqlPoolBase & {
   allTokens: Array<GqlPoolTokenExpanded>
   alpha: Scalars['String']['output']
   beta: Scalars['String']['output']
+  c: Scalars['String']['output']
   chain: GqlChain
   createTime: Scalars['Int']['output']
+  dSq: Scalars['String']['output']
   decimals: Scalars['Int']['output']
   displayTokens: Array<GqlPoolTokenDisplay>
   dynamicData: GqlPoolDynamicData
   factory?: Maybe<Scalars['Bytes']['output']>
   id: Scalars['ID']['output']
   investConfig: GqlPoolInvestConfig
+  lambda: Scalars['String']['output']
   name: Scalars['String']['output']
   nestingType: GqlPoolNestingType
   owner: Scalars['Bytes']['output']
+  root3Alpha: Scalars['String']['output']
+  s: Scalars['String']['output']
+  sqrtAlpha: Scalars['String']['output']
+  sqrtBeta: Scalars['String']['output']
   staking?: Maybe<GqlPoolStaking>
   symbol: Scalars['String']['output']
+  tauAlphaX: Scalars['String']['output']
+  tauAlphaY: Scalars['String']['output']
+  tauBetaX: Scalars['String']['output']
+  tauBetaY: Scalars['String']['output']
   tokens: Array<GqlPoolTokenUnion>
   type: Scalars['String']['output']
+  u: Scalars['String']['output']
+  v: Scalars['String']['output']
   version: Scalars['Int']['output']
+  w: Scalars['String']['output']
   withdrawConfig: GqlPoolWithdrawConfig
+  z: Scalars['String']['output']
 }
 
 export type GqlPoolInvestConfig = {
@@ -544,6 +602,7 @@ export enum GqlPoolOrderBy {
   Fees24h = 'fees24h',
   TotalLiquidity = 'totalLiquidity',
   TotalShares = 'totalShares',
+  UserbalanceUsd = 'userbalanceUsd',
   Volume24h = 'volume24h',
 }
 
@@ -868,8 +927,11 @@ export type GqlPoolUnion =
 export type GqlPoolUserBalance = {
   __typename: 'GqlPoolUserBalance'
   stakedBalance: Scalars['AmountHumanReadable']['output']
+  stakedBalanceUsd: Scalars['Float']['output']
   totalBalance: Scalars['AmountHumanReadable']['output']
+  totalBalanceUsd: Scalars['Float']['output']
   walletBalance: Scalars['AmountHumanReadable']['output']
+  walletBalanceUsd: Scalars['Float']['output']
 }
 
 export type GqlPoolUserSwapVolume = {
@@ -1054,6 +1116,15 @@ export type GqlSorSwapRouteHop = {
 export enum GqlSorSwapType {
   ExactIn = 'EXACT_IN',
   ExactOut = 'EXACT_OUT',
+}
+
+export type GqlSwap = {
+  __typename: 'GqlSwap'
+  amount: Scalars['String']['output']
+  assetInIndex: Scalars['Int']['output']
+  assetOutIndex: Scalars['Int']['output']
+  poolId: Scalars['String']['output']
+  userData: Scalars['String']['output']
 }
 
 export type GqlToken = {
@@ -1371,7 +1442,6 @@ export type MutationUserSyncBalanceArgs = {
 
 export type Query = {
   __typename: 'Query'
-  balancerQueryTest: Scalars['String']['output']
   beetsGetFbeetsRatio: Scalars['String']['output']
   beetsPoolGetReliquaryFarmSnapshots: Array<GqlReliquaryFarmSnapshot>
   blocksGetAverageBlockTime: Scalars['Float']['output']
@@ -1383,6 +1453,7 @@ export type Query = {
   poolGetAllPoolsSnapshots: Array<GqlPoolSnapshot>
   poolGetBatchSwaps: Array<GqlPoolBatchSwap>
   poolGetFeaturedPoolGroups: Array<GqlPoolFeaturedPoolGroup>
+  poolGetGyroPools: Array<GqlPoolGyro>
   poolGetJoinExits: Array<GqlPoolJoinExit>
   poolGetLinearPools: Array<GqlPoolLinear>
   poolGetPool: GqlPoolBase
@@ -1393,6 +1464,7 @@ export type Query = {
   protocolMetricsAggregated: GqlProtocolMetricsAggregated
   protocolMetricsChain: GqlProtocolMetricsChain
   sorGetBatchSwapForTokensIn: GqlSorGetBatchSwapForTokensInResponse
+  sorGetCowSwaps: GqlCowSwapApiResponse
   sorGetSwaps: GqlSorGetSwapsResponse
   tokenGetCandlestickChartData: Array<GqlTokenCandlestickChartDataItem>
   tokenGetCurrentPrices: Array<GqlTokenPrice>
@@ -1433,6 +1505,10 @@ export type QueryPoolGetBatchSwapsArgs = {
   first?: InputMaybe<Scalars['Int']['input']>
   skip?: InputMaybe<Scalars['Int']['input']>
   where?: InputMaybe<GqlPoolSwapFilter>
+}
+
+export type QueryPoolGetGyroPoolsArgs = {
+  chains?: InputMaybe<Array<GqlChain>>
 }
 
 export type QueryPoolGetJoinExitsArgs = {
@@ -1494,7 +1570,16 @@ export type QuerySorGetBatchSwapForTokensInArgs = {
   tokensIn: Array<GqlTokenAmountHumanReadable>
 }
 
+export type QuerySorGetCowSwapsArgs = {
+  chain: GqlChain
+  swapAmount: Scalars['BigDecimal']['input']
+  swapType: GqlSorSwapType
+  tokenIn: Scalars['String']['input']
+  tokenOut: Scalars['String']['input']
+}
+
 export type QuerySorGetSwapsArgs = {
+  chain?: InputMaybe<GqlChain>
   swapAmount: Scalars['BigDecimal']['input']
   swapOptions: GqlSorSwapOptionsInput
   swapType: GqlSorSwapType
@@ -1586,10 +1671,6 @@ export type QueryUserGetSwapsArgs = {
   poolId: Scalars['String']['input']
   skip?: InputMaybe<Scalars['Int']['input']>
 }
-
-export type GetTimestampQueryVariables = Exact<{ [key: string]: never }>
-
-export type GetTimestampQuery = { __typename: 'Query'; timestamp: string }
 
 export type GetAppGlobalPollingDataQueryVariables = Exact<{ [key: string]: never }>
 
@@ -4105,6 +4186,7 @@ export type GetPoolsQuery = {
       holdersCount: string
       swapFee: string
       swapsCount: string
+      totalShares: string
       apr: {
         __typename: 'GqlPoolApr'
         hasRewardApr: boolean
@@ -4136,6 +4218,13 @@ export type GetPoolsQuery = {
         }>
       }
     }
+    userBalance?: {
+      __typename: 'GqlPoolUserBalance'
+      totalBalance: string
+      totalBalanceUsd: number
+      stakedBalance: string
+      walletBalance: string
+    } | null
   }>
 }
 
@@ -4596,26 +4685,6 @@ export const GqlTokenDynamicDataFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<GqlTokenDynamicDataFragment, unknown>
-export const GetTimestampDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetTimestamp' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            alias: { kind: 'Name', value: 'timestamp' },
-            name: { kind: 'Name', value: 'balancerQueryTest' },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GetTimestampQuery, GetTimestampQueryVariables>
 export const GetAppGlobalPollingDataDocument = {
   kind: 'Document',
   definitions: [
@@ -8778,6 +8847,7 @@ export const GetPoolsDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'holdersCount' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'swapFee' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'swapsCount' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'totalShares' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'apr' },
@@ -9018,6 +9088,19 @@ export const GetPoolsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'owner' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'userBalance' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'totalBalanceUsd' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'stakedBalance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'walletBalance' } },
+                    ],
+                  },
+                },
               ],
             },
           },

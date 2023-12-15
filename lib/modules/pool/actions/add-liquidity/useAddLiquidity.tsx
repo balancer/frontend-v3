@@ -1,35 +1,44 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { createContext, PropsWithChildren, useEffect, useMemo } from 'react'
-import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { makeVar, useReactiveVar } from '@apollo/client'
-import { usePool } from '../../usePool'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { safeSum } from '@/lib/shared/utils/numbers'
+import { makeVar, useReactiveVar } from '@apollo/client'
+import { HumanAmount } from '@balancer/sdk'
+import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
+import { Address } from 'viem'
+import { usePool } from '../../usePool'
+import { AddLiquidityHelpers } from './AddLiquidityHelpers'
+import { AddLiquidityInputs, HumanAmountIn } from './add-liquidity.types'
+import { useAddLiquidityBtpOutQuery } from './queries/useAddLiquidityBtpOutQuery'
+import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
+import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
+import { useAddLiquidityDisabledWithReasons } from './useAddLiquidityDisabledWithReasons'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
 
-export type AmountIn = {
-  tokenAddress: string
-  value: string
-}
-
-export const amountsInVar = makeVar<AmountIn[]>([])
+export const amountsInVar = makeVar<HumanAmountIn[]>([])
 
 export function _useAddLiquidity() {
   const amountsIn = useReactiveVar(amountsInVar)
-  const { pool } = usePool()
+
+  const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
 
+  const handler = selectAddLiquidityHandler(pool)
+
   function setInitialAmountsIn() {
-    const amountsIn = pool.allTokens.map(token => ({
-      tokenAddress: token.address,
-      value: '',
-    }))
+    const amountsIn = pool.allTokens.map(
+      token =>
+        ({
+          tokenAddress: token.address,
+          humanAmount: '',
+        } as HumanAmountIn)
+    )
     amountsInVar(amountsIn)
   }
 
@@ -37,21 +46,20 @@ export function _useAddLiquidity() {
     setInitialAmountsIn()
   }, [])
 
-  function setAmountIn(tokenAddress: string, value: string) {
+  function setAmountIn(tokenAddress: Address, humanAmount: HumanAmount) {
     const state = amountsInVar()
 
     amountsInVar([
       ...state.filter(amountIn => !isSameAddress(amountIn.tokenAddress, tokenAddress)),
       {
         tokenAddress,
-        value,
+        humanAmount,
       },
     ])
   }
 
   const tokens = pool.allTokens.map(token => getToken(token.address, pool.chain))
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
-
   const usdAmountsIn = useMemo(
     () =>
       amountsIn.map(amountIn => {
@@ -60,28 +68,36 @@ export function _useAddLiquidity() {
         )
 
         if (!token) return '0'
-        console.log('amountIn', amountIn)
 
-        return usdValueForToken(token, amountIn.value)
+        return usdValueForToken(token, amountIn.humanAmount)
       }),
     [amountsIn, usdValueForToken, validTokens]
   )
-
   const totalUSDValue = safeSum(usdAmountsIn)
 
-  // When the amounts in change we should fetch the expected output.
-  useEffect(() => {
-    queryAddLiquidity()
-  }, [amountsIn])
+  const { formattedPriceImpact, isPriceImpactLoading } = useAddLiquidityPriceImpactQuery(
+    handler,
+    amountsIn,
+    pool.id
+  )
 
-  // TODO: Call underlying SDK query function
-  function queryAddLiquidity() {
-    console.log('amountsIn', amountsIn)
-  }
+  const { bptOut, bptOutUnits, isBptOutQueryLoading, lastSdkQueryOutput } =
+    useAddLiquidityBtpOutQuery(handler, amountsIn, pool.id)
 
-  // TODO: Call underlying SDK execution function
-  function executeAddLiquidity() {
-    console.log('amountsIn', amountsIn)
+  const { isAddLiquidityDisabled, addLiquidityDisabledReason } =
+    useAddLiquidityDisabledWithReasons(amountsIn)
+
+  /* We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
+    helper is a class and if we return its methods we would lose the this binding, getting a:
+    TypeError: Cannot read property getAmountsToApprove of undefined
+    when trying to access the returned method
+    */
+  const helpers = new AddLiquidityHelpers(pool)
+
+  function buildAddLiquidityTx(inputs: AddLiquidityInputs) {
+    // There are edge cases where we will never call setLastSdkQueryOutput so that lastSdkQueryOutput will be undefined.
+    // That`s expected as sdkQueryOutput is an optional input
+    return handler.buildAddLiquidityTx({ inputs, sdkQueryOutput: lastSdkQueryOutput })
   }
 
   return {
@@ -89,8 +105,17 @@ export function _useAddLiquidity() {
     tokens,
     validTokens,
     totalUSDValue,
+    formattedPriceImpact,
+    isPriceImpactLoading,
+    bptOut,
+    isBptOutQueryLoading,
+    bptOutUnits,
     setAmountIn,
-    executeAddLiquidity,
+    isAddLiquidityDisabled,
+    addLiquidityDisabledReason,
+    buildAddLiquidityTx,
+    helpers,
+    poolStateInput,
   }
 }
 

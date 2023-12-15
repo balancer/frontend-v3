@@ -1,3 +1,4 @@
+import { getChainId } from '@/lib/config/app.config'
 import { dateToUnixTimestamp } from '@/lib/shared/hooks/useTime'
 import {
   GetPoolQuery,
@@ -6,8 +7,9 @@ import {
   GqlPoolMinimalType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { getAddressBlockExplorerLink, isSameAddress } from '@/lib/shared/utils/addresses'
+import { MinimalToken, PoolStateInput } from '@balancer/sdk'
 import BigNumber from 'bignumber.js'
-import { Address, getAddress } from 'viem'
+import { Address, Hex, getAddress } from 'viem'
 
 /**
  * METHODS
@@ -131,11 +133,33 @@ export function usePoolHelpers(pool: Pool, chain: GqlChain) {
   )
   const poolExplorerLink = getAddressBlockExplorerLink(pool.address as Address, chain)
 
-  function hasGaugeAddress() {
-    return !!pool?.staking?.gauge?.gaugeAddress
-  }
+  const hasGaugeAddress = !!pool?.staking?.gauge?.gaugeAddress
 
   const gaugeAddress = pool?.staking?.gauge?.gaugeAddress || ''
 
-  return { poolExplorerLink, gaugeExplorerLink, hasGaugeAddress, gaugeAddress }
+  const poolStateInput = toPoolStateInput(pool)
+
+  const chainId = getChainId(pool.chain)
+
+  return {
+    poolExplorerLink,
+    gaugeExplorerLink,
+    hasGaugeAddress,
+    gaugeAddress,
+    poolStateInput,
+    chainId,
+  }
+}
+
+export function toPoolStateInput(pool: Pool): PoolStateInput {
+  // TODO: double check if we need an extra request to get PoolStateInput to get index token field
+  const tokens = pool.tokens.map((t, index) => {
+    return { ...t, index }
+  })
+  return {
+    id: pool.id as Hex,
+    address: pool.address as Address,
+    tokens: tokens as MinimalToken[],
+    type: pool.type,
+  }
 }

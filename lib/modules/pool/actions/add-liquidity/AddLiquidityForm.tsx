@@ -1,32 +1,57 @@
 'use client'
 
-import { useDisclosure } from '@chakra-ui/hooks'
-import { useAddLiquidity } from './useAddLiquidity'
-import { useRef } from 'react'
-import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
-import { Button, Card, Center, HStack, Heading, VStack, Text, Tooltip } from '@chakra-ui/react'
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
-import { AddLiquidityModal } from './AddLiquidityModal'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { priceImpactFormat } from '@/lib/shared/utils/numbers'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { HumanAmount } from '@balancer/sdk'
+import { useDisclosure } from '@chakra-ui/hooks'
+import { InfoOutlineIcon } from '@chakra-ui/icons'
+import {
+  Button,
+  Card,
+  Center,
+  HStack,
+  Heading,
+  Skeleton,
+  Text,
+  Tooltip,
+  VStack,
+} from '@chakra-ui/react'
+import { useRef } from 'react'
+import { Address } from 'wagmi'
+import { AddLiquidityModal } from './AddLiquidityModal'
+import { useAddLiquidity } from './useAddLiquidity'
 
 export function AddLiquidityForm() {
-  const { amountsIn, totalUSDValue, setAmountIn, tokens, validTokens } = useAddLiquidity()
+  const {
+    amountsIn,
+    totalUSDValue,
+    setAmountIn,
+    tokens,
+    validTokens,
+    formattedPriceImpact,
+    isPriceImpactLoading,
+    bptOutUnits,
+    isBptOutQueryLoading,
+    isAddLiquidityDisabled,
+    addLiquidityDisabledReason,
+  } = useAddLiquidity()
   const { toCurrency } = useCurrency()
+
   const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
 
   function currentValueFor(tokenAddress: string) {
     const amountIn = amountsIn.find(amountIn => isSameAddress(amountIn.tokenAddress, tokenAddress))
-    return amountIn ? amountIn.value : ''
+    return amountIn ? amountIn.humanAmount : ''
   }
 
   function submit() {
-    console.log(amountsIn)
-    previewDisclosure.onOpen()
+    if (!isAddLiquidityDisabled) {
+      previewDisclosure.onOpen()
+    }
   }
 
   return (
@@ -48,7 +73,9 @@ export function AddLiquidityForm() {
                     address={token.address}
                     chain={token.chain}
                     value={currentValueFor(token.address)}
-                    onChange={e => setAmountIn(token.address, e.currentTarget.value)}
+                    onChange={e =>
+                      setAmountIn(token.address as Address, e.currentTarget.value as HumanAmount)
+                    }
                   />
                 )
               })}
@@ -67,17 +94,39 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
-                  <NumberText color="GrayText">{priceImpactFormat(0)}</NumberText>
+                  <NumberText color="GrayText">
+                    {isPriceImpactLoading ? <Skeleton w="12" h="full" /> : formattedPriceImpact}
+                  </NumberText>
                   <Tooltip label="Price impact" fontSize="sm">
+                    <InfoOutlineIcon color="GrayText" />
+                  </Tooltip>
+                </HStack>
+              </HStack>
+              <HStack justify="space-between" w="full">
+                <Text color="GrayText">Bpt out</Text>
+                <HStack>
+                  <NumberText color="GrayText">
+                    {isBptOutQueryLoading ? <Skeleton w="12" h="full" /> : bptOutUnits}
+                  </NumberText>
+                  <Tooltip label="Bpt out" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
                 </HStack>
               </HStack>
             </VStack>
 
-            <Button ref={nextBtn} variant="secondary" w="full" size="lg" onClick={submit}>
-              Next
-            </Button>
+            <Tooltip label={isAddLiquidityDisabled ? addLiquidityDisabledReason : ''}>
+              <Button
+                ref={nextBtn}
+                variant="secondary"
+                w="full"
+                size="lg"
+                isDisabled={isAddLiquidityDisabled}
+                onClick={submit}
+              >
+                Next
+              </Button>
+            </Tooltip>
           </VStack>
         </Card>
         <AddLiquidityModal
