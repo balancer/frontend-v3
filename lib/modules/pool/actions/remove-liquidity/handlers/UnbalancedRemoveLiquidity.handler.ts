@@ -69,7 +69,12 @@ export class UnbalancedRemoveLiquidityHandler implements RemoveLiquidityHandler 
     const { account, slippagePercent } = buildInputs.inputs
     const sdkQueryOutput = buildInputs.sdkQueryOutput
     if (!account || !slippagePercent) throw new Error('Missing account or slippage')
-    if (!sdkQueryOutput) throw new Error('Missing sdkQueryOutput')
+    if (!sdkQueryOutput) {
+      throw new Error(
+        `Missing sdkQueryOutput.
+It looks that you did not setLastSdkQueryOutput (check out if you are calling useRemoveLiquidityBtpOutQuery)`
+      )
+    }
 
     const removeLiquidity = new RemoveLiquidity()
 

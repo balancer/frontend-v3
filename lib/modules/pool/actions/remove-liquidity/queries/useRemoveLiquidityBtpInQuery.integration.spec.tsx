@@ -1,18 +1,15 @@
-import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
+import { poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
 
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
-import { defaultTestUserAccount } from '@/test/utils/wagmi'
-import { selectRemoveLiquidityHandler } from '../handlers/selectRemoveLiquidityHandler'
-import { useRemoveLiquidityBtpOutQuery } from './useRemoveLiquidityBtInQuery'
 import { HumanAmountIn } from '../../liquidity-types'
+import { selectRemoveLiquidityHandler } from '../handlers/selectRemoveLiquidityHandler'
+import { useRemoveLiquidityBtpInQuery } from './useRemoveLiquidityBptInQuery'
 
 async function testQuery(humanAmountsIn: HumanAmountIn[]) {
   const handler = selectRemoveLiquidityHandler(aWjAuraWethPoolElementMock())
-  const { result } = testHook(() =>
-    useRemoveLiquidityBtpOutQuery(handler, humanAmountsIn, defaultTestUserAccount)
-  )
+  const { result } = testHook(() => useRemoveLiquidityBtpInQuery(handler, humanAmountsIn, poolId))
   return result
 }
 

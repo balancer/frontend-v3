@@ -34,6 +34,7 @@ import { aGqlPoolElementMock } from '../msw/builders/gqlPoolElement.builders'
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
+import { RemoveLiquidityProvider } from '@/lib/modules/pool/actions/remove-liquidity/useRemoveLiquidity'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -168,6 +169,18 @@ export const DefaultAddLiquidityTestProvider = ({ children }: PropsWithChildren)
       {children}
     </TokenAllowancesProvider>
   </AddLiquidityProvider>
+)
+
+export const DefaultRemoveLiquidityTestProvider = ({ children }: PropsWithChildren) => (
+  <RemoveLiquidityProvider>
+    <TokenAllowancesProvider
+      spenderAddress={vaultV2Address}
+      tokenAddresses={[wETHAddress, wjAuraAddress]}
+      userAddress={defaultTestUserAccount}
+    >
+      {children}
+    </TokenAllowancesProvider>
+  </RemoveLiquidityProvider>
 )
 
 /* Builds a PoolProvider that injects the provided pool data*/

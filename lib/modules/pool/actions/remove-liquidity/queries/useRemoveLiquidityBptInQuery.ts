@@ -1,27 +1,24 @@
 'use client'
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { RemoveLiquidityQueryOutput, TokenAmount } from '@balancer/sdk'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
-import { formatUnits } from 'viem'
 import { useQuery } from 'wagmi'
-import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
-import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
-import { HumanAmountIn } from '../../liquidity-types'
 import { areEmptyAmounts } from '../../LiquidityActionHelpers'
-import { fNum } from '@/lib/shared/utils/numbers'
+import { HumanAmountIn } from '../../liquidity-types'
+import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
+import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
 
 const debounceMillis = 300
 
-export function useRemoveLiquidityBtpOutQuery(
+export function useRemoveLiquidityBtpInQuery(
   handler: RemoveLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
   poolId: string
 ) {
-  const { userAddress } = useUserAccount()
+  const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [bptIn, setBptIn] = useState<TokenAmount | null>(null)
   const [lastSdkQueryOutput, setLastSdkQueryOutput] = useState<
@@ -31,14 +28,14 @@ export function useRemoveLiquidityBtpOutQuery(
 
   function queryKey(): string {
     return generateRemoveLiquidityQueryKey({
-      userAddress: userAddress || emptyAddress,
+      userAddress,
       poolId,
       slippage,
       humanAmountsIn: debouncedHumanAmountsIn as unknown as HumanAmountIn[],
     })
   }
 
-  async function queryBptOut() {
+  async function queryBptIn() {
     const queryResult = await handler.queryRemoveLiquidity({ humanAmountsIn })
 
     const { bptIn } = queryResult
@@ -55,14 +52,14 @@ export function useRemoveLiquidityBtpOutQuery(
   const query = useQuery(
     [queryKey()],
     async () => {
-      return await queryBptOut()
+      return await queryBptIn()
     },
     {
-      enabled: !!userAddress && !areEmptyAmounts(humanAmountsIn),
+      enabled: isConnected && !areEmptyAmounts(humanAmountsIn),
     }
   )
 
-  const bptOutUnits = bptIn ? fNum('integer', formatUnits(bptIn.amount, 18)) : '-'
-
-  return { bptIn: bptIn, bptOutUnits, isBptInQueryLoading: query.isLoading, lastSdkQueryOutput }
+  // TODO: move to component
+  // const bptOutUnits = bptIn ? fNum('integer', formatUnits(bptIn.amount, 18)) : '-'
+  return { bptIn: bptIn, isBptInQueryLoading: query.isLoading, lastSdkQueryOutput }
 }

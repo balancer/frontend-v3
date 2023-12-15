@@ -18,6 +18,8 @@ export function useBuildAddLiquidityQuery(
 
   const { buildAddLiquidityTx } = useAddLiquidity()
   const { slippage } = useUserSettings()
+
+  //TODO: fix this
   const allowances = {}
 
   function queryKey(): string {
@@ -37,6 +39,7 @@ export function useBuildAddLiquidityQuery(
         account: userAddress,
         slippagePercent: slippage,
       }
+      // This method is implemented by an specific handler (instance of AddLiquidityHandler)
       return await buildAddLiquidityTx(inputs)
     },
     {
