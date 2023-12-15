@@ -5,12 +5,12 @@ import { PoolListCard } from './PoolListCard'
 import { Pagination } from '@/lib/shared/components/pagination/Pagination'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
-import { DecoratedPoolListItem } from '../../pool.types'
 import { getPoolPath } from '../../pool.utils'
 import { useRouter } from 'next/navigation'
+import { PoolListItem } from '../../pool.types'
 
 interface Props {
-  pools: DecoratedPoolListItem[]
+  pools: PoolListItem[]
   count: number
   loading: boolean
 }
@@ -20,7 +20,7 @@ export function PoolListCards({ pools, count, loading }: Props) {
   const { pagination, setPagination } = usePoolListQueryState()
   const paginationProps = getPaginationProps(count, pagination, setPagination)
   const showPagination = pools.length && count && count > pagination.pageSize
-  const cardClickHandler = (event: React.MouseEvent<HTMLElement>, pool: DecoratedPoolListItem) => {
+  const cardClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
     const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
 
     if (event.ctrlKey || event.metaKey) {
@@ -32,10 +32,7 @@ export function PoolListCards({ pools, count, loading }: Props) {
 
   // Prefetch pool page on card hover, otherwise there is a significant delay
   // between clicking the card and the pool page loading.
-  const cardMouseEnterHandler = (
-    event: React.MouseEvent<HTMLElement>,
-    pool: DecoratedPoolListItem
-  ) => {
+  const cardMouseEnterHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
     const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
     router.prefetch(poolPath)
   }

@@ -4221,6 +4221,7 @@ export type GetPoolsQuery = {
     userBalance?: {
       __typename: 'GqlPoolUserBalance'
       totalBalance: string
+      totalBalanceUsd: number
       stakedBalance: string
       walletBalance: string
     } | null
@@ -9094,6 +9095,7 @@ export const GetPoolsDocument = {
                     kind: 'SelectionSet',
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'totalBalanceUsd' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'stakedBalance' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'walletBalance' } },
                     ],
