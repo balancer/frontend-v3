@@ -1,8 +1,8 @@
-import { Badge, HStack, Text } from '@chakra-ui/react'
+import { Badge, HStack, Text, Tooltip } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
-import { feePercentFormat } from '@/lib/shared/utils/numbers'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import Image from 'next/image'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 export default function PoolMetaBadges() {
   const { pool, chain } = usePool()
@@ -44,21 +44,23 @@ export default function PoolMetaBadges() {
               <Text fontSize="1rem">{token.symbol}</Text>
               {token.weight && (
                 <Text fontWeight="normal" fontSize="1rem">
-                  {feePercentFormat(token.weight || 0)}
+                  {fNum('weight', token.weight || 0)}
                 </Text>
               )}
             </HStack>
           </Badge>
         )
       })}
-      <Badge
-        fontWeight="normal"
-        p="1"
-        background="lightBadge"
-        _dark={{ background: 'background.card.level6' }}
-      >
-        <Text>{feePercentFormat(parseFloat(pool.dynamicData.swapFee))}</Text>
-      </Badge>
+      <Tooltip label="Swap fee">
+        <Badge
+          fontWeight="normal"
+          p="1"
+          background="lightBadge"
+          _dark={{ background: 'background.card.level6' }}
+        >
+          <Text>{fNum('feePercent', pool.dynamicData.swapFee)}</Text>
+        </Badge>
+      </Tooltip>
     </HStack>
   )
 }
