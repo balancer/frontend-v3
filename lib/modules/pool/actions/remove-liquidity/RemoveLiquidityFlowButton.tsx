@@ -2,7 +2,7 @@ import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNext
 import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { Text, VStack } from '@chakra-ui/react'
-import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
+import { useConstructRemoveLiquidityStep } from './useConstructRemoveLiquidityStep'
 import { useRemoveLiquidity } from './useRemoveLiquidity'
 import { HumanAmountIn } from '../liquidity-types'
 
@@ -18,7 +18,7 @@ export function RemoveLiquidityFlowButton({ humanAmountsInWithTokenInfo, poolId 
     helpers.getAmountsToApprove(humanAmountsInWithTokenInfo)
   )
 
-  const { step: addLiquidityStep } = useConstructAddLiquidityStep(
+  const { step: addLiquidityStep } = useConstructRemoveLiquidityStep(
     humanAmountsInWithTokenInfo,
     poolId
   )
