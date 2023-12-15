@@ -13,7 +13,7 @@ import { Address } from 'viem'
 import { usePool } from '../../usePool'
 import { LiquidityActionHelpers, areEmptyAmounts } from '../LiquidityActionHelpers'
 import { RemoveLiquidityInputs } from './remove-liquidity.types'
-import { useRemoveLiquidityBtpOutQuery } from './queries/useRemoveLiquidityBtInQuery'
+import { useRemoveLiquidityBtpInQuery } from './queries/useRemoveLiquidityBptInQuery'
 import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
 import { HumanAmountIn } from '../liquidity-types'
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
@@ -81,8 +81,11 @@ export function _useRemoveLiquidity() {
     pool.id
   )
 
-  const { bptIn, bptOutUnits, isBptInQueryLoading, lastSdkQueryOutput } =
-    useRemoveLiquidityBtpOutQuery(handler, amountsIn, pool.id)
+  const { bptIn, isBptInQueryLoading, lastSdkQueryOutput } = useRemoveLiquidityBtpInQuery(
+    handler,
+    amountsIn,
+    pool.id
+  )
 
   // TODO: we will need to render reasons why the transaction cannot be performed so instead of a boolean this will become an object
   const isAddLiquidityDisabled = areEmptyAmounts(amountsIn)
@@ -109,7 +112,6 @@ export function _useRemoveLiquidity() {
     isPriceImpactLoading,
     bptIn,
     isBptInQueryLoading,
-    bptOutUnits,
     setAmountIn,
     isAddLiquidityDisabled,
     buildRemoveLiquidityTx,
