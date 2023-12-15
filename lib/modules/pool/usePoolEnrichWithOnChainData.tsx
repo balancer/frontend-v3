@@ -149,7 +149,7 @@ async function getBalanceDataForPool({
   pool.allTokens.map(token => token)
   const poolIds: string[] = [pool.id]
   const calls: { poolId: string; type: 'balances' | 'supply'; call: ContractFunctionConfig }[] = [
-    getSupplyCall(pool),
+    getSupplyCall(pool as GqlPoolUnion),
     getBalancesCall(pool.id, vaultV2Address),
   ]
 

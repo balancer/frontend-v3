@@ -108,6 +108,7 @@ query GetPools(
     type
     userBalance {
       totalBalance
+      totalBalanceUsd
       stakedBalance
       walletBalance
     }
