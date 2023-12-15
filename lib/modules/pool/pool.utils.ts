@@ -1,12 +1,7 @@
-import {
-  GqlChain,
-  GqlPoolAprValue,
-  GqlPoolBase,
-  GqlPoolMinimal,
-} from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolAprValue } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolVariant } from './pool.types'
-import { Numberish, bn, fNum } from '@/lib/shared/utils/numbers'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -59,16 +54,4 @@ export function getAprLabel(apr: GqlPoolAprValue): string {
   } else {
     return '-'
   }
-}
-
-/**
- * Calculates BPT price for pool using total liquidity and total BPT.
- */
-export function getBptPrice(pool: GqlPoolMinimal): string {
-  return bn(pool.dynamicData.totalLiquidity).div(pool.dynamicData.totalShares).toString()
-}
-
-export function usdValueOfBpt(pool: GqlPoolMinimal, bpt: Numberish): string {
-  const bptPrice = getBptPrice(pool)
-  return bn(bptPrice).times(bpt.toString()).toString()
 }

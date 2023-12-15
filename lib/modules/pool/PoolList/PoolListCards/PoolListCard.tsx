@@ -7,7 +7,6 @@ import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
-import { usdValueOfBpt } from '../../pool.utils'
 
 interface Props {
   pool: PoolListItem
