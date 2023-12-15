@@ -4,7 +4,7 @@ import { waitFor } from '@testing-library/react'
 
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
-import { selectRemoveLiquidityHandler } from '../selectRemoveLiquidityHandler'
+import { selectRemoveLiquidityHandler } from '../handlers/selectRemoveLiquidityHandler'
 import { useRemoveLiquidityPriceImpactQuery } from './useRemoveLiquidityPriceImpactQuery'
 import { HumanAmountIn } from '../../liquidity-types'
 

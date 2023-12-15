@@ -10,7 +10,7 @@ import { defaultTestUserAccount, testPublicClient as testClient } from '@/test/u
 import { ChainId, HumanAmount } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/actions'
-import { selectAddLiquidityHandler } from '../../pool/actions/add-liquidity/selectAddLiquidityHandler'
+import { selectAddLiquidityHandler } from '../../pool/actions/add-liquidity/handlers/selectAddLiquidityHandler'
 import { buildAddLiquidityLabels } from '../../pool/actions/add-liquidity/useConstructAddLiquidityStep'
 import { HumanAmountIn } from '../../pool/actions/liquidity-types'
 

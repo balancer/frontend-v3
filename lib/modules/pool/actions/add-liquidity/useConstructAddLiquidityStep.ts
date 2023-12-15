@@ -32,7 +32,6 @@ export function useConstructAddLiquidityStep(humanAmountsIn: HumanAmountIn[], po
       transaction?.execution.isLoading ||
       addLiquidityQuery.isLoading,
     error: transaction?.simulation.error || transaction?.execution.error || addLiquidityQuery.error,
-    joinQuery: addLiquidityQuery,
   }
 }
 

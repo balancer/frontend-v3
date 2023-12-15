@@ -6,7 +6,7 @@ import { HumanAmount } from '@balancer/sdk'
 import { Address } from 'viem'
 import { aPhantomStablePoolStateInputMock } from '../../../__mocks__/pool.builders'
 import { Pool } from '../../../usePool'
-import { selectAddLiquidityHandler } from '../selectAddLiquidityHandler'
+import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
 import { HumanAmountIn } from '../../liquidity-types'
 
 function selectUnbalancedHandler() {

@@ -3,24 +3,23 @@ import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManag
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { Address } from 'wagmi'
 import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
-import { useBuildAddLiquidityQuery } from './queries/useBuildAddLiquidityTxQuery'
+import { useBuildRemoveLiquidityQuery } from './queries/useBuildRemoveLiquidityTxQuery'
 import { HumanAmountIn } from '../liquidity-types'
 
-export function useConstructAddLiquidityStep(humanAmountsIn: HumanAmountIn[], poolId: string) {
+export function useConstructRemoveLiquidityStep(humanAmountsIn: HumanAmountIn[], poolId: string) {
   const { isActiveStep, activateStep } = useActiveStep()
 
-  //TODO: add slippage
-  const addLiquidityQuery = useBuildAddLiquidityQuery(humanAmountsIn, isActiveStep, poolId)
+  const removeLiquidityQuery = useBuildRemoveLiquidityQuery(humanAmountsIn, isActiveStep, poolId)
 
   const transactionLabels = buildAddLiquidityLabels(poolId)
 
-  const transaction = useManagedSendTransaction(transactionLabels, addLiquidityQuery.data)
+  const transaction = useManagedSendTransaction(transactionLabels, removeLiquidityQuery.data)
 
   const step: FlowStep = {
     ...transaction,
     transactionLabels,
-    id: `addLiquidityPool${poolId}`,
-    stepType: 'addLiquidity',
+    id: `removeLiquidityPool${poolId}`,
+    stepType: 'removeLiquidity',
     isComplete: () => false,
     activateStep,
   }
@@ -30,17 +29,17 @@ export function useConstructAddLiquidityStep(humanAmountsIn: HumanAmountIn[], po
     isLoading:
       transaction?.simulation.isLoading ||
       transaction?.execution.isLoading ||
-      addLiquidityQuery.isLoading,
-    error: transaction?.simulation.error || transaction?.execution.error || addLiquidityQuery.error,
-    joinQuery: addLiquidityQuery,
+      removeLiquidityQuery.isLoading,
+    error:
+      transaction?.simulation.error || transaction?.execution.error || removeLiquidityQuery.error,
   }
 }
 
 export const buildAddLiquidityLabels: BuildTransactionLabels = (poolId: Address) => {
   return {
-    init: 'Add pool liquidity',
-    confirming: 'Confirm add liquidity',
+    init: 'Remove liquidity',
+    confirming: 'Confirm remove liquidity',
     tooltip: 'TODO',
-    description: `🎉 Liquidity added to pool ${poolId}`,
+    description: `🎉 Liquidity removed from pool ${poolId}`,
   }
 }

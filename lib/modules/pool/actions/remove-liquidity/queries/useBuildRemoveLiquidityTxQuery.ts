@@ -10,14 +10,14 @@ import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryK
 import { HumanAmountIn } from '../../liquidity-types'
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
-export function useBuildAddLiquidityQuery(
+export function useBuildRemoveLiquidityQuery(
   humanAmountsIn: HumanAmountIn[],
   enabled: boolean,
   poolId: string
 ) {
   const { userAddress } = useUserAccount()
 
-  const { buildAddLiquidityTx } = useRemoveLiquidity()
+  const { buildRemoveLiquidityTx } = useRemoveLiquidity()
   const { slippage } = useUserSettings()
   const allowances = {}
 
@@ -38,7 +38,7 @@ export function useBuildAddLiquidityQuery(
         account: userAddress || emptyAddress,
         slippagePercent: slippage,
       }
-      return await buildAddLiquidityTx(inputs)
+      return await buildRemoveLiquidityTx(inputs)
     },
     {
       enabled: enabled && !!userAddress && allowances && hasTokenAllowance(allowances),
@@ -50,6 +50,6 @@ export function useBuildAddLiquidityQuery(
 
 function hasTokenAllowance(tokenAllowances: Dictionary<bigint>) {
   // TODO: depending on the user humanAmountsIn this rule will be different
-  // Here we will check that the user has enough allowance for the current Join operation
+  // Here we will check that the user has enough allowance for the current remove liquidity operation
   return Object.values(tokenAllowances).every(a => a > 0n)
 }

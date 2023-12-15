@@ -5,7 +5,7 @@ import { waitFor } from '@testing-library/react'
 
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { PropsWithChildren } from 'react'
-import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityTxQuery'
+import { useBuildRemoveLiquidityQuery } from './useBuildRemoveLiquidityTxQuery'
 import { RemoveLiquidityProvider } from '../useRemoveLiquidity'
 import { HumanAmountIn } from '../../liquidity-types'
 
@@ -19,7 +19,7 @@ export const Providers = ({ children }: PropsWithChildren) => (
 
 async function testQuery(humanAmountsIn: HumanAmountIn[]) {
   const enabled = true
-  const { result } = testHook(() => useBuildAddLiquidityQuery(humanAmountsIn, enabled, poolId), {
+  const { result } = testHook(() => useBuildRemoveLiquidityQuery(humanAmountsIn, enabled, poolId), {
     wrapper: Providers,
   })
   return result
