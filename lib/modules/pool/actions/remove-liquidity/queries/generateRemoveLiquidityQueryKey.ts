@@ -1,6 +1,7 @@
 import { HumanAmountIn } from '../../liquidity-types'
 
 type Props = {
+  queryId: string
   userAddress: string
   poolId: string
   slippage: string
@@ -9,10 +10,13 @@ type Props = {
 
 // Should we share the same function for add and remove liquidity?
 export function generateRemoveLiquidityQueryKey({
+  queryId,
   userAddress,
   poolId,
   slippage,
   humanAmountsIn,
 }: Props): string {
-  return `remove_liquidity:${userAddress}:${poolId}:${slippage}:${JSON.stringify(humanAmountsIn)}`
+  return `'Remove_Liquidity:${queryId}:${userAddress}:${poolId}:${slippage}:${JSON.stringify(
+    humanAmountsIn
+  )}`
 }

@@ -5,11 +5,10 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { useQuery } from 'wagmi'
-import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
+import { hasValidHumanAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
-import { areEmptyAmounts } from '../../LiquidityActionHelpers'
-import { fNum } from '@/lib/shared/utils/numbers'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
+import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
 
 const debounceMillis = 250
 
@@ -25,6 +24,7 @@ export function useRemoveLiquidityPriceImpactQuery(
 
   function queryKey(): string {
     return generateRemoveLiquidityQueryKey({
+      queryId: 'PriceImpact',
       userAddress,
       poolId,
       slippage,
@@ -47,7 +47,7 @@ export function useRemoveLiquidityPriceImpactQuery(
       return await queryPriceImpact()
     },
     {
-      enabled: isConnected && !areEmptyAmounts(humanAmountsIn),
+      enabled: isConnected && hasValidHumanAmounts(humanAmountsIn),
     }
   )
 

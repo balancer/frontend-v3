@@ -97,7 +97,7 @@ export function _useRemoveLiquidity() {
     */
   const helpers = new LiquidityActionHelpers(pool)
 
-  function buildRemoveLiquidityTx(inputs: RemoveLiquidityInputs) {
+  function buildTx(inputs: RemoveLiquidityInputs) {
     // There are edge cases where we will never call setLastSdkQueryOutput so that lastSdkQueryOutput will be undefined.
     // That`s expected as sdkQueryOutput is an optional input
     return handler.buildRemoveLiquidityTx({ inputs, sdkQueryOutput: lastSdkQueryOutput })
@@ -114,7 +114,8 @@ export function _useRemoveLiquidity() {
     isBptInQueryLoading,
     setAmountIn,
     isAddLiquidityDisabled,
-    buildRemoveLiquidityTx,
+    buildTx,
+    lastSdkQueryOutput,
     helpers,
     poolStateInput,
   }

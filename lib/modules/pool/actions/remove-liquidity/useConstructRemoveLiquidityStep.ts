@@ -5,9 +5,12 @@ import { Address } from 'wagmi'
 import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
 import { useBuildRemoveLiquidityQuery } from './queries/useBuildRemoveLiquidityTxQuery'
 import { HumanAmountIn } from '../liquidity-types'
+import { useRemoveLiquidity } from './useRemoveLiquidity'
 
 export function useConstructRemoveLiquidityStep(humanAmountsIn: HumanAmountIn[], poolId: string) {
   const { isActiveStep, activateStep } = useActiveStep()
+
+  const { setAmountIn } = useRemoveLiquidity()
 
   const removeLiquidityQuery = useBuildRemoveLiquidityQuery(humanAmountsIn, isActiveStep, poolId)
 
@@ -32,6 +35,8 @@ export function useConstructRemoveLiquidityStep(humanAmountsIn: HumanAmountIn[],
       removeLiquidityQuery.isLoading,
     error:
       transaction?.simulation.error || transaction?.execution.error || removeLiquidityQuery.error,
+    setAmountIn,
+    removeLiquidityQuery,
   }
 }
 

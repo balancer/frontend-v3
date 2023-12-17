@@ -1,7 +1,6 @@
 'use client'
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useQuery } from 'wagmi'
 import { HumanAmountIn } from '../../liquidity-types'
@@ -16,12 +15,13 @@ export function useBuildRemoveLiquidityQuery(
 ) {
   const { userAddress, isConnected } = useUserAccount()
 
-  const { buildRemoveLiquidityTx } = useRemoveLiquidity()
+  const { buildTx, lastSdkQueryOutput } = useRemoveLiquidity()
   const { slippage } = useUserSettings()
 
   function queryKey(): string {
     return generateRemoveLiquidityQueryKey({
-      userAddress: userAddress || emptyAddress,
+      queryId: 'BuildTxConfig',
+      userAddress,
       poolId,
       slippage,
       humanAmountsIn,
@@ -33,19 +33,16 @@ export function useBuildRemoveLiquidityQuery(
     async () => {
       const inputs = {
         humanAmountsIn,
-        account: userAddress || emptyAddress,
+        account: userAddress,
         slippagePercent: slippage,
       }
-      console.log('Voy a construir la TX config')
       // This method is implemented by an specific handler (instance of RemoveLiquidityHandler)
-      return await buildRemoveLiquidityTx(inputs)
+      return await buildTx(inputs)
     },
     {
-      enabled: enabled && isConnected && hasApproval(),
+      enabled: enabled && isConnected && hasApproval() && !!lastSdkQueryOutput,
     }
   )
-
-  // console.log({ removeLiquidityQuery: removeLiquidityQuery.data?.data })
 
   return removeLiquidityQuery
 }

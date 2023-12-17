@@ -102,4 +102,7 @@ export const isEmptyAmount = (amountIn: HumanAmountIn) =>
   !amountIn.humanAmount || amountIn.humanAmount === '0'
 
 export const areEmptyAmounts = (humanAmountsIn: HumanAmountIn[]) =>
-  humanAmountsIn.every(isEmptyAmount)
+  !humanAmountsIn || humanAmountsIn.length === 0 || humanAmountsIn.every(isEmptyAmount)
+
+export const hasValidHumanAmounts = (humanAmountsIn: HumanAmountIn[]) =>
+  humanAmountsIn.some(a => a.humanAmount && a.humanAmount !== '0')
