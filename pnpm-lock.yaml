@@ -12,8 +12,8 @@ dependencies:
     specifier: 3.8.0-rc.1
     version: 3.8.0-rc.1(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
   '@balancer/sdk':
-    specifier: ^0.4.0
-    version: 0.4.0(typescript@5.1.6)(zod@3.22.4)
+    specifier: ^0.5.0
+    version: 0.5.0(typescript@5.1.6)(zod@3.22.4)
   '@chakra-ui/anatomy':
     specifier: ^2.2.2
     version: 2.2.2
@@ -1059,8 +1059,8 @@ packages:
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
 
-  /@balancer/sdk@0.4.0(typescript@5.1.6)(zod@3.22.4):
-    resolution: {integrity: sha512-g8ilzNSlk2Pdh7PUAyr88sD78GGDTOUJUpAhKBO5dN77Kk70ivyL6mNJBGpJqrjraoBygv6yQukV8yO5m0kiEw==}
+  /@balancer/sdk@0.5.0(typescript@5.1.6)(zod@3.22.4):
+    resolution: {integrity: sha512-2ys18xZAfGvwJpQmStmX2O6b/QkIQQWHpm09/qk2oHDg/lhnYYY5otfs14QuEQubdlA3Kth0U0uAxMlc4NxN/w==}
     engines: {node: '>=18.x'}
     dependencies:
       async-retry: 1.3.3

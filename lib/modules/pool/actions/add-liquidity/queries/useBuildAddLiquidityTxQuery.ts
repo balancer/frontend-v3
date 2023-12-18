@@ -7,6 +7,7 @@ import { useQuery } from 'wagmi'
 import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
+import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
 export function useBuildAddLiquidityQuery(
@@ -18,8 +19,7 @@ export function useBuildAddLiquidityQuery(
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
 
-  //TODO: fix this
-  const allowances = {}
+  const { allowances } = useTokenAllowances()
 
   function queryKey(): string {
     return generateAddLiquidityQueryKey({
@@ -53,6 +53,8 @@ export function useBuildAddLiquidityQuery(
 }
 
 function hasTokenAllowance(tokenAllowances: Dictionary<bigint>) {
+  if (!tokenAllowances) return false
+  if (Object.values(tokenAllowances).length === 0) return false
   // TODO: depending on the user humanAmountsIn this rule will be different
   // Here we will check that the user has enough allowance for the current Join operation
   return Object.values(tokenAllowances).every(a => a > 0n)

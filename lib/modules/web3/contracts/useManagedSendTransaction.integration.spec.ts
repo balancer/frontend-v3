@@ -49,7 +49,7 @@ describe('weighted join test', () => {
     }
     const { sdkQueryOutput } = await handler.queryAddLiquidity(inputs)
 
-    const txConfig = await handler.buildAddLiquidityTx({ inputs, sdkQueryOutput })
+    const txConfig = await handler.buildAddLiquidityTx({ inputs })
 
     const { result } = testHook(() => {
       return useManagedSendTransaction(buildAddLiquidityLabels(), txConfig)

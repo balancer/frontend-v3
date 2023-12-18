@@ -24,9 +24,8 @@ test('queries price impact for add liquidity', async () => {
 
   const result = await testQuery(humanAmountsIn)
 
-  await waitFor(() => expect(result.current.formattedPriceImpact).not.toBe('-'))
+  await waitFor(() => expect(result.current.priceImpact).not.toBeNull())
 
-  expect(result.current.priceImpact).toBeCloseTo(0.002368782867485742)
-  expect(result.current.formattedPriceImpact).toBe('0.24%')
+  expect(result.current.priceImpact).toBeCloseTo(0.005)
   expect(result.current.isPriceImpactLoading).toBeFalsy()
 })

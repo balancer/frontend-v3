@@ -29,7 +29,8 @@ export function _useRemoveLiquidity() {
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
 
-  const handler = useMemo(() => selectRemoveLiquidityHandler(pool), [])
+  // TODO: this handler will also depend on user selection (not only pool.id)
+  const handler = useMemo(() => selectRemoveLiquidityHandler(pool), [pool.id])
 
   function setInitialAmountsIn() {
     const amountsIn = pool.allTokens.map(

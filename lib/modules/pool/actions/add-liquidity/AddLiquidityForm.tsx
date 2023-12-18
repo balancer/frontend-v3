@@ -24,6 +24,7 @@ import { Address } from 'wagmi'
 import { humanizeTokenAmount } from '../LiquidityActionHelpers'
 import { AddLiquidityModal } from './AddLiquidityModal'
 import { useAddLiquidity } from './useAddLiquidity'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 export function AddLiquidityForm() {
   const {
@@ -32,7 +33,7 @@ export function AddLiquidityForm() {
     setHumanAmountIn: setAmountIn,
     tokens,
     validTokens,
-    formattedPriceImpact,
+    priceImpact,
     isPriceImpactLoading,
     bptOut,
     isBptOutQueryLoading,
@@ -50,6 +51,7 @@ export function AddLiquidityForm() {
   }
 
   const bptOutUnits = humanizeTokenAmount(bptOut)
+  const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
   function submit() {
     if (!isAddLiquidityDisabled) {

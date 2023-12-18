@@ -6,7 +6,7 @@ import { TokenAmount } from '@balancer/sdk'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { useQuery } from 'wagmi'
-import { areEmptyAmounts } from '../../LiquidityActionHelpers'
+import { hasValidHumanAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
@@ -48,7 +48,9 @@ export function useAddLiquidityBptOutQuery(
       return await queryBptOut()
     },
     {
-      enabled: isConnected && !areEmptyAmounts(humanAmountsIn),
+      enabled: isConnected && hasValidHumanAmounts(humanAmountsIn),
+      // TODO: remove when finishing debugging
+      onError: error => console.log('Error in queryBptOut', error),
     }
   )
 

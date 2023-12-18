@@ -80,7 +80,7 @@ export function AddLiquidityModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { humanAmountsIn, totalUSDValue, helpers, formattedPriceImpact, bptOut } = useAddLiquidity()
+  const { humanAmountsIn, totalUSDValue, helpers, bptOut, priceImpact } = useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
   // TODO: move userAddress up
@@ -97,6 +97,7 @@ export function AddLiquidityModal({
   )
 
   const bptOutUnits = humanizeTokenAmount(bptOut)
+  const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
   return (
     <Modal

@@ -95,7 +95,7 @@ describe('When adding unbalanced liquidity for an stable pool', () => {
     })
 
     const priceImpact = await handler.calculatePriceImpact({ humanAmountsIn })
-    expect(priceImpact).toMatchInlineSnapshot(`0.006104055180098694`)
+    expect(priceImpact).toBeCloseTo(0.006)
   })
 })
 

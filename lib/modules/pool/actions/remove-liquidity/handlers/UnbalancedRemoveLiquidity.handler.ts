@@ -73,7 +73,7 @@ export class UnbalancedRemoveLiquidityHandler implements RemoveLiquidityHandler 
     const { account, slippagePercent } = buildInputs.inputs
     if (!account || !slippagePercent) throw new Error('Missing account or slippage')
     if (!this.sdkQueryOutput) {
-      console.error('Missing sdkQueryOutput.')
+      console.error('Missing sdkQueryOutput in buildRemoveLiquidityTx')
       throw new Error(
         `Missing sdkQueryOutput.
 It looks that you did not call useRemoveLiquidityBtpOutQuery before trying to build the tx config`

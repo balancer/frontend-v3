@@ -51,8 +51,5 @@ export function useRemoveLiquidityPriceImpactQuery(
     }
   )
 
-  // TODO: Move to component
-  // const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
-
   return { priceImpact, isPriceImpactLoading: query.isLoading }
 }

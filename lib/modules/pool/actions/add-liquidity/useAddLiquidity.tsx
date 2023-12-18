@@ -30,7 +30,7 @@ export function _useAddLiquidity() {
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
 
-  const handler = selectAddLiquidityHandler(pool)
+  const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id])
 
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -76,7 +76,7 @@ export function _useAddLiquidity() {
   )
   const totalUSDValue = safeSum(usdAmountsIn)
 
-  const { formattedPriceImpact, isPriceImpactLoading } = useAddLiquidityPriceImpactQuery(
+  const { isPriceImpactLoading, priceImpact } = useAddLiquidityPriceImpactQuery(
     handler,
     humanAmountsIn,
     pool.id
@@ -107,8 +107,8 @@ export function _useAddLiquidity() {
     tokens,
     validTokens,
     totalUSDValue,
-    formattedPriceImpact,
     isPriceImpactLoading,
+    priceImpact,
     bptOut,
     isBptOutQueryLoading,
     setHumanAmountIn,

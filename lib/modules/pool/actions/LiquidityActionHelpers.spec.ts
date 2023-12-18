@@ -1,4 +1,5 @@
-import { hasValidHumanAmounts } from './LiquidityActionHelpers'
+import { TokenAmount } from '@balancer/sdk'
+import { hasValidHumanAmounts, humanizeTokenAmount } from './LiquidityActionHelpers'
 import { HumanAmountIn } from './liquidity-types'
 
 describe('hasValidHumanAmounts', () => {
@@ -20,4 +21,11 @@ describe('hasValidHumanAmounts', () => {
     const humanAmountsIn: HumanAmountIn[] = []
     expect(hasValidHumanAmounts(humanAmountsIn)).toBeFalsy()
   })
+})
+
+test('humanizes token amount', () => {
+  const tokenAmount: TokenAmount = {
+    amount: 251359380787607529n,
+  } as TokenAmount
+  expect(humanizeTokenAmount(tokenAmount)).toBe('0')
 })

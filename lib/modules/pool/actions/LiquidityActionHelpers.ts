@@ -113,5 +113,5 @@ export const hasValidHumanAmounts = (humanAmountsIn: HumanAmountIn[]) =>
 export function humanizeTokenAmount(tokenAmount?: TokenAmount | null) {
   if (!tokenAmount) return '-'
 
-  return fNum('integer', formatUnits(tokenAmount.amount, 18))
+  return fNum('token', formatUnits(tokenAmount.amount, 18))
 }
