@@ -180,7 +180,7 @@ export function RemoveLiquidityForm() {
                 <InfoOutlineIcon color="GrayText" />
               </Tooltip>
             </HStack>
-            <VStack w="full">
+            <VStack w="full" gap="md">
               <InputWithSlider
                 value={proportionalPercent.toString()}
                 setValue={setProportionalPercent}
