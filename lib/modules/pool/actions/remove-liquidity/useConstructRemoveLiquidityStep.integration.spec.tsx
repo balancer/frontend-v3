@@ -57,5 +57,10 @@ test('Throws error when user tries to remove liquidity in a pool where they does
     expect(result.current.constructStepResult.step.simulation.error).toBeDefined()
   )
 
-  // expect(result.current.constructStepResult.step.simulation.error?.cause.).toBe('')
+  expect(result.current.constructStepResult.step.simulation.error?.cause).toMatchInlineSnapshot(`
+    [ExecutionRevertedError: Execution reverted with reason: BAL#434.
+
+    Details: execution reverted: BAL#434
+    Version: viem@1.18.1]
+  `)
 })
