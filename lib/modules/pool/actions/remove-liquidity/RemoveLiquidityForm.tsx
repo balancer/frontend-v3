@@ -174,6 +174,7 @@ export function RemoveLiquidityForm() {
               </Tooltip>
             </HStack>
             <VStack w="full" gap="md">
+              {/* TODO: hook the slider up to the proportional amounts with more logic */}
               <InputWithSlider
                 value={proportionalPercent.toString()}
                 setValue={setProportionalPercent}
