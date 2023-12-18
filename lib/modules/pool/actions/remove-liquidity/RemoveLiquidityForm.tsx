@@ -105,7 +105,12 @@ function RemoveLiquiditySingleToken({
                 token && (
                   <HStack key={token.address} w="full">
                     <Radio value={token.address} />
-                    <TokenRow chain={token.chain} address={token.address as Address} value={0} />
+                    <TokenRow
+                      chain={token.chain}
+                      address={token.address as Address}
+                      value={0}
+                      isSelected={token.address === singleToken?.address}
+                    />
                   </HStack>
                 )
             )}
