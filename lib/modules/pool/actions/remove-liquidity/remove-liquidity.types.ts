@@ -1,9 +1,9 @@
 import { RemoveLiquidityQueryOutput, TokenAmount } from '@balancer/sdk'
 import { Address } from 'wagmi'
-import { HumanAmountIn } from '../liquidity-types'
 
 export type RemoveLiquidityInputs = {
-  humanAmountsIn: HumanAmountIn[]
+  bptIn: string // not sure exactly what type this should be yet.
+  singleTokenOut?: Address // The token address when removing liquidity for a single token.
   account?: Address
   slippagePercent?: string
 }
@@ -11,8 +11,7 @@ export type RemoveLiquidityInputs = {
 // sdkQueryOutput is optional because it will be only used in cases where we use the SDK to query/build the transaction
 // We will probably need a more abstract interface to be used by edge cases
 export type RemoveLiquidityOutputs = {
-  bptIn: TokenAmount
-  sdkQueryOutput?: RemoveLiquidityQueryOutput
+  amountsOut: TokenAmount[]
 }
 
 // sdkQueryOutput is optional because it will be only used in cases where we use the SDK to query/build the transaction
