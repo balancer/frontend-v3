@@ -19,6 +19,15 @@ export function useCurrency() {
     return bn(amount).times(fxRate).toString()
   }
 
+  function formatCurrency(value: string | undefined) {
+    const symbol = hasFxRates ? symbolForCurrency(currency) : '$'
+    return `${symbol}${value ?? '0'}`
+  }
+
+  function parseCurrency(value: string) {
+    return value.replace(/^\$/, '')
+  }
+
   // Converts a USD value to the user's currency and formats in fiat style.
   function toCurrency(
     usdVal: Numberish,
@@ -31,5 +40,5 @@ export function useCurrency() {
     return withSymbol ? symbol + formattedAmount : formattedAmount
   }
 
-  return { toCurrency }
+  return { toCurrency, formatCurrency, parseCurrency }
 }
