@@ -31,7 +31,8 @@ export const InputWithSlider = forwardRef(
         )}
         <Box
           borderRadius="md"
-          p="md"
+          py="sm"
+          px="md"
           shadow="innerBase"
           bg="background.card.level1"
           border="white"
@@ -40,44 +41,34 @@ export const InputWithSlider = forwardRef(
           {...boxProps}
         >
           <HStack align="start" spacing="md">
-            <Box position="relative">
-              <Input
-                type="number"
-                placeholder="0.00"
-                autoComplete="off"
-                autoCorrect="off"
-                min={0}
-                border="transparent"
-                bg="transparent"
-                shadow="none"
-                p="0"
-                fontSize="xl"
-                fontWeight="medium"
-                value={value}
-                title={String(value)}
-                onKeyDown={blockInvalidNumberInput}
-                _hover={{
-                  borderColor: 'transparent',
-                  boxShadow: 'none',
-                }}
-                _focus={{
-                  outline: 'none',
-                  borderColor: 'transparent',
-                  boxShadow: 'none',
-                }}
-                {...inputProps}
-              />
-              <Box
-                position="absolute"
-                bgGradient="linear(to-r, transparent, background.card.level1 70%)"
-                w="8"
-                h="full"
-                top={0}
-                right={0}
-                zIndex={9999}
-              ></Box>
-            </Box>
-            <Box w="50%" alignSelf="center">
+            <Input
+              type="number"
+              placeholder="0.00"
+              autoComplete="off"
+              autoCorrect="off"
+              min={0}
+              border="transparent"
+              bg="transparent"
+              shadow="none"
+              p="0"
+              fontSize="xl"
+              fontWeight="medium"
+              value={value}
+              title={String(value)}
+              onKeyDown={blockInvalidNumberInput}
+              _hover={{
+                borderColor: 'transparent',
+                boxShadow: 'none',
+              }}
+              _focus={{
+                outline: 'none',
+                borderColor: 'transparent',
+                boxShadow: 'none',
+              }}
+              w="50%"
+              {...inputProps}
+            />
+            <Box w="50%" pr="sm" alignSelf="center">
               <Slider aria-label="slider" defaultValue={100} onChange={setValue}>
                 <SliderTrack>
                   <SliderFilledTrack />
