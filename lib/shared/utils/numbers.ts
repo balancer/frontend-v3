@@ -92,7 +92,7 @@ function priceImpactFormat(val: Numberish): string {
 }
 
 // Formats an integer value as a percentage.
-export function integerPercentageFormat(val: Numberish): string {
+function integerPercentageFormat(val: Numberish): string {
   return numeral(val.toString()).format(INTEGER_PERCENTAGE_FORMAT)
 }
 
@@ -106,7 +106,15 @@ export function blockInvalidNumberInput(event: KeyboardEvent<HTMLInputElement>):
   ;['e', 'E', '+', '-'].includes(event.key) && event.preventDefault()
 }
 
-type NumberFormat = 'integer' | 'fiat' | 'token' | 'apr' | 'feePercent' | 'weight' | 'priceImpact'
+type NumberFormat =
+  | 'integer'
+  | 'fiat'
+  | 'token'
+  | 'apr'
+  | 'feePercent'
+  | 'weight'
+  | 'priceImpact'
+  | 'percentage'
 
 // General number formatting function.
 export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): string {
@@ -125,6 +133,8 @@ export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): s
       return weightFormat(val)
     case 'priceImpact':
       return priceImpactFormat(val)
+    case 'percentage':
+      return integerPercentageFormat(val)
     default:
       throw new Error(`Number format not implemented: ${format}`)
   }

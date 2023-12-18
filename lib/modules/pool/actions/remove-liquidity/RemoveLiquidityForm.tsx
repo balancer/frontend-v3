@@ -20,7 +20,7 @@ import {
 } from '@chakra-ui/react'
 import { RemoveLiquidityModal } from './RemoveLiquidityModal'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { integerPercentageFormat, priceImpactFormat } from '@/lib/shared/utils/numbers'
+import { fNum } from '@/lib/shared/utils/numbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { FiSettings } from 'react-icons/fi'
@@ -180,7 +180,7 @@ export function RemoveLiquidityForm() {
                 setValue={setProportionalPercent}
               >
                 <Text>Amount</Text>
-                <Text>{integerPercentageFormat(proportionalPercent / 100)}</Text>
+                <Text>{fNum('percentage', proportionalPercent / 100)}</Text>
               </InputWithSlider>
               {activeTab === TABS[0] && <RemoveLiquidityProportional tokens={tokens} />}
               {activeTab === TABS[1] && (
@@ -204,7 +204,7 @@ export function RemoveLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
-                  <NumberText color="GrayText">{priceImpactFormat(0)}</NumberText>
+                  <NumberText color="GrayText">{fNum('priceImpact', 0)}</NumberText>
                   <Tooltip label="Price impact" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>

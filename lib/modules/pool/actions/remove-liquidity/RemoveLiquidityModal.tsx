@@ -19,7 +19,7 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
-import { priceImpactFormat } from '@/lib/shared/utils/numbers'
+import { fNum } from '@/lib/shared/utils/numbers'
 import { usePool } from '../../usePool'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { FiArrowLeft } from 'react-icons/fi'
@@ -111,7 +111,7 @@ export function RemoveLiquidityModal({
                   </Text>
                   <HStack>
                     <Text fontWeight="medium" variant="secondary">
-                      {priceImpactFormat(0)}
+                      {fNum('priceImpact', 0)}
                     </Text>
                     <Tooltip label="Price impact" fontSize="sm">
                       <InfoOutlineIcon color="GrayText" />
