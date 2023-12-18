@@ -151,12 +151,15 @@ export function usePoolHelpers(pool: Pool, chain: GqlChain) {
   }
 }
 
-function toPoolStateInput(pool: Pool): PoolStateInput {
+export function toPoolStateInput(pool: Pool): PoolStateInput {
+  // TODO: double check if we need an extra request to get PoolStateInput to get index token field
+  const tokens = pool.tokens.map((t, index) => {
+    return { ...t, index }
+  })
   return {
     id: pool.id as Hex,
     address: pool.address as Address,
-    // pool.tokens are readonly so we need to spread to avoid error when sorting:
-    tokens: [...pool.tokens] as MinimalToken[],
+    tokens: tokens as MinimalToken[],
     type: pool.type,
   }
 }

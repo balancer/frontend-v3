@@ -1,39 +1,34 @@
-import { Card, HStack, VStack, Text, Box, Grid, GridItem } from '@chakra-ui/react'
-import { DecoratedPoolListItem, poolTypeHash } from '../../pool.types'
-import { weightFormat } from '@/lib/shared/utils/numbers'
-import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
+import { Card, HStack, VStack, Text, Grid, GridItem } from '@chakra-ui/react'
+import { PoolListItem, poolTypeHash } from '../../pool.types'
+import { fNum } from '@/lib/shared/utils/numbers'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
+import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
 
 interface Props {
-  pool: DecoratedPoolListItem
-  cardClickHandler?: (event: React.MouseEvent<HTMLElement>, pool: DecoratedPoolListItem) => void
-  cardMouseEnterHandler?: (
-    event: React.MouseEvent<HTMLElement>,
-    pool: DecoratedPoolListItem
-  ) => void
+  pool: PoolListItem
+  cardClickHandler?: (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => void
+  cardMouseEnterHandler?: (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => void
 }
 
-function PoolTokens({ pool }: { pool: DecoratedPoolListItem }) {
+function PoolNameLabel({ pool }: { pool: PoolListItem }) {
   if (pool) {
     const displayTokens = pool.displayTokens
     return (
-      <HStack spacing="1" wrap="wrap">
+      <Text fontWeight="bold" noOfLines={1}>
         {displayTokens.map((token, idx) => {
           return (
-            <HStack key={token.address}>
-              <Text fontWeight="bold" fontSize="1rem">
-                {token.nestedTokens ? token.name : token.symbol}
-                {token.weight && ` ${weightFormat(token.weight || '')}`}
-                {idx <= displayTokens.length - 2 && ' / '}
-              </Text>
-            </HStack>
+            <>
+              {token.nestedTokens ? token.name : token.symbol}
+              {token.weight && ` ${fNum('weight', token.weight || '')}`}
+              {idx <= displayTokens.length - 2 && ' / '}
+            </>
           )
         })}
-      </HStack>
+      </Text>
     )
   }
 }
@@ -52,29 +47,17 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
       onMouseEnter={event => cardMouseEnterHandler && cardMouseEnterHandler(event, pool)}
       p="md"
     >
-      <VStack alignItems="flex-start" p="md" h="full">
+      <VStack alignItems="flex-start" h="full">
         <HStack alignItems="flex-start">
           <NetworkIcon chain={pool.chain} />
           <VStack alignItems="flex-start" gap="0" w="full">
-            <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+            <Text fontWeight="medium" variant="secondary" fontSize="sm">
               {poolTypeHash[pool.type]}
             </Text>
-            <PoolTokens pool={pool} />
+            <PoolNameLabel pool={pool} />
           </VStack>
         </HStack>
-        <HStack py="6">
-          {pool.displayTokens.map((token, idx) => (
-            <Box key={token.address} ml={idx > 0 ? -5 : 0} zIndex={9 - idx}>
-              <TokenIcon
-                chain={pool.chain}
-                address={token.address}
-                size={64}
-                alt={token?.symbol || token.address}
-                border="2px solid black"
-              />
-            </Box>
-          ))}
-        </HStack>
+        <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} />
         <Grid w="full" h="full" templateColumns="1fr 1fr" templateRows="1fr 1fr" gap="4">
           <GridItem>
             <Card h="full" variant="gradient">
@@ -122,7 +105,7 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
                     My Liquidity:
                   </Text>
                   <Text fontWeight="bold" fontSize="1rem">
-                    {toCurrency(pool.userBalance?.totalBalanceUsd || 0, { abbreviated: false })}
+                    {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
                   </Text>
                 </VStack>
               </Card>

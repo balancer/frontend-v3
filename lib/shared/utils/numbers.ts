@@ -44,31 +44,32 @@ type FormatOpts = { abbreviated?: boolean }
 
 /**
  * Converts a number to a string format within the decimal limit that numeral
- * can handle.
+ * can handle. Numeral is only used for display purposes, so we don't need to
+ * worry about precision.
  */
 function toSafeValue(val: Numberish): string {
   return bn(val).toFixed(NUMERAL_DECIMAL_LIMIT)
 }
 
 // Formats an integer value.
-export function integerFormat(val: Numberish): string {
+function integerFormat(val: Numberish): string {
   return numeral(toSafeValue(val)).format(INTEGER_FORMAT)
 }
 
 // Formats a fiat value.
-export function fiatFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
+function fiatFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
   const format = abbreviated ? FIAT_FORMAT_A : FIAT_FORMAT
   return numeral(toSafeValue(val)).format(format)
 }
 
 // Formats a token value.
-export function tokenFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
+function tokenFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
   const format = abbreviated ? TOKEN_FORMAT_A : TOKEN_FORMAT
   return numeral(toSafeValue(val)).format(format)
 }
 
 // Formats an APR value as a percentage.
-export function aprFormat(apr: Numberish): string {
+function aprFormat(apr: Numberish): string {
   if (bn(apr).lt(APR_LOWER_THRESHOLD)) return '0%'
   if (bn(apr).gt(APR_UPPER_THRESHOLD)) return '-'
 
@@ -76,17 +77,17 @@ export function aprFormat(apr: Numberish): string {
 }
 
 // Formats a fee value as a percentage.
-export function feePercentFormat(fee: Numberish): string {
+function feePercentFormat(fee: Numberish): string {
   return numeral(fee.toString()).format(FEE_FORMAT)
 }
 
 // Formats a weight value as a percentage.
-export function weightFormat(val: Numberish): string {
+function weightFormat(val: Numberish): string {
   return numeral(val.toString()).format(WEIGHT_FORMAT)
 }
 
 // Formats a price impact value as a percentage.
-export function priceImpactFormat(val: Numberish): string {
+function priceImpactFormat(val: Numberish): string {
   return numeral(val.toString()).format(PRICE_IMPACT_FORMAT)
 }
 
@@ -103,4 +104,28 @@ export function safeSum(amounts: Numberish[]): string {
 // Prevents invalid characters from being entered into a number input.
 export function blockInvalidNumberInput(event: KeyboardEvent<HTMLInputElement>): void {
   ;['e', 'E', '+', '-'].includes(event.key) && event.preventDefault()
+}
+
+type NumberFormat = 'integer' | 'fiat' | 'token' | 'apr' | 'feePercent' | 'weight' | 'priceImpact'
+
+// General number formatting function.
+export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): string {
+  switch (format) {
+    case 'integer':
+      return integerFormat(val)
+    case 'fiat':
+      return fiatFormat(val, opts)
+    case 'token':
+      return tokenFormat(val, opts)
+    case 'apr':
+      return aprFormat(val)
+    case 'feePercent':
+      return feePercentFormat(val)
+    case 'weight':
+      return weightFormat(val)
+    case 'priceImpact':
+      return priceImpactFormat(val)
+    default:
+      throw new Error(`Number format not implemented: ${format}`)
+  }
 }

@@ -3,7 +3,6 @@ import {
   GqlChain,
   GqlPoolLinearNested,
   GqlPoolPhantomStableNested,
-  GqlPoolUnion,
   GqlTokenPrice,
 } from '@/lib/shared/services/api/generated/graphql'
 import { Address, formatUnits, PublicClient } from 'viem'
@@ -215,7 +214,9 @@ function getBalancesCall(
   }
 }
 
-function getSupplyCall(pool: GqlPoolUnion | GqlPoolPhantomStableNested | GqlPoolLinearNested): {
+function getSupplyCall(
+  pool: GetPoolQuery['pool'] | GqlPoolPhantomStableNested | GqlPoolLinearNested
+): {
   poolId: string
   type: 'supply'
   call: ContractFunctionConfig

@@ -1,44 +1,32 @@
-import { poolId } from '@/lib/debug-helpers'
 import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { Address } from 'wagmi'
 import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
-import { AddLiquidityConfigBuilder } from './AddLiquidityConfigBuilder'
 import { HumanAmountIn } from './add-liquidity.types'
-import { useBuildAddLiquidityQuery } from './useBuildAddLiquidityQuery'
+import { useBuildAddLiquidityQuery } from './queries/useBuildAddLiquidityTxQuery'
 
-export function useConstructAddLiquidityStep(
-  humanAmountsIn: HumanAmountIn[],
-  builder: AddLiquidityConfigBuilder
-) {
-  const { address: userAddress } = useUserAccount()
+export function useConstructAddLiquidityStep(humanAmountsIn: HumanAmountIn[], poolId: string) {
   const { isActiveStep, activateStep } = useActiveStep()
 
-  const addLiquidityQuery = useBuildAddLiquidityQuery(
-    builder,
-    humanAmountsIn,
-    isActiveStep,
-    userAddress
-  )
+  //TODO: add slippage
+  const addLiquidityQuery = useBuildAddLiquidityQuery(humanAmountsIn, isActiveStep, poolId)
 
   const transactionLabels = buildAddLiquidityLabels(poolId)
 
-  const transaction = useManagedSendTransaction(transactionLabels, addLiquidityQuery.data?.config)
+  const transaction = useManagedSendTransaction(transactionLabels, addLiquidityQuery.data)
 
   const step: FlowStep = {
     ...transaction,
     transactionLabels,
-    id: `joinPool${poolId}`,
-    stepType: 'joinPool',
+    id: `addLiquidityPool${poolId}`,
+    stepType: 'addLiquidity',
     isComplete: () => false,
     activateStep,
   }
 
   return {
     step,
-    // joinPayload: builder,
     isLoading:
       transaction?.simulation.isLoading ||
       transaction?.execution.isLoading ||
