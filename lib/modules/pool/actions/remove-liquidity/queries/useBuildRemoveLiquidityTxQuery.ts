@@ -43,7 +43,10 @@ export function useBuildRemoveLiquidityQuery(
       return handler.buildRemoveLiquidityTx({ inputs, sdkQueryOutput: lastSdkQueryOutput })
     },
     {
-      enabled: isActiveStep && isConnected && hasApproval(),
+      enabled:
+        isActiveStep && // If the step is not active (the user did not click Next button) avoid running the build tx query to save RPC requests
+        isConnected &&
+        hasApproval(),
     }
   )
 

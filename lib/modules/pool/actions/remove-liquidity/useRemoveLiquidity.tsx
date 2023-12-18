@@ -12,12 +12,11 @@ import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
 import { LiquidityActionHelpers, areEmptyAmounts } from '../LiquidityActionHelpers'
-import { RemoveLiquidityInputs } from './remove-liquidity.types'
-import { useRemoveLiquidityBtpInQuery } from './queries/useRemoveLiquidityBptInQuery'
-import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
 import { HumanAmountIn } from '../liquidity-types'
-import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
+import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
 import { useBuildRemoveLiquidityQuery } from './queries/useBuildRemoveLiquidityTxQuery'
+import { useRemoveLiquidityBtpInQuery } from './queries/useRemoveLiquidityBptInQuery'
+import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)

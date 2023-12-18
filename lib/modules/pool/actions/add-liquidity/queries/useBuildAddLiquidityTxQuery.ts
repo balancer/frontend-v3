@@ -2,21 +2,22 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { AddLiquidityQueryOutput } from '@balancer/sdk'
 import { Dictionary } from 'lodash'
 import { useQuery } from 'wagmi'
-import { useAddLiquidity } from '../useAddLiquidity'
-import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
 import { HumanAmountIn } from '../../liquidity-types'
+import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
+import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
 
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
 export function useBuildAddLiquidityQuery(
+  handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
-  enabled: boolean,
-  poolId: string
+  isActiveStep: boolean,
+  poolId: string,
+  lastSdkQueryOutput?: AddLiquidityQueryOutput
 ) {
   const { userAddress, isConnected } = useUserAccount()
-
-  const { buildAddLiquidityTx } = useAddLiquidity()
   const { slippage } = useUserSettings()
 
   //TODO: fix this
@@ -39,11 +40,16 @@ export function useBuildAddLiquidityQuery(
         account: userAddress,
         slippagePercent: slippage,
       }
-      // This method is implemented by an specific handler (instance of AddLiquidityHandler)
-      return await buildAddLiquidityTx(inputs)
+      // There are edge cases where we will never call setLastSdkQueryOutput so that lastSdkQueryOutput will be undefined.
+      // That`s expected as sdkQueryOutput is an optional input
+      return handler.buildAddLiquidityTx({ inputs, sdkQueryOutput: lastSdkQueryOutput })
     },
     {
-      enabled: enabled && isConnected && allowances && hasTokenAllowance(allowances),
+      enabled:
+        isActiveStep && // If the step is not active (the user did not click Next button) avoid running the build tx query to save RPC requests
+        isConnected &&
+        allowances &&
+        hasTokenAllowance(allowances),
     }
   )
 

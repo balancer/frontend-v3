@@ -11,13 +11,13 @@ import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
-import { AddLiquidityInputs } from './add-liquidity.types'
 import { useAddLiquidityBtpOutQuery } from './queries/useAddLiquidityBtpOutQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { HumanAmountIn } from '../liquidity-types'
 import { LiquidityActionHelpers } from '../LiquidityActionHelpers'
 import { useAddLiquidityDisabledWithReasons } from './useAddLiquidityDisabledWithReasons'
+import { useBuildAddLiquidityQuery } from './queries/useBuildAddLiquidityTxQuery'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -95,10 +95,15 @@ export function _useAddLiquidity() {
     */
   const helpers = new LiquidityActionHelpers(pool)
 
-  function buildAddLiquidityTx(inputs: AddLiquidityInputs) {
-    // There are edge cases where we will never call setLastSdkQueryOutput so that lastSdkQueryOutput will be undefined.
-    // That`s expected as sdkQueryOutput is an optional input
-    return handler.buildAddLiquidityTx({ inputs, sdkQueryOutput: lastSdkQueryOutput })
+  function useBuildTx(humanAmountsIn: HumanAmountIn[], isActiveStep: boolean) {
+    return useBuildAddLiquidityQuery(
+      handler,
+      humanAmountsIn,
+      isActiveStep,
+      pool.id,
+      // This is an optional parameter that will be sometimes undefined (when the handler does not use the SDK)
+      lastSdkQueryOutput
+    )
   }
 
   return {
@@ -114,9 +119,10 @@ export function _useAddLiquidity() {
     setAmountIn,
     isAddLiquidityDisabled,
     addLiquidityDisabledReason,
-    buildAddLiquidityTx,
+    useBuildTx,
     helpers,
     poolStateInput,
+    lastSdkQueryOutput,
   }
 }
 

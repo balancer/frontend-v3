@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import {
@@ -10,7 +11,6 @@ import { PropsWithChildren } from 'react'
 import { HumanAmountIn } from '../liquidity-types'
 import { useConstructRemoveLiquidityStep } from './useConstructRemoveLiquidityStep'
 import { RemoveLiquidityProvider } from './useRemoveLiquidity'
-// import { useRemoveLiquidityBtpInQuery } from './queries/useRemoveLiquidityBptInQuery'
 
 const PoolProvider = buildDefaultPoolTestProvider(aWjAuraWethPoolElementMock())
 
@@ -36,7 +36,7 @@ async function testConstructRemoveLiquidityStep() {
   return result
 }
 
-test('returns amountsIn with empty input amount by default', async () => {
+test('Throws error when user tries to remove liquidity in a pool where they does not have balance', async () => {
   const result = await testConstructRemoveLiquidityStep()
 
   // User fills token inputs
