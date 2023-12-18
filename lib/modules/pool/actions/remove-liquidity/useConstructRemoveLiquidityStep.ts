@@ -3,16 +3,15 @@ import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManag
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { Address } from 'wagmi'
 import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
-import { useBuildRemoveLiquidityQuery } from './queries/useBuildRemoveLiquidityTxQuery'
 import { HumanAmountIn } from '../liquidity-types'
 import { useRemoveLiquidity } from './useRemoveLiquidity'
 
 export function useConstructRemoveLiquidityStep(humanAmountsIn: HumanAmountIn[], poolId: string) {
   const { isActiveStep, activateStep } = useActiveStep()
 
-  const { setAmountIn } = useRemoveLiquidity()
+  const { setAmountIn, useBuildTx, lastSdkQueryOutput } = useRemoveLiquidity()
 
-  const removeLiquidityQuery = useBuildRemoveLiquidityQuery(humanAmountsIn, isActiveStep, poolId)
+  const removeLiquidityQuery = useBuildTx(humanAmountsIn, isActiveStep)
 
   const transactionLabels = buildAddLiquidityLabels(poolId)
 
@@ -35,8 +34,10 @@ export function useConstructRemoveLiquidityStep(humanAmountsIn: HumanAmountIn[],
       removeLiquidityQuery.isLoading,
     error:
       transaction?.simulation.error || transaction?.execution.error || removeLiquidityQuery.error,
-    setAmountIn,
-    removeLiquidityQuery,
+    // The following functions are only exposed for testing purposes so that we can
+    // "simulate" the preview step to test useConstructREmoveLiquidityStep hook
+    _setAmountIn: setAmountIn,
+    _lastSdkQueryOutput: lastSdkQueryOutput,
   }
 }
 

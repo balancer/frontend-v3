@@ -17,6 +17,7 @@ import { useRemoveLiquidityBtpInQuery } from './queries/useRemoveLiquidityBptInQ
 import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
 import { HumanAmountIn } from '../liquidity-types'
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
+import { useBuildRemoveLiquidityQuery } from './queries/useBuildRemoveLiquidityTxQuery'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -97,10 +98,15 @@ export function _useRemoveLiquidity() {
     */
   const helpers = new LiquidityActionHelpers(pool)
 
-  function buildTx(inputs: RemoveLiquidityInputs) {
-    // There are edge cases where we will never call setLastSdkQueryOutput so that lastSdkQueryOutput will be undefined.
-    // That`s expected as sdkQueryOutput is an optional input
-    return handler.buildRemoveLiquidityTx({ inputs, sdkQueryOutput: lastSdkQueryOutput })
+  function useBuildTx(humanAmountsIn: HumanAmountIn[], isActiveStep: boolean) {
+    return useBuildRemoveLiquidityQuery(
+      handler,
+      humanAmountsIn,
+      isActiveStep,
+      pool.id,
+      // This is an optional parameter that will be sometimes undefined (when the handler does not use the SDK)
+      lastSdkQueryOutput
+    )
   }
 
   return {
@@ -114,7 +120,7 @@ export function _useRemoveLiquidity() {
     isBptInQueryLoading,
     setAmountIn,
     isAddLiquidityDisabled,
-    buildTx,
+    useBuildTx,
     lastSdkQueryOutput,
     helpers,
     poolStateInput,

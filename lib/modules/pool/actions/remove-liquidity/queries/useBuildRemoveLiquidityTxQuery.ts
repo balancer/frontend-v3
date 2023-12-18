@@ -2,20 +2,22 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { RemoveLiquidityQueryOutput } from '@balancer/sdk'
 import { useQuery } from 'wagmi'
 import { HumanAmountIn } from '../../liquidity-types'
-import { useRemoveLiquidity } from '../useRemoveLiquidity'
+import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
 export function useBuildRemoveLiquidityQuery(
+  handler: RemoveLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
-  enabled: boolean,
-  poolId: string
+  isActiveStep: boolean,
+  poolId: string,
+  lastSdkQueryOutput?: RemoveLiquidityQueryOutput
 ) {
   const { userAddress, isConnected } = useUserAccount()
 
-  const { buildTx, lastSdkQueryOutput } = useRemoveLiquidity()
   const { slippage } = useUserSettings()
 
   function queryKey(): string {
@@ -36,11 +38,12 @@ export function useBuildRemoveLiquidityQuery(
         account: userAddress,
         slippagePercent: slippage,
       }
-      // This method is implemented by an specific handler (instance of RemoveLiquidityHandler)
-      return await buildTx(inputs)
+      // There are edge cases where we will never call setLastSdkQueryOutput so that lastSdkQueryOutput will be undefined.
+      // That`s expected as sdkQueryOutput is an optional input
+      return handler.buildRemoveLiquidityTx({ inputs, sdkQueryOutput: lastSdkQueryOutput })
     },
     {
-      enabled: enabled && isConnected && hasApproval() && !!lastSdkQueryOutput,
+      enabled: isActiveStep && isConnected && hasApproval(),
     }
   )
 
