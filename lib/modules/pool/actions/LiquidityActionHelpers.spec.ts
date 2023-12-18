@@ -27,5 +27,5 @@ test('humanizes token amount', () => {
   const tokenAmount: TokenAmount = {
     amount: 251359380787607529n,
   } as TokenAmount
-  expect(humanizeTokenAmount(tokenAmount)).toBe('0')
+  expect(humanizeTokenAmount(tokenAmount)).toBe('0.2514')
 })
