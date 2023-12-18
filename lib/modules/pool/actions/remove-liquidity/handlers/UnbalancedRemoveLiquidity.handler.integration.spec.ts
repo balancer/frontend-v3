@@ -29,7 +29,6 @@ describe('When removing unbalanced liquidity for a weighted pool', () => {
     })
 
     expect(result.bptIn.amount).toBeGreaterThan(390000000000000000000n)
-    expect(result.sdkQueryOutput).toBeDefined()
   })
 
   test('builds Tx Config', async () => {

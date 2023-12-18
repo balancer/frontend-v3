@@ -31,6 +31,7 @@ import { Address } from 'wagmi'
 import { usePool } from '../../usePool'
 import { AddLiquidityFlowButton, HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
 import { useAddLiquidity } from './useAddLiquidity'
+import { humanizeTokenAmount } from '../LiquidityActionHelpers'
 
 type Props = {
   isOpen: boolean
@@ -79,19 +80,23 @@ export function AddLiquidityModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { amountsIn, totalUSDValue, helpers, formattedPriceImpact, bptOutUnits } = useAddLiquidity()
+  const { humanAmountsIn, totalUSDValue, helpers, formattedPriceImpact, bptOut } = useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
   // TODO: move userAddress up
   const spenderAddress = useContractAddress('balancer.vaultV2')
   const { userAddress } = useUserAccount()
   const { getToken } = useTokens()
-  const humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[] = amountsIn.map(humanAmountIn => {
-    return {
-      ...humanAmountIn,
-      ...getToken(humanAmountIn.tokenAddress, pool.chain),
-    } as HumanAmountInWithTokenInfo
-  })
+  const humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[] = humanAmountsIn.map(
+    humanAmountIn => {
+      return {
+        ...humanAmountIn,
+        ...getToken(humanAmountIn.tokenAddress, pool.chain),
+      } as HumanAmountInWithTokenInfo
+    }
+  )
+
+  const bptOutUnits = humanizeTokenAmount(bptOut)
 
   return (
     <Modal
@@ -118,7 +123,7 @@ export function AddLiquidityModal({
                   <Text color="GrayText">{"You're adding"}</Text>
                   <NumberText fontSize="lg">{toCurrency(totalUSDValue)}</NumberText>
                 </HStack>
-                {amountsIn.map(amountIn => (
+                {humanAmountsIn.map(amountIn => (
                   <TokenAmountRow key={amountIn.tokenAddress} {...amountIn} />
                 ))}
               </VStack>

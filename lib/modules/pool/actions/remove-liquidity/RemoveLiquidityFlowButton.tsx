@@ -18,10 +18,7 @@ export function RemoveLiquidityFlowButton({ humanAmountsInWithTokenInfo, poolId 
     helpers.getAmountsToApprove(humanAmountsInWithTokenInfo)
   )
 
-  const { step: addLiquidityStep } = useConstructRemoveLiquidityStep(
-    humanAmountsInWithTokenInfo,
-    poolId
-  )
+  const { step: addLiquidityStep } = useConstructRemoveLiquidityStep(poolId)
   const steps = [tokenApprovalStep, addLiquidityStep]
 
   function handleRemoveCompleted() {

@@ -18,10 +18,7 @@ export function AddLiquidityFlowButton({ humanAmountsInWithTokenInfo, poolId }: 
     helpers.getAmountsToApprove(humanAmountsInWithTokenInfo)
   )
 
-  const { step: addLiquidityStep } = useConstructAddLiquidityStep(
-    humanAmountsInWithTokenInfo,
-    poolId
-  )
+  const { step: addLiquidityStep } = useConstructAddLiquidityStep(poolId)
   const steps = [tokenApprovalStep, addLiquidityStep]
 
   function handleJoinCompleted() {

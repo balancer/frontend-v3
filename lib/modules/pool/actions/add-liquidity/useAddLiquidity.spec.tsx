@@ -23,7 +23,7 @@ async function testUseAddLiquidity() {
 test('returns amountsIn with empty input amount by default', async () => {
   const result = await testUseAddLiquidity()
 
-  expect(result.current.amountsIn).toEqual([
+  expect(result.current.humanAmountsIn).toEqual([
     {
       tokenAddress: balAddress,
       humanAmount: '',

@@ -2,7 +2,6 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { RemoveLiquidityQueryOutput } from '@balancer/sdk'
 import { useQuery } from 'wagmi'
 import { HumanAmountIn } from '../../liquidity-types'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
@@ -13,8 +12,7 @@ export function useBuildRemoveLiquidityQuery(
   handler: RemoveLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
   isActiveStep: boolean,
-  poolId: string,
-  lastSdkQueryOutput?: RemoveLiquidityQueryOutput
+  poolId: string
 ) {
   const { userAddress, isConnected } = useUserAccount()
 
@@ -38,9 +36,7 @@ export function useBuildRemoveLiquidityQuery(
         account: userAddress,
         slippagePercent: slippage,
       }
-      // There are edge cases where we will never call setLastSdkQueryOutput so that lastSdkQueryOutput will be undefined.
-      // That`s expected as sdkQueryOutput is an optional input
-      return handler.buildRemoveLiquidityTx({ inputs, sdkQueryOutput: lastSdkQueryOutput })
+      return handler.buildRemoveLiquidityTx({ inputs })
     },
     {
       enabled:

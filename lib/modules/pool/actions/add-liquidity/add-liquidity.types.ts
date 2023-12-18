@@ -18,9 +18,6 @@ export type AddLiquidityOutputs = {
   sdkQueryOutput?: AddLiquidityQueryOutput
 }
 
-// sdkQueryOutput is optional because it will be only used in cases where we use the SDK to query/build the transaction
-// We will probably need a more abstract interface to be used by edge cases
 export type BuildLiquidityInputs = {
   inputs: AddLiquidityInputs
-  sdkQueryOutput?: AddLiquidityQueryOutput
 }

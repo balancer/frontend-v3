@@ -63,7 +63,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
 
     const handler = selectUnbalancedHandler()
 
-    const { sdkQueryOutput } = await handler.queryAddLiquidity({
+    await handler.queryAddLiquidity({
       humanAmountsIn,
     })
 
@@ -72,7 +72,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
     }
-    const result = await handler.buildAddLiquidityTx({ inputs, sdkQueryOutput })
+    const result = await handler.buildAddLiquidityTx({ inputs })
 
     expect(result.to).toBe(networkConfig.contracts.balancer.vaultV2)
     expect(result.data).toBeDefined()

@@ -11,7 +11,7 @@ import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
-import { useAddLiquidityBtpOutQuery } from './queries/useAddLiquidityBtpOutQuery'
+import { useAddLiquidityBptOutQuery } from './queries/useAddLiquidityBptOutQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { HumanAmountIn } from '../liquidity-types'
@@ -22,17 +22,17 @@ import { useBuildAddLiquidityQuery } from './queries/useBuildAddLiquidityTxQuery
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
 
-export const amountsInVar = makeVar<HumanAmountIn[]>([])
+export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
 
 export function _useAddLiquidity() {
-  const amountsIn = useReactiveVar(amountsInVar)
+  const humanAmountsIn = useReactiveVar(humanAmountsInVar)
 
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
 
   const handler = selectAddLiquidityHandler(pool)
 
-  function setInitialAmountsIn() {
+  function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
       token =>
         ({
@@ -40,17 +40,17 @@ export function _useAddLiquidity() {
           humanAmount: '',
         } as HumanAmountIn)
     )
-    amountsInVar(amountsIn)
+    humanAmountsInVar(amountsIn)
   }
 
   useEffect(() => {
-    setInitialAmountsIn()
+    setInitialHumanAmountsIn()
   }, [])
 
-  function setAmountIn(tokenAddress: Address, humanAmount: HumanAmount) {
-    const state = amountsInVar()
+  function setHumanAmountIn(tokenAddress: Address, humanAmount: HumanAmount) {
+    const state = humanAmountsInVar()
 
-    amountsInVar([
+    humanAmountsInVar([
       ...state.filter(amountIn => !isSameAddress(amountIn.tokenAddress, tokenAddress)),
       {
         tokenAddress,
@@ -63,7 +63,7 @@ export function _useAddLiquidity() {
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
   const usdAmountsIn = useMemo(
     () =>
-      amountsIn.map(amountIn => {
+      humanAmountsIn.map(amountIn => {
         const token = validTokens.find(token =>
           isSameAddress(token?.address, amountIn.tokenAddress)
         )
@@ -72,21 +72,24 @@ export function _useAddLiquidity() {
 
         return usdValueForToken(token, amountIn.humanAmount)
       }),
-    [amountsIn, usdValueForToken, validTokens]
+    [humanAmountsIn, usdValueForToken, validTokens]
   )
   const totalUSDValue = safeSum(usdAmountsIn)
 
   const { formattedPriceImpact, isPriceImpactLoading } = useAddLiquidityPriceImpactQuery(
     handler,
-    amountsIn,
+    humanAmountsIn,
     pool.id
   )
 
-  const { bptOut, bptOutUnits, isBptOutQueryLoading, lastSdkQueryOutput } =
-    useAddLiquidityBtpOutQuery(handler, amountsIn, pool.id)
+  const { bptOut, isBptOutQueryLoading } = useAddLiquidityBptOutQuery(
+    handler,
+    humanAmountsIn,
+    pool.id
+  )
 
   const { isAddLiquidityDisabled, addLiquidityDisabledReason } =
-    useAddLiquidityDisabledWithReasons(amountsIn)
+    useAddLiquidityDisabledWithReasons(humanAmountsIn)
 
   /* We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
     helper is a class and if we return its methods we would lose the this binding, getting a:
@@ -95,19 +98,12 @@ export function _useAddLiquidity() {
     */
   const helpers = new LiquidityActionHelpers(pool)
 
-  function useBuildTx(humanAmountsIn: HumanAmountIn[], isActiveStep: boolean) {
-    return useBuildAddLiquidityQuery(
-      handler,
-      humanAmountsIn,
-      isActiveStep,
-      pool.id,
-      // This is an optional parameter that will be sometimes undefined (when the handler does not use the SDK)
-      lastSdkQueryOutput
-    )
+  function useBuildTx(isActiveStep: boolean) {
+    return useBuildAddLiquidityQuery(handler, humanAmountsIn, isActiveStep, pool.id)
   }
 
   return {
-    amountsIn,
+    humanAmountsIn,
     tokens,
     validTokens,
     totalUSDValue,
@@ -115,14 +111,12 @@ export function _useAddLiquidity() {
     isPriceImpactLoading,
     bptOut,
     isBptOutQueryLoading,
-    bptOutUnits,
-    setAmountIn,
+    setHumanAmountIn,
     isAddLiquidityDisabled,
     addLiquidityDisabledReason,
     useBuildTx,
     helpers,
     poolStateInput,
-    lastSdkQueryOutput,
   }
 }
 

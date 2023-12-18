@@ -3,6 +3,7 @@ import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   AddLiquidity,
   AddLiquidityKind,
+  AddLiquidityQueryOutput,
   AddLiquidityUnbalancedInput,
   PriceImpact,
   Slippage,
@@ -27,6 +28,8 @@ import { HumanAmountIn } from '../../liquidity-types'
  */
 export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   helpers: LiquidityActionHelpers
+  sdkQueryOutput?: AddLiquidityQueryOutput
+
   constructor(pool: Pool) {
     this.helpers = new LiquidityActionHelpers(pool)
   }
@@ -37,8 +40,9 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     const addLiquidity = new AddLiquidity()
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
-    const sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
-    return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
+    this.sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
+
+    return { bptOut: this.sdkQueryOutput.bptOut }
   }
 
   public async calculatePriceImpact({ humanAmountsIn }: AddLiquidityInputs): Promise<number> {
@@ -62,19 +66,19 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   */
   public async buildAddLiquidityTx(buildInputs: BuildLiquidityInputs): Promise<TransactionConfig> {
     const { account, slippagePercent } = buildInputs.inputs
-    const sdkQueryOutput = buildInputs.sdkQueryOutput
     if (!account || !slippagePercent) throw new Error('Missing account or slippage')
-    if (!sdkQueryOutput) {
+    if (!this.sdkQueryOutput) {
+      console.error('Missing sdkQueryOutput.')
       throw new Error(
         `Missing sdkQueryOutput.
-It looks that you did not setLastSdkQueryOutput (check out if you are calling useAddLiquidityBtpOutQuery)`
+It looks that you did not call useAddLiquidityBtpOutQuery before trying to build the tx config`
       )
     }
 
     const addLiquidity = new AddLiquidity()
 
     const { call, to, value } = addLiquidity.buildCall({
-      ...sdkQueryOutput,
+      ...this.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,

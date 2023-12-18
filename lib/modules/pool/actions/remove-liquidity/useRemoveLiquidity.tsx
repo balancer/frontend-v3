@@ -21,15 +21,15 @@ import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidity
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
 
-export const amountsInVar = makeVar<HumanAmountIn[]>([])
+export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
 
 export function _useRemoveLiquidity() {
-  const amountsIn = useReactiveVar(amountsInVar)
+  const humanAmountsIn = useReactiveVar(humanAmountsInVar)
 
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
 
-  const handler = selectRemoveLiquidityHandler(pool)
+  const handler = useMemo(() => selectRemoveLiquidityHandler(pool), [])
 
   function setInitialAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -39,17 +39,17 @@ export function _useRemoveLiquidity() {
           humanAmount: '',
         } as HumanAmountIn)
     )
-    amountsInVar(amountsIn)
+    humanAmountsInVar(amountsIn)
   }
 
   useEffect(() => {
     setInitialAmountsIn()
   }, [])
 
-  function setAmountIn(tokenAddress: Address, humanAmount: HumanAmount) {
-    const state = amountsInVar()
+  function setHumanAmountIn(tokenAddress: Address, humanAmount: HumanAmount) {
+    const state = humanAmountsInVar()
 
-    amountsInVar([
+    humanAmountsInVar([
       ...state.filter(amountIn => !isSameAddress(amountIn.tokenAddress, tokenAddress)),
       {
         tokenAddress,
@@ -62,7 +62,7 @@ export function _useRemoveLiquidity() {
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
   const usdAmountsIn = useMemo(
     () =>
-      amountsIn.map(amountIn => {
+      humanAmountsIn.map(amountIn => {
         const token = validTokens.find(token =>
           isSameAddress(token?.address, amountIn.tokenAddress)
         )
@@ -71,24 +71,24 @@ export function _useRemoveLiquidity() {
 
         return usdValueForToken(token, amountIn.humanAmount)
       }),
-    [amountsIn, usdValueForToken, validTokens]
+    [humanAmountsIn, usdValueForToken, validTokens]
   )
   const totalUSDValue = safeSum(usdAmountsIn)
 
   const { priceImpact, isPriceImpactLoading } = useRemoveLiquidityPriceImpactQuery(
     handler,
-    amountsIn,
+    humanAmountsIn,
     pool.id
   )
 
-  const { bptIn, isBptInQueryLoading, lastSdkQueryOutput } = useRemoveLiquidityBtpInQuery(
+  const { bptIn, isBptInQueryLoading } = useRemoveLiquidityBtpInQuery(
     handler,
-    amountsIn,
+    humanAmountsIn,
     pool.id
   )
 
   // TODO: we will need to render reasons why the transaction cannot be performed so instead of a boolean this will become an object
-  const isAddLiquidityDisabled = areEmptyAmounts(amountsIn)
+  const isAddLiquidityDisabled = areEmptyAmounts(humanAmountsIn)
 
   /* We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
     helper is a class and if we return its methods we would lose the this binding, getting a:
@@ -97,19 +97,12 @@ export function _useRemoveLiquidity() {
     */
   const helpers = new LiquidityActionHelpers(pool)
 
-  function useBuildTx(humanAmountsIn: HumanAmountIn[], isActiveStep: boolean) {
-    return useBuildRemoveLiquidityQuery(
-      handler,
-      humanAmountsIn,
-      isActiveStep,
-      pool.id,
-      // This is an optional parameter that will be sometimes undefined (when the handler does not use the SDK)
-      lastSdkQueryOutput
-    )
+  function useBuildTx(isActiveStep: boolean) {
+    return useBuildRemoveLiquidityQuery(handler, humanAmountsIn, isActiveStep, pool.id)
   }
 
   return {
-    amountsIn,
+    amountsIn: humanAmountsIn,
     tokens,
     validTokens,
     totalUSDValue,
@@ -117,12 +110,12 @@ export function _useRemoveLiquidity() {
     isPriceImpactLoading,
     bptIn,
     isBptInQueryLoading,
-    setAmountIn,
+    setHumanAmountIn,
     isAddLiquidityDisabled,
     useBuildTx,
-    lastSdkQueryOutput,
     helpers,
     poolStateInput,
+    handler,
   }
 }
 

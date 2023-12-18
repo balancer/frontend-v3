@@ -4,6 +4,7 @@ import {
   PriceImpact,
   RemoveLiquidity,
   RemoveLiquidityKind,
+  RemoveLiquidityQueryOutput,
   RemoveLiquidityUnbalancedInput,
   Slippage,
 } from '@balancer/sdk'
@@ -27,6 +28,8 @@ import { PriceImpactAmount } from '../../add-liquidity/add-liquidity.types'
  */
 export class UnbalancedRemoveLiquidityHandler implements RemoveLiquidityHandler {
   helpers: LiquidityActionHelpers
+  sdkQueryOutput?: RemoveLiquidityQueryOutput
+
   constructor(pool: Pool) {
     this.helpers = new LiquidityActionHelpers(pool)
   }
@@ -37,11 +40,12 @@ export class UnbalancedRemoveLiquidityHandler implements RemoveLiquidityHandler 
     const removeLiquidity = new RemoveLiquidity()
     const removeLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
-    const sdkQueryOutput = await removeLiquidity.query(
+    this.sdkQueryOutput = await removeLiquidity.query(
       removeLiquidityInput,
       this.helpers.poolStateInput
     )
-    return { bptIn: sdkQueryOutput.bptIn, sdkQueryOutput }
+
+    return { bptIn: this.sdkQueryOutput.bptIn }
   }
 
   public async calculatePriceImpact({ humanAmountsIn }: RemoveLiquidityInputs): Promise<number> {
@@ -67,19 +71,19 @@ export class UnbalancedRemoveLiquidityHandler implements RemoveLiquidityHandler 
     buildInputs: BuildLiquidityInputs
   ): Promise<TransactionConfig> {
     const { account, slippagePercent } = buildInputs.inputs
-    const sdkQueryOutput = buildInputs.sdkQueryOutput
     if (!account || !slippagePercent) throw new Error('Missing account or slippage')
-    if (!sdkQueryOutput) {
+    if (!this.sdkQueryOutput) {
+      console.error('Missing sdkQueryOutput.')
       throw new Error(
         `Missing sdkQueryOutput.
-It looks that you did not setLastSdkQueryOutput (check out if you are calling useRemoveLiquidityBtpOutQuery)`
+It looks that you did not call useRemoveLiquidityBtpOutQuery before trying to build the tx config`
       )
     }
 
     const removeLiquidity = new RemoveLiquidity()
 
     const { call, to, value } = removeLiquidity.buildCall({
-      ...sdkQueryOutput,
+      ...this.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,

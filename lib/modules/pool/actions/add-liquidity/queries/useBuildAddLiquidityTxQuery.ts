@@ -2,7 +2,6 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { AddLiquidityQueryOutput } from '@balancer/sdk'
 import { Dictionary } from 'lodash'
 import { useQuery } from 'wagmi'
 import { HumanAmountIn } from '../../liquidity-types'
@@ -14,8 +13,7 @@ export function useBuildAddLiquidityQuery(
   handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
   isActiveStep: boolean,
-  poolId: string,
-  lastSdkQueryOutput?: AddLiquidityQueryOutput
+  poolId: string
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
@@ -40,9 +38,7 @@ export function useBuildAddLiquidityQuery(
         account: userAddress,
         slippagePercent: slippage,
       }
-      // There are edge cases where we will never call setLastSdkQueryOutput so that lastSdkQueryOutput will be undefined.
-      // That`s expected as sdkQueryOutput is an optional input
-      return handler.buildAddLiquidityTx({ inputs, sdkQueryOutput: lastSdkQueryOutput })
+      return handler.buildAddLiquidityTx({ inputs })
     },
     {
       enabled:

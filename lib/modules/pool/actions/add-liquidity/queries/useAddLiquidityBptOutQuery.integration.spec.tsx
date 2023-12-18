@@ -5,13 +5,13 @@ import { waitFor } from '@testing-library/react'
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { selectAddLiquidityHandler } from '../handlers/selectAddLiquidityHandler'
-import { useAddLiquidityBtpOutQuery } from './useAddLiquidityBtpOutQuery'
+import { useAddLiquidityBptOutQuery } from './useAddLiquidityBptOutQuery'
 import { HumanAmountIn } from '../../liquidity-types'
 
 async function testQuery(humanAmountsIn: HumanAmountIn[]) {
   const handler = selectAddLiquidityHandler(aWjAuraWethPoolElementMock())
   const { result } = testHook(() =>
-    useAddLiquidityBtpOutQuery(handler, humanAmountsIn, defaultTestUserAccount)
+    useAddLiquidityBptOutQuery(handler, humanAmountsIn, defaultTestUserAccount)
   )
   return result
 }
@@ -26,7 +26,6 @@ test('queries btp out for add liquidity', async () => {
 
   await waitFor(() => expect(result.current.bptOut).not.toBeNull())
 
-  expect(result.current.bptOut).toBeDefined()
-  expect(result.current.bptOutUnits).toBe('33.4271k')
+  expect(result.current.bptOut?.amount).toBeDefined()
   expect(result.current.isBptOutQueryLoading).toBeFalsy()
 })

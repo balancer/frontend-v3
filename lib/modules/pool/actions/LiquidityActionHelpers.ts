@@ -10,6 +10,9 @@ import { Pool } from '../usePool'
 import { HumanAmountInWithTokenInfo } from './remove-liquidity/RemoveLiquidityFlowButton'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { HumanAmountIn } from './liquidity-types'
+import { fNum } from '@/lib/shared/utils/numbers'
+import { TokenAmount } from '@balancer/sdk'
+import { formatUnits } from 'viem'
 
 // TODO: this should be imported from the SDK
 export type InputAmount = {
@@ -106,3 +109,9 @@ export const areEmptyAmounts = (humanAmountsIn: HumanAmountIn[]) =>
 
 export const hasValidHumanAmounts = (humanAmountsIn: HumanAmountIn[]) =>
   humanAmountsIn.some(a => a.humanAmount && a.humanAmount !== '0')
+
+export function humanizeTokenAmount(tokenAmount?: TokenAmount | null) {
+  if (!tokenAmount) return '-'
+
+  return fNum('integer', formatUnits(tokenAmount.amount, 18))
+}

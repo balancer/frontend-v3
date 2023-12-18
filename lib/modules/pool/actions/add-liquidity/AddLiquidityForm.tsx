@@ -21,19 +21,20 @@ import {
 } from '@chakra-ui/react'
 import { useRef } from 'react'
 import { Address } from 'wagmi'
+import { humanizeTokenAmount } from '../LiquidityActionHelpers'
 import { AddLiquidityModal } from './AddLiquidityModal'
 import { useAddLiquidity } from './useAddLiquidity'
 
 export function AddLiquidityForm() {
   const {
-    amountsIn,
+    humanAmountsIn: amountsIn,
     totalUSDValue,
-    setAmountIn,
+    setHumanAmountIn: setAmountIn,
     tokens,
     validTokens,
     formattedPriceImpact,
     isPriceImpactLoading,
-    bptOutUnits,
+    bptOut,
     isBptOutQueryLoading,
     isAddLiquidityDisabled,
     addLiquidityDisabledReason,
@@ -47,6 +48,8 @@ export function AddLiquidityForm() {
     const amountIn = amountsIn.find(amountIn => isSameAddress(amountIn.tokenAddress, tokenAddress))
     return amountIn ? amountIn.humanAmount : ''
   }
+
+  const bptOutUnits = humanizeTokenAmount(bptOut)
 
   function submit() {
     if (!isAddLiquidityDisabled) {

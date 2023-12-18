@@ -2,30 +2,25 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { AddLiquidityQueryOutput, TokenAmount } from '@balancer/sdk'
+import { TokenAmount } from '@balancer/sdk'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
-import { formatUnits } from 'viem'
 import { useQuery } from 'wagmi'
+import { areEmptyAmounts } from '../../LiquidityActionHelpers'
+import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
-import { HumanAmountIn } from '../../liquidity-types'
-import { areEmptyAmounts } from '../../LiquidityActionHelpers'
-import { fNum } from '@/lib/shared/utils/numbers'
 
 const debounceMillis = 300
 
-export function useAddLiquidityBtpOutQuery(
+export function useAddLiquidityBptOutQuery(
   handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
   poolId: string
 ) {
-  const { userAddress } = useUserAccount()
+  const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [bptOut, setBptOut] = useState<TokenAmount | null>(null)
-  const [lastSdkQueryOutput, setLastSdkQueryOutput] = useState<AddLiquidityQueryOutput | undefined>(
-    undefined
-  )
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, debounceMillis)
 
   function queryKey(): string {
@@ -44,10 +39,6 @@ export function useAddLiquidityBtpOutQuery(
 
     setBptOut(bptOut)
 
-    // Only SDK handlers will return this output
-    if (queryResult.sdkQueryOutput) {
-      setLastSdkQueryOutput(queryResult.sdkQueryOutput)
-    }
     return bptOut
   }
 
@@ -57,11 +48,9 @@ export function useAddLiquidityBtpOutQuery(
       return await queryBptOut()
     },
     {
-      enabled: !!userAddress && !areEmptyAmounts(humanAmountsIn),
+      enabled: isConnected && !areEmptyAmounts(humanAmountsIn),
     }
   )
 
-  const bptOutUnits = bptOut ? fNum('token', formatUnits(bptOut.amount, 18)) : '-'
-
-  return { bptOut, bptOutUnits, isBptOutQueryLoading: query.isLoading, lastSdkQueryOutput }
+  return { bptOut, isBptOutQueryLoading: query.isLoading }
 }
