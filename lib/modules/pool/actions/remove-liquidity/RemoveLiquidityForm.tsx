@@ -17,7 +17,6 @@ import {
   Box,
   Radio,
   RadioGroup,
-  Stack,
 } from '@chakra-ui/react'
 import { RemoveLiquidityModal } from './RemoveLiquidityModal'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -48,7 +47,7 @@ const TABS = [
 function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | undefined)[] }) {
   return (
     <Card variant="level8" p="md" shadow="lg" w="full">
-      <VStack mr="sm">
+      <VStack>
         <HStack w="full" justify="space-between">
           <Text fontWeight="bold" fontSize="1rem">
             You&apos;ll get at least
@@ -99,30 +98,19 @@ function RemoveLiquiditySingleToken({
         border="white"
         w="full"
       >
-        <Box position="relative">
-          <RadioGroup onChange={setSingleToken} value={singleToken?.address}>
-            <Stack mr="sm">
-              {tokens.map(
-                token =>
-                  token && (
-                    <HStack key={token.address}>
-                      <Radio value={token.address} />
-                      <TokenRow chain={token.chain} address={token.address as Address} value={0} />
-                    </HStack>
-                  )
-              )}
-            </Stack>
-          </RadioGroup>
-          <Box
-            position="absolute"
-            bgGradient="linear(to-r, transparent, background.card.level1 95%)"
-            w="8"
-            h="full"
-            top={0}
-            right={0}
-            zIndex={9999}
-          ></Box>
-        </Box>
+        <RadioGroup onChange={setSingleToken} value={singleToken?.address}>
+          <VStack w="full">
+            {tokens.map(
+              token =>
+                token && (
+                  <HStack key={token.address} w="full">
+                    <Radio value={token.address} />
+                    <TokenRow chain={token.chain} address={token.address as Address} value={0} />
+                  </HStack>
+                )
+            )}
+          </VStack>
+        </RadioGroup>
       </Box>
     </VStack>
   )
