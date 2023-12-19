@@ -70,22 +70,6 @@ export const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolFilterType[] } = {
   ],
 }
 
-export const poolTypeHash: { [key in GqlPoolMinimalType]: string } = {
-  [GqlPoolMinimalType.Weighted]: 'Weighted',
-  [GqlPoolMinimalType.Element]: 'Element',
-  [GqlPoolMinimalType.Gyro]: 'Gyro 2-CLP',
-  [GqlPoolMinimalType.Gyro3]: 'Gyro 3-CLP',
-  [GqlPoolMinimalType.Gyroe]: 'Gyro E-CLP',
-  [GqlPoolMinimalType.Investment]: 'Managed',
-  [GqlPoolMinimalType.Linear]: 'Linear',
-  [GqlPoolMinimalType.LiquidityBootstrapping]: 'LBP',
-  [GqlPoolMinimalType.MetaStable]: 'MetaStable',
-  [GqlPoolMinimalType.PhantomStable]: 'PhantomStable',
-  [GqlPoolMinimalType.Stable]: 'Stable',
-  [GqlPoolMinimalType.Unknown]: 'Unknown',
-  [GqlPoolMinimalType.Fx]: 'FX',
-}
-
 export const orderByHash: { [key: string]: string } = {
   totalLiquidity: 'TVL',
   volume24h: 'Volume (24h)',

@@ -1,4 +1,8 @@
-import { GqlChain, GqlPoolAprValue } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GqlChain,
+  GqlPoolAprValue,
+  GqlPoolMinimalType,
+} from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolVariant } from './pool.types'
 import { fNum } from '@/lib/shared/utils/numbers'
@@ -54,4 +58,25 @@ export function getAprLabel(apr: GqlPoolAprValue): string {
   } else {
     return '-'
   }
+}
+
+// Maps GraphQL pool type enum to human readable label for UI.
+const poolTypeLabelMap: { [key in GqlPoolMinimalType]: string } = {
+  [GqlPoolMinimalType.Weighted]: 'Weighted',
+  [GqlPoolMinimalType.Element]: 'Element',
+  [GqlPoolMinimalType.Gyro]: 'Gyro 2-CLP',
+  [GqlPoolMinimalType.Gyro3]: 'Gyro 3-CLP',
+  [GqlPoolMinimalType.Gyroe]: 'Gyro E-CLP',
+  [GqlPoolMinimalType.Investment]: 'Managed',
+  [GqlPoolMinimalType.Linear]: 'Linear',
+  [GqlPoolMinimalType.LiquidityBootstrapping]: 'LBP',
+  [GqlPoolMinimalType.MetaStable]: 'MetaStable',
+  [GqlPoolMinimalType.PhantomStable]: 'PhantomStable',
+  [GqlPoolMinimalType.Stable]: 'Stable',
+  [GqlPoolMinimalType.Unknown]: 'Unknown',
+  [GqlPoolMinimalType.Fx]: 'FX',
+}
+
+export function getPoolTypeLabel(type: GqlPoolMinimalType): string {
+  return poolTypeLabelMap[type]
 }
