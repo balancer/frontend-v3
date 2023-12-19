@@ -24,6 +24,7 @@ export const APR_FORMAT = '0.[00]%'
 export const FEE_FORMAT = '0.[0000]%'
 export const WEIGHT_FORMAT = '(%0,0)'
 export const PRICE_IMPACT_FORMAT = '0.00%'
+export const INTEGER_PERCENTAGE_FORMAT = '0%'
 
 // Do not display APR values greater than this amount; they are likely to be nonsensical
 // These can arise from pools with extremely low balances (e.g., completed LBPs)
@@ -90,6 +91,11 @@ function priceImpactFormat(val: Numberish): string {
   return numeral(val.toString()).format(PRICE_IMPACT_FORMAT)
 }
 
+// Formats an integer value as a percentage.
+function integerPercentageFormat(val: Numberish): string {
+  return numeral(val.toString()).format(INTEGER_PERCENTAGE_FORMAT)
+}
+
 // Sums an array of numbers safely using bignumber.js.
 export function safeSum(amounts: Numberish[]): string {
   return amounts.reduce((a, b) => bn(a).plus(b.toString()), bn(0)).toString()
@@ -100,7 +106,15 @@ export function blockInvalidNumberInput(event: KeyboardEvent<HTMLInputElement>):
   ;['e', 'E', '+', '-'].includes(event.key) && event.preventDefault()
 }
 
-type NumberFormat = 'integer' | 'fiat' | 'token' | 'apr' | 'feePercent' | 'weight' | 'priceImpact'
+type NumberFormat =
+  | 'integer'
+  | 'fiat'
+  | 'token'
+  | 'apr'
+  | 'feePercent'
+  | 'weight'
+  | 'priceImpact'
+  | 'percentage'
 
 // General number formatting function.
 export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): string {
@@ -119,6 +133,8 @@ export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): s
       return weightFormat(val)
     case 'priceImpact':
       return priceImpactFormat(val)
+    case 'percentage':
+      return integerPercentageFormat(val)
     default:
       throw new Error(`Number format not implemented: ${format}`)
   }
