@@ -10,7 +10,7 @@
  *
  *      throw new SentryError('A constant error mesage, no interpolation', {
  *        cause: error // maintain stack trace
- *        context: { params } // add additional context
+ *        context: { extra: params } // add additional context
  *      })
  *    }
  */
