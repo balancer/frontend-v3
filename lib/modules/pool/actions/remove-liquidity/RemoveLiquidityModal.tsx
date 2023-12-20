@@ -27,6 +27,7 @@ import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { Address } from 'viem'
 import { useRemoveLiquidity } from './useRemoveLiquidity'
 import RemoveLiquidityBptRow from './RemoveLiquidityBptRow'
+import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 
 type Props = {
   isOpen: boolean
@@ -48,6 +49,7 @@ export function RemoveLiquidityModal({
     singleToken,
   } = useRemoveLiquidity()
   const { pool, bptPrice } = usePool()
+  const { slippage } = useUserSettings()
 
   return (
     <Modal
@@ -76,7 +78,7 @@ export function RemoveLiquidityModal({
                 <Text fontWeight="bold" fontSize="1rem">
                   You&apos;re removing
                 </Text>
-                <RemoveLiquidityBptRow pool={pool} amount={0} bptPrice={bptPrice} />
+                <RemoveLiquidityBptRow pool={pool} amount={4} bptPrice={bptPrice} />
               </VStack>
             </Card>
             <Card variant="level0" p="md" w="full">
@@ -86,7 +88,7 @@ export function RemoveLiquidityModal({
                     You&apos;ll get at least
                   </Text>
                   <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                    With max slippage: 0.50%
+                    With max slippage: {fNum('slippage', slippage)}
                   </Text>
                 </HStack>
                 {selectedRemoveLiquidityType === 'PROPORTIONAL' &&

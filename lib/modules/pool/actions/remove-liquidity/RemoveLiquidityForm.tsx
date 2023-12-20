@@ -32,6 +32,7 @@ import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { Address } from 'viem'
 import { GqlToken, GqlTokenAmountHumanReadable } from '@/lib/shared/services/api/generated/graphql'
 import React from 'react'
+import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 
 const TABS = [
   {
@@ -45,6 +46,8 @@ const TABS = [
 ]
 
 function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | undefined)[] }) {
+  const { slippage } = useUserSettings()
+
   return (
     <Card variant="level8" p="md" shadow="lg" w="full">
       <VStack>
@@ -53,7 +56,7 @@ function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | undefined
             You&apos;ll get at least
           </Text>
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-            With max slippage: 0.50%
+            With max slippage: {fNum('slippage', slippage)}
           </Text>
         </HStack>
         {tokens.map(
@@ -98,7 +101,7 @@ function RemoveLiquiditySingleToken({
         border="white"
         w="full"
       >
-        <RadioGroup onChange={setSingleToken} value={singleToken?.address}>
+        <RadioGroup onChange={setSingleToken} value={singleToken?.address ?? tokens[0]?.address}>
           <VStack w="full">
             {tokens.map(
               token =>

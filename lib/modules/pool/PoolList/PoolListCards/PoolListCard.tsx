@@ -1,5 +1,5 @@
 import { Card, HStack, VStack, Text, Grid, GridItem } from '@chakra-ui/react'
-import { PoolListItem, poolTypeHash } from '../../pool.types'
+import { PoolListItem } from '../../pool.types'
 import { fNum } from '@/lib/shared/utils/numbers'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
@@ -7,6 +7,7 @@ import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
+import { getPoolTypeLabel } from '../../pool.utils'
 
 interface Props {
   pool: PoolListItem
@@ -52,7 +53,7 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
           <NetworkIcon chain={pool.chain} />
           <VStack alignItems="flex-start" gap="0" w="full">
             <Text fontWeight="medium" variant="secondary" fontSize="sm">
-              {poolTypeHash[pool.type]}
+              {getPoolTypeLabel(pool.type)}
             </Text>
             <PoolNameLabel pool={pool} />
           </VStack>

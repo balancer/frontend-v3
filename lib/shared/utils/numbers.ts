@@ -21,6 +21,7 @@ export const FIAT_FORMAT = '0,0.00'
 export const TOKEN_FORMAT_A = '0,0.[0000]a'
 export const TOKEN_FORMAT = '0,0.[0000]'
 export const APR_FORMAT = '0.[00]%'
+export const SLIPPAGE_FORMAT = '0.00%'
 export const FEE_FORMAT = '0.[0000]%'
 export const WEIGHT_FORMAT = '(%0,0)'
 export const PRICE_IMPACT_FORMAT = '0.00%'
@@ -76,6 +77,11 @@ function aprFormat(apr: Numberish): string {
   return numeral(apr.toString()).format(APR_FORMAT)
 }
 
+// Formats a slippage value as a percentage.
+function slippageFormat(slippage: Numberish): string {
+  return numeral(bn(slippage).div(100)).format(SLIPPAGE_FORMAT)
+}
+
 // Formats a fee value as a percentage.
 function feePercentFormat(fee: Numberish): string {
   return numeral(fee.toString()).format(FEE_FORMAT)
@@ -115,6 +121,7 @@ type NumberFormat =
   | 'weight'
   | 'priceImpact'
   | 'percentage'
+  | 'slippage'
 
 // General number formatting function.
 export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): string {
@@ -135,6 +142,8 @@ export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): s
       return priceImpactFormat(val)
     case 'percentage':
       return integerPercentageFormat(val)
+    case 'slippage':
+      return slippageFormat(val)
     default:
       throw new Error(`Number format not implemented: ${format}`)
   }

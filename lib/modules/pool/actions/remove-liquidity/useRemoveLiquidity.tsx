@@ -1,122 +1,126 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { createContext, PropsWithChildren } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { safeSum } from '@/lib/shared/utils/numbers'
 import { makeVar, useReactiveVar } from '@apollo/client'
-import { HumanAmount } from '@balancer/sdk'
-import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
-import { Address } from 'viem'
 import { usePool } from '../../usePool'
-import { LiquidityActionHelpers, areEmptyAmounts } from '../LiquidityActionHelpers'
-import { HumanAmountIn } from '../liquidity-types'
-import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
-import { useBuildRemoveLiquidityQuery } from './queries/useBuildRemoveLiquidityTxQuery'
-import { useRemoveLiquidityBtpInQuery } from './queries/useRemoveLiquidityBptInQuery'
-import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
+import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { GqlToken, GqlTokenAmountHumanReadable } from '@/lib/shared/services/api/generated/graphql'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
 
-export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
+type RemoveLiquidityType = 'PROPORTIONAL' | 'SINGLE_TOKEN'
+
+interface RemoveLiquidityState {
+  type: RemoveLiquidityType
+  singleToken: GqlTokenAmountHumanReadable | null
+  proportionalPercent: number
+  selectedOptions: { [poolTokenIndex: string]: string }
+  proportionalAmounts: GqlTokenAmountHumanReadable[] | null
+}
+
+export const removeliquidityStateVar = makeVar<RemoveLiquidityState>({
+  type: 'PROPORTIONAL',
+  proportionalPercent: 100,
+  singleToken: null,
+  selectedOptions: {},
+  proportionalAmounts: null,
+})
 
 export function _useRemoveLiquidity() {
-  const humanAmountsIn = useReactiveVar(humanAmountsInVar)
-
-  const { pool, poolStateInput } = usePool()
+  const { pool } = usePool()
   const { getToken, usdValueForToken } = useTokens()
 
-  // TODO: this handler will also depend on user selection (not only pool.id)
-  const handler = useMemo(() => selectRemoveLiquidityHandler(pool), [pool.id])
-
-  function setInitialAmountsIn() {
-    const amountsIn = pool.allTokens.map(
-      token =>
-        ({
-          tokenAddress: token.address,
-          humanAmount: '',
-        } as HumanAmountIn)
-    )
-    humanAmountsInVar(amountsIn)
+  async function setProportionalPercent(value: number) {
+    removeliquidityStateVar({ ...removeliquidityStateVar(), proportionalPercent: value })
   }
 
-  useEffect(() => {
-    setInitialAmountsIn()
-  }, [])
+  function setProportional() {
+    removeliquidityStateVar({
+      ...removeliquidityStateVar(),
+      type: 'PROPORTIONAL',
+      singleToken: null,
+    })
+  }
 
-  function setHumanAmountIn(tokenAddress: Address, humanAmount: HumanAmount) {
-    const state = humanAmountsInVar()
+  function setProportionalAmounts(proportionalAmounts: GqlTokenAmountHumanReadable[]) {
+    removeliquidityStateVar({ ...removeliquidityStateVar(), proportionalAmounts })
+  }
 
-    humanAmountsInVar([
-      ...state.filter(amountIn => !isSameAddress(amountIn.tokenAddress, tokenAddress)),
-      {
-        tokenAddress,
-        humanAmount,
+  function setSingleToken(address: string) {
+    removeliquidityStateVar({
+      ...removeliquidityStateVar(),
+      type: 'SINGLE_TOKEN',
+      singleToken: { address, amount: '' },
+    })
+  }
+
+  function setSingleTokenAmount(tokenAmount: GqlTokenAmountHumanReadable) {
+    removeliquidityStateVar({
+      ...removeliquidityStateVar(),
+      singleToken: tokenAmount,
+    })
+  }
+
+  function setSelectedOption(poolTokenIndex: number, tokenAddress: string) {
+    const state = removeliquidityStateVar()
+
+    removeliquidityStateVar({
+      ...state,
+      selectedOptions: {
+        ...state.selectedOptions,
+        [`${poolTokenIndex}`]: tokenAddress,
       },
-    ])
+    })
   }
+
+  function clearRemoveLiquidityState() {
+    removeliquidityStateVar({
+      type: 'PROPORTIONAL',
+      proportionalPercent: 100,
+      singleToken: null,
+      selectedOptions: {},
+      proportionalAmounts: null,
+    })
+  }
+
+  const removeliquidityState = useReactiveVar(removeliquidityStateVar)
 
   const tokens = pool.allTokens.map(token => getToken(token.address, pool.chain))
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
-  const usdAmountsIn = useMemo(
-    () =>
-      humanAmountsIn.map(amountIn => {
-        const token = validTokens.find(token =>
-          isSameAddress(token?.address, amountIn.tokenAddress)
-        )
 
-        if (!token) return '0'
+  // // When the amounts in change we should fetch the expected output.
+  // useEffect(() => {
+  //   queryRemoveLiquidity()
+  // }, [amountsOut])
 
-        return usdValueForToken(token, amountIn.humanAmount)
-      }),
-    [humanAmountsIn, usdValueForToken, validTokens]
-  )
-  const totalUSDValue = safeSum(usdAmountsIn)
+  // // TODO: Call underlying SDK query function
+  // function queryRemoveLiquidity() {
+  //   console.log('amountsOut', amountsOut)
+  // }
 
-  const { priceImpact, isPriceImpactLoading } = useRemoveLiquidityPriceImpactQuery(
-    handler,
-    humanAmountsIn,
-    pool.id
-  )
-
-  const { bptIn, isBptInQueryLoading } = useRemoveLiquidityBtpInQuery(
-    handler,
-    humanAmountsIn,
-    pool.id
-  )
-
-  // TODO: we will need to render reasons why the transaction cannot be performed so instead of a boolean this will become an object
-  const isAddLiquidityDisabled = areEmptyAmounts(humanAmountsIn)
-
-  /* We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
-    helper is a class and if we return its methods we would lose the this binding, getting a:
-    TypeError: Cannot read property getAmountsToApprove of undefined
-    when trying to access the returned method
-    */
-  const helpers = new LiquidityActionHelpers(pool)
-
-  function useBuildTx(isActiveStep: boolean) {
-    return useBuildRemoveLiquidityQuery(handler, humanAmountsIn, isActiveStep, pool.id)
-  }
+  // // TODO: Call underlying SDK execution function
+  // function executeRemoveLiquidity() {
+  //   console.log('amountsOut', amountsOut)
+  // }
 
   return {
-    amountsIn: humanAmountsIn,
     tokens,
     validTokens,
-    totalUSDValue,
-    priceImpact,
-    isPriceImpactLoading,
-    bptIn,
-    isBptInQueryLoading,
-    setHumanAmountIn,
-    isAddLiquidityDisabled,
-    useBuildTx,
-    helpers,
-    poolStateInput,
-    handler,
+    selectedRemoveLiquidityType: removeliquidityState.type,
+    singleToken: removeliquidityState.singleToken,
+    proportionalPercent: removeliquidityState.proportionalPercent,
+    selectedOptions: removeliquidityState.selectedOptions,
+    proportionalAmounts: removeliquidityState.proportionalAmounts,
+    setProportionalPercent,
+    setProportional,
+    setSingleToken,
+    setSingleTokenAmount,
+    setSelectedOption,
+    clearRemoveLiquidityState,
+    setProportionalAmounts,
+    //executeRemoveLiquidity,
   }
 }
 

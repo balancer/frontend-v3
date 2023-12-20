@@ -16,6 +16,7 @@ import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import { usePoolHelpers } from './pool.helpers'
 import { usePublicClient } from 'wagmi'
 import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/usePoolEnrichWithOnChainData'
+import { bn } from '@/lib/shared/utils/numbers'
 
 export type UsePoolResponse = ReturnType<typeof _usePool> & {
   chain: GqlChain
@@ -50,8 +51,7 @@ export function _usePool({
   // fallbacks to ensure the pool is always present. We prefer the pool with on chain data
   const pool = poolWithOnChainData || data?.pool || initialData.pool
 
-  const bptPrice =
-    parseFloat(pool.dynamicData.totalLiquidity) / parseFloat(pool.dynamicData.totalShares)
+  const bptPrice = bn(pool.dynamicData.totalLiquidity).div(pool.dynamicData.totalShares).toFixed(2)
 
   return {
     pool,
