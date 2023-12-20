@@ -56,7 +56,7 @@ function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | undefined
             You&apos;ll get at least
           </Text>
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-            With max slippage: {slippage}%
+            With max slippage: {fNum('slippage', slippage)}
           </Text>
         </HStack>
         {tokens.map(
