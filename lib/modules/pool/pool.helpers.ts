@@ -7,6 +7,7 @@ import {
   GqlPoolMinimalType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { getAddressBlockExplorerLink, isSameAddress } from '@/lib/shared/utils/addresses'
+import { bn } from '@/lib/shared/utils/numbers'
 import { MinimalToken, PoolStateInput } from '@balancer/sdk'
 import BigNumber from 'bignumber.js'
 import { Address, Hex, getAddress } from 'viem'
@@ -105,6 +106,10 @@ export function noInitLiquidity(pool: GqlPoolBase): boolean {
 }
 export function preMintedBptIndex(pool: GqlPoolBase): number | void {
   return pool.allTokens.findIndex(token => isSameAddress(token.address, pool.address))
+}
+
+export function calcBptPrice(pool: GetPoolQuery['pool']): string {
+  return bn(pool.dynamicData.totalLiquidity).div(pool.dynamicData.totalShares).toString()
 }
 
 export function createdAfterTimestamp(pool: GqlPoolBase): boolean {
