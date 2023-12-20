@@ -1,7 +1,7 @@
 import { HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
-import { fNum } from '@/lib/shared/utils/numbers'
+import { bn, fNum } from '@/lib/shared/utils/numbers'
 
 type Props = {
   pool: any
@@ -11,7 +11,7 @@ type Props = {
 
 export default function RemoveLiquidityBptRow({ pool, bptPrice, amount }: Props) {
   const { toCurrency } = useCurrency()
-  const totalValue = amount * bptPrice
+  const totalValue = bn(amount).times(bptPrice).toString()
 
   return (
     <HStack width="full" justifyContent="space-between">
