@@ -16,10 +16,10 @@ import { AddLiquidityInputs, HumanAmountIn } from './add-liquidity.types'
 import { useAddLiquidityBtpOutQuery } from './queries/useAddLiquidityBtpOutQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
-import { areEmptyAmounts } from './add-liquidity.helpers'
+import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
-import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
+import { areEmptyAmounts } from './add-liquidity.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -118,10 +118,10 @@ export function _useAddLiquidity() {
     bptOutUnits,
     isDisabled,
     disabledReason,
-    helpers,
-    poolStateInput,
     setAmountIn,
     buildAddLiquidityTx,
+    helpers,
+    poolStateInput,
   }
 }
 
