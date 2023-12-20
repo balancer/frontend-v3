@@ -1,5 +1,5 @@
-query GetPool($id: String!) {
-  pool: poolGetPool(id: $id) {
+query GetPool($id: String!, $chain: GqlChain) {
+  pool: poolGetPool(id: $id, chain: $chain) {
     id
     address
     name

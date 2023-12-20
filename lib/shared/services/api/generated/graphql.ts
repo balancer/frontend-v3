@@ -1756,6 +1756,7 @@ export type GetBlocksPerDayQuery = {
 
 export type GetPoolQueryVariables = Exact<{
   id: Scalars['String']['input']
+  chain?: InputMaybe<GqlChain>
 }>
 
 export type GetPoolQuery = {
@@ -4936,6 +4937,11 @@ export const GetPoolDocument = {
             type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'chain' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -4949,6 +4955,11 @@ export const GetPoolDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'id' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'chain' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'chain' } },
               },
             ],
             selectionSet: {
