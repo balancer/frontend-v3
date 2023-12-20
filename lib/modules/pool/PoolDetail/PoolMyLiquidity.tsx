@@ -96,8 +96,7 @@ export default function PoolMyLiquidity() {
               <Button
                 as={Link}
                 href={`${pathname}/remove-liquidity`}
-                variant="disabled"
-                isDisabled
+                variant="primary"
                 prefetch={true}
               >
                 Remove
