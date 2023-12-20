@@ -10,15 +10,16 @@ function disabled(reason: string): IsDisabledWithReason {
   }
 }
 
-export function useIsDisabledWithReason(
+/**
+ * Iterates over the given conditions and returns the first disabled reason.
+ */
+export function isDisabledWithReason(
   ...conditionsWithReasons: [boolean, string][]
 ): IsDisabledWithReason {
   const notDisabled = { isDisabled: false }
 
   for (const [condition, reason] of conditionsWithReasons) {
-    if (condition) {
-      return disabled(reason)
-    }
+    if (condition) return disabled(reason)
   }
 
   return notDisabled

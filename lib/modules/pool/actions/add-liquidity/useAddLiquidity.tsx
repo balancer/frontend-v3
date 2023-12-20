@@ -16,10 +16,10 @@ import { AddLiquidityInputs, HumanAmountIn } from './add-liquidity.types'
 import { useAddLiquidityBtpOutQuery } from './queries/useAddLiquidityBtpOutQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
-import { useIsDisabledWithReason } from '@/lib/shared/hooks/useIsDisabledWithReason'
 import { areEmptyAmounts } from './add-liquidity.helpers'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
+import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -88,7 +88,7 @@ export function _useAddLiquidity() {
   const { bptOut, bptOutUnits, isBptOutQueryLoading, lastSdkQueryOutput } =
     useAddLiquidityBtpOutQuery(handler, amountsIn, pool.id)
 
-  const { isDisabled, disabledReason } = useIsDisabledWithReason(
+  const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [areEmptyAmounts(amountsIn), 'You must specify one or more token amounts']
   )

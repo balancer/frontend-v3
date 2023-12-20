@@ -13,9 +13,9 @@ import { makeVar, useLazyQuery, useReactiveVar } from '@apollo/client'
 import { PropsWithChildren, createContext, useEffect, useState } from 'react'
 import { Address, isAddress } from 'viem'
 import { emptyAddress } from '../web3/contracts/wagmi-helpers'
-import { useIsDisabledWithReason } from '@/lib/shared/hooks/useIsDisabledWithReason'
 import { useUserAccount } from '../web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
+import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -233,7 +233,7 @@ export function _useSwap() {
 
   const isLoading = loading
 
-  const { isDisabled, disabledReason } = useIsDisabledWithReason(
+  const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [isLoading, 'Swap is loading'],
     [!swapOutput, 'Swap output is undefined'],
