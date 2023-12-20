@@ -1,5 +1,5 @@
-query GetPool($id: String!) {
-  pool: poolGetPool(id: $id) {
+query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
+  pool: poolGetPool(id: $id, chain: $chain, userAddress: $userAddress) {
     id
     address
     name
@@ -200,6 +200,13 @@ query GetPool($id: String!) {
         }
       }
     }
+    userBalance {
+      stakedBalance
+      totalBalance
+      walletBalance
+      stakedBalanceUsd
+      walletBalanceUsd
+    }
     ... on GqlPoolWeighted {
       nestingType
       tokens {
@@ -262,7 +269,7 @@ query GetPool($id: String!) {
             }
           }
         }
-        ... on GqlPoolTokenPhantomStable {
+        ... on GqlPoolTokenComposableStable {
           id
           index
           name
@@ -407,7 +414,7 @@ query GetPool($id: String!) {
         }
       }
     }
-    ... on GqlPoolPhantomStable {
+    ... on GqlPoolComposableStable {
       amp
       nestingType
       bptPriceRate
@@ -471,7 +478,7 @@ query GetPool($id: String!) {
             }
           }
         }
-        ... on GqlPoolTokenPhantomStable {
+        ... on GqlPoolTokenComposableStable {
           id
           index
           name
@@ -647,7 +654,7 @@ query GetPool($id: String!) {
             }
           }
         }
-        ... on GqlPoolTokenPhantomStable {
+        ... on GqlPoolTokenComposableStable {
           id
           index
           name
@@ -804,7 +811,7 @@ query GetPool($id: String!) {
             }
           }
         }
-        ... on GqlPoolTokenPhantomStable {
+        ... on GqlPoolTokenComposableStable {
           id
           index
           name

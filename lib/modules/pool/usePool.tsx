@@ -34,7 +34,7 @@ export function _usePool({
   const client = usePublicClient({ chainId: config.chainId })
 
   const { data } = useQuery(GetPoolDocument, {
-    variables: { id },
+    variables: { id, chain },
     context: { headers: { ChainId: config.chainId } },
   })
 
