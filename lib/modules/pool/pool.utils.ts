@@ -1,8 +1,4 @@
-import {
-  GqlChain,
-  GqlPoolAprValue,
-  GqlPoolMinimalType,
-} from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolAprValue, GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolVariant } from './pool.types'
 import { fNum } from '@/lib/shared/utils/numbers'
@@ -61,22 +57,22 @@ export function getAprLabel(apr: GqlPoolAprValue): string {
 }
 
 // Maps GraphQL pool type enum to human readable label for UI.
-const poolTypeLabelMap: { [key in GqlPoolMinimalType]: string } = {
-  [GqlPoolMinimalType.Weighted]: 'Weighted',
-  [GqlPoolMinimalType.Element]: 'Element',
-  [GqlPoolMinimalType.Gyro]: 'Gyro 2-CLP',
-  [GqlPoolMinimalType.Gyro3]: 'Gyro 3-CLP',
-  [GqlPoolMinimalType.Gyroe]: 'Gyro E-CLP',
-  [GqlPoolMinimalType.Investment]: 'Managed',
-  [GqlPoolMinimalType.Linear]: 'Linear',
-  [GqlPoolMinimalType.LiquidityBootstrapping]: 'LBP',
-  [GqlPoolMinimalType.MetaStable]: 'MetaStable',
-  [GqlPoolMinimalType.PhantomStable]: 'PhantomStable',
-  [GqlPoolMinimalType.Stable]: 'Stable',
-  [GqlPoolMinimalType.Unknown]: 'Unknown',
-  [GqlPoolMinimalType.Fx]: 'FX',
+const poolTypeLabelMap: { [key in GqlPoolType]: string } = {
+  [GqlPoolType.Weighted]: 'Weighted',
+  [GqlPoolType.Element]: 'Element',
+  [GqlPoolType.Gyro]: 'Gyro 2-CLP',
+  [GqlPoolType.Gyro3]: 'Gyro 3-CLP',
+  [GqlPoolType.Gyroe]: 'Gyro E-CLP',
+  [GqlPoolType.Investment]: 'Managed',
+  [GqlPoolType.Linear]: 'Linear',
+  [GqlPoolType.LiquidityBootstrapping]: 'LBP',
+  [GqlPoolType.MetaStable]: 'MetaStable',
+  [GqlPoolType.PhantomStable]: 'PhantomStable',
+  [GqlPoolType.Stable]: 'Stable',
+  [GqlPoolType.Unknown]: 'Unknown',
+  [GqlPoolType.Fx]: 'FX',
 }
 
-export function getPoolTypeLabel(type: GqlPoolMinimalType): string {
+export function getPoolTypeLabel(type: GqlPoolType): string {
   return poolTypeLabelMap[type]
 }
