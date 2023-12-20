@@ -16,7 +16,10 @@ import { AddLiquidityInputs, HumanAmountIn } from './add-liquidity.types'
 import { useAddLiquidityBtpOutQuery } from './queries/useAddLiquidityBtpOutQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
-import { useAddLiquidityDisabledWithReasons } from './useAddLiquidityDisabledWithReasons'
+import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { LABELS } from '@/lib/shared/labels'
+import { areEmptyAmounts } from './add-liquidity.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -28,6 +31,7 @@ export function _useAddLiquidity() {
 
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
+  const { isConnected } = useUserAccount()
 
   const handler = selectAddLiquidityHandler(pool)
 
@@ -84,8 +88,10 @@ export function _useAddLiquidity() {
   const { bptOut, bptOutUnits, isBptOutQueryLoading, lastSdkQueryOutput } =
     useAddLiquidityBtpOutQuery(handler, amountsIn, pool.id)
 
-  const { isAddLiquidityDisabled, addLiquidityDisabledReason } =
-    useAddLiquidityDisabledWithReasons(amountsIn)
+  const { isDisabled, disabledReason } = isDisabledWithReason(
+    [!isConnected, LABELS.walletNotConnected],
+    [areEmptyAmounts(amountsIn), 'You must specify one or more token amounts']
+  )
 
   /* We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
     helper is a class and if we return its methods we would lose the this binding, getting a:
@@ -110,9 +116,9 @@ export function _useAddLiquidity() {
     bptOut,
     isBptOutQueryLoading,
     bptOutUnits,
+    isDisabled,
+    disabledReason,
     setAmountIn,
-    isAddLiquidityDisabled,
-    addLiquidityDisabledReason,
     buildAddLiquidityTx,
     helpers,
     poolStateInput,

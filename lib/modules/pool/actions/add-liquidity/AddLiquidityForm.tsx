@@ -35,8 +35,8 @@ export function AddLiquidityForm() {
     isPriceImpactLoading,
     bptOutUnits,
     isBptOutQueryLoading,
-    isAddLiquidityDisabled,
-    addLiquidityDisabledReason,
+    isDisabled,
+    disabledReason,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
 
@@ -46,12 +46,6 @@ export function AddLiquidityForm() {
   function currentValueFor(tokenAddress: string) {
     const amountIn = amountsIn.find(amountIn => isSameAddress(amountIn.tokenAddress, tokenAddress))
     return amountIn ? amountIn.humanAmount : ''
-  }
-
-  function submit() {
-    if (!isAddLiquidityDisabled) {
-      previewDisclosure.onOpen()
-    }
   }
 
   return (
@@ -115,14 +109,14 @@ export function AddLiquidityForm() {
               </HStack>
             </VStack>
 
-            <Tooltip label={isAddLiquidityDisabled ? addLiquidityDisabledReason : ''}>
+            <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={isAddLiquidityDisabled}
-                onClick={submit}
+                isDisabled={isDisabled}
+                onClick={() => !isDisabled && previewDisclosure.onOpen()}
               >
                 Next
               </Button>
