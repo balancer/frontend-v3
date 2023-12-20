@@ -98,7 +98,7 @@ function RemoveLiquiditySingleToken({
         border="white"
         w="full"
       >
-        <RadioGroup onChange={setSingleToken} value={singleToken?.address}>
+        <RadioGroup onChange={setSingleToken} value={singleToken?.address ?? tokens[0]?.address}>
           <VStack w="full">
             {tokens.map(
               token =>
