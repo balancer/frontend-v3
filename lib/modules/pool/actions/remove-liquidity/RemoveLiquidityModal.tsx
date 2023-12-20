@@ -78,7 +78,7 @@ export function RemoveLiquidityModal({
                 <Text fontWeight="bold" fontSize="1rem">
                   You&apos;re removing
                 </Text>
-                <RemoveLiquidityBptRow pool={pool} amount={0} bptPrice={bptPrice} />
+                <RemoveLiquidityBptRow pool={pool} amount={4} bptPrice={bptPrice} />
               </VStack>
             </Card>
             <Card variant="level0" p="md" w="full">

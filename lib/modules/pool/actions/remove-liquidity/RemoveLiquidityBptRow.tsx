@@ -5,13 +5,13 @@ import { bn, fNum } from '@/lib/shared/utils/numbers'
 
 type Props = {
   pool: any
-  bptPrice: number
+  bptPrice: string
   amount: number
 }
 
 export default function RemoveLiquidityBptRow({ pool, bptPrice, amount }: Props) {
   const { toCurrency } = useCurrency()
-  const totalValue = bn(amount).times(bptPrice).toString()
+  const totalValue = bn(amount).times(bptPrice).toFixed(2)
 
   return (
     <HStack width="full" justifyContent="space-between">
