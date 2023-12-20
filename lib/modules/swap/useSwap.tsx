@@ -11,44 +11,52 @@ import {
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { makeVar, useLazyQuery, useReactiveVar } from '@apollo/client'
 import { PropsWithChildren, createContext, useEffect, useState } from 'react'
-import { isAddress } from 'viem'
+import { Address, isAddress } from 'viem'
+import { emptyAddress } from '../web3/contracts/wagmi-helpers'
+import { useIsDisabledWithReason } from '@/lib/shared/hooks/useIsDisabledWithReason'
+import { useUserAccount } from '../web3/useUserAccount'
+import { LABELS } from '@/lib/shared/labels'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
 
+type TokenInput = {
+  address: Address
+  amount: string
+}
+
 type SwapState = {
-  tokenIn: string
-  tokenOut: string
+  tokenIn: TokenInput
+  tokenOut: TokenInput
   swapType: GqlSorSwapType
-  swapAmount: string | null
-  swapOptions: {
-    maxPools: number
-  }
 }
 
 const swapStateVar = makeVar<SwapState>({
-  tokenIn: '',
-  tokenOut: '',
-  swapType: GqlSorSwapType.ExactIn,
-  swapAmount: null,
-  swapOptions: {
-    maxPools: 8,
+  tokenIn: {
+    address: emptyAddress,
+    amount: '',
   },
+  tokenOut: {
+    address: emptyAddress,
+    amount: '',
+  },
+  swapType: GqlSorSwapType.ExactIn,
 })
 
 export function _useSwap() {
   const swapState = useReactiveVar(swapStateVar)
 
-  const [tokenInAmount, _setTokenInAmount] = useState<string>('')
-  const [tokenOutAmount, _setTokenOutAmount] = useState<string>('')
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
   const [selectedChain, setSelectedChain] = useState<GqlChain>(GqlChain.Mainnet)
   const [swapOutput, setSwapOutput] = useState<GetSorSwapsQuery['swaps']>()
 
+  const { isConnected } = useUserAccount()
   const networkConfig = getNetworkConfig(selectedChain)
 
   const shouldFetchSwap =
-    isAddress(swapState.tokenIn) && isAddress(swapState.tokenOut) && swapState.swapType
+    isAddress(swapState.tokenIn.address) &&
+    isAddress(swapState.tokenOut.address) &&
+    !!swapState.swapType
 
   const [fetchSwapsQuery, { loading }] = useLazyQuery(GetSorSwapsDocument, {
     fetchPolicy: 'no-cache',
@@ -56,21 +64,28 @@ export function _useSwap() {
   })
 
   async function fetchSwaps() {
-    console.log('fetchSwaps')
-
     const state = swapStateVar()
 
     if (!shouldFetchSwap) return
+
+    console.log('fetchSwaps', state)
+
+    const swapAmount =
+      swapState.swapType === GqlSorSwapType.ExactIn ? state.tokenIn.amount : state.tokenOut.amount
+
+    console.log('swapAmount', swapAmount)
 
     const { data } = await fetchSwapsQuery({
       fetchPolicy: 'no-cache',
       variables: {
         chain: selectedChain,
-        tokenIn: state.tokenIn,
-        tokenOut: state.tokenOut,
+        tokenIn: state.tokenIn.address,
+        tokenOut: state.tokenOut.address,
         swapType: state.swapType,
-        swapAmount: state.swapAmount || '0',
-        swapOptions: state.swapOptions,
+        swapAmount: swapAmount || '0',
+        swapOptions: {
+          maxPools: 8,
+        },
       },
     })
 
@@ -100,17 +115,23 @@ export function _useSwap() {
     console.log('shouldFetchSwap', shouldFetchSwap)
   }, [shouldFetchSwap])
 
-  function setTokenIn(tokenAddress: string) {
+  function setTokenIn(tokenAddress: Address) {
     swapStateVar({
       ...swapState,
-      tokenIn: tokenAddress,
+      tokenIn: {
+        ...swapState.tokenIn,
+        address: tokenAddress,
+      },
     })
   }
 
-  function setTokenOut(tokenAddress: string) {
+  function setTokenOut(tokenAddress: Address) {
     swapStateVar({
       ...swapState,
-      tokenOut: tokenAddress,
+      tokenOut: {
+        ...swapState.tokenOut,
+        address: tokenAddress,
+      },
     })
   }
 
@@ -120,7 +141,6 @@ export function _useSwap() {
       tokenIn: swapState.tokenOut,
       tokenOut: swapState.tokenIn,
       swapType: GqlSorSwapType.ExactIn,
-      swapAmount: null,
     })
     setTokenInAmount('', { userTriggered: false })
     setTokenOutAmount('', { userTriggered: false })
@@ -130,14 +150,26 @@ export function _useSwap() {
     amount: string,
     { userTriggered = true }: { userTriggered?: boolean } = {}
   ) {
-    _setTokenInAmount(amount)
     if (userTriggered) {
       swapStateVar({
         ...swapState,
         swapType: GqlSorSwapType.ExactIn,
-        swapAmount: amount,
+        tokenIn: {
+          ...swapState.tokenIn,
+          amount,
+        },
       })
       fetchSwaps()
+    } else {
+      // Sometimes we want to set the amount without triggering a fetch or
+      // swapType change, like when we populate the amount after a change from the other input.
+      swapStateVar({
+        ...swapState,
+        tokenIn: {
+          ...swapState.tokenIn,
+          amount,
+        },
+      })
     }
   }
 
@@ -145,14 +177,26 @@ export function _useSwap() {
     amount: string,
     { userTriggered = true }: { userTriggered?: boolean } = {}
   ) {
-    _setTokenOutAmount(amount)
     if (userTriggered) {
       swapStateVar({
         ...swapState,
         swapType: GqlSorSwapType.ExactOut,
-        swapAmount: amount,
+        tokenOut: {
+          ...swapState.tokenOut,
+          amount,
+        },
       })
       fetchSwaps()
+    } else {
+      // Sometimes we want to set the amount without triggering a fetch or
+      // swapType change, like when we populate the amount after a change from the other input.
+      swapStateVar({
+        ...swapState,
+        tokenOut: {
+          ...swapState.tokenOut,
+          amount,
+        },
+      })
     }
   }
 
@@ -161,8 +205,14 @@ export function _useSwap() {
 
     swapStateVar({
       ...swapState,
-      tokenIn: tokenIn ? tokenIn : '',
-      tokenOut: tokenOut ? tokenOut : '',
+      tokenIn: {
+        ...swapState.tokenIn,
+        address: tokenIn ? tokenIn : emptyAddress,
+      },
+      tokenOut: {
+        ...swapState.tokenOut,
+        address: tokenOut ? tokenOut : emptyAddress,
+      },
     })
   }
 
@@ -176,17 +226,27 @@ export function _useSwap() {
     setDefaultTokens()
   }, [selectedChain])
 
+  // When either token address changes, fetch swaps
+  useEffect(() => {
+    fetchSwaps()
+  }, [swapState.tokenIn.address, swapState.tokenOut.address])
+
   const isLoading = loading
-  const isDisabled = isLoading || !swapOutput || swapOutput.swaps.length === 0
+
+  const { isDisabled, disabledReason } = useIsDisabledWithReason(
+    [isConnected, LABELS.walletNotConnected],
+    [isLoading, 'Swap is loading'],
+    [!swapOutput, 'Swap output is undefined'],
+    [swapOutput?.swaps.length === 0, 'Swap output is empty']
+  )
 
   return {
     ...swapState,
-    tokenInAmount,
-    tokenOutAmount,
     tokenSelectKey,
     selectedChain,
     isLoading,
     isDisabled,
+    disabledReason,
     setTokenSelectKey,
     setSelectedChain,
     setTokenInAmount,

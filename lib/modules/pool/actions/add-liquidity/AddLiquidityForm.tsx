@@ -35,8 +35,8 @@ export function AddLiquidityForm() {
     isPriceImpactLoading,
     bptOutUnits,
     isBptOutQueryLoading,
-    isAddLiquidityDisabled,
-    addLiquidityDisabledReason,
+    isDisabled,
+    disabledReason,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
 
@@ -49,7 +49,7 @@ export function AddLiquidityForm() {
   }
 
   function submit() {
-    if (!isAddLiquidityDisabled) {
+    if (!isDisabled) {
       previewDisclosure.onOpen()
     }
   }
@@ -115,13 +115,13 @@ export function AddLiquidityForm() {
               </HStack>
             </VStack>
 
-            <Tooltip label={isAddLiquidityDisabled ? addLiquidityDisabledReason : ''}>
+            <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={isAddLiquidityDisabled}
+                isDisabled={isDisabled}
                 onClick={submit}
               >
                 Next
