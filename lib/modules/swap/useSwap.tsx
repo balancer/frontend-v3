@@ -234,7 +234,7 @@ export function _useSwap() {
   const isLoading = loading
 
   const { isDisabled, disabledReason } = useIsDisabledWithReason(
-    [isConnected, LABELS.walletNotConnected],
+    [!isConnected, LABELS.walletNotConnected],
     [isLoading, 'Swap is loading'],
     [!swapOutput, 'Swap output is undefined'],
     [swapOutput?.swaps.length === 0, 'Swap output is empty']

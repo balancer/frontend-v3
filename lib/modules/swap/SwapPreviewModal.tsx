@@ -27,7 +27,6 @@ import {
 } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
 import { Address } from 'wagmi'
-import { usePool } from '../pool/usePool'
 import { useSwap } from './useSwap'
 import { SwapFlowButton } from './SwapFlowButton'
 
@@ -39,11 +38,11 @@ type Props = {
 }
 
 function TokenAmountRow({ address, amount }: { address: Address; amount: string }) {
-  const { pool } = usePool()
+  const { selectedChain } = useSwap()
   const { getToken, usdValueForToken } = useTokens()
   const { toCurrency } = useCurrency()
 
-  const token = getToken(address, pool.chain)
+  const token = getToken(address, selectedChain)
   const usdValue = token ? usdValueForToken(token, amount) : undefined
 
   return (
@@ -70,10 +69,9 @@ export function SwapPreviewModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { pool } = usePool()
   const spenderAddress = useContractAddress('balancer.vaultV2')
   const { userAddress } = useUserAccount()
-  const { tokenIn, tokenOut, swapType } = useSwap()
+  const { tokenIn, tokenOut } = useSwap()
 
   return (
     <Modal

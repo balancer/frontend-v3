@@ -48,12 +48,6 @@ export function AddLiquidityForm() {
     return amountIn ? amountIn.humanAmount : ''
   }
 
-  function submit() {
-    if (!isDisabled) {
-      previewDisclosure.onOpen()
-    }
-  }
-
   return (
     <TokenBalancesProvider tokens={validTokens}>
       <Center h="full" w="full" maxW="lg" mx="auto">
@@ -122,7 +116,7 @@ export function AddLiquidityForm() {
                 w="full"
                 size="lg"
                 isDisabled={isDisabled}
-                onClick={submit}
+                onClick={() => !isDisabled && previewDisclosure.onOpen()}
               >
                 Next
               </Button>

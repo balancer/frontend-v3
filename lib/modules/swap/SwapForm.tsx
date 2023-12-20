@@ -27,7 +27,6 @@ import { fNum } from '@/lib/shared/utils/numbers'
 import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { CgArrowsExchangeV } from 'react-icons/cg'
-import { SwapFlowButton } from './SwapFlowButton'
 import { Address } from 'viem'
 import { SwapPreviewModal } from './SwapPreviewModal'
 
@@ -37,6 +36,8 @@ export function SwapForm() {
     tokenOut,
     selectedChain,
     tokenSelectKey,
+    isDisabled,
+    disabledReason,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
@@ -139,14 +140,14 @@ export function SwapForm() {
               </HStack>
             </VStack>
 
-            <Tooltip label={isAddLiquidityDisabled ? addLiquidityDisabledReason : ''}>
+            <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={isAddLiquidityDisabled}
-                onClick={submit}
+                isDisabled={isDisabled}
+                onClick={() => !isDisabled && previewDisclosure.onOpen()}
               >
                 Next
               </Button>
