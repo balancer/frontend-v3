@@ -2,8 +2,7 @@ import {
   GetPoolsQuery,
   GetPoolsQueryVariables,
   GqlChain,
-  GqlPoolFilterType,
-  GqlPoolMinimalType,
+  GqlPoolType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
 } from '@/lib/shared/services/api/generated/graphql'
@@ -41,33 +40,29 @@ export interface PoolsQueryVariables extends GetPoolsQueryVariables {
 }
 
 export const poolTypeFilters = [
-  GqlPoolFilterType.Weighted,
-  GqlPoolFilterType.Stable,
-  GqlPoolFilterType.LiquidityBootstrapping,
-  GqlPoolFilterType.Gyro,
+  GqlPoolType.Weighted,
+  GqlPoolType.Stable,
+  GqlPoolType.LiquidityBootstrapping,
+  GqlPoolType.Gyro,
 ] as const
 
 export type PoolFilterType = (typeof poolTypeFilters)[number]
 
 export type SortingState = PoolsColumnSort[]
 
-// We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
-export const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolFilterType[] } = {
-  [GqlPoolFilterType.Weighted]: [GqlPoolFilterType.Weighted],
-  [GqlPoolFilterType.Stable]: [
-    GqlPoolFilterType.Stable,
-    GqlPoolFilterType.PhantomStable,
-    GqlPoolFilterType.MetaStable,
-    GqlPoolFilterType.Gyro,
-    GqlPoolFilterType.Gyro3,
-    GqlPoolFilterType.Gyroe,
+// We need to map toggalable pool types to their corresponding set of GqlPoolTypes.
+export const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolType[] } = {
+  [GqlPoolType.Weighted]: [GqlPoolType.Weighted],
+  [GqlPoolType.Stable]: [
+    GqlPoolType.Stable,
+    GqlPoolType.PhantomStable,
+    GqlPoolType.MetaStable,
+    GqlPoolType.Gyro,
+    GqlPoolType.Gyro3,
+    GqlPoolType.Gyroe,
   ],
-  [GqlPoolFilterType.LiquidityBootstrapping]: [GqlPoolFilterType.LiquidityBootstrapping],
-  [GqlPoolFilterType.Gyro]: [
-    GqlPoolFilterType.Gyro,
-    GqlPoolFilterType.Gyro3,
-    GqlPoolFilterType.Gyroe,
-  ],
+  [GqlPoolType.LiquidityBootstrapping]: [GqlPoolType.LiquidityBootstrapping],
+  [GqlPoolType.Gyro]: [GqlPoolType.Gyro, GqlPoolType.Gyro3, GqlPoolType.Gyroe],
 }
 
 export const orderByHash: { [key: string]: string } = {

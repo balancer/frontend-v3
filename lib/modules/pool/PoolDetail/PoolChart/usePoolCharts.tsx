@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 import * as echarts from 'echarts/core'
 import {
   GetPoolSnapshotsDocument,
-  GqlPoolFilterType,
+  GqlPoolType,
   GqlPoolSnapshotDataRange,
 } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
@@ -164,9 +164,9 @@ export function getPoolTabsList({
   poolType,
 }: {
   variant: PoolVariant
-  poolType: GqlPoolFilterType
+  poolType: GqlPoolType
 }): PoolChartTypeTab[] {
-  if (poolType === GqlPoolFilterType.LiquidityBootstrapping && variant === PoolVariant.v2) {
+  if (poolType === GqlPoolType.LiquidityBootstrapping && variant === PoolVariant.v2) {
     return [
       {
         value: PoolChartTab.VOLUME,
@@ -219,7 +219,7 @@ export function usePoolCharts() {
 
     return getPoolTabsList({
       variant: variant as PoolVariant,
-      poolType: poolType as GqlPoolFilterType,
+      poolType: poolType as GqlPoolType,
     })
   }, [pool?.type, variant])
 
