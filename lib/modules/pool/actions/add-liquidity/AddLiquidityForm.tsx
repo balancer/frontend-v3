@@ -37,8 +37,8 @@ export function AddLiquidityForm() {
     isPriceImpactLoading,
     bptOut,
     isBptOutQueryLoading,
-    isAddLiquidityDisabled,
-    addLiquidityDisabledReason,
+    isDisabled,
+    disabledReason,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
 
@@ -52,12 +52,6 @@ export function AddLiquidityForm() {
 
   const bptOutUnits = humanizeTokenAmount(bptOut)
   const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
-
-  function submit() {
-    if (!isAddLiquidityDisabled) {
-      previewDisclosure.onOpen()
-    }
-  }
 
   return (
     <TokenBalancesProvider tokens={validTokens}>
@@ -120,14 +114,14 @@ export function AddLiquidityForm() {
               </HStack>
             </VStack>
 
-            <Tooltip label={isAddLiquidityDisabled ? addLiquidityDisabledReason : ''}>
+            <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={isAddLiquidityDisabled}
-                onClick={submit}
+                isDisabled={isDisabled}
+                onClick={() => !isDisabled && previewDisclosure.onOpen()}
               >
                 Next
               </Button>

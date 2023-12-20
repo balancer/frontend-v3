@@ -13,11 +13,13 @@ import { Address } from 'viem'
 import { usePool } from '../../usePool'
 import { useAddLiquidityBptOutQuery } from './queries/useAddLiquidityBptOutQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
-import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { HumanAmountIn } from '../liquidity-types'
-import { LiquidityActionHelpers } from '../LiquidityActionHelpers'
-import { useAddLiquidityDisabledWithReasons } from './useAddLiquidityDisabledWithReasons'
+import { LiquidityActionHelpers, areEmptyAmounts } from '../LiquidityActionHelpers'
 import { useBuildAddLiquidityQuery } from './queries/useBuildAddLiquidityTxQuery'
+import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { LABELS } from '@/lib/shared/labels'
+import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -29,6 +31,7 @@ export function _useAddLiquidity() {
 
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
+  const { isConnected } = useUserAccount()
 
   const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id])
 
@@ -88,8 +91,10 @@ export function _useAddLiquidity() {
     pool.id
   )
 
-  const { isAddLiquidityDisabled, addLiquidityDisabledReason } =
-    useAddLiquidityDisabledWithReasons(humanAmountsIn)
+  const { isDisabled, disabledReason } = isDisabledWithReason(
+    [!isConnected, LABELS.walletNotConnected],
+    [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts']
+  )
 
   /* We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
     helper is a class and if we return its methods we would lose the this binding, getting a:
@@ -112,9 +117,9 @@ export function _useAddLiquidity() {
     bptOut,
     isBptOutQueryLoading,
     setHumanAmountIn,
-    isAddLiquidityDisabled,
-    addLiquidityDisabledReason,
     useBuildTx,
+    isDisabled,
+    disabledReason,
     helpers,
     poolStateInput,
   }
