@@ -219,7 +219,7 @@ export function usePoolCharts() {
 
     return getPoolTabsList({
       variant: variant as PoolVariant,
-      poolType: poolType as GqlPoolType,
+      poolType: poolType,
     })
   }, [pool?.type, variant])
 

@@ -180,7 +180,7 @@ export function usePoolActivityChart() {
 
     return getPoolActivityTabsList({
       variant: variant as PoolVariant,
-      poolType: poolType as GqlPoolType,
+      poolType: poolType,
     })
   }, [pool?.type, variant])
 

@@ -79,10 +79,10 @@ const mutableRisks = getLink(RiskKey.Mutable)
 export function getPoolRisks(pool: GqlPoolElement): Risk[] {
   const result: Risk[] = []
 
-  if (isWeighted(pool.type as GqlPoolType)) result.push(weightedRisks)
-  if (isStable(pool.type as GqlPoolType)) result.push(stableRisks)
+  if (isWeighted(pool.type)) result.push(weightedRisks)
+  if (isStable(pool.type)) result.push(stableRisks)
   //   if (isComposableStable(pool.poolType)) result.push(composableRisks)
-  if (isMetaStable(pool.type as GqlPoolType)) result.push(metaStableRisks)
+  if (isMetaStable(pool.type)) result.push(metaStableRisks)
 
   //   if (isBoosted(pool)) {
   //     result.push(boostedRisks)
