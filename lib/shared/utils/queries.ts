@@ -12,4 +12,4 @@ export function refetchQueries(...queries: Pick<UseQueryResult, 'isFetched' | 'r
   return Promise.all(queries.map(query => query.refetch()))
 }
 
-export const defaultDebounceMillis = 300
+export const defaultDebounceMs = 300 // milliseconds

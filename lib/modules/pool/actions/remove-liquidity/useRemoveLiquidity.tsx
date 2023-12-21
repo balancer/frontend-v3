@@ -29,7 +29,7 @@ export function _useRemoveLiquidity() {
   // TODO: Pool User balance -> can we get it from the API?
   // const maxBptIn = pool.userBalance.totalBalance
   const maxBptIn = 1000
-  const bptIn = maxBptIn * (sliderPercent / 100)
+  const bptIn = bn(maxBptIn).times(sliderPercent / 100)
 
   const totalUsdValue = bn(bptIn).times(bptPrice).toString()
 

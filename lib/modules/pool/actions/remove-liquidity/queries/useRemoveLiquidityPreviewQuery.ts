@@ -9,7 +9,7 @@ import { useQuery } from 'wagmi'
 import { isEmptyHumanAmount } from '../../LiquidityActionHelpers'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
-import { defaultDebounceMillis } from '@/lib/shared/utils/queries'
+import { defaultDebounceMs } from '@/lib/shared/utils/queries'
 
 export function useRemoveLiquidityBtpInQuery(
   handler: RemoveLiquidityHandler,
@@ -19,7 +19,7 @@ export function useRemoveLiquidityBtpInQuery(
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [amountsOut, setAmountsOut] = useState<TokenAmount[] | undefined>(undefined)
-  const [debouncedHumanBptIn] = useDebounce(humanBptIn, defaultDebounceMillis)
+  const [debouncedHumanBptIn] = useDebounce(humanBptIn, defaultDebounceMs)
 
   function queryKey(): string {
     return generateRemoveLiquidityQueryKey({

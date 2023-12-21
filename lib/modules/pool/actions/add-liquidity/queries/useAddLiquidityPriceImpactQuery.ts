@@ -9,7 +9,7 @@ import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
 import { HumanAmountIn } from '../../liquidity-types'
 import { areEmptyAmounts } from '../../LiquidityActionHelpers'
-import { defaultDebounceMillis } from '@/lib/shared/utils/queries'
+import { defaultDebounceMs } from '@/lib/shared/utils/queries'
 
 export function useAddLiquidityPriceImpactQuery(
   handler: AddLiquidityHandler,
@@ -19,14 +19,14 @@ export function useAddLiquidityPriceImpactQuery(
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [priceImpact, setPriceImpact] = useState<number | null>(null)
-  const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMillis)
+  const [debouncedHumanAmountsIn] = useDebounce(humanAmountsIn, defaultDebounceMs)
 
   function queryKey(): string {
     return generateAddLiquidityQueryKey({
       userAddress,
       poolId,
       slippage,
-      humanAmountsIn: debouncedHumanAmountsIn as unknown as HumanAmountIn[],
+      humanAmountsIn: debouncedHumanAmountsIn,
     })
   }
 
@@ -45,7 +45,7 @@ export function useAddLiquidityPriceImpactQuery(
       return await queryPriceImpact()
     },
     {
-      enabled: isConnected && !areEmptyAmounts(humanAmountsIn),
+      enabled: isConnected && !areEmptyAmounts(debouncedHumanAmountsIn),
     }
   )
 
