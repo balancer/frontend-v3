@@ -41,15 +41,9 @@ export function useBuildRemoveLiquidityQuery(
     {
       enabled:
         isActiveStep && // If the step is not active (the user did not click Next button) avoid running the build tx query to save RPC requests
-        isConnected &&
-        hasApproval(),
+        isConnected,
     }
   )
 
   return removeLiquidityQuery
-}
-
-function hasApproval() {
-  // TODO: Do we need approvals in any scenario
-  return true
 }
