@@ -142,7 +142,7 @@ export function AddLiquidityModal({
                     isSameAddress(amountIn.tokenAddress, token?.address)
                   ) as HumanAmountIn
 
-                  return <TokenAmountRow key={token?.address} {...amountIn} />
+                  return <TokenAmountRow key={token.address} {...amountIn} />
                 })}
               </VStack>
             </Card>
