@@ -9,8 +9,7 @@ import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
 import { HumanAmount } from '@balancer/sdk'
 import { isEmpty } from 'lodash'
-
-const debounceMillis = 250
+import { defaultDebounceMillis } from '@/lib/shared/utils/queries'
 
 export function useRemoveLiquidityPriceImpactQuery(
   handler: RemoveLiquidityHandler,
@@ -20,7 +19,7 @@ export function useRemoveLiquidityPriceImpactQuery(
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [priceImpact, setPriceImpact] = useState<number | null>(null)
-  const [debouncedHumanBptIn] = useDebounce(humanBptIn, debounceMillis)
+  const [debouncedHumanBptIn] = useDebounce(humanBptIn, defaultDebounceMillis)
 
   function queryKey(): string {
     return generateRemoveLiquidityQueryKey({

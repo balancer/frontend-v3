@@ -10,8 +10,7 @@ import { hasValidHumanAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
-
-const debounceMillis = 300
+import { defaultDebounceMillis } from '@/lib/shared/utils/queries'
 
 export function useAddLiquidityPreviewQuery(
   handler: AddLiquidityHandler,
@@ -21,7 +20,7 @@ export function useAddLiquidityPreviewQuery(
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [bptOut, setBptOut] = useState<TokenAmount | null>(null)
-  const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, debounceMillis)
+  const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMillis)
 
   function queryKey(): string {
     return generateAddLiquidityQueryKey({
