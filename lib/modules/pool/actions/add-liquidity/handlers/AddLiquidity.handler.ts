@@ -7,8 +7,8 @@ import {
 
 /**
  * AddLiquidityHandler is an interface that defines the methods that must be implemented by a handler.
- * They take standard inputs from the UI and return frontend standardised
- * outputs. The outputs should not be return types from the SDK. This is to
+ * They take standard inputs from the UI and return frontend standardised outputs.
+ * The outputs should not be return types from the SDK. This is to
  * allow handlers to be developed in the future that may not use the SDK.
  */
 export interface AddLiquidityHandler {
