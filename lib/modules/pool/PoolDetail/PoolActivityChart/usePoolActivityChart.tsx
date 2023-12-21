@@ -9,7 +9,7 @@ import { PoolVariant } from '../../pool.types'
 import {
   GetPoolJoinsExitsSwapsDocument,
   GqlChain,
-  GqlPoolFilterType,
+  GqlPoolType,
   GqlPoolJoinExitType,
 } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
@@ -133,9 +133,9 @@ export function getPoolActivityTabsList({
   poolType,
 }: {
   variant: PoolVariant
-  poolType: GqlPoolFilterType
+  poolType: GqlPoolType
 }): PoolActivityChartTypeTab[] {
-  if (poolType === GqlPoolFilterType.LiquidityBootstrapping && variant === PoolVariant.v2) {
+  if (poolType === GqlPoolType.LiquidityBootstrapping && variant === PoolVariant.v2) {
     return [
       {
         value: 'adds',
@@ -180,7 +180,7 @@ export function usePoolActivityChart() {
 
     return getPoolActivityTabsList({
       variant: variant as PoolVariant,
-      poolType: poolType as GqlPoolFilterType,
+      poolType: poolType,
     })
   }, [pool?.type, variant])
 

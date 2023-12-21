@@ -2,7 +2,7 @@
 
 import {
   GqlChain,
-  GqlPoolFilterType,
+  GqlPoolType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
 } from '@/lib/shared/services/api/generated/graphql'
@@ -89,15 +89,15 @@ export function usePoolListQueryState() {
     setTextSearch(text)
   }
 
-  function poolTypeLabel(poolType: GqlPoolFilterType) {
+  function poolTypeLabel(poolType: GqlPoolType) {
     switch (poolType) {
-      case GqlPoolFilterType.Weighted:
+      case GqlPoolType.Weighted:
         return 'Weighted'
-      case GqlPoolFilterType.Stable:
+      case GqlPoolType.Stable:
         return 'Stable'
-      case GqlPoolFilterType.LiquidityBootstrapping:
+      case GqlPoolType.LiquidityBootstrapping:
         return 'Liquidity Bootstrapping'
-      case GqlPoolFilterType.Gyro:
+      case GqlPoolType.Gyro:
         return 'CLP'
       default:
         return poolType.toLowerCase()
