@@ -2,7 +2,7 @@ import { Card, HStack, VStack, Text, Grid, GridItem } from '@chakra-ui/react'
 import { PoolListItem } from '../../pool.types'
 import { fNum } from '@/lib/shared/utils/numbers'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
-import { memo } from 'react'
+import { ReactNode, memo } from 'react'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
@@ -34,6 +34,19 @@ function PoolNameLabel({ pool }: { pool: PoolListItem }) {
   }
 }
 
+function StatCard({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <Card h="full" variant="gradient">
+      <VStack alignItems="flex-start" w="full" p="md" gap="0">
+        <Text fontWeight="medium" variant="secondary" fontSize="sm">
+          {label}
+        </Text>
+        <Text fontWeight="bold">{value}</Text>
+      </VStack>
+    </Card>
+  )
+}
+
 const MemoizedAprTooltip = memo(AprTooltip)
 
 export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: Props) {
@@ -59,57 +72,31 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
           </VStack>
         </HStack>
         <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} />
-        <Grid w="full" h="full" templateColumns="1fr 1fr" templateRows="1fr 1fr" gap="4">
+        <Grid w="full" h="full" templateColumns="1fr 1fr" templateRows="1fr 1fr" gap="sm">
           <GridItem>
-            <Card h="full" variant="gradient">
-              <VStack alignItems="flex-start" w="full" p="md" gap="0">
-                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                  TVL:
-                </Text>
-                <Text fontWeight="bold" fontSize="1rem">
-                  {toCurrency(pool.dynamicData.totalLiquidity)}
-                </Text>
-              </VStack>
-            </Card>
+            <StatCard label="TVL" value={toCurrency(pool.dynamicData.totalLiquidity)} />
           </GridItem>
           <GridItem>
-            <Card h="full" variant="gradient">
-              <VStack alignItems="flex-start" w="full" p="md" gap="0">
-                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                  Vol(24h):
-                </Text>
-                <Text fontWeight="bold" fontSize="1rem">
-                  {toCurrency(pool.dynamicData.volume24h)}
-                </Text>
-              </VStack>
-            </Card>
+            <StatCard label="Volume(24h)" value={toCurrency(pool.dynamicData.volume24h)} />
           </GridItem>
-          <GridItem>
-            <Card h="full" variant="gradient">
-              <VStack alignItems="flex-start" w="full" p="md" gap="0">
-                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                  APR:
-                </Text>
+          <GridItem colSpan={2}>
+            <StatCard
+              label="APR"
+              value={
                 <MemoizedAprTooltip
                   data={pool.dynamicData.apr}
                   poolId={pool.id}
                   textProps={{ fontSize: '1rem', fontWeight: 'bold' }}
                 />
-              </VStack>
-            </Card>
+              }
+            />
           </GridItem>
           {userAddress && (
             <GridItem>
-              <Card h="full" variant="gradient">
-                <VStack alignItems="flex-start" w="full" p="md" gap="0">
-                  <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                    My Liquidity:
-                  </Text>
-                  <Text fontWeight="bold" fontSize="1rem">
-                    {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
-                  </Text>
-                </VStack>
-              </Card>
+              <StatCard
+                label="My Liquidity"
+                value={toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
+              />
             </GridItem>
           )}
         </Grid>
