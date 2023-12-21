@@ -1,32 +1,28 @@
 import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
+  HumanAmount,
+  InputAmount,
   PriceImpact,
   RemoveLiquidity,
   RemoveLiquidityKind,
   RemoveLiquidityQueryOutput,
-  RemoveLiquidityUnbalancedInput,
+  RemoveLiquiditySingleTokenInput,
   Slippage,
 } from '@balancer/sdk'
+import { Address, parseEther } from 'viem'
+import { BPT_DECIMALS } from '../../../pool.types'
 import { Pool } from '../../../usePool'
-import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
+import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
+import { PriceImpactAmount } from '../../add-liquidity/add-liquidity.types'
 import {
   BuildLiquidityInputs,
   RemoveLiquidityInputs,
   RemoveLiquidityOutputs,
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
-import { HumanAmountIn } from '../../liquidity-types'
-import { PriceImpactAmount } from '../../add-liquidity/add-liquidity.types'
 
-/**
- * UnbalancedAddLiquidityHandler is a handler that implements the
- * AddLiquidityHandler interface for unbalanced adds, e.g. where the user
- * specifies the token amounts in. It uses the Balancer SDK to implement it's
- * methods. It also handles the case where one of the input tokens is the native
- * asset instead of the wrapped native asset.
- */
-export class UnbalancedRemoveLiquidityHandler implements RemoveLiquidityHandler {
+export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler {
   helpers: LiquidityActionHelpers
   sdkQueryOutput?: RemoveLiquidityQueryOutput
 
@@ -35,29 +31,29 @@ export class UnbalancedRemoveLiquidityHandler implements RemoveLiquidityHandler 
   }
 
   public async queryRemoveLiquidity({
-    humanAmountsIn,
+    humanBptIn,
   }: RemoveLiquidityInputs): Promise<RemoveLiquidityOutputs> {
     const removeLiquidity = new RemoveLiquidity()
-    const removeLiquidityInput = this.constructSdkInput(humanAmountsIn)
+    const removeLiquidityInput = this.constructSdkInput(humanBptIn)
 
     this.sdkQueryOutput = await removeLiquidity.query(
       removeLiquidityInput,
       this.helpers.poolStateInput
     )
 
-    return { bptIn: this.sdkQueryOutput.bptIn }
+    return { amountsOut: this.sdkQueryOutput.amountsOut }
   }
 
-  public async calculatePriceImpact({ humanAmountsIn }: RemoveLiquidityInputs): Promise<number> {
-    if (areEmptyAmounts(humanAmountsIn)) {
+  public async calculatePriceImpact({ humanBptIn }: RemoveLiquidityInputs): Promise<number> {
+    if (isEmptyHumanAmount(humanBptIn)) {
       // Avoid price impact calculation when there are no amounts in
       return 0
     }
 
-    const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
+    const removeLiquidityInput = this.constructSdkInput(humanBptIn)
 
     const priceImpactABA: PriceImpactAmount = await PriceImpact.removeLiquidity(
-      addLiquidityInput,
+      removeLiquidityInput,
       this.helpers.poolStateInput
     )
 
@@ -101,16 +97,23 @@ It looks that you did not call useRemoveLiquidityBtpOutQuery before trying to bu
   /**
    * PRIVATE METHODS
    */
-  private constructSdkInput(humanAmountsIn: HumanAmountIn[]): RemoveLiquidityUnbalancedInput {
-    const amountsOut = this.helpers.toInputAmounts(humanAmountsIn)
+  private constructSdkInput(humanBptIn: HumanAmount | ''): RemoveLiquiditySingleTokenInput {
+    // const bptToken = new Token(ChainId.MAINNET, poolMock.address as Address, 18)
+    // const bptIn = TokenAmount.fromRawAmount(bptToken, parseEther(humanBptInAmount)),
+
+    const bptIn: InputAmount = {
+      rawAmount: parseEther(`${humanBptIn}`),
+      decimals: BPT_DECIMALS,
+      address: this.helpers.pool.address as Address,
+    }
 
     return {
       chainId: this.helpers.chainId,
       rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
-      amountsOut,
-      kind: RemoveLiquidityKind.Unbalanced,
+      bptIn,
+      kind: RemoveLiquidityKind.SingleToken,
       //TODO: review this case
-      toNativeAsset: this.helpers.isNativeAssetIn(humanAmountsIn),
+      // toNativeAsset: this.helpers.isNativeAssetIn(humanAmountsIn),
     }
   }
 }

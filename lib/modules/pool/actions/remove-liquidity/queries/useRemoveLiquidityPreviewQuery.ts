@@ -2,12 +2,11 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { TokenAmount } from '@balancer/sdk'
+import { HumanAmount, TokenAmount } from '@balancer/sdk'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { useQuery } from 'wagmi'
-import { hasValidHumanAmounts } from '../../LiquidityActionHelpers'
-import { HumanAmountIn } from '../../liquidity-types'
+import { isEmptyHumanAmount } from '../../LiquidityActionHelpers'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
 
@@ -15,13 +14,13 @@ const debounceMillis = 300
 
 export function useRemoveLiquidityBtpInQuery(
   handler: RemoveLiquidityHandler,
-  humanAmountsIn: HumanAmountIn[],
+  humanBptIn: HumanAmount | '',
   poolId: string
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
-  const [bptIn, setBptIn] = useState<TokenAmount | undefined>(undefined)
-  const [debouncedHumanAmountsIn] = useDebounce(humanAmountsIn, debounceMillis)
+  const [amountsOut, setAmountsOut] = useState<TokenAmount[] | undefined>(undefined)
+  const [debouncedHumanBptIn] = useDebounce(humanBptIn, debounceMillis)
 
   function queryKey(): string {
     return generateRemoveLiquidityQueryKey({
@@ -29,16 +28,16 @@ export function useRemoveLiquidityBtpInQuery(
       userAddress,
       poolId,
       slippage,
-      humanAmountsIn: debouncedHumanAmountsIn,
+      humanBptIn: debouncedHumanBptIn,
     })
   }
 
   async function queryBptIn() {
-    const { bptIn } = await handler.queryRemoveLiquidity({ humanAmountsIn })
+    const { amountsOut } = await handler.queryRemoveLiquidity({ humanBptIn: debouncedHumanBptIn })
 
-    setBptIn(bptIn)
+    setAmountsOut(amountsOut)
 
-    return bptIn
+    return amountsOut
   }
 
   const query = useQuery(
@@ -47,10 +46,10 @@ export function useRemoveLiquidityBtpInQuery(
       return await queryBptIn()
     },
     {
-      enabled: isConnected && hasValidHumanAmounts(debouncedHumanAmountsIn),
-      onError: (error: Error) => console.log('Error in  queryRemoveLiquidity', error.name),
+      enabled: isConnected && !isEmptyHumanAmount(debouncedHumanBptIn),
+      onError: (error: Error) => console.log('Error in queryRemoveLiquidity', error.name),
     }
   )
 
-  return { bptIn, isBptInQueryLoading: query.isLoading }
+  return { amountsOut, isPreviewQueryLoading: query.isLoading }
 }

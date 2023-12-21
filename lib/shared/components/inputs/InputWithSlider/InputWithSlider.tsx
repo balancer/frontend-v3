@@ -20,10 +20,21 @@ type Props = {
   value?: string
   boxProps?: BoxProps
   setValue?: any
+  isNumberInputDisabled?: boolean
 }
 
 export const InputWithSlider = forwardRef(
-  ({ value, boxProps, setValue, children, ...numberInputProps }: NumberInputProps & Props, ref) => {
+  (
+    {
+      value,
+      boxProps,
+      setValue,
+      children,
+      isNumberInputDisabled,
+      ...numberInputProps
+    }: NumberInputProps & Props,
+    ref
+  ) => {
     const { formatCurrency, parseCurrency } = useCurrency()
 
     function handleChange(value: string | number) {
@@ -68,6 +79,7 @@ export const InputWithSlider = forwardRef(
               onKeyDown={blockInvalidNumberInput}
               onChange={handleChange}
               w="50%"
+              isDisabled={isNumberInputDisabled}
               {...numberInputProps}
             >
               <NumberInputField

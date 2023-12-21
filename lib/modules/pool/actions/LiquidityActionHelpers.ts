@@ -1,7 +1,7 @@
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { PoolStateInput } from '@balancer/sdk'
+import { HumanAmount, PoolStateInput } from '@balancer/sdk'
 import { keyBy } from 'lodash'
 import { parseUnits } from 'viem'
 import { Address } from 'wagmi'
@@ -101,8 +101,10 @@ export class LiquidityActionHelpers {
   }
 }
 
-export const isEmptyAmount = (amountIn: HumanAmountIn) =>
-  !amountIn.humanAmount || amountIn.humanAmount === '0'
+export const isEmptyAmount = (amountIn: HumanAmountIn) => isEmptyHumanAmount(amountIn.humanAmount)
+
+export const isEmptyHumanAmount = (humanAmount: HumanAmount | '') =>
+  !humanAmount || humanAmount === '0'
 
 export const areEmptyAmounts = (humanAmountsIn: HumanAmountIn[]) =>
   !humanAmountsIn || humanAmountsIn.length === 0 || humanAmountsIn.every(isEmptyAmount)

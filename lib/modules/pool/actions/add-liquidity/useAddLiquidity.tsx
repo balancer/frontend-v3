@@ -11,7 +11,7 @@ import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
-import { useAddLiquidityBptOutQuery } from './queries/useAddLiquidityBptOutQuery'
+import { useAddLiquidityPreviewQuery } from './queries/useAddLiquidityPreviewQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { HumanAmountIn } from '../liquidity-types'
 import { LiquidityActionHelpers, areEmptyAmounts } from '../LiquidityActionHelpers'
@@ -85,7 +85,7 @@ export function _useAddLiquidity() {
     pool.id
   )
 
-  const { bptOut, isBptOutQueryLoading } = useAddLiquidityBptOutQuery(
+  const { bptOut, isPreviewQueryLoading: isBptOutQueryLoading } = useAddLiquidityPreviewQuery(
     handler,
     humanAmountsIn,
     pool.id

@@ -13,7 +13,7 @@ import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
 
 const debounceMillis = 300
 
-export function useAddLiquidityBptOutQuery(
+export function useAddLiquidityPreviewQuery(
   handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
   poolId: string
@@ -54,5 +54,5 @@ export function useAddLiquidityBptOutQuery(
     }
   )
 
-  return { bptOut, isBptOutQueryLoading: query.isLoading }
+  return { bptOut, isPreviewQueryLoading: query.isLoading }
 }

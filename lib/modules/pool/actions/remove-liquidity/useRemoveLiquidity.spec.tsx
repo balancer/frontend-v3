@@ -1,69 +1,57 @@
 import { balAddress, wETHAddress } from '@/lib/debug-helpers'
-import { aTokenExpandedMock } from '@/lib/modules/tokens/__mocks__/token.builders'
-import { aGqlPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
+import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { buildDefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers'
+import { act } from 'react-dom/test-utils'
 import { mainnet } from 'wagmi'
-import { HumanAmountInWithTokenInfo } from './RemoveLiquidityFlowButton'
 import { _useRemoveLiquidity } from './useRemoveLiquidity'
+
+const poolMock = aBalWethPoolElementMock() // 80BAL-20WETH
+poolMock.dynamicData.totalLiquidity = '1000'
+poolMock.dynamicData.totalShares = '100'
+// bptPrice will be 1000/10 = 100
 
 async function testUseRemoveLiquidity() {
   const { result } = testHook(() => _useRemoveLiquidity(), {
-    wrapper: buildDefaultPoolTestProvider(
-      aGqlPoolElementMock({
-        allTokens: [
-          aTokenExpandedMock({ address: balAddress }),
-          aTokenExpandedMock({ address: wETHAddress }),
-        ],
-      })
-    ),
+    wrapper: buildDefaultPoolTestProvider(poolMock),
   })
   return result
 }
 
-test('returns amountsIn with empty input amount by default', async () => {
-  const result = await testUseRemoveLiquidity()
+describe('When the user choses proportional remove liquidity', () => {
+  test('uses Proportional liquidity type with 100% percentage by default', async () => {
+    const result = await testUseRemoveLiquidity()
 
-  expect(result.current.amountsIn).toEqual([
-    {
-      tokenAddress: balAddress,
-      humanAmount: '',
-    },
-    {
-      tokenAddress: wETHAddress,
-      humanAmount: '',
-    },
-  ])
+    expect(result.current.isProportional).toBeTruthy()
+    expect(result.current.sliderPercent).toBe(100)
+    expect(result.current.totalUsdValue).toBe('10000')
+  })
+
+  test('recalculates totalUsdValue when changing the slider', async () => {
+    const result = await testUseRemoveLiquidity()
+
+    expect(result.current.totalUsdValue).toBe('10000')
+
+    act(() => result.current.setSliderPercent(50))
+    expect(result.current.sliderPercent).toBe(50)
+
+    expect(result.current.totalUsdValue).toBe('5000')
+  })
 })
 
-test('returns add liquidity helpers', async () => {
+describe('When the user choses single token remove liquidity', () => {
+  test('returns selected token address with empty amount by default', async () => {
+    const result = await testUseRemoveLiquidity()
+
+    act(() => result.current.setSingleTokenAddress(wETHAddress))
+
+    expect(result.current.singleTokenAddress).toEqual(wETHAddress)
+    //TODO: check empty amount
+  })
+})
+
+test('returns liquidity helpers', async () => {
   const result = await testUseRemoveLiquidity()
 
   expect(result.current.helpers.chainId).toBe(mainnet.id)
   expect(result.current.helpers.poolTokenAddresses).toEqual([balAddress, wETHAddress])
-
-  const humanAmountsIn = [
-    { tokenAddress: balAddress, humanAmount: '1', symbol: 'BAL' },
-    { tokenAddress: wETHAddress, humanAmount: '2', symbol: 'WETH' },
-  ]
-
-  expect(
-    result.current.helpers.getAmountsToApprove(
-      humanAmountsIn as unknown as HumanAmountInWithTokenInfo[]
-    )
-  ).toMatchInlineSnapshot(`
-    [
-      {
-        "humanAmount": "1",
-        "rawAmount": 1000000000000000000n,
-        "tokenAddress": "0xba100000625a3754423978a60c9317c58a424e3d",
-        "tokenSymbol": "BAL",
-      },
-      {
-        "humanAmount": "2",
-        "rawAmount": 2000000000000000000n,
-        "tokenAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-        "tokenSymbol": "WETH",
-      },
-    ]
-  `)
 })

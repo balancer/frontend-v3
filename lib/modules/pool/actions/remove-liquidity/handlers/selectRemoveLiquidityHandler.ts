@@ -1,18 +1,21 @@
-import { getChainId } from '@/lib/config/app.config'
 import { Pool } from '../../../usePool'
+import { RemoveLiquidityType } from '../remove-liquidity.types'
+import { ProportionalRemoveLiquidityHandler } from './ProportionalRemoveLiquidity.handler'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
-import { TwammRemoveLiquidityHandler } from './TwammRemoveLiquidity.handler'
-import { UnbalancedRemoveLiquidityHandler } from './UnbalancedRemoveLiquidity.handler'
 
-export function selectRemoveLiquidityHandler(pool: Pool) {
+export function selectRemoveLiquidityHandler(
+  pool: Pool,
+  kind: RemoveLiquidityType
+): RemoveLiquidityHandler {
   // TODO: Depending on the pool attributes we will return a different handler
-  let handler: RemoveLiquidityHandler
-  if (pool.id === 'TWAMM-example') {
-    // This is just an example to illustrate how edge-case handlers would receive different inputs but return a common contract
-    handler = new TwammRemoveLiquidityHandler(getChainId(pool.chain))
-  } else {
-    handler = new UnbalancedRemoveLiquidityHandler(pool)
+  // if (pool.id === 'TWAMM-example') {
+  //   // This is just an example to illustrate how edge-case handlers would receive different inputs but return a common contract
+  //   return new TwammRemoveLiquidityHandler(getChainId(pool.chain))
+  // }
+  if (kind === RemoveLiquidityType.Proportional) {
+    return new ProportionalRemoveLiquidityHandler(pool)
   }
 
-  return handler
+  // Default type
+  return new ProportionalRemoveLiquidityHandler(pool)
 }

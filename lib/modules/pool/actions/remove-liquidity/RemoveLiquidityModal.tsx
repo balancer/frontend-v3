@@ -45,8 +45,9 @@ export function RemoveLiquidityModal({
   const initialFocusRef = useRef(null)
   const {
     //executeRemoveLiquidity,
-    selectedRemoveLiquidityType,
-    singleToken,
+    isProportional,
+    isSingleToken,
+    singleTokenAddress,
   } = useRemoveLiquidity()
   const { pool, bptPrice } = usePool()
   const { slippage } = useUserSettings()
@@ -91,7 +92,7 @@ export function RemoveLiquidityModal({
                     With max slippage: {fNum('slippage', slippage)}
                   </Text>
                 </HStack>
-                {selectedRemoveLiquidityType === 'PROPORTIONAL' &&
+                {isProportional &&
                   pool.displayTokens.map(token => (
                     <TokenRow
                       key={token.address}
@@ -100,8 +101,8 @@ export function RemoveLiquidityModal({
                       value={0}
                     />
                   ))}
-                {selectedRemoveLiquidityType === 'SINGLE_TOKEN' && singleToken && (
-                  <TokenRow address={singleToken.address as Address} chain={pool.chain} value={0} />
+                {isSingleToken && (
+                  <TokenRow address={singleTokenAddress as Address} chain={pool.chain} value={0} />
                 )}
               </VStack>
             </Card>
