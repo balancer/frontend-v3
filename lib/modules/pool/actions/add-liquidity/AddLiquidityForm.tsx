@@ -21,10 +21,10 @@ import {
 } from '@chakra-ui/react'
 import { useRef } from 'react'
 import { Address } from 'wagmi'
-import { humanizeTokenAmount } from '../LiquidityActionHelpers'
 import { AddLiquidityModal } from './AddLiquidityModal'
 import { useAddLiquidity } from './useAddLiquidity'
-import { fNum } from '@/lib/shared/utils/numbers'
+import { fNum, safeTokenFormat } from '@/lib/shared/utils/numbers'
+import { BPT_DECIMALS } from '../../pool.constants'
 
 export function AddLiquidityForm() {
   const {
@@ -50,7 +50,7 @@ export function AddLiquidityForm() {
     return amountIn ? amountIn.humanAmount : ''
   }
 
-  const bptOutUnits = humanizeTokenAmount(bptOut)
+  const bptOutUnits = safeTokenFormat(bptOut?.amount, BPT_DECIMALS)
   const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
   return (

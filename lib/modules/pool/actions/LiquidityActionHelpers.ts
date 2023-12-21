@@ -111,9 +111,3 @@ export const areEmptyAmounts = (humanAmountsIn: HumanAmountIn[]) =>
 
 export const hasValidHumanAmounts = (humanAmountsIn: HumanAmountIn[]) =>
   humanAmountsIn.some(a => a.humanAmount && a.humanAmount !== '0')
-
-export function humanizeTokenAmount(tokenAmount?: TokenAmount | null) {
-  if (!tokenAmount) return '-'
-
-  return fNum('token', formatUnits(tokenAmount.amount, 18))
-}

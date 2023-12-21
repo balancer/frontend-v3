@@ -7,7 +7,7 @@ import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { fNum } from '@/lib/shared/utils/numbers'
+import { fNum, safeTokenFormat } from '@/lib/shared/utils/numbers'
 import { HumanAmount } from '@balancer/sdk'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
@@ -31,7 +31,7 @@ import { Address } from 'wagmi'
 import { usePool } from '../../usePool'
 import { AddLiquidityFlowButton, HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
 import { useAddLiquidity } from './useAddLiquidity'
-import { humanizeTokenAmount } from '../LiquidityActionHelpers'
+import { BPT_DECIMALS } from '../../pool.constants'
 
 type Props = {
   isOpen: boolean
@@ -96,7 +96,7 @@ export function AddLiquidityModal({
     }
   )
 
-  const bptOutUnits = humanizeTokenAmount(bptOut)
+  const bptOutUnits = safeTokenFormat(bptOut?.amount, BPT_DECIMALS)
   const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
   return (
