@@ -20,14 +20,14 @@ export function useAddLiquidityPreviewQuery(
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [bptOut, setBptOut] = useState<TokenAmount | null>(null)
-  const [debouncedHumanAmountsIn] = useDebounce(humanAmountsIn, defaultDebounceMs)
+  const [debouncedHumanAmountsIn] = useDebounce([humanAmountsIn], defaultDebounceMs)
 
   function queryKey(): string {
     return generateAddLiquidityQueryKey({
       userAddress,
       poolId,
       slippage,
-      humanAmountsIn: debouncedHumanAmountsIn,
+      humanAmountsIn: debouncedHumanAmountsIn as unknown as HumanAmountIn[],
     })
   }
 
@@ -47,7 +47,7 @@ export function useAddLiquidityPreviewQuery(
       return await queryBptOut()
     },
     {
-      enabled: isConnected && hasValidHumanAmounts(debouncedHumanAmountsIn),
+      enabled: isConnected && hasValidHumanAmounts(humanAmountsIn),
       // TODO: remove when finishing debugging
       onError: error => console.log('Error in queryBptOut', error),
     }
