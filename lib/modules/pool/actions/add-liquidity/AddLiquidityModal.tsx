@@ -34,6 +34,8 @@ import { useAddLiquidity } from './useAddLiquidity'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { formatUnits } from 'viem'
 import { bptUsdValue } from '../../pool.helpers'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { HumanAmountIn } from '../liquidity-types'
 
 type Props = {
   isOpen: boolean
@@ -89,7 +91,7 @@ export function AddLiquidityModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { humanAmountsIn, totalUSDValue, helpers, bptOut, priceImpact } = useAddLiquidity()
+  const { humanAmountsIn, totalUSDValue, helpers, bptOut, priceImpact, tokens } = useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
   // TODO: move userAddress up
@@ -133,9 +135,15 @@ export function AddLiquidityModal({
                   <Text color="GrayText">{"You're adding"}</Text>
                   <NumberText fontSize="lg">{toCurrency(totalUSDValue)}</NumberText>
                 </HStack>
-                {humanAmountsIn.map(amountIn => (
-                  <TokenAmountRow key={amountIn.tokenAddress} {...amountIn} />
-                ))}
+                {tokens.map(token => {
+                  if (!token) return <div>Missing token</div>
+
+                  const amountIn = humanAmountsIn.find(amountIn =>
+                    isSameAddress(amountIn.tokenAddress, token?.address)
+                  ) as HumanAmountIn
+
+                  return <TokenAmountRow key={token?.address} {...amountIn} />
+                })}
               </VStack>
             </Card>
 
@@ -143,7 +151,6 @@ export function AddLiquidityModal({
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text color="GrayText">{"You'll get (if no slippage)"}</Text>
-                  <Text color="GrayText">{pool.symbol}</Text>
                 </HStack>
                 <TokenAmountRow
                   tokenAddress={pool.address as Address}
