@@ -7,7 +7,7 @@ import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { fNum, safeTokenFormat } from '@/lib/shared/utils/numbers'
+import { fNum } from '@/lib/shared/utils/numbers'
 import { HumanAmount } from '@balancer/sdk'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
@@ -32,6 +32,8 @@ import { usePool } from '../../usePool'
 import { AddLiquidityFlowButton, HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
 import { useAddLiquidity } from './useAddLiquidity'
 import { BPT_DECIMALS } from '../../pool.constants'
+import { formatUnits } from 'viem'
+import { bptUsdValue } from '../../pool.helpers'
 
 type Props = {
   isOpen: boolean
@@ -44,17 +46,24 @@ function TokenAmountRow({
   tokenAddress,
   humanAmount,
   symbol,
+  isBpt,
 }: {
   tokenAddress: Address
   humanAmount: HumanAmount | ''
   symbol?: string
+  isBpt?: boolean
 }) {
   const { pool } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { toCurrency } = useCurrency()
 
   const token = getToken(tokenAddress, pool.chain)
-  const usdValue = token ? usdValueForToken(token, humanAmount) : undefined
+  let usdValue: string | undefined
+  if (isBpt) {
+    usdValue = bptUsdValue(pool, humanAmount)
+  } else {
+    usdValue = token ? usdValueForToken(token, humanAmount) : undefined
+  }
 
   return (
     <HStack w="full" justify="space-between">
@@ -96,7 +105,7 @@ export function AddLiquidityModal({
     }
   )
 
-  const bptOutUnits = safeTokenFormat(bptOut?.amount, BPT_DECIMALS)
+  const bptOutLabel = bptOut ? formatUnits(bptOut.amount, BPT_DECIMALS) : '0'
   const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
   return (
@@ -138,8 +147,9 @@ export function AddLiquidityModal({
                 </HStack>
                 <TokenAmountRow
                   tokenAddress={pool.address as Address}
-                  humanAmount={bptOutUnits as HumanAmount}
+                  humanAmount={bptOutLabel as HumanAmount}
                   symbol="LP Token"
+                  isBpt
                 />
               </VStack>
             </Card>

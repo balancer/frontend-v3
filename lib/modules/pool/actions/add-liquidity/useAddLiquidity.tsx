@@ -85,7 +85,7 @@ export function _useAddLiquidity() {
     pool.id
   )
 
-  const { bptOut, isPreviewQueryLoading: isBptOutQueryLoading } = useAddLiquidityPreviewQuery(
+  const { bptOut, isPreviewQueryLoading } = useAddLiquidityPreviewQuery(
     handler,
     humanAmountsIn,
     pool.id
@@ -115,7 +115,7 @@ export function _useAddLiquidity() {
     isPriceImpactLoading,
     priceImpact,
     bptOut,
-    isBptOutQueryLoading,
+    isPreviewQueryLoading,
     setHumanAmountIn,
     useBuildTx,
     isDisabled,

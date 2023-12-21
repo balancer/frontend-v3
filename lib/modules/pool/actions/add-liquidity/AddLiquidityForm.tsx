@@ -36,7 +36,7 @@ export function AddLiquidityForm() {
     priceImpact,
     isPriceImpactLoading,
     bptOut,
-    isBptOutQueryLoading,
+    isPreviewQueryLoading,
     isDisabled,
     disabledReason,
   } = useAddLiquidity()
@@ -50,7 +50,7 @@ export function AddLiquidityForm() {
     return amountIn ? amountIn.humanAmount : ''
   }
 
-  const bptOutUnits = safeTokenFormat(bptOut?.amount, BPT_DECIMALS)
+  const bptOutLabel = safeTokenFormat(bptOut?.amount, BPT_DECIMALS)
   const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
   return (
@@ -105,7 +105,7 @@ export function AddLiquidityForm() {
                 <Text color="GrayText">Bpt out</Text>
                 <HStack>
                   <NumberText color="GrayText">
-                    {isBptOutQueryLoading ? <Skeleton w="12" h="full" /> : bptOutUnits}
+                    {isPreviewQueryLoading ? <Skeleton w="12" h="full" /> : bptOutLabel}
                   </NumberText>
                   <Tooltip label="Bpt out" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
