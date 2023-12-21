@@ -6,14 +6,14 @@ import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.b
 import { HumanAmount } from '@balancer/sdk'
 import { selectRemoveLiquidityHandler } from '../handlers/selectRemoveLiquidityHandler'
 import { RemoveLiquidityType } from '../remove-liquidity.types'
-import { useRemoveLiquidityBtpInQuery } from './useRemoveLiquidityPreviewQuery'
+import { useRemoveLiquidityPreviewQuery } from './useRemoveLiquidityPreviewQuery'
 
 async function testQuery(humanBptIn: HumanAmount) {
   const handler = selectRemoveLiquidityHandler(
     aWjAuraWethPoolElementMock(),
     RemoveLiquidityType.Proportional
   )
-  const { result } = testHook(() => useRemoveLiquidityBtpInQuery(handler, humanBptIn, poolId))
+  const { result } = testHook(() => useRemoveLiquidityPreviewQuery(handler, poolId, humanBptIn))
   return result
 }
 

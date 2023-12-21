@@ -13,6 +13,5 @@ export function generateAddLiquidityQueryKey({
   slippage,
   humanAmountsIn,
 }: Props): string {
-  console.log('generating with humanAmountsIn')
   return `add-liquidity:${userAddress}:${poolId}:${slippage}:${JSON.stringify(humanAmountsIn)}`
 }

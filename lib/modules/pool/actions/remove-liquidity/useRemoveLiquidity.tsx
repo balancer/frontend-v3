@@ -1,15 +1,23 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { createContext, PropsWithChildren, useState } from 'react'
-import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { usePool } from '../../usePool'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { LABELS } from '@/lib/shared/labels'
 import { GqlToken, GqlTokenAmountHumanReadable } from '@/lib/shared/services/api/generated/graphql'
-import { LiquidityActionHelpers } from '../LiquidityActionHelpers'
+import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn } from '@/lib/shared/utils/numbers'
-import { RemoveLiquidityType } from './remove-liquidity.types'
 import { HumanAmount } from '@balancer/sdk'
 import { noop } from 'lodash'
+import { PropsWithChildren, createContext, useMemo, useState } from 'react'
+import { usePool } from '../../usePool'
+import { LiquidityActionHelpers, isEmptyHumanAmount } from '../LiquidityActionHelpers'
+import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
+import { useRemoveLiquidityPreviewQuery } from './queries/useRemoveLiquidityPreviewQuery'
+import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
+import { RemoveLiquidityType } from './remove-liquidity.types'
+import { useBuildRemoveLiquidityQuery } from './queries/useBuildRemoveLiquidityTxQuery'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -17,6 +25,7 @@ export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse |
 export function _useRemoveLiquidity() {
   const { pool, bptPrice } = usePool()
   const { getToken, usdValueForToken } = useTokens()
+  const { isConnected } = useUserAccount()
 
   const [removalType, setRemovalType] = useState<RemoveLiquidityType>(
     RemoveLiquidityType.Proportional
@@ -26,10 +35,15 @@ export function _useRemoveLiquidity() {
 
   const [sliderPercent, setSliderPercent] = useState<number>(100)
 
-  // TODO: Pool User balance -> can we get it from the API?
+  const handler = useMemo(() => selectRemoveLiquidityHandler(pool, removalType), [pool.id])
+
   // const maxBptIn = pool.userBalance.totalBalance
+  // TODO: Hardcoded until it is ready in the API
   const maxBptIn = 1000
   const bptIn = bn(maxBptIn).times(sliderPercent / 100)
+
+  // TODO: Do we want to deal with human format
+  const humanBptIn: HumanAmount = bptIn.toFormat() as HumanAmount
 
   const totalUsdValue = bn(bptIn).times(bptPrice).toString()
 
@@ -50,10 +64,28 @@ export function _useRemoveLiquidity() {
   const tokens = pool.allTokens.map(token => getToken(token.address, pool.chain))
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
 
-  const helpers = new LiquidityActionHelpers(pool)
+  const { isPriceImpactLoading, priceImpact } = useRemoveLiquidityPriceImpactQuery(
+    handler,
+    pool.id,
+    humanBptIn
+  )
 
-  //TODO: hook up query hooks
-  const useBuildTx = noop
+  const { amountsOut, isPreviewQueryLoading } = useRemoveLiquidityPreviewQuery(
+    handler,
+    pool.id,
+    humanBptIn
+  )
+
+  function useBuildTx(isActiveStep: boolean) {
+    return useBuildRemoveLiquidityQuery(handler, humanBptIn, isActiveStep, pool.id)
+  }
+
+  const { isDisabled, disabledReason } = isDisabledWithReason(
+    [!isConnected, LABELS.walletNotConnected],
+    [isEmptyHumanAmount(humanBptIn), 'You must specify a valid bpt in']
+  )
+
+  const helpers = new LiquidityActionHelpers(pool)
 
   return {
     tokens,
@@ -73,6 +105,12 @@ export function _useRemoveLiquidity() {
     totalUsdValue,
     helpers,
     useBuildTx,
+    isPreviewQueryLoading,
+    isPriceImpactLoading,
+    priceImpact,
+    amountsOut,
+    isDisabled,
+    disabledReason,
   }
 }
 

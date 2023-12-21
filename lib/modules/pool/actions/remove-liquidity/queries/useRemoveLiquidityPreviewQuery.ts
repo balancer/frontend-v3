@@ -11,10 +11,10 @@ import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
 import { defaultDebounceMs } from '@/lib/shared/utils/queries'
 
-export function useRemoveLiquidityBtpInQuery(
+export function useRemoveLiquidityPreviewQuery(
   handler: RemoveLiquidityHandler,
-  humanBptIn: HumanAmount | '',
-  poolId: string
+  poolId: string,
+  humanBptIn: HumanAmount | ''
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
