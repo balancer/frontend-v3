@@ -2,7 +2,12 @@ import {
   aTokenExpandedMock,
   someMinimalTokensMock,
 } from '@/lib/modules/tokens/__mocks__/token.builders'
-import { GqlChain, GqlPoolElement, GqlPoolToken } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GqlChain,
+  GqlPoolElement,
+  GqlPoolToken,
+  GqlPoolType,
+} from '@/lib/shared/services/api/generated/graphql'
 import { DeepPartial } from '@apollo/client/utilities'
 import { mock } from 'vitest-mock-extended'
 import { aGqlStakingMock } from './gqlStaking.builders'
@@ -70,7 +75,7 @@ export function aGqlPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlP
     owner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
     symbol: 'B-80BAL-20WETH',
     staking: aGqlStakingMock(),
-    type: 'WEIGHTED',
+    type: GqlPoolType.Weighted,
   }
   return Object.assign({}, defaultPool, defaultPool1, ...options)
 }
