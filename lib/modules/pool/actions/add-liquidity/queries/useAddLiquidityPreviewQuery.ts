@@ -20,14 +20,14 @@ export function useAddLiquidityPreviewQuery(
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [bptOut, setBptOut] = useState<TokenAmount | null>(null)
-  const [debouncedHumanAmountsIn] = useDebounce([humanAmountsIn], defaultDebounceMs)
+  const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
 
   function queryKey(): string {
     return generateAddLiquidityQueryKey({
       userAddress,
       poolId,
       slippage,
-      humanAmountsIn: debouncedHumanAmountsIn as unknown as HumanAmountIn[],
+      humanAmountsIn: debouncedHumanAmountsIn,
     })
   }
 

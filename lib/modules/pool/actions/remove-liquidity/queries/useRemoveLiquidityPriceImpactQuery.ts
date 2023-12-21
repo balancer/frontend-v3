@@ -19,7 +19,7 @@ export function useRemoveLiquidityPriceImpactQuery(
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [priceImpact, setPriceImpact] = useState<number | null>(null)
-  const [debouncedHumanBptIn] = useDebounce(humanBptIn, defaultDebounceMs)
+  const debouncedHumanBptIn = useDebounce(humanBptIn, defaultDebounceMs)[0]
 
   function queryKey(): string {
     return generateRemoveLiquidityQueryKey({

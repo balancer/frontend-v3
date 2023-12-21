@@ -19,7 +19,7 @@ export function useAddLiquidityPriceImpactQuery(
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [priceImpact, setPriceImpact] = useState<number | null>(null)
-  const [debouncedHumanAmountsIn] = useDebounce(humanAmountsIn, defaultDebounceMs)
+  const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
 
   function queryKey(): string {
     return generateAddLiquidityQueryKey({
@@ -45,7 +45,7 @@ export function useAddLiquidityPriceImpactQuery(
       return await queryPriceImpact()
     },
     {
-      enabled: isConnected && !areEmptyAmounts(debouncedHumanAmountsIn),
+      enabled: isConnected && !areEmptyAmounts(humanAmountsIn),
     }
   )
 

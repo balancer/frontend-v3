@@ -19,7 +19,7 @@ export function useRemoveLiquidityPreviewQuery(
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [amountsOut, setAmountsOut] = useState<TokenAmount[] | undefined>(undefined)
-  const [debouncedHumanBptIn] = useDebounce(humanBptIn, defaultDebounceMs)
+  const debouncedHumanBptIn = useDebounce(humanBptIn, defaultDebounceMs)[0]
 
   function queryKey(): string {
     return generateRemoveLiquidityQueryKey({

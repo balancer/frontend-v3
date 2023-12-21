@@ -6,6 +6,7 @@ import { useEffect } from 'react'
 import { useDebounce } from '@/lib/shared/hooks/useDebounce'
 import { usePoolList } from './usePoolList'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { defaultDebounceMs } from '@/lib/shared/utils/queries'
 
 const SEARCH = 'search'
 
@@ -20,7 +21,7 @@ export function PoolListSearch() {
     setSearch(event.target.value)
   }
 
-  const debouncedChangeHandler = useDebounce(changeHandler, 300)
+  const debouncedChangeHandler = useDebounce(changeHandler, defaultDebounceMs)
 
   useEffect(() => {
     reset({
