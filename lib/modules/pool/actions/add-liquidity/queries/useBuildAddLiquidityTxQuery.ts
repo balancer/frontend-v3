@@ -1,13 +1,13 @@
 'use client'
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
+import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Dictionary } from 'lodash'
 import { useQuery } from 'wagmi'
 import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
-import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
-import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
+import { addLiquidityKeys } from './add-liquidity-keys'
 
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
 export function useBuildAddLiquidityQuery(
@@ -21,17 +21,13 @@ export function useBuildAddLiquidityQuery(
 
   const { allowances } = useTokenAllowances()
 
-  function queryKey(): string {
-    return generateAddLiquidityQueryKey({
-      userAddress,
-      poolId,
-      slippage,
-      humanAmountsIn,
-    })
-  }
-
   const addLiquidityQuery = useQuery(
-    [queryKey()],
+    addLiquidityKeys.buildTx({
+      userAddress,
+      slippage,
+      poolId,
+      humanAmountsIn,
+    }),
     async () => {
       const inputs = {
         humanAmountsIn,

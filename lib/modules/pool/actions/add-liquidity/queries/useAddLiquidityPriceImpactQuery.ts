@@ -2,14 +2,14 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { defaultDebounceMs } from '@/lib/shared/utils/queries'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { useQuery } from 'wagmi'
-import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
-import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
-import { HumanAmountIn } from '../../liquidity-types'
 import { areEmptyAmounts } from '../../LiquidityActionHelpers'
-import { defaultDebounceMs } from '@/lib/shared/utils/queries'
+import { HumanAmountIn } from '../../liquidity-types'
+import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
+import { addLiquidityKeys } from './add-liquidity-keys'
 
 export function useAddLiquidityPriceImpactQuery(
   handler: AddLiquidityHandler,
@@ -21,15 +21,6 @@ export function useAddLiquidityPriceImpactQuery(
   const [priceImpact, setPriceImpact] = useState<number | null>(null)
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
 
-  function queryKey(): string {
-    return generateAddLiquidityQueryKey({
-      userAddress,
-      poolId,
-      slippage,
-      humanAmountsIn: debouncedHumanAmountsIn,
-    })
-  }
-
   async function queryPriceImpact() {
     const _priceImpact = await handler.calculatePriceImpact({
       humanAmountsIn,
@@ -40,7 +31,12 @@ export function useAddLiquidityPriceImpactQuery(
   }
 
   const query = useQuery(
-    [queryKey()],
+    addLiquidityKeys.preview({
+      userAddress,
+      slippage,
+      poolId,
+      humanAmountsIn: debouncedHumanAmountsIn,
+    }),
     async () => {
       return await queryPriceImpact()
     },

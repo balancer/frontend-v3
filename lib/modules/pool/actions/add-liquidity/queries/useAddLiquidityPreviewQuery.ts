@@ -2,6 +2,7 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { defaultDebounceMs } from '@/lib/shared/utils/queries'
 import { TokenAmount } from '@balancer/sdk'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
@@ -9,8 +10,7 @@ import { useQuery } from 'wagmi'
 import { hasValidHumanAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
-import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
-import { defaultDebounceMs } from '@/lib/shared/utils/queries'
+import { addLiquidityKeys } from './add-liquidity-keys'
 
 export function useAddLiquidityPreviewQuery(
   handler: AddLiquidityHandler,
@@ -21,15 +21,6 @@ export function useAddLiquidityPreviewQuery(
   const { slippage } = useUserSettings()
   const [bptOut, setBptOut] = useState<TokenAmount | null>(null)
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
-
-  function queryKey(): string {
-    return generateAddLiquidityQueryKey({
-      userAddress,
-      poolId,
-      slippage,
-      humanAmountsIn: debouncedHumanAmountsIn,
-    })
-  }
 
   async function queryBptOut() {
     const queryResult = await handler.queryAddLiquidity({ humanAmountsIn })
@@ -42,12 +33,17 @@ export function useAddLiquidityPreviewQuery(
   }
 
   const query = useQuery(
-    [queryKey()],
+    addLiquidityKeys.priceImpact({
+      userAddress,
+      slippage,
+      poolId,
+      humanAmountsIn: debouncedHumanAmountsIn,
+    }),
     async () => {
       return await queryBptOut()
     },
     {
-      enabled: isConnected && hasValidHumanAmounts(humanAmountsIn),
+      enabled: isConnected && hasValidHumanAmounts(debouncedHumanAmountsIn),
       // TODO: remove when finishing debugging
       onError: error => console.log('Error in queryBptOut', error),
     }
