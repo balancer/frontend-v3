@@ -10,7 +10,6 @@ import {
   Slippage,
 } from '@balancer/sdk'
 import { Address, parseEther } from 'viem'
-import { BPT_DECIMALS } from '../../../pool.types'
 import { Pool } from '../../../usePool'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
 import {
@@ -19,6 +18,7 @@ import {
   RemoveLiquidityOutputs,
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
+import { BPT_DECIMALS } from '../../../pool.constants'
 
 export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandler {
   helpers: LiquidityActionHelpers

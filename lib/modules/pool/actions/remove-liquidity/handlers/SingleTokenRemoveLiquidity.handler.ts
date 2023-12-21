@@ -11,7 +11,6 @@ import {
   Slippage,
 } from '@balancer/sdk'
 import { Address, parseEther } from 'viem'
-import { BPT_DECIMALS } from '../../../pool.types'
 import { Pool } from '../../../usePool'
 import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
 import { PriceImpactAmount } from '../../add-liquidity/add-liquidity.types'
@@ -21,6 +20,7 @@ import {
   RemoveLiquidityOutputs,
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
+import { BPT_DECIMALS } from '../../../pool.constants'
 
 export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler {
   helpers: LiquidityActionHelpers
