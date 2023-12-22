@@ -9,15 +9,14 @@ import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn } from '@/lib/shared/utils/numbers'
 import { HumanAmount } from '@balancer/sdk'
-import { noop } from 'lodash'
 import { PropsWithChildren, createContext, useMemo, useState } from 'react'
 import { usePool } from '../../usePool'
-import { LiquidityActionHelpers, isEmptyHumanAmount } from '../LiquidityActionHelpers'
+import { isEmptyHumanAmount } from '../LiquidityActionHelpers'
 import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
+import { useBuildRemoveLiquidityQuery } from './queries/useBuildRemoveLiquidityTxQuery'
 import { useRemoveLiquidityPreviewQuery } from './queries/useRemoveLiquidityPreviewQuery'
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 import { RemoveLiquidityType } from './remove-liquidity.types'
-import { useBuildRemoveLiquidityQuery } from './queries/useBuildRemoveLiquidityTxQuery'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -85,8 +84,6 @@ export function _useRemoveLiquidity() {
     [isEmptyHumanAmount(humanBptIn), 'You must specify a valid bpt in']
   )
 
-  const helpers = new LiquidityActionHelpers(pool)
-
   return {
     tokens,
     validTokens,
@@ -103,7 +100,6 @@ export function _useRemoveLiquidity() {
     isProportional,
     setRemovalType,
     totalUsdValue,
-    helpers,
     useBuildTx,
     isPreviewQueryLoading,
     isPriceImpactLoading,

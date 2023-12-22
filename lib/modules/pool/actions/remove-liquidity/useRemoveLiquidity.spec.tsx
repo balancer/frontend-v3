@@ -48,10 +48,3 @@ describe('When the user choses single token remove liquidity', () => {
     //TODO: check empty amount
   })
 })
-
-test('returns liquidity helpers', async () => {
-  const result = await testUseRemoveLiquidity()
-
-  expect(result.current.helpers.chainId).toBe(mainnet.id)
-  expect(result.current.helpers.poolTokenAddresses).toEqual([balAddress, wETHAddress])
-})
