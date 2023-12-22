@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { useQuery } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
-import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
+import { removeLiquidityKeys } from './remove-liquidity-keys'
 
 export function useRemoveLiquidityPreviewQuery(
   handler: RemoveLiquidityHandler,
@@ -20,16 +20,6 @@ export function useRemoveLiquidityPreviewQuery(
   const [amountsOut, setAmountsOut] = useState<TokenAmount[] | undefined>(undefined)
   const debouncedBptIn = useDebounce(bptIn, defaultDebounceMs)[0]
 
-  function queryKey(): string {
-    return generateRemoveLiquidityQueryKey({
-      queryId: 'BptIn',
-      userAddress,
-      poolId,
-      slippage,
-      bptIn: debouncedBptIn,
-    })
-  }
-
   async function queryBptIn() {
     const { amountsOut } = await handler.queryRemoveLiquidity({ bptIn: debouncedBptIn })
 
@@ -39,7 +29,12 @@ export function useRemoveLiquidityPreviewQuery(
   }
 
   const query = useQuery(
-    [queryKey()],
+    removeLiquidityKeys.preview({
+      userAddress,
+      slippage,
+      poolId,
+      bptIn,
+    }),
     async () => {
       return await queryBptIn()
     },

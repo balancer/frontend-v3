@@ -2,12 +2,12 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { defaultDebounceMs } from '@/lib/shared/utils/queries'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { useQuery } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
-import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
-import { defaultDebounceMs } from '@/lib/shared/utils/queries'
+import { removeLiquidityKeys } from './remove-liquidity-keys'
 
 export function useRemoveLiquidityPriceImpactQuery(
   handler: RemoveLiquidityHandler,
@@ -19,16 +19,6 @@ export function useRemoveLiquidityPriceImpactQuery(
   const [priceImpact, setPriceImpact] = useState<number | null>(null)
   const debouncedBptIn = useDebounce(bptIn, defaultDebounceMs)[0]
 
-  function queryKey(): string {
-    return generateRemoveLiquidityQueryKey({
-      queryId: 'PriceImpact',
-      userAddress,
-      poolId,
-      slippage,
-      bptIn: debouncedBptIn,
-    })
-  }
-
   async function queryPriceImpact() {
     const _priceImpact = await handler.calculatePriceImpact({
       bptIn: debouncedBptIn,
@@ -39,7 +29,12 @@ export function useRemoveLiquidityPriceImpactQuery(
   }
 
   const query = useQuery(
-    [queryKey()],
+    removeLiquidityKeys.priceImpact({
+      userAddress,
+      slippage,
+      poolId,
+      bptIn,
+    }),
     async () => {
       return await queryPriceImpact()
     },

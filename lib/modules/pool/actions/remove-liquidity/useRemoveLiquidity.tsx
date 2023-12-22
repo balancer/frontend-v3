@@ -11,9 +11,8 @@ import { bn, toBigInt } from '@/lib/shared/utils/numbers'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useMemo, useState } from 'react'
 import { usePool } from '../../usePool'
-import { isEmptyHumanAmount } from '../LiquidityActionHelpers'
 import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
-import { useBuildRemoveLiquidityQuery } from './queries/useBuildRemoveLiquidityTxQuery'
+import { useRemoveLiquidityBuildCallDataQuery } from './queries/useRemoveLiquidityBuildCallDataQuery'
 import { useRemoveLiquidityPreviewQuery } from './queries/useRemoveLiquidityPreviewQuery'
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 import { RemoveLiquidityType } from './remove-liquidity.types'
@@ -73,7 +72,7 @@ export function _useRemoveLiquidity() {
   )
 
   function useBuildTx(isActiveStep: boolean) {
-    return useBuildRemoveLiquidityQuery(handler, bptIn, isActiveStep, pool.id)
+    return useRemoveLiquidityBuildCallDataQuery(handler, bptIn, isActiveStep, pool.id)
   }
 
   const { isDisabled, disabledReason } = isDisabledWithReason(

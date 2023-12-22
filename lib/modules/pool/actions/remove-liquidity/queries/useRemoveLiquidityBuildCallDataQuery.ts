@@ -4,10 +4,10 @@ import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useQuery } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
-import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
+import { removeLiquidityKeys } from './remove-liquidity-keys'
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
-export function useBuildRemoveLiquidityQuery(
+export function useRemoveLiquidityBuildCallDataQuery(
   handler: RemoveLiquidityHandler,
   bptIn: bigint,
   isActiveStep: boolean,
@@ -17,18 +17,13 @@ export function useBuildRemoveLiquidityQuery(
 
   const { slippage } = useUserSettings()
 
-  function queryKey(): string {
-    return generateRemoveLiquidityQueryKey({
-      queryId: 'BuildTxConfig',
-      userAddress,
-      poolId,
-      slippage,
-      bptIn,
-    })
-  }
-
   const removeLiquidityQuery = useQuery(
-    [queryKey()],
+    removeLiquidityKeys.buildCallData({
+      userAddress,
+      slippage,
+      poolId,
+      bptIn,
+    }),
     async () => {
       const inputs = {
         bptIn,
