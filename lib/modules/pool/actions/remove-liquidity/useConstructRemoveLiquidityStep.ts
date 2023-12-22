@@ -10,10 +10,9 @@ export function useConstructRemoveLiquidityStep(poolId: string) {
 
   const { useBuildTx } = useRemoveLiquidity()
 
-  // Keep humanAmountsIn inside provider
   const removeLiquidityQuery = useBuildTx(isActiveStep)
 
-  const transactionLabels = buildAddLiquidityLabels(poolId)
+  const transactionLabels = buildRemoveLiquidityLabels(poolId)
 
   const transaction = useManagedSendTransaction(transactionLabels, removeLiquidityQuery.data)
 
@@ -37,7 +36,7 @@ export function useConstructRemoveLiquidityStep(poolId: string) {
   }
 }
 
-export const buildAddLiquidityLabels: BuildTransactionLabels = (poolId: Address) => {
+export const buildRemoveLiquidityLabels: BuildTransactionLabels = (poolId: Address) => {
   return {
     init: 'Remove liquidity',
     confirming: 'Confirm remove liquidity',

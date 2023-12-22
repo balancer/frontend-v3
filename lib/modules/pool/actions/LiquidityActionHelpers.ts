@@ -1,18 +1,15 @@
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { HumanAmount, PoolStateInput } from '@balancer/sdk'
-import { keyBy } from 'lodash'
+import { Dictionary, keyBy } from 'lodash'
 import { parseUnits } from 'viem'
 import { Address } from 'wagmi'
 import { toPoolStateInput } from '../pool.helpers'
 import { Pool } from '../usePool'
-import { HumanAmountInWithTokenInfo } from './remove-liquidity/RemoveLiquidityFlowButton'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { HumanAmountIn } from './liquidity-types'
-import { fNum } from '@/lib/shared/utils/numbers'
-import { TokenAmount } from '@balancer/sdk'
-import { formatUnits } from 'viem'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 
 // TODO: this should be imported from the SDK
 export type InputAmount = {
@@ -53,15 +50,16 @@ export class LiquidityActionHelpers {
   }
 
   public getAmountsToApprove(
-    humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[]
+    humanAmountsIn: HumanAmountIn[],
+    tokensByAddress: Dictionary<GqlToken>
   ): TokenAmountToApprove[] {
-    return this.toInputAmounts(humanAmountsInWithTokenInfo).map(({ address, rawAmount }, index) => {
-      const humanAmountWithInfo = humanAmountsInWithTokenInfo[index]
+    return this.toInputAmounts(humanAmountsIn).map(({ address, rawAmount }, index) => {
+      const humanAmountIn = humanAmountsIn[index]
       return {
         tokenAddress: address,
-        humanAmount: humanAmountWithInfo.humanAmount || '0',
+        humanAmount: humanAmountIn.humanAmount || '0',
         rawAmount,
-        tokenSymbol: humanAmountWithInfo.symbol,
+        tokenSymbol: tokensByAddress[humanAmountIn.tokenAddress].symbol,
       }
     })
   }

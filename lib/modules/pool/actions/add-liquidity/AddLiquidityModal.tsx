@@ -7,6 +7,7 @@ import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { HumanAmount } from '@balancer/sdk'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
@@ -27,15 +28,14 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
-import { Address } from 'wagmi'
-import { usePool } from '../../usePool'
-import { AddLiquidityFlowButton, HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
-import { useAddLiquidity } from './useAddLiquidity'
-import { BPT_DECIMALS } from '../../pool.constants'
 import { formatUnits } from 'viem'
+import { Address } from 'wagmi'
+import { BPT_DECIMALS } from '../../pool.constants'
 import { bptUsdValue } from '../../pool.helpers'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { usePool } from '../../usePool'
 import { HumanAmountIn } from '../liquidity-types'
+import { AddLiquidityFlowButton } from './AddLiquidityFlowButton'
+import { useAddLiquidity } from './useAddLiquidity'
 
 type Props = {
   isOpen: boolean
@@ -97,15 +97,6 @@ export function AddLiquidityModal({
   // TODO: move userAddress up
   const spenderAddress = useContractAddress('balancer.vaultV2')
   const { userAddress } = useUserAccount()
-  const { getToken } = useTokens()
-  const humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[] = humanAmountsIn.map(
-    humanAmountIn => {
-      return {
-        ...humanAmountIn,
-        ...getToken(humanAmountIn.tokenAddress, pool.chain),
-      } as HumanAmountInWithTokenInfo
-    }
-  )
 
   const bptOutLabel = bptOut ? formatUnits(bptOut.amount, BPT_DECIMALS) : '0'
   const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
@@ -183,8 +174,8 @@ export function AddLiquidityModal({
             tokenAddresses={helpers.poolTokenAddresses}
           >
             <AddLiquidityFlowButton
-              humanAmountsInWithTokenInfo={humanAmountsInWithTokenInfo}
-              poolId={pool.id}
+              humanAmountsIn={humanAmountsIn}
+              pool={pool}
             ></AddLiquidityFlowButton>
           </TokenAllowancesProvider>
         </ModalFooter>
