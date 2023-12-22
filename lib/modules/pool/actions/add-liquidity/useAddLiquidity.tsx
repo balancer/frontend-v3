@@ -103,7 +103,7 @@ export function _useAddLiquidity() {
     */
   const helpers = new LiquidityActionHelpers(pool)
 
-  function useBuildTx(isActiveStep: boolean) {
+  function useBuildCallData(isActiveStep: boolean) {
     return useAddLiquidityBuildCallDataQuery(handler, humanAmountsIn, isActiveStep, pool.id)
   }
 
@@ -117,7 +117,7 @@ export function _useAddLiquidity() {
     bptOut,
     isPreviewQueryLoading,
     setHumanAmountIn,
-    useBuildTx,
+    useBuildCallData,
     isDisabled,
     disabledReason,
     helpers,

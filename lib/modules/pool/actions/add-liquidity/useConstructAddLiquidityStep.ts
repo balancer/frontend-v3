@@ -8,9 +8,9 @@ import { useAddLiquidity } from './useAddLiquidity'
 export function useConstructAddLiquidityStep(poolId: string) {
   const { isActiveStep, activateStep } = useActiveStep()
 
-  const { useBuildTx } = useAddLiquidity()
+  const { useBuildCallData } = useAddLiquidity()
 
-  const addLiquidityQuery = useBuildTx(isActiveStep)
+  const addLiquidityQuery = useBuildCallData(isActiveStep)
 
   const transactionLabels = buildAddLiquidityLabels(poolId)
 

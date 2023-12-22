@@ -71,7 +71,7 @@ export function _useRemoveLiquidity() {
     bptIn
   )
 
-  function useBuildTx(isActiveStep: boolean) {
+  function useBuildCallData(isActiveStep: boolean) {
     return useRemoveLiquidityBuildCallDataQuery(handler, bptIn, isActiveStep, pool.id)
   }
 
@@ -96,7 +96,7 @@ export function _useRemoveLiquidity() {
     isProportional,
     setRemovalType,
     totalUsdValue,
-    useBuildTx,
+    useBuildCallData,
     isPreviewQueryLoading,
     isPriceImpactLoading,
     priceImpact,
