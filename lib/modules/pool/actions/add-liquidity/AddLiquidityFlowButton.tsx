@@ -1,13 +1,11 @@
 import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNextTokenApprovalStep'
-import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { Text, VStack } from '@chakra-ui/react'
-import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
-import { useAddLiquidity } from './useAddLiquidity'
-import { HumanAmountIn } from '../liquidity-types'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { zipObject } from 'lodash'
+import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
+import { Text, VStack } from '@chakra-ui/react'
 import { Pool } from '../../usePool'
+import { HumanAmountIn } from '../liquidity-types'
+import { useAddLiquidity } from './useAddLiquidity'
+import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
 
 type Props = {
   humanAmountsIn: HumanAmountIn[]
@@ -15,11 +13,10 @@ type Props = {
 }
 export function AddLiquidityFlowButton({ humanAmountsIn, pool }: Props) {
   const { helpers } = useAddLiquidity()
-  const { getToken } = useTokens()
+  const { getTokensByTokenAddress } = useTokens()
 
   const tokenAddresses = humanAmountsIn.map(h => h.tokenAddress)
-  const tokens = humanAmountsIn.map(h => getToken(h.tokenAddress, pool.chain))
-  const tokensByAddress = zipObject(tokenAddresses, tokens as GqlToken[])
+  const tokensByAddress = getTokensByTokenAddress(tokenAddresses, pool.chain)
 
   const { tokenApprovalStep, initialAmountsToApprove } = useNextTokenApprovalStep(
     helpers.getAmountsToApprove(humanAmountsIn, tokensByAddress)
