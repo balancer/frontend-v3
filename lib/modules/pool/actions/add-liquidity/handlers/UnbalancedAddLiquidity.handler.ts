@@ -3,21 +3,21 @@ import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   AddLiquidity,
   AddLiquidityKind,
+  AddLiquidityQueryOutput,
   AddLiquidityUnbalancedInput,
   PriceImpact,
   Slippage,
 } from '@balancer/sdk'
-import { AddLiquidityHelpers } from '../AddLiquidityHelpers'
-import { areEmptyAmounts } from '../add-liquidity.helpers'
 import {
   AddLiquidityInputs,
   AddLiquidityOutputs,
   BuildLiquidityInputs,
-  HumanAmountIn,
   PriceImpactAmount,
 } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 import { Pool } from '../../../usePool'
+import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
+import { HumanAmountIn } from '../../liquidity-types'
 
 /**
  * UnbalancedAddLiquidityHandler is a handler that implements the
@@ -27,9 +27,11 @@ import { Pool } from '../../../usePool'
  * asset instead of the wrapped native asset.
  */
 export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
-  addLiquidityHelpers: AddLiquidityHelpers
+  helpers: LiquidityActionHelpers
+  sdkQueryOutput?: AddLiquidityQueryOutput
+
   constructor(pool: Pool) {
-    this.addLiquidityHelpers = new AddLiquidityHelpers(pool)
+    this.helpers = new LiquidityActionHelpers(pool)
   }
 
   public async queryAddLiquidity({
@@ -38,11 +40,9 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     const addLiquidity = new AddLiquidity()
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
-    const sdkQueryOutput = await addLiquidity.query(
-      addLiquidityInput,
-      this.addLiquidityHelpers.poolStateInput
-    )
-    return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
+    this.sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
+
+    return { bptOut: this.sdkQueryOutput.bptOut }
   }
 
   public async calculatePriceImpact({ humanAmountsIn }: AddLiquidityInputs): Promise<number> {
@@ -55,7 +55,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
 
     const priceImpactABA: PriceImpactAmount = await PriceImpact.addLiquidityUnbalanced(
       addLiquidityInput,
-      this.addLiquidityHelpers.poolStateInput
+      this.helpers.poolStateInput
     )
 
     return priceImpactABA.decimal
@@ -66,14 +66,19 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   */
   public async buildAddLiquidityTx(buildInputs: BuildLiquidityInputs): Promise<TransactionConfig> {
     const { account, slippagePercent } = buildInputs.inputs
-    const sdkQueryOutput = buildInputs.sdkQueryOutput
     if (!account || !slippagePercent) throw new Error('Missing account or slippage')
-    if (!sdkQueryOutput) throw new Error('Missing sdkQueryOutput')
+    if (!this.sdkQueryOutput) {
+      console.error('Missing sdkQueryOutput.')
+      throw new Error(
+        `Missing sdkQueryOutput.
+It looks that you did not call useAddLiquidityBtpOutQuery before trying to build the tx config`
+      )
+    }
 
     const addLiquidity = new AddLiquidity()
 
     const { call, to, value } = addLiquidity.buildCall({
-      ...sdkQueryOutput,
+      ...this.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,
@@ -81,7 +86,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
 
     return {
       account,
-      chainId: this.addLiquidityHelpers.chainId,
+      chainId: this.helpers.chainId,
       data: call,
       to,
       value,
@@ -92,14 +97,14 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
    * PRIVATE METHODS
    */
   private constructSdkInput(humanAmountsIn: HumanAmountIn[]): AddLiquidityUnbalancedInput {
-    const amountsIn = this.addLiquidityHelpers.toInputAmounts(humanAmountsIn)
+    const amountsIn = this.helpers.toInputAmounts(humanAmountsIn)
 
     return {
-      chainId: this.addLiquidityHelpers.chainId,
-      rpcUrl: getDefaultRpcUrl(this.addLiquidityHelpers.chainId),
+      chainId: this.helpers.chainId,
+      rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
       amountsIn,
       kind: AddLiquidityKind.Unbalanced,
-      useNativeAssetAsWrappedAmountIn: this.addLiquidityHelpers.isNativeAssetIn(humanAmountsIn),
+      useNativeAssetAsWrappedAmountIn: this.helpers.isNativeAssetIn(humanAmountsIn),
     }
   }
 }

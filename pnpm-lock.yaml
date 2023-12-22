@@ -12,8 +12,8 @@ dependencies:
     specifier: 3.8.0-rc.1
     version: 3.8.0-rc.1(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
   '@balancer/sdk':
-    specifier: github:balancer/b-sdk#price-impact-with-dist
-    version: github.com/balancer/b-sdk/b3c89775e2ddc86b2aa5dfed8af2cd37479a29bf(typescript@5.1.6)(zod@3.22.4)
+    specifier: ^0.5.0
+    version: 0.5.0(typescript@5.1.6)(zod@3.22.4)
   '@chakra-ui/anatomy':
     specifier: ^2.2.2
     version: 2.2.2
@@ -1061,6 +1061,22 @@ packages:
       '@babel/helper-string-parser': 7.23.4
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
+
+  /@balancer/sdk@0.5.0(typescript@5.1.6)(zod@3.22.4):
+    resolution: {integrity: sha512-2ys18xZAfGvwJpQmStmX2O6b/QkIQQWHpm09/qk2oHDg/lhnYYY5otfs14QuEQubdlA3Kth0U0uAxMlc4NxN/w==}
+    engines: {node: '>=18.x'}
+    dependencies:
+      async-retry: 1.3.3
+      decimal.js-light: 2.5.1
+      lodash: 4.17.21
+      pino: 8.16.2
+      viem: 1.18.1(typescript@5.1.6)(zod@3.22.4)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+    dev: false
 
   /@bcoe/v8-coverage@0.2.3:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
@@ -12644,21 +12660,3 @@ packages:
       '@types/react': 18.2.34
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
-
-  github.com/balancer/b-sdk/b3c89775e2ddc86b2aa5dfed8af2cd37479a29bf(typescript@5.1.6)(zod@3.22.4):
-    resolution: {tarball: https://codeload.github.com/balancer/b-sdk/tar.gz/b3c89775e2ddc86b2aa5dfed8af2cd37479a29bf}
-    id: github.com/balancer/b-sdk/b3c89775e2ddc86b2aa5dfed8af2cd37479a29bf
-    name: '@balancer/sdk'
-    version: 0.3.1
-    engines: {node: '>=18.x'}
-    dependencies:
-      async-retry: 1.3.3
-      decimal.js-light: 2.5.1
-      pino: 8.16.2
-      viem: 1.18.1(typescript@5.1.6)(zod@3.22.4)
-    transitivePeerDependencies:
-      - bufferutil
-      - typescript
-      - utf-8-validate
-      - zod
-    dev: false

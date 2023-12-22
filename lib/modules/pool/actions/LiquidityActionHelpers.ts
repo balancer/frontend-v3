@@ -1,15 +1,15 @@
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { PoolStateInput } from '@balancer/sdk'
-import { keyBy } from 'lodash'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { HumanAmount, PoolStateInput } from '@balancer/sdk'
+import { Dictionary, keyBy } from 'lodash'
 import { parseUnits } from 'viem'
 import { Address } from 'wagmi'
-import { toPoolStateInput } from '../../pool.helpers'
-import { Pool } from '../../usePool'
-import { HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
-import { HumanAmountIn } from './add-liquidity.types'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { toPoolStateInput } from '../pool.helpers'
+import { Pool } from '../usePool'
+import { HumanAmountIn } from './liquidity-types'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 
 // TODO: this should be imported from the SDK
 export type InputAmount = {
@@ -27,10 +27,10 @@ const NullPool: Pool = {
 } as unknown as Pool
 
 /*
-  AddLiquidityHelpers provides helper methods to traverse the pool state and prepare data structures needed by add liquidity handlers
-  to implement the AddLiquidityHandler interface
+  This class provides helper methods to traverse the pool state and prepare data structures needed by add/remove liquidity  handlers
+  to implement the Add/RemoveLiquidityHandler interface
 */
-export class AddLiquidityHelpers {
+export class LiquidityActionHelpers {
   constructor(public pool: Pool = NullPool) {}
 
   public get poolStateInput(): PoolStateInput {
@@ -50,15 +50,16 @@ export class AddLiquidityHelpers {
   }
 
   public getAmountsToApprove(
-    humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[]
+    humanAmountsIn: HumanAmountIn[],
+    tokensByAddress: Dictionary<GqlToken>
   ): TokenAmountToApprove[] {
-    return this.toInputAmounts(humanAmountsInWithTokenInfo).map(({ address, rawAmount }, index) => {
-      const humanAmountWithInfo = humanAmountsInWithTokenInfo[index]
+    return this.toInputAmounts(humanAmountsIn).map(({ address, rawAmount }, index) => {
+      const humanAmountIn = humanAmountsIn[index]
       return {
         tokenAddress: address,
-        humanAmount: humanAmountWithInfo.humanAmount || '0',
+        humanAmount: humanAmountIn.humanAmount || '0',
         rawAmount,
-        tokenSymbol: humanAmountWithInfo.symbol,
+        tokenSymbol: tokensByAddress[humanAmountIn.tokenAddress].symbol,
       }
     })
   }
@@ -97,3 +98,14 @@ export class AddLiquidityHelpers {
     return humanAmountsIn.some(amountIn => isSameAddress(amountIn.tokenAddress, nativeAssetAddress))
   }
 }
+
+export const isEmptyAmount = (amountIn: HumanAmountIn) => isEmptyHumanAmount(amountIn.humanAmount)
+
+export const isEmptyHumanAmount = (humanAmount: HumanAmount | '') =>
+  !humanAmount || humanAmount === '0'
+
+export const areEmptyAmounts = (humanAmountsIn: HumanAmountIn[]) =>
+  !humanAmountsIn || humanAmountsIn.length === 0 || humanAmountsIn.every(isEmptyAmount)
+
+export const hasValidHumanAmounts = (humanAmountsIn: HumanAmountIn[]) =>
+  humanAmountsIn.some(a => a.humanAmount && a.humanAmount !== '0')

@@ -1,27 +1,28 @@
 import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNextTokenApprovalStep'
+import { useTokens } from '@/lib/modules/tokens/useTokens'
 import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { Text, VStack } from '@chakra-ui/react'
-import { HumanAmountIn } from './add-liquidity.types'
-import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
+import { Pool } from '../../usePool'
+import { HumanAmountIn } from '../liquidity-types'
 import { useAddLiquidity } from './useAddLiquidity'
-
-export type HumanAmountInWithTokenInfo = HumanAmountIn & GqlToken
+import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
 
 type Props = {
-  humanAmountsInWithTokenInfo: HumanAmountInWithTokenInfo[]
-  poolId: string
+  humanAmountsIn: HumanAmountIn[]
+  pool: Pool
 }
-export function AddLiquidityFlowButton({ humanAmountsInWithTokenInfo, poolId }: Props) {
+export function AddLiquidityFlowButton({ humanAmountsIn, pool }: Props) {
   const { helpers } = useAddLiquidity()
+  const { getTokensByTokenAddress } = useTokens()
+
+  const tokenAddresses = humanAmountsIn.map(h => h.tokenAddress)
+  const tokensByAddress = getTokensByTokenAddress(tokenAddresses, pool.chain)
+
   const { tokenApprovalStep, initialAmountsToApprove } = useNextTokenApprovalStep(
-    helpers.getAmountsToApprove(humanAmountsInWithTokenInfo)
+    helpers.getAmountsToApprove(humanAmountsIn, tokensByAddress)
   )
 
-  const { step: addLiquidityStep } = useConstructAddLiquidityStep(
-    humanAmountsInWithTokenInfo,
-    poolId
-  )
+  const { step: addLiquidityStep } = useConstructAddLiquidityStep(pool.id)
   const steps = [tokenApprovalStep, addLiquidityStep]
 
   function handleJoinCompleted() {

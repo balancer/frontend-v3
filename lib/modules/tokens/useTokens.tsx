@@ -19,6 +19,8 @@ import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { TokenBase } from './token.types'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
+import { Address } from 'wagmi'
+import { Dictionary, zipObject } from 'lodash'
 
 export type UseTokensResult = ReturnType<typeof _useTokens>
 export const TokensContext = createContext<UseTokensResult | null>(null)
@@ -64,6 +66,16 @@ export function _useTokens(
     return tokens.filter(token => token[chainKey] === chain)
   }
 
+  function getTokensByTokenAddress(
+    tokenAddresses: Address[],
+    chain: GqlChain
+  ): Dictionary<GqlToken> {
+    return zipObject(
+      tokenAddresses,
+      tokenAddresses.map(t => getToken(t, chain) as GqlToken)
+    )
+  }
+
   function priceForToken(token: GqlToken): number {
     const price = prices.find(
       price => isSameAddress(price.address, token.address) && price.chain === token.chain
@@ -102,6 +114,7 @@ export function _useTokens(
     priceFor,
     priceForToken,
     getTokensByChain,
+    getTokensByTokenAddress,
     exclNativeAssetFilter,
     nativeAssetFilter,
     usdValueForToken,

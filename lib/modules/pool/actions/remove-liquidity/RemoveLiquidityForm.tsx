@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { useDisclosure } from '@chakra-ui/hooks'
@@ -128,18 +129,25 @@ export function RemoveLiquidityForm() {
   const {
     tokens,
     validTokens,
-    proportionalPercent,
-    setProportionalPercent,
-    singleToken,
-    setSingleToken,
     setProportional,
+    singleTokenAddress,
+    setSingleToken,
+    setSingleTokenAddress,
+    setProportionalAmounts,
+    setSliderPercent,
+    sliderPercent,
+    singleToken,
+    totalUsdValue,
   } = useRemoveLiquidity()
   const { toCurrency } = useCurrency()
   const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
   const [activeTab, setActiveTab] = useState(TABS[0])
 
+  const usdInputAmount = totalUsdValue
+
   function submit() {
+    // TODO: implement isDisabledWithReason
     previewDisclosure.onOpen()
   }
 
@@ -177,13 +185,14 @@ export function RemoveLiquidityForm() {
               </Tooltip>
             </HStack>
             <VStack w="full" gap="md">
-              {/* TODO: hook the slider up to the proportional amounts with more logic */}
+              {/* value={toCurrency(usdInputAmount)} */}
               <InputWithSlider
-                value={proportionalPercent.toString()}
-                setValue={setProportionalPercent}
+                value={sliderPercent.toString()}
+                setValue={setSliderPercent}
+                isNumberInputDisabled
               >
                 <Text>Amount</Text>
-                <Text>{fNum('percentage', proportionalPercent / 100)}</Text>
+                <Text>{fNum('percentage', sliderPercent / 100)}</Text>
               </InputWithSlider>
               {activeTab === TABS[0] && <RemoveLiquidityProportional tokens={tokens} />}
               {activeTab === TABS[1] && (
@@ -198,7 +207,7 @@ export function RemoveLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Total</Text>
                 <HStack>
-                  <NumberText color="GrayText">{toCurrency(0)}</NumberText>
+                  <NumberText color="GrayText">{toCurrency(totalUsdValue)}</NumberText>
                   <Tooltip label="Total" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>

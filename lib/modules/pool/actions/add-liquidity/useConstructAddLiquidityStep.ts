@@ -3,14 +3,14 @@ import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManag
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { Address } from 'wagmi'
 import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
-import { HumanAmountIn } from './add-liquidity.types'
-import { useBuildAddLiquidityQuery } from './queries/useBuildAddLiquidityTxQuery'
+import { useAddLiquidity } from './useAddLiquidity'
 
-export function useConstructAddLiquidityStep(humanAmountsIn: HumanAmountIn[], poolId: string) {
+export function useConstructAddLiquidityStep(poolId: string) {
   const { isActiveStep, activateStep } = useActiveStep()
 
-  //TODO: add slippage
-  const addLiquidityQuery = useBuildAddLiquidityQuery(humanAmountsIn, isActiveStep, poolId)
+  const { useBuildCallData } = useAddLiquidity()
+
+  const addLiquidityQuery = useBuildCallData(isActiveStep)
 
   const transactionLabels = buildAddLiquidityLabels(poolId)
 
@@ -32,7 +32,6 @@ export function useConstructAddLiquidityStep(humanAmountsIn: HumanAmountIn[], po
       transaction?.execution.isLoading ||
       addLiquidityQuery.isLoading,
     error: transaction?.simulation.error || transaction?.execution.error || addLiquidityQuery.error,
-    joinQuery: addLiquidityQuery,
   }
 }
 
