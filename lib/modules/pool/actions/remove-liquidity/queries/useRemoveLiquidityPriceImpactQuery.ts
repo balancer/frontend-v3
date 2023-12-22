@@ -7,19 +7,17 @@ import { useDebounce } from 'use-debounce'
 import { useQuery } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
-import { HumanAmount } from '@balancer/sdk'
-import { isEmpty } from 'lodash'
 import { defaultDebounceMs } from '@/lib/shared/utils/queries'
 
 export function useRemoveLiquidityPriceImpactQuery(
   handler: RemoveLiquidityHandler,
   poolId: string,
-  humanBptIn: HumanAmount | ''
+  bptIn: bigint
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [priceImpact, setPriceImpact] = useState<number | null>(null)
-  const debouncedHumanBptIn = useDebounce(humanBptIn, defaultDebounceMs)[0]
+  const debouncedBptIn = useDebounce(bptIn, defaultDebounceMs)[0]
 
   function queryKey(): string {
     return generateRemoveLiquidityQueryKey({
@@ -27,13 +25,13 @@ export function useRemoveLiquidityPriceImpactQuery(
       userAddress,
       poolId,
       slippage,
-      humanBptIn: debouncedHumanBptIn,
+      bptIn: debouncedBptIn,
     })
   }
 
   async function queryPriceImpact() {
     const _priceImpact = await handler.calculatePriceImpact({
-      humanBptIn: debouncedHumanBptIn,
+      bptIn: debouncedBptIn,
     })
 
     setPriceImpact(_priceImpact)
@@ -46,7 +44,7 @@ export function useRemoveLiquidityPriceImpactQuery(
       return await queryPriceImpact()
     },
     {
-      enabled: isConnected && !isEmpty(debouncedHumanBptIn),
+      enabled: isConnected && debouncedBptIn > 0n,
     }
   )
 

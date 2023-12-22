@@ -7,6 +7,8 @@ import { aPhantomStablePoolStateInputMock } from '../../../__mocks__/pool.builde
 import { Pool } from '../../../usePool'
 import { RemoveLiquidityInputs, RemoveLiquidityType } from '../remove-liquidity.types'
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
+import { BPT_DECIMALS } from '../../../pool.constants'
+import { parseUnits } from 'viem'
 
 const poolMock = aBalWethPoolElementMock() // 80BAL-20WETH
 
@@ -18,7 +20,7 @@ describe('When removing unbalanced liquidity for a weighted pool', () => {
   test('queries amounts out', async () => {
     // TODO: why address and slippage are optional???
     const inputs: RemoveLiquidityInputs = {
-      humanBptIn: '1',
+      bptIn: parseUnits('1', BPT_DECIMALS),
     }
 
     const handler = selectSingleTokenHandler(poolMock)
@@ -38,7 +40,7 @@ describe('When removing unbalanced liquidity for a weighted pool', () => {
     const handler = selectSingleTokenHandler(poolMock)
 
     const inputs: RemoveLiquidityInputs = {
-      humanBptIn: '1',
+      bptIn: parseUnits('1', BPT_DECIMALS),
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
     }
@@ -59,7 +61,7 @@ describe('When removing liquidity from a stable pool', () => {
     const handler = selectSingleTokenHandler(pool)
 
     const inputs: RemoveLiquidityInputs = {
-      humanBptIn: '1',
+      bptIn: parseUnits('1', BPT_DECIMALS),
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
     }

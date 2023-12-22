@@ -7,6 +7,8 @@ import { aPhantomStablePoolStateInputMock } from '../../../__mocks__/pool.builde
 import { Pool } from '../../../usePool'
 import { RemoveLiquidityInputs, RemoveLiquidityType } from '../remove-liquidity.types'
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
+import { parseUnits } from 'viem'
+import { BPT_DECIMALS } from '../../../pool.constants'
 
 const poolMock = aBalWethPoolElementMock() // 80BAL-20WETH
 
@@ -15,7 +17,7 @@ function selectProportionalHandler(pool: Pool) {
 }
 
 const inputs: RemoveLiquidityInputs = {
-  humanBptIn: '1',
+  bptIn: parseUnits('1', BPT_DECIMALS),
   account: defaultTestUserAccount,
   slippagePercent: '0.2',
 }

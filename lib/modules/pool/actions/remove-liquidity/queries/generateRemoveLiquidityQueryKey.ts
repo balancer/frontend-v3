@@ -1,11 +1,9 @@
-import { HumanAmount } from '@balancer/sdk'
-
 type Props = {
   queryId: string
   userAddress: string
   poolId: string
   slippage: string
-  humanBptIn: HumanAmount | ''
+  bptIn: bigint
 }
 
 // Should we share the same function for add and remove liquidity?
@@ -14,7 +12,7 @@ export function generateRemoveLiquidityQueryKey({
   userAddress,
   poolId,
   slippage,
-  humanBptIn,
+  bptIn,
 }: Props): string {
-  return `'Remove_Liquidity:${queryId}:${userAddress}:${poolId}:${slippage}:${humanBptIn}`
+  return `'Remove_Liquidity:${queryId}:${userAddress}:${poolId}:${slippage}:${bptIn}`
 }

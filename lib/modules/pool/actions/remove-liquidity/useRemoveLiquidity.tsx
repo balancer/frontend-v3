@@ -7,7 +7,7 @@ import { LABELS } from '@/lib/shared/labels'
 import { GqlToken, GqlTokenAmountHumanReadable } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
-import { bn } from '@/lib/shared/utils/numbers'
+import { bn, toBigInt } from '@/lib/shared/utils/numbers'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useMemo, useState } from 'react'
 import { usePool } from '../../usePool'
@@ -39,10 +39,7 @@ export function _useRemoveLiquidity() {
   // const maxBptIn = pool.userBalance.totalBalance
   // TODO: Hardcoded until it is ready in the API
   const maxBptIn = 1000
-  const bptIn = bn(maxBptIn).times(sliderPercent / 100)
-
-  // TODO: Do we want to deal with human format
-  const humanBptIn: HumanAmount = bptIn.toFormat() as HumanAmount
+  const bptIn: bigint = toBigInt(bn(maxBptIn).times(sliderPercent / 100))
 
   const totalUsdValue = bn(bptIn).times(bptPrice).toString()
 
@@ -66,22 +63,22 @@ export function _useRemoveLiquidity() {
   const { isPriceImpactLoading, priceImpact } = useRemoveLiquidityPriceImpactQuery(
     handler,
     pool.id,
-    humanBptIn
+    bptIn
   )
 
   const { amountsOut, isPreviewQueryLoading } = useRemoveLiquidityPreviewQuery(
     handler,
     pool.id,
-    humanBptIn
+    bptIn
   )
 
   function useBuildTx(isActiveStep: boolean) {
-    return useBuildRemoveLiquidityQuery(handler, humanBptIn, isActiveStep, pool.id)
+    return useBuildRemoveLiquidityQuery(handler, bptIn, isActiveStep, pool.id)
   }
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
-    [isEmptyHumanAmount(humanBptIn), 'You must specify a valid bpt in']
+    [bptIn === 0n, 'You must specify a valid bpt in']
   )
 
   return {

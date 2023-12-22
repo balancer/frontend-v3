@@ -2,24 +2,23 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { HumanAmount, TokenAmount } from '@balancer/sdk'
+import { defaultDebounceMs } from '@/lib/shared/utils/queries'
+import { TokenAmount } from '@balancer/sdk'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { useQuery } from 'wagmi'
-import { isEmptyHumanAmount } from '../../LiquidityActionHelpers'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { generateRemoveLiquidityQueryKey } from './generateRemoveLiquidityQueryKey'
-import { defaultDebounceMs } from '@/lib/shared/utils/queries'
 
 export function useRemoveLiquidityPreviewQuery(
   handler: RemoveLiquidityHandler,
   poolId: string,
-  humanBptIn: HumanAmount | ''
+  bptIn: bigint
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [amountsOut, setAmountsOut] = useState<TokenAmount[] | undefined>(undefined)
-  const debouncedHumanBptIn = useDebounce(humanBptIn, defaultDebounceMs)[0]
+  const debouncedBptIn = useDebounce(bptIn, defaultDebounceMs)[0]
 
   function queryKey(): string {
     return generateRemoveLiquidityQueryKey({
@@ -27,12 +26,12 @@ export function useRemoveLiquidityPreviewQuery(
       userAddress,
       poolId,
       slippage,
-      humanBptIn: debouncedHumanBptIn,
+      bptIn: debouncedBptIn,
     })
   }
 
   async function queryBptIn() {
-    const { amountsOut } = await handler.queryRemoveLiquidity({ humanBptIn: debouncedHumanBptIn })
+    const { amountsOut } = await handler.queryRemoveLiquidity({ bptIn: debouncedBptIn })
 
     setAmountsOut(amountsOut)
 
@@ -45,7 +44,7 @@ export function useRemoveLiquidityPreviewQuery(
       return await queryBptIn()
     },
     {
-      enabled: isConnected && !isEmptyHumanAmount(debouncedHumanBptIn),
+      enabled: isConnected && debouncedBptIn > 0n,
       onError: (error: Error) => console.log('Error in queryRemoveLiquidity', error.name),
     }
   )

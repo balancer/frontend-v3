@@ -42,6 +42,10 @@ export function bn(val: Numberish): BigNumber {
   return new BigNumber(val.toString())
 }
 
+export function toBigInt(val: Numberish): bigint {
+  return BigInt(val.toString())
+}
+
 type FormatOpts = { abbreviated?: boolean }
 
 /**
