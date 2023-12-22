@@ -7,7 +7,7 @@ import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
-import { getPoolTypeLabel } from '../../pool.utils'
+import { getAprLabel, getPoolTypeLabel } from '../../pool.utils'
 
 interface Props {
   pool: PoolListItem
@@ -19,7 +19,7 @@ function PoolNameLabel({ pool }: { pool: PoolListItem }) {
   if (pool) {
     const displayTokens = pool.displayTokens
     return (
-      <Text fontWeight="bold" noOfLines={1}>
+      <Text fontWeight="bold" noOfLines={2} h="12">
         {displayTokens.map((token, idx) => {
           return (
             <>
@@ -34,10 +34,10 @@ function PoolNameLabel({ pool }: { pool: PoolListItem }) {
   }
 }
 
-function StatCard({ label, value }: { label: string; value: ReactNode }) {
+function StatCard({ label, value }: { label: ReactNode; value: ReactNode }) {
   return (
-    <Card h="full" variant="gradient">
-      <VStack alignItems="flex-start" w="full" p="md" gap="0">
+    <Card h="full" variant="gradient" p="sm">
+      <VStack alignItems="flex-start" w="full" gap="0">
         <Text fontWeight="medium" variant="secondary" fontSize="sm">
           {label}
         </Text>
@@ -71,7 +71,7 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
             <PoolNameLabel pool={pool} />
           </VStack>
         </HStack>
-        <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} />
+        <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} pb="lg" />
         <Grid w="full" h="full" templateColumns="1fr 1fr" templateRows="1fr 1fr" gap="sm">
           <GridItem>
             <StatCard label="TVL" value={toCurrency(pool.dynamicData.totalLiquidity)} />
@@ -79,26 +79,32 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
           <GridItem>
             <StatCard label="Volume(24h)" value={toCurrency(pool.dynamicData.volume24h)} />
           </GridItem>
-          <GridItem colSpan={2}>
+          <GridItem>
             <StatCard
-              label="APR"
+              label="My Liquidity"
               value={
-                <MemoizedAprTooltip
-                  data={pool.dynamicData.apr}
-                  poolId={pool.id}
-                  textProps={{ fontSize: '1rem', fontWeight: 'bold' }}
-                />
+                userAddress
+                  ? toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })
+                  : '-'
               }
             />
           </GridItem>
-          {userAddress && (
-            <GridItem>
-              <StatCard
-                label="My Liquidity"
-                value={toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
-              />
-            </GridItem>
-          )}
+          <GridItem>
+            <StatCard
+              label={
+                <HStack>
+                  <span>APR</span>
+                  <MemoizedAprTooltip
+                    data={pool.dynamicData.apr}
+                    poolId={pool.id}
+                    textProps={{ fontSize: '1rem', fontWeight: 'bold' }}
+                    onlySparkles
+                  />
+                </HStack>
+              }
+              value={<Text fontSize="sm">{getAprLabel(pool.dynamicData.apr.apr)}</Text>}
+            />
+          </GridItem>
         </Grid>
       </VStack>
     </Card>

@@ -60,7 +60,7 @@ function AprTooltip({ data, textProps, onlySparkles, placement, aprLabel, apr }:
         <PopoverTrigger>
           <Button
             minWidth="0"
-            //height="auto"
+            h="auto"
             variant="unstyled"
             _active={{ outline: 'none' }}
             _focus={{ outline: 'none' }}

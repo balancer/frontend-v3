@@ -10,7 +10,7 @@ type Props = {
 
 export function TokenIconStack({ tokens, chain, size = 64, ...rest }: Props & StackProps) {
   return (
-    <HStack py="md" {...rest}>
+    <HStack {...rest}>
       {tokens.map((token, i) => (
         <Box
           key={token.address}
