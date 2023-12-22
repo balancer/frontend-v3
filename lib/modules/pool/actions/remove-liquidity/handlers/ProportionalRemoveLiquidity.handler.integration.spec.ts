@@ -60,7 +60,7 @@ describe('When proportionally removing liquidity for a weighted pool', () => {
   })
 })
 
-describe('When removing liquidity from an stable pool', () => {
+describe('When removing liquidity from a stable pool', () => {
   test('queries remove liquidity', async () => {
     const pool = aPhantomStablePoolStateInputMock() as Pool // wstETH-rETH-sfrxETH
 

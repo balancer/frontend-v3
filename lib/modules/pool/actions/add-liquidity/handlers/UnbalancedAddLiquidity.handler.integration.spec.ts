@@ -79,7 +79,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
   })
 })
 
-describe('When adding unbalanced liquidity for an stable pool', () => {
+describe('When adding unbalanced liquidity for a stable pool', () => {
   test('calculates price impact', async () => {
     const pool = aPhantomStablePoolStateInputMock() as Pool // wstETH-rETH-sfrxETH
 
