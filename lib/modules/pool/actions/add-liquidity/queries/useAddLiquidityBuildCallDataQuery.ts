@@ -10,7 +10,7 @@ import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { addLiquidityKeys } from './add-liquidity-keys'
 
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
-export function useBuildAddLiquidityQuery(
+export function useAddLiquidityBuildCallDataQuery(
   handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
   isActiveStep: boolean,

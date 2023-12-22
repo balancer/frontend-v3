@@ -15,7 +15,7 @@ import { useAddLiquidityPreviewQuery } from './queries/useAddLiquidityPreviewQue
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { HumanAmountIn } from '../liquidity-types'
 import { LiquidityActionHelpers, areEmptyAmounts } from '../LiquidityActionHelpers'
-import { useBuildAddLiquidityQuery } from './queries/useBuildAddLiquidityTxQuery'
+import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
@@ -104,7 +104,7 @@ export function _useAddLiquidity() {
   const helpers = new LiquidityActionHelpers(pool)
 
   function useBuildTx(isActiveStep: boolean) {
-    return useBuildAddLiquidityQuery(handler, humanAmountsIn, isActiveStep, pool.id)
+    return useAddLiquidityBuildCallDataQuery(handler, humanAmountsIn, isActiveStep, pool.id)
   }
 
   return {
