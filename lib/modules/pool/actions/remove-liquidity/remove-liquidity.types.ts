@@ -6,20 +6,20 @@ import {
 } from '@balancer/sdk'
 import { Address } from 'wagmi'
 
-type ProportionalRemoveLiquidityInputs = {
-  humanBptIn: HumanAmount | ''
-}
+type CommonRemoveLiquidityInputs = { account?: Address; slippagePercent?: string }
 
-type SingleTokenRemoveLiquidityInputs = {
+export type ProportionalRemoveLiquidityInputs = {
   humanBptIn: HumanAmount | ''
-}
+} & CommonRemoveLiquidityInputs
 
-// ProportionalRemoveLiquidityInputs and SingleTokenRemoveLiquidityInputs have currently the same shape
-// but we prefer to keep this interface explicit (in the future there could be divergence or new types like Unbalanced kind)
-export type RemoveLiquidityInputs = (
+export type SingleTokenRemoveLiquidityInputs = {
+  humanBptIn: HumanAmount | ''
+  tokenOut: Address
+} & CommonRemoveLiquidityInputs
+
+export type RemoveLiquidityInputs =
   | ProportionalRemoveLiquidityInputs
   | SingleTokenRemoveLiquidityInputs
-) & { account?: Address; slippagePercent?: string }
 
 // sdkQueryOutput is optional because it will be only used in cases where we use the SDK to query/build the transaction
 // We will probably need a more abstract interface to be used by edge cases
