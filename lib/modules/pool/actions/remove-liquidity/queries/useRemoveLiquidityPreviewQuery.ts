@@ -6,14 +6,15 @@ import { defaultDebounceMs } from '@/lib/shared/utils/queries'
 import { TokenAmount } from '@balancer/sdk'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
-import { useQuery } from 'wagmi'
+import { Address, useQuery } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { removeLiquidityKeys } from './remove-liquidity-keys'
 
 export function useRemoveLiquidityPreviewQuery(
   handler: RemoveLiquidityHandler,
   poolId: string,
-  bptIn: bigint
+  bptIn: bigint,
+  tokenOut?: Address
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
@@ -34,6 +35,7 @@ export function useRemoveLiquidityPreviewQuery(
       slippage,
       poolId,
       bptIn,
+      tokenOut,
     }),
     async () => {
       return await queryBptIn()

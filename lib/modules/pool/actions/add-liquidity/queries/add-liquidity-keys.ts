@@ -15,5 +15,6 @@ export const addLiquidityKeys = {
   priceImpact: (params: LiquidityParams) =>
     [addLiquidity, 'price-impact', liquidityParams(params)] as const,
   preview: (params: LiquidityParams) => [addLiquidity, 'preview', liquidityParams(params)] as const,
-  buildTx: (params: LiquidityParams) => [addLiquidity, 'buildTx', liquidityParams(params)] as const,
+  buildCallData: (params: LiquidityParams) =>
+    [addLiquidity, 'buildCallData', liquidityParams(params)] as const,
 }

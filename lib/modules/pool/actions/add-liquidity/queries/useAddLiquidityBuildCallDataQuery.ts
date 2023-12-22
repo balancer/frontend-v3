@@ -22,7 +22,7 @@ export function useAddLiquidityBuildCallDataQuery(
   const { allowances } = useTokenAllowances()
 
   const addLiquidityQuery = useQuery(
-    addLiquidityKeys.buildTx({
+    addLiquidityKeys.buildCallData({
       userAddress,
       slippage,
       poolId,

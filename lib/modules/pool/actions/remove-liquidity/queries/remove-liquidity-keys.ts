@@ -1,3 +1,5 @@
+import { Address } from 'viem'
+
 const removeLiquidity = 'remove-liquidity'
 
 type LiquidityParams = {
@@ -5,9 +7,10 @@ type LiquidityParams = {
   poolId: string
   slippage: string
   bptIn: bigint
+  tokenOut?: Address // only used by single token removal type
 }
-function liquidityParams({ userAddress, poolId, slippage, bptIn }: LiquidityParams) {
-  return `${userAddress}:${poolId}:${slippage}:${bptIn}`
+function liquidityParams({ userAddress, poolId, slippage, bptIn, tokenOut }: LiquidityParams) {
+  return `${userAddress}:${poolId}:${slippage}:${bptIn}:${tokenOut}`
 }
 export const removeLiquidityKeys = {
   priceImpact: (params: LiquidityParams) =>
@@ -15,5 +18,5 @@ export const removeLiquidityKeys = {
   preview: (params: LiquidityParams) =>
     [removeLiquidity, 'preview', liquidityParams(params)] as const,
   buildCallData: (params: LiquidityParams) =>
-    [removeLiquidity, 'buildTx', liquidityParams(params)] as const,
+    [removeLiquidity, 'buildCallData', liquidityParams(params)] as const,
 }

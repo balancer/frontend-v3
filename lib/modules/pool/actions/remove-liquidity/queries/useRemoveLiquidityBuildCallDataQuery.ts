@@ -2,7 +2,7 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { useQuery } from 'wagmi'
+import { Address, useQuery } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { removeLiquidityKeys } from './remove-liquidity-keys'
 
@@ -11,7 +11,8 @@ export function useRemoveLiquidityBuildCallDataQuery(
   handler: RemoveLiquidityHandler,
   bptIn: bigint,
   isActiveStep: boolean,
-  poolId: string
+  poolId: string,
+  tokenOut?: Address
 ) {
   const { userAddress, isConnected } = useUserAccount()
 
@@ -23,6 +24,7 @@ export function useRemoveLiquidityBuildCallDataQuery(
       slippage,
       poolId,
       bptIn,
+      tokenOut,
     }),
     async () => {
       const inputs = {
