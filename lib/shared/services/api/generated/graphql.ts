@@ -2108,6 +2108,14 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+        } | null
       }
     | {
         __typename: 'GqlPoolElement'
@@ -2311,6 +2319,14 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+        } | null
       }
     | {
         __typename: 'GqlPoolGyro'
@@ -2658,6 +2674,14 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+        } | null
       }
     | {
         __typename: 'GqlPoolLinear'
@@ -2863,6 +2887,14 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+        } | null
       }
     | {
         __typename: 'GqlPoolLiquidityBootstrapping'
@@ -3208,6 +3240,14 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+        } | null
       }
     | {
         __typename: 'GqlPoolMetaStable'
@@ -3409,6 +3449,14 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+        } | null
       }
     | {
         __typename: 'GqlPoolStable'
@@ -3610,6 +3658,14 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+        } | null
       }
     | {
         __typename: 'GqlPoolWeighted'
@@ -3955,6 +4011,14 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+        } | null
       }
 }
 
@@ -5494,6 +5558,20 @@ export const GetPoolDocument = {
                           ],
                         },
                       },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'userBalance' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'stakedBalance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'walletBalance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'stakedBalanceUsd' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'walletBalanceUsd' } },
                     ],
                   },
                 },

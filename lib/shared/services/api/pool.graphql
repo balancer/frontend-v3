@@ -1,5 +1,5 @@
-query GetPool($id: String!, $chain: GqlChain) {
-  pool: poolGetPool(id: $id, chain: $chain) {
+query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
+  pool: poolGetPool(id: $id, chain: $chain, userAddress: $userAddress) {
     id
     address
     name
@@ -199,6 +199,13 @@ query GetPool($id: String!, $chain: GqlChain) {
           }
         }
       }
+    }
+    userBalance {
+      stakedBalance
+      totalBalance
+      walletBalance
+      stakedBalanceUsd
+      walletBalanceUsd
     }
     ... on GqlPoolWeighted {
       nestingType
@@ -993,11 +1000,7 @@ query GetPoolTokensDynamicData($addresses: [String!]!) {
 }
 
 query GetPoolJoinsExitsSwaps($first: Int, $skip: Int, $poolId: String!, $chainId: GqlChain!) {
-  swaps: poolGetSwaps(
-    first: $first
-    skip: $skip
-    where: { poolIdIn: [$poolId], chainIn: [$chainId] }
-  ) {
+  swaps: poolGetSwaps(first: $first, skip: $skip, where: { poolIdIn: [$poolId], chainIn: [$chainId] }) {
     id
     poolId
     timestamp
@@ -1009,11 +1012,7 @@ query GetPoolJoinsExitsSwaps($first: Int, $skip: Int, $poolId: String!, $chainId
     userAddress
     valueUSD
   }
-  joinExits: poolGetJoinExits(
-    first: $first
-    skip: $skip
-    where: { poolIdIn: [$poolId], chainIn: [$chainId] }
-  ) {
+  joinExits: poolGetJoinExits(first: $first, skip: $skip, where: { poolIdIn: [$poolId], chainIn: [$chainId] }) {
     id
     timestamp
     tx

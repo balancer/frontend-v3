@@ -10,6 +10,7 @@ import { usePool } from '../usePool'
 import { Address } from 'viem'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 const TABS = [
   {
@@ -32,6 +33,7 @@ const TABS = [
 export default function PoolMyLiquidity() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain } = usePool()
+  const { toCurrency } = useCurrency()
   const pathname = usePathname()
 
   function handleTabChanged(option: ButtonGroupOption) {
@@ -62,7 +64,7 @@ export default function PoolMyLiquidity() {
                   </VStack>
                   <VStack spacing="1" alignItems="flex-end">
                     <Heading fontWeight="bold" size="h6">
-                      $0.00
+                      {toCurrency(pool.userBalance?.stakedBalanceUsd || 0)}
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">
                       8.69%-12.34%
