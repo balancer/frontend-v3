@@ -8,7 +8,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useTokens } from '../../useTokens'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { tokenFormat } from '@/lib/shared/utils/numbers'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 type Props = {
   token: GqlToken
@@ -28,7 +28,8 @@ export function TokenSelectListRow({
   const { toCurrency } = useCurrency()
   const { usdValueForToken } = useTokens()
 
-  const tokenBalance = userBalance && !isBalancesLoading ? tokenFormat(userBalance.formatted) : '-'
+  const tokenBalance =
+    userBalance && !isBalancesLoading ? fNum('token', userBalance.formatted) : '-'
   const usdValue =
     userBalance && !isBalancesLoading ? usdValueForToken(token, userBalance.formatted) : '0'
   const fiatValue = userBalance && !isBalancesLoading ? toCurrency(usdValue) : '-'

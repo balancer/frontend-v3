@@ -2,12 +2,35 @@ import {
   aTokenExpandedMock,
   someMinimalTokensMock,
 } from '@/lib/modules/tokens/__mocks__/token.builders'
-import { GqlChain, GqlPoolElement, GqlPoolToken } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GqlChain,
+  GqlPoolElement,
+  GqlPoolToken,
+  GqlPoolType,
+} from '@/lib/shared/services/api/generated/graphql'
 import { DeepPartial } from '@apollo/client/utilities'
 import { mock } from 'vitest-mock-extended'
 import { aGqlStakingMock } from './gqlStaking.builders'
 import { balAddress, poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { getPoolAddress } from '@balancer/sdk'
+
+export function aBalWethPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlPoolElement {
+  const poolId = '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014' // 80BAL-20WETH
+  const tokens = [
+    aTokenExpandedMock({ address: balAddress }),
+    aTokenExpandedMock({ address: wETHAddress }),
+  ]
+
+  const options2 = {
+    id: poolId,
+    address: getPoolAddress(poolId),
+    allTokens: tokens,
+    tokens: tokens as unknown as GqlPoolToken[],
+    ...options,
+  }
+
+  return aGqlPoolElementMock(options2)
+}
 
 export function aWjAuraWethPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlPoolElement {
   const tokens = [
@@ -56,6 +79,7 @@ export function aGqlPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlP
     ],
     dynamicData: {
       totalLiquidity: '176725796.079429',
+      totalShares: '13131700.67391808961378162',
       lifetimeVolume: '1221246014.434743',
       lifetimeSwapFees: '5171589.170118799',
       volume24h: '545061.9941007149',
@@ -70,7 +94,7 @@ export function aGqlPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlP
     owner: '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b',
     symbol: 'B-80BAL-20WETH',
     staking: aGqlStakingMock(),
-    type: 'WEIGHTED',
+    type: GqlPoolType.Weighted,
   }
   return Object.assign({}, defaultPool, defaultPool1, ...options)
 }

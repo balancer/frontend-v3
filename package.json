@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.8.0-rc.1",
-    "@balancer/sdk": "github:balancer/b-sdk#price-impact-with-dist",
+    "@balancer/sdk": "^0.5.0",
     "@chakra-ui/anatomy": "^2.2.2",
     "@chakra-ui/hooks": "^2.2.1",
     "@chakra-ui/icons": "^2.1.0",
@@ -93,6 +93,7 @@
     "@graphql-codegen/typescript-document-nodes": "^4.0.1",
     "@graphql-codegen/typescript-msw": "^1.1.6",
     "@graphql-typed-document-node/core": "^3.2.0",
+    "@sentry/types": "^7.89.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/react-hooks": "^8.0.1",

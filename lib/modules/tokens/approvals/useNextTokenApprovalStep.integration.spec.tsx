@@ -1,5 +1,5 @@
 import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import { DefaultTokenAllowancesTestProvider, testHook } from '@/test/utils/custom-renderers'
+import { DefaultAddLiquidityTestProvider, testHook } from '@/test/utils/custom-renderers'
 import { testPublicClient } from '@/test/utils/wagmi'
 import { waitFor } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
@@ -19,7 +19,7 @@ async function resetForkState() {
 
 function testUseTokenApprovals(amountsToApprove: TokenAmountToApprove[]) {
   const { result } = testHook(() => useNextTokenApprovalStep(amountsToApprove), {
-    wrapper: DefaultTokenAllowancesTestProvider,
+    wrapper: DefaultAddLiquidityTestProvider,
   })
   return result
 }

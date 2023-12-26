@@ -13,9 +13,10 @@ import { FetchPoolProps } from './pool.types'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
-import { usePoolHelpers } from './pool.helpers'
+import { calcBptPrice, usePoolHelpers } from './pool.helpers'
 import { usePublicClient } from 'wagmi'
 import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/usePoolEnrichWithOnChainData'
+import { bn } from '@/lib/shared/utils/numbers'
 
 export type UsePoolResponse = ReturnType<typeof _usePool> & {
   chain: GqlChain
@@ -50,8 +51,11 @@ export function _usePool({
   // fallbacks to ensure the pool is always present. We prefer the pool with on chain data
   const pool = poolWithOnChainData || data?.pool || initialData.pool
 
+  const bptPrice = calcBptPrice(pool)
+
   return {
     pool,
+    bptPrice,
     loading,
     // TODO: we assume here that we never need to reload the entire pool.
     // this assumption may need to be questioned

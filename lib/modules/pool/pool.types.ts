@@ -2,13 +2,10 @@ import {
   GetPoolsQuery,
   GetPoolsQueryVariables,
   GqlChain,
-  GqlPoolFilterType,
-  GqlPoolMinimalType,
+  GqlPoolType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
-  GqlPoolUserBalance,
 } from '@/lib/shared/services/api/generated/graphql'
-import { HumanAmount } from '@balancer/sdk'
 import {
   parseAsArrayOf,
   parseAsInteger,
@@ -19,13 +16,6 @@ import {
 export type PoolList = GetPoolsQuery['pools']
 
 export type PoolListItem = PoolList[0]
-
-interface GqlPoolUserBalanceExtended extends GqlPoolUserBalance {
-  totalBalanceUsd?: HumanAmount
-}
-export interface DecoratedPoolListItem extends PoolListItem {
-  userBalance?: GqlPoolUserBalanceExtended | null
-}
 
 export enum PoolVariant {
   v2 = 'v2',
@@ -50,49 +40,29 @@ export interface PoolsQueryVariables extends GetPoolsQueryVariables {
 }
 
 export const poolTypeFilters = [
-  GqlPoolFilterType.Weighted,
-  GqlPoolFilterType.Stable,
-  GqlPoolFilterType.LiquidityBootstrapping,
-  GqlPoolFilterType.Gyro,
+  GqlPoolType.Weighted,
+  GqlPoolType.Stable,
+  GqlPoolType.LiquidityBootstrapping,
+  GqlPoolType.Gyro,
 ] as const
 
 export type PoolFilterType = (typeof poolTypeFilters)[number]
 
 export type SortingState = PoolsColumnSort[]
 
-// We need to map toggalable pool types to their corresponding set of GqlPoolFilterTypes.
-export const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolFilterType[] } = {
-  [GqlPoolFilterType.Weighted]: [GqlPoolFilterType.Weighted],
-  [GqlPoolFilterType.Stable]: [
-    GqlPoolFilterType.Stable,
-    GqlPoolFilterType.PhantomStable,
-    GqlPoolFilterType.MetaStable,
-    GqlPoolFilterType.Gyro,
-    GqlPoolFilterType.Gyro3,
-    GqlPoolFilterType.Gyroe,
+// We need to map toggalable pool types to their corresponding set of GqlPoolTypes.
+export const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolType[] } = {
+  [GqlPoolType.Weighted]: [GqlPoolType.Weighted],
+  [GqlPoolType.Stable]: [
+    GqlPoolType.Stable,
+    GqlPoolType.PhantomStable,
+    GqlPoolType.MetaStable,
+    GqlPoolType.Gyro,
+    GqlPoolType.Gyro3,
+    GqlPoolType.Gyroe,
   ],
-  [GqlPoolFilterType.LiquidityBootstrapping]: [GqlPoolFilterType.LiquidityBootstrapping],
-  [GqlPoolFilterType.Gyro]: [
-    GqlPoolFilterType.Gyro,
-    GqlPoolFilterType.Gyro3,
-    GqlPoolFilterType.Gyroe,
-  ],
-}
-
-export const poolTypeHash: { [key in GqlPoolMinimalType]: string } = {
-  [GqlPoolMinimalType.Weighted]: 'Weighted',
-  [GqlPoolMinimalType.Element]: 'Element',
-  [GqlPoolMinimalType.Gyro]: 'Gyro 2-CLP',
-  [GqlPoolMinimalType.Gyro3]: 'Gyro 3-CLP',
-  [GqlPoolMinimalType.Gyroe]: 'Gyro E-CLP',
-  [GqlPoolMinimalType.Investment]: 'Managed',
-  [GqlPoolMinimalType.Linear]: 'Linear',
-  [GqlPoolMinimalType.LiquidityBootstrapping]: 'LBP',
-  [GqlPoolMinimalType.MetaStable]: 'MetaStable',
-  [GqlPoolMinimalType.PhantomStable]: 'PhantomStable',
-  [GqlPoolMinimalType.Stable]: 'Stable',
-  [GqlPoolMinimalType.Unknown]: 'Unknown',
-  [GqlPoolMinimalType.Fx]: 'FX',
+  [GqlPoolType.LiquidityBootstrapping]: [GqlPoolType.LiquidityBootstrapping],
+  [GqlPoolType.Gyro]: [GqlPoolType.Gyro, GqlPoolType.Gyro3, GqlPoolType.Gyroe],
 }
 
 export const orderByHash: { [key: string]: string } = {

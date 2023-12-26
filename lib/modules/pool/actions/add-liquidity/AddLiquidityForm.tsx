@@ -23,20 +23,22 @@ import { useRef } from 'react'
 import { Address } from 'wagmi'
 import { AddLiquidityModal } from './AddLiquidityModal'
 import { useAddLiquidity } from './useAddLiquidity'
+import { fNum, safeTokenFormat } from '@/lib/shared/utils/numbers'
+import { BPT_DECIMALS } from '../../pool.constants'
 
 export function AddLiquidityForm() {
   const {
-    amountsIn,
+    humanAmountsIn: amountsIn,
     totalUSDValue,
-    setAmountIn,
+    setHumanAmountIn: setAmountIn,
     tokens,
     validTokens,
-    formattedPriceImpact,
+    priceImpact,
     isPriceImpactLoading,
-    bptOutUnits,
-    isBptOutQueryLoading,
-    isAddLiquidityDisabled,
-    addLiquidityDisabledReason,
+    bptOut,
+    isPreviewQueryLoading,
+    isDisabled,
+    disabledReason,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
 
@@ -48,11 +50,8 @@ export function AddLiquidityForm() {
     return amountIn ? amountIn.humanAmount : ''
   }
 
-  function submit() {
-    if (!isAddLiquidityDisabled) {
-      previewDisclosure.onOpen()
-    }
-  }
+  const bptOutLabel = safeTokenFormat(bptOut?.amount, BPT_DECIMALS)
+  const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
   return (
     <TokenBalancesProvider tokens={validTokens}>
@@ -106,7 +105,7 @@ export function AddLiquidityForm() {
                 <Text color="GrayText">Bpt out</Text>
                 <HStack>
                   <NumberText color="GrayText">
-                    {isBptOutQueryLoading ? <Skeleton w="12" h="full" /> : bptOutUnits}
+                    {isPreviewQueryLoading ? <Skeleton w="12" h="full" /> : bptOutLabel}
                   </NumberText>
                   <Tooltip label="Bpt out" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
@@ -115,14 +114,14 @@ export function AddLiquidityForm() {
               </HStack>
             </VStack>
 
-            <Tooltip label={isAddLiquidityDisabled ? addLiquidityDisabledReason : ''}>
+            <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={isAddLiquidityDisabled}
-                onClick={submit}
+                isDisabled={isDisabled}
+                onClick={() => !isDisabled && previewDisclosure.onOpen()}
               >
                 Next
               </Button>

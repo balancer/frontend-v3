@@ -2,8 +2,7 @@ import {
   GetPoolQuery,
   GqlChain,
   GqlPoolLinearNested,
-  GqlPoolPhantomStableNested,
-  GqlPoolUnion,
+  GqlPoolComposableStableNested,
   GqlTokenPrice,
 } from '@/lib/shared/services/api/generated/graphql'
 import { Address, formatUnits, PublicClient } from 'viem'
@@ -64,7 +63,7 @@ async function updateWithOnChainBalanceData({
   for (const token of clone.tokens) {
     if (
       token.__typename === 'GqlPoolTokenLinear' ||
-      token.__typename === 'GqlPoolTokenPhantomStable'
+      token.__typename === 'GqlPoolTokenComposableStable'
     ) {
       token.pool.totalShares = formatUnits(supplyMap[token.pool.id].totalSupply, 18)
     }
@@ -75,7 +74,7 @@ async function updateWithOnChainBalanceData({
 
     if (
       token.__typename === 'GqlPoolTokenLinear' ||
-      token.__typename === 'GqlPoolTokenPhantomStable'
+      token.__typename === 'GqlPoolTokenComposableStable'
     ) {
       const percentOfNestedSupply =
         (balancesMap[pool.id].balances[token.index] * WAD) / supplyMap[token.pool.id].totalSupply
@@ -158,13 +157,13 @@ async function getBalanceDataForPool({
       poolIds.push(token.pool.id)
       calls.push(getSupplyCall(token.pool))
       calls.push(getBalancesCall(token.pool.id, vaultV2Address))
-    } else if (token.__typename === 'GqlPoolTokenPhantomStable') {
+    } else if (token.__typename === 'GqlPoolTokenComposableStable') {
       poolIds.push(token.pool.id)
       calls.push(getSupplyCall(token.pool))
       calls.push(getBalancesCall(token.pool.id, vaultV2Address))
     }
 
-    if (token.__typename === 'GqlPoolTokenPhantomStable') {
+    if (token.__typename === 'GqlPoolTokenComposableStable') {
       for (const nestedToken of token.pool.tokens) {
         if (nestedToken.__typename === 'GqlPoolTokenLinear') {
           poolIds.push(nestedToken.pool.id)
@@ -215,14 +214,17 @@ function getBalancesCall(
   }
 }
 
-function getSupplyCall(pool: GqlPoolUnion | GqlPoolPhantomStableNested | GqlPoolLinearNested): {
+function getSupplyCall(
+  pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested | GqlPoolLinearNested
+): {
   poolId: string
   type: 'supply'
   call: ContractFunctionConfig
 } {
   const isLinear = pool.__typename === 'GqlPoolLinear' || pool.__typename == 'GqlPoolLinearNested'
-  const isPhantomStable =
-    pool.__typename === 'GqlPoolPhantomStable' || pool.__typename == 'GqlPoolPhantomStableNested'
+  const isComposableStable =
+    pool.__typename === 'GqlPoolComposableStable' ||
+    pool.__typename == 'GqlPoolComposableStableNested'
 
   return {
     poolId: pool.id,
@@ -233,7 +235,7 @@ function getSupplyCall(pool: GqlPoolUnion | GqlPoolPhantomStableNested | GqlPool
         : // composable stable pool has actual and total supply functions exposed
           balancerV2ComposableStablePoolV5ABI,
       address: pool.address as Address,
-      functionName: isPhantomStable
+      functionName: isComposableStable
         ? 'getActualSupply'
         : isLinear
         ? 'getVirtualSupply'

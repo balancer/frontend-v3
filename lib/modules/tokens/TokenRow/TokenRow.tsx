@@ -5,16 +5,17 @@ import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { ReactNode } from 'react'
 import { TokenIcon } from '../TokenIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { Numberish, tokenFormat } from '@/lib/shared/utils/numbers'
+import { Numberish, fNum } from '@/lib/shared/utils/numbers'
 
 type Props = {
   address: Address
   chain: GqlChain
   value: Numberish
   customRender?: (token: GqlToken) => ReactNode | ReactNode[]
+  isSelected?: boolean
 }
 
-export default function TokenRow({ address, value, customRender, chain }: Props) {
+export default function TokenRow({ address, value, customRender, chain, isSelected }: Props) {
   const { getToken, usdValueForToken } = useTokens()
   const { toCurrency } = useCurrency()
   const token = getToken(address, chain)
@@ -26,7 +27,12 @@ export default function TokenRow({ address, value, customRender, chain }: Props)
       <HStack>
         <TokenIcon chain={chain} address={address} size={32} alt={token?.symbol || address} />
         <VStack spacing="1" alignItems="flex-start">
-          <Heading fontWeight="bold" as="h6" fontSize="1rem">
+          <Heading
+            fontWeight="bold"
+            as="h6"
+            fontSize="1rem"
+            variant={isSelected ? 'primary' : 'secondary'}
+          >
             {token?.symbol}
           </Heading>
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
@@ -37,7 +43,7 @@ export default function TokenRow({ address, value, customRender, chain }: Props)
       <HStack spacing="8">
         <VStack spacing="1" alignItems="flex-end">
           <Heading fontWeight="bold" as="h6" fontSize="1rem">
-            {tokenFormat(value) || 0.0}
+            {fNum('token', value)}
           </Heading>
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
             {toCurrency(totalValue)}
