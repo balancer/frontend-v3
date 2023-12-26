@@ -53,7 +53,6 @@ export function _usePool({
 
   // fallbacks to ensure the pool is always present. We prefer the pool with on chain data
   const pool = poolWithOnChainData || data?.pool || initialData.pool
-
   const bptPrice = calcBptPrice(pool)
 
   return {
