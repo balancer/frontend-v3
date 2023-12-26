@@ -7,7 +7,6 @@ import { fNum } from '@/lib/shared/utils/numbers'
 export default function PoolMetaBadges() {
   const { pool, chain } = usePool()
 
-  console.log('lmao', pool)
   return (
     <HStack>
       <Badge

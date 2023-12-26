@@ -1,10 +1,11 @@
 import { Box, HStack, VStack, Text } from '@chakra-ui/react'
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import Image from 'next/image'
 import { usePool } from '../../usePool'
 import * as echarts from 'echarts/core'
+import { motion } from 'framer-motion'
 
 const colors = [
   {
@@ -39,8 +40,15 @@ const colors = [
 
 export default function WeightedPoolWeightChart() {
   const { pool, chain } = usePool()
-
   const eChartsRef = useRef<EChartsReactCore | null>(null)
+  const [isChartLoaded, setIsChartLoaded] = useState(false)
+
+  useEffect(() => {
+    eChartsRef.current?.getEchartsInstance().on('finished', () => {
+      setIsChartLoaded(true)
+    })
+  }, [])
+
   const chartOption = useMemo(() => {
     return {
       tooltip: {
@@ -92,6 +100,7 @@ export default function WeightedPoolWeightChart() {
     <VStack spacing="6">
       <Box width="250px" height="250px" mt="-8" position="relative">
         <Box
+          as={motion.div}
           rounded="full"
           bg="white"
           position="absolute"
@@ -104,6 +113,8 @@ export default function WeightedPoolWeightChart() {
           display="flex"
           justifyContent="center"
           alignItems="center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isChartLoaded ? 1 : 0, transition: { delay: 0.1 } }}
         >
           <Image
             src={`/images/chains/${chain}.svg`}
@@ -112,6 +123,40 @@ export default function WeightedPoolWeightChart() {
             height={45}
           />
         </Box>
+        <Box
+          as={motion.div}
+          rounded="full"
+          bg="white"
+          position="absolute"
+          top="48%"
+          transform="translateY(0)"
+          left="90px"
+          zIndex={3}
+          width="70px"
+          height="70px"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isChartLoaded ? 0.2 : 0, transition: { delay: 0.3 } }}
+        />
+        <Box
+          as={motion.div}
+          rounded="full"
+          bg="white"
+          position="absolute"
+          top="46%"
+          transform="translateY(0)"
+          left="85px"
+          zIndex={3}
+          width="80px"
+          height="80px"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isChartLoaded ? 0.1 : 0, transition: { delay: 0.5 } }}
+        />
         <Box width="full" height="full">
           <ReactECharts option={chartOption} onEvents={{}} ref={eChartsRef} />
         </Box>
