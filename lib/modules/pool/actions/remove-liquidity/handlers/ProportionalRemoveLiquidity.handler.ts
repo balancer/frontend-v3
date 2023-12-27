@@ -8,7 +8,7 @@ import {
   RemoveLiquidityQueryOutput,
   Slippage,
 } from '@balancer/sdk'
-import { Address, parseEther } from 'viem'
+import { Address } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
 import { Pool } from '../../../usePool'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'

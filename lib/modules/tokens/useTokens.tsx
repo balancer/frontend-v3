@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import {
   GetTokenPricesDocument,
   GetTokenPricesQuery,
@@ -13,14 +15,12 @@ import {
 } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { createContext, PropsWithChildren, useCallback } from 'react'
-import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import { TokenBase } from './token.types'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
-import { Address } from 'wagmi'
+import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { Dictionary, zipObject } from 'lodash'
+import { PropsWithChildren, createContext, useCallback } from 'react'
+import { Address } from 'wagmi'
+import { TokenBase } from './token.types'
 
 export type UseTokensResult = ReturnType<typeof _useTokens>
 export const TokensContext = createContext<UseTokensResult | null>(null)
