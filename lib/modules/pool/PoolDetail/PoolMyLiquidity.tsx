@@ -7,10 +7,13 @@ import ButtonGroup, {
 import { Box, Button, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { usePool } from '../usePool'
-import { Address } from 'viem'
+import { Address, parseUnits } from 'viem'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { keyBy, sumBy } from 'lodash'
+import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
+import { useTokens } from '../../tokens/useTokens'
 
 const TABS = [
   {
@@ -25,19 +28,82 @@ const TABS = [
     value: 'staked',
     label: 'Staked',
   },
-  {
-    value: 'third-parties',
-    label: '3rd parties',
-  },
+  // {
+  //   value: 'third-parties',
+  //   label: '3rd parties',
+  // },
 ]
 export default function PoolMyLiquidity() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain } = usePool()
   const { toCurrency } = useCurrency()
+  const { getToken, usdValueForToken } = useTokens()
+
   const pathname = usePathname()
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
+  }
+
+  function getBalanceToUseForTokenAmounts(useTotalRegardless?: boolean) {
+    if (useTotalRegardless) {
+      return parseUnits(pool.userBalance?.totalBalance || '0', 18)
+    }
+    switch (activeTab.value) {
+      case 'all':
+        return parseUnits(pool.userBalance?.totalBalance || '0', 18)
+      case 'staked':
+        return parseUnits(pool.userBalance?.stakedBalance || '0', 18)
+      case 'unstaked':
+        return (
+          parseUnits(pool.userBalance?.stakedBalance || '0', 18) -
+          parseUnits(pool.userBalance?.totalBalance || '0', 18)
+        )
+      default:
+        return parseUnits(pool.userBalance?.totalBalance || '0', 18)
+    }
+  }
+
+  function calculateUserPoolTokenBalances(useTotalRegardless?: boolean) {
+    return keyBy(
+      getProportionalExitAmountsFromScaledBptIn(
+        getBalanceToUseForTokenAmounts(useTotalRegardless),
+        pool.tokens,
+        pool.dynamicData.totalShares
+      ),
+      'address'
+    )
+  }
+
+  function getTitlePrefix() {
+    switch (activeTab.value) {
+      case 'all':
+        return 'total'
+      case 'staked':
+        return 'staked'
+      case 'unstaked':
+        return 'unstaked'
+      default:
+        return ''
+    }
+  }
+
+  function getTotalBalanceUsd() {
+    const tokenBalances = calculateUserPoolTokenBalances(true)
+    const totalBalanceUsd = sumBy(Object.values(tokenBalances), tokenBalance =>
+      parseFloat(usdValueForToken(getToken(tokenBalance.address, chain), tokenBalance.amount))
+    )
+
+    switch (activeTab.value) {
+      case 'all':
+        return totalBalanceUsd
+      case 'staked':
+        return pool.userBalance?.stakedBalanceUsd
+      case 'unstaked':
+        return totalBalanceUsd - (pool.userBalance?.stakedBalanceUsd || 0)
+      default:
+        return totalBalanceUsd
+    }
   }
 
   return (
@@ -56,7 +122,7 @@ export default function PoolMyLiquidity() {
                 <HStack py="4" px="4" width="full" justifyContent="space-between">
                   <VStack spacing="1" alignItems="flex-start">
                     <Heading fontWeight="bold" size="h6">
-                      My balance
+                      My {getTitlePrefix()} balance
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">
                       APR range
@@ -64,7 +130,7 @@ export default function PoolMyLiquidity() {
                   </VStack>
                   <VStack spacing="1" alignItems="flex-end">
                     <Heading fontWeight="bold" size="h6">
-                      {toCurrency(pool.userBalance?.stakedBalanceUsd || 0)}
+                      {toCurrency(getTotalBalanceUsd() || 0)}
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">
                       8.69%-12.34%
@@ -80,7 +146,7 @@ export default function PoolMyLiquidity() {
                       key={`my-liquidity-token-${token.address}`}
                       address={token.address as Address}
                       // TODO: Fill pool balances
-                      value={0}
+                      value={calculateUserPoolTokenBalances()[token.address].amount}
                     />
                   )
                 })}

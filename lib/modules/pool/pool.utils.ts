@@ -1,7 +1,14 @@
-import { GqlChain, GqlPoolAprValue, GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GqlChain,
+  GqlPoolAprValue,
+  GqlPoolTokenBase,
+  GqlPoolType,
+} from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolVariant } from './pool.types'
 import { fNum } from '@/lib/shared/utils/numbers'
+import { TokenAmountHumanReadable } from '../tokens/token.types'
+import { formatUnits, parseUnits } from 'viem'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -76,4 +83,41 @@ const poolTypeLabelMap: { [key in GqlPoolType]: string } = {
 
 export function getPoolTypeLabel(type: GqlPoolType): string {
   return poolTypeLabelMap[type]
+}
+
+export function getProportionalExitAmountsForBptIn(
+  bptInHumanReadable: string,
+  poolTokens: GqlPoolTokenBase[],
+  poolTotalShares: string
+): TokenAmountHumanReadable[] {
+  const bptInAmountScaled = parseUnits(bptInHumanReadable, 18)
+  const bptTotalSupply = parseUnits(poolTotalShares, 18)
+
+  return poolTokens.map(token => {
+    const tokenBalance = parseUnits(token.totalBalance, token.decimals)
+    const tokenProportionalAmount = (bptInAmountScaled * tokenBalance) / bptTotalSupply
+
+    return {
+      address: token.address,
+      amount: formatUnits(tokenProportionalAmount, token.decimals),
+    }
+  })
+}
+
+export function getProportionalExitAmountsFromScaledBptIn(
+  bptIn: bigint,
+  poolTokens: GqlPoolTokenBase[],
+  poolTotalShares: string
+): TokenAmountHumanReadable[] {
+  const bptTotalSupply = parseUnits(poolTotalShares, 18)
+
+  return poolTokens.map(token => {
+    const tokenBalance = parseUnits(token.totalBalance, token.decimals)
+    const tokenProportionalAmount = (bptIn * tokenBalance) / bptTotalSupply
+
+    return {
+      address: token.address,
+      amount: formatUnits(tokenProportionalAmount, token.decimals),
+    }
+  })
 }
