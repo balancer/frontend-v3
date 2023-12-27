@@ -4,7 +4,6 @@ import { aGqlPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders
 import { buildDefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers'
 import { mainnet } from 'wagmi'
 import { _useAddLiquidity } from './useAddLiquidity'
-import { HumanAmount } from '@balancer/sdk'
 import { HumanAmountIn } from '../liquidity-types'
 import { Dictionary } from 'lodash'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
