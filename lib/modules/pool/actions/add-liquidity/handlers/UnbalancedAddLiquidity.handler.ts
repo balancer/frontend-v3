@@ -64,7 +64,9 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   /*
     sdkQueryOutput is the result of the query that we run in the add liquidity form
   */
-  public async buildAddLiquidityTx(buildInputs: BuildLiquidityInputs): Promise<TransactionConfig> {
+  public async buildAddLiquidityCallData(
+    buildInputs: BuildLiquidityInputs
+  ): Promise<TransactionConfig> {
     const { account, slippagePercent } = buildInputs.inputs
     if (!account || !slippagePercent) throw new Error('Missing account or slippage')
     if (!this.sdkQueryOutput) {
