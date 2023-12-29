@@ -1,13 +1,13 @@
 import React from 'react'
 import { Box, Card, HStack, Heading, VStack } from '@chakra-ui/react'
 import PoolBadges from './PoolBadges'
-import { useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { usePool } from '../usePool'
 import { getAprLabel } from '../pool.utils'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 export default function PoolStats() {
   const { pool } = usePool()
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
 
   return (
     <Card

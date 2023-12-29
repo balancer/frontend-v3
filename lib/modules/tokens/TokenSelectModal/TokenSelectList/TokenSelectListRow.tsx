@@ -5,8 +5,10 @@ import { TokenIcon } from '../../TokenIcon'
 import { TokenAmount } from '../../token.types'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { tokenFormat, useNumbers } from '@/lib/shared/hooks/useNumbers'
 import { useTokens } from '../../useTokens'
+import { NumberText } from '@/lib/shared/components/typography/NumberText'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 type Props = {
   token: GqlToken
@@ -23,10 +25,11 @@ export function TokenSelectListRow({
   ...rest
 }: Props & BoxProps) {
   const { isConnected } = useUserAccount()
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
   const { usdValueForToken } = useTokens()
 
-  const tokenBalance = userBalance && !isBalancesLoading ? tokenFormat(userBalance.formatted) : '-'
+  const tokenBalance =
+    userBalance && !isBalancesLoading ? fNum('token', userBalance.formatted) : '-'
   const usdValue =
     userBalance && !isBalancesLoading ? usdValueForToken(token, userBalance.formatted) : '0'
   const fiatValue = userBalance && !isBalancesLoading ? toCurrency(usdValue) : '-'
@@ -61,16 +64,12 @@ export function TokenSelectListRow({
         </HStack>
         {isConnected && (
           <VStack align="end" justify="center" spacing="none">
-            <Text
-              title={userBalance?.amount.toString()}
-              style={{ fontVariantNumeric: 'tabular-nums ' }}
-              {...textStyles}
-            >
+            <NumberText title={userBalance?.amount.toString()} {...textStyles}>
               {tokenBalance}
-            </Text>
-            <Text fontSize="sm" style={{ fontVariantNumeric: 'tabular-nums ' }} {...textStyles}>
+            </NumberText>
+            <NumberText fontSize="sm" {...textStyles}>
               {fiatValue}
-            </Text>
+            </NumberText>
           </VStack>
         )}
       </HStack>

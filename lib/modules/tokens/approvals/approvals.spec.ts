@@ -1,13 +1,28 @@
 import { SupportedChainId } from '@/lib/config/config.types'
 import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import { MAX_BIGINT } from '@/lib/shared/hooks/useNumbers'
-import { filterRequiredTokenApprovals, isDoubleApprovalRequired } from './approval-rules'
+import {
+  TokenAmountToApprove,
+  filterRequiredTokenApprovals,
+  isDoubleApprovalRequired,
+} from './approval-rules'
+import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
+import { testRawAmount } from '@/test/utils/numbers'
 
 const chainId: SupportedChainId = 1
 
-const amountsToApprove = [
-  { tokenAddress: wETHAddress, amount: 10n },
-  { tokenAddress: wjAuraAddress, amount: 20n },
+const amountsToApprove: TokenAmountToApprove[] = [
+  {
+    tokenAddress: wETHAddress,
+    humanAmount: '10',
+    rawAmount: testRawAmount('10'),
+    tokenSymbol: 'WETH',
+  },
+  {
+    tokenAddress: wjAuraAddress,
+    humanAmount: '10',
+    rawAmount: testRawAmount('10'),
+    tokenSymbol: 'wjAura',
+  },
 ]
 
 const currentTokenAllowances = {
@@ -58,8 +73,10 @@ describe('filterRequiredTokenApprovals', () => {
       })
     ).toEqual([
       {
-        amount: 10n,
+        humanAmount: '10',
+        rawAmount: 10000000000000000000n,
         tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        tokenSymbol: 'WETH',
       },
     ])
   })

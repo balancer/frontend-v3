@@ -2,7 +2,7 @@
 
 import {
   GqlChain,
-  GqlPoolFilterType,
+  GqlPoolType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
 } from '@/lib/shared/services/api/generated/graphql'
@@ -31,6 +31,19 @@ export function usePoolListQueryState() {
     'textSearch',
     poolListQueryStateParsers.textSearch
   )
+  const [userAddress, setUserAddress] = useQueryState(
+    'userAddress',
+    poolListQueryStateParsers.userAddress
+  )
+
+  // Set internal checked state
+  function toggleUserAddress(checked: boolean, address: string) {
+    if (checked) {
+      setUserAddress(address)
+    } else {
+      setUserAddress('')
+    }
+  }
 
   // Set internal checked state
   function toggleNetwork(checked: boolean, network: GqlChain) {
@@ -76,22 +89,22 @@ export function usePoolListQueryState() {
     setTextSearch(text)
   }
 
-  function poolTypeLabel(poolType: GqlPoolFilterType) {
+  function poolTypeLabel(poolType: GqlPoolType) {
     switch (poolType) {
-      case GqlPoolFilterType.Weighted:
+      case GqlPoolType.Weighted:
         return 'Weighted'
-      case GqlPoolFilterType.Stable:
+      case GqlPoolType.Stable:
         return 'Stable'
-      case GqlPoolFilterType.LiquidityBootstrapping:
+      case GqlPoolType.LiquidityBootstrapping:
         return 'Liquidity Bootstrapping'
-      case GqlPoolFilterType.Gyro:
+      case GqlPoolType.Gyro:
         return 'CLP'
       default:
         return poolType.toLowerCase()
     }
   }
 
-  const totalFilterCount = networks.length + poolTypes.length
+  const totalFilterCount = networks.length + poolTypes.length + (userAddress ? 1 : 0)
   const sorting: SortingState = orderBy
     ? [{ id: orderBy, desc: orderDirection === GqlPoolOrderDirection.Desc }]
     : []
@@ -115,6 +128,7 @@ export function usePoolListQueryState() {
     where: {
       poolTypeIn: mappedPoolTypes,
       chainIn: networks.length > 0 ? networks : PROJECT_CONFIG.supportedNetworks,
+      userAddress,
     },
     textSearch,
   }
@@ -129,6 +143,7 @@ export function usePoolListQueryState() {
       networks,
       textSearch,
     },
+    toggleUserAddress,
     toggleNetwork,
     togglePoolType,
     poolTypeLabel,
@@ -143,5 +158,6 @@ export function usePoolListQueryState() {
     networks,
     mappedPoolTypes,
     queryVariables,
+    userAddress,
   }
 }

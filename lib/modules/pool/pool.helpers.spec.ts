@@ -1,27 +1,14 @@
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { aGqlPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
-import { aGqlStakingMock, defaultGaugeAddressMock } from '@/test/msw/builders/gqlStaking.builders'
-import { buildGqlPoolHelpers } from './pool.helpers'
+import { poolId } from '@/lib/debug-helpers'
+import { MockApi } from '@/lib/shared/hooks/balancer-api/MockApi'
+import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
+import { toPoolStateInput } from './pool.helpers'
 
-const poolHelpers = buildGqlPoolHelpers(aGqlPoolElementMock(), GqlChain.Mainnet)
+test('gets pool state input from pool', () => {
+  const wjAuraWethPoolMock = new MockApi().getPool(poolId) // Balancer Weighted wjAura and WETH
+  const pool = aWjAuraWethPoolElementMock()
 
-describe('Gql pool helpers', () => {
-  test('returns pool explorer link', () => {
-    expect(poolHelpers.getBlockExplorerPoolLink()).toBe(
-      'https://etherscan.io/address/0x5c6ee304399dbdb9c8ef030ab642b10820db8f56'
-    )
-  })
-
-  test('returns gauge explorer link when the pool', () => {
-    const staking = aGqlStakingMock()
-    const poolHelpers = buildGqlPoolHelpers(aGqlPoolElementMock({ staking }), GqlChain.Mainnet)
-
-    expect(poolHelpers.getBlockExplorerGaugeLink()).toBe(
-      `https://etherscan.io/address/${defaultGaugeAddressMock}`
-    )
-  })
-
-  test('returns gauge explorer link when the pool gauge is not defined', () => {
-    expect(poolHelpers.getBlockExplorerGaugeLink()).toBe('https://etherscan.io/address/undefined')
-  })
+  const poolInputState = toPoolStateInput(pool)
+  expect(poolInputState.address).toBe(wjAuraWethPoolMock.address)
+  expect(poolInputState.id).toBe(wjAuraWethPoolMock.id)
+  // expect(poolInputState.tokens).toEqual(expect.objectContaining(wjAuraWethPoolMock.tokens))
 })

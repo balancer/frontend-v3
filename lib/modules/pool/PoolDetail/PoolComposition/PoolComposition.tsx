@@ -4,13 +4,14 @@ import React from 'react'
 import { usePool } from '../../usePool'
 import { Address } from 'viem'
 import { GqlPoolToken } from '@/lib/shared/services/api/generated/graphql'
-import { useNumbers, weightFormat } from '@/lib/shared/hooks/useNumbers'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import Image from 'next/image'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 export function PoolComposition() {
   const { pool, chain } = usePool()
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
   const { getPoolTokenWeightByBalance } = useTokens()
 
   return (
@@ -56,7 +57,8 @@ export function PoolComposition() {
                         return (
                           <VStack minWidth="100px" spacing="1" alignItems="flex-end">
                             <Heading fontWeight="bold" as="h6" fontSize="1rem">
-                              {weightFormat(
+                              {fNum(
+                                'weight',
                                 getPoolTokenWeightByBalance(
                                   pool.dynamicData.totalLiquidity,
                                   poolToken,
@@ -66,7 +68,7 @@ export function PoolComposition() {
                             </Heading>
                             <HStack spacing="1">
                               <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                                {weightFormat(poolToken.weight || '0')}
+                                {fNum('weight', poolToken.weight || '0')}
                               </Text>
                               <Image
                                 src="/images/icons/bullseye.svg"

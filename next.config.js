@@ -1,5 +1,7 @@
-/** @type {import('next').NextConfig} */
+const { withSentryConfig } = require('@sentry/nextjs')
+const { sentryOptions, sentryWebpackPluginOptions } = require('./sentry.config')
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: config => {
     config.resolve.fallback = { fs: false, net: false, tls: false }
@@ -15,31 +17,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'raw.githubusercontent.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'assets.coingecko.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'api.dicebear.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'assets-cdn.trustwallet.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'beethoven-assets.s3.eu-central-1.amazonaws.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.ankr.com',
+        hostname: '**',
       },
     ],
   },
   pageExtensions: ['tsx', `${process.env.PROTOCOL}.tsx`],
 }
 
-module.exports = nextConfig
+module.exports = withSentryConfig(nextConfig, sentryWebpackPluginOptions, sentryOptions)

@@ -41,6 +41,7 @@ query GetPools(
       holdersCount
       swapFee
       swapsCount
+      totalShares
       apr {
         apr {
           ... on GqlPoolAprTotal {
@@ -105,6 +106,12 @@ query GetPools(
     owner
     symbol
     type
+    userBalance {
+      totalBalance
+      totalBalanceUsd
+      stakedBalance
+      walletBalance
+    }
   }
   count: poolGetPoolsCount(
     first: $first

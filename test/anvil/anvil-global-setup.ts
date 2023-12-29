@@ -14,7 +14,9 @@ const port = 8555
 const anvilOptions: CreateAnvilOptions = {
   forkUrl,
   port,
-  forkBlockNumber: 17878719,
+  // From time to time this block gets outdated having this kind of error in integration tests:
+  // ContractFunctionExecutionError: The contract function "queryJoin" returned no data ("0x").
+  // forkBlockNumber: 18814198,
 }
 
 // https://www.npmjs.com/package/@viem/anvil

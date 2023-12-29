@@ -1,7 +1,9 @@
+import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+
 /* TBD:
  Maybe adding a command to reload this file (with 10 tokens for each chain) from a real request
  */
-export const allFakeGqlTokens = [
+export const allFakeGqlTokens: GqlToken[] = [
   {
     __typename: 'GqlToken',
     address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
@@ -9,6 +11,7 @@ export const allFakeGqlTokens = [
     symbol: 'ETH',
     decimals: 18,
     chainId: 1,
+    chain: GqlChain.Mainnet,
     logoURI:
       'https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
     priority: 0,
@@ -21,6 +24,7 @@ export const allFakeGqlTokens = [
     symbol: 'WETH',
     decimals: 18,
     chainId: 1,
+    chain: GqlChain.Mainnet,
     logoURI:
       'https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
     priority: 0,
@@ -33,6 +37,7 @@ export const allFakeGqlTokens = [
     symbol: 'BAL',
     decimals: 18,
     chainId: 1,
+    chain: GqlChain.Mainnet,
     logoURI:
       'https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xba100000625a3754423978a60c9317c58a424e3d.png',
     priority: 0,
@@ -45,6 +50,7 @@ export const allFakeGqlTokens = [
     symbol: 'RPL',
     decimals: 18,
     chainId: 1,
+    chain: GqlChain.Mainnet,
     logoURI:
       'https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xd33526068d116ce69f19a9ee46f0bd304f21a51f.png',
     priority: 0,
@@ -57,6 +63,7 @@ export const allFakeGqlTokens = [
     symbol: 'USDT',
     decimals: 6,
     chainId: 1,
+    chain: GqlChain.Mainnet,
     logoURI:
       'https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
     priority: 0,
@@ -69,6 +76,7 @@ export const allFakeGqlTokens = [
     symbol: 'DAI',
     decimals: 18,
     chainId: 1,
+    chain: GqlChain.Mainnet,
     logoURI:
       'https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png',
     priority: 0,
@@ -81,6 +89,7 @@ export const allFakeGqlTokens = [
     symbol: 'aUSDC',
     decimals: 6,
     chainId: 1,
+    chain: GqlChain.Mainnet,
     logoURI: 'https://assets.coingecko.com/coins/images/11674/large/aUSDC.png?1592546449',
     priority: 0,
     tradable: true,
@@ -92,6 +101,7 @@ export const allFakeGqlTokens = [
     symbol: 'USDC',
     decimals: 6,
     chainId: 1,
+    chain: GqlChain.Mainnet,
     logoURI:
       'https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
     priority: 0,

@@ -2,7 +2,7 @@ import { ThemeTypings, extendTheme } from '@chakra-ui/react'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
 import tinycolor from 'tinycolor2'
 
-const balColors = {
+export const balColors = {
   primary: {
     '50': '#eaf6ff',
     '100': '#daedff',
@@ -115,7 +115,7 @@ const balColors = {
 const createBackgroundOpacity = (baseColor: string, opacity: number) =>
   `hsla(${baseColor}, ${opacity})`
 
-const tokens = {
+export const tokens = {
   colors: {
     light: {
       background: {
@@ -124,6 +124,9 @@ const tokens = {
         baseWithOpacity: createBackgroundOpacity(balColors.base.hslLight, 0.4),
         special: balColors.gradient.dawnLight,
         specialSecondary: balColors.gradient.sunsetLight,
+      },
+      border: {
+        base: balColors.brown['100'],
       },
       // Button colors
       button: {
@@ -135,10 +138,10 @@ const tokens = {
           } 100%)`,
         },
         border: {
-          tertiary: tinycolor(balColors.base.light).lighten(15),
           disabled: 'gray.400',
         },
         text: {
+          tertiary: balColors.gray['600'],
           disabled: 'gray.400',
         },
       },
@@ -171,10 +174,36 @@ const tokens = {
       },
       // Input colors
       input: {
-        border: '#ff0000',
-        bg: 'hsla(43,23%,96%,1)',
-        bgHover: 'hsla(43,23%,98%,1)',
-        bgFocus: 'hsla(43,23%,100%,1)',
+        labelFocus: balColors.purple['500'], // Not implemented
+        labelError: balColors.purple['600'], // Not implemented
+
+        fontDefault: 'gray.700',
+        fontFocus: 'gray.900',
+        fontPlaceholder: tinycolor(balColors.brown['500']).setAlpha(0.5),
+        fontError: balColors.red['900'],
+        fontHint: 'gray.500',
+        fontHintError: balColors.red['600'],
+
+        caret: 'blue.400',
+
+        bgDefault: balColors.base.light,
+        bgHover: tinycolor(balColors.base.light).lighten(4),
+        bgHoverDisabled: tinycolor(balColors.red[500]).setAlpha(0.2),
+        bgFocus: tinycolor(balColors.base.light).lighten(8),
+        bgError: tinycolor(balColors.red['50']).setAlpha(0.5),
+        bgErrorFocus: tinycolor(balColors.base.light).lighten(8),
+
+        borderDefault: tinycolor(balColors.base.light).darken(10),
+        borderHover: balColors.purple['500'],
+        borderFocus: balColors.purple['500'],
+        borderError: balColors.red['500'],
+        borderErrorFocus: balColors.red['600'],
+        borderDisabled: 'blue',
+
+        clearIcon: tinycolor(balColors.base.light).lighten(5),
+        clearHover: tinycolor(balColors.base.light).lighten(1),
+        clearError: balColors.red['500'],
+        clearErrorHover: balColors.red['600'],
       },
     },
     dark: {
@@ -184,6 +213,10 @@ const tokens = {
         baseWithOpacity: createBackgroundOpacity(balColors.base.hslDark, 0.94),
         special: balColors.gradient.dawnDark,
         specialSecondary: balColors.gradient.sunsetDark,
+      },
+      // Border colors
+      border: {
+        base: balColors.gray['600'],
       },
       // Button colors
       button: {
@@ -199,10 +232,10 @@ const tokens = {
           disabled: 'gray.500',
         },
         text: {
+          tertiary: balColors.gray['300'],
           disabled: 'gray.500',
         },
       },
-
       // Font colors
       text: {
         primary: 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
@@ -212,7 +245,6 @@ const tokens = {
         link: `linear-gradient(45deg, ${balColors.purple['400']} 0%, ${balColors.purple['200']} 100%)`,
         linkHover: `linear-gradient(45deg, ${balColors.purple['200']} 0%, ${balColors.purple['50']} 100%)`,
       },
-
       // card colors
       card: {
         border: {
@@ -231,10 +263,36 @@ const tokens = {
         },
       },
       input: {
-        border: 'red.500',
-        bg: 'hsla(216, 12%, 25%, 1)',
-        bgHover: 'hsla(216, 12%, 25%, 1)',
-        bgFocus: 'hsla(216, 12%, 21%, 1)',
+        labelFocus: balColors.purple['400'],
+        labelError: balColors.red['400'],
+
+        fontDefault: 'brown.200',
+        fontFocus: 'white',
+        fontPlaceholder: tinycolor(balColors.gray['500']).setAlpha(0.8),
+        fontError: balColors.red['200'],
+        fontHint: 'gray.400',
+        fontHintError: balColors.red['400'],
+
+        caret: 'green.400',
+
+        bgDefault: tinycolor(balColors.base.dark).darken(2),
+        bgHover: tinycolor(balColors.base.dark).darken(4),
+        bgHoverDisabled: tinycolor(balColors.red[500]).setAlpha(0.2),
+        bgFocus: tinycolor(balColors.base.dark).darken(8),
+        bgError: '#474046',
+        bgErrorFocus: tinycolor(balColors.base.dark).darken(8),
+
+        borderDefault: tinycolor(balColors.base.dark).lighten(10),
+        borderHover: balColors.purple['400'],
+        borderFocus: balColors.purple['400'],
+        borderError: balColors.red['400'],
+        borderErrorFocus: balColors.red['300'],
+        borderDisabled: 'yellow',
+
+        clearIcon: tinycolor(balColors.base.dark).lighten(5),
+        clearHover: tinycolor(balColors.base.light).lighten(1),
+        clearError: balColors.red['400'],
+        clearErrorHover: balColors.red['500'],
       },
     },
   },
@@ -242,10 +300,56 @@ const tokens = {
     light: {
       shadowInnerBase:
         '0px 2px 4px 0px rgba(0, 0, 0, 0.05) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.05) inset, 0px 10px 20px 0px rgba(0, 0, 0, 0.05) inset',
+      btnDefault:
+        '0.1rem 0.1rem 0.1rem 0px rgba(255, 255, 255, 0.5) inset, -0.1rem -0.1rem 0.1rem 0px rgba(0, 0, 0, 0.15) inset, 0.125rem 0.125rem 0.125rem 0px rgba(0, 0, 0, 0.15)',
+      btnDefaultActive:
+        '0px 0px 8px 0px rgba(0, 0, 0, 0.25) inset, 0px 0px 2px 0px rgba(0, 0, 0, 0.3) inset',
+      btnTertiary:
+        '0.1rem 0.1rem 0.1rem 0px rgba(255, 255, 255, 0.5) inset, -0.1rem -0.1rem 0.1rem 0px rgba(0, 0, 0, 0.15) inset, 0.1rem 0.1rem 0.1rem 0px rgba(0, 0, 0, 0.07)',
+      fontDefault: '0px -1px 0px rgba(255, 255, 255, 0.05), 0px 1px 2px rgba(0, 0, 0, 0.2)',
+      fontLight: '0px -1px 0px rgba(255, 255, 255, 0.30), 0px 1px 2px rgba(0, 0, 0, 0.20)',
+      fontDark: '0px -1px 0px rgba(255, 255, 255, 0.30), 0px 1px 2px rgba(0, 0, 0, 0.05)',
+      input: {
+        innerBase:
+          '0px 2px 4px 0px rgba(0, 0, 0, 0.05) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.05) inset, 0px 10px 20px 0px rgba(0, 0, 0, 0.05) inset, 0px -1px 0px 0px rgba(255, 255, 255, 0.8) inset',
+        innerFocus: `0px 2px 4px 0px ${tinycolor(balColors.purple['500']).setAlpha(
+          0.1
+        )} inset, 0px 4px 8px 0px ${tinycolor(balColors.purple['500']).setAlpha(
+          0.2
+        )} inset, 0 0 0 1px ${balColors.purple['500']}`,
+        innerError: `0px 2px 4px 0px ${tinycolor(balColors.red['500']).setAlpha(
+          0.1
+        )} inset, 0px 4px 8px 0px ${tinycolor(balColors.red['500']).setAlpha(
+          0.1
+        )} inset, 0 0 0 1px ${balColors.red['500']}`,
+      },
     },
     dark: {
       shadowInnerBase:
         '0px 2px 4px 0px rgba(0, 0, 0, 0.10) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.10) inset, 0px 10px 20px 0px rgba(0, 0, 0, 0.10) inset',
+      btnDefault:
+        '0.1rem 0.1rem 0.1rem 0px rgba(255, 255, 255, 0.75) inset, -0.1rem -0.1rem 0.1rem 0px rgba(0, 0, 0, 0.3) inset, 0.125rem 0.125rem 0.125rem 0px rgba(0, 0, 0, 0.25)',
+      btnDefaultActive:
+        '0px 0px 8px 0px rgba(0, 0, 0, 0.50) inset, 0px 0px 4px 0px rgba(0, 0, 0, 0.70) inset',
+      btnTertiary:
+        '0.1rem 0.1rem 0.1rem 0px rgba(255, 255, 255, 0.05) inset, -0.1rem -0.1rem 0.1rem 0px rgba(0, 0, 0, 0.15) inset, 0.125rem 0.125rem 0.125rem 0px rgba(0, 0, 0, 0.09)',
+      fontDefault: '0px -1px 0px rgba(255, 255, 255, 0.30), 0px 1px 2px rgba(0, 0, 0, 0.20)',
+      fontLight: '0px -1px 0px rgba(255, 255, 255, 0.30), 0px 1px 2px rgba(0, 0, 0, 0.20)',
+      fontDark: '0px -1px 0px rgba(255, 255, 255, 0.30), 0px 1px 2px rgba(0, 0, 0, 0.20)',
+      input: {
+        innerBase:
+          '0px 2px 4px 0px rgba(0, 0, 0, 0.10) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.10) inset, 0px 10px 20px 0px rgba(0, 0, 0, 0.10) inset, 0px -1px 0px 0px rgba(255, 255, 255, 0.15) inset',
+        innerFocus: `0px 2px 4px 0px ${tinycolor(balColors.purple['400']).setAlpha(
+          0.1
+        )} inset, 0px 4px 8px 0px ${tinycolor(balColors.purple['400']).setAlpha(
+          0.2
+        )} inset, 0 0 0 1px ${balColors.purple['400']}`,
+        innerError: `0px 2px 4px 0px ${tinycolor(balColors.red['500']).setAlpha(
+          0.2
+        )} inset, 0px 4px 8px 0px ${tinycolor(balColors.red['500']).setAlpha(
+          0.2
+        )} inset, 0 0 0 1px ${balColors.red['500']}`,
+      },
     },
   },
   transition: {
@@ -374,23 +478,102 @@ export const balTheme = {
         },
       },
       input: {
-        border: {
-          default: tokens.colors.light.input.border,
-          _dark: tokens.colors.dark.input.border,
+        fontDefault: {
+          default: tokens.colors.light.input.fontDefault,
+          _dark: tokens.colors.dark.input.fontDefault,
         },
-        bg: {
-          default: tokens.colors.light.input.bg,
-          _dark: tokens.colors.dark.input.bg,
+        fontPlaceholder: {
+          default: tokens.colors.light.input.fontPlaceholder,
+          _dark: tokens.colors.dark.input.fontPlaceholder,
+        },
+        fontFocus: {
+          default: tokens.colors.light.input.fontFocus,
+          _dark: tokens.colors.dark.input.fontFocus,
+        },
+        fontError: {
+          default: tokens.colors.light.input.fontError,
+          _dark: tokens.colors.dark.input.fontError,
+        },
+        fontHint: {
+          default: tokens.colors.light.input.fontHint,
+          _dark: tokens.colors.dark.input.fontHint,
+        },
+        fontHintError: {
+          default: tokens.colors.light.input.fontHintError,
+          _dark: tokens.colors.dark.input.fontHintError,
+        },
+        borderDefault: {
+          default: tokens.colors.light.input.borderDefault,
+          _dark: tokens.colors.dark.input.borderDefault,
+        },
+        borderHover: {
+          default: tokens.colors.light.input.borderHover,
+          _dark: tokens.colors.dark.input.borderHover,
+        },
+        borderFocus: {
+          default: tokens.colors.light.input.borderFocus,
+          _dark: tokens.colors.dark.input.borderFocus,
+        },
+        borderError: {
+          default: tokens.colors.light.input.borderError,
+          _dark: tokens.colors.dark.input.borderError,
+        },
+        borderErrorFocus: {
+          default: tokens.colors.light.input.borderErrorFocus,
+          _dark: tokens.colors.dark.input.borderErrorFocus,
+        },
+        borderDisabled: {
+          default: tokens.colors.light.input.borderDisabled,
+          _dark: tokens.colors.dark.input.borderDisabled,
+        },
+        caret: {
+          default: tokens.colors.light.input.caret,
+          _dark: tokens.colors.dark.input.caret,
+        },
+        bgDefault: {
+          default: tokens.colors.light.input.bgDefault,
+          _dark: tokens.colors.dark.input.bgDefault,
         },
         bgHover: {
           default: tokens.colors.light.input.bgHover,
           _dark: tokens.colors.dark.input.bgHover,
         },
+        bgHoverDisabled: {
+          default: tokens.colors.light.input.bgHoverDisabled,
+          _dark: tokens.colors.dark.input.bgHoverDisabled,
+        },
         bgFocus: {
           default: tokens.colors.light.input.bgFocus,
           _dark: tokens.colors.dark.input.bgFocus,
         },
+        bgError: {
+          default: tokens.colors.light.input.bgError,
+          _dark: tokens.colors.dark.input.bgError,
+        },
+        bgErrorFocus: {
+          default: tokens.colors.light.input.bgErrorFocus,
+          _dark: tokens.colors.dark.input.bgErrorFocus,
+        },
+        clearIcon: {
+          default: tokens.colors.light.input.clearIcon,
+          _dark: tokens.colors.dark.input.clearIcon,
+        },
       },
+      formLabel: {
+        focus: {
+          default: tokens.colors.light.input.labelFocus,
+          _dark: tokens.colors.dark.input.labelFocus,
+        },
+        error: {
+          default: tokens.colors.light.input.labelError,
+          _dark: tokens.colors.dark.input.labelError,
+        },
+      },
+      formErrorMessage: {
+        default: tokens.colors.light.input.labelError,
+        _dark: tokens.colors.dark.input.labelError,
+      },
+
       backgroundImage: {
         card: {
           gradient: {
@@ -408,13 +591,12 @@ export const balTheme = {
         },
       },
 
-      // Button colors
       border: {
+        base: {
+          default: tokens.colors.light.border.base,
+          _dark: tokens.colors.dark.border.base,
+        },
         button: {
-          tertiary: {
-            default: tokens.colors.light.button.border.tertiary,
-            _dark: tokens.colors.dark.button.border.tertiary,
-          },
           disabled: {
             default: tokens.colors.light.button.border.disabled,
             _dark: tokens.colors.dark.button.border.disabled,
@@ -453,6 +635,10 @@ export const balTheme = {
           _dark: tokens.colors.dark.button.background.primary,
         },
         button: {
+          tertiary: {
+            default: tokens.colors.light.button.text.tertiary,
+            _dark: tokens.colors.dark.button.text.tertiary,
+          },
           disabled: {
             default: tokens.colors.light.button.text.disabled,
             _dark: tokens.colors.dark.button.text.disabled,
@@ -464,6 +650,25 @@ export const balTheme = {
         },
         dark: '#414853',
         light: '#F3F1EC',
+      },
+
+      chart: {
+        pool: {
+          scatter: {
+            add: {
+              from: 'rgba(0, 211, 149, 100%)',
+              to: 'rgba(0, 211, 149, 20%)',
+            },
+            remove: {
+              from: 'rgba(239, 68, 68, 100%)',
+              to: 'rgba(239, 68, 68, 20%)',
+            },
+            swap: {
+              from: 'rgba(109, 173, 249, 100%)',
+              to: 'rgba(109, 173, 249, 20%)',
+            },
+          },
+        },
       },
     },
     space: {
@@ -484,6 +689,44 @@ export const balTheme = {
       },
       innerMd: 'inset 0 0 6px 0 rgba(0, 0, 0, 0.1)',
       innerLg: 'inset 0 0 8px 0 rgba(0, 0, 0, 0.15)',
+      btnDefault: {
+        default: tokens.shadows.light.btnDefault,
+        _dark: tokens.shadows.dark.btnDefault,
+      },
+      btnDefaultActive: {
+        default: tokens.shadows.light.btnDefaultActive,
+        _dark: tokens.shadows.dark.btnDefaultActive,
+      },
+      btnTertiary: {
+        default: tokens.shadows.light.btnTertiary,
+        _dark: tokens.shadows.dark.btnTertiary,
+      },
+      fontDefault: {
+        default: tokens.shadows.light.fontDefault,
+        _dark: tokens.shadows.dark.fontDefault,
+      },
+      fontLight: {
+        default: tokens.shadows.light.fontLight,
+        _dark: tokens.shadows.dark.fontLight,
+      },
+      fontDark: {
+        default: tokens.shadows.light.fontDark,
+        _dark: tokens.shadows.dark.fontDark,
+      },
+      input: {
+        innerBase: {
+          default: tokens.shadows.light.input.innerBase,
+          _dark: tokens.shadows.dark.input.innerBase,
+        },
+        innerFocus: {
+          default: tokens.shadows.light.input.innerFocus,
+          _dark: tokens.shadows.dark.input.innerFocus,
+        },
+        innerError: {
+          default: tokens.shadows.light.input.innerError,
+          _dark: tokens.shadows.dark.input.innerError,
+        },
+      },
     },
     sizes: {
       maxContent: '1320px',
@@ -527,25 +770,18 @@ export const balTheme = {
         transition: 'all 0.3s ease-in-out',
         backgroundColor: 'rgba(0, 0, 0, 0.2)',
         borderRadius: '16px',
-        // border: '3px solid transparent',
-        // backgroundClip: 'content-box',
       },
       '::-webkit-scrollbar-thumb:hover': {
         transition: 'all 0.3s ease',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        // border: 'none',
       },
-      '.chakra-ui-light ::-webkit-scrollbar-thumb, .chakra-ui-dark ::-webkit-scrollbar-thumb': {
-        // border: 'none',
-      },
+      '.chakra-ui-light ::-webkit-scrollbar-thumb, .chakra-ui-dark ::-webkit-scrollbar-thumb': {},
       '.chakra-ui-dark::-webkit-scrollbar-thumb, .chakra-ui-dark ::-webkit-scrollbar-thumb': {
         backgroundColor: 'rgba(255, 255, 255, 0.4)',
       },
       '.chakra-ui-dark::-webkit-scrollbar-thumb:hover, .chakra-ui-dark ::-webkit-scrollbar-thumb:hover':
         {
           backgroundColor: 'rgba(255, 255, 255, 0.6)',
-          // backgroundColor: 'pink',
-          // border: 'none',
         },
       'p + ul': {
         mt: '1',
@@ -590,22 +826,43 @@ export const balTheme = {
     Input: {
       baseStyle: {
         field: {
-          // background: 'white', // Set the default background color
-          shadow: 'innerBase',
+          shadow: 'input.innerBase',
           border: '1px solid',
-          borderColor: 'input.border',
-          bg: 'input.bg',
+          borderColor: 'green',
+          color: 'input.fontDefault',
+          fontWeight: 'medium',
+          px: '3',
+          // caretColor: 'input.caret', // Not working
+          '::placeholder': {
+            color: 'input.fontPlaceholder',
+          },
           _hover: {
-            bg: 'input.bgHover', // Background color on hover
+            bg: 'input.bgHover',
+            borderColor: 'input.borderHover',
           },
           _focus: {
-            bg: 'input.bgFocus', // Background color on focus
-            borderColor: 'primary.400',
+            border: '1px solid',
+            bg: 'input.bgFocus',
+            focusBorderColor: 'input.borderFocus',
+            color: 'white',
+            shadow: 'input.innerFocus',
+          },
+          _focusVisible: {
+            color: 'chakra-body-text',
+            shadow: 'input.innerFocus',
+          },
+          _invalid: {
+            border: '1px solid',
+            borderColor: 'input.borderError', // Not working
+            bg: 'input.bgError', // Working
+            shadow: 'input.innerError', // Not working
+            color: 'input.fontError',
           },
           _disabled: {
             shadow: 'none',
             _hover: {
-              bg: 'red.500', // Background color on hover
+              bg: 'input.bgHoverDisabled',
+              border: 'input.borderDefault',
             },
           },
         },
@@ -616,6 +873,22 @@ export const balTheme = {
             border: '1px solid',
             borderColor: 'input.border',
           },
+        },
+      },
+    },
+    FormLabel: {
+      baseStyle: {
+        background: 'font.primary',
+        backgroundClip: 'text',
+        width: 'max-content',
+        fontWeight: 'medium',
+      },
+    },
+    FormErrorMessage: {
+      baseStyle: {
+        text: {
+          color: 'input.fontError', // Not working
+          fontWeight: 'bold', // Not working
         },
       },
     },
@@ -637,6 +910,7 @@ export const balTheme = {
         width: 'fit-content',
         background: 'font.primary',
         backgroundClip: 'text',
+        letterSpacing: '-0.04rem',
       },
       variants: {
         secondary: {
@@ -738,21 +1012,65 @@ export const balTheme = {
         },
       },
     },
+    IconButton: {
+      variants: {
+        tertiary: {
+          background: 'background.button.tertiary',
+          color: 'font.button.tertiary',
+          boxShadow: 'btnTertiary',
+        },
+      },
+    },
     Button: {
       baseStyle: {
         borderRadius: 'lg',
         color: 'text-body',
+        letterSpacing: '-0.02em',
+
         _hover: {
           borderColor: 'transparent',
-          transform: 'translateY(1px)',
+        },
+        _active: {
+          transform: 'scale(0.98)',
+          boxShadow: 'btnDefaultActive',
+          textShadow: '0px -1px 0px rgba(255, 255, 255, 0.3), 0px 1px 2px rgba(0, 0, 0, 0.15)',
         },
       },
       variants: {
+        primary: {
+          color: 'font.button.primary',
+          background: 'background.button.primary',
+          backgroundPosition: '100% 0',
+          backgroundSize: '100% 100%',
+          boxShadow: 'btnDefault',
+          textShadow: 'fontDefault',
+          transition: '0.1s ease-in-out',
+          _hover: {
+            backgroundSize: '120% 100%',
+          },
+        },
+        secondary: {
+          color: 'font.dark',
+          boxShadow: 'btnDefault',
+          textShadow: 'fontDark',
+          background: 'background.button.secondary',
+        },
+        tertiary: {
+          background: 'background.button.tertiary',
+          color: 'font.button.tertiary',
+          boxShadow: 'btnTertiary',
+        },
         solid: {
           color: 'text-body',
         },
+        'tx-gas': {
+          bgGradient: 'linear(to-tr, blue.300 0%, #D7CBE7 50%, #EAA879 100%)',
+          borderTop: '2px solid',
+          borderColor: 'purple.200',
+          color: 'black',
+        },
         disabled: {
-          minWidth: '100px',
+          minWidth: '80px',
           background: 'transparent',
           color: 'font.button.disabled',
           borderWidth: 1,
@@ -761,30 +1079,6 @@ export const balTheme = {
             borderColor: 'border.button.disabled',
             transform: 'none',
           },
-        },
-        primary: {
-          minWidth: '100px',
-          background: 'background.button.primary',
-          color: 'font.button.primary',
-        },
-        secondary: {
-          background: 'background.button.secondary',
-          borderTop: '2px solid',
-          borderTopColor: '#F4EBE1',
-          // borderBottomColor: darken('#F4EBE1', 25),
-          color: 'font.dark',
-        },
-        tertiary: {
-          background: 'background.button.tertiary',
-          borderTop: '2px solid',
-          borderColor: 'border.button.tertiary',
-          color: 'font.primary',
-        },
-        'tx-gas': {
-          bgGradient: 'linear(to-tr, blue.300 0%, #D7CBE7 50%, #EAA879 100%)',
-          borderTop: '2px solid',
-          borderColor: 'purple.200',
-          color: 'black',
         },
         buttonGroupInactive: {
           backgroundColor: 'transparent',

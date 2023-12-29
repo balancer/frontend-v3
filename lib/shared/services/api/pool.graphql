@@ -1,8 +1,9 @@
-query GetPool($id: String!) {
-  pool: poolGetPool(id: $id) {
+query GetPool($id: String!, $chain: GqlChain) {
+  pool: poolGetPool(id: $id, chain: $chain) {
     id
     address
     name
+    version
     owner
     decimals
     factory
@@ -42,6 +43,8 @@ query GetPool($id: String!) {
       fees24hAthTimestamp
       fees24hAtl
       fees24hAtlTimestamp
+      yieldCapture24h
+      yieldCapture48h
       apr {
         hasRewardApr
         thirdPartyApr {
@@ -108,6 +111,7 @@ query GetPool($id: String!) {
       decimals
       isNested
       isPhantomBpt
+      isMainToken
     }
     displayTokens {
       id
@@ -126,12 +130,14 @@ query GetPool($id: String!) {
     staking {
       id
       type
+      chain
       address
       gauge {
         id
         gaugeAddress
         version
         status
+        workingSupply
         otherGauges {
           gaugeAddress
           version
@@ -158,7 +164,16 @@ query GetPool($id: String!) {
         poolTokenAddress
         tokenOptions {
           ... on GqlPoolToken {
-            ...GqlPoolToken
+            id
+            index
+            name
+            symbol
+            balance
+            address
+            priceRate
+            decimals
+            weight
+            totalBalance
           }
         }
       }
@@ -171,7 +186,16 @@ query GetPool($id: String!) {
         poolTokenAddress
         tokenOptions {
           ... on GqlPoolToken {
-            ...GqlPoolToken
+            id
+            index
+            name
+            symbol
+            balance
+            address
+            priceRate
+            decimals
+            weight
+            totalBalance
           }
         }
       }
@@ -180,13 +204,153 @@ query GetPool($id: String!) {
       nestingType
       tokens {
         ... on GqlPoolToken {
-          ...GqlPoolToken
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          priceRate
+          decimals
+          weight
+          totalBalance
         }
         ... on GqlPoolTokenLinear {
-          ...GqlPoolTokenLinear
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          priceRate
+          decimals
+          weight
+          mainTokenBalance
+          wrappedTokenBalance
+          totalMainTokenBalance
+          totalBalance
+          pool {
+            id
+            type
+            version
+            name
+            symbol
+            address
+            owner
+            factory
+            createTime
+            wrappedIndex
+            mainIndex
+            upperTarget
+            lowerTarget
+            totalShares
+            totalLiquidity
+            bptPriceRate
+            tokens {
+              ... on GqlPoolToken {
+                id
+                index
+                name
+                symbol
+                balance
+                address
+                priceRate
+                decimals
+                weight
+                totalBalance
+              }
+            }
+          }
         }
-        ... on GqlPoolTokenPhantomStable {
-          ...GqlPoolTokenPhantomStable
+        ... on GqlPoolTokenComposableStable {
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          weight
+          priceRate
+          decimals
+          totalBalance
+          pool {
+            id
+            type
+            version
+            name
+            symbol
+            address
+            owner
+            factory
+            createTime
+            totalShares
+            totalLiquidity
+            nestingType
+            swapFee
+            amp
+            bptPriceRate
+            tokens {
+              ... on GqlPoolToken {
+                id
+                index
+                name
+                symbol
+                balance
+                address
+                priceRate
+                decimals
+                weight
+                totalBalance
+              }
+              ... on GqlPoolTokenLinear {
+                id
+                index
+                name
+                symbol
+                balance
+                address
+                priceRate
+                decimals
+                weight
+                mainTokenBalance
+                wrappedTokenBalance
+                totalMainTokenBalance
+                totalBalance
+                pool {
+                  id
+                  type
+                  version
+                  name
+                  symbol
+                  address
+                  owner
+                  factory
+                  createTime
+                  wrappedIndex
+                  mainIndex
+                  upperTarget
+                  lowerTarget
+                  totalShares
+                  totalLiquidity
+                  bptPriceRate
+                  tokens {
+                    ... on GqlPoolToken {
+                      id
+                      index
+                      name
+                      symbol
+                      balance
+                      address
+                      priceRate
+                      decimals
+                      weight
+                      totalBalance
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -194,7 +358,16 @@ query GetPool($id: String!) {
       amp
       tokens {
         ... on GqlPoolToken {
-          ...GqlPoolToken
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          priceRate
+          decimals
+          weight
+          totalBalance
         }
       }
     }
@@ -202,7 +375,16 @@ query GetPool($id: String!) {
       amp
       tokens {
         ... on GqlPoolToken {
-          ...GqlPoolToken
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          priceRate
+          decimals
+          weight
+          totalBalance
         }
       }
     }
@@ -212,22 +394,172 @@ query GetPool($id: String!) {
       baseToken
       tokens {
         ... on GqlPoolToken {
-          ...GqlPoolToken
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          priceRate
+          decimals
+          weight
+          totalBalance
         }
       }
     }
-    ... on GqlPoolPhantomStable {
+    ... on GqlPoolComposableStable {
       amp
       nestingType
+      bptPriceRate
       tokens {
         ... on GqlPoolToken {
-          ...GqlPoolToken
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          priceRate
+          decimals
+          weight
+          totalBalance
         }
         ... on GqlPoolTokenLinear {
-          ...GqlPoolTokenLinear
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          priceRate
+          decimals
+          weight
+          mainTokenBalance
+          wrappedTokenBalance
+          totalMainTokenBalance
+          totalBalance
+          pool {
+            id
+            name
+            type
+            version
+            symbol
+            address
+            owner
+            factory
+            createTime
+            wrappedIndex
+            mainIndex
+            upperTarget
+            lowerTarget
+            totalShares
+            totalLiquidity
+            bptPriceRate
+            tokens {
+              ... on GqlPoolToken {
+                id
+                index
+                name
+                symbol
+                balance
+                address
+                priceRate
+                decimals
+                weight
+                totalBalance
+              }
+            }
+          }
         }
-        ... on GqlPoolTokenPhantomStable {
-          ...GqlPoolTokenPhantomStable
+        ... on GqlPoolTokenComposableStable {
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          weight
+          priceRate
+          decimals
+          totalBalance
+          pool {
+            id
+            type
+            version
+            name
+            symbol
+            address
+            owner
+            factory
+            createTime
+            totalShares
+            totalLiquidity
+            nestingType
+            swapFee
+            amp
+            bptPriceRate
+            tokens {
+              ... on GqlPoolToken {
+                id
+                index
+                name
+                symbol
+                balance
+                address
+                priceRate
+                decimals
+                weight
+                totalBalance
+              }
+              ... on GqlPoolTokenLinear {
+                id
+                index
+                name
+                symbol
+                balance
+                address
+                priceRate
+                decimals
+                weight
+                mainTokenBalance
+                wrappedTokenBalance
+                totalMainTokenBalance
+                totalBalance
+                pool {
+                  id
+                  type
+                  version
+                  name
+                  symbol
+                  address
+                  owner
+                  factory
+                  createTime
+                  wrappedIndex
+                  mainIndex
+                  upperTarget
+                  lowerTarget
+                  totalShares
+                  totalLiquidity
+                  bptPriceRate
+                  tokens {
+                    ... on GqlPoolToken {
+                      id
+                      index
+                      name
+                      symbol
+                      balance
+                      address
+                      priceRate
+                      decimals
+                      weight
+                      totalBalance
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -236,9 +568,19 @@ query GetPool($id: String!) {
       wrappedIndex
       lowerTarget
       upperTarget
+      bptPriceRate
       tokens {
         ... on GqlPoolToken {
-          ...GqlPoolToken
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          priceRate
+          decimals
+          weight
+          totalBalance
         }
       }
     }
@@ -247,13 +589,153 @@ query GetPool($id: String!) {
       nestingType
       tokens {
         ... on GqlPoolToken {
-          ...GqlPoolToken
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          priceRate
+          decimals
+          weight
+          totalBalance
         }
         ... on GqlPoolTokenLinear {
-          ...GqlPoolTokenLinear
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          priceRate
+          decimals
+          weight
+          mainTokenBalance
+          wrappedTokenBalance
+          totalMainTokenBalance
+          totalBalance
+          pool {
+            id
+            type
+            version
+            name
+            symbol
+            address
+            owner
+            factory
+            createTime
+            wrappedIndex
+            mainIndex
+            upperTarget
+            lowerTarget
+            totalShares
+            totalLiquidity
+            bptPriceRate
+            tokens {
+              ... on GqlPoolToken {
+                id
+                index
+                name
+                symbol
+                balance
+                address
+                priceRate
+                decimals
+                weight
+                totalBalance
+              }
+            }
+          }
         }
-        ... on GqlPoolTokenPhantomStable {
-          ...GqlPoolTokenPhantomStable
+        ... on GqlPoolTokenComposableStable {
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          weight
+          priceRate
+          decimals
+          totalBalance
+          pool {
+            id
+            type
+            version
+            name
+            symbol
+            address
+            owner
+            factory
+            createTime
+            totalShares
+            totalLiquidity
+            nestingType
+            swapFee
+            amp
+            bptPriceRate
+            tokens {
+              ... on GqlPoolToken {
+                id
+                index
+                name
+                symbol
+                balance
+                address
+                priceRate
+                decimals
+                weight
+                totalBalance
+              }
+              ... on GqlPoolTokenLinear {
+                id
+                index
+                name
+                symbol
+                balance
+                address
+                priceRate
+                decimals
+                weight
+                mainTokenBalance
+                wrappedTokenBalance
+                totalMainTokenBalance
+                totalBalance
+                pool {
+                  id
+                  type
+                  version
+                  name
+                  symbol
+                  address
+                  owner
+                  factory
+                  createTime
+                  wrappedIndex
+                  mainIndex
+                  upperTarget
+                  lowerTarget
+                  totalShares
+                  totalLiquidity
+                  bptPriceRate
+                  tokens {
+                    ... on GqlPoolToken {
+                      id
+                      index
+                      name
+                      symbol
+                      balance
+                      address
+                      priceRate
+                      decimals
+                      weight
+                      totalBalance
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -264,93 +746,154 @@ query GetPool($id: String!) {
       nestingType
       tokens {
         ... on GqlPoolToken {
-          ...GqlPoolToken
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          priceRate
+          decimals
+          weight
+          totalBalance
         }
-      }
-    }
-  }
-}
-
-fragment GqlPoolToken on GqlPoolToken {
-  id
-  index
-  name
-  symbol
-  balance
-  address
-  priceRate
-  decimals
-  weight
-  totalBalance
-}
-
-fragment GqlPoolTokenLinear on GqlPoolTokenLinear {
-  id
-  index
-  name
-  symbol
-  balance
-  address
-  priceRate
-  decimals
-  weight
-  mainTokenBalance
-  wrappedTokenBalance
-  totalMainTokenBalance
-  totalBalance
-  pool {
-    id
-    name
-    symbol
-    address
-    owner
-    factory
-    createTime
-    wrappedIndex
-    mainIndex
-    upperTarget
-    lowerTarget
-    totalShares
-    totalLiquidity
-    bptPriceRate
-    tokens {
-      ... on GqlPoolToken {
-        ...GqlPoolToken
-      }
-    }
-  }
-}
-
-fragment GqlPoolTokenPhantomStable on GqlPoolTokenPhantomStable {
-  id
-  index
-  name
-  symbol
-  balance
-  address
-  weight
-  priceRate
-  decimals
-  totalBalance
-  pool {
-    id
-    name
-    symbol
-    address
-    owner
-    factory
-    createTime
-    totalShares
-    totalLiquidity
-    nestingType
-    swapFee
-    amp
-    tokens {
-      ... on GqlPoolToken {
-        ...GqlPoolToken
-      }
-      ... on GqlPoolTokenLinear {
-        ...GqlPoolTokenLinear
+        ... on GqlPoolTokenLinear {
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          priceRate
+          decimals
+          weight
+          mainTokenBalance
+          wrappedTokenBalance
+          totalMainTokenBalance
+          totalBalance
+          pool {
+            id
+            type
+            version
+            name
+            symbol
+            address
+            owner
+            factory
+            createTime
+            wrappedIndex
+            mainIndex
+            upperTarget
+            lowerTarget
+            totalShares
+            totalLiquidity
+            bptPriceRate
+            tokens {
+              ... on GqlPoolToken {
+                id
+                index
+                name
+                symbol
+                balance
+                address
+                priceRate
+                decimals
+                weight
+                totalBalance
+              }
+            }
+          }
+        }
+        ... on GqlPoolTokenComposableStable {
+          id
+          index
+          name
+          symbol
+          balance
+          address
+          weight
+          priceRate
+          decimals
+          totalBalance
+          pool {
+            id
+            type
+            version
+            name
+            symbol
+            address
+            owner
+            factory
+            createTime
+            totalShares
+            totalLiquidity
+            nestingType
+            swapFee
+            amp
+            bptPriceRate
+            tokens {
+              ... on GqlPoolToken {
+                id
+                index
+                name
+                symbol
+                balance
+                address
+                priceRate
+                decimals
+                weight
+                totalBalance
+              }
+              ... on GqlPoolTokenLinear {
+                id
+                index
+                name
+                symbol
+                balance
+                address
+                priceRate
+                decimals
+                weight
+                mainTokenBalance
+                wrappedTokenBalance
+                totalMainTokenBalance
+                totalBalance
+                pool {
+                  id
+                  type
+                  version
+                  name
+                  symbol
+                  address
+                  owner
+                  factory
+                  createTime
+                  wrappedIndex
+                  mainIndex
+                  upperTarget
+                  lowerTarget
+                  totalShares
+                  totalLiquidity
+                  bptPriceRate
+                  tokens {
+                    ... on GqlPoolToken {
+                      id
+                      index
+                      name
+                      symbol
+                      balance
+                      address
+                      priceRate
+                      decimals
+                      weight
+                      totalBalance
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -446,5 +989,40 @@ query GetPoolTokensDynamicData($addresses: [String!]!) {
   }
   dynamicData: tokenGetTokensDynamicData(addresses: $addresses) {
     ...GqlTokenDynamicData
+  }
+}
+
+query GetPoolJoinsExitsSwaps($first: Int, $skip: Int, $poolId: String!, $chainId: GqlChain!) {
+  swaps: poolGetSwaps(
+    first: $first
+    skip: $skip
+    where: { poolIdIn: [$poolId], chainIn: [$chainId] }
+  ) {
+    id
+    poolId
+    timestamp
+    tokenAmountIn
+    tokenAmountOut
+    tokenIn
+    tokenOut
+    tx
+    userAddress
+    valueUSD
+  }
+  joinExits: poolGetJoinExits(
+    first: $first
+    skip: $skip
+    where: { poolIdIn: [$poolId], chainIn: [$chainId] }
+  ) {
+    id
+    timestamp
+    tx
+    type
+    poolId
+    valueUSD
+    amounts {
+      address
+      amount
+    }
   }
 }

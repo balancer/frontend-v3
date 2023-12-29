@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 import * as echarts from 'echarts/core'
 import {
   GetPoolSnapshotsDocument,
-  GqlPoolFilterType,
+  GqlPoolType,
   GqlPoolSnapshotDataRange,
 } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
@@ -11,7 +11,8 @@ import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { usePool } from '../../usePool'
 import { PoolVariant } from '../../pool.types'
-import { NumberFormatter, useNumbers } from '@/lib/shared/hooks/useNumbers'
+import { NumberFormatter } from '@/lib/shared/utils/numbers'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 export enum PoolChartTab {
   VOLUME = 'volume',
@@ -163,9 +164,9 @@ export function getPoolTabsList({
   poolType,
 }: {
   variant: PoolVariant
-  poolType: GqlPoolFilterType
+  poolType: GqlPoolType
 }): PoolChartTypeTab[] {
-  if (poolType === GqlPoolFilterType.LiquidityBootstrapping && variant === PoolVariant.v2) {
+  if (poolType === GqlPoolType.LiquidityBootstrapping && variant === PoolVariant.v2) {
     return [
       {
         value: PoolChartTab.VOLUME,
@@ -210,7 +211,7 @@ export function usePoolSnapshots(
 export function usePoolCharts() {
   const { pool, loading: isLoadingPool } = usePool()
   const { id: poolId, variant } = useParams()
-  const { toCurrency } = useNumbers()
+  const { toCurrency } = useCurrency()
 
   const tabsList = useMemo(() => {
     const poolType = pool?.type
@@ -218,7 +219,7 @@ export function usePoolCharts() {
 
     return getPoolTabsList({
       variant: variant as PoolVariant,
-      poolType: poolType as GqlPoolFilterType,
+      poolType: poolType,
     })
   }, [pool?.type, variant])
 

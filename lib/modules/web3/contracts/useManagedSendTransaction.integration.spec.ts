@@ -4,25 +4,18 @@ import { describe, expect, test } from 'vitest'
 import { poolId } from '@/lib/debug-helpers'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
+import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { testHook } from '@/test/utils/custom-renderers'
-import {
-  defaultTestUserAccount,
-  setWagmiDefaultRpcUrlForTests,
-  testPublicClient as testClient,
-} from '@/test/utils/wagmi'
+import { defaultTestUserAccount, testPublicClient as testClient } from '@/test/utils/wagmi'
 import { ChainId, HumanAmount } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/actions'
+import { selectAddLiquidityHandler } from '../../pool/actions/add-liquidity/handlers/selectAddLiquidityHandler'
 import { buildAddLiquidityLabels } from '../../pool/actions/add-liquidity/useConstructAddLiquidityStep'
-import { someTokenAllowancesMock } from '../../tokens/__mocks__/token.builders'
-import { AddLiquidityConfigBuilder } from '../../pool/actions/add-liquidity/AddLiquidityConfigBuilder'
+import { HumanAmountIn } from '../../pool/actions/liquidity-types'
 
 const chainId = ChainId.MAINNET
-const port = 8555
-const rpcUrl = `http://127.0.0.1:${port}/`
 const account = defaultTestUserAccount
-
-setWagmiDefaultRpcUrlForTests(rpcUrl)
 
 const utils = await getSdkTestUtils({
   account,
@@ -31,7 +24,7 @@ const utils = await getSdkTestUtils({
   poolId, // Balancer Weighted wjAura and WETH,
 })
 
-const { getPoolTokens, poolStateInput, getPoolTokenBalances } = utils
+const { getPoolTokens, getPoolTokenBalances } = utils
 
 const poolTokens = getPoolTokens()
 
@@ -42,31 +35,25 @@ describe('weighted join test', () => {
   test('Sends transaction after updating amount inputs', async () => {
     await utils.setupTokens([...getPoolTokens().map(() => '100' as HumanAmount), '100'])
 
-    const builder = new AddLiquidityConfigBuilder(chainId, someTokenAllowancesMock, poolStateInput)
+    const handler = selectAddLiquidityHandler(aWjAuraWethPoolElementMock())
 
-    poolTokens.forEach(t => builder.setAmountIn(t.address, '1'))
+    const humanAmountsIn: HumanAmountIn[] = poolTokens.map(t => ({
+      humanAmount: '1',
+      tokenAddress: t.address,
+    }))
 
-    const balanceBefore = await getPoolTokenBalances()
+    const inputs = {
+      humanAmountsIn,
+      account: defaultTestUserAccount,
+      slippagePercent: '0.2',
+    }
+    const { sdkQueryOutput } = await handler.queryAddLiquidity(inputs)
 
-    // First simulation
-    const { queryResult, config } = await builder.buildSdkAddLiquidityTxConfig(account)
+    const txConfig = await handler.buildAddLiquidityCallData({ inputs })
 
     const { result } = testHook(() => {
-      return useManagedSendTransaction(buildAddLiquidityLabels(), config)
+      return useManagedSendTransaction(buildAddLiquidityLabels(), txConfig)
     })
-
-    await waitFor(() => expect(result.current.executeAsync).toBeDefined())
-    expect(queryResult.bptOut.amount).toBeGreaterThan(200000000000000000000n)
-
-    // Second simulation
-    poolTokens.forEach(t => builder.setAmountIn(t.address, '2'))
-
-    const { queryResult: queryResult2, config: config2 } =
-      await builder.buildSdkAddLiquidityTxConfig(defaultTestUserAccount)
-    // Double approximately
-    expect(queryResult2.bptOut.amount).toBeGreaterThan(520000000000000000000n)
-
-    // act(() => result.current.setTxConfig(config2))
 
     await waitFor(() => expect(result.current.executeAsync).toBeDefined())
 
@@ -75,7 +62,6 @@ describe('weighted join test', () => {
       expect(res.hash).toBeDefined()
       return res
     })
-
     const transactionReceipt = await act(async () =>
       testClient.waitForTransactionReceipt({
         hash: res.hash,
@@ -83,18 +69,5 @@ describe('weighted join test', () => {
     )
 
     expect(transactionReceipt.status).to.eq('success')
-
-    const balanceDeltas = await act(async () =>
-      utils.calculateBalanceDeltas(balanceBefore, transactionReceipt)
-    )
-
-    // Confirm final balance changes match query result
-    const expectedDeltas = [
-      ...queryResult2.amountsIn.map(a => a.amount),
-      queryResult2.bptOut.amount,
-    ]
-
-    // Wait for the sdk to be completed
-    // expect(expectedDeltas).to.deep.eq(balanceDeltas)
   })
 })

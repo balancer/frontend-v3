@@ -8,6 +8,8 @@ import {
   Button,
   Flex,
   Input,
+  InputGroup,
+  InputRightElement,
   Select,
   UnorderedList,
   ListItem,
@@ -31,6 +33,10 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  FormHelperText,
 } from '@chakra-ui/react'
 
 import { darken } from '@chakra-ui/theme-tools'
@@ -38,7 +44,7 @@ import Section from '@/lib/shared/components/layout/Section'
 
 export default function Components() {
   return (
-    <Box p="md" maxW="maxContent" mx="auto" mt="xl">
+    <Box p="mx" maxW="maxContent" mx="auto" mt="xl">
       <Box as="section" mb="24">
         <Heading as="h1" variant="gradient-dusk" size="h1-hero">
           Components
@@ -1110,6 +1116,108 @@ export default function Components() {
         <Heading as="h1" variant="gradient-dusk" size="h1-hero">
           Form fields
         </Heading>
+
+        <Box mb="8">
+          <Heading as="h3" variant="gradient-dusk" size="h3">
+            Custom input fields
+          </Heading>
+          <Text>
+            For some reason, I haven&apos;t been able to get some of these styles into the theme, so
+            I&apos;ve listed all the code below
+          </Text>
+        </Box>
+
+        <Section maxW="sm">
+          <Section variant="subsection">
+            <Box>
+              <FormControl>
+                <FormLabel>Input label</FormLabel>
+                <InputGroup>
+                  <Input
+                    type="text"
+                    placeholder="Placeholder"
+                    bg="input.bgDefault"
+                    border="1px solid"
+                    borderColor="input.borderDefault"
+                    _hover={{ bg: 'input.bgHover', borderColor: 'input.borderHover' }}
+                    _focus={{
+                      bg: 'input.bgFocus',
+                      borderColor: 'input.borderFocus',
+                    }}
+                    _focusVisible={{
+                      bg: 'input.bgFocus',
+                      borderColor: 'input.borderFocus',
+                      shadow: 'input.innerFocus',
+                      color: 'input.fontFocus',
+                    }}
+                  />
+                  <InputRightElement>
+                    {/* <IoCloseCircle color="input.clearIcon" />  */}
+                    {/* This doesn't work, but color="yellow" does work... */}
+                  </InputRightElement>
+                </InputGroup>
+                <FormHelperText fontWeight="medium" color="input.fontHint">
+                  Hint text that is displayed on focus of the input
+                </FormHelperText>
+              </FormControl>
+            </Box>
+          </Section>
+          <Section variant="subsection">
+            <FormControl isInvalid>
+              <FormLabel>Input label</FormLabel>
+              <Input
+                placeholder="Placeholder"
+                type="text"
+                defaultValue="500.00"
+                border="1px solid"
+                borderColor="yellow" // Not working
+                shadow="input.innerError" // Not working
+                errorBorderColor="red.400" // This works but I'd like to set it to 'inner.borderError' to also get the dark mode style
+                _hover={{ bg: 'input.bgHover' }}
+                _focusVisible={{
+                  shadow: 'input.innerError', // Working
+                  bg: 'input.bgFocus',
+                }}
+              />
+              <FormErrorMessage fontWeight="medium" color="input.fontHintError">
+                Exceeds wallet balance
+              </FormErrorMessage>
+            </FormControl>
+          </Section>
+          <Section variant="subsection">
+            <Box>
+              <FormControl isDisabled>
+                <FormLabel>Disabled input label</FormLabel>
+                <Input
+                  type="email"
+                  isDisabled
+                  placeholder="Placeholder"
+                  bg="input.bgDefault"
+                  border="1px solid"
+                  // boxShadow="input.innerBase"
+                  borderColor="input.borderDefault"
+                  _hover={{ bg: 'input.bgHover', borderColor: 'input.borderHover' }}
+                  _focus={{
+                    bg: 'input.bgFocus',
+                    borderColor: 'input.borderFocus',
+                  }}
+                  _focusVisible={{
+                    bg: 'input.bgFocus',
+                    borderColor: 'input.borderFocus',
+                    shadow: 'input.innerFocus',
+                  }}
+                />
+              </FormControl>
+            </Box>
+          </Section>
+        </Section>
+
+        <Box mb="8">
+          <Heading as="h3" variant="gradient-dusk" size="h3">
+            Theme inputs
+          </Heading>
+          <Text>This is how it comes out of the theme.</Text>
+        </Box>
 
         <Box mb="8">
           <Text variant="eyebrow" mb="4">

@@ -1,5 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import {
   GetTokenPricesDocument,
   GetTokenPricesQuery,
@@ -12,12 +15,12 @@ import {
 } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { createContext, PropsWithChildren, useCallback } from 'react'
-import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import { Dictionary, zipObject } from 'lodash'
+import { PropsWithChildren, createContext, useCallback } from 'react'
+import { Address } from 'wagmi'
 import { TokenBase } from './token.types'
-import { Numberish, bn } from '@/lib/shared/hooks/useNumbers'
 
 export type UseTokensResult = ReturnType<typeof _useTokens>
 export const TokensContext = createContext<UseTokensResult | null>(null)
@@ -49,6 +52,10 @@ export function _useTokens(
     return !isSameAddress(token.address, networkConfig.tokens.nativeAsset.address)
   }
 
+  /*
+    It can return undefined when the token address belongs to a pool token (not included in the provided tokens)
+    // TODO: should we avoid calling getToken with pool tokens?
+   */
   function getToken(address: string, chain: GqlChain | number): GqlToken | undefined {
     const chainKey = typeof chain === 'number' ? 'chainId' : 'chain'
     return tokens.find(token => isSameAddress(token.address, address) && token[chainKey] === chain)
@@ -57,6 +64,16 @@ export function _useTokens(
   function getTokensByChain(chain: number | GqlChain): GqlToken[] {
     const chainKey = typeof chain === 'number' ? 'chainId' : 'chain'
     return tokens.filter(token => token[chainKey] === chain)
+  }
+
+  function getTokensByTokenAddress(
+    tokenAddresses: Address[],
+    chain: GqlChain
+  ): Dictionary<GqlToken> {
+    return zipObject(
+      tokenAddresses,
+      tokenAddresses.map(t => getToken(t, chain) as GqlToken)
+    )
   }
 
   function priceForToken(token: GqlToken): number {
@@ -68,9 +85,10 @@ export function _useTokens(
     return price.price
   }
 
-  function usdValueForToken(token: GqlToken, amount: Numberish): string {
+  const usdValueForToken = useCallback((token: GqlToken, amount: Numberish) => {
+    if (amount === '') return '0'
     return bn(amount).times(priceForToken(token)).toFixed(2)
-  }
+  }, [])
 
   function priceFor(address: string, chain: GqlChain): number {
     const token = getToken(address, chain)
@@ -86,15 +104,6 @@ export function _useTokens(
         parseFloat(poolTotalLiquidity)
       )
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  )
-
-  const calculateTokensValue = useCallback(
-    (tokenAddress: string, tokenAmount: Numberish, chain: GqlChain) => {
-      return priceFor(tokenAddress, chain) * parseFloat(tokenAmount as string)
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
@@ -105,11 +114,11 @@ export function _useTokens(
     priceFor,
     priceForToken,
     getTokensByChain,
+    getTokensByTokenAddress,
     exclNativeAssetFilter,
     nativeAssetFilter,
     usdValueForToken,
     getPoolTokenWeightByBalance,
-    calculateTokensValue,
   }
 }
 

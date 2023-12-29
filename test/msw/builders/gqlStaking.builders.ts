@@ -1,16 +1,29 @@
-import { GqlPoolStaking, GqlPoolStakingGauge } from '@/lib/shared/services/api/generated/graphql'
-import { DeepPartial } from '@apollo/client/utilities'
-import { mock } from 'vitest-mock-extended'
+import {
+  GqlChain,
+  GqlPoolStaking,
+  GqlPoolStakingGaugeStatus,
+  GqlPoolStakingType,
+} from '@/lib/shared/services/api/generated/graphql'
 
 export const defaultGaugeAddressMock = '0x-test-gauge-address'
 
 export function aGqlStakingMock(...options: Partial<GqlPoolStaking>[]): GqlPoolStaking {
-  const defaultPoolStakingDataMock: DeepPartial<GqlPoolStaking> = mock<GqlPoolStaking>()
-  const defaultPoolStakingGAugeDataMock: DeepPartial<GqlPoolStakingGauge> =
-    mock<GqlPoolStakingGauge>()
-  defaultPoolStakingGAugeDataMock.gaugeAddress = defaultGaugeAddressMock
+  const defaultGqlPoolStaking: GqlPoolStaking = {
+    __typename: 'GqlPoolStaking',
+    id: 'test-staking-id',
+    address: '0x',
+    chain: GqlChain.Mainnet,
+    type: GqlPoolStakingType.Gauge,
+    gauge: {
+      __typename: 'GqlPoolStakingGauge',
+      id: 'test gauge id',
+      gaugeAddress: defaultGaugeAddressMock,
+      rewards: [],
+      status: GqlPoolStakingGaugeStatus.Active,
+      version: 2,
+      workingSupply: '',
+    },
+  }
 
-  defaultPoolStakingDataMock.gauge = defaultPoolStakingGAugeDataMock
-
-  return Object.assign({}, defaultPoolStakingDataMock, ...options)
+  return Object.assign({}, defaultGqlPoolStaking, ...options)
 }

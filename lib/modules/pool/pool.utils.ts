@@ -1,7 +1,7 @@
-import { GqlChain, GqlPoolAprValue } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolAprValue, GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolVariant } from './pool.types'
-import { aprFormat } from '@/lib/shared/hooks/useNumbers'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -48,10 +48,32 @@ export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolPr
  */
 export function getAprLabel(apr: GqlPoolAprValue): string {
   if (apr.__typename === 'GqlPoolAprRange') {
-    return `${aprFormat(apr.min)} - ${aprFormat(apr.max)}`
+    return `${fNum('apr', apr.min)} - ${fNum('apr', apr.max)}`
   } else if (apr.__typename === 'GqlPoolAprTotal') {
-    return aprFormat(apr.total)
+    return fNum('apr', apr.total)
   } else {
     return '-'
   }
+}
+
+// Maps GraphQL pool type enum to human readable label for UI.
+const poolTypeLabelMap: { [key in GqlPoolType]: string } = {
+  [GqlPoolType.Weighted]: 'Weighted',
+  [GqlPoolType.Element]: 'Element',
+  [GqlPoolType.Gyro]: 'Gyro 2-CLP',
+  [GqlPoolType.Gyro3]: 'Gyro 3-CLP',
+  [GqlPoolType.Gyroe]: 'Gyro E-CLP',
+  [GqlPoolType.Investment]: 'Managed',
+  [GqlPoolType.Linear]: 'Linear',
+  [GqlPoolType.LiquidityBootstrapping]: 'LBP',
+  [GqlPoolType.MetaStable]: 'MetaStable',
+  [GqlPoolType.PhantomStable]: 'PhantomStable',
+  [GqlPoolType.Stable]: 'Stable',
+  [GqlPoolType.Unknown]: 'Unknown',
+  [GqlPoolType.Fx]: 'FX',
+  [GqlPoolType.ComposableStable]: 'ComposableStable',
+}
+
+export function getPoolTypeLabel(type: GqlPoolType): string {
+  return poolTypeLabelMap[type]
 }

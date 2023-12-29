@@ -1,11 +1,11 @@
 'use client'
 
-import { isGyro, isMetaStable, isPhantomStable, isStable, isWeighted } from '../pool.helpers'
+import { isGyro, isLBP, isMetaStable, isPhantomStable, isStable, isWeighted } from '../pool.helpers'
 import { Box, HStack, Tag, Text } from '@chakra-ui/react'
 import { TokenIcon } from '../../tokens/TokenIcon'
 import { PoolListItem } from '../pool.types'
-import { toPercentageFormatted } from '@/lib/shared/utils/numbers'
 import { GqlChain, GqlPoolTokenDisplay } from '@/lib/shared/services/api/generated/graphql'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 interface Props {
   pool: PoolListItem
@@ -47,7 +47,7 @@ function NestedTokens({
 
 export function PoolListTokensTag({ pool }: Props) {
   if (pool) {
-    if (isWeighted(pool.type)) {
+    if (isWeighted(pool.type) || isLBP(pool.type)) {
       return (
         <HStack spacing="1" wrap="wrap">
           {pool.displayTokens.map(token => {
@@ -60,7 +60,7 @@ export function PoolListTokensTag({ pool }: Props) {
                     <PoolTokenIcon token={token} chain={pool.chain} />
                   )}
                   <Text>{token.nestedTokens ? token.name : token.symbol}</Text>
-                  <Text>{toPercentageFormatted(token.weight || '')}</Text>
+                  <Text>{fNum('weight', token.weight || '')}</Text>
                 </HStack>
               </Tag>
             )

@@ -1,9 +1,9 @@
 import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import { DefaultTokenAllowancesTestProvider, testHook } from '@/test/utils/custom-renderers'
+import { DefaultAddLiquidityTestProvider, testHook } from '@/test/utils/custom-renderers'
 import { testPublicClient } from '@/test/utils/wagmi'
 import { waitFor } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
-import { AmountToApprove } from './approval-rules'
+import { TokenAmountToApprove } from './approval-rules'
 import { useNextTokenApprovalStep } from './useNextTokenApprovalStep'
 
 //TODO: Extract to helper
@@ -17,16 +17,16 @@ async function resetForkState() {
   })
 }
 
-function testUseTokenApprovals(amountsToApprove: AmountToApprove[]) {
+function testUseTokenApprovals(amountsToApprove: TokenAmountToApprove[]) {
   const { result } = testHook(() => useNextTokenApprovalStep(amountsToApprove), {
-    wrapper: DefaultTokenAllowancesTestProvider,
+    wrapper: DefaultAddLiquidityTestProvider,
   })
   return result
 }
 
-const amountsToApprove: AmountToApprove[] = [
-  { tokenAddress: wETHAddress, amount: 2n },
-  { tokenAddress: wjAuraAddress, amount: 2n },
+const amountsToApprove: TokenAmountToApprove[] = [
+  { tokenAddress: wETHAddress, rawAmount: 2n, humanAmount: '2', tokenSymbol: 'WETH' },
+  { tokenAddress: wjAuraAddress, rawAmount: 2n, humanAmount: '2', tokenSymbol: 'wjAura' },
 ]
 
 // Unskip once we refactor tests state to be isolated

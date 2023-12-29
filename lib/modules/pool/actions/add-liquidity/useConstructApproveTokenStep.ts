@@ -4,7 +4,6 @@ import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddr
 import { useManagedErc20Transaction } from '@/lib/modules/web3/contracts/useManagedErc20Transaction'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { MAX_BIGINT } from '@/lib/shared/hooks/useNumbers'
 import { useEffect } from 'react'
 import { Address } from 'viem'
 import {
@@ -14,6 +13,7 @@ import {
 import { useTokenAllowances } from '../../../web3/useTokenAllowances'
 import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
 import { CompletedApprovalState } from '../../../tokens/approvals/useCompletedApprovalsState'
+import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 
 export function useConstructApproveTokenStep(
   tokenAddress: Address,
@@ -34,7 +34,7 @@ export function useConstructApproveTokenStep(
     tokenAddress,
     'approve',
     tokenApprovalLabels,
-    { args: [spender || emptyAddress, MAX_BIGINT] }, //By default we set MAX_BIGINT
+    { args: [spender, MAX_BIGINT] }, //By default we set MAX_BIGINT
     {
       enabled: isActiveStep && !!spender && !isAllowancesLoading,
     }
