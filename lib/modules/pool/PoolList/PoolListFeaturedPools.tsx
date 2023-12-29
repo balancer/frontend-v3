@@ -1,41 +1,13 @@
 import { Card, Center, Grid, GridItem, HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import Image from 'next/image'
-
-interface FeaturedPools {
-  id: string
-  chain: string
-  imageUrl: string
-  primary?: boolean
-}
-
-const featuredPools: FeaturedPools[] = [
-  {
-    id: '0x1e19cf2d73a72ef1332c882f20534b6519be0276000200000000000000000112',
-    chain: 'MAINNET',
-    imageUrl: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
-    primary: true,
-  },
-  {
-    id: '0x32df62dc3aed2cd6224193052ce665dc181658410002000000000000000003bd',
-    chain: 'ARBITRUM',
-    imageUrl: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
-  },
-  {
-    id: '0x4683e340a8049261057d5ab1b29c8d840e75695e00020000000000000000005a',
-    chain: 'GNOSIS',
-    imageUrl: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
-  },
-  {
-    id: '0x42ed016f826165c2e5976fe5bc3df540c5ad0af700000000000000000000058b',
-    chain: 'MAINNET',
-    imageUrl: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
-  },
-  {
-    id: '0x93d199263632a4ef4bb438f1feb99e57b4b5f0bd0000000000000000000005c2',
-    chain: 'MAINNET',
-    imageUrl: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
-  },
-]
+import { usePoolListFeaturedPools } from './usePoolListFeaturedPools'
+import {
+  GqlPoolFeaturedPoolGroup,
+  GqlPoolMinimal,
+} from '@/lib/shared/services/api/generated/graphql'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import { getAprLabel, getPoolTypeLabel } from '../pool.utils'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 const indexAreaHash: { [key: number]: string } = {
   1: 'one',
@@ -45,22 +17,25 @@ const indexAreaHash: { [key: number]: string } = {
 }
 
 interface FeaturedPoolCardProps {
-  pool: FeaturedPools
+  pool: GqlPoolFeaturedPoolGroup
 }
 
 function FeaturedPoolCard({ pool }: FeaturedPoolCardProps) {
+  const { toCurrency } = useCurrency()
+  const poolItem = pool.items.find(item => item.__typename === 'GqlPoolMinimal') as GqlPoolMinimal
+
   return (
-    <Card variant="gradient" h="full" w="full">
+    <Card variant="gradient" h="full" w="full" p="4">
       <VStack justifyContent="space-between" h="full">
         <HStack justifyContent="space-between" w="full">
-          <Text>pool type</Text>
-          <Text>TVL</Text>
+          <Text>{getPoolTypeLabel(poolItem.type)}</Text>
+          <Text>{toCurrency(poolItem.dynamicData.totalLiquidity)} TVL</Text>
         </HStack>
-        <Image src={pool.imageUrl} width="24" height="24" alt="pool name" />
+        <Image src={pool.icon} width="24" height="24" alt="pool name" />
         <Center>
           <VStack>
-            <Text>Pool Name</Text>
-            <Text>APR</Text>
+            <Text>{poolItem.name}</Text>
+            <Text>{getAprLabel(poolItem.dynamicData.apr.apr)} APR</Text>
           </VStack>
         </Center>
       </VStack>
@@ -69,8 +44,11 @@ function FeaturedPoolCard({ pool }: FeaturedPoolCardProps) {
 }
 
 export function PoolListFeaturedPools() {
-  const poolsWithoutPrimary = featuredPools.filter(pool => !pool.primary)
+  const { featuredPools } = usePoolListFeaturedPools()
+  const { projectName } = getProjectConfig()
+
   const primaryPool = featuredPools.find(pool => pool.primary)
+  const poolsWithoutPrimary = featuredPools.filter(pool => !pool.primary)
 
   return (
     <VStack align="start" w="full">
@@ -85,25 +63,25 @@ export function PoolListFeaturedPools() {
         }}
         templateAreas={{
           base: `"primary primary"
-               "one     two"
-               "three   four"`,
+                 "one     two"
+                 "three   four"`,
           lg: `"primary primary one   two"
-             "primary primary three four"`, // align with PoolListCards
+               "primary primary three four"`, // align with PoolListCards
         }}
       >
         <GridItem area="primary">
           {primaryPool && (
             <VStack align="start" w="full" h="full" spacing="xl">
               <Heading as="h2" size="xl" variant="special">
-                Featured pools on<br></br> Balancer protocol
+                Featured pools on<br></br> {projectName} protocol
               </Heading>
-              <FeaturedPoolCard pool={primaryPool} />
+              <FeaturedPoolCard pool={primaryPool as GqlPoolFeaturedPoolGroup} />
             </VStack>
           )}
         </GridItem>
         {poolsWithoutPrimary.map((pool, index) => (
           <GridItem key={index} area={indexAreaHash[index + 1]}>
-            <FeaturedPoolCard pool={pool} />
+            <FeaturedPoolCard pool={pool as GqlPoolFeaturedPoolGroup} />
           </GridItem>
         ))}
       </Grid>
