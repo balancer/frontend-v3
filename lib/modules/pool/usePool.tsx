@@ -19,6 +19,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/usePoolEnrichWithOnChainData'
 import { bn } from '@/lib/shared/utils/numbers'
+import { useChainUserPoolBalances } from './useChainUserPoolBalances'
 
 export type UsePoolResponse = ReturnType<typeof _usePool> & {
   chain: GqlChain

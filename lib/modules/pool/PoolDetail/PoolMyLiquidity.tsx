@@ -14,6 +14,7 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { keyBy, sumBy } from 'lodash'
 import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
 import { useTokens } from '../../tokens/useTokens'
+import { useChainUserPoolBalances } from '../useChainUserPoolBalances'
 
 const TABS = [
   {
@@ -38,6 +39,7 @@ export default function PoolMyLiquidity() {
   const { pool, chain } = usePool()
   const { toCurrency } = useCurrency()
   const { getToken, usdValueForToken } = useTokens()
+  const { userBalance } = useChainUserPoolBalances()
 
   const pathname = usePathname()
 
@@ -47,20 +49,20 @@ export default function PoolMyLiquidity() {
 
   function getBalanceToUseForTokenAmounts(useTotalRegardless?: boolean) {
     if (useTotalRegardless) {
-      return parseUnits(pool.userBalance?.totalBalance || '0', 18)
+      return parseUnits(userBalance?.totalBalance || '0', 18)
     }
     switch (activeTab.value) {
       case 'all':
-        return parseUnits(pool.userBalance?.totalBalance || '0', 18)
+        return parseUnits(userBalance?.totalBalance || '0', 18)
       case 'staked':
-        return parseUnits(pool.userBalance?.stakedBalance || '0', 18)
+        return parseUnits(userBalance?.stakedBalance || '0', 18)
       case 'unstaked':
         return (
-          parseUnits(pool.userBalance?.stakedBalance || '0', 18) -
-          parseUnits(pool.userBalance?.totalBalance || '0', 18)
+          parseUnits(userBalance?.stakedBalance || '0', 18) -
+          parseUnits(userBalance?.totalBalance || '0', 18)
         )
       default:
-        return parseUnits(pool.userBalance?.totalBalance || '0', 18)
+        return parseUnits(userBalance?.totalBalance || '0', 18)
     }
   }
 
@@ -98,9 +100,9 @@ export default function PoolMyLiquidity() {
       case 'all':
         return totalBalanceUsd
       case 'staked':
-        return pool.userBalance?.stakedBalanceUsd
+        return userBalance?.stakedBalanceUsd
       case 'unstaked':
-        return totalBalanceUsd - (pool.userBalance?.stakedBalanceUsd || 0)
+        return totalBalanceUsd - (userBalance?.stakedBalanceUsd || 0)
       default:
         return totalBalanceUsd
     }
