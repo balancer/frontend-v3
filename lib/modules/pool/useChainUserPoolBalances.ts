@@ -3,22 +3,25 @@ import { usePool } from './usePool'
 import { balancerV2GaugeV5ABI, balancerV2WeightedPoolV4ABI } from '../web3/contracts/abi/generated'
 import { useUserAccount } from '../web3/useUserAccount'
 import { formatUnits, zeroAddress } from 'viem'
+import { useTokens } from '../tokens/useTokens'
+import { sumBy } from 'lodash'
+import { calcBptPriceRaw } from './pool.helpers'
 
 export function useChainUserPoolBalances() {
-  const { pool, chainId, bptPrice } = usePool()
+  const { pool, chainId, chain } = usePool()
   const { userAddress, isConnected } = useUserAccount()
+  const { priceFor } = useTokens()
 
-  const { data: unstakedPoolBalance = 0n, isLoading: isLoadingUnstakedPoolBalance } =
-    useContractRead({
-      abi: balancerV2WeightedPoolV4ABI,
-      address: pool.address as Address,
-      functionName: 'balanceOf',
-      args: [userAddress],
-      enabled: isConnected,
-      chainId,
-    })
+  const { data: unstakedPoolBalance, isLoading: isLoadingUnstakedPoolBalance } = useContractRead({
+    abi: balancerV2WeightedPoolV4ABI,
+    address: pool.address as Address,
+    functionName: 'balanceOf',
+    args: [userAddress],
+    enabled: isConnected,
+    chainId,
+  })
 
-  const { data: stakedPoolBalance = 0n, isLoading: isLoadingStakedPoolBalance } = useContractRead({
+  const { data: stakedPoolBalance, isLoading: isLoadingStakedPoolBalance } = useContractRead({
     abi: balancerV2GaugeV5ABI,
     address: (pool.staking?.gauge?.gaugeAddress as Address) || zeroAddress,
     functionName: 'balanceOf',
@@ -27,18 +30,26 @@ export function useChainUserPoolBalances() {
     chainId,
   })
 
+  const totalLiquidity = sumBy(pool.tokens, token => {
+    return priceFor(token.address, chain) * parseFloat(token.balance)
+  })
+
+  const onChainBptPrice = calcBptPriceRaw(totalLiquidity.toString(), pool.dynamicData.totalShares)
+
   const isLoadingChainBalances = isLoadingUnstakedPoolBalance || isLoadingStakedPoolBalance
-  const totalBalance = formatUnits(stakedPoolBalance + unstakedPoolBalance, 18)
-  const totalBalanceUsd = parseFloat(bptPrice) * parseFloat(totalBalance)
-  const stakedBalanceUsd = parseFloat(bptPrice) * parseFloat(formatUnits(stakedPoolBalance, 18))
+  const totalBalance = formatUnits((stakedPoolBalance || 0n) + (unstakedPoolBalance || 0n), 18)
+  const stakedBalanceUsd =
+    parseFloat(onChainBptPrice) * parseFloat(formatUnits(stakedPoolBalance || 0n, 18))
 
   const userBalance = {
     ...(pool.userBalance || {}),
-    stakedBalance: formatUnits(stakedPoolBalance, 18),
+    stakedBalance: stakedPoolBalance
+      ? formatUnits(stakedPoolBalance || 0n, 18)
+      : pool.userBalance?.stakedBalance,
     unstakedPoolBalance,
-    totalBalance,
-    totalBalanceUsd,
-    stakedBalanceUsd,
+    totalBalance:
+      stakedBalanceUsd && unstakedPoolBalance ? totalBalance : pool.userBalance?.totalBalance,
+    stakedBalanceUsd: stakedBalanceUsd ? stakedBalanceUsd : pool.userBalance?.stakedBalanceUsd,
   }
 
   return {

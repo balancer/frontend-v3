@@ -110,6 +110,10 @@ export function calcBptPrice(pool: GetPoolQuery['pool']): string {
   return bn(pool.dynamicData.totalLiquidity).div(pool.dynamicData.totalShares).toString()
 }
 
+export function calcBptPriceRaw(totalLiquidity: string, totalShares: string): string {
+  return bn(totalLiquidity).div(totalShares).toString()
+}
+
 export function bptUsdValue(pool: GetPoolQuery['pool'], bptAmount: Numberish): string {
   return bn(bptAmount).times(calcBptPrice(pool)).toString()
 }
