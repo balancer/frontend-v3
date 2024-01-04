@@ -4,12 +4,14 @@ import { usePoolListQueryState } from '../usePoolListQueryState'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { FiGlobe } from 'react-icons/fi'
 import { PoolsColumnSort, orderByHash } from '../../pool.types'
+import { usePoolOrderByState } from '../usePoolOrderByState'
 
 const setIsDesc = (id: GqlPoolOrderBy, currentSortingObj: PoolsColumnSort) =>
   currentSortingObj.id === id ? !currentSortingObj.desc : true
 
 export function PoolListTableHeader({ ...rest }) {
-  const { sorting, setSorting, userAddress } = usePoolListQueryState()
+  const { sorting, setSorting } = usePoolListQueryState()
+  const { orderBy } = usePoolOrderByState()
   const sortingObj = sorting[0]
 
   return (
@@ -22,32 +24,23 @@ export function PoolListTableHeader({ ...rest }) {
       <GridItem>
         <Text fontWeight="bold">Pool name</Text>
       </GridItem>
-      {userAddress && (
-        <GridItem>
-          <Text textAlign="right" fontWeight="bold">
-            My Liquidity
-          </Text>
+      {orderBy.map((orderByItem, index) => (
+        <GridItem key={index} justifySelf="end">
+          <PoolListSortButton
+            title={orderByHash[orderByItem]}
+            isCurrentSort={sortingObj.id === orderByItem}
+            isDesc={sortingObj.desc}
+            onClick={() =>
+              setSorting([
+                {
+                  id: orderByItem,
+                  desc: setIsDesc(orderByItem, sortingObj),
+                },
+              ])
+            }
+          />
         </GridItem>
-      )}
-      {[GqlPoolOrderBy.TotalLiquidity, GqlPoolOrderBy.Volume24h, GqlPoolOrderBy.Apr].map(
-        (orderByItem, index) => (
-          <GridItem key={index} justifySelf="end">
-            <PoolListSortButton
-              title={orderByHash[orderByItem]}
-              isCurrentSort={sortingObj.id === orderByItem}
-              isDesc={sortingObj.desc}
-              onClick={() =>
-                setSorting([
-                  {
-                    id: orderByItem,
-                    desc: setIsDesc(orderByItem, sortingObj),
-                  },
-                ])
-              }
-            />
-          </GridItem>
-        )
-      )}
+      ))}
     </Grid>
   )
 }

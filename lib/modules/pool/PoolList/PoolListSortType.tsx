@@ -3,9 +3,11 @@ import { FiArrowDown, FiArrowUp } from 'react-icons/fi'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { orderByHash } from '../pool.types'
+import { usePoolOrderByState } from './usePoolOrderByState'
 
 export function PoolListSortType() {
   const { sorting, setSorting } = usePoolListQueryState()
+  const { orderBy } = usePoolOrderByState()
 
   return (
     <HStack mr={5}>
@@ -16,7 +18,7 @@ export function PoolListSortType() {
           setSorting([{ id: e.target.value as GqlPoolOrderBy, desc: sorting[0].desc }])
         }}
       >
-        {['totalLiquidity', 'volume24h', 'apr'].map(sortType => (
+        {orderBy.map(sortType => (
           <option key={sortType} value={sortType}>
             {orderByHash[sortType]}
           </option>

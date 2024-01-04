@@ -69,6 +69,7 @@ export const orderByHash: { [key: string]: string } = {
   totalLiquidity: 'TVL',
   volume24h: 'Volume (24h)',
   apr: 'APR',
+  userbalanceUsd: 'My liquidity',
 }
 
 export const poolListQueryStateParsers = {
