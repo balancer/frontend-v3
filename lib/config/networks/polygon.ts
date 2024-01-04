@@ -1,9 +1,11 @@
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
 
 const networkConfig: NetworkConfig = {
   chainId: 137,
   name: 'Polygon Mainnet',
   shortName: 'Polygon',
+  chain: GqlChain.Polygon,
   iconPath: '/images/chains/POLYGON.svg',
   blockExplorerBaseUrl: 'https://polygonscan.com',
   tokens: {
