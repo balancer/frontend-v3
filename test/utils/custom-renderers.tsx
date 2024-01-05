@@ -1,4 +1,4 @@
-import { poolId, vaultV2Address, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
+import { vaultV2Address, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { AddLiquidityProvider } from '@/lib/modules/pool/actions/add-liquidity/useAddLiquidity'
 import { PoolVariant } from '@/lib/modules/pool/pool.types'
 import { PoolProvider } from '@/lib/modules/pool/usePool'
@@ -190,14 +190,14 @@ export const buildDefaultPoolTestProvider =
   ({ children }: PropsWithChildren) => {
     return (
       <PoolProvider
-        id={poolId}
+        id={pool.id}
         chain={GqlChain.Mainnet}
         variant={PoolVariant.v2}
         data={{
           __typename: 'Query',
           pool,
         }}
-        variables={{ id: poolId }}
+        variables={{ id: pool.id, chain: pool.chain, userAddress: defaultTestUserAccount }}
       >
         {children}
       </PoolProvider>
