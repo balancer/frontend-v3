@@ -1,16 +1,26 @@
 import { Address } from 'viem'
+import { HumanAmount } from '@balancer/sdk'
+import { RemoveLiquidityHandlerType } from '../handlers/RemoveLiquidity.handler'
 
 const removeLiquidity = 'remove-liquidity'
 
 type LiquidityParams = {
+  type: RemoveLiquidityHandlerType
   userAddress: string
   poolId: string
   slippage: string
-  bptIn: bigint
+  bptInUnits: HumanAmount
   tokenOut?: Address // only used by single token removal type
 }
-function liquidityParams({ userAddress, poolId, slippage, bptIn, tokenOut }: LiquidityParams) {
-  return `${userAddress}:${poolId}:${slippage}:${bptIn}:${tokenOut}`
+function liquidityParams({
+  type,
+  userAddress,
+  poolId,
+  slippage,
+  bptInUnits,
+  tokenOut,
+}: LiquidityParams) {
+  return `${type}:${userAddress}:${poolId}:${slippage}:${bptInUnits}:${tokenOut}`
 }
 export const removeLiquidityKeys = {
   priceImpact: (params: LiquidityParams) =>

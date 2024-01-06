@@ -3,7 +3,7 @@
 
 import { useDisclosure } from '@chakra-ui/hooks'
 import { useRemoveLiquidity } from './useRemoveLiquidity'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import {
   Button,
@@ -18,6 +18,7 @@ import {
   Box,
   Radio,
   RadioGroup,
+  Skeleton,
 } from '@chakra-ui/react'
 import { RemoveLiquidityModal } from './RemoveLiquidityModal'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -31,11 +32,11 @@ import ButtonGroup, {
 import { InputWithSlider } from '@/lib/shared/components/inputs/InputWithSlider/InputWithSlider'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { Address } from 'viem'
-import { GqlToken, GqlTokenAmountHumanReadable } from '@/lib/shared/services/api/generated/graphql'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import React from 'react'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 
-const TABS = [
+const TABS: ButtonGroupOption[] = [
   {
     value: 'proportional',
     label: 'Proportional',
@@ -48,6 +49,7 @@ const TABS = [
 
 function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | undefined)[] }) {
   const { slippage } = useUserSettings()
+  const { tokenOutUnitsByAddress } = useRemoveLiquidity()
 
   return (
     <Card variant="level8" p="md" shadow="lg" w="full">
@@ -67,7 +69,7 @@ function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | undefined
                 chain={token.chain}
                 key={token.address}
                 address={token.address as Address}
-                value={0}
+                value={tokenOutUnitsByAddress[token.address as Address] || 0}
               />
             )
         )}
@@ -78,15 +80,10 @@ function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | undefined
 
 interface RemoveLiquiditySingleTokenProps {
   tokens: (GqlToken | undefined)[]
-  setSingleToken: (value: string) => void
-  singleToken: GqlTokenAmountHumanReadable | null
 }
 
-function RemoveLiquiditySingleToken({
-  tokens,
-  singleToken,
-  setSingleToken,
-}: RemoveLiquiditySingleTokenProps) {
+function RemoveLiquiditySingleToken({ tokens }: RemoveLiquiditySingleTokenProps) {
+  const { singleTokenAddress, setSingleTokenAddress, tokenOutUnitsByAddress } = useRemoveLiquidity()
   return (
     <VStack w="full">
       <HStack w="full" justify="space-between">
@@ -102,7 +99,10 @@ function RemoveLiquiditySingleToken({
         border="white"
         w="full"
       >
-        <RadioGroup onChange={setSingleToken} value={singleToken?.address ?? tokens[0]?.address}>
+        <RadioGroup
+          onChange={tokenAddress => setSingleTokenAddress(tokenAddress as Address)}
+          value={singleTokenAddress ?? tokens[0]?.address}
+        >
           <VStack w="full">
             {tokens.map(
               token =>
@@ -112,8 +112,8 @@ function RemoveLiquiditySingleToken({
                     <TokenRow
                       chain={token.chain}
                       address={token.address as Address}
-                      value={0}
-                      isSelected={token.address === singleToken?.address}
+                      value={tokenOutUnitsByAddress[token.address as Address]}
+                      isSelected={token.address === singleTokenAddress}
                     />
                   </HStack>
                 )
@@ -129,22 +129,19 @@ export function RemoveLiquidityForm() {
   const {
     tokens,
     validTokens,
-    setProportional,
-    singleTokenAddress,
-    setSingleToken,
-    setSingleTokenAddress,
-    setProportionalAmounts,
-    setSliderPercent,
-    sliderPercent,
-    singleToken,
+    setProportionalType,
+    setSingleTokenType,
+    setBptInUnitsPercent,
+    bptInUnitsPercent,
     totalUsdValue,
+    totalUsdFromTokensOut,
+    priceImpact,
+    isPriceImpactLoading,
   } = useRemoveLiquidity()
   const { toCurrency } = useCurrency()
   const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
   const [activeTab, setActiveTab] = useState(TABS[0])
-
-  const usdInputAmount = totalUsdValue
 
   function submit() {
     // TODO: implement isDisabledWithReason
@@ -153,14 +150,13 @@ export function RemoveLiquidityForm() {
 
   function toggleTab(option: ButtonGroupOption) {
     setActiveTab(option)
-  }
-
-  useEffect(() => {
-    // actively choosing a single token will set the correct selectedRemoveLiquidityType
-    if (activeTab === TABS[0]) {
-      setProportional()
+    if (option.value === 'proportional') {
+      setProportionalType()
     }
-  }, [activeTab])
+    if (option.value === 'single') {
+      setSingleTokenType()
+    }
+  }
 
   return (
     <TokenBalancesProvider tokens={validTokens}>
@@ -185,29 +181,22 @@ export function RemoveLiquidityForm() {
               </Tooltip>
             </HStack>
             <VStack w="full" gap="md">
-              {/* value={toCurrency(usdInputAmount)} */}
               <InputWithSlider
-                value={sliderPercent.toString()}
-                setValue={setSliderPercent}
+                value={totalUsdValue}
+                onPercentChanged={setBptInUnitsPercent}
                 isNumberInputDisabled
               >
                 <Text>Amount</Text>
-                <Text>{fNum('percentage', sliderPercent / 100)}</Text>
+                <Text>{fNum('percentage', bptInUnitsPercent / 100)}</Text>
               </InputWithSlider>
               {activeTab === TABS[0] && <RemoveLiquidityProportional tokens={tokens} />}
-              {activeTab === TABS[1] && (
-                <RemoveLiquiditySingleToken
-                  tokens={tokens}
-                  singleToken={singleToken}
-                  setSingleToken={setSingleToken}
-                />
-              )}
+              {activeTab === TABS[1] && <RemoveLiquiditySingleToken tokens={tokens} />}
             </VStack>
             <VStack spacing="sm" align="start" w="full">
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Total</Text>
                 <HStack>
-                  <NumberText color="GrayText">{toCurrency(totalUsdValue)}</NumberText>
+                  <NumberText color="GrayText">{toCurrency(totalUsdFromTokensOut)}</NumberText>
                   <Tooltip label="Total" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
@@ -216,7 +205,13 @@ export function RemoveLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
-                  <NumberText color="GrayText">{fNum('priceImpact', 0)}</NumberText>
+                  <NumberText color="GrayText">
+                    {isPriceImpactLoading ? (
+                      <Skeleton w="12" h="full" />
+                    ) : (
+                      fNum('priceImpact', priceImpact || 0)
+                    )}
+                  </NumberText>
                   <Tooltip label="Price impact" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>

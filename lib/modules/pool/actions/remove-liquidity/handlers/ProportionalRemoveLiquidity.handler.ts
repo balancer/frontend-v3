@@ -1,6 +1,7 @@
 import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
+  HumanAmount,
   InputAmount,
   RemoveLiquidity,
   RemoveLiquidityKind,
@@ -8,7 +9,7 @@ import {
   RemoveLiquidityQueryOutput,
   Slippage,
 } from '@balancer/sdk'
-import { Address } from 'viem'
+import { Address, parseEther } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
 import { Pool } from '../../../usePool'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
@@ -17,9 +18,11 @@ import {
   RemoveLiquidityInputs,
   RemoveLiquidityOutputs,
 } from '../remove-liquidity.types'
-import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
+import { RemoveLiquidityHandler, RemoveLiquidityHandlerType } from './RemoveLiquidity.handler'
 
 export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandler {
+  type: RemoveLiquidityHandlerType = 'proportional'
+
   helpers: LiquidityActionHelpers
   sdkQueryOutput?: RemoveLiquidityQueryOutput
 
@@ -28,7 +31,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
   }
 
   public async queryRemoveLiquidity({
-    bptIn,
+    bptInUnits: bptIn,
   }: RemoveLiquidityInputs): Promise<RemoveLiquidityOutputs> {
     const removeLiquidity = new RemoveLiquidity()
     const removeLiquidityInput = this.constructSdkInput(bptIn)
@@ -83,9 +86,9 @@ It looks that you did not call useRemoveLiquidityBtpOutQuery before trying to bu
   /**
    * PRIVATE METHODS
    */
-  private constructSdkInput(bptIn: bigint): RemoveLiquidityProportionalInput {
-    const bptInInputAmount: InputAmount = {
-      rawAmount: bptIn,
+  private constructSdkInput(bptInUnits: HumanAmount): RemoveLiquidityProportionalInput {
+    const bptIn: InputAmount = {
+      rawAmount: parseEther(bptInUnits),
       decimals: BPT_DECIMALS,
       address: this.helpers.pool.address as Address,
     }
@@ -93,7 +96,7 @@ It looks that you did not call useRemoveLiquidityBtpOutQuery before trying to bu
     return {
       chainId: this.helpers.chainId,
       rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
-      bptIn: bptInInputAmount,
+      bptIn,
       kind: RemoveLiquidityKind.Proportional,
       //TODO: review this case
       // toNativeAsset: this.helpers.isNativeAssetIn(humanAmountsIn),

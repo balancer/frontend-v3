@@ -5,12 +5,15 @@ import {
   BuildLiquidityInputs,
 } from '../remove-liquidity.types'
 
+export type RemoveLiquidityHandlerType = 'proportional' | 'single'
+
 /**
  * RemoveLiquidityHandler is an interface that defines the methods that must be implemented by a handler.
  * They take standard inputs from the UI and return frontend standardised outputs.
  * This is to allow handlers to be developed in the future that may not use the SDK.
  */
 export interface RemoveLiquidityHandler {
+  type: RemoveLiquidityHandlerType
   // Query the SDK for the expected output of removing liquidity
   queryRemoveLiquidity(inputs: RemoveLiquidityInputs): Promise<RemoveLiquidityOutputs>
   // Calculate the price impact of removing liquidity

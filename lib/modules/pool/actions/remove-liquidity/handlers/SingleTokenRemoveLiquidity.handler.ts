@@ -1,6 +1,7 @@
 import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
+  HumanAmount,
   InputAmount,
   PriceImpact,
   RemoveLiquidity,
@@ -9,19 +10,21 @@ import {
   RemoveLiquiditySingleTokenInput,
   Slippage,
 } from '@balancer/sdk'
-import { Address } from 'viem'
+import { Address, parseEther } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
 import { Pool } from '../../../usePool'
-import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
+import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
 import { PriceImpactAmount } from '../../add-liquidity/add-liquidity.types'
 import {
   BuildLiquidityInputs,
   RemoveLiquidityOutputs,
   SingleTokenRemoveLiquidityInputs,
 } from '../remove-liquidity.types'
-import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
+import { RemoveLiquidityHandler, RemoveLiquidityHandlerType } from './RemoveLiquidity.handler'
 
 export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler {
+  type: RemoveLiquidityHandlerType = 'single'
+
   helpers: LiquidityActionHelpers
   sdkQueryOutput?: RemoveLiquidityQueryOutput
 
@@ -30,11 +33,13 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
   }
 
   public async queryRemoveLiquidity({
-    bptIn,
+    bptInUnits,
     tokenOut,
   }: SingleTokenRemoveLiquidityInputs): Promise<RemoveLiquidityOutputs> {
+    if (!tokenOut) return { amountsOut: [] }
+
     const removeLiquidity = new RemoveLiquidity()
-    const removeLiquidityInput = this.constructSdkInput(bptIn, tokenOut)
+    const removeLiquidityInput = this.constructSdkInput(bptInUnits, tokenOut)
 
     this.sdkQueryOutput = await removeLiquidity.query(
       removeLiquidityInput,
@@ -45,15 +50,15 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
   }
 
   public async calculatePriceImpact({
-    bptIn,
+    bptInUnits,
     tokenOut,
   }: SingleTokenRemoveLiquidityInputs): Promise<number> {
-    if (bptIn === 0n) {
-      // Avoid price impact calculation when there are no amounts in
+    if (isEmptyHumanAmount(bptInUnits) || !tokenOut) {
+      // Avoid price impact calculation
       return 0
     }
 
-    const removeLiquidityInput = this.constructSdkInput(bptIn, tokenOut)
+    const removeLiquidityInput = this.constructSdkInput(bptInUnits, tokenOut)
 
     const priceImpactABA: PriceImpactAmount = await PriceImpact.removeLiquidity(
       removeLiquidityInput,
@@ -100,9 +105,12 @@ It looks that you did not call useRemoveLiquidityBtpOutQuery before trying to bu
   /**
    * PRIVATE METHODS
    */
-  private constructSdkInput(bptIn: bigint, tokenOut: Address): RemoveLiquiditySingleTokenInput {
+  private constructSdkInput(
+    bptInUnits: HumanAmount,
+    tokenOut: Address
+  ): RemoveLiquiditySingleTokenInput {
     const bptInInputAmount: InputAmount = {
-      rawAmount: bptIn,
+      rawAmount: parseEther(bptInUnits),
       decimals: BPT_DECIMALS,
       address: this.helpers.pool.address as Address,
     }

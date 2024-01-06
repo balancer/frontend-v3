@@ -3,26 +3,31 @@
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { defaultDebounceMs } from '@/lib/shared/utils/queries'
-import { TokenAmount } from '@balancer/sdk'
+import { HumanAmount, TokenAmount } from '@balancer/sdk'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { Address, useQuery } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { removeLiquidityKeys } from './remove-liquidity-keys'
 
+export type RemoveLiquidityPreviewQueryResult = ReturnType<typeof useRemoveLiquidityPreviewQuery>
+
 export function useRemoveLiquidityPreviewQuery(
   handler: RemoveLiquidityHandler,
   poolId: string,
-  bptIn: bigint,
+  bptInUnits: HumanAmount,
   tokenOut?: Address
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [amountsOut, setAmountsOut] = useState<TokenAmount[] | undefined>(undefined)
-  const debouncedBptIn = useDebounce(bptIn, defaultDebounceMs)[0]
+  const debouncedBptInUnits = useDebounce(bptInUnits, defaultDebounceMs)[0]
 
   async function queryBptIn() {
-    const { amountsOut } = await handler.queryRemoveLiquidity({ bptIn: debouncedBptIn })
+    const { amountsOut } = await handler.queryRemoveLiquidity({
+      bptInUnits: debouncedBptInUnits,
+      tokenOut,
+    })
 
     setAmountsOut(amountsOut)
 
@@ -31,18 +36,18 @@ export function useRemoveLiquidityPreviewQuery(
 
   const query = useQuery(
     removeLiquidityKeys.preview({
+      type: handler.type,
       userAddress,
       slippage,
       poolId,
-      bptIn,
+      bptInUnits: debouncedBptInUnits,
       tokenOut,
     }),
     async () => {
       return await queryBptIn()
     },
     {
-      enabled: isConnected && debouncedBptIn > 0n,
-      onError: (error: Error) => console.log('Error in queryRemoveLiquidity', error.name),
+      enabled: isConnected && Number(debouncedBptInUnits) > 0,
     }
   )
 

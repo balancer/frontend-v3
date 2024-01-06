@@ -4,10 +4,10 @@
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
-import { GqlToken, GqlTokenAmountHumanReadable } from '@/lib/shared/services/api/generated/graphql'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
-import { bn, toBigInt } from '@/lib/shared/utils/numbers'
+import { bn } from '@/lib/shared/utils/numbers'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useMemo, useState } from 'react'
 import { usePool } from '../../usePool'
@@ -16,6 +16,8 @@ import { useRemoveLiquidityBuildCallDataQuery } from './queries/useRemoveLiquidi
 import { useRemoveLiquidityPreviewQuery } from './queries/useRemoveLiquidityPreviewQuery'
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 import { RemoveLiquidityType } from './remove-liquidity.types'
+import { Address } from 'viem'
+import { toHumanAmount } from '../LiquidityActionHelpers'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -28,70 +30,86 @@ export function _useRemoveLiquidity() {
   const [removalType, setRemovalType] = useState<RemoveLiquidityType>(
     RemoveLiquidityType.Proportional
   )
-  const [singleTokenAddress, setSingleTokenAddress] = useState<string | null>(null)
-  const [singleTokenHumanAmount, setSingleTokenHumanAmount] = useState<HumanAmount | ''>('')
+  const [singleTokenAddress, setSingleTokenAddress] = useState<Address | undefined>(undefined)
 
-  const [sliderPercent, setSliderPercent] = useState<number>(100)
+  const [bptInUnitsPercent, setBptInUnitsPercent] = useState<number>(100)
 
-  const handler = useMemo(() => selectRemoveLiquidityHandler(pool, removalType), [pool.id])
+  const handler = useMemo(
+    () => selectRemoveLiquidityHandler(pool, removalType),
+    [pool.id, removalType]
+  )
 
-  // const maxBptIn = pool.userBalance.totalBalance
   // TODO: Hardcoded until it is ready in the API
-  const maxBptIn = 1000
-  const bptIn: bigint = toBigInt(bn(maxBptIn).times(sliderPercent / 100))
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const maxBptInUnits: HumanAmount = pool?.userBalance?.totalBalance || '100' // we use 100 for DEBUG until totalBalance PR is ready
+  const bptInUnits: HumanAmount = bn(maxBptInUnits)
+    .times(bptInUnitsPercent / 100)
+    .toString() as HumanAmount
 
-  const totalUsdValue = bn(bptIn).times(bptPrice).toString()
+  const totalUsdValue = bn(bptInUnits).times(bptPrice).toString()
 
-  function setProportionalAmounts(proportionalAmounts: GqlTokenAmountHumanReadable[]) {
-    console.log({ proportionalAmounts })
-  }
-
-  const setProportional = () => setRemovalType(RemoveLiquidityType.Proportional)
-  const setSingleToken = () => setRemovalType(RemoveLiquidityType.SingleToken)
+  const setProportionalType = () => setRemovalType(RemoveLiquidityType.Proportional)
+  const setSingleTokenType = () => setRemovalType(RemoveLiquidityType.SingleToken)
   const isSingleToken = removalType === RemoveLiquidityType.SingleToken
   const isProportional = removalType === RemoveLiquidityType.Proportional
 
-  const singleToken: GqlTokenAmountHumanReadable = {
-    address: singleTokenAddress || '', //TODO remove null
-    amount: singleTokenHumanAmount,
-  }
-
   const tokens = pool.allTokens.map(token => getToken(token.address, pool.chain))
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
+  const firstTokenAddress = tokens?.[0]?.address as Address
+
+  const singleTokenOutAddress = singleTokenAddress || firstTokenAddress
 
   const { isPriceImpactLoading, priceImpact } = useRemoveLiquidityPriceImpactQuery(
     handler,
     pool.id,
-    bptIn
+    bptInUnits,
+    singleTokenOutAddress //tokenOut --> refactor to better generic types
   )
 
   const { amountsOut, isPreviewQueryLoading } = useRemoveLiquidityPreviewQuery(
     handler,
     pool.id,
-    bptIn
+    bptInUnits,
+    singleTokenOutAddress //tokenOut --> refactor to better generic types
   )
 
+  const tokenOutUnitsByAddress: Record<Address, HumanAmount> = {}
+  amountsOut?.map(tokenAmount => {
+    tokenOutUnitsByAddress[tokenAmount.token.address] = toHumanAmount(tokenAmount)
+  })
+
+  const tokenOutUsdByAddress: Record<Address, HumanAmount> = {}
+  amountsOut?.map(tokenAmount => {
+    const tokenAddress: Address = tokenAmount.token.address
+    const token = getToken(tokenAddress, pool.chain)
+    if (!token) throw new Error(`Token with address ${tokenAddress} was not found`)
+    const tokenUnits = tokenOutUnitsByAddress[token.address as Address]
+    tokenOutUsdByAddress[tokenAddress] = usdValueForToken(token, tokenUnits) as HumanAmount
+  })
+
+  const totalUsdFromTokensOut: string = Object.values(tokenOutUsdByAddress)
+    .reduce((acc, current) => acc + parseFloat(current), 0)
+    .toString()
+
   function useBuildCallData(isActiveStep: boolean) {
-    return useRemoveLiquidityBuildCallDataQuery(handler, bptIn, isActiveStep, pool.id)
+    return useRemoveLiquidityBuildCallDataQuery(handler, bptInUnits, isActiveStep, pool.id)
   }
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
-    [bptIn === 0n, 'You must specify a valid bpt in']
+    [Number(bptInUnits) === 0, 'You must specify a valid bpt in']
   )
 
   return {
     tokens,
     validTokens,
-    setProportional,
-    setProportionalAmounts,
-    setSingleToken,
+    setProportionalType,
+    setSingleTokenType,
     setSingleTokenAddress,
-    setSingleTokenHumanAmount,
-    singleToken,
     singleTokenAddress,
-    sliderPercent,
-    setSliderPercent,
+    bptInUnitsPercent,
+    setBptInUnitsPercent,
     isSingleToken,
     isProportional,
     setRemovalType,
@@ -103,6 +121,9 @@ export function _useRemoveLiquidity() {
     amountsOut,
     isDisabled,
     disabledReason,
+    tokenOutUnitsByAddress,
+    tokenOutUsdByAddress,
+    totalUsdFromTokensOut,
   }
 }
 
