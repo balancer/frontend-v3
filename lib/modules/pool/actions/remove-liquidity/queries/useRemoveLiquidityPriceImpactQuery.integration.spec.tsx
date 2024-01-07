@@ -5,24 +5,25 @@ import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.b
 import { selectRemoveLiquidityHandler } from '../handlers/selectRemoveLiquidityHandler'
 import { RemoveLiquidityType } from '../remove-liquidity.types'
 import { useRemoveLiquidityPriceImpactQuery } from './useRemoveLiquidityPriceImpactQuery'
-import { parseUnits } from 'viem'
-import { BPT_DECIMALS } from '../../../pool.constants'
+import { HumanAmount } from '@balancer/sdk'
 
 const poolMock = aWjAuraWethPoolElementMock()
 
-async function testQuery(bptIn: bigint) {
+async function testQuery(bptInUnits: HumanAmount) {
   const handler = selectRemoveLiquidityHandler(
     aWjAuraWethPoolElementMock(),
     RemoveLiquidityType.Proportional
   )
-  const { result } = testHook(() => useRemoveLiquidityPriceImpactQuery(handler, poolMock.id, bptIn))
+  const { result } = testHook(() =>
+    useRemoveLiquidityPriceImpactQuery(handler, poolMock.id, bptInUnits)
+  )
   return result
 }
 
 test('queries price impact for add liquidity', async () => {
-  const bptIn: bigint = parseUnits('1', BPT_DECIMALS)
+  const bptInUnits: HumanAmount = '1'
 
-  const result = await testQuery(bptIn)
+  const result = await testQuery(bptInUnits)
 
   await waitFor(() => expect(result.current.priceImpact).toBeDefined())
 
