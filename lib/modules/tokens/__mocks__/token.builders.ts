@@ -7,7 +7,7 @@ import {
   GqlPoolTokenExpanded,
   GqlTokenPrice,
 } from '@/lib/shared/services/api/generated/graphql'
-import { fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
+import { allFakeGqlTokens, fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
 import { mock } from 'vitest-mock-extended'
 import { TokenAmountToApprove } from '../approvals/approval-rules'
 import { TokenAllowances } from '../../web3/useTokenAllowances'
@@ -19,7 +19,7 @@ import { Address, parseUnits } from 'viem'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 
 export const defaultTokenMock = aTokenMock({ symbol: 'TEST-TOKEN' })
-export const defaultTokenListMock: MswTokenList = [defaultTokenMock as MswTokenList[0]]
+export const defaultTokenListMock: MswTokenList = allFakeGqlTokens
 
 export const defaultTokenPriceMock = aTokenPriceMock()
 export const defaultTokenPriceListMock = [defaultTokenPriceMock]
@@ -36,8 +36,8 @@ export const defaultGetTokenPricesQueryMock: GetTokenPricesQuery = {
   tokenPrices: defaultTokenPriceListMock,
 }
 
-export function aTokenAmountMock(options?: Partial<TokenAmount>) {
-  const defaultTokenAmount = {
+export function aTokenAmountMock(options?: Partial<TokenAmount>): TokenAmount {
+  const defaultTokenAmount: TokenAmount = {
     address: '0xc67b12049c2d0cf6e476bc64c7f82fc6c63cffc5',
     amount: 0n,
     chainId: 1,

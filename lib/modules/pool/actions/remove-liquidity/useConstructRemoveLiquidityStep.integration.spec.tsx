@@ -43,7 +43,7 @@ test.skip('Throws error when user tries to remove liquidity in a pool where they
 
   // User fills token inputs
   act(() => {
-    result.current.providerResult.setProportional()
+    result.current.providerResult.setProportionalType()
   })
 
   // await waitFor(() => expect(result.current.providerResult.amountsOut).toBeDefined())
