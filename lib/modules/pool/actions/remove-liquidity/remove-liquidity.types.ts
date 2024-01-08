@@ -9,11 +9,11 @@ import { Address } from 'wagmi'
 type CommonRemoveLiquidityInputs = { account?: Address; slippagePercent?: string }
 
 export type ProportionalRemoveLiquidityInputs = {
-  bptInUnits: HumanAmount // bptIn in Ether units
+  humanBptIn: HumanAmount
 } & CommonRemoveLiquidityInputs
 
 export type SingleTokenRemoveLiquidityInputs = {
-  bptInUnits: HumanAmount
+  humanBptIn: HumanAmount
   tokenOut: Address
 } & CommonRemoveLiquidityInputs
 

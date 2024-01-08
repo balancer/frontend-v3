@@ -9,19 +9,19 @@ import { selectRemoveLiquidityHandler } from '../handlers/selectRemoveLiquidityH
 import { RemoveLiquidityType } from '../remove-liquidity.types'
 import { useRemoveLiquidityPreviewQuery } from './useRemoveLiquidityPreviewQuery'
 
-async function testQuery(bptInUnits: HumanAmount) {
+async function testQuery(humanBptIn: HumanAmount) {
   const handler = selectRemoveLiquidityHandler(
     aWjAuraWethPoolElementMock(),
     RemoveLiquidityType.Proportional
   )
-  const { result } = testHook(() => useRemoveLiquidityPreviewQuery(handler, poolId, bptInUnits))
+  const { result } = testHook(() => useRemoveLiquidityPreviewQuery(handler, poolId, humanBptIn))
   return result
 }
 
 test('runs preview query for proportional remove liquidity', async () => {
-  const bptInUnits: HumanAmount = '642.164532327890776754'
+  const humanBptIn: HumanAmount = '642.164532327890776754'
 
-  const result = await testQuery(bptInUnits)
+  const result = await testQuery(humanBptIn)
 
   await waitFor(() => expect(result.current.amountsOut).toBeDefined())
 

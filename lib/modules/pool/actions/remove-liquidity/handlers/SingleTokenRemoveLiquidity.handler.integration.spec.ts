@@ -16,7 +16,7 @@ describe('When removing unbalanced liquidity for a weighted pool', () => {
   test('queries amounts out', async () => {
     // TODO: why address and slippage are optional???
     const inputs: RemoveLiquidityInputs = {
-      bptInUnits: '1',
+      humanBptIn: '1',
       account: defaultTestUserAccount,
       tokenOut: balAddress,
     }
@@ -38,7 +38,7 @@ describe('When removing unbalanced liquidity for a weighted pool', () => {
     const handler = selectSingleTokenHandler(poolMock)
 
     const inputs: RemoveLiquidityInputs = {
-      bptInUnits: '1',
+      humanBptIn: '1',
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
       tokenOut: balAddress,

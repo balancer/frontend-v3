@@ -15,17 +15,17 @@ export type RemoveLiquidityPreviewQueryResult = ReturnType<typeof useRemoveLiqui
 export function useRemoveLiquidityPreviewQuery(
   handler: RemoveLiquidityHandler,
   poolId: string,
-  bptInUnits: HumanAmount,
+  humanBptIn: HumanAmount,
   tokenOut?: Address
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [amountsOut, setAmountsOut] = useState<TokenAmount[] | undefined>(undefined)
-  const debouncedBptInUnits = useDebounce(bptInUnits, defaultDebounceMs)[0]
+  const debouncedHumanBptIn = useDebounce(humanBptIn, defaultDebounceMs)[0]
 
   async function queryBptIn() {
     const { amountsOut } = await handler.queryRemoveLiquidity({
-      bptInUnits: debouncedBptInUnits,
+      humanBptIn: debouncedHumanBptIn,
       tokenOut,
     })
 
@@ -40,14 +40,14 @@ export function useRemoveLiquidityPreviewQuery(
       userAddress,
       slippage,
       poolId,
-      bptInUnits: debouncedBptInUnits,
+      humanBptIn: debouncedHumanBptIn,
       tokenOut,
     }),
     async () => {
       return await queryBptIn()
     },
     {
-      enabled: isConnected && Number(debouncedBptInUnits) > 0,
+      enabled: isConnected && Number(debouncedHumanBptIn) > 0,
     }
   )
 

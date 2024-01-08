@@ -9,7 +9,7 @@ type LiquidityParams = {
   userAddress: string
   poolId: string
   slippage: string
-  bptInUnits: HumanAmount
+  humanBptIn: HumanAmount
   tokenOut?: Address // only used by single token removal type
 }
 function liquidityParams({
@@ -17,10 +17,10 @@ function liquidityParams({
   userAddress,
   poolId,
   slippage,
-  bptInUnits,
+  humanBptIn,
   tokenOut,
 }: LiquidityParams) {
-  return `${type}:${userAddress}:${poolId}:${slippage}:${bptInUnits}:${tokenOut}`
+  return `${type}:${userAddress}:${poolId}:${slippage}:${humanBptIn}:${tokenOut}`
 }
 export const removeLiquidityKeys = {
   priceImpact: (params: LiquidityParams) =>

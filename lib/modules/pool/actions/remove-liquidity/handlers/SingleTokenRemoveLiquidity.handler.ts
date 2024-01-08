@@ -33,13 +33,13 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
   }
 
   public async queryRemoveLiquidity({
-    bptInUnits,
+    humanBptIn,
     tokenOut,
   }: SingleTokenRemoveLiquidityInputs): Promise<RemoveLiquidityOutputs> {
     if (!tokenOut) return { amountsOut: [] }
 
     const removeLiquidity = new RemoveLiquidity()
-    const removeLiquidityInput = this.constructSdkInput(bptInUnits, tokenOut)
+    const removeLiquidityInput = this.constructSdkInput(humanBptIn, tokenOut)
 
     this.sdkQueryOutput = await removeLiquidity.query(
       removeLiquidityInput,
@@ -50,15 +50,15 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
   }
 
   public async calculatePriceImpact({
-    bptInUnits,
+    humanBptIn,
     tokenOut,
   }: SingleTokenRemoveLiquidityInputs): Promise<number> {
-    if (isEmptyHumanAmount(bptInUnits) || !tokenOut) {
+    if (isEmptyHumanAmount(humanBptIn) || !tokenOut) {
       // Avoid price impact calculation
       return 0
     }
 
-    const removeLiquidityInput = this.constructSdkInput(bptInUnits, tokenOut)
+    const removeLiquidityInput = this.constructSdkInput(humanBptIn, tokenOut)
 
     const priceImpactABA: PriceImpactAmount = await PriceImpact.removeLiquidity(
       removeLiquidityInput,
@@ -106,11 +106,11 @@ It looks that you did not call useRemoveLiquidityBtpOutQuery before trying to bu
    * PRIVATE METHODS
    */
   private constructSdkInput(
-    bptInUnits: HumanAmount,
+    humanBptIn: HumanAmount,
     tokenOut: Address
   ): RemoveLiquiditySingleTokenInput {
     const bptInInputAmount: InputAmount = {
-      rawAmount: parseEther(bptInUnits),
+      rawAmount: parseEther(humanBptIn),
       decimals: BPT_DECIMALS,
       address: this.helpers.pool.address as Address,
     }

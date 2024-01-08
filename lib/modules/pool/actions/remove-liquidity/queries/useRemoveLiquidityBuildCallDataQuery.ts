@@ -10,7 +10,7 @@ import { HumanAmount } from '@balancer/sdk'
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
 export function useRemoveLiquidityBuildCallDataQuery(
   handler: RemoveLiquidityHandler,
-  bptInUnits: HumanAmount,
+  humanBptIn: HumanAmount,
   isActiveStep: boolean,
   poolId: string,
   tokenOut?: Address
@@ -25,12 +25,12 @@ export function useRemoveLiquidityBuildCallDataQuery(
       userAddress,
       slippage,
       poolId,
-      bptInUnits,
+      humanBptIn,
       tokenOut,
     }),
     async () => {
       const inputs = {
-        bptInUnits,
+        humanBptIn,
         account: userAddress,
         slippagePercent: slippage,
       }

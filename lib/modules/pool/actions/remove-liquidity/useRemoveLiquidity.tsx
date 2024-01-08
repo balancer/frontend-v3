@@ -32,7 +32,7 @@ export function _useRemoveLiquidity() {
   )
   const [singleTokenAddress, setSingleTokenAddress] = useState<Address | undefined>(undefined)
 
-  const [bptInUnitsPercent, setBptInUnitsPercent] = useState<number>(100)
+  const [humanBptInPercent, setHumanBptInPercent] = useState<number>(100)
 
   const handler = useMemo(
     () => selectRemoveLiquidityHandler(pool, removalType),
@@ -42,9 +42,9 @@ export function _useRemoveLiquidity() {
   // TODO: Hardcoded until it is ready in the API
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const maxBptInUnits: HumanAmount = pool?.userBalance?.totalBalance || '100' // we use 100 for DEBUG until totalBalance PR is ready
-  const bptInUnits: HumanAmount = bn(maxBptInUnits)
-    .times(bptInUnitsPercent / 100)
+  const maxHumanBptIn: HumanAmount = pool?.userBalance?.totalBalance || '100' // we use 100 for DEBUG until totalBalance PR is ready
+  const humanBptIn: HumanAmount = bn(maxHumanBptIn)
+    .times(humanBptInPercent / 100)
     .toString() as HumanAmount
 
   const setProportionalType = () => setRemovalType(RemoveLiquidityType.Proportional)
@@ -61,14 +61,14 @@ export function _useRemoveLiquidity() {
   const { isPriceImpactLoading, priceImpact } = useRemoveLiquidityPriceImpactQuery(
     handler,
     pool.id,
-    bptInUnits,
+    humanBptIn,
     singleTokenOutAddress //tokenOut --> refactor to better generic types
   )
 
   const { amountsOut, isPreviewQueryLoading } = useRemoveLiquidityPreviewQuery(
     handler,
     pool.id,
-    bptInUnits,
+    humanBptIn,
     singleTokenOutAddress //tokenOut --> refactor to better generic types
   )
 
@@ -105,12 +105,12 @@ export function _useRemoveLiquidity() {
     .toString()
 
   function useBuildCallData(isActiveStep: boolean) {
-    return useRemoveLiquidityBuildCallDataQuery(handler, bptInUnits, isActiveStep, pool.id)
+    return useRemoveLiquidityBuildCallDataQuery(handler, humanBptIn, isActiveStep, pool.id)
   }
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
-    [Number(bptInUnits) === 0, 'You must specify a valid bpt in']
+    [Number(humanBptIn) === 0, 'You must specify a valid bpt in']
   )
 
   return {
@@ -120,8 +120,8 @@ export function _useRemoveLiquidity() {
     setSingleTokenType,
     setSingleTokenAddress,
     singleTokenAddress,
-    bptInUnitsPercent,
-    setBptInUnitsPercent,
+    humanBptInPercent,
+    setHumanBptInPercent,
     isSingleToken,
     isProportional,
     setRemovalType,

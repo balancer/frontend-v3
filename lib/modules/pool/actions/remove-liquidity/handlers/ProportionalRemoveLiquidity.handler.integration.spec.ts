@@ -14,7 +14,7 @@ function selectProportionalHandler(pool: Pool) {
 }
 
 const inputs: RemoveLiquidityInputs = {
-  bptInUnits: '1',
+  humanBptIn: '1',
   account: defaultTestUserAccount,
   slippagePercent: '0.2',
 }

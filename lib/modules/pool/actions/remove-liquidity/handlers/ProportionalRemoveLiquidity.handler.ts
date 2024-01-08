@@ -31,7 +31,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
   }
 
   public async queryRemoveLiquidity({
-    bptInUnits: bptIn,
+    humanBptIn: bptIn,
   }: RemoveLiquidityInputs): Promise<RemoveLiquidityOutputs> {
     const removeLiquidity = new RemoveLiquidity()
     const removeLiquidityInput = this.constructSdkInput(bptIn)
@@ -86,9 +86,9 @@ It looks that you did not call useRemoveLiquidityBtpOutQuery before trying to bu
   /**
    * PRIVATE METHODS
    */
-  private constructSdkInput(bptInUnits: HumanAmount): RemoveLiquidityProportionalInput {
+  private constructSdkInput(humanBptIn: HumanAmount): RemoveLiquidityProportionalInput {
     const bptIn: InputAmount = {
-      rawAmount: parseEther(bptInUnits),
+      rawAmount: parseEther(humanBptIn),
       decimals: BPT_DECIMALS,
       address: this.helpers.pool.address as Address,
     }

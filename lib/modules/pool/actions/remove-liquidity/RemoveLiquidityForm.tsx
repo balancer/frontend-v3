@@ -131,8 +131,8 @@ export function RemoveLiquidityForm() {
     validTokens,
     setProportionalType,
     setSingleTokenType,
-    setBptInUnitsPercent,
-    bptInUnitsPercent,
+    setHumanBptInPercent,
+    humanBptInPercent,
     totalUsdValue,
     priceImpact,
     isPriceImpactLoading,
@@ -182,11 +182,11 @@ export function RemoveLiquidityForm() {
             <VStack w="full" gap="md">
               <InputWithSlider
                 value={totalUsdValue}
-                onPercentChanged={setBptInUnitsPercent}
+                onPercentChanged={setHumanBptInPercent}
                 isNumberInputDisabled
               >
                 <Text>Amount</Text>
-                <Text>{fNum('percentage', bptInUnitsPercent / 100)}</Text>
+                <Text>{fNum('percentage', humanBptInPercent / 100)}</Text>
               </InputWithSlider>
               {activeTab === TABS[0] && <RemoveLiquidityProportional tokens={tokens} />}
               {activeTab === TABS[1] && <RemoveLiquiditySingleToken tokens={tokens} />}

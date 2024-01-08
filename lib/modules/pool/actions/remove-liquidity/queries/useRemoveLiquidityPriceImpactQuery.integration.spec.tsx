@@ -9,21 +9,21 @@ import { HumanAmount } from '@balancer/sdk'
 
 const poolMock = aWjAuraWethPoolElementMock()
 
-async function testQuery(bptInUnits: HumanAmount) {
+async function testQuery(humanBptIn: HumanAmount) {
   const handler = selectRemoveLiquidityHandler(
     aWjAuraWethPoolElementMock(),
     RemoveLiquidityType.Proportional
   )
   const { result } = testHook(() =>
-    useRemoveLiquidityPriceImpactQuery(handler, poolMock.id, bptInUnits)
+    useRemoveLiquidityPriceImpactQuery(handler, poolMock.id, humanBptIn)
   )
   return result
 }
 
 test('queries price impact for add liquidity', async () => {
-  const bptInUnits: HumanAmount = '1'
+  const humanBptIn: HumanAmount = '1'
 
-  const result = await testQuery(bptInUnits)
+  const result = await testQuery(humanBptIn)
 
   await waitFor(() => expect(result.current.priceImpact).toBeDefined())
 

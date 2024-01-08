@@ -9,7 +9,7 @@ test('Generates expected query keys', () => {
     userAddress: defaultTestUserAccount,
     poolId,
     slippage: '0.2',
-    bptInUnits: '1',
+    humanBptIn: '1',
   })
   expect(result).toMatchInlineSnapshot(
     `
@@ -26,7 +26,7 @@ test('Generates expected query keys', () => {
     userAddress: defaultTestUserAccount,
     poolId,
     slippage: '0.3',
-    bptInUnits: '1',
+    humanBptIn: '1',
   })
 
   expect(result).not.toEqual(result2)

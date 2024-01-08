@@ -55,10 +55,10 @@ describe('When the user choses proportional remove liquidity', () => {
     const result = await testUseRemoveLiquidity(poolMock)
 
     expect(result.current.isProportional).toBeTruthy()
-    expect(result.current.bptInUnitsPercent).toBe(100)
+    expect(result.current.humanBptInPercent).toBe(100)
 
-    act(() => result.current.setBptInUnitsPercent(50))
-    expect(result.current.bptInUnitsPercent).toBe(50)
+    act(() => result.current.setHumanBptInPercent(50))
+    expect(result.current.humanBptInPercent).toBe(50)
   })
 
   test('calculates token amounts out', async () => {

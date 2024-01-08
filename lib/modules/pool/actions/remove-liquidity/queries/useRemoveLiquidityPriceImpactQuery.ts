@@ -13,17 +13,17 @@ import { HumanAmount } from '@balancer/sdk'
 export function useRemoveLiquidityPriceImpactQuery(
   handler: RemoveLiquidityHandler,
   poolId: string,
-  bptInUnits: HumanAmount,
+  humanBptIn: HumanAmount,
   tokenOut?: Address
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [priceImpact, setPriceImpact] = useState<number | null>(null)
-  const debouncedBptIn = useDebounce(bptInUnits, defaultDebounceMs)[0]
+  const debouncedBptIn = useDebounce(humanBptIn, defaultDebounceMs)[0]
 
   async function queryPriceImpact() {
     const _priceImpact = await handler.calculatePriceImpact({
-      bptInUnits: debouncedBptIn,
+      humanBptIn: debouncedBptIn,
       tokenOut,
     })
 
@@ -37,7 +37,7 @@ export function useRemoveLiquidityPriceImpactQuery(
       userAddress,
       slippage,
       poolId,
-      bptInUnits,
+      humanBptIn: humanBptIn,
       tokenOut,
     }),
     async () => {
