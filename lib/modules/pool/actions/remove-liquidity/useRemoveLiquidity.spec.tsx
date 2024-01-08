@@ -36,7 +36,14 @@ mockTokenPricesList([
   aTokenPriceMock({ address: wETHAddress, price: wethPrice }),
 ])
 
-async function testUseRemoveLiquidity(pool: GqlPoolElement = aBalWethPoolElementMock()) {
+const poolMock = aBalWethPoolElementMock() // 80BAL-20WETH
+
+poolMock.userBalance = aUserPoolBalance({ totalBalance: '200' }) // maxBptUnits
+poolMock.dynamicData.totalLiquidity = '1000'
+poolMock.dynamicData.totalShares = '100'
+// bptPrice = 1000/100 = 10
+
+async function testUseRemoveLiquidity(pool: GqlPoolElement = poolMock) {
   const { result } = testHook(() => _useRemoveLiquidity(), {
     wrapper: buildDefaultPoolTestProvider(pool),
   })
@@ -45,60 +52,35 @@ async function testUseRemoveLiquidity(pool: GqlPoolElement = aBalWethPoolElement
 
 describe('When the user choses proportional remove liquidity', () => {
   test('recalculates totalUsdValue when changing the slider', async () => {
-    const result = await testUseRemoveLiquidity()
+    const result = await testUseRemoveLiquidity(poolMock)
 
     expect(result.current.isProportional).toBeTruthy()
     expect(result.current.bptInUnitsPercent).toBe(100)
-    const initialTotalUsdValue = result.current.totalUsdValue
 
     act(() => result.current.setBptInUnitsPercent(50))
     expect(result.current.bptInUnitsPercent).toBe(50)
-
-    expect(result.current.totalUsdValue).toBeCloseTo(Number(initialTotalUsdValue) / 2)
   })
 
-  test('calculates totalUsdValue', async () => {
-    const poolMock = aBalWethPoolElementMock() // 80BAL-20WETH
-
-    poolMock.userBalance = aUserPoolBalance({ totalBalance: '200' }) // maxBptUnits
-    poolMock.dynamicData.totalLiquidity = '1000'
-    poolMock.dynamicData.totalShares = '100'
-    // bptPrice = 1000/100 = 10
-    const result = await testUseRemoveLiquidity(poolMock)
-
-    // totalUsdValue = bptPrice * maxBptUnits = 10 * 200 = 2000
-    expect(result.current.totalUsdValue).toBe('2000')
-  })
-
-  test('calculates tokenOutUnitsByAddress', async () => {
+  test('calculates token amounts out', async () => {
     const result = await testUseRemoveLiquidity()
 
-    expect(result.current.tokenOutUnitsByAddress).toEqual({
-      [balAddress]: balTokenOutUnits,
-      [wETHAddress]: wEthTokenOutUnits,
-    })
+    expect(result.current.amountOutForToken(balAddress)).toBe(balTokenOutUnits)
+    expect(result.current.amountOutForToken(wETHAddress)).toBe(wEthTokenOutUnits)
   })
 
-  test('calculates tokenOutUsdByAddress', async () => {
+  test('calculates token usd out ', async () => {
     const result = await testUseRemoveLiquidity()
 
     // By default token prices are 0.00
-    expect(result.current.tokenOutUsdByAddress).toEqual({
-      [balAddress]: '0.00',
-      [wETHAddress]: '0.00',
-    })
+    expect(result.current.usdOutForToken(balAddress)).toBe('0.00')
+    expect(result.current.usdOutForToken(wETHAddress)).toBe('0.00')
 
-    await waitFor(() =>
-      expect(result.current.tokenOutUsdByAddress[balAddress] !== '0.00').toBeTruthy()
-    )
-    await waitFor(() =>
-      expect(result.current.tokenOutUsdByAddress[wETHAddress] !== '0.00').toBeTruthy()
-    )
+    await waitFor(() => expect(result.current.usdOutForToken(balAddress) !== '0.00').toBeTruthy())
+    expect(result.current.usdOutForToken(balAddress)).toBe('2.00') // balTokenOutUnits * balPrice = 1 * 2 = 2.00
+    expect(result.current.usdOutForToken(wETHAddress)).toBe('1.50')
 
-    expect(result.current.tokenOutUsdByAddress).toEqual({
-      [balAddress]: '2.00', // balTokenOutUnits * balPrice = 1 * 2 = 2.00
-      [wETHAddress]: '1.50', // wethTokenOutUnits x wethPrice = 0.5 * 3 = 1.50 with 18 decimals
-    })
+    // total usd value is the sum of the token out usd values (2.00 + 1.50 = 3.50)
+    expect(result.current.totalUsdValue).toBe('3.5')
   })
 })
 

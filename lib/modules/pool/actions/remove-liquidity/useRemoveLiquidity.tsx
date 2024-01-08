@@ -47,8 +47,6 @@ export function _useRemoveLiquidity() {
     .times(bptInUnitsPercent / 100)
     .toString() as HumanAmount
 
-  const totalUsdValue = bn(bptInUnits).times(bptPrice).toString()
-
   const setProportionalType = () => setRemovalType(RemoveLiquidityType.Proportional)
   const setSingleTokenType = () => setRemovalType(RemoveLiquidityType.SingleToken)
   const isSingleToken = removalType === RemoveLiquidityType.SingleToken
@@ -74,21 +72,33 @@ export function _useRemoveLiquidity() {
     singleTokenOutAddress //tokenOut --> refactor to better generic types
   )
 
-  const tokenOutUnitsByAddress: Record<Address, HumanAmount> = {}
+  const _tokenOutUnitsByAddress: Record<Address, HumanAmount> = {}
   amountsOut?.map(tokenAmount => {
-    tokenOutUnitsByAddress[tokenAmount.token.address] = toHumanAmount(tokenAmount)
+    _tokenOutUnitsByAddress[tokenAmount.token.address] = toHumanAmount(tokenAmount)
   })
 
-  const tokenOutUsdByAddress: Record<Address, HumanAmount> = {}
+  const amountOutForToken = (tokenAddress: Address): HumanAmount => {
+    const amount = _tokenOutUnitsByAddress[tokenAddress]
+    if (!amount) return '0.00'
+    return amount
+  }
+
+  const _tokenOutUsdByAddress: Record<Address, HumanAmount> = {}
   amountsOut?.map(tokenAmount => {
     const tokenAddress: Address = tokenAmount.token.address
     const token = getToken(tokenAddress, pool.chain)
     if (!token) throw new Error(`Token with address ${tokenAddress} was not found`)
-    const tokenUnits = tokenOutUnitsByAddress[token.address as Address]
-    tokenOutUsdByAddress[tokenAddress] = usdValueForToken(token, tokenUnits) as HumanAmount
+    const tokenUnits = amountOutForToken(token.address as Address)
+    _tokenOutUsdByAddress[tokenAddress] = usdValueForToken(token, tokenUnits) as HumanAmount
   })
 
-  const totalUsdFromTokensOut: string = Object.values(tokenOutUsdByAddress)
+  const usdOutForToken = (tokenAddress: Address): HumanAmount => {
+    const usdOut = _tokenOutUsdByAddress[tokenAddress]
+    if (!usdOut) return '0.00'
+    return usdOut
+  }
+
+  const totalUsdValue: string = Object.values(_tokenOutUsdByAddress)
     .reduce((acc, current) => acc + parseFloat(current), 0)
     .toString()
 
@@ -118,12 +128,10 @@ export function _useRemoveLiquidity() {
     isPreviewQueryLoading,
     isPriceImpactLoading,
     priceImpact,
-    amountsOut,
     isDisabled,
     disabledReason,
-    tokenOutUnitsByAddress,
-    tokenOutUsdByAddress,
-    totalUsdFromTokensOut,
+    usdOutForToken,
+    amountOutForToken,
   }
 }
 

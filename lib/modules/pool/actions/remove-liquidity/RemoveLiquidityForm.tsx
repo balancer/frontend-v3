@@ -49,7 +49,7 @@ const TABS: ButtonGroupOption[] = [
 
 function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | undefined)[] }) {
   const { slippage } = useUserSettings()
-  const { tokenOutUnitsByAddress } = useRemoveLiquidity()
+  const { amountOutForToken } = useRemoveLiquidity()
 
   return (
     <Card variant="level8" p="md" shadow="lg" w="full">
@@ -69,7 +69,7 @@ function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | undefined
                 chain={token.chain}
                 key={token.address}
                 address={token.address as Address}
-                value={tokenOutUnitsByAddress[token.address as Address] || 0}
+                value={amountOutForToken(token.address as Address)}
               />
             )
         )}
@@ -83,7 +83,7 @@ interface RemoveLiquiditySingleTokenProps {
 }
 
 function RemoveLiquiditySingleToken({ tokens }: RemoveLiquiditySingleTokenProps) {
-  const { singleTokenAddress, setSingleTokenAddress, tokenOutUnitsByAddress } = useRemoveLiquidity()
+  const { singleTokenAddress, setSingleTokenAddress, amountOutForToken } = useRemoveLiquidity()
   return (
     <VStack w="full">
       <HStack w="full" justify="space-between">
@@ -112,7 +112,7 @@ function RemoveLiquiditySingleToken({ tokens }: RemoveLiquiditySingleTokenProps)
                     <TokenRow
                       chain={token.chain}
                       address={token.address as Address}
-                      value={tokenOutUnitsByAddress[token.address as Address]}
+                      value={amountOutForToken(token.address as Address)}
                       isSelected={token.address === singleTokenAddress}
                     />
                   </HStack>
@@ -134,7 +134,6 @@ export function RemoveLiquidityForm() {
     setBptInUnitsPercent,
     bptInUnitsPercent,
     totalUsdValue,
-    totalUsdFromTokensOut,
     priceImpact,
     isPriceImpactLoading,
   } = useRemoveLiquidity()
@@ -196,7 +195,7 @@ export function RemoveLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Total</Text>
                 <HStack>
-                  <NumberText color="GrayText">{toCurrency(totalUsdFromTokensOut)}</NumberText>
+                  <NumberText color="GrayText">{toCurrency(totalUsdValue)}</NumberText>
                   <Tooltip label="Total" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
