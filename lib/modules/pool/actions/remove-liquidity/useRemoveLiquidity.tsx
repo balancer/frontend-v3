@@ -23,7 +23,7 @@ export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
 
 export function _useRemoveLiquidity() {
-  const { pool, bptPrice } = usePool()
+  const { pool } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected } = useUserAccount()
 
@@ -130,8 +130,8 @@ export function _useRemoveLiquidity() {
     priceImpact,
     isDisabled,
     disabledReason,
-    usdOutForToken,
     amountOutForToken,
+    usdOutForToken,
   }
 }
 
