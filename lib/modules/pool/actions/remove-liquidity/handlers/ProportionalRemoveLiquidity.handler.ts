@@ -18,11 +18,9 @@ import {
   RemoveLiquidityInputs,
   RemoveLiquidityOutputs,
 } from '../remove-liquidity.types'
-import { RemoveLiquidityHandler, RemoveLiquidityHandlerType } from './RemoveLiquidity.handler'
+import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
 
 export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandler {
-  type: RemoveLiquidityHandlerType = 'proportional'
-
   helpers: LiquidityActionHelpers
   sdkQueryOutput?: RemoveLiquidityQueryOutput
 

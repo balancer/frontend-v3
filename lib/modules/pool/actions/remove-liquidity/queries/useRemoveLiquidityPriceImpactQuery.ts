@@ -33,7 +33,7 @@ export function useRemoveLiquidityPriceImpactQuery(
 
   const query = useQuery(
     removeLiquidityKeys.priceImpact({
-      type: handler.type,
+      handler,
       userAddress,
       slippage,
       poolId,

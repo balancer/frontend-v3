@@ -36,7 +36,7 @@ export function useRemoveLiquidityPreviewQuery(
 
   const query = useQuery(
     removeLiquidityKeys.preview({
-      type: handler.type,
+      handler,
       userAddress,
       slippage,
       poolId,

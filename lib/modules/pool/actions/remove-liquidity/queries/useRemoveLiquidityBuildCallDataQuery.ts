@@ -21,7 +21,7 @@ export function useRemoveLiquidityBuildCallDataQuery(
 
   const removeLiquidityQuery = useQuery(
     removeLiquidityKeys.buildCallData({
-      type: handler.type,
+      handler,
       userAddress,
       slippage,
       poolId,

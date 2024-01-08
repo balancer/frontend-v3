@@ -20,11 +20,9 @@ import {
   RemoveLiquidityOutputs,
   SingleTokenRemoveLiquidityInputs,
 } from '../remove-liquidity.types'
-import { RemoveLiquidityHandler, RemoveLiquidityHandlerType } from './RemoveLiquidity.handler'
+import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
 
 export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler {
-  type: RemoveLiquidityHandlerType = 'single'
-
   helpers: LiquidityActionHelpers
   sdkQueryOutput?: RemoveLiquidityQueryOutput
 
