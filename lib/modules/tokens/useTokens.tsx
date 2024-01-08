@@ -85,10 +85,13 @@ export function _useTokens(
     return price.price
   }
 
-  const usdValueForToken = useCallback((token: GqlToken, amount: Numberish) => {
-    if (amount === '') return '0'
-    return bn(amount).times(priceForToken(token)).toFixed(2)
-  }, [])
+  const usdValueForToken = useCallback(
+    (token: GqlToken, amount: Numberish) => {
+      if (amount === '') return '0'
+      return bn(amount).times(priceForToken(token)).toFixed(2)
+    },
+    [JSON.stringify(prices)]
+  )
 
   function priceFor(address: string, chain: GqlChain): number {
     const token = getToken(address, chain)

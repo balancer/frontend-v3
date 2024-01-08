@@ -6,7 +6,7 @@ import {
   defaultGetTokenPricesQueryMock,
   defaultGetTokensQueryMock,
   defaultGetTokensQueryVariablesMock,
-  defaultTokenMock,
+  defaultTokenListMock,
 } from './__mocks__/token.builders'
 import { _useTokens } from './useTokens'
 
@@ -27,7 +27,7 @@ test('fetches tokens', async () => {
 
   await waitFor(() => expect(result.current.tokens.length).toBeGreaterThan(0))
 
-  expect(result.current.tokens).toMatchObject([defaultTokenMock])
+  expect(result.current.tokens).toEqual(defaultTokenListMock)
 })
 
 test('gets tokens by token address', async () => {
@@ -47,7 +47,7 @@ test('gets tokens by token address', async () => {
           "logoURI": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xba100000625a3754423978a60c9317c58a424e3d.png",
           "name": "Balancer",
           "priority": 0,
-          "symbol": "TEST-TOKEN",
+          "symbol": "BAL",
           "tradable": true,
         },
       }

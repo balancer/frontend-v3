@@ -2,21 +2,14 @@ import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { HumanAmount, PoolStateInput } from '@balancer/sdk'
+import { HumanAmount, InputAmount, PoolStateInput, TokenAmount } from '@balancer/sdk'
 import { Dictionary, keyBy } from 'lodash'
-import { parseUnits } from 'viem'
+import { formatUnits, parseUnits } from 'viem'
 import { Address } from 'wagmi'
 import { toPoolStateInput } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-
-// TODO: this should be imported from the SDK
-export type InputAmount = {
-  address: Address
-  decimals: number
-  rawAmount: bigint
-}
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -109,3 +102,7 @@ export const areEmptyAmounts = (humanAmountsIn: HumanAmountIn[]) =>
 
 export const hasValidHumanAmounts = (humanAmountsIn: HumanAmountIn[]) =>
   humanAmountsIn.some(a => a.humanAmount && a.humanAmount !== '0')
+
+export function toHumanAmount(tokenAmount: TokenAmount): HumanAmount {
+  return formatUnits(tokenAmount.amount, tokenAmount.token.decimals) as HumanAmount
+}

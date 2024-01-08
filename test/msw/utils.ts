@@ -1,6 +1,5 @@
 import { DocumentNode, TypedDocumentNode } from '@apollo/client'
 import { RequestHandler } from 'msw'
-
 import { mswServer } from './server'
 
 /**
@@ -23,8 +22,8 @@ export function getQueryName(document: TypedDocumentNode | DocumentNode): string
   }
   return definition?.name?.value
 }
-
 export function mockGQL(handlers: Array<RequestHandler> | RequestHandler) {
+  // Override default handlers with custom ones
   if (Array.isArray(handlers)) return mswServer.use(...handlers)
   mswServer.use(handlers)
 }
