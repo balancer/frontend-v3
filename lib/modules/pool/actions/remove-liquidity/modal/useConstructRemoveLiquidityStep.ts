@@ -2,8 +2,8 @@ import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transaction
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { Address } from 'wagmi'
-import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
-import { useRemoveLiquidity } from './useRemoveLiquidity'
+import { useActiveStep } from '../../../../../shared/hooks/transaction-flows/useActiveStep'
+import { useRemoveLiquidity } from '../useRemoveLiquidity'
 
 export function useConstructRemoveLiquidityStep(poolId: string) {
   const { isActiveStep, activateStep } = useActiveStep()

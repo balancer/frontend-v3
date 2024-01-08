@@ -23,7 +23,7 @@ export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
 
 export function _useRemoveLiquidity() {
-  const { pool } = usePool()
+  const { pool, bptPrice } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected } = useUserAccount()
 
@@ -46,6 +46,8 @@ export function _useRemoveLiquidity() {
   const humanBptIn: HumanAmount = bn(maxHumanBptIn)
     .times(humanBptInPercent / 100)
     .toString() as HumanAmount
+
+  const totalBptPrice = bn(humanBptIn).times(bptPrice).toFixed(2)
 
   const setProportionalType = () => setRemovalType(RemoveLiquidityType.Proportional)
   const setSingleTokenType = () => setRemovalType(RemoveLiquidityType.SingleToken)
@@ -119,8 +121,10 @@ export function _useRemoveLiquidity() {
     setProportionalType,
     setSingleTokenType,
     setSingleTokenAddress,
-    singleTokenAddress,
+    singleTokenOutAddress,
+    humanBptIn,
     humanBptInPercent,
+    totalBptPrice,
     setHumanBptInPercent,
     isSingleToken,
     isProportional,

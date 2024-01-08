@@ -91,6 +91,6 @@ describe('When the user choses single token remove liquidity', () => {
     act(() => result.current.setSingleTokenType())
     act(() => result.current.setSingleTokenAddress(wETHAddress))
 
-    expect(result.current.singleTokenAddress).toEqual(wETHAddress)
+    expect(result.current.singleTokenOutAddress).toEqual(wETHAddress)
   })
 })
