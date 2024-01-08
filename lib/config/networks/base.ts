@@ -1,9 +1,11 @@
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
 
 const networkConfig: NetworkConfig = {
   chainId: 8453,
   name: 'Base Mainnet',
   shortName: 'Base',
+  chain: GqlChain.Base,
   iconPath: '/images/chains/BASE.svg',
   blockExplorerBaseUrl: 'https://basescan.org',
   tokens: {
