@@ -42,7 +42,7 @@ export function _useRemoveLiquidity() {
   // TODO: Hardcoded until it is ready in the API
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const maxHumanBptIn: HumanAmount = pool?.userBalance?.totalBalance || '100' // we use 100 for DEBUG until totalBalance PR is ready
+  const maxHumanBptIn: HumanAmount = pool?.userBalance?.totalBalance || '100' // we use 100 for DEBUG until this PR is merged: https://github.com/balancer/frontend-v3/pull/192
   const humanBptIn: HumanAmount = bn(maxHumanBptIn)
     .times(humanBptInPercent / 100)
     .toString() as HumanAmount
