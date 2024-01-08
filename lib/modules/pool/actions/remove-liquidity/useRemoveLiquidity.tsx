@@ -7,7 +7,7 @@ import { LABELS } from '@/lib/shared/labels'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
-import { bn } from '@/lib/shared/utils/numbers'
+import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useMemo, useState } from 'react'
 import { usePool } from '../../usePool'
@@ -99,7 +99,9 @@ export function _useRemoveLiquidity() {
   }
 
   const totalUsdValue: string = Object.values(_tokenOutUsdByAddress)
-    .reduce((acc, current) => acc + parseFloat(current), 0)
+    .reduce((acc, current) => {
+      return Number(safeSum([acc, current]))
+    }, 0)
     .toString()
 
   function useBuildCallData(isActiveStep: boolean) {
