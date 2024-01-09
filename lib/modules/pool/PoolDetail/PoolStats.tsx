@@ -4,7 +4,6 @@ import PoolBadges from './PoolBadges'
 import { usePool } from '../usePool'
 import { getAprLabel } from '../pool.utils'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import BoostedPoolWeightChart from './PoolWeightCharts/BoostedPoolWeightChart'
 import PoolWeightChart from './PoolWeightCharts/PoolWeightChart'
 
 export default function PoolStats() {
