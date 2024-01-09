@@ -18,6 +18,7 @@ import { getNetworkConfig } from '@/lib/config/app.config'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { WAD } from '@balancer/sdk'
 import { useUserAccount } from '../web3/useUserAccount'
+import { isComposableStablePool, isLinearPool } from './pool.utils'
 
 export function usePoolEnrichWithOnChainData({
   chain,
@@ -236,7 +237,7 @@ function getUserBalancesCall(
   pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested | GqlPoolLinearNested,
   userAddress: Address
 ): { poolId: string; type: 'userBalance'; call: ContractFunctionConfig } {
-  const isLinear = pool.__typename === 'GqlPoolLinear' || pool.__typename == 'GqlPoolLinearNested'
+  const isLinear = isLinearPool(pool)
 
   return {
     poolId: pool.id,
@@ -257,10 +258,8 @@ function getSupplyCall(
   type: 'supply'
   call: ContractFunctionConfig
 } {
-  const isLinear = pool.__typename === 'GqlPoolLinear' || pool.__typename == 'GqlPoolLinearNested'
-  const isComposableStable =
-    pool.__typename === 'GqlPoolComposableStable' ||
-    pool.__typename == 'GqlPoolComposableStableNested'
+  const isLinear = isLinearPool(pool)
+  const isComposableStable = isComposableStablePool(pool)
 
   return {
     poolId: pool.id,
