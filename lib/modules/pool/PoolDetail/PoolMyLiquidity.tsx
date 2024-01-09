@@ -15,6 +15,7 @@ import { keyBy, sumBy } from 'lodash'
 import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
 import { useTokens } from '../../tokens/useTokens'
 import { useChainUserPoolBalances } from '../useChainUserPoolBalances'
+import { BPT_DECIMALS } from '../pool.constants'
 
 const TABS = [
   {
@@ -48,21 +49,21 @@ export default function PoolMyLiquidity() {
   }
 
   function getBalanceToUseForTokenAmounts(useTotalRegardless?: boolean) {
+    const parsedTotalBalance = parseUnits(userBalance?.totalBalance || '0', BPT_DECIMALS)
+    const parsedStakedBalance = parseUnits(userBalance?.stakedBalance || '0', BPT_DECIMALS)
+
     if (useTotalRegardless) {
-      return parseUnits(userBalance?.totalBalance || '0', 18)
+      return parsedTotalBalance
     }
     switch (activeTab.value) {
       case 'all':
-        return parseUnits(userBalance?.totalBalance || '0', 18)
+        return parsedTotalBalance
       case 'staked':
-        return parseUnits(userBalance?.stakedBalance || '0', 18)
+        return parsedStakedBalance
       case 'unstaked':
-        return (
-          parseUnits(userBalance?.stakedBalance || '0', 18) -
-          parseUnits(userBalance?.totalBalance || '0', 18)
-        )
+        return parsedTotalBalance - parsedStakedBalance
       default:
-        return parseUnits(userBalance?.totalBalance || '0', 18)
+        return parsedTotalBalance
     }
   }
 

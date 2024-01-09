@@ -1,6 +1,9 @@
 import {
+  GetPoolQuery,
   GqlChain,
   GqlPoolAprValue,
+  GqlPoolComposableStableNested,
+  GqlPoolLinearNested,
   GqlPoolTokenBase,
   GqlPoolType,
 } from '@/lib/shared/services/api/generated/graphql'
@@ -83,6 +86,21 @@ const poolTypeLabelMap: { [key in GqlPoolType]: string } = {
 
 export function getPoolTypeLabel(type: GqlPoolType): string {
   return poolTypeLabelMap[type]
+}
+
+export function isLinearPool(
+  pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested | GqlPoolLinearNested
+) {
+  return pool.__typename === 'GqlPoolLinear' || pool.__typename == 'GqlPoolLinearNested'
+}
+
+export function isComposableStablePool(
+  pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested | GqlPoolLinearNested
+) {
+  return (
+    pool.__typename === 'GqlPoolComposableStable' ||
+    pool.__typename == 'GqlPoolComposableStableNested'
+  )
 }
 
 export function getProportionalExitAmountsForBptIn(
