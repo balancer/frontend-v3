@@ -197,7 +197,7 @@ export const buildDefaultPoolTestProvider =
           __typename: 'Query',
           pool,
         }}
-        variables={{ id: pool.id }}
+        variables={{ id: pool.id, chain: pool.chain }}
       >
         {children}
       </PoolProvider>
