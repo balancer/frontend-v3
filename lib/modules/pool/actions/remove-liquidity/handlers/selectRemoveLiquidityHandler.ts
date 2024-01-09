@@ -2,6 +2,7 @@ import { Pool } from '../../../usePool'
 import { RemoveLiquidityType } from '../remove-liquidity.types'
 import { ProportionalRemoveLiquidityHandler } from './ProportionalRemoveLiquidity.handler'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
+import { SingleTokenRemoveLiquidityHandler } from './SingleTokenRemoveLiquidity.handler'
 
 export function selectRemoveLiquidityHandler(
   pool: Pool,
@@ -14,6 +15,9 @@ export function selectRemoveLiquidityHandler(
   // }
   if (kind === RemoveLiquidityType.Proportional) {
     return new ProportionalRemoveLiquidityHandler(pool)
+  }
+  if (kind === RemoveLiquidityType.SingleToken) {
+    return new SingleTokenRemoveLiquidityHandler(pool)
   }
 
   // Default type

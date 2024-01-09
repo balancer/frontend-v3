@@ -17,5 +17,5 @@ export interface AddLiquidityHandler {
   // Calculate the price impact of adding liquidity
   calculatePriceImpact(inputs: AddLiquidityInputs): Promise<number>
   // Build tx payload for adding liquidity
-  buildAddLiquidityTx(inputs: BuildLiquidityInputs): Promise<TransactionConfig>
+  buildAddLiquidityCallData(inputs: BuildLiquidityInputs): Promise<TransactionConfig>
 }

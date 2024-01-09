@@ -24,6 +24,7 @@ export interface NetworkConfig {
   chainId: SupportedChainId
   name: string
   shortName: string
+  chain: GqlChain
   iconPath: string
   blockExplorerBaseUrl: string
   tokens: TokensConfig

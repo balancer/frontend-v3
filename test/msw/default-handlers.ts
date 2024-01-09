@@ -1,10 +1,14 @@
 import { buildPoolListMswHandler } from './handlers/PoolList.handlers'
-import { buildTokenListMswHandler, buildTokenPricesMswHandler } from './handlers/Tokens.handlers'
+import { buildTokenPricesMswHandler } from './handlers/Tokens.handlers'
+import { buildTokenListMswHandler } from './handlers/Tokens.handlers'
 import { buildPoolMswHandler } from './handlers/Pool.handlers'
 import { buildAppGlobalDataMswHandler } from './handlers/AppGlobalData.handlers'
 import { defaultPostMswHandler } from './handlers/rest-handlers'
 
-export const defaultMswHandlers = [
+/*
+  Must be a function (not a plain const )to avoid circular import problems
+*/
+export const getDefaultMswHandlers = () => [
   defaultPostMswHandler,
   buildPoolListMswHandler(),
   buildTokenListMswHandler(),

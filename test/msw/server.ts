@@ -1,4 +1,4 @@
 import { setupServer } from 'msw/node'
-import { defaultMswHandlers } from './handlers'
+import { getDefaultMswHandlers } from './default-handlers'
 
-export const mswServer = setupServer(...defaultMswHandlers)
+export const mswServer = setupServer(...getDefaultMswHandlers())

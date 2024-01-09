@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import networkConfig from '@/lib/config/networks/mainnet'
 import { balAddress, wETHAddress } from '@/lib/debug-helpers'
 import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
@@ -7,8 +6,6 @@ import { aPhantomStablePoolStateInputMock } from '../../../__mocks__/pool.builde
 import { Pool } from '../../../usePool'
 import { RemoveLiquidityInputs, RemoveLiquidityType } from '../remove-liquidity.types'
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
-import { parseUnits } from 'viem'
-import { BPT_DECIMALS } from '../../../pool.constants'
 
 const poolMock = aBalWethPoolElementMock() // 80BAL-20WETH
 
@@ -17,7 +14,7 @@ function selectProportionalHandler(pool: Pool) {
 }
 
 const inputs: RemoveLiquidityInputs = {
-  bptIn: parseUnits('1', BPT_DECIMALS),
+  humanBptIn: '1',
   account: defaultTestUserAccount,
   slippagePercent: '0.2',
 }

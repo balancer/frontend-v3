@@ -37,13 +37,13 @@ function UserPoolFilter() {
   const [checked, setChecked] = useState(false)
 
   useEffect(() => {
-    if (userAddress === connectedUserAddress) {
-      setChecked(true)
+    if (connectedUserAddress) {
+      setChecked(userAddress === connectedUserAddress)
     } else {
       setChecked(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userAddress])
+  }, [userAddress, connectedUserAddress])
 
   return (
     <Checkbox

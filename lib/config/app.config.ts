@@ -36,6 +36,10 @@ export function getChainId(gqlChain: GqlChain): SupportedChainId {
   return getNetworkConfig(gqlChain).chainId as SupportedChainId
 }
 
+export function getGqlChain(chainId: SupportedChainId): GqlChain {
+  return getNetworkConfig(chainId).chain
+}
+
 export function getNativeAssetAddress(chainId: SupportedChainId) {
   return getNetworkConfig(chainId).tokens.nativeAsset.address
 }
