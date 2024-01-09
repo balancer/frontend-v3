@@ -5,11 +5,12 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Address, useQuery } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { removeLiquidityKeys } from './remove-liquidity-keys'
+import { HumanAmount } from '@balancer/sdk'
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
 export function useRemoveLiquidityBuildCallDataQuery(
   handler: RemoveLiquidityHandler,
-  bptIn: bigint,
+  humanBptIn: HumanAmount,
   isActiveStep: boolean,
   poolId: string,
   tokenOut?: Address
@@ -20,15 +21,16 @@ export function useRemoveLiquidityBuildCallDataQuery(
 
   const removeLiquidityQuery = useQuery(
     removeLiquidityKeys.buildCallData({
+      handler,
       userAddress,
       slippage,
       poolId,
-      bptIn,
+      humanBptIn,
       tokenOut,
     }),
     async () => {
       const inputs = {
-        bptIn,
+        humanBptIn,
         account: userAddress,
         slippagePercent: slippage,
       }

@@ -14,6 +14,7 @@ export default defineConfig({
     globals: true,
     environment: 'happy-dom',
     coverage: {
+      provider: 'v8',
       reporter: process.env.SILENT_TESTS ? ['lcov'] : ['text', 'lcov'],
     }, // lcov reporter is used by IDE coverage extensions
     include: [

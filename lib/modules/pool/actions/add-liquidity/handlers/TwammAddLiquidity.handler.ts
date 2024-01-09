@@ -35,7 +35,9 @@ export class TwammAddLiquidityHandler implements AddLiquidityHandler {
   }
 
   // TODO: This is a non-sense example implementation
-  public async buildAddLiquidityTx(buildInputs: BuildLiquidityInputs): Promise<TransactionConfig> {
+  public async buildAddLiquidityCallData(
+    buildInputs: BuildLiquidityInputs
+  ): Promise<TransactionConfig> {
     const { humanAmountsIn, account, slippagePercent } = buildInputs.inputs
     if (!account || !slippagePercent) throw new Error('Missing account or slippage')
 
