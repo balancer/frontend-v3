@@ -20,14 +20,15 @@ import {
 } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
 import { fNum } from '@/lib/shared/utils/numbers'
-import { usePool } from '../../usePool'
+import { usePool } from '../../../usePool'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { FiArrowLeft } from 'react-icons/fi'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { Address } from 'viem'
-import { useRemoveLiquidity } from './useRemoveLiquidity'
+import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import RemoveLiquidityBptRow from './RemoveLiquidityBptRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
+import { RemoveLiquidityFlowButton } from './RemoveLiquidityFlowButton'
 
 type Props = {
   isOpen: boolean
@@ -47,9 +48,11 @@ export function RemoveLiquidityModal({
     //executeRemoveLiquidity,
     isProportional,
     isSingleToken,
-    singleTokenAddress,
+    singleTokenOutAddress,
+    amountOutForToken,
+    priceImpact,
   } = useRemoveLiquidity()
-  const { pool, bptPrice } = usePool()
+  const { pool } = usePool()
   const { slippage } = useUserSettings()
 
   return (
@@ -79,7 +82,7 @@ export function RemoveLiquidityModal({
                 <Text fontWeight="bold" fontSize="1rem">
                   You&apos;re removing
                 </Text>
-                <RemoveLiquidityBptRow pool={pool} amount={4} bptPrice={bptPrice} />
+                <RemoveLiquidityBptRow pool={pool} />
               </VStack>
             </Card>
             <Card variant="level0" p="md" w="full">
@@ -98,11 +101,15 @@ export function RemoveLiquidityModal({
                       key={token.address}
                       address={token.address as Address}
                       chain={pool.chain}
-                      value={0}
+                      value={amountOutForToken(token.address as Address)}
                     />
                   ))}
                 {isSingleToken && (
-                  <TokenRow address={singleTokenAddress as Address} chain={pool.chain} value={0} />
+                  <TokenRow
+                    address={singleTokenOutAddress as Address}
+                    chain={pool.chain}
+                    value={amountOutForToken(singleTokenOutAddress as Address)}
+                  />
                 )}
               </VStack>
             </Card>
@@ -114,7 +121,7 @@ export function RemoveLiquidityModal({
                   </Text>
                   <HStack>
                     <Text fontWeight="medium" variant="secondary">
-                      {fNum('priceImpact', 0)}
+                      {fNum('priceImpact', priceImpact || 0)}
                     </Text>
                     <Tooltip label="Price impact" fontSize="sm">
                       <InfoOutlineIcon color="GrayText" />
@@ -126,14 +133,7 @@ export function RemoveLiquidityModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <Button
-            w="full"
-            size="lg"
-            variant="primary"
-            // onClick={executeRemoveLiquidity}
-          >
-            Confirm remove
-          </Button>
+          <RemoveLiquidityFlowButton poolId={pool.id}></RemoveLiquidityFlowButton>
         </ModalFooter>
       </ModalContent>
     </Modal>
