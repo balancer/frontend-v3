@@ -10,9 +10,10 @@ import { areEmptyAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { addLiquidityKeys } from './add-liquidity-keys'
+import { SupportedHandler } from '../add-liquidity.types'
 
 export function useAddLiquidityPriceImpactQuery(
-  handler: AddLiquidityHandler,
+  handler: AddLiquidityHandler<SupportedHandler>,
   humanAmountsIn: HumanAmountIn[],
   poolId: string
 ) {
@@ -22,9 +23,7 @@ export function useAddLiquidityPriceImpactQuery(
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
 
   async function queryPriceImpact() {
-    const _priceImpact = await handler.calculatePriceImpact({
-      humanAmountsIn,
-    })
+    const _priceImpact = await handler.calculatePriceImpact(humanAmountsIn)
 
     setPriceImpact(_priceImpact)
     return _priceImpact

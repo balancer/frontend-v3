@@ -14,7 +14,6 @@ function selectSingleTokenHandler(pool: Pool) {
 
 describe('When removing unbalanced liquidity for a weighted pool', () => {
   test('queries amounts out', async () => {
-    // TODO: why address and slippage are optional???
     const inputs: RemoveLiquidityInputs = {
       humanBptIn: '1',
       account: defaultTestUserAccount,

@@ -1,23 +1,40 @@
-import { AddLiquidityQueryOutput, PriceImpact, TokenAmount } from '@balancer/sdk'
+import { AddLiquidityQueryOutput, TokenAmount } from '@balancer/sdk'
 import { Address } from 'wagmi'
 import { HumanAmountIn } from '../liquidity-types'
+import { UnbalancedAddLiquidityHandler } from './handlers/UnbalancedAddLiquidity.handler'
+import { TwammAddLiquidityHandler } from './handlers/TwammAddLiquidity.handler'
 
-// TODO: this type should be exposed by the SDK
-export type PriceImpactAmount = Awaited<ReturnType<typeof PriceImpact.addLiquidityUnbalanced>>
+export type SupportedHandler = UnbalancedAddLiquidityHandler | TwammAddLiquidityHandler
 
-export type AddLiquidityInputs = {
-  humanAmountsIn: HumanAmountIn[]
-  account?: Address
-  slippagePercent?: string
-}
-
-// sdkQueryOutput is optional because it will be only used in cases where we use the SDK to query/build the transaction
-// We will probably need a more abstract interface to be used by edge cases
-export type AddLiquidityOutputs = {
+export type SdkQueryAddLiquidityOutput = {
   bptOut: TokenAmount
-  sdkQueryOutput?: AddLiquidityQueryOutput
+  sdkQueryOutput: AddLiquidityQueryOutput
 }
 
-export type BuildLiquidityInputs = {
-  inputs: AddLiquidityInputs
+export type TwammQueryAddLiquidityOutput = { bptOut: TokenAmount }
+
+// Default handlers (UnbalancedAddLiquidityHandler) that use the SDK to query/build the transaction will return sdkQueryOutput
+// Edge-case handlers (TwammAddLiquidityHandler) that do not use the SDK edge-case handlers will not return sdkQueryOutput
+export type QueryAddLiquidityOutput<Handler extends SupportedHandler> =
+  Handler extends UnbalancedAddLiquidityHandler
+    ? SdkQueryAddLiquidityOutput
+    : TwammQueryAddLiquidityOutput
+
+export type SdkBuildAddLiquidityInputs = {
+  humanAmountsIn: HumanAmountIn[]
+  account: Address
+  slippagePercent: string
+  sdkQueryOutput: AddLiquidityQueryOutput
 }
+
+export type TwammBuildAddLiquidityInputs = {
+  humanAmountsIn: HumanAmountIn[]
+  account: Address
+  slippagePercent: string
+  bptOut: TokenAmount
+}
+
+export type BuildAddLiquidityInputs<Handler extends SupportedHandler> =
+  Handler extends UnbalancedAddLiquidityHandler
+    ? SdkBuildAddLiquidityInputs
+    : TwammBuildAddLiquidityInputs

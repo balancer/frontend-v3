@@ -44,14 +44,8 @@ export function RemoveLiquidityModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const {
-    //executeRemoveLiquidity,
-    isProportional,
-    isSingleToken,
-    singleTokenOutAddress,
-    amountOutForToken,
-    priceImpact,
-  } = useRemoveLiquidity()
+  const { isProportional, isSingleToken, singleTokenOutAddress, amountOutForToken, priceImpact } =
+    useRemoveLiquidity()
   const { pool } = usePool()
   const { slippage } = useUserSettings()
 
