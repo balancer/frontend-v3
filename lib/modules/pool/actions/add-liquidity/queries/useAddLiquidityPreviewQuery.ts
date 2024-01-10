@@ -36,8 +36,8 @@ export function useAddLiquidityPreviewQuery(
   )
 
   return {
-    isPreviewQueryLoading: query.isLoading,
-    queryOutLiquidityOutput: query.data,
+    ...query,
     bptOut: query.data?.bptOut,
+    isPreviewQueryLoading: query.isLoading,
   }
 }

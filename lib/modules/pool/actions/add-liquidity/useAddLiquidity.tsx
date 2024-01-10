@@ -85,11 +85,11 @@ export function _useAddLiquidity() {
     pool.id
   )
 
-  const { bptOut, isPreviewQueryLoading, queryOutLiquidityOutput } = useAddLiquidityPreviewQuery(
-    handler,
-    humanAmountsIn,
-    pool.id
-  )
+  const {
+    isPreviewQueryLoading,
+    bptOut,
+    data: queryOutLiquidityOutput,
+  } = useAddLiquidityPreviewQuery(handler, humanAmountsIn, pool.id)
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
