@@ -93,9 +93,11 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
-                  <NumberText color="GrayText">
-                    {isPriceImpactLoading ? <Skeleton w="12" h="full" /> : formattedPriceImpact}
-                  </NumberText>
+                  {isPriceImpactLoading ? (
+                    <Skeleton w="12" h="full" />
+                  ) : (
+                    <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
+                  )}
                   <Tooltip label="Price impact" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
