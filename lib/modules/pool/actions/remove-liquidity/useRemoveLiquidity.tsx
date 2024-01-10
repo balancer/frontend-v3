@@ -47,7 +47,7 @@ export function _useRemoveLiquidity() {
     .times(humanBptInPercent / 100)
     .toString() as HumanAmount
 
-  const totalBptPrice = bn(humanBptIn).times(bptPrice).toFixed(2)
+  const totalUsdFromBprPrice = bn(humanBptIn).times(bptPrice).toFixed(2)
 
   const setProportionalType = () => setRemovalType(RemoveLiquidityType.Proportional)
   const setSingleTokenType = () => setRemovalType(RemoveLiquidityType.SingleToken)
@@ -124,7 +124,7 @@ export function _useRemoveLiquidity() {
     singleTokenOutAddress,
     humanBptIn,
     humanBptInPercent,
-    totalBptPrice,
+    totalUsdFromBprPrice,
     setHumanBptInPercent,
     isSingleToken,
     isProportional,

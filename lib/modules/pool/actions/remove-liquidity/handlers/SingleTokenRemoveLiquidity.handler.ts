@@ -4,6 +4,7 @@ import {
   HumanAmount,
   InputAmount,
   PriceImpact,
+  PriceImpactAmount,
   RemoveLiquidity,
   RemoveLiquidityKind,
   RemoveLiquidityQueryOutput,
@@ -14,7 +15,6 @@ import { Address, parseEther } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
 import { Pool } from '../../../usePool'
 import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
-import { PriceImpactAmount } from '../../add-liquidity/add-liquidity.types'
 import {
   BuildLiquidityInputs,
   RemoveLiquidityOutputs,
