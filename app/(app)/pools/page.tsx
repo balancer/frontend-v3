@@ -17,6 +17,7 @@ interface Props {
     poolTypes?: string
     networks?: string
     textSearch?: string
+    userAddress?: string
   }
 }
 
@@ -39,6 +40,7 @@ export default async function Pools({ searchParams }: Props) {
     where: {
       poolTypeIn: mappedPoolTypes,
       chainIn: networks.length > 0 ? networks : PROJECT_CONFIG.supportedNetworks,
+      userAddress: poolListQueryStateParsers.userAddress.parseServerSide(searchParams.userAddress),
     },
     textSearch: poolListQueryStateParsers.textSearch.parseServerSide(searchParams.textSearch),
   }
