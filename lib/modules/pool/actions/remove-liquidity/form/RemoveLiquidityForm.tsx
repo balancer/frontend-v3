@@ -49,7 +49,6 @@ export function RemoveLiquidityForm() {
     setSingleTokenType,
     setHumanBptInPercent,
     humanBptInPercent,
-    totalUsdFromBprPrice,
     totalUsdValue,
     priceImpact,
     isPriceImpactLoading,
@@ -118,17 +117,6 @@ export function RemoveLiquidityForm() {
                   </Tooltip>
                 </HStack>
               </HStack>
-              {/* DELETE BEGIN*/}
-              <HStack justify="space-between" w="full">
-                <Text color="GrayText">Total from bpt price</Text>
-                <HStack>
-                  <NumberText color="GrayText">{toCurrency(totalUsdFromBprPrice)}</NumberText>
-                  <Tooltip label="Total from bpt price" fontSize="sm">
-                    <InfoOutlineIcon color="GrayText" />
-                  </Tooltip>
-                </HStack>
-              </HStack>
-              {/* DELETE END */}
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
