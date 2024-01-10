@@ -55,6 +55,7 @@ describe('weighted join test', () => {
       humanAmountsIn,
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
+      bptOut: query.sdkQueryOutput.bptOut,
       sdkQueryOutput: query.sdkQueryOutput,
     }
 

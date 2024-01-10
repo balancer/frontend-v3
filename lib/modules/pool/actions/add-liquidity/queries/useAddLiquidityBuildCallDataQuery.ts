@@ -6,17 +6,22 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useQuery } from 'wagmi'
 import { Pool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
-import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
+import {
+  BuildAddLiquidityInputs,
+  QueryAddLiquidityOutput,
+  SdkBuildAddLiquidityInputs,
+  SupportedHandler,
+} from '../add-liquidity.types'
+import { TwammAddLiquidityHandler } from '../handlers/TwammAddLiquidity.handler'
 import { addLiquidityKeys } from './add-liquidity-keys'
-import { QueryAddLiquidityOutput, SupportedHandler } from '../add-liquidity.types'
 
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
 export function useAddLiquidityBuildCallDataQuery(
-  handler: AddLiquidityHandler<SupportedHandler>,
+  handler: SupportedHandler,
   humanAmountsIn: HumanAmountIn[],
   isActiveStep: boolean,
   pool: Pool,
-  queryAddLiquidityOutput: QueryAddLiquidityOutput<SupportedHandler>
+  queryOutput: QueryAddLiquidityOutput<SupportedHandler>
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
@@ -31,19 +36,30 @@ export function useAddLiquidityBuildCallDataQuery(
       humanAmountsIn,
     }),
     async () => {
-      const buildInput = {
+      const baseInput: BuildAddLiquidityInputs<SupportedHandler> = {
         humanAmountsIn,
         account: userAddress,
         slippagePercent: slippage,
-        bptOut: queryAddLiquidityOutput.bptOut,
-        queryAddLiquidityOutput,
+        bptOut: queryOutput.bptOut,
       }
-      return handler.buildAddLiquidityCallData(buildInput)
+
+      const isSdkHandler = 'sdkQueryOutput' in queryOutput && queryOutput.sdkQueryOutput
+
+      if (isSdkHandler) {
+        const sdkBuildInput: SdkBuildAddLiquidityInputs = {
+          ...baseInput,
+          sdkQueryOutput: queryOutput.sdkQueryOutput,
+        }
+        return handler.buildAddLiquidityCallData(sdkBuildInput)
+      }
+      if (handler instanceof TwammAddLiquidityHandler) {
+        return handler.buildAddLiquidityCallData(baseInput)
+      }
     },
     {
       enabled:
         isActiveStep && // If the step is not active (the user did not click Next button) avoid running the build tx query to save RPC requests
-        queryAddLiquidityOutput &&
+        queryOutput.bptOut && // undefined bptOut means that the preview query did not finish yet
         isConnected &&
         hasAllowances(humanAmountsIn, pool),
     }

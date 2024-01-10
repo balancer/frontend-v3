@@ -11,7 +11,9 @@ export type SdkQueryAddLiquidityOutput = {
   sdkQueryOutput: AddLiquidityQueryOutput
 }
 
-export type TwammQueryAddLiquidityOutput = { bptOut: TokenAmount }
+export type TwammQueryAddLiquidityOutput = {
+  bptOut: TokenAmount
+}
 
 // Default handlers (UnbalancedAddLiquidityHandler) that use the SDK to query/build the transaction will return sdkQueryOutput
 // Edge-case handlers (TwammAddLiquidityHandler) that do not use the SDK edge-case handlers will not return sdkQueryOutput
@@ -24,6 +26,7 @@ export type SdkBuildAddLiquidityInputs = {
   humanAmountsIn: HumanAmountIn[]
   account: Address
   slippagePercent: string
+  bptOut: TokenAmount
   sdkQueryOutput: AddLiquidityQueryOutput
 }
 

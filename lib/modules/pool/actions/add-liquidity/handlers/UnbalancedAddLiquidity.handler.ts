@@ -37,8 +37,9 @@ export class UnbalancedAddLiquidityHandler
     const addLiquidity = new AddLiquidity()
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
-    const result = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
-    return { bptOut: result.bptOut, sdkQueryOutput: result }
+    const sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
+
+    return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
   }
 
   public async calculatePriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number> {

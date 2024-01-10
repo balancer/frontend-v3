@@ -68,6 +68,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
       humanAmountsIn,
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
+      bptOut: sdkQueryOutput.bptOut,
       sdkQueryOutput,
     }
     const result = await handler.buildAddLiquidityCallData(buildInputs)
