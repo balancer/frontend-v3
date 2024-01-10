@@ -204,13 +204,13 @@ export function RemoveLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
-                  <NumberText color="GrayText">
-                    {isPriceImpactLoading ? (
-                      <Skeleton w="12" h="full" />
-                    ) : (
-                      fNum('priceImpact', priceImpact || 0)
-                    )}
-                  </NumberText>
+                  {isPriceImpactLoading ? (
+                    <Skeleton w="12" h="full" />
+                  ) : (
+                    <NumberText color="GrayText">
+                      {fNum('priceImpact', priceImpact || 0)}
+                    </NumberText>
+                  )}
                   <Tooltip label="Price impact" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
