@@ -88,7 +88,7 @@ export function _useAddLiquidity() {
   const {
     isPreviewQueryLoading,
     bptOut,
-    data: queryOutLiquidityOutput,
+    data: previewQueryData,
   } = useAddLiquidityPreviewQuery(handler, humanAmountsIn, pool.id)
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
@@ -104,11 +104,11 @@ export function _useAddLiquidity() {
   const helpers = new LiquidityActionHelpers(pool)
 
   function useBuildCallData(isActiveStep: boolean) {
-    if (!queryOutLiquidityOutput) {
-      console.error('Missing queryOutLiquidityOutput.')
+    if (!previewQueryData) {
+      console.error('Missing previewQueryData.')
       throw new Error(
-        `Missing queryOutLiquidityOutput.
-It looks that you tried to call useBuildCallData before the last query finished generating queryOutLiquidityOutputs`
+        `Missing previewQueryData.
+It looks that you tried to call useBuildCallData before the last query finished generating previewQueryData`
       )
     }
 
@@ -117,7 +117,7 @@ It looks that you tried to call useBuildCallData before the last query finished 
       humanAmountsIn,
       isActiveStep,
       pool,
-      queryOutLiquidityOutput
+      previewQueryData
     )
   }
 
