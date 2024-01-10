@@ -47,52 +47,43 @@ export default function PoolStats() {
         <PoolBadges />
       </Box>
       <Grid templateColumns="repeat(5, 1fr)" columnGap="4" w="full">
-        <Center>
-          <VStack spacing="sm">
-            <Heading size="h6" fontWeight="medium">
-              TVL
-            </Heading>
-            <Heading fontSize="2xl">
-              {poolValues ? (
-                toCurrency(poolValues.totalLiquidity)
-              ) : (
-                <Skeleton height="25px" w="75px" />
-              )}
-            </Heading>
-          </VStack>
-        </Center>
-        <Center>
-          <VStack spacing="sm">
-            <Heading size="h6" fontWeight="medium">
-              Volume (24h)
-            </Heading>
-            <Heading fontSize="2xl">
-              {poolValues ? toCurrency(poolValues.volume24h) : <Skeleton height="25px" w="75px" />}
-            </Heading>
-          </VStack>
-        </Center>
-
+        <VStack spacing="sm" m="auto">
+          <Heading size="h6" fontWeight="medium">
+            TVL
+          </Heading>
+          <Heading fontSize="2xl">
+            {poolValues ? (
+              toCurrency(poolValues.totalLiquidity)
+            ) : (
+              <Skeleton height="30px" w="100px" />
+            )}
+          </Heading>
+        </VStack>
+        <VStack spacing="sm" m="auto">
+          <Heading size="h6" fontWeight="medium">
+            Volume (24h)
+          </Heading>
+          <Heading fontSize="2xl">
+            {poolValues ? toCurrency(poolValues.volume24h) : <Skeleton height="30px" w="100px" />}
+          </Heading>
+        </VStack>
         <PoolWeightChart />
-        <Center>
-          <VStack spacing="sm">
-            <Heading size="h6" fontWeight="medium">
-              Revenue (24h)
-            </Heading>
-            <Heading fontSize="2xl">
-              {poolValues ? toCurrency(poolValues.fees24h) : <Skeleton height="25px" w="75px" />}
-            </Heading>
-          </VStack>
-        </Center>
-        <Center>
-          <VStack spacing="sm">
-            <Heading size="h6" fontWeight="medium">
-              APR
-            </Heading>
-            <Heading fontSize="2xl">
-              {poolValues ? getAprLabel(poolValues.apr) : <Skeleton height="25px" w="75px" />}
-            </Heading>
-          </VStack>
-        </Center>
+        <VStack spacing="sm" m="auto">
+          <Heading size="h6" fontWeight="medium">
+            Revenue (24h)
+          </Heading>
+          <Heading fontSize="2xl">
+            {poolValues ? toCurrency(poolValues.fees24h) : <Skeleton height="30px" w="100px" />}
+          </Heading>
+        </VStack>
+        <VStack spacing="sm" m="auto">
+          <Heading size="h6" fontWeight="medium">
+            APR
+          </Heading>
+          <Heading fontSize="2xl">
+            {poolValues ? getAprLabel(poolValues.apr) : <Skeleton height="30px" w="100px" />}
+          </Heading>
+        </VStack>
       </Grid>
     </Card>
   )
