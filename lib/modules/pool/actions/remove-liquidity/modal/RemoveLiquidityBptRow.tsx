@@ -11,7 +11,7 @@ type Props = {
 
 export default function RemoveLiquidityBptRow({ pool }: Props) {
   const { toCurrency } = useCurrency()
-  const { humanBptIn, totalUsdValue, totalUsdFromBprPrice } = useRemoveLiquidity()
+  const { humanBptIn, totalUsdValue } = useRemoveLiquidity()
 
   return (
     <HStack width="full" justifyContent="space-between">
@@ -31,9 +31,6 @@ export default function RemoveLiquidityBptRow({ pool }: Props) {
           <Heading fontWeight="bold" as="h6" fontSize="1rem">
             {fNum('token', humanBptIn) || 0.0}
           </Heading>
-          <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-            {toCurrency(totalUsdFromBprPrice)}
-          </Text>
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
             {toCurrency(totalUsdValue)}
           </Text>
