@@ -38,6 +38,6 @@ export function useAddLiquidityPreviewQuery(
   return {
     isPreviewQueryLoading: query.isLoading,
     queryOutLiquidityOutputs: query.data,
-    bptOut: query.data?.bptOut || null, // CHECK WHY CHANGINT TO UNDEFINED BREAKS TESTS
+    bptOut: query.data?.bptOut,
   }
 }
