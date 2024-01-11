@@ -24,7 +24,6 @@ export interface AddLiquidityHandler {
   /*
     Build tx callData payload for adding liquidity
     It is responsibility of the UI to avoid calling buildAddLiquidityCallData before the last queryAddLiquidity was finished
-    ("Next" button will be disabled if the react-query calling queryAddLiquidity is in loading state)
   */
   buildAddLiquidityCallData(inputs: BuildAddLiquidityInputs): Promise<TransactionConfig>
 }

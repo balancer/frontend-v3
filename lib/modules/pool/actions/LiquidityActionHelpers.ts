@@ -10,6 +10,7 @@ import { toPoolStateInput } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { SentryError } from '@/lib/shared/utils/errors'
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -105,4 +106,18 @@ export const hasValidHumanAmounts = (humanAmountsIn: HumanAmountIn[]) =>
 
 export function toHumanAmount(tokenAmount: TokenAmount): HumanAmount {
   return formatUnits(tokenAmount.amount, tokenAmount.token.decimals) as HumanAmount
+}
+
+export function ensureLastQueryLoaded<Q>(liquidityActionDescription: string, queryResponse?: Q): Q {
+  if (!queryResponse) {
+    // This should never happen because we don't allow the user to trigger buildLiquidityCallData
+    // before the query is loaded.
+    console.error(`Missing queryResponse in ${liquidityActionDescription}`)
+    throw new SentryError(
+      `Missing queryResponse.
+It looks that you tried to call useBuildCallData before the last query finished generating queryResponse`
+    )
+  }
+
+  return queryResponse
 }

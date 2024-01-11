@@ -3,26 +3,31 @@ import { balAddress, wETHAddress } from '@/lib/debug-helpers'
 import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { Pool } from '../../../usePool'
-import { RemoveLiquidityInputs, RemoveLiquidityType } from '../remove-liquidity.types'
+import { QueryRemoveLiquidityInputs, RemoveLiquidityType } from '../remove-liquidity.types'
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
+import { SingleTokenRemoveLiquidityHandler } from './SingleTokenRemoveLiquidity.handler'
 
 const poolMock = aBalWethPoolElementMock() // 80BAL-20WETH
 
-function selectSingleTokenHandler(pool: Pool) {
-  return selectRemoveLiquidityHandler(pool, RemoveLiquidityType.SingleToken)
+function selectSingleTokenHandler(pool: Pool): SingleTokenRemoveLiquidityHandler {
+  return selectRemoveLiquidityHandler(
+    pool,
+    RemoveLiquidityType.SingleToken
+  ) as SingleTokenRemoveLiquidityHandler
 }
+
+const defaultQueryInput: QueryRemoveLiquidityInputs = {
+  humanBptIn: '1',
+  tokenOut: balAddress,
+}
+
+const defaultBuildInput = { account: defaultTestUserAccount, slippagePercent: '0.2' }
 
 describe('When removing unbalanced liquidity for a weighted pool', () => {
   test('queries amounts out', async () => {
-    const inputs: RemoveLiquidityInputs = {
-      humanBptIn: '1',
-      account: defaultTestUserAccount,
-      tokenOut: balAddress,
-    }
-
     const handler = selectSingleTokenHandler(poolMock)
 
-    const result = await handler.queryRemoveLiquidity(inputs)
+    const result = await handler.queryRemoveLiquidity(defaultQueryInput)
 
     const [balTokenAmountOut, wEthTokenAmountOut] = result.amountsOut
 
@@ -36,16 +41,14 @@ describe('When removing unbalanced liquidity for a weighted pool', () => {
   test('builds Tx Config', async () => {
     const handler = selectSingleTokenHandler(poolMock)
 
-    const inputs: RemoveLiquidityInputs = {
+    const inputs: QueryRemoveLiquidityInputs = {
       humanBptIn: '1',
-      account: defaultTestUserAccount,
-      slippagePercent: '0.2',
       tokenOut: balAddress,
     }
 
-    const { sdkQueryOutput } = await handler.queryRemoveLiquidity(inputs)
+    await handler.queryRemoveLiquidity(inputs)
 
-    const result = await handler.buildRemoveLiquidityTx({ inputs, sdkQueryOutput })
+    const result = await handler.buildRemoveLiquidityCallData(defaultBuildInput)
 
     expect(result.to).toBe(networkConfig.contracts.balancer.vaultV2)
     expect(result.data).toBeDefined()

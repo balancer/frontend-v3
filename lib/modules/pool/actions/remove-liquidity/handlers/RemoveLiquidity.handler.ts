@@ -1,8 +1,8 @@
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
-  RemoveLiquidityInputs,
-  RemoveLiquidityOutputs,
-  BuildLiquidityInputs,
+  QueryRemoveLiquidityInputs,
+  BuildRemoveLiquidityInputs,
+  QueryRemoveLiquidityOutput,
 } from '../remove-liquidity.types'
 
 /**
@@ -12,9 +12,11 @@ import {
  */
 export interface RemoveLiquidityHandler {
   // Query the SDK for the expected output of removing liquidity
-  queryRemoveLiquidity(inputs: RemoveLiquidityInputs): Promise<RemoveLiquidityOutputs>
+  queryRemoveLiquidity(inputs: QueryRemoveLiquidityInputs): Promise<QueryRemoveLiquidityOutput>
   // Calculate the price impact of removing liquidity
-  calculatePriceImpact(inputs: RemoveLiquidityInputs): Promise<number>
-  // Build tx payload for removing liquidity
-  buildRemoveLiquidityTx(inputs: BuildLiquidityInputs): Promise<TransactionConfig>
+  calculatePriceImpact(inputs: QueryRemoveLiquidityInputs): Promise<number>
+  /*
+    Build tx callData payload for removing liquidity
+    It is responsibility of the UI to avoid calling buildRemoveLiquidityCallData before the last queryRemoveLiquidity was finished
+  */ buildRemoveLiquidityCallData(inputs: BuildRemoveLiquidityInputs): Promise<TransactionConfig>
 }
