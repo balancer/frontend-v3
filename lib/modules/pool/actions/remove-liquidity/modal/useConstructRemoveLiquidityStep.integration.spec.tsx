@@ -9,7 +9,7 @@ import {
 import { act } from '@testing-library/react'
 import { PropsWithChildren } from 'react'
 import { useConstructRemoveLiquidityStep } from './useConstructRemoveLiquidityStep'
-import { RemoveLiquidityProvider, useRemoveLiquidity } from './useRemoveLiquidity'
+import { RemoveLiquidityProvider, useRemoveLiquidity } from '../useRemoveLiquidity'
 
 const PoolProvider = buildDefaultPoolTestProvider(aWjAuraWethPoolElementMock())
 
@@ -43,7 +43,7 @@ test.skip('Throws error when user tries to remove liquidity in a pool where they
 
   // User fills token inputs
   act(() => {
-    result.current.providerResult.setProportional()
+    result.current.providerResult.setProportionalType()
   })
 
   // await waitFor(() => expect(result.current.providerResult.amountsOut).toBeDefined())

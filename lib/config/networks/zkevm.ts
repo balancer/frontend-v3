@@ -1,9 +1,11 @@
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
 
 const networkConfig: NetworkConfig = {
   chainId: 1101,
   name: 'Polygon zkEVM Mainnet',
   shortName: 'zkEVM',
+  chain: GqlChain.Zkevm,
   iconPath: '/images/chains/ZKEVM.svg',
   blockExplorerBaseUrl: 'https://zkevm.polygonscan.com',
   tokens: {

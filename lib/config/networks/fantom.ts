@@ -1,9 +1,11 @@
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
 
 const networkConfig: NetworkConfig = {
   chainId: 250,
   name: 'Fantom Opera',
   shortName: 'Fantom',
+  chain: GqlChain.Fantom,
   iconPath: '/images/chains/FANTOM.svg',
   blockExplorerBaseUrl: 'https://ftmscan.com',
   tokens: {

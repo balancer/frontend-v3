@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
@@ -6,18 +7,15 @@ import {
   AddLiquidityQueryOutput,
   AddLiquidityUnbalancedInput,
   PriceImpact,
+  PriceImpactAmount,
   Slippage,
 } from '@balancer/sdk'
-import {
-  AddLiquidityInputs,
-  AddLiquidityOutputs,
-  BuildLiquidityInputs,
-  PriceImpactAmount,
-} from '../add-liquidity.types'
-import { AddLiquidityHandler } from './AddLiquidity.handler'
 import { Pool } from '../../../usePool'
 import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
+import { BuildAddLiquidityInputs, QueryAddLiquidityOutput } from '../add-liquidity.types'
+import { AddLiquidityHandler } from './AddLiquidity.handler'
+import { SentryError } from '@/lib/shared/utils/errors'
 
 /**
  * UnbalancedAddLiquidityHandler is a handler that implements the
@@ -28,24 +26,26 @@ import { HumanAmountIn } from '../../liquidity-types'
  */
 export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   helpers: LiquidityActionHelpers
-  sdkQueryOutput?: AddLiquidityQueryOutput
+  queryResponse?: AddLiquidityQueryOutput
 
   constructor(pool: Pool) {
     this.helpers = new LiquidityActionHelpers(pool)
   }
 
-  public async queryAddLiquidity({
-    humanAmountsIn,
-  }: AddLiquidityInputs): Promise<AddLiquidityOutputs> {
+  public async queryAddLiquidity(
+    humanAmountsIn: HumanAmountIn[]
+  ): Promise<QueryAddLiquidityOutput> {
+    // Deletes the previous queryResponse to enforce that we don't build callData with an outdated queryResponse (while a new one is loading)
+    this.queryResponse = undefined
     const addLiquidity = new AddLiquidity()
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
-    this.sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
+    this.queryResponse = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
 
-    return { bptOut: this.sdkQueryOutput.bptOut }
+    return { bptOut: this.queryResponse.bptOut }
   }
 
-  public async calculatePriceImpact({ humanAmountsIn }: AddLiquidityInputs): Promise<number> {
+  public async calculatePriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number> {
     if (areEmptyAmounts(humanAmountsIn)) {
       // Avoid price impact calculation when there are no amounts in
       return 0
@@ -64,23 +64,24 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   /*
     sdkQueryOutput is the result of the query that we run in the add liquidity form
   */
-  public async buildAddLiquidityCallData(
-    buildInputs: BuildLiquidityInputs
-  ): Promise<TransactionConfig> {
-    const { account, slippagePercent } = buildInputs.inputs
-    if (!account || !slippagePercent) throw new Error('Missing account or slippage')
-    if (!this.sdkQueryOutput) {
-      console.error('Missing sdkQueryOutput.')
-      throw new Error(
-        `Missing sdkQueryOutput.
-It looks that you did not call useAddLiquidityBtpOutQuery before trying to build the tx config`
+  public async buildAddLiquidityCallData({
+    account,
+    slippagePercent,
+  }: BuildAddLiquidityInputs): Promise<TransactionConfig> {
+    if (!this.queryResponse) {
+      // This should never happen because we don't allow the user to trigger buildAddLiquidityCallData
+      // before the query is loaded.
+      console.error('Missing queryResponse.')
+      throw new SentryError(
+        `Missing queryResponse.
+It looks that you tried to call useBuildCallData before the last query finished generating queryResponse`
       )
     }
 
     const addLiquidity = new AddLiquidity()
 
     const { call, to, value } = addLiquidity.buildCall({
-      ...this.sdkQueryOutput,
+      ...this.queryResponse,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,

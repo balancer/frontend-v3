@@ -10,6 +10,7 @@ import { defaultTestUserAccount, testPublicClient as testClient } from '@/test/u
 import { ChainId, HumanAmount } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/actions'
+import { UnbalancedAddLiquidityHandler } from '../../pool/actions/add-liquidity/handlers/UnbalancedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from '../../pool/actions/add-liquidity/handlers/selectAddLiquidityHandler'
 import { buildAddLiquidityLabels } from '../../pool/actions/add-liquidity/useConstructAddLiquidityStep'
 import { HumanAmountIn } from '../../pool/actions/liquidity-types'
@@ -35,21 +36,21 @@ describe('weighted join test', () => {
   test('Sends transaction after updating amount inputs', async () => {
     await utils.setupTokens([...getPoolTokens().map(() => '100' as HumanAmount), '100'])
 
-    const handler = selectAddLiquidityHandler(aWjAuraWethPoolElementMock())
+    const handler = selectAddLiquidityHandler(
+      aWjAuraWethPoolElementMock()
+    ) as UnbalancedAddLiquidityHandler
 
     const humanAmountsIn: HumanAmountIn[] = poolTokens.map(t => ({
       humanAmount: '1',
       tokenAddress: t.address,
     }))
 
-    const inputs = {
-      humanAmountsIn,
+    await handler.queryAddLiquidity(humanAmountsIn)
+
+    const txConfig = await handler.buildAddLiquidityCallData({
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
-    }
-    const { sdkQueryOutput } = await handler.queryAddLiquidity(inputs)
-
-    const txConfig = await handler.buildAddLiquidityCallData({ inputs })
+    })
 
     const { result } = testHook(() => {
       return useManagedSendTransaction(buildAddLiquidityLabels(), txConfig)

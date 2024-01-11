@@ -1,4 +1,5 @@
 import {
+  HumanAmount,
   RemoveLiquidityQueryOutput,
   RemoveLiquidityKind as SdkRemoveLiquidityKind,
   TokenAmount,
@@ -8,11 +9,11 @@ import { Address } from 'wagmi'
 type CommonRemoveLiquidityInputs = { account?: Address; slippagePercent?: string }
 
 export type ProportionalRemoveLiquidityInputs = {
-  bptIn: bigint
+  humanBptIn: HumanAmount
 } & CommonRemoveLiquidityInputs
 
 export type SingleTokenRemoveLiquidityInputs = {
-  bptIn: bigint
+  humanBptIn: HumanAmount
   tokenOut: Address
 } & CommonRemoveLiquidityInputs
 

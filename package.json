@@ -105,10 +105,9 @@
     "@typescript-eslint/parser": "^5.60.1",
     "@viem/anvil": "^0.0.6",
     "@vitejs/plugin-react": "^4.2.1",
-    "@vitest/coverage-v8": "^1.0.1",
+    "@vitest/coverage-v8": "^1.1.1",
     "@wagmi/cli": "^1.5.1",
     "autoprefixer": "^10.4.14",
-    "c8": "^8.0.1",
     "cross-fetch": "^4.0.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
@@ -121,7 +120,7 @@
     "stylelint": "^15.9.0",
     "stylelint-config-standard": "^33.0.0",
     "stylelint-prettier": "^3.0.0",
-    "vitest": "^1.0.4",
+    "vitest": "1.1.1",
     "vitest-mock-extended": "^1.3.1"
   },
   "pnpm": {

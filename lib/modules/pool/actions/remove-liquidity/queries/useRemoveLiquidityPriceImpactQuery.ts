@@ -8,21 +8,23 @@ import { useDebounce } from 'use-debounce'
 import { Address, useQuery } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { removeLiquidityKeys } from './remove-liquidity-keys'
+import { HumanAmount } from '@balancer/sdk'
 
 export function useRemoveLiquidityPriceImpactQuery(
   handler: RemoveLiquidityHandler,
   poolId: string,
-  bptIn: bigint,
+  humanBptIn: HumanAmount,
   tokenOut?: Address
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [priceImpact, setPriceImpact] = useState<number | null>(null)
-  const debouncedBptIn = useDebounce(bptIn, defaultDebounceMs)[0]
+  const debouncedBptIn = useDebounce(humanBptIn, defaultDebounceMs)[0]
 
   async function queryPriceImpact() {
     const _priceImpact = await handler.calculatePriceImpact({
-      bptIn: debouncedBptIn,
+      humanBptIn: debouncedBptIn,
+      tokenOut,
     })
 
     setPriceImpact(_priceImpact)
@@ -31,17 +33,18 @@ export function useRemoveLiquidityPriceImpactQuery(
 
   const query = useQuery(
     removeLiquidityKeys.priceImpact({
+      handler,
       userAddress,
       slippage,
       poolId,
-      bptIn,
+      humanBptIn: humanBptIn,
       tokenOut,
     }),
     async () => {
       return await queryPriceImpact()
     },
     {
-      enabled: isConnected && debouncedBptIn > 0n,
+      enabled: isConnected && Number(debouncedBptIn) > 0,
     }
   )
 

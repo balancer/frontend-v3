@@ -29,12 +29,7 @@ export function useAddLiquidityBuildCallDataQuery(
       humanAmountsIn,
     }),
     async () => {
-      const inputs = {
-        humanAmountsIn,
-        account: userAddress,
-        slippagePercent: slippage,
-      }
-      return handler.buildAddLiquidityCallData({ inputs })
+      return handler.buildAddLiquidityCallData({ account: userAddress, slippagePercent: slippage })
     },
     {
       enabled:
