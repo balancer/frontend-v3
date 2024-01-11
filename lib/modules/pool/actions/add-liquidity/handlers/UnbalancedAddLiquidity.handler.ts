@@ -11,11 +11,14 @@ import {
   Slippage,
 } from '@balancer/sdk'
 import { Pool } from '../../../usePool'
-import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
+import {
+  LiquidityActionHelpers,
+  areEmptyAmounts,
+  ensureLastQueryResponse,
+} from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
-import { BuildAddLiquidityInputs, QueryAddLiquidityOutput } from '../add-liquidity.types'
+import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
-import { SentryError } from '@/lib/shared/utils/errors'
 
 /**
  * UnbalancedAddLiquidityHandler is a handler that implements the
@@ -61,22 +64,11 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     return priceImpactABA.decimal
   }
 
-  /*
-    sdkQueryOutput is the result of the query that we run in the add liquidity form
-  */
   public async buildAddLiquidityCallData({
     account,
     slippagePercent,
-  }: BuildAddLiquidityInputs): Promise<TransactionConfig> {
-    if (!this.queryResponse) {
-      // This should never happen because we don't allow the user to trigger buildAddLiquidityCallData
-      // before the query is loaded.
-      console.error('Missing queryResponse.')
-      throw new SentryError(
-        `Missing queryResponse.
-It looks that you tried to call useBuildCallData before the last query finished generating queryResponse`
-      )
-    }
+  }: BuildAddLiquidityInput): Promise<TransactionConfig> {
+    this.queryResponse = ensureLastQueryResponse('Unbalanced add liquidity', this.queryResponse)
 
     const addLiquidity = new AddLiquidity()
 

@@ -3,7 +3,7 @@ import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { Token, TokenAmount } from '@balancer/sdk'
 import { HumanAmountIn } from '../../liquidity-types'
-import { BuildAddLiquidityInputs } from '../add-liquidity.types'
+import { BuildAddLiquidityInput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 
 /**
@@ -35,7 +35,7 @@ export class TwammAddLiquidityHandler implements AddLiquidityHandler {
   // TODO: This is a non-sense example implementation
   public async buildAddLiquidityCallData({
     account,
-  }: BuildAddLiquidityInputs): Promise<TransactionConfig> {
+  }: BuildAddLiquidityInput): Promise<TransactionConfig> {
     if (!this.humanAmountsIn) {
       throw new Error(
         `Missing humanAmountsIn.
