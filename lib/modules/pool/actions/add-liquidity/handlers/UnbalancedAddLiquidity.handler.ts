@@ -67,7 +67,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     slippagePercent,
   }: BuildAddLiquidityInputs): Promise<TransactionConfig> {
     if (!this.queryResponse) {
-      // This should never happen because we don't allow the user to trigger buildAddLiquidityCallData (clicking "Next" button)
+      // This should never happen because we don't allow the user to trigger buildAddLiquidityCallData
       // before the query is loaded. QUESTION: Is there a more explicit way?
       console.error('Missing queryResponse.')
       throw new Error(
