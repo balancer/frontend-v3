@@ -68,13 +68,13 @@ export function PoolComposition() {
                         return (
                           <VStack minWidth="100px" spacing="1" alignItems="flex-end">
                             <Heading fontWeight="bold" as="h6" fontSize="1rem">
-                              {fNum(
-                                'weight',
-                                getPoolTokenWeightByBalance(
-                                  pool.dynamicData.totalLiquidity,
-                                  poolToken,
-                                  chain
+                              {totalLiquidity ? (
+                                fNum(
+                                  'weight',
+                                  getPoolTokenWeightByBalance(totalLiquidity, poolToken, chain)
                                 )
+                              ) : (
+                                <Skeleton height="24px" w="75px" />
                               )}
                             </Heading>
                             <HStack spacing="1">
