@@ -34,6 +34,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   public async queryAddLiquidity(
     humanAmountsIn: HumanAmountIn[]
   ): Promise<QueryAddLiquidityOutput> {
+    // Deletes the previous queryResponse to enforce that we don't build callData with an outdated queryResponse (while a new one is loading)
     this.queryResponse = undefined
     const addLiquidity = new AddLiquidity()
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
