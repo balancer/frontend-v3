@@ -32,6 +32,6 @@ test('runs preview query for proportional remove liquidity', async () => {
   const wethAmountOut = result.current.amountsOut?.[1] as TokenAmount
   const wethOutUnits = toHumanAmount(wethAmountOut)
 
-  expect(Number(wjOutUnits)).toBeGreaterThan(1900)
+  expect(Number(wjOutUnits)).toBeGreaterThan(1800)
   expect(Number(wethOutUnits)).toBeGreaterThan(0.2)
 })

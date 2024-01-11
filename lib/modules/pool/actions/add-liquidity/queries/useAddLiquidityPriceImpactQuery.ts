@@ -22,9 +22,7 @@ export function useAddLiquidityPriceImpactQuery(
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
 
   async function queryPriceImpact() {
-    const _priceImpact = await handler.calculatePriceImpact({
-      humanAmountsIn,
-    })
+    const _priceImpact = await handler.calculatePriceImpact(humanAmountsIn)
 
     setPriceImpact(_priceImpact)
     return _priceImpact

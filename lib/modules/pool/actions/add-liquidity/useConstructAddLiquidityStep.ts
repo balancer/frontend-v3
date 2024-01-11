@@ -10,11 +10,11 @@ export function useConstructAddLiquidityStep(poolId: string) {
 
   const { useBuildCallData } = useAddLiquidity()
 
-  const addLiquidityQuery = useBuildCallData(isActiveStep)
+  const buildCallDataQuery = useBuildCallData(isActiveStep)
 
   const transactionLabels = buildAddLiquidityLabels(poolId)
 
-  const transaction = useManagedSendTransaction(transactionLabels, addLiquidityQuery.data)
+  const transaction = useManagedSendTransaction(transactionLabels, buildCallDataQuery.data)
 
   const step: FlowStep = {
     ...transaction,
@@ -30,14 +30,15 @@ export function useConstructAddLiquidityStep(poolId: string) {
     isLoading:
       transaction?.simulation.isLoading ||
       transaction?.execution.isLoading ||
-      addLiquidityQuery.isLoading,
-    error: transaction?.simulation.error || transaction?.execution.error || addLiquidityQuery.error,
+      buildCallDataQuery.isLoading,
+    error:
+      transaction?.simulation.error || transaction?.execution.error || buildCallDataQuery.error,
   }
 }
 
 export const buildAddLiquidityLabels: BuildTransactionLabels = (poolId: Address) => {
   return {
-    init: 'Add pool liquidity',
+    init: 'Add liquidity',
     confirming: 'Confirm add liquidity',
     tooltip: 'TODO',
     description: `🎉 Liquidity added to pool ${poolId}`,

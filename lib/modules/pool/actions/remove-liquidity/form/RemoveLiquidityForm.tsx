@@ -49,6 +49,7 @@ export function RemoveLiquidityForm() {
     setSingleTokenType,
     setHumanBptInPercent,
     humanBptInPercent,
+    totalUsdFromBprPrice,
     totalUsdValue,
     priceImpact,
     isPriceImpactLoading,
