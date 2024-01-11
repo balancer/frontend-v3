@@ -14,8 +14,8 @@ import { BPT_DECIMALS } from '../../../pool.constants'
 import { Pool } from '../../../usePool'
 import { LiquidityActionHelpers, ensureLastQueryLoaded } from '../../LiquidityActionHelpers'
 import {
-  BuildRemoveLiquidityInputs,
-  QueryRemoveLiquidityInputs,
+  BuildRemoveLiquidityInput,
+  QueryRemoveLiquidityInput,
   QueryRemoveLiquidityOutput,
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
@@ -30,7 +30,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
 
   public async queryRemoveLiquidity({
     humanBptIn: bptIn,
-  }: QueryRemoveLiquidityInputs): Promise<QueryRemoveLiquidityOutput> {
+  }: QueryRemoveLiquidityInput): Promise<QueryRemoveLiquidityOutput> {
     // Deletes the previous queryResponse to enforce that we don't buildCallData with an outdated queryResponse (while a new one is loading)
     this.queryResponse = undefined
     const removeLiquidity = new RemoveLiquidity()
@@ -52,7 +52,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
   public async buildRemoveLiquidityCallData({
     account,
     slippagePercent,
-  }: BuildRemoveLiquidityInputs): Promise<TransactionConfig> {
+  }: BuildRemoveLiquidityInput): Promise<TransactionConfig> {
     this.queryResponse = ensureLastQueryLoaded('Proportional remove liquidity', this.queryResponse)
 
     const removeLiquidity = new RemoveLiquidity()

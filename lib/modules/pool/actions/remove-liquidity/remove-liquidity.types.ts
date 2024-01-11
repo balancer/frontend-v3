@@ -11,24 +11,24 @@ export enum RemoveLiquidityType {
   SingleToken = SdkRemoveLiquidityKind.SingleToken,
 }
 
-export type ProportionalRemoveLiquidityInputs = {
+export type ProportionalRemoveLiquidityInput = {
   humanBptIn: HumanAmount
 }
 
-export type SingleTokenRemoveLiquidityInputs = {
+export type SingleTokenRemoveLiquidityInput = {
   humanBptIn: HumanAmount
   tokenOut: Address
 }
 
-export type QueryRemoveLiquidityInputs =
-  | ProportionalRemoveLiquidityInputs
-  | SingleTokenRemoveLiquidityInputs
+export type QueryRemoveLiquidityInput =
+  | ProportionalRemoveLiquidityInput
+  | SingleTokenRemoveLiquidityInput
 
 export type QueryRemoveLiquidityOutput = {
   amountsOut: TokenAmount[]
 }
 
-export type BuildRemoveLiquidityInputs = {
+export type BuildRemoveLiquidityInput = {
   account: Address
   slippagePercent: string
 }

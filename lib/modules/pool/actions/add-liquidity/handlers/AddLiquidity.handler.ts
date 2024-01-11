@@ -1,6 +1,6 @@
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { HumanAmountIn } from '../../liquidity-types'
-import { BuildAddLiquidityInputs, QueryAddLiquidityOutput } from '../add-liquidity.types'
+import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidity.types'
 
 /**
  * AddLiquidityHandler is an interface that defines the methods that must be implemented by a handler.
@@ -25,5 +25,5 @@ export interface AddLiquidityHandler {
     Build tx callData payload for adding liquidity
     It is responsibility of the UI to avoid calling buildAddLiquidityCallData before the last queryAddLiquidity was finished
   */
-  buildAddLiquidityCallData(inputs: BuildAddLiquidityInputs): Promise<TransactionConfig>
+  buildAddLiquidityCallData(inputs: BuildAddLiquidityInput): Promise<TransactionConfig>
 }

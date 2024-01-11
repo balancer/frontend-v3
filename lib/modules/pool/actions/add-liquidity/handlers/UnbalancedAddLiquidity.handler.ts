@@ -17,7 +17,7 @@ import {
   ensureLastQueryLoaded,
 } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
-import { BuildAddLiquidityInputs, QueryAddLiquidityOutput } from '../add-liquidity.types'
+import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 
 /**
@@ -67,7 +67,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   public async buildAddLiquidityCallData({
     account,
     slippagePercent,
-  }: BuildAddLiquidityInputs): Promise<TransactionConfig> {
+  }: BuildAddLiquidityInput): Promise<TransactionConfig> {
     this.queryResponse = ensureLastQueryLoaded('Unbalanced add liquidity', this.queryResponse)
 
     const addLiquidity = new AddLiquidity()

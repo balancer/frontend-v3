@@ -20,9 +20,9 @@ import {
   isEmptyHumanAmount,
 } from '../../LiquidityActionHelpers'
 import {
-  BuildRemoveLiquidityInputs,
+  BuildRemoveLiquidityInput,
   QueryRemoveLiquidityOutput,
-  SingleTokenRemoveLiquidityInputs,
+  SingleTokenRemoveLiquidityInput,
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
 
@@ -37,7 +37,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
   public async queryRemoveLiquidity({
     humanBptIn,
     tokenOut,
-  }: SingleTokenRemoveLiquidityInputs): Promise<QueryRemoveLiquidityOutput> {
+  }: SingleTokenRemoveLiquidityInput): Promise<QueryRemoveLiquidityOutput> {
     if (!tokenOut) return { amountsOut: [] }
 
     const removeLiquidity = new RemoveLiquidity()
@@ -54,7 +54,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
   public async calculatePriceImpact({
     humanBptIn,
     tokenOut,
-  }: SingleTokenRemoveLiquidityInputs): Promise<number> {
+  }: SingleTokenRemoveLiquidityInput): Promise<number> {
     if (isEmptyHumanAmount(humanBptIn) || !tokenOut) {
       // Avoid price impact calculation
       return 0
@@ -73,7 +73,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
   public async buildRemoveLiquidityCallData({
     account,
     slippagePercent,
-  }: BuildRemoveLiquidityInputs): Promise<TransactionConfig> {
+  }: BuildRemoveLiquidityInput): Promise<TransactionConfig> {
     this.queryResponse = ensureLastQueryLoaded('Single token remove liquidity', this.queryResponse)
 
     const removeLiquidity = new RemoveLiquidity()

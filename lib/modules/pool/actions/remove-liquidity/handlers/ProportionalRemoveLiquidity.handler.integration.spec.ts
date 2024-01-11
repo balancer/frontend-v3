@@ -4,7 +4,7 @@ import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.buil
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { aPhantomStablePoolStateInputMock } from '../../../__mocks__/pool.builders'
 import { Pool } from '../../../usePool'
-import { QueryRemoveLiquidityInputs, RemoveLiquidityType } from '../remove-liquidity.types'
+import { QueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquidity.types'
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
 import { ProportionalRemoveLiquidityHandler } from './ProportionalRemoveLiquidity.handler'
 
@@ -17,7 +17,7 @@ function selectProportionalHandler(pool: Pool): ProportionalRemoveLiquidityHandl
   ) as ProportionalRemoveLiquidityHandler
 }
 
-const defaultQueryInput: QueryRemoveLiquidityInputs = {
+const defaultQueryInput: QueryRemoveLiquidityInput = {
   humanBptIn: '1',
 }
 

@@ -5,7 +5,7 @@ export type QueryAddLiquidityOutput = {
   bptOut: TokenAmount
 }
 
-export type BuildAddLiquidityInputs = {
+export type BuildAddLiquidityInput = {
   account: Address
   slippagePercent: string
 }

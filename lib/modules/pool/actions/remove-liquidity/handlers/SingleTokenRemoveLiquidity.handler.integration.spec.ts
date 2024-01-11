@@ -3,7 +3,7 @@ import { balAddress, wETHAddress } from '@/lib/debug-helpers'
 import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { Pool } from '../../../usePool'
-import { QueryRemoveLiquidityInputs, RemoveLiquidityType } from '../remove-liquidity.types'
+import { QueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquidity.types'
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
 import { SingleTokenRemoveLiquidityHandler } from './SingleTokenRemoveLiquidity.handler'
 
@@ -16,7 +16,7 @@ function selectSingleTokenHandler(pool: Pool): SingleTokenRemoveLiquidityHandler
   ) as SingleTokenRemoveLiquidityHandler
 }
 
-const defaultQueryInput: QueryRemoveLiquidityInputs = {
+const defaultQueryInput: QueryRemoveLiquidityInput = {
   humanBptIn: '1',
   tokenOut: balAddress,
 }
@@ -41,7 +41,7 @@ describe('When removing unbalanced liquidity for a weighted pool', () => {
   test('builds Tx Config', async () => {
     const handler = selectSingleTokenHandler(poolMock)
 
-    const inputs: QueryRemoveLiquidityInputs = {
+    const inputs: QueryRemoveLiquidityInput = {
       humanBptIn: '1',
       tokenOut: balAddress,
     }
