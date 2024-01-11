@@ -4,6 +4,7 @@ import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   AddLiquidity,
   AddLiquidityKind,
+  AddLiquidityQueryOutput,
   AddLiquidityUnbalancedInput,
   PriceImpact,
   PriceImpactAmount,
@@ -12,7 +13,7 @@ import {
 import { Pool } from '../../../usePool'
 import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
-import { SdkBuildAddLiquidityInputs, SdkQueryAddLiquidityOutput } from '../add-liquidity.types'
+import { BuildAddLiquidityInputs, QueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 
 /**
@@ -22,10 +23,9 @@ import { AddLiquidityHandler } from './AddLiquidity.handler'
  * methods. It also handles the case where one of the input tokens is the native
  * asset instead of the wrapped native asset.
  */
-export class UnbalancedAddLiquidityHandler
-  implements AddLiquidityHandler<UnbalancedAddLiquidityHandler>
-{
+export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   helpers: LiquidityActionHelpers
+  queryResponse?: AddLiquidityQueryOutput
 
   constructor(pool: Pool) {
     this.helpers = new LiquidityActionHelpers(pool)
@@ -33,13 +33,14 @@ export class UnbalancedAddLiquidityHandler
 
   public async queryAddLiquidity(
     humanAmountsIn: HumanAmountIn[]
-  ): Promise<SdkQueryAddLiquidityOutput> {
+  ): Promise<QueryAddLiquidityOutput> {
+    this.queryResponse = undefined
     const addLiquidity = new AddLiquidity()
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
-    const sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
+    this.queryResponse = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
 
-    return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
+    return { bptOut: this.queryResponse.bptOut }
   }
 
   public async calculatePriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number> {
@@ -64,12 +65,21 @@ export class UnbalancedAddLiquidityHandler
   public async buildAddLiquidityCallData({
     account,
     slippagePercent,
-    sdkQueryOutput,
-  }: SdkBuildAddLiquidityInputs): Promise<TransactionConfig> {
+  }: BuildAddLiquidityInputs): Promise<TransactionConfig> {
+    if (!this.queryResponse) {
+      // This should never happen because we don't allow the user to trigger buildAddLiquidityCallData (clicking "Next" button)
+      // before the query is loaded. QUESTION: Is there a more explicit way?
+      console.error('Missing queryResponse.')
+      throw new Error(
+        `Missing queryResponse.
+It looks that you tried to call useBuildCallData before the last query finished generating queryResponse`
+      )
+    }
+
     const addLiquidity = new AddLiquidity()
 
     const { call, to, value } = addLiquidity.buildCall({
-      ...sdkQueryOutput,
+      ...this.queryResponse,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,

@@ -6,22 +6,15 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useQuery } from 'wagmi'
 import { Pool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
-import {
-  BuildAddLiquidityInputs,
-  QueryAddLiquidityOutput,
-  SdkBuildAddLiquidityInputs,
-  SupportedHandler,
-} from '../add-liquidity.types'
-import { TwammAddLiquidityHandler } from '../handlers/TwammAddLiquidity.handler'
+import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { addLiquidityKeys } from './add-liquidity-keys'
 
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
 export function useAddLiquidityBuildCallDataQuery(
-  handler: SupportedHandler,
+  handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
   isActiveStep: boolean,
-  pool: Pool,
-  queryOutput: QueryAddLiquidityOutput<SupportedHandler>
+  pool: Pool
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
@@ -36,30 +29,11 @@ export function useAddLiquidityBuildCallDataQuery(
       humanAmountsIn,
     }),
     async () => {
-      const baseInput: BuildAddLiquidityInputs<SupportedHandler> = {
-        humanAmountsIn,
-        account: userAddress,
-        slippagePercent: slippage,
-        bptOut: queryOutput.bptOut,
-      }
-
-      const isSdkHandler = 'sdkQueryOutput' in queryOutput && queryOutput.sdkQueryOutput
-
-      if (isSdkHandler) {
-        const sdkBuildInput: SdkBuildAddLiquidityInputs = {
-          ...baseInput,
-          sdkQueryOutput: queryOutput.sdkQueryOutput,
-        }
-        return handler.buildAddLiquidityCallData(sdkBuildInput)
-      }
-      if (handler instanceof TwammAddLiquidityHandler) {
-        return handler.buildAddLiquidityCallData(baseInput)
-      }
+      return handler.buildAddLiquidityCallData({ account: userAddress, slippagePercent: slippage })
     },
     {
       enabled:
         isActiveStep && // If the step is not active (the user did not click Next button) avoid running the build tx query to save RPC requests
-        queryOutput.bptOut && // undefined bptOut means that the preview query did not finish yet
         isConnected &&
         hasAllowances(humanAmountsIn, pool),
     }

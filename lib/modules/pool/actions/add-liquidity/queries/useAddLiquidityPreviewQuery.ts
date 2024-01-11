@@ -9,10 +9,9 @@ import { hasValidHumanAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { addLiquidityKeys } from './add-liquidity-keys'
-import { SupportedHandler } from '../add-liquidity.types'
 
 export function useAddLiquidityPreviewQuery(
-  handler: AddLiquidityHandler<SupportedHandler>,
+  handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
   poolId: string
 ) {
@@ -36,7 +35,6 @@ export function useAddLiquidityPreviewQuery(
   )
 
   return {
-    ...query,
     bptOut: query.data?.bptOut,
     isPreviewQueryLoading: query.isLoading,
   }

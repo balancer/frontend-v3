@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import networkConfig from '@/lib/config/networks/mainnet'
 import { balAddress, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
@@ -7,7 +8,6 @@ import { Address } from 'viem'
 import { aPhantomStablePoolStateInputMock } from '../../../__mocks__/pool.builders'
 import { Pool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
-import { SdkBuildAddLiquidityInputs } from '../add-liquidity.types'
 import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
 
@@ -62,19 +62,42 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
 
     const handler = selectUnbalancedHandler()
 
-    const { sdkQueryOutput } = await handler.queryAddLiquidity(humanAmountsIn)
+    // Store query response in handler instance
+    await handler.queryAddLiquidity(humanAmountsIn)
 
-    const buildInputs: SdkBuildAddLiquidityInputs = {
-      humanAmountsIn,
+    const result = await handler.buildAddLiquidityCallData({
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
-      bptOut: sdkQueryOutput.bptOut,
-      sdkQueryOutput,
-    }
-    const result = await handler.buildAddLiquidityCallData(buildInputs)
+    })
 
     expect(result.to).toBe(networkConfig.contracts.balancer.vaultV2)
     expect(result.data).toBeDefined()
+  })
+
+  test('throws exception if we try to buildAddLiquidityCallData before the last queryAddLiquidity query has finished', async () => {
+    const humanAmountsIn: HumanAmountIn[] = [
+      { humanAmount: '1', tokenAddress: wETHAddress },
+      { humanAmount: '1', tokenAddress: wjAuraAddress },
+    ]
+
+    const handler = selectUnbalancedHandler()
+
+    // Store query response in handler instance
+    await handler.queryAddLiquidity(humanAmountsIn)
+
+    // Run without await so that the query is loading when we call buildAddLiquidityCallData
+    handler.queryAddLiquidity(humanAmountsIn)
+
+    const callback = async () =>
+      handler.buildAddLiquidityCallData({
+        account: defaultTestUserAccount,
+        slippagePercent: '0.2',
+      })
+
+    await expect(callback()).rejects.toThrowErrorMatchingInlineSnapshot(`
+      [Error: Missing queryResponse.
+      It looks that you tried to call useBuildCallData before the last query finished generating queryResponse]
+    `)
   })
 })
 

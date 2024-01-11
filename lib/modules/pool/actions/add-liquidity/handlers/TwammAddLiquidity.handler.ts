@@ -3,7 +3,7 @@ import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { Token, TokenAmount } from '@balancer/sdk'
 import { HumanAmountIn } from '../../liquidity-types'
-import { TwammBuildAddLiquidityInputs, TwammQueryAddLiquidityOutput } from '../add-liquidity.types'
+import { BuildAddLiquidityInputs } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 
 /**
@@ -11,13 +11,14 @@ import { AddLiquidityHandler } from './AddLiquidity.handler'
  * AddLiquidityHandler interface for TWAMM adds.
  * This is just a fake example to show how to implement edge-case handlers.
  */
-export class TwammAddLiquidityHandler implements AddLiquidityHandler<TwammAddLiquidityHandler> {
+export class TwammAddLiquidityHandler implements AddLiquidityHandler {
+  humanAmountsIn?: HumanAmountIn[]
+
   constructor(private chainId: SupportedChainId) {}
 
   // TODO: This is a non-sense example implementation
-  public async queryAddLiquidity(
-    humanAmountsIn: HumanAmountIn[]
-  ): Promise<TwammQueryAddLiquidityOutput> {
+  public async queryAddLiquidity(humanAmountsIn: HumanAmountIn[]) {
+    this.humanAmountsIn = humanAmountsIn
     const tokenAmount = TokenAmount.fromHumanAmount(
       {} as unknown as Token,
       humanAmountsIn[0].humanAmount || '0'
@@ -33,13 +34,16 @@ export class TwammAddLiquidityHandler implements AddLiquidityHandler<TwammAddLiq
 
   // TODO: This is a non-sense example implementation
   public async buildAddLiquidityCallData({
-    humanAmountsIn,
     account,
-    slippagePercent,
-  }: TwammBuildAddLiquidityInputs): Promise<TransactionConfig> {
-    if (!account || !slippagePercent) throw new Error('Missing account or slippage')
+  }: BuildAddLiquidityInputs): Promise<TransactionConfig> {
+    if (!this.humanAmountsIn) {
+      throw new Error(
+        `Missing humanAmountsIn.
+This probably means that you tried to run build callData before running queryAddLiquidity`
+      )
+    }
 
-    const value = BigInt(humanAmountsIn[0].humanAmount)
+    const value = BigInt(this.humanAmountsIn[0].humanAmount)
 
     return {
       account,

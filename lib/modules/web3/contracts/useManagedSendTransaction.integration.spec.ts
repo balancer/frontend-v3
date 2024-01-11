@@ -10,14 +10,10 @@ import { defaultTestUserAccount, testPublicClient as testClient } from '@/test/u
 import { ChainId, HumanAmount } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/actions'
+import { UnbalancedAddLiquidityHandler } from '../../pool/actions/add-liquidity/handlers/UnbalancedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from '../../pool/actions/add-liquidity/handlers/selectAddLiquidityHandler'
 import { buildAddLiquidityLabels } from '../../pool/actions/add-liquidity/useConstructAddLiquidityStep'
 import { HumanAmountIn } from '../../pool/actions/liquidity-types'
-import {
-  BuildAddLiquidityInputs,
-  SdkBuildAddLiquidityInputs,
-} from '../../pool/actions/add-liquidity/add-liquidity.types'
-import { UnbalancedAddLiquidityHandler } from '../../pool/actions/add-liquidity/handlers/UnbalancedAddLiquidity.handler'
 
 const chainId = ChainId.MAINNET
 const account = defaultTestUserAccount
@@ -49,17 +45,12 @@ describe('weighted join test', () => {
       tokenAddress: t.address,
     }))
 
-    const query = await handler.queryAddLiquidity(humanAmountsIn)
+    await handler.queryAddLiquidity(humanAmountsIn)
 
-    const buildInput: SdkBuildAddLiquidityInputs = {
-      humanAmountsIn,
+    const txConfig = await handler.buildAddLiquidityCallData({
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
-      bptOut: query.sdkQueryOutput.bptOut,
-      sdkQueryOutput: query.sdkQueryOutput,
-    }
-
-    const txConfig = await handler.buildAddLiquidityCallData(buildInput)
+    })
 
     const { result } = testHook(() => {
       return useManagedSendTransaction(buildAddLiquidityLabels(), txConfig)
