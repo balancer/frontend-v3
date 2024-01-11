@@ -95,7 +95,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
       })
 
     await expect(callback()).rejects.toThrowErrorMatchingInlineSnapshot(`
-      [Error: Missing queryResponse.
+      [SentryError: Missing queryResponse.
       It looks that you tried to call useBuildCallData before the last query finished generating queryResponse]
     `)
   })
