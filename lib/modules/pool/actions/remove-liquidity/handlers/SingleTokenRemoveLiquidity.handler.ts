@@ -16,7 +16,7 @@ import { BPT_DECIMALS } from '../../../pool.constants'
 import { Pool } from '../../../usePool'
 import {
   LiquidityActionHelpers,
-  ensureLastQueryLoaded,
+  ensureLastQueryResponse,
   isEmptyHumanAmount,
 } from '../../LiquidityActionHelpers'
 import {
@@ -74,7 +74,10 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
     account,
     slippagePercent,
   }: BuildRemoveLiquidityInput): Promise<TransactionConfig> {
-    this.queryResponse = ensureLastQueryLoaded('Single token remove liquidity', this.queryResponse)
+    this.queryResponse = ensureLastQueryResponse(
+      'Single token remove liquidity',
+      this.queryResponse
+    )
 
     const removeLiquidity = new RemoveLiquidity()
 

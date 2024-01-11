@@ -108,7 +108,10 @@ export function toHumanAmount(tokenAmount: TokenAmount): HumanAmount {
   return formatUnits(tokenAmount.amount, tokenAmount.token.decimals) as HumanAmount
 }
 
-export function ensureLastQueryResponse<Q>(liquidityActionDescription: string, queryResponse?: Q): Q {
+export function ensureLastQueryResponse<Q>(
+  liquidityActionDescription: string,
+  queryResponse?: Q
+): Q {
   if (!queryResponse) {
     // This should never happen because we don't allow the user to trigger buildLiquidityCallData
     // before the query is loaded.

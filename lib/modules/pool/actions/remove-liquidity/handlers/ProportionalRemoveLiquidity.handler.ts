@@ -12,7 +12,7 @@ import {
 import { Address, parseEther } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
 import { Pool } from '../../../usePool'
-import { LiquidityActionHelpers, ensureLastQueryLoaded } from '../../LiquidityActionHelpers'
+import { LiquidityActionHelpers, ensureLastQueryResponse } from '../../LiquidityActionHelpers'
 import {
   BuildRemoveLiquidityInput,
   QueryRemoveLiquidityInput,
@@ -53,7 +53,10 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
     account,
     slippagePercent,
   }: BuildRemoveLiquidityInput): Promise<TransactionConfig> {
-    this.queryResponse = ensureLastQueryLoaded('Proportional remove liquidity', this.queryResponse)
+    this.queryResponse = ensureLastQueryResponse(
+      'Proportional remove liquidity',
+      this.queryResponse
+    )
 
     const removeLiquidity = new RemoveLiquidity()
 
