@@ -15,6 +15,7 @@ import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHe
 import { HumanAmountIn } from '../../liquidity-types'
 import { BuildAddLiquidityInputs, QueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
+import { SentryError } from '@/lib/shared/utils/errors'
 
 /**
  * UnbalancedAddLiquidityHandler is a handler that implements the
@@ -69,9 +70,9 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   }: BuildAddLiquidityInputs): Promise<TransactionConfig> {
     if (!this.queryResponse) {
       // This should never happen because we don't allow the user to trigger buildAddLiquidityCallData
-      // before the query is loaded. QUESTION: Is there a more explicit way?
+      // before the query is loaded.
       console.error('Missing queryResponse.')
-      throw new Error(
+      throw new SentryError(
         `Missing queryResponse.
 It looks that you tried to call useBuildCallData before the last query finished generating queryResponse`
       )
