@@ -18,5 +18,6 @@ export interface RemoveLiquidityHandler {
   /*
     Build tx callData payload for removing liquidity
     It is responsibility of the UI to avoid calling buildRemoveLiquidityCallData before the last queryRemoveLiquidity was finished
-  */ buildRemoveLiquidityCallData(inputs: BuildRemoveLiquidityInput): Promise<TransactionConfig>
+  */
+  buildRemoveLiquidityCallData(inputs: BuildRemoveLiquidityInput): Promise<TransactionConfig>
 }
