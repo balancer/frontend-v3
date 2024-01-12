@@ -120,6 +120,7 @@ export function _useAddLiquidity() {
       stopRefetchCountdown()
       await sleep(1000) // TODO: Show some kind of UI feedback during this artificial delay
       await Promise.all([refetchPreviewQuery(), refetchPriceImpact()])
+      await refetchBuildQuery()
       startRefetchCountdown()
     }
     if (secondsToRefetch === 0) {
