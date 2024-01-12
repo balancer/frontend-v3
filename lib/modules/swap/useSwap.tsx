@@ -94,12 +94,14 @@ export function _useSwap() {
   }
 
   function setReturnAmount(swap: GetSorSwapsQuery['swaps'] | undefined, swapType: GqlSorSwapType) {
-    if (!swap) return
+    let returnAmount = ''
+
+    if (swap) returnAmount = swap.returnAmount || '0'
 
     if (swapType === GqlSorSwapType.ExactIn) {
-      setTokenOutAmount(swap?.returnAmount || '0', { userTriggered: false })
+      setTokenOutAmount(returnAmount, { userTriggered: false })
     } else {
-      setTokenInAmount(swap?.returnAmount || '0', { userTriggered: false })
+      setTokenInAmount(returnAmount, { userTriggered: false })
     }
   }
 
@@ -150,12 +152,14 @@ export function _useSwap() {
     amount: string,
     { userTriggered = true }: { userTriggered?: boolean } = {}
   ) {
+    const state = swapStateVar()
+
     if (userTriggered) {
       swapStateVar({
-        ...swapState,
+        ...state,
         swapType: GqlSorSwapType.ExactIn,
         tokenIn: {
-          ...swapState.tokenIn,
+          ...state.tokenIn,
           amount,
         },
       })
@@ -164,9 +168,9 @@ export function _useSwap() {
       // Sometimes we want to set the amount without triggering a fetch or
       // swapType change, like when we populate the amount after a change from the other input.
       swapStateVar({
-        ...swapState,
+        ...state,
         tokenIn: {
-          ...swapState.tokenIn,
+          ...state.tokenIn,
           amount,
         },
       })
@@ -177,23 +181,26 @@ export function _useSwap() {
     amount: string,
     { userTriggered = true }: { userTriggered?: boolean } = {}
   ) {
+    const state = swapStateVar()
+
     if (userTriggered) {
       swapStateVar({
-        ...swapState,
+        ...state,
         swapType: GqlSorSwapType.ExactOut,
         tokenOut: {
-          ...swapState.tokenOut,
+          ...state.tokenOut,
           amount,
         },
       })
       fetchSwaps()
     } else {
       // Sometimes we want to set the amount without triggering a fetch or
-      // swapType change, like when we populate the amount after a change from the other input.
+      // swapType change, like when we populate the amount after a change from
+      // the other input.
       swapStateVar({
-        ...swapState,
+        ...state,
         tokenOut: {
-          ...swapState.tokenOut,
+          ...state.tokenOut,
           amount,
         },
       })

@@ -58,6 +58,7 @@ export function SwapForm() {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const tokens = useMemo(() => getTokensByChain(selectedChain), [selectedChain])
+
   // Exclude the currently selected token from the token select modal search.
   const tokenSelectTokens = tokens.filter(
     token =>
@@ -122,7 +123,7 @@ export function SwapForm() {
               <TokenInput
                 address={tokenOut.address}
                 chain={selectedChain}
-                value={tokenOut.address}
+                value={tokenOut.amount}
                 onChange={e => setTokenOutAmount(e.currentTarget.value as HumanAmount)}
                 toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
               />
