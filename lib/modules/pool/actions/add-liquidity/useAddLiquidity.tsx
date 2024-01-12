@@ -114,18 +114,16 @@ export function _useAddLiquidity() {
   }
 
   useEffect(() => {
-    const refetch = async () => {
+    const refetchQueries = async () => {
       // TODO: remove after manual feature tests
       console.log('Refetching preview, priceImpact and build queries')
       stopRefetchCountdown()
       await sleep(1000) // TODO: Show some kind of UI feedback during this artificial delay
-      await refetchPreviewQuery()
-      await refetchPriceImpact()
-      await refetchBuildQuery?.()
+      await Promise.all([refetchPreviewQuery(), refetchPriceImpact()])
       startRefetchCountdown()
     }
     if (secondsToRefetch === 0) {
-      refetch()
+      refetchQueries()
     }
   }, [secondsToRefetch])
 
