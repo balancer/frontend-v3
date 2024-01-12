@@ -97,6 +97,7 @@ export function AddLiquidityModal({
   // TODO: move userAddress up
   const spenderAddress = useContractAddress('balancer.vaultV2')
   const { userAddress } = useUserAccount()
+  const { secondsToRefetch } = useAddLiquidity()
 
   const bptOutLabel = bptOut ? formatUnits(bptOut.amount, BPT_DECIMALS) : '0'
   const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
@@ -162,6 +163,11 @@ export function AddLiquidityModal({
                       <InfoOutlineIcon color="GrayText" />
                     </Tooltip>
                   </HStack>
+                </HStack>
+              </VStack>
+              <VStack align="start" spacing="md">
+                <HStack justify="space-between" w="full">
+                  <Text>Seconds till next query {secondsToRefetch}</Text>
                 </HStack>
               </VStack>
             </Card>

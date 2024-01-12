@@ -40,8 +40,9 @@ export function useAddLiquidityPriceImpactQuery(
     },
     {
       enabled: isConnected && !areEmptyAmounts(humanAmountsIn),
+      cacheTime: 0,
     }
   )
 
-  return { priceImpact, isPriceImpactLoading: query.isLoading }
+  return { priceImpact, isPriceImpactLoading: query.isLoading, refetchPriceImpact: query.refetch }
 }

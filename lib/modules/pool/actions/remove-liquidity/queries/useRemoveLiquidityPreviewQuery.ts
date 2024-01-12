@@ -48,6 +48,7 @@ export function useRemoveLiquidityPreviewQuery(
     },
     {
       enabled: isConnected && Number(debouncedHumanBptIn) > 0,
+      cacheTime: 0,
     }
   )
 

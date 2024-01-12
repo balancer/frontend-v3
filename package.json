@@ -50,7 +50,6 @@
     "@types/echarts": "^4.9.19",
     "@types/node": "20.3.2",
     "@types/react-dom": "18.2.6",
-    "@uidotdev/usehooks": "^2.0.1",
     "@vercel/speed-insights": "^1.0.1",
     "bignumber.js": "^9.1.2",
     "date-fns": "^2.30.0",
@@ -79,6 +78,7 @@
     "tinycolor2": "^1.6.0",
     "typescript": "5.1.6",
     "use-debounce": "^10.0.0",
+    "usehooks-ts": "^2.9.2",
     "viem": "^1.18.1",
     "wagmi": "^1.4.5",
     "zod": "^3.21.4"
