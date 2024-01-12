@@ -14,7 +14,8 @@ export function useAddLiquidityBuildCallDataQuery(
   handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
   isActiveStep: boolean,
-  pool: Pool
+  pool: Pool,
+  startRefetchCountdown: () => void
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
@@ -29,6 +30,7 @@ export function useAddLiquidityBuildCallDataQuery(
       humanAmountsIn,
     }),
     async () => {
+      startRefetchCountdown()
       return handler.buildAddLiquidityCallData({ account: userAddress, slippagePercent: slippage })
     },
     {
@@ -39,5 +41,5 @@ export function useAddLiquidityBuildCallDataQuery(
     }
   )
 
-  return addLiquidityQuery
+  return { ...addLiquidityQuery, refetchBuildQuery: addLiquidityQuery.refetch }
 }

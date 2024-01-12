@@ -39,6 +39,7 @@ export function AddLiquidityForm() {
     isPreviewQueryLoading,
     isDisabled,
     disabledReason,
+    stopRefetchCountdown,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
 
@@ -52,6 +53,11 @@ export function AddLiquidityForm() {
 
   const bptOutLabel = safeTokenFormat(bptOut?.amount, BPT_DECIMALS)
   const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
+
+  const onModalClose = () => {
+    previewDisclosure.onClose()
+    return stopRefetchCountdown()
+  }
 
   return (
     <TokenBalancesProvider tokens={validTokens}>
@@ -134,7 +140,7 @@ export function AddLiquidityForm() {
           finalFocusRef={nextBtn}
           isOpen={previewDisclosure.isOpen}
           onOpen={previewDisclosure.onOpen}
-          onClose={previewDisclosure.onClose}
+          onClose={onModalClose}
         />
       </Center>
     </TokenBalancesProvider>
