@@ -2,11 +2,8 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { Token, TokenAmount } from '@balancer/sdk'
-import {
-  AddLiquidityInputs,
-  AddLiquidityOutputs,
-  BuildLiquidityInputs,
-} from '../add-liquidity.types'
+import { HumanAmountIn } from '../../liquidity-types'
+import { BuildAddLiquidityInput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 
 /**
@@ -15,12 +12,13 @@ import { AddLiquidityHandler } from './AddLiquidity.handler'
  * This is just a fake example to show how to implement edge-case handlers.
  */
 export class TwammAddLiquidityHandler implements AddLiquidityHandler {
+  humanAmountsIn?: HumanAmountIn[]
+
   constructor(private chainId: SupportedChainId) {}
 
   // TODO: This is a non-sense example implementation
-  public async queryAddLiquidity({
-    humanAmountsIn,
-  }: AddLiquidityInputs): Promise<AddLiquidityOutputs> {
+  public async queryAddLiquidity(humanAmountsIn: HumanAmountIn[]) {
+    this.humanAmountsIn = humanAmountsIn
     const tokenAmount = TokenAmount.fromHumanAmount(
       {} as unknown as Token,
       humanAmountsIn[0].humanAmount || '0'
@@ -30,16 +28,22 @@ export class TwammAddLiquidityHandler implements AddLiquidityHandler {
   }
 
   // TODO: This is a non-sense example implementation
-  public async calculatePriceImpact({ humanAmountsIn }: AddLiquidityInputs): Promise<number> {
+  public async calculatePriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number> {
     return Number(humanAmountsIn[0].humanAmount)
   }
 
   // TODO: This is a non-sense example implementation
-  public async buildAddLiquidityTx(buildInputs: BuildLiquidityInputs): Promise<TransactionConfig> {
-    const { humanAmountsIn, account, slippagePercent } = buildInputs.inputs
-    if (!account || !slippagePercent) throw new Error('Missing account or slippage')
+  public async buildAddLiquidityCallData({
+    account,
+  }: BuildAddLiquidityInput): Promise<TransactionConfig> {
+    if (!this.humanAmountsIn) {
+      throw new Error(
+        `Missing humanAmountsIn.
+This probably means that you tried to run build callData before running queryAddLiquidity`
+      )
+    }
 
-    const value = BigInt(humanAmountsIn[0].humanAmount)
+    const value = BigInt(this.humanAmountsIn[0].humanAmount)
 
     return {
       account,

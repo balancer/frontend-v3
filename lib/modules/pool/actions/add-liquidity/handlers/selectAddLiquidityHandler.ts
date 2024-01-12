@@ -1,8 +1,8 @@
 import { getChainId } from '@/lib/config/app.config'
-import { Pool } from '../../usePool'
-import { AddLiquidityHandler } from './handlers/AddLiquidity.handler'
-import { TwammAddLiquidityHandler } from './handlers/TwammAddLiquidity.handler'
-import { UnbalancedAddLiquidityHandler } from './handlers/UnbalancedAddLiquidity.handler'
+import { Pool } from '../../../usePool'
+import { TwammAddLiquidityHandler } from './TwammAddLiquidity.handler'
+import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
+import { AddLiquidityHandler } from './AddLiquidity.handler'
 
 export function selectAddLiquidityHandler(pool: Pool) {
   // TODO: Depending on the pool attributes we will return a different handler

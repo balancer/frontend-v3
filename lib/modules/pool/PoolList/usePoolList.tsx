@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, ReactNode } from 'react'
+import { createContext, ReactNode, useEffect } from 'react'
 import {
   GetPoolsDocument,
   GetPoolsQuery,
@@ -10,9 +10,12 @@ import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
+import { useUserAccount } from '../../web3/useUserAccount'
+import { isAddress } from 'viem'
 
 export function _usePoolList() {
-  const { queryVariables } = usePoolListQueryState()
+  const { queryVariables, toggleUserAddress } = usePoolListQueryState()
+  const { userAddress } = useUserAccount()
 
   const { data, loading, previousData, refetch, networkStatus, error } = useQuery(
     GetPoolsDocument,
@@ -20,6 +23,14 @@ export function _usePoolList() {
   )
 
   const pools = loading && previousData ? previousData.pools : data?.pools || []
+
+  // If the user has previously selected to filter by their liquidity and then
+  // changes their connected wallet, we want to automatically update the filter.
+  useEffect(() => {
+    if (isAddress(userAddress) && isAddress(queryVariables.where.userAddress || '')) {
+      toggleUserAddress(true, userAddress)
+    }
+  }, [userAddress])
 
   return {
     pools,

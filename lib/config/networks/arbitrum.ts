@@ -1,9 +1,11 @@
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
 
 const networkConfig: NetworkConfig = {
   chainId: 42161,
   name: 'Arbitrum One',
   shortName: 'Arbitrum',
+  chain: GqlChain.Arbitrum,
   iconPath: '/images/chains/ARBITRUM.svg',
   blockExplorerBaseUrl: 'https://arbiscan.io',
   tokens: {

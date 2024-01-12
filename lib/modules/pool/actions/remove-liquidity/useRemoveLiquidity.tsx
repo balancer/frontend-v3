@@ -1,126 +1,143 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { createContext, PropsWithChildren } from 'react'
-import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { makeVar, useReactiveVar } from '@apollo/client'
-import { usePool } from '../../usePool'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { GqlToken, GqlTokenAmountHumanReadable } from '@/lib/shared/services/api/generated/graphql'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { LABELS } from '@/lib/shared/labels'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
+import { bn, safeSum } from '@/lib/shared/utils/numbers'
+import { HumanAmount } from '@balancer/sdk'
+import { PropsWithChildren, createContext, useMemo, useState } from 'react'
+import { usePool } from '../../usePool'
+import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
+import { useRemoveLiquidityBuildCallDataQuery } from './queries/useRemoveLiquidityBuildCallDataQuery'
+import { useRemoveLiquidityPreviewQuery } from './queries/useRemoveLiquidityPreviewQuery'
+import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
+import { RemoveLiquidityType } from './remove-liquidity.types'
+import { Address } from 'viem'
+import { toHumanAmount } from '../LiquidityActionHelpers'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
 
-type RemoveLiquidityType = 'PROPORTIONAL' | 'SINGLE_TOKEN'
-
-interface RemoveLiquidityState {
-  type: RemoveLiquidityType
-  singleToken: GqlTokenAmountHumanReadable | null
-  proportionalPercent: number
-  selectedOptions: { [poolTokenIndex: string]: string }
-  proportionalAmounts: GqlTokenAmountHumanReadable[] | null
-}
-
-export const removeliquidityStateVar = makeVar<RemoveLiquidityState>({
-  type: 'PROPORTIONAL',
-  proportionalPercent: 100,
-  singleToken: null,
-  selectedOptions: {},
-  proportionalAmounts: null,
-})
-
 export function _useRemoveLiquidity() {
-  const { pool } = usePool()
+  const { pool, bptPrice } = usePool()
   const { getToken, usdValueForToken } = useTokens()
+  const { isConnected } = useUserAccount()
 
-  async function setProportionalPercent(value: number) {
-    removeliquidityStateVar({ ...removeliquidityStateVar(), proportionalPercent: value })
-  }
+  const [removalType, setRemovalType] = useState<RemoveLiquidityType>(
+    RemoveLiquidityType.Proportional
+  )
+  const [singleTokenAddress, setSingleTokenAddress] = useState<Address | undefined>(undefined)
 
-  function setProportional() {
-    removeliquidityStateVar({
-      ...removeliquidityStateVar(),
-      type: 'PROPORTIONAL',
-      singleToken: null,
-    })
-  }
+  const [humanBptInPercent, setHumanBptInPercent] = useState<number>(100)
 
-  function setProportionalAmounts(proportionalAmounts: GqlTokenAmountHumanReadable[]) {
-    removeliquidityStateVar({ ...removeliquidityStateVar(), proportionalAmounts })
-  }
+  const handler = useMemo(
+    () => selectRemoveLiquidityHandler(pool, removalType),
+    [pool.id, removalType]
+  )
 
-  function setSingleToken(address: string) {
-    removeliquidityStateVar({
-      ...removeliquidityStateVar(),
-      type: 'SINGLE_TOKEN',
-      singleToken: { address, amount: '' },
-    })
-  }
+  // TODO: Hardcoded until it is ready in the API
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const maxHumanBptIn: HumanAmount = pool?.userBalance?.totalBalance || '100' // we use 100 for DEBUG until this PR is merged: https://github.com/balancer/frontend-v3/pull/192
+  const humanBptIn: HumanAmount = bn(maxHumanBptIn)
+    .times(humanBptInPercent / 100)
+    .toString() as HumanAmount
 
-  function setSingleTokenAmount(tokenAmount: GqlTokenAmountHumanReadable) {
-    removeliquidityStateVar({
-      ...removeliquidityStateVar(),
-      singleToken: tokenAmount,
-    })
-  }
+  const totalUsdFromBprPrice = bn(humanBptIn).times(bptPrice).toFixed(2)
 
-  function setSelectedOption(poolTokenIndex: number, tokenAddress: string) {
-    const state = removeliquidityStateVar()
-
-    removeliquidityStateVar({
-      ...state,
-      selectedOptions: {
-        ...state.selectedOptions,
-        [`${poolTokenIndex}`]: tokenAddress,
-      },
-    })
-  }
-
-  function clearRemoveLiquidityState() {
-    removeliquidityStateVar({
-      type: 'PROPORTIONAL',
-      proportionalPercent: 100,
-      singleToken: null,
-      selectedOptions: {},
-      proportionalAmounts: null,
-    })
-  }
-
-  const removeliquidityState = useReactiveVar(removeliquidityStateVar)
+  const setProportionalType = () => setRemovalType(RemoveLiquidityType.Proportional)
+  const setSingleTokenType = () => setRemovalType(RemoveLiquidityType.SingleToken)
+  const isSingleToken = removalType === RemoveLiquidityType.SingleToken
+  const isProportional = removalType === RemoveLiquidityType.Proportional
 
   const tokens = pool.allTokens.map(token => getToken(token.address, pool.chain))
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
+  const firstTokenAddress = tokens?.[0]?.address as Address
 
-  // // When the amounts in change we should fetch the expected output.
-  // useEffect(() => {
-  //   queryRemoveLiquidity()
-  // }, [amountsOut])
+  const singleTokenOutAddress = singleTokenAddress || firstTokenAddress
 
-  // // TODO: Call underlying SDK query function
-  // function queryRemoveLiquidity() {
-  //   console.log('amountsOut', amountsOut)
-  // }
+  const { isPriceImpactLoading, priceImpact } = useRemoveLiquidityPriceImpactQuery(
+    handler,
+    pool.id,
+    humanBptIn,
+    singleTokenOutAddress //tokenOut --> refactor to better generic types
+  )
 
-  // // TODO: Call underlying SDK execution function
-  // function executeRemoveLiquidity() {
-  //   console.log('amountsOut', amountsOut)
-  // }
+  const { amountsOut, isPreviewQueryLoading } = useRemoveLiquidityPreviewQuery(
+    handler,
+    pool.id,
+    humanBptIn,
+    singleTokenOutAddress //tokenOut --> refactor to better generic types
+  )
+
+  const _tokenOutUnitsByAddress: Record<Address, HumanAmount> = {}
+  amountsOut?.map(tokenAmount => {
+    _tokenOutUnitsByAddress[tokenAmount.token.address] = toHumanAmount(tokenAmount)
+  })
+
+  const amountOutForToken = (tokenAddress: Address): HumanAmount => {
+    const amount = _tokenOutUnitsByAddress[tokenAddress]
+    if (!amount) return '0.00'
+    return amount
+  }
+
+  const _tokenOutUsdByAddress: Record<Address, HumanAmount> = {}
+  amountsOut?.map(tokenAmount => {
+    const tokenAddress: Address = tokenAmount.token.address
+    const token = getToken(tokenAddress, pool.chain)
+    if (!token) throw new Error(`Token with address ${tokenAddress} was not found`)
+    const tokenUnits = amountOutForToken(token.address as Address)
+    _tokenOutUsdByAddress[tokenAddress] = usdValueForToken(token, tokenUnits) as HumanAmount
+  })
+
+  const usdOutForToken = (tokenAddress: Address): HumanAmount => {
+    const usdOut = _tokenOutUsdByAddress[tokenAddress]
+    if (!usdOut) return '0.00'
+    return usdOut
+  }
+
+  const totalUsdValue: string = Object.values(_tokenOutUsdByAddress)
+    .reduce((acc, current) => {
+      return Number(safeSum([acc, current]))
+    }, 0)
+    .toString()
+
+  function useBuildCallData(isActiveStep: boolean) {
+    return useRemoveLiquidityBuildCallDataQuery(handler, humanBptIn, isActiveStep, pool.id)
+  }
+
+  const { isDisabled, disabledReason } = isDisabledWithReason(
+    [!isConnected, LABELS.walletNotConnected],
+    [Number(humanBptIn) === 0, 'You must specify a valid bpt in']
+  )
 
   return {
     tokens,
     validTokens,
-    selectedRemoveLiquidityType: removeliquidityState.type,
-    singleToken: removeliquidityState.singleToken,
-    proportionalPercent: removeliquidityState.proportionalPercent,
-    selectedOptions: removeliquidityState.selectedOptions,
-    proportionalAmounts: removeliquidityState.proportionalAmounts,
-    setProportionalPercent,
-    setProportional,
-    setSingleToken,
-    setSingleTokenAmount,
-    setSelectedOption,
-    clearRemoveLiquidityState,
-    setProportionalAmounts,
-    //executeRemoveLiquidity,
+    setProportionalType,
+    setSingleTokenType,
+    setSingleTokenAddress,
+    singleTokenOutAddress,
+    humanBptIn,
+    humanBptInPercent,
+    totalUsdFromBprPrice,
+    setHumanBptInPercent,
+    isSingleToken,
+    isProportional,
+    setRemovalType,
+    totalUsdValue,
+    useBuildCallData,
+    isPreviewQueryLoading,
+    isPriceImpactLoading,
+    priceImpact,
+    isDisabled,
+    disabledReason,
+    amountOutForToken,
+    usdOutForToken,
   }
 }
 

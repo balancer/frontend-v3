@@ -11,31 +11,31 @@ import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
-import { AddLiquidityHelpers } from './AddLiquidityHelpers'
-import { AddLiquidityInputs, HumanAmountIn } from './add-liquidity.types'
-import { useAddLiquidityBtpOutQuery } from './queries/useAddLiquidityBtpOutQuery'
+import { useAddLiquidityPreviewQuery } from './queries/useAddLiquidityPreviewQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
-import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
+import { HumanAmountIn } from '../liquidity-types'
+import { LiquidityActionHelpers, areEmptyAmounts } from '../LiquidityActionHelpers'
+import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
-import { areEmptyAmounts } from './add-liquidity.helpers'
+import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
 
-export const amountsInVar = makeVar<HumanAmountIn[]>([])
+export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
 
 export function _useAddLiquidity() {
-  const amountsIn = useReactiveVar(amountsInVar)
+  const humanAmountsIn = useReactiveVar(humanAmountsInVar)
 
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected } = useUserAccount()
 
-  const handler = selectAddLiquidityHandler(pool)
+  const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id])
 
-  function setInitialAmountsIn() {
+  function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
       token =>
         ({
@@ -43,17 +43,17 @@ export function _useAddLiquidity() {
           humanAmount: '',
         } as HumanAmountIn)
     )
-    amountsInVar(amountsIn)
+    humanAmountsInVar(amountsIn)
   }
 
   useEffect(() => {
-    setInitialAmountsIn()
+    setInitialHumanAmountsIn()
   }, [])
 
-  function setAmountIn(tokenAddress: Address, humanAmount: HumanAmount) {
-    const state = amountsInVar()
+  function setHumanAmountIn(tokenAddress: Address, humanAmount: HumanAmount) {
+    const state = humanAmountsInVar()
 
-    amountsInVar([
+    humanAmountsInVar([
       ...state.filter(amountIn => !isSameAddress(amountIn.tokenAddress, tokenAddress)),
       {
         tokenAddress,
@@ -66,7 +66,7 @@ export function _useAddLiquidity() {
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
   const usdAmountsIn = useMemo(
     () =>
-      amountsIn.map(amountIn => {
+      humanAmountsIn.map(amountIn => {
         const token = validTokens.find(token =>
           isSameAddress(token?.address, amountIn.tokenAddress)
         )
@@ -75,22 +75,25 @@ export function _useAddLiquidity() {
 
         return usdValueForToken(token, amountIn.humanAmount)
       }),
-    [amountsIn, usdValueForToken, validTokens]
+    [humanAmountsIn, usdValueForToken, validTokens]
   )
   const totalUSDValue = safeSum(usdAmountsIn)
 
-  const { formattedPriceImpact, isPriceImpactLoading } = useAddLiquidityPriceImpactQuery(
+  const { isPriceImpactLoading, priceImpact } = useAddLiquidityPriceImpactQuery(
     handler,
-    amountsIn,
+    humanAmountsIn,
     pool.id
   )
 
-  const { bptOut, bptOutUnits, isBptOutQueryLoading, lastSdkQueryOutput } =
-    useAddLiquidityBtpOutQuery(handler, amountsIn, pool.id)
+  const { isPreviewQueryLoading, bptOut } = useAddLiquidityPreviewQuery(
+    handler,
+    humanAmountsIn,
+    pool.id
+  )
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
-    [areEmptyAmounts(amountsIn), 'You must specify one or more token amounts']
+    [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts']
   )
 
   /* We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
@@ -98,28 +101,25 @@ export function _useAddLiquidity() {
     TypeError: Cannot read property getAmountsToApprove of undefined
     when trying to access the returned method
     */
-  const helpers = new AddLiquidityHelpers(pool)
+  const helpers = new LiquidityActionHelpers(pool)
 
-  function buildAddLiquidityTx(inputs: AddLiquidityInputs) {
-    // There are edge cases where we will never call setLastSdkQueryOutput so that lastSdkQueryOutput will be undefined.
-    // That`s expected as sdkQueryOutput is an optional input
-    return handler.buildAddLiquidityTx({ inputs, sdkQueryOutput: lastSdkQueryOutput })
+  function useBuildCallData(isActiveStep: boolean) {
+    return useAddLiquidityBuildCallDataQuery(handler, humanAmountsIn, isActiveStep, pool)
   }
 
   return {
-    amountsIn,
+    humanAmountsIn,
     tokens,
     validTokens,
     totalUSDValue,
-    formattedPriceImpact,
     isPriceImpactLoading,
+    priceImpact,
     bptOut,
-    isBptOutQueryLoading,
-    bptOutUnits,
+    isPreviewQueryLoading,
+    setHumanAmountIn,
+    useBuildCallData,
     isDisabled,
     disabledReason,
-    setAmountIn,
-    buildAddLiquidityTx,
     helpers,
     poolStateInput,
   }

@@ -4,6 +4,7 @@ import { MAX_UINT256 } from '@balancer/sdk'
 import BigNumber from 'bignumber.js'
 import numeral from 'numeral'
 import { KeyboardEvent } from 'react'
+import { formatUnits } from 'viem'
 
 // Allows calling JSON.stringify with bigints
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#use_within_json
@@ -147,4 +148,11 @@ export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): s
     default:
       throw new Error(`Number format not implemented: ${format}`)
   }
+}
+
+// Returns dash if token amount is null, otherwise returns humanized token amount in token display format.
+export function safeTokenFormat(amount: bigint | null | undefined, decimals: number): string {
+  if (!amount) return '-'
+
+  return fNum('token', formatUnits(amount, decimals))
 }

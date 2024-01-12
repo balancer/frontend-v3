@@ -23,18 +23,20 @@ import { useRef } from 'react'
 import { Address } from 'wagmi'
 import { AddLiquidityModal } from './AddLiquidityModal'
 import { useAddLiquidity } from './useAddLiquidity'
+import { fNum, safeTokenFormat } from '@/lib/shared/utils/numbers'
+import { BPT_DECIMALS } from '../../pool.constants'
 
 export function AddLiquidityForm() {
   const {
-    amountsIn,
+    humanAmountsIn: amountsIn,
     totalUSDValue,
-    setAmountIn,
+    setHumanAmountIn: setAmountIn,
     tokens,
     validTokens,
-    formattedPriceImpact,
+    priceImpact,
     isPriceImpactLoading,
-    bptOutUnits,
-    isBptOutQueryLoading,
+    bptOut,
+    isPreviewQueryLoading,
     isDisabled,
     disabledReason,
   } = useAddLiquidity()
@@ -47,6 +49,9 @@ export function AddLiquidityForm() {
     const amountIn = amountsIn.find(amountIn => isSameAddress(amountIn.tokenAddress, tokenAddress))
     return amountIn ? amountIn.humanAmount : ''
   }
+
+  const bptOutLabel = safeTokenFormat(bptOut?.amount, BPT_DECIMALS)
+  const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
   return (
     <TokenBalancesProvider tokens={validTokens}>
@@ -88,9 +93,11 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
-                  <NumberText color="GrayText">
-                    {isPriceImpactLoading ? <Skeleton w="12" h="full" /> : formattedPriceImpact}
-                  </NumberText>
+                  {isPriceImpactLoading ? (
+                    <Skeleton w="12" h="full" />
+                  ) : (
+                    <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
+                  )}
                   <Tooltip label="Price impact" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
@@ -100,7 +107,7 @@ export function AddLiquidityForm() {
                 <Text color="GrayText">Bpt out</Text>
                 <HStack>
                   <NumberText color="GrayText">
-                    {isBptOutQueryLoading ? <Skeleton w="12" h="full" /> : bptOutUnits}
+                    {isPreviewQueryLoading ? <Skeleton w="12" h="full" /> : bptOutLabel}
                   </NumberText>
                   <Tooltip label="Bpt out" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />

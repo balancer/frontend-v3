@@ -3,8 +3,10 @@ import { aTokenExpandedMock } from '@/lib/modules/tokens/__mocks__/token.builder
 import { aGqlPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { buildDefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers'
 import { mainnet } from 'wagmi'
-import { HumanAmountInWithTokenInfo } from './AddLiquidityFlowButton'
 import { _useAddLiquidity } from './useAddLiquidity'
+import { HumanAmountIn } from '../liquidity-types'
+import { Dictionary } from 'lodash'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 
 async function testUseAddLiquidity() {
   const { result } = testHook(() => _useAddLiquidity(), {
@@ -23,7 +25,7 @@ async function testUseAddLiquidity() {
 test('returns amountsIn with empty input amount by default', async () => {
   const result = await testUseAddLiquidity()
 
-  expect(result.current.amountsIn).toEqual([
+  expect(result.current.humanAmountsIn).toEqual([
     {
       tokenAddress: balAddress,
       humanAmount: '',
@@ -41,16 +43,18 @@ test('returns add liquidity helpers', async () => {
   expect(result.current.helpers.chainId).toBe(mainnet.id)
   expect(result.current.helpers.poolTokenAddresses).toEqual([balAddress, wETHAddress])
 
-  const humanAmountsIn = [
-    { tokenAddress: balAddress, humanAmount: '1', symbol: 'BAL' },
-    { tokenAddress: wETHAddress, humanAmount: '2', symbol: 'WETH' },
+  const humanAmountsIn: HumanAmountIn[] = [
+    { tokenAddress: balAddress, humanAmount: '1' },
+    { tokenAddress: wETHAddress, humanAmount: '2' },
   ]
 
-  expect(
-    result.current.helpers.getAmountsToApprove(
-      humanAmountsIn as unknown as HumanAmountInWithTokenInfo[]
-    )
-  ).toMatchInlineSnapshot(`
+  const tokensByAddress = {
+    [balAddress]: { symbol: 'BAL' },
+    [wETHAddress]: { symbol: 'WETH' },
+  } as Dictionary<GqlToken>
+
+  expect(result.current.helpers.getAmountsToApprove(humanAmountsIn, tokensByAddress))
+    .toMatchInlineSnapshot(`
     [
       {
         "humanAmount": "1",

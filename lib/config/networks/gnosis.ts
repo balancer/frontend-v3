@@ -1,9 +1,11 @@
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
 
 const networkConfig: NetworkConfig = {
   chainId: 100,
   name: 'Gnosis Chain',
   shortName: 'Gnosis',
+  chain: GqlChain.Gnosis,
   iconPath: '/images/chains/GNOSIS.svg',
   blockExplorerBaseUrl: 'https://gnosisscan.io',
   tokens: {

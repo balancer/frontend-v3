@@ -1,21 +1,29 @@
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
-import {
-  AddLiquidityInputs,
-  AddLiquidityOutputs,
-  BuildLiquidityInputs,
-} from '../add-liquidity.types'
+import { HumanAmountIn } from '../../liquidity-types'
+import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidity.types'
 
 /**
  * AddLiquidityHandler is an interface that defines the methods that must be implemented by a handler.
- * They take standard inputs from the UI and return frontend standardised
- * outputs. The outputs should not be return types from the SDK. This is to
- * allow handlers to be developed in the future that may not use the SDK.
+ * They take standard inputs from the UI and return frontend standardised outputs.
+ *
+ * SDK handlers:
+ * - Default handlers will interact with the SDK to query and build the call data for the transaction
+ * - They store the response of the last query execution inside the handler instance so it can be used later by buildAddLiquidityCallData
+ * - Each time queryAddLiquidity is called they update that internal state
+ *
+ * Edge-case handlers:
+ * - Edge case handlers (e.g. Twamm handler) will not interact with the SDK
+ * - They do not store the response of a SDK query but could store other state related to the edge-case implementation
  */
 export interface AddLiquidityHandler {
-  // Query the SDK for the expected output of adding liquidity
-  queryAddLiquidity(inputs: AddLiquidityInputs): Promise<AddLiquidityOutputs>
+  // Query the expected output of adding liquidity and store it inside the handler instance
+  // Also returns bptOut to be used by the UI
+  queryAddLiquidity(humanAmountsIn: HumanAmountIn[]): Promise<QueryAddLiquidityOutput>
   // Calculate the price impact of adding liquidity
-  calculatePriceImpact(inputs: AddLiquidityInputs): Promise<number>
-  // Build tx payload for adding liquidity
-  buildAddLiquidityTx(inputs: BuildLiquidityInputs): Promise<TransactionConfig>
+  calculatePriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number>
+  /*
+    Build tx callData payload for adding liquidity
+    It is responsibility of the UI to avoid calling buildAddLiquidityCallData before the last queryAddLiquidity was finished
+  */
+  buildAddLiquidityCallData(inputs: BuildAddLiquidityInput): Promise<TransactionConfig>
 }

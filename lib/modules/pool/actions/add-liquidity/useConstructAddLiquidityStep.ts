@@ -3,18 +3,18 @@ import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManag
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { Address } from 'wagmi'
 import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
-import { HumanAmountIn } from './add-liquidity.types'
-import { useBuildAddLiquidityQuery } from './queries/useBuildAddLiquidityTxQuery'
+import { useAddLiquidity } from './useAddLiquidity'
 
-export function useConstructAddLiquidityStep(humanAmountsIn: HumanAmountIn[], poolId: string) {
+export function useConstructAddLiquidityStep(poolId: string) {
   const { isActiveStep, activateStep } = useActiveStep()
 
-  //TODO: add slippage
-  const addLiquidityQuery = useBuildAddLiquidityQuery(humanAmountsIn, isActiveStep, poolId)
+  const { useBuildCallData } = useAddLiquidity()
+
+  const buildCallDataQuery = useBuildCallData(isActiveStep)
 
   const transactionLabels = buildAddLiquidityLabels(poolId)
 
-  const transaction = useManagedSendTransaction(transactionLabels, addLiquidityQuery.data)
+  const transaction = useManagedSendTransaction(transactionLabels, buildCallDataQuery.data)
 
   const step: FlowStep = {
     ...transaction,
@@ -30,15 +30,15 @@ export function useConstructAddLiquidityStep(humanAmountsIn: HumanAmountIn[], po
     isLoading:
       transaction?.simulation.isLoading ||
       transaction?.execution.isLoading ||
-      addLiquidityQuery.isLoading,
-    error: transaction?.simulation.error || transaction?.execution.error || addLiquidityQuery.error,
-    joinQuery: addLiquidityQuery,
+      buildCallDataQuery.isLoading,
+    error:
+      transaction?.simulation.error || transaction?.execution.error || buildCallDataQuery.error,
   }
 }
 
 export const buildAddLiquidityLabels: BuildTransactionLabels = (poolId: Address) => {
   return {
-    init: 'Add pool liquidity',
+    init: 'Add liquidity',
     confirming: 'Confirm add liquidity',
     tooltip: 'TODO',
     description: `🎉 Liquidity added to pool ${poolId}`,

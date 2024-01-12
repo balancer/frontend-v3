@@ -2,55 +2,46 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { defaultDebounceMs } from '@/lib/shared/utils/queries'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { useQuery } from 'wagmi'
-import { areEmptyAmounts } from '../add-liquidity.helpers'
-import { HumanAmountIn } from '../add-liquidity.types'
+import { areEmptyAmounts } from '../../LiquidityActionHelpers'
+import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
-import { generateAddLiquidityQueryKey } from './generateAddLiquidityQueryKey'
-import { fNum } from '@/lib/shared/utils/numbers'
-
-const debounceMillis = 250
+import { addLiquidityKeys } from './add-liquidity-keys'
 
 export function useAddLiquidityPriceImpactQuery(
   handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
   poolId: string
 ) {
-  const { userAddress } = useUserAccount()
+  const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [priceImpact, setPriceImpact] = useState<number | null>(null)
-  const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, debounceMillis)
-
-  function queryKey(): string {
-    return generateAddLiquidityQueryKey({
-      userAddress,
-      poolId,
-      slippage,
-      humanAmountsIn: debouncedHumanAmountsIn as unknown as HumanAmountIn[],
-    })
-  }
+  const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
 
   async function queryPriceImpact() {
-    const _priceImpact = await handler.calculatePriceImpact({
-      humanAmountsIn,
-    })
+    const _priceImpact = await handler.calculatePriceImpact(humanAmountsIn)
 
     setPriceImpact(_priceImpact)
     return _priceImpact
   }
 
   const query = useQuery(
-    [queryKey()],
+    addLiquidityKeys.preview({
+      userAddress,
+      slippage,
+      poolId,
+      humanAmountsIn: debouncedHumanAmountsIn,
+    }),
     async () => {
       return await queryPriceImpact()
     },
     {
-      enabled: !!userAddress && !areEmptyAmounts(humanAmountsIn),
+      enabled: isConnected && !areEmptyAmounts(humanAmountsIn),
     }
   )
-  const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
-  return { priceImpact, formattedPriceImpact, isPriceImpactLoading: query.isLoading }
+  return { priceImpact, isPriceImpactLoading: query.isLoading }
 }

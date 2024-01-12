@@ -2,12 +2,12 @@ import { Card, HStack, VStack, Text, Grid, GridItem } from '@chakra-ui/react'
 import { PoolListItem } from '../../pool.types'
 import { fNum } from '@/lib/shared/utils/numbers'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
-import { memo } from 'react'
+import { ReactNode, memo } from 'react'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
-import { getPoolTypeLabel } from '../../pool.utils'
+import { getAprLabel, getPoolTypeLabel } from '../../pool.utils'
 
 interface Props {
   pool: PoolListItem
@@ -19,7 +19,7 @@ function PoolNameLabel({ pool }: { pool: PoolListItem }) {
   if (pool) {
     const displayTokens = pool.displayTokens
     return (
-      <Text fontWeight="bold" noOfLines={1}>
+      <Text fontWeight="bold" noOfLines={2} h="12">
         {displayTokens.map((token, idx) => {
           return (
             <>
@@ -32,6 +32,19 @@ function PoolNameLabel({ pool }: { pool: PoolListItem }) {
       </Text>
     )
   }
+}
+
+function StatCard({ label, value }: { label: ReactNode; value: ReactNode }) {
+  return (
+    <Card h="full" variant="gradient" p="sm">
+      <VStack alignItems="flex-start" w="full" gap="0">
+        <Text fontWeight="medium" variant="secondary" fontSize="sm">
+          {label}
+        </Text>
+        <Text fontWeight="bold">{value}</Text>
+      </VStack>
+    </Card>
+  )
 }
 
 const MemoizedAprTooltip = memo(AprTooltip)
@@ -58,60 +71,40 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
             <PoolNameLabel pool={pool} />
           </VStack>
         </HStack>
-        <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} />
-        <Grid w="full" h="full" templateColumns="1fr 1fr" templateRows="1fr 1fr" gap="4">
+        <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} pb="lg" />
+        <Grid w="full" h="full" templateColumns="1fr 1fr" templateRows="1fr 1fr" gap="sm">
           <GridItem>
-            <Card h="full" variant="gradient">
-              <VStack alignItems="flex-start" w="full" p="md" gap="0">
-                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                  TVL:
-                </Text>
-                <Text fontWeight="bold" fontSize="1rem">
-                  {toCurrency(pool.dynamicData.totalLiquidity)}
-                </Text>
-              </VStack>
-            </Card>
+            <StatCard label="TVL" value={toCurrency(pool.dynamicData.totalLiquidity)} />
           </GridItem>
           <GridItem>
-            <Card h="full" variant="gradient">
-              <VStack alignItems="flex-start" w="full" p="md" gap="0">
-                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                  Vol(24h):
-                </Text>
-                <Text fontWeight="bold" fontSize="1rem">
-                  {toCurrency(pool.dynamicData.volume24h)}
-                </Text>
-              </VStack>
-            </Card>
+            <StatCard label="Volume(24h)" value={toCurrency(pool.dynamicData.volume24h)} />
           </GridItem>
           <GridItem>
-            <Card h="full" variant="gradient">
-              <VStack alignItems="flex-start" w="full" p="md" gap="0">
-                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                  APR:
-                </Text>
-                <MemoizedAprTooltip
-                  data={pool.dynamicData.apr}
-                  poolId={pool.id}
-                  textProps={{ fontSize: '1rem', fontWeight: 'bold' }}
-                />
-              </VStack>
-            </Card>
+            <StatCard
+              label="My Liquidity"
+              value={
+                userAddress
+                  ? toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })
+                  : '-'
+              }
+            />
           </GridItem>
-          {userAddress && (
-            <GridItem>
-              <Card h="full" variant="gradient">
-                <VStack alignItems="flex-start" w="full" p="md" gap="0">
-                  <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                    My Liquidity:
-                  </Text>
-                  <Text fontWeight="bold" fontSize="1rem">
-                    {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
-                  </Text>
-                </VStack>
-              </Card>
-            </GridItem>
-          )}
+          <GridItem>
+            <StatCard
+              label={
+                <HStack>
+                  <span>APR</span>
+                  <MemoizedAprTooltip
+                    data={pool.dynamicData.apr}
+                    poolId={pool.id}
+                    textProps={{ fontSize: '1rem', fontWeight: 'bold' }}
+                    onlySparkles
+                  />
+                </HStack>
+              }
+              value={<Text fontSize="sm">{getAprLabel(pool.dynamicData.apr.apr)}</Text>}
+            />
+          </GridItem>
         </Grid>
       </VStack>
     </Card>

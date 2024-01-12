@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import {
   GetTokenPricesDocument,
   GetTokenPricesQuery,
@@ -13,12 +15,12 @@ import {
 } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { createContext, PropsWithChildren, useCallback } from 'react'
-import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import { TokenBase } from './token.types'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
+import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import { Dictionary, zipObject } from 'lodash'
+import { PropsWithChildren, createContext, useCallback } from 'react'
+import { Address } from 'wagmi'
+import { TokenBase } from './token.types'
 
 export type UseTokensResult = ReturnType<typeof _useTokens>
 export const TokensContext = createContext<UseTokensResult | null>(null)
@@ -67,6 +69,16 @@ export function _useTokens(
     [tokens]
   )
 
+  function getTokensByTokenAddress(
+    tokenAddresses: Address[],
+    chain: GqlChain
+  ): Dictionary<GqlToken> {
+    return zipObject(
+      tokenAddresses,
+      tokenAddresses.map(t => getToken(t, chain) as GqlToken)
+    )
+  }
+
   function priceForToken(token: GqlToken): number {
     const price = prices.find(
       price => isSameAddress(price.address, token.address) && price.chain === token.chain
@@ -76,10 +88,13 @@ export function _useTokens(
     return price.price
   }
 
-  const usdValueForToken = useCallback((token: GqlToken, amount: Numberish) => {
-    if (amount === '') return '0'
-    return bn(amount).times(priceForToken(token)).toFixed(2)
-  }, [])
+  const usdValueForToken = useCallback(
+    (token: GqlToken, amount: Numberish) => {
+      if (amount === '') return '0'
+      return bn(amount).times(priceForToken(token)).toFixed(2)
+    },
+    [JSON.stringify(prices)]
+  )
 
   function priceFor(address: string, chain: GqlChain): number {
     const token = getToken(address, chain)
@@ -105,6 +120,7 @@ export function _useTokens(
     priceFor,
     priceForToken,
     getTokensByChain,
+    getTokensByTokenAddress,
     exclNativeAssetFilter,
     nativeAssetFilter,
     usdValueForToken,

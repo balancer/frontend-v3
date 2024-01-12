@@ -1,37 +1,58 @@
 'use client'
 
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { blockInvalidNumberInput } from '@/lib/shared/utils/numbers'
 import {
   Box,
   BoxProps,
   HStack,
-  forwardRef,
+  NumberInput,
+  NumberInputField,
+  NumberInputProps,
   Slider,
-  SliderTrack,
   SliderFilledTrack,
   SliderThumb,
-  NumberInput,
-  NumberInputProps,
-  NumberInputField,
+  SliderTrack,
+  forwardRef,
 } from '@chakra-ui/react'
-import { blockInvalidNumberInput } from '@/lib/shared/utils/numbers'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { useState } from 'react'
 
 type Props = {
   value?: string
   boxProps?: BoxProps
-  setValue?: any
+  onPercentChanged: (percent: number) => void
+  isNumberInputDisabled?: boolean
 }
 
 export const InputWithSlider = forwardRef(
-  ({ value, boxProps, setValue, children, ...numberInputProps }: NumberInputProps & Props, ref) => {
-    const { formatCurrency, parseCurrency } = useCurrency()
+  (
+    {
+      value,
+      boxProps,
+      onPercentChanged,
+      children,
+      isNumberInputDisabled,
+      ...numberInputProps
+    }: NumberInputProps & Props,
+    ref
+  ) => {
+    const [sliderPercent, setSliderPercent] = useState<number>(100)
+    const { toCurrency } = useCurrency()
 
-    function handleChange(value: string | number) {
-      if (typeof value === 'string') {
-        setValue(parseCurrency(value))
-      } else {
-        setValue(value)
+    function handleSliderChange(percent: number) {
+      setSliderPercent(percent)
+      onPercentChanged(percent)
+    }
+
+    function handleInputChange(value: string) {
+      if (!value || Number(value) === 0) {
+        setSliderPercent(0)
+        onPercentChanged(0)
       }
+      // TODO: Calculate new percent based on new user input
+      // const newPercent = calculateNewPercent(value)
+      // onPercentChanged(newPercent)
+      // setSliderPercent(newPercent)
     }
 
     return (
@@ -64,13 +85,15 @@ export const InputWithSlider = forwardRef(
               p="0"
               fontSize="xl"
               fontWeight="medium"
-              value={formatCurrency(value)}
+              value={toCurrency(value || 0)}
               onKeyDown={blockInvalidNumberInput}
-              onChange={handleChange}
+              onChange={handleInputChange}
               w="50%"
+              isDisabled={isNumberInputDisabled}
               {...numberInputProps}
             >
               <NumberInputField
+                aria-valuenow={sliderPercent}
                 pl="0"
                 _focusVisible={{
                   borderColor: 'transparent',
@@ -86,8 +109,8 @@ export const InputWithSlider = forwardRef(
               <Slider
                 aria-label="slider"
                 defaultValue={100}
-                onChange={handleChange}
-                value={parseFloat(value || '')}
+                onChange={handleSliderChange}
+                value={sliderPercent}
                 focusThumbOnChange={false} // this is so the NumberInput won't lose focus after input
               >
                 <SliderTrack>

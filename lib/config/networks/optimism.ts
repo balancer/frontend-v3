@@ -1,9 +1,11 @@
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
 
 const networkConfig: NetworkConfig = {
   chainId: 10,
   name: 'Optimism Mainnet',
   shortName: 'Optimism',
+  chain: GqlChain.Optimism,
   iconPath: '/images/chains/OPTIMISM.svg',
   blockExplorerBaseUrl: 'https://optimistic.etherscan.io',
   tokens: {

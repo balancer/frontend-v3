@@ -37,13 +37,13 @@ function UserPoolFilter() {
   const [checked, setChecked] = useState(false)
 
   useEffect(() => {
-    if (userAddress === connectedUserAddress) {
-      setChecked(true)
+    if (connectedUserAddress) {
+      setChecked(userAddress === connectedUserAddress)
     } else {
       setChecked(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userAddress])
+  }, [userAddress, connectedUserAddress])
 
   return (
     <Checkbox
@@ -126,6 +126,8 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
 })
 
 export function PoolListFilters() {
+  const { isConnected } = useUserAccount()
+
   return (
     <VStack align="flex-start" w="full">
       <HStack w="full">
@@ -139,11 +141,16 @@ export function PoolListFilters() {
             <PopoverCloseButton />
             <PopoverBody p="md">
               <VStack align="start">
-                <Heading as="h3" size="sm" mb="1.5">
-                  My Liquidity
-                </Heading>
-                <UserPoolFilter />
-                <Divider />
+                {isConnected && (
+                  <>
+                    <Heading as="h3" size="sm" mb="1.5">
+                      My Liquidity
+                    </Heading>
+                    <UserPoolFilter />
+                    <Divider />
+                  </>
+                )}
+
                 <Heading as="h3" size="sm" mb="1.5">
                   Pool types
                 </Heading>
