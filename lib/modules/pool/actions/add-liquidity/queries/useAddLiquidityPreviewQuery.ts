@@ -33,6 +33,7 @@ export function useAddLiquidityPreviewQuery(
     },
     {
       enabled: isConnected && hasValidHumanAmounts(debouncedHumanAmountsIn),
+      cacheTime: 0,
     }
   )
 

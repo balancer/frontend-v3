@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCountdown } from 'usehooks-ts'
 
-const DEFAULT_REFETCH_SECONDS_COUNTDOWN = 10
+const DEFAULT_REFETCH_SECONDS_COUNTDOWN = 5 // TODO: increase after feature manual tests
 
 type Props = {
   countdownSeconds?: number

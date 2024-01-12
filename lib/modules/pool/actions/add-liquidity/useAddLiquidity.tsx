@@ -21,6 +21,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useRefetchCountdown } from '@/lib/shared/hooks/transaction-flows/useRefetchCountdown'
+import { sleep } from '@/lib/shared/utils/time'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -85,7 +86,7 @@ export function _useAddLiquidity() {
     [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts']
   )
 
-  const { isPriceImpactLoading, priceImpact } = useAddLiquidityPriceImpactQuery(
+  const { isPriceImpactLoading, priceImpact, refetchPriceImpact } = useAddLiquidityPriceImpactQuery(
     handler,
     humanAmountsIn,
     pool.id
@@ -114,8 +115,12 @@ export function _useAddLiquidity() {
 
   useEffect(() => {
     const refetch = async () => {
+      // TODO: remove after manual feature tests
+      console.log('Refetching preview, priceImpact and build queries')
       await refetchPreviewQuery()
-      await refetchBuildQuery()
+      await refetchPriceImpact()
+      await refetchBuildQuery?.()
+      await sleep(1000) // TODO: Show some kind of UI feedback during this artificial delay
       startRefetchCountdown()
     }
     if (secondsToRefetch === 0) {

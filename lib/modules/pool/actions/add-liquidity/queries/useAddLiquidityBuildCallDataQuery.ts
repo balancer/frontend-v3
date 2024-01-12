@@ -38,6 +38,8 @@ export function useAddLiquidityBuildCallDataQuery(
         isActiveStep && // If the step is not active (the user did not click Next button) avoid running the build tx query to save RPC requests
         isConnected &&
         hasAllowances(humanAmountsIn, pool),
+
+      cacheTime: 0,
     }
   )
 
