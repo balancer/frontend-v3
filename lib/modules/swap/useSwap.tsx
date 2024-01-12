@@ -16,6 +16,8 @@ import { emptyAddress } from '../web3/contracts/wagmi-helpers'
 import { useUserAccount } from '../web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
+import { useDebouncedCallback } from 'use-debounce'
+import { useCountdown } from 'usehooks-ts'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -53,29 +55,32 @@ export function _useSwap() {
   const { isConnected } = useUserAccount()
   const networkConfig = getNetworkConfig(selectedChain)
 
+  const [refetchCountdownSecs, { startCountdown, resetCountdown, stopCountdown }] = useCountdown({
+    countStart: 30,
+    intervalMs: 1000,
+  })
+
   const shouldFetchSwap =
     isAddress(swapState.tokenIn.address) &&
     isAddress(swapState.tokenOut.address) &&
     !!swapState.swapType
 
-  const [fetchSwapsQuery, { loading }] = useLazyQuery(GetSorSwapsDocument, {
+  const [fetchSwapQuery, { loading }] = useLazyQuery(GetSorSwapsDocument, {
     fetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
   })
 
-  async function fetchSwaps() {
+  async function fetchSwap() {
+    resetCountdown()
+    stopCountdown()
     const state = swapStateVar()
 
     if (!shouldFetchSwap) return
 
-    console.log('fetchSwaps', state)
-
     const swapAmount =
       swapState.swapType === GqlSorSwapType.ExactIn ? state.tokenIn.amount : state.tokenOut.amount
 
-    console.log('swapAmount', swapAmount)
-
-    const { data } = await fetchSwapsQuery({
+    const { data } = await fetchSwapQuery({
       fetchPolicy: 'no-cache',
       variables: {
         chain: selectedChain,
@@ -91,7 +96,14 @@ export function _useSwap() {
 
     setSwapOutput(data?.swaps)
     setReturnAmount(data?.swaps, state.swapType)
+    // TODO:
+    // Start timeout here
+    // If timeout is reached, refetch swaps
+    // If fetchSwaps is called we should kill any existing timeout.
+    startCountdown()
   }
+
+  const debouncedFetchSwaps = useDebouncedCallback(fetchSwap, 300)
 
   function setReturnAmount(swap: GetSorSwapsQuery['swaps'] | undefined, swapType: GqlSorSwapType) {
     let returnAmount = ''
@@ -105,17 +117,17 @@ export function _useSwap() {
     }
   }
 
-  useEffect(() => {
-    console.log('swapOutput', swapOutput)
-  }, [swapOutput])
+  // useEffect(() => {
+  //   console.log('swapOutput', swapOutput)
+  // }, [swapOutput])
 
-  useEffect(() => {
-    console.log('swapState', swapState)
-  }, [swapState])
+  // useEffect(() => {
+  //   console.log('swapState', swapState)
+  // }, [swapState])
 
-  useEffect(() => {
-    console.log('shouldFetchSwap', shouldFetchSwap)
-  }, [shouldFetchSwap])
+  // useEffect(() => {
+  //   console.log('shouldFetchSwap', shouldFetchSwap)
+  // }, [shouldFetchSwap])
 
   function setTokenIn(tokenAddress: Address) {
     swapStateVar({
@@ -163,7 +175,8 @@ export function _useSwap() {
           amount,
         },
       })
-      fetchSwaps()
+      setTokenOutAmount('', { userTriggered: false })
+      debouncedFetchSwaps()
     } else {
       // Sometimes we want to set the amount without triggering a fetch or
       // swapType change, like when we populate the amount after a change from the other input.
@@ -192,7 +205,8 @@ export function _useSwap() {
           amount,
         },
       })
-      fetchSwaps()
+      setTokenInAmount('', { userTriggered: false })
+      debouncedFetchSwaps()
     } else {
       // Sometimes we want to set the amount without triggering a fetch or
       // swapType change, like when we populate the amount after a change from
@@ -235,8 +249,16 @@ export function _useSwap() {
 
   // When either token address changes, fetch swaps
   useEffect(() => {
-    fetchSwaps()
+    debouncedFetchSwaps()
   }, [swapState.tokenIn.address, swapState.tokenOut.address])
+
+  // When refetchCountdownSecs reaches 0, refetch swaps
+  useEffect(() => {
+    if (refetchCountdownSecs === 0) {
+      console.log('Expired swap, refetching')
+      fetchSwap()
+    }
+  }, [refetchCountdownSecs])
 
   const isLoading = loading
 
@@ -254,6 +276,7 @@ export function _useSwap() {
     isLoading,
     isDisabled,
     disabledReason,
+    refetchCountdownSecs,
     setTokenSelectKey,
     setSelectedChain,
     setTokenInAmount,

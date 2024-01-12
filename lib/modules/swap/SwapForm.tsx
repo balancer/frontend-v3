@@ -38,6 +38,7 @@ export function SwapForm() {
     tokenSelectKey,
     isDisabled,
     disabledReason,
+    refetchCountdownSecs,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
@@ -138,6 +139,9 @@ export function SwapForm() {
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
                 </HStack>
+              </HStack>
+              <HStack>
+                <Text color="GrayText">Expires in: {refetchCountdownSecs} secs</Text>
               </HStack>
             </VStack>
 
