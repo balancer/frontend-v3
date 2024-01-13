@@ -148,28 +148,25 @@ export function _useSwap() {
     { userTriggered = true }: { userTriggered?: boolean } = {}
   ) {
     const state = swapStateVar()
+    const newState = {
+      ...state,
+      tokenIn: {
+        ...state.tokenIn,
+        amount,
+      },
+    }
 
     if (userTriggered) {
       swapStateVar({
-        ...state,
+        ...newState,
         swapType: GqlSorSwapType.ExactIn,
-        tokenIn: {
-          ...state.tokenIn,
-          amount,
-        },
       })
       setTokenOutAmount('', { userTriggered: false })
       debouncedFetchSwaps()
     } else {
       // Sometimes we want to set the amount without triggering a fetch or
       // swapType change, like when we populate the amount after a change from the other input.
-      swapStateVar({
-        ...state,
-        tokenIn: {
-          ...state.tokenIn,
-          amount,
-        },
-      })
+      swapStateVar(newState)
     }
   }
 
@@ -178,15 +175,18 @@ export function _useSwap() {
     { userTriggered = true }: { userTriggered?: boolean } = {}
   ) {
     const state = swapStateVar()
+    const newState = {
+      ...state,
+      tokenOut: {
+        ...state.tokenOut,
+        amount,
+      },
+    }
 
     if (userTriggered) {
       swapStateVar({
-        ...state,
+        ...newState,
         swapType: GqlSorSwapType.ExactOut,
-        tokenOut: {
-          ...state.tokenOut,
-          amount,
-        },
       })
       setTokenInAmount('', { userTriggered: false })
       debouncedFetchSwaps()
@@ -194,13 +194,7 @@ export function _useSwap() {
       // Sometimes we want to set the amount without triggering a fetch or
       // swapType change, like when we populate the amount after a change from
       // the other input.
-      swapStateVar({
-        ...state,
-        tokenOut: {
-          ...state.tokenOut,
-          amount,
-        },
-      })
+      swapStateVar(newState)
     }
   }
 
