@@ -10,7 +10,7 @@ type Paths<T, D extends string = '.'> = {
     : never
 }[keyof T]
 
-type ContractPath = Paths<NetworkConfig['contracts']>
+export type ContractPath = Paths<NetworkConfig['contracts']>
 
 export function useContractAddress(contractId: ContractPath) {
   const networkConfig = useNetworkConfig()
