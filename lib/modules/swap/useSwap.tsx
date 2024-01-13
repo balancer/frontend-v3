@@ -60,10 +60,8 @@ export function _useSwap() {
     intervalMs: 1000,
   })
 
-  const shouldFetchSwap =
-    isAddress(swapState.tokenIn.address) &&
-    isAddress(swapState.tokenOut.address) &&
-    !!swapState.swapType
+  const shouldFetchSwap = (state: SwapState) =>
+    isAddress(state.tokenIn.address) && isAddress(state.tokenOut.address) && !!state.swapType
 
   const [fetchSwapQuery, { loading }] = useLazyQuery(GetSorSwapsDocument, {
     fetchPolicy: 'no-cache',
@@ -75,7 +73,7 @@ export function _useSwap() {
     stopCountdown()
     const state = swapStateVar()
 
-    if (!shouldFetchSwap) return
+    if (!shouldFetchSwap(state)) return
 
     const swapAmount =
       swapState.swapType === GqlSorSwapType.ExactIn ? state.tokenIn.amount : state.tokenOut.amount
@@ -96,10 +94,6 @@ export function _useSwap() {
 
     setSwapOutput(data?.swaps)
     setReturnAmount(data?.swaps, state.swapType)
-    // TODO:
-    // Start timeout here
-    // If timeout is reached, refetch swaps
-    // If fetchSwaps is called we should kill any existing timeout.
     startCountdown()
   }
 
@@ -116,18 +110,6 @@ export function _useSwap() {
       setTokenInAmount(returnAmount, { userTriggered: false })
     }
   }
-
-  // useEffect(() => {
-  //   console.log('swapOutput', swapOutput)
-  // }, [swapOutput])
-
-  // useEffect(() => {
-  //   console.log('swapState', swapState)
-  // }, [swapState])
-
-  // useEffect(() => {
-  //   console.log('shouldFetchSwap', shouldFetchSwap)
-  // }, [shouldFetchSwap])
 
   function setTokenIn(tokenAddress: Address) {
     swapStateVar({
@@ -255,7 +237,6 @@ export function _useSwap() {
   // When refetchCountdownSecs reaches 0, refetch swaps
   useEffect(() => {
     if (refetchCountdownSecs === 0) {
-      console.log('Expired swap, refetching')
       fetchSwap()
     }
   }, [refetchCountdownSecs])
