@@ -63,6 +63,10 @@ export function _useSwap() {
   const shouldFetchSwap = (state: SwapState) =>
     isAddress(state.tokenIn.address) && isAddress(state.tokenOut.address) && !!state.swapType
 
+  const getSwapAmount = (state: SwapState) =>
+    (state.swapType === GqlSorSwapType.ExactIn ? state.tokenIn.amount : state.tokenOut.amount) ||
+    '0'
+
   const [fetchSwapQuery, { loading }] = useLazyQuery(GetSorSwapsDocument, {
     fetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -75,9 +79,6 @@ export function _useSwap() {
 
     if (!shouldFetchSwap(state)) return
 
-    const swapAmount =
-      swapState.swapType === GqlSorSwapType.ExactIn ? state.tokenIn.amount : state.tokenOut.amount
-
     const { data } = await fetchSwapQuery({
       fetchPolicy: 'no-cache',
       variables: {
@@ -85,7 +86,7 @@ export function _useSwap() {
         tokenIn: state.tokenIn.address,
         tokenOut: state.tokenOut.address,
         swapType: state.swapType,
-        swapAmount: swapAmount || '0',
+        swapAmount: getSwapAmount(state),
         swapOptions: {
           maxPools: 8,
         },
