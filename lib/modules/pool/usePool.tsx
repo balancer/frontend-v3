@@ -14,12 +14,9 @@ import { getNetworkConfig } from '@/lib/config/app.config'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import { calcBptPrice, usePoolHelpers } from './pool.helpers'
-import { usePublicClient } from 'wagmi'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/usePoolEnrichWithOnChainData'
-import { bn } from '@/lib/shared/utils/numbers'
-import { useChainUserPoolBalances } from './useChainUserPoolBalances'
 
 export type UsePoolResponse = ReturnType<typeof _usePool> & {
   chain: GqlChain
@@ -31,11 +28,9 @@ export type Pool = GetPoolQuery['pool']
 export function _usePool({
   id,
   chain,
-  variant,
   initialData,
 }: FetchPoolProps & { initialData: GetPoolQuery }) {
   const config = getNetworkConfig(chain)
-  const client = usePublicClient({ chainId: config.chainId })
   const { userAddress } = useUserAccount()
 
   const { data } = useQuery(GetPoolDocument, {
