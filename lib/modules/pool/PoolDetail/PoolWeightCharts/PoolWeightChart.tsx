@@ -8,7 +8,7 @@ import BoostedPoolWeightChart from './BoostedPoolWeightChart'
 export default function PoolWeightChart() {
   const { pool } = usePool()
 
-  if (isBoosted(pool) || isStable(pool.type) && pool.tokens.length === 3) {
+  if (isBoosted(pool) || (isStable(pool.type) && pool.tokens.length === 3)) {
     return <BoostedPoolWeightChart />
   }
   if (pool.type === 'WEIGHTED') {

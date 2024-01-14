@@ -2,11 +2,10 @@ import { Box, HStack, VStack, Text } from '@chakra-ui/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
-import Image from 'next/image'
 import { usePool } from '../../usePool'
 import * as echarts from 'echarts/core'
 import { motion } from 'framer-motion'
-import ChainLogoHalo from './ChainLogoHalo'
+import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 
 const colors = [
   {
@@ -117,7 +116,7 @@ export default function WeightedPoolWeightChart() {
           initial={{ opacity: 0 }}
           animate={{ opacity: isChartLoaded ? 1 : 0, transition: { delay: 0.1 } }}
         >
-          <ChainLogoHalo chain={chain} isChartLoaded={isChartLoaded} />
+          <PoolWeightChartChainIcon chain={chain} isChartLoaded={isChartLoaded} />
         </Box>
         <Box width="full" height="full">
           <ReactECharts option={chartOption} onEvents={{}} ref={eChartsRef} />

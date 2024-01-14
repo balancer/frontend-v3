@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box, HStack, VStack, Text } from '@chakra-ui/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
@@ -5,8 +6,7 @@ import EChartsReactCore from 'echarts-for-react/lib/core'
 import * as echarts from 'echarts/core'
 import { usePool } from '../../usePool'
 import { motion } from 'framer-motion'
-import Image from 'next/image'
-import ChainLogoHalo from './ChainLogoHalo'
+import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 
 const colors = [
   {
@@ -53,7 +53,7 @@ export default function BoostedPoolWeightChart() {
   const chartOption = useMemo(() => {
     return {
       tooltip: {
-        show: false
+        show: false,
       },
       legend: {
         show: false,
@@ -98,7 +98,7 @@ export default function BoostedPoolWeightChart() {
   }, [])
 
   return (
-    <VStack spacing='4'>
+    <VStack spacing="4">
       <svg
         style={{ visibility: 'hidden', position: 'absolute' }}
         width="0"
@@ -135,9 +135,8 @@ export default function BoostedPoolWeightChart() {
           justifyContent="center"
           alignItems="center"
           initial={{ opacity: 0 }}
-          animate={{ opacity: isChartLoaded ? 1 : 0, transition: { delay: 0.1 } }}
         >
-          <ChainLogoHalo chain={chain} isChartLoaded={isChartLoaded} />
+          <PoolWeightChartChainIcon chain={chain} isChartLoaded={isChartLoaded} />
         </Box>
         <Box width="full" height="full" clipPath="polygon(50% 0, 100% 100%, 0 100%)">
           <ReactECharts option={chartOption} onEvents={{}} ref={eChartsRef} />
@@ -160,6 +159,6 @@ export default function BoostedPoolWeightChart() {
           )
         })}
       </HStack>
-    </VStack >
+    </VStack>
   )
 }

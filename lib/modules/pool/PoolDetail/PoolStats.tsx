@@ -1,12 +1,11 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Box, Card, Center, Grid, Heading, Skeleton, VStack } from '@chakra-ui/react'
+import { Box, Card, Grid, Heading, Skeleton, VStack } from '@chakra-ui/react'
 import PoolBadges from './PoolBadges'
 import { usePool } from '../usePool'
 import { getAprLabel } from '../pool.utils'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import BoostedPoolWeightChart from './PoolWeightCharts/BoostedPoolWeightChart'
 import PoolWeightChart from './PoolWeightCharts/PoolWeightChart'
 import { GqlPoolAprValue } from '@/lib/shared/services/api/generated/graphql'
 
