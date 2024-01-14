@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { usePool } from '../../usePool'
 import * as echarts from 'echarts/core'
 import { motion } from 'framer-motion'
+import ChainLogoHalo from './ChainLogoHalo'
 
 const colors = [
   {
@@ -104,7 +105,7 @@ export default function WeightedPoolWeightChart() {
           rounded="full"
           bg="white"
           position="absolute"
-          top="50%"
+          top="49%"
           transform="translateY(0)"
           left="95px"
           zIndex={4}
@@ -116,47 +117,8 @@ export default function WeightedPoolWeightChart() {
           initial={{ opacity: 0 }}
           animate={{ opacity: isChartLoaded ? 1 : 0, transition: { delay: 0.1 } }}
         >
-          <Image
-            src={`/images/chains/${chain}.svg`}
-            alt={`Chain icon for ${chain.toLowerCase()}`}
-            width={45}
-            height={45}
-          />
+          <ChainLogoHalo chain={chain} isChartLoaded={isChartLoaded} />
         </Box>
-        <Box
-          as={motion.div}
-          rounded="full"
-          bg="white"
-          position="absolute"
-          top="48%"
-          transform="translateY(0)"
-          left="90px"
-          zIndex={3}
-          width="70px"
-          height="70px"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isChartLoaded ? 0.2 : 0, transition: { delay: 0.3 } }}
-        />
-        <Box
-          as={motion.div}
-          rounded="full"
-          bg="white"
-          position="absolute"
-          top="46%"
-          transform="translateY(0)"
-          left="85px"
-          zIndex={3}
-          width="80px"
-          height="80px"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isChartLoaded ? 0.1 : 0, transition: { delay: 0.5 } }}
-        />
         <Box width="full" height="full">
           <ReactECharts option={chartOption} onEvents={{}} ref={eChartsRef} />
         </Box>
