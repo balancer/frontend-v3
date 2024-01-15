@@ -3,10 +3,11 @@ import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { isEmpty } from 'lodash'
 import { useEffect, useState } from 'react'
-import { useConstructApproveTokenStep } from '../../pool/actions/add-liquidity/useConstructApproveTokenStep'
 import { emptyAddress } from '../../web3/contracts/wagmi-helpers'
 import { TokenAmountToApprove, filterRequiredTokenApprovals } from './approval-rules'
 import { useCompletedApprovalsState } from './useCompletedApprovalsState'
+import { useConstructApproveTokenStep } from './useConstructApproveTokenStep'
+import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 
 /*
   Returns the next Token Approval Step to be rendered by the TransactionFlow component
@@ -14,7 +15,7 @@ import { useCompletedApprovalsState } from './useCompletedApprovalsState'
   filterRequiredTokenApprovals is recalculated after updating the allowances so we can always return the first in the list until the list in empty
 */
 export function useNextTokenApprovalStep(amountsToApprove: TokenAmountToApprove[]) {
-  const { chainId } = useNetworkConfig()
+  const { chainId, chain } = useNetworkConfig()
   // IDEA: maybe we can have a concrete vault token provider with a more specific useVaultAllowance method??
   const vaultAllowances = useTokenAllowances()
   const currentTokenAllowances = vaultAllowances.allowances || {}
@@ -39,10 +40,14 @@ export function useNextTokenApprovalStep(amountsToApprove: TokenAmountToApprove[
     ? emptyAddress
     : filteredAmountsToApprove[0].tokenAddress
 
-  const tokenApprovalStep = useConstructApproveTokenStep(
-    tokenAddressToApprove,
-    completedTokenApprovalsState
-  )
+  const tokenApprovalStep = useConstructApproveTokenStep({
+    tokenAddress: tokenAddressToApprove,
+    spender: 'balancer.vaultV2',
+    actionType: 'AddLiquidity',
+    chain,
+    amountToApprove: MAX_BIGINT, //TODO: Use amounts to approve
+    completedApprovalState: completedTokenApprovalsState,
+  })
 
   return {
     initialAmountsToApprove,
