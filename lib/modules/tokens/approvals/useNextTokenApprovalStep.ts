@@ -30,9 +30,13 @@ export function useNextTokenApprovalStep({
   approveMaxBigInt = true,
 }: Params) {
   const { chainId, chain } = useNetworkConfig()
-  // IDEA: maybe we can have a concrete vault token provider with a more specific useVaultAllowance method??
-  const vaultAllowances = useTokenAllowances()
-  const currentTokenAllowances = vaultAllowances.allowances || {}
+
+  // Allowances are for whatever spender is passed into the
+  // TokenAllowancesProvider. If that differs from the spender passed into this
+  // hook then the allowances will be incorrect.
+  const { allowances, isAllowancesLoading } = useTokenAllowances()
+
+  const currentTokenAllowances = allowances || {}
   const [initialAmountsToApprove, setInitialAmountsToApprove] = useState<
     TokenAmountToApprove[] | null
   >(null)
@@ -71,6 +75,6 @@ export function useNextTokenApprovalStep({
   return {
     initialAmountsToApprove,
     tokenApprovalStep,
-    isAllowancesLoading: vaultAllowances.isAllowancesLoading,
+    isAllowancesLoading,
   }
 }
