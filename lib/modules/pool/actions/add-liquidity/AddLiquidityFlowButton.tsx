@@ -18,9 +18,10 @@ export function AddLiquidityFlowButton({ humanAmountsIn, pool }: Props) {
   const tokenAddresses = humanAmountsIn.map(h => h.tokenAddress)
   const tokensByAddress = getTokensByTokenAddress(tokenAddresses, pool.chain)
 
-  const { tokenApprovalStep, initialAmountsToApprove } = useNextTokenApprovalStep(
-    helpers.getAmountsToApprove(humanAmountsIn, tokensByAddress)
-  )
+  const { tokenApprovalStep, initialAmountsToApprove } = useNextTokenApprovalStep({
+    amountsToApprove: helpers.getAmountsToApprove(humanAmountsIn, tokensByAddress),
+    actionType: 'AddLiquidity',
+  })
 
   const { step: addLiquidityStep } = useConstructAddLiquidityStep(pool.id)
   const steps = [tokenApprovalStep, addLiquidityStep]
