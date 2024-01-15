@@ -9,12 +9,10 @@ import { useCompletedApprovalsState } from './useCompletedApprovalsState'
 import { useConstructApproveTokenStep } from './useConstructApproveTokenStep'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 import { ApprovalAction } from './approval-labels'
-import { ContractPath } from '../../web3/contracts/useContractAddress'
 
 type Params = {
   amountsToApprove: TokenAmountToApprove[]
   actionType: ApprovalAction
-  spender?: ContractPath
   approveMaxBigInt?: boolean
 }
 
@@ -26,15 +24,11 @@ type Params = {
 export function useNextTokenApprovalStep({
   amountsToApprove,
   actionType,
-  spender = 'balancer.vaultV2',
   approveMaxBigInt = true,
 }: Params) {
   const { chainId, chain } = useNetworkConfig()
 
-  // Allowances are for whatever spender is passed into the
-  // TokenAllowancesProvider. If that differs from the spender passed into this
-  // hook then the allowances will be incorrect.
-  const { allowances, isAllowancesLoading } = useTokenAllowances()
+  const { allowances, isAllowancesLoading, spenderAddress } = useTokenAllowances()
 
   const currentTokenAllowances = allowances || {}
   const [initialAmountsToApprove, setInitialAmountsToApprove] = useState<
@@ -65,7 +59,7 @@ export function useNextTokenApprovalStep({
 
   const tokenApprovalStep = useConstructApproveTokenStep({
     tokenAddress: tokenAddressToApprove,
-    spender,
+    spenderAddress,
     actionType,
     chain,
     amountToApprove,
