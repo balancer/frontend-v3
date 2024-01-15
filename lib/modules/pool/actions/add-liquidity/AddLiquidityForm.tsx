@@ -36,7 +36,7 @@ export function AddLiquidityForm() {
     priceImpact,
     isPriceImpactLoading,
     bptOut,
-    isPreviewQueryLoading,
+    isMixedQueryLoading,
     isDisabled,
     disabledReason,
     stopRefetchCountdown,
@@ -113,7 +113,7 @@ export function AddLiquidityForm() {
                 <Text color="GrayText">Bpt out</Text>
                 <HStack>
                   <NumberText color="GrayText">
-                    {isPreviewQueryLoading ? <Skeleton w="12" h="full" /> : bptOutLabel}
+                    {isMixedQueryLoading ? <Skeleton w="12" h="full" /> : bptOutLabel}
                   </NumberText>
                   <Tooltip label="Bpt out" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />

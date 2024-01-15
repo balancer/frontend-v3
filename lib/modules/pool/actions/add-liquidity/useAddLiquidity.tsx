@@ -2,26 +2,25 @@
 'use client'
 
 import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useRefetchCountdown } from '@/lib/shared/hooks/transaction-flows/useRefetchCountdown'
+import { LABELS } from '@/lib/shared/labels'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { safeSum } from '@/lib/shared/utils/numbers'
+import { sleep } from '@/lib/shared/utils/time'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { HumanAmount } from '@balancer/sdk'
-import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
+import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
-import { useAddLiquidityPreviewQuery } from './queries/useAddLiquidityPreviewQuery'
-import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
-import { HumanAmountIn } from '../liquidity-types'
 import { LiquidityActionHelpers, areEmptyAmounts } from '../LiquidityActionHelpers'
-import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
-import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { LABELS } from '@/lib/shared/labels'
+import { HumanAmountIn } from '../liquidity-types'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
-import { useRefetchCountdown } from '@/lib/shared/hooks/transaction-flows/useRefetchCountdown'
-import { sleep } from '@/lib/shared/utils/time'
+import { useAddLiquidityMixedQuery } from './queries/useAddLiquidityMixedQuery'
+import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -29,6 +28,7 @@ export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>
 export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
 
 export function _useAddLiquidity() {
+  const [isBuildCallReady, setBuildCallReady] = useState(false)
   const humanAmountsIn = useReactiveVar(humanAmountsInVar)
 
   const { pool, poolStateInput } = usePool()
@@ -92,26 +92,16 @@ export function _useAddLiquidity() {
     pool.id
   )
 
-  const { isPreviewQueryLoading, bptOut, refetchPreviewQuery } = useAddLiquidityPreviewQuery(
-    handler,
-    humanAmountsIn,
-    pool.id
-  )
-
   const { secondsToRefetch, startRefetchCountdown, stopRefetchCountdown } = useRefetchCountdown()
 
-  let refetchBuildQuery: () => Promise<object>
-  function useBuildCallData(isActiveStep: boolean) {
-    const buildQuery = useAddLiquidityBuildCallDataQuery(
+  const { bptOut, isMixedQueryLoading, refetchMixedQuery, transactionConfig, mixedQueryError } =
+    useAddLiquidityMixedQuery(
       handler,
       humanAmountsIn,
-      isActiveStep,
-      pool,
+      pool.id,
+      isBuildCallReady,
       startRefetchCountdown
     )
-    refetchBuildQuery = buildQuery.refetch
-    return buildQuery
-  }
 
   useEffect(() => {
     const refetchQueries = async () => {
@@ -119,8 +109,7 @@ export function _useAddLiquidity() {
       console.log('Refetching preview, priceImpact and build queries')
       stopRefetchCountdown()
       await sleep(1000) // TODO: Show some kind of UI feedback during this artificial delay
-      await Promise.all([refetchPreviewQuery(), refetchPriceImpact()])
-      await refetchBuildQuery()
+      await Promise.all([refetchMixedQuery(), refetchPriceImpact()])
       startRefetchCountdown()
     }
     if (secondsToRefetch === 0) {
@@ -143,15 +132,17 @@ export function _useAddLiquidity() {
     isPriceImpactLoading,
     priceImpact,
     bptOut,
-    isPreviewQueryLoading,
+    transactionConfig,
+    mixedQueryError,
+    isMixedQueryLoading,
     setHumanAmountIn,
-    useBuildCallData,
     isDisabled,
     disabledReason,
     helpers,
     poolStateInput,
     secondsToRefetch,
     stopRefetchCountdown,
+    setBuildCallReady,
   }
 }
 

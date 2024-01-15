@@ -7,9 +7,18 @@ type LiquidityParams = {
   poolId: string
   slippage: string
   humanAmountsIn: HumanAmountIn[]
+  isBuildCallReady: boolean
 }
-function liquidityParams({ userAddress, poolId, slippage, humanAmountsIn }: LiquidityParams) {
-  return `${userAddress}:${poolId}:${slippage}:${JSON.stringify(humanAmountsIn)}`
+function liquidityParams({
+  userAddress,
+  poolId,
+  slippage,
+  humanAmountsIn,
+  isBuildCallReady = true,
+}: LiquidityParams) {
+  return `${userAddress}:${poolId}:${slippage}:${isBuildCallReady}:${JSON.stringify(
+    humanAmountsIn
+  )}`
 }
 export const addLiquidityKeys = {
   priceImpact: (params: LiquidityParams) =>
@@ -17,4 +26,5 @@ export const addLiquidityKeys = {
   preview: (params: LiquidityParams) => [addLiquidity, 'preview', liquidityParams(params)] as const,
   buildCallData: (params: LiquidityParams) =>
     [addLiquidity, 'buildCallData', liquidityParams(params)] as const,
+  mixed: (params: LiquidityParams) => [addLiquidity, 'mixed', liquidityParams(params)] as const,
 }

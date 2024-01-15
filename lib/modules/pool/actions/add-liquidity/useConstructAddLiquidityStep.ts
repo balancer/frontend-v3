@@ -2,19 +2,19 @@ import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transaction
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { Address } from 'wagmi'
-import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
 import { useAddLiquidity } from './useAddLiquidity'
 
 export function useConstructAddLiquidityStep(poolId: string) {
-  const { isActiveStep, activateStep } = useActiveStep()
+  const { transactionConfig, isMixedQueryLoading, mixedQueryError, setBuildCallReady } =
+    useAddLiquidity()
 
-  const { useBuildCallData } = useAddLiquidity()
-
-  const buildCallDataQuery = useBuildCallData(isActiveStep)
+  const activateStep = () => {
+    return setBuildCallReady(true)
+  }
 
   const transactionLabels = buildAddLiquidityLabels(poolId)
 
-  const transaction = useManagedSendTransaction(transactionLabels, buildCallDataQuery.data)
+  const transaction = useManagedSendTransaction(transactionLabels, transactionConfig)
 
   const step: FlowStep = {
     ...transaction,
@@ -28,11 +28,8 @@ export function useConstructAddLiquidityStep(poolId: string) {
   return {
     step,
     isLoading:
-      transaction?.simulation.isLoading ||
-      transaction?.execution.isLoading ||
-      buildCallDataQuery.isLoading,
-    error:
-      transaction?.simulation.error || transaction?.execution.error || buildCallDataQuery.error,
+      transaction?.simulation.isLoading || transaction?.execution.isLoading || isMixedQueryLoading,
+    error: transaction?.simulation.error || transaction?.execution.error || mixedQueryError,
   }
 }
 

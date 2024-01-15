@@ -6,6 +6,7 @@ import {
   AddLiquidityKind,
   AddLiquidityQueryOutput,
   AddLiquidityUnbalancedInput,
+  Address,
   PriceImpact,
   PriceImpactAmount,
   Slippage,
@@ -17,7 +18,11 @@ import {
   ensureLastQueryResponse,
 } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
-import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidity.types'
+import {
+  BuildAddLiquidityInput,
+  MixedAddLiquidityOutput,
+  QueryAddLiquidityOutput,
+} from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 
 /**
@@ -85,6 +90,27 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
       data: call,
       to,
       value,
+    }
+  }
+
+  public async mixed(
+    humanAmountsIn: HumanAmountIn[],
+    account: Address,
+    slippagePercent: string,
+    isBuildCallReady: boolean // This is true when the user isconnected and the flow is in the "build call data step" (for example, after the approval steps are finished)
+  ): Promise<MixedAddLiquidityOutput> {
+    const queryResponse = await this.queryAddLiquidity(humanAmountsIn)
+
+    if (!isBuildCallReady) {
+      return {
+        bptOut: queryResponse.bptOut,
+      }
+    }
+
+    const buildCallDataResponse = await this.buildAddLiquidityCallData({ account, slippagePercent })
+    return {
+      bptOut: queryResponse.bptOut,
+      transactionConfig: buildCallDataResponse,
     }
   }
 
