@@ -11,7 +11,7 @@ export function usePoolListFeaturedPools() {
   })
 
   return {
-    featuredPools: data?.featuredPoolGroups || [],
+    featuredPools: data?.featuredPools || [],
     loading,
     error,
     networkStatus,
