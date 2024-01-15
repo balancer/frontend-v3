@@ -1,12 +1,11 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Box, Card, Center, Grid, Heading, Skeleton, VStack } from '@chakra-ui/react'
+import { Box, Card, Grid, Heading, Skeleton, VStack } from '@chakra-ui/react'
 import PoolBadges from './PoolBadges'
 import { usePool } from '../usePool'
 import { getAprLabel } from '../pool.utils'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import BoostedPoolWeightChart from './PoolWeightCharts/BoostedPoolWeightChart'
 import PoolWeightChart from './PoolWeightCharts/PoolWeightChart'
 import { GqlPoolAprValue } from '@/lib/shared/services/api/generated/graphql'
 
@@ -18,7 +17,7 @@ interface PoolValues {
 }
 
 export default function PoolStats() {
-  const { pool } = usePool()
+  const { pool, chain } = usePool()
   const { toCurrency } = useCurrency()
   const [poolValues, setPoolValues] = useState<PoolValues | null>(null)
 
@@ -67,7 +66,7 @@ export default function PoolStats() {
             {poolValues ? toCurrency(poolValues.volume24h) : <Skeleton height="30px" w="100px" />}
           </Heading>
         </VStack>
-        <PoolWeightChart />
+        <PoolWeightChart pool={pool} chain={chain} />
         <VStack spacing="sm" m="auto">
           <Heading size="h6" fontWeight="medium">
             Revenue (24h)
