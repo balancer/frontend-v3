@@ -12,17 +12,9 @@ import {
   Slippage,
 } from '@balancer/sdk'
 import { Pool } from '../../../usePool'
-import {
-  LiquidityActionHelpers,
-  areEmptyAmounts,
-  ensureLastQueryResponse,
-} from '../../LiquidityActionHelpers'
+import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
-import {
-  BuildAddLiquidityInput,
-  MixedAddLiquidityOutput,
-  QueryAddLiquidityOutput,
-} from '../add-liquidity.types'
+import { MixedAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 
 /**
@@ -34,23 +26,9 @@ import { AddLiquidityHandler } from './AddLiquidity.handler'
  */
 export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   helpers: LiquidityActionHelpers
-  queryResponse?: AddLiquidityQueryOutput
 
   constructor(pool: Pool) {
     this.helpers = new LiquidityActionHelpers(pool)
-  }
-
-  public async queryAddLiquidity(
-    humanAmountsIn: HumanAmountIn[]
-  ): Promise<QueryAddLiquidityOutput> {
-    // Deletes the previous queryResponse to enforce that we don't build callData with an outdated queryResponse (while a new one is loading)
-    this.queryResponse = undefined
-    const addLiquidity = new AddLiquidity()
-    const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
-
-    this.queryResponse = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
-
-    return { bptOut: this.queryResponse.bptOut }
   }
 
   public async calculatePriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number> {
@@ -69,30 +47,6 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     return priceImpactABA.decimal
   }
 
-  public async buildAddLiquidityCallData({
-    account,
-    slippagePercent,
-  }: BuildAddLiquidityInput): Promise<TransactionConfig> {
-    this.queryResponse = ensureLastQueryResponse('Unbalanced add liquidity', this.queryResponse)
-
-    const addLiquidity = new AddLiquidity()
-
-    const { call, to, value } = addLiquidity.buildCall({
-      ...this.queryResponse,
-      slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
-      sender: account,
-      recipient: account,
-    })
-
-    return {
-      account,
-      chainId: this.helpers.chainId,
-      data: call,
-      to,
-      value,
-    }
-  }
-
   public async mixed(
     humanAmountsIn: HumanAmountIn[],
     account: Address,
@@ -107,7 +61,11 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
       }
     }
 
-    const buildCallDataResponse = await this.buildAddLiquidityCallData({ account, slippagePercent })
+    const buildCallDataResponse = await this.buildAddLiquidityCallData(
+      account,
+      slippagePercent,
+      queryResponse
+    )
     return {
       bptOut: queryResponse.bptOut,
       transactionConfig: buildCallDataResponse,
@@ -117,6 +75,38 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   /**
    * PRIVATE METHODS
    */
+
+  private async queryAddLiquidity(humanAmountsIn: HumanAmountIn[]) {
+    // Deletes the previous queryResponse to enforce that we don't build callData with an outdated queryResponse (while a new one is loading)
+    const addLiquidity = new AddLiquidity()
+    const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
+
+    return await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
+  }
+
+  private async buildAddLiquidityCallData(
+    account: Address,
+    slippagePercent: string,
+    queryResponse: AddLiquidityQueryOutput
+  ): Promise<TransactionConfig> {
+    const addLiquidity = new AddLiquidity()
+
+    const { call, to, value } = addLiquidity.buildCall({
+      ...queryResponse,
+      slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
+      sender: account,
+      recipient: account,
+    })
+
+    return {
+      account,
+      chainId: this.helpers.chainId,
+      data: call,
+      to,
+      value,
+    }
+  }
+
   private constructSdkInput(humanAmountsIn: HumanAmountIn[]): AddLiquidityUnbalancedInput {
     const amountsIn = this.helpers.toInputAmounts(humanAmountsIn)
 
