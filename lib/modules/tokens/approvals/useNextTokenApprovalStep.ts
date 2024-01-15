@@ -15,7 +15,7 @@ type Params = {
   amountsToApprove: TokenAmountToApprove[]
   actionType: ApprovalAction
   spender?: ContractPath
-  useApprovalAmounts?: boolean
+  approveMaxBigInt?: boolean
 }
 
 /*
@@ -27,7 +27,7 @@ export function useNextTokenApprovalStep({
   amountsToApprove,
   actionType,
   spender = 'balancer.vaultV2',
-  useApprovalAmounts = false,
+  approveMaxBigInt = true,
 }: Params) {
   const { chainId, chain } = useNetworkConfig()
   // IDEA: maybe we can have a concrete vault token provider with a more specific useVaultAllowance method??
@@ -54,16 +54,17 @@ export function useNextTokenApprovalStep({
     ? emptyAddress
     : filteredAmountsToApprove[0].tokenAddress
 
-  // const tokenAmountToApprove = isEmpty(filteredAmountsToApprove)
-  //   ? emptyAddress
-  //   : filteredAmountsToApprove[0].tokenAddress
+  const amountToApprove =
+    isEmpty(filteredAmountsToApprove) || approveMaxBigInt
+      ? MAX_BIGINT
+      : filteredAmountsToApprove[0].rawAmount
 
   const tokenApprovalStep = useConstructApproveTokenStep({
     tokenAddress: tokenAddressToApprove,
     spender,
     actionType,
     chain,
-    amountToApprove: useApprovalAmounts ? 1n : MAX_BIGINT, //TODO: Use amounts to approve
+    amountToApprove,
     completedApprovalState: completedTokenApprovalsState,
   })
 
