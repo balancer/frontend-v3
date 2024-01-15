@@ -8,13 +8,27 @@ import { TokenAmountToApprove, filterRequiredTokenApprovals } from './approval-r
 import { useCompletedApprovalsState } from './useCompletedApprovalsState'
 import { useConstructApproveTokenStep } from './useConstructApproveTokenStep'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
+import { ApprovalAction } from './approval-labels'
+import { ContractPath } from '../../web3/contracts/useContractAddress'
+
+type Params = {
+  amountsToApprove: TokenAmountToApprove[]
+  actionType: ApprovalAction
+  spender?: ContractPath
+  useApprovalAmounts?: boolean
+}
 
 /*
   Returns the next Token Approval Step to be rendered by the TransactionFlow component
   When the current approval is completed it will refetch allowances and then return the next Approval Step
   filterRequiredTokenApprovals is recalculated after updating the allowances so we can always return the first in the list until the list in empty
 */
-export function useNextTokenApprovalStep(amountsToApprove: TokenAmountToApprove[]) {
+export function useNextTokenApprovalStep({
+  amountsToApprove,
+  actionType,
+  spender = 'balancer.vaultV2',
+  useApprovalAmounts = false,
+}: Params) {
   const { chainId, chain } = useNetworkConfig()
   // IDEA: maybe we can have a concrete vault token provider with a more specific useVaultAllowance method??
   const vaultAllowances = useTokenAllowances()
@@ -40,12 +54,16 @@ export function useNextTokenApprovalStep(amountsToApprove: TokenAmountToApprove[
     ? emptyAddress
     : filteredAmountsToApprove[0].tokenAddress
 
+  // const tokenAmountToApprove = isEmpty(filteredAmountsToApprove)
+  //   ? emptyAddress
+  //   : filteredAmountsToApprove[0].tokenAddress
+
   const tokenApprovalStep = useConstructApproveTokenStep({
     tokenAddress: tokenAddressToApprove,
-    spender: 'balancer.vaultV2',
-    actionType: 'AddLiquidity',
+    spender,
+    actionType,
     chain,
-    amountToApprove: MAX_BIGINT, //TODO: Use amounts to approve
+    amountToApprove: useApprovalAmounts ? 1n : MAX_BIGINT, //TODO: Use amounts to approve
     completedApprovalState: completedTokenApprovalsState,
   })
 
