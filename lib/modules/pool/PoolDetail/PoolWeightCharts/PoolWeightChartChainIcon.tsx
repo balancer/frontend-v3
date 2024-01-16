@@ -21,7 +21,6 @@ export default function PoolWeightChartChainIcon({ chain, isChartLoaded, isSmall
           height={size}
         />
       </Box>
-
       <Box
         as={motion.div}
         background="white"
