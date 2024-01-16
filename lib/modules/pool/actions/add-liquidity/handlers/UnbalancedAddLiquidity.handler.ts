@@ -13,16 +13,8 @@ import {
 import { Pool } from '../../../usePool'
 import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
-import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
-
-interface SdkQueryAddLiquidityOutput extends QueryAddLiquidityOutput {
-  sdkQueryOutput: AddLiquidityQueryOutput
-}
-
-export interface SdkBuildAddLiquidityInput extends BuildAddLiquidityInput {
-  queryOutput: SdkQueryAddLiquidityOutput
-}
+import { SdkBuildAddLiquidityInput, SdkQueryAddLiquidityOutput } from '../add-liquidity.types'
 
 /**
  * UnbalancedAddLiquidityHandler is a handler that implements the
