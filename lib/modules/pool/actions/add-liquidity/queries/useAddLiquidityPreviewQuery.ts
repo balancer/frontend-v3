@@ -22,7 +22,7 @@ export function useAddLiquidityPreviewQuery(
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
 
   const query = useQuery(
-    addLiquidityKeys.priceImpact({
+    addLiquidityKeys.preview({
       userAddress,
       slippage,
       poolId,
@@ -38,8 +38,10 @@ export function useAddLiquidityPreviewQuery(
   )
 
   return {
+    ...query,
     bptOut: query.data?.bptOut,
     isPreviewQueryLoading: query.isLoading,
+    isPreviewQueryRefetching: query.isRefetching,
     refetchPreviewQuery: query.refetch,
   }
 }

@@ -11,14 +11,10 @@ import {
   Slippage,
 } from '@balancer/sdk'
 import { Pool } from '../../../usePool'
-import {
-  LiquidityActionHelpers,
-  areEmptyAmounts,
-  ensureLastQueryResponse,
-} from '../../LiquidityActionHelpers'
+import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
-import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
+import { SdkBuildAddLiquidityInput, SdkQueryAddLiquidityOutput } from '../add-liquidity.types'
 
 /**
  * UnbalancedAddLiquidityHandler is a handler that implements the
@@ -29,7 +25,6 @@ import { AddLiquidityHandler } from './AddLiquidity.handler'
  */
 export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   helpers: LiquidityActionHelpers
-  queryResponse?: AddLiquidityQueryOutput
 
   constructor(pool: Pool) {
     this.helpers = new LiquidityActionHelpers(pool)
@@ -37,15 +32,13 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
 
   public async queryAddLiquidity(
     humanAmountsIn: HumanAmountIn[]
-  ): Promise<QueryAddLiquidityOutput> {
-    // Deletes the previous queryResponse to enforce that we don't build callData with an outdated queryResponse (while a new one is loading)
-    this.queryResponse = undefined
+  ): Promise<SdkQueryAddLiquidityOutput> {
     const addLiquidity = new AddLiquidity()
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
-    this.queryResponse = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
+    const sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
 
-    return { bptOut: this.queryResponse.bptOut }
+    return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
   }
 
   public async calculatePriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number> {
@@ -67,13 +60,12 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   public async buildAddLiquidityCallData({
     account,
     slippagePercent,
-  }: BuildAddLiquidityInput): Promise<TransactionConfig> {
-    this.queryResponse = ensureLastQueryResponse('Unbalanced add liquidity', this.queryResponse)
-
+    queryOutput,
+  }: SdkBuildAddLiquidityInput): Promise<TransactionConfig> {
     const addLiquidity = new AddLiquidity()
 
     const { call, to, value } = addLiquidity.buildCall({
-      ...this.queryResponse,
+      ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,

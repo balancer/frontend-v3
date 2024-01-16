@@ -128,7 +128,7 @@ export function AddLiquidityForm() {
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={isDisabled}
+                isDisabled={isDisabled || isPreviewQueryLoading}
                 onClick={() => !isDisabled && previewDisclosure.onOpen()}
               >
                 Next
