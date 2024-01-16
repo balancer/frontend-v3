@@ -18,9 +18,12 @@ async function resetForkState() {
 }
 
 function testUseTokenApprovals(amountsToApprove: TokenAmountToApprove[]) {
-  const { result } = testHook(() => useNextTokenApprovalStep(amountsToApprove), {
-    wrapper: DefaultAddLiquidityTestProvider,
-  })
+  const { result } = testHook(
+    () => useNextTokenApprovalStep({ amountsToApprove, actionType: 'AddLiquidity' }),
+    {
+      wrapper: DefaultAddLiquidityTestProvider,
+    }
+  )
   return result
 }
 

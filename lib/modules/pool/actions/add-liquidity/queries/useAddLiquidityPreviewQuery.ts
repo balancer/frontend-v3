@@ -10,6 +10,8 @@ import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { addLiquidityKeys } from './add-liquidity-keys'
 
+export type AddLiquidityPreviewQueryResult = ReturnType<typeof useAddLiquidityPreviewQuery>
+
 export function useAddLiquidityPreviewQuery(
   handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
@@ -31,11 +33,13 @@ export function useAddLiquidityPreviewQuery(
     },
     {
       enabled: isConnected && hasValidHumanAmounts(debouncedHumanAmountsIn),
+      cacheTime: 0,
     }
   )
 
   return {
     bptOut: query.data?.bptOut,
     isPreviewQueryLoading: query.isLoading,
+    refetchPreviewQuery: query.refetch,
   }
 }

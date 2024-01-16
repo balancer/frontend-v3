@@ -20,6 +20,8 @@ import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWit
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
+import { useRefetchCountdown } from '@/lib/shared/hooks/useRefetchCountdown'
+import { sleep } from '@/lib/shared/utils/time'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -79,22 +81,52 @@ export function _useAddLiquidity() {
   )
   const totalUSDValue = safeSum(usdAmountsIn)
 
-  const { isPriceImpactLoading, priceImpact } = useAddLiquidityPriceImpactQuery(
-    handler,
-    humanAmountsIn,
-    pool.id
-  )
-
-  const { isPreviewQueryLoading, bptOut } = useAddLiquidityPreviewQuery(
-    handler,
-    humanAmountsIn,
-    pool.id
-  )
-
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts']
   )
+
+  const { isPriceImpactLoading, priceImpact, refetchPriceImpact } = useAddLiquidityPriceImpactQuery(
+    handler,
+    humanAmountsIn,
+    pool.id
+  )
+
+  const { isPreviewQueryLoading, bptOut, refetchPreviewQuery } = useAddLiquidityPreviewQuery(
+    handler,
+    humanAmountsIn,
+    pool.id
+  )
+
+  const { secondsToRefetch, startRefetchCountdown, stopRefetchCountdown } = useRefetchCountdown()
+
+  let refetchBuildQuery: () => Promise<object>
+  function useBuildCallData(isActiveStep: boolean) {
+    const buildQuery = useAddLiquidityBuildCallDataQuery(
+      handler,
+      humanAmountsIn,
+      isActiveStep,
+      pool,
+      startRefetchCountdown
+    )
+    refetchBuildQuery = buildQuery.refetch
+    return buildQuery
+  }
+
+  useEffect(() => {
+    const refetchQueries = async () => {
+      // TODO: remove after manual feature tests
+      console.log('Refetching preview, priceImpact and build queries')
+      stopRefetchCountdown()
+      await sleep(1000) // TODO: Show some kind of UI feedback during this artificial delay
+      await Promise.all([refetchPreviewQuery(), refetchPriceImpact()])
+      await refetchBuildQuery()
+      startRefetchCountdown()
+    }
+    if (secondsToRefetch === 0) {
+      refetchQueries()
+    }
+  }, [secondsToRefetch])
 
   /* We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
     helper is a class and if we return its methods we would lose the this binding, getting a:
@@ -102,10 +134,6 @@ export function _useAddLiquidity() {
     when trying to access the returned method
     */
   const helpers = new LiquidityActionHelpers(pool)
-
-  function useBuildCallData(isActiveStep: boolean) {
-    return useAddLiquidityBuildCallDataQuery(handler, humanAmountsIn, isActiveStep, pool)
-  }
 
   return {
     humanAmountsIn,
@@ -122,6 +150,8 @@ export function _useAddLiquidity() {
     disabledReason,
     helpers,
     poolStateInput,
+    secondsToRefetch,
+    stopRefetchCountdown,
   }
 }
 

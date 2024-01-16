@@ -52,6 +52,7 @@ export function _useTokenAllowances(
     isAllowancesLoading: result.isLoading,
     isAllowancesRefetching: result.isRefetching,
     allowances: allowancesByTokenAddress,
+    spenderAddress,
     hasAllowances,
     refetchAllowances: result.refetch,
   }

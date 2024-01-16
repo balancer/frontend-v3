@@ -14,7 +14,8 @@ export function useAddLiquidityBuildCallDataQuery(
   handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
   isActiveStep: boolean,
-  pool: Pool
+  pool: Pool,
+  startRefetchCountdown: () => void
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
@@ -29,6 +30,7 @@ export function useAddLiquidityBuildCallDataQuery(
       humanAmountsIn,
     }),
     async () => {
+      startRefetchCountdown()
       return handler.buildAddLiquidityCallData({ account: userAddress, slippagePercent: slippage })
     },
     {
@@ -36,8 +38,10 @@ export function useAddLiquidityBuildCallDataQuery(
         isActiveStep && // If the step is not active (the user did not click Next button) avoid running the build tx query to save RPC requests
         isConnected &&
         hasAllowances(humanAmountsIn, pool),
+
+      cacheTime: 0,
     }
   )
 
-  return addLiquidityQuery
+  return { ...addLiquidityQuery, refetchBuildQuery: addLiquidityQuery.refetch }
 }
