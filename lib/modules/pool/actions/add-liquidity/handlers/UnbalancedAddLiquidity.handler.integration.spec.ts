@@ -76,36 +76,6 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
     expect(result.to).toBe(networkConfig.contracts.balancer.vaultV2)
     expect(result.data).toBeDefined()
   })
-
-  /*
-  test.skip('throws exception if we try to buildAddLiquidityCallData without queryOutput', async () => {
-    const humanAmountsIn: HumanAmountIn[] = [
-      { humanAmount: '1', tokenAddress: wETHAddress },
-      { humanAmount: '1', tokenAddress: wjAuraAddress },
-    ]
-
-    const handler: AddLiquidityHandler = selectUnbalancedHandler()
-
-    // Store query response in handler instance
-    await handler.queryAddLiquidity(humanAmountsIn)
-
-    // Run without await so that the query is loading when we call buildAddLiquidityCallData
-    handler.queryAddLiquidity(humanAmountsIn)
-
-    const callback = async () =>
-      handler.buildAddLiquidityCallData({
-        humanAmountsIn,
-        account: defaultTestUserAccount,
-        slippagePercent: '0.2',
-        queryOutput
-      })
-
-    await expect(callback()).rejects.toThrowErrorMatchingInlineSnapshot(`
-      [SentryError: Missing queryResponse.
-      It looks that you tried to call useBuildCallData before the last query finished generating queryResponse]
-    `)
-  })
-  */
 })
 
 describe('When adding unbalanced liquidity for a stable pool', () => {
