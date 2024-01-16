@@ -1000,7 +1000,11 @@ query GetPoolTokensDynamicData($addresses: [String!]!) {
 }
 
 query GetPoolJoinsExitsSwaps($first: Int, $skip: Int, $poolId: String!, $chainId: GqlChain!) {
-  swaps: poolGetSwaps(first: $first, skip: $skip, where: { poolIdIn: [$poolId], chainIn: [$chainId] }) {
+  swaps: poolGetSwaps(
+    first: $first
+    skip: $skip
+    where: { poolIdIn: [$poolId], chainIn: [$chainId] }
+  ) {
     id
     poolId
     timestamp
@@ -1012,7 +1016,11 @@ query GetPoolJoinsExitsSwaps($first: Int, $skip: Int, $poolId: String!, $chainId
     userAddress
     valueUSD
   }
-  joinExits: poolGetJoinExits(first: $first, skip: $skip, where: { poolIdIn: [$poolId], chainIn: [$chainId] }) {
+  joinExits: poolGetJoinExits(
+    first: $first
+    skip: $skip
+    where: { poolIdIn: [$poolId], chainIn: [$chainId] }
+  ) {
     id
     timestamp
     tx

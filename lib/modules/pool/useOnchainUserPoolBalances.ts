@@ -3,59 +3,71 @@ import { balancerV2GaugeV5ABI, balancerV2WeightedPoolV4ABI } from '../web3/contr
 import { useUserAccount } from '../web3/useUserAccount'
 import { formatUnits, zeroAddress } from 'viem'
 import { useTokens } from '../tokens/useTokens'
-import { sumBy } from 'lodash'
-import { calcBptPriceRaw } from './pool.helpers'
-import { GqlChain, GqlPoolWeighted } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GqlChain,
+  GqlPoolUnion,
+  GqlPoolUserBalance,
+} from '@/lib/shared/services/api/generated/graphql'
 import { chainToIdMap } from './pool.utils'
+import { bn, safeSum } from '@/lib/shared/utils/numbers'
+import BigNumber from 'bignumber.js'
+import { calcBptPrice } from './pool.helpers'
 
-type OnChainBalanceResponse = {
+type OnchainBalanceResponse = {
   status: string
   result?: bigint
   error?: Error
 }
 
 function enrichPools(
-  pools: GqlPoolWeighted[],
-  unstakedPoolBalances: OnChainBalanceResponse[],
-  stakedPoolBalances: OnChainBalanceResponse[],
+  pools: GqlPoolUnion[],
+  ocUnstakedBalances: OnchainBalanceResponse[],
+  ocStakedBalances: OnchainBalanceResponse[],
   priceFor: (address: string, chain: GqlChain) => number
 ) {
   return pools.map((pool, i) => {
-    if (!unstakedPoolBalances.length || !stakedPoolBalances.length) return pool
-    const unstakedPoolBalance = unstakedPoolBalances[i].result
-    const stakedPoolBalance = stakedPoolBalances[i].result
-    const totalLiquidity = sumBy(pool.tokens, token => {
-      return priceFor(token.address, pool.chain) * parseFloat(token.balance)
-    })
+    if (!ocUnstakedBalances.length || !ocStakedBalances.length) return pool
 
-    const onChainBptPrice = calcBptPriceRaw(totalLiquidity.toString(), pool.dynamicData.totalShares)
+    const ocUnstakedBalanceInt = ocUnstakedBalances[i].result || 0n
+    const unstakedBalance = BigNumber.max(
+      formatUnits(ocUnstakedBalanceInt, 18),
+      pool.userBalance?.walletBalance || 0
+    ).toString()
 
-    const totalBalance = formatUnits((stakedPoolBalance || 0n) + (unstakedPoolBalance || 0n), 18)
-    const stakedBalanceUsd =
-      parseFloat(onChainBptPrice) * parseFloat(formatUnits(stakedPoolBalance || 0n, 18))
+    const ocStakedBalanceInt = ocStakedBalances[i].result || 0n
+    const stakedBalance = BigNumber.max(
+      formatUnits(ocStakedBalanceInt, 18),
+      pool.userBalance?.stakedBalance || 0
+    ).toString()
 
-    const userBalance = {
+    const ocTotalBalanceInt = ocStakedBalanceInt + ocUnstakedBalanceInt
+    const totalBalance = BigNumber.max(
+      formatUnits(ocTotalBalanceInt, 18),
+      pool.userBalance?.totalBalance || 0
+    ).toString()
+
+    const totalUsdLiquidity = safeSum(pool.tokens.map(token => priceFor(token.address, pool.chain)))
+    const bptPrice = calcBptPrice(totalUsdLiquidity, pool.dynamicData.totalShares)
+
+    const userBalance: GqlPoolUserBalance = {
+      __typename: 'GqlPoolUserBalance',
       ...(pool.userBalance || {}),
-      stakedBalance: stakedPoolBalance
-        ? formatUnits(stakedPoolBalance || 0n, 18)
-        : pool.userBalance?.stakedBalance,
-      unstakedPoolBalance,
-      totalBalance:
-        stakedBalanceUsd && unstakedPoolBalance ? totalBalance : pool.userBalance?.totalBalance,
-      stakedBalanceUsd: stakedBalanceUsd ? stakedBalanceUsd : pool.userBalance?.stakedBalanceUsd,
+      stakedBalance,
+      stakedBalanceUsd: bn(stakedBalance).times(bptPrice).toNumber(),
+      walletBalance: unstakedBalance,
+      walletBalanceUsd: bn(unstakedBalance).times(bptPrice).toNumber(),
+      totalBalance,
+      totalBalanceUsd: bn(totalBalance).times(bptPrice).toNumber(),
     }
 
-    // apply the changes
-    const enrichedPool = {
+    return {
       ...pool,
       userBalance,
     }
-
-    return enrichedPool
   })
 }
 
-export function useOnchainUserPoolBalances(pools: GqlPoolWeighted[] = []) {
+export function useOnchainUserPoolBalances(pools: GqlPoolUnion[] = []) {
   const { userAddress, isConnected } = useUserAccount()
   const { priceFor } = useTokens()
 
@@ -100,10 +112,11 @@ export function useOnchainUserPoolBalances(pools: GqlPoolWeighted[] = []) {
   // not type inferring appropriately
   const enrichedPools = enrichPools(
     pools,
-    unstakedPoolBalances as unknown as OnChainBalanceResponse[],
-    stakedPoolBalances as unknown as OnChainBalanceResponse[],
+    unstakedPoolBalances as unknown as OnchainBalanceResponse[],
+    stakedPoolBalances as unknown as OnchainBalanceResponse[],
     priceFor
   )
+
   return {
     enrichedPools,
     isLoading,

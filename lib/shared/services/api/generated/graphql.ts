@@ -329,13 +329,18 @@ export type GqlPoolElement = GqlPoolBase & {
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
+export type GqlPoolFeaturedPool = {
+  __typename: 'GqlPoolFeaturedPool'
+  pool: GqlPoolBase
+  poolId: Scalars['ID']['output']
+  primary: Scalars['Boolean']['output']
+}
+
 export type GqlPoolFeaturedPoolGroup = {
   __typename: 'GqlPoolFeaturedPoolGroup'
-  chain: GqlChain
   icon: Scalars['String']['output']
   id: Scalars['ID']['output']
   items: Array<GqlPoolFeaturedPoolGroupItem>
-  primary: Scalars['Boolean']['output']
   title: Scalars['String']['output']
 }
 
@@ -1476,9 +1481,9 @@ export type Query = {
   blocksGetBlocksPerYear: Scalars['Float']['output']
   contentGetNewsItems: Array<GqlContentNewsItem>
   latestSyncedBlocks: GqlLatestSyncedBlocks
-  poolGetAllPoolsSnapshots: Array<GqlPoolSnapshot>
   poolGetBatchSwaps: Array<GqlPoolBatchSwap>
   poolGetFeaturedPoolGroups: Array<GqlPoolFeaturedPoolGroup>
+  poolGetFeaturedPools: Array<GqlPoolFeaturedPool>
   poolGetGyroPools: Array<GqlPoolGyro>
   poolGetJoinExits: Array<GqlPoolJoinExit>
   poolGetLinearPools: Array<GqlPoolLinear>
@@ -1524,11 +1529,6 @@ export type QueryBeetsPoolGetReliquaryFarmSnapshotsArgs = {
   range: GqlPoolSnapshotDataRange
 }
 
-export type QueryPoolGetAllPoolsSnapshotsArgs = {
-  chains?: InputMaybe<Array<GqlChain>>
-  range: GqlPoolSnapshotDataRange
-}
-
 export type QueryPoolGetBatchSwapsArgs = {
   first?: InputMaybe<Scalars['Int']['input']>
   skip?: InputMaybe<Scalars['Int']['input']>
@@ -1537,6 +1537,10 @@ export type QueryPoolGetBatchSwapsArgs = {
 
 export type QueryPoolGetFeaturedPoolGroupsArgs = {
   chains?: InputMaybe<Array<GqlChain>>
+}
+
+export type QueryPoolGetFeaturedPoolsArgs = {
+  chains: Array<GqlChain>
 }
 
 export type QueryPoolGetGyroPoolsArgs = {

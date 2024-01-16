@@ -13,7 +13,7 @@ import { FetchPoolProps } from './pool.types'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
-import { calcBptPrice, usePoolHelpers } from './pool.helpers'
+import { calcBptPriceFor, usePoolHelpers } from './pool.helpers'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/usePoolEnrichWithOnChainData'
@@ -49,7 +49,7 @@ export function _usePool({
 
   // fallbacks to ensure the pool is always present. We prefer the pool with on chain data
   const pool = poolWithOnChainData || data?.pool || initialData.pool
-  const bptPrice = calcBptPrice(pool)
+  const bptPrice = calcBptPriceFor(pool)
 
   return {
     pool,
