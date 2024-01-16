@@ -2361,6 +2361,7 @@ export type GetPoolQuery = {
         __typename: 'GqlPoolGyro'
         alpha: string
         beta: string
+        type: GqlPoolType
         c: string
         dSq: string
         lambda: string
@@ -2386,7 +2387,6 @@ export type GetPoolQuery = {
         factory?: string | null
         symbol: string
         createTime: number
-        type: GqlPoolType
         chain: GqlChain
         tokens: Array<
           | {
@@ -4852,6 +4852,7 @@ export type GetFeaturedPoolsQuery = {
           __typename: 'GqlPoolGyro'
           alpha: string
           beta: string
+          type: GqlPoolType
           c: string
           dSq: string
           lambda: string
@@ -4867,7 +4868,6 @@ export type GetFeaturedPoolsQuery = {
           v: string
           w: string
           z: string
-          type: GqlPoolType
           nestingType: GqlPoolNestingType
           id: string
           address: string
@@ -9742,6 +9742,7 @@ export const GetPoolDocument = {
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'alpha' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'beta' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'type' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'c' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'dSq' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'lambda' } },
@@ -14600,6 +14601,7 @@ export const GetFeaturedPoolsDocument = {
                           selections: [
                             { kind: 'Field', name: { kind: 'Name', value: 'alpha' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'beta' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'type' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'c' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'dSq' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'lambda' } },

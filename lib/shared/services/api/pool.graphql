@@ -742,6 +742,7 @@ query GetPool($id: String!, $chain: GqlChain) {
     ... on GqlPoolGyro {
       alpha
       beta
+      type
       c
       dSq
       lambda

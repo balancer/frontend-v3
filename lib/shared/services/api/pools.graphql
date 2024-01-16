@@ -872,6 +872,7 @@ query GetFeaturedPools($chains: [GqlChain!]!) {
       ... on GqlPoolGyro {
         alpha
         beta
+        type
         c
         dSq
         lambda
