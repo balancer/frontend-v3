@@ -6,12 +6,13 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useQuery } from 'wagmi'
 import { Pool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
-import { QueryAddLiquidityOutput, SupportedHandler } from '../add-liquidity.types'
+import { QueryAddLiquidityOutput } from '../add-liquidity.types'
 import { addLiquidityKeys } from './add-liquidity-keys'
+import { AddLiquidityHandler } from '@/lib/modules/pool/actions/add-liquidity/handlers/AddLiquidity.handler'
 
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
 export function useAddLiquidityBuildCallDataQuery(
-  handler: SupportedHandler,
+  handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
   isActiveStep: boolean,
   pool: Pool,
