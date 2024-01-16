@@ -1,5 +1,5 @@
+import { sleep } from '@/lib/shared/utils/time'
 import { CreateAnvilOptions, createAnvil } from '@viem/anvil'
-import { sleep } from '../utils/promises'
 
 export let forkUrl: string
 if (process.env.VITE_ANVIL_FORK_RPC_URL) {

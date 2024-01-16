@@ -29,12 +29,10 @@ export function useRemoveLiquidityBuildCallDataQuery(
       tokenOut,
     }),
     async () => {
-      const inputs = {
-        humanBptIn,
+      return handler.buildRemoveLiquidityCallData({
         account: userAddress,
         slippagePercent: slippage,
-      }
-      return handler.buildRemoveLiquidityTx({ inputs })
+      })
     },
     {
       enabled:

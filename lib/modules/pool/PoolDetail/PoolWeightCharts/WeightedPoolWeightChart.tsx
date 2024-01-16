@@ -2,11 +2,11 @@ import { Box, HStack, VStack, Text } from '@chakra-ui/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
-import Image from 'next/image'
 import * as echarts from 'echarts/core'
 import { motion } from 'framer-motion'
-import { GqlPoolWeighted } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolWeighted } from '@/lib/shared/services/api/generated/graphql'
 import { ChartSizeValues } from './PoolWeightChart'
+import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 
 const colors = [
   {
@@ -41,7 +41,7 @@ const colors = [
 
 interface WeightedPoolWeightChartProps {
   pool: GqlPoolWeighted
-  chain: string
+  chain: GqlChain
   chartSizeValues: ChartSizeValues
   hasLegend?: boolean
 }
@@ -134,47 +134,8 @@ export default function WeightedPoolWeightChart({
           initial={{ opacity: 0 }}
           animate={{ opacity: isChartLoaded ? 1 : 0, transition: { delay: 0.1 } }}
         >
-          <Image
-            src={`/images/chains/${chain}.svg`}
-            alt={`Chain icon for ${chain.toLowerCase()}`}
-            width={chartSizeValues.imageWidth}
-            height={chartSizeValues.imageHeight}
-          />
+          <PoolWeightChartChainIcon chain={chain} isChartLoaded={isChartLoaded} />
         </Box>
-        <Box
-          as={motion.div}
-          rounded="full"
-          bg="white"
-          position="absolute"
-          top={chartSizeValues.haloTop.middle}
-          left={chartSizeValues.haloLeft.middle}
-          width={chartSizeValues.haloWidth.middle}
-          height={chartSizeValues.haloHeigth.middle}
-          transform="translateY(0)"
-          zIndex={3}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isChartLoaded ? 0.2 : 0, transition: { delay: 0.3 } }}
-        />
-        <Box
-          as={motion.div}
-          rounded="full"
-          bg="white"
-          position="absolute"
-          top={chartSizeValues.haloTop.outer}
-          left={chartSizeValues.haloLeft.outer}
-          width={chartSizeValues.haloWidth.outer}
-          height={chartSizeValues.haloHeigth.outer}
-          transform="translateY(0)"
-          zIndex={3}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isChartLoaded ? 0.1 : 0, transition: { delay: 0.5 } }}
-        />
         <Box width="full" height="full">
           <ReactECharts option={chartOption} onEvents={{}} ref={eChartsRef} />
         </Box>

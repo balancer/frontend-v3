@@ -14,17 +14,21 @@ import {
 import { Address, parseEther } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
 import { Pool } from '../../../usePool'
-import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
 import {
-  BuildLiquidityInputs,
-  RemoveLiquidityOutputs,
-  SingleTokenRemoveLiquidityInputs,
+  LiquidityActionHelpers,
+  ensureLastQueryResponse,
+  isEmptyHumanAmount,
+} from '../../LiquidityActionHelpers'
+import {
+  BuildRemoveLiquidityInput,
+  QueryRemoveLiquidityOutput,
+  SingleTokenRemoveLiquidityInput,
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
 
 export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler {
   helpers: LiquidityActionHelpers
-  sdkQueryOutput?: RemoveLiquidityQueryOutput
+  queryResponse?: RemoveLiquidityQueryOutput
 
   constructor(pool: Pool) {
     this.helpers = new LiquidityActionHelpers(pool)
@@ -33,24 +37,24 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
   public async queryRemoveLiquidity({
     humanBptIn,
     tokenOut,
-  }: SingleTokenRemoveLiquidityInputs): Promise<RemoveLiquidityOutputs> {
+  }: SingleTokenRemoveLiquidityInput): Promise<QueryRemoveLiquidityOutput> {
     if (!tokenOut) return { amountsOut: [] }
 
     const removeLiquidity = new RemoveLiquidity()
     const removeLiquidityInput = this.constructSdkInput(humanBptIn, tokenOut)
 
-    this.sdkQueryOutput = await removeLiquidity.query(
+    this.queryResponse = await removeLiquidity.query(
       removeLiquidityInput,
       this.helpers.poolStateInput
     )
 
-    return { amountsOut: this.sdkQueryOutput.amountsOut }
+    return { amountsOut: this.queryResponse.amountsOut }
   }
 
   public async calculatePriceImpact({
     humanBptIn,
     tokenOut,
-  }: SingleTokenRemoveLiquidityInputs): Promise<number> {
+  }: SingleTokenRemoveLiquidityInput): Promise<number> {
     if (isEmptyHumanAmount(humanBptIn) || !tokenOut) {
       // Avoid price impact calculation
       return 0
@@ -66,26 +70,19 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
     return priceImpactABA.decimal
   }
 
-  /*
-    sdkQueryOutput is the result of the query that we run in the remove liquidity form
-  */
-  public async buildRemoveLiquidityTx(
-    buildInputs: BuildLiquidityInputs
-  ): Promise<TransactionConfig> {
-    const { account, slippagePercent } = buildInputs.inputs
-    if (!account || !slippagePercent) throw new Error('Missing account or slippage')
-    if (!this.sdkQueryOutput) {
-      console.error('Missing sdkQueryOutput in buildRemoveLiquidityTx')
-      throw new Error(
-        `Missing sdkQueryOutput.
-It looks that you did not call useRemoveLiquidityBtpOutQuery before trying to build the tx config`
-      )
-    }
+  public async buildRemoveLiquidityCallData({
+    account,
+    slippagePercent,
+  }: BuildRemoveLiquidityInput): Promise<TransactionConfig> {
+    this.queryResponse = ensureLastQueryResponse(
+      'Single token remove liquidity',
+      this.queryResponse
+    )
 
     const removeLiquidity = new RemoveLiquidity()
 
     const { call, to, value } = removeLiquidity.buildCall({
-      ...this.sdkQueryOutput,
+      ...this.queryResponse,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,

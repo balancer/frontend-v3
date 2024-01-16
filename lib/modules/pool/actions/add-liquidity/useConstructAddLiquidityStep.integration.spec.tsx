@@ -8,16 +8,14 @@ import {
 } from '@/test/utils/custom-renderers'
 import { act, waitFor } from '@testing-library/react'
 import { PropsWithChildren } from 'react'
-import { AddLiquidityProvider, useAddLiquidity } from './useAddLiquidity'
+import { useAddLiquidity } from './useAddLiquidity'
 import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
 
 const PoolProvider = buildDefaultPoolTestProvider(aWjAuraWethPoolElementMock())
 
 export const Providers = ({ children }: PropsWithChildren) => (
   <PoolProvider>
-    <AddLiquidityProvider>
-      <DefaultAddLiquidityTestProvider>{children}</DefaultAddLiquidityTestProvider>
-    </AddLiquidityProvider>
+    <DefaultAddLiquidityTestProvider>{children}</DefaultAddLiquidityTestProvider>
   </PoolProvider>
 )
 
@@ -38,7 +36,7 @@ async function testConstructAddLiquidityStep() {
   return result
 }
 
-test.skip('TBD', async () => {
+test('TBD', async () => {
   const result = await testConstructAddLiquidityStep()
 
   // User fills token inputs

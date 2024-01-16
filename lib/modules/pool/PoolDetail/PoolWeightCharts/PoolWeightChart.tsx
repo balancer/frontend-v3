@@ -1,11 +1,13 @@
 import { Box } from '@chakra-ui/react'
 import React from 'react'
 import WeightedPoolWeightChart from './WeightedPoolWeightChart'
-import { GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
+import { isBoosted, isStable } from '../../pool.helpers'
+import BoostedPoolWeightChart from './BoostedPoolWeightChart'
 
 interface PoolWeightChartProps {
   pool: GqlPoolUnion
-  chain: string
+  chain: GqlChain
   hasLegend?: boolean
   isSmall?: boolean
 }
@@ -71,7 +73,7 @@ const normalSize: ChartSizeValues = {
   boxWidth: '250px',
   boxHeight: '250px',
   haloTop: {
-    inner: '50%',
+    inner: '49%',
     middle: '48%',
     outer: '46%',
   },
@@ -102,6 +104,9 @@ export default function PoolWeightChart({
 }: PoolWeightChartProps) {
   const chartSizeValues = isSmall ? smallSize : normalSize
 
+  if (isBoosted(pool) || (isStable(pool.type) && pool.tokens.length === 3)) {
+    return <BoostedPoolWeightChart />
+  }
   if (pool.__typename === 'GqlPoolWeighted') {
     return (
       <WeightedPoolWeightChart
