@@ -1,6 +1,6 @@
 import { Card, Center, Grid, GridItem, HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import { usePoolListFeaturedPools } from './usePoolListFeaturedPools'
-import { GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { getAprLabel, getPoolTypeLabel } from '../pool.utils'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -15,7 +15,7 @@ const indexAreaHash: { [key: number]: string } = {
 
 interface FeaturedPoolCardProps {
   pool: GqlPoolUnion
-  chain: string
+  chain: GqlChain
   isSmall?: boolean
   hasLegend?: boolean
 }
