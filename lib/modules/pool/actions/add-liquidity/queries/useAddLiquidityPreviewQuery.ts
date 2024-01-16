@@ -17,7 +17,7 @@ export function useAddLiquidityPreviewQuery(
   humanAmountsIn: HumanAmountIn[],
   poolId: string
 ) {
-  const { userAddress } = useUserAccount()
+  const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
 
@@ -32,7 +32,7 @@ export function useAddLiquidityPreviewQuery(
       return await handler.queryAddLiquidity(humanAmountsIn)
     },
     {
-      enabled: hasValidHumanAmounts(debouncedHumanAmountsIn),
+      enabled: isConnected && hasValidHumanAmounts(debouncedHumanAmountsIn),
       cacheTime: 0,
     }
   )
