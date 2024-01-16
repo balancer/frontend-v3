@@ -11,9 +11,8 @@ import { Address, parseUnits } from 'viem'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { keyBy, sumBy } from 'lodash'
+import { keyBy } from 'lodash'
 import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
-import { useTokens } from '../../tokens/useTokens'
 import { BPT_DECIMALS } from '../pool.constants'
 
 const TABS = [
@@ -30,11 +29,11 @@ const TABS = [
     label: 'Staked',
   },
 ]
+
 export default function PoolMyLiquidity() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain } = usePool()
   const { toCurrency } = useCurrency()
-  const { getToken, usdValueForToken } = useTokens()
 
   const pathname = usePathname()
 
@@ -42,29 +41,29 @@ export default function PoolMyLiquidity() {
     setActiveTab(option)
   }
 
-  function getBalanceToUseForTokenAmounts(useTotalRegardless?: boolean) {
+  function getBalanceToUseForTokenAmounts({ useTotal = false }: { useTotal?: boolean } = {}) {
     const parsedTotalBalance = parseUnits(pool.userBalance?.totalBalance || '0', BPT_DECIMALS)
     const parsedStakedBalance = parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS)
+    const parsedUnstakedBalance = parseUnits(pool.userBalance?.walletBalance || '0', BPT_DECIMALS)
 
-    if (useTotalRegardless) {
-      return parsedTotalBalance
-    }
+    if (useTotal) return parsedTotalBalance
+
     switch (activeTab.value) {
       case 'all':
         return parsedTotalBalance
       case 'staked':
         return parsedStakedBalance
       case 'unstaked':
-        return parsedTotalBalance - parsedStakedBalance
+        return parsedUnstakedBalance
       default:
         return parsedTotalBalance
     }
   }
 
-  function calculateUserPoolTokenBalances(useTotalRegardless?: boolean) {
+  function calculateUserPoolTokenBalances({ useTotal = false }: { useTotal?: boolean } = {}) {
     return keyBy(
       getProportionalExitAmountsFromScaledBptIn(
-        getBalanceToUseForTokenAmounts(useTotalRegardless),
+        getBalanceToUseForTokenAmounts({ useTotal }),
         pool.tokens,
         pool.dynamicData.totalShares
       ),
@@ -86,20 +85,15 @@ export default function PoolMyLiquidity() {
   }
 
   function getTotalBalanceUsd() {
-    const tokenBalances = calculateUserPoolTokenBalances(true)
-    const totalBalanceUsd = sumBy(Object.values(tokenBalances), tokenBalance =>
-      parseFloat(usdValueForToken(getToken(tokenBalance.address, chain), tokenBalance.amount))
-    )
-
     switch (activeTab.value) {
       case 'all':
-        return totalBalanceUsd
+        return pool.userBalance?.totalBalanceUsd || 0
       case 'staked':
-        return pool.userBalance?.stakedBalanceUsd
+        return pool.userBalance?.stakedBalanceUsd || 0
       case 'unstaked':
-        return totalBalanceUsd - (pool.userBalance?.stakedBalanceUsd || 0)
+        return pool.userBalance?.walletBalanceUsd || 0
       default:
-        return totalBalanceUsd
+        return pool.userBalance?.totalBalanceUsd || 0
     }
   }
 

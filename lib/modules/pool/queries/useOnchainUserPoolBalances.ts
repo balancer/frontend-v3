@@ -12,6 +12,7 @@ import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { calcBptPrice } from '../pool.helpers'
 import { Pool } from '../usePool'
+import { BPT_DECIMALS } from '../pool.constants'
 
 type OnchainBalanceResponse = {
   status: string
@@ -30,19 +31,19 @@ function mergeOnchainPoolBalanceData(
 
     const ocUnstakedBalanceInt = ocUnstakedBalances[i].result || 0n
     const unstakedBalance = BigNumber.max(
-      formatUnits(ocUnstakedBalanceInt, 18),
+      formatUnits(ocUnstakedBalanceInt, BPT_DECIMALS),
       pool.userBalance?.walletBalance || 0
     ).toString()
 
     const ocStakedBalanceInt = ocStakedBalances[i].result || 0n
     const stakedBalance = BigNumber.max(
-      formatUnits(ocStakedBalanceInt, 18),
+      formatUnits(ocStakedBalanceInt, BPT_DECIMALS),
       pool.userBalance?.stakedBalance || 0
     ).toString()
 
     const ocTotalBalanceInt = ocStakedBalanceInt + ocUnstakedBalanceInt
     const totalBalance = BigNumber.max(
-      formatUnits(ocTotalBalanceInt, 18),
+      formatUnits(ocTotalBalanceInt, BPT_DECIMALS),
       pool.userBalance?.totalBalance || 0
     ).toString()
 

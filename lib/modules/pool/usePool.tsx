@@ -50,7 +50,7 @@ export function _usePool({
   })
 
   // fallbacks to ensure the pool is always present. We prefer the pool with on chain data
-  let pool = poolWithOnChainData || data?.pool || initialData.pool
+  let pool: Pool = poolWithOnChainData || data?.pool || initialData.pool
 
   const {
     data: [poolWithOnchainUserBalances],
