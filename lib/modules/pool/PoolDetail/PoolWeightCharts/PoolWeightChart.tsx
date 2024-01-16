@@ -64,5 +64,5 @@ export default function PoolWeightChart({
       />
     )
   }
-  return <Box></Box>
+  return <Box minH="150px"></Box>
 }
