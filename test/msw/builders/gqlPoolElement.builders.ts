@@ -5,8 +5,10 @@ import {
 import {
   GqlChain,
   GqlPoolElement,
+  GqlPoolNestingType,
   GqlPoolToken,
   GqlPoolType,
+  GqlPoolWeighted,
 } from '@/lib/shared/services/api/generated/graphql'
 import { DeepPartial } from '@apollo/client/utilities'
 import { mock } from 'vitest-mock-extended'
@@ -47,6 +49,15 @@ export function aWjAuraWethPoolElementMock(...options: Partial<GqlPoolElement>[]
   }
 
   return aGqlPoolElementMock(options2)
+}
+
+export function toGqlWeighedPoolMock(poolElement: GqlPoolElement): GqlPoolWeighted {
+  const pool: GqlPoolWeighted = {
+    ...poolElement,
+    __typename: 'GqlPoolWeighted',
+    nestingType: GqlPoolNestingType.NoNesting,
+  }
+  return pool
 }
 
 export function aGqlPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlPoolElement {
