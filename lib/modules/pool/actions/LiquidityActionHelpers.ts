@@ -113,6 +113,7 @@ export function ensureLastQueryResponse<Q>(
   queryResponse?: Q
 ): Q {
   if (!queryResponse) {
+    // We don't
     // This should never happen because we don't allow the user to trigger buildLiquidityCallData
     // before the query is loaded.
     console.error(`Missing queryResponse in ${liquidityActionDescription}`)

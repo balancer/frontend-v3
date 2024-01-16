@@ -92,23 +92,25 @@ export function _useAddLiquidity() {
     pool.id
   )
 
-  const { isPreviewQueryLoading, bptOut, refetchPreviewQuery } = useAddLiquidityPreviewQuery(
-    handler,
-    humanAmountsIn,
-    pool.id
-  )
+  const {
+    isPreviewQueryLoading,
+    bptOut,
+    refetchPreviewQuery,
+    data: queryAddLiquidityOutput,
+  } = useAddLiquidityPreviewQuery(handler, humanAmountsIn, pool.id)
 
   const { secondsToRefetch, startRefetchCountdown, stopRefetchCountdown } = useRefetchCountdown()
 
   let refetchBuildQuery: () => Promise<object>
   function useBuildCallData(isActiveStep: boolean) {
-    const buildQuery = useAddLiquidityBuildCallDataQuery(
+    const buildQuery = useAddLiquidityBuildCallDataQuery({
       handler,
       humanAmountsIn,
       isActiveStep,
       pool,
-      startRefetchCountdown
-    )
+      startRefetchCountdown,
+      queryAddLiquidityOutput,
+    })
     refetchBuildQuery = buildQuery.refetch
     return buildQuery
   }
