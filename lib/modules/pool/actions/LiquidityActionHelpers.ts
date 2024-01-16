@@ -113,8 +113,7 @@ export function ensureLastQueryResponse<Q>(
   queryResponse?: Q
 ): Q {
   if (!queryResponse) {
-    // This is very unlikely to happen because we don't allow the user to trigger buildLiquidityCallData
-    // before the query is loaded.
+    // This should never happen but this is a check against potential regression bugs
     console.error(`Missing queryResponse in ${liquidityActionDescription}`)
     throw new SentryError(
       `Missing queryResponse.
