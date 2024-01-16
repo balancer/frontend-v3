@@ -2,9 +2,10 @@ import { Card, Center, Grid, GridItem, HStack, Heading, Text, VStack } from '@ch
 import { usePoolListFeaturedPools } from './usePoolListFeaturedPools'
 import { GqlChain, GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import { getAprLabel, getPoolTypeLabel } from '../pool.utils'
+import { getAprLabel, getPoolPath, getPoolTypeLabel } from '../pool.utils'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import PoolWeightChart from '../PoolDetail/PoolWeightCharts/PoolWeightChart'
+import { useRouter } from 'next/navigation'
 
 const indexAreaHash: { [key: number]: string } = {
   1: 'one',
@@ -27,9 +28,35 @@ function FeaturedPoolCard({
   hasLegend = false,
 }: FeaturedPoolCardProps) {
   const { toCurrency } = useCurrency()
+  const router = useRouter()
+
+  const cardClickHandler = (event: React.MouseEvent<HTMLElement>, pool: GqlPoolUnion) => {
+    const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
+
+    if (event.ctrlKey || event.metaKey) {
+      window.open(poolPath, '_blank')
+    } else {
+      router.push(poolPath)
+    }
+  }
+
+  // Prefetch pool page on card hover, otherwise there is a significant delay
+  // between clicking the card and the pool page loading.
+  const cardMouseEnterHandler = (event: React.MouseEvent<HTMLElement>, pool: GqlPoolUnion) => {
+    const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
+    router.prefetch(poolPath)
+  }
 
   return (
-    <Card variant="gradient" h="full" w="full" p="4">
+    <Card
+      variant="gradient"
+      h="full"
+      w="full"
+      p="4"
+      cursor="pointer"
+      onClick={event => cardClickHandler(event, pool)}
+      onMouseEnter={event => cardMouseEnterHandler(event, pool)}
+    >
       <VStack justifyContent="space-between" h="full">
         <HStack justifyContent="space-between" w="full">
           <Text>{getPoolTypeLabel(pool.type)}</Text>
