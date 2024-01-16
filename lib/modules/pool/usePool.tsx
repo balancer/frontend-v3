@@ -62,8 +62,6 @@ export function _usePool({
 
   const bptPrice = calcBptPriceFor(pool)
 
-  const loading = isLoadingOnchainData || isLoadingOnchainUserBalances
-
   async function refetch() {
     return Promise.all([refetchOnchainData(), refetchOnchainUserBalances()])
   }
@@ -71,7 +69,8 @@ export function _usePool({
   return {
     pool,
     bptPrice,
-    loading,
+    isLoadingOnchainData,
+    isLoadingOnchainUserBalances,
     // TODO: we assume here that we never need to reload the entire pool.
     // this assumption may need to be questioned
     refetch,

@@ -4,7 +4,7 @@ import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { Box, Button, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Card, HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { usePool } from '../usePool'
 import { Address, parseUnits } from 'viem'
@@ -32,7 +32,7 @@ const TABS = [
 
 export default function PoolMyLiquidity() {
   const [activeTab, setActiveTab] = useState(TABS[0])
-  const { pool, chain } = usePool()
+  const { pool, chain, isLoadingOnchainUserBalances } = usePool()
   const { toCurrency } = useCurrency()
 
   const pathname = usePathname()
@@ -125,7 +125,11 @@ export default function PoolMyLiquidity() {
                   </VStack>
                   <VStack spacing="1" alignItems="flex-end">
                     <Heading fontWeight="bold" size="h6">
-                      {toCurrency(getTotalBalanceUsd() || 0)}
+                      {isLoadingOnchainUserBalances ? (
+                        <Skeleton w="12" h="6" />
+                      ) : (
+                        toCurrency(getTotalBalanceUsd() || 0)
+                      )}
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">
                       APRs TBD
@@ -141,6 +145,7 @@ export default function PoolMyLiquidity() {
                       key={`my-liquidity-token-${token.address}`}
                       address={token.address as Address}
                       value={tokenBalanceFor(token.address)}
+                      isLoading={isLoadingOnchainUserBalances}
                     />
                   )
                 })}
