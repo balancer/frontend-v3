@@ -14,9 +14,7 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { keyBy, sumBy } from 'lodash'
 import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
 import { useTokens } from '../../tokens/useTokens'
-import { useOnchainUserPoolBalances } from '../queries/useOnchainUserPoolBalances'
 import { BPT_DECIMALS } from '../pool.constants'
-import { GqlPoolWeighted } from '@/lib/shared/services/api/generated/graphql'
 
 const TABS = [
   {
