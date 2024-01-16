@@ -7,12 +7,16 @@ import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
-import { getAprLabel, getPoolTypeLabel } from '../../pool.utils'
+import {
+  getAprLabel,
+  getPoolTypeLabel,
+  cardClickHandler,
+  cardMouseEnterHandler,
+} from '../../pool.utils'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   pool: PoolListItem
-  cardClickHandler?: (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => void
-  cardMouseEnterHandler?: (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => void
 }
 
 function PoolNameLabel({ pool }: { pool: PoolListItem }) {
@@ -49,16 +53,17 @@ function StatCard({ label, value }: { label: ReactNode; value: ReactNode }) {
 
 const MemoizedAprTooltip = memo(AprTooltip)
 
-export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: Props) {
+export function PoolListCard({ pool }: Props) {
   const { toCurrency } = useCurrency()
   const { userAddress } = usePoolListQueryState()
+  const router = useRouter()
 
   return (
     <Card
       variant="gradient"
-      onClick={event => cardClickHandler && cardClickHandler(event, pool)}
-      cursor={cardClickHandler ? 'pointer' : 'default'}
-      onMouseEnter={event => cardMouseEnterHandler && cardMouseEnterHandler(event, pool)}
+      cursor="pointer"
+      onClick={event => cardClickHandler(event, pool.id, pool.chain, router)}
+      onMouseEnter={event => cardMouseEnterHandler(event, pool.id, pool.chain, router)}
       p="md"
     >
       <VStack alignItems="flex-start" h="full">

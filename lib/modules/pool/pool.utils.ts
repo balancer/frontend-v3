@@ -2,6 +2,7 @@ import { GqlChain, GqlPoolAprValue, GqlPoolType } from '@/lib/shared/services/ap
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolVariant } from './pool.types'
 import { fNum } from '@/lib/shared/utils/numbers'
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -76,4 +77,31 @@ const poolTypeLabelMap: { [key in GqlPoolType]: string } = {
 
 export function getPoolTypeLabel(type: GqlPoolType): string {
   return poolTypeLabelMap[type]
+}
+
+export const cardClickHandler = (
+  event: React.MouseEvent<HTMLElement>,
+  id: string,
+  chain: GqlChain,
+  router: AppRouterInstance
+) => {
+  const poolPath = getPoolPath({ id, chain })
+
+  if (event.ctrlKey || event.metaKey) {
+    window.open(poolPath, '_blank')
+  } else {
+    router.push(poolPath)
+  }
+}
+
+// Prefetch pool page on card hover, otherwise there is a significant delay
+// between clicking the card and the pool page loading.
+export const cardMouseEnterHandler = (
+  event: React.MouseEvent<HTMLElement>,
+  id: string,
+  chain: GqlChain,
+  router: AppRouterInstance
+) => {
+  const poolPath = getPoolPath({ id, chain })
+  router.prefetch(poolPath)
 }
