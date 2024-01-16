@@ -14,7 +14,7 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { keyBy, sumBy } from 'lodash'
 import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
 import { useTokens } from '../../tokens/useTokens'
-import { useChainUserPoolBalances } from '../useChainUserPoolBalances'
+import { useOnchainUserPoolBalances } from '../useOnchainUserPoolBalances'
 import { BPT_DECIMALS } from '../pool.constants'
 import { GqlPoolWeighted } from '@/lib/shared/services/api/generated/graphql'
 
@@ -31,17 +31,13 @@ const TABS = [
     value: 'staked',
     label: 'Staked',
   },
-  // {
-  //   value: 'third-parties',
-  //   label: '3rd parties',
-  // },
 ]
 export default function PoolMyLiquidity() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain } = usePool()
   const { toCurrency } = useCurrency()
   const { getToken, usdValueForToken } = useTokens()
-  const { enrichedPools } = useChainUserPoolBalances([pool as GqlPoolWeighted])
+  const { enrichedPools } = useOnchainUserPoolBalances([pool as GqlPoolWeighted])
   const enrichedPool = enrichedPools[0]
 
   const pathname = usePathname()

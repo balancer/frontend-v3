@@ -55,7 +55,7 @@ function enrichPools(
   })
 }
 
-export function useChainUserPoolBalances(pools: GqlPoolWeighted[] = []) {
+export function useOnchainUserPoolBalances(pools: GqlPoolWeighted[] = []) {
   const { userAddress, isConnected } = useUserAccount()
   const { priceFor } = useTokens()
 

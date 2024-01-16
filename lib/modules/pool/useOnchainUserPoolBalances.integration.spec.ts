@@ -7,7 +7,7 @@ import { buildDefaultPoolTestProvider, testHook } from '@/test/utils/custom-rend
 import { defaultTestUserAccount, testPublicClient } from '@/test/utils/wagmi'
 import { ChainId } from '@balancer/sdk'
 import { waitFor } from '@testing-library/react'
-import { useChainUserPoolBalances } from './useChainUserPoolBalances'
+import { useOnchainUserPoolBalances } from './useOnchainUserPoolBalances'
 
 const poolMock = aGqlPoolElementMock() // Provides 80BAL-20WETH pool by default
 const weightedPoolMock = toGqlWeighedPoolMock(poolMock)
@@ -15,7 +15,7 @@ const weightedPoolMock = toGqlWeighedPoolMock(poolMock)
 async function testUseChainPoolBalances() {
   const { result } = testHook(
     () => {
-      return useChainUserPoolBalances([weightedPoolMock])
+      return useOnchainUserPoolBalances([weightedPoolMock])
     },
     { wrapper: buildDefaultPoolTestProvider(poolMock) }
   )
