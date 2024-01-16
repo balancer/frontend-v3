@@ -11,11 +11,7 @@ import {
   Slippage,
 } from '@balancer/sdk'
 import { Pool } from '../../../usePool'
-import {
-  LiquidityActionHelpers,
-  areEmptyAmounts,
-  ensureLastQueryResponse as ensureQueryOutput,
-} from '../../LiquidityActionHelpers'
+import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
