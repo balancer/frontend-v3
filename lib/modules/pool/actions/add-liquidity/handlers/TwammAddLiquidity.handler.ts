@@ -3,7 +3,7 @@ import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { Token, TokenAmount } from '@balancer/sdk'
 import { HumanAmountIn } from '../../liquidity-types'
-import { TwammBuildAddLiquidityInputs, TwammQueryAddLiquidityOutput } from '../add-liquidity.types'
+import { QueryAddLiquidityOutput, TwammBuildAddLiquidityInputs } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 
 /**
@@ -11,13 +11,13 @@ import { AddLiquidityHandler } from './AddLiquidity.handler'
  * AddLiquidityHandler interface for TWAMM adds.
  * This is just a fake example to show how to implement edge-case handlers.
  */
-export class TwammAddLiquidityHandler implements AddLiquidityHandler<TwammAddLiquidityHandler> {
+export class TwammAddLiquidityHandler implements AddLiquidityHandler {
   constructor(private chainId: SupportedChainId) {}
 
   // TODO: This is a non-sense example implementation
   public async queryAddLiquidity(
     humanAmountsIn: HumanAmountIn[]
-  ): Promise<TwammQueryAddLiquidityOutput> {
+  ): Promise<QueryAddLiquidityOutput> {
     const tokenAmount = TokenAmount.fromHumanAmount(
       {} as unknown as Token,
       humanAmountsIn[0].humanAmount || '0'

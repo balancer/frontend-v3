@@ -14,11 +14,11 @@ import {
  * - Default handler types will interact with the SDK to query and build the call data for the transaction
  * - Edge case handlers (e.g. Twamm handler) will not interact with the SDK.
  */
-export interface AddLiquidityHandler<Handler extends SupportedHandler> {
+export interface AddLiquidityHandler {
   // Query the expected output of adding liquidity
-  queryAddLiquidity(humanAmountsIn: HumanAmountIn[]): Promise<QueryAddLiquidityOutput<Handler>>
+  queryAddLiquidity(humanAmountsIn: HumanAmountIn[]): Promise<QueryAddLiquidityOutput>
   // Calculate the price impact of adding liquidity
   calculatePriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number>
   // Build tx payload for adding liquidity
-  buildAddLiquidityCallData(inputs: BuildAddLiquidityInputs<Handler>): Promise<TransactionConfig>
+  buildAddLiquidityCallData(inputs: BuildAddLiquidityInputs): Promise<TransactionConfig>
 }

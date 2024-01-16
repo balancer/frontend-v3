@@ -3,8 +3,9 @@ import { Pool } from '../../../usePool'
 import { SupportedHandler } from '../add-liquidity.types'
 import { TwammAddLiquidityHandler } from './TwammAddLiquidity.handler'
 import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
+import { AddLiquidityHandler } from '@/lib/modules/pool/actions/add-liquidity/handlers/AddLiquidity.handler'
 
-export function selectAddLiquidityHandler(pool: Pool) {
+export function selectAddLiquidityHandler(pool: Pool): AddLiquidityHandler {
   // TODO: Depending on the pool attributes we will return a different handler
   let handler: SupportedHandler
   if (pool.id === 'TWAMM-example') {

@@ -6,13 +6,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useQuery } from 'wagmi'
 import { Pool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
-import {
-  BuildAddLiquidityInputs,
-  QueryAddLiquidityOutput,
-  SdkBuildAddLiquidityInputs,
-  SupportedHandler,
-} from '../add-liquidity.types'
-import { TwammAddLiquidityHandler } from '../handlers/TwammAddLiquidity.handler'
+import { QueryAddLiquidityOutput, SupportedHandler } from '../add-liquidity.types'
 import { addLiquidityKeys } from './add-liquidity-keys'
 
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
@@ -21,7 +15,7 @@ export function useAddLiquidityBuildCallDataQuery(
   humanAmountsIn: HumanAmountIn[],
   isActiveStep: boolean,
   pool: Pool,
-  queryOutput: QueryAddLiquidityOutput<SupportedHandler>
+  queryOutput: QueryAddLiquidityOutput
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
@@ -36,25 +30,12 @@ export function useAddLiquidityBuildCallDataQuery(
       humanAmountsIn,
     }),
     async () => {
-      const baseInput: BuildAddLiquidityInputs<SupportedHandler> = {
+      return handler.buildAddLiquidityCallData({
         humanAmountsIn,
         account: userAddress,
         slippagePercent: slippage,
-        bptOut: queryOutput.bptOut,
-      }
-
-      const isSdkHandler = 'sdkQueryOutput' in queryOutput && queryOutput.sdkQueryOutput
-
-      if (isSdkHandler) {
-        const sdkBuildInput: SdkBuildAddLiquidityInputs = {
-          ...baseInput,
-          sdkQueryOutput: queryOutput.sdkQueryOutput,
-        }
-        return handler.buildAddLiquidityCallData(sdkBuildInput)
-      }
-      if (handler instanceof TwammAddLiquidityHandler) {
-        return handler.buildAddLiquidityCallData(baseInput)
-      }
+        queryOutput,
+      })
     },
     {
       enabled:

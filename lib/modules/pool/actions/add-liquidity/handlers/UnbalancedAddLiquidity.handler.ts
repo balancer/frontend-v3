@@ -4,16 +4,25 @@ import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   AddLiquidity,
   AddLiquidityKind,
+  AddLiquidityQueryOutput,
   AddLiquidityUnbalancedInput,
   PriceImpact,
   PriceImpactAmount,
   Slippage,
 } from '@balancer/sdk'
 import { Pool } from '../../../usePool'
-import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
+import { areEmptyAmounts, LiquidityActionHelpers } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
-import { SdkBuildAddLiquidityInputs, SdkQueryAddLiquidityOutput } from '../add-liquidity.types'
+import { BuildAddLiquidityInputs, QueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
+
+interface SdkQueryAddLiquidityOutput extends QueryAddLiquidityOutput {
+  sdkQueryOutput: AddLiquidityQueryOutput
+}
+
+interface SdkBuildAddLiquidityInputs extends BuildAddLiquidityInputs {
+  queryOutput: SdkQueryAddLiquidityOutput
+}
 
 /**
  * UnbalancedAddLiquidityHandler is a handler that implements the
@@ -22,9 +31,7 @@ import { AddLiquidityHandler } from './AddLiquidity.handler'
  * methods. It also handles the case where one of the input tokens is the native
  * asset instead of the wrapped native asset.
  */
-export class UnbalancedAddLiquidityHandler
-  implements AddLiquidityHandler<UnbalancedAddLiquidityHandler>
-{
+export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   helpers: LiquidityActionHelpers
 
   constructor(pool: Pool) {
@@ -64,12 +71,14 @@ export class UnbalancedAddLiquidityHandler
   public async buildAddLiquidityCallData({
     account,
     slippagePercent,
-    sdkQueryOutput,
+    queryOutput,
   }: SdkBuildAddLiquidityInputs): Promise<TransactionConfig> {
+    //TODO: You could potentially fail gracefully here in instances where a bad input is provided
+
     const addLiquidity = new AddLiquidity()
 
     const { call, to, value } = addLiquidity.buildCall({
-      ...sdkQueryOutput,
+      ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,
