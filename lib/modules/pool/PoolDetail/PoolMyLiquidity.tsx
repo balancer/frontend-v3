@@ -14,7 +14,7 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { keyBy, sumBy } from 'lodash'
 import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
 import { useTokens } from '../../tokens/useTokens'
-import { useOnchainUserPoolBalances } from '../useOnchainUserPoolBalances'
+import { useOnchainUserPoolBalances } from '../queries/useOnchainUserPoolBalances'
 import { BPT_DECIMALS } from '../pool.constants'
 import { GqlPoolWeighted } from '@/lib/shared/services/api/generated/graphql'
 
@@ -37,8 +37,6 @@ export default function PoolMyLiquidity() {
   const { pool, chain } = usePool()
   const { toCurrency } = useCurrency()
   const { getToken, usdValueForToken } = useTokens()
-  const { enrichedPools } = useOnchainUserPoolBalances([pool as GqlPoolWeighted])
-  const enrichedPool = enrichedPools[0]
 
   const pathname = usePathname()
 
@@ -47,14 +45,8 @@ export default function PoolMyLiquidity() {
   }
 
   function getBalanceToUseForTokenAmounts(useTotalRegardless?: boolean) {
-    const parsedTotalBalance = parseUnits(
-      enrichedPool.userBalance?.totalBalance || '0',
-      BPT_DECIMALS
-    )
-    const parsedStakedBalance = parseUnits(
-      enrichedPool.userBalance?.stakedBalance || '0',
-      BPT_DECIMALS
-    )
+    const parsedTotalBalance = parseUnits(pool.userBalance?.totalBalance || '0', BPT_DECIMALS)
+    const parsedStakedBalance = parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS)
 
     if (useTotalRegardless) {
       return parsedTotalBalance
@@ -105,9 +97,9 @@ export default function PoolMyLiquidity() {
       case 'all':
         return totalBalanceUsd
       case 'staked':
-        return enrichedPool.userBalance?.stakedBalanceUsd
+        return pool.userBalance?.stakedBalanceUsd
       case 'unstaked':
-        return totalBalanceUsd - (enrichedPool.userBalance?.stakedBalanceUsd || 0)
+        return totalBalanceUsd - (pool.userBalance?.stakedBalanceUsd || 0)
       default:
         return totalBalanceUsd
     }

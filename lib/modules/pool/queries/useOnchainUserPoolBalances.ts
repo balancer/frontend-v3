@@ -1,17 +1,17 @@
 import { Address, useContractReads } from 'wagmi'
-import { balancerV2GaugeV5ABI, balancerV2WeightedPoolV4ABI } from '../web3/contracts/abi/generated'
-import { useUserAccount } from '../web3/useUserAccount'
-import { formatUnits, zeroAddress } from 'viem'
-import { useTokens } from '../tokens/useTokens'
 import {
-  GqlChain,
-  GqlPoolUnion,
-  GqlPoolUserBalance,
-} from '@/lib/shared/services/api/generated/graphql'
-import { chainToIdMap } from './pool.utils'
+  balancerV2GaugeV5ABI,
+  balancerV2WeightedPoolV4ABI,
+} from '../../web3/contracts/abi/generated'
+import { useUserAccount } from '../../web3/useUserAccount'
+import { formatUnits, zeroAddress } from 'viem'
+import { useTokens } from '../../tokens/useTokens'
+import { GqlChain, GqlPoolUserBalance } from '@/lib/shared/services/api/generated/graphql'
+import { chainToIdMap } from '../pool.utils'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
-import { calcBptPrice } from './pool.helpers'
+import { calcBptPrice } from '../pool.helpers'
+import { Pool } from '../usePool'
 
 type OnchainBalanceResponse = {
   status: string
@@ -19,8 +19,8 @@ type OnchainBalanceResponse = {
   error?: Error
 }
 
-function enrichPools(
-  pools: GqlPoolUnion[],
+function mergeOnchainPoolBalanceData(
+  pools: Pool[],
   ocUnstakedBalances: OnchainBalanceResponse[],
   ocStakedBalances: OnchainBalanceResponse[],
   priceFor: (address: string, chain: GqlChain) => number
@@ -67,14 +67,14 @@ function enrichPools(
   })
 }
 
-export function useOnchainUserPoolBalances(pools: GqlPoolUnion[] = []) {
+export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   const { userAddress, isConnected } = useUserAccount()
   const { priceFor } = useTokens()
 
   const {
     data: unstakedPoolBalances = [],
     isLoading: isLoadingUnstakedPoolBalances,
-    refetch: refetchUnstakedPoolBalances,
+    refetch: refetchUnstakedBalances,
   } = useContractReads({
     contracts: pools.map(pool => ({
       abi: balancerV2WeightedPoolV4ABI,
@@ -89,7 +89,7 @@ export function useOnchainUserPoolBalances(pools: GqlPoolUnion[] = []) {
   const {
     data: stakedPoolBalances = [],
     isLoading: isLoadingStakedPoolBalances,
-    refetch: refetchedStakedPoolBalances,
+    refetch: refetchedStakedBalances,
   } = useContractReads({
     contracts: pools.map(pool => ({
       abi: balancerV2GaugeV5ABI,
@@ -101,16 +101,15 @@ export function useOnchainUserPoolBalances(pools: GqlPoolUnion[] = []) {
     })),
   })
 
-  function refetchAll() {
-    refetchedStakedPoolBalances()
-    refetchUnstakedPoolBalances()
+  async function refetch() {
+    return Promise.all([refetchedStakedBalances(), refetchUnstakedBalances()])
   }
 
   const isLoading = isLoadingStakedPoolBalances || isLoadingUnstakedPoolBalances
 
   // the typecasting to unknown is required as the wagmi hook is
   // not type inferring appropriately
-  const enrichedPools = enrichPools(
+  const enrichedPools = mergeOnchainPoolBalanceData(
     pools,
     unstakedPoolBalances as unknown as OnchainBalanceResponse[],
     stakedPoolBalances as unknown as OnchainBalanceResponse[],
@@ -118,10 +117,10 @@ export function useOnchainUserPoolBalances(pools: GqlPoolUnion[] = []) {
   )
 
   return {
-    enrichedPools,
+    data: enrichedPools,
     isLoading,
-    refetchUnstakedPoolBalances,
-    refetchedStakedPoolBalances,
-    refetchAll,
+    refetchUnstakedBalances,
+    refetchedStakedBalances,
+    refetch,
   }
 }

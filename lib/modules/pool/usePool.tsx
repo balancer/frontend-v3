@@ -16,7 +16,8 @@ import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import { calcBptPriceFor, usePoolHelpers } from './pool.helpers'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
-import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/usePoolEnrichWithOnChainData'
+import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/queries/usePoolEnrichWithOnChainData'
+import { useOnchainUserPoolBalances } from './queries/useOnchainUserPoolBalances'
 
 export type UsePoolResponse = ReturnType<typeof _usePool> & {
   chain: GqlChain
@@ -38,18 +39,34 @@ export function _usePool({
     context: { headers: { ChainId: config.chainId } },
   })
 
+  // TODO: usePoolEnrichWithOnChainData is v2 specific. We need to make this more generic.
   const {
     data: poolWithOnChainData,
-    refetch,
-    isLoading: loading,
+    refetch: refetchOnchainData,
+    isLoading: isLoadingOnchainData,
   } = usePoolEnrichWithOnChainData({
     chain,
     pool: data?.pool || initialData.pool,
   })
 
   // fallbacks to ensure the pool is always present. We prefer the pool with on chain data
-  const pool = poolWithOnChainData || data?.pool || initialData.pool
+  let pool = poolWithOnChainData || data?.pool || initialData.pool
+
+  const {
+    data: [poolWithOnchainUserBalances],
+    refetch: refetchOnchainUserBalances,
+    isLoading: isLoadingOnchainUserBalances,
+  } = useOnchainUserPoolBalances([pool])
+
+  pool = poolWithOnchainUserBalances || pool
+
   const bptPrice = calcBptPriceFor(pool)
+
+  const loading = isLoadingOnchainData || isLoadingOnchainUserBalances
+
+  async function refetch() {
+    return Promise.all([refetchOnchainData(), refetchOnchainUserBalances()])
+  }
 
   return {
     pool,
