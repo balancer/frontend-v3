@@ -44,6 +44,7 @@ interface WeightedPoolWeightChartProps {
   chain: GqlChain
   chartSizeValues: ChartSizeValues
   hasLegend?: boolean
+  isSmall?: boolean
 }
 
 export default function WeightedPoolWeightChart({
@@ -51,6 +52,7 @@ export default function WeightedPoolWeightChart({
   chain,
   chartSizeValues,
   hasLegend,
+  isSmall,
 }: WeightedPoolWeightChartProps) {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const [isChartLoaded, setIsChartLoaded] = useState(false)
@@ -122,10 +124,10 @@ export default function WeightedPoolWeightChart({
           rounded="full"
           bg="white"
           position="absolute"
-          top={chartSizeValues.haloTop.inner}
-          left={chartSizeValues.haloLeft.inner}
-          width={chartSizeValues.haloWidth.inner}
-          height={chartSizeValues.haloHeigth.inner}
+          top={chartSizeValues.haloTop}
+          left={chartSizeValues.haloLeft}
+          width={chartSizeValues.haloWidth}
+          height={chartSizeValues.haloHeigth}
           transform="translateY(0)"
           zIndex={4}
           display="flex"
@@ -134,7 +136,7 @@ export default function WeightedPoolWeightChart({
           initial={{ opacity: 0 }}
           animate={{ opacity: isChartLoaded ? 1 : 0, transition: { delay: 0.1 } }}
         >
-          <PoolWeightChartChainIcon chain={chain} isChartLoaded={isChartLoaded} />
+          <PoolWeightChartChainIcon chain={chain} isChartLoaded={isChartLoaded} isSmall={isSmall} />
         </Box>
         <Box width="full" height="full">
           <ReactECharts option={chartOption} onEvents={{}} ref={eChartsRef} />
