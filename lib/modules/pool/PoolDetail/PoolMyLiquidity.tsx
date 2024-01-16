@@ -41,12 +41,10 @@ export default function PoolMyLiquidity() {
     setActiveTab(option)
   }
 
-  function getBalanceToUseForTokenAmounts({ useTotal = false }: { useTotal?: boolean } = {}) {
+  function getBptBalanceForTab() {
     const parsedTotalBalance = parseUnits(pool.userBalance?.totalBalance || '0', BPT_DECIMALS)
     const parsedStakedBalance = parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS)
     const parsedUnstakedBalance = parseUnits(pool.userBalance?.walletBalance || '0', BPT_DECIMALS)
-
-    if (useTotal) return parsedTotalBalance
 
     switch (activeTab.value) {
       case 'all':
@@ -60,10 +58,10 @@ export default function PoolMyLiquidity() {
     }
   }
 
-  function calculateUserPoolTokenBalances({ useTotal = false }: { useTotal?: boolean } = {}) {
+  function calcUserPoolTokenBalances() {
     return keyBy(
       getProportionalExitAmountsFromScaledBptIn(
-        getBalanceToUseForTokenAmounts({ useTotal }),
+        getBptBalanceForTab(),
         pool.tokens,
         pool.dynamicData.totalShares
       ),
@@ -95,6 +93,12 @@ export default function PoolMyLiquidity() {
       default:
         return pool.userBalance?.totalBalanceUsd || 0
     }
+  }
+
+  const poolTokenBalancesForTab = calcUserPoolTokenBalances()
+
+  function tokenBalanceFor(tokenAddress: string) {
+    return poolTokenBalancesForTab[tokenAddress].amount
   }
 
   return (
@@ -136,8 +140,7 @@ export default function PoolMyLiquidity() {
                       chain={chain}
                       key={`my-liquidity-token-${token.address}`}
                       address={token.address as Address}
-                      // TODO: Fill pool balances
-                      value={calculateUserPoolTokenBalances()[token.address].amount}
+                      value={tokenBalanceFor(token.address)}
                     />
                   )
                 })}
