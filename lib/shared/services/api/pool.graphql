@@ -206,6 +206,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       walletBalance
       stakedBalanceUsd
       walletBalanceUsd
+      totalBalanceUsd
     }
     ... on GqlPoolWeighted {
       nestingType

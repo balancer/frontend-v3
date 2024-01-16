@@ -2161,6 +2161,7 @@ export type GetPoolQuery = {
           walletBalance: string
           stakedBalanceUsd: number
           walletBalanceUsd: number
+          totalBalanceUsd: number
         } | null
       }
     | {
@@ -2372,6 +2373,7 @@ export type GetPoolQuery = {
           walletBalance: string
           stakedBalanceUsd: number
           walletBalanceUsd: number
+          totalBalanceUsd: number
         } | null
       }
     | {
@@ -2727,6 +2729,7 @@ export type GetPoolQuery = {
           walletBalance: string
           stakedBalanceUsd: number
           walletBalanceUsd: number
+          totalBalanceUsd: number
         } | null
       }
     | {
@@ -2940,6 +2943,7 @@ export type GetPoolQuery = {
           walletBalance: string
           stakedBalanceUsd: number
           walletBalanceUsd: number
+          totalBalanceUsd: number
         } | null
       }
     | {
@@ -3293,6 +3297,7 @@ export type GetPoolQuery = {
           walletBalance: string
           stakedBalanceUsd: number
           walletBalanceUsd: number
+          totalBalanceUsd: number
         } | null
       }
     | {
@@ -3502,6 +3507,7 @@ export type GetPoolQuery = {
           walletBalance: string
           stakedBalanceUsd: number
           walletBalanceUsd: number
+          totalBalanceUsd: number
         } | null
       }
     | {
@@ -3711,6 +3717,7 @@ export type GetPoolQuery = {
           walletBalance: string
           stakedBalanceUsd: number
           walletBalanceUsd: number
+          totalBalanceUsd: number
         } | null
       }
     | {
@@ -4064,6 +4071,7 @@ export type GetPoolQuery = {
           walletBalance: string
           stakedBalanceUsd: number
           walletBalanceUsd: number
+          totalBalanceUsd: number
         } | null
       }
 }
@@ -5631,6 +5639,7 @@ export const GetPoolDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'walletBalance' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'stakedBalanceUsd' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'walletBalanceUsd' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'totalBalanceUsd' } },
                     ],
                   },
                 },
