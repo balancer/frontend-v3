@@ -128,7 +128,7 @@ export default function PoolMyLiquidity() {
                       {toCurrency(getTotalBalanceUsd() || 0)}
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">
-                      8.69%-12.34%
+                      APRs TBD
                     </Text>
                   </VStack>
                 </HStack>
