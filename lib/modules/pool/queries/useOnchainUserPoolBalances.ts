@@ -47,7 +47,9 @@ function mergeOnchainPoolBalanceData(
       pool.userBalance?.totalBalance || 0
     ).toString()
 
-    const totalUsdLiquidity = safeSum(pool.tokens.map(token => priceFor(token.address, pool.chain)))
+    const totalUsdLiquidity = safeSum(
+      pool.tokens.map(token => bn(token.balance).times(priceFor(token.address, pool.chain)))
+    )
     const bptPrice = calcBptPrice(totalUsdLiquidity, pool.dynamicData.totalShares)
 
     const userBalance: GqlPoolUserBalance = {
