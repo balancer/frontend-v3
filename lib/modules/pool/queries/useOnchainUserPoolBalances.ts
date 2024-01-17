@@ -78,14 +78,17 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
     isLoading: isLoadingUnstakedPoolBalances,
     refetch: refetchUnstakedBalances,
   } = useContractReads({
-    contracts: pools.map(pool => ({
-      abi: balancerV2WeightedPoolV4ABI,
-      address: pool.address as Address,
-      functionName: 'balanceOf',
-      args: [userAddress],
-      enabled: isConnected,
-      chainId: chainToIdMap[pool.chain],
-    })),
+    contracts: pools.map(
+      pool =>
+        ({
+          abi: balancerV2WeightedPoolV4ABI,
+          address: pool.address as Address,
+          functionName: 'balanceOf',
+          args: [userAddress],
+          enabled: isConnected,
+          chainId: chainToIdMap[pool.chain],
+        } as const)
+    ),
   })
 
   const {
@@ -93,14 +96,17 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
     isLoading: isLoadingStakedPoolBalances,
     refetch: refetchedStakedBalances,
   } = useContractReads({
-    contracts: pools.map(pool => ({
-      abi: balancerV2GaugeV5ABI,
-      address: (pool.staking?.gauge?.gaugeAddress as Address) || zeroAddress,
-      functionName: 'balanceOf',
-      args: [userAddress],
-      enabled: isConnected && pool.staking?.gauge?.gaugeAddress !== undefined,
-      chainId: chainToIdMap[pool.chain],
-    })),
+    contracts: pools.map(
+      pool =>
+        ({
+          abi: balancerV2GaugeV5ABI,
+          address: (pool.staking?.gauge?.gaugeAddress as Address) || zeroAddress,
+          functionName: 'balanceOf',
+          args: [userAddress],
+          enabled: isConnected && pool.staking?.gauge?.gaugeAddress !== undefined,
+          chainId: chainToIdMap[pool.chain],
+        } as const)
+    ),
   })
 
   async function refetch() {
