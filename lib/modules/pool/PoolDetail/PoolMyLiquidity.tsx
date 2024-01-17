@@ -14,6 +14,7 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { keyBy } from 'lodash'
 import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
 import { BPT_DECIMALS } from '../pool.constants'
+import { useUserAccount } from '../../web3/useUserAccount'
 
 const TABS = [
   {
@@ -34,6 +35,7 @@ export default function PoolMyLiquidity() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain, isLoadingOnchainUserBalances } = usePool()
   const { toCurrency } = useCurrency()
+  const { isConnected, isConnecting } = useUserAccount()
 
   const pathname = usePathname()
 
@@ -83,6 +85,8 @@ export default function PoolMyLiquidity() {
   }
 
   function getTotalBalanceUsd() {
+    if (!isConnected || isConnecting) return 0
+
     switch (activeTab.value) {
       case 'all':
         return pool.userBalance?.totalBalanceUsd || 0
@@ -95,9 +99,12 @@ export default function PoolMyLiquidity() {
     }
   }
 
+  const totalBalanceUsd = getTotalBalanceUsd() || 0
   const poolTokenBalancesForTab = calcUserPoolTokenBalances()
 
   function tokenBalanceFor(tokenAddress: string) {
+    if (!isConnected || isConnecting) return '0'
+
     return poolTokenBalancesForTab[tokenAddress].amount
   }
 
@@ -124,11 +131,11 @@ export default function PoolMyLiquidity() {
                     </Text>
                   </VStack>
                   <VStack spacing="1" alignItems="flex-end">
-                    {isLoadingOnchainUserBalances ? (
-                      <Skeleton w="12" h="6" />
+                    {isLoadingOnchainUserBalances || isConnecting ? (
+                      <Skeleton w="12" h="5" />
                     ) : (
                       <Heading fontWeight="bold" size="h6">
-                        {toCurrency(getTotalBalanceUsd() || 0)}
+                        {toCurrency(totalBalanceUsd)}
                       </Heading>
                     )}
                     <Text variant="secondary" fontSize="0.85rem">
@@ -145,7 +152,7 @@ export default function PoolMyLiquidity() {
                       key={`my-liquidity-token-${token.address}`}
                       address={token.address as Address}
                       value={tokenBalanceFor(token.address)}
-                      isLoading={isLoadingOnchainUserBalances}
+                      isLoading={isLoadingOnchainUserBalances || isConnecting}
                     />
                   )
                 })}
