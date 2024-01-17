@@ -36,11 +36,9 @@ test('fetches onchain user balances', async () => {
 
   const result = await testUseChainPoolBalances()
 
-  await waitFor(() => expect(result.current.enrichedPools).toHaveLength(1))
+  await waitFor(() => expect(result.current.data).toHaveLength(1))
 
-  const enrichedPool = result.current.enrichedPools[0]
+  const enrichedPool = result.current.data[0]
 
-  await waitFor(() =>
-    expect(enrichedPool.userBalance?.unstakedPoolBalance).toBe(40000000000000000000n)
-  )
+  await waitFor(() => expect(enrichedPool.userBalance?.walletBalance).toBe(40000000000000000000n))
 })
