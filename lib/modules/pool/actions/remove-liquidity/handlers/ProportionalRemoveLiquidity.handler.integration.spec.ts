@@ -20,7 +20,7 @@ function selectProportionalHandler(pool: Pool): ProportionalRemoveLiquidityHandl
 
 const defaultQueryInput: QueryRemoveLiquidityInput = {
   humanBptIn: '1',
-  tokenOut: emptyAddress, // We don't use it but it mandatory to simplify TS checks
+  tokenOut: emptyAddress, // We don't use in this scenario it but it is required to simplify TS interfaces
 }
 
 const defaultBuildInput = { account: defaultTestUserAccount, slippagePercent: '0.2' }
