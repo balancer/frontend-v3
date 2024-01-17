@@ -50,12 +50,21 @@ export default function TokenRow({
       </HStack>
       <HStack spacing="8">
         <VStack spacing="1" alignItems="flex-end">
-          <Heading fontWeight="bold" as="h6" fontSize="1rem">
-            {isLoading ? <Skeleton w="12" h="4" /> : fNum('token', value)}
-          </Heading>
-          <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-            {isLoading ? <Skeleton w="12" h="4" /> : toCurrency(totalValue)}
-          </Text>
+          {isLoading ? (
+            <Skeleton w="10" h="4" />
+          ) : (
+            <Heading fontWeight="bold" as="h6" fontSize="1rem">
+              {fNum('token', value)}
+            </Heading>
+          )}
+
+          {isLoading ? (
+            <Skeleton w="10" h="4" />
+          ) : (
+            <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+              {toCurrency(totalValue)}
+            </Text>
+          )}
         </VStack>
         {customRender && token && customRender(token)}
       </HStack>

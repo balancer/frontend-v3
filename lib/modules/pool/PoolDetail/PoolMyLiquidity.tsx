@@ -124,13 +124,13 @@ export default function PoolMyLiquidity() {
                     </Text>
                   </VStack>
                   <VStack spacing="1" alignItems="flex-end">
-                    <Heading fontWeight="bold" size="h6">
-                      {isLoadingOnchainUserBalances ? (
-                        <Skeleton w="12" h="6" />
-                      ) : (
-                        toCurrency(getTotalBalanceUsd() || 0)
-                      )}
-                    </Heading>
+                    {isLoadingOnchainUserBalances ? (
+                      <Skeleton w="12" h="6" />
+                    ) : (
+                      <Heading fontWeight="bold" size="h6">
+                        {toCurrency(getTotalBalanceUsd() || 0)}
+                      </Heading>
+                    )}
                     <Text variant="secondary" fontSize="0.85rem">
                       APRs TBD
                     </Text>
