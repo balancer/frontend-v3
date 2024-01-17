@@ -34,7 +34,7 @@ export function usePoolEnrichWithOnChainData({
   const poolTokenPrices = prices.filter(price => tokenAddresses.includes(price.address))
   const { userAddress } = useUserAccount()
 
-  return useQuery(['usePoolEnrichWithOnChainData', { pool }], async () => {
+  return useQuery(['usePoolEnrichWithOnChainData', { pool, userAddress }], async () => {
     return updateWithOnChainBalanceData({
       pool,
       client,

@@ -36,7 +36,6 @@ export function _usePool({
 
   const { data } = useQuery(GetPoolDocument, {
     variables: { id, chain, userAddress },
-    context: { headers: { ChainId: config.chainId } },
   })
 
   // TODO: usePoolEnrichWithOnChainData is v2 specific. We need to make this more generic.
