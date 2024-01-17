@@ -17,9 +17,10 @@ type Props = PropsWithChildren<{
 export default async function PoolLayout({ params: { id, chain, variant }, children }: Props) {
   const cookieStore = cookies()
   const userAddressCookie = cookieStore.get(COOKIE_KEYS.UserAddress)
+  const userAddress = userAddressCookie?.value || ''
 
   const _chain = slugToChainMap[chain]
-  const variables = { id, chain: _chain, userAddress: userAddressCookie?.value || '' }
+  const variables = { id, chain: _chain, userAddress }
 
   const { data } = await getApolloServerClient().query({
     query: GetPoolDocument,
