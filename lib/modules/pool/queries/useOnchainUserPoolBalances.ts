@@ -101,7 +101,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
     contracts: pools.map(
       pool =>
         ({
-          enabled: pool.staking?.gauge?.gaugeAddress !== undefined,
+          // enabled: pool.staking?.gauge?.gaugeAddress !== undefined,
           abi: balancerV2GaugeV5ABI,
           address: pool.staking?.gauge?.gaugeAddress as Address,
           functionName: 'balanceOf',
