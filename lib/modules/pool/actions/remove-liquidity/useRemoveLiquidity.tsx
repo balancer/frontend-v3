@@ -111,6 +111,7 @@ export function _useRemoveLiquidity() {
       humanBptIn,
       isActiveStep,
       poolId: pool.id,
+      tokenOut: singleTokenOutAddress,
       queryRemoveLiquidityOutput,
     })
   }

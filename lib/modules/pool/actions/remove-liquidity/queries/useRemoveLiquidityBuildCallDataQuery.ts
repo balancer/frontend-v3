@@ -14,7 +14,7 @@ type Props = {
   humanBptIn: HumanAmount
   isActiveStep: boolean
   poolId: string
-  tokenOut?: Address // only required by SingleTokenRemoval
+  tokenOut: Address // only required by SingleToken removal
   queryRemoveLiquidityOutput?: QueryRemoveLiquidityOutput
 }
 
@@ -24,7 +24,7 @@ export function useRemoveLiquidityBuildCallDataQuery({
   humanBptIn,
   isActiveStep,
   poolId,
-  tokenOut, // only required by SingleTokenRemoval
+  tokenOut, // only required by SingleToken removal
   queryRemoveLiquidityOutput,
 }: Props) {
   const { userAddress, isConnected } = useUserAccount()
