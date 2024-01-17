@@ -5,7 +5,7 @@ import {
   balancerV2WeightedPoolV4ABI,
 } from '../../web3/contracts/abi/generated'
 import { useUserAccount } from '../../web3/useUserAccount'
-import { formatUnits, zeroAddress } from 'viem'
+import { formatUnits } from 'viem'
 import { useTokens } from '../../tokens/useTokens'
 import { GqlChain, GqlPoolUserBalance } from '@/lib/shared/services/api/generated/graphql'
 import { chainToIdMap } from '../pool.utils'
@@ -73,7 +73,6 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   const {
     data: unstakedPoolBalances = [],
     isLoading: isLoadingUnstakedPoolBalances,
-    isIdle: isIdleUnstakedPoolBalances,
     refetch: refetchUnstakedBalances,
     error: unstakedPoolBalancesError,
   } = useContractReads({
@@ -94,7 +93,6 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   const {
     data: stakedPoolBalances = [],
     isLoading: isLoadingStakedPoolBalances,
-    isIdle: isIdleStakedPoolBalances,
     refetch: refetchedStakedBalances,
     error: stakedPoolBalancesError,
   } = useContractReads({
@@ -105,7 +103,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
         ({
           enabled: pool.staking?.gauge?.gaugeAddress !== undefined,
           abi: balancerV2GaugeV5ABI,
-          address: (pool.staking?.gauge?.gaugeAddress as Address) || zeroAddress,
+          address: pool.staking?.gauge?.gaugeAddress as Address,
           functionName: 'balanceOf',
           args: [userAddress],
           chainId: chainToIdMap[pool.chain],
@@ -117,11 +115,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
     return Promise.all([refetchUnstakedBalances(), refetchedStakedBalances()])
   }
 
-  const isLoading =
-    isLoadingUnstakedPoolBalances ||
-    isIdleUnstakedPoolBalances ||
-    isLoadingStakedPoolBalances ||
-    isIdleStakedPoolBalances
+  const isLoading = isLoadingUnstakedPoolBalances || isLoadingStakedPoolBalances
 
   const enrichedPools = mergeOnchainPoolBalanceData(
     pools,
@@ -133,7 +127,10 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   useEffect(() => {
     if (unstakedPoolBalancesError || stakedPoolBalancesError) {
       const error = ensureError(unstakedPoolBalancesError || stakedPoolBalancesError)
-
+      console.log(
+        'Failed useOnchainUserPoolBalances',
+        unstakedPoolBalancesError || stakedPoolBalancesError
+      )
       throw new SentryError('Failed useOnchainUserPoolBalances', {
         cause: error,
         context: { extra: { userAddress } },
