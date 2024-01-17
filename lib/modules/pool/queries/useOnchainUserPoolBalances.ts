@@ -9,7 +9,6 @@ import { useTokens } from '../../tokens/useTokens'
 import { GqlChain, GqlPoolUserBalance } from '@/lib/shared/services/api/generated/graphql'
 import { chainToIdMap } from '../pool.utils'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
-import BigNumber from 'bignumber.js'
 import { calcBptPrice } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { BPT_DECIMALS } from '../pool.constants'
@@ -30,22 +29,22 @@ function mergeOnchainPoolBalanceData(
     if (!ocUnstakedBalances.length || !ocStakedBalances.length) return pool
 
     const ocUnstakedBalanceInt = ocUnstakedBalances[i].result || 0n
-    const unstakedBalance = BigNumber.max(
-      formatUnits(ocUnstakedBalanceInt, BPT_DECIMALS),
-      pool.userBalance?.walletBalance || 0
-    ).toString()
+    const hasOcUnstakedBalance = !!ocUnstakedBalances[i].result
+    const unstakedBalance = hasOcUnstakedBalance
+      ? formatUnits(ocUnstakedBalanceInt, BPT_DECIMALS)
+      : pool.userBalance?.walletBalance || '0'
 
     const ocStakedBalanceInt = ocStakedBalances[i].result || 0n
-    const stakedBalance = BigNumber.max(
-      formatUnits(ocStakedBalanceInt, BPT_DECIMALS),
-      pool.userBalance?.stakedBalance || 0
-    ).toString()
+    const hasOcStakedBalance = !!ocStakedBalances[i].result
+    const stakedBalance = hasOcStakedBalance
+      ? formatUnits(ocStakedBalanceInt, BPT_DECIMALS)
+      : pool.userBalance?.stakedBalance || '0'
 
     const ocTotalBalanceInt = ocStakedBalanceInt + ocUnstakedBalanceInt
-    const totalBalance = BigNumber.max(
-      formatUnits(ocTotalBalanceInt, BPT_DECIMALS),
-      pool.userBalance?.totalBalance || 0
-    ).toString()
+    const totalBalance =
+      hasOcStakedBalance && hasOcUnstakedBalance
+        ? formatUnits(ocTotalBalanceInt, BPT_DECIMALS)
+        : pool.userBalance?.totalBalance || '0'
 
     const totalUsdLiquidity = safeSum(
       pool.tokens.map(token => bn(token.balance).times(priceFor(token.address, pool.chain)))
