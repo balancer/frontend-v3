@@ -4,9 +4,10 @@ import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.buil
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { aPhantomStablePoolStateInputMock } from '../../../__mocks__/pool.builders'
 import { Pool } from '../../../usePool'
-import { QueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquidity.types'
+import { BaseQueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquidity.types'
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
 import { ProportionalRemoveLiquidityHandler } from './ProportionalRemoveLiquidity.handler'
+import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 
 const poolMock = aBalWethPoolElementMock() // 80BAL-20WETH
 
@@ -17,8 +18,9 @@ function selectProportionalHandler(pool: Pool): ProportionalRemoveLiquidityHandl
   ) as ProportionalRemoveLiquidityHandler
 }
 
-const defaultQueryInput: QueryRemoveLiquidityInput = {
+const defaultQueryInput: BaseQueryRemoveLiquidityInput = {
   humanBptIn: '1',
+  tokenOut: emptyAddress, // We don't use it but it mandatory to simplify TS checks
 }
 
 const defaultBuildInput = { account: defaultTestUserAccount, slippagePercent: '0.2' }
@@ -54,9 +56,12 @@ describe('When proportionally removing liquidity for a weighted pool', () => {
   test('builds Tx Config', async () => {
     const handler = selectProportionalHandler(poolMock)
 
-    await handler.queryRemoveLiquidity(defaultQueryInput)
+    const queryOutput = await handler.queryRemoveLiquidity(defaultQueryInput)
 
-    const result = await handler.buildRemoveLiquidityCallData(defaultBuildInput)
+    const result = await handler.buildRemoveLiquidityCallData({
+      ...defaultBuildInput,
+      queryOutput,
+    })
 
     expect(result.to).toBe(networkConfig.contracts.balancer.vaultV2)
     expect(result.data).toBeDefined()
@@ -69,9 +74,9 @@ describe('When removing liquidity from a stable pool', () => {
 
     const handler = selectProportionalHandler(pool)
 
-    await handler.queryRemoveLiquidity(defaultQueryInput)
+    const queryOutput = await handler.queryRemoveLiquidity(defaultQueryInput)
 
-    const result = await handler.buildRemoveLiquidityCallData(defaultBuildInput)
+    const result = await handler.buildRemoveLiquidityCallData({ ...defaultBuildInput, queryOutput })
     expect(result.account).toBe(defaultTestUserAccount)
   })
 })

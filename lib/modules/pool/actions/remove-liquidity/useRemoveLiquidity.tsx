@@ -64,15 +64,14 @@ export function _useRemoveLiquidity() {
     handler,
     pool.id,
     humanBptIn,
-    singleTokenOutAddress //tokenOut --> refactor to better generic types
+    singleTokenOutAddress
   )
 
-  const { amountsOut, isPreviewQueryLoading } = useRemoveLiquidityPreviewQuery(
-    handler,
-    pool.id,
-    humanBptIn,
-    singleTokenOutAddress //tokenOut --> refactor to better generic types
-  )
+  const {
+    amountsOut,
+    isPreviewQueryLoading,
+    data: queryRemoveLiquidityOutput,
+  } = useRemoveLiquidityPreviewQuery(handler, pool.id, humanBptIn, singleTokenOutAddress)
 
   const _tokenOutUnitsByAddress: Record<Address, HumanAmount> = {}
   amountsOut?.map(tokenAmount => {
@@ -107,7 +106,13 @@ export function _useRemoveLiquidity() {
     .toString()
 
   function useBuildCallData(isActiveStep: boolean) {
-    return useRemoveLiquidityBuildCallDataQuery(handler, humanBptIn, isActiveStep, pool.id)
+    return useRemoveLiquidityBuildCallDataQuery({
+      handler,
+      humanBptIn,
+      isActiveStep,
+      poolId: pool.id,
+      queryRemoveLiquidityOutput,
+    })
   }
 
   const { isDisabled, disabledReason } = isDisabledWithReason(

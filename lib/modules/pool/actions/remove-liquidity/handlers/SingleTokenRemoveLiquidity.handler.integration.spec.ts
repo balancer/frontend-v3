@@ -3,9 +3,9 @@ import { balAddress, wETHAddress } from '@/lib/debug-helpers'
 import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { Pool } from '../../../usePool'
-import { QueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquidity.types'
-import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
+import { RemoveLiquidityType, SingleTokenRemoveLiquidityInput } from '../remove-liquidity.types'
 import { SingleTokenRemoveLiquidityHandler } from './SingleTokenRemoveLiquidity.handler'
+import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
 
 const poolMock = aBalWethPoolElementMock() // 80BAL-20WETH
 
@@ -16,7 +16,7 @@ function selectSingleTokenHandler(pool: Pool): SingleTokenRemoveLiquidityHandler
   ) as SingleTokenRemoveLiquidityHandler
 }
 
-const defaultQueryInput: QueryRemoveLiquidityInput = {
+const defaultQueryInput: SingleTokenRemoveLiquidityInput = {
   humanBptIn: '1',
   tokenOut: balAddress,
 }
@@ -41,14 +41,14 @@ describe('When removing unbalanced liquidity for a weighted pool', () => {
   test('builds Tx Config', async () => {
     const handler = selectSingleTokenHandler(poolMock)
 
-    const inputs: QueryRemoveLiquidityInput = {
+    const inputs: SingleTokenRemoveLiquidityInput = {
       humanBptIn: '1',
       tokenOut: balAddress,
     }
 
-    await handler.queryRemoveLiquidity(inputs)
+    const queryOutput = await handler.queryRemoveLiquidity(inputs)
 
-    const result = await handler.buildRemoveLiquidityCallData(defaultBuildInput)
+    const result = await handler.buildRemoveLiquidityCallData({ ...defaultBuildInput, queryOutput })
 
     expect(result.to).toBe(networkConfig.contracts.balancer.vaultV2)
     expect(result.data).toBeDefined()
