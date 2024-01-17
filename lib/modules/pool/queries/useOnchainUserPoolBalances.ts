@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Address, useContractReads } from 'wagmi'
 import {
   balancerV2GaugeV5ABI,
@@ -12,30 +13,26 @@ import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import { calcBptPrice } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { BPT_DECIMALS } from '../pool.constants'
-
-type OnchainBalanceResponse = {
-  status: string
-  result?: bigint
-  error?: Error
-}
+import { useEffect } from 'react'
+import { SentryError, ensureError } from '@/lib/shared/utils/errors'
 
 function mergeOnchainPoolBalanceData(
   pools: Pool[],
-  ocUnstakedBalances: OnchainBalanceResponse[],
-  ocStakedBalances: OnchainBalanceResponse[],
+  ocUnstakedBalances: bigint[],
+  ocStakedBalances: bigint[],
   priceFor: (address: string, chain: GqlChain) => number
 ) {
   return pools.map((pool, i) => {
     if (!ocUnstakedBalances.length || !ocStakedBalances.length) return pool
 
-    const ocUnstakedBalanceInt = ocUnstakedBalances[i].result || 0n
-    const hasOcUnstakedBalance = !!ocUnstakedBalances[i].result
+    const hasOcUnstakedBalance = !!ocUnstakedBalances[i]
+    const ocUnstakedBalanceInt = BigInt(ocUnstakedBalances[i] || 0) // BigInt casting here is needed because weirdly result can be a string of 0.
     const unstakedBalance = hasOcUnstakedBalance
       ? formatUnits(ocUnstakedBalanceInt, BPT_DECIMALS)
       : pool.userBalance?.walletBalance || '0'
 
-    const ocStakedBalanceInt = ocStakedBalances[i].result || 0n
-    const hasOcStakedBalance = !!ocStakedBalances[i].result
+    const hasOcStakedBalance = !!ocStakedBalances[i]
+    const ocStakedBalanceInt = BigInt(ocStakedBalances[i] || 0)
     const stakedBalance = hasOcStakedBalance
       ? formatUnits(ocStakedBalanceInt, BPT_DECIMALS)
       : pool.userBalance?.stakedBalance || '0'
@@ -76,8 +73,12 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   const {
     data: unstakedPoolBalances = [],
     isLoading: isLoadingUnstakedPoolBalances,
+    isIdle: isIdleUnstakedPoolBalances,
     refetch: refetchUnstakedBalances,
+    error: unstakedPoolBalancesError,
   } = useContractReads({
+    allowFailure: false,
+    enabled: isConnected,
     contracts: pools.map(
       pool =>
         ({
@@ -85,7 +86,6 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
           address: pool.address as Address,
           functionName: 'balanceOf',
           args: [userAddress],
-          enabled: isConnected,
           chainId: chainToIdMap[pool.chain],
         } as const)
     ),
@@ -94,35 +94,54 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   const {
     data: stakedPoolBalances = [],
     isLoading: isLoadingStakedPoolBalances,
+    isIdle: isIdleStakedPoolBalances,
     refetch: refetchedStakedBalances,
+    error: stakedPoolBalancesError,
   } = useContractReads({
+    allowFailure: false,
+    enabled: isConnected,
     contracts: pools.map(
       pool =>
         ({
+          enabled: pool.staking?.gauge?.gaugeAddress !== undefined,
           abi: balancerV2GaugeV5ABI,
           address: (pool.staking?.gauge?.gaugeAddress as Address) || zeroAddress,
           functionName: 'balanceOf',
           args: [userAddress],
-          enabled: isConnected && pool.staking?.gauge?.gaugeAddress !== undefined,
           chainId: chainToIdMap[pool.chain],
         } as const)
     ),
   })
 
   async function refetch() {
-    return Promise.all([refetchedStakedBalances(), refetchUnstakedBalances()])
+    return Promise.all([refetchUnstakedBalances(), refetchedStakedBalances()])
   }
 
-  const isLoading = isLoadingStakedPoolBalances || isLoadingUnstakedPoolBalances
+  const isLoading =
+    isLoadingUnstakedPoolBalances ||
+    isIdleUnstakedPoolBalances ||
+    isLoadingStakedPoolBalances ||
+    isIdleStakedPoolBalances
 
   // the typecasting to unknown is required as the wagmi hook is
   // not type inferring appropriately
   const enrichedPools = mergeOnchainPoolBalanceData(
     pools,
-    unstakedPoolBalances as unknown as OnchainBalanceResponse[],
-    stakedPoolBalances as unknown as OnchainBalanceResponse[],
+    unstakedPoolBalances,
+    stakedPoolBalances,
     priceFor
   )
+
+  useEffect(() => {
+    if (unstakedPoolBalancesError || stakedPoolBalancesError) {
+      const error = ensureError(unstakedPoolBalancesError || stakedPoolBalancesError)
+
+      throw new SentryError('Failed useOnchainUserPoolBalances', {
+        cause: error,
+        context: { extra: { userAddress } },
+      })
+    }
+  }, [unstakedPoolBalancesError, stakedPoolBalancesError])
 
   return {
     data: enrichedPools,
