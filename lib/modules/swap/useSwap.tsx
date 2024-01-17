@@ -3,14 +3,13 @@
 
 import { getNetworkConfig } from '@/lib/config/app.config'
 import {
-  GetSorSwapsDocument,
   GetSorSwapsQuery,
   GqlChain,
   GqlSorSwapType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { makeVar, useLazyQuery, useReactiveVar } from '@apollo/client'
-import { PropsWithChildren, createContext, useEffect, useState } from 'react'
+import { makeVar, useApolloClient, useReactiveVar } from '@apollo/client'
+import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { Address, isAddress } from 'viem'
 import { emptyAddress } from '../web3/contracts/wagmi-helpers'
 import { useUserAccount } from '../web3/useUserAccount'
@@ -18,6 +17,9 @@ import { LABELS } from '@/lib/shared/labels'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useDebouncedCallback } from 'use-debounce'
 import { useCountdown } from 'usehooks-ts'
+import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
+import { SentryError, ensureError } from '@/lib/shared/utils/errors'
+import { bn } from '@/lib/shared/utils/numbers'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -45,57 +47,82 @@ const swapStateVar = makeVar<SwapState>({
   swapType: GqlSorSwapType.ExactIn,
 })
 
+// Unecessary for now but allows us to add logic to select other handlers in the future.
+function selectSwapHandler() {
+  return new DefaultSwapHandler()
+}
+
 export function _useSwap() {
   const swapState = useReactiveVar(swapStateVar)
 
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
   const [selectedChain, setSelectedChain] = useState<GqlChain>(GqlChain.Mainnet)
   const [swapOutput, setSwapOutput] = useState<GetSorSwapsQuery['swaps']>()
+  const [isFetching, setIsFetching] = useState(false)
 
   const { isConnected } = useUserAccount()
   const networkConfig = getNetworkConfig(selectedChain)
+
+  const handler = useMemo(() => selectSwapHandler(), [])
+  const client = useApolloClient()
 
   const [refetchCountdownSecs, { startCountdown, resetCountdown, stopCountdown }] = useCountdown({
     countStart: 30,
     intervalMs: 1000,
   })
 
-  const shouldFetchSwap = (state: SwapState) =>
-    isAddress(state.tokenIn.address) && isAddress(state.tokenOut.address) && !!state.swapType
+  const shouldFetchSwap = (state: SwapState, swapAmount: string) =>
+    isAddress(state.tokenIn.address) &&
+    isAddress(state.tokenOut.address) &&
+    !!state.swapType &&
+    bn(swapAmount).gt(0)
 
   const getSwapAmount = (state: SwapState) =>
     (state.swapType === GqlSorSwapType.ExactIn ? state.tokenIn.amount : state.tokenOut.amount) ||
     '0'
-
-  const [fetchSwapQuery, { loading }] = useLazyQuery(GetSorSwapsDocument, {
-    fetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-  })
 
   async function fetchSwap() {
     resetCountdown()
     stopCountdown()
     const state = swapStateVar()
 
-    if (!shouldFetchSwap(state)) return
+    const swapAmount = getSwapAmount(state)
 
-    const { data } = await fetchSwapQuery({
-      fetchPolicy: 'no-cache',
-      variables: {
+    if (!shouldFetchSwap(state, swapAmount)) {
+      setReturnAmount(undefined, state.swapType)
+      return
+    }
+
+    try {
+      setIsFetching(true)
+
+      const result = await handler.simulateSwap({
+        apolloClient: client,
         chain: selectedChain,
         tokenIn: state.tokenIn.address,
         tokenOut: state.tokenOut.address,
         swapType: state.swapType,
         swapAmount: getSwapAmount(state),
-        swapOptions: {
-          maxPools: 8,
-        },
-      },
-    })
+      })
 
-    setSwapOutput(data?.swaps)
-    setReturnAmount(data?.swaps, state.swapType)
-    startCountdown()
+      setSwapOutput(result?.swaps)
+      setReturnAmount(result?.swaps, state.swapType)
+      startCountdown()
+      setIsFetching(false)
+    } catch (e) {
+      const error = ensureError(e)
+      console.log('error', error)
+
+      throw new SentryError('Failed to fetch swap', {
+        cause: error,
+        context: {
+          extra: {
+            chain: selectedChain,
+            ...state,
+          },
+        },
+      })
+    }
   }
 
   const debouncedFetchSwaps = useDebouncedCallback(fetchSwap, 300)
@@ -236,7 +263,7 @@ export function _useSwap() {
     }
   }, [refetchCountdownSecs])
 
-  const isLoading = loading
+  const isLoading = isFetching
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
