@@ -5,7 +5,7 @@ import {
   balancerV2WeightedPoolV4ABI,
 } from '../../web3/contracts/abi/generated'
 import { useUserAccount } from '../../web3/useUserAccount'
-import { formatUnits } from 'viem'
+import { formatUnits, zeroAddress } from 'viem'
 import { useTokens } from '../../tokens/useTokens'
 import { GqlChain, GqlPoolUserBalance } from '@/lib/shared/services/api/generated/graphql'
 import { chainToIdMap } from '../pool.utils'
@@ -16,32 +16,34 @@ import { BPT_DECIMALS } from '../pool.constants'
 import { useEffect } from 'react'
 import { SentryError, ensureError } from '@/lib/shared/utils/errors'
 
-function mergeOnchainPoolBalanceData(
+/**
+ * Overwrites the pool's userBalance with onchain data.
+ *
+ * Needs to be an overwrite rather than a merge because figuring out if an
+ * onchain result is correct over the API result is too complicated. e.g. in the
+ * stakedBalance case, we allow failures, so that the array is the correct size. We know
+ * there will be failures for pools that don't have gauges. If they don't have
+ * gauges then they don't have staked balances, so we can safely overwrite
+ * with a 0 balance.
+ */
+function overwriteOnchainPoolBalanceData(
   pools: Pool[],
   ocUnstakedBalances: bigint[],
-  ocStakedBalances: bigint[],
+  ocStakedBalances: (bigint | null)[],
   priceFor: (address: string, chain: GqlChain) => number
 ) {
+  console.log('mergeOnchainPoolBalanceData', ocUnstakedBalances, ocStakedBalances)
   return pools.map((pool, i) => {
     if (!ocUnstakedBalances.length || !ocStakedBalances.length) return pool
 
-    const hasOcUnstakedBalance = !!ocUnstakedBalances[i]
-    const ocUnstakedBalanceInt = BigInt(ocUnstakedBalances[i] || 0) // BigInt casting here is needed because weirdly result can be a string of 0.
-    const unstakedBalance = hasOcUnstakedBalance
-      ? formatUnits(ocUnstakedBalanceInt, BPT_DECIMALS)
-      : pool.userBalance?.walletBalance || '0'
+    const ocUnstakedBalanceInt = BigInt(ocUnstakedBalances[i]) // BigInt casting here is needed because, weirdly, result can be a string of 0.
+    const unstakedBalance = formatUnits(ocUnstakedBalanceInt, BPT_DECIMALS)
 
-    const hasOcStakedBalance = !!ocStakedBalances[i]
     const ocStakedBalanceInt = BigInt(ocStakedBalances[i] || 0)
-    const stakedBalance = hasOcStakedBalance
-      ? formatUnits(ocStakedBalanceInt, BPT_DECIMALS)
-      : pool.userBalance?.stakedBalance || '0'
+    const stakedBalance = formatUnits(ocStakedBalanceInt, BPT_DECIMALS)
 
     const ocTotalBalanceInt = ocStakedBalanceInt + ocUnstakedBalanceInt
-    const totalBalance =
-      hasOcStakedBalance && hasOcUnstakedBalance
-        ? formatUnits(ocTotalBalanceInt, BPT_DECIMALS)
-        : pool.userBalance?.totalBalance || '0'
+    const totalBalance = formatUnits(ocTotalBalanceInt, BPT_DECIMALS)
 
     const totalUsdLiquidity = safeSum(
       pool.tokens.map(token => bn(token.balance).times(priceFor(token.address, pool.chain)))
@@ -96,14 +98,13 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
     refetch: refetchedStakedBalances,
     error: stakedPoolBalancesError,
   } = useContractReads({
-    allowFailure: false,
     enabled: isConnected,
     contracts: pools.map(
       pool =>
         ({
-          // enabled: pool.staking?.gauge?.gaugeAddress !== undefined,
           abi: balancerV2GaugeV5ABI,
-          address: pool.staking?.gauge?.gaugeAddress as Address,
+          // We have to let the contract call fail if there is no gauge address so the array is the right size.
+          address: (pool.staking?.gauge?.gaugeAddress as Address) || zeroAddress,
           functionName: 'balanceOf',
           args: [userAddress],
           chainId: chainToIdMap[pool.chain],
@@ -117,10 +118,10 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
 
   const isLoading = isLoadingUnstakedPoolBalances || isLoadingStakedPoolBalances
 
-  const enrichedPools = mergeOnchainPoolBalanceData(
+  const enrichedPools = overwriteOnchainPoolBalanceData(
     pools,
     unstakedPoolBalances,
-    stakedPoolBalances,
+    stakedPoolBalances.map(b => b.result || null),
     priceFor
   )
 
