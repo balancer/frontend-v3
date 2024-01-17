@@ -4,7 +4,7 @@ import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.buil
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { aPhantomStablePoolStateInputMock } from '../../../__mocks__/pool.builders'
 import { Pool } from '../../../usePool'
-import { BaseQueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquidity.types'
+import { QueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquidity.types'
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
 import { ProportionalRemoveLiquidityHandler } from './ProportionalRemoveLiquidity.handler'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
@@ -18,7 +18,7 @@ function selectProportionalHandler(pool: Pool): ProportionalRemoveLiquidityHandl
   ) as ProportionalRemoveLiquidityHandler
 }
 
-const defaultQueryInput: BaseQueryRemoveLiquidityInput = {
+const defaultQueryInput: QueryRemoveLiquidityInput = {
   humanBptIn: '1',
   tokenOut: emptyAddress, // We don't use it but it mandatory to simplify TS checks
 }

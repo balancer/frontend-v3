@@ -17,18 +17,10 @@ export enum RemoveLiquidityType {
   - SDK handlers will extend it with sdk fields (see interfaces below).
   - Edge case handlers (i.e. TWAMM handler) that do not use the SDK will just implement this base interface without extending it.
 */
-export interface BaseQueryRemoveLiquidityInput {
+export interface QueryRemoveLiquidityInput {
   humanBptIn: HumanAmount
   tokenOut: Address // Only SingleToken handler uses tokenOut but we define it here to simply optional type handling
 }
-export interface SingleTokenRemoveLiquidityInput {
-  humanBptIn: HumanAmount
-  tokenOut: Address
-}
-
-export type QueryRemoveLiquidityInput =
-  | BaseQueryRemoveLiquidityInput
-  | SingleTokenRemoveLiquidityInput
 
 export type QueryRemoveLiquidityOutput = {
   amountsOut: TokenAmount[]

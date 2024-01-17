@@ -13,7 +13,7 @@ import { BPT_DECIMALS } from '../../../pool.constants'
 import { Pool } from '../../../usePool'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
 import {
-  BaseQueryRemoveLiquidityInput,
+  QueryRemoveLiquidityInput,
   SdkBuildRemoveLiquidityInput,
   SdkQueryRemoveLiquidityOutput,
 } from '../remove-liquidity.types'
@@ -28,7 +28,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
 
   public async queryRemoveLiquidity({
     humanBptIn: bptIn,
-  }: BaseQueryRemoveLiquidityInput): Promise<SdkQueryRemoveLiquidityOutput> {
+  }: QueryRemoveLiquidityInput): Promise<SdkQueryRemoveLiquidityOutput> {
     const removeLiquidity = new RemoveLiquidity()
     const removeLiquidityInput = this.constructSdkInput(bptIn)
 

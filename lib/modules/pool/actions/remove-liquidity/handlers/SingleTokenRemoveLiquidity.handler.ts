@@ -17,7 +17,7 @@ import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActio
 import {
   SdkBuildRemoveLiquidityInput,
   SdkQueryRemoveLiquidityOutput,
-  SingleTokenRemoveLiquidityInput,
+  QueryRemoveLiquidityInput,
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
 import { SentryError } from '@/lib/shared/utils/errors'
@@ -32,7 +32,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
   public async queryRemoveLiquidity({
     humanBptIn,
     tokenOut,
-  }: SingleTokenRemoveLiquidityInput): Promise<SdkQueryRemoveLiquidityOutput> {
+  }: QueryRemoveLiquidityInput): Promise<SdkQueryRemoveLiquidityOutput> {
     const removeLiquidity = new RemoveLiquidity()
     const removeLiquidityInput = this.constructSdkInput(humanBptIn, tokenOut)
 
@@ -47,7 +47,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
   public async calculatePriceImpact({
     humanBptIn,
     tokenOut,
-  }: SingleTokenRemoveLiquidityInput): Promise<number> {
+  }: QueryRemoveLiquidityInput): Promise<number> {
     if (!tokenOut) {
       throw new SentryError('TokenOut should never be undefined in Single Token remove liquidity')
     }
