@@ -123,8 +123,6 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
     isLoadingStakedPoolBalances ||
     isIdleStakedPoolBalances
 
-  // the typecasting to unknown is required as the wagmi hook is
-  // not type inferring appropriately
   const enrichedPools = mergeOnchainPoolBalanceData(
     pools,
     unstakedPoolBalances,
