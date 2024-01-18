@@ -20,7 +20,7 @@ import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWit
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
-import { useRefetchCountdown } from '@/lib/shared/hooks/transaction-flows/useRefetchCountdown'
+import { useRefetchCountdown } from '@/lib/shared/hooks/useRefetchCountdown'
 import { sleep } from '@/lib/shared/utils/time'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
@@ -92,23 +92,25 @@ export function _useAddLiquidity() {
     pool.id
   )
 
-  const { isPreviewQueryLoading, bptOut, refetchPreviewQuery } = useAddLiquidityPreviewQuery(
-    handler,
-    humanAmountsIn,
-    pool.id
-  )
+  const {
+    isPreviewQueryLoading,
+    bptOut,
+    refetchPreviewQuery,
+    data: queryAddLiquidityOutput,
+  } = useAddLiquidityPreviewQuery(handler, humanAmountsIn, pool.id)
 
   const { secondsToRefetch, startRefetchCountdown, stopRefetchCountdown } = useRefetchCountdown()
 
   let refetchBuildQuery: () => Promise<object>
   function useBuildCallData(isActiveStep: boolean) {
-    const buildQuery = useAddLiquidityBuildCallDataQuery(
+    const buildQuery = useAddLiquidityBuildCallDataQuery({
       handler,
       humanAmountsIn,
       isActiveStep,
       pool,
-      startRefetchCountdown
-    )
+      startRefetchCountdown,
+      queryAddLiquidityOutput,
+    })
     refetchBuildQuery = buildQuery.refetch
     return buildQuery
   }

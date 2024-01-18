@@ -4,12 +4,17 @@ import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { Box, Button, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Card, HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { usePool } from '../usePool'
-import { Address } from 'viem'
+import { Address, parseUnits } from 'viem'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { keyBy } from 'lodash'
+import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
+import { BPT_DECIMALS } from '../pool.constants'
+import { useUserAccount } from '../../web3/useUserAccount'
 
 const TABS = [
   {
@@ -24,18 +29,83 @@ const TABS = [
     value: 'staked',
     label: 'Staked',
   },
-  {
-    value: 'third-parties',
-    label: '3rd parties',
-  },
 ]
+
 export default function PoolMyLiquidity() {
   const [activeTab, setActiveTab] = useState(TABS[0])
-  const { pool, chain } = usePool()
+  const { pool, chain, isLoadingOnchainUserBalances } = usePool()
+  const { toCurrency } = useCurrency()
+  const { isConnected, isConnecting } = useUserAccount()
+
   const pathname = usePathname()
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
+  }
+
+  function getBptBalanceForTab() {
+    const parsedTotalBalance = parseUnits(pool.userBalance?.totalBalance || '0', BPT_DECIMALS)
+    const parsedStakedBalance = parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS)
+    const parsedUnstakedBalance = parseUnits(pool.userBalance?.walletBalance || '0', BPT_DECIMALS)
+
+    switch (activeTab.value) {
+      case 'all':
+        return parsedTotalBalance
+      case 'staked':
+        return parsedStakedBalance
+      case 'unstaked':
+        return parsedUnstakedBalance
+      default:
+        return parsedTotalBalance
+    }
+  }
+
+  function calcUserPoolTokenBalances() {
+    return keyBy(
+      getProportionalExitAmountsFromScaledBptIn(
+        getBptBalanceForTab(),
+        pool.tokens,
+        pool.dynamicData.totalShares
+      ),
+      'address'
+    )
+  }
+
+  function getTitlePrefix() {
+    switch (activeTab.value) {
+      case 'all':
+        return 'total'
+      case 'staked':
+        return 'staked'
+      case 'unstaked':
+        return 'unstaked'
+      default:
+        return ''
+    }
+  }
+
+  function getTotalBalanceUsd() {
+    if (!isConnected || isConnecting) return 0
+
+    switch (activeTab.value) {
+      case 'all':
+        return pool.userBalance?.totalBalanceUsd || 0
+      case 'staked':
+        return pool.userBalance?.stakedBalanceUsd || 0
+      case 'unstaked':
+        return pool.userBalance?.walletBalanceUsd || 0
+      default:
+        return pool.userBalance?.totalBalanceUsd || 0
+    }
+  }
+
+  const totalBalanceUsd = getTotalBalanceUsd() || 0
+  const poolTokenBalancesForTab = calcUserPoolTokenBalances()
+
+  function tokenBalanceFor(tokenAddress: string) {
+    if (!isConnected || isConnecting) return '0'
+
+    return poolTokenBalancesForTab[tokenAddress].amount
   }
 
   return (
@@ -54,18 +124,22 @@ export default function PoolMyLiquidity() {
                 <HStack py="4" px="4" width="full" justifyContent="space-between">
                   <VStack spacing="1" alignItems="flex-start">
                     <Heading fontWeight="bold" size="h6">
-                      My balance
+                      My {getTitlePrefix()} balance
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">
                       APR range
                     </Text>
                   </VStack>
                   <VStack spacing="1" alignItems="flex-end">
-                    <Heading fontWeight="bold" size="h6">
-                      $0.00
-                    </Heading>
+                    {isLoadingOnchainUserBalances || isConnecting ? (
+                      <Skeleton w="12" h="5" />
+                    ) : (
+                      <Heading fontWeight="bold" size="h6">
+                        {toCurrency(totalBalanceUsd)}
+                      </Heading>
+                    )}
                     <Text variant="secondary" fontSize="0.85rem">
-                      8.69%-12.34%
+                      APRs TBD
                     </Text>
                   </VStack>
                 </HStack>
@@ -77,8 +151,8 @@ export default function PoolMyLiquidity() {
                       chain={chain}
                       key={`my-liquidity-token-${token.address}`}
                       address={token.address as Address}
-                      // TODO: Fill pool balances
-                      value={0}
+                      value={tokenBalanceFor(token.address)}
+                      isLoading={isLoadingOnchainUserBalances || isConnecting}
                     />
                   )
                 })}

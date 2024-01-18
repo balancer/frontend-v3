@@ -22,7 +22,7 @@ const utils = await getSdkTestUtils({
   account,
   chainId,
   client: testClient,
-  poolId, // Balancer Weighted wjAura and WETH,
+  pool: aWjAuraWethPoolElementMock(), // Balancer Weighted wjAura and WETH,
 })
 
 const { getPoolTokens, getPoolTokenBalances } = utils
@@ -45,11 +45,13 @@ describe('weighted join test', () => {
       tokenAddress: t.address,
     }))
 
-    await handler.queryAddLiquidity(humanAmountsIn)
+    const queryOutput = await handler.queryAddLiquidity(humanAmountsIn)
 
     const txConfig = await handler.buildAddLiquidityCallData({
+      humanAmountsIn,
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
+      queryOutput,
     })
 
     const { result } = testHook(() => {

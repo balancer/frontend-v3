@@ -6,23 +6,21 @@ import {
   RemoveLiquidity,
   RemoveLiquidityKind,
   RemoveLiquidityProportionalInput,
-  RemoveLiquidityQueryOutput,
   Slippage,
 } from '@balancer/sdk'
 import { Address, parseEther } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
 import { Pool } from '../../../usePool'
-import { LiquidityActionHelpers, ensureLastQueryResponse } from '../../LiquidityActionHelpers'
+import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
 import {
-  BuildRemoveLiquidityInput,
   QueryRemoveLiquidityInput,
-  QueryRemoveLiquidityOutput,
+  SdkBuildRemoveLiquidityInput,
+  SdkQueryRemoveLiquidityOutput,
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
 
 export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandler {
   helpers: LiquidityActionHelpers
-  queryResponse?: RemoveLiquidityQueryOutput
 
   constructor(pool: Pool) {
     this.helpers = new LiquidityActionHelpers(pool)
@@ -30,18 +28,16 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
 
   public async queryRemoveLiquidity({
     humanBptIn: bptIn,
-  }: QueryRemoveLiquidityInput): Promise<QueryRemoveLiquidityOutput> {
-    // Deletes the previous queryResponse to enforce that we don't buildCallData with an outdated queryResponse (while a new one is loading)
-    this.queryResponse = undefined
+  }: QueryRemoveLiquidityInput): Promise<SdkQueryRemoveLiquidityOutput> {
     const removeLiquidity = new RemoveLiquidity()
     const removeLiquidityInput = this.constructSdkInput(bptIn)
 
-    this.queryResponse = await removeLiquidity.query(
+    const sdkQueryOutput = await removeLiquidity.query(
       removeLiquidityInput,
       this.helpers.poolStateInput
     )
 
-    return { amountsOut: this.queryResponse.amountsOut }
+    return { amountsOut: sdkQueryOutput.amountsOut, sdkQueryOutput }
   }
 
   public async calculatePriceImpact(): Promise<number> {
@@ -52,16 +48,12 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
   public async buildRemoveLiquidityCallData({
     account,
     slippagePercent,
-  }: BuildRemoveLiquidityInput): Promise<TransactionConfig> {
-    this.queryResponse = ensureLastQueryResponse(
-      'Proportional remove liquidity',
-      this.queryResponse
-    )
-
+    queryOutput,
+  }: SdkBuildRemoveLiquidityInput): Promise<TransactionConfig> {
     const removeLiquidity = new RemoveLiquidity()
 
     const { call, to, value } = removeLiquidity.buildCall({
-      ...this.queryResponse,
+      ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,

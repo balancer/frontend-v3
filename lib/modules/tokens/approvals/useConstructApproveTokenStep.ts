@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { ContractPath, useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
 import { useManagedErc20Transaction } from '@/lib/modules/web3/contracts/useManagedErc20Transaction'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
@@ -15,7 +14,7 @@ import { Address } from 'viem'
 
 type Params = {
   tokenAddress: Address
-  spender?: ContractPath
+  spenderAddress: Address
   amountToApprove: bigint
   actionType: ApprovalAction
   chain: GqlChain
@@ -24,14 +23,13 @@ type Params = {
 
 export function useConstructApproveTokenStep({
   tokenAddress,
-  spender = 'balancer.vaultV2',
+  spenderAddress,
   amountToApprove = MAX_BIGINT,
   actionType,
   chain,
   completedApprovalState,
 }: Params) {
   const { isActiveStep, activateStep } = useActiveStep()
-  const spenderAddress = useContractAddress(spender)
   const { refetchAllowances, isAllowancesLoading } = useTokenAllowances()
   const { getToken } = useTokens()
   const { completedApprovals, saveCompletedApprovals } = completedApprovalState
@@ -50,7 +48,7 @@ export function useConstructApproveTokenStep({
     tokenApprovalLabels,
     { args: [spenderAddress, amountToApprove] },
     {
-      enabled: isActiveStep && !!spender && !isAllowancesLoading,
+      enabled: isActiveStep && !!spenderAddress && !isAllowancesLoading,
     }
   )
 

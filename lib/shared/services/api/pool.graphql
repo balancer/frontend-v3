@@ -1,5 +1,5 @@
-query GetPool($id: String!, $chain: GqlChain) {
-  pool: poolGetPool(id: $id, chain: $chain) {
+query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
+  pool: poolGetPool(id: $id, chain: $chain, userAddress: $userAddress) {
     id
     address
     name
@@ -199,6 +199,14 @@ query GetPool($id: String!, $chain: GqlChain) {
           }
         }
       }
+    }
+    userBalance {
+      stakedBalance
+      totalBalance
+      walletBalance
+      stakedBalanceUsd
+      walletBalanceUsd
+      totalBalanceUsd
     }
     ... on GqlPoolWeighted {
       nestingType

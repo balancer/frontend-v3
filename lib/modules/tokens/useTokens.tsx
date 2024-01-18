@@ -86,7 +86,8 @@ export function _useTokens(
   }
 
   const usdValueForToken = useCallback(
-    (token: GqlToken, amount: Numberish) => {
+    (token: GqlToken | undefined, amount: Numberish) => {
+      if (!token) return '0'
       if (amount === '') return '0'
       return bn(amount).times(priceForToken(token)).toFixed(2)
     },

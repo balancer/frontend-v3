@@ -43,7 +43,7 @@ describe('Gql pool helpers', () => {
     const result = await testUsePool()
 
     expect(result.current.gaugeExplorerLink).toBe(
-      `https://etherscan.io/address/0x-test-gauge-address`
+      `https://etherscan.io/address/0x2d42910d826e5500579d121596e98a6eb33c0a1b`
     )
   })
 

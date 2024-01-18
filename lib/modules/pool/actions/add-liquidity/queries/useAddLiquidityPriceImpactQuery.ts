@@ -29,7 +29,7 @@ export function useAddLiquidityPriceImpactQuery(
   }
 
   const query = useQuery(
-    addLiquidityKeys.preview({
+    addLiquidityKeys.priceImpact({
       userAddress,
       slippage,
       poolId,
