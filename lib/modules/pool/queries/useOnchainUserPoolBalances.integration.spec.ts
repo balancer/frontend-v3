@@ -28,7 +28,7 @@ async function createSdkUtils(pool: GqlPoolElement) {
   })
 }
 
-test.only('fetches onchain user balances', async () => {
+test('fetches onchain user balances', async () => {
   const poolMock = aBalWethPoolElementMock() // Provides 80BAL-20WETH pool by default
   const utils = await createSdkUtils(poolMock)
 
@@ -40,33 +40,47 @@ test.only('fetches onchain user balances', async () => {
   await waitFor(() => expect(result.current.data[0].userBalance?.walletBalance).toBe('40'))
 })
 
-test.skip('fetches onchain user balances when the pool does not have staking info', async () => {
-  const poolMock = aBalWethPoolElementMock() // Provides 80BAL-20WETH pool by default
+test('fetches onchain user balances when the pool does not have staking info', async () => {
+  const poolMockWithUndefinedStaking = aBalWethPoolElementMock() // Provides 80BAL-20WETH pool by default
+  poolMockWithUndefinedStaking.staking = undefined
 
-  poolMock.staking = undefined
+  expect(poolMockWithUndefinedStaking.staking).toBeUndefined()
 
-  const utils = await createSdkUtils(poolMock)
+  const utils = await createSdkUtils(poolMockWithUndefinedStaking)
 
   // sets pool wallet balance
   await utils.setUserPoolBalance('50')
 
-  const result = await testUseChainPoolBalances(poolMock)
+  const result = await testUseChainPoolBalances(poolMockWithUndefinedStaking)
 
   await waitFor(() => expect(result.current.data[0].userBalance?.walletBalance).toBe('50'))
 })
 
-test.skip('fetches onchain user balances when the pool has empty gaugeAddress', async () => {
-  const poolMock = aBalWethPoolElementMock() // Provides 80BAL-20WETH pool by default
-
+test('fetches onchain user balances when the pool has empty gaugeAddress', async () => {
+  const poolMockWithEmptyGaugeAddress = aBalWethPoolElementMock() // Provides 80BAL-20WETH pool by default
   // Empty staking address
-  if (poolMock.staking?.gauge?.gaugeAddress) poolMock.staking.gauge.gaugeAddress = ''
+  if (poolMockWithEmptyGaugeAddress.staking?.gauge?.gaugeAddress) {
+    poolMockWithEmptyGaugeAddress.staking.gauge.gaugeAddress = ''
+  }
 
-  const utils = await createSdkUtils(poolMock)
+  expect(poolMockWithEmptyGaugeAddress.staking?.gauge).toMatchInlineSnapshot(`
+    {
+      "__typename": "GqlPoolStakingGauge",
+      "gaugeAddress": "",
+      "id": "test gauge id",
+      "rewards": [],
+      "status": "ACTIVE",
+      "version": 2,
+      "workingSupply": "",
+    }
+  `)
+
+  const utils = await createSdkUtils(poolMockWithEmptyGaugeAddress)
 
   // sets pool wallet balance
   await utils.setUserPoolBalance('60')
 
-  const result = await testUseChainPoolBalances(poolMock)
+  const result = await testUseChainPoolBalances(poolMockWithEmptyGaugeAddress)
 
   await waitFor(() => expect(result.current.data[0].userBalance?.walletBalance).toBe('60'))
 })
