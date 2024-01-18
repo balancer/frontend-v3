@@ -109,17 +109,7 @@ export function getProportionalExitAmountsForBptIn(
   poolTotalShares: string
 ): TokenAmountHumanReadable[] {
   const bptInAmountScaled = parseUnits(bptInHumanReadable, 18)
-  const bptTotalSupply = parseUnits(poolTotalShares, 18)
-
-  return poolTokens.map(token => {
-    const tokenBalance = parseUnits(token.totalBalance, token.decimals)
-    const tokenProportionalAmount = (bptInAmountScaled * tokenBalance) / bptTotalSupply
-
-    return {
-      address: token.address,
-      amount: formatUnits(tokenProportionalAmount, token.decimals),
-    }
-  })
+  return getProportionalExitAmountsFromScaledBptIn(bptInAmountScaled, poolTokens, poolTotalShares)
 }
 
 export function getProportionalExitAmountsFromScaledBptIn(
