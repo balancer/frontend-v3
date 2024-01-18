@@ -8,13 +8,13 @@ import { useUserAccount } from '../../web3/useUserAccount'
 import { formatUnits, zeroAddress } from 'viem'
 import { useTokens } from '../../tokens/useTokens'
 import { GqlChain, GqlPoolUserBalance } from '@/lib/shared/services/api/generated/graphql'
-import { chainToIdMap } from '../pool.utils'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import { calcBptPrice } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { BPT_DECIMALS } from '../pool.constants'
 import { useEffect } from 'react'
 import { SentryError, ensureError } from '@/lib/shared/utils/errors'
+import { chainToIdMap } from '../../chains/chains.constants'
 
 /**
  * Overwrites the pool's userBalance with onchain data.

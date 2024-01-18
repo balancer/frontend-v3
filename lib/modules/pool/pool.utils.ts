@@ -40,19 +40,6 @@ export const chainToSlugMap: Record<GqlChain, ChainSlug> = {
 }
 export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlChain>
 
-// Maps GraphQL chain enum to chain ID
-export const chainToIdMap: Record<GqlChain, number> = {
-  [GqlChain.Mainnet]: 1,
-  [GqlChain.Arbitrum]: 42161,
-  [GqlChain.Polygon]: 137,
-  [GqlChain.Avalanche]: 43114,
-  [GqlChain.Fantom]: 250,
-  [GqlChain.Base]: 8453,
-  [GqlChain.Optimism]: 10,
-  [GqlChain.Zkevm]: 1101,
-  [GqlChain.Gnosis]: 100,
-}
-
 /**
  * Constructs path to pool detail page.
  * @param {String} id Pool ID could be ID or address depending on variant.
