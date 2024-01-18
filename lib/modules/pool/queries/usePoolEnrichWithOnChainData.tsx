@@ -17,8 +17,8 @@ import { usePublicClient, useQuery } from 'wagmi'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { WAD } from '@balancer/sdk'
-import { useUserAccount } from '../web3/useUserAccount'
-import { isComposableStablePool, isLinearPool } from './pool.utils'
+import { useUserAccount } from '../../web3/useUserAccount'
+import { isComposableStablePool, isLinearPool } from '../pool.utils'
 
 export function usePoolEnrichWithOnChainData({
   chain,
@@ -34,7 +34,7 @@ export function usePoolEnrichWithOnChainData({
   const poolTokenPrices = prices.filter(price => tokenAddresses.includes(price.address))
   const { userAddress } = useUserAccount()
 
-  return useQuery(['usePoolEnrichWithOnChainData', { pool }], async () => {
+  return useQuery(['usePoolEnrichWithOnChainData', { pool, userAddress }], async () => {
     return updateWithOnChainBalanceData({
       pool,
       client,

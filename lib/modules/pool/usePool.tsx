@@ -13,10 +13,11 @@ import { FetchPoolProps } from './pool.types'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
-import { calcBptPrice, usePoolHelpers } from './pool.helpers'
+import { calcBptPriceFor, usePoolHelpers } from './pool.helpers'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
-import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/usePoolEnrichWithOnChainData'
+import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/queries/usePoolEnrichWithOnChainData'
+import { useOnchainUserPoolBalances } from './queries/useOnchainUserPoolBalances'
 
 export type UsePoolResponse = ReturnType<typeof _usePool> & {
   chain: GqlChain
@@ -35,26 +36,43 @@ export function _usePool({
 
   const { data } = useQuery(GetPoolDocument, {
     variables: { id, chain, userAddress },
-    context: { headers: { ChainId: config.chainId } },
   })
 
+  // TODO: usePoolEnrichWithOnChainData is v2 specific. We need to make this more generic.
   const {
     data: poolWithOnChainData,
-    refetch,
-    isLoading: loading,
+    refetch: refetchOnchainData,
+    isLoading: isLoadingOnchainData,
   } = usePoolEnrichWithOnChainData({
     chain,
     pool: data?.pool || initialData.pool,
   })
 
   // fallbacks to ensure the pool is always present. We prefer the pool with on chain data
-  const pool = poolWithOnChainData || data?.pool || initialData.pool
-  const bptPrice = calcBptPrice(pool)
+  let pool: Pool = poolWithOnChainData || data?.pool || initialData.pool
+
+  const {
+    data: [poolWithOnchainUserBalances],
+    refetch: refetchOnchainUserBalances,
+    isLoading: isLoadingOnchainUserBalances,
+  } = useOnchainUserPoolBalances([pool])
+
+  pool = poolWithOnchainUserBalances || pool
+
+  const bptPrice = calcBptPriceFor(pool)
+
+  async function refetch() {
+    return Promise.all([refetchOnchainData(), refetchOnchainUserBalances()])
+  }
+
+  const isLoading = isLoadingOnchainData || isLoadingOnchainUserBalances
 
   return {
     pool,
     bptPrice,
-    loading,
+    isLoading,
+    isLoadingOnchainData,
+    isLoadingOnchainUserBalances,
     // TODO: we assume here that we never need to reload the entire pool.
     // this assumption may need to be questioned
     refetch,

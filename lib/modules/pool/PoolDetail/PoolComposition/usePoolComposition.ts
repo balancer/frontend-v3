@@ -11,7 +11,7 @@ type CompositionRow = {
 }
 
 export function usePoolComposition() {
-  const { pool, loading } = usePool()
+  const { pool, isLoadingOnchainData } = usePool()
 
   const poolComposition = useMemo(() => {
     return pool.tokens
@@ -29,5 +29,5 @@ export function usePoolComposition() {
       .filter(Boolean) as CompositionRow[]
   }, [pool])
 
-  return { poolComposition, loading }
+  return { poolComposition, loading: isLoadingOnchainData }
 }

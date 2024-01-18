@@ -4,19 +4,17 @@ import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { Box, Button, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Card, HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { usePool } from '../usePool'
 import { Address, parseUnits } from 'viem'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { keyBy, sumBy } from 'lodash'
+import { keyBy } from 'lodash'
 import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
-import { useTokens } from '../../tokens/useTokens'
-import { useChainUserPoolBalances } from '../useChainUserPoolBalances'
 import { BPT_DECIMALS } from '../pool.constants'
-import { GqlPoolWeighted } from '@/lib/shared/services/api/generated/graphql'
+import { useUserAccount } from '../../web3/useUserAccount'
 
 const TABS = [
   {
@@ -31,18 +29,13 @@ const TABS = [
     value: 'staked',
     label: 'Staked',
   },
-  // {
-  //   value: 'third-parties',
-  //   label: '3rd parties',
-  // },
 ]
+
 export default function PoolMyLiquidity() {
   const [activeTab, setActiveTab] = useState(TABS[0])
-  const { pool, chain } = usePool()
+  const { pool, chain, isLoadingOnchainUserBalances } = usePool()
   const { toCurrency } = useCurrency()
-  const { getToken, usdValueForToken } = useTokens()
-  const { enrichedPools } = useChainUserPoolBalances([pool as GqlPoolWeighted])
-  const enrichedPool = enrichedPools[0]
+  const { isConnected, isConnecting } = useUserAccount()
 
   const pathname = usePathname()
 
@@ -50,35 +43,27 @@ export default function PoolMyLiquidity() {
     setActiveTab(option)
   }
 
-  function getBalanceToUseForTokenAmounts(useTotalRegardless?: boolean) {
-    const parsedTotalBalance = parseUnits(
-      enrichedPool.userBalance?.totalBalance || '0',
-      BPT_DECIMALS
-    )
-    const parsedStakedBalance = parseUnits(
-      enrichedPool.userBalance?.stakedBalance || '0',
-      BPT_DECIMALS
-    )
+  function getBptBalanceForTab() {
+    const parsedTotalBalance = parseUnits(pool.userBalance?.totalBalance || '0', BPT_DECIMALS)
+    const parsedStakedBalance = parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS)
+    const parsedUnstakedBalance = parseUnits(pool.userBalance?.walletBalance || '0', BPT_DECIMALS)
 
-    if (useTotalRegardless) {
-      return parsedTotalBalance
-    }
     switch (activeTab.value) {
       case 'all':
         return parsedTotalBalance
       case 'staked':
         return parsedStakedBalance
       case 'unstaked':
-        return parsedTotalBalance - parsedStakedBalance
+        return parsedUnstakedBalance
       default:
         return parsedTotalBalance
     }
   }
 
-  function calculateUserPoolTokenBalances(useTotalRegardless?: boolean) {
+  function calcUserPoolTokenBalances() {
     return keyBy(
       getProportionalExitAmountsFromScaledBptIn(
-        getBalanceToUseForTokenAmounts(useTotalRegardless),
+        getBptBalanceForTab(),
         pool.tokens,
         pool.dynamicData.totalShares
       ),
@@ -100,21 +85,27 @@ export default function PoolMyLiquidity() {
   }
 
   function getTotalBalanceUsd() {
-    const tokenBalances = calculateUserPoolTokenBalances(true)
-    const totalBalanceUsd = sumBy(Object.values(tokenBalances), tokenBalance =>
-      parseFloat(usdValueForToken(getToken(tokenBalance.address, chain), tokenBalance.amount))
-    )
+    if (!isConnected || isConnecting) return 0
 
     switch (activeTab.value) {
       case 'all':
-        return totalBalanceUsd
+        return pool.userBalance?.totalBalanceUsd || 0
       case 'staked':
-        return enrichedPool.userBalance?.stakedBalanceUsd
+        return pool.userBalance?.stakedBalanceUsd || 0
       case 'unstaked':
-        return totalBalanceUsd - (enrichedPool.userBalance?.stakedBalanceUsd || 0)
+        return pool.userBalance?.walletBalanceUsd || 0
       default:
-        return totalBalanceUsd
+        return pool.userBalance?.totalBalanceUsd || 0
     }
+  }
+
+  const totalBalanceUsd = getTotalBalanceUsd() || 0
+  const poolTokenBalancesForTab = calcUserPoolTokenBalances()
+
+  function tokenBalanceFor(tokenAddress: string) {
+    if (!isConnected || isConnecting) return '0'
+
+    return poolTokenBalancesForTab[tokenAddress].amount
   }
 
   return (
@@ -140,11 +131,15 @@ export default function PoolMyLiquidity() {
                     </Text>
                   </VStack>
                   <VStack spacing="1" alignItems="flex-end">
-                    <Heading fontWeight="bold" size="h6">
-                      {toCurrency(getTotalBalanceUsd() || 0)}
-                    </Heading>
+                    {isLoadingOnchainUserBalances || isConnecting ? (
+                      <Skeleton w="12" h="5" />
+                    ) : (
+                      <Heading fontWeight="bold" size="h6">
+                        {toCurrency(totalBalanceUsd)}
+                      </Heading>
+                    )}
                     <Text variant="secondary" fontSize="0.85rem">
-                      8.69%-12.34%
+                      APRs TBD
                     </Text>
                   </VStack>
                 </HStack>
@@ -156,8 +151,8 @@ export default function PoolMyLiquidity() {
                       chain={chain}
                       key={`my-liquidity-token-${token.address}`}
                       address={token.address as Address}
-                      // TODO: Fill pool balances
-                      value={calculateUserPoolTokenBalances()[token.address].amount}
+                      value={tokenBalanceFor(token.address)}
+                      isLoading={isLoadingOnchainUserBalances || isConnecting}
                     />
                   )
                 })}
