@@ -14,7 +14,7 @@ export function useRemoveLiquidityPriceImpactQuery(
   handler: RemoveLiquidityHandler,
   poolId: string,
   humanBptIn: HumanAmount,
-  tokenOut?: Address
+  tokenOut: Address
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()

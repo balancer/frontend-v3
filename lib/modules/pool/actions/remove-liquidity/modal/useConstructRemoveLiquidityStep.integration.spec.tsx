@@ -9,7 +9,7 @@ import {
 import { act } from '@testing-library/react'
 import { PropsWithChildren } from 'react'
 import { useConstructRemoveLiquidityStep } from './useConstructRemoveLiquidityStep'
-import { RemoveLiquidityProvider, useRemoveLiquidity } from './useRemoveLiquidity'
+import { RemoveLiquidityProvider, useRemoveLiquidity } from '../useRemoveLiquidity'
 
 const PoolProvider = buildDefaultPoolTestProvider(aWjAuraWethPoolElementMock())
 

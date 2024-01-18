@@ -3,8 +3,7 @@
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { defaultDebounceMs } from '@/lib/shared/utils/queries'
-import { HumanAmount, TokenAmount } from '@balancer/sdk'
-import { useState } from 'react'
+import { HumanAmount } from '@balancer/sdk'
 import { useDebounce } from 'use-debounce'
 import { Address, useQuery } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
@@ -16,23 +15,11 @@ export function useRemoveLiquidityPreviewQuery(
   handler: RemoveLiquidityHandler,
   poolId: string,
   humanBptIn: HumanAmount,
-  tokenOut?: Address
+  tokenOut: Address
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
-  const [amountsOut, setAmountsOut] = useState<TokenAmount[] | undefined>(undefined)
   const debouncedHumanBptIn = useDebounce(humanBptIn, defaultDebounceMs)[0]
-
-  async function queryBptIn() {
-    const { amountsOut } = await handler.queryRemoveLiquidity({
-      humanBptIn: debouncedHumanBptIn,
-      tokenOut,
-    })
-
-    setAmountsOut(amountsOut)
-
-    return amountsOut
-  }
 
   const query = useQuery(
     removeLiquidityKeys.preview({
@@ -44,12 +31,22 @@ export function useRemoveLiquidityPreviewQuery(
       tokenOut,
     }),
     async () => {
-      return await queryBptIn()
+      return await handler.queryRemoveLiquidity({
+        humanBptIn: debouncedHumanBptIn,
+        tokenOut,
+      })
     },
     {
       enabled: isConnected && Number(debouncedHumanBptIn) > 0,
+      cacheTime: 0,
     }
   )
 
-  return { amountsOut, isPreviewQueryLoading: query.isLoading }
+  return {
+    ...query,
+    amountsOut: query.data?.amountsOut,
+    isPreviewQueryLoading: query.isLoading,
+    isPreviewQueryRefetching: query.isRefetching,
+    refetchPreviewQuery: query.refetch,
+  }
 }

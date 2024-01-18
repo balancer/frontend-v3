@@ -23,7 +23,7 @@ export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
 
 export function _useRemoveLiquidity() {
-  const { pool } = usePool()
+  const { pool, bptPrice } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected } = useUserAccount()
 
@@ -47,6 +47,8 @@ export function _useRemoveLiquidity() {
     .times(humanBptInPercent / 100)
     .toString() as HumanAmount
 
+  const totalUsdFromBprPrice = bn(humanBptIn).times(bptPrice).toFixed(2)
+
   const setProportionalType = () => setRemovalType(RemoveLiquidityType.Proportional)
   const setSingleTokenType = () => setRemovalType(RemoveLiquidityType.SingleToken)
   const isSingleToken = removalType === RemoveLiquidityType.SingleToken
@@ -62,15 +64,14 @@ export function _useRemoveLiquidity() {
     handler,
     pool.id,
     humanBptIn,
-    singleTokenOutAddress //tokenOut --> refactor to better generic types
+    singleTokenOutAddress
   )
 
-  const { amountsOut, isPreviewQueryLoading } = useRemoveLiquidityPreviewQuery(
-    handler,
-    pool.id,
-    humanBptIn,
-    singleTokenOutAddress //tokenOut --> refactor to better generic types
-  )
+  const {
+    amountsOut,
+    isPreviewQueryLoading,
+    data: queryRemoveLiquidityOutput,
+  } = useRemoveLiquidityPreviewQuery(handler, pool.id, humanBptIn, singleTokenOutAddress)
 
   const _tokenOutUnitsByAddress: Record<Address, HumanAmount> = {}
   amountsOut?.map(tokenAmount => {
@@ -105,7 +106,14 @@ export function _useRemoveLiquidity() {
     .toString()
 
   function useBuildCallData(isActiveStep: boolean) {
-    return useRemoveLiquidityBuildCallDataQuery(handler, humanBptIn, isActiveStep, pool.id)
+    return useRemoveLiquidityBuildCallDataQuery({
+      handler,
+      humanBptIn,
+      isActiveStep,
+      poolId: pool.id,
+      tokenOut: singleTokenOutAddress,
+      queryRemoveLiquidityOutput,
+    })
   }
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
@@ -119,8 +127,10 @@ export function _useRemoveLiquidity() {
     setProportionalType,
     setSingleTokenType,
     setSingleTokenAddress,
-    singleTokenAddress,
+    singleTokenOutAddress,
+    humanBptIn,
     humanBptInPercent,
+    totalUsdFromBprPrice,
     setHumanBptInPercent,
     isSingleToken,
     isProportional,

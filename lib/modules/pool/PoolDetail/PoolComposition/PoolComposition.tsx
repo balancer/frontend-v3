@@ -1,6 +1,6 @@
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import { Box, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
-import React from 'react'
+import { Box, Card, HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
+import React, { useEffect, useState } from 'react'
 import { usePool } from '../../usePool'
 import { Address } from 'viem'
 import { GqlPoolToken } from '@/lib/shared/services/api/generated/graphql'
@@ -13,6 +13,13 @@ export function PoolComposition() {
   const { pool, chain } = usePool()
   const { toCurrency } = useCurrency()
   const { getPoolTokenWeightByBalance } = useTokens()
+  const [totalLiquidity, setTotalLiquidity] = useState('')
+
+  useEffect(() => {
+    if (pool) {
+      setTotalLiquidity(pool.dynamicData.totalLiquidity)
+    }
+  }, [pool])
 
   return (
     <Card variant="gradient" width="full" height="320px">
@@ -37,7 +44,11 @@ export function PoolComposition() {
                   </VStack>
                   <VStack spacing="1" alignItems="flex-end">
                     <Heading fontWeight="bold" size="h6">
-                      {toCurrency(pool.dynamicData.totalLiquidity)}
+                      {totalLiquidity ? (
+                        toCurrency(totalLiquidity)
+                      ) : (
+                        <Skeleton height="24px" w="75px" />
+                      )}
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">
                       8.69% (TODO INTEGRATE)
@@ -57,13 +68,13 @@ export function PoolComposition() {
                         return (
                           <VStack minWidth="100px" spacing="1" alignItems="flex-end">
                             <Heading fontWeight="bold" as="h6" fontSize="1rem">
-                              {fNum(
-                                'weight',
-                                getPoolTokenWeightByBalance(
-                                  pool.dynamicData.totalLiquidity,
-                                  poolToken,
-                                  chain
+                              {totalLiquidity ? (
+                                fNum(
+                                  'weight',
+                                  getPoolTokenWeightByBalance(totalLiquidity, poolToken, chain)
                                 )
+                              ) : (
+                                <Skeleton height="24px" w="75px" />
                               )}
                             </Heading>
                             <HStack spacing="1">

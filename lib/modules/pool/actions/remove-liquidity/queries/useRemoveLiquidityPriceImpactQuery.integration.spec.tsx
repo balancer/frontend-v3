@@ -6,7 +6,9 @@ import { selectRemoveLiquidityHandler } from '../handlers/selectRemoveLiquidityH
 import { RemoveLiquidityType } from '../remove-liquidity.types'
 import { useRemoveLiquidityPriceImpactQuery } from './useRemoveLiquidityPriceImpactQuery'
 import { HumanAmount } from '@balancer/sdk'
+import { Address } from 'viem'
 
+const emptyTokenOut = '' as Address // We don't use it but it is required to simplify TS checks
 const poolMock = aWjAuraWethPoolElementMock()
 
 async function testQuery(humanBptIn: HumanAmount) {
@@ -15,7 +17,7 @@ async function testQuery(humanBptIn: HumanAmount) {
     RemoveLiquidityType.Proportional
   )
   const { result } = testHook(() =>
-    useRemoveLiquidityPriceImpactQuery(handler, poolMock.id, humanBptIn)
+    useRemoveLiquidityPriceImpactQuery(handler, poolMock.id, humanBptIn, emptyTokenOut)
   )
   return result
 }

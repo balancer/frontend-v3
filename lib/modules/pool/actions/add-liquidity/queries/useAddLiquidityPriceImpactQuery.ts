@@ -22,16 +22,14 @@ export function useAddLiquidityPriceImpactQuery(
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
 
   async function queryPriceImpact() {
-    const _priceImpact = await handler.calculatePriceImpact({
-      humanAmountsIn,
-    })
+    const _priceImpact = await handler.calculatePriceImpact(humanAmountsIn)
 
     setPriceImpact(_priceImpact)
     return _priceImpact
   }
 
   const query = useQuery(
-    addLiquidityKeys.preview({
+    addLiquidityKeys.priceImpact({
       userAddress,
       slippage,
       poolId,
@@ -42,8 +40,9 @@ export function useAddLiquidityPriceImpactQuery(
     },
     {
       enabled: isConnected && !areEmptyAmounts(humanAmountsIn),
+      cacheTime: 0,
     }
   )
 
-  return { priceImpact, isPriceImpactLoading: query.isLoading }
+  return { priceImpact, isPriceImpactLoading: query.isLoading, refetchPriceImpact: query.refetch }
 }

@@ -39,6 +39,7 @@ export function AddLiquidityForm() {
     isPreviewQueryLoading,
     isDisabled,
     disabledReason,
+    stopRefetchCountdown,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
 
@@ -52,6 +53,11 @@ export function AddLiquidityForm() {
 
   const bptOutLabel = safeTokenFormat(bptOut?.amount, BPT_DECIMALS)
   const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
+
+  const onModalClose = () => {
+    previewDisclosure.onClose()
+    return stopRefetchCountdown()
+  }
 
   return (
     <TokenBalancesProvider tokens={validTokens}>
@@ -93,9 +99,11 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
-                  <NumberText color="GrayText">
-                    {isPriceImpactLoading ? <Skeleton w="12" h="full" /> : formattedPriceImpact}
-                  </NumberText>
+                  {isPriceImpactLoading ? (
+                    <Skeleton w="12" h="full" />
+                  ) : (
+                    <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
+                  )}
                   <Tooltip label="Price impact" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
@@ -120,7 +128,7 @@ export function AddLiquidityForm() {
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={isDisabled}
+                isDisabled={isDisabled || isPreviewQueryLoading}
                 onClick={() => !isDisabled && previewDisclosure.onOpen()}
               >
                 Next
@@ -132,7 +140,7 @@ export function AddLiquidityForm() {
           finalFocusRef={nextBtn}
           isOpen={previewDisclosure.isOpen}
           onOpen={previewDisclosure.onOpen}
-          onClose={previewDisclosure.onClose}
+          onClose={onModalClose}
         />
       </Center>
     </TokenBalancesProvider>

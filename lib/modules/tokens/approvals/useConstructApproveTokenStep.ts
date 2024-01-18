@@ -1,32 +1,44 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { wETHAddress } from '@/lib/debug-helpers'
-import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
 import { useManagedErc20Transaction } from '@/lib/modules/web3/contracts/useManagedErc20Transaction'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useEffect } from 'react'
-import { Address } from 'viem'
-import {
-  TokenApprovalLabelArgs,
-  buildTokenApprovalLabels,
-} from '../../../tokens/approvals/approval-labels'
-import { useTokenAllowances } from '../../../web3/useTokenAllowances'
-import { useActiveStep } from '../../../../shared/hooks/transaction-flows/useActiveStep'
-import { CompletedApprovalState } from '../../../tokens/approvals/useCompletedApprovalsState'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
+import { CompletedApprovalState } from './useCompletedApprovalsState'
+import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
+import { useTokenAllowances } from '../../web3/useTokenAllowances'
+import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
+import { useTokens } from '../useTokens'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { Address } from 'viem'
 
-export function useConstructApproveTokenStep(
-  tokenAddress: Address,
-  { completedApprovals, saveCompletedApprovals }: CompletedApprovalState
-) {
+type Params = {
+  tokenAddress: Address
+  spenderAddress: Address
+  amountToApprove: bigint
+  actionType: ApprovalAction
+  chain: GqlChain
+  completedApprovalState: CompletedApprovalState
+}
+
+export function useConstructApproveTokenStep({
+  tokenAddress,
+  spenderAddress,
+  amountToApprove = MAX_BIGINT,
+  actionType,
+  chain,
+  completedApprovalState,
+}: Params) {
   const { isActiveStep, activateStep } = useActiveStep()
-  const spender = useContractAddress('balancer.vaultV2')
   const { refetchAllowances, isAllowancesLoading } = useTokenAllowances()
+  const { getToken } = useTokens()
+  const { completedApprovals, saveCompletedApprovals } = completedApprovalState
+
+  const token = getToken(tokenAddress, chain)
 
   const labelArgs: TokenApprovalLabelArgs = {
-    actionType: 'AddLiquidity',
-    // TODO: refactor when we have token info from consumer
-    symbol: tokenAddress === wETHAddress ? 'WETH' : 'wjAura',
+    actionType,
+    symbol: token ? token.symbol : 'Unknown',
   }
   const tokenApprovalLabels = buildTokenApprovalLabels(labelArgs)
 
@@ -34,9 +46,9 @@ export function useConstructApproveTokenStep(
     tokenAddress,
     'approve',
     tokenApprovalLabels,
-    { args: [spender, MAX_BIGINT] }, //By default we set MAX_BIGINT
+    { args: [spenderAddress, amountToApprove] },
     {
-      enabled: isActiveStep && !!spender && !isAllowancesLoading,
+      enabled: isActiveStep && !!spenderAddress && !isAllowancesLoading,
     }
   )
 

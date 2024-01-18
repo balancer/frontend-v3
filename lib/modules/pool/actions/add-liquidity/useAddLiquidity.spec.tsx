@@ -1,23 +1,28 @@
 import { balAddress, wETHAddress } from '@/lib/debug-helpers'
-import { aTokenExpandedMock } from '@/lib/modules/tokens/__mocks__/token.builders'
-import { aGqlPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
-import { buildDefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers'
-import { mainnet } from 'wagmi'
-import { _useAddLiquidity } from './useAddLiquidity'
-import { HumanAmountIn } from '../liquidity-types'
-import { Dictionary } from 'lodash'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
+import {
+  DefaultAddLiquidityTestProvider,
+  buildDefaultPoolTestProvider,
+  testHook,
+} from '@/test/utils/custom-renderers'
+import { Dictionary } from 'lodash'
+import { PropsWithChildren } from 'react'
+import { mainnet } from 'wagmi'
+import { HumanAmountIn } from '../liquidity-types'
+import { _useAddLiquidity } from './useAddLiquidity'
+
+const PoolProvider = buildDefaultPoolTestProvider(aBalWethPoolElementMock())
+
+export const Providers = ({ children }: PropsWithChildren) => (
+  <PoolProvider>
+    <DefaultAddLiquidityTestProvider>{children}</DefaultAddLiquidityTestProvider>
+  </PoolProvider>
+)
 
 async function testUseAddLiquidity() {
   const { result } = testHook(() => _useAddLiquidity(), {
-    wrapper: buildDefaultPoolTestProvider(
-      aGqlPoolElementMock({
-        allTokens: [
-          aTokenExpandedMock({ address: balAddress }),
-          aTokenExpandedMock({ address: wETHAddress }),
-        ],
-      })
-    ),
+    wrapper: Providers,
   })
   return result
 }

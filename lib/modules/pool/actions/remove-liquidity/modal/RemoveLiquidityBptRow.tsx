@@ -1,17 +1,17 @@
-import { HStack, Heading, Text, VStack } from '@chakra-ui/react'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
-import { bn, fNum } from '@/lib/shared/utils/numbers'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { fNum } from '@/lib/shared/utils/numbers'
+import { HStack, Heading, Text, VStack } from '@chakra-ui/react'
+import { Pool } from '../../../usePool'
+import { useRemoveLiquidity } from '../useRemoveLiquidity'
 
 type Props = {
-  pool: any
-  bptPrice: string
-  amount: number
+  pool: Pool
 }
 
-export default function RemoveLiquidityBptRow({ pool, bptPrice, amount }: Props) {
+export default function RemoveLiquidityBptRow({ pool }: Props) {
   const { toCurrency } = useCurrency()
-  const totalValue = bn(amount).times(bptPrice).toFixed(2)
+  const { humanBptIn, totalUsdValue } = useRemoveLiquidity()
 
   return (
     <HStack width="full" justifyContent="space-between">
@@ -29,10 +29,10 @@ export default function RemoveLiquidityBptRow({ pool, bptPrice, amount }: Props)
       <HStack spacing="8">
         <VStack spacing="1" alignItems="flex-end">
           <Heading fontWeight="bold" as="h6" fontSize="1rem">
-            {fNum('token', amount) || 0.0}
+            {fNum('token', humanBptIn) || 0.0}
           </Heading>
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-            {toCurrency(totalValue)}
+            {toCurrency(totalUsdValue)}
           </Text>
         </VStack>
         {/* TODO: add percentages */}

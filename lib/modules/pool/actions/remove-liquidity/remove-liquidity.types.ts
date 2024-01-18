@@ -6,37 +6,42 @@ import {
 } from '@balancer/sdk'
 import { Address } from 'wagmi'
 
-type CommonRemoveLiquidityInputs = { account?: Address; slippagePercent?: string }
-
-export type ProportionalRemoveLiquidityInputs = {
-  humanBptIn: HumanAmount
-} & CommonRemoveLiquidityInputs
-
-export type SingleTokenRemoveLiquidityInputs = {
-  humanBptIn: HumanAmount
-  tokenOut: Address
-} & CommonRemoveLiquidityInputs
-
-export type RemoveLiquidityInputs =
-  | ProportionalRemoveLiquidityInputs
-  | SingleTokenRemoveLiquidityInputs
-
-// sdkQueryOutput is optional because it will be only used in cases where we use the SDK to query/build the transaction
-// We will probably need a more abstract interface to be used by edge cases
-export type RemoveLiquidityOutputs = {
-  amountsOut: TokenAmount[]
-  sdkQueryOutput?: RemoveLiquidityQueryOutput
-}
-
-// sdkQueryOutput is optional because it will be only used in cases where we use the SDK to query/build the transaction
-// We will probably need a more abstract interface to be used by edge cases
-export type BuildLiquidityInputs = {
-  inputs: RemoveLiquidityInputs
-  sdkQueryOutput?: RemoveLiquidityQueryOutput
-}
-
 // There are other kinds but we only support two of them
 export enum RemoveLiquidityType {
   Proportional = SdkRemoveLiquidityKind.Proportional,
   SingleToken = SdkRemoveLiquidityKind.SingleToken,
+}
+
+/*
+  Base interface that every handler must implement.
+  - SDK handlers will extend it with sdk fields (see interfaces below).
+  - Edge case handlers (i.e. TWAMM handler) that do not use the SDK will just implement this base interface without extending it.
+*/
+export interface QueryRemoveLiquidityInput {
+  humanBptIn: HumanAmount
+  tokenOut: Address // Only SingleToken handler uses tokenOut but we define it here to simply optional type handling
+}
+
+export type QueryRemoveLiquidityOutput = {
+  amountsOut: TokenAmount[]
+}
+
+export type BuildRemoveLiquidityInput = {
+  account: Address
+  slippagePercent: string
+  queryOutput: QueryRemoveLiquidityOutput
+}
+
+/*
+  SDK interfaces:
+  They extend the base QueryAddLiquidityOutput interface above.
+  Implemented by the default handlers (i.e. UnbalancedAddLiquidity or NestedAddLiquidityHandler)
+  which interact with the SDK to query and build the tx callData.
+*/
+export interface SdkQueryRemoveLiquidityOutput extends QueryRemoveLiquidityOutput {
+  sdkQueryOutput: RemoveLiquidityQueryOutput
+}
+
+export interface SdkBuildRemoveLiquidityInput extends BuildRemoveLiquidityInput {
+  queryOutput: SdkQueryRemoveLiquidityOutput
 }

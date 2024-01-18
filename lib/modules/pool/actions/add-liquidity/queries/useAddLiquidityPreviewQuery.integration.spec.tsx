@@ -24,7 +24,7 @@ test('queries btp out for add liquidity', async () => {
 
   const result = await testQuery(humanAmountsIn)
 
-  await waitFor(() => expect(result.current.bptOut).not.toBeNull())
+  await waitFor(() => expect(result.current.bptOut).toBeDefined())
 
   expect(result.current.bptOut?.amount).toBeDefined()
   expect(result.current.isPreviewQueryLoading).toBeFalsy()
