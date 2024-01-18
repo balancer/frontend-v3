@@ -24,7 +24,7 @@ import {
   Tooltip,
   VStack,
 } from '@chakra-ui/react'
-import { RefObject, useRef } from 'react'
+import { RefObject, memo, useRef } from 'react'
 import { formatUnits } from 'viem'
 import { Address } from 'wagmi'
 import { BPT_DECIMALS } from '../../pool.constants'
@@ -81,14 +81,25 @@ function TokenAmountRow({
   )
 }
 
+const TimeoutLabel = memo(function TimeoutLabel({
+  secondsToRefetch,
+}: {
+  secondsToRefetch: number
+}) {
+  console.log('Render TimeoutLabel')
+  return <Text>Seconds till next query {secondsToRefetch}</Text>
+})
+
 export function AddLiquidityModal({
   isOpen,
   onClose,
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
+  console.log('Render AddLiquidityModal')
   const initialFocusRef = useRef(null)
-  const { humanAmountsIn, totalUSDValue, bptOut, priceImpact, tokens } = useAddLiquidity()
+  const { humanAmountsIn, totalUSDValue, bptOut, priceImpact, tokens, shouldFreezeQuote } =
+    useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
   const { secondsToRefetch } = useAddLiquidity()
@@ -159,11 +170,13 @@ export function AddLiquidityModal({
                   </HStack>
                 </HStack>
               </VStack>
-              <VStack align="start" spacing="md">
-                <HStack justify="space-between" w="full">
-                  <Text>Seconds till next query {secondsToRefetch}</Text>
-                </HStack>
-              </VStack>
+              {!shouldFreezeQuote && (
+                <VStack align="start" spacing="md">
+                  <HStack justify="space-between" w="full">
+                    <TimeoutLabel secondsToRefetch={secondsToRefetch} />
+                  </HStack>
+                </VStack>
+              )}
             </Card>
           </VStack>
         </ModalBody>

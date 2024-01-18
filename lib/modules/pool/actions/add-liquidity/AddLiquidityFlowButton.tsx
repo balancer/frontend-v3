@@ -6,13 +6,18 @@ import { Pool } from '../../usePool'
 import { HumanAmountIn } from '../liquidity-types'
 import { useAddLiquidity } from './useAddLiquidity'
 import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
+import { getTransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { use, useEffect } from 'react'
+import { init } from '@graphql-codegen/cli'
+import { useTraceUpdate } from '@/lib/shared/hooks/useTraceUpdate'
 
 type Props = {
   humanAmountsIn: HumanAmountIn[]
   pool: Pool
 }
 export function AddLiquidityFlowButton({ humanAmountsIn, pool }: Props) {
-  const { helpers, isComplete, setIsComplete } = useAddLiquidity()
+  console.log('Render AddLiquidityFlowButton')
+  const { helpers, setIsComplete, setAddLiquidityTransactionState, isComplete } = useAddLiquidity()
   const { getTokensByTokenAddress } = useTokens()
 
   const tokenAddresses = humanAmountsIn.map(h => h.tokenAddress)
@@ -23,10 +28,15 @@ export function AddLiquidityFlowButton({ humanAmountsIn, pool }: Props) {
     actionType: 'AddLiquidity',
   })
 
-  const { step: addLiquidityStep } = useConstructAddLiquidityStep(pool.id)
-  const steps = [tokenApprovalStep, addLiquidityStep]
+  const { step: addLiquidityStep, transaction } = useConstructAddLiquidityStep(pool.id)
+  const steps = [addLiquidityStep]
+
+  // if (initialAmountsToApprove?.length) steps.unshift(tokenApprovalStep)
+
+  // const addLiquidityTransactionState = getTransactionState(transaction)
 
   function handleJoinCompleted() {
+    console.log('Join completed')
     setIsComplete(true)
   }
 
@@ -34,6 +44,11 @@ export function AddLiquidityFlowButton({ humanAmountsIn, pool }: Props) {
   const tokensRequiringApprovalTransaction = initialAmountsToApprove
     ?.map(token => token.tokenSymbol)
     .join(' , ')
+
+  // useEffect(() => {
+  //   setAddLiquidityTransactionState(addLiquidityTransactionState)
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [addLiquidityTransactionState, setAddLiquidityTransactionState])
 
   return (
     <VStack w="full">
@@ -47,7 +62,8 @@ export function AddLiquidityFlowButton({ humanAmountsIn, pool }: Props) {
       ) : (
         <TransactionFlow
           completedAlertContent="Successfully added liquidity"
-          onCompleteClick={handleJoinCompleted}
+          onComplete={handleJoinCompleted}
+          onCompleteClick={() => true}
           completedButtonLabel="Return to pool"
           steps={steps}
         />

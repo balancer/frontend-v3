@@ -21,7 +21,8 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useRefetchCountdown } from '@/lib/shared/hooks/useRefetchCountdown'
-import { sleep } from '@/lib/shared/utils/time'
+import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -31,7 +32,10 @@ export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
 export function _useAddLiquidity() {
   const humanAmountsIn = useReactiveVar(humanAmountsInVar)
   const [isComplete, setIsComplete] = useState(false)
+  const [addLiquidityTransactionState, setAddLiquidityTransactionState] =
+    useState<TransactionState>()
 
+  const { isActiveStep, activateStep } = useActiveStep()
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected } = useUserAccount()
@@ -94,6 +98,12 @@ export function _useAddLiquidity() {
 
   const totalUSDValue = safeSum(usdAmountsIn)
 
+  const isConfirmingAddLiquidity = addLiquidityTransactionState === TransactionState.Confirming
+
+  // If the flow is complete or the final add liquidity transaction is
+  // confirming, disable queries and updates to state.
+  const shouldFreezeQuote = isComplete || isConfirmingAddLiquidity
+
   /**
    * The three handler queries, simulate + priceImpact + buildCallData.
    */
@@ -103,7 +113,7 @@ export function _useAddLiquidity() {
     refetchPreviewQuery,
     data: queryAddLiquidityOutput,
   } = useAddLiquidityPreviewQuery(handler, humanAmountsIn, pool.id, {
-    enabled: !isComplete,
+    enabled: !shouldFreezeQuote,
   })
 
   const { isPriceImpactLoading, priceImpact, refetchPriceImpact } = useAddLiquidityPriceImpactQuery(
@@ -111,26 +121,21 @@ export function _useAddLiquidity() {
     humanAmountsIn,
     pool.id,
     {
-      enabled: !isComplete,
+      enabled: !shouldFreezeQuote,
     }
   )
 
-  let refetchBuildQuery: () => Promise<object>
-  function useBuildCallData(isActiveStep: boolean) {
-    const buildQuery = useAddLiquidityBuildCallDataQuery({
-      handler,
-      humanAmountsIn,
-      isActiveStep,
-      pool,
-      startRefetchCountdown,
-      queryAddLiquidityOutput,
-      options: {
-        enabled: !isComplete,
-      },
-    })
-    refetchBuildQuery = buildQuery.refetch
-    return buildQuery
-  }
+  const buildCallDataQuery = useAddLiquidityBuildCallDataQuery({
+    handler,
+    humanAmountsIn,
+    isActiveStep,
+    pool,
+    startRefetchCountdown,
+    queryAddLiquidityOutput,
+    options: {
+      enabled: !shouldFreezeQuote && isActiveStep,
+    },
+  })
 
   /**
    * Side-effects
@@ -139,20 +144,26 @@ export function _useAddLiquidity() {
   useEffect(() => {
     const refetchQueries = async () => {
       stopRefetchCountdown()
-      await sleep(1000) // TODO: Show some kind of UI feedback during this artificial delay
       await Promise.all([refetchPreviewQuery(), refetchPriceImpact()])
-      await refetchBuildQuery()
+      await buildCallDataQuery.refetch()
       startRefetchCountdown()
     }
-    if (secondsToRefetch === 0 && !isComplete) refetchQueries()
+    if (secondsToRefetch === 0 && !shouldFreezeQuote) refetchQueries()
   }, [secondsToRefetch])
+
+  useEffect(() => {
+    console.log('Build call data query success: ', buildCallDataQuery.data)
+    if (buildCallDataQuery.data) {
+      startRefetchCountdown()
+    }
+  }, [buildCallDataQuery.data])
 
   // If the transaction flow is complete, stop the countdown timer.
   useEffect(() => {
-    if (isComplete) {
+    if (shouldFreezeQuote) {
       stopRefetchCountdown()
     }
-  }, [isComplete])
+  }, [shouldFreezeQuote])
 
   // On initial render, set the initial humanAmountsIn
   useEffect(() => {
@@ -160,6 +171,7 @@ export function _useAddLiquidity() {
   }, [])
 
   return {
+    activateStep,
     humanAmountsIn,
     tokens,
     validTokens,
@@ -174,8 +186,11 @@ export function _useAddLiquidity() {
     poolStateInput,
     secondsToRefetch,
     isComplete,
+    shouldFreezeQuote,
+    addLiquidityTransactionState,
+    buildCallDataQuery,
+    setAddLiquidityTransactionState,
     setHumanAmountIn,
-    useBuildCallData,
     stopRefetchCountdown,
     setIsComplete,
   }
