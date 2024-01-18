@@ -8,6 +8,7 @@ import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { addLiquidityKeys } from './add-liquidity-keys'
 import { QueryAddLiquidityOutput } from '../add-liquidity.types'
 import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
+import { UseQueryOptions } from '@tanstack/react-query'
 
 type Props = {
   handler: AddLiquidityHandler
@@ -16,6 +17,7 @@ type Props = {
   pool: Pool
   startRefetchCountdown: () => void
   queryAddLiquidityOutput?: QueryAddLiquidityOutput
+  options?: UseQueryOptions
 }
 
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
@@ -26,11 +28,14 @@ export function useAddLiquidityBuildCallDataQuery({
   pool,
   startRefetchCountdown,
   queryAddLiquidityOutput,
+  options = {},
 }: Props) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
 
   const { hasAllowances } = useTokenAllowances()
+
+  const enabled = options.enabled ?? true
 
   const addLiquidityQuery = useQuery(
     addLiquidityKeys.buildCallData({
@@ -57,7 +62,7 @@ export function useAddLiquidityBuildCallDataQuery({
     {
       enabled:
         // If the step is not active (the user did not click Next button) or a preview query is currently running we avoid running the build tx query to save RPC requests
-        isActiveStep && isConnected && hasAllowances(humanAmountsIn, pool),
+        enabled && isActiveStep && isConnected && hasAllowances(humanAmountsIn, pool),
 
       cacheTime: 0,
     }

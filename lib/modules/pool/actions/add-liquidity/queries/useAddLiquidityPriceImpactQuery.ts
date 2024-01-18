@@ -10,16 +10,20 @@ import { areEmptyAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { addLiquidityKeys } from './add-liquidity-keys'
+import { UseQueryOptions } from '@tanstack/react-query'
 
 export function useAddLiquidityPriceImpactQuery(
   handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
-  poolId: string
+  poolId: string,
+  options: UseQueryOptions = {}
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const [priceImpact, setPriceImpact] = useState<number | null>(null)
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
+
+  const enabled = options.enabled ?? true
 
   async function queryPriceImpact() {
     const _priceImpact = await handler.calculatePriceImpact(humanAmountsIn)
@@ -35,11 +39,9 @@ export function useAddLiquidityPriceImpactQuery(
       poolId,
       humanAmountsIn: debouncedHumanAmountsIn,
     }),
-    async () => {
-      return await queryPriceImpact()
-    },
+    async () => queryPriceImpact(),
     {
-      enabled: isConnected && !areEmptyAmounts(humanAmountsIn),
+      enabled: enabled && isConnected && !areEmptyAmounts(humanAmountsIn),
       cacheTime: 0,
     }
   )

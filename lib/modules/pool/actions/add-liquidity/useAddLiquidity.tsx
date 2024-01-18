@@ -102,12 +102,17 @@ export function _useAddLiquidity() {
     bptOut,
     refetchPreviewQuery,
     data: queryAddLiquidityOutput,
-  } = useAddLiquidityPreviewQuery(handler, humanAmountsIn, pool.id)
+  } = useAddLiquidityPreviewQuery(handler, humanAmountsIn, pool.id, {
+    enabled: !isComplete,
+  })
 
   const { isPriceImpactLoading, priceImpact, refetchPriceImpact } = useAddLiquidityPriceImpactQuery(
     handler,
     humanAmountsIn,
-    pool.id
+    pool.id,
+    {
+      enabled: !isComplete,
+    }
   )
 
   let refetchBuildQuery: () => Promise<object>
@@ -119,6 +124,9 @@ export function _useAddLiquidity() {
       pool,
       startRefetchCountdown,
       queryAddLiquidityOutput,
+      options: {
+        enabled: !isComplete,
+      },
     })
     refetchBuildQuery = buildQuery.refetch
     return buildQuery
@@ -136,7 +144,7 @@ export function _useAddLiquidity() {
       await refetchBuildQuery()
       startRefetchCountdown()
     }
-    if (secondsToRefetch === 0) refetchQueries()
+    if (secondsToRefetch === 0 && !isComplete) refetchQueries()
   }, [secondsToRefetch])
 
   // If the transaction flow is complete, stop the countdown timer.
