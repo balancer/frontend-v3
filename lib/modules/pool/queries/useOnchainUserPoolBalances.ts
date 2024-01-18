@@ -32,7 +32,6 @@ function overwriteOnchainPoolBalanceData(
   ocStakedBalances: (bigint | null)[],
   priceFor: (address: string, chain: GqlChain) => number
 ) {
-  console.log('mergeOnchainPoolBalanceData', ocUnstakedBalances, ocStakedBalances)
   return pools.map((pool, i) => {
     if (!ocUnstakedBalances.length || !ocStakedBalances.length) return pool
 
