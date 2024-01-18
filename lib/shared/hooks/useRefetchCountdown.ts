@@ -15,6 +15,7 @@ export function useRefetchCountdown({
   })
 
   const startRefetchCountdown = () => {
+    console.log('Start refetch countdown')
     resetCountdown()
     startCountdown()
   }

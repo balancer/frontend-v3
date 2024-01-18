@@ -20,9 +20,9 @@ import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWit
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
-import { useRefetchCountdown } from '@/lib/shared/hooks/useRefetchCountdown'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
+import { useCountdown } from 'usehooks-ts'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -39,7 +39,11 @@ export function _useAddLiquidity() {
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected } = useUserAccount()
-  const { secondsToRefetch, startRefetchCountdown, stopRefetchCountdown } = useRefetchCountdown()
+  const countdownTimer = useCountdown({
+    countStart: 30,
+    intervalMs: 1000,
+  })
+  const [secondsToRefetch, countdownControllers] = countdownTimer
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts']
@@ -130,8 +134,8 @@ export function _useAddLiquidity() {
     humanAmountsIn,
     isActiveStep,
     pool,
-    startRefetchCountdown,
     queryAddLiquidityOutput,
+    countdownControllers,
     options: {
       enabled: !shouldFreezeQuote && isActiveStep,
     },
@@ -140,28 +144,21 @@ export function _useAddLiquidity() {
   /**
    * Side-effects
    */
-  // When the countdown timer reaches 0, refetch the simulate and priceImpact queries.
+  // When the countdown timer reaches 0, refetch the simulate and priceImpact
+  // queries.
   useEffect(() => {
     const refetchQueries = async () => {
-      stopRefetchCountdown()
       await Promise.all([refetchPreviewQuery(), refetchPriceImpact()])
       await buildCallDataQuery.refetch()
-      startRefetchCountdown()
     }
     if (secondsToRefetch === 0 && !shouldFreezeQuote) refetchQueries()
   }, [secondsToRefetch])
 
-  useEffect(() => {
-    console.log('Build call data query success: ', buildCallDataQuery.data)
-    if (buildCallDataQuery.data) {
-      startRefetchCountdown()
-    }
-  }, [buildCallDataQuery.data])
-
   // If the transaction flow is complete, stop the countdown timer.
   useEffect(() => {
     if (shouldFreezeQuote) {
-      stopRefetchCountdown()
+      countdownControllers.stopCountdown()
+      countdownControllers.resetCountdown()
     }
   }, [shouldFreezeQuote])
 
@@ -191,7 +188,7 @@ export function _useAddLiquidity() {
     buildCallDataQuery,
     setAddLiquidityTransactionState,
     setHumanAmountIn,
-    stopRefetchCountdown,
+    stopRefetchCountdown: countdownControllers.stopCountdown,
     setIsComplete,
   }
 }

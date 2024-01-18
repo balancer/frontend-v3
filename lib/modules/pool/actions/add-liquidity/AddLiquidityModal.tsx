@@ -81,11 +81,8 @@ function TokenAmountRow({
   )
 }
 
-const TimeoutLabel = memo(function TimeoutLabel({
-  secondsToRefetch,
-}: {
-  secondsToRefetch: number
-}) {
+const TimeoutLabel = memo(function TimeoutLabel() {
+  const { secondsToRefetch } = useAddLiquidity()
   console.log('Render TimeoutLabel')
   return <Text>Seconds till next query {secondsToRefetch}</Text>
 })
@@ -102,7 +99,6 @@ export function AddLiquidityModal({
     useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
-  const { secondsToRefetch } = useAddLiquidity()
 
   const bptOutLabel = bptOut ? formatUnits(bptOut.amount, BPT_DECIMALS) : '0'
   const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
@@ -173,7 +169,7 @@ export function AddLiquidityModal({
               {!shouldFreezeQuote && (
                 <VStack align="start" spacing="md">
                   <HStack justify="space-between" w="full">
-                    <TimeoutLabel secondsToRefetch={secondsToRefetch} />
+                    <TimeoutLabel />
                   </HStack>
                 </VStack>
               )}
