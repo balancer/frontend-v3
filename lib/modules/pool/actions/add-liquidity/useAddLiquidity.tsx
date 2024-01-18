@@ -95,7 +95,7 @@ export function _useAddLiquidity() {
   const totalUSDValue = safeSum(usdAmountsIn)
 
   /**
-   * The three handler queries, simulate + priceImpact + bui.
+   * The three handler queries, simulate + priceImpact + buildCallData.
    */
   const {
     isPreviewQueryLoading,
