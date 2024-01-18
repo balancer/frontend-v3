@@ -5,11 +5,12 @@ import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.buil
 import { aUserPoolBalance } from '@/test/msw/builders/gqlUserBalance.builders'
 import { mockTokenPricesList } from '@/test/msw/handlers/Tokens.handlers'
 import { buildDefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers'
+import { waitFor } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
+import { mock } from 'vitest-mock-extended'
 import { aTokenAmountMock } from '../__mocks__/liquidity.builders'
 import { RemoveLiquidityPreviewQueryResult } from './queries/useRemoveLiquidityPreviewQuery'
 import { _useRemoveLiquidity } from './useRemoveLiquidity'
-import { waitFor } from '@testing-library/react'
 
 const balTokenOutUnits = '1'
 const wEthTokenOutUnits = '0.5'
@@ -18,12 +19,16 @@ const wEthTokenOutUnits = '0.5'
 vi.mock('./queries/useRemoveLiquidityPreviewQuery', () => {
   return {
     useRemoveLiquidityPreviewQuery(): RemoveLiquidityPreviewQueryResult {
+      const result = mock<RemoveLiquidityPreviewQueryResult>()
       return {
+        ...result,
         amountsOut: [
           aTokenAmountMock(balAddress, balTokenOutUnits),
           aTokenAmountMock(wETHAddress, wEthTokenOutUnits),
         ],
         isPreviewQueryLoading: false,
+        isPreviewQueryRefetching: false,
+        refetchPreviewQuery: vi.fn(),
       }
     },
   }

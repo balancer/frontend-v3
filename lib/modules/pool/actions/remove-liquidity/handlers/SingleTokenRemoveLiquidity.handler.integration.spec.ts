@@ -4,8 +4,8 @@ import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.buil
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { Pool } from '../../../usePool'
 import { QueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquidity.types'
-import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
 import { SingleTokenRemoveLiquidityHandler } from './SingleTokenRemoveLiquidity.handler'
+import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
 
 const poolMock = aBalWethPoolElementMock() // 80BAL-20WETH
 
@@ -46,9 +46,9 @@ describe('When removing unbalanced liquidity for a weighted pool', () => {
       tokenOut: balAddress,
     }
 
-    await handler.queryRemoveLiquidity(inputs)
+    const queryOutput = await handler.queryRemoveLiquidity(inputs)
 
-    const result = await handler.buildRemoveLiquidityCallData(defaultBuildInput)
+    const result = await handler.buildRemoveLiquidityCallData({ ...defaultBuildInput, queryOutput })
 
     expect(result.to).toBe(networkConfig.contracts.balancer.vaultV2)
     expect(result.data).toBeDefined()
