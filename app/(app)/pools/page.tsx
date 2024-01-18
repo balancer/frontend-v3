@@ -1,10 +1,14 @@
 import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
-import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
-import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
+import {
+  GetFeaturedPoolsDocument,
+  GetPoolsDocument,
+} from '@/lib/shared/services/api/generated/graphql'
+import { PROJECT_CONFIG, getProjectConfig } from '@/lib/config/getProjectConfig'
 import { PoolList } from '@/lib/modules/pool/PoolList/PoolList'
 import { PoolListProvider } from '@/lib/modules/pool/PoolList/usePoolList'
 import { POOL_TYPE_MAP, poolListQueryStateParsers } from '@/lib/modules/pool/pool.types'
 import { uniq } from 'lodash'
+import { PoolListFeaturedPoolsProvider } from '@/lib/modules/pool/PoolList/usePoolListFeaturedPools'
 
 export const revalidate = 30
 
@@ -30,7 +34,9 @@ export default async function Pools({ searchParams }: Props) {
   )
   const networks = poolListQueryStateParsers.networks.parseServerSide(searchParams.networks)
 
-  const variables = {
+  const { supportedNetworks } = getProjectConfig()
+
+  const poolListVariables = {
     first: poolListQueryStateParsers.first.parseServerSide(searchParams.first),
     skip: poolListQueryStateParsers.skip.parseServerSide(searchParams.skip),
     orderBy: poolListQueryStateParsers.orderBy.parseServerSide(searchParams.orderBy),
@@ -45,14 +51,26 @@ export default async function Pools({ searchParams }: Props) {
     textSearch: poolListQueryStateParsers.textSearch.parseServerSide(searchParams.textSearch),
   }
 
-  const { data } = await getApolloServerClient().query({
+  const { data: poolListData } = await getApolloServerClient().query({
     query: GetPoolsDocument,
-    variables,
+    variables: poolListVariables,
+  })
+
+  const poolListFeaturedPoolsVariables = { chains: supportedNetworks }
+
+  const { data: poolListFeaturedPoolsData } = await getApolloServerClient().query({
+    query: GetFeaturedPoolsDocument,
+    variables: poolListFeaturedPoolsVariables,
   })
 
   return (
-    <PoolListProvider data={data} variables={variables}>
-      <PoolList />
+    <PoolListProvider data={poolListData} variables={poolListVariables}>
+      <PoolListFeaturedPoolsProvider
+        data={poolListFeaturedPoolsData}
+        variables={poolListFeaturedPoolsVariables}
+      >
+        <PoolList />
+      </PoolListFeaturedPoolsProvider>
     </PoolListProvider>
   )
 }
