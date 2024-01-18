@@ -8,7 +8,7 @@ import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { safeSum } from '@/lib/shared/utils/numbers'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { HumanAmount } from '@balancer/sdk'
-import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
+import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
 import { useAddLiquidityPreviewQuery } from './queries/useAddLiquidityPreviewQuery'
@@ -30,13 +30,29 @@ export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
 
 export function _useAddLiquidity() {
   const humanAmountsIn = useReactiveVar(humanAmountsInVar)
+  const [isComplete, setIsComplete] = useState(false)
 
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected } = useUserAccount()
+  const { secondsToRefetch, startRefetchCountdown, stopRefetchCountdown } = useRefetchCountdown()
+  const { isDisabled, disabledReason } = isDisabledWithReason(
+    [!isConnected, LABELS.walletNotConnected],
+    [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts']
+  )
 
   const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id])
+  /**
+   * We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
+   * helper is a class and if we return its methods we would lose the this binding, getting a:
+   * TypeError: Cannot read property getAmountsToApprove of undefined
+   * when trying to access the returned method
+   */
+  const helpers = new LiquidityActionHelpers(pool)
 
+  /**
+   * Helper functions & variables
+   */
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
       token =>
@@ -47,10 +63,6 @@ export function _useAddLiquidity() {
     )
     humanAmountsInVar(amountsIn)
   }
-
-  useEffect(() => {
-    setInitialHumanAmountsIn()
-  }, [])
 
   function setHumanAmountIn(tokenAddress: Address, humanAmount: HumanAmount) {
     const state = humanAmountsInVar()
@@ -79,19 +91,12 @@ export function _useAddLiquidity() {
       }),
     [humanAmountsIn, usdValueForToken, validTokens]
   )
+
   const totalUSDValue = safeSum(usdAmountsIn)
 
-  const { isDisabled, disabledReason } = isDisabledWithReason(
-    [!isConnected, LABELS.walletNotConnected],
-    [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts']
-  )
-
-  const { isPriceImpactLoading, priceImpact, refetchPriceImpact } = useAddLiquidityPriceImpactQuery(
-    handler,
-    humanAmountsIn,
-    pool.id
-  )
-
+  /**
+   * The three handler queries, simulate + priceImpact + bui.
+   */
   const {
     isPreviewQueryLoading,
     bptOut,
@@ -99,7 +104,11 @@ export function _useAddLiquidity() {
     data: queryAddLiquidityOutput,
   } = useAddLiquidityPreviewQuery(handler, humanAmountsIn, pool.id)
 
-  const { secondsToRefetch, startRefetchCountdown, stopRefetchCountdown } = useRefetchCountdown()
+  const { isPriceImpactLoading, priceImpact, refetchPriceImpact } = useAddLiquidityPriceImpactQuery(
+    handler,
+    humanAmountsIn,
+    pool.id
+  )
 
   let refetchBuildQuery: () => Promise<object>
   function useBuildCallData(isActiveStep: boolean) {
@@ -115,27 +124,32 @@ export function _useAddLiquidity() {
     return buildQuery
   }
 
+  /**
+   * Side-effects
+   */
+  // When the countdown timer reaches 0, refetch the simulate and priceImpact queries.
   useEffect(() => {
     const refetchQueries = async () => {
-      // TODO: remove after manual feature tests
-      console.log('Refetching preview, priceImpact and build queries')
       stopRefetchCountdown()
       await sleep(1000) // TODO: Show some kind of UI feedback during this artificial delay
       await Promise.all([refetchPreviewQuery(), refetchPriceImpact()])
       await refetchBuildQuery()
       startRefetchCountdown()
     }
-    if (secondsToRefetch === 0) {
-      refetchQueries()
-    }
+    if (secondsToRefetch === 0) refetchQueries()
   }, [secondsToRefetch])
 
-  /* We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
-    helper is a class and if we return its methods we would lose the this binding, getting a:
-    TypeError: Cannot read property getAmountsToApprove of undefined
-    when trying to access the returned method
-    */
-  const helpers = new LiquidityActionHelpers(pool)
+  // If the transaction flow is complete, stop the countdown timer.
+  useEffect(() => {
+    if (isComplete) {
+      stopRefetchCountdown()
+    }
+  }, [isComplete])
+
+  // On initial render, set the initial humanAmountsIn
+  useEffect(() => {
+    setInitialHumanAmountsIn()
+  }, [])
 
   return {
     humanAmountsIn,
@@ -146,14 +160,16 @@ export function _useAddLiquidity() {
     priceImpact,
     bptOut,
     isPreviewQueryLoading,
-    setHumanAmountIn,
-    useBuildCallData,
     isDisabled,
     disabledReason,
     helpers,
     poolStateInput,
     secondsToRefetch,
+    isComplete,
+    setHumanAmountIn,
+    useBuildCallData,
     stopRefetchCountdown,
+    setIsComplete,
   }
 }
 

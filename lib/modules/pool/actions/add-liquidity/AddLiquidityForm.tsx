@@ -23,8 +23,11 @@ import { useRef } from 'react'
 import { Address } from 'wagmi'
 import { AddLiquidityModal } from './AddLiquidityModal'
 import { useAddLiquidity } from './useAddLiquidity'
-import { fNum, safeTokenFormat } from '@/lib/shared/utils/numbers'
+import { bn, fNum, safeTokenFormat } from '@/lib/shared/utils/numbers'
 import { BPT_DECIMALS } from '../../pool.constants'
+import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
 
 export function AddLiquidityForm() {
   const {
@@ -42,6 +45,8 @@ export function AddLiquidityForm() {
     stopRefetchCountdown,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
+  const { userAddress } = useUserAccount()
+  const spenderAddress = useContractAddress('balancer.vaultV2')
 
   const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
@@ -54,6 +59,10 @@ export function AddLiquidityForm() {
   const bptOutLabel = safeTokenFormat(bptOut?.amount, BPT_DECIMALS)
   const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
+  const tokenAddressesWithAmountIn = amountsIn
+    .filter(amountIn => bn(amountIn.humanAmount).gt(0))
+    .map(amountIn => amountIn.tokenAddress)
+
   const onModalClose = () => {
     previewDisclosure.onClose()
     return stopRefetchCountdown()
@@ -61,88 +70,94 @@ export function AddLiquidityForm() {
 
   return (
     <TokenBalancesProvider tokens={validTokens}>
-      <Center h="full" w="full" maxW="lg" mx="auto">
-        <Card variant="level3" shadow="xl" w="full" p="md">
-          <VStack spacing="lg" align="start">
-            <HStack>
-              <Heading fontWeight="bold" size="h5">
-                Add liquidity
-              </Heading>
-            </HStack>
-            <VStack spacing="md" w="full">
-              {tokens.map(token => {
-                if (!token) return <div>Missing token</div>
-                return (
-                  <TokenInput
-                    key={token.address}
-                    address={token.address}
-                    chain={token.chain}
-                    value={currentValueFor(token.address)}
-                    onChange={e =>
-                      setAmountIn(token.address as Address, e.currentTarget.value as HumanAmount)
-                    }
-                  />
-                )
-              })}
-            </VStack>
+      <TokenAllowancesProvider
+        userAddress={userAddress}
+        spenderAddress={spenderAddress}
+        tokenAddresses={tokenAddressesWithAmountIn}
+      >
+        <Center h="full" w="full" maxW="lg" mx="auto">
+          <Card variant="level3" shadow="xl" w="full" p="md">
+            <VStack spacing="lg" align="start">
+              <HStack>
+                <Heading fontWeight="bold" size="h5">
+                  Add liquidity
+                </Heading>
+              </HStack>
+              <VStack spacing="md" w="full">
+                {tokens.map(token => {
+                  if (!token) return <div>Missing token</div>
+                  return (
+                    <TokenInput
+                      key={token.address}
+                      address={token.address}
+                      chain={token.chain}
+                      value={currentValueFor(token.address)}
+                      onChange={e =>
+                        setAmountIn(token.address as Address, e.currentTarget.value as HumanAmount)
+                      }
+                    />
+                  )
+                })}
+              </VStack>
 
-            <VStack spacing="sm" align="start" w="full">
-              <HStack justify="space-between" w="full">
-                <Text color="GrayText">Total</Text>
-                <HStack>
-                  <NumberText color="GrayText">{toCurrency(totalUSDValue)}</NumberText>
-                  <Tooltip label="Total" fontSize="sm">
-                    <InfoOutlineIcon color="GrayText" />
-                  </Tooltip>
+              <VStack spacing="sm" align="start" w="full">
+                <HStack justify="space-between" w="full">
+                  <Text color="GrayText">Total</Text>
+                  <HStack>
+                    <NumberText color="GrayText">{toCurrency(totalUSDValue)}</NumberText>
+                    <Tooltip label="Total" fontSize="sm">
+                      <InfoOutlineIcon color="GrayText" />
+                    </Tooltip>
+                  </HStack>
                 </HStack>
-              </HStack>
-              <HStack justify="space-between" w="full">
-                <Text color="GrayText">Price impact</Text>
-                <HStack>
-                  {isPriceImpactLoading ? (
-                    <Skeleton w="12" h="full" />
-                  ) : (
-                    <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
-                  )}
-                  <Tooltip label="Price impact" fontSize="sm">
-                    <InfoOutlineIcon color="GrayText" />
-                  </Tooltip>
+                <HStack justify="space-between" w="full">
+                  <Text color="GrayText">Price impact</Text>
+                  <HStack>
+                    {isPriceImpactLoading ? (
+                      <Skeleton w="12" h="full" />
+                    ) : (
+                      <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
+                    )}
+                    <Tooltip label="Price impact" fontSize="sm">
+                      <InfoOutlineIcon color="GrayText" />
+                    </Tooltip>
+                  </HStack>
                 </HStack>
-              </HStack>
-              <HStack justify="space-between" w="full">
-                <Text color="GrayText">Bpt out</Text>
-                <HStack>
-                  <NumberText color="GrayText">
-                    {isPreviewQueryLoading ? <Skeleton w="12" h="full" /> : bptOutLabel}
-                  </NumberText>
-                  <Tooltip label="Bpt out" fontSize="sm">
-                    <InfoOutlineIcon color="GrayText" />
-                  </Tooltip>
+                <HStack justify="space-between" w="full">
+                  <Text color="GrayText">Bpt out</Text>
+                  <HStack>
+                    <NumberText color="GrayText">
+                      {isPreviewQueryLoading ? <Skeleton w="12" h="full" /> : bptOutLabel}
+                    </NumberText>
+                    <Tooltip label="Bpt out" fontSize="sm">
+                      <InfoOutlineIcon color="GrayText" />
+                    </Tooltip>
+                  </HStack>
                 </HStack>
-              </HStack>
-            </VStack>
+              </VStack>
 
-            <Tooltip label={isDisabled ? disabledReason : ''}>
-              <Button
-                ref={nextBtn}
-                variant="secondary"
-                w="full"
-                size="lg"
-                isDisabled={isDisabled || isPreviewQueryLoading}
-                onClick={() => !isDisabled && previewDisclosure.onOpen()}
-              >
-                Next
-              </Button>
-            </Tooltip>
-          </VStack>
-        </Card>
-        <AddLiquidityModal
-          finalFocusRef={nextBtn}
-          isOpen={previewDisclosure.isOpen}
-          onOpen={previewDisclosure.onOpen}
-          onClose={onModalClose}
-        />
-      </Center>
+              <Tooltip label={isDisabled ? disabledReason : ''}>
+                <Button
+                  ref={nextBtn}
+                  variant="secondary"
+                  w="full"
+                  size="lg"
+                  isDisabled={isDisabled || isPreviewQueryLoading}
+                  onClick={() => !isDisabled && previewDisclosure.onOpen()}
+                >
+                  Next
+                </Button>
+              </Tooltip>
+            </VStack>
+          </Card>
+          <AddLiquidityModal
+            finalFocusRef={nextBtn}
+            isOpen={previewDisclosure.isOpen}
+            onOpen={previewDisclosure.onOpen}
+            onClose={onModalClose}
+          />
+        </Center>
+      </TokenAllowancesProvider>
     </TokenBalancesProvider>
   )
 }
