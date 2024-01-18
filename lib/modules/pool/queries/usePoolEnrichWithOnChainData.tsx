@@ -5,7 +5,7 @@ import {
   GqlPoolComposableStableNested,
   GqlTokenPrice,
 } from '@/lib/shared/services/api/generated/graphql'
-import { Address, formatUnits, PublicClient } from 'viem'
+import { Address, formatUnits, PublicClient, zeroAddress } from 'viem'
 import { cloneDeep, keyBy, sumBy } from 'lodash'
 import { ContractFunctionConfig } from 'viem/types/contract'
 import {
@@ -17,6 +17,8 @@ import { usePublicClient, useQuery } from 'wagmi'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { WAD } from '@balancer/sdk'
+import { useUserAccount } from '../../web3/useUserAccount'
+import { isComposableStablePool, isLinearPool } from '../pool.utils'
 
 export function usePoolEnrichWithOnChainData({
   chain,
@@ -30,13 +32,15 @@ export function usePoolEnrichWithOnChainData({
   const { prices } = useTokens()
   const tokenAddresses = pool.allTokens.map(token => token.address)
   const poolTokenPrices = prices.filter(price => tokenAddresses.includes(price.address))
+  const { userAddress } = useUserAccount()
 
-  return useQuery(['usePoolEnrichWithOnChainData', pool.id], async () => {
+  return useQuery(['usePoolEnrichWithOnChainData', { pool, userAddress }], async () => {
     return updateWithOnChainBalanceData({
       pool,
       client,
       tokenPrices: poolTokenPrices,
       vaultV2Address: config.contracts.balancer.vaultV2,
+      userAddress,
     })
   })
 }
@@ -46,13 +50,21 @@ async function updateWithOnChainBalanceData({
   client,
   tokenPrices,
   vaultV2Address,
+  userAddress = zeroAddress,
 }: {
   pool: GetPoolQuery['pool']
   client: PublicClient
   tokenPrices: GqlTokenPrice[]
   vaultV2Address: Address
+  userAddress: Address
 }): Promise<GetPoolQuery['pool']> {
-  const { balances, supplies } = await getBalanceDataForPool({ pool, client, vaultV2Address })
+  const { balances, supplies } = await getBalanceDataForPool({
+    pool,
+    client,
+    vaultV2Address,
+    userAddress,
+  })
+
   const balancesMap = keyBy(balances, 'poolId')
   const supplyMap = keyBy(supplies, 'poolId')
   const pricesMap = keyBy(tokenPrices, 'address')
@@ -137,19 +149,26 @@ async function getBalanceDataForPool({
   pool,
   client,
   vaultV2Address,
+  userAddress = zeroAddress,
 }: {
   pool: GetPoolQuery['pool']
   client: PublicClient
   vaultV2Address: Address
+  userAddress?: Address
 }): Promise<{
   balances: { poolId: string; balances: bigint[] }[]
   supplies: { poolId: string; totalSupply: bigint }[]
 }> {
-  pool.allTokens.map(token => token)
   const poolIds: string[] = [pool.id]
-  const calls: { poolId: string; type: 'balances' | 'supply'; call: ContractFunctionConfig }[] = [
+
+  const calls: {
+    poolId: string
+    type: 'balances' | 'supply' | 'userBalance'
+    call: ContractFunctionConfig
+  }[] = [
     getSupplyCall(pool),
     getBalancesCall(pool.id, vaultV2Address),
+    getUserBalancesCall(pool, userAddress),
   ]
 
   for (const token of pool.tokens) {
@@ -214,6 +233,24 @@ function getBalancesCall(
   }
 }
 
+function getUserBalancesCall(
+  pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested | GqlPoolLinearNested,
+  userAddress: Address
+): { poolId: string; type: 'userBalance'; call: ContractFunctionConfig } {
+  const isLinear = isLinearPool(pool)
+
+  return {
+    poolId: pool.id,
+    type: 'userBalance',
+    call: {
+      abi: isLinear ? balancerV2Erc4626LinearPoolV3ABI : balancerV2ComposableStablePoolV5ABI,
+      address: pool.address as Address,
+      functionName: 'balanceOf',
+      args: [userAddress],
+    },
+  }
+}
+
 function getSupplyCall(
   pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested | GqlPoolLinearNested
 ): {
@@ -221,10 +258,8 @@ function getSupplyCall(
   type: 'supply'
   call: ContractFunctionConfig
 } {
-  const isLinear = pool.__typename === 'GqlPoolLinear' || pool.__typename == 'GqlPoolLinearNested'
-  const isComposableStable =
-    pool.__typename === 'GqlPoolComposableStable' ||
-    pool.__typename == 'GqlPoolComposableStableNested'
+  const isLinear = isLinearPool(pool)
+  const isComposableStable = isComposableStablePool(pool)
 
   return {
     poolId: pool.id,

@@ -1,30 +1,34 @@
 import {
   aTokenExpandedMock,
+  someGqlTokenMocks,
   someMinimalTokensMock,
+  someTokenExpandedMock,
 } from '@/lib/modules/tokens/__mocks__/token.builders'
 import {
   GqlChain,
   GqlPoolElement,
+  GqlPoolNestingType,
   GqlPoolToken,
+  GqlPoolTokenExpanded,
   GqlPoolType,
+  GqlPoolWeighted,
 } from '@/lib/shared/services/api/generated/graphql'
 import { DeepPartial } from '@apollo/client/utilities'
 import { mock } from 'vitest-mock-extended'
 import { aGqlStakingMock } from './gqlStaking.builders'
 import { balAddress, poolId, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { getPoolAddress } from '@balancer/sdk'
+import { Address } from 'viem'
 
 export function aBalWethPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlPoolElement {
   const poolId = '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014' // 80BAL-20WETH
-  const tokens = [
-    aTokenExpandedMock({ address: balAddress }),
-    aTokenExpandedMock({ address: wETHAddress }),
-  ]
+  const tokens = someGqlTokenMocks(['BAL', 'WETH'])
+  const allTokens = someTokenExpandedMock(tokens.map(t => t.address as Address))
 
-  const options2 = {
+  const options2: Partial<GqlPoolElement> = {
     id: poolId,
     address: getPoolAddress(poolId),
-    allTokens: tokens,
+    allTokens,
     tokens: tokens as unknown as GqlPoolToken[],
     ...options,
   }
@@ -33,6 +37,7 @@ export function aBalWethPoolElementMock(...options: Partial<GqlPoolElement>[]): 
 }
 
 export function aWjAuraWethPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlPoolElement {
+  // TODO: review
   const tokens = [
     aTokenExpandedMock({ address: wjAuraAddress }),
     aTokenExpandedMock({ address: wETHAddress }),
@@ -49,13 +54,22 @@ export function aWjAuraWethPoolElementMock(...options: Partial<GqlPoolElement>[]
   return aGqlPoolElementMock(options2)
 }
 
+export function toGqlWeighedPoolMock(poolElement: GqlPoolElement): GqlPoolWeighted {
+  const pool: GqlPoolWeighted = {
+    ...poolElement,
+    __typename: 'GqlPoolWeighted',
+    nestingType: GqlPoolNestingType.NoNesting,
+  }
+  return pool
+}
+
 export function aGqlPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlPoolElement {
   const defaultPool = mock<GqlPoolElement>()
 
   const defaultPool1: DeepPartial<GqlPoolElement> = {
     __typename: 'GqlPoolElement',
     address: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56',
-    tokens: someMinimalTokensMock([balAddress, wETHAddress]),
+    tokens: someGqlTokenMocks(['BAL', 'WETH']),
     allTokens: [
       {
         address: balAddress,

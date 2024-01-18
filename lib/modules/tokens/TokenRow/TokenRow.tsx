@@ -1,4 +1,4 @@
-import { HStack, Heading, Text, VStack } from '@chakra-ui/react'
+import { HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { useTokens } from '../useTokens'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
@@ -13,9 +13,17 @@ type Props = {
   value: Numberish
   customRender?: (token: GqlToken) => ReactNode | ReactNode[]
   isSelected?: boolean
+  isLoading?: boolean
 }
 
-export default function TokenRow({ address, value, customRender, chain, isSelected }: Props) {
+export default function TokenRow({
+  address,
+  value,
+  customRender,
+  chain,
+  isSelected,
+  isLoading,
+}: Props) {
   const { getToken, usdValueForToken } = useTokens()
   const { toCurrency } = useCurrency()
   const token = getToken(address, chain)
@@ -42,12 +50,21 @@ export default function TokenRow({ address, value, customRender, chain, isSelect
       </HStack>
       <HStack spacing="8">
         <VStack spacing="1" alignItems="flex-end">
-          <Heading fontWeight="bold" as="h6" fontSize="1rem">
-            {fNum('token', value)}
-          </Heading>
-          <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-            {toCurrency(totalValue)}
-          </Text>
+          {isLoading ? (
+            <Skeleton w="10" h="4" />
+          ) : (
+            <Heading fontWeight="bold" as="h6" fontSize="1rem">
+              {fNum('token', value)}
+            </Heading>
+          )}
+
+          {isLoading ? (
+            <Skeleton w="10" h="4" />
+          ) : (
+            <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+              {toCurrency(totalValue)}
+            </Text>
+          )}
         </VStack>
         {customRender && token && customRender(token)}
       </HStack>

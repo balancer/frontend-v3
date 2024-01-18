@@ -1,4 +1,4 @@
-import { MockApi } from '@/lib/shared/hooks/balancer-api/MockApi'
+import { GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import {
   BALANCER_VAULT,
@@ -28,10 +28,11 @@ import {
   trim,
 } from 'viem'
 import { erc20ABI } from 'wagmi'
+import { aWjAuraWethPoolElementMock } from '../msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount, testPublicClient } from '../utils/wagmi'
 
 /*
-  Given chain, user account and poolId
+  Given chain, user account and pool
   Returns a set of helper functions to:
   - Prepare the anvil state where the integration tests are running (i.e. set balances of tokens in the pool)
   - Check the new state of the pool after the test updates (i.e check the balances of the tokens in the pool)
@@ -40,25 +41,21 @@ export async function getSdkTestUtils({
   client = testPublicClient,
   chainId = ChainId.MAINNET,
   account = defaultTestUserAccount,
-  poolId,
+  pool = aWjAuraWethPoolElementMock(),
 }: {
   client?: Client & PublicActions & WalletActions & TestActions
   account?: Address
   chainId?: ChainId
-  poolId: Address
+  pool: GqlPoolElement
 }) {
-  const api = new MockApi()
-  // get pool state from api
-  const poolStateInput = await api.getPool(poolId)
-
   return {
-    poolStateInput,
     approveToken,
     getPoolTokenBalances,
     getPoolTokens,
     calculateBalanceDeltas,
     setupToken,
     setupTokens,
+    setUserPoolBalance,
   }
 
   async function approveToken(
@@ -101,14 +98,14 @@ export async function getSdkTestUtils({
           address: account,
         })
       } else {
-        balances[i] = getErc20Balance(tokens[i], account)
+        balances[i] = getErc20Balance(tokens[i] as Address, account)
       }
     }
     return Promise.all(balances)
   }
 
   function getPoolTokens() {
-    return poolStateInput.tokens.map(t => new Token(chainId, t.address, t.decimals))
+    return pool.tokens.map(t => new Token(chainId, t.address as Address, t.decimals))
   }
 
   // Token addresses to check balance deltas
@@ -119,7 +116,7 @@ export async function getSdkTestUtils({
     const poolTokensAddr = checkNativeBalance
       ? replaceWrapped(poolTokens, chainId).map(t => t.address)
       : poolTokens.map(t => t.address)
-    return [...poolTokensAddr, poolStateInput.address]
+    return [...poolTokensAddr, pool.address]
   }
 
   // // Includes BPT balance
@@ -312,8 +309,18 @@ export async function getSdkTestUtils({
   }
 
   function toEvmTokenBalance(humanBalance: HumanAmount, tokenAddress: Address): bigint {
+    // when token is BPT token we set the pool balance
+    if (isSameAddress(tokenAddress, pool.address)) return parseUnits(humanBalance, 18)
+
     const foundToken = getPoolTokens().find(t => isSameAddress(tokenAddress, t.address))
     if (!foundToken) throw new Error(`Token with address: ${tokenAddress} not found`)
     return parseUnits(humanBalance, foundToken.decimals)
+  }
+
+  /*
+   * Setup local fork with pool balance for the current account address
+   */
+  async function setUserPoolBalance(humanBalance: HumanAmount) {
+    return await setupToken(humanBalance, pool.address as Address)
   }
 }

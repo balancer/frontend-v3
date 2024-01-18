@@ -52,12 +52,8 @@ enum GqlContentNewsItemSource {
 }
 
 type GqlCowSwapApiResponse {
-  marketSp: String!
   returnAmount: String!
-  returnAmountConsideringFees: String!
-  returnAmountFromSwaps: String!
   swapAmount: String!
-  swapAmountForSwaps: String!
   swaps: [GqlSwap!]!
   tokenAddresses: [String!]!
   tokenIn: String!
@@ -300,6 +296,12 @@ type GqlPoolElement implements GqlPoolBase {
   userBalance: GqlPoolUserBalance
   version: Int!
   withdrawConfig: GqlPoolWithdrawConfig!
+}
+
+type GqlPoolFeaturedPool {
+  pool: GqlPoolBase!
+  poolId: ID!
+  primary: Boolean!
 }
 
 type GqlPoolFeaturedPoolGroup {
@@ -754,6 +756,7 @@ type GqlPoolToken implements GqlPoolTokenBase {
   index: Int!
   name: String!
   priceRate: BigDecimal!
+  priceRateProvider: String
   symbol: String!
   totalBalance: BigDecimal!
   weight: BigDecimal
@@ -767,6 +770,7 @@ interface GqlPoolTokenBase {
   index: Int!
   name: String!
   priceRate: BigDecimal!
+  priceRateProvider: String
   symbol: String!
   totalBalance: BigDecimal!
   weight: BigDecimal
@@ -781,6 +785,7 @@ type GqlPoolTokenComposableStable implements GqlPoolTokenBase {
   name: String!
   pool: GqlPoolComposableStableNested!
   priceRate: BigDecimal!
+  priceRateProvider: String
   symbol: String!
   totalBalance: BigDecimal!
   weight: BigDecimal
@@ -819,6 +824,7 @@ type GqlPoolTokenLinear implements GqlPoolTokenBase {
   name: String!
   pool: GqlPoolLinearNested!
   priceRate: BigDecimal!
+  priceRateProvider: String
   symbol: String!
   totalBalance: BigDecimal!
   totalMainTokenBalance: BigDecimal!
@@ -908,9 +914,7 @@ type GqlProtocolMetricsAggregated {
   chains: [GqlProtocolMetricsChain!]!
   numLiquidityProviders: BigInt!
   poolCount: BigInt!
-  swapFee7d: BigDecimal!
   swapFee24h: BigDecimal!
-  swapVolume7d: BigDecimal!
   swapVolume24h: BigDecimal!
   totalLiquidity: BigDecimal!
   totalSwapFee: BigDecimal!
@@ -922,9 +926,7 @@ type GqlProtocolMetricsChain {
   chainId: String!
   numLiquidityProviders: BigInt!
   poolCount: BigInt!
-  swapFee7d: BigDecimal!
   swapFee24h: BigDecimal!
-  swapVolume7d: BigDecimal!
   swapVolume24h: BigDecimal!
   totalLiquidity: BigDecimal!
   totalSwapFee: BigDecimal!
@@ -967,6 +969,29 @@ type GqlReliquaryTokenBalanceSnapshot {
   id: ID!
   name: String!
   symbol: String!
+}
+
+type GqlSftmxStakingData {
+  exchangeRate: String!
+  maintenancePaused: Boolean!
+  maxDepositLimit: AmountHumanReadable!
+  minDepositLimit: AmountHumanReadable!
+  numberOfVaults: Int!
+  stakingApr: String!
+  totalFtmAmount: AmountHumanReadable!
+  totalFtmAmountInPool: AmountHumanReadable!
+  totalFtmAmountStaked: AmountHumanReadable!
+  undelegatePaused: Boolean!
+  withdrawPaused: Boolean!
+  withdrawalDelay: Int!
+}
+
+type GqlSftmxWithdrawalRequests {
+  amountSftmx: AmountHumanReadable!
+  id: String!
+  isWithdrawn: Boolean!
+  requestTimestamp: Int!
+  user: String!
 }
 
 type GqlSorGetBatchSwapForTokensInResponse {
@@ -1223,7 +1248,6 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 scalar JSON
 
 type Mutation {
-  balancerMutationTest: String!
   beetsPoolLoadReliquarySnapshotsForAllFarms: String!
   beetsSyncFbeetsRatio: String!
   cacheAverageBlockTime: String!
@@ -1248,6 +1272,8 @@ type Mutation {
   poolSyncNewPoolsFromSubgraph: [String!]!
   poolSyncPool(poolId: String!): String!
   poolSyncPoolAllTokensRelationship: String!
+  poolSyncPriceRateProviders: String!
+  poolSyncProtocolYieldFeeExemptions: String!
   poolSyncSanityPoolData: String!
   poolSyncStakingForPools: String!
   poolSyncSwapsForLast48Hours: String!
@@ -1258,11 +1284,14 @@ type Mutation {
   poolUpdateLiquidityValuesForAllPools: String!
   poolUpdateVolumeAndFeeValuesForAllPools: String!
   protocolCacheMetrics: String!
+  sftmxSyncStakingData: String!
+  sftmxSyncWithdrawalRequests: String!
   tokenDeletePrice(timestamp: Int!, tokenAddress: String!): Boolean!
   tokenDeleteTokenType(tokenAddress: String!, type: GqlTokenType!): String!
   tokenInitChartData(tokenAddress: String!): String!
   tokenReloadAllTokenTypes: String!
   tokenReloadTokenPrices: Boolean
+  tokenSyncLatestFxPrices(chain: GqlChain!): String!
   tokenSyncTokenDefinitions: String!
   tokenSyncTokenDynamicData: String!
   userInitStakedBalances(stakingTypes: [GqlPoolStakingType!]!): String!
@@ -1289,12 +1318,9 @@ type Query {
   blocksGetBlocksPerYear: Float!
   contentGetNewsItems: [GqlContentNewsItem!]!
   latestSyncedBlocks: GqlLatestSyncedBlocks!
-  poolGetAllPoolsSnapshots(
-    chains: [GqlChain!]
-    range: GqlPoolSnapshotDataRange!
-  ): [GqlPoolSnapshot!]!
   poolGetBatchSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolBatchSwap!]!
-  poolGetFeaturedPoolGroups: [GqlPoolFeaturedPoolGroup!]!
+  poolGetFeaturedPoolGroups(chains: [GqlChain!]): [GqlPoolFeaturedPoolGroup!]!
+  poolGetFeaturedPools(chains: [GqlChain!]!): [GqlPoolFeaturedPool!]!
   poolGetGyroPools(chains: [GqlChain!]): [GqlPoolGyro!]!
   poolGetJoinExits(first: Int, skip: Int, where: GqlPoolJoinExitFilter): [GqlPoolJoinExit!]!
   poolGetLinearPools(chains: [GqlChain!]): [GqlPoolLinear!]!
@@ -1323,6 +1349,8 @@ type Query {
   poolGetSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolSwap!]!
   protocolMetricsAggregated(chains: [GqlChain!]): GqlProtocolMetricsAggregated!
   protocolMetricsChain(chain: GqlChain): GqlProtocolMetricsChain!
+  sftmxGetStakingData: GqlSftmxStakingData!
+  sftmxGetWithdrawalRequests(user: String!): [GqlSftmxWithdrawalRequests!]!
   sorGetBatchSwapForTokensIn(
     swapOptions: GqlSorSwapOptionsInput!
     tokenOut: String!

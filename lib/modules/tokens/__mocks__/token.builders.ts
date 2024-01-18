@@ -4,6 +4,7 @@ import {
   GetTokensQuery,
   GetTokensQueryVariables,
   GqlChain,
+  GqlPoolToken,
   GqlPoolTokenExpanded,
   GqlTokenPrice,
 } from '@/lib/shared/services/api/generated/graphql'
@@ -68,11 +69,30 @@ export function someMinimalTokensMock(addresses?: Address[]): MinimalToken[] {
   return addresses.map((address, index) => ({ address, decimals: 18, index }))
 }
 
+export function aGqlTokenMock(...options: Partial<GqlPoolToken>[]): GqlPoolToken {
+  const symbol = options[0].symbol
+  const defaultToken: TokenBase = fakeTokenBySymbol(symbol || 'BAL')
+  const defaultOptions: GqlPoolToken = mock<GqlPoolToken>({
+    ...defaultToken,
+    __typename: 'GqlPoolToken',
+    balance: '0',
+  })
+  return Object.assign({}, defaultOptions, ...options)
+}
+
+export function someGqlTokenMocks(symbols: string[]): GqlPoolToken[] {
+  return symbols.map(symbol => aGqlTokenMock({ symbol }))
+}
+
 export function aTokenExpandedMock(
   ...options: Partial<GqlPoolTokenExpanded>[]
 ): GqlPoolTokenExpanded {
   const defaultToken: TokenBase = fakeTokenBySymbol('BAL')
   return Object.assign({}, defaultToken, ...options)
+}
+
+export function someTokenExpandedMock(addresses: Address[]): GqlPoolTokenExpanded[] {
+  return addresses.map(address => aTokenExpandedMock({ address }))
 }
 
 export function aTokenPriceMock(...options: Partial<GqlTokenPrice>[]): GqlTokenPrice {
