@@ -1,4 +1,5 @@
-import { ThemeTypings, extendTheme } from '@chakra-ui/react'
+import { ThemeTypings, extendTheme, createMultiStyleConfigHelpers } from '@chakra-ui/react'
+import { selectAnatomy } from '@chakra-ui/anatomy'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
 import tinycolor from 'tinycolor2'
 
@@ -115,6 +116,28 @@ export const balColors = {
 const createBackgroundOpacity = (baseColor: string, opacity: number) =>
   `hsla(${baseColor}, ${opacity})`
 
+const primaryTextColor = `linear-gradient(45deg, ${balColors.gray['700']} 0%, ${balColors.gray['500']} 100%)`
+// Define Select parts styles
+const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpers(
+  selectAnatomy.keys
+)
+
+const selectBaseStyle = definePartsStyle({
+  field: {
+    background: 'background.button.secondary',
+    py: '1.5',
+    fontSize: 'md',
+    fontWeight: 'bold',
+    pl: '2',
+    pr: '1',
+  },
+  icon: {
+    color: primaryTextColor,
+  },
+})
+
+export const selectTheme = defineMultiStyleConfig({ baseStyle: selectBaseStyle })
+
 export const tokens = {
   colors: {
     light: {
@@ -148,7 +171,7 @@ export const tokens = {
 
       // Font colors
       text: {
-        primary: `linear-gradient(45deg, ${balColors.gray['700']} 0%, ${balColors.gray['500']} 100%)`,
+        primary: primaryTextColor,
         secondary: 'linear-gradient(45deg, #728097 0%, #909BAD 100%)',
         special: balColors.gradient.dawnLight,
         specialSecondary: balColors.gradient.sunsetLight,
@@ -654,6 +677,12 @@ export const balTheme = {
 
       chart: {
         pool: {
+          line: {
+            volume: {
+              from: 'rgba(0, 211, 149, 1)',
+              to: 'rgba(0, 211, 149, 0.2)',
+            },
+          },
           scatter: {
             add: {
               from: 'rgba(0, 211, 149, 100%)',
@@ -1021,6 +1050,7 @@ export const balTheme = {
         },
       },
     },
+    Select: selectTheme,
     Button: {
       baseStyle: {
         borderRadius: 'lg',

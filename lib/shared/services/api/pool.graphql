@@ -974,8 +974,8 @@ query GetUserSwaps($first: Int, $skip: Int, $poolId: String!) {
   }
 }
 
-query GetPoolSnapshots($poolId: String!, $range: GqlPoolSnapshotDataRange!) {
-  snapshots: poolGetSnapshots(id: $poolId, range: $range) {
+query GetPoolSnapshots($poolId: String!, $range: GqlPoolSnapshotDataRange!, $chainId: GqlChain!) {
+  snapshots: poolGetSnapshots(id: $poolId, range: $range, chain: $chainId) {
     id
     timestamp
     totalLiquidity

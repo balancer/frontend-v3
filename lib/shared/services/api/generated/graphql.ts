@@ -4179,6 +4179,7 @@ export type GetUserSwapsQuery = {
 export type GetPoolSnapshotsQueryVariables = Exact<{
   poolId: Scalars['String']['input']
   range: GqlPoolSnapshotDataRange
+  chainId: GqlChain
 }>
 
 export type GetPoolSnapshotsQuery = {
@@ -8575,6 +8576,14 @@ export const GetPoolSnapshotsDocument = {
             type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlPoolSnapshotDataRange' } },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'chainId' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
+          },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -8593,6 +8602,11 @@ export const GetPoolSnapshotsDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'range' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'range' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'chain' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'chainId' } },
               },
             ],
             selectionSet: {
