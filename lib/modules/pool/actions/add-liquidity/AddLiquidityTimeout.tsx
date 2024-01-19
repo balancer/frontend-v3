@@ -5,6 +5,9 @@ import { useCountdown } from 'usehooks-ts'
 import { useAddLiquidity } from './useAddLiquidity'
 
 function useAddLiquidityTimeout() {
+  // This countdown needs to be nested here and not at a higher level, like in
+  // useAddLiquidity, because otherwise it causes re-renders of the entire
+  // add-liquidity flow component tree every second.
   const [secondsToRefetch, { startCountdown, stopCountdown, resetCountdown }] = useCountdown({
     countStart: 30,
     intervalMs: 1000,
