@@ -23,7 +23,7 @@ type TokenApprovalParams = {
 /*
   Filters the given list of amountsToApprove discarding those that do not need approval
 */
-export function filterRequiredTokenApprovals({
+export function getRequiredTokenApprovals({
   chainId,
   amountsToApprove,
   currentTokenAllowances,

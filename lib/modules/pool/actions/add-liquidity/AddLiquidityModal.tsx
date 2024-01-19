@@ -24,7 +24,7 @@ import {
   Tooltip,
   VStack,
 } from '@chakra-ui/react'
-import { RefObject, memo, useRef } from 'react'
+import { RefObject, useRef } from 'react'
 import { formatUnits } from 'viem'
 import { Address } from 'wagmi'
 import { BPT_DECIMALS } from '../../pool.constants'
@@ -33,6 +33,7 @@ import { usePool } from '../../usePool'
 import { HumanAmountIn } from '../liquidity-types'
 import { AddLiquidityFlowButton } from './AddLiquidityFlowButton'
 import { useAddLiquidity } from './useAddLiquidity'
+import { AddLiquidityTimeout } from './AddLiquidityTimeout'
 
 type Props = {
   isOpen: boolean
@@ -81,26 +82,28 @@ function TokenAmountRow({
   )
 }
 
-const TimeoutLabel = memo(function TimeoutLabel() {
-  const { secondsToRefetch } = useAddLiquidity()
-  console.log('Render TimeoutLabel')
-  return <Text>Seconds till next query {secondsToRefetch}</Text>
-})
-
 export function AddLiquidityModal({
   isOpen,
   onClose,
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  console.log('Render AddLiquidityModal')
   const initialFocusRef = useRef(null)
-  const { humanAmountsIn, totalUSDValue, bptOut, priceImpact, tokens, shouldFreezeQuote } =
-    useAddLiquidity()
+  const {
+    humanAmountsIn,
+    totalUSDValue,
+    simulationQuery,
+    priceImpactQuery,
+    tokens,
+    shouldFreezeQuote,
+  } = useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
 
+  const bptOut = simulationQuery?.data?.bptOut
   const bptOutLabel = bptOut ? formatUnits(bptOut.amount, BPT_DECIMALS) : '0'
+
+  const priceImpact = priceImpactQuery?.data
   const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
   return (
@@ -169,7 +172,7 @@ export function AddLiquidityModal({
               {!shouldFreezeQuote && (
                 <VStack align="start" spacing="md">
                   <HStack justify="space-between" w="full">
-                    <TimeoutLabel />
+                    <AddLiquidityTimeout />
                   </HStack>
                 </VStack>
               )}
@@ -177,10 +180,7 @@ export function AddLiquidityModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <AddLiquidityFlowButton
-            humanAmountsIn={humanAmountsIn}
-            pool={pool}
-          ></AddLiquidityFlowButton>
+          <AddLiquidityFlowButton />
         </ModalFooter>
       </ModalContent>
     </Modal>

@@ -11,9 +11,9 @@ import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { addLiquidityKeys } from './add-liquidity-keys'
 import { UseQueryOptions } from '@tanstack/react-query'
 
-export type AddLiquidityPreviewQueryResult = ReturnType<typeof useAddLiquidityPreviewQuery>
+export type AddLiquiditySimulationQueryResult = ReturnType<typeof useAddLiquiditySimulationQuery>
 
-export function useAddLiquidityPreviewQuery(
+export function useAddLiquiditySimulationQuery(
   handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
   poolId: string,
@@ -25,25 +25,19 @@ export function useAddLiquidityPreviewQuery(
 
   const enabled = options.enabled ?? true
 
-  const query = useQuery(
-    addLiquidityKeys.preview({
-      userAddress,
-      slippage,
-      poolId,
-      humanAmountsIn: debouncedHumanAmountsIn,
-    }),
-    async () => handler.queryAddLiquidity(humanAmountsIn),
-    {
-      enabled: enabled && isConnected && hasValidHumanAmounts(debouncedHumanAmountsIn),
-      cacheTime: 0,
-    }
-  )
+  const queryKey = addLiquidityKeys.preview({
+    userAddress,
+    slippage,
+    poolId,
+    humanAmountsIn: debouncedHumanAmountsIn,
+  })
 
-  return {
-    ...query,
-    bptOut: query.data?.bptOut,
-    isPreviewQueryLoading: query.isLoading,
-    isPreviewQueryRefetching: query.isRefetching,
-    refetchPreviewQuery: query.refetch,
+  const queryFn = async () => handler.queryAddLiquidity(humanAmountsIn)
+
+  const queryOpts = {
+    enabled: enabled && isConnected && hasValidHumanAmounts(debouncedHumanAmountsIn),
+    cacheTime: 0,
   }
+
+  return useQuery(queryKey, queryFn, queryOpts)
 }

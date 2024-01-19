@@ -11,12 +11,14 @@ export function useConstructAddLiquidityStep(poolId: string) {
 
   const transaction = useManagedSendTransaction(transactionLabels, buildCallDataQuery.data)
 
+  const isComplete = () => transaction.result.isSuccess
+
   const step: FlowStep = {
     ...transaction,
     transactionLabels,
     id: `addLiquidityPool${poolId}`,
     stepType: 'addLiquidity',
-    isComplete: () => false,
+    isComplete,
     activateStep,
   }
 

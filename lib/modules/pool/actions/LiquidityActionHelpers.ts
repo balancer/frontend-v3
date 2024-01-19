@@ -59,6 +59,8 @@ export class LiquidityActionHelpers {
   }
 
   public toInputAmounts(humanAmountsIn: HumanAmountIn[]): InputAmount[] {
+    if (!humanAmountsIn.length) return []
+
     const amountsInList: InputAmount[] = this.pool.tokens.map(t => {
       return {
         rawAmount: 0n,

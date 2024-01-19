@@ -5,23 +5,16 @@ import { Pool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { addLiquidityKeys } from './add-liquidity-keys'
-import { QueryAddLiquidityOutput } from '../add-liquidity.types'
 import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
 import { UseQueryOptions } from '@tanstack/react-query'
-
-interface CountdownControllers {
-  startCountdown: () => void
-  stopCountdown: () => void
-  resetCountdown: () => void
-}
+import { AddLiquiditySimulationQueryResult } from './useAddLiquiditySimulationQuery'
 
 type Props = {
   handler: AddLiquidityHandler
   humanAmountsIn: HumanAmountIn[]
   isActiveStep: boolean
   pool: Pool
-  queryAddLiquidityOutput?: QueryAddLiquidityOutput
-  countdownControllers: CountdownControllers
+  simulationQuery: AddLiquiditySimulationQueryResult
   options?: UseQueryOptions
 }
 
@@ -30,8 +23,7 @@ export function useAddLiquidityBuildCallDataQuery({
   handler,
   humanAmountsIn,
   pool,
-  queryAddLiquidityOutput,
-  countdownControllers,
+  simulationQuery,
   options = {},
 }: Props) {
   const { userAddress, isConnected } = useUserAccount()
@@ -52,17 +44,15 @@ export function useAddLiquidityBuildCallDataQuery({
           1. We do not allow the user to activate the build step (set isActiveStep to true) before the preview query has finished
           2. When we refetch after countdown timeout we explicitly wait for the preview query to finish
       */
-    console.log('Build call data')
-    const queryOutput = ensureLastQueryResponse('Add liquidity query', queryAddLiquidityOutput)
-    countdownControllers.stopCountdown()
-    countdownControllers.resetCountdown()
+    console.log('Building call data...')
+    const queryOutput = ensureLastQueryResponse('Add liquidity query', simulationQuery.data)
     const response = await handler.buildAddLiquidityCallData({
       account: userAddress,
       humanAmountsIn,
       slippagePercent: slippage,
-      queryOutput,
+      queryOutput: queryOutput,
     })
-    countdownControllers.startCountdown()
+    console.log('Call data built:', response)
     return response
   }
 

@@ -39,7 +39,7 @@ test.skip('useNextTokenApprovalStep builds 2 sequential token approval steps', a
   const result = testUseTokenApprovals(amountsToApprove)
   await waitFor(() => expect(result.current.isAllowancesLoading).toBeFalsy())
 
-  expect(result.current.tokenApprovalStep.transactionLabels).toMatchInlineSnapshot(`
+  expect(result.current.tokenApprovalStep?.transactionLabels).toMatchInlineSnapshot(`
     {
       "confirming": "Approving WETH",
       "description": "Token WETH approval completed",
@@ -49,20 +49,20 @@ test.skip('useNextTokenApprovalStep builds 2 sequential token approval steps', a
     }
   `)
 
-  act(() => result.current.tokenApprovalStep.activateStep())
-  console.log(result.current.tokenApprovalStep.simulation.isIdle)
-  await waitFor(() => expect(result.current.tokenApprovalStep.simulation.isSuccess).toBeTruthy())
-  await act(() => result.current.tokenApprovalStep.executeAsync?.())
+  act(() => result.current.tokenApprovalStep?.activateStep())
+  console.log(result.current.tokenApprovalStep?.simulation.isIdle)
+  await waitFor(() => expect(result.current.tokenApprovalStep?.simulation.isSuccess).toBeTruthy())
+  await act(() => result.current.tokenApprovalStep?.executeAsync?.())
 
-  expect(result.current.tokenApprovalStep.id).toBe(wETHAddress)
-  expect(result.current.tokenApprovalStep.isComplete()).toBeFalsy()
+  expect(result.current.tokenApprovalStep?.id).toBe(wETHAddress)
+  expect(result.current.tokenApprovalStep?.isComplete()).toBeFalsy()
 
-  await waitFor(() => expect(result.current.tokenApprovalStep.id).toBe(wjAuraAddress))
-  expect(result.current.tokenApprovalStep.isComplete()).toBeFalsy()
+  await waitFor(() => expect(result.current.tokenApprovalStep?.id).toBe(wjAuraAddress))
+  expect(result.current.tokenApprovalStep?.isComplete()).toBeFalsy()
 
   // Second approval simulation
-  await waitFor(() => expect(result.current.tokenApprovalStep.simulation.isSuccess).toBeTruthy())
-  await act(() => result.current.tokenApprovalStep.executeAsync?.())
+  await waitFor(() => expect(result.current.tokenApprovalStep?.simulation.isSuccess).toBeTruthy())
+  await act(() => result.current.tokenApprovalStep?.executeAsync?.())
 
-  await waitFor(() => expect(result.current.tokenApprovalStep.isComplete()).toBeFalsy())
+  await waitFor(() => expect(result.current.tokenApprovalStep?.isComplete()).toBeFalsy())
 })

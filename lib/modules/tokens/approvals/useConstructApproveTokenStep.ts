@@ -76,5 +76,5 @@ export function useConstructApproveTokenStep({
     saveExecutedApproval()
   }, [approvalTransaction.result.isSuccess])
 
-  return step
+  return tokenAddress === emptyAddress ? null : step
 }

@@ -2,7 +2,7 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import {
   TokenAmountToApprove,
-  filterRequiredTokenApprovals,
+  getRequiredTokenApprovals,
   isDoubleApprovalRequired,
 } from './approval-rules'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
@@ -30,10 +30,10 @@ const currentTokenAllowances = {
   [wjAuraAddress]: MAX_BIGINT,
 }
 
-describe('filterRequiredTokenApprovals', () => {
+describe('getRequiredTokenApprovals', () => {
   test('when skipAllowanceCheck', () => {
     expect(
-      filterRequiredTokenApprovals({
+      getRequiredTokenApprovals({
         chainId,
         amountsToApprove,
         currentTokenAllowances,
@@ -44,7 +44,7 @@ describe('filterRequiredTokenApprovals', () => {
 
   test('when empty amounts to approve', () => {
     expect(
-      filterRequiredTokenApprovals({
+      getRequiredTokenApprovals({
         chainId,
         amountsToApprove: [],
         currentTokenAllowances,
@@ -54,7 +54,7 @@ describe('filterRequiredTokenApprovals', () => {
 
   test('when all token allowances are lesser than the amounts to approve', () => {
     expect(
-      filterRequiredTokenApprovals({
+      getRequiredTokenApprovals({
         amountsToApprove,
         chainId,
         currentTokenAllowances,
@@ -66,7 +66,7 @@ describe('filterRequiredTokenApprovals', () => {
     currentTokenAllowances[wETHAddress] = 5n
 
     expect(
-      filterRequiredTokenApprovals({
+      getRequiredTokenApprovals({
         amountsToApprove,
         chainId,
         currentTokenAllowances,

@@ -11,7 +11,7 @@ import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
-import { useAddLiquidityPreviewQuery } from './queries/useAddLiquidityPreviewQuery'
+import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulationQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { HumanAmountIn } from '../liquidity-types'
 import { LiquidityActionHelpers, areEmptyAmounts } from '../LiquidityActionHelpers'
@@ -20,9 +20,15 @@ import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWit
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
-import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import {
+  FlowStep,
+  TransactionState,
+  getTransactionState,
+} from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
-import { useCountdown } from 'usehooks-ts'
+import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNextTokenApprovalStep'
+import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
+import { useDisclosure } from '@chakra-ui/hooks'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -32,18 +38,13 @@ export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
 export function _useAddLiquidity() {
   const humanAmountsIn = useReactiveVar(humanAmountsInVar)
   const [isComplete, setIsComplete] = useState(false)
-  const [addLiquidityTransactionState, setAddLiquidityTransactionState] =
-    useState<TransactionState>()
 
   const { isActiveStep, activateStep } = useActiveStep()
   const { pool, poolStateInput } = usePool()
-  const { getToken, usdValueForToken } = useTokens()
+  const { getToken, usdValueForToken, getTokensByTokenAddress } = useTokens()
   const { isConnected } = useUserAccount()
-  const countdownTimer = useCountdown({
-    countStart: 30,
-    intervalMs: 1000,
-  })
-  const [secondsToRefetch, countdownControllers] = countdownTimer
+  const previewModalDisclosure = useDisclosure()
+
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts']
@@ -61,6 +62,19 @@ export function _useAddLiquidity() {
   /**
    * Helper functions & variables
    */
+  const amountsInTokenAddresses = humanAmountsIn.map(h => h.tokenAddress)
+  const amountsInTokensByAddress = getTokensByTokenAddress(amountsInTokenAddresses, pool.chain)
+
+  const { tokenApprovalStep, initialAmountsToApprove } = useNextTokenApprovalStep({
+    amountsToApprove: helpers.getAmountsToApprove(humanAmountsIn, amountsInTokensByAddress),
+    actionType: 'AddLiquidity',
+  })
+
+  const { step: addLiquidityStep, transaction } = useConstructAddLiquidityStep(pool.id)
+  const steps = [tokenApprovalStep, addLiquidityStep].filter(step => step !== null) as FlowStep[]
+
+  const addLiquidityTransactionState = getTransactionState(transaction)
+
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
       token =>
@@ -103,39 +117,29 @@ export function _useAddLiquidity() {
   const totalUSDValue = safeSum(usdAmountsIn)
 
   const isConfirmingAddLiquidity = addLiquidityTransactionState === TransactionState.Confirming
+  const isAwaitingUserConfirmation = addLiquidityTransactionState === TransactionState.Loading
 
   // If the flow is complete or the final add liquidity transaction is
   // confirming, disable queries and updates to state.
-  const shouldFreezeQuote = isComplete || isConfirmingAddLiquidity
+  const shouldFreezeQuote = isComplete || isConfirmingAddLiquidity || isAwaitingUserConfirmation
 
   /**
    * The three handler queries, simulate + priceImpact + buildCallData.
    */
-  const {
-    isPreviewQueryLoading,
-    bptOut,
-    refetchPreviewQuery,
-    data: queryAddLiquidityOutput,
-  } = useAddLiquidityPreviewQuery(handler, humanAmountsIn, pool.id, {
+  const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn, pool.id, {
     enabled: !shouldFreezeQuote,
   })
 
-  const { isPriceImpactLoading, priceImpact, refetchPriceImpact } = useAddLiquidityPriceImpactQuery(
-    handler,
-    humanAmountsIn,
-    pool.id,
-    {
-      enabled: !shouldFreezeQuote,
-    }
-  )
+  const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn, pool.id, {
+    enabled: !shouldFreezeQuote,
+  })
 
   const buildCallDataQuery = useAddLiquidityBuildCallDataQuery({
     handler,
     humanAmountsIn,
     isActiveStep,
     pool,
-    queryAddLiquidityOutput,
-    countdownControllers,
+    simulationQuery,
     options: {
       enabled: !shouldFreezeQuote && isActiveStep,
     },
@@ -144,24 +148,6 @@ export function _useAddLiquidity() {
   /**
    * Side-effects
    */
-  // When the countdown timer reaches 0, refetch the simulate and priceImpact
-  // queries.
-  useEffect(() => {
-    const refetchQueries = async () => {
-      await Promise.all([refetchPreviewQuery(), refetchPriceImpact()])
-      await buildCallDataQuery.refetch()
-    }
-    if (secondsToRefetch === 0 && !shouldFreezeQuote) refetchQueries()
-  }, [secondsToRefetch])
-
-  // If the transaction flow is complete, stop the countdown timer.
-  useEffect(() => {
-    if (shouldFreezeQuote) {
-      countdownControllers.stopCountdown()
-      countdownControllers.resetCountdown()
-    }
-  }, [shouldFreezeQuote])
-
   // On initial render, set the initial humanAmountsIn
   useEffect(() => {
     setInitialHumanAmountsIn()
@@ -173,22 +159,20 @@ export function _useAddLiquidity() {
     tokens,
     validTokens,
     totalUSDValue,
-    isPriceImpactLoading,
-    priceImpact,
-    bptOut,
-    isPreviewQueryLoading,
+    simulationQuery,
+    priceImpactQuery,
     isDisabled,
     disabledReason,
     helpers,
     poolStateInput,
-    secondsToRefetch,
     isComplete,
     shouldFreezeQuote,
     addLiquidityTransactionState,
     buildCallDataQuery,
-    setAddLiquidityTransactionState,
+    initialAmountsToApprove,
+    steps,
+    previewModalDisclosure,
     setHumanAmountIn,
-    stopRefetchCountdown: countdownControllers.stopCountdown,
     setIsComplete,
   }
 }
