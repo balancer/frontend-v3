@@ -5,7 +5,7 @@ import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { safeSum } from '@/lib/shared/utils/numbers'
+import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
@@ -27,8 +27,12 @@ import {
 } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
 import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNextTokenApprovalStep'
-import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
 import { useDisclosure } from '@chakra-ui/hooks'
+import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
+import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
+import { TransactionBundle } from '@/lib/modules/web3/contracts/contract.types'
+import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
+import { isEqual } from 'lodash'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -38,11 +42,13 @@ export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
 export function _useAddLiquidity() {
   const humanAmountsIn = useReactiveVar(humanAmountsInVar)
   const [isComplete, setIsComplete] = useState(false)
+  const [_addLiquidityTransaction, _setAddLiquidityTransaction] = useState<TransactionBundle>()
 
   const { isActiveStep, activateStep } = useActiveStep()
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken, getTokensByTokenAddress } = useTokens()
-  const { isConnected } = useUserAccount()
+  const { isConnected, userAddress } = useUserAccount()
+  const vaultAddress = useContractAddress('balancer.vaultV2')
   const previewModalDisclosure = useDisclosure()
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
@@ -62,18 +68,18 @@ export function _useAddLiquidity() {
   /**
    * Helper functions & variables
    */
+  const tokenAddressesWithAmountIn = humanAmountsIn
+    .filter(amountIn => bn(amountIn.humanAmount).gt(0))
+    .map(amountIn => amountIn.tokenAddress)
   const amountsInTokenAddresses = humanAmountsIn.map(h => h.tokenAddress)
   const amountsInTokensByAddress = getTokensByTokenAddress(amountsInTokenAddresses, pool.chain)
 
+  const tokenAllowances = useTokenAllowances(userAddress, vaultAddress, tokenAddressesWithAmountIn)
   const { tokenApprovalStep, initialAmountsToApprove } = useNextTokenApprovalStep({
+    tokenAllowances,
     amountsToApprove: helpers.getAmountsToApprove(humanAmountsIn, amountsInTokensByAddress),
     actionType: 'AddLiquidity',
   })
-
-  const { step: addLiquidityStep, transaction } = useConstructAddLiquidityStep(pool.id)
-  const steps = [tokenApprovalStep, addLiquidityStep].filter(step => step !== null) as FlowStep[]
-
-  const addLiquidityTransactionState = getTransactionState(transaction)
 
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -116,6 +122,10 @@ export function _useAddLiquidity() {
 
   const totalUSDValue = safeSum(usdAmountsIn)
 
+  const addLiquidityTransactionState = _addLiquidityTransaction
+    ? getTransactionState(_addLiquidityTransaction)
+    : undefined
+
   const isConfirmingAddLiquidity = addLiquidityTransactionState === TransactionState.Confirming
   const isAwaitingUserConfirmation = addLiquidityTransactionState === TransactionState.Loading
 
@@ -146,6 +156,17 @@ export function _useAddLiquidity() {
   })
 
   /**
+   * Transaction step construction
+   */
+  const { addLiquidityStep, addLiquidityTransaction } = useConstructAddLiquidityStep(
+    pool.id,
+    buildCallDataQuery,
+    activateStep
+  )
+
+  const steps = [tokenApprovalStep, addLiquidityStep].filter(step => step !== null) as FlowStep[]
+
+  /**
    * Side-effects
    */
   // On initial render, set the initial humanAmountsIn
@@ -153,8 +174,17 @@ export function _useAddLiquidity() {
     setInitialHumanAmountsIn()
   }, [])
 
+  useEffect(() => {
+    // SMELL! This conditional fixes a re-render loop.
+    // The problem is we need the transaction state to enable or
+    // disable queries, but we also need the buildCallDataQuery state in
+    // useConstructAddLiquidityStep to construct the transaction...
+    if (!isEqual(_addLiquidityTransaction, addLiquidityTransaction)) {
+      _setAddLiquidityTransaction(addLiquidityTransaction)
+    }
+  }, [addLiquidityTransaction])
+
   return {
-    activateStep,
     humanAmountsIn,
     tokens,
     validTokens,
@@ -170,8 +200,11 @@ export function _useAddLiquidity() {
     addLiquidityTransactionState,
     buildCallDataQuery,
     initialAmountsToApprove,
-    steps,
     previewModalDisclosure,
+    tokenApprovalStep,
+    addLiquidityTransaction,
+    steps,
+    activateStep,
     setHumanAmountIn,
     setIsComplete,
   }

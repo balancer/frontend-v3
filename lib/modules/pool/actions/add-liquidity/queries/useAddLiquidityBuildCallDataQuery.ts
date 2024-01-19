@@ -18,6 +18,8 @@ type Props = {
   options?: UseQueryOptions
 }
 
+export type AddLiquidityBuildQueryResponse = ReturnType<typeof useAddLiquidityBuildCallDataQuery>
+
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
 export function useAddLiquidityBuildCallDataQuery({
   handler,

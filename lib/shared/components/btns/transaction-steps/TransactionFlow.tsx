@@ -54,9 +54,8 @@ export default function TransactionFlow({
 
   // notify step activation
   useEffect(() => {
-    // console.log('Chaging activeStep to', activeStep.id)
-    activeStep.activateStep() //TODO: also deactivate previous steps (is that necessary, we could skip it if we use enabled with completed but thats dangerous, this is probably easier)
-  }, [activeStep.id])
+    if (activeStep) activeStep.activateStep() //TODO: also deactivate previous steps (is that necessary, we could skip it if we use enabled with completed but thats dangerous, this is probably easier)
+  }, [activeStep?.id])
 
   return (
     <>

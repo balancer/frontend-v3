@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
+import { UseTokenAllowancesResponse } from '@/lib/modules/web3/useTokenAllowances'
 import { isEmpty } from 'lodash'
 import { useEffect, useState } from 'react'
 import { emptyAddress } from '../../web3/contracts/wagmi-helpers'
@@ -11,6 +11,7 @@ import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 import { ApprovalAction } from './approval-labels'
 
 type Params = {
+  tokenAllowances: UseTokenAllowancesResponse
   amountsToApprove: TokenAmountToApprove[]
   actionType: ApprovalAction
   approveMaxBigInt?: boolean
@@ -22,13 +23,14 @@ type Params = {
   getRequiredTokenApprovals is recalculated after updating the allowances so we can always return the first in the list until the list in empty
 */
 export function useNextTokenApprovalStep({
+  tokenAllowances,
   amountsToApprove,
   actionType,
   approveMaxBigInt = true,
 }: Params) {
   const { chainId, chain } = useNetworkConfig()
 
-  const { allowances, isAllowancesLoading, spenderAddress } = useTokenAllowances()
+  const { allowances, isAllowancesLoading, spenderAddress } = tokenAllowances
 
   const currentTokenAllowances = allowances || {}
   const [initialAmountsToApprove, setInitialAmountsToApprove] = useState<
@@ -58,6 +60,7 @@ export function useNextTokenApprovalStep({
       : remainingAmountsToApprove[0].rawAmount
 
   const tokenApprovalStep = useConstructApproveTokenStep({
+    tokenAllowances,
     tokenAddress: tokenAddressToApprove,
     spenderAddress,
     actionType,

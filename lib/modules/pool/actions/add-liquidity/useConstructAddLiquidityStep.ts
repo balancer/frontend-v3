@@ -1,20 +1,28 @@
-import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { Address } from 'wagmi'
-import { useAddLiquidity } from './useAddLiquidity'
+import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { AddLiquidityBuildQueryResponse } from './queries/useAddLiquidityBuildCallDataQuery'
 
-export function useConstructAddLiquidityStep(poolId: string) {
-  const { buildCallDataQuery, activateStep } = useAddLiquidity()
+export function useConstructAddLiquidityStep(
+  poolId: string,
+  buildCallDataQuery: AddLiquidityBuildQueryResponse,
+  activateStep: () => void
+) {
+  const transactionLabels: TransactionLabels = {
+    init: 'Add liquidity',
+    confirming: 'Confirm add liquidity',
+    confirmed: `🎉 Liquidity added to pool`,
+    tooltip: 'TODO',
+  }
 
-  const transactionLabels = buildAddLiquidityLabels(poolId)
+  const addLiquidityTransaction = useManagedSendTransaction(
+    transactionLabels,
+    buildCallDataQuery.data
+  )
 
-  const transaction = useManagedSendTransaction(transactionLabels, buildCallDataQuery.data)
+  const isComplete = () => addLiquidityTransaction.result.isSuccess
 
-  const isComplete = () => transaction.result.isSuccess
-
-  const step: FlowStep = {
-    ...transaction,
+  const addLiquidityStep: FlowStep = {
+    ...addLiquidityTransaction,
     transactionLabels,
     id: `addLiquidityPool${poolId}`,
     stepType: 'addLiquidity',
@@ -23,23 +31,15 @@ export function useConstructAddLiquidityStep(poolId: string) {
   }
 
   return {
-    step,
-    transaction,
+    addLiquidityStep,
+    addLiquidityTransaction,
     isLoading:
-      transaction?.simulation.isLoading ||
-      transaction?.execution.isLoading ||
+      addLiquidityTransaction?.simulation.isLoading ||
+      addLiquidityTransaction?.execution.isLoading ||
       buildCallDataQuery.isLoading,
     error:
-      transaction?.simulation.error || transaction?.execution.error || buildCallDataQuery.error,
-  }
-}
-
-export const buildAddLiquidityLabels: BuildTransactionLabels = (poolId: Address) => {
-  return {
-    init: 'Add liquidity',
-    confirming: 'Confirm add liquidity',
-    confirmed: 'Back to pool',
-    tooltip: 'TODO',
-    description: `🎉 Liquidity added to pool ${poolId}`,
+      addLiquidityTransaction?.simulation.error ||
+      addLiquidityTransaction?.execution.error ||
+      buildCallDataQuery.error,
   }
 }

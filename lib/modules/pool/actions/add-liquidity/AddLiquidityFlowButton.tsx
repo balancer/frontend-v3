@@ -3,7 +3,6 @@
 import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
 import { Button, Text, VStack } from '@chakra-ui/react'
 import { useAddLiquidity } from './useAddLiquidity'
-import { useEffect } from 'react'
 
 export function AddLiquidityFlowButton() {
   const { setIsComplete, isComplete, initialAmountsToApprove, steps } = useAddLiquidity()
@@ -15,11 +14,7 @@ export function AddLiquidityFlowButton() {
 
   const tokensRequiringApprovalTransaction = initialAmountsToApprove
     ?.map(token => token.tokenSymbol)
-    .join(' , ')
-
-  useEffect(() => {
-    console.log('steps', steps)
-  }, [steps])
+    .join(', ')
 
   return (
     <VStack w="full">
