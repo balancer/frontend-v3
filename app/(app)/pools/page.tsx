@@ -8,7 +8,7 @@ import { PoolList } from '@/lib/modules/pool/PoolList/PoolList'
 import { PoolListProvider } from '@/lib/modules/pool/PoolList/usePoolList'
 import { POOL_TYPE_MAP, poolListQueryStateParsers } from '@/lib/modules/pool/pool.types'
 import { uniq } from 'lodash'
-import { PoolListFeaturedPoolsProvider } from '@/lib/modules/pool/PoolList/usePoolListFeaturedPools'
+import { FeaturedPoolsProvider } from '@/lib/modules/featuredPools/useFeaturedPools'
 
 export const revalidate = 30
 
@@ -65,12 +65,12 @@ export default async function Pools({ searchParams }: Props) {
 
   return (
     <PoolListProvider data={poolListData} variables={poolListVariables}>
-      <PoolListFeaturedPoolsProvider
+      <FeaturedPoolsProvider
         data={poolListFeaturedPoolsData}
         variables={poolListFeaturedPoolsVariables}
       >
         <PoolList />
-      </PoolListFeaturedPoolsProvider>
+      </FeaturedPoolsProvider>
     </PoolListProvider>
   )
 }

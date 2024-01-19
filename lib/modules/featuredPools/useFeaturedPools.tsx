@@ -11,7 +11,7 @@ import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { createContext, ReactNode } from 'react'
 
-export function _usePoolListFeaturedPools() {
+export function _useFeaturedPools() {
   const { supportedNetworks } = getProjectConfig()
   const { data, loading, networkStatus, error } = useQuery(GetFeaturedPoolsDocument, {
     variables: { chains: supportedNetworks },
@@ -25,11 +25,9 @@ export function _usePoolListFeaturedPools() {
   }
 }
 
-export const PoolListFeaturedPoolsContext = createContext<ReturnType<
-  typeof _usePoolListFeaturedPools
-> | null>(null)
+export const FeaturedPoolsContext = createContext<ReturnType<typeof _useFeaturedPools> | null>(null)
 
-export function PoolListFeaturedPoolsProvider({
+export function FeaturedPoolsProvider({
   children,
   data,
   variables,
@@ -44,14 +42,10 @@ export function PoolListFeaturedPoolsProvider({
     variables,
   })
 
-  const hook = _usePoolListFeaturedPools()
-  return (
-    <PoolListFeaturedPoolsContext.Provider value={hook}>
-      {children}
-    </PoolListFeaturedPoolsContext.Provider>
-  )
+  const hook = _useFeaturedPools()
+  return <FeaturedPoolsContext.Provider value={hook}>{children}</FeaturedPoolsContext.Provider>
 }
 
-export function usePoolListFeaturedPools() {
-  return useMandatoryContext(PoolListFeaturedPoolsContext, 'PoolListFeaturedPools')
+export function useFeaturedPools() {
+  return useMandatoryContext(FeaturedPoolsContext, 'FeaturedPools')
 }

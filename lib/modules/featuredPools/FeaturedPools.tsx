@@ -1,5 +1,5 @@
 import { Card, Center, Grid, GridItem, HStack, Heading, Text, VStack } from '@chakra-ui/react'
-import { usePoolListFeaturedPools } from './usePoolListFeaturedPools'
+import { useFeaturedPools } from './useFeaturedPools'
 import { GqlChain, GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import {
@@ -7,9 +7,9 @@ import {
   cardMouseEnterHandler,
   getAprLabel,
   getPoolTypeLabel,
-} from '../pool.utils'
+} from '../pool/pool.utils'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import PoolWeightChart from '../PoolDetail/PoolWeightCharts/PoolWeightChart'
+import PoolWeightChart from '../pool/PoolDetail/PoolWeightCharts/PoolWeightChart'
 import { useRouter } from 'next/navigation'
 
 const indexAreaHash: { [key: number]: string } = {
@@ -62,8 +62,8 @@ function FeaturedPoolCard({
   )
 }
 
-export function PoolListFeaturedPools() {
-  const { featuredPools: allFeaturedPools } = usePoolListFeaturedPools()
+export function FeaturedPools() {
+  const { featuredPools: allFeaturedPools } = useFeaturedPools()
   const { projectName } = getProjectConfig()
 
   const featuredPools = allFeaturedPools.slice(0, 5)
