@@ -58,8 +58,10 @@ export function useAddLiquidityBuildCallDataQuery({
     return response
   }
 
-  return useQuery(queryKey, queryFn, {
+  const queryOpts = {
     enabled: enabled && isConnected,
     cacheTime: 0,
-  })
+  }
+
+  return useQuery(queryKey, queryFn, queryOpts)
 }
