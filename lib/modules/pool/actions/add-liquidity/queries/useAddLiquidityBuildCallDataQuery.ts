@@ -58,10 +58,8 @@ export function useAddLiquidityBuildCallDataQuery({
     return response
   }
 
-  const buildCallDataQuery = useQuery(queryKey, queryFn, {
+  return useQuery(queryKey, queryFn, {
     enabled: enabled && isConnected,
     cacheTime: 0,
   })
-
-  return { ...buildCallDataQuery, refetchBuildQuery: buildCallDataQuery.refetch }
 }
