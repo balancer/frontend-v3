@@ -5,15 +5,23 @@ import { Text, VStack } from '@chakra-ui/react'
 import { useAddLiquidity } from './useAddLiquidity'
 import { usePoolRedirect } from '../../pool.hooks'
 import { usePool } from '../../usePool'
+import React, { useState } from 'react'
 
 export function AddLiquidityFlowButton() {
+  const [didRefetchPool, setDidRefetchPool] = useState(false)
   const { setIsComplete, initialAmountsToApprove, steps } = useAddLiquidity()
-  const { pool } = usePool()
+  const { pool, refetch } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
 
-  function handleJoinCompleted() {
-    console.log('Join completed')
+  async function handleJoinCompleted() {
     setIsComplete(true)
+    await refetch()
+    setDidRefetchPool(true)
+  }
+
+  async function handlerRedirectToPoolPage(event: React.MouseEvent<HTMLElement>) {
+    if (!didRefetchPool) await refetch()
+    redirectToPoolPage(event)
   }
 
   const tokensRequiringApprovalTransaction = initialAmountsToApprove
@@ -29,7 +37,7 @@ export function AddLiquidityFlowButton() {
       </Text>
       <TransactionFlow
         onComplete={handleJoinCompleted}
-        onCompleteClick={redirectToPoolPage}
+        onCompleteClick={handlerRedirectToPoolPage}
         completedButtonLabel="Return to pool"
         steps={steps}
       />
