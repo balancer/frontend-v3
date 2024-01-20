@@ -45,11 +45,7 @@ export default function TransactionFlow({
   // side effect, automatically execute the onComplete
   // callback once everything is complete
   useEffect(() => {
-    console.log('Are all steps complete?', areAllStepsComplete)
-
-    if (areAllStepsComplete) {
-      onComplete?.()
-    }
+    if (areAllStepsComplete) onComplete?.()
   }, [areAllStepsComplete])
 
   // notify step activation
