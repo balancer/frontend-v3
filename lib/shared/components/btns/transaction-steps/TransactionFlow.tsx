@@ -17,13 +17,13 @@ type Props = {
 
   // callback to execute on the button that will be shown to users once the
   // flow is complete
-  onCompleteClick: () => void
+  onCompleteClick: (event: React.MouseEvent<HTMLElement>) => void
 
   // label to show on the completed flow button
   completedButtonLabel: string
 
   // custom content to render in the success alert box
-  completedAlertContent: ReactNode
+  completedAlertContent?: ReactNode
 }
 
 export default function TransactionFlow({
@@ -62,7 +62,7 @@ export default function TransactionFlow({
               {completedAlertContent}
             </Alert>
           )}
-          <Button w="full" size="lg" variant="primary" onClick={onCompleteClick}>
+          <Button w="full" size="lg" onClick={onCompleteClick}>
             {completedButtonLabel}
           </Button>
         </VStack>

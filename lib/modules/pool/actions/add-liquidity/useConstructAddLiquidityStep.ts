@@ -9,9 +9,9 @@ export function useConstructAddLiquidityStep(
 ) {
   const transactionLabels: TransactionLabels = {
     init: 'Add liquidity',
-    confirming: 'Confirm add liquidity',
-    confirmed: `🎉 Liquidity added to pool`,
-    tooltip: 'TODO',
+    confirming: 'Confirming...',
+    confirmed: `Liquidity added to pool!`,
+    tooltip: 'Add liquidity to pool.',
   }
 
   const addLiquidityTransaction = useManagedSendTransaction(
