@@ -109,9 +109,11 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Bpt out</Text>
                 <HStack>
-                  <NumberText color="GrayText">
-                    {simulationQuery.isLoading ? <Skeleton w="12" h="full" /> : bptOutLabel}
-                  </NumberText>
+                  {simulationQuery.isLoading ? (
+                    <Skeleton w="12" h="full" />
+                  ) : (
+                    <NumberText color="GrayText">{bptOutLabel}</NumberText>
+                  )}
                   <Tooltip label="Bpt out" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
