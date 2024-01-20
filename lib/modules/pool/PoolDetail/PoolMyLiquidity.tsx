@@ -15,6 +15,7 @@ import { keyBy } from 'lodash'
 import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
 import { BPT_DECIMALS } from '../pool.constants'
 import { useUserAccount } from '../../web3/useUserAccount'
+import { bn } from '@/lib/shared/utils/numbers'
 
 const TABS = [
   {
@@ -108,6 +109,8 @@ export default function PoolMyLiquidity() {
     return poolTokenBalancesForTab[tokenAddress].amount
   }
 
+  const hasUnstakedBalance = bn(pool.userBalance?.walletBalance || '0').gt(0)
+
   return (
     <Card variant="gradient" width="full" minHeight="320px">
       <VStack spacing="0" width="full">
@@ -175,7 +178,12 @@ export default function PoolMyLiquidity() {
               >
                 Remove
               </Button>
-              <Button variant="disabled" isDisabled>
+              <Button
+                as={Link}
+                href={`${pathname}/stake`}
+                variant={hasUnstakedBalance ? 'secondary' : 'disabled'}
+                isDisabled={!hasUnstakedBalance}
+              >
                 Stake
               </Button>
               <Button variant="disabled" isDisabled>

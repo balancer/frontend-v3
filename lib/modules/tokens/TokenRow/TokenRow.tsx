@@ -11,6 +11,7 @@ type Props = {
   address: Address
   chain: GqlChain
   value: Numberish
+  usdValue?: string
   customRender?: (token: GqlToken) => ReactNode | ReactNode[]
   isSelected?: boolean
   isLoading?: boolean
@@ -19,6 +20,7 @@ type Props = {
 export default function TokenRow({
   address,
   value,
+  usdValue,
   customRender,
   chain,
   isSelected,
@@ -28,7 +30,11 @@ export default function TokenRow({
   const { toCurrency } = useCurrency()
   const token = getToken(address, chain)
 
-  const totalValue = token ? usdValueForToken(token, value) : '0'
+  const getUsdValue = () => {
+    if (usdValue) return usdValue
+    if (token) return usdValueForToken(token, value)
+    return '0'
+  }
 
   return (
     <HStack width="full" justifyContent="space-between">
@@ -62,7 +68,7 @@ export default function TokenRow({
             <Skeleton w="10" h="4" />
           ) : (
             <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-              {toCurrency(totalValue)}
+              {toCurrency(getUsdValue())}
             </Text>
           )}
         </VStack>
