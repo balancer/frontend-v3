@@ -2,7 +2,7 @@ import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { HumanAmount, InputAmount, PoolStateInput, TokenAmount } from '@balancer/sdk'
+import { HumanAmount, InputAmount, PoolState, TokenAmount } from '@balancer/sdk'
 import { Dictionary, keyBy } from 'lodash'
 import { formatUnits, parseUnits } from 'viem'
 import { Address } from 'wagmi'
@@ -27,7 +27,7 @@ const NullPool: Pool = {
 export class LiquidityActionHelpers {
   constructor(public pool: Pool = NullPool) {}
 
-  public get poolStateInput(): PoolStateInput {
+  public get poolStateInput(): PoolState {
     return toPoolStateInput(this.pool)
   }
 

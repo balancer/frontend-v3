@@ -65,6 +65,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     const addLiquidity = new AddLiquidity()
 
     const { call, to, value } = addLiquidity.buildCall({
+      chainId: this.helpers.chainId,
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,

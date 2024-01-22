@@ -1,10 +1,10 @@
 /*********************** Mock To Represent API Requirements **********************/
 
-import { Hex, PoolStateInput, getPoolAddress } from '@balancer/sdk'
+import { Hex, PoolState, getPoolAddress } from '@balancer/sdk'
 import { Address } from 'wagmi'
 
 export class MockApi {
-  public getPool(id: Hex): PoolStateInput {
+  public getPool(id: Hex): PoolState {
     const tokens = [
       {
         address: '0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f' as Address, // wjAURA
@@ -23,6 +23,7 @@ export class MockApi {
       address: getPoolAddress(id) as Address,
       type: 'WEIGHTED',
       tokens,
+      balancerVersion: 2,
     }
   }
 }
