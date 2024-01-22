@@ -205,11 +205,11 @@ export function _useSwap() {
       ...swapState,
       tokenIn: {
         ...swapState.tokenIn,
-        address: tokenIn ? tokenIn : emptyAddress,
+        address: tokenIn || emptyAddress,
       },
       tokenOut: {
         ...swapState.tokenOut,
-        address: tokenOut ? tokenOut : emptyAddress,
+        address: tokenOut || emptyAddress,
       },
     })
   }
