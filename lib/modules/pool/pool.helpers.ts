@@ -106,12 +106,16 @@ export function preMintedBptIndex(pool: GqlPoolBase): number | void {
   return pool.allTokens.findIndex(token => isSameAddress(token.address, pool.address))
 }
 
-export function calcBptPrice(pool: GetPoolQuery['pool']): string {
-  return bn(pool.dynamicData.totalLiquidity).div(pool.dynamicData.totalShares).toString()
+export function calcBptPrice(totalLiquidity: string, totalShares: string): string {
+  return bn(totalLiquidity).div(totalShares).toString()
+}
+
+export function calcBptPriceFor(pool: GetPoolQuery['pool']): string {
+  return calcBptPrice(pool.dynamicData.totalLiquidity, pool.dynamicData.totalShares)
 }
 
 export function bptUsdValue(pool: GetPoolQuery['pool'], bptAmount: Numberish): string {
-  return bn(bptAmount).times(calcBptPrice(pool)).toString()
+  return bn(bptAmount).times(calcBptPriceFor(pool)).toString()
 }
 
 export function createdAfterTimestamp(pool: GqlPoolBase): boolean {

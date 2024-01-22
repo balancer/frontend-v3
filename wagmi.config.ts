@@ -51,6 +51,10 @@ export default defineConfig(() => {
             name: 'BalancerV2WeightedPoolV4',
             address: '0x3ff3a210e57cfe679d9ad1e9ba6453a716c56a2e',
           },
+          {
+            name: 'BalancerV2GaugeV5',
+            address: '0xbc02ef87f4e15ef78a571f3b2adcc726fee70d8b',
+          },
         ],
       }),
     ],

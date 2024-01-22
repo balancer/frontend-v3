@@ -329,6 +329,13 @@ export type GqlPoolElement = GqlPoolBase & {
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
+export type GqlPoolFeaturedPool = {
+  __typename: 'GqlPoolFeaturedPool'
+  pool: GqlPoolBase
+  poolId: Scalars['ID']['output']
+  primary: Scalars['Boolean']['output']
+}
+
 export type GqlPoolFeaturedPoolGroup = {
   __typename: 'GqlPoolFeaturedPoolGroup'
   chain: GqlChain
@@ -1478,6 +1485,7 @@ export type Query = {
   latestSyncedBlocks: GqlLatestSyncedBlocks
   poolGetBatchSwaps: Array<GqlPoolBatchSwap>
   poolGetFeaturedPoolGroups: Array<GqlPoolFeaturedPoolGroup>
+  poolGetFeaturedPools: Array<GqlPoolFeaturedPool>
   poolGetGyroPools: Array<GqlPoolGyro>
   poolGetJoinExits: Array<GqlPoolJoinExit>
   poolGetLinearPools: Array<GqlPoolLinear>
@@ -1531,6 +1539,10 @@ export type QueryPoolGetBatchSwapsArgs = {
 
 export type QueryPoolGetFeaturedPoolGroupsArgs = {
   chains?: InputMaybe<Array<GqlChain>>
+}
+
+export type QueryPoolGetFeaturedPoolsArgs = {
+  chains: Array<GqlChain>
 }
 
 export type QueryPoolGetGyroPoolsArgs = {
@@ -1791,7 +1803,8 @@ export type GetBlocksPerDayQuery = {
 
 export type GetPoolQueryVariables = Exact<{
   id: Scalars['String']['input']
-  chain?: InputMaybe<GqlChain>
+  chain: GqlChain
+  userAddress?: InputMaybe<Scalars['String']['input']>
 }>
 
 export type GetPoolQuery = {
@@ -2143,6 +2156,15 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+          totalBalanceUsd: number
+        } | null
       }
     | {
         __typename: 'GqlPoolElement'
@@ -2346,6 +2368,15 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+          totalBalanceUsd: number
+        } | null
       }
     | {
         __typename: 'GqlPoolGyro'
@@ -2693,6 +2724,15 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+          totalBalanceUsd: number
+        } | null
       }
     | {
         __typename: 'GqlPoolLinear'
@@ -2898,6 +2938,15 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+          totalBalanceUsd: number
+        } | null
       }
     | {
         __typename: 'GqlPoolLiquidityBootstrapping'
@@ -3243,6 +3292,15 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+          totalBalanceUsd: number
+        } | null
       }
     | {
         __typename: 'GqlPoolMetaStable'
@@ -3444,6 +3502,15 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+          totalBalanceUsd: number
+        } | null
       }
     | {
         __typename: 'GqlPoolStable'
@@ -3645,6 +3712,15 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+          totalBalanceUsd: number
+        } | null
       }
     | {
         __typename: 'GqlPoolWeighted'
@@ -3990,6 +4066,15 @@ export type GetPoolQuery = {
             }>
           }>
         }
+        userBalance?: {
+          __typename: 'GqlPoolUserBalance'
+          stakedBalance: string
+          totalBalance: string
+          walletBalance: string
+          stakedBalanceUsd: number
+          walletBalanceUsd: number
+          totalBalanceUsd: number
+        } | null
       }
 }
 
@@ -4598,7 +4683,15 @@ export const GetPoolDocument = {
         {
           kind: 'VariableDefinition',
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'chain' } },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userAddress' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
         },
       ],
       selectionSet: {
@@ -4618,6 +4711,11 @@ export const GetPoolDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'chain' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'chain' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'userAddress' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'userAddress' } },
               },
             ],
             selectionSet: {
@@ -5152,6 +5250,21 @@ export const GetPoolDocument = {
                           ],
                         },
                       },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'userBalance' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'stakedBalance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'walletBalance' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'stakedBalanceUsd' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'walletBalanceUsd' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'totalBalanceUsd' } },
                     ],
                   },
                 },

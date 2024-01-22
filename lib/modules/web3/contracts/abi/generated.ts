@@ -1191,6 +1191,566 @@ export const balancerV2Erc4626LinearPoolV3Config = {
 } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// BalancerV2GaugeV5
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xbc02ef87f4e15ef78a571f3b2adcc726fee70d8b)
+ */
+export const balancerV2GaugeV5ABI = [
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'provider', type: 'address', indexed: true },
+      { name: 'value', type: 'uint256', indexed: false },
+    ],
+    name: 'Deposit',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'provider', type: 'address', indexed: true },
+      { name: 'value', type: 'uint256', indexed: false },
+    ],
+    name: 'Withdraw',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'user', type: 'address', indexed: true },
+      { name: 'original_balance', type: 'uint256', indexed: false },
+      { name: 'original_supply', type: 'uint256', indexed: false },
+      { name: 'working_balance', type: 'uint256', indexed: false },
+      { name: 'working_supply', type: 'uint256', indexed: false },
+    ],
+    name: 'UpdateLiquidityLimit',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: '_from', type: 'address', indexed: true },
+      { name: '_to', type: 'address', indexed: true },
+      { name: '_value', type: 'uint256', indexed: false },
+    ],
+    name: 'Transfer',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: '_owner', type: 'address', indexed: true },
+      { name: '_spender', type: 'address', indexed: true },
+      { name: '_value', type: 'uint256', indexed: false },
+    ],
+    name: 'Approval',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'reward_token', type: 'address', indexed: true },
+      { name: 'distributor', type: 'address', indexed: false },
+    ],
+    name: 'RewardDistributorUpdated',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [{ name: 'new_relative_weight_cap', type: 'uint256', indexed: false }],
+    name: 'RelativeWeightCapChanged',
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+    inputs: [
+      { name: 'minter', type: 'address' },
+      { name: 'veBoostProxy', type: 'address' },
+      { name: 'authorizerAdaptor', type: 'address' },
+    ],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: '_value', type: 'uint256' }],
+    name: 'deposit',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_value', type: 'uint256' },
+      { name: '_addr', type: 'address' },
+    ],
+    name: 'deposit',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_value', type: 'uint256' },
+      { name: '_addr', type: 'address' },
+      { name: '_claim_rewards', type: 'bool' },
+    ],
+    name: 'deposit',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: '_value', type: 'uint256' }],
+    name: 'withdraw',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_value', type: 'uint256' },
+      { name: '_claim_rewards', type: 'bool' },
+    ],
+    name: 'withdraw',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [],
+    name: 'claim_rewards',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: '_addr', type: 'address' }],
+    name: 'claim_rewards',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_addr', type: 'address' },
+      { name: '_receiver', type: 'address' },
+    ],
+    name: 'claim_rewards',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_from', type: 'address' },
+      { name: '_to', type: 'address' },
+      { name: '_value', type: 'uint256' },
+    ],
+    name: 'transferFrom',
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_to', type: 'address' },
+      { name: '_value', type: 'uint256' },
+    ],
+    name: 'transfer',
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_spender', type: 'address' },
+      { name: '_value', type: 'uint256' },
+    ],
+    name: 'approve',
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_owner', type: 'address' },
+      { name: '_spender', type: 'address' },
+      { name: '_value', type: 'uint256' },
+      { name: '_deadline', type: 'uint256' },
+      { name: '_v', type: 'uint8' },
+      { name: '_r', type: 'bytes32' },
+      { name: '_s', type: 'bytes32' },
+    ],
+    name: 'permit',
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_spender', type: 'address' },
+      { name: '_added_value', type: 'uint256' },
+    ],
+    name: 'increaseAllowance',
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_spender', type: 'address' },
+      { name: '_subtracted_value', type: 'uint256' },
+    ],
+    name: 'decreaseAllowance',
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'addr', type: 'address' }],
+    name: 'user_checkpoint',
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: '_receiver', type: 'address' }],
+    name: 'set_rewards_receiver',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'addr', type: 'address' }],
+    name: 'kick',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_reward_token', type: 'address' },
+      { name: '_amount', type: 'uint256' },
+    ],
+    name: 'deposit_reward_token',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_reward_token', type: 'address' },
+      { name: '_distributor', type: 'address' },
+    ],
+    name: 'add_reward',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_reward_token', type: 'address' },
+      { name: '_distributor', type: 'address' },
+    ],
+    name: 'set_reward_distributor',
+    outputs: [],
+  },
+  { stateMutability: 'nonpayable', type: 'function', inputs: [], name: 'killGauge', outputs: [] },
+  { stateMutability: 'nonpayable', type: 'function', inputs: [], name: 'unkillGauge', outputs: [] },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: '_addr', type: 'address' },
+      { name: '_token', type: 'address' },
+    ],
+    name: 'claimed_reward',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: '_user', type: 'address' },
+      { name: '_reward_token', type: 'address' },
+    ],
+    name: 'claimable_reward',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'addr', type: 'address' }],
+    name: 'claimable_tokens',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'integrate_checkpoint',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'future_epoch_time',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'inflation_rate',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'decimals',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'version',
+    outputs: [{ name: '', type: 'string' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: 'owner', type: 'address' },
+      { name: 'spender', type: 'address' },
+    ],
+    name: 'allowance',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: '_lp_token', type: 'address' },
+      { name: 'relative_weight_cap', type: 'uint256' },
+    ],
+    name: 'initialize',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'relative_weight_cap', type: 'uint256' }],
+    name: 'setRelativeWeightCap',
+    outputs: [],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getRelativeWeightCap',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'time', type: 'uint256' }],
+    name: 'getCappedRelativeWeight',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'pure',
+    type: 'function',
+    inputs: [],
+    name: 'getMaxRelativeWeightCap',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'arg0', type: 'address' }],
+    name: 'balanceOf',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'totalSupply',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'name',
+    outputs: [{ name: '', type: 'string' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'symbol',
+    outputs: [{ name: '', type: 'string' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'DOMAIN_SEPARATOR',
+    outputs: [{ name: '', type: 'bytes32' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'arg0', type: 'address' }],
+    name: 'nonces',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'lp_token',
+    outputs: [{ name: '', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'is_killed',
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'reward_count',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'arg0', type: 'address' }],
+    name: 'reward_data',
+    outputs: [
+      {
+        name: '',
+        type: 'tuple',
+        components: [
+          { name: 'token', type: 'address' },
+          { name: 'distributor', type: 'address' },
+          { name: 'period_finish', type: 'uint256' },
+          { name: 'rate', type: 'uint256' },
+          { name: 'last_update', type: 'uint256' },
+          { name: 'integral', type: 'uint256' },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'arg0', type: 'address' }],
+    name: 'rewards_receiver',
+    outputs: [{ name: '', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: 'arg0', type: 'address' },
+      { name: 'arg1', type: 'address' },
+    ],
+    name: 'reward_integral_for',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'arg0', type: 'address' }],
+    name: 'working_balances',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'working_supply',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'arg0', type: 'address' }],
+    name: 'integrate_inv_supply_of',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'arg0', type: 'address' }],
+    name: 'integrate_checkpoint_of',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'arg0', type: 'address' }],
+    name: 'integrate_fraction',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'period',
+    outputs: [{ name: '', type: 'int128' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'arg0', type: 'uint256' }],
+    name: 'reward_tokens',
+    outputs: [{ name: '', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'arg0', type: 'uint256' }],
+    name: 'period_timestamp',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'arg0', type: 'uint256' }],
+    name: 'integrate_inv_supply',
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+] as const
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xbc02ef87f4e15ef78a571f3b2adcc726fee70d8b)
+ */
+export const balancerV2GaugeV5Address = {
+  1: '0xBC02eF87f4E15EF78A571f3B2aDcC726Fee70d8b',
+} as const
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xbc02ef87f4e15ef78a571f3b2adcc726fee70d8b)
+ */
+export const balancerV2GaugeV5Config = {
+  address: balancerV2GaugeV5Address,
+  abi: balancerV2GaugeV5ABI,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // BalancerV2Vault
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2393,6 +2953,27 @@ export function useBalancerV2Erc4626LinearPoolV3Read<
     address: balancerV2Erc4626LinearPoolV3Address[1],
     ...config,
   } as UseContractReadConfig<typeof balancerV2Erc4626LinearPoolV3ABI, TFunctionName, TSelectData>)
+}
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link balancerV2GaugeV5ABI}__.
+ *
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xbc02ef87f4e15ef78a571f3b2adcc726fee70d8b)
+ */
+export function useBalancerV2GaugeV5Read<
+  TFunctionName extends string,
+  TSelectData = ReadContractResult<typeof balancerV2GaugeV5ABI, TFunctionName>
+>(
+  config: Omit<
+    UseContractReadConfig<typeof balancerV2GaugeV5ABI, TFunctionName, TSelectData>,
+    'abi' | 'address'
+  > & { chainId?: keyof typeof balancerV2GaugeV5Address } = {} as any
+) {
+  return useContractRead({
+    abi: balancerV2GaugeV5ABI,
+    address: balancerV2GaugeV5Address[1],
+    ...config,
+  } as UseContractReadConfig<typeof balancerV2GaugeV5ABI, TFunctionName, TSelectData>)
 }
 
 /**
