@@ -44,6 +44,9 @@ export function Navbar({ leftSlot, rightSlot }: Props) {
               <Link href="/pools" prefetch={true}>
                 Pools
               </Link>
+              <Link href="/swap" prefetch={true}>
+                Swap
+              </Link>
               <Link href="/debug" prefetch={true}>
                 Debug
               </Link>
