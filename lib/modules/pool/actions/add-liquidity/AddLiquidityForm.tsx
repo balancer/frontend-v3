@@ -37,6 +37,7 @@ export function AddLiquidityForm() {
     isDisabled,
     disabledReason,
     previewModalDisclosure,
+    deactivateStep,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
 
@@ -54,6 +55,7 @@ export function AddLiquidityForm() {
 
   const onModalClose = () => {
     previewModalDisclosure.onClose()
+    deactivateStep()
   }
 
   return (

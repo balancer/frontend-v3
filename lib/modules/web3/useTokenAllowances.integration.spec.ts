@@ -3,11 +3,11 @@ import { testHook } from '@/test/utils/custom-renderers'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { act, waitFor } from '@testing-library/react'
 import { Address } from 'viem'
-import { _useTokenAllowances } from './useTokenAllowances'
+import { useTokenAllowances } from './useTokenAllowances'
 
 function testTokenAllowances(tokenAddresses: Address[]) {
   const { result } = testHook(() =>
-    _useTokenAllowances(defaultTestUserAccount, vaultV2Address, tokenAddresses)
+    useTokenAllowances(defaultTestUserAccount, vaultV2Address, tokenAddresses)
   )
   return result
 }

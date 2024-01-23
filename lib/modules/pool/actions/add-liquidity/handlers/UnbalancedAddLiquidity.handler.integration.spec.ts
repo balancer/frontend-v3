@@ -10,7 +10,6 @@ import { Pool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
 import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
-import { AddLiquidityHandler } from './AddLiquidity.handler'
 
 function selectUnbalancedHandler() {
   return selectAddLiquidityHandler(aWjAuraWethPoolElementMock()) as UnbalancedAddLiquidityHandler
