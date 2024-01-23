@@ -2,16 +2,16 @@
 import { Text } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
-import { useAddLiquidity } from './useAddLiquidity'
 import {
   TransactionState,
   getTransactionState,
 } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { useRemoveLiquidity } from '../useRemoveLiquidity'
 
-function useAddLiquidityTimeout() {
+function useRemoveLiquidityTimeout() {
   // This countdown needs to be nested here and not at a higher level, like in
-  // useAddLiquidity, because otherwise it causes re-renders of the entire
-  // add-liquidity flow component tree every second.
+  // useRemoveLiquidity, because otherwise it causes re-renders of the entire
+  // remove-liquidity flow component tree every second.
   const [secondsToRefetch, { startCountdown, stopCountdown, resetCountdown }] = useCountdown({
     countStart: 30,
     intervalMs: 1000,
@@ -22,10 +22,10 @@ function useAddLiquidityTimeout() {
     priceImpactQuery,
     buildCallDataQuery,
     previewModalDisclosure,
-    addLiquidityTransaction,
-  } = useAddLiquidity()
+    removeLiquidityTransaction,
+  } = useRemoveLiquidity()
 
-  const transactionState = getTransactionState(addLiquidityTransaction)
+  const transactionState = getTransactionState(removeLiquidityTransaction)
 
   const isConfirmingAddLiquidity = transactionState === TransactionState.Confirming
   const isAwaitingUserConfirmation = transactionState === TransactionState.Loading
@@ -69,8 +69,8 @@ function useAddLiquidityTimeout() {
   return { secondsToRefetch, shouldFreezeQuote }
 }
 
-export function AddLiquidityTimeout() {
-  const { secondsToRefetch, shouldFreezeQuote } = useAddLiquidityTimeout()
+export function RemoveLiquidityTimeout() {
+  const { secondsToRefetch, shouldFreezeQuote } = useRemoveLiquidityTimeout()
 
   return !shouldFreezeQuote && <Text>Quote expires in: {secondsToRefetch} secs</Text>
 }

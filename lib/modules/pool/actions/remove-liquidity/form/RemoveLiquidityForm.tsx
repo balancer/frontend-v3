@@ -50,8 +50,7 @@ export function RemoveLiquidityForm() {
     setHumanBptInPercent,
     humanBptInPercent,
     totalUsdValue,
-    priceImpact,
-    isPriceImpactLoading,
+    priceImpactQuery,
   } = useRemoveLiquidity()
   const { toCurrency } = useCurrency()
   const previewDisclosure = useDisclosure()
@@ -120,11 +119,11 @@ export function RemoveLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
-                  {isPriceImpactLoading ? (
+                  {priceImpactQuery.isLoading ? (
                     <Skeleton w="12" h="full" />
                   ) : (
                     <NumberText color="GrayText">
-                      {fNum('priceImpact', priceImpact || 0)}
+                      {fNum('priceImpact', priceImpactQuery.data || 0)}
                     </NumberText>
                   )}
                   <Tooltip label="Price impact" fontSize="sm">

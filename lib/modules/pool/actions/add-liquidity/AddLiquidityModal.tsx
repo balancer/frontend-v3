@@ -98,7 +98,7 @@ export function AddLiquidityModal({
   const bptOutLabel = bptOut ? formatUnits(bptOut.amount, BPT_DECIMALS) : '0'
 
   const priceImpact = priceImpactQuery?.data
-  const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpactLabel = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
   return (
     <Modal
@@ -156,7 +156,7 @@ export function AddLiquidityModal({
                 <HStack justify="space-between" w="full">
                   <Text>Price impact</Text>
                   <HStack>
-                    <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
+                    <NumberText color="GrayText">{priceImpactLabel}</NumberText>
                     <Tooltip label="Price impact" fontSize="sm">
                       <InfoOutlineIcon color="GrayText" />
                     </Tooltip>

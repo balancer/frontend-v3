@@ -7,7 +7,7 @@ import { HumanAmount, TokenAmount } from '@balancer/sdk'
 import { toHumanAmount } from '../../LiquidityActionHelpers'
 import { selectRemoveLiquidityHandler } from '../handlers/selectRemoveLiquidityHandler'
 import { RemoveLiquidityType } from '../remove-liquidity.types'
-import { useRemoveLiquidityPreviewQuery } from './useRemoveLiquidityPreviewQuery'
+import { useRemoveLiquiditySimulationQuery } from './useRemoveLiquiditySimulationQuery'
 import { Address } from 'viem'
 
 async function testQuery(humanBptIn: HumanAmount) {
@@ -17,7 +17,7 @@ async function testQuery(humanBptIn: HumanAmount) {
   )
   const emptyTokenOut = '' as Address // We don't use it but it is required to simplify TS checks
   const { result } = testHook(() =>
-    useRemoveLiquidityPreviewQuery(handler, poolId, humanBptIn, emptyTokenOut)
+    useRemoveLiquiditySimulationQuery(handler, poolId, humanBptIn, emptyTokenOut)
   )
   return result
 }
