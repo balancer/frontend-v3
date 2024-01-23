@@ -17,13 +17,14 @@ const NUM_RECENT_TRANSACTIONS = 5
 // rejected = transaction was rejected by the rpc / other execution error prior to submission to chain
 type TransactionStatus = 'confirming' | 'confirmed' | 'reverted' | 'rejected'
 
-type TrackedTransaction = {
+export type TrackedTransaction = {
   hash: Hash
   label?: string
   description?: string
   status: TransactionStatus
   toastId?: ToastId
   timestamp: number
+  init?: string
 }
 
 type UpdateTrackedTransaction = Pick<TrackedTransaction, 'label' | 'description' | 'status'>
@@ -169,7 +170,7 @@ export function _useRecentTransactions() {
     handleTransactionAdded(trackedTransaction)
   }
 
-  return { transactions, addTrackedTransaction, updateTrackedTransaction }
+  return { transactions, addTrackedTransaction, updateTrackedTransaction, setTransactions }
 }
 
 export function RecentTransactionsProvider({ children }: { children: ReactNode }) {
