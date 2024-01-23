@@ -12,7 +12,6 @@ import { AddLiquiditySimulationQueryResult } from './useAddLiquiditySimulationQu
 type Props = {
   handler: AddLiquidityHandler
   humanAmountsIn: HumanAmountIn[]
-  isActiveStep: boolean
   pool: Pool
   simulationQuery: AddLiquiditySimulationQueryResult
   options?: UseQueryOptions

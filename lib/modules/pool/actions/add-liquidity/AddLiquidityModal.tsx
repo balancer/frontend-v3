@@ -89,14 +89,8 @@ export function AddLiquidityModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const {
-    humanAmountsIn,
-    totalUSDValue,
-    simulationQuery,
-    priceImpactQuery,
-    tokens,
-    shouldFreezeQuote,
-  } = useAddLiquidity()
+  const { humanAmountsIn, totalUSDValue, simulationQuery, priceImpactQuery, tokens } =
+    useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
 
@@ -169,13 +163,12 @@ export function AddLiquidityModal({
                   </HStack>
                 </HStack>
               </VStack>
-              {!shouldFreezeQuote && (
-                <VStack align="start" spacing="md">
-                  <HStack justify="space-between" w="full">
-                    <AddLiquidityTimeout />
-                  </HStack>
-                </VStack>
-              )}
+
+              <VStack align="start" spacing="md">
+                <HStack justify="space-between" w="full">
+                  <AddLiquidityTimeout />
+                </HStack>
+              </VStack>
             </Card>
           </VStack>
         </ModalBody>
