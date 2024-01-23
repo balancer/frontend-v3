@@ -34,10 +34,16 @@ function Transactions({ transactions }: { transactions: Record<string, TrackedTr
   return (
     <VStack p="4" rounded="md" align="start">
       {orderedRecentTransactions.map(tx => {
+        // TODO? Add another description so it would always fit in the default width of 320px (ln 71) without truncation (ln 46)
+        const label =
+          tx.description && tx.init && tx.description?.length > tx.init.length
+            ? tx.description
+            : tx.init
+
         return (
           <HStack key={tx.hash}>
-            <Tooltip label={tx.init} fontSize="sm">
-              <Text isTruncated maxW="80%">
+            <Tooltip label={label} fontSize="sm">
+              <Text isTruncated maxW="85%">
                 {tx.init}
               </Text>
             </Tooltip>
@@ -62,13 +68,13 @@ export default function RecentTransactions() {
           <FiActivity />
         </Button>
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent w="330px">
         <PopoverArrow />
         <PopoverCloseButton />
         <PopoverHeader>
           <Heading size="md">Recent transactions</Heading>
         </PopoverHeader>
-        <PopoverBody>
+        <PopoverBody maxH="180px" overflowY="auto">
           {hasTransactions ? (
             <Transactions transactions={transactions} />
           ) : (
