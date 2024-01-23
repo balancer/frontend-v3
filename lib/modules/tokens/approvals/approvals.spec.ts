@@ -13,13 +13,11 @@ const chainId: SupportedChainId = 1
 const amountsToApprove: TokenAmountToApprove[] = [
   {
     tokenAddress: wETHAddress,
-    humanAmount: '10',
     rawAmount: testRawAmount('10'),
     tokenSymbol: 'WETH',
   },
   {
     tokenAddress: wjAuraAddress,
-    humanAmount: '10',
     rawAmount: testRawAmount('10'),
     tokenSymbol: 'wjAura',
   },
