@@ -8,6 +8,7 @@ import { addLiquidityKeys } from './add-liquidity-keys'
 import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
 import { UseQueryOptions } from '@tanstack/react-query'
 import { AddLiquiditySimulationQueryResult } from './useAddLiquiditySimulationQuery'
+import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 
 type Props = {
   handler: AddLiquidityHandler
@@ -60,6 +61,7 @@ export function useAddLiquidityBuildCallDataQuery({
   const queryOpts = {
     enabled: enabled && isConnected && !!simulationQuery.data,
     cacheTime: 0,
+    ...onlyExplicitRefetch,
   }
 
   return useQuery(queryKey, queryFn, queryOpts)
