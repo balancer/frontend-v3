@@ -15,6 +15,7 @@ export function useOnTransactionSubmission(labels: TransactionLabels, hash?: Add
         description: labels.description,
         status: 'confirming',
         timestamp: Date.now(),
+        init: labels.init,
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
