@@ -9,7 +9,7 @@ import { usePublicClient } from 'wagmi'
 
 export type RecentTransactionsResponse = ReturnType<typeof _useRecentTransactions>
 export const TransactionsContext = createContext<RecentTransactionsResponse | null>(null)
-const NUM_RECENT_TRANSACTIONS = 5
+const NUM_RECENT_TRANSACTIONS = 20
 
 // confirming = transaction has not been mined
 // confirmed = transaction has been mined and is present on chain
