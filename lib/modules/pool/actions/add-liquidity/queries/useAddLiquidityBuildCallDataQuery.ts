@@ -59,7 +59,7 @@ export function useAddLiquidityBuildCallDataQuery({
   }
 
   const queryOpts = {
-    enabled: enabled && isConnected,
+    enabled: enabled && isConnected && !!simulationQuery.data,
     cacheTime: 0,
   }
 
