@@ -29,6 +29,8 @@ function Transactions({ transactions }: { transactions: Record<string, TrackedTr
   const networkConfig = useNetworkConfig()
   const orderedRecentTransactions = orderBy(Object.values(transactions), 'timestamp', 'desc')
 
+  console.log({ orderedRecentTransactions })
+
   return (
     <VStack p="4" rounded="md" align="start">
       {orderedRecentTransactions.map(tx => {
@@ -50,7 +52,7 @@ function Transactions({ transactions }: { transactions: Record<string, TrackedTr
 }
 
 export default function RecentTransactions() {
-  const { transactions, setTransactions } = useRecentTransactions()
+  const { transactions, clearTransactions } = useRecentTransactions()
   const hasTransactions = !isEmpty(transactions)
 
   return (
@@ -74,7 +76,7 @@ export default function RecentTransactions() {
           )}
         </PopoverBody>
         <PopoverFooter>
-          <Button isDisabled={!hasTransactions} onClick={() => setTransactions({})}>
+          <Button isDisabled={!hasTransactions} onClick={() => clearTransactions()}>
             Clear transactions
           </Button>
         </PopoverFooter>

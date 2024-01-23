@@ -7,7 +7,7 @@ import { BalancerLogo } from '../imgs/BalancerLogo'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { useBreakpoints } from '../../hooks/useBreakpoints'
 import { UserSettings } from '@/lib/modules/user/settings/UserSettings'
-import RecentTransactions from './RecentTransactions'
+import RecentTransactions from '../other/RecentTransactions'
 
 type Props = {
   leftSlot?: React.ReactNode
