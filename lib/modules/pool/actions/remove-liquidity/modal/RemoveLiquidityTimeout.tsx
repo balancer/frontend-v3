@@ -27,15 +27,15 @@ function useRemoveLiquidityTimeout() {
 
   const transactionState = getTransactionState(removeLiquidityTransaction)
 
-  const isConfirmingAddLiquidity = transactionState === TransactionState.Confirming
+  const isConfirmingRemoveLiquidity = transactionState === TransactionState.Confirming
   const isAwaitingUserConfirmation = transactionState === TransactionState.Loading
   const isComplete = transactionState === TransactionState.Completed
 
-  // If the flow is complete or the final add liquidity transaction is
+  // If the flow is complete or the final remove liquidity transaction is
   // confirming, disable query refetches.
-  const shouldFreezeQuote = isComplete || isConfirmingAddLiquidity || isAwaitingUserConfirmation
+  const shouldFreezeQuote = isComplete || isConfirmingRemoveLiquidity || isAwaitingUserConfirmation
 
-  // When the countdown timer reaches 0, refetch all add liquidity queries.
+  // When the countdown timer reaches 0, refetch all remove liquidity queries.
   useEffect(() => {
     const refetchQueries = async () => {
       stopCountdown()
