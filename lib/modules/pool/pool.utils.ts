@@ -89,7 +89,7 @@ export function getPoolTypeLabel(type: GqlPoolType): string {
   return poolTypeLabelMap[type]
 }
 
-export const cardClickHandler = (
+export const poolClickHandler = (
   event: React.MouseEvent<HTMLElement>,
   id: string,
   chain: GqlChain,
@@ -104,9 +104,9 @@ export const cardClickHandler = (
   }
 }
 
-// Prefetch pool page on card hover, otherwise there is a significant delay
-// between clicking the card and the pool page loading.
-export const cardMouseEnterHandler = (
+// Prefetch pool page on hover, otherwise there is a significant delay
+// between clicking the pool and the pool page loading.
+export const poolMouseEnterHandler = (
   event: React.MouseEvent<HTMLElement>,
   id: string,
   chain: GqlChain,

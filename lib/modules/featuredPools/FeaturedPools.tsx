@@ -3,8 +3,8 @@ import { useFeaturedPools } from './useFeaturedPools'
 import { GqlChain, GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import {
-  cardClickHandler,
-  cardMouseEnterHandler,
+  poolClickHandler,
+  poolMouseEnterHandler,
   getAprLabel,
   getPoolTypeLabel,
 } from '../pool/pool.utils'
@@ -42,8 +42,8 @@ function FeaturedPoolCard({
       w="full"
       p="4"
       cursor="pointer"
-      onClick={event => cardClickHandler(event, pool.id, pool.chain, router)}
-      onMouseEnter={event => cardMouseEnterHandler(event, pool.id, pool.chain, router)}
+      onClick={event => poolClickHandler(event, pool.id, pool.chain, router)}
+      onMouseEnter={event => poolMouseEnterHandler(event, pool.id, pool.chain, router)}
     >
       <VStack justifyContent="space-between" h="full">
         <HStack justifyContent="space-between" w="full">

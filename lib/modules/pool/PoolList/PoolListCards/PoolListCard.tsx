@@ -10,8 +10,8 @@ import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
 import {
   getAprLabel,
   getPoolTypeLabel,
-  cardClickHandler,
-  cardMouseEnterHandler,
+  poolClickHandler,
+  poolMouseEnterHandler,
 } from '../../pool.utils'
 import { useRouter } from 'next/navigation'
 
@@ -62,8 +62,8 @@ export function PoolListCard({ pool }: Props) {
     <Card
       variant="gradient"
       cursor="pointer"
-      onClick={event => cardClickHandler(event, pool.id, pool.chain, router)}
-      onMouseEnter={event => cardMouseEnterHandler(event, pool.id, pool.chain, router)}
+      onClick={event => poolClickHandler(event, pool.id, pool.chain, router)}
+      onMouseEnter={event => poolMouseEnterHandler(event, pool.id, pool.chain, router)}
       p="md"
     >
       <VStack alignItems="flex-start" h="full">
