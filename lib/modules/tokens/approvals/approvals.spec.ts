@@ -71,7 +71,6 @@ describe('getRequiredTokenApprovals', () => {
       })
     ).toEqual([
       {
-        humanAmount: '10',
         rawAmount: 10000000000000000000n,
         tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
         tokenSymbol: 'WETH',
