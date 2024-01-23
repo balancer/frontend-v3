@@ -53,6 +53,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
     const removeLiquidity = new RemoveLiquidity()
 
     const { call, to, value } = removeLiquidity.buildCall({
+      chainId: this.helpers.chainId,
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
