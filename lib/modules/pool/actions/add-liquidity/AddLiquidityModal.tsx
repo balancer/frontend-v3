@@ -20,6 +20,7 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
+  Skeleton,
   Text,
   Tooltip,
   VStack,
@@ -156,7 +157,11 @@ export function AddLiquidityModal({
                 <HStack justify="space-between" w="full">
                   <Text>Price impact</Text>
                   <HStack>
-                    <NumberText color="GrayText">{priceImpactLabel}</NumberText>
+                    {priceImpactQuery.isLoading ? (
+                      <Skeleton w="12" h="full" />
+                    ) : (
+                      <NumberText color="GrayText">{priceImpactLabel}</NumberText>
+                    )}
                     <Tooltip label="Price impact" fontSize="sm">
                       <InfoOutlineIcon color="GrayText" />
                     </Tooltip>

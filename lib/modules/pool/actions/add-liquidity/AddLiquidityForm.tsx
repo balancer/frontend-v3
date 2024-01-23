@@ -50,8 +50,9 @@ export function AddLiquidityForm() {
 
   const bptOut = simulationQuery?.data?.bptOut
   const bptOutLabel = safeTokenFormat(bptOut?.amount, BPT_DECIMALS)
+
   const priceImpact = priceImpactQuery?.data
-  const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpactLabel = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
   const onModalClose = () => {
     previewModalDisclosure.onClose()
@@ -101,7 +102,7 @@ export function AddLiquidityForm() {
                   {priceImpactQuery.isLoading ? (
                     <Skeleton w="12" h="full" />
                   ) : (
-                    <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
+                    <NumberText color="GrayText">{priceImpactLabel}</NumberText>
                   )}
                   <Tooltip label="Price impact" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />

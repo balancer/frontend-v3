@@ -57,6 +57,9 @@ export function RemoveLiquidityForm() {
   const nextBtn = useRef(null)
   const [activeTab, setActiveTab] = useState(TABS[0])
 
+  const priceImpact = priceImpactQuery?.data
+  const priceImpactLabel = priceImpact ? fNum('priceImpact', priceImpact) : '-'
+
   function submit() {
     // TODO: implement isDisabledWithReason
     previewDisclosure.onOpen()
@@ -122,9 +125,7 @@ export function RemoveLiquidityForm() {
                   {priceImpactQuery.isLoading ? (
                     <Skeleton w="12" h="full" />
                   ) : (
-                    <NumberText color="GrayText">
-                      {fNum('priceImpact', priceImpactQuery.data || 0)}
-                    </NumberText>
+                    <NumberText color="GrayText">{priceImpactLabel}</NumberText>
                   )}
                   <Tooltip label="Price impact" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
