@@ -26,7 +26,7 @@ export function useConstructGaugeDepositActionStep(
   gauge?: GqlPoolStakingGauge | null,
   depositAmount?: bigint
 ): TransactionStep {
-  const { isActiveStep, activateStep } = useActiveStep()
+  const { activateStep } = useActiveStep()
   const labels = getDepositTransactionLabels(gauge)
   const deposit = useManagedTransaction(
     'balancer.gaugeV5',
@@ -36,14 +36,17 @@ export function useConstructGaugeDepositActionStep(
     { enabled: !!gauge || !!depositAmount }
   )
 
+  function isComplete() {
+    return deposit.result.isSuccess
+  }
+
   const step: TransactionStep = {
     ...deposit,
     id: `${gauge?.gaugeAddress}-deposit`,
     stepType: 'gaugeDeposit',
     transactionLabels: labels,
     activateStep,
-    // TODO: is this needed?
-    isComplete: () => false,
+    isComplete,
   }
   return step
 }
@@ -52,7 +55,7 @@ export function useConstructGaugeWithdrawActionStep(
   gauge?: GqlPoolStakingGauge | null,
   withdrawAmount?: bigint
 ): TransactionStep {
-  const { isActiveStep, activateStep } = useActiveStep()
+  const { activateStep } = useActiveStep()
   const labels = getWithdrawTransactionLabels(gauge)
   const withdraw = useManagedTransaction(
     'balancer.gaugeV5',
@@ -62,14 +65,17 @@ export function useConstructGaugeWithdrawActionStep(
     { enabled: !!gauge || !!withdrawAmount }
   )
 
+  function isComplete() {
+    return withdraw.result.isSuccess
+  }
+
   const step: TransactionStep = {
     ...withdraw,
     id: `${gauge?.gaugeAddress}-withdraw`,
     stepType: 'gaugeWithdraw',
     transactionLabels: labels,
     activateStep,
-    // TODO: is this needed?
-    isComplete: () => false,
+    isComplete,
   }
   return step
 }
