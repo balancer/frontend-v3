@@ -15,6 +15,9 @@ const networkConfig: NetworkConfig = {
       symbol: 'ETH',
       decimals: 18,
     },
+    defaultSwapTokens: {
+      tokenIn: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    },
   },
   contracts: {
     multicall2: '0x80c7dd17b01855a6d2347444a0fcc36136a314de',

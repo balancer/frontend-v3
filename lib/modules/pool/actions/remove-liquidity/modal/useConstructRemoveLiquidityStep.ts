@@ -16,12 +16,14 @@ export function useConstructRemoveLiquidityStep(poolId: string) {
 
   const transaction = useManagedSendTransaction(transactionLabels, removeLiquidityQuery.data)
 
+  const isComplete = () => transaction.result.isSuccess
+
   const step: FlowStep = {
     ...transaction,
     transactionLabels,
     id: `removeLiquidityPool${poolId}`,
     stepType: 'removeLiquidity',
-    isComplete: () => false,
+    isComplete,
     activateStep,
   }
 

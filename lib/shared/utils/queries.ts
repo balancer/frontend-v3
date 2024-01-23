@@ -1,5 +1,12 @@
 import { UseQueryResult } from '@tanstack/react-query'
 
+// When you only want a query to refetch when the key changes or refetch is called.
+export const onlyExplicitRefetch = {
+  refetchOnMount: false,
+  refetchOnReconnect: false,
+  refetchOnWindowFocus: false,
+}
+
 export function isLoadingQueries(...queries: Pick<UseQueryResult, 'isLoading'>[]): boolean {
   return queries.some(query => query.isLoading)
 }

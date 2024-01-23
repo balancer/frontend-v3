@@ -12,7 +12,6 @@ import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/actions'
 import { UnbalancedAddLiquidityHandler } from '../../pool/actions/add-liquidity/handlers/UnbalancedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from '../../pool/actions/add-liquidity/handlers/selectAddLiquidityHandler'
-import { buildAddLiquidityLabels } from '../../pool/actions/add-liquidity/useConstructAddLiquidityStep'
 import { HumanAmountIn } from '../../pool/actions/liquidity-types'
 
 const chainId = ChainId.MAINNET
@@ -55,7 +54,7 @@ describe('weighted join test', () => {
     })
 
     const { result } = testHook(() => {
-      return useManagedSendTransaction(buildAddLiquidityLabels(), txConfig)
+      return useManagedSendTransaction({ init: 'foo', tooltip: 'bar' }, txConfig)
     })
 
     await waitFor(() => expect(result.current.executeAsync).toBeDefined())

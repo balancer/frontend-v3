@@ -2,7 +2,7 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import {
   TokenAmountToApprove,
-  filterRequiredTokenApprovals,
+  getRequiredTokenApprovals,
   isDoubleApprovalRequired,
 } from './approval-rules'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
@@ -13,13 +13,11 @@ const chainId: SupportedChainId = 1
 const amountsToApprove: TokenAmountToApprove[] = [
   {
     tokenAddress: wETHAddress,
-    humanAmount: '10',
     rawAmount: testRawAmount('10'),
     tokenSymbol: 'WETH',
   },
   {
     tokenAddress: wjAuraAddress,
-    humanAmount: '10',
     rawAmount: testRawAmount('10'),
     tokenSymbol: 'wjAura',
   },
@@ -30,10 +28,10 @@ const currentTokenAllowances = {
   [wjAuraAddress]: MAX_BIGINT,
 }
 
-describe('filterRequiredTokenApprovals', () => {
+describe('getRequiredTokenApprovals', () => {
   test('when skipAllowanceCheck', () => {
     expect(
-      filterRequiredTokenApprovals({
+      getRequiredTokenApprovals({
         chainId,
         amountsToApprove,
         currentTokenAllowances,
@@ -44,7 +42,7 @@ describe('filterRequiredTokenApprovals', () => {
 
   test('when empty amounts to approve', () => {
     expect(
-      filterRequiredTokenApprovals({
+      getRequiredTokenApprovals({
         chainId,
         amountsToApprove: [],
         currentTokenAllowances,
@@ -54,7 +52,7 @@ describe('filterRequiredTokenApprovals', () => {
 
   test('when all token allowances are lesser than the amounts to approve', () => {
     expect(
-      filterRequiredTokenApprovals({
+      getRequiredTokenApprovals({
         amountsToApprove,
         chainId,
         currentTokenAllowances,
@@ -66,14 +64,13 @@ describe('filterRequiredTokenApprovals', () => {
     currentTokenAllowances[wETHAddress] = 5n
 
     expect(
-      filterRequiredTokenApprovals({
+      getRequiredTokenApprovals({
         amountsToApprove,
         chainId,
         currentTokenAllowances,
       })
     ).toEqual([
       {
-        humanAmount: '10',
         rawAmount: 10000000000000000000n,
         tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
         tokenSymbol: 'WETH',
