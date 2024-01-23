@@ -127,7 +127,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   useEffect(() => {
     if (unstakedPoolBalancesError || stakedPoolBalancesError) {
       const error = ensureError(unstakedPoolBalancesError || stakedPoolBalancesError)
-      console.log(
+      console.error(
         'Failed useOnchainUserPoolBalances',
         unstakedPoolBalancesError || stakedPoolBalancesError
       )

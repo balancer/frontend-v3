@@ -18,6 +18,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/queries/usePoolEnrichWithOnChainData'
 import { useOnchainUserPoolBalances } from './queries/useOnchainUserPoolBalances'
+import { usePoolIncentives } from './queries/usePoolIncentives'
 
 export type UsePoolResponse = ReturnType<typeof _usePool> & {
   chain: GqlChain
@@ -56,6 +57,8 @@ export function _usePool({
     refetch: refetchOnchainUserBalances,
     isLoading: isLoadingOnchainUserBalances,
   } = useOnchainUserPoolBalances([pool])
+
+  const {} = usePoolIncentives([pool])
 
   pool = poolWithOnchainUserBalances || pool
 

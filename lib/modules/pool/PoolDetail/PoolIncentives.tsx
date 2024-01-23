@@ -6,6 +6,8 @@ import { Box, Button, Card, HStack, Heading, Text, VStack } from '@chakra-ui/rea
 import React, { useState } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../usePool'
+import { sumBy } from 'lodash'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 const TABS = [
   {
@@ -24,11 +26,22 @@ const TABS = [
 
 export default function PoolIncentives() {
   const [activeTab, setActiveTab] = useState(TABS[0])
+  const { toCurrency } = useCurrency()
   const { pool, chain } = usePool()
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
   }
+
+  const currentRewards = pool.staking?.gauge?.rewards || []
+  const currentRewardsPerWeek = currentRewards.map(reward => {
+    return {
+      ...reward,
+      rewardPerWeek: (parseFloat(reward.rewardPerSecond) * 86400) / 52,
+    }
+  })
+
+  const totalRewardsPerWeek = sumBy(currentRewardsPerWeek, reward => reward.rewardPerWeek)
 
   return (
     <Card variant="gradient" width="full" minHeight="320px">
@@ -54,23 +67,22 @@ export default function PoolIncentives() {
                   </VStack>
                   <VStack spacing="1" alignItems="flex-end">
                     <Heading fontWeight="bold" size="h6">
-                      $3000.00
+                      {totalRewardsPerWeek}
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">
-                      8.69%
+                      Gauge votes TBD
                     </Text>
                   </VStack>
                 </HStack>
               </Box>
               <VStack spacing="4" p="4" py="2" pb="4" width="full">
-                {pool.displayTokens.map(token => {
+                {currentRewardsPerWeek.map(token => {
                   return (
                     <TokenRow
                       chain={chain}
-                      key={`my-liquidity-token-${token.address}`}
-                      address={token.address as Address}
-                      // TODO: Fill pool balances
-                      value={0}
+                      key={`pool-gauge-reward-token-${token.tokenAddress}`}
+                      address={token.tokenAddress as Address}
+                      value={token.rewardPerWeek}
                     />
                   )
                 })}
