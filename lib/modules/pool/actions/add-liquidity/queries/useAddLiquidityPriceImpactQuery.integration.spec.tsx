@@ -24,7 +24,7 @@ test('queries price impact for add liquidity', async () => {
 
   const result = await testQuery(humanAmountsIn)
 
-  await waitFor(() => expect(result.current.data).not.toBeNull())
+  await waitFor(() => expect(result.current.data).not.toBeUndefined())
 
   expect(result.current.data).toBeGreaterThan(0.001)
   expect(result.current.isLoading).toBeFalsy()
