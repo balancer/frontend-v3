@@ -1,8 +1,15 @@
 import { useNetwork } from 'wagmi'
-import { getNetworkConfig } from '@/lib/config/app.config'
+import { getNetworkConfig, getRelayerAddress, getVaultAddress } from '@/lib/config/app.config'
 
 export function useNetworkConfig() {
   const { chain } = useNetwork()
 
-  return getNetworkConfig(chain?.id)
+  const networkConfig = getNetworkConfig(chain?.id)
+
+  return {
+    ...networkConfig,
+    vaultV2Address: getVaultAddress(networkConfig.chainId, 'v2'),
+    // vaultV3Address: getVaultAddress(networkConfig.chainId, 'v3'),
+    relayerAddress: getRelayerAddress(networkConfig.chainId),
+  }
 }
