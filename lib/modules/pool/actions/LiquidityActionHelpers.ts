@@ -47,13 +47,11 @@ export class LiquidityActionHelpers {
     humanAmountsIn: HumanAmountIn[],
     tokensByAddress: Dictionary<GqlToken>
   ): TokenAmountToApprove[] {
-    return this.toInputAmounts(humanAmountsIn).map(({ address, rawAmount }, index) => {
-      const humanAmountIn = humanAmountsIn[index]
+    return this.toInputAmounts(humanAmountsIn).map(({ address, rawAmount }) => {
       return {
         tokenAddress: address,
-        humanAmount: humanAmountIn.humanAmount || '0',
         rawAmount,
-        tokenSymbol: tokensByAddress[humanAmountIn.tokenAddress].symbol,
+        tokenSymbol: tokensByAddress[address].symbol,
       }
     })
   }
@@ -84,7 +82,7 @@ export class LiquidityActionHelpers {
       amountsInByTokenAddress[tokenAddress].rawAmount = parseUnits(humanAmount, decimals)
     })
 
-    const amountsIn = Object.values(amountsInByTokenAddress)
+    const amountsIn = Object.values(amountsInByTokenAddress).filter(a => a.rawAmount > 0n)
     return amountsIn
   }
 
