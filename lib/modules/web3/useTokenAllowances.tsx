@@ -1,7 +1,5 @@
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { Dictionary, isEmpty, zipObject } from 'lodash'
-import { PropsWithChildren, createContext } from 'react'
 import { ContractFunctionConfig, parseUnits } from 'viem'
 import { Address, erc20ABI, useContractReads } from 'wagmi'
 import { HumanAmountIn } from '../pool/actions/liquidity-types'
@@ -11,11 +9,15 @@ import { Erc20Abi } from './contracts/contract.types'
 
 export type TokenAllowances = Record<Address, bigint>
 
-export function _useTokenAllowances(
+export type UseTokenAllowancesResponse = ReturnType<typeof useTokenAllowances>
+
+export function useTokenAllowances(
   userAccount: Address,
   spenderAddress: Address,
   tokenAddresses: Address[]
 ) {
+  const { getToken } = useTokens()
+
   const contracts: ContractFunctionConfig<Erc20Abi, 'allowance'>[] = tokenAddresses.map(
     tokenAddress => ({
       address: tokenAddress,
@@ -30,8 +32,6 @@ export function _useTokenAllowances(
     allowFailure: false,
     enabled: !!spenderAddress && !!userAccount,
   })
-
-  const { getToken } = useTokens()
 
   const allowancesByTokenAddress = result.data ? zipObject(tokenAddresses, result.data) : {}
 
@@ -56,28 +56,6 @@ export function _useTokenAllowances(
     hasAllowances,
     refetchAllowances: result.refetch,
   }
-}
-
-type UseTokenAllowancesResponse = ReturnType<typeof _useTokenAllowances>
-export const TokenAllowancesContext = createContext<UseTokenAllowancesResponse | null>(null)
-
-export function TokenAllowancesProvider({
-  children,
-  tokenAddresses,
-  userAddress,
-  spenderAddress,
-}: PropsWithChildren<{
-  tokenAddresses: Address[]
-  userAddress: Address
-  spenderAddress: Address
-}>) {
-  const hook = _useTokenAllowances(userAddress, spenderAddress, tokenAddresses)
-
-  return <TokenAllowancesContext.Provider value={hook}>{children}</TokenAllowancesContext.Provider>
-}
-
-export function useTokenAllowances() {
-  return useMandatoryContext(TokenAllowancesContext, 'TokenAllowances')
 }
 
 export function _hasAllowance(

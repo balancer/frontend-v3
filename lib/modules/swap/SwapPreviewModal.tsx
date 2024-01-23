@@ -2,9 +2,6 @@
 
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
-import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
@@ -69,8 +66,6 @@ export function SwapPreviewModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const spenderAddress = useContractAddress('balancer.vaultV2')
-  const { userAddress } = useUserAccount()
   const { tokenIn, tokenOut } = useSwap()
 
   return (
@@ -115,13 +110,7 @@ export function SwapPreviewModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <TokenAllowancesProvider
-            userAddress={userAddress}
-            spenderAddress={spenderAddress}
-            tokenAddresses={[tokenIn.address]}
-          >
-            <SwapFlowButton />
-          </TokenAllowancesProvider>
+          <SwapFlowButton />
         </ModalFooter>
       </ModalContent>
     </Modal>

@@ -5,13 +5,15 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { useDebounce } from 'use-debounce'
 import { useQuery } from 'wagmi'
-import { areEmptyAmounts } from '../../LiquidityActionHelpers'
+import { hasValidHumanAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { addLiquidityKeys } from './add-liquidity-keys'
 import { UseQueryOptions } from '@tanstack/react-query'
 
-export function useAddLiquidityPriceImpactQuery(
+export type AddLiquiditySimulationQueryResult = ReturnType<typeof useAddLiquiditySimulationQuery>
+
+export function useAddLiquiditySimulationQuery(
   handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
   poolId: string,
@@ -23,17 +25,17 @@ export function useAddLiquidityPriceImpactQuery(
 
   const enabled = options.enabled ?? true
 
-  const queryKey = addLiquidityKeys.priceImpact({
+  const queryKey = addLiquidityKeys.preview({
     userAddress,
     slippage,
     poolId,
     humanAmountsIn: debouncedHumanAmountsIn,
   })
 
-  const queryFn = async () => handler.calculatePriceImpact(humanAmountsIn)
+  const queryFn = async () => handler.queryAddLiquidity(humanAmountsIn)
 
   const queryOpts = {
-    enabled: enabled && isConnected && !areEmptyAmounts(humanAmountsIn),
+    enabled: enabled && isConnected && hasValidHumanAmounts(debouncedHumanAmountsIn),
     cacheTime: 0,
     ...onlyExplicitRefetch,
   }
