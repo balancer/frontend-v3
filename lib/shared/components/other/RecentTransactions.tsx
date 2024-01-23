@@ -29,8 +29,6 @@ function Transactions({ transactions }: { transactions: Record<string, TrackedTr
   const networkConfig = useNetworkConfig()
   const orderedRecentTransactions = orderBy(Object.values(transactions), 'timestamp', 'desc')
 
-  console.log({ orderedRecentTransactions })
-
   return (
     <VStack p="4" rounded="md" align="start">
       {orderedRecentTransactions.map(tx => {
