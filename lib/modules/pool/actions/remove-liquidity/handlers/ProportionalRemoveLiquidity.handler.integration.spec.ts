@@ -70,7 +70,7 @@ describe('When proportionally removing liquidity for a weighted pool', () => {
 
 describe('When removing liquidity from a stable pool', () => {
   test('queries remove liquidity', async () => {
-    const pool = aPhantomStablePoolStateInputMock() as Pool // wstETH-rETH-sfrxETH
+    const pool = aPhantomStablePoolStateInputMock() as unknown as Pool // wstETH-rETH-sfrxETH
 
     const handler = selectProportionalHandler(pool)
 

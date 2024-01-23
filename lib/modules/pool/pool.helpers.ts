@@ -8,7 +8,7 @@ import {
 } from '@/lib/shared/services/api/generated/graphql'
 import { getAddressBlockExplorerLink, isSameAddress } from '@/lib/shared/utils/addresses'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
-import { MinimalToken, PoolStateInput } from '@balancer/sdk'
+import { MinimalToken, PoolState, mapPoolType } from '@balancer/sdk'
 import BigNumber from 'bignumber.js'
 import { Address, Hex, getAddress } from 'viem'
 
@@ -162,7 +162,7 @@ export function usePoolHelpers(pool: Pool, chain: GqlChain) {
   }
 }
 
-export function toPoolStateInput(pool: Pool): PoolStateInput {
+export function toPoolStateInput(pool: Pool): PoolState {
   // TODO: double check if we need an extra request to get PoolStateInput to get index token field
   // Add index in GQL query instead of this
   const tokens = pool.tokens.map((t, index) => {
@@ -172,6 +172,7 @@ export function toPoolStateInput(pool: Pool): PoolStateInput {
     id: pool.id as Hex,
     address: pool.address as Address,
     tokens: tokens as MinimalToken[],
-    type: pool.type,
+    type: mapPoolType(pool.type),
+    balancerVersion: 2,
   }
 }
