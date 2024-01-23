@@ -4,6 +4,7 @@ import {
   TransactionLabels,
   TransactionStep,
 } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
 
 function getDepositTransactionLabels(gauge?: GqlPoolStakingGauge | null): TransactionLabels {
   const labels: TransactionLabels = {
@@ -25,6 +26,7 @@ export function useConstructGaugeDepositActionStep(
   gauge?: GqlPoolStakingGauge | null,
   depositAmount?: bigint
 ): TransactionStep {
+  const { isActiveStep, activateStep } = useActiveStep()
   const labels = getDepositTransactionLabels(gauge)
   const deposit = useManagedTransaction(
     'balancer.gaugeV5',
@@ -39,8 +41,7 @@ export function useConstructGaugeDepositActionStep(
     id: `${gauge?.gaugeAddress}-deposit`,
     stepType: 'gaugeDeposit',
     transactionLabels: labels,
-    // TODO: is this needed?
-    activateStep: () => false,
+    activateStep,
     // TODO: is this needed?
     isComplete: () => false,
   }
@@ -51,6 +52,7 @@ export function useConstructGaugeWithdrawActionStep(
   gauge?: GqlPoolStakingGauge | null,
   withdrawAmount?: bigint
 ): TransactionStep {
+  const { isActiveStep, activateStep } = useActiveStep()
   const labels = getWithdrawTransactionLabels(gauge)
   const withdraw = useManagedTransaction(
     'balancer.gaugeV5',
@@ -65,8 +67,7 @@ export function useConstructGaugeWithdrawActionStep(
     id: `${gauge?.gaugeAddress}-withdraw`,
     stepType: 'gaugeWithdraw',
     transactionLabels: labels,
-    // TODO: is this needed?
-    activateStep: () => false,
+    activateStep,
     // TODO: is this needed?
     isComplete: () => false,
   }
