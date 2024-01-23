@@ -170,7 +170,12 @@ export function _useRecentTransactions() {
     handleTransactionAdded(trackedTransaction)
   }
 
-  return { transactions, addTrackedTransaction, updateTrackedTransaction, setTransactions }
+  function clearTransactions() {
+    updateLocalStorage({})
+    setTransactions({})
+  }
+
+  return { transactions, addTrackedTransaction, updateTrackedTransaction, clearTransactions }
 }
 
 export function RecentTransactionsProvider({ children }: { children: ReactNode }) {
