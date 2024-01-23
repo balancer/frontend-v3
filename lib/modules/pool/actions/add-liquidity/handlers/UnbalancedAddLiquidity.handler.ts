@@ -4,7 +4,6 @@ import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   AddLiquidity,
   AddLiquidityKind,
-  AddLiquidityQueryOutput,
   AddLiquidityUnbalancedInput,
   PriceImpact,
   PriceImpactAmount,
