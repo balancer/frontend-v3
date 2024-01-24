@@ -46,7 +46,6 @@ export function useAddLiquidityBuildCallDataQuery({
           1. We do not allow the user to activate the build step (set isActiveStep to true) before the preview query has finished
           2. When we refetch after countdown timeout we explicitly wait for the preview query to finish
       */
-    console.log('Building call data...')
     const queryOutput = ensureLastQueryResponse('Add liquidity query', simulationQuery.data)
     const response = await handler.buildAddLiquidityCallData({
       account: userAddress,
