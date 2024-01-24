@@ -31,14 +31,15 @@ export function useManagedTransaction<
   additionalConfig?: Omit<
     UsePrepareContractWriteConfig<T[M], F, number>,
     'abi' | 'address' | 'functionName' | 'args'
-  >
+  >,
+  contractAddress?: string
 ) {
   const address = useContractAddress(contractId)
   const [writeArgs, setWriteArgs] = useState(args)
 
   const prepareQuery = usePrepareContractWrite({
     abi: AbiMap[contractId] as Abi,
-    address,
+    address: contractAddress ?? address,
     functionName: functionName as InferFunctionName<any, string, WriteAbiMutability>,
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
     args: writeArgs?.args as any,

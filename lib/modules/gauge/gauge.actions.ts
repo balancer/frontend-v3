@@ -33,7 +33,8 @@ export function useConstructGaugeDepositActionStep(
     'deposit',
     transactionLabels,
     { args: [depositAmount || 0n] },
-    { enabled: !!gauge || !!depositAmount }
+    { enabled: !!gauge || !!depositAmount },
+    gauge?.gaugeAddress
   )
 
   const step: TransactionStep = {
@@ -58,7 +59,8 @@ export function useConstructGaugeWithdrawActionStep(
     'withdraw',
     transactionLabels,
     { args: [withdrawAmount || 0n] },
-    { enabled: !!gauge || !!withdrawAmount }
+    { enabled: !!gauge || !!withdrawAmount },
+    gauge?.gaugeAddress
   )
 
   const step: TransactionStep = {
