@@ -21,7 +21,10 @@ export interface AddLiquidityHandler {
   // Also returns bptOut to be used by the UI
   queryAddLiquidity(
     humanAmountsIn: HumanAmountIn[],
-    userAddress?: Address // Only NestedAddLiquidity expects a userAddress (TODO: change signature in SDK to be able to query without connected user)
+    // Only NestedAddLiquidity expects a userAddress
+    // TODO: The sdk team is going to remove userAddress from the nested query signature to simplify this:
+    // https://github.com/balancer/b-sdk/issues/209
+    userAddress?: Address
   ): Promise<QueryAddLiquidityOutput>
   // Calculate the price impact of adding liquidity
   calculatePriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number>
