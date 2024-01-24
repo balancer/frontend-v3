@@ -27,11 +27,11 @@ test('runs preview query for proportional remove liquidity', async () => {
 
   const result = await testQuery(humanBptIn)
 
-  await waitFor(() => expect(result.current.amountsOut).toBeDefined())
+  await waitFor(() => expect(result.current.data?.amountsOut).toBeDefined())
 
-  const wjAmountOut = result.current.amountsOut?.[0] as TokenAmount
+  const wjAmountOut = result.current.data?.amountsOut?.[0] as TokenAmount
   const wjOutUnits = toHumanAmount(wjAmountOut)
-  const wethAmountOut = result.current.amountsOut?.[1] as TokenAmount
+  const wethAmountOut = result.current.data?.amountsOut?.[1] as TokenAmount
   const wethOutUnits = toHumanAmount(wethAmountOut)
 
   expect(Number(wjOutUnits)).toBeGreaterThan(1800)
