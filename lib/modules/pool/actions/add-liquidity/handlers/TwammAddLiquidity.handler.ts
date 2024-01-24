@@ -17,7 +17,7 @@ export class TwammAddLiquidityHandler implements AddLiquidityHandler {
   constructor(private chainId: SupportedChainId) {}
 
   // TODO: This is a non-sense example implementation
-  public async queryAddLiquidity(humanAmountsIn: HumanAmountIn[]) {
+  public async simulate(humanAmountsIn: HumanAmountIn[]) {
     this.humanAmountsIn = humanAmountsIn
     const tokenAmount = TokenAmount.fromHumanAmount(
       {} as unknown as Token,
@@ -28,14 +28,12 @@ export class TwammAddLiquidityHandler implements AddLiquidityHandler {
   }
 
   // TODO: This is a non-sense example implementation
-  public async calculatePriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number> {
+  public async getPriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number> {
     return Number(humanAmountsIn[0].humanAmount)
   }
 
   // TODO: This is a non-sense example implementation
-  public async buildAddLiquidityCallData({
-    account,
-  }: BuildAddLiquidityInput): Promise<TransactionConfig> {
+  public async buildCallData({ account }: BuildAddLiquidityInput): Promise<TransactionConfig> {
     if (!this.humanAmountsIn) {
       throw new Error(
         `Missing humanAmountsIn.

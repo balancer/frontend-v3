@@ -33,7 +33,7 @@ export function useRemoveLiquidityPriceImpactQuery(
   })
 
   const queryFn = async () =>
-    handler.calculatePriceImpact({
+    handler.getPriceImpact({
       humanBptIn: debouncedBptIn,
       tokenOut,
     })

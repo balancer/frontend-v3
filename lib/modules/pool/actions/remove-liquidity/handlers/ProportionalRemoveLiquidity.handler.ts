@@ -26,7 +26,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
     this.helpers = new LiquidityActionHelpers(pool)
   }
 
-  public async queryRemoveLiquidity({
+  public async simulate({
     humanBptIn: bptIn,
   }: QueryRemoveLiquidityInput): Promise<SdkQueryRemoveLiquidityOutput> {
     const removeLiquidity = new RemoveLiquidity()
@@ -40,12 +40,12 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
     return { amountsOut: sdkQueryOutput.amountsOut, sdkQueryOutput }
   }
 
-  public async calculatePriceImpact(): Promise<number> {
+  public async getPriceImpact(): Promise<number> {
     // proportional remove liquidity does not have price impact
     return 0
   }
 
-  public async buildRemoveLiquidityCallData({
+  public async buildCallData({
     account,
     slippagePercent,
     queryOutput,

@@ -47,7 +47,7 @@ export function useAddLiquidityBuildCallDataQuery({
           2. When we refetch after countdown timeout we explicitly wait for the preview query to finish
       */
     const queryOutput = ensureLastQueryResponse('Add liquidity query', simulationQuery.data)
-    const response = await handler.buildAddLiquidityCallData({
+    const response = await handler.buildCallData({
       account: userAddress,
       humanAmountsIn,
       slippagePercent: slippage,
