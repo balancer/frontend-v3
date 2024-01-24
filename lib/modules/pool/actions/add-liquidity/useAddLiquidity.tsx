@@ -20,19 +20,13 @@ import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWit
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
-import {
-  FlowStep,
-  TransactionState,
-  getTransactionState,
-} from '@/lib/shared/components/btns/transaction-steps/lib'
+import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
 import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNextTokenApprovalStep'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
-import { TransactionBundle } from '@/lib/modules/web3/contracts/contract.types'
 import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
-import { isEqual } from 'lodash'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -42,9 +36,8 @@ export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
 export function _useAddLiquidity() {
   const humanAmountsIn = useReactiveVar(humanAmountsInVar)
   const [isComplete, setIsComplete] = useState(false)
-  const [_addLiquidityTransaction, _setAddLiquidityTransaction] = useState<TransactionBundle>()
 
-  const { isActiveStep, activateStep } = useActiveStep()
+  const { isActiveStep, activateStep, deactivateStep } = useActiveStep()
   const { pool, poolStateInput } = usePool()
   const { getToken, usdValueForToken, getTokensByTokenAddress } = useTokens()
   const { isConnected, userAddress } = useUserAccount()
@@ -122,36 +115,20 @@ export function _useAddLiquidity() {
 
   const totalUSDValue = safeSum(usdAmountsIn)
 
-  const addLiquidityTransactionState = _addLiquidityTransaction
-    ? getTransactionState(_addLiquidityTransaction)
-    : undefined
-
-  const isConfirmingAddLiquidity = addLiquidityTransactionState === TransactionState.Confirming
-  const isAwaitingUserConfirmation = addLiquidityTransactionState === TransactionState.Loading
-
-  // If the flow is complete or the final add liquidity transaction is
-  // confirming, disable queries and updates to state.
-  const shouldFreezeQuote = isComplete || isConfirmingAddLiquidity || isAwaitingUserConfirmation
-
   /**
    * The three handler queries, simulate + priceImpact + buildCallData.
    */
-  const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn, pool.id, {
-    enabled: !shouldFreezeQuote,
-  })
+  const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn, pool.id)
 
-  const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn, pool.id, {
-    enabled: !shouldFreezeQuote,
-  })
+  const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn, pool.id)
 
   const buildCallDataQuery = useAddLiquidityBuildCallDataQuery({
     handler,
     humanAmountsIn,
-    isActiveStep,
     pool,
     simulationQuery,
     options: {
-      enabled: !shouldFreezeQuote && isActiveStep,
+      enabled: isActiveStep,
     },
   })
 
@@ -174,16 +151,6 @@ export function _useAddLiquidity() {
     setInitialHumanAmountsIn()
   }, [])
 
-  useEffect(() => {
-    // SMELL! This conditional fixes a re-render loop.
-    // The problem is we need the transaction state to enable or
-    // disable queries, but we also need the buildCallDataQuery state in
-    // useConstructAddLiquidityStep to construct the transaction...
-    if (!isEqual(_addLiquidityTransaction, addLiquidityTransaction)) {
-      _setAddLiquidityTransaction(addLiquidityTransaction)
-    }
-  }, [addLiquidityTransaction])
-
   return {
     humanAmountsIn,
     tokens,
@@ -196,8 +163,6 @@ export function _useAddLiquidity() {
     helpers,
     poolStateInput,
     isComplete,
-    shouldFreezeQuote,
-    addLiquidityTransactionState,
     buildCallDataQuery,
     initialAmountsToApprove,
     previewModalDisclosure,
@@ -205,6 +170,7 @@ export function _useAddLiquidity() {
     addLiquidityTransaction,
     steps,
     activateStep,
+    deactivateStep,
     setHumanAmountIn,
     setIsComplete,
   }

@@ -751,6 +751,21 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       alpha
       beta
       type
+      c
+      dSq
+      lambda
+      root3Alpha
+      s
+      sqrtAlpha
+      sqrtBeta
+      tauAlphaX
+      tauAlphaY
+      tauBetaX
+      tauBetaY
+      u
+      v
+      w
+      z
       nestingType
       tokens {
         ... on GqlPoolToken {

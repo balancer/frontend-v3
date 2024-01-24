@@ -2,7 +2,7 @@ import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { HumanAmount, InputAmount, PoolStateInput, TokenAmount } from '@balancer/sdk'
+import { HumanAmount, InputAmount, PoolState, TokenAmount } from '@balancer/sdk'
 import { Dictionary, keyBy } from 'lodash'
 import { formatUnits, parseUnits } from 'viem'
 import { Address } from 'wagmi'
@@ -27,7 +27,7 @@ const NullPool: Pool = {
 export class LiquidityActionHelpers {
   constructor(public pool: Pool = NullPool) {}
 
-  public get poolStateInput(): PoolStateInput {
+  public get poolStateInput(): PoolState {
     return toPoolStateInput(this.pool)
   }
 
@@ -47,13 +47,11 @@ export class LiquidityActionHelpers {
     humanAmountsIn: HumanAmountIn[],
     tokensByAddress: Dictionary<GqlToken>
   ): TokenAmountToApprove[] {
-    return this.toInputAmounts(humanAmountsIn).map(({ address, rawAmount }, index) => {
-      const humanAmountIn = humanAmountsIn[index]
+    return this.toInputAmounts(humanAmountsIn).map(({ address, rawAmount }) => {
       return {
         tokenAddress: address,
-        humanAmount: humanAmountIn.humanAmount || '0',
         rawAmount,
-        tokenSymbol: tokensByAddress[humanAmountIn.tokenAddress].symbol,
+        tokenSymbol: tokensByAddress[address].symbol,
       }
     })
   }
@@ -84,7 +82,7 @@ export class LiquidityActionHelpers {
       amountsInByTokenAddress[tokenAddress].rawAmount = parseUnits(humanAmount, decimals)
     })
 
-    const amountsIn = Object.values(amountsInByTokenAddress)
+    const amountsIn = Object.values(amountsInByTokenAddress).filter(a => a.rawAmount > 0n)
     return amountsIn
   }
 

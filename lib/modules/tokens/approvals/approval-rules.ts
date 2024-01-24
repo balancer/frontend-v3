@@ -1,13 +1,11 @@
 import { SupportedChainId } from '@/lib/config/config.types'
 import { requiresDoubleApproval } from '@/lib/config/tokens.config'
 import { isNativeAsset } from '@/lib/shared/utils/addresses'
-import { HumanAmount } from '@balancer/sdk'
 import { Address } from 'viem'
 import { TokenAllowances } from '../../web3/useTokenAllowances'
 
 export type TokenAmountToApprove = {
   rawAmount: bigint
-  humanAmount: HumanAmount
   tokenAddress: Address
   tokenSymbol: string
 }
@@ -38,10 +36,6 @@ export function getRequiredTokenApprovals({
   return amountsToApprove.filter(({ tokenAddress, rawAmount }) => {
     if (isNativeAsset(chainId, tokenAddress)) return false
     const allowedAmount = currentTokenAllowances[tokenAddress]
-
-    // We were checking this in V2 but maybe we don't need it if we only generate valid amounts to approve
-    // const amountToApproveIsInvalid = amount == 0n
-    // if (amountToApproveIsInvalid) return false
 
     const hasEnoughAllowedAmount = allowedAmount >= rawAmount
     if (hasEnoughAllowedAmount) return false

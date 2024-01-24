@@ -1,7 +1,7 @@
 import { GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import {
-  BALANCER_VAULT,
+  VAULT,
   ChainId,
   HumanAmount,
   MAX_UINT256,
@@ -27,7 +27,7 @@ import {
   toHex,
   trim,
 } from 'viem'
-import { erc20ABI } from 'wagmi'
+import { erc20ABI, mainnet } from 'wagmi'
 import { aWjAuraWethPoolElementMock } from '../msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount, testPublicClient } from '../utils/wagmi'
 
@@ -70,7 +70,7 @@ export async function getSdkTestUtils({
       address: token,
       abi: erc20ABI,
       functionName: 'approve',
-      args: [BALANCER_VAULT, amount],
+      args: [VAULT[client?.chain?.id || mainnet.id], amount],
     })
 
     const txReceipt = await client.waitForTransactionReceipt({

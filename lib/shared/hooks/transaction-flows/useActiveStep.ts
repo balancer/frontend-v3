@@ -8,9 +8,11 @@ export function useActiveStep() {
   const [isActiveStep, setIsActiveStep] = useState(false)
 
   const activateStep = () => setIsActiveStep(true)
+  const deactivateStep = () => setIsActiveStep(false)
   return {
     isActiveStep: isActiveStep && isConnected, // A step cannot be active if the user is not connected
     setIsActiveStep,
     activateStep,
+    deactivateStep,
   }
 }

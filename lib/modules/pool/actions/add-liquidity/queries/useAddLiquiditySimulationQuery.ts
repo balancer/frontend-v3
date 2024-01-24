@@ -2,7 +2,7 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { defaultDebounceMs } from '@/lib/shared/utils/queries'
+import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { useDebounce } from 'use-debounce'
 import { useQuery } from 'wagmi'
 import { hasValidHumanAmounts } from '../../LiquidityActionHelpers'
@@ -37,6 +37,7 @@ export function useAddLiquiditySimulationQuery(
   const queryOpts = {
     enabled: enabled && isConnected && hasValidHumanAmounts(debouncedHumanAmountsIn),
     cacheTime: 0,
+    ...onlyExplicitRefetch,
   }
 
   return useQuery(queryKey, queryFn, queryOpts)
