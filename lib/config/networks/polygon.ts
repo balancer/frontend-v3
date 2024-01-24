@@ -23,6 +23,7 @@ const networkConfig: NetworkConfig = {
     multicall2: '0x275617327c958bD06b5D6b871E7f491D76113dd8',
     balancer: {
       vaultV2: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
+      relayer: '0x35Cea9e57A393ac66Aaa7E25C391D52C74B5648f',
     },
   },
 }

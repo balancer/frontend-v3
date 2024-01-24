@@ -75,7 +75,7 @@ export function someMinimalTokensMock(addresses?: Address[]): MinimalToken[] {
 
 export function aGqlTokenMock(...options: Partial<GqlPoolToken>[]): GqlPoolToken {
   const symbol = options[0].symbol
-  const defaultToken: TokenBase = fakeTokenBySymbol(symbol || 'BAL')
+  const defaultToken: TokenBase = fakeTokenBySymbol((symbol as FakeTokenSymbol) || 'BAL')
   const defaultOptions: GqlPoolToken = mock<GqlPoolToken>({
     ...defaultToken,
     __typename: 'GqlPoolToken',
