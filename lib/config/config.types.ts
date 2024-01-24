@@ -20,6 +20,7 @@ export interface ContractsConfig {
   multicall2: Address
   balancer: {
     vaultV2: Address
+    gaugeV5?: Address
   }
 }
 
