@@ -22,7 +22,12 @@ export type TransactionLabels = {
   preparing?: string
 }
 
-type StepType = 'batchRelayerApproval' | 'tokenApproval' | 'addLiquidity' | 'removeLiquidity'
+type StepType =
+  | 'signBatchRelayer'
+  | 'approveBatchRelayer'
+  | 'tokenApproval'
+  | 'addLiquidity'
+  | 'removeLiquidity'
 
 export type ManagedResult = TransactionBundle & Executable
 

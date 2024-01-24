@@ -8,7 +8,11 @@ import {
   GqlPoolTokenExpanded,
   GqlTokenPrice,
 } from '@/lib/shared/services/api/generated/graphql'
-import { allFakeGqlTokens, fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
+import {
+  FakeTokenSymbol,
+  allFakeGqlTokens,
+  fakeTokenBySymbol,
+} from '@/test/data/all-gql-tokens.fake'
 import { mock } from 'vitest-mock-extended'
 import { TokenAmountToApprove } from '../approvals/approval-rules'
 import { TokenAllowances } from '../../web3/useTokenAllowances'
@@ -87,8 +91,15 @@ export function someGqlTokenMocks(symbols: string[]): GqlPoolToken[] {
 export function aTokenExpandedMock(
   ...options: Partial<GqlPoolTokenExpanded>[]
 ): GqlPoolTokenExpanded {
-  const defaultToken: TokenBase = fakeTokenBySymbol('BAL')
+  const symbol = (options[0]?.symbol as FakeTokenSymbol) || 'BAL'
+  const defaultToken: TokenBase = fakeTokenBySymbol(symbol)
   return Object.assign({}, defaultToken, ...options)
+}
+export function aTokenExpandedBySymbolMock(
+  symbol: FakeTokenSymbol,
+  ...options: Partial<GqlPoolTokenExpanded>[]
+): GqlPoolTokenExpanded {
+  return aTokenExpandedMock({ symbol }, ...options)
 }
 
 export function someTokenExpandedMock(addresses: Address[]): GqlPoolTokenExpanded[] {

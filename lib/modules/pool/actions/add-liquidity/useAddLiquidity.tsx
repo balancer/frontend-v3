@@ -38,7 +38,7 @@ export function _useAddLiquidity() {
   const [isComplete, setIsComplete] = useState(false)
 
   const { isActiveStep, activateStep, deactivateStep } = useActiveStep()
-  const { pool, poolStateInput } = usePool()
+  const { pool } = usePool()
   const { getToken, usdValueForToken, getTokensByTokenAddress } = useTokens()
   const { isConnected, userAddress } = useUserAccount()
   const vaultAddress = useContractAddress('balancer.vaultV2')
@@ -97,7 +97,9 @@ export function _useAddLiquidity() {
     ])
   }
 
-  const tokens = pool.allTokens.map(token => getToken(token.address, pool.chain))
+  const tokens = pool.allTokens
+    .filter(token => token.isMainToken)
+    .map(token => getToken(token.address, pool.chain))
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
   const usdAmountsIn = useMemo(
     () =>
@@ -161,7 +163,6 @@ export function _useAddLiquidity() {
     isDisabled,
     disabledReason,
     helpers,
-    poolStateInput,
     isComplete,
     buildCallDataQuery,
     initialAmountsToApprove,

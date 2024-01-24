@@ -1,6 +1,7 @@
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { HumanAmountIn } from '../../liquidity-types'
 import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidity.types'
+import { Address } from 'viem'
 
 /**
  * AddLiquidityHandler is an interface that defines the methods that must be implemented by a handler.
@@ -18,7 +19,10 @@ import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidit
 export interface AddLiquidityHandler {
   // Query the expected output of adding liquidity and store it inside the handler instance
   // Also returns bptOut to be used by the UI
-  queryAddLiquidity(humanAmountsIn: HumanAmountIn[]): Promise<QueryAddLiquidityOutput>
+  queryAddLiquidity(
+    humanAmountsIn: HumanAmountIn[],
+    userAddress?: Address // Only NestedAddLiquidity expects a userAddress (TODO: change signature in SDK to be able to query without connected user)
+  ): Promise<QueryAddLiquidityOutput>
   // Calculate the price impact of adding liquidity
   calculatePriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number>
   /*

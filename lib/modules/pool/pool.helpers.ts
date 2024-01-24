@@ -4,13 +4,14 @@ import {
   GetPoolQuery,
   GqlChain,
   GqlPoolBase,
+  GqlPoolNestingType,
   GqlPoolType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { getAddressBlockExplorerLink, isSameAddress } from '@/lib/shared/utils/addresses'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
-import { MinimalToken, PoolState, mapPoolType } from '@balancer/sdk'
+
 import BigNumber from 'bignumber.js'
-import { Address, Hex, getAddress } from 'viem'
+import { Address, getAddress } from 'viem'
 
 /**
  * METHODS
@@ -148,8 +149,6 @@ export function usePoolHelpers(pool: Pool, chain: GqlChain) {
 
   const gaugeAddress = pool?.staking?.gauge?.gaugeAddress || ''
 
-  const poolStateInput = toPoolStateInput(pool)
-
   const chainId = getChainId(pool.chain)
 
   return {
@@ -157,22 +156,12 @@ export function usePoolHelpers(pool: Pool, chain: GqlChain) {
     gaugeExplorerLink,
     hasGaugeAddress,
     gaugeAddress,
-    poolStateInput,
     chainId,
   }
 }
 
-export function toPoolStateInput(pool: Pool): PoolState {
-  // TODO: double check if we need an extra request to get PoolStateInput to get index token field
-  // Add index in GQL query instead of this
-  const tokens = pool.tokens.map((t, index) => {
-    return { ...t, index }
-  })
-  return {
-    id: pool.id as Hex,
-    address: pool.address as Address,
-    tokens: tokens as MinimalToken[],
-    type: mapPoolType(pool.type),
-    balancerVersion: 2,
-  }
+export function hasNestedPools(pool: Pool) {
+  // The following discriminator is needed because not all pools in GqlPoolQuery do have nestingType property
+  // and the real TS discriminator is __typename which we don't want to use
+  return 'nestingType' in pool && pool.nestingType !== GqlPoolNestingType.NoNesting
 }

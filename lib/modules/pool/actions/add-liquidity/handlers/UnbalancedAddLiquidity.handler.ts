@@ -35,7 +35,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     const addLiquidity = new AddLiquidity()
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
-    const sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
+    const sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolState)
 
     return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
   }
@@ -50,7 +50,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
 
     const priceImpactABA: PriceImpactAmount = await PriceImpact.addLiquidityUnbalanced(
       addLiquidityInput,
-      this.helpers.poolStateInput
+      this.helpers.poolState
     )
 
     return priceImpactABA.decimal

@@ -32,7 +32,7 @@ export function useAddLiquiditySimulationQuery(
     humanAmountsIn: debouncedHumanAmountsIn,
   })
 
-  const queryFn = async () => handler.queryAddLiquidity(humanAmountsIn)
+  const queryFn = async () => handler.queryAddLiquidity(humanAmountsIn, userAddress)
 
   const queryOpts = {
     enabled: enabled && isConnected && hasValidHumanAmounts(debouncedHumanAmountsIn),

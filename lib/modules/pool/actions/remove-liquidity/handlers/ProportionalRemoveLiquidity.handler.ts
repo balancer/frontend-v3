@@ -32,10 +32,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
     const removeLiquidity = new RemoveLiquidity()
     const removeLiquidityInput = this.constructSdkInput(bptIn)
 
-    const sdkQueryOutput = await removeLiquidity.query(
-      removeLiquidityInput,
-      this.helpers.poolStateInput
-    )
+    const sdkQueryOutput = await removeLiquidity.query(removeLiquidityInput, this.helpers.poolState)
 
     return { amountsOut: sdkQueryOutput.amountsOut, sdkQueryOutput }
   }
