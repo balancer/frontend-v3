@@ -9,7 +9,7 @@ import { usePublicClient } from 'wagmi'
 
 export type RecentTransactionsResponse = ReturnType<typeof _useRecentTransactions>
 export const TransactionsContext = createContext<RecentTransactionsResponse | null>(null)
-const NUM_RECENT_TRANSACTIONS = 5
+const NUM_RECENT_TRANSACTIONS = 20
 
 // confirming = transaction has not been mined
 // confirmed = transaction has been mined and is present on chain
@@ -17,13 +17,14 @@ const NUM_RECENT_TRANSACTIONS = 5
 // rejected = transaction was rejected by the rpc / other execution error prior to submission to chain
 type TransactionStatus = 'confirming' | 'confirmed' | 'reverted' | 'rejected'
 
-type TrackedTransaction = {
+export type TrackedTransaction = {
   hash: Hash
   label?: string
   description?: string
   status: TransactionStatus
   toastId?: ToastId
   timestamp: number
+  init?: string
 }
 
 type UpdateTrackedTransaction = Pick<TrackedTransaction, 'label' | 'description' | 'status'>
@@ -169,7 +170,12 @@ export function _useRecentTransactions() {
     handleTransactionAdded(trackedTransaction)
   }
 
-  return { transactions, addTrackedTransaction, updateTrackedTransaction }
+  function clearTransactions() {
+    updateLocalStorage({})
+    setTransactions({})
+  }
+
+  return { transactions, addTrackedTransaction, updateTrackedTransaction, clearTransactions }
 }
 
 export function RecentTransactionsProvider({ children }: { children: ReactNode }) {

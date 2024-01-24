@@ -9,7 +9,6 @@ import {
 } from '@/lib/shared/services/api/generated/graphql'
 import { getAddressBlockExplorerLink, isSameAddress } from '@/lib/shared/utils/addresses'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
-
 import BigNumber from 'bignumber.js'
 import { Address, getAddress } from 'viem'
 
