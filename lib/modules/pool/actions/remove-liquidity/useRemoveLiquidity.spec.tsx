@@ -16,9 +16,9 @@ const balTokenOutUnits = '1'
 const wEthTokenOutUnits = '0.5'
 
 // Mock query to avoid onchain SDK call from unit tests
-vi.mock('./queries/useRemoveLiquidityPreviewQuery', () => {
+vi.mock('./queries/useRemoveLiquiditySimulationQuery', () => {
   return {
-    useRemoveLiquidityPreviewQuery(): RemoveLiquiditySimulationQueryResult {
+    useRemoveLiquiditySimulationQuery(): RemoveLiquiditySimulationQueryResult {
       const result = mock<RemoveLiquiditySimulationQueryResult>()
       return {
         ...result,
