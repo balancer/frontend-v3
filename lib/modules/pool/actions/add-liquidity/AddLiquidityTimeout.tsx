@@ -35,7 +35,7 @@ function useAddLiquidityTimeout() {
   // Disable query refetches:
   // if the final step is not active
   // if the flow is complete
-  // if  the final add liquidity transaction is confirming
+  // if the add liquidity transaction is confirming
   const shouldFreezeQuote =
     !isActiveStep || isComplete || isConfirmingAddLiquidity || isAwaitingUserConfirmation
 
