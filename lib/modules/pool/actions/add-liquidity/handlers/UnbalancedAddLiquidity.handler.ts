@@ -29,9 +29,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     this.helpers = new LiquidityActionHelpers(pool)
   }
 
-  public async queryAddLiquidity(
-    humanAmountsIn: HumanAmountIn[]
-  ): Promise<SdkQueryAddLiquidityOutput> {
+  public async simulate(humanAmountsIn: HumanAmountIn[]): Promise<SdkQueryAddLiquidityOutput> {
     const addLiquidity = new AddLiquidity()
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
@@ -40,7 +38,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
   }
 
-  public async calculatePriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number> {
+  public async getPriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number> {
     if (areEmptyAmounts(humanAmountsIn)) {
       // Avoid price impact calculation when there are no amounts in
       return 0
@@ -56,7 +54,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     return priceImpactABA.decimal
   }
 
-  public async buildAddLiquidityCallData({
+  public async buildCallData({
     account,
     slippagePercent,
     queryOutput,

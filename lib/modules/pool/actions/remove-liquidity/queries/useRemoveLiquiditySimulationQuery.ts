@@ -37,7 +37,7 @@ export function useRemoveLiquiditySimulationQuery(
   })
 
   const queryFn = async () =>
-    handler.queryRemoveLiquidity({
+    handler.simulate({
       humanBptIn: debouncedHumanBptIn,
       tokenOut,
     })

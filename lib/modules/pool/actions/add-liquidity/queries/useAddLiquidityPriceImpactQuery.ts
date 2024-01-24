@@ -30,7 +30,7 @@ export function useAddLiquidityPriceImpactQuery(
     humanAmountsIn: debouncedHumanAmountsIn,
   })
 
-  const queryFn = async () => handler.calculatePriceImpact(humanAmountsIn)
+  const queryFn = async () => handler.getPriceImpact(humanAmountsIn)
 
   const queryOpts = {
     enabled: enabled && isConnected && !areEmptyAmounts(humanAmountsIn),
