@@ -51,6 +51,9 @@ export function RemoveLiquidityForm() {
     totalUsdValue,
     priceImpactQuery,
     previewModalDisclosure,
+    isDisabled,
+    disabledReason,
+    simulationQuery,
   } = useRemoveLiquidity()
   const { toCurrency } = useCurrency()
   const nextBtn = useRef(null)
@@ -58,11 +61,6 @@ export function RemoveLiquidityForm() {
 
   const priceImpact = priceImpactQuery?.data
   const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-' // If it's 0 we want to display 0.
-
-  function submit() {
-    // TODO: implement isDisabledWithReason
-    previewModalDisclosure.onOpen()
-  }
 
   function toggleTab(option: ButtonGroupOption) {
     setActiveTab(option)
@@ -132,9 +130,18 @@ export function RemoveLiquidityForm() {
                 </HStack>
               </HStack>
             </VStack>
-            <Button ref={nextBtn} variant="secondary" w="full" size="lg" onClick={submit}>
-              Next
-            </Button>
+            <Tooltip label={isDisabled ? disabledReason : ''}>
+              <Button
+                ref={nextBtn}
+                variant="secondary"
+                w="full"
+                size="lg"
+                isDisabled={isDisabled || simulationQuery.isLoading}
+                onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
+              >
+                Next
+              </Button>
+            </Tooltip>
           </VStack>
         </Card>
         <RemoveLiquidityModal
