@@ -153,6 +153,7 @@ export function _useRemoveLiquidity() {
     priceImpactQuery,
     buildCallDataQuery,
     isDisabled,
+    isActiveStep,
     disabledReason,
     steps,
     previewModalDisclosure,
