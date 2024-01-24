@@ -24,7 +24,7 @@ export function RemoveLiquidityFlowButton() {
   return (
     <VStack w="full">
       <TransactionFlow
-        onComplete={handleJoinCompleted}
+        onComplete={handleRemoveCompleted}
         onCompleteClick={handlerRedirectToPoolPage}
         completedButtonLabel="Return to pool"
         steps={steps}
