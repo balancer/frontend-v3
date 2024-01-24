@@ -57,7 +57,7 @@ export function RemoveLiquidityModal({
   const { slippage } = useUserSettings()
 
   const priceImpact = priceImpactQuery?.data
-  const priceImpactLabel = priceImpact ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
 
   return (
     <Modal

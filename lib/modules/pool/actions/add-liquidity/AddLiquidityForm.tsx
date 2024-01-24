@@ -52,7 +52,7 @@ export function AddLiquidityForm() {
   const bptOutLabel = safeTokenFormat(bptOut?.amount, BPT_DECIMALS)
 
   const priceImpact = priceImpactQuery?.data
-  const priceImpactLabel = priceImpact ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
 
   const onModalClose = () => {
     previewModalDisclosure.onClose()

@@ -58,7 +58,7 @@ export function RemoveLiquidityForm() {
   const [activeTab, setActiveTab] = useState(TABS[0])
 
   const priceImpact = priceImpactQuery?.data
-  const priceImpactLabel = priceImpact ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-' // If it's 0 we want to display 0.
 
   function submit() {
     // TODO: implement isDisabledWithReason

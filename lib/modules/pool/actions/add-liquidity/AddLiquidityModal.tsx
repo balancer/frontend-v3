@@ -99,7 +99,7 @@ export function AddLiquidityModal({
   const bptOutLabel = bptOut ? formatUnits(bptOut.amount, BPT_DECIMALS) : '0'
 
   const priceImpact = priceImpactQuery?.data
-  const priceImpactLabel = priceImpact ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
 
   return (
     <Modal
