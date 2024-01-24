@@ -85,12 +85,16 @@ describe('isDoubleApprovalRequired', () => {
   })
   test('when token is special (like USDT)', () => {
     const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7'
-    currentTokenAllowances[usdtAddress] = 10n
+    const currentTokenAllowances = {
+      [usdtAddress]: 10n,
+    }
     expect(isDoubleApprovalRequired(chainId, usdtAddress, currentTokenAllowances)).toBeTruthy()
   })
   test('when token is special (like USDT) but current allowance is already zero', () => {
     const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7'
-    currentTokenAllowances[usdtAddress] = 0n
+    const currentTokenAllowances = {
+      [usdtAddress]: 0n,
+    }
     expect(isDoubleApprovalRequired(chainId, usdtAddress, currentTokenAllowances)).toBeFalsy()
   })
 })
