@@ -1,5 +1,5 @@
 import { theme } from '@chakra-ui/react'
-import { format } from 'date-fns'
+import { addMinutes, format } from 'date-fns'
 import * as echarts from 'echarts/core'
 import {
   GetPoolSnapshotsDocument,
@@ -16,6 +16,7 @@ import { NumberFormatter } from '@/lib/shared/utils/numbers'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { balColors, balTheme } from '@/lib/shared/services/chakra/theme'
 import numeral from 'numeral'
+import { twentyFourHoursInSecs } from '@/lib/shared/hooks/useTime'
 
 export enum PoolChartTab {
   VOLUME = 'volume',
@@ -298,21 +299,44 @@ export function usePoolCharts() {
     const snapshots = data?.snapshots
     if (!snapshots) return []
 
+    let chartArr: (string | number)[][] = []
     if (activeTab.value === PoolChartTab.TVL) {
-      return snapshots.map(snapshot => {
+      chartArr = snapshots.map(snapshot => {
         return [snapshot.timestamp, snapshot.totalLiquidity]
       })
     }
 
     if (activeTab.value === PoolChartTab.FEES) {
-      return snapshots.map(snapshot => {
+      chartArr = snapshots.map(snapshot => {
         return [snapshot.timestamp, snapshot.fees24h]
       })
     }
+    if (activeTab.value === PoolChartTab.VOLUME) {
+      chartArr = snapshots.map(snapshot => {
+        return [snapshot.timestamp, snapshot.volume24h]
+      })
+    }
 
-    return snapshots.map(snapshot => {
-      return [snapshot.timestamp, snapshot.volume24h]
-    })
+    // add lagging timestamps
+    if (chartArr.length < 30) {
+      const lastDate = chartArr[chartArr.length - 1][0]
+      const days = 30 - chartArr.length
+
+      const timestampsArr: number[] = []
+      for (let i = 1; i <= days; i++) {
+        const timestamp = Number(lastDate) - i * twentyFourHoursInSecs
+        timestampsArr.push(timestamp * 1000)
+      }
+
+      const laggingTimestamps = timestampsArr.map(timestamp => [
+        addMinutes(timestamp, new Date(timestamp).getTimezoneOffset()).getTime() / 1000,
+        '0',
+      ])
+
+      chartArr = [...laggingTimestamps, ...chartArr]
+    }
+
+    return chartArr
   }, [data?.snapshots, activeTab])
 
   const defaultChartOptions = getDefaultPoolChartOptions(toCurrency)
