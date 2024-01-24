@@ -67,7 +67,7 @@ export function _useAddLiquidity() {
   const amountsInTokensByAddress = getTokensByTokenAddress(amountsInTokenAddresses, pool.chain)
 
   const tokenAllowances = useTokenAllowances(userAddress, vaultAddress, tokenAddressesWithAmountIn)
-  const { tokenApprovalStep, initialAmountsToApprove } = useNextTokenApprovalStep({
+  const { tokenApprovalStep, remainingAmountsToApprove } = useNextTokenApprovalStep({
     tokenAllowances,
     amountsToApprove: helpers.getAmountsToApprove(humanAmountsIn, amountsInTokensByAddress),
     actionType: 'AddLiquidity',
@@ -162,11 +162,12 @@ export function _useAddLiquidity() {
     helpers,
     poolStateInput,
     buildCallDataQuery,
-    initialAmountsToApprove,
+    remainingAmountsToApprove,
     previewModalDisclosure,
     tokenApprovalStep,
     addLiquidityTransaction,
     steps,
+    isActiveStep,
     activateStep,
     deactivateStep,
     setHumanAmountIn,
