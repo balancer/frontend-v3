@@ -11,7 +11,7 @@ export function RemoveLiquidityFlowButton() {
   const { pool, refetch } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
 
-  async function handleJoinCompleted() {
+  async function handleRemoveCompleted() {
     await refetch() // Refetches onchain balances.
     setDidRefetchPool(true)
   }
