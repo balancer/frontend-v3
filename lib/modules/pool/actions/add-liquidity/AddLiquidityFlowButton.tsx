@@ -1,39 +1,32 @@
-import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNextTokenApprovalStep'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
+'use client'
+
 import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
 import { Text, VStack } from '@chakra-ui/react'
-import { Pool } from '../../usePool'
-import { HumanAmountIn } from '../liquidity-types'
 import { useAddLiquidity } from './useAddLiquidity'
-import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
+import { usePoolRedirect } from '../../pool.hooks'
+import { usePool } from '../../usePool'
+import React, { useState } from 'react'
 
-type Props = {
-  humanAmountsIn: HumanAmountIn[]
-  pool: Pool
-}
-export function AddLiquidityFlowButton({ humanAmountsIn, pool }: Props) {
-  const { helpers } = useAddLiquidity()
-  const { getTokensByTokenAddress } = useTokens()
+export function AddLiquidityFlowButton() {
+  const [didRefetchPool, setDidRefetchPool] = useState(false)
+  const { setIsComplete, initialAmountsToApprove, steps } = useAddLiquidity()
+  const { pool, refetch } = usePool()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
 
-  const tokenAddresses = humanAmountsIn.map(h => h.tokenAddress)
-  const tokensByAddress = getTokensByTokenAddress(tokenAddresses, pool.chain)
-
-  const { tokenApprovalStep, initialAmountsToApprove } = useNextTokenApprovalStep({
-    amountsToApprove: helpers.getAmountsToApprove(humanAmountsIn, tokensByAddress),
-    actionType: 'AddLiquidity',
-  })
-
-  const { step: addLiquidityStep } = useConstructAddLiquidityStep(pool.id)
-  const steps = [tokenApprovalStep, addLiquidityStep]
-
-  function handleJoinCompleted() {
-    console.log('Join completed')
+  async function handleJoinCompleted() {
+    setIsComplete(true)
+    await refetch()
+    setDidRefetchPool(true)
   }
 
-  // TODO: define UI for approval steps
+  async function handlerRedirectToPoolPage(event: React.MouseEvent<HTMLElement>) {
+    if (!didRefetchPool) await refetch()
+    redirectToPoolPage(event)
+  }
+
   const tokensRequiringApprovalTransaction = initialAmountsToApprove
     ?.map(token => token.tokenSymbol)
-    .join(' , ')
+    .join(', ')
 
   return (
     <VStack w="full">
@@ -43,8 +36,8 @@ export function AddLiquidityFlowButton({ humanAmountsIn, pool }: Props) {
           : 'All tokens have enough allowance'}
       </Text>
       <TransactionFlow
-        completedAlertContent="Successfully added liquidity"
-        onCompleteClick={handleJoinCompleted}
+        onComplete={handleJoinCompleted}
+        onCompleteClick={handlerRedirectToPoolPage}
         completedButtonLabel="Return to pool"
         steps={steps}
       />

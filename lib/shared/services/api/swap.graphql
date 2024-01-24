@@ -1,35 +1,37 @@
-# query GetSorSwaps(
-#   $tokenIn: String!
-#   $tokenOut: String!
-#   $swapType: GqlSorSwapType!
-#   $swapAmount: BigDecimal!
-#   $swapOptions: GqlSorSwapOptionsInput!
-# ) {
-#   swaps: sorGetSwaps(
-#     tokenIn: $tokenIn
-#     tokenOut: $tokenOut
-#     swapType: $swapType
-#     swapAmount: $swapAmount
-#     swapOptions: $swapOptions
-#   ) {
-#     tokenIn
-#     tokenOut
-#     swapAmount
-#     swapAmountForSwaps
-#     returnAmount
-#     returnAmountFromSwaps
-#     returnAmountConsideringFees
-#     marketSp
-#     swaps {
-#       amount
-#       assetInIndex
-#       assetOutIndex
-#       poolId
-#       userData
-#     }
-#     tokenAddresses
-#   }
-# }
+query GetSorSwaps(
+  $tokenIn: String!
+  $tokenOut: String!
+  $swapType: GqlSorSwapType!
+  $swapAmount: BigDecimal!
+  $chain: GqlChain!
+  $swapOptions: GqlSorSwapOptionsInput!
+) {
+  swaps: sorGetSwaps(
+    tokenIn: $tokenIn
+    tokenOut: $tokenOut
+    swapType: $swapType
+    swapAmount: $swapAmount
+    chain: $chain
+    swapOptions: $swapOptions
+  ) {
+    tokenIn
+    tokenOut
+    swapAmount
+    swapAmountForSwaps
+    returnAmount
+    returnAmountFromSwaps
+    returnAmountConsideringFees
+    marketSp
+    swaps {
+      amount
+      assetInIndex
+      assetOutIndex
+      poolId
+      userData
+    }
+    tokenAddresses
+  }
+}
 
 # query GetTokenRelativePriceChartData(
 #   $tokenIn: String!
@@ -102,19 +104,19 @@
 #   }
 # }
 
-# fragment GqlTokenDynamicData on GqlTokenDynamicData {
-#   id
-#   tokenAddress
-#   ath
-#   atl
-#   marketCap
-#   fdv
-#   priceChange24h
-#   priceChangePercent24h
-#   priceChangePercent7d
-#   priceChangePercent14d
-#   priceChangePercent30d
-#   high24h
-#   low24h
-#   updatedAt
-# }
+fragment GqlTokenDynamicData on GqlTokenDynamicData {
+  id
+  tokenAddress
+  ath
+  atl
+  marketCap
+  fdv
+  priceChange24h
+  priceChangePercent24h
+  priceChangePercent7d
+  priceChangePercent14d
+  priceChangePercent30d
+  high24h
+  low24h
+  updatedAt
+}

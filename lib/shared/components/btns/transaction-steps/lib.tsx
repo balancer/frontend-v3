@@ -6,6 +6,7 @@ export enum TransactionState {
   Loading = 'loading',
   Preparing = 'preparing',
   Error = 'error',
+  Completed = 'completed',
 }
 
 export type TransactionLabels = {
@@ -62,6 +63,9 @@ export function getTransactionState({
   }
   if (execution.isLoading) {
     return TransactionState.Loading
+  }
+  if (execution.isSuccess) {
+    return TransactionState.Completed
   }
   if (result.isLoading) {
     return TransactionState.Confirming

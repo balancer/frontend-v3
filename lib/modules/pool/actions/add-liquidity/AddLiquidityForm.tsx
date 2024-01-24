@@ -6,7 +6,6 @@ import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { HumanAmount } from '@balancer/sdk'
-import { useDisclosure } from '@chakra-ui/hooks'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
   Button,
@@ -33,17 +32,15 @@ export function AddLiquidityForm() {
     setHumanAmountIn: setAmountIn,
     tokens,
     validTokens,
-    priceImpact,
-    isPriceImpactLoading,
-    bptOut,
-    isPreviewQueryLoading,
+    priceImpactQuery,
+    simulationQuery,
     isDisabled,
     disabledReason,
-    stopRefetchCountdown,
+    previewModalDisclosure,
+    deactivateStep,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
 
-  const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
 
   function currentValueFor(tokenAddress: string) {
@@ -51,12 +48,14 @@ export function AddLiquidityForm() {
     return amountIn ? amountIn.humanAmount : ''
   }
 
+  const bptOut = simulationQuery?.data?.bptOut
   const bptOutLabel = safeTokenFormat(bptOut?.amount, BPT_DECIMALS)
+  const priceImpact = priceImpactQuery?.data
   const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
   const onModalClose = () => {
-    previewDisclosure.onClose()
-    return stopRefetchCountdown()
+    previewModalDisclosure.onClose()
+    deactivateStep()
   }
 
   return (
@@ -99,7 +98,7 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
-                  {isPriceImpactLoading ? (
+                  {priceImpactQuery.isLoading ? (
                     <Skeleton w="12" h="full" />
                   ) : (
                     <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
@@ -112,9 +111,11 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Bpt out</Text>
                 <HStack>
-                  <NumberText color="GrayText">
-                    {isPreviewQueryLoading ? <Skeleton w="12" h="full" /> : bptOutLabel}
-                  </NumberText>
+                  {simulationQuery.isLoading ? (
+                    <Skeleton w="12" h="full" />
+                  ) : (
+                    <NumberText color="GrayText">{bptOutLabel}</NumberText>
+                  )}
                   <Tooltip label="Bpt out" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
@@ -128,8 +129,8 @@ export function AddLiquidityForm() {
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={isDisabled || isPreviewQueryLoading}
-                onClick={() => !isDisabled && previewDisclosure.onOpen()}
+                isDisabled={isDisabled || simulationQuery.isLoading}
+                onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
               >
                 Next
               </Button>
@@ -138,8 +139,8 @@ export function AddLiquidityForm() {
         </Card>
         <AddLiquidityModal
           finalFocusRef={nextBtn}
-          isOpen={previewDisclosure.isOpen}
-          onOpen={previewDisclosure.onOpen}
+          isOpen={previewModalDisclosure.isOpen}
+          onOpen={previewModalDisclosure.onOpen}
           onClose={onModalClose}
         />
       </Center>

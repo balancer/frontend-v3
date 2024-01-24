@@ -6,13 +6,14 @@ import { useEffect } from 'react'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 import { CompletedApprovalState } from './useCompletedApprovalsState'
 import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
-import { useTokenAllowances } from '../../web3/useTokenAllowances'
+import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
 import { useTokens } from '../useTokens'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
 
 type Params = {
+  tokenAllowances: UseTokenAllowancesResponse
   tokenAddress: Address
   spenderAddress: Address
   amountToApprove: bigint
@@ -22,6 +23,7 @@ type Params = {
 }
 
 export function useConstructApproveTokenStep({
+  tokenAllowances,
   tokenAddress,
   spenderAddress,
   amountToApprove = MAX_BIGINT,
@@ -30,7 +32,7 @@ export function useConstructApproveTokenStep({
   completedApprovalState,
 }: Params) {
   const { isActiveStep, activateStep } = useActiveStep()
-  const { refetchAllowances, isAllowancesLoading } = useTokenAllowances()
+  const { refetchAllowances, isAllowancesLoading } = tokenAllowances
   const { getToken } = useTokens()
   const { completedApprovals, saveCompletedApprovals } = completedApprovalState
 
@@ -76,5 +78,5 @@ export function useConstructApproveTokenStep({
     saveExecutedApproval()
   }, [approvalTransaction.result.isSuccess])
 
-  return step
+  return tokenAddress === emptyAddress ? null : step
 }

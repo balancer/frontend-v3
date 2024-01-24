@@ -17,13 +17,13 @@ type Props = {
 
   // callback to execute on the button that will be shown to users once the
   // flow is complete
-  onCompleteClick: () => void
+  onCompleteClick: (event: React.MouseEvent<HTMLElement>) => void
 
   // label to show on the completed flow button
   completedButtonLabel: string
 
   // custom content to render in the success alert box
-  completedAlertContent: ReactNode
+  completedAlertContent?: ReactNode
 }
 
 export default function TransactionFlow({
@@ -45,16 +45,13 @@ export default function TransactionFlow({
   // side effect, automatically execute the onComplete
   // callback once everything is complete
   useEffect(() => {
-    if (areAllStepsComplete) {
-      onComplete?.()
-    }
+    if (areAllStepsComplete) onComplete?.()
   }, [areAllStepsComplete])
 
   // notify step activation
   useEffect(() => {
-    // console.log('Chaging activeStep to', activeStep.id)
-    activeStep.activateStep() //TODO: also deactivate previous steps (is that necessary, we could skip it if we use enabled with completed but thats dangerous, this is probably easier)
-  }, [activeStep.id])
+    if (activeStep) activeStep.activateStep() //TODO: also deactivate previous steps (is that necessary, we could skip it if we use enabled with completed but thats dangerous, this is probably easier)
+  }, [activeStep?.id])
 
   return (
     <>
@@ -65,7 +62,7 @@ export default function TransactionFlow({
               {completedAlertContent}
             </Alert>
           )}
-          <Button w="full" size="lg" variant="primary" onClick={onCompleteClick}>
+          <Button w="full" size="lg" onClick={onCompleteClick}>
             {completedButtonLabel}
           </Button>
         </VStack>

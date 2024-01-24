@@ -17,7 +17,7 @@ interface PoolValues {
 }
 
 export default function PoolStats() {
-  const { pool } = usePool()
+  const { pool, chain } = usePool()
   const { toCurrency } = useCurrency()
   const [poolValues, setPoolValues] = useState<PoolValues | null>(null)
 
@@ -66,7 +66,7 @@ export default function PoolStats() {
             {poolValues ? toCurrency(poolValues.volume24h) : <Skeleton height="30px" w="100px" />}
           </Heading>
         </VStack>
-        <PoolWeightChart />
+        <PoolWeightChart pool={pool} chain={chain} />
         <VStack spacing="sm" m="auto">
           <Heading size="h6" fontWeight="medium">
             Revenue (24h)

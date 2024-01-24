@@ -7,6 +7,7 @@ import { BalancerLogo } from '../imgs/BalancerLogo'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { useBreakpoints } from '../../hooks/useBreakpoints'
 import { UserSettings } from '@/lib/modules/user/settings/UserSettings'
+import RecentTransactions from '../other/RecentTransactions'
 
 type Props = {
   leftSlot?: React.ReactNode
@@ -27,6 +28,7 @@ export function Navbar({ leftSlot, rightSlot }: Props) {
         <HStack padding="md" order={{ md: '2' }}>
           {rightSlot || (
             <>
+              <RecentTransactions />
               <UserSettings />
               <DarkModeToggle />
               <ConnectWallet />
@@ -43,6 +45,9 @@ export function Navbar({ leftSlot, rightSlot }: Props) {
               </Link>
               <Link href="/pools" prefetch={true}>
                 Pools
+              </Link>
+              <Link href="/swap" prefetch={true}>
+                Swap
               </Link>
               <Link href="/debug" prefetch={true}>
                 Debug
