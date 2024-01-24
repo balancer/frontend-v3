@@ -13,11 +13,14 @@ import { PropsWithChildren, createContext, useMemo, useState } from 'react'
 import { usePool } from '../../usePool'
 import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
 import { useRemoveLiquidityBuildCallDataQuery } from './queries/useRemoveLiquidityBuildCallDataQuery'
-import { useRemoveLiquidityPreviewQuery } from './queries/useRemoveLiquidityPreviewQuery'
+import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address } from 'viem'
 import { toHumanAmount } from '../LiquidityActionHelpers'
+import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
+import { useConstructRemoveLiquidityStep } from './modal/useConstructRemoveLiquidityStep'
+import { useDisclosure } from '@chakra-ui/hooks'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -26,6 +29,8 @@ export function _useRemoveLiquidity() {
   const { pool, bptPrice } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected } = useUserAccount()
+  const { isActiveStep, activateStep, deactivateStep } = useActiveStep()
+  const previewModalDisclosure = useDisclosure()
 
   const [removalType, setRemovalType] = useState<RemoveLiquidityType>(
     RemoveLiquidityType.Proportional
@@ -39,10 +44,7 @@ export function _useRemoveLiquidity() {
     [pool.id, removalType]
   )
 
-  // TODO: Hardcoded until it is ready in the API
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const maxHumanBptIn: HumanAmount = pool?.userBalance?.totalBalance || '100' // we use 100 for DEBUG until this PR is merged: https://github.com/balancer/frontend-v3/pull/192
+  const maxHumanBptIn: HumanAmount = (pool?.userBalance?.totalBalance || '0') as HumanAmount
   const humanBptIn: HumanAmount = bn(maxHumanBptIn)
     .times(humanBptInPercent / 100)
     .toString() as HumanAmount
@@ -60,21 +62,48 @@ export function _useRemoveLiquidity() {
 
   const singleTokenOutAddress = singleTokenAddress || firstTokenAddress
 
-  const { isPriceImpactLoading, priceImpact } = useRemoveLiquidityPriceImpactQuery(
+  /**
+   * The three handler queries, simulate + priceImpact + buildCallData.
+   */
+  const simulationQuery = useRemoveLiquiditySimulationQuery(
     handler,
     pool.id,
     humanBptIn,
     singleTokenOutAddress
   )
 
-  const {
-    amountsOut,
-    isPreviewQueryLoading,
-    data: queryRemoveLiquidityOutput,
-  } = useRemoveLiquidityPreviewQuery(handler, pool.id, humanBptIn, singleTokenOutAddress)
+  const priceImpactQuery = useRemoveLiquidityPriceImpactQuery(
+    handler,
+    pool.id,
+    humanBptIn,
+    singleTokenOutAddress
+  )
+
+  const buildCallDataQuery = useRemoveLiquidityBuildCallDataQuery({
+    handler,
+    humanBptIn,
+    poolId: pool.id,
+    tokenOut: singleTokenOutAddress,
+    simulationQuery,
+    options: {
+      enabled: isActiveStep,
+    },
+  })
+
+  /**
+   * Transaction step construction
+   */
+  const { removeLiquidityStep, removeLiquidityTransaction } = useConstructRemoveLiquidityStep(
+    pool.id,
+    buildCallDataQuery,
+    activateStep
+  )
+  const steps = [removeLiquidityStep]
+
+  const amountsOut = simulationQuery.data?.amountsOut || []
 
   const _tokenOutUnitsByAddress: Record<Address, HumanAmount> = {}
-  amountsOut?.map(tokenAmount => {
+  amountsOut.map(tokenAmount => {
     _tokenOutUnitsByAddress[tokenAmount.token.address] = toHumanAmount(tokenAmount)
   })
 
@@ -85,7 +114,7 @@ export function _useRemoveLiquidity() {
   }
 
   const _tokenOutUsdByAddress: Record<Address, HumanAmount> = {}
-  amountsOut?.map(tokenAmount => {
+  amountsOut.map(tokenAmount => {
     const tokenAddress: Address = tokenAmount.token.address
     const token = getToken(tokenAddress, pool.chain)
     if (!token) throw new Error(`Token with address ${tokenAddress} was not found`)
@@ -105,17 +134,6 @@ export function _useRemoveLiquidity() {
     }, 0)
     .toString()
 
-  function useBuildCallData(isActiveStep: boolean) {
-    return useRemoveLiquidityBuildCallDataQuery({
-      handler,
-      humanBptIn,
-      isActiveStep,
-      poolId: pool.id,
-      tokenOut: singleTokenOutAddress,
-      queryRemoveLiquidityOutput,
-    })
-  }
-
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [Number(humanBptIn) === 0, 'You must specify a valid bpt in']
@@ -124,24 +142,27 @@ export function _useRemoveLiquidity() {
   return {
     tokens,
     validTokens,
-    setProportionalType,
-    setSingleTokenType,
-    setSingleTokenAddress,
     singleTokenOutAddress,
     humanBptIn,
     humanBptInPercent,
     totalUsdFromBprPrice,
-    setHumanBptInPercent,
     isSingleToken,
     isProportional,
-    setRemovalType,
     totalUsdValue,
-    useBuildCallData,
-    isPreviewQueryLoading,
-    isPriceImpactLoading,
-    priceImpact,
+    simulationQuery,
+    priceImpactQuery,
+    buildCallDataQuery,
     isDisabled,
     disabledReason,
+    steps,
+    previewModalDisclosure,
+    removeLiquidityTransaction,
+    deactivateStep,
+    setRemovalType,
+    setHumanBptInPercent,
+    setProportionalType,
+    setSingleTokenType,
+    setSingleTokenAddress,
     amountOutForToken,
     usdOutForToken,
   }

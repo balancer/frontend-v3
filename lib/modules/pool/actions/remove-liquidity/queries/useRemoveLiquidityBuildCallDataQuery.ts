@@ -6,63 +6,63 @@ import { Address, useQuery } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { removeLiquidityKeys } from './remove-liquidity-keys'
 import { HumanAmount } from '@balancer/sdk'
-import { QueryRemoveLiquidityOutput } from '../remove-liquidity.types'
 import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
+import { RemoveLiquiditySimulationQueryResult } from './useRemoveLiquiditySimulationQuery'
+import { UseQueryOptions } from '@tanstack/react-query'
+import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 
 type Props = {
   handler: RemoveLiquidityHandler
   humanBptIn: HumanAmount
-  isActiveStep: boolean
   poolId: string
   tokenOut: Address // only required by SingleToken removal
-  queryRemoveLiquidityOutput?: QueryRemoveLiquidityOutput
+  simulationQuery: RemoveLiquiditySimulationQueryResult
+  options?: UseQueryOptions
 }
+
+export type RemoveLiquidityBuildQueryResponse = ReturnType<
+  typeof useRemoveLiquidityBuildCallDataQuery
+>
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
 export function useRemoveLiquidityBuildCallDataQuery({
   handler,
   humanBptIn,
-  isActiveStep,
   poolId,
   tokenOut, // only required by SingleToken removal
-  queryRemoveLiquidityOutput,
+  simulationQuery,
+  options = {},
 }: Props) {
   const { userAddress, isConnected } = useUserAccount()
-
   const { slippage } = useUserSettings()
 
-  const removeLiquidityQuery = useQuery(
-    removeLiquidityKeys.buildCallData({
-      handler,
-      userAddress,
-      slippage,
-      poolId,
-      humanBptIn,
-      tokenOut,
-    }),
+  const enabled = options.enabled ?? true
 
-    async () => {
-      /*
-        This should never happen as:
-          1. We do not allow the user to activate the build step (set isActiveStep to true) before the preview query has finished
-          2. When we refetch after countdown timeout we explicitly wait for the preview query to finish
-      */
-      const queryOutput = ensureLastQueryResponse(
-        'Remove liquidity query',
-        queryRemoveLiquidityOutput
-      )
-      return handler.buildRemoveLiquidityCallData({
-        account: userAddress,
-        slippagePercent: slippage,
-        queryOutput,
-      })
-    },
-    {
-      enabled:
-        isActiveStep && // If the step is not active (the user did not click Next button) avoid running the build tx query to save RPC requests
-        isConnected,
-    }
-  )
+  const queryKey = removeLiquidityKeys.buildCallData({
+    handler,
+    userAddress,
+    slippage,
+    poolId,
+    humanBptIn,
+    tokenOut,
+  })
 
-  return { ...removeLiquidityQuery, refetchBuildQuery: removeLiquidityQuery.refetch }
+  const queryFn = async () => {
+    const queryOutput = ensureLastQueryResponse('Remove liquidity query', simulationQuery.data)
+    const res = await handler.buildRemoveLiquidityCallData({
+      account: userAddress,
+      slippagePercent: slippage,
+      queryOutput,
+    })
+    console.log('Call data built:', res)
+    return res
+  }
+
+  const queryOpts = {
+    enabled: enabled && isConnected,
+    cacheTime: 0,
+    ...onlyExplicitRefetch,
+  }
+
+  return useQuery(queryKey, queryFn, queryOpts)
 }

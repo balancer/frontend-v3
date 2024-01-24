@@ -3,14 +3,18 @@
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queries'
+import { HumanAmount } from '@balancer/sdk'
 import { useDebounce } from 'use-debounce'
 import { Address, useQuery } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { removeLiquidityKeys } from './remove-liquidity-keys'
-import { HumanAmount } from '@balancer/sdk'
 import { UseQueryOptions } from '@tanstack/react-query'
 
-export function useRemoveLiquidityPriceImpactQuery(
+export type RemoveLiquiditySimulationQueryResult = ReturnType<
+  typeof useRemoveLiquiditySimulationQuery
+>
+
+export function useRemoveLiquiditySimulationQuery(
   handler: RemoveLiquidityHandler,
   poolId: string,
   humanBptIn: HumanAmount,
@@ -19,27 +23,27 @@ export function useRemoveLiquidityPriceImpactQuery(
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
-  const debouncedBptIn = useDebounce(humanBptIn, defaultDebounceMs)[0]
+  const debouncedHumanBptIn = useDebounce(humanBptIn, defaultDebounceMs)[0]
 
   const enabled = options.enabled ?? true
 
-  const queryKey = removeLiquidityKeys.priceImpact({
+  const queryKey = removeLiquidityKeys.preview({
     handler,
     userAddress,
     slippage,
     poolId,
-    humanBptIn: humanBptIn,
+    humanBptIn: debouncedHumanBptIn,
     tokenOut,
   })
 
   const queryFn = async () =>
-    handler.calculatePriceImpact({
-      humanBptIn: debouncedBptIn,
+    handler.queryRemoveLiquidity({
+      humanBptIn: debouncedHumanBptIn,
       tokenOut,
     })
 
   const queryOpts = {
-    enabled: enabled && isConnected && Number(debouncedBptIn) > 0,
+    enabled: enabled && isConnected && Number(debouncedHumanBptIn) > 0,
     cacheTime: 0,
     ...onlyExplicitRefetch,
   }

@@ -35,7 +35,6 @@ export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
 
 export function _useAddLiquidity() {
   const humanAmountsIn = useReactiveVar(humanAmountsInVar)
-  const [isComplete, setIsComplete] = useState(false)
 
   const { isActiveStep, activateStep, deactivateStep } = useActiveStep()
   const { pool, poolStateInput } = usePool()
@@ -162,7 +161,6 @@ export function _useAddLiquidity() {
     disabledReason,
     helpers,
     poolStateInput,
-    isComplete,
     buildCallDataQuery,
     initialAmountsToApprove,
     previewModalDisclosure,
@@ -172,7 +170,6 @@ export function _useAddLiquidity() {
     activateStep,
     deactivateStep,
     setHumanAmountIn,
-    setIsComplete,
   }
 }
 

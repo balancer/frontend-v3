@@ -13,6 +13,7 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
+  Skeleton,
   Text,
   Tooltip,
   VStack,
@@ -28,6 +29,8 @@ import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import RemoveLiquidityBptRow from './RemoveLiquidityBptRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { RemoveLiquidityFlowButton } from './RemoveLiquidityFlowButton'
+import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
+import { NumberText } from '@/lib/shared/components/typography/NumberText'
 
 type Props = {
   isOpen: boolean
@@ -43,10 +46,18 @@ export function RemoveLiquidityModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { isProportional, isSingleToken, singleTokenOutAddress, amountOutForToken, priceImpact } =
-    useRemoveLiquidity()
+  const {
+    isProportional,
+    isSingleToken,
+    singleTokenOutAddress,
+    amountOutForToken,
+    priceImpactQuery,
+  } = useRemoveLiquidity()
   const { pool } = usePool()
   const { slippage } = useUserSettings()
+
+  const priceImpact = priceImpactQuery?.data
+  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
 
   return (
     <Modal
@@ -113,20 +124,28 @@ export function RemoveLiquidityModal({
                     Price impact
                   </Text>
                   <HStack>
-                    <Text fontWeight="medium" variant="secondary">
-                      {fNum('priceImpact', priceImpact || 0)}
-                    </Text>
+                    {priceImpactQuery.isLoading ? (
+                      <Skeleton w="12" h="full" />
+                    ) : (
+                      <NumberText color="GrayText">{priceImpactLabel}</NumberText>
+                    )}
                     <Tooltip label="Price impact" fontSize="sm">
                       <InfoOutlineIcon color="GrayText" />
                     </Tooltip>
                   </HStack>
                 </HStack>
+
+                <VStack align="start" spacing="md">
+                  <HStack justify="space-between" w="full">
+                    <RemoveLiquidityTimeout />
+                  </HStack>
+                </VStack>
               </VStack>
             </Card>
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <RemoveLiquidityFlowButton poolId={pool.id}></RemoveLiquidityFlowButton>
+          <RemoveLiquidityFlowButton />
         </ModalFooter>
       </ModalContent>
     </Modal>
