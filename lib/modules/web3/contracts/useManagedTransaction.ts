@@ -26,7 +26,7 @@ export function useManagedTransaction<
 >(
   contractId: M,
   functionName: F,
-  labels: TransactionLabels,
+  transactionLabels: TransactionLabels,
   args?: GetFunctionArgs<T[M], F> | null,
   additionalConfig?: Omit<
     UsePrepareContractWriteConfig<T[M], F, number>,
@@ -54,11 +54,11 @@ export function useManagedTransaction<
   }
 
   // on successful submission to chain, add tx to cache
-  useOnTransactionSubmission(labels, writeQuery.data?.hash)
+  useOnTransactionSubmission(transactionLabels, writeQuery.data?.hash)
 
   // on confirmation, update tx in tx cache
   useOnTransactionConfirmation(
-    labels,
+    transactionLabels,
     bundle.result.data?.status,
     bundle.result.data?.transactionHash
   )

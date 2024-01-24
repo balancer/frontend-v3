@@ -6,7 +6,7 @@ import {
 } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
 
-function getDepositTransactionLabels(gauge?: GqlPoolStakingGauge | null): TransactionLabels {
+function buildGaugeDepositLabels(gauge?: GqlPoolStakingGauge | null): TransactionLabels {
   const labels: TransactionLabels = {
     init: 'TODO DEPOSIT INIT',
     tooltip: 'TODO DEPOSIT TOOLTIP',
@@ -14,7 +14,7 @@ function getDepositTransactionLabels(gauge?: GqlPoolStakingGauge | null): Transa
   return labels
 }
 
-function getWithdrawTransactionLabels(gauge?: GqlPoolStakingGauge | null): TransactionLabels {
+function buildGaugeWithdrawLabels(gauge?: GqlPoolStakingGauge | null): TransactionLabels {
   const labels: TransactionLabels = {
     init: 'TODO WITHDRAW INNIT',
     tooltip: 'TODO WITHDRAW TOOLTIP',
@@ -27,11 +27,11 @@ export function useConstructGaugeDepositActionStep(
   depositAmount?: bigint
 ): TransactionStep {
   const { activateStep } = useActiveStep()
-  const labels = getDepositTransactionLabels(gauge)
+  const transactionLabels = buildGaugeDepositLabels(gauge)
   const deposit = useManagedTransaction(
     'balancer.gaugeV5',
     'deposit',
-    labels,
+    transactionLabels,
     { args: [depositAmount || 0n] },
     { enabled: !!gauge || !!depositAmount }
   )
@@ -44,7 +44,7 @@ export function useConstructGaugeDepositActionStep(
     ...deposit,
     id: `${gauge?.gaugeAddress}-deposit`,
     stepType: 'gaugeDeposit',
-    transactionLabels: labels,
+    transactionLabels,
     activateStep,
     isComplete,
   }
@@ -56,26 +56,22 @@ export function useConstructGaugeWithdrawActionStep(
   withdrawAmount?: bigint
 ): TransactionStep {
   const { activateStep } = useActiveStep()
-  const labels = getWithdrawTransactionLabels(gauge)
+  const transactionLabels = buildGaugeWithdrawLabels(gauge)
   const withdraw = useManagedTransaction(
     'balancer.gaugeV5',
     'withdraw',
-    labels,
+    transactionLabels,
     { args: [withdrawAmount || 0n] },
     { enabled: !!gauge || !!withdrawAmount }
   )
-
-  function isComplete() {
-    return withdraw.result.isSuccess
-  }
 
   const step: TransactionStep = {
     ...withdraw,
     id: `${gauge?.gaugeAddress}-withdraw`,
     stepType: 'gaugeWithdraw',
-    transactionLabels: labels,
+    transactionLabels,
     activateStep,
-    isComplete,
+    isComplete: () => withdraw.result.isSuccess,
   }
   return step
 }
