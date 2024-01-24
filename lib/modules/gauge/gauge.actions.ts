@@ -36,17 +36,13 @@ export function useConstructGaugeDepositActionStep(
     { enabled: !!gauge || !!depositAmount }
   )
 
-  function isComplete() {
-    return deposit.result.isSuccess
-  }
-
   const step: TransactionStep = {
     ...deposit,
     id: `${gauge?.gaugeAddress}-deposit`,
     stepType: 'gaugeDeposit',
     transactionLabels,
     activateStep,
-    isComplete,
+    isComplete: () => deposit.result.isSuccess,
   }
   return step
 }
