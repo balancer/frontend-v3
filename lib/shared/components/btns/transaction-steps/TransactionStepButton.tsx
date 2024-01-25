@@ -31,7 +31,8 @@ export function TransactionStepButton({
 
   function getButtonLabel() {
     // sensible defaults for loading / confirm if not provided
-    const relevantLabel = transactionLabels[transactionState]
+    const relevantLabel = transactionLabels[transactionState as keyof typeof transactionLabels]
+
     if (!relevantLabel) {
       switch (transactionState) {
         case TransactionState.Preparing:
@@ -41,6 +42,8 @@ export function TransactionStepButton({
         case TransactionState.Confirming:
           return 'Confirming transaction'
         case TransactionState.Error:
+          return transactionLabels.init
+        case TransactionState.Completed:
           return transactionLabels.init
       }
     }

@@ -2,9 +2,6 @@
 
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
-import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
@@ -23,6 +20,7 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
+  Skeleton,
   Text,
   Tooltip,
   VStack,
@@ -36,6 +34,7 @@ import { usePool } from '../../usePool'
 import { HumanAmountIn } from '../liquidity-types'
 import { AddLiquidityFlowButton } from './AddLiquidityFlowButton'
 import { useAddLiquidity } from './useAddLiquidity'
+import { AddLiquidityTimeout } from './AddLiquidityTimeout'
 
 type Props = {
   isOpen: boolean
@@ -91,16 +90,16 @@ export function AddLiquidityModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { humanAmountsIn, totalUSDValue, helpers, bptOut, priceImpact, tokens } = useAddLiquidity()
+  const { humanAmountsIn, totalUSDValue, simulationQuery, priceImpactQuery, tokens } =
+    useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
-  // TODO: move userAddress up
-  const spenderAddress = useContractAddress('balancer.vaultV2')
-  const { userAddress } = useUserAccount()
-  const { secondsToRefetch } = useAddLiquidity()
 
+  const bptOut = simulationQuery?.data?.bptOut
   const bptOutLabel = bptOut ? formatUnits(bptOut.amount, BPT_DECIMALS) : '0'
-  const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
+
+  const priceImpact = priceImpactQuery?.data
+  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
 
   return (
     <Modal
@@ -158,32 +157,28 @@ export function AddLiquidityModal({
                 <HStack justify="space-between" w="full">
                   <Text>Price impact</Text>
                   <HStack>
-                    <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
+                    {priceImpactQuery.isLoading ? (
+                      <Skeleton w="12" h="full" />
+                    ) : (
+                      <NumberText color="GrayText">{priceImpactLabel}</NumberText>
+                    )}
                     <Tooltip label="Price impact" fontSize="sm">
                       <InfoOutlineIcon color="GrayText" />
                     </Tooltip>
                   </HStack>
                 </HStack>
               </VStack>
+
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
-                  <Text>Seconds till next query {secondsToRefetch}</Text>
+                  <AddLiquidityTimeout />
                 </HStack>
               </VStack>
             </Card>
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <TokenAllowancesProvider
-            userAddress={userAddress}
-            spenderAddress={spenderAddress}
-            tokenAddresses={helpers.poolTokenAddresses}
-          >
-            <AddLiquidityFlowButton
-              humanAmountsIn={humanAmountsIn}
-              pool={pool}
-            ></AddLiquidityFlowButton>
-          </TokenAllowancesProvider>
+          <AddLiquidityFlowButton />
         </ModalFooter>
       </ModalContent>
     </Modal>

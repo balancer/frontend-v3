@@ -298,6 +298,12 @@ type GqlPoolElement implements GqlPoolBase {
   withdrawConfig: GqlPoolWithdrawConfig!
 }
 
+type GqlPoolFeaturedPool {
+  pool: GqlPoolBase!
+  poolId: ID!
+  primary: Boolean!
+}
+
 type GqlPoolFeaturedPoolGroup {
   chain: GqlChain!
   icon: String!
@@ -1316,6 +1322,7 @@ type Query {
   latestSyncedBlocks: GqlLatestSyncedBlocks!
   poolGetBatchSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolBatchSwap!]!
   poolGetFeaturedPoolGroups(chains: [GqlChain!]): [GqlPoolFeaturedPoolGroup!]!
+  poolGetFeaturedPools(chains: [GqlChain!]!): [GqlPoolFeaturedPool!]!
   poolGetGyroPools(chains: [GqlChain!]): [GqlPoolGyro!]!
   poolGetJoinExits(first: Int, skip: Int, where: GqlPoolJoinExitFilter): [GqlPoolJoinExit!]!
   poolGetLinearPools(chains: [GqlChain!]): [GqlPoolLinear!]!

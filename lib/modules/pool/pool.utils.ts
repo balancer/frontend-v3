@@ -1,7 +1,18 @@
-import { GqlChain, GqlPoolAprValue, GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GetPoolQuery,
+  GqlChain,
+  GqlPoolAprValue,
+  GqlPoolComposableStableNested,
+  GqlPoolLinearNested,
+  GqlPoolTokenBase,
+  GqlPoolType,
+} from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolVariant } from './pool.types'
 import { fNum } from '@/lib/shared/utils/numbers'
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
+import { TokenAmountHumanReadable } from '../tokens/token.types'
+import { formatUnits, parseUnits } from 'viem'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -76,4 +87,73 @@ const poolTypeLabelMap: { [key in GqlPoolType]: string } = {
 
 export function getPoolTypeLabel(type: GqlPoolType): string {
   return poolTypeLabelMap[type]
+}
+
+export const poolClickHandler = (
+  event: React.MouseEvent<HTMLElement>,
+  id: string,
+  chain: GqlChain,
+  router: AppRouterInstance
+) => {
+  const poolPath = getPoolPath({ id, chain })
+
+  if (event.ctrlKey || event.metaKey) {
+    window.open(poolPath, '_blank')
+  } else {
+    router.push(poolPath)
+  }
+}
+
+// Prefetch pool page on hover, otherwise there is a significant delay
+// between clicking the pool and the pool page loading.
+export const poolMouseEnterHandler = (
+  event: React.MouseEvent<HTMLElement>,
+  id: string,
+  chain: GqlChain,
+  router: AppRouterInstance
+) => {
+  const poolPath = getPoolPath({ id, chain })
+  router.prefetch(poolPath)
+}
+
+export function isLinearPool(
+  pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested | GqlPoolLinearNested
+) {
+  return pool.__typename === 'GqlPoolLinear' || pool.__typename == 'GqlPoolLinearNested'
+}
+
+export function isComposableStablePool(
+  pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested | GqlPoolLinearNested
+) {
+  return (
+    pool.__typename === 'GqlPoolComposableStable' ||
+    pool.__typename == 'GqlPoolComposableStableNested'
+  )
+}
+
+export function getProportionalExitAmountsForBptIn(
+  bptInHumanReadable: string,
+  poolTokens: GqlPoolTokenBase[],
+  poolTotalShares: string
+): TokenAmountHumanReadable[] {
+  const bptInAmountScaled = parseUnits(bptInHumanReadable, 18)
+  return getProportionalExitAmountsFromScaledBptIn(bptInAmountScaled, poolTokens, poolTotalShares)
+}
+
+export function getProportionalExitAmountsFromScaledBptIn(
+  bptIn: bigint,
+  poolTokens: GqlPoolTokenBase[],
+  poolTotalShares: string
+): TokenAmountHumanReadable[] {
+  const bptTotalSupply = parseUnits(poolTotalShares, 18)
+
+  return poolTokens.map(token => {
+    const tokenBalance = parseUnits(token.totalBalance, token.decimals)
+    const tokenProportionalAmount = (bptIn * tokenBalance) / bptTotalSupply
+
+    return {
+      address: token.address,
+      amount: formatUnits(tokenProportionalAmount, token.decimals),
+    }
+  })
 }

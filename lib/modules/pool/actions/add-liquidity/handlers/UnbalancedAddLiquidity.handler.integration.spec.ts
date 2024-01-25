@@ -24,7 +24,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
       { humanAmount: '1', tokenAddress: wjAuraAddress },
     ]
 
-    const priceImpact = await handler.calculatePriceImpact(humanAmountsIn)
+    const priceImpact = await handler.getPriceImpact(humanAmountsIn)
     expect(priceImpact).toBeGreaterThan(0.002)
   })
 
@@ -36,7 +36,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
       { humanAmount: '', tokenAddress: balAddress },
     ]
 
-    const priceImpact = await handler.calculatePriceImpact(humanAmountsIn)
+    const priceImpact = await handler.getPriceImpact(humanAmountsIn)
 
     expect(priceImpact).toEqual(0)
   })
@@ -49,7 +49,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
 
     const handler = selectUnbalancedHandler()
 
-    const result = await handler.queryAddLiquidity(humanAmountsIn)
+    const result = await handler.simulate(humanAmountsIn)
 
     expect(result.bptOut.amount).toBeGreaterThan(300000000000000000000n)
   })
@@ -63,47 +63,23 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
     const handler = selectUnbalancedHandler()
 
     // Store query response in handler instance
-    await handler.queryAddLiquidity(humanAmountsIn)
+    const queryOutput = await handler.simulate(humanAmountsIn)
 
-    const result = await handler.buildAddLiquidityCallData({
+    const result = await handler.buildCallData({
+      humanAmountsIn,
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
+      queryOutput,
     })
 
     expect(result.to).toBe(networkConfig.contracts.balancer.vaultV2)
     expect(result.data).toBeDefined()
   })
-
-  test('throws exception if we try to buildAddLiquidityCallData before the last queryAddLiquidity query has finished', async () => {
-    const humanAmountsIn: HumanAmountIn[] = [
-      { humanAmount: '1', tokenAddress: wETHAddress },
-      { humanAmount: '1', tokenAddress: wjAuraAddress },
-    ]
-
-    const handler = selectUnbalancedHandler()
-
-    // Store query response in handler instance
-    await handler.queryAddLiquidity(humanAmountsIn)
-
-    // Run without await so that the query is loading when we call buildAddLiquidityCallData
-    handler.queryAddLiquidity(humanAmountsIn)
-
-    const callback = async () =>
-      handler.buildAddLiquidityCallData({
-        account: defaultTestUserAccount,
-        slippagePercent: '0.2',
-      })
-
-    await expect(callback()).rejects.toThrowErrorMatchingInlineSnapshot(`
-      [SentryError: Missing queryResponse.
-      It looks that you tried to call useBuildCallData before the last query finished generating queryResponse]
-    `)
-  })
 })
 
 describe('When adding unbalanced liquidity for a stable pool', () => {
   test('calculates price impact', async () => {
-    const pool = aPhantomStablePoolStateInputMock() as Pool // wstETH-rETH-sfrxETH
+    const pool = aPhantomStablePoolStateInputMock() as unknown as Pool // wstETH-rETH-sfrxETH
 
     const handler = selectAddLiquidityHandler(pool)
 
@@ -116,7 +92,7 @@ describe('When adding unbalanced liquidity for a stable pool', () => {
       }
     })
 
-    const priceImpact = await handler.calculatePriceImpact(humanAmountsIn)
+    const priceImpact = await handler.getPriceImpact(humanAmountsIn)
     expect(priceImpact).toBeGreaterThan(0.001)
   })
 })

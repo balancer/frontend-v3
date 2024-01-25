@@ -5,25 +5,32 @@ import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.buil
 import { aUserPoolBalance } from '@/test/msw/builders/gqlUserBalance.builders'
 import { mockTokenPricesList } from '@/test/msw/handlers/Tokens.handlers'
 import { buildDefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers'
-import { act } from 'react-dom/test-utils'
-import { aTokenAmountMock } from '../__mocks__/liquidity.builders'
-import { RemoveLiquidityPreviewQueryResult } from './queries/useRemoveLiquidityPreviewQuery'
-import { _useRemoveLiquidity } from './useRemoveLiquidity'
 import { waitFor } from '@testing-library/react'
+import { act } from 'react-dom/test-utils'
+import { mock } from 'vitest-mock-extended'
+import { aTokenAmountMock } from '../__mocks__/liquidity.builders'
+import { RemoveLiquiditySimulationQueryResult } from './queries/useRemoveLiquiditySimulationQuery'
+import { _useRemoveLiquidity } from './useRemoveLiquidity'
 
 const balTokenOutUnits = '1'
 const wEthTokenOutUnits = '0.5'
 
 // Mock query to avoid onchain SDK call from unit tests
-vi.mock('./queries/useRemoveLiquidityPreviewQuery', () => {
+vi.mock('./queries/useRemoveLiquiditySimulationQuery', () => {
   return {
-    useRemoveLiquidityPreviewQuery(): RemoveLiquidityPreviewQueryResult {
+    useRemoveLiquiditySimulationQuery(): RemoveLiquiditySimulationQueryResult {
+      const result = mock<RemoveLiquiditySimulationQueryResult>()
       return {
-        amountsOut: [
-          aTokenAmountMock(balAddress, balTokenOutUnits),
-          aTokenAmountMock(wETHAddress, wEthTokenOutUnits),
-        ],
-        isPreviewQueryLoading: false,
+        ...result,
+        data: {
+          amountsOut: [
+            aTokenAmountMock(balAddress, balTokenOutUnits),
+            aTokenAmountMock(wETHAddress, wEthTokenOutUnits),
+          ],
+        },
+        isLoading: false,
+        isRefetching: false,
+        refetch: vi.fn(),
       }
     },
   }

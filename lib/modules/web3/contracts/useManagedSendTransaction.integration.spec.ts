@@ -12,7 +12,6 @@ import { act, waitFor } from '@testing-library/react'
 import { SendTransactionResult } from 'wagmi/actions'
 import { UnbalancedAddLiquidityHandler } from '../../pool/actions/add-liquidity/handlers/UnbalancedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from '../../pool/actions/add-liquidity/handlers/selectAddLiquidityHandler'
-import { buildAddLiquidityLabels } from '../../pool/actions/add-liquidity/useConstructAddLiquidityStep'
 import { HumanAmountIn } from '../../pool/actions/liquidity-types'
 
 const chainId = ChainId.MAINNET
@@ -22,7 +21,7 @@ const utils = await getSdkTestUtils({
   account,
   chainId,
   client: testClient,
-  poolId, // Balancer Weighted wjAura and WETH,
+  pool: aWjAuraWethPoolElementMock(), // Balancer Weighted wjAura and WETH,
 })
 
 const { getPoolTokens, getPoolTokenBalances } = utils
@@ -45,15 +44,17 @@ describe('weighted join test', () => {
       tokenAddress: t.address,
     }))
 
-    await handler.queryAddLiquidity(humanAmountsIn)
+    const queryOutput = await handler.simulate(humanAmountsIn)
 
-    const txConfig = await handler.buildAddLiquidityCallData({
+    const txConfig = await handler.buildCallData({
+      humanAmountsIn,
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
+      queryOutput,
     })
 
     const { result } = testHook(() => {
-      return useManagedSendTransaction(buildAddLiquidityLabels(), txConfig)
+      return useManagedSendTransaction({ init: 'foo', tooltip: 'bar' }, txConfig)
     })
 
     await waitFor(() => expect(result.current.executeAsync).toBeDefined())

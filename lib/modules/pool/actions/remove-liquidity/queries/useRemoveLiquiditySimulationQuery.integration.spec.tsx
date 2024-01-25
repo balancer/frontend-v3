@@ -7,14 +7,18 @@ import { HumanAmount, TokenAmount } from '@balancer/sdk'
 import { toHumanAmount } from '../../LiquidityActionHelpers'
 import { selectRemoveLiquidityHandler } from '../handlers/selectRemoveLiquidityHandler'
 import { RemoveLiquidityType } from '../remove-liquidity.types'
-import { useRemoveLiquidityPreviewQuery } from './useRemoveLiquidityPreviewQuery'
+import { useRemoveLiquiditySimulationQuery } from './useRemoveLiquiditySimulationQuery'
+import { Address } from 'viem'
 
 async function testQuery(humanBptIn: HumanAmount) {
   const handler = selectRemoveLiquidityHandler(
     aWjAuraWethPoolElementMock(),
     RemoveLiquidityType.Proportional
   )
-  const { result } = testHook(() => useRemoveLiquidityPreviewQuery(handler, poolId, humanBptIn))
+  const emptyTokenOut = '' as Address // We don't use it but it is required to simplify TS checks
+  const { result } = testHook(() =>
+    useRemoveLiquiditySimulationQuery(handler, poolId, humanBptIn, emptyTokenOut)
+  )
   return result
 }
 
@@ -23,13 +27,11 @@ test('runs preview query for proportional remove liquidity', async () => {
 
   const result = await testQuery(humanBptIn)
 
-  await waitFor(() => expect(result.current.amountsOut).toBeDefined())
+  await waitFor(() => expect(result.current.data?.amountsOut).toBeDefined())
 
-  await waitFor(() => expect(result.current.amountsOut).toBeDefined())
-
-  const wjAmountOut = result.current.amountsOut?.[0] as TokenAmount
+  const wjAmountOut = result.current.data?.amountsOut?.[0] as TokenAmount
   const wjOutUnits = toHumanAmount(wjAmountOut)
-  const wethAmountOut = result.current.amountsOut?.[1] as TokenAmount
+  const wethAmountOut = result.current.data?.amountsOut?.[1] as TokenAmount
   const wethOutUnits = toHumanAmount(wethAmountOut)
 
   expect(Number(wjOutUnits)).toBeGreaterThan(1800)

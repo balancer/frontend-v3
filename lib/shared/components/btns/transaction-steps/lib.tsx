@@ -6,6 +6,7 @@ export enum TransactionState {
   Loading = 'loading',
   Preparing = 'preparing',
   Error = 'error',
+  Completed = 'completed',
 }
 
 export type TransactionLabels = {
@@ -27,6 +28,8 @@ type StepType =
   | 'addLiquidity'
   | 'removeLiquidity'
   | 'swap'
+  | 'gaugeDeposit'
+  | 'gaugeWithdraw'
 
 export type ManagedResult = TransactionBundle & Executable
 
@@ -67,6 +70,9 @@ export function getTransactionState({
   }
   if (execution.isLoading) {
     return TransactionState.Loading
+  }
+  if (execution.isSuccess) {
+    return TransactionState.Completed
   }
   if (result.isLoading) {
     return TransactionState.Confirming

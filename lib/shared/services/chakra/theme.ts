@@ -115,6 +115,8 @@ export const balColors = {
 const createBackgroundOpacity = (baseColor: string, opacity: number) =>
   `hsla(${baseColor}, ${opacity})`
 
+const primaryTextColor = `linear-gradient(45deg, ${balColors.gray['700']} 0%, ${balColors.gray['500']} 100%)`
+
 export const tokens = {
   colors: {
     light: {
@@ -148,7 +150,7 @@ export const tokens = {
 
       // Font colors
       text: {
-        primary: `linear-gradient(45deg, ${balColors.gray['700']} 0%, ${balColors.gray['500']} 100%)`,
+        primary: primaryTextColor,
         secondary: 'linear-gradient(45deg, #728097 0%, #909BAD 100%)',
         special: balColors.gradient.dawnLight,
         specialSecondary: balColors.gradient.sunsetLight,
@@ -654,6 +656,12 @@ export const balTheme = {
 
       chart: {
         pool: {
+          bar: {
+            volume: {
+              from: 'rgba(0, 211, 149, 1)',
+              to: 'rgba(0, 211, 149, 0.2)',
+            },
+          },
           scatter: {
             add: {
               from: 'rgba(0, 211, 149, 100%)',
@@ -1018,6 +1026,24 @@ export const balTheme = {
           background: 'background.button.tertiary',
           color: 'font.button.tertiary',
           boxShadow: 'btnTertiary',
+        },
+      },
+    },
+    Select: {
+      baseStyle: {},
+      variants: {
+        secondary: {
+          field: {
+            background: 'background.button.secondary',
+            py: '1.5',
+            fontSize: 'md',
+            fontWeight: 'bold',
+            pl: '2',
+            pr: '1',
+          },
+          icon: {
+            color: primaryTextColor,
+          },
         },
       },
     },

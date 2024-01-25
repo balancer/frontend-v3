@@ -5,13 +5,13 @@ import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { safeSum } from '@/lib/shared/utils/numbers'
+import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
-import { useAddLiquidityPreviewQuery } from './queries/useAddLiquidityPreviewQuery'
+import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulationQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { HumanAmountIn } from '../liquidity-types'
 import { LiquidityActionHelpers, areEmptyAmounts } from '../LiquidityActionHelpers'
@@ -20,8 +20,13 @@ import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWit
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
-import { useRefetchCountdown } from '@/lib/shared/hooks/useRefetchCountdown'
-import { sleep } from '@/lib/shared/utils/time'
+import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
+import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNextTokenApprovalStep'
+import { useDisclosure } from '@chakra-ui/hooks'
+import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
+import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
+import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -31,11 +36,46 @@ export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
 export function _useAddLiquidity() {
   const humanAmountsIn = useReactiveVar(humanAmountsInVar)
 
-  const { pool, poolStateInput } = usePool()
-  const { getToken, usdValueForToken } = useTokens()
-  const { isConnected } = useUserAccount()
+  const {
+    isActiveStep: isFinalStepActive,
+    activateStep: activateFinalStep,
+    deactivateStep: deactivateFinalStep,
+  } = useActiveStep()
+  const { pool } = usePool()
+  const { getToken, usdValueForToken, getTokensByTokenAddress } = useTokens()
+  const { isConnected, userAddress } = useUserAccount()
+  const vaultAddress = useContractAddress('balancer.vaultV2')
+  const previewModalDisclosure = useDisclosure()
+
+  const { isDisabled, disabledReason } = isDisabledWithReason(
+    [!isConnected, LABELS.walletNotConnected],
+    [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts']
+  )
 
   const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id])
+  /**
+   * We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
+   * helper is a class and if we return its methods we would lose the this binding, getting a:
+   * TypeError: Cannot read property getAmountsToApprove of undefined
+   * when trying to access the returned method
+   */
+  const helpers = new LiquidityActionHelpers(pool)
+
+  /**
+   * Helper functions & variables
+   */
+  const tokenAddressesWithAmountIn = humanAmountsIn
+    .filter(amountIn => bn(amountIn.humanAmount).gt(0))
+    .map(amountIn => amountIn.tokenAddress)
+  const amountsInTokenAddresses = humanAmountsIn.map(h => h.tokenAddress)
+  const amountsInTokensByAddress = getTokensByTokenAddress(amountsInTokenAddresses, pool.chain)
+
+  const tokenAllowances = useTokenAllowances(userAddress, vaultAddress, tokenAddressesWithAmountIn)
+  const { tokenApprovalStep, remainingAmountsToApprove } = useNextTokenApprovalStep({
+    tokenAllowances,
+    amountsToApprove: helpers.getAmountsToApprove(humanAmountsIn, amountsInTokensByAddress),
+    actionType: 'AddLiquidity',
+  })
 
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -47,10 +87,6 @@ export function _useAddLiquidity() {
     )
     humanAmountsInVar(amountsIn)
   }
-
-  useEffect(() => {
-    setInitialHumanAmountsIn()
-  }, [])
 
   function setHumanAmountIn(tokenAddress: Address, humanAmount: HumanAmount) {
     const state = humanAmountsInVar()
@@ -79,79 +115,64 @@ export function _useAddLiquidity() {
       }),
     [humanAmountsIn, usdValueForToken, validTokens]
   )
+
   const totalUSDValue = safeSum(usdAmountsIn)
 
-  const { isDisabled, disabledReason } = isDisabledWithReason(
-    [!isConnected, LABELS.walletNotConnected],
-    [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts']
-  )
+  /**
+   * The three handler queries, simulate + priceImpact + buildCallData.
+   */
+  const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn, pool.id)
 
-  const { isPriceImpactLoading, priceImpact, refetchPriceImpact } = useAddLiquidityPriceImpactQuery(
+  const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn, pool.id)
+
+  const buildCallDataQuery = useAddLiquidityBuildCallDataQuery({
     handler,
     humanAmountsIn,
-    pool.id
+    pool,
+    simulationQuery,
+    options: {
+      enabled: isFinalStepActive,
+    },
+  })
+
+  /**
+   * Transaction step construction
+   */
+  const { addLiquidityStep, addLiquidityTransaction } = useConstructAddLiquidityStep(
+    pool.id,
+    buildCallDataQuery,
+    activateFinalStep
   )
 
-  const { isPreviewQueryLoading, bptOut, refetchPreviewQuery } = useAddLiquidityPreviewQuery(
-    handler,
-    humanAmountsIn,
-    pool.id
-  )
+  const steps = [tokenApprovalStep, addLiquidityStep].filter(step => step !== null) as FlowStep[]
 
-  const { secondsToRefetch, startRefetchCountdown, stopRefetchCountdown } = useRefetchCountdown()
-
-  let refetchBuildQuery: () => Promise<object>
-  function useBuildCallData(isActiveStep: boolean) {
-    const buildQuery = useAddLiquidityBuildCallDataQuery(
-      handler,
-      humanAmountsIn,
-      isActiveStep,
-      pool,
-      startRefetchCountdown
-    )
-    refetchBuildQuery = buildQuery.refetch
-    return buildQuery
-  }
-
+  /**
+   * Side-effects
+   */
+  // On initial render, set the initial humanAmountsIn
   useEffect(() => {
-    const refetchQueries = async () => {
-      // TODO: remove after manual feature tests
-      console.log('Refetching preview, priceImpact and build queries')
-      stopRefetchCountdown()
-      await sleep(1000) // TODO: Show some kind of UI feedback during this artificial delay
-      await Promise.all([refetchPreviewQuery(), refetchPriceImpact()])
-      await refetchBuildQuery()
-      startRefetchCountdown()
-    }
-    if (secondsToRefetch === 0) {
-      refetchQueries()
-    }
-  }, [secondsToRefetch])
-
-  /* We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
-    helper is a class and if we return its methods we would lose the this binding, getting a:
-    TypeError: Cannot read property getAmountsToApprove of undefined
-    when trying to access the returned method
-    */
-  const helpers = new LiquidityActionHelpers(pool)
+    setInitialHumanAmountsIn()
+  }, [])
 
   return {
     humanAmountsIn,
     tokens,
     validTokens,
     totalUSDValue,
-    isPriceImpactLoading,
-    priceImpact,
-    bptOut,
-    isPreviewQueryLoading,
-    setHumanAmountIn,
-    useBuildCallData,
+    simulationQuery,
+    priceImpactQuery,
     isDisabled,
     disabledReason,
     helpers,
-    poolStateInput,
-    secondsToRefetch,
-    stopRefetchCountdown,
+    buildCallDataQuery,
+    remainingAmountsToApprove,
+    previewModalDisclosure,
+    tokenApprovalStep,
+    addLiquidityTransaction,
+    steps,
+    isFinalStepActive,
+    deactivateFinalStep,
+    setHumanAmountIn,
   }
 }
 

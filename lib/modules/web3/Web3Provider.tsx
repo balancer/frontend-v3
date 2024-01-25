@@ -30,6 +30,7 @@ import { balTheme } from '@/lib/shared/services/chakra/theme'
 import { CustomAvatar } from './CustomAvatar'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { SupportedChainId } from '@/lib/config/config.types'
+import { UserAccountProvider } from './useUserAccount'
 
 export const supportedChains = [
   mainnet,
@@ -139,7 +140,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   return (
     <WagmiConfig config={createWagmiConfig()}>
       <RainbowKitProvider chains={chains} theme={customTheme} avatar={CustomAvatar}>
-        {children}
+        <UserAccountProvider>{children}</UserAccountProvider>
       </RainbowKitProvider>
     </WagmiConfig>
   )

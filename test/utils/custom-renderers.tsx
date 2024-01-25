@@ -1,4 +1,3 @@
-import { vaultV2Address, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { AddLiquidityProvider } from '@/lib/modules/pool/actions/add-liquidity/useAddLiquidity'
 import { PoolVariant } from '@/lib/modules/pool/pool.types'
 import { PoolProvider } from '@/lib/modules/pool/usePool'
@@ -14,7 +13,6 @@ import { createWagmiConfig } from '@/lib/modules/web3/Web3Provider'
 import { AbiMap } from '@/lib/modules/web3/contracts/AbiMap'
 import { WriteAbiMutability } from '@/lib/modules/web3/contracts/contract.types'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
-import { TokenAllowancesProvider } from '@/lib/modules/web3/useTokenAllowances'
 import { TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { GqlChain, GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 import { ApolloProvider } from '@apollo/client'
@@ -35,6 +33,7 @@ import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
 import { RemoveLiquidityProvider } from '@/lib/modules/pool/actions/remove-liquidity/useRemoveLiquidity'
+import { UserAccountProvider } from '@/lib/modules/web3/useUserAccount'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -78,15 +77,17 @@ function GlobalProviders({ children }: WrapperProps) {
     <WagmiConfig config={wagmiConfig}>
       <AppRouterContextProviderMock router={defaultRouterOptions}>
         <ApolloProvider client={apolloTestClient}>
-          <TokensProvider
-            tokensData={defaultGetTokensQueryMock}
-            tokenPricesData={defaultGetTokenPricesQueryMock}
-            variables={defaultGetTokensQueryVariablesMock}
-          >
-            <UserSettingsProvider initCurrency={'USD'} initSlippage={'0.2'}>
-              <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
-            </UserSettingsProvider>
-          </TokensProvider>
+          <UserAccountProvider>
+            <TokensProvider
+              tokensData={defaultGetTokensQueryMock}
+              tokenPricesData={defaultGetTokenPricesQueryMock}
+              variables={defaultGetTokensQueryVariablesMock}
+            >
+              <UserSettingsProvider initCurrency={'USD'} initSlippage={'0.2'}>
+                <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+              </UserSettingsProvider>
+            </TokensProvider>
+          </UserAccountProvider>
         </ApolloProvider>
       </AppRouterContextProviderMock>
     </WagmiConfig>
@@ -116,6 +117,7 @@ export function testManagedTransaction<
   M extends keyof typeof AbiMap,
   F extends InferFunctionName<T[M], string, WriteAbiMutability>
 >(
+  contractAddress: string,
   contractId: M,
   functionName: F,
   args?: GetFunctionArgs<T[M], F>,
@@ -125,7 +127,14 @@ export function testManagedTransaction<
   >
 ) {
   const { result } = testHook(() =>
-    useManagedTransaction(contractId, functionName, {} as TransactionLabels, args, additionalConfig)
+    useManagedTransaction(
+      contractAddress,
+      contractId,
+      functionName,
+      {} as TransactionLabels,
+      args,
+      additionalConfig
+    )
   )
   return result
 }
@@ -160,27 +169,11 @@ export async function useConnectTestAccount() {
 }
 
 export const DefaultAddLiquidityTestProvider = ({ children }: PropsWithChildren) => (
-  <AddLiquidityProvider>
-    <TokenAllowancesProvider
-      spenderAddress={vaultV2Address}
-      tokenAddresses={[wETHAddress, wjAuraAddress]}
-      userAddress={defaultTestUserAccount}
-    >
-      {children}
-    </TokenAllowancesProvider>
-  </AddLiquidityProvider>
+  <AddLiquidityProvider>{children}</AddLiquidityProvider>
 )
 
 export const DefaultRemoveLiquidityTestProvider = ({ children }: PropsWithChildren) => (
-  <RemoveLiquidityProvider>
-    <TokenAllowancesProvider
-      spenderAddress={vaultV2Address}
-      tokenAddresses={[wETHAddress, wjAuraAddress]}
-      userAddress={defaultTestUserAccount}
-    >
-      {children}
-    </TokenAllowancesProvider>
-  </RemoveLiquidityProvider>
+  <RemoveLiquidityProvider>{children}</RemoveLiquidityProvider>
 )
 
 /* Builds a PoolProvider that injects the provided pool data*/
@@ -197,7 +190,7 @@ export const buildDefaultPoolTestProvider =
           __typename: 'Query',
           pool,
         }}
-        variables={{ id: pool.id }}
+        variables={{ id: pool.id, chain: pool.chain, userAddress: defaultTestUserAccount }}
       >
         {children}
       </PoolProvider>

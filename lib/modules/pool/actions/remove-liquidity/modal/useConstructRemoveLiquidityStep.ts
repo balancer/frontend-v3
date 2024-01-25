@@ -1,46 +1,45 @@
-import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { Address } from 'wagmi'
-import { useActiveStep } from '../../../../../shared/hooks/transaction-flows/useActiveStep'
-import { useRemoveLiquidity } from '../useRemoveLiquidity'
+import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { RemoveLiquidityBuildQueryResponse } from '../queries/useRemoveLiquidityBuildCallDataQuery'
 
-export function useConstructRemoveLiquidityStep(poolId: string) {
-  const { isActiveStep, activateStep } = useActiveStep()
+export function useConstructRemoveLiquidityStep(
+  poolId: string,
+  buildCallDataQuery: RemoveLiquidityBuildQueryResponse,
+  activateStep: () => void
+) {
+  const transactionLabels: TransactionLabels = {
+    init: 'Remove liquidity',
+    confirming: 'Confirming...',
+    confirmed: `Liquidity removed from pool!`,
+    tooltip: 'Remove liquidity from pool.',
+  }
 
-  const { useBuildCallData } = useRemoveLiquidity()
+  const removeLiquidityTransaction = useManagedSendTransaction(
+    transactionLabels,
+    buildCallDataQuery.data
+  )
 
-  const removeLiquidityQuery = useBuildCallData(isActiveStep)
+  const isComplete = () => removeLiquidityTransaction.result.isSuccess
 
-  const transactionLabels = buildRemoveLiquidityLabels(poolId)
-
-  const transaction = useManagedSendTransaction(transactionLabels, removeLiquidityQuery.data)
-
-  const step: FlowStep = {
-    ...transaction,
+  const removeLiquidityStep: FlowStep = {
+    ...removeLiquidityTransaction,
     transactionLabels,
     id: `removeLiquidityPool${poolId}`,
     stepType: 'removeLiquidity',
-    isComplete: () => false,
+    isComplete,
     activateStep,
   }
 
   return {
-    step,
+    removeLiquidityStep,
+    removeLiquidityTransaction,
     isLoading:
-      transaction?.simulation.isLoading ||
-      transaction?.execution.isLoading ||
-      removeLiquidityQuery.isLoading,
+      removeLiquidityTransaction?.simulation.isLoading ||
+      removeLiquidityTransaction?.execution.isLoading ||
+      buildCallDataQuery.isLoading,
     error:
-      transaction?.simulation.error || transaction?.execution.error || removeLiquidityQuery.error,
-  }
-}
-
-export const buildRemoveLiquidityLabels: BuildTransactionLabels = (poolId: Address) => {
-  return {
-    init: 'Remove liquidity',
-    confirming: 'Confirm remove liquidity',
-    tooltip: 'TODO',
-    description: `🎉 Liquidity removed from pool ${poolId}`,
+      removeLiquidityTransaction?.simulation.error ||
+      removeLiquidityTransaction?.execution.error ||
+      buildCallDataQuery.error,
   }
 }

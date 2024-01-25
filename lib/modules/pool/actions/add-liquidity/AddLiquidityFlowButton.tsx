@@ -1,39 +1,44 @@
-import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNextTokenApprovalStep'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
+/* eslint-disable react-hooks/exhaustive-deps */
+'use client'
+
 import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
 import { Text, VStack } from '@chakra-ui/react'
-import { Pool } from '../../usePool'
-import { HumanAmountIn } from '../liquidity-types'
 import { useAddLiquidity } from './useAddLiquidity'
-import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
+import { usePoolRedirect } from '../../pool.hooks'
+import { usePool } from '../../usePool'
+import React, { useEffect, useState } from 'react'
+import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 
-type Props = {
-  humanAmountsIn: HumanAmountIn[]
-  pool: Pool
-}
-export function AddLiquidityFlowButton({ humanAmountsIn, pool }: Props) {
-  const { helpers } = useAddLiquidity()
-  const { getTokensByTokenAddress } = useTokens()
+export function AddLiquidityFlowButton() {
+  const [didRefetchPool, setDidRefetchPool] = useState(false)
+  const [initialAmountsToApprove, setInitialAmountsToApprove] = useState<
+    TokenAmountToApprove[] | null
+  >(null)
+  const { steps, remainingAmountsToApprove } = useAddLiquidity()
+  const { pool, refetch } = usePool()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
 
-  const tokenAddresses = humanAmountsIn.map(h => h.tokenAddress)
-  const tokensByAddress = getTokensByTokenAddress(tokenAddresses, pool.chain)
+  useEffect(() => {
+    // Saves the first value of remainingAmountsToApprove in case we want to show in the UI:
+    // initial VS remaining token approvals
+    if (initialAmountsToApprove === null) {
+      setInitialAmountsToApprove(remainingAmountsToApprove)
+    }
+  }, [JSON.stringify(remainingAmountsToApprove)])
 
-  const { tokenApprovalStep, initialAmountsToApprove } = useNextTokenApprovalStep({
-    amountsToApprove: helpers.getAmountsToApprove(humanAmountsIn, tokensByAddress),
-    actionType: 'AddLiquidity',
-  })
-
-  const { step: addLiquidityStep } = useConstructAddLiquidityStep(pool.id)
-  const steps = [tokenApprovalStep, addLiquidityStep]
-
-  function handleJoinCompleted() {
-    console.log('Join completed')
+  async function handleJoinCompleted() {
+    await refetch() // Refetches onchain balances.
+    setDidRefetchPool(true)
   }
 
-  // TODO: define UI for approval steps
-  const tokensRequiringApprovalTransaction = initialAmountsToApprove
+  async function handlerRedirectToPoolPage(event: React.MouseEvent<HTMLElement>) {
+    if (!didRefetchPool) await refetch() // Refetches onchain balances.
+    redirectToPoolPage(event)
+  }
+
+  const tokensRequiringApprovalTransaction = remainingAmountsToApprove
     ?.map(token => token.tokenSymbol)
-    .join(' , ')
+    .join(', ')
 
   return (
     <VStack w="full">
@@ -43,8 +48,8 @@ export function AddLiquidityFlowButton({ humanAmountsIn, pool }: Props) {
           : 'All tokens have enough allowance'}
       </Text>
       <TransactionFlow
-        completedAlertContent="Successfully added liquidity"
-        onCompleteClick={handleJoinCompleted}
+        onComplete={handleJoinCompleted}
+        onCompleteClick={handlerRedirectToPoolPage}
         completedButtonLabel="Return to pool"
         steps={steps}
       />
