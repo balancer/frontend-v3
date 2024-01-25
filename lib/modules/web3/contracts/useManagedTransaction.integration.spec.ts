@@ -7,7 +7,7 @@ test('relayer successful relayer approval transaction', async () => {
   const balancerRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'
   const vault = '0xBA12222222228d8Ba445958a75a0704d566BF2C8'
 
-  const result = testManagedTransaction('balancer.vaultV2', 'setRelayerApproval', vault, {
+  const result = testManagedTransaction(vault, 'balancer.vaultV2', 'setRelayerApproval', {
     args: [defaultTestUserAccount, balancerRelayer, true],
   })
 
