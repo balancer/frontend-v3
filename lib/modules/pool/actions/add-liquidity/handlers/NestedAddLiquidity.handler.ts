@@ -23,12 +23,12 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
     this.helpers = new LiquidityActionHelpers(pool)
   }
 
-  public async calculatePriceImpact(): Promise<number> {
+  public async getPriceImpact(): Promise<number> {
     // nested remove liquidity does not have price impact
     return 0
   }
 
-  public async queryAddLiquidity(
+  public async simulate(
     humanAmountsIn: HumanAmountIn[],
     userAddress?: Address
   ): Promise<NestedQueryAddLiquidityOutput> {
@@ -49,7 +49,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
     return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
   }
 
-  public async buildAddLiquidityCallData({
+  public async buildCallData({
     account,
     slippagePercent,
     queryOutput,

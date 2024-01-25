@@ -16,7 +16,7 @@ describe('When adding nested liquidity for a weighted pool', () => {
   test('has zero price impact', async () => {
     const handler = selectNestedHandler(nestedPoolMock)
 
-    const priceImpact = await handler.calculatePriceImpact()
+    const priceImpact = await handler.getPriceImpact()
     expect(priceImpact).toBe(0)
   })
 
@@ -25,7 +25,7 @@ describe('When adding nested liquidity for a weighted pool', () => {
 
     const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '1', tokenAddress: daiAddress }]
 
-    const result = await handler.queryAddLiquidity(humanAmountsIn)
+    const result = await handler.simulate(humanAmountsIn)
 
     expect(result.bptOut.amount).toBeGreaterThan(20000000000000000n)
   })
@@ -40,7 +40,7 @@ describe('When adding nested liquidity for a weighted pool', () => {
       { humanAmount: '1', tokenAddress: usdtAddress },
     ]
 
-    const result = await handler.queryAddLiquidity(humanAmountsIn)
+    const result = await handler.simulate(humanAmountsIn)
 
     expect(result.bptOut.amount).toBeGreaterThan(40000000000000000n)
   })
@@ -51,9 +51,9 @@ describe('When adding nested liquidity for a weighted pool', () => {
     const handler = selectNestedHandler(nestedPoolMock)
 
     // Store query response in handler instance
-    const queryOutput = await handler.queryAddLiquidity(humanAmountsIn, defaultTestUserAccount)
+    const queryOutput = await handler.simulate(humanAmountsIn, defaultTestUserAccount)
 
-    const result = await handler.buildAddLiquidityCallData({
+    const result = await handler.buildCallData({
       humanAmountsIn,
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
