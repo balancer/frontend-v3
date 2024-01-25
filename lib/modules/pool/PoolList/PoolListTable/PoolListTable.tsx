@@ -21,9 +21,14 @@ export function PoolListTable({ pools, count, loading }: Props) {
   const showPagination = !!pools.length && !!count && count > pagination.pageSize
   const { isMobile } = useBreakpoints()
 
+  const numberColumnWidth = userAddress ? '175px' : '200px'
+  const furthestLeftColWidth = '120px'
+
   const rowProps = {
     px: [0, 4],
-    gridTemplateColumns: `50px 1fr ${userAddress ? '150px' : ''} 175px 175px 175px`,
+    gridTemplateColumns: `50px 1fr ${userAddress ? furthestLeftColWidth : ''} ${
+      userAddress ? numberColumnWidth : furthestLeftColWidth
+    } ${numberColumnWidth} ${numberColumnWidth}`,
     alignItems: 'center',
     gap: 'lg',
     minW: '800px',
