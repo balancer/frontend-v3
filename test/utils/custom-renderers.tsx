@@ -117,6 +117,7 @@ export function testManagedTransaction<
   M extends keyof typeof AbiMap,
   F extends InferFunctionName<T[M], string, WriteAbiMutability>
 >(
+  contractAddress: string,
   contractId: M,
   functionName: F,
   args?: GetFunctionArgs<T[M], F>,
@@ -126,7 +127,14 @@ export function testManagedTransaction<
   >
 ) {
   const { result } = testHook(() =>
-    useManagedTransaction(contractId, functionName, {} as TransactionLabels, args, additionalConfig)
+    useManagedTransaction(
+      contractAddress,
+      contractId,
+      functionName,
+      {} as TransactionLabels,
+      args,
+      additionalConfig
+    )
   )
   return result
 }
