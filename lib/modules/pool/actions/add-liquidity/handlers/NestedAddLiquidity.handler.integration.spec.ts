@@ -60,7 +60,7 @@ describe('When adding nested liquidity for a weighted pool', () => {
       queryOutput: queryOutput,
     })
 
-    expect(result.to).toBe(networkConfig.contracts.balancer.relayer)
+    expect(result.to).toBe(networkConfig.contracts.balancer.relayerV6)
     expect(result.data).toBeDefined()
     expect(result.account).toBe(defaultTestUserAccount)
 

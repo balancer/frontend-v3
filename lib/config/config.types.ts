@@ -20,7 +20,7 @@ export interface ContractsConfig {
   multicall2: Address
   balancer: {
     vaultV2: Address
-    relayer: Address
+    relayerV6: Address
   }
 }
 

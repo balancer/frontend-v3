@@ -44,13 +44,4 @@ export function getNativeAssetAddress(chainId: SupportedChainId) {
   return getNetworkConfig(chainId).tokens.nativeAsset.address
 }
 
-export function getVaultAddress(chainId: SupportedChainId, variant: 'v2' | 'v3') {
-  if (variant === 'v2') return getNetworkConfig(chainId).contracts.balancer.vaultV2
-  throw new Error('v3 vault is not yet supported')
-}
-
-export function getRelayerAddress(chainId: SupportedChainId) {
-  return getNetworkConfig(chainId).contracts.balancer.relayer
-}
-
 export const DELEGATE_OWNER = '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b'

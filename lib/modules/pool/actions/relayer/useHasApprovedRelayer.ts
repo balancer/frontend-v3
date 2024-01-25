@@ -6,19 +6,20 @@ import { useContractRead } from 'wagmi'
 export function useHasApprovedRelayer() {
   const { isConnected, userAddress } = useUserAccount()
 
-  const { chainId, relayerAddress, vaultV2Address } = useNetworkConfig()
+  const networkConfig = useNetworkConfig()
+  const { chainId, contracts } = networkConfig
 
   const query = useContractRead({
-    chainId,
+    chainId: chainId,
     abi: balancerV2VaultABI,
-    address: vaultV2Address,
+    address: contracts.balancer.vaultV2,
     account: userAddress,
     functionName: 'hasApprovedRelayer',
-    args: [userAddress, relayerAddress],
+    args: [userAddress, contracts.balancer.relayerV6],
     enabled: isConnected,
   })
   return {
     ...query,
-    hasApprovedRelayer: query.data,
+    hasApprovedRelayer: query.data ?? false,
   }
 }
