@@ -88,7 +88,7 @@ export function PoolListTokensTag({ pool }: Props) {
                 borderRadius="full"
               >
                 <PoolTokenIcon token={token} chain={pool.chain} />
-                <Text>{token.symbol}</Text>
+                <Text fontWeight="bold">{token.symbol}</Text>
               </HStack>
             ))}
           </HStack>
@@ -103,7 +103,7 @@ export function PoolListTokensTag({ pool }: Props) {
                 <PoolTokenIcon token={token} chain={pool.chain} />
               </Box>
             ))}
-            <Text>{pool.name}</Text>
+            <Text fontWeight="bold">{pool.name}</Text>
           </HStack>
         </Tag>
       )
@@ -119,7 +119,7 @@ export function PoolListTokensTag({ pool }: Props) {
                   ) : (
                     <PoolTokenIcon token={token} chain={pool.chain} />
                   )}
-                  <Text>{token.nestedTokens ? token.name : token.symbol}</Text>
+                  <Text fontWeight="bold">{token.nestedTokens ? token.name : token.symbol}</Text>
                 </HStack>
               )
             })}
