@@ -1,10 +1,11 @@
 import { theme } from '@chakra-ui/react'
-import { format } from 'date-fns'
+import { addMinutes, format } from 'date-fns'
 import * as echarts from 'echarts/core'
 import {
   GetPoolSnapshotsDocument,
   GqlPoolType,
   GqlPoolSnapshotDataRange,
+  GqlChain,
 } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { useCallback, useMemo, useState } from 'react'
@@ -13,6 +14,9 @@ import { usePool } from '../../usePool'
 import { PoolVariant } from '../../pool.types'
 import { NumberFormatter } from '@/lib/shared/utils/numbers'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { balColors, balTheme } from '@/lib/shared/services/chakra/theme'
+import numeral from 'numeral'
+import { twentyFourHoursInSecs } from '@/lib/shared/hooks/useTime'
 
 export enum PoolChartTab {
   VOLUME = 'volume',
@@ -28,15 +32,15 @@ export type PoolChartPeriod = {
 export const poolChartPeriods = [
   {
     value: GqlPoolSnapshotDataRange.ThirtyDays,
-    label: '30 days',
+    label: '30d',
   },
   {
     value: GqlPoolSnapshotDataRange.NinetyDays,
-    label: '90 days',
+    label: '90d',
   },
   {
     value: GqlPoolSnapshotDataRange.OneHundredEightyDays,
-    label: '180 days',
+    label: '180d',
   },
   {
     value: GqlPoolSnapshotDataRange.AllTime,
@@ -46,7 +50,7 @@ export const poolChartPeriods = [
 
 export interface PoolChartTypeOptions {
   type: 'line' | 'bar'
-  color: string
+  color: string | echarts.graphic.LinearGradient
   hoverColor: string
   hoverBorderColor?: string
   areaStyle?: {
@@ -62,7 +66,16 @@ export interface PoolChartTypeTab {
 export const poolChartTypeOptions: Record<PoolChartTab, PoolChartTypeOptions> = {
   [PoolChartTab.VOLUME]: {
     type: 'bar',
-    color: theme.colors.green[400],
+    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+      {
+        offset: 0,
+        color: balTheme.semanticTokens.colors.chart.pool.bar.volume.from,
+      },
+      {
+        offset: 1,
+        color: balTheme.semanticTokens.colors.chart.pool.bar.volume.to,
+      },
+    ]),
     hoverColor: theme.colors.pink[500],
   },
   [PoolChartTab.TVL]: {
@@ -90,15 +103,22 @@ export const poolChartTypeOptions: Record<PoolChartTab, PoolChartTypeOptions> = 
   },
 }
 
+const toolTipTheme = {
+  heading: 'font-weight: bold; color: #E5D3BE',
+  container: `background: ${balColors.gray[800]};`,
+  text: balColors.gray[400],
+}
+
 export const getDefaultPoolChartOptions = (currencyFormatter: NumberFormatter) => ({
   grid: {
-    left: '2.5%',
-    right: 0,
-    top: '10%',
-    bottom: '5%',
+    left: '-2.5%',
+    right: '2.5%',
+    top: '7.5%',
+    bottom: '0',
     containLabel: true,
   },
   xAxis: {
+    show: false,
     type: 'time',
     minorSplitLine: { show: false },
     axisTick: { show: false },
@@ -127,6 +147,7 @@ export const getDefaultPoolChartOptions = (currencyFormatter: NumberFormatter) =
     },
   },
   yAxis: {
+    show: false,
     type: 'value',
     axisLine: { show: false },
     minorSplitLine: { show: false },
@@ -144,17 +165,31 @@ export const getDefaultPoolChartOptions = (currencyFormatter: NumberFormatter) =
 
   tooltip: {
     show: true,
-    showContent: false,
+    showContent: true,
     trigger: 'axis',
     confine: true,
-    backgroundColor: theme.colors.white,
-    borderColor: theme.colors.white,
     axisPointer: {
       animation: false,
       type: 'shadow',
       label: {
         show: false,
       },
+    },
+    extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container}`,
+    formatter: (params: any) => {
+      const data = Array.isArray(params) ? params[0] : params
+      return `
+          <div style="padding: none; display: flex; flex-direction: column; justify-content: center;${
+            toolTipTheme.container
+          }">
+            <div style="font-size: 0.85rem; font-weight: 500; color: ${toolTipTheme.text};">
+              ${format(new Date(data.value[0] * 1000), 'MMM d')}
+            </div>
+            <div style="font-size: 14px; font-weight: 500; color: ${toolTipTheme.text};">
+              ${numeral(data.value[1]).format('($0,0a)')}
+            </div>
+          </div>
+        `
     },
   },
 })
@@ -203,6 +238,7 @@ export function usePoolSnapshots(
     variables: {
       poolId,
       range,
+      chainId: GqlChain.Mainnet,
     },
     notifyOnNetworkStatusChange: true,
   })
@@ -223,40 +259,90 @@ export function usePoolCharts() {
     })
   }, [pool?.type, variant])
 
-  const [activeTab, setActiveTab] = useState(tabsList[0].value)
+  const [activeTab, setActiveTab] = useState(tabsList[0])
   const [chartValue, setChartValue] = useState(0)
   const [chartDate, setChartDate] = useState('')
-  const [activePeriod, setActivePeriod] = useState(GqlPoolSnapshotDataRange.ThirtyDays)
+  const [activePeriod, setActivePeriod] = useState(poolChartPeriods[0])
 
-  const { data, loading: isLoadingSnapshots } = usePoolSnapshots(poolId as string, activePeriod)
+  const { data, loading: isLoadingSnapshots } = usePoolSnapshots(
+    poolId as string,
+    activePeriod.value
+  )
 
   const isLoading = isLoadingSnapshots
+
+  const chartValueSum = useMemo(() => {
+    if (!data?.snapshots) return null
+
+    let val = 0
+
+    if (activeTab.value === PoolChartTab.TVL) {
+      val = Number(data?.snapshots[data?.snapshots.length - 1]?.totalLiquidity)
+    }
+
+    if (activeTab.value === PoolChartTab.FEES) {
+      val = data?.snapshots.reduce((acc, snapshot) => {
+        return (acc += Number(snapshot.fees24h))
+      }, 0)
+    }
+
+    if (activeTab.value === PoolChartTab.VOLUME) {
+      val = data?.snapshots.reduce((acc, snapshot) => {
+        return (acc += Number(snapshot.totalLiquidity))
+      }, 0)
+    }
+
+    return toCurrency(val)
+  }, [data?.snapshots, activeTab, toCurrency])
 
   const chartData = useMemo(() => {
     const snapshots = data?.snapshots
     if (!snapshots) return []
 
-    if (activeTab === PoolChartTab.TVL) {
-      return snapshots.map(snapshot => {
+    let chartArr: (string | number)[][] = []
+    if (activeTab.value === PoolChartTab.TVL) {
+      chartArr = snapshots.map(snapshot => {
         return [snapshot.timestamp, snapshot.totalLiquidity]
       })
     }
 
-    if (activeTab === PoolChartTab.FEES) {
-      return snapshots.map(snapshot => {
+    if (activeTab.value === PoolChartTab.FEES) {
+      chartArr = snapshots.map(snapshot => {
         return [snapshot.timestamp, snapshot.fees24h]
       })
     }
+    if (activeTab.value === PoolChartTab.VOLUME) {
+      chartArr = snapshots.map(snapshot => {
+        return [snapshot.timestamp, snapshot.volume24h]
+      })
+    }
 
-    return snapshots.map(snapshot => {
-      return [snapshot.timestamp, snapshot.volume24h]
-    })
+    // add lagging timestamps
+    if (chartArr.length < 30) {
+      const lastDate = chartArr[chartArr.length - 1][0]
+      const days = 30 - chartArr.length
+
+      const timestampsArr: number[] = []
+      for (let i = 1; i <= days; i++) {
+        const timestamp = Number(lastDate) - i * twentyFourHoursInSecs
+        timestampsArr.push(timestamp * 1000)
+      }
+
+      const laggingTimestamps = timestampsArr.map(timestamp => [
+        addMinutes(timestamp, new Date(timestamp).getTimezoneOffset()).getTime() / 1000,
+        '0',
+      ])
+
+      chartArr = [...laggingTimestamps, ...chartArr]
+    }
+
+    return chartArr
   }, [data?.snapshots, activeTab])
 
   const defaultChartOptions = getDefaultPoolChartOptions(toCurrency)
 
   const options = useMemo(() => {
-    const activeTabOptions = poolChartTypeOptions[activeTab]
+    const activeTabOptions = poolChartTypeOptions[activeTab.value]
 
     return {
       ...defaultChartOptions,
@@ -321,5 +407,6 @@ export function usePoolCharts() {
     handleMouseLeave,
     chartData,
     tabsList,
+    chartValueSum,
   }
 }
