@@ -41,7 +41,7 @@ export function _useAddLiquidity() {
     activateStep: activateFinalStep,
     deactivateStep: deactivateFinalStep,
   } = useActiveStep()
-  const { pool, poolStateInput } = usePool()
+  const { pool } = usePool()
   const { getToken, usdValueForToken, getTokensByTokenAddress } = useTokens()
   const { isConnected, userAddress } = useUserAccount()
   const vaultAddress = useContractAddress('balancer.vaultV2')
@@ -164,7 +164,6 @@ export function _useAddLiquidity() {
     isDisabled,
     disabledReason,
     helpers,
-    poolStateInput,
     buildCallDataQuery,
     remainingAmountsToApprove,
     previewModalDisclosure,
