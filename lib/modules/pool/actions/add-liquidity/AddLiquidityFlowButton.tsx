@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import TransactionFlow from '@/lib/shared/components/btns/transaction-steps/TransactionFlow'
@@ -5,13 +6,25 @@ import { Text, VStack } from '@chakra-ui/react'
 import { useAddLiquidity } from './useAddLiquidity'
 import { usePoolRedirect } from '../../pool.hooks'
 import { usePool } from '../../usePool'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 
 export function AddLiquidityFlowButton() {
   const [didRefetchPool, setDidRefetchPool] = useState(false)
-  const { initialAmountsToApprove, steps } = useAddLiquidity()
+  const [initialAmountsToApprove, setInitialAmountsToApprove] = useState<
+    TokenAmountToApprove[] | null
+  >(null)
+  const { steps, remainingAmountsToApprove } = useAddLiquidity()
   const { pool, refetch } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
+
+  useEffect(() => {
+    // Saves the first value of remainingAmountsToApprove in case we want to show in the UI:
+    // initial VS remaining token approvals
+    if (initialAmountsToApprove === null) {
+      setInitialAmountsToApprove(remainingAmountsToApprove)
+    }
+  }, [JSON.stringify(remainingAmountsToApprove)])
 
   async function handleJoinCompleted() {
     await refetch() // Refetches onchain balances.
@@ -23,7 +36,7 @@ export function AddLiquidityFlowButton() {
     redirectToPoolPage(event)
   }
 
-  const tokensRequiringApprovalTransaction = initialAmountsToApprove
+  const tokensRequiringApprovalTransaction = remainingAmountsToApprove
     ?.map(token => token.tokenSymbol)
     .join(', ')
 
