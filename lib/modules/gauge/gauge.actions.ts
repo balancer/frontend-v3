@@ -29,10 +29,10 @@ export function useConstructGaugeDepositActionStep(
   const { activateStep } = useActiveStep()
   const transactionLabels = buildGaugeDepositLabels(gauge)
   const deposit = useManagedTransaction(
+    gauge?.gaugeAddress || '',
     'balancer.gaugeV5',
     'deposit',
     transactionLabels,
-    gauge?.gaugeAddress || '',
     { args: [depositAmount || 0n] },
     { enabled: !!gauge || !!depositAmount }
   )
@@ -55,10 +55,10 @@ export function useConstructGaugeWithdrawActionStep(
   const { activateStep } = useActiveStep()
   const transactionLabels = buildGaugeWithdrawLabels(gauge)
   const withdraw = useManagedTransaction(
+    gauge?.gaugeAddress || '',
     'balancer.gaugeV5',
     'withdraw',
     transactionLabels,
-    gauge?.gaugeAddress || '',
     { args: [withdrawAmount || 0n] },
     { enabled: !!gauge || !!withdrawAmount }
   )

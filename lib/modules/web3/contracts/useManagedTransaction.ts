@@ -23,10 +23,10 @@ export function useManagedTransaction<
   M extends keyof typeof AbiMap,
   F extends InferFunctionName<T[M], string, WriteAbiMutability>
 >(
+  contractAddress: string,
   contractId: M,
   functionName: F,
   transactionLabels: TransactionLabels,
-  contractAddress: string,
   args?: GetFunctionArgs<T[M], F> | null,
   additionalConfig?: Omit<
     UsePrepareContractWriteConfig<T[M], F, number>,
