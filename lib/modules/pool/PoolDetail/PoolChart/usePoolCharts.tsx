@@ -69,11 +69,11 @@ export const poolChartTypeOptions: Record<PoolChartTab, PoolChartTypeOptions> = 
     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
       {
         offset: 0,
-        color: balTheme.semanticTokens.colors.chart.pool.line.volume.from,
+        color: balTheme.semanticTokens.colors.chart.pool.bar.volume.from,
       },
       {
         offset: 1,
-        color: balTheme.semanticTokens.colors.chart.pool.line.volume.to,
+        color: balTheme.semanticTokens.colors.chart.pool.bar.volume.to,
       },
     ]),
     hoverColor: theme.colors.pink[500],

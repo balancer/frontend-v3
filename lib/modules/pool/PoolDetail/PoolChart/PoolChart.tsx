@@ -44,6 +44,7 @@ export function PoolChart() {
                     setActivePeriod(period)
                   }}
                   options={poolChartPeriods}
+                  variant="secondary"
                 />
               </HStack>
               <Stack gap="0" textAlign="right">
