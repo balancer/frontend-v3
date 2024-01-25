@@ -54,6 +54,7 @@ export function RemoveLiquidityForm() {
     isDisabled,
     disabledReason,
     simulationQuery,
+    deactivateFinalStep,
   } = useRemoveLiquidity()
   const { toCurrency } = useCurrency()
   const nextBtn = useRef(null)
@@ -70,6 +71,11 @@ export function RemoveLiquidityForm() {
     if (option.value === 'single') {
       setSingleTokenType()
     }
+  }
+
+  const onModalClose = () => {
+    previewModalDisclosure.onClose()
+    deactivateFinalStep()
   }
 
   return (
@@ -148,7 +154,7 @@ export function RemoveLiquidityForm() {
           finalFocusRef={nextBtn}
           isOpen={previewModalDisclosure.isOpen}
           onOpen={previewModalDisclosure.onOpen}
-          onClose={previewModalDisclosure.onClose}
+          onClose={onModalClose}
         />
       </Center>
     </TokenBalancesProvider>

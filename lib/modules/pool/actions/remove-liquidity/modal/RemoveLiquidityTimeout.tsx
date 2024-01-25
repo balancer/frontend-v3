@@ -23,6 +23,7 @@ function useRemoveLiquidityTimeout() {
     buildCallDataQuery,
     previewModalDisclosure,
     removeLiquidityTransaction,
+    isFinalStepActive,
   } = useRemoveLiquidity()
 
   const transactionState = getTransactionState(removeLiquidityTransaction)
@@ -31,8 +32,9 @@ function useRemoveLiquidityTimeout() {
   const isAwaitingUserConfirmation = transactionState === TransactionState.Loading
   const isComplete = transactionState === TransactionState.Completed
 
-  // If the flow is complete or the final remove liquidity transaction is
-  // confirming, disable query refetches.
+  // Disable query refetches:
+  // if the flow is complete
+  // if the remove liquidity transaction is confirming
   const shouldFreezeQuote = isComplete || isConfirmingRemoveLiquidity || isAwaitingUserConfirmation
 
   // When the countdown timer reaches 0, refetch all remove liquidity queries.
@@ -41,7 +43,7 @@ function useRemoveLiquidityTimeout() {
       stopCountdown()
       resetCountdown()
       await Promise.all([simulationQuery.refetch(), priceImpactQuery.refetch()])
-      await buildCallDataQuery.refetch()
+      if (isFinalStepActive) await buildCallDataQuery.refetch() // Avoid this refetch if the final step is not active (for example, when approval pre steps are active)
       startCountdown()
     }
     if (secondsToRefetch === 0 && !shouldFreezeQuote) refetchQueries()
