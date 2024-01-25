@@ -24,7 +24,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
   }
 
   public async getPriceImpact(): Promise<number> {
-    // nested remove liquidity does not have price impact
+    // TODO: implemented in a different PR
     return 0
   }
 
