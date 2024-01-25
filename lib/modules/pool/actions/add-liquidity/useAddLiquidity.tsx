@@ -36,7 +36,11 @@ export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
 export function _useAddLiquidity() {
   const humanAmountsIn = useReactiveVar(humanAmountsInVar)
 
-  const { isActiveStep, activateStep, deactivateStep } = useActiveStep()
+  const {
+    isActiveStep: isFinalStepActive,
+    activateStep: activateFinalStep,
+    deactivateStep: deactivateFinalStep,
+  } = useActiveStep()
   const { pool } = usePool()
   const { getToken, usdValueForToken, getTokensByTokenAddress } = useTokens()
   const { isConnected, userAddress } = useUserAccount()
@@ -67,7 +71,7 @@ export function _useAddLiquidity() {
   const amountsInTokensByAddress = getTokensByTokenAddress(amountsInTokenAddresses, pool.chain)
 
   const tokenAllowances = useTokenAllowances(userAddress, vaultAddress, tokenAddressesWithAmountIn)
-  const { tokenApprovalStep, initialAmountsToApprove } = useNextTokenApprovalStep({
+  const { tokenApprovalStep, remainingAmountsToApprove } = useNextTokenApprovalStep({
     tokenAllowances,
     amountsToApprove: helpers.getAmountsToApprove(humanAmountsIn, amountsInTokensByAddress),
     actionType: 'AddLiquidity',
@@ -129,7 +133,7 @@ export function _useAddLiquidity() {
     pool,
     simulationQuery,
     options: {
-      enabled: isActiveStep,
+      enabled: isFinalStepActive,
     },
   })
 
@@ -139,7 +143,7 @@ export function _useAddLiquidity() {
   const { addLiquidityStep, addLiquidityTransaction } = useConstructAddLiquidityStep(
     pool.id,
     buildCallDataQuery,
-    activateStep
+    activateFinalStep
   )
 
   const steps = [tokenApprovalStep, addLiquidityStep].filter(step => step !== null) as FlowStep[]
@@ -163,13 +167,13 @@ export function _useAddLiquidity() {
     disabledReason,
     helpers,
     buildCallDataQuery,
-    initialAmountsToApprove,
+    remainingAmountsToApprove,
     previewModalDisclosure,
     tokenApprovalStep,
     addLiquidityTransaction,
     steps,
-    activateStep,
-    deactivateStep,
+    isFinalStepActive,
+    deactivateFinalStep,
     setHumanAmountIn,
   }
 }

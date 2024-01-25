@@ -2,10 +2,8 @@
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { UseTokenAllowancesResponse } from '@/lib/modules/web3/useTokenAllowances'
 import { isEmpty } from 'lodash'
-import { useEffect, useState } from 'react'
 import { emptyAddress } from '../../web3/contracts/wagmi-helpers'
 import { TokenAmountToApprove, getRequiredTokenApprovals } from './approval-rules'
-import { useCompletedApprovalsState } from './useCompletedApprovalsState'
 import { useConstructApproveTokenStep } from './useConstructApproveTokenStep'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 import { ApprovalAction } from './approval-labels'
@@ -32,23 +30,11 @@ export function useNextTokenApprovalStep({
 
   const { allowances, isAllowancesLoading, spenderAddress } = tokenAllowances
 
-  const currentTokenAllowances = allowances || {}
-  const [initialAmountsToApprove, setInitialAmountsToApprove] = useState<
-    TokenAmountToApprove[] | null
-  >(null)
-
   const remainingAmountsToApprove = getRequiredTokenApprovals({
     chainId,
     amountsToApprove,
-    currentTokenAllowances,
+    currentTokenAllowances: allowances || {},
   })
-
-  useEffect(() => {
-    // Saves the first value of filteredAmountsToApprove to render the list of approval steps in the UI
-    if (initialAmountsToApprove === null) setInitialAmountsToApprove(remainingAmountsToApprove)
-  }, [remainingAmountsToApprove])
-
-  const completedTokenApprovalsState = useCompletedApprovalsState()
 
   const tokenAddressToApprove = isEmpty(remainingAmountsToApprove)
     ? emptyAddress
@@ -66,12 +52,11 @@ export function useNextTokenApprovalStep({
     actionType,
     chain,
     amountToApprove,
-    completedApprovalState: completedTokenApprovalsState,
   })
 
   return {
-    initialAmountsToApprove,
     tokenApprovalStep,
     isAllowancesLoading,
+    remainingAmountsToApprove,
   }
 }
