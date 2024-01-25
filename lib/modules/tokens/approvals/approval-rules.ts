@@ -14,7 +14,6 @@ type TokenApprovalParams = {
   chainId: SupportedChainId | null
   amountsToApprove: TokenAmountToApprove[]
   currentTokenAllowances: TokenAllowances
-  // spenderAddress: Address // Check comment below
   skipAllowanceCheck?: boolean
 }
 
@@ -25,9 +24,6 @@ export function getRequiredTokenApprovals({
   chainId,
   amountsToApprove,
   currentTokenAllowances,
-  // TODO: in V2 we were passing the spender to a similar function but maybe we don't need it here
-  // as we can leave it in higher abstraction layers
-  // spenderAddress,
   skipAllowanceCheck = false,
 }: TokenApprovalParams) {
   if (!chainId) return []

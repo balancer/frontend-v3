@@ -4,7 +4,6 @@ import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useEffect } from 'react'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
-import { CompletedApprovalState } from './useCompletedApprovalsState'
 import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
 import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
@@ -19,7 +18,6 @@ type Params = {
   amountToApprove: bigint
   actionType: ApprovalAction
   chain: GqlChain
-  completedApprovalState: CompletedApprovalState
 }
 
 export function useConstructApproveTokenStep({
@@ -29,12 +27,10 @@ export function useConstructApproveTokenStep({
   amountToApprove = MAX_BIGINT,
   actionType,
   chain,
-  completedApprovalState,
 }: Params) {
   const { isActiveStep, activateStep } = useActiveStep()
   const { refetchAllowances, isAllowancesLoading } = tokenAllowances
   const { getToken } = useTokens()
-  const { completedApprovals, saveCompletedApprovals } = completedApprovalState
 
   const token = getToken(tokenAddress, chain)
 
@@ -54,16 +50,13 @@ export function useConstructApproveTokenStep({
     }
   )
 
-  const isCompleted =
-    (completedApprovals.includes(tokenAddress) && approvalTransaction.result.isSuccess) ||
-    tokenAddress === emptyAddress
-
   const step: FlowStep = {
     ...approvalTransaction,
     transactionLabels: tokenApprovalLabels,
     id: tokenAddress,
     stepType: 'tokenApproval',
-    isComplete: () => isCompleted,
+    // Completion is handled by useNextTokenApprovalStep which returns the next approval step in the sequence
+    isComplete: () => false,
     activateStep,
   }
 
@@ -72,7 +65,6 @@ export function useConstructApproveTokenStep({
     async function saveExecutedApproval() {
       if (approvalTransaction.result.isSuccess) {
         await refetchAllowances()
-        saveCompletedApprovals(tokenAddress)
       }
     }
     saveExecutedApproval()

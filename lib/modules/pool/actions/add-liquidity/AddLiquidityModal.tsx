@@ -20,6 +20,7 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
+  Skeleton,
   Text,
   Tooltip,
   VStack,
@@ -98,7 +99,7 @@ export function AddLiquidityModal({
   const bptOutLabel = bptOut ? formatUnits(bptOut.amount, BPT_DECIMALS) : '0'
 
   const priceImpact = priceImpactQuery?.data
-  const formattedPriceImpact = priceImpact ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
 
   return (
     <Modal
@@ -156,7 +157,11 @@ export function AddLiquidityModal({
                 <HStack justify="space-between" w="full">
                   <Text>Price impact</Text>
                   <HStack>
-                    <NumberText color="GrayText">{formattedPriceImpact}</NumberText>
+                    {priceImpactQuery.isLoading ? (
+                      <Skeleton w="12" h="full" />
+                    ) : (
+                      <NumberText color="GrayText">{priceImpactLabel}</NumberText>
+                    )}
                     <Tooltip label="Price impact" fontSize="sm">
                       <InfoOutlineIcon color="GrayText" />
                     </Tooltip>

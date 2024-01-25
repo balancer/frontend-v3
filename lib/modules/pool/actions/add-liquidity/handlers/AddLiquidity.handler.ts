@@ -18,12 +18,12 @@ import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidit
 export interface AddLiquidityHandler {
   // Query the expected output of adding liquidity and store it inside the handler instance
   // Also returns bptOut to be used by the UI
-  queryAddLiquidity(humanAmountsIn: HumanAmountIn[]): Promise<QueryAddLiquidityOutput>
+  simulate(humanAmountsIn: HumanAmountIn[]): Promise<QueryAddLiquidityOutput>
   // Calculate the price impact of adding liquidity
-  calculatePriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number>
+  getPriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number>
   /*
     Build tx callData payload for adding liquidity
     It is responsibility of the UI to avoid calling buildAddLiquidityCallData before the last queryAddLiquidity was finished
   */
-  buildAddLiquidityCallData(inputs: BuildAddLiquidityInput): Promise<TransactionConfig>
+  buildCallData(inputs: BuildAddLiquidityInput): Promise<TransactionConfig>
 }

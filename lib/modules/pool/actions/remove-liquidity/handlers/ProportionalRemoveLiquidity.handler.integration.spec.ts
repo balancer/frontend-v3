@@ -29,7 +29,7 @@ describe('When proportionally removing liquidity for a weighted pool', () => {
   test('returns ZERO price impact', async () => {
     const handler = selectProportionalHandler(poolMock)
 
-    const result = await handler.queryRemoveLiquidity(defaultQueryInput)
+    const result = await handler.simulate(defaultQueryInput)
 
     const [balTokenAmountOut, wEthTokenAmountOut] = result.amountsOut
 
@@ -42,7 +42,7 @@ describe('When proportionally removing liquidity for a weighted pool', () => {
   test('queries amounts out', async () => {
     const handler = selectProportionalHandler(poolMock)
 
-    const result = await handler.queryRemoveLiquidity(defaultQueryInput)
+    const result = await handler.simulate(defaultQueryInput)
 
     const [balTokenAmountOut, wEthTokenAmountOut] = result.amountsOut
 
@@ -56,9 +56,9 @@ describe('When proportionally removing liquidity for a weighted pool', () => {
   test('builds Tx Config', async () => {
     const handler = selectProportionalHandler(poolMock)
 
-    const queryOutput = await handler.queryRemoveLiquidity(defaultQueryInput)
+    const queryOutput = await handler.simulate(defaultQueryInput)
 
-    const result = await handler.buildRemoveLiquidityCallData({
+    const result = await handler.buildCallData({
       ...defaultBuildInput,
       queryOutput,
     })
@@ -74,9 +74,9 @@ describe('When removing liquidity from a stable pool', () => {
 
     const handler = selectProportionalHandler(pool)
 
-    const queryOutput = await handler.queryRemoveLiquidity(defaultQueryInput)
+    const queryOutput = await handler.simulate(defaultQueryInput)
 
-    const result = await handler.buildRemoveLiquidityCallData({ ...defaultBuildInput, queryOutput })
+    const result = await handler.buildCallData({ ...defaultBuildInput, queryOutput })
     expect(result.account).toBe(defaultTestUserAccount)
   })
 })

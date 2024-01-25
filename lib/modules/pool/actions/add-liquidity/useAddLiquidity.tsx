@@ -8,7 +8,7 @@ import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { HumanAmount } from '@balancer/sdk'
-import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
+import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
 import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulationQuery'
@@ -35,10 +35,13 @@ export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
 
 export function _useAddLiquidity() {
   const humanAmountsIn = useReactiveVar(humanAmountsInVar)
-  const [isComplete, setIsComplete] = useState(false)
 
-  const { isActiveStep, activateStep, deactivateStep } = useActiveStep()
-  const { pool, poolStateInput } = usePool()
+  const {
+    isActiveStep: isFinalStepActive,
+    activateStep: activateFinalStep,
+    deactivateStep: deactivateFinalStep,
+  } = useActiveStep()
+  const { pool } = usePool()
   const { getToken, usdValueForToken, getTokensByTokenAddress } = useTokens()
   const { isConnected, userAddress } = useUserAccount()
   const vaultAddress = useContractAddress('balancer.vaultV2')
@@ -68,7 +71,7 @@ export function _useAddLiquidity() {
   const amountsInTokensByAddress = getTokensByTokenAddress(amountsInTokenAddresses, pool.chain)
 
   const tokenAllowances = useTokenAllowances(userAddress, vaultAddress, tokenAddressesWithAmountIn)
-  const { tokenApprovalStep, initialAmountsToApprove } = useNextTokenApprovalStep({
+  const { tokenApprovalStep, remainingAmountsToApprove } = useNextTokenApprovalStep({
     tokenAllowances,
     amountsToApprove: helpers.getAmountsToApprove(humanAmountsIn, amountsInTokensByAddress),
     actionType: 'AddLiquidity',
@@ -128,7 +131,7 @@ export function _useAddLiquidity() {
     pool,
     simulationQuery,
     options: {
-      enabled: isActiveStep,
+      enabled: isFinalStepActive,
     },
   })
 
@@ -138,7 +141,7 @@ export function _useAddLiquidity() {
   const { addLiquidityStep, addLiquidityTransaction } = useConstructAddLiquidityStep(
     pool.id,
     buildCallDataQuery,
-    activateStep
+    activateFinalStep
   )
 
   const steps = [tokenApprovalStep, addLiquidityStep].filter(step => step !== null) as FlowStep[]
@@ -161,18 +164,15 @@ export function _useAddLiquidity() {
     isDisabled,
     disabledReason,
     helpers,
-    poolStateInput,
-    isComplete,
     buildCallDataQuery,
-    initialAmountsToApprove,
+    remainingAmountsToApprove,
     previewModalDisclosure,
     tokenApprovalStep,
     addLiquidityTransaction,
     steps,
-    activateStep,
-    deactivateStep,
+    isFinalStepActive,
+    deactivateFinalStep,
     setHumanAmountIn,
-    setIsComplete,
   }
 }
 

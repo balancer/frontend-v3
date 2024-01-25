@@ -15,7 +15,6 @@ import {
 } from 'wagmi'
 import { AbiMap } from './AbiMap'
 import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
-import { useContractAddress } from './useContractAddress'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 
@@ -24,21 +23,21 @@ export function useManagedTransaction<
   M extends keyof typeof AbiMap,
   F extends InferFunctionName<T[M], string, WriteAbiMutability>
 >(
+  contractAddress: string,
   contractId: M,
   functionName: F,
-  labels: TransactionLabels,
+  transactionLabels: TransactionLabels,
   args?: GetFunctionArgs<T[M], F> | null,
   additionalConfig?: Omit<
     UsePrepareContractWriteConfig<T[M], F, number>,
     'abi' | 'address' | 'functionName' | 'args'
   >
 ) {
-  const address = useContractAddress(contractId)
   const [writeArgs, setWriteArgs] = useState(args)
 
   const prepareQuery = usePrepareContractWrite({
     abi: AbiMap[contractId] as Abi,
-    address,
+    address: contractAddress,
     functionName: functionName as InferFunctionName<any, string, WriteAbiMutability>,
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
     args: writeArgs?.args as any,
@@ -54,11 +53,11 @@ export function useManagedTransaction<
   }
 
   // on successful submission to chain, add tx to cache
-  useOnTransactionSubmission(labels, writeQuery.data?.hash)
+  useOnTransactionSubmission(transactionLabels, writeQuery.data?.hash)
 
   // on confirmation, update tx in tx cache
   useOnTransactionConfirmation(
-    labels,
+    transactionLabels,
     bundle.result.data?.status,
     bundle.result.data?.transactionHash
   )

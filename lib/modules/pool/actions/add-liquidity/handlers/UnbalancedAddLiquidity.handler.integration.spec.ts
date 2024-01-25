@@ -24,7 +24,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
       { humanAmount: '1', tokenAddress: wjAuraAddress },
     ]
 
-    const priceImpact = await handler.calculatePriceImpact(humanAmountsIn)
+    const priceImpact = await handler.getPriceImpact(humanAmountsIn)
     expect(priceImpact).toBeGreaterThan(0.002)
   })
 
@@ -36,7 +36,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
       { humanAmount: '', tokenAddress: balAddress },
     ]
 
-    const priceImpact = await handler.calculatePriceImpact(humanAmountsIn)
+    const priceImpact = await handler.getPriceImpact(humanAmountsIn)
 
     expect(priceImpact).toEqual(0)
   })
@@ -49,7 +49,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
 
     const handler = selectUnbalancedHandler()
 
-    const result = await handler.queryAddLiquidity(humanAmountsIn)
+    const result = await handler.simulate(humanAmountsIn)
 
     expect(result.bptOut.amount).toBeGreaterThan(300000000000000000000n)
   })
@@ -63,9 +63,9 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
     const handler = selectUnbalancedHandler()
 
     // Store query response in handler instance
-    const queryOutput = await handler.queryAddLiquidity(humanAmountsIn)
+    const queryOutput = await handler.simulate(humanAmountsIn)
 
-    const result = await handler.buildAddLiquidityCallData({
+    const result = await handler.buildCallData({
       humanAmountsIn,
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
@@ -92,7 +92,7 @@ describe('When adding unbalanced liquidity for a stable pool', () => {
       }
     })
 
-    const priceImpact = await handler.calculatePriceImpact(humanAmountsIn)
+    const priceImpact = await handler.getPriceImpact(humanAmountsIn)
     expect(priceImpact).toBeGreaterThan(0.001)
   })
 })

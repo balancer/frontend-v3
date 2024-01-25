@@ -148,8 +148,6 @@ export function usePoolHelpers(pool: Pool, chain: GqlChain) {
 
   const gaugeAddress = pool?.staking?.gauge?.gaugeAddress || ''
 
-  const poolStateInput = toPoolStateInput(pool)
-
   const chainId = getChainId(pool.chain)
 
   return {
@@ -157,7 +155,6 @@ export function usePoolHelpers(pool: Pool, chain: GqlChain) {
     gaugeExplorerLink,
     hasGaugeAddress,
     gaugeAddress,
-    poolStateInput,
     chainId,
   }
 }
