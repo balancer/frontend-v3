@@ -79,7 +79,7 @@ export function UserSettings() {
   return (
     <Popover>
       <PopoverTrigger>
-        <Button variant="tertiary" size="sm">
+        <Button variant="tertiary">
           <HiOutlineCog6Tooth />
         </Button>
       </PopoverTrigger>
