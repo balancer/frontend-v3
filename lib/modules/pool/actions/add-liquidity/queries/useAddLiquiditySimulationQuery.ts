@@ -32,7 +32,10 @@ export function useAddLiquiditySimulationQuery(
     humanAmountsIn: debouncedHumanAmountsIn,
   })
 
-  const queryFn = async () => handler.queryAddLiquidity(humanAmountsIn, userAddress)
+  // Only NestedAddLiquidity expects a userAddress
+  // TODO: The sdk team is going to remove userAddress from the nested query signature to simplify this:
+  // https://github.com/balancer/b-sdk/issues/209
+  const queryFn = async () => handler.simulate(humanAmountsIn, userAddress)
 
   const queryOpts = {
     enabled: enabled && isConnected && hasValidHumanAmounts(debouncedHumanAmountsIn),

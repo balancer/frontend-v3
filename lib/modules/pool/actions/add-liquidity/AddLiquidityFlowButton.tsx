@@ -9,18 +9,17 @@ import React, { useState } from 'react'
 
 export function AddLiquidityFlowButton() {
   const [didRefetchPool, setDidRefetchPool] = useState(false)
-  const { setIsComplete, initialAmountsToApprove, steps } = useAddLiquidity()
+  const { initialAmountsToApprove, steps } = useAddLiquidity()
   const { pool, refetch } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
 
   async function handleJoinCompleted() {
-    setIsComplete(true)
-    await refetch()
+    await refetch() // Refetches onchain balances.
     setDidRefetchPool(true)
   }
 
   async function handlerRedirectToPoolPage(event: React.MouseEvent<HTMLElement>) {
-    if (!didRefetchPool) await refetch()
+    if (!didRefetchPool) await refetch() // Refetches onchain balances.
     redirectToPoolPage(event)
   }
 

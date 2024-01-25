@@ -27,8 +27,8 @@ test('queries price impact for add liquidity', async () => {
 
   const result = await testQuery(humanBptIn)
 
-  await waitFor(() => expect(result.current.priceImpact).toBeDefined())
+  await waitFor(() => expect(result.current.data).toBeDefined())
 
-  expect(result.current.priceImpact).toBeCloseTo(0.002368782867485742)
-  expect(result.current.isPriceImpactLoading).toBeFalsy()
+  expect(result.current.data).toBeCloseTo(0.002368782867485742)
+  expect(result.current.isLoading).toBeFalsy()
 })

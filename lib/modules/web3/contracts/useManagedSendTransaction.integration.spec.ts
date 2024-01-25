@@ -44,9 +44,9 @@ describe('weighted join test', () => {
       tokenAddress: t.address,
     }))
 
-    const queryOutput = await handler.queryAddLiquidity(humanAmountsIn)
+    const queryOutput = await handler.simulate(humanAmountsIn)
 
-    const txConfig = await handler.buildAddLiquidityCallData({
+    const txConfig = await handler.buildCallData({
       humanAmountsIn,
       account: defaultTestUserAccount,
       slippagePercent: '0.2',

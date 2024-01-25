@@ -29,7 +29,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
     this.helpers = new LiquidityActionHelpers(pool)
   }
 
-  public async queryRemoveLiquidity({
+  public async simulate({
     humanBptIn,
     tokenOut,
   }: QueryRemoveLiquidityInput): Promise<SdkQueryRemoveLiquidityOutput> {
@@ -41,7 +41,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
     return { amountsOut: sdkQueryOutput.amountsOut, sdkQueryOutput }
   }
 
-  public async calculatePriceImpact({
+  public async getPriceImpact({
     humanBptIn,
     tokenOut,
   }: QueryRemoveLiquidityInput): Promise<number> {
@@ -64,7 +64,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
     return priceImpactABA.decimal
   }
 
-  public async buildRemoveLiquidityCallData({
+  public async buildCallData({
     account,
     slippagePercent,
     queryOutput,

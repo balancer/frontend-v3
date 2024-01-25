@@ -27,7 +27,7 @@ describe('When removing unbalanced liquidity for a weighted pool', () => {
   test('queries amounts out', async () => {
     const handler = selectSingleTokenHandler(poolMock)
 
-    const result = await handler.queryRemoveLiquidity(defaultQueryInput)
+    const result = await handler.simulate(defaultQueryInput)
 
     const [balTokenAmountOut, wEthTokenAmountOut] = result.amountsOut
 
@@ -46,9 +46,9 @@ describe('When removing unbalanced liquidity for a weighted pool', () => {
       tokenOut: balAddress,
     }
 
-    const queryOutput = await handler.queryRemoveLiquidity(inputs)
+    const queryOutput = await handler.simulate(inputs)
 
-    const result = await handler.buildRemoveLiquidityCallData({ ...defaultBuildInput, queryOutput })
+    const result = await handler.buildCallData({ ...defaultBuildInput, queryOutput })
 
     expect(result.to).toBe(networkConfig.contracts.balancer.vaultV2)
     expect(result.data).toBeDefined()

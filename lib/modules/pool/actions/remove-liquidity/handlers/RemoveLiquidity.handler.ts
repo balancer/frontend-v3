@@ -12,12 +12,12 @@ import {
  */
 export interface RemoveLiquidityHandler {
   // Query the SDK for the expected output of removing liquidity
-  queryRemoveLiquidity(inputs: QueryRemoveLiquidityInput): Promise<QueryRemoveLiquidityOutput>
+  simulate(inputs: QueryRemoveLiquidityInput): Promise<QueryRemoveLiquidityOutput>
   // Calculate the price impact of removing liquidity
-  calculatePriceImpact(inputs: QueryRemoveLiquidityInput): Promise<number>
+  getPriceImpact(inputs: QueryRemoveLiquidityInput): Promise<number>
   /*
     Build tx callData payload for removing liquidity
     It is responsibility of the UI to avoid calling buildRemoveLiquidityCallData before the last queryRemoveLiquidity was finished
   */
-  buildRemoveLiquidityCallData(inputs: BuildRemoveLiquidityInput): Promise<TransactionConfig>
+  buildCallData(inputs: BuildRemoveLiquidityInput): Promise<TransactionConfig>
 }
