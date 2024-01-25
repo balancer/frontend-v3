@@ -28,9 +28,6 @@ type StepType =
   | 'tokenApproval'
   | 'addLiquidity'
   | 'removeLiquidity'
-  | 'tokenApproval'
-  | 'addLiquidity'
-  | 'removeLiquidity'
   | 'gaugeDeposit'
   | 'gaugeWithdraw'
 
