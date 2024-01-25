@@ -6,7 +6,7 @@ import { act } from 'react-dom/test-utils'
 test('relayer successful relayer approval transaction', async () => {
   const balancerRelayer = '0xfeA793Aa415061C483D2390414275AD314B3F621'
 
-  const result = testManagedTransaction('balancer.vaultV2', 'setRelayerApproval', {
+  const result = testManagedTransaction('balancer.vaultV2', 'setRelayerApproval', balancerRelayer, {
     args: [defaultTestUserAccount, balancerRelayer, true],
   })
 

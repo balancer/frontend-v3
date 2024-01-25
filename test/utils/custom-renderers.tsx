@@ -121,6 +121,7 @@ export function testManagedTransaction<
 >(
   contractId: M,
   functionName: F,
+  contractAddress: string,
   args?: GetFunctionArgs<T[M], F>,
   additionalConfig?: Omit<
     UsePrepareContractWriteConfig<T[M], F, number>,
@@ -128,7 +129,14 @@ export function testManagedTransaction<
   >
 ) {
   const { result } = testHook(() =>
-    useManagedTransaction(contractId, functionName, {} as TransactionLabels, args, additionalConfig)
+    useManagedTransaction(
+      contractId,
+      functionName,
+      {} as TransactionLabels,
+      contractAddress,
+      args,
+      additionalConfig
+    )
   )
   return result
 }

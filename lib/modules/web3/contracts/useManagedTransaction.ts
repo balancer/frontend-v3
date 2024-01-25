@@ -15,7 +15,6 @@ import {
 } from 'wagmi'
 import { AbiMap } from './AbiMap'
 import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
-import { useContractAddress } from './useContractAddress'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 
@@ -27,19 +26,18 @@ export function useManagedTransaction<
   contractId: M,
   functionName: F,
   transactionLabels: TransactionLabels,
+  contractAddress: string,
   args?: GetFunctionArgs<T[M], F> | null,
   additionalConfig?: Omit<
     UsePrepareContractWriteConfig<T[M], F, number>,
     'abi' | 'address' | 'functionName' | 'args'
-  >,
-  contractAddress?: string
+  >
 ) {
-  const address = useContractAddress(contractId)
   const [writeArgs, setWriteArgs] = useState(args)
 
   const prepareQuery = usePrepareContractWrite({
     abi: AbiMap[contractId] as Abi,
-    address: contractAddress ?? address,
+    address: contractAddress,
     functionName: functionName as InferFunctionName<any, string, WriteAbiMutability>,
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
     args: writeArgs?.args as any,
