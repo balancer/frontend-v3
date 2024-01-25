@@ -23,7 +23,7 @@ function useAddLiquidityTimeout() {
     buildCallDataQuery,
     previewModalDisclosure,
     addLiquidityTransaction,
-    isActiveStep,
+    isFinalStepActive,
   } = useAddLiquidity()
 
   const transactionState = getTransactionState(addLiquidityTransaction)
@@ -33,11 +33,9 @@ function useAddLiquidityTimeout() {
   const isComplete = transactionState === TransactionState.Completed
 
   // Disable query refetches:
-  // if the final step is not active
   // if the flow is complete
   // if the add liquidity transaction is confirming
-  const shouldFreezeQuote =
-    !isActiveStep || isComplete || isConfirmingAddLiquidity || isAwaitingUserConfirmation
+  const shouldFreezeQuote = isComplete || isConfirmingAddLiquidity || isAwaitingUserConfirmation
 
   // When the countdown timer reaches 0, refetch all add liquidity queries.
   useEffect(() => {
@@ -45,7 +43,7 @@ function useAddLiquidityTimeout() {
       stopCountdown()
       resetCountdown()
       await Promise.all([simulationQuery.refetch(), priceImpactQuery.refetch()])
-      await buildCallDataQuery.refetch()
+      if (isFinalStepActive) await buildCallDataQuery.refetch() // avoid this refetch if the final step is not enabled (for example during pre-approval steps)
       startCountdown()
     }
     if (secondsToRefetch === 0 && !shouldFreezeQuote) refetchQueries()
