@@ -9,7 +9,6 @@ export interface TokensConfig {
     symbol: string
     decimals: number
   }
-  doubleApprovalRequired?: string[]
   defaultSwapTokens?: {
     tokenIn?: Address
     tokenOut?: Address

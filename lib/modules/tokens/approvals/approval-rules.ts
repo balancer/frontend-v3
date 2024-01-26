@@ -1,5 +1,4 @@
 import { SupportedChainId } from '@/lib/config/config.types'
-import { requiresDoubleApproval } from '@/lib/config/tokens.config'
 import { isNativeAsset } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
 import { TokenAllowances } from '../../web3/useTokenAllowances'
@@ -36,19 +35,4 @@ export function getRequiredTokenApprovals({
     if (hasEnoughAllowedAmount) return false
     return true
   })
-}
-
-/**
- * Some tokens require setting their approval amount to 0 first before being
- * able to adjust the value up again. This returns true for tokens that requires
- * this and false otherwise.
- */
-export function isDoubleApprovalRequired(
-  chainId: SupportedChainId,
-  tokenAddress: Address,
-  currentTokenAllowances: TokenAllowances
-): boolean {
-  return !!(
-    requiresDoubleApproval(chainId, tokenAddress) && currentTokenAllowances[tokenAddress] > 0n
-  )
 }
