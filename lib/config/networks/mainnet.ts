@@ -15,6 +15,15 @@ const networkConfig: NetworkConfig = {
       symbol: 'ETH',
       decimals: 18,
     },
+    /**
+     * The approval function for these tokens doesn't allow setting a new approval
+     * level if the current level is > 0. Thus they must be approved in two steps
+     * first setting to 0 then setting to the required amount.
+     */
+    doubleApprovalRequired: [
+      '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
+      '0xf629cbd94d3791c9250152bd8dfbdf380e2a3b9c', // ENJ
+    ],
     defaultSwapTokens: {
       tokenIn: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     },
