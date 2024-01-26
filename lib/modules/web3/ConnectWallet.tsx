@@ -25,8 +25,7 @@ export function ConnectWallet() {
         if (!isConnected) {
           return (
             <Button
-              variant="secondary"
-              size="sm"
+              variant="tertiary"
               onClick={openConnectModal}
               type="button"
               isLoading={isLoading || !mounted}
@@ -39,7 +38,7 @@ export function ConnectWallet() {
 
         if (chain.unsupported) {
           return (
-            <Button onClick={openChainModal} type="button">
+            <Button onClick={openChainModal} type="button" variant="tertiary">
               Unsupported network
             </Button>
           )
@@ -47,7 +46,13 @@ export function ConnectWallet() {
 
         return (
           <HStack spacing="sm">
-            <Button onClick={openChainModal} display="flex" alignItems="center" type="button">
+            <Button
+              onClick={openChainModal}
+              display="flex"
+              alignItems="center"
+              type="button"
+              variant="tertiary"
+            >
               {chain.hasIcon && (
                 <Box width={6} height={6} borderRadius="full" overflow="hidden" marginRight="sm">
                   {chain.iconUrl && (
@@ -62,7 +67,7 @@ export function ConnectWallet() {
               )}
               {chain.name}
             </Button>
-            <Button onClick={openAccountModal}>
+            <Button onClick={openAccountModal} variant="tertiary">
               <CustomAvatar
                 ensImage={account.ensAvatar}
                 address={account.address}
