@@ -18,6 +18,8 @@ import { balColors, balTheme } from '@/lib/shared/services/chakra/theme'
 import numeral from 'numeral'
 import { twentyFourHoursInSecs } from '@/lib/shared/hooks/useTime'
 
+const MIN_CHART_VALUES_NUM = 2
+
 export enum PoolChartTab {
   VOLUME = 'volume',
   TVL = 'tvl',
@@ -318,8 +320,8 @@ export function usePoolCharts() {
     }
 
     // add lagging timestamps
-    if (chartArr.length < 30) {
-      const lastDate = chartArr[chartArr.length - 1][0]
+    if (chartArr.length < 30 && chartArr.length > MIN_CHART_VALUES_NUM) {
+      const lastDate = chartArr[chartArr.length - 1][0] || 0
       const days = 30 - chartArr.length
 
       const timestampsArr: number[] = []
