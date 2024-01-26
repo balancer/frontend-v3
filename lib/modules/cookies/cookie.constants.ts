@@ -4,5 +4,6 @@ export const COOKIE_KEYS = {
     ColorMode: 'chakra-ui-color-mode', // Has to be this string to match Chakra's default
     Currency: 'userSettings.Currency',
     Slippage: 'userSettings.Slippage',
+    SignatureAllowance: 'userSettings.SignatureAllowance',
   },
 }
