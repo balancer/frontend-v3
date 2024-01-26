@@ -67,7 +67,7 @@ export function PoolChart() {
         ) : (
           <Flex h="100" alignItems="center">
             <Text fontSize="2xl" variant="secondary" p="lg">
-              Not enough data to show charts
+              Not enough data
             </Text>
           </Flex>
         )}
