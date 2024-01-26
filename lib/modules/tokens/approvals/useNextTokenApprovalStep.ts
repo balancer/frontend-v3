@@ -15,6 +15,11 @@ type Params = {
   approveMaxBigInt?: boolean
 }
 
+const emptyAmountToApprove: TokenAmountToApprove = {
+  tokenAddress: emptyAddress,
+  rawAmount: MAX_BIGINT,
+}
+
 /*
   Returns the next Token Approval Step to be rendered by the TransactionFlow component
   When the current approval is completed it will refetch allowances and then return the next Approval Step
@@ -34,24 +39,19 @@ export function useNextTokenApprovalStep({
     chainId,
     amountsToApprove,
     currentTokenAllowances: allowances || {},
+    approveMaxBigInt,
   })
 
-  const tokenAddressToApprove = isEmpty(remainingAmountsToApprove)
-    ? emptyAddress
-    : remainingAmountsToApprove[0].tokenAddress
-
-  const amountToApprove =
-    isEmpty(remainingAmountsToApprove) || approveMaxBigInt
-      ? MAX_BIGINT
-      : remainingAmountsToApprove[0].rawAmount
+  const tokenAmountToApprove = isEmpty(remainingAmountsToApprove)
+    ? emptyAmountToApprove
+    : remainingAmountsToApprove[0]
 
   const tokenApprovalStep = useConstructApproveTokenStep({
     tokenAllowances,
-    tokenAddress: tokenAddressToApprove,
+    tokenAmountToApprove,
     spenderAddress,
     actionType,
     chain,
-    amountToApprove,
   })
 
   return {

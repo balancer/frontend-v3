@@ -3,6 +3,7 @@ import { isNativeAsset } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
 import { TokenAllowances } from '../../web3/useTokenAllowances'
 import { requiresDoubleApproval } from '@/lib/config/tokens.config'
+import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 
 export type TokenAmountToApprove = {
   rawAmount: bigint
@@ -13,6 +14,7 @@ type TokenApprovalParams = {
   chainId: SupportedChainId | null
   amountsToApprove: TokenAmountToApprove[]
   currentTokenAllowances: TokenAllowances
+  approveMaxBigInt: boolean
   skipAllowanceCheck?: boolean
 }
 
@@ -23,12 +25,13 @@ export function getRequiredTokenApprovals({
   chainId,
   amountsToApprove,
   currentTokenAllowances,
+  approveMaxBigInt = true,
   skipAllowanceCheck = false,
 }: TokenApprovalParams) {
   if (!chainId) return []
   if (skipAllowanceCheck) return []
 
-  const tokenAmountsToApprove = amountsToApprove.filter(({ tokenAddress, rawAmount }) => {
+  let tokenAmountsToApprove = amountsToApprove.filter(({ tokenAddress, rawAmount }) => {
     if (isNativeAsset(chainId, tokenAddress)) return false
     const allowedAmount = currentTokenAllowances[tokenAddress]
 
@@ -36,6 +39,13 @@ export function getRequiredTokenApprovals({
     if (hasEnoughAllowedAmount) return false
     return true
   })
+
+  if (approveMaxBigInt) {
+    // Use MAX_BIGINT in all the amounts to approve
+    tokenAmountsToApprove = tokenAmountsToApprove.map(({ tokenAddress }) => {
+      return { tokenAddress, rawAmount: MAX_BIGINT }
+    })
+  }
 
   /**
    * Some tokens (e.g. USDT) require setting their approval amount to 0n before being

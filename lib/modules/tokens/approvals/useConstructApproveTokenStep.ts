@@ -3,34 +3,34 @@ import { useManagedErc20Transaction } from '@/lib/modules/web3/contracts/useMana
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useEffect } from 'react'
-import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
 import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
 import { useTokens } from '../useTokens'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
+import { TokenAmountToApprove } from './approval-rules'
 
 type Params = {
   tokenAllowances: UseTokenAllowancesResponse
-  tokenAddress: Address
+  tokenAmountToApprove: TokenAmountToApprove
   spenderAddress: Address
-  amountToApprove: bigint
   actionType: ApprovalAction
   chain: GqlChain
 }
 
 export function useConstructApproveTokenStep({
   tokenAllowances,
-  tokenAddress,
+  tokenAmountToApprove,
   spenderAddress,
-  amountToApprove = MAX_BIGINT,
   actionType,
   chain,
 }: Params) {
   const { isActiveStep, activateStep } = useActiveStep()
   const { refetchAllowances, isAllowancesLoading } = tokenAllowances
   const { getToken } = useTokens()
+
+  const { tokenAddress, rawAmount } = tokenAmountToApprove
 
   const token = getToken(tokenAddress, chain)
 
@@ -44,7 +44,7 @@ export function useConstructApproveTokenStep({
     tokenAddress,
     'approve',
     tokenApprovalLabels,
-    { args: [spenderAddress, amountToApprove] },
+    { args: [spenderAddress, rawAmount] },
     {
       enabled: isActiveStep && !!spenderAddress && !isAllowancesLoading,
     }
