@@ -8,6 +8,7 @@ import { usePoolRedirect } from '../../pool.hooks'
 import { usePool } from '../../usePool'
 import React, { useEffect, useState } from 'react'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
+import { useTokens } from '@/lib/modules/tokens/useTokens'
 
 export function AddLiquidityFlowButton() {
   const [didRefetchPool, setDidRefetchPool] = useState(false)
@@ -16,6 +17,7 @@ export function AddLiquidityFlowButton() {
   >(null)
   const { steps, remainingAmountsToApprove } = useAddLiquidity()
   const { pool, refetch } = usePool()
+  const { getToken } = useTokens()
   const { redirectToPoolPage } = usePoolRedirect(pool)
 
   useEffect(() => {
@@ -37,7 +39,7 @@ export function AddLiquidityFlowButton() {
   }
 
   const tokensRequiringApprovalTransaction = remainingAmountsToApprove
-    ?.map(token => token.tokenSymbol)
+    ?.map(token => getToken(token.tokenAddress, pool.chain)?.symbol)
     .join(', ')
 
   return (
