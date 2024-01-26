@@ -17,6 +17,8 @@ import {
 import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { usdtAbi } from './abi/UsdtAbi'
 
 type Erc20Abi = typeof erc20ABI
 export function useManagedErc20Transaction<
@@ -33,8 +35,15 @@ export function useManagedErc20Transaction<
 ) {
   const [writeArgs, setWriteArgs] = useState(args)
 
+  const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7'
+  const isUsdt = isSameAddress(tokenAddress, usdtAddress)
+
   const prepareQuery = usePrepareContractWrite({
-    abi: erc20ABI,
+    /*
+      USDTs ABI does not exactly follow the erc20ABI so we need its explicit ABI to avoid errors (e.g. calling approve)
+      More info: https://github.com/wevm/wagmi/issues/2749#issuecomment-1638200817
+    */
+    abi: isUsdt ? usdtAbi : erc20ABI,
     address: tokenAddress,
     functionName: functionName as InferFunctionName<any, string, WriteAbiMutability>,
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
