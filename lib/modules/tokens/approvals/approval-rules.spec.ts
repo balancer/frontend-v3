@@ -66,13 +66,13 @@ describe('getRequiredTokenApprovals', () => {
       })
     ).toEqual([
       {
-        rawAmount: 10000000000000000000n,
         tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        rawAmount: MAX_BIGINT,
       },
     ])
   })
 
-  test.only('when one token (USDT) requires double token approval', () => {
+  test('when one token (USDT) requires double token approval', () => {
     const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7' as Address
 
     const currentTokenAllowances = {
@@ -98,8 +98,8 @@ describe('getRequiredTokenApprovals', () => {
         tokenAddress: usdtAddress,
       },
       {
-        rawAmount: 10000000000000000000n,
         tokenAddress: usdtAddress,
+        rawAmount: MAX_BIGINT,
       },
     ])
   })
@@ -126,7 +126,7 @@ describe('getRequiredTokenApprovals', () => {
       })
     ).toEqual([
       {
-        rawAmount: 10000000000000000000n,
+        rawAmount: MAX_BIGINT,
         tokenAddress: usdtAddress,
       },
     ])

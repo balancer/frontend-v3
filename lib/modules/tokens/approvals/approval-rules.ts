@@ -14,7 +14,7 @@ type TokenApprovalParams = {
   chainId: SupportedChainId | null
   amountsToApprove: TokenAmountToApprove[]
   currentTokenAllowances: TokenAllowances
-  approveMaxBigInt: boolean
+  approveMaxBigInt?: boolean
   skipAllowanceCheck?: boolean
 }
 
