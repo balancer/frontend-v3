@@ -35,10 +35,9 @@ export function isPhantomStable(poolType: GqlPoolType): boolean {
   return poolType === GqlPoolType.PhantomStable
 }
 
-// TODO: verify
-// export function isComposableStable(poolType: GqlPoolType): boolean {
-//   return poolType === GqlPoolType.ComposableStable
-// }
+export function isComposableStable(poolType: GqlPoolType): boolean {
+  return poolType === GqlPoolType.ComposableStable
+}
 
 // TODO: verify
 // export function isComposableStableV1(pool: Pool): boolean {

@@ -1,6 +1,14 @@
 'use client'
 
-import { isGyro, isLBP, isMetaStable, isPhantomStable, isStable, isWeighted } from '../pool.helpers'
+import {
+  isComposableStable,
+  isGyro,
+  isLBP,
+  isMetaStable,
+  isPhantomStable,
+  isStable,
+  isWeighted,
+} from '../pool.helpers'
 import { Box, HStack, Tag, Text } from '@chakra-ui/react'
 import { TokenIcon } from '../../tokens/TokenIcon'
 import { PoolListItem } from '../pool.types'
@@ -107,7 +115,7 @@ export function PoolListTokensTag({ pool }: Props) {
           </HStack>
         </Tag>
       )
-    } else if (isPhantomStable(pool.type)) {
+    } else if (isPhantomStable(pool.type) || isComposableStable(pool.type)) {
       return (
         <Tag borderRadius="full" p="2">
           <HStack spacing="1">
