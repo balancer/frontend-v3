@@ -2,6 +2,7 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { isNativeAsset } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
 import { TokenAllowances } from '../../web3/useTokenAllowances'
+import { requiresDoubleApproval } from '@/lib/config/tokens.config'
 
 export type TokenAmountToApprove = {
   rawAmount: bigint
@@ -38,7 +39,7 @@ export function getRequiredTokenApprovals({
 
   /**
    * Some tokens (e.g. USDT) require setting their approval amount to 0n before being
-   * able to adjust the value up again.
+   * able to adjust the value up again (only when there was an existing allowance)
    */
   return tokenAmountsToApprove.flatMap(t => {
     if (isDoubleApprovalRequired(chainId, t.tokenAddress, currentTokenAllowances)) {
@@ -51,4 +52,19 @@ export function getRequiredTokenApprovals({
     }
     return t
   })
+}
+
+/**
+ * Some tokens require setting their approval amount to 0 first before being
+ * able to adjust the value up again. This returns true for tokens that requires
+ * this and false otherwise.
+ */
+export function isDoubleApprovalRequired(
+  chainId: SupportedChainId,
+  tokenAddress: Address,
+  currentTokenAllowances: TokenAllowances
+): boolean {
+  return !!(
+    requiresDoubleApproval(chainId, tokenAddress) && currentTokenAllowances[tokenAddress] > 0n
+  )
 }
