@@ -62,7 +62,7 @@ export default function RecentTransactions() {
   return (
     <Popover>
       <PopoverTrigger>
-        <Button variant="tertiary" size="sm">
+        <Button variant="tertiary">
           <FiActivity />
         </Button>
       </PopoverTrigger>

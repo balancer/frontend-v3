@@ -42,7 +42,7 @@ export function _useAddLiquidity() {
     deactivateStep: deactivateFinalStep,
   } = useActiveStep()
   const { pool } = usePool()
-  const { getToken, usdValueForToken, getTokensByTokenAddress } = useTokens()
+  const { getToken, usdValueForToken } = useTokens()
   const { isConnected, userAddress } = useUserAccount()
   const vaultAddress = useContractAddress('balancer.vaultV2')
   const previewModalDisclosure = useDisclosure()
@@ -67,13 +67,11 @@ export function _useAddLiquidity() {
   const tokenAddressesWithAmountIn = humanAmountsIn
     .filter(amountIn => bn(amountIn.humanAmount).gt(0))
     .map(amountIn => amountIn.tokenAddress)
-  const amountsInTokenAddresses = humanAmountsIn.map(h => h.tokenAddress)
-  const amountsInTokensByAddress = getTokensByTokenAddress(amountsInTokenAddresses, pool.chain)
 
   const tokenAllowances = useTokenAllowances(userAddress, vaultAddress, tokenAddressesWithAmountIn)
   const { tokenApprovalStep, remainingAmountsToApprove } = useNextTokenApprovalStep({
     tokenAllowances,
-    amountsToApprove: helpers.getAmountsToApprove(humanAmountsIn, amountsInTokensByAddress),
+    amountsToApprove: helpers.getAmountsToApprove(humanAmountsIn),
     actionType: 'AddLiquidity',
   })
 

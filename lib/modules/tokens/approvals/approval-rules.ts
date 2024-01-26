@@ -7,7 +7,6 @@ import { TokenAllowances } from '../../web3/useTokenAllowances'
 export type TokenAmountToApprove = {
   rawAmount: bigint
   tokenAddress: Address
-  tokenSymbol: string
 }
 
 type TokenApprovalParams = {

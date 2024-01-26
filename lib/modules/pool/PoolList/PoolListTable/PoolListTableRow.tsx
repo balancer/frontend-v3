@@ -25,12 +25,12 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
       <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
         <Grid {...rest} height="63.5px">
           <GridItem>
-            <NetworkIcon chain={pool.chain} />
+            <NetworkIcon chain={pool.chain} size={10} />
           </GridItem>
           <GridItem>{pool && <PoolListTokensTag pool={pool} />}</GridItem>
           {userAddress && (
             <GridItem>
-              <Text textAlign="right">
+              <Text textAlign="right" fontWeight="medium" fontSize="lg">
                 {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
               </Text>
             </GridItem>
@@ -39,6 +39,8 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
             <Text
               title={toCurrency(pool.dynamicData.totalLiquidity, { abbreviated: false })}
               textAlign="right"
+              fontWeight="medium"
+              fontSize="lg"
             >
               {toCurrency(pool.dynamicData.totalLiquidity)}
             </Text>
@@ -47,12 +49,18 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
             <Text
               title={toCurrency(pool.dynamicData.volume24h, { abbreviated: false })}
               textAlign="right"
+              fontWeight="medium"
+              fontSize="lg"
             >
               {toCurrency(pool.dynamicData.volume24h)}
             </Text>
           </GridItem>
           <GridItem justifySelf="end">
-            <MemoizedAprTooltip data={pool.dynamicData.apr} poolId={pool.id} />
+            <MemoizedAprTooltip
+              data={pool.dynamicData.apr}
+              poolId={pool.id}
+              textProps={{ fontWeight: 'medium', fontSize: 'lg' }}
+            />
           </GridItem>
         </Grid>
       </Link>

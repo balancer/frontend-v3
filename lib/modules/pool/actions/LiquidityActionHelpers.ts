@@ -58,15 +58,11 @@ export class LiquidityActionHelpers {
     return this.pool.tokens.map(t => t.address as Address)
   }
 
-  public getAmountsToApprove(
-    humanAmountsIn: HumanAmountIn[],
-    tokensByAddress: Dictionary<GqlToken>
-  ): TokenAmountToApprove[] {
+  public getAmountsToApprove(humanAmountsIn: HumanAmountIn[]): TokenAmountToApprove[] {
     return this.toInputAmounts(humanAmountsIn).map(({ address, rawAmount }) => {
       return {
         tokenAddress: address,
         rawAmount,
-        tokenSymbol: tokensByAddress[address].symbol,
       }
     })
   }

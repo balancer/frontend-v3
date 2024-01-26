@@ -52,15 +52,23 @@ export function PoolListTokensTag({ pool }: Props) {
         <HStack spacing="1" wrap="wrap">
           {pool.displayTokens.map(token => {
             return (
-              <Tag key={token.address} borderRadius="full" p="2">
+              <Tag
+                key={token.address}
+                borderRadius="full"
+                p="2"
+                borderWidth={2}
+                borderColor="background.card.level0"
+              >
                 <HStack>
                   {token.nestedTokens ? (
                     <NestedTokens nestedTokens={token.nestedTokens} chain={pool.chain} />
                   ) : (
                     <PoolTokenIcon token={token} chain={pool.chain} />
                   )}
-                  <Text>{token.nestedTokens ? token.name : token.symbol}</Text>
-                  <Text>{fNum('weight', token.weight || '')}</Text>
+                  <Text fontWeight="bold">{token.nestedTokens ? token.name : token.symbol}</Text>
+                  <Text fontWeight="light" fontSize="xs">
+                    {fNum('weight', token.weight || '')}
+                  </Text>
                 </HStack>
               </Tag>
             )
@@ -69,12 +77,18 @@ export function PoolListTokensTag({ pool }: Props) {
       )
     } else if (isMetaStable(pool.type) || isGyro(pool.type)) {
       return (
-        <Tag borderRadius="full" p="2">
-          <HStack>
-            {pool.displayTokens.map(token => (
-              <HStack key={token.address} spacing="1">
+        <Tag borderRadius="full" px={0}>
+          <HStack spacing={0} p={0}>
+            {pool.displayTokens.map((token, i) => (
+              <HStack
+                key={token.address}
+                p="2"
+                borderWidth={pool.displayTokens.length - 1 === i ? 0 : 2}
+                borderColor="background.card.level0"
+                borderRadius="full"
+              >
                 <PoolTokenIcon token={token} chain={pool.chain} />
-                <Text>{token.symbol}</Text>
+                <Text fontWeight="bold">{token.symbol}</Text>
               </HStack>
             ))}
           </HStack>
@@ -89,7 +103,7 @@ export function PoolListTokensTag({ pool }: Props) {
                 <PoolTokenIcon token={token} chain={pool.chain} />
               </Box>
             ))}
-            <Text>{pool.name}</Text>
+            <Text fontWeight="bold">{pool.name}</Text>
           </HStack>
         </Tag>
       )
@@ -105,7 +119,7 @@ export function PoolListTokensTag({ pool }: Props) {
                   ) : (
                     <PoolTokenIcon token={token} chain={pool.chain} />
                   )}
-                  <Text>{token.nestedTokens ? token.name : token.symbol}</Text>
+                  <Text fontWeight="bold">{token.nestedTokens ? token.name : token.symbol}</Text>
                 </HStack>
               )
             })}

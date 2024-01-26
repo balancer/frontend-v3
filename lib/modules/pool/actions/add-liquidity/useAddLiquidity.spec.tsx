@@ -1,12 +1,11 @@
 import { balAddress, daiAddress, usdcAddress, usdtAddress, wETHAddress } from '@/lib/debug-helpers'
-import { GqlPoolElement, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import {
   DefaultAddLiquidityTestProvider,
   buildDefaultPoolTestProvider,
   testHook,
 } from '@/test/utils/custom-renderers'
-import { Dictionary } from 'lodash'
 import { PropsWithChildren } from 'react'
 import { mainnet } from 'wagmi'
 import { HumanAmountIn } from '../liquidity-types'
@@ -53,23 +52,15 @@ test('returns add liquidity helpers', async () => {
     { tokenAddress: wETHAddress, humanAmount: '2' },
   ]
 
-  const tokensByAddress = {
-    [balAddress]: { symbol: 'BAL' },
-    [wETHAddress]: { symbol: 'WETH' },
-  } as unknown as Dictionary<GqlToken>
-
-  expect(result.current.helpers.getAmountsToApprove(humanAmountsIn, tokensByAddress))
-    .toMatchInlineSnapshot(`
+  expect(result.current.helpers.getAmountsToApprove(humanAmountsIn)).toMatchInlineSnapshot(`
     [
       {
         "rawAmount": 1000000000000000000n,
         "tokenAddress": "0xba100000625a3754423978a60c9317c58a424e3d",
-        "tokenSymbol": "BAL",
       },
       {
         "rawAmount": 2000000000000000000n,
         "tokenAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-        "tokenSymbol": "WETH",
       },
     ]
   `)
