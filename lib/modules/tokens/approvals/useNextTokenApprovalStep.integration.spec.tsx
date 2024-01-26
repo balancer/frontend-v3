@@ -39,8 +39,8 @@ function testUseTokenApprovals(amountsToApprove: TokenAmountToApprove[]) {
 }
 
 const amountsToApprove: TokenAmountToApprove[] = [
-  { tokenAddress: wETHAddress, rawAmount: 2n, tokenSymbol: 'WETH' },
-  { tokenAddress: wjAuraAddress, rawAmount: 2n, tokenSymbol: 'wjAura' },
+  { tokenAddress: wETHAddress, rawAmount: 2n },
+  { tokenAddress: wjAuraAddress, rawAmount: 2n },
 ]
 
 // Unskip once we refactor tests state to be isolated
