@@ -1,5 +1,5 @@
 'use client'
-import { Box, Card, HStack, Heading, Skeleton, Stack, Text } from '@chakra-ui/react'
+import { Box, Card, Center, Flex, HStack, Heading, Skeleton, Stack, Text } from '@chakra-ui/react'
 import ReactECharts from 'echarts-for-react'
 
 import { PoolChartTypeTab, poolChartPeriods, usePoolCharts } from './usePoolCharts'
@@ -65,7 +65,11 @@ export function PoolChart() {
             </Box>
           </Stack>
         ) : (
-          <Text p="lg">Empty pool snapshots list</Text>
+          <Flex h="100" alignItems="center">
+            <Text fontSize="2xl" variant="secondary" p="lg">
+              Not enough data to show charts
+            </Text>
+          </Flex>
         )}
       </Stack>
     </Card>
