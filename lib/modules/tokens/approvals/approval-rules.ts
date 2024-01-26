@@ -27,12 +27,28 @@ export function getRequiredTokenApprovals({
   if (!chainId) return []
   if (skipAllowanceCheck) return []
 
-  return amountsToApprove.filter(({ tokenAddress, rawAmount }) => {
+  const tokenAmountsToApprove = amountsToApprove.filter(({ tokenAddress, rawAmount }) => {
     if (isNativeAsset(chainId, tokenAddress)) return false
     const allowedAmount = currentTokenAllowances[tokenAddress]
 
     const hasEnoughAllowedAmount = allowedAmount >= rawAmount
     if (hasEnoughAllowedAmount) return false
     return true
+  })
+
+  /**
+   * Some tokens (e.g. USDT) require setting their approval amount to 0n before being
+   * able to adjust the value up again.
+   */
+  return tokenAmountsToApprove.flatMap(t => {
+    if (isDoubleApprovalRequired(chainId, t.tokenAddress, currentTokenAllowances)) {
+      const zeroTokenAmountToApprove: TokenAmountToApprove = {
+        rawAmount: 0n,
+        tokenAddress: t.tokenAddress,
+      }
+      // Prepend approval for ZERO amount
+      return [zeroTokenAmountToApprove, t]
+    }
+    return t
   })
 }
