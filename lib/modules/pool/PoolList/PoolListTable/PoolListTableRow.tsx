@@ -3,11 +3,11 @@ import Link from 'next/link'
 import { getPoolPath } from '../../pool.utils'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
-import { PoolListTokensTag } from '../PoolListTokensTag'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { PoolListItem } from '../../pool.types'
+import { PoolListTokenPills } from '../PoolListTokenPills'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -27,7 +27,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
           <GridItem>
             <NetworkIcon chain={pool.chain} size={10} />
           </GridItem>
-          <GridItem>{pool && <PoolListTokensTag pool={pool} />}</GridItem>
+          <GridItem>{pool && <PoolListTokenPills pool={pool} />}</GridItem>
           {userAddress && (
             <GridItem>
               <Text textAlign="right" fontWeight="medium">

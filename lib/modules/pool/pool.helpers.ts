@@ -88,6 +88,17 @@ export function isWeightedLike(poolType: GqlPoolType): boolean {
   return isWeighted(poolType) || isManaged(poolType) || isLiquidityBootstrapping(poolType)
 }
 
+export function isStableLike(poolType: GqlPoolType): boolean {
+  return (
+    isStable(poolType) ||
+    isMetaStable(poolType) ||
+    isPhantomStable(poolType) ||
+    isComposableStable(poolType) ||
+    isFx(poolType) ||
+    isGyro(poolType)
+  )
+}
+
 export function isSwappingHaltable(poolType: GqlPoolType): boolean {
   return isManaged(poolType) || isLiquidityBootstrapping(poolType)
 }
