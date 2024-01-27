@@ -78,17 +78,23 @@ export function FeaturedPools() {
     <VStack align="start" w="full">
       <Grid
         w="full"
-        h="600px"
+        minH="600px"
         gap="4"
         alignContent="stretch"
         templateColumns={{
-          base: 'repeat(2, 1fr)',
+          base: 'repeat(1, 1fr)',
+          md: 'repeat(2, 1fr)',
           lg: 'repeat(4, 1fr)', // align with PoolListCards
         }}
         templateAreas={{
-          base: `"primary primary"
-                 "one     two"
-                 "three   four"`,
+          base: `"primary"
+                 "one"
+                 "two"
+                 "three"
+                 "four"`,
+          md: `"primary primary"
+               "one     two"
+               "three   four"`,
           lg: `"primary primary one   two"
                "primary primary three four"`, // align with PoolListCards
         }}
