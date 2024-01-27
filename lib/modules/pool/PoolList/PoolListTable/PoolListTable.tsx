@@ -29,7 +29,6 @@ export function PoolListTable({ pools, count, loading }: Props) {
     } ${numberColumnWidth} 200px`,
     alignItems: 'center',
     gap: 'lg',
-    minW: '800px',
   }
 
   return (
