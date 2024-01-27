@@ -88,6 +88,10 @@ function FilterTags() {
   const { networks, toggleNetwork, poolTypes, togglePoolType, poolTypeLabel } =
     usePoolListQueryState()
 
+  if (networks.length === 0 && poolTypes.length === 0) {
+    return <></>
+  }
+
   return (
     <HStack spacing="sm" wrap="wrap">
       {poolTypes.map(poolType => (
