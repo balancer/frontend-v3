@@ -24,7 +24,7 @@ export function PaginatedTable({
 
   return (
     <Card variant="level2" p="md" shadow="xl" {...rest}>
-      <VStack spacing="md" w="full">
+      <VStack spacing="md" w="full" overflowX="scroll">
         {renderTableHeader()}
         {isLoadingRows && (
           <Flex justifyContent={'center'} py={32}>

@@ -30,7 +30,9 @@ function WeightedTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; 
           >
             <HStack>
               <TokenIconOrIconStack token={token} chain={chain} />
-              <Text fontWeight="bold">{token.nestedTokens ? token.name : token.symbol}</Text>
+              <Text fontWeight="bold" noOfLines={1}>
+                {token.nestedTokens ? token.name : token.symbol}
+              </Text>
               <Text fontWeight="light" fontSize="xs">
                 {fNum('weight', token.weight || '')}
               </Text>
@@ -64,7 +66,9 @@ function StableTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; ch
           >
             <HStack>
               <TokenIconOrIconStack token={token} chain={chain} />
-              <Text fontWeight="bold">{token.nestedTokens ? token.name : token.symbol}</Text>
+              <Text fontWeight="bold" noOfLines={1}>
+                {token.nestedTokens ? token.name : token.symbol}
+              </Text>
             </HStack>
           </Box>
         )
