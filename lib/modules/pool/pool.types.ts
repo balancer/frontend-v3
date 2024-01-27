@@ -73,18 +73,20 @@ export const orderByHash: { [key: string]: string } = {
 }
 
 export const poolListQueryStateParsers = {
-  first: parseAsInteger.withDefault(20),
-  skip: parseAsInteger.withDefault(0),
-  orderBy: parseAsStringEnum<GqlPoolOrderBy>(Object.values(GqlPoolOrderBy)).withDefault(
-    GqlPoolOrderBy.TotalLiquidity
-  ),
-  orderDirection: parseAsStringEnum<GqlPoolOrderDirection>(
-    Object.values(GqlPoolOrderDirection)
-  ).withDefault(GqlPoolOrderDirection.Desc),
-  poolTypes: parseAsArrayOf(
-    parseAsStringEnum<PoolFilterType>(Object.values(poolTypeFilters))
-  ).withDefault([]),
-  networks: parseAsArrayOf(parseAsStringEnum<GqlChain>(Object.values(GqlChain))).withDefault([]),
-  textSearch: parseAsString,
-  userAddress: parseAsString,
+  first: parseAsInteger.withOptions({ history: 'push' }).withDefault(20),
+  skip: parseAsInteger.withOptions({ history: 'push' }).withDefault(0),
+  orderBy: parseAsStringEnum<GqlPoolOrderBy>(Object.values(GqlPoolOrderBy))
+    .withOptions({ history: 'push' })
+    .withDefault(GqlPoolOrderBy.TotalLiquidity),
+  orderDirection: parseAsStringEnum<GqlPoolOrderDirection>(Object.values(GqlPoolOrderDirection))
+    .withOptions({ history: 'push' })
+    .withDefault(GqlPoolOrderDirection.Desc),
+  poolTypes: parseAsArrayOf(parseAsStringEnum<PoolFilterType>(Object.values(poolTypeFilters)))
+    .withOptions({ history: 'push' })
+    .withDefault([]),
+  networks: parseAsArrayOf(parseAsStringEnum<GqlChain>(Object.values(GqlChain)))
+    .withOptions({ history: 'push' })
+    .withDefault([]),
+  textSearch: parseAsString.withOptions({ history: 'push' }),
+  userAddress: parseAsString.withOptions({ history: 'push' }),
 }
