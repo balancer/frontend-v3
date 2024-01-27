@@ -1,3 +1,5 @@
+'use client'
+
 import { Card, Center, Grid, GridItem, HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import { useFeaturedPools } from './useFeaturedPools'
 import { GqlChain, GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
