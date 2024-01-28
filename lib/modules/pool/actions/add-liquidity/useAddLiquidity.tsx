@@ -173,6 +173,7 @@ export function _useAddLiquidity() {
     isFinalStepActive,
     deactivateFinalStep,
     setHumanAmountIn,
+    tokenAllowances,
   }
 }
 

@@ -22,7 +22,8 @@ export type TransactionLabels = {
   preparing?: string
 }
 
-type StepType =
+// TODO: Link with StepMetadata types
+export type StepType =
   | 'signBatchRelayer'
   | 'approveBatchRelayer'
   | 'tokenApproval'

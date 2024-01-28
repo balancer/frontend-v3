@@ -35,6 +35,7 @@ import { HumanAmountIn } from '../liquidity-types'
 import { AddLiquidityFlowButton } from './AddLiquidityFlowButton'
 import { useAddLiquidity } from './useAddLiquidity'
 import { AddLiquidityTimeout } from './AddLiquidityTimeout'
+import { AddLiquidityFlowButton2 } from './AddLiquidityFlowButton2'
 
 type Props = {
   isOpen: boolean
@@ -178,7 +179,8 @@ export function AddLiquidityModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <AddLiquidityFlowButton />
+          {/* <AddLiquidityFlowButton /> */}
+          <AddLiquidityFlowButton2 />
         </ModalFooter>
       </ModalContent>
     </Modal>
