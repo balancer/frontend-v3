@@ -158,7 +158,6 @@ export function _useRemoveLiquidity() {
     buildCallDataQuery,
     isDisabled,
     isFinalStepActive,
-    deactivateFinalStep,
     disabledReason,
     steps,
     previewModalDisclosure,

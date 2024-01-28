@@ -1,37 +1,21 @@
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { useQuery } from 'wagmi'
-import { Pool } from '../../../usePool'
-import { HumanAmountIn } from '../../liquidity-types'
-import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
-import { addLiquidityKeys } from './add-liquidity-keys'
-import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
-import { UseQueryOptions } from '@tanstack/react-query'
-import { AddLiquiditySimulationQueryResult } from './useAddLiquiditySimulationQuery'
 import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
-
-type Props = {
-  handler: AddLiquidityHandler
-  humanAmountsIn: HumanAmountIn[]
-  pool: Pool
-  simulationQuery: AddLiquiditySimulationQueryResult
-  options?: UseQueryOptions
-}
+import { useQuery } from 'wagmi'
+import { usePool } from '../../../usePool'
+import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
+import { useAddLiquidity } from '../useAddLiquidity'
+import { addLiquidityKeys } from './add-liquidity-keys'
 
 export type AddLiquidityBuildQueryResponse = ReturnType<typeof useAddLiquidityBuildCallDataQuery>
 
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
-export function useAddLiquidityBuildCallDataQuery({
-  handler,
-  humanAmountsIn,
-  pool,
-  simulationQuery,
-  options = {},
-}: Props) {
+export function useAddLiquidityBuildCallDataQuery({ enabled }: { enabled: boolean }) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
+  const { pool } = usePool()
 
-  const enabled = options.enabled ?? true
+  const { humanAmountsIn, handler, simulationQuery } = useAddLiquidity()
 
   const queryKey = addLiquidityKeys.buildCallData({
     userAddress,

@@ -3,12 +3,20 @@ import { Text } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
 import { useAddLiquidity } from './useAddLiquidity'
-import {
-  TransactionState,
-  getTransactionState,
-} from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { AddLiquidityBuildQueryResponse } from './queries/useAddLiquidityBuildCallDataQuery'
 
-function useAddLiquidityTimeout() {
+type Props = {
+  transactionState?: TransactionState
+  isFinalStepActive: boolean
+  buildCallDataQuery: AddLiquidityBuildQueryResponse
+}
+
+function useAddLiquidityTimeout({
+  transactionState,
+  isFinalStepActive,
+  buildCallDataQuery,
+}: Props) {
   // This countdown needs to be nested here and not at a higher level, like in
   // useAddLiquidity, because otherwise it causes re-renders of the entire
   // add-liquidity flow component tree every second.
@@ -17,16 +25,7 @@ function useAddLiquidityTimeout() {
     intervalMs: 1000,
   })
 
-  const {
-    simulationQuery,
-    priceImpactQuery,
-    buildCallDataQuery,
-    previewModalDisclosure,
-    addLiquidityTransaction,
-    isFinalStepActive,
-  } = useAddLiquidity()
-
-  const transactionState = getTransactionState(addLiquidityTransaction)
+  const { simulationQuery, priceImpactQuery, previewModalDisclosure } = useAddLiquidity()
 
   const isConfirmingAddLiquidity = transactionState === TransactionState.Confirming
   const isAwaitingUserConfirmation = transactionState === TransactionState.Loading
@@ -71,8 +70,8 @@ function useAddLiquidityTimeout() {
   return { secondsToRefetch, shouldFreezeQuote }
 }
 
-export function AddLiquidityTimeout() {
-  const { secondsToRefetch, shouldFreezeQuote } = useAddLiquidityTimeout()
+export function AddLiquidityTimeout(props: Props) {
+  const { secondsToRefetch, shouldFreezeQuote } = useAddLiquidityTimeout(props)
 
   return !shouldFreezeQuote && <Text>Quote expires in: {secondsToRefetch} secs</Text>
 }

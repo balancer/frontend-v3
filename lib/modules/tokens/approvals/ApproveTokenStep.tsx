@@ -2,11 +2,8 @@
 import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
 import { useAddLiquidity } from '../../pool/actions/add-liquidity/useAddLiquidity'
 import { ApproveTokenProps, useConstructApproveTokenStep } from './useConstructApproveTokenStep'
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { CommonStepProps } from '../../pool/actions/useIterateSteps'
 
-type CommonStepProps = {
-  useOnStepCompleted: (step: FlowStep) => void
-}
 type Props = ApproveTokenProps & CommonStepProps
 
 export function ApproveTokenStep({

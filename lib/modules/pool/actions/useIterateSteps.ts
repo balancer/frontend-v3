@@ -1,21 +1,21 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import { ApproveTokenProps } from '../../tokens/approvals/useConstructApproveTokenStep'
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+import {
+  FlowStep,
+  TransactionState,
+  getTransactionState,
+} from '@/lib/shared/components/btns/transaction-steps/lib'
 
-type AddLiquidityMetadata = {
+// This props are common to every step component
+export type CommonStepProps = {
+  useOnStepCompleted: (step: FlowStep) => void
+}
+
+export interface AddLiquidityMetadata {
   type: 'addLiquidity'
-  props: undefined
+  // no props
 }
-
-export const stepAddLiquidity: AddLiquidityMetadata = {
-  type: 'addLiquidity',
-  props: undefined,
-}
-
-// const stepAddLiquidity: StepMetadata Step = {
-//   type: 'addLiquidity',
-//   props: undefined,
-// }
 
 export interface ApproveTokenMetadata {
   type: 'approveToken'
@@ -26,7 +26,19 @@ export type StepMetadata = AddLiquidityMetadata | ApproveTokenMetadata
 
 export function useIterateSteps(steps: StepMetadata[]) {
   const [activeStepIndex, setActiveStep] = useState(0)
-  const goToNextStep = () => setActiveStep(activeStepIndex + 1)
+
+  const isFinalStepActive = activeStepIndex === steps.length - 1
+
+  // Expose the transaction state of the last step to freeze the timeout refetch
+  let finalStepTransactionState: TransactionState | undefined
+
+  const goToNextStep = (completedStep: FlowStep) => {
+    if (isFinalStepActive) {
+      finalStepTransactionState = getTransactionState(completedStep)
+      return
+    }
+    setActiveStep(activeStepIndex + 1)
+  }
 
   function getCurrentStep() {
     return steps[activeStepIndex]
@@ -36,15 +48,16 @@ export function useIterateSteps(steps: StepMetadata[]) {
   function useOnStepCompleted(step: FlowStep) {
     const isComplete = step.isComplete()
     return useEffect(() => {
-      if (isComplete) goToNextStep()
+      if (isComplete) goToNextStep(step)
     }, [isComplete])
   }
 
   const currentStep = getCurrentStep()
-  // currentStep.props = {
-  //   ...currentStep.props,
-  //   useOnStepCompleted,
-  // }
 
-  return { useOnStepCompleted, currentStep }
+  return {
+    useOnStepCompleted,
+    currentStep,
+    isFinalStepActive,
+    finalStepTransactionState,
+  }
 }

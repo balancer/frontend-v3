@@ -2,11 +2,7 @@ import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManag
 import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { AddLiquidityBuildQueryResponse } from './queries/useAddLiquidityBuildCallDataQuery'
 
-export function useConstructAddLiquidityStep(
-  poolId: string,
-  buildCallDataQuery: AddLiquidityBuildQueryResponse,
-  activateStep: () => void
-) {
+export function useConstructAddLiquidityStep(buildCallDataQuery: AddLiquidityBuildQueryResponse) {
   const transactionLabels: TransactionLabels = {
     init: 'Add liquidity',
     confirming: 'Confirming...',
@@ -24,22 +20,13 @@ export function useConstructAddLiquidityStep(
   const addLiquidityStep: FlowStep = {
     ...addLiquidityTransaction,
     transactionLabels,
-    id: `addLiquidityPool${poolId}`,
+    id: `addLiquidityPool`,
     stepType: 'addLiquidity',
     isComplete,
-    activateStep,
   }
 
+  // TODO: return addLiquidityStep directly
   return {
     addLiquidityStep,
-    addLiquidityTransaction,
-    isLoading:
-      addLiquidityTransaction?.simulation.isLoading ||
-      addLiquidityTransaction?.execution.isLoading ||
-      buildCallDataQuery.isLoading,
-    error:
-      addLiquidityTransaction?.simulation.error ||
-      addLiquidityTransaction?.execution.error ||
-      buildCallDataQuery.error,
   }
 }

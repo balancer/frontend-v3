@@ -32,9 +32,7 @@ import { BPT_DECIMALS } from '../../pool.constants'
 import { bptUsdValue } from '../../pool.helpers'
 import { usePool } from '../../usePool'
 import { HumanAmountIn } from '../liquidity-types'
-import { AddLiquidityFlowButton } from './AddLiquidityFlowButton'
 import { useAddLiquidity } from './useAddLiquidity'
-import { AddLiquidityTimeout } from './AddLiquidityTimeout'
 import { AddLiquidityFlowButton2 } from './AddLiquidityFlowButton2'
 
 type Props = {
@@ -169,17 +167,10 @@ export function AddLiquidityModal({
                   </HStack>
                 </HStack>
               </VStack>
-
-              <VStack align="start" spacing="md">
-                <HStack justify="space-between" w="full">
-                  <AddLiquidityTimeout />
-                </HStack>
-              </VStack>
             </Card>
           </VStack>
         </ModalBody>
         <ModalFooter>
-          {/* <AddLiquidityFlowButton /> */}
           <AddLiquidityFlowButton2 />
         </ModalFooter>
       </ModalContent>
