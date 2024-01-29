@@ -16,18 +16,18 @@ export function StakeForm() {
           </Heading>
         </CardHeader>
         <CardBody>
-          <Card variant="level0" p="md" shadow="sm" w="full">
-            {isLoading ? (
-              <Skeleton />
-            ) : (
+          {isLoading ? (
+            <Skeleton />
+          ) : (
+            <Card variant="level0" p="md" shadow="sm" w="full">
               <TokenRow
                 address={pool.address as Address}
                 value={pool.userBalance?.walletBalance || '0'}
                 usdValue={pool.userBalance?.walletBalanceUsd.toString()}
                 chain={pool.chain}
               />
-            )}
-          </Card>
+            </Card>
+          )}
         </CardBody>
         <CardFooter>
           <StakeFlowButton />
