@@ -59,7 +59,7 @@ export function AddLiquidityFlowButton2() {
   const isAddLiquidityStepActive = currentStep.type === 'addLiquidity'
 
   const buildCallDataQuery = useAddLiquidityBuildCallDataQuery({
-    enabled: currentStep.type === 'addLiquidity',
+    enabled: isAddLiquidityStepActive,
   })
 
   const { addLiquidityStep, addLiquidityTransaction } =
