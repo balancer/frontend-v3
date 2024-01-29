@@ -104,7 +104,7 @@ export function _useAddLiquidity() {
   const totalUSDValue = safeSum(usdAmountsIn)
 
   /**
-   * The three handler queries, simulate + priceImpact + buildCallData.
+   * Simulation queries:
    */
   const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn, pool.id)
 

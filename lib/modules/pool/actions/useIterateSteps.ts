@@ -8,19 +8,19 @@ export type CommonStepProps = {
   useOnStepCompleted: (step: FlowStep) => void
 }
 
-export interface AddLiquidityMetadata {
+export interface AddLiquidityConfig {
   type: 'addLiquidity'
   // no props
 }
 
-export interface ApproveTokenMetadata {
+export interface ApproveTokenConfig {
   type: 'approveToken'
   props: ApproveTokenProps
 }
 
-export type StepMetadata = AddLiquidityMetadata | ApproveTokenMetadata
+export type StepConfig = AddLiquidityConfig | ApproveTokenConfig
 
-export function useIterateSteps(steps: StepMetadata[]) {
+export function useIterateSteps(steps: StepConfig[]) {
   const [activeStepIndex, setActiveStep] = useState(0)
 
   const isFinalStepActive = activeStepIndex === steps.length - 1

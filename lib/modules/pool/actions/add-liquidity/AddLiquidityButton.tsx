@@ -10,7 +10,7 @@ export type Props = {
   addLiquidityStep: FlowStep
 }
 
-export function AddLiquidityStep({ addLiquidityStep }: Props) {
+export function AddLiquidityButton({ addLiquidityStep }: Props) {
   const [didRefetchPool, setDidRefetchPool] = useState(false)
   const { refetch, pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)

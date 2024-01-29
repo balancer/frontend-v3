@@ -22,7 +22,7 @@ export type TransactionLabels = {
   preparing?: string
 }
 
-// TODO: Link with StepMetadata types
+// TODO: Link with StepParam types
 export type StepType =
   | 'signBatchRelayer'
   | 'approveBatchRelayer'
@@ -53,6 +53,7 @@ export type TransactionStep = {
   stepType: StepType
   transactionLabels: TransactionLabels
   isComplete: () => boolean
+  activateStep?: () => void // TODO: This won't be needed once we refactor all flows to useIterateSteps
 }
 
 // Allows adding extra properties like set state callbacks to TransactionStep

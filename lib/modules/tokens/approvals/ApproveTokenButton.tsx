@@ -6,7 +6,7 @@ import { CommonStepProps } from '../../pool/actions/useIterateSteps'
 
 type Props = ApproveTokenProps & CommonStepProps
 
-export function ApproveTokenStep({
+export function ApproveTokenButton({
   useOnStepCompleted,
   tokenAddress,
   amountToApprove,

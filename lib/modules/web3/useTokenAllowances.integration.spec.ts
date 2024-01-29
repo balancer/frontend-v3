@@ -24,6 +24,9 @@ test('fetches token allowances', async () => {
       '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': expect.any(BigInt),
     })
   )
+
+  expect(result.current.allowanceFor(wETHAddress)).toBe(0n)
+  expect(result.current.allowanceFor(wjAuraAddress)).toBe(0n)
 })
 
 test('allows refetching allowances', async () => {

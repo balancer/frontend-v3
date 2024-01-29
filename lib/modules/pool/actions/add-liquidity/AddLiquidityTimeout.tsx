@@ -3,17 +3,21 @@ import { Text } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
 import { useAddLiquidity } from './useAddLiquidity'
-import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import {
+  TransactionState,
+  getTransactionState,
+} from '@/lib/shared/components/btns/transaction-steps/lib'
 import { AddLiquidityBuildQueryResponse } from './queries/useAddLiquidityBuildCallDataQuery'
+import { TransactionBundle } from '@/lib/modules/web3/contracts/contract.types'
 
 type Props = {
-  addLiquidityTransactionState: TransactionState
+  addLiquidityTransaction: TransactionBundle
   isFinalStepActive: boolean
   buildCallDataQuery: AddLiquidityBuildQueryResponse
 }
 
 function useAddLiquidityTimeout({
-  addLiquidityTransactionState,
+  addLiquidityTransaction,
   isFinalStepActive,
   buildCallDataQuery,
 }: Props) {
@@ -27,9 +31,10 @@ function useAddLiquidityTimeout({
 
   const { simulationQuery, priceImpactQuery, previewModalDisclosure } = useAddLiquidity()
 
-  const isConfirmingAddLiquidity = addLiquidityTransactionState === TransactionState.Confirming
-  const isAwaitingUserConfirmation = addLiquidityTransactionState === TransactionState.Loading
-  const isComplete = addLiquidityTransactionState === TransactionState.Completed
+  const transactionState = getTransactionState(addLiquidityTransaction)
+  const isConfirmingAddLiquidity = transactionState === TransactionState.Confirming
+  const isAwaitingUserConfirmation = transactionState === TransactionState.Loading
+  const isComplete = transactionState === TransactionState.Completed
 
   // Disable query refetches:
   // if the flow is complete

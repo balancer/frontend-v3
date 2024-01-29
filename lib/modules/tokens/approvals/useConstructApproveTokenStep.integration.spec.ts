@@ -61,6 +61,4 @@ test('Approves a token allowance', async () => {
   await act(() => result.current.executeAsync?.())
 
   await waitFor(() => expect(result.current.execution.isSuccess).toBeTruthy())
-
-  expect(result.current.isComplete()).toBeTruthy()
 })

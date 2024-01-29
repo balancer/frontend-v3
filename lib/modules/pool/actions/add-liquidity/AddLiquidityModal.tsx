@@ -33,7 +33,7 @@ import { bptUsdValue } from '../../pool.helpers'
 import { usePool } from '../../usePool'
 import { HumanAmountIn } from '../liquidity-types'
 import { useAddLiquidity } from './useAddLiquidity'
-import { AddLiquidityFlowButton2 } from './AddLiquidityFlowButton2'
+import { AddLiquidityFlow } from './AddLiquidityFlow'
 
 type Props = {
   isOpen: boolean
@@ -171,7 +171,7 @@ export function AddLiquidityModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <AddLiquidityFlowButton2 />
+          <AddLiquidityFlow />
         </ModalFooter>
       </ModalContent>
     </Modal>
