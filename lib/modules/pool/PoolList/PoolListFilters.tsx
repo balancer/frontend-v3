@@ -3,6 +3,7 @@
 
 import {
   Badge,
+  Box,
   Button,
   ButtonProps,
   Checkbox,
@@ -140,33 +141,35 @@ export function PoolListFilters() {
           <PopoverTrigger>
             <FilterButton />
           </PopoverTrigger>
-          <PopoverContent>
-            <PopoverArrow />
-            <PopoverCloseButton />
-            <PopoverBody p="md">
-              <VStack align="start">
-                {isConnected && (
-                  <>
-                    <Heading as="h3" size="sm" mb="1.5">
-                      My Liquidity
-                    </Heading>
-                    <UserPoolFilter />
-                    <Divider />
-                  </>
-                )}
+          <Box zIndex="popover">
+            <PopoverContent>
+              <PopoverArrow />
+              <PopoverCloseButton />
+              <PopoverBody p="md">
+                <VStack align="start">
+                  {isConnected && (
+                    <>
+                      <Heading as="h3" size="sm" mb="1.5">
+                        My Liquidity
+                      </Heading>
+                      <UserPoolFilter />
+                      <Divider />
+                    </>
+                  )}
 
-                <Heading as="h3" size="sm" mb="1.5">
-                  Pool types
-                </Heading>
-                <PoolTypeFilters />
-                <Divider />
-                <Heading as="h3" size="sm">
-                  Networks
-                </Heading>
-                <PoolNetworkFilters />
-              </VStack>
-            </PopoverBody>
-          </PopoverContent>
+                  <Heading as="h3" size="sm" mb="1.5">
+                    Pool types
+                  </Heading>
+                  <PoolTypeFilters />
+                  <Divider />
+                  <Heading as="h3" size="sm">
+                    Networks
+                  </Heading>
+                  <PoolNetworkFilters />
+                </VStack>
+              </PopoverBody>
+            </PopoverContent>
+          </Box>
         </Popover>
       </HStack>
       <FilterTags />

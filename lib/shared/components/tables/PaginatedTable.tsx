@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, BoxProps, Card, Flex, Spinner, VStack } from '@chakra-ui/react'
+import { Box, BoxProps, Card, Center, Flex, Spinner, VStack } from '@chakra-ui/react'
 import { Pagination } from '@/lib/shared/components/pagination/Pagination'
 
 interface Props<T> extends BoxProps {
@@ -20,28 +20,45 @@ export function PaginatedTable({
   paginationProps,
   ...rest
 }: Props<any>) {
-  const isLoadingRows = loading && items.length === 0
-
   return (
     <Card variant="level2" p="md" shadow="xl" {...rest}>
       <VStack spacing="md" w="full" overflowX="scroll" className="hide-scrollbar">
         {renderTableHeader()}
-        {isLoadingRows && (
-          <Flex justifyContent={'center'} py={32}>
-            <Spinner size="xl" />
-          </Flex>
-        )}
-        {!isLoadingRows && items.length === 0 && (
-          <Box height="md" display="flex" alignItems="center" justifyContent="center">
-            No results found for your search criteria.
-          </Box>
-        )}
-        {!isLoadingRows &&
-          items.map((item, index) => (
-            <Box key={`${item.id}-${index}`} w="full">
-              {renderTableRow(item, index)}
+        <Box w="full" position="relative">
+          {items.length > 0 && (
+            <VStack spacing="sm">
+              {items.map((item, index) => (
+                <Box key={`${item.id}-${index}`} w="full">
+                  {renderTableRow(item, index)}
+                </Box>
+              ))}
+            </VStack>
+          )}
+
+          {!loading && items.length === 0 && <Center>No pools found.</Center>}
+
+          {loading && (
+            <Box
+              style={{
+                position: 'absolute',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+                height: '100%',
+                top: 0,
+                left: 0,
+                borderRadius: 10,
+                zIndex: 10,
+                backdropFilter: 'blur(3px)',
+              }}
+            >
+              <Center>
+                <Spinner size="xl" />
+              </Center>
             </Box>
-          ))}
+          )}
+        </Box>
       </VStack>
       {showPagination && <Pagination p="md" {...paginationProps} />}
     </Card>
