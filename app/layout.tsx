@@ -8,6 +8,7 @@ import { satoshiFont } from '@/lib/assets/fonts/satoshi/satoshi'
 import NextTopLoader from 'nextjs-toploader'
 import { Container } from '@chakra-ui/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import '@/lib/assets/css/global.css'
 
 const { projectName, projectId } = getProjectConfig()
 const iconUrl = `/images/icons/${projectId}.ico`

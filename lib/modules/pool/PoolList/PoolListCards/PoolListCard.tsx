@@ -26,11 +26,11 @@ function PoolNameLabel({ pool }: { pool: PoolListItem }) {
       <Text fontWeight="bold" noOfLines={2} h="12">
         {displayTokens.map((token, idx) => {
           return (
-            <>
+            <span key={token.address}>
               {token.nestedTokens ? token.name : token.symbol}
               {token.weight && ` ${fNum('weight', token.weight || '')}`}
               {idx <= displayTokens.length - 2 && ' / '}
-            </>
+            </span>
           )
         })}
       </Text>
