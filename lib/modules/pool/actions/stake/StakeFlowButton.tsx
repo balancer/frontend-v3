@@ -8,7 +8,7 @@ import { usePoolRedirect } from '../../pool.hooks'
 import { usePool } from '../../usePool'
 import React, { useState } from 'react'
 
-export function StakingFlowButton() {
+export function StakeFlowButton() {
   const [didRefetchPool, setDidRefetchPool] = useState(false)
   const { steps, remainingAmountsToApprove } = useStaking()
   const { pool, refetch } = usePool()
