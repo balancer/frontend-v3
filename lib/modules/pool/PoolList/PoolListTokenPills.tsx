@@ -1,4 +1,4 @@
-import { Box, HStack, Text } from '@chakra-ui/react'
+import { Box, HStack, Text, Wrap, WrapItem } from '@chakra-ui/react'
 import { GqlChain, GqlPoolTokenDisplay } from '@/lib/shared/services/api/generated/graphql'
 import { PoolListItem } from '../pool.types'
 import { TokenIconStack } from '../../tokens/TokenIconStack'
@@ -16,10 +16,10 @@ function TokenIconOrIconStack({ token, chain }: { token: GqlPoolTokenDisplay; ch
 
 function WeightedTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; chain: GqlChain }) {
   return (
-    <HStack spacing="xs">
+    <Wrap spacing="xs">
       {tokens.map(token => {
         return (
-          <Box
+          <WrapItem
             key={token.address}
             p="2"
             pr="3"
@@ -37,10 +37,10 @@ function WeightedTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; 
                 {fNum('weight', token.weight || '')}
               </Text>
             </HStack>
-          </Box>
+          </WrapItem>
         )
       })}
-    </HStack>
+    </Wrap>
   )
 }
 

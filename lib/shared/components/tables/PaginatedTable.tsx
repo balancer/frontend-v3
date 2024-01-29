@@ -26,7 +26,7 @@ export function PaginatedTable({
         {renderTableHeader()}
         <Box w="full" position="relative">
           {items.length > 0 && (
-            <VStack spacing="sm">
+            <VStack spacing="md">
               {items.map((item, index) => (
                 <Box key={`${item.id}-${index}`} w="full">
                   {renderTableRow(item, index)}

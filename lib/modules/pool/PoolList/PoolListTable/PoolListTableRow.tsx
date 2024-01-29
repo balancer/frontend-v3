@@ -21,13 +21,22 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
   const { toCurrency } = useCurrency()
 
   return (
-    <Box key={keyValue}>
+    <Box
+      key={keyValue}
+      transition="all 0.2s ease-in-out"
+      _hover={{
+        bg: 'background.base',
+      }}
+      rounded="md"
+    >
       <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
-        <Grid {...rest} height="63.5px">
+        <Grid {...rest} py="sm">
           <GridItem>
             <NetworkIcon chain={pool.chain} size={10} />
           </GridItem>
-          <GridItem>{pool && <PoolListTokenPills pool={pool} />}</GridItem>
+          <GridItem>
+            <PoolListTokenPills pool={pool} />
+          </GridItem>
           {userAddress && (
             <GridItem>
               <Text textAlign="right" fontWeight="medium">
