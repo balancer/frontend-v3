@@ -77,16 +77,16 @@ const poolTypeLabelMap: { [key in GqlPoolType]: string } = {
   [GqlPoolType.Investment]: 'Managed',
   [GqlPoolType.Linear]: 'Linear',
   [GqlPoolType.LiquidityBootstrapping]: 'LBP',
-  [GqlPoolType.MetaStable]: 'MetaStable',
-  [GqlPoolType.PhantomStable]: 'PhantomStable',
+  [GqlPoolType.MetaStable]: 'Stable',
+  [GqlPoolType.PhantomStable]: 'Stable',
   [GqlPoolType.Stable]: 'Stable',
   [GqlPoolType.Unknown]: 'Unknown',
   [GqlPoolType.Fx]: 'FX',
-  [GqlPoolType.ComposableStable]: 'ComposableStable',
+  [GqlPoolType.ComposableStable]: 'Stable',
 }
 
 export function getPoolTypeLabel(type: GqlPoolType): string {
-  return poolTypeLabelMap[type]
+  return poolTypeLabelMap[type] ?? type.replace(/_/g, ' ').toLowerCase()
 }
 
 export const poolClickHandler = (

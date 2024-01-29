@@ -99,18 +99,6 @@ export function isStableLike(poolType: GqlPoolType): boolean {
   )
 }
 
-export function getTypeLabel(poolType: GqlPoolType): string {
-  if (isWeighted(poolType)) return 'Weighted'
-  if (isStable(poolType)) return 'Stable'
-  if (isMetaStable(poolType)) return 'Stable'
-  if (isPhantomStable(poolType)) return 'Stable'
-  if (isComposableStable(poolType)) return 'Stable'
-  if (isFx(poolType)) return 'Fx'
-  if (isGyro(poolType)) return 'Gyro'
-  if (isLiquidityBootstrapping(poolType)) return 'LBP'
-  return poolType.replace(/_/g, ' ').toLowerCase()
-}
-
 export function isSwappingHaltable(poolType: GqlPoolType): boolean {
   return isManaged(poolType) || isLiquidityBootstrapping(poolType)
 }
