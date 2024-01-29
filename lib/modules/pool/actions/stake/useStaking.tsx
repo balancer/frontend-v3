@@ -16,11 +16,7 @@ import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { useConstructGaugeDepositActionStep } from '@/lib/modules/gauge/gauge.actions'
 import { BPT_DECIMALS } from '../../pool.constants'
 
-export type UseStakingResponse = ReturnType<typeof _useStaking>
-
-export const StakingContext = createContext<UseStakingResponse | null>(null)
-
-export function _useStaking() {
+export function useStaking() {
   const {
     isActiveStep: isFinalStepActive,
     activateStep: activateFinalStep,
@@ -76,10 +72,3 @@ export function _useStaking() {
     deactivateFinalStep,
   }
 }
-
-export function StakingProvider({ children }: PropsWithChildren) {
-  const hook = _useStaking()
-  return <StakingContext.Provider value={hook}>{children}</StakingContext.Provider>
-}
-
-export const useStaking = (): UseStakingResponse => useMandatoryContext(StakingContext, 'Staking')
