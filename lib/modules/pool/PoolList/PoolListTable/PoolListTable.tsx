@@ -6,7 +6,6 @@ import { PaginatedTable } from '@/lib/shared/components/tables/PaginatedTable'
 import { PoolListTableHeader } from './PoolListTableHeader'
 import { PoolListTableRow } from './PoolListTableRow'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
-import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { PoolListItem } from '../../pool.types'
 
 interface Props {
@@ -19,19 +18,17 @@ export function PoolListTable({ pools, count, loading }: Props) {
   const { pagination, setPagination, userAddress } = usePoolListQueryState()
   const paginationProps = getPaginationProps(count || 0, pagination, setPagination)
   const showPagination = !!pools.length && !!count && count > pagination.pageSize
-  const { isMobile } = useBreakpoints()
 
-  const numberColumnWidth = userAddress ? '175px' : '200px'
+  const numberColumnWidth = userAddress ? '150px' : '175px'
   const furthestLeftColWidth = '120px'
 
   const rowProps = {
     px: [0, 4],
-    gridTemplateColumns: `50px 1fr ${userAddress ? furthestLeftColWidth : ''} ${
-      userAddress ? numberColumnWidth : furthestLeftColWidth
-    } ${numberColumnWidth} ${numberColumnWidth}`,
+    gridTemplateColumns: `50px minmax(400px, 1fr) 100px ${
+      userAddress ? furthestLeftColWidth : ''
+    } ${userAddress ? numberColumnWidth : furthestLeftColWidth} ${numberColumnWidth} 200px`,
     alignItems: 'center',
     gap: 'lg',
-    minW: '800px',
   }
 
   return (
@@ -47,7 +44,6 @@ export function PoolListTable({ pools, count, loading }: Props) {
         paginationProps={paginationProps}
         border="1px solid"
         borderColor="border.base"
-        overflowX={isMobile ? 'auto' : 'hidden'}
         w="full"
         alignItems="flex-start"
       />

@@ -9,6 +9,8 @@ import { PoolListProvider } from '@/lib/modules/pool/PoolList/usePoolList'
 import { POOL_TYPE_MAP, poolListQueryStateParsers } from '@/lib/modules/pool/pool.types'
 import { uniq } from 'lodash'
 import { FeaturedPoolsProvider } from '@/lib/modules/featuredPools/useFeaturedPools'
+import { VStack } from '@chakra-ui/react'
+import { FeaturedPools } from '@/lib/modules/featuredPools/FeaturedPools'
 
 export const revalidate = 30
 
@@ -69,7 +71,10 @@ export default async function Pools({ searchParams }: Props) {
         data={poolListFeaturedPoolsData}
         variables={poolListFeaturedPoolsVariables}
       >
-        <PoolList />
+        <VStack align="start" spacing="2xl">
+          <FeaturedPools />
+          <PoolList />
+        </VStack>
       </FeaturedPoolsProvider>
     </PoolListProvider>
   )

@@ -55,7 +55,7 @@ export const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolType[] } = {
   [GqlPoolType.Weighted]: [GqlPoolType.Weighted],
   [GqlPoolType.Stable]: [
     GqlPoolType.Stable,
-    GqlPoolType.PhantomStable,
+    GqlPoolType.ComposableStable,
     GqlPoolType.MetaStable,
     GqlPoolType.Gyro,
     GqlPoolType.Gyro3,

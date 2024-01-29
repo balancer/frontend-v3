@@ -35,10 +35,9 @@ export function isPhantomStable(poolType: GqlPoolType): boolean {
   return poolType === GqlPoolType.PhantomStable
 }
 
-// TODO: verify
-// export function isComposableStable(poolType: GqlPoolType): boolean {
-//   return poolType === GqlPoolType.ComposableStable
-// }
+export function isComposableStable(poolType: GqlPoolType): boolean {
+  return poolType === GqlPoolType.ComposableStable
+}
 
 // TODO: verify
 // export function isComposableStableV1(pool: Pool): boolean {
@@ -87,6 +86,17 @@ export function isManaged(poolType: GqlPoolType): boolean {
 
 export function isWeightedLike(poolType: GqlPoolType): boolean {
   return isWeighted(poolType) || isManaged(poolType) || isLiquidityBootstrapping(poolType)
+}
+
+export function isStableLike(poolType: GqlPoolType): boolean {
+  return (
+    isStable(poolType) ||
+    isMetaStable(poolType) ||
+    isPhantomStable(poolType) ||
+    isComposableStable(poolType) ||
+    isFx(poolType) ||
+    isGyro(poolType)
+  )
 }
 
 export function isSwappingHaltable(poolType: GqlPoolType): boolean {

@@ -3,6 +3,7 @@
 
 import {
   Badge,
+  Box,
   Button,
   ButtonProps,
   Checkbox,
@@ -88,6 +89,10 @@ function FilterTags() {
   const { networks, toggleNetwork, poolTypes, togglePoolType, poolTypeLabel } =
     usePoolListQueryState()
 
+  if (networks.length === 0 && poolTypes.length === 0) {
+    return <></>
+  }
+
   return (
     <HStack spacing="sm" wrap="wrap">
       {poolTypes.map(poolType => (
@@ -130,39 +135,41 @@ export function PoolListFilters() {
 
   return (
     <VStack align="flex-start" w="full">
-      <HStack w="full">
+      <HStack w="full" spacing="none">
         <PoolListSearch />
         <Popover>
           <PopoverTrigger>
-            <FilterButton />
+            <FilterButton ml="sm" />
           </PopoverTrigger>
-          <PopoverContent>
-            <PopoverArrow />
-            <PopoverCloseButton />
-            <PopoverBody p="md">
-              <VStack align="start">
-                {isConnected && (
-                  <>
-                    <Heading as="h3" size="sm" mb="1.5">
-                      My Liquidity
-                    </Heading>
-                    <UserPoolFilter />
-                    <Divider />
-                  </>
-                )}
+          <Box zIndex="popover">
+            <PopoverContent>
+              <PopoverArrow />
+              <PopoverCloseButton />
+              <PopoverBody p="md">
+                <VStack align="start">
+                  {isConnected && (
+                    <>
+                      <Heading as="h3" size="sm" mb="1.5">
+                        My Liquidity
+                      </Heading>
+                      <UserPoolFilter />
+                      <Divider />
+                    </>
+                  )}
 
-                <Heading as="h3" size="sm" mb="1.5">
-                  Pool types
-                </Heading>
-                <PoolTypeFilters />
-                <Divider />
-                <Heading as="h3" size="sm">
-                  Networks
-                </Heading>
-                <PoolNetworkFilters />
-              </VStack>
-            </PopoverBody>
-          </PopoverContent>
+                  <Heading as="h3" size="sm" mb="1.5">
+                    Pool types
+                  </Heading>
+                  <PoolTypeFilters />
+                  <Divider />
+                  <Heading as="h3" size="sm">
+                    Networks
+                  </Heading>
+                  <PoolNetworkFilters />
+                </VStack>
+              </PopoverBody>
+            </PopoverContent>
+          </Box>
         </Popover>
       </HStack>
       <FilterTags />
