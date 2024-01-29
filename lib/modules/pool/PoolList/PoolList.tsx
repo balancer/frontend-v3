@@ -24,7 +24,7 @@ export function PoolList() {
           ({fNum('integer', count || 0)})
         </Heading>
       </HStack>
-      <Stack direction={['column-reverse', 'row']} w="full" alignItems="flex-start">
+      <Stack direction={{ base: 'column-reverse', md: 'row' }} w="full" alignItems="flex-start">
         <PoolListFilters />
         <HStack justifyContent="flex-end" w="full">
           {isCardsView && <PoolListSortType />}

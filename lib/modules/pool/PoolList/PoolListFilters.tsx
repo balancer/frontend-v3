@@ -135,11 +135,11 @@ export function PoolListFilters() {
 
   return (
     <VStack align="flex-start" w="full">
-      <HStack w="full">
+      <HStack w="full" spacing="none">
         <PoolListSearch />
         <Popover>
           <PopoverTrigger>
-            <FilterButton />
+            <FilterButton ml="sm" />
           </PopoverTrigger>
           <Box zIndex="popover">
             <PopoverContent>
