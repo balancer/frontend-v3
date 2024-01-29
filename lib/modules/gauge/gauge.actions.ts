@@ -1,9 +1,6 @@
 import { GqlPoolStakingGauge } from '@/lib/shared/services/api/generated/graphql'
 import { useManagedTransaction } from '../web3/contracts/useManagedTransaction'
-import {
-  TransactionLabels,
-  TransactionStep,
-} from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionLabels, FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
 
 function buildGaugeDepositLabels(gauge?: GqlPoolStakingGauge | null): TransactionLabels {
@@ -29,7 +26,7 @@ function buildGaugeWithdrawLabels(gauge?: GqlPoolStakingGauge | null): Transacti
 export function useConstructGaugeDepositActionStep(
   gauge?: GqlPoolStakingGauge | null,
   depositAmount?: bigint
-): TransactionStep {
+): FlowStep {
   const { activateStep } = useActiveStep()
   const transactionLabels = buildGaugeDepositLabels(gauge)
   const deposit = useManagedTransaction(
@@ -41,7 +38,7 @@ export function useConstructGaugeDepositActionStep(
     { enabled: !!gauge || !!depositAmount }
   )
 
-  const step: TransactionStep = {
+  const step: FlowStep = {
     ...deposit,
     id: `${gauge?.gaugeAddress}-deposit`,
     stepType: 'gaugeDeposit',
@@ -55,7 +52,7 @@ export function useConstructGaugeDepositActionStep(
 export function useConstructGaugeWithdrawActionStep(
   gauge?: GqlPoolStakingGauge | null,
   withdrawAmount?: bigint
-): TransactionStep {
+): FlowStep {
   const { activateStep } = useActiveStep()
   const transactionLabels = buildGaugeWithdrawLabels(gauge)
   const withdraw = useManagedTransaction(
@@ -67,7 +64,7 @@ export function useConstructGaugeWithdrawActionStep(
     { enabled: !!gauge || !!withdrawAmount }
   )
 
-  const step: TransactionStep = {
+  const step: FlowStep = {
     ...withdraw,
     id: `${gauge?.gaugeAddress}-withdraw`,
     stepType: 'gaugeWithdraw',
