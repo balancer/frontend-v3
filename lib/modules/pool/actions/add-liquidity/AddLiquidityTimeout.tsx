@@ -7,13 +7,13 @@ import { TransactionState } from '@/lib/shared/components/btns/transaction-steps
 import { AddLiquidityBuildQueryResponse } from './queries/useAddLiquidityBuildCallDataQuery'
 
 type Props = {
-  transactionState?: TransactionState
+  addLiquidityTransactionState: TransactionState
   isFinalStepActive: boolean
   buildCallDataQuery: AddLiquidityBuildQueryResponse
 }
 
 function useAddLiquidityTimeout({
-  transactionState,
+  addLiquidityTransactionState,
   isFinalStepActive,
   buildCallDataQuery,
 }: Props) {
@@ -27,9 +27,9 @@ function useAddLiquidityTimeout({
 
   const { simulationQuery, priceImpactQuery, previewModalDisclosure } = useAddLiquidity()
 
-  const isConfirmingAddLiquidity = transactionState === TransactionState.Confirming
-  const isAwaitingUserConfirmation = transactionState === TransactionState.Loading
-  const isComplete = transactionState === TransactionState.Completed
+  const isConfirmingAddLiquidity = addLiquidityTransactionState === TransactionState.Confirming
+  const isAwaitingUserConfirmation = addLiquidityTransactionState === TransactionState.Loading
+  const isComplete = addLiquidityTransactionState === TransactionState.Completed
 
   // Disable query refetches:
   // if the flow is complete

@@ -1,11 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import { ApproveTokenProps } from '../../tokens/approvals/useConstructApproveTokenStep'
-import {
-  FlowStep,
-  TransactionState,
-  getTransactionState,
-} from '@/lib/shared/components/btns/transaction-steps/lib'
+import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 
 // This props are common to every step component
 export type CommonStepProps = {
@@ -29,12 +25,8 @@ export function useIterateSteps(steps: StepMetadata[]) {
 
   const isFinalStepActive = activeStepIndex === steps.length - 1
 
-  // Expose the transaction state of the last step to freeze the timeout refetch
-  let finalStepTransactionState: TransactionState | undefined
-
-  const goToNextStep = (completedStep: FlowStep) => {
+  const goToNextStep = () => {
     if (isFinalStepActive) {
-      finalStepTransactionState = getTransactionState(completedStep)
       return
     }
     setActiveStep(activeStepIndex + 1)
@@ -48,7 +40,7 @@ export function useIterateSteps(steps: StepMetadata[]) {
   function useOnStepCompleted(step: FlowStep) {
     const isComplete = step.isComplete()
     return useEffect(() => {
-      if (isComplete) goToNextStep(step)
+      if (isComplete) goToNextStep()
     }, [isComplete])
   }
 
@@ -58,6 +50,5 @@ export function useIterateSteps(steps: StepMetadata[]) {
     useOnStepCompleted,
     currentStep,
     isFinalStepActive,
-    finalStepTransactionState,
   }
 }

@@ -25,8 +25,8 @@ export function useConstructAddLiquidityStep(buildCallDataQuery: AddLiquidityBui
     isComplete,
   }
 
-  // TODO: return addLiquidityStep directly
   return {
     addLiquidityStep,
+    addLiquidityTransaction,
   }
 }

@@ -1,8 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { ApproveTokenStep } from '@/lib/modules/tokens/approvals/ApproveTokenStep'
+import { getRequiredTokenApprovals } from '@/lib/modules/tokens/approvals/approval-rules'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { getTransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { VStack } from '@chakra-ui/react'
 import {
   AddLiquidityMetadata,
@@ -10,12 +13,11 @@ import {
   StepMetadata,
   useIterateSteps,
 } from '../useIterateSteps'
-import { useAddLiquidity } from './useAddLiquidity'
 import { AddLiquidityStep } from './AddLiquidityStep'
-import { getRequiredTokenApprovals } from '@/lib/modules/tokens/approvals/approval-rules'
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 import { AddLiquidityTimeout } from './AddLiquidityTimeout'
+import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
+import { useAddLiquidity } from './useAddLiquidity'
+import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
 
 export function AddLiquidityFlowButton2() {
   //TODO: Export all logic to testable hook
@@ -52,7 +54,7 @@ export function AddLiquidityFlowButton2() {
   // Think about renaming step prefix
   const steps: StepMetadata[] = [...tokenStepRequests, stepAddLiquidity]
 
-  const { currentStep, useOnStepCompleted, finalStepTransactionState } = useIterateSteps(steps)
+  const { currentStep, useOnStepCompleted } = useIterateSteps(steps)
 
   const isAddLiquidityStepActive = currentStep.type === 'addLiquidity'
 
@@ -60,14 +62,18 @@ export function AddLiquidityFlowButton2() {
     enabled: currentStep.type === 'addLiquidity',
   })
 
+  const { addLiquidityStep, addLiquidityTransaction } =
+    useConstructAddLiquidityStep(buildCallDataQuery)
+
+  const finalTransactionState = getTransactionState(addLiquidityTransaction)
+
   return (
     <VStack w="full">
       <AddLiquidityTimeout
-        transactionState={finalStepTransactionState}
+        addLiquidityTransactionState={finalTransactionState}
         isFinalStepActive={isAddLiquidityStepActive}
         buildCallDataQuery={buildCallDataQuery}
       />
-
       {currentStep.type === 'approveToken' && (
         <ApproveTokenStep
           useOnStepCompleted={useOnStepCompleted}
@@ -76,13 +82,8 @@ export function AddLiquidityFlowButton2() {
       )}
 
       {currentStep.type === 'addLiquidity' && (
-        <AddLiquidityStep
-          useOnStepCompleted={useOnStepCompleted}
-          buildCallDataQuery={buildCallDataQuery}
-        ></AddLiquidityStep>
+        <AddLiquidityStep addLiquidityStep={addLiquidityStep}></AddLiquidityStep>
       )}
-
-      {}
     </VStack>
   )
 }

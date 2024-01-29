@@ -1,19 +1,43 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
-import { CommonStepProps } from '../useIterateSteps'
-import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
-import { AddLiquidityBuildQueryResponse } from './queries/useAddLiquidityBuildCallDataQuery'
+import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { useEffect, useState } from 'react'
+import { usePool } from '../../usePool'
+import { Button, VStack } from '@chakra-ui/react'
+import { usePoolRedirect } from '../../pool.hooks'
 
-type Props = CommonStepProps & AddLiquidityProps
-
-export type AddLiquidityProps = {
-  buildCallDataQuery: AddLiquidityBuildQueryResponse
+export type Props = {
+  addLiquidityStep: FlowStep
 }
 
-export function AddLiquidityStep({ useOnStepCompleted, buildCallDataQuery }: Props) {
-  const { addLiquidityStep } = useConstructAddLiquidityStep(buildCallDataQuery)
+export function AddLiquidityStep({ addLiquidityStep }: Props) {
+  const [didRefetchPool, setDidRefetchPool] = useState(false)
+  const { refetch, pool } = usePool()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
 
-  useOnStepCompleted(addLiquidityStep)
+  const isComplete = addLiquidityStep.isComplete()
 
-  return <TransactionStepButton step={addLiquidityStep}></TransactionStepButton>
+  useEffect(() => {
+    async function reFetchPool() {
+      await refetch()
+      setDidRefetchPool(true)
+    }
+    if (isComplete) reFetchPool()
+  }, [isComplete])
+
+  async function handlerRedirectToPoolPage(event: React.MouseEvent<HTMLElement>) {
+    redirectToPoolPage(event)
+  }
+
+  return (
+    <VStack w="full">
+      {!isComplete && <TransactionStepButton step={addLiquidityStep}></TransactionStepButton>}
+
+      {isComplete && (
+        <Button w="full" size="lg" onClick={handlerRedirectToPoolPage} isLoading={!didRefetchPool}>
+          Return to pool
+        </Button>
+      )}
+    </VStack>
+  )
 }
