@@ -37,8 +37,6 @@ export function useStaking() {
   // Get token allowances
   const tokenAllowances = useTokenAllowances(userAddress, gaugeAddress, [poolAddress])
 
-  console.log({ tokenAllowances })
-
   // Construct token allowance step
   const amountToApprove = {
     rawAmount: parseUnits(unstakedBalance, BPT_DECIMALS),
