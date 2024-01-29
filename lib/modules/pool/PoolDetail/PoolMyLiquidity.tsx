@@ -110,6 +110,7 @@ export default function PoolMyLiquidity() {
   }
 
   const hasUnstakedBalance = bn(pool.userBalance?.walletBalance || '0').gt(0)
+  const hasStakedBalance = bn(pool.userBalance?.stakedBalance || '0').gt(0)
 
   return (
     <Card variant="gradient" width="full" minHeight="320px">
@@ -173,7 +174,8 @@ export default function PoolMyLiquidity() {
               <Button
                 as={Link}
                 href={`${pathname}/remove-liquidity`}
-                variant="primary"
+                variant={hasUnstakedBalance ? 'secondary' : 'disabled'}
+                isDisabled={!hasUnstakedBalance}
                 prefetch={true}
               >
                 Remove
@@ -186,7 +188,12 @@ export default function PoolMyLiquidity() {
               >
                 Stake
               </Button>
-              <Button variant="disabled" isDisabled>
+              <Button
+                as={Link}
+                href={`${pathname}/unstake`}
+                variant={hasStakedBalance ? 'secondary' : 'disabled'}
+                isDisabled={!hasStakedBalance}
+              >
                 Unstake
               </Button>
             </HStack>
