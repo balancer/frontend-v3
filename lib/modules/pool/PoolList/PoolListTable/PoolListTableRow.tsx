@@ -8,6 +8,7 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { PoolListItem } from '../../pool.types'
 import { PoolListTokenPills } from '../PoolListTokenPills'
+import { getTypeLabel } from '../../pool.helpers'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -44,6 +45,11 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
               </Text>
             </GridItem>
           )}
+          <GridItem>
+            <Text textAlign="right" fontWeight="medium" textTransform="capitalize">
+              {getTypeLabel(pool.type)}
+            </Text>
+          </GridItem>
           <GridItem>
             <Text
               title={toCurrency(pool.dynamicData.totalLiquidity, { abbreviated: false })}

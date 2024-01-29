@@ -24,9 +24,9 @@ export function PoolListTable({ pools, count, loading }: Props) {
 
   const rowProps = {
     px: [0, 4],
-    gridTemplateColumns: `50px minmax(400px, 1fr) ${userAddress ? furthestLeftColWidth : ''} ${
-      userAddress ? numberColumnWidth : furthestLeftColWidth
-    } ${numberColumnWidth} 200px`,
+    gridTemplateColumns: `50px minmax(400px, 1fr) 100px ${
+      userAddress ? furthestLeftColWidth : ''
+    } ${userAddress ? numberColumnWidth : furthestLeftColWidth} ${numberColumnWidth} 200px`,
     alignItems: 'center',
     gap: 'lg',
   }
