@@ -26,7 +26,7 @@ export function useNextTokenApprovalStep({
   actionType,
   approveMaxBigInt = true,
 }: Params) {
-  const { chainId, chain } = useNetworkConfig()
+  const { chainId } = useNetworkConfig()
 
   const { allowances, isAllowancesLoading, spenderAddress } = tokenAllowances
 
@@ -45,13 +45,17 @@ export function useNextTokenApprovalStep({
       ? MAX_BIGINT
       : remainingAmountsToApprove[0].rawAmount
 
+  const symbol = isEmpty(remainingAmountsToApprove)
+    ? 'Unknown'
+    : remainingAmountsToApprove[0].tokenSymbol
+
   const tokenApprovalStep = useConstructApproveTokenStep({
     tokenAllowances,
     tokenAddress: tokenAddressToApprove,
     spenderAddress,
     actionType,
-    chain,
     amountToApprove,
+    symbol,
   })
 
   return {

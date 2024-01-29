@@ -7,8 +7,6 @@ import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
 import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
-import { useTokens } from '../useTokens'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
 
 type Params = {
@@ -17,7 +15,7 @@ type Params = {
   spenderAddress: Address
   amountToApprove: bigint
   actionType: ApprovalAction
-  chain: GqlChain
+  symbol: string
 }
 
 export function useConstructApproveTokenStep({
@@ -26,17 +24,14 @@ export function useConstructApproveTokenStep({
   spenderAddress,
   amountToApprove = MAX_BIGINT,
   actionType,
-  chain,
+  symbol,
 }: Params) {
   const { isActiveStep, activateStep } = useActiveStep()
   const { refetchAllowances, isAllowancesLoading } = tokenAllowances
-  const { getToken } = useTokens()
-
-  const token = getToken(tokenAddress, chain)
 
   const labelArgs: TokenApprovalLabelArgs = {
     actionType,
-    symbol: token ? token.symbol : 'Unknown',
+    symbol,
   }
   const tokenApprovalLabels = buildTokenApprovalLabels(labelArgs)
 

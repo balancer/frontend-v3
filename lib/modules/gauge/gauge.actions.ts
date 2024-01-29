@@ -8,7 +8,9 @@ import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveSte
 
 function buildGaugeDepositLabels(gauge?: GqlPoolStakingGauge | null): TransactionLabels {
   const labels: TransactionLabels = {
-    init: 'TODO DEPOSIT INIT',
+    init: 'Stake',
+    confirming: 'Confirming...',
+    confirmed: `BPT deposited in gauge!`,
     tooltip: 'TODO DEPOSIT TOOLTIP',
   }
   return labels
@@ -16,7 +18,9 @@ function buildGaugeDepositLabels(gauge?: GqlPoolStakingGauge | null): Transactio
 
 function buildGaugeWithdrawLabels(gauge?: GqlPoolStakingGauge | null): TransactionLabels {
   const labels: TransactionLabels = {
-    init: 'TODO WITHDRAW INNIT',
+    init: 'Unstake',
+    confirming: 'Confirming...',
+    confirmed: `BPT withdrawn from gauge!`,
     tooltip: 'TODO WITHDRAW TOOLTIP',
   }
   return labels
