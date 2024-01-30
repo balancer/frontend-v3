@@ -98,7 +98,9 @@ export function _useAddLiquidity() {
     ])
   }
 
-  const tokens = pool.allTokens.map(token => getToken(token.address, pool.chain))
+  const tokens = pool.allTokens
+    .filter(token => token.isMainToken)
+    .map(token => getToken(token.address, pool.chain))
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
   const usdAmountsIn = useMemo(
     () =>

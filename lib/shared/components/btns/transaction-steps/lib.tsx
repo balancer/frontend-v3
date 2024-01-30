@@ -23,7 +23,8 @@ export type TransactionLabels = {
 }
 
 type StepType =
-  | 'batchRelayerApproval'
+  | 'signBatchRelayer'
+  | 'approveBatchRelayer'
   | 'tokenApproval'
   | 'addLiquidity'
   | 'removeLiquidity'
