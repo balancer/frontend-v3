@@ -30,7 +30,7 @@ function testUseConstruct() {
   return result
 }
 
-test.skip('Approves a token allowance', async () => {
+test('Approves a token allowance', async () => {
   const result = testUseConstruct()
 
   expect(result.current.transactionLabels).toMatchInlineSnapshot(`

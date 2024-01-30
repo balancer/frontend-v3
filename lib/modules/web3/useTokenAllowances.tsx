@@ -31,7 +31,7 @@ export function useTokenAllowances(
 
   function allowanceFor(tokenAddress: Address): bigint {
     // We don't need isSameAddress cause we use the same tokensAddresses source
-    return allowancesByTokenAddress[tokenAddress]
+    return allowancesByTokenAddress[tokenAddress] ?? 0n
   }
 
   return {
