@@ -6,6 +6,9 @@ import { ReactNode } from 'react'
 import { TokenIcon } from '../TokenIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { Numberish, fNum } from '@/lib/shared/utils/numbers'
+import { HiExternalLink } from 'react-icons/hi'
+import Link from 'next/link'
+import { useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
 
 type Props = {
   address: Address
@@ -26,23 +29,30 @@ export default function TokenRow({
 }: Props) {
   const { getToken, usdValueForToken } = useTokens()
   const { toCurrency } = useCurrency()
+  const { getBlockExplorerTokenUrl } = useBlockExplorer(chain)
   const token = getToken(address, chain)
 
   const totalValue = token ? usdValueForToken(token, value) : '0'
 
   return (
     <HStack width="full" justifyContent="space-between">
-      <HStack>
+      <HStack spacing="md">
         <TokenIcon chain={chain} address={address} size={32} alt={token?.symbol || address} />
         <VStack spacing="1" alignItems="flex-start">
-          <Heading
-            fontWeight="bold"
-            as="h6"
-            fontSize="1rem"
-            variant={isSelected ? 'primary' : 'secondary'}
-          >
-            {token?.symbol}
-          </Heading>
+          <HStack>
+            <Heading
+              fontWeight="bold"
+              as="h6"
+              fontSize="md"
+              variant={isSelected ? 'primary' : 'secondary'}
+            >
+              {token?.symbol}
+            </Heading>
+            <Text as={Link} href={getBlockExplorerTokenUrl(address)} color="font.secondary">
+              <HiExternalLink />
+            </Text>
+          </HStack>
+
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
             {token?.name}
           </Text>
