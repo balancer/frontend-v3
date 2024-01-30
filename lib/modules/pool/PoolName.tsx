@@ -8,9 +8,9 @@ export function PoolName({ pool, ...rest }: { pool: PoolListItem | GqlPoolUnion 
 
   // TODO: We may need a more complex conditional for choosing when to display
   // the API provided name over constructing one from the tokens.
-  if (pool.name) {
-    return <Text {...rest}>{pool.name}</Text>
-  }
+  // if (pool.name) {
+  //   return <Text {...rest}>{pool.name}</Text>
+  // }
 
   return (
     <Text {...rest}>
