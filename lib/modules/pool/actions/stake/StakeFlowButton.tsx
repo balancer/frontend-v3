@@ -24,9 +24,9 @@ export function StakeFlowButton() {
     redirectToPoolPage(event)
   }
 
-  const tokensRequiringApprovalTransaction = remainingAmountsToApprove
-    ?.map(token => token.tokenSymbol)
-    .join(', ')
+  const tokensRequiringApprovalTransaction = remainingAmountsToApprove?.map(
+    token => token.tokenSymbol
+  )
 
   return (
     <VStack w="full">
