@@ -90,7 +90,9 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Total</Text>
                 <HStack>
-                  <NumberText color="GrayText">{toCurrency(totalUSDValue)}</NumberText>
+                  <NumberText color="GrayText">
+                    {toCurrency(totalUSDValue, { abbreviated: false })}
+                  </NumberText>
                   <Tooltip label="Total" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
