@@ -102,7 +102,9 @@ export function PoolListCard({ pool }: Props) {
             <StatCard
               label={
                 <HStack>
-                  <span>APR</span>
+                  <Text fontWeight="medium" variant="secondary" fontSize="sm">
+                    APR
+                  </Text>
                   <MemoizedAprTooltip
                     data={pool.dynamicData.apr}
                     poolId={pool.id}
