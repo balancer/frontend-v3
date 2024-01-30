@@ -8,6 +8,8 @@ import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveSte
 import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
 import { Address } from 'viem'
+import { useTokens } from '../useTokens'
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
 type Params = {
   tokenAllowances: UseTokenAllowancesResponse
@@ -15,7 +17,6 @@ type Params = {
   spenderAddress: Address
   amountToApprove: bigint
   actionType: ApprovalAction
-  symbol: string
 }
 
 export function useConstructApproveTokenStep({
@@ -24,14 +25,17 @@ export function useConstructApproveTokenStep({
   spenderAddress,
   amountToApprove = MAX_BIGINT,
   actionType,
-  symbol,
 }: Params) {
   const { isActiveStep, activateStep } = useActiveStep()
   const { refetchAllowances, isAllowancesLoading } = tokenAllowances
+  const { getToken } = useTokens()
+  const { chain } = useNetworkConfig()
+
+  const token = getToken(tokenAddress, chain)
 
   const labelArgs: TokenApprovalLabelArgs = {
     actionType,
-    symbol,
+    symbol: token ? token.symbol : 'Unknown',
   }
   const tokenApprovalLabels = buildTokenApprovalLabels(labelArgs)
 

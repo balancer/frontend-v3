@@ -7,12 +7,16 @@ import { useStaking } from './useStaking'
 import { usePoolRedirect } from '../../pool.hooks'
 import { usePool } from '../../usePool'
 import React, { useState } from 'react'
+import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
 export function StakeFlowButton() {
   const [didRefetchPool, setDidRefetchPool] = useState(false)
   const { steps, remainingAmountsToApprove } = useStaking()
   const { pool, refetch } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
+  const { getToken } = useTokens()
+  const { chain } = useNetworkConfig()
 
   async function handleStakeCompleted() {
     await refetch() // Refetches onchain balances.
@@ -25,7 +29,7 @@ export function StakeFlowButton() {
   }
 
   const tokensRequiringApprovalTransaction = remainingAmountsToApprove?.map(
-    token => token.tokenSymbol
+    ({ tokenAddress }) => getToken(tokenAddress, chain)?.symbol ?? 'Unknown'
   )
 
   return (

@@ -45,17 +45,12 @@ export function useNextTokenApprovalStep({
       ? MAX_BIGINT
       : remainingAmountsToApprove[0].rawAmount
 
-  const symbol = isEmpty(remainingAmountsToApprove)
-    ? 'Unknown'
-    : remainingAmountsToApprove[0].tokenSymbol
-
   const tokenApprovalStep = useConstructApproveTokenStep({
     tokenAllowances,
     tokenAddress: tokenAddressToApprove,
     spenderAddress,
     actionType,
     amountToApprove,
-    symbol,
   })
 
   return {
