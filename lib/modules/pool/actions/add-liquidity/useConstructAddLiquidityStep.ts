@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
@@ -16,8 +17,9 @@ export function useConstructAddLiquidityStep() {
   const buildCallDataQuery = useAddLiquidityBuildCallDataQuery()
 
   useEffect(() => {
+    // simulationQuery is refetched every 30 seconds by AddLiquidityTimeout
     if (simulationQuery.data) {
-      console.log('Cambiando simulation query')
+      buildCallDataQuery.refetch()
     }
   }, [simulationQuery.data])
 
