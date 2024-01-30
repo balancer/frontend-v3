@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
-import { ApproveTokenProps } from '../../tokens/approvals/useConstructApproveTokenStep'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 
 // This props are common to every step component
@@ -8,19 +7,7 @@ export type CommonStepProps = {
   useOnStepCompleted: (step: FlowStep) => void
 }
 
-export interface AddLiquidityConfig {
-  type: 'addLiquidity'
-  // no props
-}
-
-export interface ApproveTokenConfig {
-  type: 'approveToken'
-  props: ApproveTokenProps
-}
-
-export type StepConfig = AddLiquidityConfig | ApproveTokenConfig
-
-export function useIterateSteps(steps: StepConfig[]) {
+export function useIterateSteps<T>(steps: T[]) {
   const [activeStepIndex, setActiveStep] = useState(0)
 
   const isFinalStepActive = activeStepIndex === steps.length - 1
@@ -32,7 +19,7 @@ export function useIterateSteps(steps: StepConfig[]) {
     setActiveStep(activeStepIndex + 1)
   }
 
-  function getCurrentStep() {
+  function getCurrentStep(): T {
     return steps[activeStepIndex]
   }
 

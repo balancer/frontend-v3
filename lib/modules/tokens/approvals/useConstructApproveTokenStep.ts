@@ -7,6 +7,7 @@ import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from
 import { useTokens } from '../useTokens'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
+import { bn } from '@/lib/shared/utils/numbers'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse
@@ -51,7 +52,7 @@ export function useConstructApproveTokenStep({
     requiredRawAmount -> actual amount that the transaction requires
     requestedRawAmount -> amount that we are going to request (normally MAX_BIGINT)
   */
-  const isComplete = allowanceFor(tokenAddress) >= amountToApprove
+  const isComplete = bn(allowanceFor(tokenAddress)).gte(bn(amountToApprove))
 
   const step: FlowStep = {
     ...approvalTransaction,

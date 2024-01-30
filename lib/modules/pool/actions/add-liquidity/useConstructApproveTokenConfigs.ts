@@ -1,8 +1,13 @@
 import { getRequiredTokenApprovals } from '@/lib/modules/tokens/approvals/approval-rules'
-import { ApproveTokenConfig } from '../useIterateSteps'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useAddLiquidity } from './useAddLiquidity'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { ApproveTokenProps } from '@/lib/modules/tokens/approvals/useConstructApproveTokenStep'
+
+export interface ApproveTokenConfig {
+  type: 'approveToken'
+  props: ApproveTokenProps
+}
 
 /*
   Each ApproveTokenConfig contains the instructions to render an ApproveTokenButton
