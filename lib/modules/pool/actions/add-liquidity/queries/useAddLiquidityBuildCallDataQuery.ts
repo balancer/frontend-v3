@@ -10,7 +10,7 @@ import { addLiquidityKeys } from './add-liquidity-keys'
 export type AddLiquidityBuildQueryResponse = ReturnType<typeof useAddLiquidityBuildCallDataQuery>
 
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
-export function useAddLiquidityBuildCallDataQuery({ enabled }: { enabled: boolean }) {
+export function useAddLiquidityBuildCallDataQuery() {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const { pool } = usePool()
@@ -25,11 +25,6 @@ export function useAddLiquidityBuildCallDataQuery({ enabled }: { enabled: boolea
   })
 
   const queryFn = async () => {
-    /*
-        This should never happen as:
-          1. We do not allow the user to activate the build step (set isActiveStep to true) before the preview query has finished
-          2. When we refetch after countdown timeout we explicitly wait for the preview query to finish
-      */
     const queryOutput = ensureLastQueryResponse('Add liquidity query', simulationQuery.data)
     const response = await handler.buildCallData({
       account: userAddress,
@@ -42,7 +37,7 @@ export function useAddLiquidityBuildCallDataQuery({ enabled }: { enabled: boolea
   }
 
   const queryOpts = {
-    enabled: enabled && isConnected && !!simulationQuery.data,
+    enabled: isConnected && !!simulationQuery.data,
     cacheTime: 0,
     ...onlyExplicitRefetch,
   }

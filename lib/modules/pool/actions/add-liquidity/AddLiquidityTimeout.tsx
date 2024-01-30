@@ -3,24 +3,13 @@ import { Text } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
 import { useAddLiquidity } from './useAddLiquidity'
-import {
-  TransactionState,
-  getTransactionState,
-} from '@/lib/shared/components/btns/transaction-steps/lib'
-import { AddLiquidityBuildQueryResponse } from './queries/useAddLiquidityBuildCallDataQuery'
-import { TransactionBundle } from '@/lib/modules/web3/contracts/contract.types'
+import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 
 type Props = {
-  addLiquidityTransaction: TransactionBundle
-  isFinalStepActive: boolean
-  buildCallDataQuery: AddLiquidityBuildQueryResponse
+  addLiquidityTxState?: TransactionState
 }
 
-function useAddLiquidityTimeout({
-  addLiquidityTransaction,
-  isFinalStepActive,
-  buildCallDataQuery,
-}: Props) {
+function useAddLiquidityTimeout({ addLiquidityTxState }: Props) {
   // This countdown needs to be nested here and not at a higher level, like in
   // useAddLiquidity, because otherwise it causes re-renders of the entire
   // add-liquidity flow component tree every second.
@@ -31,10 +20,9 @@ function useAddLiquidityTimeout({
 
   const { simulationQuery, priceImpactQuery, previewModalDisclosure } = useAddLiquidity()
 
-  const transactionState = getTransactionState(addLiquidityTransaction)
-  const isConfirmingAddLiquidity = transactionState === TransactionState.Confirming
-  const isAwaitingUserConfirmation = transactionState === TransactionState.Loading
-  const isComplete = transactionState === TransactionState.Completed
+  const isConfirmingAddLiquidity = addLiquidityTxState === TransactionState.Confirming
+  const isAwaitingUserConfirmation = addLiquidityTxState === TransactionState.Loading
+  const isComplete = addLiquidityTxState === TransactionState.Completed
 
   // Disable query refetches:
   // if the flow is complete
@@ -47,7 +35,6 @@ function useAddLiquidityTimeout({
       stopCountdown()
       resetCountdown()
       await Promise.all([simulationQuery.refetch(), priceImpactQuery.refetch()])
-      if (isFinalStepActive) await buildCallDataQuery.refetch() // avoid this refetch if the final step is not enabled (for example during pre-approval steps)
       startCountdown()
     }
     if (secondsToRefetch === 0 && !shouldFreezeQuote) refetchQueries()

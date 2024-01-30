@@ -1,21 +1,33 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useEffect, useState } from 'react'
 import { usePool } from '../../usePool'
 import { Button, VStack } from '@chakra-ui/react'
 import { usePoolRedirect } from '../../pool.hooks'
+import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
+import {
+  TransactionState,
+  getTransactionState,
+} from '@/lib/shared/components/btns/transaction-steps/lib'
 
 export type Props = {
-  addLiquidityStep: FlowStep
+  onTransactionStateUpdate: (transactionState: TransactionState) => void
 }
 
-export function AddLiquidityButton({ addLiquidityStep }: Props) {
+export function AddLiquidityButton({ onTransactionStateUpdate }: Props) {
   const [didRefetchPool, setDidRefetchPool] = useState(false)
   const { refetch, pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
 
+  const { addLiquidityStep, addLiquidityTransaction } = useConstructAddLiquidityStep()
+
   const isComplete = addLiquidityStep.isComplete()
+
+  // To be used by Timeout component to freeze queries
+  const transactionState = getTransactionState(addLiquidityTransaction)
+  useEffect(() => {
+    onTransactionStateUpdate(transactionState)
+  }, [transactionState])
 
   useEffect(() => {
     async function reFetchPool() {

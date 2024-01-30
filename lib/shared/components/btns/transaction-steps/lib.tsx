@@ -61,11 +61,10 @@ export type TransactionStepHook = {
   transactionStep: TransactionStep
 }
 
-export function getTransactionState({
-  simulation,
-  execution,
-  result,
-}: TransactionBundle): TransactionState {
+export function getTransactionState(transactionBundle?: TransactionBundle): TransactionState {
+  if (!transactionBundle) return TransactionState.Ready
+  const { simulation, execution, result } = transactionBundle
+
   if (simulation.isLoading) {
     return TransactionState.Preparing
   }
