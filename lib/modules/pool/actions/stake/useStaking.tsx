@@ -1,9 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { HumanAmount } from '@balancer/sdk'
-import { PropsWithChildren, createContext } from 'react'
 import { Address, parseUnits } from 'viem'
 import { usePool } from '../../usePool'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
