@@ -62,6 +62,6 @@ describe('bn', () => {
   test('creates a BigNumber instance from different formats', () => {
     expect(bn(1234567).toFixed()).toBe('1234567')
     expect(bn('54321').toFixed()).toBe('54321')
-    expect(bn(12345n).toFixed()).toBe(12345n)
+    expect(bn(12345n).toFixed()).toBe('12345')
   })
 })
