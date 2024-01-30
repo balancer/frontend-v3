@@ -13,6 +13,7 @@ import {
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import PoolWeightChart from '../pool/PoolDetail/PoolWeightCharts/PoolWeightChart'
 import { useRouter } from 'next/navigation'
+import { PoolName } from '../pool/PoolName'
 
 const indexAreaHash: { [key: number]: string } = {
   1: 'one',
@@ -48,15 +49,16 @@ function FeaturedPoolCard({
       onMouseEnter={event => poolMouseEnterHandler(event, pool.id, pool.chain, router)}
     >
       <VStack justifyContent="space-between" h="full">
-        <HStack justifyContent="space-between" w="full">
-          <Text>{getPoolTypeLabel(pool.type)}</Text>
-          <Text>{toCurrency(pool.dynamicData.totalLiquidity)} TVL</Text>
+        <HStack justifyContent="center" w="full" spacing="sm">
+          <Text color="font.secondary">{getPoolTypeLabel(pool.type)}</Text>
+          <Text color="font.secondary">&#x2022;</Text>
+          <Text color="font.secondary">{toCurrency(pool.dynamicData.totalLiquidity)} TVL</Text>
         </HStack>
         <PoolWeightChart pool={pool} chain={chain} hasLegend={hasLegend} isSmall={isSmall} />
         <Center>
           <VStack>
-            <Text>{pool.name}</Text>
-            <Text>{getAprLabel(pool.dynamicData.apr.apr)} APR</Text>
+            <PoolName pool={pool} fontWeight="bold" fontSize="lg" noOfLines={1} />
+            <Text color="font.secondary">{getAprLabel(pool.dynamicData.apr.apr)} APR</Text>
           </VStack>
         </Center>
       </VStack>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, BoxProps, Card, Center, Flex, Spinner, VStack } from '@chakra-ui/react'
+import { Box, BoxProps, Card, Center, Text, Spinner, VStack } from '@chakra-ui/react'
 import { Pagination } from '@/lib/shared/components/pagination/Pagination'
 
 interface Props<T> extends BoxProps {
@@ -35,7 +35,11 @@ export function PaginatedTable({
             </VStack>
           )}
 
-          {!loading && items.length === 0 && <Center>No pools found.</Center>}
+          {!loading && items.length === 0 && (
+            <Center py="2xl">
+              <Text color="gray.500">No pools found.</Text>
+            </Center>
+          )}
 
           {loading && (
             <Box
