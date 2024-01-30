@@ -1,6 +1,5 @@
 import { Card, HStack, VStack, Text, Grid, GridItem } from '@chakra-ui/react'
 import { PoolListItem } from '../../pool.types'
-import { fNum } from '@/lib/shared/utils/numbers'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { ReactNode, isValidElement, memo } from 'react'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
@@ -14,28 +13,10 @@ import {
   poolMouseEnterHandler,
 } from '../../pool.utils'
 import { useRouter } from 'next/navigation'
+import { PoolName } from '../../PoolName'
 
 interface Props {
   pool: PoolListItem
-}
-
-function PoolNameLabel({ pool }: { pool: PoolListItem }) {
-  if (pool) {
-    const displayTokens = pool.displayTokens
-    return (
-      <Text fontWeight="bold" noOfLines={2} h="12">
-        {displayTokens.map((token, idx) => {
-          return (
-            <span key={token.address}>
-              {token.nestedTokens ? token.name : token.symbol}
-              {token.weight && ` ${fNum('weight', token.weight || '')}`}
-              {idx <= displayTokens.length - 2 && ' / '}
-            </span>
-          )
-        })}
-      </Text>
-    )
-  }
 }
 
 function StatCard({ label, value }: { label: ReactNode; value: ReactNode }) {
@@ -77,7 +58,7 @@ export function PoolListCard({ pool }: Props) {
             <Text fontWeight="medium" variant="secondary" fontSize="sm">
               {getPoolTypeLabel(pool.type)}
             </Text>
-            <PoolNameLabel pool={pool} />
+            <PoolName pool={pool} fontWeight="bold" noOfLines={2} h="12" />
           </VStack>
         </HStack>
         <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} pb="lg" />
