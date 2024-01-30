@@ -7,16 +7,13 @@ import { useStaking } from './useStaking'
 import { usePoolRedirect } from '../../pool.hooks'
 import { usePool } from '../../usePool'
 import React, { useState } from 'react'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import { isEmpty } from 'lodash'
 
 export function StakeFlowButton() {
   const [didRefetchPool, setDidRefetchPool] = useState(false)
-  const { steps, remainingAmountsToApprove } = useStaking()
+  const { steps, bptAmountToApprove } = useStaking()
   const { pool, refetch } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
-  const { getToken } = useTokens()
-  const { chain } = useNetworkConfig()
 
   async function handleStakeCompleted() {
     await refetch() // Refetches onchain balances.
@@ -28,16 +25,14 @@ export function StakeFlowButton() {
     redirectToPoolPage(event)
   }
 
-  const tokensRequiringApprovalTransaction = remainingAmountsToApprove?.map(
-    ({ tokenAddress }) => getToken(tokenAddress, chain)?.symbol ?? 'Unknown'
-  )
+  const tokensRequiringApprovalTransaction = bptAmountToApprove?.map(amount => amount.tokenSymbol)
 
   return (
     <VStack w="full">
       <Text variant="specialSecondary">
-        {tokensRequiringApprovalTransaction
-          ? `BPT ${tokensRequiringApprovalTransaction} requires approval step`
-          : 'BPT has enough allowance'}
+        {isEmpty(tokensRequiringApprovalTransaction)
+          ? 'BPT has enough allowance'
+          : `BPT ${tokensRequiringApprovalTransaction} requires approval step`}
       </Text>
       <TransactionFlow
         onComplete={handleStakeCompleted}

@@ -15,6 +15,7 @@ import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNext
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { useConstructGaugeDepositActionStep } from '@/lib/modules/gauge/gauge.actions'
 import { BPT_DECIMALS } from '../../pool.constants'
+import { isEmpty } from 'lodash'
 
 export function useStaking() {
   const {
@@ -44,6 +45,7 @@ export function useStaking() {
     tokenAddress: poolAddress,
     tokenSymbol: pool.symbol,
   }
+  // TODO: need to get the bpt symbol to show in the button
   const { tokenApprovalStep, remainingAmountsToApprove } = useNextTokenApprovalStep({
     tokenAllowances,
     amountsToApprove: [amountToApprove],
@@ -63,7 +65,7 @@ export function useStaking() {
   return {
     isDisabled,
     disabledReason,
-    remainingAmountsToApprove,
+    bptAmountToApprove: isEmpty(remainingAmountsToApprove) ? [] : [amountToApprove],
     tokenApprovalStep,
     steps,
     isFinalStepActive,
