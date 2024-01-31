@@ -46,7 +46,7 @@ export function useTokenApprovalConfigs({
         tokenAmountToApprove,
         actionType,
         chain,
-        spenderAddress: userAddress,
+        spenderAddress,
       },
     }
   })
