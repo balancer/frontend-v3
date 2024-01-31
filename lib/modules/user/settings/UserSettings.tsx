@@ -89,7 +89,7 @@ function SignatureAllowanceSelect() {
 }
 
 // eslint-disable-next-line max-len
-const signaturesTooltipLabel = `It's recommended to turn on signatures for gas-free transactions. However, if your wallet doesn't support the signing of signatures, you can turn it off.`
+const signaturesTooltipLabel = `It's recommended to turn on signatures for gas-free transactions, where possible. However, if your wallet doesn't support the signing of signatures, you can turn it off.`
 
 export function UserSettings() {
   const { signatureAllowance } = useUserSettings()
