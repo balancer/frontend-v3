@@ -43,17 +43,12 @@ export function _useAddLiquidity() {
   )
 
   const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id])
-  /**
-   * We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
-   * helper is a class and if we return its methods we would lose the this binding, getting a:
-   * TypeError: Cannot read property getAmountsToApprove of undefined
-   * when trying to access the returned method
-   */
-  const helpers = new LiquidityActionHelpers(pool)
 
   /**
    * Helper functions & variables
    */
+  const helpers = new LiquidityActionHelpers(pool)
+  const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
   const tokenAddressesWithAmountIn = humanAmountsIn
     .filter(amountIn => bn(amountIn.humanAmount).gt(0))
     .map(amountIn => amountIn.tokenAddress)
@@ -120,6 +115,7 @@ export function _useAddLiquidity() {
 
   return {
     humanAmountsIn,
+    inputAmounts,
     tokens,
     validTokens,
     totalUSDValue,
@@ -127,7 +123,6 @@ export function _useAddLiquidity() {
     priceImpactQuery,
     isDisabled,
     disabledReason,
-    helpers,
     previewModalDisclosure,
     setHumanAmountIn,
     tokenAllowances,

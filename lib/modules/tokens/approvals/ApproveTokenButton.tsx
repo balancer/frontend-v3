@@ -6,21 +6,15 @@ import { CommonStepProps } from '../../pool/actions/useIterateSteps'
 
 type Props = ApproveTokenProps & CommonStepProps
 
-export function ApproveTokenButton({
-  useOnStepCompleted,
-  tokenAddress,
-  amountToApprove,
-  chain,
-}: Props) {
+export function ApproveTokenButton({ useOnStepCompleted, tokenAmountToApprove, chain }: Props) {
   const { tokenAllowances } = useAddLiquidity()
 
   const tokenApprovalStep = useConstructApproveTokenStep({
     actionType: 'AddLiquidity',
     chain,
     spenderAddress: tokenAllowances.spenderAddress,
-    tokenAddress: tokenAddress,
-    amountToApprove: amountToApprove,
     tokenAllowances,
+    tokenAmountToApprove,
   })
 
   useOnStepCompleted(tokenApprovalStep)
