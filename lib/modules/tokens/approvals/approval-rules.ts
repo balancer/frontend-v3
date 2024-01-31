@@ -11,9 +11,12 @@ export type TokenAmountToApprove = {
   requestedRawAmount: bigint // amount that we are going to request (normally MAX_BIGINT)
 }
 
+// This is a subtype of InputAmount as we only need rawAmount and address
+export type RawAmount = Pick<InputAmount, 'address' | 'rawAmount'>
+
 type TokenApprovalParams = {
   chainId: SupportedChainId | null
-  inputAmounts: InputAmount[]
+  rawAmounts: RawAmount[]
   allowanceFor: (tokenAddress: Address) => bigint
   approveMaxBigInt?: boolean
   skipAllowanceCheck?: boolean
@@ -24,7 +27,7 @@ type TokenApprovalParams = {
 */
 export function getRequiredTokenApprovals({
   chainId,
-  inputAmounts,
+  rawAmounts,
   allowanceFor,
   approveMaxBigInt = true,
   skipAllowanceCheck = false,
@@ -32,7 +35,7 @@ export function getRequiredTokenApprovals({
   if (!chainId) return []
   if (skipAllowanceCheck) return []
 
-  let tokenAmountsToApprove: TokenAmountToApprove[] = inputAmounts.map(({ address, rawAmount }) => {
+  let tokenAmountsToApprove: TokenAmountToApprove[] = rawAmounts.map(({ address, rawAmount }) => {
     return {
       tokenAddress: address,
       requiredRawAmount: rawAmount,

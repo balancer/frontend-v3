@@ -19,7 +19,7 @@ export function useConstructApproveTokenConfigs(): ApproveTokenConfig[] {
 
   const tokenAmountsToApprove = getRequiredTokenApprovals({
     chainId,
-    inputAmounts,
+    rawAmounts: inputAmounts,
     allowanceFor: tokenAllowances.allowanceFor,
   })
 

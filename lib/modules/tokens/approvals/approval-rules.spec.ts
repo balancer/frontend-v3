@@ -2,22 +2,19 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { usdtAddress, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 import { testRawAmount } from '@/test/utils/numbers'
-import { InputAmount } from '@balancer/sdk'
 import { Address } from 'viem'
-import { getRequiredTokenApprovals } from './approval-rules'
+import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
 
 const chainId: SupportedChainId = 1
 
-const inputAmounts: InputAmount[] = [
+const rawAmounts: RawAmount[] = [
   {
     address: wETHAddress,
     rawAmount: testRawAmount('10'),
-    decimals: 18,
   },
   {
     address: wjAuraAddress,
     rawAmount: testRawAmount('10'),
-    decimals: 18,
   },
 ]
 
@@ -30,7 +27,7 @@ describe('getRequiredTokenApprovals', () => {
     expect(
       getRequiredTokenApprovals({
         chainId,
-        inputAmounts,
+        rawAmounts,
         allowanceFor,
         skipAllowanceCheck: true,
       })
@@ -41,7 +38,7 @@ describe('getRequiredTokenApprovals', () => {
     expect(
       getRequiredTokenApprovals({
         chainId,
-        inputAmounts: [],
+        rawAmounts: [],
         allowanceFor,
       })
     ).toEqual([])
@@ -50,7 +47,7 @@ describe('getRequiredTokenApprovals', () => {
   test('when all token allowances are lesser than the amounts to approve', () => {
     expect(
       getRequiredTokenApprovals({
-        inputAmounts,
+        rawAmounts: rawAmounts,
         chainId,
         allowanceFor,
       })
@@ -65,7 +62,7 @@ describe('getRequiredTokenApprovals', () => {
 
     expect(
       getRequiredTokenApprovals({
-        inputAmounts,
+        rawAmounts: rawAmounts,
         chainId,
         allowanceFor,
       })
@@ -83,17 +80,16 @@ describe('getRequiredTokenApprovals', () => {
       return 5n
     }
 
-    const inputAmounts: InputAmount[] = [
+    const rawAmounts: RawAmount[] = [
       {
         address: usdtAddress,
         rawAmount: testRawAmount('10'),
-        decimals: 18,
       },
     ]
 
     expect(
       getRequiredTokenApprovals({
-        inputAmounts,
+        rawAmounts,
         chainId,
         allowanceFor,
       })
@@ -116,17 +112,16 @@ describe('getRequiredTokenApprovals', () => {
       return 0n
     }
 
-    const inputAmounts: InputAmount[] = [
+    const rawAmounts: RawAmount[] = [
       {
         address: usdtAddress,
         rawAmount: testRawAmount('10'),
-        decimals: 18,
       },
     ]
 
     expect(
       getRequiredTokenApprovals({
-        inputAmounts,
+        rawAmounts,
         chainId,
         allowanceFor,
       })
