@@ -36,16 +36,24 @@ export function _useRemoveLiquidity() {
 
   const [humanBptInPercent, setHumanBptInPercent] = useState<number>(100)
 
-  const handler = useMemo(
-    () => selectRemoveLiquidityHandler(pool, removalType),
-    [pool.id, removalType]
-  )
-
   const maxHumanBptIn: HumanAmount = (pool?.userBalance?.totalBalance || '0') as HumanAmount
   const humanBptIn: HumanAmount = bn(maxHumanBptIn)
     .times(humanBptInPercent / 100)
     .toString() as HumanAmount
 
+  const { isDisabled, disabledReason } = isDisabledWithReason(
+    [!isConnected, LABELS.walletNotConnected],
+    [Number(humanBptIn) === 0, 'You must specify a valid bpt in']
+  )
+
+  const handler = useMemo(
+    () => selectRemoveLiquidityHandler(pool, removalType),
+    [pool.id, removalType]
+  )
+
+  /**
+   * Helper functions & variables
+   */
   const totalUsdFromBprPrice = bn(humanBptIn).times(bptPrice).toFixed(2)
 
   const setProportionalType = () => setRemovalType(RemoveLiquidityType.Proportional)
@@ -109,11 +117,6 @@ export function _useRemoveLiquidity() {
       return Number(safeSum([acc, current]))
     }, 0)
     .toString()
-
-  const { isDisabled, disabledReason } = isDisabledWithReason(
-    [!isConnected, LABELS.walletNotConnected],
-    [Number(humanBptIn) === 0, 'You must specify a valid bpt in']
-  )
 
   return {
     tokens,
