@@ -30,6 +30,7 @@ import RemoveLiquidityBptRow from './RemoveLiquidityBptRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { RemoveLiquidityFlow } from './RemoveLiquidityFlow'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
+import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
 
 type Props = {
   isOpen: boolean
@@ -51,6 +52,7 @@ export function RemoveLiquidityModal({
     singleTokenOutAddress,
     amountOutForToken,
     priceImpactQuery,
+    removeLiquidityTxState,
   } = useRemoveLiquidity()
   const { pool } = usePool()
   const { slippage } = useUserSettings()
@@ -133,6 +135,12 @@ export function RemoveLiquidityModal({
                     </Tooltip>
                   </HStack>
                 </HStack>
+
+                <VStack align="start" spacing="md">
+                  <HStack justify="space-between" w="full">
+                    <RemoveLiquidityTimeout removeLiquidityTxState={removeLiquidityTxState} />
+                  </HStack>
+                </VStack>
               </VStack>
             </Card>
           </VStack>

@@ -8,7 +8,7 @@ import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { HumanAmount } from '@balancer/sdk'
-import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
+import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
 import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulationQuery'
@@ -22,6 +22,7 @@ import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
+import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -36,6 +37,8 @@ export function _useAddLiquidity() {
   const { isConnected, userAddress } = useUserAccount()
   const vaultAddress = useContractAddress('balancer.vaultV2')
   const previewModalDisclosure = useDisclosure()
+
+  const [addLiquidityTxState, setAddLiquidityTxState] = useState<TransactionState>()
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
@@ -132,6 +135,8 @@ export function _useAddLiquidity() {
     setHumanAmountIn,
     tokenAllowances,
     handler,
+    addLiquidityTxState,
+    setAddLiquidityTxState,
   }
 }
 

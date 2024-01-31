@@ -1,13 +1,10 @@
-import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { VStack } from '@chakra-ui/react'
-import { useState } from 'react'
 import { useIterateSteps } from '../../useIterateSteps'
 import { RemoveLiquidityButton } from '../RemoveLiquidityButton'
-import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
+import { useRemoveLiquidity } from '../useRemoveLiquidity'
 
 export function RemoveLiquidityFlow() {
-  const [removeLiquidityTxState, setRemoveLiquidityTxState] = useState<TransactionState>()
-
+  const { setRemoveLiquidityTxState } = useRemoveLiquidity()
   interface RemoveLiquidityConfig {
     type: 'removeLiquidity'
     // no props
@@ -22,8 +19,6 @@ export function RemoveLiquidityFlow() {
 
   return (
     <VStack w="full">
-      <RemoveLiquidityTimeout removeLiquidityTxState={removeLiquidityTxState} />
-
       {currentStep.type === 'removeLiquidity' && (
         <RemoveLiquidityButton
           onTransactionStateUpdate={setRemoveLiquidityTxState}

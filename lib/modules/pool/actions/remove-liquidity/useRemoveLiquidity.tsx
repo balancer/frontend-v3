@@ -18,6 +18,7 @@ import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address } from 'viem'
 import { toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
+import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -40,6 +41,8 @@ export function _useRemoveLiquidity() {
   const humanBptIn: HumanAmount = bn(maxHumanBptIn)
     .times(humanBptInPercent / 100)
     .toString() as HumanAmount
+
+  const [removeLiquidityTxState, setRemoveLiquidityTxState] = useState<TransactionState>()
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
@@ -140,6 +143,8 @@ export function _useRemoveLiquidity() {
     setSingleTokenAddress,
     amountOutForToken,
     usdOutForToken,
+    removeLiquidityTxState,
+    setRemoveLiquidityTxState,
     handler,
   }
 }
