@@ -7,11 +7,13 @@ type RelayerMode = 'signRelayer' | 'approveRelayer' | 'no-relayer-needed'
 export function useRelayerMode(): RelayerMode {
   const { connector } = useUserAccount()
   const { pool } = usePool()
-  // const {enableSignature} = useUserSettings()
+  // const {enableSignatures} = useUserSettings()
+  // DEBUG_MODE for testing relayer approval
+  const enableSignatures = 'no'
 
   if (!shouldUseNestedLiquidity(pool)) return 'no-relayer-needed'
 
-  // if(enableSignature === 'yes') return 'approveRelayer'
+  if (enableSignatures === 'no') return 'approveRelayer'
   if (connector?.id === 'walletConnect') return 'approveRelayer'
   //TODO: confirm gnosis safe connector ID
   if (connector?.id === 'gnosisSafe') return 'approveRelayer'
