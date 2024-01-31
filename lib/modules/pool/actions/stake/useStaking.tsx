@@ -11,9 +11,9 @@ import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
 import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNextTokenApprovalStep'
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
-import { useConstructGaugeDepositActionStep } from '@/lib/modules/gauge/gauge.actions'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { isEmpty } from 'lodash'
+import { useConstructStakingDepositActionStep } from './staking.actions'
 
 export function useStaking() {
   const {
@@ -53,10 +53,7 @@ export function useStaking() {
   /**
    * Transaction step construction
    */
-  const stakeStep = useConstructGaugeDepositActionStep(
-    pool.staking?.gauge,
-    amountToApprove.rawAmount
-  )
+  const stakeStep = useConstructStakingDepositActionStep(pool.staking, amountToApprove.rawAmount)
 
   const steps = [tokenApprovalStep, stakeStep].filter(step => step !== null) as FlowStep[]
 
