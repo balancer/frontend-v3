@@ -15,18 +15,13 @@ import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulat
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { HumanAmountIn } from '../liquidity-types'
 import { LiquidityActionHelpers, areEmptyAmounts } from '../LiquidityActionHelpers'
-import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
-import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNextTokenApprovalStep'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
-import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -36,11 +31,6 @@ export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
 export function _useAddLiquidity() {
   const humanAmountsIn = useReactiveVar(humanAmountsInVar)
 
-  const {
-    isActiveStep: isFinalStepActive,
-    activateStep: activateFinalStep,
-    deactivateStep: deactivateFinalStep,
-  } = useActiveStep()
   const { pool } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected, userAddress } = useUserAccount()
@@ -69,11 +59,6 @@ export function _useAddLiquidity() {
     .map(amountIn => amountIn.tokenAddress)
 
   const tokenAllowances = useTokenAllowances(userAddress, vaultAddress, tokenAddressesWithAmountIn)
-  const { tokenApprovalStep, remainingAmountsToApprove } = useNextTokenApprovalStep({
-    tokenAllowances,
-    amountsToApprove: helpers.getAmountsToApprove(humanAmountsIn),
-    actionType: 'AddLiquidity',
-  })
 
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -119,32 +104,11 @@ export function _useAddLiquidity() {
   const totalUSDValue = safeSum(usdAmountsIn)
 
   /**
-   * The three handler queries, simulate + priceImpact + buildCallData.
+   * Simulation queries:
    */
   const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn, pool.id)
 
   const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn, pool.id)
-
-  const buildCallDataQuery = useAddLiquidityBuildCallDataQuery({
-    handler,
-    humanAmountsIn,
-    pool,
-    simulationQuery,
-    options: {
-      enabled: isFinalStepActive,
-    },
-  })
-
-  /**
-   * Transaction step construction
-   */
-  const { addLiquidityStep, addLiquidityTransaction } = useConstructAddLiquidityStep(
-    pool.id,
-    buildCallDataQuery,
-    activateFinalStep
-  )
-
-  const steps = [tokenApprovalStep, addLiquidityStep].filter(step => step !== null) as FlowStep[]
 
   /**
    * Side-effects
@@ -164,15 +128,10 @@ export function _useAddLiquidity() {
     isDisabled,
     disabledReason,
     helpers,
-    buildCallDataQuery,
-    remainingAmountsToApprove,
     previewModalDisclosure,
-    tokenApprovalStep,
-    addLiquidityTransaction,
-    steps,
-    isFinalStepActive,
-    deactivateFinalStep,
     setHumanAmountIn,
+    tokenAllowances,
+    handler,
   }
 }
 

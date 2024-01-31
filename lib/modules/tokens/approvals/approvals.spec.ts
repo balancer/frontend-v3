@@ -7,6 +7,7 @@ import {
 } from './approval-rules'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 import { testRawAmount } from '@/test/utils/numbers'
+import { Address } from 'viem'
 
 const chainId: SupportedChainId = 1
 
@@ -21,9 +22,8 @@ const amountsToApprove: TokenAmountToApprove[] = [
   },
 ]
 
-const currentTokenAllowances = {
-  [wETHAddress]: MAX_BIGINT,
-  [wjAuraAddress]: MAX_BIGINT,
+function allowanceFor(): bigint {
+  return MAX_BIGINT
 }
 
 describe('getRequiredTokenApprovals', () => {
@@ -32,7 +32,7 @@ describe('getRequiredTokenApprovals', () => {
       getRequiredTokenApprovals({
         chainId,
         amountsToApprove,
-        currentTokenAllowances,
+        allowanceFor,
         skipAllowanceCheck: true,
       })
     ).toEqual([])
@@ -43,7 +43,7 @@ describe('getRequiredTokenApprovals', () => {
       getRequiredTokenApprovals({
         chainId,
         amountsToApprove: [],
-        currentTokenAllowances,
+        allowanceFor,
       })
     ).toEqual([])
   })
@@ -53,24 +53,27 @@ describe('getRequiredTokenApprovals', () => {
       getRequiredTokenApprovals({
         amountsToApprove,
         chainId,
-        currentTokenAllowances,
+        allowanceFor,
       })
     ).toEqual([])
   })
 
   test('when some token allowances are greater than the amounts to approve', () => {
-    currentTokenAllowances[wETHAddress] = 5n
+    function allowanceFor(tokenAddress: Address): bigint {
+      if (tokenAddress === wETHAddress) return 5n
+      return MAX_BIGINT
+    }
 
     expect(
       getRequiredTokenApprovals({
         amountsToApprove,
         chainId,
-        currentTokenAllowances,
+        allowanceFor,
       })
     ).toEqual([
       {
-        rawAmount: 10000000000000000000n,
-        tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        rawAmount: MAX_BIGINT,
+        tokenAddress: wETHAddress,
       },
     ])
   })
@@ -78,20 +81,20 @@ describe('getRequiredTokenApprovals', () => {
 
 describe('isDoubleApprovalRequired', () => {
   test('when token is not special', () => {
-    expect(isDoubleApprovalRequired(chainId, wETHAddress, currentTokenAllowances)).toBeFalsy()
+    expect(isDoubleApprovalRequired(chainId, wETHAddress, allowanceFor)).toBeFalsy()
   })
   test('when token is special (like USDT)', () => {
-    const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7'
-    const currentTokenAllowances = {
-      [usdtAddress]: 10n,
+    function allowanceFor(): bigint {
+      return 10n
     }
-    expect(isDoubleApprovalRequired(chainId, usdtAddress, currentTokenAllowances)).toBeTruthy()
+    const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7'
+    expect(isDoubleApprovalRequired(chainId, usdtAddress, allowanceFor)).toBeTruthy()
   })
   test('when token is special (like USDT) but current allowance is already zero', () => {
     const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7'
-    const currentTokenAllowances = {
-      [usdtAddress]: 0n,
+    function allowanceFor(): bigint {
+      return 0n
     }
-    expect(isDoubleApprovalRequired(chainId, usdtAddress, currentTokenAllowances)).toBeFalsy()
+    expect(isDoubleApprovalRequired(chainId, usdtAddress, allowanceFor)).toBeFalsy()
   })
 })
