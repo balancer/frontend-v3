@@ -1,7 +1,6 @@
 import { SupportedChainId } from '@/lib/config/config.types'
 import { isNativeAsset } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
-import { TokenAllowances } from '../../web3/useTokenAllowances'
 import { requiresDoubleApproval } from '@/lib/config/tokens.config'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 
@@ -13,7 +12,7 @@ export type TokenAmountToApprove = {
 type TokenApprovalParams = {
   chainId: SupportedChainId | null
   amountsToApprove: TokenAmountToApprove[]
-  currentTokenAllowances: TokenAllowances
+  allowanceFor: (tokenAddress: Address) => bigint
   approveMaxBigInt?: boolean
   skipAllowanceCheck?: boolean
 }
@@ -24,7 +23,7 @@ type TokenApprovalParams = {
 export function getRequiredTokenApprovals({
   chainId,
   amountsToApprove,
-  currentTokenAllowances,
+  allowanceFor,
   approveMaxBigInt = true,
   skipAllowanceCheck = false,
 }: TokenApprovalParams) {
@@ -33,9 +32,8 @@ export function getRequiredTokenApprovals({
 
   let tokenAmountsToApprove = amountsToApprove.filter(({ tokenAddress, rawAmount }) => {
     if (isNativeAsset(chainId, tokenAddress)) return false
-    const allowedAmount = currentTokenAllowances[tokenAddress]
 
-    const hasEnoughAllowedAmount = allowedAmount >= rawAmount
+    const hasEnoughAllowedAmount = allowanceFor(tokenAddress) >= rawAmount
     if (hasEnoughAllowedAmount) return false
     return true
   })
@@ -47,12 +45,19 @@ export function getRequiredTokenApprovals({
     })
   }
 
+  tokenAmountsToApprove = approveMaxBigInt
+    ? tokenAmountsToApprove.map(amountToApprove => ({
+        ...amountToApprove,
+        rawAmount: MAX_BIGINT,
+      }))
+    : tokenAmountsToApprove
+
   /**
    * Some tokens (e.g. USDT) require setting their approval amount to 0n before being
    * able to adjust the value up again (only when there was an existing allowance)
    */
   return tokenAmountsToApprove.flatMap(t => {
-    if (isDoubleApprovalRequired(chainId, t.tokenAddress, currentTokenAllowances)) {
+    if (isDoubleApprovalRequired(chainId, t.tokenAddress, allowanceFor)) {
       const zeroTokenAmountToApprove: TokenAmountToApprove = {
         rawAmount: 0n,
         tokenAddress: t.tokenAddress,
@@ -72,9 +77,7 @@ export function getRequiredTokenApprovals({
 export function isDoubleApprovalRequired(
   chainId: SupportedChainId,
   tokenAddress: Address,
-  currentTokenAllowances: TokenAllowances
+  allowanceFor: (tokenAddress: Address) => bigint
 ): boolean {
-  return !!(
-    requiresDoubleApproval(chainId, tokenAddress) && currentTokenAllowances[tokenAddress] > 0n
-  )
+  return !!(requiresDoubleApproval(chainId, tokenAddress) && allowanceFor(tokenAddress) > 0n)
 }

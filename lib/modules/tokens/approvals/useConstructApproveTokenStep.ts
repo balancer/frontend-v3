@@ -1,9 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedErc20Transaction } from '@/lib/modules/web3/contracts/useManagedErc20Transaction'
-import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useEffect } from 'react'
-import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
 import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
 import { useTokens } from '../useTokens'
@@ -11,7 +9,7 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
 import { TokenAmountToApprove } from './approval-rules'
 
-type Params = {
+export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse
   tokenAmountToApprove: TokenAmountToApprove
   spenderAddress: Address
@@ -25,9 +23,8 @@ export function useConstructApproveTokenStep({
   spenderAddress,
   actionType,
   chain,
-}: Params) {
-  const { isActiveStep, activateStep } = useActiveStep()
-  const { refetchAllowances, isAllowancesLoading } = tokenAllowances
+}: ApproveTokenProps) {
+  const { refetchAllowances, isAllowancesLoading, allowanceFor } = tokenAllowances
   const { getToken } = useTokens()
 
   const { tokenAddress, rawAmount } = tokenAmountToApprove
@@ -46,18 +43,23 @@ export function useConstructApproveTokenStep({
     tokenApprovalLabels,
     { args: [spenderAddress, rawAmount] },
     {
-      enabled: isActiveStep && !!spenderAddress && !isAllowancesLoading,
+      enabled: !!spenderAddress && !isAllowancesLoading,
     }
   )
+
+  /* TODO: Change props to receive a TokenAmountToApprove with:
+    tokenAddress
+    requiredRawAmount -> actual amount that the transaction requires
+    requestedRawAmount -> amount that we are going to request (normally MAX_BIGINT)
+  */
+  const isComplete = allowanceFor(tokenAddress) >= rawAmount
 
   const step: FlowStep = {
     ...approvalTransaction,
     transactionLabels: tokenApprovalLabels,
     id: tokenAddress,
     stepType: 'tokenApproval',
-    // Completion is handled by useNextTokenApprovalStep which returns the next approval step in the sequence
-    isComplete: () => false,
-    activateStep,
+    isComplete: () => isComplete,
   }
 
   useEffect(() => {
@@ -70,5 +72,5 @@ export function useConstructApproveTokenStep({
     saveExecutedApproval()
   }, [approvalTransaction.result.isSuccess])
 
-  return tokenAddress === emptyAddress ? null : step
+  return step
 }

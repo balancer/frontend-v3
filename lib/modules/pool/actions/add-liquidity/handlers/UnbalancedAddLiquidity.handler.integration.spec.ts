@@ -1,12 +1,13 @@
 /* eslint-disable max-len */
 import networkConfig from '@/lib/config/networks/mainnet'
 import { balAddress, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
+import {
+  aPhantomStablePoolMock,
+  aWjAuraWethPoolElementMock,
+} from '@/test/msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { HumanAmount } from '@balancer/sdk'
 import { Address } from 'viem'
-import { aPhantomStablePoolStateInputMock } from '../../../__mocks__/pool.builders'
-import { Pool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
 import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
@@ -79,7 +80,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
 
 describe('When adding unbalanced liquidity for a stable pool', () => {
   test('calculates price impact', async () => {
-    const pool = aPhantomStablePoolStateInputMock() as unknown as Pool // wstETH-rETH-sfrxETH
+    const pool = aPhantomStablePoolMock() // wstETH-rETH-sfrxETH
 
     const handler = selectAddLiquidityHandler(pool)
 

@@ -32,9 +32,8 @@ import { BPT_DECIMALS } from '../../pool.constants'
 import { bptUsdValue } from '../../pool.helpers'
 import { usePool } from '../../usePool'
 import { HumanAmountIn } from '../liquidity-types'
-import { AddLiquidityFlowButton } from './AddLiquidityFlowButton'
 import { useAddLiquidity } from './useAddLiquidity'
-import { AddLiquidityTimeout } from './AddLiquidityTimeout'
+import { AddLiquidityFlow } from './AddLiquidityFlow'
 
 type Props = {
   isOpen: boolean
@@ -68,17 +67,19 @@ function TokenAmountRow({
 
   return (
     <HStack w="full" justify="space-between">
-      <HStack>
+      <HStack spacing="md">
         <TokenIcon
           address={token?.address}
           chain={token?.chain}
           size={28}
           alt={token?.symbol || 'Token icon'}
         />
-        <NumberText>{fNum('token', humanAmount)}</NumberText>
-        <Text>{symbol || token?.symbol}</Text>
+        <HStack>
+          <NumberText>{fNum('token', humanAmount, { abbreviated: false })}</NumberText>
+          <Text>{symbol || token?.symbol}</Text>
+        </HStack>
       </HStack>
-      <NumberText>{usdValue ? toCurrency(usdValue) : '-'}</NumberText>
+      <NumberText>{usdValue ? toCurrency(usdValue, { abbreviated: false }) : '-'}</NumberText>
     </HStack>
   )
 }
@@ -124,7 +125,9 @@ export function AddLiquidityModal({
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text color="GrayText">{"You're adding"}</Text>
-                  <NumberText fontSize="lg">{toCurrency(totalUSDValue)}</NumberText>
+                  <NumberText fontSize="lg">
+                    {toCurrency(totalUSDValue, { abbreviated: false })}
+                  </NumberText>
                 </HStack>
                 {tokens.map(token => {
                   if (!token) return <div>Missing token</div>
@@ -168,17 +171,11 @@ export function AddLiquidityModal({
                   </HStack>
                 </HStack>
               </VStack>
-
-              <VStack align="start" spacing="md">
-                <HStack justify="space-between" w="full">
-                  <AddLiquidityTimeout />
-                </HStack>
-              </VStack>
             </Card>
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <AddLiquidityFlowButton />
+          <AddLiquidityFlow />
         </ModalFooter>
       </ModalContent>
     </Modal>

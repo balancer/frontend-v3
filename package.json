@@ -103,7 +103,7 @@
     "@types/tinycolor2": "^1.4.6",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
-    "@viem/anvil": "^0.0.6",
+    "@viem/anvil": "^0.0.7",
     "@vitejs/plugin-react": "^4.2.1",
     "@vitest/coverage-v8": "^1.1.1",
     "@wagmi/cli": "^1.5.1",

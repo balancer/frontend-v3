@@ -224,8 +224,8 @@ devDependencies:
     specifier: ^5.60.1
     version: 5.62.0(eslint@8.43.0)(typescript@5.1.6)
   '@viem/anvil':
-    specifier: ^0.0.6
-    version: 0.0.6
+    specifier: ^0.0.7
+    version: 0.0.7
   '@vitejs/plugin-react':
     specifier: ^4.2.1
     version: 4.2.1(vite@5.0.5)
@@ -5351,8 +5351,8 @@ packages:
     requiresBuild: true
     dev: false
 
-  /@viem/anvil@0.0.6:
-    resolution: {integrity: sha512-OjKR/+FVwzuygXYFqP8MBal1SXG8bT2gbZwqqB0XuLw81LNBBvmE/Repm6+5kkBh4IUj0PhYdrqOsnayS14Gtg==}
+  /@viem/anvil@0.0.7:
+    resolution: {integrity: sha512-F+3ljCT1bEt8T4Fzm9gWpIgO3Dc7bzG1TtUtkStkJFMuummqZ8kvYc3UFMo5j3F51fSWZZvEkjs3+i7qf0AOqQ==}
     dependencies:
       execa: 7.2.0
       get-port: 6.1.2

@@ -4,13 +4,13 @@ import {
   GetPoolQuery,
   GqlChain,
   GqlPoolBase,
+  GqlPoolNestingType,
   GqlPoolType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { getAddressBlockExplorerLink, isSameAddress } from '@/lib/shared/utils/addresses'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
-import { MinimalToken, PoolState, mapPoolType } from '@balancer/sdk'
 import BigNumber from 'bignumber.js'
-import { Address, Hex, getAddress } from 'viem'
+import { Address, getAddress } from 'viem'
 
 /**
  * METHODS
@@ -35,10 +35,9 @@ export function isPhantomStable(poolType: GqlPoolType): boolean {
   return poolType === GqlPoolType.PhantomStable
 }
 
-// TODO: verify
-// export function isComposableStable(poolType: GqlPoolType): boolean {
-//   return poolType === GqlPoolType.ComposableStable
-// }
+export function isComposableStable(poolType: GqlPoolType): boolean {
+  return poolType === GqlPoolType.ComposableStable
+}
 
 // TODO: verify
 // export function isComposableStableV1(pool: Pool): boolean {
@@ -87,6 +86,17 @@ export function isManaged(poolType: GqlPoolType): boolean {
 
 export function isWeightedLike(poolType: GqlPoolType): boolean {
   return isWeighted(poolType) || isManaged(poolType) || isLiquidityBootstrapping(poolType)
+}
+
+export function isStableLike(poolType: GqlPoolType): boolean {
+  return (
+    isStable(poolType) ||
+    isMetaStable(poolType) ||
+    isPhantomStable(poolType) ||
+    isComposableStable(poolType) ||
+    isFx(poolType) ||
+    isGyro(poolType)
+  )
 }
 
 export function isSwappingHaltable(poolType: GqlPoolType): boolean {
@@ -159,17 +169,8 @@ export function usePoolHelpers(pool: Pool, chain: GqlChain) {
   }
 }
 
-export function toPoolStateInput(pool: Pool): PoolState {
-  // TODO: double check if we need an extra request to get PoolStateInput to get index token field
-  // Add index in GQL query instead of this
-  const tokens = pool.tokens.map((t, index) => {
-    return { ...t, index }
-  })
-  return {
-    id: pool.id as Hex,
-    address: pool.address as Address,
-    tokens: tokens as MinimalToken[],
-    type: mapPoolType(pool.type),
-    balancerVersion: 2,
-  }
+export function hasNestedPools(pool: Pool) {
+  // The following discriminator is needed because not all pools in GqlPoolQuery do have nestingType property
+  // and the real TS discriminator is __typename which we don't want to use
+  return 'nestingType' in pool && pool.nestingType !== GqlPoolNestingType.NoNesting
 }

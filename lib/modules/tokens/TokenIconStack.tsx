@@ -9,12 +9,17 @@ type Props = {
 }
 
 export function TokenIconStack({ tokens, chain, size = 64, ...rest }: Props & StackProps) {
+  const getNestingMargin = () => {
+    if (tokens.length > 4) return -10
+    return -5
+  }
+
   return (
     <HStack {...rest}>
       {tokens.map((token, i) => (
         <Box
           key={token.address}
-          ml={i > 0 ? -5 : 0}
+          ml={i > 0 ? getNestingMargin() : 0}
           zIndex={9 - i}
           border="2px solid"
           borderColor="background.base"
