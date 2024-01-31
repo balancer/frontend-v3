@@ -1,7 +1,6 @@
-import { GqlPoolStaking, GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolStaking } from '@/lib/shared/services/api/generated/graphql'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { TransactionLabels, FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 function buildStakingDepositLabels(staking?: GqlPoolStaking | null): TransactionLabels {
@@ -60,7 +59,6 @@ export function useConstructStakingDepositActionStep(
   staking?: GqlPoolStaking | null,
   depositAmount?: bigint
 ): FlowStep {
-  const { activateStep } = useActiveStep()
   const transactionLabels = buildStakingDepositLabels(staking)
   const stakingConfig = getStakingConfig(staking, depositAmount)
 
@@ -78,7 +76,6 @@ export function useConstructStakingDepositActionStep(
     id: `${staking?.type}-deposit`,
     stepType: 'stakingDeposit',
     transactionLabels,
-    activateStep,
     isComplete: () => deposit.result.isSuccess,
   }
   return step
@@ -88,7 +85,6 @@ export function useConstructStakingWithdrawActionStep(
   staking?: GqlPoolStaking | null,
   withdrawAmount?: bigint
 ): FlowStep {
-  const { activateStep } = useActiveStep()
   const transactionLabels = buildStakingWithdrawLabels(staking)
   const stakingConfig = getStakingConfig(staking, withdrawAmount)
 
@@ -106,7 +102,6 @@ export function useConstructStakingWithdrawActionStep(
     id: `${staking?.type}-withdraw`,
     stepType: 'stakingWithdraw',
     transactionLabels,
-    activateStep,
     isComplete: () => withdraw.result.isSuccess,
   }
   return step
