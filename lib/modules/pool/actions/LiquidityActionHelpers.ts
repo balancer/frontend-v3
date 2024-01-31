@@ -144,6 +144,10 @@ export function shouldUseNestedLiquidity(pool: Pool) {
 }
 
 export function toPoolState(pool: Pool): PoolState {
+  if (pool.type === 'META_STABLE') {
+    throw new Error('META_STABLE pool type is not yet supported by the SDK')
+  }
+
   return {
     id: pool.id as Hex,
     address: pool.address as Address,
