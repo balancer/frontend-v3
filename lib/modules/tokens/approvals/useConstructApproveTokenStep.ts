@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedErc20Transaction } from '@/lib/modules/web3/contracts/useManagedErc20Transaction'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
 import { useTokens } from '../useTokens'
@@ -28,6 +28,8 @@ export function useConstructApproveTokenStep({
   const { refetchAllowances, isAllowancesLoading, allowanceFor } = tokenAllowances
   const { getToken } = useTokens()
 
+  const [didRefetchAllowances, setDidRefetchAllowances] = useState(false)
+
   const { tokenAddress, requestedRawAmount, requiredRawAmount } = tokenAmountToApprove
 
   const token = getToken(tokenAddress, chain)
@@ -47,12 +49,11 @@ export function useConstructApproveTokenStep({
       enabled: !!spenderAddress && !isAllowancesLoading,
     }
   )
-
-  const isComplete = isStepComplete(
-    allowanceFor(tokenAddress),
-    requiredRawAmount,
-    approvalTransaction
-  )
+  /*
+     We wait for allowances to be refetched (didRefetchAllowances) after the approval transaction.
+     This is must in edge-cases like USDT (with doubleApprovalRequired setup in TokensConfig) when requiredRawAmount is 0n
+   */
+  const isComplete = didRefetchAllowances && allowanceFor(tokenAddress) >= requiredRawAmount
 
   const step: FlowStep = {
     ...approvalTransaction,
@@ -67,23 +68,11 @@ export function useConstructApproveTokenStep({
     async function saveExecutedApproval() {
       if (approvalTransaction.result.isSuccess) {
         await refetchAllowances()
+        setDidRefetchAllowances(true)
       }
     }
     saveExecutedApproval()
   }, [approvalTransaction.result.isSuccess])
 
   return step
-}
-
-function isStepComplete(
-  currentAllowance: bigint,
-  requiredRawAmount: bigint,
-  approvalTransaction: TransactionBundle
-): boolean {
-  /* When we are approving 0n for edge-cases like USDT (with doubleApprovalRequired setup in TokensConfig)
-     we only wait for the on approval transaction to be successful
-   */
-  if (requiredRawAmount === 0n) return approvalTransaction.result.isSuccess
-
-  return currentAllowance >= requiredRawAmount
 }
