@@ -1,4 +1,4 @@
-import { HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
+import { HStack, Heading, Link, Skeleton, Text, VStack } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { useTokens } from '../useTokens'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
@@ -6,9 +6,8 @@ import { ReactNode } from 'react'
 import { TokenIcon } from '../TokenIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { Numberish, fNum } from '@/lib/shared/utils/numbers'
-import { HiExternalLink } from 'react-icons/hi'
-import Link from 'next/link'
 import { useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
+import { ExternalLinkIcon } from '@chakra-ui/icons'
 
 type Props = {
   address: Address
@@ -54,16 +53,10 @@ export default function TokenRow({
             >
               {token?.symbol}
             </Heading>
-            <Text
-              as={Link}
-              href={getBlockExplorerTokenUrl(address)}
-              color="font.secondary"
-              target="_blank"
-            >
-              <HiExternalLink />
-            </Text>
+            <Link href={getBlockExplorerTokenUrl(address)} target="_blank">
+              <ExternalLinkIcon color="gray.400" width="1rem" height="1rem" />
+            </Link>
           </HStack>
-
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
             {token?.name}
           </Text>
