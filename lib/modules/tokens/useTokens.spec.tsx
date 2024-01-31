@@ -1,7 +1,6 @@
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
-import { Address } from 'viem'
 import {
   defaultGetTokenPricesQueryMock,
   defaultGetTokensQueryMock,
@@ -9,6 +8,7 @@ import {
   defaultTokenListMock,
 } from './__mocks__/token.builders'
 import { _useTokens } from './useTokens'
+import { balAddress, wETHAddress } from '@/lib/debug-helpers'
 
 const initTokensData = defaultGetTokensQueryMock
 const initTokenPricesData = defaultGetTokenPricesQueryMock
@@ -30,10 +30,48 @@ test('fetches tokens', async () => {
   expect(result.current.tokens).toEqual(defaultTokenListMock)
 })
 
-test('gets tokens by token address', async () => {
+test('gets a token by token address and chain', async () => {
   const result = testUseTokens()
 
-  const tokenAddresses = ['0xba100000625a3754423978a60c9317c58a424e3d' as Address]
+  expect(result.current.getToken(wETHAddress, GqlChain.Mainnet)).toMatchInlineSnapshot(`
+    {
+      "__typename": "GqlToken",
+      "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      "chain": "MAINNET",
+      "chainId": 1,
+      "decimals": 18,
+      "logoURI": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+      "name": "Wrapped Ether",
+      "priority": 0,
+      "symbol": "WETH",
+      "tradable": true,
+    }
+  `)
+})
+
+test('gets a token by token address and current chain when chain is not provided', async () => {
+  const result = testUseTokens()
+
+  expect(result.current.getToken(wETHAddress, GqlChain.Mainnet)).toMatchInlineSnapshot(`
+    {
+      "__typename": "GqlToken",
+      "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+      "chain": "MAINNET",
+      "chainId": 1,
+      "decimals": 18,
+      "logoURI": "https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+      "name": "Wrapped Ether",
+      "priority": 0,
+      "symbol": "WETH",
+      "tradable": true,
+    }
+  `)
+})
+
+test('gets a list of tokens from a list of token addresses', async () => {
+  const result = testUseTokens()
+
+  const tokenAddresses = [balAddress]
 
   expect(result.current.getTokensByTokenAddress(tokenAddresses, GqlChain.Mainnet))
     .toMatchInlineSnapshot(`
