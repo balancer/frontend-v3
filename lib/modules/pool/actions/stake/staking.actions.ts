@@ -2,6 +2,7 @@ import { GqlPoolStaking } from '@/lib/shared/services/api/generated/graphql'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { TransactionLabels, FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { Address } from 'viem'
 
 function buildStakingDepositLabels(staking?: GqlPoolStaking | null): TransactionLabels {
   const labels: TransactionLabels = {
@@ -25,7 +26,8 @@ function buildStakingWithdrawLabels(staking?: GqlPoolStaking | null): Transactio
 
 function getStakingConfig(
   staking?: GqlPoolStaking | null,
-  amount?: bigint
+  amount?: bigint,
+  userAddress?: Address
 ):
   | {
       contractAddress: string | undefined
@@ -33,8 +35,6 @@ function getStakingConfig(
       args: any
     }
   | undefined {
-  const { userAddress } = useUserAccount()
-
   if (staking) {
     switch (staking.type) {
       case 'MASTER_CHEF':
@@ -60,7 +60,8 @@ export function useConstructStakingDepositActionStep(
   depositAmount?: bigint
 ): FlowStep {
   const transactionLabels = buildStakingDepositLabels(staking)
-  const stakingConfig = getStakingConfig(staking, depositAmount)
+  const { userAddress } = useUserAccount()
+  const stakingConfig = getStakingConfig(staking, depositAmount, userAddress)
 
   const deposit = useManagedTransaction(
     stakingConfig?.contractAddress || '',
@@ -86,7 +87,8 @@ export function useConstructStakingWithdrawActionStep(
   withdrawAmount?: bigint
 ): FlowStep {
   const transactionLabels = buildStakingWithdrawLabels(staking)
-  const stakingConfig = getStakingConfig(staking, withdrawAmount)
+  const { userAddress } = useUserAccount()
+  const stakingConfig = getStakingConfig(staking, withdrawAmount, userAddress)
 
   const withdraw = useManagedTransaction(
     stakingConfig?.contractAddress || '',
