@@ -107,7 +107,7 @@ export function AddLiquidityForm() {
                 <Text color="GrayText">LP tokens</Text>
                 <HStack>
                   {simulationQuery.isLoading ? (
-                    <Skeleton w="12" h="full" />
+                    <Skeleton w="16" h="6" />
                   ) : (
                     <NumberText color="GrayText">{bptOutLabel}</NumberText>
                   )}
@@ -126,7 +126,7 @@ export function AddLiquidityForm() {
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
                   {priceImpactQuery.isLoading ? (
-                    <Skeleton w="12" h="full" />
+                    <Skeleton w="16" h="6" />
                   ) : (
                     <NumberText color="GrayText">{priceImpactLabel}</NumberText>
                   )}
