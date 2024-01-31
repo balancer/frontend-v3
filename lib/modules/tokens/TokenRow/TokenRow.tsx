@@ -51,7 +51,7 @@ export default function TokenRow({
     <HStack width="full" justifyContent="space-between">
       <HStack spacing="md">
         <TokenIcon chain={chain} address={address} size={36} alt={token?.symbol || address} />
-        <VStack spacing="1" alignItems="flex-start">
+        <VStack spacing="xs" alignItems="flex-start">
           <HStack>
             <Heading
               fontWeight="bold"
@@ -77,7 +77,7 @@ export default function TokenRow({
         </VStack>
       </HStack>
       <HStack spacing="8">
-        <VStack spacing="1" alignItems="flex-end">
+        <VStack spacing="xs" alignItems="flex-end">
           {isLoading ? (
             <Skeleton w="10" h="4" />
           ) : (
