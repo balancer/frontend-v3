@@ -86,8 +86,8 @@ function GlobalProviders({ children }: WrapperProps) {
               <UserSettingsProvider
                 initCurrency={'USD'}
                 initSlippage={'0.2'}
-                initSignatureAllowance="on"
                 initPoolListView={'list'}
+                initEnableSignatures="yes"
               >
                 <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
               </UserSettingsProvider>
