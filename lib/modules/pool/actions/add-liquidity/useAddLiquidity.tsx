@@ -8,7 +8,7 @@ import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { HumanAmount } from '@balancer/sdk'
-import { PropsWithChildren, createContext, useEffect, useMemo } from 'react'
+import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
 import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulationQuery'
@@ -22,6 +22,7 @@ import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
+import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -37,23 +38,20 @@ export function _useAddLiquidity() {
   const vaultAddress = useContractAddress('balancer.vaultV2')
   const previewModalDisclosure = useDisclosure()
 
+  const [addLiquidityTxState, setAddLiquidityTxState] = useState<TransactionState>()
+
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts']
   )
 
   const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id])
-  /**
-   * We don't expose individual helper methods like getAmountsToApprove or poolTokenAddresses because
-   * helper is a class and if we return its methods we would lose the this binding, getting a:
-   * TypeError: Cannot read property getAmountsToApprove of undefined
-   * when trying to access the returned method
-   */
-  const helpers = new LiquidityActionHelpers(pool)
 
   /**
    * Helper functions & variables
    */
+  const helpers = new LiquidityActionHelpers(pool)
+  const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
   const tokenAddressesWithAmountIn = humanAmountsIn
     .filter(amountIn => bn(amountIn.humanAmount).gt(0))
     .map(amountIn => amountIn.tokenAddress)
@@ -120,6 +118,7 @@ export function _useAddLiquidity() {
 
   return {
     humanAmountsIn,
+    inputAmounts,
     tokens,
     validTokens,
     totalUSDValue,
@@ -127,11 +126,12 @@ export function _useAddLiquidity() {
     priceImpactQuery,
     isDisabled,
     disabledReason,
-    helpers,
     previewModalDisclosure,
     setHumanAmountIn,
     tokenAllowances,
     handler,
+    addLiquidityTxState,
+    setAddLiquidityTxState,
   }
 }
 

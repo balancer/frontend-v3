@@ -2,18 +2,16 @@
 
 import { ApproveTokenButton } from '@/lib/modules/tokens/approvals/ApproveTokenButton'
 import { VStack } from '@chakra-ui/react'
-import { useState } from 'react'
 import { useIterateSteps } from '../useIterateSteps'
 import { AddLiquidityButton } from './AddLiquidityButton'
-import { AddLiquidityTimeout } from './AddLiquidityTimeout'
+import { useAddLiquidity } from './useAddLiquidity'
 import { useConstructApproveTokenConfigs } from './useConstructApproveTokenConfigs'
-import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 
 export function AddLiquidityFlow() {
   // const signRelayerConfig: SignRelayerConfig[] = useConstructSignRelayerConfig()
   // const approveRelayerConfig: ApproveRelayerConfig[] = useConstructApproveRelayerConfig()
 
-  const [addLiquidityTxState, setAddLiquidityTxState] = useState<TransactionState>()
+  const { setAddLiquidityTxState } = useAddLiquidity()
 
   const approveTokenConfigs = useConstructApproveTokenConfigs()
 
@@ -32,7 +30,6 @@ export function AddLiquidityFlow() {
 
   return (
     <VStack w="full">
-      <AddLiquidityTimeout addLiquidityTxState={addLiquidityTxState} />
       {currentStep.type === 'approveToken' && (
         <ApproveTokenButton
           useOnStepCompleted={useOnStepCompleted}

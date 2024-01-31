@@ -54,7 +54,7 @@ export default function TokenRow({
               {token?.symbol}
             </Heading>
             <Link href={getBlockExplorerTokenUrl(address)} target="_blank">
-              <ExternalLinkIcon color="gray.400" width="1rem" height="1rem" />
+              <ExternalLinkIcon color="gray.500" width="1rem" height="1rem" />
             </Link>
           </HStack>
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">

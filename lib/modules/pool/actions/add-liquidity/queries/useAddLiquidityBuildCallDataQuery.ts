@@ -30,7 +30,7 @@ export function useAddLiquidityBuildCallDataQuery() {
       account: userAddress,
       humanAmountsIn,
       slippagePercent: slippage,
-      queryOutput: queryOutput,
+      queryOutput,
     })
     console.log('Call data built:', response)
     return response

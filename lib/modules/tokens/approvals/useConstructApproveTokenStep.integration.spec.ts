@@ -6,20 +6,26 @@ import { act } from 'react-dom/test-utils'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { useConstructApproveTokenStep } from './useConstructApproveTokenStep'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { TokenAmountToApprove } from './approval-rules'
+import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 
 function testUseConstruct() {
   const { result } = testHook(
     () => {
+      const tokenAmountToApprove: TokenAmountToApprove = {
+        requiredRawAmount: 40n,
+        requestedRawAmount: MAX_BIGINT,
+        tokenAddress: wETHAddress,
+      }
       const tokenAllowances = useTokenAllowances(defaultTestUserAccount, vaultV2Address, [
         wETHAddress,
         wjAuraAddress,
       ])
       return useConstructApproveTokenStep({
         actionType: 'AddLiquidity',
-        tokenAddress: wETHAddress,
+        tokenAmountToApprove,
         chain: GqlChain.Mainnet,
         spenderAddress: defaultTestUserAccount,
-        amountToApprove: 40n,
         tokenAllowances,
       })
     },

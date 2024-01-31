@@ -50,15 +50,23 @@ function FeaturedPoolCard({
     >
       <VStack justifyContent="space-between" h="full">
         <HStack justifyContent="center" w="full" spacing="sm">
-          <Text color="font.secondary">{getPoolTypeLabel(pool.type)}</Text>
-          <Text color="font.secondary">&#x2022;</Text>
-          <Text color="font.secondary">{toCurrency(pool.dynamicData.totalLiquidity)} TVL</Text>
+          <Text variant="secondary" fontWeight="medium">
+            {getPoolTypeLabel(pool.type)}
+          </Text>
+          <Text variant="secondary" fontWeight="medium">
+            &#x2022;
+          </Text>
+          <Text variant="secondary" fontWeight="medium">
+            {toCurrency(pool.dynamicData.totalLiquidity)} TVL
+          </Text>
         </HStack>
         <PoolWeightChart pool={pool} chain={chain} hasLegend={hasLegend} isSmall={isSmall} />
         <Center>
           <VStack>
             <PoolName pool={pool} fontWeight="bold" fontSize="lg" noOfLines={1} />
-            <Text color="font.secondary">{getAprLabel(pool.dynamicData.apr.apr)} APR</Text>
+            <Text variant="secondary" fontWeight="medium">
+              {getAprLabel(pool.dynamicData.apr.apr)} APR
+            </Text>
           </VStack>
         </Center>
       </VStack>

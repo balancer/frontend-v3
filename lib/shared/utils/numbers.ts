@@ -151,8 +151,12 @@ export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): s
 }
 
 // Returns dash if token amount is null, otherwise returns humanized token amount in token display format.
-export function safeTokenFormat(amount: bigint | null | undefined, decimals: number): string {
+export function safeTokenFormat(
+  amount: bigint | null | undefined,
+  decimals: number,
+  opts?: FormatOpts
+): string {
   if (!amount) return '-'
 
-  return fNum('token', formatUnits(amount, decimals))
+  return fNum('token', formatUnits(amount, decimals), opts)
 }

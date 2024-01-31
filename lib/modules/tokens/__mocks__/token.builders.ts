@@ -120,15 +120,3 @@ export const someTokenAllowancesMock: TokenAllowances = {
   [wETHAddress]: MAX_BIGINT,
   [wjAuraAddress]: MAX_BIGINT,
 }
-
-export function anAmountToApproveMock(
-  options: Partial<TokenAmountToApprove>
-): TokenAmountToApprove {
-  const defaultAmount = {
-    tokenAddress: wETHAddress,
-    rawAmount: parseUnits('1', 18),
-    humanAmount: '1',
-    tokenSymbol: 'Test token symbol',
-  }
-  return Object.assign({}, defaultAmount, options)
-}

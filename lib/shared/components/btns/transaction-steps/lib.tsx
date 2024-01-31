@@ -53,7 +53,6 @@ export type TransactionStep = {
   stepType: StepType
   transactionLabels: TransactionLabels
   isComplete: () => boolean
-  activateStep?: () => void // TODO: This won't be needed once we refactor all flows to useIterateSteps
 }
 
 // Allows adding extra properties like set state callbacks to TransactionStep

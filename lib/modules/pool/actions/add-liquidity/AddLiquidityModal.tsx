@@ -34,6 +34,7 @@ import { usePool } from '../../usePool'
 import { HumanAmountIn } from '../liquidity-types'
 import { useAddLiquidity } from './useAddLiquidity'
 import { AddLiquidityFlow } from './AddLiquidityFlow'
+import { AddLiquidityTimeout } from './AddLiquidityTimeout'
 
 type Props = {
   isOpen: boolean
@@ -91,8 +92,14 @@ export function AddLiquidityModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { humanAmountsIn, totalUSDValue, simulationQuery, priceImpactQuery, tokens } =
-    useAddLiquidity()
+  const {
+    humanAmountsIn,
+    totalUSDValue,
+    simulationQuery,
+    priceImpactQuery,
+    tokens,
+    addLiquidityTxState,
+  } = useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
 
@@ -170,6 +177,11 @@ export function AddLiquidityModal({
                     </Tooltip>
                   </HStack>
                 </HStack>
+                <VStack align="start" spacing="md">
+                  <HStack justify="space-between" w="full">
+                    <AddLiquidityTimeout addLiquidityTxState={addLiquidityTxState} />
+                  </HStack>
+                </VStack>
               </VStack>
             </Card>
           </VStack>

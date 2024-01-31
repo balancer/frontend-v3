@@ -7,16 +7,14 @@ type Props = ApproveTokenProps & CommonStepProps
 
 export function ApproveTokenButton({
   useOnStepCompleted,
-  tokenAddress,
-  amountToApprove,
+  tokenAmountToApprove,
   tokenAllowances,
 }: Props) {
   const tokenApprovalStep = useConstructApproveTokenStep({
     actionType: 'AddLiquidity',
     spenderAddress: tokenAllowances.spenderAddress,
-    tokenAddress: tokenAddress,
-    amountToApprove: amountToApprove,
     tokenAllowances,
+    tokenAmountToApprove,
   })
 
   useOnStepCompleted(tokenApprovalStep)
