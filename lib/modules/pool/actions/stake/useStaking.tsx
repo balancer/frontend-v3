@@ -1,69 +1,65 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { HumanAmount } from '@balancer/sdk'
-import { Address, parseUnits } from 'viem'
-import { usePool } from '../../usePool'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
-import { useNextTokenApprovalStep } from '@/lib/modules/tokens/approvals/useNextTokenApprovalStep'
+import { makeVar, useReactiveVar } from '@apollo/client'
+import { HumanAmountIn } from '../liquidity-types'
+import { Address, parseUnits } from 'viem'
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
+import { usePool } from '../../usePool'
 import { BPT_DECIMALS } from '../../pool.constants'
-import { isEmpty } from 'lodash'
-import { useConstructStakingDepositActionStep } from './staking.actions'
+import { useEffect } from 'react'
+
+export const humanAmountInVar = makeVar<HumanAmountIn | null>(null)
 
 export function useStaking() {
-  const {
-    isActiveStep: isFinalStepActive,
-    activateStep: activateFinalStep,
-    deactivateStep: deactivateFinalStep,
-  } = useActiveStep()
+  const { userAddress, isConnected } = useUserAccount()
   const { pool } = usePool()
-  const { isConnected, userAddress } = useUserAccount()
-
   const { isDisabled, disabledReason } = isDisabledWithReason([
     !isConnected,
     LABELS.walletNotConnected,
   ])
 
-  const unstakedBalance = pool.userBalance?.walletBalance || '0'
-  const gaugeAddress = pool.staking?.address as Address
-  const poolAddress = pool.address as Address
+  const humanAmountIn = useReactiveVar(humanAmountInVar)
 
-  // Get token allowances
-  const tokenAllowances = useTokenAllowances(userAddress, gaugeAddress, [poolAddress])
+  function setInitialHumanAmountIn() {
+    const amountIn = {
+      tokenAddress: pool.address,
+      humanAmount: pool.userBalance?.walletBalance,
+    } as HumanAmountIn
 
-  // Construct token allowance step
-  const amountToApprove = {
-    rawAmount: parseUnits(unstakedBalance, BPT_DECIMALS),
-    humanAmount: unstakedBalance as HumanAmount,
-    tokenAddress: poolAddress,
-    tokenSymbol: pool.symbol,
+    humanAmountInVar(amountIn)
   }
-  // TODO: need to get the bpt symbol to show in the button
-  const { tokenApprovalStep, remainingAmountsToApprove } = useNextTokenApprovalStep({
-    tokenAllowances,
-    amountsToApprove: [amountToApprove],
-    actionType: 'Staking',
-  })
+
+  const tokenAllowances = useTokenAllowances(
+    userAddress,
+    pool.staking?.gauge?.gaugeAddress as Address,
+    [humanAmountIn?.tokenAddress as Address]
+  )
+
+  const rawAmount = parseUnits(humanAmountIn?.humanAmount || '', BPT_DECIMALS)
+
+  const amountToApprove = {
+    rawAmount,
+    tokenAddress: pool.address as Address,
+  }
 
   /**
-   * Transaction step construction
+   * Side-effects
    */
-  const stakeStep = useConstructStakingDepositActionStep(pool.staking, amountToApprove.rawAmount)
-
-  const steps = [tokenApprovalStep, stakeStep].filter(step => step !== null) as FlowStep[]
+  // On initial render, set the initial humanAmountsIn
+  useEffect(() => {
+    setInitialHumanAmountIn()
+  }, [])
 
   return {
     isDisabled,
     disabledReason,
-    bptAmountToApprove: isEmpty(remainingAmountsToApprove) ? [] : [amountToApprove],
-    tokenApprovalStep,
-    steps,
-    isFinalStepActive,
-    deactivateFinalStep,
+    humanAmountIn,
+    rawAmount,
+    tokenAllowances,
+    amountToApprove,
   }
 }
