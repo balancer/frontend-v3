@@ -28,8 +28,7 @@ import { Address } from 'viem'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import RemoveLiquidityBptRow from './RemoveLiquidityBptRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { RemoveLiquidityFlowButton } from './RemoveLiquidityFlowButton'
-import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
+import { RemoveLiquidityFlow } from './RemoveLiquidityFlow'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 
 type Props = {
@@ -134,18 +133,12 @@ export function RemoveLiquidityModal({
                     </Tooltip>
                   </HStack>
                 </HStack>
-
-                <VStack align="start" spacing="md">
-                  <HStack justify="space-between" w="full">
-                    <RemoveLiquidityTimeout />
-                  </HStack>
-                </VStack>
               </VStack>
             </Card>
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <RemoveLiquidityFlowButton />
+          <RemoveLiquidityFlow />
         </ModalFooter>
       </ModalContent>
     </Modal>

@@ -29,11 +29,7 @@ export function _useRemoveLiquidity() {
   const { pool, bptPrice } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected } = useUserAccount()
-  const {
-    isActiveStep: isFinalStepActive,
-    activateStep: activateFinalStep,
-    deactivateStep: deactivateFinalStep,
-  } = useActiveStep()
+
   const previewModalDisclosure = useDisclosure()
 
   const [removalType, setRemovalType] = useState<RemoveLiquidityType>(
@@ -67,7 +63,7 @@ export function _useRemoveLiquidity() {
   const singleTokenOutAddress = singleTokenAddress || firstTokenAddress
 
   /**
-   * The three handler queries, simulate + priceImpact + buildCallData.
+   * Simulation queries
    */
   const simulationQuery = useRemoveLiquiditySimulationQuery(
     handler,
@@ -82,27 +78,6 @@ export function _useRemoveLiquidity() {
     humanBptIn,
     singleTokenOutAddress
   )
-
-  const buildCallDataQuery = useRemoveLiquidityBuildCallDataQuery({
-    handler,
-    humanBptIn,
-    poolId: pool.id,
-    tokenOut: singleTokenOutAddress,
-    simulationQuery,
-    options: {
-      enabled: isFinalStepActive,
-    },
-  })
-
-  /**
-   * Transaction step construction
-   */
-  const { removeLiquidityStep, removeLiquidityTransaction } = useConstructRemoveLiquidityStep(
-    pool.id,
-    buildCallDataQuery,
-    activateFinalStep
-  )
-  const steps = [removeLiquidityStep]
 
   const amountsOut = simulationQuery.data?.amountsOut || []
 
@@ -155,14 +130,9 @@ export function _useRemoveLiquidity() {
     totalUsdValue,
     simulationQuery,
     priceImpactQuery,
-    buildCallDataQuery,
     isDisabled,
-    isFinalStepActive,
-    deactivateFinalStep,
     disabledReason,
-    steps,
     previewModalDisclosure,
-    removeLiquidityTransaction,
     setRemovalType,
     setHumanBptInPercent,
     setProportionalType,
@@ -170,6 +140,7 @@ export function _useRemoveLiquidity() {
     setSingleTokenAddress,
     amountOutForToken,
     usdOutForToken,
+    handler,
   }
 }
 
