@@ -13,6 +13,7 @@ export function Providers({ children }: { children: ReactNode }) {
   const initCurrency = cookies().get(COOKIE_KEYS.UserSettings.Currency)?.value
   const initSlippage = cookies().get(COOKIE_KEYS.UserSettings.Slippage)?.value
   const initSignatureAllowance = cookies().get(COOKIE_KEYS.UserSettings.SignatureAllowance)?.value
+  const initPoolListView = cookies().get(COOKIE_KEYS.UserSettings.PoolListView)?.value
 
   return (
     <ThemeProvider initialColorMode={initialColorMode as 'light' | 'dark' | 'system'}>
@@ -23,6 +24,7 @@ export function Providers({ children }: { children: ReactNode }) {
               initCurrency={initCurrency}
               initSlippage={initSlippage}
               initSignatureAllowance={initSignatureAllowance}
+              initPoolListView={initPoolListView}
             >
               <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
             </UserSettingsProvider>

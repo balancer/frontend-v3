@@ -2,7 +2,7 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { requiresDoubleApproval } from '@/lib/config/tokens.config'
 import { isNativeAsset } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
-import { TokenAllowances } from '../../web3/useTokenAllowances'
+import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 
 export type TokenAmountToApprove = {
   rawAmount: bigint
@@ -12,7 +12,8 @@ export type TokenAmountToApprove = {
 type TokenApprovalParams = {
   chainId: SupportedChainId | null
   amountsToApprove: TokenAmountToApprove[]
-  currentTokenAllowances: TokenAllowances
+  allowanceFor: (tokenAddress: Address) => bigint
+  approveMaxBigInt?: boolean
   skipAllowanceCheck?: boolean
 }
 
@@ -22,20 +23,27 @@ type TokenApprovalParams = {
 export function getRequiredTokenApprovals({
   chainId,
   amountsToApprove,
-  currentTokenAllowances,
+  allowanceFor,
+  approveMaxBigInt = true,
   skipAllowanceCheck = false,
 }: TokenApprovalParams) {
   if (!chainId) return []
   if (skipAllowanceCheck) return []
 
-  return amountsToApprove.filter(({ tokenAddress, rawAmount }) => {
+  const requiredAmountsToApprove = amountsToApprove.filter(({ tokenAddress, rawAmount }) => {
     if (isNativeAsset(chainId, tokenAddress)) return false
-    const allowedAmount = currentTokenAllowances[tokenAddress]
 
-    const hasEnoughAllowedAmount = allowedAmount >= rawAmount
+    const hasEnoughAllowedAmount = allowanceFor(tokenAddress) >= rawAmount
     if (hasEnoughAllowedAmount) return false
     return true
   })
+
+  return approveMaxBigInt
+    ? requiredAmountsToApprove.map(amountToApprove => ({
+        ...amountToApprove,
+        rawAmount: MAX_BIGINT,
+      }))
+    : requiredAmountsToApprove
 }
 
 /**
@@ -46,9 +54,7 @@ export function getRequiredTokenApprovals({
 export function isDoubleApprovalRequired(
   chainId: SupportedChainId,
   tokenAddress: Address,
-  currentTokenAllowances: TokenAllowances
+  allowanceFor: (tokenAddress: Address) => bigint
 ): boolean {
-  return !!(
-    requiresDoubleApproval(chainId, tokenAddress) && currentTokenAllowances[tokenAddress] > 0n
-  )
+  return !!(requiresDoubleApproval(chainId, tokenAddress) && allowanceFor(tokenAddress) > 0n)
 }

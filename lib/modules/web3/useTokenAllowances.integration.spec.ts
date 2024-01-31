@@ -20,8 +20,8 @@ test('fetches token allowances', async () => {
 
   expect(result.current.allowances).toEqual(
     expect.objectContaining({
-      '0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f': expect.any(BigInt),
-      '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': expect.any(BigInt),
+      [wjAuraAddress]: expect.any(BigInt),
+      [wETHAddress]: expect.any(BigInt),
     })
   )
 })

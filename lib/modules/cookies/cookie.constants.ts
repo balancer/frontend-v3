@@ -5,5 +5,6 @@ export const COOKIE_KEYS = {
     Currency: 'userSettings.Currency',
     Slippage: 'userSettings.Slippage',
     SignatureAllowance: 'userSettings.SignatureAllowance',
+    PoolListView: 'userSettings.PoolListView',
   },
 }

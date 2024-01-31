@@ -22,7 +22,8 @@ export type TransactionLabels = {
   preparing?: string
 }
 
-type StepType =
+// TODO: Link with StepParam types
+export type StepType =
   | 'signBatchRelayer'
   | 'approveBatchRelayer'
   | 'tokenApproval'
@@ -52,7 +53,7 @@ export type TransactionStep = {
   stepType: StepType
   transactionLabels: TransactionLabels
   isComplete: () => boolean
-  activateStep: () => void
+  activateStep?: () => void // TODO: This won't be needed once we refactor all flows to useIterateSteps
 }
 
 // Allows adding extra properties like set state callbacks to TransactionStep
@@ -60,11 +61,10 @@ export type TransactionStepHook = {
   transactionStep: TransactionStep
 }
 
-export function getTransactionState({
-  simulation,
-  execution,
-  result,
-}: TransactionBundle): TransactionState {
+export function getTransactionState(transactionBundle?: TransactionBundle): TransactionState {
+  if (!transactionBundle) return TransactionState.Ready
+  const { simulation, execution, result } = transactionBundle
+
   if (simulation.isLoading) {
     return TransactionState.Preparing
   }
