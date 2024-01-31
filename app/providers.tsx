@@ -12,13 +12,18 @@ export function Providers({ children }: { children: ReactNode }) {
   const initialColorMode = cookies().get(COOKIE_KEYS.UserSettings.ColorMode)?.value
   const initCurrency = cookies().get(COOKIE_KEYS.UserSettings.Currency)?.value
   const initSlippage = cookies().get(COOKIE_KEYS.UserSettings.Slippage)?.value
+  const initPoolListView = cookies().get(COOKIE_KEYS.UserSettings.PoolListView)?.value
 
   return (
     <ThemeProvider initialColorMode={initialColorMode as 'light' | 'dark' | 'system'}>
       <Web3Provider>
         <ApolloClientProvider>
           <ApolloGlobalDataProvider>
-            <UserSettingsProvider initCurrency={initCurrency} initSlippage={initSlippage}>
+            <UserSettingsProvider
+              initCurrency={initCurrency}
+              initSlippage={initSlippage}
+              initPoolListView={initPoolListView}
+            >
               <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
             </UserSettingsProvider>
           </ApolloGlobalDataProvider>

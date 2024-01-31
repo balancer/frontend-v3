@@ -36,10 +36,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
     const removeLiquidity = new RemoveLiquidity()
     const removeLiquidityInput = this.constructSdkInput(humanBptIn, tokenOut)
 
-    const sdkQueryOutput = await removeLiquidity.query(
-      removeLiquidityInput,
-      this.helpers.poolStateInput
-    )
+    const sdkQueryOutput = await removeLiquidity.query(removeLiquidityInput, this.helpers.poolState)
 
     return { amountsOut: sdkQueryOutput.amountsOut, sdkQueryOutput }
   }
@@ -61,7 +58,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
 
     const priceImpactABA: PriceImpactAmount = await PriceImpact.removeLiquidity(
       removeLiquidityInput,
-      this.helpers.poolStateInput
+      this.helpers.poolState
     )
 
     return priceImpactABA.decimal

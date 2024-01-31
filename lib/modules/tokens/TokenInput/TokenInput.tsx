@@ -79,7 +79,7 @@ function TokenInputFooter({ token, value, updateValue }: TokenInputFooterProps) 
       {isBalancesLoading ? (
         <Skeleton w="12" h="full" />
       ) : (
-        <Text fontSize="sm">{toCurrency(usdValue)}</Text>
+        <Text fontSize="sm">{toCurrency(usdValue, { abbreviated: false })}</Text>
       )}
       {isBalancesLoading ? (
         <Skeleton w="12" h="full" />

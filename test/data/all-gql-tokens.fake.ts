@@ -1,5 +1,18 @@
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 
+export const fakeTokenSymbols = [
+  'ETH',
+  'WETH',
+  'BAL',
+  'RPL',
+  'USDT',
+  'DAI',
+  'aUSDC',
+  'USDC',
+  'USDC-DAI-USDT',
+] as const
+export type FakeTokenSymbol = (typeof fakeTokenSymbols)[number]
+
 /* TBD:
  Maybe adding a command to reload this file (with 10 tokens for each chain) from a real request
  */
@@ -107,9 +120,23 @@ export const allFakeGqlTokens: GqlToken[] = [
     priority: 0,
     tradable: true,
   },
+  {
+    // Used in 50WETH-50-3pool nested pool tests
+    __typename: 'GqlToken',
+    address: '0x79c58f70905f734641735bc61e45c19dd9ad60bc',
+    name: 'USDC-DAI-USDT',
+    symbol: 'USDC-DAI-USDT',
+    decimals: 18,
+    chainId: 1,
+    chain: GqlChain.Mainnet,
+    logoURI:
+      'https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
+    priority: 0,
+    tradable: true,
+  },
 ]
 
-export function fakeTokenBySymbol(symbol: string) {
+export function fakeTokenBySymbol(symbol: FakeTokenSymbol) {
   const token = allFakeGqlTokens.find(token => token.symbol === symbol)
   if (!token) {
     console.log(

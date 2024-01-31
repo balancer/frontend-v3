@@ -83,7 +83,11 @@ function GlobalProviders({ children }: WrapperProps) {
               tokenPricesData={defaultGetTokenPricesQueryMock}
               variables={defaultGetTokensQueryVariablesMock}
             >
-              <UserSettingsProvider initCurrency={'USD'} initSlippage={'0.2'}>
+              <UserSettingsProvider
+                initCurrency={'USD'}
+                initSlippage={'0.2'}
+                initPoolListView={'list'}
+              >
                 <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
               </UserSettingsProvider>
             </TokensProvider>

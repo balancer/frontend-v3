@@ -1,5 +1,5 @@
-import { balAddress, wETHAddress } from '@/lib/debug-helpers'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { balAddress, daiAddress, usdcAddress, usdtAddress, wETHAddress } from '@/lib/debug-helpers'
+import { GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import {
   DefaultAddLiquidityTestProvider,
@@ -10,16 +10,16 @@ import { PropsWithChildren } from 'react'
 import { mainnet } from 'wagmi'
 import { HumanAmountIn } from '../liquidity-types'
 import { _useAddLiquidity } from './useAddLiquidity'
+import { nestedPoolMock } from '../../__mocks__/nestedPoolMock'
 
-const PoolProvider = buildDefaultPoolTestProvider(aBalWethPoolElementMock())
+async function testUseAddLiquidity(pool: GqlPoolElement = aBalWethPoolElementMock()) {
+  const PoolProvider = buildDefaultPoolTestProvider(pool)
 
-export const Providers = ({ children }: PropsWithChildren) => (
-  <PoolProvider>
-    <DefaultAddLiquidityTestProvider>{children}</DefaultAddLiquidityTestProvider>
-  </PoolProvider>
-)
-
-async function testUseAddLiquidity() {
+  const Providers = ({ children }: PropsWithChildren) => (
+    <PoolProvider>
+      <DefaultAddLiquidityTestProvider>{children}</DefaultAddLiquidityTestProvider>
+    </PoolProvider>
+  )
   const { result } = testHook(() => _useAddLiquidity(), {
     wrapper: Providers,
   })
@@ -64,4 +64,17 @@ test('returns add liquidity helpers', async () => {
       },
     ]
   `)
+})
+
+// Only works when using .only
+// there's a global state collision otherwise (investigation pending)
+test.skip('returns valid tokens for a nested pool', async () => {
+  const result = await testUseAddLiquidity(nestedPoolMock as GqlPoolElement)
+
+  expect(result.current.validTokens.map(t => t.address)).toEqual([
+    wETHAddress,
+    daiAddress,
+    usdtAddress,
+    usdcAddress,
+  ])
 })

@@ -1,4 +1,4 @@
-import { AddLiquidityQueryOutput, TokenAmount } from '@balancer/sdk'
+import { AddLiquidityNestedQueryOutput, AddLiquidityQueryOutput, TokenAmount } from '@balancer/sdk'
 import { Address } from 'wagmi'
 import { HumanAmountIn } from '../liquidity-types'
 
@@ -28,6 +28,13 @@ export interface SdkQueryAddLiquidityOutput extends QueryAddLiquidityOutput {
   sdkQueryOutput: AddLiquidityQueryOutput
 }
 
+export interface NestedQueryAddLiquidityOutput extends QueryAddLiquidityOutput {
+  sdkQueryOutput: AddLiquidityNestedQueryOutput
+}
+
 export interface SdkBuildAddLiquidityInput extends BuildAddLiquidityInput {
   queryOutput: SdkQueryAddLiquidityOutput
+}
+export interface NestedBuildAddLiquidityInput extends BuildAddLiquidityInput {
+  queryOutput: NestedQueryAddLiquidityOutput
 }

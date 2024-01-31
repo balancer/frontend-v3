@@ -1,8 +1,10 @@
 import networkConfig from '@/lib/config/networks/mainnet'
 import { balAddress, wETHAddress } from '@/lib/debug-helpers'
-import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
+import {
+  aBalWethPoolElementMock,
+  aPhantomStablePoolMock,
+} from '@/test/msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
-import { aPhantomStablePoolStateInputMock } from '../../../__mocks__/pool.builders'
 import { Pool } from '../../../usePool'
 import { QueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquidity.types'
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
@@ -70,7 +72,7 @@ describe('When proportionally removing liquidity for a weighted pool', () => {
 
 describe('When removing liquidity from a stable pool', () => {
   test('queries remove liquidity', async () => {
-    const pool = aPhantomStablePoolStateInputMock() as unknown as Pool // wstETH-rETH-sfrxETH
+    const pool = aPhantomStablePoolMock() // wstETH-rETH-sfrxETH
 
     const handler = selectProportionalHandler(pool)
 

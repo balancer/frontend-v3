@@ -1,22 +1,11 @@
-import { makeVar, useReactiveVar } from '@apollo/client'
-
-export enum ViewType {
-  Table = 'Table',
-  Cards = 'Cards',
-}
-
-export const viewTypeStateVar = makeVar<ViewType>(ViewType.Table)
+import { PoolListView, useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 
 export function usePoolListViewType() {
-  function setViewType(value: ViewType) {
-    viewTypeStateVar(value)
-  }
-
-  const viewType = useReactiveVar(viewTypeStateVar)
+  const { poolListView, setPoolListView } = useUserSettings()
 
   return {
-    isTableView: viewType === ViewType.Table,
-    isCardsView: viewType === ViewType.Cards,
-    setViewType,
+    isTableView: poolListView === PoolListView.List,
+    isCardsView: poolListView === PoolListView.Grid,
+    setPoolListView,
   }
 }

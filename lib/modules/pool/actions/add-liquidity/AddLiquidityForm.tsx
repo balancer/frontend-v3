@@ -37,7 +37,6 @@ export function AddLiquidityForm() {
     isDisabled,
     disabledReason,
     previewModalDisclosure,
-    deactivateFinalStep,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
 
@@ -56,7 +55,6 @@ export function AddLiquidityForm() {
 
   const onModalClose = () => {
     previewModalDisclosure.onClose()
-    deactivateFinalStep()
   }
 
   return (
@@ -90,7 +88,9 @@ export function AddLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Total</Text>
                 <HStack>
-                  <NumberText color="GrayText">{toCurrency(totalUSDValue)}</NumberText>
+                  <NumberText color="GrayText">
+                    {toCurrency(totalUSDValue, { abbreviated: false })}
+                  </NumberText>
                   <Tooltip label="Total" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
