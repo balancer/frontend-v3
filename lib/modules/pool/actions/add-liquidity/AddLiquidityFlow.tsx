@@ -6,30 +6,39 @@ import { useIterateSteps } from '../useIterateSteps'
 import { AddLiquidityButton } from './AddLiquidityButton'
 import { useAddLiquidity } from './useAddLiquidity'
 import { useConstructApproveTokenConfigs } from './useConstructApproveTokenConfigs'
+import { ApproveRelayerButton } from '@/lib/modules/relayer/ApproveRelayerButton'
+import {
+  SupportedStepConfig,
+  addLiquidityConfig,
+  approveRelayerConfig,
+  signRelayerConfig,
+} from './add-liquidity-configs'
+import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 
 export function AddLiquidityFlow() {
-  // const signRelayerConfig: SignRelayerConfig[] = useConstructSignRelayerConfig()
-  // const approveRelayerConfig: ApproveRelayerConfig[] = useConstructApproveRelayerConfig()
-
+  const relayerMode = useRelayerMode()
   const { setAddLiquidityTxState } = useAddLiquidity()
 
   const approveTokenConfigs = useConstructApproveTokenConfigs()
 
-  interface AddLiquidityConfig {
-    type: 'addLiquidity'
-    // no props
+  let stepConfigs: SupportedStepConfig[] = [...approveTokenConfigs, addLiquidityConfig]
+
+  if (relayerMode === 'approveRelayer') {
+    stepConfigs = [approveRelayerConfig, ...stepConfigs]
   }
 
-  const addLiquidityConfig: AddLiquidityConfig = {
-    type: 'addLiquidity',
+  if (relayerMode === 'signRelayer') {
+    stepConfigs = [signRelayerConfig, ...stepConfigs]
   }
-
-  const stepConfigs = [...approveTokenConfigs, addLiquidityConfig]
 
   const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
   return (
     <VStack w="full">
+      {currentStep.type === 'approveRelayer' && (
+        <ApproveRelayerButton useOnStepCompleted={useOnStepCompleted}></ApproveRelayerButton>
+      )}
+
       {currentStep.type === 'approveToken' && (
         <ApproveTokenButton
           useOnStepCompleted={useOnStepCompleted}
