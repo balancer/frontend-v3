@@ -8,6 +8,7 @@ import { useTokens } from '../useTokens'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
 import { TokenAmountToApprove } from './approval-rules'
+import { TransactionBundle } from '../../web3/contracts/contract.types'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse
@@ -27,7 +28,7 @@ export function useConstructApproveTokenStep({
   const { refetchAllowances, isAllowancesLoading, allowanceFor } = tokenAllowances
   const { getToken } = useTokens()
 
-  const { tokenAddress, rawAmount } = tokenAmountToApprove
+  const { tokenAddress, requestedRawAmount, requiredRawAmount } = tokenAmountToApprove
 
   const token = getToken(tokenAddress, chain)
 
@@ -41,18 +42,17 @@ export function useConstructApproveTokenStep({
     tokenAddress,
     'approve',
     tokenApprovalLabels,
-    { args: [spenderAddress, rawAmount] },
+    { args: [spenderAddress, requestedRawAmount] },
     {
       enabled: !!spenderAddress && !isAllowancesLoading,
     }
   )
 
-  /* TODO: Change props to receive a TokenAmountToApprove with:
-    tokenAddress
-    requiredRawAmount -> actual amount that the transaction requires
-    requestedRawAmount -> amount that we are going to request (normally MAX_BIGINT)
-  */
-  const isComplete = allowanceFor(tokenAddress) >= rawAmount
+  const isComplete = isStepComplete(
+    allowanceFor(tokenAddress),
+    requiredRawAmount,
+    approvalTransaction
+  )
 
   const step: FlowStep = {
     ...approvalTransaction,
@@ -73,4 +73,17 @@ export function useConstructApproveTokenStep({
   }, [approvalTransaction.result.isSuccess])
 
   return step
+}
+
+function isStepComplete(
+  currentAllowance: bigint,
+  requiredRawAmount: bigint,
+  approvalTransaction: TransactionBundle
+): boolean {
+  /* When we are approving 0n for edge-cases like USDT (with doubleApprovalRequired setup in TokensConfig)
+     we only wait for the on approval transaction to be successful
+   */
+  if (requiredRawAmount === 0n) return approvalTransaction.result.isSuccess
+
+  return currentAllowance >= requiredRawAmount
 }

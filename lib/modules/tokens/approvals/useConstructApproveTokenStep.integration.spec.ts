@@ -7,12 +7,14 @@ import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { useConstructApproveTokenStep } from './useConstructApproveTokenStep'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { TokenAmountToApprove } from './approval-rules'
+import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 
 function testUseConstruct() {
   const { result } = testHook(
     () => {
       const tokenAmountToApprove: TokenAmountToApprove = {
-        rawAmount: 40n,
+        requiredRawAmount: 40n,
+        requestedRawAmount: MAX_BIGINT,
         tokenAddress: wETHAddress,
       }
       const tokenAllowances = useTokenAllowances(defaultTestUserAccount, vaultV2Address, [

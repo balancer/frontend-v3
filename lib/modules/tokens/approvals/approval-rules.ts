@@ -3,15 +3,17 @@ import { isNativeAsset } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
 import { requiresDoubleApproval } from '@/lib/config/tokens.config'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
+import { InputAmount } from '@balancer/sdk'
 
 export type TokenAmountToApprove = {
-  rawAmount: bigint
   tokenAddress: Address
+  requiredRawAmount: bigint // actual amount that the transaction requires
+  requestedRawAmount: bigint // amount that we are going to request (normally MAX_BIGINT)
 }
 
 type TokenApprovalParams = {
   chainId: SupportedChainId | null
-  amountsToApprove: TokenAmountToApprove[]
+  inputAmounts: InputAmount[]
   allowanceFor: (tokenAddress: Address) => bigint
   approveMaxBigInt?: boolean
   skipAllowanceCheck?: boolean
@@ -22,35 +24,30 @@ type TokenApprovalParams = {
 */
 export function getRequiredTokenApprovals({
   chainId,
-  amountsToApprove,
+  inputAmounts,
   allowanceFor,
   approveMaxBigInt = true,
   skipAllowanceCheck = false,
-}: TokenApprovalParams) {
+}: TokenApprovalParams): TokenAmountToApprove[] {
   if (!chainId) return []
   if (skipAllowanceCheck) return []
 
-  let tokenAmountsToApprove = amountsToApprove.filter(({ tokenAddress, rawAmount }) => {
+  let tokenAmountsToApprove: TokenAmountToApprove[] = inputAmounts.map(({ address, rawAmount }) => {
+    return {
+      tokenAddress: address,
+      requiredRawAmount: rawAmount,
+      // The transaction only requires requiredRawAmount but we will normally request MAX_BIGINT
+      requestedRawAmount: approveMaxBigInt ? MAX_BIGINT : rawAmount,
+    }
+  })
+
+  tokenAmountsToApprove = tokenAmountsToApprove.filter(({ tokenAddress, requiredRawAmount }) => {
     if (isNativeAsset(chainId, tokenAddress)) return false
 
-    const hasEnoughAllowedAmount = allowanceFor(tokenAddress) >= rawAmount
+    const hasEnoughAllowedAmount = allowanceFor(tokenAddress) >= requiredRawAmount
     if (hasEnoughAllowedAmount) return false
     return true
   })
-
-  if (approveMaxBigInt) {
-    // Use MAX_BIGINT in all the amounts to approve
-    tokenAmountsToApprove = tokenAmountsToApprove.map(({ tokenAddress }) => {
-      return { tokenAddress, rawAmount: MAX_BIGINT }
-    })
-  }
-
-  tokenAmountsToApprove = approveMaxBigInt
-    ? tokenAmountsToApprove.map(amountToApprove => ({
-        ...amountToApprove,
-        rawAmount: MAX_BIGINT,
-      }))
-    : tokenAmountsToApprove
 
   /**
    * Some tokens (e.g. USDT) require setting their approval amount to 0n before being
@@ -59,7 +56,8 @@ export function getRequiredTokenApprovals({
   return tokenAmountsToApprove.flatMap(t => {
     if (isDoubleApprovalRequired(chainId, t.tokenAddress, allowanceFor)) {
       const zeroTokenAmountToApprove: TokenAmountToApprove = {
-        rawAmount: 0n,
+        requiredRawAmount: 0n,
+        requestedRawAmount: 0n,
         tokenAddress: t.tokenAddress,
       }
       // Prepend approval for ZERO amount
@@ -74,7 +72,7 @@ export function getRequiredTokenApprovals({
  * able to adjust the value up again. This returns true for tokens that requires
  * this and false otherwise.
  */
-export function isDoubleApprovalRequired(
+function isDoubleApprovalRequired(
   chainId: SupportedChainId,
   tokenAddress: Address,
   allowanceFor: (tokenAddress: Address) => bigint

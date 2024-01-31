@@ -14,12 +14,12 @@ export interface ApproveTokenConfig {
 */
 export function useConstructApproveTokenConfigs(): ApproveTokenConfig[] {
   const { userAddress } = useUserAccount()
-  const { tokenAllowances, helpers, humanAmountsIn } = useAddLiquidity()
+  const { tokenAllowances, inputAmounts } = useAddLiquidity()
   const { chainId, chain } = useNetworkConfig()
 
   const tokenAmountsToApprove = getRequiredTokenApprovals({
     chainId,
-    amountsToApprove: helpers.getAmountsToApprove(humanAmountsIn),
+    inputAmounts,
     allowanceFor: tokenAllowances.allowanceFor,
   })
 

@@ -12,12 +12,12 @@ import {
   TokenAmount,
   mapPoolType,
 } from '@balancer/sdk'
-import { Dictionary, keyBy } from 'lodash'
+import { keyBy } from 'lodash'
 import { Hex, formatUnits, parseUnits } from 'viem'
 import { Address } from 'wagmi'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
-import { GqlPoolType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
 import { SentryError } from '@/lib/shared/utils/errors'
 import { hasNestedPools } from '../pool.helpers'
 
@@ -62,7 +62,8 @@ export class LiquidityActionHelpers {
     return this.toInputAmounts(humanAmountsIn).map(({ address, rawAmount }) => {
       return {
         tokenAddress: address,
-        rawAmount,
+        requiredRawAmount: rawAmount,
+        requestedRawAmount: rawAmount, //This amount will be probably replaced by MAX_BIGINT depending on the approval rules
       }
     })
   }
