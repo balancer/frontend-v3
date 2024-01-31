@@ -51,7 +51,7 @@ export default function TokenRow({
             <Text
               as={Link}
               href={getBlockExplorerTokenUrl(address)}
-              color="font.secondary"
+              color="gray.500"
               target="_blank"
             >
               <HiExternalLink />
