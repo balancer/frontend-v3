@@ -100,7 +100,7 @@ export function AddLiquidityModal({
                     isSameAddress(amountIn.tokenAddress, token?.address)
                   ) as HumanAmountIn
 
-                  if (!amountIn) return <div>Missing amount in</div>
+                  if (!amountIn) return <div key={token.address}>Missing amount in</div>
 
                   return (
                     <TokenRow
