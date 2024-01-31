@@ -20,9 +20,9 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useTokenApprovalConfigs'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -34,7 +34,7 @@ export function _useAddLiquidity() {
 
   const { pool } = usePool()
   const { getToken, usdValueForToken } = useTokens()
-  const { isConnected, userAddress } = useUserAccount()
+  const { isConnected } = useUserAccount()
   const vaultAddress = useContractAddress('balancer.vaultV2')
   const previewModalDisclosure = useDisclosure()
 
@@ -52,11 +52,17 @@ export function _useAddLiquidity() {
    */
   const helpers = new LiquidityActionHelpers(pool)
   const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
-  const tokenAddressesWithAmountIn = humanAmountsIn
-    .filter(amountIn => bn(amountIn.humanAmount).gt(0))
-    .map(amountIn => amountIn.tokenAddress)
 
-  const tokenAllowances = useTokenAllowances(userAddress, vaultAddress, tokenAddressesWithAmountIn)
+  const addLiquidityStepConfig: { type: 'addLiquidity' } = {
+    type: 'addLiquidity',
+  }
+
+  const tokenApprovalStepConfigs = useTokenApprovalConfigs({
+    spenderAddress: vaultAddress,
+    chain: pool.chain,
+    approvalAmounts: inputAmounts,
+    actionType: 'AddLiquidity',
+  })
 
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -127,10 +133,11 @@ export function _useAddLiquidity() {
     isDisabled,
     disabledReason,
     previewModalDisclosure,
-    setHumanAmountIn,
-    tokenAllowances,
+    addLiquidityStepConfig,
+    tokenApprovalStepConfigs,
     handler,
     addLiquidityTxState,
+    setHumanAmountIn,
     setAddLiquidityTxState,
   }
 }

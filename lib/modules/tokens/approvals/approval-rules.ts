@@ -4,6 +4,7 @@ import { Address } from 'viem'
 import { requiresDoubleApproval } from '@/lib/config/tokens.config'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 import { InputAmount } from '@balancer/sdk'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 export type TokenAmountToApprove = {
   tokenAddress: Address
@@ -15,7 +16,7 @@ export type TokenAmountToApprove = {
 export type RawAmount = Pick<InputAmount, 'address' | 'rawAmount'>
 
 type TokenApprovalParams = {
-  chainId: SupportedChainId | null
+  chainId: GqlChain | SupportedChainId | null
   rawAmounts: RawAmount[]
   allowanceFor: (tokenAddress: Address) => bigint
   approveMaxBigInt?: boolean
@@ -76,7 +77,7 @@ export function getRequiredTokenApprovals({
  * this and false otherwise.
  */
 function isDoubleApprovalRequired(
-  chainId: SupportedChainId,
+  chainId: GqlChain | SupportedChainId,
   tokenAddress: Address,
   allowanceFor: (tokenAddress: Address) => bigint
 ): boolean {
