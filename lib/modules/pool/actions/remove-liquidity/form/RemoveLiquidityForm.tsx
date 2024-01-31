@@ -54,7 +54,6 @@ export function RemoveLiquidityForm() {
     isDisabled,
     disabledReason,
     simulationQuery,
-    deactivateFinalStep,
   } = useRemoveLiquidity()
   const { toCurrency } = useCurrency()
   const nextBtn = useRef(null)
@@ -75,7 +74,6 @@ export function RemoveLiquidityForm() {
 
   const onModalClose = () => {
     previewModalDisclosure.onClose()
-    deactivateFinalStep()
   }
 
   return (

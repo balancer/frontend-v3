@@ -2,49 +2,31 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { Address, useQuery } from 'wagmi'
-import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
+import { useQuery } from 'wagmi'
 import { removeLiquidityKeys } from './remove-liquidity-keys'
-import { HumanAmount } from '@balancer/sdk'
 import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
-import { RemoveLiquiditySimulationQueryResult } from './useRemoveLiquiditySimulationQuery'
-import { UseQueryOptions } from '@tanstack/react-query'
 import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
-
-type Props = {
-  handler: RemoveLiquidityHandler
-  humanBptIn: HumanAmount
-  poolId: string
-  tokenOut: Address // only required by SingleToken removal
-  simulationQuery: RemoveLiquiditySimulationQueryResult
-  options?: UseQueryOptions
-}
+import { usePool } from '../../../usePool'
+import { useRemoveLiquidity } from '../useRemoveLiquidity'
 
 export type RemoveLiquidityBuildQueryResponse = ReturnType<
   typeof useRemoveLiquidityBuildCallDataQuery
 >
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
-export function useRemoveLiquidityBuildCallDataQuery({
-  handler,
-  humanBptIn,
-  poolId,
-  tokenOut, // only required by SingleToken removal
-  simulationQuery,
-  options = {},
-}: Props) {
+export function useRemoveLiquidityBuildCallDataQuery() {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
-
-  const enabled = options.enabled ?? true
+  const { pool } = usePool()
+  const { humanBptIn, handler, simulationQuery, singleTokenOutAddress } = useRemoveLiquidity()
 
   const queryKey = removeLiquidityKeys.buildCallData({
     handler,
     userAddress,
     slippage,
-    poolId,
+    poolId: pool.id,
     humanBptIn,
-    tokenOut,
+    tokenOut: singleTokenOutAddress, // only required by SingleToken removal
   })
 
   const queryFn = async () => {
@@ -59,7 +41,7 @@ export function useRemoveLiquidityBuildCallDataQuery({
   }
 
   const queryOpts = {
-    enabled: enabled && isConnected,
+    enabled: isConnected && !!simulationQuery.data,
     cacheTime: 0,
     ...onlyExplicitRefetch,
   }
