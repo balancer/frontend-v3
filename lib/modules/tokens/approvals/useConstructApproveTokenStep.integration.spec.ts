@@ -5,7 +5,6 @@ import { waitFor } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { useConstructApproveTokenStep } from './useConstructApproveTokenStep'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { TokenAmountToApprove } from './approval-rules'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 
