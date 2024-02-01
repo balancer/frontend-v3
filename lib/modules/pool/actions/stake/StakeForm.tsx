@@ -25,6 +25,8 @@ export function StakeForm() {
                 value={pool.userBalance?.walletBalance || '0'}
                 usdValue={pool.userBalance?.walletBalanceUsd.toString()}
                 chain={pool.chain}
+                isBpt={true}
+                pool={pool}
               />
             </Card>
           )}
