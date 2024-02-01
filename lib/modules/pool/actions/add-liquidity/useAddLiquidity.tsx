@@ -53,9 +53,9 @@ export function _useAddLiquidity() {
   const helpers = new LiquidityActionHelpers(pool)
   const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
 
-  const addLiquidityStepConfig: { type: 'addLiquidity' } = {
+  const addLiquidityStepConfig = {
     type: 'addLiquidity',
-  }
+  } as const
 
   const tokenApprovalStepConfigs = useTokenApprovalConfigs({
     spenderAddress: vaultAddress,
