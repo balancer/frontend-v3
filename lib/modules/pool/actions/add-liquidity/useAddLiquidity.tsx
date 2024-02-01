@@ -5,7 +5,7 @@ import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { bn, safeSum } from '@/lib/shared/utils/numbers'
+import { safeSum } from '@/lib/shared/utils/numbers'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
@@ -20,9 +20,8 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
-import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { useAddLiquidityStepConfigs } from './useAddLiquidityStepConfigs'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -34,8 +33,7 @@ export function _useAddLiquidity() {
 
   const { pool } = usePool()
   const { getToken, usdValueForToken } = useTokens()
-  const { isConnected, userAddress } = useUserAccount()
-  const vaultAddress = useContractAddress('balancer.vaultV2')
+  const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
 
   const [addLiquidityTxState, setAddLiquidityTxState] = useState<TransactionState>()
@@ -52,11 +50,8 @@ export function _useAddLiquidity() {
    */
   const helpers = new LiquidityActionHelpers(pool)
   const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
-  const tokenAddressesWithAmountIn = humanAmountsIn
-    .filter(amountIn => bn(amountIn.humanAmount).gt(0))
-    .map(amountIn => amountIn.tokenAddress)
 
-  const tokenAllowances = useTokenAllowances(userAddress, vaultAddress, tokenAddressesWithAmountIn)
+  const stepConfigs = useAddLiquidityStepConfigs(inputAmounts)
 
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -127,10 +122,10 @@ export function _useAddLiquidity() {
     isDisabled,
     disabledReason,
     previewModalDisclosure,
-    setHumanAmountIn,
-    tokenAllowances,
+    stepConfigs,
     handler,
     addLiquidityTxState,
+    setHumanAmountIn,
     setAddLiquidityTxState,
   }
 }

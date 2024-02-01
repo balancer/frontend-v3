@@ -8,7 +8,7 @@ export function isSameAddress(address1: string, address2: string): boolean {
   return address1.toLowerCase() === address2.toLowerCase()
 }
 
-export function isNativeAsset(chainId: SupportedChainId, tokenAddress: Address) {
+export function isNativeAsset(chainId: GqlChain | SupportedChainId, tokenAddress: Address) {
   return isSameAddress(getNativeAssetAddress(chainId), tokenAddress)
 }
 

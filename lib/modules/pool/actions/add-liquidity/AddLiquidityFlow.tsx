@@ -5,31 +5,10 @@ import { VStack } from '@chakra-ui/react'
 import { useIterateSteps } from '../useIterateSteps'
 import { AddLiquidityButton } from './AddLiquidityButton'
 import { useAddLiquidity } from './useAddLiquidity'
-import { useConstructApproveTokenConfigs } from './useConstructApproveTokenConfigs'
 import { ApproveRelayerButton } from '@/lib/modules/relayer/ApproveRelayerButton'
-import {
-  SupportedStepConfig,
-  addLiquidityConfig,
-  approveRelayerConfig,
-  signRelayerConfig,
-} from './add-liquidity-configs'
-import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 
 export function AddLiquidityFlow() {
-  const relayerMode = useRelayerMode()
-  const { setAddLiquidityTxState } = useAddLiquidity()
-
-  const approveTokenConfigs = useConstructApproveTokenConfigs()
-
-  let stepConfigs: SupportedStepConfig[] = [...approveTokenConfigs, addLiquidityConfig]
-
-  if (relayerMode === 'approveRelayer') {
-    stepConfigs = [approveRelayerConfig, ...stepConfigs]
-  }
-
-  if (relayerMode === 'signRelayer') {
-    stepConfigs = [signRelayerConfig, ...stepConfigs]
-  }
+  const { setAddLiquidityTxState, stepConfigs } = useAddLiquidity()
 
   const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
