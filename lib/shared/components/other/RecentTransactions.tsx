@@ -28,7 +28,7 @@ import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
 function Transactions({ transactions }: { transactions: Record<string, TrackedTransaction> }) {
   const networkConfig = useNetworkConfig()
-  const { getBlockExplorerTxUrl } = useBlockExplorer(networkConfig.chain)
+  const { getBlockExplorerTxUrl } = useBlockExplorer(networkConfig.chain) // TODO: the recent transactions can be from all chains so the chain info should come from there
   const orderedRecentTransactions = orderBy(Object.values(transactions), 'timestamp', 'desc')
 
   return (
