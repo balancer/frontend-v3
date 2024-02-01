@@ -43,7 +43,7 @@ export function useStaking() {
 
   const amountToApprove = {
     rawAmount,
-    tokenAddress: pool.address as Address,
+    address: pool.address as Address,
   }
 
   /**

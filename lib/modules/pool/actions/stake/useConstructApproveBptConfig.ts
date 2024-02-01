@@ -19,19 +19,18 @@ export function useConstructApproveBptConfigs(): ApproveTokenConfig[] {
 
   const tokenAmountsToApprove = getRequiredTokenApprovals({
     chainId,
-    amountsToApprove: [amountToApprove],
+    rawAmounts: [amountToApprove],
     allowanceFor: tokenAllowances.allowanceFor,
   })
 
-  return tokenAmountsToApprove.map(({ tokenAddress, rawAmount }) => {
+  return tokenAmountsToApprove.map(tokenAmountToApprove => {
     return {
       type: 'approveToken',
       props: {
         actionType: 'Staking',
         chain,
-        amountToApprove: rawAmount,
+        tokenAmountToApprove,
         spenderAddress: userAddress,
-        tokenAddress,
         tokenAllowances,
       },
     }
