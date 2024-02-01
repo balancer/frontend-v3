@@ -7,9 +7,6 @@ import { useConstructApproveBptConfigs } from './useConstructApproveBptConfig'
 import { StakeButton } from './StakeButton'
 
 export function StakeFlow() {
-  // const signRelayerConfig: SignRelayerConfig[] = useConstructSignRelayerConfig()
-  // const approveRelayerConfig: ApproveRelayerConfig[] = useConstructApproveRelayerConfig()
-
   const approveTokenConfigs = useConstructApproveBptConfigs()
 
   interface StakeConfig {
