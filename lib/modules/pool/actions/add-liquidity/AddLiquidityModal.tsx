@@ -152,7 +152,7 @@ export function AddLiquidityModal({
                   <HStack>
                     <NumberText color="GrayText">{fNum('slippage', slippage)}</NumberText>
                     <Tooltip
-                      label="Your maximum slippage setting. This can be changed in you
+                      label="Your maximum slippage setting. This can be changed in your
                       transaction settings (top right on previous input form)."
                       fontSize="sm"
                     >
