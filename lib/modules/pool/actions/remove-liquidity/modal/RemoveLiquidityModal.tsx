@@ -147,7 +147,7 @@ export function RemoveLiquidityModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <VStack w="full">{currentStep.Render(useOnStepCompleted)}</VStack>
+          <VStack w="full">{currentStep.render()}</VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>

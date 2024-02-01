@@ -5,12 +5,12 @@ import { RemoveLiquidityButton } from '../RemoveLiquidityButton'
 export function useRemoveLiquidityConfig(
   onTransactionStateUpdate: OnTransactionStateUpdate
 ): StepConfig {
-  function Render() {
+  function render() {
     return (
       <RemoveLiquidityButton
         onTransactionStateUpdate={onTransactionStateUpdate}
       ></RemoveLiquidityButton>
     )
   }
-  return { Render }
+  return { render }
 }

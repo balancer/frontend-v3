@@ -10,7 +10,7 @@ export type CommonStepProps = {
 }
 
 export interface StepConfig {
-  Render(useOnStepCompleted?: OnStepCompleted): JSX.Element
+  render(useOnStepCompleted?: OnStepCompleted): JSX.Element
 }
 
 export function useIterateSteps(steps: StepConfig[]) {

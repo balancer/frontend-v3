@@ -50,13 +50,13 @@ export function useTokenApprovalConfigs({
       chain,
       spenderAddress,
     }
-    return TokenApprovalConfig(props)
+    return buildTokenApprovalConfig(props)
   })
 }
 
-function TokenApprovalConfig(props: ApproveTokenProps): StepConfig {
+function buildTokenApprovalConfig(props: ApproveTokenProps): StepConfig {
   const approvalStepConfig: StepConfig = {
-    Render(useOnStepCompleted: OnStepCompleted) {
+    render(useOnStepCompleted: OnStepCompleted) {
       return (
         <ApproveTokenButton {...props} useOnStepCompleted={useOnStepCompleted}></ApproveTokenButton>
       )
@@ -65,10 +65,6 @@ function TokenApprovalConfig(props: ApproveTokenProps): StepConfig {
   return approvalStepConfig
 }
 
-/*
-  We need this component to avoid returning useConstructApproveTokenStep in a loop when building multiple ApproveToken steps
-  Rules of react hooks: https://react.dev/warnings/invalid-hook-call-warning#breaking-rules-of-hooks
-*/
 export function ApproveTokenButton(props: Props) {
   const step = useConstructApproveTokenStep(props)
 
