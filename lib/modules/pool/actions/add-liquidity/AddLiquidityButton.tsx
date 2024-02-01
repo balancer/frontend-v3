@@ -6,12 +6,12 @@ import { Button, VStack } from '@chakra-ui/react'
 import { usePoolRedirect } from '../../pool.hooks'
 import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
 import {
-  TransactionState,
+  OnTransactionStateUpdate,
   getTransactionState,
 } from '@/lib/shared/components/btns/transaction-steps/lib'
 
-export type Props = {
-  onTransactionStateUpdate: (transactionState: TransactionState) => void
+type Props = {
+  onTransactionStateUpdate: OnTransactionStateUpdate
 }
 
 export function AddLiquidityButton({ onTransactionStateUpdate }: Props) {

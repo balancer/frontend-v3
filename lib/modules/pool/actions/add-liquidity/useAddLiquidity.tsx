@@ -51,7 +51,7 @@ export function _useAddLiquidity() {
   const helpers = new LiquidityActionHelpers(pool)
   const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
 
-  const stepConfigs = useAddLiquidityStepConfigs(inputAmounts)
+  const stepConfigs = useAddLiquidityStepConfigs(inputAmounts, setAddLiquidityTxState)
 
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(

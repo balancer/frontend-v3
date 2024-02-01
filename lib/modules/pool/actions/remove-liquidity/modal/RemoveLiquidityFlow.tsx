@@ -1,29 +1,27 @@
 import { VStack } from '@chakra-ui/react'
-import { useIterateSteps } from '../../useIterateSteps'
+import { StepConfig, useIterateSteps } from '../../useIterateSteps'
 import { RemoveLiquidityButton } from '../RemoveLiquidityButton'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
+import { OnTransactionStateUpdate } from '@/lib/shared/components/btns/transaction-steps/lib'
 
 export function RemoveLiquidityFlow() {
   const { setRemoveLiquidityTxState } = useRemoveLiquidity()
-  interface RemoveLiquidityConfig {
-    type: 'removeLiquidity'
-    // no props
-  }
 
-  const removeLiquidityConfig: RemoveLiquidityConfig = {
-    type: 'removeLiquidity',
+  function useRemoveLiquidityConfig(
+    onTransactionStateUpdate: OnTransactionStateUpdate
+  ): StepConfig {
+    function render() {
+      return (
+        <RemoveLiquidityButton
+          onTransactionStateUpdate={onTransactionStateUpdate}
+        ></RemoveLiquidityButton>
+      )
+    }
+    return { render }
   }
-  const stepConfigs = [removeLiquidityConfig]
+  const stepConfigs = [useRemoveLiquidityConfig(setRemoveLiquidityTxState)]
 
   const { currentStep } = useIterateSteps(stepConfigs)
 
-  return (
-    <VStack w="full">
-      {currentStep.type === 'removeLiquidity' && (
-        <RemoveLiquidityButton
-          onTransactionStateUpdate={setRemoveLiquidityTxState}
-        ></RemoveLiquidityButton>
-      )}
-    </VStack>
-  )
+  return <VStack w="full">{currentStep.render()}</VStack>
 }

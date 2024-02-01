@@ -5,6 +5,8 @@ import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { ApproveTokenProps } from './useConstructApproveTokenStep'
 import { ApprovalAction } from './approval-labels'
+import { ApproveTokenButton } from './ApproveTokenButton'
+import { OnStepCompleted } from '../../pool/actions/useIterateSteps'
 
 export interface ApproveTokenConfig {
   type: 'approveToken'
@@ -23,7 +25,7 @@ export function useTokenApprovalConfigs({
   chain,
   approvalAmounts,
   actionType,
-}: Params): ApproveTokenConfig[] {
+}: Params) {
   const { userAddress } = useUserAccount()
 
   const _approvalAmounts = approvalAmounts.filter(amount => amount.rawAmount > 0)
@@ -39,14 +41,23 @@ export function useTokenApprovalConfigs({
   })
 
   return tokenAmountsToApprove.map(tokenAmountToApprove => {
+    const props: ApproveTokenProps = {
+      tokenAllowances,
+      tokenAmountToApprove,
+      actionType,
+      chain,
+      spenderAddress,
+    }
+
     return {
       type: 'approveToken',
-      props: {
-        tokenAllowances,
-        tokenAmountToApprove,
-        actionType,
-        chain,
-        spenderAddress,
+      render(useOnStepCompleted: OnStepCompleted) {
+        return (
+          <ApproveTokenButton
+            {...props}
+            useOnStepCompleted={useOnStepCompleted}
+          ></ApproveTokenButton>
+        )
       },
     }
   })
