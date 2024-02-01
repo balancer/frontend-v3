@@ -12,6 +12,7 @@ export function Providers({ children }: { children: ReactNode }) {
   const initialColorMode = cookies().get(COOKIE_KEYS.UserSettings.ColorMode)?.value
   const initCurrency = cookies().get(COOKIE_KEYS.UserSettings.Currency)?.value
   const initSlippage = cookies().get(COOKIE_KEYS.UserSettings.Slippage)?.value
+  const initEnableSignatures = cookies().get(COOKIE_KEYS.UserSettings.EnableSignatures)?.value
   const initPoolListView = cookies().get(COOKIE_KEYS.UserSettings.PoolListView)?.value
 
   return (
@@ -22,6 +23,7 @@ export function Providers({ children }: { children: ReactNode }) {
             <UserSettingsProvider
               initCurrency={initCurrency}
               initSlippage={initSlippage}
+              initEnableSignatures={initEnableSignatures}
               initPoolListView={initPoolListView}
             >
               <RecentTransactionsProvider>{children}</RecentTransactionsProvider>

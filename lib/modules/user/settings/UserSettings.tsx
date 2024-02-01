@@ -17,12 +17,15 @@ import {
   Select,
   VStack,
   Text,
+  Tooltip,
+  Switch,
 } from '@chakra-ui/react'
 import { HiOutlineCog6Tooth } from 'react-icons/hi2'
 import { useUserSettings } from './useUserSettings'
 import { SupportedCurrency } from '@/lib/shared/utils/currencies'
 import { FiPercent } from 'react-icons/fi'
 import { blockInvalidNumberInput } from '@/lib/shared/utils/numbers'
+import { InfoOutlineIcon } from '@chakra-ui/icons'
 
 function CurrencySelect() {
   const { currency, setCurrency } = useUserSettings()
@@ -75,6 +78,19 @@ function SlippageInput() {
   )
 }
 
+function EnableSignaturesSelect() {
+  const { enableSignatures, setEnableSignatures } = useUserSettings()
+
+  const handleChange = () => {
+    setEnableSignatures(enableSignatures === 'yes' ? 'no' : 'yes')
+  }
+
+  return <Switch isChecked={enableSignatures === 'yes'} onChange={handleChange} />
+}
+
+// eslint-disable-next-line max-len
+const signaturesTooltipLabel = `It's recommended to turn on signatures for gas-free transactions, where possible. However, if your wallet doesn't support the signing of signatures, you can turn it off.`
+
 export function UserSettings() {
   return (
     <Popover>
@@ -95,6 +111,13 @@ export function UserSettings() {
             <CurrencySelect />
             <Heading size="sm">Slippage</Heading>
             <SlippageInput />
+            <HStack>
+              <Heading size="sm">Use Signatures</Heading>
+              <Tooltip label={signaturesTooltipLabel} fontSize="sm">
+                <InfoOutlineIcon color="GrayText" />
+              </Tooltip>
+            </HStack>
+            <EnableSignaturesSelect />
           </VStack>
         </PopoverBody>
       </PopoverContent>
