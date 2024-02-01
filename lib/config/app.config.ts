@@ -40,7 +40,7 @@ export function getGqlChain(chainId: SupportedChainId): GqlChain {
   return getNetworkConfig(chainId).chain
 }
 
-export function getNativeAssetAddress(chainId: SupportedChainId) {
+export function getNativeAssetAddress(chainId: GqlChain | SupportedChainId) {
   return getNetworkConfig(chainId).tokens.nativeAsset.address
 }
 
