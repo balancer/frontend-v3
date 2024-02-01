@@ -7,16 +7,23 @@ import {
 import { InputAmount } from '@balancer/sdk'
 import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 
+export enum AddLiquidityStepType {
+  ADD_LIQUIDITY = 'addLiquidity',
+  SIGN_RELAYER = 'signRelayer',
+  APPROVE_RELAYER = 'approveRelayer',
+  APPROVE_TOKEN = 'approveToken',
+}
+
 const addLiquidityConfig = {
-  type: 'addLiquidity',
+  type: AddLiquidityStepType.ADD_LIQUIDITY,
 } as const
 
 const approveRelayerConfig = {
-  type: 'approveRelayer',
+  type: AddLiquidityStepType.APPROVE_RELAYER,
 } as const
 
 const signRelayerConfig = {
-  type: 'signRelayer',
+  type: AddLiquidityStepType.SIGN_RELAYER,
 } as const
 
 export type AddLiquidityStepConfig =

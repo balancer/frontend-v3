@@ -5,9 +5,10 @@ import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { ApproveTokenProps } from './useConstructApproveTokenStep'
 import { ApprovalAction } from './approval-labels'
+import { AddLiquidityStepType } from '../../pool/actions/add-liquidity/useAddLiquidityStepConfigs'
 
 export interface ApproveTokenConfig {
-  type: 'approveToken'
+  type: AddLiquidityStepType.APPROVE_TOKEN
   props: ApproveTokenProps
 }
 
@@ -40,7 +41,7 @@ export function useTokenApprovalConfigs({
 
   return tokenAmountsToApprove.map(tokenAmountToApprove => {
     return {
-      type: 'approveToken',
+      type: AddLiquidityStepType.APPROVE_TOKEN,
       props: {
         tokenAllowances,
         tokenAmountToApprove,

@@ -6,6 +6,7 @@ import { useIterateSteps } from '../useIterateSteps'
 import { AddLiquidityButton } from './AddLiquidityButton'
 import { useAddLiquidity } from './useAddLiquidity'
 import { ApproveRelayerButton } from '@/lib/modules/relayer/ApproveRelayerButton'
+import { AddLiquidityStepType } from './useAddLiquidityStepConfigs'
 
 export function AddLiquidityFlow() {
   const { setAddLiquidityTxState, stepConfigs } = useAddLiquidity()
@@ -14,18 +15,18 @@ export function AddLiquidityFlow() {
 
   return (
     <VStack w="full">
-      {currentStep.type === 'approveRelayer' && (
+      {currentStep.type === AddLiquidityStepType.APPROVE_RELAYER && (
         <ApproveRelayerButton useOnStepCompleted={useOnStepCompleted}></ApproveRelayerButton>
       )}
 
-      {currentStep.type === 'approveToken' && (
+      {currentStep.type === AddLiquidityStepType.APPROVE_TOKEN && (
         <ApproveTokenButton
           useOnStepCompleted={useOnStepCompleted}
           {...currentStep.props}
         ></ApproveTokenButton>
       )}
 
-      {currentStep.type === 'addLiquidity' && (
+      {currentStep.type === AddLiquidityStepType.ADD_LIQUIDITY && (
         <AddLiquidityButton onTransactionStateUpdate={setAddLiquidityTxState}></AddLiquidityButton>
       )}
     </VStack>
