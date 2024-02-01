@@ -1,12 +1,14 @@
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
+import { CommonStepProps, OnStepCompleted, StepConfig } from '../../pool/actions/useIterateSteps'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { useUserAccount } from '../../web3/useUserAccount'
-import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { ApproveTokenProps } from './useConstructApproveTokenStep'
 import { ApprovalAction } from './approval-labels'
-import { ApproveTokenButton } from './ApproveTokenButton'
-import { OnStepCompleted } from '../../pool/actions/useIterateSteps'
+import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
+import { ApproveTokenProps, useConstructApproveTokenStep } from './useConstructApproveTokenStep'
+import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
+
+type Props = ApproveTokenProps & CommonStepProps
 
 export interface ApproveTokenConfig {
   type: 'approveToken'
@@ -25,7 +27,7 @@ export function useTokenApprovalConfigs({
   chain,
   approvalAmounts,
   actionType,
-}: Params) {
+}: Params): StepConfig[] {
   const { userAddress } = useUserAccount()
 
   const _approvalAmounts = approvalAmounts.filter(amount => amount.rawAmount > 0)
@@ -48,17 +50,29 @@ export function useTokenApprovalConfigs({
       chain,
       spenderAddress,
     }
-
-    return {
-      type: 'approveToken',
-      render(useOnStepCompleted: OnStepCompleted) {
-        return (
-          <ApproveTokenButton
-            {...props}
-            useOnStepCompleted={useOnStepCompleted}
-          ></ApproveTokenButton>
-        )
-      },
-    }
+    return TokenApprovalConfig(props)
   })
+}
+
+function TokenApprovalConfig(props: ApproveTokenProps): StepConfig {
+  const approvalStepConfig: StepConfig = {
+    Render(useOnStepCompleted: OnStepCompleted) {
+      return (
+        <ApproveTokenButton {...props} useOnStepCompleted={useOnStepCompleted}></ApproveTokenButton>
+      )
+    },
+  }
+  return approvalStepConfig
+}
+
+/*
+  We need this component to avoid returning useConstructApproveTokenStep in a loop when building multiple ApproveToken steps
+  Rules of react hooks: https://react.dev/warnings/invalid-hook-call-warning#breaking-rules-of-hooks
+*/
+export function ApproveTokenButton(props: Props) {
+  const step = useConstructApproveTokenStep(props)
+
+  props.useOnStepCompleted(step)
+
+  return <TransactionStepButton step={step}></TransactionStepButton>
 }

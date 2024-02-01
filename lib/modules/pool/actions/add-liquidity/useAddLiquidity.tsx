@@ -22,6 +22,7 @@ import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useAddLiquidityStepConfigs } from './useAddLiquidityStepConfigs'
+import { useIterateSteps } from '../useIterateSteps'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -52,6 +53,7 @@ export function _useAddLiquidity() {
   const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
 
   const stepConfigs = useAddLiquidityStepConfigs(inputAmounts, setAddLiquidityTxState)
+  const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -122,7 +124,8 @@ export function _useAddLiquidity() {
     isDisabled,
     disabledReason,
     previewModalDisclosure,
-    stepConfigs,
+    currentStep,
+    useOnStepCompleted,
     handler,
     addLiquidityTxState,
     setHumanAmountIn,

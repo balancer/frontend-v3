@@ -5,30 +5,24 @@ import { InputAmount } from '@balancer/sdk'
 import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import { AddLiquidityButton } from './AddLiquidityButton'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { OnStepCompleted, StepConfig } from '../useIterateSteps'
-import { ApproveRelayerButton } from '@/lib/modules/relayer/ApproveRelayerButton'
+import { StepConfig } from '../useIterateSteps'
+import { approveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 
 export function useAddLiquidityConfig(
   setAddLiquidityTxState: (transactionState: TransactionState) => void
 ): StepConfig {
-  function render() {
+  function Render() {
     return (
       <AddLiquidityButton onTransactionStateUpdate={setAddLiquidityTxState}></AddLiquidityButton>
     )
   }
   return {
-    render,
+    Render,
   }
 }
 
-const approveRelayerConfig: StepConfig = {
-  render(useOnStepCompleted: OnStepCompleted) {
-    return <ApproveRelayerButton useOnStepCompleted={useOnStepCompleted}></ApproveRelayerButton>
-  },
-}
-
 const signRelayerConfig: StepConfig = {
-  render: () => <div>TO BE IMPLEMENTED</div>,
+  Render: () => <div>TO BE IMPLEMENTED</div>,
 } as const
 
 export function useAddLiquidityStepConfigs(

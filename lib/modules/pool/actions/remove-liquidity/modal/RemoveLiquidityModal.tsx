@@ -28,7 +28,6 @@ import { Address } from 'viem'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import RemoveLiquidityBptRow from './RemoveLiquidityBptRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { RemoveLiquidityFlow } from './RemoveLiquidityFlow'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
 
@@ -53,6 +52,8 @@ export function RemoveLiquidityModal({
     amountOutForToken,
     priceImpactQuery,
     removeLiquidityTxState,
+    currentStep,
+    useOnStepCompleted,
   } = useRemoveLiquidity()
   const { pool } = usePool()
   const { slippage } = useUserSettings()
@@ -146,7 +147,7 @@ export function RemoveLiquidityModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <RemoveLiquidityFlow />
+          <VStack w="full">{currentStep.Render(useOnStepCompleted)}</VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>
