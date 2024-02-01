@@ -24,7 +24,6 @@ function testUseConstruct() {
       return useConstructApproveTokenStep({
         actionType: 'AddLiquidity',
         tokenAmountToApprove,
-        chain: GqlChain.Mainnet,
         spenderAddress: defaultTestUserAccount,
         tokenAllowances,
       })
