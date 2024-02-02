@@ -94,7 +94,7 @@ export function SwapForm() {
                 Swap
               </Heading>
             </HStack>
-            <VStack spacing="sm" w="full" justify="start">
+            <VStack spacing="md" w="full">
               <Select
                 value={selectedChain}
                 onChange={e => {
@@ -107,36 +107,38 @@ export function SwapForm() {
                   </option>
                 ))}
               </Select>
-              <TokenInput
-                address={tokenIn.address}
-                chain={selectedChain}
-                value={tokenIn.amount}
-                onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
-                toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
-              />
-              <Box pos="relative">
-                <IconButton
-                  size="sm"
-                  fontSize="2xl"
-                  aria-label="Switch tokens"
-                  icon={<CgArrowsExchangeV />}
-                  onClick={switchTokens}
-                  variant="tertiary"
-                  pos="absolute"
-                  top="-4"
-                  left="-4"
-                  w="8"
-                  h="8"
-                  rounded="full"
+              <VStack spacing="sm" w="full">
+                <TokenInput
+                  address={tokenIn.address}
+                  chain={selectedChain}
+                  value={tokenIn.amount}
+                  onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
+                  toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
                 />
-              </Box>
-              <TokenInput
-                address={tokenOut.address}
-                chain={selectedChain}
-                value={tokenOut.amount}
-                onChange={e => setTokenOutAmount(e.currentTarget.value as HumanAmount)}
-                toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
-              />
+                <Box pos="relative">
+                  <IconButton
+                    size="sm"
+                    fontSize="2xl"
+                    aria-label="Switch tokens"
+                    icon={<CgArrowsExchangeV />}
+                    onClick={switchTokens}
+                    variant="tertiary"
+                    pos="absolute"
+                    top="-4"
+                    left="-4"
+                    w="8"
+                    h="8"
+                    rounded="full"
+                  />
+                </Box>
+                <TokenInput
+                  address={tokenOut.address}
+                  chain={selectedChain}
+                  value={tokenOut.amount}
+                  onChange={e => setTokenOutAmount(e.currentTarget.value as HumanAmount)}
+                  toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
+                />
+              </VStack>
             </VStack>
 
             <VStack spacing="sm" align="start" w="full" px="md">
