@@ -52,15 +52,6 @@ enum GqlContentNewsItemSource {
   twitter
 }
 
-type GqlCowSwapApiResponse {
-  returnAmount: String!
-  swapAmount: String!
-  swaps: [GqlSwap!]!
-  tokenAddresses: [String!]!
-  tokenIn: String!
-  tokenOut: String!
-}
-
 type GqlFeaturePoolGroupItemExternalLink {
   buttonText: String!
   buttonUrl: String!
@@ -1036,6 +1027,22 @@ type GqlSorGetBatchSwapForTokensInResponse {
   tokenOutAmount: AmountHumanReadable!
 }
 
+type GqlSorGetSwaps {
+  priceImpact: AmountHumanReadable!
+  returnAmount: AmountHumanReadable!
+  returnAmountScaled: BigDecimal!
+  routes: [GqlSorSwapRoute!]!
+  swapAmount: AmountHumanReadable!
+  swapAmountScaled: BigDecimal!
+  swapType: GqlSorSwapType!
+  swaps: [GqlSorSwap!]!
+  tokenAddresses: [String!]!
+  tokenIn: String!
+  tokenInAmount: AmountHumanReadable!
+  tokenOut: String!
+  tokenOutAmount: AmountHumanReadable!
+}
+
 type GqlSorGetSwapsResponse {
   effectivePrice: AmountHumanReadable!
   effectivePriceReversed: AmountHumanReadable!
@@ -1094,14 +1101,6 @@ type GqlSorSwapRouteHop {
 enum GqlSorSwapType {
   EXACT_IN
   EXACT_OUT
-}
-
-type GqlSwap {
-  amount: String!
-  assetInIndex: Int!
-  assetOutIndex: Int!
-  poolId: String!
-  userData: String!
 }
 
 type GqlToken {
@@ -1345,18 +1344,6 @@ type Query {
   protocolMetricsChain(chain: GqlChain): GqlProtocolMetricsChain!
   sftmxGetStakingData: GqlSftmxStakingData!
   sftmxGetWithdrawalRequests(user: String!): [GqlSftmxWithdrawalRequests!]!
-  sorGetBatchSwapForTokensIn(
-    swapOptions: GqlSorSwapOptionsInput!
-    tokenOut: String!
-    tokensIn: [GqlTokenAmountHumanReadable!]!
-  ): GqlSorGetBatchSwapForTokensInResponse!
-  sorGetCowSwaps(
-    chain: GqlChain!
-    swapAmount: BigDecimal!
-    swapType: GqlSorSwapType!
-    tokenIn: String!
-    tokenOut: String!
-  ): GqlCowSwapApiResponse!
   sorGetSwaps(
     chain: GqlChain
     swapAmount: BigDecimal!
@@ -1365,6 +1352,14 @@ type Query {
     tokenIn: String!
     tokenOut: String!
   ): GqlSorGetSwapsResponse!
+  sorV2GetSwaps(
+    chain: GqlChain!
+    swapAmount: BigDecimal!
+    swapOptions: GqlSorSwapOptionsInput!
+    swapType: GqlSorSwapType!
+    tokenIn: String!
+    tokenOut: String!
+  ): GqlSorGetSwaps!
   tokenGetCandlestickChartData(
     address: String!
     chain: GqlChain

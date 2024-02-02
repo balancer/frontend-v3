@@ -6,7 +6,7 @@ query GetSorSwaps(
   $chain: GqlChain!
   $swapOptions: GqlSorSwapOptionsInput!
 ) {
-  swaps: sorGetSwaps(
+  swaps: sorV2GetSwaps(
     tokenIn: $tokenIn
     tokenOut: $tokenOut
     swapType: $swapType
@@ -14,14 +14,17 @@ query GetSorSwaps(
     chain: $chain
     swapOptions: $swapOptions
   ) {
-    tokenIn
-    tokenOut
-    swapAmount
-    swapAmountForSwaps
+    priceImpact
     returnAmount
-    returnAmountFromSwaps
-    returnAmountConsideringFees
-    marketSp
+    returnAmountScaled
+    swapAmount
+    swapAmountScaled
+    swapType
+    tokenAddresses
+    tokenIn
+    tokenInAmount
+    tokenOut
+    tokenOutAmount
     swaps {
       amount
       assetInIndex
@@ -29,7 +32,25 @@ query GetSorSwaps(
       poolId
       userData
     }
-    tokenAddresses
+    routes {
+      hops {
+        pool {
+          displayTokens {
+            address
+          }
+        }
+        poolId
+        tokenIn
+        tokenInAmount
+        tokenOut
+        tokenOutAmount
+      }
+      share
+      tokenIn
+      tokenInAmount
+      tokenOut
+      tokenOutAmount
+    }
   }
 }
 
