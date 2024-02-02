@@ -8,7 +8,6 @@ import { useTokens } from '../useTokens'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
 import { TokenAmountToApprove } from './approval-rules'
-import { TransactionBundle } from '../../web3/contracts/contract.types'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse

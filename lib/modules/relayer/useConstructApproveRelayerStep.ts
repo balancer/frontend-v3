@@ -44,7 +44,7 @@ export function useConstructApproveRelayerStep() {
   }
 
   useEffect(() => {
-    refetch()
+    if (approveRelayerTransaction.result.isSuccess) refetch()
   }, [approveRelayerTransaction.result.isSuccess])
 
   return step
