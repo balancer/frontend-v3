@@ -18,6 +18,7 @@ import {
   Select,
   IconButton,
   Button,
+  Box,
 } from '@chakra-ui/react'
 import { useMemo, useRef } from 'react'
 import { useSwap } from './useSwap'
@@ -93,7 +94,7 @@ export function SwapForm() {
                 Swap
               </Heading>
             </HStack>
-            <VStack spacing="md" w="full">
+            <VStack spacing="sm" w="full" justify="start">
               <Select
                 value={selectedChain}
                 onChange={e => {
@@ -113,13 +114,22 @@ export function SwapForm() {
                 onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
                 toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
               />
-              <IconButton
-                size="sm"
-                fontSize="2xl"
-                aria-label="Switch tokens"
-                icon={<CgArrowsExchangeV />}
-                onClick={switchTokens}
-              />
+              <Box pos="relative">
+                <IconButton
+                  size="sm"
+                  fontSize="2xl"
+                  aria-label="Switch tokens"
+                  icon={<CgArrowsExchangeV />}
+                  onClick={switchTokens}
+                  variant="tertiary"
+                  pos="absolute"
+                  top="-4"
+                  left="-4"
+                  w="8"
+                  h="8"
+                  rounded="full"
+                />
+              </Box>
               <TokenInput
                 address={tokenOut.address}
                 chain={selectedChain}
