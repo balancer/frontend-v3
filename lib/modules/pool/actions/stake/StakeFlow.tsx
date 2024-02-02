@@ -3,11 +3,11 @@
 import { ApproveTokenButton } from '@/lib/modules/tokens/approvals/ApproveTokenButton'
 import { VStack } from '@chakra-ui/react'
 import { useIterateSteps } from '../useIterateSteps'
-import { useConstructApproveBptConfigs } from './useConstructApproveBptConfig'
 import { StakeButton } from './StakeButton'
+import { useStaking } from './useStaking'
 
 export function StakeFlow() {
-  const approveTokenConfigs = useConstructApproveBptConfigs()
+  const { bptApprovalStepConfig } = useStaking()
 
   interface StakeConfig {
     type: 'stake'
@@ -18,7 +18,7 @@ export function StakeFlow() {
     type: 'stake',
   }
 
-  const stepConfigs = [...approveTokenConfigs, stakeConfig]
+  const stepConfigs = [...bptApprovalStepConfig, stakeConfig]
 
   const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
 

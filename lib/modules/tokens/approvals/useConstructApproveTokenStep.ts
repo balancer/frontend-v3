@@ -6,14 +6,15 @@ import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
 import { Address } from 'viem'
 import { useTokens } from '../useTokens'
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { TokenAmountToApprove } from './approval-rules'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse
   tokenAmountToApprove: TokenAmountToApprove
   spenderAddress: Address
   actionType: ApprovalAction
+  chain: GqlChain
 }
 
 export function useConstructApproveTokenStep({
@@ -21,10 +22,10 @@ export function useConstructApproveTokenStep({
   tokenAmountToApprove,
   spenderAddress,
   actionType,
+  chain,
 }: ApproveTokenProps) {
   const { refetchAllowances, isAllowancesLoading, allowanceFor } = tokenAllowances
   const { getToken } = useTokens()
-  const { chain } = useNetworkConfig()
 
   const [didRefetchAllowances, setDidRefetchAllowances] = useState(false)
 

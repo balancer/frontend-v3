@@ -9,12 +9,14 @@ export function ApproveTokenButton({
   useOnStepCompleted,
   tokenAmountToApprove,
   tokenAllowances,
+  chain,
 }: Props) {
   const tokenApprovalStep = useConstructApproveTokenStep({
     actionType: 'AddLiquidity',
     spenderAddress: tokenAllowances.spenderAddress,
     tokenAllowances,
     tokenAmountToApprove,
+    chain,
   })
 
   useOnStepCompleted(tokenApprovalStep)

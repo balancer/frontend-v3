@@ -11,6 +11,7 @@ import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { usePool } from '../../usePool'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { useEffect } from 'react'
+import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useTokenApprovalConfigs'
 
 export const humanAmountInVar = makeVar<HumanAmountIn | null>(null)
 
@@ -33,11 +34,9 @@ export function useStaking() {
     humanAmountInVar(amountIn)
   }
 
-  const tokenAllowances = useTokenAllowances(
-    userAddress,
-    pool.staking?.gauge?.gaugeAddress as Address,
-    [humanAmountIn?.tokenAddress as Address]
-  )
+  const tokenAllowances = useTokenAllowances(userAddress, pool.staking?.address as Address, [
+    humanAmountIn?.tokenAddress as Address,
+  ])
 
   const rawAmount = parseUnits(humanAmountIn?.humanAmount || '', BPT_DECIMALS)
 
@@ -45,6 +44,13 @@ export function useStaking() {
     rawAmount,
     address: pool.address as Address,
   }
+
+  const bptApprovalStepConfig = useTokenApprovalConfigs({
+    spenderAddress: pool.staking?.address as Address,
+    chain: pool.chain,
+    approvalAmounts: [amountToApprove],
+    actionType: 'Staking',
+  })
 
   /**
    * Side-effects
@@ -61,5 +67,6 @@ export function useStaking() {
     rawAmount,
     tokenAllowances,
     amountToApprove,
+    bptApprovalStepConfig,
   }
 }
