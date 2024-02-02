@@ -29,7 +29,6 @@ import { BPT_DECIMALS } from '../../pool.constants'
 import { usePool } from '../../usePool'
 import { HumanAmountIn } from '../liquidity-types'
 import { useAddLiquidity } from './useAddLiquidity'
-import { AddLiquidityFlow } from './AddLiquidityFlow'
 import { AddLiquidityTimeout } from './AddLiquidityTimeout'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
@@ -55,6 +54,8 @@ export function AddLiquidityModal({
     priceImpactQuery,
     tokens,
     addLiquidityTxState,
+    currentStep,
+    useOnStepCompleted,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
@@ -151,7 +152,7 @@ export function AddLiquidityModal({
                   <HStack>
                     <NumberText color="GrayText">{fNum('slippage', slippage)}</NumberText>
                     <Tooltip
-                      label="Your maximum slippage setting. This can be changed in you 
+                      label="Your maximum slippage setting. This can be changed in your
                       transaction settings (top right on previous input form)."
                       fontSize="sm"
                     >
@@ -165,7 +166,7 @@ export function AddLiquidityModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <AddLiquidityFlow />
+          <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>

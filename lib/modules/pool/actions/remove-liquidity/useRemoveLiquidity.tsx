@@ -19,6 +19,8 @@ import { Address } from 'viem'
 import { toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { useIterateSteps } from '../useIterateSteps'
+import { useRemoveLiquidityConfig } from './modal/useRemoveLiquidityConfig'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -43,6 +45,9 @@ export function _useRemoveLiquidity() {
     .toString() as HumanAmount
 
   const [removeLiquidityTxState, setRemoveLiquidityTxState] = useState<TransactionState>()
+
+  const stepConfigs = [useRemoveLiquidityConfig(setRemoveLiquidityTxState)]
+  const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
@@ -146,6 +151,8 @@ export function _useRemoveLiquidity() {
     removeLiquidityTxState,
     setRemoveLiquidityTxState,
     handler,
+    currentStep,
+    useOnStepCompleted,
   }
 }
 

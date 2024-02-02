@@ -37,6 +37,7 @@ export function _useUserAccount() {
     // We use an emptyAddress when the user is not connected to avoid undefined value and satisfy the TS compiler
     userAddress: mounted ? query.address || emptyAddress : emptyAddress,
     isConnected: mounted && !!query.address,
+    connector: mounted ? query.connector : undefined,
   }
 }
 
