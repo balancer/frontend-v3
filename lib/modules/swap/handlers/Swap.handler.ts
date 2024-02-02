@@ -17,6 +17,7 @@ export type SwapInputs = {
 export type SimulateSwapResponse = {
   returnAmount: string
   swapType: GqlSorSwapType
+  priceImpact: string
   sorSwapsQuery?: GetSorSwapsQuery
 }
 

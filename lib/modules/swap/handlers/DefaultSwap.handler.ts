@@ -24,6 +24,7 @@ export class DefaultSwapHandler implements SwapHandler {
     return {
       returnAmount: data.swaps.returnAmount,
       swapType: data.swaps.swapType,
+      priceImpact: data.swaps.priceImpact,
       sorSwapsQuery: data as GetSorSwapsQuery,
     }
   }

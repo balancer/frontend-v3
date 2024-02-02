@@ -2,17 +2,14 @@
 
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
-import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { HumanAmount } from '@balancer/sdk'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
   Card,
   Center,
   HStack,
   Heading,
   VStack,
-  Text,
   Tooltip,
   useDisclosure,
   Select,
@@ -24,12 +21,12 @@ import { useMemo, useRef } from 'react'
 import { useSwap } from './useSwap'
 import { useTokens } from '../tokens/useTokens'
 import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
-import { fNum } from '@/lib/shared/utils/numbers'
 import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { CgArrowsExchangeV } from 'react-icons/cg'
 import { Address } from 'viem'
 import { SwapPreviewModal } from './SwapPreviewModal'
+import { SwapDetailsAccordian } from './SwapDetailsAccordian'
 
 export function SwapForm() {
   const {
@@ -141,17 +138,7 @@ export function SwapForm() {
               </VStack>
             </VStack>
 
-            <VStack spacing="sm" align="start" w="full" px="md">
-              <HStack justify="space-between" w="full">
-                <Text color="GrayText">Price impact</Text>
-                <HStack>
-                  <NumberText color="GrayText">{fNum('priceImpact', 0)}</NumberText>
-                  <Tooltip label="Price impact" fontSize="sm">
-                    <InfoOutlineIcon color="GrayText" />
-                  </Tooltip>
-                </HStack>
-              </HStack>
-            </VStack>
+            <SwapDetailsAccordian />
 
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
