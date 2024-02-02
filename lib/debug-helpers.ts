@@ -4,14 +4,24 @@ import { Address } from 'viem'
 /*
   Temporary shared helpers and constants used by debug pages until we finish the real implementations (depending on SDK and other blocking parts)
 */
-export const balAddress: Address = '0xba100000625a3754423978a60c9317c58a424e3d'
-export const daiAddress: Address = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
-export const wETHAddress: Address = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
-export const wjAuraAddress: Address = '0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f'
+export const balAddress = '0xba100000625a3754423978a60c9317c58a424e3d' as const
+export const wETHAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' as const
+export const wjAuraAddress = '0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f' as const
+
+export const bpt3PoolAddress = '0x79c58f70905f734641735bc61e45c19dd9ad60bc' as const
+export const daiAddress = '0x6b175474e89094c44da98b954eedeac495271d0f' as const
+export const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as const
+export const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7' as const
+
+export const nested50WETH_50_3poolId =
+  '0x08775ccb6674d6bdceb0797c364c2653ed84f3840002000000000000000004f0' as const //50WETH-50-3pool
+
+export const threePoolId =
+  '0x79c58f70905f734641735bc61e45c19dd9ad60bc0000000000000000000004e7' as const
 
 export const vaultV2Address = mainnetNetworkConfig.contracts.balancer.vaultV2 as Address
 
-export const poolId: Address = '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512' // Balancer Weighted wjAura and WETH
+export const poolId = '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512' as const // Balancer Weighted wjAura and WETH
 
 /*
   Used to pretty print objects when debugging

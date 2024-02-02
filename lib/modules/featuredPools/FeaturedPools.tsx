@@ -1,3 +1,5 @@
+'use client'
+
 import { Card, Center, Grid, GridItem, HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import { useFeaturedPools } from './useFeaturedPools'
 import { GqlChain, GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
@@ -11,6 +13,7 @@ import {
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import PoolWeightChart from '../pool/PoolDetail/PoolWeightCharts/PoolWeightChart'
 import { useRouter } from 'next/navigation'
+import { PoolName } from '../pool/PoolName'
 
 const indexAreaHash: { [key: number]: string } = {
   1: 'one',
@@ -46,15 +49,24 @@ function FeaturedPoolCard({
       onMouseEnter={event => poolMouseEnterHandler(event, pool.id, pool.chain, router)}
     >
       <VStack justifyContent="space-between" h="full">
-        <HStack justifyContent="space-between" w="full">
-          <Text>{getPoolTypeLabel(pool.type)}</Text>
-          <Text>{toCurrency(pool.dynamicData.totalLiquidity)} TVL</Text>
+        <HStack justifyContent="center" w="full" spacing="sm">
+          <Text variant="secondary" fontWeight="medium">
+            {getPoolTypeLabel(pool.type)}
+          </Text>
+          <Text variant="secondary" fontWeight="medium">
+            &#x2022;
+          </Text>
+          <Text variant="secondary" fontWeight="medium">
+            {toCurrency(pool.dynamicData.totalLiquidity)} TVL
+          </Text>
         </HStack>
         <PoolWeightChart pool={pool} chain={chain} hasLegend={hasLegend} isSmall={isSmall} />
         <Center>
           <VStack>
-            <Text>{pool.name}</Text>
-            <Text>{getAprLabel(pool.dynamicData.apr.apr)} APR</Text>
+            <PoolName pool={pool} fontWeight="bold" fontSize="lg" noOfLines={1} />
+            <Text variant="secondary" fontWeight="medium">
+              {getAprLabel(pool.dynamicData.apr.apr)} APR
+            </Text>
           </VStack>
         </Center>
       </VStack>
@@ -76,17 +88,23 @@ export function FeaturedPools() {
     <VStack align="start" w="full">
       <Grid
         w="full"
-        h="600px"
+        minH="600px"
         gap="4"
         alignContent="stretch"
         templateColumns={{
-          base: 'repeat(2, 1fr)',
+          base: 'repeat(1, 1fr)',
+          md: 'repeat(2, 1fr)',
           lg: 'repeat(4, 1fr)', // align with PoolListCards
         }}
         templateAreas={{
-          base: `"primary primary"
-                 "one     two"
-                 "three   four"`,
+          base: `"primary"
+                 "one"
+                 "two"
+                 "three"
+                 "four"`,
+          md: `"primary primary"
+               "one     two"
+               "three   four"`,
           lg: `"primary primary one   two"
                "primary primary three four"`, // align with PoolListCards
         }}

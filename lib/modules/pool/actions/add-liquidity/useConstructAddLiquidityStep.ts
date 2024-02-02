@@ -1,18 +1,27 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { AddLiquidityBuildQueryResponse } from './queries/useAddLiquidityBuildCallDataQuery'
+import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
+import { useEffect } from 'react'
+import { useAddLiquidity } from './useAddLiquidity'
 
-export function useConstructAddLiquidityStep(
-  poolId: string,
-  buildCallDataQuery: AddLiquidityBuildQueryResponse,
-  activateStep: () => void
-) {
+export function useConstructAddLiquidityStep() {
   const transactionLabels: TransactionLabels = {
     init: 'Add liquidity',
     confirming: 'Confirming...',
     confirmed: `Liquidity added to pool!`,
     tooltip: 'Add liquidity to pool.',
   }
+
+  const { simulationQuery } = useAddLiquidity()
+  const buildCallDataQuery = useAddLiquidityBuildCallDataQuery()
+
+  useEffect(() => {
+    // simulationQuery is refetched every 30 seconds by AddLiquidityTimeout
+    if (simulationQuery.data) {
+      buildCallDataQuery.refetch()
+    }
+  }, [simulationQuery.data])
 
   const addLiquidityTransaction = useManagedSendTransaction(
     transactionLabels,
@@ -24,22 +33,13 @@ export function useConstructAddLiquidityStep(
   const addLiquidityStep: FlowStep = {
     ...addLiquidityTransaction,
     transactionLabels,
-    id: `addLiquidityPool${poolId}`,
+    id: `addLiquidityPool`,
     stepType: 'addLiquidity',
     isComplete,
-    activateStep,
   }
 
   return {
     addLiquidityStep,
     addLiquidityTransaction,
-    isLoading:
-      addLiquidityTransaction?.simulation.isLoading ||
-      addLiquidityTransaction?.execution.isLoading ||
-      buildCallDataQuery.isLoading,
-    error:
-      addLiquidityTransaction?.simulation.error ||
-      addLiquidityTransaction?.execution.error ||
-      buildCallDataQuery.error,
   }
 }

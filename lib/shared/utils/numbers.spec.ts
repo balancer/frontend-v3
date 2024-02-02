@@ -1,4 +1,4 @@
-import { fNum, safeTokenFormat } from './numbers'
+import { bn, fNum, safeTokenFormat } from './numbers'
 
 test('Stringifies bigints', () => {
   expect(JSON.stringify(12345n)).toBe('"12345"')
@@ -55,5 +55,13 @@ describe('safeTokenFormat', () => {
   test('for a bigint amount', () => {
     expect(safeTokenFormat(251359380787607529n, 18)).toBe('0.2514')
     expect(safeTokenFormat(null, 18)).toBe('-')
+  })
+})
+
+describe('bn', () => {
+  test('creates a BigNumber instance from different formats', () => {
+    expect(bn(1234567).toFixed()).toBe('1234567')
+    expect(bn('54321').toFixed()).toBe('54321')
+    expect(bn(12345n).toFixed()).toBe('12345')
   })
 })

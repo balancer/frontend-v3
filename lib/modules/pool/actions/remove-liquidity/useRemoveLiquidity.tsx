@@ -12,15 +12,15 @@ import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useMemo, useState } from 'react'
 import { usePool } from '../../usePool'
 import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
-import { useRemoveLiquidityBuildCallDataQuery } from './queries/useRemoveLiquidityBuildCallDataQuery'
 import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address } from 'viem'
 import { toHumanAmount } from '../LiquidityActionHelpers'
-import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
-import { useConstructRemoveLiquidityStep } from './modal/useConstructRemoveLiquidityStep'
 import { useDisclosure } from '@chakra-ui/hooks'
+import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { useIterateSteps } from '../useIterateSteps'
+import { useRemoveLiquidityConfig } from './modal/useRemoveLiquidityConfig'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -29,11 +29,7 @@ export function _useRemoveLiquidity() {
   const { pool, bptPrice } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected } = useUserAccount()
-  const {
-    isActiveStep: isFinalStepActive,
-    activateStep: activateFinalStep,
-    deactivateStep: deactivateFinalStep,
-  } = useActiveStep()
+
   const previewModalDisclosure = useDisclosure()
 
   const [removalType, setRemovalType] = useState<RemoveLiquidityType>(
@@ -43,16 +39,29 @@ export function _useRemoveLiquidity() {
 
   const [humanBptInPercent, setHumanBptInPercent] = useState<number>(100)
 
-  const handler = useMemo(
-    () => selectRemoveLiquidityHandler(pool, removalType),
-    [pool.id, removalType]
-  )
-
   const maxHumanBptIn: HumanAmount = (pool?.userBalance?.totalBalance || '0') as HumanAmount
   const humanBptIn: HumanAmount = bn(maxHumanBptIn)
     .times(humanBptInPercent / 100)
     .toString() as HumanAmount
 
+  const [removeLiquidityTxState, setRemoveLiquidityTxState] = useState<TransactionState>()
+
+  const stepConfigs = [useRemoveLiquidityConfig(setRemoveLiquidityTxState)]
+  const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
+
+  const { isDisabled, disabledReason } = isDisabledWithReason(
+    [!isConnected, LABELS.walletNotConnected],
+    [Number(humanBptIn) === 0, 'You must specify a valid bpt in']
+  )
+
+  const handler = useMemo(
+    () => selectRemoveLiquidityHandler(pool, removalType),
+    [pool.id, removalType]
+  )
+
+  /**
+   * Helper functions & variables
+   */
   const totalUsdFromBprPrice = bn(humanBptIn).times(bptPrice).toFixed(2)
 
   const setProportionalType = () => setRemovalType(RemoveLiquidityType.Proportional)
@@ -67,7 +76,7 @@ export function _useRemoveLiquidity() {
   const singleTokenOutAddress = singleTokenAddress || firstTokenAddress
 
   /**
-   * The three handler queries, simulate + priceImpact + buildCallData.
+   * Simulation queries
    */
   const simulationQuery = useRemoveLiquiditySimulationQuery(
     handler,
@@ -82,27 +91,6 @@ export function _useRemoveLiquidity() {
     humanBptIn,
     singleTokenOutAddress
   )
-
-  const buildCallDataQuery = useRemoveLiquidityBuildCallDataQuery({
-    handler,
-    humanBptIn,
-    poolId: pool.id,
-    tokenOut: singleTokenOutAddress,
-    simulationQuery,
-    options: {
-      enabled: isFinalStepActive,
-    },
-  })
-
-  /**
-   * Transaction step construction
-   */
-  const { removeLiquidityStep, removeLiquidityTransaction } = useConstructRemoveLiquidityStep(
-    pool.id,
-    buildCallDataQuery,
-    activateFinalStep
-  )
-  const steps = [removeLiquidityStep]
 
   const amountsOut = simulationQuery.data?.amountsOut || []
 
@@ -138,11 +126,6 @@ export function _useRemoveLiquidity() {
     }, 0)
     .toString()
 
-  const { isDisabled, disabledReason } = isDisabledWithReason(
-    [!isConnected, LABELS.walletNotConnected],
-    [Number(humanBptIn) === 0, 'You must specify a valid bpt in']
-  )
-
   return {
     tokens,
     validTokens,
@@ -155,14 +138,9 @@ export function _useRemoveLiquidity() {
     totalUsdValue,
     simulationQuery,
     priceImpactQuery,
-    buildCallDataQuery,
     isDisabled,
-    isFinalStepActive,
-    deactivateFinalStep,
     disabledReason,
-    steps,
     previewModalDisclosure,
-    removeLiquidityTransaction,
     setRemovalType,
     setHumanBptInPercent,
     setProportionalType,
@@ -170,6 +148,11 @@ export function _useRemoveLiquidity() {
     setSingleTokenAddress,
     amountOutForToken,
     usdOutForToken,
+    removeLiquidityTxState,
+    setRemoveLiquidityTxState,
+    handler,
+    currentStep,
+    useOnStepCompleted,
   }
 }
 

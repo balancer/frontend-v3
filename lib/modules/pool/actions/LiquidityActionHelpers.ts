@@ -2,15 +2,24 @@ import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { HumanAmount, InputAmount, PoolState, TokenAmount } from '@balancer/sdk'
-import { Dictionary, keyBy } from 'lodash'
-import { formatUnits, parseUnits } from 'viem'
+import {
+  HumanAmount,
+  InputAmount,
+  MinimalToken,
+  NestedPool,
+  NestedPoolState,
+  PoolState,
+  TokenAmount,
+  mapPoolType,
+} from '@balancer/sdk'
+import { keyBy } from 'lodash'
+import { Hex, formatUnits, parseUnits } from 'viem'
 import { Address } from 'wagmi'
-import { toPoolStateInput } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
 import { SentryError } from '@/lib/shared/utils/errors'
+import { hasNestedPools } from '../pool.helpers'
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -27,8 +36,14 @@ const NullPool: Pool = {
 export class LiquidityActionHelpers {
   constructor(public pool: Pool = NullPool) {}
 
-  public get poolStateInput(): PoolState {
-    return toPoolStateInput(this.pool)
+  /* Used by default (non-nested) SDK handlers */
+  public get poolState(): PoolState {
+    return toPoolState(this.pool)
+  }
+
+  /* Used by default nested SDK handlers */
+  public get nestedPoolState(): NestedPoolState {
+    return mapPoolToNestedPoolState(this.pool)
   }
 
   public get networkConfig() {
@@ -43,15 +58,12 @@ export class LiquidityActionHelpers {
     return this.pool.tokens.map(t => t.address as Address)
   }
 
-  public getAmountsToApprove(
-    humanAmountsIn: HumanAmountIn[],
-    tokensByAddress: Dictionary<GqlToken>
-  ): TokenAmountToApprove[] {
+  public getAmountsToApprove(humanAmountsIn: HumanAmountIn[]): TokenAmountToApprove[] {
     return this.toInputAmounts(humanAmountsIn).map(({ address, rawAmount }) => {
       return {
         tokenAddress: address,
-        rawAmount,
-        tokenSymbol: tokensByAddress[address].symbol,
+        requiredRawAmount: rawAmount,
+        requestedRawAmount: rawAmount, //This amount will be probably replaced by MAX_BIGINT depending on the approval rules
       }
     })
   }
@@ -59,7 +71,7 @@ export class LiquidityActionHelpers {
   public toInputAmounts(humanAmountsIn: HumanAmountIn[]): InputAmount[] {
     if (!humanAmountsIn.length) return []
 
-    const amountsInList: InputAmount[] = this.pool.tokens.map(t => {
+    const amountsInList: InputAmount[] = this.pool.allTokens.map(t => {
       return {
         rawAmount: 0n,
         decimals: t.decimals,
@@ -122,4 +134,85 @@ It looks that you tried to call useBuildCallData before the last query finished 
   }
 
   return queryResponse
+}
+
+export function supportsNestedLiquidity(pool: Pool) {
+  return pool.type === GqlPoolType.ComposableStable || pool.type === GqlPoolType.Weighted
+}
+
+export function shouldUseNestedLiquidity(pool: Pool) {
+  return supportsNestedLiquidity(pool) && hasNestedPools(pool)
+}
+
+export function toPoolState(pool: Pool): PoolState {
+  if (pool.type === 'META_STABLE') {
+    throw new Error('META_STABLE pool type is not yet supported by the SDK')
+  }
+
+  return {
+    id: pool.id as Hex,
+    address: pool.address as Address,
+    tokens: pool.tokens as MinimalToken[],
+    type: mapPoolType(pool.type),
+    balancerVersion: 2, //TODO: change to dynamic version when we implement v3 integration
+  }
+}
+
+//TODO: this should be exposed by the SDK
+export function mapPoolToNestedPoolState(pool: Pool): NestedPoolState {
+  const pools: NestedPool[] = [
+    {
+      id: pool.id as Address,
+      address: pool.address as Address,
+      type: mapPoolType(pool.type),
+      level: 1,
+      tokens: pool.tokens.map(t => {
+        const minimalToken: MinimalToken = {
+          address: t.address as Address,
+          decimals: t.decimals,
+          index: t.index,
+        }
+        return minimalToken
+      }),
+    },
+  ]
+
+  pool.tokens.forEach(token => {
+    if ('pool' in token) {
+      // Token represents nested pools only nested if they have a pool property
+      if (token.pool === undefined) return
+
+      // map API result to NestedPool
+      pools.push({
+        id: token.pool.id as Address,
+        address: token.pool.address as Address,
+        level: 0,
+        type: mapPoolType(token.pool.type),
+        tokens: token.pool.tokens.map(t => {
+          const minimalToken: MinimalToken = {
+            address: t.address as Address,
+            decimals: t.decimals,
+            index: t.index,
+          }
+          return minimalToken
+        }),
+      })
+    }
+  })
+
+  const mainTokens = pool.allTokens
+    .filter(t => {
+      return t.isMainToken
+    })
+    .map(t => {
+      return {
+        address: t.address,
+        decimals: t.decimals,
+      }
+    })
+
+  return {
+    pools,
+    mainTokens,
+  } as NestedPoolState
 }

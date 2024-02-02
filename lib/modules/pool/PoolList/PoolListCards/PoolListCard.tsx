@@ -1,8 +1,7 @@
 import { Card, HStack, VStack, Text, Grid, GridItem } from '@chakra-ui/react'
 import { PoolListItem } from '../../pool.types'
-import { fNum } from '@/lib/shared/utils/numbers'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
-import { ReactNode, memo } from 'react'
+import { ReactNode, isValidElement, memo } from 'react'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
@@ -14,38 +13,24 @@ import {
   poolMouseEnterHandler,
 } from '../../pool.utils'
 import { useRouter } from 'next/navigation'
+import { PoolName } from '../../PoolName'
 
 interface Props {
   pool: PoolListItem
-}
-
-function PoolNameLabel({ pool }: { pool: PoolListItem }) {
-  if (pool) {
-    const displayTokens = pool.displayTokens
-    return (
-      <Text fontWeight="bold" noOfLines={2} h="12">
-        {displayTokens.map((token, idx) => {
-          return (
-            <>
-              {token.nestedTokens ? token.name : token.symbol}
-              {token.weight && ` ${fNum('weight', token.weight || '')}`}
-              {idx <= displayTokens.length - 2 && ' / '}
-            </>
-          )
-        })}
-      </Text>
-    )
-  }
 }
 
 function StatCard({ label, value }: { label: ReactNode; value: ReactNode }) {
   return (
     <Card h="full" variant="gradient" p="sm">
       <VStack alignItems="flex-start" w="full" gap="0">
-        <Text fontWeight="medium" variant="secondary" fontSize="sm">
-          {label}
-        </Text>
-        <Text fontWeight="bold">{value}</Text>
+        {isValidElement(label) ? (
+          label
+        ) : (
+          <Text fontWeight="medium" variant="secondary" fontSize="sm">
+            {label}
+          </Text>
+        )}
+        {isValidElement(value) ? value : <Text fontWeight="bold">{value}</Text>}
       </VStack>
     </Card>
   )
@@ -73,7 +58,7 @@ export function PoolListCard({ pool }: Props) {
             <Text fontWeight="medium" variant="secondary" fontSize="sm">
               {getPoolTypeLabel(pool.type)}
             </Text>
-            <PoolNameLabel pool={pool} />
+            <PoolName pool={pool} fontWeight="bold" noOfLines={2} h="12" />
           </VStack>
         </HStack>
         <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} pb="lg" />
@@ -98,7 +83,9 @@ export function PoolListCard({ pool }: Props) {
             <StatCard
               label={
                 <HStack>
-                  <span>APR</span>
+                  <Text fontWeight="medium" variant="secondary" fontSize="sm">
+                    APR
+                  </Text>
                   <MemoizedAprTooltip
                     data={pool.dynamicData.apr}
                     poolId={pool.id}
@@ -107,7 +94,11 @@ export function PoolListCard({ pool }: Props) {
                   />
                 </HStack>
               }
-              value={<Text fontSize="sm">{getAprLabel(pool.dynamicData.apr.apr)}</Text>}
+              value={
+                <Text fontWeight="bold" fontSize="sm">
+                  {getAprLabel(pool.dynamicData.apr.apr)}
+                </Text>
+              }
             />
           </GridItem>
         </Grid>

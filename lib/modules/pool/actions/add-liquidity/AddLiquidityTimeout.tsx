@@ -1,14 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Text } from '@chakra-ui/react'
+import { HStack, Text, Tooltip } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
 import { useAddLiquidity } from './useAddLiquidity'
-import {
-  TransactionState,
-  getTransactionState,
-} from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { InfoOutlineIcon } from '@chakra-ui/icons'
 
-function useAddLiquidityTimeout() {
+type Props = {
+  addLiquidityTxState?: TransactionState
+}
+
+function useAddLiquidityTimeout({ addLiquidityTxState }: Props) {
   // This countdown needs to be nested here and not at a higher level, like in
   // useAddLiquidity, because otherwise it causes re-renders of the entire
   // add-liquidity flow component tree every second.
@@ -17,20 +19,11 @@ function useAddLiquidityTimeout() {
     intervalMs: 1000,
   })
 
-  const {
-    simulationQuery,
-    priceImpactQuery,
-    buildCallDataQuery,
-    previewModalDisclosure,
-    addLiquidityTransaction,
-    isFinalStepActive,
-  } = useAddLiquidity()
+  const { simulationQuery, priceImpactQuery, previewModalDisclosure } = useAddLiquidity()
 
-  const transactionState = getTransactionState(addLiquidityTransaction)
-
-  const isConfirmingAddLiquidity = transactionState === TransactionState.Confirming
-  const isAwaitingUserConfirmation = transactionState === TransactionState.Loading
-  const isComplete = transactionState === TransactionState.Completed
+  const isConfirmingAddLiquidity = addLiquidityTxState === TransactionState.Confirming
+  const isAwaitingUserConfirmation = addLiquidityTxState === TransactionState.Loading
+  const isComplete = addLiquidityTxState === TransactionState.Completed
 
   // Disable query refetches:
   // if the flow is complete
@@ -43,7 +36,6 @@ function useAddLiquidityTimeout() {
       stopCountdown()
       resetCountdown()
       await Promise.all([simulationQuery.refetch(), priceImpactQuery.refetch()])
-      if (isFinalStepActive) await buildCallDataQuery.refetch() // avoid this refetch if the final step is not enabled (for example during pre-approval steps)
       startCountdown()
     }
     if (secondsToRefetch === 0 && !shouldFreezeQuote) refetchQueries()
@@ -71,8 +63,23 @@ function useAddLiquidityTimeout() {
   return { secondsToRefetch, shouldFreezeQuote }
 }
 
-export function AddLiquidityTimeout() {
-  const { secondsToRefetch, shouldFreezeQuote } = useAddLiquidityTimeout()
+export function AddLiquidityTimeout(props: Props) {
+  const { secondsToRefetch, shouldFreezeQuote } = useAddLiquidityTimeout(props)
 
-  return !shouldFreezeQuote && <Text>Quote expires in: {secondsToRefetch} secs</Text>
+  return (
+    !shouldFreezeQuote && (
+      <HStack justify="space-between" w="full">
+        <Text>Valid for</Text>
+        <HStack>
+          <Text color="GrayText">{secondsToRefetch} secs</Text>
+          <Tooltip
+            label="Quoted numbers above valid until timeout, after which they will be recalculated."
+            fontSize="sm"
+          >
+            <InfoOutlineIcon color="GrayText" />
+          </Tooltip>
+        </HStack>
+      </HStack>
+    )
+  )
 }
