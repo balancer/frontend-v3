@@ -12,6 +12,8 @@ import { usePool } from '../../usePool'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { useEffect } from 'react'
 import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useTokenApprovalConfigs'
+import { stakeConfig } from './stakeConfig'
+import { useIterateSteps } from '../useIterateSteps'
 
 export const humanAmountInVar = makeVar<HumanAmountIn | null>(null)
 
@@ -52,6 +54,10 @@ export function useStaking() {
     actionType: 'Staking',
   })
 
+  const stepConfigs = [...bptApprovalStepConfig, stakeConfig]
+
+  const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
+
   /**
    * Side-effects
    */
@@ -68,5 +74,7 @@ export function useStaking() {
     tokenAllowances,
     amountToApprove,
     bptApprovalStepConfig,
+    currentStep,
+    useOnStepCompleted,
   }
 }

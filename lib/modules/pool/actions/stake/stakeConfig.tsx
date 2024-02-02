@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { StepConfig } from '../useIterateSteps'
 import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
 import { useEffect, useState } from 'react'
 import { usePool } from '../../usePool'
@@ -7,7 +8,13 @@ import { usePoolRedirect } from '../../pool.hooks'
 import { useConstructStakingDepositActionStep } from './staking.actions'
 import { useStaking } from './useStaking'
 
-export function StakeButton() {
+export const stakeConfig: StepConfig = {
+  render() {
+    return <StakeButton />
+  },
+}
+
+function StakeButton() {
   const [didRefetchPool, setDidRefetchPool] = useState(false)
   const { refetch, pool } = usePool()
   const { rawAmount } = useStaking()

@@ -1,11 +1,21 @@
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import { Card, CardBody, CardFooter, CardHeader, Center, Heading, Skeleton } from '@chakra-ui/react'
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Center,
+  Heading,
+  Skeleton,
+  VStack,
+} from '@chakra-ui/react'
 import { usePool } from '../../usePool'
 import { Address } from 'viem'
-import { StakeFlow } from './StakeFlow'
+import { useStaking } from './useStaking'
 
 export function StakeForm() {
   const { pool, isLoading } = usePool()
+  const { currentStep, useOnStepCompleted } = useStaking()
 
   return (
     <Center h="full" w="full" maxW="lg" mx="auto">
@@ -32,7 +42,7 @@ export function StakeForm() {
           )}
         </CardBody>
         <CardFooter>
-          <StakeFlow />
+          <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
         </CardFooter>
       </Card>
     </Center>
