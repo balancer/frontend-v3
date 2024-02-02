@@ -38,7 +38,6 @@ export function SwapForm() {
     tokenSelectKey,
     isDisabled,
     disabledReason,
-    refetchCountdownSecs,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
@@ -130,7 +129,7 @@ export function SwapForm() {
               />
             </VStack>
 
-            <VStack spacing="sm" align="start" w="full">
+            <VStack spacing="sm" align="start" w="full" px="md">
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
@@ -139,9 +138,6 @@ export function SwapForm() {
                     <InfoOutlineIcon color="GrayText" />
                   </Tooltip>
                 </HStack>
-              </HStack>
-              <HStack>
-                <Text color="GrayText">Expires in: {refetchCountdownSecs} secs</Text>
               </HStack>
             </VStack>
 

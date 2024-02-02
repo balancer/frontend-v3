@@ -1,16 +1,13 @@
-import { SimulateParams, SwapHandler } from './Swap.handler'
-import { SentryError } from '@/lib/shared/utils/errors'
+import { SwapInputs, SimulateSwapResponse, SwapHandler } from './Swap.handler'
 import { GetSorSwapsDocument, GetSorSwapsQuery } from '@/lib/shared/services/api/generated/graphql'
+import { ApolloClient } from '@apollo/client'
 
 export class DefaultSwapHandler implements SwapHandler {
-  async simulateSwap({ apolloClient, ...variables }: SimulateParams): Promise<GetSorSwapsQuery> {
-    if (!apolloClient) {
-      throw new SentryError('ApolloClient undefined for handler that needs it', {
-        context: { extra: { handler: 'DefaultSwapHandler', method: 'simulateSwap' } },
-      })
-    }
+  constructor(public apolloClient: ApolloClient<object>) {}
 
-    const { data } = await apolloClient.query({
+  async simulate({ ...variables }: SwapInputs): Promise<SimulateSwapResponse> {
+    console.log('Fetching swap simulation', variables)
+    const { data } = await this.apolloClient.query({
       query: GetSorSwapsDocument,
       variables: {
         ...variables,
@@ -22,7 +19,13 @@ export class DefaultSwapHandler implements SwapHandler {
       notifyOnNetworkStatusChange: true,
     })
 
-    return data
+    console.log('Swap response', data)
+
+    return {
+      returnAmount: data.swaps.returnAmount,
+      swapType: data.swaps.swapType,
+      sorSwapsQuery: data as GetSorSwapsQuery,
+    }
   }
   // buildSwapCallData(inputs: BuildAddLiquidityInput): Promise<TransactionConfig> {
   //   throw new Error('Method not implemented.')

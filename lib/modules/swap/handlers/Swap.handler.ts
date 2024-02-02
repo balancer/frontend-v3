@@ -1,14 +1,23 @@
-import { GqlChain, GqlSorSwapType } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GetSorSwapsQuery,
+  GqlChain,
+  GqlSorSwapType,
+} from '@/lib/shared/services/api/generated/graphql'
 import { ApolloClient } from '@apollo/client'
 import { Address } from 'viem'
 
-export type SimulateParams = {
+export type SwapInputs = {
   chain: GqlChain
   tokenIn: Address
   tokenOut: Address
   swapType: GqlSorSwapType
   swapAmount: string
-  apolloClient?: ApolloClient<object>
+}
+
+export type SimulateSwapResponse = {
+  returnAmount: string
+  swapType: GqlSorSwapType
+  sorSwapsQuery?: GetSorSwapsQuery
 }
 
 /**
@@ -16,6 +25,8 @@ export type SimulateParams = {
  * They take standard inputs from the UI and return frontend standardised outputs.
  */
 export interface SwapHandler {
-  simulateSwap(params: SimulateParams): Promise<any>
+  apolloClient?: ApolloClient<object>
+
+  simulate(params: SwapInputs): Promise<SimulateSwapResponse>
   // buildSwapCallData(inputs: BuildAddLiquidityInput): Promise<TransactionConfig>
 }
