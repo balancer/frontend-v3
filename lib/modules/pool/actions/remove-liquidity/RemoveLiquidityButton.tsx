@@ -43,7 +43,7 @@ export function RemoveLiquidityButton({ onTransactionStateUpdate }: Props) {
 
   return (
     <VStack w="full">
-      {!isComplete && <TransactionStepButton step={removeLiquidityStep}></TransactionStepButton>}
+      {!isComplete && <TransactionStepButton step={removeLiquidityStep} />}
 
       {isComplete && (
         <Button w="full" size="lg" onClick={handlerRedirectToPoolPage} isLoading={!didRefetchPool}>

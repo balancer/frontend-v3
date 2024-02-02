@@ -5,7 +5,7 @@ import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { bn, safeSum } from '@/lib/shared/utils/numbers'
+import { safeSum } from '@/lib/shared/utils/numbers'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
@@ -20,9 +20,9 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useTokenApprovalConfigs'
+import { useAddLiquidityStepConfigs } from './useAddLiquidityStepConfigs'
+import { useIterateSteps } from '../useIterateSteps'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -35,7 +35,6 @@ export function _useAddLiquidity() {
   const { pool } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected } = useUserAccount()
-  const vaultAddress = useContractAddress('balancer.vaultV2')
   const previewModalDisclosure = useDisclosure()
 
   const [addLiquidityTxState, setAddLiquidityTxState] = useState<TransactionState>()
@@ -53,16 +52,8 @@ export function _useAddLiquidity() {
   const helpers = new LiquidityActionHelpers(pool)
   const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
 
-  const addLiquidityStepConfig = {
-    type: 'addLiquidity',
-  } as const
-
-  const tokenApprovalStepConfigs = useTokenApprovalConfigs({
-    spenderAddress: vaultAddress,
-    chain: pool.chain,
-    approvalAmounts: inputAmounts,
-    actionType: 'AddLiquidity',
-  })
+  const stepConfigs = useAddLiquidityStepConfigs(inputAmounts, setAddLiquidityTxState)
+  const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -133,8 +124,8 @@ export function _useAddLiquidity() {
     isDisabled,
     disabledReason,
     previewModalDisclosure,
-    addLiquidityStepConfig,
-    tokenApprovalStepConfigs,
+    currentStep,
+    useOnStepCompleted,
     handler,
     addLiquidityTxState,
     setHumanAmountIn,

@@ -9,6 +9,8 @@ export enum TransactionState {
   Completed = 'completed',
 }
 
+export type OnTransactionStateUpdate = (transactionState: TransactionState) => void
+
 export type TransactionLabels = {
   init: string
   loading?: string
@@ -22,7 +24,6 @@ export type TransactionLabels = {
   preparing?: string
 }
 
-// TODO: Link with StepParam types
 export type StepType =
   | 'signBatchRelayer'
   | 'approveBatchRelayer'

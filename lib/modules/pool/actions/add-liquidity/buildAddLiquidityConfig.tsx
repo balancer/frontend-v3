@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { StepConfig } from '../useIterateSteps'
 import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
 import { useEffect, useState } from 'react'
 import { usePool } from '../../usePool'
@@ -6,12 +7,24 @@ import { Button, VStack } from '@chakra-ui/react'
 import { usePoolRedirect } from '../../pool.hooks'
 import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
 import {
-  TransactionState,
+  OnTransactionStateUpdate,
   getTransactionState,
 } from '@/lib/shared/components/btns/transaction-steps/lib'
 
-export type Props = {
-  onTransactionStateUpdate: (transactionState: TransactionState) => void
+export function buildAddLiquidityConfig(
+  onTransactionStateUpdate: OnTransactionStateUpdate
+): StepConfig {
+  function render() {
+    return <AddLiquidityButton onTransactionStateUpdate={onTransactionStateUpdate} />
+  }
+
+  return {
+    render,
+  }
+}
+
+type Props = {
+  onTransactionStateUpdate: OnTransactionStateUpdate
 }
 
 export function AddLiquidityButton({ onTransactionStateUpdate }: Props) {
@@ -43,7 +56,7 @@ export function AddLiquidityButton({ onTransactionStateUpdate }: Props) {
 
   return (
     <VStack w="full">
-      {!isComplete && <TransactionStepButton step={addLiquidityStep}></TransactionStepButton>}
+      {!isComplete && <TransactionStepButton step={addLiquidityStep} />}
 
       {isComplete && (
         <Button w="full" size="lg" onClick={handlerRedirectToPoolPage} isLoading={!didRefetchPool}>

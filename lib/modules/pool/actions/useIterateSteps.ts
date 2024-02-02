@@ -2,12 +2,18 @@
 import { useEffect, useState } from 'react'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 
+export type OnStepCompleted = (step: FlowStep) => void
+
 // This props are common to every step component
 export type CommonStepProps = {
-  useOnStepCompleted: (step: FlowStep) => void
+  useOnStepCompleted: OnStepCompleted
 }
 
-export function useIterateSteps<T>(steps: T[]) {
+export interface StepConfig {
+  render(useOnStepCompleted?: OnStepCompleted): JSX.Element
+}
+
+export function useIterateSteps(steps: StepConfig[]) {
   const [activeStepIndex, setActiveStep] = useState(0)
 
   const isFinalStepActive = activeStepIndex === steps.length - 1
@@ -19,7 +25,7 @@ export function useIterateSteps<T>(steps: T[]) {
     setActiveStep(activeStepIndex + 1)
   }
 
-  function getCurrentStep(): T {
+  function getCurrentStep(): StepConfig {
     return steps[activeStepIndex]
   }
 
@@ -36,6 +42,5 @@ export function useIterateSteps<T>(steps: T[]) {
   return {
     useOnStepCompleted,
     currentStep,
-    isFinalStepActive,
   }
 }
