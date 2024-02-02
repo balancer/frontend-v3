@@ -109,6 +109,7 @@ export default function PoolMyLiquidity() {
     return poolTokenBalancesForTab[tokenAddress].amount
   }
 
+  const canStake = pool.staking
   const hasUnstakedBalance = bn(pool.userBalance?.walletBalance || '0').gt(0)
   const hasStakedBalance = bn(pool.userBalance?.stakedBalance || '0').gt(0)
 
@@ -183,8 +184,8 @@ export default function PoolMyLiquidity() {
               <Button
                 as={Link}
                 href={`${pathname}/stake`}
-                variant={hasUnstakedBalance ? 'secondary' : 'disabled'}
-                isDisabled={!hasUnstakedBalance}
+                variant={canStake && hasUnstakedBalance ? 'secondary' : 'disabled'}
+                isDisabled={!(canStake && hasUnstakedBalance)}
               >
                 Stake
               </Button>
