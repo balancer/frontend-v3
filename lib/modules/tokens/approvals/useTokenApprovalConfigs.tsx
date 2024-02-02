@@ -57,9 +57,7 @@ export function useTokenApprovalConfigs({
 function buildTokenApprovalConfig(props: ApproveTokenProps): StepConfig {
   const approvalStepConfig: StepConfig = {
     render(useOnStepCompleted: OnStepCompleted) {
-      return (
-        <ApproveTokenButton {...props} useOnStepCompleted={useOnStepCompleted}></ApproveTokenButton>
-      )
+      return <ApproveTokenButton {...props} useOnStepCompleted={useOnStepCompleted} />
     },
   }
   return approvalStepConfig
@@ -70,5 +68,5 @@ export function ApproveTokenButton(props: Props) {
 
   props.useOnStepCompleted(step)
 
-  return <TransactionStepButton step={step}></TransactionStepButton>
+  return <TransactionStepButton step={step} />
 }

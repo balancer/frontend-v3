@@ -2,20 +2,9 @@ import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-
 import { CommonStepProps, OnStepCompleted, StepConfig } from '../pool/actions/useIterateSteps'
 import { useConstructApproveRelayerStep } from './useConstructApproveRelayerStep'
 
-/*
-export const approveRelayerConfig: StepConfig = {
-  Render(useOnStepCompleted: OnStepCompleted) {
-    const step = useConstructApproveRelayerStep()
-    useOnStepCompleted(step)
-
-    return <TransactionStepButton step={step}></TransactionStepButton>
-  },
-}
-*/
-
 export const approveRelayerConfig: StepConfig = {
   render(useOnStepCompleted: OnStepCompleted) {
-    return <ApproveRelayerButton useOnStepCompleted={useOnStepCompleted}></ApproveRelayerButton>
+    return <ApproveRelayerButton useOnStepCompleted={useOnStepCompleted} />
   },
 }
 
@@ -24,5 +13,5 @@ function ApproveRelayerButton({ useOnStepCompleted }: CommonStepProps) {
 
   useOnStepCompleted(step)
 
-  return <TransactionStepButton step={step}></TransactionStepButton>
+  return <TransactionStepButton step={step} />
 }

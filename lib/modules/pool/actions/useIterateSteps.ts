@@ -39,20 +39,8 @@ export function useIterateSteps(steps: StepConfig[]) {
 
   const currentStep = getCurrentStep()
 
-  /*
-  REVIEW:
-  Using RenderCurrentStep instead of currentStep.render(useOnStepCompleted) does not work
-  Probably because of useOnStepCompleted useEffect
-   function RenderCurrentStep() {
-     const currentStep = getCurrentStep()
-     return currentStep.Render(goToNextStep)
-   }
-
-  */
-
   return {
     useOnStepCompleted,
     currentStep,
-    // RenderCurrentStep,
   }
 }

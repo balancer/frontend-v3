@@ -15,9 +15,7 @@ export function buildAddLiquidityConfig(
   onTransactionStateUpdate: OnTransactionStateUpdate
 ): StepConfig {
   function render() {
-    return (
-      <AddLiquidityButton onTransactionStateUpdate={onTransactionStateUpdate}></AddLiquidityButton>
-    )
+    return <AddLiquidityButton onTransactionStateUpdate={onTransactionStateUpdate} />
   }
 
   return {
@@ -58,7 +56,7 @@ export function AddLiquidityButton({ onTransactionStateUpdate }: Props) {
 
   return (
     <VStack w="full">
-      {!isComplete && <TransactionStepButton step={addLiquidityStep}></TransactionStepButton>}
+      {!isComplete && <TransactionStepButton step={addLiquidityStep} />}
 
       {isComplete && (
         <Button w="full" size="lg" onClick={handlerRedirectToPoolPage} isLoading={!didRefetchPool}>
