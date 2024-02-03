@@ -1028,6 +1028,8 @@ type GqlSorGetBatchSwapForTokensInResponse {
 }
 
 type GqlSorGetSwaps {
+  effectivePrice: AmountHumanReadable!
+  effectivePriceReversed: AmountHumanReadable!
   priceImpact: AmountHumanReadable!
   returnAmount: AmountHumanReadable!
   returnAmountScaled: BigDecimal!

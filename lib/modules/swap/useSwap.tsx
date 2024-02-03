@@ -12,8 +12,10 @@ import { useUserAccount } from '../web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
-import { bn } from '@/lib/shared/utils/numbers'
+import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { useSwapSimulationQuery } from './queries/useSwapSimulationQuery'
+import { useTokens } from '../tokens/useTokens'
+import { useUserSettings } from '../user/settings/useUserSettings'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -51,13 +53,17 @@ export function _useSwap() {
 
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
   const [selectedChain, setSelectedChain] = useState<GqlChain>(GqlChain.Mainnet)
-  // const [swapOutput, setSwapOutput] = useState<GetSorSwapsQuery['swaps']>()
 
   const { isConnected } = useUserAccount()
+  const { slippage } = useUserSettings()
   const networkConfig = getNetworkConfig(selectedChain)
+  const { getToken, usdValueForToken } = useTokens()
 
   const client = useApolloClient()
   const handler = useMemo(() => selectSwapHandler(client), [])
+
+  const tokenInInfo = getToken(swapState.tokenIn.address, selectedChain)
+  const tokenOutInfo = getToken(swapState.tokenOut.address, selectedChain)
 
   const shouldFetchSwap = (state: SwapState, swapAmount: string) =>
     isAddress(state.tokenIn.address) &&
@@ -82,48 +88,6 @@ export function _useSwap() {
       enabled: shouldFetchSwap(swapState, getSwapAmount(swapState)),
     },
   })
-  // async function fetchSwap() {
-  //   const state = swapStateVar()
-
-  //   const swapAmount = getSwapAmount(state)
-
-  //   if (!shouldFetchSwap(state, swapAmount)) {
-  //     setReturnAmount(undefined, state.swapType)
-  //     return
-  //   }
-
-  //   try {
-  //     setIsFetching(true)
-
-  //     const result = await handler.simulateSwap({
-  //       apolloClient: client,
-  //       chain: selectedChain,
-  //       tokenIn: state.tokenIn.address,
-  //       tokenOut: state.tokenOut.address,
-  //       swapType: state.swapType,
-  //       swapAmount: getSwapAmount(state),
-  //     })
-
-  //     setSwapOutput(result?.swaps)
-  //     setReturnAmount(result?.swaps, state.swapType)
-  //     setIsFetching(false)
-  //   } catch (e) {
-  //     const error = ensureError(e)
-  //     console.log('error', error)
-
-  //     throw new SentryError('Failed to fetch swap', {
-  //       cause: error,
-  //       context: {
-  //         extra: {
-  //           chain: selectedChain,
-  //           ...state,
-  //         },
-  //       },
-  //     })
-  //   }
-  // }
-
-  // const debouncedFetchSwaps = useDebouncedCallback(fetchSwap, 300)
 
   function setReturnAmount(returnAmount: string, swapType: GqlSorSwapType) {
     if (swapType === GqlSorSwapType.ExactIn) {
@@ -233,6 +197,16 @@ export function _useSwap() {
     })
   }
 
+  const returnAmountUsd =
+    swapState.swapType === GqlSorSwapType.ExactIn
+      ? usdValueForToken(tokenOutInfo, swapState.tokenOut.amount)
+      : usdValueForToken(tokenInInfo, swapState.tokenIn.amount)
+
+  const priceImpact = simulationQuery.data?.priceImpact
+  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpacUsd = bn(priceImpact || 0).times(returnAmountUsd)
+  const maxSlippageUsd = bn(slippage).div(100).times(returnAmountUsd)
+
   // On first render, set default tokens
   useEffect(() => {
     setDefaultTokens()
@@ -256,11 +230,16 @@ export function _useSwap() {
 
   return {
     ...swapState,
+    tokenInInfo,
+    tokenOutInfo,
     tokenSelectKey,
     selectedChain,
     simulationQuery,
     isDisabled,
     disabledReason,
+    priceImpactLabel,
+    priceImpacUsd,
+    maxSlippageUsd,
     setTokenSelectKey,
     setSelectedChain,
     setTokenInAmount,

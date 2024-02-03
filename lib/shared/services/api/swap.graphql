@@ -25,6 +25,8 @@ query GetSorSwaps(
     tokenInAmount
     tokenOut
     tokenOutAmount
+    effectivePrice
+    effectivePriceReversed
     swaps {
       amount
       assetInIndex

@@ -36,6 +36,7 @@ export function SwapForm() {
     tokenSelectKey,
     isDisabled,
     disabledReason,
+    simulationQuery,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
@@ -138,7 +139,7 @@ export function SwapForm() {
               </VStack>
             </VStack>
 
-            <SwapDetailsAccordian />
+            {simulationQuery.data && <SwapDetailsAccordian />}
 
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button

@@ -1106,6 +1106,8 @@ export type GqlSorGetBatchSwapForTokensInResponse = {
 
 export type GqlSorGetSwaps = {
   __typename: 'GqlSorGetSwaps'
+  effectivePrice: Scalars['AmountHumanReadable']['output']
+  effectivePriceReversed: Scalars['AmountHumanReadable']['output']
   priceImpact: Scalars['AmountHumanReadable']['output']
   returnAmount: Scalars['AmountHumanReadable']['output']
   returnAmountScaled: Scalars['BigDecimal']['output']
@@ -6964,6 +6966,8 @@ export type GetSorSwapsQuery = {
     tokenInAmount: string
     tokenOut: string
     tokenOutAmount: string
+    effectivePrice: string
+    effectivePriceReversed: string
     swaps: Array<{
       __typename: 'GqlSorSwap'
       amount: string
@@ -15577,6 +15581,8 @@ export const GetSorSwapsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'tokenInAmount' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'tokenOutAmount' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'effectivePrice' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'effectivePriceReversed' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'swaps' },
