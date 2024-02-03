@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { StepConfig } from '../useIterateSteps'
 import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
 import { useEffect, useState } from 'react'
 import { usePool } from '../../usePool'
@@ -10,18 +9,6 @@ import {
   OnTransactionStateUpdate,
   getTransactionState,
 } from '@/lib/shared/components/btns/transaction-steps/lib'
-
-export function buildAddLiquidityConfig(
-  onTransactionStateUpdate: OnTransactionStateUpdate
-): StepConfig {
-  function render() {
-    return <AddLiquidityButton onTransactionStateUpdate={onTransactionStateUpdate} />
-  }
-
-  return {
-    render,
-  }
-}
 
 type Props = {
   onTransactionStateUpdate: OnTransactionStateUpdate
