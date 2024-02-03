@@ -16,6 +16,7 @@ import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { useSwapSimulationQuery } from './queries/useSwapSimulationQuery'
 import { useTokens } from '../tokens/useTokens'
 import { useUserSettings } from '../user/settings/useUserSettings'
+import { useDisclosure } from '@chakra-ui/react'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -58,6 +59,7 @@ export function _useSwap() {
   const { slippage } = useUserSettings()
   const networkConfig = getNetworkConfig(selectedChain)
   const { getToken, usdValueForToken } = useTokens()
+  const previewModalDisclosure = useDisclosure()
 
   const client = useApolloClient()
   const handler = useMemo(() => selectSwapHandler(client), [])
@@ -240,6 +242,7 @@ export function _useSwap() {
     priceImpactLabel,
     priceImpacUsd,
     maxSlippageUsd,
+    previewModalDisclosure,
     setTokenSelectKey,
     setSelectedChain,
     setTokenInAmount,

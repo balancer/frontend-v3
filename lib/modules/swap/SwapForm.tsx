@@ -27,6 +27,7 @@ import { CgArrowsExchangeV } from 'react-icons/cg'
 import { Address } from 'viem'
 import { SwapPreviewModal } from './SwapPreviewModal'
 import { SwapDetailsAccordian } from './SwapDetailsAccordian'
+import { SwapTimeout } from './SwapTimeout'
 
 export function SwapForm() {
   const {
@@ -37,6 +38,7 @@ export function SwapForm() {
     isDisabled,
     disabledReason,
     simulationQuery,
+    previewModalDisclosure,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
@@ -48,7 +50,6 @@ export function SwapForm() {
   const { getTokensByChain } = useTokens()
   const tokenSelectDisclosure = useDisclosure()
 
-  const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
 
   const networkOptions = PROJECT_CONFIG.supportedNetworks
@@ -140,6 +141,11 @@ export function SwapForm() {
             </VStack>
 
             {simulationQuery.data && <SwapDetailsAccordian />}
+            {simulationQuery.data && (
+              <Box px="md" w="full">
+                <SwapTimeout />
+              </Box>
+            )}
 
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
@@ -148,7 +154,7 @@ export function SwapForm() {
                 w="full"
                 size="lg"
                 isDisabled={isDisabled}
-                onClick={() => !isDisabled && previewDisclosure.onOpen()}
+                onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
               >
                 Next
               </Button>
@@ -165,9 +171,9 @@ export function SwapForm() {
       />
       <SwapPreviewModal
         finalFocusRef={nextBtn}
-        isOpen={previewDisclosure.isOpen}
-        onOpen={previewDisclosure.onOpen}
-        onClose={previewDisclosure.onClose}
+        isOpen={previewModalDisclosure.isOpen}
+        onOpen={previewModalDisclosure.onOpen}
+        onClose={previewModalDisclosure.onClose}
       />
     </TokenBalancesProvider>
   )
