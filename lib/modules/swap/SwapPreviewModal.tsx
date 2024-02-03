@@ -26,6 +26,7 @@ import { RefObject, useRef } from 'react'
 import { Address } from 'wagmi'
 import { useSwap } from './useSwap'
 import { SwapFlowButton } from './SwapFlowButton'
+import { SwapTimeout } from './SwapTimeout'
 
 type Props = {
   isOpen: boolean
@@ -105,6 +106,7 @@ export function SwapPreviewModal({
                     </Tooltip>
                   </HStack>
                 </HStack>
+                <SwapTimeout />
               </VStack>
             </Card>
           </VStack>

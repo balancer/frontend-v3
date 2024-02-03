@@ -27,7 +27,7 @@ import { CgArrowsExchangeV } from 'react-icons/cg'
 import { Address } from 'viem'
 import { SwapPreviewModal } from './SwapPreviewModal'
 import { SwapDetailsAccordian } from './SwapDetailsAccordian'
-import { SwapTimeout } from './SwapTimeout'
+import { TransactionSettings } from '../user/settings/TransactionSettings'
 
 export function SwapForm() {
   const {
@@ -88,10 +88,11 @@ export function SwapForm() {
       <Center h="full" w="full" maxW="lg" mx="auto">
         <Card variant="level3" shadow="xl" w="full" p="md">
           <VStack spacing="lg" align="start">
-            <HStack>
+            <HStack w="full" justify="space-between">
               <Heading fontWeight="bold" size="h5">
                 Swap
               </Heading>
+              <TransactionSettings size="sm" />
             </HStack>
             <VStack spacing="md" w="full">
               <Select
@@ -141,11 +142,6 @@ export function SwapForm() {
             </VStack>
 
             {simulationQuery.data && <SwapDetailsAccordian />}
-            {simulationQuery.data && (
-              <Box px="md" w="full">
-                <SwapTimeout />
-              </Box>
-            )}
 
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
