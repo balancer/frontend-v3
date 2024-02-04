@@ -2,12 +2,13 @@ import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { Box, Button, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Card, HStack, Heading, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../usePool'
 import { sumBy } from 'lodash'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { useTokens } from '../../tokens/useTokens'
 
 const TABS = [
   {
@@ -18,16 +19,13 @@ const TABS = [
     value: 'unclaimed',
     label: 'Unclaimed',
   },
-  {
-    value: 'my-total',
-    label: 'My total',
-  },
 ]
 
 export default function PoolIncentives() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { toCurrency } = useCurrency()
   const { pool, chain } = usePool()
+  const { priceFor } = useTokens()
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
@@ -41,7 +39,10 @@ export default function PoolIncentives() {
     }
   })
 
-  const totalRewardsPerWeek = sumBy(currentRewardsPerWeek, reward => reward.rewardPerWeek)
+  const totalRewardsPerWeek = sumBy(
+    currentRewardsPerWeek,
+    reward => priceFor(reward.tokenAddress, chain) * reward.rewardPerWeek
+  )
 
   return (
     <Card variant="gradient" width="full" minHeight="320px">
@@ -61,17 +62,11 @@ export default function PoolIncentives() {
                     <Heading fontWeight="bold" size="h6">
                       Pool incentives this week
                     </Heading>
-                    <Text variant="secondary" fontSize="0.85rem">
-                      Gauge votes
-                    </Text>
                   </VStack>
                   <VStack spacing="1" alignItems="flex-end">
                     <Heading fontWeight="bold" size="h6">
-                      {totalRewardsPerWeek}
+                      {toCurrency(totalRewardsPerWeek)}
                     </Heading>
-                    <Text variant="secondary" fontSize="0.85rem">
-                      Gauge votes TBD
-                    </Text>
                   </VStack>
                 </HStack>
               </Box>
