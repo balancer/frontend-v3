@@ -1,6 +1,7 @@
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { HumanAmountIn } from '../../liquidity-types'
 import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidity.types'
+import { Address } from 'viem'
 
 /**
  * AddLiquidityHandler is an interface that defines the methods that must be implemented by a handler.
@@ -18,12 +19,19 @@ import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidit
 export interface AddLiquidityHandler {
   // Query the expected output of adding liquidity and store it inside the handler instance
   // Also returns bptOut to be used by the UI
-  queryAddLiquidity(humanAmountsIn: HumanAmountIn[]): Promise<QueryAddLiquidityOutput>
+  simulate(
+    humanAmountsIn: HumanAmountIn[],
+    // Only NestedAddLiquidity expects a userAddress
+    // TODO: The sdk team is going to remove userAddress from the nested query signature to simplify this:
+    // https://github.com/balancer/b-sdk/issues/209
+    userAddress?: Address
+  ): Promise<QueryAddLiquidityOutput>
+
   // Calculate the price impact of adding liquidity
-  calculatePriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number>
+  getPriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number>
   /*
     Build tx callData payload for adding liquidity
     It is responsibility of the UI to avoid calling buildAddLiquidityCallData before the last queryAddLiquidity was finished
   */
-  buildAddLiquidityCallData(inputs: BuildAddLiquidityInput): Promise<TransactionConfig>
+  buildCallData(inputs: BuildAddLiquidityInput): Promise<TransactionConfig>
 }

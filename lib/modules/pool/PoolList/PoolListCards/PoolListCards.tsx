@@ -1,12 +1,10 @@
 'use client'
 
-import { Box, Grid } from '@chakra-ui/react'
+import { Box, Center, Grid, Spinner, Text } from '@chakra-ui/react'
 import { PoolListCard } from './PoolListCard'
 import { Pagination } from '@/lib/shared/components/pagination/Pagination'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
-import { getPoolPath } from '../../pool.utils'
-import { useRouter } from 'next/navigation'
 import { PoolListItem } from '../../pool.types'
 
 interface Props {
@@ -16,40 +14,23 @@ interface Props {
 }
 
 export function PoolListCards({ pools, count, loading }: Props) {
-  const router = useRouter()
   const { pagination, setPagination } = usePoolListQueryState()
   const paginationProps = getPaginationProps(count, pagination, setPagination)
-  const showPagination = pools.length && count && count > pagination.pageSize
-  const cardClickHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
-    const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
-
-    if (event.ctrlKey || event.metaKey) {
-      window.open(poolPath, '_blank')
-    } else {
-      router.push(poolPath)
-    }
-  }
-
-  // Prefetch pool page on card hover, otherwise there is a significant delay
-  // between clicking the card and the pool page loading.
-  const cardMouseEnterHandler = (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => {
-    const poolPath = getPoolPath({ id: pool.id, chain: pool.chain })
-    router.prefetch(poolPath)
-  }
+  const showPagination = !!pools.length && !!count && count > pagination.pageSize
 
   return (
     <Box w="full" style={{ position: 'relative' }}>
       <Grid templateColumns={{ base: '1fr', lg: 'repeat(4, 1fr)' }} w="full" gap="4">
         {pools.map(pool => (
-          <PoolListCard
-            key={pool.id}
-            pool={pool}
-            cardClickHandler={cardClickHandler}
-            cardMouseEnterHandler={cardMouseEnterHandler}
-          />
+          <PoolListCard key={pool.id} pool={pool} />
         ))}
       </Grid>
-      {showPagination && <Pagination {...paginationProps} />}
+
+      {!loading && pools.length === 0 && (
+        <Center py="2xl" border="1px" borderStyle="dashed" borderColor="gray.500" borderRadius="md">
+          <Text color="gray.500">No pools found.</Text>
+        </Center>
+      )}
       {loading && (
         <Box
           style={{
@@ -59,14 +40,20 @@ export function PoolListCards({ pools, count, loading }: Props) {
             justifyContent: 'center',
             width: '100%',
             height: '100%',
-            background: 'black',
             top: 0,
             left: 0,
-            opacity: 0.3,
             borderRadius: 10,
+            zIndex: 10,
+            backdropFilter: 'blur(3px)',
           }}
-        ></Box>
+        >
+          <Center>
+            <Spinner py="2xl" size="xl" />
+          </Center>
+        </Box>
       )}
+
+      {showPagination && <Pagination {...paginationProps} />}
     </Box>
   )
 }

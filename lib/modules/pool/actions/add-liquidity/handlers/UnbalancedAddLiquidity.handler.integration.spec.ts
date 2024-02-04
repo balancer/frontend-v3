@@ -1,16 +1,16 @@
 /* eslint-disable max-len */
 import networkConfig from '@/lib/config/networks/mainnet'
 import { balAddress, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
+import {
+  aPhantomStablePoolMock,
+  aWjAuraWethPoolElementMock,
+} from '@/test/msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { HumanAmount } from '@balancer/sdk'
 import { Address } from 'viem'
-import { aPhantomStablePoolStateInputMock } from '../../../__mocks__/pool.builders'
-import { Pool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
 import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
-import { AddLiquidityHandler } from './AddLiquidity.handler'
 
 function selectUnbalancedHandler() {
   return selectAddLiquidityHandler(aWjAuraWethPoolElementMock()) as UnbalancedAddLiquidityHandler
@@ -25,7 +25,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
       { humanAmount: '1', tokenAddress: wjAuraAddress },
     ]
 
-    const priceImpact = await handler.calculatePriceImpact(humanAmountsIn)
+    const priceImpact = await handler.getPriceImpact(humanAmountsIn)
     expect(priceImpact).toBeGreaterThan(0.002)
   })
 
@@ -37,7 +37,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
       { humanAmount: '', tokenAddress: balAddress },
     ]
 
-    const priceImpact = await handler.calculatePriceImpact(humanAmountsIn)
+    const priceImpact = await handler.getPriceImpact(humanAmountsIn)
 
     expect(priceImpact).toEqual(0)
   })
@@ -50,7 +50,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
 
     const handler = selectUnbalancedHandler()
 
-    const result = await handler.queryAddLiquidity(humanAmountsIn)
+    const result = await handler.simulate(humanAmountsIn)
 
     expect(result.bptOut.amount).toBeGreaterThan(300000000000000000000n)
   })
@@ -64,9 +64,9 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
     const handler = selectUnbalancedHandler()
 
     // Store query response in handler instance
-    const queryOutput = await handler.queryAddLiquidity(humanAmountsIn)
+    const queryOutput = await handler.simulate(humanAmountsIn)
 
-    const result = await handler.buildAddLiquidityCallData({
+    const result = await handler.buildCallData({
       humanAmountsIn,
       account: defaultTestUserAccount,
       slippagePercent: '0.2',
@@ -80,7 +80,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
 
 describe('When adding unbalanced liquidity for a stable pool', () => {
   test('calculates price impact', async () => {
-    const pool = aPhantomStablePoolStateInputMock() as Pool // wstETH-rETH-sfrxETH
+    const pool = aPhantomStablePoolMock() // wstETH-rETH-sfrxETH
 
     const handler = selectAddLiquidityHandler(pool)
 
@@ -93,7 +93,7 @@ describe('When adding unbalanced liquidity for a stable pool', () => {
       }
     })
 
-    const priceImpact = await handler.calculatePriceImpact(humanAmountsIn)
+    const priceImpact = await handler.getPriceImpact(humanAmountsIn)
     expect(priceImpact).toBeGreaterThan(0.001)
   })
 })

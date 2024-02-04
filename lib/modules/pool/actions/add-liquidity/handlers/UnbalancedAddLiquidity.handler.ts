@@ -4,7 +4,6 @@ import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   AddLiquidity,
   AddLiquidityKind,
-  AddLiquidityQueryOutput,
   AddLiquidityUnbalancedInput,
   PriceImpact,
   PriceImpactAmount,
@@ -30,18 +29,16 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     this.helpers = new LiquidityActionHelpers(pool)
   }
 
-  public async queryAddLiquidity(
-    humanAmountsIn: HumanAmountIn[]
-  ): Promise<SdkQueryAddLiquidityOutput> {
+  public async simulate(humanAmountsIn: HumanAmountIn[]): Promise<SdkQueryAddLiquidityOutput> {
     const addLiquidity = new AddLiquidity()
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
-    const sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolStateInput)
+    const sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolState)
 
     return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
   }
 
-  public async calculatePriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number> {
+  public async getPriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number> {
     if (areEmptyAmounts(humanAmountsIn)) {
       // Avoid price impact calculation when there are no amounts in
       return 0
@@ -51,13 +48,13 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
 
     const priceImpactABA: PriceImpactAmount = await PriceImpact.addLiquidityUnbalanced(
       addLiquidityInput,
-      this.helpers.poolStateInput
+      this.helpers.poolState
     )
 
     return priceImpactABA.decimal
   }
 
-  public async buildAddLiquidityCallData({
+  public async buildCallData({
     account,
     slippagePercent,
     queryOutput,
@@ -65,6 +62,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     const addLiquidity = new AddLiquidity()
 
     const { call, to, value } = addLiquidity.buildCall({
+      chainId: this.helpers.chainId,
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,

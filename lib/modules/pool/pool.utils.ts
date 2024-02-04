@@ -10,6 +10,7 @@ import {
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolVariant } from './pool.types'
 import { fNum } from '@/lib/shared/utils/numbers'
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { TokenAmountHumanReadable } from '../tokens/token.types'
 import { formatUnits, parseUnits } from 'viem'
 
@@ -76,16 +77,43 @@ const poolTypeLabelMap: { [key in GqlPoolType]: string } = {
   [GqlPoolType.Investment]: 'Managed',
   [GqlPoolType.Linear]: 'Linear',
   [GqlPoolType.LiquidityBootstrapping]: 'LBP',
-  [GqlPoolType.MetaStable]: 'MetaStable',
-  [GqlPoolType.PhantomStable]: 'PhantomStable',
+  [GqlPoolType.MetaStable]: 'Stable',
+  [GqlPoolType.PhantomStable]: 'Stable',
   [GqlPoolType.Stable]: 'Stable',
   [GqlPoolType.Unknown]: 'Unknown',
   [GqlPoolType.Fx]: 'FX',
-  [GqlPoolType.ComposableStable]: 'ComposableStable',
+  [GqlPoolType.ComposableStable]: 'Stable',
 }
 
 export function getPoolTypeLabel(type: GqlPoolType): string {
-  return poolTypeLabelMap[type]
+  return poolTypeLabelMap[type] ?? type.replace(/_/g, ' ').toLowerCase()
+}
+
+export const poolClickHandler = (
+  event: React.MouseEvent<HTMLElement>,
+  id: string,
+  chain: GqlChain,
+  router: AppRouterInstance
+) => {
+  const poolPath = getPoolPath({ id, chain })
+
+  if (event.ctrlKey || event.metaKey) {
+    window.open(poolPath, '_blank')
+  } else {
+    router.push(poolPath)
+  }
+}
+
+// Prefetch pool page on hover, otherwise there is a significant delay
+// between clicking the pool and the pool page loading.
+export const poolMouseEnterHandler = (
+  event: React.MouseEvent<HTMLElement>,
+  id: string,
+  chain: GqlChain,
+  router: AppRouterInstance
+) => {
+  const poolPath = getPoolPath({ id, chain })
+  router.prefetch(poolPath)
 }
 
 export function isLinearPool(

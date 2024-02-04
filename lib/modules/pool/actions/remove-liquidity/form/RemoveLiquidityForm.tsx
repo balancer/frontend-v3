@@ -9,7 +9,6 @@ import { InputWithSlider } from '@/lib/shared/components/inputs/InputWithSlider/
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
-import { useDisclosure } from '@chakra-ui/hooks'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
   Button,
@@ -50,18 +49,18 @@ export function RemoveLiquidityForm() {
     setHumanBptInPercent,
     humanBptInPercent,
     totalUsdValue,
-    priceImpact,
-    isPriceImpactLoading,
+    priceImpactQuery,
+    previewModalDisclosure,
+    isDisabled,
+    disabledReason,
+    simulationQuery,
   } = useRemoveLiquidity()
   const { toCurrency } = useCurrency()
-  const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
   const [activeTab, setActiveTab] = useState(TABS[0])
 
-  function submit() {
-    // TODO: implement isDisabledWithReason
-    previewDisclosure.onOpen()
-  }
+  const priceImpact = priceImpactQuery?.data
+  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-' // If it's 0 we want to display 0.
 
   function toggleTab(option: ButtonGroupOption) {
     setActiveTab(option)
@@ -71,6 +70,10 @@ export function RemoveLiquidityForm() {
     if (option.value === 'single') {
       setSingleTokenType()
     }
+  }
+
+  const onModalClose = () => {
+    previewModalDisclosure.onClose()
   }
 
   return (
@@ -120,12 +123,10 @@ export function RemoveLiquidityForm() {
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Price impact</Text>
                 <HStack>
-                  {isPriceImpactLoading ? (
+                  {priceImpactQuery.isLoading ? (
                     <Skeleton w="12" h="full" />
                   ) : (
-                    <NumberText color="GrayText">
-                      {fNum('priceImpact', priceImpact || 0)}
-                    </NumberText>
+                    <NumberText color="GrayText">{priceImpactLabel}</NumberText>
                   )}
                   <Tooltip label="Price impact" fontSize="sm">
                     <InfoOutlineIcon color="GrayText" />
@@ -133,16 +134,25 @@ export function RemoveLiquidityForm() {
                 </HStack>
               </HStack>
             </VStack>
-            <Button ref={nextBtn} variant="secondary" w="full" size="lg" onClick={submit}>
-              Next
-            </Button>
+            <Tooltip label={isDisabled ? disabledReason : ''}>
+              <Button
+                ref={nextBtn}
+                variant="secondary"
+                w="full"
+                size="lg"
+                isDisabled={isDisabled || simulationQuery.isLoading}
+                onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
+              >
+                Next
+              </Button>
+            </Tooltip>
           </VStack>
         </Card>
         <RemoveLiquidityModal
           finalFocusRef={nextBtn}
-          isOpen={previewDisclosure.isOpen}
-          onOpen={previewDisclosure.onOpen}
-          onClose={previewDisclosure.onClose}
+          isOpen={previewModalDisclosure.isOpen}
+          onOpen={previewModalDisclosure.onOpen}
+          onClose={onModalClose}
         />
       </Center>
     </TokenBalancesProvider>

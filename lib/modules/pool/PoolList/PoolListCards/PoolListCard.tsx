@@ -1,47 +1,36 @@
 import { Card, HStack, VStack, Text, Grid, GridItem } from '@chakra-ui/react'
 import { PoolListItem } from '../../pool.types'
-import { fNum } from '@/lib/shared/utils/numbers'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
-import { ReactNode, memo } from 'react'
+import { ReactNode, isValidElement, memo } from 'react'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
-import { getAprLabel, getPoolTypeLabel } from '../../pool.utils'
+import {
+  getAprLabel,
+  getPoolTypeLabel,
+  poolClickHandler,
+  poolMouseEnterHandler,
+} from '../../pool.utils'
+import { useRouter } from 'next/navigation'
+import { PoolName } from '../../PoolName'
 
 interface Props {
   pool: PoolListItem
-  cardClickHandler?: (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => void
-  cardMouseEnterHandler?: (event: React.MouseEvent<HTMLElement>, pool: PoolListItem) => void
-}
-
-function PoolNameLabel({ pool }: { pool: PoolListItem }) {
-  if (pool) {
-    const displayTokens = pool.displayTokens
-    return (
-      <Text fontWeight="bold" noOfLines={2} h="12">
-        {displayTokens.map((token, idx) => {
-          return (
-            <>
-              {token.nestedTokens ? token.name : token.symbol}
-              {token.weight && ` ${fNum('weight', token.weight || '')}`}
-              {idx <= displayTokens.length - 2 && ' / '}
-            </>
-          )
-        })}
-      </Text>
-    )
-  }
 }
 
 function StatCard({ label, value }: { label: ReactNode; value: ReactNode }) {
   return (
     <Card h="full" variant="gradient" p="sm">
       <VStack alignItems="flex-start" w="full" gap="0">
-        <Text fontWeight="medium" variant="secondary" fontSize="sm">
-          {label}
-        </Text>
-        <Text fontWeight="bold">{value}</Text>
+        {isValidElement(label) ? (
+          label
+        ) : (
+          <Text fontWeight="medium" variant="secondary" fontSize="sm">
+            {label}
+          </Text>
+        )}
+        {isValidElement(value) ? value : <Text fontWeight="bold">{value}</Text>}
       </VStack>
     </Card>
   )
@@ -49,16 +38,17 @@ function StatCard({ label, value }: { label: ReactNode; value: ReactNode }) {
 
 const MemoizedAprTooltip = memo(AprTooltip)
 
-export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: Props) {
+export function PoolListCard({ pool }: Props) {
   const { toCurrency } = useCurrency()
   const { userAddress } = usePoolListQueryState()
+  const router = useRouter()
 
   return (
     <Card
       variant="gradient"
-      onClick={event => cardClickHandler && cardClickHandler(event, pool)}
-      cursor={cardClickHandler ? 'pointer' : 'default'}
-      onMouseEnter={event => cardMouseEnterHandler && cardMouseEnterHandler(event, pool)}
+      cursor="pointer"
+      onClick={event => poolClickHandler(event, pool.id, pool.chain, router)}
+      onMouseEnter={event => poolMouseEnterHandler(event, pool.id, pool.chain, router)}
       p="md"
     >
       <VStack alignItems="flex-start" h="full">
@@ -68,7 +58,7 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
             <Text fontWeight="medium" variant="secondary" fontSize="sm">
               {getPoolTypeLabel(pool.type)}
             </Text>
-            <PoolNameLabel pool={pool} />
+            <PoolName pool={pool} fontWeight="bold" noOfLines={2} h="12" />
           </VStack>
         </HStack>
         <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} pb="lg" />
@@ -93,7 +83,9 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
             <StatCard
               label={
                 <HStack>
-                  <span>APR</span>
+                  <Text fontWeight="medium" variant="secondary" fontSize="sm">
+                    APR
+                  </Text>
                   <MemoizedAprTooltip
                     data={pool.dynamicData.apr}
                     poolId={pool.id}
@@ -102,7 +94,11 @@ export function PoolListCard({ pool, cardClickHandler, cardMouseEnterHandler }: 
                   />
                 </HStack>
               }
-              value={<Text fontSize="sm">{getAprLabel(pool.dynamicData.apr.apr)}</Text>}
+              value={
+                <Text fontWeight="bold" fontSize="sm">
+                  {getAprLabel(pool.dynamicData.apr.apr)}
+                </Text>
+              }
             />
           </GridItem>
         </Grid>

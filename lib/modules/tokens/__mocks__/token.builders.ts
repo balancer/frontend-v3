@@ -8,7 +8,11 @@ import {
   GqlPoolTokenExpanded,
   GqlTokenPrice,
 } from '@/lib/shared/services/api/generated/graphql'
-import { allFakeGqlTokens, fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
+import {
+  FakeTokenSymbol,
+  allFakeGqlTokens,
+  fakeTokenBySymbol,
+} from '@/test/data/all-gql-tokens.fake'
 import { mock } from 'vitest-mock-extended'
 import { TokenAmountToApprove } from '../approvals/approval-rules'
 import { TokenAllowances } from '../../web3/useTokenAllowances'
@@ -71,7 +75,7 @@ export function someMinimalTokensMock(addresses?: Address[]): MinimalToken[] {
 
 export function aGqlTokenMock(...options: Partial<GqlPoolToken>[]): GqlPoolToken {
   const symbol = options[0].symbol
-  const defaultToken: TokenBase = fakeTokenBySymbol(symbol || 'BAL')
+  const defaultToken: TokenBase = fakeTokenBySymbol((symbol as FakeTokenSymbol) || 'BAL')
   const defaultOptions: GqlPoolToken = mock<GqlPoolToken>({
     ...defaultToken,
     __typename: 'GqlPoolToken',
@@ -87,8 +91,15 @@ export function someGqlTokenMocks(symbols: string[]): GqlPoolToken[] {
 export function aTokenExpandedMock(
   ...options: Partial<GqlPoolTokenExpanded>[]
 ): GqlPoolTokenExpanded {
-  const defaultToken: TokenBase = fakeTokenBySymbol('BAL')
+  const symbol = (options[0]?.symbol as FakeTokenSymbol) || 'BAL'
+  const defaultToken: TokenBase = fakeTokenBySymbol(symbol)
   return Object.assign({}, defaultToken, ...options)
+}
+export function aTokenExpandedBySymbolMock(
+  symbol: FakeTokenSymbol,
+  ...options: Partial<GqlPoolTokenExpanded>[]
+): GqlPoolTokenExpanded {
+  return aTokenExpandedMock({ symbol }, ...options)
 }
 
 export function someTokenExpandedMock(addresses: Address[]): GqlPoolTokenExpanded[] {
@@ -108,16 +119,4 @@ export function aTokenPriceMock(...options: Partial<GqlTokenPrice>[]): GqlTokenP
 export const someTokenAllowancesMock: TokenAllowances = {
   [wETHAddress]: MAX_BIGINT,
   [wjAuraAddress]: MAX_BIGINT,
-}
-
-export function anAmountToApproveMock(
-  options: Partial<TokenAmountToApprove>
-): TokenAmountToApprove {
-  const defaultAmount = {
-    tokenAddress: wETHAddress,
-    rawAmount: parseUnits('1', 18),
-    humanAmount: '1',
-    tokenSymbol: 'Test token symbol',
-  }
-  return Object.assign({}, defaultAmount, options)
 }

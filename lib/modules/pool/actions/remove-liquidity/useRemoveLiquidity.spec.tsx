@@ -9,26 +9,28 @@ import { waitFor } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
 import { mock } from 'vitest-mock-extended'
 import { aTokenAmountMock } from '../__mocks__/liquidity.builders'
-import { RemoveLiquidityPreviewQueryResult } from './queries/useRemoveLiquidityPreviewQuery'
+import { RemoveLiquiditySimulationQueryResult } from './queries/useRemoveLiquiditySimulationQuery'
 import { _useRemoveLiquidity } from './useRemoveLiquidity'
 
 const balTokenOutUnits = '1'
 const wEthTokenOutUnits = '0.5'
 
 // Mock query to avoid onchain SDK call from unit tests
-vi.mock('./queries/useRemoveLiquidityPreviewQuery', () => {
+vi.mock('./queries/useRemoveLiquiditySimulationQuery', () => {
   return {
-    useRemoveLiquidityPreviewQuery(): RemoveLiquidityPreviewQueryResult {
-      const result = mock<RemoveLiquidityPreviewQueryResult>()
+    useRemoveLiquiditySimulationQuery(): RemoveLiquiditySimulationQueryResult {
+      const result = mock<RemoveLiquiditySimulationQueryResult>()
       return {
         ...result,
-        amountsOut: [
-          aTokenAmountMock(balAddress, balTokenOutUnits),
-          aTokenAmountMock(wETHAddress, wEthTokenOutUnits),
-        ],
-        isPreviewQueryLoading: false,
-        isPreviewQueryRefetching: false,
-        refetchPreviewQuery: vi.fn(),
+        data: {
+          amountsOut: [
+            aTokenAmountMock(balAddress, balTokenOutUnits),
+            aTokenAmountMock(wETHAddress, wEthTokenOutUnits),
+          ],
+        },
+        isLoading: false,
+        isRefetching: false,
+        refetch: vi.fn(),
       }
     },
   }

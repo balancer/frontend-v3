@@ -10,12 +10,17 @@ export interface TokensConfig {
     decimals: number
   }
   doubleApprovalRequired?: string[]
+  defaultSwapTokens?: {
+    tokenIn?: Address
+    tokenOut?: Address
+  }
 }
 
 export interface ContractsConfig {
   multicall2: Address
   balancer: {
     vaultV2: Address
+    relayerV6: Address
   }
 }
 

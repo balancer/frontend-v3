@@ -1,5 +1,19 @@
-import { hasValidHumanAmounts } from './LiquidityActionHelpers'
+import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
+import {
+  LiquidityActionHelpers,
+  hasValidHumanAmounts,
+  shouldUseNestedLiquidity,
+} from './LiquidityActionHelpers'
 import { HumanAmountIn } from './liquidity-types'
+import { nestedPoolMock } from '../__mocks__/nestedPoolMock'
+import {
+  bpt3PoolAddress,
+  wETHAddress,
+  threePoolId,
+  daiAddress,
+  usdcAddress,
+  usdtAddress,
+} from '@/lib/debug-helpers'
 
 describe('hasValidHumanAmounts', () => {
   test('when all humanAmounts are empty', () => {
@@ -20,4 +34,42 @@ describe('hasValidHumanAmounts', () => {
     const humanAmountsIn: HumanAmountIn[] = []
     expect(hasValidHumanAmounts(humanAmountsIn)).toBeFalsy()
   })
+})
+
+test('detects pools requiring nested liquidity', () => {
+  expect(shouldUseNestedLiquidity(aWjAuraWethPoolElementMock())).toBeFalsy()
+  expect(shouldUseNestedLiquidity(nestedPoolMock)).toBeTruthy()
+})
+
+it('returns poolState for non nested pools', () => {
+  const poolMock = aWjAuraWethPoolElementMock()
+  const helpers = new LiquidityActionHelpers(aWjAuraWethPoolElementMock())
+  expect(helpers.poolState.id).toBe(poolMock.id)
+})
+
+it('returns NestedPoolState for nested pools', () => {
+  const helpers = new LiquidityActionHelpers(nestedPoolMock)
+  const nestedPoolState = helpers.nestedPoolState
+
+  expect(nestedPoolState.pools).toHaveLength(2)
+  const firstPool = nestedPoolState.pools[0]
+  expect(firstPool.id).toBe(nestedPoolMock.id)
+  expect(firstPool.tokens.map(t => t.address)).toEqual([bpt3PoolAddress, wETHAddress])
+
+  const secondPool = nestedPoolState.pools[1]
+  expect(secondPool.id).toBe(threePoolId)
+  expect(secondPool.tokens.map(t => t.address)).toEqual([
+    daiAddress,
+    bpt3PoolAddress,
+    usdcAddress,
+    usdtAddress,
+  ])
+
+  expect(nestedPoolState.mainTokens).toHaveLength(4)
+  expect(nestedPoolState.mainTokens.map(t => t.address)).toEqual([
+    wETHAddress,
+    daiAddress,
+    usdtAddress,
+    usdcAddress,
+  ])
 })

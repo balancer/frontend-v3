@@ -13,6 +13,12 @@ export default function Debug() {
       >
         Add liquidity in wjAura-weth (unbalanced)
       </Link>
+      <Link
+        as={NextLink}
+        href="pools/ethereum/v2/0x08775ccb6674d6bdceb0797c364c2653ed84f3840002000000000000000004f0/add-liquidity"
+      >
+        Add liquidity in nested pool (50WETH-50-3pool)
+      </Link>
       <Link as={NextLink} href="/debug/token-select">
         Token select
       </Link>

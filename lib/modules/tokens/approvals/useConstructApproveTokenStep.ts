@@ -1,38 +1,35 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedErc20Transaction } from '@/lib/modules/web3/contracts/useManagedErc20Transaction'
-import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { useEffect } from 'react'
-import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
-import { CompletedApprovalState } from './useCompletedApprovalsState'
-import { useActiveStep } from '@/lib/shared/hooks/transaction-flows/useActiveStep'
-import { useTokenAllowances } from '../../web3/useTokenAllowances'
+import { useEffect, useState } from 'react'
+import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
 import { useTokens } from '../useTokens'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
+import { TokenAmountToApprove } from './approval-rules'
 
-type Params = {
-  tokenAddress: Address
+export type ApproveTokenProps = {
+  tokenAllowances: UseTokenAllowancesResponse
+  tokenAmountToApprove: TokenAmountToApprove
   spenderAddress: Address
-  amountToApprove: bigint
   actionType: ApprovalAction
   chain: GqlChain
-  completedApprovalState: CompletedApprovalState
 }
 
 export function useConstructApproveTokenStep({
-  tokenAddress,
+  tokenAllowances,
+  tokenAmountToApprove,
   spenderAddress,
-  amountToApprove = MAX_BIGINT,
   actionType,
   chain,
-  completedApprovalState,
-}: Params) {
-  const { isActiveStep, activateStep } = useActiveStep()
-  const { refetchAllowances, isAllowancesLoading } = useTokenAllowances()
+}: ApproveTokenProps) {
+  const { refetchAllowances, isAllowancesLoading, allowanceFor } = tokenAllowances
   const { getToken } = useTokens()
-  const { completedApprovals, saveCompletedApprovals } = completedApprovalState
+
+  const [didRefetchAllowances, setDidRefetchAllowances] = useState(false)
+
+  const { tokenAddress, requestedRawAmount, requiredRawAmount } = tokenAmountToApprove
 
   const token = getToken(tokenAddress, chain)
 
@@ -46,23 +43,23 @@ export function useConstructApproveTokenStep({
     tokenAddress,
     'approve',
     tokenApprovalLabels,
-    { args: [spenderAddress, amountToApprove] },
+    { args: [spenderAddress, requestedRawAmount] },
     {
-      enabled: isActiveStep && !!spenderAddress && !isAllowancesLoading,
+      enabled: !!spenderAddress && !isAllowancesLoading,
     }
   )
-
-  const isCompleted =
-    (completedApprovals.includes(tokenAddress) && approvalTransaction.result.isSuccess) ||
-    tokenAddress === emptyAddress
+  /*
+     We wait for allowances to be refetched (didRefetchAllowances) after the approval transaction.
+     This is must in edge-cases like USDT (with doubleApprovalRequired setup in TokensConfig) when requiredRawAmount is 0n
+   */
+  const isComplete = didRefetchAllowances && allowanceFor(tokenAddress) >= requiredRawAmount
 
   const step: FlowStep = {
     ...approvalTransaction,
     transactionLabels: tokenApprovalLabels,
     id: tokenAddress,
     stepType: 'tokenApproval',
-    isComplete: () => isCompleted,
-    activateStep,
+    isComplete: () => isComplete,
   }
 
   useEffect(() => {
@@ -70,7 +67,7 @@ export function useConstructApproveTokenStep({
     async function saveExecutedApproval() {
       if (approvalTransaction.result.isSuccess) {
         await refetchAllowances()
-        saveCompletedApprovals(tokenAddress)
+        setDidRefetchAllowances(true)
       }
     }
     saveExecutedApproval()

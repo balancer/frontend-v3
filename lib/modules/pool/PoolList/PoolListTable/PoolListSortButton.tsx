@@ -7,29 +7,17 @@ interface Props extends ButtonProps {
   isCurrentSort: boolean
 }
 
-const getColor = (isCurrentSort: boolean) => (isCurrentSort ? 'blue' : 'lightgrey')
+const getColor = (isCurrentSort: boolean) => (isCurrentSort ? 'text.special' : 'default') // TODO: text.special doesn't work
 
 export default function PoolListSortButton({ title, isDesc, isCurrentSort, ...rest }: Props) {
   return (
-    <Button
-      _hover={{ backgroundColor: isCurrentSort ? 'lightblue' : 'transparent' }}
-      _focus={{ outline: 'none' }}
-      _active={{ backgroundColor: 'transparent' }}
-      bgColor={isCurrentSort ? 'background.card.level6' : undefined}
-      p={isCurrentSort ? '2' : '0'}
-      pr="2"
-      height="fit-content"
-      variant="ghost"
-      userSelect="none"
-      borderRadius="md"
-      {...rest}
-    >
+    <Button size="sm" variant={isCurrentSort ? 'tertiary' : 'ghost'} {...rest}>
       <HStack>
         <Text>{title}</Text>
-        <VStack alignContent="center" gap="0">
-          {(!isCurrentSort || !isDesc) && <FiChevronUp size="15" color={getColor(isCurrentSort)} />}
+        <VStack alignContent="center" gap="0" spacing="0">
+          {(!isCurrentSort || !isDesc) && <FiChevronUp size="10" color={getColor(isCurrentSort)} />}
           {(!isCurrentSort || isDesc) && (
-            <FiChevronDown size="15" color={getColor(isCurrentSort)} />
+            <FiChevronDown size="10" color={getColor(isCurrentSort)} />
           )}
         </VStack>
       </HStack>

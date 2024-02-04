@@ -1,67 +1,46 @@
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { useQuery } from 'wagmi'
-import { Pool } from '../../../usePool'
-import { HumanAmountIn } from '../../liquidity-types'
-import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
-import { addLiquidityKeys } from './add-liquidity-keys'
-import { QueryAddLiquidityOutput } from '../add-liquidity.types'
+import { usePool } from '../../../usePool'
 import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
+import { useAddLiquidity } from '../useAddLiquidity'
+import { addLiquidityKeys } from './add-liquidity-keys'
 
-type Props = {
-  handler: AddLiquidityHandler
-  humanAmountsIn: HumanAmountIn[]
-  isActiveStep: boolean
-  pool: Pool
-  startRefetchCountdown: () => void
-  queryAddLiquidityOutput?: QueryAddLiquidityOutput
-}
+export type AddLiquidityBuildQueryResponse = ReturnType<typeof useAddLiquidityBuildCallDataQuery>
 
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
-export function useAddLiquidityBuildCallDataQuery({
-  handler,
-  humanAmountsIn,
-  isActiveStep,
-  pool,
-  startRefetchCountdown,
-  queryAddLiquidityOutput,
-}: Props) {
+export function useAddLiquidityBuildCallDataQuery() {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
+  const { pool } = usePool()
 
-  const { hasAllowances } = useTokenAllowances()
+  const { humanAmountsIn, handler, simulationQuery } = useAddLiquidity()
 
-  const addLiquidityQuery = useQuery(
-    addLiquidityKeys.buildCallData({
-      userAddress,
-      slippage,
-      poolId: pool.id,
+  const queryKey = addLiquidityKeys.buildCallData({
+    userAddress,
+    slippage,
+    poolId: pool.id,
+    humanAmountsIn,
+  })
+
+  const queryFn = async () => {
+    const queryOutput = ensureLastQueryResponse('Add liquidity query', simulationQuery.data)
+    const response = await handler.buildCallData({
+      account: userAddress,
       humanAmountsIn,
-    }),
-    async () => {
-      /*
-        This should never happen as:
-          1. We do not allow the user to activate the build step (set isActiveStep to true) before the preview query has finished
-          2. When we refetch after countdown timeout we explicitly wait for the preview query to finish
-      */
-      const queryOutput = ensureLastQueryResponse('Add liquidity query', queryAddLiquidityOutput)
-      startRefetchCountdown()
-      return handler.buildAddLiquidityCallData({
-        account: userAddress,
-        humanAmountsIn,
-        slippagePercent: slippage,
-        queryOutput,
-      })
-    },
-    {
-      enabled:
-        // If the step is not active (the user did not click Next button) or a preview query is currently running we avoid running the build tx query to save RPC requests
-        isActiveStep && isConnected && hasAllowances(humanAmountsIn, pool),
+      slippagePercent: slippage,
+      queryOutput,
+    })
+    console.log('Call data built:', response)
+    return response
+  }
 
-      cacheTime: 0,
-    }
-  )
+  const queryOpts = {
+    enabled: isConnected && !!simulationQuery.data,
+    cacheTime: 0,
+    ...onlyExplicitRefetch,
+  }
 
-  return { ...addLiquidityQuery, refetchBuildQuery: addLiquidityQuery.refetch }
+  return useQuery(queryKey, queryFn, queryOpts)
 }

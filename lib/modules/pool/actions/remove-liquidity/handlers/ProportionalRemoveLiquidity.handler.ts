@@ -26,26 +26,23 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
     this.helpers = new LiquidityActionHelpers(pool)
   }
 
-  public async queryRemoveLiquidity({
+  public async simulate({
     humanBptIn: bptIn,
   }: QueryRemoveLiquidityInput): Promise<SdkQueryRemoveLiquidityOutput> {
     const removeLiquidity = new RemoveLiquidity()
     const removeLiquidityInput = this.constructSdkInput(bptIn)
 
-    const sdkQueryOutput = await removeLiquidity.query(
-      removeLiquidityInput,
-      this.helpers.poolStateInput
-    )
+    const sdkQueryOutput = await removeLiquidity.query(removeLiquidityInput, this.helpers.poolState)
 
     return { amountsOut: sdkQueryOutput.amountsOut, sdkQueryOutput }
   }
 
-  public async calculatePriceImpact(): Promise<number> {
+  public async getPriceImpact(): Promise<number> {
     // proportional remove liquidity does not have price impact
     return 0
   }
 
-  public async buildRemoveLiquidityCallData({
+  public async buildCallData({
     account,
     slippagePercent,
     queryOutput,
@@ -53,6 +50,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
     const removeLiquidity = new RemoveLiquidity()
 
     const { call, to, value } = removeLiquidity.buildCall({
+      chainId: this.helpers.chainId,
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,

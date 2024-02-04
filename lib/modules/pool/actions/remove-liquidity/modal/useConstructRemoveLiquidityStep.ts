@@ -1,46 +1,45 @@
-import { BuildTransactionLabels } from '@/lib/modules/web3/contracts/transactionLabels'
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { Address } from 'wagmi'
-import { useActiveStep } from '../../../../../shared/hooks/transaction-flows/useActiveStep'
+import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { useRemoveLiquidityBuildCallDataQuery } from '../queries/useRemoveLiquidityBuildCallDataQuery'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
+import { useEffect } from 'react'
 
-export function useConstructRemoveLiquidityStep(poolId: string) {
-  const { isActiveStep, activateStep } = useActiveStep()
-
-  const { useBuildCallData } = useRemoveLiquidity()
-
-  const removeLiquidityQuery = useBuildCallData(isActiveStep)
-
-  const transactionLabels = buildRemoveLiquidityLabels(poolId)
-
-  const transaction = useManagedSendTransaction(transactionLabels, removeLiquidityQuery.data)
-
-  const step: FlowStep = {
-    ...transaction,
-    transactionLabels,
-    id: `removeLiquidityPool${poolId}`,
-    stepType: 'removeLiquidity',
-    isComplete: () => false,
-    activateStep,
-  }
-
-  return {
-    step,
-    isLoading:
-      transaction?.simulation.isLoading ||
-      transaction?.execution.isLoading ||
-      removeLiquidityQuery.isLoading,
-    error:
-      transaction?.simulation.error || transaction?.execution.error || removeLiquidityQuery.error,
-  }
-}
-
-export const buildRemoveLiquidityLabels: BuildTransactionLabels = (poolId: Address) => {
-  return {
+export function useConstructRemoveLiquidityStep() {
+  const transactionLabels: TransactionLabels = {
     init: 'Remove liquidity',
-    confirming: 'Confirm remove liquidity',
-    tooltip: 'TODO',
-    description: `🎉 Liquidity removed from pool ${poolId}`,
+    confirming: 'Confirming...',
+    confirmed: `Liquidity removed from pool!`,
+    tooltip: 'Remove liquidity from pool.',
+  }
+
+  const { simulationQuery } = useRemoveLiquidity()
+  const buildCallDataQuery = useRemoveLiquidityBuildCallDataQuery()
+
+  useEffect(() => {
+    // simulationQuery is refetched every 30 seconds by RemoveLiquidityTimeout
+    if (simulationQuery.data) {
+      buildCallDataQuery.refetch()
+    }
+  }, [simulationQuery.data])
+
+  const removeLiquidityTransaction = useManagedSendTransaction(
+    transactionLabels,
+    buildCallDataQuery.data
+  )
+
+  const isComplete = () => removeLiquidityTransaction.result.isSuccess
+
+  const removeLiquidityStep: FlowStep = {
+    ...removeLiquidityTransaction,
+    transactionLabels,
+    id: `removeLiquidityPool`,
+    stepType: 'removeLiquidity',
+    isComplete,
+  }
+
+  return {
+    removeLiquidityStep,
+    removeLiquidityTransaction,
   }
 }

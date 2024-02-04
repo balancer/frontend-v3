@@ -6,6 +6,7 @@ import PoolMyLiquidity from './PoolMyLiquidity'
 import PoolIncentives from './PoolIncentives'
 import { PoolAccordion } from './PoolAccordion/PoolAccordion'
 import PoolMetaBadges from './PoolMetaBadges/PoolMetaBadges'
+import { PoolChart } from './PoolChart/PoolChart'
 
 export function PoolDetail() {
   return (
@@ -26,6 +27,9 @@ export function PoolDetail() {
           </Grid>
           <HStack width="full" spacing="4">
             <PoolComposition />
+          </HStack>
+          <HStack width="full" spacing="4">
+            <PoolChart />
           </HStack>
         </VStack>
         <PoolAccordion />

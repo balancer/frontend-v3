@@ -1,51 +1,73 @@
 import { SupportedChainId } from '@/lib/config/config.types'
-import { requiresDoubleApproval } from '@/lib/config/tokens.config'
 import { isNativeAsset } from '@/lib/shared/utils/addresses'
-import { HumanAmount } from '@balancer/sdk'
 import { Address } from 'viem'
-import { TokenAllowances } from '../../web3/useTokenAllowances'
+import { requiresDoubleApproval } from '@/lib/config/tokens.config'
+import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
+import { InputAmount } from '@balancer/sdk'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 export type TokenAmountToApprove = {
-  rawAmount: bigint
-  humanAmount: HumanAmount
   tokenAddress: Address
-  tokenSymbol: string
+  requiredRawAmount: bigint // actual amount that the transaction requires
+  requestedRawAmount: bigint // amount that we are going to request (normally MAX_BIGINT)
 }
 
+// This is a subtype of InputAmount as we only need rawAmount and address
+export type RawAmount = Pick<InputAmount, 'address' | 'rawAmount'>
+
 type TokenApprovalParams = {
-  chainId: SupportedChainId | null
-  amountsToApprove: TokenAmountToApprove[]
-  currentTokenAllowances: TokenAllowances
-  // spenderAddress: Address // Check comment below
+  chainId: GqlChain | SupportedChainId | null
+  rawAmounts: RawAmount[]
+  allowanceFor: (tokenAddress: Address) => bigint
+  approveMaxBigInt?: boolean
   skipAllowanceCheck?: boolean
 }
 
 /*
   Filters the given list of amountsToApprove discarding those that do not need approval
 */
-export function filterRequiredTokenApprovals({
+export function getRequiredTokenApprovals({
   chainId,
-  amountsToApprove,
-  currentTokenAllowances,
-  // TODO: in V2 we were passing the spender to a similar function but maybe we don't need it here
-  // as we can leave it in higher abstraction layers
-  // spenderAddress,
+  rawAmounts,
+  allowanceFor,
+  approveMaxBigInt = true,
   skipAllowanceCheck = false,
-}: TokenApprovalParams) {
+}: TokenApprovalParams): TokenAmountToApprove[] {
   if (!chainId) return []
   if (skipAllowanceCheck) return []
 
-  return amountsToApprove.filter(({ tokenAddress, rawAmount }) => {
+  let tokenAmountsToApprove: TokenAmountToApprove[] = rawAmounts.map(({ address, rawAmount }) => {
+    return {
+      tokenAddress: address,
+      requiredRawAmount: rawAmount,
+      // The transaction only requires requiredRawAmount but we will normally request MAX_BIGINT
+      requestedRawAmount: approveMaxBigInt ? MAX_BIGINT : rawAmount,
+    }
+  })
+
+  tokenAmountsToApprove = tokenAmountsToApprove.filter(({ tokenAddress, requiredRawAmount }) => {
     if (isNativeAsset(chainId, tokenAddress)) return false
-    const allowedAmount = currentTokenAllowances[tokenAddress]
 
-    // We were checking this in V2 but maybe we don't need it if we only generate valid amounts to approve
-    // const amountToApproveIsInvalid = amount == 0n
-    // if (amountToApproveIsInvalid) return false
-
-    const hasEnoughAllowedAmount = allowedAmount >= rawAmount
+    const hasEnoughAllowedAmount = allowanceFor(tokenAddress) >= requiredRawAmount
     if (hasEnoughAllowedAmount) return false
     return true
+  })
+
+  /**
+   * Some tokens (e.g. USDT) require setting their approval amount to 0n before being
+   * able to adjust the value up again (only when there was an existing allowance)
+   */
+  return tokenAmountsToApprove.flatMap(t => {
+    if (isDoubleApprovalRequired(chainId, t.tokenAddress, allowanceFor)) {
+      const zeroTokenAmountToApprove: TokenAmountToApprove = {
+        requiredRawAmount: 0n,
+        requestedRawAmount: 0n,
+        tokenAddress: t.tokenAddress,
+      }
+      // Prepend approval for ZERO amount
+      return [zeroTokenAmountToApprove, t]
+    }
+    return t
   })
 }
 
@@ -54,12 +76,10 @@ export function filterRequiredTokenApprovals({
  * able to adjust the value up again. This returns true for tokens that requires
  * this and false otherwise.
  */
-export function isDoubleApprovalRequired(
-  chainId: SupportedChainId,
+function isDoubleApprovalRequired(
+  chainId: GqlChain | SupportedChainId,
   tokenAddress: Address,
-  currentTokenAllowances: TokenAllowances
+  allowanceFor: (tokenAddress: Address) => bigint
 ): boolean {
-  return !!(
-    requiresDoubleApproval(chainId, tokenAddress) && currentTokenAllowances[tokenAddress] > 0n
-  )
+  return !!(requiresDoubleApproval(chainId, tokenAddress) && allowanceFor(tokenAddress) > 0n)
 }

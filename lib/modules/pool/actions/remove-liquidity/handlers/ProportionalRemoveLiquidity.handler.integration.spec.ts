@@ -1,8 +1,10 @@
 import networkConfig from '@/lib/config/networks/mainnet'
 import { balAddress, wETHAddress } from '@/lib/debug-helpers'
-import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
+import {
+  aBalWethPoolElementMock,
+  aPhantomStablePoolMock,
+} from '@/test/msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount } from '@/test/utils/wagmi'
-import { aPhantomStablePoolStateInputMock } from '../../../__mocks__/pool.builders'
 import { Pool } from '../../../usePool'
 import { QueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquidity.types'
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
@@ -29,7 +31,7 @@ describe('When proportionally removing liquidity for a weighted pool', () => {
   test('returns ZERO price impact', async () => {
     const handler = selectProportionalHandler(poolMock)
 
-    const result = await handler.queryRemoveLiquidity(defaultQueryInput)
+    const result = await handler.simulate(defaultQueryInput)
 
     const [balTokenAmountOut, wEthTokenAmountOut] = result.amountsOut
 
@@ -42,7 +44,7 @@ describe('When proportionally removing liquidity for a weighted pool', () => {
   test('queries amounts out', async () => {
     const handler = selectProportionalHandler(poolMock)
 
-    const result = await handler.queryRemoveLiquidity(defaultQueryInput)
+    const result = await handler.simulate(defaultQueryInput)
 
     const [balTokenAmountOut, wEthTokenAmountOut] = result.amountsOut
 
@@ -56,9 +58,9 @@ describe('When proportionally removing liquidity for a weighted pool', () => {
   test('builds Tx Config', async () => {
     const handler = selectProportionalHandler(poolMock)
 
-    const queryOutput = await handler.queryRemoveLiquidity(defaultQueryInput)
+    const queryOutput = await handler.simulate(defaultQueryInput)
 
-    const result = await handler.buildRemoveLiquidityCallData({
+    const result = await handler.buildCallData({
       ...defaultBuildInput,
       queryOutput,
     })
@@ -70,13 +72,13 @@ describe('When proportionally removing liquidity for a weighted pool', () => {
 
 describe('When removing liquidity from a stable pool', () => {
   test('queries remove liquidity', async () => {
-    const pool = aPhantomStablePoolStateInputMock() as Pool // wstETH-rETH-sfrxETH
+    const pool = aPhantomStablePoolMock() // wstETH-rETH-sfrxETH
 
     const handler = selectProportionalHandler(pool)
 
-    const queryOutput = await handler.queryRemoveLiquidity(defaultQueryInput)
+    const queryOutput = await handler.simulate(defaultQueryInput)
 
-    const result = await handler.buildRemoveLiquidityCallData({ ...defaultBuildInput, queryOutput })
+    const result = await handler.buildCallData({ ...defaultBuildInput, queryOutput })
     expect(result.account).toBe(defaultTestUserAccount)
   })
 })

@@ -2,9 +2,10 @@ import { Box, HStack, VStack, Text } from '@chakra-ui/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
-import { usePool } from '../../usePool'
 import * as echarts from 'echarts/core'
 import { motion } from 'framer-motion'
+import { GqlChain, GqlPoolWeighted } from '@/lib/shared/services/api/generated/graphql'
+import { ChartSizeValues } from './PoolWeightChart'
 import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 
 const colors = [
@@ -38,8 +39,21 @@ const colors = [
   },
 ]
 
-export default function WeightedPoolWeightChart() {
-  const { pool, chain } = usePool()
+interface WeightedPoolWeightChartProps {
+  pool: GqlPoolWeighted
+  chain: GqlChain
+  chartSizeValues: ChartSizeValues
+  hasLegend?: boolean
+  isSmall?: boolean
+}
+
+export default function WeightedPoolWeightChart({
+  pool,
+  chain,
+  chartSizeValues,
+  hasLegend,
+  isSmall,
+}: WeightedPoolWeightChartProps) {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const [isChartLoaded, setIsChartLoaded] = useState(false)
 
@@ -51,6 +65,7 @@ export default function WeightedPoolWeightChart() {
 
   const chartOption = useMemo(() => {
     return {
+      ...(chartSizeValues.chartHeight && { height: chartSizeValues.chartHeight }),
       tooltip: {
         trigger: 'item',
         show: false,
@@ -98,47 +113,54 @@ export default function WeightedPoolWeightChart() {
 
   return (
     <VStack spacing="6">
-      <Box width="250px" height="250px" mt="-8" position="relative">
+      <Box
+        width={chartSizeValues.boxWidth}
+        height={chartSizeValues.boxHeight}
+        mt="-8"
+        position="relative"
+      >
         <Box
           as={motion.div}
           rounded="full"
           bg="white"
           position="absolute"
-          top="49%"
+          top={chartSizeValues.haloTop}
+          left={chartSizeValues.haloLeft}
+          width={chartSizeValues.haloWidth}
+          height={chartSizeValues.haloHeigth}
           transform="translateY(0)"
-          left="95px"
           zIndex={4}
-          width="60px"
-          height="60px"
           display="flex"
           justifyContent="center"
           alignItems="center"
           initial={{ opacity: 0 }}
           animate={{ opacity: isChartLoaded ? 1 : 0, transition: { delay: 0.1 } }}
         >
-          <PoolWeightChartChainIcon chain={chain} isChartLoaded={isChartLoaded} />
+          <PoolWeightChartChainIcon chain={chain} isChartLoaded={isChartLoaded} isSmall={isSmall} />
         </Box>
         <Box width="full" height="full">
           <ReactECharts option={chartOption} onEvents={{}} ref={eChartsRef} />
         </Box>
       </Box>
-      <HStack spacing="6">
-        {pool.tokens.map((token, i) => {
-          return (
-            <Box
-              fontWeight="normal"
-              fontSize="1rem"
-              background="none"
-              key={`token-weight-chart-legend-${token.symbol}`}
-            >
-              <HStack>
-                <Box width="8px" height="8px" bg={colors[i].from} rounded="full" />
-                <Text color="gray.400">{token.symbol}</Text>
-              </HStack>
-            </Box>
-          )
-        })}
-      </HStack>
+      {hasLegend && (
+        <HStack spacing="6">
+          {pool.tokens.map((token, i) => {
+            return (
+              <Box
+                fontWeight="normal"
+                fontSize="1rem"
+                background="none"
+                key={`token-weight-chart-legend-${token.symbol}`}
+              >
+                <HStack>
+                  <Box width="8px" height="8px" bg={colors[i].from} rounded="full" />
+                  <Text color="gray.400">{token.symbol}</Text>
+                </HStack>
+              </Box>
+            )
+          })}
+        </HStack>
+      )}
     </VStack>
   )
 }

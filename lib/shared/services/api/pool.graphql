@@ -751,6 +751,21 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       alpha
       beta
       type
+      c
+      dSq
+      lambda
+      root3Alpha
+      s
+      sqrtAlpha
+      sqrtBeta
+      tauAlphaX
+      tauAlphaY
+      tauBetaX
+      tauBetaY
+      u
+      v
+      w
+      z
       nestingType
       tokens {
         ... on GqlPoolToken {
@@ -974,8 +989,8 @@ query GetUserSwaps($first: Int, $skip: Int, $poolId: String!) {
   }
 }
 
-query GetPoolSnapshots($poolId: String!, $range: GqlPoolSnapshotDataRange!) {
-  snapshots: poolGetSnapshots(id: $poolId, range: $range) {
+query GetPoolSnapshots($poolId: String!, $range: GqlPoolSnapshotDataRange!, $chainId: GqlChain!) {
+  snapshots: poolGetSnapshots(id: $poolId, range: $range, chain: $chainId) {
     id
     timestamp
     totalLiquidity
