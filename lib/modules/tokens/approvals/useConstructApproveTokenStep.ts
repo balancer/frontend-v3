@@ -4,10 +4,10 @@ import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useEffect, useState } from 'react'
 import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
-import { useTokens } from '../useTokens'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
+import { useTokens } from '../useTokens'
 import { TokenAmountToApprove } from './approval-rules'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse

@@ -23,10 +23,12 @@ import {
 import { isEmpty, orderBy } from 'lodash'
 import { FiActivity } from 'react-icons/fi'
 import { ExternalLinkIcon } from '@chakra-ui/icons'
+import { useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
 function Transactions({ transactions }: { transactions: Record<string, TrackedTransaction> }) {
   const networkConfig = useNetworkConfig()
+  const { getBlockExplorerTxUrl } = useBlockExplorer(networkConfig.chain) // TODO: the recent transactions can be from all chains so the chain info should come from there
   const orderedRecentTransactions = orderBy(Object.values(transactions), 'timestamp', 'desc')
 
   return (
@@ -45,7 +47,7 @@ function Transactions({ transactions }: { transactions: Record<string, TrackedTr
                 {tx.init}
               </Text>
             </Tooltip>
-            <Link href={`${networkConfig.blockExplorerBaseUrl}/tx/${tx.hash}`} target="_blank">
+            <Link href={getBlockExplorerTxUrl(tx.hash)} target="_blank">
               <ExternalLinkIcon color="gray.400" width="1rem" height="1rem" />
             </Link>
           </HStack>

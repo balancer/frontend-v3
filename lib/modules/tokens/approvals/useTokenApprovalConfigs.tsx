@@ -22,6 +22,9 @@ export type Params = {
   actionType: ApprovalAction
 }
 
+/*
+  Generic hook to creates a Token Approval Step Config for different flows defined by the actionType property
+*/
 export function useTokenApprovalConfigs({
   spenderAddress,
   chain,

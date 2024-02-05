@@ -30,8 +30,8 @@ export type StepType =
   | 'tokenApproval'
   | 'addLiquidity'
   | 'removeLiquidity'
-  | 'gaugeDeposit'
-  | 'gaugeWithdraw'
+  | 'stakingDeposit'
+  | 'stakingWithdraw'
 
 export type ManagedResult = TransactionBundle & Executable
 
