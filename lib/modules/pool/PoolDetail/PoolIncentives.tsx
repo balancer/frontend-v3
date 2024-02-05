@@ -9,6 +9,7 @@ import { usePool } from '../usePool'
 import { sumBy } from 'lodash'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useTokens } from '../../tokens/useTokens'
+import { useGaugeBalances } from '../../gauge/useGaugeBalances'
 
 const TABS = [
   {
@@ -26,6 +27,7 @@ export default function PoolIncentives() {
   const { toCurrency } = useCurrency()
   const { pool, chain } = usePool()
   const { priceFor } = useTokens()
+  const {} = useGaugeBalances([pool])
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
