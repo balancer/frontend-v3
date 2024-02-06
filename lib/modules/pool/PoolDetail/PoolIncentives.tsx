@@ -4,7 +4,7 @@ import ButtonGroup, {
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { Box, Button, Card, HStack, Heading, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import { Address } from 'viem'
+import { Address, parseUnits } from 'viem'
 import { usePool } from '../usePool'
 import { sumBy } from 'lodash'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -26,14 +26,23 @@ export default function PoolIncentives() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { toCurrency } = useCurrency()
   const { pool, chain } = usePool()
-  const { priceFor } = useTokens()
-  const {} = useGaugeBalances([pool])
+  const { priceFor, getToken } = useTokens()
+  const { rewards } = useGaugeBalances([pool])
 
-  function handleTabChanged(option: ButtonGroupOption) {
-    setActiveTab(option)
-  }
-
+  const claimableRewardsForPool = rewards[pool.address] || {}
   const currentRewards = pool.staking?.gauge?.rewards || []
+
+  const parsedClaimableRewards = Object.keys(claimableRewardsForPool).map(tokenAddress => {
+    const tokenInfo = getToken(tokenAddress, chain)
+    const rewardInfo = claimableRewardsForPool[tokenAddress]
+    const parsedClaimableReward = parseUnits(rewardInfo?.result || '0', tokenInfo?.decimals || 18)
+    return {
+      ...rewardInfo,
+      claimableReward: parsedClaimableReward.toString(),
+      tokenAddress,
+    }
+  })
+
   const currentRewardsPerWeek = currentRewards.map(reward => {
     return {
       ...reward,
@@ -41,10 +50,52 @@ export default function PoolIncentives() {
     }
   })
 
-  const totalRewardsPerWeek = sumBy(
-    currentRewardsPerWeek,
-    reward => priceFor(reward.tokenAddress, chain) * reward.rewardPerWeek
-  )
+  function handleTabChanged(option: ButtonGroupOption) {
+    setActiveTab(option)
+  }
+
+  function getRewardListForTab() {
+    switch (activeTab.value) {
+      case 'pool':
+        return currentRewardsPerWeek
+      case 'unclaimed':
+        return parsedClaimableRewards
+      default:
+        return currentRewardsPerWeek
+    }
+  }
+
+  function getRewardKeyForTab() {
+    switch (activeTab.value) {
+      case 'pool':
+        return 'rewardPerWeek'
+      case 'unclaimed':
+        return 'claimableReward'
+      default:
+        return 'rewardPerWeek'
+    }
+  }
+
+  function getTotalForTab() {
+    const totalRewardsPerWeek = sumBy(
+      currentRewardsPerWeek,
+      reward => priceFor(reward.tokenAddress, chain) * reward.rewardPerWeek
+    )
+
+    const claimableRewards = sumBy(
+      parsedClaimableRewards,
+      r => priceFor(r.tokenAddress, chain) * r.claimableReward
+    )
+
+    switch (activeTab.value) {
+      case 'pool':
+        return totalRewardsPerWeek
+      case 'unclaimed':
+        return claimableRewards
+      default:
+        return totalRewardsPerWeek
+    }
+  }
 
   return (
     <Card variant="gradient" width="full" minHeight="320px">
@@ -67,19 +118,19 @@ export default function PoolIncentives() {
                   </VStack>
                   <VStack spacing="1" alignItems="flex-end">
                     <Heading fontWeight="bold" size="h6">
-                      {toCurrency(totalRewardsPerWeek)}
+                      {toCurrency(getTotalForTab())}
                     </Heading>
                   </VStack>
                 </HStack>
               </Box>
               <VStack spacing="4" p="4" py="2" pb="4" width="full">
-                {currentRewardsPerWeek.map(token => {
+                {getRewardListForTab().map(token => {
                   return (
                     <TokenRow
                       chain={chain}
                       key={`pool-gauge-reward-token-${token.tokenAddress}`}
                       address={token.tokenAddress as Address}
-                      value={token.rewardPerWeek}
+                      value={token[getRewardKeyForTab()]}
                     />
                   )
                 })}

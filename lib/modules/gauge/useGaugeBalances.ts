@@ -5,13 +5,11 @@ import { ContractFunctionConfig } from 'viem'
 import { AbiMap } from '../web3/contracts/AbiMap'
 import { zeroAddress } from 'viem'
 import { ChainContractConfig, useMulticall } from '../web3/contracts/useMulticall'
-import { flatten } from 'lodash'
+import { flatten, mapValues } from 'lodash'
 
-export function useGaugeBalances(pools: Pool[]) {
+function useGaugeV2ClaimableRewards(pools: Pool[]) {
   const { userAddress, isConnected } = useUserAccount()
-
-  const v1_requests = pools.filter(pool => pool.staking?.gauge?.version === 1)
-  const v2_requests: ChainContractConfig[][] =
+  const multicallRequests: ChainContractConfig[][] =
     pools
       .filter(pool => pool.staking?.gauge?.version === 2)
       .map(pool => {
@@ -19,7 +17,7 @@ export function useGaugeBalances(pools: Pool[]) {
         const rewardTokenCalls: ChainContractConfig[] = (pool.staking?.gauge?.rewards || []).map(
           rewardToken => {
             return {
-              id: `claimableGaugeReward.${pool.staking?.gauge?.gaugeAddress}.${rewardToken.tokenAddress}`,
+              id: `${pool.address}.${rewardToken.tokenAddress}`,
               address: (pool.staking?.gauge?.gaugeAddress || zeroAddress) as Address,
               args: [userAddress, rewardToken.tokenAddress],
               functionName: 'claimable_reward',
@@ -32,28 +30,23 @@ export function useGaugeBalances(pools: Pool[]) {
         return rewardTokenCalls
       }) || []
 
-  const flattenedRequests = flatten(v2_requests)
-  const data = useMulticall(flattenedRequests)
-  console.log('d', data)
+  return useMulticall(flatten(multicallRequests))
+}
 
-  // const {
-  //   data: stakedPoolBalances = [],
-  //   isLoading: isLoadingStakedPoolBalances,
-  //   refetch: refetchedStakedBalances,
-  //   error: stakedPoolBalancesError,
-  // } = useContractReads({
-  //   enabled: isConnected,
-  //   contracts: pools.map(
-  //     pool =>
-  //       ({
-  //         abi: balancerV2GaugeV5ABI,
-  //         // We have to let the contract call fail if there is no gauge address so the array is the right size.
-  //         address: (pool.staking?.gauge?.gaugeAddress as Address) || zeroAddress,
-  //         functionName: 'balanceOf',
-  //         args: [userAddress],
-  //         chainId: chainToIdMap[pool.chain],
-  //       } as const)
-  //   ),
-  // })
-  return {}
+export function useGaugeBalances(pools: Pool[]) {
+  const v1_requests = pools.filter(pool => pool.staking?.gauge?.version === 1)
+  const v2ClaimableRewardsPerChain = useGaugeV2ClaimableRewards(
+    pools.filter(pool => pool.staking?.gauge?.version === 2)
+  )
+
+  // Assign call to flatten list into a single object keyed by the pool address
+  const v2ClaimableRewardsPerPool = Object.assign(
+    {},
+    ...flatten(Object.values(v2ClaimableRewardsPerChain).map(rewards => rewards.data)).filter(
+      p => p
+    )
+  )
+
+  const rewards = v2ClaimableRewardsPerPool
+  return { rewards }
 }
