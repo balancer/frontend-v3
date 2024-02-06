@@ -26,7 +26,7 @@ export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
 
 export function _useRemoveLiquidity() {
-  const { pool, bptPrice } = usePool()
+  const { pool, bptPrice, refetch: refetchPoolUserBalances } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected } = useUserAccount()
 
@@ -37,6 +37,7 @@ export function _useRemoveLiquidity() {
   )
   const [singleTokenAddress, setSingleTokenAddress] = useState<Address | undefined>(undefined)
   const [humanBptInPercent, setHumanBptInPercent] = useState<number>(100)
+  const [didRefetchPool, setDidRefetchPool] = useState(false)
 
   // Quote state, fixed when remove liquidity tx goes into confirming/confirmed
   // state. This is required to maintain amounts in preview dialog on success.
@@ -83,6 +84,8 @@ export function _useRemoveLiquidity() {
   const isTxConfirmingOrConfirmed =
     removeLiquidityTxState === TransactionState.Confirming ||
     removeLiquidityTxState === TransactionState.Completed
+
+  const isRemoveLiquidityConfirmed = removeLiquidityTxState === TransactionState.Completed
 
   /**
    * Queries
@@ -148,6 +151,16 @@ export function _useRemoveLiquidity() {
     }
   }, [humanBptIn, simulationQuery.data?.amountsOut, priceImpactQuery.data, removeLiquidityTxState])
 
+  // When the remove liquidity transaction is confirmed, refetch the user's pool
+  // balances so that they are up to date when navigating back to the pool page.
+  useEffect(() => {
+    async function reFetchPool() {
+      await refetchPoolUserBalances()
+      setDidRefetchPool(true)
+    }
+    if (isRemoveLiquidityConfirmed) reFetchPool()
+  }, [isRemoveLiquidityConfirmed])
+
   return {
     tokens,
     validTokens,
@@ -169,6 +182,7 @@ export function _useRemoveLiquidity() {
     handler,
     currentStep,
     isTxConfirmingOrConfirmed,
+    didRefetchPool,
     setRemovalType,
     setHumanBptInPercent,
     setProportionalType,
