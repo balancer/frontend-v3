@@ -26,7 +26,6 @@ import { FiArrowLeft } from 'react-icons/fi'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { Address } from 'viem'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
-import RemoveLiquidityBptRow from './RemoveLiquidityBptRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
@@ -53,6 +52,7 @@ export function RemoveLiquidityModal({
     priceImpactQuery,
     removeLiquidityTxState,
     currentStep,
+    humanBptIn,
     useOnStepCompleted,
   } = useRemoveLiquidity()
   const { pool } = usePool()
@@ -88,7 +88,13 @@ export function RemoveLiquidityModal({
                 <Text fontWeight="bold" fontSize="1rem">
                   You&apos;re removing
                 </Text>
-                <RemoveLiquidityBptRow pool={pool} />
+                <TokenRow
+                  value={humanBptIn}
+                  address={pool.address as Address}
+                  chain={pool.chain}
+                  isBpt={true}
+                  pool={pool}
+                />
               </VStack>
             </Card>
             <Card variant="level0" p="md" w="full">
