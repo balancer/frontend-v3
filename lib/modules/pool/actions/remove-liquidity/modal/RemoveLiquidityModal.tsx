@@ -81,9 +81,9 @@ export function RemoveLiquidityModal({
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="md" align="start">
-            <Card variant="level0" p="md" w="full">
+            <Card variant="level8" shadow="sm" p="md" w="full">
               <VStack align="start" spacing="md">
-                <Text fontWeight="bold" fontSize="1rem">
+                <Text fontWeight="bold" fontSize="sm">
                   You&apos;re removing
                 </Text>
                 <TokenRow
@@ -95,10 +95,10 @@ export function RemoveLiquidityModal({
                 />
               </VStack>
             </Card>
-            <Card variant="level0" p="md" w="full">
+            <Card variant="level8" shadow="sm" p="md" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
-                  <Text fontWeight="bold" fontSize="1rem">
+                  <Text fontWeight="bold" fontSize="sm">
                     You&apos;ll get at least
                   </Text>
                   <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
@@ -123,8 +123,8 @@ export function RemoveLiquidityModal({
                 )}
               </VStack>
             </Card>
-            <Card variant="level0" p="md" w="full">
-              <VStack align="start" spacing="md">
+            <Card variant="level8" shadow="sm" p="md" w="full">
+              <VStack align="start" spacing="sm">
                 <HStack justify="space-between" w="full">
                   <Text fontWeight="medium" variant="secondary">
                     Price impact
@@ -141,11 +141,7 @@ export function RemoveLiquidityModal({
                   </HStack>
                 </HStack>
 
-                <VStack align="start" spacing="md">
-                  <HStack justify="space-between" w="full">
-                    <RemoveLiquidityTimeout removeLiquidityTxState={removeLiquidityTxState} />
-                  </HStack>
-                </VStack>
+                <RemoveLiquidityTimeout removeLiquidityTxState={removeLiquidityTxState} />
               </VStack>
             </Card>
           </VStack>

@@ -16,20 +16,19 @@ import {
   Center,
   HStack,
   Heading,
-  Icon,
   Skeleton,
   Text,
   Tooltip,
   VStack,
 } from '@chakra-ui/react'
 import { useRef, useState } from 'react'
-import { FiSettings } from 'react-icons/fi'
 import { RemoveLiquidityModal } from '../modal/RemoveLiquidityModal'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { RemoveLiquidityProportional } from './RemoveLiquidityProportional'
 import { RemoveLiquiditySingleToken } from './RemoveLiquiditySingleToken'
 import { usePool } from '../../../usePool'
 import { usePoolRedirect } from '../../../pool.hooks'
+import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
 
 const TABS: ButtonGroupOption[] = [
   {
@@ -97,7 +96,7 @@ export function RemoveLiquidityForm() {
               <Heading fontWeight="bold" size="h5">
                 Remove liquidity
               </Heading>
-              <Icon as={FiSettings} aria-label="settings" />
+              <TransactionSettings size="sm" />
             </HStack>
             <HStack>
               <ButtonGroup
@@ -110,19 +109,21 @@ export function RemoveLiquidityForm() {
                 <InfoOutlineIcon color="GrayText" />
               </Tooltip>
             </HStack>
-            <VStack w="full" gap="md">
+            <VStack w="full" spacing="md">
               <InputWithSlider
                 value={totalUsdValue}
                 onPercentChanged={setHumanBptInPercent}
                 isNumberInputDisabled
               >
-                <Text>Amount</Text>
-                <Text>{fNum('percentage', humanBptInPercent / 100)}</Text>
+                <Text fontSize="sm">Amount</Text>
+                <Text fontSize="sm" variant="secondary">
+                  {fNum('percentage', humanBptInPercent / 100)}
+                </Text>
               </InputWithSlider>
               {activeTab === TABS[0] && <RemoveLiquidityProportional tokens={tokens} />}
               {activeTab === TABS[1] && <RemoveLiquiditySingleToken tokens={tokens} />}
             </VStack>
-            <VStack spacing="sm" align="start" w="full">
+            <VStack spacing="sm" align="start" w="full" px="md">
               <HStack justify="space-between" w="full">
                 <Text color="GrayText">Total</Text>
                 <HStack>

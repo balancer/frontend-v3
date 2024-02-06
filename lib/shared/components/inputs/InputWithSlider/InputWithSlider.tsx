@@ -13,6 +13,7 @@ import {
   SliderFilledTrack,
   SliderThumb,
   SliderTrack,
+  VStack,
   forwardRef,
 } from '@chakra-ui/react'
 import { useState } from 'react'
@@ -56,7 +57,7 @@ export const InputWithSlider = forwardRef(
     }
 
     return (
-      <>
+      <VStack w="full" spacing="xs">
         {children && (
           <HStack w="full" justifyContent="space-between">
             {children}
@@ -95,6 +96,8 @@ export const InputWithSlider = forwardRef(
               <NumberInputField
                 aria-valuenow={sliderPercent}
                 pl="0"
+                fontSize="2xl"
+                fontWeight="medium"
                 _focusVisible={{
                   borderColor: 'transparent',
                   boxShadow: 'none',
@@ -102,6 +105,10 @@ export const InputWithSlider = forwardRef(
                 _hover={{
                   borderColor: 'transparent',
                   boxShadow: 'none',
+                }}
+                _disabled={{
+                  opacity: 1,
+                  textColor: 'input.fontDefault',
                 }}
               />
             </NumberInput>
@@ -121,7 +128,7 @@ export const InputWithSlider = forwardRef(
             </Box>
           </HStack>
         </Box>
-      </>
+      </VStack>
     )
   }
 )
