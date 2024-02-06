@@ -55,6 +55,10 @@ export default defineConfig(() => {
             name: 'BalancerV2GaugeV5',
             address: '0xbc02ef87f4e15ef78a571f3b2adcc726fee70d8b',
           },
+          {
+            name: 'BalancerV2BatchRelayerLibrary',
+            address: '0xea66501df1a00261e3bb79d1e90444fc6a186b62',
+          },
         ],
       }),
     ],
