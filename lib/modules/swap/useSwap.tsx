@@ -17,6 +17,8 @@ import { useSwapSimulationQuery } from './queries/useSwapSimulationQuery'
 import { useTokens } from '../tokens/useTokens'
 import { useUserSettings } from '../user/settings/useUserSettings'
 import { useDisclosure } from '@chakra-ui/react'
+import { useSwapStepConfigs } from './useSwapStepConfigs'
+import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -51,6 +53,7 @@ function selectSwapHandler(apolloClient: ApolloClient<object>) {
 
 export function _useSwap() {
   const swapState = useReactiveVar(swapStateVar)
+  const [swapTxState, setSwapTxState] = useState<TransactionState>()
 
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
   const [selectedChain, setSelectedChain] = useState<GqlChain>(GqlChain.Mainnet)
@@ -66,6 +69,10 @@ export function _useSwap() {
 
   const tokenInInfo = getToken(swapState.tokenIn.address, selectedChain)
   const tokenOutInfo = getToken(swapState.tokenOut.address, selectedChain)
+
+  if (!tokenInInfo || !tokenOutInfo) {
+    throw new Error('Token not found')
+  }
 
   const shouldFetchSwap = (state: SwapState, swapAmount: string) =>
     isAddress(state.tokenIn.address) &&
@@ -208,6 +215,13 @@ export function _useSwap() {
   const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
   const priceImpacUsd = bn(priceImpact || 0).times(returnAmountUsd)
   const maxSlippageUsd = bn(slippage).div(100).times(returnAmountUsd)
+
+  const swapStepConfigs = useSwapStepConfigs({
+    humanAmountIn: swapState.tokenIn.amount,
+    tokenIn: tokenInInfo,
+    selectedChain,
+    setSwapTxState,
+  })
 
   // On first render, set default tokens
   useEffect(() => {

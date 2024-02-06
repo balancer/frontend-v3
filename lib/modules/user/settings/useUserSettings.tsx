@@ -5,6 +5,7 @@ import { SupportedCurrency } from '@/lib/shared/utils/currencies'
 import { PropsWithChildren, createContext } from 'react'
 import { useCookieState } from '../../cookies/useCookieState'
 import { COOKIE_KEYS } from '../../cookies/cookie.constants'
+import { bn } from '@/lib/shared/utils/numbers'
 
 export enum PoolListView {
   Grid = 'grid',
@@ -52,9 +53,14 @@ export function _useUserSettings({
     initPoolListView
   )
 
+  const slippageDecimal = bn(slippage).div(100).toString()
+  const slippageBps = bn(slippage).times(100).toString()
+
   return {
     currency,
     slippage,
+    slippageDecimal,
+    slippageBps,
     poolListView,
     enableSignatures,
     setCurrency,
