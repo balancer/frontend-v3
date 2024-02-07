@@ -3859,12 +3859,12 @@ export const erc20ABI = [
  */
 export function useBalancerMinterRead<
   TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerMinterABI, TFunctionName>,
+  TSelectData = ReadContractResult<typeof balancerMinterABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof balancerMinterABI, TFunctionName, TSelectData>,
     'abi' | 'address'
-  > & { chainId?: keyof typeof balancerMinterAddress } = {} as any,
+  > & { chainId?: keyof typeof balancerMinterAddress } = {} as any
 ) {
   return useContractRead({
     abi: balancerMinterABI,
@@ -3880,12 +3880,12 @@ export function useBalancerMinterRead<
  */
 export function useBalancerV2BalancerRelayerRead<
   TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerV2BalancerRelayerABI, TFunctionName>,
+  TSelectData = ReadContractResult<typeof balancerV2BalancerRelayerABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof balancerV2BalancerRelayerABI, TFunctionName, TSelectData>,
     'abi' | 'address'
-  > & { chainId?: keyof typeof balancerV2BalancerRelayerAddress } = {} as any,
+  > & { chainId?: keyof typeof balancerV2BalancerRelayerAddress } = {} as any
 ) {
   return useContractRead({
     abi: balancerV2BalancerRelayerABI,
@@ -3901,12 +3901,12 @@ export function useBalancerV2BalancerRelayerRead<
  */
 export function useBalancerV2BatchRelayerLibraryRead<
   TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerV2BatchRelayerLibraryABI, TFunctionName>,
+  TSelectData = ReadContractResult<typeof balancerV2BatchRelayerLibraryABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof balancerV2BatchRelayerLibraryABI, TFunctionName, TSelectData>,
     'abi' | 'address'
-  > & { chainId?: keyof typeof balancerV2BatchRelayerLibraryAddress } = {} as any,
+  > & { chainId?: keyof typeof balancerV2BatchRelayerLibraryAddress } = {} as any
 ) {
   return useContractRead({
     abi: balancerV2BatchRelayerLibraryABI,
@@ -3922,22 +3922,18 @@ export function useBalancerV2BatchRelayerLibraryRead<
  */
 export function useBalancerV2ComposableStablePoolV5Read<
   TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerV2ComposableStablePoolV5ABI, TFunctionName>,
+  TSelectData = ReadContractResult<typeof balancerV2ComposableStablePoolV5ABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof balancerV2ComposableStablePoolV5ABI, TFunctionName, TSelectData>,
     'abi' | 'address'
-  > & { chainId?: keyof typeof balancerV2ComposableStablePoolV5Address } = {} as any,
+  > & { chainId?: keyof typeof balancerV2ComposableStablePoolV5Address } = {} as any
 ) {
   return useContractRead({
     abi: balancerV2ComposableStablePoolV5ABI,
     address: balancerV2ComposableStablePoolV5Address[1],
     ...config,
-  } as UseContractReadConfig<
-    typeof balancerV2ComposableStablePoolV5ABI,
-    TFunctionName,
-    TSelectData
-  >)
+  } as UseContractReadConfig<typeof balancerV2ComposableStablePoolV5ABI, TFunctionName, TSelectData>)
 }
 
 /**
@@ -3947,12 +3943,12 @@ export function useBalancerV2ComposableStablePoolV5Read<
  */
 export function useBalancerV2Erc4626LinearPoolV3Read<
   TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerV2Erc4626LinearPoolV3ABI, TFunctionName>,
+  TSelectData = ReadContractResult<typeof balancerV2Erc4626LinearPoolV3ABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof balancerV2Erc4626LinearPoolV3ABI, TFunctionName, TSelectData>,
     'abi' | 'address'
-  > & { chainId?: keyof typeof balancerV2Erc4626LinearPoolV3Address } = {} as any,
+  > & { chainId?: keyof typeof balancerV2Erc4626LinearPoolV3Address } = {} as any
 ) {
   return useContractRead({
     abi: balancerV2Erc4626LinearPoolV3ABI,
@@ -3968,12 +3964,12 @@ export function useBalancerV2Erc4626LinearPoolV3Read<
  */
 export function useBalancerV2GaugeV5Read<
   TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerV2GaugeV5ABI, TFunctionName>,
+  TSelectData = ReadContractResult<typeof balancerV2GaugeV5ABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof balancerV2GaugeV5ABI, TFunctionName, TSelectData>,
     'abi' | 'address'
-  > & { chainId?: keyof typeof balancerV2GaugeV5Address } = {} as any,
+  > & { chainId?: keyof typeof balancerV2GaugeV5Address } = {} as any
 ) {
   return useContractRead({
     abi: balancerV2GaugeV5ABI,
@@ -3989,12 +3985,12 @@ export function useBalancerV2GaugeV5Read<
  */
 export function useBalancerV2VaultRead<
   TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerV2VaultABI, TFunctionName>,
+  TSelectData = ReadContractResult<typeof balancerV2VaultABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof balancerV2VaultABI, TFunctionName, TSelectData>,
     'abi' | 'address'
-  > & { chainId?: keyof typeof balancerV2VaultAddress } = {} as any,
+  > & { chainId?: keyof typeof balancerV2VaultAddress } = {} as any
 ) {
   return useContractRead({
     abi: balancerV2VaultABI,
@@ -4010,12 +4006,12 @@ export function useBalancerV2VaultRead<
  */
 export function useBalancerV2WeightedPoolV4Read<
   TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerV2WeightedPoolV4ABI, TFunctionName>,
+  TSelectData = ReadContractResult<typeof balancerV2WeightedPoolV4ABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof balancerV2WeightedPoolV4ABI, TFunctionName, TSelectData>,
     'abi' | 'address'
-  > & { chainId?: keyof typeof balancerV2WeightedPoolV4Address } = {} as any,
+  > & { chainId?: keyof typeof balancerV2WeightedPoolV4Address } = {} as any
 ) {
   return useContractRead({
     abi: balancerV2WeightedPoolV4ABI,
@@ -4029,12 +4025,12 @@ export function useBalancerV2WeightedPoolV4Read<
  */
 export function useErc20Read<
   TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>,
+  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
 >(
   config: Omit<
     UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
     'abi'
-  > = {} as any,
+  > = {} as any
 ) {
   return useContractRead({ abi: erc20ABI, ...config } as UseContractReadConfig<
     typeof erc20ABI,
