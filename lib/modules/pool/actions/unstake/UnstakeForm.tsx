@@ -1,11 +1,12 @@
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import { Card, CardBody, CardFooter, CardHeader, Center, Heading, Skeleton } from '@chakra-ui/react'
+import { Card, CardBody, CardFooter, CardHeader, Center, Heading } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
 import { Address } from 'viem'
-import { UnstakeFlowButton } from './UnstakeFlowButton'
+import { useUnstaking } from './useUnstaking'
 
 export function UnstakeForm() {
-  const { pool, isLoading } = usePool()
+  const { pool } = usePool()
+  const { currentStep, useOnStepCompleted } = useUnstaking()
 
   return (
     <Center h="full" w="full" maxW="lg" mx="auto">
@@ -27,9 +28,7 @@ export function UnstakeForm() {
             />
           </Card>
         </CardBody>
-        <CardFooter>
-          <UnstakeFlowButton />
-        </CardFooter>
+        <CardFooter>{currentStep.render(useOnStepCompleted)}</CardFooter>
       </Card>
     </Center>
   )

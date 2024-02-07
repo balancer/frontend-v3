@@ -40,3 +40,5 @@ export class GaugeActionsService {
     })
   }
 }
+
+export const gaugeActionsService = new GaugeActionsService()
