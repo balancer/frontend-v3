@@ -4,7 +4,6 @@ import {
   Card,
   HStack,
   Heading,
-  Icon,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -22,7 +21,6 @@ import { RefObject, useRef } from 'react'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { usePool } from '../../../usePool'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { FiArrowLeft } from 'react-icons/fi'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { Address } from 'viem'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
@@ -48,18 +46,19 @@ export function RemoveLiquidityModal({
     isProportional,
     isSingleToken,
     singleTokenOutAddress,
-    amountOutForToken,
     priceImpactQuery,
     removeLiquidityTxState,
     currentStep,
-    humanBptIn,
+    quoteBptIn,
+    quotePriceImpact,
+    amountOutForToken,
     useOnStepCompleted,
   } = useRemoveLiquidity()
   const { pool } = usePool()
   const { slippage } = useUserSettings()
 
-  const priceImpact = priceImpactQuery?.data
-  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpactLabel =
+    quotePriceImpact !== undefined ? fNum('priceImpact', quotePriceImpact) : '-'
 
   return (
     <Modal
@@ -74,7 +73,6 @@ export function RemoveLiquidityModal({
       <ModalContent>
         <ModalHeader>
           <HStack>
-            <Icon as={FiArrowLeft} aria-label="back" />
             <Heading fontWeight="bold" size="h5">
               Remove liquidity
             </Heading>
@@ -89,7 +87,7 @@ export function RemoveLiquidityModal({
                   You&apos;re removing
                 </Text>
                 <TokenRow
-                  value={humanBptIn}
+                  value={quoteBptIn}
                   address={pool.address as Address}
                   chain={pool.chain}
                   isBpt={true}
