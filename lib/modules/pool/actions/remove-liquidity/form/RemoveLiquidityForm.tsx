@@ -28,6 +28,8 @@ import { RemoveLiquidityModal } from '../modal/RemoveLiquidityModal'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { RemoveLiquidityProportional } from './RemoveLiquidityProportional'
 import { RemoveLiquiditySingleToken } from './RemoveLiquiditySingleToken'
+import { usePool } from '../../../usePool'
+import { usePoolRedirect } from '../../../pool.hooks'
 
 const TABS: ButtonGroupOption[] = [
   {
@@ -44,9 +46,6 @@ export function RemoveLiquidityForm() {
   const {
     tokens,
     validTokens,
-    setProportionalType,
-    setSingleTokenType,
-    setHumanBptInPercent,
     humanBptInPercent,
     totalUsdValue,
     priceImpactQuery,
@@ -54,7 +53,13 @@ export function RemoveLiquidityForm() {
     isDisabled,
     disabledReason,
     simulationQuery,
+    isTxConfirmingOrConfirmed,
+    setProportionalType,
+    setSingleTokenType,
+    setHumanBptInPercent,
   } = useRemoveLiquidity()
+  const { pool } = usePool()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
   const { toCurrency } = useCurrency()
   const nextBtn = useRef(null)
   const [activeTab, setActiveTab] = useState(TABS[0])
@@ -73,7 +78,14 @@ export function RemoveLiquidityForm() {
   }
 
   const onModalClose = () => {
-    previewModalDisclosure.onClose()
+    if (isTxConfirmingOrConfirmed) {
+      // If the transaction is confirming or confirmed, it's very likely that
+      // they no longer have a pool balance. To be safe, always redirect to the
+      // pool page when closing the modal in this state.
+      redirectToPoolPage()
+    } else {
+      previewModalDisclosure.onClose()
+    }
   }
 
   return (
