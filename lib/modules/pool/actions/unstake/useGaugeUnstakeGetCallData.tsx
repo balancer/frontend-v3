@@ -7,8 +7,8 @@ export function useGaugeUnstakeGetCallData(amount: bigint, gaugeService: any) {
   const { pool } = usePool()
 
   const inputData = {
-    hasPendingNonBALRewards: true,
-    hasPendingBalRewards: true,
+    hasPendingNonBALRewards: true, // TODO: replace with actual bool
+    hasPendingBalRewards: true, // TODO: replace with actual bool
     gauges: [pool.staking?.id || ''],
     sender: userAddress || '',
     recipient: userAddress || '',
