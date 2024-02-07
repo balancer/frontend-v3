@@ -146,7 +146,7 @@ export function _useRemoveLiquidity() {
     if (!isTxConfirmingOrConfirmed) {
       updateQuoteState(humanBptIn, simulationQuery.data?.amountsOut, priceImpactQuery.data)
     }
-  }, [humanBptIn, simulationQuery.data?.amountsOut, priceImpactQuery.data, removeLiquidityTxState])
+  }, [humanBptIn, JSON.stringify(simulationQuery.data?.amountsOut), priceImpactQuery.data, removeLiquidityTxState])
 
   return {
     tokens,
