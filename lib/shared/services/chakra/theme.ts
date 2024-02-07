@@ -390,7 +390,7 @@ export const balTheme = {
       GrayText: {
         default: tokens.colors.light.text.secondary,
         _dark: tokens.colors.dark.text.secondary,
-      }, 
+      },
       'chakra-body-text': { _light: 'gray.800', _dark: 'whiteAlpha.900' },
       'chakra-body-bg': { _light: 'white', _dark: 'gray.800' },
       'chakra-border-color': { _light: 'gray.200', _dark: 'whiteAlpha.300' },
@@ -619,15 +619,15 @@ export const balTheme = {
         primary: {
           default: tokens.colors.light.text.primary,
           _dark: tokens.colors.dark.text.primary,
-        },        
+        },
         secondary: {
           default: tokens.colors.light.text.secondary,
           _dark: tokens.colors.dark.text.secondary,
-        },        
+        },
         primaryGradient: {
           default: tokens.colors.light.text.primaryGradient,
           _dark: tokens.colors.dark.text.primaryGradient,
-        },        
+        },
         secondaryGradient: {
           default: tokens.colors.light.text.secondaryGradient,
           _dark: tokens.colors.dark.text.secondaryGradient,
@@ -1009,7 +1009,7 @@ export const balTheme = {
         primaryGradient: {
           background: 'font.primaryGradient',
           backgroundClip: 'text',
-        },        
+        },
         secondaryGradient: {
           background: 'font.secondaryGradient',
           backgroundClip: 'text',
