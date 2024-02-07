@@ -20,7 +20,7 @@ export function PoolList() {
         <Heading as="h2" size="lg" variant="special">
           Liquidity pools
         </Heading>
-        <Heading size="lg" opacity=".5">
+        <Heading size="md" variant="secondary" mt="1">
           ({fNum('integer', count || 0)})
         </Heading>
       </HStack>

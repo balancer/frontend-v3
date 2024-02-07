@@ -150,8 +150,10 @@ export const tokens = {
 
       // Font colors
       text: {
-        primary: primaryTextColor,
-        secondary: 'linear-gradient(45deg, #728097 0%, #909BAD 100%)',
+        primary: balColors.gray['700'],
+        secondary: balColors.gray['500'],
+        primaryGradient: primaryTextColor,
+        secondaryGradient: 'linear-gradient(45deg, #728097 0%, #909BAD 100%)',
         special: balColors.gradient.dawnLight,
         specialSecondary: balColors.gradient.sunsetLight,
         link: `linear-gradient(45deg, ${balColors.purple['700']} 0%, ${balColors.purple['500']} 100%)`,
@@ -240,8 +242,10 @@ export const tokens = {
       },
       // Font colors
       text: {
-        primary: 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
-        secondary: 'linear-gradient(45deg, #909BAD 0%, #728097 100%)',
+        primary: '#E5D3BE',
+        secondary: balColors.gray['400'],
+        primaryGradient: 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
+        secondaryGradient: 'linear-gradient(45deg, #909BAD 0%, #728097 100%)',
         special: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
         specialSecondary: 'linear-gradient(180deg, #EA9A43 0%, #F06147 100%)',
         link: `linear-gradient(45deg, ${balColors.purple['400']} 0%, ${balColors.purple['200']} 100%)`,
@@ -383,6 +387,10 @@ export const balTheme = {
         _dark: 'darkBorderColor',
       },
       primary: { _light: 'primary.500', _dark: 'primary.500' },
+      GrayText: {
+        default: tokens.colors.light.text.secondary,
+        _dark: tokens.colors.dark.text.secondary,
+      }, 
       'chakra-body-text': { _light: 'gray.800', _dark: 'whiteAlpha.900' },
       'chakra-body-bg': { _light: 'white', _dark: 'gray.800' },
       'chakra-border-color': { _light: 'gray.200', _dark: 'whiteAlpha.300' },
@@ -611,10 +619,18 @@ export const balTheme = {
         primary: {
           default: tokens.colors.light.text.primary,
           _dark: tokens.colors.dark.text.primary,
-        },
+        },        
         secondary: {
           default: tokens.colors.light.text.secondary,
           _dark: tokens.colors.dark.text.secondary,
+        },        
+        primaryGradient: {
+          default: tokens.colors.light.text.primaryGradient,
+          _dark: tokens.colors.dark.text.primaryGradient,
+        },        
+        secondaryGradient: {
+          default: tokens.colors.light.text.secondaryGradient,
+          _dark: tokens.colors.dark.text.secondaryGradient,
         },
         special: {
           default: tokens.colors.light.text.special,
@@ -984,12 +1000,18 @@ export const balTheme = {
     },
     Text: {
       baseStyle: {
-        background: 'font.primary',
-        backgroundClip: 'text',
+        color: 'font.primary',
       },
       variants: {
         secondary: {
-          background: 'font.secondary',
+          color: 'font.secondary',
+        },
+        primaryGradient: {
+          background: 'font.primaryGradient',
+          backgroundClip: 'text',
+        },        
+        secondaryGradient: {
+          background: 'font.secondaryGradient',
           backgroundClip: 'text',
         },
         special: {
