@@ -21,6 +21,7 @@ export interface ContractsConfig {
   balancer: {
     vaultV2: Address
     relayerV6: Address
+    minter: Address
   }
 }
 

@@ -59,6 +59,7 @@ export default defineConfig(() => {
             name: 'BalancerV2BatchRelayerLibrary',
             address: '0xea66501df1a00261e3bb79d1e90444fc6a186b62',
           },
+          { name: 'BalancerMinter', address: '0x239e55F427D44C3cc793f49bFB507ebe76638a2b' },
         ],
       }),
     ],

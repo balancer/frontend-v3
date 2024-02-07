@@ -2,6 +2,207 @@ import { useContractRead, UseContractReadConfig } from 'wagmi'
 import { ReadContractResult } from 'wagmi/actions'
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// BalancerMinter
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x239e55F427D44C3cc793f49bFB507ebe76638a2b)
+ */
+export const balancerMinterABI = [
+  {
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+    inputs: [
+      { name: 'tokenAdmin', internalType: 'contract IBalancerTokenAdmin', type: 'address' },
+      { name: 'gaugeController', internalType: 'contract IGaugeController', type: 'address' },
+    ],
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'recipient', internalType: 'address', type: 'address', indexed: true },
+      { name: 'gauge', internalType: 'address', type: 'address', indexed: false },
+      { name: 'minted', internalType: 'uint256', type: 'uint256', indexed: false },
+    ],
+    name: 'Minted',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'user', internalType: 'address', type: 'address', indexed: true },
+      { name: 'minter', internalType: 'address', type: 'address', indexed: true },
+      { name: 'approval', internalType: 'bool', type: 'bool', indexed: false },
+    ],
+    name: 'MinterApprovalSet',
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: 'minter', internalType: 'address', type: 'address' },
+      { name: 'user', internalType: 'address', type: 'address' },
+    ],
+    name: 'allowed_to_mint_for',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getBalancerToken',
+    outputs: [{ name: '', internalType: 'contract IERC20', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getBalancerTokenAdmin',
+    outputs: [{ name: '', internalType: 'contract IBalancerTokenAdmin', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getDomainSeparator',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getGaugeController',
+    outputs: [{ name: '', internalType: 'contract IGaugeController', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: 'minter', internalType: 'address', type: 'address' },
+      { name: 'user', internalType: 'address', type: 'address' },
+    ],
+    name: 'getMinterApproval',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'user', internalType: 'address', type: 'address' }],
+    name: 'getNextNonce',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'gauge', internalType: 'address', type: 'address' }],
+    name: 'mint',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'gauge', internalType: 'address', type: 'address' },
+      { name: 'user', internalType: 'address', type: 'address' },
+    ],
+    name: 'mintFor',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'gauges', internalType: 'address[]', type: 'address[]' }],
+    name: 'mintMany',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'gauges', internalType: 'address[]', type: 'address[]' },
+      { name: 'user', internalType: 'address', type: 'address' },
+    ],
+    name: 'mintManyFor',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'gauge', internalType: 'address', type: 'address' },
+      { name: 'user', internalType: 'address', type: 'address' },
+    ],
+    name: 'mint_for',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'gauges', internalType: 'address[8]', type: 'address[8]' }],
+    name: 'mint_many',
+    outputs: [],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: 'user', internalType: 'address', type: 'address' },
+      { name: 'gauge', internalType: 'address', type: 'address' },
+    ],
+    name: 'minted',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'minter', internalType: 'address', type: 'address' },
+      { name: 'approval', internalType: 'bool', type: 'bool' },
+    ],
+    name: 'setMinterApproval',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'minter', internalType: 'address', type: 'address' },
+      { name: 'approval', internalType: 'bool', type: 'bool' },
+      { name: 'user', internalType: 'address', type: 'address' },
+      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
+      { name: 'v', internalType: 'uint8', type: 'uint8' },
+      { name: 'r', internalType: 'bytes32', type: 'bytes32' },
+      { name: 's', internalType: 'bytes32', type: 'bytes32' },
+    ],
+    name: 'setMinterApprovalWithSignature',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'minter', internalType: 'address', type: 'address' }],
+    name: 'toggle_approve_mint',
+    outputs: [],
+  },
+] as const
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x239e55F427D44C3cc793f49bFB507ebe76638a2b)
+ */
+export const balancerMinterAddress = {
+  1: '0x239e55F427D44C3cc793f49bFB507ebe76638a2b',
+} as const
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x239e55F427D44C3cc793f49bFB507ebe76638a2b)
+ */
+export const balancerMinterConfig = {
+  address: balancerMinterAddress,
+  abi: balancerMinterABI,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // BalancerV2BatchRelayerLibrary
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -3572,6 +3773,27 @@ export const erc20ABI = [
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // React
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link balancerMinterABI}__.
+ *
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x239e55F427D44C3cc793f49bFB507ebe76638a2b)
+ */
+export function useBalancerMinterRead<
+  TFunctionName extends string,
+  TSelectData = ReadContractResult<typeof balancerMinterABI, TFunctionName>,
+>(
+  config: Omit<
+    UseContractReadConfig<typeof balancerMinterABI, TFunctionName, TSelectData>,
+    'abi' | 'address'
+  > & { chainId?: keyof typeof balancerMinterAddress } = {} as any,
+) {
+  return useContractRead({
+    abi: balancerMinterABI,
+    address: balancerMinterAddress[1],
+    ...config,
+  } as UseContractReadConfig<typeof balancerMinterABI, TFunctionName, TSelectData>)
+}
 
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link balancerV2BatchRelayerLibraryABI}__.
