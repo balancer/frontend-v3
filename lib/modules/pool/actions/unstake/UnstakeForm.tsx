@@ -16,18 +16,16 @@ export function UnstakeForm() {
           </Heading>
         </CardHeader>
         <CardBody>
-          {isLoading ? (
-            <Skeleton />
-          ) : (
-            <Card variant="level0" p="md" shadow="sm" w="full">
-              <TokenRow
-                address={pool.address as Address}
-                value={pool.userBalance?.stakedBalance || '0'}
-                usdValue={pool.userBalance?.stakedBalanceUsd.toString()}
-                chain={pool.chain}
-              />
-            </Card>
-          )}
+          <Card variant="level0" p="md" shadow="sm" w="full">
+            <TokenRow
+              address={pool.address as Address}
+              value={pool.userBalance?.stakedBalance || '0'}
+              usdValue={pool.userBalance?.stakedBalanceUsd.toString()}
+              chain={pool.chain}
+              pool={pool}
+              isBpt
+            />
+          </Card>
         </CardBody>
         <CardFooter>
           <UnstakeFlowButton />
