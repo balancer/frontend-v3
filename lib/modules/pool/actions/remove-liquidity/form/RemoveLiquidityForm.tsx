@@ -95,7 +95,7 @@ export function RemoveLiquidityForm() {
                 size="lg"
               />
               <Tooltip label="Remove liquidity type" fontSize="sm">
-                <InfoOutlineIcon color="GrayText" />
+                <InfoOutlineIcon color="grayText" />
               </Tooltip>
             </HStack>
             <VStack w="full" gap="md">
@@ -112,24 +112,24 @@ export function RemoveLiquidityForm() {
             </VStack>
             <VStack spacing="sm" align="start" w="full">
               <HStack justify="space-between" w="full">
-                <Text color="GrayText">Total</Text>
+                <Text color="grayText">Total</Text>
                 <HStack>
-                  <NumberText color="GrayText">{toCurrency(totalUsdValue)}</NumberText>
+                  <NumberText color="grayText">{toCurrency(totalUsdValue)}</NumberText>
                   <Tooltip label="Total" fontSize="sm">
-                    <InfoOutlineIcon color="GrayText" />
+                    <InfoOutlineIcon color="grayText" />
                   </Tooltip>
                 </HStack>
               </HStack>
               <HStack justify="space-between" w="full">
-                <Text color="GrayText">Price impact</Text>
+                <Text color="grayText">Price impact</Text>
                 <HStack>
                   {priceImpactQuery.isLoading ? (
                     <Skeleton w="12" h="full" />
                   ) : (
-                    <NumberText color="GrayText">{priceImpactLabel}</NumberText>
+                    <NumberText color="grayText">{priceImpactLabel}</NumberText>
                   )}
                   <Tooltip label="Price impact" fontSize="sm">
-                    <InfoOutlineIcon color="GrayText" />
+                    <InfoOutlineIcon color="grayText" />
                   </Tooltip>
                 </HStack>
               </HStack>

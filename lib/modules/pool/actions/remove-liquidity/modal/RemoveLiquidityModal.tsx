@@ -135,10 +135,10 @@ export function RemoveLiquidityModal({
                     {priceImpactQuery.isLoading ? (
                       <Skeleton w="12" h="full" />
                     ) : (
-                      <NumberText color="GrayText">{priceImpactLabel}</NumberText>
+                      <NumberText color="grayText">{priceImpactLabel}</NumberText>
                     )}
                     <Tooltip label="Price impact" fontSize="sm">
-                      <InfoOutlineIcon color="GrayText" />
+                      <InfoOutlineIcon color="grayText" />
                     </Tooltip>
                   </HStack>
                 </HStack>

@@ -40,7 +40,7 @@ function SlippageInput() {
           onKeyDown={blockInvalidNumberInput}
         />
         <InputRightElement pointerEvents="none">
-          <FiPercent color="GrayText" />
+          <FiPercent color="grayText" />
         </InputRightElement>
       </InputGroup>
       <HStack>

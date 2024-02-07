@@ -387,7 +387,7 @@ export const balTheme = {
         _dark: 'darkBorderColor',
       },
       primary: { _light: 'primary.500', _dark: 'primary.500' },
-      GrayText: {
+      grayText: {
         default: tokens.colors.light.text.secondary,
         _dark: tokens.colors.dark.text.secondary,
       },

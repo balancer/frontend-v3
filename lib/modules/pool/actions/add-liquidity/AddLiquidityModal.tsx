@@ -89,7 +89,7 @@ export function AddLiquidityModal({
             <Card variant="level5" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
-                  <Text color="GrayText">{"You're adding"}</Text>
+                  <Text color="grayText">{"You're adding"}</Text>
                   <NumberText fontSize="lg">
                     {toCurrency(totalUSDValue, { abbreviated: false })}
                   </NumberText>
@@ -119,7 +119,7 @@ export function AddLiquidityModal({
             <Card variant="level5" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
-                  <Text color="GrayText">{"You'll get (if no slippage)"}</Text>
+                  <Text color="grayText">{"You'll get (if no slippage)"}</Text>
                 </HStack>
                 <TokenRow
                   value={bptOutLabel}
@@ -140,23 +140,23 @@ export function AddLiquidityModal({
                     {priceImpactQuery.isLoading ? (
                       <Skeleton w="12" h="full" />
                     ) : (
-                      <NumberText color="GrayText">{priceImpactLabel}</NumberText>
+                      <NumberText color="grayText">{priceImpactLabel}</NumberText>
                     )}
                     <Tooltip label="Price impact" fontSize="sm">
-                      <InfoOutlineIcon color="GrayText" />
+                      <InfoOutlineIcon color="grayText" />
                     </Tooltip>
                   </HStack>
                 </HStack>
                 <HStack justify="space-between" w="full">
                   <Text>Max. slippage</Text>
                   <HStack>
-                    <NumberText color="GrayText">{fNum('slippage', slippage)}</NumberText>
+                    <NumberText color="grayText">{fNum('slippage', slippage)}</NumberText>
                     <Tooltip
                       label="Your maximum slippage setting. This can be changed in your
                       transaction settings (top right on previous input form)."
                       fontSize="sm"
                     >
-                      <InfoOutlineIcon color="GrayText" />
+                      <InfoOutlineIcon color="grayText" />
                     </Tooltip>
                   </HStack>
                 </HStack>

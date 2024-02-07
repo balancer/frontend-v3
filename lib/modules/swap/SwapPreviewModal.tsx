@@ -99,9 +99,9 @@ export function SwapPreviewModal({
                 <HStack justify="space-between" w="full">
                   <Text>Price impact</Text>
                   <HStack>
-                    <NumberText color="GrayText">{fNum('priceImpact', 0)}</NumberText>
+                    <NumberText color="grayText">{fNum('priceImpact', 0)}</NumberText>
                     <Tooltip label="Price impact" fontSize="sm">
-                      <InfoOutlineIcon color="GrayText" />
+                      <InfoOutlineIcon color="grayText" />
                     </Tooltip>
                   </HStack>
                 </HStack>

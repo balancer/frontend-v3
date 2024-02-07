@@ -59,7 +59,7 @@ function SlippageInput() {
           onKeyDown={blockInvalidNumberInput}
         />
         <InputRightElement pointerEvents="none">
-          <FiPercent color="GrayText" />
+          <FiPercent color="grayText" />
         </InputRightElement>
       </InputGroup>
       <HStack>
@@ -114,7 +114,7 @@ export function UserSettings() {
             <HStack>
               <Heading size="sm">Use Signatures</Heading>
               <Tooltip label={signaturesTooltipLabel} fontSize="sm">
-                <InfoOutlineIcon color="GrayText" />
+                <InfoOutlineIcon color="grayText" />
               </Tooltip>
             </HStack>
             <EnableSignaturesSelect />
