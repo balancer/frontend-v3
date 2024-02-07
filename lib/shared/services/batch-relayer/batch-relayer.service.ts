@@ -16,7 +16,7 @@ export class BatchRelayerService {
     public readonly batchRelayerAddress: string,
     public readonly wethAddress: string,
     private readonly vaultActionsService: VaultActionsService,
-    private readonly gaugeStakingService: GaugeActionsService
+    private readonly gaugeActionsService: GaugeActionsService
   ) {}
 
   public encodePeekChainedReferenceValue(reference: bigint): string {
@@ -32,19 +32,19 @@ export class BatchRelayerService {
   }
 
   public gaugeEncodeDeposit(params: EncodeGaugeDepositInput): string {
-    return this.gaugeStakingService.encodeDeposit(params)
+    return this.gaugeActionsService.encodeDeposit(params)
   }
 
   public gaugeEncodeWithdraw(params: EncodeGaugeWithdrawInput): string {
-    return this.gaugeStakingService.encodeWithdraw(params)
+    return this.gaugeActionsService.encodeWithdraw(params)
   }
 
   public gaugeEncodeClaimRewards(params: EncodeGaugeClaimRewardsInput): string {
-    return this.gaugeStakingService.encodeClaimRewards(params)
+    return this.gaugeActionsService.encodeClaimRewards(params)
   }
 
   public gaugeEncodeMint(params: EncodeGaugeMintInput): string {
-    return this.gaugeStakingService.encodeMint(params)
+    return this.gaugeActionsService.encodeMint(params)
   }
 
   public replaceWethWithzeroAddress(address: string) {
