@@ -11,3 +11,5 @@ export const AbiMap = {
   'balancer.minter': balancerMinterABI,
   'balancer.relayerV6': balancerV2BalancerRelayerABI,
 }
+
+export type AbiMapType = keyof typeof AbiMap | undefined
