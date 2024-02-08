@@ -32,6 +32,8 @@ import { useAddLiquidity } from './useAddLiquidity'
 import { AddLiquidityTimeout } from './AddLiquidityTimeout'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
+import { SignRelayerButton } from '@/lib/shared/components/btns/transaction-steps/SignRelayerButton'
+import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
 
 type Props = {
   isOpen: boolean
@@ -57,6 +59,7 @@ export function AddLiquidityModal({
     currentStep,
     useOnStepCompleted,
   } = useAddLiquidity()
+  const shouldSignRelayerApproval = useShouldSignRelayerApproval()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
   const { slippage } = useUserSettings()
@@ -166,7 +169,11 @@ export function AddLiquidityModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
+          {shouldSignRelayerApproval ? (
+            <SignRelayerButton />
+          ) : (
+            <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>

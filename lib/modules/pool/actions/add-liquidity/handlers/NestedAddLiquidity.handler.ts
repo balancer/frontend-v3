@@ -53,6 +53,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
     account,
     slippagePercent,
     queryOutput,
+    relayerApprovalSignature,
   }: NestedBuildAddLiquidityInput): Promise<TransactionConfig> {
     const addLiquidity = new AddLiquidityNested()
 
@@ -61,7 +62,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,
-      // relayerApprovalSignature: signature, // TODO: use when implementing sign relayer step
+      relayerApprovalSignature,
     })
 
     return {

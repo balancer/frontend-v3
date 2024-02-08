@@ -15,7 +15,7 @@ export function useAddLiquidityBuildCallDataQuery() {
   const { slippage } = useUserSettings()
   const { pool } = usePool()
 
-  const { humanAmountsIn, handler, simulationQuery } = useAddLiquidity()
+  const { humanAmountsIn, handler, simulationQuery, relayerApprovalSignature } = useAddLiquidity()
 
   const queryKey = addLiquidityKeys.buildCallData({
     userAddress,
@@ -31,6 +31,7 @@ export function useAddLiquidityBuildCallDataQuery() {
       humanAmountsIn,
       slippagePercent: slippage,
       queryOutput,
+      relayerApprovalSignature, // only present in Add Nested Liquidity with sign relayer mode
     })
     console.log('Call data built:', response)
     return response
