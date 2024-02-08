@@ -16,3 +16,17 @@ export const testQueryClient = new QueryClient({
     warn: console.warn,
   },
 })
+
+export function aSuccessfulQueryResultMock() {
+  return {
+    status: 'success',
+    isLoading: false,
+    isLoadingError: false,
+    isRefetchError: false,
+    isRefetching: false,
+    isSuccess: true,
+    isError: false,
+    error: null,
+    refetch: vi.fn(),
+  } as const
+}
