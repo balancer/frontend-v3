@@ -4,7 +4,7 @@ import { parseUnits } from 'viem'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { usePool } from '../../usePool'
 import { selectStakingService } from '@/lib/modules/staking/selectStakingService'
-import { useGaugeUnstakeGetCallData } from './useGaugeUnstakeGetCallData'
+import { useUnstakeGaugeCallDataQuery } from './useUnstakeGaugeCallDataQuery'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 
@@ -20,7 +20,7 @@ export function useConstructClaimAndUnstakeStep() {
   }
 
   const stakingService = selectStakingService(pool)
-  const { data } = useGaugeUnstakeGetCallData(
+  const { data } = useUnstakeGaugeCallDataQuery(
     parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS),
     stakingService
   )

@@ -3,7 +3,7 @@ import { usePool } from '../../usePool'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 // TODO: typing 'gaugeService' cascades a lot
-export function useGaugeUnstakeGetCallData(amount: bigint, gaugeService: any) {
+export function useUnstakeGaugeCallDataQuery(amount: bigint, gaugeService: any) {
   const { userAddress } = useUserAccount()
   const { pool } = usePool()
 
@@ -17,13 +17,9 @@ export function useGaugeUnstakeGetCallData(amount: bigint, gaugeService: any) {
     outputReference: 0n,
   }
 
-  return useQuery(
-    ['unstakeGetContractCallData', inputData],
-    () => {
-      const contractCallData =
-        gaugeService.getGaugeClaimRewardsAndWithdrawContractCallData(inputData)
-      return contractCallData
-    },
-    { enabled: amount.toString() !== '0' }
-  )
+  const queryKey = ['unstake', , 'gauge', 'callData', inputData]
+  const queryFn = () => gaugeService.getGaugeClaimRewardsAndWithdrawContractCallData(inputData)
+  const queryOpts = { enabled: amount.toString() !== '0' }
+
+  return useQuery(queryKey, queryFn, queryOpts)
 }
