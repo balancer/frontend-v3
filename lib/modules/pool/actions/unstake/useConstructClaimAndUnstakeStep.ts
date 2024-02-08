@@ -3,7 +3,7 @@ import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transa
 import { parseUnits } from 'viem'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { usePool } from '../../usePool'
-import { selectUnstakeService } from './util/selectUnstakeService'
+import { selectStakingService } from '@/lib/modules/staking/selectStakingService'
 import { useGaugeUnstakeGetCallData } from './useGaugeUnstakeGetCallData'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
@@ -19,10 +19,10 @@ export function useConstructClaimAndUnstakeStep() {
     tooltip: 'TODO WITHDRAW TOOLTIP',
   }
 
-  const handler = selectUnstakeService(pool)
+  const stakingService = selectStakingService(pool)
   const { data } = useGaugeUnstakeGetCallData(
     parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS),
-    handler
+    stakingService
   )
 
   const claimAndUnstakeTransaction = useManagedTransaction(

@@ -1,8 +1,8 @@
 import { useHasApprovedRelayer } from '@/lib/modules/relayer/useHasApprovedRelayer'
 import { ClaimAndUnstakeButton } from './ClaimAndUnstakeButton'
-import { useHasMinterApproval } from './useHasMinterApproval'
+import { useHasMinterApproval } from '@/lib/modules/staking/gauge/useHasMinterApproval'
 import { approveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
-import { minterApprovalConfig } from './minterApprovalConfig'
+import { minterApprovalConfig } from '@/lib/modules/staking/gauge/minterApprovalConfig'
 
 export function useClaimAndUnstakeStepConfigs() {
   const { hasMinterApproval } = useHasMinterApproval()

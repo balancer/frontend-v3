@@ -1,5 +1,5 @@
 import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
-import { CommonStepProps, OnStepCompleted, StepConfig } from '../useIterateSteps'
+import { CommonStepProps, OnStepCompleted, StepConfig } from '../../pool/actions/useIterateSteps'
 import { useConstructMinterApprovalStep } from './useConstructMinterApprovalStep'
 import { VStack } from '@chakra-ui/react'
 

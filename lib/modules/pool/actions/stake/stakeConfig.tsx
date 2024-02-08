@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { usePool } from '../../usePool'
 import { Button, VStack } from '@chakra-ui/react'
 import { usePoolRedirect } from '../../pool.hooks'
-import { useConstructStakingDepositActionStep } from './staking.actions'
+import { useConstructStakingDepositActionStep } from '../../../staking/staking.actions'
 import { useStaking } from './useStaking'
 
 export const stakeConfig: StepConfig = {
