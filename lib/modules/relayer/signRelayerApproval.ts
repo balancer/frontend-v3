@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import networkConfig from '@/lib/config/networks/mainnet'
 import { ensureError } from '@/lib/shared/utils/errors'
 import { Relayer } from '@balancer/sdk'
@@ -14,6 +15,8 @@ export async function signRelayerApproval(
 ): Promise<Address | undefined> {
   if (!client) return undefined
 
+  // TODO: ignore TS error due to SDK using viem v2 (this won't be needed once we migrate to wagmi v2)
+  // @ts-ignore
   const publicClient = client.extend(publicActions).extend(walletActions) as SdkClient
 
   try {
