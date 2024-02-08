@@ -17,7 +17,7 @@ export function useUnstakeGaugeCallDataQuery(amount: bigint, gaugeService: any) 
     outputReference: 0n,
   }
 
-  const queryKey = ['unstake', , 'gauge', 'callData', inputData]
+  const queryKey = ['unstake', 'gauge', 'callData', inputData]
   const queryFn = () => gaugeService.getGaugeClaimRewardsAndWithdrawContractCallData(inputData)
   const queryOpts = { enabled: amount.toString() !== '0' }
 
