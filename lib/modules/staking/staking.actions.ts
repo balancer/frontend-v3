@@ -32,7 +32,7 @@ function getStakingConfig(
 ):
   | {
       contractAddress: string | undefined
-      contractId: AbiMapType
+      contractId: any // TODO: add typing here
       args: any
     }
   | undefined {
@@ -66,7 +66,7 @@ export function useConstructStakingDepositActionStep(
 
   const deposit = useManagedTransaction(
     stakingConfig?.contractAddress || '',
-    stakingConfig?.contractId!,
+    stakingConfig?.contractId,
     'deposit',
     transactionLabels,
     { args: stakingConfig?.args },
@@ -93,7 +93,7 @@ export function useConstructStakingWithdrawActionStep(
 
   const withdraw = useManagedTransaction(
     stakingConfig?.contractAddress || '',
-    stakingConfig?.contractId!,
+    stakingConfig?.contractId,
     'withdraw',
     transactionLabels,
     { args: stakingConfig?.args },
