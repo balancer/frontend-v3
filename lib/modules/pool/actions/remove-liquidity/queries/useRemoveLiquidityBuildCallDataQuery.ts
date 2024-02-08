@@ -2,7 +2,7 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { useQuery } from 'wagmi'
+import { useQuery } from '@tanstack/react-query'
 import { removeLiquidityKeys } from './remove-liquidity-keys'
 import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
 import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'

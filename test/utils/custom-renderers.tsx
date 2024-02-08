@@ -34,6 +34,7 @@ import { AppRouterContextProviderMock } from './app-router-context-provider-mock
 import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
 import { RemoveLiquidityProvider } from '@/lib/modules/pool/actions/remove-liquidity/useRemoveLiquidity'
 import { UserAccountProvider } from '@/lib/modules/web3/useUserAccount'
+import { ReactQueryClientProvider } from '@/app/react-query.provider'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -89,7 +90,9 @@ function GlobalProviders({ children }: WrapperProps) {
                 initPoolListView={'list'}
                 initEnableSignatures="yes"
               >
-                <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+                <RecentTransactionsProvider>
+                  <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+                </RecentTransactionsProvider>
               </UserSettingsProvider>
             </TokensProvider>
           </UserAccountProvider>

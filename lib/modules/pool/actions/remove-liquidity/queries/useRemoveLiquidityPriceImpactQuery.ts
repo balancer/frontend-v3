@@ -4,11 +4,11 @@ import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { useDebounce } from 'use-debounce'
-import { Address, useQuery } from 'wagmi'
+import { Address } from 'viem'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { removeLiquidityKeys } from './remove-liquidity-keys'
 import { HumanAmount } from '@balancer/sdk'
-import { UseQueryOptions } from '@tanstack/react-query'
+import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 export function useRemoveLiquidityPriceImpactQuery(
   handler: RemoveLiquidityHandler,

@@ -4,12 +4,11 @@ import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { useDebounce } from 'use-debounce'
-import { useQuery } from 'wagmi'
 import { hasValidHumanAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { addLiquidityKeys } from './add-liquidity-keys'
-import { UseQueryOptions } from '@tanstack/react-query'
+import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 export type AddLiquiditySimulationQueryResult = ReturnType<typeof useAddLiquiditySimulationQuery>
 
