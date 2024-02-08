@@ -16,6 +16,7 @@ export interface BuildAddLiquidityInput {
   account: Address
   slippagePercent: string
   queryOutput: QueryAddLiquidityOutput
+  relayerApprovalSignature?: Address //only used by Nested Add Liquidity in signRelayer mode
 }
 
 /*
@@ -37,4 +38,5 @@ export interface SdkBuildAddLiquidityInput extends BuildAddLiquidityInput {
 }
 export interface NestedBuildAddLiquidityInput extends BuildAddLiquidityInput {
   queryOutput: NestedQueryAddLiquidityOutput
+  relayerApprovalSignature?: Address // Only used if the relayer mode is 'signRelayer'
 }

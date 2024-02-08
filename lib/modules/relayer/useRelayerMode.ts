@@ -1,5 +1,6 @@
 import { shouldUseNestedLiquidity } from '../pool/actions/LiquidityActionHelpers'
 import { usePool } from '../pool/usePool'
+import { useUserSettings } from '../user/settings/useUserSettings'
 import { useUserAccount } from '../web3/useUserAccount'
 
 type RelayerMode = 'signRelayer' | 'approveRelayer' | 'no-relayer-needed'
@@ -7,9 +8,7 @@ type RelayerMode = 'signRelayer' | 'approveRelayer' | 'no-relayer-needed'
 export function useRelayerMode(): RelayerMode {
   const { connector } = useUserAccount()
   const { pool } = usePool()
-  // const {enableSignatures} = useUserSettings()
-  // DEBUG_MODE for testing relayer approval
-  const enableSignatures = 'no'
+  const { enableSignatures } = useUserSettings()
 
   if (!shouldUseNestedLiquidity(pool)) return 'no-relayer-needed'
 

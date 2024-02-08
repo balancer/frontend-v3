@@ -6,7 +6,6 @@ import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { approveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { buildAddLiquidityConfig } from './buildAddLiquidityConfig'
-import { signRelayerConfig } from '@/lib/modules/relayer/signRelayerConfig'
 
 export function useAddLiquidityStepConfigs(
   inputAmounts: InputAmount[],
@@ -27,10 +26,6 @@ export function useAddLiquidityStepConfigs(
 
   if (relayerMode === 'approveRelayer') {
     stepConfigs = [approveRelayerConfig, ...stepConfigs]
-  }
-
-  if (relayerMode === 'signRelayer') {
-    stepConfigs = [signRelayerConfig, ...stepConfigs]
   }
 
   return stepConfigs

@@ -7,8 +7,6 @@ import {
   testHook,
 } from '@/test/utils/custom-renderers'
 import { PropsWithChildren } from 'react'
-import { mainnet } from 'wagmi'
-import { HumanAmountIn } from '../liquidity-types'
 import { _useAddLiquidity } from './useAddLiquidity'
 import { nestedPoolMock } from '../../__mocks__/nestedPoolMock'
 import { act } from '@testing-library/react'
