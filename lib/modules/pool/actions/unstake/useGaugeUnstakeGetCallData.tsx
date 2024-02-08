@@ -2,6 +2,7 @@ import { useQuery } from 'wagmi'
 import { usePool } from '../../usePool'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
+// TODO: typing 'gaugeService' cascades a lot
 export function useGaugeUnstakeGetCallData(amount: bigint, gaugeService: any) {
   const { userAddress } = useUserAccount()
   const { pool } = usePool()
