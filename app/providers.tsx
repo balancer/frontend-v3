@@ -7,6 +7,7 @@ import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTra
 import { ApolloGlobalDataProvider } from '@/lib/shared/services/api/apollo-global-data.provider'
 import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
 import { COOKIE_KEYS } from '@/lib/modules/cookies/cookie.constants'
+import { ReactQueryClientProvider } from './react-query.provider'
 
 export function Providers({ children }: { children: ReactNode }) {
   const initialColorMode = cookies().get(COOKIE_KEYS.UserSettings.ColorMode)?.value
@@ -26,7 +27,9 @@ export function Providers({ children }: { children: ReactNode }) {
               initEnableSignatures={initEnableSignatures}
               initPoolListView={initPoolListView}
             >
-              <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+              <RecentTransactionsProvider>
+                <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+              </RecentTransactionsProvider>
             </UserSettingsProvider>
           </ApolloGlobalDataProvider>
         </ApolloClientProvider>

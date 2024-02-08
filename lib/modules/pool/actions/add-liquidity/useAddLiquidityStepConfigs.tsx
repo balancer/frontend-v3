@@ -3,9 +3,19 @@ import { usePool } from '../../usePool'
 import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useTokenApprovalConfigs'
 import { InputAmount } from '@balancer/sdk'
 import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
-import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import {
+  OnTransactionStateUpdate,
+  TransactionState,
+} from '@/lib/shared/components/btns/transaction-steps/lib'
 import { approveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
-import { buildAddLiquidityConfig } from './buildAddLiquidityConfig'
+import { AddLiquidityButton } from './AddLiquidityButton'
+import { StepConfig } from '../useIterateSteps'
+
+function buildAddLiquidityConfig(onTransactionStateUpdate: OnTransactionStateUpdate): StepConfig {
+  return {
+    render: () => <AddLiquidityButton onTransactionStateUpdate={onTransactionStateUpdate} />,
+  }
+}
 
 export function useAddLiquidityStepConfigs(
   inputAmounts: InputAmount[],

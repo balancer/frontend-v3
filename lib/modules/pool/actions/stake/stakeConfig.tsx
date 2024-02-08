@@ -5,42 +5,24 @@ import { useEffect, useState } from 'react'
 import { usePool } from '../../usePool'
 import { Button, VStack } from '@chakra-ui/react'
 import { usePoolRedirect } from '../../pool.hooks'
-import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
-import {
-  OnTransactionStateUpdate,
-  getTransactionState,
-} from '@/lib/shared/components/btns/transaction-steps/lib'
+import { useConstructStakingDepositActionStep } from './staking.actions'
+import { useStaking } from './useStaking'
 
-export function buildAddLiquidityConfig(
-  onTransactionStateUpdate: OnTransactionStateUpdate
-): StepConfig {
-  function render() {
-    return <AddLiquidityButton onTransactionStateUpdate={onTransactionStateUpdate} />
-  }
-
-  return {
-    render,
-  }
+export const stakeConfig: StepConfig = {
+  render() {
+    return <StakeButton />
+  },
 }
 
-type Props = {
-  onTransactionStateUpdate: OnTransactionStateUpdate
-}
-
-export function AddLiquidityButton({ onTransactionStateUpdate }: Props) {
+function StakeButton() {
   const [didRefetchPool, setDidRefetchPool] = useState(false)
   const { refetch, pool } = usePool()
+  const { rawAmount } = useStaking()
   const { redirectToPoolPage } = usePoolRedirect(pool)
 
-  const { addLiquidityStep, addLiquidityTransaction } = useConstructAddLiquidityStep()
+  const stakeStep = useConstructStakingDepositActionStep(pool.staking, rawAmount)
 
-  const isComplete = addLiquidityStep.isComplete()
-
-  // To be used by Timeout component to freeze queries
-  const transactionState = getTransactionState(addLiquidityTransaction)
-  useEffect(() => {
-    onTransactionStateUpdate(transactionState)
-  }, [transactionState])
+  const isComplete = stakeStep.isComplete()
 
   useEffect(() => {
     async function reFetchPool() {
@@ -56,8 +38,7 @@ export function AddLiquidityButton({ onTransactionStateUpdate }: Props) {
 
   return (
     <VStack w="full">
-      {!isComplete && <TransactionStepButton step={addLiquidityStep} />}
-
+      {!isComplete && <TransactionStepButton step={stakeStep}></TransactionStepButton>}
       {isComplete && (
         <Button w="full" size="lg" onClick={handlerRedirectToPoolPage} isLoading={!didRefetchPool}>
           Return to pool

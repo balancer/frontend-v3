@@ -12,7 +12,9 @@ import ButtonGroup, {
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import Link from 'next/link'
 
-const TABS = [
+type Tabs = { value: string; label: string }[]
+
+const TABS: Tabs = [
   {
     value: 'add-liquidity',
     label: 'Add',
@@ -21,17 +23,42 @@ const TABS = [
     value: 'remove-liquidity',
     label: 'Remove',
   },
+
+  {
+    value: 'stake',
+    label: 'Stake',
+  },
+  {
+    value: 'unstake',
+    label: 'Unstake',
+  },
 ]
+
+// TODO: this is tightly coupled with the array above but should be ok I think?
+function getTabs(index: number, tabs: Tabs) {
+  switch (index) {
+    case 0:
+    case 1:
+    default:
+      return tabs.slice(0, 2)
+    case 2:
+    case 3:
+      return tabs.slice(2, 4)
+  }
+}
 
 export function PoolActionsNav() {
   const pathname = usePathname()
-  const activeTab = pathname.includes('remove') ? TABS[1] : TABS[0]
+  const pathnameArray = pathname.split('/')
+  const lastPathname = pathnameArray[pathnameArray.length - 1]
+  const activeTabIndex = TABS.findIndex(tab => tab.value === lastPathname)
+  const activeTab = TABS[activeTabIndex]
   const { pool } = usePool()
   const networkConfig = getNetworkConfig(pool.chain)
   const router = useRouter()
 
   function toggleFlow(option: ButtonGroupOption) {
-    if (pathname.includes(option.value)) return
+    if (option.value === lastPathname) return
     router.push(`${getPoolPath(pool)}/${option.value}`)
   }
 
@@ -40,7 +67,12 @@ export function PoolActionsNav() {
       <Card variant="level3" p="sm">
         <Image src={networkConfig.iconPath} width="24" height="24" alt={networkConfig.shortName} />
       </Card>
-      <ButtonGroup currentOption={activeTab} options={TABS} onChange={toggleFlow} size="lg" />
+      <ButtonGroup
+        currentOption={activeTab}
+        options={getTabs(activeTabIndex, TABS)}
+        onChange={toggleFlow}
+        size="lg"
+      />
       <IconButton
         as={Link}
         href={getPoolPath(pool)}

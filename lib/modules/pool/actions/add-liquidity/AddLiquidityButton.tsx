@@ -1,34 +1,41 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { usePool } from '../../usePool'
 import { Button, VStack } from '@chakra-ui/react'
 import { usePoolRedirect } from '../../pool.hooks'
+import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
 import {
-  TransactionState,
+  OnTransactionStateUpdate,
   getTransactionState,
 } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { useConstructRemoveLiquidityStep } from './modal/useConstructRemoveLiquidityStep'
-import { useRemoveLiquidity } from './useRemoveLiquidity'
 
-export type Props = {
-  onTransactionStateUpdate: (transactionState: TransactionState) => void
+type Props = {
+  onTransactionStateUpdate: OnTransactionStateUpdate
 }
 
-export function RemoveLiquidityButton({ onTransactionStateUpdate }: Props) {
-  const { pool } = usePool()
-  const { didRefetchPool } = useRemoveLiquidity()
+export function AddLiquidityButton({ onTransactionStateUpdate }: Props) {
+  const [didRefetchPool, setDidRefetchPool] = useState(false)
+  const { refetch, pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
 
-  const { removeLiquidityStep, removeLiquidityTransaction } = useConstructRemoveLiquidityStep()
+  const { addLiquidityStep, addLiquidityTransaction } = useConstructAddLiquidityStep()
 
-  const isComplete = removeLiquidityStep.isComplete()
+  const isComplete = addLiquidityStep.isComplete()
 
   // To be used by Timeout component to freeze queries
-  const transactionState = getTransactionState(removeLiquidityTransaction)
+  const transactionState = getTransactionState(addLiquidityTransaction)
   useEffect(() => {
     onTransactionStateUpdate(transactionState)
   }, [transactionState])
+
+  useEffect(() => {
+    async function reFetchPool() {
+      await refetch()
+      setDidRefetchPool(true)
+    }
+    if (isComplete) reFetchPool()
+  }, [isComplete])
 
   async function handlerRedirectToPoolPage(event: React.MouseEvent<HTMLElement>) {
     redirectToPoolPage(event)
@@ -41,7 +48,7 @@ export function RemoveLiquidityButton({ onTransactionStateUpdate }: Props) {
           Return to pool
         </Button>
       ) : (
-        <TransactionStepButton step={removeLiquidityStep} />
+        <TransactionStepButton step={addLiquidityStep} />
       )}
     </VStack>
   )

@@ -30,8 +30,8 @@ export type StepType =
   | 'tokenApproval'
   | 'addLiquidity'
   | 'removeLiquidity'
-  | 'gaugeDeposit'
-  | 'gaugeWithdraw'
+  | 'stakingDeposit'
+  | 'stakingWithdraw'
 
 export type ManagedResult = TransactionBundle & Executable
 
@@ -71,7 +71,7 @@ export function getTransactionState(transactionBundle?: TransactionBundle): Tran
   if (execution.isLoading) {
     return TransactionState.Loading
   }
-  if (execution.isSuccess) {
+  if (result.isSuccess) {
     return TransactionState.Completed
   }
   if (result.isLoading) {
