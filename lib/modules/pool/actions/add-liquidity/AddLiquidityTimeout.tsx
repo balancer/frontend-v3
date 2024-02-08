@@ -71,12 +71,12 @@ export function AddLiquidityTimeout(props: Props) {
       <HStack justify="space-between" w="full">
         <Text>Valid for</Text>
         <HStack>
-          <Text color="GrayText">{secondsToRefetch} secs</Text>
+          <Text color="grayText">{secondsToRefetch} secs</Text>
           <Tooltip
             label="Quoted numbers above valid until timeout, after which they will be recalculated."
             fontSize="sm"
           >
-            <InfoOutlineIcon color="GrayText" />
+            <InfoOutlineIcon color="grayText" />
           </Tooltip>
         </HStack>
       </HStack>

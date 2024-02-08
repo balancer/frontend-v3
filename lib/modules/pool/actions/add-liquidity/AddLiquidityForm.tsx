@@ -90,9 +90,9 @@ export function AddLiquidityForm() {
 
             <VStack spacing="sm" align="start" w="full" px="md">
               <HStack justify="space-between" w="full">
-                <Text color="GrayText">Total</Text>
+                <Text color="grayText">Total</Text>
                 <HStack>
-                  <NumberText color="GrayText">
+                  <NumberText color="grayText">
                     {toCurrency(totalUSDValue, { abbreviated: false })}
                   </NumberText>
                   <Tooltip
@@ -102,17 +102,17 @@ export function AddLiquidityForm() {
                     )}).`}
                     fontSize="sm"
                   >
-                    <InfoOutlineIcon color="GrayText" />
+                    <InfoOutlineIcon color="grayText" />
                   </Tooltip>
                 </HStack>
               </HStack>
               <HStack justify="space-between" w="full">
-                <Text color="GrayText">LP tokens</Text>
+                <Text color="grayText">LP tokens</Text>
                 <HStack>
                   {simulationQuery.isLoading ? (
                     <Skeleton w="16" h="6" />
                   ) : (
-                    <NumberText color="GrayText">{bptOutLabel}</NumberText>
+                    <NumberText color="grayText">{bptOutLabel}</NumberText>
                   )}
                   <Tooltip
                     label={`LP tokens you are expected to recieve. Does not include potential slippage (${fNum(
@@ -121,24 +121,24 @@ export function AddLiquidityForm() {
                     )}).`}
                     fontSize="sm"
                   >
-                    <InfoOutlineIcon color="GrayText" />
+                    <InfoOutlineIcon color="grayText" />
                   </Tooltip>
                 </HStack>
               </HStack>
               <HStack justify="space-between" w="full">
-                <Text color="GrayText">Price impact</Text>
+                <Text color="grayText">Price impact</Text>
                 <HStack>
                   {priceImpactQuery.isLoading ? (
                     <Skeleton w="16" h="6" />
                   ) : (
-                    <NumberText color="GrayText">{priceImpactLabel}</NumberText>
+                    <NumberText color="grayText">{priceImpactLabel}</NumberText>
                   )}
                   <Tooltip
                     label="Adding unbalanced amounts causes the internal prices of the pool to change,
                     as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees."
                     fontSize="sm"
                   >
-                    <InfoOutlineIcon color="GrayText" />
+                    <InfoOutlineIcon color="grayText" />
                   </Tooltip>
                 </HStack>
               </HStack>

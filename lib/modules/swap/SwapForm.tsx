@@ -132,16 +132,16 @@ export function SwapForm() {
 
             <VStack spacing="sm" align="start" w="full">
               <HStack justify="space-between" w="full">
-                <Text color="GrayText">Price impact</Text>
+                <Text color="grayText">Price impact</Text>
                 <HStack>
-                  <NumberText color="GrayText">{fNum('priceImpact', 0)}</NumberText>
+                  <NumberText color="grayText">{fNum('priceImpact', 0)}</NumberText>
                   <Tooltip label="Price impact" fontSize="sm">
-                    <InfoOutlineIcon color="GrayText" />
+                    <InfoOutlineIcon color="grayText" />
                   </Tooltip>
                 </HStack>
               </HStack>
               <HStack>
-                <Text color="GrayText">Expires in: {refetchCountdownSecs} secs</Text>
+                <Text color="grayText">Expires in: {refetchCountdownSecs} secs</Text>
               </HStack>
             </VStack>
 
