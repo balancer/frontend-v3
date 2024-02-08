@@ -38,5 +38,4 @@ export interface SdkBuildAddLiquidityInput extends BuildAddLiquidityInput {
 }
 export interface NestedBuildAddLiquidityInput extends BuildAddLiquidityInput {
   queryOutput: NestedQueryAddLiquidityOutput
-  relayerApprovalSignature?: Address // Only used if the relayer mode is 'signRelayer'
 }
