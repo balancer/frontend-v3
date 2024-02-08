@@ -1,5 +1,6 @@
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
+import { zeroAddress } from 'viem'
 
 const networkConfig: NetworkConfig = {
   chainId: 250,
@@ -24,7 +25,7 @@ const networkConfig: NetworkConfig = {
     balancer: {
       vaultV2: '0x20dd72Ed959b6147912C2e529F0a0C651c33c9ce',
       relayerV6: '0x35Cea9e57A393ac66Aaa7E25C391D52C74B5648f',
-      minter: '0x',
+      minter: zeroAddress,
     },
   },
 }
