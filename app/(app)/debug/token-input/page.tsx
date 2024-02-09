@@ -3,7 +3,7 @@
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { Button, Card, Heading, Text, VStack, useDisclosure } from '@chakra-ui/react'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useState } from 'react'
 import { TokenSelectModal } from '@/lib/modules/tokens/TokenSelectModal/TokenSelectModal'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
@@ -47,6 +47,7 @@ export default function TokenInputPage() {
 
         <TokenSelectModal
           tokens={tokens}
+          chain={GqlChain.Mainnet}
           isOpen={tokenSelectDisclosure.isOpen}
           onOpen={tokenSelectDisclosure.onOpen}
           onClose={tokenSelectDisclosure.onClose}
