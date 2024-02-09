@@ -55,6 +55,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,
+      wethIsEth: true, //TODO: review this scenario
     })
 
     return {

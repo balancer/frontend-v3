@@ -67,6 +67,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,
+      wethIsEth: true,
     })
 
     return {
