@@ -63,7 +63,7 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
 
 export function getPort(network: NetworkSetup) {
   // return network.port
-  return network.port + (Number(process.env.VITEST_WORKER_ID) || 0)
+  return network.port + (Number(process.env.VITEST_JOB_ID) || 0)
 }
 
 export function getTestRpcUrl(networkName: NetworksWithFork) {
