@@ -14,6 +14,7 @@ export interface TokensConfig {
     tokenIn?: Address
     tokenOut?: Address
   }
+  popularTokens?: Address[]
 }
 
 export interface ContractsConfig {
