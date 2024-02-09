@@ -2,6 +2,945 @@ import { useContractRead, UseContractReadConfig } from 'wagmi'
 import { ReadContractResult } from 'wagmi/actions'
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// BalancerMinter
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x239e55F427D44C3cc793f49bFB507ebe76638a2b)
+ */
+export const balancerMinterABI = [
+  {
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+    inputs: [
+      { name: 'tokenAdmin', internalType: 'contract IBalancerTokenAdmin', type: 'address' },
+      { name: 'gaugeController', internalType: 'contract IGaugeController', type: 'address' },
+    ],
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'recipient', internalType: 'address', type: 'address', indexed: true },
+      { name: 'gauge', internalType: 'address', type: 'address', indexed: false },
+      { name: 'minted', internalType: 'uint256', type: 'uint256', indexed: false },
+    ],
+    name: 'Minted',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'user', internalType: 'address', type: 'address', indexed: true },
+      { name: 'minter', internalType: 'address', type: 'address', indexed: true },
+      { name: 'approval', internalType: 'bool', type: 'bool', indexed: false },
+    ],
+    name: 'MinterApprovalSet',
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: 'minter', internalType: 'address', type: 'address' },
+      { name: 'user', internalType: 'address', type: 'address' },
+    ],
+    name: 'allowed_to_mint_for',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getBalancerToken',
+    outputs: [{ name: '', internalType: 'contract IERC20', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getBalancerTokenAdmin',
+    outputs: [{ name: '', internalType: 'contract IBalancerTokenAdmin', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getDomainSeparator',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getGaugeController',
+    outputs: [{ name: '', internalType: 'contract IGaugeController', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: 'minter', internalType: 'address', type: 'address' },
+      { name: 'user', internalType: 'address', type: 'address' },
+    ],
+    name: 'getMinterApproval',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'user', internalType: 'address', type: 'address' }],
+    name: 'getNextNonce',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'gauge', internalType: 'address', type: 'address' }],
+    name: 'mint',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'gauge', internalType: 'address', type: 'address' },
+      { name: 'user', internalType: 'address', type: 'address' },
+    ],
+    name: 'mintFor',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'gauges', internalType: 'address[]', type: 'address[]' }],
+    name: 'mintMany',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'gauges', internalType: 'address[]', type: 'address[]' },
+      { name: 'user', internalType: 'address', type: 'address' },
+    ],
+    name: 'mintManyFor',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'gauge', internalType: 'address', type: 'address' },
+      { name: 'user', internalType: 'address', type: 'address' },
+    ],
+    name: 'mint_for',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'gauges', internalType: 'address[8]', type: 'address[8]' }],
+    name: 'mint_many',
+    outputs: [],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: 'user', internalType: 'address', type: 'address' },
+      { name: 'gauge', internalType: 'address', type: 'address' },
+    ],
+    name: 'minted',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'minter', internalType: 'address', type: 'address' },
+      { name: 'approval', internalType: 'bool', type: 'bool' },
+    ],
+    name: 'setMinterApproval',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'minter', internalType: 'address', type: 'address' },
+      { name: 'approval', internalType: 'bool', type: 'bool' },
+      { name: 'user', internalType: 'address', type: 'address' },
+      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
+      { name: 'v', internalType: 'uint8', type: 'uint8' },
+      { name: 'r', internalType: 'bytes32', type: 'bytes32' },
+      { name: 's', internalType: 'bytes32', type: 'bytes32' },
+    ],
+    name: 'setMinterApprovalWithSignature',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'minter', internalType: 'address', type: 'address' }],
+    name: 'toggle_approve_mint',
+    outputs: [],
+  },
+] as const
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x239e55F427D44C3cc793f49bFB507ebe76638a2b)
+ */
+export const balancerMinterAddress = {
+  1: '0x239e55F427D44C3cc793f49bFB507ebe76638a2b',
+} as const
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x239e55F427D44C3cc793f49bFB507ebe76638a2b)
+ */
+export const balancerMinterConfig = {
+  address: balancerMinterAddress,
+  abi: balancerMinterABI,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// BalancerV2BalancerRelayer
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x35Cea9e57A393ac66Aaa7E25C391D52C74B5648f)
+ */
+export const balancerV2BalancerRelayerABI = [
+  {
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+    inputs: [
+      { name: 'vault', internalType: 'contract IVault', type: 'address' },
+      { name: 'libraryAddress', internalType: 'address', type: 'address' },
+      { name: 'queryLibrary', internalType: 'address', type: 'address' },
+      { name: 'version', internalType: 'string', type: 'string' },
+    ],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getLibrary',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getQueryLibrary',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getVault',
+    outputs: [{ name: '', internalType: 'contract IVault', type: 'address' }],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [{ name: 'data', internalType: 'bytes[]', type: 'bytes[]' }],
+    name: 'multicall',
+    outputs: [{ name: 'results', internalType: 'bytes[]', type: 'bytes[]' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'data', internalType: 'bytes[]', type: 'bytes[]' }],
+    name: 'vaultActionsQueryMulticall',
+    outputs: [{ name: 'results', internalType: 'bytes[]', type: 'bytes[]' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'version',
+    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+  },
+  { stateMutability: 'payable', type: 'receive' },
+] as const
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x35Cea9e57A393ac66Aaa7E25C391D52C74B5648f)
+ */
+export const balancerV2BalancerRelayerAddress = {
+  1: '0x35Cea9e57A393ac66Aaa7E25C391D52C74B5648f',
+} as const
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x35Cea9e57A393ac66Aaa7E25C391D52C74B5648f)
+ */
+export const balancerV2BalancerRelayerConfig = {
+  address: balancerV2BalancerRelayerAddress,
+  abi: balancerV2BalancerRelayerABI,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// BalancerV2BatchRelayerLibrary
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xea66501df1a00261e3bb79d1e90444fc6a186b62)
+ */
+export const balancerV2BatchRelayerLibraryABI = [
+  {
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+    inputs: [
+      { name: 'vault', internalType: 'contract IVault', type: 'address' },
+      { name: 'wstETH', internalType: 'contract IERC20', type: 'address' },
+      { name: 'minter', internalType: 'contract IBalancerMinter', type: 'address' },
+      { name: 'canCallUserCheckpoint', internalType: 'bool', type: 'bool' },
+      { name: 'version', internalType: 'string', type: 'string' },
+    ],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'token', internalType: 'contract IERC20', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'approveVault',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'kind', internalType: 'enum IVault.SwapKind', type: 'uint8' },
+      {
+        name: 'swaps',
+        internalType: 'struct IVault.BatchSwapStep[]',
+        type: 'tuple[]',
+        components: [
+          { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
+          { name: 'assetInIndex', internalType: 'uint256', type: 'uint256' },
+          { name: 'assetOutIndex', internalType: 'uint256', type: 'uint256' },
+          { name: 'amount', internalType: 'uint256', type: 'uint256' },
+          { name: 'userData', internalType: 'bytes', type: 'bytes' },
+        ],
+      },
+      { name: 'assets', internalType: 'contract IAsset[]', type: 'address[]' },
+      {
+        name: 'funds',
+        internalType: 'struct IVault.FundManagement',
+        type: 'tuple',
+        components: [
+          { name: 'sender', internalType: 'address', type: 'address' },
+          { name: 'fromInternalBalance', internalType: 'bool', type: 'bool' },
+          { name: 'recipient', internalType: 'address payable', type: 'address' },
+          { name: 'toInternalBalance', internalType: 'bool', type: 'bool' },
+        ],
+      },
+      { name: 'limits', internalType: 'int256[]', type: 'int256[]' },
+      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
+      { name: 'value', internalType: 'uint256', type: 'uint256' },
+      {
+        name: 'outputReferences',
+        internalType: 'struct VaultActions.OutputReference[]',
+        type: 'tuple[]',
+        components: [
+          { name: 'index', internalType: 'uint256', type: 'uint256' },
+          { name: 'key', internalType: 'uint256', type: 'uint256' },
+        ],
+      },
+    ],
+    name: 'batchSwap',
+    outputs: [{ name: 'results', internalType: 'int256[]', type: 'int256[]' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'canCallUserCheckpoint',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'kind', internalType: 'enum VaultActions.PoolKind', type: 'uint8' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address payable', type: 'address' },
+      {
+        name: 'request',
+        internalType: 'struct IVault.ExitPoolRequest',
+        type: 'tuple',
+        components: [
+          { name: 'assets', internalType: 'contract IAsset[]', type: 'address[]' },
+          { name: 'minAmountsOut', internalType: 'uint256[]', type: 'uint256[]' },
+          { name: 'userData', internalType: 'bytes', type: 'bytes' },
+          { name: 'toInternalBalance', internalType: 'bool', type: 'bool' },
+        ],
+      },
+      {
+        name: 'outputReferences',
+        internalType: 'struct VaultActions.OutputReference[]',
+        type: 'tuple[]',
+        components: [
+          { name: 'index', internalType: 'uint256', type: 'uint256' },
+          { name: 'key', internalType: 'uint256', type: 'uint256' },
+        ],
+      },
+    ],
+    name: 'exitPool',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'user', internalType: 'address', type: 'address' },
+      { name: 'gauges', internalType: 'contract IStakingLiquidityGauge[]', type: 'address[]' },
+    ],
+    name: 'gaugeCheckpoint',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'gauges', internalType: 'contract IStakingLiquidityGauge[]', type: 'address[]' },
+    ],
+    name: 'gaugeClaimRewards',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'gauge', internalType: 'contract IStakingLiquidityGauge', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'gaugeDeposit',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'gauges', internalType: 'address[]', type: 'address[]' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'gaugeMint',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'approval', internalType: 'bool', type: 'bool' },
+      { name: 'user', internalType: 'address', type: 'address' },
+      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
+      { name: 'v', internalType: 'uint8', type: 'uint8' },
+      { name: 'r', internalType: 'bytes32', type: 'bytes32' },
+      { name: 's', internalType: 'bytes32', type: 'bytes32' },
+    ],
+    name: 'gaugeSetMinterApproval',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'gauge', internalType: 'contract IStakingLiquidityGauge', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'gaugeWithdraw',
+    outputs: [],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getEntrypoint',
+    outputs: [{ name: '', internalType: 'contract IBalancerRelayer', type: 'address' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [],
+    name: 'getVault',
+    outputs: [{ name: '', internalType: 'contract IVault', type: 'address' }],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'kind', internalType: 'enum VaultActions.PoolKind', type: 'uint8' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      {
+        name: 'request',
+        internalType: 'struct IVault.JoinPoolRequest',
+        type: 'tuple',
+        components: [
+          { name: 'assets', internalType: 'contract IAsset[]', type: 'address[]' },
+          { name: 'maxAmountsIn', internalType: 'uint256[]', type: 'uint256[]' },
+          { name: 'userData', internalType: 'bytes', type: 'bytes' },
+          { name: 'fromInternalBalance', internalType: 'bool', type: 'bool' },
+        ],
+      },
+      { name: 'value', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'joinPool',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      {
+        name: 'ops',
+        internalType: 'struct IVault.UserBalanceOp[]',
+        type: 'tuple[]',
+        components: [
+          { name: 'kind', internalType: 'enum IVault.UserBalanceOpKind', type: 'uint8' },
+          { name: 'asset', internalType: 'contract IAsset', type: 'address' },
+          { name: 'amount', internalType: 'uint256', type: 'uint256' },
+          { name: 'sender', internalType: 'address', type: 'address' },
+          { name: 'recipient', internalType: 'address payable', type: 'address' },
+        ],
+      },
+      { name: 'value', internalType: 'uint256', type: 'uint256' },
+      {
+        name: 'outputReferences',
+        internalType: 'struct VaultActions.OutputReference[]',
+        type: 'tuple[]',
+        components: [
+          { name: 'index', internalType: 'uint256', type: 'uint256' },
+          { name: 'key', internalType: 'uint256', type: 'uint256' },
+        ],
+      },
+    ],
+    name: 'manageUserBalance',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [{ name: 'ref', internalType: 'uint256', type: 'uint256' }],
+    name: 'peekChainedReferenceValue',
+    outputs: [{ name: 'value', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'relayer', internalType: 'address', type: 'address' },
+      { name: 'approved', internalType: 'bool', type: 'bool' },
+      { name: 'authorisation', internalType: 'bytes', type: 'bytes' },
+    ],
+    name: 'setRelayerApproval',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'stakeETH',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'stakeETHAndWrap',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      {
+        name: 'singleSwap',
+        internalType: 'struct IVault.SingleSwap',
+        type: 'tuple',
+        components: [
+          { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
+          { name: 'kind', internalType: 'enum IVault.SwapKind', type: 'uint8' },
+          { name: 'assetIn', internalType: 'contract IAsset', type: 'address' },
+          { name: 'assetOut', internalType: 'contract IAsset', type: 'address' },
+          { name: 'amount', internalType: 'uint256', type: 'uint256' },
+          { name: 'userData', internalType: 'bytes', type: 'bytes' },
+        ],
+      },
+      {
+        name: 'funds',
+        internalType: 'struct IVault.FundManagement',
+        type: 'tuple',
+        components: [
+          { name: 'sender', internalType: 'address', type: 'address' },
+          { name: 'fromInternalBalance', internalType: 'bool', type: 'bool' },
+          { name: 'recipient', internalType: 'address payable', type: 'address' },
+          { name: 'toInternalBalance', internalType: 'bool', type: 'bool' },
+        ],
+      },
+      { name: 'limit', internalType: 'uint256', type: 'uint256' },
+      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
+      { name: 'value', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'swap',
+    outputs: [{ name: 'result', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'staticToken', internalType: 'contract IStaticATokenLM', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'toUnderlying', internalType: 'bool', type: 'bool' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'unwrapAaveStaticToken',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrappedToken', internalType: 'contract ICToken', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'unwrapCompoundV2',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrappedToken', internalType: 'contract IERC4626', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'unwrapERC4626',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrappedToken', internalType: 'contract IEulerToken', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'unwrapEuler',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrappedToken', internalType: 'contract IGearboxDieselToken', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'dieselAmount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'unwrapGearbox',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'vaultToken', internalType: 'contract IReaperTokenVault', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'unwrapReaperVaultToken',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrappedToken', internalType: 'contract IShareToken', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'unwrapShareToken',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrappedToken', internalType: 'contract ITetuSmartVault', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'unwrapTetu',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrapperToken', internalType: 'contract IUnbuttonToken', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'unwrapUnbuttonToken',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'unwrapWstETH',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrappedToken', internalType: 'contract IYearnTokenVault', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'unwrapYearn',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'token', internalType: 'contract IERC20Permit', type: 'address' },
+      { name: 'owner', internalType: 'address', type: 'address' },
+      { name: 'value', internalType: 'uint256', type: 'uint256' },
+      { name: 'deadline', internalType: 'uint256', type: 'uint256' },
+      { name: 'v', internalType: 'uint8', type: 'uint8' },
+      { name: 'r', internalType: 'bytes32', type: 'bytes32' },
+      { name: 's', internalType: 'bytes32', type: 'bytes32' },
+    ],
+    name: 'vaultPermit',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'token', internalType: 'contract IERC20PermitDAI', type: 'address' },
+      { name: 'holder', internalType: 'address', type: 'address' },
+      { name: 'nonce', internalType: 'uint256', type: 'uint256' },
+      { name: 'expiry', internalType: 'uint256', type: 'uint256' },
+      { name: 'allowed', internalType: 'bool', type: 'bool' },
+      { name: 'v', internalType: 'uint8', type: 'uint8' },
+      { name: 'r', internalType: 'bytes32', type: 'bytes32' },
+      { name: 's', internalType: 'bytes32', type: 'bytes32' },
+    ],
+    name: 'vaultPermitDAI',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'staticToken', internalType: 'contract IStaticATokenLM', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'fromUnderlying', internalType: 'bool', type: 'bool' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'wrapAaveDynamicToken',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrappedToken', internalType: 'contract ICToken', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'wrapCompoundV2',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrappedToken', internalType: 'contract IERC4626', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'wrapERC4626',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrappedToken', internalType: 'contract IEulerToken', type: 'address' },
+      { name: 'eulerProtocol', internalType: 'address', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'wrapEuler',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrappedToken', internalType: 'contract IGearboxDieselToken', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'mainAmount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'wrapGearbox',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'vaultToken', internalType: 'contract IReaperTokenVault', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'wrapReaperVaultToken',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrappedToken', internalType: 'contract IShareToken', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'wrapShareToken',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'wrapStETH',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrappedToken', internalType: 'contract ITetuSmartVault', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'wrapTetu',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrapperToken', internalType: 'contract IUnbuttonToken', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'uAmount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'wrapUnbuttonToken',
+    outputs: [],
+  },
+  {
+    stateMutability: 'payable',
+    type: 'function',
+    inputs: [
+      { name: 'wrappedToken', internalType: 'contract IYearnTokenVault', type: 'address' },
+      { name: 'sender', internalType: 'address', type: 'address' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+      { name: 'outputReference', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'wrapYearn',
+    outputs: [],
+  },
+] as const
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xea66501df1a00261e3bb79d1e90444fc6a186b62)
+ */
+export const balancerV2BatchRelayerLibraryAddress = {
+  1: '0xeA66501dF1A00261E3bB79D1E90444fc6A186B62',
+} as const
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xea66501df1a00261e3bb79d1e90444fc6a186b62)
+ */
+export const balancerV2BatchRelayerLibraryConfig = {
+  address: balancerV2BatchRelayerLibraryAddress,
+  abi: balancerV2BatchRelayerLibraryABI,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // BalancerV2ComposableStablePoolV5
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2912,6 +3851,69 @@ export const erc20ABI = [
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // React
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link balancerMinterABI}__.
+ *
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x239e55F427D44C3cc793f49bFB507ebe76638a2b)
+ */
+export function useBalancerMinterRead<
+  TFunctionName extends string,
+  TSelectData = ReadContractResult<typeof balancerMinterABI, TFunctionName>
+>(
+  config: Omit<
+    UseContractReadConfig<typeof balancerMinterABI, TFunctionName, TSelectData>,
+    'abi' | 'address'
+  > & { chainId?: keyof typeof balancerMinterAddress } = {} as any
+) {
+  return useContractRead({
+    abi: balancerMinterABI,
+    address: balancerMinterAddress[1],
+    ...config,
+  } as UseContractReadConfig<typeof balancerMinterABI, TFunctionName, TSelectData>)
+}
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link balancerV2BalancerRelayerABI}__.
+ *
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x35Cea9e57A393ac66Aaa7E25C391D52C74B5648f)
+ */
+export function useBalancerV2BalancerRelayerRead<
+  TFunctionName extends string,
+  TSelectData = ReadContractResult<typeof balancerV2BalancerRelayerABI, TFunctionName>
+>(
+  config: Omit<
+    UseContractReadConfig<typeof balancerV2BalancerRelayerABI, TFunctionName, TSelectData>,
+    'abi' | 'address'
+  > & { chainId?: keyof typeof balancerV2BalancerRelayerAddress } = {} as any
+) {
+  return useContractRead({
+    abi: balancerV2BalancerRelayerABI,
+    address: balancerV2BalancerRelayerAddress[1],
+    ...config,
+  } as UseContractReadConfig<typeof balancerV2BalancerRelayerABI, TFunctionName, TSelectData>)
+}
+
+/**
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link balancerV2BatchRelayerLibraryABI}__.
+ *
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xea66501df1a00261e3bb79d1e90444fc6a186b62)
+ */
+export function useBalancerV2BatchRelayerLibraryRead<
+  TFunctionName extends string,
+  TSelectData = ReadContractResult<typeof balancerV2BatchRelayerLibraryABI, TFunctionName>
+>(
+  config: Omit<
+    UseContractReadConfig<typeof balancerV2BatchRelayerLibraryABI, TFunctionName, TSelectData>,
+    'abi' | 'address'
+  > & { chainId?: keyof typeof balancerV2BatchRelayerLibraryAddress } = {} as any
+) {
+  return useContractRead({
+    abi: balancerV2BatchRelayerLibraryABI,
+    address: balancerV2BatchRelayerLibraryAddress[1],
+    ...config,
+  } as UseContractReadConfig<typeof balancerV2BatchRelayerLibraryABI, TFunctionName, TSelectData>)
+}
 
 /**
  * Wraps __{@link useContractRead}__ with `abi` set to __{@link balancerV2ComposableStablePoolV5ABI}__.

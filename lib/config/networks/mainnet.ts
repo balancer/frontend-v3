@@ -33,6 +33,7 @@ const networkConfig: NetworkConfig = {
     balancer: {
       vaultV2: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
       relayerV6: '0x35Cea9e57A393ac66Aaa7E25C391D52C74B5648f',
+      minter: '0x239e55F427D44C3cc793f49bFB507ebe76638a2b',
     },
   },
 }
