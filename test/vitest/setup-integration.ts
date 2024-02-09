@@ -6,5 +6,5 @@ import { startFork } from '../anvil/anvil-runner'
 beforeAll(async () => {
   // By default all the integration tests use MAINNET
   // If not, they must explicitly call startFork(<networkName>)
-  startFork('MAINNET')
+  await startFork('MAINNET')
 })
