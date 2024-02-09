@@ -55,7 +55,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,
-      wethIsEth: true, //TODO: review this scenario
+      wethIsEth: false, // assuming we don't want to withdraw the native asset over the wrapped native asset for now.
     })
 
     return {
@@ -82,8 +82,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
       rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
       bptIn,
       kind: RemoveLiquidityKind.Proportional,
-      //TODO: review this case
-      // toNativeAsset: this.helpers.isNativeAssetIn(humanAmountsIn),
+      toNativeAsset: false, // assuming we don't want to withdraw the native asset over the wrapped native asset for now.
     }
   }
 }

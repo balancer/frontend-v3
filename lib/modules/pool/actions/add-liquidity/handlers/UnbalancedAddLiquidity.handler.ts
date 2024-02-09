@@ -55,6 +55,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   }
 
   public async buildCallData({
+    humanAmountsIn,
     account,
     slippagePercent,
     queryOutput,
@@ -67,7 +68,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,
-      wethIsEth: true,
+      wethIsEth: this.helpers.isNativeAssetIn(humanAmountsIn),
     })
 
     return {
