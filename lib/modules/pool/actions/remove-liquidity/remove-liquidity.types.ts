@@ -9,7 +9,7 @@ import { Address } from 'wagmi'
 // There are other kinds but we only support two of them
 export enum RemoveLiquidityType {
   Proportional = SdkRemoveLiquidityKind.Proportional,
-  SingleToken = SdkRemoveLiquidityKind.SingleToken,
+  SingleToken = SdkRemoveLiquidityKind.SingleTokenExactIn,
 }
 
 /*
