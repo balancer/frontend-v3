@@ -5,7 +5,7 @@ import {
   aPhantomStablePoolMock,
   aWjAuraWethPoolElementMock,
 } from '@/test/msw/builders/gqlPoolElement.builders'
-import { defaultTestUserAccount } from '@/test/utils/wagmi'
+import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { HumanAmount } from '@balancer/sdk'
 import { Address } from 'viem'
 import { HumanAmountIn } from '../../liquidity-types'

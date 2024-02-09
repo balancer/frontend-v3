@@ -1,7 +1,7 @@
 import networkConfig from '@/lib/config/networks/mainnet'
 import { balAddress, wETHAddress } from '@/lib/debug-helpers'
 import { aBalWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
-import { defaultTestUserAccount } from '@/test/utils/wagmi'
+import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { Pool } from '../../../usePool'
 import { QueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquidity.types'
 import { SingleTokenRemoveLiquidityHandler } from './SingleTokenRemoveLiquidity.handler'

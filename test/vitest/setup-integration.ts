@@ -1,9 +1,10 @@
-import { ChainId } from '@balancer/sdk'
-import { setWagmiDefaultRpcUrlForTests } from '../utils/wagmi'
+import { startFork } from '../anvil/anvil-runner'
 
 /*
   Specific setup for integration tests (that it is not needed in unit tests)
 */
-const port = 8555
-
-beforeAll(() => setWagmiDefaultRpcUrlForTests(ChainId.MAINNET, `http://127.0.0.1:${port}/`))
+beforeAll(async () => {
+  // By default all the integration tests use MAINNET
+  // If not, they must explicitly call startFork(<networkName>)
+  startFork('MAINNET')
+})

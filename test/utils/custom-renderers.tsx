@@ -31,10 +31,12 @@ import {
 import { aGqlPoolElementMock } from '../msw/builders/gqlPoolElement.builders'
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
-import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
+import { createWagmiTestConfig } from './wagmi/wagmi-test-setup'
 import { RemoveLiquidityProvider } from '@/lib/modules/pool/actions/remove-liquidity/useRemoveLiquidity'
 import { UserAccountProvider } from '@/lib/modules/web3/useUserAccount'
 import { ReactQueryClientProvider } from '@/app/react-query.provider'
+import { defaultTestUserAccount } from '../anvil/anvil-setup'
+import { createMockConnector } from './wagmi/wagmi-mock-connectors'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -152,7 +154,7 @@ export function testManagedTransaction<
  */
 export async function useConnectTestAccount() {
   function useConnectWallet() {
-    const config = { connector: mainnetMockConnector }
+    const config = { connector: createMockConnector('MAINNET') }
     return {
       account: useAccount(),
       connect: useConnect(config),

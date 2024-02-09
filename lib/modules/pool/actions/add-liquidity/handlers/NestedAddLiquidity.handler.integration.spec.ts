@@ -1,12 +1,13 @@
 /* eslint-disable max-len */
 import networkConfig from '@/lib/config/networks/mainnet'
 import { daiAddress, usdcAddress, usdtAddress, wETHAddress } from '@/lib/debug-helpers'
-import { defaultTestUserAccount, testPublicClient } from '@/test/utils/wagmi'
+import { testPublicClient } from '@/test/utils/wagmi/wagmi-test-setup'
 import { nestedPoolMock } from '../../../__mocks__/nestedPoolMock'
 import { Pool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
 import { NestedAddLiquidityHandler } from './NestedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
+import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 
 function selectNestedHandler(pool: Pool) {
   return selectAddLiquidityHandler(pool) as NestedAddLiquidityHandler

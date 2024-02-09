@@ -13,6 +13,9 @@ export const daiAddress = '0x6b175474e89094c44da98b954eedeac495271d0f' as const
 export const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as const
 export const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7' as const
 
+export const ethAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' as const
+export const maticAddress = '0x0000000000000000000000000000000000001010' as const
+
 export const nested50WETH_50_3poolId =
   '0x08775ccb6674d6bdceb0797c364c2653ed84f3840002000000000000000004f0' as const //50WETH-50-3pool
 
