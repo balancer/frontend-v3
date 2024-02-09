@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import { defaultTestUserAccount } from '@/test/utils/wagmi'
 import { poolId } from '@/lib/debug-helpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { addLiquidityKeys } from './add-liquidity-keys'
+import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 
 test('Generates expected query keys', () => {
   const humanAmountsIn: HumanAmountIn[] = [

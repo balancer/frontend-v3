@@ -4,7 +4,8 @@ import {
   toGqlWeighedPoolMock,
 } from '@/test/msw/builders/gqlPoolElement.builders'
 import { testHook } from '@/test/utils/custom-renderers'
-import { defaultTestUserAccount, testPublicClient } from '@/test/utils/wagmi'
+import { testPublicClient } from '@/test/utils/wagmi/wagmi-test-setup'
+import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { ChainId } from '@balancer/sdk'
 import { waitFor } from '@testing-library/react'
 import { useOnchainUserPoolBalances } from './useOnchainUserPoolBalances'

@@ -14,7 +14,9 @@ const integrationTestOptions: Partial<InlineConfig> = {
   globalSetup: ['./test/anvil/anvil-global-setup.ts'],
   testTimeout: 20_000,
   // Consider disabling threads if we detect problems with anvil
-  // threads: false,
+  // poolOptions: {
+  //   threads: { singleThread: true },
+  // },
   retry: 1,
   // Uncomment the next line to exclude test for debug reasons
   // exclude: ['lib/modules/tokens/useTokenBalances.integration.spec.ts', 'node_modules', 'dist'],
