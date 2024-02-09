@@ -162,6 +162,7 @@ export function SwapForm() {
       </Center>
       <TokenSelectModal
         tokens={tokenSelectTokens}
+        chain={selectedChain}
         isOpen={tokenSelectDisclosure.isOpen}
         onOpen={tokenSelectDisclosure.onOpen}
         onClose={tokenSelectDisclosure.onClose}

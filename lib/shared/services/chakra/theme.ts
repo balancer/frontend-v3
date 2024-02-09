@@ -1299,7 +1299,15 @@ export const balTheme = {
     },
     Tag: {
       baseStyle: {
-        bg: 'background: #EFEDE6',
+        container: {
+          background: 'background.card.level1',
+          shadow: 'md',
+          borderColor: 'border.base',
+          borderWidth: '1px',
+          borderRadius: 'full',
+          color: 'font.primary',
+          fontWeight: 'semibold',
+        },
       },
     },
   },
