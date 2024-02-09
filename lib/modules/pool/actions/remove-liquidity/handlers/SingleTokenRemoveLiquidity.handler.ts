@@ -7,7 +7,7 @@ import {
   PriceImpactAmount,
   RemoveLiquidity,
   RemoveLiquidityKind,
-  RemoveLiquiditySingleTokenInput,
+  RemoveLiquiditySingleTokenExactInInput,
   Slippage,
 } from '@balancer/sdk'
 import { Address, parseEther } from 'viem'
@@ -77,6 +77,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,
+      wethIsEth: false, // assuming we don't want to withdraw the native asset over the wrapped native asset for now.
     })
 
     return {
@@ -94,7 +95,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
   private constructSdkInput(
     humanBptIn: HumanAmount,
     tokenOut: Address
-  ): RemoveLiquiditySingleTokenInput {
+  ): RemoveLiquiditySingleTokenExactInInput {
     const bptInInputAmount: InputAmount = {
       rawAmount: parseEther(humanBptIn),
       decimals: BPT_DECIMALS,
@@ -105,10 +106,9 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
       chainId: this.helpers.chainId,
       rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
       bptIn: bptInInputAmount,
-      kind: RemoveLiquidityKind.SingleToken,
+      kind: RemoveLiquidityKind.SingleTokenExactIn,
       tokenOut,
-      //TODO: review this case
-      // toNativeAsset: this.helpers.isNativeAssetIn(humanAmountsIn),
+      toNativeAsset: false, // assuming we don't want to withdraw the native asset over the wrapped native asset for now.
     }
   }
 }
