@@ -4,7 +4,7 @@ import {
   aBalWethPoolElementMock,
   aPhantomStablePoolMock,
 } from '@/test/msw/builders/gqlPoolElement.builders'
-import { defaultTestUserAccount } from '@/test/utils/wagmi'
+import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { Pool } from '../../../usePool'
 import { QueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquidity.types'
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
