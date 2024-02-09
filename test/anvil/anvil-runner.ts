@@ -34,7 +34,7 @@ function getAnvilOptions(
 
 /*
     Starts an anvil fork with the given options.
-    In vitest, each thread is assigned a unique, numerical id (`process.env.VITEST_JOB_ID`).
+    In vitest, each thread is assigned a unique, numerical id (`process.env.WORKER_JOB_ID`).
     When jobId is provided, the fork uses this id to create a different local rpc url (e.g. `http://127.0.0.1:<8545+jobId>/`
     so that tests can be run in parallel (depending on the number of threads of the host machine)
 */
@@ -63,13 +63,13 @@ anvil --fork-url https://eth-mainnet.alchemyapi.io/v2/<your-key> --port 8545 --f
 
   const rpcUrl = getTestRpcUrl(networkName)
 
-  if (verbose) {
-    console.log('🛠️  Starting anvil', {
-      networkName,
-      port,
-      forkBlockNumber: blockNumber ?? anvilOptions.forkBlockNumber,
-    })
-  }
+  // if (verbose) {
+  console.log('🛠️  Starting anvil', {
+    networkName,
+    port,
+    forkBlockNumber: blockNumber ?? anvilOptions.forkBlockNumber,
+  })
+  // }
   try {
     await anvil.start()
   } catch (e) {
