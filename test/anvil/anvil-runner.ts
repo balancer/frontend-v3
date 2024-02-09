@@ -63,13 +63,13 @@ anvil --fork-url https://eth-mainnet.alchemyapi.io/v2/<your-key> --port 8545 --f
 
   const rpcUrl = getTestRpcUrl(networkName)
 
-  // if (verbose) {
-  console.log('🛠️  Starting anvil', {
-    networkName,
-    port,
-    forkBlockNumber: blockNumber ?? anvilOptions.forkBlockNumber,
-  })
-  // }
+  if (verbose) {
+    console.log('🛠️  Starting anvil', {
+      networkName,
+      port,
+      forkBlockNumber: blockNumber ?? anvilOptions.forkBlockNumber,
+    })
+  }
   try {
     await anvil.start()
   } catch (e) {
