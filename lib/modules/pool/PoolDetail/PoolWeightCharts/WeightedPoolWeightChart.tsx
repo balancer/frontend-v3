@@ -73,11 +73,17 @@ export default function WeightedPoolWeightChart({
       legend: {
         show: false,
       },
+      grid: {
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      },
       series: [
         {
           name: 'Access From',
           type: 'pie',
-          radius: '80%',
+          radius: ['55%', '80%'],
           itemStyle: {
             borderColor: '#4F5764',
             borderWidth: 2.5,
@@ -112,23 +118,21 @@ export default function WeightedPoolWeightChart({
   }, [pool])
 
   return (
-    <VStack spacing="6">
-      <Box
-        width={chartSizeValues.boxWidth}
-        height={chartSizeValues.boxHeight}
-        mt="-8"
-        position="relative"
-      >
+    <VStack>
+      <Box width={chartSizeValues.boxWidth} height={chartSizeValues.boxHeight} position="relative">
         <Box
           as={motion.div}
           rounded="full"
           bg="white"
           position="absolute"
-          top={chartSizeValues.haloTop}
-          left={chartSizeValues.haloLeft}
           width={chartSizeValues.haloWidth}
           height={chartSizeValues.haloHeigth}
-          transform="translateY(0)"
+          transform="translateY(-50%)"
+          bottom="0"
+          top="50%"
+          left="0"
+          right="0"
+          mx="auto"
           zIndex={4}
           display="flex"
           justifyContent="center"
@@ -138,12 +142,17 @@ export default function WeightedPoolWeightChart({
         >
           <PoolWeightChartChainIcon chain={chain} isChartLoaded={isChartLoaded} isSmall={isSmall} />
         </Box>
-        <Box width="full" height="full">
-          <ReactECharts option={chartOption} onEvents={{}} ref={eChartsRef} />
+        <Box width={chartSizeValues.boxWidth} height={chartSizeValues.boxHeight}>
+          <ReactECharts
+            style={{ width: chartSizeValues.boxWidth, height: chartSizeValues.boxHeight }}
+            option={chartOption}
+            onEvents={{}}
+            ref={eChartsRef}
+          />
         </Box>
       </Box>
       {hasLegend && (
-        <HStack spacing="6">
+        <HStack mt="-4" spacing="6">
           {pool.tokens.map((token, i) => {
             return (
               <Box
