@@ -4,7 +4,7 @@ import { groupBy, keyBy, set } from 'lodash'
 import { ContractFunctionConfig } from 'viem'
 
 import { multicall } from 'wagmi/actions'
-import { chainToIdMap } from '../../chains/chains.constants'
+import { getChainId } from '@/lib/config/app.config'
 
 export type ChainContractConfig = ContractFunctionConfig & { chain: GqlChain; id: string }
 
@@ -26,7 +26,7 @@ export function useMulticall(multicallRequests: ChainContractConfig[]) {
         queryFn: async () => {
           const results = await multicall({
             contracts: multicalls,
-            chainId: chainToIdMap[chain as GqlChain],
+            chainId: getChainId(chain as GqlChain),
           })
 
           // map the result to its id based on the call index
