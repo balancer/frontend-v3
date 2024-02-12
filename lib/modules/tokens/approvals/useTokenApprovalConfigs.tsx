@@ -20,6 +20,7 @@ export type Params = {
   chain: GqlChain
   approvalAmounts: RawAmount[]
   actionType: ApprovalAction
+  symbol?: string // for bpt approval
 }
 
 /*
@@ -30,6 +31,7 @@ export function useTokenApprovalConfigs({
   chain,
   approvalAmounts,
   actionType,
+  symbol,
 }: Params): StepConfig[] {
   const { userAddress } = useUserAccount()
 
@@ -52,6 +54,7 @@ export function useTokenApprovalConfigs({
       actionType,
       chain,
       spenderAddress,
+      symbol,
     }
     return buildTokenApprovalConfig(props)
   })

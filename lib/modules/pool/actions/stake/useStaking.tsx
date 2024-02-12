@@ -19,7 +19,7 @@ export const humanAmountInVar = makeVar<HumanAmountIn | null>(null)
 
 export function useStaking() {
   const { userAddress, isConnected } = useUserAccount()
-  const { pool } = usePool()
+  const { pool, isLoading } = usePool()
   const { isDisabled, disabledReason } = isDisabledWithReason([
     !isConnected,
     LABELS.walletNotConnected,
@@ -52,6 +52,7 @@ export function useStaking() {
     chain: pool.chain,
     approvalAmounts: [amountToApprove],
     actionType: 'Staking',
+    symbol: pool.symbol, // for bpt approval
   })
 
   const stepConfigs = [...bptApprovalStepConfig, stakeConfig]

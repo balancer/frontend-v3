@@ -15,6 +15,7 @@ export type ApproveTokenProps = {
   spenderAddress: Address
   actionType: ApprovalAction
   chain: GqlChain
+  symbol?: string // for bpt approval
 }
 
 export function useConstructApproveTokenStep({
@@ -23,6 +24,7 @@ export function useConstructApproveTokenStep({
   spenderAddress,
   actionType,
   chain,
+  symbol,
 }: ApproveTokenProps) {
   const { refetchAllowances, isAllowancesLoading, allowanceFor } = tokenAllowances
   const { getToken } = useTokens()
@@ -35,7 +37,7 @@ export function useConstructApproveTokenStep({
 
   const labelArgs: TokenApprovalLabelArgs = {
     actionType,
-    symbol: token ? token.symbol : 'Unknown',
+    symbol: symbol ?? (token ? token.symbol : 'Unknown'),
   }
   const tokenApprovalLabels = buildTokenApprovalLabels(labelArgs)
 
