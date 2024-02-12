@@ -3,7 +3,6 @@ import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTr
 import { TransactionLabels, FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Address } from 'viem'
-import { AbiMapType } from '../web3/contracts/AbiMap'
 
 function buildStakingDepositLabels(staking?: GqlPoolStaking | null): TransactionLabels {
   const labels: TransactionLabels = {
