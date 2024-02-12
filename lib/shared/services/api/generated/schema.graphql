@@ -1027,30 +1027,22 @@ type GqlSorGetBatchSwapForTokensInResponse {
   tokenOutAmount: AmountHumanReadable!
 }
 
-type GqlSorGetSwapPaths {
+type GqlSorGetSwaps {
   effectivePrice: AmountHumanReadable!
   effectivePriceReversed: AmountHumanReadable!
-  paths: [GqlSorPath!]!
   priceImpact: AmountHumanReadable!
   returnAmount: AmountHumanReadable!
   returnAmountScaled: BigDecimal!
   routes: [GqlSorSwapRoute!]!
   swapAmount: AmountHumanReadable!
   swapAmountScaled: BigDecimal!
+  swapType: GqlSorSwapType!
   swaps: [GqlSorSwap!]!
-
-  """
-  The token address of the tokenIn provided
-  """
+  tokenAddresses: [String!]!
   tokenIn: String!
   tokenInAmount: AmountHumanReadable!
-
-  """
-  The token address of the tokenOut provided
-  """
   tokenOut: String!
   tokenOutAmount: AmountHumanReadable!
-  vaultVersion: Int!
 }
 
 type GqlSorGetSwapsResponse {
@@ -1362,17 +1354,10 @@ type Query {
   protocolMetricsChain(chain: GqlChain): GqlProtocolMetricsChain!
   sftmxGetStakingData: GqlSftmxStakingData!
   sftmxGetWithdrawalRequests(user: String!): [GqlSftmxWithdrawalRequests!]!
-
-  """
-  Get swap quote from the SOR v2 for the V2 vault
-  """
-  sorGetSwapPaths(
-    """
-    The Chain to query
-    """
-    chain: GqlChain!
-    queryBatchSwap: Boolean
+  sorGetSwaps(
+    chain: GqlChain
     swapAmount: BigDecimal!
+    swapOptions: GqlSorSwapOptionsInput!
     swapType: GqlSorSwapType!
 
     """
@@ -1380,20 +1365,15 @@ type Query {
     """
     tokenIn: String!
     tokenOut: String!
-    useVaultVersion: Int
-  ): GqlSorGetSwapPaths!
-
-  """
-  Get swap quote from the SOR, queries both the old and new SOR
-  """
-  sorGetSwaps(
-    chain: GqlChain
+  ): GqlSorGetSwapsResponse!
+  sorV2GetSwaps(
+    chain: GqlChain!
     swapAmount: BigDecimal!
     swapOptions: GqlSorSwapOptionsInput!
     swapType: GqlSorSwapType!
     tokenIn: String!
     tokenOut: String!
-  ): GqlSorGetSwapsResponse!
+  ): GqlSorGetSwaps!
   tokenGetCandlestickChartData(
     address: String!
     chain: GqlChain
