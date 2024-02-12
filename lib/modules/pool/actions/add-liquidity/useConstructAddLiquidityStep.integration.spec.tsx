@@ -1,15 +1,10 @@
 /* eslint-disable max-len */
-import { poolId, wETHAddress } from '@/lib/debug-helpers'
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import {
   DefaultAddLiquidityTestProvider,
   buildDefaultPoolTestProvider,
-  testHook,
 } from '@/test/utils/custom-renderers'
-import { act, waitFor } from '@testing-library/react'
 import { PropsWithChildren } from 'react'
-import { useAddLiquidity } from './useAddLiquidity'
-import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
 
 const PoolProvider = buildDefaultPoolTestProvider(aWjAuraWethPoolElementMock())
 
