@@ -20,6 +20,7 @@ import {
   optimism,
   polygon,
   polygonZkEvm,
+  sepolia,
 } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
@@ -42,6 +43,7 @@ export const supportedChains = [
   optimism,
   polygon,
   polygonZkEvm,
+  sepolia,
 ]
 
 export const { chains, publicClient } = configureChains(supportedChains, [
