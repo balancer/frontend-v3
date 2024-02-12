@@ -921,6 +921,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       }
     }
     ... on GqlPoolFx {
+      alpha
       beta
       delta
       epsilon
