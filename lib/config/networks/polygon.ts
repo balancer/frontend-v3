@@ -27,6 +27,7 @@ const networkConfig: NetworkConfig = {
       minter: '0x47B489bf5836f83ABD928C316F8e39bC0587B020',
     },
   },
+  minConfirmations: 13,
 }
 
 export default networkConfig
