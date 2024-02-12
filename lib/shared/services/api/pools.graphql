@@ -18,6 +18,7 @@ query GetPools(
     chain
     createTime
     decimals
+    vaultVersion
     displayTokens {
       id
       address
@@ -139,6 +140,7 @@ query GetFeaturedPools($chains: [GqlChain!]!) {
       createTime
       type
       chain
+      vaultVersion
       dynamicData {
         poolId
         swapEnabled

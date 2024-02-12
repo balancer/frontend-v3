@@ -11,6 +11,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
     createTime
     type
     chain
+    vaultVersion
     dynamicData {
       poolId
       swapEnabled

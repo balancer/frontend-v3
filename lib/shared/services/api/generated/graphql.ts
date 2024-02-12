@@ -1104,23 +1104,25 @@ export type GqlSorGetBatchSwapForTokensInResponse = {
   tokenOutAmount: Scalars['AmountHumanReadable']['output']
 }
 
-export type GqlSorGetSwaps = {
-  __typename: 'GqlSorGetSwaps'
+export type GqlSorGetSwapPaths = {
+  __typename: 'GqlSorGetSwapPaths'
   effectivePrice: Scalars['AmountHumanReadable']['output']
   effectivePriceReversed: Scalars['AmountHumanReadable']['output']
+  paths: Array<GqlSorPath>
   priceImpact: Scalars['AmountHumanReadable']['output']
   returnAmount: Scalars['AmountHumanReadable']['output']
   returnAmountScaled: Scalars['BigDecimal']['output']
   routes: Array<GqlSorSwapRoute>
   swapAmount: Scalars['AmountHumanReadable']['output']
   swapAmountScaled: Scalars['BigDecimal']['output']
-  swapType: GqlSorSwapType
   swaps: Array<GqlSorSwap>
-  tokenAddresses: Array<Scalars['String']['output']>
+  /** The token address of the tokenIn provided */
   tokenIn: Scalars['String']['output']
   tokenInAmount: Scalars['AmountHumanReadable']['output']
+  /** The token address of the tokenOut provided */
   tokenOut: Scalars['String']['output']
   tokenOutAmount: Scalars['AmountHumanReadable']['output']
+  vaultVersion: Scalars['Int']['output']
 }
 
 export type GqlSorGetSwapsResponse = {
@@ -1144,6 +1146,15 @@ export type GqlSorGetSwapsResponse = {
   tokenInAmount: Scalars['AmountHumanReadable']['output']
   tokenOut: Scalars['String']['output']
   tokenOutAmount: Scalars['AmountHumanReadable']['output']
+}
+
+export type GqlSorPath = {
+  __typename: 'GqlSorPath'
+  inputAmountRaw: Scalars['String']['output']
+  outputAmountRaw: Scalars['String']['output']
+  pools: Array<Maybe<Scalars['String']['output']>>
+  tokens: Array<Maybe<Token>>
+  vaultVersion: Scalars['Int']['output']
 }
 
 export type GqlSorSwap = {
@@ -1479,8 +1490,10 @@ export type Query = {
   protocolMetricsChain: GqlProtocolMetricsChain
   sftmxGetStakingData: GqlSftmxStakingData
   sftmxGetWithdrawalRequests: Array<GqlSftmxWithdrawalRequests>
+  /** Get swap quote from the SOR v2 for the V2 vault */
+  sorGetSwapPaths: GqlSorGetSwapPaths
+  /** Get swap quote from the SOR, queries both the old and new SOR */
   sorGetSwaps: GqlSorGetSwapsResponse
-  sorV2GetSwaps: GqlSorGetSwaps
   tokenGetCandlestickChartData: Array<GqlTokenCandlestickChartDataItem>
   tokenGetCurrentPrices: Array<GqlTokenPrice>
   tokenGetHistoricalPrices: Array<GqlHistoricalTokenPrice>
@@ -1588,17 +1601,18 @@ export type QuerySftmxGetWithdrawalRequestsArgs = {
   user: Scalars['String']['input']
 }
 
-export type QuerySorGetSwapsArgs = {
-  chain?: InputMaybe<GqlChain>
+export type QuerySorGetSwapPathsArgs = {
+  chain: GqlChain
+  queryBatchSwap?: InputMaybe<Scalars['Boolean']['input']>
   swapAmount: Scalars['BigDecimal']['input']
-  swapOptions: GqlSorSwapOptionsInput
   swapType: GqlSorSwapType
   tokenIn: Scalars['String']['input']
   tokenOut: Scalars['String']['input']
+  useVaultVersion?: InputMaybe<Scalars['Int']['input']>
 }
 
-export type QuerySorV2GetSwapsArgs = {
-  chain: GqlChain
+export type QuerySorGetSwapsArgs = {
+  chain?: InputMaybe<GqlChain>
   swapAmount: Scalars['BigDecimal']['input']
   swapOptions: GqlSorSwapOptionsInput
   swapType: GqlSorSwapType
@@ -1681,6 +1695,12 @@ export type QueryUserGetSwapsArgs = {
   first?: InputMaybe<Scalars['Int']['input']>
   poolId: Scalars['String']['input']
   skip?: InputMaybe<Scalars['Int']['input']>
+}
+
+export type Token = {
+  __typename: 'Token'
+  address: Scalars['String']['output']
+  decimals: Scalars['Int']['output']
 }
 
 export type GetAppGlobalPollingDataQueryVariables = Exact<{ [key: string]: never }>
@@ -1794,6 +1814,7 @@ export type GetPoolQuery = {
         createTime: number
         type: GqlPoolType
         chain: GqlChain
+        vaultVersion: number
         tokens: Array<
           | {
               __typename: 'GqlPoolToken'
@@ -2150,6 +2171,7 @@ export type GetPoolQuery = {
         createTime: number
         type: GqlPoolType
         chain: GqlChain
+        vaultVersion: number
         tokens: Array<{
           __typename: 'GqlPoolToken'
           id: string
@@ -2359,6 +2381,7 @@ export type GetPoolQuery = {
         createTime: number
         type: GqlPoolType
         chain: GqlChain
+        vaultVersion: number
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
           poolId: string
@@ -2573,6 +2596,7 @@ export type GetPoolQuery = {
         symbol: string
         createTime: number
         chain: GqlChain
+        vaultVersion: number
         tokens: Array<
           | {
               __typename: 'GqlPoolToken'
@@ -2931,6 +2955,7 @@ export type GetPoolQuery = {
         createTime: number
         type: GqlPoolType
         chain: GqlChain
+        vaultVersion: number
         tokens: Array<{
           __typename: 'GqlPoolToken'
           id: string
@@ -3141,6 +3166,7 @@ export type GetPoolQuery = {
         createTime: number
         type: GqlPoolType
         chain: GqlChain
+        vaultVersion: number
         tokens: Array<
           | {
               __typename: 'GqlPoolToken'
@@ -3495,6 +3521,7 @@ export type GetPoolQuery = {
         createTime: number
         type: GqlPoolType
         chain: GqlChain
+        vaultVersion: number
         tokens: Array<{
           __typename: 'GqlPoolToken'
           id: string
@@ -3705,6 +3732,7 @@ export type GetPoolQuery = {
         createTime: number
         type: GqlPoolType
         chain: GqlChain
+        vaultVersion: number
         tokens: Array<{
           __typename: 'GqlPoolToken'
           id: string
@@ -3915,6 +3943,7 @@ export type GetPoolQuery = {
         createTime: number
         type: GqlPoolType
         chain: GqlChain
+        vaultVersion: number
         tokens: Array<
           | {
               __typename: 'GqlPoolToken'
@@ -4451,6 +4480,7 @@ export type GetPoolsQuery = {
     chain: GqlChain
     createTime: number
     decimals: number
+    vaultVersion: number
     factory?: string | null
     id: string
     name: string
@@ -4552,6 +4582,7 @@ export type GetFeaturedPoolsQuery = {
           createTime: number
           type: GqlPoolType
           chain: GqlChain
+          vaultVersion: number
           tokens: Array<
             | {
                 __typename: 'GqlPoolToken'
@@ -4900,6 +4931,7 @@ export type GetFeaturedPoolsQuery = {
           createTime: number
           type: GqlPoolType
           chain: GqlChain
+          vaultVersion: number
           tokens: Array<{
             __typename: 'GqlPoolToken'
             id: string
@@ -5101,6 +5133,7 @@ export type GetFeaturedPoolsQuery = {
           createTime: number
           type: GqlPoolType
           chain: GqlChain
+          vaultVersion: number
           dynamicData: {
             __typename: 'GqlPoolDynamicData'
             poolId: string
@@ -5307,6 +5340,7 @@ export type GetFeaturedPoolsQuery = {
           symbol: string
           createTime: number
           chain: GqlChain
+          vaultVersion: number
           tokens: Array<
             | {
                 __typename: 'GqlPoolToken'
@@ -5657,6 +5691,7 @@ export type GetFeaturedPoolsQuery = {
           createTime: number
           type: GqlPoolType
           chain: GqlChain
+          vaultVersion: number
           tokens: Array<{
             __typename: 'GqlPoolToken'
             id: string
@@ -5859,6 +5894,7 @@ export type GetFeaturedPoolsQuery = {
           createTime: number
           type: GqlPoolType
           chain: GqlChain
+          vaultVersion: number
           tokens: Array<
             | {
                 __typename: 'GqlPoolToken'
@@ -6205,6 +6241,7 @@ export type GetFeaturedPoolsQuery = {
           createTime: number
           type: GqlPoolType
           chain: GqlChain
+          vaultVersion: number
           tokens: Array<{
             __typename: 'GqlPoolToken'
             id: string
@@ -6407,6 +6444,7 @@ export type GetFeaturedPoolsQuery = {
           createTime: number
           type: GqlPoolType
           chain: GqlChain
+          vaultVersion: number
           tokens: Array<{
             __typename: 'GqlPoolToken'
             id: string
@@ -6609,6 +6647,7 @@ export type GetFeaturedPoolsQuery = {
           createTime: number
           type: GqlPoolType
           chain: GqlChain
+          vaultVersion: number
           tokens: Array<
             | {
                 __typename: 'GqlPoolToken'
@@ -7331,6 +7370,7 @@ export const GetPoolDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'createTime' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'type' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'chain' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'vaultVersion' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'dynamicData' },
@@ -11210,6 +11250,7 @@ export const GetPoolsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'chain' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'createTime' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'vaultVersion' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'displayTokens' },
@@ -11610,6 +11651,7 @@ export const GetFeaturedPoolsDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'createTime' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'type' } },
                       { kind: 'Field', name: { kind: 'Name', value: 'chain' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'vaultVersion' } },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'dynamicData' },
