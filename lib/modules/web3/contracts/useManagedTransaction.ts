@@ -53,14 +53,14 @@ export function useManagedTransaction<
   }
 
   // on successful submission to chain, add tx to cache
-  useOnTransactionSubmission(transactionLabels, writeQuery.data?.hash)
+  useOnTransactionSubmission({ labels: transactionLabels, hash: writeQuery.data?.hash })
 
   // on confirmation, update tx in tx cache
-  useOnTransactionConfirmation(
-    transactionLabels,
-    bundle.result.data?.status,
-    bundle.result.data?.transactionHash
-  )
+  useOnTransactionConfirmation({
+    labels: transactionLabels,
+    status: bundle.result.data?.status,
+    hash: bundle.result.data?.transactionHash,
+  })
 
   // if parent changes args, update here
   useEffect(() => {

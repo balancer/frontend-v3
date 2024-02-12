@@ -60,14 +60,14 @@ export function useManagedErc20Transaction<
   }
 
   // on successful submission to chain, add tx to cache
-  useOnTransactionSubmission(labels, writeQuery.data?.hash)
+  useOnTransactionSubmission({ labels, hash: writeQuery.data?.hash, chain })
 
   // on confirmation, update tx in tx cache
-  useOnTransactionConfirmation(
+  useOnTransactionConfirmation({
     labels,
-    bundle.result.data?.status,
-    bundle.result.data?.transactionHash
-  )
+    status: bundle.result.data?.status,
+    hash: bundle.result.data?.transactionHash,
+  })
 
   // if parent changes args, update here
   useEffect(() => {

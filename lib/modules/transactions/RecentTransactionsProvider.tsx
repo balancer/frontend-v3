@@ -25,6 +25,7 @@ export type TrackedTransaction = {
   toastId?: ToastId
   timestamp: number
   init?: string
+  chain?: string
 }
 
 type UpdateTrackedTransaction = Pick<TrackedTransaction, 'label' | 'description' | 'status'>
