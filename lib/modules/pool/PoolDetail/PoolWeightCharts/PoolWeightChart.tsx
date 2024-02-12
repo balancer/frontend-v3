@@ -1,9 +1,10 @@
 import { Box } from '@chakra-ui/react'
 import React from 'react'
 import WeightedPoolWeightChart from './WeightedPoolWeightChart'
-import { GqlChain, GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolStable, GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
 import { isBoosted, isStable } from '../../pool.helpers'
 import BoostedPoolWeightChart from './BoostedPoolWeightChart'
+import StablePoolWeightChart from './StablePoolWeightChart'
 
 interface PoolWeightChartProps {
   pool: GqlPoolUnion
@@ -14,8 +15,8 @@ interface PoolWeightChartProps {
 
 export interface ChartSizeValues {
   chartHeight: string
-  boxWidth: string
-  boxHeight: string
+  boxWidth: number
+  boxHeight: number
   haloTop: string
   haloLeft: string
   haloWidth: string
@@ -24,8 +25,8 @@ export interface ChartSizeValues {
 
 const smallSize: ChartSizeValues = {
   chartHeight: '150px',
-  boxWidth: '150px',
-  boxHeight: '150px',
+  boxWidth: 150,
+  boxHeight: 150,
   haloTop: '40%',
   haloLeft: '55px',
   haloWidth: '40px',
@@ -34,8 +35,8 @@ const smallSize: ChartSizeValues = {
 
 const normalSize: ChartSizeValues = {
   chartHeight: '',
-  boxWidth: '275px',
-  boxHeight: '275px',
+  boxWidth: 275,
+  boxHeight: 275,
   haloTop: '49%',
   haloLeft: '95px',
   haloWidth: '60px',
@@ -51,17 +52,28 @@ export default function PoolWeightChart({
   const chartSizeValues = isSmall ? smallSize : normalSize
 
   if (isBoosted(pool) || (isStable(pool.type) && pool.tokens.length === 3)) {
-    return <BoostedPoolWeightChart />
+    return (
+      <BoostedPoolWeightChart
+        pool={pool as GqlPoolStable}
+        chain={chain}
+        hasLegend={hasLegend}
+        isSmall={isSmall}
+      />
+    )
+  }
+  if (isStable(pool.type)) {
+    return (
+      <StablePoolWeightChart
+        pool={pool as GqlPoolStable}
+        chain={chain}
+        hasLegend={hasLegend}
+        isSmall={isSmall}
+      />
+    )
   }
   if (pool.__typename === 'GqlPoolWeighted') {
     return (
-      <WeightedPoolWeightChart
-        pool={pool}
-        chain={chain}
-        hasLegend={hasLegend}
-        chartSizeValues={chartSizeValues}
-        isSmall={isSmall}
-      />
+      <WeightedPoolWeightChart pool={pool} chain={chain} hasLegend={hasLegend} isSmall={isSmall} />
     )
   }
   return <Box minH="150px"></Box>

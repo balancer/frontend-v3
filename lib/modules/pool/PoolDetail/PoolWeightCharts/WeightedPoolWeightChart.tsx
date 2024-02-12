@@ -42,18 +42,37 @@ const colors = [
 interface WeightedPoolWeightChartProps {
   pool: GqlPoolWeighted
   chain: GqlChain
-  chartSizeValues: ChartSizeValues
   hasLegend?: boolean
   isSmall?: boolean
+}
+
+const smallSize: ChartSizeValues = {
+  chartHeight: '150px',
+  boxWidth: 150,
+  boxHeight: 150,
+  haloTop: '40%',
+  haloLeft: '55px',
+  haloWidth: '40px',
+  haloHeigth: '40px',
+}
+
+const normalSize: ChartSizeValues = {
+  chartHeight: '',
+  boxWidth: 275,
+  boxHeight: 275,
+  haloTop: '49%',
+  haloLeft: '95px',
+  haloWidth: '60px',
+  haloHeigth: '60px',
 }
 
 export default function WeightedPoolWeightChart({
   pool,
   chain,
-  chartSizeValues,
   hasLegend,
   isSmall,
 }: WeightedPoolWeightChartProps) {
+  const chartSizeValues = isSmall ? smallSize : normalSize
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const [isChartLoaded, setIsChartLoaded] = useState(false)
 
@@ -86,7 +105,7 @@ export default function WeightedPoolWeightChart({
           radius: ['55%', '80%'],
           itemStyle: {
             borderColor: '#4F5764',
-            borderWidth: 2.5,
+            borderWidth: 3.5,
           },
           label: {
             show: false,
@@ -119,7 +138,11 @@ export default function WeightedPoolWeightChart({
 
   return (
     <VStack>
-      <Box width={chartSizeValues.boxWidth} height={chartSizeValues.boxHeight} position="relative">
+      <Box
+        width={`${chartSizeValues.boxWidth}px`}
+        height={`${chartSizeValues.boxHeight}`}
+        position="relative"
+      >
         <Box
           as={motion.div}
           rounded="full"
@@ -142,9 +165,12 @@ export default function WeightedPoolWeightChart({
         >
           <PoolWeightChartChainIcon chain={chain} isChartLoaded={isChartLoaded} isSmall={isSmall} />
         </Box>
-        <Box width={chartSizeValues.boxWidth} height={chartSizeValues.boxHeight}>
+        <Box width={`${chartSizeValues.boxWidth}`} height={`${chartSizeValues.boxHeight}`}>
           <ReactECharts
-            style={{ width: chartSizeValues.boxWidth, height: chartSizeValues.boxHeight }}
+            style={{
+              width: `${chartSizeValues.boxWidth}ox`,
+              height: `${chartSizeValues.boxHeight}px`,
+            }}
             option={chartOption}
             onEvents={{}}
             ref={eChartsRef}
