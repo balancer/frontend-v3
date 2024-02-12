@@ -23,34 +23,12 @@ export interface ChartSizeValues {
   haloHeigth: string
 }
 
-const smallSize: ChartSizeValues = {
-  chartHeight: '150px',
-  boxWidth: 150,
-  boxHeight: 150,
-  haloTop: '40%',
-  haloLeft: '55px',
-  haloWidth: '40px',
-  haloHeigth: '40px',
-}
-
-const normalSize: ChartSizeValues = {
-  chartHeight: '',
-  boxWidth: 275,
-  boxHeight: 275,
-  haloTop: '49%',
-  haloLeft: '95px',
-  haloWidth: '60px',
-  haloHeigth: '60px',
-}
-
 export default function PoolWeightChart({
   pool,
   chain,
   hasLegend = true,
   isSmall = false,
 }: PoolWeightChartProps) {
-  const chartSizeValues = isSmall ? smallSize : normalSize
-
   if (isBoosted(pool) || (isStable(pool.type) && pool.tokens.length === 3)) {
     return (
       <BoostedPoolWeightChart

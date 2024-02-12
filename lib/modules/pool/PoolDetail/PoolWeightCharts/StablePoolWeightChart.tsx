@@ -1,14 +1,6 @@
-import { Box, HStack, VStack, Text, Grid } from '@chakra-ui/react'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import ReactECharts from 'echarts-for-react'
-import EChartsReactCore from 'echarts-for-react/lib/core'
-import * as echarts from 'echarts/core'
+import { Box, HStack, Text, Grid } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
-import {
-  GqlChain,
-  GqlPoolStable,
-  GqlPoolWeighted,
-} from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolStable } from '@/lib/shared/services/api/generated/graphql'
 import { ChartSizeValues } from './PoolWeightChart'
 import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 
@@ -111,6 +103,7 @@ export default function StablePoolWeightChart({
             {pool.tokens.map((_, i) => {
               return (
                 <Box
+                  key={`${pool.address}-token-weight-${i}`}
                   as={motion.div}
                   cursor="pointer"
                   width="full"
@@ -139,6 +132,7 @@ export default function StablePoolWeightChart({
             {pool.tokens.map((_, i) => {
               return (
                 <Box
+                  key={`${pool.address}-token-weight-${i}`}
                   as={motion.div}
                   cursor="pointer"
                   bgGradient={`linear(to-b, ${colors[i].from}, ${colors[i].to})`}

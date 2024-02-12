@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import * as echarts from 'echarts/core'
-import { usePool } from '../../usePool'
 import { motion } from 'framer-motion'
 import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 import { WeightedPoolWeightChartProps } from './StablePoolWeightChart'
@@ -174,7 +173,7 @@ export default function BoostedPoolWeightChart({
           width={chartSizeValues.haloWidth}
           height={chartSizeValues.haloHeigth}
         >
-          <PoolWeightChartChainIcon chain={chain} isChartLoaded={true} isSmall={isSmall} />
+          <PoolWeightChartChainIcon chain={chain} isChartLoaded={isChartLoaded} isSmall={isSmall} />
         </Box>
         <Box width="full" height="full" clipPath="polygon(50% 0, 100% 100%, 0 100%)">
           <ReactECharts option={chartOption} onEvents={{}} ref={eChartsRef} />
