@@ -925,7 +925,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       delta
       epsilon
       lambda
-      vaultVersion
       tokens {
         ... on GqlPoolToken {
           id
