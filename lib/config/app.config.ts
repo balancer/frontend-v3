@@ -44,4 +44,8 @@ export function getNativeAssetAddress(chainId: GqlChain | SupportedChainId) {
   return getNetworkConfig(chainId).tokens.nativeAsset.address
 }
 
+export function getChainName(chainId: GqlChain | SupportedChainId) {
+  return getNetworkConfig(chainId).name
+}
+
 export const DELEGATE_OWNER = '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b'

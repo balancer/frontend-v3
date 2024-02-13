@@ -1052,12 +1052,25 @@ export const balTheme = {
       },
     },
     Select: {
-      baseStyle: {},
+      baseStyle: {
+        field: {
+          background: 'background.card.level2',
+          fontWeight: 'bold',
+          color: 'font.primary',
+          shadow: 'md',
+          border: '0px solid transparent',
+          borderColor: 'transparent',
+          outline: 'none',
+        },
+        icon: {
+          color: 'font.link',
+        },
+      },
       variants: {
         secondary: {
           field: {
             background: 'background.button.secondary',
-            py: '1.5',
+            py: 'sm',
             fontSize: 'md',
             fontWeight: 'bold',
             pl: '2',
