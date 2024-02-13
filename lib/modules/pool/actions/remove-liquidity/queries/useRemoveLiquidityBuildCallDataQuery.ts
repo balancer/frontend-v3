@@ -8,6 +8,7 @@ import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
 import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { usePool } from '../../../usePool'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
+import { useRelayerSignature } from '@/lib/modules/relayer/useRelayerSignature'
 
 export type RemoveLiquidityBuildQueryResponse = ReturnType<
   typeof useRemoveLiquidityBuildCallDataQuery
@@ -19,6 +20,7 @@ export function useRemoveLiquidityBuildCallDataQuery() {
   const { slippage } = useUserSettings()
   const { pool } = usePool()
   const { humanBptIn, handler, simulationQuery, singleTokenOutAddress } = useRemoveLiquidity()
+  const { relayerApprovalSignature } = useRelayerSignature()
 
   const queryKey = removeLiquidityKeys.buildCallData({
     handler,
@@ -35,6 +37,7 @@ export function useRemoveLiquidityBuildCallDataQuery() {
       account: userAddress,
       slippagePercent: slippage,
       queryOutput,
+      relayerApprovalSignature,
     })
     console.log('Call data built:', res)
     return res
