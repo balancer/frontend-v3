@@ -17,6 +17,7 @@ import { AbiMap } from './AbiMap'
 import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
 export function useManagedTransaction<
   T extends typeof AbiMap,
@@ -53,7 +54,8 @@ export function useManagedTransaction<
   }
 
   // on successful submission to chain, add tx to cache
-  useOnTransactionSubmission({ labels: transactionLabels, hash: writeQuery.data?.hash })
+  const { chain } = useNetworkConfig()
+  useOnTransactionSubmission({ labels: transactionLabels, hash: writeQuery.data?.hash, chain })
 
   // on confirmation, update tx in tx cache
   useOnTransactionConfirmation({

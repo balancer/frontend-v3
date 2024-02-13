@@ -14,6 +14,7 @@ import {
 } from './contract.types'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
 export function useManagedSendTransaction(
   labels: TransactionLabels,
@@ -58,14 +59,15 @@ export function useManagedSendTransaction(
   }, [bundle.execution?.error, bundle.result?.error])
 
   // on successful submission to chain, add tx to cache
-  useOnTransactionSubmission(labels, writeQuery.data?.hash)
+  const { chain } = useNetworkConfig()
+  useOnTransactionSubmission({ labels, hash: writeQuery.data?.hash, chain })
 
   // on confirmation, update tx in tx cache
-  useOnTransactionConfirmation(
+  useOnTransactionConfirmation({
     labels,
-    bundle.result.data?.status,
-    bundle.result.data?.transactionHash
-  )
+    status: bundle.result.data?.status,
+    hash: bundle.result.data?.transactionHash,
+  })
 
   return {
     ...bundle,
