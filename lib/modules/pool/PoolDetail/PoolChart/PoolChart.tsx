@@ -1,5 +1,5 @@
 'use client'
-import { Box, Card, Center, Flex, HStack, Heading, Skeleton, Stack, Text } from '@chakra-ui/react'
+import { Box, Card, Flex, HStack, Heading, Skeleton, Stack, Text } from '@chakra-ui/react'
 import ReactECharts from 'echarts-for-react'
 
 import { PoolChartTypeTab, poolChartPeriods, usePoolCharts } from './usePoolCharts'
