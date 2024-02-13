@@ -8,6 +8,7 @@ import { Address } from 'viem'
 import { useTokens } from '../useTokens'
 import { TokenAmountToApprove } from './approval-rules'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { usePool } from '../../pool/usePool'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse
@@ -26,6 +27,7 @@ export function useConstructApproveTokenStep({
 }: ApproveTokenProps) {
   const { refetchAllowances, isAllowancesLoading, allowanceFor } = tokenAllowances
   const { getToken } = useTokens()
+  const { pool } = usePool()
 
   const [didRefetchAllowances, setDidRefetchAllowances] = useState(false)
 
@@ -35,7 +37,8 @@ export function useConstructApproveTokenStep({
 
   const labelArgs: TokenApprovalLabelArgs = {
     actionType,
-    symbol: token ? token.symbol : 'Unknown',
+    // if there is no token it must be a bpt, needs to be reconsidered if this assumption changes
+    symbol: (token && token?.symbol) ?? pool.symbol ?? 'Unknown',
   }
   const tokenApprovalLabels = buildTokenApprovalLabels(labelArgs)
 
