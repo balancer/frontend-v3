@@ -8,7 +8,8 @@ import { useDebounce } from 'use-debounce'
 import { Address } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { removeLiquidityKeys } from './remove-liquidity-keys'
-import { useQuery, UseQueryOptions } from '@tanstack/react-query'
+import { useQuery } from 'wagmi'
+import { UseQueryOptions } from '@tanstack/react-query'
 
 export type RemoveLiquiditySimulationQueryResult = ReturnType<
   typeof useRemoveLiquiditySimulationQuery
