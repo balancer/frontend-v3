@@ -24,6 +24,7 @@ export interface ContractsConfig {
     relayerV6: Address
     minter: Address
   }
+  feeDistributor?: Address
 }
 
 export type SupportedChainId = (typeof supportedChains)[number]['id']

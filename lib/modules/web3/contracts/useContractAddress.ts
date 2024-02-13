@@ -15,6 +15,6 @@ export type ContractPath = Paths<NetworkConfig['contracts']>
 export function useContractAddress(contractId: ContractPath) {
   const networkConfig = useNetworkConfig()
 
-  const address = get(networkConfig.contracts, contractId)
+  const address = get(networkConfig.contracts, contractId as string)
   return address
 }
