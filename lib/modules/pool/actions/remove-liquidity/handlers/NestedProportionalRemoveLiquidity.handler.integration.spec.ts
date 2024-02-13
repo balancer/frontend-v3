@@ -44,7 +44,7 @@ describe('When proportionally removing liquidity for a nested pool', () => {
     expect(wethTokenAmountOut.amount).toBeGreaterThan(0n)
   })
 
-  test.only('builds Tx Config', async () => {
+  test('builds Tx Config', async () => {
     const handler = selectNestedProportionalHandler(nestedPoolMock)
 
     const queryOutput = await handler.simulate(defaultQueryInput)
