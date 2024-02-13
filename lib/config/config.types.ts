@@ -36,6 +36,7 @@ export interface NetworkConfig {
   blockExplorerBaseUrl: string
   tokens: TokensConfig
   contracts: ContractsConfig
+  minConfirmations?: number
 }
 
 export interface Config {

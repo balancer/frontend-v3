@@ -17,6 +17,7 @@ import { AbiMap } from './AbiMap'
 import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
 export function useManagedTransaction<
   T extends typeof AbiMap,
@@ -34,6 +35,7 @@ export function useManagedTransaction<
   >
 ) {
   const [writeArgs, setWriteArgs] = useState(args)
+  const { minConfirmations } = useNetworkConfig()
 
   const prepareQuery = usePrepareContractWrite({
     abi: AbiMap[contractId] as Abi,
@@ -45,7 +47,10 @@ export function useManagedTransaction<
   })
 
   const writeQuery = useContractWrite(prepareQuery.config)
-  const transactionStatusQuery = useWaitForTransaction({ hash: writeQuery.data?.hash })
+  const transactionStatusQuery = useWaitForTransaction({
+    hash: writeQuery.data?.hash,
+    confirmations: minConfirmations,
+  })
   const bundle = {
     simulation: prepareQuery as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
