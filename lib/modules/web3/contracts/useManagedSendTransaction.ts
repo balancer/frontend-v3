@@ -59,8 +59,6 @@ export function useManagedSendTransaction(
     }
   }, [bundle.execution?.error, bundle.result?.error])
 
-  console.log({ writeQuery })
-
   // on successful submission to chain, add tx to cache
   useOnTransactionSubmission({
     labels,
