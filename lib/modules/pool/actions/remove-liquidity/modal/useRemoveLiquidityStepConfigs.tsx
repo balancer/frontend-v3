@@ -11,11 +11,7 @@ export function buildRemoveLiquidityConfig(
   onTransactionStateUpdate: OnTransactionStateUpdate
 ): StepConfig {
   function render() {
-    return (
-      <RemoveLiquidityButton
-        onTransactionStateUpdate={onTransactionStateUpdate}
-      ></RemoveLiquidityButton>
-    )
+    return <RemoveLiquidityButton onTransactionStateUpdate={onTransactionStateUpdate} />
   }
   return { render }
 }
