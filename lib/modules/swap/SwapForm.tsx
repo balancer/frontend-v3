@@ -29,6 +29,7 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { CgArrowsExchangeV } from 'react-icons/cg'
 import { Address } from 'viem'
 import { SwapPreviewModal } from './SwapPreviewModal'
+import { getChainName } from '@/lib/config/app.config'
 
 export function SwapForm() {
   const {
@@ -103,7 +104,7 @@ export function SwapForm() {
               >
                 {networkOptions.map(networkOption => (
                   <option key={networkOption} value={networkOption}>
-                    {networkOption}
+                    {getChainName(networkOption)}
                   </option>
                 ))}
               </Select>

@@ -1,5 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-
 import { HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { useTokens } from '../useTokens'

@@ -19,6 +19,7 @@ import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { usdtAbi } from './abi/UsdtAbi'
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
 type Erc20Abi = typeof erc20ABI
 export function useManagedErc20Transaction<
@@ -34,6 +35,7 @@ export function useManagedErc20Transaction<
   >
 ) {
   const [writeArgs, setWriteArgs] = useState(args)
+  const { minConfirmations } = useNetworkConfig()
 
   const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7'
   const isUsdt = isSameAddress(tokenAddress, usdtAddress)
@@ -52,7 +54,11 @@ export function useManagedErc20Transaction<
   })
 
   const writeQuery = useContractWrite(prepareQuery.config)
-  const transactionStatusQuery = useWaitForTransaction({ hash: writeQuery.data?.hash })
+  const transactionStatusQuery = useWaitForTransaction({
+    hash: writeQuery.data?.hash,
+    confirmations: minConfirmations,
+  })
+
   const bundle = {
     simulation: prepareQuery as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
