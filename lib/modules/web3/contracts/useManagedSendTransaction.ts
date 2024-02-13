@@ -14,7 +14,8 @@ import {
 } from './contract.types'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import { getGqlChain } from '@/lib/config/app.config'
+import { SupportedChainId } from '@/lib/config/config.types'
 
 export function useManagedSendTransaction(
   labels: TransactionLabels,
@@ -58,9 +59,14 @@ export function useManagedSendTransaction(
     }
   }, [bundle.execution?.error, bundle.result?.error])
 
+  console.log({ writeQuery })
+
   // on successful submission to chain, add tx to cache
-  const { chain } = useNetworkConfig()
-  useOnTransactionSubmission({ labels, hash: writeQuery.data?.hash, chain })
+  useOnTransactionSubmission({
+    labels,
+    hash: writeQuery.data?.hash,
+    chain: getGqlChain((writeQuery.variables?.chainId || 1) as SupportedChainId),
+  })
 
   // on confirmation, update tx in tx cache
   useOnTransactionConfirmation({
