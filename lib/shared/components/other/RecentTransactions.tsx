@@ -23,7 +23,8 @@ import {
 import { isEmpty, orderBy } from 'lodash'
 import { FiActivity } from 'react-icons/fi'
 import { ExternalLinkIcon } from '@chakra-ui/icons'
-import { useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
+import { GqlChain } from '../../services/api/generated/graphql'
+import { getNetworkConfig } from '@/lib/config/app.config'
 
 function Transactions({ transactions }: { transactions: Record<string, TrackedTransaction> }) {
   const orderedRecentTransactions = orderBy(Object.values(transactions), 'timestamp', 'desc')
@@ -37,7 +38,7 @@ function Transactions({ transactions }: { transactions: Record<string, TrackedTr
             ? tx.description
             : tx.init
 
-        const { getBlockExplorerTxUrl } = useBlockExplorer(tx.chain)
+        const networkConfigForTxChain = getNetworkConfig(tx.chain || GqlChain.Mainnet)
 
         return (
           <HStack key={tx.hash}>
@@ -46,7 +47,10 @@ function Transactions({ transactions }: { transactions: Record<string, TrackedTr
                 {tx.init}
               </Text>
             </Tooltip>
-            <Link href={getBlockExplorerTxUrl(tx.hash)} target="_blank">
+            <Link
+              href={`${networkConfigForTxChain.blockExplorerBaseUrl}/tx/${tx.hash}`}
+              target="_blank"
+            >
               <ExternalLinkIcon color="gray.400" width="1rem" height="1rem" />
             </Link>
           </HStack>
