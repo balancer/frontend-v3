@@ -37,6 +37,7 @@ import { UserAccountProvider } from '@/lib/modules/web3/useUserAccount'
 import { ReactQueryClientProvider } from '@/app/react-query.provider'
 import { defaultTestUserAccount } from '../anvil/anvil-setup'
 import { createMockConnector } from './wagmi/wagmi-mock-connectors'
+import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignature'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -179,11 +180,15 @@ export async function useConnectTestAccount() {
 }
 
 export const DefaultAddLiquidityTestProvider = ({ children }: PropsWithChildren) => (
-  <AddLiquidityProvider>{children}</AddLiquidityProvider>
+  <RelayerSignatureProvider>
+    <AddLiquidityProvider>{children}</AddLiquidityProvider>
+  </RelayerSignatureProvider>
 )
 
 export const DefaultRemoveLiquidityTestProvider = ({ children }: PropsWithChildren) => (
-  <RemoveLiquidityProvider>{children}</RemoveLiquidityProvider>
+  <RelayerSignatureProvider>
+    <RemoveLiquidityProvider>{children}</RemoveLiquidityProvider>
+  </RelayerSignatureProvider>
 )
 
 /* Builds a PoolProvider that injects the provided pool data*/
