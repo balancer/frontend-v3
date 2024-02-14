@@ -24,6 +24,8 @@ export function TokenIconStack({ tokens, chain, size = 64, ...rest }: Props & St
           border="2px solid"
           borderColor="background.base"
           borderRadius="100%"
+          width={`${size + 4}px`}
+          height={`${size + 4}px`}
         >
           <TokenIcon
             chain={chain}

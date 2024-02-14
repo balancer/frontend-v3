@@ -27,6 +27,8 @@ import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
+import { SignRelayerButton } from '@/lib/shared/components/btns/transaction-steps/SignRelayerButton'
+import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
 
 type Props = {
   isOpen: boolean
@@ -43,6 +45,7 @@ export function RemoveLiquidityModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
   const {
+    tokens,
     isProportional,
     isSingleToken,
     singleTokenOutAddress,
@@ -54,6 +57,8 @@ export function RemoveLiquidityModal({
     amountOutForToken,
     useOnStepCompleted,
   } = useRemoveLiquidity()
+  const shouldSignRelayerApproval = useShouldSignRelayerApproval()
+
   const { pool } = usePool()
   const { slippage } = useUserSettings()
 
@@ -106,14 +111,17 @@ export function RemoveLiquidityModal({
                   </Text>
                 </HStack>
                 {isProportional &&
-                  pool.displayTokens.map(token => (
-                    <TokenRow
-                      key={token.address}
-                      address={token.address as Address}
-                      chain={pool.chain}
-                      value={amountOutForToken(token.address as Address)}
-                    />
-                  ))}
+                  tokens.map(
+                    token =>
+                      token && (
+                        <TokenRow
+                          key={token.address}
+                          address={token.address as Address}
+                          chain={pool.chain}
+                          value={amountOutForToken(token.address as Address)}
+                        />
+                      )
+                  )}
                 {isSingleToken && (
                   <TokenRow
                     address={singleTokenOutAddress as Address}
@@ -147,7 +155,11 @@ export function RemoveLiquidityModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
+          {shouldSignRelayerApproval ? (
+            <SignRelayerButton />
+          ) : (
+            <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>

@@ -39,8 +39,6 @@ export function _useAddLiquidity() {
 
   const [addLiquidityTxState, setAddLiquidityTxState] = useState<TransactionState>()
 
-  const [relayerApprovalSignature, setRelayerApprovalSignature] = useState<Address | undefined>()
-
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts']
@@ -132,8 +130,6 @@ export function _useAddLiquidity() {
     addLiquidityTxState,
     setHumanAmountIn,
     setAddLiquidityTxState,
-    relayerApprovalSignature,
-    setRelayerApprovalSignature,
   }
 }
 
