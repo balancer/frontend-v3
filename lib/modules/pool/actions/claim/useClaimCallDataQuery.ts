@@ -5,13 +5,13 @@ import { BatchRelayerService } from '@/lib/shared/services/batch-relayer/batch-r
 import { gaugeActionsService } from '@/lib/shared/services/batch-relayer/extensions/gauge-actions.service'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
-export function useClaimCallDataQuery(gaugesAddresses: Address[]) {
+export function useClaimCallDataQuery(gaugeAddresses: Address[]) {
   const networkConfig = useNetworkConfig()
 
   const inputData = {
     hasPendingNonBALRewards: true, // TODO: replace with actual bool
     hasPendingBalRewards: true, // TODO: replace with actual bool
-    gauges: gaugesAddresses,
+    gauges: gaugeAddresses,
     outputReference: 0n,
   }
 
@@ -25,6 +25,6 @@ export function useClaimCallDataQuery(gaugesAddresses: Address[]) {
     return gaugeService.getGaugeClaimRewardsContractCallData(inputData) as Address[]
   }
 
-  const queryOpts = { enabled: gaugesAddresses.length > 0 }
+  const queryOpts = { enabled: gaugeAddresses.length > 0 }
   return useQuery(queryKey, queryFn, queryOpts)
 }

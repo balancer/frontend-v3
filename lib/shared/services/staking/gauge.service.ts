@@ -6,21 +6,17 @@ import {
   EncodeGaugeWithdrawInput,
 } from '../batch-relayer/relayer-types'
 
-interface ClaimAndWithdrawCallDataArgs {
-  hasPendingNonBALRewards: boolean
-  hasPendingBalRewards: boolean
-  gauges: Address[]
-  sender: Address
-  recipient: Address
-  amount: bigint
-  outputReference: bigint
-}
-
 interface ClaimCallDataArgs {
   hasPendingNonBALRewards: boolean
   hasPendingBalRewards: boolean
   gauges: Address[]
   outputReference: bigint
+}
+
+interface ClaimAndWithdrawCallDataArgs extends ClaimCallDataArgs {
+  sender: Address
+  recipient: Address
+  amount: bigint
 }
 
 export class GaugeService {
