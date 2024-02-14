@@ -25,7 +25,6 @@ import { useAddLiquidity } from './useAddLiquidity'
 import { fNum, safeTokenFormat } from '@/lib/shared/utils/numbers'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { HiCog } from 'react-icons/hi2'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
 
 export function AddLiquidityForm() {
