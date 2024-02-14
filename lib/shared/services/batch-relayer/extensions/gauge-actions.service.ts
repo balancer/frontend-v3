@@ -8,7 +8,7 @@ import {
 } from '../relayer-types'
 
 export class GaugeActionsService {
-  public encodeDeposit(params: EncodeGaugeDepositInput): string {
+  public encodeDeposit(params: EncodeGaugeDepositInput): `0x${string}` {
     return encodeFunctionData({
       abi: balancerV2BatchRelayerLibraryABI,
       functionName: 'gaugeDeposit',
@@ -16,7 +16,7 @@ export class GaugeActionsService {
     })
   }
 
-  public encodeWithdraw(params: EncodeGaugeWithdrawInput): string {
+  public encodeWithdraw(params: EncodeGaugeWithdrawInput): `0x${string}` {
     return encodeFunctionData({
       abi: balancerV2BatchRelayerLibraryABI,
       functionName: 'gaugeWithdraw',
@@ -24,7 +24,7 @@ export class GaugeActionsService {
     })
   }
 
-  public encodeClaimRewards(params: EncodeGaugeClaimRewardsInput): string {
+  public encodeClaimRewards(params: EncodeGaugeClaimRewardsInput): `0x${string}` {
     return encodeFunctionData({
       abi: balancerV2BatchRelayerLibraryABI,
       functionName: 'gaugeClaimRewards',
@@ -32,7 +32,7 @@ export class GaugeActionsService {
     })
   }
 
-  public encodeMint(params: EncodeGaugeMintInput): string {
+  public encodeMint(params: EncodeGaugeMintInput): `0x${string}` {
     return encodeFunctionData({
       abi: balancerV2BatchRelayerLibraryABI,
       functionName: 'gaugeMint',
