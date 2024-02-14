@@ -22,7 +22,7 @@ export function useClaimCallDataQuery(gaugeAddresses: Address[]) {
       gaugeActionsService
     )
     const gaugeService = new GaugeService(batchRelayerService)
-    return gaugeService.getGaugeClaimRewardsContractCallData(inputData) as Address[]
+    return gaugeService.getGaugeClaimRewardsContractCallData(inputData)
   }
 
   const queryOpts = { enabled: gaugeAddresses.length > 0 }
