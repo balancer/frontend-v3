@@ -44,9 +44,9 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
   const balRewardsData = Object.values(balTokensQuery).reduce((acc: BalTokenReward[], chain) => {
     if (!chain.data) return acc
 
-    const chainDataArr = Object.values(chain.data) as Record<string, ClaimableBalanceResult>[]
+    const chainDataArr = Object.values(chain.data) as Record<Address, ClaimableBalanceResult>[]
     chainDataArr.forEach(claimableBalance => {
-      const gaugesAddresses = Object.keys(claimableBalance)
+      const gaugesAddresses = Object.keys(claimableBalance) as Address[]
 
       gaugesAddresses.forEach(gaugeAddress => {
         const gaugeData = claimableBalance[gaugeAddress]
