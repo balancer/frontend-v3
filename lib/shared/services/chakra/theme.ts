@@ -1188,6 +1188,28 @@ export const balTheme = {
           background: 'background.card.level3',
         },
       },
+      defaultProps: {
+        size: 'lg',
+      },
+    },
+    Popover: {
+      variants: {
+        tooltip: {
+          content: {
+            background: 'background.card.level3',
+            borderColor: 'transparent',
+            color: 'grayText',
+            fontWeight: 'bold',
+            shadow: 'lg',
+          },
+          body: {
+            background: 'background.card.level3',
+            color: 'grayText',
+            px: 'sm',
+            py: 'xs',
+          },
+        },
+      },
     },
     Card: {
       baseStyle: {

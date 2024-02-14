@@ -52,9 +52,9 @@ export function removeAddress(address: string, addresses: string[]): string[] {
   return addresses.filter(a => !isSameAddress(a, address))
 }
 
-export function shortenLabel(str: string, segLength = 4) {
-  const firstSegment = str.substring(0, segLength + 2)
-  const lastSegment = str.substring(str.length, str.length - segLength)
+export function abbreviateAddress(address: string | Address, segLength = 4) {
+  const firstSegment = address.substring(0, segLength + 2)
+  const lastSegment = address.substring(address.length, address.length - segLength)
   return `${firstSegment}...${lastSegment}`
 }
 

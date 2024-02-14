@@ -8,11 +8,9 @@ import { ReactNode, useEffect, useState } from 'react'
 import { TokenIcon } from '../TokenIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { Numberish, fNum } from '@/lib/shared/utils/numbers'
-import { useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
 import { Pool } from '../../pool/usePool'
 import { bptUsdValue } from '../../pool/pool.helpers'
-import { HiExternalLink } from 'react-icons/hi'
-import Link from 'next/link'
+import { TokenInfoPopover } from '../TokenInfoPopover'
 
 type Props = {
   address: Address
@@ -40,7 +38,6 @@ export default function TokenRow({
 }: Props) {
   const { getToken, usdValueForToken } = useTokens()
   const { toCurrency } = useCurrency()
-  const { getBlockExplorerTokenUrl } = useBlockExplorer(chain)
   const [amount, setAmount] = useState<string>('')
   const [usdValue, setUsdValue] = useState<string | undefined>(undefined)
   const token = getToken(address, chain)
@@ -71,14 +68,7 @@ export default function TokenRow({
             >
               {token?.symbol || pool?.symbol}
             </Heading>
-            <Text
-              as={Link}
-              href={getBlockExplorerTokenUrl(address)}
-              color="gray.500"
-              target="_blank"
-            >
-              <HiExternalLink />
-            </Text>
+            <TokenInfoPopover tokenAddress={address} chain={chain} />
           </HStack>
           <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
             {token?.name || pool?.name}
