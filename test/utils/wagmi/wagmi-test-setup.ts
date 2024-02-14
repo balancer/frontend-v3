@@ -1,5 +1,4 @@
-import { chains } from '@/lib/modules/web3/Web3Provider'
-import { keyBy } from 'lodash'
+import { chainsByKey } from '@/lib/modules/web3/Web3Provider'
 import { CreateConfigParameters, WalletClient, createConfig } from 'wagmi'
 import { testQueryClient } from '../react-query'
 import { createMockConnector } from './wagmi-mock-connectors'
@@ -36,11 +35,10 @@ export function createWagmiTestConfig({ ...config }: SetupClient = {}) {
 }
 
 export function setWagmiDefaultRpcUrlForTests() {
-  // chains variable is returned by configureChains in Web3Provider
+  // chainsByKey variable is returned by configureChains in Web3Provider
   // We override the default http urls
   // This will change in wagmi v2 setup
   const chainId = ChainId[currentTestNetwork]
-  const chainsByKey = keyBy(chains, 'id')
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore

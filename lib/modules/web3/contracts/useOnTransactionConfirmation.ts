@@ -3,28 +3,34 @@ import { Address } from 'viem'
 import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
 import { TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
 
-export function useOnTransactionConfirmation(
-  labels: TransactionLabels,
-  transactionStatus?: 'success' | 'reverted',
-  transactionHash?: Address
-) {
+type updateTrackedTransactionRequest = {
+  labels: TransactionLabels
+  status?: 'success' | 'reverted'
+  hash?: Address
+}
+
+export function useOnTransactionConfirmation({
+  labels,
+  hash,
+  status,
+}: updateTrackedTransactionRequest) {
   const { updateTrackedTransaction } = useRecentTransactions()
 
   // on confirmation, update tx in tx cache
   useEffect(() => {
-    if (transactionHash) {
-      if (transactionStatus === 'reverted') {
-        updateTrackedTransaction(transactionHash, {
+    if (hash) {
+      if (status === 'reverted') {
+        updateTrackedTransaction(hash, {
           label: labels.reverted,
           status: 'reverted',
         })
       } else {
-        updateTrackedTransaction(transactionHash, {
+        updateTrackedTransaction(hash, {
           label: labels.confirmed,
           status: 'confirmed',
         })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transactionHash])
+  }, [hash])
 }

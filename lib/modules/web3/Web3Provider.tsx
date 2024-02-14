@@ -46,13 +46,13 @@ export const supportedChains = [
   sepolia,
 ]
 
-export const { chains, publicClient } = configureChains(supportedChains, [
+const { chains, publicClient } = configureChains(supportedChains, [
   infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string }),
   alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string }),
   publicProvider(),
 ])
 
-const chainsByKey = keyBy(chains, 'id')
+export const chainsByKey = keyBy(chains, 'id')
 
 export function getDefaultRpcUrl(chainId: SupportedChainId) {
   return chainsByKey[chainId].rpcUrls.default.http[0]

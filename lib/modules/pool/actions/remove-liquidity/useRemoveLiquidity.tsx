@@ -20,7 +20,7 @@ import { toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useIterateSteps } from '../useIterateSteps'
-import { useRemoveLiquidityConfig } from './modal/useRemoveLiquidityConfig'
+import { useRemoveLiquidityStepConfigs } from './modal/useRemoveLiquidityStepConfigs'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -52,7 +52,7 @@ export function _useRemoveLiquidity() {
 
   const [removeLiquidityTxState, setRemoveLiquidityTxState] = useState<TransactionState>()
 
-  const stepConfigs = [useRemoveLiquidityConfig(setRemoveLiquidityTxState)]
+  const stepConfigs = useRemoveLiquidityStepConfigs(setRemoveLiquidityTxState)
   const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
@@ -75,7 +75,10 @@ export function _useRemoveLiquidity() {
   const isSingleToken = removalType === RemoveLiquidityType.SingleToken
   const isProportional = removalType === RemoveLiquidityType.Proportional
 
-  const tokens = pool.allTokens.map(token => getToken(token.address, pool.chain))
+  const tokens = pool.allTokens
+    .filter(token => token.isMainToken)
+    .map(token => getToken(token.address, pool.chain))
+
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
   const firstTokenAddress = tokens?.[0]?.address as Address
 

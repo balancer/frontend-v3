@@ -61,8 +61,8 @@ export function TokenSelectModal({
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Select a token</ModalHeader>
-        <ModalCloseButton />
+        <ModalHeader color="font.primary">Select a token</ModalHeader>
+        <ModalCloseButton color="font.primary" rounded="full" />
         <ModalBody p={0}>
           <VStack w="full" align="start" spacing="md">
             <Box px="md" w="full">

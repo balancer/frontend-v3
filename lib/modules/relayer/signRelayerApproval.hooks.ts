@@ -2,10 +2,10 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useToast } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useWalletClient } from 'wagmi'
-import { useAddLiquidity } from '../pool/actions/add-liquidity/useAddLiquidity'
 import { signRelayerApproval } from './signRelayerApproval'
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 import { useRelayerMode } from './useRelayerMode'
+import { useRelayerSignature } from './useRelayerSignature'
 
 enum SignRelayerState {
   Ready = 'init',
@@ -17,7 +17,7 @@ enum SignRelayerState {
 export function useShouldSignRelayerApproval() {
   const relayerMode = useRelayerMode()
   const { hasApprovedRelayer } = useHasApprovedRelayer()
-  const { relayerApprovalSignature } = useAddLiquidity()
+  const { relayerApprovalSignature } = useRelayerSignature()
 
   return relayerMode === 'signRelayer' && !relayerApprovalSignature && !hasApprovedRelayer
 }
@@ -26,7 +26,7 @@ export function useSignRelayerApproval() {
   const toast = useToast()
   const { userAddress } = useUserAccount()
 
-  const { setRelayerApprovalSignature } = useAddLiquidity()
+  const { setRelayerApprovalSignature } = useRelayerSignature()
 
   const [signRelayerState, setSignRelayerState] = useState<SignRelayerState>(
     SignRelayerState.Preparing
@@ -66,6 +66,7 @@ export function useSignRelayerApproval() {
       setRelayerApprovalSignature(signature)
     } catch (error) {
       // TODO: refactor when we define a global error handling UX pattern
+      console.error(error)
       setError('Error in relayer signature call')
       setSignRelayerState(SignRelayerState.Ready)
     }
