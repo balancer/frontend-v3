@@ -12,7 +12,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { Address } from 'viem'
-import { CopyTokenAddressButtons } from './CopyTokenAddressButton'
+import { CopyTokenAddressButton } from './CopyTokenAddressButton'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { HiExternalLink } from 'react-icons/hi'
 import { CoingeckoIcon } from '@/lib/shared/components/icons/CoingeckoIcon'
@@ -47,7 +47,7 @@ export function TokenInfoPopover({ tokenAddress, chain }: Props) {
               {abbreviateAddress(tokenAddress)}
             </Text>
             <HStack spacing="xs">
-              <CopyTokenAddressButtons tokenAddress={tokenAddress} color="inherit" />
+              <CopyTokenAddressButton tokenAddress={tokenAddress} color="inherit" />
               <IconButton
                 size="xs"
                 isRound

@@ -4,7 +4,7 @@ import { CheckCircleIcon, CopyIcon } from '@chakra-ui/icons'
 import { IconButton, IconButtonProps } from '@chakra-ui/react'
 import { useState } from 'react'
 
-export function CopyTokenAddressButtons({
+export function CopyTokenAddressButton({
   tokenAddress,
   ...rest
 }: { tokenAddress: string } & Omit<IconButtonProps, 'aria-label'>) {
