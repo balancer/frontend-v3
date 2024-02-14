@@ -40,7 +40,7 @@ export function useConstructClaimAllRewardsStep({
     ...claimAllRewardsTransaction,
     transactionLabels,
     id: 'claimAllRewards',
-    stepType: 'claimAllRewards',
+    stepType: 'claim',
     isComplete: () => isConnected && claimAllRewardsStep.result.isSuccess,
   }
 
