@@ -1,6 +1,6 @@
 import { getNativeAssetAddress, getNetworkConfig } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
-import { Address } from 'viem'
+import { Address, checksumAddress, isAddress } from 'viem'
 import { GqlChain } from '../services/api/generated/graphql'
 
 export function isSameAddress(address1: string, address2: string): boolean {
@@ -53,6 +53,7 @@ export function removeAddress(address: string, addresses: string[]): string[] {
 }
 
 export function abbreviateAddress(address: string | Address, segLength = 4) {
+  if (isAddress(address)) address = checksumAddress(address)
   const firstSegment = address.substring(0, segLength + 2)
   const lastSegment = address.substring(address.length, address.length - segLength)
   return `${firstSegment}...${lastSegment}`
