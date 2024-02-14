@@ -2,8 +2,15 @@ import { useEffect } from 'react'
 import { Address } from 'viem'
 import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
 import { TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
-export function useOnTransactionSubmission(labels: TransactionLabels, hash?: Address) {
+type NewTrackedTransactionRequest = {
+  labels: TransactionLabels
+  hash?: Address
+  chain?: GqlChain
+}
+
+export function useOnTransactionSubmission({ labels, hash, chain }: NewTrackedTransactionRequest) {
   const { addTrackedTransaction } = useRecentTransactions()
 
   // on successful submission to chain, add tx to cache
@@ -11,6 +18,7 @@ export function useOnTransactionSubmission(labels: TransactionLabels, hash?: Add
     if (hash) {
       addTrackedTransaction({
         hash,
+        chain,
         label: labels.confirming || 'Confirming transaction',
         description: labels.description,
         status: 'confirming',

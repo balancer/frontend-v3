@@ -1,5 +1,6 @@
 'use client'
 
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { AlertStatus, ToastId, useToast } from '@chakra-ui/react'
 import { keyBy, orderBy, take } from 'lodash'
@@ -25,6 +26,7 @@ export type TrackedTransaction = {
   toastId?: ToastId
   timestamp: number
   init?: string
+  chain?: GqlChain
 }
 
 type UpdateTrackedTransaction = Pick<TrackedTransaction, 'label' | 'description' | 'status'>

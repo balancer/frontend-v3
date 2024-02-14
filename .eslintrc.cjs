@@ -36,6 +36,17 @@ module.exports = {
             group: ['wagmi/dist'],
             message: 'Invalid import: remove dist from import path',
           },
+          {
+            /*
+              There are some differences in behavior between react-query v3 (used by wagmi 1.X), v4 and v5
+              With this rule we try to stick to react-query v3 API until we eventually migrate to wagmi v2 (and react-query v5)
+              https://github.com/TanStack/query/issues/3584#issuecomment-1782331608
+            */
+            group: ['@tanstack/react-query'],
+            importNames: ['useQuery'],
+            message:
+              'Import useQuery from wagmi to keep a unified useQuery API until we migrate to wagmi v2',
+          },
         ],
       },
     ],
