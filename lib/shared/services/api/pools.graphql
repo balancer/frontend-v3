@@ -101,6 +101,35 @@ query GetPools(
         }
       }
     }
+    staking {
+      id
+      type
+      chain
+      address
+      gauge {
+        id
+        gaugeAddress
+        version
+        status
+        workingSupply
+        otherGauges {
+          gaugeAddress
+          version
+          status
+          id
+          rewards {
+            id
+            tokenAddress
+            rewardPerSecond
+          }
+        }
+        rewards {
+          id
+          rewardPerSecond
+          tokenAddress
+        }
+      }
+    }
     factory
     id
     name

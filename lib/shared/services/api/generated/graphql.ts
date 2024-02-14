@@ -4687,6 +4687,40 @@ export type GetPoolsQuery = {
         }>
       }
     }
+    staking?: {
+      __typename: 'GqlPoolStaking'
+      id: string
+      type: GqlPoolStakingType
+      chain: GqlChain
+      address: string
+      gauge?: {
+        __typename: 'GqlPoolStakingGauge'
+        id: string
+        gaugeAddress: string
+        version: number
+        status: GqlPoolStakingGaugeStatus
+        workingSupply: string
+        otherGauges?: Array<{
+          __typename: 'GqlPoolStakingOtherGauge'
+          gaugeAddress: string
+          version: number
+          status: GqlPoolStakingGaugeStatus
+          id: string
+          rewards: Array<{
+            __typename: 'GqlPoolStakingGaugeReward'
+            id: string
+            tokenAddress: string
+            rewardPerSecond: string
+          }>
+        }> | null
+        rewards: Array<{
+          __typename: 'GqlPoolStakingGaugeReward'
+          id: string
+          rewardPerSecond: string
+          tokenAddress: string
+        }>
+      } | null
+    } | null
     userBalance?: {
       __typename: 'GqlPoolUserBalance'
       totalBalance: string
@@ -12410,6 +12444,79 @@ export const GetPoolsDocument = {
                                       ],
                                     },
                                   },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'staking' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'chain' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'gauge' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'gaugeAddress' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'version' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'workingSupply' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'otherGauges' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'gaugeAddress' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'version' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'rewards' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'tokenAddress' },
+                                        },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'rewardPerSecond' },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'rewards' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'rewardPerSecond' },
+                                  },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'tokenAddress' } },
                                 ],
                               },
                             },

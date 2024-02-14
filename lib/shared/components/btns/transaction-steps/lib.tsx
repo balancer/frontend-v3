@@ -34,6 +34,7 @@ export type StepType =
   | 'stakingWithdraw'
   | 'minterApproval'
   | 'claimAndUnstake'
+  | 'claim'
 
 export type ManagedResult = TransactionBundle & Executable
 

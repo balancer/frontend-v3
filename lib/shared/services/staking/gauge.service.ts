@@ -6,6 +6,19 @@ import {
   EncodeGaugeWithdrawInput,
 } from '../batch-relayer/relayer-types'
 
+interface ClaimCallDataArgs {
+  hasPendingNonBALRewards: boolean
+  hasPendingBalRewards: boolean
+  gauges: Address[]
+  outputReference: bigint
+}
+
+interface ClaimAndWithdrawCallDataArgs extends ClaimCallDataArgs {
+  sender: Address
+  recipient: Address
+  amount: bigint
+}
+
 export class GaugeService {
   constructor(private readonly batchRelayerService: BatchRelayerService) {}
 
@@ -17,15 +30,7 @@ export class GaugeService {
     recipient,
     amount,
     outputReference,
-  }: {
-    hasPendingNonBALRewards: boolean
-    hasPendingBalRewards: boolean
-    gauges: Address[]
-    sender: Address
-    recipient: Address
-    amount: bigint
-    outputReference: bigint
-  }) {
+  }: ClaimAndWithdrawCallDataArgs) {
     const calls: string[] = []
 
     const rewardsCalls = this.getGaugeClaimRewardsContractCallData({
@@ -49,12 +54,7 @@ export class GaugeService {
     hasPendingBalRewards,
     gauges,
     outputReference,
-  }: {
-    hasPendingNonBALRewards: boolean
-    hasPendingBalRewards: boolean
-    gauges: Address[]
-    outputReference: bigint
-  }) {
+  }: ClaimCallDataArgs) {
     const calls: string[] = []
 
     if (hasPendingNonBALRewards) {
