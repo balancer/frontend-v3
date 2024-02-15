@@ -4,7 +4,6 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { GaugeService } from '@/lib/shared/services/staking/gauge.service'
 import { Address } from 'viem'
 
-// TODO: typing 'gaugeService' cascades a lot
 export function useUnstakeGaugeCallDataQuery(
   amount: bigint,
   gaugeService: GaugeService | undefined
