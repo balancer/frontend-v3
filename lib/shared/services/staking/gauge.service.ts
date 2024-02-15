@@ -31,7 +31,7 @@ export class GaugeService {
     amount,
     outputReference,
   }: ClaimAndWithdrawCallDataArgs) {
-    const calls: string[] = []
+    const calls: `0x${string}`[] = []
 
     const rewardsCalls = this.getGaugeClaimRewardsContractCallData({
       hasPendingNonBALRewards,
@@ -55,7 +55,7 @@ export class GaugeService {
     gauges,
     outputReference,
   }: ClaimCallDataArgs) {
-    const calls: string[] = []
+    const calls: `0x${string}`[] = []
 
     if (hasPendingNonBALRewards) {
       calls.push(this.getGaugeEncodeClaimRewardsCallData({ gauges }))
@@ -73,15 +73,20 @@ export class GaugeService {
     sender,
     recipient,
     amount,
-  }: EncodeGaugeWithdrawInput): string {
+  }: EncodeGaugeWithdrawInput): `0x${string}` {
     return this.batchRelayerService.gaugeEncodeWithdraw({ gauge, sender, recipient, amount })
   }
 
-  public getGaugeEncodeClaimRewardsCallData({ gauges }: EncodeGaugeClaimRewardsInput): string {
+  public getGaugeEncodeClaimRewardsCallData({
+    gauges,
+  }: EncodeGaugeClaimRewardsInput): `0x${string}` {
     return this.batchRelayerService.gaugeEncodeClaimRewards({ gauges })
   }
 
-  public getGaugeEncodeMintCallData({ gauges, outputReference }: EncodeGaugeMintInput): string {
+  public getGaugeEncodeMintCallData({
+    gauges,
+    outputReference,
+  }: EncodeGaugeMintInput): `0x${string}` {
     return this.batchRelayerService.gaugeEncodeMint({ gauges, outputReference })
   }
 }
