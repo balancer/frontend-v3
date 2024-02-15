@@ -19,7 +19,9 @@ export function useConstructClaimAndUnstakeStep() {
     tooltip: 'TODO WITHDRAW TOOLTIP',
   }
 
-  const stakingService = selectStakingService(pool)
+  const stakingService = pool.staking
+    ? selectStakingService(pool.chain, pool.staking?.type)
+    : undefined
   const { data } = useUnstakeGaugeCallDataQuery(
     parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS),
     stakingService

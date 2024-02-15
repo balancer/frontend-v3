@@ -1,13 +1,11 @@
 import { useQuery } from 'wagmi'
 import { Address } from 'viem'
 import { GaugeService } from '@/lib/shared/services/staking/gauge.service'
-import { BatchRelayerService } from '@/lib/shared/services/batch-relayer/batch-relayer.service'
-import { gaugeActionsService } from '@/lib/shared/services/batch-relayer/extensions/gauge-actions.service'
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
-export function useClaimCallDataQuery(gaugeAddresses: Address[]) {
-  const networkConfig = useNetworkConfig()
-
+export function useClaimCallDataQuery(
+  gaugeAddresses: Address[],
+  gaugeService: GaugeService | undefined
+) {
   const inputData = {
     hasPendingNonBALRewards: true, // TODO: replace with actual bool
     hasPendingBalRewards: true, // TODO: replace with actual bool
@@ -16,15 +14,13 @@ export function useClaimCallDataQuery(gaugeAddresses: Address[]) {
   }
 
   const queryKey = ['claim', 'gauge', 'callData', inputData]
-  const queryFn = () => {
-    const batchRelayerService = new BatchRelayerService(
-      networkConfig.contracts.balancer.relayerV6,
-      gaugeActionsService
-    )
-    const gaugeService = new GaugeService(batchRelayerService)
-    return gaugeService.getGaugeClaimRewardsContractCallData(inputData)
-  }
+  const queryFn = () => gaugeService && gaugeService.getGaugeClaimRewardsContractCallData(inputData)
+  const queryOpts = { enabled: gaugeService && gaugeAddresses.length > 0 }
 
-  const queryOpts = { enabled: gaugeAddresses.length > 0 }
-  return useQuery(queryKey, queryFn, queryOpts)
+  const query = useQuery(queryKey, queryFn, queryOpts)
+
+  return {
+    ...query,
+    data: query.data || [],
+  }
 }
