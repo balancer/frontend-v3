@@ -9,9 +9,11 @@ import { useClaimStepConfigs } from './useClaimStepConfigs'
 import { Address } from 'viem'
 import { Pool } from '../../usePool'
 import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
+import { useDisclosure } from '@chakra-ui/hooks'
 
 export function useClaiming(gaugeAddresses: Address[], pool: Pool) {
   const { isConnected } = useUserAccount()
+  const previewModalDisclosure = useDisclosure()
   const { isDisabled, disabledReason } = isDisabledWithReason([
     !isConnected,
     LABELS.walletNotConnected,
@@ -29,5 +31,6 @@ export function useClaiming(gaugeAddresses: Address[], pool: Pool) {
     disabledReason,
     currentStep,
     useOnStepCompleted,
+    previewModalDisclosure,
   }
 }

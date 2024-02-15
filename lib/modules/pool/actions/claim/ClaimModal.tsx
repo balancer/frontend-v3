@@ -1,6 +1,5 @@
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import {
-  Button,
   Heading,
   Modal,
   ModalBody,
@@ -10,9 +9,9 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
+  VStack,
 } from '@chakra-ui/react'
 import { Pool } from '../../usePool'
-import { useRef, RefObject } from 'react'
 import { useClaiming } from './useClaiming'
 import { Address } from 'wagmi'
 
@@ -20,7 +19,6 @@ type Props = {
   isOpen: boolean
   onClose(): void
   onOpen(): void
-  finalFocusRef?: RefObject<HTMLInputElement>
   gaugeAddresses: Address[]
   pool: Pool
 }
@@ -28,23 +26,14 @@ type Props = {
 export function ClaimModal({
   isOpen,
   onClose,
-  finalFocusRef,
   gaugeAddresses,
   pool,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const initialFocusRef = useRef(null)
   const { currentStep, useOnStepCompleted } = useClaiming(gaugeAddresses, pool)
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      initialFocusRef={initialFocusRef}
-      finalFocusRef={finalFocusRef}
-      isCentered
-      {...rest}
-    >
+    <Modal isOpen={isOpen} onClose={onClose} isCentered {...rest}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
@@ -53,10 +42,9 @@ export function ClaimModal({
           </Heading>
         </ModalHeader>
         <ModalCloseButton />
-        <ModalCloseButton />
         <ModalBody>Body</ModalBody>
         <ModalFooter>
-          <Button variant="ghost">Secondary Action</Button>
+          <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>
