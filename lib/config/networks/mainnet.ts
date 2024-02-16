@@ -9,6 +9,7 @@ const networkConfig: NetworkConfig = {
   iconPath: '/images/chains/MAINNET.svg',
   blockExplorerBaseUrl: 'https://etherscan.io',
   tokens: {
+    balToken: { address: '0xba100000625a3754423978a60c9317c58a424e3d' },
     nativeAsset: {
       name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',

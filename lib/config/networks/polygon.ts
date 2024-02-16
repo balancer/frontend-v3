@@ -9,6 +9,7 @@ const networkConfig: NetworkConfig = {
   iconPath: '/images/chains/POLYGON.svg',
   blockExplorerBaseUrl: 'https://polygonscan.com',
   tokens: {
+    balToken: { address: '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3' },
     nativeAsset: {
       name: 'Matic',
       address: '0x0000000000000000000000000000000000001010',
