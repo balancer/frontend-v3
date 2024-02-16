@@ -22,19 +22,19 @@ export class BatchRelayerService {
     })
   }
 
-  public gaugeEncodeDeposit(params: EncodeGaugeDepositInput): string {
+  public gaugeEncodeDeposit(params: EncodeGaugeDepositInput): `0x${string}` {
     return this.gaugeActionsService.encodeDeposit(params)
   }
 
-  public gaugeEncodeWithdraw(params: EncodeGaugeWithdrawInput): string {
+  public gaugeEncodeWithdraw(params: EncodeGaugeWithdrawInput): `0x${string}` {
     return this.gaugeActionsService.encodeWithdraw(params)
   }
 
-  public gaugeEncodeClaimRewards(params: EncodeGaugeClaimRewardsInput): string {
+  public gaugeEncodeClaimRewards(params: EncodeGaugeClaimRewardsInput): `0x${string}` {
     return this.gaugeActionsService.encodeClaimRewards(params)
   }
 
-  public gaugeEncodeMint(params: EncodeGaugeMintInput): string {
+  public gaugeEncodeMint(params: EncodeGaugeMintInput): `0x${string}` {
     return this.gaugeActionsService.encodeMint(params)
   }
 }

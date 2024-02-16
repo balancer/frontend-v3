@@ -66,7 +66,7 @@ function StableTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; ch
           >
             <HStack>
               <TokenIconOrIconStack token={token} chain={chain} />
-              <Text fontWeight="bold" noOfLines={1}>
+              <Text fontWeight="bold" noOfLines={1} maxW="20">
                 {token.nestedTokens ? token.name : token.symbol}
               </Text>
             </HStack>
