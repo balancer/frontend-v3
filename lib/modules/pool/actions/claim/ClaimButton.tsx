@@ -8,5 +8,5 @@ interface ClaimButtonProps {
 
 export function ClaimButton({ step }: ClaimButtonProps) {
   const isComplete = step.isComplete()
-  return <VStack w="full">{isComplete ? null : <TransactionStepButton step={step} />}</VStack>
+  return <VStack w="full">{!isComplete && <TransactionStepButton step={step} />}</VStack>
 }
