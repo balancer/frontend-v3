@@ -20,12 +20,15 @@ import {
 } from '@chakra-ui/react'
 import { useRef } from 'react'
 import { Address } from 'wagmi'
-import { AddLiquidityModal } from './AddLiquidityModal'
-import { useAddLiquidity } from './useAddLiquidity'
+import { AddLiquidityModal } from '../AddLiquidityModal'
+import { useAddLiquidity } from '../useAddLiquidity'
 import { fNum, safeTokenFormat } from '@/lib/shared/utils/numbers'
-import { BPT_DECIMALS } from '../../pool.constants'
+import { BPT_DECIMALS } from '../../../pool.constants'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
+import { ProportionalInputs } from './ProportionalInputs'
+import { isGyro } from '../../../pool.helpers'
+import { usePool } from '../../../usePool'
 
 export function AddLiquidityForm() {
   const {
@@ -43,6 +46,7 @@ export function AddLiquidityForm() {
   const { toCurrency } = useCurrency()
   const { slippage } = useUserSettings()
   const nextBtn = useRef(null)
+  const { pool } = usePool()
 
   function currentValueFor(tokenAddress: string) {
     const amountIn = amountsIn.find(amountIn => isSameAddress(amountIn.tokenAddress, tokenAddress))
@@ -70,22 +74,27 @@ export function AddLiquidityForm() {
               </Heading>
               <TransactionSettings size="sm" />
             </HStack>
-            <VStack spacing="md" w="full">
-              {tokens.map(token => {
-                if (!token) return <div>Missing token</div>
-                return (
-                  <TokenInput
-                    key={token.address}
-                    address={token.address}
-                    chain={token.chain}
-                    value={currentValueFor(token.address)}
-                    onChange={e =>
-                      setAmountIn(token.address as Address, e.currentTarget.value as HumanAmount)
-                    }
-                  />
-                )
-              })}
-            </VStack>
+
+            {isGyro(pool.type) ? (
+              <ProportionalInputs></ProportionalInputs>
+            ) : (
+              <VStack spacing="md" w="full">
+                {tokens.map(token => {
+                  if (!token) return <div>Missing token</div>
+                  return (
+                    <TokenInput
+                      key={token.address}
+                      address={token.address}
+                      chain={token.chain}
+                      value={currentValueFor(token.address)}
+                      onChange={e =>
+                        setAmountIn(token.address as Address, e.currentTarget.value as HumanAmount)
+                      }
+                    />
+                  )
+                })}
+              </VStack>
+            )}
 
             <VStack spacing="sm" align="start" w="full" px="md">
               <HStack justify="space-between" w="full">
@@ -114,7 +123,7 @@ export function AddLiquidityForm() {
                     <NumberText color="grayText">{bptOutLabel}</NumberText>
                   )}
                   <Tooltip
-                    label={`LP tokens you are expected to recieve. Does not include potential slippage (${fNum(
+                    label={`LP tokens you are expected to receive. Does not include potential slippage (${fNum(
                       'slippage',
                       slippage
                     )}).`}
