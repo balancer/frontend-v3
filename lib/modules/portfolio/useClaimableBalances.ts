@@ -6,6 +6,7 @@ import { AbiMap } from '../web3/contracts/AbiMap'
 import { ClaimableBalanceResult } from './usePortfolio'
 import { useMemo } from 'react'
 import { formatUnits } from 'viem'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 export interface ClaimableReward {
   balance: bigint
@@ -86,7 +87,7 @@ export function useClaimableBalances(pools: PoolListItem[]) {
               tokenAddress: tokenAddresses[idx] as Address,
               gaugeAddress,
               balance: result.result,
-              formattedBalance: formatUnits(result.result, 18),
+              formattedBalance: fNum('token', formatUnits(result.result, 18)),
               decimals: 18,
             })
           }
