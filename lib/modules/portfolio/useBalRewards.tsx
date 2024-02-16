@@ -8,6 +8,7 @@ import { useMulticall } from '../web3/contracts/useMulticall'
 import { getPoolsByGaugesMap } from '../pool/pool.utils'
 import { ClaimableBalanceResult } from './usePortfolio'
 import { fNum } from '@/lib/shared/utils/numbers'
+import networkConfigs from '@/lib/config/networks'
 
 export interface BalTokenReward {
   balance: bigint
@@ -15,6 +16,7 @@ export interface BalTokenReward {
   formattedBalance: string
   gaugeAddress: string
   pool: PoolListItem
+  tokenAddress: Address
 }
 
 export function useBalTokenRewards(pools: PoolListItem[]) {
@@ -61,6 +63,7 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
           balance: gaugeData.result,
           formattedBalance: fNum('token', formatUnits(balance, 18)),
           decimals: 18,
+          tokenAddress: networkConfigs[pool.chain].tokens.balToken?.address as Address,
         })
       })
     })
