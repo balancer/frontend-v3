@@ -323,12 +323,12 @@ export function usePoolCharts() {
 
     // add lagging timestamps
     if (!isPoolOlder30Days && chartArr.length < 30 && chartArr.length > MIN_CHART_VALUES_NUM) {
-      const lastDate = chartArr[chartArr.length - 1][0] || 0
+      const firstDate = chartArr[0][0] || 0
       const days = 30 - chartArr.length
 
       const timestampsArr: number[] = []
       for (let i = 1; i <= days; i++) {
-        const timestamp = Number(lastDate) - i * twentyFourHoursInSecs
+        const timestamp = Number(firstDate) - i * twentyFourHoursInSecs
         timestampsArr.push(timestamp * 1000)
       }
 
