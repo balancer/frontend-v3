@@ -67,7 +67,11 @@ export function useProportionalInputs() {
       })
 
       const tokenWithMinPrice = minBy(userTokenBalancePrices, 'balancePrice')
-      if (!tokenWithMinPrice) return
+      if (!tokenWithMinPrice || tokenWithMinPrice.balancePrice === 0) {
+        //Avoid maximize calculations when the user does not have balance
+        setIsLoading(false)
+        return
+      }
 
       setTokenWithMinPrice(tokenWithMinPrice)
 
