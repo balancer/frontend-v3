@@ -30,6 +30,12 @@ export function useProportionalInputs() {
   const [maximizedUsdValue, setMaximizedUsdValue] = useState('')
   const [tokenWithMinPrice, setTokenWithMinPrice] = useState<TokenWithMinPrice | undefined>()
 
+  function clearAmountsIn() {
+    const state = humanAmountsInVar()
+
+    humanAmountsInVar(state.map(amountIn => ({ ...amountIn, humanAmount: '' })))
+  }
+
   function handleMaximizeUserAmounts() {
     if (!tokenWithMinPrice) return
     if (isMaximized) return setIsMaximized(false)
@@ -37,13 +43,15 @@ export function useProportionalInputs() {
     setIsMaximized(true)
   }
 
-  function handleHumanInputChange(tokenAddress: Address, humanAmount: HumanAmount) {
+  function handleHumanInputChange(tokenAddress: Address, humanAmount: HumanAmount | '') {
     // Checks if the user is entering the max amount for the tokenWithMinPrice
     const isMaximizing: boolean =
       tokenAddress === tokenWithMinPrice?.tokenAddress &&
       humanAmount === tokenWithMinPrice?.userBalance
 
     setIsMaximized(isMaximizing)
+
+    if (!humanAmount) return clearAmountsIn()
 
     const proportionalHumanAmountsIn = helpers.calculateProportionalHumanAmountsIn(
       tokenAddress,
