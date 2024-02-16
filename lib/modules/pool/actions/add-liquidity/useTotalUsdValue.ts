@@ -19,9 +19,9 @@ export function useTotalUsdValue(tokens: GqlToken[]) {
     [usdValueForToken, tokens]
   )
 
-  function totalUsdValueFor(humanAmountsIn: HumanAmountIn[]) {
+  function usdValueFor(humanAmountsIn: HumanAmountIn[]) {
     return safeSum(calculateUsdAmountsIn(humanAmountsIn))
   }
 
-  return { usdValueFor: totalUsdValueFor }
+  return { usdValueFor }
 }
