@@ -57,10 +57,12 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
         if (gaugeData.status === 'success') {
           balance = gaugeData.result
         }
+        if (!balance) return
+
         acc.push({
           gaugeAddress,
           pool,
-          balance: gaugeData.result,
+          balance,
           formattedBalance: fNum('token', formatUnits(balance, 18)),
           decimals: 18,
           tokenAddress: networkConfigs[pool.chain].tokens.balToken?.address as Address,
