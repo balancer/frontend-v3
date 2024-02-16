@@ -1,7 +1,9 @@
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
+import { GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { SentryError } from '@/lib/shared/utils/errors'
 import {
   HumanAmount,
   InputAmount,
@@ -9,17 +11,18 @@ import {
   NestedPool,
   NestedPoolState,
   PoolState,
+  PoolStateWithBalances,
+  RawPoolToken,
   TokenAmount,
+  calculateProportionalAmounts,
   mapPoolType,
 } from '@balancer/sdk'
 import { keyBy } from 'lodash'
 import { Hex, formatUnits, parseUnits } from 'viem'
 import { Address } from 'wagmi'
+import { hasNestedPools } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
-import { GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
-import { SentryError } from '@/lib/shared/utils/errors'
-import { hasNestedPools } from '../pool.helpers'
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -44,6 +47,36 @@ export class LiquidityActionHelpers {
   /* Used by default nested SDK handlers */
   public get nestedPoolState(): NestedPoolState {
     return mapPoolToNestedPoolState(this.pool)
+  }
+
+  public get poolStateWithBalances(): PoolStateWithBalances {
+    return toPoolStateWithBalances(this.pool)
+  }
+
+  /* Used by Proportional Add Liquidity flows */
+  public calculateProportionalHumanAmountsIn(
+    tokenAddress: Address,
+    humanAmount: HumanAmount
+  ): HumanAmountIn[] {
+    const amountIn: InputAmount = this.toInputAmounts([{ tokenAddress, humanAmount }])[0]
+    return (
+      calculateProportionalAmounts(this.poolStateWithBalances, amountIn)
+        .amountsIn.map(amountIn => ({
+          tokenAddress: amountIn.address,
+          humanAmount: formatUnits(amountIn.rawAmount, amountIn.decimals) as HumanAmount,
+        }))
+        // user updated token must be in the first place of the array because the Proportional handler always calculates bptOut based on the first position
+        .sort(sortUpdatedTokenFirst(tokenAddress))
+    )
+
+    function sortUpdatedTokenFirst(tokenAddress: Address | null) {
+      return (a: HumanAmountIn, b: HumanAmountIn) => {
+        if (!tokenAddress) return 0
+        if (isSameAddress(a.tokenAddress, tokenAddress)) return -1
+        if (isSameAddress(b.tokenAddress, tokenAddress)) return 1
+        return 0
+      }
+    }
   }
 
   public get networkConfig() {
@@ -149,11 +182,14 @@ export function toPoolState(pool: Pool): PoolState {
     throw new Error('META_STABLE pool type is not yet supported by the SDK')
   }
 
+  // TODO: fix in SDK
+  const poolType = pool.type === GqlPoolType.Gyro ? 'GYRO2' : pool.type
+
   return {
     id: pool.id as Hex,
     address: pool.address as Address,
     tokens: pool.tokens as MinimalToken[],
-    type: mapPoolType(pool.type),
+    type: mapPoolType(poolType),
     balancerVersion: 2, //TODO: change to dynamic version when we implement v3 integration
   }
 }
@@ -215,4 +251,17 @@ export function mapPoolToNestedPoolState(pool: Pool): NestedPoolState {
     pools,
     mainTokens,
   } as NestedPoolState
+}
+
+export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
+  // TODO: fix in SDK
+  const poolType = pool.type === GqlPoolType.Gyro ? 'GYRO2' : pool.type
+  return {
+    id: pool.id as Hex,
+    address: pool.address as Address,
+    tokens: pool.tokens as RawPoolToken[],
+    type: mapPoolType(poolType),
+    totalShares: pool.dynamicData.totalShares as HumanAmount,
+    balancerVersion: 2, //TODO: change to dynamic version when we implement v3 integration
+  }
 }

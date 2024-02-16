@@ -1,16 +1,33 @@
+import { isGyro } from '../../../pool.helpers'
+import { Pool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
 
 const addLiquidity = 'add-liquidity'
 
 type LiquidityParams = {
   userAddress: string
-  poolId: string
+  pool: Pool
   slippage: string
   humanAmountsIn: HumanAmountIn[]
 }
-function liquidityParams({ userAddress, poolId, slippage, humanAmountsIn }: LiquidityParams) {
-  return `${userAddress}:${poolId}:${slippage}:${JSON.stringify(humanAmountsIn)}`
+function liquidityParams({ userAddress, pool, slippage, humanAmountsIn }: LiquidityParams) {
+  return `${userAddress}:${pool.id}:${slippage}:${stringifyHumanAmountsIn(pool, humanAmountsIn)}`
 }
+
+function stringifyHumanAmountsIn(pool: Pool, humanAmountsIn: HumanAmountIn[]): string {
+  if (humanAmountsIn.length === 0) return ''
+  if (isGyro(pool.type)) {
+    /*
+    This is an edge-case where we only use the first human amount in the array to avoid triggering queries when the other human amounts change automatically
+    (as they are automatically calculated and entered in the proportional add liquidity flow).
+    */
+    return JSON.stringify(humanAmountsIn[0])
+    // return `${humanAmountIn.humanAmount}-${humanAmountIn.tokenAddress}`
+  }
+
+  return JSON.stringify(humanAmountsIn)
+}
+
 export const addLiquidityKeys = {
   priceImpact: (params: LiquidityParams) =>
     [addLiquidity, 'price-impact', liquidityParams(params)] as const,
