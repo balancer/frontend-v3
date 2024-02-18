@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, HStack, VStack, Text } from '@chakra-ui/react'
+import { Box, HStack, VStack, Text, useTheme, useColorMode } from '@chakra-ui/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
@@ -69,6 +69,8 @@ export default function BoostedPoolWeightChart({
   const chartSizeValues = isSmall ? smallSize : normalSize
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const [isChartLoaded, setIsChartLoaded] = useState(false)
+  const theme = useTheme()
+  const { colorMode } = useColorMode()
 
   useEffect(() => {
     eChartsRef.current?.getEchartsInstance().on('finished', () => {
@@ -86,15 +88,13 @@ export default function BoostedPoolWeightChart({
       },
       series: [
         {
-          name: 'Access From',
           type: 'pie',
           radius: '250%',
-          //   radius: ['40%', '70%'],
           avoidLabelOverlap: false,
           itemStyle: {
             borderRadius: 2,
-            borderColor: '#2D3748',
-            borderWidth: 3.5,
+            borderColor: theme.colors['chartBorder'][colorMode],
+            borderWidth: 1.5,
           },
           label: {
             show: false,
@@ -105,6 +105,7 @@ export default function BoostedPoolWeightChart({
           data: pool.tokens.map((token, i) => ({
             value: 33,
             name: token.symbol,
+            emphasis: {},
             itemStyle: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
@@ -121,7 +122,7 @@ export default function BoostedPoolWeightChart({
         },
       ],
     }
-  }, [])
+  }, [colorMode])
 
   return (
     <VStack position="relative" spacing="4">

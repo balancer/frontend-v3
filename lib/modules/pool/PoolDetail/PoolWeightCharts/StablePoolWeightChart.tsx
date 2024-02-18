@@ -1,4 +1,4 @@
-import { Box, HStack, Text, Grid } from '@chakra-ui/react'
+import { Box, HStack, Text, Grid, useTheme, useColorMode } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { GqlChain, GqlPoolStable } from '@/lib/shared/services/api/generated/graphql'
 import { ChartSizeValues } from './PoolWeightChart'
@@ -69,6 +69,7 @@ export default function StablePoolWeightChart({
   isSmall,
 }: WeightedPoolWeightChartProps) {
   const chartSizeValues = isSmall ? smallSize : normalSize
+  const { colorMode } = useColorMode()
   return (
     <Box position="relative" width="fit-content" height="fit-content">
       <Box
@@ -99,10 +100,12 @@ export default function StablePoolWeightChart({
           <PoolWeightChartChainIcon chain={chain} isChartLoaded={true} isSmall={isSmall} />
         </Box>
         {pool.tokens.length <= 3 && (
-          <HStack zIndex={1} spacing="1" width="full" height="full" rounded="2xl">
+          <HStack spacing="0" zIndex={1} width="full" height="full" rounded="2xl">
             {pool.tokens.map((_, i) => {
               return (
                 <Box
+                  borderColor={`chartBorder.${colorMode}`}
+                  borderWidth="1px"
                   key={`${pool.address}-token-weight-${i}`}
                   as={motion.div}
                   cursor="pointer"
@@ -120,15 +123,7 @@ export default function StablePoolWeightChart({
           </HStack>
         )}
         {pool.tokens.length === 4 && (
-          <Grid
-            zIndex={1}
-            templateColumns="1fr 1fr"
-            rowGap="1"
-            columnGap="1"
-            width="full"
-            height="full"
-            rounded="2xl"
-          >
+          <Grid zIndex={1} templateColumns="1fr 1fr" width="full" height="full" rounded="2xl">
             {pool.tokens.map((_, i) => {
               return (
                 <Box
@@ -136,6 +131,8 @@ export default function StablePoolWeightChart({
                   as={motion.div}
                   cursor="pointer"
                   bgGradient={`linear(to-b, ${colors[i].from}, ${colors[i].to})`}
+                  borderColor={`chartBorder.${colorMode}`}
+                  borderWidth="1px"
                   _hover={{ filter: 'brightness(103%)' }}
                   borderTopLeftRadius={i === 0 ? 'xl' : 'none'}
                   borderBottomLeftRadius={i === 2 ? 'xl' : 'none'}
