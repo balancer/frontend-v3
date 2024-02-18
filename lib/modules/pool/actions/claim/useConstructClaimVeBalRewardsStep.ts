@@ -15,8 +15,8 @@ export function useConstructClaimVeBalRewardsStep() {
   const { userAddress } = useUserAccount()
 
   const claimVeBalRewardsTransaction = useManagedTransaction(
-    networkConfig.contracts.balancer.relayerV6,
-    'balancer.feeDistributorStatic',
+    networkConfig.contracts.feeDistributor as string,
+    'balancer.feeDistributor',
     'claimTokens',
     transactionLabels,
     { args: [userAddress, claimableVeBalRewardsTokens] },

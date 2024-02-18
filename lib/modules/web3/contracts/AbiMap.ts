@@ -1,3 +1,4 @@
+import { FeeDistributorABI } from './abi/FeeDistributorABI'
 import { FeeDistributorStaticABI } from './abi/FeeDistributorStaticABI'
 import {
   balancerMinterABI,
@@ -12,6 +13,7 @@ export const AbiMap = {
   'balancer.minter': balancerMinterABI,
   'balancer.relayerV6': balancerV2BalancerRelayerABI,
   'balancer.feeDistributorStatic': FeeDistributorStaticABI,
+  'balancer.feeDistributor': FeeDistributorABI,
 }
 
 export type AbiMapType = keyof typeof AbiMap | undefined
