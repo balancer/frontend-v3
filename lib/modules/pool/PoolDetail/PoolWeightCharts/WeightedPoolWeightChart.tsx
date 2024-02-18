@@ -1,51 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, HStack, VStack, Text, useTheme, useColorMode } from '@chakra-ui/react'
+import { Box, HStack, VStack, useTheme, useColorMode } from '@chakra-ui/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import * as echarts from 'echarts/core'
 import { motion } from 'framer-motion'
-import { GqlChain, GqlPoolWeighted } from '@/lib/shared/services/api/generated/graphql'
-import { ChartSizeValues } from './PoolWeightChart'
+import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
 import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
-
-const colors = [
-  {
-    from: '#1E4CF1',
-    to: '#00FFAA',
-  },
-  {
-    from: '#B2C4DB',
-    to: '#FDFDFD',
-  },
-  {
-    from: '#EF4A2B',
-    to: '#F48975',
-  },
-  {
-    from: '#FFD600',
-    to: '#F48975',
-  },
-  {
-    from: '#9C68AA',
-    to: '#C03BE4',
-  },
-  {
-    from: '#FFBD91',
-    to: '#FF957B',
-  },
-  {
-    from: '#30CEF0',
-    to: '#02A2FE',
-  },
-]
-
-interface WeightedPoolWeightChartProps {
-  pool: GqlPoolWeighted
-  chain: GqlChain
-  hasLegend?: boolean
-  isSmall?: boolean
-}
+import PoolWeightChartLegend from './PoolWeightChartLegend'
 
 const smallSize: ChartSizeValues = {
   chartHeight: '150px',
@@ -72,7 +34,8 @@ export default function WeightedPoolWeightChart({
   chain,
   hasLegend,
   isSmall,
-}: WeightedPoolWeightChartProps) {
+  colors,
+}: PoolWeightChartProps) {
   const chartSizeValues = isSmall ? smallSize : normalSize
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const [isChartLoaded, setIsChartLoaded] = useState(false)
@@ -183,22 +146,8 @@ export default function WeightedPoolWeightChart({
         </Box>
       </Box>
       {hasLegend && (
-        <HStack mt="-4" spacing="6">
-          {pool.tokens.map((token, i) => {
-            return (
-              <Box
-                fontWeight="normal"
-                fontSize="1rem"
-                background="none"
-                key={`token-weight-chart-legend-${token.symbol}`}
-              >
-                <HStack>
-                  <Box width="8px" height="8px" bg={colors[i].from} rounded="full" />
-                  <Text color="gray.400">{token.symbol}</Text>
-                </HStack>
-              </Box>
-            )
-          })}
+        <HStack mt="-4">
+          <PoolWeightChartLegend pool={pool} colors={colors} />
         </HStack>
       )}
     </VStack>

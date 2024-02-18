@@ -67,6 +67,10 @@ export function isGyro(poolType: GqlPoolType) {
   return [GqlPoolType.Gyro, GqlPoolType.Gyro3, GqlPoolType.Gyroe].includes(poolType)
 }
 
+export function isClp(poolType: GqlPoolType) {
+  return isGyro(poolType)
+}
+
 export function isUnknownType(poolType: any): boolean {
   return !Object.values(GqlPoolType).includes(poolType)
 }

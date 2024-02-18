@@ -4,35 +4,75 @@ import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
 import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 import PoolWeightChartLegend from './PoolWeightChartLegend'
 
-const smallSize: ChartSizeValues = {
-  chartHeight: '150px',
-  boxWidth: 150,
-  boxHeight: 150,
-  haloTop: '40%',
-  haloLeft: '55px',
-  haloWidth: '40px',
-  haloHeigth: '40px',
+const chartSizes: Record<string, Record<string, ChartSizeValues>> = {
+  square: {
+    small: {
+      chartHeight: '150px',
+      boxWidth: 100,
+      boxHeight: 100,
+      haloTop: '40%',
+      haloLeft: '55px',
+      haloWidth: '40px',
+      haloHeigth: '40px',
+    },
+    normal: {
+      chartHeight: '',
+      boxWidth: 160,
+      boxHeight: 160,
+      haloTop: '49%',
+      haloLeft: '95px',
+      haloWidth: '60px',
+      haloHeigth: '60px',
+    },
+  },
+  diamond: {
+    small: {
+      chartHeight: '150px',
+      boxWidth: 150,
+      boxHeight: 150,
+      haloTop: '40%',
+      haloLeft: '55px',
+      haloWidth: '40px',
+      haloHeigth: '40px',
+    },
+    normal: {
+      chartHeight: '',
+      boxWidth: 225,
+      boxHeight: 114,
+      haloTop: '49%',
+      haloLeft: '95px',
+      haloWidth: '60px',
+      haloHeigth: '60px',
+    },
+  },
 }
 
-const normalSize: ChartSizeValues = {
-  chartHeight: '',
-  boxWidth: 225,
-  boxHeight: 225,
-  haloTop: '49%',
-  haloLeft: '95px',
-  haloWidth: '60px',
-  haloHeigth: '60px',
-}
-
-export default function StablePoolWeightChart({
+export default function CLPPoolWeightChart({
   pool,
   chain,
   hasLegend,
-  colors,
   isSmall,
+  colors,
 }: PoolWeightChartProps) {
-  const chartSizeValues = isSmall ? smallSize : normalSize
   const { colorMode } = useColorMode()
+
+  function getChartSizeValues() {
+    const chartSizeKey = isSmall ? 'small' : 'normal'
+    if (pool.tokens.length === 2) {
+      return chartSizes.diamond[chartSizeKey]
+    }
+    return chartSizes.square[chartSizeKey]
+  }
+
+  function getLegendOffset() {
+    if (pool.tokens.length === 2) {
+      return '-5rem'
+    }
+    return '-4rem'
+  }
+
+  const chartSizeValues = getChartSizeValues()
+
   return (
     <Flex
       position="relative"
@@ -42,8 +82,8 @@ export default function StablePoolWeightChart({
       alignItems="center"
     >
       <Box
-        width={`${chartSizeValues.boxWidth * 0.75}px`}
-        height={`${chartSizeValues.boxHeight * 0.75}px`}
+        width={`${chartSizeValues.boxWidth}px`}
+        height={`${chartSizeValues.boxHeight}px`}
         position="relative"
       >
         <Box
@@ -68,8 +108,61 @@ export default function StablePoolWeightChart({
         >
           <PoolWeightChartChainIcon chain={chain} isChartLoaded={true} isSmall={isSmall} />
         </Box>
-        {pool.tokens.length <= 3 && (
-          <HStack spacing="0" zIndex={1} width="full" height="full" rounded="2xl">
+        <svg
+          style={{ visibility: 'hidden', position: 'absolute' }}
+          width="0"
+          height="0"
+          xmlns="http://www.w3.org/2000/svg"
+          version="1.1"
+        >
+          <defs>
+            <filter id="round">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur" />
+              <feColorMatrix
+                in="blur"
+                mode="matrix"
+                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
+                result="goo"
+              />
+              <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+            </filter>
+          </defs>
+        </svg>
+        {pool.tokens.length === 2 && (
+          <Box filter="url(#round)">
+            <Box
+              bgGradient={`linear(to-r, ${colors[0].from}, ${colors[0].to})`}
+              width={`${chartSizeValues.boxWidth}px`}
+              height={`${chartSizeValues.boxHeight}px`}
+              borderTopRightRadius="xl"
+              clipPath="polygon(50% 0, 100% 100%, 0 100%)"
+              transform="rotate(90deg) translateY(-50%)"
+              position="absolute"
+              borderWidth="2px"
+              borderColor={`chartBorder.${colorMode}`}
+              _hover={{ filter: 'brightness(103%)' }}
+            />
+            <Box
+              bgGradient={`linear(to-r, ${colors[1].from}, ${colors[1].to})`}
+              width={`${chartSizeValues.boxWidth}px`}
+              height={`${chartSizeValues.boxHeight}px`}
+              borderTopRightRadius="xl"
+              clipPath="polygon(50% 0, 100% 100%, 0 100%)"
+              transform="rotate(-90deg) translateY(-50%)"
+              position="absolute"
+              _hover={{ filter: 'brightness(103%)' }}
+            />
+          </Box>
+        )}
+        {pool.tokens.length === 3 && (
+          <HStack
+            spacing="0"
+            zIndex={1}
+            width="full"
+            height="full"
+            rounded="2xl"
+            transform="rotate(-135deg)"
+          >
             {pool.tokens.map((_, i) => {
               return (
                 <Box
@@ -115,7 +208,7 @@ export default function StablePoolWeightChart({
         {hasLegend && (
           <HStack
             width="full"
-            bottom="-2.5rem"
+            bottom={getLegendOffset()}
             position="absolute"
             left="0"
             right="0"
