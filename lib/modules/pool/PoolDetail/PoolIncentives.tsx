@@ -31,15 +31,8 @@ const TABS = [
 export default function PoolIncentives() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain } = usePool()
-  const { previewModalDisclosure, disabledReason, isDisabled } = useClaiming(
-    [(pool.staking?.id || '') as Hex],
-    pool
-  )
-
-  // TODO show rewards somewhere and periodically update them
-  const convertedPool = pool as unknown as PoolListItem // need to change type going from pool to pools for hooks
-  const { claimableRewards: thirdPartyRewards } = useClaimableBalances([convertedPool])
-  const { balRewardsData: balRewards } = useBalTokenRewards([convertedPool])
+  const { previewModalDisclosure, disabledReason, isDisabled, thirdPartyRewards, balRewards } =
+    useClaiming([(pool.staking?.id || '') as Hex], pool)
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)

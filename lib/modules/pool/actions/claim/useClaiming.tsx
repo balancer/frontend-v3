@@ -10,6 +10,9 @@ import { Address } from 'viem'
 import { Pool } from '../../usePool'
 import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 import { useDisclosure } from '@chakra-ui/hooks'
+import { useBalTokenRewards } from '@/lib/modules/portfolio/useBalRewards'
+import { useClaimableBalances } from '@/lib/modules/portfolio/useClaimableBalances'
+import { PoolListItem } from '../../pool.types'
 
 export function useClaiming(gaugeAddresses: Address[], pool: Pool) {
   const { isConnected } = useUserAccount()
@@ -18,6 +21,10 @@ export function useClaiming(gaugeAddresses: Address[], pool: Pool) {
     !isConnected,
     LABELS.walletNotConnected,
   ])
+
+  const convertedPool = pool as unknown as PoolListItem // need to change type going from pool to pools for hooks
+  const { claimableRewards: thirdPartyRewards } = useClaimableBalances([convertedPool])
+  const { balRewardsData: balRewards } = useBalTokenRewards([convertedPool])
 
   const stepConfigs = useClaimStepConfigs(
     gaugeAddresses,
@@ -32,5 +39,7 @@ export function useClaiming(gaugeAddresses: Address[], pool: Pool) {
     currentStep,
     useOnStepCompleted,
     previewModalDisclosure,
+    thirdPartyRewards,
+    balRewards,
   }
 }

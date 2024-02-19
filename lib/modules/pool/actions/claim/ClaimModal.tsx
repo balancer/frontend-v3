@@ -16,9 +16,8 @@ import {
 import { Pool } from '../../usePool'
 import { useClaiming } from './useClaiming'
 import { Address } from 'wagmi'
-import { BalTokenReward, useBalTokenRewards } from '@/lib/modules/portfolio/useBalRewards'
-import { ClaimableReward, useClaimableBalances } from '@/lib/modules/portfolio/useClaimableBalances'
-import { PoolListItem } from '../../pool.types'
+import { BalTokenReward } from '@/lib/modules/portfolio/useBalRewards'
+import { ClaimableReward } from '@/lib/modules/portfolio/useClaimableBalances'
 
 type Props = {
   isOpen: boolean
@@ -35,11 +34,10 @@ export function ClaimModal({
   pool,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const { currentStep, useOnStepCompleted } = useClaiming(gaugeAddresses, pool)
-
-  const convertedPool = pool as unknown as PoolListItem // need to change type going from pool to pools for hooks
-  const { claimableRewards: thirdPartyRewards } = useClaimableBalances([convertedPool])
-  const { balRewardsData: balRewards } = useBalTokenRewards([convertedPool])
+  const { currentStep, useOnStepCompleted, thirdPartyRewards, balRewards } = useClaiming(
+    gaugeAddresses,
+    pool
+  )
 
   function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
     if (reward.formattedBalance === '0') return null
