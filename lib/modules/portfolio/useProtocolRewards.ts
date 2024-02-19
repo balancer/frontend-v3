@@ -4,7 +4,7 @@ import { FeeDistributorStaticABI } from '../web3/contracts/abi/FeeDistributorSta
 import networkConfigs from '@/lib/config/networks'
 import { formatUnits } from 'viem'
 
-const claimableTokens: string[] = [
+export const claimableVeBalRewardsTokens: string[] = [
   '0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2', // bb-a-USD v1
   '0xA13a9247ea42D743238089903570127DdA72fE44', // bb-a-USD v2
   '0xfeBb0bbf162E64fb9D0dfe186E517d84C395f016', // bb-a-USD v3
@@ -23,11 +23,11 @@ export function useProtocolRewards() {
     address: networkConfigs.MAINNET.contracts.feeDistributor,
     abi: FeeDistributorStaticABI,
     functionName: 'claimTokens',
-    args: [userAddress, claimableTokens],
+    args: [userAddress, claimableVeBalRewardsTokens],
     select: data => {
       return (data as bigint[]).map((clBalance, index) => {
         return {
-          tokenAddress: claimableTokens[index],
+          tokenAddress: claimableVeBalRewardsTokens[index],
           balance: clBalance,
           formattedBalance: formatUnits(clBalance, 18),
         }
