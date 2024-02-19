@@ -5,6 +5,8 @@ import { useCountdown } from 'usehooks-ts'
 import { useAddLiquidity } from './useAddLiquidity'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { requiresProportionalInput } from '../LiquidityActionHelpers'
+import { usePool } from '../../usePool'
 
 type Props = {
   addLiquidityTxState?: TransactionState
@@ -20,6 +22,7 @@ function useAddLiquidityTimeout({ addLiquidityTxState }: Props) {
   })
 
   const { simulationQuery, priceImpactQuery, previewModalDisclosure } = useAddLiquidity()
+  const { pool, refetch: refetchPool } = usePool()
 
   const isConfirmingAddLiquidity = addLiquidityTxState === TransactionState.Confirming
   const isAwaitingUserConfirmation = addLiquidityTxState === TransactionState.Loading
@@ -35,7 +38,19 @@ function useAddLiquidityTimeout({ addLiquidityTxState }: Props) {
     const refetchQueries = async () => {
       stopCountdown()
       resetCountdown()
-      await Promise.all([simulationQuery.refetch(), priceImpactQuery.refetch()])
+      const refetchPromises: Promise<any>[] = [
+        simulationQuery.refetch(),
+        priceImpactQuery.refetch(),
+      ]
+      if (requiresProportionalInput(pool)) {
+        /*
+          This is the only edge-case where the SDK needs pool onchain data from the frontend
+          (calculateProportionalAmounts uses pool.dynamicData.totalShares in its parameters)
+          so we must refetch pool data
+        */
+        refetchPromises.push(refetchPool())
+      }
+      await Promise.all(refetchPromises)
       startCountdown()
     }
     if (secondsToRefetch === 0 && !shouldFreezeQuote) refetchQueries()
