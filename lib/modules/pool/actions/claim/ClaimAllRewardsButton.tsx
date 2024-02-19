@@ -1,7 +1,8 @@
 import { Address } from 'viem'
 import { useConstructClaimAllRewardsStep } from './useConstructClaimAllRewardsStep'
-import { ClaimButton } from './ClaimButton'
 import { GqlChain, GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
+import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
+import { VStack } from '@chakra-ui/react'
 
 interface ClaimAllRewardsButtonProps {
   gaugeAddresses: Address[]
@@ -20,5 +21,9 @@ export function ClaimAllRewardsButton({
     stakingType,
   })
 
-  return <ClaimButton step={claimAllRewardsStep} />
+  return (
+    <VStack w="full">
+      <TransactionStepButton step={claimAllRewardsStep} />
+    </VStack>
+  )
 }
