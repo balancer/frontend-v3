@@ -60,7 +60,7 @@ export function useClaimableBalances(pools: PoolListItem[]) {
     }
   })
 
-  const poolsRewardTokensQuery = useMulticall(poolsRewardTokensRequests)
+  const { results: poolsRewardTokensQuery, refetchAll } = useMulticall(poolsRewardTokensRequests)
 
   // Format claimable rewards data
   const poolRewardTokensData = Object.values(poolsRewardTokensQuery).reduce(
@@ -100,5 +100,6 @@ export function useClaimableBalances(pools: PoolListItem[]) {
 
   return {
     claimableRewards: poolRewardTokensData,
+    refetchClaimableRewards: refetchAll,
   }
 }

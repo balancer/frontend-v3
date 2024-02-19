@@ -40,7 +40,7 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
       }
     }) || []
 
-  const balTokensQuery = useMulticall(balIncentivesRequests)
+  const { results: balTokensQuery, refetchAll } = useMulticall(balIncentivesRequests)
 
   // Bal incentives
   const balRewardsData = Object.values(balTokensQuery).reduce((acc: BalTokenReward[], chain) => {
@@ -74,5 +74,6 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
 
   return {
     balRewardsData,
+    refetchBalRewards: refetchAll,
   }
 }
