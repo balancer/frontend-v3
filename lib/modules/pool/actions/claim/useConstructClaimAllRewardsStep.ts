@@ -6,6 +6,8 @@ import { useClaimCallDataQuery } from './useClaimCallDataQuery'
 import { selectStakingService } from '@/lib/modules/staking/selectStakingService'
 import { GqlChain, GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 import networkConfigs from '@/lib/config/networks'
+import { useClaiming } from './useClaiming'
+import { useEffect } from 'react'
 
 interface UseConstructClaimAllRewardsStepArgs {
   gaugeAddresses: Address[]
@@ -19,10 +21,17 @@ export function useConstructClaimAllRewardsStep({
   stakingType,
 }: UseConstructClaimAllRewardsStepArgs) {
   const { isConnected } = useUserAccount()
+  const { thirdPartyRewards, balRewards, refetchClaimableRewards, refetchBalRewards } =
+    useClaiming()
 
   const shouldClaimMany = gaugeAddresses.length > 1
   const stakingService = selectStakingService(chain, stakingType)
-  const { data: claimData } = useClaimCallDataQuery(gaugeAddresses, stakingService)
+  const { data: claimData } = useClaimCallDataQuery(
+    gaugeAddresses,
+    stakingService,
+    thirdPartyRewards.length > 0,
+    balRewards.length > 0
+  )
 
   const transactionLabels: TransactionLabels = {
     init: `Claim${shouldClaimMany ? ' all' : ''}`,
@@ -49,6 +58,13 @@ export function useConstructClaimAllRewardsStep({
     stepType: 'claim',
     isComplete: () => isConnected && claimAllRewardsStep.result.isSuccess,
   }
+
+  useEffect(() => {
+    if (claimAllRewardsTransaction.result.isSuccess) {
+      refetchClaimableRewards()
+      refetchBalRewards()
+    }
+  }, [claimAllRewardsTransaction])
 
   return {
     claimAllRewardsStep,

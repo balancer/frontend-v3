@@ -34,10 +34,7 @@ export function ClaimModal({
   pool,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const { currentStep, useOnStepCompleted, thirdPartyRewards, balRewards } = useClaiming(
-    gaugeAddresses,
-    pool
-  )
+  const { currentStep, useOnStepCompleted, thirdPartyRewards, balRewards } = useClaiming()
 
   function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
     if (reward.formattedBalance === '0') return null
@@ -71,12 +68,12 @@ export function ClaimModal({
         </ModalBody>
         <ModalFooter>
           <VStack w="full">
-            {currentStep.render.length ? (
-              currentStep.render(useOnStepCompleted)
-            ) : (
+            {!balRewards.length && !thirdPartyRewards.length ? (
               <Button w="full" size="lg" onClick={onClose}>
                 Close
               </Button>
+            ) : (
+              currentStep.render(useOnStepCompleted)
             )}
           </VStack>
         </ModalFooter>

@@ -7,14 +7,14 @@ import { LABELS } from '@/lib/shared/labels'
 import { useIterateSteps } from '../useIterateSteps'
 import { useClaimStepConfigs } from './useClaimStepConfigs'
 import { Address } from 'viem'
-import { Pool } from '../../usePool'
+import { usePool } from '../../usePool'
 import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { useBalTokenRewards } from '@/lib/modules/portfolio/useBalRewards'
 import { useClaimableBalances } from '@/lib/modules/portfolio/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
 
-export function useClaiming(gaugeAddresses: Address[], pool: Pool) {
+export function useClaiming() {
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
   const { isDisabled, disabledReason } = isDisabledWithReason([
@@ -22,12 +22,16 @@ export function useClaiming(gaugeAddresses: Address[], pool: Pool) {
     LABELS.walletNotConnected,
   ])
 
+  const { pool } = usePool()
+
   const convertedPool = pool as unknown as PoolListItem // need to change type going from pool to pools for hooks
-  const { claimableRewards: thirdPartyRewards } = useClaimableBalances([convertedPool])
-  const { balRewardsData: balRewards } = useBalTokenRewards([convertedPool])
+  const { claimableRewards: thirdPartyRewards, refetchClaimableRewards } = useClaimableBalances([
+    convertedPool,
+  ])
+  const { balRewardsData: balRewards, refetchBalRewards } = useBalTokenRewards([convertedPool])
 
   const stepConfigs = useClaimStepConfigs(
-    gaugeAddresses,
+    [pool.staking?.id as Address],
     pool.chain,
     pool.staking?.type || GqlPoolStakingType.Gauge
   )
@@ -41,5 +45,7 @@ export function useClaiming(gaugeAddresses: Address[], pool: Pool) {
     previewModalDisclosure,
     thirdPartyRewards,
     balRewards,
+    refetchClaimableRewards,
+    refetchBalRewards,
   }
 }
