@@ -32,7 +32,7 @@ export default function PoolIncentives() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain } = usePool()
   const { previewModalDisclosure, disabledReason, isDisabled, thirdPartyRewards, balRewards } =
-    useClaiming([(pool.staking?.id || '') as Hex], pool)
+    useClaiming()
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
