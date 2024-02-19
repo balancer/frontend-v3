@@ -77,7 +77,8 @@ export function useClaimableBalances(pools: PoolListItem[]) {
 
         results.forEach((result, idx) => {
           if (result.status === 'success') {
-            if (!result.result) return
+            const balance = result.result
+            if (!balance) return
 
             const gaugeData = rewardTokensList.find(r => r.gaugeAddress === gaugeAddress)
             if (!gaugeData) return
@@ -86,8 +87,8 @@ export function useClaimableBalances(pools: PoolListItem[]) {
               pool: gaugeData?.pool,
               tokenAddress: tokenAddresses[idx] as Address,
               gaugeAddress,
-              balance: result.result,
-              formattedBalance: fNum('token', formatUnits(result.result, 18)),
+              balance,
+              formattedBalance: fNum('token', formatUnits(balance, 18)),
               decimals: 18,
             })
           }
