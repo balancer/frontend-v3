@@ -27,8 +27,8 @@ import { BPT_DECIMALS } from '../../../pool.constants'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
 import { ProportionalInputs } from './ProportionalInputs'
-import { isGyro } from '../../../pool.helpers'
 import { usePool } from '../../../usePool'
+import { requiresProportionalInput } from '../../LiquidityActionHelpers'
 
 export function AddLiquidityForm() {
   const {
@@ -75,7 +75,7 @@ export function AddLiquidityForm() {
               <TransactionSettings size="sm" />
             </HStack>
 
-            {isGyro(pool.type) ? (
+            {requiresProportionalInput(pool) ? (
               <ProportionalInputs></ProportionalInputs>
             ) : (
               <VStack spacing="md" w="full">

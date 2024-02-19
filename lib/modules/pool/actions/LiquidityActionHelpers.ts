@@ -20,7 +20,7 @@ import {
 import { keyBy } from 'lodash'
 import { Hex, formatUnits, parseUnits } from 'viem'
 import { Address } from 'wagmi'
-import { hasNestedPools } from '../pool.helpers'
+import { hasNestedPools, isGyro } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
 
@@ -175,6 +175,10 @@ export function supportsNestedLiquidity(pool: Pool) {
 
 export function shouldUseNestedLiquidity(pool: Pool) {
   return supportsNestedLiquidity(pool) && hasNestedPools(pool)
+}
+
+export function requiresProportionalInput(pool: Pool) {
+  return isGyro(pool.type)
 }
 
 export function toPoolState(pool: Pool): PoolState {

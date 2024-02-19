@@ -1,5 +1,5 @@
-import { isGyro } from '../../../pool.helpers'
 import { Pool } from '../../../usePool'
+import { requiresProportionalInput } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
 
 const addLiquidity = 'add-liquidity'
@@ -16,13 +16,12 @@ function liquidityParams({ userAddress, pool, slippage, humanAmountsIn }: Liquid
 
 function stringifyHumanAmountsIn(pool: Pool, humanAmountsIn: HumanAmountIn[]): string {
   if (humanAmountsIn.length === 0) return ''
-  if (isGyro(pool.type)) {
+  if (requiresProportionalInput(pool)) {
     /*
     This is an edge-case where we only use the first human amount in the array to avoid triggering queries when the other human amounts change automatically
     (as they are automatically calculated and entered in the proportional add liquidity flow).
     */
     return JSON.stringify(humanAmountsIn[0])
-    // return `${humanAmountIn.humanAmount}-${humanAmountIn.tokenAddress}`
   }
 
   return JSON.stringify(humanAmountsIn)
