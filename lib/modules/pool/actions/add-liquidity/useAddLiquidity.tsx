@@ -23,6 +23,7 @@ import { useDisclosure } from '@chakra-ui/hooks'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useAddLiquidityStepConfigs } from './useAddLiquidityStepConfigs'
 import { useIterateSteps } from '../useIterateSteps'
+import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -38,10 +39,12 @@ export function _useAddLiquidity() {
   const previewModalDisclosure = useDisclosure()
 
   const [addLiquidityTxState, setAddLiquidityTxState] = useState<TransactionState>()
+  const { hasValidationErrors } = useTokenInputsValidation()
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
-    [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts']
+    [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts'],
+    [hasValidationErrors(), 'Errors in token inputs']
   )
 
   const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id])
