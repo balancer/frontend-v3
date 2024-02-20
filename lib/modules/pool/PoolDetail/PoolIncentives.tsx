@@ -31,7 +31,7 @@ const TABS = [
 export default function PoolIncentives() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain } = usePool()
-  const { previewModalDisclosure, disabledReason, isDisabled, thirdPartyRewards, balRewards } =
+  const { previewModalDisclosure, disabledReason, isDisabled, nonBalRewards, balRewards } =
     useClaiming()
 
   function handleTabChanged(option: ButtonGroupOption) {
@@ -98,7 +98,7 @@ export default function PoolIncentives() {
                   variant="secondary"
                   w="full"
                   size="lg"
-                  isDisabled={isDisabled || (!thirdPartyRewards.length && !balRewards.length)}
+                  isDisabled={isDisabled || (!nonBalRewards.length && !balRewards.length)}
                   onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
                 >
                   Claim
