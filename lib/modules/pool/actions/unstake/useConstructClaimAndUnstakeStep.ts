@@ -7,10 +7,17 @@ import { selectStakingService } from '@/lib/modules/staking/selectStakingService
 import { useUnstakeGaugeCallDataQuery } from './useUnstakeGaugeCallDataQuery'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
+import { useBalTokenRewards } from '@/lib/modules/portfolio/useBalRewards'
+import { useClaimableBalances } from '@/lib/modules/portfolio/useClaimableBalances'
+import { PoolListItem } from '../../pool.types'
 
 export function useConstructClaimAndUnstakeStep() {
   const { pool } = usePool()
   const networkConfig = getNetworkConfig(pool.chain)
+
+  const convertedPool = pool as unknown as PoolListItem // need to change type going from pool to pools for hooks
+  const { claimableRewards: nonBalrewards } = useClaimableBalances([convertedPool])
+  const { balRewardsData: balRewards } = useBalTokenRewards([convertedPool])
 
   const transactionLabels: TransactionLabels = {
     init: 'Claim & unstake',
@@ -24,7 +31,9 @@ export function useConstructClaimAndUnstakeStep() {
     : undefined
   const { data } = useUnstakeGaugeCallDataQuery(
     parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS),
-    stakingService
+    stakingService,
+    nonBalrewards.length > 0,
+    balRewards.length > 0
   )
 
   const claimAndUnstakeTransaction = useManagedTransaction(
