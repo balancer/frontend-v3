@@ -30,7 +30,7 @@ export function useTokenInput(
   function validateInput(value: string) {
     if (!token) return
     const tokenAddress = token.address as Address
-    const userBalance = balanceFor(token.address)
+    const userBalance = balanceFor(tokenAddress)
 
     if (value && userBalance !== undefined) {
       if (bn(value).gt(bn(userBalance.formatted))) {
