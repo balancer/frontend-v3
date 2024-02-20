@@ -8,10 +8,7 @@ import { Address } from 'viem'
 import { usePool } from '../usePool'
 import { useClaiming } from '../actions/claim/useClaiming'
 import { ClaimModal } from '../actions/claim/ClaimModal'
-import { useClaimableBalances } from '../../portfolio/useClaimableBalances'
-import { PoolListItem } from '../pool.types'
 import { Hex } from 'viem'
-import { useBalTokenRewards } from '../../portfolio/useBalRewards'
 
 const TABS = [
   {
