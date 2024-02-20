@@ -8,6 +8,7 @@ import { useMulticall } from '../web3/contracts/useMulticall'
 import { getPoolsByGaugesMap } from '../pool/pool.utils'
 import { ClaimableBalanceResult } from './usePortfolio'
 import { fNum } from '@/lib/shared/utils/numbers'
+import networkConfigs from '@/lib/config/networks'
 
 export interface BalTokenReward {
   balance: bigint
@@ -15,6 +16,7 @@ export interface BalTokenReward {
   formattedBalance: string
   gaugeAddress: string
   pool: PoolListItem
+  tokenAddress: Address
 }
 
 export function useBalTokenRewards(pools: PoolListItem[]) {
@@ -38,7 +40,7 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
       }
     }) || []
 
-  const balTokensQuery = useMulticall(balIncentivesRequests)
+  const { results: balTokensQuery, refetchAll } = useMulticall(balIncentivesRequests)
 
   // Bal incentives
   const balRewardsData = Object.values(balTokensQuery).reduce((acc: BalTokenReward[], chain) => {
@@ -55,12 +57,15 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
         if (gaugeData.status === 'success') {
           balance = gaugeData.result
         }
+        if (!balance) return
+
         acc.push({
           gaugeAddress,
           pool,
-          balance: gaugeData.result,
+          balance,
           formattedBalance: fNum('token', formatUnits(balance, 18)),
           decimals: 18,
+          tokenAddress: networkConfigs[pool.chain].tokens.balToken?.address as Address,
         })
       })
     })
@@ -69,5 +74,6 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
 
   return {
     balRewardsData,
+    refetchBalRewards: refetchAll,
   }
 }

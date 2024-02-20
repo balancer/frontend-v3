@@ -9,6 +9,7 @@ const networkConfig: NetworkConfig = {
   iconPath: '/images/chains/MAINNET.svg',
   blockExplorerBaseUrl: 'https://sepolia.etherscan.io',
   tokens: {
+    balToken: { address: '0xb19382073c7a0addbb56ac6af1808fa49e377b75' },
     nativeAsset: {
       name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',

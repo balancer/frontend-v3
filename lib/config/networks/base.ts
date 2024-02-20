@@ -9,6 +9,7 @@ const networkConfig: NetworkConfig = {
   iconPath: '/images/chains/BASE.svg',
   blockExplorerBaseUrl: 'https://basescan.org',
   tokens: {
+    balToken: { address: '0x4158734d47fc9692176b5085e0f52ee0da5d47f1' },
     nativeAsset: {
       name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
