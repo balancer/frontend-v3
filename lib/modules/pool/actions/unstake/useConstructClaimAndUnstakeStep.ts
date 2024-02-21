@@ -5,7 +5,7 @@ import { BPT_DECIMALS } from '../../pool.constants'
 import { usePool } from '../../usePool'
 import { selectStakingService } from '@/lib/modules/staking/selectStakingService'
 import { useUnstakeGaugeCallDataQuery } from './useUnstakeGaugeCallDataQuery'
-import { getNetworkConfig } from '@/lib/config/app.config'
+import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 
 export function useConstructClaimAndUnstakeStep() {
@@ -33,7 +33,7 @@ export function useConstructClaimAndUnstakeStep() {
     'multicall',
     transactionLabels,
     { args: [data] },
-    { enabled: !!pool }
+    { enabled: !!pool, chainId: getChainId(pool.chain) }
   )
 
   const claimAndUnstakeStep: FlowStep = {
