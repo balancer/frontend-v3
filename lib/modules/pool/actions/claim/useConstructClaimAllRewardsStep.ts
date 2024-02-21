@@ -8,6 +8,7 @@ import { GqlChain, GqlPoolStakingType } from '@/lib/shared/services/api/generate
 import networkConfigs from '@/lib/config/networks'
 import { useClaiming } from './useClaiming'
 import { useEffect } from 'react'
+import { getChainId } from '@/lib/config/app.config'
 
 interface UseConstructClaimAllRewardsStepArgs {
   gaugeAddresses: Address[]
@@ -48,7 +49,10 @@ export function useConstructClaimAllRewardsStep({
     'multicall',
     transactionLabels,
     { args: [claimData] },
-    { enabled: gaugeAddresses.length > 0 && claimData && claimData.length > 0 }
+    {
+      enabled: gaugeAddresses.length > 0 && claimData && claimData.length > 0,
+      chainId: getChainId(chain),
+    }
   )
 
   const claimAllRewardsStep: FlowStep = {

@@ -11,6 +11,7 @@ import {
   UsePrepareContractWriteConfig,
   useContractWrite,
   usePrepareContractWrite,
+  useSwitchNetwork,
   useWaitForTransaction,
 } from 'wagmi'
 import { AbiMap } from './AbiMap'
@@ -38,6 +39,14 @@ export function useManagedTransaction<
 ) {
   const [writeArgs, setWriteArgs] = useState(args)
   const { minConfirmations } = useNetworkConfig()
+  const { switchNetwork } = useSwitchNetwork()
+
+  useEffect(() => {
+    if (!!additionalConfig?.chainId && switchNetwork) {
+      switchNetwork(additionalConfig?.chainId)
+      prepareQuery.refetch()
+    }
+  }, [additionalConfig?.chainId, switchNetwork])
 
   const prepareQuery = usePrepareContractWrite({
     abi: AbiMap[contractId] as Abi,
