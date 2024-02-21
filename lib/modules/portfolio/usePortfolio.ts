@@ -4,14 +4,21 @@ import { PoolListItem } from '../pool/pool.types'
 import { useMemo } from 'react'
 import { useQuery as useApolloQuery } from '@apollo/client'
 import { useProtocolRewards } from './useProtocolRewards'
-import { useClaimableBalances } from './useClaimableBalances'
-import { useBalTokenRewards } from './useBalRewards'
+import { ClaimableReward, useClaimableBalances } from './useClaimableBalances'
+import { BalTokenReward, useBalTokenRewards } from './useBalRewards'
 import { bn } from '@/lib/shared/utils/numbers'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
   result: bigint
 }
+
+export interface PoolRewardsData extends PoolListItem {
+  balReward?: BalTokenReward
+  claimableReward?: ClaimableReward
+}
+
+export type PoolRewardsDataMap = Record<string, PoolRewardsData>
 
 export function usePortfolio() {
   const { userAddress } = useUserAccount()
@@ -58,10 +65,27 @@ export function usePortfolio() {
   // Other tokens rewards
   const { claimableRewards } = useClaimableBalances(portfolioData.stakedPools || [])
 
+  const poolRewardsMap = useMemo(() => {
+    return portfolioData.stakedPools?.reduce((acc: PoolRewardsDataMap, pool) => {
+      const balReward = balRewardsData.find(r => r.pool.id === pool.id)
+      const claimableReward = claimableRewards.find(r => r.pool.id === pool.id)
+
+      acc[pool.id] = {
+        ...pool,
+      }
+
+      if (balReward) acc[pool.id].balReward = balReward
+      if (claimableReward) acc[pool.id].claimableReward = claimableReward
+
+      return acc
+    }, {})
+  }, [portfolioData.stakedPools, balRewardsData, claimableRewards])
+
   return {
     portfolioData,
     balRewardsData,
     protocolRewardsData,
     claimableRewards,
+    poolRewardsMap,
   }
 }

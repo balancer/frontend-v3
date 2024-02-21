@@ -8,7 +8,8 @@ import { HStack, Heading, Stack, Text } from '@chakra-ui/react'
 
 export default function Portfolio() {
   const { toCurrency } = useCurrency()
-  const { portfolioData, balRewardsData, protocolRewardsData, claimableRewards } = usePortfolio()
+  const { portfolioData, balRewardsData, protocolRewardsData, claimableRewards, poolRewardsMap } =
+    usePortfolio()
 
   if (!portfolioData) {
     return null

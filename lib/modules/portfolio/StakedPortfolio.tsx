@@ -4,6 +4,7 @@ import { PortfolioPoolsList } from './PortfolioPoolsList'
 
 interface StakedPortfolioProps {
   pools: PoolListItem[]
+  poolRewardsMap: Record<string, string>
 }
 
 export function StakedPortfolio({ pools }: StakedPortfolioProps) {
