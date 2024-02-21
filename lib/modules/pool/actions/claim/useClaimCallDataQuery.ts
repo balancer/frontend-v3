@@ -5,11 +5,11 @@ import { GaugeService } from '@/lib/shared/services/staking/gauge.service'
 export function useClaimCallDataQuery(
   gaugeAddresses: Address[],
   gaugeService: GaugeService | undefined,
-  hasPendingNonBALRewards: boolean,
+  hasPendingNonBalRewards: boolean,
   hasPendingBalRewards: boolean
 ) {
   const inputData = {
-    hasPendingNonBALRewards,
+    hasPendingNonBalRewards,
     hasPendingBalRewards,
     gauges: gaugeAddresses,
     outputReference: 0n,

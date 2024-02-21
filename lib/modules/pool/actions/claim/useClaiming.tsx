@@ -30,6 +30,8 @@ export function useClaiming() {
   ])
   const { balRewardsData: balRewards, refetchBalRewards } = useBalTokenRewards([convertedPool])
 
+  const hasNoRewards = !nonBalRewards.length && !balRewards.length
+
   const stepConfigs = useClaimStepConfigs(
     [pool.staking?.id as Address],
     pool.chain,
@@ -47,5 +49,6 @@ export function useClaiming() {
     balRewards,
     refetchClaimableRewards,
     refetchBalRewards,
+    hasNoRewards,
   }
 }

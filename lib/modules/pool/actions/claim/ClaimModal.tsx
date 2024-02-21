@@ -34,7 +34,7 @@ export function ClaimModal({
   pool,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const { currentStep, useOnStepCompleted, nonBalRewards, balRewards } = useClaiming()
+  const { currentStep, useOnStepCompleted, nonBalRewards, balRewards, hasNoRewards } = useClaiming()
 
   function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
     if (reward.formattedBalance === '0') return null
@@ -58,7 +58,7 @@ export function ClaimModal({
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          {!balRewards.length && !nonBalRewards.length && <Text>Nothing to claim</Text>}
+          {!hasNoRewards && <Text>Nothing to claim</Text>}
           {balRewards.map((reward, idx) => (
             <RewardTokenRow key={idx} reward={reward} />
           ))}
@@ -68,7 +68,7 @@ export function ClaimModal({
         </ModalBody>
         <ModalFooter>
           <VStack w="full">
-            {!balRewards.length && !nonBalRewards.length ? (
+            {!hasNoRewards ? (
               <Button w="full" size="lg" onClick={onClose}>
                 Close
               </Button>

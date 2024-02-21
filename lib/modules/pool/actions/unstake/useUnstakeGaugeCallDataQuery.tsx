@@ -7,14 +7,14 @@ import { Address } from 'viem'
 export function useUnstakeGaugeCallDataQuery(
   amount: bigint,
   gaugeService: GaugeService | undefined,
-  hasPendingNonBALRewards: boolean,
+  hasPendingNonBalRewards: boolean,
   hasPendingBalRewards: boolean
 ) {
   const { userAddress } = useUserAccount()
   const { pool } = usePool()
 
   const inputData = {
-    hasPendingNonBALRewards,
+    hasPendingNonBalRewards,
     hasPendingBalRewards,
     gauges: [(pool.staking?.id || '') as Address],
     sender: userAddress || '',
