@@ -21,15 +21,14 @@ export function useConstructClaimAllRewardsStep({
   stakingType,
 }: UseConstructClaimAllRewardsStepArgs) {
   const { isConnected } = useUserAccount()
-  const { thirdPartyRewards, balRewards, refetchClaimableRewards, refetchBalRewards } =
-    useClaiming()
+  const { nonBalRewards, balRewards, refetchClaimableRewards, refetchBalRewards } = useClaiming()
 
   const shouldClaimMany = gaugeAddresses.length > 1
   const stakingService = selectStakingService(chain, stakingType)
   const { data: claimData } = useClaimCallDataQuery(
     gaugeAddresses,
     stakingService,
-    thirdPartyRewards.length > 0,
+    nonBalRewards.length > 0,
     balRewards.length > 0
   )
 

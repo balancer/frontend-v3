@@ -25,10 +25,12 @@ export function useClaiming() {
   const { pool } = usePool()
 
   const convertedPool = pool as unknown as PoolListItem // need to change type going from pool to pools for hooks
-  const { claimableRewards: thirdPartyRewards, refetchClaimableRewards } = useClaimableBalances([
+  const { claimableRewards: nonBalRewards, refetchClaimableRewards } = useClaimableBalances([
     convertedPool,
   ])
   const { balRewardsData: balRewards, refetchBalRewards } = useBalTokenRewards([convertedPool])
+
+  const hasNoRewards = !nonBalRewards.length && !balRewards.length
 
   const stepConfigs = useClaimStepConfigs(
     [pool.staking?.id as Address],
@@ -43,9 +45,10 @@ export function useClaiming() {
     currentStep,
     useOnStepCompleted,
     previewModalDisclosure,
-    thirdPartyRewards,
+    nonBalRewards,
     balRewards,
     refetchClaimableRewards,
     refetchBalRewards,
+    hasNoRewards,
   }
 }

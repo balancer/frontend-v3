@@ -7,7 +7,7 @@ import {
 } from '../batch-relayer/relayer-types'
 
 interface ClaimCallDataArgs {
-  hasPendingNonBALRewards: boolean
+  hasPendingNonBalRewards: boolean
   hasPendingBalRewards: boolean
   gauges: Address[]
   outputReference: bigint
@@ -23,7 +23,7 @@ export class GaugeService {
   constructor(private readonly batchRelayerService: BatchRelayerService) {}
 
   public getGaugeClaimRewardsAndWithdrawContractCallData({
-    hasPendingNonBALRewards,
+    hasPendingNonBalRewards,
     hasPendingBalRewards,
     gauges,
     sender,
@@ -34,7 +34,7 @@ export class GaugeService {
     const calls: Hex[] = []
 
     const rewardsCalls = this.getGaugeClaimRewardsContractCallData({
-      hasPendingNonBALRewards,
+      hasPendingNonBalRewards,
       hasPendingBalRewards,
       gauges,
       outputReference,
@@ -50,14 +50,14 @@ export class GaugeService {
   }
 
   public getGaugeClaimRewardsContractCallData({
-    hasPendingNonBALRewards,
+    hasPendingNonBalRewards,
     hasPendingBalRewards,
     gauges,
     outputReference,
   }: ClaimCallDataArgs) {
     const calls: Hex[] = []
 
-    if (hasPendingNonBALRewards) {
+    if (hasPendingNonBalRewards) {
       calls.push(this.getGaugeEncodeClaimRewardsCallData({ gauges }))
     }
 
