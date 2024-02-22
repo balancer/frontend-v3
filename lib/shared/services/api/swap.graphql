@@ -4,42 +4,32 @@ query GetSorSwaps(
   $swapType: GqlSorSwapType!
   $swapAmount: BigDecimal!
   $chain: GqlChain!
-  $swapOptions: GqlSorSwapOptionsInput!
 ) {
-  swaps: sorV2GetSwaps(
+  swaps: sorGetSwapPaths(
     tokenIn: $tokenIn
     tokenOut: $tokenOut
     swapType: $swapType
     swapAmount: $swapAmount
     chain: $chain
-    swapOptions: $swapOptions
   ) {
+    effectivePrice
+    effectivePriceReversed
+    paths {
+      inputAmountRaw
+      outputAmountRaw
+      pools
+      tokens {
+        address
+      }
+      vaultVersion
+    }
     priceImpact
     returnAmount
     returnAmountScaled
-    swapAmount
-    swapAmountScaled
-    swapType
-    tokenAddresses
-    tokenIn
-    tokenInAmount
-    tokenOut
-    tokenOutAmount
-    effectivePrice
-    effectivePriceReversed
-    swaps {
-      amount
-      assetInIndex
-      assetOutIndex
-      poolId
-      userData
-    }
     routes {
       hops {
         pool {
-          displayTokens {
-            address
-          }
+          symbol
         }
         poolId
         tokenIn
@@ -48,11 +38,25 @@ query GetSorSwaps(
         tokenOutAmount
       }
       share
-      tokenIn
+      tokenInAmount
       tokenInAmount
       tokenOut
       tokenOutAmount
     }
+    swapAmount
+    swapAmountScaled
+    swaps {
+      amount
+      assetInIndex
+      assetOutIndex
+      poolId
+      userData
+    }
+    tokenIn
+    tokenInAmount
+    tokenOut
+    tokenOutAmount
+    vaultVersion
   }
 }
 
