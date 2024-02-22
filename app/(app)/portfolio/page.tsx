@@ -23,7 +23,9 @@ export default function Portfolio() {
       {portfolioData.userTotalBalance && (
         <Heading>Total balance: {toCurrency(portfolioData.userTotalBalance?.toNumber())}</Heading>
       )}
-      {hasStakedPools && <StakedPortfolio pools={portfolioData.stakedPools} />}
+      {hasStakedPools && (
+        <StakedPortfolio pools={portfolioData.stakedPools} poolRewardsMap={poolRewardsMap} />
+      )}
       {hasUnstakedPools && <UnstakedPortfolio pools={portfolioData.unstakedPools} />}
       {balRewardsData && (
         <Stack>

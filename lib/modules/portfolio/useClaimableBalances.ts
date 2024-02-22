@@ -99,7 +99,17 @@ export function useClaimableBalances(pools: PoolListItem[]) {
     []
   )
 
+  const claimableRewardsByPoolMap = useMemo(() => {
+    return poolRewardTokensData.reduce((acc: Record<string, ClaimableReward[]>, reward) => {
+      const poolId = reward.pool.id
+      if (!acc[poolId]) acc[poolId] = []
+      acc[poolId].push(reward)
+      return acc
+    }, {})
+  }, [poolRewardTokensData])
+
   return {
+    claimableRewardsByPoolMap,
     claimableRewards: poolRewardTokensData,
     refetchClaimableRewards: refetchAll,
   }

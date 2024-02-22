@@ -2,12 +2,14 @@ import { Button, HStack, Stack, Text } from '@chakra-ui/react'
 import { PoolListItem } from '../pool/pool.types'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { useState } from 'react'
-import { ClaimModal } from '../pool/actions/claim/ClaimModal'
 import { Hex } from 'viem'
+import { ClaimRewardsModal } from '../pool/actions/claim/ClaimRewardsModal'
+import { PoolRewardsDataMap } from './usePortfolio'
 
 interface PortfolioPoolsListProps {
   pools: PoolListItem[]
   isStaked?: boolean
+  poolRewardsMap?: PoolRewardsDataMap
 }
 
 function getBalance(pool: PoolListItem, isStaked: boolean) {
@@ -21,7 +23,11 @@ interface ClaimModalData {
   gaugeAddresses: string[]
 }
 
-export function PortfolioPoolsList({ pools, isStaked = false }: PortfolioPoolsListProps) {
+export function PortfolioPoolsList({
+  pools,
+  poolRewardsMap,
+  isStaked = false,
+}: PortfolioPoolsListProps) {
   const [claimModalData, setClaimModalData] = useState<ClaimModalData | null>(null)
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false)
   console.log('pools', pools)
@@ -48,6 +54,8 @@ export function PortfolioPoolsList({ pools, isStaked = false }: PortfolioPoolsLi
     setIsClaimModalOpen(false)
     setClaimModalData(null)
   }
+
+  console.log('poolRewardsMap', poolRewardsMap)
   return (
     <Stack>
       {pools.map(pool => (
@@ -70,11 +78,11 @@ export function PortfolioPoolsList({ pools, isStaked = false }: PortfolioPoolsLi
       ))}
 
       {claimModalData && (
-        <ClaimModal
+        <ClaimRewardsModal
           isOpen={isClaimModalOpen}
           onClose={onModalClose}
-          gaugeAddresses={claimModalData.gaugeAddresses as Hex[]}
-          pool={claimModalData.pool as PoolListItem}
+          balRewards={poolRewardsMap?.[claimModalData.pool.id]?.balReward}
+          // nonBalRewards={poolRewardsMap?.[claimModalData.pool.id]?.claimableReward || []}
         />
       )}
     </Stack>

@@ -15,7 +15,7 @@ export interface ClaimableBalanceResult {
 
 export interface PoolRewardsData extends PoolListItem {
   balReward?: BalTokenReward
-  claimableReward?: ClaimableReward
+  claimableRewards?: ClaimableReward[]
 }
 
 export type PoolRewardsDataMap = Record<string, PoolRewardsData>
@@ -63,23 +63,25 @@ export function usePortfolio() {
   const { protocolRewardsData } = useProtocolRewards()
 
   // Other tokens rewards
-  const { claimableRewards } = useClaimableBalances(portfolioData.stakedPools || [])
+  const { claimableRewards, claimableRewardsByPoolMap } = useClaimableBalances(
+    portfolioData.stakedPools || []
+  )
 
   const poolRewardsMap = useMemo(() => {
     return portfolioData.stakedPools?.reduce((acc: PoolRewardsDataMap, pool) => {
       const balReward = balRewardsData.find(r => r.pool.id === pool.id)
-      const claimableReward = claimableRewards.find(r => r.pool.id === pool.id)
+      const claimableReward = claimableRewardsByPoolMap[pool.id]
 
       acc[pool.id] = {
         ...pool,
       }
 
       if (balReward) acc[pool.id].balReward = balReward
-      if (claimableReward) acc[pool.id].claimableReward = claimableReward
+      if (claimableReward) acc[pool.id].claimableRewards = claimableReward
 
       return acc
     }, {})
-  }, [portfolioData.stakedPools, balRewardsData, claimableRewards])
+  }, [portfolioData.stakedPools, balRewardsData, claimableRewardsByPoolMap])
 
   return {
     portfolioData,
