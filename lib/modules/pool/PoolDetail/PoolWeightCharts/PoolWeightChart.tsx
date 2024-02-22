@@ -1,46 +1,65 @@
 import { Box } from '@chakra-ui/react'
 import React from 'react'
 import WeightedPoolWeightChart from './WeightedPoolWeightChart'
-import { GqlChain, GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
-import { isBoosted, isStable } from '../../pool.helpers'
+import { GqlChain, GqlPoolStable, GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
+import { isBoosted, isClp, isStable } from '../../pool.helpers'
 import BoostedPoolWeightChart from './BoostedPoolWeightChart'
+import StablePoolWeightChart from './StablePoolWeightChart'
+import CLPPoolWeightChart from './CLPPoolWeightChart'
 
-interface PoolWeightChartProps {
+export interface PoolWeightChartProps {
   pool: GqlPoolUnion
   chain: GqlChain
   hasLegend?: boolean
   isSmall?: boolean
+  colors?: PoolWeightChartColorDef[]
 }
 
 export interface ChartSizeValues {
   chartHeight: string
-  boxWidth: string
-  boxHeight: string
+  boxWidth: number
+  boxHeight: number
   haloTop: string
   haloLeft: string
   haloWidth: string
   haloHeigth: string
 }
 
-const smallSize: ChartSizeValues = {
-  chartHeight: '150px',
-  boxWidth: '150px',
-  boxHeight: '150px',
-  haloTop: '40%',
-  haloLeft: '55px',
-  haloWidth: '40px',
-  haloHeigth: '40px',
+export interface PoolWeightChartColorDef {
+  from: string
+  to: string
 }
 
-const normalSize: ChartSizeValues = {
-  chartHeight: '',
-  boxWidth: '250px',
-  boxHeight: '250px',
-  haloTop: '49%',
-  haloLeft: '95px',
-  haloWidth: '60px',
-  haloHeigth: '60px',
-}
+export const DEFAULT_POOL_WEIGHT_CHART_COLORS: PoolWeightChartColorDef[] = [
+  {
+    from: '#1E4CF1',
+    to: '#00FFAA',
+  },
+  {
+    from: '#B2C4DB',
+    to: '#FDFDFD',
+  },
+  {
+    from: '#EF4A2B',
+    to: '#F48975',
+  },
+  {
+    from: '#FFD600',
+    to: '#F48975',
+  },
+  {
+    from: '#9C68AA',
+    to: '#C03BE4',
+  },
+  {
+    from: '#FFBD91',
+    to: '#FF957B',
+  },
+  {
+    from: '#30CEF0',
+    to: '#02A2FE',
+  },
+]
 
 export default function PoolWeightChart({
   pool,
@@ -48,21 +67,23 @@ export default function PoolWeightChart({
   hasLegend = true,
   isSmall = false,
 }: PoolWeightChartProps) {
-  const chartSizeValues = isSmall ? smallSize : normalSize
-
-  if (isBoosted(pool) || (isStable(pool.type) && pool.tokens.length === 3)) {
-    return <BoostedPoolWeightChart />
+  const commonProps = {
+    chain,
+    hasLegend,
+    isSmall,
+    colors: DEFAULT_POOL_WEIGHT_CHART_COLORS,
+  }
+  if (isBoosted(pool)) {
+    return <BoostedPoolWeightChart pool={pool as GqlPoolStable} {...commonProps} />
+  }
+  if (isStable(pool.type)) {
+    return <StablePoolWeightChart pool={pool as GqlPoolStable} {...commonProps} />
+  }
+  if (isClp(pool.type)) {
+    return <CLPPoolWeightChart pool={pool as GqlPoolStable} {...commonProps} />
   }
   if (pool.__typename === 'GqlPoolWeighted') {
-    return (
-      <WeightedPoolWeightChart
-        pool={pool}
-        chain={chain}
-        hasLegend={hasLegend}
-        chartSizeValues={chartSizeValues}
-        isSmall={isSmall}
-      />
-    )
+    return <WeightedPoolWeightChart pool={pool} {...commonProps} />
   }
   return <Box minH="150px"></Box>
 }
