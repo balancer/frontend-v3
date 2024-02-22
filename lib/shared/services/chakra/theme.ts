@@ -99,6 +99,10 @@ export const balColors = {
     dark: 'hsla(217,12%,25%,1)',
     hslDark: '217,12%,25%',
   },
+  chartBorder: {
+    light: '#edeae3',
+    dark: '#4F5764',
+  },
   gradient: {
     // dusk: 'linear(to-tr, purple.300 5%, #D7CBE7 50%, #EAA879 95%)',
     // sand: 'linear(to-t, #E6C6A0 0%, #E5D3BE 100%)',

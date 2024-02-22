@@ -24,7 +24,11 @@ export function isLinear(poolType: GqlPoolType): boolean {
 }
 
 export function isStable(poolType: GqlPoolType): boolean {
-  return poolType === GqlPoolType.Stable
+  return (
+    poolType === GqlPoolType.Stable ||
+    poolType === GqlPoolType.MetaStable ||
+    poolType === GqlPoolType.ComposableStable
+  )
 }
 
 export function isMetaStable(poolType: GqlPoolType): boolean {
@@ -61,6 +65,10 @@ export function isBoosted(pool: GqlPoolBase) {
 
 export function isGyro(poolType: GqlPoolType) {
   return [GqlPoolType.Gyro, GqlPoolType.Gyro3, GqlPoolType.Gyroe].includes(poolType)
+}
+
+export function isClp(poolType: GqlPoolType) {
+  return isGyro(poolType)
 }
 
 export function isUnknownType(poolType: any): boolean {
