@@ -4,7 +4,6 @@ import { useUserAccount } from '../web3/useUserAccount'
 import { Address, erc20ABI, useBalance, useQuery } from 'wagmi'
 import { useTokens } from './useTokens'
 import { TokenAmount, TokenBase } from './token.types'
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { formatUnits } from 'viem'
 import { isLoadingQueries, isRefetchingQueries, refetchQueries } from '@/lib/shared/utils/queries'
 import { multicall } from 'wagmi/actions'
@@ -13,6 +12,7 @@ import { PropsWithChildren, createContext } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import crypto from 'crypto'
 import { orderBy } from 'lodash'
+import { getNetworkConfig } from '@/lib/config/app.config'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
@@ -22,7 +22,10 @@ export const TokenBalancesContext = createContext<UseTokenBalancesResponse | nul
 export function _useTokenBalances(tokens: TokenBase[]) {
   const { userAddress } = useUserAccount()
   const { exclNativeAssetFilter, nativeAssetFilter } = useTokens()
-  const networkConfig = useNetworkConfig()
+
+  const NO_TOKENS_CHAIN_ID = 1 // this should never be used as the multicall is disabled when no tokens
+  const chainId = tokens.length ? tokens[0].chainId : NO_TOKENS_CHAIN_ID
+  const networkConfig = getNetworkConfig(chainId)
 
   const includesNativeAsset = tokens.some(nativeAssetFilter)
   const _tokens = tokens.filter(exclNativeAssetFilter)
@@ -63,9 +66,10 @@ export function _useTokenBalances(tokens: TokenBase[]) {
   const tokenBalancesQuery = useQuery(
     // This query key can potentially collide, but it will overflow the useQuery
     // cache if this list of tokens is large.
-    [`useTokenBalances:${userAddress}:${networkConfig.chainId}:${hashKey()}`],
+    [`useTokenBalances:${userAddress}:${chainId}:${hashKey()}`],
     async () => {
       const data = await multicall({
+        chainId,
         contracts: _tokens.map(token => ({
           abi: erc20ABI,
           address: token.address as Address,
@@ -93,7 +97,7 @@ export function _useTokenBalances(tokens: TokenBase[]) {
     const amount = balance.status === 'success' ? (balance.result as bigint) : 0n
 
     return {
-      chainId: networkConfig.chainId,
+      chainId,
       address: token.address,
       amount,
       formatted: formatUnits(amount, token.decimals),
@@ -103,7 +107,7 @@ export function _useTokenBalances(tokens: TokenBase[]) {
 
   if (includesNativeAsset && nativeBalanceQuery.data) {
     balances.push({
-      chainId: networkConfig.chainId,
+      chainId,
       address: networkConfig.tokens.nativeAsset.address,
       amount: nativeBalanceQuery.data.value,
       formatted: formatUnits(
