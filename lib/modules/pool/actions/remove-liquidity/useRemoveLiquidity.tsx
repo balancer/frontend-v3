@@ -8,8 +8,8 @@ import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
-import { HumanAmount } from '@balancer/sdk'
-import { PropsWithChildren, createContext, useMemo, useState } from 'react'
+import { HumanAmount, TokenAmount } from '@balancer/sdk'
+import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { usePool } from '../../usePool'
 import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
 import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
@@ -20,13 +20,13 @@ import { toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useIterateSteps } from '../useIterateSteps'
-import { useRemoveLiquidityConfig } from './modal/useRemoveLiquidityConfig'
+import { useRemoveLiquidityStepConfigs } from './modal/useRemoveLiquidityStepConfigs'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
 
 export function _useRemoveLiquidity() {
-  const { pool, bptPrice } = usePool()
+  const { pool, bptPrice, refetch: refetchPoolUserBalances } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected } = useUserAccount()
 
@@ -36,8 +36,14 @@ export function _useRemoveLiquidity() {
     RemoveLiquidityType.Proportional
   )
   const [singleTokenAddress, setSingleTokenAddress] = useState<Address | undefined>(undefined)
-
   const [humanBptInPercent, setHumanBptInPercent] = useState<number>(100)
+  const [didRefetchPool, setDidRefetchPool] = useState(false)
+
+  // Quote state, fixed when remove liquidity tx goes into confirming/confirmed
+  // state. This is required to maintain amounts in preview dialog on success.
+  const [quoteBptIn, setQuoteBptIn] = useState<HumanAmount>('0')
+  const [quoteAmountsOut, setQuoteAmountsOut] = useState<TokenAmount[]>([])
+  const [quotePriceImpact, setQuotePriceImpact] = useState<number>()
 
   const maxHumanBptIn: HumanAmount = (pool?.userBalance?.totalBalance || '0') as HumanAmount
   const humanBptIn: HumanAmount = bn(maxHumanBptIn)
@@ -46,7 +52,7 @@ export function _useRemoveLiquidity() {
 
   const [removeLiquidityTxState, setRemoveLiquidityTxState] = useState<TransactionState>()
 
-  const stepConfigs = [useRemoveLiquidityConfig(setRemoveLiquidityTxState)]
+  const stepConfigs = useRemoveLiquidityStepConfigs(setRemoveLiquidityTxState)
   const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
@@ -69,14 +75,23 @@ export function _useRemoveLiquidity() {
   const isSingleToken = removalType === RemoveLiquidityType.SingleToken
   const isProportional = removalType === RemoveLiquidityType.Proportional
 
-  const tokens = pool.allTokens.map(token => getToken(token.address, pool.chain))
+  const tokens = pool.allTokens
+    .filter(token => token.isMainToken)
+    .map(token => getToken(token.address, pool.chain))
+
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
   const firstTokenAddress = tokens?.[0]?.address as Address
 
   const singleTokenOutAddress = singleTokenAddress || firstTokenAddress
 
+  const isTxConfirmingOrConfirmed =
+    removeLiquidityTxState === TransactionState.Confirming ||
+    removeLiquidityTxState === TransactionState.Completed
+
+  const isRemoveLiquidityConfirmed = removeLiquidityTxState === TransactionState.Completed
+
   /**
-   * Simulation queries
+   * Queries
    */
   const simulationQuery = useRemoveLiquiditySimulationQuery(
     handler,
@@ -92,39 +107,67 @@ export function _useRemoveLiquidity() {
     singleTokenOutAddress
   )
 
-  const amountsOut = simulationQuery.data?.amountsOut || []
-
-  const _tokenOutUnitsByAddress: Record<Address, HumanAmount> = {}
-  amountsOut.map(tokenAmount => {
-    _tokenOutUnitsByAddress[tokenAmount.token.address] = toHumanAmount(tokenAmount)
-  })
+  const amountOutMap: Record<Address, HumanAmount> = Object.fromEntries(
+    quoteAmountsOut.map(tokenAmount => [tokenAmount.token.address, toHumanAmount(tokenAmount)])
+  )
 
   const amountOutForToken = (tokenAddress: Address): HumanAmount => {
-    const amount = _tokenOutUnitsByAddress[tokenAddress]
-    if (!amount) return '0.00'
-    return amount
+    const amountOut = amountOutMap[tokenAddress]
+    return amountOut ? amountOut : '0'
   }
 
-  const _tokenOutUsdByAddress: Record<Address, HumanAmount> = {}
-  amountsOut.map(tokenAmount => {
-    const tokenAddress: Address = tokenAmount.token.address
-    const token = getToken(tokenAddress, pool.chain)
-    if (!token) throw new Error(`Token with address ${tokenAddress} was not found`)
-    const tokenUnits = amountOutForToken(token.address as Address)
-    _tokenOutUsdByAddress[tokenAddress] = usdValueForToken(token, tokenUnits) as HumanAmount
-  })
+  const usdAmountOutMap: Record<Address, HumanAmount> = Object.fromEntries(
+    quoteAmountsOut.map(tokenAmount => {
+      const tokenAddress: Address = tokenAmount.token.address
+      const token = getToken(tokenAddress, pool.chain)
+      if (!token) throw new Error(`Token with address ${tokenAddress} was not found`)
+      const tokenUnits = amountOutForToken(token.address as Address)
+      return [tokenAddress, usdValueForToken(token, tokenUnits) as HumanAmount]
+    })
+  )
 
   const usdOutForToken = (tokenAddress: Address): HumanAmount => {
-    const usdOut = _tokenOutUsdByAddress[tokenAddress]
-    if (!usdOut) return '0.00'
-    return usdOut
+    const usdOut = usdAmountOutMap[tokenAddress]
+    return usdOut ? usdOut : '0'
   }
 
-  const totalUsdValue: string = Object.values(_tokenOutUsdByAddress)
-    .reduce((acc, current) => {
-      return Number(safeSum([acc, current]))
-    }, 0)
-    .toString()
+  const totalUsdValue: string = safeSum(Object.values(usdAmountOutMap))
+
+  function updateQuoteState(
+    bptIn: HumanAmount,
+    amountsOut: TokenAmount[] | undefined,
+    priceImpact: number | undefined
+  ) {
+    setQuoteBptIn(bptIn)
+    if (amountsOut) setQuoteAmountsOut(amountsOut)
+    if (priceImpact) setQuotePriceImpact(priceImpact)
+  }
+
+  /**
+   * Side-effects
+   */
+  // If amounts change, update quote state unless the final transaction is
+  // confirming or confirmed.
+  useEffect(() => {
+    if (!isTxConfirmingOrConfirmed) {
+      updateQuoteState(humanBptIn, simulationQuery.data?.amountsOut, priceImpactQuery.data)
+    }
+  }, [
+    humanBptIn,
+    JSON.stringify(simulationQuery.data?.amountsOut),
+    priceImpactQuery.data,
+    removeLiquidityTxState,
+  ])
+
+  // When the remove liquidity transaction is confirmed, refetch the user's pool
+  // balances so that they are up to date when navigating back to the pool page.
+  useEffect(() => {
+    async function reFetchPool() {
+      await refetchPoolUserBalances()
+      setDidRefetchPool(true)
+    }
+    if (isRemoveLiquidityConfirmed) reFetchPool()
+  }, [isRemoveLiquidityConfirmed])
 
   return {
     tokens,
@@ -132,6 +175,8 @@ export function _useRemoveLiquidity() {
     singleTokenOutAddress,
     humanBptIn,
     humanBptInPercent,
+    quoteBptIn,
+    quotePriceImpact,
     totalUsdFromBprPrice,
     isSingleToken,
     isProportional,
@@ -141,6 +186,11 @@ export function _useRemoveLiquidity() {
     isDisabled,
     disabledReason,
     previewModalDisclosure,
+    removeLiquidityTxState,
+    handler,
+    currentStep,
+    isTxConfirmingOrConfirmed,
+    didRefetchPool,
     setRemovalType,
     setHumanBptInPercent,
     setProportionalType,
@@ -148,10 +198,7 @@ export function _useRemoveLiquidity() {
     setSingleTokenAddress,
     amountOutForToken,
     usdOutForToken,
-    removeLiquidityTxState,
     setRemoveLiquidityTxState,
-    handler,
-    currentStep,
     useOnStepCompleted,
   }
 }

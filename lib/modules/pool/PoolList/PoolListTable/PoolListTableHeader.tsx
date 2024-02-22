@@ -18,7 +18,7 @@ export function PoolListTableHeader({ ...rest }) {
     <Grid {...rest} py="3" w="full" borderBottom="1px solid" borderColor="border.base">
       <GridItem>
         <VStack align="start" w="full">
-          <Icon as={FiGlobe} boxSize="5" ml="1" color="GrayText" />
+          <Icon as={FiGlobe} boxSize="5" ml="1" color="grayText" />
         </VStack>
       </GridItem>
       <GridItem>

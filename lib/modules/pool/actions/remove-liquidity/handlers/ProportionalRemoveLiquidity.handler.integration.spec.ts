@@ -4,7 +4,7 @@ import {
   aBalWethPoolElementMock,
   aPhantomStablePoolMock,
 } from '@/test/msw/builders/gqlPoolElement.builders'
-import { defaultTestUserAccount } from '@/test/utils/wagmi'
+import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { Pool } from '../../../usePool'
 import { QueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquidity.types'
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
@@ -31,15 +31,9 @@ describe('When proportionally removing liquidity for a weighted pool', () => {
   test('returns ZERO price impact', async () => {
     const handler = selectProportionalHandler(poolMock)
 
-    const result = await handler.simulate(defaultQueryInput)
+    const priceImpact = await handler.getPriceImpact()
 
-    const [balTokenAmountOut, wEthTokenAmountOut] = result.amountsOut
-
-    expect(balTokenAmountOut.token.address).toBe(balAddress)
-    expect(balTokenAmountOut.amount).toBeGreaterThan(2000000000000000000n)
-
-    expect(wEthTokenAmountOut.token.address).toBe(wETHAddress)
-    expect(wEthTokenAmountOut.amount).toBeGreaterThan(100000000000000n)
+    expect(priceImpact).toBe(0)
   })
   test('queries amounts out', async () => {
     const handler = selectProportionalHandler(poolMock)

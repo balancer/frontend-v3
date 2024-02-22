@@ -1368,7 +1368,7 @@ type Query {
     range: GqlTokenChartDataRange!
   ): [GqlTokenCandlestickChartDataItem!]!
   tokenGetCurrentPrices(chains: [GqlChain!]): [GqlTokenPrice!]!
-  tokenGetHistoricalPrices(addresses: [String!]!): [GqlHistoricalTokenPrice!]!
+  tokenGetHistoricalPrices(addresses: [String!]!, chain: GqlChain): [GqlHistoricalTokenPrice!]!
   tokenGetPriceChartData(
     address: String!
     chain: GqlChain
@@ -1385,7 +1385,7 @@ type Query {
   tokenGetTokenDynamicData(address: String!, chain: GqlChain): GqlTokenDynamicData
   tokenGetTokens(chains: [GqlChain!]): [GqlToken!]!
   tokenGetTokensData(addresses: [String!]!): [GqlTokenData!]!
-  tokenGetTokensDynamicData(addresses: [String!]!): [GqlTokenDynamicData!]!
+  tokenGetTokensDynamicData(addresses: [String!]!, chain: GqlChain): [GqlTokenDynamicData!]!
   userGetFbeetsBalance: GqlUserFbeetsBalance!
   userGetPoolBalances(address: String, chains: [GqlChain!]): [GqlUserPoolBalance!]!
   userGetPoolJoinExits(

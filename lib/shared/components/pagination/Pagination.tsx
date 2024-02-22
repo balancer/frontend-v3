@@ -78,13 +78,13 @@ export function Pagination({
         </GridItem>
         <GridItem area="page" alignSelf="center">
           <Center>
-            <Text flexShrink="0" mr="8" fontSize="sm" color="GrayText">
+            <Text flexShrink="0" mr="8" fontSize="sm" color="grayText">
               Page{' '}
-              <Text fontWeight="bold" as="span" color="GrayText">
+              <Text fontWeight="bold" as="span" color="grayText">
                 {currentPageNumber}
               </Text>{' '}
               of{' '}
-              <Text fontWeight="bold" as="span" color="GrayText">
+              <Text fontWeight="bold" as="span" color="grayText">
                 {totalPageCount}
               </Text>
             </Text>
@@ -92,7 +92,7 @@ export function Pagination({
         </GridItem>
         <GridItem area="goto" justifySelf={{ base: 'start', lg: 'end' }}>
           <HStack alignContent="space-between">
-            <Text flexShrink="0" color="GrayText" fontSize="sm">
+            <Text flexShrink="0" color="grayText" fontSize="sm">
               Goto page:
             </Text>{' '}
             <NumberInput

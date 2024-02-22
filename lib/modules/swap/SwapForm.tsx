@@ -12,10 +12,9 @@ import {
   VStack,
   Tooltip,
   useDisclosure,
-  Select,
   IconButton,
   Button,
-  Box,
+  Text,
 } from '@chakra-ui/react'
 import { useMemo, useRef } from 'react'
 import { useSwap } from './useSwap'
@@ -26,8 +25,13 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { CgArrowsExchangeV } from 'react-icons/cg'
 import { Address } from 'viem'
 import { SwapPreviewModal } from './SwapPreviewModal'
-import { SwapDetailsAccordian } from './SwapDetailsAccordian'
+import { getChainName } from '@/lib/config/app.config'
+import { RichSelect } from '@/lib/shared/components/inputs/RichSelect'
+import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
+import { FiGlobe } from 'react-icons/fi'
+import { HiChevronDown } from 'react-icons/hi2'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
+import { SwapDetailsAccordian } from './SwapDetailsAccordian'
 
 export function SwapForm() {
   const {
@@ -37,8 +41,8 @@ export function SwapForm() {
     tokenSelectKey,
     isDisabled,
     disabledReason,
-    simulationQuery,
     previewModalDisclosure,
+    simulationQuery,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
@@ -52,7 +56,15 @@ export function SwapForm() {
 
   const nextBtn = useRef(null)
 
-  const networkOptions = PROJECT_CONFIG.supportedNetworks
+  const networkOptions = PROJECT_CONFIG.supportedNetworks.map(network => ({
+    label: (
+      <HStack>
+        <NetworkIcon chain={network} size={6} />
+        <Text>{getChainName(network)}</Text>
+      </HStack>
+    ),
+    value: network,
+  }))
 
   const tokenMap = { tokenIn, tokenOut }
 
@@ -95,50 +107,40 @@ export function SwapForm() {
               <TransactionSettings size="sm" />
             </HStack>
             <VStack spacing="md" w="full">
-              <Select
+              <RichSelect
                 value={selectedChain}
-                onChange={e => {
-                  setSelectedChain(e.currentTarget.value as GqlChain)
+                options={networkOptions}
+                onChange={newValue => {
+                  setSelectedChain(newValue as GqlChain)
                 }}
-              >
-                {networkOptions.map(networkOption => (
-                  <option key={networkOption} value={networkOption}>
-                    {networkOption}
-                  </option>
-                ))}
-              </Select>
-              <VStack spacing="sm" w="full">
-                <TokenInput
-                  address={tokenIn.address}
-                  chain={selectedChain}
-                  value={tokenIn.amount}
-                  onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
-                  toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
-                />
-                <Box pos="relative">
-                  <IconButton
-                    size="sm"
-                    fontSize="2xl"
-                    aria-label="Switch tokens"
-                    icon={<CgArrowsExchangeV />}
-                    onClick={switchTokens}
-                    variant="tertiary"
-                    pos="absolute"
-                    top="-4"
-                    left="-4"
-                    w="8"
-                    h="8"
-                    rounded="full"
-                  />
-                </Box>
-                <TokenInput
-                  address={tokenOut.address}
-                  chain={selectedChain}
-                  value={tokenOut.amount}
-                  onChange={e => setTokenOutAmount(e.currentTarget.value as HumanAmount)}
-                  toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
-                />
-              </VStack>
+                rightIcon={
+                  <HStack>
+                    <FiGlobe />
+                    <HiChevronDown />
+                  </HStack>
+                }
+              />
+              <TokenInput
+                address={tokenIn.address}
+                chain={selectedChain}
+                value={tokenIn.amount}
+                onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
+                toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
+              />
+              <IconButton
+                size="sm"
+                fontSize="2xl"
+                aria-label="Switch tokens"
+                icon={<CgArrowsExchangeV />}
+                onClick={switchTokens}
+              />
+              <TokenInput
+                address={tokenOut.address}
+                chain={selectedChain}
+                value={tokenOut.amount}
+                onChange={e => setTokenOutAmount(e.currentTarget.value as HumanAmount)}
+                toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
+              />
             </VStack>
 
             {simulationQuery.data && <SwapDetailsAccordian />}
@@ -159,6 +161,7 @@ export function SwapForm() {
         </Card>
       </Center>
       <TokenSelectModal
+        chain={selectedChain}
         tokens={tokenSelectTokens}
         isOpen={tokenSelectDisclosure.isOpen}
         onOpen={tokenSelectDisclosure.onOpen}

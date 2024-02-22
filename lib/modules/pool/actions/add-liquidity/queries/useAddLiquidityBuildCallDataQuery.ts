@@ -6,6 +6,7 @@ import { usePool } from '../../../usePool'
 import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { addLiquidityKeys } from './add-liquidity-keys'
+import { useRelayerSignature } from '@/lib/modules/relayer/useRelayerSignature'
 
 export type AddLiquidityBuildQueryResponse = ReturnType<typeof useAddLiquidityBuildCallDataQuery>
 
@@ -16,6 +17,7 @@ export function useAddLiquidityBuildCallDataQuery() {
   const { pool } = usePool()
 
   const { humanAmountsIn, handler, simulationQuery } = useAddLiquidity()
+  const { relayerApprovalSignature } = useRelayerSignature()
 
   const queryKey = addLiquidityKeys.buildCallData({
     userAddress,
@@ -31,6 +33,7 @@ export function useAddLiquidityBuildCallDataQuery() {
       humanAmountsIn,
       slippagePercent: slippage,
       queryOutput,
+      relayerApprovalSignature, // only present in Add Nested Liquidity with sign relayer mode
     })
     console.log('Call data built:', response)
     return response

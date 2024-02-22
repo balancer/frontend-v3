@@ -11,6 +11,7 @@ import { mock } from 'vitest-mock-extended'
 import { aTokenAmountMock } from '../__mocks__/liquidity.builders'
 import { RemoveLiquiditySimulationQueryResult } from './queries/useRemoveLiquiditySimulationQuery'
 import { _useRemoveLiquidity } from './useRemoveLiquidity'
+import { aSuccessfulQueryResultMock } from '@/test/utils/react-query'
 
 const balTokenOutUnits = '1'
 const wEthTokenOutUnits = '0.5'
@@ -20,17 +21,16 @@ vi.mock('./queries/useRemoveLiquiditySimulationQuery', () => {
   return {
     useRemoveLiquiditySimulationQuery(): RemoveLiquiditySimulationQueryResult {
       const result = mock<RemoveLiquiditySimulationQueryResult>()
+
       return {
         ...result,
+        ...aSuccessfulQueryResultMock(),
         data: {
           amountsOut: [
             aTokenAmountMock(balAddress, balTokenOutUnits),
             aTokenAmountMock(wETHAddress, wEthTokenOutUnits),
           ],
         },
-        isLoading: false,
-        isRefetching: false,
-        refetch: vi.fn(),
       }
     },
   }

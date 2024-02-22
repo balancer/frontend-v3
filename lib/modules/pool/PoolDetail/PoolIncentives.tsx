@@ -2,10 +2,13 @@ import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { Box, Button, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Card, HStack, Heading, Text, Tooltip, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../usePool'
+import { useClaiming } from '../actions/claim/useClaiming'
+import { ClaimModal } from '../actions/claim/ClaimModal'
+import { Hex } from 'viem'
 
 const TABS = [
   {
@@ -25,9 +28,14 @@ const TABS = [
 export default function PoolIncentives() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain } = usePool()
+  const { previewModalDisclosure, disabledReason, isDisabled, hasNoRewards } = useClaiming()
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
+  }
+
+  const onModalClose = () => {
+    previewModalDisclosure.onClose()
   }
 
   return (
@@ -81,10 +89,28 @@ export default function PoolIncentives() {
               <Button variant="disabled" isDisabled>
                 Incentivize
               </Button>
+              <Tooltip label={isDisabled ? disabledReason : ''}>
+                <Button
+                  variant="secondary"
+                  w="full"
+                  size="lg"
+                  isDisabled={isDisabled || hasNoRewards}
+                  onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
+                >
+                  Claim
+                </Button>
+              </Tooltip>
             </HStack>
           </Card>
         </Box>
       </VStack>
+      <ClaimModal
+        isOpen={previewModalDisclosure.isOpen}
+        onOpen={previewModalDisclosure.onOpen}
+        onClose={onModalClose}
+        gaugeAddresses={[(pool.staking?.id || '') as Hex]}
+        pool={pool}
+      />
     </Card>
   )
 }

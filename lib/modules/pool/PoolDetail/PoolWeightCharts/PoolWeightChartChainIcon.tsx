@@ -50,7 +50,7 @@ export default function PoolWeightChartChainIcon({ chain, isChartLoaded, isSmall
         height={`${size}px`}
         transform={`scale(${isSmall ? '2.35' : '2.15'})`}
         initial={{ opacity: 0 }}
-        animate={{ opacity: isChartLoaded ? 0.1 : 0, transition: { delay: 0.4 } }}
+        animate={{ opacity: isChartLoaded ? 0.1 : 0, transition: { delay: 0.45 } }}
         zIndex={1}
       />
     </Box>

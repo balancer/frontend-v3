@@ -9,7 +9,6 @@ import {
 } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { approveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { AddLiquidityButton } from './AddLiquidityButton'
-import { signRelayerConfig } from '@/lib/modules/relayer/signRelayerConfig'
 import { StepConfig } from '../useIterateSteps'
 
 function buildAddLiquidityConfig(onTransactionStateUpdate: OnTransactionStateUpdate): StepConfig {
@@ -37,10 +36,6 @@ export function useAddLiquidityStepConfigs(
 
   if (relayerMode === 'approveRelayer') {
     stepConfigs = [approveRelayerConfig, ...stepConfigs]
-  }
-
-  if (relayerMode === 'signRelayer') {
-    stepConfigs = [signRelayerConfig, ...stepConfigs]
   }
 
   return stepConfigs

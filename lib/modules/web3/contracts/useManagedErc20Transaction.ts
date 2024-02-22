@@ -19,6 +19,9 @@ import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { usdtAbi } from './abi/UsdtAbi'
+import { getGqlChain } from '@/lib/config/app.config'
+import { SupportedChainId } from '@/lib/config/config.types'
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
 type Erc20Abi = typeof erc20ABI
 export function useManagedErc20Transaction<
@@ -34,6 +37,7 @@ export function useManagedErc20Transaction<
   >
 ) {
   const [writeArgs, setWriteArgs] = useState(args)
+  const { minConfirmations } = useNetworkConfig()
 
   const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7'
   const isUsdt = isSameAddress(tokenAddress, usdtAddress)
@@ -52,7 +56,11 @@ export function useManagedErc20Transaction<
   })
 
   const writeQuery = useContractWrite(prepareQuery.config)
-  const transactionStatusQuery = useWaitForTransaction({ hash: writeQuery.data?.hash })
+  const transactionStatusQuery = useWaitForTransaction({
+    hash: writeQuery.data?.hash,
+    confirmations: minConfirmations,
+  })
+
   const bundle = {
     simulation: prepareQuery as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
@@ -60,14 +68,18 @@ export function useManagedErc20Transaction<
   }
 
   // on successful submission to chain, add tx to cache
-  useOnTransactionSubmission(labels, writeQuery.data?.hash)
+  useOnTransactionSubmission({
+    labels,
+    hash: writeQuery.data?.hash,
+    chain: getGqlChain((writeQuery.variables?.chainId || 1) as SupportedChainId),
+  })
 
   // on confirmation, update tx in tx cache
-  useOnTransactionConfirmation(
+  useOnTransactionConfirmation({
     labels,
-    bundle.result.data?.status,
-    bundle.result.data?.transactionHash
-  )
+    status: bundle.result.data?.status,
+    hash: bundle.result.data?.transactionHash,
+  })
 
   // if parent changes args, update here
   useEffect(() => {

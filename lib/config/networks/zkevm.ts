@@ -9,6 +9,7 @@ const networkConfig: NetworkConfig = {
   iconPath: '/images/chains/ZKEVM.svg',
   blockExplorerBaseUrl: 'https://zkevm.polygonscan.com',
   tokens: {
+    balToken: { address: '0x4f9a0e7fd2bf6067db6994cf12e4495df938e6e9' },
     nativeAsset: {
       name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
@@ -23,7 +24,8 @@ const networkConfig: NetworkConfig = {
     multicall2: '0xca11bde05977b3631167028862be2a173976ca11',
     balancer: {
       vaultV2: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
-      relayerV6: '0x35Cea9e57A393ac66Aaa7E25C391D52C74B5648f',
+      relayerV6: '0x8e620FfCa2580ed87241D7e10F85EE75d0a906F5',
+      minter: '0x475D18169BE8a89357A9ee3Ab00ca386d20fA229',
     },
   },
 }

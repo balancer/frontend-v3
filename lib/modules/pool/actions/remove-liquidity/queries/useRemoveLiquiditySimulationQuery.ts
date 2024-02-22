@@ -5,9 +5,10 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { HumanAmount } from '@balancer/sdk'
 import { useDebounce } from 'use-debounce'
-import { Address, useQuery } from 'wagmi'
+import { Address } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { removeLiquidityKeys } from './remove-liquidity-keys'
+import { useQuery } from 'wagmi'
 import { UseQueryOptions } from '@tanstack/react-query'
 
 export type RemoveLiquiditySimulationQueryResult = ReturnType<

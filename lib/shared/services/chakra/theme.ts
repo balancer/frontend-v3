@@ -99,6 +99,10 @@ export const balColors = {
     dark: 'hsla(217,12%,25%,1)',
     hslDark: '217,12%,25%',
   },
+  chartBorder: {
+    light: '#edeae3',
+    dark: '#4F5764',
+  },
   gradient: {
     // dusk: 'linear(to-tr, purple.300 5%, #D7CBE7 50%, #EAA879 95%)',
     // sand: 'linear(to-t, #E6C6A0 0%, #E5D3BE 100%)',
@@ -150,12 +154,14 @@ export const tokens = {
 
       // Font colors
       text: {
-        primary: primaryTextColor,
-        secondary: 'linear-gradient(45deg, #728097 0%, #909BAD 100%)',
+        primary: balColors.gray['700'],
+        secondary: balColors.gray['500'],
+        primaryGradient: primaryTextColor,
+        secondaryGradient: 'linear-gradient(45deg, #728097 0%, #909BAD 100%)',
         special: balColors.gradient.dawnLight,
         specialSecondary: balColors.gradient.sunsetLight,
-        link: `linear-gradient(45deg, ${balColors.purple['700']} 0%, ${balColors.purple['500']} 100%)`,
-        linkHover: `linear-gradient(45deg, ${balColors.purple['900']} 0%, ${balColors.purple['700']} 100%)`,
+        link: balColors.purple['500'],
+        linkHover: balColors.purple['700'],
       },
 
       card: {
@@ -240,12 +246,14 @@ export const tokens = {
       },
       // Font colors
       text: {
-        primary: 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
-        secondary: 'linear-gradient(45deg, #909BAD 0%, #728097 100%)',
+        primary: '#E5D3BE',
+        secondary: balColors.gray['400'],
+        primaryGradient: 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
+        secondaryGradient: 'linear-gradient(45deg, #909BAD 0%, #728097 100%)',
         special: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
         specialSecondary: 'linear-gradient(180deg, #EA9A43 0%, #F06147 100%)',
-        link: `linear-gradient(45deg, ${balColors.purple['400']} 0%, ${balColors.purple['200']} 100%)`,
-        linkHover: `linear-gradient(45deg, ${balColors.purple['200']} 0%, ${balColors.purple['50']} 100%)`,
+        link: balColors.purple['300'],
+        linkHover: balColors.purple['100'],
       },
       // card colors
       card: {
@@ -383,6 +391,10 @@ export const balTheme = {
         _dark: 'darkBorderColor',
       },
       primary: { _light: 'primary.500', _dark: 'primary.500' },
+      grayText: {
+        default: tokens.colors.light.text.secondary,
+        _dark: tokens.colors.dark.text.secondary,
+      },
       'chakra-body-text': { _light: 'gray.800', _dark: 'whiteAlpha.900' },
       'chakra-body-bg': { _light: 'white', _dark: 'gray.800' },
       'chakra-border-color': { _light: 'gray.200', _dark: 'whiteAlpha.300' },
@@ -615,6 +627,14 @@ export const balTheme = {
         secondary: {
           default: tokens.colors.light.text.secondary,
           _dark: tokens.colors.dark.text.secondary,
+        },
+        primaryGradient: {
+          default: tokens.colors.light.text.primaryGradient,
+          _dark: tokens.colors.dark.text.primaryGradient,
+        },
+        secondaryGradient: {
+          default: tokens.colors.light.text.secondaryGradient,
+          _dark: tokens.colors.dark.text.secondaryGradient,
         },
         special: {
           default: tokens.colors.light.text.special,
@@ -984,12 +1004,18 @@ export const balTheme = {
     },
     Text: {
       baseStyle: {
-        background: 'font.primary',
-        backgroundClip: 'text',
+        color: 'font.primary',
       },
       variants: {
         secondary: {
-          background: 'font.secondary',
+          color: 'font.secondary',
+        },
+        primaryGradient: {
+          background: 'font.primaryGradient',
+          backgroundClip: 'text',
+        },
+        secondaryGradient: {
+          background: 'font.secondaryGradient',
           backgroundClip: 'text',
         },
         special: {
@@ -1011,12 +1037,10 @@ export const balTheme = {
     },
     Link: {
       baseStyle: {
-        background: 'font.link',
-        backgroundClip: 'text',
-        transition: tokens.transition.slow,
+        color: 'font.link',
+        transition: tokens.transition.default,
         _hover: {
-          background: 'font.linkHover',
-          backgroundClip: 'text',
+          color: 'font.linkHover',
         },
       },
     },
@@ -1030,12 +1054,25 @@ export const balTheme = {
       },
     },
     Select: {
-      baseStyle: {},
+      baseStyle: {
+        field: {
+          background: 'background.card.level2',
+          fontWeight: 'bold',
+          color: 'font.primary',
+          shadow: 'md',
+          border: '0px solid transparent',
+          borderColor: 'transparent',
+          outline: 'none',
+        },
+        icon: {
+          color: 'font.link',
+        },
+      },
       variants: {
         secondary: {
           field: {
             background: 'background.button.secondary',
-            py: '1.5',
+            py: 'sm',
             fontSize: 'md',
             fontWeight: 'bold',
             pl: '2',
@@ -1153,6 +1190,28 @@ export const balTheme = {
           background: 'background.card.level3',
         },
       },
+      defaultProps: {
+        size: 'lg',
+      },
+    },
+    Popover: {
+      variants: {
+        tooltip: {
+          content: {
+            background: 'background.card.level3',
+            borderColor: 'transparent',
+            color: 'grayText',
+            fontWeight: 'bold',
+            shadow: 'lg',
+          },
+          body: {
+            background: 'background.card.level3',
+            color: 'grayText',
+            px: 'sm',
+            py: 'xs',
+          },
+        },
+      },
     },
     Card: {
       baseStyle: {
@@ -1268,16 +1327,17 @@ export const balTheme = {
         },
       },
     },
-    List: {
-      baseStyle: {
-        item: {
-          color: 'purple.300',
-        },
-      },
-    },
     Tag: {
       baseStyle: {
-        bg: 'background: #EFEDE6',
+        container: {
+          background: 'background.card.level1',
+          shadow: 'md',
+          borderColor: 'border.base',
+          borderWidth: '1px',
+          borderRadius: 'full',
+          color: 'font.primary',
+          fontWeight: 'semibold',
+        },
       },
     },
   },

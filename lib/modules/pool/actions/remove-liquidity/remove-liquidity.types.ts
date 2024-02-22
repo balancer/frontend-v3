@@ -9,7 +9,7 @@ import { Address } from 'wagmi'
 // There are other kinds but we only support two of them
 export enum RemoveLiquidityType {
   Proportional = SdkRemoveLiquidityKind.Proportional,
-  SingleToken = SdkRemoveLiquidityKind.SingleToken,
+  SingleToken = SdkRemoveLiquidityKind.SingleTokenExactIn,
 }
 
 /*
@@ -20,6 +20,7 @@ export enum RemoveLiquidityType {
 export interface QueryRemoveLiquidityInput {
   humanBptIn: HumanAmount
   tokenOut: Address // Only SingleToken handler uses tokenOut but we define it here to simply optional type handling
+  userAddress?: Address // Used by Nested remove liquidity
 }
 
 export type QueryRemoveLiquidityOutput = {
@@ -30,6 +31,7 @@ export type BuildRemoveLiquidityInput = {
   account: Address
   slippagePercent: string
   queryOutput: QueryRemoveLiquidityOutput
+  relayerApprovalSignature?: Address //only used by Nested Remove Liquidity in signRelayer mode
 }
 
 /*

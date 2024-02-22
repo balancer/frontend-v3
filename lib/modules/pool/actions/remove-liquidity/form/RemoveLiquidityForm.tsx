@@ -16,18 +16,19 @@ import {
   Center,
   HStack,
   Heading,
-  Icon,
   Skeleton,
   Text,
   Tooltip,
   VStack,
 } from '@chakra-ui/react'
 import { useRef, useState } from 'react'
-import { FiSettings } from 'react-icons/fi'
 import { RemoveLiquidityModal } from '../modal/RemoveLiquidityModal'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { RemoveLiquidityProportional } from './RemoveLiquidityProportional'
 import { RemoveLiquiditySingleToken } from './RemoveLiquiditySingleToken'
+import { usePool } from '../../../usePool'
+import { usePoolRedirect } from '../../../pool.hooks'
+import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
 
 const TABS: ButtonGroupOption[] = [
   {
@@ -44,9 +45,6 @@ export function RemoveLiquidityForm() {
   const {
     tokens,
     validTokens,
-    setProportionalType,
-    setSingleTokenType,
-    setHumanBptInPercent,
     humanBptInPercent,
     totalUsdValue,
     priceImpactQuery,
@@ -54,7 +52,13 @@ export function RemoveLiquidityForm() {
     isDisabled,
     disabledReason,
     simulationQuery,
+    isTxConfirmingOrConfirmed,
+    setProportionalType,
+    setSingleTokenType,
+    setHumanBptInPercent,
   } = useRemoveLiquidity()
+  const { pool } = usePool()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
   const { toCurrency } = useCurrency()
   const nextBtn = useRef(null)
   const [activeTab, setActiveTab] = useState(TABS[0])
@@ -73,7 +77,14 @@ export function RemoveLiquidityForm() {
   }
 
   const onModalClose = () => {
-    previewModalDisclosure.onClose()
+    if (isTxConfirmingOrConfirmed) {
+      // If the transaction is confirming or confirmed, it's very likely that
+      // they no longer have a pool balance. To be safe, always redirect to the
+      // pool page when closing the modal in this state.
+      redirectToPoolPage()
+    } else {
+      previewModalDisclosure.onClose()
+    }
   }
 
   return (
@@ -85,7 +96,7 @@ export function RemoveLiquidityForm() {
               <Heading fontWeight="bold" size="h5">
                 Remove liquidity
               </Heading>
-              <Icon as={FiSettings} aria-label="settings" />
+              <TransactionSettings size="sm" />
             </HStack>
             <HStack>
               <ButtonGroup
@@ -95,41 +106,43 @@ export function RemoveLiquidityForm() {
                 size="lg"
               />
               <Tooltip label="Remove liquidity type" fontSize="sm">
-                <InfoOutlineIcon color="GrayText" />
+                <InfoOutlineIcon color="grayText" />
               </Tooltip>
             </HStack>
-            <VStack w="full" gap="md">
+            <VStack w="full" spacing="md">
               <InputWithSlider
                 value={totalUsdValue}
                 onPercentChanged={setHumanBptInPercent}
                 isNumberInputDisabled
               >
-                <Text>Amount</Text>
-                <Text>{fNum('percentage', humanBptInPercent / 100)}</Text>
+                <Text fontSize="sm">Amount</Text>
+                <Text fontSize="sm" variant="secondary">
+                  {fNum('percentage', humanBptInPercent / 100)}
+                </Text>
               </InputWithSlider>
               {activeTab === TABS[0] && <RemoveLiquidityProportional tokens={tokens} />}
               {activeTab === TABS[1] && <RemoveLiquiditySingleToken tokens={tokens} />}
             </VStack>
-            <VStack spacing="sm" align="start" w="full">
+            <VStack spacing="sm" align="start" w="full" px="md">
               <HStack justify="space-between" w="full">
-                <Text color="GrayText">Total</Text>
+                <Text color="grayText">Total</Text>
                 <HStack>
-                  <NumberText color="GrayText">{toCurrency(totalUsdValue)}</NumberText>
+                  <NumberText color="grayText">{toCurrency(totalUsdValue)}</NumberText>
                   <Tooltip label="Total" fontSize="sm">
-                    <InfoOutlineIcon color="GrayText" />
+                    <InfoOutlineIcon color="grayText" />
                   </Tooltip>
                 </HStack>
               </HStack>
               <HStack justify="space-between" w="full">
-                <Text color="GrayText">Price impact</Text>
+                <Text color="grayText">Price impact</Text>
                 <HStack>
                   {priceImpactQuery.isLoading ? (
                     <Skeleton w="12" h="full" />
                   ) : (
-                    <NumberText color="GrayText">{priceImpactLabel}</NumberText>
+                    <NumberText color="grayText">{priceImpactLabel}</NumberText>
                   )}
                   <Tooltip label="Price impact" fontSize="sm">
-                    <InfoOutlineIcon color="GrayText" />
+                    <InfoOutlineIcon color="grayText" />
                   </Tooltip>
                 </HStack>
               </HStack>

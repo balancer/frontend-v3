@@ -10,13 +10,16 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
+  VStack,
 } from '@chakra-ui/react'
 import { RefObject, useRef, useState } from 'react'
 import { TokenSelectList } from './TokenSelectList/TokenSelectList'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { TokenSelectPopular } from './TokenSelectPopular'
 
 type Props = {
   tokens: GqlToken[]
+  chain: GqlChain
   excludeNativeAsset?: boolean
   pinNativeAsset?: boolean
   isOpen: boolean
@@ -28,6 +31,7 @@ type Props = {
 
 export function TokenSelectModal({
   tokens,
+  chain,
   excludeNativeAsset = false,
   pinNativeAsset = false,
   isOpen,
@@ -57,27 +61,38 @@ export function TokenSelectModal({
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Select a token</ModalHeader>
-        <ModalCloseButton />
+        <ModalHeader color="font.primary">Select a token</ModalHeader>
+        <ModalCloseButton color="font.primary" rounded="full" />
         <ModalBody p={0}>
-          <Box px="md">
-            <Input
-              ref={initialFocusRef}
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              placeholder="Search by name, symbol or address"
-            />
-          </Box>
-          <Box p="md" pr="0">
-            <TokenSelectList
-              tokens={tokens}
-              excludeNativeAsset={excludeNativeAsset}
-              pinNativeAsset={pinNativeAsset}
-              listHeight={500}
-              searchTerm={searchTerm}
-              onTokenSelect={closeOnSelect}
-            />
-          </Box>
+          <VStack w="full" align="start" spacing="md">
+            <Box px="md" w="full">
+              <Input
+                ref={initialFocusRef}
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                placeholder="Search by name, symbol or address"
+              />
+            </Box>
+            {!searchTerm && (
+              <Box px="md" w="full">
+                <TokenSelectPopular
+                  chain={chain}
+                  excludeNativeAsset={excludeNativeAsset}
+                  onTokenSelect={closeOnSelect}
+                />
+              </Box>
+            )}
+            <Box px="md" pr="0" w="full">
+              <TokenSelectList
+                tokens={tokens}
+                excludeNativeAsset={excludeNativeAsset}
+                pinNativeAsset={pinNativeAsset}
+                listHeight={500}
+                searchTerm={searchTerm}
+                onTokenSelect={closeOnSelect}
+              />
+            </Box>
+          </VStack>
         </ModalBody>
       </ModalContent>
     </Modal>

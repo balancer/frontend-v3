@@ -29,7 +29,8 @@ import {
 } from 'viem'
 import { erc20ABI, mainnet } from 'wagmi'
 import { aWjAuraWethPoolElementMock } from '../msw/builders/gqlPoolElement.builders'
-import { defaultTestUserAccount, testPublicClient } from '../utils/wagmi'
+import { testPublicClient } from '../utils/wagmi/wagmi-test-setup'
+import { defaultTestUserAccount } from '../anvil/anvil-setup'
 
 /*
   Given chain, user account and pool

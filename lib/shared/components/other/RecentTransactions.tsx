@@ -23,34 +23,40 @@ import {
 import { isEmpty, orderBy } from 'lodash'
 import { FiActivity } from 'react-icons/fi'
 import { ExternalLinkIcon } from '@chakra-ui/icons'
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import { useBlockExplorer } from '../../hooks/useBlockExplorer'
+
+function TransactionRow({ transaction }: { transaction: TrackedTransaction }) {
+  const { getBlockExplorerTxUrl } = useBlockExplorer(transaction.chain)
+  // TODO? Add another description so it would always fit in the default width of 320px (ln 71) without truncation (ln 46)
+  const label =
+    transaction.description &&
+    transaction.init &&
+    transaction.description?.length > transaction.init.length
+      ? transaction.description
+      : transaction.init
+
+  return (
+    <HStack key={transaction.hash}>
+      <Tooltip label={label} fontSize="sm">
+        <Text isTruncated maxW="85%">
+          {transaction.init}
+        </Text>
+      </Tooltip>
+      <Link href={getBlockExplorerTxUrl(transaction.hash)} target="_blank">
+        <ExternalLinkIcon color="gray.400" width="1rem" height="1rem" />
+      </Link>
+    </HStack>
+  )
+}
 
 function Transactions({ transactions }: { transactions: Record<string, TrackedTransaction> }) {
-  const networkConfig = useNetworkConfig()
   const orderedRecentTransactions = orderBy(Object.values(transactions), 'timestamp', 'desc')
 
   return (
     <VStack p="4" rounded="md" align="start">
-      {orderedRecentTransactions.map(tx => {
-        // TODO? Add another description so it would always fit in the default width of 320px (ln 71) without truncation (ln 46)
-        const label =
-          tx.description && tx.init && tx.description?.length > tx.init.length
-            ? tx.description
-            : tx.init
-
-        return (
-          <HStack key={tx.hash}>
-            <Tooltip label={label} fontSize="sm">
-              <Text isTruncated maxW="85%">
-                {tx.init}
-              </Text>
-            </Tooltip>
-            <Link href={`${networkConfig.blockExplorerBaseUrl}/tx/${tx.hash}`} target="_blank">
-              <ExternalLinkIcon color="gray.400" width="1rem" height="1rem" />
-            </Link>
-          </HStack>
-        )
-      })}
+      {orderedRecentTransactions.map(transaction => (
+        <TransactionRow key={transaction.hash} transaction={transaction} />
+      ))}
     </VStack>
   )
 }

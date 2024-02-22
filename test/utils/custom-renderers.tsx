@@ -31,9 +31,13 @@ import {
 import { aGqlPoolElementMock } from '../msw/builders/gqlPoolElement.builders'
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
-import { createWagmiTestConfig, defaultTestUserAccount, mainnetMockConnector } from './wagmi'
+import { createWagmiTestConfig } from './wagmi/wagmi-test-setup'
 import { RemoveLiquidityProvider } from '@/lib/modules/pool/actions/remove-liquidity/useRemoveLiquidity'
 import { UserAccountProvider } from '@/lib/modules/web3/useUserAccount'
+import { ReactQueryClientProvider } from '@/app/react-query.provider'
+import { defaultTestUserAccount } from '../anvil/anvil-setup'
+import { createMockConnector } from './wagmi/wagmi-mock-connectors'
+import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignature'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -89,7 +93,9 @@ function GlobalProviders({ children }: WrapperProps) {
                 initPoolListView={'list'}
                 initEnableSignatures="yes"
               >
-                <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+                <RecentTransactionsProvider>
+                  <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+                </RecentTransactionsProvider>
               </UserSettingsProvider>
             </TokensProvider>
           </UserAccountProvider>
@@ -149,7 +155,7 @@ export function testManagedTransaction<
  */
 export async function useConnectTestAccount() {
   function useConnectWallet() {
-    const config = { connector: mainnetMockConnector }
+    const config = { connector: createMockConnector('MAINNET') }
     return {
       account: useAccount(),
       connect: useConnect(config),
@@ -174,11 +180,15 @@ export async function useConnectTestAccount() {
 }
 
 export const DefaultAddLiquidityTestProvider = ({ children }: PropsWithChildren) => (
-  <AddLiquidityProvider>{children}</AddLiquidityProvider>
+  <RelayerSignatureProvider>
+    <AddLiquidityProvider>{children}</AddLiquidityProvider>
+  </RelayerSignatureProvider>
 )
 
 export const DefaultRemoveLiquidityTestProvider = ({ children }: PropsWithChildren) => (
-  <RemoveLiquidityProvider>{children}</RemoveLiquidityProvider>
+  <RelayerSignatureProvider>
+    <RemoveLiquidityProvider>{children}</RemoveLiquidityProvider>
+  </RelayerSignatureProvider>
 )
 
 /* Builds a PoolProvider that injects the provided pool data*/

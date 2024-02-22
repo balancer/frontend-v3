@@ -1,6 +1,6 @@
 import { vaultV2Address, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { buildDefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers'
-import { defaultTestUserAccount } from '@/test/utils/wagmi'
+import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { waitFor } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'

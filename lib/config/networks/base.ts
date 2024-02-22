@@ -9,6 +9,7 @@ const networkConfig: NetworkConfig = {
   iconPath: '/images/chains/BASE.svg',
   blockExplorerBaseUrl: 'https://basescan.org',
   tokens: {
+    balToken: { address: '0x4158734d47fc9692176b5085e0f52ee0da5d47f1' },
     nativeAsset: {
       name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
@@ -23,7 +24,8 @@ const networkConfig: NetworkConfig = {
     multicall2: '0xca11bde05977b3631167028862be2a173976ca11',
     balancer: {
       vaultV2: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
-      relayerV6: '0x35Cea9e57A393ac66Aaa7E25C391D52C74B5648f',
+      relayerV6: '0x7C3C773C878d2238a9b64d8CEE02377BF07ED06a',
+      minter: '0x0c5538098EBe88175078972F514C9e101D325D4F',
     },
   },
 }
