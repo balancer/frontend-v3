@@ -19,7 +19,7 @@ export function useAddLiquiditySimulationQuery(
   humanAmountsIn: HumanAmountIn[],
   options: UseQueryOptions = {}
 ) {
-  const { userAddress, isConnected } = useUserAccount()
+  const { userAddress } = useUserAccount()
   const { pool } = usePool()
   const { slippage } = useUserSettings()
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
@@ -39,7 +39,7 @@ export function useAddLiquiditySimulationQuery(
   const queryFn = async () => handler.simulate(humanAmountsIn, userAddress)
 
   const queryOpts = {
-    enabled: enabled && isConnected && hasValidHumanAmounts(debouncedHumanAmountsIn),
+    enabled: enabled && hasValidHumanAmounts(debouncedHumanAmountsIn),
     cacheTime: 0,
     ...onlyExplicitRefetch,
   }
