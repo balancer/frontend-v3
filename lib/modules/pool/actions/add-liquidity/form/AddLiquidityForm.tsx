@@ -76,7 +76,7 @@ export function AddLiquidityForm() {
             </HStack>
 
             {requiresProportionalInput(pool) ? (
-              <ProportionalInputs></ProportionalInputs>
+              <ProportionalInputs />
             ) : (
               <VStack spacing="md" w="full">
                 {tokens.map(token => {
