@@ -8,7 +8,7 @@ import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
-import { Address } from 'viem'
+import { Address, formatUnits } from 'viem'
 import { usePool } from '../../usePool'
 import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulationQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
@@ -23,6 +23,7 @@ import { TransactionState } from '@/lib/shared/components/btns/transaction-steps
 import { useAddLiquidityStepConfigs } from './useAddLiquidityStepConfigs'
 import { useIterateSteps } from '../useIterateSteps'
 import { useTotalUsdValue } from './useTotalUsdValue'
+import { SdkQueryAddLiquidityOutput } from './add-liquidity.types'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -91,6 +92,17 @@ export function _useAddLiquidity() {
    */
   const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn)
 
+  const sdkSimulatedData: SdkQueryAddLiquidityOutput =
+    simulationQuery.data as unknown as SdkQueryAddLiquidityOutput
+
+  let sdkSimulatedAmounts
+  if (sdkSimulatedData) {
+    sdkSimulatedAmounts = sdkSimulatedData.sdkQueryOutput.amountsIn.map(({ amount, token }) => ({
+      // token: token.address,
+      amount: formatUnits(amount, token.decimals),
+    }))
+  }
+
   const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn)
 
   /**
@@ -108,6 +120,7 @@ export function _useAddLiquidity() {
     validTokens,
     totalUSDValue,
     simulationQuery,
+    sdkSimulatedAmounts,
     priceImpactQuery,
     isDisabled,
     disabledReason,

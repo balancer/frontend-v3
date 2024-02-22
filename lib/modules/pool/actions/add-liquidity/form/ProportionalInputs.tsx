@@ -14,7 +14,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 export function ProportionalInputs() {
   const { isConnected } = useUserAccount()
   const { toCurrency } = useCurrency()
-  const { tokens, humanAmountsIn: amountsIn } = useAddLiquidity()
+  const { tokens, humanAmountsIn: amountsIn, sdkSimulatedAmounts } = useAddLiquidity()
   const {
     handleHumanInputChange,
     handleMaximizeUserAmounts,
@@ -34,6 +34,8 @@ export function ProportionalInputs() {
         <AlertIcon />
         This pool requires liquidity to be added proportionally
       </Alert>
+      <Text>Simulated {JSON.stringify(sdkSimulatedAmounts)}</Text>
+
       {isConnected ? (
         isLoading ? (
           <Skeleton h="5" w="full" />
