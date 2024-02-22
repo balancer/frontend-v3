@@ -9,6 +9,7 @@ const networkConfig: NetworkConfig = {
   iconPath: '/images/chains/POLYGON.svg',
   blockExplorerBaseUrl: 'https://polygonscan.com',
   tokens: {
+    balToken: { address: '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3' },
     nativeAsset: {
       name: 'Matic',
       address: '0x0000000000000000000000000000000000001010',
@@ -18,6 +19,13 @@ const networkConfig: NetworkConfig = {
     defaultSwapTokens: {
       tokenIn: '0x0000000000000000000000000000000000001010',
     },
+    popularTokens: [
+      '0x0000000000000000000000000000000000001010', // MATIC
+      '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270', // WMATIC
+      '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619', // WETH
+      '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3', // BAL
+      '0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4', // stMATIC
+    ],
   },
   contracts: {
     multicall2: '0x275617327c958bD06b5D6b871E7f491D76113dd8',
@@ -27,6 +35,7 @@ const networkConfig: NetworkConfig = {
       minter: '0x47B489bf5836f83ABD928C316F8e39bC0587B020',
     },
   },
+  minConfirmations: 13,
 }
 
 export default networkConfig

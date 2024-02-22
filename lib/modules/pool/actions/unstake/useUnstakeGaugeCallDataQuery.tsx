@@ -1,16 +1,22 @@
 import { useQuery } from 'wagmi'
 import { usePool } from '../../usePool'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { GaugeService } from '@/lib/shared/services/staking/gauge.service'
+import { Address } from 'viem'
 
-// TODO: typing 'gaugeService' cascades a lot
-export function useUnstakeGaugeCallDataQuery(amount: bigint, gaugeService: any) {
+export function useUnstakeGaugeCallDataQuery(
+  amount: bigint,
+  gaugeService: GaugeService | undefined,
+  hasPendingNonBalRewards: boolean,
+  hasPendingBalRewards: boolean
+) {
   const { userAddress } = useUserAccount()
   const { pool } = usePool()
 
   const inputData = {
-    hasPendingNonBALRewards: true, // TODO: replace with actual bool
-    hasPendingBalRewards: true, // TODO: replace with actual bool
-    gauges: [pool.staking?.id || ''],
+    hasPendingNonBalRewards,
+    hasPendingBalRewards,
+    gauges: [(pool.staking?.id || '') as Address],
     sender: userAddress || '',
     recipient: userAddress || '',
     amount,
@@ -18,8 +24,14 @@ export function useUnstakeGaugeCallDataQuery(amount: bigint, gaugeService: any) 
   }
 
   const queryKey = ['unstake', 'gauge', 'callData', inputData]
-  const queryFn = () => gaugeService.getGaugeClaimRewardsAndWithdrawContractCallData(inputData)
-  const queryOpts = { enabled: amount.toString() !== '0' }
+  const queryFn = () =>
+    gaugeService && gaugeService.getGaugeClaimRewardsAndWithdrawContractCallData(inputData)
+  const queryOpts = { enabled: gaugeService && amount.toString() !== '0' }
 
-  return useQuery(queryKey, queryFn, queryOpts)
+  const query = useQuery(queryKey, queryFn, queryOpts)
+
+  return {
+    ...query,
+    data: query.data || [],
+  }
 }

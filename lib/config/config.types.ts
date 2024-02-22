@@ -3,6 +3,7 @@ import { GqlChain } from '../shared/services/api/generated/graphql'
 import { supportedChains } from '../modules/web3/Web3Provider'
 
 export interface TokensConfig {
+  balToken?: { address: Address }
   nativeAsset: {
     name: string
     address: Address
@@ -24,6 +25,7 @@ export interface ContractsConfig {
     relayerV6: Address
     minter: Address
   }
+  feeDistributor?: Address
 }
 
 export type SupportedChainId = (typeof supportedChains)[number]['id']
@@ -36,6 +38,7 @@ export interface NetworkConfig {
   blockExplorerBaseUrl: string
   tokens: TokensConfig
   contracts: ContractsConfig
+  minConfirmations?: number
 }
 
 export interface Config {

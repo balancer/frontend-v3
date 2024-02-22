@@ -8,6 +8,7 @@ import zkevm from './zkevm'
 import fantom from './fantom'
 import optimism from './optimism'
 import base from './base'
+import sepolia from './sepolia'
 
 const networkConfigs = {
   [GqlChain.Arbitrum]: arbitrum,
@@ -19,6 +20,7 @@ const networkConfigs = {
   [GqlChain.Zkevm]: zkevm,
   [GqlChain.Fantom]: fantom,
   [GqlChain.Optimism]: optimism,
+  [GqlChain.Sepolia]: sepolia,
 }
 
 export default networkConfigs

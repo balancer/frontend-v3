@@ -35,8 +35,8 @@ describe('Performs multicall in multiple chains', () => {
 
     const { result } = testHook(() => useMulticall(multicallRequests))
 
-    await waitFor(() => expect(result.current.POLYGON.data).toBeDefined())
-    expect(result.current.POLYGON.data).toMatchInlineSnapshot(`
+    await waitFor(() => expect(result.current.results.POLYGON.data).toBeDefined())
+    expect(result.current.results.POLYGON.data).toMatchInlineSnapshot(`
     {
       "maticBalance": {
         "result": 10000000000000000000000n,
@@ -53,9 +53,9 @@ describe('Performs multicall in multiple chains', () => {
 
     const { result } = testHook(() => useMulticall(multicallRequests))
 
-    await waitFor(() => expect(result.current.MAINNET.data).toBeDefined())
+    await waitFor(() => expect(result.current.results.MAINNET.data).toBeDefined())
 
-    expect(result.current.MAINNET.data).toMatchInlineSnapshot(`
+    expect(result.current.results.MAINNET.data).toMatchInlineSnapshot(`
       {
         "ethBalance": {
           "result": 0n,

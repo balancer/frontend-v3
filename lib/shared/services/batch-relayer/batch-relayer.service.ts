@@ -6,7 +6,7 @@ import {
 } from './relayer-types'
 import { GaugeActionsService } from './extensions/gauge-actions.service'
 import { balancerV2BatchRelayerLibraryABI } from '@/lib/modules/web3/contracts/abi/generated'
-import { encodeFunctionData } from 'viem'
+import { encodeFunctionData, Hex } from 'viem'
 
 export class BatchRelayerService {
   constructor(
@@ -22,19 +22,19 @@ export class BatchRelayerService {
     })
   }
 
-  public gaugeEncodeDeposit(params: EncodeGaugeDepositInput): string {
+  public gaugeEncodeDeposit(params: EncodeGaugeDepositInput): Hex {
     return this.gaugeActionsService.encodeDeposit(params)
   }
 
-  public gaugeEncodeWithdraw(params: EncodeGaugeWithdrawInput): string {
+  public gaugeEncodeWithdraw(params: EncodeGaugeWithdrawInput): Hex {
     return this.gaugeActionsService.encodeWithdraw(params)
   }
 
-  public gaugeEncodeClaimRewards(params: EncodeGaugeClaimRewardsInput): string {
+  public gaugeEncodeClaimRewards(params: EncodeGaugeClaimRewardsInput): Hex {
     return this.gaugeActionsService.encodeClaimRewards(params)
   }
 
-  public gaugeEncodeMint(params: EncodeGaugeMintInput): string {
+  public gaugeEncodeMint(params: EncodeGaugeMintInput): Hex {
     return this.gaugeActionsService.encodeMint(params)
   }
 }

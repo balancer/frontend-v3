@@ -9,6 +9,7 @@ const networkConfig: NetworkConfig = {
   iconPath: '/images/chains/GNOSIS.svg',
   blockExplorerBaseUrl: 'https://gnosisscan.io',
   tokens: {
+    balToken: { address: '0x7ef541e2a22058048904fe5744f9c7e4c57af717' },
     nativeAsset: {
       name: 'xDAI',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',

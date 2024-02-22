@@ -8,7 +8,8 @@ import { areEmptyAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { addLiquidityKeys } from './add-liquidity-keys'
-import { useQuery, UseQueryOptions } from '@tanstack/react-query'
+import { UseQueryOptions } from '@tanstack/react-query'
+import { useQuery } from 'wagmi'
 
 export function useAddLiquidityPriceImpactQuery(
   handler: AddLiquidityHandler,

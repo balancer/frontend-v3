@@ -8,7 +8,7 @@ import {
   GqlPoolType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
-import { FetchPoolProps, PoolVariant } from './pool.types'
+import { FetchPoolProps, PoolListItem, PoolVariant } from './pool.types'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { TokenAmountHumanReadable } from '../tokens/token.types'
@@ -25,6 +25,7 @@ export enum ChainSlug {
   Optimisim = 'optimism',
   Zkevm = 'zkevm',
   Gnosis = 'gnosis',
+  Sepolia = 'sepolia',
 }
 
 // Maps GraphQL chain enum to URL slug
@@ -38,6 +39,7 @@ export const chainToSlugMap: Record<GqlChain, ChainSlug> = {
   [GqlChain.Optimism]: ChainSlug.Optimisim,
   [GqlChain.Zkevm]: ChainSlug.Zkevm,
   [GqlChain.Gnosis]: ChainSlug.Gnosis,
+  [GqlChain.Sepolia]: ChainSlug.Sepolia,
 }
 export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlChain>
 
@@ -156,4 +158,26 @@ export function getProportionalExitAmountsFromScaledBptIn(
       amount: formatUnits(tokenProportionalAmount, token.decimals),
     }
   })
+}
+
+/**
+ *
+ * @description Returns a map of pool by gauge id
+ * @example getPoolsByGaugesMap(pools) => { '0x123': pool1, '0x456': pool2 }
+ */
+export function getPoolsByGaugesMap(pools: PoolListItem[]) {
+  return pools.reduce((acc: Record<string, PoolListItem>, pool) => {
+    const gaugeId = pool.staking?.gauge?.id || ''
+    if (gaugeId) {
+      acc[gaugeId] = pool
+    }
+    pool.staking?.gauge?.otherGauges?.forEach(otherGauge => {
+      const otherGaugeId = otherGauge.id
+      if (otherGaugeId) {
+        acc[otherGaugeId] = pool
+      }
+    })
+
+    return acc
+  }, {})
 }

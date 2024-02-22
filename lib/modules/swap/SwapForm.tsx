@@ -15,7 +15,6 @@ import {
   Text,
   Tooltip,
   useDisclosure,
-  Select,
   IconButton,
   Button,
 } from '@chakra-ui/react'
@@ -29,6 +28,11 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { CgArrowsExchangeV } from 'react-icons/cg'
 import { Address } from 'viem'
 import { SwapPreviewModal } from './SwapPreviewModal'
+import { getChainName } from '@/lib/config/app.config'
+import { RichSelect } from '@/lib/shared/components/inputs/RichSelect'
+import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
+import { FiGlobe } from 'react-icons/fi'
+import { HiChevronDown } from 'react-icons/hi2'
 
 export function SwapForm() {
   const {
@@ -53,7 +57,15 @@ export function SwapForm() {
   const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
 
-  const networkOptions = PROJECT_CONFIG.supportedNetworks
+  const networkOptions = PROJECT_CONFIG.supportedNetworks.map(network => ({
+    label: (
+      <HStack>
+        <NetworkIcon chain={network} size={6} />
+        <Text>{getChainName(network)}</Text>
+      </HStack>
+    ),
+    value: network,
+  }))
 
   const tokenMap = { tokenIn, tokenOut }
 
@@ -95,18 +107,19 @@ export function SwapForm() {
               </Heading>
             </HStack>
             <VStack spacing="md" w="full">
-              <Select
+              <RichSelect
                 value={selectedChain}
-                onChange={e => {
-                  setSelectedChain(e.currentTarget.value as GqlChain)
+                options={networkOptions}
+                onChange={newValue => {
+                  setSelectedChain(newValue as GqlChain)
                 }}
-              >
-                {networkOptions.map(networkOption => (
-                  <option key={networkOption} value={networkOption}>
-                    {networkOption}
-                  </option>
-                ))}
-              </Select>
+                rightIcon={
+                  <HStack>
+                    <FiGlobe />
+                    <HiChevronDown />
+                  </HStack>
+                }
+              />
               <TokenInput
                 address={tokenIn.address}
                 chain={selectedChain}

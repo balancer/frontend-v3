@@ -8,7 +8,8 @@ import { Address } from 'viem'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { removeLiquidityKeys } from './remove-liquidity-keys'
 import { HumanAmount } from '@balancer/sdk'
-import { useQuery, UseQueryOptions } from '@tanstack/react-query'
+import { useQuery } from 'wagmi'
+import { UseQueryOptions } from '@tanstack/react-query'
 
 export function useRemoveLiquidityPriceImpactQuery(
   handler: RemoveLiquidityHandler,

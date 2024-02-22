@@ -17,6 +17,9 @@ import { AbiMap } from './AbiMap'
 import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
+import { getGqlChain } from '@/lib/config/app.config'
+import { SupportedChainId } from '@/lib/config/config.types'
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
 export function useManagedTransaction<
   T extends typeof AbiMap,
@@ -34,6 +37,7 @@ export function useManagedTransaction<
   >
 ) {
   const [writeArgs, setWriteArgs] = useState(args)
+  const { minConfirmations } = useNetworkConfig()
 
   const prepareQuery = usePrepareContractWrite({
     abi: AbiMap[contractId] as Abi,
@@ -45,7 +49,10 @@ export function useManagedTransaction<
   })
 
   const writeQuery = useContractWrite(prepareQuery.config)
-  const transactionStatusQuery = useWaitForTransaction({ hash: writeQuery.data?.hash })
+  const transactionStatusQuery = useWaitForTransaction({
+    hash: writeQuery.data?.hash,
+    confirmations: minConfirmations,
+  })
   const bundle = {
     simulation: prepareQuery as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
@@ -53,14 +60,18 @@ export function useManagedTransaction<
   }
 
   // on successful submission to chain, add tx to cache
-  useOnTransactionSubmission(transactionLabels, writeQuery.data?.hash)
+  useOnTransactionSubmission({
+    labels: transactionLabels,
+    hash: writeQuery.data?.hash,
+    chain: getGqlChain((writeQuery.variables?.chainId || 1) as SupportedChainId),
+  })
 
   // on confirmation, update tx in tx cache
-  useOnTransactionConfirmation(
-    transactionLabels,
-    bundle.result.data?.status,
-    bundle.result.data?.transactionHash
-  )
+  useOnTransactionConfirmation({
+    labels: transactionLabels,
+    status: bundle.result.data?.status,
+    hash: bundle.result.data?.transactionHash,
+  })
 
   // if parent changes args, update here
   useEffect(() => {

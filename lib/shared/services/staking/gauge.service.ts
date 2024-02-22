@@ -1,4 +1,4 @@
-import { Address } from 'viem'
+import { Address, Hex } from 'viem'
 import { BatchRelayerService } from '../batch-relayer/batch-relayer.service'
 import {
   EncodeGaugeClaimRewardsInput,
@@ -6,30 +6,35 @@ import {
   EncodeGaugeWithdrawInput,
 } from '../batch-relayer/relayer-types'
 
+interface ClaimCallDataArgs {
+  hasPendingNonBalRewards: boolean
+  hasPendingBalRewards: boolean
+  gauges: Address[]
+  outputReference: bigint
+}
+
+interface ClaimAndWithdrawCallDataArgs extends ClaimCallDataArgs {
+  sender: Address
+  recipient: Address
+  amount: bigint
+}
+
 export class GaugeService {
   constructor(private readonly batchRelayerService: BatchRelayerService) {}
 
   public getGaugeClaimRewardsAndWithdrawContractCallData({
-    hasPendingNonBALRewards,
+    hasPendingNonBalRewards,
     hasPendingBalRewards,
     gauges,
     sender,
     recipient,
     amount,
     outputReference,
-  }: {
-    hasPendingNonBALRewards: boolean
-    hasPendingBalRewards: boolean
-    gauges: Address[]
-    sender: Address
-    recipient: Address
-    amount: bigint
-    outputReference: bigint
-  }) {
-    const calls: string[] = []
+  }: ClaimAndWithdrawCallDataArgs) {
+    const calls: Hex[] = []
 
     const rewardsCalls = this.getGaugeClaimRewardsContractCallData({
-      hasPendingNonBALRewards,
+      hasPendingNonBalRewards,
       hasPendingBalRewards,
       gauges,
       outputReference,
@@ -45,19 +50,14 @@ export class GaugeService {
   }
 
   public getGaugeClaimRewardsContractCallData({
-    hasPendingNonBALRewards,
+    hasPendingNonBalRewards,
     hasPendingBalRewards,
     gauges,
     outputReference,
-  }: {
-    hasPendingNonBALRewards: boolean
-    hasPendingBalRewards: boolean
-    gauges: Address[]
-    outputReference: bigint
-  }) {
-    const calls: string[] = []
+  }: ClaimCallDataArgs) {
+    const calls: Hex[] = []
 
-    if (hasPendingNonBALRewards) {
+    if (hasPendingNonBalRewards) {
       calls.push(this.getGaugeEncodeClaimRewardsCallData({ gauges }))
     }
 
@@ -73,15 +73,15 @@ export class GaugeService {
     sender,
     recipient,
     amount,
-  }: EncodeGaugeWithdrawInput): string {
+  }: EncodeGaugeWithdrawInput): Hex {
     return this.batchRelayerService.gaugeEncodeWithdraw({ gauge, sender, recipient, amount })
   }
 
-  public getGaugeEncodeClaimRewardsCallData({ gauges }: EncodeGaugeClaimRewardsInput): string {
+  public getGaugeEncodeClaimRewardsCallData({ gauges }: EncodeGaugeClaimRewardsInput): Hex {
     return this.batchRelayerService.gaugeEncodeClaimRewards({ gauges })
   }
 
-  public getGaugeEncodeMintCallData({ gauges, outputReference }: EncodeGaugeMintInput): string {
+  public getGaugeEncodeMintCallData({ gauges, outputReference }: EncodeGaugeMintInput): Hex {
     return this.batchRelayerService.gaugeEncodeMint({ gauges, outputReference })
   }
 }

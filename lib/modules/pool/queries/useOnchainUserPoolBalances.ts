@@ -14,7 +14,7 @@ import { Pool } from '../usePool'
 import { BPT_DECIMALS } from '../pool.constants'
 import { useEffect } from 'react'
 import { SentryError, ensureError } from '@/lib/shared/utils/errors'
-import { chainToIdMap } from '../../chains/chains.constants'
+import { getChainId } from '@/lib/config/app.config'
 
 /**
  * Overwrites the pool's userBalance with onchain data.
@@ -86,7 +86,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
           address: pool.address as Address,
           functionName: 'balanceOf',
           args: [userAddress],
-          chainId: chainToIdMap[pool.chain],
+          chainId: getChainId(pool.chain),
         } as const)
     ),
   })
@@ -106,7 +106,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
           address: (pool.staking?.gauge?.gaugeAddress as Address) || zeroAddress,
           functionName: 'balanceOf',
           args: [userAddress],
-          chainId: chainToIdMap[pool.chain],
+          chainId: getChainId(pool.chain),
         } as const)
     ),
   })
