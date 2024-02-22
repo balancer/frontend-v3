@@ -28,7 +28,7 @@ export default function StablePoolWeightChart({
   pool,
   chain,
   hasLegend,
-  colors,
+  colors = [],
   isSmall,
 }: PoolWeightChartProps) {
   const chartSizeValues = isSmall ? smallSize : normalSize

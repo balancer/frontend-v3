@@ -12,6 +12,7 @@ export interface PoolWeightChartProps {
   chain: GqlChain
   hasLegend?: boolean
   isSmall?: boolean
+  colors?: PoolWeightChartColorDef[]
 }
 
 export interface ChartSizeValues {
@@ -29,7 +30,7 @@ export interface PoolWeightChartColorDef {
   to: string
 }
 
-const colors: PoolWeightChartColorDef[] = [
+export const DEFAULT_POOL_WEIGHT_CHART_COLORS: PoolWeightChartColorDef[] = [
   {
     from: '#1E4CF1',
     to: '#00FFAA',
@@ -70,7 +71,7 @@ export default function PoolWeightChart({
     chain,
     hasLegend,
     isSmall,
-    colors,
+    colors: DEFAULT_POOL_WEIGHT_CHART_COLORS,
   }
   if (isBoosted(pool)) {
     return <BoostedPoolWeightChart pool={pool as GqlPoolStable} {...commonProps} />

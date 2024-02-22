@@ -52,7 +52,7 @@ export default function CLPPoolWeightChart({
   chain,
   hasLegend,
   isSmall,
-  colors,
+  colors = [],
 }: PoolWeightChartProps) {
   const { colorMode } = useColorMode()
 

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, HStack, VStack, useTheme, useColorMode } from '@chakra-ui/react'
+import { Box, HStack, VStack, Text, useTheme, useColorMode } from '@chakra-ui/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
@@ -34,7 +34,7 @@ export default function WeightedPoolWeightChart({
   chain,
   hasLegend,
   isSmall,
-  colors,
+  colors = [],
 }: PoolWeightChartProps) {
   const chartSizeValues = isSmall ? smallSize : normalSize
   const eChartsRef = useRef<EChartsReactCore | null>(null)

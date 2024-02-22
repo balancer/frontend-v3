@@ -4,10 +4,10 @@ import { PoolWeightChartColorDef } from './PoolWeightChart'
 
 export default function PoolWeightChartLegend({
   pool,
-  colors,
+  colors = [],
 }: {
   pool: GqlPoolUnion
-  colors: PoolWeightChartColorDef[]
+  colors?: PoolWeightChartColorDef[]
 }) {
   return (
     <HStack spacing="6">

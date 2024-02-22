@@ -34,7 +34,7 @@ export default function BoostedPoolWeightChart({
   chain,
   hasLegend,
   isSmall,
-  colors,
+  colors = [],
 }: PoolWeightChartProps) {
   const chartSizeValues = isSmall ? smallSize : normalSize
   const eChartsRef = useRef<EChartsReactCore | null>(null)
