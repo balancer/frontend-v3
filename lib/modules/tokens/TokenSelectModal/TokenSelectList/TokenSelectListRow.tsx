@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, BoxProps, HStack, VStack, Text, TextProps } from '@chakra-ui/react'
+import { Box, BoxProps, HStack, VStack, Text } from '@chakra-ui/react'
 import { TokenIcon } from '../../TokenIcon'
 import { TokenAmount } from '../../token.types'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
@@ -9,6 +9,7 @@ import { useTokens } from '../../useTokens'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
+import { TokenInfoPopover } from '../../TokenInfoPopover'
 
 type Props = {
   token: GqlToken
@@ -36,18 +37,15 @@ export function TokenSelectListRow({
 
   const boxStyles: BoxProps = {
     bg: active ? 'background.card.level5' : 'transparent',
-    shadow: active ? 'md' : 'none',
+    border: '1px solid',
+    borderColor: active ? 'border.base' : 'transparent',
     borderRadius: 'md',
     p: 'sm',
     cursor: 'pointer',
     _hover: {
-      bg: active ? 'background.card.level6' : 'background.card.level4',
+      bg: active ? 'background.card.level8' : 'background.card.level1',
     },
     transition: 'all 0.2s ease-in-out',
-  }
-
-  const textStyles: TextProps = {
-    color: active ? 'blue.500' : 'inherit',
   }
 
   return (
@@ -56,18 +54,37 @@ export function TokenSelectListRow({
         <HStack height="full" spacing="md" maxW="full">
           <TokenIcon address={token.address} chain={token.chain} alt={token.symbol} />
           <VStack height="full" align="start" justify="center" spacing="none" maxW="full">
-            <Text {...textStyles}>{token.symbol}</Text>
-            <Text title={token.name} fontSize="sm" w="40" isTruncated={true} {...textStyles}>
+            <HStack spacing="xs">
+              <Text color={active ? 'font.link' : 'font.primary'} fontWeight="bold">
+                {token.symbol}
+              </Text>
+              <Box onClick={e => e.stopPropagation()}>
+                <TokenInfoPopover tokenAddress={token.address} chain={token.chain} />
+              </Box>
+            </HStack>
+
+            <Text
+              title={token.name}
+              fontSize="sm"
+              w="40"
+              isTruncated={true}
+              color="grayText"
+              fontWeight="medium"
+            >
               {token.name}
             </Text>
           </VStack>
         </HStack>
         {isConnected && (
           <VStack align="end" justify="center" spacing="none">
-            <NumberText title={userBalance?.amount.toString()} {...textStyles}>
+            <NumberText
+              title={userBalance?.amount.toString()}
+              color={active ? 'font.link' : 'font.primary'}
+              fontWeight="bold"
+            >
               {tokenBalance}
             </NumberText>
-            <NumberText fontSize="sm" {...textStyles}>
+            <NumberText fontSize="sm" color="grayText" fontWeight="medium">
               {fiatValue}
             </NumberText>
           </VStack>

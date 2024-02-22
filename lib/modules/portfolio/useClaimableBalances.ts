@@ -1,13 +1,14 @@
 import { PoolListItem } from '../pool/pool.types'
-
 import { Address } from 'wagmi'
 import { useUserAccount } from '../web3/useUserAccount'
 import { useMulticall } from '../web3/contracts/useMulticall'
 import { AbiMap } from '../web3/contracts/AbiMap'
 import { ClaimableBalanceResult } from './usePortfolio'
 import { useMemo } from 'react'
+import { formatUnits } from 'viem'
+import { fNum } from '@/lib/shared/utils/numbers'
 
-interface ClaimableReward {
+export interface ClaimableReward {
   balance: bigint
   decimals?: number
   formattedBalance: string
@@ -51,7 +52,7 @@ export function useClaimableBalances(pools: PoolListItem[]) {
   const poolsRewardTokensRequests = rewardTokensList.map(r => {
     return {
       chain: r.pool.chain,
-      id: `${r.pool.address}.${r.gaugeAddress}`,
+      id: `${r.gaugeAddress}.${r.tokenAddress}`,
       abi: AbiMap['balancer.gaugeV5'],
       address: r.gaugeAddress,
       functionName: 'claimable_reward',
@@ -59,30 +60,35 @@ export function useClaimableBalances(pools: PoolListItem[]) {
     }
   })
 
-  const poolsRewardTokensQuery = useMulticall(poolsRewardTokensRequests)
+  const { results: poolsRewardTokensQuery, refetchAll } = useMulticall(poolsRewardTokensRequests)
 
   // Format claimable rewards data
   const poolRewardTokensData = Object.values(poolsRewardTokensQuery).reduce(
     (acc: ClaimableReward[], chain) => {
       if (!chain.data) return acc
-      const chainDataArr = Object.values(chain.data) as Record<string, ClaimableBalanceResult>[]
+      const chainData = chain.data
+      const chainDataArr = Object.values(chainData) as Record<string, ClaimableBalanceResult>[]
+      const gaugeAddresses = Object.keys(chainData)
 
-      chainDataArr.forEach(claimableReward => {
-        const gaugesAddresses = Object.keys(claimableReward)
+      chainDataArr.forEach((claimableRewardRecord, idx) => {
+        const gaugeAddress = gaugeAddresses[idx]
+        const tokenAddresses = Object.keys(claimableRewardRecord)
+        const results = Object.values(claimableRewardRecord)
 
-        gaugesAddresses.forEach(gaugeAddress => {
-          const balance = claimableReward[gaugeAddress]
+        results.forEach((result, idx) => {
+          if (result.status === 'success') {
+            const balance = result.result
+            if (!balance) return
 
-          if (balance.status === 'success') {
             const gaugeData = rewardTokensList.find(r => r.gaugeAddress === gaugeAddress)
             if (!gaugeData) return
 
             acc.push({
               pool: gaugeData?.pool,
-              tokenAddress: gaugeData?.tokenAddress,
+              tokenAddress: tokenAddresses[idx] as Address,
               gaugeAddress,
-              balance: balance.result,
-              formattedBalance: balance.result.toString(),
+              balance,
+              formattedBalance: fNum('token', formatUnits(balance, 18)),
               decimals: 18,
             })
           }
@@ -95,5 +101,6 @@ export function useClaimableBalances(pools: PoolListItem[]) {
 
   return {
     claimableRewards: poolRewardTokensData,
+    refetchClaimableRewards: refetchAll,
   }
 }

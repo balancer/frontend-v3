@@ -9,6 +9,7 @@ const networkConfig: NetworkConfig = {
   iconPath: '/images/chains/ZKEVM.svg',
   blockExplorerBaseUrl: 'https://zkevm.polygonscan.com',
   tokens: {
+    balToken: { address: '0x4f9a0e7fd2bf6067db6994cf12e4495df938e6e9' },
     nativeAsset: {
       name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',

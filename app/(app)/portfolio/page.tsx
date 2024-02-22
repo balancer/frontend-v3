@@ -1,4 +1,5 @@
 'use client'
+import { ClaimAllVebalRewardsButton } from '@/lib/modules/pool/actions/claim/ClaimAllVebalRewardsButton'
 import { StakedPortfolio } from '@/lib/modules/portfolio/StakedPortfolio'
 import { UnstakedPortfolio } from '@/lib/modules/portfolio/UnstakedPortfolio'
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
@@ -43,6 +44,7 @@ export default function Portfolio() {
               <Text>{formattedBalance}</Text>
             </HStack>
           ))}
+          <ClaimAllVebalRewardsButton />
         </Stack>
       )}
 

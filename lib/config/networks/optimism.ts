@@ -9,6 +9,7 @@ const networkConfig: NetworkConfig = {
   iconPath: '/images/chains/OPTIMISM.svg',
   blockExplorerBaseUrl: 'https://optimistic.etherscan.io',
   tokens: {
+    balToken: { address: '0xfe8b128ba8c78aabc59d4c64cee7ff28e9379921' },
     nativeAsset: {
       name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',

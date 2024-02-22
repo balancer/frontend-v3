@@ -1,4 +1,4 @@
-import { shortenLabel } from '@/lib/shared/utils/addresses'
+import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { Box, Card, HStack, Heading, Link, Text, VStack } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
@@ -18,7 +18,7 @@ export function PoolContracts() {
             </Box>
             <Link target="_blank" href={poolExplorerLink}>
               <HStack>
-                <Text variant="secondary">{shortenLabel(pool.address)}</Text>
+                <Text variant="secondary">{abbreviateAddress(pool.address)}</Text>
                 <ExternalLinkIcon color="gray.400" width="1rem" height="1rem" />
               </HStack>
             </Link>
@@ -30,7 +30,7 @@ export function PoolContracts() {
               </Box>
               <Link target="_blank" href={gaugeExplorerLink}>
                 <HStack>
-                  <Text variant="secondary">{shortenLabel(gaugeAddress)}</Text>
+                  <Text variant="secondary">{abbreviateAddress(gaugeAddress)}</Text>
                   <ExternalLinkIcon color="gray.400" width="1rem" height="1rem" />
                 </HStack>
               </Link>
