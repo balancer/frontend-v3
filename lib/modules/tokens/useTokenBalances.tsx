@@ -23,7 +23,8 @@ export function _useTokenBalances(tokens: TokenBase[]) {
   const { userAddress } = useUserAccount()
   const { exclNativeAssetFilter, nativeAssetFilter } = useTokens()
 
-  const chainId = tokens.length ? tokens[0].chainId : 1
+  const NO_TOKENS_CHAIN_ID = 1 // this should never be used as the multicall is disabled when no tokens
+  const chainId = tokens.length ? tokens[0].chainId : NO_TOKENS_CHAIN_ID
   const networkConfig = getNetworkConfig(chainId)
 
   const includesNativeAsset = tokens.some(nativeAssetFilter)
