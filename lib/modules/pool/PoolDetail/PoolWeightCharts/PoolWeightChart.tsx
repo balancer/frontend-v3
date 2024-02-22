@@ -12,7 +12,6 @@ export interface PoolWeightChartProps {
   chain: GqlChain
   hasLegend?: boolean
   isSmall?: boolean
-  colors: PoolWeightChartColorDef[]
 }
 
 export interface ChartSizeValues {
