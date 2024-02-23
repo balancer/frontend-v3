@@ -25,7 +25,6 @@ export function useProportionalInputs() {
   const { balanceFor, balances, isBalancesLoading } = useTokenBalances()
   const { priceForToken } = useTokens()
   const { isLoading: isPoolLoading } = usePool()
-  const [isLoading, setIsLoading] = useState(true)
   const [isMaximized, setIsMaximized] = useState(false)
   const [maximizedUsdValue, setMaximizedUsdValue] = useState('')
   const [tokenWithMinPrice, setTokenWithMinPrice] = useState<TokenWithMinPrice | undefined>()
@@ -61,10 +60,14 @@ export function useProportionalInputs() {
     humanAmountsInVar(proportionalHumanAmountsIn)
   }
 
+  const shouldCalculateMaximizeAmounts =
+    isConnected && !isBalancesLoading && !isPoolLoading && balances.length > 0
+
+  const canMaximize = !!tokenWithMinPrice?.userBalance
+
   useEffect(() => {
     // Once data is loaded, calculates and initializes state to maximize amounts
-    if (isConnected && !isBalancesLoading && !isPoolLoading && balances.length > 0) {
-      setIsLoading(true)
+    if (shouldCalculateMaximizeAmounts) {
       const userTokenBalancePrices = validTokens.map(token => {
         const userBalance = balanceFor(token.address)?.formatted || 0
         return {
@@ -77,7 +80,6 @@ export function useProportionalInputs() {
       const tokenWithMinPrice = minBy(userTokenBalancePrices, 'balancePrice')
       if (!tokenWithMinPrice || tokenWithMinPrice.balancePrice === 0) {
         //Avoid maximize calculations when the user does not have balance
-        setIsLoading(false)
         return
       }
 
@@ -89,13 +91,11 @@ export function useProportionalInputs() {
       )
 
       setMaximizedUsdValue(usdValueFor(maxProportionalHumanAmountsIn))
-
-      setIsLoading(false)
     }
-  }, [isConnected, isBalancesLoading, isPoolLoading, JSON.stringify(balances)])
+  }, [shouldCalculateMaximizeAmounts])
 
   return {
-    isLoading,
+    canMaximize,
     isMaximized,
     maximizedUsdValue,
     handleHumanInputChange,

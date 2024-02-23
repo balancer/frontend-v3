@@ -1,7 +1,7 @@
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { HumanAmount } from '@balancer/sdk'
-import { Alert, AlertIcon, HStack, Skeleton, Switch, Text, VStack } from '@chakra-ui/react'
+import { Alert, AlertIcon, HStack, Switch, Text, VStack } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { useProportionalInputs } from './useProportionalInputs'
@@ -20,7 +20,7 @@ export function ProportionalInputs() {
     handleMaximizeUserAmounts,
     isMaximized,
     maximizedUsdValue,
-    isLoading,
+    canMaximize,
   } = useProportionalInputs()
 
   function currentValueFor(tokenAddress: string) {
@@ -34,17 +34,11 @@ export function ProportionalInputs() {
         <AlertIcon />
         This pool requires liquidity to be added proportionally
       </Alert>
-      {isConnected ? (
-        isLoading ? (
-          <Skeleton h="5" w="full" />
-        ) : (
-          <HStack spacing="md" w="full">
-            <Switch isChecked={isMaximized} onChange={handleMaximizeUserAmounts} />
-            <Text>
-              Add your max amount: {toCurrency(maximizedUsdValue, { abbreviated: false })}
-            </Text>
-          </HStack>
-        )
+      {isConnected && canMaximize ? (
+        <HStack spacing="md" w="full">
+          <Switch isChecked={isMaximized} onChange={handleMaximizeUserAmounts} />
+          <Text>Add your max amount: {toCurrency(maximizedUsdValue, { abbreviated: false })}</Text>
+        </HStack>
       ) : null}
 
       {tokens.map(token => {
