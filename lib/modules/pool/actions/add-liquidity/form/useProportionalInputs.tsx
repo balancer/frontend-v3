@@ -6,7 +6,7 @@ import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { bn } from '@/lib/shared/utils/numbers'
 import { Address, HumanAmount } from '@balancer/sdk'
 import { minBy } from 'lodash'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { usePool } from '../../../usePool'
 import { humanAmountsInVar, useAddLiquidity } from '../useAddLiquidity'
 import { useTotalUsdValue } from '../useTotalUsdValue'
@@ -26,8 +26,6 @@ export function useProportionalInputs() {
   const { priceForToken } = useTokens()
   const { isLoading: isPoolLoading } = usePool()
   const [isMaximized, setIsMaximized] = useState(false)
-  const [maximizedUsdValue, setMaximizedUsdValue] = useState('')
-  const [tokenWithMinPrice, setTokenWithMinPrice] = useState<TokenWithMinPrice | undefined>()
 
   function clearAmountsIn() {
     const state = humanAmountsInVar()
@@ -63,36 +61,39 @@ export function useProportionalInputs() {
   const shouldCalculateMaximizeAmounts =
     isConnected && !isBalancesLoading && !isPoolLoading && balances.length > 0
 
-  const canMaximize = !!tokenWithMinPrice?.userBalance
+  function calculateTokenWithMinPrice() {
+    if (!shouldCalculateMaximizeAmounts) return
+    const userTokenBalancePrices = validTokens.map(token => {
+      const userBalance = balanceFor(token.address)?.formatted || 0
+      return {
+        tokenAddress: token.address,
+        balancePrice: bn(userBalance).times(priceForToken(token)).toNumber(),
+        userBalance,
+      } as TokenWithMinPrice
+    })
 
-  useEffect(() => {
-    // Once data is loaded, calculates and initializes state to maximize amounts
-    if (shouldCalculateMaximizeAmounts) {
-      const userTokenBalancePrices = validTokens.map(token => {
-        const userBalance = balanceFor(token.address)?.formatted || 0
-        return {
-          tokenAddress: token.address,
-          balancePrice: bn(userBalance).times(priceForToken(token)).toNumber(),
-          userBalance,
-        } as TokenWithMinPrice
-      })
+    return minBy(userTokenBalancePrices, 'balancePrice')
+  }
 
-      const tokenWithMinPrice = minBy(userTokenBalancePrices, 'balancePrice')
-      if (!tokenWithMinPrice || tokenWithMinPrice.balancePrice === 0) {
-        //Avoid maximize calculations when the user does not have balance
-        return
-      }
+  const tokenWithMinPrice: TokenWithMinPrice | undefined = calculateTokenWithMinPrice()
 
-      setTokenWithMinPrice(tokenWithMinPrice)
-
-      const maxProportionalHumanAmountsIn = helpers.calculateProportionalHumanAmountsIn(
-        tokenWithMinPrice.tokenAddress as Address,
-        tokenWithMinPrice.userBalance.toString() as HumanAmount
-      )
-
-      setMaximizedUsdValue(usdValueFor(maxProportionalHumanAmountsIn))
+  function calculateMaximizedUsdValue() {
+    if (!shouldCalculateMaximizeAmounts) return ''
+    if (!tokenWithMinPrice || tokenWithMinPrice.balancePrice === 0) {
+      //Avoid maximize calculations when the user does not have balance
+      return ''
     }
-  }, [shouldCalculateMaximizeAmounts])
+
+    const maxProportionalHumanAmountsIn = helpers.calculateProportionalHumanAmountsIn(
+      tokenWithMinPrice.tokenAddress as Address,
+      tokenWithMinPrice.userBalance.toString() as HumanAmount
+    )
+    return usdValueFor(maxProportionalHumanAmountsIn)
+  }
+
+  const maximizedUsdValue = calculateMaximizedUsdValue()
+
+  const canMaximize = !!tokenWithMinPrice?.userBalance
 
   return {
     canMaximize,
