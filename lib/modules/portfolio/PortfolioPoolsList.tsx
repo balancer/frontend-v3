@@ -30,7 +30,6 @@ export function PortfolioPoolsList({
 }: PortfolioPoolsListProps) {
   const [claimModalData, setClaimModalData] = useState<ClaimModalData | null>(null)
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false)
-  console.log('pools', pools)
 
   function openClaimModal(pool: PoolListItem) {
     const gaugeData = pool.staking?.gauge
@@ -66,7 +65,6 @@ export function PortfolioPoolsList({
           {isStaked && (
             <Button
               variant="secondary"
-              w="full"
               size="lg"
               isDisabled={false}
               onClick={() => openClaimModal(pool)}
@@ -82,7 +80,8 @@ export function PortfolioPoolsList({
           isOpen={isClaimModalOpen}
           onClose={onModalClose}
           balRewards={poolRewardsMap?.[claimModalData.pool.id]?.balReward}
-          // nonBalRewards={poolRewardsMap?.[claimModalData.pool.id]?.claimableReward || []}
+          nonBalRewards={poolRewardsMap?.[claimModalData.pool.id]?.claimableRewards || []}
+          pool={claimModalData.pool}
         />
       )}
     </Stack>

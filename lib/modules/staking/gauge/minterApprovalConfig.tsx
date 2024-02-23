@@ -2,15 +2,18 @@ import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-
 import { CommonStepProps, OnStepCompleted, StepConfig } from '../../pool/actions/useIterateSteps'
 import { useConstructMinterApprovalStep } from './useConstructMinterApprovalStep'
 import { VStack } from '@chakra-ui/react'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
-export const minterApprovalConfig: StepConfig = {
-  render(useOnStepCompleted: OnStepCompleted) {
-    return <MinterApprovalButton useOnStepCompleted={useOnStepCompleted} />
-  },
+export function minterApprovalConfig(chain: GqlChain): StepConfig {
+  return {
+    render(useOnStepCompleted: OnStepCompleted) {
+      return <MinterApprovalButton useOnStepCompleted={useOnStepCompleted} chain={chain} />
+    },
+  }
 }
 
-function MinterApprovalButton({ useOnStepCompleted }: CommonStepProps) {
-  const step = useConstructMinterApprovalStep()
+function MinterApprovalButton({ useOnStepCompleted, chain }: CommonStepProps) {
+  const step = useConstructMinterApprovalStep(chain)
 
   useOnStepCompleted(step)
 

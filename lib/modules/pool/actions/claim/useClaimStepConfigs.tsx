@@ -31,7 +31,7 @@ export function useClaimStepConfigs(
   }
 
   if (!hasMinterApproval) {
-    stepConfigs = [minterApprovalConfig, ...stepConfigs]
+    stepConfigs = [minterApprovalConfig(chain), ...stepConfigs]
   }
 
   return stepConfigs

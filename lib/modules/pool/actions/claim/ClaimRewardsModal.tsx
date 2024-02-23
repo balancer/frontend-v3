@@ -10,21 +10,35 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
-  Text,
+  Stack,
   VStack,
 } from '@chakra-ui/react'
-import { Pool } from '../../usePool'
-import { useClaiming } from './useClaiming'
 import { Address } from 'wagmi'
 import { BalTokenReward } from '@/lib/modules/portfolio/useBalRewards'
 import { ClaimableReward } from '@/lib/modules/portfolio/useClaimableBalances'
+import { useClaimStepConfigs } from './useClaimStepConfigs'
+import { PoolListItem } from '../../pool.types'
+import { useIterateSteps } from '../useIterateSteps'
+import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 
 type Props = {
   isOpen: boolean
-  onClose(): void
-  onOpen(): void
+  onClose?(): void
+  onOpen?(): void
+  pool: PoolListItem
   balRewards?: BalTokenReward
-  nonBalRewards: ClaimableReward[]
+  nonBalRewards?: ClaimableReward[]
+}
+
+function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
+  if (reward.formattedBalance === '0') return null
+  return (
+    <TokenRow
+      address={reward.tokenAddress}
+      value={reward.formattedBalance}
+      chain={reward.pool.chain}
+    />
+  )
 }
 
 export function ClaimRewardsModal({
@@ -32,18 +46,16 @@ export function ClaimRewardsModal({
   onClose,
   balRewards,
   nonBalRewards,
+  pool,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
-    if (reward.formattedBalance === '0') return null
-    return (
-      <TokenRow
-        address={reward.tokenAddress}
-        value={reward.formattedBalance}
-        chain={reward.pool.chain}
-      />
-    )
-  }
+  const stepConfigs = useClaimStepConfigs(
+    [pool.staking?.id as Address],
+    pool.chain,
+    pool.staking?.type || GqlPoolStakingType.Gauge
+  )
+  const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
+  const hasNoRewards = !nonBalRewards?.length && !balRewards
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered {...rest}>
@@ -56,21 +68,23 @@ export function ClaimRewardsModal({
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          {balRewards && <RewardTokenRow reward={balRewards} />}
+          <Stack>
+            {balRewards && <RewardTokenRow reward={balRewards} />}
 
-          {nonBalRewards.map((reward, idx) => (
-            <RewardTokenRow key={idx} reward={reward} />
-          ))}
+            {nonBalRewards &&
+              nonBalRewards.map((reward, idx) => <RewardTokenRow key={idx} reward={reward} />)}
+          </Stack>
         </ModalBody>
         <ModalFooter>
           <VStack w="full">
-            {/* {hasNoRewards ? (
+            {currentStep.render(useOnStepCompleted)}
+            {hasNoRewards ? (
               <Button w="full" size="lg" onClick={onClose}>
                 Close
               </Button>
             ) : (
               currentStep.render(useOnStepCompleted)
-            )} */}
+            )}
           </VStack>
         </ModalFooter>
       </ModalContent>

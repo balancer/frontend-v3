@@ -69,7 +69,7 @@ export function ClaimModal({
         <ModalFooter>
           <VStack w="full">
             {hasNoRewards ? (
-              <Button w="full" size="lg" onClick={onClose}>
+              <Button size="lg" onClick={onClose}>
                 Close
               </Button>
             ) : (
