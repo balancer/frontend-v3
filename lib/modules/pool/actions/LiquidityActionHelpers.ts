@@ -53,32 +53,6 @@ export class LiquidityActionHelpers {
     return toPoolStateWithBalances(this.pool)
   }
 
-  /* Used by Proportional Add Liquidity flows */
-  public calculateProportionalHumanAmountsIn(
-    tokenAddress: Address,
-    humanAmount: HumanAmount
-  ): HumanAmountIn[] {
-    const amountIn: InputAmount = this.toInputAmounts([{ tokenAddress, humanAmount }])[0]
-    return (
-      calculateProportionalAmounts(this.poolStateWithBalances, amountIn)
-        .amountsIn.map(amountIn => ({
-          tokenAddress: amountIn.address,
-          humanAmount: formatUnits(amountIn.rawAmount, amountIn.decimals) as HumanAmount,
-        }))
-        // user updated token must be in the first place of the array because the Proportional handler always calculates bptOut based on the first position
-        .sort(sortUpdatedTokenFirst(tokenAddress))
-    )
-
-    function sortUpdatedTokenFirst(tokenAddress: Address | null) {
-      return (a: HumanAmountIn, b: HumanAmountIn) => {
-        if (!tokenAddress) return 0
-        if (isSameAddress(a.tokenAddress, tokenAddress)) return -1
-        if (isSameAddress(b.tokenAddress, tokenAddress)) return 1
-        return 0
-      }
-    }
-  }
-
   public get networkConfig() {
     return getNetworkConfig(this.pool.chain)
   }

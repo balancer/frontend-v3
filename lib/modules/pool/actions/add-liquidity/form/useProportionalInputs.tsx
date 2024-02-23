@@ -4,13 +4,17 @@
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { bn } from '@/lib/shared/utils/numbers'
-import { Address, HumanAmount } from '@balancer/sdk'
+import { Address, HumanAmount, InputAmount, calculateProportionalAmounts } from '@balancer/sdk'
 import { minBy } from 'lodash'
 import { useState } from 'react'
 import { usePool } from '../../../usePool'
 import { humanAmountsInVar, useAddLiquidity } from '../useAddLiquidity'
 import { useTotalUsdValue } from '../useTotalUsdValue'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { HumanAmountIn } from '../../liquidity-types'
+import { formatUnits } from 'viem'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
 
 type TokenWithMinPrice = {
   tokenAddress: Address
@@ -50,9 +54,10 @@ export function useProportionalInputs() {
 
     if (!humanAmount) return clearAmountsIn()
 
-    const proportionalHumanAmountsIn = helpers.calculateProportionalHumanAmountsIn(
+    const proportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn(
       tokenAddress,
-      humanAmount
+      humanAmount,
+      helpers
     )
 
     humanAmountsInVar(proportionalHumanAmountsIn)
@@ -84,9 +89,10 @@ export function useProportionalInputs() {
       return ''
     }
 
-    const maxProportionalHumanAmountsIn = helpers.calculateProportionalHumanAmountsIn(
+    const maxProportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn(
       tokenWithMinPrice.tokenAddress as Address,
-      tokenWithMinPrice.userBalance.toString() as HumanAmount
+      tokenWithMinPrice.userBalance.toString() as HumanAmount,
+      helpers
     )
     return usdValueFor(maxProportionalHumanAmountsIn)
   }
@@ -101,5 +107,31 @@ export function useProportionalInputs() {
     maximizedUsdValue,
     handleHumanInputChange,
     handleMaximizeUserAmounts,
+  }
+}
+
+export function _calculateProportionalHumanAmountsIn(
+  tokenAddress: Address,
+  humanAmount: HumanAmount,
+  helpers: LiquidityActionHelpers
+): HumanAmountIn[] {
+  const amountIn: InputAmount = helpers.toInputAmounts([{ tokenAddress, humanAmount }])[0]
+  return (
+    calculateProportionalAmounts(helpers.poolStateWithBalances, amountIn)
+      .amountsIn.map(amountIn => ({
+        tokenAddress: amountIn.address,
+        humanAmount: formatUnits(amountIn.rawAmount, amountIn.decimals) as HumanAmount,
+      }))
+      // user updated token must be in the first place of the array because the Proportional handler always calculates bptOut based on the first position
+      .sort(sortUpdatedTokenFirst(tokenAddress))
+  )
+
+  function sortUpdatedTokenFirst(tokenAddress: Address | null) {
+    return (a: HumanAmountIn, b: HumanAmountIn) => {
+      if (!tokenAddress) return 0
+      if (isSameAddress(a.tokenAddress, tokenAddress)) return -1
+      if (isSameAddress(b.tokenAddress, tokenAddress)) return 1
+      return 0
+    }
   }
 }
