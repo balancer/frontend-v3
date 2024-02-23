@@ -151,8 +151,8 @@ export function shouldUseNestedLiquidity(pool: Pool) {
   return supportsNestedLiquidity(pool) && hasNestedPools(pool)
 }
 
-export function requiresProportionalInput(pool: Pool) {
-  return isGyro(pool.type)
+export function requiresProportionalInput(poolType: GqlPoolType) {
+  return isGyro(poolType)
 }
 
 export function toPoolState(pool: Pool): PoolState {

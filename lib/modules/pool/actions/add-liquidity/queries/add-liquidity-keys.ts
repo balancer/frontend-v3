@@ -16,7 +16,7 @@ function liquidityParams({ userAddress, pool, slippage, humanAmountsIn }: Liquid
 
 function stringifyHumanAmountsIn(pool: Pool, humanAmountsIn: HumanAmountIn[]): string {
   if (humanAmountsIn.length === 0) return ''
-  if (requiresProportionalInput(pool)) {
+  if (requiresProportionalInput(pool.type)) {
     /*
     This is an edge-case where we only use the first human amount in the array to avoid triggering queries when the other human amounts change automatically
     (as they are automatically calculated and entered in the proportional add liquidity flow).

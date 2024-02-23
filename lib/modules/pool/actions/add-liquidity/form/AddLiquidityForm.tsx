@@ -75,7 +75,7 @@ export function AddLiquidityForm() {
               <TransactionSettings size="sm" />
             </HStack>
 
-            {requiresProportionalInput(pool) ? (
+            {requiresProportionalInput(pool.type) ? (
               <ProportionalInputs />
             ) : (
               <VStack spacing="md" w="full">

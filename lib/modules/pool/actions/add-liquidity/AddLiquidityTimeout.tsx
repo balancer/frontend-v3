@@ -42,7 +42,7 @@ function useAddLiquidityTimeout({ addLiquidityTxState }: Props) {
         simulationQuery.refetch(),
         priceImpactQuery.refetch(),
       ]
-      if (requiresProportionalInput(pool)) {
+      if (requiresProportionalInput(pool.type)) {
         /*
           This is the only edge-case where the SDK needs pool onchain data from the frontend
           (calculateProportionalAmounts uses pool.dynamicData.totalShares in its parameters)
