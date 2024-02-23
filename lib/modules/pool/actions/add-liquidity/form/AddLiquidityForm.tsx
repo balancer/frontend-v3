@@ -46,7 +46,7 @@ export function AddLiquidityForm() {
   const { toCurrency } = useCurrency()
   const { slippage } = useUserSettings()
   const nextBtn = useRef(null)
-  const { pool } = usePool()
+  const { pool, refetch: poolRefetch } = usePool()
 
   function currentValueFor(tokenAddress: string) {
     const amountIn = amountsIn.find(amountIn => isSameAddress(amountIn.tokenAddress, tokenAddress))
@@ -61,6 +61,19 @@ export function AddLiquidityForm() {
 
   const onModalClose = () => {
     previewModalDisclosure.onClose()
+  }
+
+  const onModalOpen = async () => {
+    previewModalDisclosure.onOpen()
+    if (requiresProportionalInput(pool)) {
+      /*
+        Refetch pool state and simulation to enforce up to date bptOut calculation
+        only in proportional scenario where bptOut depends on poolStateWithBalances
+        (See ProportionalAddLiquidity.handler.ts)
+      */
+      await poolRefetch()
+      await simulationQuery.refetch()
+    }
   }
 
   return (
@@ -159,7 +172,7 @@ export function AddLiquidityForm() {
                 w="full"
                 size="lg"
                 isDisabled={isDisabled || simulationQuery.isLoading}
-                onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
+                onClick={() => !isDisabled && onModalOpen()}
               >
                 Next
               </Button>
