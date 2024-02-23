@@ -39,6 +39,7 @@ export function AddLiquidityForm() {
     validTokens,
     priceImpactQuery,
     simulationQuery,
+    refetchQuote,
     isDisabled,
     disabledReason,
     previewModalDisclosure,
@@ -58,6 +59,14 @@ export function AddLiquidityForm() {
 
   const priceImpact = priceImpactQuery?.data
   const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
+
+  const onModalOpen = async () => {
+    previewModalDisclosure.onOpen()
+    if (requiresProportionalInput(pool.type)) {
+      // Edge-case refetch to avoid mismatches in proportional bptOut calculations
+      await refetchQuote()
+    }
+  }
 
   const onModalClose = () => {
     previewModalDisclosure.onClose()
@@ -159,7 +168,7 @@ export function AddLiquidityForm() {
                 w="full"
                 size="lg"
                 isDisabled={isDisabled || simulationQuery.isLoading}
-                onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
+                onClick={() => !isDisabled && onModalOpen()}
               >
                 Next
               </Button>

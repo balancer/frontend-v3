@@ -13,7 +13,11 @@ import { usePool } from '../../usePool'
 import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulationQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { HumanAmountIn } from '../liquidity-types'
-import { LiquidityActionHelpers, areEmptyAmounts } from '../LiquidityActionHelpers'
+import {
+  LiquidityActionHelpers,
+  areEmptyAmounts,
+  requiresProportionalInput,
+} from '../LiquidityActionHelpers'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
@@ -32,7 +36,7 @@ export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
 export function _useAddLiquidity() {
   const humanAmountsIn = useReactiveVar(humanAmountsInVar)
 
-  const { pool } = usePool()
+  const { pool, refetch: refetchPool } = usePool()
   const { getToken } = useTokens()
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
@@ -94,6 +98,21 @@ export function _useAddLiquidity() {
   const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn)
 
   /**
+   * Refetch logic:
+   */
+  async function refetchQuote() {
+    if (requiresProportionalInput(pool.type)) {
+      /*
+      This is the only edge-case where the SDK needs pool onchain data from the frontend
+      (calculateProportionalAmounts uses pool.dynamicData.totalShares in its parameters)
+      so we must refetch pool data
+      */
+      await refetchPool()
+    }
+    await Promise.all([simulationQuery.refetch(), priceImpactQuery.refetch()])
+  }
+
+  /**
    * Side-effects
    */
   // On initial render, set the initial humanAmountsIn
@@ -109,6 +128,7 @@ export function _useAddLiquidity() {
     totalUSDValue,
     simulationQuery,
     priceImpactQuery,
+    refetchQuote,
     isDisabled,
     disabledReason,
     previewModalDisclosure,
