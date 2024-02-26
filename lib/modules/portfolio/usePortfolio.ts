@@ -4,7 +4,7 @@ import { PoolListItem } from '../pool/pool.types'
 import { useMemo } from 'react'
 import { useQuery as useApolloQuery } from '@apollo/client'
 import { useProtocolRewards } from './useProtocolRewards'
-import { ClaimableReward, useClaimableBalances } from './useClaimableBalances'
+import { ClaimableReward, useClaimableBalances } from './claim/useClaimableBalances'
 import { BalTokenReward, useBalTokenRewards } from './useBalRewards'
 import { bn } from '@/lib/shared/utils/numbers'
 

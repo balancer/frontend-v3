@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react'
 import { Address } from 'wagmi'
 import { BalTokenReward } from '@/lib/modules/portfolio/useBalRewards'
-import { ClaimableReward } from '@/lib/modules/portfolio/useClaimableBalances'
+import { ClaimableReward } from '@/lib/modules/portfolio/claim/useClaimableBalances'
 import { useClaimStepConfigs } from './useClaimStepConfigs'
 import { PoolListItem } from '../../pool.types'
 import { useIterateSteps } from '../useIterateSteps'

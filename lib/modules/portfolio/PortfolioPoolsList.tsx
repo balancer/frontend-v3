@@ -37,14 +37,12 @@ export function PortfolioPoolsList({
     const otherGauges = gaugeData.otherGauges || []
 
     const gaugeAddresses = [gaugeData.gaugeAddress, ...otherGauges.map(g => g.gaugeAddress)]
+
     setClaimModalData({
       pool,
       gaugeAddresses,
     })
-    setClaimModalData({
-      pool,
-      gaugeAddresses,
-    })
+
     setIsClaimModalOpen(true)
   }
 
