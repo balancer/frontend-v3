@@ -83,7 +83,7 @@ export default function WeightedPoolWeightChart({
           emphasis: {
             scale: false,
           },
-          data: pool.tokens.map((token, i) => ({
+          data: pool.displayTokens.map((token, i) => ({
             value: parseFloat(token.weight || '0') * 100,
             name: token.symbol,
             itemStyle: {

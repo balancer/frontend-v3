@@ -14,6 +14,7 @@ import { useEffect } from 'react'
 import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useTokenApprovalConfigs'
 import { stakeConfig } from './stakeConfig'
 import { useIterateSteps } from '../useIterateSteps'
+import { getChainId } from '@/lib/config/app.config'
 
 export const humanAmountInVar = makeVar<HumanAmountIn | null>(null)
 
@@ -36,9 +37,12 @@ export function useStaking() {
     humanAmountInVar(amountIn)
   }
 
-  const tokenAllowances = useTokenAllowances(userAddress, pool.staking?.address as Address, [
-    humanAmountIn?.tokenAddress as Address,
-  ])
+  const tokenAllowances = useTokenAllowances({
+    chainId: getChainId(pool.chain),
+    userAddress,
+    spenderAddress: pool.staking?.address as Address,
+    tokenAddresses: [humanAmountIn?.tokenAddress as Address],
+  })
 
   const rawAmount = parseUnits(humanAmountIn?.humanAmount || '', BPT_DECIMALS)
 

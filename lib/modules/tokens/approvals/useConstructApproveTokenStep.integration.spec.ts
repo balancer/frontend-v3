@@ -17,10 +17,12 @@ function testUseConstruct() {
         requestedRawAmount: MAX_BIGINT,
         tokenAddress: wETHAddress,
       }
-      const tokenAllowances = useTokenAllowances(defaultTestUserAccount, vaultV2Address, [
-        wETHAddress,
-        wjAuraAddress,
-      ])
+      const tokenAllowances = useTokenAllowances({
+        chainId: 1,
+        userAddress: defaultTestUserAccount,
+        spenderAddress: vaultV2Address,
+        tokenAddresses: [wETHAddress, wjAuraAddress],
+      })
       return useConstructApproveTokenStep({
         actionType: 'AddLiquidity',
         tokenAmountToApprove,

@@ -10,16 +10,17 @@ import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { addLiquidityKeys } from './add-liquidity-keys'
 import { UseQueryOptions } from '@tanstack/react-query'
 import { useQuery } from 'wagmi'
+import { usePool } from '../../../usePool'
 
 export type AddLiquiditySimulationQueryResult = ReturnType<typeof useAddLiquiditySimulationQuery>
 
 export function useAddLiquiditySimulationQuery(
   handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
-  poolId: string,
   options: UseQueryOptions = {}
 ) {
-  const { userAddress, isConnected } = useUserAccount()
+  const { userAddress } = useUserAccount()
+  const { pool } = usePool()
   const { slippage } = useUserSettings()
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
 
@@ -28,7 +29,7 @@ export function useAddLiquiditySimulationQuery(
   const queryKey = addLiquidityKeys.preview({
     userAddress,
     slippage,
-    poolId,
+    pool,
     humanAmountsIn: debouncedHumanAmountsIn,
   })
 
@@ -38,7 +39,7 @@ export function useAddLiquiditySimulationQuery(
   const queryFn = async () => handler.simulate(humanAmountsIn, userAddress)
 
   const queryOpts = {
-    enabled: enabled && isConnected && hasValidHumanAmounts(debouncedHumanAmountsIn),
+    enabled: enabled && hasValidHumanAmounts(debouncedHumanAmountsIn),
     cacheTime: 0,
     ...onlyExplicitRefetch,
   }

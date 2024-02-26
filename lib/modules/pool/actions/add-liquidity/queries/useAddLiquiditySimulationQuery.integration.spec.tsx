@@ -1,18 +1,17 @@
 import { wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import { testHook } from '@/test/utils/custom-renderers'
+import { DefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
 
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
-import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { selectAddLiquidityHandler } from '../handlers/selectAddLiquidityHandler'
 import { useAddLiquiditySimulationQuery } from './useAddLiquiditySimulationQuery'
 import { HumanAmountIn } from '../../liquidity-types'
 
 async function testQuery(humanAmountsIn: HumanAmountIn[]) {
   const handler = selectAddLiquidityHandler(aWjAuraWethPoolElementMock())
-  const { result } = testHook(() =>
-    useAddLiquiditySimulationQuery(handler, humanAmountsIn, defaultTestUserAccount)
-  )
+  const { result } = testHook(() => useAddLiquiditySimulationQuery(handler, humanAmountsIn), {
+    wrapper: DefaultPoolTestProvider,
+  })
   return result
 }
 
