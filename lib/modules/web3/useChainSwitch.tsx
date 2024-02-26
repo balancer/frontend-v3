@@ -1,53 +1,59 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { createContext, ReactNode, useEffect } from 'react'
-import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useNetwork, useSwitchNetwork } from 'wagmi'
 import { makeVar, useReactiveVar } from '@apollo/client'
-import { Box, useToast } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { getChainId, getChainShortName } from '@/lib/config/app.config'
 
-export const connectedChainVar = makeVar(0)
+export const connectToChainVar = makeVar(0)
+export const needsToSwitchChainVar = makeVar(false)
 
-export function _useChainSwitch() {
-  const toast = useToast()
-  const { chain } = useNetwork()
+export function useChainSwitch(chain: GqlChain) {
+  const { chain: connectedChain } = useNetwork()
   const { chains, error, isLoading, pendingChainId, switchNetwork } = useSwitchNetwork()
-  const connectedChain = useReactiveVar(connectedChainVar)
+  const connectToChain = useReactiveVar(connectToChainVar)
+  const chainId = getChainId(chain)
 
-  const isConnectedChain = connectedChain === chain?.id
+  const isConnectedChain = chainId === connectedChain?.id
 
-  function setConnectedChain(chainId: number) {
-    connectedChainVar(chainId)
+  function setConnectToChain(chainId: number) {
+    connectToChainVar(chainId)
   }
 
-  useEffect(() => {
-    if (!isConnectedChain) {
-      toast({
-        position: 'bottom-left',
-        render: () => (
-          <Box color="white" p={3} bg="blue.500">
-            Hello World
-          </Box>
-        ),
-      })
-    }
-  }, [isConnectedChain])
+  const networkSwitchButtonProps = {
+    name: getChainShortName(chain),
+    switchNetwork,
+    chainId,
+    isLoading,
+  }
 
   return {
-    connectedChain,
+    connectToChain,
     isConnectedChain,
-    setConnectedChain,
+    setConnectToChain,
+    NetworkSwitchButton,
+    networkSwitchButtonProps,
   }
 }
 
-export const ChainSwitchContext = createContext<ReturnType<typeof _useChainSwitch> | null>(null)
-
-export function ChainSwitchProvider({ children }: { children: ReactNode }) {
-  const hook = _useChainSwitch()
-  return <ChainSwitchContext.Provider value={hook}>{children}</ChainSwitchContext.Provider>
+export interface NetworkSwitchButtonProps {
+  name: string
+  switchNetwork: ((chainId_?: number | undefined) => void) | undefined
+  chainId?: number
+  isLoading: boolean
 }
 
-export function useChainSwitch() {
-  return useMandatoryContext(ChainSwitchContext, 'ChainSwitch')
+export const NetworkSwitchButton: React.FC<NetworkSwitchButtonProps> = function ({
+  ...networkSwitchButtonProps
+}) {
+  return (
+    <Button
+      w="full"
+      onClick={() => networkSwitchButtonProps.switchNetwork?.(networkSwitchButtonProps.chainId)}
+    >
+      Switch network to {networkSwitchButtonProps.name}
+    </Button>
+  )
 }

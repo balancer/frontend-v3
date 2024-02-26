@@ -8,7 +8,6 @@ import { ApolloGlobalDataProvider } from '@/lib/shared/services/api/apollo-globa
 import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
 import { COOKIE_KEYS } from '@/lib/modules/cookies/cookie.constants'
 import { ReactQueryClientProvider } from './react-query.provider'
-import { ChainSwitchProvider } from '@/lib/modules/web3/useChainSwitch'
 
 export function Providers({ children }: { children: ReactNode }) {
   const initialColorMode = cookies().get(COOKIE_KEYS.UserSettings.ColorMode)?.value
@@ -20,22 +19,20 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider initialColorMode={initialColorMode as 'light' | 'dark' | 'system'}>
       <Web3Provider>
-        <ChainSwitchProvider>
-          <ApolloClientProvider>
-            <ApolloGlobalDataProvider>
-              <UserSettingsProvider
-                initCurrency={initCurrency}
-                initSlippage={initSlippage}
-                initEnableSignatures={initEnableSignatures}
-                initPoolListView={initPoolListView}
-              >
-                <RecentTransactionsProvider>
-                  <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
-                </RecentTransactionsProvider>
-              </UserSettingsProvider>
-            </ApolloGlobalDataProvider>
-          </ApolloClientProvider>
-        </ChainSwitchProvider>
+        <ApolloClientProvider>
+          <ApolloGlobalDataProvider>
+            <UserSettingsProvider
+              initCurrency={initCurrency}
+              initSlippage={initSlippage}
+              initEnableSignatures={initEnableSignatures}
+              initPoolListView={initPoolListView}
+            >
+              <RecentTransactionsProvider>
+                <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+              </RecentTransactionsProvider>
+            </UserSettingsProvider>
+          </ApolloGlobalDataProvider>
+        </ApolloClientProvider>
       </Web3Provider>
     </ThemeProvider>
   )
