@@ -5,7 +5,6 @@ import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { safeSum } from '@/lib/shared/utils/numbers'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { Address } from 'viem'
@@ -13,7 +12,11 @@ import { usePool } from '../../usePool'
 import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulationQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import { HumanAmountIn } from '../liquidity-types'
-import { LiquidityActionHelpers, areEmptyAmounts } from '../LiquidityActionHelpers'
+import {
+  LiquidityActionHelpers,
+  areEmptyAmounts,
+  requiresProportionalInput,
+} from '../LiquidityActionHelpers'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
@@ -22,6 +25,7 @@ import { useDisclosure } from '@chakra-ui/hooks'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useAddLiquidityStepConfigs } from './useAddLiquidityStepConfigs'
 import { useIterateSteps } from '../useIterateSteps'
+import { useTotalUsdValue } from './useTotalUsdValue'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -29,8 +33,8 @@ export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>
 export function _useAddLiquidity() {
   const [humanAmountsIn, setHumanAmountsIn] = useState<HumanAmountIn[]>([])
 
-  const { pool } = usePool()
-  const { getToken, usdValueForToken } = useTokens()
+  const { pool, refetch: refetchPool } = usePool()
+  const { getToken } = useTokens()
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
 
@@ -77,28 +81,31 @@ export function _useAddLiquidity() {
     .filter(token => token.isMainToken)
     .map(token => getToken(token.address, pool.chain))
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
-  const usdAmountsIn = useMemo(
-    () =>
-      humanAmountsIn.map(amountIn => {
-        const token = validTokens.find(token =>
-          isSameAddress(token?.address, amountIn.tokenAddress)
-        )
 
-        if (!token) return '0'
-
-        return usdValueForToken(token, amountIn.humanAmount)
-      }),
-    [humanAmountsIn, usdValueForToken, validTokens]
-  )
-
-  const totalUSDValue = safeSum(usdAmountsIn)
+  const { usdValueFor } = useTotalUsdValue(validTokens)
+  const totalUSDValue = usdValueFor(humanAmountsIn)
 
   /**
    * Simulation queries:
    */
-  const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn, pool.id)
+  const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn)
 
-  const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn, pool.id)
+  const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn)
+
+  /**
+   * Refetch logic:
+   */
+  async function refetchQuote() {
+    if (requiresProportionalInput(pool.type)) {
+      /*
+      This is the only edge-case where the SDK needs pool onchain data from the frontend
+      (calculateProportionalAmounts uses pool.dynamicData.totalShares in its parameters)
+      so we must refetch pool data
+      */
+      await refetchPool()
+    }
+    await Promise.all([simulationQuery.refetch(), priceImpactQuery.refetch()])
+  }
 
   /**
    * Side-effects
@@ -116,6 +123,7 @@ export function _useAddLiquidity() {
     totalUSDValue,
     simulationQuery,
     priceImpactQuery,
+    refetchQuote,
     isDisabled,
     disabledReason,
     previewModalDisclosure,
@@ -126,6 +134,7 @@ export function _useAddLiquidity() {
     setHumanAmountIn,
     setHumanAmountsIn,
     setAddLiquidityTxState,
+    helpers,
   }
 }
 
