@@ -68,9 +68,9 @@ export default function StablePoolWeightChart({
         >
           <PoolWeightChartChainIcon chain={chain} isChartLoaded={true} isSmall={isSmall} />
         </Box>
-        {pool.tokens.length <= 3 && (
+        {pool.displayTokens.length <= 3 && (
           <HStack spacing="0" zIndex={1} width="full" height="full" rounded="2xl">
-            {pool.tokens.map((_, i) => {
+            {pool.displayTokens.map((_, i) => {
               return (
                 <Box
                   borderColor={`chartBorder.${colorMode}`}
@@ -84,16 +84,16 @@ export default function StablePoolWeightChart({
                   _hover={{ filter: 'brightness(103%)' }}
                   borderTopLeftRadius={i === 0 ? 'xl' : 'none'}
                   borderBottomLeftRadius={i === 0 ? 'xl' : 'none'}
-                  borderTopRightRadius={i === pool.tokens.length - 1 ? 'xl' : 'none'}
-                  borderBottomRightRadius={i === pool.tokens.length - 1 ? 'xl' : 'none'}
+                  borderTopRightRadius={i === pool.displayTokens.length - 1 ? 'xl' : 'none'}
+                  borderBottomRightRadius={i === pool.displayTokens.length - 1 ? 'xl' : 'none'}
                 />
               )
             })}
           </HStack>
         )}
-        {pool.tokens.length === 4 && (
+        {pool.displayTokens.length === 4 && (
           <Grid zIndex={1} templateColumns="1fr 1fr" width="full" height="full" rounded="2xl">
-            {pool.tokens.map((_, i) => {
+            {pool.displayTokens.map((_, i) => {
               return (
                 <Box
                   key={`${pool.address}-token-weight-${i}`}

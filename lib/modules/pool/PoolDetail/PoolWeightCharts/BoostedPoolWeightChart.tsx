@@ -72,7 +72,7 @@ export default function BoostedPoolWeightChart({
           labelLine: {
             show: false,
           },
-          data: pool.tokens.map((token, i) => ({
+          data: pool.displayTokens.map((token, i) => ({
             value: 33,
             name: token.symbol,
             emphasis: {},
