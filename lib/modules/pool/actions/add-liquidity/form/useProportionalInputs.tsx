@@ -68,7 +68,7 @@ export function useProportionalInputs() {
 
   function calculateTokenWithMinValue() {
     if (!shouldCalculateMaximizeAmounts) return
-    const userTokenBalancePrices = validTokens.map(token => {
+    const userTokenUsdValues = validTokens.map(token => {
       const userBalance = balanceFor(token.address)?.formatted || 0
       return {
         tokenAddress: token.address,
@@ -77,7 +77,7 @@ export function useProportionalInputs() {
       } as TokenWithMinValue
     })
 
-    return minBy(userTokenBalancePrices, 'balancePrice')
+    return minBy(userTokenUsdValues, 'balancePrice')
   }
 
   const tokenWithMinValue: TokenWithMinValue | undefined = calculateTokenWithMinValue()
