@@ -14,6 +14,7 @@ query GetSorSwaps(
   ) {
     effectivePrice
     effectivePriceReversed
+    swapType
     paths {
       inputAmountRaw
       outputAmountRaw

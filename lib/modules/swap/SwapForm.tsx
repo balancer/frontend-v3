@@ -15,6 +15,7 @@ import {
   IconButton,
   Button,
   Text,
+  Box,
 } from '@chakra-ui/react'
 import { useMemo, useRef } from 'react'
 import { useSwap } from './useSwap'
@@ -120,27 +121,36 @@ export function SwapForm() {
                   </HStack>
                 }
               />
-              <TokenInput
-                address={tokenIn.address}
-                chain={selectedChain}
-                value={tokenIn.amount}
-                onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
-                toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
-              />
-              <IconButton
-                size="sm"
-                fontSize="2xl"
-                aria-label="Switch tokens"
-                icon={<CgArrowsExchangeV />}
-                onClick={switchTokens}
-              />
-              <TokenInput
-                address={tokenOut.address}
-                chain={selectedChain}
-                value={tokenOut.amount}
-                onChange={e => setTokenOutAmount(e.currentTarget.value as HumanAmount)}
-                toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
-              />
+              <VStack w="full">
+                <TokenInput
+                  address={tokenIn.address}
+                  chain={selectedChain}
+                  value={tokenIn.amount}
+                  onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
+                  toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
+                />
+                <Box position="relative" border="red 1px solid">
+                  <IconButton
+                    position="absolute"
+                    variant="tertiary"
+                    size="sm"
+                    fontSize="2xl"
+                    ml="-16px"
+                    mt="-16px"
+                    isRound={true}
+                    aria-label="Switch tokens"
+                    icon={<CgArrowsExchangeV />}
+                    onClick={switchTokens}
+                  />
+                </Box>
+                <TokenInput
+                  address={tokenOut.address}
+                  chain={selectedChain}
+                  value={tokenOut.amount}
+                  onChange={e => setTokenOutAmount(e.currentTarget.value as HumanAmount)}
+                  toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
+                />
+              </VStack>
             </VStack>
 
             {simulationQuery.data && <SwapDetailsAccordian />}

@@ -1115,6 +1115,7 @@ export type GqlSorGetSwapPaths = {
   routes: Array<GqlSorSwapRoute>
   swapAmount: Scalars['AmountHumanReadable']['output']
   swapAmountScaled: Scalars['BigDecimal']['output']
+  swapType: GqlSorSwapType
   swaps: Array<GqlSorSwap>
   /** The token address of the tokenIn provided */
   tokenIn: Scalars['String']['output']
@@ -7355,6 +7356,7 @@ export type GetSorSwapsQuery = {
     __typename: 'GqlSorGetSwapPaths'
     effectivePrice: string
     effectivePriceReversed: string
+    swapType: GqlSorSwapType
     priceImpact: string
     returnAmount: string
     returnAmountScaled: string
@@ -17364,6 +17366,7 @@ export const GetSorSwapsDocument = {
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'effectivePrice' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'effectivePriceReversed' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'swapType' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'paths' },

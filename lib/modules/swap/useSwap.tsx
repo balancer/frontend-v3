@@ -70,10 +70,6 @@ export function _useSwap() {
   const tokenInInfo = getToken(swapState.tokenIn.address, selectedChain)
   const tokenOutInfo = getToken(swapState.tokenOut.address, selectedChain)
 
-  if (!tokenInInfo || !tokenOutInfo) {
-    throw new Error('Token not found')
-  }
-
   const shouldFetchSwap = (state: SwapState, swapAmount: string) =>
     isAddress(state.tokenIn.address) &&
     isAddress(state.tokenOut.address) &&

@@ -1037,6 +1037,7 @@ type GqlSorGetSwapPaths {
   routes: [GqlSorSwapRoute!]!
   swapAmount: AmountHumanReadable!
   swapAmountScaled: BigDecimal!
+  swapType: GqlSorSwapType!
   swaps: [GqlSorSwap!]!
 
   """
