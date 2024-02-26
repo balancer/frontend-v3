@@ -31,6 +31,7 @@ export function _useTokenBalances(tokens: TokenBase[]) {
   const _tokens = tokens.filter(exclNativeAssetFilter)
 
   const nativeBalanceQuery = useBalance({
+    chainId,
     address: userAddress,
     enabled: !!userAddress && includesNativeAsset,
     cacheTime: BALANCE_CACHE_TIME_MS,
