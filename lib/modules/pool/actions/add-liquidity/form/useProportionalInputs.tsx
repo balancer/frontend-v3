@@ -8,7 +8,7 @@ import { Address, HumanAmount, InputAmount, calculateProportionalAmounts } from 
 import { minBy } from 'lodash'
 import { useState } from 'react'
 import { usePool } from '../../../usePool'
-import { humanAmountsInVar, useAddLiquidity } from '../useAddLiquidity'
+import { useAddLiquidity } from '../useAddLiquidity'
 import { useTotalUsdValue } from '../useTotalUsdValue'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { HumanAmountIn } from '../../liquidity-types'
@@ -24,7 +24,7 @@ type TokenWithMinValue = {
 
 export function useProportionalInputs() {
   const { isConnected } = useUserAccount()
-  const { validTokens, helpers } = useAddLiquidity()
+  const { validTokens, helpers, humanAmountsIn, setHumanAmountsIn } = useAddLiquidity()
   const { usdValueFor } = useTotalUsdValue(validTokens)
   const { balanceFor, balances, isBalancesLoading } = useTokenBalances()
   const { priceForToken } = useTokens()
@@ -32,9 +32,7 @@ export function useProportionalInputs() {
   const [isMaximized, setIsMaximized] = useState(false)
 
   function clearAmountsIn() {
-    const state = humanAmountsInVar()
-
-    humanAmountsInVar(state.map(amountIn => ({ ...amountIn, humanAmount: '' })))
+    setHumanAmountsIn(humanAmountsIn.map(amountIn => ({ ...amountIn, humanAmount: '' })))
   }
 
   function handleMaximizeUserAmounts() {
@@ -60,7 +58,7 @@ export function useProportionalInputs() {
       helpers
     )
 
-    humanAmountsInVar(proportionalHumanAmountsIn)
+    setHumanAmountsIn(proportionalHumanAmountsIn)
   }
 
   const shouldCalculateMaximizeAmounts =
