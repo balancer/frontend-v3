@@ -1,6 +1,6 @@
 import { Box, HStack, Grid, useColorMode, Flex } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
-import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
+import { ChartSizeValues, PoolTokensWeightChartProps } from './PoolWeightChart'
 import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 import PoolWeightChartLegend from './PoolWeightChartLegend'
 
@@ -48,24 +48,24 @@ const chartSizes: Record<string, Record<string, ChartSizeValues>> = {
 }
 
 export default function CLPPoolWeightChart({
-  pool,
+  tokens,
   chain,
   hasLegend,
   isSmall,
   colors = [],
-}: PoolWeightChartProps) {
+}: PoolTokensWeightChartProps) {
   const { colorMode } = useColorMode()
 
   function getChartSizeValues() {
     const chartSizeKey = isSmall ? 'small' : 'normal'
-    if (pool.tokens.length === 2) {
+    if (tokens.length === 2) {
       return chartSizes.diamond[chartSizeKey]
     }
     return chartSizes.square[chartSizeKey]
   }
 
   function getLegendOffset() {
-    if (pool.tokens.length === 2) {
+    if (tokens.length === 2) {
       return '-5rem'
     }
     return '-4rem'
@@ -128,7 +128,7 @@ export default function CLPPoolWeightChart({
             </filter>
           </defs>
         </svg>
-        {pool.tokens.length === 2 && (
+        {tokens.length === 2 && (
           <Box filter="url(#round)">
             <Box
               bgGradient={`linear(to-r, ${colors[0].from}, ${colors[0].to})`}
@@ -154,7 +154,7 @@ export default function CLPPoolWeightChart({
             />
           </Box>
         )}
-        {pool.tokens.length === 3 && (
+        {tokens.length === 3 && (
           <HStack
             spacing="0"
             zIndex={1}
@@ -163,12 +163,12 @@ export default function CLPPoolWeightChart({
             rounded="2xl"
             transform="rotate(-135deg)"
           >
-            {pool.tokens.map((_, i) => {
+            {tokens.map((token, i) => {
               return (
                 <Box
                   borderColor={`chartBorder.${colorMode}`}
                   borderWidth="1px"
-                  key={`${pool.address}-token-weight-${i}`}
+                  key={`${token.address}-token-weight-${i}`}
                   as={motion.div}
                   cursor="pointer"
                   width="full"
@@ -177,19 +177,19 @@ export default function CLPPoolWeightChart({
                   _hover={{ filter: 'brightness(103%)' }}
                   borderTopLeftRadius={i === 0 ? 'xl' : 'none'}
                   borderBottomLeftRadius={i === 0 ? 'xl' : 'none'}
-                  borderTopRightRadius={i === pool.tokens.length - 1 ? 'xl' : 'none'}
-                  borderBottomRightRadius={i === pool.tokens.length - 1 ? 'xl' : 'none'}
+                  borderTopRightRadius={i === tokens.length - 1 ? 'xl' : 'none'}
+                  borderBottomRightRadius={i === tokens.length - 1 ? 'xl' : 'none'}
                 />
               )
             })}
           </HStack>
         )}
-        {pool.tokens.length === 4 && (
+        {tokens.length === 4 && (
           <Grid zIndex={1} templateColumns="1fr 1fr" width="full" height="full" rounded="2xl">
-            {pool.tokens.map((_, i) => {
+            {tokens.map((token, i) => {
               return (
                 <Box
-                  key={`${pool.address}-token-weight-${i}`}
+                  key={`${token.address}-token-weight-${i}`}
                   as={motion.div}
                   cursor="pointer"
                   bgGradient={`linear(to-b, ${colors[i].from}, ${colors[i].to})`}
@@ -215,7 +215,7 @@ export default function CLPPoolWeightChart({
             mx="auto"
             justifyContent="center"
           >
-            <PoolWeightChartLegend pool={pool} colors={colors} />
+            <PoolWeightChartLegend tokens={tokens} colors={colors} />
           </HStack>
         )}
       </Box>

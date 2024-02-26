@@ -6,7 +6,7 @@ import EChartsReactCore from 'echarts-for-react/lib/core'
 import * as echarts from 'echarts/core'
 import { motion } from 'framer-motion'
 import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
-import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
+import { ChartSizeValues, PoolTokensWeightChartProps } from './PoolWeightChart'
 import PoolWeightChartLegend from './PoolWeightChartLegend'
 
 const smallSize: ChartSizeValues = {
@@ -30,12 +30,12 @@ const normalSize: ChartSizeValues = {
 }
 
 export default function BoostedPoolWeightChart({
-  pool,
+  tokens,
   chain,
   hasLegend,
   isSmall,
   colors = [],
-}: PoolWeightChartProps) {
+}: PoolTokensWeightChartProps) {
   const chartSizeValues = isSmall ? smallSize : normalSize
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const [isChartLoaded, setIsChartLoaded] = useState(false)
@@ -72,7 +72,7 @@ export default function BoostedPoolWeightChart({
           labelLine: {
             show: false,
           },
-          data: pool.tokens.map((token, i) => ({
+          data: tokens.map((token, i) => ({
             value: 33,
             name: token.symbol,
             emphasis: {},
@@ -160,7 +160,7 @@ export default function BoostedPoolWeightChart({
           mx="auto"
           justifyContent="center"
         >
-          <PoolWeightChartLegend pool={pool} colors={colors} />
+          <PoolWeightChartLegend tokens={tokens} colors={colors} />
         </HStack>
       )}
     </VStack>

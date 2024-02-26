@@ -1,6 +1,6 @@
 import { Box, HStack, Grid, useColorMode, Flex } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
-import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
+import { ChartSizeValues, PoolTokensWeightChartProps } from './PoolWeightChart'
 import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 import PoolWeightChartLegend from './PoolWeightChartLegend'
 
@@ -25,14 +25,15 @@ const normalSize: ChartSizeValues = {
 }
 
 export default function StablePoolWeightChart({
-  pool,
+  tokens,
   chain,
   hasLegend,
   colors = [],
   isSmall,
-}: PoolWeightChartProps) {
+}: PoolTokensWeightChartProps) {
   const chartSizeValues = isSmall ? smallSize : normalSize
   const { colorMode } = useColorMode()
+
   return (
     <Flex
       position="relative"
@@ -68,14 +69,14 @@ export default function StablePoolWeightChart({
         >
           <PoolWeightChartChainIcon chain={chain} isChartLoaded={true} isSmall={isSmall} />
         </Box>
-        {pool.tokens.length <= 3 && (
+        {tokens.length <= 3 && (
           <HStack spacing="0" zIndex={1} width="full" height="full" rounded="2xl">
-            {pool.tokens.map((_, i) => {
+            {tokens.map((token, i) => {
               return (
                 <Box
                   borderColor={`chartBorder.${colorMode}`}
                   borderWidth="1px"
-                  key={`${pool.address}-token-weight-${i}`}
+                  key={`${token.address}-token-weight-${i}`}
                   as={motion.div}
                   cursor="pointer"
                   width="full"
@@ -84,19 +85,19 @@ export default function StablePoolWeightChart({
                   _hover={{ filter: 'brightness(103%)' }}
                   borderTopLeftRadius={i === 0 ? 'xl' : 'none'}
                   borderBottomLeftRadius={i === 0 ? 'xl' : 'none'}
-                  borderTopRightRadius={i === pool.tokens.length - 1 ? 'xl' : 'none'}
-                  borderBottomRightRadius={i === pool.tokens.length - 1 ? 'xl' : 'none'}
+                  borderTopRightRadius={i === tokens.length - 1 ? 'xl' : 'none'}
+                  borderBottomRightRadius={i === tokens.length - 1 ? 'xl' : 'none'}
                 />
               )
             })}
           </HStack>
         )}
-        {pool.tokens.length === 4 && (
+        {tokens.length === 4 && (
           <Grid zIndex={1} templateColumns="1fr 1fr" width="full" height="full" rounded="2xl">
-            {pool.tokens.map((_, i) => {
+            {tokens.map((token, i) => {
               return (
                 <Box
-                  key={`${pool.address}-token-weight-${i}`}
+                  key={`${token.address}-token-weight-${i}`}
                   as={motion.div}
                   cursor="pointer"
                   bgGradient={`linear(to-b, ${colors[i].from}, ${colors[i].to})`}
@@ -122,7 +123,7 @@ export default function StablePoolWeightChart({
             mx="auto"
             justifyContent="center"
           >
-            <PoolWeightChartLegend pool={pool} colors={colors} />
+            <PoolWeightChartLegend tokens={tokens} colors={colors} />
           </HStack>
         )}
       </Box>

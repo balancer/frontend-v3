@@ -1,18 +1,30 @@
 import { Box } from '@chakra-ui/react'
 import React from 'react'
 import WeightedPoolWeightChart from './WeightedPoolWeightChart'
-import { GqlChain, GqlPoolStable, GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GqlChain,
+  GqlPoolToken,
+  GqlPoolTokenUnion,
+  GqlPoolUnion,
+} from '@/lib/shared/services/api/generated/graphql'
 import { isBoosted, isClp, isStable } from '../../pool.helpers'
 import BoostedPoolWeightChart from './BoostedPoolWeightChart'
 import StablePoolWeightChart from './StablePoolWeightChart'
 import CLPPoolWeightChart from './CLPPoolWeightChart'
 
-export interface PoolWeightChartProps {
-  pool: GqlPoolUnion
+export interface PoolWeightChartPropsBase {
   chain: GqlChain
   hasLegend?: boolean
   isSmall?: boolean
   colors?: PoolWeightChartColorDef[]
+}
+
+export interface PoolWeightChartProps extends PoolWeightChartPropsBase {
+  pool: GqlPoolUnion
+}
+
+export interface PoolTokensWeightChartProps extends PoolWeightChartPropsBase {
+  tokens: GqlPoolTokenUnion[] | GqlPoolToken[]
 }
 
 export interface ChartSizeValues {
@@ -73,17 +85,20 @@ export default function PoolWeightChart({
     isSmall,
     colors: DEFAULT_POOL_WEIGHT_CHART_COLORS,
   }
+
+  const filteredTokens = pool.tokens.filter(token => token.address !== pool.address)
+
   if (isBoosted(pool)) {
-    return <BoostedPoolWeightChart pool={pool as GqlPoolStable} {...commonProps} />
+    return <BoostedPoolWeightChart tokens={filteredTokens} {...commonProps} />
   }
   if (isStable(pool.type)) {
-    return <StablePoolWeightChart pool={pool as GqlPoolStable} {...commonProps} />
+    return <StablePoolWeightChart tokens={filteredTokens} {...commonProps} />
   }
   if (isClp(pool.type)) {
-    return <CLPPoolWeightChart pool={pool as GqlPoolStable} {...commonProps} />
+    return <CLPPoolWeightChart tokens={filteredTokens} {...commonProps} />
   }
   if (pool.__typename === 'GqlPoolWeighted') {
-    return <WeightedPoolWeightChart pool={pool} {...commonProps} />
+    return <WeightedPoolWeightChart tokens={filteredTokens} {...commonProps} />
   }
   return <Box minH="150px"></Box>
 }

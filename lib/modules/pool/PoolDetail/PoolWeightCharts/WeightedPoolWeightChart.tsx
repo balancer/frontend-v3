@@ -5,7 +5,7 @@ import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import * as echarts from 'echarts/core'
 import { motion } from 'framer-motion'
-import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
+import { ChartSizeValues, PoolTokensWeightChartProps } from './PoolWeightChart'
 import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 import PoolWeightChartLegend from './PoolWeightChartLegend'
 
@@ -30,12 +30,12 @@ const normalSize: ChartSizeValues = {
 }
 
 export default function WeightedPoolWeightChart({
-  pool,
+  tokens,
   chain,
   hasLegend,
   isSmall,
   colors = [],
-}: PoolWeightChartProps) {
+}: PoolTokensWeightChartProps) {
   const chartSizeValues = isSmall ? smallSize : normalSize
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const [isChartLoaded, setIsChartLoaded] = useState(false)
@@ -83,7 +83,7 @@ export default function WeightedPoolWeightChart({
           emphasis: {
             scale: false,
           },
-          data: pool.tokens.map((token, i) => ({
+          data: tokens.map((token, i) => ({
             value: parseFloat(token.weight || '0') * 100,
             name: token.symbol,
             itemStyle: {
@@ -102,7 +102,7 @@ export default function WeightedPoolWeightChart({
         },
       ],
     }
-  }, [pool, colorMode])
+  }, [tokens, colorMode])
 
   return (
     <VStack>
@@ -147,7 +147,7 @@ export default function WeightedPoolWeightChart({
       </Box>
       {hasLegend && (
         <HStack mt="-4">
-          <PoolWeightChartLegend pool={pool} colors={colors} />
+          <PoolWeightChartLegend tokens={tokens} colors={colors} />
         </HStack>
       )}
     </VStack>
