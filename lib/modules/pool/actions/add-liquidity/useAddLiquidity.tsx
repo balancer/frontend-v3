@@ -5,7 +5,6 @@ import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { makeVar, useReactiveVar } from '@apollo/client'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { Address } from 'viem'
@@ -31,10 +30,8 @@ import { useTotalUsdValue } from './useTotalUsdValue'
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
 
-export const humanAmountsInVar = makeVar<HumanAmountIn[]>([])
-
 export function _useAddLiquidity() {
-  const humanAmountsIn = useReactiveVar(humanAmountsInVar)
+  const [humanAmountsIn, setHumanAmountsIn] = useState<HumanAmountIn[]>([])
 
   const { pool, refetch: refetchPool } = usePool()
   const { getToken } = useTokens()
@@ -67,14 +64,12 @@ export function _useAddLiquidity() {
           humanAmount: '',
         } as HumanAmountIn)
     )
-    humanAmountsInVar(amountsIn)
+    setHumanAmountsIn(amountsIn)
   }
 
   function setHumanAmountIn(tokenAddress: Address, humanAmount: HumanAmount) {
-    const state = humanAmountsInVar()
-
-    humanAmountsInVar([
-      ...state.filter(amountIn => !isSameAddress(amountIn.tokenAddress, tokenAddress)),
+    setHumanAmountsIn([
+      ...humanAmountsIn.filter(amountIn => !isSameAddress(amountIn.tokenAddress, tokenAddress)),
       {
         tokenAddress,
         humanAmount,
@@ -137,6 +132,7 @@ export function _useAddLiquidity() {
     handler,
     addLiquidityTxState,
     setHumanAmountIn,
+    setHumanAmountsIn,
     setAddLiquidityTxState,
     helpers,
   }

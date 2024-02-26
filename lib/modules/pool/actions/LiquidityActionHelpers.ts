@@ -14,7 +14,6 @@ import {
   PoolStateWithBalances,
   RawPoolToken,
   TokenAmount,
-  calculateProportionalAmounts,
   mapPoolType,
 } from '@balancer/sdk'
 import { keyBy } from 'lodash'
