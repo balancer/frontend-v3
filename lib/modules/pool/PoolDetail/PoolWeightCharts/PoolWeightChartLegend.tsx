@@ -11,7 +11,7 @@ export default function PoolWeightChartLegend({
 }) {
   return (
     <HStack spacing="6">
-      {pool.tokens.map((token, i) => {
+      {pool.displayTokens.map((token, i) => {
         return (
           <Box
             fontWeight="normal"

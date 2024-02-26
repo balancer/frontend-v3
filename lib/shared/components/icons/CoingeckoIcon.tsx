@@ -12,8 +12,8 @@ export function CoingeckoIcon(props: SVGProps<SVGSVGElement>) {
       {...props}
     >
       <title>coingecko</title>
-      <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="coingecko" fill-rule="nonzero">
+      <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+        <g id="coingecko" fillRule="nonzero">
           <path
             d="M40,19.9116965 C40.0485655,30.9569576 31.1343913,39.9505707 20.0891349,40 C9.04387851,40.0490235 0.0498948489,31.1352232 0,20.0899662 C-0.0494813791,9.04470927 8.86394076,0.0503508387 19.909193,0 C30.9552745,-0.0487888569 39.9498688,8.86561662 40,19.9116965 L40,19.9116965 Z"
             id="Path"
