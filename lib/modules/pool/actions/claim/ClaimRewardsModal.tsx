@@ -77,7 +77,6 @@ export function ClaimRewardsModal({
         </ModalBody>
         <ModalFooter>
           <VStack w="full">
-            {currentStep.render(useOnStepCompleted)}
             {hasNoRewards ? (
               <Button w="full" size="lg" onClick={onClose}>
                 Close

@@ -2,7 +2,6 @@ import { Button, HStack, Stack, Text } from '@chakra-ui/react'
 import { PoolListItem } from '../pool/pool.types'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { useState } from 'react'
-import { Hex } from 'viem'
 import { ClaimRewardsModal } from '../pool/actions/claim/ClaimRewardsModal'
 import { PoolRewardsDataMap } from './usePortfolio'
 
@@ -54,24 +53,28 @@ export function PortfolioPoolsList({
     setClaimModalData(null)
   }
 
-  console.log('poolRewardsMap', poolRewardsMap)
   return (
     <Stack>
       {pools.map(pool => (
         <HStack justifyContent="space-between" key={pool.id}>
           <Text>{pool.name}</Text>
-          <Text>{fNum('token', getBalance(pool, isStaked))}</Text>
+          <HStack>
+            <Text>{fNum('token', getBalance(pool, isStaked))}</Text>
 
-          {isStaked && (
-            <Button
-              variant="secondary"
-              size="lg"
-              isDisabled={false}
-              onClick={() => openClaimModal(pool)}
-            >
-              Claim
-            </Button>
-          )}
+            {isStaked && (
+              <Button
+                variant="secondary"
+                size="lg"
+                isDisabled={
+                  !poolRewardsMap?.[pool.id]?.balReward &&
+                  !poolRewardsMap?.[pool.id]?.claimableRewards?.length
+                }
+                onClick={() => openClaimModal(pool)}
+              >
+                Claim
+              </Button>
+            )}
+          </HStack>
         </HStack>
       ))}
 
