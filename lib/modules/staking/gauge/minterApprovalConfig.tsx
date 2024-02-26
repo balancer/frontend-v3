@@ -4,6 +4,7 @@ import { useConstructMinterApprovalStep } from './useConstructMinterApprovalStep
 import { VStack } from '@chakra-ui/react'
 
 export const minterApprovalConfig: StepConfig = {
+  description: 'Approve relayer as minter',
   render(useOnStepCompleted: OnStepCompleted) {
     return <MinterApprovalButton useOnStepCompleted={useOnStepCompleted} />
   },

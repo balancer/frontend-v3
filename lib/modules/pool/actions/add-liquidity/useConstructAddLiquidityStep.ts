@@ -4,6 +4,7 @@ import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transa
 import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 import { useEffect } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
+import { useUpdateCurrentFlowStep } from '../useCurrentFlowStep'
 
 export function useConstructAddLiquidityStep() {
   const transactionLabels: TransactionLabels = {
@@ -37,6 +38,8 @@ export function useConstructAddLiquidityStep() {
     stepType: 'addLiquidity',
     isComplete,
   }
+
+  useUpdateCurrentFlowStep(addLiquidityStep)
 
   return {
     addLiquidityStep,

@@ -2,20 +2,18 @@
 import { useManagedErc20Transaction } from '@/lib/modules/web3/contracts/useManagedErc20Transaction'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useEffect, useState } from 'react'
+import { Address } from 'viem'
 import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
-import { Address } from 'viem'
-import { useTokens } from '../useTokens'
 import { TokenAmountToApprove } from './approval-rules'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { usePool } from '../../pool/usePool'
+import { useUpdateCurrentFlowStep } from '../../pool/actions/useCurrentFlowStep'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse
   tokenAmountToApprove: TokenAmountToApprove
   spenderAddress: Address
   actionType: ApprovalAction
-  chain: GqlChain
+  symbol: string
 }
 
 export function useConstructApproveTokenStep({
@@ -23,22 +21,17 @@ export function useConstructApproveTokenStep({
   tokenAmountToApprove,
   spenderAddress,
   actionType,
-  chain,
+  symbol,
 }: ApproveTokenProps) {
   const { refetchAllowances, isAllowancesLoading, allowanceFor } = tokenAllowances
-  const { getToken } = useTokens()
-  const { pool } = usePool()
 
   const [didRefetchAllowances, setDidRefetchAllowances] = useState(false)
 
   const { tokenAddress, requestedRawAmount, requiredRawAmount } = tokenAmountToApprove
 
-  const token = getToken(tokenAddress, chain)
-
   const labelArgs: TokenApprovalLabelArgs = {
     actionType,
-    // if there is no token it must be a bpt, needs to be reconsidered if this assumption changes
-    symbol: (token && token?.symbol) ?? pool.symbol ?? 'Unknown',
+    symbol,
   }
   const tokenApprovalLabels = buildTokenApprovalLabels(labelArgs)
 
@@ -64,6 +57,8 @@ export function useConstructApproveTokenStep({
     stepType: 'tokenApproval',
     isComplete: () => isComplete,
   }
+
+  useUpdateCurrentFlowStep(step)
 
   useEffect(() => {
     // refetch allowances after the approval transaction was executed

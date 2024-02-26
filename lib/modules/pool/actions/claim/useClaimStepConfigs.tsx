@@ -5,6 +5,7 @@ import { minterApprovalConfig } from '@/lib/modules/staking/gauge/minterApproval
 import { ClaimAllRewardsButton } from './ClaimAllRewardsButton'
 import { Address } from 'viem'
 import { GqlChain, GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
+import { StepConfig } from '../useIterateSteps'
 
 export function useClaimStepConfigs(
   gaugeAddresses: Address[],
@@ -14,8 +15,9 @@ export function useClaimStepConfigs(
   const { hasMinterApproval } = useHasMinterApproval()
   const { hasApprovedRelayer } = useHasApprovedRelayer()
 
-  let stepConfigs = [
+  let stepConfigs: StepConfig[] = [
     {
+      description: 'Claim',
       render: () => (
         <ClaimAllRewardsButton
           gaugeAddresses={gaugeAddresses}

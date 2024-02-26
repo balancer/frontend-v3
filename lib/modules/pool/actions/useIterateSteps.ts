@@ -10,23 +10,24 @@ export type CommonStepProps = {
 }
 
 export interface StepConfig {
+  description: string
   render(useOnStepCompleted?: OnStepCompleted): JSX.Element
 }
 
 export function useIterateSteps(steps: StepConfig[]) {
-  const [activeStepIndex, setActiveStep] = useState(0)
+  const [currentStepIndex, setCurrentStepIndex] = useState(0)
 
-  const isFinalStepActive = activeStepIndex === steps.length - 1
+  const isFinalStepActive = currentStepIndex === steps.length - 1
 
   const goToNextStep = () => {
     if (isFinalStepActive) {
       return
     }
-    setActiveStep(activeStepIndex + 1)
+    setCurrentStepIndex(currentStepIndex + 1)
   }
 
   function getCurrentStep(): StepConfig {
-    return steps[activeStepIndex]
+    return steps[currentStepIndex]
   }
 
   // Goes to the next step in the sequence (goToNextStep) when the current step is completed
@@ -42,5 +43,6 @@ export function useIterateSteps(steps: StepConfig[]) {
   return {
     useOnStepCompleted,
     currentStep,
+    currentStepIndex,
   }
 }

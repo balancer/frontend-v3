@@ -1,12 +1,14 @@
+import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
 import { CommonStepProps, OnStepCompleted, StepConfig } from '../../pool/actions/useIterateSteps'
+import { usePool } from '../../pool/usePool'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { useUserAccount } from '../../web3/useUserAccount'
+import { useTokens } from '../useTokens'
 import { ApprovalAction } from './approval-labels'
 import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
 import { ApproveTokenProps, useConstructApproveTokenStep } from './useConstructApproveTokenStep'
-import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
 import { getChainId } from '@/lib/config/app.config'
 
 type Props = ApproveTokenProps & CommonStepProps
@@ -33,6 +35,8 @@ export function useTokenApprovalConfigs({
   actionType,
 }: Params): StepConfig[] {
   const { userAddress } = useUserAccount()
+  const { getToken } = useTokens()
+  const { pool } = usePool()
 
   const _approvalAmounts = approvalAmounts.filter(amount => amount.rawAmount > 0)
 
@@ -52,12 +56,16 @@ export function useTokenApprovalConfigs({
   })
 
   return tokenAmountsToApprove.map(tokenAmountToApprove => {
+    const token = getToken(tokenAmountToApprove.tokenAddress, chain)
+    // if there is no token it must be a bpt, needs to be reconsidered if this assumption changes
+    const symbol = (token && token?.symbol) ?? pool.symbol ?? 'Unknown'
+
     const props: ApproveTokenProps = {
       tokenAllowances,
       tokenAmountToApprove,
       actionType,
-      chain,
       spenderAddress,
+      symbol,
     }
     return buildTokenApprovalConfig(props)
   })
@@ -65,6 +73,7 @@ export function useTokenApprovalConfigs({
 
 function buildTokenApprovalConfig(props: ApproveTokenProps): StepConfig {
   const approvalStepConfig: StepConfig = {
+    description: `Approve token ${props.symbol}`,
     render(useOnStepCompleted: OnStepCompleted) {
       return <ApproveTokenButton {...props} useOnStepCompleted={useOnStepCompleted} />
     },

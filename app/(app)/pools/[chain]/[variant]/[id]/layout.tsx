@@ -7,6 +7,7 @@ import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.c
 import { PropsWithChildren } from 'react'
 import { cookies } from 'next/headers'
 import { COOKIE_KEYS } from '@/lib/modules/cookies/cookie.constants'
+import { CurrentFlowStepProvider } from '@/lib/modules/pool/actions/useCurrentFlowStep'
 
 export const revalidate = 30
 
@@ -33,7 +34,7 @@ export default async function PoolLayout({ params: { id, chain, variant }, child
 
   return (
     <PoolProvider id={id} chain={_chain} variant={variant} data={data} variables={variables}>
-      {children}
+      <CurrentFlowStepProvider>{children}</CurrentFlowStepProvider>
     </PoolProvider>
   )
 }

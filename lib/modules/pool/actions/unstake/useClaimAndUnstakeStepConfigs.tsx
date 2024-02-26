@@ -3,13 +3,15 @@ import { ClaimAndUnstakeButton } from './ClaimAndUnstakeButton'
 import { useHasMinterApproval } from '@/lib/modules/staking/gauge/useHasMinterApproval'
 import { approveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { minterApprovalConfig } from '@/lib/modules/staking/gauge/minterApprovalConfig'
+import { StepConfig } from '../useIterateSteps'
 
 export function useClaimAndUnstakeStepConfigs() {
   const { hasMinterApproval } = useHasMinterApproval()
   const { hasApprovedRelayer } = useHasApprovedRelayer()
 
-  let stepConfigs = [
+  let stepConfigs: StepConfig[] = [
     {
+      description: 'Claim and unstake',
       render: () => <ClaimAndUnstakeButton />,
     },
   ]

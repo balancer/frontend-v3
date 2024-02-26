@@ -26,6 +26,7 @@ import { fNum, safeTokenFormat } from '@/lib/shared/utils/numbers'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
+import { StepTracker } from './StepTracker'
 
 export function AddLiquidityForm() {
   const {
@@ -64,6 +65,8 @@ export function AddLiquidityForm() {
       <Center h="full" w="full" maxW="lg" mx="auto">
         <Card variant="level3" shadow="xl" w="full" p="md">
           <VStack spacing="lg" align="start" w="full">
+            <StepTracker />
+
             <HStack w="full" justify="space-between">
               <Heading fontWeight="bold" size="h5">
                 Add liquidity

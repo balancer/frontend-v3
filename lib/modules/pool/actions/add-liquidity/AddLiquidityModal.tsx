@@ -34,6 +34,7 @@ import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { SignRelayerButton } from '@/lib/shared/components/btns/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
+import { StepTracker } from './StepTracker'
 
 type Props = {
   isOpen: boolean
@@ -89,6 +90,7 @@ export function AddLiquidityModal({
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="md" align="start">
+            <StepTracker />
             <Card variant="level5" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
