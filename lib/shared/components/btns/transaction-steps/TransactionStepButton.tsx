@@ -5,7 +5,6 @@ import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Alert, Button, VStack } from '@chakra-ui/react'
 import { FlowStep, TransactionState, getTransactionState } from './lib'
-import { useChainSwitch } from '@/lib/modules/web3/useChainSwitch'
 
 interface Props {
   step: FlowStep
@@ -15,7 +14,6 @@ export function TransactionStepButton({
   step: { simulation, execution, result, transactionLabels, execute: managedRun },
 }: Props) {
   const { isConnected } = useUserAccount()
-  const { isConnectedChain } = useChainSwitch()
   const isTransactButtonVisible = isConnected
   const transactionState = getTransactionState({ simulation, execution, result })
   const isButtonLoading =
@@ -24,10 +22,7 @@ export function TransactionStepButton({
   const hasSimulationError = simulation.isError
   const isIdle = isConnected && simulation.isIdle && !simulation.data
   const isButtonDisabled =
-    transactionState === TransactionState.Loading ||
-    hasSimulationError ||
-    isIdle ||
-    !isConnectedChain
+    transactionState === TransactionState.Loading || hasSimulationError || isIdle
 
   function handleOnClick() {
     if (!simulation.isError) {
