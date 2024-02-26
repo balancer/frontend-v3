@@ -16,7 +16,7 @@ import { formatUnits } from 'viem'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
 
-type TokenWithMinPrice = {
+type TokenWithMinValue = {
   tokenAddress: Address
   balancePrice: number
   userBalance: HumanAmount
@@ -38,17 +38,17 @@ export function useProportionalInputs() {
   }
 
   function handleMaximizeUserAmounts() {
-    if (!tokenWithMinPrice) return
+    if (!tokenWithMinValue) return
     if (isMaximized) return setIsMaximized(false)
-    handleHumanInputChange(tokenWithMinPrice.tokenAddress, tokenWithMinPrice.userBalance)
+    handleHumanInputChange(tokenWithMinValue.tokenAddress, tokenWithMinValue.userBalance)
     setIsMaximized(true)
   }
 
   function handleHumanInputChange(tokenAddress: Address, humanAmount: HumanAmount | '') {
-    // Checks if the user is entering the max amount for the tokenWithMinPrice
+    // Checks if the user is entering the max amount for the tokenWithMinValue
     const isMaximizing: boolean =
-      tokenAddress === tokenWithMinPrice?.tokenAddress &&
-      humanAmount === tokenWithMinPrice?.userBalance
+      tokenAddress === tokenWithMinValue?.tokenAddress &&
+      humanAmount === tokenWithMinValue?.userBalance
 
     setIsMaximized(isMaximizing)
 
@@ -66,7 +66,7 @@ export function useProportionalInputs() {
   const shouldCalculateMaximizeAmounts =
     isConnected && !isBalancesLoading && !isPoolLoading && balances.length > 0
 
-  function calculateTokenWithMinPrice() {
+  function calculateTokenWithMinValue() {
     if (!shouldCalculateMaximizeAmounts) return
     const userTokenBalancePrices = validTokens.map(token => {
       const userBalance = balanceFor(token.address)?.formatted || 0
@@ -74,24 +74,24 @@ export function useProportionalInputs() {
         tokenAddress: token.address,
         balancePrice: bn(userBalance).times(priceForToken(token)).toNumber(),
         userBalance,
-      } as TokenWithMinPrice
+      } as TokenWithMinValue
     })
 
     return minBy(userTokenBalancePrices, 'balancePrice')
   }
 
-  const tokenWithMinPrice: TokenWithMinPrice | undefined = calculateTokenWithMinPrice()
+  const tokenWithMinValue: TokenWithMinValue | undefined = calculateTokenWithMinValue()
 
   function calculateMaximizedUsdValue() {
     if (!shouldCalculateMaximizeAmounts) return ''
-    if (!tokenWithMinPrice || tokenWithMinPrice.balancePrice === 0) {
+    if (!tokenWithMinValue || tokenWithMinValue.balancePrice === 0) {
       //Avoid maximize calculations when the user does not have balance
       return ''
     }
 
     const maxProportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn(
-      tokenWithMinPrice.tokenAddress as Address,
-      tokenWithMinPrice.userBalance.toString() as HumanAmount,
+      tokenWithMinValue.tokenAddress as Address,
+      tokenWithMinValue.userBalance.toString() as HumanAmount,
       helpers
     )
     return usdValueFor(maxProportionalHumanAmountsIn)
@@ -99,7 +99,7 @@ export function useProportionalInputs() {
 
   const maximizedUsdValue = calculateMaximizedUsdValue()
 
-  const canMaximize = !!tokenWithMinPrice?.userBalance
+  const canMaximize = !!tokenWithMinValue?.userBalance
 
   return {
     canMaximize,
