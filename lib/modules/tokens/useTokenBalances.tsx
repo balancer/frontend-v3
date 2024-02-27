@@ -93,18 +93,21 @@ export function _useTokenBalances(tokens: TokenBase[]) {
     return refetchQueries(tokenBalancesQuery)
   }
 
-  const balances: TokenAmount[] = (tokenBalancesQuery.data || []).map((balance, index) => {
-    const token = _tokens[index]
-    const amount = balance.status === 'success' ? (balance.result as bigint) : 0n
+  const balances = (tokenBalancesQuery.data || [])
+    .map((balance, index) => {
+      const token = _tokens[index]
+      if (!token) return
+      const amount = balance.status === 'success' ? (balance.result as bigint) : 0n
 
-    return {
-      chainId,
-      address: token.address,
-      amount,
-      formatted: formatUnits(amount, token.decimals),
-      decimals: token.decimals,
-    }
-  })
+      return {
+        chainId,
+        address: token.address,
+        amount,
+        formatted: formatUnits(amount, token.decimals),
+        decimals: token.decimals,
+      }
+    })
+    .filter(Boolean) as TokenAmount[]
 
   if (includesNativeAsset && nativeBalanceQuery.data) {
     balances.push({

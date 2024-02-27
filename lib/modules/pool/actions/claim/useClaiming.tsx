@@ -11,7 +11,7 @@ import { usePool } from '../../usePool'
 import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { useBalTokenRewards } from '@/lib/modules/portfolio/useBalRewards'
-import { useClaimableBalances } from '@/lib/modules/portfolio/useClaimableBalances'
+import { useClaimableBalances } from '@/lib/modules/portfolio/claim/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
 
 export function useClaiming() {
