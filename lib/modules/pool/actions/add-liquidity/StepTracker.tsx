@@ -1,62 +1,65 @@
 'use client'
 
-import { Text, VStack } from '@chakra-ui/react'
-import { useAddLiquidity } from './useAddLiquidity'
-import { useCurrentFlowStep } from '../useCurrentFlowStep'
-import { StepConfig } from '../useIterateSteps'
-import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { noop } from 'lodash'
+import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
+import {
+  Step,
+  StepDescription,
+  StepIcon,
+  StepIndicator,
+  StepNumber,
+  StepStatus,
+  StepTitle,
+  Stepper,
+} from '@chakra-ui/react'
+import { useAddLiquidity } from './useAddLiquidity'
 
 export function StepTracker() {
   const { stepConfigs, currentStepIndex } = useAddLiquidity()
   const relayerMode = useRelayerMode()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval()
-
   const hasSignRelayerStep = relayerMode === 'signRelayer'
 
-  const signRelayerConfig = { description: 'Sign relayer', render: noop } as StepConfig
+  function getCurrentIndex() {
+    if (hasSignRelayerStep) {
+      if (shouldSignRelayerApproval) return 0
+      return currentStepIndex + 1
+    }
+    return currentStepIndex
+  }
 
   function isCurrent(index: number) {
-    return currentStepIndex === index && !shouldSignRelayerApproval
+    return getCurrentIndex() === index
   }
 
-  function getStepNumber(index: number) {
-    return shouldSignRelayerApproval ? index + 2 : index + 1
-  }
+  const steps = hasSignRelayerStep ? [{ description: 'Sign relayer' }, ...stepConfigs] : stepConfigs
 
-  return (
-    <VStack align="flex-start">
-      {hasSignRelayerStep && (
-        <Step stepNumber={0} config={signRelayerConfig} isCurrent={shouldSignRelayerApproval} />
-      )}
-
-      {stepConfigs.map((config, index) => (
-        <Step
-          key={config.description}
-          stepNumber={getStepNumber(index)}
-          isCurrent={isCurrent(index)}
-          config={config}
-        />
-      ))}
-    </VStack>
-  )
+  return <Steps currentIndex={getCurrentIndex()} steps={steps} isCurrent={isCurrent}></Steps>
 }
 
 type Props = {
-  stepNumber: number
-  isCurrent: boolean
-  config: StepConfig
+  currentIndex: number
+  isCurrent: (i: number) => boolean
+  steps: { description: string }[]
 }
-function Step({ stepNumber, isCurrent, config }: Props) {
-  const { flowStep } = useCurrentFlowStep()
 
+function Steps({ currentIndex, steps, isCurrent }: Props) {
   return (
-    <VStack>
-      <Text>
-        {isCurrent && '*'} {stepNumber} {config.description}
-      </Text>
-      {isCurrent && flowStep && <Text>{JSON.stringify(flowStep.execution.status)}</Text>}
-    </VStack>
+    <Stepper index={currentIndex} orientation="vertical" colorScheme="blue">
+      {steps.map((step, index) => (
+        <Step key={index}>
+          <StepIndicator>
+            <StepStatus
+              complete={<StepIcon />}
+              incomplete={<StepNumber />}
+              active={<StepNumber />}
+            />
+          </StepIndicator>
+
+          <StepTitle>{step.description}</StepTitle>
+          {isCurrent(index) && <StepDescription>***</StepDescription>}
+        </Step>
+      ))}
+    </Stepper>
   )
 }
