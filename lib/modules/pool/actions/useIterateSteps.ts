@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { SupportedChainId } from '@/lib/config/config.types'
 
 export type OnStepCompleted = (step: FlowStep) => void
 
