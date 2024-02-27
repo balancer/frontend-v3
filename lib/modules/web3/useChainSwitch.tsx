@@ -4,26 +4,24 @@
 import { useNetwork, useSwitchNetwork } from 'wagmi'
 import { makeVar, useReactiveVar } from '@apollo/client'
 import { Button } from '@chakra-ui/react'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { getChainId, getChainShortName } from '@/lib/config/app.config'
+import { getChainShortName } from '@/lib/config/app.config'
+import { SupportedChainId } from '@/lib/config/config.types'
 
 export const connectToChainVar = makeVar(0)
-export const needsToSwitchChainVar = makeVar(false)
 
-export function useChainSwitch(chain: GqlChain) {
+export function useChainSwitch(chainId: SupportedChainId) {
   const { chain: connectedChain } = useNetwork()
   const { chains, error, isLoading, pendingChainId, switchNetwork } = useSwitchNetwork()
   const connectToChain = useReactiveVar(connectToChainVar)
-  const chainId = getChainId(chain)
 
   const isConnectedChain = chainId === connectedChain?.id
 
-  function setConnectToChain(chainId: number) {
+  function setConnectToChain(chainId: SupportedChainId) {
     connectToChainVar(chainId)
   }
 
   const networkSwitchButtonProps = {
-    name: getChainShortName(chain),
+    name: getChainShortName(chainId),
     switchNetwork,
     chainId,
     isLoading,
@@ -41,7 +39,7 @@ export function useChainSwitch(chain: GqlChain) {
 export interface NetworkSwitchButtonProps {
   name: string
   switchNetwork: ((chainId_?: number | undefined) => void) | undefined
-  chainId?: number
+  chainId: number
   isLoading: boolean
 }
 

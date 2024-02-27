@@ -18,7 +18,6 @@ import { useClaiming } from './useClaiming'
 import { Address } from 'wagmi'
 import { BalTokenReward } from '@/lib/modules/portfolio/useBalRewards'
 import { ClaimableReward } from '@/lib/modules/portfolio/useClaimableBalances'
-import { useChainSwitch } from '@/lib/modules/web3/useChainSwitch'
 
 type Props = {
   isOpen: boolean
@@ -36,9 +35,6 @@ export function ClaimModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const { currentStep, useOnStepCompleted, nonBalRewards, balRewards, hasNoRewards } = useClaiming()
-  const { isConnectedChain, NetworkSwitchButton, networkSwitchButtonProps } = useChainSwitch(
-    pool.chain
-  )
 
   function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
     if (reward.formattedBalance === '0') return null
@@ -72,9 +68,7 @@ export function ClaimModal({
         </ModalBody>
         <ModalFooter>
           <VStack w="full">
-            {!isConnectedChain ? (
-              <NetworkSwitchButton {...networkSwitchButtonProps} />
-            ) : hasNoRewards ? (
+            {hasNoRewards ? (
               <Button w="full" size="lg" onClick={onClose}>
                 Close
               </Button>
