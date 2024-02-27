@@ -8,7 +8,7 @@ import { useUnstakeGaugeCallDataQuery } from './useUnstakeGaugeCallDataQuery'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { useBalTokenRewards } from '@/lib/modules/portfolio/useBalRewards'
-import { useClaimableBalances } from '@/lib/modules/portfolio/useClaimableBalances'
+import { useClaimableBalances } from '@/lib/modules/portfolio/claim/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
 
 export function useConstructClaimAndUnstakeStep() {

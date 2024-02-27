@@ -6,15 +6,16 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { useIterateSteps } from '../useIterateSteps'
 import { useClaimAndUnstakeStepConfigs } from './useClaimAndUnstakeStepConfigs'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
-export function useUnstaking() {
+export function useUnstaking(chain: GqlChain) {
   const { isConnected } = useUserAccount()
   const { isDisabled, disabledReason } = isDisabledWithReason([
     !isConnected,
     LABELS.walletNotConnected,
   ])
 
-  const stepConfigs = useClaimAndUnstakeStepConfigs()
+  const stepConfigs = useClaimAndUnstakeStepConfigs(chain)
   const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
   return {

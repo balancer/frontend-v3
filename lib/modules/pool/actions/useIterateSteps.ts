@@ -1,12 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 export type OnStepCompleted = (step: FlowStep) => void
 
 // This props are common to every step component
 export type CommonStepProps = {
   useOnStepCompleted: OnStepCompleted
+}
+
+export interface MinterStepProps extends CommonStepProps {
+  chain: GqlChain
 }
 
 export interface StepConfig {
