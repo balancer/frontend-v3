@@ -35,8 +35,6 @@ export function TransactionStepButton({
     }
   }
 
-  console.log({ simulation })
-
   function getButtonLabel() {
     // sensible defaults for loading / confirm if not provided
     const relevantLabel = transactionLabels[transactionState as keyof typeof transactionLabels]
@@ -57,8 +55,6 @@ export function TransactionStepButton({
     }
     return relevantLabel
   }
-
-  console.log({ networkSwitchButtonProps })
 
   return (
     <VStack width="full">
