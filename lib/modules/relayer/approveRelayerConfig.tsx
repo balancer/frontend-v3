@@ -9,8 +9,11 @@ export const getApproveRelayerConfig = (chainId: SupportedChainId): StepConfig =
   },
 })
 
-function ApproveRelayerButton({ useOnStepCompleted, chainId }: CommonStepProps) {
-  const step = useConstructApproveRelayerStep(chainId!) // chainId will always be defined here, see ln 6
+function ApproveRelayerButton({
+  useOnStepCompleted,
+  chainId,
+}: CommonStepProps & { chainId: SupportedChainId }) {
+  const step = useConstructApproveRelayerStep(chainId)
 
   useOnStepCompleted(step)
 

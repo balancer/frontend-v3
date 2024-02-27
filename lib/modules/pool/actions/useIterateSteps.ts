@@ -8,7 +8,6 @@ export type OnStepCompleted = (step: FlowStep) => void
 // This props are common to every step component
 export type CommonStepProps = {
   useOnStepCompleted: OnStepCompleted
-  chainId?: SupportedChainId
 }
 
 export interface StepConfig {
