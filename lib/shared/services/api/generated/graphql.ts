@@ -7372,7 +7372,7 @@ export type GetSorSwapsQuery = {
       inputAmountRaw: string
       outputAmountRaw: string
       pools: Array<string | null>
-      vaultVersion: number
+      balancerVersion: number
       tokens: Array<{ __typename: 'Token'; address: string } | null>
     }>
     routes: Array<{
@@ -17384,7 +17384,11 @@ export const GetSorSwapsDocument = {
                           selections: [{ kind: 'Field', name: { kind: 'Name', value: 'address' } }],
                         },
                       },
-                      { kind: 'Field', name: { kind: 'Name', value: 'vaultVersion' } },
+                      {
+                        kind: 'Field',
+                        alias: { kind: 'Name', value: 'balancerVersion' },
+                        name: { kind: 'Name', value: 'vaultVersion' },
+                      },
                     ],
                   },
                 },

@@ -22,7 +22,7 @@ query GetSorSwaps(
       tokens {
         address
       }
-      vaultVersion
+      balancerVersion: vaultVersion
     }
     priceImpact
     returnAmount
