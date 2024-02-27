@@ -10,12 +10,7 @@ export class DefaultSwapHandler implements SwapHandler {
 
     const { data } = await this.apolloClient.query({
       query: GetSorSwapsDocument,
-      variables: {
-        ...variables,
-        swapOptions: {
-          maxPools: 8,
-        },
-      },
+      variables,
       fetchPolicy: 'no-cache',
       notifyOnNetworkStatusChange: true,
     })
