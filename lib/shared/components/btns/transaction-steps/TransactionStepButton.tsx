@@ -16,7 +16,7 @@ export function TransactionStepButton({
   step: { simulation, execution, result, transactionLabels, execute: managedRun },
 }: Props) {
   const { isConnected } = useUserAccount()
-  const { isConnectedChain, NetworkSwitchButton, networkSwitchButtonProps } = useChainSwitch(
+  const { shouldChangeNetwork, NetworkSwitchButton, networkSwitchButtonProps } = useChainSwitch(
     simulation.config.chainId as SupportedChainId
   )
   const isTransactButtonVisible = isConnected
@@ -65,10 +65,10 @@ export function TransactionStepButton({
       )}
       {execution.data?.hash && <TransactionStateData result={result}></TransactionStateData>}
       {!isTransactButtonVisible && <ConnectWallet />}
-      {!isConnectedChain && isTransactButtonVisible && (
+      {shouldChangeNetwork && isTransactButtonVisible && (
         <NetworkSwitchButton {...networkSwitchButtonProps} />
       )}
-      {isConnectedChain && isTransactButtonVisible && (
+      {!shouldChangeNetwork && isTransactButtonVisible && (
         <Button
           width="full"
           w="full"
