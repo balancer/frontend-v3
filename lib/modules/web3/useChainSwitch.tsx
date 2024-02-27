@@ -2,23 +2,15 @@
 'use client'
 
 import { useNetwork, useSwitchNetwork } from 'wagmi'
-import { makeVar, useReactiveVar } from '@apollo/client'
 import { Button } from '@chakra-ui/react'
 import { getChainShortName } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 
-export const connectToChainVar = makeVar(0)
-
 export function useChainSwitch(chainId: SupportedChainId) {
   const { chain: connectedChain } = useNetwork()
-  const { chains, error, isLoading, pendingChainId, switchNetwork } = useSwitchNetwork()
-  const connectToChain = useReactiveVar(connectToChainVar)
+  const { isLoading, switchNetwork } = useSwitchNetwork()
 
-  const isConnectedChain = chainId === connectedChain?.id
-
-  function setConnectToChain(chainId: SupportedChainId) {
-    connectToChainVar(chainId)
-  }
+  const shouldChangeNetwork = chainId !== connectedChain?.id
 
   const networkSwitchButtonProps = {
     name: getChainShortName(chainId),
@@ -28,9 +20,7 @@ export function useChainSwitch(chainId: SupportedChainId) {
   }
 
   return {
-    connectToChain,
-    isConnectedChain,
-    setConnectToChain,
+    shouldChangeNetwork,
     NetworkSwitchButton,
     networkSwitchButtonProps,
   }
