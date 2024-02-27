@@ -4,6 +4,7 @@ import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { useState } from 'react'
 import { ClaimRewardsModal } from '../pool/actions/claim/ClaimRewardsModal'
 import { PoolRewardsDataMap } from './usePortfolio'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 interface PortfolioPoolsListProps {
   pools: PoolListItem[]
@@ -11,15 +12,15 @@ interface PortfolioPoolsListProps {
   poolRewardsMap?: PoolRewardsDataMap
 }
 
-function getBalance(pool: PoolListItem, isStaked: boolean) {
-  const totalBalance = bn(pool.userBalance?.totalBalance || '0')
-  const stakedBalance = bn(pool.userBalance?.stakedBalance || '0')
-  return isStaked ? stakedBalance : totalBalance.minus(stakedBalance)
-}
-
 interface ClaimModalData {
   pool: PoolListItem
   gaugeAddresses: string[]
+}
+
+function getPoolBalance(pool: PoolListItem, isStaked: boolean) {
+  const totalBalance = bn(pool.userBalance?.totalBalance || '0')
+  const stakedBalance = bn(pool.userBalance?.stakedBalance || '0')
+  return isStaked ? stakedBalance : totalBalance.minus(stakedBalance)
 }
 
 export function PortfolioPoolsList({
@@ -29,6 +30,7 @@ export function PortfolioPoolsList({
 }: PortfolioPoolsListProps) {
   const [claimModalData, setClaimModalData] = useState<ClaimModalData | null>(null)
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false)
+  const { toCurrency } = useCurrency()
 
   function openClaimModal(pool: PoolListItem) {
     const gaugeData = pool.staking?.gauge
@@ -55,10 +57,18 @@ export function PortfolioPoolsList({
     <Stack>
       {pools.map(pool => (
         <HStack justifyContent="space-between" key={pool.id}>
-          <Text>{pool.name}</Text>
           <HStack>
-            <Text>{fNum('token', getBalance(pool, isStaked))}</Text>
-
+            <Text>[{pool.chain}]</Text>
+            <Text>{pool.name}</Text>
+          </HStack>
+          <HStack>
+            <Text>pool balance: {fNum('token', getPoolBalance(pool, isStaked))}</Text>
+            {poolRewardsMap && (
+              <Text>
+                claimable balance:{' '}
+                {toCurrency(poolRewardsMap?.[pool.id]?.totalFiatClaimBalance?.toString() || '0')}
+              </Text>
+            )}
             {isStaked && (
               <Button
                 variant="secondary"

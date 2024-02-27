@@ -8,9 +8,20 @@ import { HStack, Heading, Stack, Text } from '@chakra-ui/react'
 
 export default function Portfolio() {
   const { toCurrency } = useCurrency()
-  const { portfolioData, balRewardsData, protocolRewardsData, claimableRewards, poolRewardsMap } =
-    usePortfolio()
+  const {
+    portfolioData,
+    balRewardsData,
+    protocolRewardsData,
+    claimableRewards,
+    poolRewardsMap,
+    isLoading,
+  } = usePortfolio()
 
+  if (isLoading) {
+    return <Text>Loading...</Text>
+  }
+
+  // TODO: handle errors and no data state
   if (!portfolioData) {
     return null
   }

@@ -49,6 +49,7 @@ export function useMulticall(multicallRequests: ChainContractConfig[]) {
       multicallResults.map((result, i) => ({ ...result, chain: suppliedChains[i] })),
       'chain'
     ),
+    isLoading: multicallResults.some(result => result.isLoading),
     refetchAll,
   }
 }

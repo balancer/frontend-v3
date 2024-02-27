@@ -63,7 +63,7 @@ export function ClaimRewardsModal({
       <ModalContent>
         <ModalHeader>
           <Heading fontWeight="bold" size="h5">
-            Claim rewards
+            [{pool.chain}] Claim rewards
           </Heading>
         </ModalHeader>
         <ModalCloseButton />
