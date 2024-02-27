@@ -7,6 +7,7 @@ import { Button, VStack } from '@chakra-ui/react'
 import { usePoolRedirect } from '../../pool.hooks'
 import { useConstructStakingDepositActionStep } from '../../../staking/staking.actions'
 import { useStaking } from './useStaking'
+import { getChainId } from '@/lib/config/app.config'
 
 export const stakeConfig: StepConfig = {
   render() {
@@ -20,7 +21,11 @@ function StakeButton() {
   const { rawAmount } = useStaking()
   const { redirectToPoolPage } = usePoolRedirect(pool)
 
-  const stakeStep = useConstructStakingDepositActionStep(pool.staking, rawAmount)
+  const stakeStep = useConstructStakingDepositActionStep(
+    getChainId(pool.chain),
+    pool.staking,
+    rawAmount
+  )
 
   const isComplete = stakeStep.isComplete()
 

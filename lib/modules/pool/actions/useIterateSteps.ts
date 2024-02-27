@@ -1,12 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { SupportedChainId } from '@/lib/config/config.types'
 
 export type OnStepCompleted = (step: FlowStep) => void
 
 // This props are common to every step component
 export type CommonStepProps = {
   useOnStepCompleted: OnStepCompleted
+  chainId?: SupportedChainId
 }
 
 export interface StepConfig {

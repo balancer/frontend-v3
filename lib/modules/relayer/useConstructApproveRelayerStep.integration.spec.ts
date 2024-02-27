@@ -5,7 +5,7 @@ import { useConstructApproveRelayerStep } from './useConstructApproveRelayerStep
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 
 test('Runs relayer approval transaction and queries that it was approved', async () => {
-  const { result } = testHook(() => useConstructApproveRelayerStep())
+  const { result } = testHook(() => useConstructApproveRelayerStep(1))
 
   await waitFor(() => expect(result.current.simulation.isSuccess).toBeTruthy())
 

@@ -7,9 +7,10 @@ import {
   OnTransactionStateUpdate,
   TransactionState,
 } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { approveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
+import { getApproveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { AddLiquidityButton } from './AddLiquidityButton'
 import { StepConfig } from '../useIterateSteps'
+import { getChainId } from '@/lib/config/app.config'
 
 function buildAddLiquidityConfig(onTransactionStateUpdate: OnTransactionStateUpdate): StepConfig {
   return {
@@ -35,7 +36,8 @@ export function useAddLiquidityStepConfigs(
   let stepConfigs = [...tokenApprovalConfigs, buildAddLiquidityConfig(setAddLiquidityTxState)]
 
   if (relayerMode === 'approveRelayer') {
-    stepConfigs = [approveRelayerConfig, ...stepConfigs]
+    const chainId = getChainId(pool.chain)
+    stepConfigs = [getApproveRelayerConfig(chainId), ...stepConfigs]
   }
 
   return stepConfigs

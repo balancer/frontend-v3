@@ -2,7 +2,7 @@
 import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { usePool } from '../../pool/usePool'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
-import { getNetworkConfig } from '@/lib/config/app.config'
+import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { useHasMinterApproval } from './useHasMinterApproval'
 import { useEffect } from 'react'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
@@ -26,6 +26,7 @@ export function useConstructMinterApprovalStep() {
     'balancer.minter',
     'setMinterApproval',
     transactionLabels,
+    getChainId(pool.chain),
     { args: [networkConfig.contracts.balancer.relayerV6, true] },
     { enabled: !isLoading }
   )

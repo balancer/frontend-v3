@@ -5,8 +5,9 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useEffect } from 'react'
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
+import { SupportedChainId } from '@/lib/config/config.types'
 
-export function useConstructApproveRelayerStep() {
+export function useConstructApproveRelayerStep(chainId: SupportedChainId) {
   const { userAddress, isConnected } = useUserAccount()
   const networkConfig = useNetworkConfig()
 
@@ -27,6 +28,7 @@ export function useConstructApproveRelayerStep() {
     'balancer.vaultV2',
     'setRelayerApproval',
     transactionLabels,
+    chainId,
     {
       args: [userAddress, relayerAddress, true],
     },

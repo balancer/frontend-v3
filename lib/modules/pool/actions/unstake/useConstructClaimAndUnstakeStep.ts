@@ -5,7 +5,7 @@ import { BPT_DECIMALS } from '../../pool.constants'
 import { usePool } from '../../usePool'
 import { selectStakingService } from '@/lib/modules/staking/selectStakingService'
 import { useUnstakeGaugeCallDataQuery } from './useUnstakeGaugeCallDataQuery'
-import { getNetworkConfig } from '@/lib/config/app.config'
+import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { useBalTokenRewards } from '@/lib/modules/portfolio/useBalRewards'
 import { useClaimableBalances } from '@/lib/modules/portfolio/useClaimableBalances'
@@ -41,6 +41,7 @@ export function useConstructClaimAndUnstakeStep() {
     'balancer.relayerV6',
     'multicall',
     transactionLabels,
+    getChainId(pool.chain),
     { args: [data] },
     { enabled: !!pool }
   )

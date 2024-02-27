@@ -47,10 +47,10 @@ export function useConstructClaimAllRewardsStep({
     'balancer.relayerV6',
     'multicall',
     transactionLabels,
+    getChainId(chain),
     { args: [claimData] },
     {
       enabled: gaugeAddresses.length > 0 && claimData && claimData.length > 0,
-      chainId: getChainId(chain),
     }
   )
 

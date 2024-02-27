@@ -19,6 +19,7 @@ export function useConstructClaimVeBalRewardsStep() {
     'balancer.feeDistributor',
     'claimTokens',
     transactionLabels,
+    1, // only on mainnet
     { args: [userAddress, claimableVeBalRewardsTokens] },
     { enabled: !!userAddress }
   )

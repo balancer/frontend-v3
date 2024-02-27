@@ -1,10 +1,11 @@
 import { useHasApprovedRelayer } from '@/lib/modules/relayer/useHasApprovedRelayer'
 import { useHasMinterApproval } from '@/lib/modules/staking/gauge/useHasMinterApproval'
-import { approveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
+import { getApproveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { minterApprovalConfig } from '@/lib/modules/staking/gauge/minterApprovalConfig'
 import { ClaimAllRewardsButton } from './ClaimAllRewardsButton'
 import { Address } from 'viem'
 import { GqlChain, GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
+import { getChainId } from '@/lib/config/app.config'
 
 export function useClaimStepConfigs(
   gaugeAddresses: Address[],
@@ -27,7 +28,8 @@ export function useClaimStepConfigs(
   ]
 
   if (!hasApprovedRelayer) {
-    stepConfigs = [approveRelayerConfig, ...stepConfigs]
+    const chainId = getChainId(chain)
+    stepConfigs = [getApproveRelayerConfig(chainId), ...stepConfigs]
   }
 
   if (!hasMinterApproval) {

@@ -4,8 +4,12 @@ import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transa
 import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 import { useEffect } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
+import { usePool } from '../../usePool'
+import { getChainId } from '@/lib/config/app.config'
 
 export function useConstructAddLiquidityStep() {
+  const { pool } = usePool()
+
   const transactionLabels: TransactionLabels = {
     init: 'Add liquidity',
     confirming: 'Confirming...',
@@ -25,6 +29,7 @@ export function useConstructAddLiquidityStep() {
 
   const addLiquidityTransaction = useManagedSendTransaction(
     transactionLabels,
+    getChainId(pool.chain),
     buildCallDataQuery.data
   )
 

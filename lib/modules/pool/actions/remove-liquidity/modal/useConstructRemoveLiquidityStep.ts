@@ -4,8 +4,12 @@ import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transa
 import { useRemoveLiquidityBuildCallDataQuery } from '../queries/useRemoveLiquidityBuildCallDataQuery'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useEffect } from 'react'
+import { usePool } from '../../../usePool'
+import { getChainId } from '@/lib/config/app.config'
 
 export function useConstructRemoveLiquidityStep() {
+  const { pool } = usePool()
+
   const transactionLabels: TransactionLabels = {
     init: 'Remove liquidity',
     confirming: 'Confirming...',
@@ -25,6 +29,7 @@ export function useConstructRemoveLiquidityStep() {
 
   const removeLiquidityTransaction = useManagedSendTransaction(
     transactionLabels,
+    getChainId(pool.chain),
     buildCallDataQuery.data
   )
 
