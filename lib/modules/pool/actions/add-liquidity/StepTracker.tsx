@@ -3,6 +3,13 @@
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
 import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Heading,
   Step,
   StepDescription,
   StepIcon,
@@ -34,7 +41,21 @@ export function StepTracker() {
 
   const steps = hasSignRelayerStep ? [{ description: 'Sign relayer' }, ...stepConfigs] : stepConfigs
 
-  return <Steps currentIndex={getCurrentIndex()} steps={steps} isCurrent={isCurrent}></Steps>
+  return (
+    <Accordion width="full" variant="gradient" allowToggle textAlign="left">
+      <AccordionItem m="0" p="0">
+        <AccordionButton p="0" mb="4">
+          <Box width="full" textAlign="left">
+            <Heading variant="accordionHeading">Step details</Heading>
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
+        <AccordionPanel m="0" p="0">
+          <Steps currentIndex={getCurrentIndex()} steps={steps} isCurrent={isCurrent}></Steps>
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
+  )
 }
 
 type Props = {
