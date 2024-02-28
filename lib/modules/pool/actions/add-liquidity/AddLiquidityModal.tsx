@@ -90,7 +90,9 @@ export function AddLiquidityModal({
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="md" align="start">
-            <StepTracker />
+            <Card variant="level5" p="md" shadow="sm" w="full">
+              <StepTracker />
+            </Card>
             <Card variant="level5" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">

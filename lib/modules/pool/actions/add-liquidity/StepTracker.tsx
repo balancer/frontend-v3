@@ -8,17 +8,19 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Box,
-  Heading,
+  Circle,
+  CircularProgress,
+  CircularProgressLabel,
+  ColorMode,
+  HStack,
   Step,
-  StepDescription,
-  StepIcon,
-  StepIndicator,
-  StepNumber,
-  StepStatus,
-  StepTitle,
   Stepper,
+  Text,
+  VStack,
+  useColorMode,
 } from '@chakra-ui/react'
+
+import { CheckIcon } from '@chakra-ui/icons'
 import { useAddLiquidity } from './useAddLiquidity'
 
 export function StepTracker() {
@@ -41,21 +43,56 @@ export function StepTracker() {
 
   const steps = hasSignRelayerStep ? [{ title: 'Sign relayer' }, ...stepConfigs] : stepConfigs
 
+  const currentStepTitle = steps[getCurrentIndex()].title
+
+  const currentStepPosition = `Step ${getCurrentIndex() + 1}/${steps.length}`
+
   return (
     <Accordion width="full" variant="gradient" allowToggle textAlign="left">
       <AccordionItem m="0" p="0">
         <AccordionButton p="0" mb="4">
-          <Box width="full" textAlign="left">
-            <Heading variant="accordionHeading">Step details</Heading>
-          </Box>
-          <AccordionIcon />
+          <HStack width="full" justify="flex-start" fontSize="md">
+            <CustomStepIndicator stepNumber={1} status="active" />
+            <Text>{currentStepTitle}</Text>
+          </HStack>
+          <HStack justify="flex-end" fontSize="sm">
+            <Text whiteSpace="nowrap">{currentStepPosition}</Text>
+            <AccordionIcon />
+          </HStack>
         </AccordionButton>
-        <AccordionPanel m="0" p="0">
+        <AccordionPanel marginInlineStart="2" p="0">
           <Steps currentIndex={getCurrentIndex()} steps={steps} isCurrent={isCurrent}></Steps>
         </AccordionPanel>
       </AccordionItem>
     </Accordion>
   )
+}
+
+function getColor(colorMode: ColorMode, status: string) {
+  const activeColor = {
+    dark: 'gradient',
+    light: 'blue',
+  }
+
+  const completeColor = {
+    dark: 'green',
+    light: 'green',
+  }
+
+  const incompleteColor = {
+    dark: 'gray',
+    light: 'gray',
+  }
+  if (status === 'active') {
+    return activeColor[colorMode]
+  }
+  if (status === 'complete') {
+    return completeColor[colorMode]
+  }
+  if (status === 'incomplete') {
+    return incompleteColor[colorMode]
+  }
+  return 'blue'
 }
 
 type Props = {
@@ -65,22 +102,60 @@ type Props = {
 }
 
 function Steps({ currentIndex, steps, isCurrent }: Props) {
+  const { colorMode } = useColorMode()
+
+  function getStatus(index: number) {
+    if (index < currentIndex) return 'complete'
+    if (index === currentIndex) return 'active'
+    return 'incomplete'
+  }
+
   return (
-    <Stepper index={currentIndex} orientation="vertical" colorScheme="blue">
+    <Stepper index={currentIndex} orientation="vertical">
       {steps.map((step, index) => (
         <Step key={index}>
-          <StepIndicator>
-            <StepStatus
-              complete={<StepIcon />}
-              incomplete={<StepNumber />}
-              active={<StepNumber />}
-            />
-          </StepIndicator>
+          <CustomStepIndicator
+            stepNumber={index + 1}
+            status={getStatus(index)}
+          ></CustomStepIndicator>
 
-          <StepTitle>{step.title}</StepTitle>
-          {isCurrent(index) && <StepDescription>***</StepDescription>}
+          <VStack>
+            <Text color={getColor(colorMode, getStatus(index))}>{step.title}</Text>
+            S: {getStatus(index)}
+            {isCurrent(index) && (
+              <Text variant="secondary" fontSize="0.85rem">
+                APR range
+              </Text>
+            )}
+          </VStack>
         </Step>
       ))}
     </Stepper>
+  )
+}
+
+export function CustomStepIndicator({
+  stepNumber,
+  status,
+}: {
+  stepNumber: number
+  status: string
+}) {
+  const { colorMode } = useColorMode()
+
+  if (status === 'complete') {
+    return (
+      <Circle size="7" bg="transparent" color="green" border="2px">
+        <CheckIcon rounded="full" />
+      </Circle>
+    )
+  }
+
+  return (
+    <CircularProgress value={100} thickness="4" size="8" color={getColor(colorMode, status)}>
+      <CircularProgressLabel fontSize="md" color={getColor(colorMode, status)}>
+        {stepNumber}
+      </CircularProgressLabel>
+    </CircularProgress>
   )
 }
