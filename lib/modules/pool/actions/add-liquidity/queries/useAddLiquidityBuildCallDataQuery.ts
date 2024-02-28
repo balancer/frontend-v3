@@ -22,7 +22,7 @@ export function useAddLiquidityBuildCallDataQuery() {
   const queryKey = addLiquidityKeys.buildCallData({
     userAddress,
     slippage,
-    poolId: pool.id,
+    pool,
     humanAmountsIn,
   })
 

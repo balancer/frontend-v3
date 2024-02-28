@@ -4,21 +4,20 @@
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
-import { makeVar, useReactiveVar } from '@apollo/client'
 import { HumanAmountIn } from '../liquidity-types'
 import { Address, parseUnits } from 'viem'
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { usePool } from '../../usePool'
 import { BPT_DECIMALS } from '../../pool.constants'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useTokenApprovalConfigs'
 import { stakeConfig } from './stakeConfig'
 import { useIterateSteps } from '../useIterateSteps'
 import { getChainId } from '@/lib/config/app.config'
 
-export const humanAmountInVar = makeVar<HumanAmountIn | null>(null)
-
 export function useStaking() {
+  const [humanAmountIn, setHumanAmountIn] = useState<HumanAmountIn | null>(null)
+
   const { userAddress, isConnected } = useUserAccount()
   const { pool } = usePool()
   const { isDisabled, disabledReason } = isDisabledWithReason([
@@ -26,23 +25,21 @@ export function useStaking() {
     LABELS.walletNotConnected,
   ])
 
-  const humanAmountIn = useReactiveVar(humanAmountInVar)
-
   function setInitialHumanAmountIn() {
     const amountIn = {
       tokenAddress: pool.address,
       humanAmount: pool.userBalance?.walletBalance,
     } as HumanAmountIn
 
-    humanAmountInVar(amountIn)
+    setHumanAmountIn(amountIn)
   }
 
-  const tokenAllowances = useTokenAllowances(
+  const tokenAllowances = useTokenAllowances({
+    chainId: getChainId(pool.chain),
     userAddress,
-    pool.staking?.address as Address,
-    [humanAmountIn?.tokenAddress as Address],
-    getChainId(pool.chain)
-  )
+    spenderAddress: pool.staking?.address as Address,
+    tokenAddresses: [humanAmountIn?.tokenAddress as Address],
+  })
 
   const rawAmount = parseUnits(humanAmountIn?.humanAmount || '', BPT_DECIMALS)
 

@@ -38,12 +38,12 @@ export function useTokenApprovalConfigs({
 
   const approvalTokenAddresses = _approvalAmounts.map(amount => amount.address)
 
-  const tokenAllowances = useTokenAllowances(
+  const tokenAllowances = useTokenAllowances({
+    chainId: getChainId(chain),
     userAddress,
     spenderAddress,
-    approvalTokenAddresses,
-    getChainId(chain)
-  )
+    tokenAddresses: approvalTokenAddresses,
+  })
 
   const tokenAmountsToApprove = getRequiredTokenApprovals({
     chainId: chain,

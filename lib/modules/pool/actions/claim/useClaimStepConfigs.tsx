@@ -2,7 +2,7 @@ import { useHasApprovedRelayer } from '@/lib/modules/relayer/useHasApprovedRelay
 import { useHasMinterApproval } from '@/lib/modules/staking/gauge/useHasMinterApproval'
 import { getApproveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { minterApprovalConfig } from '@/lib/modules/staking/gauge/minterApprovalConfig'
-import { ClaimAllRewardsButton } from './ClaimAllRewardsButton'
+import { ClaimAllRewardsButton } from '../../../portfolio/claim/ClaimAllRewardsButton'
 import { Address } from 'viem'
 import { GqlChain, GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 import { getChainId } from '@/lib/config/app.config'
@@ -33,7 +33,7 @@ export function useClaimStepConfigs(
   }
 
   if (!hasMinterApproval) {
-    stepConfigs = [minterApprovalConfig, ...stepConfigs]
+    stepConfigs = [minterApprovalConfig(chain), ...stepConfigs]
   }
 
   return stepConfigs

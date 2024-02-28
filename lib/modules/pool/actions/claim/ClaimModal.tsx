@@ -17,7 +17,7 @@ import { Pool } from '../../usePool'
 import { useClaiming } from './useClaiming'
 import { Address } from 'wagmi'
 import { BalTokenReward } from '@/lib/modules/portfolio/useBalRewards'
-import { ClaimableReward } from '@/lib/modules/portfolio/useClaimableBalances'
+import { ClaimableReward } from '@/lib/modules/portfolio/claim/useClaimableBalances'
 
 type Props = {
   isOpen: boolean
@@ -69,7 +69,7 @@ export function ClaimModal({
         <ModalFooter>
           <VStack w="full">
             {hasNoRewards ? (
-              <Button w="full" size="lg" onClick={onClose}>
+              <Button size="lg" onClick={onClose}>
                 Close
               </Button>
             ) : (

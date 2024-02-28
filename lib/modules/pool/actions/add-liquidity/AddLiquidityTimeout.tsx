@@ -19,7 +19,7 @@ function useAddLiquidityTimeout({ addLiquidityTxState }: Props) {
     intervalMs: 1000,
   })
 
-  const { simulationQuery, priceImpactQuery, previewModalDisclosure } = useAddLiquidity()
+  const { previewModalDisclosure, refetchQuote } = useAddLiquidity()
 
   const isConfirmingAddLiquidity = addLiquidityTxState === TransactionState.Confirming
   const isAwaitingUserConfirmation = addLiquidityTxState === TransactionState.Loading
@@ -35,7 +35,7 @@ function useAddLiquidityTimeout({ addLiquidityTxState }: Props) {
     const refetchQueries = async () => {
       stopCountdown()
       resetCountdown()
-      await Promise.all([simulationQuery.refetch(), priceImpactQuery.refetch()])
+      await refetchQuote()
       startCountdown()
     }
     if (secondsToRefetch === 0 && !shouldFreezeQuote) refetchQueries()

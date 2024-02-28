@@ -16,11 +16,16 @@ export const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7' as const
 export const ethAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' as const
 export const maticAddress = '0x0000000000000000000000000000000000001010' as const
 
+export const vEth = '0x4bc3263eb5bb2ef7ad9ab6fb68be80e43b43801f' as const
+
 export const nested50WETH_50_3poolId =
   '0x08775ccb6674d6bdceb0797c364c2653ed84f3840002000000000000000004f0' as const //50WETH-50-3pool
 
 export const threePoolId =
   '0x79c58f70905f734641735bc61e45c19dd9ad60bc0000000000000000000004e7' as const
+
+export const gyro2CLP_USDC_DAI =
+  '0xdac42eeb17758daa38caf9a3540c808247527ae3000200000000000000000a2b' as const
 
 export const vaultV2Address = mainnetNetworkConfig.contracts.balancer.vaultV2 as Address
 

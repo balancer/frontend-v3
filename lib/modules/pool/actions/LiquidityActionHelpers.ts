@@ -1,7 +1,9 @@
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
+import { GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { SentryError } from '@/lib/shared/utils/errors'
 import {
   HumanAmount,
   InputAmount,
@@ -9,17 +11,17 @@ import {
   NestedPool,
   NestedPoolState,
   PoolState,
+  PoolStateWithBalances,
+  RawPoolToken,
   TokenAmount,
   mapPoolType,
 } from '@balancer/sdk'
 import { keyBy } from 'lodash'
 import { Hex, formatUnits, parseUnits } from 'viem'
 import { Address } from 'wagmi'
+import { hasNestedPools, isGyro } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
-import { GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
-import { SentryError } from '@/lib/shared/utils/errors'
-import { hasNestedPools } from '../pool.helpers'
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -44,6 +46,10 @@ export class LiquidityActionHelpers {
   /* Used by default nested SDK handlers */
   public get nestedPoolState(): NestedPoolState {
     return mapPoolToNestedPoolState(this.pool)
+  }
+
+  public get poolStateWithBalances(): PoolStateWithBalances {
+    return toPoolStateWithBalances(this.pool)
   }
 
   public get networkConfig() {
@@ -144,16 +150,23 @@ export function shouldUseNestedLiquidity(pool: Pool) {
   return supportsNestedLiquidity(pool) && hasNestedPools(pool)
 }
 
+export function requiresProportionalInput(poolType: GqlPoolType) {
+  return isGyro(poolType)
+}
+
 export function toPoolState(pool: Pool): PoolState {
   if (pool.type === 'META_STABLE') {
     throw new Error('META_STABLE pool type is not yet supported by the SDK')
   }
 
+  // TODO: fix in SDK
+  const poolType = pool.type === GqlPoolType.Gyro ? 'GYRO2' : pool.type
+
   return {
     id: pool.id as Hex,
     address: pool.address as Address,
     tokens: pool.tokens as MinimalToken[],
-    type: mapPoolType(pool.type),
+    type: mapPoolType(poolType),
     balancerVersion: 2, //TODO: change to dynamic version when we implement v3 integration
   }
 }
@@ -215,4 +228,17 @@ export function mapPoolToNestedPoolState(pool: Pool): NestedPoolState {
     pools,
     mainTokens,
   } as NestedPoolState
+}
+
+export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
+  // TODO: fix in SDK
+  const poolType = pool.type === GqlPoolType.Gyro ? 'GYRO2' : pool.type
+  return {
+    id: pool.id as Hex,
+    address: pool.address as Address,
+    tokens: pool.tokens as RawPoolToken[],
+    type: mapPoolType(poolType),
+    totalShares: pool.dynamicData.totalShares as HumanAmount,
+    balancerVersion: 2, //TODO: change to dynamic version when we implement v3 integration
+  }
 }

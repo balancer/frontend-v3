@@ -19,6 +19,12 @@ export default function Debug() {
       >
         Add liquidity in nested pool (50WETH-50-3pool)
       </Link>
+      <Link
+        as={NextLink}
+        href="pools/polygon/v2/0xdac42eeb17758daa38caf9a3540c808247527ae3000200000000000000000a2b/add-liquidity"
+      >
+        Add liquidity in Gyro pool (2CLP_USDC/DAI)
+      </Link>
       <Link as={NextLink} href="/debug/token-select">
         Token select
       </Link>

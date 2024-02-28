@@ -1,5 +1,5 @@
 import { Address } from 'viem'
-import { useConstructClaimAllRewardsStep } from './useConstructClaimAllRewardsStep'
+import { useConstructClaimAllRewardsStep } from '../../pool/actions/claim/useConstructClaimAllRewardsStep'
 import { GqlChain, GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
 import { VStack } from '@chakra-ui/react'

@@ -8,26 +8,33 @@ export type TokenAllowances = Record<Address, bigint>
 
 export type UseTokenAllowancesResponse = ReturnType<typeof useTokenAllowances>
 
-export function useTokenAllowances(
-  userAccount: Address,
-  spenderAddress: Address,
-  tokenAddresses: Address[],
-  chainId: number
-) {
+type Props = {
+  chainId: SupportedChainId
+  userAddress: Address
+  spenderAddress: Address
+  tokenAddresses: Address[]
+}
+
+export function useTokenAllowances({
+  chainId,
+  userAddress,
+  spenderAddress,
+  tokenAddresses,
+}: Props) {
   const contracts: ContractFunctionConfig<Erc20Abi, 'allowance'>[] = tokenAddresses.map(
     tokenAddress => ({
+      chainId,
       address: tokenAddress,
       abi: erc20ABI,
       functionName: 'allowance',
-      chainId,
-      args: [userAccount, spenderAddress],
+      args: [userAddress, spenderAddress],
     })
   )
 
   const result = useContractReads({
     contracts,
     allowFailure: false,
-    enabled: !!spenderAddress && !!userAccount,
+    enabled: !!spenderAddress && !!userAddress,
   })
 
   const allowancesByTokenAddress = result.data ? zipObject(tokenAddresses, result.data) : {}
