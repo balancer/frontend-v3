@@ -20,13 +20,16 @@ import {
 } from '@chakra-ui/react'
 import { useRef } from 'react'
 import { Address } from 'wagmi'
-import { AddLiquidityModal } from './AddLiquidityModal'
-import { useAddLiquidity } from './useAddLiquidity'
+import { AddLiquidityModal } from '../AddLiquidityModal'
+import { useAddLiquidity } from '../useAddLiquidity'
 import { fNum, safeTokenFormat } from '@/lib/shared/utils/numbers'
-import { BPT_DECIMALS } from '../../pool.constants'
+import { BPT_DECIMALS } from '../../../pool.constants'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
-import { StepTracker } from './StepTracker'
+import { ProportionalInputs } from './ProportionalInputs'
+import { usePool } from '../../../usePool'
+import { requiresProportionalInput } from '../../LiquidityActionHelpers'
+import { StepTracker } from '../StepTracker'
 
 export function AddLiquidityForm() {
   const {
@@ -37,6 +40,7 @@ export function AddLiquidityForm() {
     validTokens,
     priceImpactQuery,
     simulationQuery,
+    refetchQuote,
     isDisabled,
     disabledReason,
     previewModalDisclosure,
@@ -44,6 +48,7 @@ export function AddLiquidityForm() {
   const { toCurrency } = useCurrency()
   const { slippage } = useUserSettings()
   const nextBtn = useRef(null)
+  const { pool } = usePool()
 
   function currentValueFor(tokenAddress: string) {
     const amountIn = amountsIn.find(amountIn => isSameAddress(amountIn.tokenAddress, tokenAddress))
@@ -55,6 +60,14 @@ export function AddLiquidityForm() {
 
   const priceImpact = priceImpactQuery?.data
   const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
+
+  const onModalOpen = async () => {
+    previewModalDisclosure.onOpen()
+    if (requiresProportionalInput(pool.type)) {
+      // Edge-case refetch to avoid mismatches in proportional bptOut calculations
+      await refetchQuote()
+    }
+  }
 
   const onModalClose = () => {
     previewModalDisclosure.onClose()
@@ -73,22 +86,27 @@ export function AddLiquidityForm() {
               </Heading>
               <TransactionSettings size="sm" />
             </HStack>
-            <VStack spacing="md" w="full">
-              {tokens.map(token => {
-                if (!token) return <div>Missing token</div>
-                return (
-                  <TokenInput
-                    key={token.address}
-                    address={token.address}
-                    chain={token.chain}
-                    value={currentValueFor(token.address)}
-                    onChange={e =>
-                      setAmountIn(token.address as Address, e.currentTarget.value as HumanAmount)
-                    }
-                  />
-                )
-              })}
-            </VStack>
+
+            {requiresProportionalInput(pool.type) ? (
+              <ProportionalInputs />
+            ) : (
+              <VStack spacing="md" w="full">
+                {tokens.map(token => {
+                  if (!token) return <div>Missing token</div>
+                  return (
+                    <TokenInput
+                      key={token.address}
+                      address={token.address}
+                      chain={token.chain}
+                      value={currentValueFor(token.address)}
+                      onChange={e =>
+                        setAmountIn(token.address as Address, e.currentTarget.value as HumanAmount)
+                      }
+                    />
+                  )
+                })}
+              </VStack>
+            )}
 
             <VStack spacing="sm" align="start" w="full" px="md">
               <HStack justify="space-between" w="full">
@@ -117,7 +135,7 @@ export function AddLiquidityForm() {
                     <NumberText color="grayText">{bptOutLabel}</NumberText>
                   )}
                   <Tooltip
-                    label={`LP tokens you are expected to recieve. Does not include potential slippage (${fNum(
+                    label={`LP tokens you are expected to receive. Does not include potential slippage (${fNum(
                       'slippage',
                       slippage
                     )}).`}
@@ -153,7 +171,7 @@ export function AddLiquidityForm() {
                 w="full"
                 size="lg"
                 isDisabled={isDisabled || simulationQuery.isLoading}
-                onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
+                onClick={() => !isDisabled && onModalOpen()}
               >
                 Next
               </Button>

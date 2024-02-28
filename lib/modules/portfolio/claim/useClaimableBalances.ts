@@ -1,9 +1,9 @@
-import { PoolListItem } from '../pool/pool.types'
+import { PoolListItem } from '../../pool/pool.types'
 import { Address } from 'wagmi'
-import { useUserAccount } from '../web3/useUserAccount'
-import { useMulticall } from '../web3/contracts/useMulticall'
-import { AbiMap } from '../web3/contracts/AbiMap'
-import { ClaimableBalanceResult } from './usePortfolio'
+import { useUserAccount } from '../../web3/useUserAccount'
+import { useMulticall } from '../../web3/contracts/useMulticall'
+import { AbiMap } from '../../web3/contracts/AbiMap'
+import { ClaimableBalanceResult } from '../usePortfolio'
 import { useMemo } from 'react'
 import { formatUnits } from 'viem'
 import { fNum } from '@/lib/shared/utils/numbers'
@@ -99,7 +99,17 @@ export function useClaimableBalances(pools: PoolListItem[]) {
     []
   )
 
+  const claimableRewardsByPoolMap = useMemo(() => {
+    return poolRewardTokensData.reduce((acc: Record<string, ClaimableReward[]>, reward) => {
+      const poolId = reward.pool.id
+      if (!acc[poolId]) acc[poolId] = []
+      acc[poolId].push(reward)
+      return acc
+    }, {})
+  }, [poolRewardTokensData])
+
   return {
+    claimableRewardsByPoolMap,
     claimableRewards: poolRewardTokensData,
     refetchClaimableRewards: refetchAll,
   }

@@ -4,8 +4,9 @@ import { useHasMinterApproval } from '@/lib/modules/staking/gauge/useHasMinterAp
 import { approveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { minterApprovalConfig } from '@/lib/modules/staking/gauge/minterApprovalConfig'
 import { StepConfig } from '../useIterateSteps'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
-export function useClaimAndUnstakeStepConfigs() {
+export function useClaimAndUnstakeStepConfigs(chain: GqlChain) {
   const { hasMinterApproval } = useHasMinterApproval()
   const { hasApprovedRelayer } = useHasApprovedRelayer()
 
@@ -21,7 +22,7 @@ export function useClaimAndUnstakeStepConfigs() {
   }
 
   if (!hasMinterApproval) {
-    stepConfigs = [minterApprovalConfig, ...stepConfigs]
+    stepConfigs = [minterApprovalConfig(chain), ...stepConfigs]
   }
 
   return stepConfigs

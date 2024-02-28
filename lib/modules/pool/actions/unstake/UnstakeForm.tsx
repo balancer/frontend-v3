@@ -6,7 +6,7 @@ import { useUnstaking } from './useUnstaking'
 
 export function UnstakeForm() {
   const { pool } = usePool()
-  const { currentStep, useOnStepCompleted } = useUnstaking()
+  const { currentStep, useOnStepCompleted } = useUnstaking(pool.chain)
 
   return (
     <Center h="full" w="full" maxW="lg" mx="auto">

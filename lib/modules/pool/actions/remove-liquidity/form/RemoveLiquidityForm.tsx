@@ -29,6 +29,7 @@ import { RemoveLiquiditySingleToken } from './RemoveLiquiditySingleToken'
 import { usePool } from '../../../usePool'
 import { usePoolRedirect } from '../../../pool.hooks'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
+import { requiresProportionalInput } from '../../LiquidityActionHelpers'
 
 const TABS: ButtonGroupOption[] = [
   {
@@ -98,17 +99,19 @@ export function RemoveLiquidityForm() {
               </Heading>
               <TransactionSettings size="sm" />
             </HStack>
-            <HStack>
-              <ButtonGroup
-                currentOption={activeTab}
-                options={TABS}
-                onChange={toggleTab}
-                size="lg"
-              />
-              <Tooltip label="Remove liquidity type" fontSize="sm">
-                <InfoOutlineIcon color="grayText" />
-              </Tooltip>
-            </HStack>
+            {!requiresProportionalInput && (
+              <HStack>
+                <ButtonGroup
+                  currentOption={activeTab}
+                  options={TABS}
+                  onChange={toggleTab}
+                  size="lg"
+                />
+                <Tooltip label="Remove liquidity type" fontSize="sm">
+                  <InfoOutlineIcon color="grayText" />
+                </Tooltip>
+              </HStack>
+            )}
             <VStack w="full" spacing="md">
               <InputWithSlider
                 value={totalUsdValue}
