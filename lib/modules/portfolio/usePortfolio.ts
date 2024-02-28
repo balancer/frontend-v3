@@ -8,6 +8,7 @@ import { ClaimableReward, useClaimableBalances } from './claim/useClaimableBalan
 import { BalTokenReward, useBalTokenRewards } from './useBalRewards'
 import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
+import { Address } from 'viem'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
@@ -21,6 +22,18 @@ export interface PoolRewardsData extends PoolListItem {
 }
 
 export type PoolRewardsDataMap = Record<string, PoolRewardsData>
+
+export function getAllGaugesAddressesFromPool(pool: PoolListItem) {
+  const arr = []
+  const staking = pool.staking
+
+  if (staking?.gauge) arr.push(staking.gauge.gaugeAddress)
+  if (staking?.gauge?.otherGauges) {
+    arr.push(...staking.gauge.otherGauges.map(g => g.gaugeAddress))
+  }
+
+  return arr as Address[]
+}
 
 export function usePortfolio() {
   const { userAddress } = useUserAccount()

@@ -1,5 +1,4 @@
 import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { Address } from 'viem'
 import { useUserAccount } from '../../../web3/useUserAccount'
 import { useManagedTransaction } from '../../../web3/contracts/useManagedTransaction'
 import { useClaimCallDataQuery } from './useClaimCallDataQuery'
@@ -8,21 +7,17 @@ import { GqlChain, GqlPoolStakingType } from '@/lib/shared/services/api/generate
 import networkConfigs from '@/lib/config/networks'
 import { useClaiming } from './useClaiming'
 import { useEffect } from 'react'
+import { PoolListItem } from '../../pool.types'
+import { getAllGaugesAddressesFromPool } from '@/lib/modules/portfolio/usePortfolio'
 
-interface UseConstructClaimAllRewardsStepArgs {
-  gaugeAddresses: Address[]
-  chain: GqlChain
-  stakingType: GqlPoolStakingType
-}
-
-export function useConstructClaimAllRewardsStep({
-  gaugeAddresses,
-  chain,
-  stakingType,
-}: UseConstructClaimAllRewardsStepArgs) {
+export function useConstructClaimAllRewardsStep(pool: PoolListItem) {
   const { isConnected } = useUserAccount()
-  const { nonBalRewards, balRewards, refetchClaimableRewards, refetchBalRewards } = useClaiming()
+  const { nonBalRewards, balRewards, refetchClaimableRewards, refetchBalRewards } =
+    useClaiming(pool)
 
+  const chain = pool.chain as GqlChain
+  const stakingType = pool.staking?.type as GqlPoolStakingType
+  const gaugeAddresses = getAllGaugesAddressesFromPool(pool)
   const shouldClaimMany = gaugeAddresses.length > 1
   const stakingService = selectStakingService(chain, stakingType)
   const { data: claimData } = useClaimCallDataQuery(
@@ -63,7 +58,7 @@ export function useConstructClaimAllRewardsStep({
       refetchClaimableRewards()
       refetchBalRewards()
     }
-  }, [claimAllRewardsTransaction])
+  }, [claimAllRewardsTransaction.result.isSuccess, refetchClaimableRewards, refetchBalRewards])
 
   return {
     claimAllRewardsStep,

@@ -14,7 +14,6 @@ interface PortfolioPoolsListProps {
 
 interface ClaimModalData {
   pool: PoolListItem
-  gaugeAddresses: string[]
 }
 
 function getPoolBalance(pool: PoolListItem, isStaked: boolean) {
@@ -33,16 +32,8 @@ export function PortfolioPoolsList({
   const { toCurrency } = useCurrency()
 
   function openClaimModal(pool: PoolListItem) {
-    const gaugeData = pool.staking?.gauge
-    if (!gaugeData) return
-
-    const otherGauges = gaugeData.otherGauges || []
-
-    const gaugeAddresses = [gaugeData.gaugeAddress, ...otherGauges.map(g => g.gaugeAddress)]
-
     setClaimModalData({
       pool,
-      gaugeAddresses,
     })
 
     setIsClaimModalOpen(true)
