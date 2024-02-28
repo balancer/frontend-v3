@@ -13,7 +13,7 @@ export function useClaimStepConfigs(
   stakingType: GqlPoolStakingType
 ) {
   const { hasMinterApproval } = useHasMinterApproval()
-  const { hasApprovedRelayer } = useHasApprovedRelayer()
+  const { hasApprovedRelayer } = useHasApprovedRelayer(getChainId(chain))
 
   let stepConfigs = [
     {

@@ -6,15 +6,16 @@ import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transa
 import { useEffect } from 'react'
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 import { SupportedChainId } from '@/lib/config/config.types'
+import { getNetworkConfig } from '@/lib/config/app.config'
 
 export function useConstructApproveRelayerStep(chainId: SupportedChainId) {
   const { userAddress, isConnected } = useUserAccount()
-  const networkConfig = useNetworkConfig()
+  const config = getNetworkConfig(chainId)
 
-  const relayerAddress = networkConfig.contracts.balancer.relayerV6
-  const vaultAddress = networkConfig.contracts.balancer.vaultV2
+  const relayerAddress = config.contracts.balancer.relayerV6
+  const vaultAddress = config.contracts.balancer.vaultV2
 
-  const { hasApprovedRelayer, isLoading, refetch } = useHasApprovedRelayer()
+  const { hasApprovedRelayer, isLoading, refetch } = useHasApprovedRelayer(chainId)
 
   const transactionLabels: TransactionLabels = {
     init: 'Approve relayer',
