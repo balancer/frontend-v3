@@ -16,7 +16,7 @@ export function useConstructClaimAllRewardsStep(pool: PoolListItem) {
     useClaiming(pool)
 
   const chain = pool.chain as GqlChain
-  const stakingType = pool.staking?.type as GqlPoolStakingType
+  const stakingType = pool.staking?.type || GqlPoolStakingType.Gauge
   const gaugeAddresses = getAllGaugesAddressesFromPool(pool)
   const shouldClaimMany = gaugeAddresses.length > 1
   const stakingService = selectStakingService(chain, stakingType)

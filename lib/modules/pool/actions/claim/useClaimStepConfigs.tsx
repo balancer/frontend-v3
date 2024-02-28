@@ -15,13 +15,13 @@ export function useClaimStepConfigs(pool: PoolListItem) {
     },
   ]
 
-  // if (!hasApprovedRelayer) {
-  //   stepConfigs = [approveRelayerConfig, ...stepConfigs]
-  // }
+  if (!hasApprovedRelayer) {
+    stepConfigs = [approveRelayerConfig, ...stepConfigs]
+  }
 
-  // if (!hasMinterApproval) {
-  //   stepConfigs = [minterApprovalConfig(pool.chain), ...stepConfigs]
-  // }
+  if (!hasMinterApproval) {
+    stepConfigs = [minterApprovalConfig(pool.chain), ...stepConfigs]
+  }
 
   return stepConfigs
 }
