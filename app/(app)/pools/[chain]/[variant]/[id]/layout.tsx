@@ -25,6 +25,11 @@ export default async function PoolLayout({ params: { id, chain, variant }, child
   const { data } = await getApolloServerClient().query({
     query: GetPoolDocument,
     variables,
+    context: {
+      fetchOptions: {
+        next: { revalidate: 30 },
+      },
+    },
   })
 
   if (!data.pool) {
