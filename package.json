@@ -64,7 +64,7 @@
     "graphql-tag": "^2.12.6",
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
-    "next": "14.0.4",
+    "next": "14.1.0",
     "next-usequerystate": "^1.9.2",
     "nextjs-toploader": "^1.6.4",
     "numeral": "^2.0.6",
