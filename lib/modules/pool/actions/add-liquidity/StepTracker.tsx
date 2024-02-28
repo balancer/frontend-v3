@@ -13,8 +13,6 @@ import {
   CircularProgressLabel,
   ColorMode,
   HStack,
-  Step,
-  Stepper,
   Text,
   VStack,
   useColorMode,
@@ -52,7 +50,7 @@ export function StepTracker() {
       <AccordionItem m="0" p="0">
         <AccordionButton p="0" mb="4">
           <HStack width="full" justify="flex-start" fontSize="md">
-            <CustomStepIndicator stepNumber={1} status="active" />
+            <CustomStepIndicator stepNumber={getCurrentIndex() + 1} status="active" />
             <Text>{currentStepTitle}</Text>
           </HStack>
           <HStack justify="flex-end" fontSize="sm">
@@ -111,26 +109,27 @@ function Steps({ currentIndex, steps, isCurrent }: Props) {
   }
 
   return (
-    <Stepper index={currentIndex} orientation="vertical">
+    <VStack alignItems="left">
       {steps.map((step, index) => (
-        <Step key={index}>
+        <HStack key={index} alignItems="start">
           <CustomStepIndicator
             stepNumber={index + 1}
             status={getStatus(index)}
           ></CustomStepIndicator>
 
-          <VStack>
-            <Text color={getColor(colorMode, getStatus(index))}>{step.title}</Text>
-            S: {getStatus(index)}
+          <VStack spacing={0} alignItems="start">
+            <Text mt={isCurrent(index) ? -0.3 : 0} color={getColor(colorMode, getStatus(index))}>
+              {step.title}
+            </Text>
             {isCurrent(index) && (
-              <Text variant="secondary" fontSize="0.85rem">
-                APR range
+              <Text variant="secondary" fontSize="0.85rem" m="0" p="0">
+                <div>S: {getStatus(index)}</div>
               </Text>
             )}
           </VStack>
-        </Step>
+        </HStack>
       ))}
-    </Stepper>
+    </VStack>
   )
 }
 
