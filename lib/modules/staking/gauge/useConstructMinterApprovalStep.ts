@@ -6,12 +6,11 @@ import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { useHasMinterApproval } from './useHasMinterApproval'
 import { useEffect } from 'react'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { PoolListItem } from '../../pool/pool.types'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
-export function useConstructMinterApprovalStep(chain: GqlChain) {
+export function useConstructMinterApprovalStep() {
   const { isConnected } = useUserAccount()
-  const networkConfig = getNetworkConfig(chain)
+  const { pool } = usePool()
+  const networkConfig = getNetworkConfig(pool.chain)
 
   const { hasMinterApproval, isLoading, refetch } = useHasMinterApproval()
 
