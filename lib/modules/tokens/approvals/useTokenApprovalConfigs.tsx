@@ -7,6 +7,7 @@ import { ApprovalAction } from './approval-labels'
 import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
 import { ApproveTokenProps, useConstructApproveTokenStep } from './useConstructApproveTokenStep'
 import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
+import { getChainId } from '@/lib/config/app.config'
 
 type Props = ApproveTokenProps & CommonStepProps
 
@@ -37,7 +38,12 @@ export function useTokenApprovalConfigs({
 
   const approvalTokenAddresses = _approvalAmounts.map(amount => amount.address)
 
-  const tokenAllowances = useTokenAllowances(userAddress, spenderAddress, approvalTokenAddresses)
+  const tokenAllowances = useTokenAllowances(
+    userAddress,
+    spenderAddress,
+    approvalTokenAddresses,
+    getChainId(chain)
+  )
 
   const tokenAmountsToApprove = getRequiredTokenApprovals({
     chainId: chain,

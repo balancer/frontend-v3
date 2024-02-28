@@ -7,7 +7,7 @@ import { useTokenAllowances } from './useTokenAllowances'
 
 function testTokenAllowances(tokenAddresses: Address[]) {
   const { result } = testHook(() =>
-    useTokenAllowances(defaultTestUserAccount, vaultV2Address, tokenAddresses)
+    useTokenAllowances(defaultTestUserAccount, vaultV2Address, tokenAddresses, 1)
   )
   return result
 }
