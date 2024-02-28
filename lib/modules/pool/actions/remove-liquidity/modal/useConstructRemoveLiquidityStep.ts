@@ -30,6 +30,7 @@ export function useConstructRemoveLiquidityStep() {
   const removeLiquidityTransaction = useManagedSendTransaction(
     transactionLabels,
     getChainId(pool.chain),
+    !!buildCallDataQuery.data,
     buildCallDataQuery.data
   )
 

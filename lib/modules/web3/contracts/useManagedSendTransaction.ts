@@ -21,13 +21,15 @@ import { useChainSwitch } from '../useChainSwitch'
 export function useManagedSendTransaction(
   labels: TransactionLabels,
   chainId: SupportedChainId,
+  enabled: boolean,
   txConfig?: UsePrepareSendTransactionConfig
 ) {
   const { shouldChangeNetwork } = useChainSwitch(chainId)
+
   const prepareQuery = usePrepareSendTransaction({
     ...txConfig,
     chainId,
-    enabled: txConfig?.enabled && !shouldChangeNetwork,
+    enabled: enabled && !shouldChangeNetwork,
   })
 
   const writeQuery = useSendTransaction({

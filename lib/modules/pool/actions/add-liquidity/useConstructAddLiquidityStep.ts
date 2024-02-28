@@ -30,6 +30,7 @@ export function useConstructAddLiquidityStep() {
   const addLiquidityTransaction = useManagedSendTransaction(
     transactionLabels,
     getChainId(pool.chain),
+    !!buildCallDataQuery.data,
     buildCallDataQuery.data
   )
 
