@@ -5,8 +5,8 @@ import { Box } from '@chakra-ui/react'
 import { GetPoolDocument } from '@/lib/shared/services/api/generated/graphql'
 import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
 import { PropsWithChildren } from 'react'
-import { cookies } from 'next/headers'
-import { COOKIE_KEYS } from '@/lib/modules/cookies/cookie.constants'
+// import { cookies } from 'next/headers'
+// import { COOKIE_KEYS } from '@/lib/modules/cookies/cookie.constants'
 
 export const revalidate = 30
 
@@ -15,12 +15,12 @@ type Props = PropsWithChildren<{
 }>
 
 export default async function PoolLayout({ params: { id, chain, variant }, children }: Props) {
-  const cookieStore = cookies()
-  const userAddressCookie = cookieStore.get(COOKIE_KEYS.UserAddress)
-  const userAddress = userAddressCookie?.value
+  // const cookieStore = cookies()
+  // const userAddressCookie = cookieStore.get(COOKIE_KEYS.UserAddress)
+  // const userAddress = userAddressCookie?.value
 
   const _chain = slugToChainMap[chain]
-  const variables = { id, chain: _chain, userAddress }
+  const variables = { id, chain: _chain }
 
   const { data } = await getApolloServerClient().query({
     query: GetPoolDocument,
