@@ -19,10 +19,11 @@ query GetSorSwaps(
       inputAmountRaw
       outputAmountRaw
       pools
+      vaultVersion
       tokens {
         address
+        decimals
       }
-      balancerVersion: vaultVersion
     }
     priceImpact
     returnAmount
