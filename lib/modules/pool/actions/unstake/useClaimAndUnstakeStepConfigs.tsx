@@ -12,7 +12,7 @@ export function useClaimAndUnstakeStepConfigs(chain: GqlChain) {
 
   let stepConfigs: StepConfig[] = [
     {
-      description: 'Claim and unstake',
+      title: 'Claim and unstake',
       render: () => <ClaimAndUnstakeButton />,
     },
   ]

@@ -3,7 +3,7 @@ import { CommonStepProps, OnStepCompleted, StepConfig } from '../pool/actions/us
 import { useConstructApproveRelayerStep } from './useConstructApproveRelayerStep'
 
 export const approveRelayerConfig: StepConfig = {
-  description: 'Approve relayer',
+  title: 'Approve relayer',
   render(useOnStepCompleted: OnStepCompleted) {
     return <ApproveRelayerButton useOnStepCompleted={useOnStepCompleted} />
   },

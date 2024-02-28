@@ -6,7 +6,7 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 export function minterApprovalConfig(chain: GqlChain): StepConfig {
   return {
-    description: 'Approve relayer as minter',
+    title: 'Approve relayer as minter',
     render(useOnStepCompleted: OnStepCompleted) {
       return <MinterApprovalButton useOnStepCompleted={useOnStepCompleted} chain={chain} />
     },

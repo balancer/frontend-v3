@@ -39,7 +39,7 @@ export function StepTracker() {
     return getCurrentIndex() === index
   }
 
-  const steps = hasSignRelayerStep ? [{ description: 'Sign relayer' }, ...stepConfigs] : stepConfigs
+  const steps = hasSignRelayerStep ? [{ title: 'Sign relayer' }, ...stepConfigs] : stepConfigs
 
   return (
     <Accordion width="full" variant="gradient" allowToggle textAlign="left">
@@ -61,7 +61,7 @@ export function StepTracker() {
 type Props = {
   currentIndex: number
   isCurrent: (i: number) => boolean
-  steps: { description: string }[]
+  steps: { title: string }[]
 }
 
 function Steps({ currentIndex, steps, isCurrent }: Props) {
@@ -77,7 +77,7 @@ function Steps({ currentIndex, steps, isCurrent }: Props) {
             />
           </StepIndicator>
 
-          <StepTitle>{step.description}</StepTitle>
+          <StepTitle>{step.title}</StepTitle>
           {isCurrent(index) && <StepDescription>***</StepDescription>}
         </Step>
       ))}

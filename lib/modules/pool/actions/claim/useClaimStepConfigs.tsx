@@ -17,7 +17,7 @@ export function useClaimStepConfigs(
 
   let stepConfigs: StepConfig[] = [
     {
-      description: 'Claim',
+      title: 'Claim',
       render: () => (
         <ClaimAllRewardsButton
           gaugeAddresses={gaugeAddresses}

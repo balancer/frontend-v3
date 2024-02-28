@@ -15,7 +15,7 @@ export interface MinterStepProps extends CommonStepProps {
 }
 
 export interface StepConfig {
-  description: string
+  title: string // Used by the StepTracker to render step titles in the multi-step flow
   render(useOnStepCompleted?: OnStepCompleted): JSX.Element
 }
 

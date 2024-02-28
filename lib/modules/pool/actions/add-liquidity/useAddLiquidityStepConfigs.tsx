@@ -13,7 +13,7 @@ import { StepConfig } from '../useIterateSteps'
 
 function buildAddLiquidityConfig(onTransactionStateUpdate: OnTransactionStateUpdate): StepConfig {
   return {
-    description: 'Add liquidity',
+    title: 'Add liquidity',
     render: () => <AddLiquidityButton onTransactionStateUpdate={onTransactionStateUpdate} />,
   }
 }
