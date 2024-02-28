@@ -7,7 +7,7 @@ import { PoolAccordion } from './PoolAccordion/PoolAccordion'
 import PoolMetaBadges from './PoolMetaBadges/PoolMetaBadges'
 import { PoolChart } from './PoolChart/PoolChart'
 
-export function PoolDetail() {
+export async function PoolDetail() {
   return (
     <Stack width="full">
       {/* {loading && <Text>Loading...</Text>} */}
