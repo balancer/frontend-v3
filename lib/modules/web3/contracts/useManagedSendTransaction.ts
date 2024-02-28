@@ -38,7 +38,10 @@ export function useManagedSendTransaction(
   const transactionStatusQuery = useWaitForTransaction({ hash: writeQuery.data?.hash })
 
   const bundle = {
-    simulation: prepareQuery as TransactionSimulation,
+    simulation: {
+      ...prepareQuery,
+      config: { ...prepareQuery.config, chainId },
+    } as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
     result: transactionStatusQuery,
   }
