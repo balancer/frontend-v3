@@ -1,3 +1,5 @@
+'use client'
+
 import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,

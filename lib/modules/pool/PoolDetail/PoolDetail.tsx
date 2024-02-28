@@ -1,4 +1,3 @@
-'use client'
 import { HStack, Stack, VStack } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
 import PoolStats from './PoolStats'
