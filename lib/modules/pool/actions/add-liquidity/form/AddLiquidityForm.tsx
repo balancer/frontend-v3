@@ -29,7 +29,6 @@ import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSett
 import { ProportionalInputs } from './ProportionalInputs'
 import { usePool } from '../../../usePool'
 import { requiresProportionalInput } from '../../LiquidityActionHelpers'
-import { StepTracker } from '../StepTracker'
 
 export function AddLiquidityForm() {
   const {
@@ -78,8 +77,6 @@ export function AddLiquidityForm() {
       <Center h="full" w="full" maxW="lg" mx="auto">
         <Card variant="level3" shadow="xl" w="full" p="md">
           <VStack spacing="lg" align="start" w="full">
-            <StepTracker />
-
             <HStack w="full" justify="space-between">
               <Heading fontWeight="bold" size="h5">
                 Add liquidity

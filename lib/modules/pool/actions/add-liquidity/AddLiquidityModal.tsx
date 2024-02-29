@@ -34,7 +34,7 @@ import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { SignRelayerButton } from '@/lib/shared/components/btns/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { StepTracker } from './StepTracker'
+import { StepTracker } from '../step-tracker/StepTracker'
 
 type Props = {
   isOpen: boolean
@@ -58,6 +58,8 @@ export function AddLiquidityModal({
     tokens,
     addLiquidityTxState,
     currentStep,
+    currentStepIndex,
+    stepConfigs,
     useOnStepCompleted,
   } = useAddLiquidity()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval()
@@ -91,7 +93,7 @@ export function AddLiquidityModal({
         <ModalBody>
           <VStack spacing="md" align="start">
             <Card variant="level5" p="md" shadow="sm" w="full">
-              <StepTracker />
+              <StepTracker currentStepIndex={currentStepIndex} stepConfigs={stepConfigs} />
             </Card>
             <Card variant="level5" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="md">
