@@ -1,12 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { usePool } from '../../pool/usePool'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useHasMinterApproval } from './useHasMinterApproval'
 import { useEffect } from 'react'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { PoolListItem } from '../../pool/pool.types'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 export function useConstructMinterApprovalStep(chain: GqlChain) {
