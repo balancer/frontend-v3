@@ -102,6 +102,7 @@ export function TokenSelectModal({
                 listHeight={250}
                 searchTerm={searchTerm}
                 onTokenSelect={closeOnSelect}
+                showTokensWithBalance
               />
               <Card p="1" mr="4" mb="4">
                 <HStack>

@@ -17,6 +17,7 @@ type Props = {
   listHeight: number
   searchTerm?: string
   onTokenSelect: (token: GqlToken) => void
+  showTokensWithBalance?: boolean
 }
 
 export function TokenSelectList({
@@ -26,6 +27,7 @@ export function TokenSelectList({
   listHeight,
   searchTerm,
   onTokenSelect,
+  showTokensWithBalance = false,
   ...rest
 }: Props & BoxProps) {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -38,34 +40,38 @@ export function TokenSelectList({
     searchTerm
   )
 
+  const tokensWithBalance = orderedTokens.filter(token => balanceFor(token)?.amount)
+  const tokensWithoutBalance = orderedTokens.filter(token => !tokensWithBalance.includes(token))
+  const tokensToShow = showTokensWithBalance ? tokensWithBalance : tokensWithoutBalance
+
   const decrementActiveIndex = () => setActiveIndex(prev => Math.max(prev - 1, 0))
   const incrementActiveIndex = () =>
-    setActiveIndex(prev => Math.min(prev + 1, orderedTokens.length - 1))
+    setActiveIndex(prev => Math.min(prev + 1, tokensToShow.length - 1))
   const hotkeyOpts = { enableOnFormTags: true }
 
   const selectActiveToken = () => {
-    onTokenSelect(orderedTokens[activeIndex])
+    onTokenSelect(tokensToShow[activeIndex])
   }
 
   useHotkeys('up', decrementActiveIndex, hotkeyOpts)
   useHotkeys('shift+tab', decrementActiveIndex, hotkeyOpts)
   useHotkeys('down', incrementActiveIndex, hotkeyOpts)
   useHotkeys('tab', incrementActiveIndex, hotkeyOpts)
-  useHotkeys('enter', selectActiveToken, [orderedTokens, activeIndex], hotkeyOpts)
+  useHotkeys('enter', selectActiveToken, [tokensToShow, activeIndex], hotkeyOpts)
 
   function keyFor(token: GqlToken, index: number) {
     return `${token.address}:${token.chain}:${index}`
   }
 
   function getScrollToIndex() {
-    if (orderedTokens.length === 0) return undefined
+    if (tokensToShow.length === 0) return undefined
 
     return activeIndex >= 8 ? activeIndex - 7 : 0
   }
 
   return (
     <Box height={listHeight} {...rest}>
-      {orderedTokens.length === 0 ? (
+      {tokensToShow.length === 0 ? (
         <Center h="60">
           <Text color="gray.500" fontSize="sm">
             No tokens found
@@ -75,12 +81,12 @@ export function TokenSelectList({
         <VirtualList
           width="100%"
           height={listHeight}
-          itemCount={orderedTokens.length}
+          itemCount={tokensToShow.length}
           itemSize={60}
           scrollToIndex={getScrollToIndex()}
           style={{ overflowY: 'scroll', paddingRight: '0.5rem' }}
           renderItem={({ index, style }) => {
-            const token = orderedTokens[index]
+            const token = tokensToShow[index]
             const userBalance = isConnected ? balanceFor(token) : undefined
 
             return (
