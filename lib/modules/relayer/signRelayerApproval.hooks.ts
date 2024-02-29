@@ -6,6 +6,7 @@ import { signRelayerApproval } from './signRelayerApproval'
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 import { useRelayerMode } from './useRelayerMode'
 import { useRelayerSignature } from './useRelayerSignature'
+import { SupportedChainId } from '@/lib/config/config.types'
 
 enum SignRelayerState {
   Ready = 'init',
@@ -14,9 +15,9 @@ enum SignRelayerState {
   Completed = 'completed',
 }
 
-export function useShouldSignRelayerApproval() {
+export function useShouldSignRelayerApproval(chainId: SupportedChainId) {
   const relayerMode = useRelayerMode()
-  const { hasApprovedRelayer } = useHasApprovedRelayer()
+  const { hasApprovedRelayer } = useHasApprovedRelayer(chainId)
   const { relayerApprovalSignature } = useRelayerSignature()
 
   return relayerMode === 'signRelayer' && !relayerApprovalSignature && !hasApprovedRelayer

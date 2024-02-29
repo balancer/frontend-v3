@@ -1,13 +1,15 @@
 import { useHasApprovedRelayer } from '@/lib/modules/relayer/useHasApprovedRelayer'
 import { useHasMinterApproval } from '@/lib/modules/staking/gauge/useHasMinterApproval'
-import { approveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
+import { getApproveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { minterApprovalConfig } from '@/lib/modules/staking/gauge/minterApprovalConfig'
 import { ClaimAllRewardsButton } from '../../../portfolio/claim/ClaimAllRewardsButton'
+import { getChainId } from '@/lib/config/app.config'
 import { PoolListItem } from '../../pool.types'
 
 export function useClaimStepConfigs(pool: PoolListItem) {
+  const chainId = getChainId(pool.chain)
   const { hasMinterApproval } = useHasMinterApproval()
-  const { hasApprovedRelayer } = useHasApprovedRelayer()
+  const { hasApprovedRelayer } = useHasApprovedRelayer(chainId)
 
   let stepConfigs = [
     {
@@ -16,7 +18,7 @@ export function useClaimStepConfigs(pool: PoolListItem) {
   ]
 
   if (!hasApprovedRelayer) {
-    stepConfigs = [approveRelayerConfig, ...stepConfigs]
+    stepConfigs = [getApproveRelayerConfig(chainId), ...stepConfigs]
   }
 
   if (!hasMinterApproval) {

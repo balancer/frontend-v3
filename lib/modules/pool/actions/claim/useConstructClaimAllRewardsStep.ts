@@ -7,6 +7,7 @@ import { GqlChain, GqlPoolStakingType } from '@/lib/shared/services/api/generate
 import networkConfigs from '@/lib/config/networks'
 import { useClaiming } from './useClaiming'
 import { useEffect } from 'react'
+import { getChainId } from '@/lib/config/app.config'
 import { PoolListItem } from '../../pool.types'
 import { getAllGaugesAddressesFromPool } from '@/lib/modules/portfolio/usePortfolio'
 
@@ -41,8 +42,11 @@ export function useConstructClaimAllRewardsStep(pool: PoolListItem) {
     'balancer.relayerV6',
     'multicall',
     transactionLabels,
+    getChainId(chain),
     { args: [claimData] },
-    { enabled: gaugeAddresses.length > 0 && claimData && claimData.length > 0 }
+    {
+      enabled: gaugeAddresses.length > 0 && claimData && claimData.length > 0,
+    }
   )
 
   const claimAllRewardsStep: FlowStep = {

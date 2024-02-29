@@ -1,8 +1,8 @@
-import { SupportedChainId } from '@/lib/config/config.types'
 import { zipObject } from 'lodash'
 import { ContractFunctionConfig } from 'viem'
 import { Address, erc20ABI, useContractReads } from 'wagmi'
 import { Erc20Abi } from './contracts/contract.types'
+import { SupportedChainId } from '@/lib/config/config.types'
 
 export type TokenAllowances = Record<Address, bigint>
 
