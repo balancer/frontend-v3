@@ -4,28 +4,25 @@
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
-import { makeVar, useReactiveVar } from '@apollo/client'
 import { HumanAmountIn } from '../liquidity-types'
 import { Address, parseUnits } from 'viem'
 import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { usePool } from '../../usePool'
 import { BPT_DECIMALS } from '../../pool.constants'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useTokenApprovalConfigs'
 import { stakeConfig } from './stakeConfig'
 import { useIterateSteps } from '../useIterateSteps'
 
-export const humanAmountInVar = makeVar<HumanAmountIn | null>(null)
-
 export function useStaking() {
+  const [humanAmountIn, setHumanAmountIn] = useState<HumanAmountIn | null>(null)
+
   const { userAddress, isConnected } = useUserAccount()
-  const { pool } = usePool()
+  const { pool, chainId } = usePool()
   const { isDisabled, disabledReason } = isDisabledWithReason([
     !isConnected,
     LABELS.walletNotConnected,
   ])
-
-  const humanAmountIn = useReactiveVar(humanAmountInVar)
 
   function setInitialHumanAmountIn() {
     const amountIn = {
@@ -33,12 +30,15 @@ export function useStaking() {
       humanAmount: pool.userBalance?.walletBalance,
     } as HumanAmountIn
 
-    humanAmountInVar(amountIn)
+    setHumanAmountIn(amountIn)
   }
 
-  const tokenAllowances = useTokenAllowances(userAddress, pool.staking?.address as Address, [
-    humanAmountIn?.tokenAddress as Address,
-  ])
+  const tokenAllowances = useTokenAllowances({
+    chainId,
+    userAddress,
+    spenderAddress: pool.staking?.address as Address,
+    tokenAddresses: [humanAmountIn?.tokenAddress as Address],
+  })
 
   const rawAmount = parseUnits(humanAmountIn?.humanAmount || '', BPT_DECIMALS)
 

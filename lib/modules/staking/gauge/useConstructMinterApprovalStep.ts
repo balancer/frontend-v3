@@ -1,16 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { usePool } from '../../pool/usePool'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
-import { getNetworkConfig } from '@/lib/config/app.config'
+import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { useHasMinterApproval } from './useHasMinterApproval'
 import { useEffect } from 'react'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
-export function useConstructMinterApprovalStep() {
+export function useConstructMinterApprovalStep(chain: GqlChain) {
   const { isConnected } = useUserAccount()
-  const { pool } = usePool()
-  const networkConfig = getNetworkConfig(pool.chain)
+  const networkConfig = getNetworkConfig(chain)
 
   const { hasMinterApproval, isLoading, refetch } = useHasMinterApproval()
 
@@ -26,6 +25,7 @@ export function useConstructMinterApprovalStep() {
     'balancer.minter',
     'setMinterApproval',
     transactionLabels,
+    getChainId(chain),
     { args: [networkConfig.contracts.balancer.relayerV6, true] },
     { enabled: !isLoading }
   )

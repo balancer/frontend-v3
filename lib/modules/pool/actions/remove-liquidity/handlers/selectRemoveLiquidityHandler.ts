@@ -2,6 +2,7 @@ import { Pool } from '../../../usePool'
 import { shouldUseNestedLiquidity } from '../../LiquidityActionHelpers'
 import { RemoveLiquidityType } from '../remove-liquidity.types'
 import { NestedProportionalRemoveLiquidityHandler } from './NestedProportionalRemoveLiquidity.handler'
+import { NestedSingleTokenRemoveLiquidityHandler } from './NestedSingleTokenRemoveLiquidity.handler'
 import { ProportionalRemoveLiquidityHandler } from './ProportionalRemoveLiquidity.handler'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
 import { SingleTokenRemoveLiquidityHandler } from './SingleTokenRemoveLiquidity.handler'
@@ -17,6 +18,9 @@ export function selectRemoveLiquidityHandler(
   // }
   if (shouldUseNestedLiquidity(pool) && kind === RemoveLiquidityType.Proportional) {
     return new NestedProportionalRemoveLiquidityHandler(pool)
+  }
+  if (shouldUseNestedLiquidity(pool) && kind === RemoveLiquidityType.SingleToken) {
+    return new NestedSingleTokenRemoveLiquidityHandler(pool)
   }
   if (kind === RemoveLiquidityType.Proportional) {
     return new ProportionalRemoveLiquidityHandler(pool)

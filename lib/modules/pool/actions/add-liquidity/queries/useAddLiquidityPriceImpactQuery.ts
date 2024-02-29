@@ -10,13 +10,14 @@ import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { addLiquidityKeys } from './add-liquidity-keys'
 import { UseQueryOptions } from '@tanstack/react-query'
 import { useQuery } from 'wagmi'
+import { usePool } from '../../../usePool'
 
 export function useAddLiquidityPriceImpactQuery(
   handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
-  poolId: string,
   options: UseQueryOptions = {}
 ) {
+  const { pool } = usePool()
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
@@ -26,7 +27,7 @@ export function useAddLiquidityPriceImpactQuery(
   const queryKey = addLiquidityKeys.priceImpact({
     userAddress,
     slippage,
-    poolId,
+    pool,
     humanAmountsIn: debouncedHumanAmountsIn,
   })
 

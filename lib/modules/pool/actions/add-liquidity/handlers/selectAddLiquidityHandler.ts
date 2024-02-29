@@ -4,18 +4,18 @@ import { TwammAddLiquidityHandler } from './TwammAddLiquidity.handler'
 import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 import { NestedAddLiquidityHandler } from './NestedAddLiquidity.handler'
-import { shouldUseNestedLiquidity } from '../../LiquidityActionHelpers'
+import { requiresProportionalInput, shouldUseNestedLiquidity } from '../../LiquidityActionHelpers'
+import { ProportionalAddLiquidityHandler } from './ProportionalAddLiquidity.handler'
 
-export function selectAddLiquidityHandler(pool: Pool) {
-  let handler: AddLiquidityHandler
-  if (pool.id === 'TWAMM-example') {
-    // This is just an example to illustrate how edge-case handlers would receive different inputs but return a common contract
-    handler = new TwammAddLiquidityHandler(getChainId(pool.chain))
-  } else if (shouldUseNestedLiquidity(pool)) {
-    handler = new NestedAddLiquidityHandler(pool)
-  } else {
-    handler = new UnbalancedAddLiquidityHandler(pool)
+export function selectAddLiquidityHandler(pool: Pool): AddLiquidityHandler {
+  // This is just an example to illustrate how edge-case handlers would receive different inputs but return a common contract
+  if (pool.id === 'TWAMM-example') return new TwammAddLiquidityHandler(getChainId(pool.chain))
+
+  if (requiresProportionalInput(pool.type)) {
+    return new ProportionalAddLiquidityHandler(pool)
   }
 
-  return handler
+  if (shouldUseNestedLiquidity(pool)) return new NestedAddLiquidityHandler(pool)
+
+  return new UnbalancedAddLiquidityHandler(pool)
 }

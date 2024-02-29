@@ -39,6 +39,7 @@ import { defaultTestUserAccount } from '../anvil/anvil-setup'
 import { createMockConnector } from './wagmi/wagmi-mock-connectors'
 import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignature'
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInputsValidation'
+import { SupportedChainId } from '@/lib/config/config.types'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -132,6 +133,7 @@ export function testManagedTransaction<
   contractAddress: string,
   contractId: M,
   functionName: F,
+  chainId: SupportedChainId,
   args?: GetFunctionArgs<T[M], F>,
   additionalConfig?: Omit<
     UsePrepareContractWriteConfig<T[M], F, number>,
@@ -144,6 +146,7 @@ export function testManagedTransaction<
       contractId,
       functionName,
       {} as TransactionLabels,
+      chainId,
       args,
       additionalConfig
     )

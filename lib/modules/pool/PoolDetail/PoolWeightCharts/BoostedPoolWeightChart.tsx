@@ -1,48 +1,46 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, HStack, VStack, Text } from '@chakra-ui/react'
+import { Box, HStack, VStack, useTheme, useColorMode } from '@chakra-ui/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import * as echarts from 'echarts/core'
-import { usePool } from '../../usePool'
 import { motion } from 'framer-motion'
 import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
+import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
+import PoolWeightChartLegend from './PoolWeightChartLegend'
 
-const colors = [
-  {
-    from: '#1E4CF1',
-    to: '#00FFAA',
-  },
-  {
-    from: '#B2C4DB',
-    to: '#FDFDFD',
-  },
-  {
-    from: '#EF4A2B',
-    to: '#F48975',
-  },
-  {
-    from: '#FFD600',
-    to: '#F48975',
-  },
-  {
-    from: '#9C68AA',
-    to: '#C03BE4',
-  },
-  {
-    from: '#FFBD91',
-    to: '#FF957B',
-  },
-  {
-    from: '#30CEF0',
-    to: '#02A2FE',
-  },
-]
+const smallSize: ChartSizeValues = {
+  chartHeight: '150px',
+  boxWidth: 150,
+  boxHeight: 130,
+  haloTop: '40%',
+  haloLeft: '55px',
+  haloWidth: '40px',
+  haloHeigth: '40px',
+}
 
-export default function BoostedPoolWeightChart() {
-  const { pool, chain } = usePool()
+const normalSize: ChartSizeValues = {
+  chartHeight: '',
+  boxWidth: 278,
+  boxHeight: 230,
+  haloTop: '49%',
+  haloLeft: '95px',
+  haloWidth: '60px',
+  haloHeigth: '60px',
+}
+
+export default function BoostedPoolWeightChart({
+  pool,
+  chain,
+  hasLegend,
+  isSmall,
+  colors = [],
+}: PoolWeightChartProps) {
+  const chartSizeValues = isSmall ? smallSize : normalSize
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const [isChartLoaded, setIsChartLoaded] = useState(false)
+  const theme = useTheme()
+  const { colorMode } = useColorMode()
 
   useEffect(() => {
     eChartsRef.current?.getEchartsInstance().on('finished', () => {
@@ -60,15 +58,13 @@ export default function BoostedPoolWeightChart() {
       },
       series: [
         {
-          name: 'Access From',
           type: 'pie',
-          radius: '150%',
-          //   radius: ['40%', '70%'],
+          radius: '250%',
           avoidLabelOverlap: false,
           itemStyle: {
             borderRadius: 2,
-            borderColor: '#4F5764',
-            borderWidth: 2,
+            borderColor: theme.colors['chartBorder'][colorMode],
+            borderWidth: 1.5,
           },
           label: {
             show: false,
@@ -76,9 +72,10 @@ export default function BoostedPoolWeightChart() {
           labelLine: {
             show: false,
           },
-          data: pool.tokens.map((token, i) => ({
+          data: pool.displayTokens.map((token, i) => ({
             value: 33,
             name: token.symbol,
+            emphasis: {},
             itemStyle: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
@@ -95,10 +92,10 @@ export default function BoostedPoolWeightChart() {
         },
       ],
     }
-  }, [])
+  }, [colorMode])
 
   return (
-    <VStack spacing="4">
+    <VStack position="relative" spacing="4">
       <svg
         style={{ visibility: 'hidden', position: 'absolute' }}
         width="0"
@@ -108,7 +105,7 @@ export default function BoostedPoolWeightChart() {
       >
         <defs>
           <filter id="round">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
             <feColorMatrix
               in="blur"
               mode="matrix"
@@ -119,46 +116,53 @@ export default function BoostedPoolWeightChart() {
           </filter>
         </defs>
       </svg>
-      <Box width="278px" height="230px" filter="url(#round)" overflow="hidden">
+      <Box
+        width={`${chartSizeValues.boxWidth}px`}
+        height={`${chartSizeValues.boxHeight}px`}
+        filter="url(#round)"
+        overflow="hidden"
+        mt={hasLegend ? '-8' : '0'}
+        position="relative"
+      >
         <Box
           as={motion.div}
           rounded="full"
           bg="white"
           position="absolute"
-          top="54%"
-          transform="translateY(0)"
-          left="109px"
+          transform="translateY(-50%)"
+          bottom="0"
+          left="0"
+          right="0"
+          top="65%"
+          mx="auto"
           zIndex={4}
-          width="60px"
-          height="60px"
           display="flex"
           justifyContent="center"
           alignItems="center"
           initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { delay: 0.1 } }}
+          width={chartSizeValues.haloWidth}
+          height={chartSizeValues.haloHeigth}
         >
-          <PoolWeightChartChainIcon chain={chain} isChartLoaded={isChartLoaded} />
+          <PoolWeightChartChainIcon chain={chain} isChartLoaded={isChartLoaded} isSmall={isSmall} />
         </Box>
         <Box width="full" height="full" clipPath="polygon(50% 0, 100% 100%, 0 100%)">
           <ReactECharts option={chartOption} onEvents={{}} ref={eChartsRef} />
         </Box>
       </Box>
-      <HStack spacing="6">
-        {pool.tokens.map((token, i) => {
-          return (
-            <Box
-              fontWeight="normal"
-              fontSize="1rem"
-              background="none"
-              key={`token-weight-chart-legend-${token.symbol}`}
-            >
-              <HStack>
-                <Box width="8px" height="8px" bg={colors[i].from} rounded="full" />
-                <Text color="gray.400">{token.symbol}</Text>
-              </HStack>
-            </Box>
-          )
-        })}
-      </HStack>
+      {hasLegend && (
+        <HStack
+          width="full"
+          bottom="-2.5rem"
+          position="absolute"
+          left="0"
+          right="0"
+          mx="auto"
+          justifyContent="center"
+        >
+          <PoolWeightChartLegend pool={pool} colors={colors} />
+        </HStack>
+      )}
     </VStack>
   )
 }

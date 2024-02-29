@@ -3,6 +3,7 @@ import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTr
 import { TransactionLabels, FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Address } from 'viem'
+import { SupportedChainId } from '@/lib/config/config.types'
 
 function buildStakingDepositLabels(staking?: GqlPoolStaking | null): TransactionLabels {
   const labels: TransactionLabels = {
@@ -56,6 +57,7 @@ function getStakingConfig(
 }
 
 export function useConstructStakingDepositActionStep(
+  chainId: SupportedChainId,
   staking?: GqlPoolStaking | null,
   depositAmount?: bigint
 ): FlowStep {
@@ -68,6 +70,7 @@ export function useConstructStakingDepositActionStep(
     stakingConfig?.contractId,
     'deposit',
     transactionLabels,
+    chainId,
     { args: stakingConfig?.args },
     { enabled: !!staking || !!depositAmount }
   )
@@ -83,6 +86,7 @@ export function useConstructStakingDepositActionStep(
 }
 
 export function useConstructStakingWithdrawActionStep(
+  chainId: SupportedChainId,
   staking?: GqlPoolStaking | null,
   withdrawAmount?: bigint
 ): FlowStep {
@@ -95,6 +99,7 @@ export function useConstructStakingWithdrawActionStep(
     stakingConfig?.contractId,
     'withdraw',
     transactionLabels,
+    chainId,
     { args: stakingConfig?.args },
     { enabled: !!staking || !!withdrawAmount }
   )

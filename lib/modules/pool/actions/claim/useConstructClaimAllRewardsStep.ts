@@ -1,26 +1,32 @@
 import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
-
-import { Address } from 'viem'
 import { useUserAccount } from '../../../web3/useUserAccount'
-
 import { useManagedTransaction } from '../../../web3/contracts/useManagedTransaction'
 import { useClaimCallDataQuery } from './useClaimCallDataQuery'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { selectStakingService } from '@/lib/modules/staking/selectStakingService'
+import { GqlChain, GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 import networkConfigs from '@/lib/config/networks'
+import { useClaiming } from './useClaiming'
+import { useEffect } from 'react'
+import { getChainId } from '@/lib/config/app.config'
+import { PoolListItem } from '../../pool.types'
+import { getAllGaugesAddressesFromPool } from '@/lib/modules/portfolio/usePortfolio'
 
-interface UseConstructClaimAllRewardsStepArgs {
-  gaugeAddresses: Address[]
-  chain: GqlChain
-}
-
-export function useConstructClaimAllRewardsStep({
-  gaugeAddresses,
-  chain,
-}: UseConstructClaimAllRewardsStepArgs) {
+export function useConstructClaimAllRewardsStep(pool: PoolListItem) {
   const { isConnected } = useUserAccount()
+  const { nonBalRewards, balRewards, refetchClaimableRewards, refetchBalRewards } =
+    useClaiming(pool)
 
+  const chain = pool.chain as GqlChain
+  const stakingType = pool.staking?.type || GqlPoolStakingType.Gauge
+  const gaugeAddresses = getAllGaugesAddressesFromPool(pool)
   const shouldClaimMany = gaugeAddresses.length > 1
-  const { data: claimData } = useClaimCallDataQuery(gaugeAddresses)
+  const stakingService = selectStakingService(chain, stakingType)
+  const { data: claimData } = useClaimCallDataQuery(
+    gaugeAddresses,
+    stakingService,
+    nonBalRewards.length > 0,
+    balRewards.length > 0
+  )
 
   const transactionLabels: TransactionLabels = {
     init: `Claim${shouldClaimMany ? ' all' : ''}`,
@@ -36,8 +42,11 @@ export function useConstructClaimAllRewardsStep({
     'balancer.relayerV6',
     'multicall',
     transactionLabels,
-    { args: [claimData as Address[]] },
-    { enabled: gaugeAddresses.length > 0 && claimData && claimData.length > 0 }
+    getChainId(chain),
+    { args: [claimData] },
+    {
+      enabled: gaugeAddresses.length > 0 && claimData && claimData.length > 0,
+    }
   )
 
   const claimAllRewardsStep: FlowStep = {
@@ -47,6 +56,13 @@ export function useConstructClaimAllRewardsStep({
     stepType: 'claim',
     isComplete: () => isConnected && claimAllRewardsStep.result.isSuccess,
   }
+
+  useEffect(() => {
+    if (claimAllRewardsTransaction.result.isSuccess) {
+      refetchClaimableRewards()
+      refetchBalRewards()
+    }
+  }, [claimAllRewardsTransaction.result.isSuccess, refetchClaimableRewards, refetchBalRewards])
 
   return {
     claimAllRewardsStep,

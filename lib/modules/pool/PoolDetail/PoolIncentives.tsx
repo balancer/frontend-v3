@@ -2,10 +2,14 @@ import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { Box, Button, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Card, HStack, Heading, Text, Tooltip, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../usePool'
+import { useClaiming } from '../actions/claim/useClaiming'
+import { ClaimModal } from '../actions/claim/ClaimModal'
+import { Hex } from 'viem'
+import { PoolListItem } from '../pool.types'
 
 const TABS = [
   {
@@ -25,9 +29,16 @@ const TABS = [
 export default function PoolIncentives() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain } = usePool()
+  const { previewModalDisclosure, disabledReason, isDisabled, hasNoRewards } = useClaiming(
+    pool as unknown as PoolListItem
+  )
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
+  }
+
+  const onModalClose = () => {
+    previewModalDisclosure.onClose()
   }
 
   return (
@@ -35,7 +46,7 @@ export default function PoolIncentives() {
       <VStack spacing="0" width="full">
         <HStack width="full" p="4" justifyContent="space-between">
           <Heading fontWeight="bold" size="h5">
-            Incentives
+            Incentives``
           </Heading>
           <ButtonGroup currentOption={activeTab} options={TABS} onChange={handleTabChanged} />
         </HStack>
@@ -81,10 +92,28 @@ export default function PoolIncentives() {
               <Button variant="disabled" isDisabled>
                 Incentivize
               </Button>
+              <Tooltip label={isDisabled ? disabledReason : ''}>
+                <Button
+                  variant="secondary"
+                  w="full"
+                  size="lg"
+                  isDisabled={isDisabled || hasNoRewards}
+                  onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
+                >
+                  Claim
+                </Button>
+              </Tooltip>
             </HStack>
           </Card>
         </Box>
       </VStack>
+      <ClaimModal
+        isOpen={previewModalDisclosure.isOpen}
+        onOpen={previewModalDisclosure.onOpen}
+        onClose={onModalClose}
+        gaugeAddresses={[(pool.staking?.id || '') as Hex]}
+        pool={pool as unknown as PoolListItem}
+      />
     </Card>
   )
 }

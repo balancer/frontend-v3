@@ -9,6 +9,7 @@ const networkConfig: NetworkConfig = {
   iconPath: '/images/chains/AVALANCHE.svg',
   blockExplorerBaseUrl: 'https://snowtrace.io',
   tokens: {
+    balToken: { address: '0xe15bcb9e0ea69e6ab9fa080c4c4a5632896298c3' },
     nativeAsset: {
       name: 'Avalanche',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',

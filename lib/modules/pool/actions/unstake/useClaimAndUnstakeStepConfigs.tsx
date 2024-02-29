@@ -1,12 +1,15 @@
 import { useHasApprovedRelayer } from '@/lib/modules/relayer/useHasApprovedRelayer'
 import { ClaimAndUnstakeButton } from './ClaimAndUnstakeButton'
 import { useHasMinterApproval } from '@/lib/modules/staking/gauge/useHasMinterApproval'
-import { approveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
+import { getApproveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { minterApprovalConfig } from '@/lib/modules/staking/gauge/minterApprovalConfig'
+import { getChainId } from '@/lib/config/app.config'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
-export function useClaimAndUnstakeStepConfigs() {
+export function useClaimAndUnstakeStepConfigs(chain: GqlChain) {
+  const chainId = getChainId(chain)
   const { hasMinterApproval } = useHasMinterApproval()
-  const { hasApprovedRelayer } = useHasApprovedRelayer()
+  const { hasApprovedRelayer } = useHasApprovedRelayer(chainId)
 
   let stepConfigs = [
     {
@@ -15,11 +18,11 @@ export function useClaimAndUnstakeStepConfigs() {
   ]
 
   if (!hasApprovedRelayer) {
-    stepConfigs = [approveRelayerConfig, ...stepConfigs]
+    stepConfigs = [getApproveRelayerConfig(chainId), ...stepConfigs]
   }
 
   if (!hasMinterApproval) {
-    stepConfigs = [minterApprovalConfig, ...stepConfigs]
+    stepConfigs = [minterApprovalConfig(chain), ...stepConfigs]
   }
 
   return stepConfigs

@@ -99,6 +99,10 @@ export const balColors = {
     dark: 'hsla(217,12%,25%,1)',
     hslDark: '217,12%,25%',
   },
+  chartBorder: {
+    light: '#edeae3',
+    dark: '#4F5764',
+  },
   gradient: {
     // dusk: 'linear(to-tr, purple.300 5%, #D7CBE7 50%, #EAA879 95%)',
     // sand: 'linear(to-t, #E6C6A0 0%, #E5D3BE 100%)',
@@ -156,8 +160,8 @@ export const tokens = {
         secondaryGradient: 'linear-gradient(45deg, #728097 0%, #909BAD 100%)',
         special: balColors.gradient.dawnLight,
         specialSecondary: balColors.gradient.sunsetLight,
-        link: `linear-gradient(45deg, ${balColors.purple['700']} 0%, ${balColors.purple['500']} 100%)`,
-        linkHover: `linear-gradient(45deg, ${balColors.purple['900']} 0%, ${balColors.purple['700']} 100%)`,
+        link: balColors.purple['500'],
+        linkHover: balColors.purple['700'],
       },
 
       card: {
@@ -248,8 +252,8 @@ export const tokens = {
         secondaryGradient: 'linear-gradient(45deg, #909BAD 0%, #728097 100%)',
         special: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
         specialSecondary: 'linear-gradient(180deg, #EA9A43 0%, #F06147 100%)',
-        link: `linear-gradient(45deg, ${balColors.purple['400']} 0%, ${balColors.purple['200']} 100%)`,
-        linkHover: `linear-gradient(45deg, ${balColors.purple['200']} 0%, ${balColors.purple['50']} 100%)`,
+        link: balColors.purple['300'],
+        linkHover: balColors.purple['100'],
       },
       // card colors
       card: {
@@ -1033,12 +1037,10 @@ export const balTheme = {
     },
     Link: {
       baseStyle: {
-        background: 'font.link',
-        backgroundClip: 'text',
-        transition: tokens.transition.slow,
+        color: 'font.link',
+        transition: tokens.transition.default,
         _hover: {
-          background: 'font.linkHover',
-          backgroundClip: 'text',
+          color: 'font.linkHover',
         },
       },
     },
@@ -1322,13 +1324,6 @@ export const balTheme = {
                 )`,
             },
           },
-        },
-      },
-    },
-    List: {
-      baseStyle: {
-        item: {
-          color: 'purple.300',
         },
       },
     },

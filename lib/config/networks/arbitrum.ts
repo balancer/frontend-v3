@@ -9,6 +9,7 @@ const networkConfig: NetworkConfig = {
   iconPath: '/images/chains/ARBITRUM.svg',
   blockExplorerBaseUrl: 'https://arbiscan.io',
   tokens: {
+    balToken: { address: '0x040d1edc9569d4bab2d15287dc5a4f10f56a56b8' },
     nativeAsset: {
       name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',

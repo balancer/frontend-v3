@@ -22,7 +22,7 @@ export function PoolComposition() {
   }, [pool])
 
   return (
-    <Card variant="gradient" width="full" height="320px">
+    <Card variant="gradient" width="full">
       <VStack spacing="0" width="full">
         <HStack width="full" p="4" justifyContent="space-between">
           <Heading fontWeight="bold" size="h5">

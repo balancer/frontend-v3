@@ -7,7 +7,10 @@ import { formatUnits } from 'viem'
 import { useMulticall } from '../web3/contracts/useMulticall'
 import { getPoolsByGaugesMap } from '../pool/pool.utils'
 import { ClaimableBalanceResult } from './usePortfolio'
-import { fNum } from '@/lib/shared/utils/numbers'
+import { bn, fNum } from '@/lib/shared/utils/numbers'
+import networkConfigs from '@/lib/config/networks'
+import { useTokens } from '../tokens/useTokens'
+import BigNumber from 'bignumber.js'
 
 export interface BalTokenReward {
   balance: bigint
@@ -15,10 +18,13 @@ export interface BalTokenReward {
   formattedBalance: string
   gaugeAddress: string
   pool: PoolListItem
+  tokenAddress: Address
+  fiatBalance: BigNumber
 }
 
 export function useBalTokenRewards(pools: PoolListItem[]) {
   const { userAddress } = useUserAccount()
+  const { priceFor } = useTokens()
 
   // Get list of all reward tokens from provided pools
   const poolByGaugeMap = useMemo(() => {
@@ -38,7 +44,7 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
       }
     }) || []
 
-  const balTokensQuery = useMulticall(balIncentivesRequests)
+  const { results: balTokensQuery, refetchAll, isLoading } = useMulticall(balIncentivesRequests)
 
   // Bal incentives
   const balRewardsData = Object.values(balTokensQuery).reduce((acc: BalTokenReward[], chain) => {
@@ -55,12 +61,22 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
         if (gaugeData.status === 'success') {
           balance = gaugeData.result
         }
+
+        if (!balance) return
+        const balTokenAddress = networkConfigs[pool.chain].tokens.balToken?.address as Address
+        const tokenPrice = balTokenAddress ? priceFor(balTokenAddress, pool.chain) : 0
+        const fiatBalance = tokenPrice
+          ? bn(formatUnits(balance, 18)).multipliedBy(tokenPrice)
+          : bn(0)
+
         acc.push({
           gaugeAddress,
           pool,
-          balance: gaugeData.result,
+          balance,
           formattedBalance: fNum('token', formatUnits(balance, 18)),
+          fiatBalance,
           decimals: 18,
+          tokenAddress: networkConfigs[pool.chain].tokens.balToken?.address as Address,
         })
       })
     })
@@ -69,5 +85,7 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
 
   return {
     balRewardsData,
+    refetchBalRewards: refetchAll,
+    isLoadingBalRewards: isLoading,
   }
 }

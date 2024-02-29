@@ -4,19 +4,41 @@ import { PoolListItem } from '../pool/pool.types'
 import { useMemo } from 'react'
 import { useQuery as useApolloQuery } from '@apollo/client'
 import { useProtocolRewards } from './useProtocolRewards'
-import { useClaimableBalances } from './useClaimableBalances'
-import { useBalTokenRewards } from './useBalRewards'
+import { ClaimableReward, useClaimableBalances } from './claim/useClaimableBalances'
+import { BalTokenReward, useBalTokenRewards } from './useBalRewards'
 import { bn } from '@/lib/shared/utils/numbers'
+import BigNumber from 'bignumber.js'
+import { Address } from 'viem'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
   result: bigint
 }
 
+export interface PoolRewardsData extends PoolListItem {
+  balReward?: BalTokenReward
+  claimableRewards?: ClaimableReward[]
+  totalFiatClaimBalance?: BigNumber
+}
+
+export type PoolRewardsDataMap = Record<string, PoolRewardsData>
+
+export function getAllGaugesAddressesFromPool(pool: PoolListItem) {
+  const arr = []
+  const staking = pool.staking
+
+  if (staking?.gauge) arr.push(staking.gauge.gaugeAddress)
+  if (staking?.gauge?.otherGauges) {
+    arr.push(...staking.gauge.otherGauges.map(g => g.gaugeAddress))
+  }
+
+  return arr as Address[]
+}
+
 export function usePortfolio() {
   const { userAddress } = useUserAccount()
 
-  const { data } = useApolloQuery(GetPoolsDocument, {
+  const { data, loading } = useApolloQuery(GetPoolsDocument, {
     variables: { where: { userAddress } },
     notifyOnNetworkStatusChange: true,
   })
@@ -50,18 +72,50 @@ export function usePortfolio() {
   }, [data?.pools])
 
   // Bal token rewards
-  const { balRewardsData } = useBalTokenRewards(portfolioData.stakedPools || [])
+  const { balRewardsData, isLoadingBalRewards } = useBalTokenRewards(
+    portfolioData.stakedPools || []
+  )
 
   // Protocol rewards
-  const { protocolRewardsData } = useProtocolRewards()
+  const { protocolRewardsData, isLoadingProtocolRewards } = useProtocolRewards()
 
   // Other tokens rewards
-  const { claimableRewards } = useClaimableBalances(portfolioData.stakedPools || [])
+  const { claimableRewards, claimableRewardsByPoolMap, isLoadingClaimableRewards } =
+    useClaimableBalances(portfolioData.stakedPools || [])
+
+  const poolRewardsMap = useMemo(() => {
+    return portfolioData.stakedPools?.reduce((acc: PoolRewardsDataMap, pool) => {
+      const balReward = balRewardsData.find(r => r.pool.id === pool.id)
+      const claimableReward = claimableRewardsByPoolMap[pool.id]
+
+      acc[pool.id] = {
+        ...pool,
+      }
+
+      let totalFiatClaimableBalance = bn(0)
+      if (balReward) {
+        acc[pool.id].balReward = balReward
+        totalFiatClaimableBalance = totalFiatClaimableBalance.plus(balReward.fiatBalance)
+      }
+      if (claimableReward) {
+        acc[pool.id].claimableRewards = claimableReward
+        claimableReward.forEach(
+          r => (totalFiatClaimableBalance = totalFiatClaimableBalance.plus(r.fiatBalance))
+        )
+      }
+
+      acc[pool.id].totalFiatClaimBalance = totalFiatClaimableBalance
+      return acc
+    }, {})
+  }, [portfolioData.stakedPools, balRewardsData, claimableRewardsByPoolMap])
 
   return {
     portfolioData,
     balRewardsData,
     protocolRewardsData,
     claimableRewards,
+    poolRewardsMap,
+    isLoading:
+      loading || isLoadingBalRewards || isLoadingProtocolRewards || isLoadingClaimableRewards,
   }
 }

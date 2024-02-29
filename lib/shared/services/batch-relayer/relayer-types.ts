@@ -1,6 +1,6 @@
 import { ExitPoolRequest } from '@balancer/sdk'
 import { Numberish } from '../../utils/numbers'
-import { Address } from 'viem'
+import { Address, Hex } from 'viem'
 
 export type OutputReference = {
   index: bigint
@@ -8,7 +8,7 @@ export type OutputReference = {
 }
 
 export interface EncodeExitPoolInput {
-  poolId: `0x${string}`
+  poolId: Hex
   poolKind: number
   sender: Address
   recipient: Address

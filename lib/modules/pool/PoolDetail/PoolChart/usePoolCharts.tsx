@@ -1,5 +1,5 @@
 import { theme } from '@chakra-ui/react'
-import { addMinutes, format } from 'date-fns'
+import { addMinutes, differenceInDays, format } from 'date-fns'
 import * as echarts from 'echarts/core'
 import {
   GetPoolSnapshotsDocument,
@@ -319,14 +319,16 @@ export function usePoolCharts() {
       })
     }
 
+    const isPoolOlder30Days = differenceInDays(new Date().getTime(), pool.createTime * 1000) > 30
+
     // add lagging timestamps
-    if (chartArr.length < 30 && chartArr.length > MIN_CHART_VALUES_NUM) {
-      const lastDate = chartArr[chartArr.length - 1][0] || 0
+    if (!isPoolOlder30Days && chartArr.length < 30 && chartArr.length > MIN_CHART_VALUES_NUM) {
+      const firstDate = chartArr[0][0] || 0
       const days = 30 - chartArr.length
 
       const timestampsArr: number[] = []
       for (let i = 1; i <= days; i++) {
-        const timestamp = Number(lastDate) - i * twentyFourHoursInSecs
+        const timestamp = Number(firstDate) - i * twentyFourHoursInSecs
         timestampsArr.push(timestamp * 1000)
       }
 
@@ -339,7 +341,7 @@ export function usePoolCharts() {
     }
 
     return chartArr
-  }, [data?.snapshots, activeTab])
+  }, [data?.snapshots, activeTab, pool.createTime])
 
   const defaultChartOptions = getDefaultPoolChartOptions(toCurrency)
 
