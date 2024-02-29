@@ -25,7 +25,6 @@ import {
 import { RefObject, useRef } from 'react'
 import { Address } from 'wagmi'
 import { useSwap } from './useSwap'
-import { SwapFlowButton } from './SwapFlowButton'
 import { SwapTimeout } from './SwapTimeout'
 
 type Props = {
@@ -67,7 +66,7 @@ export function SwapPreviewModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { tokenIn, tokenOut } = useSwap()
+  const { tokenIn, tokenOut, swapTxState, currentStep, useOnStepCompleted } = useSwap()
 
   return (
     <Modal
@@ -106,13 +105,13 @@ export function SwapPreviewModal({
                     </Tooltip>
                   </HStack>
                 </HStack>
-                <SwapTimeout />
+                <SwapTimeout swapTxState={swapTxState} />
               </VStack>
             </Card>
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <SwapFlowButton />
+          <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>

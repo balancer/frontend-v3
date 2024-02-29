@@ -4,16 +4,17 @@ import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queri
 import { useDebounce } from 'use-debounce'
 import { useQuery } from 'wagmi'
 import { UseQueryOptions } from '@tanstack/react-query'
-import { SwapHandler, SwapInputs } from '../handlers/Swap.handler'
+import { SwapHandler } from '../handlers/Swap.handler'
 import { swapQueryKeys } from './swapQueryKeys'
+import { SimulateSwapInputs } from '../swap.types'
 
 type Params = {
   handler: SwapHandler
-  swapInputs: SwapInputs
+  swapInputs: SimulateSwapInputs
   options?: UseQueryOptions
 }
 
-export function useSwapSimulationQuery({
+export function useSimulateSwapQuery({
   handler,
   swapInputs: { swapAmount, chain, tokenIn, tokenOut, swapType },
   options = {},

@@ -5,13 +5,14 @@ import { ApolloClient } from '@apollo/client'
 import { Path, Slippage, Swap, SwapKind } from '@balancer/sdk'
 import { formatUnits } from 'viem'
 import { TransactionConfig } from '../../web3/contracts/contract.types'
-import { SdkBuildSwapCallDataInput, SdkSimulateSwapResponse, SwapInputs } from '../swap.types'
+import { SdkBuildSwapInputs, SdkSimulateSwapResponse, SimulateSwapInputs } from '../swap.types'
 import { getTimestampInMinsFromNow } from '@/lib/shared/utils/time'
+import { VaultVersion } from '@/lib/shared/types'
 
 export class DefaultSwapHandler implements SwapHandler {
   constructor(public apolloClient: ApolloClient<object>) {}
 
-  async simulate({ ...variables }: SwapInputs): Promise<SdkSimulateSwapResponse> {
+  async simulate({ ...variables }: SimulateSwapInputs): Promise<SdkSimulateSwapResponse> {
     console.log('Fetching swap simulation', variables)
     const { chain, swapType } = variables
     const networkConfig = getNetworkConfig(variables.chain)
@@ -31,6 +32,16 @@ export class DefaultSwapHandler implements SwapHandler {
     })
 
     // Get return amount with onchain call
+    console.log({
+      swap,
+      tokenIn: data.swaps.tokenIn,
+      tokenOut: data.swaps.tokenOut,
+      paths: data.swaps.paths,
+      rpc: networkConfig.rpcUrl,
+      chain: getChainId(chain),
+      swapKind: this.swapTypeToKind(swapType),
+    })
+
     const onchainReturnAmount = await swap.query(networkConfig.rpcUrl)
     console.log('Swap (onchain)', onchainReturnAmount)
 
@@ -43,17 +54,18 @@ export class DefaultSwapHandler implements SwapHandler {
       priceImpact: data.swaps.priceImpact,
       effectivePrice: data.swaps.effectivePrice,
       effectivePriceReversed: data.swaps.effectivePriceReversed,
+      vaultVersion: data.swaps.vaultVersion as VaultVersion,
       swap: swap,
       onchainReturnAmount,
     }
   }
 
-  buildSwapCallData({
+  build({
     simulateResponse: { swap, onchainReturnAmount },
     slippagePercent,
     account,
     chain,
-  }: SdkBuildSwapCallDataInput): TransactionConfig {
+  }: SdkBuildSwapInputs): TransactionConfig {
     const tx = swap.buildCall({
       slippage: Slippage.fromPercentage(slippagePercent as `${number}`),
       deadline: BigInt(getTimestampInMinsFromNow(60)),

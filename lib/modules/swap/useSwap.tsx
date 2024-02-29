@@ -13,12 +13,16 @@ import { LABELS } from '@/lib/shared/labels'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
-import { useSwapSimulationQuery } from './queries/useSwapSimulationQuery'
+import { useSimulateSwapQuery } from './queries/useSimulateSwapQuery'
 import { useTokens } from '../tokens/useTokens'
 import { useUserSettings } from '../user/settings/useUserSettings'
 import { useDisclosure } from '@chakra-ui/react'
 import { useSwapStepConfigs } from './useSwapStepConfigs'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { VaultVersion } from '@/lib/shared/types'
+import { SimulateSwapResponse } from './swap.types'
+import { SwapHandler } from './handlers/Swap.handler'
+import { useIterateSteps } from '../pool/actions/useIterateSteps'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -32,6 +36,7 @@ type SwapState = {
   tokenIn: TokenInput
   tokenOut: TokenInput
   swapType: GqlSorSwapType
+  vaultVersion: VaultVersion
 }
 
 const swapStateVar = makeVar<SwapState>({
@@ -44,10 +49,11 @@ const swapStateVar = makeVar<SwapState>({
     amount: '',
   },
   swapType: GqlSorSwapType.ExactIn,
+  vaultVersion: 2,
 })
 
 // Unecessary for now but allows us to add logic to select other handlers in the future.
-function selectSwapHandler(apolloClient: ApolloClient<object>) {
+function selectSwapHandler(apolloClient: ApolloClient<object>): SwapHandler {
   return new DefaultSwapHandler(apolloClient)
 }
 
@@ -80,7 +86,7 @@ export function _useSwap() {
     (state.swapType === GqlSorSwapType.ExactIn ? state.tokenIn.amount : state.tokenOut.amount) ||
     '0'
 
-  const simulationQuery = useSwapSimulationQuery({
+  const simulationQuery = useSimulateSwapQuery({
     handler,
     swapInputs: {
       chain: selectedChain,
@@ -94,7 +100,16 @@ export function _useSwap() {
     },
   })
 
-  function setReturnAmount(returnAmount: string, swapType: GqlSorSwapType) {
+  function handleSimulationResponse({
+    returnAmount,
+    vaultVersion,
+    swapType,
+  }: SimulateSwapResponse) {
+    swapStateVar({
+      ...swapState,
+      vaultVersion: vaultVersion,
+    })
+
     if (swapType === GqlSorSwapType.ExactIn) {
       setTokenOutAmount(returnAmount, { userTriggered: false })
     } else {
@@ -212,12 +227,14 @@ export function _useSwap() {
   const priceImpacUsd = bn(priceImpact || 0).times(returnAmountUsd)
   const maxSlippageUsd = bn(slippage).div(100).times(returnAmountUsd)
 
-  // const swapStepConfigs = useSwapStepConfigs({
-  //   humanAmountIn: swapState.tokenIn.amount,
-  //   tokenIn: tokenInInfo,
-  //   selectedChain,
-  //   setSwapTxState,
-  // })
+  const swapStepConfigs = useSwapStepConfigs({
+    humanAmountIn: swapState.tokenIn.amount,
+    tokenIn: tokenInInfo,
+    selectedChain,
+    vaultVersion: swapState.vaultVersion,
+    setSwapTxState,
+  })
+  const { currentStep, useOnStepCompleted } = useIterateSteps(swapStepConfigs)
 
   // On first render, set default tokens
   useEffect(() => {
@@ -231,7 +248,7 @@ export function _useSwap() {
 
   useEffect(() => {
     if (simulationQuery.data) {
-      setReturnAmount(simulationQuery.data.returnAmount, simulationQuery.data.swapType)
+      handleSimulationResponse(simulationQuery.data)
     }
   }, [simulationQuery.data])
 
@@ -253,6 +270,10 @@ export function _useSwap() {
     priceImpacUsd,
     maxSlippageUsd,
     previewModalDisclosure,
+    handler,
+    swapTxState,
+    currentStep,
+    useOnStepCompleted,
     setTokenSelectKey,
     setSelectedChain,
     setTokenInAmount,
