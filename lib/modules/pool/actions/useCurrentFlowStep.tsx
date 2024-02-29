@@ -6,7 +6,7 @@ import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { PropsWithChildren, createContext, useEffect, useState } from 'react'
 
 export function _useCurrentFlowStep() {
-  const [flowStep, setCurrentFlowStep] = useState<FlowStep | null>(null)
+  const [flowStep, setCurrentFlowStep] = useState<FlowStep | undefined>()
 
   return { flowStep, setCurrentFlowStep }
 }
