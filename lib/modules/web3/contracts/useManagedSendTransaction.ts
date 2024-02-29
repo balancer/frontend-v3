@@ -16,12 +16,20 @@ import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { getGqlChain } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
+import { useChainSwitch } from '../useChainSwitch'
 
 export function useManagedSendTransaction(
   labels: TransactionLabels,
+  chainId: SupportedChainId,
   txConfig?: UsePrepareSendTransactionConfig
 ) {
-  const prepareQuery = usePrepareSendTransaction(txConfig)
+  const { shouldChangeNetwork } = useChainSwitch(chainId)
+
+  const prepareQuery = usePrepareSendTransaction({
+    ...txConfig,
+    chainId,
+    enabled: !!txConfig && !shouldChangeNetwork,
+  })
 
   const writeQuery = useSendTransaction({
     chainId: txConfig?.chainId,
@@ -31,7 +39,10 @@ export function useManagedSendTransaction(
   const transactionStatusQuery = useWaitForTransaction({ hash: writeQuery.data?.hash })
 
   const bundle = {
-    simulation: prepareQuery as TransactionSimulation,
+    simulation: {
+      ...prepareQuery,
+      config: { ...prepareQuery.config, chainId },
+    } as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
     result: transactionStatusQuery,
   }

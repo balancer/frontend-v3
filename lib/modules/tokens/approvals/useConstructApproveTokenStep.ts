@@ -27,7 +27,7 @@ export function useConstructApproveTokenStep({
 }: ApproveTokenProps) {
   const { refetchAllowances, isAllowancesLoading, allowanceFor } = tokenAllowances
   const { getToken } = useTokens()
-  const { pool } = usePool()
+  const { pool, chainId } = usePool()
 
   const [didRefetchAllowances, setDidRefetchAllowances] = useState(false)
 
@@ -46,6 +46,7 @@ export function useConstructApproveTokenStep({
     tokenAddress,
     'approve',
     tokenApprovalLabels,
+    chainId,
     { args: [spenderAddress, requestedRawAmount] },
     {
       enabled: !!spenderAddress && !isAllowancesLoading,

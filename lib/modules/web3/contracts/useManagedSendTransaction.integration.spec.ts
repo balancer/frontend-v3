@@ -55,7 +55,7 @@ describe('weighted join test', () => {
     })
 
     const { result } = testHook(() => {
-      return useManagedSendTransaction({ init: 'foo', tooltip: 'bar' }, txConfig)
+      return useManagedSendTransaction({ init: 'foo', tooltip: 'bar' }, 1, txConfig)
     })
 
     await waitFor(() => expect(result.current.executeAsync).toBeDefined())

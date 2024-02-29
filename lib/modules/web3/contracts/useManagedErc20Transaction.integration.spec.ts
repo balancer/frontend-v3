@@ -11,7 +11,7 @@ test('token approval transaction (wETH)', async () => {
   const vault2 = '0xBA12222222228d8Ba445958a75a0704d566BF2C8'
 
   const { result } = testHook(() =>
-    useManagedErc20Transaction(wEthAddress, 'approve', {} as TransactionLabels, {
+    useManagedErc20Transaction(wEthAddress, 'approve', {} as TransactionLabels, 1, {
       args: [vault2, parseUnits('100', 18)],
     })
   )

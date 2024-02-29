@@ -34,6 +34,7 @@ import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { SignRelayerButton } from '@/lib/shared/components/btns/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
+import { getChainId } from '@/lib/config/app.config'
 
 type Props = {
   isOpen: boolean
@@ -59,9 +60,9 @@ export function AddLiquidityModal({
     currentStep,
     useOnStepCompleted,
   } = useAddLiquidity()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
+  const shouldSignRelayerApproval = useShouldSignRelayerApproval(getChainId(pool.chain))
   const { slippage } = useUserSettings()
 
   const bptOut = simulationQuery?.data?.bptOut
