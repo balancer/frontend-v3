@@ -1,20 +1,12 @@
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
-import {
-  SwapInputs,
-  SimulateSwapResponse,
-  SwapHandler,
-  SdkSimulateSwapResponse,
-  SdkBuildSwapCallDataInput,
-} from './Swap.handler'
-import {
-  GetSorSwapsDocument,
-  GetSorSwapsQuery,
-  GqlSorSwapType,
-} from '@/lib/shared/services/api/generated/graphql'
+import { SwapHandler } from './Swap.handler'
+import { GetSorSwapsDocument, GqlSorSwapType } from '@/lib/shared/services/api/generated/graphql'
 import { ApolloClient } from '@apollo/client'
-import { Path, Swap, SwapKind } from '@balancer/sdk'
+import { Path, Slippage, Swap, SwapKind } from '@balancer/sdk'
 import { formatUnits } from 'viem'
 import { TransactionConfig } from '../../web3/contracts/contract.types'
+import { SdkBuildSwapCallDataInput, SdkSimulateSwapResponse, SwapInputs } from '../swap.types'
+import { getTimestampInMinsFromNow } from '@/lib/shared/utils/time'
 
 export class DefaultSwapHandler implements SwapHandler {
   constructor(public apolloClient: ApolloClient<object>) {}
@@ -56,20 +48,28 @@ export class DefaultSwapHandler implements SwapHandler {
     }
   }
 
-  buildSwapCallData(inputs: SdkBuildSwapCallDataInput): Promise<TransactionConfig> {
-    const {
-      simulateResponse: { swap, onchainReturnAmount },
-      slippage,
-    } = inputs
-
-    const callData = swap.buildCall({
-      slippage,
-      deadline,
+  buildSwapCallData({
+    simulateResponse: { swap, onchainReturnAmount },
+    slippagePercent,
+    account,
+    chain,
+  }: SdkBuildSwapCallDataInput): TransactionConfig {
+    const tx = swap.buildCall({
+      slippage: Slippage.fromPercentage(slippagePercent as `${number}`),
+      deadline: BigInt(getTimestampInMinsFromNow(60)),
       expectedAmountOut: onchainReturnAmount,
-      sender,
-      recipient,
+      sender: account,
+      recipient: account,
       wethIsEth: false,
-    }) as SwapBuildOutputExactIn
+    })
+
+    return {
+      account,
+      chainId: getChainId(chain),
+      data: tx.callData,
+      value: tx.value,
+      to: tx.to,
+    }
   }
 
   private swapTypeToKind(swapType: GqlSorSwapType): SwapKind {
