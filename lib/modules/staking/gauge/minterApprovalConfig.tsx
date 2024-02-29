@@ -12,8 +12,8 @@ export function minterApprovalConfig(chain: GqlChain): StepConfig {
   }
 }
 
-function MinterApprovalButton({ useOnStepCompleted }: MinterStepProps) {
-  const step = useConstructMinterApprovalStep()
+function MinterApprovalButton({ useOnStepCompleted, chain }: MinterStepProps) {
+  const step = useConstructMinterApprovalStep(chain)
 
   useOnStepCompleted(step)
 
