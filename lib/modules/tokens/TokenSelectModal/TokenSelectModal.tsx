@@ -2,6 +2,8 @@
 
 import {
   Box,
+  Card,
+  HStack,
   Input,
   Modal,
   ModalBody,
@@ -11,11 +13,13 @@ import {
   ModalOverlay,
   ModalProps,
   VStack,
+  Text,
 } from '@chakra-ui/react'
 import { RefObject, useRef, useState } from 'react'
 import { TokenSelectList } from './TokenSelectList/TokenSelectList'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { TokenSelectPopular } from './TokenSelectPopular'
+import { TbWallet, TbCoins } from 'react-icons/tb'
 
 type Props = {
   tokens: GqlToken[]
@@ -83,11 +87,35 @@ export function TokenSelectModal({
               </Box>
             )}
             <Box px="md" pr="0" w="full">
+              <Card p="1" mr="4" mb="4">
+                <HStack>
+                  <Box color="font.secondary">
+                    <TbWallet />
+                  </Box>
+                  <Text color="font.secondary">In your wallet</Text>
+                </HStack>
+              </Card>
               <TokenSelectList
                 tokens={tokens}
                 excludeNativeAsset={excludeNativeAsset}
                 pinNativeAsset={pinNativeAsset}
-                listHeight={500}
+                listHeight={250}
+                searchTerm={searchTerm}
+                onTokenSelect={closeOnSelect}
+              />
+              <Card p="1" mr="4" mb="4">
+                <HStack>
+                  <Box color="font.secondary">
+                    <TbCoins />
+                  </Box>
+                  <Text color="font.secondary">Other tokens</Text>
+                </HStack>
+              </Card>
+              <TokenSelectList
+                tokens={tokens}
+                excludeNativeAsset={excludeNativeAsset}
+                pinNativeAsset={pinNativeAsset}
+                listHeight={250}
                 searchTerm={searchTerm}
                 onTokenSelect={closeOnSelect}
               />
