@@ -212,12 +212,12 @@ export function _useSwap() {
   const priceImpacUsd = bn(priceImpact || 0).times(returnAmountUsd)
   const maxSlippageUsd = bn(slippage).div(100).times(returnAmountUsd)
 
-  const swapStepConfigs = useSwapStepConfigs({
-    humanAmountIn: swapState.tokenIn.amount,
-    tokenIn: tokenInInfo,
-    selectedChain,
-    setSwapTxState,
-  })
+  // const swapStepConfigs = useSwapStepConfigs({
+  //   humanAmountIn: swapState.tokenIn.amount,
+  //   tokenIn: tokenInInfo,
+  //   selectedChain,
+  //   setSwapTxState,
+  // })
 
   // On first render, set default tokens
   useEffect(() => {

@@ -2,7 +2,7 @@ import { Button, Tooltip } from '@chakra-ui/react'
 import { useSwap } from './useSwap'
 
 export function SwapFlowButton() {
-  const { isDisabled, disabledReason, isLoading } = useSwap()
+  const { isDisabled, disabledReason, simulationQuery } = useSwap()
 
   function submit() {
     console.log('swap')
@@ -15,7 +15,7 @@ export function SwapFlowButton() {
         w="full"
         size="lg"
         isDisabled={isDisabled}
-        isLoading={isLoading}
+        isLoading={simulationQuery.isLoading}
         onClick={submit}
       >
         Swap

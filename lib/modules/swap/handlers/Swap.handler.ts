@@ -4,7 +4,9 @@ import {
   GqlSorSwapType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { ApolloClient } from '@apollo/client'
+import { Swap, TokenAmount } from '@balancer/sdk'
 import { Address } from 'viem'
+import { TransactionConfig } from '../../web3/contracts/contract.types'
 
 export type SwapInputs = {
   chain: GqlChain
@@ -14,13 +16,27 @@ export type SwapInputs = {
   swapAmount: string
 }
 
-export type SimulateSwapResponse = {
+export interface SimulateSwapResponse {
   returnAmount: string
   swapType: GqlSorSwapType
   priceImpact: string
   effectivePrice: string
   effectivePriceReversed: string
-  sorSwapsQuery?: GetSorSwapsQuery
+}
+
+export interface SdkSimulateSwapResponse extends SimulateSwapResponse {
+  swap: Swap
+  onchainReturnAmount: TokenAmount
+}
+
+export interface BuildSwapCallDataInput {
+  account: Address
+  slippagePercent: string
+  simulateResponse: SimulateSwapResponse
+}
+
+export interface SdkBuildSwapCallDataInput extends BuildSwapCallDataInput {
+  simulateResponse: SdkSimulateSwapResponse
 }
 
 /**
@@ -31,5 +47,5 @@ export interface SwapHandler {
   apolloClient?: ApolloClient<object>
 
   simulate(params: SwapInputs): Promise<SimulateSwapResponse>
-  // buildSwapCallData(inputs: BuildAddLiquidityInput): Promise<TransactionConfig>
+  buildSwapCallData(inputs: BuildSwapCallDataInput): Promise<TransactionConfig>
 }
