@@ -1,39 +1,30 @@
 import { useHasApprovedRelayer } from '@/lib/modules/relayer/useHasApprovedRelayer'
 import { useHasMinterApproval } from '@/lib/modules/staking/gauge/useHasMinterApproval'
-import { approveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { minterApprovalConfig } from '@/lib/modules/staking/gauge/minterApprovalConfig'
 import { ClaimAllRewardsButton } from '../../../portfolio/claim/ClaimAllRewardsButton'
-import { Address } from 'viem'
-import { GqlChain, GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
+import { getApproveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
+import { getChainId } from '@/lib/config/app.config'
+import { PoolListItem } from '../../pool.types'
 import { StepConfig } from '../useIterateSteps'
 
-export function useClaimStepConfigs(
-  gaugeAddresses: Address[],
-  chain: GqlChain,
-  stakingType: GqlPoolStakingType
-) {
+export function useClaimStepConfigs(pool: PoolListItem) {
+  const chainId = getChainId(pool.chain)
   const { hasMinterApproval } = useHasMinterApproval()
-  const { hasApprovedRelayer } = useHasApprovedRelayer()
+  const { hasApprovedRelayer } = useHasApprovedRelayer(chainId)
 
   let stepConfigs: StepConfig[] = [
     {
       title: 'Claim',
-      render: () => (
-        <ClaimAllRewardsButton
-          gaugeAddresses={gaugeAddresses}
-          chain={chain}
-          stakingType={stakingType}
-        />
-      ),
+      render: () => <ClaimAllRewardsButton pool={pool} />,
     },
   ]
 
   if (!hasApprovedRelayer) {
-    stepConfigs = [approveRelayerConfig, ...stepConfigs]
+    stepConfigs = [getApproveRelayerConfig(chainId), ...stepConfigs]
   }
 
   if (!hasMinterApproval) {
-    stepConfigs = [minterApprovalConfig(chain), ...stepConfigs]
+    stepConfigs = [minterApprovalConfig(pool.chain), ...stepConfigs]
   }
 
   return stepConfigs

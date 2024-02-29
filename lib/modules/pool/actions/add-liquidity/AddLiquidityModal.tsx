@@ -62,9 +62,9 @@ export function AddLiquidityModal({
     stepConfigs,
     useOnStepCompleted,
   } = useAddLiquidity()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval()
   const { toCurrency } = useCurrency()
-  const { pool } = usePool()
+  const { pool, chainId } = usePool()
+  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
   const { slippage } = useUserSettings()
 
   const bptOut = simulationQuery?.data?.bptOut
@@ -93,7 +93,11 @@ export function AddLiquidityModal({
         <ModalBody>
           <VStack spacing="md" align="start">
             <Card variant="level5" p="md" shadow="sm" w="full">
-              <StepTracker currentStepIndex={currentStepIndex} stepConfigs={stepConfigs} />
+              <StepTracker
+                currentStepIndex={currentStepIndex}
+                stepConfigs={stepConfigs}
+                chainId={chainId}
+              />
             </Card>
             <Card variant="level5" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="md">

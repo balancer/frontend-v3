@@ -5,8 +5,11 @@ import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuil
 import { useEffect } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
 import { useUpdateCurrentFlowStep } from '../useCurrentFlowStep'
+import { usePool } from '../../usePool'
 
 export function useConstructAddLiquidityStep() {
+  const { chainId } = usePool()
+
   const transactionLabels: TransactionLabels = {
     init: 'Add liquidity',
     confirming: 'Confirming...',
@@ -26,6 +29,7 @@ export function useConstructAddLiquidityStep() {
 
   const addLiquidityTransaction = useManagedSendTransaction(
     transactionLabels,
+    chainId,
     buildCallDataQuery.data
   )
 

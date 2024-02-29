@@ -18,17 +18,19 @@ import { useCurrentFlowStep } from '../useCurrentFlowStep'
 import { StepConfig } from '../useIterateSteps'
 import { Step, StepIndicator } from './Step'
 import { StepProps } from './getStepLook'
+import { SupportedChainId } from '@/lib/config/config.types'
 
 type StepTrackerProps = {
   stepConfigs: StepConfig[]
   currentStepIndex: number
+  chainId: SupportedChainId
 }
 
-export function StepTracker({ stepConfigs, currentStepIndex }: StepTrackerProps) {
+export function StepTracker({ stepConfigs, currentStepIndex, chainId }: StepTrackerProps) {
   const { flowStep } = useCurrentFlowStep()
   const { colorMode } = useColorMode()
   const relayerMode = useRelayerMode()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval()
+  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
   const hasSignRelayerStep = relayerMode === 'signRelayer'
 
   function getCurrentIndex() {

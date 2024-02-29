@@ -10,7 +10,7 @@ import { Abi, Address } from 'viem'
 import { SupportedChainId } from '@/lib/config/config.types'
 
 export type TransactionSimulation =
-  | ReturnType<typeof usePrepareContractWrite>
+  | (ReturnType<typeof usePrepareContractWrite> & { config: { chainId: number } }) // somehow the config prop gets dropped somewhere
   | ReturnType<typeof usePrepareSendTransaction>
 
 export type TransactionExecution =

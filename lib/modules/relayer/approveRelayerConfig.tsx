@@ -1,16 +1,20 @@
 import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
 import { CommonStepProps, OnStepCompleted, StepConfig } from '../pool/actions/useIterateSteps'
 import { useConstructApproveRelayerStep } from './useConstructApproveRelayerStep'
+import { SupportedChainId } from '@/lib/config/config.types'
 
-export const approveRelayerConfig: StepConfig = {
+export const getApproveRelayerConfig = (chainId: SupportedChainId): StepConfig => ({
   title: 'Approve relayer',
   render(useOnStepCompleted: OnStepCompleted) {
-    return <ApproveRelayerButton useOnStepCompleted={useOnStepCompleted} />
+    return <ApproveRelayerButton useOnStepCompleted={useOnStepCompleted} chainId={chainId} />
   },
-}
+})
 
-function ApproveRelayerButton({ useOnStepCompleted }: CommonStepProps) {
-  const step = useConstructApproveRelayerStep()
+function ApproveRelayerButton({
+  useOnStepCompleted,
+  chainId,
+}: CommonStepProps & { chainId: SupportedChainId }) {
+  const step = useConstructApproveRelayerStep(chainId)
 
   useOnStepCompleted(step)
 

@@ -22,6 +22,7 @@ import { usdtAbi } from './abi/UsdtAbi'
 import { getGqlChain } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import { useChainSwitch } from '../useChainSwitch'
 
 type Erc20Abi = typeof erc20ABI
 export function useManagedErc20Transaction<
@@ -30,6 +31,7 @@ export function useManagedErc20Transaction<
   tokenAddress: Address,
   functionName: F,
   labels: TransactionLabels,
+  chainId: SupportedChainId,
   args?: GetFunctionArgs<Erc20Abi, F> | null,
   additionalConfig?: Omit<
     UsePrepareContractWriteConfig<Erc20Abi, F, number>,
@@ -38,6 +40,7 @@ export function useManagedErc20Transaction<
 ) {
   const [writeArgs, setWriteArgs] = useState(args)
   const { minConfirmations } = useNetworkConfig()
+  const { shouldChangeNetwork } = useChainSwitch(chainId)
 
   const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7'
   const isUsdt = isSameAddress(tokenAddress, usdtAddress)
@@ -53,6 +56,8 @@ export function useManagedErc20Transaction<
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
     args: writeArgs?.args as any,
     ...(additionalConfig as any),
+    chainId,
+    enabled: additionalConfig?.enabled && !shouldChangeNetwork,
   })
 
   const writeQuery = useContractWrite(prepareQuery.config)

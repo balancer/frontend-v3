@@ -7,6 +7,7 @@ import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
 import { TokenAmountToApprove } from './approval-rules'
 import { useUpdateCurrentFlowStep } from '../../pool/actions/useCurrentFlowStep'
+import { usePool } from '../../pool/usePool'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse
@@ -24,6 +25,7 @@ export function useConstructApproveTokenStep({
   symbol,
 }: ApproveTokenProps) {
   const { refetchAllowances, isAllowancesLoading, allowanceFor } = tokenAllowances
+  const { chainId } = usePool()
 
   const [didRefetchAllowances, setDidRefetchAllowances] = useState(false)
 
@@ -39,6 +41,7 @@ export function useConstructApproveTokenStep({
     tokenAddress,
     'approve',
     tokenApprovalLabels,
+    chainId,
     { args: [spenderAddress, requestedRawAmount] },
     {
       enabled: !!spenderAddress && !isAllowancesLoading,

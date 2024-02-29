@@ -57,9 +57,8 @@ export function RemoveLiquidityModal({
     amountOutForToken,
     useOnStepCompleted,
   } = useRemoveLiquidity()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval()
-
-  const { pool } = usePool()
+  const { pool, chainId } = usePool()
+  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
   const { slippage } = useUserSettings()
 
   const priceImpactLabel =
