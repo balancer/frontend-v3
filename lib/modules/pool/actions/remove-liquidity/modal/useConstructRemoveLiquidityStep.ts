@@ -5,10 +5,9 @@ import { useRemoveLiquidityBuildCallDataQuery } from '../queries/useRemoveLiquid
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useEffect } from 'react'
 import { usePool } from '../../../usePool'
-import { getChainId } from '@/lib/config/app.config'
 
 export function useConstructRemoveLiquidityStep() {
-  const { pool } = usePool()
+  const { pool, chainId } = usePool()
 
   const transactionLabels: TransactionLabels = {
     init: 'Remove liquidity',
@@ -29,8 +28,7 @@ export function useConstructRemoveLiquidityStep() {
 
   const removeLiquidityTransaction = useManagedSendTransaction(
     transactionLabels,
-    getChainId(pool.chain),
-    !!buildCallDataQuery.data,
+    chainId,
     buildCallDataQuery.data
   )
 

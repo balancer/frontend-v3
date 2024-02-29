@@ -5,14 +5,14 @@ import { BPT_DECIMALS } from '../../pool.constants'
 import { usePool } from '../../usePool'
 import { selectStakingService } from '@/lib/modules/staking/selectStakingService'
 import { useUnstakeGaugeCallDataQuery } from './useUnstakeGaugeCallDataQuery'
-import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
+import { getNetworkConfig } from '@/lib/config/app.config'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { useBalTokenRewards } from '@/lib/modules/portfolio/useBalRewards'
 import { useClaimableBalances } from '@/lib/modules/portfolio/claim/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
 
 export function useConstructClaimAndUnstakeStep() {
-  const { pool } = usePool()
+  const { pool, chainId } = usePool()
   const networkConfig = getNetworkConfig(pool.chain)
 
   const convertedPool = pool as unknown as PoolListItem // need to change type going from pool to pools for hooks
@@ -41,7 +41,7 @@ export function useConstructClaimAndUnstakeStep() {
     'balancer.relayerV6',
     'multicall',
     transactionLabels,
-    getChainId(pool.chain),
+    chainId,
     { args: [data] },
     { enabled: !!pool }
   )

@@ -9,7 +9,6 @@ import { useTokens } from '../useTokens'
 import { TokenAmountToApprove } from './approval-rules'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { usePool } from '../../pool/usePool'
-import { getChainId } from '@/lib/config/app.config'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse
@@ -28,7 +27,7 @@ export function useConstructApproveTokenStep({
 }: ApproveTokenProps) {
   const { refetchAllowances, isAllowancesLoading, allowanceFor } = tokenAllowances
   const { getToken } = useTokens()
-  const { pool } = usePool()
+  const { pool, chainId } = usePool()
 
   const [didRefetchAllowances, setDidRefetchAllowances] = useState(false)
 
@@ -47,7 +46,7 @@ export function useConstructApproveTokenStep({
     tokenAddress,
     'approve',
     tokenApprovalLabels,
-    getChainId(pool.chain),
+    chainId,
     { args: [spenderAddress, requestedRawAmount] },
     {
       enabled: !!spenderAddress && !isAllowancesLoading,
