@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, BoxProps, Center, Text } from '@chakra-ui/react'
+import { Box, BoxProps, Card, Center, Text } from '@chakra-ui/react'
 import VirtualList from 'react-tiny-virtual-list'
 import { TokenSelectListRow } from './TokenSelectListRow'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
@@ -72,30 +72,35 @@ export function TokenSelectList({
           </Text>
         </Center>
       ) : (
-        <VirtualList
-          width="100%"
-          height={listHeight}
-          itemCount={orderedTokens.length}
-          itemSize={60}
-          scrollToIndex={getScrollToIndex()}
-          style={{ overflowY: 'scroll', paddingRight: '0.5rem' }}
-          renderItem={({ index, style }) => {
-            const token = orderedTokens[index]
-            const userBalance = isConnected ? balanceFor(token) : undefined
+        <>
+          <Card p="1" mr="4" mb="4">
+            <Text>Other tokens</Text>
+          </Card>
+          <VirtualList
+            width="100%"
+            height={listHeight}
+            itemCount={orderedTokens.length}
+            itemSize={60}
+            scrollToIndex={getScrollToIndex()}
+            style={{ overflowY: 'scroll', paddingRight: '0.5rem' }}
+            renderItem={({ index, style }) => {
+              const token = orderedTokens[index]
+              const userBalance = isConnected ? balanceFor(token) : undefined
 
-            return (
-              <TokenSelectListRow
-                key={keyFor(token, index)}
-                active={index === activeIndex}
-                onClick={() => onTokenSelect(token)}
-                token={token}
-                userBalance={userBalance}
-                isBalancesLoading={isBalancesLoading}
-                style={style}
-              />
-            )
-          }}
-        />
+              return (
+                <TokenSelectListRow
+                  key={keyFor(token, index)}
+                  active={index === activeIndex}
+                  onClick={() => onTokenSelect(token)}
+                  token={token}
+                  userBalance={userBalance}
+                  isBalancesLoading={isBalancesLoading}
+                  style={style}
+                />
+              )
+            }}
+          />
+        </>
       )}
     </Box>
   )
