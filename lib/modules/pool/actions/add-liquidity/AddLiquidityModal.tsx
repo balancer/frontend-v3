@@ -6,6 +6,7 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
+  Box,
   Card,
   HStack,
   Heading,
@@ -80,7 +81,18 @@ export function AddLiquidityModal({
       {...rest}
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent left="-100px" position="relative">
+        <Box
+          p="2"
+          height="200px"
+          width="200px"
+          rounded="md"
+          bg="red"
+          right="-224px"
+          position="absolute"
+        >
+          <Text>steps</Text>
+        </Box>
         <ModalHeader>
           <Heading fontWeight="bold" size="h5">
             Add liquidity
