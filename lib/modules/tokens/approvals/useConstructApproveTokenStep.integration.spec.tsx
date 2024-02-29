@@ -1,5 +1,9 @@
 import { vaultV2Address, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import { buildDefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers'
+import {
+  DefaultPoolTestProvider,
+  buildDefaultPoolTestProvider,
+  testHook,
+} from '@/test/utils/custom-renderers'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { waitFor } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
@@ -7,6 +11,16 @@ import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { useConstructApproveTokenStep } from './useConstructApproveTokenStep'
 import { TokenAmountToApprove } from './approval-rules'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
+import { CurrentFlowStepProvider } from '../../pool/actions/useCurrentFlowStep'
+import { PropsWithChildren } from 'react'
+
+function Provider({ children }: PropsWithChildren) {
+  return (
+    <CurrentFlowStepProvider>
+      <DefaultPoolTestProvider>{children}</DefaultPoolTestProvider>
+    </CurrentFlowStepProvider>
+  )
+}
 
 function testUseConstruct() {
   const { result } = testHook(
@@ -33,7 +47,7 @@ function testUseConstruct() {
       })
     },
     {
-      wrapper: buildDefaultPoolTestProvider(),
+      wrapper: Provider,
     }
   )
   return result
