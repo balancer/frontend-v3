@@ -8,6 +8,7 @@ import { Address } from 'viem'
 import { useTokens } from '../useTokens'
 import { TokenAmountToApprove } from './approval-rules'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { getChainId } from '@/lib/config/app.config'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse
@@ -44,6 +45,7 @@ export function useConstructApproveTokenStep({
     tokenAddress,
     'approve',
     tokenApprovalLabels,
+    getChainId(chain),
     { args: [spenderAddress, requestedRawAmount] },
     {
       enabled: !!spenderAddress && !isAllowancesLoading,

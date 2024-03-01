@@ -4,7 +4,7 @@ import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useToken
 import { InputAmount } from '@balancer/sdk'
 import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { approveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
+import { getApproveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { AddLiquidityButton } from './AddLiquidityButton'
 
 export function useAddLiquidityStepConfigs(
@@ -13,7 +13,7 @@ export function useAddLiquidityStepConfigs(
 ) {
   const relayerMode = useRelayerMode()
   const vaultAddress = useContractAddress('balancer.vaultV2')
-  const { pool } = usePool()
+  const { pool, chainId } = usePool()
 
   const tokenApprovalConfigs = useTokenApprovalConfigs({
     spenderAddress: vaultAddress,
@@ -29,7 +29,7 @@ export function useAddLiquidityStepConfigs(
   let stepConfigs = [...tokenApprovalConfigs, addLiquidityStepConfig]
 
   if (relayerMode === 'approveRelayer') {
-    stepConfigs = [approveRelayerConfig, ...stepConfigs]
+    stepConfigs = [getApproveRelayerConfig(chainId), ...stepConfigs]
   }
 
   return stepConfigs

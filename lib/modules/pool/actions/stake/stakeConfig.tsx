@@ -16,11 +16,11 @@ export const stakeConfig: StepConfig = {
 
 function StakeButton() {
   const [didRefetchPool, setDidRefetchPool] = useState(false)
-  const { refetch, pool } = usePool()
+  const { refetch, pool, chainId } = usePool()
   const { rawAmount } = useStaking()
   const { redirectToPoolPage } = usePoolRedirect(pool)
 
-  const stakeStep = useConstructStakingDepositActionStep(pool.staking, rawAmount)
+  const stakeStep = useConstructStakingDepositActionStep(chainId, pool.staking, rawAmount)
 
   const isComplete = stakeStep.isComplete()
 

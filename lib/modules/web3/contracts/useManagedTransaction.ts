@@ -20,6 +20,7 @@ import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { getGqlChain } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import { useChainSwitch } from '../useChainSwitch'
 
 export function useManagedTransaction<
   T extends typeof AbiMap,
@@ -30,6 +31,7 @@ export function useManagedTransaction<
   contractId: M,
   functionName: F,
   transactionLabels: TransactionLabels,
+  chainId: SupportedChainId,
   args?: GetFunctionArgs<T[M], F> | null,
   additionalConfig?: Omit<
     UsePrepareContractWriteConfig<T[M], F, number>,
@@ -38,6 +40,7 @@ export function useManagedTransaction<
 ) {
   const [writeArgs, setWriteArgs] = useState(args)
   const { minConfirmations } = useNetworkConfig()
+  const { shouldChangeNetwork } = useChainSwitch(chainId)
 
   const prepareQuery = usePrepareContractWrite({
     abi: AbiMap[contractId] as Abi,
@@ -46,6 +49,8 @@ export function useManagedTransaction<
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
     args: writeArgs?.args as any,
     ...(additionalConfig as any),
+    chainId,
+    enabled: additionalConfig?.enabled && !shouldChangeNetwork,
   })
 
   const writeQuery = useContractWrite(prepareQuery.config)
