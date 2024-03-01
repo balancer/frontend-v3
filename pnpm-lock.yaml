@@ -140,9 +140,9 @@ dependencies:
   react-jazzicon:
     specifier: ^1.0.4
     version: 1.0.4(react-dom@18.2.0)(react@18.2.0)
-  react-tiny-virtual-list:
-    specifier: ^2.2.0
-    version: 2.2.0(react@18.2.0)
+  react-virtuoso:
+    specifier: ^4.7.1
+    version: 4.7.1(react-dom@18.2.0)(react@18.2.0)
   tinycolor2:
     specifier: ^1.6.0
     version: 1.6.0
@@ -4934,7 +4934,7 @@ packages:
   /@tanstack/react-query-persist-client@4.36.1(@tanstack/react-query@4.36.1):
     resolution: {integrity: sha512-32I5b9aAu4NCiXZ7Te/KEQLfHbYeTNriVPrKYcvEThnZ9tlW01vLcSoxpUIsMYRsembvJUUAkzYBAiZHLOd6pQ==}
     peerDependencies:
-      '@tanstack/react-query': ^4.29.19
+      '@tanstack/react-query': ^4.36.1
     dependencies:
       '@tanstack/query-persist-client-core': 4.36.1
       '@tanstack/react-query': 4.36.1(react-dom@18.2.0)(react@18.2.0)
@@ -10663,13 +10663,15 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /react-tiny-virtual-list@2.2.0(react@18.2.0):
-    resolution: {integrity: sha512-MDiy2xyqfvkWrRiQNdHFdm36lfxmcLLKuYnUqcf9xIubML85cmYCgzBJrDsLNZ3uJQ5LEHH9BnxGKKSm8+C0Bw==}
+  /react-virtuoso@4.7.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-V1JIZLEwgX7R+YNkbY8dq6NcnIGKGWXe4mnMJJPsA2L4qeFKst0LY3mDk6sBCJyKRbMzYFxTZWyTT4QsA1JvVQ==}
+    engines: {node: '>=10'}
     peerDependencies:
-      react: 15.x || 16.x || ^18.0.0
+      react: '>=16 || >=17 || >= 18 || ^18.0.0'
+      react-dom: '>=16 || >=17 || >= 18 || ^18.0.0'
     dependencies:
-      prop-types: 15.8.1
       react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /react@18.2.0:
