@@ -4,6 +4,7 @@ import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transa
 import { useEffect } from 'react'
 import { useSwap } from './useSwap'
 import { useBuildSwapQuery } from './queries/useBuildSwapQuery'
+import { getChainId } from '@/lib/config/app.config'
 
 export function useConstructSwapStep() {
   const transactionLabels: TransactionLabels = {
@@ -13,7 +14,7 @@ export function useConstructSwapStep() {
     tooltip: 'Swap A for B',
   }
 
-  const { simulationQuery } = useSwap()
+  const { simulationQuery, selectedChain } = useSwap()
   const buildSwapQuery = useBuildSwapQuery()
 
   useEffect(() => {
@@ -23,7 +24,9 @@ export function useConstructSwapStep() {
     }
   }, [JSON.stringify(simulationQuery.data)])
 
-  const swapTransaction = useManagedSendTransaction(transactionLabels, buildSwapQuery.data)
+  const chainId = buildSwapQuery.data?.chainId || getChainId(selectedChain)
+
+  const swapTransaction = useManagedSendTransaction(transactionLabels, chainId, buildSwapQuery.data)
 
   const isComplete = () => swapTransaction.result.isSuccess
 
