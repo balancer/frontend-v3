@@ -53,9 +53,10 @@ export function SwapForm() {
   } = useSwap()
   const { getTokensByChain } = useTokens()
   const tokenSelectDisclosure = useDisclosure()
-
   const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
+  const finalRefTokenIn = useRef(null)
+  const finalRefTokenOut = useRef(null)
 
   const networkOptions = PROJECT_CONFIG.supportedNetworks.map(network => ({
     label: (
@@ -121,6 +122,7 @@ export function SwapForm() {
                 }
               />
               <TokenInput
+                ref={finalRefTokenIn}
                 address={tokenIn.address}
                 chain={selectedChain}
                 value={tokenIn.amount}
@@ -135,6 +137,7 @@ export function SwapForm() {
                 onClick={switchTokens}
               />
               <TokenInput
+                ref={finalRefTokenOut}
                 address={tokenOut.address}
                 chain={selectedChain}
                 value={tokenOut.amount}
@@ -142,7 +145,6 @@ export function SwapForm() {
                 toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
               />
             </VStack>
-
             <VStack spacing="sm" align="start" w="full">
               <HStack justify="space-between" w="full">
                 <Text color="grayText">Price impact</Text>
@@ -157,7 +159,6 @@ export function SwapForm() {
                 <Text color="grayText">Expires in: {refetchCountdownSecs} secs</Text>
               </HStack>
             </VStack>
-
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}
@@ -174,6 +175,7 @@ export function SwapForm() {
         </Card>
       </Center>
       <TokenSelectModal
+        finalFocusRef={tokenSelectKey === 'tokenIn' ? finalRefTokenIn : finalRefTokenOut}
         tokens={tokenSelectTokens}
         chain={selectedChain}
         isOpen={tokenSelectDisclosure.isOpen}
