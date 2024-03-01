@@ -19,7 +19,6 @@ import { useUserSettings } from '../user/settings/useUserSettings'
 import { useDisclosure } from '@chakra-ui/react'
 import { useSwapStepConfigs } from './useSwapStepConfigs'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { VaultVersion } from '@/lib/shared/types'
 import { SimulateSwapResponse } from './swap.types'
 import { SwapHandler } from './handlers/Swap.handler'
 import { useIterateSteps } from '../pool/actions/useIterateSteps'
@@ -36,7 +35,7 @@ type SwapState = {
   tokenIn: TokenInput
   tokenOut: TokenInput
   swapType: GqlSorSwapType
-  vaultVersion: VaultVersion
+  vaultVersion: number
 }
 
 const swapStateVar = makeVar<SwapState>({

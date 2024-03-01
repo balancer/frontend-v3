@@ -7,7 +7,6 @@ import { formatUnits } from 'viem'
 import { TransactionConfig } from '../../web3/contracts/contract.types'
 import { SdkBuildSwapInputs, SdkSimulateSwapResponse, SimulateSwapInputs } from '../swap.types'
 import { getTimestampInMinsFromNow } from '@/lib/shared/utils/time'
-import { VaultVersion } from '@/lib/shared/types'
 
 export class DefaultSwapHandler implements SwapHandler {
   constructor(public apolloClient: ApolloClient<object>) {}
@@ -49,13 +48,9 @@ export class DefaultSwapHandler implements SwapHandler {
     const returnAmount = formatUnits(onchainReturnAmount.amount, onchainReturnAmount.token.decimals)
 
     return {
+      ...data.swaps,
       returnAmount,
-      swapType: data.swaps.swapType,
-      priceImpact: data.swaps.priceImpact,
-      effectivePrice: data.swaps.effectivePrice,
-      effectivePriceReversed: data.swaps.effectivePriceReversed,
-      vaultVersion: data.swaps.vaultVersion as VaultVersion,
-      swap: swap,
+      swap,
       onchainReturnAmount,
     }
   }

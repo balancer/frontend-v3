@@ -17,6 +17,7 @@ import { useSwap } from './useSwap'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useUserSettings } from '../user/settings/useUserSettings'
 import { useState } from 'react'
+import { SdkSimulateSwapResponse } from './swap.types'
 
 export function SwapDetailsAccordian() {
   const [priceDirection, setPriceDirection] = useState<'givenIn' | 'givenOut'>('givenIn')
@@ -50,6 +51,10 @@ export function SwapDetailsAccordian() {
     e.preventDefault()
     setPriceDirection(priceDirection === 'givenIn' ? 'givenOut' : 'givenIn')
   }
+
+  const sdkSimulationRes = simulationQuery.data as SdkSimulateSwapResponse
+  const orderRouteVersion = sdkSimulationRes?.vaultVersion || 2
+  const hopCount = sdkSimulationRes?.apiSwap?.routes[0]?.hops?.length || 0
 
   return (
     <Accordion w="full" allowToggle>
@@ -95,10 +100,12 @@ export function SwapDetailsAccordian() {
             </HStack>
 
             <HStack justify="space-between" w="full">
-              <Text color="GrayText">Gas cost</Text>
+              <Text color="GrayText">Order route</Text>
               <HStack>
-                <NumberText color="GrayText">~{toCurrency(0, { abbreviated: false })}</NumberText>
-                <Tooltip label="Price impact" fontSize="sm">
+                <NumberText color="GrayText">
+                  BV{orderRouteVersion}: {hopCount} hops
+                </NumberText>
+                <Tooltip label="Balancer vault version and number of hops" fontSize="sm">
                   <InfoOutlineIcon color="GrayText" />
                 </Tooltip>
               </HStack>

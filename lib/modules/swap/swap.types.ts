@@ -1,5 +1,8 @@
-import { GqlChain, GqlSorSwapType } from '@/lib/shared/services/api/generated/graphql'
-import { VaultVersion } from '@/lib/shared/types'
+import {
+  GetSorSwapsQuery,
+  GqlChain,
+  GqlSorSwapType,
+} from '@/lib/shared/services/api/generated/graphql'
 import { Swap, TokenAmount } from '@balancer/sdk'
 import { Address } from 'wagmi'
 
@@ -11,14 +14,7 @@ export type SimulateSwapInputs = {
   swapAmount: string
 }
 
-export interface SimulateSwapResponse {
-  returnAmount: string
-  swapType: GqlSorSwapType
-  priceImpact: string
-  effectivePrice: string
-  effectivePriceReversed: string
-  vaultVersion: VaultVersion
-}
+export type SimulateSwapResponse = GetSorSwapsQuery['swaps']
 
 export interface SdkSimulateSwapResponse extends SimulateSwapResponse {
   swap: Swap
