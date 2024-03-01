@@ -52,9 +52,8 @@ export function SwapDetailsAccordian() {
     setPriceDirection(priceDirection === 'givenIn' ? 'givenOut' : 'givenIn')
   }
 
-  const sdkSimulationRes = simulationQuery.data as SdkSimulateSwapResponse
-  const orderRouteVersion = sdkSimulationRes?.vaultVersion || 2
-  const hopCount = sdkSimulationRes?.apiSwap?.routes[0]?.hops?.length || 0
+  const orderRouteVersion = simulationQuery.data?.vaultVersion || 2
+  const hopCount = simulationQuery.data?.routes[0]?.hops?.length || 0
 
   return (
     <Accordion w="full" allowToggle>
