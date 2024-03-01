@@ -13,7 +13,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react'
-import { Pool } from '../../usePool'
 import { useClaiming } from './useClaiming'
 import { Address } from 'wagmi'
 import { BalTokenReward } from '@/lib/modules/portfolio/useBalRewards'
@@ -35,8 +34,9 @@ export function ClaimModal({
   pool,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const { currentStep, useOnStepCompleted, nonBalRewards, balRewards, hasNoRewards } =
-    useClaiming(pool)
+  const { currentStep, useOnStepCompleted, nonBalRewards, balRewards, hasNoRewards } = useClaiming([
+    pool,
+  ])
 
   function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
     if (reward.formattedBalance === '0') return null

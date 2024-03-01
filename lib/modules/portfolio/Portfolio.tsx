@@ -15,6 +15,7 @@ export default function Portfolio() {
     claimableRewards,
     poolRewardsMap,
     isLoading,
+    poolsByChainMap,
   } = usePortfolio()
 
   if (isLoading) {
