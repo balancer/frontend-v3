@@ -12,7 +12,6 @@ export class DefaultSwapHandler implements SwapHandler {
   constructor(public apolloClient: ApolloClient<object>) {}
 
   async simulate({ ...variables }: SimulateSwapInputs): Promise<SdkSimulateSwapResponse> {
-    console.log('Fetching swap simulation', variables)
     const { chain, swapType } = variables
     const networkConfig = getNetworkConfig(variables.chain)
 
@@ -22,7 +21,6 @@ export class DefaultSwapHandler implements SwapHandler {
       fetchPolicy: 'no-cache',
       notifyOnNetworkStatusChange: true,
     })
-    console.log('Swap (API)', data.swaps)
 
     const swap = new Swap({
       chainId: getChainId(chain),
@@ -30,19 +28,8 @@ export class DefaultSwapHandler implements SwapHandler {
       swapKind: this.swapTypeToKind(swapType),
     })
 
-    // Get return amount with onchain call
-    console.log({
-      swap,
-      tokenIn: data.swaps.tokenIn,
-      tokenOut: data.swaps.tokenOut,
-      paths: data.swaps.paths,
-      rpc: networkConfig.rpcUrl,
-      chain: getChainId(chain),
-      swapKind: this.swapTypeToKind(swapType),
-    })
-
+    // Get accurate return amount with onchain call
     const onchainReturnAmount = await swap.query(networkConfig.rpcUrl)
-    console.log('Swap (onchain)', onchainReturnAmount)
 
     // Format return amount to human readable
     const returnAmount = formatUnits(onchainReturnAmount.amount, onchainReturnAmount.token.decimals)
