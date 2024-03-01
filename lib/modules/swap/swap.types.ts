@@ -26,6 +26,7 @@ export interface BuildSwapInputs {
   chain: GqlChain
   slippagePercent: string
   simulateResponse: SimulateSwapResponse
+  isNativeAssetIn: boolean
 }
 
 export interface SdkBuildSwapInputs extends BuildSwapInputs {

@@ -5,14 +5,13 @@ import { SwapButton } from './SwapButton'
 import { useMemo } from 'react'
 import { Address, parseUnits } from 'viem'
 import { RawAmount } from '../tokens/approvals/approval-rules'
-import { VaultVersion } from '@/lib/shared/types'
 import { useVault } from '@/lib/shared/hooks/useVault'
 
 type Params = {
   humanAmountIn: string
   tokenIn: GqlToken | undefined
   selectedChain: GqlChain
-  vaultVersion: VaultVersion
+  vaultVersion: number
   setSwapTxState: (transactionState: TransactionState) => void
 }
 

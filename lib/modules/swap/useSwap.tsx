@@ -22,6 +22,7 @@ import { TransactionState } from '@/lib/shared/components/btns/transaction-steps
 import { SimulateSwapResponse } from './swap.types'
 import { SwapHandler } from './handlers/Swap.handler'
 import { useIterateSteps } from '../pool/actions/useIterateSteps'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -225,6 +226,10 @@ export function _useSwap() {
   const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
   const priceImpacUsd = bn(priceImpact || 0).times(returnAmountUsd)
   const maxSlippageUsd = bn(slippage).div(100).times(returnAmountUsd)
+  const isNativeAssetIn = isSameAddress(
+    swapState.tokenIn.address,
+    networkConfig.tokens.nativeAsset.address
+  )
 
   const swapStepConfigs = useSwapStepConfigs({
     humanAmountIn: swapState.tokenIn.amount,
@@ -272,6 +277,7 @@ export function _useSwap() {
     handler,
     swapTxState,
     currentStep,
+    isNativeAssetIn,
     useOnStepCompleted,
     setTokenSelectKey,
     setSelectedChain,
