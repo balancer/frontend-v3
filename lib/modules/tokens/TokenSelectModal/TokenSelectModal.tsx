@@ -4,7 +4,6 @@ import {
   Box,
   Card,
   HStack,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -16,13 +15,14 @@ import {
   Text,
   Button,
 } from '@chakra-ui/react'
-import { RefObject, useRef, useState } from 'react'
+import { RefObject, useState } from 'react'
 import { TokenSelectList } from './TokenSelectList/TokenSelectList'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { TokenSelectPopular } from './TokenSelectPopular'
 import { TbWallet, TbCoins } from 'react-icons/tb'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { SearchInput } from '@/lib/shared/components/inputs/SearchInput'
 
 type Props = {
   tokens: GqlToken[]
@@ -49,12 +49,10 @@ export function TokenSelectModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const [searchTerm, setSearchTerm] = useState('')
   const { isConnected } = useUserAccount()
-  const initialFocusRef = useRef(null)
   const { openConnectModal } = useConnectModal()
 
   function closeOnSelect(token: GqlToken) {
     onClose()
-
     onTokenSelect(token)
     setSearchTerm('')
   }
@@ -69,13 +67,7 @@ export function TokenSelectModal({
   }
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      initialFocusRef={initialFocusRef}
-      finalFocusRef={finalFocusRef}
-      {...rest}
-    >
+    <Modal isOpen={isOpen} onClose={onClose} finalFocusRef={finalFocusRef} {...rest}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader color="font.primary">Select a token</ModalHeader>
@@ -83,11 +75,12 @@ export function TokenSelectModal({
         <ModalBody p={0}>
           <VStack w="full" align="start" spacing="md">
             <Box px="md" w="full">
-              <Input
-                ref={initialFocusRef}
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
+              <SearchInput
+                search={searchTerm}
+                setSearch={setSearchTerm}
                 placeholder="Search by name, symbol or address"
+                ariaLabel="search for a token"
+                tabIndex={1}
               />
             </Box>
             {!searchTerm && (

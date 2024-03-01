@@ -1,4 +1,4 @@
-import { InputGroup, Input, InputRightElement, IconButton } from '@chakra-ui/react'
+import { InputGroup, Input, InputRightElement, IconButton, InputProps } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import { HiOutlineX, HiOutlineSearch } from 'react-icons/hi'
 import { useDebounce } from '@/lib/shared/hooks/useDebounce'
@@ -20,7 +20,8 @@ export function SearchInput({
   placeholder,
   ariaLabel,
   isLoading,
-}: SearchInputProps) {
+  ...rest
+}: SearchInputProps & InputProps) {
   const { register, setValue, getFieldState } = useForm()
 
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +35,6 @@ export function SearchInput({
       <Input
         {...register(SEARCH)}
         id={SEARCH}
-        tabIndex={1}
         placeholder={placeholder}
         onChange={debouncedChangeHandler}
         bg="input.bgDefault"
@@ -51,6 +51,7 @@ export function SearchInput({
           shadow: 'input.innerFocus',
           color: 'input.fontFocus',
         }}
+        {...rest}
       />
       <InputRightElement>
         <IconButton
