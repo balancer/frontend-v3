@@ -41,6 +41,7 @@ function testUseConstruct() {
         spenderAddress: defaultTestUserAccount,
         tokenAllowances,
         chain: GqlChain.Mainnet,
+        symbol: 'WETH',
       })
     },
     {

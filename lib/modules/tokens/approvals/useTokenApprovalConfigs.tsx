@@ -2,7 +2,6 @@ import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
 import { CommonStepProps, OnStepCompleted, StepConfig } from '../../pool/actions/useIterateSteps'
-import { usePool } from '../../pool/usePool'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { useTokens } from '../useTokens'
@@ -23,6 +22,7 @@ export type Params = {
   chain: GqlChain
   approvalAmounts: RawAmount[]
   actionType: ApprovalAction
+  bptSymbol?: string //Edge-case for approving
 }
 
 /*
@@ -33,10 +33,10 @@ export function useTokenApprovalConfigs({
   chain,
   approvalAmounts,
   actionType,
+  bptSymbol,
 }: Params): StepConfig[] {
   const { userAddress } = useUserAccount()
   const { getToken } = useTokens()
-  const { pool } = usePool()
 
   const _approvalAmounts = approvalAmounts.filter(amount => amount.rawAmount > 0)
 
@@ -57,15 +57,15 @@ export function useTokenApprovalConfigs({
 
   return tokenAmountsToApprove.map(tokenAmountToApprove => {
     const token = getToken(tokenAmountToApprove.tokenAddress, chain)
-    // if there is no token it must be a bpt, needs to be reconsidered if this assumption changes
-    const symbol = (token && token?.symbol) ?? pool.symbol ?? 'Unknown'
+    const symbol = bptSymbol ?? (token && token?.symbol) ?? 'Unknown'
 
     const props: ApproveTokenProps = {
       tokenAllowances,
       tokenAmountToApprove,
       actionType,
-      spenderAddress,
+      chain,
       symbol,
+      spenderAddress,
     }
     return buildTokenApprovalConfig(props)
   })

@@ -1,15 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { getChainId } from '@/lib/config/app.config'
 import { useManagedErc20Transaction } from '@/lib/modules/web3/contracts/useManagedErc20Transaction'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useEffect, useState } from 'react'
 import { Address } from 'viem'
+import { useUpdateCurrentFlowStep } from '../../pool/actions/useCurrentFlowStep'
 import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
-import { useTokens } from '../useTokens'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
 import { TokenAmountToApprove } from './approval-rules'
-import { useUpdateCurrentFlowStep } from '../../pool/actions/useCurrentFlowStep'
-import { getChainId } from '@/lib/config/app.config'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse
@@ -17,6 +16,7 @@ export type ApproveTokenProps = {
   spenderAddress: Address
   actionType: ApprovalAction
   chain: GqlChain
+  symbol: string
 }
 
 export function useConstructApproveTokenStep({
@@ -25,19 +25,17 @@ export function useConstructApproveTokenStep({
   spenderAddress,
   actionType,
   chain,
+  symbol,
 }: ApproveTokenProps) {
   const { refetchAllowances, isAllowancesLoading, allowanceFor } = tokenAllowances
-  const { getToken } = useTokens()
 
   const [didRefetchAllowances, setDidRefetchAllowances] = useState(false)
 
   const { tokenAddress, requestedRawAmount, requiredRawAmount } = tokenAmountToApprove
 
-  const token = getToken(tokenAddress, chain)
-
   const labelArgs: TokenApprovalLabelArgs = {
     actionType,
-    symbol: (token && token?.symbol) ?? 'Unknown',
+    symbol,
   }
   const tokenApprovalLabels = buildTokenApprovalLabels(labelArgs)
 
