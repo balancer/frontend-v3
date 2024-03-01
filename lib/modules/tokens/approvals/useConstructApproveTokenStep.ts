@@ -4,17 +4,19 @@ import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useEffect, useState } from 'react'
 import { Address } from 'viem'
 import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
+import { useTokens } from '../useTokens'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
 import { TokenAmountToApprove } from './approval-rules'
 import { useUpdateCurrentFlowStep } from '../../pool/actions/useCurrentFlowStep'
-import { usePool } from '../../pool/usePool'
+import { getChainId } from '@/lib/config/app.config'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse
   tokenAmountToApprove: TokenAmountToApprove
   spenderAddress: Address
   actionType: ApprovalAction
-  symbol: string
+  chain: GqlChain
 }
 
 export function useConstructApproveTokenStep({
@@ -22,18 +24,20 @@ export function useConstructApproveTokenStep({
   tokenAmountToApprove,
   spenderAddress,
   actionType,
-  symbol,
+  chain,
 }: ApproveTokenProps) {
   const { refetchAllowances, isAllowancesLoading, allowanceFor } = tokenAllowances
-  const { chainId } = usePool()
+  const { getToken } = useTokens()
 
   const [didRefetchAllowances, setDidRefetchAllowances] = useState(false)
 
   const { tokenAddress, requestedRawAmount, requiredRawAmount } = tokenAmountToApprove
 
+  const token = getToken(tokenAddress, chain)
+
   const labelArgs: TokenApprovalLabelArgs = {
     actionType,
-    symbol,
+    symbol: (token && token?.symbol) ?? 'Unknown',
   }
   const tokenApprovalLabels = buildTokenApprovalLabels(labelArgs)
 
@@ -41,7 +45,7 @@ export function useConstructApproveTokenStep({
     tokenAddress,
     'approve',
     tokenApprovalLabels,
-    chainId,
+    getChainId(chain),
     { args: [spenderAddress, requestedRawAmount] },
     {
       enabled: !!spenderAddress && !isAllowancesLoading,

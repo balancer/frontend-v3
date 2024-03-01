@@ -1,18 +1,15 @@
 import { vaultV2Address, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import {
-  DefaultPoolTestProvider,
-  buildDefaultPoolTestProvider,
-  testHook,
-} from '@/test/utils/custom-renderers'
-import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
-import { waitFor } from '@testing-library/react'
-import { act } from 'react-dom/test-utils'
-import { useTokenAllowances } from '../../web3/useTokenAllowances'
-import { useConstructApproveTokenStep } from './useConstructApproveTokenStep'
-import { TokenAmountToApprove } from './approval-rules'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
-import { CurrentFlowStepProvider } from '../../pool/actions/useCurrentFlowStep'
+import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
+import { DefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers'
+import { waitFor } from '@testing-library/react'
 import { PropsWithChildren } from 'react'
+import { act } from 'react-dom/test-utils'
+import { CurrentFlowStepProvider } from '../../pool/actions/useCurrentFlowStep'
+import { useTokenAllowances } from '../../web3/useTokenAllowances'
+import { TokenAmountToApprove } from './approval-rules'
+import { useConstructApproveTokenStep } from './useConstructApproveTokenStep'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 function Provider({ children }: PropsWithChildren) {
   return (
@@ -43,7 +40,7 @@ function testUseConstruct() {
         tokenAmountToApprove,
         spenderAddress: defaultTestUserAccount,
         tokenAllowances,
-        symbol: 'WETH',
+        chain: GqlChain.Mainnet,
       })
     },
     {
