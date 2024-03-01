@@ -14,12 +14,15 @@ import {
   ModalProps,
   VStack,
   Text,
+  Button,
 } from '@chakra-ui/react'
 import { RefObject, useRef, useState } from 'react'
 import { TokenSelectList } from './TokenSelectList/TokenSelectList'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { TokenSelectPopular } from './TokenSelectPopular'
 import { TbWallet, TbCoins } from 'react-icons/tb'
+import { useUserAccount } from '../../web3/useUserAccount'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 
 type Props = {
   tokens: GqlToken[]
@@ -45,14 +48,24 @@ export function TokenSelectModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const [searchTerm, setSearchTerm] = useState('')
-
+  const { isConnected } = useUserAccount()
   const initialFocusRef = useRef(null)
+  const { openConnectModal } = useConnectModal()
 
   function closeOnSelect(token: GqlToken) {
     onClose()
 
     onTokenSelect(token)
     setSearchTerm('')
+  }
+
+  const tokenSelectListProps = {
+    tokens,
+    excludeNativeAsset,
+    pinNativeAsset,
+    listHeight: 250,
+    searchTerm,
+    onTokenSelect: closeOnSelect,
   }
 
   return (
@@ -93,17 +106,14 @@ export function TokenSelectModal({
                     <TbWallet />
                   </Box>
                   <Text color="font.secondary">In your wallet</Text>
+                  {!isConnected && (
+                    <Button ml="auto" variant="link" color="purple.300" onClick={openConnectModal}>
+                      Connect wallet
+                    </Button>
+                  )}
                 </HStack>
               </Card>
-              <TokenSelectList
-                tokens={tokens}
-                excludeNativeAsset={excludeNativeAsset}
-                pinNativeAsset={pinNativeAsset}
-                listHeight={250}
-                searchTerm={searchTerm}
-                onTokenSelect={closeOnSelect}
-                showTokensWithBalance
-              />
+              {isConnected && <TokenSelectList {...tokenSelectListProps} showTokensWithBalance />}
               <Card p="1" mr="4" mb="4">
                 <HStack>
                   <Box color="font.secondary">
@@ -112,14 +122,7 @@ export function TokenSelectModal({
                   <Text color="font.secondary">Other tokens</Text>
                 </HStack>
               </Card>
-              <TokenSelectList
-                tokens={tokens}
-                excludeNativeAsset={excludeNativeAsset}
-                pinNativeAsset={pinNativeAsset}
-                listHeight={250}
-                searchTerm={searchTerm}
-                onTokenSelect={closeOnSelect}
-              />
+              <TokenSelectList {...tokenSelectListProps} />
             </Box>
           </VStack>
         </ModalBody>
