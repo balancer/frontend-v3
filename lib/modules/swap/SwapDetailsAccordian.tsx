@@ -17,7 +17,6 @@ import { useSwap } from './useSwap'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useUserSettings } from '../user/settings/useUserSettings'
 import { useState } from 'react'
-import { SdkSimulateSwapResponse } from './swap.types'
 
 export function SwapDetailsAccordian() {
   const [priceDirection, setPriceDirection] = useState<'givenIn' | 'givenOut'>('givenIn')

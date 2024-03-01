@@ -14,7 +14,6 @@ import {
   usdcAddress,
   usdtAddress,
 } from '@/lib/debug-helpers'
-import { gyroPoolMock } from '../__mocks__/gyroPoolMock'
 
 describe('hasValidHumanAmounts', () => {
   test('when all humanAmounts are empty', () => {

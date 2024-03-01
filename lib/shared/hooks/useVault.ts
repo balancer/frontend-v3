@@ -1,5 +1,4 @@
 import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
-import { VaultVersion } from '../types'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 
 export type VaultVersion = 2 | 3
