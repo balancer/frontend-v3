@@ -1,5 +1,6 @@
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
+import { mainnetIssues } from './issues/mainnet-issues'
 
 const networkConfig: NetworkConfig = {
   chainId: 1,
@@ -47,6 +48,8 @@ const networkConfig: NetworkConfig = {
     },
     feeDistributor: '0xD3cf852898b21fc233251427c2DC93d3d604F3BB',
   },
+
+  issues: mainnetIssues,
 }
 
 export default networkConfig

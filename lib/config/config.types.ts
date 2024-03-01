@@ -1,6 +1,7 @@
 import { Address } from 'viem'
 import { GqlChain } from '../shared/services/api/generated/graphql'
 import { supportedChains } from '../modules/web3/Web3Provider'
+import { PoolIssue } from '../modules/pool/alerts/pool-issues/PoolIssue.type'
 
 export interface TokensConfig {
   balToken?: { address: Address }
@@ -39,6 +40,7 @@ export interface NetworkConfig {
   tokens: TokensConfig
   contracts: ContractsConfig
   minConfirmations?: number
+  issues?: IssuesConfig
 }
 
 export interface Config {
@@ -53,4 +55,8 @@ export interface ProjectConfig {
   projectId: 'beets' | 'balancer'
   projectName: string
   supportedNetworks: GqlChain[]
+}
+
+export interface IssuesConfig {
+  PoolIssues?: Partial<Record<PoolIssue, string[]>>
 }
