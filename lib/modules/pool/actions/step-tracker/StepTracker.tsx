@@ -17,7 +17,7 @@ import {
 import { useCurrentFlowStep } from '../useCurrentFlowStep'
 import { StepConfig } from '../useIterateSteps'
 import { Step, StepIndicator } from './Step'
-import { StepProps } from './getStepLook'
+import { StepProps } from './getStepSettings'
 import { SupportedChainId } from '@/lib/config/config.types'
 
 type StepTrackerProps = {

@@ -1,5 +1,5 @@
 import { mockDeep } from 'vitest-mock-extended'
-import { StepProps, getStepLook } from './getStepLook'
+import { StepProps, getStepSettings } from './getStepSettings'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 
 const flowStep = mockDeep<FlowStep>()
@@ -16,7 +16,7 @@ describe('generates step props', () => {
       colorMode: 'light',
       flowStep,
     }
-    const state = getStepLook(props)
+    const state = getStepSettings(props)
 
     expect(state).toMatchInlineSnapshot(`
       {
@@ -38,7 +38,7 @@ describe('generates step props', () => {
       colorMode: 'light',
       flowStep: undefined,
     }
-    const state = getStepLook(props)
+    const state = getStepSettings(props)
 
     expect(state).toMatchInlineSnapshot(`
       {

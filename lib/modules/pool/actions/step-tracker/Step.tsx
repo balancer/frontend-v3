@@ -7,10 +7,10 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react'
-import { StepProps, getStepLook } from './getStepLook'
+import { StepProps, getStepSettings } from './getStepSettings'
 
 export function Step(props: StepProps) {
-  const { color, isActive, title } = getStepLook(props)
+  const { color, isActive, title } = getStepSettings(props)
 
   return (
     <HStack alignItems="start">
@@ -31,7 +31,7 @@ export function Step(props: StepProps) {
 }
 
 export function StepIndicator(props: StepProps) {
-  const { color, isActiveLoading, status, stepNumber } = getStepLook(props)
+  const { color, isActiveLoading, status, stepNumber } = getStepSettings(props)
 
   if (status === 'complete') {
     return (

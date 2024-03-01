@@ -19,7 +19,7 @@ export type StepProps = {
   Generates an object used to render the UI state of a given step in the context of a multi-step flow
   It handles title, colors, loading states, etc
 */
-export function getStepLook({ step, currentIndex, index, colorMode, flowStep }: StepProps) {
+export function getStepSettings({ step, currentIndex, index, colorMode, flowStep }: StepProps) {
   const color = getColor(colorMode, getStatus(index), flowStep)
 
   const isActive = index === currentIndex
