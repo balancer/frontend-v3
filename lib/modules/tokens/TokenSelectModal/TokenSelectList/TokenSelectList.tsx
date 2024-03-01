@@ -1,7 +1,6 @@
 'use client'
 
-import { Box, BoxProps, Center, Text } from '@chakra-ui/react'
-import VirtualList from 'react-tiny-virtual-list'
+import { Box, BoxProps, Button, Card, Center, HStack, Text } from '@chakra-ui/react'
 import { TokenSelectListRow } from './TokenSelectListRow'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useTokenBalances } from '../../useTokenBalances'
@@ -9,6 +8,9 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTokenSelectList } from './useTokenSelectList'
+import { TbCoins, TbWallet } from 'react-icons/tb'
+import { GroupedVirtuoso } from 'react-virtuoso'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 
 type Props = {
   tokens: GqlToken[]
@@ -17,7 +19,42 @@ type Props = {
   listHeight: number
   searchTerm?: string
   onTokenSelect: (token: GqlToken) => void
-  showTokensWithBalance?: boolean
+}
+function OtherTokens() {
+  return (
+    <Card p="1" mb="2">
+      <HStack>
+        <Box color="font.secondary">
+          <TbCoins />
+        </Box>
+        <Text color="font.secondary">Other tokens</Text>
+      </HStack>
+    </Card>
+  )
+}
+
+function InYourWallet({
+  isConnected,
+  openConnectModal,
+}: {
+  isConnected: boolean
+  openConnectModal: (() => void) | undefined
+}) {
+  return (
+    <Card p="1" mb="2">
+      <HStack>
+        <Box color="font.secondary">
+          <TbWallet />
+        </Box>
+        <Text color="font.secondary">In your wallet</Text>
+        {!isConnected && (
+          <Button ml="auto" variant="link" color="purple.300" onClick={openConnectModal}>
+            Connect wallet
+          </Button>
+        )}
+      </HStack>
+    </Card>
+  )
 }
 
 export function TokenSelectList({
@@ -27,7 +64,6 @@ export function TokenSelectList({
   listHeight,
   searchTerm,
   onTokenSelect,
-  showTokensWithBalance = false,
   ...rest
 }: Props & BoxProps) {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -39,10 +75,19 @@ export function TokenSelectList({
     pinNativeAsset,
     searchTerm
   )
+  const { openConnectModal } = useConnectModal()
 
-  const tokensWithBalance = orderedTokens.filter(token => balanceFor(token)?.amount)
+  const tokensWithBalance = isConnected
+    ? orderedTokens.filter(token => balanceFor(token)?.amount)
+    : []
   const tokensWithoutBalance = orderedTokens.filter(token => !tokensWithBalance.includes(token))
-  const tokensToShow = showTokensWithBalance ? tokensWithBalance : tokensWithoutBalance
+  const tokensToShow = [...tokensWithBalance, ...tokensWithoutBalance]
+
+  const groups = [
+    <InYourWallet isConnected={isConnected} openConnectModal={openConnectModal} />,
+    <OtherTokens />,
+  ]
+  const groupCounts = [tokensWithBalance.length, tokensWithoutBalance.length]
 
   const decrementActiveIndex = () => setActiveIndex(prev => Math.max(prev - 1, 0))
   const incrementActiveIndex = () =>
@@ -78,14 +123,13 @@ export function TokenSelectList({
           </Text>
         </Center>
       ) : (
-        <VirtualList
-          width="100%"
-          height={listHeight}
-          itemCount={tokensToShow.length}
-          itemSize={60}
-          scrollToIndex={getScrollToIndex()}
-          style={{ overflowY: 'scroll', paddingRight: '0.5rem' }}
-          renderItem={({ index, style }) => {
+        <GroupedVirtuoso
+          groupCounts={groupCounts}
+          style={{ height: listHeight }}
+          groupContent={index => {
+            return groups[index]
+          }}
+          itemContent={index => {
             const token = tokensToShow[index]
             const userBalance = isConnected ? balanceFor(token) : undefined
 
@@ -97,7 +141,6 @@ export function TokenSelectList({
                 token={token}
                 userBalance={userBalance}
                 isBalancesLoading={isBalancesLoading}
-                style={style}
               />
             )
           }}

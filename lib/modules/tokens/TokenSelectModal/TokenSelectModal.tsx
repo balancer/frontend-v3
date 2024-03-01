@@ -2,8 +2,6 @@
 
 import {
   Box,
-  Card,
-  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -12,16 +10,11 @@ import {
   ModalOverlay,
   ModalProps,
   VStack,
-  Text,
-  Button,
 } from '@chakra-ui/react'
 import { RefObject, useState } from 'react'
 import { TokenSelectList } from './TokenSelectList/TokenSelectList'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { TokenSelectPopular } from './TokenSelectPopular'
-import { TbWallet, TbCoins } from 'react-icons/tb'
-import { useUserAccount } from '../../web3/useUserAccount'
-import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { SearchInput } from '@/lib/shared/components/inputs/SearchInput'
 
 type Props = {
@@ -48,22 +41,11 @@ export function TokenSelectModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const [searchTerm, setSearchTerm] = useState('')
-  const { isConnected } = useUserAccount()
-  const { openConnectModal } = useConnectModal()
 
   function closeOnSelect(token: GqlToken) {
     onClose()
     onTokenSelect(token)
     setSearchTerm('')
-  }
-
-  const tokenSelectListProps = {
-    tokens,
-    excludeNativeAsset,
-    pinNativeAsset,
-    listHeight: 250,
-    searchTerm,
-    onTokenSelect: closeOnSelect,
   }
 
   return (
@@ -93,29 +75,14 @@ export function TokenSelectModal({
               </Box>
             )}
             <Box px="md" pr="0" w="full">
-              <Card p="1" mr="4" mb="4">
-                <HStack>
-                  <Box color="font.secondary">
-                    <TbWallet />
-                  </Box>
-                  <Text color="font.secondary">In your wallet</Text>
-                  {!isConnected && (
-                    <Button ml="auto" variant="link" color="purple.300" onClick={openConnectModal}>
-                      Connect wallet
-                    </Button>
-                  )}
-                </HStack>
-              </Card>
-              {isConnected && <TokenSelectList {...tokenSelectListProps} showTokensWithBalance />}
-              <Card p="1" mr="4" mb="4">
-                <HStack>
-                  <Box color="font.secondary">
-                    <TbCoins />
-                  </Box>
-                  <Text color="font.secondary">Other tokens</Text>
-                </HStack>
-              </Card>
-              <TokenSelectList {...tokenSelectListProps} />
+              <TokenSelectList
+                tokens={tokens}
+                excludeNativeAsset={excludeNativeAsset}
+                pinNativeAsset={pinNativeAsset}
+                listHeight={500}
+                searchTerm={searchTerm}
+                onTokenSelect={closeOnSelect}
+              />
             </Box>
           </VStack>
         </ModalBody>
