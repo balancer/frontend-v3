@@ -30,9 +30,9 @@ import { getChainName } from '@/lib/config/app.config'
 import { RichSelect } from '@/lib/shared/components/inputs/RichSelect'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { FiGlobe } from 'react-icons/fi'
-import { HiChevronDown } from 'react-icons/hi2'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
 import { SwapDetailsAccordian } from './SwapDetailsAccordian'
+import { ChevronDownIcon } from '@chakra-ui/icons'
 
 export function SwapForm() {
   const {
@@ -117,7 +117,7 @@ export function SwapForm() {
                 rightIcon={
                   <HStack>
                     <FiGlobe />
-                    <HiChevronDown />
+                    <ChevronDownIcon fontWeight="bold" fontSize="xl" />
                   </HStack>
                 }
               />
