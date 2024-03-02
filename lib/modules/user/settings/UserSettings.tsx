@@ -27,7 +27,7 @@ import { FiPercent } from 'react-icons/fi'
 import { blockInvalidNumberInput } from '@/lib/shared/utils/numbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 
-function CurrencySelect() {
+export function CurrencySelect() {
   const { currency, setCurrency } = useUserSettings()
   const options = Object.values(SupportedCurrency)
 
