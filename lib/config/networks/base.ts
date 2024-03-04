@@ -8,6 +8,7 @@ const networkConfig: NetworkConfig = {
   chain: GqlChain.Base,
   iconPath: '/images/chains/BASE.svg',
   blockExplorerBaseUrl: 'https://basescan.org',
+  rpcUrl: 'https://base-mainnet.g.alchemy.com/v2/cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88',
   tokens: {
     balToken: { address: '0x4158734d47fc9692176b5085e0f52ee0da5d47f1' },
     nativeAsset: {

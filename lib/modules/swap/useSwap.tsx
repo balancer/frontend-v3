@@ -2,22 +2,27 @@
 'use client'
 
 import { getNetworkConfig } from '@/lib/config/app.config'
-import {
-  GetSorSwapsDocument,
-  GetSorSwapsQuery,
-  GqlChain,
-  GqlSorSwapType,
-} from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlSorSwapType } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { makeVar, useLazyQuery, useReactiveVar } from '@apollo/client'
-import { PropsWithChildren, createContext, useEffect, useState } from 'react'
+import { ApolloClient, makeVar, useApolloClient, useReactiveVar } from '@apollo/client'
+import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { Address, isAddress } from 'viem'
 import { emptyAddress } from '../web3/contracts/wagmi-helpers'
 import { useUserAccount } from '../web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
-import { useDebouncedCallback } from 'use-debounce'
-import { useCountdown } from 'usehooks-ts'
+import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
+import { bn, fNum } from '@/lib/shared/utils/numbers'
+import { useSimulateSwapQuery } from './queries/useSimulateSwapQuery'
+import { useTokens } from '../tokens/useTokens'
+import { useUserSettings } from '../user/settings/useUserSettings'
+import { useDisclosure } from '@chakra-ui/react'
+import { useSwapStepConfigs } from './useSwapStepConfigs'
+import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { SimulateSwapResponse } from './swap.types'
+import { SwapHandler } from './handlers/Swap.handler'
+import { useIterateSteps } from '../pool/actions/useIterateSteps'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -31,6 +36,7 @@ type SwapState = {
   tokenIn: TokenInput
   tokenOut: TokenInput
   swapType: GqlSorSwapType
+  vaultVersion: number
 }
 
 const swapStateVar = makeVar<SwapState>({
@@ -43,67 +49,66 @@ const swapStateVar = makeVar<SwapState>({
     amount: '',
   },
   swapType: GqlSorSwapType.ExactIn,
+  vaultVersion: 2,
 })
+
+// Unecessary for now but allows us to add logic to select other handlers in the future.
+function selectSwapHandler(apolloClient: ApolloClient<object>): SwapHandler {
+  return new DefaultSwapHandler(apolloClient)
+}
 
 export function _useSwap() {
   const swapState = useReactiveVar(swapStateVar)
+  const [swapTxState, setSwapTxState] = useState<TransactionState>()
 
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
   const [selectedChain, setSelectedChain] = useState<GqlChain>(GqlChain.Mainnet)
-  const [swapOutput, setSwapOutput] = useState<GetSorSwapsQuery['swaps']>()
 
   const { isConnected } = useUserAccount()
+  const { slippage } = useUserSettings()
   const networkConfig = getNetworkConfig(selectedChain)
+  const { getToken, usdValueForToken } = useTokens()
+  const previewModalDisclosure = useDisclosure()
 
-  const [refetchCountdownSecs, { startCountdown, resetCountdown, stopCountdown }] = useCountdown({
-    countStart: 30,
-    intervalMs: 1000,
-  })
+  const client = useApolloClient()
+  const handler = useMemo(() => selectSwapHandler(client), [])
 
-  const shouldFetchSwap = (state: SwapState) =>
-    isAddress(state.tokenIn.address) && isAddress(state.tokenOut.address) && !!state.swapType
+  const tokenInInfo = getToken(swapState.tokenIn.address, selectedChain)
+  const tokenOutInfo = getToken(swapState.tokenOut.address, selectedChain)
+
+  const shouldFetchSwap = (state: SwapState, swapAmount: string) =>
+    isAddress(state.tokenIn.address) &&
+    isAddress(state.tokenOut.address) &&
+    !!state.swapType &&
+    bn(swapAmount).gt(0)
 
   const getSwapAmount = (state: SwapState) =>
     (state.swapType === GqlSorSwapType.ExactIn ? state.tokenIn.amount : state.tokenOut.amount) ||
     '0'
 
-  const [fetchSwapQuery, { loading }] = useLazyQuery(GetSorSwapsDocument, {
-    fetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
+  const simulationQuery = useSimulateSwapQuery({
+    handler,
+    swapInputs: {
+      chain: selectedChain,
+      tokenIn: swapState.tokenIn.address,
+      tokenOut: swapState.tokenOut.address,
+      swapType: swapState.swapType,
+      swapAmount: getSwapAmount(swapState),
+    },
+    options: {
+      enabled: shouldFetchSwap(swapState, getSwapAmount(swapState)),
+    },
   })
 
-  async function fetchSwap() {
-    resetCountdown()
-    stopCountdown()
-    const state = swapStateVar()
-
-    if (!shouldFetchSwap(state)) return
-
-    const { data } = await fetchSwapQuery({
-      fetchPolicy: 'no-cache',
-      variables: {
-        chain: selectedChain,
-        tokenIn: state.tokenIn.address,
-        tokenOut: state.tokenOut.address,
-        swapType: state.swapType,
-        swapAmount: getSwapAmount(state),
-        swapOptions: {
-          maxPools: 8,
-        },
-      },
+  function handleSimulationResponse({
+    returnAmount,
+    vaultVersion,
+    swapType,
+  }: SimulateSwapResponse) {
+    swapStateVar({
+      ...swapState,
+      vaultVersion: vaultVersion,
     })
-
-    setSwapOutput(data?.swaps)
-    setReturnAmount(data?.swaps, state.swapType)
-    startCountdown()
-  }
-
-  const debouncedFetchSwaps = useDebouncedCallback(fetchSwap, 300)
-
-  function setReturnAmount(swap: GetSorSwapsQuery['swaps'] | undefined, swapType: GqlSorSwapType) {
-    let returnAmount = ''
-
-    if (swap) returnAmount = swap.returnAmount || '0'
 
     if (swapType === GqlSorSwapType.ExactIn) {
       setTokenOutAmount(returnAmount, { userTriggered: false })
@@ -162,7 +167,6 @@ export function _useSwap() {
         swapType: GqlSorSwapType.ExactIn,
       })
       setTokenOutAmount('', { userTriggered: false })
-      debouncedFetchSwaps()
     } else {
       // Sometimes we want to set the amount without triggering a fetch or
       // swapType change, like when we populate the amount after a change from the other input.
@@ -189,7 +193,6 @@ export function _useSwap() {
         swapType: GqlSorSwapType.ExactOut,
       })
       setTokenInAmount('', { userTriggered: false })
-      debouncedFetchSwaps()
     } else {
       // Sometimes we want to set the amount without triggering a fetch or
       // swapType change, like when we populate the amount after a change from
@@ -205,14 +208,37 @@ export function _useSwap() {
       ...swapState,
       tokenIn: {
         ...swapState.tokenIn,
-        address: tokenIn || emptyAddress,
+        address: tokenIn ? tokenIn : emptyAddress,
       },
       tokenOut: {
         ...swapState.tokenOut,
-        address: tokenOut || emptyAddress,
+        address: tokenOut ? tokenOut : emptyAddress,
       },
     })
   }
+
+  const returnAmountUsd =
+    swapState.swapType === GqlSorSwapType.ExactIn
+      ? usdValueForToken(tokenOutInfo, swapState.tokenOut.amount)
+      : usdValueForToken(tokenInInfo, swapState.tokenIn.amount)
+
+  const priceImpact = simulationQuery.data?.priceImpact
+  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpacUsd = bn(priceImpact || 0).times(returnAmountUsd)
+  const maxSlippageUsd = bn(slippage).div(100).times(returnAmountUsd)
+  const isNativeAssetIn = isSameAddress(
+    swapState.tokenIn.address,
+    networkConfig.tokens.nativeAsset.address
+  )
+
+  const swapStepConfigs = useSwapStepConfigs({
+    humanAmountIn: swapState.tokenIn.amount,
+    tokenIn: tokenInInfo,
+    selectedChain,
+    vaultVersion: swapState.vaultVersion,
+    setSwapTxState,
+  })
+  const { currentStep, useOnStepCompleted } = useIterateSteps(swapStepConfigs)
 
   // On first render, set default tokens
   useEffect(() => {
@@ -224,35 +250,35 @@ export function _useSwap() {
     setDefaultTokens()
   }, [selectedChain])
 
-  // When either token address changes, fetch swaps
   useEffect(() => {
-    debouncedFetchSwaps()
-  }, [swapState.tokenIn.address, swapState.tokenOut.address])
-
-  // When refetchCountdownSecs reaches 0, refetch swaps
-  useEffect(() => {
-    if (refetchCountdownSecs === 0) {
-      fetchSwap()
+    if (simulationQuery.data) {
+      handleSimulationResponse(simulationQuery.data)
     }
-  }, [refetchCountdownSecs])
-
-  const isLoading = loading
+  }, [simulationQuery.data])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
-    [isLoading, 'Swap is loading'],
-    [!swapOutput, 'Swap output is undefined'],
-    [swapOutput?.swaps.length === 0, 'Swap output is empty']
+    [simulationQuery.isLoading, 'Swap is loading']
   )
 
   return {
     ...swapState,
+    tokenInInfo,
+    tokenOutInfo,
     tokenSelectKey,
     selectedChain,
-    isLoading,
+    simulationQuery,
     isDisabled,
     disabledReason,
-    refetchCountdownSecs,
+    priceImpactLabel,
+    priceImpacUsd,
+    maxSlippageUsd,
+    previewModalDisclosure,
+    handler,
+    swapTxState,
+    currentStep,
+    isNativeAssetIn,
+    useOnStepCompleted,
     setTokenSelectKey,
     setSelectedChain,
     setTokenInAmount,

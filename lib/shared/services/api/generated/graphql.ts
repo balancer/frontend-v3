@@ -1104,10 +1104,11 @@ export type GqlSorGetBatchSwapForTokensInResponse = {
   tokenOutAmount: Scalars['AmountHumanReadable']['output']
 }
 
-export type GqlSorGetSwaps = {
-  __typename: 'GqlSorGetSwaps'
+export type GqlSorGetSwapPaths = {
+  __typename: 'GqlSorGetSwapPaths'
   effectivePrice: Scalars['AmountHumanReadable']['output']
   effectivePriceReversed: Scalars['AmountHumanReadable']['output']
+  paths: Array<GqlSorPath>
   priceImpact: Scalars['AmountHumanReadable']['output']
   returnAmount: Scalars['AmountHumanReadable']['output']
   returnAmountScaled: Scalars['BigDecimal']['output']
@@ -1116,11 +1117,13 @@ export type GqlSorGetSwaps = {
   swapAmountScaled: Scalars['BigDecimal']['output']
   swapType: GqlSorSwapType
   swaps: Array<GqlSorSwap>
-  tokenAddresses: Array<Scalars['String']['output']>
+  /** The token address of the tokenIn provided */
   tokenIn: Scalars['String']['output']
   tokenInAmount: Scalars['AmountHumanReadable']['output']
+  /** The token address of the tokenOut provided */
   tokenOut: Scalars['String']['output']
   tokenOutAmount: Scalars['AmountHumanReadable']['output']
+  vaultVersion: Scalars['Int']['output']
 }
 
 export type GqlSorGetSwapsResponse = {
@@ -1144,6 +1147,15 @@ export type GqlSorGetSwapsResponse = {
   tokenInAmount: Scalars['AmountHumanReadable']['output']
   tokenOut: Scalars['String']['output']
   tokenOutAmount: Scalars['AmountHumanReadable']['output']
+}
+
+export type GqlSorPath = {
+  __typename: 'GqlSorPath'
+  inputAmountRaw: Scalars['String']['output']
+  outputAmountRaw: Scalars['String']['output']
+  pools: Array<Maybe<Scalars['String']['output']>>
+  tokens: Array<Maybe<Token>>
+  vaultVersion: Scalars['Int']['output']
 }
 
 export type GqlSorSwap = {
@@ -1479,8 +1491,10 @@ export type Query = {
   protocolMetricsChain: GqlProtocolMetricsChain
   sftmxGetStakingData: GqlSftmxStakingData
   sftmxGetWithdrawalRequests: Array<GqlSftmxWithdrawalRequests>
+  /** Get swap quote from the SOR v2 for the V2 vault */
+  sorGetSwapPaths: GqlSorGetSwapPaths
+  /** Get swap quote from the SOR, queries both the old and new SOR */
   sorGetSwaps: GqlSorGetSwapsResponse
-  sorV2GetSwaps: GqlSorGetSwaps
   tokenGetCandlestickChartData: Array<GqlTokenCandlestickChartDataItem>
   tokenGetCurrentPrices: Array<GqlTokenPrice>
   tokenGetHistoricalPrices: Array<GqlHistoricalTokenPrice>
@@ -1588,17 +1602,18 @@ export type QuerySftmxGetWithdrawalRequestsArgs = {
   user: Scalars['String']['input']
 }
 
-export type QuerySorGetSwapsArgs = {
-  chain?: InputMaybe<GqlChain>
+export type QuerySorGetSwapPathsArgs = {
+  chain: GqlChain
+  queryBatchSwap?: InputMaybe<Scalars['Boolean']['input']>
   swapAmount: Scalars['BigDecimal']['input']
-  swapOptions: GqlSorSwapOptionsInput
   swapType: GqlSorSwapType
   tokenIn: Scalars['String']['input']
   tokenOut: Scalars['String']['input']
+  useVaultVersion?: InputMaybe<Scalars['Int']['input']>
 }
 
-export type QuerySorV2GetSwapsArgs = {
-  chain: GqlChain
+export type QuerySorGetSwapsArgs = {
+  chain?: InputMaybe<GqlChain>
   swapAmount: Scalars['BigDecimal']['input']
   swapOptions: GqlSorSwapOptionsInput
   swapType: GqlSorSwapType
@@ -1681,6 +1696,12 @@ export type QueryUserGetSwapsArgs = {
   first?: InputMaybe<Scalars['Int']['input']>
   poolId: Scalars['String']['input']
   skip?: InputMaybe<Scalars['Int']['input']>
+}
+
+export type Token = {
+  __typename: 'Token'
+  address: Scalars['String']['output']
+  decimals: Scalars['Int']['output']
 }
 
 export type GetAppGlobalPollingDataQueryVariables = Exact<{ [key: string]: never }>
@@ -7327,22 +7348,49 @@ export type GetSorSwapsQueryVariables = Exact<{
   swapType: GqlSorSwapType
   swapAmount: Scalars['BigDecimal']['input']
   chain: GqlChain
-  swapOptions: GqlSorSwapOptionsInput
 }>
 
 export type GetSorSwapsQuery = {
   __typename: 'Query'
   swaps: {
-    __typename: 'GqlSorGetSwapsResponse'
-    tokenIn: string
-    tokenOut: string
-    swapAmount: string
-    swapAmountForSwaps?: string | null
+    __typename: 'GqlSorGetSwapPaths'
+    effectivePrice: string
+    effectivePriceReversed: string
+    swapType: GqlSorSwapType
+    priceImpact: string
     returnAmount: string
-    returnAmountFromSwaps?: string | null
-    returnAmountConsideringFees: string
-    marketSp: string
-    tokenAddresses: Array<string>
+    returnAmountScaled: string
+    swapAmount: string
+    swapAmountScaled: string
+    tokenIn: string
+    tokenInAmount: string
+    tokenOut: string
+    tokenOutAmount: string
+    vaultVersion: number
+    paths: Array<{
+      __typename: 'GqlSorPath'
+      inputAmountRaw: string
+      outputAmountRaw: string
+      pools: Array<string | null>
+      vaultVersion: number
+      tokens: Array<{ __typename: 'Token'; address: string; decimals: number } | null>
+    }>
+    routes: Array<{
+      __typename: 'GqlSorSwapRoute'
+      share: number
+      tokenInAmount: string
+      tokenOut: string
+      tokenOutAmount: string
+      hops: Array<{
+        __typename: 'GqlSorSwapRouteHop'
+        poolId: string
+        tokenIn: string
+        tokenInAmount: string
+        tokenOut: string
+        tokenOutAmount: string
+        pool: { __typename: 'GqlPoolMinimal'; symbol: string }
+      }>
+    }>
     swaps: Array<{
       __typename: 'GqlSorSwap'
       amount: string
@@ -17278,14 +17326,6 @@ export const GetSorSwapsDocument = {
             type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
           },
         },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'swapOptions' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlSorSwapOptionsInput' } },
-          },
-        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -17293,7 +17333,7 @@ export const GetSorSwapsDocument = {
           {
             kind: 'Field',
             alias: { kind: 'Name', value: 'swaps' },
-            name: { kind: 'Name', value: 'sorGetSwaps' },
+            name: { kind: 'Name', value: 'sorGetSwapPaths' },
             arguments: [
               {
                 kind: 'Argument',
@@ -17320,23 +17360,80 @@ export const GetSorSwapsDocument = {
                 name: { kind: 'Name', value: 'chain' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'chain' } },
               },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'swapOptions' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'swapOptions' } },
-              },
             ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'tokenIn' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'swapAmount' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'swapAmountForSwaps' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'effectivePrice' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'effectivePriceReversed' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'swapType' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'paths' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'inputAmountRaw' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'outputAmountRaw' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'pools' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'vaultVersion' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'tokens' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'priceImpact' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'returnAmount' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'returnAmountFromSwaps' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'returnAmountConsideringFees' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'marketSp' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'returnAmountScaled' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'routes' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'hops' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'pool' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
+                                ],
+                              },
+                            },
+                            { kind: 'Field', name: { kind: 'Name', value: 'poolId' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'tokenIn' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'tokenInAmount' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'tokenOutAmount' } },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'share' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tokenInAmount' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tokenInAmount' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'tokenOutAmount' } },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'swapAmount' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'swapAmountScaled' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'swaps' },
@@ -17351,7 +17448,11 @@ export const GetSorSwapsDocument = {
                     ],
                   },
                 },
-                { kind: 'Field', name: { kind: 'Name', value: 'tokenAddresses' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenIn' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenInAmount' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenOut' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenOutAmount' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'vaultVersion' } },
               ],
             },
           },

@@ -2,27 +2,25 @@
 
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
-import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { HumanAmount } from '@balancer/sdk'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
   Card,
   Center,
   HStack,
   Heading,
   VStack,
-  Text,
   Tooltip,
   useDisclosure,
   IconButton,
   Button,
+  Text,
+  Box,
 } from '@chakra-ui/react'
 import { useMemo, useRef } from 'react'
 import { useSwap } from './useSwap'
 import { useTokens } from '../tokens/useTokens'
 import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
-import { fNum } from '@/lib/shared/utils/numbers'
 import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { CgArrowsExchangeV } from 'react-icons/cg'
@@ -33,6 +31,8 @@ import { RichSelect } from '@/lib/shared/components/inputs/RichSelect'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { FiGlobe } from 'react-icons/fi'
 import { HiChevronDown } from 'react-icons/hi2'
+import { TransactionSettings } from '../user/settings/TransactionSettings'
+import { SwapDetailsAccordian } from './SwapDetailsAccordian'
 
 export function SwapForm() {
   const {
@@ -42,7 +42,8 @@ export function SwapForm() {
     tokenSelectKey,
     isDisabled,
     disabledReason,
-    refetchCountdownSecs,
+    previewModalDisclosure,
+    simulationQuery,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
@@ -54,7 +55,6 @@ export function SwapForm() {
   const { getTokensByChain } = useTokens()
   const tokenSelectDisclosure = useDisclosure()
 
-  const previewDisclosure = useDisclosure()
   const nextBtn = useRef(null)
 
   const networkOptions = PROJECT_CONFIG.supportedNetworks.map(network => ({
@@ -101,10 +101,11 @@ export function SwapForm() {
       <Center h="full" w="full" maxW="lg" mx="auto">
         <Card variant="level3" shadow="xl" w="full" p="md">
           <VStack spacing="lg" align="start">
-            <HStack>
+            <HStack w="full" justify="space-between">
               <Heading fontWeight="bold" size="h5">
                 Swap
               </Heading>
+              <TransactionSettings size="sm" />
             </HStack>
             <VStack spacing="md" w="full">
               <RichSelect
@@ -120,43 +121,39 @@ export function SwapForm() {
                   </HStack>
                 }
               />
-              <TokenInput
-                address={tokenIn.address}
-                chain={selectedChain}
-                value={tokenIn.amount}
-                onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
-                toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
-              />
-              <IconButton
-                size="sm"
-                fontSize="2xl"
-                aria-label="Switch tokens"
-                icon={<CgArrowsExchangeV />}
-                onClick={switchTokens}
-              />
-              <TokenInput
-                address={tokenOut.address}
-                chain={selectedChain}
-                value={tokenOut.amount}
-                onChange={e => setTokenOutAmount(e.currentTarget.value as HumanAmount)}
-                toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
-              />
+              <VStack w="full">
+                <TokenInput
+                  address={tokenIn.address}
+                  chain={selectedChain}
+                  value={tokenIn.amount}
+                  onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
+                  toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
+                />
+                <Box position="relative" border="red 1px solid">
+                  <IconButton
+                    position="absolute"
+                    variant="tertiary"
+                    size="sm"
+                    fontSize="2xl"
+                    ml="-16px"
+                    mt="-16px"
+                    isRound={true}
+                    aria-label="Switch tokens"
+                    icon={<CgArrowsExchangeV />}
+                    onClick={switchTokens}
+                  />
+                </Box>
+                <TokenInput
+                  address={tokenOut.address}
+                  chain={selectedChain}
+                  value={tokenOut.amount}
+                  onChange={e => setTokenOutAmount(e.currentTarget.value as HumanAmount)}
+                  toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
+                />
+              </VStack>
             </VStack>
 
-            <VStack spacing="sm" align="start" w="full">
-              <HStack justify="space-between" w="full">
-                <Text color="grayText">Price impact</Text>
-                <HStack>
-                  <NumberText color="grayText">{fNum('priceImpact', 0)}</NumberText>
-                  <Tooltip label="Price impact" fontSize="sm">
-                    <InfoOutlineIcon color="grayText" />
-                  </Tooltip>
-                </HStack>
-              </HStack>
-              <HStack>
-                <Text color="grayText">Expires in: {refetchCountdownSecs} secs</Text>
-              </HStack>
-            </VStack>
+            {simulationQuery.data && <SwapDetailsAccordian />}
 
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
@@ -165,7 +162,7 @@ export function SwapForm() {
                 w="full"
                 size="lg"
                 isDisabled={isDisabled}
-                onClick={() => !isDisabled && previewDisclosure.onOpen()}
+                onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
               >
                 Next
               </Button>
@@ -174,8 +171,8 @@ export function SwapForm() {
         </Card>
       </Center>
       <TokenSelectModal
-        tokens={tokenSelectTokens}
         chain={selectedChain}
+        tokens={tokenSelectTokens}
         isOpen={tokenSelectDisclosure.isOpen}
         onOpen={tokenSelectDisclosure.onOpen}
         onClose={tokenSelectDisclosure.onClose}
@@ -183,9 +180,9 @@ export function SwapForm() {
       />
       <SwapPreviewModal
         finalFocusRef={nextBtn}
-        isOpen={previewDisclosure.isOpen}
-        onOpen={previewDisclosure.onOpen}
-        onClose={previewDisclosure.onClose}
+        isOpen={previewModalDisclosure.isOpen}
+        onOpen={previewModalDisclosure.onOpen}
+        onClose={previewModalDisclosure.onClose}
       />
     </TokenBalancesProvider>
   )
