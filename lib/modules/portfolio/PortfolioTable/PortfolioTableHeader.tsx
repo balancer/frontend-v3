@@ -20,11 +20,10 @@ export function PortfolioTableHeader({ ...rest }) {
       title: 'veBAL boost',
     },
     {
-      title: 'My liquidity',
-    },
-
-    {
       title: 'APR',
+    },
+    {
+      title: 'My liquidity',
     },
   ]
   return (

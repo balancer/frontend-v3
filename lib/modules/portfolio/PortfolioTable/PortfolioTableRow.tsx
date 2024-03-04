@@ -8,6 +8,7 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { PoolListItem } from '../../pool/pool.types'
 import { getPoolPath, getPoolTypeLabel } from '../../pool/pool.utils'
 import { PoolListTokenPills } from '../../pool/PoolList/PoolListTokenPills'
+import { bn } from '@/lib/shared/utils/numbers'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -55,7 +56,7 @@ export function PortfolioTableRow({ pool, keyValue, ...rest }: Props) {
               textAlign="right"
               fontWeight="medium"
             >
-              {toCurrency(pool.dynamicData.totalLiquidity)}
+              {bn(pool.userBalance?.stakedBalance || 0).isGreaterThan(0) ? 'Staked' : 'N/A'}
             </Text>
           </GridItem>
           <GridItem textAlign="right">
@@ -73,6 +74,15 @@ export function PortfolioTableRow({ pool, keyValue, ...rest }: Props) {
               poolId={pool.id}
               textProps={{ fontWeight: 'medium' }}
             />
+          </GridItem>
+          <GridItem justifySelf="end">
+            <Text
+              title={toCurrency(pool.dynamicData.volume24h, { abbreviated: false })}
+              textAlign="right"
+              fontWeight="medium"
+            >
+              {toCurrency(pool.dynamicData.volume24h)}
+            </Text>
           </GridItem>
         </Grid>
       </Link>
