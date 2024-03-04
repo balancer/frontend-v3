@@ -3,19 +3,9 @@ import { usePool } from '../../usePool'
 import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useTokenApprovalConfigs'
 import { InputAmount } from '@balancer/sdk'
 import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
-import {
-  OnTransactionStateUpdate,
-  TransactionState,
-} from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { getApproveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { AddLiquidityButton } from './AddLiquidityButton'
-import { StepConfig } from '../useIterateSteps'
-
-function buildAddLiquidityConfig(onTransactionStateUpdate: OnTransactionStateUpdate): StepConfig {
-  return {
-    render: () => <AddLiquidityButton onTransactionStateUpdate={onTransactionStateUpdate} />,
-  }
-}
 
 export function useAddLiquidityStepConfigs(
   inputAmounts: InputAmount[],
@@ -32,7 +22,11 @@ export function useAddLiquidityStepConfigs(
     actionType: 'AddLiquidity',
   })
 
-  let stepConfigs = [...tokenApprovalConfigs, buildAddLiquidityConfig(setAddLiquidityTxState)]
+  const addLiquidityStepConfig = {
+    render: () => <AddLiquidityButton onTransactionStateUpdate={setAddLiquidityTxState} />,
+  }
+
+  let stepConfigs = [...tokenApprovalConfigs, addLiquidityStepConfig]
 
   if (relayerMode === 'approveRelayer') {
     stepConfigs = [getApproveRelayerConfig(chainId), ...stepConfigs]

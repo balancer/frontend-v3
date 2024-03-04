@@ -38,6 +38,7 @@ import { ReactQueryClientProvider } from '@/app/react-query.provider'
 import { defaultTestUserAccount } from '../anvil/anvil-setup'
 import { createMockConnector } from './wagmi/wagmi-mock-connectors'
 import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignature'
+import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { SupportedChainId } from '@/lib/config/config.types'
 
 export type WrapperProps = { children: ReactNode }
@@ -184,7 +185,9 @@ export async function useConnectTestAccount() {
 
 export const DefaultAddLiquidityTestProvider = ({ children }: PropsWithChildren) => (
   <RelayerSignatureProvider>
-    <AddLiquidityProvider>{children}</AddLiquidityProvider>
+    <TokenInputsValidationProvider>
+      <AddLiquidityProvider>{children}</AddLiquidityProvider>
+    </TokenInputsValidationProvider>
   </RelayerSignatureProvider>
 )
 

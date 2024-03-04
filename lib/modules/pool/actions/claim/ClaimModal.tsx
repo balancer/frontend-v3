@@ -13,7 +13,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react'
-import { Pool } from '../../usePool'
 import { useClaiming } from './useClaiming'
 import { Address } from 'wagmi'
 import { BalTokenReward } from '@/lib/modules/portfolio/useBalRewards'
@@ -31,7 +30,6 @@ type Props = {
 export function ClaimModal({
   isOpen,
   onClose,
-  gaugeAddresses,
   pool,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
