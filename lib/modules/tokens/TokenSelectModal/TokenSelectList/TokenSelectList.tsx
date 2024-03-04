@@ -22,7 +22,7 @@ type Props = {
 }
 function OtherTokens() {
   return (
-    <Card p="1" mb="2">
+    <Card p="1" my="2">
       <HStack>
         <Box color="font.secondary">
           <TbCoins />
@@ -33,27 +33,30 @@ function OtherTokens() {
   )
 }
 
-function InYourWallet({
-  isConnected,
-  openConnectModal,
-}: {
+interface InYourWalletProps {
   isConnected: boolean
   openConnectModal: (() => void) | undefined
-}) {
+  hasNoTokensInWallet: boolean
+}
+
+function InYourWallet({ isConnected, openConnectModal, hasNoTokensInWallet }: InYourWalletProps) {
   return (
-    <Card p="1" mb="2">
-      <HStack>
-        <Box color="font.secondary">
-          <TbWallet />
-        </Box>
-        <Text color="font.secondary">In your wallet</Text>
-        {!isConnected && (
-          <Button ml="auto" variant="link" color="purple.300" onClick={openConnectModal}>
-            Connect wallet
-          </Button>
-        )}
-      </HStack>
-    </Card>
+    <>
+      <Card p="1" pr="4" mb="2">
+        <HStack>
+          <Box color="font.secondary">
+            <TbWallet />
+          </Box>
+          <Text color="font.secondary">In your wallet</Text>
+          {!isConnected && (
+            <Button ml="auto" variant="link" color="purple.300" onClick={openConnectModal}>
+              Connect wallet
+            </Button>
+          )}
+        </HStack>
+      </Card>
+      {isConnected && hasNoTokensInWallet && <Text>No tokens in your wallet</Text>}
+    </>
   )
 }
 
@@ -84,7 +87,11 @@ export function TokenSelectList({
   const tokensToShow = [...tokensWithBalance, ...tokensWithoutBalance]
 
   const groups = [
-    <InYourWallet isConnected={isConnected} openConnectModal={openConnectModal} />,
+    <InYourWallet
+      isConnected={isConnected}
+      openConnectModal={openConnectModal}
+      hasNoTokensInWallet={!tokensWithBalance.length}
+    />,
     <OtherTokens />,
   ]
   const groupCounts = [tokensWithBalance.length, tokensWithoutBalance.length]
