@@ -5,12 +5,12 @@ import { NetworkClaimBlock } from './NetworkClaimBlock'
 export function PortfolioNetworkClaim() {
   const { poolsByChainMap } = usePortfolio()
 
-  function openClaimModal(chain: string) {}
+  function openClaimModal(chain: string) {
+    console.log(chain)
+  }
   return (
     <Stack>
-      <Heading as="h2" size="lg">
-        Claimable incentives
-      </Heading>
+      <Heading size="lg">Claimable incentives</Heading>
       <Flex flexDirection={['column', 'column', 'column', 'row']} gap={6}>
         {Object.entries(poolsByChainMap).map(([chain, pools]) => (
           <NetworkClaimBlock

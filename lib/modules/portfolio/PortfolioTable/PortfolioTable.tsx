@@ -26,7 +26,7 @@ export function PortfolioTable() {
   return (
     <Stack>
       <HStack>
-        <Heading size="xl">Balancer portfolio</Heading>
+        <Heading size="lg">Balancer portfolio</Heading>
       </HStack>
       <PaginatedTable
         items={pools}

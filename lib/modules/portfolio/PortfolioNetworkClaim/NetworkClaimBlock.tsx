@@ -1,5 +1,5 @@
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
-import { Button, Card, Flex, HStack, Heading, Icon, Stack } from '@chakra-ui/react'
+import { Button, Card, Flex, HStack, Heading, Stack } from '@chakra-ui/react'
 import { chainToSlugMap } from '../../pool/pool.utils'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
