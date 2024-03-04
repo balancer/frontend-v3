@@ -33,6 +33,7 @@ import { FiGlobe } from 'react-icons/fi'
 import { HiChevronDown } from 'react-icons/hi2'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
 import { SwapDetailsAccordian } from './SwapDetailsAccordian'
+import { TokenInputsValidationProvider } from '../tokens/useTokenInputsValidation'
 
 export function SwapForm() {
   const {
@@ -99,95 +100,97 @@ export function SwapForm() {
 
   return (
     <TokenBalancesProvider tokens={tokens}>
-      <Center h="full" w="full" maxW="lg" mx="auto">
-        <Card variant="level3" shadow="xl" w="full" p="md">
-          <VStack spacing="lg" align="start">
-            <HStack w="full" justify="space-between">
-              <Heading fontWeight="bold" size="h5">
-                Swap
-              </Heading>
-              <TransactionSettings size="sm" />
-            </HStack>
-            <VStack spacing="md" w="full">
-              <RichSelect
-                value={selectedChain}
-                options={networkOptions}
-                onChange={newValue => {
-                  setSelectedChain(newValue as GqlChain)
-                }}
-                rightIcon={
-                  <HStack>
-                    <FiGlobe />
-                    <HiChevronDown />
-                  </HStack>
-                }
-              />
-              <VStack w="full">
-                <TokenInput
-                  ref={finalRefTokenIn}
-                  address={tokenIn.address}
-                  chain={selectedChain}
-                  value={tokenIn.amount}
-                  onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
-                  toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
+      <TokenInputsValidationProvider>
+        <Center h="full" w="full" maxW="lg" mx="auto">
+          <Card variant="level3" shadow="xl" w="full" p="md">
+            <VStack spacing="lg" align="start">
+              <HStack w="full" justify="space-between">
+                <Heading fontWeight="bold" size="h5">
+                  Swap
+                </Heading>
+                <TransactionSettings size="sm" />
+              </HStack>
+              <VStack spacing="md" w="full">
+                <RichSelect
+                  value={selectedChain}
+                  options={networkOptions}
+                  onChange={newValue => {
+                    setSelectedChain(newValue as GqlChain)
+                  }}
+                  rightIcon={
+                    <HStack>
+                      <FiGlobe />
+                      <HiChevronDown />
+                    </HStack>
+                  }
                 />
-                <Box position="relative" border="red 1px solid">
-                  <IconButton
-                    position="absolute"
-                    variant="tertiary"
-                    size="sm"
-                    fontSize="2xl"
-                    ml="-16px"
-                    mt="-16px"
-                    isRound={true}
-                    aria-label="Switch tokens"
-                    icon={<CgArrowsExchangeV />}
-                    onClick={switchTokens}
+                <VStack w="full">
+                  <TokenInput
+                    ref={finalRefTokenIn}
+                    address={tokenIn.address}
+                    chain={selectedChain}
+                    value={tokenIn.amount}
+                    onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
+                    toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
                   />
-                </Box>
-                <TokenInput
-                  ref={finalRefTokenOut}
-                  address={tokenOut.address}
-                  chain={selectedChain}
-                  value={tokenOut.amount}
-                  onChange={e => setTokenOutAmount(e.currentTarget.value as HumanAmount)}
-                  toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
-                />
+                  <Box position="relative" border="red 1px solid">
+                    <IconButton
+                      position="absolute"
+                      variant="tertiary"
+                      size="sm"
+                      fontSize="2xl"
+                      ml="-16px"
+                      mt="-16px"
+                      isRound={true}
+                      aria-label="Switch tokens"
+                      icon={<CgArrowsExchangeV />}
+                      onClick={switchTokens}
+                    />
+                  </Box>
+                  <TokenInput
+                    ref={finalRefTokenOut}
+                    address={tokenOut.address}
+                    chain={selectedChain}
+                    value={tokenOut.amount}
+                    onChange={e => setTokenOutAmount(e.currentTarget.value as HumanAmount)}
+                    toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
+                  />
+                </VStack>
               </VStack>
+
+              {simulationQuery.data && <SwapDetailsAccordian />}
+
+              <Tooltip label={isDisabled ? disabledReason : ''}>
+                <Button
+                  ref={nextBtn}
+                  variant="secondary"
+                  w="full"
+                  size="lg"
+                  isDisabled={isDisabled}
+                  onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
+                >
+                  Next
+                </Button>
+              </Tooltip>
             </VStack>
-
-            {simulationQuery.data && <SwapDetailsAccordian />}
-
-            <Tooltip label={isDisabled ? disabledReason : ''}>
-              <Button
-                ref={nextBtn}
-                variant="secondary"
-                w="full"
-                size="lg"
-                isDisabled={isDisabled}
-                onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
-              >
-                Next
-              </Button>
-            </Tooltip>
-          </VStack>
-        </Card>
-      </Center>
-      <TokenSelectModal
-        finalFocusRef={tokenSelectKey === 'tokenIn' ? finalRefTokenIn : finalRefTokenOut}
-        chain={selectedChain}
-        tokens={tokenSelectTokens}
-        isOpen={tokenSelectDisclosure.isOpen}
-        onOpen={tokenSelectDisclosure.onOpen}
-        onClose={tokenSelectDisclosure.onClose}
-        onTokenSelect={handleTokenSelect}
-      />
-      <SwapPreviewModal
-        finalFocusRef={nextBtn}
-        isOpen={previewModalDisclosure.isOpen}
-        onOpen={previewModalDisclosure.onOpen}
-        onClose={previewModalDisclosure.onClose}
-      />
+          </Card>
+        </Center>
+        <TokenSelectModal
+          finalFocusRef={tokenSelectKey === 'tokenIn' ? finalRefTokenIn : finalRefTokenOut}
+          chain={selectedChain}
+          tokens={tokenSelectTokens}
+          isOpen={tokenSelectDisclosure.isOpen}
+          onOpen={tokenSelectDisclosure.onOpen}
+          onClose={tokenSelectDisclosure.onClose}
+          onTokenSelect={handleTokenSelect}
+        />
+        <SwapPreviewModal
+          finalFocusRef={nextBtn}
+          isOpen={previewModalDisclosure.isOpen}
+          onOpen={previewModalDisclosure.onOpen}
+          onClose={previewModalDisclosure.onClose}
+        />
+      </TokenInputsValidationProvider>
     </TokenBalancesProvider>
   )
 }
