@@ -6,7 +6,9 @@ import { AbiMap } from '../../web3/contracts/AbiMap'
 import { ClaimableBalanceResult } from '../usePortfolio'
 import { useMemo } from 'react'
 import { formatUnits } from 'viem'
-import { fNum } from '@/lib/shared/utils/numbers'
+import { bn, fNum } from '@/lib/shared/utils/numbers'
+import { useTokens } from '../../tokens/useTokens'
+import BigNumber from 'bignumber.js'
 
 export interface ClaimableReward {
   balance: bigint
@@ -15,10 +17,12 @@ export interface ClaimableReward {
   gaugeAddress: string
   pool: PoolListItem
   tokenAddress: Address
+  fiatBalance: BigNumber
 }
 
 export function useClaimableBalances(pools: PoolListItem[]) {
   const { userAddress } = useUserAccount()
+  const { priceFor } = useTokens()
 
   // Get list of all reward tokens from provided pools
   const rewardTokensList = useMemo(
@@ -60,7 +64,11 @@ export function useClaimableBalances(pools: PoolListItem[]) {
     }
   })
 
-  const { results: poolsRewardTokensQuery, refetchAll } = useMulticall(poolsRewardTokensRequests)
+  const {
+    results: poolsRewardTokensQuery,
+    refetchAll,
+    isLoading,
+  } = useMulticall(poolsRewardTokensRequests)
 
   // Format claimable rewards data
   const poolRewardTokensData = Object.values(poolsRewardTokensQuery).reduce(
@@ -83,11 +91,18 @@ export function useClaimableBalances(pools: PoolListItem[]) {
             const gaugeData = rewardTokensList.find(r => r.gaugeAddress === gaugeAddress)
             if (!gaugeData) return
 
+            const tokenPrice = priceFor(tokenAddresses[idx], gaugeData.pool.chain)
+
+            const fiatBalance = tokenPrice
+              ? bn(formatUnits(balance, 18)).multipliedBy(tokenPrice)
+              : bn(0)
+
             acc.push({
               pool: gaugeData?.pool,
               tokenAddress: tokenAddresses[idx] as Address,
               gaugeAddress,
               balance,
+              fiatBalance,
               formattedBalance: fNum('token', formatUnits(balance, 18)),
               decimals: 18,
             })
@@ -112,5 +127,6 @@ export function useClaimableBalances(pools: PoolListItem[]) {
     claimableRewardsByPoolMap,
     claimableRewards: poolRewardTokensData,
     refetchClaimableRewards: refetchAll,
+    isLoadingClaimableRewards: isLoading,
   }
 }

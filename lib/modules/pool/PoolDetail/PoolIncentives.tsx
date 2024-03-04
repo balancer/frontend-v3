@@ -11,6 +11,7 @@ import { usePool } from '../usePool'
 import { useClaiming } from '../actions/claim/useClaiming'
 import { ClaimModal } from '../actions/claim/ClaimModal'
 import { Hex } from 'viem'
+import { PoolListItem } from '../pool.types'
 
 const TABS = [
   {
@@ -30,7 +31,9 @@ const TABS = [
 export default function PoolIncentives() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain } = usePool()
-  const { previewModalDisclosure, disabledReason, isDisabled, hasNoRewards } = useClaiming()
+  const { previewModalDisclosure, disabledReason, isDisabled, hasNoRewards } = useClaiming([
+    pool,
+  ] as unknown[] as PoolListItem[])
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
@@ -111,7 +114,7 @@ export default function PoolIncentives() {
         onOpen={previewModalDisclosure.onOpen}
         onClose={onModalClose}
         gaugeAddresses={[(pool.staking?.id || '') as Hex]}
-        pool={pool}
+        pool={pool as unknown as PoolListItem}
       />
     </Card>
   )

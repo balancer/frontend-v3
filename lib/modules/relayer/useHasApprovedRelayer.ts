@@ -1,22 +1,23 @@
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import { getNetworkConfig } from '@/lib/config/app.config'
+import { SupportedChainId } from '@/lib/config/config.types'
 import { balancerV2VaultABI } from '@/lib/modules/web3/contracts/abi/generated'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useContractRead } from 'wagmi'
+import { useChainSwitch } from '../web3/useChainSwitch'
 
-export function useHasApprovedRelayer() {
+export function useHasApprovedRelayer(chainId: SupportedChainId) {
   const { isConnected, userAddress } = useUserAccount()
-
-  const networkConfig = useNetworkConfig()
-  const { chainId, contracts } = networkConfig
+  const { shouldChangeNetwork } = useChainSwitch(chainId)
+  const config = getNetworkConfig(chainId)
 
   const query = useContractRead({
-    chainId: chainId,
+    chainId,
     abi: balancerV2VaultABI,
-    address: contracts.balancer.vaultV2,
+    address: config.contracts.balancer.vaultV2,
     account: userAddress,
     functionName: 'hasApprovedRelayer',
-    args: [userAddress, contracts.balancer.relayerV6],
-    enabled: isConnected,
+    args: [userAddress, config.contracts.balancer.relayerV6],
+    enabled: isConnected && !shouldChangeNetwork,
   })
   return {
     ...query,

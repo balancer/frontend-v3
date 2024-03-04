@@ -12,7 +12,7 @@ import { useClaimableBalances } from '@/lib/modules/portfolio/claim/useClaimable
 import { PoolListItem } from '../../pool.types'
 
 export function useConstructClaimAndUnstakeStep() {
-  const { pool } = usePool()
+  const { pool, chainId } = usePool()
   const networkConfig = getNetworkConfig(pool.chain)
 
   const convertedPool = pool as unknown as PoolListItem // need to change type going from pool to pools for hooks
@@ -41,6 +41,7 @@ export function useConstructClaimAndUnstakeStep() {
     'balancer.relayerV6',
     'multicall',
     transactionLabels,
+    chainId,
     { args: [data] },
     { enabled: !!pool }
   )

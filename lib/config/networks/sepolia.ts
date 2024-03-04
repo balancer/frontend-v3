@@ -7,6 +7,7 @@ const networkConfig: NetworkConfig = {
   shortName: 'Sepolia',
   chain: GqlChain.Sepolia,
   iconPath: '/images/chains/MAINNET.svg',
+  rpcUrl: 'https://sepolia.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
   blockExplorerBaseUrl: 'https://sepolia.etherscan.io',
   tokens: {
     balToken: { address: '0xb19382073c7a0addbb56ac6af1808fa49e377b75' },

@@ -13,19 +13,17 @@ import {
   Stack,
   VStack,
 } from '@chakra-ui/react'
-import { Address } from 'wagmi'
 import { BalTokenReward } from '@/lib/modules/portfolio/useBalRewards'
 import { ClaimableReward } from '@/lib/modules/portfolio/claim/useClaimableBalances'
 import { useClaimStepConfigs } from './useClaimStepConfigs'
 import { PoolListItem } from '../../pool.types'
 import { useIterateSteps } from '../useIterateSteps'
-import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 
 type Props = {
   isOpen: boolean
   onClose?(): void
   onOpen?(): void
-  pool: PoolListItem
+  pools: PoolListItem[]
   balRewards?: BalTokenReward
   nonBalRewards?: ClaimableReward[]
 }
@@ -46,14 +44,11 @@ export function ClaimRewardsModal({
   onClose,
   balRewards,
   nonBalRewards,
-  pool,
+  pools,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const stepConfigs = useClaimStepConfigs(
-    [pool.staking?.id as Address],
-    pool.chain,
-    pool.staking?.type || GqlPoolStakingType.Gauge
-  )
+  const stepConfigs = useClaimStepConfigs(pools)
+
   const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
   const hasNoRewards = !nonBalRewards?.length && !balRewards
 
@@ -63,7 +58,7 @@ export function ClaimRewardsModal({
       <ModalContent>
         <ModalHeader>
           <Heading fontWeight="bold" size="h5">
-            Claim rewards
+            [{pools[0].chain}] Claim rewards
           </Heading>
         </ModalHeader>
         <ModalCloseButton />

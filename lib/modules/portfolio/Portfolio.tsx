@@ -4,13 +4,31 @@ import { StakedPortfolio } from '@/lib/modules/portfolio/StakedPortfolio'
 import { UnstakedPortfolio } from '@/lib/modules/portfolio/UnstakedPortfolio'
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { HStack, Heading, Stack, Text } from '@chakra-ui/react'
+import { Button, HStack, Heading, Stack, Text } from '@chakra-ui/react'
+import { useState } from 'react'
+import { ClaimNetworkRewardsModal } from './claim/ClaimNetworkRewardsModal'
+import { PoolListItem } from '../pool/pool.types'
 
 export default function Portfolio() {
+  const [claimByNetworkModalData, setClaimByNetworkModalData] = useState<null | PoolListItem[]>(
+    null
+  )
   const { toCurrency } = useCurrency()
-  const { portfolioData, balRewardsData, protocolRewardsData, claimableRewards, poolRewardsMap } =
-    usePortfolio()
+  const {
+    portfolioData,
+    balRewardsData,
+    protocolRewardsData,
+    claimableRewards,
+    poolRewardsMap,
+    isLoading,
+    poolsByChainMap,
+  } = usePortfolio()
 
+  if (isLoading) {
+    return <Text>Loading...</Text>
+  }
+
+  // TODO: handle errors and no data state
   if (!portfolioData) {
     return null
   }
@@ -24,7 +42,31 @@ export default function Portfolio() {
         <Heading>Total balance: {toCurrency(portfolioData.userTotalBalance?.toNumber())}</Heading>
       )}
       {hasStakedPools && (
-        <StakedPortfolio pools={portfolioData.stakedPools} poolRewardsMap={poolRewardsMap} />
+        <Stack>
+          <StakedPortfolio pools={portfolioData.stakedPools} poolRewardsMap={poolRewardsMap} />
+          <Stack>
+            {Object.entries(poolsByChainMap).map(([chain, pools]) => (
+              <Stack key={chain} w="30%">
+                <Heading size="sm">Claim by {chain} network</Heading>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setClaimByNetworkModalData(pools)
+                  }}
+                >
+                  Claim
+                </Button>
+              </Stack>
+            ))}
+          </Stack>
+        </Stack>
+      )}
+      {claimByNetworkModalData && (
+        <ClaimNetworkRewardsModal
+          isOpen={!!claimByNetworkModalData}
+          onClose={() => setClaimByNetworkModalData(null)}
+          pools={claimByNetworkModalData}
+        />
       )}
       {hasUnstakedPools && <UnstakedPortfolio pools={portfolioData.unstakedPools} />}
       {balRewardsData && (

@@ -48,4 +48,8 @@ export function getChainName(chainId: GqlChain | SupportedChainId) {
   return getNetworkConfig(chainId).name
 }
 
+export function getChainShortName(chainId: GqlChain | SupportedChainId) {
+  return getNetworkConfig(chainId).shortName
+}
+
 export const DELEGATE_OWNER = '0xba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1ba1b'
