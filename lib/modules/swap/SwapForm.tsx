@@ -101,37 +101,30 @@ export function SwapForm() {
   return (
     <TokenBalancesProvider tokens={tokens}>
       <TokenInputsValidationProvider>
-      <Center h="full" w="full" maxW="lg" mx="auto">
-        <Card variant="level3" shadow="xl" w="full" p="md">
-          <VStack spacing="lg" align="start">
-            <HStack w="full" justify="space-between">
-              <Heading fontWeight="bold" size="h5">
-                Swap
-              </Heading>
-              <TransactionSettings size="sm" />
-            </HStack>
-            <VStack spacing="md" w="full">
-              <RichSelect
-                value={selectedChain}
-                options={networkOptions}
-                onChange={newValue => {
-                  setSelectedChain(newValue as GqlChain)
-                }}
-                rightIcon={
-                  <HStack>
-                    <FiGlobe />
-                    <ChevronDownIcon fontWeight="bold" fontSize="xl" />
-                  </HStack>
-                }
-              />
-              <VStack w="full">
-                <TokenInput
-                  address={tokenIn.address}
-                  chain={selectedChain}
-                  value={tokenIn.amount}
-                  onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
-                  toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
+        <Center h="full" w="full" maxW="lg" mx="auto">
+          <Card variant="level3" shadow="xl" w="full" p="md">
+            <VStack spacing="lg" align="start">
+              <HStack w="full" justify="space-between">
+                <Heading fontWeight="bold" size="h5">
+                  Swap
+                </Heading>
+                <TransactionSettings size="sm" />
+              </HStack>
+              <VStack spacing="md" w="full">
+                <RichSelect
+                  value={selectedChain}
+                  options={networkOptions}
+                  onChange={newValue => {
+                    setSelectedChain(newValue as GqlChain)
+                  }}
+                  rightIcon={
+                    <HStack>
+                      <FiGlobe />
+                      <ChevronDownIcon fontWeight="bold" fontSize="xl" />
+                    </HStack>
+                  }
                 />
+
                 <VStack w="full">
                   <TokenInput
                     ref={finalRefTokenIn}
@@ -164,22 +157,22 @@ export function SwapForm() {
                     toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
                   />
                 </VStack>
+
+                {simulationQuery.data && <SwapDetailsAccordian />}
+
+                <Tooltip label={isDisabled ? disabledReason : ''}>
+                  <Button
+                    ref={nextBtn}
+                    variant="secondary"
+                    w="full"
+                    size="lg"
+                    isDisabled={isDisabled}
+                    onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
+                  >
+                    Next
+                  </Button>
+                </Tooltip>
               </VStack>
-
-              {simulationQuery.data && <SwapDetailsAccordian />}
-
-              <Tooltip label={isDisabled ? disabledReason : ''}>
-                <Button
-                  ref={nextBtn}
-                  variant="secondary"
-                  w="full"
-                  size="lg"
-                  isDisabled={isDisabled}
-                  onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
-                >
-                  Next
-                </Button>
-              </Tooltip>
             </VStack>
           </Card>
         </Center>
