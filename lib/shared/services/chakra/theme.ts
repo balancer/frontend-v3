@@ -1240,6 +1240,22 @@ export const balTheme = {
         },
       },
       variants: {
+        modalSubSection: {
+          container: {
+            background: 'background.card.level1',
+            border: '1px solid',
+            borderColor: 'border.base',
+            shadow: 'sm',
+            padding: 'md',
+            width: 'full',
+          },
+          header: {
+            padding: 'none',
+            paddingBottom: 'md',
+            color: 'font.primary',
+            fontWeight: 'bold',
+          },
+        },
         level0: {
           container: {
             background: 'background.card.level0',

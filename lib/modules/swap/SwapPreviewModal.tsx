@@ -1,13 +1,11 @@
 'use client'
 
-import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
   Card,
+  CardHeader,
   HStack,
   Heading,
   Modal,
@@ -23,40 +21,15 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
-import { Address } from 'wagmi'
 import { useSwap } from './useSwap'
 import { SwapTimeout } from './SwapTimeout'
+import TokenRow from '../tokens/TokenRow/TokenRow'
 
 type Props = {
   isOpen: boolean
   onClose(): void
   onOpen(): void
   finalFocusRef?: RefObject<HTMLInputElement>
-}
-
-function TokenAmountRow({ address, amount }: { address: Address; amount: string }) {
-  const { selectedChain } = useSwap()
-  const { getToken, usdValueForToken } = useTokens()
-  const { toCurrency } = useCurrency()
-
-  const token = getToken(address, selectedChain)
-  const usdValue = token ? usdValueForToken(token, amount) : undefined
-
-  return (
-    <HStack w="full" justify="space-between">
-      <HStack>
-        <TokenIcon
-          address={token?.address}
-          chain={token?.chain}
-          size={28}
-          alt={token?.symbol || 'Token icon'}
-        />
-        <NumberText>{fNum('token', amount)}</NumberText>
-        <Text>{token?.symbol}</Text>
-      </HStack>
-      <NumberText>{usdValue ? toCurrency(usdValue) : '-'}</NumberText>
-    </HStack>
-  )
 }
 
 export function SwapPreviewModal({
@@ -66,7 +39,8 @@ export function SwapPreviewModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { tokenIn, tokenOut, swapTxState, currentStep, useOnStepCompleted } = useSwap()
+  const { tokenIn, tokenOut, swapTxState, currentStep, useOnStepCompleted, selectedChain } =
+    useSwap()
 
   return (
     <Modal
@@ -81,17 +55,30 @@ export function SwapPreviewModal({
       <ModalContent>
         <ModalHeader>
           <Heading fontWeight="bold" size="h5">
-            Swap preview
+            Review swap
           </Heading>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="md" align="start">
-            <Card variant="level0" p="md" shadow="sm" w="full">
-              <VStack align="start" spacing="md">
-                <TokenAmountRow {...tokenIn} />
-                <TokenAmountRow {...tokenOut} />
-              </VStack>
+            <Card variant="modalSubSection">
+              <CardHeader>You pay</CardHeader>
+              <TokenRow
+                address={tokenIn.address}
+                value={tokenIn.amount}
+                chain={selectedChain}
+                abbreviated={false}
+              />
+            </Card>
+
+            <Card variant="modalSubSection">
+              <CardHeader>You&apos;lll get (if no slippage)</CardHeader>
+              <TokenRow
+                address={tokenOut.address}
+                value={tokenOut.amount}
+                chain={selectedChain}
+                abbreviated={false}
+              />
             </Card>
 
             <Card variant="level0" p="md" shadow="sm" w="full">
