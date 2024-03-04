@@ -7,8 +7,7 @@ import { getChainId } from '@/lib/config/app.config'
 import { PoolListItem } from '../../pool.types'
 
 export function useClaimStepConfigs(pools: PoolListItem[]) {
-  const pool = pools[0]
-  const { chain } = pool
+  const { chain } = pools[0]
   const chainId = getChainId(chain)
   const { hasMinterApproval } = useHasMinterApproval()
   const { hasApprovedRelayer } = useHasApprovedRelayer(chainId)
