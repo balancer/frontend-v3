@@ -18,7 +18,7 @@ type Props = {
   value: Numberish
   usdValue?: string
   customRender?: (token: GqlToken) => ReactNode | ReactNode[]
-  isSelected?: boolean
+  disabled?: boolean
   isLoading?: boolean
   abbreviated?: boolean
   isBpt?: boolean
@@ -30,7 +30,7 @@ export default function TokenRow({
   value,
   customRender,
   chain,
-  isSelected,
+  disabled,
   isLoading,
   abbreviated = true,
   isBpt,
@@ -56,15 +56,15 @@ export default function TokenRow({
 
   return (
     <HStack width="full" justifyContent="space-between">
-      <HStack spacing="md">
-        <TokenIcon chain={chain} address={address} size={36} alt={token?.symbol || address} />
-        <VStack spacing="xs" alignItems="flex-start">
-          <HStack>
+      <HStack spacing="sm">
+        <TokenIcon chain={chain} address={address} size={40} alt={token?.symbol || address} />
+        <VStack spacing="none" alignItems="flex-start">
+          <HStack spacing="none">
             <Heading
               fontWeight="bold"
               as="h6"
               fontSize="md"
-              variant={isSelected ? 'primary' : 'secondary'}
+              variant={disabled ? 'secondary' : 'primary'}
             >
               {token?.symbol || pool?.symbol}
             </Heading>
@@ -76,7 +76,7 @@ export default function TokenRow({
         </VStack>
       </HStack>
       <HStack spacing="8">
-        <VStack spacing="xs" alignItems="flex-end">
+        <VStack spacing="none" alignItems="flex-end">
           {isLoading ? (
             <>
               <Skeleton w="10" h="4" />
