@@ -5,11 +5,11 @@ import { TokenSelectListRow } from './TokenSelectListRow'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useTokenBalances } from '../../useTokenBalances'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTokenSelectList } from './useTokenSelectList'
 import { TbCoins, TbWallet } from 'react-icons/tb'
-import { GroupedVirtuoso } from 'react-virtuoso'
+import { GroupedVirtuoso, GroupedVirtuosoHandle } from 'react-virtuoso'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 
 type Props = {
@@ -69,6 +69,7 @@ export function TokenSelectList({
   onTokenSelect,
   ...rest
 }: Props & BoxProps) {
+  const ref = useRef<GroupedVirtuosoHandle>(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const { balanceFor, isBalancesLoading } = useTokenBalances()
   const { isConnected } = useUserAccount()
@@ -112,14 +113,12 @@ export function TokenSelectList({
   useHotkeys('tab', incrementActiveIndex, hotkeyOpts)
   useHotkeys('enter', selectActiveToken, [tokensToShow, activeIndex], hotkeyOpts)
 
+  useEffect(() => {
+    ref.current?.scrollIntoView({ index: activeIndex, behavior: 'auto' })
+  }, [activeIndex])
+
   function keyFor(token: GqlToken, index: number) {
     return `${token.address}:${token.chain}:${index}`
-  }
-
-  function getScrollToIndex() {
-    if (tokensToShow.length === 0) return undefined
-
-    return activeIndex >= 8 ? activeIndex - 7 : 0
   }
 
   return (
@@ -132,6 +131,7 @@ export function TokenSelectList({
         </Center>
       ) : (
         <GroupedVirtuoso
+          ref={ref}
           groupCounts={groupCounts}
           style={{ height: listHeight }}
           groupContent={index => {
