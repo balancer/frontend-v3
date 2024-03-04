@@ -1,6 +1,7 @@
 import { IconProps, useTheme } from '@chakra-ui/react'
+import { SVGProps } from 'react'
 
-interface Props extends IconProps {
+interface Props extends SVGProps<SVGSVGElement> {
   gradFrom?: string
   gradTo?: string
 }

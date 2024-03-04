@@ -1,7 +1,6 @@
-import { Box, Flex, Heading, Icon, Stack } from '@chakra-ui/react'
+import { Flex, Heading, Icon, Stack } from '@chakra-ui/react'
 import { usePortfolio } from './usePortfolio'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { BsStars } from 'react-icons/bs'
 import { FiBarChart } from 'react-icons/fi'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 
