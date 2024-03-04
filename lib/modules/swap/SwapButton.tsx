@@ -7,6 +7,7 @@ import { Button, VStack } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
 import { useConstructSwapStep } from './useConstructSwapStep'
+import { useTokenBalances } from '../tokens/useTokenBalances'
 
 type Props = {
   onTransactionStateUpdate: OnTransactionStateUpdate
@@ -14,6 +15,7 @@ type Props = {
 
 export function SwapButton({ onTransactionStateUpdate }: Props) {
   const { swapStep, swapTransaction } = useConstructSwapStep()
+  const { refetchBalances } = useTokenBalances()
 
   const isComplete = swapStep.isComplete()
 
@@ -22,6 +24,11 @@ export function SwapButton({ onTransactionStateUpdate }: Props) {
   useEffect(() => {
     onTransactionStateUpdate(transactionState)
   }, [transactionState])
+
+  // Refetch balances after swap is complete
+  useEffect(() => {
+    if (isComplete) refetchBalances()
+  }, [isComplete])
 
   return (
     <VStack w="full">

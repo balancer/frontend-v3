@@ -849,6 +849,25 @@ export const balTheme = {
             border: 'none',
           },
         },
+        button: {
+          icon: {
+            color: 'grayText',
+          },
+          button: {
+            color: 'grayText',
+          },
+          panel: {
+            borderTop: '1px solid',
+            borderColor: 'border.base',
+          },
+          container: {
+            border: 'none',
+            borderWidth: 0,
+            background: 'background.card.level2',
+            shadow: 'md',
+            rounded: 'md',
+          },
+        },
       },
     },
     Input: {
@@ -1216,7 +1235,7 @@ export const balTheme = {
     Card: {
       baseStyle: {
         container: {
-          background: 'background.card.level0',
+          background: 'background.card.level1',
           rounded: 'lg',
         },
       },
