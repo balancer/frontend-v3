@@ -109,12 +109,21 @@ export function usePortfolio() {
     }, {})
   }, [portfolioData.stakedPools, balRewardsData, claimableRewardsByPoolMap])
 
+  const poolsByChainMap = useMemo(() => {
+    return portfolioData.stakedPools?.reduce((acc: Record<string, PoolListItem[]>, pool) => {
+      if (!acc[pool.chain]) acc[pool.chain] = []
+      acc[pool.chain].push(pool)
+      return acc
+    }, {})
+  }, [portfolioData.stakedPools])
+
   return {
     portfolioData,
     balRewardsData,
     protocolRewardsData,
     claimableRewards,
     poolRewardsMap,
+    poolsByChainMap,
     isLoading:
       loading || isLoadingBalRewards || isLoadingProtocolRewards || isLoadingClaimableRewards,
   }

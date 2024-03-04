@@ -29,9 +29,9 @@ const TABS = [
 export default function PoolIncentives() {
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain } = usePool()
-  const { previewModalDisclosure, disabledReason, isDisabled, hasNoRewards } = useClaiming(
-    pool as unknown as PoolListItem
-  )
+  const { previewModalDisclosure, disabledReason, isDisabled, hasNoRewards } = useClaiming([
+    pool,
+  ] as unknown[] as PoolListItem[])
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
@@ -46,7 +46,7 @@ export default function PoolIncentives() {
       <VStack spacing="0" width="full">
         <HStack width="full" p="4" justifyContent="space-between">
           <Heading fontWeight="bold" size="h5">
-            Incentives``
+            Incentives
           </Heading>
           <ButtonGroup currentOption={activeTab} options={TABS} onChange={handleTabChanged} />
         </HStack>

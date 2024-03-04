@@ -30,10 +30,10 @@ import { getChainName } from '@/lib/config/app.config'
 import { RichSelect } from '@/lib/shared/components/inputs/RichSelect'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { FiGlobe } from 'react-icons/fi'
-import { HiChevronDown } from 'react-icons/hi2'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
 import { SwapDetailsAccordian } from './SwapDetailsAccordian'
 import { TokenInputsValidationProvider } from '../tokens/useTokenInputsValidation'
+import { ChevronDownIcon } from '@chakra-ui/icons'
 
 export function SwapForm() {
   const {
@@ -101,28 +101,36 @@ export function SwapForm() {
   return (
     <TokenBalancesProvider tokens={tokens}>
       <TokenInputsValidationProvider>
-        <Center h="full" w="full" maxW="lg" mx="auto">
-          <Card variant="level3" shadow="xl" w="full" p="md">
-            <VStack spacing="lg" align="start">
-              <HStack w="full" justify="space-between">
-                <Heading fontWeight="bold" size="h5">
-                  Swap
-                </Heading>
-                <TransactionSettings size="sm" />
-              </HStack>
-              <VStack spacing="md" w="full">
-                <RichSelect
-                  value={selectedChain}
-                  options={networkOptions}
-                  onChange={newValue => {
-                    setSelectedChain(newValue as GqlChain)
-                  }}
-                  rightIcon={
-                    <HStack>
-                      <FiGlobe />
-                      <HiChevronDown />
-                    </HStack>
-                  }
+      <Center h="full" w="full" maxW="lg" mx="auto">
+        <Card variant="level3" shadow="xl" w="full" p="md">
+          <VStack spacing="lg" align="start">
+            <HStack w="full" justify="space-between">
+              <Heading fontWeight="bold" size="h5">
+                Swap
+              </Heading>
+              <TransactionSettings size="sm" />
+            </HStack>
+            <VStack spacing="md" w="full">
+              <RichSelect
+                value={selectedChain}
+                options={networkOptions}
+                onChange={newValue => {
+                  setSelectedChain(newValue as GqlChain)
+                }}
+                rightIcon={
+                  <HStack>
+                    <FiGlobe />
+                    <ChevronDownIcon fontWeight="bold" fontSize="xl" />
+                  </HStack>
+                }
+              />
+              <VStack w="full">
+                <TokenInput
+                  address={tokenIn.address}
+                  chain={selectedChain}
+                  value={tokenIn.amount}
+                  onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
+                  toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
                 />
                 <VStack w="full">
                   <TokenInput
