@@ -26,14 +26,14 @@ export function RichSelect({
     <Menu>
       <MenuButton
         as={Button}
-        rightIcon={rightIcon ?? <ChevronDownIcon />}
+        rightIcon={rightIcon ?? <ChevronDownIcon fontWeight="bold" fontSize="xl" />}
         w="full"
         textAlign="left"
         color="font.primary"
-        background="background.card.level8"
+        background="background.card.level2"
         shadow="md"
-        _hover={{ background: 'background.card.level7' }}
-        _active={{ background: 'background.card.level6' }}
+        _hover={{ background: 'background.card.level3' }}
+        _active={{ background: 'background.card.level4' }}
         {...rest}
       >
         {currentOption?.label || 'Select'}
