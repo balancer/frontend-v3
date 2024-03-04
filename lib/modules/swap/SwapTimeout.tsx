@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { HStack, Text, Tooltip } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { useSwap } from './useSwap'
+import { IoRefresh } from 'react-icons/io5'
 
 type Props = {
   swapTxState?: TransactionState
@@ -75,18 +75,14 @@ export function SwapTimeout(props: Props) {
 
   return (
     !shouldFreezeQuote && (
-      <HStack justify="space-between" w="full">
-        <Text>Valid for</Text>
-        <HStack>
-          <Text color="GrayText">{secondsToRefetch} secs</Text>
-          <Tooltip
-            label="Quoted numbers above valid until timeout, after which they will be recalculated."
-            fontSize="sm"
-          >
-            <InfoOutlineIcon color="GrayText" />
-          </Tooltip>
-        </HStack>
-      </HStack>
+      <Box fontSize="xl" color="grayText" pos="relative">
+        <IoRefresh />
+        {secondsToRefetch <= 5 && (
+          <Box pos="absolute" top={1} left={2} fontSize="xx-small">
+            {secondsToRefetch}
+          </Box>
+        )}
+      </Box>
     )
   )
 }

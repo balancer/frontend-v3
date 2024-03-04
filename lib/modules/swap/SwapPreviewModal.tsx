@@ -1,8 +1,5 @@
 'use client'
 
-import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { fNum } from '@/lib/shared/utils/numbers'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
   Card,
   CardHeader,
@@ -17,13 +14,14 @@ import {
   ModalOverlay,
   ModalProps,
   Text,
-  Tooltip,
   VStack,
 } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
 import { useSwap } from './useSwap'
 import { SwapTimeout } from './SwapTimeout'
 import TokenRow from '../tokens/TokenRow/TokenRow'
+import { SwapDetails } from './SwapDetails'
+import { SwapRate } from './SwapRate'
 
 type Props = {
   isOpen: boolean
@@ -81,19 +79,18 @@ export function SwapPreviewModal({
               />
             </Card>
 
-            <Card variant="level0" p="md" shadow="sm" w="full">
-              <VStack align="start" spacing="md">
-                <HStack justify="space-between" w="full">
-                  <Text>Price impact</Text>
-                  <HStack>
-                    <NumberText color="grayText">{fNum('priceImpact', 0)}</NumberText>
-                    <Tooltip label="Price impact" fontSize="sm">
-                      <InfoOutlineIcon color="grayText" />
-                    </Tooltip>
-                  </HStack>
+            <Card variant="modalSubSection">
+              <SwapDetails />
+            </Card>
+
+            <Card variant="modalSubSection" fontSize="sm">
+              <HStack justify="space-between" w="full">
+                <Text color="grayText">Exchange rate</Text>
+                <HStack>
+                  <SwapRate />
+                  <SwapTimeout swapTxState={swapTxState} />
                 </HStack>
-                <SwapTimeout swapTxState={swapTxState} />
-              </VStack>
+              </HStack>
             </Card>
           </VStack>
         </ModalBody>
