@@ -88,11 +88,12 @@ export function TokenSelectList({
 
   const groups = [
     <InYourWallet
+      key="in-your-wallet"
       isConnected={isConnected}
       openConnectModal={openConnectModal}
       hasNoTokensInWallet={!tokensWithBalance.length}
     />,
-    <OtherTokens />,
+    <OtherTokens key="other-tokens" />,
   ]
   const groupCounts = [tokensWithBalance.length, tokensWithoutBalance.length]
 
