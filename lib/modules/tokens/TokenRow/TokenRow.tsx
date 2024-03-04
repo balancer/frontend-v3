@@ -63,7 +63,7 @@ export default function TokenRow({
             <Heading
               fontWeight="bold"
               as="h6"
-              fontSize="md"
+              fontSize="lg"
               variant={disabled ? 'secondary' : 'primary'}
             >
               {token?.symbol || pool?.symbol}
@@ -84,7 +84,7 @@ export default function TokenRow({
             </>
           ) : (
             <>
-              <Heading fontWeight="bold" as="h6" fontSize="1rem">
+              <Heading fontWeight="bold" as="h6" fontSize="lg">
                 {amount}
               </Heading>
               <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
