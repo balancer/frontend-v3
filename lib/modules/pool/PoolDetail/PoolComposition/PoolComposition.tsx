@@ -1,3 +1,5 @@
+'use client'
+
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { Box, Card, HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'

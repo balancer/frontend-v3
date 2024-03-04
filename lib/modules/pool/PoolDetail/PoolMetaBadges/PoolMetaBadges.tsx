@@ -1,3 +1,5 @@
+'use client'
+
 import { Badge, HStack, Text, Tooltip } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
