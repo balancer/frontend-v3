@@ -16,6 +16,7 @@ import { CopyTokenAddressButton } from './CopyTokenAddressButton'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { HiExternalLink } from 'react-icons/hi'
 import { CoingeckoIcon } from '@/lib/shared/components/icons/CoingeckoIcon'
+import { AddTokenToWalletButton } from './AddTokenToWalletButton'
 
 type Props = {
   tokenAddress: string | Address
@@ -48,6 +49,7 @@ export function TokenInfoPopover({ tokenAddress, chain }: Props) {
             </Text>
             <HStack spacing="xs">
               <CopyTokenAddressButton tokenAddress={tokenAddress} color="inherit" />
+              <AddTokenToWalletButton tokenAddress={tokenAddress} chain={chain} color="inherit" />
               <IconButton
                 size="xs"
                 isRound
