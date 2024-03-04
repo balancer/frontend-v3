@@ -117,7 +117,6 @@ export function usePortfolio() {
     }, {})
   }, [portfolioData.stakedPools])
 
-  console.log('poolsByChainMap', poolsByChainMap)
   return {
     portfolioData,
     balRewardsData,
