@@ -13,6 +13,7 @@ import {
   Text,
   VStack,
   forwardRef,
+  useTheme,
 } from '@chakra-ui/react'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useTokens } from '../useTokens'
@@ -23,6 +24,7 @@ import { HiChevronDown } from 'react-icons/hi'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { blockInvalidNumberInput, fNum } from '@/lib/shared/utils/numbers'
 import { TokenIcon } from '../TokenIcon'
+import { useTokenInputsValidation } from '../useTokenInputsValidation'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
@@ -64,6 +66,11 @@ function TokenInputFooter({ token, value, updateValue }: TokenInputFooterProps) 
   const { balanceFor, isBalancesLoading } = useTokenBalances()
   const { usdValueForToken } = useTokens()
   const { toCurrency } = useCurrency()
+  const { hasValidationError, getValidationError } = useTokenInputsValidation()
+
+  const hasError = hasValidationError(token)
+  // TODO: replace input.fontHintError with proper theme color
+  const inputLabelColor = hasError ? 'input.fontHintError' : 'current'
 
   const balance = token ? balanceFor(token?.address) : undefined
   const userBalance = token ? balance?.formatted || '0' : '0'
@@ -82,10 +89,15 @@ function TokenInputFooter({ token, value, updateValue }: TokenInputFooterProps) 
         <Skeleton w="12" h="full" />
       ) : (
         <HStack cursor="pointer" onClick={() => updateValue(userBalance)}>
-          <Text fontSize="sm" variant="secondary">
+          {hasError && (
+            <Text variant="secondary" fontSize="sm" color={inputLabelColor}>
+              {getValidationError(token)}
+            </Text>
+          )}
+          <Text fontSize="sm" variant="secondary" color={inputLabelColor}>
             {fNum('token', userBalance, { abbreviated: false })}
           </Text>
-          <Box color="font.secondary">
+          <Box color={hasError ? 'input.fontHintError' : 'secondary'}>
             <TbWallet />
           </Box>
         </HStack>
@@ -120,12 +132,18 @@ export const TokenInput = forwardRef(
     }: InputProps & Props,
     ref
   ) => {
+    const { colors } = useTheme()
     const { getToken } = useTokens()
     const token = address && chain ? getToken(address, chain) : undefined
+    const { hasValidationError } = useTokenInputsValidation()
+
     const { handleOnChange, updateValue } = useTokenInput(token, onChange)
 
     const tokenInputSelector = TokenInputSelector({ token, weight, toggleTokenSelect })
     const footer = hideFooter ? undefined : TokenInputFooter({ token, value, updateValue })
+
+    // TODO: replace 'red[600' with proper theme color
+    const boxShadow = hasValidationError(token) ? `0 0 0 1px ${colors.red[600]}` : undefined
 
     return (
       <Box
@@ -134,6 +152,7 @@ export const TokenInput = forwardRef(
         shadow="innerBase"
         bg="background.card.level1"
         border="white"
+        boxShadow={boxShadow}
         w="full"
         ref={ref}
         {...boxProps}
