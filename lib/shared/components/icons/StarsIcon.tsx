@@ -1,16 +1,16 @@
-import { useTheme } from '@chakra-ui/react'
+import { IconProps, useTheme } from '@chakra-ui/react'
 
-interface Props {
+interface Props extends IconProps {
   gradFrom?: string
   gradTo?: string
 }
 
-function StarsIcon({ gradFrom = 'yellow', gradTo = 'pink' }: Props) {
+function StarsIcon({ gradFrom = 'yellow', gradTo = 'pink', ...rest }: Props) {
   const theme = useTheme()
   const gradientId = `stars-gradient-${gradFrom}-${gradTo}`
 
   return (
-    <svg width="15" height="16" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
       <defs>
         <linearGradient
           id={gradientId}

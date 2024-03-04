@@ -8,6 +8,7 @@ import { Button, HStack, Heading, Stack, Text } from '@chakra-ui/react'
 import { useState } from 'react'
 import { ClaimNetworkRewardsModal } from './claim/ClaimNetworkRewardsModal'
 import { PoolListItem } from '../pool/pool.types'
+import { PortfolioSummary } from './PortfolioSummary'
 
 export default function Portfolio() {
   const [claimByNetworkModalData, setClaimByNetworkModalData] = useState<null | PoolListItem[]>(
@@ -38,9 +39,7 @@ export default function Portfolio() {
 
   return (
     <Stack width="full">
-      {portfolioData.userTotalBalance && (
-        <Heading>Total balance: {toCurrency(portfolioData.userTotalBalance?.toNumber())}</Heading>
-      )}
+      <PortfolioSummary />
       {hasStakedPools && (
         <Stack>
           <StakedPortfolio pools={portfolioData.stakedPools} poolRewardsMap={poolRewardsMap} />

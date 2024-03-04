@@ -1,7 +1,9 @@
+'use client'
+
 import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
 import { useUserAccount } from '../web3/useUserAccount'
 import { PoolListItem } from '../pool/pool.types'
-import { useMemo } from 'react'
+import { createContext, useMemo } from 'react'
 import { useQuery as useApolloQuery } from '@apollo/client'
 import { useProtocolRewards } from './useProtocolRewards'
 import { ClaimableReward, useClaimableBalances } from './claim/useClaimableBalances'
@@ -9,6 +11,7 @@ import { BalTokenReward, useBalTokenRewards } from './useBalRewards'
 import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { Address } from 'viem'
+import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
@@ -27,15 +30,21 @@ export function getAllGaugesAddressesFromPool(pool: PoolListItem) {
   const arr = []
   const staking = pool.staking
 
-  if (staking?.gauge) arr.push(staking.gauge.gaugeAddress)
+  if (staking?.gauge) {
+    if (staking.gauge.version > 1) {
+      arr.push(staking.gauge.gaugeAddress)
+    }
+  }
   if (staking?.gauge?.otherGauges) {
-    arr.push(...staking.gauge.otherGauges.map(g => g.gaugeAddress))
+    arr.push(...staking.gauge.otherGauges.filter(g => g.version > 1).map(g => g.gaugeAddress))
   }
 
   return arr as Address[]
 }
 
-export function usePortfolio() {
+export type UsePortfolio = ReturnType<typeof _usePortfolio>
+
+function _usePortfolio() {
   const { userAddress } = useUserAccount()
 
   const { data, loading } = useApolloQuery(GetPoolsDocument, {
@@ -117,6 +126,12 @@ export function usePortfolio() {
     }, {})
   }, [portfolioData.stakedPools])
 
+  const totalFiatClaimableBalance = useMemo(() => {
+    return portfolioData.stakedPools?.reduce((acc, pool) => {
+      return acc.plus(poolRewardsMap[pool.id]?.totalFiatClaimBalance || 0)
+    }, bn(0))
+  }, [portfolioData.stakedPools, poolRewardsMap])
+
   return {
     portfolioData,
     balRewardsData,
@@ -124,7 +139,17 @@ export function usePortfolio() {
     claimableRewards,
     poolRewardsMap,
     poolsByChainMap,
+    totalFiatClaimableBalance,
     isLoading:
       loading || isLoadingBalRewards || isLoadingProtocolRewards || isLoadingClaimableRewards,
   }
 }
+
+export const PortfolioContext = createContext<UsePortfolio | null>(null)
+
+export function PortfolioProvider({ children }: { children: React.ReactNode }) {
+  const hook = _usePortfolio()
+  return <PortfolioContext.Provider value={hook}>{children}</PortfolioContext.Provider>
+}
+
+export const usePortfolio = (): UsePortfolio => useMandatoryContext(PortfolioContext, 'Provider')
