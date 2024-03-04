@@ -33,8 +33,9 @@ export function ClaimModal({
   pool,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const { currentStep, useOnStepCompleted, nonBalRewards, balRewards, hasNoRewards } =
-    useClaiming(pool)
+  const { currentStep, useOnStepCompleted, nonBalRewards, balRewards, hasNoRewards } = useClaiming([
+    pool,
+  ])
 
   function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
     if (reward.formattedBalance === '0') return null
