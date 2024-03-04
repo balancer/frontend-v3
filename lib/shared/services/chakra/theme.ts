@@ -1254,6 +1254,7 @@ export const balTheme = {
             paddingBottom: 'md',
             color: 'font.primary',
             fontWeight: 'bold',
+            fontSize: 'sm',
           },
         },
         level0: {
