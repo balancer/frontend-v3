@@ -15,10 +15,11 @@ export function PoolAlert({ title, description, status }: PoolAlertProps) {
     <Alert status={status} rounded="lg">
       <AlertIcon />
       <AlertTitle
-        dangerouslySetInnerHTML={{ __html: title }}
         sx={{ a: { textDecoration: 'underline' } }} // TODO: define this styles in the theme
-      />
-      <AlertDescription dangerouslySetInnerHTML={{ __html: description }} />
+      >
+        {title}
+      </AlertTitle>
+      <AlertDescription>{description}</AlertDescription>
     </Alert>
   )
 }

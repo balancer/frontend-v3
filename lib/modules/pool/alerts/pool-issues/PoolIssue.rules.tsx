@@ -25,7 +25,6 @@ function anAlert(poolIssue: PoolIssue): PoolAlertProps {
     type: 'Vulnerability',
     status: 'error',
     title: getVulnerabilityText(poolIssue),
-    description: '',
     labels: [],
   }
 }

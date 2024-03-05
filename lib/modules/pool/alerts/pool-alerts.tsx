@@ -8,8 +8,8 @@ type Type = 'Vulnerability'
 
 export type PoolAlertProps = {
   type: Type
-  title: string
-  description: string
+  title: JSX.Element
+  description?: JSX.Element
   status: AlertStatus
   labels: Label[]
 }
