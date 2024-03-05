@@ -132,7 +132,7 @@ export const tokens = {
         specialSecondary: balColors.gradient.sunsetLight,
       },
       border: {
-        base: balColors.brown['100'],
+        base: '#FFFFFF',
       },
       // Button colors
       button: {
@@ -1216,7 +1216,7 @@ export const balTheme = {
         },
       },
       defaultProps: {
-        size: 'lg',
+        size: 'md',
       },
     },
     Popover: {
