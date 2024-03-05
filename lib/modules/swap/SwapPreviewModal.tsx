@@ -60,7 +60,7 @@ export function SwapPreviewModal({
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <VStack spacing="md" align="start">
+          <VStack spacing="sm" align="start">
             <Card variant="modalSubSection">
               <CardHeader>You pay</CardHeader>
               <TokenRow
