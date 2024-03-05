@@ -230,6 +230,7 @@ export function _useSwap() {
     swapState.tokenIn.address,
     networkConfig.tokens.nativeAsset.address
   )
+  const validAmountOut = bn(swapState.tokenOut.amount).gt(0)
 
   const swapStepConfigs = useSwapStepConfigs({
     humanAmountIn: swapState.tokenIn.amount,
@@ -258,7 +259,8 @@ export function _useSwap() {
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
-    [simulationQuery.isLoading, 'Swap is loading']
+    [simulationQuery.isLoading, 'Swap is loading'],
+    [!validAmountOut, 'Invalid amount out']
   )
 
   return {
