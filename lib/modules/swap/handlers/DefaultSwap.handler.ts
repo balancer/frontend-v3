@@ -17,7 +17,7 @@ export class DefaultSwapHandler implements SwapHandler {
 
     const { data } = await this.apolloClient.query({
       query: GetSorSwapsDocument,
-      variables,
+      variables: { ...variables, queryBatchSwap: false }, // We don't need the API to do a query because we're doing that via the SDK below.
       fetchPolicy: 'no-cache',
       notifyOnNetworkStatusChange: true,
     })

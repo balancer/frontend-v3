@@ -268,6 +268,8 @@ export type GqlPoolDynamicData = {
   fees24hAtlTimestamp: Scalars['Int']['output']
   fees48h: Scalars['BigDecimal']['output']
   holdersCount: Scalars['BigInt']['output']
+  isInRecoveryMode: Scalars['Boolean']['output']
+  isPaused: Scalars['Boolean']['output']
   lifetimeSwapFees: Scalars['BigDecimal']['output']
   lifetimeVolume: Scalars['BigDecimal']['output']
   poolId: Scalars['ID']['output']
@@ -1074,26 +1076,63 @@ export type GqlReliquaryTokenBalanceSnapshot = {
 
 export type GqlSftmxStakingData = {
   __typename: 'GqlSftmxStakingData'
+  /** Current exchange rate for sFTMx -> FTM */
   exchangeRate: Scalars['String']['output']
+  /** Whether maintenance is paused. This pauses reward claiming or harvesting and withdrawing from matured vaults. */
   maintenancePaused: Scalars['Boolean']['output']
+  /** The maximum FTM amount to depost. */
   maxDepositLimit: Scalars['AmountHumanReadable']['output']
+  /** The minimum FTM amount to deposit. */
   minDepositLimit: Scalars['AmountHumanReadable']['output']
+  /** Number of vaults that delegated to validators. */
   numberOfVaults: Scalars['Int']['output']
+  /** The current rebasing APR for sFTMx. */
   stakingApr: Scalars['String']['output']
+  /** Total amount of FTM in custody of sFTMx. Staked FTM plus free pool FTM. */
   totalFtmAmount: Scalars['AmountHumanReadable']['output']
+  /** Total amount of FTM in the free pool. */
   totalFtmAmountInPool: Scalars['AmountHumanReadable']['output']
+  /** Total amount of FTM staked/delegated to validators. */
   totalFtmAmountStaked: Scalars['AmountHumanReadable']['output']
+  /** Whether undelegation is paused. Undelegate is the first step to redeem sFTMx. */
   undelegatePaused: Scalars['Boolean']['output']
+  /** A list of all the vaults that delegated to validators. */
+  vaults: Array<GqlSftmxStakingVault>
+  /** Whether withdrawals are paused. Withdraw is the second and final step to redeem sFTMx. */
   withdrawPaused: Scalars['Boolean']['output']
+  /** Delay to wait between undelegate (1st step) and withdraw (2nd step). */
   withdrawalDelay: Scalars['Int']['output']
+}
+
+export type GqlSftmxStakingVault = {
+  __typename: 'GqlSftmxStakingVault'
+  /** The amount of FTM that has been delegated via this vault. */
+  ftmAmountStaked: Scalars['AmountHumanReadable']['output']
+  /** Whether the vault is matured, meaning whether unlock time has passed. */
+  isMatured: Scalars['Boolean']['output']
+  /** Timestamp when the delegated FTM unlocks, matures. */
+  unlockTimestamp: Scalars['Int']['output']
+  /** The address of the validator that the vault has delegated to. */
+  validatorAddress: Scalars['String']['output']
+  /** The ID of the validator that the vault has delegated to. */
+  validatorId: Scalars['String']['output']
+  /** The contract address of the vault. */
+  vaultAddress: Scalars['String']['output']
+  /** The internal index of the vault. */
+  vaultIndex: Scalars['Int']['output']
 }
 
 export type GqlSftmxWithdrawalRequests = {
   __typename: 'GqlSftmxWithdrawalRequests'
+  /** Amount of sFTMx that is being redeemed. */
   amountSftmx: Scalars['AmountHumanReadable']['output']
+  /** The Withdrawal ID, used for interactions. */
   id: Scalars['String']['output']
+  /** Whether the requests is finished and the user has withdrawn. */
   isWithdrawn: Scalars['Boolean']['output']
+  /** The timestamp when the request was placed. There is a delay until the user can withdraw. See withdrawalDelay. */
   requestTimestamp: Scalars['Int']['output']
+  /** The user address that this request belongs to. */
   user: Scalars['String']['output']
 }
 
@@ -1489,7 +1528,9 @@ export type Query = {
   poolGetSwaps: Array<GqlPoolSwap>
   protocolMetricsAggregated: GqlProtocolMetricsAggregated
   protocolMetricsChain: GqlProtocolMetricsChain
+  /** Get the staking data and status for sFTMx */
   sftmxGetStakingData: GqlSftmxStakingData
+  /** Retrieve the withdrawalrequests from a user */
   sftmxGetWithdrawalRequests: Array<GqlSftmxWithdrawalRequests>
   /** Get swap quote from the SOR v2 for the V2 vault */
   sorGetSwapPaths: GqlSorGetSwapPaths
@@ -7348,6 +7389,7 @@ export type GetSorSwapsQueryVariables = Exact<{
   swapType: GqlSorSwapType
   swapAmount: Scalars['BigDecimal']['input']
   chain: GqlChain
+  queryBatchSwap: Scalars['Boolean']['input']
 }>
 
 export type GetSorSwapsQuery = {
@@ -17326,6 +17368,14 @@ export const GetSorSwapsDocument = {
             type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
           },
         },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'queryBatchSwap' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+          },
+        },
       ],
       selectionSet: {
         kind: 'SelectionSet',
@@ -17359,6 +17409,11 @@ export const GetSorSwapsDocument = {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'chain' },
                 value: { kind: 'Variable', name: { kind: 'Name', value: 'chain' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'queryBatchSwap' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'queryBatchSwap' } },
               },
             ],
             selectionSet: {

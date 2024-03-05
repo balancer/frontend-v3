@@ -4,6 +4,7 @@ query GetSorSwaps(
   $swapType: GqlSorSwapType!
   $swapAmount: BigDecimal!
   $chain: GqlChain!
+  $queryBatchSwap: Boolean!
 ) {
   swaps: sorGetSwapPaths(
     tokenIn: $tokenIn
@@ -11,6 +12,7 @@ query GetSorSwaps(
     swapType: $swapType
     swapAmount: $swapAmount
     chain: $chain
+    queryBatchSwap: $queryBatchSwap
   ) {
     effectivePrice
     effectivePriceReversed
