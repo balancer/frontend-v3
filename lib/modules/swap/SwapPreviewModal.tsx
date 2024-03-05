@@ -72,7 +72,7 @@ export function SwapPreviewModal({
             </Card>
 
             <Card variant="modalSubSection">
-              <CardHeader>You&apos;lll get (if no slippage)</CardHeader>
+              <CardHeader>You&apos;ll get (if no slippage)</CardHeader>
               <TokenRow
                 address={tokenOut.address}
                 value={tokenOut.amount}
