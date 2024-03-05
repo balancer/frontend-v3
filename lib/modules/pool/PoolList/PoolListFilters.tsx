@@ -30,7 +30,7 @@ import { usePoolListQueryState } from './usePoolListQueryState'
 import { PoolFilterType, poolTypeFilters } from '../pool.types'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useEffect, useState } from 'react'
-import { FunnelIcon } from '@heroicons/react/24/outline'
+import { Filter } from 'react-feather'
 
 function UserPoolFilter() {
   const { userAddress, toggleUserAddress } = usePoolListQueryState()
@@ -119,7 +119,7 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
 
   return (
     <Button ref={ref} {...props} display="flex" gap="2" variant="tertiary">
-      <Icon as={FunnelIcon} boxSize={4} />
+      <Icon as={Filter} boxSize={4} />
       Filters
       {totalFilterCount > 0 && (
         <Badge ml="2" colorScheme="blue">
