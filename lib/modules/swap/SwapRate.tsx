@@ -41,7 +41,7 @@ export function SwapRate() {
   }
 
   return (
-    <Text variant="secondary" fontSize="sm" onClick={togglePriceDirection}>
+    <Text variant="secondary" fontSize="sm" cursor="pointer" onClick={togglePriceDirection}>
       {priceLabel}
     </Text>
   )

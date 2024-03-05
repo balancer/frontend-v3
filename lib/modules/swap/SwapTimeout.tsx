@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box } from '@chakra-ui/react'
+import { HStack, Text, Box } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useSwap } from './useSwap'
-import { IoRefresh } from 'react-icons/io5'
+import { NumberText } from '@/lib/shared/components/typography/NumberText'
 
 type Props = {
   swapTxState?: TransactionState
@@ -75,14 +75,17 @@ export function SwapTimeout(props: Props) {
 
   return (
     !shouldFreezeQuote && (
-      <Box fontSize="xl" color="grayText" pos="relative">
-        <IoRefresh />
-        {secondsToRefetch <= 5 && (
-          <Box pos="absolute" top={1} left={2} fontSize="xx-small">
+      <HStack spacing="xs" fontSize="sm" fontWeight="normal">
+        <Text color="grayText">Quote refresh in</Text>
+        <HStack spacing="none">
+          <NumberText color="grayText" textAlign="right" fontWeight="bold">
             {secondsToRefetch}
-          </Box>
-        )}
-      </Box>
+          </NumberText>
+          <Text color="grayText" fontWeight="bold">
+            s
+          </Text>
+        </HStack>
+      </HStack>
     )
   )
 }

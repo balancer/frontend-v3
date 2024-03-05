@@ -37,8 +37,7 @@ export function SwapPreviewModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { tokenIn, tokenOut, swapTxState, currentStep, useOnStepCompleted, selectedChain } =
-    useSwap()
+  const { tokenIn, tokenOut, currentStep, useOnStepCompleted, selectedChain } = useSwap()
 
   return (
     <Modal
@@ -52,9 +51,12 @@ export function SwapPreviewModal({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          <Heading fontWeight="bold" size="h5">
-            Review swap
-          </Heading>
+          <HStack justify="space-between" w="full" pr="lg">
+            <Heading fontWeight="bold" size="h5">
+              Review swap
+            </Heading>
+            <SwapTimeout />
+          </HStack>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
@@ -86,10 +88,7 @@ export function SwapPreviewModal({
             <Card variant="modalSubSection" fontSize="sm">
               <HStack justify="space-between" w="full">
                 <Text color="grayText">Exchange rate</Text>
-                <HStack>
-                  <SwapRate />
-                  <SwapTimeout swapTxState={swapTxState} />
-                </HStack>
+                <SwapRate />
               </HStack>
             </Card>
           </VStack>
