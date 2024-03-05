@@ -1,31 +1,17 @@
 import { Grid, GridItem, Icon, Text, VStack } from '@chakra-ui/react'
 
-import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { FiGlobe } from 'react-icons/fi'
 import PoolListSortButton from '../../pool/PoolList/PoolListTable/PoolListSortButton'
-import { PoolsColumnSort } from '../../pool/pool.types'
+import { PortfolioTableSortingId, PortfolioSortingData, portfolioOrderBy } from './PortfolioTable'
 
-const setIsDesc = (id: GqlPoolOrderBy, currentSortingObj: PoolsColumnSort) =>
+const setIsDesc = (id: PortfolioTableSortingId, currentSortingObj: PortfolioSortingData) =>
   currentSortingObj.id === id ? !currentSortingObj.desc : true
 
-export function PortfolioTableHeader({ ...rest }) {
-  //   const { sorting, setSorting } = usePoolListQueryState()
-  //   const { orderBy } = usePoolOrderByState()
-  //   const sortingObj = sorting[0]
-  const orderBy = [
-    {
-      title: 'Staking',
-    },
-    {
-      title: 'veBAL boost',
-    },
-    {
-      title: 'APR',
-    },
-    {
-      title: 'My liquidity',
-    },
-  ]
+type Props = {
+  currentSortingObj: PortfolioSortingData
+  setCurrentSortingObj: (value: PortfolioSortingData) => void
+}
+export function PortfolioTableHeader({ currentSortingObj, setCurrentSortingObj, ...rest }: Props) {
   return (
     <Grid {...rest} py="3" w="full" borderBottom="1px solid" borderColor="border.base">
       <GridItem>
@@ -36,25 +22,20 @@ export function PortfolioTableHeader({ ...rest }) {
       <GridItem>
         <Text fontWeight="bold">Pool name</Text>
       </GridItem>
-      <GridItem justifySelf="end">
-        <Text fontWeight="bold">Type</Text>
-      </GridItem>
-      {orderBy.map((orderByItem, index) => (
+      {portfolioOrderBy.map((orderByItem, index) => (
         <GridItem key={index} justifySelf="end">
           <PoolListSortButton
             title={orderByItem.title}
-            isCurrentSort={false}
-            isDesc={false}
+            isCurrentSort={orderByItem.id === currentSortingObj.id}
+            isDesc={currentSortingObj.desc}
             onClick={
-              () => {
-                //
-              }
-              //   setSorting([
-              //     {
-              //       id: orderByItem,
-              //       desc: setIsDesc(orderByItem, sortingObj),
-              //     },
-              //   ])
+              orderByItem.id === currentSortingObj.id
+                ? () =>
+                    setCurrentSortingObj({
+                      id: orderByItem.id,
+                      desc: setIsDesc(orderByItem.id, currentSortingObj),
+                    })
+                : () => setCurrentSortingObj({ id: orderByItem.id, desc: false })
             }
           />
         </GridItem>
