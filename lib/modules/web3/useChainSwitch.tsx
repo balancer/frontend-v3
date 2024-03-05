@@ -39,6 +39,8 @@ export const NetworkSwitchButton: React.FC<NetworkSwitchButtonProps> = function 
   return (
     <Button
       w="full"
+      size="lg"
+      variant="primary"
       onClick={() => networkSwitchButtonProps.switchNetwork?.(networkSwitchButtonProps.chainId)}
       isLoading={networkSwitchButtonProps.isLoading}
     >
