@@ -1,5 +1,4 @@
-import { TiWarning } from 'react-icons/ti'
-import { TbAlertHexagonFilled } from 'react-icons/tb'
+import { AlertTriangle, XOctagon } from 'react-feather'
 import { PropsWithChildren, createContext, useEffect, useState } from 'react'
 import { useMandatoryContext } from '../utils/contexts'
 
@@ -35,9 +34,9 @@ export function _usePriceImpact() {
     switch (priceImpactLevel) {
       case 'high':
       case 'max':
-        return <TbAlertHexagonFilled />
+        return <XOctagon />
       case 'medium':
-        return <TiWarning />
+        return <AlertTriangle />
       case 'low':
       default:
         return undefined
