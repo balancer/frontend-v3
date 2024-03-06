@@ -102,7 +102,7 @@ export function SwapForm() {
     <TokenBalancesProvider tokens={tokens}>
       <TokenInputsValidationProvider>
         <Center h="full" w="full" maxW="lg" mx="auto">
-          <Card variant="level3" shadow="xl" w="full" p="md">
+          <Card variant="level2" shadow="xl" w="full" p="md">
             <VStack spacing="lg" align="start">
               <HStack w="full" justify="space-between">
                 <Heading fontWeight="bold" size="h5">

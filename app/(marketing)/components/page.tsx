@@ -829,46 +829,46 @@ export default function Components() {
           Border Radius
         </Heading>
         <Stack direction="row" flexWrap="wrap" mb="8">
-          <Center h="20" w="20" borderRadius="none" bg="background.card.level5" shadow="xl">
+          <Center h="20" w="20" borderRadius="none" bg="background.level3" shadow="xl">
             none
           </Center>
-          <Center h="20" w="20" borderRadius="sm" bg="background.card.level5" shadow="xl">
+          <Center h="20" w="20" borderRadius="sm" bg="background.level3" shadow="xl">
             <Box>
               <Center>sm</Center>
               <Center fontSize="xs">2px</Center>
             </Box>
           </Center>
-          <Center h="20" w="20" borderRadius="base" bg="background.card.level5" shadow="xl">
+          <Center h="20" w="20" borderRadius="base" bg="background.level3" shadow="xl">
             <Box>
               <Center>base</Center>
               <Center fontSize="xs">4px</Center>
             </Box>
           </Center>
-          <Center h="20" w="20" borderRadius="lg" bg="background.card.level5" shadow="xl">
+          <Center h="20" w="20" borderRadius="lg" bg="background.level3" shadow="xl">
             <Box>
               <Center>lg</Center>
               <Center fontSize="xs">8px</Center>
             </Box>
           </Center>
-          <Center h="20" w="20" borderRadius="xl" bg="background.card.level5" shadow="xl">
+          <Center h="20" w="20" borderRadius="xl" bg="background.level3" shadow="xl">
             <Box>
               <Center>xl</Center>
               <Center fontSize="xs">12px</Center>
             </Box>
           </Center>
-          <Center h="20" w="20" borderRadius="2xl" bg="background.card.level5" shadow="xl">
+          <Center h="20" w="20" borderRadius="2xl" bg="background.level3" shadow="xl">
             <Box>
               <Center>2xl</Center>
               <Center fontSize="xs">16px</Center>
             </Box>
           </Center>
-          <Center h="20" w="20" borderRadius="3xl" bg="background.card.level5" shadow="xl">
+          <Center h="20" w="20" borderRadius="3xl" bg="background.level3" shadow="xl">
             <Box>
               <Center>3xl</Center>
               <Center fontSize="xs">20px</Center>
             </Box>
           </Center>
-          <Center h="20" w="20" borderRadius="full" bg="background.card.level5" shadow="xl">
+          <Center h="20" w="20" borderRadius="full" bg="background.level3" shadow="xl">
             <Box>
               <Center>full</Center>
               <Center fontSize="xs">9999px</Center>

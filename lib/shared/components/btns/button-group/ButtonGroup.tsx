@@ -18,7 +18,7 @@ export default function ButtonGroup({ currentOption, options, onChange, size }: 
     <HStack
       rounded="md"
       p="1"
-      backgroundColor="background.card.level5"
+      backgroundColor="background.level3"
       spacing="1"
       borderColor="borderColor"
       shadow="sm"

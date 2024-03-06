@@ -94,10 +94,10 @@ export const balColors = {
   },
   // sand: 'hsla(43,23%,91%,1)',
   base: {
-    light: 'hsla(43,23%,91%,1)',
-    hslLight: '90,23%,92%',
-    dark: 'hsla(217,12%,25%,1)',
-    hslDark: '217,12%,25%',
+    light: 'hsla(44,22%,90%,1)',
+    hslLight: '44,22%,90%',
+    dark: 'hsla(216,12%,25%,1)',
+    hslDark: '216,12%,25%',
   },
   chartBorder: {
     light: '#edeae3',
@@ -126,8 +126,13 @@ export const tokens = {
     light: {
       background: {
         // Background colors
+        level0: '#EBE8E0',
+        level1: '#EFEDE6',
+        level2: '#F5F3EF',
+        level3: '#FBFAF9',
+        level4: '#FFFFFF',
         base: balColors.base.light,
-        baseWithOpacity: createBackgroundOpacity(balColors.base.hslLight, 0.4),
+        baseWithOpacity: createBackgroundOpacity(balColors.base.hslLight, 0.5),
         special: balColors.gradient.dawnLight,
         specialSecondary: balColors.gradient.sunsetLight,
       },
@@ -163,23 +168,22 @@ export const tokens = {
         link: balColors.purple['500'],
         linkHover: balColors.purple['700'],
       },
-
       card: {
         border: {
           card: 'red',
         },
-        background: {
-          level0: '#EDEAE3',
-          level1: '#EFEDE6',
-          level2: '#F1EFE9',
-          level3: '#F3F1EC',
-          level4: '#F5F3EF',
-          level5: '#F7F6F2',
-          level6: '#F9F8F6',
-          level7: '#FBFAF9',
-          level8: '#FDFDFC',
-          level9: '#FFFFFF',
-        },
+        // background: {
+        //   level0: '#EDEAE3',
+        //   level1: '#EFEDE6',
+        //   level2: '#F1EFE9',
+        //   level3: '#F3F1EC',
+        //   level4: '#F5F3EF',
+        //   level5: '#F7F6F2',
+        //   level6: '#F9F8F6',
+        //   level7: '#FBFAF9',
+        //   level8: '#FDFDFC',
+        //   level9: '#FFFFFF',
+        // },
       },
       // Input colors
       input: {
@@ -218,8 +222,13 @@ export const tokens = {
     dark: {
       // Background colors
       background: {
+        level0: '#31373F',
+        level1: '#383E47',
+        level2: '#3F4650',
+        level3: '#464D58',
+        level4: '#4C5561',
         base: balColors.base.dark,
-        baseWithOpacity: createBackgroundOpacity(balColors.base.hslDark, 0.94),
+        baseWithOpacity: createBackgroundOpacity(balColors.base.hslDark, 0.97),
         special: balColors.gradient.dawnDark,
         specialSecondary: balColors.gradient.sunsetDark,
       },
@@ -255,24 +264,24 @@ export const tokens = {
         specialSecondary: 'linear-gradient(180deg, #EA9A43 0%, #F06147 100%)',
         link: balColors.purple['300'],
         linkHover: balColors.purple['100'],
-      },
+      }, 
       // card colors
       card: {
         border: {
           card: '#4F5764',
         },
-        background: {
-          level0: '#383E47',
-          level1: '#3A404A',
-          level2: '#3D434D',
-          level3: '#3F4550',
-          level4: '#414853',
-          level5: '#434A56',
-          level6: '#464D59',
-          level7: '#484F5B',
-          level8: '#4A525E',
-          level9: '#4C5461',
-        },
+        // background: {
+        //   level0: '#383E47',
+        //   level1: '#3A404A',
+        //   level2: '#3D434D',
+        //   level3: '#3F4550',
+        //   level4: '#414853',
+        //   level5: '#434A56',
+        //   level6: '#464D59',
+        //   level7: '#484F5B',
+        //   level8: '#4A525E',
+        //   level9: '#4C5461',
+        // },
       },
       input: {
         labelFocus: balColors.purple['400'],
@@ -423,7 +432,27 @@ export const balTheme = {
       },
 
       // Background colors
-      background: {
+      background: {   
+        level0: {
+          default: tokens.colors.light.background.level0,
+          _dark: tokens.colors.dark.background.level0,
+        },
+        level1: {
+          default: tokens.colors.light.background.level1,
+          _dark: tokens.colors.dark.background.level1,
+        },
+        level2: {
+          default: tokens.colors.light.background.level2,
+          _dark: tokens.colors.dark.background.level2,
+        },
+        level3: {
+          default: tokens.colors.light.background.level3,
+          _dark: tokens.colors.dark.background.level3,
+        },
+        level4: {
+          default: tokens.colors.light.background.level4,
+          _dark: tokens.colors.dark.background.level4,
+        },                   
         base: {
           default: tokens.colors.light.background.base,
           _dark: tokens.colors.dark.background.base,
@@ -454,44 +483,44 @@ export const balTheme = {
             _dark: tokens.colors.dark.button.background.tertiary,
           },
         },
-        card: {
-          level0: {
-            default: tokens.colors.light.card.background.level0,
-            _dark: tokens.colors.dark.card.background.level0,
-          },
-          level1: {
-            default: tokens.colors.light.card.background.level1,
-            _dark: tokens.colors.dark.card.background.level1,
-          },
-          level2: {
-            default: tokens.colors.light.card.background.level2,
-            _dark: tokens.colors.dark.card.background.level2,
-          },
-          level3: {
-            default: tokens.colors.light.card.background.level3,
-            _dark: tokens.colors.dark.card.background.level3,
-          },
-          level4: {
-            default: tokens.colors.light.card.background.level4,
-            _dark: tokens.colors.dark.card.background.level4,
-          },
-          level5: {
-            default: tokens.colors.light.card.background.level5,
-            _dark: tokens.colors.dark.card.background.level5,
-          },
-          level6: {
-            default: tokens.colors.light.card.background.level6,
-            _dark: tokens.colors.dark.card.background.level6,
-          },
-          level7: {
-            default: tokens.colors.light.card.background.level7,
-            _dark: tokens.colors.dark.card.background.level7,
-          },
-          level8: {
-            default: tokens.colors.light.card.background.level8,
-            _dark: tokens.colors.dark.card.background.level8,
-          },
-        },
+        // card: {
+        //   level0: {
+        //     default: tokens.colors.light.card.background.level0,
+        //     _dark: tokens.colors.dark.card.background.level0,
+        //   },
+        //   level1: {
+        //     default: tokens.colors.light.card.background.level1,
+        //     _dark: tokens.colors.dark.card.background.level1,
+        //   },
+        //   level2: {
+        //     default: tokens.colors.light.card.background.level2,
+        //     _dark: tokens.colors.dark.card.background.level2,
+        //   },
+        //   level3: {
+        //     default: tokens.colors.light.card.background.level3,
+        //     _dark: tokens.colors.dark.card.background.level3,
+        //   },
+        //   level4: {
+        //     default: tokens.colors.light.card.background.level4,
+        //     _dark: tokens.colors.dark.card.background.level4,
+        //   },
+        //   level5: {
+        //     default: tokens.colors.light.card.background.level5,
+        //     _dark: tokens.colors.dark.card.background.level5,
+        //   },
+        //   level6: {
+        //     default: tokens.colors.light.card.background.level6,
+        //     _dark: tokens.colors.dark.card.background.level6,
+        //   },
+        //   level7: {
+        //     default: tokens.colors.light.card.background.level7,
+        //     _dark: tokens.colors.dark.card.background.level7,
+        //   },
+        //   level8: {
+        //     default: tokens.colors.light.card.background.level8,
+        //     _dark: tokens.colors.dark.card.background.level8,
+        //   },
+        // },
       },
       input: {
         fontDefault: {
@@ -836,11 +865,8 @@ export const balTheme = {
             fontSize: '1.25rem',
             rounded: 'lg',
             borderWidth: 0,
-            border: 'none',
-            background: 'lightBadge',
-            _dark: {
-              background: 'background.card.level3',
-            },
+            border: 'none',            
+            background: 'background.level1',
           },
           container: {
             border: 'none',
@@ -865,7 +891,7 @@ export const balTheme = {
           container: {
             border: 'none',
             borderWidth: 0,
-            background: 'background.card.level2',
+            background: 'background.level1',
             shadow: 'md',
             rounded: 'md',
           },
@@ -1077,7 +1103,7 @@ export const balTheme = {
     Select: {
       baseStyle: {
         field: {
-          background: 'background.card.level2',
+          background: 'background.level1',
           fontWeight: 'bold',
           color: 'font.primary',
           shadow: 'md',
@@ -1182,7 +1208,7 @@ export const balTheme = {
           _dark: {
             color: 'gray.300',
             _hover: {
-              color: 'background.card.level5',
+              color: 'background.level3',
             },
           },
         },
@@ -1200,7 +1226,7 @@ export const balTheme = {
             transform: 'none',
           },
           _dark: {
-            color: 'background.card.level5',
+            color: 'background.level3',
           },
         },
       },
@@ -1208,7 +1234,7 @@ export const balTheme = {
     Modal: {
       baseStyle: {
         dialog: {
-          background: 'background.card.level0',
+          background: 'background.level0',
         },
         closeButton: {
           top: 3,
@@ -1223,14 +1249,14 @@ export const balTheme = {
       variants: {
         tooltip: {
           content: {
-            background: 'background.card.level3',
+            background: 'background.level2',
             borderColor: 'transparent',
             color: 'grayText',
             fontWeight: 'bold',
             shadow: 'lg',
           },
           body: {
-            background: 'background.card.level3',
+            background: 'background.level2',
             color: 'grayText',
             px: 'sm',
             py: 'xs',
@@ -1241,14 +1267,14 @@ export const balTheme = {
     Card: {
       baseStyle: {
         container: {
-          background: 'background.card.level1',
+          background: 'background.level1',
           rounded: 'lg',
         },
       },
       variants: {
         modalSubSection: {
           container: {
-            background: 'background.card.level1',
+            background: 'background.level1',
             borderWidth: '1px',
             borderColor: 'border.base',
             shadow: 'sm',
@@ -1265,85 +1291,58 @@ export const balTheme = {
         },
         level0: {
           container: {
-            background: 'background.card.level0',
+            background: 'background.level0',
             borderColor: 'rgba(229, 211, 190, 0.6)',
-            _dark: {
-              borderColor: 'darkBorderColor',
-            },
           },
         },
         level1: {
           container: {
-            background: 'background.card.level1',
-            borderColor: 'lightBorderColor',
-            _dark: {
-              borderColor: 'darkBorderColor',
-            },
+            background: 'background.level1',
+            borderColor: 'border.base',
           },
         },
         level2: {
           container: {
-            background: 'background.card.level2',
-            borderColor: 'lightBorderColor',
-            _dark: {
-              borderColor: 'darkBorderColor',
-            },
+            background: 'background.level1',
+            borderColor: 'border.base',
           },
         },
         level3: {
           container: {
-            background: 'background.card.level3',
-            borderColor: 'lightBorderColor',
-            _dark: {
-              borderColor: 'darkBorderColor',
-            },
+            background: 'background.level2',
+            borderColor: 'border.base',
           },
         },
         level4: {
           container: {
-            background: 'background.card.level4',
-            borderColor: 'lightBorderColor',
-            _dark: {
-              borderColor: 'darkBorderColor',
-            },
+            background: 'background.level2',
+            borderColor: 'border.base',
           },
         },
-        level5: {
-          container: {
-            background: 'background.card.level5',
-            borderColor: 'lightBorderColor',
-            _dark: {
-              borderColor: 'darkBorderColor',
-            },
-          },
-        },
-        level6: {
-          container: {
-            background: 'background.card.level6',
-            borderColor: 'lightBorderColor',
-            _dark: {
-              borderColor: 'darkBorderColor',
-            },
-          },
-        },
-        level7: {
-          container: {
-            background: 'background.card.level7',
-            borderColor: 'lightBorderColor',
-            _dark: {
-              borderColor: 'darkBorderColor',
-            },
-          },
-        },
-        level8: {
-          container: {
-            background: 'background.card.level8',
-            borderColor: 'lightBorderColor',
-            _dark: {
-              borderColor: 'darkBorderColor',
-            },
-          },
-        },
+        // level5: {
+        //   container: {
+        //     background: 'background.level3',
+        //     borderColor: 'border.base',
+        //   },
+        // },
+        // level6: {
+        //   container: {
+        //     background: 'background.level3',
+        //     borderColor: 'border.base',
+        //   },
+        // },
+        // level7: {
+        //   container: {
+        //     background: 'background.level4',
+        //     borderColor: 'border.base',
+        //   },
+        // },
+        // level8: {
+        //   container: {
+        //     background: 'background.level4',
+        //     borderColor: 'border.base',
+        //   },
+        // },
         gradient: {
           container: {
             width: 'full',
@@ -1372,7 +1371,7 @@ export const balTheme = {
     Tag: {
       baseStyle: {
         container: {
-          background: 'background.card.level1',
+          background: 'background.level1',
           shadow: 'md',
           borderColor: 'border.base',
           borderWidth: '1px',
