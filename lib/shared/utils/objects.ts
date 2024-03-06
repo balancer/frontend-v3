@@ -1,5 +1,3 @@
-type Config<T> = Record<string, T>
-
 /**
  * Given an object like:
  *
@@ -11,8 +9,8 @@ type Config<T> = Record<string, T>
  *
  * User by config files to enable non-case-sensitive lookups.
  */
-export function convertHexToLowerCase<T>(config: Config<T>): Config<T> {
-  const newConfig: Config<T> = {}
+export function convertHexToLowerCase<T>(config: T): T {
+  const newConfig: Record<any, any> = {}
 
   for (const key in config) {
     if (Object.prototype.hasOwnProperty.call(config, key)) {
@@ -20,20 +18,20 @@ export function convertHexToLowerCase<T>(config: Config<T>): Config<T> {
       const lowercaseKey = isHex(key) ? key.toLowerCase() : key
 
       if (typeof value === 'string' && isHex(value)) {
-        newConfig[lowercaseKey] = value.toLowerCase() as T
+        newConfig[lowercaseKey] = value.toLowerCase()
       } else if (Array.isArray(value)) {
         newConfig[lowercaseKey] = value.map(item =>
-          typeof item === 'string' && isHex(item) ? (item.toLowerCase() as T) : item
-        ) as T
+          typeof item === 'string' && isHex(item) ? item.toLowerCase() : item
+        )
       } else if (typeof value === 'object') {
-        newConfig[lowercaseKey] = convertHexToLowerCase(value as Config<T>) as T
+        newConfig[lowercaseKey] = convertHexToLowerCase(value)
       } else {
-        newConfig[lowercaseKey] = value as T
+        newConfig[lowercaseKey] = value
       }
     }
   }
 
-  return newConfig
+  return newConfig as T
 }
 
 function isHex(s: string) {

@@ -92,7 +92,7 @@ const networkConfig: NetworkConfig = {
         '0x66bb9d104c55861feb3ec3559433f01f6373c9660002000000000000000003cf',
         '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003cD',
       ],
-    } as const,
+    },
   }),
 }
 
