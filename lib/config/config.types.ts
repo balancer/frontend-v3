@@ -28,9 +28,8 @@ export interface ContractsConfig {
   }
   feeDistributor?: Address
 }
-
-export interface IssuesConfig {
-  PoolIssues?: Partial<Record<PoolIssue, string[]>>
+export interface PoolsConfig {
+  issues?: Partial<Record<PoolIssue, string[]>>
 }
 
 export type SupportedChainId = (typeof supportedChains)[number]['id']
@@ -44,7 +43,7 @@ export interface NetworkConfig {
   tokens: TokensConfig
   contracts: ContractsConfig
   minConfirmations?: number
-  issues?: IssuesConfig
+  pools: PoolsConfig
 }
 
 export interface Config {

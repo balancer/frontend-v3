@@ -9,28 +9,29 @@
  *
  * User by config files to enable non-case-sensitive lookups.
  */
-export function convertHexKeysToLowerCase(obj: any): any {
-  if (typeof obj !== 'object' || obj === null) {
-    return obj
-  }
+export function convertHexToLowerCase(config: any): any {
+  const newConfig: any = {}
 
-  if (Array.isArray(obj)) {
-    return obj.map(item => convertHexKeysToLowerCase(item))
-  }
+  for (const key in config) {
+    if (Object.prototype.hasOwnProperty.call(config, key)) {
+      const value = config[key]
+      const lowercaseKey = isHex(key) ? key.toLowerCase() : key
 
-  const newObj: { [key: string]: any } = {}
-  for (const key in obj) {
-    // eslint-disable-next-line no-prototype-builtins
-    if (obj.hasOwnProperty(key)) {
-      if (isHex(key)) {
-        const newKey = key.toLowerCase()
-        newObj[newKey] = convertHexKeysToLowerCase(obj[key])
+      if (typeof value === 'string' && isHex(value)) {
+        newConfig[lowercaseKey] = value.toLowerCase()
+      } else if (Array.isArray(value)) {
+        newConfig[lowercaseKey] = value.map(item =>
+          typeof item === 'string' && isHex(item) ? item.toLowerCase() : item
+        )
+      } else if (typeof value === 'object') {
+        newConfig[lowercaseKey] = convertHexToLowerCase(value)
       } else {
-        newObj[key] = obj[key]
+        newConfig[lowercaseKey] = value
       }
     }
   }
-  return newObj
+
+  return newConfig
 }
 
 function isHex(s: string) {

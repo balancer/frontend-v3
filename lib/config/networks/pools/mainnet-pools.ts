@@ -1,11 +1,11 @@
 import { PoolIssue } from '@/lib/modules/pool/alerts/pool-issues/PoolIssue.type'
-import { IssuesConfig } from '../../config.types'
+import { PoolsConfig } from '../../config.types'
 import { CSP_ISSUE_POOL_IDS } from '../issues/common/csp-issue'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { convertHexKeysToLowerCase } from '@/lib/shared/utils/objects'
+import { convertHexToLowerCase } from '@/lib/shared/utils/objects'
 
-const _mainnetIssues: IssuesConfig = {
-  PoolIssues: {
+const _mainnetPools: PoolsConfig = {
+  issues: {
     [PoolIssue.PoolProtocolFeeVulnWarning]: [
       '0x5b3240b6be3e7487d61cd1afdfc7fe4fa1d81e6400000000000000000000037b',
     ],
@@ -42,9 +42,9 @@ const _mainnetIssues: IssuesConfig = {
     [PoolIssue.FxPoolVulnWarning]: [
       '0x55bec22f8f6c69137ceaf284d9b441db1b9bfedc0002000000000000000003cd',
       '0x66bb9d104c55861feb3ec3559433f01f6373c9660002000000000000000003cf',
-      '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003ce',
+      '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003cD',
     ],
   },
 }
 
-export const mainnetIssues: IssuesConfig = convertHexKeysToLowerCase(_mainnetIssues)
+export const mainnetPools: PoolsConfig = convertHexToLowerCase(_mainnetPools)

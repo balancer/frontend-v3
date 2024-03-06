@@ -6,7 +6,7 @@ import { getVulnerabilityJsx } from './PoolIssue.labels'
 import { PoolAlertProps, PoolAlertRuleFunc } from '../PoolAlerts'
 
 export const getPoolIssueAlerts: PoolAlertRuleFunc = (pool: Pool) => {
-  const poolIssues = getNetworkConfig(pool.chain)?.issues?.PoolIssues
+  const poolIssues = getNetworkConfig(pool.chain).pools?.issues
 
   if (!poolIssues) return
 

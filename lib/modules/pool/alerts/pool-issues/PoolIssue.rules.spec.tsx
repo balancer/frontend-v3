@@ -7,7 +7,7 @@ describe('Creates pool alerts for', () => {
     expect(getPoolIssueAlerts(recoveryPoolMock)).toMatchInlineSnapshot(`
       [
         {
-          "description": "",
+          "id": "eulerRecoveryModeWarning",
           "labels": [],
           "status": "error",
           "title": <div>
@@ -25,7 +25,7 @@ describe('Creates pool alerts for', () => {
           "type": "Vulnerability",
         },
         {
-          "description": "",
+          "id": "cspPoolVulnWarning",
           "labels": [],
           "status": "error",
           "title": <div>
