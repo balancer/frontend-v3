@@ -270,6 +270,7 @@ export function _useSwap() {
     simulationQuery,
     isDisabled,
     disabledReason,
+    priceImpact,
     priceImpactLabel,
     priceImpacUsd,
     maxSlippageUsd,
