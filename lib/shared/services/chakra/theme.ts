@@ -163,7 +163,6 @@ export const tokens = {
         link: balColors.purple['500'],
         linkHover: balColors.purple['700'],
       },
-
       card: {
         border: {
           card: 'red',
@@ -179,6 +178,14 @@ export const tokens = {
           level7: tinycolor(balColors.base.light).lighten(7),
           level8: tinycolor(balColors.base.light).lighten(8),
         },
+      },
+      // Elevation colors
+      elevation: {
+        leveln1: '#EBE8E0',
+        level0: '#EFEDE6',
+        level1: '#F5F3EF',
+        level2: '#FBFAF9',
+        level3: '#FFFFFF',
       },
       // Input colors
       input: {
@@ -221,6 +228,7 @@ export const tokens = {
         baseWithOpacity: createBackgroundOpacity(balColors.base.hslDark, 0.94),
         special: balColors.gradient.dawnDark,
         specialSecondary: balColors.gradient.sunsetDark,
+        elevationN1WithOpacity: 'rgba(49, 55, 63, 0.96)',
       },
       // Border colors
       border: {
@@ -272,6 +280,14 @@ export const tokens = {
           level8: tinycolor(balColors.base.dark).lighten(8),
         },
       },
+      // Elevation colours
+      elevation: {
+        leveln1: '#31373F',
+        level0: '#383E47',
+        level1: '#3F4650',
+        level2: '#464D58',
+        level3: '#4C5561',
+      },
       input: {
         labelFocus: balColors.purple['400'],
         labelError: balColors.red['400'],
@@ -308,6 +324,12 @@ export const tokens = {
   },
   shadows: {
     light: {
+      sm: '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, -0.5px -1px 0px 0px #FFFFFF',
+      md: '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, 6px 6px 6px -3px #49351D0F, -0.5px -0.5px 0px 0px #FFFFFF',
+      lg: '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, 6px 6px 6px -3px #49351D0F, 12px 12px 12px -6px #49351D0F, -0.5px -1px 0px 0px #FFFFFF',
+      xl: '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, 6px 6px 6px -3px #49351D0F, 12px 12px 12px -6px #49351D0F, 24px 24px 24px -12px #49351D0F, -0.5px -1px 0px 0px #FFFFFF',
+      '2xl':
+        '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, 6px 6px 6px -3px #49351D0F, 12px 12px 12px -6px #49351D0F, 24px 24px 24px -12px #49351D0F, 42px 42px 42px -24px #49351D0F, -0.5px -1px 0px 0px #FFFFFF',
       shadowInnerBase:
         '0px 2px 4px 0px rgba(0, 0, 0, 0.05) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.05) inset, 0px 10px 20px 0px rgba(0, 0, 0, 0.05) inset',
       btnDefault:
@@ -335,6 +357,12 @@ export const tokens = {
       },
     },
     dark: {
+      sm: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F',
+      md: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000001A, -0.5px -1px 0px 0px #FFFFFF33',
+      lg: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000001A, 0px -1px 0px 0px #FFFFFF26',
+      xl: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000000F, 24px 24px 24px -12px #0000001A, 0px -1px 0px 0px #FFFFFF26',
+      '2xl':
+        '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000000F, 24px 24px 24px -12px #0000000F, 42px 42px 42px -24px #0000000F, -0.5px -0.5px 0px 0px #FFFFFF26',
       shadowInnerBase:
         '0px 2px 4px 0px rgba(0, 0, 0, 0.10) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.10) inset, 0px 10px 20px 0px rgba(0, 0, 0, 0.10) inset',
       btnDefault:
@@ -383,6 +411,7 @@ export const balTheme = {
   },
   semanticTokens: {
     colors: {
+      besk: 'red.500',
       lightBorderColor: 'rgba(229, 211, 190, 0.6)',
       darkBorderColor: '#4F5764',
       lightBadge: '#EBE9E0',
@@ -429,6 +458,10 @@ export const balTheme = {
         baseWithOpacity: {
           default: tokens.colors.light.background.baseWithOpacity,
           _dark: tokens.colors.dark.background.baseWithOpacity,
+        },
+        elevationN1WithOpacity: {
+          default: tokens.colors.light.background.baseWithOpacity,
+          _dark: tokens.colors.dark.background.elevationN1WithOpacity,
         },
         special: {
           default: tokens.colors.light.background.special,
@@ -587,7 +620,6 @@ export const balTheme = {
         default: tokens.colors.light.input.labelError,
         _dark: tokens.colors.dark.input.labelError,
       },
-
       backgroundImage: {
         card: {
           gradient: {
@@ -698,6 +730,29 @@ export const balTheme = {
           },
         },
       },
+      // elevation colours
+      elevation: {
+        leveln1: {
+          default: tokens.colors.light.elevation.leveln1,
+          _dark: tokens.colors.dark.elevation.leveln1,
+        },
+        level0: {
+          default: tokens.colors.light.elevation.level0,
+          _dark: tokens.colors.dark.elevation.level0,
+        },
+        level1: {
+          default: tokens.colors.light.elevation.level1,
+          _dark: tokens.colors.dark.elevation.level1,
+        },
+        level2: {
+          default: tokens.colors.light.elevation.level2,
+          _dark: tokens.colors.dark.elevation.level2,
+        },
+        level3: {
+          default: tokens.colors.light.elevation.level3,
+          _dark: tokens.colors.dark.elevation.level3,
+        },
+      },
     },
     space: {
       none: '0',
@@ -710,6 +765,26 @@ export const balTheme = {
       '2xl': '4rem',
     },
     shadows: {
+      sm: {
+        default: tokens.shadows.light.sm,
+        _dark: tokens.shadows.dark.sm,
+      },
+      md: {
+        default: tokens.shadows.light.md,
+        _dark: tokens.shadows.dark.md,
+      },
+      lg: {
+        default: tokens.shadows.light.lg,
+        _dark: tokens.shadows.dark.lg,
+      },
+      xl: {
+        default: tokens.shadows.light.xl,
+        _dark: tokens.shadows.dark.xl,
+      },
+      '2xl': {
+        default: tokens.shadows.light['2xl'],
+        _dark: tokens.shadows.dark['2xl'],
+      },
       innerSm: 'inset 0 0 4px 0 rgba(0, 0, 0, 0.06)',
       innerBase: {
         default: tokens.shadows.light['shadowInnerBase'],
@@ -717,6 +792,9 @@ export const balTheme = {
       },
       innerMd: 'inset 0 0 6px 0 rgba(0, 0, 0, 0.1)',
       innerLg: 'inset 0 0 8px 0 rgba(0, 0, 0, 0.15)',
+
+      innerXl:
+        '20px 20px 50px 0px rgba(0, 0, 0, 0.25) inset, 10px 10px 25px 0px rgba(0, 0, 0, 0.18) inset, 2px 2px 11px 0px rgba(0, 0, 0, 0.19) inset, 0px -1px 1px 0px #FFFFFF40 inset',
       btnDefault: {
         default: tokens.shadows.light.btnDefault,
         _dark: tokens.shadows.dark.btnDefault,
@@ -1300,6 +1378,31 @@ export const balTheme = {
             _dark: {
               borderColor: 'darkBorderColor',
             },
+          },
+        },
+        elevationN1: {
+          container: {
+            background: 'elevation.leveln1',
+          },
+        },
+        elevation0: {
+          container: {
+            background: 'elevation.level0',
+          },
+        },
+        elevation1: {
+          container: {
+            background: 'elevation.level1',
+          },
+        },
+        elevation2: {
+          container: {
+            background: 'elevation.level2',
+          },
+        },
+        elevation3: {
+          container: {
+            background: 'elevation.level3',
           },
         },
         gradient: {
