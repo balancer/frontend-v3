@@ -14,7 +14,7 @@ import {
   useColorMode,
 } from '@chakra-ui/react'
 
-import { useCurrentFlowStep } from '../../../../../modules/pool/actions/useCurrentFlowStep'
+import { useCurrentFlowStep } from '../useCurrentFlowStep'
 import { StepConfig } from '../../../../../modules/pool/actions/useIterateSteps'
 import { Step, StepIndicator } from './Step'
 import { StepProps } from './getStepSettings'

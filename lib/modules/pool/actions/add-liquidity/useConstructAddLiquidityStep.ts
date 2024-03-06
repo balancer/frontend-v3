@@ -4,7 +4,7 @@ import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transa
 import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 import { useEffect } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
-import { useUpdateCurrentFlowStep } from '../useCurrentFlowStep'
+import { useUpdateCurrentFlowStep } from '../../../../shared/components/btns/transaction-steps/useCurrentFlowStep'
 import { usePool } from '../../usePool'
 
 export function useConstructAddLiquidityStep() {

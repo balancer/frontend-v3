@@ -5,7 +5,7 @@ import { DefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers
 import { waitFor } from '@testing-library/react'
 import { PropsWithChildren } from 'react'
 import { act } from 'react-dom/test-utils'
-import { CurrentFlowStepProvider } from '../../pool/actions/useCurrentFlowStep'
+import { CurrentFlowStepProvider } from '../../../shared/components/btns/transaction-steps/useCurrentFlowStep'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { TokenAmountToApprove } from './approval-rules'
 import { useConstructApproveTokenStep } from './useConstructApproveTokenStep'
