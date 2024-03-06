@@ -9,6 +9,7 @@ import { useConstructStakingDepositActionStep } from '../../../staking/staking.a
 import { useStaking } from './useStaking'
 
 export const stakeConfig: StepConfig = {
+  title: 'Stake',
   render() {
     return <StakeButton />
   },

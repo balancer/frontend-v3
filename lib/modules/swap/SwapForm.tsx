@@ -23,17 +23,16 @@ import { useTokens } from '../tokens/useTokens'
 import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
 import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { CgArrowsExchangeV } from 'react-icons/cg'
 import { Address } from 'viem'
 import { SwapPreviewModal } from './SwapPreviewModal'
 import { getChainName } from '@/lib/config/app.config'
 import { RichSelect } from '@/lib/shared/components/inputs/RichSelect'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
-import { FiGlobe } from 'react-icons/fi'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
 import { SwapDetailsAccordian } from './SwapDetailsAccordian'
 import { TokenInputsValidationProvider } from '../tokens/useTokenInputsValidation'
 import { ChevronDownIcon } from '@chakra-ui/icons'
+import { Globe, Repeat } from 'react-feather'
 
 export function SwapForm() {
   const {
@@ -119,7 +118,7 @@ export function SwapForm() {
                   }}
                   rightIcon={
                     <HStack>
-                      <FiGlobe />
+                      <Globe size={16} />
                       <ChevronDownIcon fontWeight="bold" fontSize="xl" />
                     </HStack>
                   }
@@ -144,7 +143,7 @@ export function SwapForm() {
                       mt="-16px"
                       isRound={true}
                       aria-label="Switch tokens"
-                      icon={<CgArrowsExchangeV />}
+                      icon={<Repeat size={16} />}
                       onClick={switchTokens}
                     />
                   </Box>

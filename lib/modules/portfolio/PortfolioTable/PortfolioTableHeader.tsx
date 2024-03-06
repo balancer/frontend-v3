@@ -16,7 +16,7 @@ export function PortfolioTableHeader({ currentSortingObj, setCurrentSortingObj, 
     <Grid {...rest} py="3" w="full" borderBottom="1px solid" borderColor="border.base">
       <GridItem>
         <VStack align="start" w="full">
-          <Icon as={FiGlobe} boxSize="5" ml="1" color="grayText" />
+          <Icon as={Globe} boxSize="5" ml="1" color="grayText" />
         </VStack>
       </GridItem>
       <GridItem>

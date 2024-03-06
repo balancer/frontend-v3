@@ -18,13 +18,13 @@ import {
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useTokens } from '../useTokens'
 import { useTokenBalances } from '../useTokenBalances'
-import { TbWallet } from 'react-icons/tb'
 import { useTokenInput } from './useTokenInput'
-import { HiChevronDown } from 'react-icons/hi'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { blockInvalidNumberInput, fNum } from '@/lib/shared/utils/numbers'
 import { TokenIcon } from '../TokenIcon'
 import { useTokenInputsValidation } from '../useTokenInputsValidation'
+import { ChevronDown } from 'react-feather'
+import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
@@ -49,7 +49,7 @@ function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSele
       {weight && <Text fontWeight="normal">{weight}%</Text>}
       {toggleTokenSelect && (
         <Box ml="sm">
-          <HiChevronDown />
+          <ChevronDown />
         </Box>
       )}
     </Button>
@@ -98,7 +98,7 @@ function TokenInputFooter({ token, value, updateValue }: TokenInputFooterProps) 
             {fNum('token', userBalance, { abbreviated: false })}
           </Text>
           <Box color={hasError ? 'input.fontHintError' : 'secondary'}>
-            <TbWallet />
+            <WalletIcon size={16} />
           </Box>
         </HStack>
       )}
