@@ -13,20 +13,41 @@ import {
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { SwapDetails } from './SwapDetails'
 import { SwapRate } from './SwapRate'
-import { useSwap } from './useSwap'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import { fNum } from '@/lib/shared/utils/numbers'
+import { useEffect } from 'react'
 
-export function SwapDetailsAccordian() {
-  const { priceImpact } = useSwap()
-
+interface SwapDetailsAccordianProps {
+  priceImpact: string | undefined
+  setIsNextBtnDisabled: (value: boolean) => void
+}
+export function SwapDetailsAccordian({
+  priceImpact,
+  setIsNextBtnDisabled,
+}: SwapDetailsAccordianProps) {
   const {
     priceImpactLevel,
     priceImpactColor,
     acceptHighPriceImpact,
+    hasToAcceptHighPriceImpact,
     setAcceptHighPriceImpact,
     getPriceImpactIcon,
-  } = usePriceImpact(priceImpact)
+    setPriceImpact,
+  } = usePriceImpact()
+
+  useEffect(() => {
+    if (priceImpact) {
+      setPriceImpact(priceImpact)
+    }
+  }, [priceImpact])
+
+  useEffect(() => {
+    if (hasToAcceptHighPriceImpact && !acceptHighPriceImpact) {
+      setIsNextBtnDisabled(true)
+    } else {
+      setIsNextBtnDisabled(false)
+    }
+  }, [acceptHighPriceImpact, hasToAcceptHighPriceImpact])
 
   return (
     <>

@@ -17,7 +17,7 @@ import {
   Text,
   Box,
 } from '@chakra-ui/react'
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useSwap } from './useSwap'
 import { useTokens } from '../tokens/useTokens'
 import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
@@ -34,7 +34,7 @@ import { TransactionSettings } from '../user/settings/TransactionSettings'
 import { SwapDetailsAccordian } from './SwapDetailsAccordian'
 import { TokenInputsValidationProvider } from '../tokens/useTokenInputsValidation'
 import { ChevronDownIcon } from '@chakra-ui/icons'
-import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
+import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
 
 export function SwapForm() {
   const {
@@ -60,11 +60,9 @@ export function SwapForm() {
   const nextBtn = useRef(null)
   const finalRefTokenIn = useRef(null)
   const finalRefTokenOut = useRef(null)
+  const [isNextBtnDisabled, setIsNextBtnDisabled] = useState(false)
 
-  const { hasToAcceptHighPriceImpact, acceptHighPriceImpact } = usePriceImpact(priceImpact)
-
-  const isDisabled = isSwapDisabled || hasToAcceptHighPriceImpact !== acceptHighPriceImpact
-  console.log('comp', { hasToAcceptHighPriceImpact, acceptHighPriceImpact })
+  const isDisabled = isSwapDisabled || isNextBtnDisabled
 
   const networkOptions = PROJECT_CONFIG.supportedNetworks.map(network => ({
     label: (
@@ -164,7 +162,14 @@ export function SwapForm() {
                   />
                 </VStack>
 
-                {simulationQuery.data && <SwapDetailsAccordian />}
+                {simulationQuery.data && (
+                  <PriceImpactProvider>
+                    <SwapDetailsAccordian
+                      priceImpact={priceImpact}
+                      setIsNextBtnDisabled={setIsNextBtnDisabled}
+                    />
+                  </PriceImpactProvider>
+                )}
 
                 <Tooltip label={isDisabled ? disabledReason : ''}>
                   <Button

@@ -15,7 +15,6 @@ export function SwapDetails() {
     simulationQuery,
     tokenInInfo,
     tokenOutInfo,
-    priceImpact,
     priceImpactLabel,
     priceImpacUsd,
     maxSlippageUsd,
@@ -24,7 +23,7 @@ export function SwapDetails() {
     tokenOut,
   } = useSwap()
 
-  const { priceImpactLevel, priceImpactColor, getPriceImpactIcon } = usePriceImpact(priceImpact)
+  const { priceImpactLevel, priceImpactColor, getPriceImpactIcon } = usePriceImpact()
 
   const orderRouteVersion = simulationQuery.data?.vaultVersion || 2
   const hopCount = simulationQuery.data?.routes[0]?.hops?.length || 0
