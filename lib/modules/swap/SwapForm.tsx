@@ -32,8 +32,8 @@ import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { FiGlobe } from 'react-icons/fi'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
 import { SwapDetailsAccordian } from './SwapDetailsAccordian'
-import { ChevronDownIcon } from '@chakra-ui/icons'
 import { TokenInputsValidationProvider } from '../tokens/useTokenInputsValidation'
+import { ChevronDownIcon } from '@chakra-ui/icons'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 
 export function SwapForm() {
@@ -58,6 +58,9 @@ export function SwapForm() {
   const { getTokensByChain } = useTokens()
   const tokenSelectDisclosure = useDisclosure()
   const nextBtn = useRef(null)
+  const finalRefTokenIn = useRef(null)
+  const finalRefTokenOut = useRef(null)
+
   const { hasToAcceptHighPriceImpact, acceptHighPriceImpact } = usePriceImpact(priceImpact)
 
   const isDisabled = isSwapDisabled || hasToAcceptHighPriceImpact !== acceptHighPriceImpact
@@ -130,6 +133,7 @@ export function SwapForm() {
                 />
                 <VStack w="full">
                   <TokenInput
+                    ref={finalRefTokenIn}
                     address={tokenIn.address}
                     chain={selectedChain}
                     value={tokenIn.amount}
@@ -151,6 +155,7 @@ export function SwapForm() {
                     />
                   </Box>
                   <TokenInput
+                    ref={finalRefTokenOut}
                     address={tokenOut.address}
                     chain={selectedChain}
                     value={tokenOut.amount}
@@ -158,26 +163,27 @@ export function SwapForm() {
                     toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
                   />
                 </VStack>
+
+                {simulationQuery.data && <SwapDetailsAccordian />}
+
+                <Tooltip label={isDisabled ? disabledReason : ''}>
+                  <Button
+                    ref={nextBtn}
+                    variant="secondary"
+                    w="full"
+                    size="lg"
+                    isDisabled={isDisabled}
+                    onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
+                  >
+                    Next
+                  </Button>
+                </Tooltip>
               </VStack>
-
-              {simulationQuery.data && <SwapDetailsAccordian />}
-
-              <Tooltip label={isDisabled ? disabledReason : ''}>
-                <Button
-                  ref={nextBtn}
-                  variant="secondary"
-                  w="full"
-                  size="lg"
-                  isDisabled={isDisabled}
-                  onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
-                >
-                  Next
-                </Button>
-              </Tooltip>
             </VStack>
           </Card>
         </Center>
         <TokenSelectModal
+          finalFocusRef={tokenSelectKey === 'tokenIn' ? finalRefTokenIn : finalRefTokenOut}
           chain={selectedChain}
           tokens={tokenSelectTokens}
           isOpen={tokenSelectDisclosure.isOpen}

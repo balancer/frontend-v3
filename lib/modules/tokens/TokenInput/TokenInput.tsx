@@ -154,13 +154,13 @@ export const TokenInput = forwardRef(
         border="white"
         boxShadow={boxShadow}
         w="full"
-        ref={ref}
         {...boxProps}
       >
         <VStack align="start" spacing="md">
           <InputGroup border="transparent" background="transparent">
             <Box w="full" position="relative">
               <Input
+                ref={ref}
                 type="number"
                 placeholder="0.00"
                 autoComplete="off"
