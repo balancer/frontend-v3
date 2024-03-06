@@ -7,6 +7,7 @@ const networkConfig: NetworkConfig = {
   shortName: 'zkEVM',
   chain: GqlChain.Zkevm,
   iconPath: '/images/chains/ZKEVM.svg',
+  rpcUrl: 'https://polygonzkevm-mainnet.g.alchemy.com/v2/cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88',
   blockExplorerBaseUrl: 'https://zkevm.polygonscan.com',
   tokens: {
     balToken: { address: '0x4f9a0e7fd2bf6067db6994cf12e4495df938e6e9' },

@@ -63,6 +63,11 @@ export default async function Pools({ searchParams }: Props) {
   const { data: poolListFeaturedPoolsData } = await getApolloServerClient().query({
     query: GetFeaturedPoolsDocument,
     variables: poolListFeaturedPoolsVariables,
+    context: {
+      fetchOptions: {
+        next: { revalidate: 30 },
+      },
+    },
   })
 
   return (

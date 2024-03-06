@@ -11,7 +11,7 @@ import { useBalTokenRewards } from '@/lib/modules/portfolio/useBalRewards'
 import { useClaimableBalances } from '@/lib/modules/portfolio/claim/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
 
-export function useClaiming(pool: PoolListItem) {
+export function useClaiming(pools: PoolListItem[]) {
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
   const { isDisabled, disabledReason } = isDisabledWithReason([
@@ -19,12 +19,12 @@ export function useClaiming(pool: PoolListItem) {
     LABELS.walletNotConnected,
   ])
 
-  const { claimableRewards: nonBalRewards, refetchClaimableRewards } = useClaimableBalances([pool])
-  const { balRewardsData: balRewards, refetchBalRewards } = useBalTokenRewards([pool])
+  const { claimableRewards: nonBalRewards, refetchClaimableRewards } = useClaimableBalances(pools)
+  const { balRewardsData: balRewards, refetchBalRewards } = useBalTokenRewards(pools)
 
   const hasNoRewards = !nonBalRewards.length && !balRewards.length
 
-  const stepConfigs = useClaimStepConfigs(pool)
+  const stepConfigs = useClaimStepConfigs(pools)
   const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
   return {

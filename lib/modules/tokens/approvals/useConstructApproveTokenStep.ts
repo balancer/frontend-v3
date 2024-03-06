@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { getChainId } from '@/lib/config/app.config'
 import { useManagedErc20Transaction } from '@/lib/modules/web3/contracts/useManagedErc20Transaction'
 import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useEffect, useState } from 'react'
+import { Address } from 'viem'
+import { useUpdateCurrentFlowStep } from '../../../shared/components/btns/transaction-steps/useCurrentFlowStep'
 import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
-import { Address } from 'viem'
-import { useTokens } from '../useTokens'
 import { TokenAmountToApprove } from './approval-rules'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { usePool } from '../../pool/usePool'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse
@@ -16,6 +16,7 @@ export type ApproveTokenProps = {
   spenderAddress: Address
   actionType: ApprovalAction
   chain: GqlChain
+  symbol: string
 }
 
 export function useConstructApproveTokenStep({
@@ -24,21 +25,17 @@ export function useConstructApproveTokenStep({
   spenderAddress,
   actionType,
   chain,
+  symbol,
 }: ApproveTokenProps) {
   const { refetchAllowances, isAllowancesLoading, allowanceFor } = tokenAllowances
-  const { getToken } = useTokens()
-  const { pool, chainId } = usePool()
 
   const [didRefetchAllowances, setDidRefetchAllowances] = useState(false)
 
   const { tokenAddress, requestedRawAmount, requiredRawAmount } = tokenAmountToApprove
 
-  const token = getToken(tokenAddress, chain)
-
   const labelArgs: TokenApprovalLabelArgs = {
     actionType,
-    // if there is no token it must be a bpt, needs to be reconsidered if this assumption changes
-    symbol: (token && token?.symbol) ?? pool.symbol ?? 'Unknown',
+    symbol,
   }
   const tokenApprovalLabels = buildTokenApprovalLabels(labelArgs)
 
@@ -46,7 +43,7 @@ export function useConstructApproveTokenStep({
     tokenAddress,
     'approve',
     tokenApprovalLabels,
-    chainId,
+    getChainId(chain),
     { args: [spenderAddress, requestedRawAmount] },
     {
       enabled: !!spenderAddress && !isAllowancesLoading,
@@ -65,6 +62,8 @@ export function useConstructApproveTokenStep({
     stepType: 'tokenApproval',
     isComplete: () => isComplete,
   }
+
+  useUpdateCurrentFlowStep(step)
 
   useEffect(() => {
     // refetch allowances after the approval transaction was executed

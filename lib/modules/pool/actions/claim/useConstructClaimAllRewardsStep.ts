@@ -11,14 +11,15 @@ import { getChainId } from '@/lib/config/app.config'
 import { PoolListItem } from '../../pool.types'
 import { getAllGaugesAddressesFromPool } from '@/lib/modules/portfolio/usePortfolio'
 
-export function useConstructClaimAllRewardsStep(pool: PoolListItem) {
+export function useConstructClaimAllRewardsStep(pools: PoolListItem[]) {
   const { isConnected } = useUserAccount()
   const { nonBalRewards, balRewards, refetchClaimableRewards, refetchBalRewards } =
-    useClaiming(pool)
+    useClaiming(pools)
 
+  const pool = pools[0]
   const chain = pool.chain as GqlChain
   const stakingType = pool.staking?.type || GqlPoolStakingType.Gauge
-  const gaugeAddresses = getAllGaugesAddressesFromPool(pool)
+  const gaugeAddresses = pools.flatMap(pool => getAllGaugesAddressesFromPool(pool))
   const shouldClaimMany = gaugeAddresses.length > 1
   const stakingService = selectStakingService(chain, stakingType)
   const { data: claimData } = useClaimCallDataQuery(

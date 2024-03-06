@@ -21,9 +21,9 @@ export default function Debug() {
       </Link>
       <Link
         as={NextLink}
-        href="pools/polygon/v2/0xdac42eeb17758daa38caf9a3540c808247527ae3000200000000000000000a2b/add-liquidity"
+        href="pools/polygon/v2/0xee278d943584dd8640eaf4cc6c7a5c80c0073e85000200000000000000000bc7/add-liquidity"
       >
-        Add liquidity in Gyro pool (2CLP_USDC/DAI)
+        Add liquidity in Gyro pool (2CLP_WMATIC/MATICX)
       </Link>
       <Link
         as={NextLink}

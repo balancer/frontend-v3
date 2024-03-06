@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 import { usePool } from '../../../usePool'
 
 export function useConstructRemoveLiquidityStep() {
-  const { pool, chainId } = usePool()
+  const { chainId } = usePool()
 
   const transactionLabels: TransactionLabels = {
     init: 'Remove liquidity',

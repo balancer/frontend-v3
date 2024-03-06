@@ -239,6 +239,8 @@ type GqlPoolDynamicData {
   fees24hAtlTimestamp: Int!
   fees48h: BigDecimal!
   holdersCount: BigInt!
+  isInRecoveryMode: Boolean!
+  isPaused: Boolean!
   lifetimeSwapFees: BigDecimal!
   lifetimeVolume: BigDecimal!
   poolId: ID!
@@ -999,25 +1001,133 @@ type GqlReliquaryTokenBalanceSnapshot {
 }
 
 type GqlSftmxStakingData {
+  """
+  Current exchange rate for sFTMx -> FTM
+  """
   exchangeRate: String!
+
+  """
+  Whether maintenance is paused. This pauses reward claiming or harvesting and withdrawing from matured vaults.
+  """
   maintenancePaused: Boolean!
+
+  """
+  The maximum FTM amount to depost.
+  """
   maxDepositLimit: AmountHumanReadable!
+
+  """
+  The minimum FTM amount to deposit.
+  """
   minDepositLimit: AmountHumanReadable!
+
+  """
+  Number of vaults that delegated to validators.
+  """
   numberOfVaults: Int!
+
+  """
+  The current rebasing APR for sFTMx.
+  """
   stakingApr: String!
+
+  """
+  Total amount of FTM in custody of sFTMx. Staked FTM plus free pool FTM.
+  """
   totalFtmAmount: AmountHumanReadable!
+
+  """
+  Total amount of FTM in the free pool.
+  """
   totalFtmAmountInPool: AmountHumanReadable!
+
+  """
+  Total amount of FTM staked/delegated to validators.
+  """
   totalFtmAmountStaked: AmountHumanReadable!
+
+  """
+  Whether undelegation is paused. Undelegate is the first step to redeem sFTMx.
+  """
   undelegatePaused: Boolean!
+
+  """
+  A list of all the vaults that delegated to validators.
+  """
+  vaults: [GqlSftmxStakingVault!]!
+
+  """
+  Whether withdrawals are paused. Withdraw is the second and final step to redeem sFTMx.
+  """
   withdrawPaused: Boolean!
+
+  """
+  Delay to wait between undelegate (1st step) and withdraw (2nd step).
+  """
   withdrawalDelay: Int!
 }
 
+type GqlSftmxStakingVault {
+  """
+  The amount of FTM that has been delegated via this vault.
+  """
+  ftmAmountStaked: AmountHumanReadable!
+
+  """
+  Whether the vault is matured, meaning whether unlock time has passed.
+  """
+  isMatured: Boolean!
+
+  """
+  Timestamp when the delegated FTM unlocks, matures.
+  """
+  unlockTimestamp: Int!
+
+  """
+  The address of the validator that the vault has delegated to.
+  """
+  validatorAddress: String!
+
+  """
+  The ID of the validator that the vault has delegated to.
+  """
+  validatorId: String!
+
+  """
+  The contract address of the vault.
+  """
+  vaultAddress: String!
+
+  """
+  The internal index of the vault.
+  """
+  vaultIndex: Int!
+}
+
 type GqlSftmxWithdrawalRequests {
+  """
+  Amount of sFTMx that is being redeemed.
+  """
   amountSftmx: AmountHumanReadable!
+
+  """
+  The Withdrawal ID, used for interactions.
+  """
   id: String!
+
+  """
+  Whether the requests is finished and the user has withdrawn.
+  """
   isWithdrawn: Boolean!
+
+  """
+  The timestamp when the request was placed. There is a delay until the user can withdraw. See withdrawalDelay.
+  """
   requestTimestamp: Int!
+
+  """
+  The user address that this request belongs to.
+  """
   user: String!
 }
 
@@ -1027,9 +1137,10 @@ type GqlSorGetBatchSwapForTokensInResponse {
   tokenOutAmount: AmountHumanReadable!
 }
 
-type GqlSorGetSwaps {
+type GqlSorGetSwapPaths {
   effectivePrice: AmountHumanReadable!
   effectivePriceReversed: AmountHumanReadable!
+  paths: [GqlSorPath!]!
   priceImpact: AmountHumanReadable!
   returnAmount: AmountHumanReadable!
   returnAmountScaled: BigDecimal!
@@ -1038,11 +1149,19 @@ type GqlSorGetSwaps {
   swapAmountScaled: BigDecimal!
   swapType: GqlSorSwapType!
   swaps: [GqlSorSwap!]!
-  tokenAddresses: [String!]!
+
+  """
+  The token address of the tokenIn provided
+  """
   tokenIn: String!
   tokenInAmount: AmountHumanReadable!
+
+  """
+  The token address of the tokenOut provided
+  """
   tokenOut: String!
   tokenOutAmount: AmountHumanReadable!
+  vaultVersion: Int!
 }
 
 type GqlSorGetSwapsResponse {
@@ -1065,6 +1184,14 @@ type GqlSorGetSwapsResponse {
   tokenInAmount: AmountHumanReadable!
   tokenOut: String!
   tokenOutAmount: AmountHumanReadable!
+}
+
+type GqlSorPath {
+  inputAmountRaw: String!
+  outputAmountRaw: String!
+  pools: [String]!
+  tokens: [Token]!
+  vaultVersion: Int!
 }
 
 type GqlSorSwap {
@@ -1344,8 +1471,40 @@ type Query {
   poolGetSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolSwap!]!
   protocolMetricsAggregated(chains: [GqlChain!]): GqlProtocolMetricsAggregated!
   protocolMetricsChain(chain: GqlChain): GqlProtocolMetricsChain!
+
+  """
+  Get the staking data and status for sFTMx
+  """
   sftmxGetStakingData: GqlSftmxStakingData!
+
+  """
+  Retrieve the withdrawalrequests from a user
+  """
   sftmxGetWithdrawalRequests(user: String!): [GqlSftmxWithdrawalRequests!]!
+
+  """
+  Get swap quote from the SOR v2 for the V2 vault
+  """
+  sorGetSwapPaths(
+    """
+    The Chain to query
+    """
+    chain: GqlChain!
+    queryBatchSwap: Boolean
+    swapAmount: BigDecimal!
+    swapType: GqlSorSwapType!
+
+    """
+    Token address of the tokenIn
+    """
+    tokenIn: String!
+    tokenOut: String!
+    useVaultVersion: Int
+  ): GqlSorGetSwapPaths!
+
+  """
+  Get swap quote from the SOR, queries both the old and new SOR
+  """
   sorGetSwaps(
     chain: GqlChain
     swapAmount: BigDecimal!
@@ -1354,14 +1513,6 @@ type Query {
     tokenIn: String!
     tokenOut: String!
   ): GqlSorGetSwapsResponse!
-  sorV2GetSwaps(
-    chain: GqlChain!
-    swapAmount: BigDecimal!
-    swapOptions: GqlSorSwapOptionsInput!
-    swapType: GqlSorSwapType!
-    tokenIn: String!
-    tokenOut: String!
-  ): GqlSorGetSwaps!
   tokenGetCandlestickChartData(
     address: String!
     chain: GqlChain
@@ -1407,4 +1558,9 @@ type Query {
   veBalGetUser: GqlVeBalUserData!
   veBalGetUserBalance: AmountHumanReadable!
   veBalGetVotingList: [GqlVotingPool!]!
+}
+
+type Token {
+  address: String!
+  decimals: Int!
 }
