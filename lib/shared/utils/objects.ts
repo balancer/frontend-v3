@@ -1,3 +1,5 @@
+type Config<T> = Record<string, T>
+
 /**
  * Given an object like:
  *
@@ -9,8 +11,8 @@
  *
  * User by config files to enable non-case-sensitive lookups.
  */
-export function convertHexToLowerCase(config: any): any {
-  const newConfig: any = {}
+export function convertHexToLowerCase<T>(config: Config<T>): Config<T> {
+  const newConfig: Config<T> = {}
 
   for (const key in config) {
     if (Object.prototype.hasOwnProperty.call(config, key)) {
@@ -18,15 +20,15 @@ export function convertHexToLowerCase(config: any): any {
       const lowercaseKey = isHex(key) ? key.toLowerCase() : key
 
       if (typeof value === 'string' && isHex(value)) {
-        newConfig[lowercaseKey] = value.toLowerCase()
+        newConfig[lowercaseKey] = value.toLowerCase() as T
       } else if (Array.isArray(value)) {
         newConfig[lowercaseKey] = value.map(item =>
-          typeof item === 'string' && isHex(item) ? item.toLowerCase() : item
-        )
+          typeof item === 'string' && isHex(item) ? (item.toLowerCase() as T) : item
+        ) as T
       } else if (typeof value === 'object') {
-        newConfig[lowercaseKey] = convertHexToLowerCase(value)
+        newConfig[lowercaseKey] = convertHexToLowerCase(value as Config<T>) as T
       } else {
-        newConfig[lowercaseKey] = value
+        newConfig[lowercaseKey] = value as T
       }
     }
   }

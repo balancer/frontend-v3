@@ -1,6 +1,6 @@
 import { PoolIssue } from '@/lib/modules/pool/alerts/pool-issues/PoolIssue.type'
 import { PoolsConfig } from '../../config.types'
-import { CSP_ISSUE_POOL_IDS } from './csp-issue'
+import { CSP_ISSUE_POOL_IDS } from '../../../shared/data/csp-issue'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { convertHexToLowerCase } from '@/lib/shared/utils/objects'
 
