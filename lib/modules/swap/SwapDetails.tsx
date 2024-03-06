@@ -2,10 +2,11 @@ import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { HStack, VStack, Text, Tooltip } from '@chakra-ui/react'
+import { HStack, VStack, Text, Tooltip, Box } from '@chakra-ui/react'
 import { useSwap } from './useSwap'
 import { GqlSorSwapType } from '@/lib/shared/services/api/generated/graphql'
 import { useUserSettings } from '../user/settings/useUserSettings'
+import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 
 export function SwapDetails() {
   const { toCurrency } = useCurrency()
@@ -14,6 +15,7 @@ export function SwapDetails() {
     simulationQuery,
     tokenInInfo,
     tokenOutInfo,
+    priceImpact,
     priceImpactLabel,
     priceImpacUsd,
     maxSlippageUsd,
@@ -21,6 +23,8 @@ export function SwapDetails() {
     tokenIn,
     tokenOut,
   } = useSwap()
+
+  const { priceImpactLevel, priceImpactColor, getPriceImpactIcon } = usePriceImpact(priceImpact)
 
   const orderRouteVersion = simulationQuery.data?.vaultVersion || 2
   const hopCount = simulationQuery.data?.routes[0]?.hops?.length || 0
@@ -36,17 +40,20 @@ export function SwapDetails() {
   return (
     <VStack spacing="sm" align="start" w="full" fontSize="sm">
       <HStack justify="space-between" w="full">
-        <Text color="grayText">Price impact</Text>
+        <Text color={priceImpactColor}>Price impact</Text>
         <HStack>
-          <NumberText color="grayText">
+          <NumberText color={priceImpactColor}>
             -{toCurrency(priceImpacUsd, { abbreviated: false })} (-{priceImpactLabel})
           </NumberText>
           <Tooltip label="Price impact" fontSize="sm">
-            <InfoOutlineIcon color="grayText" />
+            {priceImpactLevel === 'low' ? (
+              <InfoOutlineIcon color="grayText" />
+            ) : (
+              <Box color={priceImpactColor}>{getPriceImpactIcon(priceImpactLevel)}</Box>
+            )}
           </Tooltip>
         </HStack>
       </HStack>
-
       <HStack justify="space-between" w="full">
         <Text color="grayText">Max slippage</Text>
         <HStack>
@@ -58,7 +65,6 @@ export function SwapDetails() {
           </Tooltip>
         </HStack>
       </HStack>
-
       <HStack justify="space-between" w="full">
         <Text color="grayText">{limitLabel}</Text>
         <HStack>
@@ -70,7 +76,6 @@ export function SwapDetails() {
           </Tooltip>
         </HStack>
       </HStack>
-
       <HStack justify="space-between" w="full">
         <Text color="grayText">Order route</Text>
         <HStack>
