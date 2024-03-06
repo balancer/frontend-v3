@@ -58,9 +58,8 @@ export function isFx(poolType: GqlPoolType | string): boolean {
 }
 
 // TODO: verify how to determine boosted pool from api
-export function isBoosted(pool: GqlPoolBase) {
-  return pool.type === GqlPoolType.PhantomStable
-  //   return !!Object.keys(poolMetadata(pool.id)?.features || {}).includes(PoolFeature.Boosted)
+export function isBoosted(poolType: GqlPoolType) {
+  return poolType === GqlPoolType.PhantomStable
 }
 
 export function isGyro(poolType: GqlPoolType) {
