@@ -1,24 +1,48 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Box, Card, Grid, GridItem, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  BoxProps,
+  Card,
+  Grid,
+  GridItem,
+  Heading,
+  Icon,
+  Skeleton,
+  Text,
+  VStack,
+} from '@chakra-ui/react'
 import PoolBadges from './PoolBadges'
 import { usePool } from '../usePool'
 import { getAprLabel } from '../pool.utils'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import PoolWeightChart from './PoolWeightCharts/PoolWeightChart'
 import { GqlPoolAprValue } from '@/lib/shared/services/api/generated/graphql'
-import Noise from '@/app/noise'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenCircle } from '@/lib/shared/components/zen/ZenCircle'
 import { ZenSquare } from '@/lib/shared/components/zen/ZenSquare'
 import { ZenDiamond } from '@/lib/shared/components/zen/ZenDiamond'
+import { BarChart, Gift, Shield, Users } from 'react-feather'
+import { ElevatedIcon } from '@/lib/shared/components/icons/ElevatedIcon'
 
 interface PoolValues {
   totalLiquidity: string
   volume24h: string
   fees24h: string
   apr: GqlPoolAprValue
+}
+
+const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps } = {
+  contentProps: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cardProps: {
+    position: 'relative',
+    overflow: 'hidden',
+  },
 }
 
 export default function PoolStats() {
@@ -71,101 +95,82 @@ export default function PoolStats() {
           </NoisyCard>
         </GridItem>
         <GridItem colSpan={1} rowSpan={1}>
-          <NoisyCard
-            contentProps={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            cardProps={{ position: 'relative', overflow: 'hidden' }}
-          >
+          <NoisyCard {...commonNoisyCardProps}>
             <ZenCircle sizePx="225px" />
-            <VStack spacing="none" m="auto">
-              <Heading fontSize="3xl">
-                {poolValues ? (
-                  toCurrency(poolValues.totalLiquidity)
-                ) : (
-                  <Skeleton height="30px" w="100px" />
-                )}
-              </Heading>
-              <Text variant="secondaryGradient" fontWeight="semibold" fontSize="md">
-                Pool value
-              </Text>
+            <VStack spacing="4" m="auto">
+              <ElevatedIcon as={Shield} sizePx="48px" boxSize={5} />
+              <VStack spacing="0">
+                <Heading fontSize="2xl">
+                  {poolValues ? (
+                    toCurrency(poolValues.totalLiquidity)
+                  ) : (
+                    <Skeleton height="30px" w="100px" />
+                  )}
+                </Heading>
+                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm">
+                  Pool value
+                </Text>
+              </VStack>
             </VStack>
           </NoisyCard>
         </GridItem>
         <GridItem colSpan={1} rowSpan={1}>
-          <NoisyCard
-            contentProps={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            cardProps={{
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-          >
+          <NoisyCard {...commonNoisyCardProps}>
             <ZenDiamond widthPx="225px" heightPx="225px" />
-            <VStack spacing="none" m="auto">
-              <Heading fontSize="3xl">
-                {poolValues ? (
-                  toCurrency(poolValues.totalLiquidity)
-                ) : (
-                  <Skeleton height="30px" w="100px" />
-                )}
-              </Heading>
-              <Text variant="secondaryGradient" fontWeight="semibold" fontSize="md">
-                Pool value
-              </Text>
+            <VStack spacing="4" m="auto">
+              <ElevatedIcon as={Gift} sizePx="48px" boxSize={5} />
+              <VStack spacing="0">
+                <Heading fontSize="2xl">
+                  {poolValues ? (
+                    toCurrency(poolValues.totalLiquidity)
+                  ) : (
+                    <Skeleton height="30px" w="100px" />
+                  )}
+                </Heading>
+                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm">
+                  Pool value
+                </Text>
+              </VStack>
             </VStack>
           </NoisyCard>
         </GridItem>
         <GridItem colSpan={1} rowSpan={1}>
-          <NoisyCard
-            contentProps={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            cardProps={{ position: 'relative', overflow: 'hidden' }}
-          >
+          <NoisyCard {...commonNoisyCardProps}>
             <ZenSquare sizePx="225px" />
-            <VStack spacing="none" m="auto">
-              <Heading fontSize="3xl">
-                {poolValues ? (
-                  toCurrency(poolValues.volume24h)
-                ) : (
-                  <Skeleton height="30px" w="100px" />
-                )}
-              </Heading>
-              <Text variant="secondaryGradient" fontWeight="semibold" fontSize="md">
-                Swap volume (24h)
-              </Text>
+            <VStack spacing="4" m="auto">
+              <ElevatedIcon as={BarChart} sizePx="48px" boxSize={5} />
+              <VStack spacing="0">
+                <Heading fontSize="2xl">
+                  {poolValues ? (
+                    toCurrency(poolValues.volume24h)
+                  ) : (
+                    <Skeleton height="30px" w="100px" />
+                  )}
+                </Heading>
+                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm">
+                  Swap volume (24h)
+                </Text>
+              </VStack>
             </VStack>
           </NoisyCard>
         </GridItem>
         <GridItem colSpan={1} rowSpan={1}>
-          <NoisyCard
-            contentProps={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            cardProps={{ position: 'relative', overflow: 'hidden' }}
-          >
+          <NoisyCard {...commonNoisyCardProps}>
             <ZenCircle sizePx="225px" />
-            <VStack spacing="none" m="auto">
-              <Heading fontSize="3xl">
-                {pool.dynamicData ? (
-                  pool.dynamicData.holdersCount
-                ) : (
-                  <Skeleton height="30px" w="100px" />
-                )}
-              </Heading>
-              <Text variant="secondaryGradient" fontWeight="semibold" fontSize="md">
-                Liquidity providers
-              </Text>
+            <VStack spacing="4" m="auto">
+              <ElevatedIcon as={Users} sizePx="48px" boxSize={5} />
+              <VStack spacing="0">
+                <Heading fontSize="2xl">
+                  {pool.dynamicData ? (
+                    pool.dynamicData.holdersCount
+                  ) : (
+                    <Skeleton height="30px" w="100px" />
+                  )}
+                </Heading>
+                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm">
+                  Liquidity providers
+                </Text>
+              </VStack>
             </VStack>
           </NoisyCard>
         </GridItem>
