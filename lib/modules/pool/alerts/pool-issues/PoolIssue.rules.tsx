@@ -2,7 +2,7 @@ import { getNetworkConfig } from '@/lib/config/app.config'
 import { Pool } from '../../usePool'
 import { PoolId } from '../../pool.types'
 import { PoolIssue } from './PoolIssue.type'
-import { getVulnerabilityJsx } from './PoolIssue.labels'
+import { jsxTitleByVulnerability } from './PoolIssue.labels'
 import { PoolAlertProps, PoolAlertRuleFunc } from '../PoolAlerts'
 import { AlertStatus } from '@chakra-ui/react'
 
@@ -26,7 +26,7 @@ function anAlert(poolIssue: PoolIssue): PoolAlertProps {
     id: poolIssue,
     type: 'Vulnerability',
     status: getStatus(poolIssue),
-    title: getVulnerabilityJsx(poolIssue),
+    title: jsxTitleByVulnerability[poolIssue],
     labels: [],
   }
 }
