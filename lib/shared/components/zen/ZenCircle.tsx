@@ -14,14 +14,8 @@ export function ZenCircle({ sizePx }: Props) {
     width: sizePx,
     shadow: 'md',
   }
-  return (
-    <>
-      <Box {...commonProps} />
-      <Box {...commonProps} transform="scale(1.1)" />
-      <Box {...commonProps} transform="scale(1.2)" />
-      <Box {...commonProps} transform="scale(1.3)" />
-      <Box {...commonProps} transform="scale(1.4)" />
-      <Box {...commonProps} transform="scale(1.5)" />
-    </>
-  )
+
+  return [...Array(8).keys()].map((_, i) => (
+    <Box key={`zen-square-${i}`} {...commonProps} transform={`scale(1.${i})`} />
+  ))
 }

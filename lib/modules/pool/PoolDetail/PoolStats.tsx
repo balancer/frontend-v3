@@ -18,13 +18,14 @@ import { usePool } from '../usePool'
 import { getAprLabel } from '../pool.utils'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import PoolWeightChart from './PoolWeightCharts/PoolWeightChart'
-import { GqlPoolAprValue } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolAprValue, GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenCircle } from '@/lib/shared/components/zen/ZenCircle'
 import { ZenSquare } from '@/lib/shared/components/zen/ZenSquare'
 import { ZenDiamond } from '@/lib/shared/components/zen/ZenDiamond'
 import { BarChart, Gift, Shield, Users } from 'react-feather'
 import { ElevatedIcon } from '@/lib/shared/components/icons/ElevatedIcon'
+import { isClp, isStable, isWeighted } from '../pool.helpers'
 
 interface PoolValues {
   totalLiquidity: string
@@ -43,6 +44,18 @@ const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps } = {
     position: 'relative',
     overflow: 'hidden',
   },
+}
+
+function MainZenSymbol({ poolType }: { poolType: GqlPoolType }) {
+  if (isWeighted(poolType)) {
+    return <ZenCircle sizePx="400px" />
+  }
+  if (isStable(poolType)) {
+    return <ZenSquare sizePx="400px" />
+  }
+  if (isClp(poolType)) {
+    return <ZenDiamond widthPx="400px" heightPx="400px" />
+  }
 }
 
 export default function PoolStats() {
@@ -82,13 +95,8 @@ export default function PoolStats() {
         p="4"
       >
         <GridItem position="relative" colSpan={2} rowSpan={2}>
-          <NoisyCard
-            contentProps={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <NoisyCard {...commonNoisyCardProps}>
+            <MainZenSymbol poolType={pool.type} />
             <Box mt="-6">
               <PoolWeightChart pool={pool} chain={chain} />
             </Box>
