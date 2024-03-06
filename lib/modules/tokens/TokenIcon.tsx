@@ -1,3 +1,5 @@
+'use client'
+
 import Image, { ImageProps } from 'next/image'
 import { useState } from 'react'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'

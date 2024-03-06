@@ -41,7 +41,7 @@ export function RemoveLiquiditySingleToken({ tokens }: RemoveLiquiditySingleToke
                       chain={token.chain}
                       address={token.address as Address}
                       value={amountOutForToken(token.address as Address)}
-                      isSelected={token.address === singleTokenOutAddress}
+                      disabled={token.address !== singleTokenOutAddress}
                     />
                   </HStack>
                 )

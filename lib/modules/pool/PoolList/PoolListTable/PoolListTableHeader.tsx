@@ -2,9 +2,9 @@ import { Grid, GridItem, Icon, Text, VStack } from '@chakra-ui/react'
 import PoolListSortButton from './PoolListSortButton'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
-import { FiGlobe } from 'react-icons/fi'
 import { PoolsColumnSort, orderByHash } from '../../pool.types'
 import { usePoolOrderByState } from '../usePoolOrderByState'
+import { Globe } from 'react-feather'
 
 const setIsDesc = (id: GqlPoolOrderBy, currentSortingObj: PoolsColumnSort) =>
   currentSortingObj.id === id ? !currentSortingObj.desc : true
@@ -18,7 +18,7 @@ export function PoolListTableHeader({ ...rest }) {
     <Grid {...rest} py="3" w="full" borderBottom="1px solid" borderColor="border.base">
       <GridItem>
         <VStack align="start" w="full">
-          <Icon as={FiGlobe} boxSize="5" ml="1" color="grayText" />
+          <Icon as={Globe} boxSize="5" ml="1" color="grayText" />
         </VStack>
       </GridItem>
       <GridItem>

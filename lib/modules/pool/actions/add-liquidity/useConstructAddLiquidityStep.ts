@@ -7,7 +7,7 @@ import { useAddLiquidity } from './useAddLiquidity'
 import { usePool } from '../../usePool'
 
 export function useConstructAddLiquidityStep() {
-  const { pool, chainId } = usePool()
+  const { chainId } = usePool()
 
   const transactionLabels: TransactionLabels = {
     init: 'Add liquidity',
