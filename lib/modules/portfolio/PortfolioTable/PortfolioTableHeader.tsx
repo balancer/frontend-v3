@@ -1,6 +1,6 @@
 import { Grid, GridItem, Icon, Text, VStack } from '@chakra-ui/react'
 
-import { FiGlobe } from 'react-icons/fi'
+import { Globe } from 'react-feather'
 import PoolListSortButton from '../../pool/PoolList/PoolListTable/PoolListSortButton'
 import { PortfolioTableSortingId, PortfolioSortingData, portfolioOrderBy } from './PortfolioTable'
 
