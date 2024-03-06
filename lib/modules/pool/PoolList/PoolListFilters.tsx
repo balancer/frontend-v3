@@ -27,10 +27,10 @@ import {
 import { PoolListSearch } from './PoolListSearch'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { usePoolListQueryState } from './usePoolListQueryState'
-import { IoFilter } from 'react-icons/io5'
 import { PoolFilterType, poolTypeFilters } from '../pool.types'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useEffect, useState } from 'react'
+import { Filter } from 'react-feather'
 
 function UserPoolFilter() {
   const { userAddress, toggleUserAddress } = usePoolListQueryState()
@@ -119,7 +119,7 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
 
   return (
     <Button ref={ref} {...props} display="flex" gap="2" variant="tertiary">
-      <Icon as={IoFilter} boxSize={4} />
+      <Icon as={Filter} boxSize={4} />
       Filters
       {totalFilterCount > 0 && (
         <Badge ml="2" colorScheme="blue">

@@ -1,8 +1,8 @@
 import { InputGroup, Input, InputRightElement, IconButton, InputProps } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
-import { HiOutlineX, HiOutlineSearch } from 'react-icons/hi'
 import { useDebounce } from '@/lib/shared/hooks/useDebounce'
 import { defaultDebounceMs } from '@/lib/shared/utils/queries'
+import { Search, X } from 'react-feather'
 
 interface SearchInputProps {
   search: string | null
@@ -58,7 +58,7 @@ export function SearchInput({
           variant="ghost"
           size="sm"
           aria-label={ariaLabel}
-          icon={search ? <HiOutlineX /> : <HiOutlineSearch />}
+          icon={search ? <X /> : <Search />}
           onClick={() => {
             setSearch('')
             setValue(SEARCH, '')

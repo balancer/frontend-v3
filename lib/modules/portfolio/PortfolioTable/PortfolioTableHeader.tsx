@@ -1,9 +1,9 @@
 import { Grid, GridItem, Icon, Text, VStack } from '@chakra-ui/react'
 
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
-import { FiGlobe } from 'react-icons/fi'
 import PoolListSortButton from '../../pool/PoolList/PoolListTable/PoolListSortButton'
 import { PoolsColumnSort } from '../../pool/pool.types'
+import { Globe } from 'react-feather'
 
 const setIsDesc = (id: GqlPoolOrderBy, currentSortingObj: PoolsColumnSort) =>
   currentSortingObj.id === id ? !currentSortingObj.desc : true
@@ -30,7 +30,7 @@ export function PortfolioTableHeader({ ...rest }) {
     <Grid {...rest} py="3" w="full" borderBottom="1px solid" borderColor="border.base">
       <GridItem>
         <VStack align="start" w="full">
-          <Icon as={FiGlobe} boxSize="5" ml="1" color="grayText" />
+          <Icon as={Globe} boxSize="5" ml="1" color="grayText" />
         </VStack>
       </GridItem>
       <GridItem>
