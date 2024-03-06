@@ -8,10 +8,15 @@ function simulateInputKey({ swapAmount, swapType, tokenIn, tokenOut, chain }: Si
 
 type BuildKeyParams = Pick<
   BuildSwapInputs,
-  'account' | 'chain' | 'slippagePercent' | 'simulateResponse'
+  'account' | 'selectedChain' | 'slippagePercent' | 'simulateResponse'
 >
-function buildInputKey({ account, chain, slippagePercent, simulateResponse }: BuildKeyParams) {
-  return `${account}:${chain}:${slippagePercent}:${JSON.stringify(simulateResponse)}`
+function buildInputKey({
+  account,
+  selectedChain,
+  slippagePercent,
+  simulateResponse,
+}: BuildKeyParams) {
+  return `${account}:${selectedChain}:${slippagePercent}:${JSON.stringify(simulateResponse)}`
 }
 
 export const swapQueryKeys = {

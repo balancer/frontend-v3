@@ -18,7 +18,7 @@ export function useBuildSwapQuery() {
     useSwap()
 
   const queryKey = swapQueryKeys.build({
-    chain: selectedChain,
+    selectedChain,
     account: userAddress,
     slippagePercent: slippage,
     simulateResponse: simulationQuery.data || ({} as SimulateSwapResponse),
@@ -33,7 +33,7 @@ export function useBuildSwapQuery() {
       swapType,
       account: userAddress,
       slippagePercent: slippage,
-      chain: selectedChain,
+      selectedChain,
       simulateResponse,
       isNativeAssetIn,
     })

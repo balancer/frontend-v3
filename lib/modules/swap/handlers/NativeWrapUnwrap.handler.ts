@@ -20,11 +20,11 @@ export class NativeWrapUnwrapHandler implements SwapHandler {
     }
   }
 
-  build({ tokenIn, tokenOut, account, chain }: SdkBuildSwapInputs): TransactionConfig {
-    const wrapType = getWrapType(tokenIn.address, tokenOut.address, chain)
+  build({ tokenIn, tokenOut, account, selectedChain }: SdkBuildSwapInputs): TransactionConfig {
+    const wrapType = getWrapType(tokenIn.address, tokenOut.address, selectedChain)
     if (!wrapType) throw new Error('NativeWrapUnwrapHandler called with non valid wrap tokens')
 
-    const { tokens } = getNetworkConfig(chain)
+    const { tokens } = getNetworkConfig(selectedChain)
 
     let data: Hex | undefined
     if (wrapType === WrapType.WRAP) {
@@ -39,7 +39,7 @@ export class NativeWrapUnwrapHandler implements SwapHandler {
 
     return {
       account,
-      chainId: getChainId(chain),
+      chainId: getChainId(selectedChain),
       data,
       value,
       to: tokens.addresses.wNativeAsset,

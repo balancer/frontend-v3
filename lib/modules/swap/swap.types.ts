@@ -41,7 +41,6 @@ export interface SdkSimulateSwapResponse extends SimulateSwapResponse, ApiSwapQu
 
 export interface BuildSwapInputs extends SwapState {
   account: Address
-  chain: GqlChain
   slippagePercent: string
   simulateResponse: SimulateSwapResponse
   isNativeAssetIn: boolean
