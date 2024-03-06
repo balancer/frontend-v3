@@ -9,7 +9,7 @@ import { useUserSettings } from '../user/settings/useUserSettings'
 import { SdkSimulateSwapResponse } from './swap.types'
 import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
 import { useTokens } from '../tokens/useTokens'
-import { isNativeWrapUnwrap } from './useWrapping'
+import { NativeWrapUnwrapHandler } from './handlers/NativeWrapUnwrap.handler'
 
 export function OrderRoute() {
   const { simulationQuery } = useSwap()
@@ -38,19 +38,11 @@ export function SwapDetails() {
   const { toCurrency } = useCurrency()
   const { slippage, slippageDecimal } = useUserSettings()
   const { usdValueForToken } = useTokens()
-  const {
-    tokenInInfo,
-    tokenOutInfo,
-    swapType,
-    tokenIn,
-    tokenOut,
-    handler,
-    simulationQuery,
-    selectedChain,
-  } = useSwap()
+  const { tokenInInfo, tokenOutInfo, swapType, tokenIn, tokenOut, handler, simulationQuery } =
+    useSwap()
 
   const isDefaultSwap = handler instanceof DefaultSwapHandler
-  const isNativeWrapOrUnwrap = isNativeWrapUnwrap(tokenIn.address, tokenOut.address, selectedChain)
+  const isNativeWrapOrUnwrap = handler instanceof NativeWrapUnwrapHandler
 
   const _slippage = isNativeWrapOrUnwrap ? 0 : slippage
   const _slippageDecimal = isNativeWrapOrUnwrap ? 0 : slippageDecimal
