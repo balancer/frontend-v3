@@ -7,15 +7,16 @@ import { getChainId } from '@/lib/config/app.config'
 import { PoolListItem } from '../../pool.types'
 import { StepConfig } from '../useIterateSteps'
 
-export function useClaimStepConfigs(pool: PoolListItem) {
-  const chainId = getChainId(pool.chain)
+export function useClaimStepConfigs(pools: PoolListItem[]): StepConfig[] {
+  const { chain } = pools[0]
+  const chainId = getChainId(chain)
   const { hasMinterApproval } = useHasMinterApproval()
   const { hasApprovedRelayer } = useHasApprovedRelayer(chainId)
 
   let stepConfigs: StepConfig[] = [
     {
       title: 'Claim',
-      render: () => <ClaimAllRewardsButton pool={pool} />,
+      render: () => <ClaimAllRewardsButton pools={pools} />,
     },
   ]
 
@@ -24,7 +25,7 @@ export function useClaimStepConfigs(pool: PoolListItem) {
   }
 
   if (!hasMinterApproval) {
-    stepConfigs = [minterApprovalConfig(pool.chain), ...stepConfigs]
+    stepConfigs = [minterApprovalConfig(chain), ...stepConfigs]
   }
 
   return stepConfigs

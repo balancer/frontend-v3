@@ -3,7 +3,7 @@
 import {
   Box,
   BoxProps,
-  Card,
+  Button,
   HStack,
   Input,
   InputGroup,
@@ -35,29 +35,24 @@ type TokenInputSelectorProps = {
 function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSelectorProps) {
   const label = token ? token?.symbol : toggleTokenSelect ? 'Select token' : 'No token'
   return (
-    <Card
-      py="xs"
-      px="sm"
-      variant="level4"
-      shadow="md"
+    <Button
+      variant={token ? 'tertiary' : 'secondary'}
       onClick={toggleTokenSelect}
       cursor={toggleTokenSelect ? 'pointer' : 'default'}
     >
-      <HStack spacing="xs">
-        {token && (
-          <TokenIcon logoURI={token?.logoURI} alt={token?.symbol || 'token icon'} size={24} />
-        )}
-        <Text title={label} fontWeight="bold" noOfLines={1} maxW="36">
-          {label}
-        </Text>
-        {weight && <Text fontWeight="normal">{weight}%</Text>}
-        {toggleTokenSelect && (
-          <Box fontSize="xl" color="sand.500">
-            <HiChevronDown />
-          </Box>
-        )}
-      </HStack>
-    </Card>
+      {token && (
+        <Box mr="sm">
+          <TokenIcon logoURI={token?.logoURI} alt={token?.symbol || 'token icon'} size={22} />
+        </Box>
+      )}
+      {label}
+      {weight && <Text fontWeight="normal">{weight}%</Text>}
+      {toggleTokenSelect && (
+        <Box ml="sm">
+          <HiChevronDown />
+        </Box>
+      )}
+    </Button>
   )
 }
 
@@ -159,13 +154,13 @@ export const TokenInput = forwardRef(
         border="white"
         boxShadow={boxShadow}
         w="full"
-        ref={ref}
         {...boxProps}
       >
         <VStack align="start" spacing="md">
           <InputGroup border="transparent" background="transparent">
             <Box w="full" position="relative">
               <Input
+                ref={ref}
                 type="number"
                 placeholder="0.00"
                 autoComplete="off"

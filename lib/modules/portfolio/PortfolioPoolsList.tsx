@@ -83,7 +83,7 @@ export function PortfolioPoolsList({
           onClose={onModalClose}
           balRewards={poolRewardsMap?.[claimModalData.pool.id]?.balReward}
           nonBalRewards={poolRewardsMap?.[claimModalData.pool.id]?.claimableRewards || []}
-          pool={claimModalData.pool}
+          pools={[claimModalData.pool]}
         />
       )}
     </Stack>

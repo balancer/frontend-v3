@@ -62,7 +62,6 @@ export function TokenSelectListRow({
                 <TokenInfoPopover tokenAddress={token.address} chain={token.chain} />
               </Box>
             </HStack>
-
             <Text
               title={token.name}
               fontSize="sm"
@@ -75,7 +74,7 @@ export function TokenSelectListRow({
             </Text>
           </VStack>
         </HStack>
-        {isConnected && (
+        {isConnected && tokenBalance !== '0' && (
           <VStack align="end" justify="center" spacing="none">
             <NumberText
               title={userBalance?.amount.toString()}

@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'

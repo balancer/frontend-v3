@@ -35,6 +35,7 @@ export type StepType =
   | 'minterApproval'
   | 'claimAndUnstake'
   | 'claim'
+  | 'swap'
 
 export type ManagedResult = TransactionBundle & Executable
 
