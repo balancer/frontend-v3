@@ -43,7 +43,7 @@ export interface NetworkConfig {
   tokens: TokensConfig
   contracts: ContractsConfig
   minConfirmations?: number
-  pools: PoolsConfig
+  pools?: PoolsConfig //TODO: make it required once we add pool config for all networks
 }
 
 export interface Config {
