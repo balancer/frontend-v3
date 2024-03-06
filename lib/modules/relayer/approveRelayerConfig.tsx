@@ -4,6 +4,7 @@ import { useConstructApproveRelayerStep } from './useConstructApproveRelayerStep
 import { SupportedChainId } from '@/lib/config/config.types'
 
 export const getApproveRelayerConfig = (chainId: SupportedChainId): StepConfig => ({
+  title: 'Approve relayer',
   render(useOnStepCompleted: OnStepCompleted) {
     return <ApproveRelayerButton useOnStepCompleted={useOnStepCompleted} chainId={chainId} />
   },

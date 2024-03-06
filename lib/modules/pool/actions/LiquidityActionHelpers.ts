@@ -167,7 +167,7 @@ export function toPoolState(pool: Pool): PoolState {
     address: pool.address as Address,
     tokens: pool.tokens as MinimalToken[],
     type: mapPoolType(poolType),
-    balancerVersion: 2, //TODO: change to dynamic version when we implement v3 integration
+    vaultVersion: 2, //TODO: change to dynamic version when we implement v3 integration
   }
 }
 
@@ -239,6 +239,6 @@ export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
     tokens: pool.tokens as RawPoolToken[],
     type: mapPoolType(poolType),
     totalShares: pool.dynamicData.totalShares as HumanAmount,
-    balancerVersion: 2, //TODO: change to dynamic version when we implement v3 integration
+    vaultVersion: 2, //TODO: change to dynamic version when we implement v3 integration
   }
 }

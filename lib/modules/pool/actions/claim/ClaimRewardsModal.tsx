@@ -23,7 +23,7 @@ type Props = {
   isOpen: boolean
   onClose?(): void
   onOpen?(): void
-  pool: PoolListItem
+  pools: PoolListItem[]
   balRewards?: BalTokenReward
   nonBalRewards?: ClaimableReward[]
 }
@@ -44,10 +44,10 @@ export function ClaimRewardsModal({
   onClose,
   balRewards,
   nonBalRewards,
-  pool,
+  pools,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const stepConfigs = useClaimStepConfigs(pool)
+  const stepConfigs = useClaimStepConfigs(pools)
 
   const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
   const hasNoRewards = !nonBalRewards?.length && !balRewards
@@ -58,7 +58,7 @@ export function ClaimRewardsModal({
       <ModalContent>
         <ModalHeader>
           <Heading fontWeight="bold" size="h5">
-            [{pool.chain}] Claim rewards
+            [{pools[0].chain}] Claim rewards
           </Heading>
         </ModalHeader>
         <ModalCloseButton />

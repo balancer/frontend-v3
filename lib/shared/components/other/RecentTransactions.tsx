@@ -21,9 +21,9 @@ import {
   useRecentTransactions,
 } from '@/lib/modules/transactions/RecentTransactionsProvider'
 import { isEmpty, orderBy } from 'lodash'
-import { FiActivity } from 'react-icons/fi'
 import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { useBlockExplorer } from '../../hooks/useBlockExplorer'
+import { Activity } from 'react-feather'
 
 function TransactionRow({ transaction }: { transaction: TrackedTransaction }) {
   const { getBlockExplorerTxUrl } = useBlockExplorer(transaction.chain)
@@ -69,7 +69,7 @@ export default function RecentTransactions() {
     <Popover>
       <PopoverTrigger>
         <Button variant="tertiary">
-          <FiActivity />
+          <Activity />
         </Button>
       </PopoverTrigger>
       <PopoverContent w="330px">

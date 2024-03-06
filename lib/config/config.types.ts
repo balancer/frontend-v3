@@ -28,6 +28,9 @@ export interface ContractsConfig {
   }
   feeDistributor?: Address
 }
+export interface PoolsConfig {
+  issues?: Partial<Record<PoolIssue, string[]>>
+}
 
 export type SupportedChainId = (typeof supportedChains)[number]['id']
 export interface NetworkConfig {
@@ -36,11 +39,12 @@ export interface NetworkConfig {
   shortName: string
   chain: GqlChain
   iconPath: string
+  rpcUrl: string
   blockExplorerBaseUrl: string
   tokens: TokensConfig
   contracts: ContractsConfig
   minConfirmations?: number
-  issues?: IssuesConfig
+  pools?: PoolsConfig
 }
 
 export interface Config {

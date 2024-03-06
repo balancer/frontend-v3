@@ -4,11 +4,11 @@ import { VStack } from '@chakra-ui/react'
 import { PoolListItem } from '../../pool/pool.types'
 
 interface ClaimAllRewardsButtonProps {
-  pool: PoolListItem
+  pools: PoolListItem[]
 }
 
-export function ClaimAllRewardsButton({ pool }: ClaimAllRewardsButtonProps) {
-  const { claimAllRewardsStep } = useConstructClaimAllRewardsStep(pool)
+export function ClaimAllRewardsButton({ pools }: ClaimAllRewardsButtonProps) {
+  const { claimAllRewardsStep } = useConstructClaimAllRewardsStep(pools)
 
   return (
     <VStack w="full">

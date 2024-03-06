@@ -9,10 +9,11 @@ export function useRemoveLiquidityStepConfigs(
   setRemoveLiquidityTxState: (transactionState: TransactionState) => void
 ) {
   const relayerMode = useRelayerMode()
-  const { pool, chainId } = usePool()
+  const { chainId } = usePool()
 
   let stepConfigs: StepConfig[] = [
     {
+      title: 'Remove liquidity',
       render() {
         return <RemoveLiquidityButton onTransactionStateUpdate={setRemoveLiquidityTxState} />
       },

@@ -132,7 +132,7 @@ export const tokens = {
         specialSecondary: balColors.gradient.sunsetLight,
       },
       border: {
-        base: balColors.brown['100'],
+        base: '#FFFFFF',
       },
       // Button colors
       button: {
@@ -169,15 +169,16 @@ export const tokens = {
           card: 'red',
         },
         background: {
-          level0: balColors.base.light,
-          level1: tinycolor(balColors.base.light).lighten(1),
-          level2: tinycolor(balColors.base.light).lighten(2),
-          level3: tinycolor(balColors.base.light).lighten(3),
-          level4: tinycolor(balColors.base.light).lighten(4),
-          level5: tinycolor(balColors.base.light).lighten(5),
-          level6: tinycolor(balColors.base.light).lighten(6),
-          level7: tinycolor(balColors.base.light).lighten(7),
-          level8: tinycolor(balColors.base.light).lighten(8),
+          level0: '#EDEAE3',
+          level1: '#EFEDE6',
+          level2: '#F1EFE9',
+          level3: '#F3F1EC',
+          level4: '#F5F3EF',
+          level5: '#F7F6F2',
+          level6: '#F9F8F6',
+          level7: '#FBFAF9',
+          level8: '#FDFDFC',
+          level9: '#FFFFFF',
         },
       },
       // Input colors
@@ -224,7 +225,7 @@ export const tokens = {
       },
       // Border colors
       border: {
-        base: balColors.gray['600'],
+        base: '#4C5561',
       },
       // Button colors
       button: {
@@ -261,15 +262,16 @@ export const tokens = {
           card: '#4F5764',
         },
         background: {
-          level0: balColors.base.dark,
-          level1: tinycolor(balColors.base.dark).lighten(1),
-          level2: tinycolor(balColors.base.dark).lighten(2),
-          level3: tinycolor(balColors.base.dark).lighten(3),
-          level4: tinycolor(balColors.base.dark).lighten(4),
-          level5: tinycolor(balColors.base.dark).lighten(5),
-          level6: tinycolor(balColors.base.dark).lighten(6),
-          level7: tinycolor(balColors.base.dark).lighten(7),
-          level8: tinycolor(balColors.base.dark).lighten(8),
+          level0: '#383E47',
+          level1: '#3A404A',
+          level2: '#3D434D',
+          level3: '#3F4550',
+          level4: '#414853',
+          level5: '#434A56',
+          level6: '#464D59',
+          level7: '#484F5B',
+          level8: '#4A525E',
+          level9: '#4C5461',
         },
       },
       input: {
@@ -849,6 +851,25 @@ export const balTheme = {
             border: 'none',
           },
         },
+        button: {
+          icon: {
+            color: 'grayText',
+          },
+          button: {
+            color: 'grayText',
+          },
+          panel: {
+            borderTop: '1px solid',
+            borderColor: 'border.base',
+          },
+          container: {
+            border: 'none',
+            borderWidth: 0,
+            background: 'background.card.level2',
+            shadow: 'md',
+            rounded: 'md',
+          },
+        },
       },
     },
     Input: {
@@ -1187,11 +1208,15 @@ export const balTheme = {
     Modal: {
       baseStyle: {
         dialog: {
-          background: 'background.card.level3',
+          background: 'background.card.level0',
+        },
+        closeButton: {
+          top: 3,
+          color: 'grayText',
         },
       },
       defaultProps: {
-        size: 'lg',
+        size: 'md',
       },
     },
     Popover: {
@@ -1216,11 +1241,28 @@ export const balTheme = {
     Card: {
       baseStyle: {
         container: {
-          background: 'background.card.level0',
+          background: 'background.card.level1',
           rounded: 'lg',
         },
       },
       variants: {
+        modalSubSection: {
+          container: {
+            background: 'background.card.level1',
+            borderWidth: '1px',
+            borderColor: 'border.base',
+            shadow: 'sm',
+            padding: 'md',
+            width: 'full',
+          },
+          header: {
+            padding: 'none',
+            paddingBottom: 'md',
+            color: 'font.primary',
+            fontWeight: 'bold',
+            fontSize: 'sm',
+          },
+        },
         level0: {
           container: {
             background: 'background.card.level0',
