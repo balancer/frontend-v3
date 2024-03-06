@@ -28,7 +28,7 @@ const vulnerabilityDisclosureLink = (
   </a>
 )
 
-export function getVulnerabilityText(poolIssue: PoolIssue): JSX.Element {
+export function getVulnerabilityJsx(poolIssue: PoolIssue): JSX.Element {
   switch (poolIssue) {
     case PoolIssue.PoolProtocolFeeVulnWarning:
       return (

@@ -1,9 +1,9 @@
 import { getNetworkConfig } from '@/lib/config/app.config'
-import { PoolAlertProps, PoolAlertRuleFunc } from '../pool-alerts'
 import { Pool } from '../../usePool'
 import { PoolId } from '../../pool.types'
 import { PoolIssue } from './PoolIssue.type'
-import { getVulnerabilityText } from './PoolIssue.labels'
+import { getVulnerabilityJsx } from './PoolIssue.labels'
+import { PoolAlertProps, PoolAlertRuleFunc } from '../PoolAlerts'
 
 export const getPoolIssueAlerts: PoolAlertRuleFunc = (pool: Pool) => {
   const poolIssues = getNetworkConfig(pool.chain)?.issues?.PoolIssues
@@ -22,9 +22,10 @@ export const getPoolIssueAlerts: PoolAlertRuleFunc = (pool: Pool) => {
 
 function anAlert(poolIssue: PoolIssue): PoolAlertProps {
   return {
+    id: poolIssue,
     type: 'Vulnerability',
     status: 'error',
-    title: getVulnerabilityText(poolIssue),
+    title: getVulnerabilityJsx(poolIssue),
     labels: [],
   }
 }

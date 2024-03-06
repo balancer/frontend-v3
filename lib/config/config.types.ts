@@ -29,6 +29,10 @@ export interface ContractsConfig {
   feeDistributor?: Address
 }
 
+export interface IssuesConfig {
+  PoolIssues?: Partial<Record<PoolIssue, string[]>>
+}
+
 export type SupportedChainId = (typeof supportedChains)[number]['id']
 export interface NetworkConfig {
   chainId: SupportedChainId
@@ -55,8 +59,4 @@ export interface ProjectConfig {
   projectId: 'beets' | 'balancer'
   projectName: string
   supportedNetworks: GqlChain[]
-}
-
-export interface IssuesConfig {
-  PoolIssues?: Partial<Record<PoolIssue, string[]>>
 }
