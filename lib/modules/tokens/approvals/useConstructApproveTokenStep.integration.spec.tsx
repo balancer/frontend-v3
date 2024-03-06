@@ -1,13 +1,23 @@
 import { vaultV2Address, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import { buildDefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers'
+import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
+import { DefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
+import { PropsWithChildren } from 'react'
 import { act } from 'react-dom/test-utils'
+import { CurrentFlowStepProvider } from '../../../shared/components/btns/transaction-steps/useCurrentFlowStep'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
+import { TokenAmountToApprove } from './approval-rules'
 import { useConstructApproveTokenStep } from './useConstructApproveTokenStep'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { TokenAmountToApprove } from './approval-rules'
-import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
+
+function Provider({ children }: PropsWithChildren) {
+  return (
+    <CurrentFlowStepProvider>
+      <DefaultPoolTestProvider>{children}</DefaultPoolTestProvider>
+    </CurrentFlowStepProvider>
+  )
+}
 
 function testUseConstruct() {
   const { result } = testHook(
@@ -28,13 +38,14 @@ function testUseConstruct() {
       return useConstructApproveTokenStep({
         actionType: 'AddLiquidity',
         tokenAmountToApprove,
-        chain: GqlChain.Mainnet,
         spenderAddress: defaultTestUserAccount,
         tokenAllowances,
+        chain: GqlChain.Mainnet,
+        symbol: 'WETH',
       })
     },
     {
-      wrapper: buildDefaultPoolTestProvider(),
+      wrapper: Provider,
     }
   )
   return result

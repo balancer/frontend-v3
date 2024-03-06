@@ -6,6 +6,7 @@ import { useMemo } from 'react'
 import { Address, parseUnits } from 'viem'
 import { RawAmount } from '../tokens/approvals/approval-rules'
 import { useVault } from '@/lib/shared/hooks/useVault'
+import { StepConfig } from '../pool/actions/useIterateSteps'
 
 type Params = {
   humanAmountIn: string
@@ -41,7 +42,8 @@ export function useSwapStepConfigs({
     actionType: 'Swapping',
   })
 
-  const swapStepConfig = {
+  const swapStepConfig: StepConfig = {
+    title: 'Swap',
     render: () => <SwapButton onTransactionStateUpdate={setSwapTxState} />,
   }
 

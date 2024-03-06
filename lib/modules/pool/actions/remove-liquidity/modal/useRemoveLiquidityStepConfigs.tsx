@@ -13,6 +13,7 @@ export function useRemoveLiquidityStepConfigs(
 
   let stepConfigs: StepConfig[] = [
     {
+      title: 'Remove liquidity',
       render() {
         return <RemoveLiquidityButton onTransactionStateUpdate={setRemoveLiquidityTxState} />
       },
