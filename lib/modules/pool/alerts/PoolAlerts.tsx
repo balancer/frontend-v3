@@ -1,3 +1,5 @@
+'use client'
+
 import { Alert, AlertDescription, AlertIcon, AlertStatus, AlertTitle } from '@chakra-ui/react'
 import { usePool } from '../usePool'
 import { Pool } from '../usePool'
