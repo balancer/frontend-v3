@@ -25,6 +25,12 @@ export default function Debug() {
       >
         Add liquidity in Gyro pool (2CLP_WMATIC/MATICX)
       </Link>
+      <Link
+        as={NextLink}
+        href="pools/ethereum/v2/0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473"
+      >
+        Pool in recovery mode
+      </Link>
       <Link as={NextLink} href="/debug/token-select">
         Token select
       </Link>
