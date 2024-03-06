@@ -9,12 +9,14 @@ import { Address } from 'wagmi'
 export type SwapTokenInput = {
   address: Address
   amount: string
+  scaledAmount: bigint
 }
 
 export type SwapState = {
   tokenIn: SwapTokenInput
   tokenOut: SwapTokenInput
   swapType: GqlSorSwapType
+  selectedChain: GqlChain
 }
 
 export type SimulateSwapInputs = {

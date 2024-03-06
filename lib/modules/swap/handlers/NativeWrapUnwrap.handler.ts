@@ -1,10 +1,10 @@
-import { getChainId } from '@/lib/config/app.config'
+import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { SwapHandler } from './Swap.handler'
 import { ApolloClient } from '@apollo/client'
 import { TransactionConfig } from '../../web3/contracts/contract.types'
 import { SdkBuildSwapInputs, SimulateSwapInputs, SimulateSwapResponse } from '../swap.types'
 import { WrapType, getWrapType } from '../useWrapping'
-import { Address, encodeFunctionData } from 'viem'
+import { encodeFunctionData } from 'viem'
 import { Hex } from 'viem'
 
 export class NativeWrapUnwrapHandler implements SwapHandler {
@@ -24,43 +24,54 @@ export class NativeWrapUnwrapHandler implements SwapHandler {
     const wrapType = getWrapType(tokenIn.address, tokenOut.address, chain)
     if (!wrapType) throw new Error('NativeWrapUnwrapHandler called with non valid wrap tokens')
 
-    // const tx = swap.buildCall({
-    //   slippage: Slippage.fromPercentage(slippagePercent as `${number}`),
-    //   deadline: BigInt(getTimestampInMinsFromNow(60)),
-    //   expectedAmountOut: onchainReturnAmount,
-    //   sender: account,
-    //   recipient: account,
-    //   wethIsEth: isNativeAssetIn,
-    // })
+    const { tokens } = getNetworkConfig(chain)
 
     let data: Hex | undefined
     if (wrapType === WrapType.WRAP) {
       data = this.buildWrapCallData()
     } else if (wrapType === WrapType.UNWRAP) {
-      data = this.buildUnwrapCallData()
+      data = this.buildUnwrapCallData(tokenIn.scaledAmount)
     }
 
     if (!data) throw new Error('NativeWrapUnwrapHandler could not build data')
+
+    const value = wrapType === WrapType.WRAP ? tokenIn.scaledAmount : BigInt(0)
 
     return {
       account,
       chainId: getChainId(chain),
       data,
-      value: tx.value,
-      to: tx.to,
+      value,
+      to: tokens.addresses.wNativeAsset,
     }
   }
 
   private buildWrapCallData() {
     return encodeFunctionData({
-      abi: ['function deposit() payable'],
+      abi: [
+        {
+          inputs: [],
+          name: 'deposit',
+          outputs: [],
+          stateMutability: 'payable',
+          type: 'function',
+        },
+      ],
       functionName: 'deposit',
     })
   }
 
-  private buildUnwrapCall(scaledAmount: bigint) {
+  private buildUnwrapCallData(scaledAmount: bigint) {
     return encodeFunctionData({
-      abi: ['function withdraw(uint256 wad)'],
+      abi: [
+        {
+          inputs: [{ name: 'amount', type: 'uint256' }],
+          name: 'withdraw',
+          outputs: [],
+          stateMutability: '',
+          type: 'function',
+        },
+      ],
       functionName: 'withdraw',
       args: [scaledAmount],
     })

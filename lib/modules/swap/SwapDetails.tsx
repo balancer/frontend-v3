@@ -8,6 +8,8 @@ import { GqlSorSwapType } from '@/lib/shared/services/api/generated/graphql'
 import { useUserSettings } from '../user/settings/useUserSettings'
 import { SdkSimulateSwapResponse } from './swap.types'
 import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
+import { useTokens } from '../tokens/useTokens'
+import { isNativeWrapUnwrap } from './useWrapping'
 
 export function OrderRoute() {
   const { simulationQuery } = useSwap()
@@ -35,27 +37,41 @@ export function OrderRoute() {
 export function SwapDetails() {
   const { toCurrency } = useCurrency()
   const { slippage, slippageDecimal } = useUserSettings()
+  const { usdValueForToken } = useTokens()
   const {
     tokenInInfo,
     tokenOutInfo,
-    priceImpactLabel,
-    priceImpacUsd,
-    maxSlippageUsd,
     swapType,
     tokenIn,
     tokenOut,
     handler,
+    simulationQuery,
+    selectedChain,
   } = useSwap()
 
   const isDefaultSwap = handler instanceof DefaultSwapHandler
+  const isNativeWrapOrUnwrap = isNativeWrapUnwrap(tokenIn.address, tokenOut.address, selectedChain)
+
+  const _slippage = isNativeWrapOrUnwrap ? 0 : slippage
+  const _slippageDecimal = isNativeWrapOrUnwrap ? 0 : slippageDecimal
+
+  const returnAmountUsd =
+    swapType === GqlSorSwapType.ExactIn
+      ? usdValueForToken(tokenOutInfo, tokenOut.amount)
+      : usdValueForToken(tokenInInfo, tokenIn.amount)
+
+  const priceImpact = simulationQuery.data?.priceImpact
+  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpacUsd = bn(priceImpact || 0).times(returnAmountUsd)
+  const maxSlippageUsd = bn(_slippage).div(100).times(returnAmountUsd)
 
   const limitLabel =
     swapType === GqlSorSwapType.ExactIn ? "You'll get at least" : "You'll pay at most"
   const limitToken = swapType === GqlSorSwapType.ExactIn ? tokenOutInfo : tokenInInfo
   const limitValue =
     swapType === GqlSorSwapType.ExactIn
-      ? bn(tokenOut.amount).minus(bn(tokenOut.amount).times(slippageDecimal)).toString()
-      : bn(tokenIn.amount).plus(bn(tokenIn.amount).times(slippageDecimal)).toString()
+      ? bn(tokenOut.amount).minus(bn(tokenOut.amount).times(_slippageDecimal)).toString()
+      : bn(tokenIn.amount).plus(bn(tokenIn.amount).times(_slippageDecimal)).toString()
 
   return (
     <VStack spacing="sm" align="start" w="full" fontSize="sm">
@@ -75,7 +91,7 @@ export function SwapDetails() {
         <Text color="grayText">Max slippage</Text>
         <HStack>
           <NumberText color="grayText">
-            -{toCurrency(maxSlippageUsd, { abbreviated: false })} (-{fNum('slippage', slippage)})
+            -{toCurrency(maxSlippageUsd, { abbreviated: false })} (-{fNum('slippage', _slippage)})
           </NumberText>
           <Tooltip label="Price impact" fontSize="sm">
             <InfoOutlineIcon color="grayText" />
