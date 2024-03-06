@@ -6,12 +6,36 @@ import { HStack, VStack, Text, Tooltip } from '@chakra-ui/react'
 import { useSwap } from './useSwap'
 import { GqlSorSwapType } from '@/lib/shared/services/api/generated/graphql'
 import { useUserSettings } from '../user/settings/useUserSettings'
+import { SdkSimulateSwapResponse } from './swap.types'
+import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
+
+export function OrderRoute() {
+  const { simulationQuery } = useSwap()
+
+  const queryData = simulationQuery.data as SdkSimulateSwapResponse
+
+  const orderRouteVersion = queryData.vaultVersion || 2
+  const hopCount = queryData?.routes[0]?.hops?.length || 0
+
+  return (
+    <HStack justify="space-between" w="full">
+      <Text color="grayText">Order route</Text>
+      <HStack>
+        <Text color="grayText">
+          BV{orderRouteVersion}: {hopCount} hops
+        </Text>
+        <Tooltip label="Balancer vault version and number of hops" fontSize="sm">
+          <InfoOutlineIcon color="grayText" />
+        </Tooltip>
+      </HStack>
+    </HStack>
+  )
+}
 
 export function SwapDetails() {
   const { toCurrency } = useCurrency()
   const { slippage, slippageDecimal } = useUserSettings()
   const {
-    simulationQuery,
     tokenInInfo,
     tokenOutInfo,
     priceImpactLabel,
@@ -20,10 +44,10 @@ export function SwapDetails() {
     swapType,
     tokenIn,
     tokenOut,
+    handler,
   } = useSwap()
 
-  const orderRouteVersion = simulationQuery.data?.vaultVersion || 2
-  const hopCount = simulationQuery.data?.routes[0]?.hops?.length || 0
+  const isDefaultSwap = handler instanceof DefaultSwapHandler
 
   const limitLabel =
     swapType === GqlSorSwapType.ExactIn ? "You'll get at least" : "You'll pay at most"
@@ -71,17 +95,7 @@ export function SwapDetails() {
         </HStack>
       </HStack>
 
-      <HStack justify="space-between" w="full">
-        <Text color="grayText">Order route</Text>
-        <HStack>
-          <Text color="grayText">
-            BV{orderRouteVersion}: {hopCount} hops
-          </Text>
-          <Tooltip label="Balancer vault version and number of hops" fontSize="sm">
-            <InfoOutlineIcon color="grayText" />
-          </Tooltip>
-        </HStack>
-      </HStack>
+      {isDefaultSwap && <OrderRoute />}
     </VStack>
   )
 }

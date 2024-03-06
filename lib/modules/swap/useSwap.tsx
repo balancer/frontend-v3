@@ -19,25 +19,16 @@ import { useUserSettings } from '../user/settings/useUserSettings'
 import { useDisclosure } from '@chakra-ui/react'
 import { useSwapStepConfigs } from './useSwapStepConfigs'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
-import { SimulateSwapResponse } from './swap.types'
+import { SdkSimulateSwapResponse, SimulateSwapResponse, SwapState } from './swap.types'
 import { SwapHandler } from './handlers/Swap.handler'
 import { useIterateSteps } from '../pool/actions/useIterateSteps'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { useVault } from '@/lib/shared/hooks/useVault'
+import { NativeWrapUnwrapHandler } from './handlers/NativeWrapUnwrap.handler'
+import { isNativeWrapUnwrap } from './useWrapping'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
-
-type TokenInput = {
-  address: Address
-  amount: string
-}
-
-type SwapState = {
-  tokenIn: TokenInput
-  tokenOut: TokenInput
-  swapType: GqlSorSwapType
-  vaultVersion: number
-}
 
 const swapStateVar = makeVar<SwapState>({
   tokenIn: {
@@ -49,11 +40,18 @@ const swapStateVar = makeVar<SwapState>({
     amount: '',
   },
   swapType: GqlSorSwapType.ExactIn,
-  vaultVersion: 2,
 })
 
 // Unecessary for now but allows us to add logic to select other handlers in the future.
-function selectSwapHandler(apolloClient: ApolloClient<object>): SwapHandler {
+function selectSwapHandler(
+  tokenInAddress: Address,
+  tokenOutAddress: Address,
+  chain: GqlChain,
+  apolloClient: ApolloClient<object>
+): SwapHandler {
+  if (isNativeWrapUnwrap(tokenInAddress, tokenOutAddress, chain)) {
+    return new NativeWrapUnwrapHandler(apolloClient)
+  }
   return new DefaultSwapHandler(apolloClient)
 }
 
@@ -66,12 +64,22 @@ export function _useSwap() {
 
   const { isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
-  const networkConfig = getNetworkConfig(selectedChain)
   const { getToken, usdValueForToken } = useTokens()
+
+  const networkConfig = getNetworkConfig(selectedChain)
   const previewModalDisclosure = useDisclosure()
 
   const client = useApolloClient()
-  const handler = useMemo(() => selectSwapHandler(client), [])
+  const handler = useMemo(
+    () =>
+      selectSwapHandler(
+        swapState.tokenIn.address,
+        swapState.tokenOut.address,
+        selectedChain,
+        client
+      ),
+    [swapState.tokenIn.address, swapState.tokenOut.address, selectedChain]
+  )
 
   const tokenInInfo = getToken(swapState.tokenIn.address, selectedChain)
   const tokenOutInfo = getToken(swapState.tokenOut.address, selectedChain)
@@ -100,14 +108,9 @@ export function _useSwap() {
     },
   })
 
-  function handleSimulationResponse({
-    returnAmount,
-    vaultVersion,
-    swapType,
-  }: SimulateSwapResponse) {
+  function handleSimulationResponse({ returnAmount, swapType }: SimulateSwapResponse) {
     swapStateVar({
       ...swapState,
-      vaultVersion: vaultVersion,
     })
 
     if (swapType === GqlSorSwapType.ExactIn) {
@@ -232,11 +235,14 @@ export function _useSwap() {
   )
   const validAmountOut = bn(swapState.tokenOut.amount).gt(0)
 
+  const vaultVersion = (simulationQuery.data as SdkSimulateSwapResponse)?.vaultVersion || 2
+  const { vaultAddress } = useVault(vaultVersion)
+
   const swapStepConfigs = useSwapStepConfigs({
     humanAmountIn: swapState.tokenIn.amount,
     tokenIn: tokenInInfo,
     selectedChain,
-    vaultVersion: swapState.vaultVersion,
+    vaultAddress,
     setSwapTxState,
   })
   const { currentStep, useOnStepCompleted } = useIterateSteps(swapStepConfigs)

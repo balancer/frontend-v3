@@ -3,7 +3,10 @@ import { GqlChain } from '../shared/services/api/generated/graphql'
 import { supportedChains } from '../modules/web3/Web3Provider'
 
 export interface TokensConfig {
-  balToken?: { address: Address }
+  addresses: {
+    bal: Address
+    wNativeAsset: Address
+  }
   nativeAsset: {
     name: string
     address: Address

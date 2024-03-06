@@ -14,20 +14,23 @@ export function useBuildSwapQuery() {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
 
-  const { handler, simulationQuery, selectedChain, isNativeAssetIn } = useSwap()
+  const { handler, simulationQuery, selectedChain, isNativeAssetIn, tokenIn, tokenOut, swapType } =
+    useSwap()
 
   const queryKey = swapQueryKeys.build({
     chain: selectedChain,
     account: userAddress,
     slippagePercent: slippage,
     simulateResponse: simulationQuery.data || ({} as SimulateSwapResponse),
-    isNativeAssetIn,
   })
 
   const queryFn = async () => {
     const simulateResponse = ensureLastQueryResponse('Swap query', simulationQuery.data)
 
     const response = await handler.build({
+      tokenIn,
+      tokenOut,
+      swapType,
       account: userAddress,
       slippagePercent: slippage,
       chain: selectedChain,
