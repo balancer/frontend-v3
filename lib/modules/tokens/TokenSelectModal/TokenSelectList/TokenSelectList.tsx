@@ -8,9 +8,10 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useEffect, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTokenSelectList } from './useTokenSelectList'
-import { TbCoins, TbWallet } from 'react-icons/tb'
 import { GroupedVirtuoso, GroupedVirtuosoHandle } from 'react-virtuoso'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { CoinsIcon } from '@/lib/shared/components/icons/CoinsIcon'
+import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 
 type Props = {
   tokens: GqlToken[]
@@ -25,7 +26,7 @@ function OtherTokens() {
     <Card p="1" my="2">
       <HStack>
         <Box color="font.secondary">
-          <TbCoins />
+          <CoinsIcon />
         </Box>
         <Text color="font.secondary">Other tokens</Text>
       </HStack>
@@ -45,7 +46,7 @@ function InYourWallet({ isConnected, openConnectModal, hasNoTokensInWallet }: In
       <Card p="1" pr="4" mb="2">
         <HStack>
           <Box color="font.secondary">
-            <TbWallet />
+            <WalletIcon />
           </Box>
           <Text color="font.secondary">In your wallet</Text>
           {!isConnected && (

@@ -18,11 +18,10 @@ import {
   Text,
   ButtonProps,
 } from '@chakra-ui/react'
-import { HiOutlineCog6Tooth } from 'react-icons/hi2'
 import { useUserSettings } from './useUserSettings'
-import { FiPercent } from 'react-icons/fi'
 import { blockInvalidNumberInput, fNum } from '@/lib/shared/utils/numbers'
 import { CurrencySelect } from './UserSettings'
+import { Percent, Settings } from 'react-feather'
 
 function SlippageInput() {
   const { slippage, setSlippage } = useUserSettings()
@@ -41,7 +40,7 @@ function SlippageInput() {
           onKeyDown={blockInvalidNumberInput}
         />
         <InputRightElement pointerEvents="none">
-          <FiPercent color="grayText" />
+          <Percent color="grayText" />
         </InputRightElement>
       </InputGroup>
       <HStack>
@@ -71,7 +70,7 @@ export function TransactionSettings(props: ButtonProps) {
             <Text color="grayText" fontSize="xs">
               {fNum('slippage', slippage)}
             </Text>
-            <HiOutlineCog6Tooth color="grayText" />
+            <Settings color="grayText" />
           </HStack>
         </Button>
       </PopoverTrigger>

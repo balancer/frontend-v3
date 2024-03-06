@@ -128,9 +128,6 @@ dependencies:
   react-hotkeys-hook:
     specifier: ^4.4.1
     version: 4.4.1(react-dom@18.2.0)(react@18.2.0)
-  react-icons:
-    specifier: ^4.10.1
-    version: 4.12.0(react@18.2.0)
   react-virtuoso:
     specifier: ^4.7.1
     version: 4.7.1(react-dom@18.2.0)(react@18.2.0)
@@ -10512,14 +10509,6 @@ packages:
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-    dev: false
-
-  /react-icons@4.12.0(react@18.2.0):
-    resolution: {integrity: sha512-IBaDuHiShdZqmfc/TwHu6+d6k2ltNCf3AszxNmjJc1KUfXdEeRJOKyNvLmAHaarhzGmTSVygNdyu8/opXv2gaw==}
-    peerDependencies:
-      react: '*'
-    dependencies:
-      react: 18.2.0
     dev: false
 
   /react-is@16.13.1:
