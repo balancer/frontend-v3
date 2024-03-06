@@ -34,7 +34,7 @@ import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { SignRelayerButton } from '@/lib/shared/components/btns/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { StepTracker } from '../step-tracker/StepTracker'
+import { StepTracker } from '../../../../shared/components/btns/transaction-steps/step-tracker/StepTracker'
 
 type Props = {
   isOpen: boolean
