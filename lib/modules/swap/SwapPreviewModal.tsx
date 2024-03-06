@@ -1,13 +1,8 @@
 'use client'
 
-import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { fNum } from '@/lib/shared/utils/numbers'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
   Card,
+  CardHeader,
   HStack,
   Heading,
   Modal,
@@ -19,44 +14,20 @@ import {
   ModalOverlay,
   ModalProps,
   Text,
-  Tooltip,
   VStack,
 } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
-import { Address } from 'wagmi'
 import { useSwap } from './useSwap'
 import { SwapTimeout } from './SwapTimeout'
+import TokenRow from '../tokens/TokenRow/TokenRow'
+import { SwapDetails } from './SwapDetails'
+import { SwapRate } from './SwapRate'
 
 type Props = {
   isOpen: boolean
   onClose(): void
   onOpen(): void
   finalFocusRef?: RefObject<HTMLInputElement>
-}
-
-function TokenAmountRow({ address, amount }: { address: Address; amount: string }) {
-  const { selectedChain } = useSwap()
-  const { getToken, usdValueForToken } = useTokens()
-  const { toCurrency } = useCurrency()
-
-  const token = getToken(address, selectedChain)
-  const usdValue = token ? usdValueForToken(token, amount) : undefined
-
-  return (
-    <HStack w="full" justify="space-between">
-      <HStack>
-        <TokenIcon
-          address={token?.address}
-          chain={token?.chain}
-          size={28}
-          alt={token?.symbol || 'Token icon'}
-        />
-        <NumberText>{fNum('token', amount)}</NumberText>
-        <Text>{token?.symbol}</Text>
-      </HStack>
-      <NumberText>{usdValue ? toCurrency(usdValue) : '-'}</NumberText>
-    </HStack>
-  )
 }
 
 export function SwapPreviewModal({
@@ -66,7 +37,7 @@ export function SwapPreviewModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { tokenIn, tokenOut, swapTxState, currentStep, useOnStepCompleted } = useSwap()
+  const { tokenIn, tokenOut, currentStep, useOnStepCompleted, selectedChain } = useSwap()
 
   return (
     <Modal
@@ -80,33 +51,45 @@ export function SwapPreviewModal({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          <Heading fontWeight="bold" size="h5">
-            Swap preview
-          </Heading>
+          <HStack justify="space-between" w="full" pr="lg">
+            <Heading fontWeight="bold" size="h5">
+              Review swap
+            </Heading>
+            <SwapTimeout />
+          </HStack>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <VStack spacing="md" align="start">
-            <Card variant="level0" p="md" shadow="sm" w="full">
-              <VStack align="start" spacing="md">
-                <TokenAmountRow {...tokenIn} />
-                <TokenAmountRow {...tokenOut} />
-              </VStack>
+          <VStack spacing="sm" align="start">
+            <Card variant="modalSubSection">
+              <CardHeader>You pay</CardHeader>
+              <TokenRow
+                address={tokenIn.address}
+                value={tokenIn.amount}
+                chain={selectedChain}
+                abbreviated={false}
+              />
             </Card>
 
-            <Card variant="level0" p="md" shadow="sm" w="full">
-              <VStack align="start" spacing="md">
-                <HStack justify="space-between" w="full">
-                  <Text>Price impact</Text>
-                  <HStack>
-                    <NumberText color="grayText">{fNum('priceImpact', 0)}</NumberText>
-                    <Tooltip label="Price impact" fontSize="sm">
-                      <InfoOutlineIcon color="grayText" />
-                    </Tooltip>
-                  </HStack>
-                </HStack>
-                <SwapTimeout swapTxState={swapTxState} />
-              </VStack>
+            <Card variant="modalSubSection">
+              <CardHeader>You&apos;ll get (if no slippage)</CardHeader>
+              <TokenRow
+                address={tokenOut.address}
+                value={tokenOut.amount}
+                chain={selectedChain}
+                abbreviated={false}
+              />
+            </Card>
+
+            <Card variant="modalSubSection">
+              <SwapDetails />
+            </Card>
+
+            <Card variant="modalSubSection" fontSize="sm">
+              <HStack justify="space-between" w="full">
+                <Text color="grayText">Exchange rate</Text>
+                <SwapRate />
+              </HStack>
             </Card>
           </VStack>
         </ModalBody>

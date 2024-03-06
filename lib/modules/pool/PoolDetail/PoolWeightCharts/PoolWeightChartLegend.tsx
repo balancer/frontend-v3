@@ -1,12 +1,12 @@
-import { GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
 import { Box, HStack, Text } from '@chakra-ui/react'
 import { PoolWeightChartColorDef } from './PoolWeightChart'
+import { Pool } from '../../usePool'
 
 export default function PoolWeightChartLegend({
   pool,
   colors = [],
 }: {
-  pool: GqlPoolUnion
+  pool: Pool
   colors?: PoolWeightChartColorDef[]
 }) {
   return (
