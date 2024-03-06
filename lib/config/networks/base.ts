@@ -1,5 +1,6 @@
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
+import { convertHexToLowerCase } from '@/lib/shared/utils/objects'
 
 const networkConfig: NetworkConfig = {
   chainId: 8453,
@@ -29,6 +30,7 @@ const networkConfig: NetworkConfig = {
       minter: '0x0c5538098EBe88175078972F514C9e101D325D4F',
     },
   },
+  pools: convertHexToLowerCase({ issues: {} }),
 }
 
 export default networkConfig

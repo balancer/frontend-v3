@@ -1,6 +1,7 @@
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
 import { zeroAddress } from 'viem'
+import { convertHexToLowerCase } from '@/lib/shared/utils/objects'
 
 const networkConfig: NetworkConfig = {
   chainId: 250,
@@ -29,6 +30,7 @@ const networkConfig: NetworkConfig = {
       minter: zeroAddress,
     },
   },
+  pools: convertHexToLowerCase({ issues: {} }),
 }
 
 export default networkConfig
