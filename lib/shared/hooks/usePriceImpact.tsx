@@ -1,6 +1,7 @@
 import { AlertTriangle, XOctagon } from 'react-feather'
 import { PropsWithChildren, createContext, useEffect, useState } from 'react'
 import { useMandatoryContext } from '../utils/contexts'
+import { Icon } from '@chakra-ui/react'
 
 type PriceImpactLevel = 'low' | 'medium' | 'high' | 'max'
 
@@ -34,9 +35,9 @@ export function _usePriceImpact() {
     switch (priceImpactLevel) {
       case 'high':
       case 'max':
-        return <XOctagon />
+        return <Icon as={XOctagon} />
       case 'medium':
-        return <AlertTriangle />
+        return <Icon as={AlertTriangle} />
       case 'low':
       default:
         return undefined
