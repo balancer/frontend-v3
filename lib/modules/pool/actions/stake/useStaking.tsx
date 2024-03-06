@@ -52,6 +52,7 @@ export function useStaking() {
     chain: pool.chain,
     approvalAmounts: [amountToApprove],
     actionType: 'Staking',
+    bptSymbol: pool.symbol,
   })
 
   const stepConfigs = [...bptApprovalStepConfig, stakeConfig]
