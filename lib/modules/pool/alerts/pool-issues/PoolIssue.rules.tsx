@@ -4,6 +4,7 @@ import { PoolId } from '../../pool.types'
 import { PoolIssue } from './PoolIssue.type'
 import { getVulnerabilityJsx } from './PoolIssue.labels'
 import { PoolAlertProps, PoolAlertRuleFunc } from '../PoolAlerts'
+import { AlertStatus } from '@chakra-ui/react'
 
 export const getPoolIssueAlerts: PoolAlertRuleFunc = (pool: Pool) => {
   const poolIssues = getNetworkConfig(pool.chain).pools?.issues
@@ -24,8 +25,14 @@ function anAlert(poolIssue: PoolIssue): PoolAlertProps {
   return {
     id: poolIssue,
     type: 'Vulnerability',
-    status: 'error',
+    status: getStatus(poolIssue),
     title: getVulnerabilityJsx(poolIssue),
     labels: [],
   }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function getStatus(poolIssue: PoolIssue): AlertStatus {
+  //For now, all issues are vulnerabilities with default error status
+  return 'error'
 }
