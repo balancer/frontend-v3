@@ -10,7 +10,10 @@ const networkConfig: NetworkConfig = {
   rpcUrl: 'https://rpc.gnosischain.com',
   blockExplorerBaseUrl: 'https://gnosisscan.io',
   tokens: {
-    balToken: { address: '0x7ef541e2a22058048904fe5744f9c7e4c57af717' },
+    addresses: {
+      bal: '0x7ef541e2a22058048904fe5744f9c7e4c57af717',
+      wNativeAsset: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d',
+    },
     nativeAsset: {
       name: 'xDAI',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',

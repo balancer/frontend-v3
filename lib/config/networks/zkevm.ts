@@ -10,7 +10,10 @@ const networkConfig: NetworkConfig = {
   rpcUrl: 'https://polygonzkevm-mainnet.g.alchemy.com/v2/cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88',
   blockExplorerBaseUrl: 'https://zkevm.polygonscan.com',
   tokens: {
-    balToken: { address: '0x4f9a0e7fd2bf6067db6994cf12e4495df938e6e9' },
+    addresses: {
+      bal: '0x4f9a0e7fd2bf6067db6994cf12e4495df938e6e9',
+      wNativeAsset: '0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9',
+    },
     nativeAsset: {
       name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',

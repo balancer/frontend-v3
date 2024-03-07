@@ -10,7 +10,10 @@ const networkConfig: NetworkConfig = {
   rpcUrl: 'https://arbitrum-mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
   blockExplorerBaseUrl: 'https://arbiscan.io',
   tokens: {
-    balToken: { address: '0x040d1edc9569d4bab2d15287dc5a4f10f56a56b8' },
+    addresses: {
+      bal: '0x040d1edc9569d4bab2d15287dc5a4f10f56a56b8',
+      wNativeAsset: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+    },
     nativeAsset: {
       name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',

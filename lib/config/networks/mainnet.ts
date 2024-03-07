@@ -13,7 +13,10 @@ const networkConfig: NetworkConfig = {
   rpcUrl: 'https://mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
   blockExplorerBaseUrl: 'https://etherscan.io',
   tokens: {
-    balToken: { address: '0xba100000625a3754423978a60c9317c58a424e3d' },
+    addresses: {
+      bal: '0xba100000625a3754423978a60c9317c58a424e3d',
+      wNativeAsset: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    },
     nativeAsset: {
       name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
