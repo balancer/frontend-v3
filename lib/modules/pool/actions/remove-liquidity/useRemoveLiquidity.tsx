@@ -4,7 +4,7 @@
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolTokenExpanded, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
@@ -16,7 +16,7 @@ import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquidityS
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address } from 'viem'
-import { toHumanAmount } from '../LiquidityActionHelpers'
+import { shouldUseRecoveryRemoveLiquidity, toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useIterateSteps } from '../useIterateSteps'
@@ -75,8 +75,12 @@ export function _useRemoveLiquidity() {
   const isSingleToken = removalType === RemoveLiquidityType.SingleToken
   const isProportional = removalType === RemoveLiquidityType.Proportional
 
+  const tokenFilter = shouldUseRecoveryRemoveLiquidity(pool)
+    ? (token: GqlPoolTokenExpanded) => !token.isNested
+    : (token: GqlPoolTokenExpanded) => token.isMainToken
+
   const tokens = pool.allTokens
-    .filter(token => token.isMainToken)
+    .filter(tokenFilter)
     .map(token => getToken(token.address, pool.chain))
 
   const validTokens = tokens.filter((token): token is GqlToken => !!token)

@@ -106,7 +106,7 @@ export default function PoolMyLiquidity() {
   function tokenBalanceFor(tokenAddress: string) {
     if (!isConnected || isConnecting) return '0'
 
-    return poolTokenBalancesForTab[tokenAddress].amount
+    return poolTokenBalancesForTab[tokenAddress]?.amount //TODO optional amount until we fix tokens vs display tokens issue
   }
 
   const canStake = pool.staking
@@ -150,6 +150,7 @@ export default function PoolMyLiquidity() {
                 </HStack>
               </Box>
               <VStack spacing="4" p="4" py="2" pb="4" width="full">
+                {/* TODO: Use tokens instead of display tokens to show pool token balances in old boosted pools*/}
                 {pool.displayTokens.map(token => {
                   return (
                     <TokenRow

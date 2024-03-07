@@ -19,9 +19,10 @@ import {
 import { keyBy } from 'lodash'
 import { Hex, formatUnits, parseUnits } from 'viem'
 import { Address } from 'wagmi'
-import { hasNestedPools, isGyro } from '../pool.helpers'
+import { hasNestedPools, isComposableStable, isGyro } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
+import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -150,6 +151,21 @@ export function shouldUseNestedLiquidity(pool: Pool) {
   return supportsNestedLiquidity(pool) && hasNestedPools(pool)
 }
 
+export function shouldUseRecoveryRemoveLiquidity(pool: Pool) {
+  // TODO: allows testing:
+  // pools/ethereum/v2/0x0da692ac0611397027c91e559cfd482c4197e4030002000000000000000005c9
+  // (in recovery but not paused):
+  if (pool.dynamicData.isInRecoveryMode) return true
+
+  if (pool.dynamicData.isInRecoveryMode && pool.dynamicData.isPaused) return true
+
+  if (pool.dynamicData.isInRecoveryMode && isAffectedByCspIssue(pool)) return true
+
+  // Old boosted pools
+  if (isComposableStable(pool.type) && pool.version === 0) return true
+  // const isNotDeepAndCsV1 = !isDeep(pool) && isComposableStableV1(pool);
+}
+
 export function requiresProportionalInput(poolType: GqlPoolType) {
   return isGyro(poolType)
 }
@@ -160,7 +176,7 @@ export function toPoolState(pool: Pool): PoolState {
   }
 
   // TODO: fix in SDK
-  const poolType = pool.type === GqlPoolType.Gyro ? 'GYRO2' : pool.type
+  const poolType = pool.type === GqlPoolType.Linear ? GqlPoolType.Weighted : pool.type
 
   return {
     id: pool.id as Hex,

@@ -6,6 +6,7 @@ import {
   RemoveLiquidity,
   RemoveLiquidityKind,
   RemoveLiquidityProportionalInput,
+  RemoveLiquidityRecoveryInput,
   Slippage,
 } from '@balancer/sdk'
 import { Address, parseEther } from 'viem'
@@ -21,9 +22,12 @@ import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
 
 export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandler {
   helpers: LiquidityActionHelpers
+  /** Special flag for Recovery mode remove liquidity type */
+  isRecovery: boolean
 
-  constructor(pool: Pool) {
+  constructor(pool: Pool, isRecovery = false) {
     this.helpers = new LiquidityActionHelpers(pool)
+    this.isRecovery = isRecovery
   }
 
   public async simulate({
@@ -70,7 +74,9 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
   /**
    * PRIVATE METHODS
    */
-  private constructSdkInput(humanBptIn: HumanAmount): RemoveLiquidityProportionalInput {
+  protected constructSdkInput(
+    humanBptIn: HumanAmount
+  ): RemoveLiquidityProportionalInput | RemoveLiquidityRecoveryInput {
     const bptIn: InputAmount = {
       rawAmount: parseEther(humanBptIn),
       decimals: BPT_DECIMALS,
@@ -81,7 +87,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
       chainId: this.helpers.chainId,
       rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
       bptIn,
-      kind: RemoveLiquidityKind.Proportional,
+      kind: this.isRecovery ? RemoveLiquidityKind.Recovery : RemoveLiquidityKind.Proportional,
       toNativeAsset: false, // assuming we don't want to withdraw the native asset over the wrapped native asset for now.
     }
   }
