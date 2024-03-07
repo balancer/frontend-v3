@@ -20,7 +20,7 @@ import { getFxRates } from '../../utils/currencies'
 export const revalidate = 60
 
 export async function ApolloGlobalDataProvider({ children }: React.PropsWithChildren) {
-  const client = getApolloServerClient()
+  /*const client = getApolloServerClient()
 
   const tokensQueryVariables = {
     chains: getProjectConfig().supportedNetworks,
@@ -46,17 +46,17 @@ export async function ApolloGlobalDataProvider({ children }: React.PropsWithChil
         next: { revalidate: 60 },
       },
     },
-  })
+  })*/
 
   const exchangeRates = await getFxRates()
 
   return (
-    <TokensProvider
+    /*<TokensProvider
       tokensData={tokensQueryData}
       tokenPricesData={tokenPricesQueryData}
       variables={tokensQueryVariables}
-    >
-      <FiatFxRatesProvider data={exchangeRates}>{children}</FiatFxRatesProvider>
-    </TokensProvider>
+    >*/
+    <FiatFxRatesProvider data={exchangeRates}>{children}</FiatFxRatesProvider>
+    /*</TokensProvider>*/
   )
 }
