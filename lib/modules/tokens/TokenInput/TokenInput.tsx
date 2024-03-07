@@ -25,6 +25,7 @@ import { TokenIcon } from '../TokenIcon'
 import { useTokenInputsValidation } from '../useTokenInputsValidation'
 import { ChevronDown } from 'react-feather'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
+import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
@@ -60,13 +61,22 @@ type TokenInputFooterProps = {
   token: GqlToken | undefined
   value?: string
   updateValue: (value: string) => void
+  hasPriceImpact?: boolean
+  isLoadingPriceImpact?: boolean
 }
 
-function TokenInputFooter({ token, value, updateValue }: TokenInputFooterProps) {
+function TokenInputFooter({
+  token,
+  value,
+  updateValue,
+  hasPriceImpact,
+  isLoadingPriceImpact,
+}: TokenInputFooterProps) {
   const { balanceFor, isBalancesLoading } = useTokenBalances()
   const { usdValueForToken } = useTokens()
   const { toCurrency } = useCurrency()
   const { hasValidationError, getValidationError } = useTokenInputsValidation()
+  const { priceImpact, priceImpactColor } = usePriceImpact()
 
   const hasError = hasValidationError(token)
   // TODO: replace input.fontHintError with proper theme color
@@ -76,13 +86,20 @@ function TokenInputFooter({ token, value, updateValue }: TokenInputFooterProps) 
   const userBalance = token ? balance?.formatted || '0' : '0'
   const usdValue = value && token ? usdValueForToken(token, value) : '0'
 
+  const showPriceImpact = !isLoadingPriceImpact && hasPriceImpact && priceImpact
+
   return (
     <HStack h="4" w="full" justify="space-between">
       {isBalancesLoading ? (
         <Skeleton w="12" h="full" />
       ) : (
-        <Text variant="secondary" fontSize="sm">
+        <Text
+          variant="secondary"
+          fontSize="sm"
+          color={showPriceImpact ? priceImpactColor : 'gray.400'}
+        >
           {toCurrency(usdValue, { abbreviated: false })}
+          {showPriceImpact && ` (-${fNum('priceImpact', priceImpact)})`}
         </Text>
       )}
       {isBalancesLoading ? (
@@ -115,6 +132,8 @@ type Props = {
   boxProps?: BoxProps
   onChange?: (event: { currentTarget: { value: string } }) => void
   toggleTokenSelect?: () => void
+  hasPriceImpact?: boolean
+  isLoadingPriceImpact?: boolean
 }
 
 export const TokenInput = forwardRef(
@@ -128,6 +147,8 @@ export const TokenInput = forwardRef(
       onChange,
       toggleTokenSelect,
       hideFooter = false,
+      hasPriceImpact = false,
+      isLoadingPriceImpact = false,
       ...inputProps
     }: InputProps & Props,
     ref
@@ -140,7 +161,9 @@ export const TokenInput = forwardRef(
     const { handleOnChange, updateValue } = useTokenInput(token, onChange)
 
     const tokenInputSelector = TokenInputSelector({ token, weight, toggleTokenSelect })
-    const footer = hideFooter ? undefined : TokenInputFooter({ token, value, updateValue })
+    const footer = hideFooter
+      ? undefined
+      : TokenInputFooter({ token, value, updateValue, hasPriceImpact, isLoadingPriceImpact })
 
     // TODO: replace 'red[600' with proper theme color
     const boxShadow = hasValidationError(token) ? `0 0 0 1px ${colors.red[600]}` : undefined
