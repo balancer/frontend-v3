@@ -3,9 +3,12 @@ import { defaultPoolListMock, mockPoolList } from '@/test/msw/handlers/PoolList.
 import { aGqlPoolMinimalMock } from '@/test/msw/builders/gqlPoolMinimal.builders'
 import { testHook } from '@/test/utils/custom-renderers'
 import { _usePoolList } from './usePoolList'
+import { GetPoolsQuery } from '@/lib/shared/services/api/generated/graphql'
 
 async function renderUsePoolsList() {
-  const { result, waitForLoadedUseQuery } = testHook(() => _usePoolList())
+  const { result, waitForLoadedUseQuery } = testHook(() =>
+    _usePoolList({ pools: defaultPoolListMock } as GetPoolsQuery)
+  )
   await waitForLoadedUseQuery(result)
   return result
 }
