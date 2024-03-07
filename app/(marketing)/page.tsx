@@ -10,9 +10,9 @@ export default function Home() {
         <Heading size="2xl" variant="special">
           Balancer V3
         </Heading>
-        <Button size="lg" as={Link} href="/pools" prefetch={true}>
+        {/*<Button size="lg" as={Link} href="/pools" prefetch={true}>
           Explore pools
-        </Button>
+        </Button>*/}
       </VStack>
     </Center>
   )
