@@ -84,6 +84,7 @@ export function SwapDetailsAccordian({
         </AccordionItem>
       </Accordion>
       {(priceImpactLevel === 'high' || priceImpactLevel === 'max') && (
+        // TODO: fix a lot of styling here
         <>
           <VStack align="start" w="full">
             <Card w="full" p="2" border="2px solid" borderColor="red.500">
