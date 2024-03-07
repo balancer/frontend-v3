@@ -48,6 +48,8 @@ export function _usePriceImpact() {
   useEffect(() => {
     if (priceImpact) {
       setPriceImpactLevel(getPriceImpactLevel(parseFloat(priceImpact)))
+      // reset accept high price impact when price impact changes
+      setAcceptHighPriceImpact(false)
     }
   }, [priceImpact])
 
