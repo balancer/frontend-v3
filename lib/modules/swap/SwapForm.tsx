@@ -29,7 +29,7 @@ import { getChainName } from '@/lib/config/app.config'
 import { RichSelect } from '@/lib/shared/components/inputs/RichSelect'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
-import { SwapDetailsAccordian } from './SwapDetailsAccordian'
+import { SwapDetailsAccordion } from './SwapDetailsAccordion'
 import { TokenInputsValidationProvider } from '../tokens/useTokenInputsValidation'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
@@ -45,7 +45,6 @@ export function SwapForm() {
     disabledReason,
     previewModalDisclosure,
     simulationQuery,
-    priceImpact,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
@@ -167,10 +166,7 @@ export function SwapForm() {
                   </VStack>
 
                   {simulationQuery.data && (
-                    <SwapDetailsAccordian
-                      priceImpact={priceImpact}
-                      setIsNextBtnDisabled={setIsNextBtnDisabled}
-                    />
+                    <SwapDetailsAccordion setIsNextBtnDisabled={setIsNextBtnDisabled} />
                   )}
 
                   <Tooltip label={isDisabled ? disabledReason : ''}>

@@ -26,6 +26,7 @@ export function _usePriceImpact() {
       case 'medium':
         return 'orange.300'
       case 'low':
+        return 'green.400'
       default:
         return 'grayText'
     }

@@ -11,6 +11,7 @@ import { SdkSimulateSwapResponse } from './swap.types'
 import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
 import { useTokens } from '../tokens/useTokens'
 import { NativeWrapUnwrapHandler } from './handlers/NativeWrapUnwrap.handler'
+import { useEffect } from 'react'
 
 export function OrderRoute() {
   const { simulationQuery } = useSwap()
@@ -42,10 +43,11 @@ export function SwapDetails() {
   const { tokenInInfo, tokenOutInfo, swapType, tokenIn, tokenOut, handler, simulationQuery } =
     useSwap()
 
+  const { priceImpactLevel, priceImpactColor, getPriceImpactIcon, setPriceImpact } =
+    usePriceImpact()
+
   const isDefaultSwap = handler instanceof DefaultSwapHandler
   const isNativeWrapOrUnwrap = handler instanceof NativeWrapUnwrapHandler
-
-  const { priceImpactLevel, priceImpactColor, getPriceImpactIcon } = usePriceImpact()
 
   const _slippage = isNativeWrapOrUnwrap ? 0 : slippage
   const _slippageDecimal = isNativeWrapOrUnwrap ? 0 : slippageDecimal
@@ -67,6 +69,12 @@ export function SwapDetails() {
     swapType === GqlSorSwapType.ExactIn
       ? bn(tokenOut.amount).minus(bn(tokenOut.amount).times(_slippageDecimal)).toString()
       : bn(tokenIn.amount).plus(bn(tokenIn.amount).times(_slippageDecimal)).toString()
+
+  useEffect(() => {
+    if (priceImpact) {
+      setPriceImpact(priceImpact)
+    }
+  }, [priceImpact])
 
   return (
     <VStack spacing="sm" align="start" w="full" fontSize="sm">
