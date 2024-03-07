@@ -10,7 +10,10 @@ const networkConfig: NetworkConfig = {
   rpcUrl: 'https://optimism-mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
   blockExplorerBaseUrl: 'https://optimistic.etherscan.io',
   tokens: {
-    balToken: { address: '0xfe8b128ba8c78aabc59d4c64cee7ff28e9379921' },
+    addresses: {
+      bal: '0xfe8b128ba8c78aabc59d4c64cee7ff28e9379921',
+      wNativeAsset: '0x4200000000000000000000000000000000000006',
+    },
     nativeAsset: {
       name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',

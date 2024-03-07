@@ -10,7 +10,10 @@ const networkConfig: NetworkConfig = {
   rpcUrl: 'https://avalanche-mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
   blockExplorerBaseUrl: 'https://snowtrace.io',
   tokens: {
-    balToken: { address: '0xe15bcb9e0ea69e6ab9fa080c4c4a5632896298c3' },
+    addresses: {
+      bal: '0xe15bcb9e0ea69e6ab9fa080c4c4a5632896298c3',
+      wNativeAsset: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
+    },
     nativeAsset: {
       name: 'Avalanche',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',

@@ -1,6 +1,7 @@
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
 import { zeroAddress } from 'viem'
+import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 
 const networkConfig: NetworkConfig = {
   chainId: 250,
@@ -11,6 +12,10 @@ const networkConfig: NetworkConfig = {
   rpcUrl: 'https://mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
   blockExplorerBaseUrl: 'https://ftmscan.com',
   tokens: {
+    addresses: {
+      bal: emptyAddress,
+      wNativeAsset: emptyAddress,
+    },
     nativeAsset: {
       name: 'Fantom',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
