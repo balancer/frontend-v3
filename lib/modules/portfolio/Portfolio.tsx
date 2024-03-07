@@ -3,7 +3,6 @@ import { ClaimAllVebalRewardsButton } from '@/lib/modules/portfolio/claim/ClaimA
 import { StakedPortfolio } from '@/lib/modules/portfolio/StakedPortfolio'
 import { UnstakedPortfolio } from '@/lib/modules/portfolio/UnstakedPortfolio'
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { Button, HStack, Heading, Stack, Text } from '@chakra-ui/react'
 import { useState } from 'react'
 import { ClaimNetworkRewardsModal } from './claim/ClaimNetworkRewardsModal'
@@ -16,7 +15,7 @@ export default function Portfolio() {
   const [claimByNetworkModalData, setClaimByNetworkModalData] = useState<null | PoolListItem[]>(
     null
   )
-  const { toCurrency } = useCurrency()
+
   const {
     portfolioData,
     balRewardsData,
@@ -44,6 +43,7 @@ export default function Portfolio() {
       <PortfolioSummary />
       <PortfolioNetworkClaim />
       <PortfolioTable />
+
       {hasStakedPools && (
         <Stack>
           <StakedPortfolio pools={portfolioData.stakedPools} poolRewardsMap={poolRewardsMap} />

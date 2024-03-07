@@ -1,6 +1,7 @@
 import { Address } from 'viem'
 import { GqlChain } from '../shared/services/api/generated/graphql'
 import { supportedChains } from '../modules/web3/Web3Provider'
+import { PoolIssue } from '../modules/pool/alerts/pool-issues/PoolIssue.type'
 
 export interface TokensConfig {
   balToken?: { address: Address }
@@ -27,6 +28,9 @@ export interface ContractsConfig {
   }
   feeDistributor?: Address
 }
+export interface PoolsConfig {
+  issues?: Partial<Record<PoolIssue, string[]>>
+}
 
 export type SupportedChainId = (typeof supportedChains)[number]['id']
 export interface NetworkConfig {
@@ -40,6 +44,7 @@ export interface NetworkConfig {
   tokens: TokensConfig
   contracts: ContractsConfig
   minConfirmations?: number
+  pools?: PoolsConfig //TODO: make it required once we add pool config for all networks
 }
 
 export interface Config {

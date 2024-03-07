@@ -6,6 +6,7 @@ import PoolIncentives from './PoolIncentives'
 import { PoolAccordion } from './PoolAccordion/PoolAccordion'
 import PoolMetaBadges from './PoolMetaBadges/PoolMetaBadges'
 import { PoolChart } from './PoolChart/PoolChart'
+import { PoolAlerts } from '../alerts/PoolAlerts'
 
 export async function PoolDetail() {
   return (
@@ -14,6 +15,7 @@ export async function PoolDetail() {
       <VStack width="full" spacing="16">
         <VStack alignItems="flex-start" width="full" spacing="5">
           <PoolMetaBadges />
+          <PoolAlerts />
           <PoolStats />
           <HStack width="full" spacing="4">
             <PoolMyLiquidity />
