@@ -150,8 +150,8 @@ export default function PoolMyLiquidity() {
                 </HStack>
               </Box>
               <VStack spacing="4" p="4" py="2" pb="4" width="full">
-                {/* DEBUG: Use tokens instead of display tokens to show pool token balances */}
-                {pool.tokens.map(token => {
+                {/* TODO: Use tokens instead of display tokens to show pool token balances in old boosted pools*/}
+                {pool.displayTokens.map(token => {
                   return (
                     <TokenRow
                       chain={chain}
