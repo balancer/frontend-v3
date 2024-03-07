@@ -18,7 +18,6 @@ interface Props extends GridProps {
 const MemoizedAprTooltip = memo(AprTooltip)
 
 export function PortfolioTableRow({ pool, keyValue, ...rest }: Props) {
-  //   const { userAddress } = usePoolListQueryState()
   const { toCurrency } = useCurrency()
 
   return (
@@ -38,51 +37,40 @@ export function PortfolioTableRow({ pool, keyValue, ...rest }: Props) {
           <GridItem>
             <PoolListTokenPills pool={pool} />
           </GridItem>
-          {/* {userAddress && (
-            <GridItem>
-              <Text textAlign="right" fontWeight="medium">
-                {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
-              </Text>
-            </GridItem>
-          )} */}
+
           <GridItem>
             <Text textAlign="right" fontWeight="medium" textTransform="capitalize">
               {getPoolTypeLabel(pool.type)}
             </Text>
           </GridItem>
           <GridItem>
-            <Text
-              title={toCurrency(pool.dynamicData.totalLiquidity, { abbreviated: false })}
-              textAlign="right"
-              fontWeight="medium"
-            >
+            <Text textAlign="right" fontWeight="medium">
               {bn(pool.userBalance?.stakedBalance || 0).isGreaterThan(0) ? 'Staked' : 'N/A'}
             </Text>
           </GridItem>
+          {/* TO-DO vebal boost */}
           <GridItem textAlign="right">
             <Text
               title={toCurrency(pool.dynamicData.volume24h, { abbreviated: false })}
               textAlign="right"
               fontWeight="medium"
             >
-              {toCurrency(pool.dynamicData.volume24h)}
+              1.5x
             </Text>
           </GridItem>
+
+          <GridItem>
+            <Text textAlign="right" fontWeight="medium">
+              {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
+            </Text>
+          </GridItem>
+
           <GridItem justifySelf="end">
             <MemoizedAprTooltip
               data={pool.dynamicData.apr}
               poolId={pool.id}
               textProps={{ fontWeight: 'medium' }}
             />
-          </GridItem>
-          <GridItem justifySelf="end">
-            <Text
-              title={toCurrency(pool.dynamicData.volume24h, { abbreviated: false })}
-              textAlign="right"
-              fontWeight="medium"
-            >
-              {toCurrency(pool.dynamicData.volume24h)}
-            </Text>
           </GridItem>
         </Grid>
       </Link>

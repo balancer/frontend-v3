@@ -4,7 +4,10 @@ import { supportedChains } from '../modules/web3/Web3Provider'
 import { PoolIssue } from '../modules/pool/alerts/pool-issues/PoolIssue.type'
 
 export interface TokensConfig {
-  balToken?: { address: Address }
+  addresses: {
+    bal: Address
+    wNativeAsset: Address
+  }
   nativeAsset: {
     name: string
     address: Address

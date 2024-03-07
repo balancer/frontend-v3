@@ -6,6 +6,19 @@ import {
 import { Swap, TokenAmount } from '@balancer/sdk'
 import { Address } from 'wagmi'
 
+export type SwapTokenInput = {
+  address: Address
+  amount: string
+  scaledAmount: bigint
+}
+
+export type SwapState = {
+  tokenIn: SwapTokenInput
+  tokenOut: SwapTokenInput
+  swapType: GqlSorSwapType
+  selectedChain: GqlChain
+}
+
 export type SimulateSwapInputs = {
   chain: GqlChain
   tokenIn: Address
@@ -14,16 +27,20 @@ export type SimulateSwapInputs = {
   swapAmount: string
 }
 
-export type SimulateSwapResponse = GetSorSwapsQuery['swaps']
+type ApiSwapQuery = GetSorSwapsQuery['swaps']
 
-export interface SdkSimulateSwapResponse extends SimulateSwapResponse {
+export type SimulateSwapResponse = Pick<
+  ApiSwapQuery,
+  'effectivePrice' | 'effectivePriceReversed' | 'returnAmount' | 'priceImpact' | 'swapType'
+>
+
+export interface SdkSimulateSwapResponse extends SimulateSwapResponse, ApiSwapQuery {
   swap: Swap
   onchainReturnAmount: TokenAmount
 }
 
-export interface BuildSwapInputs {
+export interface BuildSwapInputs extends SwapState {
   account: Address
-  chain: GqlChain
   slippagePercent: string
   simulateResponse: SimulateSwapResponse
   isNativeAssetIn: boolean
