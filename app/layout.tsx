@@ -33,12 +33,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <NextTopLoader showSpinner={false} />
         <Providers>
           <Noise>
-            <Navbar />
+            {/*<Navbar />*/}
             <Container maxW="maxContent" py="2xl">
               {children}
               <SpeedInsights />
             </Container>
-            <Footer />
+            {/*<Footer />*/}
           </Noise>
         </Providers>
       </body>
