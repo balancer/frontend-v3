@@ -12,7 +12,6 @@ import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { FetchPoolProps } from './pool.types'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import { calcBptPriceFor, usePoolHelpers } from './pool.helpers'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
@@ -88,12 +87,6 @@ export function PoolProvider({
   data,
   variables,
 }: PropsWithChildren<FetchPoolProps> & { data: GetPoolQuery; variables: GetPoolQueryVariables }) {
-  useSeedApolloCache({
-    query: GetPoolDocument,
-    data,
-    variables,
-  })
-
   const hook = _usePool({ id, chain, variant, initialData: data })
   const payload = {
     ...hook,

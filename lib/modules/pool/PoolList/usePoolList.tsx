@@ -10,11 +10,10 @@ import {
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { isAddress } from 'viem'
 
-export function _usePoolList() {
+export function _usePoolList(initialData: GetPoolsQuery) {
   const { queryVariables, toggleUserAddress } = usePoolListQueryState()
   const { userAddress } = useUserAccount()
 
@@ -23,7 +22,7 @@ export function _usePoolList() {
     { variables: queryVariables, notifyOnNetworkStatusChange: true }
   )
 
-  const pools = loading && previousData ? previousData.pools : data?.pools || []
+  const pools = loading && previousData ? previousData.pools : data?.pools || initialData.pools
 
   // If the user has previously selected to filter by their liquidity and then
   // changes their connected wallet, we want to automatically update the filter.
@@ -35,7 +34,7 @@ export function _usePoolList() {
 
   return {
     pools,
-    count: data?.count || previousData?.count,
+    count: data?.count || previousData?.count || initialData.count,
     loading,
     error,
     networkStatus,
@@ -54,13 +53,8 @@ export function PoolListProvider({
   data: GetPoolsQuery
   variables: GetPoolsQueryVariables
 }) {
-  useSeedApolloCache({
-    query: GetPoolsDocument,
-    data: data,
-    variables,
-  })
+  const hook = _usePoolList(data)
 
-  const hook = _usePoolList()
   return <PoolListContext.Provider value={hook}>{children}</PoolListContext.Provider>
 }
 

@@ -1,7 +1,6 @@
 'use client'
 
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import {
   GetFeaturedPoolsDocument,
   GetFeaturedPoolsQuery,
@@ -11,14 +10,14 @@ import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { createContext, ReactNode } from 'react'
 
-export function _useFeaturedPools() {
+export function _useFeaturedPools(initialData: GetFeaturedPoolsQuery) {
   const { supportedNetworks } = getProjectConfig()
   const { data, loading, networkStatus, error } = useQuery(GetFeaturedPoolsDocument, {
     variables: { chains: supportedNetworks },
   })
 
   return {
-    featuredPools: data?.featuredPools || [],
+    featuredPools: data?.featuredPools || initialData.featuredPools,
     loading,
     error,
     networkStatus,
@@ -36,13 +35,8 @@ export function FeaturedPoolsProvider({
   data: GetFeaturedPoolsQuery
   variables: GetFeaturedPoolsQueryVariables
 }) {
-  useSeedApolloCache({
-    query: GetFeaturedPoolsDocument,
-    data,
-    variables,
-  })
+  const hook = _useFeaturedPools(data)
 
-  const hook = _useFeaturedPools()
   return <FeaturedPoolsContext.Provider value={hook}>{children}</FeaturedPoolsContext.Provider>
 }
 

@@ -2,7 +2,6 @@
 'use client'
 
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import {
   GetTokenPricesDocument,
   GetTokenPricesQuery,
@@ -15,10 +14,10 @@ import {
 } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { Numberish, bn } from '@/lib/shared/utils/numbers'
+import { bn, Numberish } from '@/lib/shared/utils/numbers'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { Dictionary, zipObject } from 'lodash'
-import { PropsWithChildren, createContext, useCallback } from 'react'
+import { createContext, PropsWithChildren, useCallback } from 'react'
 import { Address } from 'wagmi'
 import { TokenBase } from './token.types'
 
@@ -139,16 +138,6 @@ export function TokensProvider({
   tokenPricesData: GetTokenPricesQuery
   variables: GetTokensQueryVariables
 }) {
-  /*useSeedApolloCache({
-    query: GetTokensDocument,
-    data: tokensData,
-    variables,
-  })
-  useSeedApolloCache({
-    query: GetTokenPricesDocument,
-    data: tokenPricesData,
-  })*/
-
   const tokens = _useTokens(tokensData, tokenPricesData, variables)
 
   return <TokensContext.Provider value={tokens}>{children}</TokensContext.Provider>
