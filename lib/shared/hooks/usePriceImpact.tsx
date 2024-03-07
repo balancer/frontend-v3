@@ -27,7 +27,7 @@ export function _usePriceImpact() {
         return 'orange.300'
       case 'low':
       default:
-        return 'green.400'
+        return 'grayText'
     }
   }
 
