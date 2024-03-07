@@ -22,7 +22,7 @@ export const revalidate = 60
 export async function ApolloGlobalDataProvider({ children }: React.PropsWithChildren) {
   const client = getApolloServerClient()
 
-  /*const tokensQueryVariables = {
+  const tokensQueryVariables = {
     chains: getProjectConfig().supportedNetworks,
   }
 
@@ -34,7 +34,7 @@ export async function ApolloGlobalDataProvider({ children }: React.PropsWithChil
         next: { revalidate: 300 }, // 5 minutes, but this could potentially be longer
       },
     },
-  })*/
+  })
 
   const { data: tokenPricesQueryData } = await client.query({
     query: GetTokenPricesDocument,
