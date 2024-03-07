@@ -20,18 +20,18 @@ export function Providers({ children }: { children: ReactNode }) {
     <ThemeProvider initialColorMode={initialColorMode as 'light' | 'dark' | 'system'}>
       <Web3Provider>
         <ApolloClientProvider>
-          <ApolloGlobalDataProvider>
-            <UserSettingsProvider
-              initCurrency={initCurrency}
-              initSlippage={initSlippage}
-              initEnableSignatures={initEnableSignatures}
-              initPoolListView={initPoolListView}
-            >
-              <RecentTransactionsProvider>
-                <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
-              </RecentTransactionsProvider>
-            </UserSettingsProvider>
-          </ApolloGlobalDataProvider>
+          {/*<ApolloGlobalDataProvider>*/}
+          <UserSettingsProvider
+            initCurrency={initCurrency}
+            initSlippage={initSlippage}
+            initEnableSignatures={initEnableSignatures}
+            initPoolListView={initPoolListView}
+          >
+            <RecentTransactionsProvider>
+              <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+            </RecentTransactionsProvider>
+          </UserSettingsProvider>
+          {/*</ApolloGlobalDataProvider>*/}
         </ApolloClientProvider>
       </Web3Provider>
     </ThemeProvider>
