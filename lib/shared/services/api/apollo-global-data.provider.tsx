@@ -51,12 +51,12 @@ export async function ApolloGlobalDataProvider({ children }: React.PropsWithChil
   const exchangeRates = await getFxRates()
 
   return (
-    /*<TokensProvider
+    <TokensProvider
       tokensData={tokensQueryData}
       tokenPricesData={tokenPricesQueryData}
       variables={tokensQueryVariables}
-    >*/
-    <FiatFxRatesProvider data={exchangeRates}>{children}</FiatFxRatesProvider>
-    /*</TokensProvider>*/
+    >
+      <FiatFxRatesProvider data={exchangeRates}>{children}</FiatFxRatesProvider>
+    </TokensProvider>
   )
 }

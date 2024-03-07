@@ -139,7 +139,7 @@ export function TokensProvider({
   tokenPricesData: GetTokenPricesQuery
   variables: GetTokensQueryVariables
 }) {
-  useSeedApolloCache({
+  /*useSeedApolloCache({
     query: GetTokensDocument,
     data: tokensData,
     variables,
@@ -147,7 +147,7 @@ export function TokensProvider({
   useSeedApolloCache({
     query: GetTokenPricesDocument,
     data: tokenPricesData,
-  })
+  })*/
 
   const tokens = _useTokens(tokensData, tokenPricesData, variables)
 
