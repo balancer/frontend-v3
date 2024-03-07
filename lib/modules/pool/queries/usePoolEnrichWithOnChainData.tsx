@@ -70,7 +70,9 @@ async function updateWithOnChainBalanceData({
   const pricesMap = keyBy(tokenPrices, 'address')
   const clone = cloneDeep(pool)
 
+  console.log('supplyMap[pool.id].totalSupply', supplyMap[pool.id].totalSupply)
   clone.dynamicData.totalShares = formatUnits(supplyMap[pool.id].totalSupply, 18)
+  console.log('clone.dynamicData.totalShares:', clone.dynamicData.totalShares)
 
   for (const token of clone.tokens) {
     if (
@@ -88,6 +90,7 @@ async function updateWithOnChainBalanceData({
       token.__typename === 'GqlPoolTokenLinear' ||
       token.__typename === 'GqlPoolTokenComposableStable'
     ) {
+      // DIVISION BY ZERO AS supplyMap[token.pool.id].totalSupply is 0n
       const percentOfNestedSupply =
         (balancesMap[pool.id].balances[token.index] * WAD) / supplyMap[token.pool.id].totalSupply
 

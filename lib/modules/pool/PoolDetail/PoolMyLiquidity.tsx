@@ -106,7 +106,7 @@ export default function PoolMyLiquidity() {
   function tokenBalanceFor(tokenAddress: string) {
     if (!isConnected || isConnecting) return '0'
 
-    return poolTokenBalancesForTab[tokenAddress].amount
+    return poolTokenBalancesForTab[tokenAddress]?.amount //TODO optional amount until we fix tokens vs display tokens issue
   }
 
   const canStake = pool.staking
