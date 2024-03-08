@@ -1,4 +1,4 @@
-import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
+import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
 import { CommonStepProps, OnStepCompleted, StepConfig } from '../../pool/actions/useIterateSteps'

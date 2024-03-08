@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { FlowStep, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 import { useEffect } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
-import { useUpdateCurrentFlowStep } from '../../../../shared/components/btns/transaction-steps/useCurrentFlowStep'
+import { useUpdateCurrentFlowStep } from '../../../transactions/transaction-steps/useCurrentFlowStep'
 import { usePool } from '../../usePool'
 
 export function useConstructAddLiquidityStep() {

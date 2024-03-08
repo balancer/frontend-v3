@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { FlowStep, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { useHasMinterApproval } from './useHasMinterApproval'

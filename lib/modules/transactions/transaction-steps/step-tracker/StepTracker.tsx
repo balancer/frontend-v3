@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react'
 
 import { useCurrentFlowStep } from '../useCurrentFlowStep'
-import { StepConfig } from '../../../../../modules/pool/actions/useIterateSteps'
+import { StepConfig } from '../../../pool/actions/useIterateSteps'
 import { Step, StepIndicator } from './Step'
 import { StepProps } from './getStepSettings'
 import { SupportedChainId } from '@/lib/config/config.types'

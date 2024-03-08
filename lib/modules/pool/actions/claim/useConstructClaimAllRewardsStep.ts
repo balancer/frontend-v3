@@ -1,4 +1,4 @@
-import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { FlowStep, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useUserAccount } from '../../../web3/useUserAccount'
 import { useManagedTransaction } from '../../../web3/contracts/useManagedTransaction'
 import { useClaimCallDataQuery } from './useClaimCallDataQuery'

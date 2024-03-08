@@ -1,7 +1,7 @@
 'use client'
 
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { FlowStep } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { PropsWithChildren, createContext, useEffect, useState } from 'react'
 

@@ -18,7 +18,7 @@ import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address } from 'viem'
 import { toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useIterateSteps } from '../useIterateSteps'
 import { useRemoveLiquidityStepConfigs } from './modal/useRemoveLiquidityStepConfigs'
 

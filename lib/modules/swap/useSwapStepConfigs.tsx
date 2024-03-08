@@ -1,5 +1,5 @@
 import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useTokenApprovalConfigs'
-import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { SwapButton } from './SwapButton'
 import { useMemo } from 'react'
