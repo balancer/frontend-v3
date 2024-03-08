@@ -5012,6 +5012,8 @@ export type GetFeaturedPoolsQuery = {
             lifetimeVolume: string
             lifetimeSwapFees: string
             holdersCount: string
+            isInRecoveryMode: boolean
+            isPaused: boolean
             swapsCount: string
             sharePriceAth: string
             sharePriceAthTimestamp: number
@@ -5217,6 +5219,8 @@ export type GetFeaturedPoolsQuery = {
             lifetimeVolume: string
             lifetimeSwapFees: string
             holdersCount: string
+            isInRecoveryMode: boolean
+            isPaused: boolean
             swapsCount: string
             sharePriceAth: string
             sharePriceAthTimestamp: number
@@ -5568,6 +5572,8 @@ export type GetFeaturedPoolsQuery = {
             lifetimeVolume: string
             lifetimeSwapFees: string
             holdersCount: string
+            isInRecoveryMode: boolean
+            isPaused: boolean
             swapsCount: string
             sharePriceAth: string
             sharePriceAthTimestamp: number
@@ -5932,6 +5938,8 @@ export type GetFeaturedPoolsQuery = {
             lifetimeVolume: string
             lifetimeSwapFees: string
             holdersCount: string
+            isInRecoveryMode: boolean
+            isPaused: boolean
             swapsCount: string
             sharePriceAth: string
             sharePriceAthTimestamp: number
@@ -6139,6 +6147,8 @@ export type GetFeaturedPoolsQuery = {
             lifetimeVolume: string
             lifetimeSwapFees: string
             holdersCount: string
+            isInRecoveryMode: boolean
+            isPaused: boolean
             swapsCount: string
             sharePriceAth: string
             sharePriceAthTimestamp: number
@@ -6486,6 +6496,8 @@ export type GetFeaturedPoolsQuery = {
             lifetimeVolume: string
             lifetimeSwapFees: string
             holdersCount: string
+            isInRecoveryMode: boolean
+            isPaused: boolean
             swapsCount: string
             sharePriceAth: string
             sharePriceAthTimestamp: number
@@ -6689,6 +6701,8 @@ export type GetFeaturedPoolsQuery = {
             lifetimeVolume: string
             lifetimeSwapFees: string
             holdersCount: string
+            isInRecoveryMode: boolean
+            isPaused: boolean
             swapsCount: string
             sharePriceAth: string
             sharePriceAthTimestamp: number
@@ -6892,6 +6906,8 @@ export type GetFeaturedPoolsQuery = {
             lifetimeVolume: string
             lifetimeSwapFees: string
             holdersCount: string
+            isInRecoveryMode: boolean
+            isPaused: boolean
             swapsCount: string
             sharePriceAth: string
             sharePriceAthTimestamp: number
@@ -7239,6 +7255,8 @@ export type GetFeaturedPoolsQuery = {
             lifetimeVolume: string
             lifetimeSwapFees: string
             holdersCount: string
+            isInRecoveryMode: boolean
+            isPaused: boolean
             swapsCount: string
             sharePriceAth: string
             sharePriceAthTimestamp: number
@@ -12783,6 +12801,8 @@ export const GetFeaturedPoolsDocument = {
                             { kind: 'Field', name: { kind: 'Name', value: 'lifetimeVolume' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'lifetimeSwapFees' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'holdersCount' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'isInRecoveryMode' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'isPaused' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'swapsCount' } },
                             { kind: 'Field', name: { kind: 'Name', value: 'sharePriceAth' } },
                             {
