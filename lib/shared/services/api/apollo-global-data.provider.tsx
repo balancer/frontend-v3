@@ -31,7 +31,7 @@ export async function ApolloGlobalDataProvider({ children }: React.PropsWithChil
     variables: tokensQueryVariables,
     context: {
       fetchOptions: {
-        next: { revalidate: 300 }, // 5 minutes, but this could potentially be longer
+        next: { revalidate: 600 }, // 10 minutes, but this could potentially be longer
       },
     },
   })

@@ -15,7 +15,11 @@ export function _usePoolList(initialData: GetPoolsQuery) {
 
   const { data, loading, previousData, refetch, networkStatus, error } = useQuery(
     GetPoolsDocument,
-    { variables: queryVariables, notifyOnNetworkStatusChange: true, skip: true } // skip initial fetch on mount so that initialData is used
+    {
+      variables: queryVariables,
+      notifyOnNetworkStatusChange: true,
+      skip: true, // skip initial fetch on mount so that initialData is used
+    }
   )
 
   const pools = loading && previousData ? previousData.pools : data?.pools || initialData.pools
