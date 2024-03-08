@@ -21,7 +21,7 @@ import { useDisclosure } from '@chakra-ui/hooks'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useIterateSteps } from '../useIterateSteps'
 import { useRemoveLiquidityStepConfigs } from './modal/useRemoveLiquidityStepConfigs'
-import { isComposableStable } from '../../pool.helpers'
+import { hasNestedPools } from '../../pool.helpers'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -76,7 +76,7 @@ export function _useRemoveLiquidity() {
   const isSingleToken = removalType === RemoveLiquidityType.SingleToken
   const isProportional = removalType === RemoveLiquidityType.Proportional
 
-  const tokenFilter = !isComposableStable(pool.type)
+  const tokenFilter = hasNestedPools(pool)
     ? (token: GqlPoolTokenExpanded) => !token.isNested
     : (token: GqlPoolTokenExpanded) => token.isMainToken
 
