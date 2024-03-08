@@ -29,6 +29,7 @@ import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
 import { SignRelayerButton } from '@/lib/shared/components/btns/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
+import { shouldUseRecoveryRemoveLiquidity } from '../../LiquidityActionHelpers'
 
 type Props = {
   isOpen: boolean
@@ -154,7 +155,7 @@ export function RemoveLiquidityModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          {shouldSignRelayerApproval ? (
+          {shouldSignRelayerApproval && !shouldUseRecoveryRemoveLiquidity(pool) ? (
             <SignRelayerButton />
           ) : (
             <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>

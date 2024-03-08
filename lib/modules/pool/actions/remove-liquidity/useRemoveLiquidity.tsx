@@ -16,11 +16,12 @@ import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquidityS
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address } from 'viem'
-import { shouldUseRecoveryRemoveLiquidity, toHumanAmount } from '../LiquidityActionHelpers'
+import { toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useIterateSteps } from '../useIterateSteps'
 import { useRemoveLiquidityStepConfigs } from './modal/useRemoveLiquidityStepConfigs'
+import { isComposableStable } from '../../pool.helpers'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -75,7 +76,7 @@ export function _useRemoveLiquidity() {
   const isSingleToken = removalType === RemoveLiquidityType.SingleToken
   const isProportional = removalType === RemoveLiquidityType.Proportional
 
-  const tokenFilter = shouldUseRecoveryRemoveLiquidity(pool)
+  const tokenFilter = !isComposableStable(pool.type)
     ? (token: GqlPoolTokenExpanded) => !token.isNested
     : (token: GqlPoolTokenExpanded) => token.isMainToken
 

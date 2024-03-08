@@ -19,7 +19,7 @@ import {
 import { keyBy } from 'lodash'
 import { Hex, formatUnits, parseUnits } from 'viem'
 import { Address } from 'wagmi'
-import { hasNestedPools, isComposableStable, isGyro } from '../pool.helpers'
+import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
 import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
@@ -157,13 +157,12 @@ export function shouldUseRecoveryRemoveLiquidity(pool: Pool) {
   // (in recovery but not paused):
   if (pool.dynamicData.isInRecoveryMode) return true
 
+  // All composableStables v1 are in recovery mode
+  if (isComposableStableV1(pool)) return true
+
   if (pool.dynamicData.isInRecoveryMode && pool.dynamicData.isPaused) return true
 
   if (pool.dynamicData.isInRecoveryMode && isAffectedByCspIssue(pool)) return true
-
-  // Old boosted pools
-  if (isComposableStable(pool.type) && pool.version === 0) return true
-  // const isNotDeepAndCsV1 = !isDeep(pool) && isComposableStableV1(pool);
 }
 
 export function requiresProportionalInput(poolType: GqlPoolType) {

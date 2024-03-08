@@ -4,12 +4,13 @@ import { TransactionState } from '@/lib/shared/components/btns/transaction-steps
 import { RemoveLiquidityButton } from '../RemoveLiquidityButton'
 import { StepConfig } from '../../useIterateSteps'
 import { usePool } from '../../../usePool'
+import { shouldUseRecoveryRemoveLiquidity } from '../../LiquidityActionHelpers'
 
 export function useRemoveLiquidityStepConfigs(
   setRemoveLiquidityTxState: (transactionState: TransactionState) => void
 ) {
   const relayerMode = useRelayerMode()
-  const { chainId } = usePool()
+  const { chainId, pool } = usePool()
 
   let stepConfigs: StepConfig[] = [
     {
@@ -20,7 +21,7 @@ export function useRemoveLiquidityStepConfigs(
     },
   ]
 
-  if (relayerMode === 'approveRelayer') {
+  if (relayerMode === 'approveRelayer' && !shouldUseRecoveryRemoveLiquidity(pool)) {
     stepConfigs = [getApproveRelayerConfig(chainId), ...stepConfigs]
   }
 
