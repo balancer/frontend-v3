@@ -28,7 +28,9 @@ export function getStepSettings({ step, currentIndex, index, colorMode, flowStep
 
   function getStatus(index: number): StepStatus {
     if (index < currentIndex) return 'complete'
-    if (index === currentIndex) return 'active'
+    // When the last step is complete
+    if (isActive && flowStep?.result.isSuccess) return 'complete'
+    if (isActive) return 'active'
     return 'incomplete'
   }
 
@@ -67,7 +69,6 @@ function getActiveColor(flowStep?: FlowStep) {
 function isLoading(status: StepStatus, flowStep?: FlowStep): boolean {
   if (!flowStep) return false
   if (status !== 'active') return false
-
   if (getTransactionState(flowStep) === TransactionState.Loading) {
     return true
   }

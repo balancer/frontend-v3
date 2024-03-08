@@ -29,5 +29,5 @@ export function useUpdateCurrentFlowStep(step: FlowStep) {
   const { setCurrentFlowStep } = useCurrentFlowStep()
   useEffect(() => {
     setCurrentFlowStep(step)
-  }, [step.id, step.simulation.status, step.execution.status])
+  }, [step.id, step.simulation.status, step.execution.status, step.result.status])
 }
