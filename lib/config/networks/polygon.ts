@@ -13,7 +13,10 @@ const networkConfig: NetworkConfig = {
   rpcUrl: 'https://polygon-mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
   blockExplorerBaseUrl: 'https://polygonscan.com',
   tokens: {
-    balToken: { address: '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3' },
+    addresses: {
+      bal: '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3',
+      wNativeAsset: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
+    },
     nativeAsset: {
       name: 'Matic',
       address: '0x0000000000000000000000000000000000001010',

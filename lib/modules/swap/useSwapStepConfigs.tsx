@@ -5,14 +5,13 @@ import { SwapButton } from './SwapButton'
 import { useMemo } from 'react'
 import { Address, parseUnits } from 'viem'
 import { RawAmount } from '../tokens/approvals/approval-rules'
-import { useVault } from '@/lib/shared/hooks/useVault'
 import { StepConfig } from '../pool/actions/useIterateSteps'
 
 type Params = {
   humanAmountIn: string
   tokenIn: GqlToken | undefined
   selectedChain: GqlChain
-  vaultVersion: number
+  vaultAddress: Address
   setSwapTxState: (transactionState: TransactionState) => void
 }
 
@@ -20,11 +19,9 @@ export function useSwapStepConfigs({
   humanAmountIn,
   tokenIn,
   selectedChain,
-  vaultVersion = 2,
+  vaultAddress,
   setSwapTxState,
 }: Params) {
-  const { vaultAddress } = useVault(vaultVersion)
-
   const tokenInAmounts = useMemo(() => {
     if (!tokenIn) return [] as RawAmount[]
     return [

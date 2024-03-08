@@ -11,7 +11,10 @@ const networkConfig: NetworkConfig = {
   rpcUrl: 'https://sepolia.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
   blockExplorerBaseUrl: 'https://sepolia.etherscan.io',
   tokens: {
-    balToken: { address: '0xb19382073c7a0addbb56ac6af1808fa49e377b75' },
+    addresses: {
+      bal: '0xb19382073c7a0addbb56ac6af1808fa49e377b75',
+      wNativeAsset: '0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9',
+    },
     nativeAsset: {
       name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
