@@ -20,9 +20,9 @@ export type StepProps = {
   It handles title, colors, loading states, etc
 */
 export function getStepSettings({ step, currentIndex, index, colorMode, flowStep }: StepProps) {
-  const color = getColor(colorMode, getStatus(index), flowStep)
-
   const isActive = index === currentIndex
+
+  const color = getColor(colorMode, getStatus(index), flowStep)
 
   const stepNumber = index + 1
 
