@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import DarkModeToggle from '../btns/DarkModeToggle'
-import { Box, Stack, HStack } from '@chakra-ui/react'
+import { Box, Stack, HStack, BoxProps } from '@chakra-ui/react'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { BalancerLogo } from '../imgs/BalancerLogo'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
@@ -14,18 +14,18 @@ type Props = {
   rightSlot?: React.ReactNode
 }
 
-export function Navbar({ leftSlot, rightSlot }: Props) {
+export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
   const { isMobile } = useBreakpoints()
 
   return (
-    <Box w="full">
+    <Box w="full" {...rest}>
       <Stack
         flexDirection={{ base: 'column', md: 'row' }}
         justify={{ base: 'flex-start', md: 'space-between' }}
         fontWeight="medium"
         as="nav"
       >
-        <HStack padding="md" order={{ md: '2' }}>
+        <HStack padding="md" order={{ md: '2' }} onClick={e => e.stopPropagation()}>
           {rightSlot || (
             <>
               <RecentTransactions />
@@ -35,7 +35,7 @@ export function Navbar({ leftSlot, rightSlot }: Props) {
             </>
           )}
         </HStack>
-        <HStack padding="md" spacing="lg">
+        <HStack padding="md" spacing="lg" onClick={e => e.stopPropagation()}>
           {leftSlot || (
             <>
               <Link href="/" prefetch={true}>
