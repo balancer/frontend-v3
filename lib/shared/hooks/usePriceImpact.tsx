@@ -13,9 +13,9 @@ export function _usePriceImpact() {
   const [hasToAcceptHighPriceImpact, setHasToAcceptHighPriceImpact] = useState(false)
 
   function getPriceImpactLevel(priceImpact: number) {
-    if (priceImpact < 0.005) return 'low'
-    if (priceImpact < 0.01) return 'medium'
-    if (priceImpact < 0.05) return 'high'
+    if (priceImpact < 0.005) return 'low' // 0.5%
+    if (priceImpact < 0.01) return 'medium' // 1%
+    if (priceImpact < 0.05) return 'high' // 5%
     return 'max'
   }
   function getPriceImpactColor(priceImpactLevel: PriceImpactLevel) {
