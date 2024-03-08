@@ -2,11 +2,7 @@
 'use client'
 
 import { createContext, ReactNode, useEffect } from 'react'
-import {
-  GetPoolsDocument,
-  GetPoolsQuery,
-  GetPoolsQueryVariables,
-} from '@/lib/shared/services/api/generated/graphql'
+import { GetPoolsDocument, GetPoolsQuery } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
@@ -19,7 +15,7 @@ export function _usePoolList(initialData: GetPoolsQuery) {
 
   const { data, loading, previousData, refetch, networkStatus, error } = useQuery(
     GetPoolsDocument,
-    { variables: queryVariables, notifyOnNetworkStatusChange: true }
+    { variables: queryVariables, notifyOnNetworkStatusChange: true, skip: true } // skip initial fetch on mount so that initialData is used
   )
 
   const pools = loading && previousData ? previousData.pools : data?.pools || initialData.pools
@@ -44,15 +40,7 @@ export function _usePoolList(initialData: GetPoolsQuery) {
 
 export const PoolListContext = createContext<ReturnType<typeof _usePoolList> | null>(null)
 
-export function PoolListProvider({
-  children,
-  data,
-  variables,
-}: {
-  children: ReactNode
-  data: GetPoolsQuery
-  variables: GetPoolsQueryVariables
-}) {
+export function PoolListProvider({ children, data }: { children: ReactNode; data: GetPoolsQuery }) {
   const hook = _usePoolList(data)
 
   return <PoolListContext.Provider value={hook}>{children}</PoolListContext.Provider>

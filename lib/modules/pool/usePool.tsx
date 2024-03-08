@@ -35,6 +35,7 @@ export function _usePool({
 
   const { data } = useQuery(GetPoolDocument, {
     variables: { id, chain, userAddress },
+    skip: true, // skip initial fetch on mount so that initialData is used
   })
 
   // TODO: usePoolEnrichWithOnChainData is v2 specific. We need to make this more generic.
@@ -85,8 +86,7 @@ export function PoolProvider({
   variant,
   children,
   data,
-  variables,
-}: PropsWithChildren<FetchPoolProps> & { data: GetPoolQuery; variables: GetPoolQueryVariables }) {
+}: PropsWithChildren<FetchPoolProps> & { data: GetPoolQuery }) {
   const hook = _usePool({ id, chain, variant, initialData: data })
   const payload = {
     ...hook,

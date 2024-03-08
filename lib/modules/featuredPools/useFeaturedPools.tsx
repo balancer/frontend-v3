@@ -4,7 +4,6 @@ import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import {
   GetFeaturedPoolsDocument,
   GetFeaturedPoolsQuery,
-  GetFeaturedPoolsQueryVariables,
 } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
@@ -14,6 +13,7 @@ export function _useFeaturedPools(initialData: GetFeaturedPoolsQuery) {
   const { supportedNetworks } = getProjectConfig()
   const { data, loading, networkStatus, error } = useQuery(GetFeaturedPoolsDocument, {
     variables: { chains: supportedNetworks },
+    skip: true, // skip initial fetch on mount so that initialData is used
   })
 
   return {
@@ -29,11 +29,9 @@ export const FeaturedPoolsContext = createContext<ReturnType<typeof _useFeatured
 export function FeaturedPoolsProvider({
   children,
   data,
-  variables,
 }: {
   children: ReactNode
   data: GetFeaturedPoolsQuery
-  variables: GetFeaturedPoolsQueryVariables
 }) {
   const hook = _useFeaturedPools(data)
 

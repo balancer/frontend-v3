@@ -31,8 +31,9 @@ export function _useTokens(
 ) {
   const networkConfig = useNetworkConfig()
 
-  const { data: tokensData } = useQuery(GetTokensDocument, { variables })
-  const { data: tokenPricesData } = useQuery(GetTokenPricesDocument)
+  // skip initial fetch on mount so that initialData is used
+  const { data: tokensData } = useQuery(GetTokensDocument, { variables, skip: true })
+  const { data: tokenPricesData } = useQuery(GetTokenPricesDocument, { skip: true })
 
   const tokens = tokensData?.tokens || initTokenData.tokens
   const prices = tokenPricesData?.tokenPrices || initTokenPricesData.tokenPrices
