@@ -23,8 +23,8 @@ import { SwapHandler } from './handlers/Swap.handler'
 import { useIterateSteps } from '../pool/actions/useIterateSteps'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useVault } from '@/lib/shared/hooks/useVault'
-import { NativeWrapUnwrapHandler } from './handlers/NativeWrapUnwrap.handler'
-import { isNativeWrapUnwrap } from './useWrapping'
+import { NativeWrapHandler } from './handlers/NativeWrap.handler'
+import { getWrapHandler, isNativeWrap, isSupportedWrap } from './useWrapping'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -51,9 +51,20 @@ function selectSwapHandler(
   chain: GqlChain,
   apolloClient: ApolloClient<object>
 ): SwapHandler {
-  if (isNativeWrapUnwrap(tokenInAddress, tokenOutAddress, chain)) {
-    return new NativeWrapUnwrapHandler(apolloClient)
+  console.log('Selecting handler')
+
+  if (isNativeWrap(tokenInAddress, tokenOutAddress, chain)) {
+    console.log('NativeWrapHandler')
+
+    return new NativeWrapHandler(apolloClient)
+  } else if (isSupportedWrap(tokenInAddress, tokenOutAddress, chain)) {
+    console.log('SupportedWrapHandler')
+
+    const wrapHandler = getWrapHandler(tokenInAddress, tokenOutAddress, chain)
+    return new wrapHandler(apolloClient)
   }
+  console.log('DefaultSwapHandler')
+
   return new DefaultSwapHandler(apolloClient)
 }
 

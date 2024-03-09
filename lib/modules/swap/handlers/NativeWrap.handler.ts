@@ -7,7 +7,7 @@ import { WrapType, getWrapType } from '../useWrapping'
 import { encodeFunctionData } from 'viem'
 import { Hex } from 'viem'
 
-export class NativeWrapUnwrapHandler implements SwapHandler {
+export class NativeWrapHandler implements SwapHandler {
   constructor(public apolloClient: ApolloClient<object>) {}
 
   async simulate({ ...variables }: SimulateSwapInputs): Promise<SimulateSwapResponse> {
@@ -22,7 +22,7 @@ export class NativeWrapUnwrapHandler implements SwapHandler {
 
   build({ tokenIn, tokenOut, account, selectedChain }: SdkBuildSwapInputs): TransactionConfig {
     const wrapType = getWrapType(tokenIn.address, tokenOut.address, selectedChain)
-    if (!wrapType) throw new Error('NativeWrapUnwrapHandler called with non valid wrap tokens')
+    if (!wrapType) throw new Error('NativeWrapHandler called with non valid wrap tokens')
 
     const { tokens } = getNetworkConfig(selectedChain)
 
@@ -33,7 +33,7 @@ export class NativeWrapUnwrapHandler implements SwapHandler {
       data = this.buildUnwrapCallData(tokenIn.scaledAmount)
     }
 
-    if (!data) throw new Error('NativeWrapUnwrapHandler could not build data')
+    if (!data) throw new Error('NativeWrapHandler could not build data')
 
     const value = wrapType === WrapType.WRAP ? tokenIn.scaledAmount : BigInt(0)
 
