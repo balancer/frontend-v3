@@ -14,7 +14,7 @@ import {
 
 import { useClaimStepConfigs } from '../../pool/actions/claim/useClaimStepConfigs'
 import { PoolListItem } from '../../pool/pool.types'
-import { useIterateSteps } from '../../pool/actions/useIterateSteps'
+import { useIterateSteps } from '../../transactions/transaction-steps/useIterateSteps'
 
 type Props = {
   isOpen: boolean

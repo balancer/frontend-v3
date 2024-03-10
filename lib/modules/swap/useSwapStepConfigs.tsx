@@ -5,7 +5,7 @@ import { SwapButton } from './SwapButton'
 import { useMemo } from 'react'
 import { Address, parseUnits } from 'viem'
 import { RawAmount } from '../tokens/approvals/approval-rules'
-import { StepConfig } from '../pool/actions/useIterateSteps'
+import { StepConfig } from '../transactions/transaction-steps/useIterateSteps'
 
 type Params = {
   humanAmountIn: string

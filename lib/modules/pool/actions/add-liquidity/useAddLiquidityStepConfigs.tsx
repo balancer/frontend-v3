@@ -6,7 +6,7 @@ import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
 import { getApproveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { AddLiquidityButton } from './AddLiquidityButton'
-import { StepConfig } from '../useIterateSteps'
+import { StepConfig } from '../../../transactions/transaction-steps/useIterateSteps'
 
 export function useAddLiquidityStepConfigs(
   inputAmounts: InputAmount[],

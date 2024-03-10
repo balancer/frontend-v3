@@ -1,7 +1,11 @@
 import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
-import { CommonStepProps, OnStepCompleted, StepConfig } from '../../pool/actions/useIterateSteps'
+import {
+  CommonStepProps,
+  OnStepCompleted,
+  StepConfig,
+} from '../../transactions/transaction-steps/useIterateSteps'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { useTokens } from '../useTokens'

@@ -1,5 +1,9 @@
 import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
-import { CommonStepProps, OnStepCompleted, StepConfig } from '../pool/actions/useIterateSteps'
+import {
+  CommonStepProps,
+  OnStepCompleted,
+  StepConfig,
+} from '../transactions/transaction-steps/useIterateSteps'
 import { useConstructApproveRelayerStep } from './useConstructApproveRelayerStep'
 import { SupportedChainId } from '@/lib/config/config.types'
 
