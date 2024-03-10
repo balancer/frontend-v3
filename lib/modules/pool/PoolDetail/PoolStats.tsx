@@ -97,7 +97,14 @@ export default function PoolStats() {
         p="4"
       >
         <GridItem position="relative" colSpan={2} rowSpan={2}>
-          <NoisyCard {...commonNoisyCardProps}>
+          <NoisyCard
+            cardProps={{
+              ...commonNoisyCardProps.cardProps,
+              borderTopRightRadius: 'none',
+              borderBottomRightRadius: 'none',
+            }}
+            contentProps={commonNoisyCardProps.contentProps}
+          >
             <MainZenSymbol poolType={pool.type} />
             <Box mt="-6">
               <PoolWeightChart pool={pool} chain={chain} />
@@ -105,7 +112,16 @@ export default function PoolStats() {
           </NoisyCard>
         </GridItem>
         <GridItem colSpan={1} rowSpan={1}>
-          <NoisyCard {...commonNoisyCardProps}>
+          <NoisyCard
+            cardProps={{
+              ...commonNoisyCardProps.cardProps,
+              borderTopRightRadius: 'none',
+              borderBottomRightRadius: 'none',
+              borderBottomLeftRadius: 'none',
+              borderTopLeftRadius: 'none',
+            }}
+            contentProps={commonNoisyCardProps.contentProps}
+          >
             <ZenCircle sizePx="225px" />
             <VStack spacing="4" m="auto">
               <ElevatedIcon as={Shield} sizePx="48px" boxSize={5} />
@@ -125,7 +141,15 @@ export default function PoolStats() {
           </NoisyCard>
         </GridItem>
         <GridItem colSpan={1} rowSpan={1}>
-          <NoisyCard {...commonNoisyCardProps}>
+          <NoisyCard
+            cardProps={{
+              ...commonNoisyCardProps.cardProps,
+              borderBottomLeftRadius: 'none',
+              borderTopLeftRadius: 'none',
+              borderBottomRightRadius: 'none',
+            }}
+            contentProps={commonNoisyCardProps.contentProps}
+          >
             <ZenDiamond widthPx="225px" heightPx="225px" />
             <VStack spacing="4" m="auto">
               <ElevatedIcon as={Gift} sizePx="48px" boxSize={5} />
@@ -148,7 +172,16 @@ export default function PoolStats() {
           </NoisyCard>
         </GridItem>
         <GridItem colSpan={1} rowSpan={1}>
-          <NoisyCard {...commonNoisyCardProps}>
+          <NoisyCard
+            cardProps={{
+              ...commonNoisyCardProps.cardProps,
+              borderBottomRightRadius: 'none',
+              borderTopRightRadius: 'none',
+              borderBottomLeftRadius: 'none',
+              borderTopLeftRadius: 'none',
+            }}
+            contentProps={commonNoisyCardProps.contentProps}
+          >
             <ZenSquare sizePx="225px" />
             <VStack spacing="4" m="auto">
               <ElevatedIcon as={BarChart} sizePx="48px" boxSize={5} />
@@ -168,7 +201,15 @@ export default function PoolStats() {
           </NoisyCard>
         </GridItem>
         <GridItem colSpan={1} rowSpan={1}>
-          <NoisyCard {...commonNoisyCardProps}>
+          <NoisyCard
+            cardProps={{
+              ...commonNoisyCardProps.cardProps,
+              borderBottomLeftRadius: 'none',
+              borderTopRightRadius: 'none',
+              borderTopLeftRadius: 'none',
+            }}
+            contentProps={commonNoisyCardProps.contentProps}
+          >
             <ZenCircle sizePx="225px" />
             <VStack spacing="4" m="auto">
               <ElevatedIcon as={Users} sizePx="48px" boxSize={5} />

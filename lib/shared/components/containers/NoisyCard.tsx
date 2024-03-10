@@ -13,8 +13,6 @@ export function NoisyCard({ children, cardProps = {}, contentProps = {} }: Noisy
       height="full"
       width="full"
       rounded="sm"
-      borderTopRightRadius="none"
-      borderBottomRightRadius="none"
       position="relative"
       {...cardProps}
     >
