@@ -15,15 +15,7 @@ type Props = {
 
 export default function ButtonGroup({ currentOption, options, onChange, size }: Props) {
   return (
-    <HStack
-      rounded="md"
-      p="1"
-      backgroundColor="background.card.level5"
-      spacing="1"
-      borderColor="borderColor"
-      shadow="sm"
-      borderWidth={1}
-    >
+    <HStack rounded="md" p="1" spacing="1" shadow="innerXl">
       {options.map(option => {
         const isActive = currentOption.value === option.value
         return (

@@ -1,4 +1,4 @@
-import { HStack, Stack, VStack } from '@chakra-ui/react'
+import { Grid, GridItem, HStack, Stack, VStack } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
 import PoolStats from './PoolStats'
 import PoolMyLiquidity from './PoolMyLiquidity'
@@ -11,23 +11,28 @@ export async function PoolDetail() {
   return (
     <Stack width="full">
       {/* {loading && <Text>Loading...</Text>} */}
-      <VStack width="full" spacing="16">
-        <VStack alignItems="flex-start" width="full" spacing="5">
-          <PoolMetaBadges />
-          <PoolStats />
-          <HStack width="full" spacing="4">
-            <PoolMyLiquidity />
-            <PoolIncentives />
-          </HStack>
-          <HStack width="full" spacing="4">
-            <PoolComposition />
-          </HStack>
-          <HStack width="full" spacing="4">
-            <PoolChart />
-          </HStack>
-        </VStack>
+      <Grid width="full" rowGap="5" templateColumns="1fr 1fr">
+        <GridItem colSpan={2}>
+          <VStack alignItems="flex-start" spacing="5">
+            <PoolMetaBadges />
+            <PoolStats />
+          </VStack>
+        </GridItem>
+        <GridItem colSpan={2}>
+          <PoolMyLiquidity />
+        </GridItem>
+        <GridItem colSpan={2}>
+          <PoolIncentives />
+        </GridItem>
+        <HStack width="full" spacing="4"></HStack>
+        <HStack width="full" spacing="4">
+          <PoolComposition />
+        </HStack>
+        <HStack width="full" spacing="4">
+          <PoolChart />
+        </HStack>
         <PoolAccordion />
-      </VStack>
+      </Grid>
     </Stack>
   )
 }
