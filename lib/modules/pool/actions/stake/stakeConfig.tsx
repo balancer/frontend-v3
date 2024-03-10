@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { StepConfig } from '../useIterateSteps'
+import { StepConfig } from '../../../transactions/transaction-steps/useIterateSteps'
 import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
 import { useEffect, useState } from 'react'
 import { usePool } from '../../usePool'

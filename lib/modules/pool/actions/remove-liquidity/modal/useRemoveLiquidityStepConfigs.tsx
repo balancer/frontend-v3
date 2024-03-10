@@ -2,7 +2,7 @@ import { getApproveRelayerConfig } from '@/lib/modules/relayer/approveRelayerCon
 import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
 import { RemoveLiquidityButton } from '../RemoveLiquidityButton'
-import { StepConfig } from '../../useIterateSteps'
+import { StepConfig } from '../../../../transactions/transaction-steps/useIterateSteps'
 import { usePool } from '../../../usePool'
 
 export function useRemoveLiquidityStepConfigs(

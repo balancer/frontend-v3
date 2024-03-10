@@ -17,7 +17,7 @@ import { BalTokenReward } from '@/lib/modules/portfolio/useBalRewards'
 import { ClaimableReward } from '@/lib/modules/portfolio/claim/useClaimableBalances'
 import { useClaimStepConfigs } from './useClaimStepConfigs'
 import { PoolListItem } from '../../pool.types'
-import { useIterateSteps } from '../useIterateSteps'
+import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 
 type Props = {
   isOpen: boolean
