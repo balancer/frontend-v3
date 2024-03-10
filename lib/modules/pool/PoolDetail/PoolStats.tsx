@@ -7,6 +7,7 @@ import {
   Card,
   Grid,
   GridItem,
+  HStack,
   Heading,
   Icon,
   Skeleton,
@@ -26,6 +27,7 @@ import { ZenDiamond } from '@/lib/shared/components/zen/ZenDiamond'
 import { BarChart, Gift, Shield, Users } from 'react-feather'
 import { ElevatedIcon } from '@/lib/shared/components/icons/ElevatedIcon'
 import { isClp, isStable, isWeighted } from '../pool.helpers'
+import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 
 interface PoolValues {
   totalLiquidity: string
@@ -128,15 +130,18 @@ export default function PoolStats() {
             <VStack spacing="4" m="auto">
               <ElevatedIcon as={Gift} sizePx="48px" boxSize={5} />
               <VStack spacing="0">
-                <Heading fontSize="2xl">
-                  {poolValues ? (
-                    toCurrency(poolValues.totalLiquidity)
-                  ) : (
-                    <Skeleton height="30px" w="100px" />
-                  )}
-                </Heading>
+                <HStack>
+                  <Heading fontSize="2xl">
+                    {poolValues ? (
+                      getAprLabel(pool.dynamicData.apr.apr)
+                    ) : (
+                      <Skeleton height="30px" w="100px" />
+                    )}
+                  </Heading>
+                  <Icon as={StarsIcon} />
+                </HStack>
                 <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm">
-                  Pool value
+                  LP yield APR
                 </Text>
               </VStack>
             </VStack>
