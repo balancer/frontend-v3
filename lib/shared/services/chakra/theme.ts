@@ -172,18 +172,6 @@ export const tokens = {
         border: {
           card: 'red',
         },
-        // background: {
-        //   level0: '#EDEAE3',
-        //   level1: '#EFEDE6',
-        //   level2: '#F1EFE9',
-        //   level3: '#F3F1EC',
-        //   level4: '#F5F3EF',
-        //   level5: '#F7F6F2',
-        //   level6: '#F9F8F6',
-        //   level7: '#FBFAF9',
-        //   level8: '#FDFDFC',
-        //   level9: '#FFFFFF',
-        // },
       },
       // Input colors
       input: {
@@ -270,18 +258,6 @@ export const tokens = {
         border: {
           card: '#4F5764',
         },
-        // background: {
-        //   level0: '#383E47',
-        //   level1: '#3A404A',
-        //   level2: '#3D434D',
-        //   level3: '#3F4550',
-        //   level4: '#414853',
-        //   level5: '#434A56',
-        //   level6: '#464D59',
-        //   level7: '#484F5B',
-        //   level8: '#4A525E',
-        //   level9: '#4C5461',
-        // },
       },
       input: {
         labelFocus: balColors.purple['400'],
@@ -483,44 +459,6 @@ export const balTheme = {
             _dark: tokens.colors.dark.button.background.tertiary,
           },
         },
-        // card: {
-        //   level0: {
-        //     default: tokens.colors.light.card.background.level0,
-        //     _dark: tokens.colors.dark.card.background.level0,
-        //   },
-        //   level1: {
-        //     default: tokens.colors.light.card.background.level1,
-        //     _dark: tokens.colors.dark.card.background.level1,
-        //   },
-        //   level2: {
-        //     default: tokens.colors.light.card.background.level2,
-        //     _dark: tokens.colors.dark.card.background.level2,
-        //   },
-        //   level3: {
-        //     default: tokens.colors.light.card.background.level3,
-        //     _dark: tokens.colors.dark.card.background.level3,
-        //   },
-        //   level4: {
-        //     default: tokens.colors.light.card.background.level4,
-        //     _dark: tokens.colors.dark.card.background.level4,
-        //   },
-        //   level5: {
-        //     default: tokens.colors.light.card.background.level5,
-        //     _dark: tokens.colors.dark.card.background.level5,
-        //   },
-        //   level6: {
-        //     default: tokens.colors.light.card.background.level6,
-        //     _dark: tokens.colors.dark.card.background.level6,
-        //   },
-        //   level7: {
-        //     default: tokens.colors.light.card.background.level7,
-        //     _dark: tokens.colors.dark.card.background.level7,
-        //   },
-        //   level8: {
-        //     default: tokens.colors.light.card.background.level8,
-        //     _dark: tokens.colors.dark.card.background.level8,
-        //   },
-        // },
       },
       input: {
         fontDefault: {
@@ -1319,30 +1257,6 @@ export const balTheme = {
             borderColor: 'border.base',
           },
         },
-        // level5: {
-        //   container: {
-        //     background: 'background.level3',
-        //     borderColor: 'border.base',
-        //   },
-        // },
-        // level6: {
-        //   container: {
-        //     background: 'background.level3',
-        //     borderColor: 'border.base',
-        //   },
-        // },
-        // level7: {
-        //   container: {
-        //     background: 'background.level4',
-        //     borderColor: 'border.base',
-        //   },
-        // },
-        // level8: {
-        //   container: {
-        //     background: 'background.level4',
-        //     borderColor: 'border.base',
-        //   },
-        // },
         gradient: {
           container: {
             width: 'full',
