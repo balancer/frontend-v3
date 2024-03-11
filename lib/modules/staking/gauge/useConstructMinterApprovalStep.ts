@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FlowStep, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
+import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { useHasMinterApproval } from './useHasMinterApproval'
 import { useEffect } from 'react'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { useUpdateCurrentFlowStep } from '../../transactions/transaction-steps/useCurrentFlowStep'
 
 export function useConstructMinterApprovalStep(chain: GqlChain) {
   const { isConnected } = useUserAccount()
@@ -30,13 +31,13 @@ export function useConstructMinterApprovalStep(chain: GqlChain) {
     { enabled: !isLoading }
   )
 
-  const step: FlowStep = {
+  const step = useUpdateCurrentFlowStep({
     ...minterApprovalTransaction,
     transactionLabels,
     id: 'minterApproval',
     stepType: 'minterApproval',
     isComplete: () => isConnected && hasMinterApproval,
-  }
+  })
 
   useEffect(() => {
     if (minterApprovalTransaction.result.isSuccess) refetch()

@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import {
   Accordion,
   AccordionButton,
@@ -28,30 +26,21 @@ type StepTrackerProps = {
   chainId: SupportedChainId
 }
 
-export function StepTracker({ stepConfigs, currentStepIndex, chainId }: StepTrackerProps) {
+export function StepTracker({ stepConfigs, currentStepIndex }: StepTrackerProps) {
   const [initialStepConfigs, setInitialStepConfigs] = useState<StepConfig[]>([])
 
   const { flowStep } = useCurrentFlowStep()
   const { colorMode } = useColorMode()
-  const relayerMode = useRelayerMode()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
-  const hasSignRelayerStep = relayerMode === 'signRelayer'
 
   // Number of steps that were completed and deleted from the original stepConfigs list
   const deletedStepsCount =
     initialStepConfigs.length === 0 ? 0 : initialStepConfigs.length - stepConfigs.length
 
   function getCurrentIndex() {
-    if (hasSignRelayerStep) {
-      if (shouldSignRelayerApproval) return 0
-      return currentStepIndex + deletedStepsCount + 1
-    }
     return currentStepIndex + deletedStepsCount
   }
 
-  const steps = hasSignRelayerStep
-    ? [{ title: 'Sign relayer' }, ...initialStepConfigs]
-    : initialStepConfigs
+  const steps = initialStepConfigs
 
   const currentStep = steps[getCurrentIndex()]
   const currentStepTitle = currentStep?.title

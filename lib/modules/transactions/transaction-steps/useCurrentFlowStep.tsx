@@ -25,9 +25,10 @@ export function CurrentFlowStepProvider({ children }: PropsWithChildren) {
 export const useCurrentFlowStep = (): Result =>
   useMandatoryContext(CurrentFlowStepContext, 'CurrentFlowStep')
 
-export function useUpdateCurrentFlowStep(step: FlowStep) {
+export function useUpdateCurrentFlowStep(step: FlowStep): FlowStep {
   const { setCurrentFlowStep } = useCurrentFlowStep()
   useEffect(() => {
     setCurrentFlowStep(step)
   }, [step.id, step.simulation.status, step.execution.status, step.result.status])
+  return step
 }
