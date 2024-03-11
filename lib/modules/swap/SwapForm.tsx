@@ -17,7 +17,7 @@ import {
   Text,
   Box,
 } from '@chakra-ui/react'
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef } from 'react'
 import { useSwap } from './useSwap'
 import { useTokens } from '../tokens/useTokens'
 import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
@@ -41,7 +41,7 @@ export function SwapForm() {
     tokenOut,
     selectedChain,
     tokenSelectKey,
-    isDisabled: isSwapDisabled,
+    isDisabled,
     disabledReason,
     previewModalDisclosure,
     simulationQuery,
@@ -52,15 +52,13 @@ export function SwapForm() {
     setTokenIn,
     setTokenOut,
     switchTokens,
+    setNeedsToAcceptHighPI,
   } = useSwap()
   const { getTokensByChain } = useTokens()
   const tokenSelectDisclosure = useDisclosure()
   const nextBtn = useRef(null)
   const finalRefTokenIn = useRef(null)
   const finalRefTokenOut = useRef(null)
-  const [isNextBtnDisabled, setIsNextBtnDisabled] = useState(false)
-
-  const isDisabled = isSwapDisabled || isNextBtnDisabled
 
   const networkOptions = PROJECT_CONFIG.supportedNetworks.map(network => ({
     label: (
@@ -166,7 +164,7 @@ export function SwapForm() {
                   </VStack>
 
                   {simulationQuery.data && (
-                    <SwapDetailsAccordion setIsNextBtnDisabled={setIsNextBtnDisabled} />
+                    <SwapDetailsAccordion setNeedsToAcceptHighPI={setNeedsToAcceptHighPI} />
                   )}
 
                   <Tooltip label={isDisabled ? disabledReason : ''}>

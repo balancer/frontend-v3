@@ -20,9 +20,9 @@ import { useEffect } from 'react'
 import { SwapDetailsAcceptPriceImpactModal } from './SwapDetailsAcceptPriceImpactModal'
 
 interface SwapDetailsAccordianProps {
-  setIsNextBtnDisabled: (value: boolean) => void
+  setNeedsToAcceptHighPI: (value: boolean) => void
 }
-export function SwapDetailsAccordion({ setIsNextBtnDisabled }: SwapDetailsAccordianProps) {
+export function SwapDetailsAccordion({ setNeedsToAcceptHighPI }: SwapDetailsAccordianProps) {
   const acceptHighImpactDisclosure = useDisclosure()
   const {
     priceImpactLevel,
@@ -36,9 +36,9 @@ export function SwapDetailsAccordion({ setIsNextBtnDisabled }: SwapDetailsAccord
 
   useEffect(() => {
     if (hasToAcceptHighPriceImpact && !acceptHighPriceImpact) {
-      setIsNextBtnDisabled(true)
+      setNeedsToAcceptHighPI(true)
     } else {
-      setIsNextBtnDisabled(false)
+      setNeedsToAcceptHighPI(false)
     }
   }, [acceptHighPriceImpact, hasToAcceptHighPriceImpact])
 
