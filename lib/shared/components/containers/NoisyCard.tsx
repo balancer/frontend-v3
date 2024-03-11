@@ -20,7 +20,7 @@ export function NoisyCard({ children, cardProps = {}, contentProps = {} }: Noisy
       <Box
         width="full"
         height="full"
-        backgroundColor="background.elevationN1WithOpacity"
+        backgroundColor="background.elevation0WithOpacity"
         {...contentProps}
       >
         {children}

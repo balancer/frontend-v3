@@ -78,7 +78,7 @@ export default function PoolStats() {
 
   return (
     <Card
-      variant="elevation1"
+      variant="elevation2"
       width="full"
       height="400px"
       display="flex"

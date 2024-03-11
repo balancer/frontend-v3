@@ -131,9 +131,6 @@ export const tokens = {
         special: balColors.gradient.dawnLight,
         specialSecondary: balColors.gradient.sunsetLight,
       },
-      border: {
-        base: '#FFFFFF',
-      },
       // Button colors
       button: {
         background: {
@@ -182,11 +179,11 @@ export const tokens = {
       },
       // Elevation colors
       elevation: {
-        leveln1: '#EBE8E0',
-        level0: '#EFEDE6',
-        level1: '#F5F3EF',
-        level2: '#FBFAF9',
-        level3: '#FFFFFF',
+        level0: '#EBE8E0',
+        level1: '#EFEDE6',
+        level2: '#F5F3EF',
+        level3: '#FBFAF9',
+        level4: '#FFFFFF',
       },
       // Input colors
       input: {
@@ -229,11 +226,7 @@ export const tokens = {
         baseWithOpacity: createBackgroundOpacity(balColors.base.hslDark, 0.94),
         special: balColors.gradient.dawnDark,
         specialSecondary: balColors.gradient.sunsetDark,
-        elevationN1WithOpacity: 'rgba(49, 55, 63, 0.96)',
-      },
-      // Border colors
-      border: {
-        base: '#4C5561',
+        elevation0WithOpacity: 'rgba(49, 55, 63, 0.96)',
       },
       // Button colors
       button: {
@@ -284,11 +277,11 @@ export const tokens = {
       },
       // Elevation colours
       elevation: {
-        leveln1: '#31373F',
-        level0: '#383E47',
-        level1: '#3F4650',
-        level2: '#464D58',
-        level3: '#4C5561',
+        level0: '#31373F',
+        level1: '#383E47',
+        level2: '#3F4650',
+        level3: '#464D58',
+        level4: '#4C5561',
       },
       input: {
         labelFocus: balColors.purple['400'],
@@ -461,9 +454,9 @@ export const balTheme = {
           default: tokens.colors.light.background.baseWithOpacity,
           _dark: tokens.colors.dark.background.baseWithOpacity,
         },
-        elevationN1WithOpacity: {
+        elevation0WithOpacity: {
           default: tokens.colors.light.background.baseWithOpacity,
-          _dark: tokens.colors.dark.background.elevationN1WithOpacity,
+          _dark: tokens.colors.dark.background.elevation0WithOpacity,
         },
         special: {
           default: tokens.colors.light.background.special,
@@ -641,8 +634,8 @@ export const balTheme = {
 
       border: {
         base: {
-          default: tokens.colors.light.border.base,
-          _dark: tokens.colors.dark.border.base,
+          default: tokens.colors.light.elevation.level4,
+          _dark: tokens.colors.dark.elevation.level4,
         },
         button: {
           disabled: {
@@ -734,10 +727,6 @@ export const balTheme = {
       },
       // elevation colours
       elevation: {
-        leveln1: {
-          default: tokens.colors.light.elevation.leveln1,
-          _dark: tokens.colors.dark.elevation.leveln1,
-        },
         level0: {
           default: tokens.colors.light.elevation.level0,
           _dark: tokens.colors.dark.elevation.level0,
@@ -753,6 +742,10 @@ export const balTheme = {
         level3: {
           default: tokens.colors.light.elevation.level3,
           _dark: tokens.colors.dark.elevation.level3,
+        },
+        level4: {
+          default: tokens.colors.light.elevation.level4,
+          _dark: tokens.colors.dark.elevation.level4,
         },
       },
     },
@@ -1422,11 +1415,6 @@ export const balTheme = {
             },
           },
         },
-        elevationN1: {
-          container: {
-            background: 'elevation.leveln1',
-          },
-        },
         elevation0: {
           container: {
             background: 'elevation.level0',
@@ -1445,6 +1433,11 @@ export const balTheme = {
         elevation3: {
           container: {
             background: 'elevation.level3',
+          },
+        },
+        elevation4: {
+          container: {
+            background: 'elevation.level4',
           },
         },
         gradient: {

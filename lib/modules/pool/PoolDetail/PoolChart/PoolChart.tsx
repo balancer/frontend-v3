@@ -23,7 +23,7 @@ export function PoolChart() {
   } = usePoolCharts()
 
   return (
-    <Card variant="gradient">
+    <Card variant="elevation2" shadow="2xl" width="full" minHeight="320px">
       <Stack px="lg" py="md">
         {isLoading ? (
           <Skeleton w="100%" h="300" />
@@ -31,10 +31,13 @@ export function PoolChart() {
           <Stack>
             <HStack justifyContent="space-between">
               <HStack gap="16px">
-                <Heading fontWeight="bold" size="h5">
-                  {chartValueSum}
-                </Heading>
-
+                <Stack gap="0" textAlign="right">
+                  <ButtonGroup
+                    currentOption={activeTab}
+                    options={tabsList}
+                    onChange={tab => setActiveTab(tab as PoolChartTypeTab)}
+                  />
+                </Stack>
                 <Selector
                   activeOption={activePeriod}
                   onChange={option => {
@@ -44,16 +47,13 @@ export function PoolChart() {
                     setActivePeriod(period)
                   }}
                   options={poolChartPeriods}
-                  variant="secondary"
+                  variant="special"
                 />
               </HStack>
-              <Stack gap="0" textAlign="right">
-                <ButtonGroup
-                  currentOption={activeTab}
-                  options={tabsList}
-                  onChange={tab => setActiveTab(tab as PoolChartTypeTab)}
-                />
-              </Stack>
+
+              <Heading fontWeight="bold" size="h5">
+                {chartValueSum}
+              </Heading>
             </HStack>
             <Box onMouseLeave={handleMouseLeave}>
               <ReactECharts

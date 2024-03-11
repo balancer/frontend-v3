@@ -125,7 +125,7 @@ export default function PoolMyLiquidity() {
   const hasStakedBalance = bn(pool.userBalance?.stakedBalance || '0').gt(0)
 
   return (
-    <Card variant="elevation1" shadow="2xl" width="full" minHeight="320px">
+    <Card variant="elevation2" shadow="2xl" width="full" minHeight="320px">
       <Grid width="full" templateColumns="1fr 1fr">
         <GridItem>
           <VStack spacing="0" width="full">
@@ -136,7 +136,7 @@ export default function PoolMyLiquidity() {
               <ButtonGroup currentOption={activeTab} options={TABS} onChange={handleTabChanged} />
             </HStack>
             <Box width="full" p="4" pt="0">
-              <Card variant="elevation1" borderWidth={1} borderColor="borderColor" shadow="none">
+              <Card variant="elevation2" borderWidth={1} borderColor="borderColor" shadow="none">
                 <VStack width="full">
                   <Box width="full" borderBottomWidth={1} borderColor="borderColor">
                     <HStack py="4" px="4" width="full" justifyContent="space-between">
@@ -218,7 +218,7 @@ export default function PoolMyLiquidity() {
         <GridItem p="4" pl="0">
           <Card
             height="full"
-            variant="elevationN1"
+            variant="elevation0"
             shadow="innerXl"
             width="full"
             rounded="sm"
