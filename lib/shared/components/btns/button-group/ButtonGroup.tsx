@@ -20,7 +20,7 @@ export default function ButtonGroup({ currentOption, options, onChange, size }: 
       p="1"
       backgroundColor="background.level3"
       spacing="1"
-      borderColor="borderColor"
+      borderColor="border.base"
       shadow="sm"
       borderWidth={1}
     >
