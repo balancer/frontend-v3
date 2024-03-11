@@ -264,7 +264,7 @@ export const tokens = {
         specialSecondary: 'linear-gradient(180deg, #EA9A43 0%, #F06147 100%)',
         link: balColors.purple['300'],
         linkHover: balColors.purple['100'],
-      }, 
+      },
       // card colors
       card: {
         border: {
@@ -432,7 +432,7 @@ export const balTheme = {
       },
 
       // Background colors
-      background: {   
+      background: {
         level0: {
           default: tokens.colors.light.background.level0,
           _dark: tokens.colors.dark.background.level0,
@@ -452,7 +452,7 @@ export const balTheme = {
         level4: {
           default: tokens.colors.light.background.level4,
           _dark: tokens.colors.dark.background.level4,
-        },                   
+        },
         base: {
           default: tokens.colors.light.background.base,
           _dark: tokens.colors.dark.background.base,
@@ -865,7 +865,7 @@ export const balTheme = {
             fontSize: '1.25rem',
             rounded: 'lg',
             borderWidth: 0,
-            border: 'none',            
+            border: 'none',
             background: 'background.level1',
           },
           container: {
