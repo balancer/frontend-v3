@@ -4,7 +4,7 @@
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
-import { useIterateSteps } from '../useIterateSteps'
+import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 import { useClaimAndUnstakeStepConfigs } from './useClaimAndUnstakeStepConfigs'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 

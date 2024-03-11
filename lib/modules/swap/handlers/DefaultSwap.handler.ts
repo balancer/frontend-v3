@@ -17,7 +17,7 @@ export class DefaultSwapHandler implements SwapHandler {
 
     const { data } = await this.apolloClient.query({
       query: GetSorSwapsDocument,
-      variables,
+      variables: { ...variables, queryBatchSwap: false }, // We don't need the API to do a query because we're doing that via the SDK below.
       fetchPolicy: 'no-cache',
       notifyOnNetworkStatusChange: true,
     })
@@ -46,7 +46,7 @@ export class DefaultSwapHandler implements SwapHandler {
     simulateResponse: { swap, onchainReturnAmount },
     slippagePercent,
     account,
-    chain,
+    selectedChain,
     isNativeAssetIn,
   }: SdkBuildSwapInputs): TransactionConfig {
     const tx = swap.buildCall({
@@ -60,7 +60,7 @@ export class DefaultSwapHandler implements SwapHandler {
 
     return {
       account,
-      chainId: getChainId(chain),
+      chainId: getChainId(selectedChain),
       data: tx.callData,
       value: tx.value,
       to: tx.to,

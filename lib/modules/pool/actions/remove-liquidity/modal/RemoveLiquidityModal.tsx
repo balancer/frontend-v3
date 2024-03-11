@@ -27,7 +27,7 @@ import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
-import { SignRelayerButton } from '@/lib/shared/components/btns/transaction-steps/SignRelayerButton'
+import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
 
 type Props = {

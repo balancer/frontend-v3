@@ -14,9 +14,9 @@ import {
 import { Address } from 'viem'
 import { CopyTokenAddressButton } from './CopyTokenAddressButton'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
-import { HiExternalLink } from 'react-icons/hi'
 import { CoingeckoIcon } from '@/lib/shared/components/icons/CoingeckoIcon'
 import { AddTokenToWalletButton } from './AddTokenToWalletButton'
+import { ExternalLink } from 'react-feather'
 
 type Props = {
   tokenAddress: string | Address
@@ -67,7 +67,7 @@ export function TokenInfoPopover({ tokenAddress, chain }: Props) {
                 variant="ghost"
                 aria-label="View on block explorer"
                 color="grayText"
-                icon={<HiExternalLink />}
+                icon={<ExternalLink />}
                 as="a"
                 href={getBlockExplorerTokenUrl(tokenAddress)}
                 target="_blank"

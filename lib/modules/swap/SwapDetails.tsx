@@ -6,32 +6,64 @@ import { HStack, VStack, Text, Tooltip } from '@chakra-ui/react'
 import { useSwap } from './useSwap'
 import { GqlSorSwapType } from '@/lib/shared/services/api/generated/graphql'
 import { useUserSettings } from '../user/settings/useUserSettings'
+import { SdkSimulateSwapResponse } from './swap.types'
+import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
+import { useTokens } from '../tokens/useTokens'
+import { NativeWrapUnwrapHandler } from './handlers/NativeWrapUnwrap.handler'
+
+export function OrderRoute() {
+  const { simulationQuery } = useSwap()
+
+  const queryData = simulationQuery.data as SdkSimulateSwapResponse
+
+  const orderRouteVersion = queryData.vaultVersion || 2
+  const hopCount = queryData?.routes[0]?.hops?.length || 0
+
+  return (
+    <HStack justify="space-between" w="full">
+      <Text color="grayText">Order route</Text>
+      <HStack>
+        <Text color="grayText">
+          BV{orderRouteVersion}: {hopCount} hops
+        </Text>
+        <Tooltip label="Balancer vault version and number of hops" fontSize="sm">
+          <InfoOutlineIcon color="grayText" />
+        </Tooltip>
+      </HStack>
+    </HStack>
+  )
+}
 
 export function SwapDetails() {
   const { toCurrency } = useCurrency()
   const { slippage, slippageDecimal } = useUserSettings()
-  const {
-    simulationQuery,
-    tokenInInfo,
-    tokenOutInfo,
-    priceImpactLabel,
-    priceImpacUsd,
-    maxSlippageUsd,
-    swapType,
-    tokenIn,
-    tokenOut,
-  } = useSwap()
+  const { usdValueForToken } = useTokens()
+  const { tokenInInfo, tokenOutInfo, swapType, tokenIn, tokenOut, handler, simulationQuery } =
+    useSwap()
 
-  const orderRouteVersion = simulationQuery.data?.vaultVersion || 2
-  const hopCount = simulationQuery.data?.routes[0]?.hops?.length || 0
+  const isDefaultSwap = handler instanceof DefaultSwapHandler
+  const isNativeWrapOrUnwrap = handler instanceof NativeWrapUnwrapHandler
+
+  const _slippage = isNativeWrapOrUnwrap ? 0 : slippage
+  const _slippageDecimal = isNativeWrapOrUnwrap ? 0 : slippageDecimal
+
+  const returnAmountUsd =
+    swapType === GqlSorSwapType.ExactIn
+      ? usdValueForToken(tokenOutInfo, tokenOut.amount)
+      : usdValueForToken(tokenInInfo, tokenIn.amount)
+
+  const priceImpact = simulationQuery.data?.priceImpact
+  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpacUsd = bn(priceImpact || 0).times(returnAmountUsd)
+  const maxSlippageUsd = bn(_slippage).div(100).times(returnAmountUsd)
 
   const limitLabel =
     swapType === GqlSorSwapType.ExactIn ? "You'll get at least" : "You'll pay at most"
   const limitToken = swapType === GqlSorSwapType.ExactIn ? tokenOutInfo : tokenInInfo
   const limitValue =
     swapType === GqlSorSwapType.ExactIn
-      ? bn(tokenOut.amount).minus(bn(tokenOut.amount).times(slippageDecimal)).toString()
-      : bn(tokenIn.amount).plus(bn(tokenIn.amount).times(slippageDecimal)).toString()
+      ? bn(tokenOut.amount).minus(bn(tokenOut.amount).times(_slippageDecimal)).toString()
+      : bn(tokenIn.amount).plus(bn(tokenIn.amount).times(_slippageDecimal)).toString()
 
   return (
     <VStack spacing="sm" align="start" w="full" fontSize="sm">
@@ -51,7 +83,7 @@ export function SwapDetails() {
         <Text color="grayText">Max slippage</Text>
         <HStack>
           <NumberText color="grayText">
-            -{toCurrency(maxSlippageUsd, { abbreviated: false })} (-{fNum('slippage', slippage)})
+            -{toCurrency(maxSlippageUsd, { abbreviated: false })} (-{fNum('slippage', _slippage)})
           </NumberText>
           <Tooltip label="Price impact" fontSize="sm">
             <InfoOutlineIcon color="grayText" />
@@ -71,17 +103,7 @@ export function SwapDetails() {
         </HStack>
       </HStack>
 
-      <HStack justify="space-between" w="full">
-        <Text color="grayText">Order route</Text>
-        <HStack>
-          <Text color="grayText">
-            BV{orderRouteVersion}: {hopCount} hops
-          </Text>
-          <Tooltip label="Balancer vault version and number of hops" fontSize="sm">
-            <InfoOutlineIcon color="grayText" />
-          </Tooltip>
-        </HStack>
-      </HStack>
+      {isDefaultSwap && <OrderRoute />}
     </VStack>
   )
 }

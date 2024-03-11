@@ -20,12 +20,11 @@ import {
   Tooltip,
   Switch,
 } from '@chakra-ui/react'
-import { HiOutlineCog6Tooth } from 'react-icons/hi2'
 import { useUserSettings } from './useUserSettings'
 import { SupportedCurrency } from '@/lib/shared/utils/currencies'
-import { FiPercent } from 'react-icons/fi'
 import { blockInvalidNumberInput } from '@/lib/shared/utils/numbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { Percent, Settings } from 'react-feather'
 
 export function CurrencySelect() {
   const { currency, setCurrency } = useUserSettings()
@@ -59,7 +58,7 @@ function SlippageInput() {
           onKeyDown={blockInvalidNumberInput}
         />
         <InputRightElement pointerEvents="none">
-          <FiPercent color="grayText" />
+          <Percent color="grayText" />
         </InputRightElement>
       </InputGroup>
       <HStack>
@@ -96,7 +95,7 @@ export function UserSettings() {
     <Popover>
       <PopoverTrigger>
         <Button variant="tertiary">
-          <HiOutlineCog6Tooth />
+          <Settings size={18} />
         </Button>
       </PopoverTrigger>
       <PopoverContent>

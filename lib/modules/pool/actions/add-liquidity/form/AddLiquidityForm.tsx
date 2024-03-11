@@ -29,6 +29,7 @@ import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSett
 import { ProportionalInputs } from './ProportionalInputs'
 import { usePool } from '../../../usePool'
 import { requiresProportionalInput } from '../../LiquidityActionHelpers'
+import { Info } from 'react-feather'
 
 export function AddLiquidityForm() {
   const {
@@ -108,7 +109,7 @@ export function AddLiquidityForm() {
             <VStack spacing="sm" align="start" w="full" px="md">
               <HStack justify="space-between" w="full">
                 <Text color="grayText">Total</Text>
-                <HStack>
+                <HStack textColor="grayText">
                   <NumberText color="grayText">
                     {toCurrency(totalUSDValue, { abbreviated: false })}
                   </NumberText>
@@ -119,13 +120,13 @@ export function AddLiquidityForm() {
                     )}).`}
                     fontSize="sm"
                   >
-                    <InfoOutlineIcon color="grayText" />
+                    <Info size={16} />
                   </Tooltip>
                 </HStack>
               </HStack>
               <HStack justify="space-between" w="full">
                 <Text color="grayText">LP tokens</Text>
-                <HStack>
+                <HStack textColor="grayText">
                   {simulationQuery.isLoading ? (
                     <Skeleton w="16" h="6" />
                   ) : (
@@ -138,13 +139,13 @@ export function AddLiquidityForm() {
                     )}).`}
                     fontSize="sm"
                   >
-                    <InfoOutlineIcon color="grayText" />
+                    <Info size={16} />
                   </Tooltip>
                 </HStack>
               </HStack>
               <HStack justify="space-between" w="full">
                 <Text color="grayText">Price impact</Text>
-                <HStack>
+                <HStack textColor="grayText">
                   {priceImpactQuery.isLoading ? (
                     <Skeleton w="16" h="6" />
                   ) : (
@@ -155,7 +156,7 @@ export function AddLiquidityForm() {
                     as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees."
                     fontSize="sm"
                   >
-                    <InfoOutlineIcon color="grayText" />
+                    <Info size={16} />
                   </Tooltip>
                 </HStack>
               </HStack>

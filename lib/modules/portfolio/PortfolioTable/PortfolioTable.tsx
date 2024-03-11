@@ -3,25 +3,98 @@ import { usePortfolio } from '../usePortfolio'
 import { PortfolioTableHeader } from './PortfolioTableHeader'
 import { PoolListItem } from '../../pool/pool.types'
 import { PortfolioTableRow } from './PortfolioTableRow'
-import { useUserAccount } from '../../web3/useUserAccount'
 import { HStack, Heading, Stack } from '@chakra-ui/react'
+import { useMemo, useState } from 'react'
+
+export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr' | 'type'
+export interface PortfolioSortingData {
+  id: PortfolioTableSortingId
+  desc: boolean
+}
+
+export const portfolioOrderBy: {
+  title: string
+  id: PortfolioTableSortingId
+}[] = [
+  {
+    title: 'Type',
+    id: 'type',
+  },
+  {
+    title: 'Staking',
+    id: 'staking',
+  },
+  {
+    title: 'veBAL boost',
+    id: 'vebal',
+  },
+  {
+    title: 'My liquidity',
+    id: 'liquidity',
+  },
+  {
+    title: 'APR',
+    id: 'apr',
+  },
+]
+const numberColumnWidth = '125px'
+const furthestLeftColWidth = '140px'
+
+const rowProps = {
+  px: [0, 4],
+  gridTemplateColumns: `50px minmax(400px, 1fr) 100px 
+  ${furthestLeftColWidth} ${numberColumnWidth} ${numberColumnWidth} 145px`,
+  alignItems: 'center',
+  gap: 'lg',
+}
 
 export function PortfolioTable() {
   const { portfolioData, isLoading } = usePortfolio()
-  const { userAddress } = useUserAccount()
   const pools = [portfolioData?.stakedPools || [], portfolioData?.unstakedPools || []].flat()
 
-  const numberColumnWidth = userAddress ? '150px' : '175px'
-  const furthestLeftColWidth = '120px'
+  const [currentSortingObj, setCurrentSortingObj] = useState<PortfolioSortingData>({
+    id: 'staking',
+    desc: true,
+  })
 
-  const rowProps = {
-    px: [0, 4],
-    gridTemplateColumns: `50px minmax(400px, 1fr) 100px ${
-      userAddress ? furthestLeftColWidth : ''
-    } ${userAddress ? numberColumnWidth : furthestLeftColWidth} ${numberColumnWidth} 200px`,
-    alignItems: 'center',
-    gap: 'lg',
-  }
+  // To-Do: don't mutate the original array
+  const sortedPools = useMemo(() => {
+    return pools.sort((a, b) => {
+      if (currentSortingObj.id === 'type') {
+        return currentSortingObj.desc ? a.type.localeCompare(b.type) : b.type.localeCompare(a.type)
+      }
+
+      if (currentSortingObj.id === 'staking') {
+        const aStakedBalance = Number(a.userBalance?.stakedBalance || 0)
+        const bStakedBalance = Number(b.userBalance?.stakedBalance || 0)
+
+        return currentSortingObj.desc
+          ? bStakedBalance - aStakedBalance
+          : aStakedBalance - bStakedBalance
+      }
+
+      // To-Do: implement sorting by vebal boost
+      if (currentSortingObj.id === 'vebal') {
+        return 0
+      }
+
+      if (currentSortingObj.id === 'liquidity') {
+        const aTotalBalance = a.userBalance?.totalBalanceUsd || 0
+        const bTotalBalance = b.userBalance?.totalBalanceUsd || 0
+
+        return currentSortingObj.desc
+          ? aTotalBalance - bTotalBalance
+          : bTotalBalance - aTotalBalance
+      }
+
+      // To-Do: implement sorting by APR
+      if (currentSortingObj.id === 'apr') {
+        return 0
+      }
+
+      return 0
+    })
+  }, [currentSortingObj, pools])
 
   return (
     <Stack>
@@ -29,9 +102,15 @@ export function PortfolioTable() {
         <Heading size="lg">Balancer portfolio</Heading>
       </HStack>
       <PaginatedTable
-        items={pools}
+        items={sortedPools}
         loading={isLoading}
-        renderTableHeader={() => <PortfolioTableHeader {...rowProps} />}
+        renderTableHeader={() => (
+          <PortfolioTableHeader
+            currentSortingObj={currentSortingObj}
+            setCurrentSortingObj={setCurrentSortingObj}
+            {...rowProps}
+          />
+        )}
         renderTableRow={(item: PoolListItem, index) => {
           return <PortfolioTableRow keyValue={index} pool={item} {...rowProps} />
         }}

@@ -2,7 +2,7 @@
 
 import { Card, Center, Grid, GridItem, HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import { useFeaturedPools } from './useFeaturedPools'
-import { GqlChain, GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import {
   poolClickHandler,
@@ -14,6 +14,7 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import PoolWeightChart from '../pool/PoolDetail/PoolWeightCharts/PoolWeightChart'
 import { useRouter } from 'next/navigation'
 import { PoolName } from '../pool/PoolName'
+import { Pool } from '../pool/usePool'
 
 const indexAreaHash: { [key: number]: string } = {
   1: 'one',
@@ -23,7 +24,7 @@ const indexAreaHash: { [key: number]: string } = {
 }
 
 interface FeaturedPoolCardProps {
-  pool: GqlPoolUnion
+  pool: Pool
   chain: GqlChain
   isSmall?: boolean
   hasLegend?: boolean

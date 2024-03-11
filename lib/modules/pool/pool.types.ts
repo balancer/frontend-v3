@@ -12,6 +12,9 @@ import {
   parseAsString,
   parseAsStringEnum,
 } from 'next-usequerystate/parsers'
+import { Hex } from 'viem'
+
+export type PoolId = Hex
 
 export type PoolList = GetPoolsQuery['pools']
 

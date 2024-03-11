@@ -1,5 +1,6 @@
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
+import { convertHexToLowerCase } from '@/lib/shared/utils/objects'
 
 const networkConfig: NetworkConfig = {
   chainId: 8453,
@@ -10,7 +11,10 @@ const networkConfig: NetworkConfig = {
   blockExplorerBaseUrl: 'https://basescan.org',
   rpcUrl: 'https://base-mainnet.g.alchemy.com/v2/cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88',
   tokens: {
-    balToken: { address: '0x4158734d47fc9692176b5085e0f52ee0da5d47f1' },
+    addresses: {
+      bal: '0x4158734d47fc9692176b5085e0f52ee0da5d47f1',
+      wNativeAsset: '0x4200000000000000000000000000000000000006',
+    },
     nativeAsset: {
       name: 'Ether',
       address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
@@ -29,6 +33,7 @@ const networkConfig: NetworkConfig = {
       minter: '0x0c5538098EBe88175078972F514C9e101D325D4F',
     },
   },
+  pools: convertHexToLowerCase({ issues: {} }),
 }
 
 export default networkConfig

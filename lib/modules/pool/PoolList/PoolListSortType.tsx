@@ -1,9 +1,9 @@
 import { HStack, IconButton, Select } from '@chakra-ui/react'
-import { FiArrowDown, FiArrowUp } from 'react-icons/fi'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { orderByHash } from '../pool.types'
 import { usePoolOrderByState } from './usePoolOrderByState'
+import { ChevronDown, ChevronUp } from 'react-feather'
 
 export function PoolListSortType() {
   const { sorting, setSorting } = usePoolListQueryState()
@@ -25,13 +25,13 @@ export function PoolListSortType() {
         ))}
       </Select>
       <IconButton
-        icon={<FiArrowDown />}
+        icon={<ChevronDown />}
         aria-label="sort-desc"
         onClick={() => setSorting([{ id: sorting[0].id, desc: true }])}
         isDisabled={sorting[0].desc}
       />
       <IconButton
-        icon={<FiArrowUp />}
+        icon={<ChevronUp />}
         aria-label="sort-asc"
         onClick={() => setSorting([{ id: sorting[0].id, desc: false }])}
         isDisabled={!sorting[0].desc}
