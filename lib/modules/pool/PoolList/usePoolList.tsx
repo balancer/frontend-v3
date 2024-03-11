@@ -8,17 +8,18 @@ import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { isAddress } from 'viem'
+import { useSkipInitialQuery } from '@/lib/shared/hooks/useSkipInitialQuery'
 
 export function _usePoolList(initialData: GetPoolsQuery) {
   const { queryVariables, toggleUserAddress } = usePoolListQueryState()
   const { userAddress } = useUserAccount()
+  const skipQuery = useSkipInitialQuery(queryVariables)
 
   const { data, loading, previousData, refetch, networkStatus, error } = useQuery(
     GetPoolsDocument,
     {
       variables: queryVariables,
-      notifyOnNetworkStatusChange: true,
-      skip: true, // skip initial fetch on mount so that initialData is used
+      skip: skipQuery,
     }
   )
 

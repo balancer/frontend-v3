@@ -20,6 +20,8 @@ import { Dictionary, zipObject } from 'lodash'
 import { createContext, PropsWithChildren, useCallback } from 'react'
 import { Address } from 'wagmi'
 import { TokenBase } from './token.types'
+import { minsToMs } from '@/lib/shared/hooks/useTime'
+import { useSkipInitialQuery } from '@/lib/shared/hooks/useSkipInitialQuery'
 
 export type UseTokensResult = ReturnType<typeof _useTokens>
 export const TokensContext = createContext<UseTokensResult | null>(null)
@@ -30,10 +32,19 @@ export function _useTokens(
   variables: GetTokensQueryVariables
 ) {
   const networkConfig = useNetworkConfig()
+  const skipQuery = useSkipInitialQuery(variables)
 
   // skip initial fetch on mount so that initialData is used
-  const { data: tokensData } = useQuery(GetTokensDocument, { variables, skip: true })
-  const { data: tokenPricesData } = useQuery(GetTokenPricesDocument, { skip: true })
+  const { data: tokensData } = useQuery(GetTokensDocument, {
+    variables,
+    skip: skipQuery,
+  })
+  const { data: tokenPricesData } = useQuery(GetTokenPricesDocument, {
+    variables,
+    initialFetchPolicy: 'cache-only',
+    nextFetchPolicy: 'cache-first',
+    pollInterval: minsToMs(3),
+  })
 
   const tokens = tokensData?.tokens || initTokenData.tokens
   const prices = tokenPricesData?.tokenPrices || initTokenPricesData.tokenPrices

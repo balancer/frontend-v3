@@ -1,6 +1,7 @@
 'use client'
 
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import { useSkipInitialQuery } from '@/lib/shared/hooks/useSkipInitialQuery'
 import {
   GetFeaturedPoolsDocument,
   GetFeaturedPoolsQuery,
@@ -11,9 +12,12 @@ import { createContext, ReactNode } from 'react'
 
 export function _useFeaturedPools(initialData: GetFeaturedPoolsQuery) {
   const { supportedNetworks } = getProjectConfig()
+  const queryVariables = { chains: supportedNetworks }
+  const skipQuery = useSkipInitialQuery(queryVariables)
+
   const { data, loading, networkStatus, error } = useQuery(GetFeaturedPoolsDocument, {
-    variables: { chains: supportedNetworks },
-    skip: true, // skip initial fetch on mount so that initialData is used
+    variables: queryVariables,
+    skip: skipQuery,
   })
 
   return {
