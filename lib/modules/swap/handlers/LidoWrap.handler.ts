@@ -4,10 +4,11 @@ import { ApolloClient } from '@apollo/client'
 import { TransactionConfig } from '../../web3/contracts/contract.types'
 import { SdkBuildSwapInputs, SimulateSwapInputs, SimulateSwapResponse } from '../swap.types'
 import { WrapType, getWrapType } from '../useWrapping'
-import { createPublicClient, encodeFunctionData, formatUnits, http } from 'viem'
+import { encodeFunctionData, formatUnits } from 'viem'
 import { Hex } from 'viem'
 import { bn } from '@/lib/shared/utils/numbers'
-import { mainnet } from 'viem/chains'
+import { getViemClient } from '@/lib/shared/services/viem/viem.client'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 export class LidoWrapHandler implements SwapHandler {
   constructor(public apolloClient: ApolloClient<object>) {}
@@ -16,7 +17,7 @@ export class LidoWrapHandler implements SwapHandler {
     const wrapType = getWrapType(variables.tokenIn, variables.tokenOut, variables.chain)
     if (!wrapType) throw new Error('LidoWrapHandler called with non valid wrap tokens')
 
-    const returnAmount = await this.applyRate(variables.swapAmount, wrapType)
+    const returnAmount = await this.applyRate(variables.swapAmount, wrapType, variables.chain)
 
     return {
       swapType: variables.swapType,
@@ -29,7 +30,7 @@ export class LidoWrapHandler implements SwapHandler {
 
   build({ tokenIn, tokenOut, account, selectedChain }: SdkBuildSwapInputs): TransactionConfig {
     const wrapType = getWrapType(tokenIn.address, tokenOut.address, selectedChain)
-    if (!wrapType) throw new Error('NativeWrapHandler called with non valid wrap tokens')
+    if (!wrapType) throw new Error('Non valid wrap tokens')
 
     const { tokens } = getNetworkConfig(selectedChain)
 
@@ -40,15 +41,12 @@ export class LidoWrapHandler implements SwapHandler {
       data = this.buildUnwrapCallData(tokenIn.scaledAmount)
     }
 
-    if (!data) throw new Error('NativeWrapHandler could not build data')
-
-    const value = wrapType === WrapType.WRAP ? tokenIn.scaledAmount : BigInt(0)
+    if (!data) throw new Error('Could not build data')
 
     return {
       account,
       chainId: getChainId(selectedChain),
       data,
-      value,
       to: tokens.addresses.wNativeAsset,
     }
   }
@@ -57,14 +55,14 @@ export class LidoWrapHandler implements SwapHandler {
     return encodeFunctionData({
       abi: [
         {
-          inputs: [],
-          name: 'deposit',
-          outputs: [],
-          stateMutability: 'payable',
+          inputs: [{ name: '_stETHAmount', type: 'uint256' }],
+          name: 'wrap',
+          outputs: [{ name: 'amount', type: 'uint256' }],
+          stateMutability: '',
           type: 'function',
         },
       ],
-      functionName: 'deposit',
+      functionName: 'wrap',
     })
   }
 
@@ -74,7 +72,7 @@ export class LidoWrapHandler implements SwapHandler {
         {
           inputs: [{ name: 'amount', type: 'uint256' }],
           name: 'withdraw',
-          outputs: [],
+          outputs: [{ name: 'amount', type: 'uint256' }],
           stateMutability: '',
           type: 'function',
         },
@@ -84,13 +82,10 @@ export class LidoWrapHandler implements SwapHandler {
     })
   }
 
-  private async applyRate(amount: string, wrapType: WrapType | null) {
-    const publicClient = createPublicClient({
-      chain: mainnet,
-      transport: http(),
-    })
+  private async applyRate(amount: string, wrapType: WrapType | null, chain: GqlChain) {
+    const viemClient = getViemClient(chain)
 
-    const rateScaled = await publicClient.readContract({
+    const rateScaled = await viemClient.readContract({
       abi: [
         {
           inputs: [],
