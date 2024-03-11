@@ -2,7 +2,7 @@
 import { HStack, Text, Tooltip } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
-import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 

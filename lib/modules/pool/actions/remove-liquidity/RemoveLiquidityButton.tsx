@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
+import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
 import { useEffect } from 'react'
 import { usePool } from '../../usePool'
 import { Button, VStack } from '@chakra-ui/react'
@@ -7,7 +7,7 @@ import { usePoolRedirect } from '../../pool.hooks'
 import {
   TransactionState,
   getTransactionState,
-} from '@/lib/shared/components/btns/transaction-steps/lib'
+} from '@/lib/modules/transactions/transaction-steps/lib'
 import { useConstructRemoveLiquidityStep } from './modal/useConstructRemoveLiquidityStep'
 import { useRemoveLiquidity } from './useRemoveLiquidity'
 

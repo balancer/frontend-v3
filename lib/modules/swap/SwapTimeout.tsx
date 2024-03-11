@@ -2,7 +2,7 @@
 import { HStack, Text, Box } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
-import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useSwap } from './useSwap'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 
