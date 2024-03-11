@@ -25,7 +25,7 @@ export function isSupportedWrap(tokenIn: Address, tokenOut: Address, chain: GqlC
   })
 }
 
-export function getWrapHandler(tokenIn: Address, tokenOut: Address, chain: GqlChain) {
+export function getWrapConfig(tokenIn: Address, tokenOut: Address, chain: GqlChain) {
   const networkConfig = getNetworkConfig(chain)
   const supportedWrappers = networkConfig.tokens.supportedWrappers || []
   if (!isSupportedWrap(tokenIn, tokenOut, chain)) throw new Error('Unsupported wrap')
@@ -36,6 +36,12 @@ export function getWrapHandler(tokenIn: Address, tokenOut: Address, chain: GqlCh
 
   if (!wrapper) throw new Error('Wrapper not found')
 
+  return wrapper
+}
+
+export function getWrapHandler(tokenIn: Address, tokenOut: Address, chain: GqlChain) {
+  const wrapper = getWrapConfig(tokenIn, tokenOut, chain)
+
   return wrapper?.swapHandlerClass
 }
 
@@ -44,6 +50,9 @@ export function getWrapType(tokenIn: Address, tokenOut: Address, chain: GqlChain
     return WrapType.WRAP
   } else if (isWrappedNativeToken(tokenIn, chain) && isNativeToken(tokenOut, chain)) {
     return WrapType.UNWRAP
+  } else if (isSupportedWrap(tokenIn, tokenOut, chain)) {
+    const wrapper = getWrapConfig(tokenIn, tokenOut, chain)
+    return tokenIn === wrapper.baseToken ? WrapType.WRAP : WrapType.UNWRAP
   }
 
   return null
