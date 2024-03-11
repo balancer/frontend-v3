@@ -43,7 +43,7 @@ export function SwapDetails() {
   const { tokenInInfo, tokenOutInfo, swapType, tokenIn, tokenOut, handler, simulationQuery } =
     useSwap()
 
-  const { priceImpactLevel, priceImpactColor, getPriceImpactIcon, setPriceImpact } =
+  const { priceImpactLevel, priceImpactColor, getPriceImpactIcon, setPriceImpact, priceImpact } =
     usePriceImpact()
 
   const isDefaultSwap = handler instanceof DefaultSwapHandler
@@ -57,8 +57,7 @@ export function SwapDetails() {
       ? usdValueForToken(tokenOutInfo, tokenOut.amount)
       : usdValueForToken(tokenInInfo, tokenIn.amount)
 
-  const priceImpact = simulationQuery.data?.priceImpact
-  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpactLabel = priceImpact ? fNum('priceImpact', priceImpact) : '-'
   const priceImpacUsd = bn(priceImpact || 0).times(returnAmountUsd)
   const maxSlippageUsd = bn(_slippage).div(100).times(returnAmountUsd)
 
@@ -71,10 +70,10 @@ export function SwapDetails() {
       : bn(tokenIn.amount).plus(bn(tokenIn.amount).times(_slippageDecimal)).toString()
 
   useEffect(() => {
-    if (priceImpact) {
-      setPriceImpact(priceImpact)
+    if (simulationQuery.data) {
+      setPriceImpact(simulationQuery.data.priceImpact ?? '-1')
     }
-  }, [priceImpact])
+  }, [simulationQuery])
 
   return (
     <VStack spacing="sm" align="start" w="full" fontSize="sm">

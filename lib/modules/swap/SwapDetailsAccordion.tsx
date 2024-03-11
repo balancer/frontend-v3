@@ -73,7 +73,9 @@ export function SwapDetailsAccordion({ setNeedsToAcceptHighPI }: SwapDetailsAcco
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
-      {(priceImpactLevel === 'high' || priceImpactLevel === 'max') && (
+      {(priceImpactLevel === 'high' ||
+        priceImpactLevel === 'max' ||
+        priceImpactLevel === 'unknown') && (
         // TODO: fix a lot of styling here
         <>
           <VStack align="start" w="full">
@@ -83,27 +85,39 @@ export function SwapDetailsAccordion({ setNeedsToAcceptHighPI }: SwapDetailsAcco
                   {getPriceImpactIcon(priceImpactLevel)}
                 </Box>
                 <VStack align="start">
-                  <Text color="white" fontWeight="700">
-                    Price impact is high: Exceeds {priceImpactLevel === 'high' ? '1' : '5'}.00%.
-                  </Text>
-                  <Text color="white" fontSize="sm">
-                    The higher the price impact, the worse exchange rate you get for this swap.
-                  </Text>
+                  {priceImpactLevel === 'unknown' ? (
+                    <Text color="white" fontWeight="700">
+                      Price impact is unknown.
+                    </Text>
+                  ) : (
+                    <>
+                      <Text color="white" fontWeight="700">
+                        Price impact is high: Exceeds {priceImpactLevel === 'high' ? '1' : '5'}.00%.
+                      </Text>
+                      <Text color="white" fontSize="sm">
+                        The higher the price impact, the worse exchange rate you get for this swap.
+                      </Text>
+                    </>
+                  )}
                 </VStack>
               </HStack>
             </Card>
             <Card w="full" p="2" variant="level1">
               <VStack w="full" align="flex-start">
                 <Text>Price impact acknowledgement</Text>
-                <Text color="grayText">
-                  I accept the high price impact of{' '}
-                  {priceImpact && fNum('priceImpact', priceImpact)}. I understand that this may
-                  result in losses, since the size of my swap is likely to move the market price
-                  unfavorably based on the current depth of the market.
-                </Text>
+                {priceImpactLevel === 'unknown' ? (
+                  <Text color="grayText">I accept the unknown price impact. </Text>
+                ) : (
+                  <Text color="grayText">
+                    I accept the high price impact of{' '}
+                    {priceImpact && fNum('priceImpact', priceImpact)}. I understand that this may
+                    result in losses, since the size of my swap is likely to move the market price
+                    unfavorably based on the current depth of the market.
+                  </Text>
+                )}
                 {!acceptHighPriceImpact ? (
                   <Button w="full" variant="secondary" onClick={handleClick}>
-                    I accept high price impact
+                    I accept {priceImpactLevel === 'unknown' ? 'unknown' : 'high'} price impact
                   </Button>
                 ) : (
                   <Text
@@ -114,7 +128,7 @@ export function SwapDetailsAccordion({ setNeedsToAcceptHighPI }: SwapDetailsAcco
                     rounded="md"
                     align="center"
                   >
-                    High price impact accepted
+                    {priceImpactLevel === 'unknown' ? 'Unknown' : 'High'} price impact accepted
                   </Text>
                 )}
               </VStack>

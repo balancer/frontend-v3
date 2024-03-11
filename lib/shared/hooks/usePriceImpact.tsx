@@ -3,7 +3,7 @@ import { PropsWithChildren, createContext, useEffect, useState } from 'react'
 import { useMandatoryContext } from '../utils/contexts'
 import { Icon } from '@chakra-ui/react'
 
-type PriceImpactLevel = 'low' | 'medium' | 'high' | 'max'
+type PriceImpactLevel = 'low' | 'medium' | 'high' | 'max' | 'unknown'
 
 export function _usePriceImpact() {
   const [priceImpactLevel, setPriceImpactLevel] = useState<PriceImpactLevel>('low')
@@ -13,7 +13,8 @@ export function _usePriceImpact() {
   const [hasToAcceptHighPriceImpact, setHasToAcceptHighPriceImpact] = useState(false)
 
   function getPriceImpactLevel(priceImpact: number) {
-    if (priceImpact < 0.005) return 'low' // 0.5%
+    if (priceImpact === -1) return 'unknown'
+    if (priceImpact >= 0 && priceImpact < 0.005) return 'low' // 0.5%
     if (priceImpact < 0.01) return 'medium' // 1%
     if (priceImpact < 0.05) return 'high' // 5%
     return 'max'
@@ -33,6 +34,7 @@ export function _usePriceImpact() {
 
   function getPriceImpactIcon(priceImpactLevel: PriceImpactLevel) {
     switch (priceImpactLevel) {
+      case 'unknown':
       case 'high':
       case 'max':
         return <Icon as={XOctagon} />
@@ -57,7 +59,11 @@ export function _usePriceImpact() {
   }, [priceImpactLevel])
 
   useEffect(() => {
-    if (priceImpactLevel === 'high' || priceImpactLevel === 'max') {
+    if (
+      priceImpactLevel === 'high' ||
+      priceImpactLevel === 'max' ||
+      priceImpactLevel === 'unknown'
+    ) {
       setHasToAcceptHighPriceImpact(true)
     } else {
       setHasToAcceptHighPriceImpact(false)
