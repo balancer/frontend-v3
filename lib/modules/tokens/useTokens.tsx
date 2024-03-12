@@ -16,7 +16,7 @@ import {
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
-import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import { useQuery } from '@apollo/client'
 import { Dictionary, zipObject } from 'lodash'
 import { PropsWithChildren, createContext, useCallback } from 'react'
 import { Address } from 'wagmi'

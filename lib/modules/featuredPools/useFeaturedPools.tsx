@@ -8,7 +8,7 @@ import {
   GetFeaturedPoolsQueryVariables,
 } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import { useQuery } from '@apollo/client'
 import { createContext, ReactNode } from 'react'
 
 export function _useFeaturedPools() {

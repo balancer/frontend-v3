@@ -7,7 +7,7 @@ import {
   GetPoolsQuery,
   GetPoolsQueryVariables,
 } from '@/lib/shared/services/api/generated/graphql'
-import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import { useQuery } from '@apollo/client'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
