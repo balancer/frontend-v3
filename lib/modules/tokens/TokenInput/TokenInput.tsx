@@ -50,7 +50,7 @@ function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSele
       {weight && <Text fontWeight="normal">{weight}%</Text>}
       {toggleTokenSelect && (
         <Box ml="sm">
-          <ChevronDown />
+          <ChevronDown size={16} />
         </Box>
       )}
     </Button>

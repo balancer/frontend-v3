@@ -1,6 +1,6 @@
 import { GqlPoolStaking } from '@/lib/shared/services/api/generated/graphql'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
-import { TransactionLabels, FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionLabels, FlowStep } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Address } from 'viem'
 import { SupportedChainId } from '@/lib/config/config.types'

@@ -159,14 +159,11 @@ export function toPoolState(pool: Pool): PoolState {
     throw new Error('META_STABLE pool type is not yet supported by the SDK')
   }
 
-  // TODO: fix in SDK
-  const poolType = pool.type === GqlPoolType.Gyro ? 'GYRO2' : pool.type
-
   return {
     id: pool.id as Hex,
     address: pool.address as Address,
     tokens: pool.tokens as MinimalToken[],
-    type: mapPoolType(poolType),
+    type: mapPoolType(pool.type),
     vaultVersion: 2, //TODO: change to dynamic version when we implement v3 integration
   }
 }

@@ -1,5 +1,5 @@
 import { useConstructClaimAllRewardsStep } from '../../pool/actions/claim/useConstructClaimAllRewardsStep'
-import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
+import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
 import { VStack } from '@chakra-ui/react'
 import { PoolListItem } from '../../pool/pool.types'
 

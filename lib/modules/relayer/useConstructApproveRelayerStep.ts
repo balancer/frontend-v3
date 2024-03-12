@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { FlowStep, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useEffect } from 'react'
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 import { SupportedChainId } from '@/lib/config/config.types'

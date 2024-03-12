@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { FlowStep, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { parseUnits } from 'viem'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { usePool } from '../../usePool'

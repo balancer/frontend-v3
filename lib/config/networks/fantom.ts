@@ -1,6 +1,7 @@
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
 import { zeroAddress } from 'viem'
+import { convertHexToLowerCase } from '@/lib/shared/utils/objects'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 
 const networkConfig: NetworkConfig = {
@@ -34,6 +35,7 @@ const networkConfig: NetworkConfig = {
       minter: zeroAddress,
     },
   },
+  pools: convertHexToLowerCase({ issues: {} }),
 }
 
 export default networkConfig
