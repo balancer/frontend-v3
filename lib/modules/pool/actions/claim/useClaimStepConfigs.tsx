@@ -5,7 +5,7 @@ import { ClaimAllRewardsButton } from '../../../portfolio/claim/ClaimAllRewardsB
 import { getApproveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { getChainId } from '@/lib/config/app.config'
 import { PoolListItem } from '../../pool.types'
-import { StepConfig } from '../useIterateSteps'
+import { StepConfig } from '../../../transactions/transaction-steps/useIterateSteps'
 
 export function useClaimStepConfigs(pools: PoolListItem[]): StepConfig[] {
   const { chain } = pools[0]

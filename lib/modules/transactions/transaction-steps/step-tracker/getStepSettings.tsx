@@ -3,7 +3,7 @@ import {
   FlowStep,
   TransactionState,
   getTransactionState,
-} from '@/lib/shared/components/btns/transaction-steps/lib'
+} from '@/lib/modules/transactions/transaction-steps/lib'
 
 type StepStatus = 'active' | 'complete' | 'incomplete'
 

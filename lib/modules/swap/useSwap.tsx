@@ -17,10 +17,10 @@ import { useSimulateSwapQuery } from './queries/useSimulateSwapQuery'
 import { useTokens } from '../tokens/useTokens'
 import { useDisclosure } from '@chakra-ui/react'
 import { useSwapStepConfigs } from './useSwapStepConfigs'
-import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
 import { SdkSimulateSwapResponse, SimulateSwapResponse, SwapState } from './swap.types'
 import { SwapHandler } from './handlers/Swap.handler'
-import { useIterateSteps } from '../pool/actions/useIterateSteps'
+import { useIterateSteps } from '../transactions/transaction-steps/useIterateSteps'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useVault } from '@/lib/shared/hooks/useVault'
 import { NativeWrapHandler } from './handlers/NativeWrap.handler'
@@ -63,7 +63,7 @@ function selectSwapHandler(
 export function _useSwap() {
   const swapState = useReactiveVar(swapStateVar)
   const [swapTxState, setSwapTxState] = useState<TransactionState>()
-
+  const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
 
   const { isConnected } = useUserAccount()
@@ -281,7 +281,8 @@ export function _useSwap() {
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [simulationQuery.isLoading, 'Swap is loading'],
-    [!validAmountOut, 'Invalid amount out']
+    [!validAmountOut, 'Invalid amount out'],
+    [needsToAcceptHighPI, 'Accept high price impact first']
   )
 
   return {
@@ -305,6 +306,7 @@ export function _useSwap() {
     setTokenIn,
     setTokenOut,
     switchTokens,
+    setNeedsToAcceptHighPI,
   }
 }
 

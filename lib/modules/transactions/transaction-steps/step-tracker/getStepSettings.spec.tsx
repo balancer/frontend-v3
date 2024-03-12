@@ -1,6 +1,6 @@
 import { mockDeep } from 'vitest-mock-extended'
 import { StepProps, getStepSettings } from './getStepSettings'
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { FlowStep } from '@/lib/modules/transactions/transaction-steps/lib'
 
 const flowStep = mockDeep<FlowStep>()
 
