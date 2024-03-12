@@ -32,18 +32,33 @@ import { CustomAvatar } from './CustomAvatar'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { UserAccountProvider } from './useUserAccount'
+import { defineChain } from 'viem'
+import { Chain } from 'viem'
+import { getNetworkConfig } from '@/lib/config/app.config'
+
+function buildChain(viemChain: Chain, rpcOverride?: string): Chain {
+  const { rpcUrl } = getNetworkConfig(viemChain.id)
+
+  return defineChain({
+    ...viemChain,
+    rpcUrls: {
+      default: { http: [rpcOverride || rpcUrl || viemChain.rpcUrls.default.http[0]] },
+      public: { http: [rpcOverride || rpcUrl || viemChain.rpcUrls.public.http[0]] },
+    },
+  })
+}
 
 export const supportedChains = [
-  mainnet,
-  arbitrum,
-  base,
-  avalanche,
-  fantom,
-  gnosis,
-  optimism,
-  polygon,
-  polygonZkEvm,
-  sepolia,
+  buildChain(mainnet),
+  buildChain(arbitrum),
+  buildChain(base),
+  buildChain(avalanche),
+  buildChain(fantom),
+  buildChain(gnosis),
+  buildChain(optimism),
+  buildChain(polygon),
+  buildChain(polygonZkEvm),
+  buildChain(sepolia),
 ]
 
 const { chains, publicClient } = configureChains(supportedChains, [
