@@ -2,7 +2,7 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'wagmi'
 import { isNativeToken, isWrappedNativeToken } from '../tokens/token.helpers'
 import { getNetworkConfig } from '@/lib/config/app.config'
-import { sameAddresses } from '@/lib/shared/utils/addresses'
+import { isSameAddress, sameAddresses } from '@/lib/shared/utils/addresses'
 import { LidoWrapHandler } from './handlers/LidoWrap.handler'
 import { SwapHandler } from './handlers/Swap.handler'
 import { SupportedWrapHandler, WrapType } from './swap.types'
@@ -58,7 +58,7 @@ export function getWrapType(tokenIn: Address, tokenOut: Address, chain: GqlChain
     return WrapType.UNWRAP
   } else if (isSupportedWrap(tokenIn, tokenOut, chain)) {
     const wrapper = getWrapConfig(tokenIn, tokenOut, chain)
-    return tokenIn === wrapper.baseToken ? WrapType.WRAP : WrapType.UNWRAP
+    return isSameAddress(wrapper.baseToken, tokenIn) ? WrapType.WRAP : WrapType.UNWRAP
   }
 
   return null

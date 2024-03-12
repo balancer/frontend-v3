@@ -112,7 +112,7 @@ export class LidoWrapHandler implements SwapHandler {
     const rate = formatUnits(rateScaled, 18)
 
     return wrapType === WrapType.WRAP
-      ? bn(amount).times(rate).div(1).toString()
-      : bn(amount).times(1).div(rate).toString()
+      ? bn(amount).times(1).div(rate).toString()
+      : bn(amount).times(rate).div(1).toString()
   }
 }

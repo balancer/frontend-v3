@@ -10,10 +10,10 @@ function getViemChain(chainId: number) {
 }
 
 export function getViemClient(chain: GqlChain) {
-  const { rpcUrl, chainId } = getNetworkConfig(chain)
+  const { chainId } = getNetworkConfig(chain)
 
   return createPublicClient({
     chain: getViemChain(chainId),
-    transport: http(rpcUrl),
+    transport: http(),
   })
 }
