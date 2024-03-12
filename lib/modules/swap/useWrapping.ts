@@ -39,7 +39,7 @@ export function getWrapConfig(tokenIn: Address, tokenOut: Address, chain: GqlCha
   return wrapper
 }
 
-export function getWrapHandler(tokenIn: Address, tokenOut: Address, chain: GqlChain) {
+export function getWrapHandlerClass(tokenIn: Address, tokenOut: Address, chain: GqlChain) {
   const wrapper = getWrapConfig(tokenIn, tokenOut, chain)
 
   return wrapper?.swapHandlerClass

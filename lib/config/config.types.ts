@@ -3,7 +3,6 @@ import { GqlChain } from '../shared/services/api/generated/graphql'
 import { supportedChains } from '../modules/web3/Web3Provider'
 import { PoolIssue } from '../modules/pool/alerts/pool-issues/PoolIssue.type'
 import { SwapHandler } from '../modules/swap/handlers/Swap.handler'
-import { ApolloClient } from '@apollo/client'
 
 export interface TokensConfig {
   addresses: {
@@ -19,7 +18,7 @@ export interface TokensConfig {
   supportedWrappers?: {
     baseToken: Address
     wrappedToken: Address
-    swapHandlerClass: new (apolloClient: ApolloClient<object>) => SwapHandler
+    swapHandlerClass: new () => SwapHandler
   }[]
   doubleApprovalRequired?: string[]
   defaultSwapTokens?: {

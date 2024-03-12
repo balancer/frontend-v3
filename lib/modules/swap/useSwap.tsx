@@ -24,7 +24,7 @@ import { useIterateSteps } from '../pool/actions/useIterateSteps'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useVault } from '@/lib/shared/hooks/useVault'
 import { NativeWrapHandler } from './handlers/NativeWrap.handler'
-import { getWrapHandler, isNativeWrap, isSupportedWrap } from './useWrapping'
+import { getWrapHandlerClass, isNativeWrap, isSupportedWrap } from './useWrapping'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -53,8 +53,8 @@ function selectSwapHandler(
   if (isNativeWrap(tokenInAddress, tokenOutAddress, chain)) {
     return new NativeWrapHandler(apolloClient)
   } else if (isSupportedWrap(tokenInAddress, tokenOutAddress, chain)) {
-    const wrapHandler = getWrapHandler(tokenInAddress, tokenOutAddress, chain)
-    return new wrapHandler(apolloClient)
+    const WrapHandler = getWrapHandlerClass(tokenInAddress, tokenOutAddress, chain)
+    return new WrapHandler()
   }
 
   return new DefaultSwapHandler(apolloClient)

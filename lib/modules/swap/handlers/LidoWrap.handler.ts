@@ -1,6 +1,5 @@
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { SwapHandler } from './Swap.handler'
-import { ApolloClient } from '@apollo/client'
 import { TransactionConfig } from '../../web3/contracts/contract.types'
 import { SdkBuildSwapInputs, SimulateSwapInputs, SimulateSwapResponse } from '../swap.types'
 import { WrapType, getWrapType } from '../useWrapping'
@@ -11,8 +10,6 @@ import { getViemClient } from '@/lib/shared/services/viem/viem.client'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 export class LidoWrapHandler implements SwapHandler {
-  constructor(public apolloClient: ApolloClient<object>) {}
-
   async simulate({ ...variables }: SimulateSwapInputs): Promise<SimulateSwapResponse> {
     const wrapType = getWrapType(variables.tokenIn, variables.tokenOut, variables.chain)
     if (!wrapType) throw new Error('LidoWrapHandler called with non valid wrap tokens')
