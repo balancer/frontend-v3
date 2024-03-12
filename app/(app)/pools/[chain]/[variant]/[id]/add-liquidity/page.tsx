@@ -5,18 +5,18 @@ import { AddLiquidityForm } from '@/lib/modules/pool/actions/add-liquidity/form/
 import { AddLiquidityProvider } from '@/lib/modules/pool/actions/add-liquidity/useAddLiquidity'
 import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignature'
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInputsValidation'
-import { CurrentFlowStepProvider } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
 
 export default function AddLiquidityPage() {
   return (
     <RelayerSignatureProvider>
       <TokenInputsValidationProvider>
         <AddLiquidityProvider>
-          <PoolActionsLayout>
-            <CurrentFlowStepProvider>
+          <PriceImpactProvider>
+            <PoolActionsLayout>
               <AddLiquidityForm />
-            </CurrentFlowStepProvider>
-          </PoolActionsLayout>
+            </PoolActionsLayout>
+          </PriceImpactProvider>
         </AddLiquidityProvider>
       </TokenInputsValidationProvider>
     </RelayerSignatureProvider>

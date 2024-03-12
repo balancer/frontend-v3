@@ -8,6 +8,7 @@ describe('generates step props', () => {
   test('when the step is active and the transaction execution is loading', () => {
     flowStep.simulation.isLoading = false
     flowStep.execution.isLoading = true
+    flowStep.result.isSuccess = false
 
     const props: StepProps = {
       currentIndex: 0,
@@ -24,6 +25,30 @@ describe('generates step props', () => {
         "isActive": true,
         "isActiveLoading": true,
         "status": "active",
+        "stepNumber": 1,
+        "title": "Add Liquidity",
+      }
+    `)
+  })
+
+  test('when the last step transaction is complete (result is success)', () => {
+    flowStep.result.isSuccess = true
+
+    const props: StepProps = {
+      currentIndex: 0,
+      index: 0,
+      step: { title: 'Add Liquidity' },
+      colorMode: 'light',
+      flowStep,
+    }
+    const state = getStepSettings(props)
+
+    expect(state).toMatchInlineSnapshot(`
+      {
+        "color": "green",
+        "isActive": true,
+        "isActiveLoading": false,
+        "status": "complete",
         "stepNumber": 1,
         "title": "Add Liquidity",
       }

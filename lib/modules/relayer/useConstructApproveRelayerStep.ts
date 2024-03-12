@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { FlowStep, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
+import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useEffect } from 'react'
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { getNetworkConfig } from '@/lib/config/app.config'
+import { useSyncCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
 
 export function useConstructApproveRelayerStep(chainId: SupportedChainId) {
   const { userAddress, isConnected } = useUserAccount()
@@ -37,13 +38,13 @@ export function useConstructApproveRelayerStep(chainId: SupportedChainId) {
     }
   )
 
-  const step: FlowStep = {
+  const step = useSyncCurrentFlowStep({
     ...approveRelayerTransaction,
     transactionLabels,
     id: 'approveBatchRelayer',
     stepType: 'approveBatchRelayer',
     isComplete: () => isConnected && hasApprovedRelayer,
-  }
+  })
 
   useEffect(() => {
     if (approveRelayerTransaction.result.isSuccess) refetch()

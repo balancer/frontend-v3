@@ -60,7 +60,7 @@ function selectSwapHandler(
 export function _useSwap() {
   const swapState = useReactiveVar(swapStateVar)
   const [swapTxState, setSwapTxState] = useState<TransactionState>()
-
+  const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
 
   const { isConnected } = useUserAccount()
@@ -262,7 +262,7 @@ export function _useSwap() {
     vaultAddress,
     setSwapTxState,
   })
-  const { currentStep, useOnStepCompleted } = useIterateSteps(swapStepConfigs)
+  const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(swapStepConfigs)
 
   // On first render, set default tokens
   useEffect(() => {
@@ -278,7 +278,8 @@ export function _useSwap() {
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [simulationQuery.isLoading, 'Swap is loading'],
-    [!validAmountOut, 'Invalid amount out']
+    [!validAmountOut, 'Invalid amount out'],
+    [needsToAcceptHighPI, 'Accept high price impact first']
   )
 
   return {
@@ -293,6 +294,8 @@ export function _useSwap() {
     handler,
     swapTxState,
     currentStep,
+    currentStepIndex,
+    swapStepConfigs,
     isNativeAssetIn,
     useOnStepCompleted,
     setTokenSelectKey,
@@ -302,6 +305,7 @@ export function _useSwap() {
     setTokenIn,
     setTokenOut,
     switchTokens,
+    setNeedsToAcceptHighPI,
   }
 }
 
