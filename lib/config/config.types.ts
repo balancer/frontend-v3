@@ -2,7 +2,7 @@ import { Address } from 'viem'
 import { GqlChain } from '../shared/services/api/generated/graphql'
 import { supportedChains } from '../modules/web3/Web3Provider'
 import { PoolIssue } from '../modules/pool/alerts/pool-issues/PoolIssue.type'
-import { SwapHandler } from '../modules/swap/handlers/Swap.handler'
+import { SupportedWrapHandler } from '../modules/swap/wrap.helpers'
 
 export interface TokensConfig {
   addresses: {
@@ -18,7 +18,7 @@ export interface TokensConfig {
   supportedWrappers?: {
     baseToken: Address
     wrappedToken: Address
-    swapHandlerClass: new () => SwapHandler
+    swapHandler: SupportedWrapHandler
   }[]
   doubleApprovalRequired?: string[]
   defaultSwapTokens?: {

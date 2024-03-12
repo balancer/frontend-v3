@@ -3,7 +3,7 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { convertHexToLowerCase } from '@/lib/shared/utils/objects'
 import { NetworkConfig } from '../config.types'
 import { CSP_ISSUE_POOL_IDS } from '../../shared/data/csp-issue'
-import { LidoWrapHandler } from '@/lib/modules/swap/handlers/LidoWrap.handler'
+import { SupportedWrapHandler } from '@/lib/modules/swap/wrap.helpers'
 
 const networkConfig: NetworkConfig = {
   chainId: 1,
@@ -29,7 +29,7 @@ const networkConfig: NetworkConfig = {
         // stETH/wstETH
         baseToken: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
         wrappedToken: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
-        swapHandlerClass: LidoWrapHandler,
+        swapHandler: SupportedWrapHandler.LIDO,
       },
     ],
     /**

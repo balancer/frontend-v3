@@ -3,10 +3,16 @@ import { Address } from 'wagmi'
 import { isNativeToken, isWrappedNativeToken } from '../tokens/token.helpers'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { sameAddresses } from '@/lib/shared/utils/addresses'
+import { LidoWrapHandler } from './handlers/LidoWrap.handler'
+import { SwapHandler } from './handlers/Swap.handler'
 
 export enum WrapType {
   WRAP = 'wrap',
   UNWRAP = 'unwrap',
+}
+
+export enum SupportedWrapHandler {
+  LIDO = 'LIDO',
 }
 
 export function isNativeWrap(tokenIn: Address, tokenOut: Address, chain: GqlChain) {
@@ -38,10 +44,19 @@ export function getWrapConfig(tokenIn: Address, tokenOut: Address, chain: GqlCha
   return wrapper
 }
 
-export function getWrapHandlerClass(tokenIn: Address, tokenOut: Address, chain: GqlChain) {
+export function getWrapHandlerClass(
+  tokenIn: Address,
+  tokenOut: Address,
+  chain: GqlChain
+): new () => SwapHandler {
   const wrapper = getWrapConfig(tokenIn, tokenOut, chain)
 
-  return wrapper?.swapHandlerClass
+  switch (wrapper.swapHandler) {
+    case SupportedWrapHandler.LIDO:
+      return LidoWrapHandler
+    default:
+      throw new Error('Unsupported wrap handler')
+  }
 }
 
 export function getWrapType(tokenIn: Address, tokenOut: Address, chain: GqlChain): WrapType | null {
