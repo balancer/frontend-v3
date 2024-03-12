@@ -34,7 +34,6 @@ import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { StepTracker } from '../../../transactions/transaction-steps/step-tracker/StepTracker'
 
 type Props = {
   isOpen: boolean
@@ -58,8 +57,6 @@ export function AddLiquidityModal({
     tokens,
     addLiquidityTxState,
     currentStep,
-    currentStepIndex,
-    stepConfigs,
     useOnStepCompleted,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
