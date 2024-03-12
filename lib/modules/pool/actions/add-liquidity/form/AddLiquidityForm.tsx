@@ -30,6 +30,7 @@ import { ProportionalInputs } from './ProportionalInputs'
 import { usePool } from '../../../usePool'
 import { requiresProportionalInput } from '../../LiquidityActionHelpers'
 import { Info } from 'react-feather'
+import { PriceImpactAccordion } from '@/lib/shared/components/accordion/PriceImpactAccordion'
 
 export function AddLiquidityForm() {
   const {
@@ -44,6 +45,7 @@ export function AddLiquidityForm() {
     isDisabled,
     disabledReason,
     previewModalDisclosure,
+    setNeedsToAcceptHighPI,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { slippage } = useUserSettings()
@@ -106,8 +108,8 @@ export function AddLiquidityForm() {
               </VStack>
             )}
 
-            <VStack spacing="sm" align="start" w="full" px="md">
-              <HStack justify="space-between" w="full">
+            <VStack spacing="sm" align="start" w="full">
+              {/* <HStack justify="space-between" w="full">
                 <Text color="grayText">Total</Text>
                 <HStack textColor="grayText">
                   <NumberText color="grayText">
@@ -142,8 +144,8 @@ export function AddLiquidityForm() {
                     <Info size={16} />
                   </Tooltip>
                 </HStack>
-              </HStack>
-              <HStack justify="space-between" w="full">
+              </HStack> */}
+              {/* <HStack justify="space-between" w="full">
                 <Text color="grayText">Price impact</Text>
                 <HStack textColor="grayText">
                   {priceImpactQuery.isLoading ? (
@@ -159,7 +161,14 @@ export function AddLiquidityForm() {
                     <Info size={16} />
                   </Tooltip>
                 </HStack>
-              </HStack>
+              </HStack> */}
+              {priceImpactQuery.data && (
+                <PriceImpactAccordion
+                  setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                  accordionButtonComponent={<Text>{priceImpactLabel}</Text>}
+                  accordionPanelComponent={<Text>TBD</Text>}
+                />
+              )}
             </VStack>
 
             <Tooltip label={isDisabled ? disabledReason : ''}>
