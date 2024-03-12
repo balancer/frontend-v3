@@ -21,6 +21,7 @@ export function _usePriceImpact() {
   }
   function getPriceImpactColor(priceImpactLevel: PriceImpactLevel) {
     switch (priceImpactLevel) {
+      case 'unknown':
       case 'high':
       case 'max':
         return 'red.400'

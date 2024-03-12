@@ -80,9 +80,13 @@ export function SwapDetails() {
       <HStack justify="space-between" w="full">
         <Text color={priceImpactColor}>Price impact</Text>
         <HStack>
-          <NumberText color={priceImpactColor}>
-            -{toCurrency(priceImpacUsd, { abbreviated: false })} (-{priceImpactLabel})
-          </NumberText>
+          {priceImpactLevel === 'unknown' ? (
+            <Text>Unknown</Text>
+          ) : (
+            <NumberText color={priceImpactColor}>
+              -{toCurrency(priceImpacUsd, { abbreviated: false })} (-{priceImpactLabel})
+            </NumberText>
+          )}
           <Tooltip label="Price impact" fontSize="sm">
             {priceImpactLevel === 'low' ? (
               <InfoOutlineIcon color="grayText" />

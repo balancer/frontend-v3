@@ -43,7 +43,7 @@ export function SwapDetailsAccordion({ setNeedsToAcceptHighPI }: SwapDetailsAcco
   }, [acceptHighPriceImpact, hasToAcceptHighPriceImpact])
 
   const handleClick = () => {
-    if (priceImpactLevel === 'high') {
+    if (priceImpactLevel === 'high' || priceImpactLevel === 'unknown') {
       setAcceptHighPriceImpact(true)
     } else {
       acceptHighImpactDisclosure.onOpen()
@@ -86,13 +86,19 @@ export function SwapDetailsAccordion({ setNeedsToAcceptHighPI }: SwapDetailsAcco
                 </Box>
                 <VStack align="start">
                   {priceImpactLevel === 'unknown' ? (
-                    <Text color="white" fontWeight="700">
-                      Price impact is unknown.
-                    </Text>
+                    <>
+                      <Text color="white" fontWeight="700">
+                        Price impact is unknown
+                      </Text>
+                      <Text color="white" fontSize="sm">
+                        The price impact cannot be calculated. Only proceed if you know exactly what
+                        you are doing.
+                      </Text>
+                    </>
                   ) : (
                     <>
                       <Text color="white" fontWeight="700">
-                        Price impact is high: Exceeds {priceImpactLevel === 'high' ? '1' : '5'}.00%.
+                        Price impact is high: Exceeds {priceImpactLevel === 'high' ? '1' : '5'}.00%
                       </Text>
                       <Text color="white" fontSize="sm">
                         The higher the price impact, the worse exchange rate you get for this swap.
@@ -106,7 +112,11 @@ export function SwapDetailsAccordion({ setNeedsToAcceptHighPI }: SwapDetailsAcco
               <VStack w="full" align="flex-start">
                 <Text>Price impact acknowledgement</Text>
                 {priceImpactLevel === 'unknown' ? (
-                  <Text color="grayText">I accept the unknown price impact. </Text>
+                  <Text color="grayText">
+                    I accept that the price impact of this transaction is unknown. I understand that
+                    proceeding may result in losses if my transaction moves the market price
+                    unfavorably based on the current depth of the market.
+                  </Text>
                 ) : (
                   <Text color="grayText">
                     I accept the high price impact of{' '}

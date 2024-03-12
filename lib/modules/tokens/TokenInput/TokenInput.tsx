@@ -76,7 +76,7 @@ function TokenInputFooter({
   const { usdValueForToken } = useTokens()
   const { toCurrency } = useCurrency()
   const { hasValidationError, getValidationError } = useTokenInputsValidation()
-  const { priceImpact, priceImpactColor } = usePriceImpact()
+  const { priceImpact, priceImpactColor, priceImpactLevel } = usePriceImpact()
 
   const hasError = hasValidationError(token)
   // TODO: replace input.fontHintError with proper theme color
@@ -99,7 +99,9 @@ function TokenInputFooter({
           color={showPriceImpact ? priceImpactColor : 'gray.400'}
         >
           {toCurrency(usdValue, { abbreviated: false })}
-          {showPriceImpact && ` (-${fNum('priceImpact', priceImpact)})`}
+          {showPriceImpact &&
+            priceImpactLevel !== 'unknown' &&
+            ` (-${fNum('priceImpact', priceImpact)})`}
         </Text>
       )}
       {isBalancesLoading ? (
