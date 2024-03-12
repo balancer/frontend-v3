@@ -29,11 +29,13 @@ import { getChainName } from '@/lib/config/app.config'
 import { RichSelect } from '@/lib/shared/components/inputs/RichSelect'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
-import { SwapDetailsAccordion } from './SwapDetailsAccordion'
+import { PriceImpactAccordion } from '../../shared/components/accordion/PriceImpactAccordion'
 import { TokenInputsValidationProvider } from '../tokens/useTokenInputsValidation'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
 import { Globe, Repeat } from 'react-feather'
+import { SwapRate } from './SwapRate'
+import { SwapDetails } from './SwapDetails'
 
 export function SwapForm() {
   const {
@@ -164,7 +166,11 @@ export function SwapForm() {
                   </VStack>
 
                   {simulationQuery.data && (
-                    <SwapDetailsAccordion setNeedsToAcceptHighPI={setNeedsToAcceptHighPI} />
+                    <PriceImpactAccordion
+                      setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                      accordionButtonComponent={<SwapRate />}
+                      accordionPanelComponent={<SwapDetails />}
+                    />
                   )}
 
                   <Tooltip label={isDisabled ? disabledReason : ''}>

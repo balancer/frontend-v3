@@ -12,17 +12,21 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@chakra-ui/icons'
-import { SwapDetails } from './SwapDetails'
-import { SwapRate } from './SwapRate'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import { fNum } from '@/lib/shared/utils/numbers'
-import { useEffect } from 'react'
-import { SwapDetailsAcceptPriceImpactModal } from './SwapDetailsAcceptPriceImpactModal'
+import { ReactNode, useEffect } from 'react'
+import { PriceImpactAcceptModal } from '../modal/PriceImpactAcceptModal'
 
-interface SwapDetailsAccordianProps {
+interface PriceImpactAccordionProps {
   setNeedsToAcceptHighPI: (value: boolean) => void
+  accordionButtonComponent: ReactNode
+  accordionPanelComponent: ReactNode
 }
-export function SwapDetailsAccordion({ setNeedsToAcceptHighPI }: SwapDetailsAccordianProps) {
+export function PriceImpactAccordion({
+  setNeedsToAcceptHighPI,
+  accordionButtonComponent,
+  accordionPanelComponent,
+}: PriceImpactAccordionProps) {
   const acceptHighImpactDisclosure = useDisclosure()
   const {
     priceImpactLevel,
@@ -57,7 +61,7 @@ export function SwapDetailsAccordion({ setNeedsToAcceptHighPI }: SwapDetailsAcco
           <h2>
             <AccordionButton>
               <Box as="span" flex="1" textAlign="left">
-                <SwapRate />
+                {accordionButtonComponent}
               </Box>
               <HStack>
                 <Box color={priceImpactColor}>{getPriceImpactIcon(priceImpactLevel)}</Box>
@@ -68,9 +72,7 @@ export function SwapDetailsAccordion({ setNeedsToAcceptHighPI }: SwapDetailsAcco
               </HStack>
             </AccordionButton>
           </h2>
-          <AccordionPanel pb="md">
-            <SwapDetails />
-          </AccordionPanel>
+          <AccordionPanel pb="md">{accordionPanelComponent}</AccordionPanel>
         </AccordionItem>
       </Accordion>
       {(priceImpactLevel === 'high' ||
@@ -144,7 +146,7 @@ export function SwapDetailsAccordion({ setNeedsToAcceptHighPI }: SwapDetailsAcco
               </VStack>
             </Card>
           </VStack>
-          <SwapDetailsAcceptPriceImpactModal
+          <PriceImpactAcceptModal
             isOpen={acceptHighImpactDisclosure.isOpen}
             onOpen={acceptHighImpactDisclosure.onOpen}
             onClose={acceptHighImpactDisclosure.onClose}
