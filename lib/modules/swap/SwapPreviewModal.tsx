@@ -37,7 +37,8 @@ export function SwapPreviewModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { tokenIn, tokenOut, currentStep, useOnStepCompleted, selectedChain } = useSwap()
+  const { tokenIn, tokenOut, currentStep, useOnStepCompleted, selectedChain, swapTxState } =
+    useSwap()
 
   return (
     <Modal
@@ -55,7 +56,7 @@ export function SwapPreviewModal({
             <Heading fontWeight="bold" size="h5">
               Review swap
             </Heading>
-            <SwapTimeout />
+            <SwapTimeout swapTxState={swapTxState} />
           </HStack>
         </ModalHeader>
         <ModalCloseButton />
