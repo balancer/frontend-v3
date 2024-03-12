@@ -12,7 +12,8 @@ import { useTokens } from '../useTokens'
 import { ApprovalAction } from './approval-labels'
 import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
 import { ApproveTokenProps, useConstructApproveTokenStep } from './useConstructApproveTokenStep'
-import { getChainId } from '@/lib/config/app.config'
+import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 
 type Props = ApproveTokenProps & CommonStepProps
 
@@ -41,8 +42,13 @@ export function useTokenApprovalConfigs({
 }: Params): StepConfig[] {
   const { userAddress } = useUserAccount()
   const { getToken } = useTokens()
+  const {
+    tokens: { nativeAsset },
+  } = getNetworkConfig(chain)
 
-  const _approvalAmounts = approvalAmounts.filter(amount => amount.rawAmount > 0)
+  const _approvalAmounts = approvalAmounts
+    .filter(amount => amount.rawAmount > 0)
+    .filter(amount => !isSameAddress(amount.address, nativeAsset.address))
 
   const approvalTokenAddresses = _approvalAmounts.map(amount => amount.address)
 
