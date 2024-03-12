@@ -11,9 +11,10 @@ import { useTokenBalances } from '../tokens/useTokenBalances'
 
 type Props = {
   onTransactionStateUpdate: OnTransactionStateUpdate
+  closeModal: () => void
 }
 
-export function SwapButton({ onTransactionStateUpdate }: Props) {
+export function SwapButton({ onTransactionStateUpdate, closeModal }: Props) {
   const { swapStep, swapTransaction } = useConstructSwapStep()
   const { refetchBalances } = useTokenBalances()
 
@@ -33,7 +34,7 @@ export function SwapButton({ onTransactionStateUpdate }: Props) {
   return (
     <VStack w="full">
       {isComplete ? (
-        <Button w="full" size="lg">
+        <Button w="full" size="lg" onClick={closeModal}>
           Close
         </Button>
       ) : (
