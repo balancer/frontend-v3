@@ -7,8 +7,9 @@ import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
 export function PoolActivityChart() {
   const { chartOption, activeTab, setActiveTab, tabsList, eChartsRef } = usePoolActivityChart()
 
+  console.log('chart', activeTab, chartOption)
   return (
-    <Card variant="level3" px="4" py="5">
+    <Card variant="elevation2" shadow="2xl" width="full" px="4" py="5">
       <HStack width="full" justifyContent="space-between">
         <Heading fontWeight="bold" size="h5">
           Transactions

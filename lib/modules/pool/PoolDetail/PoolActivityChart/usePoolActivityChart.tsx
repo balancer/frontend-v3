@@ -187,6 +187,7 @@ export function usePoolActivityChart() {
   const [activeTab, setActiveTab] = useState(tabsList[0])
 
   const { data: response } = usePoolJoinsExitsSwaps(poolId as string, chain)
+  console.log('response', response)
 
   const chartData = useMemo(() => {
     if (!response) return { adds: [], removes: [], swaps: [] }

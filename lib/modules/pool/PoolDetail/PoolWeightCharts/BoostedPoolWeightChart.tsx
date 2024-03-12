@@ -105,7 +105,7 @@ export default function BoostedPoolWeightChart({
       >
         <defs>
           <filter id="round">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
             <feColorMatrix
               in="blur"
               mode="matrix"
