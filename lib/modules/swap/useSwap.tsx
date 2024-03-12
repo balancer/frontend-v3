@@ -24,7 +24,7 @@ import { useIterateSteps } from '../pool/actions/useIterateSteps'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useVault } from '@/lib/shared/hooks/useVault'
 import { NativeWrapHandler } from './handlers/NativeWrap.handler'
-import { getWrapHandlerClass, isNativeWrap, isSupportedWrap } from './useWrapping'
+import { getWrapHandlerClass, isNativeWrap, isSupportedWrap } from './wrap.helpers'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)

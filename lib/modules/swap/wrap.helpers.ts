@@ -19,10 +19,9 @@ export function isNativeWrap(tokenIn: Address, tokenOut: Address, chain: GqlChai
 export function isSupportedWrap(tokenIn: Address, tokenOut: Address, chain: GqlChain) {
   const networkConfig = getNetworkConfig(chain)
   const supportedWrappers = networkConfig.tokens.supportedWrappers || []
-  return supportedWrappers.some(wrapper => {
-    console.log([wrapper.baseToken, wrapper.wrappedToken], [tokenIn, tokenOut])
-    return sameAddresses([wrapper.baseToken, wrapper.wrappedToken], [tokenIn, tokenOut])
-  })
+  return supportedWrappers.some(wrapper =>
+    sameAddresses([wrapper.baseToken, wrapper.wrappedToken], [tokenIn, tokenOut])
+  )
 }
 
 export function getWrapConfig(tokenIn: Address, tokenOut: Address, chain: GqlChain) {
