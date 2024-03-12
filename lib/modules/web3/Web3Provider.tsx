@@ -42,8 +42,8 @@ function buildChain(viemChain: Chain, rpcOverride?: string): Chain {
   return defineChain({
     ...viemChain,
     rpcUrls: {
-      default: { http: [rpcOverride || rpcUrl || viemChain.rpcUrls.default.http[0]] },
-      public: { http: [rpcOverride || rpcUrl || viemChain.rpcUrls.public.http[0]] },
+      default: { http: [rpcOverride || rpcUrl, ...viemChain.rpcUrls.default.http] },
+      public: { http: [rpcOverride || rpcUrl, ...viemChain.rpcUrls.public.http] },
     },
   })
 }
