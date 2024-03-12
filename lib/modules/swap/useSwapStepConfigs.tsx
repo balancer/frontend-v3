@@ -6,6 +6,8 @@ import { useMemo } from 'react'
 import { Address, parseUnits } from 'viem'
 import { RawAmount } from '../tokens/approvals/approval-rules'
 import { StepConfig } from '../transactions/transaction-steps/useIterateSteps'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { getNetworkConfig } from '@/lib/config/app.config'
 
 type Params = {
   humanAmountIn: string
@@ -22,15 +24,21 @@ export function useSwapStepConfigs({
   vaultAddress,
   setSwapTxState,
 }: Params) {
+  const {
+    tokens: { nativeAsset },
+  } = getNetworkConfig(selectedChain)
+
   const tokenInAmounts = useMemo(() => {
     if (!tokenIn) return [] as RawAmount[]
+    if (isSameAddress(tokenIn.address, nativeAsset.address)) return []
+
     return [
       {
         address: tokenIn.address as Address,
         rawAmount: parseUnits(humanAmountIn, tokenIn.decimals),
       },
     ]
-  }, [humanAmountIn, tokenIn])
+  }, [humanAmountIn, tokenIn, nativeAsset])
 
   const tokenApprovalConfigs = useTokenApprovalConfigs({
     spenderAddress: vaultAddress,
