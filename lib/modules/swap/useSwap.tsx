@@ -262,7 +262,7 @@ export function _useSwap() {
     vaultAddress,
     setSwapTxState,
   })
-  const { currentStep, useOnStepCompleted } = useIterateSteps(swapStepConfigs)
+  const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(swapStepConfigs)
 
   // On first render, set default tokens
   useEffect(() => {
@@ -294,6 +294,8 @@ export function _useSwap() {
     handler,
     swapTxState,
     currentStep,
+    currentStepIndex,
+    swapStepConfigs,
     isNativeAssetIn,
     useOnStepCompleted,
     setTokenSelectKey,
