@@ -1,7 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import {
   Accordion,
   AccordionButton,
@@ -19,6 +18,7 @@ import { StepConfig } from '../useIterateSteps'
 import { Step, StepIndicator } from './Step'
 import { StepProps } from './getStepSettings'
 import { SupportedChainId } from '@/lib/config/config.types'
+import { useEffect, useState } from 'react'
 
 type StepTrackerProps = {
   stepConfigs: StepConfig[]
@@ -26,25 +26,24 @@ type StepTrackerProps = {
   chainId: SupportedChainId
 }
 
-export function StepTracker({ stepConfigs, currentStepIndex, chainId }: StepTrackerProps) {
+export function StepTracker({ stepConfigs, currentStepIndex }: StepTrackerProps) {
+  const [initialStepConfigs, setInitialStepConfigs] = useState<StepConfig[]>([])
+
   const { flowStep } = useCurrentFlowStep()
   const { colorMode } = useColorMode()
-  const relayerMode = useRelayerMode()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
-  const hasSignRelayerStep = relayerMode === 'signRelayer'
+
+  // Number of steps that were completed and deleted from the original stepConfigs list
+  const deletedStepsCount =
+    initialStepConfigs.length === 0 ? 0 : initialStepConfigs.length - stepConfigs.length
 
   function getCurrentIndex() {
-    if (hasSignRelayerStep) {
-      if (shouldSignRelayerApproval) return 0
-      return currentStepIndex + 1
-    }
-    return currentStepIndex
+    return currentStepIndex + deletedStepsCount
   }
 
-  const steps = hasSignRelayerStep ? [{ title: 'Sign relayer' }, ...stepConfigs] : stepConfigs
+  const steps = initialStepConfigs
 
   const currentStep = steps[getCurrentIndex()]
-  const currentStepTitle = currentStep.title
+  const currentStepTitle = currentStep?.title
 
   const currentStepPosition = `Step ${getCurrentIndex() + 1}/${steps.length}`
 
@@ -55,6 +54,15 @@ export function StepTracker({ stepConfigs, currentStepIndex, chainId }: StepTrac
     colorMode,
     flowStep,
   }
+
+  // Save initial step configs
+  // As the user goes through the flow and completes the steps, some steps (like token approvals) disappear from the provided stepConfigs prop
+  // so we save the initial list to display the whole progress in the step tracker.
+  useEffect(() => {
+    setInitialStepConfigs(stepConfigs)
+  }, [])
+
+  if (initialStepConfigs.length === 0) return null
 
   return (
     <Accordion width="full" variant="gradient" allowToggle textAlign="left">

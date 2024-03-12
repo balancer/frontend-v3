@@ -2,7 +2,8 @@ import networkConfig from '@/lib/config/networks/mainnet'
 import { claimableVeBalRewardsTokens } from '@/lib/modules/portfolio/useProtocolRewards'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { FlowStep, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
+import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
+import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 const transactionLabels: TransactionLabels = {
   init: 'Claim all',
@@ -24,13 +25,13 @@ export function useConstructClaimVeBalRewardsStep() {
     { enabled: !!userAddress }
   )
 
-  const claimAllVeBalRewardsStep: FlowStep = {
+  const claimAllVeBalRewardsStep = useSyncCurrentFlowStep({
     ...claimVeBalRewardsTransaction,
     transactionLabels,
     id: 'claimAllVeBalRewards',
     stepType: 'claim',
     isComplete: () => userAddress && claimAllVeBalRewardsStep.result.isSuccess,
-  }
+  })
 
   return {
     claimAllVeBalRewardsStep,

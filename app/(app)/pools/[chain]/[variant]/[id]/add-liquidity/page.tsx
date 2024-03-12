@@ -6,7 +6,6 @@ import { AddLiquidityProvider } from '@/lib/modules/pool/actions/add-liquidity/u
 import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignature'
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
-import { CurrentFlowStepProvider } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 export default function AddLiquidityPage() {
   return (
@@ -15,9 +14,7 @@ export default function AddLiquidityPage() {
         <AddLiquidityProvider>
           <PriceImpactProvider>
             <PoolActionsLayout>
-              <CurrentFlowStepProvider>
-                <AddLiquidityForm />
-              </CurrentFlowStepProvider>
+              <AddLiquidityForm />
             </PoolActionsLayout>
           </PriceImpactProvider>
         </AddLiquidityProvider>
