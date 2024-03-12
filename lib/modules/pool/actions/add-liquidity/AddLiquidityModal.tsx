@@ -92,14 +92,7 @@ export function AddLiquidityModal({
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="md" align="start">
-            <Card variant="level5" p="md" shadow="sm" w="full">
-              <StepTracker
-                currentStepIndex={currentStepIndex}
-                stepConfigs={stepConfigs}
-                chainId={chainId}
-              />
-            </Card>
-            <Card variant="level5" p="md" shadow="sm" w="full">
+            <Card variant="level3" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text color="grayText">{"You're adding"}</Text>
@@ -129,7 +122,7 @@ export function AddLiquidityModal({
               </VStack>
             </Card>
 
-            <Card variant="level5" p="md" shadow="sm" w="full">
+            <Card variant="level3" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text color="grayText">{"You'll get (if no slippage)"}</Text>
@@ -145,7 +138,7 @@ export function AddLiquidityModal({
               </VStack>
             </Card>
 
-            <Card variant="level5" p="md" shadow="sm" w="full">
+            <Card variant="level2" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="sm">
                 <HStack justify="space-between" w="full">
                   <Text>Price impact</Text>

@@ -16,7 +16,7 @@ export default function PoolMetaBadges() {
         px="3"
         rounded="full"
         background="lightBadge"
-        _dark={{ background: 'background.card.level6' }}
+        _dark={{ background: 'background.level3' }}
       >
         <Image
           src={`/images/chains/${chain}.svg`}
@@ -32,7 +32,7 @@ export default function PoolMetaBadges() {
             px="3"
             rounded="full"
             background="lightBadge"
-            _dark={{ background: 'background.card.level6' }}
+            _dark={{ background: 'background.level3' }}
             key={`meta-badge-${token.address}`}
           >
             <HStack>
@@ -57,7 +57,7 @@ export default function PoolMetaBadges() {
           fontWeight="normal"
           p="1"
           background="lightBadge"
-          _dark={{ background: 'background.card.level6' }}
+          _dark={{ background: 'background.level3' }}
         >
           <Text>{fNum('feePercent', pool.dynamicData.swapFee)}</Text>
         </Badge>

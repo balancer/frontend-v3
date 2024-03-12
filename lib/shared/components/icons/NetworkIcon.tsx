@@ -9,7 +9,7 @@ export function NetworkIcon({ chain, size = 12, ...rest }: { chain: GqlChain } &
   const imageSize = Number(size) * 2 + 8
 
   return (
-    <Circle bg="background.card.level4" size={size} {...rest}>
+    <Circle bg="background.level2" size={size} {...rest}>
       <Image src={iconPath} width={imageSize} height={imageSize} alt={shortName} />
     </Circle>
   )
