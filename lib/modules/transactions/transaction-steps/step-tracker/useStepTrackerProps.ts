@@ -1,8 +1,8 @@
-import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
-import { useColorMode } from '@chakra-ui/react'
-import { useCurrentFlowStep } from '../useCurrentFlowStep'
+/* eslint-disable react-hooks/exhaustive-deps */
 import { SupportedChainId } from '@/lib/config/config.types'
+import { useColorMode } from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import { useCurrentFlowStep } from '../useCurrentFlowStep'
 import { StepConfig } from '../useIterateSteps'
 
 type StepTrackerProps = {
@@ -12,34 +12,39 @@ type StepTrackerProps = {
 }
 
 /*
-  Prepares steps and indexes handling edge-cases like the Sign Relayer step.
-  Generates the props used by the two UI versions of the StepTracker component (Mobile and Desktop).
+  Prepares steps and indexes to be used by the two UI versions of the StepTracker component (Mobile and Desktop).
 */
-export function useStepTrackerProps({ stepConfigs, currentStepIndex, chainId }: StepTrackerProps) {
+export function useStepTrackerProps({ stepConfigs, currentStepIndex }: StepTrackerProps) {
+  const [initialStepConfigs, setInitialStepConfigs] = useState<StepConfig[]>([])
+
   const { flowStep } = useCurrentFlowStep()
   const { colorMode } = useColorMode()
-  const relayerMode = useRelayerMode()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
-  const hasSignRelayerStep = relayerMode === 'signRelayer'
+
+  // Number of steps that were completed and deleted from the original stepConfigs list
+  const deletedStepsCount =
+    initialStepConfigs.length === 0 ? 0 : initialStepConfigs.length - stepConfigs.length
 
   function getCurrentIndex() {
-    if (hasSignRelayerStep) {
-      if (shouldSignRelayerApproval) return 0
-      return currentStepIndex + 1
-    }
-    return currentStepIndex
+    return currentStepIndex + deletedStepsCount
   }
 
-  const steps = hasSignRelayerStep ? [{ title: 'Sign relayer' }, ...stepConfigs] : stepConfigs
+  const steps = initialStepConfigs
   const currentStep = steps[getCurrentIndex()]
   const currentStepPosition = `Step ${getCurrentIndex() + 1}/${steps.length}`
 
+  // Save initial step configs
+  // As the user goes through the flow and completes the steps, some steps (like token approvals) disappear from the provided stepConfigs prop
+  // so we save the initial list to display the whole progress in the step tracker.
+  useEffect(() => {
+    setInitialStepConfigs(stepConfigs)
+  }, [])
+
   return {
-    steps,
-    currentIndex: getCurrentIndex(),
     step: currentStep,
+    currentIndex: getCurrentIndex(),
     colorMode,
     flowStep,
     currentStepPosition,
+    steps: initialStepConfigs,
   }
 }

@@ -6,7 +6,7 @@ export default function GradientBadge({ children, ...rest }: BadgeProps) {
     <Badge
       {...rest}
       backgroundColor="lightBadge"
-      _dark={{ backgroundColor: 'background.card.level5' }}
+      _dark={{ backgroundColor: 'background.level3' }}
       p="1"
     >
       <Text
