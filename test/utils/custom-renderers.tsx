@@ -40,6 +40,7 @@ import { createMockConnector } from './wagmi/wagmi-mock-connectors'
 import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignature'
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { SupportedChainId } from '@/lib/config/config.types'
+import { CurrentFlowStepProvider } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -95,9 +96,11 @@ function GlobalProviders({ children }: WrapperProps) {
                 initPoolListView={'list'}
                 initEnableSignatures="yes"
               >
-                <RecentTransactionsProvider>
-                  <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
-                </RecentTransactionsProvider>
+                <CurrentFlowStepProvider>
+                  <RecentTransactionsProvider>
+                    <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+                  </RecentTransactionsProvider>
+                </CurrentFlowStepProvider>
               </UserSettingsProvider>
             </TokensProvider>
           </UserAccountProvider>
