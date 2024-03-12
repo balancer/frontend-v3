@@ -44,26 +44,18 @@ const swapStateVar = makeVar<SwapState>({
   selectedChain: GqlChain.Mainnet,
 })
 
-// Unecessary for now but allows us to add logic to select other handlers in the future.
 function selectSwapHandler(
   tokenInAddress: Address,
   tokenOutAddress: Address,
   chain: GqlChain,
   apolloClient: ApolloClient<object>
 ): SwapHandler {
-  console.log('Selecting handler')
-
   if (isNativeWrap(tokenInAddress, tokenOutAddress, chain)) {
-    console.log('NativeWrapHandler')
-
     return new NativeWrapHandler(apolloClient)
   } else if (isSupportedWrap(tokenInAddress, tokenOutAddress, chain)) {
-    console.log('SupportedWrapHandler')
-
     const wrapHandler = getWrapHandler(tokenInAddress, tokenOutAddress, chain)
     return new wrapHandler(apolloClient)
   }
-  console.log('DefaultSwapHandler')
 
   return new DefaultSwapHandler(apolloClient)
 }
