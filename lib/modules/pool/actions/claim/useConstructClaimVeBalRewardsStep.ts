@@ -3,7 +3,7 @@ import { claimableVeBalRewardsTokens } from '@/lib/modules/portfolio/useProtocol
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
-import { useUpdateCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 const transactionLabels: TransactionLabels = {
   init: 'Claim all',
@@ -25,7 +25,7 @@ export function useConstructClaimVeBalRewardsStep() {
     { enabled: !!userAddress }
   )
 
-  const claimAllVeBalRewardsStep = useUpdateCurrentFlowStep({
+  const claimAllVeBalRewardsStep = useSyncCurrentFlowStep({
     ...claimVeBalRewardsTransaction,
     transactionLabels,
     id: 'claimAllVeBalRewards',

@@ -6,7 +6,7 @@ import { useHasMinterApproval } from './useHasMinterApproval'
 import { useEffect } from 'react'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { useUpdateCurrentFlowStep } from '../../transactions/transaction-steps/useCurrentFlowStep'
+import { useSyncCurrentFlowStep } from '../../transactions/transaction-steps/useCurrentFlowStep'
 
 export function useConstructMinterApprovalStep(chain: GqlChain) {
   const { isConnected } = useUserAccount()
@@ -31,7 +31,7 @@ export function useConstructMinterApprovalStep(chain: GqlChain) {
     { enabled: !isLoading }
   )
 
-  const step = useUpdateCurrentFlowStep({
+  const step = useSyncCurrentFlowStep({
     ...minterApprovalTransaction,
     transactionLabels,
     id: 'minterApproval',

@@ -10,7 +10,7 @@ import { useEffect } from 'react'
 import { getChainId } from '@/lib/config/app.config'
 import { PoolListItem } from '../../pool.types'
 import { getAllGaugesAddressesFromPool } from '@/lib/modules/portfolio/usePortfolio'
-import { useUpdateCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 export function useConstructClaimAllRewardsStep(pools: PoolListItem[]) {
   const { isConnected } = useUserAccount()
@@ -51,7 +51,7 @@ export function useConstructClaimAllRewardsStep(pools: PoolListItem[]) {
     }
   )
 
-  const claimAllRewardsStep = useUpdateCurrentFlowStep({
+  const claimAllRewardsStep = useSyncCurrentFlowStep({
     ...claimAllRewardsTransaction,
     transactionLabels,
     id: 'claimAllRewards',

@@ -10,7 +10,7 @@ import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTr
 import { useBalTokenRewards } from '@/lib/modules/portfolio/useBalRewards'
 import { useClaimableBalances } from '@/lib/modules/portfolio/claim/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
-import { useUpdateCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 export function useConstructClaimAndUnstakeStep() {
   const { pool, chainId } = usePool()
@@ -47,7 +47,7 @@ export function useConstructClaimAndUnstakeStep() {
     { enabled: !!pool }
   )
 
-  const claimAndUnstakeStep = useUpdateCurrentFlowStep({
+  const claimAndUnstakeStep = useSyncCurrentFlowStep({
     ...claimAndUnstakeTransaction,
     transactionLabels,
     id: 'claimAndUnstake',

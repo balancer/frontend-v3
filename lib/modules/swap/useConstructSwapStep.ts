@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 import { useSwap } from './useSwap'
 import { useBuildSwapQuery } from './queries/useBuildSwapQuery'
 import { getChainId } from '@/lib/config/app.config'
-import { useUpdateCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
+import { useSyncCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
 
 export function useConstructSwapStep() {
   const transactionLabels: TransactionLabels = {
@@ -31,7 +31,7 @@ export function useConstructSwapStep() {
 
   const isComplete = () => swapTransaction.result.isSuccess
 
-  const swapStep = useUpdateCurrentFlowStep({
+  const swapStep = useSyncCurrentFlowStep({
     ...swapTransaction,
     transactionLabels,
     id: `swap`,

@@ -5,7 +5,7 @@ import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuil
 import { useEffect } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
 import { usePool } from '../../usePool'
-import { useUpdateCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 export function useConstructAddLiquidityStep() {
   const { chainId } = usePool()
@@ -35,7 +35,7 @@ export function useConstructAddLiquidityStep() {
 
   const isComplete = () => addLiquidityTransaction.result.isSuccess
 
-  const addLiquidityStep = useUpdateCurrentFlowStep({
+  const addLiquidityStep = useSyncCurrentFlowStep({
     ...addLiquidityTransaction,
     transactionLabels,
     id: `addLiquidityPool`,

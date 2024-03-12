@@ -7,7 +7,7 @@ import { Address } from 'viem'
 import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
 import { TokenAmountToApprove } from './approval-rules'
-import { useUpdateCurrentFlowStep } from '../../transactions/transaction-steps/useCurrentFlowStep'
+import { useSyncCurrentFlowStep } from '../../transactions/transaction-steps/useCurrentFlowStep'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse
@@ -54,7 +54,7 @@ export function useConstructApproveTokenStep({
    */
   const isComplete = didRefetchAllowances && allowanceFor(tokenAddress) >= requiredRawAmount
 
-  const step = useUpdateCurrentFlowStep({
+  const step = useSyncCurrentFlowStep({
     ...approvalTransaction,
     transactionLabels: tokenApprovalLabels,
     id: tokenAddress,

@@ -5,7 +5,7 @@ import { useRemoveLiquidityBuildCallDataQuery } from '../queries/useRemoveLiquid
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useEffect } from 'react'
 import { usePool } from '../../../usePool'
-import { useUpdateCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 export function useConstructRemoveLiquidityStep() {
   const { chainId } = usePool()
@@ -35,7 +35,7 @@ export function useConstructRemoveLiquidityStep() {
 
   const isComplete = () => removeLiquidityTransaction.result.isSuccess
 
-  const removeLiquidityStep = useUpdateCurrentFlowStep({
+  const removeLiquidityStep = useSyncCurrentFlowStep({
     ...removeLiquidityTransaction,
     transactionLabels,
     id: `removeLiquidityPool`,
