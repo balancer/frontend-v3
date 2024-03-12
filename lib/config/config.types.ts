@@ -2,7 +2,7 @@ import { Address } from 'viem'
 import { GqlChain } from '../shared/services/api/generated/graphql'
 import { supportedChains } from '../modules/web3/Web3Provider'
 import { PoolIssue } from '../modules/pool/alerts/pool-issues/PoolIssue.type'
-import { SupportedWrapHandler } from '../modules/swap/wrap.helpers'
+import { SupportedWrapHandler } from '../modules/swap/swap.types'
 
 export interface TokensConfig {
   addresses: {

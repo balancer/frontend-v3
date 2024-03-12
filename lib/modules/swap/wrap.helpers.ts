@@ -5,15 +5,7 @@ import { getNetworkConfig } from '@/lib/config/app.config'
 import { sameAddresses } from '@/lib/shared/utils/addresses'
 import { LidoWrapHandler } from './handlers/LidoWrap.handler'
 import { SwapHandler } from './handlers/Swap.handler'
-
-export enum WrapType {
-  WRAP = 'wrap',
-  UNWRAP = 'unwrap',
-}
-
-export enum SupportedWrapHandler {
-  LIDO = 'LIDO',
-}
+import { SupportedWrapHandler, WrapType } from './swap.types'
 
 export function isNativeWrap(tokenIn: Address, tokenOut: Address, chain: GqlChain) {
   const tokenInIsNative = isNativeToken(tokenIn, chain) || isWrappedNativeToken(tokenIn, chain)
