@@ -45,6 +45,5 @@ export function useConstructAddLiquidityStep() {
 
   return {
     addLiquidityStep,
-    addLiquidityTransaction,
   }
 }

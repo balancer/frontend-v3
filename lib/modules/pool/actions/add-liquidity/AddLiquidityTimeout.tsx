@@ -3,14 +3,14 @@ import { HStack, Text, Tooltip } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
 import { useAddLiquidity } from './useAddLiquidity'
-import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
+import {
+  TransactionState,
+  addLiquidityStepId,
+} from '@/lib/modules/transactions/transaction-steps/lib'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
-type Props = {
-  addLiquidityTxState?: TransactionState
-}
-
-function useAddLiquidityTimeout({ addLiquidityTxState }: Props) {
+function useAddLiquidityTimeout() {
   // This countdown needs to be nested here and not at a higher level, like in
   // useAddLiquidity, because otherwise it causes re-renders of the entire
   // add-liquidity flow component tree every second.
@@ -21,6 +21,8 @@ function useAddLiquidityTimeout({ addLiquidityTxState }: Props) {
 
   const { previewModalDisclosure, refetchQuote } = useAddLiquidity()
 
+  const { getCoreTransactionState } = useCurrentFlowStep()
+  const addLiquidityTxState = getCoreTransactionState(addLiquidityStepId)
   const isConfirmingAddLiquidity = addLiquidityTxState === TransactionState.Confirming
   const isAwaitingUserConfirmation = addLiquidityTxState === TransactionState.Loading
   const isComplete = addLiquidityTxState === TransactionState.Completed
@@ -63,8 +65,8 @@ function useAddLiquidityTimeout({ addLiquidityTxState }: Props) {
   return { secondsToRefetch, shouldFreezeQuote }
 }
 
-export function AddLiquidityTimeout(props: Props) {
-  const { secondsToRefetch, shouldFreezeQuote } = useAddLiquidityTimeout(props)
+export function AddLiquidityTimeout() {
+  const { secondsToRefetch, shouldFreezeQuote } = useAddLiquidityTimeout()
 
   return (
     !shouldFreezeQuote && (

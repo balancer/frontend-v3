@@ -17,7 +17,6 @@ import { useSimulateSwapQuery } from './queries/useSimulateSwapQuery'
 import { useTokens } from '../tokens/useTokens'
 import { useDisclosure } from '@chakra-ui/react'
 import { useSwapStepConfigs } from './useSwapStepConfigs'
-import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
 import { SdkSimulateSwapResponse, SimulateSwapResponse, SwapState } from './swap.types'
 import { SwapHandler } from './handlers/Swap.handler'
 import { useIterateSteps } from '../transactions/transaction-steps/useIterateSteps'
@@ -59,7 +58,6 @@ function selectSwapHandler(
 
 export function _useSwap() {
   const swapState = useReactiveVar(swapStateVar)
-  const [swapTxState, setSwapTxState] = useState<TransactionState>()
   const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
 
@@ -260,7 +258,6 @@ export function _useSwap() {
     tokenIn: tokenInInfo,
     selectedChain: swapState.selectedChain,
     vaultAddress,
-    setSwapTxState,
     closeModal: previewModalDisclosure.onClose,
   })
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(swapStepConfigs)
@@ -293,7 +290,6 @@ export function _useSwap() {
     disabledReason,
     previewModalDisclosure,
     handler,
-    swapTxState,
     currentStep,
     currentStepIndex,
     swapStepConfigs,

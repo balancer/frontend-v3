@@ -55,7 +55,6 @@ export function AddLiquidityModal({
     simulationQuery,
     priceImpactQuery,
     tokens,
-    addLiquidityTxState,
     currentStep,
     useOnStepCompleted,
   } = useAddLiquidity()
@@ -163,7 +162,7 @@ export function AddLiquidityModal({
                     </Tooltip>
                   </HStack>
                 </HStack>
-                <AddLiquidityTimeout addLiquidityTxState={addLiquidityTxState} />
+                <AddLiquidityTimeout />
               </VStack>
             </Card>
           </VStack>
