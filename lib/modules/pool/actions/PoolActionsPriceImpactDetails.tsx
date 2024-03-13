@@ -112,9 +112,11 @@ export function PoolActionsPriceImpactDetails({
       <HStack justify="space-between" w="full">
         <Text color="grayText">Share of pool</Text>
         <HStack>
-          <NumberText color="grayText">{fNum('sharePercent', currentShareOfPool)}</NumberText>
-          <Icon as={ArrowRight} color="grayText" />
-          <NumberText color="grayText">{fNum('sharePercent', futureShareOfPool)}</NumberText>
+          <HStack gap="0.5">
+            <NumberText color="grayText">{fNum('sharePercent', currentShareOfPool)}</NumberText>
+            <Icon as={ArrowRight} color="grayText" />
+            <NumberText color="grayText">{fNum('sharePercent', futureShareOfPool)}</NumberText>
+          </HStack>
           <Tooltip label="Share of pool" fontSize="sm">
             <InfoOutlineIcon color="grayText" />
           </Tooltip>
