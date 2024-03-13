@@ -30,7 +30,7 @@
     "postinstall": "npm run gen:theme-typings"
   },
   "dependencies": {
-    "@apollo/client": "3.8.0-rc.1",
+    "@apollo/client": "3.9.6",
     "@balancer/sdk": "^0.11.0",
     "@chakra-ui/anatomy": "^2.2.2",
     "@chakra-ui/hooks": "^2.2.1",
@@ -78,7 +78,7 @@
     "wagmi": "^1.4.5"
   },
   "devDependencies": {
-    "@apollo/experimental-nextjs-app-support": "^0.5.1",
+    "@apollo/experimental-nextjs-app-support": "^0.8.0",
     "@chakra-ui/cli": "^2.4.1",
     "@chakra-ui/styled-system": "^2.9.1",
     "@graphql-codegen/cli": "^5.0.0",

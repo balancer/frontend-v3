@@ -19,7 +19,7 @@ export function _usePoolList(initialData: GetPoolsQuery) {
     GetPoolsDocument,
     {
       variables: queryVariables,
-      skip: skipQuery,
+      //skip: skipQuery,
     }
   )
 
