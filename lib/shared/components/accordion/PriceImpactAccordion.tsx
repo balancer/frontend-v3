@@ -11,8 +11,8 @@ import {
   Button,
   Card,
   useDisclosure,
+  AccordionIcon,
 } from '@chakra-ui/react'
-import { ChevronDownIcon } from '@chakra-ui/icons'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { ReactNode, useEffect } from 'react'
@@ -65,11 +65,13 @@ export function PriceImpactAccordion({
                 {accordionButtonComponent}
               </Box>
               <HStack>
-                <Box color={priceImpactColor}>{getPriceImpactIcon(priceImpactLevel)}</Box>
+                <Box as="span" color={priceImpactColor}>
+                  {getPriceImpactIcon(priceImpactLevel)}
+                </Box>
                 <Text color={priceImpactColor} fontSize="sm">
                   Details
                 </Text>
-                <ChevronDownIcon color={priceImpactColor} fontWeight="bold" fontSize="xl" />
+                <AccordionIcon textColor={priceImpactColor} />
               </HStack>
             </AccordionButton>
           </h2>
