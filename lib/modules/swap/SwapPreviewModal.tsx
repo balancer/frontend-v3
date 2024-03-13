@@ -9,6 +9,7 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
+  ModalContentProps,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -22,6 +23,9 @@ import { SwapTimeout } from './SwapTimeout'
 import TokenRow from '../tokens/TokenRow/TokenRow'
 import { SwapDetails } from './SwapDetails'
 import { SwapRate } from './SwapRate'
+import { useResponsive } from '@/lib/shared/hooks/useResponsive'
+import { DesktopStepTracker } from '../transactions/transaction-steps/step-tracker/DesktopStepTracker'
+import { MobileStepTracker } from '../transactions/transaction-steps/step-tracker/MobileStepTracker'
 
 type Props = {
   isOpen: boolean
@@ -36,9 +40,20 @@ export function SwapPreviewModal({
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
+  const { isDesktop, isMobile } = useResponsive()
   const initialFocusRef = useRef(null)
-  const { tokenIn, tokenOut, currentStep, useOnStepCompleted, selectedChain, swapTxState } =
-    useSwap()
+  const {
+    tokenIn,
+    tokenOut,
+    currentStep,
+    currentStepIndex,
+    swapStepConfigs,
+    useOnStepCompleted,
+    selectedChain,
+    swapTxState,
+  } = useSwap()
+
+  const modalStyles: ModalContentProps = isDesktop ? { left: '-100px', position: 'relative' } : {}
 
   return (
     <Modal
@@ -50,7 +65,10 @@ export function SwapPreviewModal({
       {...rest}
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent {...modalStyles}>
+        {isDesktop && (
+          <DesktopStepTracker currentStepIndex={currentStepIndex} stepConfigs={swapStepConfigs} />
+        )}
         <ModalHeader>
           <HStack justify="space-between" w="full" pr="lg">
             <Heading fontWeight="bold" size="h5">
@@ -62,6 +80,14 @@ export function SwapPreviewModal({
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="sm" align="start">
+            {isMobile && (
+              <Card variant="level3" p="md" shadow="sm" w="full">
+                <MobileStepTracker
+                  currentStepIndex={currentStepIndex}
+                  stepConfigs={swapStepConfigs}
+                />
+              </Card>
+            )}
             <Card variant="modalSubSection">
               <CardHeader>You pay</CardHeader>
               <TokenRow

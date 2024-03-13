@@ -8,7 +8,6 @@ import { StepConfig } from '../useIterateSteps'
 type StepTrackerProps = {
   stepConfigs: StepConfig[]
   currentStepIndex: number
-  chainId: SupportedChainId
 }
 
 /*

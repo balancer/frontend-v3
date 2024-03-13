@@ -91,11 +91,7 @@ export function AddLiquidityModal({
       <ModalOverlay />
       <ModalContent {...modalStyles}>
         {isDesktop && (
-          <DesktopStepTracker
-            currentStepIndex={currentStepIndex}
-            stepConfigs={stepConfigs}
-            chainId={chainId}
-          />
+          <DesktopStepTracker currentStepIndex={currentStepIndex} stepConfigs={stepConfigs} />
         )}
         <ModalHeader>
           <Heading fontWeight="bold" size="h5">
@@ -106,12 +102,8 @@ export function AddLiquidityModal({
         <ModalBody>
           <VStack spacing="md" align="start">
             {isMobile && (
-              <Card variant="level5" p="md" shadow="sm" w="full">
-                <MobileStepTracker
-                  currentStepIndex={currentStepIndex}
-                  stepConfigs={stepConfigs}
-                  chainId={chainId}
-                />
+              <Card variant="level3" p="md" shadow="sm" w="full">
+                <MobileStepTracker currentStepIndex={currentStepIndex} stepConfigs={stepConfigs} />
               </Card>
             )}
             <Card variant="level3" p="md" shadow="sm" w="full">
