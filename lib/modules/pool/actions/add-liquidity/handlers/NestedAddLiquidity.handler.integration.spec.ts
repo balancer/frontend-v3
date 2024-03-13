@@ -52,7 +52,7 @@ describe('When adding nested liquidity for a weighted pool', () => {
     const handler = selectNestedHandler(nestedPoolMock)
 
     // Store query response in handler instance
-    const queryOutput = await handler.simulate(humanAmountsIn, defaultTestUserAccount)
+    const queryOutput = await handler.simulate(humanAmountsIn)
 
     const result = await handler.buildCallData({
       humanAmountsIn,

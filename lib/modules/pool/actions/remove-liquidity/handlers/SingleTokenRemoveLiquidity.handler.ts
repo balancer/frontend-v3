@@ -72,7 +72,6 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
     const removeLiquidity = new RemoveLiquidity()
 
     const { call, to, value } = removeLiquidity.buildCall({
-      chainId: this.helpers.chainId,
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
@@ -108,7 +107,6 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
       bptIn: bptInInputAmount,
       kind: RemoveLiquidityKind.SingleTokenExactIn,
       tokenOut,
-      toNativeAsset: false, // assuming we don't want to withdraw the native asset over the wrapped native asset for now.
     }
   }
 }

@@ -34,21 +34,11 @@ export class NestedSingleTokenRemoveLiquidityHandler implements RemoveLiquidityH
 
   public async simulate({
     humanBptIn,
-    userAddress,
     tokenOut,
   }: QueryRemoveLiquidityInput): Promise<NestedSingleTokenQueryRemoveLiquidityOutput> {
     const removeLiquidity = new RemoveLiquidityNested()
 
-    /*
-      The sdk expects a valid userAddress in the nested query signature
-      When the user is not connected we pass zeroAddress to query bptOut without buildingCalldata
-      When the user is connected we pass the real userAddress that will also be used to buildCallData
-      TODO: The sdk team is going to remove userAddress from the nested query signature to simplify this:
-      https://github.com/balancer/b-sdk/issues/209
-     */
-    const userAddressForQuery = userAddress || zeroAddress
-
-    const removeLiquidityInput = this.constructSdkInput(humanBptIn, userAddressForQuery, tokenOut)
+    const removeLiquidityInput = this.constructSdkInput(humanBptIn, tokenOut)
 
     const sdkQueryOutput = await removeLiquidity.query(
       removeLiquidityInput,
@@ -75,8 +65,7 @@ export class NestedSingleTokenRemoveLiquidityHandler implements RemoveLiquidityH
     const { call, to } = removeLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
-      sender: account,
-      recipient: account,
+      accountAddress: account,
       relayerApprovalSignature,
     })
 
@@ -93,11 +82,9 @@ export class NestedSingleTokenRemoveLiquidityHandler implements RemoveLiquidityH
    */
   private constructSdkInput(
     humanBptIn: HumanAmount,
-    userAddress: Address,
     tokenOut: Address
   ): RemoveLiquidityNestedSingleTokenInput {
     const result: RemoveLiquidityNestedSingleTokenInput = {
-      accountAddress: userAddress,
       bptAmountIn: parseEther(humanBptIn),
       tokenOut,
       // Ignore TS error until base chain is added to the SDK setup:
@@ -106,7 +93,6 @@ export class NestedSingleTokenRemoveLiquidityHandler implements RemoveLiquidityH
       // @ts-ignore
       chainId: this.helpers.chainId,
       rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
-      useNativeAssetAsWrappedAmountOut: false, // assuming we don't want to withdraw the native asset over the wrapped native asset for now.
     }
 
     return result

@@ -20,7 +20,6 @@ export enum RemoveLiquidityType {
 export interface QueryRemoveLiquidityInput {
   humanBptIn: HumanAmount
   tokenOut: Address // Only SingleToken handler uses tokenOut but we define it here to simply optional type handling
-  userAddress?: Address // Used by Nested remove liquidity
 }
 
 export type QueryRemoveLiquidityOutput = {
