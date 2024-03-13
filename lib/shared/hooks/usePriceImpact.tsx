@@ -38,9 +38,9 @@ export function _usePriceImpact() {
       case 'unknown':
       case 'high':
       case 'max':
-        return <Icon as={XOctagon} />
+        return <Icon as={XOctagon} color={priceImpactColor} />
       case 'medium':
-        return <Icon as={AlertTriangle} />
+        return <Icon as={AlertTriangle} color={priceImpactColor} />
       case 'low':
       default:
         return undefined

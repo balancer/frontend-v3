@@ -67,7 +67,7 @@ export function AddLiquidityDetails() {
             {priceImpactLevel === 'low' ? (
               <InfoOutlineIcon color="grayText" />
             ) : (
-              <Box color={priceImpactColor}>{getPriceImpactIcon(priceImpactLevel)}</Box>
+              getPriceImpactIcon(priceImpactLevel)
             )}
           </Tooltip>
         </HStack>

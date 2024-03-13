@@ -65,9 +65,7 @@ export function PriceImpactAccordion({
                 {accordionButtonComponent}
               </Box>
               <HStack>
-                <Box as="span" color={priceImpactColor}>
-                  {getPriceImpactIcon(priceImpactLevel)}
-                </Box>
+                {getPriceImpactIcon(priceImpactLevel)}
                 <Text color={priceImpactColor} fontSize="sm">
                   Details
                 </Text>
