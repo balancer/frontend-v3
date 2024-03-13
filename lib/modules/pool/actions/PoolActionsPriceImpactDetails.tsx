@@ -4,7 +4,6 @@ import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { HStack, VStack, Text, Tooltip, Icon } from '@chakra-ui/react'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import { useEffect, useState } from 'react'
-import { useAddLiquidity } from './add-liquidity/useAddLiquidity'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { BPT_DECIMALS } from '../pool.constants'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -13,17 +12,17 @@ import { parseUnits } from 'viem'
 import { ArrowRight } from 'react-feather'
 
 interface PoolActionsPriceImpactDetailsProps {
-  bptOutAmount: bigint | undefined
+  bptAmount: bigint | undefined
   priceImpactValue: number | undefined
   totalUSDValue: string
-  isAddLiquidity: boolean
+  isAddLiquidity?: boolean
 }
 
 export function PoolActionsPriceImpactDetails({
-  bptOutAmount,
+  bptAmount,
   priceImpactValue,
   totalUSDValue,
-  isAddLiquidity,
+  isAddLiquidity = false,
 }: PoolActionsPriceImpactDetailsProps) {
   const [userTotalBalance, setUserTotalBalance] = useState('0')
 
@@ -36,12 +35,12 @@ export function PoolActionsPriceImpactDetails({
 
   const priceImpactLabel = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
-  const bptOutLabel = safeTokenFormat(bptOutAmount, BPT_DECIMALS, { abbreviated: false })
+  const bptLabel = safeTokenFormat(bptAmount, BPT_DECIMALS, { abbreviated: false })
 
   const priceImpacUsd = bn(priceImpact || 0).times(totalUSDValue)
   const maxSlippageUsd = bn(slippage).div(100).times(totalUSDValue)
 
-  const changedShareOfPool = bn(bptOutAmount || 0).div(
+  const changedShareOfPool = bn(bptAmount || 0).div(
     bn(parseUnits(pool.dynamicData.totalShares, 18))
   )
   const currentShareOfPool = bn(parseUnits(userTotalBalance, 18)).div(
@@ -68,7 +67,7 @@ export function PoolActionsPriceImpactDetails({
       <HStack justify="space-between" w="full">
         <Text color="grayText">Expected LP tokens</Text>
         <HStack>
-          <NumberText color="grayText">{bptOutLabel}</NumberText>
+          <NumberText color="grayText">{bptLabel}</NumberText>
           <Tooltip
             label={`LP tokens you are expected to receive. Does not include potential slippage (${fNum(
               'slippage',

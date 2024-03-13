@@ -5,15 +5,18 @@ import { RemoveLiquidityForm } from '@/lib/modules/pool/actions/remove-liquidity
 import { RemoveLiquidityProvider } from '@/lib/modules/pool/actions/remove-liquidity/useRemoveLiquidity'
 import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignature'
 import { CurrentFlowStepProvider } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
 
 export default function RemoveLiquidityPage() {
   return (
     <RelayerSignatureProvider>
       <RemoveLiquidityProvider>
         <PoolActionsLayout>
-          <CurrentFlowStepProvider>
-            <RemoveLiquidityForm />
-          </CurrentFlowStepProvider>
+          <PriceImpactProvider>
+            <CurrentFlowStepProvider>
+              <RemoveLiquidityForm />
+            </CurrentFlowStepProvider>
+          </PriceImpactProvider>
         </PoolActionsLayout>
       </RemoveLiquidityProvider>
     </RelayerSignatureProvider>

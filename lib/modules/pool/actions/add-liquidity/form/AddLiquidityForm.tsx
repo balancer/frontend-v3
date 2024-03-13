@@ -108,7 +108,7 @@ export function AddLiquidityForm() {
                     <PoolActionsPriceImpactDetails
                       totalUSDValue={totalUSDValue}
                       priceImpactValue={priceImpact}
-                      bptOutAmount={simulationQuery.data?.bptOut.amount}
+                      bptAmount={simulationQuery.data?.bptOut.amount}
                       isAddLiquidity
                     />
                   }
