@@ -18,13 +18,25 @@ import { useTokens } from '../tokens/useTokens'
 import { useDisclosure } from '@chakra-ui/react'
 import { useSwapStepConfigs } from './useSwapStepConfigs'
 import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
-import { SdkSimulateSwapResponse, SimulateSwapResponse, SwapState } from './swap.types'
+import {
+  OSwapAction,
+  SdkSimulateSwapResponse,
+  SimulateSwapResponse,
+  SwapAction,
+  SwapState,
+} from './swap.types'
 import { SwapHandler } from './handlers/Swap.handler'
 import { useIterateSteps } from '../transactions/transaction-steps/useIterateSteps'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useVault } from '@/lib/shared/hooks/useVault'
 import { NativeWrapHandler } from './handlers/NativeWrap.handler'
-import { getWrapHandlerClass, isNativeWrap, isSupportedWrap } from './wrap.helpers'
+import {
+  getWrapHandlerClass,
+  getWrapType,
+  isNativeWrap,
+  isSupportedWrap,
+  isWrapOrUnwrap,
+} from './wrap.helpers'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -258,7 +270,23 @@ export function _useSwap() {
   const vaultVersion = (simulationQuery.data as SdkSimulateSwapResponse)?.vaultVersion || 2
   const { vaultAddress } = useVault(vaultVersion)
 
+  const swapAction: SwapAction = useMemo(() => {
+    if (
+      isWrapOrUnwrap(swapState.tokenIn.address, swapState.tokenOut.address, swapState.selectedChain)
+    ) {
+      const wrapType = getWrapType(
+        swapState.tokenIn.address,
+        swapState.tokenOut.address,
+        swapState.selectedChain
+      )
+      return wrapType ? wrapType : OSwapAction.SWAP
+    }
+
+    return OSwapAction.SWAP
+  }, [swapState.tokenIn.address, swapState.tokenOut.address, swapState.selectedChain])
+
   const swapStepConfigs = useSwapStepConfigs({
+    action: swapAction,
     humanAmountIn: swapState.tokenIn.amount,
     tokenIn: tokenInInfo,
     selectedChain: swapState.selectedChain,
@@ -300,6 +328,7 @@ export function _useSwap() {
     currentStepIndex,
     swapStepConfigs,
     isNativeAssetIn,
+    swapAction,
     useOnStepCompleted,
     setTokenSelectKey,
     setSelectedChain,

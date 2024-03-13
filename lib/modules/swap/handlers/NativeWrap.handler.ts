@@ -3,10 +3,10 @@ import { SwapHandler } from './Swap.handler'
 import { ApolloClient } from '@apollo/client'
 import { TransactionConfig } from '../../web3/contracts/contract.types'
 import {
+  OWrapType,
   SdkBuildSwapInputs,
   SimulateSwapInputs,
   SimulateSwapResponse,
-  WrapType,
 } from '../swap.types'
 import { getWrapType } from '../wrap.helpers'
 import { encodeFunctionData } from 'viem'
@@ -32,15 +32,15 @@ export class NativeWrapHandler implements SwapHandler {
     const { tokens } = getNetworkConfig(selectedChain)
 
     let data: Hex | undefined
-    if (wrapType === WrapType.WRAP) {
+    if (wrapType === OWrapType.WRAP) {
       data = this.buildWrapCallData()
-    } else if (wrapType === WrapType.UNWRAP) {
+    } else if (wrapType === OWrapType.UNWRAP) {
       data = this.buildUnwrapCallData(tokenIn.scaledAmount)
     }
 
     if (!data) throw new Error('Could not build data')
 
-    const value = wrapType === WrapType.WRAP ? tokenIn.scaledAmount : BigInt(0)
+    const value = wrapType === OWrapType.WRAP ? tokenIn.scaledAmount : BigInt(0)
 
     return {
       account,

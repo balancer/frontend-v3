@@ -5,7 +5,7 @@ import { getNetworkConfig } from '@/lib/config/app.config'
 import { isSameAddress, sameAddresses } from '@/lib/shared/utils/addresses'
 import { LidoWrapHandler } from './handlers/LidoWrap.handler'
 import { SwapHandler } from './handlers/Swap.handler'
-import { SupportedWrapHandler, WrapType } from './swap.types'
+import { OWrapType, SupportedWrapHandler, WrapType } from './swap.types'
 
 export function isNativeWrap(tokenIn: Address, tokenOut: Address, chain: GqlChain) {
   const tokenInIsNative = isNativeToken(tokenIn, chain) || isWrappedNativeToken(tokenIn, chain)
@@ -20,6 +20,10 @@ export function isSupportedWrap(tokenIn: Address, tokenOut: Address, chain: GqlC
   return supportedWrappers.some(wrapper =>
     sameAddresses([wrapper.baseToken, wrapper.wrappedToken], [tokenIn, tokenOut])
   )
+}
+
+export function isWrapOrUnwrap(tokenIn: Address, tokenOut: Address, chain: GqlChain) {
+  return isNativeWrap(tokenIn, tokenOut, chain) || isSupportedWrap(tokenIn, tokenOut, chain)
 }
 
 export function getWrapConfig(tokenIn: Address, tokenOut: Address, chain: GqlChain) {
@@ -53,12 +57,12 @@ export function getWrapHandlerClass(
 
 export function getWrapType(tokenIn: Address, tokenOut: Address, chain: GqlChain): WrapType | null {
   if (isNativeToken(tokenIn, chain) && isWrappedNativeToken(tokenOut, chain)) {
-    return WrapType.WRAP
+    return OWrapType.WRAP
   } else if (isWrappedNativeToken(tokenIn, chain) && isNativeToken(tokenOut, chain)) {
-    return WrapType.UNWRAP
+    return OWrapType.UNWRAP
   } else if (isSupportedWrap(tokenIn, tokenOut, chain)) {
     const wrapper = getWrapConfig(tokenIn, tokenOut, chain)
-    return isSameAddress(wrapper.baseToken, tokenIn) ? WrapType.WRAP : WrapType.UNWRAP
+    return isSameAddress(wrapper.baseToken, tokenIn) ? OWrapType.WRAP : OWrapType.UNWRAP
   }
 
   return null

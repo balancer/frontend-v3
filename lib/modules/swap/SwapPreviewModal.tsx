@@ -22,6 +22,7 @@ import { SwapTimeout } from './SwapTimeout'
 import TokenRow from '../tokens/TokenRow/TokenRow'
 import { SwapDetails } from './SwapDetails'
 import { SwapRate } from './SwapRate'
+import { capitalize } from 'lodash'
 
 type Props = {
   isOpen: boolean
@@ -37,7 +38,8 @@ export function SwapPreviewModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const initialFocusRef = useRef(null)
-  const { tokenIn, tokenOut, currentStep, useOnStepCompleted, selectedChain } = useSwap()
+  const { tokenIn, tokenOut, currentStep, useOnStepCompleted, selectedChain, swapAction } =
+    useSwap()
 
   return (
     <Modal
@@ -53,7 +55,7 @@ export function SwapPreviewModal({
         <ModalHeader>
           <HStack justify="space-between" w="full" pr="lg">
             <Heading fontWeight="bold" size="h5">
-              Review swap
+              Review {capitalize(swapAction)}
             </Heading>
             <SwapTimeout />
           </HStack>
