@@ -11,7 +11,7 @@ import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import { SdkSimulateSwapResponse } from './swap.types'
 import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
 import { useTokens } from '../tokens/useTokens'
-import { NativeWrapUnwrapHandler } from './handlers/NativeWrapUnwrap.handler'
+import { NativeWrapHandler } from './handlers/NativeWrap.handler'
 import { useEffect } from 'react'
 
 export function OrderRoute() {
@@ -48,7 +48,7 @@ export function SwapDetails() {
     usePriceImpact()
 
   const isDefaultSwap = handler instanceof DefaultSwapHandler
-  const isNativeWrapOrUnwrap = handler instanceof NativeWrapUnwrapHandler
+  const isNativeWrapOrUnwrap = handler instanceof NativeWrapHandler
 
   const _slippage = isNativeWrapOrUnwrap ? 0 : slippage
   const _slippageDecimal = isNativeWrapOrUnwrap ? 0 : slippageDecimal
