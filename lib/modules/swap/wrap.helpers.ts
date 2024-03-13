@@ -63,3 +63,9 @@ export function getWrapType(tokenIn: Address, tokenOut: Address, chain: GqlChain
 
   return null
 }
+
+export function getWrapperForBaseToken(baseToken: Address, chain: GqlChain) {
+  const networkConfig = getNetworkConfig(chain)
+  const supportedWrappers = networkConfig.tokens.supportedWrappers || []
+  return supportedWrappers.find(wrapper => isSameAddress(wrapper.baseToken, baseToken))
+}
