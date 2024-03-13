@@ -1,4 +1,4 @@
-import { Flex, HStack, Heading, Stack } from '@chakra-ui/react'
+import { Flex, Heading, Stack } from '@chakra-ui/react'
 import { usePortfolio } from '../usePortfolio'
 import { NetworkClaimBlock } from './NetworkClaimBlock'
 

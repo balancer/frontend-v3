@@ -261,6 +261,7 @@ export function _useSwap() {
     selectedChain: swapState.selectedChain,
     vaultAddress,
     setSwapTxState,
+    closeModal: previewModalDisclosure.onClose,
   })
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(swapStepConfigs)
 

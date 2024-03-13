@@ -29,7 +29,6 @@ query GetSorSwaps(
     }
     priceImpact
     returnAmount
-    returnAmountScaled
     routes {
       hops {
         pool {
@@ -48,7 +47,6 @@ query GetSorSwaps(
       tokenOutAmount
     }
     swapAmount
-    swapAmountScaled
     swaps {
       amount
       assetInIndex
