@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 'use client'
 
 import {
@@ -9,7 +10,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalContentProps,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -26,6 +26,7 @@ import { SwapRate } from './SwapRate'
 import { useResponsive } from '@/lib/shared/hooks/useResponsive'
 import { DesktopStepTracker } from '../transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { MobileStepTracker } from '../transactions/transaction-steps/step-tracker/MobileStepTracker'
+import { getStylesForModalContentWithStepTracker } from '../transactions/transaction-steps/step-tracker/useStepTrackerProps'
 
 type Props = {
   isOpen: boolean
@@ -53,7 +54,7 @@ export function SwapPreviewModal({
     swapTxState,
   } = useSwap()
 
-  const modalStyles: ModalContentProps = isDesktop ? { left: '-100px', position: 'relative' } : {}
+  const modalContentStyles = getStylesForModalContentWithStepTracker(isDesktop)
 
   return (
     <Modal
@@ -65,7 +66,7 @@ export function SwapPreviewModal({
       {...rest}
     >
       <ModalOverlay />
-      <ModalContent {...modalStyles}>
+      <ModalContent {...modalContentStyles}>
         {isDesktop && (
           <DesktopStepTracker currentStepIndex={currentStepIndex} stepConfigs={swapStepConfigs} />
         )}

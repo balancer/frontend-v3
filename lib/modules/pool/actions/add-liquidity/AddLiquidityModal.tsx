@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 'use client'
 
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
@@ -13,7 +14,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalContentProps,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -38,6 +38,7 @@ import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerA
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { useResponsive } from '@/lib/shared/hooks/useResponsive'
+import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
 
 type Props = {
   isOpen: boolean
@@ -77,7 +78,7 @@ export function AddLiquidityModal({
   const priceImpact = priceImpactQuery?.data
   const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
 
-  const modalStyles: ModalContentProps = isDesktop ? { left: '-100px', position: 'relative' } : {}
+  const modalContentStyles = getStylesForModalContentWithStepTracker(isDesktop)
 
   return (
     <Modal
@@ -89,7 +90,7 @@ export function AddLiquidityModal({
       {...rest}
     >
       <ModalOverlay />
-      <ModalContent {...modalStyles}>
+      <ModalContent {...modalContentStyles}>
         {isDesktop && (
           <DesktopStepTracker currentStepIndex={currentStepIndex} stepConfigs={stepConfigs} />
         )}
