@@ -34,7 +34,7 @@ export function PoolChart() {
   }
 
   return (
-    <Card variant="elevation2" shadow="2xl" width="full" minHeight="320px">
+    <Card variant="level2" shadow="2xl" width="full" minHeight="320px">
       <VStack width="full">
         {isLoading && <Skeleton w="100%" h="300" />}
         {chartData.length > 0 && (

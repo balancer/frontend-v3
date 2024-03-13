@@ -16,7 +16,7 @@ export function IncentiveBadge({ special = false, label, value, children, ...res
       position="relative"
       background="background.special"
     >
-      <Card {...rest} rounded="lg" variant="elevation2" p="3" shadow="2xl">
+      <Card {...rest} rounded="lg" variant="level2" p="3" shadow="2xl">
         <Box
           position="absolute"
           width="full"
@@ -36,7 +36,7 @@ export function IncentiveBadge({ special = false, label, value, children, ...res
               justifyContent="center"
               alignItems="center"
               rounded="md"
-              background="elevation.level4"
+              background="background.card.level4"
               width="60px"
               height="60px"
             >

@@ -170,14 +170,6 @@ export const tokens = {
           card: 'red',
         },
       },
-      // Elevation colors
-      elevation: {
-        level0: '#EBE8E0',
-        level1: '#EFEDE6',
-        level2: '#F5F3EF',
-        level3: '#FBFAF9',
-        level4: '#FFFFFF',
-      },
       // Input colors
       input: {
         labelFocus: balColors.purple['500'], // Not implemented
@@ -224,7 +216,7 @@ export const tokens = {
         baseWithOpacity: createBackgroundOpacity(balColors.base.hslDark, 0.97),
         special: balColors.gradient.dawnDark,
         specialSecondary: balColors.gradient.sunsetDark,
-        elevation0WithOpacity: 'rgba(49, 55, 63, 0.96)',
+        level0WithOpacity: 'rgba(49, 55, 63, 0.96)',
       },
       // Button colors
       button: {
@@ -260,14 +252,6 @@ export const tokens = {
         border: {
           card: '#4F5764',
         },
-      },
-      // Elevation colours
-      elevation: {
-        level0: '#31373F',
-        level1: '#383E47',
-        level2: '#3F4650',
-        level3: '#464D58',
-        level4: '#4C5561',
       },
       input: {
         labelFocus: balColors.purple['400'],
@@ -460,9 +444,9 @@ export const balTheme = {
           default: tokens.colors.light.background.baseWithOpacity,
           _dark: tokens.colors.dark.background.baseWithOpacity,
         },
-        elevation0WithOpacity: {
+        level0WithOpacity: {
           default: tokens.colors.light.background.baseWithOpacity,
-          _dark: tokens.colors.dark.background.elevation0WithOpacity,
+          _dark: tokens.colors.dark.background.level0WithOpacity,
         },
         special: {
           default: tokens.colors.light.background.special,
@@ -602,8 +586,8 @@ export const balTheme = {
 
       border: {
         base: {
-          default: tokens.colors.light.elevation.level4,
-          _dark: tokens.colors.dark.elevation.level4,
+          default: tokens.colors.light.background.level4,
+          _dark: tokens.colors.dark.background.level4,
         },
         button: {
           disabled: {
@@ -691,29 +675,6 @@ export const balTheme = {
               to: 'rgba(109, 173, 249, 20%)',
             },
           },
-        },
-      },
-      // elevation colours
-      elevation: {
-        level0: {
-          default: tokens.colors.light.elevation.level0,
-          _dark: tokens.colors.dark.elevation.level0,
-        },
-        level1: {
-          default: tokens.colors.light.elevation.level1,
-          _dark: tokens.colors.dark.elevation.level1,
-        },
-        level2: {
-          default: tokens.colors.light.elevation.level2,
-          _dark: tokens.colors.dark.elevation.level2,
-        },
-        level3: {
-          default: tokens.colors.light.elevation.level3,
-          _dark: tokens.colors.dark.elevation.level3,
-        },
-        level4: {
-          default: tokens.colors.light.elevation.level4,
-          _dark: tokens.colors.dark.elevation.level4,
         },
       },
     },
@@ -1302,56 +1263,26 @@ export const balTheme = {
         level0: {
           container: {
             background: 'background.level0',
-            borderColor: 'rgba(229, 211, 190, 0.6)',
           },
         },
         level1: {
           container: {
             background: 'background.level1',
-            borderColor: 'border.base',
           },
         },
         level2: {
           container: {
-            background: 'background.level1',
-            borderColor: 'border.base',
+            background: 'background.level2',
           },
         },
         level3: {
           container: {
-            background: 'background.level2',
-            borderColor: 'border.base',
+            background: 'background.level3',
           },
         },
         level4: {
           container: {
-            background: 'background.level2',
-            borderColor: 'border.base',
-          },
-        },
-        elevation0: {
-          container: {
-            background: 'elevation.level0',
-          },
-        },
-        elevation1: {
-          container: {
-            background: 'elevation.level1',
-          },
-        },
-        elevation2: {
-          container: {
-            background: 'elevation.level2',
-          },
-        },
-        elevation3: {
-          container: {
-            background: 'elevation.level3',
-          },
-        },
-        elevation4: {
-          container: {
-            background: 'elevation.level4',
+            background: 'background.level4',
           },
         },
         gradient: {

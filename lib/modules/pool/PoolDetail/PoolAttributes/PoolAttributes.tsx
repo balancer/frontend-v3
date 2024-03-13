@@ -7,7 +7,7 @@ export function PoolAttributes() {
   return (
     // <Card width="full" variant="level3" px="6" py="5" minHeight="400px" height="400px">
 
-    <Card variant="elevation2" shadow="2xl" width="full" minHeight="320px" px="4" py="5">
+    <Card variant="level2" shadow="2xl" width="full" minHeight="320px" px="4" py="5">
       <VStack alignItems="flex-start" spacing="4" width="full">
         <Heading variant="h4" fontSize="1.25rem">
           Pool attributes

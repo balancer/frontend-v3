@@ -10,7 +10,7 @@ export function ElevatedIcon({ sizePx, ...rest }: Props & IconProps) {
       rounded="full"
       width={sizePx}
       height={sizePx}
-      background="elevation.level2"
+      background="background.card.level2"
       shadow="2xl"
       display="flex"
       justifyContent="center"
