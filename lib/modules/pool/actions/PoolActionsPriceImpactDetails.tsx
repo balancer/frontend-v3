@@ -1,19 +1,33 @@
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { fNum, safeTokenFormat, bn } from '@/lib/shared/utils/numbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { HStack, VStack, Text, Tooltip, Box } from '@chakra-ui/react'
+import { HStack, VStack, Text, Tooltip, Icon } from '@chakra-ui/react'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
-import { useEffect } from 'react'
-import { useAddLiquidity } from './useAddLiquidity'
+import { useEffect, useState } from 'react'
+import { useAddLiquidity } from './add-liquidity/useAddLiquidity'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { BPT_DECIMALS } from '../../pool.constants'
+import { BPT_DECIMALS } from '../pool.constants'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { usePool } from '../../usePool'
+import { usePool } from '../usePool'
 import { parseUnits } from 'viem'
+import { ArrowRight } from 'react-feather'
 
-export function AddLiquidityDetails() {
+interface PoolActionsPriceImpactDetailsProps {
+  bptOutAmount: bigint | undefined
+  priceImpactValue: number | undefined
+  totalUSDValue: string
+  isAddLiquidity: boolean
+}
+
+export function PoolActionsPriceImpactDetails({
+  bptOutAmount,
+  priceImpactValue,
+  totalUSDValue,
+  isAddLiquidity,
+}: PoolActionsPriceImpactDetailsProps) {
+  const [userTotalBalance, setUserTotalBalance] = useState('0')
+
   const { slippage } = useUserSettings()
-  const { priceImpactQuery, simulationQuery, totalUSDValue } = useAddLiquidity()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
 
@@ -22,19 +36,32 @@ export function AddLiquidityDetails() {
 
   const priceImpactLabel = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
-  const bptOut = simulationQuery?.data?.bptOut
-  const bptOutLabel = safeTokenFormat(bptOut?.amount, BPT_DECIMALS, { abbreviated: false })
+  const bptOutLabel = safeTokenFormat(bptOutAmount, BPT_DECIMALS, { abbreviated: false })
 
   const priceImpacUsd = bn(priceImpact || 0).times(totalUSDValue)
   const maxSlippageUsd = bn(slippage).div(100).times(totalUSDValue)
 
-  const shareOfPool = bn(bptOut?.amount || 0).div(bn(parseUnits(pool.dynamicData.totalShares, 18)))
+  const changedShareOfPool = bn(bptOutAmount || 0).div(
+    bn(parseUnits(pool.dynamicData.totalShares, 18))
+  )
+  const currentShareOfPool = bn(parseUnits(userTotalBalance, 18)).div(
+    bn(parseUnits(pool.dynamicData.totalShares, 18))
+  )
+  const futureShareOfPool = isAddLiquidity
+    ? currentShareOfPool.plus(changedShareOfPool)
+    : currentShareOfPool.minus(changedShareOfPool)
 
   useEffect(() => {
-    if (priceImpactQuery) {
-      setPriceImpact(priceImpactQuery.data ?? '-1')
+    if (pool.userBalance) {
+      setUserTotalBalance(pool.userBalance.totalBalance)
     }
-  }, [priceImpactQuery])
+  }, [pool])
+
+  useEffect(() => {
+    if (priceImpactValue) {
+      setPriceImpact(priceImpactValue ?? '-1')
+    }
+  }, [priceImpactValue])
 
   return (
     <VStack spacing="sm" align="start" w="full" fontSize="sm">
@@ -86,7 +113,9 @@ export function AddLiquidityDetails() {
       <HStack justify="space-between" w="full">
         <Text color="grayText">Share of pool</Text>
         <HStack>
-          <NumberText color="grayText">{fNum('sharePercent', shareOfPool)}</NumberText>
+          <NumberText color="grayText">{fNum('sharePercent', currentShareOfPool)}</NumberText>
+          <Icon as={ArrowRight} color="grayText" />
+          <NumberText color="grayText">{fNum('sharePercent', futureShareOfPool)}</NumberText>
           <Tooltip label="Share of pool" fontSize="sm">
             <InfoOutlineIcon color="grayText" />
           </Tooltip>

@@ -15,7 +15,7 @@ import { ProportionalInputs } from './ProportionalInputs'
 import { usePool } from '../../../usePool'
 import { requiresProportionalInput } from '../../LiquidityActionHelpers'
 import { PriceImpactAccordion } from '@/lib/shared/components/accordion/PriceImpactAccordion'
-import { AddLiquidityDetails } from '../AddLiquidityDetails'
+import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 
 export function AddLiquidityForm() {
@@ -31,6 +31,7 @@ export function AddLiquidityForm() {
     disabledReason,
     previewModalDisclosure,
     setNeedsToAcceptHighPI,
+    totalUSDValue,
   } = useAddLiquidity()
   const nextBtn = useRef(null)
   const { pool } = usePool()
@@ -103,7 +104,14 @@ export function AddLiquidityForm() {
                       </Text>
                     </HStack>
                   }
-                  accordionPanelComponent={<AddLiquidityDetails />}
+                  accordionPanelComponent={
+                    <PoolActionsPriceImpactDetails
+                      totalUSDValue={totalUSDValue}
+                      priceImpactValue={priceImpact}
+                      bptOutAmount={simulationQuery.data?.bptOut.amount}
+                      isAddLiquidity
+                    />
+                  }
                 />
               )}
             </VStack>
