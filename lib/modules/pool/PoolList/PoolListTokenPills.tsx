@@ -23,10 +23,11 @@ function WeightedTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; 
             key={token.address}
             p="2"
             pr="3"
-            bg="background.card.level6"
+            bg="background.level2"
             borderRadius="full"
-            borderWidth={2}
-            borderColor="background.card.level0"
+            borderWidth={1}
+            borderColor="border.base"
+            shadow="sm"
           >
             <HStack>
               <TokenIconOrIconStack token={token} chain={chain} />
@@ -57,10 +58,11 @@ function StableTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; ch
             p="2"
             pr="3"
             pl={isFirstToken(i) ? 2 : 12}
-            bg="background.card.level6"
+            bg="background.level2"
             borderRadius="full"
-            borderWidth={2}
-            borderColor="background.card.level0"
+            borderWidth={1}
+            borderColor="border.base"
+            shadow="sm"
             ml={isFirstToken(i) ? 0 : -10}
             zIndex={zIndices[i]}
           >

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { parseUnits } from 'viem'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { usePool } from '../../usePool'
@@ -10,6 +10,7 @@ import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTr
 import { useBalTokenRewards } from '@/lib/modules/portfolio/useBalRewards'
 import { useClaimableBalances } from '@/lib/modules/portfolio/claim/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
+import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 export function useConstructClaimAndUnstakeStep() {
   const { pool, chainId } = usePool()
@@ -46,13 +47,13 @@ export function useConstructClaimAndUnstakeStep() {
     { enabled: !!pool }
   )
 
-  const claimAndUnstakeStep: FlowStep = {
+  const claimAndUnstakeStep = useSyncCurrentFlowStep({
     ...claimAndUnstakeTransaction,
     transactionLabels,
     id: 'claimAndUnstake',
     stepType: 'claimAndUnstake',
     isComplete: () => claimAndUnstakeTransaction.result.isSuccess,
-  }
+  })
 
   return {
     claimAndUnstakeStep,

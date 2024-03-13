@@ -69,7 +69,7 @@ export default function RecentTransactions() {
     <Popover>
       <PopoverTrigger>
         <Button variant="tertiary">
-          <Activity />
+          <Activity size={18} />
         </Button>
       </PopoverTrigger>
       <PopoverContent w="330px">

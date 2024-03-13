@@ -63,7 +63,7 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
         }
 
         if (!balance) return
-        const balTokenAddress = networkConfigs[pool.chain].tokens.balToken?.address as Address
+        const balTokenAddress = networkConfigs[pool.chain].tokens.addresses.bal
         const tokenPrice = balTokenAddress ? priceFor(balTokenAddress, pool.chain) : 0
         const fiatBalance = tokenPrice
           ? bn(formatUnits(balance, 18)).multipliedBy(tokenPrice)
@@ -76,7 +76,7 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
           formattedBalance: fNum('token', formatUnits(balance, 18)),
           fiatBalance,
           decimals: 18,
-          tokenAddress: networkConfigs[pool.chain].tokens.balToken?.address as Address,
+          tokenAddress: networkConfigs[pool.chain].tokens.addresses.bal,
         })
       })
     })

@@ -95,7 +95,7 @@ export function UserSettings() {
     <Popover>
       <PopoverTrigger>
         <Button variant="tertiary">
-          <Settings />
+          <Settings size={18} />
         </Button>
       </PopoverTrigger>
       <PopoverContent>

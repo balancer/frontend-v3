@@ -1,10 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useEffect } from 'react'
 import { useSwap } from './useSwap'
 import { useBuildSwapQuery } from './queries/useBuildSwapQuery'
 import { getChainId } from '@/lib/config/app.config'
+import { useSyncCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
 
 export function useConstructSwapStep() {
   const transactionLabels: TransactionLabels = {
@@ -30,13 +31,13 @@ export function useConstructSwapStep() {
 
   const isComplete = () => swapTransaction.result.isSuccess
 
-  const swapStep: FlowStep = {
+  const swapStep = useSyncCurrentFlowStep({
     ...swapTransaction,
     transactionLabels,
     id: `swap`,
     stepType: 'swap',
     isComplete,
-  }
+  })
 
   return {
     swapStep,

@@ -27,7 +27,7 @@ import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
-import { SignRelayerButton } from '@/lib/shared/components/btns/transaction-steps/SignRelayerButton'
+import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
 
 type Props = {
@@ -85,7 +85,7 @@ export function RemoveLiquidityModal({
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="md" align="start">
-            <Card variant="level8" shadow="sm" p="md" w="full">
+            <Card variant="level4" shadow="sm" p="md" w="full">
               <VStack align="start" spacing="md">
                 <Text fontWeight="bold" fontSize="sm">
                   You&apos;re removing
@@ -99,7 +99,7 @@ export function RemoveLiquidityModal({
                 />
               </VStack>
             </Card>
-            <Card variant="level8" shadow="sm" p="md" w="full">
+            <Card variant="level4" shadow="sm" p="md" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text fontWeight="bold" fontSize="sm">
@@ -130,7 +130,7 @@ export function RemoveLiquidityModal({
                 )}
               </VStack>
             </Card>
-            <Card variant="level8" shadow="sm" p="md" w="full">
+            <Card variant="level4" shadow="sm" p="md" w="full">
               <VStack align="start" spacing="sm">
                 <HStack justify="space-between" w="full">
                   <Text fontWeight="medium" variant="secondary">

@@ -12,7 +12,7 @@ import { BPT_DECIMALS } from '../../pool.constants'
 import { useEffect, useState } from 'react'
 import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useTokenApprovalConfigs'
 import { stakeConfig } from './stakeConfig'
-import { useIterateSteps } from '../useIterateSteps'
+import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 
 export function useStaking() {
   const [humanAmountIn, setHumanAmountIn] = useState<HumanAmountIn | null>(null)
@@ -52,6 +52,7 @@ export function useStaking() {
     chain: pool.chain,
     approvalAmounts: [amountToApprove],
     actionType: 'Staking',
+    bptSymbol: pool.symbol,
   })
 
   const stepConfigs = [...bptApprovalStepConfig, stakeConfig]

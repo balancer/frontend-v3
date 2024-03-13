@@ -10,6 +10,7 @@ import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
 import { PoolAttributes } from './PoolAttributes/PoolAttributes'
 import { PoolRisks } from './PoolRisks/PoolRisks'
 import { PoolContracts } from './PoolContracts/PoolContracts'
+import { PoolAlerts } from '../alerts/PoolAlerts'
 
 export async function PoolDetail() {
   return (

@@ -32,9 +32,8 @@ import { useAddLiquidity } from './useAddLiquidity'
 import { AddLiquidityTimeout } from './AddLiquidityTimeout'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { SignRelayerButton } from '@/lib/shared/components/btns/transaction-steps/SignRelayerButton'
+import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { getChainId } from '@/lib/config/app.config'
 
 type Props = {
   isOpen: boolean
@@ -61,8 +60,8 @@ export function AddLiquidityModal({
     useOnStepCompleted,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
-  const { pool } = usePool()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval(getChainId(pool.chain))
+  const { pool, chainId } = usePool()
+  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
   const { slippage } = useUserSettings()
 
   const bptOut = simulationQuery?.data?.bptOut
@@ -90,7 +89,7 @@ export function AddLiquidityModal({
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="md" align="start">
-            <Card variant="level5" p="md" shadow="sm" w="full">
+            <Card variant="level3" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text color="grayText">{"You're adding"}</Text>
@@ -120,7 +119,7 @@ export function AddLiquidityModal({
               </VStack>
             </Card>
 
-            <Card variant="level5" p="md" shadow="sm" w="full">
+            <Card variant="level3" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text color="grayText">{"You'll get (if no slippage)"}</Text>
@@ -136,7 +135,7 @@ export function AddLiquidityModal({
               </VStack>
             </Card>
 
-            <Card variant="level5" p="md" shadow="sm" w="full">
+            <Card variant="level2" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="sm">
                 <HStack justify="space-between" w="full">
                   <Text>Price impact</Text>

@@ -2,18 +2,19 @@
 import {
   OnTransactionStateUpdate,
   getTransactionState,
-} from '@/lib/shared/components/btns/transaction-steps/lib'
+} from '@/lib/modules/transactions/transaction-steps/lib'
 import { Button, VStack } from '@chakra-ui/react'
 import { useEffect } from 'react'
-import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
+import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
 import { useConstructSwapStep } from './useConstructSwapStep'
 import { useTokenBalances } from '../tokens/useTokenBalances'
 
 type Props = {
   onTransactionStateUpdate: OnTransactionStateUpdate
+  closeModal: () => void
 }
 
-export function SwapButton({ onTransactionStateUpdate }: Props) {
+export function SwapButton({ onTransactionStateUpdate, closeModal }: Props) {
   const { swapStep, swapTransaction } = useConstructSwapStep()
   const { refetchBalances } = useTokenBalances()
 
@@ -33,7 +34,7 @@ export function SwapButton({ onTransactionStateUpdate }: Props) {
   return (
     <VStack w="full">
       {isComplete ? (
-        <Button w="full" size="lg">
+        <Button w="full" size="lg" onClick={closeModal}>
           Close
         </Button>
       ) : (

@@ -1,8 +1,8 @@
 'use client'
 
-import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { Button, useColorMode } from '@chakra-ui/react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Moon, Sun } from 'react-feather'
 
 export default function DarkModeToggle() {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -24,11 +24,11 @@ export default function DarkModeToggle() {
       <AnimatePresence initial={false}>
         {colorMode === 'light' ? (
           <motion.i {...animationSun}>
-            <SunIcon />
+            <Sun size={18} />
           </motion.i>
         ) : (
           <motion.i {...animationMoon}>
-            <MoonIcon />
+            <Moon size={18} />
           </motion.i>
         )}
       </AnimatePresence>
