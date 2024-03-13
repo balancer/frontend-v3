@@ -30,6 +30,8 @@ export function useStepTrackerProps({ stepConfigs, currentStepIndex }: StepTrack
 
   const steps = initialStepConfigs
   const currentStep = steps[getCurrentIndex()]
+  const isLastStep = getCurrentIndex() >= stepConfigs.length - 1
+
   const currentStepPosition = `Step ${getCurrentIndex() + 1}/${steps.length}`
 
   // Save initial step configs
@@ -41,6 +43,7 @@ export function useStepTrackerProps({ stepConfigs, currentStepIndex }: StepTrack
 
   return {
     step: currentStep,
+    isLastStep,
     currentIndex: getCurrentIndex(),
     colorMode,
     flowStep,

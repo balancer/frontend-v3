@@ -21,6 +21,7 @@ export function Steps({ currentIndex, steps }: StepsProps) {
           step={step}
           colorMode={colorMode}
           flowStep={flowStep}
+          isLastStep={index === steps.length - 1}
         />
       ))}
     </VStack>
