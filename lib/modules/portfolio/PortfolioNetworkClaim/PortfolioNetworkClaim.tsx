@@ -1,25 +1,37 @@
 import { Flex, Heading, Stack } from '@chakra-ui/react'
 import { usePortfolio } from '../usePortfolio'
 import { NetworkClaimBlock } from './NetworkClaimBlock'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { chainToSlugMap } from '../../pool/pool.utils'
 
 export function PortfolioNetworkClaim() {
-  const { poolsByChainMap } = usePortfolio()
+  const { poolsByChainMap, protocolRewardsBalance, totalFiatClaimableBalanceByChain } =
+    usePortfolio()
 
-  function openClaimModal(chain: string) {
-    console.log(chain)
-  }
   return (
     <Stack>
       <Heading size="lg">Claimable incentives</Heading>
-      <Flex flexDirection={['column', 'column', 'column', 'row']} gap={6}>
+
+      <Flex flexDirection={['column', 'column', 'column', 'row']} gap={6} flexWrap="wrap">
         {Object.entries(poolsByChainMap).map(([chain, pools]) => (
           <NetworkClaimBlock
             key={chain}
             chain={pools[0].chain}
-            openClaimModal={openClaimModal}
-            networkTotalClaimableFiatBalance={1000}
+            networkTotalClaimableFiatBalance={totalFiatClaimableBalanceByChain[
+              pools[0].chain
+            ].toNumber()}
+            link={`/portfolio/${chainToSlugMap[pools[0].chain]}`}
           />
         ))}
+
+        {Number(protocolRewardsBalance) > 0 && (
+          <NetworkClaimBlock
+            chain={GqlChain.Mainnet}
+            networkTotalClaimableFiatBalance={protocolRewardsBalance.toNumber()}
+            title="Balancer protocol revenue"
+            link="/portfolio/balancer-protocol-revenue"
+          />
+        )}
       </Flex>
     </Stack>
   )

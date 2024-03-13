@@ -10,7 +10,7 @@ import { ClaimableReward, useClaimableBalances } from './claim/useClaimableBalan
 import { BalTokenReward, useBalTokenRewards } from './useBalRewards'
 import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
-import { Address } from 'viem'
+import { Address, formatUnits } from 'viem'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 
 export interface ClaimableBalanceResult {
@@ -35,6 +35,7 @@ export function getAllGaugesAddressesFromPool(pool: PoolListItem) {
       arr.push(staking.gauge.gaugeAddress)
     }
   }
+
   if (staking?.gauge?.otherGauges) {
     arr.push(...staking.gauge.otherGauges.filter(g => g.version > 1).map(g => g.gaugeAddress))
   }
@@ -132,6 +133,28 @@ function _usePortfolio() {
     }, bn(0))
   }, [portfolioData.stakedPools, poolRewardsMap])
 
+  const totalFiatClaimableBalanceByChain = useMemo(() => {
+    return Object.entries(poolsByChainMap).reduce(
+      (acc: Record<string, BigNumber>, [chain, pools]) => {
+        const sum = pools.reduce((total, pool) => {
+          return total.plus(poolRewardsMap[pool.id]?.totalFiatClaimBalance || 0)
+        }, bn(0))
+
+        acc[chain] = sum
+
+        return acc
+      },
+      {}
+    )
+  }, [poolsByChainMap, poolRewardsMap])
+
+  const protocolRewardsBalance = useMemo(() => {
+    return protocolRewardsData.reduce((acc, reward) => {
+      acc = acc.plus(formatUnits(reward.balance, 18))
+      return acc
+    }, bn(0))
+  }, [protocolRewardsData])
+
   return {
     portfolioData,
     balRewardsData,
@@ -140,6 +163,8 @@ function _usePortfolio() {
     poolRewardsMap,
     poolsByChainMap,
     totalFiatClaimableBalance,
+    totalFiatClaimableBalanceByChain,
+    protocolRewardsBalance,
     isLoading:
       loading || isLoadingBalRewards || isLoadingProtocolRewards || isLoadingClaimableRewards,
   }
