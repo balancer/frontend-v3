@@ -23,7 +23,7 @@ export function RemoveLiquiditySingleToken({ tokens }: RemoveLiquiditySingleToke
         borderRadius="md"
         p="md"
         shadow="innerBase"
-        bg="background.card.level1"
+        bg="background.level1"
         border="white"
         w="full"
       >

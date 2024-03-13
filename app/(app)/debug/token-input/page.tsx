@@ -28,7 +28,7 @@ export default function TokenInputPage() {
         <Heading>Token Input</Heading>
         <Text>Current value: {currentValue}</Text>
         <ConnectWallet />
-        <Card p="md" variant="level3" shadow="2xl">
+        <Card p="md" variant="level2" shadow="2xl">
           <VStack spacing="md" w="full">
             <TokenInput
               address={token?.address}

@@ -13,6 +13,7 @@ type Params = {
   selectedChain: GqlChain
   vaultAddress: Address
   setSwapTxState: (transactionState: TransactionState) => void
+  closeModal: () => void
 }
 
 export function useSwapStepConfigs({
@@ -21,6 +22,7 @@ export function useSwapStepConfigs({
   selectedChain,
   vaultAddress,
   setSwapTxState,
+  closeModal,
 }: Params) {
   const tokenInAmounts = useMemo(() => {
     if (!tokenIn) return [] as RawAmount[]
@@ -41,7 +43,7 @@ export function useSwapStepConfigs({
 
   const swapStepConfig: StepConfig = {
     title: 'Swap',
-    render: () => <SwapButton onTransactionStateUpdate={setSwapTxState} />,
+    render: () => <SwapButton onTransactionStateUpdate={setSwapTxState} closeModal={closeModal} />,
   }
 
   return [...tokenApprovalConfigs, swapStepConfig]
