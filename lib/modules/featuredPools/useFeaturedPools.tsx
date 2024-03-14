@@ -6,7 +6,7 @@ import { createContext, ReactNode } from 'react'
 
 export function _useFeaturedPools(data: GetFeaturedPoolsQuery) {
   return {
-    featuredPools: data,
+    featuredPools: data.featuredPools,
   }
 }
 
