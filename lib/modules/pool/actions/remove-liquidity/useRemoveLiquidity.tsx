@@ -18,9 +18,13 @@ import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address } from 'viem'
 import { toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
+import {
+  TransactionState,
+  removeLiquidityStepId,
+} from '@/lib/modules/transactions/transaction-steps/lib'
 import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 import { useRemoveLiquidityStepConfigs } from './modal/useRemoveLiquidityStepConfigs'
+import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -50,10 +54,9 @@ export function _useRemoveLiquidity() {
     .times(humanBptInPercent / 100)
     .toString() as HumanAmount
 
-  const [removeLiquidityTxState, setRemoveLiquidityTxState] = useState<TransactionState>()
-
-  const stepConfigs = useRemoveLiquidityStepConfigs(setRemoveLiquidityTxState)
+  const stepConfigs = useRemoveLiquidityStepConfigs()
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
+  const { getCoreTransactionState } = useCurrentFlowStep()
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
@@ -83,6 +86,8 @@ export function _useRemoveLiquidity() {
   const firstTokenAddress = tokens?.[0]?.address as Address
 
   const singleTokenOutAddress = singleTokenAddress || firstTokenAddress
+
+  const removeLiquidityTxState = getCoreTransactionState(removeLiquidityStepId)
 
   const isTxConfirmingOrConfirmed =
     removeLiquidityTxState === TransactionState.Confirming ||
@@ -186,7 +191,6 @@ export function _useRemoveLiquidity() {
     isDisabled,
     disabledReason,
     previewModalDisclosure,
-    removeLiquidityTxState,
     handler,
     stepConfigs,
     currentStep,
@@ -200,7 +204,6 @@ export function _useRemoveLiquidity() {
     setSingleTokenAddress,
     amountOutForToken,
     usdOutForToken,
-    setRemoveLiquidityTxState,
     useOnStepCompleted,
   }
 }

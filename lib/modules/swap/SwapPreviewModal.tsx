@@ -48,10 +48,9 @@ export function SwapPreviewModal({
     tokenOut,
     currentStep,
     currentStepIndex,
-    swapStepConfigs,
     useOnStepCompleted,
+    swapStepConfigs,
     selectedChain,
-    swapTxState,
   } = useSwap()
 
   return (
@@ -73,7 +72,7 @@ export function SwapPreviewModal({
             <Heading fontWeight="bold" size="h5">
               Review swap
             </Heading>
-            <SwapTimeout swapTxState={swapTxState} />
+            <SwapTimeout />
           </HStack>
         </ModalHeader>
         <ModalCloseButton />

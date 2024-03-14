@@ -55,7 +55,6 @@ export function RemoveLiquidityModal({
     isSingleToken,
     singleTokenOutAddress,
     priceImpactQuery,
-    removeLiquidityTxState,
     stepConfigs,
     currentStep,
     currentStepIndex,
@@ -163,7 +162,7 @@ export function RemoveLiquidityModal({
                   </HStack>
                 </HStack>
 
-                <RemoveLiquidityTimeout removeLiquidityTxState={removeLiquidityTxState} />
+                <RemoveLiquidityTimeout />
               </VStack>
             </Card>
           </VStack>

@@ -9,8 +9,6 @@ export enum TransactionState {
   Completed = 'completed',
 }
 
-export type OnTransactionStateUpdate = (transactionState: TransactionState) => void
-
 export type TransactionLabels = {
   init: string
   loading?: string
@@ -64,6 +62,16 @@ export type TransactionStep = {
 export type TransactionStepHook = {
   transactionStep: TransactionStep
 }
+
+// Core steps that require frozen quotes
+export const addLiquidityStepId = 'addLiquidityId'
+export const removeLiquidityStepId = 'removeLiquidityId'
+export const swapStepId = 'swapId'
+
+export type CoreStepId =
+  | typeof addLiquidityStepId
+  | typeof removeLiquidityStepId
+  | typeof swapStepId
 
 export function getTransactionState(transactionBundle?: TransactionBundle): TransactionState {
   if (!transactionBundle) return TransactionState.Ready
