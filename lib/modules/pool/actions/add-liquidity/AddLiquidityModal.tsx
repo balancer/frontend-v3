@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 'use client'
 
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
@@ -13,7 +14,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalContentProps,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -38,6 +38,7 @@ import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerA
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { useResponsive } from '@/lib/shared/hooks/useResponsive'
+import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
 
 type Props = {
   isOpen: boolean
@@ -76,8 +77,6 @@ export function AddLiquidityModal({
   const priceImpact = priceImpactQuery?.data
   const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
 
-  const modalStyles: ModalContentProps = isDesktop ? { left: '-100px', position: 'relative' } : {}
-
   return (
     <Modal
       isOpen={isOpen}
@@ -88,13 +87,9 @@ export function AddLiquidityModal({
       {...rest}
     >
       <ModalOverlay />
-      <ModalContent {...modalStyles}>
+      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && (
-          <DesktopStepTracker
-            currentStepIndex={currentStepIndex}
-            stepConfigs={stepConfigs}
-            chainId={chainId}
-          />
+          <DesktopStepTracker currentStepIndex={currentStepIndex} stepConfigs={stepConfigs} />
         )}
         <ModalHeader>
           <Heading fontWeight="bold" size="h5">
@@ -105,12 +100,8 @@ export function AddLiquidityModal({
         <ModalBody>
           <VStack spacing="md" align="start">
             {isMobile && (
-              <Card variant="level5" p="md" shadow="sm" w="full">
-                <MobileStepTracker
-                  currentStepIndex={currentStepIndex}
-                  stepConfigs={stepConfigs}
-                  chainId={chainId}
-                />
+              <Card variant="level3" p="md" shadow="sm" w="full">
+                <MobileStepTracker currentStepIndex={currentStepIndex} stepConfigs={stepConfigs} />
               </Card>
             )}
             <Card variant="level3" p="md" shadow="sm" w="full">
