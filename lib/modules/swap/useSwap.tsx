@@ -23,8 +23,8 @@ import { SwapHandler } from './handlers/Swap.handler'
 import { useIterateSteps } from '../transactions/transaction-steps/useIterateSteps'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useVault } from '@/lib/shared/hooks/useVault'
-import { NativeWrapUnwrapHandler } from './handlers/NativeWrapUnwrap.handler'
-import { isNativeWrapUnwrap } from './useWrapping'
+import { NativeWrapHandler } from './handlers/NativeWrap.handler'
+import { getWrapHandlerClass, isNativeWrap, isSupportedWrap } from './wrap.helpers'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -44,16 +44,19 @@ const swapStateVar = makeVar<SwapState>({
   selectedChain: GqlChain.Mainnet,
 })
 
-// Unecessary for now but allows us to add logic to select other handlers in the future.
 function selectSwapHandler(
   tokenInAddress: Address,
   tokenOutAddress: Address,
   chain: GqlChain,
   apolloClient: ApolloClient<object>
 ): SwapHandler {
-  if (isNativeWrapUnwrap(tokenInAddress, tokenOutAddress, chain)) {
-    return new NativeWrapUnwrapHandler(apolloClient)
+  if (isNativeWrap(tokenInAddress, tokenOutAddress, chain)) {
+    return new NativeWrapHandler(apolloClient)
+  } else if (isSupportedWrap(tokenInAddress, tokenOutAddress, chain)) {
+    const WrapHandler = getWrapHandlerClass(tokenInAddress, tokenOutAddress, chain)
+    return new WrapHandler()
   }
+
   return new DefaultSwapHandler(apolloClient)
 }
 
