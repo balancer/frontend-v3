@@ -30,8 +30,8 @@
     "postinstall": "npm run gen:theme-typings"
   },
   "dependencies": {
-    "@apollo/client": "3.9.6",
-    "@balancer/sdk": "^0.11.0",
+    "@apollo/client": "3.8.0-rc.1",
+    "@balancer/sdk": "^0.12.0",
     "@chakra-ui/anatomy": "^2.2.2",
     "@chakra-ui/hooks": "^2.2.1",
     "@chakra-ui/icons": "^2.1.0",

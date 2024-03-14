@@ -12,7 +12,7 @@ export function StakeForm() {
 
   return (
     <Center h="full" w="full" maxW="lg" mx="auto">
-      <Card variant="level3" shadow="xl" w="full" p="md">
+      <Card variant="level2" shadow="xl" w="full" p="md">
         <CardHeader>
           <Heading fontWeight="bold" size="h5">
             Stake

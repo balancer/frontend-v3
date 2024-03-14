@@ -95,6 +95,7 @@ input GqlGraphTraversalConfigInput {
 
 type GqlHistoricalTokenPrice {
   address: String!
+  chain: GqlChain!
   prices: [GqlHistoricalTokenPriceEntry!]!
 }
 
@@ -1131,36 +1132,93 @@ type GqlSftmxWithdrawalRequests {
   user: String!
 }
 
-type GqlSorGetBatchSwapForTokensInResponse {
-  assets: [String!]!
-  swaps: [GqlSorSwap!]!
-  tokenOutAmount: AmountHumanReadable!
-}
-
+"""
+The swap paths for a swap
+"""
 type GqlSorGetSwapPaths {
+  """
+  The price of tokenOut in tokenIn.
+  """
   effectivePrice: AmountHumanReadable!
+
+  """
+  The price of tokenIn in tokenOut.
+  """
   effectivePriceReversed: AmountHumanReadable!
+
+  """
+  The found paths as needed as input for the b-sdk to execute the swap
+  """
   paths: [GqlSorPath!]!
-  priceImpact: AmountHumanReadable!
+
+  """
+  Price impact in percent. 0.01 -> 0.01%
+  """
+  priceImpact: AmountHumanReadable
+
+  """
+  The return amount in human form. Return amount is either tokenOutAmount (if swapType is exactIn) or tokenInAmount (if swapType is exactOut)
+  """
   returnAmount: AmountHumanReadable!
-  returnAmountScaled: BigDecimal!
+
+  """
+  The return amount in a raw form
+  """
+  returnAmountRaw: BigDecimal!
+
+  """
+  The swap routes including pool information. Used to display by the UI
+  """
   routes: [GqlSorSwapRoute!]!
+
+  """
+  The swap amount in human form. Swap amount is either tokenInAmount (if swapType is exactIn) or tokenOutAmount (if swapType is exactOut)
+  """
   swapAmount: AmountHumanReadable!
-  swapAmountScaled: BigDecimal!
+
+  """
+  The swap amount in a raw form
+  """
+  swapAmountRaw: BigDecimal!
+
+  """
+  The swapType that was provided, exact_in vs exact_out (givenIn vs givenOut)
+  """
   swapType: GqlSorSwapType!
+
+  """
+  Swaps as needed for the vault swap input to execute the swap
+  """
   swaps: [GqlSorSwap!]!
+
+  """
+  All token addresses (or assets) as needed for the vault swap input to execute the swap
+  """
+  tokenAddresses: [String!]!
 
   """
   The token address of the tokenIn provided
   """
   tokenIn: String!
+
+  """
+  The amount of tokenIn in human form
+  """
   tokenInAmount: AmountHumanReadable!
 
   """
   The token address of the tokenOut provided
   """
   tokenOut: String!
+
+  """
+  The amount of tokenOut in human form
+  """
   tokenOutAmount: AmountHumanReadable!
+
+  """
+  The version of the vault these paths are from
+  """
   vaultVersion: Int!
 }
 
@@ -1186,19 +1244,63 @@ type GqlSorGetSwapsResponse {
   tokenOutAmount: AmountHumanReadable!
 }
 
+"""
+A path of a swap. A swap can have multiple paths. Used as input to execute the swap via b-sdk
+"""
 type GqlSorPath {
+  """
+  Input amount of this path in scaled form
+  """
   inputAmountRaw: String!
+
+  """
+  Output amount of this path in scaled form
+  """
   outputAmountRaw: String!
+
+  """
+  A sorted list of pool ids that are used in this path
+  """
   pools: [String]!
+
+  """
+  A sorted list of tokens that are ussed in this path
+  """
   tokens: [Token]!
+
+  """
+  Vault version of this path.
+  """
   vaultVersion: Int!
 }
 
+"""
+A single swap step as used for input to the vault to execute a swap
+"""
 type GqlSorSwap {
+  """
+  Amount to be swapped in this step. 0 for chained swap.
+  """
   amount: String!
+
+  """
+  Index of the asset used in the tokenAddress array.
+  """
   assetInIndex: Int!
+
+  """
+  Index of the asset used in the tokenAddress array.
+  """
   assetOutIndex: Int!
+
+  """
+  Pool id used in this swap step
+  """
   poolId: String!
+
+  """
+  UserData used in this swap, generally uses defaults.
+  """
   userData: String!
 }
 
@@ -1209,22 +1311,74 @@ input GqlSorSwapOptionsInput {
   timestamp: Int
 }
 
+"""
+The swap routes including pool information. Used to display by the UI
+"""
 type GqlSorSwapRoute {
+  """
+  The hops this route takes
+  """
   hops: [GqlSorSwapRouteHop!]!
+
+  """
+  Share of this route of the total swap
+  """
   share: Float!
+
+  """
+  Address of the tokenIn
+  """
   tokenIn: String!
-  tokenInAmount: BigDecimal!
+
+  """
+  Amount of the tokenIn in human form
+  """
+  tokenInAmount: AmountHumanReadable!
+
+  """
+  Address of the tokenOut
+  """
   tokenOut: String!
-  tokenOutAmount: BigDecimal!
+
+  """
+  Amount of the tokenOut in human form
+  """
+  tokenOutAmount: AmountHumanReadable!
 }
 
+"""
+A hop of a route. A route can have many hops meaning it traverses more than one pool.
+"""
 type GqlSorSwapRouteHop {
+  """
+  The pool entity of this hop.
+  """
   pool: GqlPoolMinimal!
+
+  """
+  The pool id of this hop.
+  """
   poolId: String!
+
+  """
+  Address of the tokenIn
+  """
   tokenIn: String!
-  tokenInAmount: BigDecimal!
+
+  """
+  Amount of the tokenIn in human form
+  """
+  tokenInAmount: AmountHumanReadable!
+
+  """
+  Address of the tokenOut
+  """
   tokenOut: String!
-  tokenOutAmount: BigDecimal!
+
+  """
+  Amount of the tokenOut in human form
+  """
+  tokenOutAmount: AmountHumanReadable!
 }
 
 enum GqlSorSwapType {
@@ -1265,6 +1419,8 @@ type GqlTokenCandlestickChartDataItem {
 
 enum GqlTokenChartDataRange {
   NINETY_DAY
+  ONE_HUNDRED_EIGHTY_DAY
+  ONE_YEAR
   SEVEN_DAY
   THIRTY_DAY
 }
@@ -1387,7 +1543,7 @@ type Mutation {
   poolLoadOnChainDataForPoolsWithActiveUpdates: String!
   poolLoadSnapshotsForAllPools: String!
   poolLoadSnapshotsForPools(poolIds: [String!]!, reload: Boolean): String!
-  poolReloadAllPoolAprs: String!
+  poolReloadAllPoolAprs(chain: GqlChain!): String!
   poolReloadAllTokenNestedPoolIds: String!
   poolReloadStakingForAllPools(stakingTypes: [GqlPoolStakingType!]!): String!
   poolSetPoolsWithPreferredGaugesAsIncentivized: String!
@@ -1400,7 +1556,7 @@ type Mutation {
   poolSyncStakingForPools: String!
   poolSyncSwapsForLast48Hours: String!
   poolSyncTotalShares: String!
-  poolUpdateAprs: String!
+  poolUpdateAprs(chain: GqlChain!): String!
   poolUpdateLifetimeValuesForAllPools: String!
   poolUpdateLiquidity24hAgoForAllPools: String!
   poolUpdateLiquidityValuesForAllPools: String!
@@ -1408,14 +1564,11 @@ type Mutation {
   protocolCacheMetrics: String!
   sftmxSyncStakingData: String!
   sftmxSyncWithdrawalRequests: String!
-  tokenDeletePrice(timestamp: Int!, tokenAddress: String!): Boolean!
   tokenDeleteTokenType(tokenAddress: String!, type: GqlTokenType!): String!
-  tokenInitChartData(tokenAddress: String!): String!
   tokenReloadAllTokenTypes: String!
-  tokenReloadTokenPrices: Boolean
+  tokenReloadTokenPrices(chains: [GqlChain!]!): Boolean
   tokenSyncLatestFxPrices(chain: GqlChain!): String!
   tokenSyncTokenDefinitions: String!
-  tokenSyncTokenDynamicData: String!
   userInitStakedBalances(stakingTypes: [GqlPoolStakingType!]!): String!
   userInitWalletBalancesForAllPools: String!
   userInitWalletBalancesForPool(poolId: String!): String!
@@ -1490,15 +1643,35 @@ type Query {
     The Chain to query
     """
     chain: GqlChain!
+
+    """
+    Whether to run queryBatchSwap to update with onchain values, default: true
+    """
     queryBatchSwap: Boolean
+
+    """
+    The amount to swap, in human form.
+    """
     swapAmount: BigDecimal!
+
+    """
+    SwapType either exact_in or exact_out (also givenIn or givenOut)
+    """
     swapType: GqlSorSwapType!
 
     """
     Token address of the tokenIn
     """
     tokenIn: String!
+
+    """
+    Token address of the tokenOut
+    """
     tokenOut: String!
+
+    """
+    Which vault version to use. If none provided, will chose the better return from either version
+    """
     useVaultVersion: Int
   ): GqlSorGetSwapPaths!
 
@@ -1506,11 +1679,34 @@ type Query {
   Get swap quote from the SOR, queries both the old and new SOR
   """
   sorGetSwaps(
+    """
+    The Chain to query
+    """
     chain: GqlChain
+
+    """
+    The amount to swap, in human form.
+    """
     swapAmount: BigDecimal!
+
+    """
+    Options for the swap
+    """
     swapOptions: GqlSorSwapOptionsInput!
+
+    """
+    SwapType either exact_in or exact_out (also givenIn or givenOut)
+    """
     swapType: GqlSorSwapType!
+
+    """
+    Token address of the tokenIn
+    """
     tokenIn: String!
+
+    """
+    Token address of the tokenOut
+    """
     tokenOut: String!
   ): GqlSorGetSwapsResponse!
   tokenGetCandlestickChartData(
@@ -1519,13 +1715,17 @@ type Query {
     range: GqlTokenChartDataRange!
   ): [GqlTokenCandlestickChartDataItem!]!
   tokenGetCurrentPrices(chains: [GqlChain!]): [GqlTokenPrice!]!
-  tokenGetHistoricalPrices(addresses: [String!]!, chain: GqlChain): [GqlHistoricalTokenPrice!]!
+  tokenGetHistoricalPrices(
+    addresses: [String!]!
+    chain: GqlChain!
+    range: GqlTokenChartDataRange!
+  ): [GqlHistoricalTokenPrice!]!
   tokenGetPriceChartData(
     address: String!
     chain: GqlChain
     range: GqlTokenChartDataRange!
   ): [GqlTokenPriceChartDataItem!]!
-  tokenGetProtocolTokenPrice: AmountHumanReadable!
+  tokenGetProtocolTokenPrice(chain: GqlChain): AmountHumanReadable!
   tokenGetRelativePriceChartData(
     chain: GqlChain
     range: GqlTokenChartDataRange!

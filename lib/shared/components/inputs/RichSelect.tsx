@@ -30,10 +30,10 @@ export function RichSelect({
         w="full"
         textAlign="left"
         color="font.primary"
-        background="background.card.level2"
+        background="background.level1"
         shadow="md"
-        _hover={{ background: 'background.card.level3' }}
-        _active={{ background: 'background.card.level4' }}
+        _hover={{ background: 'background.level2' }}
+        _active={{ background: 'background.level3' }}
         {...rest}
       >
         {currentOption?.label || 'Select'}

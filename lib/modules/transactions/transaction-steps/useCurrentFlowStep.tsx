@@ -1,14 +1,27 @@
 'use client'
 
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+import {
+  CoreStepId,
+  FlowStep,
+  TransactionState,
+  getTransactionState,
+} from '@/lib/modules/transactions/transaction-steps/lib'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { PropsWithChildren, createContext, useEffect, useState } from 'react'
 
 export function _useCurrentFlowStep() {
   const [flowStep, setCurrentFlowStep] = useState<FlowStep | undefined>()
 
-  return { flowStep, setCurrentFlowStep }
+  /*
+    We are only interested in the state of the flow step if it is a concrete CoreStepId
+  */
+  function getCoreTransactionState(coreStepId: CoreStepId) {
+    if (flowStep?.id !== coreStepId) return TransactionState.Ready
+    return getTransactionState(flowStep)
+  }
+
+  return { flowStep, setCurrentFlowStep, getCoreTransactionState }
 }
 
 export type Result = ReturnType<typeof _useCurrentFlowStep>
@@ -25,9 +38,10 @@ export function CurrentFlowStepProvider({ children }: PropsWithChildren) {
 export const useCurrentFlowStep = (): Result =>
   useMandatoryContext(CurrentFlowStepContext, 'CurrentFlowStep')
 
-export function useUpdateCurrentFlowStep(step: FlowStep) {
+export function useSyncCurrentFlowStep(step: FlowStep): FlowStep {
   const { setCurrentFlowStep } = useCurrentFlowStep()
   useEffect(() => {
     setCurrentFlowStep(step)
-  }, [step.id, step.simulation.status, step.execution.status])
+  }, [step.id, step.simulation.status, step.execution.status, step.result.status])
+  return step
 }

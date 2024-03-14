@@ -2,12 +2,17 @@ import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { SwapHandler } from './Swap.handler'
 import { ApolloClient } from '@apollo/client'
 import { TransactionConfig } from '../../web3/contracts/contract.types'
-import { SdkBuildSwapInputs, SimulateSwapInputs, SimulateSwapResponse } from '../swap.types'
-import { WrapType, getWrapType } from '../useWrapping'
+import {
+  OWrapType,
+  SdkBuildSwapInputs,
+  SimulateSwapInputs,
+  SimulateSwapResponse,
+} from '../swap.types'
+import { getWrapType } from '../wrap.helpers'
 import { encodeFunctionData } from 'viem'
 import { Hex } from 'viem'
 
-export class NativeWrapUnwrapHandler implements SwapHandler {
+export class NativeWrapHandler implements SwapHandler {
   constructor(public apolloClient: ApolloClient<object>) {}
 
   async simulate({ ...variables }: SimulateSwapInputs): Promise<SimulateSwapResponse> {
@@ -22,20 +27,20 @@ export class NativeWrapUnwrapHandler implements SwapHandler {
 
   build({ tokenIn, tokenOut, account, selectedChain }: SdkBuildSwapInputs): TransactionConfig {
     const wrapType = getWrapType(tokenIn.address, tokenOut.address, selectedChain)
-    if (!wrapType) throw new Error('NativeWrapUnwrapHandler called with non valid wrap tokens')
+    if (!wrapType) throw new Error('Non valid wrap tokens')
 
     const { tokens } = getNetworkConfig(selectedChain)
 
     let data: Hex | undefined
-    if (wrapType === WrapType.WRAP) {
+    if (wrapType === OWrapType.WRAP) {
       data = this.buildWrapCallData()
-    } else if (wrapType === WrapType.UNWRAP) {
+    } else if (wrapType === OWrapType.UNWRAP) {
       data = this.buildUnwrapCallData(tokenIn.scaledAmount)
     }
 
-    if (!data) throw new Error('NativeWrapUnwrapHandler could not build data')
+    if (!data) throw new Error('Could not build data')
 
-    const value = wrapType === WrapType.WRAP ? tokenIn.scaledAmount : BigInt(0)
+    const value = wrapType === OWrapType.WRAP ? tokenIn.scaledAmount : BigInt(0)
 
     return {
       account,

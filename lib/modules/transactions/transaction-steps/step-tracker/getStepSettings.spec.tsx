@@ -1,6 +1,6 @@
 import { mockDeep } from 'vitest-mock-extended'
 import { StepProps, getStepSettings } from './getStepSettings'
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { FlowStep } from '@/lib/modules/transactions/transaction-steps/lib'
 
 const flowStep = mockDeep<FlowStep>()
 
@@ -8,6 +8,7 @@ describe('generates step props', () => {
   test('when the step is active and the transaction execution is loading', () => {
     flowStep.simulation.isLoading = false
     flowStep.execution.isLoading = true
+    flowStep.result.isSuccess = false
 
     const props: StepProps = {
       currentIndex: 0,
@@ -15,6 +16,7 @@ describe('generates step props', () => {
       step: { title: 'Add Liquidity' },
       colorMode: 'light',
       flowStep,
+      isLastStep: true,
     }
     const state = getStepSettings(props)
 
@@ -30,6 +32,31 @@ describe('generates step props', () => {
     `)
   })
 
+  test('when the last step transaction is complete (result is success)', () => {
+    flowStep.result.isSuccess = true
+
+    const props: StepProps = {
+      currentIndex: 0,
+      index: 0,
+      step: { title: 'Add Liquidity' },
+      colorMode: 'light',
+      flowStep,
+      isLastStep: true,
+    }
+    const state = getStepSettings(props)
+
+    expect(state).toMatchInlineSnapshot(`
+      {
+        "color": "green",
+        "isActive": true,
+        "isActiveLoading": false,
+        "status": "complete",
+        "stepNumber": 1,
+        "title": "Add Liquidity",
+      }
+    `)
+  })
+
   test('when the step is incomplete', () => {
     const props: StepProps = {
       currentIndex: 0,
@@ -37,6 +64,7 @@ describe('generates step props', () => {
       step: { title: 'Add Liquidity' },
       colorMode: 'light',
       flowStep: undefined,
+      isLastStep: true,
     }
     const state = getStepSettings(props)
 

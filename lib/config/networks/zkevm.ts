@@ -1,5 +1,8 @@
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
+import { convertHexToLowerCase } from '@/lib/shared/utils/objects'
+import { PoolIssue } from '@/lib/modules/pool/alerts/pool-issues/PoolIssue.type'
+import { CSP_ISSUE_POOL_IDS } from '@/lib/shared/data/csp-issue'
 
 const networkConfig: NetworkConfig = {
   chainId: 1101,
@@ -32,6 +35,9 @@ const networkConfig: NetworkConfig = {
       minter: '0x475D18169BE8a89357A9ee3Ab00ca386d20fA229',
     },
   },
+  pools: convertHexToLowerCase({
+    issues: { [PoolIssue.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[GqlChain.Zkevm] },
+  }),
 }
 
 export default networkConfig

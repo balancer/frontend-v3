@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { FlowStep } from '@/lib/modules/transactions/transaction-steps/lib'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 export type OnStepCompleted = (step: FlowStep) => void

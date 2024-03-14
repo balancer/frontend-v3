@@ -3,7 +3,7 @@ import {
   FlowStep,
   TransactionState,
   getTransactionState,
-} from '@/lib/shared/components/btns/transaction-steps/lib'
+} from '@/lib/modules/transactions/transaction-steps/lib'
 
 type StepStatus = 'active' | 'complete' | 'incomplete'
 
@@ -12,6 +12,7 @@ export type StepProps = {
   index: number
   currentIndex: number
   colorMode: ColorMode
+  isLastStep: boolean
   flowStep?: FlowStep
 }
 
@@ -19,16 +20,25 @@ export type StepProps = {
   Generates an object used to render the UI state of a given step in the context of a multi-step flow
   It handles title, colors, loading states, etc
 */
-export function getStepSettings({ step, currentIndex, index, colorMode, flowStep }: StepProps) {
-  const color = getColor(colorMode, getStatus(index), flowStep)
-
+export function getStepSettings({
+  step,
+  currentIndex,
+  index,
+  colorMode,
+  flowStep,
+  isLastStep,
+}: StepProps) {
   const isActive = index === currentIndex
+
+  const color = getColor(colorMode, getStatus(index), flowStep)
 
   const stepNumber = index + 1
 
   function getStatus(index: number): StepStatus {
     if (index < currentIndex) return 'complete'
-    if (index === currentIndex) return 'active'
+    // When the last step is complete
+    if (isActive && isLastStep && flowStep?.result.isSuccess) return 'complete'
+    if (isActive) return 'active'
     return 'incomplete'
   }
 
@@ -67,7 +77,6 @@ function getActiveColor(flowStep?: FlowStep) {
 function isLoading(status: StepStatus, flowStep?: FlowStep): boolean {
   if (!flowStep) return false
   if (status !== 'active') return false
-
   if (getTransactionState(flowStep) === TransactionState.Loading) {
     return true
   }

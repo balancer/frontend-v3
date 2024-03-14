@@ -66,11 +66,11 @@ export function TransactionSettings(props: ButtonProps) {
     <Popover placement="bottom-end">
       <PopoverTrigger>
         <Button variant="tertiary" {...props}>
-          <HStack>
+          <HStack textColor="grayText">
             <Text color="grayText" fontSize="xs">
               {fNum('slippage', slippage)}
             </Text>
-            <Settings color="grayText" />
+            <Settings size={16} />
           </HStack>
         </Button>
       </PopoverTrigger>

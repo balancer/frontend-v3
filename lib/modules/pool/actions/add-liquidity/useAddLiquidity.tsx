@@ -22,9 +22,8 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { useAddLiquidityStepConfigs } from './useAddLiquidityStepConfigs'
-import { useIterateSteps } from '../useIterateSteps'
+import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { useTotalUsdValue } from './useTotalUsdValue'
 
@@ -39,7 +38,6 @@ export function _useAddLiquidity() {
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
 
-  const [addLiquidityTxState, setAddLiquidityTxState] = useState<TransactionState>()
   const { hasValidationErrors } = useTokenInputsValidation()
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
@@ -56,7 +54,7 @@ export function _useAddLiquidity() {
   const helpers = new LiquidityActionHelpers(pool)
   const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
 
-  const stepConfigs = useAddLiquidityStepConfigs(inputAmounts, setAddLiquidityTxState)
+  const stepConfigs = useAddLiquidityStepConfigs(inputAmounts)
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
   function setInitialHumanAmountsIn() {
@@ -133,10 +131,8 @@ export function _useAddLiquidity() {
     currentStep,
     useOnStepCompleted,
     handler,
-    addLiquidityTxState,
     setHumanAmountIn,
     setHumanAmountsIn,
-    setAddLiquidityTxState,
     stepConfigs,
     currentStepIndex,
     helpers,

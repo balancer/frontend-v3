@@ -113,6 +113,7 @@ export type GqlGraphTraversalConfigInput = {
 export type GqlHistoricalTokenPrice = {
   __typename: 'GqlHistoricalTokenPrice'
   address: Scalars['String']['output']
+  chain: GqlChain
   prices: Array<GqlHistoricalTokenPriceEntry>
 }
 
@@ -1136,32 +1137,42 @@ export type GqlSftmxWithdrawalRequests = {
   user: Scalars['String']['output']
 }
 
-export type GqlSorGetBatchSwapForTokensInResponse = {
-  __typename: 'GqlSorGetBatchSwapForTokensInResponse'
-  assets: Array<Scalars['String']['output']>
-  swaps: Array<GqlSorSwap>
-  tokenOutAmount: Scalars['AmountHumanReadable']['output']
-}
-
+/** The swap paths for a swap */
 export type GqlSorGetSwapPaths = {
   __typename: 'GqlSorGetSwapPaths'
+  /** The price of tokenOut in tokenIn. */
   effectivePrice: Scalars['AmountHumanReadable']['output']
+  /** The price of tokenIn in tokenOut. */
   effectivePriceReversed: Scalars['AmountHumanReadable']['output']
+  /** The found paths as needed as input for the b-sdk to execute the swap */
   paths: Array<GqlSorPath>
-  priceImpact: Scalars['AmountHumanReadable']['output']
+  /** Price impact in percent. 0.01 -> 0.01% */
+  priceImpact?: Maybe<Scalars['AmountHumanReadable']['output']>
+  /** The return amount in human form. Return amount is either tokenOutAmount (if swapType is exactIn) or tokenInAmount (if swapType is exactOut) */
   returnAmount: Scalars['AmountHumanReadable']['output']
-  returnAmountScaled: Scalars['BigDecimal']['output']
+  /** The return amount in a raw form */
+  returnAmountRaw: Scalars['BigDecimal']['output']
+  /** The swap routes including pool information. Used to display by the UI */
   routes: Array<GqlSorSwapRoute>
+  /** The swap amount in human form. Swap amount is either tokenInAmount (if swapType is exactIn) or tokenOutAmount (if swapType is exactOut) */
   swapAmount: Scalars['AmountHumanReadable']['output']
-  swapAmountScaled: Scalars['BigDecimal']['output']
+  /** The swap amount in a raw form */
+  swapAmountRaw: Scalars['BigDecimal']['output']
+  /** The swapType that was provided, exact_in vs exact_out (givenIn vs givenOut) */
   swapType: GqlSorSwapType
+  /** Swaps as needed for the vault swap input to execute the swap */
   swaps: Array<GqlSorSwap>
+  /** All token addresses (or assets) as needed for the vault swap input to execute the swap */
+  tokenAddresses: Array<Scalars['String']['output']>
   /** The token address of the tokenIn provided */
   tokenIn: Scalars['String']['output']
+  /** The amount of tokenIn in human form */
   tokenInAmount: Scalars['AmountHumanReadable']['output']
   /** The token address of the tokenOut provided */
   tokenOut: Scalars['String']['output']
+  /** The amount of tokenOut in human form */
   tokenOutAmount: Scalars['AmountHumanReadable']['output']
+  /** The version of the vault these paths are from */
   vaultVersion: Scalars['Int']['output']
 }
 
@@ -1188,21 +1199,33 @@ export type GqlSorGetSwapsResponse = {
   tokenOutAmount: Scalars['AmountHumanReadable']['output']
 }
 
+/** A path of a swap. A swap can have multiple paths. Used as input to execute the swap via b-sdk */
 export type GqlSorPath = {
   __typename: 'GqlSorPath'
+  /** Input amount of this path in scaled form */
   inputAmountRaw: Scalars['String']['output']
+  /** Output amount of this path in scaled form */
   outputAmountRaw: Scalars['String']['output']
+  /** A sorted list of pool ids that are used in this path */
   pools: Array<Maybe<Scalars['String']['output']>>
+  /** A sorted list of tokens that are ussed in this path */
   tokens: Array<Maybe<Token>>
+  /** Vault version of this path. */
   vaultVersion: Scalars['Int']['output']
 }
 
+/** A single swap step as used for input to the vault to execute a swap */
 export type GqlSorSwap = {
   __typename: 'GqlSorSwap'
+  /** Amount to be swapped in this step. 0 for chained swap. */
   amount: Scalars['String']['output']
+  /** Index of the asset used in the tokenAddress array. */
   assetInIndex: Scalars['Int']['output']
+  /** Index of the asset used in the tokenAddress array. */
   assetOutIndex: Scalars['Int']['output']
+  /** Pool id used in this swap step */
   poolId: Scalars['String']['output']
+  /** UserData used in this swap, generally uses defaults. */
   userData: Scalars['String']['output']
 }
 
@@ -1213,24 +1236,38 @@ export type GqlSorSwapOptionsInput = {
   timestamp?: InputMaybe<Scalars['Int']['input']>
 }
 
+/** The swap routes including pool information. Used to display by the UI */
 export type GqlSorSwapRoute = {
   __typename: 'GqlSorSwapRoute'
+  /** The hops this route takes */
   hops: Array<GqlSorSwapRouteHop>
+  /** Share of this route of the total swap */
   share: Scalars['Float']['output']
+  /** Address of the tokenIn */
   tokenIn: Scalars['String']['output']
-  tokenInAmount: Scalars['BigDecimal']['output']
+  /** Amount of the tokenIn in human form */
+  tokenInAmount: Scalars['AmountHumanReadable']['output']
+  /** Address of the tokenOut */
   tokenOut: Scalars['String']['output']
-  tokenOutAmount: Scalars['BigDecimal']['output']
+  /** Amount of the tokenOut in human form */
+  tokenOutAmount: Scalars['AmountHumanReadable']['output']
 }
 
+/** A hop of a route. A route can have many hops meaning it traverses more than one pool. */
 export type GqlSorSwapRouteHop = {
   __typename: 'GqlSorSwapRouteHop'
+  /** The pool entity of this hop. */
   pool: GqlPoolMinimal
+  /** The pool id of this hop. */
   poolId: Scalars['String']['output']
+  /** Address of the tokenIn */
   tokenIn: Scalars['String']['output']
-  tokenInAmount: Scalars['BigDecimal']['output']
+  /** Amount of the tokenIn in human form */
+  tokenInAmount: Scalars['AmountHumanReadable']['output']
+  /** Address of the tokenOut */
   tokenOut: Scalars['String']['output']
-  tokenOutAmount: Scalars['BigDecimal']['output']
+  /** Amount of the tokenOut in human form */
+  tokenOutAmount: Scalars['AmountHumanReadable']['output']
 }
 
 export enum GqlSorSwapType {
@@ -1273,6 +1310,8 @@ export type GqlTokenCandlestickChartDataItem = {
 
 export enum GqlTokenChartDataRange {
   NinetyDay = 'NINETY_DAY',
+  OneHundredEightyDay = 'ONE_HUNDRED_EIGHTY_DAY',
+  OneYear = 'ONE_YEAR',
   SevenDay = 'SEVEN_DAY',
   ThirtyDay = 'THIRTY_DAY',
 }
@@ -1422,14 +1461,11 @@ export type Mutation = {
   protocolCacheMetrics: Scalars['String']['output']
   sftmxSyncStakingData: Scalars['String']['output']
   sftmxSyncWithdrawalRequests: Scalars['String']['output']
-  tokenDeletePrice: Scalars['Boolean']['output']
   tokenDeleteTokenType: Scalars['String']['output']
-  tokenInitChartData: Scalars['String']['output']
   tokenReloadAllTokenTypes: Scalars['String']['output']
   tokenReloadTokenPrices?: Maybe<Scalars['Boolean']['output']>
   tokenSyncLatestFxPrices: Scalars['String']['output']
   tokenSyncTokenDefinitions: Scalars['String']['output']
-  tokenSyncTokenDynamicData: Scalars['String']['output']
   userInitStakedBalances: Scalars['String']['output']
   userInitWalletBalancesForAllPools: Scalars['String']['output']
   userInitWalletBalancesForPool: Scalars['String']['output']
@@ -1462,6 +1498,10 @@ export type MutationPoolLoadSnapshotsForPoolsArgs = {
   reload?: InputMaybe<Scalars['Boolean']['input']>
 }
 
+export type MutationPoolReloadAllPoolAprsArgs = {
+  chain: GqlChain
+}
+
 export type MutationPoolReloadStakingForAllPoolsArgs = {
   stakingTypes: Array<GqlPoolStakingType>
 }
@@ -1474,9 +1514,8 @@ export type MutationPoolSyncPoolArgs = {
   poolId: Scalars['String']['input']
 }
 
-export type MutationTokenDeletePriceArgs = {
-  timestamp: Scalars['Int']['input']
-  tokenAddress: Scalars['String']['input']
+export type MutationPoolUpdateAprsArgs = {
+  chain: GqlChain
 }
 
 export type MutationTokenDeleteTokenTypeArgs = {
@@ -1484,8 +1523,8 @@ export type MutationTokenDeleteTokenTypeArgs = {
   type: GqlTokenType
 }
 
-export type MutationTokenInitChartDataArgs = {
-  tokenAddress: Scalars['String']['input']
+export type MutationTokenReloadTokenPricesArgs = {
+  chains: Array<GqlChain>
 }
 
 export type MutationTokenSyncLatestFxPricesArgs = {
@@ -1674,13 +1713,18 @@ export type QueryTokenGetCurrentPricesArgs = {
 
 export type QueryTokenGetHistoricalPricesArgs = {
   addresses: Array<Scalars['String']['input']>
-  chain?: InputMaybe<GqlChain>
+  chain: GqlChain
+  range: GqlTokenChartDataRange
 }
 
 export type QueryTokenGetPriceChartDataArgs = {
   address: Scalars['String']['input']
   chain?: InputMaybe<GqlChain>
   range: GqlTokenChartDataRange
+}
+
+export type QueryTokenGetProtocolTokenPriceArgs = {
+  chain?: InputMaybe<GqlChain>
 }
 
 export type QueryTokenGetRelativePriceChartDataArgs = {
@@ -7399,11 +7443,9 @@ export type GetSorSwapsQuery = {
     effectivePrice: string
     effectivePriceReversed: string
     swapType: GqlSorSwapType
-    priceImpact: string
+    priceImpact?: string | null
     returnAmount: string
-    returnAmountScaled: string
     swapAmount: string
-    swapAmountScaled: string
     tokenIn: string
     tokenInAmount: string
     tokenOut: string
@@ -17448,7 +17490,6 @@ export const GetSorSwapsDocument = {
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'priceImpact' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'returnAmount' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'returnAmountScaled' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'routes' },
@@ -17488,7 +17529,6 @@ export const GetSorSwapsDocument = {
                   },
                 },
                 { kind: 'Field', name: { kind: 'Name', value: 'swapAmount' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'swapAmountScaled' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'swaps' },

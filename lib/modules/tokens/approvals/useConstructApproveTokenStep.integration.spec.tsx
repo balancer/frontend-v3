@@ -1,23 +1,13 @@
 import { vaultV2Address, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { DefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
-import { PropsWithChildren } from 'react'
 import { act } from 'react-dom/test-utils'
-import { CurrentFlowStepProvider } from '../../../shared/components/btns/transaction-steps/useCurrentFlowStep'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { TokenAmountToApprove } from './approval-rules'
 import { useConstructApproveTokenStep } from './useConstructApproveTokenStep'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-
-function Provider({ children }: PropsWithChildren) {
-  return (
-    <CurrentFlowStepProvider>
-      <DefaultPoolTestProvider>{children}</DefaultPoolTestProvider>
-    </CurrentFlowStepProvider>
-  )
-}
 
 function testUseConstruct() {
   const { result } = testHook(
@@ -45,7 +35,7 @@ function testUseConstruct() {
       })
     },
     {
-      wrapper: Provider,
+      wrapper: DefaultPoolTestProvider,
     }
   )
   return result

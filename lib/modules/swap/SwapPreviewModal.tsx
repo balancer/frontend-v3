@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 'use client'
 
 import {
@@ -22,6 +23,12 @@ import { SwapTimeout } from './SwapTimeout'
 import TokenRow from '../tokens/TokenRow/TokenRow'
 import { SwapDetails } from './SwapDetails'
 import { SwapRate } from './SwapRate'
+import { DesktopStepTracker } from '../transactions/transaction-steps/step-tracker/DesktopStepTracker'
+import { MobileStepTracker } from '../transactions/transaction-steps/step-tracker/MobileStepTracker'
+// eslint-disable-next-line max-len
+import { getStylesForModalContentWithStepTracker } from '../transactions/transaction-steps/step-tracker/useStepTrackerProps'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { capitalize } from 'lodash'
 
 type Props = {
   isOpen: boolean
@@ -36,8 +43,18 @@ export function SwapPreviewModal({
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
+  const { isDesktop, isMobile } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { tokenIn, tokenOut, currentStep, useOnStepCompleted, selectedChain } = useSwap()
+  const {
+    tokenIn,
+    tokenOut,
+    currentStep,
+    currentStepIndex,
+    swapStepConfigs,
+    swapAction,
+    selectedChain,
+    useOnStepCompleted,
+  } = useSwap()
 
   return (
     <Modal
@@ -49,11 +66,14 @@ export function SwapPreviewModal({
       {...rest}
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
+        {isDesktop && (
+          <DesktopStepTracker currentStepIndex={currentStepIndex} stepConfigs={swapStepConfigs} />
+        )}
         <ModalHeader>
           <HStack justify="space-between" w="full" pr="lg">
             <Heading fontWeight="bold" size="h5">
-              Review swap
+              Review {capitalize(swapAction)}
             </Heading>
             <SwapTimeout />
           </HStack>
@@ -61,6 +81,14 @@ export function SwapPreviewModal({
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="sm" align="start">
+            {isMobile && (
+              <Card variant="level3" p="md" shadow="sm" w="full">
+                <MobileStepTracker
+                  currentStepIndex={currentStepIndex}
+                  stepConfigs={swapStepConfigs}
+                />
+              </Card>
+            )}
             <Card variant="modalSubSection">
               <CardHeader>You pay</CardHeader>
               <TokenRow
