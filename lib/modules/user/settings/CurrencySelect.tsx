@@ -6,7 +6,7 @@ import { GroupBase, OptionBase, Select, SingleValue } from 'chakra-react-select'
 import { ReactNode } from 'react'
 import Image from 'next/image'
 import { useUserSettings } from './useUserSettings'
-import { getSelectStyles } from '@/lib/shared/services/chakra/theme.helpers'
+import { getSelectStyles } from '@/lib/shared/services/chakra/theme/chakra-react-select'
 
 interface CurrencyOption extends OptionBase {
   label: ReactNode

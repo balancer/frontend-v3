@@ -5,7 +5,38 @@ import ReactECharts from 'echarts-for-react'
 import { PoolChartTypeTab, poolChartPeriods, usePoolCharts } from './usePoolCharts'
 
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { Selector } from '@/lib/shared/components/selector/Selector'
+import { GroupBase, OptionBase, Select, SingleValue } from 'chakra-react-select'
+import { GqlPoolSnapshotDataRange } from '@/lib/shared/services/api/generated/graphql'
+import { getSelectStyles } from '@/lib/shared/services/chakra/theme/chakra-react-select'
+
+interface PeriodOption extends OptionBase {
+  label: string
+  value: GqlPoolSnapshotDataRange
+}
+
+type Props = {
+  value: PeriodOption
+  onChange(value: PeriodOption): void
+}
+
+export function PeriodSelect({ value, onChange }: Props) {
+  const chakraStyles = getSelectStyles<PeriodOption>('gradient')
+
+  function handleChange(newOption: SingleValue<PeriodOption>) {
+    if (newOption) onChange(newOption)
+  }
+
+  return (
+    <Select<PeriodOption, false, GroupBase<PeriodOption>>
+      name="Chain"
+      value={value}
+      options={poolChartPeriods}
+      chakraStyles={chakraStyles}
+      onChange={handleChange}
+      size="sm"
+    />
+  )
+}
 
 export function PoolChart() {
   const {
@@ -35,17 +66,7 @@ export function PoolChart() {
                   {chartValueSum}
                 </Heading>
 
-                <Selector
-                  activeOption={activePeriod}
-                  onChange={option => {
-                    const period =
-                      poolChartPeriods.find(period => period.value === option) ||
-                      poolChartPeriods[0]
-                    setActivePeriod(period)
-                  }}
-                  options={poolChartPeriods}
-                  variant="secondary"
-                />
+                <PeriodSelect value={activePeriod} onChange={setActivePeriod} />
               </HStack>
               <Stack gap="0" textAlign="right">
                 <ButtonGroup
