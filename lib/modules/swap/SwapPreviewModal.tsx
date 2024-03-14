@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 'use client'
 
 import {
@@ -23,10 +22,11 @@ import { SwapTimeout } from './SwapTimeout'
 import TokenRow from '../tokens/TokenRow/TokenRow'
 import { SwapDetails } from './SwapDetails'
 import { SwapRate } from './SwapRate'
-import { useResponsive } from '@/lib/shared/hooks/useResponsive'
 import { DesktopStepTracker } from '../transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { MobileStepTracker } from '../transactions/transaction-steps/step-tracker/MobileStepTracker'
+// eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '../transactions/transaction-steps/step-tracker/useStepTrackerProps'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 type Props = {
   isOpen: boolean
@@ -41,7 +41,7 @@ export function SwapPreviewModal({
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const { isDesktop, isMobile } = useResponsive()
+  const { isDesktop, isMobile } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const {
     tokenIn,

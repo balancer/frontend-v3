@@ -17,6 +17,7 @@ import { useStepTrackerProps } from './useStepTrackerProps'
 
 export function MobileStepTracker(props: StepTrackerProps) {
   const currentStepProps = useStepTrackerProps(props)
+  if (!currentStepProps.step) return null
   const currentStepTitle = currentStepProps.step.title
   const { currentStepPosition, currentIndex, steps } = currentStepProps
 

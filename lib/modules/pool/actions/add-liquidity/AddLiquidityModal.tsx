@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 'use client'
 
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
@@ -37,8 +36,9 @@ import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
-import { useResponsive } from '@/lib/shared/hooks/useResponsive'
+// eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 type Props = {
   isOpen: boolean
@@ -53,7 +53,7 @@ export function AddLiquidityModal({
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const { isDesktop, isMobile } = useResponsive()
+  const { isDesktop, isMobile } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const {
     humanAmountsIn,
