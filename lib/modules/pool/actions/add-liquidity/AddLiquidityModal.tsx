@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 'use client'
 
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
@@ -61,7 +62,6 @@ export function AddLiquidityModal({
     simulationQuery,
     priceImpactQuery,
     tokens,
-    addLiquidityTxState,
     stepConfigs,
     currentStep,
     currentStepIndex,
@@ -179,7 +179,7 @@ export function AddLiquidityModal({
                     </Tooltip>
                   </HStack>
                 </HStack>
-                <AddLiquidityTimeout addLiquidityTxState={addLiquidityTxState} />
+                <AddLiquidityTimeout />
               </VStack>
             </Card>
           </VStack>

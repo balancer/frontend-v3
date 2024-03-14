@@ -1,6 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
+import {
+  TransactionLabels,
+  removeLiquidityStepId,
+} from '@/lib/modules/transactions/transaction-steps/lib'
 import { useRemoveLiquidityBuildCallDataQuery } from '../queries/useRemoveLiquidityBuildCallDataQuery'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useEffect } from 'react'
@@ -38,13 +41,12 @@ export function useConstructRemoveLiquidityStep() {
   const removeLiquidityStep = useSyncCurrentFlowStep({
     ...removeLiquidityTransaction,
     transactionLabels,
-    id: `removeLiquidityPool`,
+    id: removeLiquidityStepId,
     stepType: 'removeLiquidity',
     isComplete,
   })
 
   return {
     removeLiquidityStep,
-    removeLiquidityTransaction,
   }
 }

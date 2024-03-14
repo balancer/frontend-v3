@@ -1,5 +1,4 @@
 import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useTokenApprovalConfigs'
-import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { SwapButton } from './SwapButton'
 import { useMemo } from 'react'
@@ -12,7 +11,6 @@ type Params = {
   tokenIn: GqlToken | undefined
   selectedChain: GqlChain
   vaultAddress: Address
-  setSwapTxState: (transactionState: TransactionState) => void
   closeModal: () => void
 }
 
@@ -21,7 +19,6 @@ export function useSwapStepConfigs({
   tokenIn,
   selectedChain,
   vaultAddress,
-  setSwapTxState,
   closeModal,
 }: Params) {
   const tokenInAmounts = useMemo(() => {
@@ -43,7 +40,7 @@ export function useSwapStepConfigs({
 
   const swapStepConfig: StepConfig = {
     title: 'Swap',
-    render: () => <SwapButton onTransactionStateUpdate={setSwapTxState} closeModal={closeModal} />,
+    render: () => <SwapButton closeModal={closeModal} />,
   }
 
   return [...tokenApprovalConfigs, swapStepConfig]
