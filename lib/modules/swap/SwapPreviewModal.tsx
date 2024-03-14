@@ -43,8 +43,15 @@ export function SwapPreviewModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop, isMobile } = useResponsive()
   const initialFocusRef = useRef(null)
-  const { tokenIn, tokenOut, currentStep, currentStepIndex, swapStepConfigs, selectedChain } =
-    useSwap()
+  const {
+    tokenIn,
+    tokenOut,
+    currentStep,
+    currentStepIndex,
+    useOnStepCompleted,
+    swapStepConfigs,
+    selectedChain,
+  } = useSwap()
 
   return (
     <Modal
@@ -112,7 +119,7 @@ export function SwapPreviewModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <VStack w="full">{currentStep.render()}</VStack>
+          <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>

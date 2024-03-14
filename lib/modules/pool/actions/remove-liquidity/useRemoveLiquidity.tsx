@@ -55,7 +55,7 @@ export function _useRemoveLiquidity() {
     .toString() as HumanAmount
 
   const stepConfigs = useRemoveLiquidityStepConfigs()
-  const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
+  const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
   const { getCoreTransactionState } = useCurrentFlowStep()
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
@@ -192,7 +192,9 @@ export function _useRemoveLiquidity() {
     disabledReason,
     previewModalDisclosure,
     handler,
+    stepConfigs,
     currentStep,
+    currentStepIndex,
     isTxConfirmingOrConfirmed,
     didRefetchPool,
     setRemovalType,
