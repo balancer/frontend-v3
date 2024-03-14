@@ -1,14 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { SupportedChainId } from '@/lib/config/config.types'
-import { useColorMode } from '@chakra-ui/react'
+import { ModalContentProps, useColorMode } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useCurrentFlowStep } from '../useCurrentFlowStep'
 import { StepConfig } from '../useIterateSteps'
 
+export function getStylesForModalContentWithStepTracker(isDesktop: boolean): ModalContentProps {
+  return isDesktop ? { left: '-100px', position: 'relative' } : {}
+}
+
 type StepTrackerProps = {
   stepConfigs: StepConfig[]
   currentStepIndex: number
-  chainId: SupportedChainId
 }
 
 /*
