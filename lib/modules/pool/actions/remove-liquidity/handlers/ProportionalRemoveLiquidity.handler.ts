@@ -50,7 +50,6 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
     const removeLiquidity = new RemoveLiquidity()
 
     const { call, to, value } = removeLiquidity.buildCall({
-      chainId: this.helpers.chainId,
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
@@ -82,7 +81,6 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
       rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
       bptIn,
       kind: RemoveLiquidityKind.Proportional,
-      toNativeAsset: false, // assuming we don't want to withdraw the native asset over the wrapped native asset for now.
     }
   }
 }

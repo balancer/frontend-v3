@@ -3,6 +3,7 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { convertHexToLowerCase } from '@/lib/shared/utils/objects'
 import { NetworkConfig } from '../config.types'
 import { CSP_ISSUE_POOL_IDS } from '../../shared/data/csp-issue'
+import { SupportedWrapHandler } from '@/lib/modules/swap/swap.types'
 
 const networkConfig: NetworkConfig = {
   chainId: 1,
@@ -23,6 +24,14 @@ const networkConfig: NetworkConfig = {
       symbol: 'ETH',
       decimals: 18,
     },
+    supportedWrappers: [
+      {
+        // stETH/wstETH
+        baseToken: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+        wrappedToken: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
+        swapHandler: SupportedWrapHandler.LIDO,
+      },
+    ],
     /**
      * The approval function for these tokens doesn't allow setting a new approval
      * level if the current level is > 0. Thus they must be approved in two steps

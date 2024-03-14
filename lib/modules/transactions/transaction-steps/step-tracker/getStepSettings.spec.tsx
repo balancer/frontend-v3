@@ -16,6 +16,7 @@ describe('generates step props', () => {
       step: { title: 'Add Liquidity' },
       colorMode: 'light',
       flowStep,
+      isLastStep: true,
     }
     const state = getStepSettings(props)
 
@@ -40,6 +41,7 @@ describe('generates step props', () => {
       step: { title: 'Add Liquidity' },
       colorMode: 'light',
       flowStep,
+      isLastStep: true,
     }
     const state = getStepSettings(props)
 
@@ -62,6 +64,7 @@ describe('generates step props', () => {
       step: { title: 'Add Liquidity' },
       colorMode: 'light',
       flowStep: undefined,
+      isLastStep: true,
     }
     const state = getStepSettings(props)
 
