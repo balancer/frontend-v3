@@ -47,7 +47,6 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
   POLYGON: {
     networkName: 'POLYGON',
     rpcEnv: 'NEXT_POLYGON_RPC_URL',
-    // Public Polygon RPCs are usually unreliable
     fallBackRpc: getNetworkConfig(GqlChain.Polygon).rpcUrl,
     port: ANVIL_PORTS.POLYGON,
     // Note - this has to be >= highest blockNo used in tests
@@ -57,7 +56,7 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
     networkName: 'FANTOM',
     rpcEnv: 'NEXT_FANTOM_RPC_URL',
     // Public Fantom RPCs are usually unreliable
-    fallBackRpc: undefined,
+    fallBackRpc: getNetworkConfig(GqlChain.Fantom).rpcUrl,
     port: ANVIL_PORTS.FANTOM,
     forkBlockNumber: 65313450n,
   },
