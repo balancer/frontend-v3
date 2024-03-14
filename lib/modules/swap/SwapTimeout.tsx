@@ -2,13 +2,12 @@
 import { HStack, Text } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
-import { TransactionState, swapStepId } from '@/lib/modules/transactions/transaction-steps/lib'
+import { swapStepId } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useSwap } from './useSwap'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
 
 function useSwapTimeout() {
-  const { getCoreTransactionState } = useCurrentFlowStep()
   // This countdown needs to be nested here and not at a higher level, like in
   // useAddLiquidity, because otherwise it causes re-renders of the entire
   // add-liquidity flow component tree every second.
@@ -19,15 +18,11 @@ function useSwapTimeout() {
 
   const { simulationQuery, previewModalDisclosure } = useSwap()
 
-  const swapTxState = getCoreTransactionState(swapStepId)
-  const isConfirmingSwap = swapTxState === TransactionState.Confirming
-  const isAwaitingUserConfirmation = swapTxState === TransactionState.Loading
-  const isComplete = swapTxState === TransactionState.Completed
-
   // Disable query refetches:
   // if the flow is complete
-  // if the add liquidity transaction is confirming
-  const shouldFreezeQuote = isComplete || isConfirmingSwap || isAwaitingUserConfirmation
+  // if the swap transaction is confirming
+  const { getShouldFreezeQuote } = useCurrentFlowStep()
+  const shouldFreezeQuote = getShouldFreezeQuote(swapStepId)
 
   // When the countdown timer reaches 0, refetch all add liquidity queries.
   useEffect(() => {

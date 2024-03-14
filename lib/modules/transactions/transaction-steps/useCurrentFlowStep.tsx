@@ -14,6 +14,21 @@ export function _useCurrentFlowStep() {
   const [flowStep, setCurrentFlowStep] = useState<FlowStep | undefined>()
 
   /*
+    True when the coreStepId transaction is completed or confirming
+  */
+  function getShouldFreezeQuote(coreStepId: CoreStepId) {
+    const addLiquidityTxState = getCoreTransactionState(coreStepId)
+    const isConfirmingAddLiquidity = addLiquidityTxState === TransactionState.Confirming
+    const isAwaitingUserConfirmation = addLiquidityTxState === TransactionState.Loading
+    const isComplete = addLiquidityTxState === TransactionState.Completed
+
+    // Disable query refetches:
+    // if the flow is complete
+    // if the core transaction is confirming
+    return isComplete || isConfirmingAddLiquidity || isAwaitingUserConfirmation
+  }
+
+  /*
     We are only interested in the state of the flow step if it is a concrete CoreStepId
   */
   function getCoreTransactionState(coreStepId: CoreStepId) {
@@ -21,7 +36,7 @@ export function _useCurrentFlowStep() {
     return getTransactionState(flowStep)
   }
 
-  return { flowStep, setCurrentFlowStep, getCoreTransactionState }
+  return { flowStep, setCurrentFlowStep, getCoreTransactionState, getShouldFreezeQuote }
 }
 
 export type Result = ReturnType<typeof _useCurrentFlowStep>

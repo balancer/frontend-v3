@@ -21,16 +21,11 @@ function useAddLiquidityTimeout() {
 
   const { previewModalDisclosure, refetchQuote } = useAddLiquidity()
 
-  const { getCoreTransactionState } = useCurrentFlowStep()
-  const addLiquidityTxState = getCoreTransactionState(addLiquidityStepId)
-  const isConfirmingAddLiquidity = addLiquidityTxState === TransactionState.Confirming
-  const isAwaitingUserConfirmation = addLiquidityTxState === TransactionState.Loading
-  const isComplete = addLiquidityTxState === TransactionState.Completed
-
   // Disable query refetches:
   // if the flow is complete
   // if the add liquidity transaction is confirming
-  const shouldFreezeQuote = isComplete || isConfirmingAddLiquidity || isAwaitingUserConfirmation
+  const { getShouldFreezeQuote } = useCurrentFlowStep()
+  const shouldFreezeQuote = getShouldFreezeQuote(addLiquidityStepId)
 
   // When the countdown timer reaches 0, refetch all add liquidity queries.
   useEffect(() => {
