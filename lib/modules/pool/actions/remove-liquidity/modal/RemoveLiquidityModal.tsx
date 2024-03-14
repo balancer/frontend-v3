@@ -29,10 +29,11 @@ import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
 import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { useResponsive } from '@/lib/shared/hooks/useResponsive'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
+// eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 type Props = {
   isOpen: boolean
@@ -47,7 +48,7 @@ export function RemoveLiquidityModal({
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const { isDesktop, isMobile } = useResponsive()
+  const { isDesktop, isMobile } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const {
     tokens,
