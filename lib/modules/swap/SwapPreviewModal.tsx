@@ -48,9 +48,9 @@ export function SwapPreviewModal({
     tokenOut,
     currentStep,
     currentStepIndex,
-    useOnStepCompleted,
     swapStepConfigs,
     selectedChain,
+    useOnStepCompleted,
   } = useSwap()
 
   return (
