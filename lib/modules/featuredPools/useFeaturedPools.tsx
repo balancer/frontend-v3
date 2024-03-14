@@ -17,7 +17,7 @@ export function _useFeaturedPools(initialData: GetFeaturedPoolsQuery) {
 
   const { data, loading, networkStatus, error } = useQuery(GetFeaturedPoolsDocument, {
     variables: queryVariables,
-    //skip: skipQuery,
+    skip: skipQuery,
   })
 
   return {

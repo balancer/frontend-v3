@@ -37,13 +37,13 @@ export function _useTokens(
   // skip initial fetch on mount so that initialData is used
   const { data: tokensData } = useQuery(GetTokensDocument, {
     variables,
-    //skip: skipQuery,
+    skip: skipQuery,
   })
   const { data: tokenPricesData } = useQuery(GetTokenPricesDocument, {
     variables,
-    /*initialFetchPolicy: 'cache-only',
+    initialFetchPolicy: 'cache-only',
     nextFetchPolicy: 'cache-first',
-    pollInterval: minsToMs(3),*/
+    pollInterval: minsToMs(3),
   })
 
   const tokens = tokensData?.tokens || initTokenData.tokens
