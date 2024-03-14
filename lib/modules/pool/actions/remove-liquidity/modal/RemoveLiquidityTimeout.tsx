@@ -5,7 +5,7 @@ import { useCountdown } from 'usehooks-ts'
 import { removeLiquidityStepId } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useShouldFreezeQuote } from '@/lib/modules/transactions/transaction-steps/useShouldFreezeQuote'
 
 function useRemoveLiquidityTimeout() {
   // This countdown needs to be nested here and not at a higher level, like in
@@ -21,8 +21,7 @@ function useRemoveLiquidityTimeout() {
   // Disable query refetches:
   // if the flow is complete
   // if the remove liquidity transaction is confirming
-  const { getShouldFreezeQuote } = useCurrentFlowStep()
-  const shouldFreezeQuote = getShouldFreezeQuote(removeLiquidityStepId)
+  const { shouldFreezeQuote } = useShouldFreezeQuote(removeLiquidityStepId)
 
   // When the countdown timer reaches 0, refetch all remove liquidity queries.
   useEffect(() => {

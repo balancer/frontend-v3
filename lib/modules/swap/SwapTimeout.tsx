@@ -5,7 +5,7 @@ import { useCountdown } from 'usehooks-ts'
 import { swapStepId } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useSwap } from './useSwap'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { useCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
+import { useShouldFreezeQuote } from '../transactions/transaction-steps/useShouldFreezeQuote'
 
 function useSwapTimeout() {
   // This countdown needs to be nested here and not at a higher level, like in
@@ -21,8 +21,7 @@ function useSwapTimeout() {
   // Disable query refetches:
   // if the flow is complete
   // if the swap transaction is confirming
-  const { getShouldFreezeQuote } = useCurrentFlowStep()
-  const shouldFreezeQuote = getShouldFreezeQuote(swapStepId)
+  const { shouldFreezeQuote } = useShouldFreezeQuote(swapStepId)
 
   // When the countdown timer reaches 0, refetch all add liquidity queries.
   useEffect(() => {
