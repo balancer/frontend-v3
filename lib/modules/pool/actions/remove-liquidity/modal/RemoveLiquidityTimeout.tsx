@@ -2,15 +2,15 @@
 import { HStack, Text, Tooltip } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
-import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
+import {
+  TransactionState,
+  removeLiquidityStepId,
+} from '@/lib/modules/transactions/transaction-steps/lib'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
-type Props = {
-  removeLiquidityTxState?: TransactionState
-}
-
-function useRemoveLiquidityTimeout({ removeLiquidityTxState }: Props) {
+function useRemoveLiquidityTimeout() {
   // This countdown needs to be nested here and not at a higher level, like in
   // useRemoveLiquidity, because otherwise it causes re-renders of the entire
   // remove-liquidity flow component tree every second.
@@ -21,6 +21,8 @@ function useRemoveLiquidityTimeout({ removeLiquidityTxState }: Props) {
 
   const { simulationQuery, priceImpactQuery, previewModalDisclosure } = useRemoveLiquidity()
 
+  const { getCoreTransactionState } = useCurrentFlowStep()
+  const removeLiquidityTxState = getCoreTransactionState(removeLiquidityStepId)
   const isConfirmingRemoveLiquidity = removeLiquidityTxState === TransactionState.Confirming
   const isAwaitingUserConfirmation = removeLiquidityTxState === TransactionState.Loading
   const isComplete = removeLiquidityTxState === TransactionState.Completed
@@ -63,8 +65,8 @@ function useRemoveLiquidityTimeout({ removeLiquidityTxState }: Props) {
   return { secondsToRefetch, shouldFreezeQuote }
 }
 
-export function RemoveLiquidityTimeout(props: Props) {
-  const { secondsToRefetch, shouldFreezeQuote } = useRemoveLiquidityTimeout(props)
+export function RemoveLiquidityTimeout() {
+  const { secondsToRefetch, shouldFreezeQuote } = useRemoveLiquidityTimeout()
 
   return (
     !shouldFreezeQuote && (

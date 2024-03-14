@@ -1,6 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
+import {
+  TransactionLabels,
+  addLiquidityStepId,
+} from '@/lib/modules/transactions/transaction-steps/lib'
 import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 import { useEffect } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
@@ -38,13 +41,12 @@ export function useConstructAddLiquidityStep() {
   const addLiquidityStep = useSyncCurrentFlowStep({
     ...addLiquidityTransaction,
     transactionLabels,
-    id: `addLiquidityPool`,
+    id: addLiquidityStepId,
     stepType: 'addLiquidity',
     isComplete,
   })
 
   return {
     addLiquidityStep,
-    addLiquidityTransaction,
   }
 }
