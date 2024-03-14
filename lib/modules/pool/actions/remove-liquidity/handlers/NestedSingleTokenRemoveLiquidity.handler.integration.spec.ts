@@ -23,14 +23,12 @@ const defaultQueryInput: QueryRemoveLiquidityInput = {
 const defaultBuildInput = { account: defaultTestUserAccount, slippagePercent: '0.2' }
 
 describe('When removing liquidity with single token in a nested pool', () => {
-  test('returns ZERO price impact (SDK WIP)', async () => {
+  test('returns price impact', async () => {
     const handler = selectNestedSingleTokenHandler(nestedPoolMock)
 
-    const priceImpact = await handler.getPriceImpact()
+    const priceImpact = await handler.getPriceImpact(defaultQueryInput)
 
-    // Price impact will be zero while we wait for the SDK implementation:
-    // https://github.com/balancer/b-sdk/pull/244
-    expect(priceImpact).toBe(0)
+    expect(priceImpact).toBeGreaterThan(0)
   })
 
   test('queries amounts out', async () => {
