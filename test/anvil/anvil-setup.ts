@@ -1,3 +1,5 @@
+import { getNetworkConfig } from '@/lib/config/app.config'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { mainnet, polygon, fantom } from 'viem/chains'
@@ -36,7 +38,7 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
   MAINNET: {
     networkName: 'MAINNET',
     rpcEnv: 'NEXT_ETHEREUM_RPC_URL',
-    fallBackRpc: 'https://cloudflare-eth.com',
+    fallBackRpc: getNetworkConfig(GqlChain.Mainnet).rpcUrl,
     port: ANVIL_PORTS.MAINNET,
     // From time to time this block gets outdated having this kind of error in integration tests:
     // ContractFunctionExecutionError: The contract function "queryJoin" returned no data ("0x").
@@ -46,7 +48,7 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
     networkName: 'POLYGON',
     rpcEnv: 'NEXT_POLYGON_RPC_URL',
     // Public Polygon RPCs are usually unreliable
-    fallBackRpc: 'https://polygon-rpc.com', //TODO: remove as it is not reliable
+    fallBackRpc: getNetworkConfig(GqlChain.Polygon).rpcUrl,
     port: ANVIL_PORTS.POLYGON,
     // Note - this has to be >= highest blockNo used in tests
     forkBlockNumber: 44215395n,
