@@ -74,13 +74,13 @@ export default async function Pools({ searchParams }: Props) {
   })
 
   return (
-    // <PoolListProvider data={poolListData}>
-    <FeaturedPoolsProvider data={featuredPoolsData}>
-      <VStack align="start" spacing="2xl">
-        <FeaturedPools />
-        {/* <PoolList /> */}
-      </VStack>
-    </FeaturedPoolsProvider>
-    // </PoolListProvider>
+    <PoolListProvider data={poolListData}>
+      <FeaturedPoolsProvider data={featuredPoolsData}>
+        <VStack align="start" spacing="2xl">
+          <FeaturedPools />
+          <PoolList />
+        </VStack>
+      </FeaturedPoolsProvider>
+    </PoolListProvider>
   )
 }
