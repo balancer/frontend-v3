@@ -53,7 +53,7 @@ export function _useRemoveLiquidity() {
   const [removeLiquidityTxState, setRemoveLiquidityTxState] = useState<TransactionState>()
 
   const stepConfigs = useRemoveLiquidityStepConfigs(setRemoveLiquidityTxState)
-  const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
+  const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
@@ -188,7 +188,9 @@ export function _useRemoveLiquidity() {
     previewModalDisclosure,
     removeLiquidityTxState,
     handler,
+    stepConfigs,
     currentStep,
+    currentStepIndex,
     isTxConfirmingOrConfirmed,
     didRefetchPool,
     setRemovalType,

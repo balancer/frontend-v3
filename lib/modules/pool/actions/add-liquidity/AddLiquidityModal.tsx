@@ -62,9 +62,9 @@ export function AddLiquidityModal({
     priceImpactQuery,
     tokens,
     addLiquidityTxState,
+    stepConfigs,
     currentStep,
     currentStepIndex,
-    stepConfigs,
     useOnStepCompleted,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
