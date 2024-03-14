@@ -34,20 +34,10 @@ export class NestedProportionalRemoveLiquidityHandler implements RemoveLiquidity
 
   public async simulate({
     humanBptIn,
-    userAddress,
   }: QueryRemoveLiquidityInput): Promise<NestedProportionalQueryRemoveLiquidityOutput> {
     const removeLiquidity = new RemoveLiquidityNested()
 
-    /*
-      The sdk expects a valid userAddress in the nested query signature
-      When the user is not connected we pass zeroAddress to query bptOut without buildingCalldata
-      When the user is connected we pass the real userAddress that will also be used to buildCallData
-      TODO: The sdk team is going to remove userAddress from the nested query signature to simplify this:
-      https://github.com/balancer/b-sdk/issues/209
-     */
-    const userAddressForQuery = userAddress || zeroAddress
-
-    const removeLiquidityInput = this.constructSdkInput(humanBptIn, userAddressForQuery)
+    const removeLiquidityInput = this.constructSdkInput(humanBptIn)
 
     const sdkQueryOutput = await removeLiquidity.query(
       removeLiquidityInput,
@@ -73,9 +63,9 @@ export class NestedProportionalRemoveLiquidityHandler implements RemoveLiquidity
     const { call, to } = removeLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
-      sender: account,
-      recipient: account,
+      accountAddress: account,
       relayerApprovalSignature,
+      wethIsEth: false, // assuming we don't want to use the native asset over the wrapped native asset for now.
     })
 
     return {
@@ -89,12 +79,8 @@ export class NestedProportionalRemoveLiquidityHandler implements RemoveLiquidity
   /**
    * PRIVATE METHODS
    */
-  private constructSdkInput(
-    humanBptIn: HumanAmount,
-    userAddress: Address
-  ): RemoveLiquidityNestedProportionalInput {
+  private constructSdkInput(humanBptIn: HumanAmount): RemoveLiquidityNestedProportionalInput {
     const result: RemoveLiquidityNestedProportionalInput = {
-      accountAddress: userAddress,
       bptAmountIn: parseEther(humanBptIn),
       // Ignore TS error until base chain is added to the SDK setup:
       // https://github.com/balancer/b-sdk/issues/221
@@ -102,7 +88,6 @@ export class NestedProportionalRemoveLiquidityHandler implements RemoveLiquidity
       // @ts-ignore
       chainId: this.helpers.chainId,
       rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
-      useNativeAssetAsWrappedAmountOut: false, // assuming we don't want to withdraw the native asset over the wrapped native asset for now.
     }
 
     return result

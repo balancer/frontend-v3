@@ -28,21 +28,10 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
     return 0
   }
 
-  public async simulate(
-    humanAmountsIn: HumanAmountIn[],
-    userAddress?: Address
-  ): Promise<NestedQueryAddLiquidityOutput> {
+  public async simulate(humanAmountsIn: HumanAmountIn[]): Promise<NestedQueryAddLiquidityOutput> {
     const addLiquidity = new AddLiquidityNested()
 
-    /*
-      The sdk expects a valid userAddress in the nested query signature
-      When the user is not connected we pass zeroAddress to query bptOut without buildingCalldata
-      When the user is connected we pass the real userAddress that will also be used to buildCallData
-      TODO: The sdk team is going to remove userAddress from the nested query signature to simplify this:
-      https://github.com/balancer/b-sdk/issues/209
-     */
-    const userAddressForQuery = userAddress || zeroAddress
-    const addLiquidityInput = this.constructSdkInput(humanAmountsIn, userAddressForQuery)
+    const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
     const sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.nestedPoolState)
 
@@ -60,9 +49,9 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
     const { call, to, value } = addLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
-      sender: account,
-      recipient: account,
+      accountAddress: account,
       relayerApprovalSignature,
+      wethIsEth: false, // assuming we don't want to use the native asset over the wrapped native asset for now.
     })
 
     return {
@@ -77,20 +66,15 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
   /**
    * PRIVATE METHODS
    */
-  private constructSdkInput(
-    humanAmountsIn: HumanAmountIn[],
-    userAddress: Address
-  ): AddLiquidityNestedInput {
+  private constructSdkInput(humanAmountsIn: HumanAmountIn[]): AddLiquidityNestedInput {
     const amountsIn = this.helpers.toInputAmounts(humanAmountsIn)
 
     const nonEmptyAmountsIn = amountsIn.filter(a => a.rawAmount !== 0n)
 
     return {
-      accountAddress: userAddress,
       chainId: this.helpers.chainId as ChainId,
       rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
       amountsIn: nonEmptyAmountsIn,
-      useNativeAssetAsWrappedAmountIn: this.helpers.isNativeAssetIn(humanAmountsIn),
     }
   }
 }

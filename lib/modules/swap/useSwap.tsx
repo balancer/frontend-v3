@@ -17,7 +17,6 @@ import { useSimulateSwapQuery } from './queries/useSimulateSwapQuery'
 import { useTokens } from '../tokens/useTokens'
 import { useDisclosure } from '@chakra-ui/react'
 import { useSwapStepConfigs } from './useSwapStepConfigs'
-import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
 import {
   OSwapAction,
   SdkSimulateSwapResponse,
@@ -33,6 +32,7 @@ import { NativeWrapHandler } from './handlers/NativeWrap.handler'
 import {
   getWrapHandlerClass,
   getWrapType,
+  getWrapperForBaseToken,
   isNativeWrap,
   isSupportedWrap,
   isWrapOrUnwrap,
@@ -74,7 +74,6 @@ function selectSwapHandler(
 
 export function _useSwap() {
   const swapState = useReactiveVar(swapStateVar)
-  const [swapTxState, setSwapTxState] = useState<TransactionState>()
   const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
 
@@ -291,7 +290,7 @@ export function _useSwap() {
     tokenIn: tokenInInfo,
     selectedChain: swapState.selectedChain,
     vaultAddress,
-    setSwapTxState,
+    closeModal: previewModalDisclosure.onClose,
   })
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(swapStepConfigs)
 
@@ -300,11 +299,24 @@ export function _useSwap() {
     swapStateVar(getDefaultTokenState(swapState.selectedChain))
   }, [])
 
+  // When a new simulation is triggered, update the state
   useEffect(() => {
     if (simulationQuery.data) {
       handleSimulationResponse(simulationQuery.data)
     }
   }, [simulationQuery.data])
+
+  // Check if tokenIn is a base wrap token and set tokenOut as the wrapped token.
+  useEffect(() => {
+    const wrapper = getWrapperForBaseToken(swapState.tokenIn.address, swapState.selectedChain)
+    if (wrapper) setTokenOut(wrapper.wrappedToken)
+  }, [swapState.tokenIn.address])
+
+  // Check if tokenOut is a base wrap token and set tokenIn as the wrapped token.
+  useEffect(() => {
+    const wrapper = getWrapperForBaseToken(swapState.tokenOut.address, swapState.selectedChain)
+    if (wrapper) setTokenIn(wrapper.wrappedToken)
+  }, [swapState.tokenOut.address])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
@@ -323,7 +335,6 @@ export function _useSwap() {
     disabledReason,
     previewModalDisclosure,
     handler,
-    swapTxState,
     currentStep,
     currentStepIndex,
     swapStepConfigs,

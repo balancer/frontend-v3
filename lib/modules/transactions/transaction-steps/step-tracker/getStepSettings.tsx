@@ -12,6 +12,7 @@ export type StepProps = {
   index: number
   currentIndex: number
   colorMode: ColorMode
+  isLastStep: boolean
   flowStep?: FlowStep
 }
 
@@ -19,7 +20,14 @@ export type StepProps = {
   Generates an object used to render the UI state of a given step in the context of a multi-step flow
   It handles title, colors, loading states, etc
 */
-export function getStepSettings({ step, currentIndex, index, colorMode, flowStep }: StepProps) {
+export function getStepSettings({
+  step,
+  currentIndex,
+  index,
+  colorMode,
+  flowStep,
+  isLastStep,
+}: StepProps) {
   const isActive = index === currentIndex
 
   const color = getColor(colorMode, getStatus(index), flowStep)
@@ -29,7 +37,7 @@ export function getStepSettings({ step, currentIndex, index, colorMode, flowStep
   function getStatus(index: number): StepStatus {
     if (index < currentIndex) return 'complete'
     // When the last step is complete
-    if (isActive && flowStep?.result.isSuccess) return 'complete'
+    if (isActive && isLastStep && flowStep?.result.isSuccess) return 'complete'
     if (isActive) return 'active'
     return 'incomplete'
   }

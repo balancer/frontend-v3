@@ -6,7 +6,6 @@ import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { HumanAmount } from '@balancer/sdk'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
   Button,
   Card,

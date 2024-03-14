@@ -58,7 +58,6 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
     const addLiquidity = new AddLiquidity()
 
     const { call, to, value } = addLiquidity.buildCall({
-      chainId: this.helpers.chainId,
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
@@ -87,7 +86,6 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
       rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
       bptOut,
       kind: AddLiquidityKind.Proportional,
-      useNativeAssetAsWrappedAmountIn: this.helpers.isNativeAssetIn(humanAmountsIn),
     }
   }
 }
