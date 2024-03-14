@@ -50,3 +50,6 @@ jobs:
         uses: foundry-rs/foundry-toolchain@v1
       - name: Run integration tests
         run: pnpm test:integration
+        env:
+          NEXT_ETHEREUM_RPC_URL: ${{ secrets.ETHEREUM_RPC_URL }}
+          NEXT_POLYGON_RPC_URL: ${{ secrets.POLYGON_RPC_URL }}
