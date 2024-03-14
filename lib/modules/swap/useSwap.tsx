@@ -24,7 +24,12 @@ import { useIterateSteps } from '../transactions/transaction-steps/useIterateSte
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useVault } from '@/lib/shared/hooks/useVault'
 import { NativeWrapHandler } from './handlers/NativeWrap.handler'
-import { getWrapHandlerClass, isNativeWrap, isSupportedWrap } from './wrap.helpers'
+import {
+  getWrapHandlerClass,
+  getWrapperForBaseToken,
+  isNativeWrap,
+  isSupportedWrap,
+} from './wrap.helpers'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -273,11 +278,24 @@ export function _useSwap() {
     swapStateVar(getDefaultTokenState(swapState.selectedChain))
   }, [])
 
+  // When a new simulation is triggered, update the state
   useEffect(() => {
     if (simulationQuery.data) {
       handleSimulationResponse(simulationQuery.data)
     }
   }, [simulationQuery.data])
+
+  // Check if tokenIn is a base wrap token and set tokenOut as the wrapped token.
+  useEffect(() => {
+    const wrapper = getWrapperForBaseToken(swapState.tokenIn.address, swapState.selectedChain)
+    if (wrapper) setTokenOut(wrapper.wrappedToken)
+  }, [swapState.tokenIn.address])
+
+  // Check if tokenOut is a base wrap token and set tokenIn as the wrapped token.
+  useEffect(() => {
+    const wrapper = getWrapperForBaseToken(swapState.tokenOut.address, swapState.selectedChain)
+    if (wrapper) setTokenIn(wrapper.wrappedToken)
+  }, [swapState.tokenOut.address])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
