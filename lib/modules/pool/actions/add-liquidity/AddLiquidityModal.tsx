@@ -78,8 +78,6 @@ export function AddLiquidityModal({
   const priceImpact = priceImpactQuery?.data
   const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
 
-  const modalContentStyles = getStylesForModalContentWithStepTracker(isDesktop)
-
   return (
     <Modal
       isOpen={isOpen}
@@ -90,7 +88,7 @@ export function AddLiquidityModal({
       {...rest}
     >
       <ModalOverlay />
-      <ModalContent {...modalContentStyles}>
+      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && (
           <DesktopStepTracker currentStepIndex={currentStepIndex} stepConfigs={stepConfigs} />
         )}

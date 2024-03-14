@@ -54,8 +54,6 @@ export function SwapPreviewModal({
     swapTxState,
   } = useSwap()
 
-  const modalContentStyles = getStylesForModalContentWithStepTracker(isDesktop)
-
   return (
     <Modal
       isOpen={isOpen}
@@ -66,7 +64,7 @@ export function SwapPreviewModal({
       {...rest}
     >
       <ModalOverlay />
-      <ModalContent {...modalContentStyles}>
+      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && (
           <DesktopStepTracker currentStepIndex={currentStepIndex} stepConfigs={swapStepConfigs} />
         )}
