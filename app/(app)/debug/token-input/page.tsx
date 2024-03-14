@@ -9,6 +9,7 @@ import { TokenSelectModal } from '@/lib/modules/tokens/TokenSelectModal/TokenSel
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { daiAddress } from '@/lib/debug-helpers'
+import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInputsValidation'
 
 export default function TokenInputPage() {
   const [currentValue, setCurrentValue] = useState('')
@@ -23,37 +24,39 @@ export default function TokenInputPage() {
   }
 
   return (
-    <TokenBalancesProvider tokens={tokens}>
-      <VStack width="sm" align="start" p="md">
-        <Heading>Token Input</Heading>
-        <Text>Current value: {currentValue}</Text>
-        <ConnectWallet />
-        <Card p="md" variant="level2" shadow="2xl">
-          <VStack spacing="md" w="full">
-            <TokenInput
-              address={token?.address}
-              chain={token?.chain}
-              value={currentValue}
-              onChange={e => setCurrentValue(e.currentTarget.value)}
-              toggleTokenSelect={() => {
-                tokenSelectDisclosure.onOpen()
-              }}
-            />
-            <Button variant="primary" w="full">
-              Submit
-            </Button>
-          </VStack>
-        </Card>
+    <TokenInputsValidationProvider>
+      <TokenBalancesProvider tokens={tokens}>
+        <VStack width="sm" align="start" p="md">
+          <Heading>Token Input</Heading>
+          <Text>Current value: {currentValue}</Text>
+          <ConnectWallet />
+          <Card p="md" variant="level2" shadow="2xl">
+            <VStack spacing="md" w="full">
+              <TokenInput
+                address={token?.address}
+                chain={token?.chain}
+                value={currentValue}
+                onChange={e => setCurrentValue(e.currentTarget.value)}
+                toggleTokenSelect={() => {
+                  tokenSelectDisclosure.onOpen()
+                }}
+              />
+              <Button variant="primary" w="full">
+                Submit
+              </Button>
+            </VStack>
+          </Card>
 
-        <TokenSelectModal
-          tokens={tokens}
-          chain={GqlChain.Mainnet}
-          isOpen={tokenSelectDisclosure.isOpen}
-          onOpen={tokenSelectDisclosure.onOpen}
-          onClose={tokenSelectDisclosure.onClose}
-          onTokenSelect={handleTokenSelect}
-        />
-      </VStack>
-    </TokenBalancesProvider>
+          <TokenSelectModal
+            tokens={tokens}
+            chain={GqlChain.Mainnet}
+            isOpen={tokenSelectDisclosure.isOpen}
+            onOpen={tokenSelectDisclosure.onOpen}
+            onClose={tokenSelectDisclosure.onClose}
+            onTokenSelect={handleTokenSelect}
+          />
+        </VStack>
+      </TokenBalancesProvider>
+    </TokenInputsValidationProvider>
   )
 }
