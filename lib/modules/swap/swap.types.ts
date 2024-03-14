@@ -49,3 +49,12 @@ export interface BuildSwapInputs extends SwapState {
 export interface SdkBuildSwapInputs extends BuildSwapInputs {
   simulateResponse: SdkSimulateSwapResponse
 }
+
+export enum SupportedWrapHandler {
+  LIDO = 'LIDO',
+}
+
+export enum WrapType {
+  WRAP = 'wrap',
+  UNWRAP = 'unwrap',
+}
