@@ -78,8 +78,6 @@ export function AddLiquidityModal({
   const priceImpact = priceImpactQuery?.data
   const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
 
-  const modalStyles: ModalContentProps = isDesktop ? { left: '-100px', position: 'relative' } : {}
-
   return (
     <Modal
       isOpen={isOpen}
