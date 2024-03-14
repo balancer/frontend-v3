@@ -7,24 +7,25 @@ import { ApolloGlobalDataProvider } from '@/lib/shared/services/api/apollo-globa
 import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
 import { COOKIE_KEYS } from '@/lib/modules/cookies/cookie.constants'
 import { ReactQueryClientProvider } from './react-query.provider'
+import { cookies } from 'next/headers'
 
 export function Providers({ children }: { children: ReactNode }) {
-  /*const initialColorMode = cookies().get(COOKIE_KEYS.UserSettings.ColorMode)?.value
+  const initialColorMode = cookies().get(COOKIE_KEYS.UserSettings.ColorMode)?.value
   const initCurrency = cookies().get(COOKIE_KEYS.UserSettings.Currency)?.value
   const initSlippage = cookies().get(COOKIE_KEYS.UserSettings.Slippage)?.value
   const initEnableSignatures = cookies().get(COOKIE_KEYS.UserSettings.EnableSignatures)?.value
-  const initPoolListView = cookies().get(COOKIE_KEYS.UserSettings.PoolListView)?.value*/
+  const initPoolListView = cookies().get(COOKIE_KEYS.UserSettings.PoolListView)?.value
 
   return (
-    <ThemeProvider initialColorMode={'light'}>
+    <ThemeProvider initialColorMode={initialColorMode as 'light' | 'dark' | 'system'}>
       <Web3Provider>
         <ApolloClientProvider>
           <ApolloGlobalDataProvider>
             <UserSettingsProvider
-              initCurrency={undefined}
-              initSlippage={undefined}
-              initEnableSignatures={undefined}
-              initPoolListView={undefined}
+              initCurrency={initCurrency}
+              initSlippage={initSlippage}
+              initEnableSignatures={initEnableSignatures}
+              initPoolListView={initPoolListView}
             >
               <RecentTransactionsProvider>
                 <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
