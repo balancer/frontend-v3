@@ -2,15 +2,13 @@
 import { HStack, Text } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
-import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
+import { TransactionState, swapStepId } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useSwap } from './useSwap'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
+import { useCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
 
-type Props = {
-  swapTxState?: TransactionState
-}
-
-function useSwapTimeout({ swapTxState }: Props) {
+function useSwapTimeout() {
+  const { getCoreTransactionState } = useCurrentFlowStep()
   // This countdown needs to be nested here and not at a higher level, like in
   // useAddLiquidity, because otherwise it causes re-renders of the entire
   // add-liquidity flow component tree every second.
@@ -21,6 +19,7 @@ function useSwapTimeout({ swapTxState }: Props) {
 
   const { simulationQuery, previewModalDisclosure } = useSwap()
 
+  const swapTxState = getCoreTransactionState(swapStepId)
   const isConfirmingSwap = swapTxState === TransactionState.Confirming
   const isAwaitingUserConfirmation = swapTxState === TransactionState.Loading
   const isComplete = swapTxState === TransactionState.Completed
@@ -70,8 +69,8 @@ function useSwapTimeout({ swapTxState }: Props) {
   return { secondsToRefetch, shouldFreezeQuote }
 }
 
-export function SwapTimeout(props: Props) {
-  const { secondsToRefetch, shouldFreezeQuote } = useSwapTimeout(props)
+export function SwapTimeout() {
+  const { secondsToRefetch, shouldFreezeQuote } = useSwapTimeout()
 
   return (
     !shouldFreezeQuote && (
