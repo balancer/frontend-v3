@@ -35,7 +35,7 @@ const ANVIL_PORTS: Record<NetworksWithFork, number> = {
 export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
   MAINNET: {
     networkName: 'MAINNET',
-    rpcEnv: 'ETHEREUM_RPC_URL',
+    rpcEnv: 'NEXT_ETHEREUM_RPC_URL',
     fallBackRpc: 'https://cloudflare-eth.com',
     port: ANVIL_PORTS.MAINNET,
     // From time to time this block gets outdated having this kind of error in integration tests:
@@ -53,7 +53,7 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
   },
   FANTOM: {
     networkName: 'FANTOM',
-    rpcEnv: 'FANTOM_RPC_URL',
+    rpcEnv: 'NEXT_FANTOM_RPC_URL',
     // Public Fantom RPCs are usually unreliable
     fallBackRpc: undefined,
     port: ANVIL_PORTS.FANTOM,
