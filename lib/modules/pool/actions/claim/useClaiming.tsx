@@ -4,7 +4,7 @@
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
-import { useIterateSteps } from '../useIterateSteps'
+import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 import { useClaimStepConfigs } from './useClaimStepConfigs'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { useBalTokenRewards } from '@/lib/modules/portfolio/useBalRewards'

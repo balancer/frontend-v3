@@ -31,7 +31,6 @@ export function _usePool({
   chain,
   initialData,
 }: FetchPoolProps & { initialData: GetPoolQuery }) {
-  const config = getNetworkConfig(chain)
   const { userAddress } = useUserAccount()
 
   const { data } = useQuery(GetPoolDocument, {

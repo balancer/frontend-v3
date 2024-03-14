@@ -4,6 +4,7 @@ import { ThemeProvider } from '@/lib/shared/services/chakra/ThemeProvider'
 import { ReactNode } from 'react'
 import { cookies } from 'next/headers'
 import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
+import { CurrentFlowStepProvider } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 import { ApolloGlobalDataProvider } from '@/lib/shared/services/api/apollo-global-data.provider'
 import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
 import { COOKIE_KEYS } from '@/lib/modules/cookies/cookie.constants'
@@ -27,9 +28,11 @@ export function Providers({ children }: { children: ReactNode }) {
               initEnableSignatures={initEnableSignatures}
               initPoolListView={initPoolListView}
             >
-              <RecentTransactionsProvider>
-                <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
-              </RecentTransactionsProvider>
+              <CurrentFlowStepProvider>
+                <RecentTransactionsProvider>
+                  <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+                </RecentTransactionsProvider>
+              </CurrentFlowStepProvider>
             </UserSettingsProvider>
           </ApolloGlobalDataProvider>
         </ApolloClientProvider>

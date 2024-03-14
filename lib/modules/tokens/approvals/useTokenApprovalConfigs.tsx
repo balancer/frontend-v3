@@ -1,14 +1,19 @@
-import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
+import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
-import { CommonStepProps, OnStepCompleted, StepConfig } from '../../pool/actions/useIterateSteps'
+import {
+  CommonStepProps,
+  OnStepCompleted,
+  StepConfig,
+} from '../../transactions/transaction-steps/useIterateSteps'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { useTokens } from '../useTokens'
 import { ApprovalAction } from './approval-labels'
 import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
 import { ApproveTokenProps, useConstructApproveTokenStep } from './useConstructApproveTokenStep'
-import { getChainId } from '@/lib/config/app.config'
+import { getChainId, getNativeAssetAddress, getNetworkConfig } from '@/lib/config/app.config'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 
 type Props = ApproveTokenProps & CommonStepProps
 
@@ -37,8 +42,11 @@ export function useTokenApprovalConfigs({
 }: Params): StepConfig[] {
   const { userAddress } = useUserAccount()
   const { getToken } = useTokens()
+  const nativeAssetAddress = getNativeAssetAddress(chain)
 
-  const _approvalAmounts = approvalAmounts.filter(amount => amount.rawAmount > 0)
+  const _approvalAmounts = approvalAmounts
+    .filter(amount => amount.rawAmount > 0)
+    .filter(amount => !isSameAddress(amount.address, nativeAssetAddress))
 
   const approvalTokenAddresses = _approvalAmounts.map(amount => amount.address)
 

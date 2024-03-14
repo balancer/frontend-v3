@@ -18,7 +18,7 @@ export function NetworkClaimBlock({
   const { toCurrency } = useCurrency()
 
   return (
-    <Card variant="level2" p="md" shadow="xl" flex="1">
+    <Card variant="level1" p="md" shadow="xl" flex="1">
       <Flex justifyContent="space-between" alignItems="center">
         <HStack>
           <NetworkIcon chain={chain} size={14} />

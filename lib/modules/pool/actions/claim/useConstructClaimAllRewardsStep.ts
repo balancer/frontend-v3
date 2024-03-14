@@ -1,4 +1,4 @@
-import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useUserAccount } from '../../../web3/useUserAccount'
 import { useManagedTransaction } from '../../../web3/contracts/useManagedTransaction'
 import { useClaimCallDataQuery } from './useClaimCallDataQuery'
@@ -10,6 +10,7 @@ import { useEffect } from 'react'
 import { getChainId } from '@/lib/config/app.config'
 import { PoolListItem } from '../../pool.types'
 import { getAllGaugesAddressesFromPool } from '@/lib/modules/portfolio/usePortfolio'
+import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 export function useConstructClaimAllRewardsStep(pools: PoolListItem[]) {
   const { isConnected } = useUserAccount()
@@ -50,13 +51,13 @@ export function useConstructClaimAllRewardsStep(pools: PoolListItem[]) {
     }
   )
 
-  const claimAllRewardsStep: FlowStep = {
+  const claimAllRewardsStep = useSyncCurrentFlowStep({
     ...claimAllRewardsTransaction,
     transactionLabels,
     id: 'claimAllRewards',
     stepType: 'claim',
     isComplete: () => isConnected && claimAllRewardsStep.result.isSuccess,
-  }
+  })
 
   useEffect(() => {
     if (claimAllRewardsTransaction.result.isSuccess) {

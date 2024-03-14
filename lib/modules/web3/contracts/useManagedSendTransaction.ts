@@ -1,10 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
-import {
-  ManagedResult,
-  TransactionLabels,
-} from '@/lib/shared/components/btns/transaction-steps/lib'
+import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useEffect } from 'react'
 import { usePrepareSendTransaction, useSendTransaction, useWaitForTransaction } from 'wagmi'
 import {

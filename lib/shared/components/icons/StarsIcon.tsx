@@ -1,4 +1,4 @@
-import { IconProps, useTheme } from '@chakra-ui/react'
+import { useTheme } from '@chakra-ui/react'
 import { SVGProps } from 'react'
 
 interface Props extends SVGProps<SVGSVGElement> {

@@ -27,6 +27,15 @@ export function indexOfAddress(addresses: string[], address: string): number {
   return addresses.indexOf(address.toLowerCase())
 }
 
+function containsAll(addresses1: string[], addresses2: string[]) {
+  return addresses2.every(address2 =>
+    addresses1.map(address1 => address1.toLowerCase()).includes(address2.toLowerCase())
+  )
+}
+
+export const sameAddresses = (addresses1: string[], addresses2: string[]) =>
+  containsAll(addresses1, addresses2) && containsAll(addresses2, addresses1)
+
 /**
  * Select an Address when it's unknown what format the addresses are in.
  *

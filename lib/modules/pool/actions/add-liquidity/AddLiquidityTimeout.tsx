@@ -3,14 +3,11 @@ import { HStack, Text, Tooltip } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
 import { useAddLiquidity } from './useAddLiquidity'
-import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { addLiquidityStepId } from '@/lib/modules/transactions/transaction-steps/lib'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { useShouldFreezeQuote } from '@/lib/modules/transactions/transaction-steps/useShouldFreezeQuote'
 
-type Props = {
-  addLiquidityTxState?: TransactionState
-}
-
-function useAddLiquidityTimeout({ addLiquidityTxState }: Props) {
+function useAddLiquidityTimeout() {
   // This countdown needs to be nested here and not at a higher level, like in
   // useAddLiquidity, because otherwise it causes re-renders of the entire
   // add-liquidity flow component tree every second.
@@ -21,14 +18,10 @@ function useAddLiquidityTimeout({ addLiquidityTxState }: Props) {
 
   const { previewModalDisclosure, refetchQuote } = useAddLiquidity()
 
-  const isConfirmingAddLiquidity = addLiquidityTxState === TransactionState.Confirming
-  const isAwaitingUserConfirmation = addLiquidityTxState === TransactionState.Loading
-  const isComplete = addLiquidityTxState === TransactionState.Completed
-
   // Disable query refetches:
   // if the flow is complete
   // if the add liquidity transaction is confirming
-  const shouldFreezeQuote = isComplete || isConfirmingAddLiquidity || isAwaitingUserConfirmation
+  const { shouldFreezeQuote } = useShouldFreezeQuote(addLiquidityStepId)
 
   // When the countdown timer reaches 0, refetch all add liquidity queries.
   useEffect(() => {
@@ -63,8 +56,8 @@ function useAddLiquidityTimeout({ addLiquidityTxState }: Props) {
   return { secondsToRefetch, shouldFreezeQuote }
 }
 
-export function AddLiquidityTimeout(props: Props) {
-  const { secondsToRefetch, shouldFreezeQuote } = useAddLiquidityTimeout(props)
+export function AddLiquidityTimeout() {
+  const { secondsToRefetch, shouldFreezeQuote } = useAddLiquidityTimeout()
 
   return (
     !shouldFreezeQuote && (

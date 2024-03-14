@@ -1,11 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import {
+  TransactionLabels,
+  addLiquidityStepId,
+} from '@/lib/modules/transactions/transaction-steps/lib'
 import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 import { useEffect } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
-import { useUpdateCurrentFlowStep } from '../../../../shared/components/btns/transaction-steps/useCurrentFlowStep'
 import { usePool } from '../../usePool'
+import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 export function useConstructAddLiquidityStep() {
   const { chainId } = usePool()
@@ -35,18 +38,15 @@ export function useConstructAddLiquidityStep() {
 
   const isComplete = () => addLiquidityTransaction.result.isSuccess
 
-  const addLiquidityStep: FlowStep = {
+  const addLiquidityStep = useSyncCurrentFlowStep({
     ...addLiquidityTransaction,
     transactionLabels,
-    id: `addLiquidityPool`,
+    id: addLiquidityStepId,
     stepType: 'addLiquidity',
     isComplete,
-  }
-
-  useUpdateCurrentFlowStep(addLiquidityStep)
+  })
 
   return {
     addLiquidityStep,
-    addLiquidityTransaction,
   }
 }

@@ -16,6 +16,7 @@ import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
 import { BPT_DECIMALS } from '../pool.constants'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { bn } from '@/lib/shared/utils/numbers'
+import { hasNestedPools } from '../pool.helpers'
 
 const TABS = [
   {
@@ -113,6 +114,11 @@ export default function PoolMyLiquidity() {
   const hasUnstakedBalance = bn(pool.userBalance?.walletBalance || '0').gt(0)
   const hasStakedBalance = bn(pool.userBalance?.stakedBalance || '0').gt(0)
 
+  const displayTokens = hasNestedPools(pool)
+    ? // we don't have the balances for pool.displayTokens for v2 boosted pools so we show bpt tokens balance as a workaround
+      pool.tokens
+    : pool.displayTokens
+
   return (
     <Card variant="gradient" width="full" minHeight="320px">
       <VStack spacing="0" width="full">
@@ -123,9 +129,9 @@ export default function PoolMyLiquidity() {
           <ButtonGroup currentOption={activeTab} options={TABS} onChange={handleTabChanged} />
         </HStack>
         <Box width="full" p="4" pt="0">
-          <Card borderWidth={1} variant="level5" shadow="none">
+          <Card borderWidth={1} variant="level3" shadow="none">
             <VStack width="full">
-              <Box width="full" borderBottomWidth={1} borderColor="borderColor">
+              <Box width="full" borderBottomWidth={1} borderColor="border.base">
                 <HStack py="4" px="4" width="full" justifyContent="space-between">
                   <VStack spacing="1" alignItems="flex-start">
                     <Heading fontWeight="bold" size="h6">
@@ -150,8 +156,7 @@ export default function PoolMyLiquidity() {
                 </HStack>
               </Box>
               <VStack spacing="4" p="4" py="2" pb="4" width="full">
-                {/* TODO: Use tokens instead of display tokens to show pool token balances in old boosted pools*/}
-                {pool.displayTokens.map(token => {
+                {displayTokens.map(token => {
                   return (
                     <TokenRow
                       chain={chain}

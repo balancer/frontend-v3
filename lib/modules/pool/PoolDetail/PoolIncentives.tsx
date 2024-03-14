@@ -53,9 +53,9 @@ export default function PoolIncentives() {
           <ButtonGroup currentOption={activeTab} options={TABS} onChange={handleTabChanged} />
         </HStack>
         <Box width="full" p="4" pt="0">
-          <Card borderWidth={1} variant="level5" shadow="none">
+          <Card borderWidth={1} variant="level3" shadow="none">
             <VStack width="full">
-              <Box width="full" borderBottomWidth={1} borderColor="borderColor">
+              <Box width="full" borderBottomWidth={1} borderColor="border.base">
                 <HStack py="4" px="4" width="full" justifyContent="space-between">
                   <VStack spacing="1" alignItems="flex-start">
                     <Heading fontWeight="bold" size="h6">

@@ -1,14 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { getChainId } from '@/lib/config/app.config'
 import { useManagedErc20Transaction } from '@/lib/modules/web3/contracts/useManagedErc20Transaction'
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useEffect, useState } from 'react'
 import { Address } from 'viem'
-import { useUpdateCurrentFlowStep } from '../../../shared/components/btns/transaction-steps/useCurrentFlowStep'
 import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
 import { TokenAmountToApprove } from './approval-rules'
+import { useSyncCurrentFlowStep } from '../../transactions/transaction-steps/useCurrentFlowStep'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse
@@ -55,15 +54,13 @@ export function useConstructApproveTokenStep({
    */
   const isComplete = didRefetchAllowances && allowanceFor(tokenAddress) >= requiredRawAmount
 
-  const step: FlowStep = {
+  const step = useSyncCurrentFlowStep({
     ...approvalTransaction,
     transactionLabels: tokenApprovalLabels,
     id: tokenAddress,
     stepType: 'tokenApproval',
     isComplete: () => isComplete,
-  }
-
-  useUpdateCurrentFlowStep(step)
+  })
 
   useEffect(() => {
     // refetch allowances after the approval transaction was executed

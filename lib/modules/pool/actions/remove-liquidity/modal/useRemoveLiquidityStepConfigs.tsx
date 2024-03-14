@@ -1,14 +1,11 @@
 import { getApproveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
-import { TransactionState } from '@/lib/shared/components/btns/transaction-steps/lib'
 import { RemoveLiquidityButton } from '../RemoveLiquidityButton'
-import { StepConfig } from '../../useIterateSteps'
+import { StepConfig } from '../../../../transactions/transaction-steps/useIterateSteps'
 import { usePool } from '../../../usePool'
 import { shouldUseRecoveryRemoveLiquidity } from '../../LiquidityActionHelpers'
 
-export function useRemoveLiquidityStepConfigs(
-  setRemoveLiquidityTxState: (transactionState: TransactionState) => void
-) {
+export function useRemoveLiquidityStepConfigs() {
   const relayerMode = useRelayerMode()
   const { chainId, pool } = usePool()
 
@@ -16,7 +13,7 @@ export function useRemoveLiquidityStepConfigs(
     {
       title: 'Remove liquidity',
       render() {
-        return <RemoveLiquidityButton onTransactionStateUpdate={setRemoveLiquidityTxState} />
+        return <RemoveLiquidityButton />
       },
     },
   ]
