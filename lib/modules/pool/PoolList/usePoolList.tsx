@@ -47,18 +47,18 @@ export const PoolListContext = createContext<ReturnType<typeof _usePoolList> | n
 
 export function PoolListProvider({
   children,
-  data,
-  variables,
-}: {
+}: //data,
+//variables,
+{
   children: ReactNode
-  data: GetPoolsQuery
-  variables: GetPoolsQueryVariables
+  //data: GetPoolsQuery
+  //variables: GetPoolsQueryVariables
 }) {
-  useSeedApolloCache({
+  /*useSeedApolloCache({
     query: GetPoolsDocument,
     data: data,
     variables,
-  })
+  })*/
 
   const hook = _usePoolList()
   return <PoolListContext.Provider value={hook}>{children}</PoolListContext.Provider>
