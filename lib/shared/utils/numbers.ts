@@ -123,6 +123,7 @@ type NumberFormat =
   | 'priceImpact'
   | 'percentage'
   | 'slippage'
+  | 'sharePercent'
 
 // General number formatting function.
 export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): string {
@@ -136,6 +137,7 @@ export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): s
     case 'apr':
       return aprFormat(val)
     case 'feePercent':
+    case 'sharePercent':
       return feePercentFormat(val)
     case 'weight':
       return weightFormat(val)

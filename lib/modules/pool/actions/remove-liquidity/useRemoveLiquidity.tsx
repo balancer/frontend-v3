@@ -33,7 +33,7 @@ export function _useRemoveLiquidity() {
   const { pool, bptPrice, refetch: refetchPoolUserBalances } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected } = useUserAccount()
-
+  const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const previewModalDisclosure = useDisclosure()
 
   const [removalType, setRemovalType] = useState<RemoveLiquidityType>(
@@ -60,7 +60,8 @@ export function _useRemoveLiquidity() {
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
-    [Number(humanBptIn) === 0, 'You must specify a valid bpt in']
+    [Number(humanBptIn) === 0, 'You must specify a valid bpt in'],
+    [needsToAcceptHighPI, 'Accept high price impact first']
   )
 
   const handler = useMemo(
@@ -136,7 +137,7 @@ export function _useRemoveLiquidity() {
     return usdOut ? usdOut : '0'
   }
 
-  const totalUsdValue: string = safeSum(Object.values(usdAmountOutMap))
+  const totalUSDValue: string = safeSum(Object.values(usdAmountOutMap))
 
   function updateQuoteState(
     bptIn: HumanAmount,
@@ -185,7 +186,7 @@ export function _useRemoveLiquidity() {
     totalUsdFromBprPrice,
     isSingleToken,
     isProportional,
-    totalUsdValue,
+    totalUSDValue,
     simulationQuery,
     priceImpactQuery,
     isDisabled,
@@ -205,6 +206,7 @@ export function _useRemoveLiquidity() {
     amountOutForToken,
     usdOutForToken,
     useOnStepCompleted,
+    setNeedsToAcceptHighPI,
   }
 }
 
