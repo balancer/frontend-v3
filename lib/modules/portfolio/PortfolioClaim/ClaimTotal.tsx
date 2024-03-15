@@ -4,7 +4,7 @@ type Props = {
   total: string
 }
 
-export function ClaimReviewTotal({ total }: Props) {
+export function ClaimTotal({ total }: Props) {
   return (
     <Card
       flexDirection="row"

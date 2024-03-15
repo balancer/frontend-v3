@@ -8,17 +8,19 @@ interface Props extends CardProps {
   title: string
 }
 
-export function ClaimReviewLayout({ backLink, children, title, ...rest }: Props) {
+export function ClaimPoolLayout({ backLink, children, title, ...rest }: Props) {
   return (
     <Stack alignItems="center">
       <Card
-        variant="level2"
+        variant="level1"
         p="md"
         shadow="xl"
         flex="1"
         width="100%"
         minWidth={['320px', '320px', '600px']}
         maxWidth="600px"
+        border="1px solid"
+        borderColor="input.borderDefault"
         {...rest}
       >
         <Link href={backLink}>

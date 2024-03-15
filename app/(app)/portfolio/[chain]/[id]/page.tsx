@@ -1,6 +1,6 @@
 'use client'
-import { ClaimReviewLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimReviewLayout'
-import { ClaimReviewTotal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimReviewTotal'
+import { ClaimPoolLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimPoolLayout'
+import { ClaimTotal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimTotal'
 import { useClaimStepConfigs } from '@/lib/modules/pool/actions/claim/useClaimStepConfigs'
 
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
@@ -53,16 +53,16 @@ function PoolClaim({ pool }: { pool: PoolListItem }) {
   const hasNoRewards = !nonBalRewards?.length && !balRewards
 
   return (
-    <ClaimReviewLayout backLink={`/portfolio/${chain}`} title={`Review claim: ${chain}`} gap={4}>
-      <Card variant="level4" gap={4} p="md" shadow="xl" flex="1" width="100%">
-        <Text>You`ll get</Text>
+    <ClaimPoolLayout backLink={`/portfolio/${chain}`} title={`Review claim: ${chain}`} gap={4}>
+      <Card variant="level2" gap={4} p="md" shadow="xl" flex="1" width="100%">
+        <Text fontWeight="700">You`ll get</Text>
         {balRewards && <RewardTokenRow reward={balRewards} />}
 
         {nonBalRewards &&
           nonBalRewards.map((reward, idx) => <RewardTokenRow key={idx} reward={reward} />)}
       </Card>
 
-      <ClaimReviewTotal
+      <ClaimTotal
         total={toCurrency(poolRewardsMap[pool.id]?.totalFiatClaimBalance?.toNumber() || 0)}
       />
 
@@ -81,7 +81,7 @@ function PoolClaim({ pool }: { pool: PoolListItem }) {
           currentStep.render(useOnStepCompleted)
         )}
       </VStack>
-    </ClaimReviewLayout>
+    </ClaimPoolLayout>
   )
 }
 

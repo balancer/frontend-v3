@@ -13,14 +13,14 @@ export function PoolName({ pool, ...rest }: { pool: PoolListItem | Pool } & Text
   // }
 
   return (
-    <Text {...rest}>
+    <Text display="flex" {...rest}>
       {displayTokens.map((token, idx) => {
         return (
-          <span key={token.address}>
+          <Text as="span" key={token.address}>
             {token.nestedTokens ? token.name : token.symbol}
             {token.weight && ` ${fNum('weight', token.weight || '')}`}
             {idx <= displayTokens.length - 2 && ' / '}
-          </span>
+          </Text>
         )
       })}
     </Text>

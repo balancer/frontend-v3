@@ -11,23 +11,27 @@ interface Props extends CardProps {
 export function ClaimNetworkLayout({ backLink, children, title, ...rest }: Props) {
   return (
     <Stack alignItems="center">
-      <Stack>
+      <Stack gap={8}>
         <Link href={backLink}>
           <HStack>
-            <ArrowLeft size={24} />
+            <ArrowLeft size={20} />
 
-            <Heading variant="special">{title}</Heading>
+            <Heading variant="special" size="lg">
+              {title}
+            </Heading>
           </HStack>
         </Link>
 
         <Card
-          variant="level2"
+          variant="level1"
           p="md"
           shadow="xl"
           flex="1"
           width="100%"
           minWidth={['320px', '320px', '600px']}
           maxWidth="600px"
+          border="1px solid"
+          borderColor="input.borderDefault"
           {...rest}
         >
           {children}

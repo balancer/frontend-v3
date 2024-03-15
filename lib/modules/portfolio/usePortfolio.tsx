@@ -54,6 +54,15 @@ function _usePortfolio() {
   })
 
   const portfolioData = useMemo(() => {
+    if (!isConnected || !userAddress) {
+      return {
+        pools: [],
+        stakedPools: [],
+        unstakedPools: [],
+        userTotalBalance: bn(0),
+      }
+    }
+
     const stakedPools: PoolListItem[] = []
     const unstakedPools: PoolListItem[] = []
     let userTotalBalance = bn(0)
@@ -80,7 +89,7 @@ function _usePortfolio() {
       unstakedPools,
       userTotalBalance,
     }
-  }, [data?.pools])
+  }, [data?.pools, isConnected, userAddress])
 
   // Bal token rewards
   const { balRewardsData, isLoadingBalRewards } = useBalTokenRewards(
@@ -151,7 +160,7 @@ function _usePortfolio() {
 
   const protocolRewardsBalance = useMemo(() => {
     return protocolRewardsData.reduce((acc, reward) => {
-      acc = acc.plus(formatUnits(reward.balance, 18))
+      acc = acc.plus(reward.fiatBalance)
       return acc
     }, bn(0))
   }, [protocolRewardsData])

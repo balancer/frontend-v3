@@ -8,6 +8,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 export function PortfolioNetworkClaim() {
   const { poolsByChainMap, protocolRewardsBalance, totalFiatClaimableBalanceByChain } =
     usePortfolio()
+
   const { isConnected } = useUserAccount()
 
   if (!isConnected) {

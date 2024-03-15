@@ -17,47 +17,42 @@ import { capitalize } from 'lodash'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
-type NetworkClaimLoaderProps = {
-  children(pools: PoolListItem[]): React.ReactNode
+function NetworkClaimAllButton({ pools }: { pools: PoolListItem[] }) {
+  const stepConfigs = useClaimStepConfigs(pools)
+  const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
+
+  return <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
 }
 
-function NetworkClaimLoader({ children }: NetworkClaimLoaderProps) {
-  const { chain } = useParams()
-  const { poolsByChainMap } = usePortfolio()
-  const gqlChain = slugToChainMap[chain as ChainSlug]
-  const pools = poolsByChainMap[gqlChain]
-
-  if (!pools) return <Text>Loading...</Text>
-
-  return <>{children(pools)}</>
-}
-
-function NetworkClaim({ pools }: { pools: PoolListItem[] }) {
+export default function NetworkClaim() {
   const { toCurrency } = useCurrency()
   const { chain } = useParams()
-  const { poolRewardsMap, totalFiatClaimableBalanceByChain } = usePortfolio()
 
+  const { poolsByChainMap } = usePortfolio()
   const gqlChain = slugToChainMap[chain as ChainSlug]
+
+  const pools = poolsByChainMap[gqlChain]
+  const { poolRewardsMap, totalFiatClaimableBalanceByChain, isLoadingPortfolio } = usePortfolio()
 
   const chainName = capitalize(chain as string)
   const claimableFiatBalance = totalFiatClaimableBalanceByChain[gqlChain]
 
-  const stepConfigs = useClaimStepConfigs(pools)
-  const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
   return (
     <ClaimNetworkLayout backLink={'/portfolio'} title="Portfolio">
       <HStack
-        py="3"
+        pb="3"
         justifyContent="space-between"
         borderBottom="1px"
         borderColor="input.borderDefault"
       >
-        <HStack>
-          <NetworkIcon chain={gqlChain} size={14} />
+        <HStack gap={4}>
+          <NetworkIcon chain={gqlChain} size={12} />
 
-          <Stack>
+          <Stack gap={0}>
             <Heading size="md">{chainName}</Heading>
-            <Text>Liquidity incentives</Text>
+            <Text variant="secondary" fontWeight="700">
+              Liquidity incentives
+            </Text>
           </Stack>
         </HStack>
 
@@ -66,15 +61,25 @@ function NetworkClaim({ pools }: { pools: PoolListItem[] }) {
         </Heading>
       </HStack>
 
-      <Stack p="4">
+      <Stack py="4">
         {pools?.map(pool => (
-          <Card variant="level4" gap={4} key={pool.id} p="md" shadow="xl" flex="1" width="100%">
+          <Card
+            variant="level4"
+            gap={4}
+            key={pool.id}
+            p="md"
+            shadow="xl"
+            flex="1"
+            width="100%"
+            border="1px solid"
+            borderColor="border.base"
+          >
             <HStack justifyContent="space-between">
               <HStack>
                 <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} size={24} />
               </HStack>
 
-              <Text>
+              <Text fontWeight="700">
                 {toCurrency(poolRewardsMap[pool.id]?.totalFiatClaimBalance?.toNumber() || 0)}
               </Text>
             </HStack>
@@ -99,11 +104,7 @@ function NetworkClaim({ pools }: { pools: PoolListItem[] }) {
         ))}
       </Stack>
 
-      <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
+      {pools && pools.length > 0 && <NetworkClaimAllButton pools={pools} />}
     </ClaimNetworkLayout>
   )
-}
-
-export default function NetworkClaimPage() {
-  return <NetworkClaimLoader>{pools => <NetworkClaim pools={pools} />}</NetworkClaimLoader>
 }

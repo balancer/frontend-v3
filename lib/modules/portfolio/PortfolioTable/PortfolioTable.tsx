@@ -4,7 +4,7 @@ import { PortfolioTableHeader } from './PortfolioTableHeader'
 import { PoolListItem } from '../../pool/pool.types'
 import { PortfolioTableRow } from './PortfolioTableRow'
 import { HStack, Heading, Stack } from '@chakra-ui/react'
-import { useState } from 'react';
+import { useState } from 'react'
 
 export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr' | 'type'
 export interface PortfolioSortingData {

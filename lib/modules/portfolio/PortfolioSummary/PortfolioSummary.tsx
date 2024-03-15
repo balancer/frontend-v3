@@ -3,14 +3,12 @@ import { usePortfolio } from '../usePortfolio'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { BarChart } from 'react-feather'
-import { useUserAccount } from '../../web3/useUserAccount'
 
 export function PortfolioSummary() {
-  const { portfolioData, totalFiatClaimableBalance } = usePortfolio()
+  const { portfolioData, totalFiatClaimableBalance, protocolRewardsBalance } = usePortfolio()
   const { toCurrency } = useCurrency()
-  const { isConnected } = useUserAccount()
-  const totalBalance = isConnected ? portfolioData?.userTotalBalance?.toNumber() || 0 : 0
-  const totalClaimableBalance = isConnected ? totalFiatClaimableBalance : 0
+  const totalBalance = portfolioData?.userTotalBalance?.toNumber()
+  const totalClaimableBalance = totalFiatClaimableBalance.plus(protocolRewardsBalance)
 
   return (
     <Flex direction={['column', 'column', 'row']} justifyContent={['space-around']}>
