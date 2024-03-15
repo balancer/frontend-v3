@@ -1,14 +1,13 @@
 'use client'
 import Link from 'next/link'
 import DarkModeToggle from '../btns/DarkModeToggle'
-import { Box, Stack, HStack, BoxProps } from '@chakra-ui/react'
+import { Box, BoxProps, HStack, Stack } from '@chakra-ui/react'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { BalancerLogo } from '../imgs/BalancerLogo'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { useBreakpoints } from '../../hooks/useBreakpoints'
 import { UserSettings } from '@/lib/modules/user/settings/UserSettings'
 import RecentTransactions from '../other/RecentTransactions'
-import { useTheme } from 'next-themes'
 
 type Props = {
   leftSlot?: React.ReactNode
@@ -17,15 +16,9 @@ type Props = {
 
 export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
   const { isMobile } = useBreakpoints()
-  const { theme, setTheme } = useTheme()
 
   return (
     <Box w="full" {...rest}>
-      <div>
-        The current theme is: {theme}
-        <button onClick={() => setTheme('light')}>Light Mode</button>
-        <button onClick={() => setTheme('dark')}>Dark Mode</button>
-      </div>
       <Stack
         flexDirection={{ base: 'column', md: 'row' }}
         justify={{ base: 'flex-start', md: 'space-between' }}
