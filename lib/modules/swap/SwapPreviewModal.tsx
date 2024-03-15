@@ -28,6 +28,7 @@ import { MobileStepTracker } from '../transactions/transaction-steps/step-tracke
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '../transactions/transaction-steps/step-tracker/useStepTrackerProps'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { capitalize } from 'lodash'
 
 type Props = {
   isOpen: boolean
@@ -50,8 +51,9 @@ export function SwapPreviewModal({
     currentStep,
     currentStepIndex,
     swapStepConfigs,
-    useOnStepCompleted,
+    swapAction,
     selectedChain,
+    useOnStepCompleted,
   } = useSwap()
 
   return (
@@ -71,7 +73,7 @@ export function SwapPreviewModal({
         <ModalHeader>
           <HStack justify="space-between" w="full" pr="lg">
             <Heading fontWeight="bold" size="h5">
-              Review swap
+              Review {capitalize(swapAction)}
             </Heading>
             <SwapTimeout />
           </HStack>

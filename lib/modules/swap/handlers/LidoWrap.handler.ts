@@ -2,6 +2,7 @@ import { getChainId } from '@/lib/config/app.config'
 import { SwapHandler } from './Swap.handler'
 import { TransactionConfig } from '../../web3/contracts/contract.types'
 import {
+  OWrapType,
   SdkBuildSwapInputs,
   SimulateSwapInputs,
   SimulateSwapResponse,
@@ -41,9 +42,9 @@ export class LidoWrapHandler implements SwapHandler {
     const { wrappedToken } = getWrapConfig(tokenIn.address, tokenOut.address, selectedChain)
 
     let data: Hex | undefined
-    if (wrapType === WrapType.WRAP) {
+    if (wrapType === OWrapType.WRAP) {
       data = this.buildWrapCallData(tokenIn.scaledAmount)
-    } else if (wrapType === WrapType.UNWRAP) {
+    } else if (wrapType === OWrapType.UNWRAP) {
       data = this.buildUnwrapCallData(tokenIn.scaledAmount)
     }
 
@@ -111,7 +112,7 @@ export class LidoWrapHandler implements SwapHandler {
 
     const rate = formatUnits(rateScaled, 18)
 
-    return wrapType === WrapType.WRAP
+    return wrapType === OWrapType.WRAP
       ? bn(amount).times(1).div(rate).toString()
       : bn(amount).times(rate).div(1).toString()
   }

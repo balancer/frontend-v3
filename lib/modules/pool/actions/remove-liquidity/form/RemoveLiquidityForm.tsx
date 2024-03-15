@@ -6,21 +6,9 @@ import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { InputWithSlider } from '@/lib/shared/components/inputs/InputWithSlider/InputWithSlider'
-import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-import {
-  Button,
-  Card,
-  Center,
-  HStack,
-  Heading,
-  Skeleton,
-  Text,
-  Tooltip,
-  VStack,
-} from '@chakra-ui/react'
+import { Button, Card, Center, HStack, Heading, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { useRef, useState } from 'react'
 import { RemoveLiquidityModal } from '../modal/RemoveLiquidityModal'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
@@ -30,6 +18,10 @@ import { usePool } from '../../../usePool'
 import { usePoolRedirect } from '../../../pool.hooks'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
 import { requiresProportionalInput } from '../../LiquidityActionHelpers'
+import { PriceImpactAccordion } from '@/lib/shared/components/accordion/PriceImpactAccordion'
+import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
+import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
+import { parseUnits } from 'viem'
 
 const TABS: ButtonGroupOption[] = [
   {
@@ -47,20 +39,22 @@ export function RemoveLiquidityForm() {
     tokens,
     validTokens,
     humanBptInPercent,
-    totalUsdValue,
+    totalUSDValue,
     priceImpactQuery,
     previewModalDisclosure,
     isDisabled,
     disabledReason,
     simulationQuery,
     isTxConfirmingOrConfirmed,
+    quoteBptIn,
     setProportionalType,
     setSingleTokenType,
     setHumanBptInPercent,
+    setNeedsToAcceptHighPI,
   } = useRemoveLiquidity()
   const { pool } = usePool()
+  const { priceImpactColor } = usePriceImpact()
   const { redirectToPoolPage } = usePoolRedirect(pool)
-  const { toCurrency } = useCurrency()
   const nextBtn = useRef(null)
   const [activeTab, setActiveTab] = useState(TABS[0])
 
@@ -114,7 +108,7 @@ export function RemoveLiquidityForm() {
             )}
             <VStack w="full" spacing="md">
               <InputWithSlider
-                value={totalUsdValue}
+                value={totalUSDValue}
                 onPercentChanged={setHumanBptInPercent}
                 isNumberInputDisabled
               >
@@ -126,29 +120,29 @@ export function RemoveLiquidityForm() {
               {activeTab === TABS[0] && <RemoveLiquidityProportional tokens={tokens} />}
               {activeTab === TABS[1] && <RemoveLiquiditySingleToken tokens={tokens} />}
             </VStack>
-            <VStack spacing="sm" align="start" w="full" px="md">
-              <HStack justify="space-between" w="full">
-                <Text color="grayText">Total</Text>
-                <HStack>
-                  <NumberText color="grayText">{toCurrency(totalUsdValue)}</NumberText>
-                  <Tooltip label="Total" fontSize="sm">
-                    <InfoOutlineIcon color="grayText" />
-                  </Tooltip>
-                </HStack>
-              </HStack>
-              <HStack justify="space-between" w="full">
-                <Text color="grayText">Price impact</Text>
-                <HStack>
-                  {priceImpactQuery.isLoading ? (
-                    <Skeleton w="12" h="full" />
-                  ) : (
-                    <NumberText color="grayText">{priceImpactLabel}</NumberText>
-                  )}
-                  <Tooltip label="Price impact" fontSize="sm">
-                    <InfoOutlineIcon color="grayText" />
-                  </Tooltip>
-                </HStack>
-              </HStack>
+            <VStack spacing="sm" align="start" w="full">
+              {!priceImpactQuery.isLoading && priceImpactQuery.isSuccess && (
+                <PriceImpactAccordion
+                  setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                  accordionButtonComponent={
+                    <HStack>
+                      <Text variant="secondary" fontSize="sm" color="gray.400">
+                        Price impact:{' '}
+                      </Text>
+                      <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
+                        {priceImpactLabel}
+                      </Text>
+                    </HStack>
+                  }
+                  accordionPanelComponent={
+                    <PoolActionsPriceImpactDetails
+                      totalUSDValue={totalUSDValue}
+                      priceImpactValue={priceImpact}
+                      bptAmount={BigInt(parseUnits(quoteBptIn, 18))}
+                    />
+                  }
+                />
+              )}
             </VStack>
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
