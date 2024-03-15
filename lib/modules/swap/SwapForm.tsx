@@ -36,6 +36,7 @@ import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
 import { Globe, Repeat } from 'react-feather'
 import { SwapRate } from './SwapRate'
 import { SwapDetails } from './SwapDetails'
+import { capitalize } from 'lodash'
 
 export function SwapForm() {
   const {
@@ -47,6 +48,7 @@ export function SwapForm() {
     disabledReason,
     previewModalDisclosure,
     simulationQuery,
+    swapAction,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
@@ -110,7 +112,7 @@ export function SwapForm() {
               <VStack spacing="lg" align="start">
                 <HStack w="full" justify="space-between">
                   <Heading fontWeight="bold" size="h5">
-                    Swap
+                    {capitalize(swapAction)}
                   </Heading>
                   <TransactionSettings size="sm" />
                 </HStack>

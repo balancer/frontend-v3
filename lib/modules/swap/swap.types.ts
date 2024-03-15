@@ -54,7 +54,16 @@ export enum SupportedWrapHandler {
   LIDO = 'LIDO',
 }
 
-export enum WrapType {
-  WRAP = 'wrap',
-  UNWRAP = 'unwrap',
-}
+export const OWrapType = {
+  WRAP: 'wrap',
+  UNWRAP: 'unwrap',
+} as const
+
+export type WrapType = (typeof OWrapType)[keyof typeof OWrapType]
+
+export const OSwapAction = {
+  ...OWrapType,
+  SWAP: 'swap',
+} as const
+
+export type SwapAction = (typeof OSwapAction)[keyof typeof OSwapAction]
