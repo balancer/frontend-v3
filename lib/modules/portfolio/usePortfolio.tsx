@@ -1,5 +1,5 @@
-'use client';
-import { GetPoolsQuery } from '@/lib/shared/services/api/generated/graphql';
+'use client'
+import { GetPoolsQuery } from '@/lib/shared/services/api/generated/graphql'
 import { PoolListItem } from '../pool/pool.types'
 import { createContext, useMemo } from 'react'
 import { useProtocolRewards } from './PortfolioClaim/useProtocolRewards'
@@ -159,7 +159,9 @@ function _usePortfolio({ data }: UsePortfolioArgs) {
     totalFiatClaimableBalance,
     totalFiatClaimableBalanceByChain,
     protocolRewardsBalance,
-    // isLoading: isLoadingBalRewards || isLoadingProtocolRewards || isLoadingClaimableRewards,
+    isLoadingBalRewards,
+    isLoadingProtocolRewards,
+    isLoadingClaimableRewards,
     isLoading: false,
   }
 }
