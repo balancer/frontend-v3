@@ -30,6 +30,8 @@ export const recoveryPoolMock: GqlPoolElement = {
     lifetimeVolume: '13677760.25',
     lifetimeSwapFees: '6838.88',
     holdersCount: '7',
+    isInRecoveryMode: true,
+    isPaused: false,
     swapsCount: '1027',
     sharePriceAth: '71.71543771553347',
     sharePriceAthTimestamp: 1709251200,

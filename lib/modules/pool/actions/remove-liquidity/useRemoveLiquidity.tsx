@@ -4,7 +4,7 @@
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolTokenExpanded, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
@@ -24,6 +24,7 @@ import {
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 import { useRemoveLiquidityStepConfigs } from './modal/useRemoveLiquidityStepConfigs'
+import { hasNestedPools } from '../../pool.helpers'
 import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
@@ -79,8 +80,12 @@ export function _useRemoveLiquidity() {
   const isSingleToken = removalType === RemoveLiquidityType.SingleToken
   const isProportional = removalType === RemoveLiquidityType.Proportional
 
+  const tokenFilter = hasNestedPools(pool)
+    ? (token: GqlPoolTokenExpanded) => !token.isNested
+    : (token: GqlPoolTokenExpanded) => token.isMainToken
+
   const tokens = pool.allTokens
-    .filter(token => token.isMainToken)
+    .filter(tokenFilter)
     .map(token => getToken(token.address, pool.chain))
 
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
