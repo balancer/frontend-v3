@@ -14,7 +14,7 @@ export async function FeaturedPoolsWrapper() {
     variables,
     context: {
       fetchOptions: {
-        next: { revalidate: 30 },
+        next: { revalidate: 300 },
       },
     },
   })

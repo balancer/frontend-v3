@@ -50,7 +50,7 @@ export default async function PoolListWrapper({ searchParams }: Props) {
     variables,
     context: {
       fetchOptions: {
-        next: { revalidate: 30 },
+        next: { revalidate: 120 },
       },
     },
   })
