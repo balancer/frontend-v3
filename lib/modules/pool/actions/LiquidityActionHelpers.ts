@@ -152,12 +152,12 @@ export function shouldUseNestedLiquidity(pool: Pool) {
 }
 
 export function shouldUseRecoveryRemoveLiquidity(pool: Pool) {
-  // TODO: allows testing:
-  // pools/ethereum/v2/0x0da692ac0611397027c91e559cfd482c4197e4030002000000000000000005c9
-  // (in recovery but not paused):
+  // TODO: temporary condition to allow testing pools in recovery mode (but note paused). Examples:
+  // pools/ethereum/v2/0x0da692ac0611397027c91e559cfd482c4197e4030002000000000000000005c9 (WEIGHTED)
+  // pools/ethereum/v2/0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570 (COMPOSABLE_STABLE)
   if (pool.dynamicData.isInRecoveryMode) return true
 
-  // All composableStables v1 are in recovery mode
+  // All composableStables V1 are in recovery mode and they should use recovery exit even if they are not paused
   if (isComposableStableV1(pool)) return true
 
   if (pool.dynamicData.isInRecoveryMode && pool.dynamicData.isPaused) return true
