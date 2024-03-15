@@ -51,7 +51,7 @@ export class DefaultSwapHandler implements SwapHandler {
   }: SdkBuildSwapInputs): TransactionConfig {
     const tx = swap.buildCall({
       slippage: Slippage.fromPercentage(slippagePercent as `${number}`),
-      deadline: BigInt(100),
+      deadline: BigInt(getTimestampInMinsFromNow(60)),
       expectedAmountOut: onchainReturnAmount,
       sender: account,
       recipient: account,
