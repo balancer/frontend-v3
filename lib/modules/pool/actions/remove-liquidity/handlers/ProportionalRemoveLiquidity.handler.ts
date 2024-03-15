@@ -38,7 +38,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
 
     const sdkQueryOutput = await removeLiquidity.query(removeLiquidityInput, this.helpers.poolState)
 
-    return { amountsOut: sdkQueryOutput.amountsOut, sdkQueryOutput }
+    return { amountsOut: sdkQueryOutput.amountsOut.filter(a => a.amount > 0n), sdkQueryOutput }
   }
 
   public async getPriceImpact(): Promise<number> {

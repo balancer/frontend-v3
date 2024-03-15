@@ -33,9 +33,15 @@ export default function Debug() {
       </Link>
       <Link
         as={NextLink}
+        href="pools/ethereum/v2/0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570"
+      >
+        Composable Pool in recovery mode (not paused)
+      </Link>
+      <Link
+        as={NextLink}
         href="pools/ethereum/v2/0xae8535c23afedda9304b03c68a3563b75fc8f92b0000000000000000000005a0"
       >
-        Composable Stable Pool in recovery mode and paused
+        Bricked Composable Stable Pool in recovery mode and paused
       </Link>
       <Link
         as={NextLink}
