@@ -5,6 +5,7 @@ import { PoolListItem } from '../../pool/pool.types'
 import { PortfolioTableRow } from './PortfolioTableRow'
 import { HStack, Heading, Stack } from '@chakra-ui/react'
 import { useMemo, useState } from 'react'
+import { useUserAccount } from '../../web3/useUserAccount'
 
 export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr' | 'type'
 export interface PortfolioSortingData {
@@ -50,7 +51,11 @@ const rowProps = {
 
 export function PortfolioTable() {
   const { portfolioData, isLoading } = usePortfolio()
-  const pools = [portfolioData?.stakedPools || [], portfolioData?.unstakedPools || []].flat()
+  const { isConnected } = useUserAccount()
+
+  const pools = useMemo(() => {
+    return isConnected ? portfolioData.pools : []
+  }, [portfolioData, isConnected])
 
   const [currentSortingObj, setCurrentSortingObj] = useState<PortfolioSortingData>({
     id: 'staking',

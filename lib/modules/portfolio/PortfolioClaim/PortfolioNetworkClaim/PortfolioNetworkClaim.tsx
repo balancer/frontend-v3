@@ -3,10 +3,16 @@ import { usePortfolio } from '../../usePortfolio'
 import { NetworkClaimBlock } from './NetworkClaimBlock'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { chainToSlugMap } from '../../../pool/pool.utils'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 export function PortfolioNetworkClaim() {
   const { poolsByChainMap, protocolRewardsBalance, totalFiatClaimableBalanceByChain } =
     usePortfolio()
+  const { isConnected } = useUserAccount()
+
+  if (!isConnected) {
+    return null
+  }
 
   return (
     <Stack gap={5}>

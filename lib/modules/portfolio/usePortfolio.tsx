@@ -52,7 +52,7 @@ function _usePortfolio({ data }: UsePortfolioArgs) {
     const unstakedPools: PoolListItem[] = []
     let userTotalBalance = bn(0)
 
-    data?.pools.forEach(pool => {
+    data.pools.forEach(pool => {
       const stakedBalance = bn(pool.userBalance?.stakedBalance || 0)
       const poolTotalBalance = bn(pool.userBalance?.totalBalance || 0)
       const unstakedBalance = poolTotalBalance.minus(stakedBalance)
@@ -69,6 +69,7 @@ function _usePortfolio({ data }: UsePortfolioArgs) {
       userTotalBalance = userTotalBalance.plus(pool.userBalance?.totalBalanceUsd || 0)
     })
     return {
+      pools: data.pools,
       stakedPools,
       unstakedPools,
       userTotalBalance,
