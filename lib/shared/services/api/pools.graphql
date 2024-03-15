@@ -185,6 +185,8 @@ query GetFeaturedPools($chains: [GqlChain!]!) {
         lifetimeVolume
         lifetimeSwapFees
         holdersCount
+        isInRecoveryMode
+        isPaused
         swapsCount
         sharePriceAth
         sharePriceAthTimestamp

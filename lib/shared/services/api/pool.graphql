@@ -27,6 +27,8 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       lifetimeVolume
       lifetimeSwapFees
       holdersCount
+      isInRecoveryMode
+      isPaused
       swapsCount
       sharePriceAth
       sharePriceAthTimestamp

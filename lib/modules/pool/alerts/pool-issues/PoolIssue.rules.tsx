@@ -1,4 +1,4 @@
-import { getNetworkConfig } from '@/lib/config/app.config'
+import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { Pool } from '../../usePool'
 import { PoolId } from '../../pool.types'
 import { PoolIssue } from './PoolIssue.type'
@@ -35,4 +35,14 @@ function anAlert(poolIssue: PoolIssue): PoolAlertProps {
 function getStatus(poolIssue: PoolIssue): AlertStatus {
   //For now, all issues are vulnerabilities with default error status
   return 'error'
+}
+
+export function isAffectedByCspIssue(pool: Pool) {
+  return isAffectedBy(pool, PoolIssue.CspPoolVulnWarning)
+}
+
+function isAffectedBy(pool: Pool, poolIssue: PoolIssue) {
+  const issues = getNetworkConfig(getChainId(pool.chain)).pools.issues
+  const affectedPoolIds = issues[poolIssue] ?? []
+  return affectedPoolIds.includes(pool.id.toLowerCase())
 }

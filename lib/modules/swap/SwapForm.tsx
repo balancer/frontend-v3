@@ -24,11 +24,14 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
 import { SwapPreviewModal } from './SwapPreviewModal'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
-import { SwapDetailsAccordion } from './SwapDetailsAccordion'
+import { PriceImpactAccordion } from '../../shared/components/accordion/PriceImpactAccordion'
 import { TokenInputsValidationProvider } from '../tokens/useTokenInputsValidation'
 import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
-import { Repeat } from 'react-feather'
 import { ChainSelect } from '../chains/ChainSelect'
+import { Globe, Repeat } from 'react-feather'
+import { SwapRate } from './SwapRate'
+import { SwapDetails } from './SwapDetails'
+import { capitalize } from 'lodash'
 
 export function SwapForm() {
   const {
@@ -40,6 +43,7 @@ export function SwapForm() {
     disabledReason,
     previewModalDisclosure,
     simulationQuery,
+    swapAction,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
@@ -93,7 +97,7 @@ export function SwapForm() {
               <VStack spacing="lg" align="start">
                 <HStack w="full" justify="space-between">
                   <Heading fontWeight="bold" size="h5">
-                    Swap
+                    {capitalize(swapAction)}
                   </Heading>
                   <TransactionSettings size="sm" />
                 </HStack>
@@ -142,7 +146,11 @@ export function SwapForm() {
                   </VStack>
 
                   {simulationQuery.data && (
-                    <SwapDetailsAccordion setNeedsToAcceptHighPI={setNeedsToAcceptHighPI} />
+                    <PriceImpactAccordion
+                      setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                      accordionButtonComponent={<SwapRate />}
+                      accordionPanelComponent={<SwapDetails />}
+                    />
                   )}
 
                   <Tooltip label={isDisabled ? disabledReason : ''}>

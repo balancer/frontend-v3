@@ -58,7 +58,7 @@ async function testUseRemoveLiquidity(pool: GqlPoolElement = poolMock) {
 }
 
 describe('When the user choses proportional remove liquidity', () => {
-  test('recalculates totalUsdValue when changing the slider', async () => {
+  test('recalculates totalUSDValue when changing the slider', async () => {
     const result = await testUseRemoveLiquidity(poolMock)
 
     expect(result.current.isProportional).toBeTruthy()
@@ -87,7 +87,7 @@ describe('When the user choses proportional remove liquidity', () => {
     expect(result.current.usdOutForToken(wETHAddress)).toBe('1.50')
 
     // total usd value is the sum of the token out usd values (2.00 + 1.50 = 3.50)
-    expect(result.current.totalUsdValue).toBe('3.5')
+    expect(result.current.totalUSDValue).toBe('3.5')
   })
 })
 
