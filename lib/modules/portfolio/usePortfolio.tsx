@@ -1,5 +1,6 @@
 'use client'
-import { GetPoolsQuery } from '@/lib/shared/services/api/generated/graphql'
+import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
+import { useQuery as useApolloQuery } from '@apollo/client'
 import { PoolListItem } from '../pool/pool.types'
 import { createContext, useMemo } from 'react'
 import { useProtocolRewards } from './PortfolioClaim/useProtocolRewards'
@@ -9,6 +10,7 @@ import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { Address, formatUnits } from 'viem'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { useUserAccount } from '../web3/useUserAccount'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
@@ -42,17 +44,21 @@ export function getAllGaugesAddressesFromPool(pool: PoolListItem) {
 
 export type UsePortfolio = ReturnType<typeof _usePortfolio>
 
-interface UsePortfolioArgs {
-  data: GetPoolsQuery
-}
+function _usePortfolio() {
+  const { userAddress, isConnected, isLoading: isLoadingUserInfo } = useUserAccount()
 
-function _usePortfolio({ data }: UsePortfolioArgs) {
+  const { data, loading } = useApolloQuery(GetPoolsDocument, {
+    variables: { where: { userAddress } },
+    notifyOnNetworkStatusChange: true,
+    skip: !isConnected || !userAddress,
+  })
+
   const portfolioData = useMemo(() => {
     const stakedPools: PoolListItem[] = []
     const unstakedPools: PoolListItem[] = []
     let userTotalBalance = bn(0)
 
-    data.pools.forEach(pool => {
+    data?.pools.forEach(pool => {
       const stakedBalance = bn(pool.userBalance?.stakedBalance || 0)
       const poolTotalBalance = bn(pool.userBalance?.totalBalance || 0)
       const unstakedBalance = poolTotalBalance.minus(stakedBalance)
@@ -69,7 +75,7 @@ function _usePortfolio({ data }: UsePortfolioArgs) {
       userTotalBalance = userTotalBalance.plus(pool.userBalance?.totalBalanceUsd || 0)
     })
     return {
-      pools: data.pools,
+      pools: data?.pools,
       stakedPools,
       unstakedPools,
       userTotalBalance,
@@ -163,7 +169,7 @@ function _usePortfolio({ data }: UsePortfolioArgs) {
     isLoadingBalRewards,
     isLoadingProtocolRewards,
     isLoadingClaimableRewards,
-    isLoading: false,
+    isLoadingPortfolio: loading || isLoadingUserInfo,
   }
 }
 
@@ -171,13 +177,10 @@ export const PortfolioContext = createContext<UsePortfolio | null>(null)
 
 interface PortfolioProviderProps {
   children: React.ReactNode
-  data: GetPoolsQuery
 }
 
-export function PortfolioProvider({ data, children }: PortfolioProviderProps) {
-  const hook = _usePortfolio({
-    data,
-  })
+export function PortfolioProvider({ children }: PortfolioProviderProps) {
+  const hook = _usePortfolio()
   return <PortfolioContext.Provider value={hook}>{children}</PortfolioContext.Provider>
 }
 
