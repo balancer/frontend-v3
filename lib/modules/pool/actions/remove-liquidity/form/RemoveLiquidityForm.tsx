@@ -121,28 +121,27 @@ export function RemoveLiquidityForm() {
               {activeTab === TABS[1] && <RemoveLiquiditySingleToken tokens={tokens} />}
             </VStack>
             <VStack spacing="sm" align="start" w="full">
-              {!priceImpactQuery.isLoading && priceImpactQuery.isSuccess && (
-                <PriceImpactAccordion
-                  setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
-                  accordionButtonComponent={
-                    <HStack>
-                      <Text variant="secondary" fontSize="sm" color="gray.400">
-                        Price impact:{' '}
-                      </Text>
-                      <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
-                        {priceImpactLabel}
-                      </Text>
-                    </HStack>
-                  }
-                  accordionPanelComponent={
-                    <PoolActionsPriceImpactDetails
-                      totalUSDValue={totalUSDValue}
-                      priceImpactValue={priceImpact}
-                      bptAmount={BigInt(parseUnits(quoteBptIn, 18))}
-                    />
-                  }
-                />
-              )}
+              <PriceImpactAccordion
+                setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                accordionButtonComponent={
+                  <HStack>
+                    <Text variant="secondary" fontSize="sm" color="gray.400">
+                      Price impact:{' '}
+                    </Text>
+                    <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
+                      {priceImpactLabel}
+                    </Text>
+                  </HStack>
+                }
+                accordionPanelComponent={
+                  <PoolActionsPriceImpactDetails
+                    totalUSDValue={totalUSDValue}
+                    priceImpactValue={priceImpact}
+                    bptAmount={BigInt(parseUnits(quoteBptIn, 18))}
+                  />
+                }
+                isDisabled={priceImpactQuery.isLoading && !priceImpactQuery.isSuccess}
+              />
             </VStack>
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
