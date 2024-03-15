@@ -7,7 +7,6 @@ import { fNum } from '@/lib/shared/utils/numbers'
 
 export function SwapRate() {
   const [priceDirection, setPriceDirection] = useState<'givenIn' | 'givenOut'>('givenIn')
-
   const { simulationQuery, tokenInInfo, tokenOutInfo } = useSwap()
   const { toCurrency } = useCurrency()
   const { usdValueForToken } = useTokens()
@@ -42,7 +41,7 @@ export function SwapRate() {
 
   return (
     <Text variant="secondary" fontSize="sm" cursor="pointer" onClick={togglePriceDirection}>
-      {priceLabel}
+      {simulationQuery.data && priceLabel}
     </Text>
   )
 }

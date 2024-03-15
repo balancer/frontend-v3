@@ -12,15 +12,20 @@ import { SdkSimulateSwapResponse } from './swap.types'
 import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
 import { useTokens } from '../tokens/useTokens'
 import { NativeWrapHandler } from './handlers/NativeWrap.handler'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export function OrderRoute() {
+  const [orderRouteVersion, setOrderRouteVersion] = useState(2)
+  const [hopCount, setHopCount] = useState(0)
   const { simulationQuery } = useSwap()
 
-  const queryData = simulationQuery.data as SdkSimulateSwapResponse
-
-  const orderRouteVersion = queryData.vaultVersion || 2
-  const hopCount = queryData?.routes[0]?.hops?.length || 0
+  useEffect(() => {
+    if (simulationQuery.data) {
+      const queryData = simulationQuery.data as SdkSimulateSwapResponse
+      setOrderRouteVersion(queryData.vaultVersion)
+      setHopCount(queryData?.routes[0]?.hops?.length)
+    }
+  }, [simulationQuery])
 
   return (
     <HStack justify="space-between" w="full">
