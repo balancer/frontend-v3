@@ -40,7 +40,7 @@ export async function PoolList({ searchParams }: Props) {
     textSearch: poolListQueryStateParsers.textSearch.parseServerSide(searchParams.textSearch),
   }
 
-  const { data: poolListData } = await getApolloServerClient().query({
+  const { data } = await getApolloServerClient().query({
     query: GetPoolsDocument,
     variables: poolListVariables,
     context: {
@@ -51,7 +51,7 @@ export async function PoolList({ searchParams }: Props) {
   })
 
   return (
-    <PoolListProvider data={poolListData}>
+    <PoolListProvider data={data}>
       <PoolListLayout />
     </PoolListProvider>
   )
