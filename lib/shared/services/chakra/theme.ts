@@ -1207,6 +1207,8 @@ export const balTheme = {
         container: {
           background: 'background.level1',
           rounded: 'lg',
+          borderWidth: '1px',
+          borderColor: 'border.base',
         },
       },
       variants: {
@@ -1230,7 +1232,6 @@ export const balTheme = {
         level0: {
           container: {
             background: 'background.level0',
-            borderColor: 'rgba(229, 211, 190, 0.6)',
           },
         },
         level1: {
@@ -1241,20 +1242,17 @@ export const balTheme = {
         },
         level2: {
           container: {
-            background: 'background.level1',
-            borderColor: 'border.base',
+            background: 'background.level2',
           },
         },
         level3: {
           container: {
-            background: 'background.level2',
-            borderColor: 'border.base',
+            background: 'background.level3',
           },
         },
         level4: {
           container: {
-            background: 'background.level2',
-            borderColor: 'border.base',
+            background: 'background.level4',
           },
         },
         gradient: {
