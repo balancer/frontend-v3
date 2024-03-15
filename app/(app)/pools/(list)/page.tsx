@@ -8,7 +8,7 @@ import { uniq } from 'lodash'
 
 export const revalidate = 30
 
-interface Props {
+/*interface Props {
   searchParams: {
     first?: string
     skip?: string
@@ -19,17 +19,9 @@ interface Props {
     textSearch?: string
     userAddress?: string
   }
-}
+}*/
 
-export default async function PoolsPage({ searchParams }: Props) {
-  const poolTypes = poolListQueryStateParsers.poolTypes.parseServerSide(searchParams.poolTypes)
-  const mappedPoolTypes = uniq(
-    (poolTypes.length > 0 ? poolTypes : Object.keys(POOL_TYPE_MAP))
-      .map(poolType => POOL_TYPE_MAP[poolType as keyof typeof POOL_TYPE_MAP])
-      .flat()
-  )
-  const networks = poolListQueryStateParsers.networks.parseServerSide(searchParams.networks)
-
+export default async function PoolsPage(/*{ searchParams }: Props*/) {
   /*const poolTypes = poolListQueryStateParsers.poolTypes.parseServerSide(searchParams.poolTypes)
   const mappedPoolTypes = uniq(
     (poolTypes.length > 0 ? poolTypes : Object.keys(POOL_TYPE_MAP))
