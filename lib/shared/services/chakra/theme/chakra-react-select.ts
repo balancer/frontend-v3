@@ -13,8 +13,8 @@ const defaultStyles = <T>(): ChakraStylesConfig<T> => ({
   control: provided => ({
     ...provided,
     background: 'transparent',
-    shadow: 'sm',
-    borderColor: 'border.base',
+    shadow: 'md',
+    borderColor: 'background.level3',
     rounded: 'md',
     _hover: {
       background: 'transparent',

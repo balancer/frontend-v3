@@ -144,9 +144,6 @@ export const tokens = {
         background: {
           primary: balColors.gradient.dawnLight,
           secondary: balColors.gradient.sandLight,
-          tertiary: `linear-gradient(180deg, ${tinycolor(balColors.base.light).lighten(8)} 0%, ${
-            balColors.base.light
-          } 100%)`,
         },
         border: {
           disabled: 'gray.400',
@@ -300,7 +297,7 @@ export const tokens = {
       btnDefault:
         '0.1rem 0.1rem 0.1rem 0px rgba(255, 255, 255, 0.5) inset, -0.1rem -0.1rem 0.1rem 0px rgba(0, 0, 0, 0.15) inset, 0.125rem 0.125rem 0.125rem 0px rgba(0, 0, 0, 0.15)',
       btnDefaultActive:
-        '0px 0px 8px 0px rgba(0, 0, 0, 0.25) inset, 0px 0px 2px 0px rgba(0, 0, 0, 0.3) inset',
+        '0px 0px 8px 0px rgba(0, 0, 0, 0.1) inset, 0px 0px 2px 0px rgba(0, 0, 0, 0.1) inset',
       btnTertiary:
         '0.1rem 0.1rem 0.1rem 0px rgba(255, 255, 255, 0.5) inset, -0.1rem -0.1rem 0.1rem 0px rgba(0, 0, 0, 0.15) inset, 0.1rem 0.1rem 0.1rem 0px rgba(0, 0, 0, 0.07)',
       fontDefault: '0px -1px 0px rgba(255, 255, 255, 0.05), 0px 1px 2px rgba(0, 0, 0, 0.2)',
@@ -453,10 +450,6 @@ export const balTheme = {
           secondary: {
             default: tokens.colors.light.button.background.secondary,
             _dark: tokens.colors.dark.button.background.secondary,
-          },
-          tertiary: {
-            default: tokens.colors.light.button.background.tertiary,
-            _dark: tokens.colors.dark.button.background.tertiary,
           },
         },
       },
@@ -1032,7 +1025,7 @@ export const balTheme = {
     IconButton: {
       variants: {
         tertiary: {
-          background: 'background.button.tertiary',
+          background: 'background.elevation1',
           color: 'font.button.tertiary',
           boxShadow: 'btnTertiary',
         },
@@ -1074,14 +1067,12 @@ export const balTheme = {
         borderRadius: 'lg',
         color: 'text-body',
         letterSpacing: '-0.02em',
-
+        shadow: 'md',
         _hover: {
-          borderColor: 'transparent',
+          shadow: 'sm',
         },
         _active: {
-          transform: 'scale(0.98)',
-          boxShadow: 'btnDefaultActive',
-          textShadow: '0px -1px 0px rgba(255, 255, 255, 0.3), 0px 1px 2px rgba(0, 0, 0, 0.15)',
+          // shadow: 'btnDefaultActive',
         },
       },
       variants: {
@@ -1104,9 +1095,12 @@ export const balTheme = {
           background: 'background.button.secondary',
         },
         tertiary: {
-          background: 'background.button.tertiary',
+          background: 'background.level3',
           color: 'font.button.tertiary',
-          boxShadow: 'btnTertiary',
+          _active: {
+            background: 'background.level2',
+            shadow: 'none',
+          },
         },
         solid: {
           color: 'text-body',
