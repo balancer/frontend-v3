@@ -1,15 +1,10 @@
 import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
-import {
-  GetFeaturedPoolsDocument,
-  GetPoolsDocument,
-} from '@/lib/shared/services/api/generated/graphql'
-import { PROJECT_CONFIG, getProjectConfig } from '@/lib/config/getProjectConfig'
+import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
+import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { PoolList } from '@/lib/modules/pool/PoolList/PoolList'
 import { PoolListProvider } from '@/lib/modules/pool/PoolList/usePoolList'
 import { POOL_TYPE_MAP, poolListQueryStateParsers } from '@/lib/modules/pool/pool.types'
 import { uniq } from 'lodash'
-import { FeaturedPoolsProvider } from '@/lib/modules/featuredPools/useFeaturedPools'
-import { VStack } from '@chakra-ui/react'
 import { FeaturedPools } from '@/lib/modules/featuredPools/FeaturedPools'
 
 export const revalidate = 30
@@ -36,8 +31,6 @@ export default async function Pools({ searchParams }: Props) {
   )
   const networks = poolListQueryStateParsers.networks.parseServerSide(searchParams.networks)
 
-  const { supportedNetworks } = getProjectConfig()
-
   const poolListVariables = {
     first: poolListQueryStateParsers.first.parseServerSide(searchParams.first),
     skip: poolListQueryStateParsers.skip.parseServerSide(searchParams.skip),
@@ -63,24 +56,10 @@ export default async function Pools({ searchParams }: Props) {
     },
   })
 
-  const { data: featuredPoolsData } = await getApolloServerClient().query({
-    query: GetFeaturedPoolsDocument,
-    variables: { chains: supportedNetworks },
-    context: {
-      fetchOptions: {
-        next: { revalidate: 30 },
-      },
-    },
-  })
-
   return (
     <PoolListProvider data={poolListData}>
-      <FeaturedPoolsProvider data={featuredPoolsData}>
-        <VStack align="start" spacing="2xl">
-          <FeaturedPools />
-          <PoolList />
-        </VStack>
-      </FeaturedPoolsProvider>
+      <FeaturedPools mb="xl" />
+      <PoolList />
     </PoolListProvider>
   )
 }
