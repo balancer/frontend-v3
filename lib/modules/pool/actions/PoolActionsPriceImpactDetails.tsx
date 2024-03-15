@@ -37,7 +37,7 @@ export function PoolActionsPriceImpactDetails({
 
   const bptLabel = safeTokenFormat(bptAmount, BPT_DECIMALS, { abbreviated: false })
 
-  const priceImpacUsd = bn(priceImpact || 0).times(totalUSDValue)
+  const priceImpactUsd = bn(priceImpact || 0).times(totalUSDValue)
   const maxSlippageUsd = bn(slippage).div(100).times(totalUSDValue)
 
   const changedShareOfPool = bn(bptAmount || 0).div(
@@ -86,7 +86,7 @@ export function PoolActionsPriceImpactDetails({
             <Text>Unknown</Text>
           ) : (
             <NumberText color={priceImpactColor}>
-              {toCurrency(priceImpacUsd, { abbreviated: false })} ({priceImpactLabel})
+              {toCurrency(priceImpactUsd, { abbreviated: false })} ({priceImpactLabel})
             </NumberText>
           )}
           <Tooltip label="Price impact" fontSize="sm">
