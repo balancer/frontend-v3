@@ -11,7 +11,6 @@ import { PoolAlerts } from '../alerts/PoolAlerts'
 export async function PoolDetail() {
   return (
     <Stack width="full">
-      {/* {loading && <Text>Loading...</Text>} */}
       <VStack width="full" spacing="16">
         <VStack alignItems="flex-start" width="full" spacing="5">
           <PoolMetaBadges />

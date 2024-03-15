@@ -1,3 +1,5 @@
+'use client'
+
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Button, VStack } from '@chakra-ui/react'
 import { useEffect } from 'react'
