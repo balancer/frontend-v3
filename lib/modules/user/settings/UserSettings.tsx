@@ -14,32 +14,16 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
-  Select,
   VStack,
   Text,
   Tooltip,
   Switch,
 } from '@chakra-ui/react'
 import { useUserSettings } from './useUserSettings'
-import { SupportedCurrency } from '@/lib/shared/utils/currencies'
 import { blockInvalidNumberInput } from '@/lib/shared/utils/numbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { Percent, Settings } from 'react-feather'
-
-export function CurrencySelect() {
-  const { currency, setCurrency } = useUserSettings()
-  const options = Object.values(SupportedCurrency)
-
-  return (
-    <Select onChange={e => setCurrency(e.target.value as SupportedCurrency)} value={currency}>
-      {options.map(option => (
-        <option key={option} value={option}>
-          {option}
-        </option>
-      ))}
-    </Select>
-  )
-}
+import { CurrencySelect } from './CurrencySelect'
 
 function SlippageInput() {
   const { slippage, setSlippage } = useUserSettings()

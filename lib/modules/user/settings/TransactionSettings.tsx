@@ -20,8 +20,8 @@ import {
 } from '@chakra-ui/react'
 import { useUserSettings } from './useUserSettings'
 import { blockInvalidNumberInput, fNum } from '@/lib/shared/utils/numbers'
-import { CurrencySelect } from './UserSettings'
 import { Percent, Settings } from 'react-feather'
+import { CurrencySelect } from './CurrencySelect'
 
 function SlippageInput() {
   const { slippage, setSlippage } = useUserSettings()
