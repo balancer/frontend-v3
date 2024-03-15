@@ -20,11 +20,11 @@ export function selectRemoveLiquidityHandler(
   //   return new TwammRemoveLiquidityHandler(getChainId(pool.chain))
   // }
 
-  if (shouldUseRecoveryRemoveLiquidity(pool)) {
+  const isRecoveryExit = shouldUseRecoveryRemoveLiquidity(pool)
+  if (isRecoveryExit) {
     console.log('Recovery handler')
-    const isRecovery = true
     // A recovery exit is just a Proportional one but with Recovery kind (see implementation)
-    return new ProportionalRemoveLiquidityHandler(pool, isRecovery)
+    return new ProportionalRemoveLiquidityHandler(pool, isRecoveryExit)
   }
 
   if (shouldUseNestedLiquidity(pool) && kind === RemoveLiquidityType.Proportional) {

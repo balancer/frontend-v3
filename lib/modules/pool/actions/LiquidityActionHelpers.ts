@@ -151,11 +151,11 @@ export function shouldUseNestedLiquidity(pool: Pool) {
   return supportsNestedLiquidity(pool) && hasNestedPools(pool)
 }
 
-export function shouldUseRecoveryRemoveLiquidity(pool: Pool) {
-  // TODO: temporary condition to allow testing pools in recovery mode (but note paused). Examples:
+export function shouldUseRecoveryRemoveLiquidity(pool: Pool): boolean {
+  // DEBUG: Uncomment following if condition to allow testing pools in recovery mode (but note paused). Examples:
   // pools/ethereum/v2/0x0da692ac0611397027c91e559cfd482c4197e4030002000000000000000005c9 (WEIGHTED)
   // pools/ethereum/v2/0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570 (COMPOSABLE_STABLE)
-  if (pool.dynamicData.isInRecoveryMode) return true
+  // if (pool.dynamicData.isInRecoveryMode) return true
 
   // All composableStables V1 are in recovery mode and they should use recovery exit even if they are not paused
   if (isComposableStableV1(pool)) return true
@@ -163,6 +163,8 @@ export function shouldUseRecoveryRemoveLiquidity(pool: Pool) {
   if (pool.dynamicData.isInRecoveryMode && pool.dynamicData.isPaused) return true
 
   if (pool.dynamicData.isInRecoveryMode && isAffectedByCspIssue(pool)) return true
+
+  return false
 }
 
 export function requiresProportionalInput(poolType: GqlPoolType) {
