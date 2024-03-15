@@ -42,7 +42,7 @@ export function isAffectedByCspIssue(pool: Pool) {
 }
 
 function isAffectedBy(pool: Pool, poolIssue: PoolIssue) {
-  const issues = getNetworkConfig(getChainId(pool.chain)).pools?.issues || {} //TODO: remove when issues is required PR is merged (https://github.com/balancer/frontend-v3/pull/347)
+  const issues = getNetworkConfig(getChainId(pool.chain)).pools.issues
   const affectedPoolIds = issues[poolIssue] ?? []
   return affectedPoolIds.includes(pool.id.toLowerCase())
 }
