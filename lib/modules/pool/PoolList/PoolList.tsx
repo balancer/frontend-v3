@@ -1,38 +1,58 @@
-'use client'
+import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
+import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
+import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
+import { PoolListProvider } from '@/lib/modules/pool/PoolList/usePoolList'
+import {
+  POOL_TYPE_MAP,
+  PoolSearchParams,
+  poolListQueryStateParsers,
+} from '@/lib/modules/pool/pool.types'
+import { uniq } from 'lodash'
+import { PoolListLayout } from './PoolListLayout'
 
-import { Heading, Stack, HStack, VStack } from '@chakra-ui/react'
-import { PoolListFilters } from './PoolListFilters'
-import { PoolListSortType } from './PoolListSortType'
-import { PoolListViewType } from './PoolListViewType/PoolListViewType'
-import { PoolListCards } from './PoolListCards/PoolListCards'
-import { PoolListTable } from './PoolListTable/PoolListTable'
-import { usePoolListViewType } from './PoolListViewType/usePoolListViewType'
-import { usePoolList } from './usePoolList'
-import { fNum } from '@/lib/shared/utils/numbers'
+export const revalidate = 30
 
-export function PoolList() {
-  const { isTableView, isCardsView } = usePoolListViewType()
-  const { pools, loading, count } = usePoolList()
+interface Props {
+  searchParams: PoolSearchParams
+}
+
+export async function PoolList({ searchParams }: Props) {
+  const poolTypes = poolListQueryStateParsers.poolTypes.parseServerSide(searchParams.poolTypes)
+  const mappedPoolTypes = uniq(
+    (poolTypes.length > 0 ? poolTypes : Object.keys(POOL_TYPE_MAP))
+      .map(poolType => POOL_TYPE_MAP[poolType as keyof typeof POOL_TYPE_MAP])
+      .flat()
+  )
+  const networks = poolListQueryStateParsers.networks.parseServerSide(searchParams.networks)
+
+  const poolListVariables = {
+    first: poolListQueryStateParsers.first.parseServerSide(searchParams.first),
+    skip: poolListQueryStateParsers.skip.parseServerSide(searchParams.skip),
+    orderBy: poolListQueryStateParsers.orderBy.parseServerSide(searchParams.orderBy),
+    orderDirection: poolListQueryStateParsers.orderDirection.parseServerSide(
+      searchParams.orderDirection
+    ),
+    where: {
+      poolTypeIn: mappedPoolTypes,
+      chainIn: networks.length > 0 ? networks : PROJECT_CONFIG.supportedNetworks,
+      userAddress: poolListQueryStateParsers.userAddress.parseServerSide(searchParams.userAddress),
+    },
+    textSearch: poolListQueryStateParsers.textSearch.parseServerSide(searchParams.textSearch),
+  }
+
+  const { data: poolListData } = await getApolloServerClient().query({
+    query: GetPoolsDocument,
+    variables: poolListVariables,
+    context: {
+      fetchOptions: {
+        next: { revalidate: 30 },
+      },
+    },
+  })
 
   return (
-    <VStack align="start" spacing="md" w="full">
-      <HStack>
-        <Heading as="h2" size="lg" variant="special">
-          Liquidity pools
-        </Heading>
-        <Heading size="md" variant="secondary" mt="1">
-          ({fNum('integer', count || 0)})
-        </Heading>
-      </HStack>
-      <Stack direction={{ base: 'column-reverse', md: 'row' }} w="full" alignItems="flex-start">
-        <PoolListFilters />
-        <HStack justifyContent="flex-end" w="full">
-          {isCardsView && <PoolListSortType />}
-          <PoolListViewType />
-        </HStack>
-      </Stack>
-      {isTableView && <PoolListTable pools={pools} count={count || 0} loading={loading} />}
-      {isCardsView && <PoolListCards pools={pools} count={count || 0} loading={loading} />}
-    </VStack>
+    <PoolListProvider data={poolListData}>
+      <PoolListLayout />
+    </PoolListProvider>
   )
 }
