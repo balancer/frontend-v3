@@ -3,6 +3,7 @@ import {
   LiquidityActionHelpers,
   hasValidHumanAmounts,
   shouldUseNestedLiquidity,
+  shouldUseRecoveryRemoveLiquidity,
 } from './LiquidityActionHelpers'
 import { HumanAmountIn } from './liquidity-types'
 import { nestedPoolMock } from '../__mocks__/nestedPoolMock'
@@ -14,6 +15,9 @@ import {
   usdcAddress,
   usdtAddress,
 } from '@/lib/debug-helpers'
+import { recoveryPoolMock } from '../__mocks__/recoveryPoolMock'
+import { Pool } from '../usePool'
+import { mock } from 'vitest-mock-extended'
 
 describe('hasValidHumanAmounts', () => {
   test('when all humanAmounts are empty', () => {
@@ -39,6 +43,19 @@ describe('hasValidHumanAmounts', () => {
 test('detects pools requiring nested liquidity', () => {
   expect(shouldUseNestedLiquidity(aWjAuraWethPoolElementMock())).toBeFalsy()
   expect(shouldUseNestedLiquidity(nestedPoolMock)).toBeTruthy()
+})
+
+describe('detects pools requiring recovery removal', () => {
+  test('when the pool is in recovery and paused', () => {
+    const pausedAndInRecoveryPool: Pool = mock<Pool>({
+      dynamicData: { isInRecoveryMode: true, isPaused: true },
+    })
+    expect(shouldUseRecoveryRemoveLiquidity(pausedAndInRecoveryPool)).toBeTruthy()
+  })
+
+  test('when the pool is in recovery and affected by CSP', () => {
+    expect(shouldUseRecoveryRemoveLiquidity(recoveryPoolMock)).toBeTruthy()
+  })
 })
 
 it('returns poolState for non nested pools', () => {

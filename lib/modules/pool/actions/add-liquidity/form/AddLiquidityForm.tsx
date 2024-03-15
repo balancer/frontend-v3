@@ -2,38 +2,25 @@
 
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
-import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { HumanAmount } from '@balancer/sdk'
-import {
-  Button,
-  Card,
-  Center,
-  HStack,
-  Heading,
-  Skeleton,
-  Text,
-  Tooltip,
-  VStack,
-} from '@chakra-ui/react'
+import { Button, Card, Center, HStack, Heading, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { useRef } from 'react'
 import { Address } from 'wagmi'
 import { AddLiquidityModal } from '../AddLiquidityModal'
 import { useAddLiquidity } from '../useAddLiquidity'
-import { fNum, safeTokenFormat } from '@/lib/shared/utils/numbers'
-import { BPT_DECIMALS } from '../../../pool.constants'
-import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
+import { fNum } from '@/lib/shared/utils/numbers'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
 import { ProportionalInputs } from './ProportionalInputs'
 import { usePool } from '../../../usePool'
 import { requiresProportionalInput } from '../../LiquidityActionHelpers'
-import { Info } from 'react-feather'
+import { PriceImpactAccordion } from '@/lib/shared/components/accordion/PriceImpactAccordion'
+import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
+import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 
 export function AddLiquidityForm() {
   const {
     humanAmountsIn: amountsIn,
-    totalUSDValue,
     setHumanAmountIn: setAmountIn,
     tokens,
     validTokens,
@@ -43,19 +30,17 @@ export function AddLiquidityForm() {
     isDisabled,
     disabledReason,
     previewModalDisclosure,
+    setNeedsToAcceptHighPI,
+    totalUSDValue,
   } = useAddLiquidity()
-  const { toCurrency } = useCurrency()
-  const { slippage } = useUserSettings()
   const nextBtn = useRef(null)
   const { pool } = usePool()
+  const { priceImpactColor } = usePriceImpact()
 
   function currentValueFor(tokenAddress: string) {
     const amountIn = amountsIn.find(amountIn => isSameAddress(amountIn.tokenAddress, tokenAddress))
     return amountIn ? amountIn.humanAmount : ''
   }
-
-  const bptOut = simulationQuery?.data?.bptOut
-  const bptOutLabel = safeTokenFormat(bptOut?.amount, BPT_DECIMALS, { abbreviated: false })
 
   const priceImpact = priceImpactQuery?.data
   const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
@@ -105,60 +90,30 @@ export function AddLiquidityForm() {
               </VStack>
             )}
 
-            <VStack spacing="sm" align="start" w="full" px="md">
-              <HStack justify="space-between" w="full">
-                <Text color="grayText">Total</Text>
-                <HStack textColor="grayText">
-                  <NumberText color="grayText">
-                    {toCurrency(totalUSDValue, { abbreviated: false })}
-                  </NumberText>
-                  <Tooltip
-                    label={`Total value of tokens being added. Does not include potential slippage (${fNum(
-                      'slippage',
-                      slippage
-                    )}).`}
-                    fontSize="sm"
-                  >
-                    <Info size={16} />
-                  </Tooltip>
-                </HStack>
-              </HStack>
-              <HStack justify="space-between" w="full">
-                <Text color="grayText">LP tokens</Text>
-                <HStack textColor="grayText">
-                  {simulationQuery.isLoading ? (
-                    <Skeleton w="16" h="6" />
-                  ) : (
-                    <NumberText color="grayText">{bptOutLabel}</NumberText>
-                  )}
-                  <Tooltip
-                    label={`LP tokens you are expected to receive. Does not include potential slippage (${fNum(
-                      'slippage',
-                      slippage
-                    )}).`}
-                    fontSize="sm"
-                  >
-                    <Info size={16} />
-                  </Tooltip>
-                </HStack>
-              </HStack>
-              <HStack justify="space-between" w="full">
-                <Text color="grayText">Price impact</Text>
-                <HStack textColor="grayText">
-                  {priceImpactQuery.isLoading ? (
-                    <Skeleton w="16" h="6" />
-                  ) : (
-                    <NumberText color="grayText">{priceImpactLabel}</NumberText>
-                  )}
-                  <Tooltip
-                    label="Adding unbalanced amounts causes the internal prices of the pool to change,
-                    as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees."
-                    fontSize="sm"
-                  >
-                    <Info size={16} />
-                  </Tooltip>
-                </HStack>
-              </HStack>
+            <VStack spacing="sm" align="start" w="full">
+              {priceImpactQuery.data && (
+                <PriceImpactAccordion
+                  setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                  accordionButtonComponent={
+                    <HStack>
+                      <Text variant="secondary" fontSize="sm" color="gray.400">
+                        Price impact:{' '}
+                      </Text>
+                      <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
+                        {priceImpactLabel}
+                      </Text>
+                    </HStack>
+                  }
+                  accordionPanelComponent={
+                    <PoolActionsPriceImpactDetails
+                      totalUSDValue={totalUSDValue}
+                      priceImpactValue={priceImpact}
+                      bptAmount={simulationQuery.data?.bptOut.amount}
+                      isAddLiquidity
+                    />
+                  }
+                />
+              )}
             </VStack>
 
             <Tooltip label={isDisabled ? disabledReason : ''}>

@@ -29,6 +29,7 @@ import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
 import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
+import { shouldUseRecoveryRemoveLiquidity } from '../../LiquidityActionHelpers'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
@@ -169,7 +170,7 @@ export function RemoveLiquidityModal({
           </VStack>
         </ModalBody>
         <ModalFooter>
-          {shouldSignRelayerApproval ? (
+          {shouldSignRelayerApproval && !shouldUseRecoveryRemoveLiquidity(pool) ? (
             <SignRelayerButton />
           ) : (
             <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>

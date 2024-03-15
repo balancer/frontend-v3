@@ -5,8 +5,12 @@ import { useMemo } from 'react'
 import { Address, parseUnits } from 'viem'
 import { RawAmount } from '../tokens/approvals/approval-rules'
 import { StepConfig } from '../transactions/transaction-steps/useIterateSteps'
+import { OSwapAction, SwapAction } from './swap.types'
+import { capitalize } from 'lodash'
+import { ApprovalAction } from '../tokens/approvals/approval-labels'
 
 type Params = {
+  action: SwapAction
   humanAmountIn: string
   tokenIn: GqlToken | undefined
   selectedChain: GqlChain
@@ -15,6 +19,7 @@ type Params = {
 }
 
 export function useSwapStepConfigs({
+  action,
   humanAmountIn,
   tokenIn,
   selectedChain,
@@ -31,15 +36,18 @@ export function useSwapStepConfigs({
     ]
   }, [humanAmountIn, tokenIn])
 
+  const approvalActionType: ApprovalAction =
+    action === OSwapAction.UNWRAP ? 'Unwrapping' : 'Swapping'
+
   const tokenApprovalConfigs = useTokenApprovalConfigs({
     spenderAddress: vaultAddress,
     chain: selectedChain,
     approvalAmounts: tokenInAmounts,
-    actionType: 'Swapping',
+    actionType: approvalActionType,
   })
 
   const swapStepConfig: StepConfig = {
-    title: 'Swap',
+    title: capitalize(action),
     render: () => <SwapButton closeModal={closeModal} />,
   }
 

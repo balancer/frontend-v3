@@ -26,7 +26,7 @@ type Props = {
 
 const INPUT_TEXT = 'I understand that price impact is high and I may get rekt.'
 
-export function SwapDetailsAcceptPriceImpactModal({
+export function PriceImpactAcceptModal({
   isOpen,
   onClose,
   setAcceptHighPriceImpact,
