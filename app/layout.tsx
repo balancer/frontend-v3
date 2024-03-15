@@ -9,6 +9,7 @@ import NextTopLoader from 'nextjs-toploader'
 import { Container } from '@chakra-ui/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import '@/lib/assets/css/global.css'
+import { Suspense } from 'react'
 
 const { projectName, projectId } = getProjectConfig()
 const iconUrl = `/images/icons/${projectId}.ico`
@@ -31,16 +32,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body className={satoshiFont.className} suppressHydrationWarning>
         <NextTopLoader showSpinner={false} />
-        <Providers>
-          <Noise>
-            <Navbar />
-            <Container maxW="maxContent" py="2xl">
-              {children}
-              <SpeedInsights />
-            </Container>
-            <Footer />
-          </Noise>
-        </Providers>
+        <Suspense fallback={null}>
+          <Providers>
+            <Noise>
+              <Navbar />
+              <Container maxW="maxContent" py="2xl">
+                {children}
+                <SpeedInsights />
+              </Container>
+              <Footer />
+            </Noise>
+          </Providers>
+        </Suspense>
       </body>
     </html>
   )

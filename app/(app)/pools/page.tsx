@@ -12,6 +12,7 @@ interface Props {
 export default async function Pools({ searchParams }: Props) {
   return (
     <>
+      {/* TODO loading states */}
       <Suspense fallback={<div>Loading...</div>}>
         <FeaturedPools mb="xl" />
       </Suspense>
