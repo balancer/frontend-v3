@@ -3,12 +3,9 @@ import { HStack, Text, Tooltip } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
 import { useAddLiquidity } from './useAddLiquidity'
-import {
-  TransactionState,
-  addLiquidityStepId,
-} from '@/lib/modules/transactions/transaction-steps/lib'
+import { addLiquidityStepId } from '@/lib/modules/transactions/transaction-steps/lib'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useShouldFreezeQuote } from '@/lib/modules/transactions/transaction-steps/useShouldFreezeQuote'
 
 function useAddLiquidityTimeout() {
   // This countdown needs to be nested here and not at a higher level, like in
@@ -21,16 +18,10 @@ function useAddLiquidityTimeout() {
 
   const { previewModalDisclosure, refetchQuote } = useAddLiquidity()
 
-  const { getCoreTransactionState } = useCurrentFlowStep()
-  const addLiquidityTxState = getCoreTransactionState(addLiquidityStepId)
-  const isConfirmingAddLiquidity = addLiquidityTxState === TransactionState.Confirming
-  const isAwaitingUserConfirmation = addLiquidityTxState === TransactionState.Loading
-  const isComplete = addLiquidityTxState === TransactionState.Completed
-
   // Disable query refetches:
   // if the flow is complete
   // if the add liquidity transaction is confirming
-  const shouldFreezeQuote = isComplete || isConfirmingAddLiquidity || isAwaitingUserConfirmation
+  const { shouldFreezeQuote } = useShouldFreezeQuote(addLiquidityStepId)
 
   // When the countdown timer reaches 0, refetch all add liquidity queries.
   useEffect(() => {

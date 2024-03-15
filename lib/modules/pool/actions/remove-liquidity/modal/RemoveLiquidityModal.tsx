@@ -29,6 +29,11 @@ import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
 import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
+import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
+// eslint-disable-next-line max-len
+import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
+import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 type Props = {
   isOpen: boolean
@@ -43,6 +48,7 @@ export function RemoveLiquidityModal({
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
+  const { isDesktop, isMobile } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const {
     tokens,
@@ -50,7 +56,9 @@ export function RemoveLiquidityModal({
     isSingleToken,
     singleTokenOutAddress,
     priceImpactQuery,
+    stepConfigs,
     currentStep,
+    currentStepIndex,
     quoteBptIn,
     quotePriceImpact,
     amountOutForToken,
@@ -73,7 +81,10 @@ export function RemoveLiquidityModal({
       {...rest}
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
+        {isDesktop && (
+          <DesktopStepTracker currentStepIndex={currentStepIndex} stepConfigs={stepConfigs} />
+        )}
         <ModalHeader>
           <HStack>
             <Heading fontWeight="bold" size="h5">
@@ -84,6 +95,11 @@ export function RemoveLiquidityModal({
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="md" align="start">
+            {isMobile && (
+              <Card variant="level4" p="md" shadow="sm" w="full">
+                <MobileStepTracker currentStepIndex={currentStepIndex} stepConfigs={stepConfigs} />
+              </Card>
+            )}
             <Card variant="level4" shadow="sm" p="md" w="full">
               <VStack align="start" spacing="md">
                 <Text fontWeight="bold" fontSize="sm">

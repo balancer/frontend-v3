@@ -2,13 +2,10 @@
 import { HStack, Text, Tooltip } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
-import {
-  TransactionState,
-  removeLiquidityStepId,
-} from '@/lib/modules/transactions/transaction-steps/lib'
+import { removeLiquidityStepId } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useShouldFreezeQuote } from '@/lib/modules/transactions/transaction-steps/useShouldFreezeQuote'
 
 function useRemoveLiquidityTimeout() {
   // This countdown needs to be nested here and not at a higher level, like in
@@ -21,16 +18,10 @@ function useRemoveLiquidityTimeout() {
 
   const { simulationQuery, priceImpactQuery, previewModalDisclosure } = useRemoveLiquidity()
 
-  const { getCoreTransactionState } = useCurrentFlowStep()
-  const removeLiquidityTxState = getCoreTransactionState(removeLiquidityStepId)
-  const isConfirmingRemoveLiquidity = removeLiquidityTxState === TransactionState.Confirming
-  const isAwaitingUserConfirmation = removeLiquidityTxState === TransactionState.Loading
-  const isComplete = removeLiquidityTxState === TransactionState.Completed
-
   // Disable query refetches:
   // if the flow is complete
   // if the remove liquidity transaction is confirming
-  const shouldFreezeQuote = isComplete || isConfirmingRemoveLiquidity || isAwaitingUserConfirmation
+  const { shouldFreezeQuote } = useShouldFreezeQuote(removeLiquidityStepId)
 
   // When the countdown timer reaches 0, refetch all remove liquidity queries.
   useEffect(() => {
