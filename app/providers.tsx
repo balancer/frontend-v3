@@ -12,10 +12,10 @@ import { cookies } from 'next/headers'
 
 export function Providers({ children }: { children: ReactNode }) {
   const initialColorMode = cookies().get(COOKIE_KEYS.UserSettings.ColorMode)?.value || 'system'
-  // const initCurrency = cookies().get(COOKIE_KEYS.UserSettings.Currency)?.value
-  // const initSlippage = cookies().get(COOKIE_KEYS.UserSettings.Slippage)?.value
-  // const initEnableSignatures = cookies().get(COOKIE_KEYS.UserSettings.EnableSignatures)?.value
-  // const initPoolListView = cookies().get(COOKIE_KEYS.UserSettings.PoolListView)?.value
+  const initCurrency = cookies().get(COOKIE_KEYS.UserSettings.Currency)?.value
+  const initSlippage = cookies().get(COOKIE_KEYS.UserSettings.Slippage)?.value
+  const initEnableSignatures = cookies().get(COOKIE_KEYS.UserSettings.EnableSignatures)?.value
+  const initPoolListView = cookies().get(COOKIE_KEYS.UserSettings.PoolListView)?.value
 
   return (
     <ThemeProvider initialColorMode={initialColorMode as 'light' | 'dark' | 'system'}>
@@ -23,10 +23,10 @@ export function Providers({ children }: { children: ReactNode }) {
         <ApolloClientProvider>
           <ApolloGlobalDataProvider>
             <UserSettingsProvider
-              initCurrency={undefined}
-              initSlippage={undefined}
-              initEnableSignatures={undefined}
-              initPoolListView={undefined}
+              initCurrency={initCurrency}
+              initSlippage={initSlippage}
+              initEnableSignatures={initEnableSignatures}
+              initPoolListView={initPoolListView}
             >
               <CurrentFlowStepProvider>
                 <RecentTransactionsProvider>
