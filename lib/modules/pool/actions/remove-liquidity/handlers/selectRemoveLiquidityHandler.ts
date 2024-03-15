@@ -1,5 +1,8 @@
 import { Pool } from '../../../usePool'
-import { shouldUseNestedLiquidity } from '../../LiquidityActionHelpers'
+import {
+  shouldUseNestedLiquidity,
+  shouldUseRecoveryRemoveLiquidity,
+} from '../../LiquidityActionHelpers'
 import { RemoveLiquidityType } from '../remove-liquidity.types'
 import { NestedProportionalRemoveLiquidityHandler } from './NestedProportionalRemoveLiquidity.handler'
 import { NestedSingleTokenRemoveLiquidityHandler } from './NestedSingleTokenRemoveLiquidity.handler'
@@ -16,15 +19,25 @@ export function selectRemoveLiquidityHandler(
   //   // This is just an example to illustrate how edge-case handlers would receive different inputs but return a common contract
   //   return new TwammRemoveLiquidityHandler(getChainId(pool.chain))
   // }
+
+  const isRecoveryExit = shouldUseRecoveryRemoveLiquidity(pool)
+  if (isRecoveryExit) {
+    console.log('Recovery handler')
+    // A recovery exit is just a Proportional one but with Recovery kind (see implementation)
+    return new ProportionalRemoveLiquidityHandler(pool, isRecoveryExit)
+  }
+
   if (shouldUseNestedLiquidity(pool) && kind === RemoveLiquidityType.Proportional) {
     return new NestedProportionalRemoveLiquidityHandler(pool)
   }
   if (shouldUseNestedLiquidity(pool) && kind === RemoveLiquidityType.SingleToken) {
     return new NestedSingleTokenRemoveLiquidityHandler(pool)
   }
+
   if (kind === RemoveLiquidityType.Proportional) {
     return new ProportionalRemoveLiquidityHandler(pool)
   }
+
   if (kind === RemoveLiquidityType.SingleToken) {
     return new SingleTokenRemoveLiquidityHandler(pool)
   }

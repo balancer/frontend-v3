@@ -175,7 +175,7 @@ export const TokenInput = forwardRef(
         borderRadius="md"
         p="md"
         shadow="innerBase"
-        bg="background.level1"
+        bg="background.level0"
         border="white"
         boxShadow={boxShadow}
         w="full"
@@ -214,7 +214,7 @@ export const TokenInput = forwardRef(
               />
               <Box
                 position="absolute"
-                bgGradient="linear(to-r, transparent, background.level1 70%)"
+                bgGradient="linear(to-r, transparent, background.level0 70%)"
                 w="8"
                 h="full"
                 top={0}
