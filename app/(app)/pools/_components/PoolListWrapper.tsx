@@ -30,7 +30,7 @@ export default async function PoolListWrapper({ searchParams }: Props) {
   )
   const networks = poolListQueryStateParsers.networks.parseServerSide(searchParams.networks)
 
-  const poolListVariables = {
+  const variables = {
     first: poolListQueryStateParsers.first.parseServerSide(searchParams.first),
     skip: poolListQueryStateParsers.skip.parseServerSide(searchParams.skip),
     orderBy: poolListQueryStateParsers.orderBy.parseServerSide(searchParams.orderBy),
@@ -45,9 +45,9 @@ export default async function PoolListWrapper({ searchParams }: Props) {
     textSearch: poolListQueryStateParsers.textSearch.parseServerSide(searchParams.textSearch),
   }
 
-  const { data: poolListData } = await getApolloServerClient().query({
+  const { data: data } = await getApolloServerClient().query({
     query: GetPoolsDocument,
-    variables: poolListVariables,
+    variables,
     context: {
       fetchOptions: {
         next: { revalidate: 30 },
@@ -56,7 +56,7 @@ export default async function PoolListWrapper({ searchParams }: Props) {
   })
 
   return (
-    <PoolListProvider data={poolListData}>
+    <PoolListProvider data={data} variables={variables}>
       <PoolList />
     </PoolListProvider>
   )
