@@ -7,8 +7,8 @@ import { selectStakingService } from '@/lib/modules/staking/selectStakingService
 import { useUnstakeGaugeCallDataQuery } from './useUnstakeGaugeCallDataQuery'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
-import { useBalTokenRewards } from '@/lib/modules/portfolio/useBalRewards'
-import { useClaimableBalances } from '@/lib/modules/portfolio/claim/useClaimableBalances'
+import { useBalTokenRewards } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
+import { useClaimableBalances } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
 import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 

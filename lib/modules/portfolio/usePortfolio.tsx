@@ -1,13 +1,10 @@
-'use client'
-
-import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
-import { useUserAccount } from '../web3/useUserAccount'
+'use client';
+import { GetPoolsQuery } from '@/lib/shared/services/api/generated/graphql';
 import { PoolListItem } from '../pool/pool.types'
 import { createContext, useMemo } from 'react'
-import { useQuery as useApolloQuery } from '@apollo/client'
-import { useProtocolRewards } from './useProtocolRewards'
-import { ClaimableReward, useClaimableBalances } from './claim/useClaimableBalances'
-import { BalTokenReward, useBalTokenRewards } from './useBalRewards'
+import { useProtocolRewards } from './PortfolioClaim/useProtocolRewards'
+import { ClaimableReward, useClaimableBalances } from './PortfolioClaim/useClaimableBalances'
+import { BalTokenReward, useBalTokenRewards } from './PortfolioClaim/useBalRewards'
 import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { Address, formatUnits } from 'viem'
@@ -45,14 +42,11 @@ export function getAllGaugesAddressesFromPool(pool: PoolListItem) {
 
 export type UsePortfolio = ReturnType<typeof _usePortfolio>
 
-function _usePortfolio() {
-  const { userAddress } = useUserAccount()
+interface UsePortfolioArgs {
+  data: GetPoolsQuery
+}
 
-  const { data, loading } = useApolloQuery(GetPoolsDocument, {
-    variables: { where: { userAddress } },
-    notifyOnNetworkStatusChange: true,
-  })
-
+function _usePortfolio({ data }: UsePortfolioArgs) {
   const portfolioData = useMemo(() => {
     const stakedPools: PoolListItem[] = []
     const unstakedPools: PoolListItem[] = []
@@ -165,15 +159,22 @@ function _usePortfolio() {
     totalFiatClaimableBalance,
     totalFiatClaimableBalanceByChain,
     protocolRewardsBalance,
-    isLoading:
-      loading || isLoadingBalRewards || isLoadingProtocolRewards || isLoadingClaimableRewards,
+    // isLoading: isLoadingBalRewards || isLoadingProtocolRewards || isLoadingClaimableRewards,
+    isLoading: false,
   }
 }
 
 export const PortfolioContext = createContext<UsePortfolio | null>(null)
 
-export function PortfolioProvider({ children }: { children: React.ReactNode }) {
-  const hook = _usePortfolio()
+interface PortfolioProviderProps {
+  children: React.ReactNode
+  data: GetPoolsQuery
+}
+
+export function PortfolioProvider({ data, children }: PortfolioProviderProps) {
+  const hook = _usePortfolio({
+    data,
+  })
   return <PortfolioContext.Provider value={hook}>{children}</PortfolioContext.Provider>
 }
 

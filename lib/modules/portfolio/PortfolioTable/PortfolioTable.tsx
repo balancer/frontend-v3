@@ -97,7 +97,7 @@ export function PortfolioTable() {
   }, [currentSortingObj, pools])
 
   return (
-    <Stack>
+    <Stack gap={5}>
       <HStack>
         <Heading size="lg">Balancer portfolio</Heading>
       </HStack>

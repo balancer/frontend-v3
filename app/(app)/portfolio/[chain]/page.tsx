@@ -1,10 +1,11 @@
 'use client'
 import { PoolName } from '@/lib/modules/pool/PoolName'
-import { ClaimNetworkLayout } from '@/lib/modules/pool/actions/claim/ClaimNetworkLayout'
+
 import { useClaimStepConfigs } from '@/lib/modules/pool/actions/claim/useClaimStepConfigs'
 
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import { ChainSlug, chainToSlugMap, slugToChainMap } from '@/lib/modules/pool/pool.utils'
+import { ClaimNetworkLayout } from '@/lib/modules/portfolio/PortfolioClaim/PortfolioNetworkClaim/ClaimNetworkLayout'
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
 import { useIterateSteps } from '@/lib/modules/transactions/transaction-steps/useIterateSteps'

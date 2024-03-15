@@ -1,8 +1,8 @@
 'use client'
 
-import { ClaimReviewLayout } from '@/lib/modules/pool/actions/claim/ClaimReviewLayout'
-import { ClaimReviewTotal } from '@/lib/modules/pool/actions/claim/ClaimReviewTotal'
-import { ClaimAllVebalRewardsButton } from '@/lib/modules/portfolio/claim/ClaimAllVebalRewardsButton'
+import { ClaimReviewLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimReviewLayout'
+import { ClaimReviewTotal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimReviewTotal'
+import { ClaimAllVebalRewardsButton } from '@/lib/modules/portfolio/PortfolioClaim/ClaimButtons/ClaimAllVebalRewardsButton'
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'

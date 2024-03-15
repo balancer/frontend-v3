@@ -1,15 +1,15 @@
 import { Flex, Heading, Stack } from '@chakra-ui/react'
-import { usePortfolio } from '../usePortfolio'
+import { usePortfolio } from '../../usePortfolio'
 import { NetworkClaimBlock } from './NetworkClaimBlock'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { chainToSlugMap } from '../../pool/pool.utils'
+import { chainToSlugMap } from '../../../pool/pool.utils'
 
 export function PortfolioNetworkClaim() {
   const { poolsByChainMap, protocolRewardsBalance, totalFiatClaimableBalanceByChain } =
     usePortfolio()
 
   return (
-    <Stack>
+    <Stack gap={5}>
       <Heading size="lg">Claimable incentives</Heading>
 
       <Flex flexDirection={['column', 'column', 'column', 'row']} gap={6} flexWrap="wrap">

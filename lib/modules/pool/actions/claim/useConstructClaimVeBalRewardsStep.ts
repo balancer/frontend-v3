@@ -1,5 +1,5 @@
 import networkConfig from '@/lib/config/networks/mainnet'
-import { claimableVeBalRewardsTokens } from '@/lib/modules/portfolio/useProtocolRewards'
+import { claimableVeBalRewardsTokens } from '@/lib/modules/portfolio/PortfolioClaim/useProtocolRewards'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'

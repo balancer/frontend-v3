@@ -1,18 +1,18 @@
 'use client'
-import { ClaimReviewLayout } from '@/lib/modules/pool/actions/claim/ClaimReviewLayout'
-import { ClaimReviewTotal } from '@/lib/modules/pool/actions/claim/ClaimReviewTotal'
+import { ClaimReviewLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimReviewLayout'
+import { ClaimReviewTotal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimReviewTotal'
 import { useClaimStepConfigs } from '@/lib/modules/pool/actions/claim/useClaimStepConfigs'
 
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
-import { ClaimableReward } from '@/lib/modules/portfolio/claim/useClaimableBalances'
-import { BalTokenReward } from '@/lib/modules/portfolio/useBalRewards'
+import { ClaimableReward } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
+import { BalTokenReward } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useIterateSteps } from '@/lib/modules/transactions/transaction-steps/useIterateSteps'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { Button, Card, Text, VStack } from '@chakra-ui/react'
 
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
 function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
   if (reward.formattedBalance === '0') return null
@@ -42,6 +42,7 @@ function PoolClaim({ pool }: { pool: PoolListItem }) {
   const { poolRewardsMap } = usePortfolio()
   const { chain, id } = useParams()
   const { toCurrency } = useCurrency()
+  const router = useRouter()
 
   const stepConfigs = useClaimStepConfigs([pool])
 
@@ -67,7 +68,13 @@ function PoolClaim({ pool }: { pool: PoolListItem }) {
 
       <VStack w="full">
         {hasNoRewards ? (
-          <Button w="full" size="lg" onClick={() => {}}>
+          <Button
+            w="full"
+            size="lg"
+            onClick={() => {
+              router.back()
+            }}
+          >
             Close
           </Button>
         ) : (

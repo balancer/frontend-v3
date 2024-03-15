@@ -1,6 +1,6 @@
 import { useContractRead } from 'wagmi'
-import { useUserAccount } from '../web3/useUserAccount'
-import { FeeDistributorStaticABI } from '../web3/contracts/abi/FeeDistributorStaticABI'
+import { useUserAccount } from '../../web3/useUserAccount'
+import { FeeDistributorStaticABI } from '../../web3/contracts/abi/FeeDistributorStaticABI'
 import networkConfigs from '@/lib/config/networks'
 import { formatUnits } from 'viem'
 
