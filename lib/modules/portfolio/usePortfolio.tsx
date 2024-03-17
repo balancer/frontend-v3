@@ -1,14 +1,18 @@
 'use client'
-import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GetPoolsDocument,
+  GqlPoolOrderBy,
+  GqlPoolOrderDirection,
+} from '@/lib/shared/services/api/generated/graphql'
 import { useQuery as useApolloQuery } from '@apollo/client'
 import { PoolListItem } from '../pool/pool.types'
-import { createContext, useMemo } from 'react'
+import { createContext, useMemo, useState } from 'react'
 import { useProtocolRewards } from './PortfolioClaim/useProtocolRewards'
 import { ClaimableReward, useClaimableBalances } from './PortfolioClaim/useClaimableBalances'
 import { BalTokenReward, useBalTokenRewards } from './PortfolioClaim/useBalRewards'
 import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
-import { Address, formatUnits } from 'viem'
+import { Address } from 'viem'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useUserAccount } from '../web3/useUserAccount'
 
@@ -47,8 +51,11 @@ export type UsePortfolio = ReturnType<typeof _usePortfolio>
 function _usePortfolio() {
   const { userAddress, isConnected, isLoading: isLoadingUserInfo } = useUserAccount()
 
+  const [orderBy, setOrderBy] = useState(GqlPoolOrderBy.Apr)
+  const [orderDirection, setOrderDirection] = useState(GqlPoolOrderDirection.Desc)
+
   const { data, loading } = useApolloQuery(GetPoolsDocument, {
-    variables: { where: { userAddress } },
+    variables: { where: { userAddress }, orderBy, orderDirection },
     notifyOnNetworkStatusChange: true,
     skip: !isConnected || !userAddress,
   })
@@ -166,6 +173,8 @@ function _usePortfolio() {
   }, [protocolRewardsData])
 
   return {
+    setOrderDirection,
+    setOrderBy,
     portfolioData,
     balRewardsData,
     protocolRewardsData,

@@ -1,5 +1,5 @@
 'use client'
-import { ClaimPoolLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimPoolLayout'
+import { ClaimPoolLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimPool/ClaimPoolLayout'
 import { ClaimTotal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimTotal'
 import { useClaimStepConfigs } from '@/lib/modules/pool/actions/claim/useClaimStepConfigs'
 

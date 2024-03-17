@@ -5,6 +5,7 @@ import { PoolListItem } from '../../pool/pool.types'
 import { PortfolioTableRow } from './PortfolioTableRow'
 import { HStack, Heading, Stack } from '@chakra-ui/react'
 import { useState } from 'react'
+import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 
 export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr' | 'type'
 export interface PortfolioSortingData {
@@ -26,11 +27,11 @@ export const portfolioOrderBy: {
   },
   {
     title: 'My liquidity',
-    id: 'liquidity',
+    id: GqlPoolOrderBy.UserbalanceUsd,
   },
   {
     title: 'APR',
-    id: 'apr',
+    id: GqlPoolOrderBy.Apr,
   },
 ]
 const numberColumnWidth = '125px'
@@ -45,12 +46,19 @@ const rowProps = {
 }
 
 export function PortfolioTable() {
-  const { portfolioData, isLoadingPortfolio } = usePortfolio()
+  const { portfolioData, isLoadingPortfolio, setOrderBy, setOrderDirection } = usePortfolio()
 
   const [currentSortingObj, setCurrentSortingObj] = useState<PortfolioSortingData>({
     id: 'staking',
     desc: true,
   })
+
+  function setSort(data: PortfolioSortingData) {
+    setCurrentSortingObj(data)
+    // console.log('setSort', data)
+    // setOrderBy(data.id)
+    // setOrderDirection(data.desc ? 'desc' : 'asc')
+  }
 
   return (
     <Stack gap={5}>
@@ -63,7 +71,7 @@ export function PortfolioTable() {
         renderTableHeader={() => (
           <PortfolioTableHeader
             currentSortingObj={currentSortingObj}
-            setCurrentSortingObj={setCurrentSortingObj}
+            setCurrentSortingObj={setSort}
             {...rowProps}
           />
         )}

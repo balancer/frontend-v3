@@ -1,6 +1,6 @@
 'use client'
 
-import { ClaimPoolLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimPoolLayout'
+import { ClaimPoolLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimPool/ClaimPoolLayout'
 import { ClaimTotal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimTotal'
 import { ClaimAllVebalRewardsButton } from '@/lib/modules/portfolio/PortfolioClaim/ClaimButtons/ClaimAllVebalRewardsButton'
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'

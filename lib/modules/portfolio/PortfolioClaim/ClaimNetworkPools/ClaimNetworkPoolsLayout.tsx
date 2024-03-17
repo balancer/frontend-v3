@@ -8,7 +8,7 @@ interface Props extends CardProps {
   title: string
 }
 
-export function ClaimNetworkLayout({ backLink, children, title, ...rest }: Props) {
+export function ClaimNetworkPoolsLayout({ backLink, children, title, ...rest }: Props) {
   return (
     <Stack alignItems="center">
       <Stack gap={8}>

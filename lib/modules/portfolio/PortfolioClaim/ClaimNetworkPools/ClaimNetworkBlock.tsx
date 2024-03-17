@@ -12,7 +12,7 @@ type Props = {
   title?: string
 }
 
-export function NetworkClaimBlock({ chain, title, networkTotalClaimableFiatBalance, link }: Props) {
+export function ClaimNetworkBlock({ chain, title, networkTotalClaimableFiatBalance, link }: Props) {
   const { toCurrency } = useCurrency()
 
   return (

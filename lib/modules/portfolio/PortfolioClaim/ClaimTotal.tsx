@@ -8,7 +8,7 @@ export function ClaimTotal({ total }: Props) {
   return (
     <Card
       flexDirection="row"
-      variant="level4"
+      variant="level2"
       justifyContent="space-between"
       gap={4}
       p="md"

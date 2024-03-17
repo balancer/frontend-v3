@@ -5,7 +5,7 @@ import { useClaimStepConfigs } from '@/lib/modules/pool/actions/claim/useClaimSt
 
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import { ChainSlug, chainToSlugMap, slugToChainMap } from '@/lib/modules/pool/pool.utils'
-import { ClaimNetworkLayout } from '@/lib/modules/portfolio/PortfolioClaim/PortfolioNetworkClaim/ClaimNetworkLayout'
+import { ClaimNetworkPoolsLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimNetworkPools/ClaimNetworkPoolsLayout'
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
 import { useIterateSteps } from '@/lib/modules/transactions/transaction-steps/useIterateSteps'
@@ -38,7 +38,7 @@ export default function NetworkClaim() {
   const claimableFiatBalance = totalFiatClaimableBalanceByChain[gqlChain]
 
   return (
-    <ClaimNetworkLayout backLink={'/portfolio'} title="Portfolio">
+    <ClaimNetworkPoolsLayout backLink={'/portfolio'} title="Portfolio">
       <HStack
         pb="3"
         justifyContent="space-between"
@@ -64,7 +64,7 @@ export default function NetworkClaim() {
       <Stack py="4">
         {pools?.map(pool => (
           <Card
-            variant="level4"
+            variant="level2"
             gap={4}
             key={pool.id}
             p="md"
@@ -105,6 +105,6 @@ export default function NetworkClaim() {
       </Stack>
 
       {pools && pools.length > 0 && <NetworkClaimAllButton pools={pools} />}
-    </ClaimNetworkLayout>
+    </ClaimNetworkPoolsLayout>
   )
 }
