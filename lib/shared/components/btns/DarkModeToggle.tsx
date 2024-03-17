@@ -31,7 +31,7 @@ export default function DarkModeToggle() {
   }, [])
 
   if (!mounted) {
-    return null
+    return <Button variant="tertiary" isLoading></Button>
   }
 
   return (
