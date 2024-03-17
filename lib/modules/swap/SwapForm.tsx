@@ -28,7 +28,7 @@ import { PriceImpactAccordion } from '../../shared/components/accordion/PriceImp
 import { TokenInputsValidationProvider } from '../tokens/useTokenInputsValidation'
 import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
 import { ChainSelect } from '../chains/ChainSelect'
-import { Globe, Repeat } from 'react-feather'
+import { Repeat } from 'react-feather'
 import { SwapRate } from './SwapRate'
 import { SwapDetails } from './SwapDetails'
 import { capitalize } from 'lodash'

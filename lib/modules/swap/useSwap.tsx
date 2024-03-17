@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { GqlChain, GqlSorSwapType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
