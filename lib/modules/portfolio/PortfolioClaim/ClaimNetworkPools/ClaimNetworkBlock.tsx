@@ -24,7 +24,7 @@ export function ClaimNetworkBlock({ chain, title, networkTotalClaimableFiatBalan
       borderColor="border.base"
       flex="1"
       minW={['320px']}
-      maxW={['320px', '410px']}
+      maxW={['auto', 'auto', '410px']}
     >
       <Flex justifyContent="space-between" alignItems="center">
         <HStack>

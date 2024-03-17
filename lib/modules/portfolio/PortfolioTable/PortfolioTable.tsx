@@ -9,7 +9,7 @@ import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 
 export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr' | 'type'
 export interface PortfolioSortingData {
-  id: PortfolioTableSortingId
+  id: PortfolioTableSortingId | GqlPoolOrderBy
   desc: boolean
 }
 
@@ -27,7 +27,7 @@ export const portfolioOrderBy: {
   },
   {
     title: 'My liquidity',
-    id: GqlPoolOrderBy.UserbalanceUsd,
+    id: 'liquidity',
   },
   {
     title: 'APR',
