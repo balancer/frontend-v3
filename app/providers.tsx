@@ -18,7 +18,7 @@ export function Providers({ children }: { children: ReactNode }) {
   // const initPoolListView = cookies().get(COOKIE_KEYS.UserSettings.PoolListView)?.value
 
   return (
-    <ColorThemeProvider>
+    <ColorThemeProvider defaultTheme="dark">
       <ThemeProvider>
         <Web3Provider>
           <ApolloClientProvider>
