@@ -32,23 +32,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body className={satoshiFont.className} suppressHydrationWarning>
         <NextTopLoader showSpinner={false} />
-        {/*
-          This suspense boundary is for the cookie usage within <Providers />. 
-          It means that the initial app load is near instant but essentially loads
-          a shell before streaming in the rest of the app.
-        */}
-        <Suspense fallback={null}>
-          <Providers>
-            <Noise>
-              <Navbar />
-              <Container maxW="maxContent" py="2xl">
-                {children}
-                <SpeedInsights />
-              </Container>
-              <Footer />
-            </Noise>
-          </Providers>
-        </Suspense>
+        <Providers>
+          <Noise>
+            <Navbar />
+            <Container maxW="maxContent" py="2xl">
+              {children}
+              <SpeedInsights />
+            </Container>
+            <Footer />
+          </Noise>
+        </Providers>
       </body>
     </html>
   )
