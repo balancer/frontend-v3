@@ -1,11 +1,18 @@
 'use client'
 
-import { Button, useColorMode } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
 import { Moon, Sun } from 'react-feather'
 
 export default function DarkModeToggle() {
-  const { colorMode, toggleColorMode } = useColorMode()
+  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme()
+
+  function toggleColorMode() {
+    setTheme(theme == 'light' ? 'dark' : 'light')
+  }
 
   const animationSun = {
     initial: { rotate: 0, scale: 0, opacity: 0 },
@@ -19,10 +26,18 @@ export default function DarkModeToggle() {
     exit: { rotate: 90, scale: 0, opacity: 0 },
   }
 
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
+
   return (
     <Button onClick={toggleColorMode} variant="tertiary">
       <AnimatePresence initial={false}>
-        {colorMode === 'light' ? (
+        {theme === 'light' ? (
           <motion.i {...animationSun}>
             <Sun size={18} />
           </motion.i>
