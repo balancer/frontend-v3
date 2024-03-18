@@ -6,8 +6,10 @@ import {
   RemoveLiquidityNestedSingleTokenInput,
   RemoveLiquidityNestedQueryOutput,
   Slippage,
+  PriceImpactAmount,
+  PriceImpact,
 } from '@balancer/sdk'
-import { Address, parseEther, zeroAddress } from 'viem'
+import { Address, parseEther } from 'viem'
 import { Pool } from '../../../usePool'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
 import {
@@ -48,10 +50,18 @@ export class NestedSingleTokenRemoveLiquidityHandler implements RemoveLiquidityH
     return { amountsOut: sdkQueryOutput.amountsOut, sdkQueryOutput }
   }
 
-  public async getPriceImpact(): Promise<number> {
-    // WIP in the SDK:
-    // https://github.com/balancer/b-sdk/pull/244
-    return 0
+  public async getPriceImpact({
+    humanBptIn,
+    tokenOut,
+  }: QueryRemoveLiquidityInput): Promise<number> {
+    const removeLiquidityInput = this.constructSdkInput(humanBptIn, tokenOut)
+
+    const priceImpactABA: PriceImpactAmount = await PriceImpact.removeLiquidityNested(
+      removeLiquidityInput,
+      this.helpers.nestedPoolState
+    )
+
+    return priceImpactABA.decimal
   }
 
   public async buildCallData({
