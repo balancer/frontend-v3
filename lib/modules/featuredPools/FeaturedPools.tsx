@@ -1,8 +1,11 @@
 import { BoxProps, Grid, GridItem, Heading, VStack } from '@chakra-ui/react'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { FeaturePoolCard } from './FeaturePoolCard'
-import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
-import { GetFeaturedPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
+import { GetFeaturedPoolsQuery } from '@/lib/shared/services/api/generated/graphql'
+
+interface Props {
+  data: GetFeaturedPoolsQuery
+}
 
 const indexAreaHash: { [key: number]: string } = {
   1: 'one',
@@ -11,22 +14,10 @@ const indexAreaHash: { [key: number]: string } = {
   4: 'four',
 }
 
-export async function FeaturedPools({ ...rest }: BoxProps) {
-  const { projectName, supportedNetworks } = getProjectConfig()
+export function FeaturedPools({ data, ...rest }: Props & BoxProps) {
+  const { projectName } = getProjectConfig()
 
-  const featuredPoolsQuery = await getApolloServerClient().query({
-    query: GetFeaturedPoolsDocument,
-    variables: { chains: supportedNetworks },
-    context: {
-      fetchOptions: {
-        next: { revalidate: 300 }, // 5 minutes
-      },
-    },
-  })
-
-  const queryData = featuredPoolsQuery.data.featuredPools || []
-
-  const featuredPools = queryData.slice(0, 5)
+  const featuredPools = data.featuredPools.slice(0, 5)
   const primaryPool = featuredPools.find(featured => featured.primary)?.pool
   const poolsWithoutPrimary = featuredPools
     .filter(featured => !featured.primary)
