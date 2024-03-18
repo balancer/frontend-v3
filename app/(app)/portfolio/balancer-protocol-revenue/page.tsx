@@ -16,7 +16,7 @@ export default function BalancerProtocolRevenue() {
 
   return (
     <ClaimPoolLayout backLink={'/portfolio'} gap={4} title="Balancer protocol revenue">
-      <Card variant="level4" gap={4} p="md" shadow="xl" flex="1" width="100%">
+      <Card variant="level2" gap={4} p="md" shadow="xl" flex="1" width="100%">
         <Text fontWeight="700">You`ll get</Text>
         {protocolRewardsData?.map((reward, idx) => (
           <TokenRow
