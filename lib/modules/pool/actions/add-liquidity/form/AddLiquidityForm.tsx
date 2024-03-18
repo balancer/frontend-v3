@@ -5,10 +5,8 @@ import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { HumanAmount } from '@balancer/sdk'
 import {
-  Box,
   Button,
   Card,
-  CardBody,
   Center,
   Grid,
   GridItem,
@@ -19,7 +17,7 @@ import {
   Tooltip,
   VStack,
 } from '@chakra-ui/react'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Address } from 'wagmi'
 import { AddLiquidityModal } from '../AddLiquidityModal'
 import { useAddLiquidity } from '../useAddLiquidity'
@@ -51,15 +49,22 @@ export function AddLiquidityForm() {
   } = useAddLiquidity()
   const nextBtn = useRef(null)
   const { pool, totalApr } = usePool()
-  const { priceImpactColor } = usePriceImpact()
+  const { priceImpactColor, priceImpact, setPriceImpact } = usePriceImpact()
   const { toCurrency } = useCurrency()
+
+  useEffect(() => {
+    if (priceImpactQuery.data) {
+      setPriceImpact(priceImpactQuery.data)
+    } else {
+      setPriceImpact(undefined)
+    }
+  }, [priceImpactQuery.data])
 
   function currentValueFor(tokenAddress: string) {
     const amountIn = amountsIn.find(amountIn => isSameAddress(amountIn.tokenAddress, tokenAddress))
     return amountIn ? amountIn.humanAmount : ''
   }
 
-  const priceImpact = priceImpactQuery?.data
   const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
 
   const weeklyYield = bn(totalUSDValue).times(totalApr).div(52)
@@ -124,7 +129,6 @@ export function AddLiquidityForm() {
                 accordionPanelComponent={
                   <PoolActionsPriceImpactDetails
                     totalUSDValue={totalUSDValue}
-                    priceImpactValue={priceImpact}
                     bptAmount={simulationQuery.data?.bptOut.amount}
                     isAddLiquidity
                   />

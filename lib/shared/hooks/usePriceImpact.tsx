@@ -53,6 +53,8 @@ export function _usePriceImpact() {
       setPriceImpactLevel(getPriceImpactLevel(priceImpactValue))
       // reset accept high price impact when price impact changes
       setAcceptHighPriceImpact(false)
+    } else {
+      setPriceImpactLevel('low')
     }
   }, [priceImpact])
 
