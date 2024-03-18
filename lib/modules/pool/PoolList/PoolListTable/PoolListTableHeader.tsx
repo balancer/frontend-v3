@@ -1,3 +1,5 @@
+'use client'
+
 import { Grid, GridItem, Icon, Text, VStack } from '@chakra-ui/react'
 import PoolListSortButton from './PoolListSortButton'
 import { usePoolListQueryState } from '../usePoolListQueryState'

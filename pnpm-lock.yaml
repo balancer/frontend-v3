@@ -107,6 +107,9 @@ dependencies:
   next:
     specifier: 14.0.4
     version: 14.0.4(@babel/core@7.23.5)(react-dom@18.2.0)(react@18.2.0)
+  next-themes:
+    specifier: ^0.3.0
+    version: 0.3.0(react-dom@18.2.0)(react@18.2.0)
   next-usequerystate:
     specifier: ^1.9.2
     version: 1.9.2(next@14.0.4)
@@ -152,8 +155,8 @@ dependencies:
 
 devDependencies:
   '@apollo/experimental-nextjs-app-support':
-    specifier: ^0.5.1
-    version: 0.5.1(@apollo/client@3.8.0-rc.1)(next@14.0.4)(react@18.2.0)
+    specifier: ^0.8.0
+    version: 0.8.0(@apollo/client@3.8.0-rc.1)(next@14.0.4)(react@18.2.0)
   '@chakra-ui/cli':
     specifier: ^2.4.1
     version: 2.4.1
@@ -333,10 +336,10 @@ packages:
       tslib: 2.6.2
       zen-observable-ts: 1.2.5
 
-  /@apollo/experimental-nextjs-app-support@0.5.1(@apollo/client@3.8.0-rc.1)(next@14.0.4)(react@18.2.0):
-    resolution: {integrity: sha512-gQiFY/zntVAhPTTFfFFOogp4TKVMpbPsydv3gyMR5E0IK6WgtITTcl/uuWlnfL92+enk5mfrtoQ+0p+t2a9u2A==}
+  /@apollo/experimental-nextjs-app-support@0.8.0(@apollo/client@3.8.0-rc.1)(next@14.0.4)(react@18.2.0):
+    resolution: {integrity: sha512-uyNIkOkew0T6ukC8ycbWBeTu8gtDSD5i+NVGEHU0DIEQaToFHObYcvIxaQ/8hvWzgvnpNU/KMsApfGXA9Xkpyw==}
     peerDependencies:
-      '@apollo/client': '>=3.8.0-rc || ^3.8.0 || >=3.9.0-alpha || >=3.9.0-beta || >=3.9.0-rc'
+      '@apollo/client': ^3.9.0
       next: ^13.4.1 || ^14.0.0
       react: ^18 || ^18.0.0
     dependencies:
@@ -9786,6 +9789,16 @@ packages:
 
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
+
+  /next-themes@0.3.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-/QHIrsYpd6Kfk7xakK4svpDI5mmXP0gfvCoJdGpZQ2TOrQZmsW0QxjaiLn8wbIKjtm4BTSqLoix4lxYYOnLJ/w==}
+    peerDependencies:
+      react: ^16.8 || ^17 || ^18 || ^18.0.0
+      react-dom: ^16.8 || ^17 || ^18 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
 
   /next-usequerystate@1.9.2(next@14.0.4):
     resolution: {integrity: sha512-iL2+gRiNedTdAMF9xQcYWJoWBFdfyHr3e4rDz33wcuU29rb1uU6u6UKGtF+GyNMRaAK5sDuBDd6qo5Toc68spw==}

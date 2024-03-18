@@ -1,3 +1,4 @@
+'use client'
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Box, HStack, VStack, useTheme, useColorMode } from '@chakra-ui/react'
 import { useEffect, useMemo, useRef, useState } from 'react'

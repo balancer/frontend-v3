@@ -32,6 +32,17 @@ export interface FetchPoolProps {
   variant?: PoolVariant
 }
 
+export interface PoolSearchParams {
+  first?: string
+  skip?: string
+  orderBy?: string
+  orderDirection?: string
+  poolTypes?: string
+  networks?: string
+  textSearch?: string
+  userAddress?: string
+}
+
 export interface PoolsColumnSort {
   id: GqlPoolOrderBy
   desc: boolean

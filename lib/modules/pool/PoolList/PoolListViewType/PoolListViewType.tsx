@@ -1,3 +1,5 @@
+'use client'
+
 import { HStack, IconButton } from '@chakra-ui/react'
 import { usePoolListViewType } from './usePoolListViewType'
 import { PoolListView } from '@/lib/modules/user/settings/useUserSettings'

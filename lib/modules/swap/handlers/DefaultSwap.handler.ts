@@ -6,7 +6,6 @@ import { Path, Slippage, Swap, SwapKind } from '@balancer/sdk'
 import { formatUnits } from 'viem'
 import { TransactionConfig } from '../../web3/contracts/contract.types'
 import { SdkBuildSwapInputs, SdkSimulateSwapResponse, SimulateSwapInputs } from '../swap.types'
-import { getTimestampInMinsFromNow } from '@/lib/shared/utils/time'
 
 export class DefaultSwapHandler implements SwapHandler {
   constructor(public apolloClient: ApolloClient<object>) {}
@@ -51,7 +50,7 @@ export class DefaultSwapHandler implements SwapHandler {
   }: SdkBuildSwapInputs): TransactionConfig {
     const tx = swap.buildCall({
       slippage: Slippage.fromPercentage(slippagePercent as `${number}`),
-      deadline: BigInt(getTimestampInMinsFromNow(60)),
+      deadline: BigInt(Number.MAX_SAFE_INTEGER),
       expectedAmountOut: onchainReturnAmount,
       sender: account,
       recipient: account,
