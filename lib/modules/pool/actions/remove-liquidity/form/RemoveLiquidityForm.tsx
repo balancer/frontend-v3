@@ -9,7 +9,7 @@ import { InputWithSlider } from '@/lib/shared/components/inputs/InputWithSlider/
 import { fNum } from '@/lib/shared/utils/numbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { Button, Card, Center, HStack, Heading, Text, Tooltip, VStack } from '@chakra-ui/react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { RemoveLiquidityModal } from '../modal/RemoveLiquidityModal'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { RemoveLiquidityProportional } from './RemoveLiquidityProportional'
@@ -53,12 +53,19 @@ export function RemoveLiquidityForm() {
     setNeedsToAcceptHighPI,
   } = useRemoveLiquidity()
   const { pool } = usePool()
-  const { priceImpactColor } = usePriceImpact()
+  const { priceImpactColor, priceImpact, setPriceImpact } = usePriceImpact()
   const { redirectToPoolPage } = usePoolRedirect(pool)
   const nextBtn = useRef(null)
   const [activeTab, setActiveTab] = useState(TABS[0])
 
-  const priceImpact = priceImpactQuery?.data
+  useEffect(() => {
+    if (priceImpactQuery.data) {
+      setPriceImpact(priceImpactQuery.data)
+    } else {
+      setPriceImpact(undefined)
+    }
+  }, [priceImpactQuery.data])
+
   const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-' // If it's 0 we want to display 0.
 
   function toggleTab(option: ButtonGroupOption) {
@@ -136,7 +143,6 @@ export function RemoveLiquidityForm() {
                 accordionPanelComponent={
                   <PoolActionsPriceImpactDetails
                     totalUSDValue={totalUSDValue}
-                    priceImpactValue={priceImpact}
                     bptAmount={BigInt(parseUnits(quoteBptIn, 18))}
                   />
                 }
