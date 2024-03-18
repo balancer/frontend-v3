@@ -1,19 +1,10 @@
 import { PoolList } from '@/lib/modules/pool/PoolList/PoolList'
-import { PoolSearchParams } from '@/lib/modules/pool/pool.types'
 import { Suspense } from 'react'
 
-export const revalidate = 30
-
-interface Props {
-  searchParams: PoolSearchParams
-}
-
-export default async function Pools({ searchParams }: Props) {
+export default async function Pools() {
   return (
-    <>
-      <Suspense fallback={<div>Loading...</div>}>
-        <PoolList searchParams={searchParams} />
-      </Suspense>
-    </>
+    <Suspense fallback={<div>Loading...</div>}>
+      <PoolList />
+    </Suspense>
   )
 }
