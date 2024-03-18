@@ -3,12 +3,9 @@ import { defaultPoolListMock, mockPoolList } from '@/test/msw/handlers/PoolList.
 import { aGqlPoolMinimalMock } from '@/test/msw/builders/gqlPoolMinimal.builders'
 import { testHook } from '@/test/utils/custom-renderers'
 import { _usePoolList } from './usePoolList'
-import { GetPoolsQuery } from '@/lib/shared/services/api/generated/graphql'
 
-async function renderUsePoolsList(initialData = { pools: defaultPoolListMock }) {
-  const { result, waitForLoadedUseQuery } = testHook(() =>
-    _usePoolList(initialData as GetPoolsQuery)
-  )
+async function renderUsePoolsList() {
+  const { result, waitForLoadedUseQuery } = testHook(() => _usePoolList())
   await waitForLoadedUseQuery(result)
   return result
 }
@@ -24,7 +21,7 @@ test('Returns pool list with a custom mocked GQL pool', async () => {
 
   mockPoolList(mockedList)
 
-  const result = await renderUsePoolsList({ pools: mockedList })
+  const result = await renderUsePoolsList()
 
   expect(result.current.pools[0].name).toEqual('FOO BAL')
 })
