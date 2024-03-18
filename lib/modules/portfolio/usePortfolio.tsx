@@ -1,17 +1,20 @@
 'use client'
-
-import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
-import { useUserAccount } from '../web3/useUserAccount'
-import { PoolListItem } from '../pool/pool.types'
-import { createContext, useMemo } from 'react'
+import {
+  GetPoolsDocument,
+  GqlPoolOrderBy,
+  GqlPoolOrderDirection,
+} from '@/lib/shared/services/api/generated/graphql'
 import { useQuery as useApolloQuery } from '@apollo/client'
-import { useProtocolRewards } from './useProtocolRewards'
-import { ClaimableReward, useClaimableBalances } from './claim/useClaimableBalances'
-import { BalTokenReward, useBalTokenRewards } from './useBalRewards'
+import { PoolListItem } from '../pool/pool.types'
+import { createContext, useMemo, useState } from 'react'
+import { useProtocolRewards } from './PortfolioClaim/useProtocolRewards'
+import { ClaimableReward, useClaimableBalances } from './PortfolioClaim/useClaimableBalances'
+import { BalTokenReward, useBalTokenRewards } from './PortfolioClaim/useBalRewards'
 import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { Address } from 'viem'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { useUserAccount } from '../web3/useUserAccount'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
@@ -35,6 +38,7 @@ export function getAllGaugesAddressesFromPool(pool: PoolListItem) {
       arr.push(staking.gauge.gaugeAddress)
     }
   }
+
   if (staking?.gauge?.otherGauges) {
     arr.push(...staking.gauge.otherGauges.filter(g => g.version > 1).map(g => g.gaugeAddress))
   }
@@ -45,14 +49,27 @@ export function getAllGaugesAddressesFromPool(pool: PoolListItem) {
 export type UsePortfolio = ReturnType<typeof _usePortfolio>
 
 function _usePortfolio() {
-  const { userAddress } = useUserAccount()
+  const { userAddress, isConnected, isLoading: isLoadingUserInfo } = useUserAccount()
+
+  const [orderBy, setOrderBy] = useState(GqlPoolOrderBy.Apr)
+  const [orderDirection, setOrderDirection] = useState(GqlPoolOrderDirection.Desc)
 
   const { data, loading } = useApolloQuery(GetPoolsDocument, {
-    variables: { where: { userAddress } },
+    variables: { where: { userAddress }, orderBy, orderDirection },
     notifyOnNetworkStatusChange: true,
+    skip: !isConnected || !userAddress,
   })
 
   const portfolioData = useMemo(() => {
+    if (!isConnected || !userAddress) {
+      return {
+        pools: [],
+        stakedPools: [],
+        unstakedPools: [],
+        userTotalBalance: bn(0),
+      }
+    }
+
     const stakedPools: PoolListItem[] = []
     const unstakedPools: PoolListItem[] = []
     let userTotalBalance = bn(0)
@@ -74,11 +91,12 @@ function _usePortfolio() {
       userTotalBalance = userTotalBalance.plus(pool.userBalance?.totalBalanceUsd || 0)
     })
     return {
+      pools: data?.pools,
       stakedPools,
       unstakedPools,
       userTotalBalance,
     }
-  }, [data?.pools])
+  }, [data?.pools, isConnected, userAddress])
 
   // Bal token rewards
   const { balRewardsData, isLoadingBalRewards } = useBalTokenRewards(
@@ -132,7 +150,31 @@ function _usePortfolio() {
     }, bn(0))
   }, [portfolioData.stakedPools, poolRewardsMap])
 
+  const totalFiatClaimableBalanceByChain = useMemo(() => {
+    return Object.entries(poolsByChainMap).reduce(
+      (acc: Record<string, BigNumber>, [chain, pools]) => {
+        const sum = pools.reduce((total, pool) => {
+          return total.plus(poolRewardsMap[pool.id]?.totalFiatClaimBalance || 0)
+        }, bn(0))
+
+        acc[chain] = sum
+
+        return acc
+      },
+      {}
+    )
+  }, [poolsByChainMap, poolRewardsMap])
+
+  const protocolRewardsBalance = useMemo(() => {
+    return protocolRewardsData.reduce((acc, reward) => {
+      acc = acc.plus(reward.fiatBalance)
+      return acc
+    }, bn(0))
+  }, [protocolRewardsData])
+
   return {
+    setOrderDirection,
+    setOrderBy,
     portfolioData,
     balRewardsData,
     protocolRewardsData,
@@ -140,14 +182,22 @@ function _usePortfolio() {
     poolRewardsMap,
     poolsByChainMap,
     totalFiatClaimableBalance,
-    isLoading:
-      loading || isLoadingBalRewards || isLoadingProtocolRewards || isLoadingClaimableRewards,
+    totalFiatClaimableBalanceByChain,
+    protocolRewardsBalance,
+    isLoadingBalRewards,
+    isLoadingProtocolRewards,
+    isLoadingClaimableRewards,
+    isLoadingPortfolio: loading || isLoadingUserInfo,
   }
 }
 
 export const PortfolioContext = createContext<UsePortfolio | null>(null)
 
-export function PortfolioProvider({ children }: { children: React.ReactNode }) {
+interface PortfolioProviderProps {
+  children: React.ReactNode
+}
+
+export function PortfolioProvider({ children }: PortfolioProviderProps) {
   const hook = _usePortfolio()
   return <PortfolioContext.Provider value={hook}>{children}</PortfolioContext.Provider>
 }

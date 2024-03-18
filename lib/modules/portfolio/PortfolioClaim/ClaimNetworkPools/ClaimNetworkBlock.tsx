@@ -1,38 +1,48 @@
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { Button, Card, Flex, HStack, Heading, Stack } from '@chakra-ui/react'
-import { chainToSlugMap } from '../../pool/pool.utils'
+import { chainToSlugMap } from '../../../pool/pool.utils'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import Link from 'next/link'
 
 type Props = {
   chain: GqlChain
   networkTotalClaimableFiatBalance: number
-  openClaimModal: (chain: string) => void
+  link: string
+  title?: string
 }
 
-export function NetworkClaimBlock({
-  chain,
-  openClaimModal,
-  networkTotalClaimableFiatBalance,
-}: Props) {
+export function ClaimNetworkBlock({ chain, title, networkTotalClaimableFiatBalance, link }: Props) {
   const { toCurrency } = useCurrency()
 
   return (
-    <Card variant="level1" p="md" shadow="xl" flex="1">
+    <Card
+      variant="level1"
+      p="md"
+      shadow="xl"
+      border="1px solid"
+      borderColor="border.base"
+      flex="1"
+      minW={['320px']}
+      maxW={['auto', 'auto', '410px']}
+    >
       <Flex justifyContent="space-between" alignItems="center">
         <HStack>
           <NetworkIcon chain={chain} size={14} />
 
-          <Stack>
-            <Heading size="md">{chainToSlugMap[chain]}</Heading>
+          <Stack gap={1}>
+            <Heading size="md" textTransform={'capitalize'}>
+              {title || chainToSlugMap[chain]}
+            </Heading>
             <Heading size="md" variant="special">
               {toCurrency(networkTotalClaimableFiatBalance)}
             </Heading>
           </Stack>
         </HStack>
-        <Button variant="secondary" onClick={() => openClaimModal(chain)}>
-          View
-        </Button>
+
+        <Link href={link}>
+          <Button variant="secondary">View</Button>
+        </Link>
       </Flex>
     </Card>
   )

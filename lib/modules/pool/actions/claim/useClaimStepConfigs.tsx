@@ -1,7 +1,7 @@
 import { useHasApprovedRelayer } from '@/lib/modules/relayer/useHasApprovedRelayer'
 import { useHasMinterApproval } from '@/lib/modules/staking/gauge/useHasMinterApproval'
 import { minterApprovalConfig } from '@/lib/modules/staking/gauge/minterApprovalConfig'
-import { ClaimAllRewardsButton } from '../../../portfolio/claim/ClaimAllRewardsButton'
+import { ClaimAllRewardsButton } from '../../../portfolio/PortfolioClaim/ClaimButtons/ClaimAllRewardsButton'
 import { getApproveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
 import { getChainId } from '@/lib/config/app.config'
 import { PoolListItem } from '../../pool.types'

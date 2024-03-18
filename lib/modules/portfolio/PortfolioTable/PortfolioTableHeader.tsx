@@ -22,6 +22,9 @@ export function PortfolioTableHeader({ currentSortingObj, setCurrentSortingObj, 
       <GridItem>
         <Text fontWeight="bold">Pool name</Text>
       </GridItem>
+      <GridItem justifySelf="end">
+        <Text fontWeight="bold">Type</Text>
+      </GridItem>
       {portfolioOrderBy.map((orderByItem, index) => (
         <GridItem key={index} justifySelf="end">
           <PoolListSortButton
