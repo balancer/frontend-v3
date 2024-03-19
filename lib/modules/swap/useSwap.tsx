@@ -256,6 +256,7 @@ export function _useSwap() {
   }
 
   function scaleTokenAmount(amount: string, token: GqlToken | undefined): bigint {
+    if (amount === '') return parseUnits('0', 18)
     if (!token) throw new Error('Cant scale amount without token metadata')
     return parseUnits(amount, token.decimals)
   }

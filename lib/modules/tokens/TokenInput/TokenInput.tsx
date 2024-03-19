@@ -80,7 +80,7 @@ function TokenInputFooter({
 
   const hasError = hasValidationError(token)
   // TODO: replace input.fontHintError with proper theme color
-  const inputLabelColor = hasError ? 'input.fontHintError' : 'current'
+  const inputLabelColor = hasError ? 'input.fontHintError' : 'grayText'
 
   const balance = token ? balanceFor(token?.address) : undefined
   const userBalance = token ? balance?.formatted || '0' : '0'
@@ -116,7 +116,7 @@ function TokenInputFooter({
           <Text fontSize="sm" variant="secondary" color={inputLabelColor}>
             {fNum('token', userBalance, { abbreviated: false })}
           </Text>
-          <Box color={hasError ? 'input.fontHintError' : 'secondary'}>
+          <Box color={hasError ? 'input.fontHintError' : 'icon.base'}>
             <WalletIcon size={16} />
           </Box>
         </HStack>
