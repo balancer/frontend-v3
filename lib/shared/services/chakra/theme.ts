@@ -203,6 +203,9 @@ export const tokens = {
         clearError: balColors.red['500'],
         clearErrorHover: balColors.red['600'],
       },
+      icon: {
+        default: 'gray.500',
+      },
     },
     dark: {
       // Background colors
@@ -287,6 +290,9 @@ export const tokens = {
         clearHover: tinycolor(balColors.base.light).lighten(1),
         clearError: balColors.red['400'],
         clearErrorHover: balColors.red['500'],
+      },
+      icon: {
+        default: 'gray.400',
       },
     },
   },
@@ -577,6 +583,13 @@ export const balTheme = {
             default: tokens.colors.light.button.border.disabled,
             _dark: tokens.colors.dark.button.border.disabled,
           },
+        },
+      },
+
+      icon: {
+        base: {
+          default: tokens.colors.light.icon.default,
+          _dark: tokens.colors.dark.icon.default,
         },
       },
 
@@ -1096,7 +1109,7 @@ export const balTheme = {
         },
         tertiary: {
           background: 'background.level3',
-          color: 'font.button.tertiary',
+          color: 'font.primary',
           _active: {
             background: 'background.level2',
             shadow: 'none',
