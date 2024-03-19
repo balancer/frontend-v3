@@ -1159,6 +1159,7 @@ export const balTheme = {
           backgroundColor: 'transparent',
           height: 'fit-content',
           width: 'fit-content',
+          shadow: 'none',
           px: '2',
           py: '1.5',
           fontSize: 'xs',

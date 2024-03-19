@@ -28,6 +28,7 @@ import { BPT_DECIMALS } from '../pool.constants'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { bn } from '@/lib/shared/utils/numbers'
 import { hasNestedPools } from '../pool.helpers'
+import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 
 const TABS = [
   {
@@ -131,7 +132,7 @@ export default function PoolMyLiquidity() {
     : pool.displayTokens
 
   return (
-    <Card variant="level2" shadow="2xl" width="full" minHeight="320px">
+    <Card variant="level2" shadow="2xl" width="full" minHeight="320px" borderWidth={0}>
       <Grid width="full" templateColumns="1fr 1fr">
         <GridItem>
           <VStack spacing="0" width="full">
@@ -222,7 +223,10 @@ export default function PoolMyLiquidity() {
           </VStack>
         </GridItem>
         <GridItem p="4" pl="0">
-          <Card height="full" variant="level0" shadow="innerXl" width="full" rounded="sm"></Card>
+          {/* <Card height="full" variant="level0" shadow="innerXl" width="full" rounded="sm"></Card> */}
+          <NoisyCard>
+            <></>
+          </NoisyCard>
         </GridItem>
       </Grid>
     </Card>

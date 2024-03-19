@@ -86,6 +86,7 @@ export default function PoolStats() {
       justifyContent="center"
       position="relative"
       shadow="2xl"
+      borderWidth={0}
     >
       <Grid
         columnGap="4"

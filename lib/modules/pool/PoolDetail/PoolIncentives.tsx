@@ -47,36 +47,10 @@ export default function PoolIncentives() {
 
   return (
     <VStack width="full">
-      <Box>
-        <Heading background="font.special" backgroundClip="text" size="h4">
-          Incentives
-        </Heading>
-      </Box>
-      <HStack spacing="4">
-        <IncentiveBadge label="Pool incentives (1w)" value="$5555" width="350px" />
-        <IncentiveBadge special label="My unclaimed" value="$5555" width="350px">
-          <Tooltip label={isDisabled ? disabledReason : ''}>
-            <Button
-              variant="secondary"
-              size="sm"
-              isDisabled={isDisabled || hasNoRewards}
-              onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
-            >
-              Claim
-            </Button>
-          </Tooltip>
-        </IncentiveBadge>
+      <HStack spacing="4" width="full">
+        <IncentiveBadge label="Pool incentives (1w)" value="$5555" width="full" />
+        <IncentiveBadge special label="My unclaimed" value="$5555" width="full" />
       </HStack>
-      <Box>
-        <Button variant="ghost">
-          <HStack>
-            <Text fontWeight="medium" variant="secondary">
-              View Details
-            </Text>
-            <Icon color="font.secondary" as={ChevronDown} />
-          </HStack>
-        </Button>
-      </Box>
     </VStack>
     // <Card variant="gradient" width="full" minHeight="320px">
     //   <VStack spacing="0" width="full">

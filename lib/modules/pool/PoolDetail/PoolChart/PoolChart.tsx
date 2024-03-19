@@ -64,17 +64,30 @@ export function PoolChart() {
     }
   }
 
+  return (
+    <Card variant="level2" shadow="2xl" width="full" minHeight="320px" borderWidth={0}>
+      <Stack p="4">
+        {isLoading && <Skeleton w="100%" h="300" />}
+        {!isLoading && chartData.length > 0 && (
+          <VStack width="full" height="full">
+            <HStack width="full" justifyContent="space-between">
+              <HStack spacing="2" textAlign="right">
+                <ButtonGroup
+                  currentOption={activeTab}
+                  options={tabsList}
+                  onChange={tab => setActiveTab(tab as PoolChartTypeTab)}
+                />
+
                 <PeriodSelect value={activePeriod} onChange={setActivePeriod} />
               </HStack>
-
               <VStack spacing="0" alignItems="flex-end">
                 <Heading fontWeight="bold" size="h5">
                   {chartValueSum}
                 </Heading>
-                <Text fontSize="0.85rem">{getActiveTabLabel()}</Text>
+                <Text fontSize="0.9rem">{getActiveTabLabel()}</Text>
               </VStack>
             </HStack>
-            <Box px="0" width="full" height="full" onMouseLeave={handleMouseLeave}>
+            <Box width="full" height="full" onMouseLeave={handleMouseLeave}>
               <ReactECharts
                 option={options}
                 onEvents={{
@@ -84,14 +97,14 @@ export function PoolChart() {
             </Box>
           </VStack>
         )}
-        {chartData.length <= 0 && (
+        {!isLoading && chartData.length <= 0 && (
           <Flex h="100" alignItems="center">
             <Text fontSize="2xl" variant="secondary" p="lg">
               Not enough data
             </Text>
           </Flex>
         )}
-      </VStack>
+      </Stack>
     </Card>
   )
 }

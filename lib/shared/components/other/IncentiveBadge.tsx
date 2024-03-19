@@ -10,57 +10,46 @@ type Props = {
 
 export function IncentiveBadge({ special = false, label, value, children, ...rest }: Props) {
   return (
-    <Card
-      p={special ? '1px' : '0'}
-      pr={special ? '1.5px' : '0'}
-      position="relative"
-      background="background.special"
-    >
-      <Card {...rest} rounded="lg" variant="level2" p="3" shadow="2xl">
-        <Box
-          position="absolute"
-          width="full"
-          height="full"
-          content=""
-          top="0"
-          left="0"
-          right="0"
-          background={special ? 'background.special' : 'transparent'}
-          rounded="sm"
-          opacity="0.15"
-          zIndex="1"
-        />
+    <Card borderWidth={0} position="relative" width="full">
+      <Card {...rest} borderWidth={0} rounded="lg" variant="level2" p="3" shadow="2xl">
         <HStack zIndex="2" justifyContent="space-between">
-          <HStack spacing="4">
+          <HStack spacing="4" width="full">
             <Flex
               justifyContent="center"
               alignItems="center"
               rounded="md"
-              background="background.card.level4"
+              background="background.level3"
               width="60px"
               height="60px"
+              borderWidth={1}
+              borderColor="border.base"
+              shadow="sm"
             >
-              {special && <Icon as={StarsIcon} boxSize="40px" />}
-              {!special && <Icon color="font.secondary" as={Gift} boxSize="30px" />}
+              {special && <Icon as={StarsIcon} boxSize="32px" />}
+              {!special && <Icon color="font.secondary" as={Gift} boxSize="28px" />}
             </Flex>
-            <VStack spacing="2" fontWeight="medium" alignItems="flex-start">
+            <HStack
+              spacing="2"
+              fontWeight="medium"
+              alignItems="flex-start"
+              justifyContent="space-between"
+              width="full"
+            >
               <Text
-                fontSize="0.95rem"
-                lineHeight="1rem"
-                fontWeight="medium"
-                variant={special ? 'primaryGradient' : 'secondary'}
+                fontSize="1rem"
+                fontWeight="semibold"
+                variant={special ? 'primaryGradient' : 'primaryGradient'}
               >
                 {label}
               </Text>
               <Text
-                variant={special ? 'primaryGradient' : 'secondary'}
-                fontSize="1.25rem"
-                lineHeight="1rem"
+                variant={special ? 'primaryGradient' : 'primaryGradient'}
+                fontSize="1rem"
                 fontWeight="semibold"
               >
                 {value}
               </Text>
-            </VStack>
+            </HStack>
           </HStack>
           {children}
         </HStack>
