@@ -144,15 +144,12 @@ export function SwapForm() {
                       }
                     />
                   </VStack>
-
-                  {simulationQuery.data && (
-                    <PriceImpactAccordion
-                      setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
-                      accordionButtonComponent={<SwapRate />}
-                      accordionPanelComponent={<SwapDetails />}
-                    />
-                  )}
-
+                  <PriceImpactAccordion
+                    setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                    accordionButtonComponent={<SwapRate />}
+                    accordionPanelComponent={<SwapDetails />}
+                    isDisabled={!simulationQuery.data}
+                  />
                   <Tooltip label={isDisabled ? disabledReason : ''}>
                     <Button
                       ref={nextBtn}

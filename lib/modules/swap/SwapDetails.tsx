@@ -18,9 +18,8 @@ export function OrderRoute() {
   const { simulationQuery } = useSwap()
 
   const queryData = simulationQuery.data as SdkSimulateSwapResponse
-
-  const orderRouteVersion = queryData.vaultVersion || 2
-  const hopCount = queryData?.routes[0]?.hops?.length || 0
+  const orderRouteVersion = queryData ? queryData.vaultVersion : 2
+  const hopCount = queryData ? queryData.routes[0].hops.length : 0
 
   return (
     <HStack justify="space-between" w="full">
@@ -72,9 +71,9 @@ export function SwapDetails() {
 
   useEffect(() => {
     if (simulationQuery.data) {
-      setPriceImpact(simulationQuery.data.priceImpact ?? '-1')
+      setPriceImpact(simulationQuery.data.priceImpact)
     }
-  }, [simulationQuery])
+  }, [simulationQuery.data])
 
   return (
     <VStack spacing="sm" align="start" w="full" fontSize="sm">
