@@ -6,6 +6,7 @@ import { useClaimStepConfigs } from '@/lib/modules/pool/actions/claim/useClaimSt
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import { ChainSlug, chainToSlugMap, slugToChainMap } from '@/lib/modules/pool/pool.utils'
 import { ClaimNetworkPoolsLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimNetworkPools/ClaimNetworkPoolsLayout'
+import { ClaimPortfolioModal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimPortfolioModal/ClaimPortfolioModal'
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
 import { useIterateSteps } from '@/lib/modules/transactions/transaction-steps/useIterateSteps'
@@ -16,6 +17,7 @@ import { Button, Card, HStack, Heading, Stack, Text, VStack } from '@chakra-ui/r
 import { capitalize } from 'lodash'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { useState } from 'react'
 
 function NetworkClaimAllButton({ pools }: { pools: PoolListItem[] }) {
   const stepConfigs = useClaimStepConfigs(pools)
@@ -40,6 +42,8 @@ export default function NetworkClaim() {
   const isClaimAllDisabled = pools?.every(pool =>
     poolRewardsMap[pool.id]?.totalFiatClaimBalance?.isEqualTo(0)
   )
+
+  const [modalPools, setModalPools] = useState<PoolListItem[]>([])
 
   return (
     <ClaimNetworkPoolsLayout backLink={'/portfolio'} title="Portfolio">
@@ -95,25 +99,39 @@ export default function NetworkClaim() {
                 <PoolName pool={pool} fontWeight="bold" color="fontDefault" />
               </Stack>
 
-              <Link href={`/portfolio/${chainToSlugMap[gqlChain]}/${pool.id}`}>
-                <Button
-                  variant="secondary"
-                  isDisabled={poolRewardsMap[pool.id]?.totalFiatClaimBalance?.isEqualTo(0)}
-                >
-                  Claim
-                </Button>
-              </Link>
+              <Button
+                onClick={() => {
+                  setModalPools([pool])
+                }}
+                variant="secondary"
+                isDisabled={poolRewardsMap[pool.id]?.totalFiatClaimBalance?.isEqualTo(0)}
+              >
+                Claim
+              </Button>
             </HStack>
           </Card>
         ))}
       </Stack>
 
       {pools && pools.length > 0 && (
-        <Link href={`/portfolio/${chainToSlugMap[gqlChain]}/all`}>
-          <Button width="100%" variant="secondary" isDisabled={isClaimAllDisabled}>
-            Claim all
-          </Button>
-        </Link>
+        <Button
+          onClick={() => {
+            setModalPools(pools)
+          }}
+          width="100%"
+          variant="secondary"
+          isDisabled={isClaimAllDisabled}
+        >
+          Claim all
+        </Button>
+      )}
+
+      {modalPools.length > 0 && (
+        <ClaimPortfolioModal
+          isOpen={modalPools.length > 0}
+          onClose={() => setModalPools([])}
+          pools={modalPools}
+        />
       )}
     </ClaimNetworkPoolsLayout>
   )
