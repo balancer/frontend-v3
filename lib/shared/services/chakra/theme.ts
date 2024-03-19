@@ -1094,7 +1094,6 @@ export const balTheme = {
           background: 'background.button.primary',
           backgroundPosition: '100% 0',
           backgroundSize: '100% 100%',
-          boxShadow: 'btnDefault',
           textShadow: 'fontDefault',
           transition: '0.1s ease-in-out',
           _hover: {
@@ -1103,7 +1102,6 @@ export const balTheme = {
         },
         secondary: {
           color: 'font.dark',
-          boxShadow: 'btnDefault',
           textShadow: 'fontDark',
           background: 'background.button.secondary',
         },
