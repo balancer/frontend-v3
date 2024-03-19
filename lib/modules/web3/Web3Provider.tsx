@@ -26,7 +26,7 @@ import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { infuraProvider } from 'wagmi/providers/infura'
 import { keyBy, merge } from 'lodash'
-import { useColorMode, useTheme } from '@chakra-ui/react'
+import { useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/shared/services/chakra/theme'
 import { CustomAvatar } from './CustomAvatar'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
@@ -35,6 +35,7 @@ import { UserAccountProvider } from './useUserAccount'
 import { defineChain } from 'viem'
 import { Chain } from 'viem'
 import { getNetworkConfig } from '@/lib/config/app.config'
+import { useThemeColor } from '@/lib/shared/services/chakra/useThemeColor'
 
 function buildChain(viemChain: Chain, rpcOverride?: string): Chain {
   const { rpcUrl } = getNetworkConfig(viemChain.id)
@@ -151,8 +152,8 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     ...sharedConfig,
   } as Theme)
 
-  const { colorMode } = useColorMode()
-  const customTheme = colorMode === 'dark' ? _darkTheme : _lightTheme
+  const themeColor = useThemeColor()
+  const customTheme = themeColor === 'dark' ? _darkTheme : _lightTheme
 
   return (
     <WagmiConfig config={createWagmiConfig()}>

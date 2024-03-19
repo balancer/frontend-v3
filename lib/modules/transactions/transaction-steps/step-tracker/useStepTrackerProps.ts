@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { ModalContentProps, useColorMode } from '@chakra-ui/react'
+import { ModalContentProps } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useCurrentFlowStep } from '../useCurrentFlowStep'
 import { StepConfig } from '../useIterateSteps'
+import { useThemeColor } from '@/lib/shared/services/chakra/useThemeColor'
 
 export function getStylesForModalContentWithStepTracker(isDesktop: boolean): ModalContentProps {
   return isDesktop ? { left: '-100px', position: 'relative' } : {}
@@ -20,7 +21,7 @@ export function useStepTrackerProps({ stepConfigs, currentStepIndex }: StepTrack
   const [initialStepConfigs, setInitialStepConfigs] = useState<StepConfig[]>([])
 
   const { flowStep } = useCurrentFlowStep()
-  const { colorMode } = useColorMode()
+  const themeColor = useThemeColor()
 
   // Number of steps that were completed and deleted from the original stepConfigs list
   const deletedStepsCount =
@@ -47,7 +48,7 @@ export function useStepTrackerProps({ stepConfigs, currentStepIndex }: StepTrack
     step: currentStep,
     isLastStep,
     currentIndex: getCurrentIndex(),
-    colorMode,
+    colorMode: themeColor,
     flowStep,
     currentStepPosition,
     steps: initialStepConfigs,
