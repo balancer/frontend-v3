@@ -49,7 +49,7 @@ function buildChain(viemChain: Chain, rpcOverride?: string): Chain {
 }
 
 export const supportedChains = [
-  buildChain(mainnet, 'https://rpc.tenderly.co/fork/08d8a5f5-73f4-4e2c-aa52-f29fd7b5422e'),
+  buildChain(mainnet),
   buildChain(arbitrum),
   buildChain(base),
   buildChain(avalanche),
