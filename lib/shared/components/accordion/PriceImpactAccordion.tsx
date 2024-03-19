@@ -22,11 +22,13 @@ interface PriceImpactAccordionProps {
   setNeedsToAcceptHighPI: (value: boolean) => void
   accordionButtonComponent: ReactNode
   accordionPanelComponent: ReactNode
+  isDisabled?: boolean
 }
 export function PriceImpactAccordion({
   setNeedsToAcceptHighPI,
   accordionButtonComponent,
   accordionPanelComponent,
+  isDisabled,
 }: PriceImpactAccordionProps) {
   const acceptHighImpactDisclosure = useDisclosure()
   const {
@@ -58,7 +60,7 @@ export function PriceImpactAccordion({
   return (
     <>
       <Accordion w="full" variant="button" allowToggle>
-        <AccordionItem>
+        <AccordionItem isDisabled={isDisabled}>
           <h2>
             <AccordionButton>
               <Box as="span" flex="1" textAlign="left">

@@ -4,12 +4,24 @@ import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { HumanAmount } from '@balancer/sdk'
-import { Button, Card, Center, HStack, Heading, Text, Tooltip, VStack } from '@chakra-ui/react'
-import { useRef } from 'react'
+import {
+  Button,
+  Card,
+  Center,
+  Grid,
+  GridItem,
+  HStack,
+  Heading,
+  Icon,
+  Text,
+  Tooltip,
+  VStack,
+} from '@chakra-ui/react'
+import { useEffect, useRef } from 'react'
 import { Address } from 'wagmi'
 import { AddLiquidityModal } from '../AddLiquidityModal'
 import { useAddLiquidity } from '../useAddLiquidity'
-import { fNum } from '@/lib/shared/utils/numbers'
+import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
 import { ProportionalInputs } from './ProportionalInputs'
 import { usePool } from '../../../usePool'
@@ -17,6 +29,8 @@ import { requiresProportionalInput } from '../../LiquidityActionHelpers'
 import { PriceImpactAccordion } from '@/lib/shared/components/accordion/PriceImpactAccordion'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
+import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 export function AddLiquidityForm() {
   const {
@@ -34,16 +48,23 @@ export function AddLiquidityForm() {
     totalUSDValue,
   } = useAddLiquidity()
   const nextBtn = useRef(null)
-  const { pool } = usePool()
-  const { priceImpactColor } = usePriceImpact()
+  const { pool, totalApr } = usePool()
+  const { priceImpactColor, priceImpact, setPriceImpact } = usePriceImpact()
+  const { toCurrency } = useCurrency()
+
+  useEffect(() => {
+    setPriceImpact(priceImpactQuery.data)
+  }, [priceImpactQuery.data])
 
   function currentValueFor(tokenAddress: string) {
     const amountIn = amountsIn.find(amountIn => isSameAddress(amountIn.tokenAddress, tokenAddress))
     return amountIn ? amountIn.humanAmount : ''
   }
 
-  const priceImpact = priceImpactQuery?.data
-  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpactLabel =
+    priceImpact !== undefined && priceImpact !== null ? fNum('priceImpact', priceImpact) : '-'
+
+  const weeklyYield = bn(totalUSDValue).times(totalApr).div(52)
 
   const onModalOpen = async () => {
     previewModalDisclosure.onOpen()
@@ -68,7 +89,6 @@ export function AddLiquidityForm() {
               </Heading>
               <TransactionSettings size="sm" />
             </HStack>
-
             {requiresProportionalInput(pool.type) ? (
               <ProportionalInputs />
             ) : (
@@ -89,33 +109,60 @@ export function AddLiquidityForm() {
                 })}
               </VStack>
             )}
-
             <VStack spacing="sm" align="start" w="full">
-              {priceImpactQuery.data && (
-                <PriceImpactAccordion
-                  setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
-                  accordionButtonComponent={
-                    <HStack>
-                      <Text variant="secondary" fontSize="sm" color="gray.400">
-                        Price impact:{' '}
-                      </Text>
-                      <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
-                        {priceImpactLabel}
-                      </Text>
-                    </HStack>
-                  }
-                  accordionPanelComponent={
-                    <PoolActionsPriceImpactDetails
-                      totalUSDValue={totalUSDValue}
-                      priceImpactValue={priceImpact}
-                      bptAmount={simulationQuery.data?.bptOut.amount}
-                      isAddLiquidity
-                    />
-                  }
-                />
-              )}
+              <PriceImpactAccordion
+                isDisabled={!priceImpactQuery.data}
+                setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                accordionButtonComponent={
+                  <HStack>
+                    <Text variant="secondary" fontSize="sm" color="gray.400">
+                      Price impact:{' '}
+                    </Text>
+                    <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
+                      {priceImpactLabel}
+                    </Text>
+                  </HStack>
+                }
+                accordionPanelComponent={
+                  <PoolActionsPriceImpactDetails
+                    totalUSDValue={totalUSDValue}
+                    bptAmount={simulationQuery.data?.bptOut.amount}
+                    isAddLiquidity
+                  />
+                }
+              />
             </VStack>
-
+            <Grid w="full" templateColumns="1fr 1fr" gap="2">
+              <GridItem>
+                <Card variant="level4" py="12px" px="md" w="full">
+                  <VStack align="start" gap="0.5">
+                    <Text fontSize="sm" lineHeight="16px" fontWeight="500">
+                      Total
+                    </Text>
+                    <Text fontSize="md" lineHeight="16px" fontWeight="700">
+                      {totalUSDValue !== '0'
+                        ? toCurrency(totalUSDValue, { abbreviated: false })
+                        : '-'}
+                    </Text>
+                  </VStack>
+                </Card>
+              </GridItem>
+              <GridItem>
+                <Card variant="level4" py="12px" px="md" w="full">
+                  <VStack align="start" gap="0.5">
+                    <Text variant="special" fontSize="sm" lineHeight="16px" fontWeight="500">
+                      Potential weekly yield
+                    </Text>
+                    <HStack>
+                      <Text variant="special" fontSize="md" lineHeight="16px" fontWeight="700">
+                        {weeklyYield ? toCurrency(weeklyYield, { abbreviated: false }) : '-'}
+                      </Text>
+                      <Icon as={StarsIcon} />
+                    </HStack>
+                  </VStack>
+                </Card>
+              </GridItem>
+            </Grid>
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}

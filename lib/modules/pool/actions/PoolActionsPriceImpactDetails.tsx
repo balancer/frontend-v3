@@ -13,14 +13,12 @@ import { ArrowRight } from 'react-feather'
 
 interface PoolActionsPriceImpactDetailsProps {
   bptAmount: bigint | undefined
-  priceImpactValue: number | undefined
   totalUSDValue: string
   isAddLiquidity?: boolean
 }
 
 export function PoolActionsPriceImpactDetails({
   bptAmount,
-  priceImpactValue,
   totalUSDValue,
   isAddLiquidity = false,
 }: PoolActionsPriceImpactDetailsProps) {
@@ -30,8 +28,7 @@ export function PoolActionsPriceImpactDetails({
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
 
-  const { priceImpactLevel, priceImpactColor, getPriceImpactIcon, setPriceImpact, priceImpact } =
-    usePriceImpact()
+  const { priceImpactLevel, priceImpactColor, getPriceImpactIcon, priceImpact } = usePriceImpact()
 
   const priceImpactLabel = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
@@ -55,12 +52,6 @@ export function PoolActionsPriceImpactDetails({
       setUserTotalBalance(pool.userBalance.totalBalance)
     }
   }, [pool])
-
-  useEffect(() => {
-    if (priceImpactValue) {
-      setPriceImpact(priceImpactValue ?? '-1')
-    }
-  }, [priceImpactValue])
 
   return (
     <VStack spacing="sm" align="start" w="full" fontSize="sm">
