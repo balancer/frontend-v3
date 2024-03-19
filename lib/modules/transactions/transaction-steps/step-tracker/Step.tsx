@@ -13,7 +13,7 @@ export function Step(props: StepProps) {
   const { color, isActive, title } = getStepSettings(props)
 
   return (
-    <HStack alignItems="start">
+    <HStack alignItems="center">
       <StepIndicator {...props}></StepIndicator>
       <VStack spacing="0" alignItems="start">
         <Text mt={isActive ? -0.3 : 0} color={color}>
@@ -45,8 +45,8 @@ export function StepIndicator(props: StepProps) {
     <CircularProgress
       value={100}
       isIndeterminate={isActiveLoading}
-      thickness="4"
-      size="8"
+      thickness="8"
+      size="7"
       color={color}
     >
       <CircularProgressLabel fontSize="md" color={color}>

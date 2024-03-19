@@ -164,6 +164,7 @@ export const tokens = {
         specialSecondary: balColors.gradient.sunsetLight,
         link: balColors.purple['500'],
         linkHover: balColors.purple['700'],
+        searchMatch: balColors.green['600'],
       },
       card: {
         border: {
@@ -252,6 +253,7 @@ export const tokens = {
         specialSecondary: 'linear-gradient(180deg, #EA9A43 0%, #F06147 100%)',
         link: balColors.purple['300'],
         linkHover: balColors.purple['100'],
+        searchMatch: balColors.green['400'],
       },
       // card colors
       card: {
@@ -626,6 +628,10 @@ export const balTheme = {
         linkHover: {
           default: tokens.colors.light.text.linkHover,
           _dark: tokens.colors.dark.text.linkHover,
+        },
+        searchMatch: {
+          default: tokens.colors.light.text.searchMatch,
+          _dark: tokens.colors.dark.text.searchMatch,
         },
         accordionHeading: {
           default: tokens.colors.light.button.background.primary,

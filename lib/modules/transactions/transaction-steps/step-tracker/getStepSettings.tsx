@@ -66,6 +66,7 @@ function getColor(colorMode: ColorMode, status: StepStatus, flowStep?: FlowStep)
   if (status === 'incomplete') {
     return incompleteColor[colorMode]
   }
+
   return 'blue'
 }
 
@@ -92,8 +93,8 @@ function isLoading(status: StepStatus, flowStep?: FlowStep): boolean {
   We show different colors depending on the step status and other variables like the step flow state
 */
 const completeColor = {
-  dark: 'green',
-  light: 'green',
+  dark: 'font.searchText',
+  light: 'font.searchText',
 }
 
 const incompleteColor = {
@@ -102,8 +103,8 @@ const incompleteColor = {
 }
 
 const activeColor = {
-  dark: 'gradient',
-  light: 'blue',
+  dark: 'font.primary',
+  light: 'font.primary',
 }
 
 // When the current step tx is waiting for wallet confirmation

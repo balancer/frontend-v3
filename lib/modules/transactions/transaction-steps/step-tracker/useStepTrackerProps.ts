@@ -3,20 +3,16 @@ import { ModalContentProps, useColorMode } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useCurrentFlowStep } from '../useCurrentFlowStep'
 import { StepConfig } from '../useIterateSteps'
+import { StepTrackerProps } from './step-tracker.types'
 
 export function getStylesForModalContentWithStepTracker(isDesktop: boolean): ModalContentProps {
   return isDesktop ? { left: '-100px', position: 'relative' } : {}
 }
 
-type StepTrackerProps = {
-  stepConfigs: StepConfig[]
-  currentStepIndex: number
-}
-
 /*
   Prepares steps and indexes to be used by the two UI versions of the StepTracker component (Mobile and Desktop).
 */
-export function useStepTrackerProps({ stepConfigs, currentStepIndex }: StepTrackerProps) {
+export function useStepTrackerProps({ stepConfigs, currentStepIndex, chain }: StepTrackerProps) {
   const [initialStepConfigs, setInitialStepConfigs] = useState<StepConfig[]>([])
 
   const { flowStep } = useCurrentFlowStep()
@@ -43,6 +39,10 @@ export function useStepTrackerProps({ stepConfigs, currentStepIndex }: StepTrack
     setInitialStepConfigs(stepConfigs)
   }, [])
 
+  useEffect(() => {
+    console.log('colorMode', colorMode)
+  }, [])
+
   return {
     step: currentStep,
     isLastStep,
@@ -51,5 +51,6 @@ export function useStepTrackerProps({ stepConfigs, currentStepIndex }: StepTrack
     flowStep,
     currentStepPosition,
     steps: initialStepConfigs,
+    chain,
   }
 }

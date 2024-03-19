@@ -68,7 +68,11 @@ export function SwapPreviewModal({
       <ModalOverlay />
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && (
-          <DesktopStepTracker currentStepIndex={currentStepIndex} stepConfigs={swapStepConfigs} />
+          <DesktopStepTracker
+            currentStepIndex={currentStepIndex}
+            stepConfigs={swapStepConfigs}
+            chain={selectedChain}
+          />
         )}
         <ModalHeader>
           <HStack justify="space-between" w="full" pr="lg">
