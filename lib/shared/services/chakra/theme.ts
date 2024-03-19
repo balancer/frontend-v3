@@ -204,7 +204,7 @@ export const tokens = {
         clearErrorHover: balColors.red['600'],
       },
       icon: {
-        default: 'gray.500',
+        base: 'gray.500',
       },
     },
     dark: {
@@ -292,7 +292,7 @@ export const tokens = {
         clearErrorHover: balColors.red['500'],
       },
       icon: {
-        default: 'gray.400',
+        base: 'gray.400',
       },
     },
   },
@@ -588,8 +588,8 @@ export const balTheme = {
 
       icon: {
         base: {
-          default: tokens.colors.light.icon.default,
-          _dark: tokens.colors.dark.icon.default,
+          default: tokens.colors.light.icon.base,
+          _dark: tokens.colors.dark.icon.base,
         },
       },
 
