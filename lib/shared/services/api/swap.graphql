@@ -27,7 +27,10 @@ query GetSorSwaps(
         decimals
       }
     }
-    priceImpact
+    priceImpact {
+      priceImpact
+      error
+    }
     returnAmount
     routes {
       hops {
