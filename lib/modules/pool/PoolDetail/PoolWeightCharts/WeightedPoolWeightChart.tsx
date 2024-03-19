@@ -1,6 +1,6 @@
 'use client'
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, HStack, VStack, useTheme, useColorMode } from '@chakra-ui/react'
+import { Box, HStack, VStack, useTheme } from '@chakra-ui/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
@@ -9,6 +9,7 @@ import { motion } from 'framer-motion'
 import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
 import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 import PoolWeightChartLegend from './PoolWeightChartLegend'
+import { useThemeColor } from '@/lib/shared/services/chakra/useThemeColor'
 
 const smallSize: ChartSizeValues = {
   chartHeight: '150px',
@@ -41,7 +42,7 @@ export default function WeightedPoolWeightChart({
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const [isChartLoaded, setIsChartLoaded] = useState(false)
   const theme = useTheme()
-  const { colorMode } = useColorMode()
+  const themeColor = useThemeColor()
 
   useEffect(() => {
     eChartsRef.current?.getEchartsInstance().on('finished', () => {
@@ -71,7 +72,7 @@ export default function WeightedPoolWeightChart({
           type: 'pie',
           radius: ['55%', '80%'],
           itemStyle: {
-            borderColor: theme.colors['chartBorder'][colorMode],
+            borderColor: theme.colors['chartBorder'][themeColor],
             borderWidth: 1.5,
           },
           label: {
@@ -103,7 +104,7 @@ export default function WeightedPoolWeightChart({
         },
       ],
     }
-  }, [pool, colorMode])
+  }, [pool, themeColor])
 
   return (
     <VStack>

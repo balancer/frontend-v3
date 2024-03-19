@@ -1,8 +1,9 @@
-import { Box, HStack, Grid, useColorMode, Flex } from '@chakra-ui/react'
+import { Box, HStack, Grid, Flex } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
 import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 import PoolWeightChartLegend from './PoolWeightChartLegend'
+import { useThemeColor } from '@/lib/shared/services/chakra/useThemeColor'
 
 const chartSizes: Record<string, Record<string, ChartSizeValues>> = {
   square: {
@@ -54,7 +55,7 @@ export default function CLPPoolWeightChart({
   isSmall,
   colors = [],
 }: PoolWeightChartProps) {
-  const { colorMode } = useColorMode()
+  const themeColor = useThemeColor()
 
   function getChartSizeValues() {
     const chartSizeKey = isSmall ? 'small' : 'normal'
@@ -139,7 +140,7 @@ export default function CLPPoolWeightChart({
               transform="rotate(90deg) translateY(-50%)"
               position="absolute"
               borderWidth="2px"
-              borderColor={`chartBorder.${colorMode}`}
+              borderColor={`chartBorder.${themeColor}`}
               _hover={{ filter: 'brightness(103%)' }}
             />
             <Box
@@ -166,7 +167,7 @@ export default function CLPPoolWeightChart({
             {pool.displayTokens.map((_, i) => {
               return (
                 <Box
-                  borderColor={`chartBorder.${colorMode}`}
+                  borderColor={`chartBorder.${themeColor}`}
                   borderWidth="1px"
                   key={`${pool.address}-token-weight-${i}`}
                   as={motion.div}
@@ -193,7 +194,7 @@ export default function CLPPoolWeightChart({
                   as={motion.div}
                   cursor="pointer"
                   bgGradient={`linear(to-b, ${colors[i].from}, ${colors[i].to})`}
-                  borderColor={`chartBorder.${colorMode}`}
+                  borderColor={`chartBorder.${themeColor}`}
                   borderWidth="1px"
                   _hover={{ filter: 'brightness(103%)' }}
                   borderTopLeftRadius={i === 0 ? 'xl' : 'none'}
