@@ -22,7 +22,6 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useAddLiquidityStepConfigs } from './useAddLiquidityStepConfigs'
 import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
@@ -33,19 +32,20 @@ export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>
 
 export function _useAddLiquidity() {
   const [humanAmountsIn, setHumanAmountsIn] = useState<HumanAmountIn[]>([])
+  const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
 
   const { pool, refetch: refetchPool } = usePool()
   const { getToken } = useTokens()
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
 
-  const [addLiquidityTxState, setAddLiquidityTxState] = useState<TransactionState>()
   const { hasValidationErrors } = useTokenInputsValidation()
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts'],
-    [hasValidationErrors(), 'Errors in token inputs']
+    [hasValidationErrors(), 'Errors in token inputs'],
+    [needsToAcceptHighPI, 'Accept high price impact first']
   )
 
   const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id])
@@ -56,7 +56,7 @@ export function _useAddLiquidity() {
   const helpers = new LiquidityActionHelpers(pool)
   const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
 
-  const stepConfigs = useAddLiquidityStepConfigs(inputAmounts, setAddLiquidityTxState)
+  const stepConfigs = useAddLiquidityStepConfigs(inputAmounts)
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
   function setInitialHumanAmountsIn() {
@@ -133,13 +133,12 @@ export function _useAddLiquidity() {
     currentStep,
     useOnStepCompleted,
     handler,
-    addLiquidityTxState,
     setHumanAmountIn,
     setHumanAmountsIn,
-    setAddLiquidityTxState,
     stepConfigs,
     currentStepIndex,
     helpers,
+    setNeedsToAcceptHighPI,
   }
 }
 

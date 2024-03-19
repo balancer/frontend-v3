@@ -14,26 +14,24 @@ import {
   useDisclosure,
   IconButton,
   Button,
-  Text,
   Box,
 } from '@chakra-ui/react'
 import { useMemo, useRef } from 'react'
 import { useSwap } from './useSwap'
 import { useTokens } from '../tokens/useTokens'
 import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
-import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
 import { SwapPreviewModal } from './SwapPreviewModal'
-import { getChainName } from '@/lib/config/app.config'
-import { RichSelect } from '@/lib/shared/components/inputs/RichSelect'
-import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
-import { SwapDetailsAccordion } from './SwapDetailsAccordion'
+import { PriceImpactAccordion } from '../../shared/components/accordion/PriceImpactAccordion'
 import { TokenInputsValidationProvider } from '../tokens/useTokenInputsValidation'
-import { ChevronDownIcon } from '@chakra-ui/icons'
 import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
-import { Globe, Repeat } from 'react-feather'
+import { ChainSelect } from '../chains/ChainSelect'
+import { Repeat } from 'react-feather'
+import { SwapRate } from './SwapRate'
+import { SwapDetails } from './SwapDetails'
+import { capitalize } from 'lodash'
 
 export function SwapForm() {
   const {
@@ -45,6 +43,7 @@ export function SwapForm() {
     disabledReason,
     previewModalDisclosure,
     simulationQuery,
+    swapAction,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
@@ -59,16 +58,6 @@ export function SwapForm() {
   const nextBtn = useRef(null)
   const finalRefTokenIn = useRef(null)
   const finalRefTokenOut = useRef(null)
-
-  const networkOptions = PROJECT_CONFIG.supportedNetworks.map(network => ({
-    label: (
-      <HStack>
-        <NetworkIcon chain={network} size={6} />
-        <Text>{getChainName(network)}</Text>
-      </HStack>
-    ),
-    value: network,
-  }))
 
   const tokenMap = { tokenIn, tokenOut }
 
@@ -108,23 +97,16 @@ export function SwapForm() {
               <VStack spacing="lg" align="start">
                 <HStack w="full" justify="space-between">
                   <Heading fontWeight="bold" size="h5">
-                    Swap
+                    {capitalize(swapAction)}
                   </Heading>
                   <TransactionSettings size="sm" />
                 </HStack>
                 <VStack spacing="md" w="full">
-                  <RichSelect
+                  <ChainSelect
                     value={selectedChain}
-                    options={networkOptions}
                     onChange={newValue => {
                       setSelectedChain(newValue as GqlChain)
                     }}
-                    rightIcon={
-                      <HStack>
-                        <Globe size={16} />
-                        <ChevronDownIcon fontWeight="bold" fontSize="xl" />
-                      </HStack>
-                    }
                   />
                   <VStack w="full">
                     <TokenInput
@@ -164,7 +146,11 @@ export function SwapForm() {
                   </VStack>
 
                   {simulationQuery.data && (
-                    <SwapDetailsAccordion setNeedsToAcceptHighPI={setNeedsToAcceptHighPI} />
+                    <PriceImpactAccordion
+                      setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                      accordionButtonComponent={<SwapRate />}
+                      accordionPanelComponent={<SwapDetails />}
+                    />
                   )}
 
                   <Tooltip label={isDisabled ? disabledReason : ''}>

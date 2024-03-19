@@ -1,3 +1,5 @@
+'use client'
+
 import { HStack, IconButton, Select } from '@chakra-ui/react'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'

@@ -7,8 +7,8 @@ import { LABELS } from '@/lib/shared/labels'
 import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 import { useClaimStepConfigs } from './useClaimStepConfigs'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { useBalTokenRewards } from '@/lib/modules/portfolio/useBalRewards'
-import { useClaimableBalances } from '@/lib/modules/portfolio/claim/useClaimableBalances'
+import { useBalTokenRewards } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
+import { useClaimableBalances } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
 
 export function useClaiming(pools: PoolListItem[]) {

@@ -2,7 +2,6 @@
 'use client'
 
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import {
   GetTokenPricesDocument,
   GetTokenPricesQuery,
@@ -15,12 +14,14 @@ import {
 } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { Numberish, bn } from '@/lib/shared/utils/numbers'
+import { bn, Numberish } from '@/lib/shared/utils/numbers'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { Dictionary, zipObject } from 'lodash'
-import { PropsWithChildren, createContext, useCallback } from 'react'
+import { createContext, PropsWithChildren, useCallback } from 'react'
 import { Address } from 'wagmi'
 import { TokenBase } from './token.types'
+import { minsToMs } from '@/lib/shared/hooks/useTime'
+import { useSkipInitialQuery } from '@/lib/shared/hooks/useSkipInitialQuery'
 
 export type UseTokensResult = ReturnType<typeof _useTokens>
 export const TokensContext = createContext<UseTokensResult | null>(null)
@@ -31,9 +32,19 @@ export function _useTokens(
   variables: GetTokensQueryVariables
 ) {
   const networkConfig = useNetworkConfig()
+  const skipQuery = useSkipInitialQuery(variables)
 
-  const { data: tokensData } = useQuery(GetTokensDocument, { variables })
-  const { data: tokenPricesData } = useQuery(GetTokenPricesDocument)
+  // skip initial fetch on mount so that initialData is used
+  const { data: tokensData } = useQuery(GetTokensDocument, {
+    variables,
+    skip: skipQuery,
+  })
+  const { data: tokenPricesData } = useQuery(GetTokenPricesDocument, {
+    variables,
+    initialFetchPolicy: 'cache-only',
+    nextFetchPolicy: 'cache-first',
+    pollInterval: minsToMs(3),
+  })
 
   const tokens = tokensData?.tokens || initTokenData.tokens
   const prices = tokenPricesData?.tokenPrices || initTokenPricesData.tokenPrices
@@ -139,16 +150,6 @@ export function TokensProvider({
   tokenPricesData: GetTokenPricesQuery
   variables: GetTokensQueryVariables
 }) {
-  useSeedApolloCache({
-    query: GetTokensDocument,
-    data: tokensData,
-    variables,
-  })
-  useSeedApolloCache({
-    query: GetTokenPricesDocument,
-    data: tokenPricesData,
-  })
-
   const tokens = _useTokens(tokensData, tokenPricesData, variables)
 
   return <TokensContext.Provider value={tokens}>{children}</TokensContext.Provider>

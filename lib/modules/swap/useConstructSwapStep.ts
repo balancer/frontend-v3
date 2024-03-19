@@ -1,25 +1,30 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
+import { TransactionLabels, swapStepId } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useEffect } from 'react'
 import { useSwap } from './useSwap'
 import { useBuildSwapQuery } from './queries/useBuildSwapQuery'
 import { getChainId } from '@/lib/config/app.config'
 import { useSyncCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
+import { capitalize } from 'lodash'
+import { swapActionPastTense } from './swap.helpers'
 
 export function useConstructSwapStep() {
-  const transactionLabels: TransactionLabels = {
-    init: 'Swap',
-    confirming: 'Confirming...',
-    confirmed: `Swapped!`,
-    tooltip: 'Swap A for B',
-  }
-
-  const { simulationQuery, selectedChain } = useSwap()
+  const { simulationQuery, selectedChain, swapAction, tokenInInfo, tokenOutInfo } = useSwap()
   const buildSwapQuery = useBuildSwapQuery()
 
+  const tokenInSymbol = tokenInInfo?.symbol || 'Unknown'
+  const tokenOutSymbol = tokenOutInfo?.symbol || 'Unknown'
+
+  const transactionLabels: TransactionLabels = {
+    init: capitalize(swapAction),
+    confirming: 'Confirming...',
+    confirmed: `${swapActionPastTense(swapAction)}!`,
+    tooltip: `${capitalize(swapAction)} ${tokenInSymbol} for ${tokenOutSymbol}`,
+  }
+
   useEffect(() => {
-    // simulationQuery is refetched every 30 seconds by AddLiquidityTimeout
+    // simulationQuery is refetched every 30 seconds by SwapTimeout
     if (simulationQuery.data) {
       buildSwapQuery.refetch()
     }
@@ -34,7 +39,7 @@ export function useConstructSwapStep() {
   const swapStep = useSyncCurrentFlowStep({
     ...swapTransaction,
     transactionLabels,
-    id: `swap`,
+    id: swapStepId,
     stepType: 'swap',
     isComplete,
   })

@@ -900,9 +900,9 @@ export default function Components() {
         </UnorderedList>
         <Heading size="h4">Card colors</Heading>
         <Section variant="subsection">
-          <Card>
+          <Card variant="level0">
             <CardBody>
-              <Text>Card base level</Text>
+              <Text>Card level 0</Text>
               <Card variant="level1">
                 <CardBody>
                   <Text>Card level 1</Text>
@@ -915,26 +915,6 @@ export default function Components() {
                           <Card variant="level4">
                             <CardBody>
                               <Text>Card level 4</Text>
-                              <Card variant="level5">
-                                <CardBody>
-                                  <Text>Card level 5</Text>
-                                  <Card variant="level6">
-                                    <CardBody>
-                                      <Text>Card level 6</Text>
-                                      <Card variant="level7">
-                                        <CardBody>
-                                          <Text>Card level 7</Text>
-                                          <Card variant="level8">
-                                            <CardBody>
-                                              <Text>Card level 8</Text>
-                                            </CardBody>
-                                          </Card>
-                                        </CardBody>
-                                      </Card>
-                                    </CardBody>
-                                  </Card>
-                                </CardBody>
-                              </Card>
                             </CardBody>
                           </Card>
                         </CardBody>

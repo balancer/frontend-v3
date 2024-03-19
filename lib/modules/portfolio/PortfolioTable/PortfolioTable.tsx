@@ -5,10 +5,11 @@ import { PoolListItem } from '../../pool/pool.types'
 import { PortfolioTableRow } from './PortfolioTableRow'
 import { HStack, Heading, Stack } from '@chakra-ui/react'
 import { useMemo, useState } from 'react'
+import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 
-export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr' | 'type'
+export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr'
 export interface PortfolioSortingData {
-  id: PortfolioTableSortingId
+  id: PortfolioTableSortingId | GqlPoolOrderBy
   desc: boolean
 }
 
@@ -16,10 +17,6 @@ export const portfolioOrderBy: {
   title: string
   id: PortfolioTableSortingId
 }[] = [
-  {
-    title: 'Type',
-    id: 'type',
-  },
   {
     title: 'Staking',
     id: 'staking',
@@ -37,6 +34,7 @@ export const portfolioOrderBy: {
     id: 'apr',
   },
 ]
+
 const numberColumnWidth = '125px'
 const furthestLeftColWidth = '140px'
 
@@ -49,21 +47,18 @@ const rowProps = {
 }
 
 export function PortfolioTable() {
-  const { portfolioData, isLoading } = usePortfolio()
-  const pools = [portfolioData?.stakedPools || [], portfolioData?.unstakedPools || []].flat()
+  const { portfolioData, isLoadingPortfolio } = usePortfolio()
 
   const [currentSortingObj, setCurrentSortingObj] = useState<PortfolioSortingData>({
     id: 'staking',
     desc: true,
   })
 
-  // To-Do: don't mutate the original array
   const sortedPools = useMemo(() => {
-    return pools.sort((a, b) => {
-      if (currentSortingObj.id === 'type') {
-        return currentSortingObj.desc ? a.type.localeCompare(b.type) : b.type.localeCompare(a.type)
-      }
+    if (!portfolioData?.pools) return []
+    const arr = [...portfolioData.pools]
 
+    return arr.sort((a, b) => {
       if (currentSortingObj.id === 'staking') {
         const aStakedBalance = Number(a.userBalance?.stakedBalance || 0)
         const bStakedBalance = Number(b.userBalance?.stakedBalance || 0)
@@ -87,23 +82,28 @@ export function PortfolioTable() {
           : bTotalBalance - aTotalBalance
       }
 
-      // To-Do: implement sorting by APR
       if (currentSortingObj.id === 'apr') {
-        return 0
+        const aApr = a.dynamicData.apr.apr as any
+        const bApr = b.dynamicData.apr.apr as any
+
+        const aArpValue = aApr.total || aApr.min
+        const bArpValue = bApr.total || bApr.min
+
+        return currentSortingObj.desc ? bArpValue - aArpValue : aArpValue - bArpValue
       }
 
       return 0
     })
-  }, [currentSortingObj, pools])
+  }, [currentSortingObj, portfolioData.pools])
 
   return (
-    <Stack>
+    <Stack gap={5}>
       <HStack>
         <Heading size="lg">Balancer portfolio</Heading>
       </HStack>
       <PaginatedTable
         items={sortedPools}
-        loading={isLoading}
+        loading={isLoadingPortfolio}
         renderTableHeader={() => (
           <PortfolioTableHeader
             currentSortingObj={currentSortingObj}

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 'use client'
 
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
@@ -34,6 +35,11 @@ import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
+import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
+import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
+// eslint-disable-next-line max-len
+import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 type Props = {
   isOpen: boolean
@@ -48,6 +54,7 @@ export function AddLiquidityModal({
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
+  const { isDesktop, isMobile } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const {
     humanAmountsIn,
@@ -55,8 +62,9 @@ export function AddLiquidityModal({
     simulationQuery,
     priceImpactQuery,
     tokens,
-    addLiquidityTxState,
+    stepConfigs,
     currentStep,
+    currentStepIndex,
     useOnStepCompleted,
   } = useAddLiquidity()
   const { toCurrency } = useCurrency()
@@ -80,7 +88,10 @@ export function AddLiquidityModal({
       {...rest}
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
+        {isDesktop && (
+          <DesktopStepTracker currentStepIndex={currentStepIndex} stepConfigs={stepConfigs} />
+        )}
         <ModalHeader>
           <Heading fontWeight="bold" size="h5">
             Add liquidity
@@ -89,6 +100,11 @@ export function AddLiquidityModal({
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="md" align="start">
+            {isMobile && (
+              <Card variant="level3" p="md" shadow="sm" w="full">
+                <MobileStepTracker currentStepIndex={currentStepIndex} stepConfigs={stepConfigs} />
+              </Card>
+            )}
             <Card variant="level3" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
@@ -163,7 +179,7 @@ export function AddLiquidityModal({
                     </Tooltip>
                   </HStack>
                 </HStack>
-                <AddLiquidityTimeout addLiquidityTxState={addLiquidityTxState} />
+                <AddLiquidityTimeout />
               </VStack>
             </Card>
           </VStack>

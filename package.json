@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.8.0-rc.1",
-    "@balancer/sdk": "^0.11.0",
+    "@balancer/sdk": "^0.12.0",
     "@chakra-ui/anatomy": "^2.2.2",
     "@chakra-ui/hooks": "^2.2.1",
     "@chakra-ui/icons": "^2.1.0",
@@ -49,6 +49,7 @@
     "@tanstack/react-table": "^8.9.3",
     "@vercel/speed-insights": "^1.0.1",
     "bignumber.js": "^9.1.2",
+    "chakra-react-select": "^4.7.6",
     "date-fns": "^2.30.0",
     "deepmerge": "^4.3.1",
     "echarts": "^5.4.3",
@@ -62,6 +63,7 @@
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "next": "14.0.4",
+    "next-themes": "^0.3.0",
     "next-usequerystate": "^1.9.2",
     "nextjs-toploader": "^1.6.4",
     "numeral": "^2.0.6",
@@ -78,7 +80,7 @@
     "wagmi": "^1.4.5"
   },
   "devDependencies": {
-    "@apollo/experimental-nextjs-app-support": "^0.5.1",
+    "@apollo/experimental-nextjs-app-support": "^0.8.0",
     "@chakra-ui/cli": "^2.4.1",
     "@chakra-ui/styled-system": "^2.9.1",
     "@graphql-codegen/cli": "^5.0.0",

@@ -27,6 +27,7 @@ import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
 import { BPT_DECIMALS } from '../pool.constants'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { bn } from '@/lib/shared/utils/numbers'
+import { hasNestedPools } from '../pool.helpers'
 
 const TABS = [
   {
@@ -123,6 +124,11 @@ export default function PoolMyLiquidity() {
   const canStake = pool.staking
   const hasUnstakedBalance = bn(pool.userBalance?.walletBalance || '0').gt(0)
   const hasStakedBalance = bn(pool.userBalance?.stakedBalance || '0').gt(0)
+
+  const displayTokens = hasNestedPools(pool)
+    ? // we don't have the balances for pool.displayTokens for v2 boosted pools so we show bpt tokens balance as a workaround
+      pool.tokens
+    : pool.displayTokens
 
   return (
     <Card variant="level2" shadow="2xl" width="full" minHeight="320px">

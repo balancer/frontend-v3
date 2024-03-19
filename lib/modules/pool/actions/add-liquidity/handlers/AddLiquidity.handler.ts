@@ -19,13 +19,7 @@ import { Address } from 'viem'
 export interface AddLiquidityHandler {
   // Query the expected output of adding liquidity and store it inside the handler instance
   // Also returns bptOut to be used by the UI
-  simulate(
-    humanAmountsIn: HumanAmountIn[],
-    // Only NestedAddLiquidity expects a userAddress
-    // TODO: The sdk team is going to remove userAddress from the nested query signature to simplify this:
-    // https://github.com/balancer/b-sdk/issues/209
-    userAddress?: Address
-  ): Promise<QueryAddLiquidityOutput>
+  simulate(humanAmountsIn: HumanAmountIn[]): Promise<QueryAddLiquidityOutput>
 
   // Calculate the price impact of adding liquidity
   getPriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number>

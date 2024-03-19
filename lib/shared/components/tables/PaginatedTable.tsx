@@ -41,25 +41,51 @@ export function PaginatedTable({
             </Center>
           )}
 
+          {loading && items.length === 0 && (
+            <Center py="2xl">
+              <Box
+                style={{
+                  position: 'absolute',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  height: '100%',
+                  top: 0,
+                  left: 0,
+                  borderRadius: 10,
+                  zIndex: 10,
+                  backdropFilter: 'blur(3px)',
+                }}
+              >
+                <Center>
+                  <Spinner size="xl" />
+                </Center>
+              </Box>
+            </Center>
+          )}
+
           {loading && (
-            <Box
-              style={{
-                position: 'absolute',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '100%',
-                height: '100%',
-                top: 0,
-                left: 0,
-                borderRadius: 10,
-                zIndex: 10,
-                backdropFilter: 'blur(3px)',
-              }}
-            >
-              <Center>
-                <Spinner size="xl" />
-              </Center>
+            <Box py="2xl">
+              <Box
+                style={{
+                  position: 'absolute',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  height: '100%',
+                  top: 0,
+                  left: 0,
+                  borderRadius: 10,
+                  zIndex: 10,
+                  backdropFilter: 'blur(3px)',
+                }}
+              >
+                <Center py="4xl">
+                  <Spinner size="xl" />
+                </Center>
+              </Box>
             </Box>
           )}
         </Box>

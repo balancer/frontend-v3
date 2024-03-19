@@ -4,20 +4,18 @@
 import {
   GetPoolDocument,
   GetPoolQuery,
-  GetPoolQueryVariables,
   GqlChain,
 } from '@/lib/shared/services/api/generated/graphql'
 import { createContext, PropsWithChildren } from 'react'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { FetchPoolProps } from './pool.types'
-import { getNetworkConfig } from '@/lib/config/app.config'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import { calcBptPriceFor, usePoolHelpers } from './pool.helpers'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/queries/usePoolEnrichWithOnChainData'
 import { useOnchainUserPoolBalances } from './queries/useOnchainUserPoolBalances'
+import { useSkipInitialQuery } from '@/lib/shared/hooks/useSkipInitialQuery'
 
 export type UsePoolResponse = ReturnType<typeof _usePool> & {
   chain: GqlChain
@@ -31,11 +29,13 @@ export function _usePool({
   chain,
   initialData,
 }: FetchPoolProps & { initialData: GetPoolQuery }) {
-  const config = getNetworkConfig(chain)
   const { userAddress } = useUserAccount()
+  const queryVariables = { id, chain, userAddress }
+  const skipQuery = useSkipInitialQuery(queryVariables)
 
   const { data } = useQuery(GetPoolDocument, {
-    variables: { id, chain, userAddress },
+    variables: queryVariables,
+    skip: skipQuery,
   })
 
   // TODO: usePoolEnrichWithOnChainData is v2 specific. We need to make this more generic.
@@ -86,14 +86,7 @@ export function PoolProvider({
   variant,
   children,
   data,
-  variables,
-}: PropsWithChildren<FetchPoolProps> & { data: GetPoolQuery; variables: GetPoolQueryVariables }) {
-  useSeedApolloCache({
-    query: GetPoolDocument,
-    data,
-    variables,
-  })
-
+}: PropsWithChildren<FetchPoolProps> & { data: GetPoolQuery }) {
   const hook = _usePool({ id, chain, variant, initialData: data })
   const payload = {
     ...hook,

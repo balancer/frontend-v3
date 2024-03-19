@@ -27,9 +27,27 @@ export default function Debug() {
       </Link>
       <Link
         as={NextLink}
-        href="pools/ethereum/v2/0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473"
+        href="pools/ethereum/v2/0x0da692ac0611397027c91e559cfd482c4197e4030002000000000000000005c9"
       >
-        Pool in recovery mode
+        Weighted Pool in recovery mode (not paused)
+      </Link>
+      <Link
+        as={NextLink}
+        href="pools/ethereum/v2/0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570"
+      >
+        Composable Pool in recovery mode (not paused)
+      </Link>
+      <Link
+        as={NextLink}
+        href="pools/ethereum/v2/0xae8535c23afedda9304b03c68a3563b75fc8f92b0000000000000000000005a0"
+      >
+        Bricked Composable Stable Pool in recovery mode and paused
+      </Link>
+      <Link
+        as={NextLink}
+        href="pools/ethereum/v2/0x7b50775383d3d6f0215a8f290f2c9e2eebbeceb20000000000000000000000fe"
+      >
+        Old boosted pool with issues
       </Link>
       <Link as={NextLink} href="/debug/token-select">
         Token select

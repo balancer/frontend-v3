@@ -4,7 +4,7 @@
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolTokenExpanded, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
@@ -18,9 +18,14 @@ import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address } from 'viem'
 import { toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { TransactionState } from '@/lib/modules/transactions/transaction-steps/lib'
+import {
+  TransactionState,
+  removeLiquidityStepId,
+} from '@/lib/modules/transactions/transaction-steps/lib'
 import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 import { useRemoveLiquidityStepConfigs } from './modal/useRemoveLiquidityStepConfigs'
+import { hasNestedPools } from '../../pool.helpers'
+import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -29,7 +34,7 @@ export function _useRemoveLiquidity() {
   const { pool, bptPrice, refetch: refetchPoolUserBalances } = usePool()
   const { getToken, usdValueForToken } = useTokens()
   const { isConnected } = useUserAccount()
-
+  const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const previewModalDisclosure = useDisclosure()
 
   const [removalType, setRemovalType] = useState<RemoveLiquidityType>(
@@ -50,14 +55,14 @@ export function _useRemoveLiquidity() {
     .times(humanBptInPercent / 100)
     .toString() as HumanAmount
 
-  const [removeLiquidityTxState, setRemoveLiquidityTxState] = useState<TransactionState>()
-
-  const stepConfigs = useRemoveLiquidityStepConfigs(setRemoveLiquidityTxState)
-  const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
+  const stepConfigs = useRemoveLiquidityStepConfigs()
+  const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
+  const { getCoreTransactionState } = useCurrentFlowStep()
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
-    [Number(humanBptIn) === 0, 'You must specify a valid bpt in']
+    [Number(humanBptIn) === 0, 'You must specify a valid bpt in'],
+    [needsToAcceptHighPI, 'Accept high price impact first']
   )
 
   const handler = useMemo(
@@ -75,14 +80,20 @@ export function _useRemoveLiquidity() {
   const isSingleToken = removalType === RemoveLiquidityType.SingleToken
   const isProportional = removalType === RemoveLiquidityType.Proportional
 
+  const tokenFilter = hasNestedPools(pool)
+    ? (token: GqlPoolTokenExpanded) => !token.isNested
+    : (token: GqlPoolTokenExpanded) => token.isMainToken
+
   const tokens = pool.allTokens
-    .filter(token => token.isMainToken)
+    .filter(tokenFilter)
     .map(token => getToken(token.address, pool.chain))
 
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
   const firstTokenAddress = tokens?.[0]?.address as Address
 
   const singleTokenOutAddress = singleTokenAddress || firstTokenAddress
+
+  const removeLiquidityTxState = getCoreTransactionState(removeLiquidityStepId)
 
   const isTxConfirmingOrConfirmed =
     removeLiquidityTxState === TransactionState.Confirming ||
@@ -131,7 +142,7 @@ export function _useRemoveLiquidity() {
     return usdOut ? usdOut : '0'
   }
 
-  const totalUsdValue: string = safeSum(Object.values(usdAmountOutMap))
+  const totalUSDValue: string = safeSum(Object.values(usdAmountOutMap))
 
   function updateQuoteState(
     bptIn: HumanAmount,
@@ -180,15 +191,16 @@ export function _useRemoveLiquidity() {
     totalUsdFromBprPrice,
     isSingleToken,
     isProportional,
-    totalUsdValue,
+    totalUSDValue,
     simulationQuery,
     priceImpactQuery,
     isDisabled,
     disabledReason,
     previewModalDisclosure,
-    removeLiquidityTxState,
     handler,
+    stepConfigs,
     currentStep,
+    currentStepIndex,
     isTxConfirmingOrConfirmed,
     didRefetchPool,
     setRemovalType,
@@ -198,8 +210,8 @@ export function _useRemoveLiquidity() {
     setSingleTokenAddress,
     amountOutForToken,
     usdOutForToken,
-    setRemoveLiquidityTxState,
     useOnStepCompleted,
+    setNeedsToAcceptHighPI,
   }
 }
 
