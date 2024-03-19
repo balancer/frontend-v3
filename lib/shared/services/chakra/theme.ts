@@ -1081,11 +1081,17 @@ export const balTheme = {
         color: 'text-body',
         letterSpacing: '-0.02em',
         shadow: 'md',
+        _disabled: {
+          background: 'background.level3',
+          border: '1px solid',
+          borderColor: 'border.base',
+          color: 'grayText',
+        },
         _hover: {
           shadow: 'sm',
-        },
-        _active: {
-          // shadow: 'btnDefaultActive',
+          _disabled: {
+            background: 'background.level3',
+          },
         },
       },
       variants: {
@@ -1094,7 +1100,6 @@ export const balTheme = {
           background: 'background.button.primary',
           backgroundPosition: '100% 0',
           backgroundSize: '100% 100%',
-          textShadow: 'fontDefault',
           transition: '0.1s ease-in-out',
           _hover: {
             backgroundSize: '120% 100%',
@@ -1102,7 +1107,6 @@ export const balTheme = {
         },
         secondary: {
           color: 'font.dark',
-          textShadow: 'fontDark',
           background: 'background.button.secondary',
         },
         tertiary: {
@@ -1121,17 +1125,6 @@ export const balTheme = {
           borderTop: '2px solid',
           borderColor: 'purple.200',
           color: 'black',
-        },
-        disabled: {
-          minWidth: '80px',
-          background: 'transparent',
-          color: 'font.button.disabled',
-          borderWidth: 1,
-          borderColor: 'border.button.disabled',
-          _hover: {
-            borderColor: 'border.button.disabled',
-            transform: 'none',
-          },
         },
         buttonGroupInactive: {
           backgroundColor: 'transparent',
