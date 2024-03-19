@@ -53,11 +53,7 @@ export function AddLiquidityForm() {
   const { toCurrency } = useCurrency()
 
   useEffect(() => {
-    if (priceImpactQuery.data) {
-      setPriceImpact(priceImpactQuery.data)
-    } else {
-      setPriceImpact(undefined)
-    }
+    setPriceImpact(priceImpactQuery.data)
   }, [priceImpactQuery.data])
 
   function currentValueFor(tokenAddress: string) {
