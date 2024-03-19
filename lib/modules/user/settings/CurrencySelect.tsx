@@ -33,7 +33,7 @@ const options: CurrencyOption[] = Object.values(SupportedCurrency).map(currency 
   value: currency,
 }))
 
-export function CurrencySelect() {
+export function CurrencySelect({ id }: { id: string }) {
   const { currency, setCurrency } = useUserSettings()
   const chakraStyles = getSelectStyles<CurrencyOption>()
 
@@ -45,6 +45,7 @@ export function CurrencySelect() {
 
   return (
     <Select<CurrencyOption, false, GroupBase<CurrencyOption>>
+      instanceId={id}
       value={_value}
       options={options}
       onChange={handleChange}
