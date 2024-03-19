@@ -61,7 +61,8 @@ export function AddLiquidityForm() {
     return amountIn ? amountIn.humanAmount : ''
   }
 
-  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpactLabel =
+    priceImpact !== undefined && priceImpact !== null ? fNum('priceImpact', priceImpact) : '-'
 
   const weeklyYield = bn(totalUSDValue).times(totalApr).div(52)
 

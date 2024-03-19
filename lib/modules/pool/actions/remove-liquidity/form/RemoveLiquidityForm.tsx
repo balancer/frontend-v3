@@ -59,14 +59,11 @@ export function RemoveLiquidityForm() {
   const [activeTab, setActiveTab] = useState(TABS[0])
 
   useEffect(() => {
-    if (priceImpactQuery.data) {
-      setPriceImpact(priceImpactQuery.data)
-    } else {
-      setPriceImpact(undefined)
-    }
+    setPriceImpact(priceImpactQuery.data)
   }, [priceImpactQuery.data])
 
-  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-' // If it's 0 we want to display 0.
+  const priceImpactLabel =
+    priceImpact !== undefined && priceImpact !== null ? fNum('priceImpact', priceImpact) : '-' // If it's 0 we want to display 0.
 
   function toggleTab(option: ButtonGroupOption) {
     setActiveTab(option)
