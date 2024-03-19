@@ -37,6 +37,10 @@ export default function NetworkClaim() {
   const chainName = capitalize(chain as string)
   const claimableFiatBalance = totalFiatClaimableBalanceByChain[gqlChain]
 
+  const isClaimAllDisabled = pools?.every(pool =>
+    poolRewardsMap[pool.id]?.totalFiatClaimBalance?.isEqualTo(0)
+  )
+
   return (
     <ClaimNetworkPoolsLayout backLink={'/portfolio'} title="Portfolio">
       <HStack
@@ -104,7 +108,13 @@ export default function NetworkClaim() {
         ))}
       </Stack>
 
-      {pools && pools.length > 0 && <NetworkClaimAllButton pools={pools} />}
+      {pools && pools.length > 0 && (
+        <Link href={`/portfolio/${chainToSlugMap[gqlChain]}/all`}>
+          <Button width="100%" variant="secondary" isDisabled={isClaimAllDisabled}>
+            Claim all
+          </Button>
+        </Link>
+      )}
     </ClaimNetworkPoolsLayout>
   )
 }

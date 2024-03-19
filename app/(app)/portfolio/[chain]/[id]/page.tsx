@@ -13,6 +13,7 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { Button, Card, Text, VStack } from '@chakra-ui/react'
 
 import { useParams, useRouter } from 'next/navigation'
+import { ChainSlug, slugToChainMap } from '@/lib/modules/pool/pool.utils'
 
 function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
   if (reward.formattedBalance === '0') return null
@@ -25,45 +26,56 @@ function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }
   )
 }
 
-function PoolClaimLoader({ children }: { children: (pool: PoolListItem) => React.ReactNode }) {
-  const { poolRewardsMap } = usePortfolio()
-  const { id } = useParams()
+function PoolClaimLoader({ children }: { children: (pools: PoolListItem[]) => React.ReactNode }) {
+  const { poolRewardsMap, rewardsByChainMap } = usePortfolio()
+  const { id, chain } = useParams()
+  const chainName = slugToChainMap[chain as ChainSlug]
+  const isClaimAllPage = id === 'all'
 
-  const pool = poolRewardsMap?.[id as string]
+  const pools = isClaimAllPage ? rewardsByChainMap[chainName] : [poolRewardsMap?.[id as string]]
 
-  if (!pool) {
+  if (!pools) {
     return null
   }
 
-  return children(pool)
+  return children(pools)
 }
 
-function PoolClaim({ pool }: { pool: PoolListItem }) {
+function PoolClaim({ pools }: { pools: PoolListItem[] }) {
   const { poolRewardsMap } = usePortfolio()
-  const { chain, id } = useParams()
+  const { chain } = useParams()
   const { toCurrency } = useCurrency()
   const router = useRouter()
 
-  const stepConfigs = useClaimStepConfigs([pool])
+  const stepConfigs = useClaimStepConfigs(pools)
 
-  const balRewards = poolRewardsMap?.[id as string]?.balReward
-  const nonBalRewards = poolRewardsMap?.[id as string]?.claimableRewards || []
+  const balRewards = pools.map(pool => poolRewardsMap?.[pool.id]?.balReward)
+  const nonBalRewards = pools.flatMap(pool => poolRewardsMap?.[pool.id]?.claimableRewards || [])
 
   const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
-  const hasNoRewards = !nonBalRewards?.length && !balRewards
+  const hasNoRewards = !nonBalRewards?.length && !balRewards.length
 
   return (
     <ClaimPoolLayout backLink={`/portfolio/${chain}`} title={`Review claim: ${chain}`} gap={4}>
       <Card variant="level2" gap={4} p="md" shadow="xl" flex="1" width="100%">
         <Text fontWeight="700">You`ll get</Text>
-        {balRewards && <RewardTokenRow reward={balRewards} />}
+        {balRewards &&
+          balRewards.map(
+            reward =>
+              reward && (
+                <RewardTokenRow
+                  key={`${reward?.tokenAddress}-${reward?.gaugeAddress}`}
+                  reward={reward}
+                />
+              )
+          )}
 
         {nonBalRewards &&
           nonBalRewards.map((reward, idx) => <RewardTokenRow key={idx} reward={reward} />)}
       </Card>
 
       <ClaimTotal
-        total={toCurrency(poolRewardsMap[pool.id]?.totalFiatClaimBalance?.toNumber() || 0)}
+        total={toCurrency(poolRewardsMap[pools[0].id]?.totalFiatClaimBalance?.toNumber() || 0)}
       />
 
       <VStack w="full">
@@ -86,5 +98,5 @@ function PoolClaim({ pool }: { pool: PoolListItem }) {
 }
 
 export default function PoolClaimPage() {
-  return <PoolClaimLoader>{(pool: PoolListItem) => <PoolClaim pool={pool} />}</PoolClaimLoader>
+  return <PoolClaimLoader>{(pools: PoolListItem[]) => <PoolClaim pools={pools} />}</PoolClaimLoader>
 }
