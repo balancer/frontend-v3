@@ -71,7 +71,7 @@ export function SwapDetails() {
 
   useEffect(() => {
     if (simulationQuery.data) {
-      setPriceImpact(simulationQuery.data.priceImpact ?? '-1')
+      setPriceImpact(simulationQuery.data.priceImpact)
     }
   }, [simulationQuery.data])
 

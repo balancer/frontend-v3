@@ -3,17 +3,18 @@ import { PropsWithChildren, createContext, useEffect, useState } from 'react'
 import { useMandatoryContext } from '../utils/contexts'
 import { Icon } from '@chakra-ui/react'
 
-type PriceImpactLevel = 'low' | 'medium' | 'high' | 'max' | 'unknown'
+type PriceImpactLevel = 'low' | 'medium' | 'high' | 'max' | 'unknown' | 'positive'
 
 export function _usePriceImpact() {
   const [priceImpactLevel, setPriceImpactLevel] = useState<PriceImpactLevel>('low')
   const [priceImpactColor, setPriceImpactColor] = useState('green.400')
   const [acceptHighPriceImpact, setAcceptHighPriceImpact] = useState(false)
-  const [priceImpact, setPriceImpact] = useState<string | number | undefined>()
+  const [priceImpact, setPriceImpact] = useState<string | number | undefined | null>()
   const [hasToAcceptHighPriceImpact, setHasToAcceptHighPriceImpact] = useState(false)
 
   function getPriceImpactLevel(priceImpact: number) {
-    if (priceImpact === -1) return 'unknown'
+    if (priceImpact === null || priceImpact === undefined) return 'unknown'
+    if (priceImpact < 0) return 'positive'
     if (priceImpact >= 0 && priceImpact < 0.005) return 'low' // 0.5%
     if (priceImpact < 0.01) return 'medium' // 1%
     if (priceImpact < 0.05) return 'high' // 5%
@@ -25,6 +26,8 @@ export function _usePriceImpact() {
       case 'high':
       case 'max':
         return 'red.400'
+      case 'positive':
+        return 'green.400'
       case 'medium':
         return 'orange.300'
       case 'low':
