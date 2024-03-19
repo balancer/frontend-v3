@@ -203,6 +203,9 @@ export const tokens = {
         clearError: balColors.red['500'],
         clearErrorHover: balColors.red['600'],
       },
+      icon: {
+        base: 'gray.500',
+      },
     },
     dark: {
       // Background colors
@@ -287,6 +290,9 @@ export const tokens = {
         clearHover: tinycolor(balColors.base.light).lighten(1),
         clearError: balColors.red['400'],
         clearErrorHover: balColors.red['500'],
+      },
+      icon: {
+        base: 'gray.400',
       },
     },
   },
@@ -577,6 +583,13 @@ export const balTheme = {
             default: tokens.colors.light.button.border.disabled,
             _dark: tokens.colors.dark.button.border.disabled,
           },
+        },
+      },
+
+      icon: {
+        base: {
+          default: tokens.colors.light.icon.base,
+          _dark: tokens.colors.dark.icon.base,
         },
       },
 
@@ -1068,11 +1081,17 @@ export const balTheme = {
         color: 'text-body',
         letterSpacing: '-0.02em',
         shadow: 'md',
+        _disabled: {
+          background: 'background.level3',
+          border: '1px solid',
+          borderColor: 'border.base',
+          color: 'grayText',
+        },
         _hover: {
           shadow: 'sm',
-        },
-        _active: {
-          // shadow: 'btnDefaultActive',
+          _disabled: {
+            background: 'background.level3',
+          },
         },
       },
       variants: {
@@ -1081,8 +1100,6 @@ export const balTheme = {
           background: 'background.button.primary',
           backgroundPosition: '100% 0',
           backgroundSize: '100% 100%',
-          boxShadow: 'btnDefault',
-          textShadow: 'fontDefault',
           transition: '0.1s ease-in-out',
           _hover: {
             backgroundSize: '120% 100%',
@@ -1090,13 +1107,11 @@ export const balTheme = {
         },
         secondary: {
           color: 'font.dark',
-          boxShadow: 'btnDefault',
-          textShadow: 'fontDark',
           background: 'background.button.secondary',
         },
         tertiary: {
           background: 'background.level3',
-          color: 'font.button.tertiary',
+          color: 'font.primary',
           _active: {
             background: 'background.level2',
             shadow: 'none',
@@ -1110,17 +1125,6 @@ export const balTheme = {
           borderTop: '2px solid',
           borderColor: 'purple.200',
           color: 'black',
-        },
-        disabled: {
-          minWidth: '80px',
-          background: 'transparent',
-          color: 'font.button.disabled',
-          borderWidth: 1,
-          borderColor: 'border.button.disabled',
-          _hover: {
-            borderColor: 'border.button.disabled',
-            transform: 'none',
-          },
         },
         buttonGroupInactive: {
           backgroundColor: 'transparent',

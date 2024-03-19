@@ -91,7 +91,7 @@ export function UserSettings() {
         <PopoverBody>
           <VStack align="start">
             <Heading size="sm">Currency</Heading>
-            <CurrencySelect />
+            <CurrencySelect id="user-settings-currency-select" />
             <Heading size="sm">Slippage</Heading>
             <SlippageInput />
             <HStack>

@@ -11,7 +11,9 @@ export function ClaimNetworkPools() {
 
   const { isConnected } = useUserAccount()
 
-  if (!isConnected) {
+  const emptyChainMap = Object.keys(poolsByChainMap).length === 0
+
+  if (!isConnected || emptyChainMap) {
     return null
   }
 

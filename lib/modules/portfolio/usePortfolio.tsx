@@ -1,12 +1,8 @@
 'use client'
-import {
-  GetPoolsDocument,
-  GqlPoolOrderBy,
-  GqlPoolOrderDirection,
-} from '@/lib/shared/services/api/generated/graphql'
+import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery as useApolloQuery } from '@apollo/client'
 import { PoolListItem } from '../pool/pool.types'
-import { createContext, useMemo, useState } from 'react'
+import { createContext, useMemo } from 'react'
 import { useProtocolRewards } from './PortfolioClaim/useProtocolRewards'
 import { ClaimableReward, useClaimableBalances } from './PortfolioClaim/useClaimableBalances'
 import { BalTokenReward, useBalTokenRewards } from './PortfolioClaim/useBalRewards'
@@ -51,11 +47,8 @@ export type UsePortfolio = ReturnType<typeof _usePortfolio>
 function _usePortfolio() {
   const { userAddress, isConnected, isLoading: isLoadingUserInfo } = useUserAccount()
 
-  const [orderBy, setOrderBy] = useState(GqlPoolOrderBy.Apr)
-  const [orderDirection, setOrderDirection] = useState(GqlPoolOrderDirection.Desc)
-
   const { data, loading } = useApolloQuery(GetPoolsDocument, {
-    variables: { where: { userAddress }, orderBy, orderDirection },
+    variables: { where: { userAddress } },
     notifyOnNetworkStatusChange: true,
     skip: !isConnected || !userAddress,
   })
@@ -136,6 +129,14 @@ function _usePortfolio() {
     }, {})
   }, [portfolioData.stakedPools, balRewardsData, claimableRewardsByPoolMap])
 
+  const rewardsByChainMap = useMemo(() => {
+    return portfolioData.stakedPools?.reduce((acc: Record<string, PoolRewardsData[]>, pool) => {
+      if (!acc[pool.chain]) acc[pool.chain] = []
+      acc[pool.chain].push(poolRewardsMap[pool.id])
+      return acc
+    }, {})
+  }, [portfolioData.stakedPools, poolRewardsMap])
+
   const poolsByChainMap = useMemo(() => {
     return portfolioData.stakedPools?.reduce((acc: Record<string, PoolListItem[]>, pool) => {
       if (!acc[pool.chain]) acc[pool.chain] = []
@@ -173,8 +174,6 @@ function _usePortfolio() {
   }, [protocolRewardsData])
 
   return {
-    setOrderDirection,
-    setOrderBy,
     portfolioData,
     balRewardsData,
     protocolRewardsData,
@@ -184,6 +183,7 @@ function _usePortfolio() {
     totalFiatClaimableBalance,
     totalFiatClaimableBalanceByChain,
     protocolRewardsBalance,
+    rewardsByChainMap,
     isLoadingBalRewards,
     isLoadingProtocolRewards,
     isLoadingClaimableRewards,
