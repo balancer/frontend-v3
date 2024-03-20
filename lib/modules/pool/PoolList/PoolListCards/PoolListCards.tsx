@@ -27,8 +27,14 @@ export function PoolListCards({ pools, count, loading }: Props) {
       </Grid>
 
       {!loading && pools.length === 0 && (
-        <Center py="2xl" border="1px" borderStyle="dashed" borderColor="gray.500" borderRadius="md">
-          <Text color="gray.500">No pools found.</Text>
+        <Center
+          py="2xl"
+          border="1px"
+          borderStyle="dashed"
+          borderColor="border.base"
+          borderRadius="md"
+        >
+          <Text color="font.secondary">No pools found</Text>
         </Center>
       )}
       {loading && (

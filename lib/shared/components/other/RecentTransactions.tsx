@@ -68,21 +68,21 @@ export default function RecentTransactions() {
   return (
     <Popover>
       <PopoverTrigger>
-        <Button variant="tertiary">
+        <Button variant="tertiary" p="0">
           <Activity size={18} />
         </Button>
       </PopoverTrigger>
       <PopoverContent w="330px">
-        <PopoverArrow />
+        <PopoverArrow bg="background.level3" />
         <PopoverCloseButton />
         <PopoverHeader>
           <Heading size="md">Recent transactions</Heading>
         </PopoverHeader>
-        <PopoverBody maxH="180px" overflowY="auto">
+        <PopoverBody maxH="180px" overflowY="auto" py="4">
           {hasTransactions ? (
             <Transactions transactions={transactions} />
           ) : (
-            <Text>No transactions...</Text>
+            <Text color="font.secondary">No transactions...</Text>
           )}
         </PopoverBody>
         <PopoverFooter>

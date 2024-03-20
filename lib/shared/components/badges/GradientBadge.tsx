@@ -3,20 +3,8 @@ import React from 'react'
 
 export default function GradientBadge({ children, ...rest }: BadgeProps) {
   return (
-    <Badge
-      {...rest}
-      backgroundColor="lightBadge"
-      _dark={{ backgroundColor: 'background.level3' }}
-      p="1"
-    >
-      <Text
-        _dark={{ bg: 'font.secondary', bgClip: 'text' }}
-        bg="font.primary"
-        bgClip="text"
-        fontSize="sm"
-        fontWeight="medium"
-        textTransform="capitalize"
-      >
+    <Badge {...rest} backgroundColor="background.level2" py="1" px="2">
+      <Text color="font.primary" fontSize="sm" fontWeight="medium" textTransform="capitalize">
         {children}
       </Text>
     </Badge>
