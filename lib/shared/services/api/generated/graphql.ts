@@ -326,6 +326,47 @@ export type GqlPoolElement = GqlPoolBase & {
   withdrawConfig: GqlPoolWithdrawConfig
 }
 
+export type GqlPoolEvent = {
+  blockNumber: Scalars['Int']['output']
+  blockTimestamp: Scalars['Int']['output']
+  chain: GqlChain
+  id: Scalars['ID']['output']
+  logIndex: Scalars['Int']['output']
+  poolId: Scalars['String']['output']
+  sender: Scalars['String']['output']
+  timestamp: Scalars['Int']['output']
+  tx: Scalars['String']['output']
+  type: GqlPoolEventType
+  userAddress: Scalars['String']['output']
+  valueUSD: Scalars['Float']['output']
+}
+
+export type GqlPoolEventAmount = {
+  __typename: 'GqlPoolEventAmount'
+  address: Scalars['String']['output']
+  amount: Scalars['String']['output']
+  valueUSD: Scalars['Float']['output']
+}
+
+export enum GqlPoolEventType {
+  Exit = 'EXIT',
+  Join = 'JOIN',
+  Swap = 'SWAP',
+}
+
+export enum GqlPoolEventsDataRange {
+  NinetyDays = 'NINETY_DAYS',
+  SevenDays = 'SEVEN_DAYS',
+  ThirtyDays = 'THIRTY_DAYS',
+}
+
+export type GqlPoolEventsFilter = {
+  chainIn?: InputMaybe<Array<GqlChain>>
+  poolIdIn?: InputMaybe<Array<Scalars['String']['input']>>
+  typeIn?: InputMaybe<Array<GqlPoolEventType>>
+  userAddress?: InputMaybe<Scalars['String']['input']>
+}
+
 export type GqlPoolFeaturedPool = {
   __typename: 'GqlPoolFeaturedPool'
   pool: GqlPoolBase
@@ -468,6 +509,23 @@ export type GqlPoolJoinExitAmount = {
   __typename: 'GqlPoolJoinExitAmount'
   address: Scalars['String']['output']
   amount: Scalars['String']['output']
+}
+
+export type GqlPoolJoinExitEventV3 = GqlPoolEvent & {
+  __typename: 'GqlPoolJoinExitEventV3'
+  blockNumber: Scalars['Int']['output']
+  blockTimestamp: Scalars['Int']['output']
+  chain: GqlChain
+  id: Scalars['ID']['output']
+  logIndex: Scalars['Int']['output']
+  poolId: Scalars['String']['output']
+  sender: Scalars['String']['output']
+  timestamp: Scalars['Int']['output']
+  tokens: Array<GqlPoolEventAmount>
+  tx: Scalars['String']['output']
+  type: GqlPoolEventType
+  userAddress: Scalars['String']['output']
+  valueUSD: Scalars['Float']['output']
 }
 
 export type GqlPoolJoinExitFilter = {
@@ -822,6 +880,24 @@ export type GqlPoolSwap = {
   valueUSD: Scalars['Float']['output']
 }
 
+export type GqlPoolSwapEventV3 = GqlPoolEvent & {
+  __typename: 'GqlPoolSwapEventV3'
+  blockNumber: Scalars['Int']['output']
+  blockTimestamp: Scalars['Int']['output']
+  chain: GqlChain
+  id: Scalars['ID']['output']
+  logIndex: Scalars['Int']['output']
+  poolId: Scalars['String']['output']
+  sender: Scalars['String']['output']
+  timestamp: Scalars['Int']['output']
+  tokenIn: GqlPoolEventAmount
+  tokenOut: GqlPoolEventAmount
+  tx: Scalars['String']['output']
+  type: GqlPoolEventType
+  userAddress: Scalars['String']['output']
+  valueUSD: Scalars['Float']['output']
+}
+
 export type GqlPoolSwapFilter = {
   chainIn?: InputMaybe<Array<GqlChain>>
   poolIdIn?: InputMaybe<Array<Scalars['String']['input']>>
@@ -1008,6 +1084,15 @@ export type GqlPoolWithdrawOption = {
   tokenOptions: Array<GqlPoolToken>
 }
 
+/** Returns the price impact of the path. If there is an error in the price impact calculation, priceImpact will be undefined but the error string is populated. */
+export type GqlPriceImpact = {
+  __typename: 'GqlPriceImpact'
+  /** If priceImpact cant be calculated and is returned as undefined, the error string will be populated. */
+  error?: Maybe<Scalars['String']['output']>
+  /** Price impact in percent 0.01 -> 0.01%; undefined if an error happened. */
+  priceImpact?: Maybe<Scalars['AmountHumanReadable']['output']>
+}
+
 export type GqlProtocolMetricsAggregated = {
   __typename: 'GqlProtocolMetricsAggregated'
   chains: Array<GqlProtocolMetricsChain>
@@ -1105,6 +1190,29 @@ export type GqlSftmxStakingData = {
   withdrawalDelay: Scalars['Int']['output']
 }
 
+export type GqlSftmxStakingSnapshot = {
+  __typename: 'GqlSftmxStakingSnapshot'
+  /** Current exchange rate for sFTMx -> FTM */
+  exchangeRate: Scalars['String']['output']
+  id: Scalars['ID']['output']
+  /** The timestamp of the snapshot. Timestamp is end of day midnight. */
+  timestamp: Scalars['Int']['output']
+  /** Total amount of FTM in custody of sFTMx. Staked FTM plus free pool FTM. */
+  totalFtmAmount: Scalars['AmountHumanReadable']['output']
+  /** Total amount of FTM in the free pool. */
+  totalFtmAmountInPool: Scalars['AmountHumanReadable']['output']
+  /** Total amount of FTM staked/delegated to validators. */
+  totalFtmAmountStaked: Scalars['AmountHumanReadable']['output']
+}
+
+export enum GqlSftmxStakingSnapshotDataRange {
+  AllTime = 'ALL_TIME',
+  NinetyDays = 'NINETY_DAYS',
+  OneHundredEightyDays = 'ONE_HUNDRED_EIGHTY_DAYS',
+  OneYear = 'ONE_YEAR',
+  ThirtyDays = 'THIRTY_DAYS',
+}
+
 export type GqlSftmxStakingVault = {
   __typename: 'GqlSftmxStakingVault'
   /** The amount of FTM that has been delegated via this vault. */
@@ -1137,17 +1245,33 @@ export type GqlSftmxWithdrawalRequests = {
   user: Scalars['String']['output']
 }
 
+export type GqlSorCallData = {
+  __typename: 'GqlSorCallData'
+  /** The call data that needs to be sent to the RPC */
+  callData: Scalars['String']['output']
+  /** Maximum amount to be sent for exact out orders */
+  maxAmountInRaw?: Maybe<Scalars['String']['output']>
+  /** Minimum amount received for exact in orders */
+  minAmountOutRaw?: Maybe<Scalars['String']['output']>
+  /** The target contract to send the call data to */
+  to: Scalars['String']['output']
+  /** Value in ETH that needs to be sent for native swaps */
+  value: Scalars['BigDecimal']['output']
+}
+
 /** The swap paths for a swap */
 export type GqlSorGetSwapPaths = {
   __typename: 'GqlSorGetSwapPaths'
+  /** Transaction data that can be posted to an RPC to execute the swap. */
+  callData?: Maybe<GqlSorCallData>
   /** The price of tokenOut in tokenIn. */
   effectivePrice: Scalars['AmountHumanReadable']['output']
   /** The price of tokenIn in tokenOut. */
   effectivePriceReversed: Scalars['AmountHumanReadable']['output']
   /** The found paths as needed as input for the b-sdk to execute the swap */
   paths: Array<GqlSorPath>
-  /** Price impact in percent. 0.01 -> 0.01% */
-  priceImpact?: Maybe<Scalars['AmountHumanReadable']['output']>
+  /** Price impact of the path */
+  priceImpact?: Maybe<GqlPriceImpact>
   /** The return amount in human form. Return amount is either tokenOutAmount (if swapType is exactIn) or tokenInAmount (if swapType is exactOut) */
   returnAmount: Scalars['AmountHumanReadable']['output']
   /** The return amount in a raw form */
@@ -1273,6 +1397,18 @@ export type GqlSorSwapRouteHop = {
 export enum GqlSorSwapType {
   ExactIn = 'EXACT_IN',
   ExactOut = 'EXACT_OUT',
+}
+
+/** Inputs for the call data to create the swap transaction. If this input is given, call data is added to the response. */
+export type GqlSwapCallDataInput = {
+  /** How long the swap should be valid, provide a timestamp. "999999999999999999" for infinite. Default: infinite */
+  deadline?: InputMaybe<Scalars['Int']['input']>
+  /** Who receives the output amount. */
+  receiver: Scalars['String']['input']
+  /** Who sends the input amount. */
+  sender: Scalars['String']['input']
+  /** The max slippage in percent 0.01 -> 0.01% */
+  slippagePercentage: Scalars['String']['input']
 }
 
 export type GqlToken = {
@@ -1553,22 +1689,29 @@ export type Query = {
   blocksGetBlocksPerYear: Scalars['Float']['output']
   contentGetNewsItems: Array<GqlContentNewsItem>
   latestSyncedBlocks: GqlLatestSyncedBlocks
+  /** Will de deprecated in favor of poolGetEvents */
   poolGetBatchSwaps: Array<GqlPoolBatchSwap>
+  /** Getting swap, join and exit events */
+  poolGetEvents: Array<GqlPoolEvent>
   poolGetFeaturedPoolGroups: Array<GqlPoolFeaturedPoolGroup>
   poolGetFeaturedPools: Array<GqlPoolFeaturedPool>
   poolGetFxPools: Array<GqlPoolFx>
   poolGetGyroPools: Array<GqlPoolGyro>
+  /** Will de deprecated in favor of poolGetEvents */
   poolGetJoinExits: Array<GqlPoolJoinExit>
   poolGetLinearPools: Array<GqlPoolLinear>
   poolGetPool: GqlPoolBase
   poolGetPools: Array<GqlPoolMinimal>
   poolGetPoolsCount: Scalars['Int']['output']
   poolGetSnapshots: Array<GqlPoolSnapshot>
+  /** Will de deprecated in favor of poolGetEvents */
   poolGetSwaps: Array<GqlPoolSwap>
   protocolMetricsAggregated: GqlProtocolMetricsAggregated
   protocolMetricsChain: GqlProtocolMetricsChain
   /** Get the staking data and status for sFTMx */
   sftmxGetStakingData: GqlSftmxStakingData
+  /** Get snapshots for sftmx staking for a specific range */
+  sftmxGetStakingSnapshots: Array<GqlSftmxStakingSnapshot>
   /** Retrieve the withdrawalrequests from a user */
   sftmxGetWithdrawalRequests: Array<GqlSftmxWithdrawalRequests>
   /** Get swap quote from the SOR v2 for the V2 vault */
@@ -1588,8 +1731,10 @@ export type Query = {
   tokenGetTokensDynamicData: Array<GqlTokenDynamicData>
   userGetFbeetsBalance: GqlUserFbeetsBalance
   userGetPoolBalances: Array<GqlUserPoolBalance>
+  /** Will de deprecated in favor of poolGetEvents */
   userGetPoolJoinExits: Array<GqlPoolJoinExit>
   userGetStaking: Array<GqlPoolStaking>
+  /** Will de deprecated in favor of poolGetEvents */
   userGetSwaps: Array<GqlPoolSwap>
   veBalGetTotalSupply: Scalars['AmountHumanReadable']['output']
   veBalGetUser: GqlVeBalUserData
@@ -1606,6 +1751,14 @@ export type QueryPoolGetBatchSwapsArgs = {
   first?: InputMaybe<Scalars['Int']['input']>
   skip?: InputMaybe<Scalars['Int']['input']>
   where?: InputMaybe<GqlPoolSwapFilter>
+}
+
+export type QueryPoolGetEventsArgs = {
+  chain: GqlChain
+  poolId: Scalars['String']['input']
+  range: GqlPoolEventsDataRange
+  typeIn: Array<GqlPoolEventType>
+  userAddress?: InputMaybe<Scalars['String']['input']>
 }
 
 export type QueryPoolGetFeaturedPoolGroupsArgs = {
@@ -1678,11 +1831,16 @@ export type QueryProtocolMetricsChainArgs = {
   chain?: InputMaybe<GqlChain>
 }
 
+export type QuerySftmxGetStakingSnapshotsArgs = {
+  range: GqlSftmxStakingSnapshotDataRange
+}
+
 export type QuerySftmxGetWithdrawalRequestsArgs = {
   user: Scalars['String']['input']
 }
 
 export type QuerySorGetSwapPathsArgs = {
+  callDataInput?: InputMaybe<GqlSwapCallDataInput>
   chain: GqlChain
   queryBatchSwap?: InputMaybe<Scalars['Boolean']['input']>
   swapAmount: Scalars['BigDecimal']['input']
@@ -7479,7 +7637,6 @@ export type GetSorSwapsQuery = {
     effectivePrice: string
     effectivePriceReversed: string
     swapType: GqlSorSwapType
-    priceImpact?: string | null
     returnAmount: string
     swapAmount: string
     tokenIn: string
@@ -7495,6 +7652,11 @@ export type GetSorSwapsQuery = {
       vaultVersion: number
       tokens: Array<{ __typename: 'Token'; address: string; decimals: number } | null>
     }>
+    priceImpact?: {
+      __typename: 'GqlPriceImpact'
+      priceImpact?: string | null
+      error?: string | null
+    } | null
     routes: Array<{
       __typename: 'GqlSorSwapRoute'
       share: number
@@ -17528,7 +17690,17 @@ export const GetSorSwapsDocument = {
                     ],
                   },
                 },
-                { kind: 'Field', name: { kind: 'Name', value: 'priceImpact' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'priceImpact' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'priceImpact' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'error' } },
+                    ],
+                  },
+                },
                 { kind: 'Field', name: { kind: 'Name', value: 'returnAmount' } },
                 {
                   kind: 'Field',
