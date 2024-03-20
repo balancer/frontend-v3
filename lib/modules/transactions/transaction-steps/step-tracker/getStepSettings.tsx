@@ -3,7 +3,7 @@ import {
   TransactionState,
   getTransactionState,
 } from '@/lib/modules/transactions/transaction-steps/lib'
-import { ThemeColor } from '@/lib/shared/services/chakra/useThemeColor'
+import { ThemeColor } from '@/lib/shared/services/chakra/useThemeColorMode'
 
 type StepStatus = 'active' | 'complete' | 'incomplete'
 

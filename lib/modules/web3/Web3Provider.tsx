@@ -35,7 +35,7 @@ import { UserAccountProvider } from './useUserAccount'
 import { defineChain } from 'viem'
 import { Chain } from 'viem'
 import { getNetworkConfig } from '@/lib/config/app.config'
-import { useThemeColor } from '@/lib/shared/services/chakra/useThemeColor'
+import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 
 function buildChain(viemChain: Chain, rpcOverride?: string): Chain {
   const { rpcUrl } = getNetworkConfig(viemChain.id)
@@ -152,8 +152,8 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     ...sharedConfig,
   } as Theme)
 
-  const themeColor = useThemeColor()
-  const customTheme = themeColor === 'dark' ? _darkTheme : _lightTheme
+  const colorMode = useThemeColorMode()
+  const customTheme = colorMode === 'dark' ? _darkTheme : _lightTheme
 
   return (
     <WagmiConfig config={createWagmiConfig()}>

@@ -9,7 +9,7 @@ import { motion } from 'framer-motion'
 import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
 import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 import PoolWeightChartLegend from './PoolWeightChartLegend'
-import { useThemeColor } from '@/lib/shared/services/chakra/useThemeColor'
+import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 
 const smallSize: ChartSizeValues = {
   chartHeight: '150px',
@@ -42,7 +42,7 @@ export default function WeightedPoolWeightChart({
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const [isChartLoaded, setIsChartLoaded] = useState(false)
   const theme = useTheme()
-  const themeColor = useThemeColor()
+  const colorMode = useThemeColorMode()
 
   useEffect(() => {
     eChartsRef.current?.getEchartsInstance().on('finished', () => {
@@ -72,7 +72,7 @@ export default function WeightedPoolWeightChart({
           type: 'pie',
           radius: ['55%', '80%'],
           itemStyle: {
-            borderColor: theme.colors['chartBorder'][themeColor],
+            borderColor: theme.colors['chartBorder'][colorMode],
             borderWidth: 1.5,
           },
           label: {
@@ -104,7 +104,7 @@ export default function WeightedPoolWeightChart({
         },
       ],
     }
-  }, [pool, themeColor])
+  }, [pool, colorMode])
 
   return (
     <VStack>
