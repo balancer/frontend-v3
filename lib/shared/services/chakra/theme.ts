@@ -212,6 +212,7 @@ export const tokens = {
         level4: '#4C5561',
         base: balColors.base.dark,
         baseWithOpacity: createBackgroundOpacity(balColors.base.hslDark, 0.97),
+        level0WithOpacity: 'rgba(49, 55, 63, 0.96)',
         special: balColors.gradient.dawnDark,
         specialSecondary: balColors.gradient.sunsetDark,
         highlight: balColors.green['500'],
@@ -870,6 +871,39 @@ export const balTheme = {
             background: 'background.level1',
             shadow: 'md',
             rounded: 'md',
+          },
+        },
+        incentives: {
+          root: {
+            width: 'full',
+            borderTopWidth: 0,
+            borderBottomWidth: 0,
+            shadow: '2xl',
+            rounded: 'lg',
+          },
+          container: {
+            width: 'full',
+            borderTopWidth: 0,
+            borderBottomWidth: 0,
+          },
+          panel: {
+            width: 'full',
+            borderTopWidth: 0,
+            borderBottomWidth: 0,
+          },
+          icon: {
+            color: 'orange.500',
+            _dark: {
+              color: 'green.500',
+            },
+          },
+          button: {
+            width: 'full',
+            borderTopWidth: 0,
+            borderBottomWidth: 0,
+            backgroundColor: 'background.level2',
+            p: '3',
+            rounded: 'lg',
           },
         },
       },

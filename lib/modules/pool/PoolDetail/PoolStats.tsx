@@ -21,13 +21,11 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import PoolWeightChart from './PoolWeightCharts/PoolWeightChart'
 import { GqlPoolAprValue, GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
-import { ZenCircle } from '@/lib/shared/components/zen/ZenCircle'
-import { ZenSquare } from '@/lib/shared/components/zen/ZenSquare'
-import { ZenDiamond } from '@/lib/shared/components/zen/ZenDiamond'
 import { BarChart, Gift, Shield, Users } from 'react-feather'
 import { ElevatedIcon } from '@/lib/shared/components/icons/ElevatedIcon'
 import { isClp, isStable, isWeighted } from '../pool.helpers'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
+import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 
 interface PoolValues {
   totalLiquidity: string
@@ -50,13 +48,13 @@ const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps } = {
 
 function MainZenSymbol({ poolType }: { poolType: GqlPoolType }) {
   if (isWeighted(poolType)) {
-    return <ZenCircle sizePx="400px" />
+    return <ZenGarden variant="circle" sizePx="400px" />
   }
   if (isStable(poolType)) {
-    return <ZenSquare sizePx="400px" />
+    return <ZenGarden variant="square" sizePx="400px" />
   }
   if (isClp(poolType)) {
-    return <ZenDiamond widthPx="400px" heightPx="400px" />
+    return <ZenGarden variant="diamond" sizePx="400px" />
   }
 }
 
@@ -123,7 +121,7 @@ export default function PoolStats() {
             }}
             contentProps={commonNoisyCardProps.contentProps}
           >
-            <ZenCircle sizePx="225px" />
+            <ZenGarden variant="circle" sizePx="225px" />
             <VStack spacing="4" m="auto">
               <ElevatedIcon as={Shield} sizePx="48px" boxSize={5} />
               <VStack spacing="0">
@@ -151,7 +149,7 @@ export default function PoolStats() {
             }}
             contentProps={commonNoisyCardProps.contentProps}
           >
-            <ZenDiamond widthPx="225px" heightPx="225px" />
+            <ZenGarden variant="diamond" sizePx="225px" />
             <VStack spacing="4" m="auto">
               <ElevatedIcon as={Gift} sizePx="48px" boxSize={5} />
               <VStack spacing="0">
@@ -183,7 +181,7 @@ export default function PoolStats() {
             }}
             contentProps={commonNoisyCardProps.contentProps}
           >
-            <ZenSquare sizePx="225px" />
+            <ZenGarden variant="square" sizePx="225px" />
             <VStack spacing="4" m="auto">
               <ElevatedIcon as={BarChart} sizePx="48px" boxSize={5} />
               <VStack spacing="0">
@@ -211,7 +209,7 @@ export default function PoolStats() {
             }}
             contentProps={commonNoisyCardProps.contentProps}
           >
-            <ZenCircle sizePx="225px" />
+            <ZenGarden variant="circle" sizePx="225px" />
             <VStack spacing="4" m="auto">
               <ElevatedIcon as={Users} sizePx="48px" boxSize={5} />
               <VStack spacing="0">

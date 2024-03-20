@@ -1,55 +1,58 @@
 'use client'
 
-import TokenRow from '../../tokens/TokenRow/TokenRow'
-import ButtonGroup, {
-  ButtonGroupOption,
-} from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { Box, Button, Card, HStack, Heading, Icon, Text, Tooltip, VStack } from '@chakra-ui/react'
-import React, { useState } from 'react'
-import { Address } from 'viem'
-import { usePool } from '../usePool'
-import { useClaiming } from '../actions/claim/useClaiming'
-import { ClaimModal } from '../actions/claim/ClaimModal'
-import { Hex } from 'viem'
-import { PoolListItem } from '../pool.types'
+// import TokenRow from '../../tokens/TokenRow/TokenRow'
+// import { ButtonGroupOption } from '@/lib/shared/components/btns/button-group/ButtonGroup'
+// import { Box, Button, Card, HStack, Heading, Icon, Text, Tooltip, VStack } from '@chakra-ui/react'
+// import React, { useState } from 'react'
+// import { Address } from 'viem'
+// import { usePool } from '../usePool'
+// import { useClaiming } from '../actions/claim/useClaiming'
+// import { ClaimModal } from '../actions/claim/ClaimModal'
+// import { Hex } from 'viem'
+// import { PoolListItem } from '../pool.types'
 import { IncentiveBadge } from '@/lib/shared/components/other/IncentiveBadge'
-import { ChevronDown } from 'react-feather'
+import { HStack, Text, VStack } from '@chakra-ui/react'
+// import { ChevronDown } from 'react-feather'
 
-const TABS = [
-  {
-    value: 'pool',
-    label: 'Pool',
-  },
-  {
-    value: 'unclaimed',
-    label: 'Unclaimed',
-  },
-  {
-    value: 'my-total',
-    label: 'My total',
-  },
-]
+// const TABS = [
+//   {
+//     value: 'pool',
+//     label: 'Pool',
+//   },
+//   {
+//     value: 'unclaimed',
+//     label: 'Unclaimed',
+//   },
+//   {
+//     value: 'my-total',
+//     label: 'My total',
+//   },
+// ]
 
 export default function PoolIncentives() {
-  const [activeTab, setActiveTab] = useState(TABS[0])
-  const { pool, chain } = usePool()
-  const { previewModalDisclosure, disabledReason, isDisabled, hasNoRewards } = useClaiming([
-    pool,
-  ] as unknown[] as PoolListItem[])
-
-  function handleTabChanged(option: ButtonGroupOption) {
-    setActiveTab(option)
-  }
-
-  const onModalClose = () => {
-    previewModalDisclosure.onClose()
-  }
+  // const [activeTab, setActiveTab] = useState(TABS[0])
+  // const { pool, chain } = usePool()
+  // const { previewModalDisclosure, disabledReason, isDisabled, hasNoRewards } = useClaiming([
+  //   pool,
+  // ] as unknown[] as PoolListItem[])
+  //
+  // function handleTabChanged(option: ButtonGroupOption) {
+  //   setActiveTab(option)
+  // }
+  //
+  // const onModalClose = () => {
+  //   previewModalDisclosure.onClose()
+  // }
 
   return (
     <VStack width="full">
-      <HStack spacing="4" width="full">
-        <IncentiveBadge label="Pool incentives (1w)" value="$5555" width="full" />
-        <IncentiveBadge special label="My unclaimed" value="$5555" width="full" />
+      <HStack spacing="4" width="full" alignItems="flex-start">
+        <IncentiveBadge label="Pool incentives (1w)" value="$5555" width="full">
+          <Text>bing</Text>
+        </IncentiveBadge>
+        <IncentiveBadge special label="Claimable incentives" value="$5555" width="full">
+          <Text>bing</Text>
+        </IncentiveBadge>
       </HStack>
     </VStack>
     // <Card variant="gradient" width="full" minHeight="320px">

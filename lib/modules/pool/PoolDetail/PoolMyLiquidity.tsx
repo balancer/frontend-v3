@@ -23,12 +23,14 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { keyBy } from 'lodash'
-import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
+import { getAprLabel, getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
 import { BPT_DECIMALS } from '../pool.constants'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { bn } from '@/lib/shared/utils/numbers'
 import { hasNestedPools } from '../pool.helpers'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
+import { GqlPoolApr } from '@/lib/shared/services/api/generated/graphql'
+import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 
 const TABS = [
   {
@@ -125,6 +127,7 @@ export default function PoolMyLiquidity() {
   const canStake = pool.staking
   const hasUnstakedBalance = bn(pool.userBalance?.walletBalance || '0').gt(0)
   const hasStakedBalance = bn(pool.userBalance?.stakedBalance || '0').gt(0)
+  const aprLabel = getAprLabel(pool.dynamicData?.apr.apr)
 
   const displayTokens = hasNestedPools(pool)
     ? // we don't have the balances for pool.displayTokens for v2 boosted pools so we show bpt tokens balance as a workaround
@@ -164,13 +167,13 @@ export default function PoolMyLiquidity() {
                           </Heading>
                         )}
                         <Text variant="secondary" fontSize="0.85rem">
-                          APRs TBD
+                          {aprLabel}
                         </Text>
                       </VStack>
                     </HStack>
                   </Box>
                   <VStack spacing="4" p="4" py="2" pb="4" width="full">
-                    {pool.displayTokens.map(token => {
+                    {displayTokens.map(token => {
                       return (
                         <TokenRow
                           chain={chain}
@@ -223,9 +226,14 @@ export default function PoolMyLiquidity() {
           </VStack>
         </GridItem>
         <GridItem p="4" pl="0">
-          {/* <Card height="full" variant="level0" shadow="innerXl" width="full" rounded="sm"></Card> */}
-          <NoisyCard>
-            <></>
+          <NoisyCard cardProps={{ position: 'relative', overflow: 'hidden' }}>
+            <ZenGarden
+              variant="pill"
+              sizePx="75%"
+              heightPx="75%"
+              // top="50%"
+              // transform="translateY(-50%)"
+            />
           </NoisyCard>
         </GridItem>
       </Grid>
