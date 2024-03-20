@@ -19,12 +19,6 @@ export function Step(props: StepProps) {
         <Text mt={isActive ? -0.3 : 0} color={color}>
           {title}
         </Text>
-        {isActive && (
-          <Text variant="secondary" fontSize="0.85rem" mt="-0.5" p="0" color={color}>
-            Gas: ~2.50
-            {/* S: {status} */}
-          </Text>
-        )}
       </VStack>
     </HStack>
   )
@@ -35,7 +29,7 @@ export function StepIndicator(props: StepProps) {
 
   if (status === 'complete') {
     return (
-      <Circle size="7" bg="transparent" color="green" border="2px" mr="1">
+      <Circle size="7" bg="transparent" color="font.highlight" border="2px" mr="1">
         <CheckIcon fontSize="sm" />
       </Circle>
     )

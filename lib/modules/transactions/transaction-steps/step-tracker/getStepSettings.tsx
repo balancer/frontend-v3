@@ -67,7 +67,7 @@ function getColor(colorMode: ColorMode, status: StepStatus, flowStep?: FlowStep)
     return incompleteColor[colorMode]
   }
 
-  return 'blue'
+  return 'primary'
 }
 
 function getActiveColor(flowStep?: FlowStep) {
@@ -93,8 +93,8 @@ function isLoading(status: StepStatus, flowStep?: FlowStep): boolean {
   We show different colors depending on the step status and other variables like the step flow state
 */
 const completeColor = {
-  dark: 'font.searchText',
-  light: 'font.searchText',
+  dark: 'font.highlight',
+  light: 'font.highlight',
 }
 
 const incompleteColor = {
