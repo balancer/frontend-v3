@@ -37,7 +37,7 @@ export function PaginatedTable({
 
           {!loading && items.length === 0 && (
             <Center py="2xl">
-              <Text color="gray.500">No pools found.</Text>
+              <Text color="font.secondary">No pools found</Text>
             </Center>
           )}
 

@@ -1,4 +1,5 @@
 import { Button, ButtonProps, HStack } from '@chakra-ui/react'
+import { bg } from 'date-fns/locale'
 import React from 'react'
 
 export type ButtonGroupOption = {
@@ -33,6 +34,7 @@ export default function ButtonGroup({ currentOption, options, onChange, size }: 
             variant={isActive ? 'buttonGroupActive' : 'buttonGroupInactive'}
             id={`button-group-${option.value}`}
             size={size}
+            shadow={isActive ? 'md' : 'none'}
           >
             {option.label}
           </Button>

@@ -1,9 +1,9 @@
-import { ColorMode } from '@chakra-ui/react'
 import {
   FlowStep,
   TransactionState,
   getTransactionState,
 } from '@/lib/modules/transactions/transaction-steps/lib'
+import { ColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 
 type StepStatus = 'active' | 'complete' | 'incomplete'
 

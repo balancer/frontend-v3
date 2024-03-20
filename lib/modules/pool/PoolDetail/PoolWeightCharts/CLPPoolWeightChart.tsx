@@ -1,8 +1,9 @@
-import { Box, HStack, Grid, useColorMode, Flex } from '@chakra-ui/react'
+import { Box, HStack, Grid, Flex } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
 import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 import PoolWeightChartLegend from './PoolWeightChartLegend'
+import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 
 const chartSizes: Record<string, Record<string, ChartSizeValues>> = {
   square: {
@@ -54,7 +55,7 @@ export default function CLPPoolWeightChart({
   isSmall,
   colors = [],
 }: PoolWeightChartProps) {
-  const { colorMode } = useColorMode()
+  const colorMode = useThemeColorMode()
 
   function getChartSizeValues() {
     const chartSizeKey = isSmall ? 'small' : 'normal'
