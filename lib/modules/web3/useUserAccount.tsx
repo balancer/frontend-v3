@@ -8,7 +8,7 @@ import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isAddress } from 'viem'
 import { COOKIE_KEYS } from '../cookies/cookie.constants'
 import Cookies from 'js-cookie'
-import { setTag } from '@sentry/nextjs'
+import { setTag, setUser } from '@sentry/nextjs'
 
 export type UseUserAccountResponse = ReturnType<typeof _useUserAccount>
 export const UserAccountContext = createContext<UseUserAccountResponse | null>(null)
@@ -39,6 +39,15 @@ export function _useUserAccount() {
     userAddress: mounted ? query.address || emptyAddress : emptyAddress,
     isConnected: mounted && !!query.address,
     connector: mounted ? query.connector : undefined,
+  }
+
+  if (result.userAddress) {
+    setUser({
+      id: result.userAddress,
+      username: result.userAddress,
+    })
+  } else {
+    setUser(null)
   }
 
   setTag('wallet', result.connector?.id || 'none')
