@@ -88,7 +88,7 @@ export function TransactionSettings(props: ButtonProps) {
             </VStack>
             <VStack align="start" w="full">
               <Heading size="sm">Currency</Heading>
-              <CurrencySelect />
+              <CurrencySelect id="transaction-settings-currency-select" />
             </VStack>
           </VStack>
         </PopoverBody>

@@ -28,7 +28,7 @@ export function PoolComposition() {
       <VStack spacing="0" width="full">
         <HStack width="full" p="4" justifyContent="space-between">
           <Heading fontWeight="bold" size="h5">
-            Pool Composition
+            Pool composition
           </Heading>
         </HStack>
         <Box width="full" p="4" pt="0">
@@ -38,7 +38,7 @@ export function PoolComposition() {
                 <HStack py="4" px="4" width="full" justifyContent="space-between">
                   <VStack spacing="1" alignItems="flex-start">
                     <Heading fontWeight="bold" size="h6">
-                      Total Liquidity
+                      Total liquidity
                     </Heading>
                     <Text variant="secondary" fontSize="0.85rem">
                       Share of Balancer liquidity

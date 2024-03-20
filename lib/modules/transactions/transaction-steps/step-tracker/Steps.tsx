@@ -1,6 +1,7 @@
-import { VStack, useColorMode } from '@chakra-ui/react'
+import { VStack } from '@chakra-ui/react'
 import { useCurrentFlowStep } from '../useCurrentFlowStep'
 import { Step } from './Step'
+import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 
 type StepsProps = {
   currentIndex: number
@@ -9,7 +10,7 @@ type StepsProps = {
 
 export function Steps({ currentIndex, steps }: StepsProps) {
   const { flowStep } = useCurrentFlowStep()
-  const { colorMode } = useColorMode()
+  const colorMode = useThemeColorMode()
 
   return (
     <VStack alignItems="left">

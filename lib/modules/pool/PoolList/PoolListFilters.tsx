@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   ButtonProps,
+  Center,
   Checkbox,
   Divider,
   forwardRef,
@@ -94,18 +95,20 @@ function FilterTags() {
   }
 
   return (
-    <HStack spacing="sm" wrap="wrap">
+    <HStack spacing="sm" wrap="wrap" mt="2">
       {poolTypes.map(poolType => (
-        <Tag key={poolType}>
+        <Tag key={poolType} size="lg">
           <TagLabel>{poolTypeLabel(poolType)}</TagLabel>
           <TagCloseButton onClick={() => togglePoolType(false, poolType)} />
         </Tag>
       ))}
 
       {networks.map(network => (
-        <Tag key={network}>
+        <Tag key={network} size="lg">
           <TagLabel>
-            <Text textTransform="capitalize">{network.toLowerCase()}</Text>
+            <Text fontWeight="bold" textTransform="capitalize">
+              {network.toLowerCase()}
+            </Text>
           </TagLabel>
           <TagCloseButton onClick={() => toggleNetwork(false, network)} />
         </Tag>
@@ -122,8 +125,10 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
       <Icon as={Filter} boxSize={4} />
       Filters
       {totalFilterCount > 0 && (
-        <Badge ml="2" colorScheme="blue">
-          {totalFilterCount}
+        <Badge colorScheme="green" borderRadius="full" p="0">
+          <Center h="5" w="5">
+            {totalFilterCount}
+          </Center>
         </Badge>
       )}
     </Button>
@@ -141,9 +146,9 @@ export function PoolListFilters() {
           <PopoverTrigger>
             <FilterButton ml="sm" />
           </PopoverTrigger>
-          <Box zIndex="popover">
+          <Box zIndex="popover" shadow="2xl">
             <PopoverContent>
-              <PopoverArrow />
+              <PopoverArrow bg="background.level3" />
               <PopoverCloseButton />
               <PopoverBody p="md">
                 <VStack align="start">

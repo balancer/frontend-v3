@@ -41,6 +41,7 @@ export function ChainSelect({ value, onChange }: Props) {
 
   return (
     <Select<ChainOption, false, GroupBase<ChainOption>>
+      instanceId="chain-select"
       name="Chain"
       value={_value}
       options={networkOptions}

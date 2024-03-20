@@ -20,7 +20,7 @@ export function PoolAccordion() {
       <AccordionItem>
         <AccordionButton>
           <Box width="full">
-            <Heading variant="accordionHeading">Pool Details</Heading>
+            <Heading variant="accordionHeading">Pool details</Heading>
           </Box>
           <AccordionIcon />
         </AccordionButton>
@@ -37,7 +37,7 @@ export function PoolAccordion() {
       <AccordionItem>
         <AccordionButton>
           <Box width="full">
-            <Heading variant="accordionHeading">Pool Activity</Heading>
+            <Heading variant="accordionHeading">Pool activity</Heading>
           </Box>
           <AccordionIcon />
         </AccordionButton>
