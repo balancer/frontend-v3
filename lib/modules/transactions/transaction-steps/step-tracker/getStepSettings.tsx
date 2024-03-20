@@ -3,7 +3,7 @@ import {
   TransactionState,
   getTransactionState,
 } from '@/lib/modules/transactions/transaction-steps/lib'
-import { ThemeColor } from '@/lib/shared/services/chakra/useThemeColorMode'
+import { ColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 
 type StepStatus = 'active' | 'complete' | 'incomplete'
 
@@ -11,7 +11,7 @@ export type StepProps = {
   step: { title: string }
   index: number
   currentIndex: number
-  colorMode: ThemeColor
+  colorMode: ColorMode
   isLastStep: boolean
   flowStep?: FlowStep
 }
@@ -56,7 +56,7 @@ export function getStepSettings({
   }
 }
 
-function getColor(colorMode: ThemeColor, status: StepStatus, flowStep?: FlowStep) {
+function getColor(colorMode: ColorMode, status: StepStatus, flowStep?: FlowStep) {
   if (status === 'active') {
     return getActiveColor(flowStep)[colorMode]
   }
