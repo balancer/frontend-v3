@@ -1,6 +1,7 @@
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import {
   LiquidityActionHelpers,
+  areEmptyAmounts,
   hasValidHumanAmounts,
   shouldUseNestedLiquidity,
   shouldUseRecoveryRemoveLiquidity,
@@ -19,24 +20,19 @@ import { recoveryPoolMock } from '../__mocks__/recoveryPoolMock'
 import { Pool } from '../usePool'
 import { mock } from 'vitest-mock-extended'
 
-describe('hasValidHumanAmounts', () => {
-  test('when all humanAmounts are empty', () => {
+describe('areEmptyAmounts', () => {
+  test('when all humanAmounts are empty, zero or zero with decimals', () => {
     const humanAmountsIn: HumanAmountIn[] = [
       { tokenAddress: '0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f', humanAmount: '' },
-      { tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', humanAmount: '' },
-    ]
-    expect(hasValidHumanAmounts(humanAmountsIn)).toBeFalsy()
-  })
-  test('when all humanAmounts are zero', () => {
-    const humanAmountsIn: HumanAmountIn[] = [
-      { tokenAddress: '0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f', humanAmount: '0' },
       { tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', humanAmount: '0' },
+      { tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756bb3', humanAmount: '0.00' },
     ]
-    expect(hasValidHumanAmounts(humanAmountsIn)).toBeFalsy()
+    expect(areEmptyAmounts(humanAmountsIn)).toBeTruthy()
   })
+
   test('when  humanAmounts is an empty array', () => {
     const humanAmountsIn: HumanAmountIn[] = []
-    expect(hasValidHumanAmounts(humanAmountsIn)).toBeFalsy()
+    expect(areEmptyAmounts(humanAmountsIn)).toBeTruthy()
   })
 })
 

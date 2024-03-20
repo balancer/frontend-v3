@@ -115,13 +115,10 @@ export class LiquidityActionHelpers {
 export const isEmptyAmount = (amountIn: HumanAmountIn) => isEmptyHumanAmount(amountIn.humanAmount)
 
 export const isEmptyHumanAmount = (humanAmount: HumanAmount | '') =>
-  !humanAmount || humanAmount === '0'
+  !humanAmount || Number(humanAmount) === 0
 
 export const areEmptyAmounts = (humanAmountsIn: HumanAmountIn[]) =>
   !humanAmountsIn || humanAmountsIn.length === 0 || humanAmountsIn.every(isEmptyAmount)
-
-export const hasValidHumanAmounts = (humanAmountsIn: HumanAmountIn[]) =>
-  humanAmountsIn.some(a => a.humanAmount && a.humanAmount !== '0')
 
 export function toHumanAmount(tokenAmount: TokenAmount): HumanAmount {
   return formatUnits(tokenAmount.amount, tokenAmount.token.decimals) as HumanAmount
