@@ -23,11 +23,11 @@ export function DesktopStepTracker(props: StepTrackerProps) {
             shadow="sm"
             background="background.level3"
             rounded="sm"
-            color="font.searchMatch"
+            color="font.highlight"
           >
             <HStack spacing="xs">
               <GasIcon size={16} />
-              <Text color="font.searchMatch" fontWeight="bold" fontSize="xs">
+              <Text color="font.highlight" fontWeight="bold" fontSize="xs">
                 {gasPrice ? gasPrice.toString() : '-'}
               </Text>
             </HStack>
