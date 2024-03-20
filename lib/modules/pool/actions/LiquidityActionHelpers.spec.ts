@@ -2,7 +2,6 @@ import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.b
 import {
   LiquidityActionHelpers,
   areEmptyAmounts,
-  hasValidHumanAmounts,
   shouldUseNestedLiquidity,
   shouldUseRecoveryRemoveLiquidity,
 } from './LiquidityActionHelpers'
