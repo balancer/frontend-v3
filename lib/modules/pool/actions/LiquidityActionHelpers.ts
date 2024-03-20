@@ -170,10 +170,6 @@ export function requiresProportionalInput(poolType: GqlPoolType) {
 }
 
 export function toPoolState(pool: Pool): PoolState {
-  if (pool.type === 'META_STABLE') {
-    throw new Error('META_STABLE pool type is not yet supported by the SDK')
-  }
-
   return {
     id: pool.id as Hex,
     address: pool.address as Address,
@@ -243,13 +239,11 @@ export function mapPoolToNestedPoolState(pool: Pool): NestedPoolState {
 }
 
 export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
-  // TODO: fix in SDK
-  const poolType = pool.type === GqlPoolType.Gyro ? 'GYRO2' : pool.type
   return {
     id: pool.id as Hex,
     address: pool.address as Address,
     tokens: pool.tokens as RawPoolToken[],
-    type: mapPoolType(poolType),
+    type: mapPoolType(pool.type),
     totalShares: pool.dynamicData.totalShares as HumanAmount,
     vaultVersion: 2, //TODO: change to dynamic version when we implement v3 integration
   }
