@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  Box,
   Button,
   HStack,
   Heading,
@@ -35,6 +36,7 @@ function SlippageInput() {
         <Input
           value={slippage}
           type="number"
+          bg="background.level1"
           autoComplete="off"
           autoCorrect="off"
           min={0}
@@ -42,7 +44,7 @@ function SlippageInput() {
           onKeyDown={blockInvalidNumberInput}
         />
         <InputRightElement pointerEvents="none">
-          <Percent color="grayText" />
+          <Percent color="grayText" size="20px" />
         </InputRightElement>
       </InputGroup>
       <HStack>
@@ -78,29 +80,41 @@ export function UserSettings() {
   return (
     <Popover>
       <PopoverTrigger>
-        <Button variant="tertiary">
+        <Button variant="tertiary" p="0">
           <Settings size={18} />
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <PopoverArrow />
+        <PopoverArrow bg="background.level3" />
         <PopoverCloseButton />
         <PopoverHeader>
           <Heading size="md">Settings</Heading>
         </PopoverHeader>
         <PopoverBody>
-          <VStack align="start">
-            <Heading size="sm">Currency</Heading>
-            <CurrencySelect id="user-settings-currency-select" />
-            <Heading size="sm">Slippage</Heading>
-            <SlippageInput />
-            <HStack>
-              <Heading size="sm">Use Signatures</Heading>
-              <Tooltip label={signaturesTooltipLabel} fontSize="sm">
-                <InfoOutlineIcon color="grayText" />
-              </Tooltip>
-            </HStack>
-            <EnableSignaturesSelect />
+          <VStack align="start" spacing="24px" py="3">
+            <Box w="full">
+              <Heading size="sm" pb="2">
+                Currency
+              </Heading>
+              <CurrencySelect id="user-settings-currency-select" />
+            </Box>
+            <Box w="full">
+              <Heading size="sm" pb="2">
+                Slippage
+              </Heading>
+              <SlippageInput />
+            </Box>
+            <Box w="full">
+              <HStack>
+                <Heading size="sm" pb="2">
+                  Use Signatures
+                </Heading>
+                <Tooltip label={signaturesTooltipLabel} fontSize="sm">
+                  <InfoOutlineIcon color="grayText" />
+                </Tooltip>
+              </HStack>
+              <EnableSignaturesSelect />
+            </Box>
           </VStack>
         </PopoverBody>
       </PopoverContent>
