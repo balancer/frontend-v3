@@ -1,4 +1,4 @@
-import { Flex, Heading, Icon, Stack } from '@chakra-ui/react'
+import { Card, Flex, Heading, Icon, Stack } from '@chakra-ui/react'
 import { usePortfolio } from '../usePortfolio'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
@@ -11,20 +11,26 @@ export function PortfolioSummary() {
   const totalClaimableBalance = totalFiatClaimableBalance.plus(protocolRewardsBalance)
 
   return (
-    <Flex direction={['column', 'column', 'row']} justifyContent={['space-around']}>
-      <Stack alignItems="center" mb={[5, 5, 0]}>
-        <Icon as={BarChart} mb="10px" width="30px" height="30px" />
+    <Card
+      variant={'level1'}
+      p={['md', 'md']}
+      direction={['column', 'column', 'row']}
+      justifyContent={['space-around']}
+      gap={[3, 5]}
+    >
+      <Card flex="1" variant="level2" py={[8]} alignItems="center" mb={[0, 5, 0]}>
+        <Icon as={BarChart} mb={5} width="30px" height="30px" />
         <Heading size="sm">My Balancer liquidity</Heading>
         <Heading size="lg">{toCurrency(totalBalance)}</Heading>
-      </Stack>
+      </Card>
 
-      <Stack alignItems="center">
-        <Icon as={StarsIcon} mb="10px" width="30px" height="30px" />
+      <Card flex="1" variant="level2" py={[8]} alignItems="center" mb={[0, 5, 0]}>
+        <Icon as={StarsIcon} mb={5} width="30px" height="30px" />
         <Heading size="sm">Claimable incentives</Heading>
         <Heading variant="special" size="lg">
           {toCurrency(totalClaimableBalance)}
         </Heading>
-      </Stack>
-    </Flex>
+      </Card>
+    </Card>
   )
 }

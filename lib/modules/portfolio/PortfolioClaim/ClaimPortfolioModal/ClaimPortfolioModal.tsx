@@ -54,11 +54,10 @@ export function ClaimPortfolioModal({ isOpen, onClose, pools, ...rest }: Props) 
 
   const title = pools.length > 1 ? `Review claim: ${pools[0].chain}` : `Review claim`
   const stepConfigs = useClaimStepConfigs(pools)
-  const currentStepIndex = 0
   const balRewards = pools.map(pool => poolRewardsMap?.[pool.id]?.balReward)
   const nonBalRewards = pools.flatMap(pool => poolRewardsMap?.[pool.id]?.claimableRewards || [])
 
-  const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
+  const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
   const hasNoRewards = !nonBalRewards?.length && !balRewards.length
 
   return (
