@@ -2,6 +2,8 @@ import { ThemeTypings, extendTheme } from '@chakra-ui/react'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
 import tinycolor from 'tinycolor2'
 
+export const DEFAULT_THEME_COLOR_MODE = 'dark'
+
 export const balColors = {
   primary: {
     '50': '#eaf6ff',
