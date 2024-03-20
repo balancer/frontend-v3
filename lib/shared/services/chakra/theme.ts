@@ -317,6 +317,8 @@ export const tokens = {
           0.1
         )} inset, 0 0 0 1px ${balColors.red['500']}`,
       },
+      innerXl:
+        '4px 4px 4px 0px rgba(0, 0, 0, 0.04) inset, 7px 6px 12px 0px rgba(0, 0, 0, 0.08) inset, 40px 40px 80px 0px rgba(0, 0, 0, 0.05) inset, 0px -1px 1px 0px rgba(255, 255, 255, 0.25) inset',
     },
     dark: {
       sm: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F',
@@ -350,6 +352,8 @@ export const tokens = {
           0.2
         )} inset, 0 0 0 1px ${balColors.red['500']}`,
       },
+      innerXl:
+        '20px 20px 50px 0px rgba(0, 0, 0, 0.25) inset, 10px 10px 25px 0px rgba(0, 0, 0, 0.18) inset, 2px 2px 11px 0px rgba(0, 0, 0, 0.19) inset, 0px -1px 1px 0px #FFFFFF40 inset',
     },
   },
   transition: {
@@ -710,8 +714,10 @@ export const balTheme = {
       innerMd: 'inset 0 0 6px 0 rgba(0, 0, 0, 0.1)',
       innerLg: 'inset 0 0 8px 0 rgba(0, 0, 0, 0.15)',
 
-      innerXl:
-        '20px 20px 50px 0px rgba(0, 0, 0, 0.25) inset, 10px 10px 25px 0px rgba(0, 0, 0, 0.18) inset, 2px 2px 11px 0px rgba(0, 0, 0, 0.19) inset, 0px -1px 1px 0px #FFFFFF40 inset',
+      innerXl: {
+        default: tokens.shadows.light.innerXl,
+        _dark: tokens.shadows.dark.innerXl,
+      },
       btnDefault: {
         default: tokens.shadows.light.btnDefault,
         _dark: tokens.shadows.dark.btnDefault,
@@ -1163,12 +1169,12 @@ export const balTheme = {
           px: '2',
           py: '1.5',
           fontSize: 'xs',
-          color: '#414853',
+          color: 'font.secondary',
           fontWeight: 'bold',
           borderRadius: '4px',
           _hover: {
             background: 'background.button.secondary',
-            color: '##728097',
+            color: '#728097',
             transform: 'none',
           },
           _dark: {
@@ -1185,7 +1191,7 @@ export const balTheme = {
           px: '2',
           py: '1.5',
           fontSize: 'xs',
-          color: '##728097',
+          color: 'gray.700',
           fontWeight: 'bold',
           borderRadius: '4px',
           _hover: {

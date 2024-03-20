@@ -15,6 +15,7 @@ export function NoisyCard({ children, cardProps = {}, contentProps = {} }: Noisy
       rounded="sm"
       position="relative"
       borderWidth={0}
+      shadow="none"
       {...cardProps}
     >
       <Box position="absolute" width="full" height="full" content="" shadow="innerXl" />
