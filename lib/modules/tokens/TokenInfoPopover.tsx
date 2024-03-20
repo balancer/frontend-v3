@@ -41,7 +41,7 @@ export function TokenInfoPopover({ tokenAddress, chain }: Props) {
         />
       </PopoverTrigger>
       <PopoverContent w="auto">
-        <PopoverArrow boxShadow="background.level2" />
+        <PopoverArrow bg="background.level3" shadow="none" />
         <PopoverBody>
           <HStack>
             <Text color="inherit" fontWeight="medium" fontSize="sm">

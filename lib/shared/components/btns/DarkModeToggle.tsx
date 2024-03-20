@@ -35,7 +35,7 @@ export default function DarkModeToggle() {
   }
 
   return (
-    <Button onClick={toggleColorMode} variant="tertiary">
+    <Button onClick={toggleColorMode} variant="tertiary" p="0">
       <AnimatePresence initial={false}>
         {theme === 'light' ? (
           <motion.i {...animationSun}>
