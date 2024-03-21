@@ -1,8 +1,12 @@
 import { captureException } from '@sentry/nextjs'
 import { Extras, ScopeContext } from '@sentry/types'
 import { SentryError, ensureError } from './errors'
-import { HandlerParams } from '@/lib/modules/pool/actions/liquidity-types'
 import { shouldIgnoreExecutionError } from './error-filters'
+import {
+  AddLiquidityParams,
+  stringifyHumanAmountsIn,
+} from '@/lib/modules/pool/actions/add-liquidity/queries/add-liquidity-keys'
+import { RemoveLiquidityParams } from '@/lib/modules/pool/actions/remove-liquidity/queries/remove-liquidity-keys'
 
 /**
  * Metadata to be added to the captured Sentry error
@@ -15,15 +19,20 @@ export type SentryMetadata = {
   context: Partial<ScopeContext>
 }
 
-/**
- * Used by all liquidity handlers to capture sentry errors with metadata
- */
-export function captureLiquidityHandlerError(
+export function captureAddLiquidityHandlerError(
   error: unknown,
   errorMessage: string,
-  params: HandlerParams
+  params: AddLiquidityParams
 ) {
-  captureSentryError(error, createHandlerMetadata('HandlerQueryError', errorMessage, params))
+  captureSentryError(error, createAddHandlerMetadata('HandlerQueryError', errorMessage, params))
+}
+
+export function captureRemoveLiquidityHandlerError(
+  error: unknown,
+  errorMessage: string,
+  params: RemoveLiquidityParams
+) {
+  captureSentryError(error, createRemoveHandlerMetadata('HandlerQueryError', errorMessage, params))
 }
 
 /**
@@ -50,9 +59,31 @@ function captureFatalError(error: unknown, errorName: string, errorMessage: stri
 }
 
 /**
- * Creates sentry metadata for errors in liquidity handlers
+ * Creates sentry metadata for errors in add liquidity handlers
  */
-function createHandlerMetadata(errorName: string, errorMessage: string, params: HandlerParams) {
+function createAddHandlerMetadata(
+  errorName: string,
+  errorMessage: string,
+  params: AddLiquidityParams
+) {
+  const extra: Extras = {
+    handler: params.handler.constructor.name,
+    params: {
+      ...params,
+      humanAmountsIn: stringifyHumanAmountsIn(params.poolType, params.humanAmountsIn),
+    },
+  }
+  return createFatalMetadata(errorName, errorMessage, extra)
+}
+
+/**
+ * Creates sentry metadata for errors in remove liquidity handlers
+ */
+function createRemoveHandlerMetadata(
+  errorName: string,
+  errorMessage: string,
+  params: RemoveLiquidityParams
+) {
   const extra: Extras = {
     handler: params.handler.constructor.name,
     params,

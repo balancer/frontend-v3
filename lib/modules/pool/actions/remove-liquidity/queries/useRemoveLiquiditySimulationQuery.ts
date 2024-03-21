@@ -9,7 +9,7 @@ import { Address, useQuery } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { RemoveLiquidityParams, removeLiquidityKeys } from './remove-liquidity-keys'
 import { UseQueryOptions } from '@tanstack/react-query'
-import { captureLiquidityHandlerError } from '@/lib/shared/utils/query-errors'
+import { captureRemoveLiquidityHandlerError } from '@/lib/shared/utils/query-errors'
 
 export type RemoveLiquiditySimulationQueryResult = ReturnType<
   typeof useRemoveLiquiditySimulationQuery
@@ -48,7 +48,11 @@ export function useRemoveLiquiditySimulationQuery(
     enabled: enabled && isConnected && Number(debouncedHumanBptIn) > 0,
     cacheTime: 0,
     onError(error: unknown) {
-      captureLiquidityHandlerError(error, 'Error in remove liquidity simulation query', params)
+      captureRemoveLiquidityHandlerError(
+        error,
+        'Error in remove liquidity simulation query',
+        params
+      )
     },
     ...onlyExplicitRefetch,
   })

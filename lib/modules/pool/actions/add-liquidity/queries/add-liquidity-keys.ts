@@ -1,22 +1,41 @@
-import { Pool } from '../../../usePool'
+import { GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
 import { requiresProportionalInput } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
+import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 
 const addLiquidity = 'add-liquidity'
 
-type LiquidityParams = {
+function getHandlerClassName(instance: AddLiquidityHandler): string {
+  return instance.constructor.name
+}
+
+export type AddLiquidityParams = {
+  handler: AddLiquidityHandler
   userAddress: string
-  pool: Pool
+  poolId: string
+  poolType: GqlPoolType
   slippage: string
   humanAmountsIn: HumanAmountIn[]
 }
-function liquidityParams({ userAddress, pool, slippage, humanAmountsIn }: LiquidityParams) {
-  return `${userAddress}:${pool.id}:${slippage}:${stringifyHumanAmountsIn(pool, humanAmountsIn)}`
+function liquidityParams({
+  handler,
+  userAddress,
+  poolId,
+  poolType,
+  slippage,
+  humanAmountsIn,
+}: AddLiquidityParams) {
+  return `${getHandlerClassName(
+    handler
+  )}:${userAddress}:${poolId}:${slippage}:${stringifyHumanAmountsIn(poolType, humanAmountsIn)}`
 }
 
-function stringifyHumanAmountsIn(pool: Pool, humanAmountsIn: HumanAmountIn[]): string {
+export function stringifyHumanAmountsIn(
+  poolType: GqlPoolType,
+  humanAmountsIn: HumanAmountIn[]
+): string {
   if (humanAmountsIn.length === 0) return ''
-  if (requiresProportionalInput(pool.type)) {
+  if (requiresProportionalInput(poolType)) {
     /*
     This is an edge-case where we only use the first human amount in the array to avoid triggering queries when the other human amounts change automatically
     (as they are automatically calculated and entered in the proportional add liquidity flow).
@@ -28,9 +47,10 @@ function stringifyHumanAmountsIn(pool: Pool, humanAmountsIn: HumanAmountIn[]): s
 }
 
 export const addLiquidityKeys = {
-  priceImpact: (params: LiquidityParams) =>
+  priceImpact: (params: AddLiquidityParams) =>
     [addLiquidity, 'price-impact', liquidityParams(params)] as const,
-  preview: (params: LiquidityParams) => [addLiquidity, 'preview', liquidityParams(params)] as const,
-  buildCallData: (params: LiquidityParams) =>
+  preview: (params: AddLiquidityParams) =>
+    [addLiquidity, 'preview', liquidityParams(params)] as const,
+  buildCallData: (params: AddLiquidityParams) =>
     [addLiquidity, 'buildCallData', liquidityParams(params)] as const,
 }
