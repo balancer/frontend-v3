@@ -1,8 +1,8 @@
 'use client'
-import { Box, Card, Flex, HStack, Heading, Skeleton, Stack, Text } from '@chakra-ui/react'
+import { Box, Card, Flex, HStack, Heading, Skeleton, Stack, Text, VStack } from '@chakra-ui/react'
 import ReactECharts from 'echarts-for-react'
 
-import { PoolChartTypeTab, poolChartPeriods, usePoolCharts } from './usePoolCharts'
+import { PoolChartTab, PoolChartTypeTab, poolChartPeriods, usePoolCharts } from './usePoolCharts'
 
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { GroupBase, OptionBase, Select, SingleValue } from 'chakra-react-select'
@@ -53,30 +53,41 @@ export function PoolChart() {
     chartValueSum,
   } = usePoolCharts()
 
-  return (
-    <Card variant="gradient">
-      <Stack px="lg" py="md">
-        {isLoading ? (
-          <Skeleton w="100%" h="300" />
-        ) : chartData.length > 0 ? (
-          <Stack>
-            <HStack justifyContent="space-between">
-              <HStack gap="16px">
-                <Heading fontWeight="bold" size="h5">
-                  {chartValueSum}
-                </Heading>
+  function getActiveTabLabel() {
+    switch (activeTab.value) {
+      case PoolChartTab.TVL:
+        return 'Total value locked'
+      case PoolChartTab.FEES:
+        return `${activePeriod.label} fees`
+      case PoolChartTab.VOLUME:
+        return `${activePeriod.label} volume`
+    }
+  }
 
-                <PeriodSelect value={activePeriod} onChange={setActivePeriod} />
-              </HStack>
-              <Stack gap="0" textAlign="right">
+  return (
+    <Card variant="level2" shadow="2xl" width="full" minHeight="320px" borderWidth={0}>
+      <Stack p="4">
+        {isLoading && <Skeleton w="100%" h="300" />}
+        {!isLoading && chartData.length > 0 && (
+          <VStack width="full" height="full">
+            <HStack width="full" justifyContent="space-between">
+              <HStack spacing="2" textAlign="right">
                 <ButtonGroup
                   currentOption={activeTab}
                   options={tabsList}
                   onChange={tab => setActiveTab(tab as PoolChartTypeTab)}
                 />
-              </Stack>
+
+                <PeriodSelect value={activePeriod} onChange={setActivePeriod} />
+              </HStack>
+              <VStack spacing="0" alignItems="flex-end">
+                <Heading fontWeight="bold" size="h5">
+                  {chartValueSum}
+                </Heading>
+                <Text fontSize="0.9rem">{getActiveTabLabel()}</Text>
+              </VStack>
             </HStack>
-            <Box onMouseLeave={handleMouseLeave}>
+            <Box width="full" height="full" onMouseLeave={handleMouseLeave}>
               <ReactECharts
                 option={options}
                 onEvents={{
@@ -84,8 +95,9 @@ export function PoolChart() {
                 }}
               />
             </Box>
-          </Stack>
-        ) : (
+          </VStack>
+        )}
+        {!isLoading && chartData.length <= 0 && (
           <Flex h="100" alignItems="center">
             <Text fontSize="2xl" variant="secondary" p="lg">
               Not enough data

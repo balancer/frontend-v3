@@ -9,6 +9,7 @@ import { useEffect } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
 import { usePool } from '../../usePool'
 import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructAddLiquidityStep() {
   const { chainId } = usePool()
@@ -33,7 +34,14 @@ export function useConstructAddLiquidityStep() {
   const addLiquidityTransaction = useManagedSendTransaction(
     transactionLabels,
     chainId,
-    buildCallDataQuery.data
+    buildCallDataQuery.data,
+    (error: unknown) => {
+      captureWagmiSimulationError(
+        error,
+        'Error in AddLiquidity transaction simulation',
+        buildCallDataQuery.data || {}
+      )
+    }
   )
 
   const isComplete = () => addLiquidityTransaction.result.isSuccess

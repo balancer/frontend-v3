@@ -76,7 +76,8 @@ export default function PoolWeightChart({
     isSmall,
     colors: DEFAULT_POOL_WEIGHT_CHART_COLORS,
   }
-  if (isBoosted(pool.type)) {
+  // if (isBoosted(pool.type)) {
+  if (isStable(pool.type) && pool.displayTokens.length === 3) {
     return <BoostedPoolWeightChart pool={pool as GqlPoolStable} {...commonProps} />
   }
   if (isStable(pool.type)) {

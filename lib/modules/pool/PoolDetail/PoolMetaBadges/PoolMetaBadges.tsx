@@ -18,6 +18,7 @@ export default function PoolMetaBadges() {
         background="background.level2"
         border="1px solid"
         borderColor="border.base"
+        shadow="sm"
       >
         <Image
           src={`/images/chains/${chain}.svg`}
@@ -36,6 +37,7 @@ export default function PoolMetaBadges() {
             border="1px solid"
             borderColor="border.base"
             key={`meta-badge-${token.address}`}
+            shadow="sm"
           >
             <HStack>
               <TokenIcon
@@ -61,6 +63,7 @@ export default function PoolMetaBadges() {
           background="background.level2"
           border="1px solid"
           borderColor="border.base"
+          shadow="sm"
         >
           <Text>{fNum('feePercent', pool.dynamicData.swapFee)}</Text>
         </Badge>

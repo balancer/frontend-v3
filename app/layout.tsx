@@ -3,7 +3,6 @@ import { Providers } from './providers'
 import { Navbar } from '@/lib/shared/components/navs/Navbar'
 import { Footer } from '@/lib/shared/components/navs/Footer'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import Noise from './noise'
 import { satoshiFont } from '@/lib/assets/fonts/satoshi/satoshi'
 import NextTopLoader from 'nextjs-toploader'
 import { Container } from '@chakra-ui/react'
@@ -32,14 +31,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={satoshiFont.className} suppressHydrationWarning>
         <NextTopLoader showSpinner={false} />
         <Providers>
-          <Noise>
-            <Navbar />
-            <Container maxW="maxContent" py="2xl">
-              {children}
-              <SpeedInsights />
-            </Container>
-            <Footer />
-          </Noise>
+          <Navbar />
+          <Container maxW="maxContent" py="2xl">
+            {children}
+            <SpeedInsights />
+          </Container>
+          <Footer />
         </Providers>
       </body>
     </html>
