@@ -75,7 +75,7 @@ function GlobalProviders({ children }: WrapperProps) {
   const defaultRouterOptions = {}
   let wagmiConfig: Config
   if (process.env.VITE_USE_PRODUCTION_WAGMI == 'true') {
-    wagmiConfig = prodWagmiConfig
+    wagmiConfig = prodWagmiConfig as unknown as Config
   } else {
     wagmiConfig = createWagmiTestConfig() as Config
   }
