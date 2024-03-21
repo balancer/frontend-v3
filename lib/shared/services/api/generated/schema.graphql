@@ -1310,7 +1310,7 @@ type GqlSorGetSwapPaths {
   """
   Price impact of the path
   """
-  priceImpact: GqlPriceImpact
+  priceImpact: GqlPriceImpact!
 
   """
   The return amount in human form. Return amount is either tokenOutAmount (if swapType is exactIn) or tokenInAmount (if swapType is exactOut)

@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import ReactECharts from 'echarts-for-react'
 import { Box, Card, HStack, Heading } from '@chakra-ui/react'
