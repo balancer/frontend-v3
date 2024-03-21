@@ -18,7 +18,6 @@ export const buildTokenApprovalLabels: BuildTransactionLabels = (args: TokenAppr
     confirming:
       args.actionType === 'Unapprove' ? `Unapproving ${args.symbol}` : `Approving ${args.symbol}`,
     tooltip: tooltipApprovalLabelFor(args.actionType, args.symbol),
-    description: `Token ${args.symbol} approval completed`,
   }
 }
 

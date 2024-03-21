@@ -2,8 +2,8 @@ import { useQuery } from 'wagmi'
 import { GqlChain } from '../services/api/generated/graphql'
 import { getViemClient } from '../services/viem/viem.client'
 import { formatUnits } from 'viem'
-import { fNum } from '../utils/numbers'
-import { secsToMs } from './useTime'
+import { bn, fNum } from '../utils/numbers'
+import { secs } from './useTime'
 
 function getGasPrice(chain: GqlChain) {
   const client = getViemClient(chain)
@@ -14,12 +14,19 @@ function formatGasPrice(gasPrice: bigint): string {
   return fNum('integer', formatUnits(gasPrice, 9))
 }
 
+function highGasPriceFor(chain: GqlChain) {
+  if (chain === GqlChain.Mainnet) return 50
+  return 500
+}
+
 export function useGasPriceQuery(chain: GqlChain) {
   const query = useQuery(['gasPrice', chain], () => getGasPrice(chain), {
-    refetchInterval: secsToMs(30),
+    refetchInterval: secs(30).toMs(),
   })
 
   const gasPrice = query.data ? formatGasPrice(query.data) : undefined
 
-  return { ...query, gasPrice }
+  const isHighGasPrice = gasPrice ? bn(gasPrice).gte(highGasPriceFor(chain)) : false
+
+  return { ...query, gasPrice, isHighGasPrice }
 }

@@ -9,7 +9,9 @@ import { GasIcon } from '@/lib/shared/components/icons/GasIcon'
 
 export function DesktopStepTracker(props: StepTrackerProps) {
   const { currentIndex, steps, chain } = useStepTrackerProps(props)
-  const { gasPrice } = useGasPriceQuery(chain)
+  const { gasPrice, isHighGasPrice } = useGasPriceQuery(chain)
+
+  const gasPriceColor = isHighGasPrice ? 'red.500' : 'grayText'
 
   return (
     <Card variant="level2" rounded="md" width="200px" right="-224px" position="absolute">
@@ -18,16 +20,10 @@ export function DesktopStepTracker(props: StepTrackerProps) {
           <Heading fontWeight="bold" size="h6">
             Steps
           </Heading>
-          <Box
-            p="xs"
-            shadow="sm"
-            background="background.level3"
-            rounded="sm"
-            color="font.highlight"
-          >
+          <Box p="xs" shadow="sm" background="background.level3" rounded="sm" color={gasPriceColor}>
             <HStack spacing="xs">
               <GasIcon size={16} />
-              <Text color="font.highlight" fontWeight="bold" fontSize="xs">
+              <Text color={gasPriceColor} fontWeight="bold" fontSize="xs">
                 {gasPrice ? gasPrice.toString() : '-'}
               </Text>
             </HStack>
