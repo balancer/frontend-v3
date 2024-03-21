@@ -46,8 +46,6 @@ export function useTokenSelectList(
         const userBalance = balanceFor(token)
         return userBalance ? Number(usdValueForToken(token, userBalance?.formatted || 0)) : 0
       },
-      'priority',
-      'symbol',
     ],
     ['desc', 'desc']
   )
