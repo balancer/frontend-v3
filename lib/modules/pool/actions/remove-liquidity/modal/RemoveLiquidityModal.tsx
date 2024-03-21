@@ -101,13 +101,11 @@ export function RemoveLiquidityModal({
         <ModalBody>
           <VStack spacing="md" align="start">
             {isMobile && (
-              <Card variant="level4" p="md" shadow="sm" w="full">
-                <MobileStepTracker
-                  currentStepIndex={currentStepIndex}
-                  stepConfigs={stepConfigs}
-                  chain={pool.chain}
-                />
-              </Card>
+              <MobileStepTracker
+                currentStepIndex={currentStepIndex}
+                stepConfigs={stepConfigs}
+                chain={pool.chain}
+              />
             )}
             <Card variant="level4" shadow="sm" p="md" w="full">
               <VStack align="start" spacing="md">

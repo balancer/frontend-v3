@@ -105,13 +105,11 @@ export function AddLiquidityModal({
         <ModalBody>
           <VStack spacing="md" align="start">
             {isMobile && (
-              <Card variant="level3" p="md" shadow="sm" w="full">
-                <MobileStepTracker
-                  currentStepIndex={currentStepIndex}
-                  stepConfigs={stepConfigs}
-                  chain={pool.chain}
-                />
-              </Card>
+              <MobileStepTracker
+                currentStepIndex={currentStepIndex}
+                stepConfigs={stepConfigs}
+                chain={pool.chain}
+              />
             )}
             <Card variant="level3" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="md">

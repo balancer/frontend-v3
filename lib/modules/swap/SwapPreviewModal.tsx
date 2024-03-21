@@ -86,12 +86,11 @@ export function SwapPreviewModal({
         <ModalBody>
           <VStack spacing="sm" align="start">
             {isMobile && (
-              <Card variant="level3" p="md" shadow="sm" w="full">
-                <MobileStepTracker
-                  currentStepIndex={currentStepIndex}
-                  stepConfigs={swapStepConfigs}
-                />
-              </Card>
+              <MobileStepTracker
+                currentStepIndex={currentStepIndex}
+                stepConfigs={swapStepConfigs}
+                chain={selectedChain}
+              />
             )}
             <Card variant="modalSubSection">
               <CardHeader>You pay</CardHeader>

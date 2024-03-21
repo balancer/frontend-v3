@@ -40,10 +40,6 @@ export function useStepTrackerProps({ stepConfigs, currentStepIndex, chain }: St
     setInitialStepConfigs(stepConfigs)
   }, [])
 
-  useEffect(() => {
-    console.log('colorMode', colorMode)
-  }, [])
-
   return {
     step: currentStep,
     isLastStep,
