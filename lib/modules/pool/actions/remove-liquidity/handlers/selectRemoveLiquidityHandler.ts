@@ -7,6 +7,7 @@ import { RemoveLiquidityType } from '../remove-liquidity.types'
 import { NestedProportionalRemoveLiquidityHandler } from './NestedProportionalRemoveLiquidity.handler'
 import { NestedSingleTokenRemoveLiquidityHandler } from './NestedSingleTokenRemoveLiquidity.handler'
 import { ProportionalRemoveLiquidityHandler } from './ProportionalRemoveLiquidity.handler'
+import { RecoveryRemoveLiquidityHandler } from './RecoveryRemoveLiquidity.handler'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
 import { SingleTokenRemoveLiquidityHandler } from './SingleTokenRemoveLiquidity.handler'
 
@@ -20,11 +21,9 @@ export function selectRemoveLiquidityHandler(
   //   return new TwammRemoveLiquidityHandler(getChainId(pool.chain))
   // }
 
-  const isRecoveryExit = shouldUseRecoveryRemoveLiquidity(pool)
-  if (isRecoveryExit) {
+  if (shouldUseRecoveryRemoveLiquidity(pool)) {
     console.log('Recovery handler')
-    // A recovery exit is just a Proportional one but with Recovery kind (see implementation)
-    return new ProportionalRemoveLiquidityHandler(pool, isRecoveryExit)
+    return new RecoveryRemoveLiquidityHandler(pool)
   }
 
   if (shouldUseNestedLiquidity(pool) && kind === RemoveLiquidityType.Proportional) {

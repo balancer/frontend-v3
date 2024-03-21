@@ -22,6 +22,7 @@ import { PriceImpactAccordion } from '@/lib/shared/components/accordion/PriceImp
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import { parseUnits } from 'viem'
+import { SimulationError } from '@/lib/shared/components/errors/SimulationError'
 
 const TABS: ButtonGroupOption[] = [
   {
@@ -146,13 +147,14 @@ export function RemoveLiquidityForm() {
                 isDisabled={priceImpactQuery.isLoading && !priceImpactQuery.isSuccess}
               />
             </VStack>
+            <SimulationError simulationQuery={simulationQuery} />
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={isDisabled || simulationQuery.isLoading}
+                isDisabled={isDisabled || simulationQuery.isLoading || simulationQuery.isError}
                 onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
               >
                 Next
