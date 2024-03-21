@@ -13,7 +13,7 @@ export function Steps({ currentIndex, steps }: StepsProps) {
   const colorMode = useThemeColorMode()
 
   return (
-    <VStack alignItems="left" p="sm" pt="0">
+    <VStack alignItems="left" p="sm" pt="xs" pb="md">
       {steps.map((step, index) => (
         <Step
           key={step.title}

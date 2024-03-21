@@ -93,8 +93,8 @@ function isLoading(status: StepStatus, flowStep?: FlowStep): boolean {
   We show different colors depending on the step status and other variables like the step flow state
 */
 const completeColor = {
-  dark: 'font.highlight',
-  light: 'font.highlight',
+  dark: 'grayText',
+  light: 'grayText',
 }
 
 const incompleteColor = {
@@ -109,6 +109,6 @@ const activeColor = {
 
 // When the current step tx is waiting for wallet confirmation
 const activeConfirmingColor = {
-  dark: 'orange',
-  light: 'orange',
+  dark: 'orange.300',
+  light: 'orange.300',
 }

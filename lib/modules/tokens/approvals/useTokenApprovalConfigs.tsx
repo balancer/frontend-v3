@@ -81,7 +81,7 @@ export function useTokenApprovalConfigs({
 
 function buildTokenApprovalConfig(props: ApproveTokenProps): StepConfig {
   const approvalStepConfig: StepConfig = {
-    title: `Approve token ${props.symbol}`,
+    title: `Approve ${props.symbol}`,
     render(useOnStepCompleted: OnStepCompleted) {
       return <ApproveTokenButton {...props} useOnStepCompleted={useOnStepCompleted} />
     },

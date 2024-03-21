@@ -8,6 +8,7 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { StepProps, getStepSettings } from './getStepSettings'
+import { Check } from 'react-feather'
 
 export function Step(props: StepProps) {
   const { color, isActive, title } = getStepSettings(props)
@@ -29,9 +30,17 @@ export function StepIndicator(props: StepProps) {
 
   if (status === 'complete') {
     return (
-      <Circle size="7" bg="transparent" color="font.highlight" border="2px" mr="1">
-        <CheckIcon fontSize="sm" />
-      </Circle>
+      <CircularProgress
+        value={100}
+        trackColor="border.base"
+        thickness="8"
+        size="7"
+        color="font.highlight"
+      >
+        <CircularProgressLabel fontSize="md" color="font.highlight" pl={1.5}>
+          <Check size={15} strokeWidth={4} />
+        </CircularProgressLabel>
+      </CircularProgress>
     )
   }
 
@@ -39,11 +48,12 @@ export function StepIndicator(props: StepProps) {
     <CircularProgress
       value={100}
       isIndeterminate={isActiveLoading}
+      trackColor="border.base"
       thickness="8"
       size="7"
       color={color}
     >
-      <CircularProgressLabel fontSize="md" color={color}>
+      <CircularProgressLabel fontSize="sm" fontWeight="bold" color={color}>
         {stepNumber}
       </CircularProgressLabel>
     </CircularProgress>
