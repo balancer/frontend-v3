@@ -8,7 +8,7 @@ export function PoolRisks() {
   const risks = getPoolRisks(pool as GqlPoolElement)
 
   return (
-    <Card minHeight="175px" width="full" variant="level2" px="6" py="5">
+    <Card variant="level2" shadow="2xl" width="full" px="4" py="5" borderWidth={0}>
       <VStack alignItems="flex-start" spacing="4" width="full">
         <Heading variant="h4" fontSize="1.25rem">
           Pool risks
