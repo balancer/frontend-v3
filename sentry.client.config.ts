@@ -3,10 +3,10 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from '@sentry/nextjs'
-import { sentryDns } from './sentry.config'
+import { sentryDSN } from './sentry.config'
 
 Sentry.init({
-  dsn: sentryDns,
+  dsn: sentryDSN,
 
   // Set to 0% to turn off.
   tracesSampleRate: 0,
