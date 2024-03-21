@@ -40,7 +40,7 @@ import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignat
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { CurrentFlowStepProvider } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
-import { wagmiConfig as prodWagmiConfig } from '@/lib/modules/web3/Web3Provider'
+import { createWagmiConfig } from '@/lib/modules/web3/Web3Provider'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -75,7 +75,7 @@ function GlobalProviders({ children }: WrapperProps) {
   const defaultRouterOptions = {}
   let wagmiConfig: Config
   if (process.env.VITE_USE_PRODUCTION_WAGMI == 'true') {
-    wagmiConfig = prodWagmiConfig as unknown as Config
+    wagmiConfig = createWagmiConfig() as Config
   } else {
     wagmiConfig = createWagmiTestConfig() as Config
   }
