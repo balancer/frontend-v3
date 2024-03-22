@@ -4,26 +4,25 @@ import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { SentryError } from '@/lib/shared/utils/errors'
+import { bn } from '@/lib/shared/utils/numbers'
 import {
   HumanAmount,
   InputAmount,
   MinimalToken,
-  NestedPool,
   NestedPoolState,
   PoolState,
-  PoolStateWithBalances,
-  RawPoolToken,
   TokenAmount,
+  calculateProportionalAmounts,
+  mapPoolToNestedPoolState,
   mapPoolType,
 } from '@balancer/sdk'
 import { keyBy } from 'lodash'
 import { Hex, formatUnits, parseUnits } from 'viem'
 import { Address } from 'wagmi'
-import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
+import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
+import { hasNestedPools, isComposableStable, isComposableStableV1, isGyro } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
-import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
-import { bn } from '@/lib/shared/utils/numbers'
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -47,7 +46,9 @@ export class LiquidityActionHelpers {
 
   /* Used by default nested SDK handlers */
   public get nestedPoolState(): NestedPoolState {
-    return mapPoolToNestedPoolState(this.pool)
+    // TODO: PoolGetPool should be exposed by the SDK
+    type PoolGetPool = Parameters<typeof mapPoolToNestedPoolState>[0]
+    return mapPoolToNestedPoolState(this.pool as unknown as PoolGetPool)
   }
 
   public get poolStateWithBalances(): PoolStateWithBalances {
@@ -166,7 +167,7 @@ export function shouldUseRecoveryRemoveLiquidity(pool: Pool): boolean {
 }
 
 export function requiresProportionalInput(poolType: GqlPoolType) {
-  return isGyro(poolType)
+  return isGyro(poolType) || isComposableStable(poolType)
 }
 
 export function toPoolState(pool: Pool): PoolState {
@@ -179,72 +180,16 @@ export function toPoolState(pool: Pool): PoolState {
   }
 }
 
-//TODO: this should be exposed by the SDK
-export function mapPoolToNestedPoolState(pool: Pool): NestedPoolState {
-  const pools: NestedPool[] = [
-    {
-      id: pool.id as Address,
-      address: pool.address as Address,
-      type: mapPoolType(pool.type),
-      level: 1,
-      tokens: pool.tokens.map(t => {
-        const minimalToken: MinimalToken = {
-          address: t.address as Address,
-          decimals: t.decimals,
-          index: t.index,
-        }
-        return minimalToken
-      }),
-    },
-  ]
-
-  pool.tokens.forEach(token => {
-    if ('pool' in token) {
-      // Token represents nested pools only nested if they have a pool property
-      if (token.pool === undefined) return
-
-      // map API result to NestedPool
-      pools.push({
-        id: token.pool.id as Address,
-        address: token.pool.address as Address,
-        level: 0,
-        type: mapPoolType(token.pool.type),
-        tokens: token.pool.tokens.map(t => {
-          const minimalToken: MinimalToken = {
-            address: t.address as Address,
-            decimals: t.decimals,
-            index: t.index,
-          }
-          return minimalToken
-        }),
-      })
-    }
-  })
-
-  const mainTokens = pool.allTokens
-    .filter(t => {
-      return t.isMainToken
-    })
-    .map(t => {
-      return {
-        address: t.address,
-        decimals: t.decimals,
-      }
-    })
-
-  return {
-    pools,
-    mainTokens,
-  } as NestedPoolState
-}
+type PoolStateWithBalances = Parameters<typeof calculateProportionalAmounts>[0]
 
 export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
   return {
-    id: pool.id as Hex,
     address: pool.address as Address,
-    tokens: pool.tokens as RawPoolToken[],
-    type: mapPoolType(pool.type),
+    tokens: pool.tokens.map(t => ({
+      address: t.address as Address,
+      balance: t.balance as HumanAmount,
+      decimals: t.decimals,
+    })),
     totalShares: pool.dynamicData.totalShares as HumanAmount,
-    vaultVersion: 2, //TODO: change to dynamic version when we implement v3 integration
   }
 }
