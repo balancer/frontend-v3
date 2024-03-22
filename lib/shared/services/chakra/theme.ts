@@ -1,4 +1,4 @@
-import { ThemeTypings, extendTheme } from '@chakra-ui/react'
+import { ThemeTypings, extendTheme, textDecoration } from '@chakra-ui/react'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
 import tinycolor from 'tinycolor2'
 
@@ -1100,6 +1100,16 @@ export const balTheme = {
         transition: tokens.transition.default,
         _hover: {
           color: 'font.linkHover',
+        },
+      },
+      variants: {
+        nav: {
+          color: 'font.primary',
+          transition: tokens.transition.default,
+          _hover: {
+            color: 'font.link',
+            textDecoration: 'none',
+          },
         },
       },
     },
