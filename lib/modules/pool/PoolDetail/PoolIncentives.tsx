@@ -5,13 +5,16 @@
 // import { Box, Button, Card, HStack, Heading, Icon, Text, Tooltip, VStack } from '@chakra-ui/react'
 // import React, { useState } from 'react'
 // import { Address } from 'viem'
-// import { usePool } from '../usePool'
+import { usePool } from '../usePool'
 // import { useClaiming } from '../actions/claim/useClaiming'
 // import { ClaimModal } from '../actions/claim/ClaimModal'
 // import { Hex } from 'viem'
 // import { PoolListItem } from '../pool.types'
 import { IncentiveBadge } from '@/lib/shared/components/other/IncentiveBadge'
 import { HStack, Text, VStack } from '@chakra-ui/react'
+import { sumBy } from 'lodash'
+import { useTokens } from '../../tokens/useTokens'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 // import { ChevronDown } from 'react-feather'
 
 // const TABS = [
@@ -31,7 +34,7 @@ import { HStack, Text, VStack } from '@chakra-ui/react'
 
 export default function PoolIncentives() {
   // const [activeTab, setActiveTab] = useState(TABS[0])
-  // const { pool, chain } = usePool()
+  const { pool, chain } = usePool()
   // const { previewModalDisclosure, disabledReason, isDisabled, hasNoRewards } = useClaiming([
   //   pool,
   // ] as unknown[] as PoolListItem[])
@@ -43,11 +46,31 @@ export default function PoolIncentives() {
   // const onModalClose = () => {
   //   previewModalDisclosure.onClose()
   // }
+  const { priceFor } = useTokens()
+  const { toCurrency } = useCurrency()
 
+  const rewards = pool.staking?.gauge?.rewards // || pool.staking?.farm?.rewarders
+
+  const rewardsMapped = rewards?.map(({ tokenAddress, rewardPerSecond }) => ({
+    tokenAddress,
+    rewardPerSecond,
+  }))
+
+  const incentivesWeeklyValue = sumBy(
+    rewardsMapped || [],
+    rewarder =>
+      priceFor(rewarder.tokenAddress, chain) * parseFloat(rewarder.rewardPerSecond) * 86400 * 7
+  )
+
+  console.log({ incentivesWeeklyValue })
   return (
     <VStack width="full">
       <HStack spacing="4" width="full" alignItems="flex-start">
-        <IncentiveBadge label="Pool incentives (1w)" value="$5555" width="full">
+        <IncentiveBadge
+          label="Pool incentives (1w)"
+          value={toCurrency(incentivesWeeklyValue, { abbreviated: false })}
+          width="full"
+        >
           <Text>bing</Text>
         </IncentiveBadge>
         <IncentiveBadge special label="Claimable incentives" value="$5555" width="full">
