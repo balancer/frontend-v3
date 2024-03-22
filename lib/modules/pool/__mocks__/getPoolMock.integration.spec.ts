@@ -31,9 +31,17 @@ describe.skip('Fetch pool data for mock definition', () => {
     console.log(JSON.stringify(pool))
   })
 
-  test.only('Generate meta stable pool mock', async () => {
+  test('Generate meta stable pool mock', async () => {
     const metaStablePoolId = '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080' //B-stETH-STABLE
     const pool = await getPoolMock(metaStablePoolId, GqlChain.Mainnet)
+
+    console.log(JSON.stringify(pool))
+  })
+
+  test.only('Generate composable stable pool mock', async () => {
+    const composableStablePoolId =
+      '0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570' // Balancer vETH/WETH StablePool
+    const pool = await getPoolMock(composableStablePoolId, GqlChain.Mainnet)
 
     console.log(JSON.stringify(pool))
   })
