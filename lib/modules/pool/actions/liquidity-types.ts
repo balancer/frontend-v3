@@ -5,7 +5,3 @@ export type HumanAmountIn = {
   humanAmount: HumanAmount | ''
   tokenAddress: Address
 }
-
-export interface HandlerParams {
-  handler: object
-}

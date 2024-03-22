@@ -11,6 +11,7 @@ import { getChainId } from '@/lib/config/app.config'
 import { PoolListItem } from '../../pool.types'
 import { getAllGaugesAddressesFromPool } from '@/lib/modules/portfolio/usePortfolio'
 import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructClaimAllRewardsStep(pools: PoolListItem[]) {
   const { isConnected } = useUserAccount()
@@ -48,6 +49,19 @@ export function useConstructClaimAllRewardsStep(pools: PoolListItem[]) {
     { args: [claimData] },
     {
       enabled: gaugeAddresses.length > 0 && claimData && claimData.length > 0,
+      onError(error: unknown) {
+        captureWagmiSimulationError(
+          error,
+          'Error in wagmi tx simulation (Claim all rewards transaction)',
+          {
+            poolId: pool.id,
+            chain,
+            claimData,
+            stakingType,
+            gaugeAddresses,
+          }
+        )
+      },
     }
   )
 
