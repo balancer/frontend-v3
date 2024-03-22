@@ -25,8 +25,15 @@ describe.skip('Fetch pool data for mock definition', () => {
     console.log(JSON.stringify(pool))
   })
 
-  test.only('Generate recovery mode pool mock', async () => {
+  test('Generate recovery mode pool mock', async () => {
     const pool = await getPoolMock(recoveryModePoolId, GqlChain.Mainnet)
+
+    console.log(JSON.stringify(pool))
+  })
+
+  test.only('Generate meta stable pool mock', async () => {
+    const metaStablePoolId = '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080' //B-stETH-STABLE
+    const pool = await getPoolMock(metaStablePoolId, GqlChain.Mainnet)
 
     console.log(JSON.stringify(pool))
   })
