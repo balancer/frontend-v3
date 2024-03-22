@@ -1,5 +1,5 @@
-import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
-import { FlowStep } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
+import { FlowStep } from '@/lib/modules/transactions/transaction-steps/lib'
 import { VStack } from '@chakra-ui/react'
 
 interface ClaimButtonProps {

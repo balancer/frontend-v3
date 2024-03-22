@@ -1,3 +1,5 @@
+'use client'
+
 import { Badge, HStack, Text, Tooltip } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
@@ -11,10 +13,12 @@ export default function PoolMetaBadges() {
     <HStack>
       <Badge
         py="2.5"
-        px="3"
+        px="2.5"
         rounded="full"
-        background="lightBadge"
-        _dark={{ background: 'background.card.level6' }}
+        background="background.level2"
+        border="1px solid"
+        borderColor="border.base"
+        shadow="sm"
       >
         <Image
           src={`/images/chains/${chain}.svg`}
@@ -29,9 +33,11 @@ export default function PoolMetaBadges() {
             py="2"
             px="3"
             rounded="full"
-            background="lightBadge"
-            _dark={{ background: 'background.card.level6' }}
+            background="background.level2"
+            border="1px solid"
+            borderColor="border.base"
             key={`meta-badge-${token.address}`}
+            shadow="sm"
           >
             <HStack>
               <TokenIcon
@@ -54,8 +60,10 @@ export default function PoolMetaBadges() {
         <Badge
           fontWeight="normal"
           p="1"
-          background="lightBadge"
-          _dark={{ background: 'background.card.level6' }}
+          background="background.level2"
+          border="1px solid"
+          borderColor="border.base"
+          shadow="sm"
         >
           <Text>{fNum('feePercent', pool.dynamicData.swapFee)}</Text>
         </Badge>

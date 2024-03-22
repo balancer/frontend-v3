@@ -29,12 +29,22 @@ export async function ApolloGlobalDataProvider({ children }: React.PropsWithChil
   const { data: tokensQueryData } = await client.query({
     query: GetTokensDocument,
     variables: tokensQueryVariables,
+    context: {
+      fetchOptions: {
+        next: { revalidate: 600 }, // 10 minutes, but this could potentially be longer
+      },
+    },
   })
 
   const { data: tokenPricesQueryData } = await client.query({
     query: GetTokenPricesDocument,
     variables: {
       chains: getProjectConfig().supportedNetworks,
+    },
+    context: {
+      fetchOptions: {
+        next: { revalidate: 60 },
+      },
     },
   })
 

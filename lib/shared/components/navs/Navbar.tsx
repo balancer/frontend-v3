@@ -1,31 +1,38 @@
 'use client'
-import Link from 'next/link'
+
+import NextLink from 'next/link'
 import DarkModeToggle from '../btns/DarkModeToggle'
-import { Box, Stack, HStack } from '@chakra-ui/react'
+import { Box, Stack, HStack, BoxProps, Link } from '@chakra-ui/react'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { BalancerLogo } from '../imgs/BalancerLogo'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { useBreakpoints } from '../../hooks/useBreakpoints'
 import { UserSettings } from '@/lib/modules/user/settings/UserSettings'
 import RecentTransactions from '../other/RecentTransactions'
+import { usePathname } from 'next/navigation'
 
 type Props = {
   leftSlot?: React.ReactNode
   rightSlot?: React.ReactNode
 }
 
-export function Navbar({ leftSlot, rightSlot }: Props) {
+export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
   const { isMobile } = useBreakpoints()
+  const pathname = usePathname()
+
+  function linkColorFor(path: string) {
+    return pathname === path ? 'font.highlight' : 'font.primary'
+  }
 
   return (
-    <Box w="full">
+    <Box w="full" {...rest}>
       <Stack
         flexDirection={{ base: 'column', md: 'row' }}
         justify={{ base: 'flex-start', md: 'space-between' }}
         fontWeight="medium"
         as="nav"
       >
-        <HStack padding="md" order={{ md: '2' }}>
+        <HStack padding="md" order={{ md: '2' }} onClick={e => e.stopPropagation()}>
           {rightSlot || (
             <>
               <RecentTransactions />
@@ -35,24 +42,48 @@ export function Navbar({ leftSlot, rightSlot }: Props) {
             </>
           )}
         </HStack>
-        <HStack padding="md" spacing="lg">
+        <HStack padding="md" spacing="lg" color="font.primary" onClick={e => e.stopPropagation()}>
           {leftSlot || (
             <>
-              <Link href="/" prefetch={true}>
+              <Link as={NextLink} variant="nav" href="/" prefetch={true}>
                 <Box display="flex" gap="1.5">
                   {isMobile ? <BalancerLogo width="24px" /> : <BalancerLogoType width="106px" />}
                 </Box>
               </Link>
-              <Link href="/pools" prefetch={true}>
+              <Link
+                as={NextLink}
+                href="/pools"
+                prefetch={true}
+                variant="nav"
+                color={linkColorFor('/pools')}
+              >
                 Pools
               </Link>
-              <Link href="/swap" prefetch={true}>
+              <Link
+                as={NextLink}
+                variant="nav"
+                href="/swap"
+                prefetch={true}
+                color={linkColorFor('/swap')}
+              >
                 Swap
               </Link>
-              <Link href="/portfolio" prefetch={true}>
+              <Link
+                as={NextLink}
+                variant="nav"
+                href="/portfolio"
+                prefetch={true}
+                color={linkColorFor('/portfolio')}
+              >
                 Portfolio
               </Link>
-              <Link href="/debug" prefetch={true}>
+              <Link
+                as={NextLink}
+                variant="nav"
+                href="/debug"
+                prefetch={true}
+                color={linkColorFor('/debug')}
+              >
                 Debug
               </Link>
             </>

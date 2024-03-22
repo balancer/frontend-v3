@@ -5,11 +5,11 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { HumanAmount } from '@balancer/sdk'
 import { useDebounce } from 'use-debounce'
-import { Address } from 'wagmi'
+import { Address, useQuery } from 'wagmi'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
-import { removeLiquidityKeys } from './remove-liquidity-keys'
-import { useQuery } from 'wagmi'
+import { RemoveLiquidityParams, removeLiquidityKeys } from './remove-liquidity-keys'
 import { UseQueryOptions } from '@tanstack/react-query'
+import { captureLiquidityHandlerError } from '@/lib/shared/utils/query-errors'
 
 export type RemoveLiquiditySimulationQueryResult = ReturnType<
   typeof useRemoveLiquiditySimulationQuery
@@ -28,14 +28,15 @@ export function useRemoveLiquiditySimulationQuery(
 
   const enabled = options.enabled ?? true
 
-  const queryKey = removeLiquidityKeys.preview({
+  const params: RemoveLiquidityParams = {
     handler,
     userAddress,
     slippage,
     poolId,
     humanBptIn: debouncedHumanBptIn,
     tokenOut,
-  })
+  }
+  const queryKey = removeLiquidityKeys.preview(params)
 
   const queryFn = async () =>
     handler.simulate({
@@ -43,11 +44,13 @@ export function useRemoveLiquiditySimulationQuery(
       tokenOut,
     })
 
-  const queryOpts = {
+  const result = useQuery(queryKey, queryFn, {
     enabled: enabled && isConnected && Number(debouncedHumanBptIn) > 0,
     cacheTime: 0,
+    onError(error: unknown) {
+      captureLiquidityHandlerError(error, 'Error in remove liquidity simulation query', params)
+    },
     ...onlyExplicitRefetch,
-  }
-
-  return useQuery(queryKey, queryFn, queryOpts)
+  })
+  return result
 }

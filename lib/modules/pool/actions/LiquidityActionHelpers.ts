@@ -19,9 +19,11 @@ import {
 import { keyBy } from 'lodash'
 import { Hex, formatUnits, parseUnits } from 'viem'
 import { Address } from 'wagmi'
-import { hasNestedPools, isGyro } from '../pool.helpers'
+import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
+import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
+import { bn } from '@/lib/shared/utils/numbers'
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -114,13 +116,10 @@ export class LiquidityActionHelpers {
 export const isEmptyAmount = (amountIn: HumanAmountIn) => isEmptyHumanAmount(amountIn.humanAmount)
 
 export const isEmptyHumanAmount = (humanAmount: HumanAmount | '') =>
-  !humanAmount || humanAmount === '0'
+  !humanAmount || bn(humanAmount).eq(0)
 
 export const areEmptyAmounts = (humanAmountsIn: HumanAmountIn[]) =>
   !humanAmountsIn || humanAmountsIn.length === 0 || humanAmountsIn.every(isEmptyAmount)
-
-export const hasValidHumanAmounts = (humanAmountsIn: HumanAmountIn[]) =>
-  humanAmountsIn.some(a => a.humanAmount && a.humanAmount !== '0')
 
 export function toHumanAmount(tokenAmount: TokenAmount): HumanAmount {
   return formatUnits(tokenAmount.amount, tokenAmount.token.decimals) as HumanAmount
@@ -150,6 +149,22 @@ export function shouldUseNestedLiquidity(pool: Pool) {
   return supportsNestedLiquidity(pool) && hasNestedPools(pool)
 }
 
+export function shouldUseRecoveryRemoveLiquidity(pool: Pool): boolean {
+  // DEBUG: Uncomment following if condition to allow testing pools in recovery mode (but note paused). Examples:
+  // pools/ethereum/v2/0x0da692ac0611397027c91e559cfd482c4197e4030002000000000000000005c9 (WEIGHTED)
+  // pools/ethereum/v2/0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570 (COMPOSABLE_STABLE)
+  // if (pool.dynamicData.isInRecoveryMode) return true
+
+  // All composableStables V1 are in recovery mode and they should use recovery exit even if they are not paused
+  if (isComposableStableV1(pool)) return true
+
+  if (pool.dynamicData.isInRecoveryMode && pool.dynamicData.isPaused) return true
+
+  if (pool.dynamicData.isInRecoveryMode && isAffectedByCspIssue(pool)) return true
+
+  return false
+}
+
 export function requiresProportionalInput(poolType: GqlPoolType) {
   return isGyro(poolType)
 }
@@ -159,15 +174,12 @@ export function toPoolState(pool: Pool): PoolState {
     throw new Error('META_STABLE pool type is not yet supported by the SDK')
   }
 
-  // TODO: fix in SDK
-  const poolType = pool.type === GqlPoolType.Gyro ? 'GYRO2' : pool.type
-
   return {
     id: pool.id as Hex,
     address: pool.address as Address,
     tokens: pool.tokens as MinimalToken[],
-    type: mapPoolType(poolType),
-    balancerVersion: 2, //TODO: change to dynamic version when we implement v3 integration
+    type: mapPoolType(pool.type),
+    vaultVersion: 2, //TODO: change to dynamic version when we implement v3 integration
   }
 }
 
@@ -239,6 +251,6 @@ export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
     tokens: pool.tokens as RawPoolToken[],
     type: mapPoolType(poolType),
     totalShares: pool.dynamicData.totalShares as HumanAmount,
-    balancerVersion: 2, //TODO: change to dynamic version when we implement v3 integration
+    vaultVersion: 2, //TODO: change to dynamic version when we implement v3 integration
   }
 }

@@ -26,24 +26,40 @@ import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { infuraProvider } from 'wagmi/providers/infura'
 import { keyBy, merge } from 'lodash'
-import { useColorMode, useTheme } from '@chakra-ui/react'
+import { useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/shared/services/chakra/theme'
 import { CustomAvatar } from './CustomAvatar'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { UserAccountProvider } from './useUserAccount'
+import { defineChain } from 'viem'
+import { Chain } from 'viem'
+import { getNetworkConfig } from '@/lib/config/app.config'
+import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
+
+function buildChain(viemChain: Chain, rpcOverride?: string): Chain {
+  const { rpcUrl } = getNetworkConfig(viemChain.id)
+
+  return defineChain({
+    ...viemChain,
+    rpcUrls: {
+      default: { http: [rpcOverride || rpcUrl, ...viemChain.rpcUrls.default.http] },
+      public: { http: [rpcOverride || rpcUrl, ...viemChain.rpcUrls.public.http] },
+    },
+  })
+}
 
 export const supportedChains = [
-  mainnet,
-  arbitrum,
-  base,
-  avalanche,
-  fantom,
-  gnosis,
-  optimism,
-  polygon,
-  polygonZkEvm,
-  sepolia,
+  buildChain(mainnet),
+  buildChain(arbitrum),
+  buildChain(base),
+  buildChain(avalanche),
+  buildChain(fantom),
+  buildChain(gnosis),
+  buildChain(optimism),
+  buildChain(polygon),
+  buildChain(polygonZkEvm),
+  buildChain(sepolia),
 ]
 
 const { chains, publicClient } = configureChains(supportedChains, [
@@ -136,7 +152,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     ...sharedConfig,
   } as Theme)
 
-  const { colorMode } = useColorMode()
+  const colorMode = useThemeColorMode()
   const customTheme = colorMode === 'dark' ? _darkTheme : _lightTheme
 
   return (

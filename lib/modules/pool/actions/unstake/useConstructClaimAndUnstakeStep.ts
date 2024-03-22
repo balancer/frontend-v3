@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { parseUnits } from 'viem'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { usePool } from '../../usePool'
@@ -7,12 +7,13 @@ import { selectStakingService } from '@/lib/modules/staking/selectStakingService
 import { useUnstakeGaugeCallDataQuery } from './useUnstakeGaugeCallDataQuery'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
-import { useBalTokenRewards } from '@/lib/modules/portfolio/useBalRewards'
-import { useClaimableBalances } from '@/lib/modules/portfolio/claim/useClaimableBalances'
+import { useBalTokenRewards } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
+import { useClaimableBalances } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
+import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 export function useConstructClaimAndUnstakeStep() {
-  const { pool } = usePool()
+  const { pool, chainId } = usePool()
   const networkConfig = getNetworkConfig(pool.chain)
 
   const convertedPool = pool as unknown as PoolListItem // need to change type going from pool to pools for hooks
@@ -41,17 +42,18 @@ export function useConstructClaimAndUnstakeStep() {
     'balancer.relayerV6',
     'multicall',
     transactionLabels,
+    chainId,
     { args: [data] },
     { enabled: !!pool }
   )
 
-  const claimAndUnstakeStep: FlowStep = {
+  const claimAndUnstakeStep = useSyncCurrentFlowStep({
     ...claimAndUnstakeTransaction,
     transactionLabels,
     id: 'claimAndUnstake',
     stepType: 'claimAndUnstake',
     isComplete: () => claimAndUnstakeTransaction.result.isSuccess,
-  }
+  })
 
   return {
     claimAndUnstakeStep,

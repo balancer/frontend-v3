@@ -9,11 +9,10 @@ import {
 import { TokensProvider } from '@/lib/modules/tokens/useTokens'
 import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
 import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
-import { createWagmiConfig } from '@/lib/modules/web3/Web3Provider'
 import { AbiMap } from '@/lib/modules/web3/contracts/AbiMap'
 import { WriteAbiMutability } from '@/lib/modules/web3/contracts/contract.types'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
-import { TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { GqlChain, GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 import { ApolloProvider } from '@apollo/client'
 import { RenderHookOptions, act, renderHook, waitFor } from '@testing-library/react'
@@ -38,6 +37,10 @@ import { ReactQueryClientProvider } from '@/app/react-query.provider'
 import { defaultTestUserAccount } from '../anvil/anvil-setup'
 import { createMockConnector } from './wagmi/wagmi-mock-connectors'
 import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignature'
+import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInputsValidation'
+import { SupportedChainId } from '@/lib/config/config.types'
+import { CurrentFlowStepProvider } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { createWagmiConfig } from '@/lib/modules/web3/Web3Provider'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -93,9 +96,11 @@ function GlobalProviders({ children }: WrapperProps) {
                 initPoolListView={'list'}
                 initEnableSignatures="yes"
               >
-                <RecentTransactionsProvider>
-                  <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
-                </RecentTransactionsProvider>
+                <CurrentFlowStepProvider>
+                  <RecentTransactionsProvider>
+                    <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+                  </RecentTransactionsProvider>
+                </CurrentFlowStepProvider>
               </UserSettingsProvider>
             </TokensProvider>
           </UserAccountProvider>
@@ -131,6 +136,7 @@ export function testManagedTransaction<
   contractAddress: string,
   contractId: M,
   functionName: F,
+  chainId: SupportedChainId,
   args?: GetFunctionArgs<T[M], F>,
   additionalConfig?: Omit<
     UsePrepareContractWriteConfig<T[M], F, number>,
@@ -143,6 +149,7 @@ export function testManagedTransaction<
       contractId,
       functionName,
       {} as TransactionLabels,
+      chainId,
       args,
       additionalConfig
     )
@@ -181,7 +188,9 @@ export async function useConnectTestAccount() {
 
 export const DefaultAddLiquidityTestProvider = ({ children }: PropsWithChildren) => (
   <RelayerSignatureProvider>
-    <AddLiquidityProvider>{children}</AddLiquidityProvider>
+    <TokenInputsValidationProvider>
+      <AddLiquidityProvider>{children}</AddLiquidityProvider>
+    </TokenInputsValidationProvider>
   </RelayerSignatureProvider>
 )
 
@@ -205,7 +214,6 @@ export const buildDefaultPoolTestProvider =
           __typename: 'Query',
           pool,
         }}
-        variables={{ id: pool.id, chain: pool.chain, userAddress: defaultTestUserAccount }}
       >
         {children}
       </PoolProvider>

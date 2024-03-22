@@ -1,3 +1,5 @@
+'use client'
+
 import { useMemo } from 'react'
 import { usePool } from '../../usePool'
 import { format } from 'date-fns'

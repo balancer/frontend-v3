@@ -12,6 +12,9 @@ import {
   parseAsString,
   parseAsStringEnum,
 } from 'next-usequerystate/parsers'
+import { Hex } from 'viem'
+
+export type PoolId = Hex
 
 export type PoolList = GetPoolsQuery['pools']
 
@@ -27,6 +30,17 @@ export interface FetchPoolProps {
   // chain & variant are not used yet, but will be needed in the future.
   chain: GqlChain
   variant?: PoolVariant
+}
+
+export interface PoolSearchParams {
+  first?: string
+  skip?: string
+  orderBy?: string
+  orderDirection?: string
+  poolTypes?: string
+  networks?: string
+  textSearch?: string
+  userAddress?: string
 }
 
 export interface PoolsColumnSort {

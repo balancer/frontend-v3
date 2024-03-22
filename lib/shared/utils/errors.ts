@@ -8,7 +8,7 @@
  *    } catch (err) {
  *      const error = ensureError(err)
  *
- *      throw new SentryError('A constant error mesage, no interpolation', {
+ *      throw new SentryError('A constant error message, no interpolation', {
  *        cause: error // maintain stack trace
  *        context: { extra: params } // add additional context
  *      })
@@ -26,23 +26,26 @@ export function captureError(error: Error, context?: Partial<ScopeContext>): voi
 // Extends base Error class to allow for additional context and to automatically
 // capture the error in Sentry. Enforces that all errors thrown are of this type.
 export class SentryError extends Error {
-  public readonly context?: Partial<ScopeContext>
+  public readonly context: Partial<ScopeContext>
 
   constructor(
     message: string,
     options: {
+      name?: string
       cause?: Error
       context?: Partial<ScopeContext>
     } = {}
   ) {
-    const { cause, context } = options
+    const { cause, context, name } = options
 
     super(message, { cause })
-    this.name = this.constructor.name
+    this.name = name || this.constructor.name
 
-    this.context = context
+    this.context = context || {}
 
-    captureError(this, { ...context })
+    if (cause instanceof Error && cause.stack) {
+      this.stack = cause.stack
+    }
   }
 }
 

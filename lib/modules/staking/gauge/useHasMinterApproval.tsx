@@ -10,7 +10,7 @@ export function useHasMinterApproval() {
   const { chainId, contracts } = networkConfig
 
   const query = useContractRead({
-    chainId: chainId,
+    chainId,
     abi: balancerMinterABI,
     address: contracts.balancer.minter,
     account: userAddress,

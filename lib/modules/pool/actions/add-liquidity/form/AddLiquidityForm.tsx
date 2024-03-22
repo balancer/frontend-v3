@@ -2,38 +2,39 @@
 
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
-import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { HumanAmount } from '@balancer/sdk'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
   Button,
   Card,
   Center,
+  Grid,
+  GridItem,
   HStack,
   Heading,
-  Skeleton,
+  Icon,
   Text,
   Tooltip,
   VStack,
 } from '@chakra-ui/react'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Address } from 'wagmi'
 import { AddLiquidityModal } from '../AddLiquidityModal'
 import { useAddLiquidity } from '../useAddLiquidity'
-import { fNum, safeTokenFormat } from '@/lib/shared/utils/numbers'
-import { BPT_DECIMALS } from '../../../pool.constants'
-import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
+import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
 import { ProportionalInputs } from './ProportionalInputs'
 import { usePool } from '../../../usePool'
 import { requiresProportionalInput } from '../../LiquidityActionHelpers'
+import { PriceImpactAccordion } from '@/lib/shared/components/accordion/PriceImpactAccordion'
+import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
+import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
+import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 export function AddLiquidityForm() {
   const {
     humanAmountsIn: amountsIn,
-    totalUSDValue,
     setHumanAmountIn: setAmountIn,
     tokens,
     validTokens,
@@ -43,22 +44,27 @@ export function AddLiquidityForm() {
     isDisabled,
     disabledReason,
     previewModalDisclosure,
+    setNeedsToAcceptHighPI,
+    totalUSDValue,
   } = useAddLiquidity()
-  const { toCurrency } = useCurrency()
-  const { slippage } = useUserSettings()
   const nextBtn = useRef(null)
-  const { pool } = usePool()
+  const { pool, totalApr } = usePool()
+  const { priceImpactColor, priceImpact, setPriceImpact } = usePriceImpact()
+  const { toCurrency } = useCurrency()
+
+  useEffect(() => {
+    setPriceImpact(priceImpactQuery.data)
+  }, [priceImpactQuery.data])
 
   function currentValueFor(tokenAddress: string) {
     const amountIn = amountsIn.find(amountIn => isSameAddress(amountIn.tokenAddress, tokenAddress))
     return amountIn ? amountIn.humanAmount : ''
   }
 
-  const bptOut = simulationQuery?.data?.bptOut
-  const bptOutLabel = safeTokenFormat(bptOut?.amount, BPT_DECIMALS, { abbreviated: false })
+  const priceImpactLabel =
+    priceImpact !== undefined && priceImpact !== null ? fNum('priceImpact', priceImpact) : '-'
 
-  const priceImpact = priceImpactQuery?.data
-  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
+  const weeklyYield = bn(totalUSDValue).times(totalApr).div(52)
 
   const onModalOpen = async () => {
     previewModalDisclosure.onOpen()
@@ -75,7 +81,7 @@ export function AddLiquidityForm() {
   return (
     <TokenBalancesProvider tokens={validTokens}>
       <Center h="full" w="full" maxW="lg" mx="auto">
-        <Card variant="level3" shadow="xl" w="full" p="md">
+        <Card variant="level2" shadow="xl" w="full" p="md">
           <VStack spacing="lg" align="start" w="full">
             <HStack w="full" justify="space-between">
               <Heading fontWeight="bold" size="h5">
@@ -83,7 +89,6 @@ export function AddLiquidityForm() {
               </Heading>
               <TransactionSettings size="sm" />
             </HStack>
-
             {requiresProportionalInput(pool.type) ? (
               <ProportionalInputs />
             ) : (
@@ -104,63 +109,60 @@ export function AddLiquidityForm() {
                 })}
               </VStack>
             )}
-
-            <VStack spacing="sm" align="start" w="full" px="md">
-              <HStack justify="space-between" w="full">
-                <Text color="grayText">Total</Text>
-                <HStack>
-                  <NumberText color="grayText">
-                    {toCurrency(totalUSDValue, { abbreviated: false })}
-                  </NumberText>
-                  <Tooltip
-                    label={`Total value of tokens being added. Does not include potential slippage (${fNum(
-                      'slippage',
-                      slippage
-                    )}).`}
-                    fontSize="sm"
-                  >
-                    <InfoOutlineIcon color="grayText" />
-                  </Tooltip>
-                </HStack>
-              </HStack>
-              <HStack justify="space-between" w="full">
-                <Text color="grayText">LP tokens</Text>
-                <HStack>
-                  {simulationQuery.isLoading ? (
-                    <Skeleton w="16" h="6" />
-                  ) : (
-                    <NumberText color="grayText">{bptOutLabel}</NumberText>
-                  )}
-                  <Tooltip
-                    label={`LP tokens you are expected to receive. Does not include potential slippage (${fNum(
-                      'slippage',
-                      slippage
-                    )}).`}
-                    fontSize="sm"
-                  >
-                    <InfoOutlineIcon color="grayText" />
-                  </Tooltip>
-                </HStack>
-              </HStack>
-              <HStack justify="space-between" w="full">
-                <Text color="grayText">Price impact</Text>
-                <HStack>
-                  {priceImpactQuery.isLoading ? (
-                    <Skeleton w="16" h="6" />
-                  ) : (
-                    <NumberText color="grayText">{priceImpactLabel}</NumberText>
-                  )}
-                  <Tooltip
-                    label="Adding unbalanced amounts causes the internal prices of the pool to change,
-                    as if you were swapping tokens. The higher the price impact the more you'll spend in swap fees."
-                    fontSize="sm"
-                  >
-                    <InfoOutlineIcon color="grayText" />
-                  </Tooltip>
-                </HStack>
-              </HStack>
+            <VStack spacing="sm" align="start" w="full">
+              <PriceImpactAccordion
+                isDisabled={!priceImpactQuery.data}
+                setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                accordionButtonComponent={
+                  <HStack>
+                    <Text variant="secondary" fontSize="sm" color="gray.400">
+                      Price impact:{' '}
+                    </Text>
+                    <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
+                      {priceImpactLabel}
+                    </Text>
+                  </HStack>
+                }
+                accordionPanelComponent={
+                  <PoolActionsPriceImpactDetails
+                    totalUSDValue={totalUSDValue}
+                    bptAmount={simulationQuery.data?.bptOut.amount}
+                    isAddLiquidity
+                  />
+                }
+              />
             </VStack>
-
+            <Grid w="full" templateColumns="1fr 1fr" gap="2">
+              <GridItem>
+                <Card variant="level4" py="12px" px="md" w="full">
+                  <VStack align="start" gap="0.5">
+                    <Text fontSize="sm" lineHeight="16px" fontWeight="500">
+                      Total
+                    </Text>
+                    <Text fontSize="md" lineHeight="16px" fontWeight="700">
+                      {totalUSDValue !== '0'
+                        ? toCurrency(totalUSDValue, { abbreviated: false })
+                        : '-'}
+                    </Text>
+                  </VStack>
+                </Card>
+              </GridItem>
+              <GridItem>
+                <Card variant="level4" py="12px" px="md" w="full">
+                  <VStack align="start" gap="0.5">
+                    <Text variant="special" fontSize="sm" lineHeight="16px" fontWeight="500">
+                      Potential weekly yield
+                    </Text>
+                    <HStack>
+                      <Text variant="special" fontSize="md" lineHeight="16px" fontWeight="700">
+                        {weeklyYield ? toCurrency(weeklyYield, { abbreviated: false }) : '-'}
+                      </Text>
+                      <Icon as={StarsIcon} />
+                    </HStack>
+                  </VStack>
+                </Card>
+              </GridItem>
+            </Grid>
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}

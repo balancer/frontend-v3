@@ -27,8 +27,14 @@ import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
-import { SignRelayerButton } from '@/lib/shared/components/btns/transaction-steps/SignRelayerButton'
+import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
+import { shouldUseRecoveryRemoveLiquidity } from '../../LiquidityActionHelpers'
+import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
+// eslint-disable-next-line max-len
+import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
+import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 type Props = {
   isOpen: boolean
@@ -43,6 +49,7 @@ export function RemoveLiquidityModal({
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
+  const { isDesktop, isMobile } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const {
     tokens,
@@ -50,16 +57,16 @@ export function RemoveLiquidityModal({
     isSingleToken,
     singleTokenOutAddress,
     priceImpactQuery,
-    removeLiquidityTxState,
+    stepConfigs,
     currentStep,
+    currentStepIndex,
     quoteBptIn,
     quotePriceImpact,
     amountOutForToken,
     useOnStepCompleted,
   } = useRemoveLiquidity()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval()
-
-  const { pool } = usePool()
+  const { pool, chainId } = usePool()
+  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
   const { slippage } = useUserSettings()
 
   const priceImpactLabel =
@@ -75,7 +82,14 @@ export function RemoveLiquidityModal({
       {...rest}
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
+        {isDesktop && (
+          <DesktopStepTracker
+            currentStepIndex={currentStepIndex}
+            stepConfigs={stepConfigs}
+            chain={pool.chain}
+          />
+        )}
         <ModalHeader>
           <HStack>
             <Heading fontWeight="bold" size="h5">
@@ -86,7 +100,14 @@ export function RemoveLiquidityModal({
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="md" align="start">
-            <Card variant="level8" shadow="sm" p="md" w="full">
+            {isMobile && (
+              <MobileStepTracker
+                currentStepIndex={currentStepIndex}
+                stepConfigs={stepConfigs}
+                chain={pool.chain}
+              />
+            )}
+            <Card variant="level4" shadow="sm" p="md" w="full">
               <VStack align="start" spacing="md">
                 <Text fontWeight="bold" fontSize="sm">
                   You&apos;re removing
@@ -100,7 +121,7 @@ export function RemoveLiquidityModal({
                 />
               </VStack>
             </Card>
-            <Card variant="level8" shadow="sm" p="md" w="full">
+            <Card variant="level4" shadow="sm" p="md" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text fontWeight="bold" fontSize="sm">
@@ -131,7 +152,7 @@ export function RemoveLiquidityModal({
                 )}
               </VStack>
             </Card>
-            <Card variant="level8" shadow="sm" p="md" w="full">
+            <Card variant="level4" shadow="sm" p="md" w="full">
               <VStack align="start" spacing="sm">
                 <HStack justify="space-between" w="full">
                   <Text fontWeight="medium" variant="secondary">
@@ -149,13 +170,13 @@ export function RemoveLiquidityModal({
                   </HStack>
                 </HStack>
 
-                <RemoveLiquidityTimeout removeLiquidityTxState={removeLiquidityTxState} />
+                <RemoveLiquidityTimeout />
               </VStack>
             </Card>
           </VStack>
         </ModalBody>
         <ModalFooter>
-          {shouldSignRelayerApproval ? (
+          {shouldSignRelayerApproval && !shouldUseRecoveryRemoveLiquidity(pool) ? (
             <SignRelayerButton />
           ) : (
             <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>

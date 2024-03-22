@@ -25,6 +25,11 @@ export default async function PoolLayout({ params: { id, chain, variant }, child
   const { data } = await getApolloServerClient().query({
     query: GetPoolDocument,
     variables,
+    context: {
+      fetchOptions: {
+        next: { revalidate: 30 },
+      },
+    },
   })
 
   if (!data.pool) {
@@ -32,7 +37,7 @@ export default async function PoolLayout({ params: { id, chain, variant }, child
   }
 
   return (
-    <PoolProvider id={id} chain={_chain} variant={variant} data={data} variables={variables}>
+    <PoolProvider id={id} chain={_chain} variant={variant} data={data}>
       {children}
     </PoolProvider>
   )

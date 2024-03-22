@@ -1,11 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
-import { FlowStep, TransactionLabels } from '@/lib/shared/components/btns/transaction-steps/lib'
+import {
+  TransactionLabels,
+  addLiquidityStepId,
+} from '@/lib/modules/transactions/transaction-steps/lib'
 import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 import { useEffect } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
+import { usePool } from '../../usePool'
+import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructAddLiquidityStep() {
+  const { chainId } = usePool()
+
   const transactionLabels: TransactionLabels = {
     init: 'Add liquidity',
     confirming: 'Confirming...',
@@ -25,21 +33,28 @@ export function useConstructAddLiquidityStep() {
 
   const addLiquidityTransaction = useManagedSendTransaction(
     transactionLabels,
-    buildCallDataQuery.data
+    chainId,
+    buildCallDataQuery.data,
+    (error: unknown) => {
+      captureWagmiSimulationError(
+        error,
+        'Error in AddLiquidity transaction simulation',
+        buildCallDataQuery.data || {}
+      )
+    }
   )
 
   const isComplete = () => addLiquidityTransaction.result.isSuccess
 
-  const addLiquidityStep: FlowStep = {
+  const addLiquidityStep = useSyncCurrentFlowStep({
     ...addLiquidityTransaction,
     transactionLabels,
-    id: `addLiquidityPool`,
+    id: addLiquidityStepId,
     stepType: 'addLiquidity',
     isComplete,
-  }
+  })
 
   return {
     addLiquidityStep,
-    addLiquidityTransaction,
   }
 }

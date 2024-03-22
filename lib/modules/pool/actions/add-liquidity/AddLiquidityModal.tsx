@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 'use client'
 
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
@@ -32,8 +33,13 @@ import { useAddLiquidity } from './useAddLiquidity'
 import { AddLiquidityTimeout } from './AddLiquidityTimeout'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { SignRelayerButton } from '@/lib/shared/components/btns/transaction-steps/SignRelayerButton'
+import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
+import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
+import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
+// eslint-disable-next-line max-len
+import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 type Props = {
   isOpen: boolean
@@ -48,6 +54,7 @@ export function AddLiquidityModal({
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
+  const { isDesktop, isMobile } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const {
     humanAmountsIn,
@@ -55,13 +62,14 @@ export function AddLiquidityModal({
     simulationQuery,
     priceImpactQuery,
     tokens,
-    addLiquidityTxState,
+    stepConfigs,
     currentStep,
+    currentStepIndex,
     useOnStepCompleted,
   } = useAddLiquidity()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval()
   const { toCurrency } = useCurrency()
-  const { pool } = usePool()
+  const { pool, chainId } = usePool()
+  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
   const { slippage } = useUserSettings()
 
   const bptOut = simulationQuery?.data?.bptOut
@@ -80,7 +88,14 @@ export function AddLiquidityModal({
       {...rest}
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
+        {isDesktop && (
+          <DesktopStepTracker
+            currentStepIndex={currentStepIndex}
+            stepConfigs={stepConfigs}
+            chain={pool.chain}
+          />
+        )}
         <ModalHeader>
           <Heading fontWeight="bold" size="h5">
             Add liquidity
@@ -89,7 +104,14 @@ export function AddLiquidityModal({
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="md" align="start">
-            <Card variant="level5" p="md" shadow="sm" w="full">
+            {isMobile && (
+              <MobileStepTracker
+                currentStepIndex={currentStepIndex}
+                stepConfigs={stepConfigs}
+                chain={pool.chain}
+              />
+            )}
+            <Card variant="level3" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text color="grayText">{"You're adding"}</Text>
@@ -119,7 +141,7 @@ export function AddLiquidityModal({
               </VStack>
             </Card>
 
-            <Card variant="level5" p="md" shadow="sm" w="full">
+            <Card variant="level3" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text color="grayText">{"You'll get (if no slippage)"}</Text>
@@ -135,7 +157,7 @@ export function AddLiquidityModal({
               </VStack>
             </Card>
 
-            <Card variant="level5" p="md" shadow="sm" w="full">
+            <Card variant="level2" p="md" shadow="sm" w="full">
               <VStack align="start" spacing="sm">
                 <HStack justify="space-between" w="full">
                   <Text>Price impact</Text>
@@ -163,7 +185,7 @@ export function AddLiquidityModal({
                     </Tooltip>
                   </HStack>
                 </HStack>
-                <AddLiquidityTimeout addLiquidityTxState={addLiquidityTxState} />
+                <AddLiquidityTimeout />
               </VStack>
             </Card>
           </VStack>

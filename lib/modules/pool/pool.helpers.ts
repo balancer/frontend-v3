@@ -35,32 +35,21 @@ export function isMetaStable(poolType: GqlPoolType): boolean {
   return poolType === GqlPoolType.MetaStable
 }
 
-export function isPhantomStable(poolType: GqlPoolType): boolean {
-  return poolType === GqlPoolType.PhantomStable
-}
-
 export function isComposableStable(poolType: GqlPoolType): boolean {
   return poolType === GqlPoolType.ComposableStable
 }
 
-// TODO: verify
-// export function isComposableStableV1(pool: Pool): boolean {
-//   return isComposableStable(pool.poolType) && pool.poolTypeVersion === 1
-// }
-
-// TODO: verify
-// export function isComposableStableLike(poolType: GqlPoolType): boolean {
-//   return isPhantomStable(poolType) || isComposableStable(poolType)
-// }
+export function isComposableStableV1(pool: Pool): boolean {
+  return isComposableStable(pool.type) && pool.version === 1
+}
 
 export function isFx(poolType: GqlPoolType | string): boolean {
   return poolType === GqlPoolType.Fx
 }
 
 // TODO: verify how to determine boosted pool from api
-export function isBoosted(pool: GqlPoolBase) {
-  return pool.type === GqlPoolType.PhantomStable
-  //   return !!Object.keys(poolMetadata(pool.id)?.features || {}).includes(PoolFeature.Boosted)
+export function isBoosted(poolType: GqlPoolType) {
+  return poolType === GqlPoolType.PhantomStable
 }
 
 export function isGyro(poolType: GqlPoolType) {
@@ -100,7 +89,6 @@ export function isStableLike(poolType: GqlPoolType): boolean {
   return (
     isStable(poolType) ||
     isMetaStable(poolType) ||
-    isPhantomStable(poolType) ||
     isComposableStable(poolType) ||
     isFx(poolType) ||
     isGyro(poolType)

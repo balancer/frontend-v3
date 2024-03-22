@@ -12,14 +12,13 @@ import { BPT_DECIMALS } from '../../pool.constants'
 import { useEffect, useState } from 'react'
 import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useTokenApprovalConfigs'
 import { stakeConfig } from './stakeConfig'
-import { useIterateSteps } from '../useIterateSteps'
-import { getChainId } from '@/lib/config/app.config'
+import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 
 export function useStaking() {
   const [humanAmountIn, setHumanAmountIn] = useState<HumanAmountIn | null>(null)
 
   const { userAddress, isConnected } = useUserAccount()
-  const { pool } = usePool()
+  const { pool, chainId } = usePool()
   const { isDisabled, disabledReason } = isDisabledWithReason([
     !isConnected,
     LABELS.walletNotConnected,
@@ -35,7 +34,7 @@ export function useStaking() {
   }
 
   const tokenAllowances = useTokenAllowances({
-    chainId: getChainId(pool.chain),
+    chainId,
     userAddress,
     spenderAddress: pool.staking?.address as Address,
     tokenAddresses: [humanAmountIn?.tokenAddress as Address],
@@ -53,6 +52,7 @@ export function useStaking() {
     chain: pool.chain,
     approvalAmounts: [amountToApprove],
     actionType: 'Staking',
+    bptSymbol: pool.symbol,
   })
 
   const stepConfigs = [...bptApprovalStepConfig, stakeConfig]

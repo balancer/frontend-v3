@@ -1,9 +1,9 @@
 import { fNum } from '@/lib/shared/utils/numbers'
 import { PoolListItem } from './pool.types'
 import { Text, TextProps } from '@chakra-ui/react'
-import { GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
+import { Pool } from './usePool'
 
-export function PoolName({ pool, ...rest }: { pool: PoolListItem | GqlPoolUnion } & TextProps) {
+export function PoolName({ pool, ...rest }: { pool: PoolListItem | Pool } & TextProps) {
   const displayTokens = pool.displayTokens
 
   // TODO: We may need a more complex conditional for choosing when to display
@@ -13,14 +13,14 @@ export function PoolName({ pool, ...rest }: { pool: PoolListItem | GqlPoolUnion 
   // }
 
   return (
-    <Text {...rest}>
+    <Text display="flex" {...rest}>
       {displayTokens.map((token, idx) => {
         return (
-          <span key={token.address}>
+          <Text as="span" key={token.address}>
             {token.nestedTokens ? token.name : token.symbol}
             {token.weight && ` ${fNum('weight', token.weight || '')}`}
             {idx <= displayTokens.length - 2 && ' / '}
-          </span>
+          </Text>
         )
       })}
     </Text>

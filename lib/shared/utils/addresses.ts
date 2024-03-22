@@ -8,7 +8,10 @@ export function isSameAddress(address1: string, address2: string): boolean {
   return address1.toLowerCase() === address2.toLowerCase()
 }
 
-export function isNativeAsset(chainId: GqlChain | SupportedChainId, tokenAddress: Address) {
+export function isNativeAsset(
+  chainId: GqlChain | SupportedChainId,
+  tokenAddress: Address | string
+) {
   return isSameAddress(getNativeAssetAddress(chainId), tokenAddress)
 }
 
@@ -23,6 +26,15 @@ export function indexOfAddress(addresses: string[], address: string): number {
   addresses = addresses.map(a => (a ? a.toLowerCase() : ''))
   return addresses.indexOf(address.toLowerCase())
 }
+
+function containsAll(addresses1: string[], addresses2: string[]) {
+  return addresses2.every(address2 =>
+    addresses1.map(address1 => address1.toLowerCase()).includes(address2.toLowerCase())
+  )
+}
+
+export const sameAddresses = (addresses1: string[], addresses2: string[]) =>
+  containsAll(addresses1, addresses2) && containsAll(addresses2, addresses1)
 
 /**
  * Select an Address when it's unknown what format the addresses are in.

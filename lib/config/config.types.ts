@@ -1,15 +1,25 @@
 import { Address } from 'viem'
 import { GqlChain } from '../shared/services/api/generated/graphql'
 import { supportedChains } from '../modules/web3/Web3Provider'
+import { PoolIssue } from '../modules/pool/alerts/pool-issues/PoolIssue.type'
+import { SupportedWrapHandler } from '../modules/swap/swap.types'
 
 export interface TokensConfig {
-  balToken?: { address: Address }
+  addresses: {
+    bal: Address
+    wNativeAsset: Address
+  }
   nativeAsset: {
     name: string
     address: Address
     symbol: string
     decimals: number
   }
+  supportedWrappers?: {
+    baseToken: Address
+    wrappedToken: Address
+    swapHandler: SupportedWrapHandler
+  }[]
   doubleApprovalRequired?: string[]
   defaultSwapTokens?: {
     tokenIn?: Address
@@ -27,6 +37,9 @@ export interface ContractsConfig {
   }
   feeDistributor?: Address
 }
+export interface PoolsConfig {
+  issues: Partial<Record<PoolIssue, string[]>>
+}
 
 export type SupportedChainId = (typeof supportedChains)[number]['id']
 export interface NetworkConfig {
@@ -35,10 +48,12 @@ export interface NetworkConfig {
   shortName: string
   chain: GqlChain
   iconPath: string
+  rpcUrl: string
   blockExplorerBaseUrl: string
   tokens: TokensConfig
   contracts: ContractsConfig
   minConfirmations?: number
+  pools: PoolsConfig
 }
 
 export interface Config {

@@ -13,28 +13,29 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react'
-import { Pool } from '../../usePool'
 import { useClaiming } from './useClaiming'
 import { Address } from 'wagmi'
-import { BalTokenReward } from '@/lib/modules/portfolio/useBalRewards'
-import { ClaimableReward } from '@/lib/modules/portfolio/claim/useClaimableBalances'
+import { BalTokenReward } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
+import { ClaimableReward } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
+import { PoolListItem } from '../../pool.types'
 
 type Props = {
   isOpen: boolean
   onClose(): void
   onOpen(): void
   gaugeAddresses: Address[]
-  pool: Pool
+  pool: PoolListItem
 }
 
 export function ClaimModal({
   isOpen,
   onClose,
-  gaugeAddresses,
   pool,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const { currentStep, useOnStepCompleted, nonBalRewards, balRewards, hasNoRewards } = useClaiming()
+  const { currentStep, useOnStepCompleted, nonBalRewards, balRewards, hasNoRewards } = useClaiming([
+    pool,
+  ])
 
   function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
     if (reward.formattedBalance === '0') return null

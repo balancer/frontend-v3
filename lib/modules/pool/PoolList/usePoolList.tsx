@@ -2,15 +2,10 @@
 'use client'
 
 import { createContext, ReactNode, useEffect } from 'react'
-import {
-  GetPoolsDocument,
-  GetPoolsQuery,
-  GetPoolsQueryVariables,
-} from '@/lib/shared/services/api/generated/graphql'
+import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { useSeedApolloCache } from '@/lib/shared/hooks/useSeedApolloCache'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { isAddress } from 'viem'
 
@@ -20,7 +15,9 @@ export function _usePoolList() {
 
   const { data, loading, previousData, refetch, networkStatus, error } = useQuery(
     GetPoolsDocument,
-    { variables: queryVariables, notifyOnNetworkStatusChange: true }
+    {
+      variables: queryVariables,
+    }
   )
 
   const pools = loading && previousData ? previousData.pools : data?.pools || []
@@ -45,22 +42,9 @@ export function _usePoolList() {
 
 export const PoolListContext = createContext<ReturnType<typeof _usePoolList> | null>(null)
 
-export function PoolListProvider({
-  children,
-  data,
-  variables,
-}: {
-  children: ReactNode
-  data: GetPoolsQuery
-  variables: GetPoolsQueryVariables
-}) {
-  useSeedApolloCache({
-    query: GetPoolsDocument,
-    data: data,
-    variables,
-  })
-
+export function PoolListProvider({ children }: { children: ReactNode }) {
   const hook = _usePoolList()
+
   return <PoolListContext.Provider value={hook}>{children}</PoolListContext.Provider>
 }
 

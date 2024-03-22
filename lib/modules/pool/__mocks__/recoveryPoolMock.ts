@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
-import { GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 
 export const recoveryPoolMock: GqlPoolElement = {
   id: '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473',
@@ -13,7 +13,7 @@ export const recoveryPoolMock: GqlPoolElement = {
   symbol: '50wstETH-50bb-euler-USD',
   createTime: 1675958987,
   type: 'WEIGHTED',
-  chain: 'MAINNET',
+  chain: GqlChain.Mainnet,
   vaultVersion: 2,
   dynamicData: {
     poolId: '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473',
@@ -30,6 +30,8 @@ export const recoveryPoolMock: GqlPoolElement = {
     lifetimeVolume: '13677760.25',
     lifetimeSwapFees: '6838.88',
     holdersCount: '7',
+    isInRecoveryMode: true,
+    isPaused: false,
     swapsCount: '1027',
     sharePriceAth: '71.71543771553347',
     sharePriceAthTimestamp: 1709251200,

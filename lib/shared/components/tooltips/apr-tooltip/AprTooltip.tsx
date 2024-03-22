@@ -15,9 +15,9 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
-import { FiInfo } from 'react-icons/fi'
 import { getAprLabel } from '@/lib/modules/pool/pool.utils'
 import { sortBy } from 'lodash'
+import { Info } from 'react-feather'
 
 interface Props {
   data: GqlPoolApr
@@ -68,7 +68,7 @@ function AprTooltip({ data, textProps, onlySparkles, placement, aprLabel, apr }:
             {data.hasRewardApr ? (
               <Icon as={StarsIcon} />
             ) : (
-              <Icon as={FiInfo} boxSize={4} color="gray.400" mx="1" mt="1" />
+              <Icon as={Info} boxSize={4} color="gray.400" mx="1" mt="1" />
             )}
           </Button>
         </PopoverTrigger>

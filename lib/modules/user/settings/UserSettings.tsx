@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  Box,
   Button,
   HStack,
   Heading,
@@ -14,33 +15,16 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
-  Select,
   VStack,
   Text,
   Tooltip,
   Switch,
 } from '@chakra-ui/react'
-import { HiOutlineCog6Tooth } from 'react-icons/hi2'
 import { useUserSettings } from './useUserSettings'
-import { SupportedCurrency } from '@/lib/shared/utils/currencies'
-import { FiPercent } from 'react-icons/fi'
 import { blockInvalidNumberInput } from '@/lib/shared/utils/numbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-
-function CurrencySelect() {
-  const { currency, setCurrency } = useUserSettings()
-  const options = Object.values(SupportedCurrency)
-
-  return (
-    <Select onChange={e => setCurrency(e.target.value as SupportedCurrency)} value={currency}>
-      {options.map(option => (
-        <option key={option} value={option}>
-          {option}
-        </option>
-      ))}
-    </Select>
-  )
-}
+import { Percent, Settings } from 'react-feather'
+import { CurrencySelect } from './CurrencySelect'
 
 function SlippageInput() {
   const { slippage, setSlippage } = useUserSettings()
@@ -52,6 +36,7 @@ function SlippageInput() {
         <Input
           value={slippage}
           type="number"
+          bg="background.level1"
           autoComplete="off"
           autoCorrect="off"
           min={0}
@@ -59,7 +44,7 @@ function SlippageInput() {
           onKeyDown={blockInvalidNumberInput}
         />
         <InputRightElement pointerEvents="none">
-          <FiPercent color="grayText" />
+          <Percent color="grayText" size="20px" />
         </InputRightElement>
       </InputGroup>
       <HStack>
@@ -95,29 +80,41 @@ export function UserSettings() {
   return (
     <Popover>
       <PopoverTrigger>
-        <Button variant="tertiary">
-          <HiOutlineCog6Tooth />
+        <Button variant="tertiary" p="0">
+          <Settings size={18} />
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <PopoverArrow />
+        <PopoverArrow bg="background.level3" />
         <PopoverCloseButton />
         <PopoverHeader>
           <Heading size="md">Settings</Heading>
         </PopoverHeader>
         <PopoverBody>
-          <VStack align="start">
-            <Heading size="sm">Currency</Heading>
-            <CurrencySelect />
-            <Heading size="sm">Slippage</Heading>
-            <SlippageInput />
-            <HStack>
-              <Heading size="sm">Use Signatures</Heading>
-              <Tooltip label={signaturesTooltipLabel} fontSize="sm">
-                <InfoOutlineIcon color="grayText" />
-              </Tooltip>
-            </HStack>
-            <EnableSignaturesSelect />
+          <VStack align="start" spacing="24px" py="3">
+            <Box w="full">
+              <Heading size="sm" pb="2">
+                Currency
+              </Heading>
+              <CurrencySelect id="user-settings-currency-select" />
+            </Box>
+            <Box w="full">
+              <Heading size="sm" pb="2">
+                Slippage
+              </Heading>
+              <SlippageInput />
+            </Box>
+            <Box w="full">
+              <HStack>
+                <Heading size="sm" pb="2">
+                  Use Signatures
+                </Heading>
+                <Tooltip label={signaturesTooltipLabel} fontSize="sm">
+                  <InfoOutlineIcon color="grayText" />
+                </Tooltip>
+              </HStack>
+              <EnableSignaturesSelect />
+            </Box>
           </VStack>
         </PopoverBody>
       </PopoverContent>

@@ -1,10 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
-import {
-  ManagedResult,
-  TransactionLabels,
-} from '@/lib/shared/components/btns/transaction-steps/lib'
+import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useEffect, useState } from 'react'
 import { Abi, GetFunctionArgs, InferFunctionName } from 'viem'
 import {
@@ -20,6 +17,8 @@ import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { getGqlChain } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import { useChainSwitch } from '../useChainSwitch'
+import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 
 export function useManagedTransaction<
   T extends typeof AbiMap,
@@ -30,6 +29,7 @@ export function useManagedTransaction<
   contractId: M,
   functionName: F,
   transactionLabels: TransactionLabels,
+  chainId: SupportedChainId,
   args?: GetFunctionArgs<T[M], F> | null,
   additionalConfig?: Omit<
     UsePrepareContractWriteConfig<T[M], F, number>,
@@ -38,6 +38,7 @@ export function useManagedTransaction<
 ) {
   const [writeArgs, setWriteArgs] = useState(args)
   const { minConfirmations } = useNetworkConfig()
+  const { shouldChangeNetwork } = useChainSwitch(chainId)
 
   const prepareQuery = usePrepareContractWrite({
     abi: AbiMap[contractId] as Abi,
@@ -46,9 +47,20 @@ export function useManagedTransaction<
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
     args: writeArgs?.args as any,
     ...(additionalConfig as any),
+    chainId,
+    enabled: additionalConfig?.enabled && !shouldChangeNetwork,
   })
 
-  const writeQuery = useContractWrite(prepareQuery.config)
+  const writeQuery = useContractWrite({
+    ...prepareQuery.config,
+    onError: (error: unknown) => {
+      captureWagmiExecutionError(
+        error,
+        'Error in managed transaction execution',
+        prepareQuery.config.request
+      )
+    },
+  })
   const transactionStatusQuery = useWaitForTransaction({
     hash: writeQuery.data?.hash,
     confirmations: minConfirmations,

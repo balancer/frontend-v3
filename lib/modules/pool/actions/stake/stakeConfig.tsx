@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { StepConfig } from '../useIterateSteps'
-import { TransactionStepButton } from '@/lib/shared/components/btns/transaction-steps/TransactionStepButton'
+import { StepConfig } from '../../../transactions/transaction-steps/useIterateSteps'
+import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
 import { useEffect, useState } from 'react'
 import { usePool } from '../../usePool'
 import { Button, VStack } from '@chakra-ui/react'
@@ -9,6 +9,7 @@ import { useConstructStakingDepositActionStep } from '../../../staking/staking.a
 import { useStaking } from './useStaking'
 
 export const stakeConfig: StepConfig = {
+  title: 'Stake',
   render() {
     return <StakeButton />
   },
@@ -16,11 +17,11 @@ export const stakeConfig: StepConfig = {
 
 function StakeButton() {
   const [didRefetchPool, setDidRefetchPool] = useState(false)
-  const { refetch, pool } = usePool()
+  const { refetch, pool, chainId } = usePool()
   const { rawAmount } = useStaking()
   const { redirectToPoolPage } = usePoolRedirect(pool)
 
-  const stakeStep = useConstructStakingDepositActionStep(pool.staking, rawAmount)
+  const stakeStep = useConstructStakingDepositActionStep(chainId, pool.staking, rawAmount)
 
   const isComplete = stakeStep.isComplete()
 

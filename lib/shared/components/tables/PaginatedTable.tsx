@@ -21,7 +21,7 @@ export function PaginatedTable({
   ...rest
 }: Props<any>) {
   return (
-    <Card variant="level2" p="md" shadow="xl" {...rest}>
+    <Card variant="level1" p="md" shadow="xl" {...rest}>
       <VStack spacing="md" w="full" overflowX="scroll" className="hide-scrollbar">
         {renderTableHeader()}
         <Box w="full" position="relative">
@@ -37,29 +37,55 @@ export function PaginatedTable({
 
           {!loading && items.length === 0 && (
             <Center py="2xl">
-              <Text color="gray.500">No pools found.</Text>
+              <Text color="font.secondary">No pools found</Text>
+            </Center>
+          )}
+
+          {loading && items.length === 0 && (
+            <Center py="2xl">
+              <Box
+                style={{
+                  position: 'absolute',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  height: '100%',
+                  top: 0,
+                  left: 0,
+                  borderRadius: 10,
+                  zIndex: 10,
+                  backdropFilter: 'blur(3px)',
+                }}
+              >
+                <Center>
+                  <Spinner size="xl" />
+                </Center>
+              </Box>
             </Center>
           )}
 
           {loading && (
-            <Box
-              style={{
-                position: 'absolute',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '100%',
-                height: '100%',
-                top: 0,
-                left: 0,
-                borderRadius: 10,
-                zIndex: 10,
-                backdropFilter: 'blur(3px)',
-              }}
-            >
-              <Center>
-                <Spinner size="xl" />
-              </Center>
+            <Box py="2xl">
+              <Box
+                style={{
+                  position: 'absolute',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  height: '100%',
+                  top: 0,
+                  left: 0,
+                  borderRadius: 10,
+                  zIndex: 10,
+                  backdropFilter: 'blur(3px)',
+                }}
+              >
+                <Center py="4xl">
+                  <Spinner size="xl" />
+                </Center>
+              </Box>
             </Box>
           )}
         </Box>

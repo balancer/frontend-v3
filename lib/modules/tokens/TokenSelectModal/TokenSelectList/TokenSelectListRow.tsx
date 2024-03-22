@@ -36,14 +36,14 @@ export function TokenSelectListRow({
   const fiatValue = userBalance && !isBalancesLoading ? toCurrency(usdValue) : '-'
 
   const boxStyles: BoxProps = {
-    bg: active ? 'background.card.level5' : 'transparent',
+    bg: active ? 'background.level3' : 'transparent',
     border: '1px solid',
     borderColor: active ? 'border.base' : 'transparent',
     borderRadius: 'md',
     p: 'sm',
     cursor: 'pointer',
     _hover: {
-      bg: active ? 'background.card.level8' : 'background.card.level1',
+      bg: active ? 'background.level4' : 'background.level1',
     },
     transition: 'all 0.2s ease-in-out',
   }
@@ -62,7 +62,6 @@ export function TokenSelectListRow({
                 <TokenInfoPopover tokenAddress={token.address} chain={token.chain} />
               </Box>
             </HStack>
-
             <Text
               title={token.name}
               fontSize="sm"
@@ -75,7 +74,7 @@ export function TokenSelectListRow({
             </Text>
           </VStack>
         </HStack>
-        {isConnected && (
+        {isConnected && tokenBalance !== '0' && (
           <VStack align="end" justify="center" spacing="none">
             <NumberText
               title={userBalance?.amount.toString()}

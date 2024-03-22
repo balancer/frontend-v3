@@ -1,10 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
-import {
-  ManagedResult,
-  TransactionLabels,
-} from '@/lib/shared/components/btns/transaction-steps/lib'
+import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useEffect } from 'react'
 import { usePrepareSendTransaction, useSendTransaction, useWaitForTransaction } from 'wagmi'
 import {
@@ -16,22 +13,39 @@ import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { getGqlChain } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
+import { useChainSwitch } from '../useChainSwitch'
+import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 
 export function useManagedSendTransaction(
   labels: TransactionLabels,
-  txConfig?: UsePrepareSendTransactionConfig
+  chainId: SupportedChainId,
+  txConfig: UsePrepareSendTransactionConfig | undefined,
+  onSimulationError?: (error: unknown) => void
 ) {
-  const prepareQuery = usePrepareSendTransaction(txConfig)
+  const { shouldChangeNetwork } = useChainSwitch(chainId)
+
+  const prepareQuery = usePrepareSendTransaction({
+    ...txConfig,
+    chainId,
+    enabled: !!txConfig && !shouldChangeNetwork,
+    onError: onSimulationError,
+  })
 
   const writeQuery = useSendTransaction({
     chainId: txConfig?.chainId,
     ...prepareQuery.config,
+    onError: (error: unknown) => {
+      captureWagmiExecutionError(error, 'Error sending transaction', prepareQuery.config)
+    },
   })
 
   const transactionStatusQuery = useWaitForTransaction({ hash: writeQuery.data?.hash })
 
   const bundle = {
-    simulation: prepareQuery as TransactionSimulation,
+    simulation: {
+      ...prepareQuery,
+      config: { ...prepareQuery.config, chainId },
+    } as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
     result: transactionStatusQuery,
   }

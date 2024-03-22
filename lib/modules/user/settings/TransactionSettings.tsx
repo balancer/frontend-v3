@@ -18,17 +18,17 @@ import {
   Text,
   ButtonProps,
 } from '@chakra-ui/react'
-import { HiOutlineCog6Tooth } from 'react-icons/hi2'
 import { useUserSettings } from './useUserSettings'
-import { FiPercent } from 'react-icons/fi'
-import { blockInvalidNumberInput } from '@/lib/shared/utils/numbers'
+import { blockInvalidNumberInput, fNum } from '@/lib/shared/utils/numbers'
+import { Percent, Settings } from 'react-feather'
+import { CurrencySelect } from './CurrencySelect'
 
 function SlippageInput() {
   const { slippage, setSlippage } = useUserSettings()
   const presetOpts = ['0.5', '1', '2']
 
   return (
-    <VStack align="start" w="full">
+    <VStack align="end" w="full">
       <InputGroup>
         <Input
           value={slippage}
@@ -40,7 +40,7 @@ function SlippageInput() {
           onKeyDown={blockInvalidNumberInput}
         />
         <InputRightElement pointerEvents="none">
-          <FiPercent color="grayText" />
+          <Percent color="grayText" />
         </InputRightElement>
       </InputGroup>
       <HStack>
@@ -60,11 +60,18 @@ function SlippageInput() {
 }
 
 export function TransactionSettings(props: ButtonProps) {
+  const { slippage } = useUserSettings()
+
   return (
-    <Popover>
+    <Popover placement="bottom-end">
       <PopoverTrigger>
         <Button variant="tertiary" {...props}>
-          <HiOutlineCog6Tooth />
+          <HStack textColor="grayText">
+            <Text color="grayText" fontSize="xs">
+              {fNum('slippage', slippage)}
+            </Text>
+            <Settings size={16} />
+          </HStack>
         </Button>
       </PopoverTrigger>
       <PopoverContent>
@@ -73,10 +80,16 @@ export function TransactionSettings(props: ButtonProps) {
         <PopoverHeader>
           <Heading size="md">Transaction settings</Heading>
         </PopoverHeader>
-        <PopoverBody>
-          <VStack align="start">
-            <Heading size="sm">Slippage</Heading>
-            <SlippageInput />
+        <PopoverBody p="md">
+          <VStack align="start" w="full" spacing="sm">
+            <VStack align="start" w="full">
+              <Heading size="sm">Slippage</Heading>
+              <SlippageInput />
+            </VStack>
+            <VStack align="start" w="full">
+              <Heading size="sm">Currency</Heading>
+              <CurrencySelect id="transaction-settings-currency-select" />
+            </VStack>
           </VStack>
         </PopoverBody>
       </PopoverContent>
