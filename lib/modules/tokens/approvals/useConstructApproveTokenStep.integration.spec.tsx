@@ -47,7 +47,6 @@ test('Approves a token allowance', async () => {
   expect(result.current.transactionLabels).toMatchInlineSnapshot(`
     {
       "confirming": "Approving WETH",
-      "description": "Token WETH approval completed",
       "init": "Approve WETH for adding liquidity",
       "tooltip": "You must approve WETH to add liquidity for this token on Balancer.
     Approvals are required once per token, per wallet.",

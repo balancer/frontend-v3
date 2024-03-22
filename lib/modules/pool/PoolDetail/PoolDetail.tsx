@@ -1,4 +1,3 @@
-'use client'
 import { Grid, GridItem, Stack, VStack } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
 import PoolStats from './PoolStats'
@@ -10,12 +9,10 @@ import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
 import { PoolAttributes } from './PoolAttributes/PoolAttributes'
 import { PoolRisks } from './PoolRisks/PoolRisks'
 import { PoolContracts } from './PoolContracts/PoolContracts'
-import { PoolAlerts } from '../alerts/PoolAlerts'
 
 export async function PoolDetail() {
   return (
     <Stack width="full">
-      {/* {loading && <Text>Loading...</Text>} */}
       <Grid width="full" rowGap="10" columnGap="4" templateColumns="1fr 1fr">
         <GridItem colSpan={2}>
           <VStack alignItems="flex-start" spacing="5">
@@ -48,8 +45,6 @@ export async function PoolDetail() {
             <PoolContracts />
           </VStack>
         </GridItem>
-        {/* <HStack width="full" spacing="4"></HStack> */}
-        {/* <PoolAccordion /> */}
       </Grid>
     </Stack>
   )

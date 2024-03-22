@@ -1,3 +1,5 @@
+'use client'
+
 import { Card, Heading, Link, ListItem, Text, UnorderedList, VStack } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
 import { GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
