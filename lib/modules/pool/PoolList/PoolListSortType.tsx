@@ -1,43 +1,55 @@
 'use client'
 
-import { HStack, IconButton, Select } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import { usePoolListQueryState } from './usePoolListQueryState'
-import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
-import { orderByHash } from '../pool.types'
+import { orderByHash, SortingState } from '../pool.types'
 import { usePoolOrderByState } from './usePoolOrderByState'
-import { ChevronDown, ChevronUp } from 'react-feather'
+import { GroupBase, OptionBase, Select, SingleValue } from 'chakra-react-select'
+import { ReactNode, useMemo } from 'react'
+import { getSelectStyles } from '@/lib/shared/services/chakra/theme/chakra-react-select'
+
+interface SortOption extends OptionBase {
+  label: ReactNode
+  value: SortingState
+}
 
 export function PoolListSortType() {
   const { sorting, setSorting } = usePoolListQueryState()
   const { orderBy } = usePoolOrderByState()
+  const chakraStyles = getSelectStyles<SortOption>()
+
+  const options: SortOption[] = useMemo(
+    () =>
+      orderBy
+        .map(sortType => [
+          {
+            label: `${orderByHash[sortType]} (high to low)`,
+            value: [{ id: sortType, desc: true }],
+          },
+          {
+            label: `${orderByHash[sortType]} (low to high)`,
+            value: [{ id: sortType, desc: false }],
+          },
+        ])
+        .flat(),
+    [orderBy]
+  )
+
+  function handleChange(newOption: SingleValue<SortOption>) {
+    if (newOption) setSorting(newOption.value)
+  }
+
+  const _value = options.find(option => option.value[0].id === sorting[0].id)
 
   return (
-    <HStack mr={5}>
-      <Select
-        w="32"
-        value={sorting[0].id}
-        onChange={e => {
-          setSorting([{ id: e.target.value as GqlPoolOrderBy, desc: sorting[0].desc }])
-        }}
-      >
-        {orderBy.map(sortType => (
-          <option key={sortType} value={sortType}>
-            {orderByHash[sortType]}
-          </option>
-        ))}
-      </Select>
-      <IconButton
-        icon={<ChevronDown />}
-        aria-label="sort-desc"
-        onClick={() => setSorting([{ id: sorting[0].id, desc: true }])}
-        isDisabled={sorting[0].desc}
+    <Box w="48">
+      <Select<SortOption, false, GroupBase<SortOption>>
+        instanceId="pool-list-sort"
+        value={_value}
+        options={options}
+        onChange={handleChange}
+        chakraStyles={chakraStyles}
       />
-      <IconButton
-        icon={<ChevronUp />}
-        aria-label="sort-asc"
-        onClick={() => setSorting([{ id: sorting[0].id, desc: false }])}
-        isDisabled={!sorting[0].desc}
-      />
-    </HStack>
+    </Box>
   )
 }
