@@ -18,9 +18,16 @@ describe.skip('Fetch pool data for mock definition', () => {
     console.log(JSON.stringify(pool))
   })
 
-  test('Generate gyro pool mock', async () => {
+  test('Generate gyro2 pool mock', async () => {
     // 2CLP-USDC-DAI
     const pool = await getPoolMock(gyro2CLP_USDC_DAI, GqlChain.Polygon)
+
+    console.log(JSON.stringify(pool))
+  })
+
+  test('Generate gyroE pool mock', async () => {
+    const gyroEId = '0xf01b0684c98cd7ada480bfdf6e43876422fa1fc10002000000000000000005de' //ECLP-wstETH-wETH
+    const pool = await getPoolMock(gyroEId, GqlChain.Mainnet)
 
     console.log(JSON.stringify(pool))
   })
@@ -38,7 +45,7 @@ describe.skip('Fetch pool data for mock definition', () => {
     console.log(JSON.stringify(pool))
   })
 
-  test.only('Generate composable stable pool mock', async () => {
+  test('Generate composable stable pool mock', async () => {
     const composableStablePoolId =
       '0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570' // Balancer vETH/WETH StablePool
     const pool = await getPoolMock(composableStablePoolId, GqlChain.Mainnet)
