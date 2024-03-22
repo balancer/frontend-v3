@@ -8,6 +8,7 @@ import { ApolloGlobalDataProvider } from '@/lib/shared/services/api/apollo-globa
 import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
 import { ReactQueryClientProvider } from './react-query.provider'
 import { ThemeProvider as ColorThemeProvider } from 'next-themes'
+import { DEFAULT_THEME_COLOR_MODE } from '@/lib/shared/services/chakra/theme'
 // import { COOKIE_KEYS } from '@/lib/modules/cookies/cookie.constants'
 // import { cookies } from 'next/headers'
 
@@ -18,7 +19,7 @@ export function Providers({ children }: { children: ReactNode }) {
   // const initPoolListView = cookies().get(COOKIE_KEYS.UserSettings.PoolListView)?.value
 
   return (
-    <ColorThemeProvider defaultTheme="dark">
+    <ColorThemeProvider defaultTheme={DEFAULT_THEME_COLOR_MODE}>
       <ThemeProvider>
         <Web3Provider>
           <ApolloClientProvider>

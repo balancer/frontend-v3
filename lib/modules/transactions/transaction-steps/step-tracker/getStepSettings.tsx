@@ -1,9 +1,9 @@
-import { ColorMode } from '@chakra-ui/react'
 import {
   FlowStep,
   TransactionState,
   getTransactionState,
 } from '@/lib/modules/transactions/transaction-steps/lib'
+import { ColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 
 type StepStatus = 'active' | 'complete' | 'incomplete'
 
@@ -66,7 +66,8 @@ function getColor(colorMode: ColorMode, status: StepStatus, flowStep?: FlowStep)
   if (status === 'incomplete') {
     return incompleteColor[colorMode]
   }
-  return 'blue'
+
+  return 'primary'
 }
 
 function getActiveColor(flowStep?: FlowStep) {
@@ -92,8 +93,8 @@ function isLoading(status: StepStatus, flowStep?: FlowStep): boolean {
   We show different colors depending on the step status and other variables like the step flow state
 */
 const completeColor = {
-  dark: 'green',
-  light: 'green',
+  dark: 'grayText',
+  light: 'grayText',
 }
 
 const incompleteColor = {
@@ -102,12 +103,12 @@ const incompleteColor = {
 }
 
 const activeColor = {
-  dark: 'gradient',
-  light: 'blue',
+  dark: 'font.primary',
+  light: 'font.primary',
 }
 
 // When the current step tx is waiting for wallet confirmation
 const activeConfirmingColor = {
-  dark: 'orange',
-  light: 'orange',
+  dark: 'orange.300',
+  light: 'orange.300',
 }

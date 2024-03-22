@@ -6,10 +6,11 @@ import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queri
 import { useDebounce } from 'use-debounce'
 import { Address } from 'viem'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
-import { removeLiquidityKeys } from './remove-liquidity-keys'
+import { RemoveLiquidityParams, removeLiquidityKeys } from './remove-liquidity-keys'
 import { HumanAmount } from '@balancer/sdk'
 import { useQuery } from 'wagmi'
 import { UseQueryOptions } from '@tanstack/react-query'
+import { captureRemoveLiquidityHandlerError } from '@/lib/shared/utils/query-errors'
 
 export function useRemoveLiquidityPriceImpactQuery(
   handler: RemoveLiquidityHandler,
@@ -24,14 +25,16 @@ export function useRemoveLiquidityPriceImpactQuery(
 
   const enabled = options.enabled ?? true
 
-  const queryKey = removeLiquidityKeys.priceImpact({
+  const params: RemoveLiquidityParams = {
     handler,
     userAddress,
     slippage,
     poolId,
     humanBptIn: humanBptIn,
     tokenOut,
-  })
+  }
+
+  const queryKey = removeLiquidityKeys.priceImpact(params)
 
   const queryFn = async () =>
     handler.getPriceImpact({
@@ -39,11 +42,16 @@ export function useRemoveLiquidityPriceImpactQuery(
       tokenOut,
     })
 
-  const queryOpts = {
+  return useQuery(queryKey, queryFn, {
     enabled: enabled && isConnected && Number(debouncedBptIn) > 0,
     cacheTime: 0,
     ...onlyExplicitRefetch,
-  }
-
-  return useQuery(queryKey, queryFn, queryOpts)
+    onError(error: unknown) {
+      captureRemoveLiquidityHandlerError(
+        error,
+        'Error in remove liquidity price impact query',
+        params
+      )
+    },
+  })
 }

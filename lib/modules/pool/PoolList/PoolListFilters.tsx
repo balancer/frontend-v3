@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   ButtonProps,
+  Center,
   Checkbox,
   Divider,
   forwardRef,
@@ -31,6 +32,7 @@ import { PoolFilterType, poolTypeFilters } from '../pool.types'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useEffect, useState } from 'react'
 import { Filter } from 'react-feather'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 function UserPoolFilter() {
   const { userAddress, toggleUserAddress } = usePoolListQueryState()
@@ -85,7 +87,7 @@ function PoolNetworkFilters() {
   ))
 }
 
-function FilterTags() {
+export function FilterTags() {
   const { networks, toggleNetwork, poolTypes, togglePoolType, poolTypeLabel } =
     usePoolListQueryState()
 
@@ -94,18 +96,20 @@ function FilterTags() {
   }
 
   return (
-    <HStack spacing="sm" wrap="wrap">
+    <HStack spacing="sm" wrap="wrap" mt="2">
       {poolTypes.map(poolType => (
-        <Tag key={poolType}>
+        <Tag key={poolType} size="lg">
           <TagLabel>{poolTypeLabel(poolType)}</TagLabel>
           <TagCloseButton onClick={() => togglePoolType(false, poolType)} />
         </Tag>
       ))}
 
       {networks.map(network => (
-        <Tag key={network}>
+        <Tag key={network} size="lg">
           <TagLabel>
-            <Text textTransform="capitalize">{network.toLowerCase()}</Text>
+            <Text fontWeight="bold" textTransform="capitalize">
+              {network.toLowerCase()}
+            </Text>
           </TagLabel>
           <TagCloseButton onClick={() => toggleNetwork(false, network)} />
         </Tag>
@@ -116,14 +120,17 @@ function FilterTags() {
 
 const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
   const { totalFilterCount } = usePoolListQueryState()
+  const { isMobile } = useBreakpoints()
 
   return (
     <Button ref={ref} {...props} display="flex" gap="2" variant="tertiary">
       <Icon as={Filter} boxSize={4} />
-      Filters
+      {!isMobile && 'Filters'}
       {totalFilterCount > 0 && (
-        <Badge ml="2" colorScheme="blue">
-          {totalFilterCount}
+        <Badge colorScheme="green" borderRadius="full" p="0">
+          <Center h="5" w="5">
+            {totalFilterCount}
+          </Center>
         </Badge>
       )}
     </Button>
@@ -134,16 +141,16 @@ export function PoolListFilters() {
   const { isConnected } = useUserAccount()
 
   return (
-    <VStack align="flex-start" w="full">
-      <HStack w="full" spacing="none">
+    <VStack w="full">
+      <HStack w="full" spacing="none" justify="end">
         <PoolListSearch />
         <Popover>
           <PopoverTrigger>
             <FilterButton ml="sm" />
           </PopoverTrigger>
-          <Box zIndex="popover">
+          <Box zIndex="popover" shadow="2xl">
             <PopoverContent>
-              <PopoverArrow />
+              <PopoverArrow bg="background.level3" />
               <PopoverCloseButton />
               <PopoverBody p="md">
                 <VStack align="start">
@@ -172,7 +179,6 @@ export function PoolListFilters() {
           </Box>
         </Popover>
       </HStack>
-      <FilterTags />
     </VStack>
   )
 }

@@ -1,6 +1,8 @@
-import { ThemeTypings, extendTheme } from '@chakra-ui/react'
+import { ThemeTypings, extendTheme, textDecoration } from '@chakra-ui/react'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
 import tinycolor from 'tinycolor2'
+
+export const DEFAULT_THEME_COLOR_MODE = 'dark'
 
 export const balColors = {
   primary: {
@@ -135,14 +137,16 @@ export const tokens = {
         baseWithOpacity: createBackgroundOpacity(balColors.base.hslLight, 0.5),
         special: balColors.gradient.dawnLight,
         specialSecondary: balColors.gradient.sunsetLight,
+        highlight: balColors.green['600'],
       },
       border: {
         base: '#FFFFFF',
+        highlight: balColors.green['600'],
       },
       // Button colors
       button: {
         background: {
-          primary: balColors.gradient.dawnLight,
+          primary: balColors.gradient.dawnDark,
           secondary: balColors.gradient.sandLight,
         },
         border: {
@@ -153,7 +157,6 @@ export const tokens = {
           disabled: 'gray.400',
         },
       },
-
       // Font colors
       text: {
         primary: balColors.gray['700'],
@@ -164,40 +167,32 @@ export const tokens = {
         specialSecondary: balColors.gradient.sunsetLight,
         link: balColors.purple['500'],
         linkHover: balColors.purple['700'],
-      },
-      card: {
-        border: {
-          card: 'red',
-        },
+        maxContrast: '#000',
+        highlight: balColors.green['600'],
       },
       // Input colors
       input: {
         labelFocus: balColors.purple['500'], // Not implemented
         labelError: balColors.purple['600'], // Not implemented
-
         fontDefault: 'gray.700',
         fontFocus: 'gray.900',
         fontPlaceholder: tinycolor(balColors.brown['500']).setAlpha(0.5),
         fontError: balColors.red['900'],
         fontHint: 'gray.500',
         fontHintError: balColors.red['600'],
-
         caret: 'blue.400',
-
         bgDefault: balColors.base.light,
         bgHover: tinycolor(balColors.base.light).lighten(4),
         bgHoverDisabled: tinycolor(balColors.red[500]).setAlpha(0.2),
         bgFocus: tinycolor(balColors.base.light).lighten(8),
         bgError: tinycolor(balColors.red['50']).setAlpha(0.5),
         bgErrorFocus: tinycolor(balColors.base.light).lighten(8),
-
         borderDefault: tinycolor(balColors.base.light).darken(10),
         borderHover: balColors.purple['500'],
         borderFocus: balColors.purple['500'],
         borderError: balColors.red['500'],
         borderErrorFocus: balColors.red['600'],
         borderDisabled: 'blue',
-
         clearIcon: tinycolor(balColors.base.light).lighten(5),
         clearHover: tinycolor(balColors.base.light).lighten(1),
         clearError: balColors.red['500'],
@@ -217,12 +212,15 @@ export const tokens = {
         level4: '#4C5561',
         base: balColors.base.dark,
         baseWithOpacity: createBackgroundOpacity(balColors.base.hslDark, 0.97),
+        level0WithOpacity: 'rgba(49, 55, 63, 0.96)',
         special: balColors.gradient.dawnDark,
         specialSecondary: balColors.gradient.sunsetDark,
+        highlight: balColors.green['500'],
       },
       // Border colors
       border: {
         base: '#4C5561',
+        highlight: balColors.green['500'],
       },
       // Button colors
       button: {
@@ -252,12 +250,8 @@ export const tokens = {
         specialSecondary: 'linear-gradient(180deg, #EA9A43 0%, #F06147 100%)',
         link: balColors.purple['300'],
         linkHover: balColors.purple['100'],
-      },
-      // card colors
-      card: {
-        border: {
-          card: '#4F5764',
-        },
+        maxContrast: '#fff',
+        highlight: balColors.green['500'],
       },
       input: {
         labelFocus: balColors.purple['400'],
@@ -269,23 +263,19 @@ export const tokens = {
         fontError: balColors.red['200'],
         fontHint: 'gray.400',
         fontHintError: balColors.red['400'],
-
         caret: 'green.400',
-
         bgDefault: tinycolor(balColors.base.dark).darken(2),
         bgHover: tinycolor(balColors.base.dark).darken(4),
         bgHoverDisabled: tinycolor(balColors.red[500]).setAlpha(0.2),
         bgFocus: tinycolor(balColors.base.dark).darken(8),
         bgError: '#474046',
         bgErrorFocus: tinycolor(balColors.base.dark).darken(8),
-
         borderDefault: tinycolor(balColors.base.dark).lighten(10),
         borderHover: balColors.purple['400'],
         borderFocus: balColors.purple['400'],
         borderError: balColors.red['400'],
         borderErrorFocus: balColors.red['300'],
         borderDisabled: 'yellow',
-
         clearIcon: tinycolor(balColors.base.dark).lighten(5),
         clearHover: tinycolor(balColors.base.light).lighten(1),
         clearError: balColors.red['400'],
@@ -298,6 +288,12 @@ export const tokens = {
   },
   shadows: {
     light: {
+      sm: '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, -0.5px -1px 0px 0px #FFFFFF',
+      md: '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, 6px 6px 6px -3px #49351D0F, -0.5px -0.5px 0px 0px #FFFFFF',
+      lg: '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, 6px 6px 6px -3px #49351D0F, 12px 12px 12px -6px #49351D0F, -0.5px -1px 0px 0px #FFFFFF',
+      xl: '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, 6px 6px 6px -3px #49351D0F, 12px 12px 12px -6px #49351D0F, 24px 24px 24px -12px #49351D0F, -0.5px -1px 0px 0px #FFFFFF',
+      '2xl':
+        '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, 6px 6px 6px -3px #49351D0F, 12px 12px 12px -6px #49351D0F, 24px 24px 24px -12px #49351D0F, 42px 42px 42px -24px #49351D0F, -0.5px -1px 0px 0px #FFFFFF',
       shadowInnerBase:
         '0px 2px 4px 0px rgba(0, 0, 0, 0.05) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.05) inset, 0px 10px 20px 0px rgba(0, 0, 0, 0.05) inset',
       btnDefault:
@@ -323,8 +319,16 @@ export const tokens = {
           0.1
         )} inset, 0 0 0 1px ${balColors.red['500']}`,
       },
+      innerXl:
+        '4px 4px 4px 0px rgba(0, 0, 0, 0.04) inset, 7px 6px 12px 0px rgba(0, 0, 0, 0.08) inset, 40px 40px 80px 0px rgba(0, 0, 0, 0.05) inset, 0px -1px 1px 0px rgba(255, 255, 255, 0.25) inset',
     },
     dark: {
+      sm: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F',
+      md: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000001A, -0.5px -1px 0px 0px #FFFFFF33',
+      lg: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000001A, 0px -1px 0px 0px #FFFFFF26',
+      xl: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000000F, 24px 24px 24px -12px #0000001A, 0px -1px 0px 0px #FFFFFF26',
+      '2xl':
+        '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000000F, 24px 24px 24px -12px #0000000F, 42px 42px 42px -24px #0000000F, -0.5px -0.5px 0px 0px #FFFFFF26',
       shadowInnerBase:
         '0px 2px 4px 0px rgba(0, 0, 0, 0.10) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.10) inset, 0px 10px 20px 0px rgba(0, 0, 0, 0.10) inset',
       btnDefault:
@@ -350,6 +354,8 @@ export const tokens = {
           0.2
         )} inset, 0 0 0 1px ${balColors.red['500']}`,
       },
+      innerXl:
+        '20px 20px 50px 0px rgba(0, 0, 0, 0.25) inset, 10px 10px 25px 0px rgba(0, 0, 0, 0.18) inset, 2px 2px 11px 0px rgba(0, 0, 0, 0.19) inset, 0px -1px 1px 0px #FFFFFF40 inset',
     },
   },
   transition: {
@@ -373,27 +379,10 @@ export const balTheme = {
   },
   semanticTokens: {
     colors: {
-      lightBorderColor: 'rgba(229, 211, 190, 0.6)',
-      darkBorderColor: '#4F5764',
-      lightBadge: '#EBE9E0',
-      borderColor: {
-        _light: 'lightBorderColor',
-        _dark: 'darkBorderColor',
-      },
       primary: { _light: 'primary.500', _dark: 'primary.500' },
       grayText: {
         default: tokens.colors.light.text.secondary,
         _dark: tokens.colors.dark.text.secondary,
-      },
-      'chakra-body-text': { _light: 'gray.800', _dark: 'whiteAlpha.900' },
-      'chakra-body-bg': { _light: 'white', _dark: 'gray.800' },
-      'chakra-border-color': { _light: 'gray.200', _dark: 'whiteAlpha.300' },
-      'chakra-inverse-text': { _light: 'white', _dark: 'gray.800' },
-      'chakra-subtle-bg': { _light: 'gray.100', _dark: 'gray.700' },
-      'chakra-subtle-text': { _light: 'gray.600', _dark: 'gray.400' },
-      'chakra-placeholder-color': {
-        _light: 'gray.500',
-        _dark: 'whiteAlpha.400',
       },
       gradients: {
         text: {
@@ -440,6 +429,10 @@ export const balTheme = {
           default: tokens.colors.light.background.baseWithOpacity,
           _dark: tokens.colors.dark.background.baseWithOpacity,
         },
+        level0WithOpacity: {
+          default: tokens.colors.light.background.baseWithOpacity,
+          _dark: tokens.colors.dark.background.level0WithOpacity,
+        },
         special: {
           default: tokens.colors.light.background.special,
           _dark: tokens.colors.dark.background.special,
@@ -447,6 +440,10 @@ export const balTheme = {
         specialSecondary: {
           default: tokens.colors.light.background.specialSecondary,
           _dark: tokens.colors.dark.background.specialSecondary,
+        },
+        highlight: {
+          default: tokens.colors.light.background.highlight,
+          _dark: tokens.colors.dark.background.highlight,
         },
         button: {
           primary: {
@@ -555,7 +552,6 @@ export const balTheme = {
         default: tokens.colors.light.input.labelError,
         _dark: tokens.colors.dark.input.labelError,
       },
-
       backgroundImage: {
         card: {
           gradient: {
@@ -575,8 +571,12 @@ export const balTheme = {
 
       border: {
         base: {
-          default: tokens.colors.light.border.base,
-          _dark: tokens.colors.dark.border.base,
+          default: tokens.colors.light.background.level4,
+          _dark: tokens.colors.dark.background.level4,
+        },
+        highlight: {
+          default: tokens.colors.light.border.highlight,
+          _dark: tokens.colors.dark.border.highlight,
         },
         button: {
           disabled: {
@@ -627,6 +627,14 @@ export const balTheme = {
           default: tokens.colors.light.text.linkHover,
           _dark: tokens.colors.dark.text.linkHover,
         },
+        maxContrast: {
+          default: tokens.colors.light.text.maxContrast,
+          _dark: tokens.colors.dark.text.maxContrast,
+        },
+        highlight: {
+          default: tokens.colors.light.text.highlight,
+          _dark: tokens.colors.dark.text.highlight,
+        },
         accordionHeading: {
           default: tokens.colors.light.button.background.primary,
           _dark: tokens.colors.dark.button.background.primary,
@@ -645,8 +653,8 @@ export const balTheme = {
             _dark: '#414853',
           },
         },
-        dark: '#414853',
-        light: '#F3F1EC',
+        dark: balColors.gray['700'], // always dark
+        light: '#E5D3BE', // always light
       },
 
       chart: {
@@ -685,6 +693,26 @@ export const balTheme = {
       '2xl': '4rem',
     },
     shadows: {
+      sm: {
+        default: tokens.shadows.light.sm,
+        _dark: tokens.shadows.dark.sm,
+      },
+      md: {
+        default: tokens.shadows.light.md,
+        _dark: tokens.shadows.dark.md,
+      },
+      lg: {
+        default: tokens.shadows.light.lg,
+        _dark: tokens.shadows.dark.lg,
+      },
+      xl: {
+        default: tokens.shadows.light.xl,
+        _dark: tokens.shadows.dark.xl,
+      },
+      '2xl': {
+        default: tokens.shadows.light['2xl'],
+        _dark: tokens.shadows.dark['2xl'],
+      },
       innerSm: 'inset 0 0 4px 0 rgba(0, 0, 0, 0.06)',
       innerBase: {
         default: tokens.shadows.light['shadowInnerBase'],
@@ -692,6 +720,11 @@ export const balTheme = {
       },
       innerMd: 'inset 0 0 6px 0 rgba(0, 0, 0, 0.1)',
       innerLg: 'inset 0 0 8px 0 rgba(0, 0, 0, 0.15)',
+
+      innerXl: {
+        default: tokens.shadows.light.innerXl,
+        _dark: tokens.shadows.dark.innerXl,
+      },
       btnDefault: {
         default: tokens.shadows.light.btnDefault,
         _dark: tokens.shadows.dark.btnDefault,
@@ -840,6 +873,39 @@ export const balTheme = {
             rounded: 'md',
           },
         },
+        incentives: {
+          root: {
+            width: 'full',
+            borderTopWidth: 0,
+            borderBottomWidth: 0,
+            shadow: '2xl',
+            rounded: 'lg',
+          },
+          container: {
+            width: 'full',
+            borderTopWidth: 0,
+            borderBottomWidth: 0,
+          },
+          panel: {
+            width: 'full',
+            borderTopWidth: 0,
+            borderBottomWidth: 0,
+          },
+          icon: {
+            color: 'orange.500',
+            _dark: {
+              color: 'green.500',
+            },
+          },
+          button: {
+            width: 'full',
+            borderTopWidth: 0,
+            borderBottomWidth: 0,
+            backgroundColor: 'background.level2',
+            p: '3',
+            rounded: 'lg',
+          },
+        },
       },
     },
     Input: {
@@ -847,7 +913,6 @@ export const balTheme = {
         field: {
           shadow: 'input.innerBase',
           border: '1px solid',
-          borderColor: 'green',
           color: 'input.fontDefault',
           fontWeight: 'medium',
           px: '3',
@@ -862,12 +927,13 @@ export const balTheme = {
           _focus: {
             border: '1px solid',
             bg: 'input.bgFocus',
-            focusBorderColor: 'input.borderFocus',
+            borderColor: 'input.borderFocus',
             color: 'white',
-            shadow: 'input.innerFocus',
           },
           _focusVisible: {
-            color: 'chakra-body-text',
+            color: 'input.fontFocus',
+            border: '1px solid',
+            borderColor: 'input.borderFocus',
             shadow: 'input.innerFocus',
           },
           _invalid: {
@@ -996,6 +1062,8 @@ export const balTheme = {
     Text: {
       baseStyle: {
         color: 'font.primary',
+        fontWeight: 'medium',
+        letterSpacing: '-0.25px',
       },
       variants: {
         secondary: {
@@ -1032,6 +1100,16 @@ export const balTheme = {
         transition: tokens.transition.default,
         _hover: {
           color: 'font.linkHover',
+        },
+      },
+      variants: {
+        nav: {
+          color: 'font.primary',
+          transition: tokens.transition.default,
+          _hover: {
+            color: 'font.link',
+            textDecoration: 'none',
+          },
         },
       },
     },
@@ -1080,7 +1158,6 @@ export const balTheme = {
         borderRadius: 'lg',
         color: 'text-body',
         letterSpacing: '-0.02em',
-        shadow: 'md',
         _disabled: {
           background: 'background.level3',
           border: '1px solid',
@@ -1088,7 +1165,6 @@ export const balTheme = {
           color: 'grayText',
         },
         _hover: {
-          shadow: 'sm',
           _disabled: {
             background: 'background.level3',
           },
@@ -1096,22 +1172,32 @@ export const balTheme = {
       },
       variants: {
         primary: {
-          color: 'font.button.primary',
+          color: 'font.dark',
           background: 'background.button.primary',
           backgroundPosition: '100% 0',
           backgroundSize: '100% 100%',
           transition: '0.1s ease-in-out',
+          shadow: 'md',
           _hover: {
+            shadow: 'sm',
             backgroundSize: '120% 100%',
           },
         },
         secondary: {
           color: 'font.dark',
           background: 'background.button.secondary',
+          shadow: 'md',
+          _hover: {
+            shadow: 'sm',
+          },
         },
         tertiary: {
           background: 'background.level3',
           color: 'font.primary',
+          shadow: 'md',
+          _hover: {
+            shadow: 'sm',
+          },
           _active: {
             background: 'background.level2',
             shadow: 'none',
@@ -1130,15 +1216,16 @@ export const balTheme = {
           backgroundColor: 'transparent',
           height: 'fit-content',
           width: 'fit-content',
+          shadow: 'none',
           px: '2',
           py: '1.5',
           fontSize: 'xs',
-          color: '#414853',
+          color: 'font.secondary',
           fontWeight: 'bold',
           borderRadius: '4px',
           _hover: {
             background: 'background.button.secondary',
-            color: '##728097',
+            color: '#728097',
             transform: 'none',
           },
           _dark: {
@@ -1155,7 +1242,7 @@ export const balTheme = {
           px: '2',
           py: '1.5',
           fontSize: 'xs',
-          color: '##728097',
+          color: 'gray.700',
           fontWeight: 'bold',
           borderRadius: '4px',
           _hover: {
@@ -1182,6 +1269,19 @@ export const balTheme = {
       },
     },
     Popover: {
+      baseStyle: {
+        content: {
+          bg: 'background.level3',
+          shadow: '2xl',
+          border: '1px solid',
+          borderColor: 'border.base',
+        },
+        arrow: {
+          bg: 'background.level3',
+          borderColor: 'background.level3',
+          color: 'background.level3',
+        },
+      },
       variants: {
         tooltip: {
           content: {
@@ -1235,7 +1335,6 @@ export const balTheme = {
         level1: {
           container: {
             background: 'background.level1',
-            borderColor: 'border.base',
           },
         },
         level2: {
@@ -1288,6 +1387,97 @@ export const balTheme = {
           borderRadius: 'full',
           color: 'font.primary',
           fontWeight: 'semibold',
+          fontSize: '14px',
+          _hover: {
+            color: 'white',
+          },
+        },
+        label: {
+          userSelect: 'none',
+        },
+        closeButton: {
+          color: 'font.maxContrast',
+        },
+      },
+    },
+    Radio: {
+      baseStyle: {
+        control: {
+          border: '1px solid',
+          bg: 'background.level0',
+          borderColor: 'border.base',
+          _checked: {
+            bg: 'background.highlight',
+            borderColor: 'border.highlight',
+            _hover: {
+              bg: 'background.highlight',
+              borderColor: 'border.highlight',
+            },
+          },
+          _hover: {
+            boxShadow: '0 0 0 2px var(--chakra-colors-green-600)',
+            _dark: {
+              boxShadow: '0 0 0 2px var(--chakra-colors-green-500)',
+            },
+          },
+          _focus: {
+            boxShadow: '0 0 0 2px var(--chakra-colors-green-600)',
+            _dark: {
+              boxShadow: '0 0 0 2px var(--chakra-colors-green-500)',
+            },
+          },
+          _disabled: {
+            border: '1px solid',
+            bg: 'background.level0',
+            borderColor: 'border.base',
+            opacity: '0.5',
+          },
+        },
+      },
+    },
+    Checkbox: {
+      baseStyle: {
+        control: {
+          border: '1px solid',
+          bg: 'background.level0',
+          borderColor: 'border.base',
+          _checked: {
+            bg: 'background.highlight',
+            borderColor: 'border.highlight',
+            _hover: {
+              bg: 'background.highlight',
+              borderColor: 'border.highlight',
+            },
+          },
+          _hover: {
+            boxShadow: '0 0 0 2px var(--chakra-colors-green-600)',
+            _dark: {
+              boxShadow: '0 0 0 2px var(--chakra-colors-green-500)',
+            },
+          },
+          _focus: {
+            boxShadow: '0 0 0 2px var(--chakra-colors-green-600)',
+            _dark: {
+              boxShadow: '0 0 0 2px var(--chakra-colors-green-500)',
+            },
+          },
+          _disabled: {
+            border: '1px solid',
+            bg: 'background.level3',
+            borderColor: 'border.base',
+            opacity: '0.5',
+          },
+        },
+      },
+    },
+    Slider: {
+      baseStyle: {
+        filledTrack: {
+          bg: 'background.highlight',
+        },
+        thumb: {
+          borderColor: 'background.highlight',
+          boxShadow: 'md',
         },
       },
     },

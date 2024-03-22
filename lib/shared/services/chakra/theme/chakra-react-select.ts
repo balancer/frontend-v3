@@ -9,6 +9,7 @@ const defaultStyles = <T>(): ChakraStylesConfig<T> => ({
     cursor: 'pointer',
     rounded: 'md',
     background: 'background.level3',
+    zIndex: 'dropdown',
   }),
   control: provided => ({
     ...provided,
@@ -55,6 +56,7 @@ const defaultStyles = <T>(): ChakraStylesConfig<T> => ({
   dropdownIndicator: provided => ({
     ...provided,
     background: 'background.level3',
+    paddingLeft: '0',
   }),
 })
 

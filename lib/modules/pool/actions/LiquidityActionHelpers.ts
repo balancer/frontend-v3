@@ -63,10 +63,6 @@ export class LiquidityActionHelpers {
     return getChainId(this.pool.chain)
   }
 
-  public get poolTokenAddresses(): Address[] {
-    return this.pool.tokens.map(t => t.address as Address)
-  }
-
   public getAmountsToApprove(humanAmountsIn: HumanAmountIn[]): TokenAmountToApprove[] {
     return this.toInputAmounts(humanAmountsIn).map(({ address, rawAmount }) => {
       return {

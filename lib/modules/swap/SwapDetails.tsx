@@ -70,9 +70,7 @@ export function SwapDetails() {
       : bn(tokenIn.amount).plus(bn(tokenIn.amount).times(_slippageDecimal)).toString()
 
   useEffect(() => {
-    if (simulationQuery.data) {
-      setPriceImpact(simulationQuery.data.priceImpact)
-    }
+    setPriceImpact(simulationQuery.data?.priceImpact?.priceImpact)
   }, [simulationQuery.data])
 
   return (

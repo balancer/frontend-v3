@@ -1,3 +1,5 @@
+'use client'
+
 import { useQuery } from '@apollo/client'
 import * as echarts from 'echarts/core'
 import { useEffect, useMemo, useRef, useState } from 'react'

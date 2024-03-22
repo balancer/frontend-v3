@@ -1228,7 +1228,10 @@ export default function Components() {
           <Text variant="eyebrow" mb="4">
             Checkbox
           </Text>
-          <Checkbox defaultChecked>Checkbox</Checkbox>
+          <Stack>
+            <Checkbox defaultChecked>Checkbox</Checkbox>
+            <Checkbox isDisabled>Checkbox</Checkbox>
+          </Stack>
         </Box>
 
         <Box mb="8">

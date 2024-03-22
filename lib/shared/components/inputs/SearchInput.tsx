@@ -57,8 +57,15 @@ export function SearchInput({
         <IconButton
           variant="ghost"
           size="sm"
+          color="font.secondary"
+          opacity="0.5"
           aria-label={ariaLabel}
-          icon={search ? <X /> : <Search />}
+          icon={search ? <X size="20" /> : <Search size="20" />}
+          _hover={{
+            opacity: '1',
+            background: 'background.level1',
+            color: 'font.maxContrast',
+          }}
           onClick={() => {
             setSearch('')
             setValue(SEARCH, '')

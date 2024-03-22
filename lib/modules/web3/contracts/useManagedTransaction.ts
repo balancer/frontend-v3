@@ -18,6 +18,7 @@ import { getGqlChain } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useChainSwitch } from '../useChainSwitch'
+import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 
 export function useManagedTransaction<
   T extends typeof AbiMap,
@@ -50,7 +51,16 @@ export function useManagedTransaction<
     enabled: additionalConfig?.enabled && !shouldChangeNetwork,
   })
 
-  const writeQuery = useContractWrite(prepareQuery.config)
+  const writeQuery = useContractWrite({
+    ...prepareQuery.config,
+    onError: (error: unknown) => {
+      captureWagmiExecutionError(
+        error,
+        'Error in managed transaction execution',
+        prepareQuery.config.request
+      )
+    },
+  })
   const transactionStatusQuery = useWaitForTransaction({
     hash: writeQuery.data?.hash,
     confirmations: minConfirmations,

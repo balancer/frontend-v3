@@ -8,7 +8,7 @@ export function PoolListSearch() {
   const { loading } = usePoolList()
 
   return (
-    <Box w={{ base: 'full', md: 'md' }}>
+    <Box w={{ base: 'full', lg: 'sm' }}>
       <form>
         <FormControl w="full">
           <SearchInput
