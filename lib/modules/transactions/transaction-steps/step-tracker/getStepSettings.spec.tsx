@@ -22,7 +22,7 @@ describe('generates step props', () => {
 
     expect(state).toMatchInlineSnapshot(`
       {
-        "color": "orange",
+        "color": "orange.300",
         "isActive": true,
         "isActiveLoading": true,
         "status": "active",
@@ -47,7 +47,7 @@ describe('generates step props', () => {
 
     expect(state).toMatchInlineSnapshot(`
       {
-        "color": "green",
+        "color": "grayText",
         "isActive": true,
         "isActiveLoading": false,
         "status": "complete",

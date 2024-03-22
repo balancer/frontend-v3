@@ -1,6 +1,5 @@
 'use client'
 
-import { TransactionStateData } from '@/lib/shared/components/other/TransactionState'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Alert, Button, VStack } from '@chakra-ui/react'
@@ -63,7 +62,6 @@ export function TransactionStepButton({
           {(execution.error as any)?.shortMessage || (simulation.error as any)?.shortMessage}
         </Alert>
       )}
-      {execution.data?.hash && <TransactionStateData result={result}></TransactionStateData>}
       {!isTransactButtonVisible && <ConnectWallet />}
       {shouldChangeNetwork && isTransactButtonVisible && (
         <NetworkSwitchButton {...networkSwitchButtonProps} />

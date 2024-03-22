@@ -9,7 +9,6 @@ import {
 import { TokensProvider } from '@/lib/modules/tokens/useTokens'
 import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
 import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
-import { createWagmiConfig } from '@/lib/modules/web3/Web3Provider'
 import { AbiMap } from '@/lib/modules/web3/contracts/AbiMap'
 import { WriteAbiMutability } from '@/lib/modules/web3/contracts/contract.types'
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
@@ -41,6 +40,7 @@ import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignat
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { CurrentFlowStepProvider } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { createWagmiConfig } from '@/lib/modules/web3/Web3Provider'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode

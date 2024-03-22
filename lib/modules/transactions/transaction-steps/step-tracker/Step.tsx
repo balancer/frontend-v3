@@ -8,23 +8,18 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { StepProps, getStepSettings } from './getStepSettings'
+import { Check } from 'react-feather'
 
 export function Step(props: StepProps) {
   const { color, isActive, title } = getStepSettings(props)
 
   return (
-    <HStack alignItems="start">
+    <HStack alignItems="center">
       <StepIndicator {...props}></StepIndicator>
       <VStack spacing="0" alignItems="start">
         <Text mt={isActive ? -0.3 : 0} color={color}>
           {title}
         </Text>
-        {isActive && (
-          <Text variant="secondary" fontSize="0.85rem" mt="-0.5" p="0" color={color}>
-            Gas: ~2.50
-            {/* S: {status} */}
-          </Text>
-        )}
       </VStack>
     </HStack>
   )
@@ -35,9 +30,17 @@ export function StepIndicator(props: StepProps) {
 
   if (status === 'complete') {
     return (
-      <Circle size="7" bg="transparent" color="green" border="2px" mr="1">
-        <CheckIcon fontSize="sm" />
-      </Circle>
+      <CircularProgress
+        value={100}
+        trackColor="border.base"
+        thickness="8"
+        size="7"
+        color="font.highlight"
+      >
+        <CircularProgressLabel fontSize="md" color="font.highlight" pl={1.5}>
+          <Check size={15} strokeWidth={4} />
+        </CircularProgressLabel>
+      </CircularProgress>
     )
   }
 
@@ -45,11 +48,12 @@ export function StepIndicator(props: StepProps) {
     <CircularProgress
       value={100}
       isIndeterminate={isActiveLoading}
-      thickness="4"
-      size="8"
+      trackColor="border.base"
+      thickness="8"
+      size="7"
       color={color}
     >
-      <CircularProgressLabel fontSize="md" color={color}>
+      <CircularProgressLabel fontSize="sm" fontWeight="bold" color={color}>
         {stepNumber}
       </CircularProgressLabel>
     </CircularProgress>
