@@ -2,6 +2,7 @@ import { CircularProgress, CircularProgressLabel, HStack, Text, VStack } from '@
 import { StepProps, getStepSettings } from './getStepSettings'
 import { Check } from 'react-feather'
 import { useSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
+import { signRelayerStepTitle } from '../SignRelayerButton'
 
 export function Step(props: StepProps) {
   const { color, isActive, title } = getStepSettings(props)
@@ -19,9 +20,9 @@ export function Step(props: StepProps) {
 }
 
 export function StepIndicator(props: StepProps) {
-  const { color, isActiveLoading, status, stepNumber } = getStepSettings(props)
+  const { color, isActiveLoading, status, stepNumber, title } = getStepSettings(props)
   const { isLoading } = useSignRelayerApproval()
-  const isSignRelayerStepLoading = isLoading && status === 'active'
+  const isSignRelayerStepLoading = isLoading && title === signRelayerStepTitle
 
   if (status === 'complete') {
     return (
