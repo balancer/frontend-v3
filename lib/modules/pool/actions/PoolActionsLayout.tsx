@@ -33,7 +33,13 @@ export function PoolActionsLayout({ children }: PropsWithChildren) {
         zIndex={101}
         onClick={redirectToPoolPage}
       >
-        <Navbar leftSlot={<Text color="white">{pool.name}</Text>} />
+        <Navbar
+          leftSlot={
+            <Text color="white" onClick={redirectToPoolPage} cursor="pointer">
+              {pool.name}
+            </Text>
+          }
+        />
         <Box w="full" px="md" flexGrow="1">
           <Card
             variant="level1"
