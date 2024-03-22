@@ -1,14 +1,7 @@
-import { CheckIcon } from '@chakra-ui/icons'
-import {
-  Circle,
-  CircularProgress,
-  CircularProgressLabel,
-  HStack,
-  Text,
-  VStack,
-} from '@chakra-ui/react'
+import { CircularProgress, CircularProgressLabel, HStack, Text, VStack } from '@chakra-ui/react'
 import { StepProps, getStepSettings } from './getStepSettings'
 import { Check } from 'react-feather'
+import { useSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
 
 export function Step(props: StepProps) {
   const { color, isActive, title } = getStepSettings(props)
@@ -26,9 +19,11 @@ export function Step(props: StepProps) {
 }
 
 export function StepIndicator(props: StepProps) {
+  const { isLoading: isSignRelayerLoading } = useSignRelayerApproval()
+
   const { color, isActiveLoading, status, stepNumber } = getStepSettings(props)
 
-  if (status === 'complete') {
+  if (status === 'complete' && !isSignRelayerLoading) {
     return (
       <CircularProgress
         value={100}
@@ -47,7 +42,7 @@ export function StepIndicator(props: StepProps) {
   return (
     <CircularProgress
       value={100}
-      isIndeterminate={isActiveLoading}
+      isIndeterminate={isActiveLoading || isSignRelayerLoading}
       trackColor="border.base"
       thickness="8"
       size="7"
