@@ -20,19 +20,18 @@ import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Hex } from 'viem'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { useRouter } from 'next/navigation'
 
-export default function BalancerProtocolRevenue() {
+type Props = {
+  isOpen: boolean
+  onClose(): void
+}
+
+export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
   const { protocolRewardsData, protocolRewardsBalance } = usePortfolio()
   const { toCurrency } = useCurrency()
 
-  const router = useRouter()
-
-  function onClose() {
-    router.push('/portfolio')
-  }
   return (
-    <Modal size="xl" isOpen={true} onClose={onClose} isCentered>
+    <Modal size="xl" isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>

@@ -1,20 +1,24 @@
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
-import { Button, Card, Flex, HStack, Heading, IconButton, Stack, VStack } from '@chakra-ui/react'
+import { Button, Card, Flex, HStack, Heading, IconButton, Stack } from '@chakra-ui/react'
 import { chainToSlugMap } from '../../../pool/pool.utils'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import Link from 'next/link'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { ChevronRight } from 'react-feather'
 
 type Props = {
   chain: GqlChain
   networkTotalClaimableFiatBalance: number
-  link: string
   title?: string
+  onClick(): void
 }
 
-export function ClaimNetworkBlock({ chain, title, networkTotalClaimableFiatBalance, link }: Props) {
+export function ClaimNetworkBlock({
+  chain,
+  title,
+  networkTotalClaimableFiatBalance,
+  onClick,
+}: Props) {
   const { toCurrency } = useCurrency()
   const { isDesktop, isMobile } = useBreakpoints()
 
@@ -47,19 +51,17 @@ export function ClaimNetworkBlock({ chain, title, networkTotalClaimableFiatBalan
         </HStack>
 
         {isMobile && (
-          <Link href={link}>
-            <HStack alignItems="center" gap={0}>
-              <Heading size="sm" variant="sand">
-                {toCurrency(networkTotalClaimableFiatBalance)}
-              </Heading>
-              <IconButton variant="ghost" icon={<ChevronRight />} aria-label="" />
-            </HStack>
-          </Link>
+          <HStack alignItems="center" gap={0} onClick={onClick}>
+            <Heading size="sm" variant="sand">
+              {toCurrency(networkTotalClaimableFiatBalance)}
+            </Heading>
+            <IconButton variant="ghost" icon={<ChevronRight />} aria-label="" />
+          </HStack>
         )}
         {isDesktop && (
-          <Link href={link}>
-            <Button variant="secondary">View</Button>
-          </Link>
+          <Button onClick={onClick} variant="secondary">
+            View
+          </Button>
         )}
       </Flex>
     </Card>

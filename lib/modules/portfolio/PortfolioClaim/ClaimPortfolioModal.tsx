@@ -21,9 +21,9 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import { BalTokenReward } from '../useBalRewards'
-import { ClaimableReward } from '../useClaimableBalances'
-import { ClaimTotal } from '../ClaimTotal'
+import { BalTokenReward } from './useBalRewards'
+import { ClaimableReward } from './useClaimableBalances'
+import { ClaimTotal } from './ClaimTotal'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
@@ -59,13 +59,17 @@ export function ClaimPortfolioModal({ isOpen, onClose, pools, ...rest }: Props) 
 
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
   const hasNoRewards = !nonBalRewards?.length && !balRewards.length
-
+  const chain = pools[0]?.chain
   return (
     <Modal size="xl" isOpen={isOpen} onClose={onClose} isCentered {...rest}>
       <ModalOverlay />
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && (
-          <DesktopStepTracker currentStepIndex={currentStepIndex} stepConfigs={stepConfigs} />
+          <DesktopStepTracker
+            currentStepIndex={currentStepIndex}
+            stepConfigs={stepConfigs}
+            chain={chain}
+          />
         )}
 
         <ModalHeader>
@@ -79,7 +83,11 @@ export function ClaimPortfolioModal({ isOpen, onClose, pools, ...rest }: Props) 
         <ModalBody>
           {isMobile && (
             <Card variant="level3" p="md" shadow="sm" w="full">
-              <MobileStepTracker currentStepIndex={currentStepIndex} stepConfigs={stepConfigs} />
+              <MobileStepTracker
+                currentStepIndex={currentStepIndex}
+                stepConfigs={stepConfigs}
+                chain={chain}
+              />
             </Card>
           )}
           <Card variant="level2" gap={4} p="md" shadow="xl" flex="1" width="100%" mb={4}>
