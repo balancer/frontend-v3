@@ -17,6 +17,7 @@ import {
 } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import { balColors, balTheme } from '@/lib/shared/services/chakra/theme'
+import { ButtonGroupOption } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 
 const toolTipTheme = {
   heading: 'font-weight: bold; color: #E5D3BE',
@@ -188,7 +189,7 @@ export function usePoolActivityChart() {
     })
   }, [pool?.type, variant])
 
-  const [activeTab, setActiveTab] = useState(tabsList[0])
+  const [activeTab, setActiveTab] = useState<ButtonGroupOption>(tabsList[0])
 
   const { data: response } = usePoolEvents(poolId as string, chain)
 
