@@ -32,6 +32,7 @@ import { PoolFilterType, poolTypeFilters } from '../pool.types'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useEffect, useState } from 'react'
 import { Filter } from 'react-feather'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 function UserPoolFilter() {
   const { userAddress, toggleUserAddress } = usePoolListQueryState()
@@ -86,7 +87,7 @@ function PoolNetworkFilters() {
   ))
 }
 
-function FilterTags() {
+export function FilterTags() {
   const { networks, toggleNetwork, poolTypes, togglePoolType, poolTypeLabel } =
     usePoolListQueryState()
 
@@ -119,11 +120,12 @@ function FilterTags() {
 
 const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
   const { totalFilterCount } = usePoolListQueryState()
+  const { isMobile } = useBreakpoints()
 
   return (
     <Button ref={ref} {...props} display="flex" gap="2" variant="tertiary">
       <Icon as={Filter} boxSize={4} />
-      Filters
+      {!isMobile && 'Filters'}
       {totalFilterCount > 0 && (
         <Badge colorScheme="green" borderRadius="full" p="0">
           <Center h="5" w="5">
@@ -139,8 +141,8 @@ export function PoolListFilters() {
   const { isConnected } = useUserAccount()
 
   return (
-    <VStack align="flex-start" w="full">
-      <HStack w="full" spacing="none">
+    <VStack w="full">
+      <HStack w="full" spacing="none" justify="end">
         <PoolListSearch />
         <Popover>
           <PopoverTrigger>
@@ -177,7 +179,6 @@ export function PoolListFilters() {
           </Box>
         </Popover>
       </HStack>
-      <FilterTags />
     </VStack>
   )
 }

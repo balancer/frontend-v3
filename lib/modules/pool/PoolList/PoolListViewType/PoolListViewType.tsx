@@ -1,26 +1,31 @@
 'use client'
 
-import { HStack, IconButton } from '@chakra-ui/react'
 import { usePoolListViewType } from './usePoolListViewType'
 import { PoolListView } from '@/lib/modules/user/settings/useUserSettings'
 import { Grid, List } from 'react-feather'
+import ButtonGroup, {
+  ButtonGroupOption,
+} from '@/lib/shared/components/btns/button-group/ButtonGroup'
 
 export function PoolListViewType() {
-  const { setPoolListView, isCardsView, isTableView } = usePoolListViewType()
-  return (
-    <HStack>
-      <IconButton
-        icon={<List />}
-        aria-label="list"
-        onClick={() => setPoolListView(PoolListView.List)}
-        isDisabled={isTableView}
-      />
-      <IconButton
-        icon={<Grid />}
-        aria-label="grid"
-        onClick={() => setPoolListView(PoolListView.Grid)}
-        isDisabled={isCardsView}
-      />
-    </HStack>
-  )
+  const { setPoolListView, isTableView } = usePoolListViewType()
+
+  const options: ButtonGroupOption[] = [
+    {
+      value: PoolListView.List,
+      label: <List />,
+    },
+    {
+      value: PoolListView.Grid,
+      label: <Grid />,
+    },
+  ]
+
+  function changeListView(option: ButtonGroupOption) {
+    setPoolListView(option.value as PoolListView)
+  }
+
+  const currentOption = isTableView ? options[0] : options[1]
+
+  return <ButtonGroup currentOption={currentOption} options={options} onChange={changeListView} />
 }
