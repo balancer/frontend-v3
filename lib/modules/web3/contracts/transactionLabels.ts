@@ -27,8 +27,12 @@ interface ApproveTokenParams {
 export const buildTokenApprovalLabels: BuildTransactionLabels = (args: ApproveTokenParams) => {
   return {
     init: `Approve ${args.normalizedAmount} for ${args.actionType}`,
+    loading: `Approving ${args.token.symbol}`,
+    confirming: `Approving ${args.token.symbol}`,
+    confirmed: `${args.token.symbol} approved`,
+    error: `Error approving ${args.token.symbol}`,
     tooltip: `You must approve ${args.token.symbol} to ${args.actionType} this token.
     Approvals are required once per token, per wallet.`,
-    description: '',
+    description: 'Infinte approval for Balancer v2 Vault',
   }
 }

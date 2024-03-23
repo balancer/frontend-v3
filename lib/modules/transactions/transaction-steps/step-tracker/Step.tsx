@@ -1,12 +1,4 @@
-import { CheckIcon } from '@chakra-ui/icons'
-import {
-  Circle,
-  CircularProgress,
-  CircularProgressLabel,
-  HStack,
-  Text,
-  VStack,
-} from '@chakra-ui/react'
+import { CircularProgress, CircularProgressLabel, HStack, Text, VStack } from '@chakra-ui/react'
 import { StepProps, getStepSettings } from './getStepSettings'
 import { Check } from 'react-feather'
 

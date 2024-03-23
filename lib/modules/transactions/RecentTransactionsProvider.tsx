@@ -1,5 +1,6 @@
 'use client'
 
+import { Toast } from '@/lib/shared/components/toasts/Toast'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { AlertStatus, ToastId, useToast } from '@chakra-ui/react'
@@ -100,6 +101,7 @@ export function _useRecentTransactions() {
       status: 'loading',
       duration: null,
       isClosable: true,
+      render: ({ ...rest }) => <Toast {...rest} />,
     })
 
     if (!trackedTransaction.hash) {
@@ -157,6 +159,7 @@ export function _useRecentTransactions() {
         description: updatedCachedTransaction.description,
         isClosable: true,
         duration: 5000,
+        render: ({ ...rest }) => <Toast {...rest} />,
       })
     }
   }

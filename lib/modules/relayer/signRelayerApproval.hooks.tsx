@@ -7,6 +7,7 @@ import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 import { useRelayerMode } from './useRelayerMode'
 import { useRelayerSignature } from './useRelayerSignature'
 import { SupportedChainId } from '@/lib/config/config.types'
+import { Toast } from '@/lib/shared/components/toasts/Toast'
 
 enum SignRelayerState {
   Ready = 'init',
@@ -59,6 +60,7 @@ export function useSignRelayerApproval() {
           status: 'success',
           duration: 5000,
           isClosable: true,
+          render: ({ ...rest }) => <Toast {...rest} />,
         })
       } else {
         setSignRelayerState(SignRelayerState.Ready)
