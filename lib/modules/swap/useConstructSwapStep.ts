@@ -8,6 +8,7 @@ import { getChainId } from '@/lib/config/app.config'
 import { useSyncCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
 import { capitalize } from 'lodash'
 import { swapActionPastTense } from './swap.helpers'
+import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructSwapStep() {
   const { simulationQuery, selectedChain, swapAction, tokenInInfo, tokenOutInfo } = useSwap()
@@ -32,7 +33,18 @@ export function useConstructSwapStep() {
 
   const chainId = buildSwapQuery.data?.chainId || getChainId(selectedChain)
 
-  const swapTransaction = useManagedSendTransaction(transactionLabels, chainId, buildSwapQuery.data)
+  const swapTransaction = useManagedSendTransaction(
+    transactionLabels,
+    chainId,
+    buildSwapQuery.data,
+    (error: unknown) => {
+      captureWagmiSimulationError(
+        error,
+        'Error in swap send transaction simulation',
+        buildSwapQuery.data || {}
+      )
+    }
+  )
 
   const isComplete = () => swapTransaction.result.isSuccess
 

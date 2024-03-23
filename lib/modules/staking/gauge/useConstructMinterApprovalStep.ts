@@ -7,6 +7,7 @@ import { useEffect } from 'react'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useSyncCurrentFlowStep } from '../../transactions/transaction-steps/useCurrentFlowStep'
+import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructMinterApprovalStep(chain: GqlChain) {
   const { isConnected } = useUserAccount()
@@ -28,7 +29,18 @@ export function useConstructMinterApprovalStep(chain: GqlChain) {
     transactionLabels,
     getChainId(chain),
     { args: [networkConfig.contracts.balancer.relayerV6, true] },
-    { enabled: !isLoading }
+    {
+      enabled: !isLoading,
+      onError(error: unknown) {
+        captureWagmiSimulationError(
+          error,
+          'Error in wagmi tx simulation (Minter approval transaction)',
+          {
+            minter: networkConfig.contracts.balancer.minter,
+          }
+        )
+      },
+    }
   )
 
   const step = useSyncCurrentFlowStep({

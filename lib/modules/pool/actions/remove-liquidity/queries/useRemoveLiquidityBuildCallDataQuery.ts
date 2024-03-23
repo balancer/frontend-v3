@@ -9,7 +9,7 @@ import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { usePool } from '../../../usePool'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useRelayerSignature } from '@/lib/modules/relayer/useRelayerSignature'
-import { captureLiquidityHandlerError } from '@/lib/shared/utils/query-errors'
+import { captureRemoveLiquidityHandlerError } from '@/lib/shared/utils/query-errors'
 
 export type RemoveLiquidityBuildQueryResponse = ReturnType<
   typeof useRemoveLiquidityBuildCallDataQuery
@@ -51,7 +51,11 @@ export function useRemoveLiquidityBuildCallDataQuery() {
     enabled: isConnected && !!simulationQuery.data,
     cacheTime: 0,
     onError(error: unknown) {
-      captureLiquidityHandlerError(error, 'Error in remove liquidity buildCallData query', params)
+      captureRemoveLiquidityHandlerError(
+        error,
+        'Error in remove liquidity buildCallData query',
+        params
+      )
     },
     ...onlyExplicitRefetch,
   })
