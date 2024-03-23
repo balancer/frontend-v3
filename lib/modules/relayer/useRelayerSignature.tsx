@@ -41,10 +41,12 @@ export const useRelayerSignature = (): UseRelayerSignatureResponse => {
   const context = useContext(RelayerSignatureContext)
   if (context) return context
 
-  // Edge-case: useRelayer step does not have a flowStep (because it does not have a wagmi transaction)
-  // but we need to render its loading state in the StepIndicator component (inside the StepTracker),
-  // so we need to call useRelayerSignature for all flows.
-  // For those flows (Swap) that do not use the provider we return an empty result.
+  /*
+  Edge-case: useRelayer step does not have a flowStep (because it does not have a wagmi transaction)
+  but we need to render its loading state in the StepIndicator component (inside the StepTracker),
+  so we need to call useRelayerSignature for all flows.
+  For those flows (Swap) that do not use the provider we return an empty result.
+  */
   return {
     relayerApprovalSignature: '' as Address,
     setRelayerApprovalSignature: noop,
