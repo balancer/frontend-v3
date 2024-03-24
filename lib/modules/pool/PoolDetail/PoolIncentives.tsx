@@ -13,16 +13,24 @@ import { IncentiveBadge } from '@/lib/shared/components/other/IncentiveBadge'
 import { useTokens } from '../../tokens/useTokens'
 import { sumBy } from 'lodash'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { useClaimableBalances } from '../../portfolio/PortfolioClaim/useClaimableBalances'
 
 export default function PoolIncentives() {
   const { pool, chain } = usePool()
   const { priceFor } = useTokens()
   const { toCurrency } = useCurrency()
-  const { previewModalDisclosure, disabledReason, isDisabled, hasNoRewards } = useClaiming([
-    pool,
-  ] as unknown[] as PoolListItem[])
-  const { claimableRewards } = useClaimableBalances([pool] as unknown[] as PoolListItem[])
+  const {
+    previewModalDisclosure,
+    disabledReason,
+    isDisabled,
+    hasNoRewards,
+    balRewards,
+    nonBalRewards,
+  } = useClaiming([pool] as unknown[] as PoolListItem[])
+
+  const claimableRewards = [...balRewards, ...nonBalRewards]
+
+  console.log('esk', { claimableRewards })
+
   const currentRewards = pool.staking?.gauge?.rewards || []
   const currentRewardsPerWeek = currentRewards.map(reward => {
     return {
@@ -68,7 +76,7 @@ export default function PoolIncentives() {
           value={toCurrency(totalClaimableRewards)}
           width="full"
         >
-          <VStack width="full">
+          <VStack width="full" spacing="6" alignItems="flex-start">
             <VStack spacing="6" p="2" pb="0" width="full">
               {claimableRewards.map(reward => {
                 return (
@@ -81,10 +89,10 @@ export default function PoolIncentives() {
                 )
               })}
             </VStack>
-            <HStack width="full" justifyContent="flex-start">
+            <HStack justifyContent="flex-start">
               <Tooltip label={isDisabled ? disabledReason : ''}>
                 <Button
-                  variant="secondary"
+                  variant="primary"
                   w="full"
                   size="sm"
                   isDisabled={isDisabled || hasNoRewards}
