@@ -1,11 +1,6 @@
 import { hours } from '@/lib/shared/hooks/useTime'
 import { NextResponse } from 'next/server'
 
-// Caches response from Hypernative for 12 hours *per address*.
-export const revalidate = hours(12).toSecs()
-
-const hypernativeApiKey = process.env.HYPERNATIVE_API_KEY
-
 type Params = {
   params: {
     address: string
@@ -16,29 +11,56 @@ type ReputationResponse = {
   data: Array<{ flags: string[]; address: string; recommendation: string }>
 }
 
-// Flags to ignore in check.
-const IGNORED_FLAGS = ['F-1402', 'F-1412', 'F-3110']
+async function getAuthKey(): Promise<string | null> {
+  try {
+    const res = await fetch('https://api.hypernative.xyz/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: process.env.HYPERNATIVE_EMAIL || '',
+        password: process.env.HYPERNATIVE_PASSWORD || '',
+      }),
+      next: {
+        revalidate: hours(12).toSecs(), // Token needs to be refetched every 24 hours. Set to 12 hours to be safe.
+      },
+    })
+    const {
+      data: { token },
+    } = await res.json()
+
+    return token
+  } catch {
+    return null
+  }
+}
 
 export async function GET(request: Request, { params: { address } }: Params) {
-  if (!hypernativeApiKey) return NextResponse.json({ data: { isAuthorized: true } })
+  const apiKey = await getAuthKey()
+  if (!apiKey) return NextResponse.json({ data: { isAuthorized: true } })
 
   try {
     const res = await fetch('https://api.hypernative.xyz/assets/reputation/addresses', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${hypernativeApiKey}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         addresses: [address],
+        expandDetails: true,
       }),
+      next: {
+        revalidate: hours(12).toSecs(),
+      },
     })
 
     const {
       data: [check],
     }: ReputationResponse = await res.json()
 
-    const isAuthorized = check.flags.some(flag => !IGNORED_FLAGS.includes(flag))
+    const isAuthorized = check.recommendation !== 'Deny'
 
     return NextResponse.json({ data: { ...check, isAuthorized } })
   } catch (error) {
