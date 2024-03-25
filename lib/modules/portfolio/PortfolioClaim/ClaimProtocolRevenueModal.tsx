@@ -11,6 +11,7 @@ import {
   VStack,
   Card,
   Text,
+  Stack,
 } from '@chakra-ui/react'
 
 import { ClaimTotal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimTotal'
@@ -56,27 +57,28 @@ export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          {isMobile && (
-            <Card variant="level3" p="md" shadow="sm" w="full">
+          <Stack gap={4}>
+            <Card variant="level2" gap={4} p="md" shadow="xl" flex="1" width="100%">
+              <Text fontWeight="700">You`ll get</Text>
+              {protocolRewardsData?.map((reward, idx) => (
+                <TokenRow
+                  key={idx}
+                  address={reward.tokenAddress as Hex}
+                  value={reward.formattedBalance}
+                  chain={GqlChain.Mainnet}
+                />
+              ))}
+            </Card>
+            <ClaimTotal total={toCurrency(protocolRewardsBalance)} />
+
+            {isMobile && (
               <MobileStepTracker
                 currentStepIndex={currentStepIndex}
                 stepConfigs={stepConfigs}
                 chain={GqlChain.Mainnet}
               />
-            </Card>
-          )}
-          <Card variant="level2" gap={4} p="md" shadow="xl" flex="1" width="100%" mb={4}>
-            <Text fontWeight="700">You`ll get</Text>
-            {protocolRewardsData?.map((reward, idx) => (
-              <TokenRow
-                key={idx}
-                address={reward.tokenAddress as Hex}
-                value={reward.formattedBalance}
-                chain={GqlChain.Mainnet}
-              />
-            ))}
-          </Card>
-          <ClaimTotal total={toCurrency(protocolRewardsBalance)} />
+            )}
+          </Stack>
         </ModalBody>
         <ModalFooter>
           <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>

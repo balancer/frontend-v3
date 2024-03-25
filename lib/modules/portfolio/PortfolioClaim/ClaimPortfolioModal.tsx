@@ -17,6 +17,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Stack,
   Text,
   VStack,
 } from '@chakra-ui/react'
@@ -81,36 +82,39 @@ export function ClaimPortfolioModal({ isOpen, onClose, pools, ...rest }: Props) 
         <ModalCloseButton />
 
         <ModalBody>
-          {isMobile && (
-            <Card variant="level3" p="md" shadow="sm" w="full">
+          <Stack gap={4}>
+            <Card variant="level2" gap={4} p="md" shadow="xl" flex="1" width="100%">
+              <Text fontWeight="700">You`ll get</Text>
+              {balRewards &&
+                balRewards.map(
+                  reward =>
+                    reward && (
+                      <RewardTokenRow
+                        key={`${reward?.tokenAddress}-${reward?.gaugeAddress}`}
+                        reward={reward}
+                      />
+                    )
+                )}
+
+              {nonBalRewards &&
+                nonBalRewards.map((reward, idx) => <RewardTokenRow key={idx} reward={reward} />)}
+            </Card>
+
+            <ClaimTotal
+              total={toCurrency(
+                poolRewardsMap[pools[0].id]?.totalFiatClaimBalance?.toNumber() || 0
+              )}
+            />
+            {isMobile && (
               <MobileStepTracker
                 currentStepIndex={currentStepIndex}
                 stepConfigs={stepConfigs}
                 chain={chain}
               />
-            </Card>
-          )}
-          <Card variant="level2" gap={4} p="md" shadow="xl" flex="1" width="100%" mb={4}>
-            <Text fontWeight="700">You`ll get</Text>
-            {balRewards &&
-              balRewards.map(
-                reward =>
-                  reward && (
-                    <RewardTokenRow
-                      key={`${reward?.tokenAddress}-${reward?.gaugeAddress}`}
-                      reward={reward}
-                    />
-                  )
-              )}
-
-            {nonBalRewards &&
-              nonBalRewards.map((reward, idx) => <RewardTokenRow key={idx} reward={reward} />)}
-          </Card>
-
-          <ClaimTotal
-            total={toCurrency(poolRewardsMap[pools[0].id]?.totalFiatClaimBalance?.toNumber() || 0)}
-          />
+            )}
+          </Stack>
         </ModalBody>
+
         <ModalFooter>
           <VStack w="full">
             {hasNoRewards ? (
