@@ -38,7 +38,7 @@ async function getAuthKey(): Promise<string | null> {
 
 export async function GET(request: Request, { params: { address } }: Params) {
   const apiKey = await getAuthKey()
-  if (!apiKey) return NextResponse.json({ data: { isAuthorized: true } })
+  if (!apiKey) return NextResponse.json({ isAuthorized: true })
 
   try {
     const res = await fetch('https://api.hypernative.xyz/assets/reputation/addresses', {
@@ -62,8 +62,8 @@ export async function GET(request: Request, { params: { address } }: Params) {
 
     const isAuthorized = check.recommendation !== 'Deny'
 
-    return NextResponse.json({ data: { ...check, isAuthorized } })
+    return NextResponse.json({ isAuthorized })
   } catch (error) {
-    return NextResponse.json({ data: { isAuthorized: true } })
+    return NextResponse.json({ isAuthorized: true })
   }
 }

@@ -11,7 +11,7 @@ export default function Page() {
 
   async function checkWallet() {
     const res = await fetch(`/api/wallet-check/${address}`)
-    const { data } = await res.json()
+    const data = await res.json()
     setData(data)
     console.log(data)
   }

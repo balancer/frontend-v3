@@ -1,13 +1,22 @@
 'use client'
+
+/* eslint-disable react-hooks/exhaustive-deps */
 // eslint-disable-next-line no-restricted-imports
-import { useAccount } from 'wagmi'
+import { useAccount, useDisconnect } from 'wagmi'
 import { emptyAddress } from './contracts/wagmi-helpers'
 import { useIsMounted } from './useIsMounted'
 import { PropsWithChildren, createContext, useEffect } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { isAddress } from 'viem'
+import { Address, isAddress } from 'viem'
 import { COOKIE_KEYS } from '../cookies/cookie.constants'
 import Cookies from 'js-cookie'
+
+async function isAuthorizedAddress(address: Address): Promise<boolean> {
+  const res = await fetch(`/api/wallet-check/${address}`, { cache: 'no-store' })
+  const data = await res.json()
+
+  return data?.isAuthorized
+}
 
 export type UseUserAccountResponse = ReturnType<typeof _useUserAccount>
 export const UserAccountContext = createContext<UseUserAccountResponse | null>(null)
@@ -15,8 +24,8 @@ export const UserAccountContext = createContext<UseUserAccountResponse | null>(n
 export function _useUserAccount() {
   const { mounted } = useIsMounted()
   const query = useAccount()
+  const { disconnect } = useDisconnect()
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { address, ...queryWithoutAddress } = query
 
   useEffect(() => {
@@ -25,6 +34,20 @@ export function _useUserAccount() {
     } else {
       Cookies.remove(COOKIE_KEYS.UserAddress)
     }
+  }, [address])
+
+  async function blockUnauthorizedAddress(address: Address | undefined) {
+    console.log('blockUnauthorizedAddress', address)
+
+    if (!address) return
+    if (isAddress(address)) {
+      const isAuthorized = await isAuthorizedAddress(address)
+      if (!isAuthorized) disconnect()
+    }
+  }
+
+  useEffect(() => {
+    blockUnauthorizedAddress(address)
   }, [address])
 
   // The usage of mounted helps to overcome nextjs hydration mismatch
