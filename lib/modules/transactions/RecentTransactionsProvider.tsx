@@ -1,11 +1,13 @@
 'use client'
 
 import { Toast } from '@/lib/shared/components/toasts/Toast'
+import { getBlockExplorerTxUrl } from '@/lib/shared/hooks/useBlockExplorer'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { AlertStatus, ToastId, useToast } from '@chakra-ui/react'
+import { AlertStatus, HStack, ToastId, useToast, Text, IconButton } from '@chakra-ui/react'
 import { keyBy, orderBy, take } from 'lodash'
 import React, { ReactNode, createContext, useCallback, useEffect, useState } from 'react'
+import { ExternalLink } from 'react-feather'
 import { Hash } from 'viem'
 import { usePublicClient } from 'wagmi'
 
@@ -37,6 +39,27 @@ const TransactionStatusToastStatusMapping: Record<TransactionStatus, AlertStatus
   confirming: 'loading',
   reverted: 'error',
   rejected: 'error',
+}
+
+function getTitleLabelFor(trackedTransaction: TrackedTransaction): ReactNode {
+  const txUrl = getBlockExplorerTxUrl(trackedTransaction.hash, trackedTransaction.chain)
+
+  return (
+    <HStack>
+      <Text>{trackedTransaction.label}</Text>
+      <IconButton
+        size="xs"
+        variant="ghost"
+        aria-label="View on block explorer"
+        color="grayText"
+        icon={<ExternalLink size={14} />}
+        as="a"
+        href={txUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      />
+    </HStack>
+  )
 }
 
 export function _useRecentTransactions() {
@@ -96,7 +119,7 @@ export function _useRecentTransactions() {
     // on updates for the same transaction, we will modify the same toast
     // using updateTrackedTransaction.
     const toastId = toast({
-      title: trackedTransaction.label,
+      title: getTitleLabelFor(trackedTransaction),
       description: trackedTransaction.description,
       status: 'loading',
       duration: null,
@@ -155,7 +178,7 @@ export function _useRecentTransactions() {
     if (updatedCachedTransaction.toastId) {
       toast.update(updatedCachedTransaction.toastId, {
         status: TransactionStatusToastStatusMapping[updatePayload.status],
-        title: updatedCachedTransaction.label,
+        title: getTitleLabelFor(updatedCachedTransaction),
         description: updatedCachedTransaction.description,
         isClosable: true,
         duration: 5000,

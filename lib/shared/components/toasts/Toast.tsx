@@ -80,17 +80,17 @@ export function Toast({ id, status, isClosable, title, description }: ToastProps
               isIndeterminate
               color="orange.300"
               trackColor="border.base"
-              size={6}
-              mt="px"
+              size={5}
+              mt="1"
             />
           )}
           {status === 'success' && (
             <CircularProgress
               value={100}
               trackColor="border.base"
-              size="6"
+              size={5}
               color="font.highlight"
-              mt="px"
+              mt="1"
             >
               <CircularProgressLabel fontSize="md" color="font.highlight" pl={2}>
                 <Check size={8} strokeWidth={4} />
@@ -98,7 +98,7 @@ export function Toast({ id, status, isClosable, title, description }: ToastProps
             </CircularProgress>
           )}
           {status === 'error' && (
-            <CircularProgress value={100} trackColor="border.base" size="6" color="red.500" mt="px">
+            <CircularProgress value={100} trackColor="border.base" size={5} color="red.500" mt="1">
               <CircularProgressLabel>
                 <Text fontWeight="bold" color="red.500" fontSize="xs">
                   !
