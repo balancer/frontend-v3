@@ -2,6 +2,7 @@
 
 import { Toast } from '@/lib/shared/components/toasts/Toast'
 import { getBlockExplorerTxUrl } from '@/lib/shared/hooks/useBlockExplorer'
+import { secs } from '@/lib/shared/hooks/useTime'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { AlertStatus, HStack, ToastId, useToast, Text, IconButton } from '@chakra-ui/react'
@@ -181,7 +182,7 @@ export function _useRecentTransactions() {
         title: getTitleLabelFor(updatedCachedTransaction),
         description: updatedCachedTransaction.description,
         isClosable: true,
-        duration: 5000,
+        duration: secs(10).toMs(),
         render: ({ ...rest }) => <Toast {...rest} />,
       })
     }
