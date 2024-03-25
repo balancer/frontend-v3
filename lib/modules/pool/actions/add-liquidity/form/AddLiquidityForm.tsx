@@ -169,7 +169,7 @@ export function AddLiquidityForm() {
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={isDisabled || simulationQuery.isLoading}
+                isDisabled={isDisabled || simulationQuery.isLoading || simulationQuery.isError}
                 onClick={() => !isDisabled && onModalOpen()}
               >
                 Next
