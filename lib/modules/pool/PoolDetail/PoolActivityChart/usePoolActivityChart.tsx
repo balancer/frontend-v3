@@ -9,13 +9,15 @@ import numeral from 'numeral'
 import { usePool } from '../../usePool'
 import { PoolVariant } from '../../pool.types'
 import {
-  GetPoolJoinsExitsSwapsDocument,
   GqlChain,
   GqlPoolType,
-  GqlPoolJoinExitType,
+  GqlPoolEventType,
+  GqlPoolEventsDataRange,
+  GetPoolEventsDocument,
 } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import { balColors, balTheme } from '@/lib/shared/services/chakra/theme'
+import { ButtonGroupOption } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 
 const toolTipTheme = {
   heading: 'font-weight: bold; color: #E5D3BE',
@@ -112,12 +114,13 @@ function getSymbolSize(dataItem?: [number, string]) {
   return 80
 }
 
-export function usePoolJoinsExitsSwaps(poolId: string, chain: GqlChain) {
-  return useQuery(GetPoolJoinsExitsSwapsDocument, {
+function usePoolEvents(poolId: string, chain: GqlChain) {
+  return useQuery(GetPoolEventsDocument, {
     variables: {
       poolId,
       chainId: chain,
-      first: 50,
+      typeIn: [GqlPoolEventType.Join, GqlPoolEventType.Exit, GqlPoolEventType.Swap],
+      range: GqlPoolEventsDataRange.ThirtyDays,
     },
     notifyOnNetworkStatusChange: true,
   })
@@ -186,35 +189,32 @@ export function usePoolActivityChart() {
     })
   }, [pool?.type, variant])
 
-  const [activeTab, setActiveTab] = useState(tabsList[0])
+  const [activeTab, setActiveTab] = useState<ButtonGroupOption>(tabsList[0])
 
-  const { data: response } = usePoolJoinsExitsSwaps(poolId as string, chain)
+  const { data: response } = usePoolEvents(poolId as string, chain)
 
   const chartData = useMemo(() => {
     if (!response) return { adds: [], removes: [], swaps: [] }
-    const { joinExits, swaps } = response
+    const { events } = response
 
-    const data = joinExits.reduce(
+    const data = events.reduce(
       (acc: Record<'adds' | 'removes' | 'swaps', [number, string][]>, item) => {
         const { type, timestamp, valueUSD } = item
-        const usdValue = valueUSD ?? ''
-        if (type === GqlPoolJoinExitType.Join) {
+        const usdValue = valueUSD.toString() ?? ''
+        if (type === GqlPoolEventType.Join) {
           acc.adds.push([timestamp, usdValue])
         }
-        if (type === GqlPoolJoinExitType.Exit) {
+        if (type === GqlPoolEventType.Exit) {
           acc.removes.push([timestamp, usdValue])
+        }
+        if (type === GqlPoolEventType.Swap) {
+          acc.swaps.push([timestamp, usdValue])
         }
 
         return acc
       },
       { adds: [], removes: [], swaps: [] }
     )
-
-    swaps.forEach(item => {
-      const { timestamp, valueUSD } = item
-      const usdValue = valueUSD.toString()
-      data.swaps.push([timestamp, usdValue])
-    })
 
     return data
   }, [response])
