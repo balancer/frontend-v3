@@ -33,6 +33,7 @@ export function ClaimNetworkBlock({
       flex="1"
       minW={['320px']}
       maxW={['auto', 'auto', '410px']}
+      onClick={isMobile ? onClick : undefined}
     >
       <Flex justifyContent="space-between" alignItems="center">
         <HStack>
@@ -55,7 +56,12 @@ export function ClaimNetworkBlock({
             <Heading size="sm" variant="sand">
               {toCurrency(networkTotalClaimableFiatBalance)}
             </Heading>
-            <IconButton variant="ghost" icon={<ChevronRight />} aria-label="" />
+            <IconButton
+              variant="ghost"
+              color="font.highlight"
+              icon={<ChevronRight />}
+              aria-label=""
+            />
           </HStack>
         )}
         {isDesktop && (
