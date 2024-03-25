@@ -14,12 +14,16 @@ import {
 } from '@chakra-ui/react'
 
 import { ClaimTotal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimTotal'
-import { ClaimAllVebalRewardsButton } from '@/lib/modules/portfolio/PortfolioClaim/ClaimButtons/ClaimAllVebalRewardsButton'
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Hex } from 'viem'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { useClaimProtocolRewardsStepConfigs } from '../useClaimProtocolRewardsStepConfigs'
+import { useIterateSteps } from '../../transactions/transaction-steps/useIterateSteps'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { DesktopStepTracker } from '../../transactions/transaction-steps/step-tracker/DesktopStepTracker'
+import { MobileStepTracker } from '../../transactions/transaction-steps/step-tracker/MobileStepTracker'
 
 type Props = {
   isOpen: boolean
@@ -29,11 +33,22 @@ type Props = {
 export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
   const { protocolRewardsData, protocolRewardsBalance } = usePortfolio()
   const { toCurrency } = useCurrency()
+  const { isDesktop, isMobile } = useBreakpoints()
+
+  const { stepConfigs } = useClaimProtocolRewardsStepConfigs()
+  const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
   return (
     <Modal size="xl" isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent>
+        {isDesktop && (
+          <DesktopStepTracker
+            currentStepIndex={currentStepIndex}
+            stepConfigs={stepConfigs}
+            chain={GqlChain.Mainnet}
+          />
+        )}
         <ModalHeader>
           <Heading fontWeight="bold" size="h5">
             Balancer protocol revenue
@@ -41,6 +56,15 @@ export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
+          {isMobile && (
+            <Card variant="level3" p="md" shadow="sm" w="full">
+              <MobileStepTracker
+                currentStepIndex={currentStepIndex}
+                stepConfigs={stepConfigs}
+                chain={GqlChain.Mainnet}
+              />
+            </Card>
+          )}
           <Card variant="level2" gap={4} p="md" shadow="xl" flex="1" width="100%" mb={4}>
             <Text fontWeight="700">You`ll get</Text>
             {protocolRewardsData?.map((reward, idx) => (
@@ -55,9 +79,7 @@ export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
           <ClaimTotal total={toCurrency(protocolRewardsBalance)} />
         </ModalBody>
         <ModalFooter>
-          <VStack w="full">
-            <ClaimAllVebalRewardsButton />
-          </VStack>
+          <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>
