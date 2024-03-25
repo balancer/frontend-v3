@@ -36,11 +36,10 @@ export function useConstructAddLiquidityStep() {
     chainId,
     buildCallDataQuery.data,
     (error: unknown) => {
-      captureWagmiSimulationError(
-        error,
-        'Error in AddLiquidity transaction simulation',
-        buildCallDataQuery.data || {}
-      )
+      captureWagmiSimulationError(error, 'Error in AddLiquidity transaction simulation', {
+        simulationQueryData: simulationQuery.data,
+        buildCallQueryData: buildCallDataQuery.data,
+      })
     }
   )
 
