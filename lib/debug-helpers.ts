@@ -27,6 +27,9 @@ export const threePoolId =
 export const gyro2CLP_USDC_DAI =
   '0xdac42eeb17758daa38caf9a3540c808247527ae3000200000000000000000a2b' as const
 
+export const recoveryModePoolId =
+  '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473' as const // weighted pool in recovery mode (wstEth-euler)
+
 export const vaultV2Address = mainnetNetworkConfig.contracts.balancer.vaultV2 as Address
 
 export const poolId = '0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512' as const // Balancer Weighted wjAura and WETH
