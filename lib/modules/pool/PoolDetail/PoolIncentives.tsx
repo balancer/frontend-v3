@@ -13,6 +13,7 @@ import { IncentiveBadge } from '@/lib/shared/components/other/IncentiveBadge'
 import { useTokens } from '../../tokens/useTokens'
 import { sumBy } from 'lodash'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { SECONDS_IN_DAY } from '@/test/utils/numbers'
 
 export default function PoolIncentives() {
   const { pool, chain } = usePool()
@@ -35,7 +36,7 @@ export default function PoolIncentives() {
   const currentRewardsPerWeek = currentRewards.map(reward => {
     return {
       ...reward,
-      rewardPerWeek: (parseFloat(reward.rewardPerSecond) * 86400) / 52,
+      rewardPerWeek: parseFloat(reward.rewardPerSecond) * SECONDS_IN_DAY * 7,
     }
   })
 
