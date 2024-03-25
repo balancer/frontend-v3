@@ -3,19 +3,22 @@
 import {
   Box,
   VStack,
-  Text,
   useToast,
   ToastProps,
   IconButton,
   BoxProps,
   CircularProgress,
+  HStack,
+  CircularProgressLabel,
+  Text,
 } from '@chakra-ui/react'
-import { X } from 'react-feather'
+import { Check, X } from 'react-feather'
 
 export function Toast({ id, status, isClosable, title, description }: ToastProps) {
   const toast = useToast()
   const containerStyles: BoxProps = {
     background: 'background.level3',
+    border: 'none',
     rounded: 'md',
     shadow: 'xl',
     zIndex: '1000',
@@ -71,23 +74,45 @@ export function Toast({ id, status, isClosable, title, description }: ToastProps
             icon={<X size={16} />}
           />
         )}
-        {status === 'loading' && (
-          <CircularProgress
-            isIndeterminate
-            color="orange.300"
-            trackColor="border.base"
-            size={3}
-            position="absolute"
-            top="xs"
-            left="xs"
-          />
-        )}
-        <VStack align="start">
-          <Text color="font.primary" fontWeight="bold" fontSize="lg">
-            {title}
-          </Text>
-          {description && <Text color="grayText">{description}</Text>}
-        </VStack>
+        <HStack align="start">
+          {status === 'loading' && (
+            <CircularProgress
+              isIndeterminate
+              color="orange.300"
+              trackColor="border.base"
+              size={6}
+              mt="px"
+            />
+          )}
+          {status === 'success' && (
+            <CircularProgress
+              value={100}
+              trackColor="border.base"
+              size="6"
+              color="font.highlight"
+              mt="px"
+            >
+              <CircularProgressLabel fontSize="md" color="font.highlight" pl={2}>
+                <Check size={8} strokeWidth={4} />
+              </CircularProgressLabel>
+            </CircularProgress>
+          )}
+          {status === 'error' && (
+            <CircularProgress value={100} trackColor="border.base" size="6" color="red.500" mt="px">
+              <CircularProgressLabel>
+                <Text fontWeight="bold" color="red.500" fontSize="xs">
+                  !
+                </Text>
+              </CircularProgressLabel>
+            </CircularProgress>
+          )}
+          <VStack align="start">
+            <Box color="font.primary" fontWeight="bold" fontSize="lg">
+              {title}
+            </Box>
+            {description && <Box color="grayText">{description}</Box>}
+          </VStack>
+        </HStack>
       </Box>
     </Box>
   )
