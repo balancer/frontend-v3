@@ -1,7 +1,6 @@
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { HumanAmountIn } from '../../liquidity-types'
 import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidity.types'
-import { Address } from 'viem'
 
 /**
  * AddLiquidityHandler is an interface that defines the methods that must be implemented by a handler.
