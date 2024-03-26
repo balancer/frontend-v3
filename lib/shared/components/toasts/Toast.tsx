@@ -92,8 +92,8 @@ export function Toast({ id, status, isClosable, title, description }: ToastProps
               color="font.highlight"
               mt="1"
             >
-              <CircularProgressLabel fontSize="md" color="font.highlight" pl={2}>
-                <Check size={8} strokeWidth={4} />
+              <CircularProgressLabel fontSize="md" color="font.highlight" pl={1}>
+                <Check size={12} strokeWidth={4} />
               </CircularProgressLabel>
             </CircularProgress>
           )}

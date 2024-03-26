@@ -1,6 +1,6 @@
 'use client'
 
-import { Heading, Stack, HStack, VStack, useToast } from '@chakra-ui/react'
+import { Heading, Stack, HStack, VStack } from '@chakra-ui/react'
 import { FilterTags, PoolListFilters } from './PoolListFilters'
 import { PoolListSortType } from './PoolListSortType'
 import { PoolListViewType } from './PoolListViewType/PoolListViewType'
@@ -9,24 +9,10 @@ import { PoolListTable } from './PoolListTable/PoolListTable'
 import { usePoolListViewType } from './PoolListViewType/usePoolListViewType'
 import { usePoolList } from './usePoolList'
 import { fNum } from '@/lib/shared/utils/numbers'
-import { useEffect } from 'react'
-import { Toast } from '@/lib/shared/components/toasts/Toast'
 
 export function PoolListLayout() {
   const { isTableView, isCardsView } = usePoolListViewType()
   const { pools, loading, count } = usePoolList()
-  const toast = useToast()
-
-  useEffect(() => {
-    toast({
-      duration: null,
-      isClosable: true,
-      status: 'success',
-      title: 'Loading pools',
-      description: 'Please wait...',
-      render: ({ ...rest }) => <Toast {...rest} />,
-    })
-  }, [])
 
   return (
     <VStack align="start" spacing="md" w="full">

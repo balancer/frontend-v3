@@ -2,8 +2,13 @@ import { getNetworkConfig } from '@/lib/config/app.config'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { GqlChain } from '../services/api/generated/graphql'
 
+export function getBlockExplorerName(chain?: GqlChain) {
+  const _chain = chain || GqlChain.Mainnet
+  return getNetworkConfig(_chain).blockExplorer.name
+}
+
 function getBlockExplorerUrl(chain: GqlChain) {
-  return `${getNetworkConfig(chain).blockExplorerBaseUrl}`
+  return `${getNetworkConfig(chain).blockExplorer.baseUrl}`
 }
 
 export function getBlockExplorerTxUrl(txHash: string, chain?: GqlChain) {
@@ -12,9 +17,9 @@ export function getBlockExplorerTxUrl(txHash: string, chain?: GqlChain) {
 }
 
 export function useBlockExplorer(chain?: GqlChain) {
-  const { blockExplorerBaseUrl } = useNetworkConfig()
+  const { blockExplorer } = useNetworkConfig()
 
-  const baseUrl = chain ? getNetworkConfig(chain).blockExplorerBaseUrl : blockExplorerBaseUrl
+  const baseUrl = chain ? getNetworkConfig(chain).blockExplorer.baseUrl : blockExplorer.baseUrl
 
   function getBlockExplorerTxUrl(txHash: string) {
     return `${baseUrl}/tx/${txHash}`
