@@ -1485,6 +1485,13 @@ export const balTheme = {
         },
       },
     },
+    Switch: {
+      baseStyle: {
+        track: {
+          background: 'purple.500',
+        },
+      },
+    },
   },
 }
 
