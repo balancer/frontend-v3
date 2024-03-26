@@ -5,8 +5,9 @@ import { useQuery } from 'wagmi'
 import { usePool } from '../../../usePool'
 import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
 import { useAddLiquidity } from '../useAddLiquidity'
-import { addLiquidityKeys } from './add-liquidity-keys'
+import { AddLiquidityParams, addLiquidityKeys } from './add-liquidity-keys'
 import { useRelayerSignature } from '@/lib/modules/relayer/useRelayerSignature'
+import { captureAddLiquidityHandlerError } from '@/lib/shared/utils/query-errors'
 
 export type AddLiquidityBuildQueryResponse = ReturnType<typeof useAddLiquidityBuildCallDataQuery>
 
@@ -19,12 +20,16 @@ export function useAddLiquidityBuildCallDataQuery() {
   const { humanAmountsIn, handler, simulationQuery } = useAddLiquidity()
   const { relayerApprovalSignature } = useRelayerSignature()
 
-  const queryKey = addLiquidityKeys.buildCallData({
+  const params: AddLiquidityParams = {
+    handler,
     userAddress,
     slippage,
-    pool,
+    poolId: pool.id,
+    poolType: pool.type,
     humanAmountsIn,
-  })
+  }
+
+  const queryKey = addLiquidityKeys.buildCallData(params)
 
   const queryFn = async () => {
     const queryOutput = ensureLastQueryResponse('Add liquidity query', simulationQuery.data)
@@ -39,11 +44,12 @@ export function useAddLiquidityBuildCallDataQuery() {
     return response
   }
 
-  const queryOpts = {
+  return useQuery(queryKey, queryFn, {
     enabled: isConnected && !!simulationQuery.data,
     cacheTime: 0,
     ...onlyExplicitRefetch,
-  }
-
-  return useQuery(queryKey, queryFn, queryOpts)
+    onError(error: unknown) {
+      captureAddLiquidityHandlerError(error, 'Error in add liquidity buildCallData query', params)
+    },
+  })
 }

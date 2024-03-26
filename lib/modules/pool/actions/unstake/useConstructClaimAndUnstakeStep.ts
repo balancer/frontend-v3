@@ -11,6 +11,7 @@ import { useBalTokenRewards } from '@/lib/modules/portfolio/PortfolioClaim/useBa
 import { useClaimableBalances } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
 import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructClaimAndUnstakeStep() {
   const { pool, chainId } = usePool()
@@ -44,7 +45,20 @@ export function useConstructClaimAndUnstakeStep() {
     transactionLabels,
     chainId,
     { args: [data] },
-    { enabled: !!pool }
+    {
+      enabled: !!pool,
+      onError(error: unknown) {
+        captureWagmiSimulationError(
+          error,
+          'Error in wagmi tx simulation (Claim and unstake transaction)',
+          {
+            poolId: pool.id,
+            chainId,
+            unstakeArgs: data,
+          }
+        )
+      },
+    }
   )
 
   const claimAndUnstakeStep = useSyncCurrentFlowStep({

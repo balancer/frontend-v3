@@ -4,6 +4,7 @@ import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTr
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 const transactionLabels: TransactionLabels = {
   init: 'Claim all',
@@ -22,7 +23,19 @@ export function useConstructClaimVeBalRewardsStep() {
     transactionLabels,
     1, // only on mainnet
     { args: [userAddress, claimableVeBalRewardsTokens] },
-    { enabled: !!userAddress }
+    {
+      enabled: !!userAddress,
+      onError(error: unknown) {
+        captureWagmiSimulationError(
+          error,
+          'Error in wagmi tx simulation (Claim veBal rewards transaction)',
+          {
+            userAddress,
+            feeDistributor: networkConfig.contracts.feeDistributor,
+          }
+        )
+      },
+    }
   )
 
   const claimAllVeBalRewardsStep = useSyncCurrentFlowStep({

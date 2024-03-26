@@ -1,3 +1,5 @@
+'use client'
+
 import { Box, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import { useFormattedPoolAttributes } from './useFormattedPoolAttributes'
 

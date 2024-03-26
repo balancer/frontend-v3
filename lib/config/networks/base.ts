@@ -8,7 +8,10 @@ const networkConfig: NetworkConfig = {
   shortName: 'Base',
   chain: GqlChain.Base,
   iconPath: '/images/chains/BASE.svg',
-  blockExplorerBaseUrl: 'https://basescan.org',
+  blockExplorer: {
+    baseUrl: 'https://basescan.org',
+    name: 'BaseScan',
+  },
   rpcUrl: 'https://base-mainnet.g.alchemy.com/v2/cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88',
   tokens: {
     addresses: {

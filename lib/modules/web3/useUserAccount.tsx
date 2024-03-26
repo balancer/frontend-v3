@@ -10,6 +10,7 @@ import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { Address, isAddress } from 'viem'
 import { COOKIE_KEYS } from '../cookies/cookie.constants'
 import Cookies from 'js-cookie'
+import { setTag, setUser } from '@sentry/nextjs'
 
 async function isAuthorizedAddress(address: Address): Promise<boolean> {
   const res = await fetch(`/api/wallet-check/${address}`, { cache: 'no-store' })
@@ -53,7 +54,7 @@ export function _useUserAccount() {
   // The usage of mounted helps to overcome nextjs hydration mismatch
   // errors where the state of the user account on the server pass is different
   // than the state on the client side rehydration.
-  return {
+  const result = {
     ...queryWithoutAddress,
     isLoading: !mounted || query.isConnecting,
     isConnecting: !mounted || query.isConnecting,
@@ -62,6 +63,23 @@ export function _useUserAccount() {
     isConnected: mounted && !!query.address,
     connector: mounted ? query.connector : undefined,
   }
+
+  useEffect(() => {
+    if (result.userAddress) {
+      setUser({
+        id: result.userAddress,
+        username: result.userAddress,
+      })
+    } else {
+      setUser(null)
+    }
+  }, [result.userAddress])
+
+  useEffect(() => {
+    setTag('wallet', result.connector?.id)
+  }, [result.connector?.id])
+
+  return result
 }
 
 export function UserAccountProvider({ children }: PropsWithChildren) {

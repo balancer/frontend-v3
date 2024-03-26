@@ -1,7 +1,9 @@
+'use client'
+
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
-import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { Box, Card, HStack, Heading, Link, Text, VStack } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
+import { ExternalLink } from 'react-feather'
 
 export function PoolContracts() {
   const { pool, poolExplorerLink, hasGaugeAddress, gaugeAddress, gaugeExplorerLink } = usePool()
@@ -17,9 +19,9 @@ export function PoolContracts() {
               <Text variant="secondary">Pool</Text>
             </Box>
             <Link target="_blank" href={poolExplorerLink}>
-              <HStack>
+              <HStack color="gray.400">
                 <Text variant="secondary">{abbreviateAddress(pool.address)}</Text>
-                <ExternalLinkIcon color="gray.400" width="1rem" height="1rem" />
+                <ExternalLink size={12} />
               </HStack>
             </Link>
           </HStack>
@@ -29,9 +31,9 @@ export function PoolContracts() {
                 <Text variant="secondary">Gauge</Text>
               </Box>
               <Link target="_blank" href={gaugeExplorerLink}>
-                <HStack>
+                <HStack color="gray.400">
                   <Text variant="secondary">{abbreviateAddress(gaugeAddress)}</Text>
-                  <ExternalLinkIcon color="gray.400" width="1rem" height="1rem" />
+                  <ExternalLink size={12} />
                 </HStack>
               </Link>
             </HStack>

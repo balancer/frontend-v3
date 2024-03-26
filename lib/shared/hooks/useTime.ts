@@ -24,6 +24,12 @@ export function hours(hrs: number) {
   }
 }
 
+export function secs(_secs: number) {
+  return {
+    toMs: () => _secs * oneSecondInMs,
+  }
+}
+
 export function secsToMs(secs: number): number {
   return secs * oneSecondInMs
 }

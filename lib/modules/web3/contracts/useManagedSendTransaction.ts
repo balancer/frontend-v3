@@ -14,11 +14,13 @@ import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { getGqlChain } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { useChainSwitch } from '../useChainSwitch'
+import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 
 export function useManagedSendTransaction(
   labels: TransactionLabels,
   chainId: SupportedChainId,
-  txConfig?: UsePrepareSendTransactionConfig
+  txConfig: UsePrepareSendTransactionConfig | undefined,
+  onSimulationError?: (error: unknown) => void
 ) {
   const { shouldChangeNetwork } = useChainSwitch(chainId)
 
@@ -26,11 +28,15 @@ export function useManagedSendTransaction(
     ...txConfig,
     chainId,
     enabled: !!txConfig && !shouldChangeNetwork,
+    onError: onSimulationError,
   })
 
   const writeQuery = useSendTransaction({
     chainId: txConfig?.chainId,
     ...prepareQuery.config,
+    onError: (error: unknown) => {
+      captureWagmiExecutionError(error, 'Error sending transaction', prepareQuery.config)
+    },
   })
 
   const transactionStatusQuery = useWaitForTransaction({ hash: writeQuery.data?.hash })

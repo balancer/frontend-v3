@@ -12,7 +12,10 @@ const networkConfig: NetworkConfig = {
   chain: GqlChain.Mainnet,
   iconPath: '/images/chains/MAINNET.svg',
   rpcUrl: 'https://mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
-  blockExplorerBaseUrl: 'https://etherscan.io',
+  blockExplorer: {
+    baseUrl: 'https://etherscan.io',
+    name: 'Etherscan',
+  },
   tokens: {
     addresses: {
       bal: '0xba100000625a3754423978a60c9317c58a424e3d',
