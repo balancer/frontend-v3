@@ -173,6 +173,7 @@ function _usePortfolio() {
     }, bn(0))
   }, [protocolRewardsData])
 
+  const isLoadingPortfolio = loading || isLoadingUserInfo
   return {
     portfolioData,
     balRewardsData,
@@ -187,7 +188,8 @@ function _usePortfolio() {
     isLoadingBalRewards,
     isLoadingProtocolRewards,
     isLoadingClaimableRewards,
-    isLoadingPortfolio: loading || isLoadingUserInfo,
+    isLoadingPortfolio,
+    isLoadingClaimPoolData: isLoadingBalRewards || isLoadingClaimableRewards || isLoadingPortfolio,
   }
 }
 
