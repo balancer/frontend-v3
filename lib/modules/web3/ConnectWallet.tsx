@@ -1,8 +1,11 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { Box, Button, HStack, Img } from '@chakra-ui/react'
 import { CustomAvatar } from './CustomAvatar'
+import { useUserAccount } from './useUserAccount'
 
 export function ConnectWallet() {
+  const { isLoading: isLoadingAccount, isConnected: isConnectedAccount } = useUserAccount()
+
   return (
     <ConnectButton.Custom>
       {({
@@ -15,11 +18,12 @@ export function ConnectWallet() {
         openAccountModal,
       }) => {
         const isReady = mounted && authenticationStatus !== 'loading'
-        const isLoading = authenticationStatus === 'loading'
+        const isLoading = authenticationStatus === 'loading' || isLoadingAccount
         const isConnected =
           isReady &&
           account &&
           chain &&
+          isConnectedAccount &&
           (!authenticationStatus || authenticationStatus === 'authenticated')
 
         if (!isConnected) {
