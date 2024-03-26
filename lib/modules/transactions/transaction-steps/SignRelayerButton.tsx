@@ -6,11 +6,13 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Alert, Button, VStack } from '@chakra-ui/react'
 import { StepConfig } from './useIterateSteps'
 
+export const signRelayerStepTitle = 'Sign relayer'
+
 /**
   The sign relayer step is an edge-case step where there's no transaction
   but we still need a StepConfig (with no render) to display the step in the StepTracker
  */
-export const signRelayerStep: StepConfig = { title: 'Sign relayer', render: () => <></> }
+export const signRelayerStep: StepConfig = { title: signRelayerStepTitle, render: () => <></> }
 
 export function SignRelayerButton() {
   const { isConnected } = useUserAccount()

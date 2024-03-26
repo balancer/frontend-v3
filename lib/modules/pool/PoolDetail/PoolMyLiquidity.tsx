@@ -48,7 +48,7 @@ const TABS = [
 ]
 
 export default function PoolMyLiquidity() {
-  const [activeTab, setActiveTab] = useState(TABS[0])
+  const [activeTab, setActiveTab] = useState<ButtonGroupOption>(TABS[0])
   const { pool, chain, isLoadingOnchainUserBalances } = usePool()
   const { toCurrency } = useCurrency()
   const { isConnected, isConnecting } = useUserAccount()

@@ -41,16 +41,20 @@ export function _useUserAccount() {
     connector: mounted ? query.connector : undefined,
   }
 
-  if (result.userAddress) {
-    setUser({
-      id: result.userAddress,
-      username: result.userAddress,
-    })
-  } else {
-    setUser(null)
-  }
+  useEffect(() => {
+    if (result.userAddress) {
+      setUser({
+        id: result.userAddress,
+        username: result.userAddress,
+      })
+    } else {
+      setUser(null)
+    }
+  }, [result.userAddress])
 
-  setTag('wallet', result.connector?.id || 'none')
+  useEffect(() => {
+    setTag('wallet', result.connector?.id)
+  }, [result.connector?.id])
 
   return result
 }

@@ -5,16 +5,9 @@ import { useWalletClient } from 'wagmi'
 import { signRelayerApproval } from './signRelayerApproval'
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 import { useRelayerMode } from './useRelayerMode'
-import { useRelayerSignature } from './useRelayerSignature'
+import { SignRelayerState, useRelayerSignature } from './useRelayerSignature'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { Toast } from '@/lib/shared/components/toasts/Toast'
-
-enum SignRelayerState {
-  Ready = 'init',
-  Confirming = 'confirming',
-  Preparing = 'preparing',
-  Completed = 'completed',
-}
 
 export function useShouldSignRelayerApproval(chainId: SupportedChainId) {
   const relayerMode = useRelayerMode()
@@ -28,11 +21,9 @@ export function useSignRelayerApproval() {
   const toast = useToast()
   const { userAddress } = useUserAccount()
 
-  const { setRelayerApprovalSignature } = useRelayerSignature()
+  const { setRelayerApprovalSignature, signRelayerState, setSignRelayerState } =
+    useRelayerSignature()
 
-  const [signRelayerState, setSignRelayerState] = useState<SignRelayerState>(
-    SignRelayerState.Preparing
-  )
   const [error, setError] = useState<string | undefined>()
 
   const { data: walletClient } = useWalletClient()
@@ -43,7 +34,7 @@ export function useSignRelayerApproval() {
     } else {
       setSignRelayerState(SignRelayerState.Ready)
     }
-  }, [walletClient])
+  }, [setSignRelayerState, walletClient])
 
   async function signRelayer() {
     setSignRelayerState(SignRelayerState.Confirming)
