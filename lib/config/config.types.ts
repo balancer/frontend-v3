@@ -62,7 +62,7 @@ export interface NetworkConfig {
 }
 
 export interface Config {
-  appEnv: 'dev' | 'staging' | 'prod'
+  appEnv: 'dev' | 'test' | 'staging' | 'prod'
   apiUrl: string
   networks: {
     [key in GqlChain]: NetworkConfig
