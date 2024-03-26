@@ -56,12 +56,13 @@ export function AddLiquidityForm() {
     previewModalDisclosure,
     setNeedsToAcceptHighPI,
     totalUSDValue,
+    acceptPoolRisks,
+    setAcceptPoolRisks,
   } = useAddLiquidity()
   const nextBtn = useRef(null)
   const { pool, totalApr } = usePool()
   const { priceImpactColor, priceImpact, setPriceImpact } = usePriceImpact()
   const { toCurrency } = useCurrency()
-  const [acceptPoolRisks, setAcceptPoolRisks] = useState(false)
 
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
