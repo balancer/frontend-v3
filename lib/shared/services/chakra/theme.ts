@@ -1281,6 +1281,10 @@ export const balTheme = {
           borderColor: 'background.level3',
           color: 'background.level3',
         },
+        closeButton: {
+          color: 'font.primary',
+          rounded: 'full',
+        },
       },
       variants: {
         tooltip: {

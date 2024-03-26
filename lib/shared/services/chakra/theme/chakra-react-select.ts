@@ -9,7 +9,7 @@ const defaultStyles = <T>(): ChakraStylesConfig<T> => ({
     cursor: 'pointer',
     rounded: 'md',
     background: 'background.level3',
-    zIndex: 'dropdown',
+    zIndex: 9,
   }),
   control: provided => ({
     ...provided,
@@ -65,6 +65,7 @@ const gradientStyles = <T>(): ChakraStylesConfig<T> => ({
     ...provided,
     background: 'gradient.dawnDark',
     rounded: 'md',
+    zIndex: 9,
     _focus: {
       background: 'gradient.dawnDark',
     },
