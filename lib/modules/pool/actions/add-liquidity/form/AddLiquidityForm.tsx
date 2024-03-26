@@ -180,7 +180,7 @@ export function AddLiquidityForm() {
               onChange={e => setAcceptPoolRisks(e.target.checked)}
             >
               <HStack>
-                <Text fontSize="md">I accept the risks of providing liquidity to this pool</Text>
+                <Text fontSize="md">I accept the risks of interacting with this pool</Text>
                 <Popover placement="top">
                   <PopoverTrigger>
                     <IconButton
