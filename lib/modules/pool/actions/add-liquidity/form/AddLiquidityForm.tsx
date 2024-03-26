@@ -5,27 +5,19 @@ import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { HumanAmount } from '@balancer/sdk'
 import {
-  Box,
   Button,
   Card,
   Center,
-  Checkbox,
   Grid,
   GridItem,
   HStack,
   Heading,
   Icon,
-  IconButton,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverContent,
-  PopoverTrigger,
   Text,
   Tooltip,
   VStack,
 } from '@chakra-ui/react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { Address } from 'wagmi'
 import { AddLiquidityModal } from '../AddLiquidityModal'
 import { useAddLiquidity } from '../useAddLiquidity'
@@ -39,8 +31,7 @@ import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetai
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { RisksList } from '../../../PoolDetail/PoolRisks/PoolRisks'
+import { AddLiquidityFormCheckbox } from './AddLiquidityFormCheckbox'
 
 export function AddLiquidityForm() {
   const {
@@ -56,8 +47,6 @@ export function AddLiquidityForm() {
     previewModalDisclosure,
     setNeedsToAcceptHighPI,
     totalUSDValue,
-    acceptPoolRisks,
-    setAcceptPoolRisks,
   } = useAddLiquidity()
   const nextBtn = useRef(null)
   const { pool, totalApr } = usePool()
@@ -175,34 +164,7 @@ export function AddLiquidityForm() {
                 </Card>
               </GridItem>
             </Grid>
-            <Checkbox
-              size="lg"
-              isChecked={acceptPoolRisks}
-              onChange={e => setAcceptPoolRisks(e.target.checked)}
-            >
-              <HStack>
-                <Text fontSize="md">I accept the risks of interacting with this pool</Text>
-                <Popover placement="top">
-                  <PopoverTrigger>
-                    <IconButton
-                      size="xs"
-                      aria-label="pool-risks-info"
-                      bg="background.level2"
-                      _hover={{ bg: 'background.level2' }}
-                      icon={<InfoOutlineIcon boxSize="4" color="grayText" />}
-                    />
-                  </PopoverTrigger>
-                  <Box zIndex="popover" shadow="2xl">
-                    <PopoverContent>
-                      <PopoverArrow bg="background.level3" />
-                      <PopoverBody>
-                        <RisksList textVariant="primary" />
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Box>
-                </Popover>
-              </HStack>
-            </Checkbox>
+            <AddLiquidityFormCheckbox />
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}
