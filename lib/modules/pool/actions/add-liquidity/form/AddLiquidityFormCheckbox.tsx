@@ -32,7 +32,7 @@ export function AddLiquidityFormCheckbox() {
     >
       <HStack>
         <Text fontSize="md">I accept the risks of interacting with this pool</Text>
-        <Popover placement="top">
+        <Popover placement="top" trigger="hover">
           <PopoverTrigger>
             <IconButton
               size="xs"
