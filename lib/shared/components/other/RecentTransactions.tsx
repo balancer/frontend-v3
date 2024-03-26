@@ -15,15 +15,55 @@ import {
   Text,
   Tooltip,
   VStack,
+  Center,
+  CircularProgress,
+  CircularProgressLabel,
 } from '@chakra-ui/react'
 import {
   TrackedTransaction,
+  TransactionStatus,
   useRecentTransactions,
 } from '@/lib/modules/transactions/RecentTransactionsProvider'
 import { isEmpty, orderBy } from 'lodash'
 import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { useBlockExplorer } from '../../hooks/useBlockExplorer'
-import { Activity } from 'react-feather'
+import { Activity, Check, Trash2 } from 'react-feather'
+
+function TransactionIcon({ status }: { status: TransactionStatus }) {
+  switch (status) {
+    case 'confirming':
+      return (
+        <CircularProgress
+          value={100}
+          isIndeterminate
+          trackColor="border.base"
+          size="5"
+          color="orange.300"
+        />
+      )
+    case 'confirmed':
+      return (
+        <CircularProgress value={100} trackColor="border.base" size="5" color="font.highlight">
+          <CircularProgressLabel fontSize="md" color="font.highlight" pl={1}>
+            <Check size={12} strokeWidth={4} />
+          </CircularProgressLabel>
+        </CircularProgress>
+      )
+    case 'reverted':
+    case 'rejected':
+      return (
+        <CircularProgress value={100} trackColor="border.base" size={5} color="red.500" mt="1">
+          <CircularProgressLabel>
+            <Text fontWeight="bold" color="red.500" fontSize="xs">
+              !
+            </Text>
+          </CircularProgressLabel>
+        </CircularProgress>
+      )
+    default:
+      return null
+  }
+}
 
 function TransactionRow({ transaction }: { transaction: TrackedTransaction }) {
   const { getBlockExplorerTxUrl } = useBlockExplorer(transaction.chain)
@@ -36,7 +76,8 @@ function TransactionRow({ transaction }: { transaction: TrackedTransaction }) {
       : transaction.init
 
   return (
-    <HStack key={transaction.hash}>
+    <HStack key={transaction.hash} p="md">
+      <TransactionIcon status={transaction.status} />
       <Tooltip label={label} fontSize="sm">
         <Text isTruncated maxW="85%">
           {transaction.init}
@@ -53,7 +94,7 @@ function Transactions({ transactions }: { transactions: Record<string, TrackedTr
   const orderedRecentTransactions = orderBy(Object.values(transactions), 'timestamp', 'desc')
 
   return (
-    <VStack p="4" rounded="md" align="start">
+    <VStack align="start" spacing="none">
       {orderedRecentTransactions.map(transaction => (
         <TransactionRow key={transaction.hash} transaction={transaction} />
       ))}
@@ -65,11 +106,30 @@ export default function RecentTransactions() {
   const { transactions, clearTransactions } = useRecentTransactions()
   const hasTransactions = !isEmpty(transactions)
 
+  const confirmingTxCount = Object.values(transactions).filter(
+    tx => tx.status === 'confirming'
+  ).length
+
   return (
     <Popover>
       <PopoverTrigger>
         <Button variant="tertiary" p="0">
-          <Activity size={18} />
+          {confirmingTxCount > 0 ? (
+            <CircularProgress
+              value={100}
+              isIndeterminate
+              trackColor="border.base"
+              thickness="8"
+              size="7"
+              color="orange.300"
+            >
+              <CircularProgressLabel fontSize="sm" fontWeight="bold" color="orange.300">
+                {confirmingTxCount}
+              </CircularProgressLabel>
+            </CircularProgress>
+          ) : (
+            <Activity size={18} />
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent w="330px">
@@ -78,16 +138,21 @@ export default function RecentTransactions() {
         <PopoverHeader>
           <Heading size="md">Recent transactions</Heading>
         </PopoverHeader>
-        <PopoverBody maxH="180px" overflowY="auto" py="4">
+        <PopoverBody maxH="200px" overflowY="auto" p={0}>
           {hasTransactions ? (
             <Transactions transactions={transactions} />
           ) : (
-            <Text color="font.secondary">No transactions...</Text>
+            <Center p="md">
+              <Text color="font.secondary">No transactions...</Text>
+            </Center>
           )}
         </PopoverBody>
         <PopoverFooter>
-          <Button isDisabled={!hasTransactions} onClick={() => clearTransactions()}>
-            Clear transactions
+          <Button isDisabled={!hasTransactions} onClick={() => clearTransactions()} size="sm">
+            <HStack color="font.primary">
+              <Trash2 size={12} />
+              <Text>Clear transactions</Text>
+            </HStack>
           </Button>
         </PopoverFooter>
       </PopoverContent>

@@ -20,7 +20,7 @@ const NUM_RECENT_TRANSACTIONS = 20
 // confirmed = transaction has been mined and is present on chain
 // reverted = transaction has been mined and is present on chain - but the execution was reverted
 // rejected = transaction was rejected by the rpc / other execution error prior to submission to chain
-type TransactionStatus = 'confirming' | 'confirmed' | 'reverted' | 'rejected'
+export type TransactionStatus = 'confirming' | 'confirmed' | 'reverted' | 'rejected'
 
 export type TrackedTransaction = {
   hash: Hash
