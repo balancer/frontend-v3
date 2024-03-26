@@ -16,6 +16,11 @@ export function getBlockExplorerTxUrl(txHash: string, chain?: GqlChain) {
   return `${getBlockExplorerUrl(_chain)}/tx/${txHash}`
 }
 
+export function getBlockExplorerAddressUrl(address: string, chain?: GqlChain) {
+  const _chain = chain || GqlChain.Mainnet
+  return `${getBlockExplorerUrl(_chain)}/address/${address}`
+}
+
 export function useBlockExplorer(chain?: GqlChain) {
   const { blockExplorer } = useNetworkConfig()
 
