@@ -17,9 +17,8 @@ export function Steps({ currentIndex, steps }: StepsProps) {
   return (
     <VStack align="start" spacing="xs">
       {steps.map((step, index) => (
-        <>
+        <div key={step.title}>
           <Step
-            key={step.title}
             currentIndex={currentIndex}
             index={index}
             step={step}
@@ -28,7 +27,7 @@ export function Steps({ currentIndex, steps }: StepsProps) {
             isLastStep={isLastStep(index)}
           />
           {!isLastStep(index) && <Box h="4" w="1" rounded="full" background="border.base" ml="3" />}
-        </>
+        </div>
       ))}
     </VStack>
   )
