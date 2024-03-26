@@ -54,8 +54,6 @@ export function Toast({ id, status, isClosable, title, description }: ToastProps
   }
 
   function closeToast() {
-    console.log('closeToast', id)
-
     if (id) toast.close(id)
   }
 
