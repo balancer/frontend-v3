@@ -30,8 +30,6 @@ export default function PoolIncentives() {
 
   const claimableRewards = [...balRewards, ...nonBalRewards]
 
-  console.log('esk', { claimableRewards })
-
   const currentRewards = pool.staking?.gauge?.rewards || []
   const currentRewardsPerWeek = currentRewards.map(reward => {
     return {
