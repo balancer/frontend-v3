@@ -1261,7 +1261,11 @@ export const balTheme = {
         },
         closeButton: {
           top: 3,
-          color: 'grayText',
+          color: 'font.primary',
+          rounded: 'full',
+        },
+        header: {
+          color: 'font.primary',
         },
       },
       defaultProps: {

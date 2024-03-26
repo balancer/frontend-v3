@@ -27,6 +27,7 @@ export function _useUserAccount() {
   const query = useAccount()
   const { disconnect } = useDisconnect()
   const [checkingAuth, setCheckingAuth] = useState(true)
+  const [isBlocked, setIsBlocked] = useState(false)
 
   const { address, ...queryWithoutAddress } = query
 
@@ -36,11 +37,13 @@ export function _useUserAccount() {
       return
     }
 
+    let isAuthorized = true
     if (isAddress(address)) {
-      const isAuthorized = await isAuthorizedAddress(address)
+      isAuthorized = await isAuthorizedAddress(address)
       if (!isAuthorized) disconnect()
     }
 
+    setIsBlocked(!isAuthorized)
     setCheckingAuth(false)
   }
 
@@ -67,6 +70,7 @@ export function _useUserAccount() {
     userAddress: mounted ? query.address || emptyAddress : emptyAddress,
     isConnected: mounted && !!query.address && !checkingAuth,
     connector: mounted ? query.connector : undefined,
+    isBlocked,
   }
 
   useEffect(() => {
