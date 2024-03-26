@@ -31,6 +31,7 @@ import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetai
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { AddLiquidityFormCheckbox } from './AddLiquidityFormCheckbox'
 
 export function AddLiquidityForm() {
   const {
@@ -163,6 +164,7 @@ export function AddLiquidityForm() {
                 </Card>
               </GridItem>
             </Grid>
+            <AddLiquidityFormCheckbox />
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}
