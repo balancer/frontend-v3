@@ -70,8 +70,3 @@ export function abbreviateAddress(address: string | Address, segLength = 4) {
   const lastSegment = address.substring(address.length, address.length - segLength)
   return `${firstSegment}...${lastSegment}`
 }
-
-export function getAddressBlockExplorerLink(address: Address, chain: GqlChain) {
-  const networkConfig = getNetworkConfig(chain)
-  return `${networkConfig.blockExplorerBaseUrl}/address/${address}`
-}

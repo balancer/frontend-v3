@@ -11,7 +11,10 @@ const networkConfig: NetworkConfig = {
   chain: GqlChain.Avalanche,
   iconPath: '/images/chains/AVALANCHE.svg',
   rpcUrl: 'https://avalanche-mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
-  blockExplorerBaseUrl: 'https://snowtrace.io',
+  blockExplorer: {
+    baseUrl: 'https://snowtrace.io',
+    name: 'Snowtrace',
+  },
   tokens: {
     addresses: {
       bal: '0xe15bcb9e0ea69e6ab9fa080c4c4a5632896298c3',

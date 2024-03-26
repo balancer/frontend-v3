@@ -6,7 +6,11 @@ import theme from './theme'
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   return (
-    <ChakraProvider theme={theme} cssVarsRoot="body">
+    <ChakraProvider
+      theme={theme}
+      cssVarsRoot="body"
+      toastOptions={{ defaultOptions: { position: 'bottom-left' } }}
+    >
       {children}
     </ChakraProvider>
   )

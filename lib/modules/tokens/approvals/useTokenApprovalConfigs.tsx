@@ -12,7 +12,7 @@ import { useTokens } from '../useTokens'
 import { ApprovalAction } from './approval-labels'
 import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
 import { ApproveTokenProps, useConstructApproveTokenStep } from './useConstructApproveTokenStep'
-import { getChainId, getNativeAssetAddress, getNetworkConfig } from '@/lib/config/app.config'
+import { getChainId, getNativeAssetAddress } from '@/lib/config/app.config'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 
 type Props = ApproveTokenProps & CommonStepProps

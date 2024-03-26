@@ -1,10 +1,14 @@
 'use client'
 
+import { Toast } from '@/lib/shared/components/toasts/Toast'
+import { getBlockExplorerName, getBlockExplorerTxUrl } from '@/lib/shared/hooks/useBlockExplorer'
+import { secs } from '@/lib/shared/hooks/useTime'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { AlertStatus, ToastId, useToast } from '@chakra-ui/react'
+import { AlertStatus, VStack, ToastId, useToast, Text, Button, HStack } from '@chakra-ui/react'
 import { keyBy, orderBy, take } from 'lodash'
 import React, { ReactNode, createContext, useCallback, useEffect, useState } from 'react'
+import { ExternalLink } from 'react-feather'
 import { Hash } from 'viem'
 import { usePublicClient } from 'wagmi'
 
@@ -36,6 +40,27 @@ const TransactionStatusToastStatusMapping: Record<TransactionStatus, AlertStatus
   confirming: 'loading',
   reverted: 'error',
   rejected: 'error',
+}
+
+function getDescriptionFor(trackedTransaction: TrackedTransaction): ReactNode {
+  const txUrl = getBlockExplorerTxUrl(trackedTransaction.hash, trackedTransaction.chain)
+  const explorerName = getBlockExplorerName(trackedTransaction.chain)
+
+  return (
+    <VStack align="start" w="full">
+      {trackedTransaction.description && (
+        <Text color="textGray" fontSize="sm">
+          {trackedTransaction.description}
+        </Text>
+      )}
+      <Button as="a" href={txUrl} target="_blank" rel="noopener noreferrer" size="xs">
+        <HStack>
+          <Text color="textGray">View on {explorerName}</Text>
+          <ExternalLink size={10} />
+        </HStack>
+      </Button>
+    </VStack>
+  )
 }
 
 export function _useRecentTransactions() {
@@ -96,10 +121,11 @@ export function _useRecentTransactions() {
     // using updateTrackedTransaction.
     const toastId = toast({
       title: trackedTransaction.label,
-      description: trackedTransaction.description,
+      description: getDescriptionFor(trackedTransaction),
       status: 'loading',
       duration: null,
       isClosable: true,
+      render: ({ ...rest }) => <Toast {...rest} />,
     })
 
     if (!trackedTransaction.hash) {
@@ -154,9 +180,10 @@ export function _useRecentTransactions() {
       toast.update(updatedCachedTransaction.toastId, {
         status: TransactionStatusToastStatusMapping[updatePayload.status],
         title: updatedCachedTransaction.label,
-        description: updatedCachedTransaction.description,
+        description: getDescriptionFor(updatedCachedTransaction),
         isClosable: true,
-        duration: 5000,
+        duration: secs(10).toMs(),
+        render: ({ ...rest }) => <Toast {...rest} />,
       })
     }
   }

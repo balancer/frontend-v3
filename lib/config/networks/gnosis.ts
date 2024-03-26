@@ -11,7 +11,10 @@ const networkConfig: NetworkConfig = {
   chain: GqlChain.Gnosis,
   iconPath: '/images/chains/GNOSIS.svg',
   rpcUrl: 'https://rpc.gnosischain.com',
-  blockExplorerBaseUrl: 'https://gnosisscan.io',
+  blockExplorer: {
+    baseUrl: 'https://gnosisscan.io',
+    name: 'GnosisScan',
+  },
   tokens: {
     addresses: {
       bal: '0x7ef541e2a22058048904fe5744f9c7e4c57af717',
