@@ -19,11 +19,9 @@ import { useUserSettings } from './useUserSettings'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { Settings } from 'react-feather'
 import { CurrencySelect } from './CurrencySelect'
-import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 import { SlippageInput } from './UserSettings'
 
 export function TransactionSettings(props: ButtonProps) {
-  const isMounted = useIsMounted()
   const { slippage } = useUserSettings()
 
   return (
@@ -32,7 +30,7 @@ export function TransactionSettings(props: ButtonProps) {
         <Button variant="tertiary" {...props}>
           <HStack textColor="grayText">
             <Text color="grayText" fontSize="xs">
-              {isMounted ? fNum('slippage', slippage) : '100%'}
+              {fNum('slippage', slippage)}
             </Text>
             <Settings size={16} />
           </HStack>
