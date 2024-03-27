@@ -1506,7 +1506,7 @@ export const balTheme = {
             border: '1px solid red',
           },
         },
-        title: {          
+        title: {
           letterSpacing: '-0.25px',
           mb: 'xs',
         },
