@@ -11,13 +11,20 @@ import { Address, isAddress } from 'viem'
 import { COOKIE_KEYS } from '../cookies/cookie.constants'
 import Cookies from 'js-cookie'
 import { setTag, setUser } from '@sentry/nextjs'
-import { config } from '@/lib/config/app.config'
+import { config, isProd } from '@/lib/config/app.config'
+import { captureError, ensureError } from '@/lib/shared/utils/errors'
 
 async function isAuthorizedAddress(address: Address): Promise<boolean> {
-  const res = await fetch(`/api/wallet-check/${address}`, { cache: 'no-store' })
-  const data = await res.json()
+  try {
+    const res = await fetch(`/api/wallet-check/${address}`, { cache: 'no-store' })
+    const data = await res.json()
 
-  return data?.isAuthorized
+    return data?.isAuthorized
+  } catch (err) {
+    const error = ensureError(err)
+    if (isProd) captureError(error)
+    return true
+  }
 }
 
 export type UseUserAccountResponse = ReturnType<typeof _useUserAccount>
