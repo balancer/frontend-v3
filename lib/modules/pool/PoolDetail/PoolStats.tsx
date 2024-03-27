@@ -152,16 +152,14 @@ export default function PoolStats() {
             <VStack spacing="4" m="auto">
               <ElevatedIcon as={Gift} sizePx="48px" boxSize={5} />
               <VStack spacing="0">
-                <HStack>
-                  <Heading fontSize="2xl">
-                    {poolValues ? (
-                      getAprLabel(pool.dynamicData.apr.apr)
-                    ) : (
-                      <Skeleton height="30px" w="100px" />
-                    )}
-                  </Heading>
-                  <Icon as={StarsIcon} />
-                </HStack>
+                {poolValues ? (
+                  <HStack>
+                    <Heading fontSize="2xl">{getAprLabel(pool.dynamicData.apr.apr)}</Heading>
+                    <Icon as={StarsIcon} />
+                  </HStack>
+                ) : (
+                  <Skeleton height="30px" w="100px" />
+                )}
                 <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm">
                   LP yield APR
                 </Text>
@@ -212,13 +210,11 @@ export default function PoolStats() {
             <VStack spacing="4" m="auto">
               <ElevatedIcon as={Users} sizePx="48px" boxSize={5} />
               <VStack spacing="0">
-                <Heading fontSize="2xl">
-                  {pool.dynamicData ? (
-                    pool.dynamicData.holdersCount
-                  ) : (
-                    <Skeleton height="30px" w="100px" />
-                  )}
-                </Heading>
+                {poolValues && pool.dynamicData ? (
+                  <Heading fontSize="2xl">{pool.dynamicData.holdersCount}</Heading>
+                ) : (
+                  <Skeleton height="30px" w="100px" />
+                )}
                 <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm">
                   Liquidity providers
                 </Text>
