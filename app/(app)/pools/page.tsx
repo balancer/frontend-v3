@@ -1,4 +1,4 @@
-import { FeaturedPools } from '@/lib/modules/featuredPools/FeaturedPools'
+import { FeaturedPools } from '@/lib/modules/featured-pools/FeaturedPools'
 import { PoolList } from '@/lib/modules/pool/PoolList/PoolList'
 import { Suspense } from 'react'
 

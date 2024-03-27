@@ -6,6 +6,8 @@ import { PoolListTableHeader } from './PoolListTableHeader'
 import { PoolListTableRow } from './PoolListTableRow'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
 import { PoolListItem } from '../../pool.types'
+import { useIsMounted } from 'usehooks-ts'
+import { Skeleton } from '@chakra-ui/react'
 
 interface Props {
   pools: PoolListItem[]
@@ -14,6 +16,7 @@ interface Props {
 }
 
 export function PoolListTable({ pools, count, loading }: Props) {
+  const isMounted = useIsMounted()
   const { pagination, setPagination, userAddress } = usePoolListQueryState()
   const paginationProps = getPaginationProps(count || 0, pagination, setPagination)
   const showPagination = !!pools.length && !!count && count > pagination.pageSize
@@ -29,6 +32,8 @@ export function PoolListTable({ pools, count, loading }: Props) {
     alignItems: 'center',
     gap: 'lg',
   }
+
+  if (!isMounted()) return <Skeleton height="500px" w="full" />
 
   return (
     <PaginatedTable
