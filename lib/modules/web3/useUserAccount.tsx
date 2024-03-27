@@ -4,7 +4,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { useAccount, useDisconnect } from 'wagmi'
 import { emptyAddress } from './contracts/wagmi-helpers'
-import { useIsMounted } from './useIsMounted'
 import { PropsWithChildren, createContext, useEffect, useState } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { Address, isAddress } from 'viem'
@@ -13,6 +12,7 @@ import Cookies from 'js-cookie'
 import { setTag, setUser } from '@sentry/nextjs'
 import { config, isProd } from '@/lib/config/app.config'
 import { captureError, ensureError } from '@/lib/shared/utils/errors'
+import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
 async function isAuthorizedAddress(address: Address): Promise<boolean> {
   try {
@@ -31,7 +31,7 @@ export type UseUserAccountResponse = ReturnType<typeof _useUserAccount>
 export const UserAccountContext = createContext<UseUserAccountResponse | null>(null)
 
 export function _useUserAccount() {
-  const { mounted } = useIsMounted()
+  const isMounted = useIsMounted()
   const query = useAccount()
   const { disconnect } = useDisconnect()
   const [checkingAuth, setCheckingAuth] = useState(true)
@@ -72,12 +72,12 @@ export function _useUserAccount() {
   // than the state on the client side rehydration.
   const result = {
     ...queryWithoutAddress,
-    isLoading: !mounted || query.isConnecting || checkingAuth,
-    isConnecting: !mounted || query.isConnecting || checkingAuth,
+    isLoading: !isMounted || query.isConnecting || checkingAuth,
+    isConnecting: !isMounted || query.isConnecting || checkingAuth,
     // We use an emptyAddress when the user is not connected to avoid undefined value and satisfy the TS compiler
-    userAddress: mounted ? query.address || emptyAddress : emptyAddress,
-    isConnected: mounted && !!query.address && !checkingAuth,
-    connector: mounted ? query.connector : undefined,
+    userAddress: isMounted ? query.address || emptyAddress : emptyAddress,
+    isConnected: isMounted && !!query.address && !checkingAuth,
+    connector: isMounted ? query.connector : undefined,
     isBlocked,
   }
 

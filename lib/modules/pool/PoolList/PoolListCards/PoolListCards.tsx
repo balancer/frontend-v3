@@ -6,7 +6,7 @@ import { Pagination } from '@/lib/shared/components/pagination/Pagination'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
 import { PoolListItem } from '../../pool.types'
-import { useIsMounted } from 'usehooks-ts'
+import { useIsMounted } from 'usehooks-ts/dist/esm/useIsMounted/useIsMounted'
 
 interface Props {
   pools: PoolListItem[]
@@ -20,7 +20,7 @@ export function PoolListCards({ pools, count, loading }: Props) {
   const paginationProps = getPaginationProps(count, pagination, setPagination)
   const showPagination = !!pools.length && !!count && count > pagination.pageSize
 
-  if (!isMounted()) return <Skeleton height="500px" w="full" />
+  if (!isMounted) return <Skeleton height="500px" w="full" />
 
   return (
     <Box w="full" style={{ position: 'relative' }}>
