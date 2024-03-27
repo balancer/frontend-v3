@@ -11,6 +11,7 @@ import { Address, isAddress } from 'viem'
 import { COOKIE_KEYS } from '../cookies/cookie.constants'
 import Cookies from 'js-cookie'
 import { setTag, setUser } from '@sentry/nextjs'
+import { config } from '@/lib/config/app.config'
 
 async function isAuthorizedAddress(address: Address): Promise<boolean> {
   const res = await fetch(`/api/wallet-check/${address}`, { cache: 'no-store' })
@@ -32,7 +33,7 @@ export function _useUserAccount() {
   const { address, ...queryWithoutAddress } = query
 
   async function blockUnauthorizedAddress(address: Address | undefined) {
-    if (!address) {
+    if (!address || config.appEnv === 'test') {
       setCheckingAuth(false)
       return
     }
