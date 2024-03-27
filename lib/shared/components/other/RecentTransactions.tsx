@@ -9,7 +9,6 @@ import {
   PopoverBody,
   PopoverCloseButton,
   PopoverContent,
-  PopoverFooter,
   PopoverHeader,
   PopoverTrigger,
   Text,
@@ -27,7 +26,7 @@ import {
 import { isEmpty, orderBy } from 'lodash'
 import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { useBlockExplorer } from '../../hooks/useBlockExplorer'
-import { Activity, Check, Trash2 } from 'react-feather'
+import { Activity, Check } from 'react-feather'
 
 function TransactionIcon({ status }: { status: TransactionStatus }) {
   switch (status) {
@@ -103,7 +102,7 @@ function Transactions({ transactions }: { transactions: Record<string, TrackedTr
 }
 
 export default function RecentTransactions() {
-  const { transactions, clearTransactions } = useRecentTransactions()
+  const { transactions } = useRecentTransactions()
   const hasTransactions = !isEmpty(transactions)
 
   const confirmingTxCount = Object.values(transactions).filter(
@@ -147,14 +146,6 @@ export default function RecentTransactions() {
             </Center>
           )}
         </PopoverBody>
-        <PopoverFooter>
-          <Button isDisabled={!hasTransactions} onClick={() => clearTransactions()} size="sm">
-            <HStack color="font.primary">
-              <Trash2 size={12} />
-              <Text>Clear transactions</Text>
-            </HStack>
-          </Button>
-        </PopoverFooter>
       </PopoverContent>
     </Popover>
   )
