@@ -1,4 +1,4 @@
-import { getNativeAssetAddress, getNetworkConfig } from '@/lib/config/app.config'
+import { getNativeAssetAddress } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { Address, checksumAddress, isAddress } from 'viem'
 import { GqlChain } from '../services/api/generated/graphql'

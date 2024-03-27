@@ -29,7 +29,6 @@ import { useUserAccount } from '../../web3/useUserAccount'
 import { bn } from '@/lib/shared/utils/numbers'
 import { hasNestedPools } from '../pool.helpers'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
-import { GqlPoolApr } from '@/lib/shared/services/api/generated/graphql'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 
 const TABS = [

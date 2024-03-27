@@ -1,4 +1,5 @@
 'use client'
+
 import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery as useApolloQuery } from '@apollo/client'
 import { PoolListItem } from '../pool/pool.types'
