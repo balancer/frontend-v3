@@ -7,6 +7,7 @@ import { ReactNode } from 'react'
 import Image from 'next/image'
 import { useUserSettings } from './useUserSettings'
 import { getSelectStyles } from '@/lib/shared/services/chakra/theme/chakra-react-select'
+import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
 interface CurrencyOption extends OptionBase {
   label: ReactNode
@@ -34,6 +35,7 @@ const options: CurrencyOption[] = Object.values(SupportedCurrency).map(currency 
 }))
 
 export function CurrencySelect({ id }: { id: string }) {
+  const isMounted = useIsMounted()
   const { currency, setCurrency } = useUserSettings()
   const chakraStyles = getSelectStyles<CurrencyOption>()
 
@@ -42,6 +44,8 @@ export function CurrencySelect({ id }: { id: string }) {
   }
 
   const _value = options.find(option => option.value === currency)
+
+  if (!isMounted) return null
 
   return (
     <Select<CurrencyOption, false, GroupBase<CurrencyOption>>

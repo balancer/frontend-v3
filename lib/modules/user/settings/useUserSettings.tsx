@@ -35,7 +35,7 @@ export function _useUserSettings({
   initEnableSignatures: EnableSignatures
   initPoolListView: PoolListView
 }) {
-  const [currency, setCurrency] = useCookieState<SupportedCurrency>(
+  const [currency, setCurrency] = useLocalStorage<SupportedCurrency>(
     COOKIE_KEYS.UserSettings.Currency,
     initCurrency
   )
