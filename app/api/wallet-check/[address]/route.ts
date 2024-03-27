@@ -1,3 +1,4 @@
+import { isProd } from '@/lib/config/app.config'
 import { hours } from '@/lib/shared/hooks/useTime'
 import { captureError, ensureError } from '@/lib/shared/utils/errors'
 import { NextResponse } from 'next/server'
@@ -32,12 +33,10 @@ async function getAuthKey(): Promise<string | null> {
     } = await res.json()
 
     return token
-  } catch {
-    // We don't want to send an error to Sentry here because in all environments
-    // except production we will not have auth env vars set. However, we still
-    // want to see if this is happening in production. We would have to check
-    // Vercel logs for this.
-    console.error('Failed to get Hypernative auth key')
+  } catch (err) {
+    const error = ensureError(err)
+    if (isProd) captureError(error)
+
     return null
   }
 }
