@@ -5,6 +5,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Address } from 'viem'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { useSyncCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
+import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 function buildStakingDepositLabels(staking?: GqlPoolStaking | null): TransactionLabels {
   const labels: TransactionLabels = {
@@ -73,7 +74,22 @@ export function useConstructStakingDepositActionStep(
     transactionLabels,
     chainId,
     { args: stakingConfig?.args },
-    { enabled: !!staking || !!depositAmount }
+    {
+      enabled: !!staking || !!depositAmount,
+      onError(error: unknown) {
+        captureWagmiSimulationError(
+          error,
+          'Error in wagmi tx simulation (Staking deposit transaction)',
+          {
+            chainId,
+            userAddress,
+            staking,
+            depositAmount,
+            stakingConfig,
+          }
+        )
+      },
+    }
   )
 
   const step = useSyncCurrentFlowStep({
@@ -103,7 +119,22 @@ export function useConstructStakingWithdrawActionStep(
     transactionLabels,
     chainId,
     { args: stakingConfig?.args },
-    { enabled: !!staking || !!withdrawAmount }
+    {
+      enabled: !!staking || !!withdrawAmount,
+      onError(error: unknown) {
+        captureWagmiSimulationError(
+          error,
+          'Error in wagmi tx simulation (Staking withdraw transaction)',
+          {
+            chainId,
+            userAddress,
+            staking,
+            withdrawAmount,
+            stakingConfig,
+          }
+        )
+      },
+    }
   )
 
   const step = useSyncCurrentFlowStep({

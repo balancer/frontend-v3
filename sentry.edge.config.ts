@@ -4,10 +4,10 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from '@sentry/nextjs'
+import { sentryDSN } from './sentry.config'
 
 Sentry.init({
-  dsn: 'https://53df88eafd8f9a546b0e926b65553379@o574636.ingest.sentry.io/4506382607712256',
-
+  dsn: sentryDSN,
   // Adjust this value in production, or use tracesSampler for greater control
   tracesSampleRate: 0,
 

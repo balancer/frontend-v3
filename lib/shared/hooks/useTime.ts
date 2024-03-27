@@ -18,6 +18,18 @@ export const timeNowInMs = Math.floor(Date.now() / oneSecondInMs)
 export const oneYearInSecs = twentyFourHoursInSecs * 365
 export const oneWeekInSecs = twentyFourHoursInSecs * 7
 
+export function hours(hrs: number) {
+  return {
+    toSecs: () => hrs * oneHourInSecs,
+  }
+}
+
+export function secs(_secs: number) {
+  return {
+    toMs: () => _secs * oneSecondInMs,
+  }
+}
+
 export function secsToMs(secs: number): number {
   return secs * oneSecondInMs
 }

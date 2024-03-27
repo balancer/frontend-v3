@@ -18,7 +18,10 @@ export class NativeWrapHandler implements SwapHandler {
   async simulate({ ...variables }: SimulateSwapInputs): Promise<SimulateSwapResponse> {
     return {
       swapType: variables.swapType,
-      priceImpact: '0',
+      priceImpact: {
+        __typename: 'GqlPriceImpact',
+        priceImpact: '0',
+      },
       effectivePrice: '1',
       effectivePriceReversed: '1',
       returnAmount: variables.swapAmount,

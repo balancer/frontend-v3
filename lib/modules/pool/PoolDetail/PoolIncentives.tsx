@@ -1,104 +1,99 @@
 'use client'
 
 import TokenRow from '../../tokens/TokenRow/TokenRow'
-import ButtonGroup, {
-  ButtonGroupOption,
-} from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { Box, Button, Card, HStack, Heading, Text, Tooltip, VStack } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import { Button, HStack, Tooltip, VStack } from '@chakra-ui/react'
+import React from 'react'
 import { Address } from 'viem'
 import { usePool } from '../usePool'
 import { useClaiming } from '../actions/claim/useClaiming'
 import { ClaimModal } from '../actions/claim/ClaimModal'
 import { Hex } from 'viem'
 import { PoolListItem } from '../pool.types'
-
-const TABS = [
-  {
-    value: 'pool',
-    label: 'Pool',
-  },
-  {
-    value: 'unclaimed',
-    label: 'Unclaimed',
-  },
-  {
-    value: 'my-total',
-    label: 'My total',
-  },
-]
+import { IncentiveBadge } from '@/lib/shared/components/other/IncentiveBadge'
+import { useTokens } from '../../tokens/useTokens'
+import { sumBy } from 'lodash'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { SECONDS_IN_DAY } from '@/test/utils/numbers'
 
 export default function PoolIncentives() {
-  const [activeTab, setActiveTab] = useState(TABS[0])
   const { pool, chain } = usePool()
-  const { previewModalDisclosure, disabledReason, isDisabled, hasNoRewards } = useClaiming([
-    pool,
-  ] as unknown[] as PoolListItem[])
+  const { priceFor } = useTokens()
+  const { toCurrency } = useCurrency()
+  const {
+    previewModalDisclosure,
+    disabledReason,
+    isDisabled,
+    hasNoRewards,
+    balRewards,
+    nonBalRewards,
+  } = useClaiming([pool] as unknown[] as PoolListItem[])
 
-  function handleTabChanged(option: ButtonGroupOption) {
-    setActiveTab(option)
-  }
+  const claimableRewards = [...balRewards, ...nonBalRewards]
 
-  const onModalClose = () => {
+  const currentRewards = pool.staking?.gauge?.rewards || []
+  const currentRewardsPerWeek = currentRewards.map(reward => {
+    return {
+      ...reward,
+      rewardPerWeek: parseFloat(reward.rewardPerSecond) * SECONDS_IN_DAY * 7,
+    }
+  })
+
+  const totalRewardsPerWeekUsd = sumBy(
+    currentRewardsPerWeek,
+    reward => priceFor(reward.tokenAddress, chain) * reward.rewardPerWeek
+  )
+  const totalClaimableRewards = sumBy(claimableRewards, reward => reward.fiatBalance.toNumber())
+
+  function onModalClose() {
     previewModalDisclosure.onClose()
   }
 
   return (
-    <Card variant="gradient" width="full" minHeight="320px">
-      <VStack spacing="0" width="full">
-        <HStack width="full" p="4" justifyContent="space-between">
-          <Heading fontWeight="bold" size="h5">
-            Incentives
-          </Heading>
-          <ButtonGroup currentOption={activeTab} options={TABS} onChange={handleTabChanged} />
-        </HStack>
-        <Box width="full" p="4" pt="0">
-          <Card borderWidth={1} variant="level3" shadow="none">
-            <VStack width="full">
-              <Box width="full" borderBottomWidth={1} borderColor="border.base">
-                <HStack py="4" px="4" width="full" justifyContent="space-between">
-                  <VStack spacing="1" alignItems="flex-start">
-                    <Heading fontWeight="bold" size="h6">
-                      Pool incentives this week
-                    </Heading>
-                    <Text variant="secondary" fontSize="0.85rem">
-                      Gauge votes
-                    </Text>
-                  </VStack>
-                  <VStack spacing="1" alignItems="flex-end">
-                    <Heading fontWeight="bold" size="h6">
-                      $3000.00
-                    </Heading>
-                    <Text variant="secondary" fontSize="0.85rem">
-                      8.69%
-                    </Text>
-                  </VStack>
-                </HStack>
-              </Box>
-              <VStack spacing="4" p="4" py="2" pb="4" width="full">
-                {pool.displayTokens.map(token => {
-                  return (
-                    <TokenRow
-                      chain={chain}
-                      key={`my-liquidity-token-${token.address}`}
-                      address={token.address as Address}
-                      // TODO: Fill pool balances
-                      value={0}
-                    />
-                  )
-                })}
-              </VStack>
+    <VStack width="full">
+      <HStack spacing="4" width="full" alignItems="flex-start">
+        <IncentiveBadge
+          label="Pool incentives (1w)"
+          value={toCurrency(totalRewardsPerWeekUsd)}
+          width="full"
+        >
+          <VStack spacing="6" p="2" pb="0" width="full">
+            {currentRewardsPerWeek.map(reward => {
+              return (
+                <TokenRow
+                  chain={chain}
+                  key={`my-liquidity-token-${reward.tokenAddress}`}
+                  address={reward.tokenAddress as Address}
+                  value={reward.rewardPerWeek}
+                />
+              )
+            })}
+          </VStack>
+        </IncentiveBadge>
+        <IncentiveBadge
+          special
+          label="Claimable incentives"
+          value={toCurrency(totalClaimableRewards)}
+          width="full"
+        >
+          <VStack width="full" spacing="6" alignItems="flex-start">
+            <VStack spacing="6" p="2" pb="0" width="full">
+              {claimableRewards.map(reward => {
+                return (
+                  <TokenRow
+                    chain={chain}
+                    key={`token-claimable-${reward.tokenAddress}`}
+                    address={reward.tokenAddress as Address}
+                    value={reward.fiatBalance}
+                  />
+                )
+              })}
             </VStack>
-            <HStack p="4" width="full" justifyContent="flex-start">
-              <Button variant="secondary">Vote</Button>
-              <Button variant="disabled" isDisabled>
-                Incentivize
-              </Button>
+            <HStack justifyContent="flex-start">
               <Tooltip label={isDisabled ? disabledReason : ''}>
                 <Button
-                  variant="secondary"
+                  variant="primary"
                   w="full"
-                  size="lg"
+                  size="sm"
                   isDisabled={isDisabled || hasNoRewards}
                   onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
                 >
@@ -106,9 +101,10 @@ export default function PoolIncentives() {
                 </Button>
               </Tooltip>
             </HStack>
-          </Card>
-        </Box>
-      </VStack>
+          </VStack>
+        </IncentiveBadge>
+      </HStack>
+
       <ClaimModal
         isOpen={previewModalDisclosure.isOpen}
         onOpen={previewModalDisclosure.onOpen}
@@ -116,6 +112,6 @@ export default function PoolIncentives() {
         gaugeAddresses={[(pool.staking?.id || '') as Hex]}
         pool={pool as unknown as PoolListItem}
       />
-    </Card>
+    </VStack>
   )
 }

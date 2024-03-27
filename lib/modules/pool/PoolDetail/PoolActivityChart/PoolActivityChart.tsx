@@ -10,7 +10,7 @@ export function PoolActivityChart() {
   const { chartOption, activeTab, setActiveTab, tabsList, eChartsRef } = usePoolActivityChart()
 
   return (
-    <Card variant="level2" px="4" py="5">
+    <Card variant="level2" shadow="2xl" width="full" px="4" py="5" borderWidth={0}>
       <HStack width="full" justifyContent="space-between">
         <Heading fontWeight="bold" size="h5">
           Transactions

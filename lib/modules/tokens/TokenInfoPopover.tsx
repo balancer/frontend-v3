@@ -67,7 +67,7 @@ export function TokenInfoPopover({ tokenAddress, chain }: Props) {
                 variant="ghost"
                 aria-label="View on block explorer"
                 color="grayText"
-                icon={<ExternalLink />}
+                icon={<ExternalLink size={12} />}
                 as="a"
                 href={getBlockExplorerTokenUrl(tokenAddress)}
                 target="_blank"

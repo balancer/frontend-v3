@@ -1,29 +1,29 @@
 'use client'
 
-import { Divider, Heading, VStack, useTheme } from '@chakra-ui/react'
+import { Card, Box, Divider, HStack, Heading, VStack } from '@chakra-ui/react'
 import { StepTrackerProps } from './step-tracker.types'
 import { useStepTrackerProps } from './useStepTrackerProps'
 import { Steps } from './Steps'
+import { GasPriceCard } from '@/lib/shared/hooks/useGasPrice'
 
 export function DesktopStepTracker(props: StepTrackerProps) {
-  const theme = useTheme()
-  const { colorMode, currentIndex, steps } = useStepTrackerProps(props)
+  const { currentIndex, steps, chain } = useStepTrackerProps(props)
 
   return (
-    <VStack
-      p="2"
-      width="200px"
-      rounded="md"
-      bg={theme.colors.base[colorMode]}
-      right="-224px"
-      position="absolute"
-      alignItems="flex-start"
-    >
-      <Heading fontWeight="bold" size="h5">
-        Steps
-      </Heading>
-      <Divider p="0" />
-      <Steps currentIndex={currentIndex} steps={steps}></Steps>
-    </VStack>
+    <Card variant="level2" rounded="md" width="200px" right="-224px" position="absolute">
+      <VStack alignItems="flex-start" w="full">
+        <HStack p="sm" pb="0" justify="space-between" w="full">
+          <Heading fontWeight="bold" size="h6">
+            Steps
+          </Heading>
+          <GasPriceCard chain={chain} />
+        </HStack>
+
+        <Divider p="0" />
+        <Box p="sm" pb="md">
+          <Steps currentIndex={currentIndex} steps={steps} />
+        </Box>
+      </VStack>
+    </Card>
   )
 }

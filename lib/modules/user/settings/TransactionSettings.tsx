@@ -75,7 +75,7 @@ export function TransactionSettings(props: ButtonProps) {
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <PopoverArrow />
+        <PopoverArrow bg="background.level3" />
         <PopoverCloseButton />
         <PopoverHeader>
           <Heading size="md">Transaction settings</Heading>

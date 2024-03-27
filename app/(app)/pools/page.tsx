@@ -5,7 +5,7 @@ import { Suspense } from 'react'
 export default async function Pools() {
   return (
     <>
-      <FeaturedPools mb="xl" />
+      <FeaturedPools mb="2xl" />
       <Suspense fallback={<div>Loading...</div>}>
         <PoolList />
       </Suspense>

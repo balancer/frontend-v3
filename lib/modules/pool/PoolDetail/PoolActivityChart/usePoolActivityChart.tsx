@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import * as echarts from 'echarts/core'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
@@ -10,14 +10,15 @@ import numeral from 'numeral'
 import { usePool } from '../../usePool'
 import { PoolVariant } from '../../pool.types'
 import {
-  GetPoolJoinsExitsSwapsDocument,
   GqlChain,
   GqlPoolType,
-  GqlPoolJoinExitType,
-  GetPoolJoinsExitsSwapsQuery,
+  GqlPoolEventType,
+  GqlPoolEventsDataRange,
+  GetPoolEventsDocument,
 } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import { balColors, balTheme } from '@/lib/shared/services/chakra/theme'
+import { ButtonGroupOption } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { ChainSlug, slugToChainMap } from '../../pool.utils'
 
 const toolTipTheme = {
@@ -115,12 +116,13 @@ function getSymbolSize(dataItem?: [number, string]) {
   return 80
 }
 
-export function usePoolJoinsExitsSwaps(poolId: string, chain: GqlChain) {
-  return useQuery(GetPoolJoinsExitsSwapsDocument, {
+function usePoolEvents(poolId: string, chain: GqlChain) {
+  return useQuery(GetPoolEventsDocument, {
     variables: {
       poolId,
       chainId: chain,
-      first: 50,
+      typeIn: [GqlPoolEventType.Join, GqlPoolEventType.Exit, GqlPoolEventType.Swap],
+      range: GqlPoolEventsDataRange.ThirtyDays,
     },
     notifyOnNetworkStatusChange: true,
   })
@@ -190,36 +192,32 @@ export function usePoolActivityChart() {
     })
   }, [pool?.type, variant])
 
-  const [activeTab, setActiveTab] = useState(tabsList[0])
+  const [activeTab, setActiveTab] = useState<ButtonGroupOption>(tabsList[0])
 
-  // const { data: response } = usePoolJoinsExitsSwaps(poolId as string, _chain)
-  const response: GetPoolJoinsExitsSwapsQuery = { __typename: 'Query', swaps: [], joinExits: [] }
+  const { data: response } = usePoolEvents(poolId as string, _chain)
 
   const chartData = useMemo(() => {
     if (!response) return { adds: [], removes: [], swaps: [] }
-    const { joinExits, swaps } = response
+    const { events } = response
 
-    const data = joinExits.reduce(
+    const data = events.reduce(
       (acc: Record<'adds' | 'removes' | 'swaps', [number, string][]>, item) => {
         const { type, timestamp, valueUSD } = item
-        const usdValue = valueUSD ?? ''
-        if (type === GqlPoolJoinExitType.Join) {
+        const usdValue = valueUSD.toString() ?? ''
+        if (type === GqlPoolEventType.Join) {
           acc.adds.push([timestamp, usdValue])
         }
-        if (type === GqlPoolJoinExitType.Exit) {
+        if (type === GqlPoolEventType.Exit) {
           acc.removes.push([timestamp, usdValue])
+        }
+        if (type === GqlPoolEventType.Swap) {
+          acc.swaps.push([timestamp, usdValue])
         }
 
         return acc
       },
       { adds: [], removes: [], swaps: [] }
     )
-
-    swaps.forEach(item => {
-      const { timestamp, valueUSD } = item
-      const usdValue = valueUSD.toString()
-      data.swaps.push([timestamp, usdValue])
-    })
 
     return data
   }, [JSON.stringify(response)])

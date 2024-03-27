@@ -23,6 +23,7 @@ import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
 import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
+import { bn } from '@/lib/shared/utils/numbers'
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -59,10 +60,6 @@ export class LiquidityActionHelpers {
 
   public get chainId() {
     return getChainId(this.pool.chain)
-  }
-
-  public get poolTokenAddresses(): Address[] {
-    return this.pool.tokens.map(t => t.address as Address)
   }
 
   public getAmountsToApprove(humanAmountsIn: HumanAmountIn[]): TokenAmountToApprove[] {
@@ -115,13 +112,10 @@ export class LiquidityActionHelpers {
 export const isEmptyAmount = (amountIn: HumanAmountIn) => isEmptyHumanAmount(amountIn.humanAmount)
 
 export const isEmptyHumanAmount = (humanAmount: HumanAmount | '') =>
-  !humanAmount || humanAmount === '0'
+  !humanAmount || bn(humanAmount).eq(0)
 
 export const areEmptyAmounts = (humanAmountsIn: HumanAmountIn[]) =>
   !humanAmountsIn || humanAmountsIn.length === 0 || humanAmountsIn.every(isEmptyAmount)
-
-export const hasValidHumanAmounts = (humanAmountsIn: HumanAmountIn[]) =>
-  humanAmountsIn.some(a => a.humanAmount && a.humanAmount !== '0')
 
 export function toHumanAmount(tokenAmount: TokenAmount): HumanAmount {
   return formatUnits(tokenAmount.amount, tokenAmount.token.decimals) as HumanAmount

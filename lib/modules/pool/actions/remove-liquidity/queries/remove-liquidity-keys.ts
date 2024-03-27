@@ -8,7 +8,7 @@ function getHandlerClassName(instance: RemoveLiquidityHandler): string {
   return instance.constructor.name
 }
 
-type LiquidityParams = {
+export type RemoveLiquidityParams = {
   handler: RemoveLiquidityHandler
   userAddress: string
   poolId: string
@@ -23,16 +23,16 @@ function liquidityParams({
   slippage,
   humanBptIn,
   tokenOut,
-}: LiquidityParams) {
+}: RemoveLiquidityParams) {
   return `${getHandlerClassName(
     handler
   )}:${userAddress}:${poolId}:${slippage}:${humanBptIn}:${tokenOut}`
 }
 export const removeLiquidityKeys = {
-  priceImpact: (params: LiquidityParams) =>
+  priceImpact: (params: RemoveLiquidityParams) =>
     [removeLiquidity, 'price-impact', liquidityParams(params)] as const,
-  preview: (params: LiquidityParams) =>
+  preview: (params: RemoveLiquidityParams) =>
     [removeLiquidity, 'preview', liquidityParams(params)] as const,
-  buildCallData: (params: LiquidityParams) =>
+  buildCallData: (params: RemoveLiquidityParams) =>
     [removeLiquidity, 'buildCallData', liquidityParams(params)] as const,
 }

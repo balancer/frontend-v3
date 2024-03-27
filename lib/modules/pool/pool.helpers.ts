@@ -1,4 +1,5 @@
 import { getChainId } from '@/lib/config/app.config'
+import { getBlockExplorerAddressUrl } from '@/lib/shared/hooks/useBlockExplorer'
 import { dateToUnixTimestamp } from '@/lib/shared/hooks/useTime'
 import {
   GetPoolQuery,
@@ -7,7 +8,7 @@ import {
   GqlPoolNestingType,
   GqlPoolType,
 } from '@/lib/shared/services/api/generated/graphql'
-import { getAddressBlockExplorerLink, isSameAddress } from '@/lib/shared/utils/addresses'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { Address, getAddress } from 'viem'
@@ -144,11 +145,11 @@ export function createdAfterTimestamp(pool: GqlPoolBase): boolean {
 
 type Pool = GetPoolQuery['pool']
 export function usePoolHelpers(pool: Pool, chain: GqlChain) {
-  const gaugeExplorerLink = getAddressBlockExplorerLink(
+  const gaugeExplorerLink = getBlockExplorerAddressUrl(
     pool?.staking?.gauge?.gaugeAddress as Address,
     chain
   )
-  const poolExplorerLink = getAddressBlockExplorerLink(pool.address as Address, chain)
+  const poolExplorerLink = getBlockExplorerAddressUrl(pool.address as Address, chain)
 
   const hasGaugeAddress = !!pool?.staking?.gauge?.gaugeAddress
 
