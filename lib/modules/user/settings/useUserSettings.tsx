@@ -3,11 +3,10 @@
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { SupportedCurrency } from '@/lib/shared/utils/currencies'
 import { PropsWithChildren, createContext } from 'react'
-import { useCookieState } from '../../cookies/useCookieState'
-import { COOKIE_KEYS } from '../../cookies/cookie.constants'
 import { bn } from '@/lib/shared/utils/numbers'
 import { useLocalStorage } from 'usehooks-ts'
 import { LS_KEYS } from '../../local-storage/local-storage.constants'
+import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
 export enum PoolListView {
   Grid = 'grid',
@@ -35,26 +34,32 @@ export function _useUserSettings({
   initEnableSignatures: EnableSignatures
   initPoolListView: PoolListView
 }) {
-  const [currency, setCurrency] = useLocalStorage<SupportedCurrency>(
+  const isMounted = useIsMounted()
+
+  const [_currency, setCurrency] = useLocalStorage<SupportedCurrency>(
     LS_KEYS.UserSettings.Currency,
     initCurrency
   )
+  const currency = isMounted ? _currency : initCurrency
 
-  const [slippage, setSlippage] = useCookieState<string>(
-    COOKIE_KEYS.UserSettings.Slippage,
+  const [_slippage, setSlippage] = useLocalStorage<string>(
+    LS_KEYS.UserSettings.Slippage,
     initSlippage
   )
 
-  const [enableSignatures, setEnableSignatures] = useCookieState<EnableSignatures>(
-    COOKIE_KEYS.UserSettings.EnableSignatures,
+  const [_enableSignatures, setEnableSignatures] = useLocalStorage<EnableSignatures>(
+    LS_KEYS.UserSettings.EnableSignatures,
     initEnableSignatures
   )
+  const enableSignatures = isMounted ? _enableSignatures : initEnableSignatures
 
-  const [poolListView, setPoolListView] = useLocalStorage<string>(
+  const [_poolListView, setPoolListView] = useLocalStorage<string>(
     LS_KEYS.UserSettings.PoolListView,
     initPoolListView
   )
+  const poolListView = isMounted ? _poolListView : initPoolListView
 
+  const slippage = isMounted ? _slippage : initSlippage
   const slippageDecimal = bn(slippage).div(100).toString()
   const slippageBps = bn(slippage).times(100).toString()
 

@@ -4,12 +4,10 @@ import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useFxRates } from './useFxRates'
 import { symbolForCurrency } from '../utils/currencies'
 import { Numberish, bn, fNum } from '../utils/numbers'
-import { useIsMounted } from './useIsMounted'
 
 type CurrencyOpts = { withSymbol?: boolean; abbreviated?: boolean }
 
 export function useCurrency() {
-  const isMounted = useIsMounted()
   const { currency } = useUserSettings()
   const { getFxRate, hasFxRates } = useFxRates()
 
@@ -35,8 +33,6 @@ export function useCurrency() {
     usdVal: Numberish,
     { withSymbol = true, abbreviated = true }: CurrencyOpts = {}
   ): string {
-    if (!isMounted) return withSymbol ? '$' + fNum('fiat', usdVal) : fNum('fiat', usdVal) // Need to wait for currency from local storage, otherwise hydration issues.
-
     const symbol = hasFxRates ? symbolForCurrency(currency) : '$'
     const convertedAmount = toUserCurrency(usdVal)
     const formattedAmount = fNum('fiat', convertedAmount, { abbreviated })

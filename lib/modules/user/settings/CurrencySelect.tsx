@@ -35,7 +35,6 @@ const options: CurrencyOption[] = Object.values(SupportedCurrency).map(currency 
 }))
 
 export function CurrencySelect({ id }: { id: string }) {
-  const isMounted = useIsMounted()
   const { currency, setCurrency } = useUserSettings()
   const chakraStyles = getSelectStyles<CurrencyOption>()
 
@@ -44,8 +43,6 @@ export function CurrencySelect({ id }: { id: string }) {
   }
 
   const _value = options.find(option => option.value === currency)
-
-  if (!isMounted) return null
 
   return (
     <Select<CurrencyOption, false, GroupBase<CurrencyOption>>
