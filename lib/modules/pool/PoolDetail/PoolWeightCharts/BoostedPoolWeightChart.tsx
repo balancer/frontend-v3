@@ -86,7 +86,7 @@ function InnerSymbolTriangle({ opacity, isSmall }: { opacity: string; isSmall: b
       position="absolute"
       top="50%"
       transform="translateY(-50%)"
-      mt={isSmall ? '10px' : '7px'}
+      mt={isSmall ? '6px' : '7px'}
       width="45%"
       height="45%"
       filter="url(#round)"
