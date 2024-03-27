@@ -20,7 +20,7 @@ export function PoolListCards({ pools, count, loading }: Props) {
   const paginationProps = getPaginationProps(count, pagination, setPagination)
   const showPagination = !!pools.length && !!count && count > pagination.pageSize
 
-  if (!isMounted()) return <Skeleton height="100px" w="full" />
+  if (!isMounted()) return <Skeleton height="500px" w="full" />
 
   return (
     <Box w="full" style={{ position: 'relative' }}>
