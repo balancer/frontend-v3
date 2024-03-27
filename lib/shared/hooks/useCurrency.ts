@@ -35,7 +35,7 @@ export function useCurrency() {
     usdVal: Numberish,
     { withSymbol = true, abbreviated = true }: CurrencyOpts = {}
   ): string {
-    if (!isMounted) return '' // Need to wait for currency from local storage, otherwise hydration issues.
+    if (!isMounted) return withSymbol ? '$' + fNum('fiat', usdVal) : fNum('fiat', usdVal) // Need to wait for currency from local storage, otherwise hydration issues.
 
     const symbol = hasFxRates ? symbolForCurrency(currency) : '$'
     const convertedAmount = toUserCurrency(usdVal)
