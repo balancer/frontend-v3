@@ -6,26 +6,31 @@ import { Grid, List } from 'react-feather'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
+import { useEffect, useState } from 'react'
+
+const options: ButtonGroupOption[] = [
+  {
+    value: PoolListView.List,
+    label: <List />,
+  },
+  {
+    value: PoolListView.Grid,
+    label: <Grid />,
+  },
+]
 
 export function PoolListViewType() {
   const { setPoolListView, isTableView } = usePoolListViewType()
-
-  const options: ButtonGroupOption[] = [
-    {
-      value: PoolListView.List,
-      label: <List />,
-    },
-    {
-      value: PoolListView.Grid,
-      label: <Grid />,
-    },
-  ]
+  const [currentOption, setCurrentOption] = useState<ButtonGroupOption>(options[0])
 
   function changeListView(option: ButtonGroupOption) {
     setPoolListView(option.value as PoolListView)
   }
 
-  const currentOption = isTableView ? options[0] : options[1]
+  useEffect(() => {
+    const newOption = isTableView ? options[0] : options[1]
+    setCurrentOption(newOption)
+  }, [isTableView])
 
   return <ButtonGroup currentOption={currentOption} options={options} onChange={changeListView} />
 }

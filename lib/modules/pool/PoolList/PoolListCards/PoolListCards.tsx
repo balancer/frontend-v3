@@ -1,11 +1,12 @@
 'use client'
 
-import { Box, Center, Grid, Spinner, Text } from '@chakra-ui/react'
+import { Box, Center, Grid, Skeleton, Text } from '@chakra-ui/react'
 import { PoolListCard } from './PoolListCard'
 import { Pagination } from '@/lib/shared/components/pagination/Pagination'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
 import { PoolListItem } from '../../pool.types'
+import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
 interface Props {
   pools: PoolListItem[]
@@ -14,9 +15,12 @@ interface Props {
 }
 
 export function PoolListCards({ pools, count, loading }: Props) {
+  const isMounted = useIsMounted()
   const { pagination, setPagination } = usePoolListQueryState()
   const paginationProps = getPaginationProps(count, pagination, setPagination)
   const showPagination = !!pools.length && !!count && count > pagination.pageSize
+
+  if (!isMounted) return <Skeleton height="500px" w="full" />
 
   return (
     <Box w="full" style={{ position: 'relative' }}>
@@ -38,25 +42,12 @@ export function PoolListCards({ pools, count, loading }: Props) {
         </Center>
       )}
       {loading && (
-        <Box
-          style={{
-            position: 'absolute',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            height: '100%',
-            top: 0,
-            left: 0,
-            borderRadius: 10,
-            zIndex: 10,
-            backdropFilter: 'blur(3px)',
-          }}
-        >
-          <Center>
-            <Spinner py="2xl" size="xl" />
-          </Center>
-        </Box>
+        <Grid templateColumns={{ base: '1fr', lg: 'repeat(4, 1fr)' }} w="full" gap="4">
+          <Skeleton w="full" h="350px" />
+          <Skeleton w="full" h="350px" />
+          <Skeleton w="full" h="350px" />
+          <Skeleton w="full" h="350px" />
+        </Grid>
       )}
 
       {showPagination && <Pagination {...paginationProps} />}
