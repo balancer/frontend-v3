@@ -36,7 +36,7 @@ export function _useUserSettings({
   initPoolListView: PoolListView
 }) {
   const [currency, setCurrency] = useLocalStorage<SupportedCurrency>(
-    COOKIE_KEYS.UserSettings.Currency,
+    LS_KEYS.UserSettings.Currency,
     initCurrency
   )
 
