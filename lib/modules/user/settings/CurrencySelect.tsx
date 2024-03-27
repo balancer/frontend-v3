@@ -7,7 +7,6 @@ import { ReactNode } from 'react'
 import Image from 'next/image'
 import { useUserSettings } from './useUserSettings'
 import { getSelectStyles } from '@/lib/shared/services/chakra/theme/chakra-react-select'
-import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
 interface CurrencyOption extends OptionBase {
   label: ReactNode
