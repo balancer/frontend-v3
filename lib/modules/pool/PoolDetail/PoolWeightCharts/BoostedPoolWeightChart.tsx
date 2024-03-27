@@ -24,14 +24,87 @@ const smallSize: ChartSizeValues = {
 
 const normalSize: ChartSizeValues = {
   chartHeight: '',
-  // boxWidth: 278,
-  // boxHeight: 200,
   boxWidth: 260,
   boxHeight: 200,
   haloTop: '49%',
   haloLeft: '95px',
   haloWidth: '60px',
   haloHeigth: '60px',
+}
+
+const chartFilters = {
+  light: {
+    inner:
+      'drop-shadow(0px 0px 0px rgba(73, 53, 29, 0.02)) drop-shadow(1px 1px 1px rgba(73, 53, 29, 0.06)) drop-shadow(3px 3px 3px rgba(73, 53, 29, 0.06)) drop-shadow(-0.5px -1px 0px #FFF)',
+    outer:
+      'drop-shadow(0px 0px 0px rgba(73, 53, 29, 0.02)) drop-shadow(1px 1px 1px rgba(73, 53, 29, 0.06)) drop-shadow(3px 3px 3px rgba(73, 53, 29, 0.06)) drop-shadow(-0.5px -1px 0px #FFF) ',
+    chart:
+      'drop-shadow(0px 0px 0px rgba(73, 53, 29, 0.4)) drop-shadow(1px 1px 1px rgba(73, 53, 29, 0.09)) drop-shadow(5px 3px 15px rgba(73, 53, 29, 0.3)) drop-shadow(4px -2px 4px rgba(73, 53, 29, 0.2)) drop-shadow(-0.5px -1px 0px #FFF)',
+  },
+  dark: {
+    inner:
+      'url(#round) drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.3)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.6)) drop-shadow(3px 5px 5px rgba(0, 0, 0, 0.8))',
+    outer:
+      'url(#round) drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.2)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1)) drop-shadow(3px 5px 5px rgba(0, 0, 0, 0.2))',
+    chart:
+      'drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.02)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1)) drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.1)) drop-shadow(6px 6px 6px rgba(0, 0, 0, 0.1)) drop-shadow(12px 12px 12px rgba(0, 0, 0, 0.06)) drop-shadow(42px 42px 42px rgba(0, 0, 0, 0.06))',
+  },
+}
+
+function OuterSymbolTriangle({ opacity }: { opacity: string }) {
+  const colorMode = useThemeColorMode()
+  return (
+    <Box
+      position="absolute"
+      top="50%"
+      transform="translateY(-50%)"
+      mt="4px"
+      width="65%"
+      height="65%"
+      overflow="hidden"
+      filter={`url(#round) ${chartFilters[colorMode].outer}`}
+      opacity={opacity}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Box
+        bg="background.level3"
+        width="full"
+        height="full"
+        clipPath="polygon(50% 0, 100% 100%, 0 100%)"
+        filter={`${chartFilters[colorMode].outer}`}
+        shadow="2xl"
+      />
+    </Box>
+  )
+}
+
+function InnerSymbolTriangle({ opacity, isSmall }: { opacity: string; isSmall: boolean }) {
+  return (
+    <Box
+      position="absolute"
+      top="50%"
+      transform="translateY(-50%)"
+      mt={isSmall ? '10px' : '7px'}
+      width="45%"
+      height="45%"
+      filter="url(#round)"
+      overflow="hidden"
+      opacity={opacity}
+    >
+      <Box
+        bg="background.level4"
+        width="full"
+        height="full"
+        clipPath="polygon(50% 0, 100% 100%, 0 100%)"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        position="relative"
+      ></Box>
+    </Box>
+  )
 }
 
 export default function BoostedPoolWeightChart({
@@ -126,7 +199,7 @@ export default function BoostedPoolWeightChart({
       <Box
         width={`${chartSizeValues.boxWidth}px`}
         height={`${chartSizeValues.boxHeight}px`}
-        filter="url(#round) drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.2)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1)) drop-shadow(3px 5px 5px rgba(0, 0, 0, 0.2))"
+        filter={`url(#round) ${chartFilters[colorMode].chart}`}
         overflow="hidden"
         mt={hasLegend ? '-8' : '0'}
         position="relative"
@@ -171,50 +244,15 @@ export default function BoostedPoolWeightChart({
               />
             </Box>
 
-            <Box
-              position="absolute"
-              top="50%"
-              transform="translateY(-50%)"
-              mt="4px"
-              width="65%"
-              height="65%"
-              filter="url(#round) drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.3)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.6)) drop-shadow(3px 5px 5px rgba(0, 0, 0, 0.8))"
-              overflow="hidden"
-              opacity="20%"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Box
-                bg="background.level3"
-                width="full"
-                height="full"
-                clipPath="polygon(50% 0, 100% 100%, 0 100%)"
-                shadow="2xl"
-              />
-            </Box>
-            <Box
-              position="absolute"
-              top="50%"
-              transform="translateY(-50%)"
-              mt={isSmall ? '10px' : '7px'}
-              width="45%"
-              height="45%"
-              filter="url(#round)"
-              overflow="hidden"
-              opacity="30%"
-            >
-              <Box
-                bg="background.level4"
-                width="full"
-                height="full"
-                clipPath="polygon(50% 0, 100% 100%, 0 100%)"
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                position="relative"
-              ></Box>
-            </Box>
+            {/* Since these triangles utilise clip-path, we cannot use box-shadow, we need to utilise css filters */}
+            {/* Simply applying an opacity to the background color will achieve weird effects, so to match the designs */}
+            {/* We utilise layers of the same component! */}
+            <OuterSymbolTriangle opacity="10%" />
+            <OuterSymbolTriangle opacity="20%" />
+            <OuterSymbolTriangle opacity="20%" />
+            <InnerSymbolTriangle opacity="30%" isSmall={isSmall || false} />
+            <InnerSymbolTriangle opacity="30%" isSmall={isSmall || false} />
+            <InnerSymbolTriangle opacity="30%" isSmall={isSmall || false} />
           </NoisyCard>
         </Box>
         <Box width="full" height="full" clipPath="polygon(50% 0, 100% 100%, 0 100%)">
