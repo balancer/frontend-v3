@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
@@ -18,6 +19,7 @@ import {
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import { balColors, balTheme } from '@/lib/shared/services/chakra/theme'
 import { ButtonGroupOption } from '@/lib/shared/components/btns/button-group/ButtonGroup'
+import { ChainSlug, slugToChainMap } from '../../pool.utils'
 
 const toolTipTheme = {
   heading: 'font-weight: bold; color: #E5D3BE',
@@ -176,8 +178,9 @@ export function getPoolActivityTabsList({
 export function usePoolActivityChart() {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
 
-  const { id: poolId, variant } = useParams()
-  const { pool, chain } = usePool()
+  const { id: poolId, variant, chain } = useParams()
+  const { pool } = usePool()
+  const _chain = slugToChainMap[chain as ChainSlug]
 
   const tabsList = useMemo(() => {
     const poolType = pool?.type
@@ -191,7 +194,7 @@ export function usePoolActivityChart() {
 
   const [activeTab, setActiveTab] = useState<ButtonGroupOption>(tabsList[0])
 
-  const { data: response } = usePoolEvents(poolId as string, chain)
+  const { data: response } = usePoolEvents(poolId as string, _chain)
 
   const chartData = useMemo(() => {
     if (!response) return { adds: [], removes: [], swaps: [] }

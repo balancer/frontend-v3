@@ -1,4 +1,6 @@
-import { Grid, GridItem, Stack, VStack } from '@chakra-ui/react'
+'use client'
+
+import { Grid, GridItem, Skeleton, Stack, VStack } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
 import PoolStats from './PoolStats'
 import PoolMyLiquidity from './PoolMyLiquidity'
@@ -10,39 +12,38 @@ import { PoolAttributes } from './PoolAttributes/PoolAttributes'
 import { PoolRisks } from './PoolRisks/PoolRisks'
 import { PoolContracts } from './PoolContracts/PoolContracts'
 
-export async function PoolDetail() {
+export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
   return (
     <Stack width="full">
-      <Grid width="full" rowGap="10" columnGap="4" templateColumns="1fr 1fr">
+      <Grid width="full" rowGap="2xl" columnGap="lg" templateColumns="1fr 1fr">
         <GridItem colSpan={2}>
-          <VStack alignItems="flex-start" spacing="5">
-            <PoolMetaBadges />
-            <PoolStats />
+          <VStack alignItems="flex-start" spacing="md">
+            {isLoading ? <Skeleton h="42px" w="sm" /> : <PoolMetaBadges />}
+            {isLoading ? <Skeleton h="400px" w="full" /> : <PoolStats />}
           </VStack>
         </GridItem>
         <GridItem colSpan={2}>
-          <PoolMyLiquidity />
-        </GridItem>
-        <GridItem pt="10" colSpan={2}>
-          <PoolIncentives />
-        </GridItem>
-
-        <GridItem pt="10" colSpan={1}>
-          <PoolComposition />
-        </GridItem>
-        <GridItem pt="10" colSpan={1}>
-          <PoolChart />
+          {isLoading ? <Skeleton h="370px" w="full" /> : <PoolMyLiquidity />}
         </GridItem>
         <GridItem colSpan={2}>
-          <PoolActivityChart />
+          {isLoading ? <Skeleton h="84px" w="full" /> : <PoolIncentives />}
         </GridItem>
         <GridItem colSpan={1}>
-          <PoolAttributes />
+          {isLoading ? <Skeleton h="385px" w="full" /> : <PoolComposition />}
+        </GridItem>
+        <GridItem colSpan={1}>
+          {isLoading ? <Skeleton h="385px" w="full" /> : <PoolChart />}
+        </GridItem>
+        <GridItem colSpan={2}>
+          {isLoading ? <Skeleton h="385px" w="full" /> : <PoolActivityChart />}
+        </GridItem>
+        <GridItem colSpan={1}>
+          {isLoading ? <Skeleton h="385px" w="full" /> : <PoolAttributes />}
         </GridItem>
         <GridItem colSpan={1}>
           <VStack spacing="4">
-            <PoolRisks />
-            <PoolContracts />
+            {isLoading ? <Skeleton h="200px" w="full" /> : <PoolRisks />}
+            {isLoading ? <Skeleton h="100px" w="full" /> : <PoolContracts />}
           </VStack>
         </GridItem>
       </Grid>
