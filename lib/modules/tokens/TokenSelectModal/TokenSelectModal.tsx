@@ -49,11 +49,11 @@ export function TokenSelectModal({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} finalFocusRef={finalFocusRef} {...rest}>
+    <Modal isOpen={isOpen} onClose={onClose} finalFocusRef={finalFocusRef} isCentered {...rest}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader color="font.primary">Select a token</ModalHeader>
-        <ModalCloseButton color="font.primary" rounded="full" />
+        <ModalCloseButton />
         <ModalBody p={0}>
           <VStack w="full" align="start" spacing="md">
             <Box px="md" w="full">

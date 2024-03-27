@@ -36,6 +36,7 @@ import { defineChain } from 'viem'
 import { Chain } from 'viem'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
+import { BlockedAddressModal } from './BlockedAddressModal'
 
 function buildChain(viemChain: Chain, rpcOverride?: string): Chain {
   const { rpcUrl } = getNetworkConfig(viemChain.id)
@@ -158,7 +159,10 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   return (
     <WagmiConfig config={createWagmiConfig()}>
       <RainbowKitProvider chains={chains} theme={customTheme} avatar={CustomAvatar}>
-        <UserAccountProvider>{children}</UserAccountProvider>
+        <UserAccountProvider>
+          {children}
+          <BlockedAddressModal />
+        </UserAccountProvider>
       </RainbowKitProvider>
     </WagmiConfig>
   )

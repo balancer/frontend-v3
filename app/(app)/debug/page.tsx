@@ -58,6 +58,9 @@ export default function Debug() {
       <Link as={NextLink} href="/debug/sentry">
         Sentry
       </Link>
+      <Link as={NextLink} href="/debug/wallet-check">
+        Wallet check
+      </Link>
     </VStack>
   )
 }

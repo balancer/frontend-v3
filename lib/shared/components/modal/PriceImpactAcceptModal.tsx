@@ -52,7 +52,7 @@ export function PriceImpactAcceptModal({
       <ModalOverlay bg="blackAlpha.900" />
       <ModalContent w="500px">
         <ModalHeader color="font.primary">Are you sure?</ModalHeader>
-        <ModalCloseButton color="font.primary" rounded="full" />
+        <ModalCloseButton />
         <ModalBody px="4" pb="4">
           <VStack w="full" align="start" spacing="md">
             <Text>Type the following to proceed:</Text>
