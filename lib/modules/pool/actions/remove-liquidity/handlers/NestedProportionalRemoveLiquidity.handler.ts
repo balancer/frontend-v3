@@ -7,7 +7,7 @@ import {
   RemoveLiquidityNestedQueryOutput,
   Slippage,
 } from '@balancer/sdk'
-import { Address, parseEther, zeroAddress } from 'viem'
+import { parseEther } from 'viem'
 import { Pool } from '../../../usePool'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
 import {

@@ -26,6 +26,7 @@ import { BalTokenReward } from './useBalRewards'
 import { ClaimableReward } from './useClaimableBalances'
 import { ClaimTotal } from './ClaimTotal'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+// eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'

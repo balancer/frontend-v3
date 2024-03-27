@@ -3,6 +3,7 @@ import { PoolName } from '@/lib/modules/pool/PoolName'
 
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import { ChainSlug, slugToChainMap } from '@/lib/modules/pool/pool.utils'
+// eslint-disable-next-line max-len
 import { ClaimNetworkPoolsLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimNetworkPools/ClaimNetworkPoolsLayout'
 import { ClaimPortfolioModal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimPortfolioModal'
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
