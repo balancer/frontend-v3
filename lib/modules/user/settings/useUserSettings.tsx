@@ -6,6 +6,8 @@ import { PropsWithChildren, createContext } from 'react'
 import { useCookieState } from '../../cookies/useCookieState'
 import { COOKIE_KEYS } from '../../cookies/cookie.constants'
 import { bn } from '@/lib/shared/utils/numbers'
+import { useLocalStorage } from 'usehooks-ts'
+import { LS_KEYS } from '../../local-storage/local-storage.constants'
 
 export enum PoolListView {
   Grid = 'grid',
@@ -48,8 +50,8 @@ export function _useUserSettings({
     initEnableSignatures
   )
 
-  const [poolListView, setPoolListView] = useCookieState<string>(
-    COOKIE_KEYS.UserSettings.PoolListView,
+  const [poolListView, setPoolListView] = useLocalStorage<string>(
+    LS_KEYS.UserSettings.PoolListView,
     initPoolListView
   )
 

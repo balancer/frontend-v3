@@ -9,5 +9,5 @@ export function useIsMounted() {
     setMounted(true)
   }, [])
 
-  return { mounted }
+  return mounted
 }
