@@ -1,7 +1,7 @@
 'use client'
 
 import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
-import { useQuery as useApolloQuery } from '@apollo/client'
+import { useQuery as useApolloQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { PoolListItem } from '../pool/pool.types'
 import { createContext, useMemo } from 'react'
 import { useProtocolRewards } from './PortfolioClaim/useProtocolRewards'
