@@ -25,7 +25,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
       key={keyValue}
       transition="all 0.2s ease-in-out"
       _hover={{
-        bg: 'background.base',
+        bg: 'background.level0',
       }}
       rounded="md"
     >
