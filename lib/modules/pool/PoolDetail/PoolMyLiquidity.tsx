@@ -229,8 +229,8 @@ export default function PoolMyLiquidity() {
           <NoisyCard cardProps={{ position: 'relative', overflow: 'hidden' }}>
             <ZenGarden
               variant="pill"
-              sizePx="75%"
-              heightPx="75%"
+              sizePx="80%"
+              heightPx="80%"
               // top="50%"
               // transform="translateY(-50%)"
             />

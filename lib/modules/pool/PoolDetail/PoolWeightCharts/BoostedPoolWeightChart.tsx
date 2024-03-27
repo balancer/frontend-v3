@@ -6,14 +6,15 @@ import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import * as echarts from 'echarts/core'
 import { motion } from 'framer-motion'
-import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
 import PoolWeightChartLegend from './PoolWeightChartLegend'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
+import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
+import Image from 'next/image'
 
 const smallSize: ChartSizeValues = {
   chartHeight: '150px',
-  boxWidth: 150,
+  boxWidth: 160,
   boxHeight: 130,
   haloTop: '40%',
   haloLeft: '55px',
@@ -23,8 +24,10 @@ const smallSize: ChartSizeValues = {
 
 const normalSize: ChartSizeValues = {
   chartHeight: '',
-  boxWidth: 278,
-  boxHeight: 230,
+  // boxWidth: 278,
+  // boxHeight: 200,
+  boxWidth: 260,
+  boxHeight: 200,
   haloTop: '49%',
   haloLeft: '95px',
   haloWidth: '60px',
@@ -74,6 +77,7 @@ export default function BoostedPoolWeightChart({
           labelLine: {
             show: false,
           },
+          top: isSmall ? -130 : -48,
           data: pool.displayTokens.map((token, i) => ({
             value: 33,
             name: token.symbol,
@@ -94,7 +98,7 @@ export default function BoostedPoolWeightChart({
         },
       ],
     }
-  }, [colorMode])
+  }, [colorMode, isSmall])
 
   return (
     <VStack position="relative" spacing="4">
@@ -118,35 +122,100 @@ export default function BoostedPoolWeightChart({
           </filter>
         </defs>
       </svg>
+
       <Box
         width={`${chartSizeValues.boxWidth}px`}
         height={`${chartSizeValues.boxHeight}px`}
-        filter="url(#round)"
+        filter="url(#round) drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.2)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1)) drop-shadow(3px 5px 5px rgba(0, 0, 0, 0.2))"
         overflow="hidden"
         mt={hasLegend ? '-8' : '0'}
         position="relative"
       >
         <Box
-          as={motion.div}
-          rounded="full"
-          bg="white"
           position="absolute"
-          transform="translateY(-50%)"
+          filter="url(#round)"
+          mt={isSmall ? '2px' : '0'}
+          as={motion.div}
           bottom="0"
           left="0"
           right="0"
-          top="65%"
-          mx="auto"
+          width={`${chartSizeValues.boxWidth * 0.64}px`}
+          height={`${chartSizeValues.boxHeight * 0.63}px`}
           zIndex={4}
+          mx="auto"
           display="flex"
           justifyContent="center"
           alignItems="center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, transition: { delay: 0.1 } }}
-          width={chartSizeValues.haloWidth}
-          height={chartSizeValues.haloHeigth}
+          top="56.5%"
+          transform="translateY(-50%)"
         >
-          <PoolWeightChartChainIcon chain={chain} isChartLoaded={isChartLoaded} isSmall={isSmall} />
+          <NoisyCard
+            cardProps={{
+              mt: '-4px',
+              clipPath: 'polygon(50% 0, 100% 100%, 0 100%)',
+            }}
+            contentProps={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'relative',
+              shadow: 'innerXl',
+            }}
+          >
+            <Box position="absolute" top={isSmall ? '55%' : '50%'} zIndex={5}>
+              <Image
+                src={`/images/chains/${chain}.svg`}
+                alt={`Chain icon for ${chain.toLowerCase()}`}
+                width={isSmall ? 15 : 25}
+                height={isSmall ? 15 : 25}
+              />
+            </Box>
+
+            <Box
+              position="absolute"
+              top="50%"
+              transform="translateY(-50%)"
+              mt="4px"
+              width="65%"
+              height="65%"
+              filter="url(#round) drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.3)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.6)) drop-shadow(3px 5px 5px rgba(0, 0, 0, 0.8))"
+              overflow="hidden"
+              opacity="20%"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Box
+                bg="background.level3"
+                width="full"
+                height="full"
+                clipPath="polygon(50% 0, 100% 100%, 0 100%)"
+                shadow="2xl"
+              />
+            </Box>
+            <Box
+              position="absolute"
+              top="50%"
+              transform="translateY(-50%)"
+              mt={isSmall ? '10px' : '7px'}
+              width="45%"
+              height="45%"
+              filter="url(#round)"
+              overflow="hidden"
+              opacity="30%"
+            >
+              <Box
+                bg="background.level4"
+                width="full"
+                height="full"
+                clipPath="polygon(50% 0, 100% 100%, 0 100%)"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                position="relative"
+              ></Box>
+            </Box>
+          </NoisyCard>
         </Box>
         <Box width="full" height="full" clipPath="polygon(50% 0, 100% 100%, 0 100%)">
           <ReactECharts option={chartOption} onEvents={{}} ref={eChartsRef} />
