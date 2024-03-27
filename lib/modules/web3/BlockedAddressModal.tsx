@@ -19,9 +19,7 @@ export function BlockedAddressModal() {
   const { isBlocked } = useUserAccount()
 
   useEffect(() => {
-    if (isBlocked) {
-      onOpen()
-    }
+    if (isBlocked) onOpen()
   }, [isBlocked])
 
   return (
