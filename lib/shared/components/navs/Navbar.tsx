@@ -10,6 +10,7 @@ import { useBreakpoints } from '../../hooks/useBreakpoints'
 import { UserSettings } from '@/lib/modules/user/settings/UserSettings'
 import RecentTransactions from '../other/RecentTransactions'
 import { usePathname } from 'next/navigation'
+import { isProd } from '@/lib/config/app.config'
 
 type Props = {
   leftSlot?: React.ReactNode
@@ -77,15 +78,17 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
               >
                 Portfolio
               </Link>
-              <Link
-                as={NextLink}
-                variant="nav"
-                href="/debug"
-                prefetch={true}
-                color={linkColorFor('/debug')}
-              >
-                Debug
-              </Link>
+              {!isProd && (
+                <Link
+                  as={NextLink}
+                  variant="nav"
+                  href="/debug"
+                  prefetch={true}
+                  color={linkColorFor('/debug')}
+                >
+                  Debug
+                </Link>
+              )}
             </>
           )}
         </HStack>
