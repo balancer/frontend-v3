@@ -220,7 +220,7 @@ export function usePoolActivityChart() {
     )
 
     return data
-  }, [JSON.stringify(response)])
+  }, [response])
 
   const options = useMemo(() => {
     return {
@@ -314,7 +314,7 @@ export function usePoolActivityChart() {
           series: [joinOption, exitOption, swapOption],
         })
     }
-  }, [activeTab, JSON.stringify(chartData), JSON.stringify(options)])
+  }, [activeTab, chartData, options])
 
   return {
     chartOption: defOptions,
