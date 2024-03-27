@@ -1496,6 +1496,18 @@ export const balTheme = {
         },
       },
     },
+    Alert: {
+      baseStyle: {
+        container: {
+          rounded: 'md',
+          alignItems: 'start',
+          "&[data-status='error']": {
+            border: '1px solid red',
+          },
+        },
+      },
+      variants: {},
+    },
   },
 }
 
