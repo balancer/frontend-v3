@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import * as echarts from 'echarts/core'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
