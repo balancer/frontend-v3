@@ -99,15 +99,19 @@ export function PriceImpactAccordion({
                       }.00%`}
                 </AlertTitle>
                 <AlertDescription>
-                  {priceImpactLevel === 'unknown'
-                    ? 'The price impact cannot be calculated. Only proceed if you know exactly what you are doing.'
-                    : 'The higher the price impact, the worse exchange rate you get for this swap.'}
+                  <Text color="font.maxContrast">
+                    {priceImpactLevel === 'unknown'
+                      ? 'The price impact cannot be calculated. Only proceed if you know exactly what you are doing.'
+                      : 'The higher the price impact, the worse exchange rate you get for this swap.'}
+                  </Text>
                 </AlertDescription>
               </Box>
             </Alert>
             <Card w="full" variant="level1">
-              <CardBody>
-                <Text mb="sm">Price impact acknowledgement</Text>
+              <CardBody pb="0">
+                <Text mb="sm" fontWeight="bold">
+                  Price impact acknowledgement
+                </Text>
                 {priceImpactLevel === 'unknown' ? (
                   <Text color="grayText">
                     I accept that the price impact of this transaction is unknown. I understand that
@@ -123,7 +127,7 @@ export function PriceImpactAccordion({
                   </Text>
                 )}
               </CardBody>
-              <CardFooter>
+              <CardFooter pt="md">
                 {!acceptHighPriceImpact ? (
                   <Button w="full" variant="secondary" onClick={handleClick}>
                     I accept {priceImpactLevel === 'unknown' ? 'unknown' : 'high'} price impact
