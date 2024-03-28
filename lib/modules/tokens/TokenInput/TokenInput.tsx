@@ -136,6 +136,7 @@ type Props = {
   toggleTokenSelect?: () => void
   hasPriceImpact?: boolean
   isLoadingPriceImpact?: boolean
+  disableBalanceValidation?: boolean
 }
 
 export const TokenInput = forwardRef(
@@ -151,6 +152,7 @@ export const TokenInput = forwardRef(
       hideFooter = false,
       hasPriceImpact = false,
       isLoadingPriceImpact = false,
+      disableBalanceValidation = false,
       ...inputProps
     }: InputProps & Props,
     ref
@@ -160,7 +162,11 @@ export const TokenInput = forwardRef(
     const token = address && chain ? getToken(address, chain) : undefined
     const { hasValidationError } = useTokenInputsValidation()
 
-    const { handleOnChange, updateValue } = useTokenInput(token, onChange)
+    const { handleOnChange, updateValue } = useTokenInput({
+      token,
+      onChange,
+      disableBalanceValidation,
+    })
 
     const tokenInputSelector = TokenInputSelector({ token, weight, toggleTokenSelect })
     const footer = hideFooter
