@@ -37,6 +37,7 @@ import {
   isSupportedWrap,
   isWrapOrUnwrap,
 } from './wrap.helpers'
+import { useTokenInputsValidation } from '../tokens/useTokenInputsValidation'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -79,6 +80,7 @@ export function _useSwap() {
 
   const { isConnected } = useUserAccount()
   const { getToken } = useTokens()
+  const { hasValidationErrors } = useTokenInputsValidation()
 
   const networkConfig = getNetworkConfig(swapState.selectedChain)
   const previewModalDisclosure = useDisclosure()
@@ -323,7 +325,8 @@ export function _useSwap() {
     [!isConnected, LABELS.walletNotConnected],
     [simulationQuery.isLoading, 'Swap is loading'],
     [!validAmountOut, 'Invalid amount out'],
-    [needsToAcceptHighPI, 'Accept high price impact first']
+    [needsToAcceptHighPI, 'Accept high price impact first'],
+    [hasValidationErrors, 'Invalid input']
   )
 
   return {
