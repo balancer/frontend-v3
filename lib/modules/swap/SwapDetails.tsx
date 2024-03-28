@@ -89,7 +89,9 @@ export function SwapDetails() {
             {priceImpactLevel === 'low' ? (
               <InfoOutlineIcon color="grayText" />
             ) : (
-              <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
+              <Box>
+                <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
+              </Box>
             )}
           </Tooltip>
         </HStack>
