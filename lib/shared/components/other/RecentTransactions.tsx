@@ -132,7 +132,7 @@ export default function RecentTransactions() {
               </CircularProgressLabel>
             </CircularProgress>
           ) : (
-            <Activity size={18} />
+            <Activity size={20} />
           )}
         </Button>
       </PopoverTrigger>
