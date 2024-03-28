@@ -11,10 +11,6 @@ import { ThemeProvider as ColorThemeProvider } from 'next-themes'
 import { DEFAULT_THEME_COLOR_MODE } from '@/lib/shared/services/chakra/theme'
 
 export function Providers({ children }: { children: ReactNode }) {
-  // const initCurrency = cookies().get(COOKIE_KEYS.UserSettings.Currency)?.value
-  // const initSlippage = cookies().get(COOKIE_KEYS.UserSettings.Slippage)?.value
-  // const initEnableSignatures = cookies().get(COOKIE_KEYS.UserSettings.EnableSignatures)?.value
-
   return (
     <ColorThemeProvider defaultTheme={DEFAULT_THEME_COLOR_MODE}>
       <ThemeProvider>
