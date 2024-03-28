@@ -26,7 +26,7 @@ import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { Percent, Settings } from 'react-feather'
 import { CurrencySelect } from './CurrencySelect'
 
-function SlippageInput() {
+export function SlippageInput() {
   const { slippage, setSlippage } = useUserSettings()
   const presetOpts = ['0.5', '1', '2']
 

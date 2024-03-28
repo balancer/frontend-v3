@@ -7,8 +7,6 @@ import { emptyAddress } from './contracts/wagmi-helpers'
 import { PropsWithChildren, createContext, useEffect, useState } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { Address, isAddress } from 'viem'
-import { COOKIE_KEYS } from '../cookies/cookie.constants'
-import Cookies from 'js-cookie'
 import { setTag, setUser } from '@sentry/nextjs'
 import { config, isProd } from '@/lib/config/app.config'
 import { captureError, ensureError } from '@/lib/shared/utils/errors'
@@ -57,14 +55,6 @@ export function _useUserAccount() {
 
   useEffect(() => {
     blockUnauthorizedAddress(address)
-  }, [address])
-
-  useEffect(() => {
-    if (address && isAddress(address)) {
-      Cookies.set(COOKIE_KEYS.UserAddress, address)
-    } else {
-      Cookies.remove(COOKIE_KEYS.UserAddress)
-    }
   }, [address])
 
   // The usage of mounted helps to overcome nextjs hydration mismatch

@@ -4,9 +4,6 @@ import {
   Button,
   HStack,
   Heading,
-  Input,
-  InputGroup,
-  InputRightElement,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -19,45 +16,10 @@ import {
   ButtonProps,
 } from '@chakra-ui/react'
 import { useUserSettings } from './useUserSettings'
-import { blockInvalidNumberInput, fNum } from '@/lib/shared/utils/numbers'
-import { Percent, Settings } from 'react-feather'
+import { fNum } from '@/lib/shared/utils/numbers'
+import { Settings } from 'react-feather'
 import { CurrencySelect } from './CurrencySelect'
-
-function SlippageInput() {
-  const { slippage, setSlippage } = useUserSettings()
-  const presetOpts = ['0.5', '1', '2']
-
-  return (
-    <VStack align="end" w="full">
-      <InputGroup>
-        <Input
-          value={slippage}
-          type="number"
-          autoComplete="off"
-          autoCorrect="off"
-          min={0}
-          onChange={e => setSlippage(e.currentTarget.value)}
-          onKeyDown={blockInvalidNumberInput}
-        />
-        <InputRightElement pointerEvents="none">
-          <Percent color="grayText" />
-        </InputRightElement>
-      </InputGroup>
-      <HStack>
-        {presetOpts.map(preset => (
-          <Button
-            key={preset}
-            size="xs"
-            variant={slippage === preset ? 'outline' : 'solid'}
-            onClick={() => setSlippage(preset)}
-          >
-            <Text>{preset}%</Text>
-          </Button>
-        ))}
-      </HStack>
-    </VStack>
-  )
-}
+import { SlippageInput } from './UserSettings'
 
 export function TransactionSettings(props: ButtonProps) {
   const { slippage } = useUserSettings()

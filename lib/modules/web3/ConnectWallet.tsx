@@ -32,7 +32,7 @@ export function ConnectWallet() {
               variant="tertiary"
               onClick={openConnectModal}
               type="button"
-              isLoading={isLoading || !mounted}
+              isDisabled={isLoading || !mounted}
               loadingText="Connect wallet"
             >
               Connect wallet
