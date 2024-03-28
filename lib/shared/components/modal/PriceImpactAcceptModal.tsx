@@ -12,6 +12,8 @@ import {
   Text,
   Button,
   Input,
+  ModalFooter,
+  Code,
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { useDebounce } from '@/lib/shared/hooks/useDebounce'
@@ -24,7 +26,7 @@ type Props = {
   setAcceptHighPriceImpact: (value: boolean) => void
 }
 
-const INPUT_TEXT = 'I understand that price impact is high and I may get rekt.'
+const INPUT_TEXT = 'rekt risk'
 
 export function PriceImpactAcceptModal({
   isOpen,
@@ -50,24 +52,29 @@ export function PriceImpactAcceptModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered {...rest}>
       <ModalOverlay bg="blackAlpha.900" />
-      <ModalContent w="500px">
+      <ModalContent>
         <ModalHeader color="font.primary">Are you sure?</ModalHeader>
         <ModalCloseButton />
-        <ModalBody px="4" pb="4">
+        <ModalBody>
           <VStack w="full" align="start" spacing="md">
-            <Text>Type the following to proceed:</Text>
-            <Text>{INPUT_TEXT}</Text>
+            <Text>
+              You are at risk of losing money due to the high price impact. To acknowledge and
+              accept this risk, type the following to proceed:
+            </Text>
+            <Code>{INPUT_TEXT}</Code>
             <Input placeholder={INPUT_TEXT} onChange={debouncedChangeHandler} />
-            <Button
-              w="full"
-              variant="primary"
-              isDisabled={inputText !== INPUT_TEXT}
-              onClick={handleClick}
-            >
-              Swap despite risk of getting rekt
-            </Button>
           </VStack>
         </ModalBody>
+        <ModalFooter>
+          <Button
+            w="full"
+            variant="primary"
+            isDisabled={inputText !== INPUT_TEXT}
+            onClick={handleClick}
+          >
+            I accept the risk
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   )
