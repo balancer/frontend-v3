@@ -1,10 +1,13 @@
-import { mapPoolToNestedPoolState } from '@/lib/modules/pool/actions/LiquidityActionHelpers'
 import { aNested50Weth503Pool } from './gqlPoolElement.builders'
-import { NestedPoolState } from '@balancer/sdk'
+import { NestedPoolState, mapPoolToNestedPoolState } from '@balancer/sdk'
 import { daiAddress, usdcAddress, usdtAddress, wETHAddress } from '@/lib/debug-helpers'
 
 test('aNested50Weth503Pool builds a proper nested pool mock', () => {
-  const nestedPoolState: NestedPoolState = mapPoolToNestedPoolState(aNested50Weth503Pool())
+  type PoolGetPool = Parameters<typeof mapPoolToNestedPoolState>[0]
+
+  const nestedPoolState: NestedPoolState = mapPoolToNestedPoolState(
+    aNested50Weth503Pool() as unknown as PoolGetPool
+  )
 
   expect(nestedPoolState.pools).toMatchInlineSnapshot(`
     [

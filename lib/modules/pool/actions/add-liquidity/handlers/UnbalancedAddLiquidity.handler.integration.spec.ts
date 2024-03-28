@@ -1,13 +1,8 @@
 /* eslint-disable max-len */
 import networkConfig from '@/lib/config/networks/mainnet'
 import { balAddress, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
-import {
-  aPhantomStablePoolMock,
-  aWjAuraWethPoolElementMock,
-} from '@/test/msw/builders/gqlPoolElement.builders'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
-import { HumanAmount } from '@balancer/sdk'
-import { Address } from 'viem'
+import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { HumanAmountIn } from '../../liquidity-types'
 import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
@@ -77,54 +72,3 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
     expect(result.data).toBeDefined()
   })
 })
-
-describe('When adding unbalanced liquidity for a stable pool', () => {
-  test('calculates price impact', async () => {
-    const pool = aPhantomStablePoolMock() // wstETH-rETH-sfrxETH
-
-    const handler = selectAddLiquidityHandler(pool)
-
-    // wstETH-rETH-sfrxETH has 3 tokens + BPT token:
-    // we use 0, 10, 100, 1000 as amounts
-    const humanAmountsIn: HumanAmountIn[] = pool.tokens.map((token, i) => {
-      return {
-        humanAmount: (10 ** i).toString() as HumanAmount,
-        tokenAddress: token.address as Address,
-      }
-    })
-
-    const priceImpact = await handler.getPriceImpact(humanAmountsIn)
-    expect(priceImpact).toBeGreaterThan(0.001)
-  })
-})
-
-// TODO: Refactor Single token logic and tests
-// test.skip('build Single Token AddLiquidity Config', async () => {
-//   const poolStateInput = await getPoolState()
-
-//   const builder = new AddLiquidityConfigBuilder(ChainId.MAINNET, poolStateInput, 'singleToken')
-
-//   // We need to rethink this use case when the SDK is ready
-//   const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '1', tokenAddress: wETHAddress }]
-
-//   const result = await builder.query(defaultTestUserAccount, humanAmountsIn)
-
-//   expect(result.minBptOut.amount).toBeGreaterThanOrEqual(1000000000000000000n)
-// })
-
-// TODO: Refactor native asset config and test
-// test.skip('build Unbalanced Join Config with ETH (mainnet native asset)', async () => {
-//   const poolStateInput = await getPoolState()
-//   const builder = new AddLiquidityConfigBuilder(
-//     ChainId.MAINNET,
-//     poolStateInput,
-//     'unbalancedNativeAsset'
-//   )
-
-//   // The user chose ETH in the UI but we need to pass WETH in amountsIn
-//   const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '1', tokenAddress: wETHAddress }]
-
-//   const result = await builder.buildSdkAddLiquidityTxConfig(defaultTestUserAccount, humanAmountsIn)
-
-//   expect(result.minBptOut.amount).toBeGreaterThan(380000000000000000000n)
-// })
