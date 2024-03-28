@@ -15,10 +15,17 @@ export function overflowProtected(value: Numberish, decimalLimit: number): strin
   } else return stringValue
 }
 
-export function useTokenInput(
-  token: GqlToken | undefined,
-  parentOnChange?: (event: { currentTarget: { value: string } }) => void
-) {
+type Params = {
+  token: GqlToken | undefined
+  disableBalanceValidation?: boolean
+  onChange?: (event: { currentTarget: { value: string } }) => void
+}
+
+export function useTokenInput({
+  token,
+  disableBalanceValidation = false,
+  onChange: parentOnChange,
+}: Params) {
   const { setValidationError } = useTokenInputsValidation()
   const { balanceFor } = useTokenBalances()
 
@@ -32,7 +39,7 @@ export function useTokenInput(
     const tokenAddress = token.address as Address
     const userBalance = balanceFor(tokenAddress)
 
-    if (value && userBalance !== undefined) {
+    if (value && userBalance !== undefined && !disableBalanceValidation) {
       if (bn(value).gt(bn(userBalance.formatted))) {
         return setValidationError(tokenAddress, 'Exceeds balance')
       }

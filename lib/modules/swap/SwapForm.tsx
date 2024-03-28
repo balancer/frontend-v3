@@ -139,6 +139,7 @@ export function SwapForm() {
                       onChange={e => setTokenOutAmount(e.currentTarget.value as HumanAmount)}
                       toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
                       hasPriceImpact
+                      disableBalanceValidation
                       isLoadingPriceImpact={
                         simulationQuery.isLoading || !simulationQuery.data || !tokenIn.amount
                       }
