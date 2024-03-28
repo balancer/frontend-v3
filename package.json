@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.8.0-rc.1",
-    "@balancer/sdk": "^0.12.0",
+    "@balancer/sdk": "^0.13.0",
     "@chakra-ui/anatomy": "^2.2.2",
     "@chakra-ui/hooks": "^2.2.1",
     "@chakra-ui/icons": "^2.1.0",
