@@ -1064,6 +1064,7 @@ export const balTheme = {
         color: 'font.primary',
         fontWeight: 'medium',
         letterSpacing: '-0.25px',
+        lineHeight: '1.3',
       },
       variants: {
         secondary: {
@@ -1495,6 +1496,26 @@ export const balTheme = {
           background: 'purple.500',
         },
       },
+    },
+    Alert: {
+      baseStyle: {
+        container: {
+          rounded: 'md',
+          alignItems: 'start',
+          "&[data-status='error']": {
+            border: '1px solid red',
+          },
+        },
+        title: {
+          letterSpacing: '-0.25px',
+          mb: 'xs',
+        },
+        description: {
+          fontWeight: 'medium',
+          letterSpacing: '-0.25px',
+        },
+      },
+      variants: {},
     },
   },
 }

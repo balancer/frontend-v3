@@ -28,7 +28,7 @@ export function PoolActionsPriceImpactDetails({
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
 
-  const { priceImpactLevel, priceImpactColor, getPriceImpactIcon, priceImpact } = usePriceImpact()
+  const { priceImpactLevel, priceImpactColor, PriceImpactIcon, priceImpact } = usePriceImpact()
 
   const priceImpactLabel = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
@@ -84,7 +84,7 @@ export function PoolActionsPriceImpactDetails({
             {priceImpactLevel === 'low' ? (
               <InfoOutlineIcon color="grayText" />
             ) : (
-              getPriceImpactIcon(priceImpactLevel)
+              <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
             )}
           </Tooltip>
         </HStack>

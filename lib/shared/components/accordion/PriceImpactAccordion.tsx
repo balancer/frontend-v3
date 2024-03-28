@@ -12,6 +12,11 @@ import {
   Card,
   useDisclosure,
   AccordionIcon,
+  Alert,
+  AlertTitle,
+  AlertDescription,
+  CardFooter,
+  CardBody,
 } from '@chakra-ui/react'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import { fNum } from '@/lib/shared/utils/numbers'
@@ -37,7 +42,7 @@ export function PriceImpactAccordion({
     acceptHighPriceImpact,
     hasToAcceptHighPriceImpact,
     setAcceptHighPriceImpact,
-    getPriceImpactIcon,
+    PriceImpactIcon,
     priceImpact,
   } = usePriceImpact()
 
@@ -67,7 +72,7 @@ export function PriceImpactAccordion({
                 {accordionButtonComponent}
               </Box>
               <HStack>
-                {getPriceImpactIcon(priceImpactLevel)}
+                <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
                 <Text color={priceImpactColor} fontSize="sm">
                   Details
                 </Text>
@@ -81,41 +86,32 @@ export function PriceImpactAccordion({
       {(priceImpactLevel === 'high' ||
         priceImpactLevel === 'max' ||
         priceImpactLevel === 'unknown') && (
-        // TODO: fix a lot of styling here
         <>
-          <VStack align="start" w="full">
-            <Card w="full" p="2" border="2px solid" borderColor="red.500">
-              <HStack w="full">
-                <Box color={priceImpactColor} alignSelf="flex-start">
-                  {getPriceImpactIcon(priceImpactLevel)}
-                </Box>
-                <VStack align="start">
-                  {priceImpactLevel === 'unknown' ? (
-                    <>
-                      <Text color="white" fontWeight="700">
-                        Price impact is unknown
-                      </Text>
-                      <Text color="white" fontSize="sm">
-                        The price impact cannot be calculated. Only proceed if you know exactly what
-                        you are doing.
-                      </Text>
-                    </>
-                  ) : (
-                    <>
-                      <Text color="white" fontWeight="700">
-                        Price impact is high: Exceeds {priceImpactLevel === 'high' ? '1' : '5'}.00%
-                      </Text>
-                      <Text color="white" fontSize="sm">
-                        The higher the price impact, the worse exchange rate you get for this swap.
-                      </Text>
-                    </>
-                  )}
-                </VStack>
-              </HStack>
-            </Card>
-            <Card w="full" p="2" variant="level1">
-              <VStack w="full" align="flex-start">
-                <Text>Price impact acknowledgement</Text>
+          <VStack align="start" w="full" spacing="md">
+            <Alert status="error">
+              <PriceImpactIcon priceImpactLevel={priceImpactLevel} size={24} mt="1" />
+              <Box ml="md">
+                <AlertTitle>
+                  {priceImpactLevel === 'unknown'
+                    ? 'Unknown price impact'
+                    : `Price impact is high: Exceeds ${
+                        priceImpactLevel === 'high' ? '1' : '5'
+                      }.00%`}
+                </AlertTitle>
+                <AlertDescription>
+                  <Text color="font.maxContrast">
+                    {priceImpactLevel === 'unknown'
+                      ? 'The price impact cannot be calculated. Only proceed if you know exactly what you are doing.'
+                      : 'The higher the price impact, the worse exchange rate you get for this swap.'}
+                  </Text>
+                </AlertDescription>
+              </Box>
+            </Alert>
+            <Card w="full" variant="level1">
+              <CardBody pb="0">
+                <Text mb="sm" fontWeight="bold">
+                  Price impact acknowledgement
+                </Text>
                 {priceImpactLevel === 'unknown' ? (
                   <Text color="grayText">
                     I accept that the price impact of this transaction is unknown. I understand that
@@ -130,23 +126,18 @@ export function PriceImpactAccordion({
                     unfavorably based on the current depth of the market.
                   </Text>
                 )}
+              </CardBody>
+              <CardFooter pt="md">
                 {!acceptHighPriceImpact ? (
                   <Button w="full" variant="secondary" onClick={handleClick}>
                     I accept {priceImpactLevel === 'unknown' ? 'unknown' : 'high'} price impact
                   </Button>
                 ) : (
-                  <Text
-                    w="full"
-                    color="green.400"
-                    bgColor="#25e2a41a" // green.400 with 10% opacity
-                    p="2"
-                    rounded="md"
-                    align="center"
-                  >
+                  <Button w="full" variant="secondary" isDisabled>
                     {priceImpactLevel === 'unknown' ? 'Unknown' : 'High'} price impact accepted
-                  </Text>
+                  </Button>
                 )}
-              </VStack>
+              </CardFooter>
             </Card>
           </VStack>
           <PriceImpactAcceptModal
