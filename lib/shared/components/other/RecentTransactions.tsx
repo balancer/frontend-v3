@@ -98,7 +98,7 @@ function Transactions({ transactions }: { transactions: Record<string, TrackedTr
   const orderedRecentTransactions = orderBy(Object.values(transactions), 'timestamp', 'desc')
 
   return (
-    <VStack align="start" spacing="none" pt="md">
+    <VStack align="start" spacing="none" p="md" maxH="250px" overflowY="auto">
       {orderedRecentTransactions.map(transaction => (
         <TransactionRow key={transaction.hash} transaction={transaction} />
       ))}
@@ -139,8 +139,8 @@ export default function RecentTransactions() {
       <PopoverContent w="330px">
         <PopoverArrow bg="background.level3" />
         <PopoverCloseButton />
-        <PopoverBody maxH="200px" overflowY="auto">
-          <HStack color="font.special">
+        <PopoverBody p="0">
+          <HStack color="font.special" p="md" pb="0">
             <Activity size={18} />
             <Heading size="md" variant="special">
               Recent activity
