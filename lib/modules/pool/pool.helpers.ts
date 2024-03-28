@@ -11,7 +11,8 @@ import {
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
-import { Address, getAddress } from 'viem'
+import { Address, getAddress, parseUnits } from 'viem'
+import { BPT_DECIMALS } from './pool.constants'
 
 /**
  * METHODS
@@ -141,6 +142,15 @@ export function createdAfterTimestamp(pool: GqlPoolBase): boolean {
 
   // Epoch timestamp is bigger if the date is older
   return pool.createTime > creationTimestampLimit
+}
+
+export function calcUserShareOfPool(pool: Pool) {
+  const userBalance = parseUnits(pool?.userBalance?.totalBalance || '0', BPT_DECIMALS)
+  return calcShareOfPool(pool, userBalance)
+}
+
+export function calcShareOfPool(pool: Pool, rawBalance: bigint) {
+  return bn(rawBalance).div(bn(parseUnits(pool.dynamicData.totalShares, BPT_DECIMALS)))
 }
 
 type Pool = GetPoolQuery['pool']

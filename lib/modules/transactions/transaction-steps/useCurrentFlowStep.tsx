@@ -21,7 +21,12 @@ export function _useCurrentFlowStep() {
     return getTransactionState(flowStep)
   }
 
-  return { flowStep, setCurrentFlowStep, getCoreTransactionState }
+  function isCoreTransactionComplete(coreStepId: CoreStepId): boolean {
+    if (flowStep?.id !== coreStepId) return false
+    return flowStep.result.isSuccess
+  }
+
+  return { flowStep, setCurrentFlowStep, getCoreTransactionState, isCoreTransactionComplete }
 }
 
 export type Result = ReturnType<typeof _useCurrentFlowStep>

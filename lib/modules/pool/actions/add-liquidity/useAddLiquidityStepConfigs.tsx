@@ -4,7 +4,7 @@ import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useToken
 import { InputAmount } from '@balancer/sdk'
 import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import { getApproveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
-import { AddLiquidityButton } from './AddLiquidityButton'
+import { AddLiquidityButton } from './modal/AddLiquidityButton'
 import { StepConfig } from '../../../transactions/transaction-steps/useIterateSteps'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
 import { signRelayerStep } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
