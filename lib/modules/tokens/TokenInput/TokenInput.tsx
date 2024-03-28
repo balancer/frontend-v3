@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import {
@@ -26,6 +27,7 @@ import { useTokenInputsValidation } from '../useTokenInputsValidation'
 import { ChevronDown } from 'react-feather'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
+import { useEffect } from 'react'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
@@ -162,7 +164,7 @@ export const TokenInput = forwardRef(
     const token = address && chain ? getToken(address, chain) : undefined
     const { hasValidationError } = useTokenInputsValidation()
 
-    const { handleOnChange, updateValue } = useTokenInput({
+    const { handleOnChange, updateValue, validateInput } = useTokenInput({
       token,
       onChange,
       disableBalanceValidation,
@@ -173,8 +175,11 @@ export const TokenInput = forwardRef(
       ? undefined
       : TokenInputFooter({ token, value, updateValue, hasPriceImpact, isLoadingPriceImpact })
 
-    // TODO: replace 'red[600' with proper theme color
-    const boxShadow = hasValidationError(token) ? `0 0 0 1px ${colors.red[600]}` : undefined
+    const boxShadow = hasValidationError(token) ? `0 0 0 1px ${colors.red[500]}` : undefined
+
+    useEffect(() => {
+      validateInput(value || '')
+    }, [value])
 
     return (
       <Box

@@ -51,11 +51,11 @@ export function useTokenInput({
   const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.currentTarget.value
     updateValue(newValue)
-    return validateInput(newValue)
   }
 
   return {
     handleOnChange,
     updateValue,
+    validateInput,
   }
 }
