@@ -1,7 +1,7 @@
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { fNum, safeTokenFormat, bn } from '@/lib/shared/utils/numbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { HStack, VStack, Text, Tooltip, Icon } from '@chakra-ui/react'
+import { HStack, VStack, Text, Tooltip, Icon, Box } from '@chakra-ui/react'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { BPT_DECIMALS } from '../pool.constants'
@@ -72,7 +72,9 @@ export function PoolActionsPriceImpactDetails({
             {priceImpactLevel === 'low' ? (
               <InfoOutlineIcon color="grayText" />
             ) : (
-              <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
+              <Box>
+                <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
+              </Box>
             )}
           </Tooltip>
         </HStack>
