@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={satoshiFont.className} suppressHydrationWarning>
-        <NextTopLoader showSpinner={false} />
+        <NextTopLoader showSpinner={false} color="#7f6ae8" />
         <Providers>
           <Navbar />
           <Container maxW="maxContent" py="2xl">
