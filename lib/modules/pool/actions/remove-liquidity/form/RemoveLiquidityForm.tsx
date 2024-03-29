@@ -90,7 +90,7 @@ export function RemoveLiquidityForm() {
   return (
     <TokenBalancesProvider tokens={validTokens}>
       <Center h="full" w="full" maxW="lg" mx="auto">
-        <Card variant="level2" shadow="xl" w="full" p="md">
+        <Card w="full" p="md">
           <VStack spacing="lg" align="start">
             <HStack justify="space-between" w="full">
               <Heading fontWeight="bold" size="h5">

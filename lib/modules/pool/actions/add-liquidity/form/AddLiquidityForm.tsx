@@ -136,8 +136,8 @@ export function AddLiquidityForm() {
             </VStack>
             <Grid w="full" templateColumns="1fr 1fr" gap="2">
               <GridItem>
-                <Card variant="level4" py="12px" px="md" w="full">
-                  <VStack align="start" gap="0.5">
+                <Card variant="subSection" w="full">
+                  <VStack align="start" gap="sm">
                     <Text fontSize="sm" lineHeight="16px" fontWeight="500">
                       Total
                     </Text>
@@ -150,8 +150,8 @@ export function AddLiquidityForm() {
                 </Card>
               </GridItem>
               <GridItem>
-                <Card variant="level4" py="12px" px="md" w="full">
-                  <VStack align="start" gap="0.5">
+                <Card variant="subSection" w="full">
+                  <VStack align="start" spacing="sm">
                     <Text variant="special" fontSize="sm" lineHeight="16px" fontWeight="500">
                       Potential weekly yield
                     </Text>
