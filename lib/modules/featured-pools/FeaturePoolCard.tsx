@@ -29,7 +29,6 @@ export function FeaturePoolCard({ pool, chain, isSmall = false, hasLegend = fals
     <Card
       variant="gradient"
       h="full"
-      w="full"
       p="4"
       cursor="pointer"
       onClick={event => poolClickHandler(event, pool.id, pool.chain, router)}

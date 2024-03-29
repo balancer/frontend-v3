@@ -47,8 +47,8 @@ function VeBalLink() {
           <ModalHeader>veBAL (redirect to V2)</ModalHeader>
           <ModalCloseButton />
           <ModalBody color="grayText">
-            veBAL functionality is under construction in the v3 app. In the meantime please use the
-            v2 app to vote on gauges, lock/unlock your veBAL or sync your veBAL to other networks.
+            veBAL functionality is coming soon to the V3 (this) app. In the meantime please use the
+            V2 app to vote on gauges, lock/unlock your veBAL or sync your veBAL to other networks.
           </ModalBody>
 
           <ModalFooter>

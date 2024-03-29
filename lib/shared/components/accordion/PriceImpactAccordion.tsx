@@ -107,7 +107,7 @@ export function PriceImpactAccordion({
                 </AlertDescription>
               </Box>
             </Alert>
-            <Card w="full" variant="level1">
+            <Card variant="subSection">
               <CardBody pb="0">
                 <Text mb="sm" fontWeight="bold">
                   Price impact acknowledgement
