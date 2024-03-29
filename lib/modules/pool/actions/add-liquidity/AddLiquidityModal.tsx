@@ -106,7 +106,7 @@ export function AddLiquidityModal({
                 chain={pool.chain}
               />
             )}
-            <Card variant="subSection">
+            <Card variant="modalSubSection">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text color="grayText">{"You're adding"}</Text>
@@ -136,7 +136,7 @@ export function AddLiquidityModal({
               </VStack>
             </Card>
 
-            <Card variant="subSection">
+            <Card variant="modalSubSection">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text color="grayText">{"You'll get (if no slippage)"}</Text>
@@ -152,7 +152,7 @@ export function AddLiquidityModal({
               </VStack>
             </Card>
 
-            <Card variant="subSection">
+            <Card variant="modalSubSection">
               <VStack align="start" spacing="sm">
                 <HStack justify="space-between" w="full">
                   <Text>Price impact</Text>
