@@ -32,27 +32,11 @@ const normalSize: ChartSizeValues = {
   haloHeigth: '60px',
 }
 
-const chartFilters = {
-  light: {
-    inner:
-      'drop-shadow(0px 0px 0px rgba(73, 53, 29, 0.02)) drop-shadow(1px 1px 1px rgba(73, 53, 29, 0.06)) drop-shadow(3px 3px 3px rgba(73, 53, 29, 0.06)) drop-shadow(-0.5px -1px 0px #FFF)',
-    outer:
-      'drop-shadow(0px 0px 0px rgba(73, 53, 29, 0.02)) drop-shadow(1px 1px 1px rgba(73, 53, 29, 0.06)) drop-shadow(3px 3px 3px rgba(73, 53, 29, 0.06)) drop-shadow(-0.5px -1px 0px #FFF) ',
-    chart:
-      'drop-shadow(0px 0px 0px rgba(73, 53, 29, 0.4)) drop-shadow(1px 1px 1px rgba(73, 53, 29, 0.09)) drop-shadow(5px 3px 15px rgba(73, 53, 29, 0.3)) drop-shadow(4px -2px 4px rgba(73, 53, 29, 0.2)) drop-shadow(-0.5px -1px 0px #FFF)',
-  },
-  dark: {
-    inner:
-      'url(#round) drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.3)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.6)) drop-shadow(3px 5px 5px rgba(0, 0, 0, 0.8))',
-    outer:
-      'url(#round) drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.2)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1)) drop-shadow(3px 5px 5px rgba(0, 0, 0, 0.2))',
-    chart:
-      'drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.02)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1)) drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.1)) drop-shadow(6px 6px 6px rgba(0, 0, 0, 0.1)) drop-shadow(12px 12px 12px rgba(0, 0, 0, 0.06)) drop-shadow(42px 42px 42px rgba(0, 0, 0, 0.06))',
-  },
-}
-
-function OuterSymbolTriangle({ opacity }: { opacity: string }) {
+function OuterSymbolTriangle({ opacity, isSmall }: { opacity: string; isSmall: boolean }) {
   const colorMode = useThemeColorMode()
+  const theme = useTheme()
+  const colorModeKey = colorMode === 'light' ? 'default' : '_dark'
+  const chartOuter = isSmall ? '' : theme.semanticTokens.shadows.chartIconOuter[colorModeKey]
   return (
     <Box
       position="absolute"
@@ -62,7 +46,7 @@ function OuterSymbolTriangle({ opacity }: { opacity: string }) {
       width="65%"
       height="65%"
       overflow="hidden"
-      filter={`url(#round) ${chartFilters[colorMode].outer}`}
+      filter={`url(#round) ${chartOuter}`}
       opacity={opacity}
       display="flex"
       justifyContent="center"
@@ -73,7 +57,7 @@ function OuterSymbolTriangle({ opacity }: { opacity: string }) {
         width="full"
         height="full"
         clipPath="polygon(50% 0, 100% 100%, 0 100%)"
-        filter={`${chartFilters[colorMode].outer}`}
+        filter={`${chartOuter}`}
         shadow="2xl"
       />
     </Box>
@@ -89,7 +73,7 @@ function InnerSymbolTriangle({ opacity, isSmall }: { opacity: string; isSmall: b
       mt={isSmall ? '6px' : '7px'}
       width="45%"
       height="45%"
-      filter="url(#round)"
+      filter={`url(#round)`}
       overflow="hidden"
       opacity={opacity}
     >
@@ -117,8 +101,8 @@ export default function BoostedPoolWeightChart({
   const chartSizeValues = isSmall ? smallSize : normalSize
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const [isChartLoaded, setIsChartLoaded] = useState(false)
-  const theme = useTheme()
   const colorMode = useThemeColorMode()
+  const theme = useTheme()
 
   useEffect(() => {
     eChartsRef.current?.getEchartsInstance().on('finished', () => {
@@ -199,7 +183,7 @@ export default function BoostedPoolWeightChart({
       <Box
         width={`${chartSizeValues.boxWidth}px`}
         height={`${chartSizeValues.boxHeight}px`}
-        filter={`url(#round) ${chartFilters[colorMode].chart}`}
+        filter="url(#round)"
         overflow="hidden"
         mt={hasLegend ? '-8' : '0'}
         position="relative"
@@ -247,9 +231,9 @@ export default function BoostedPoolWeightChart({
             {/* Since these triangles utilise clip-path, we cannot use box-shadow, we need to utilise css filters */}
             {/* Simply applying an opacity to the background color will achieve weird effects, so to match the designs */}
             {/* We utilise layers of the same component! */}
-            <OuterSymbolTriangle opacity="10%" />
-            <OuterSymbolTriangle opacity="20%" />
-            <OuterSymbolTriangle opacity="20%" />
+            <OuterSymbolTriangle opacity="10%" isSmall={isSmall || false} />
+            <OuterSymbolTriangle opacity="20%" isSmall={isSmall || false} />
+            <OuterSymbolTriangle opacity="20%" isSmall={isSmall || false} />
             <InnerSymbolTriangle opacity="30%" isSmall={isSmall || false} />
             <InnerSymbolTriangle opacity="30%" isSmall={isSmall || false} />
             <InnerSymbolTriangle opacity="30%" isSmall={isSmall || false} />

@@ -4,9 +4,15 @@ import { ReactNode } from 'react'
 type NoisyCardProps = {
   cardProps?: CardProps
   contentProps?: BoxProps
+  shadowContainerProps?: BoxProps
   children: ReactNode | ReactNode[]
 }
-export function NoisyCard({ children, cardProps = {}, contentProps = {} }: NoisyCardProps) {
+export function NoisyCard({
+  children,
+  cardProps = {},
+  contentProps = {},
+  shadowContainerProps = {},
+}: NoisyCardProps) {
   return (
     <Card
       backgroundImage={`url('/images/background-noise.png')`}
@@ -17,7 +23,14 @@ export function NoisyCard({ children, cardProps = {}, contentProps = {} }: Noisy
       borderWidth={0}
       {...cardProps}
     >
-      <Box position="absolute" width="full" height="full" content="" shadow="innerXl" />
+      <Box
+        position="absolute"
+        width="full"
+        height="full"
+        content=""
+        shadow="innerXl"
+        {...shadowContainerProps}
+      />
       <Box
         width="full"
         height="full"

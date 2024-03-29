@@ -1,11 +1,12 @@
 'use client'
 
-import { Box, HStack, Grid, Flex } from '@chakra-ui/react'
+import { Box, HStack, Grid, Flex, useTheme } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
-import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
+import Image from 'next/image'
 import PoolWeightChartLegend from './PoolWeightChartLegend'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
+import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 
 const smallSize: ChartSizeValues = {
   chartHeight: '150px',
@@ -25,6 +26,56 @@ const normalSize: ChartSizeValues = {
   haloLeft: '95px',
   haloWidth: '60px',
   haloHeigth: '60px',
+}
+
+function OuterSymbolSquare({ opacity, isSmall }: { opacity: string; isSmall: boolean }) {
+  const colorMode = useThemeColorMode()
+  const theme = useTheme()
+  const colorModeKey = colorMode === 'light' ? 'default' : '_dark'
+  const chartOuter = isSmall ? '' : theme.semanticTokens.shadows.chartIconOuter[colorModeKey]
+  return (
+    <Box
+      position="absolute"
+      top="50%"
+      transform="translateY(-50%)"
+      width="55%"
+      height="55%"
+      overflow="hidden"
+      filter={chartOuter}
+      opacity={opacity}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      rounded="md"
+    >
+      <Box bg="background.level3" width="full" height="full" filter={chartOuter} shadow="2xl" />
+    </Box>
+  )
+}
+
+function InnerSymbolSquare({ opacity, isSmall }: { opacity: string; isSmall: boolean }) {
+  return (
+    <Box
+      position="absolute"
+      top="50%"
+      transform="translateY(-50%)"
+      width="45%"
+      height="45%"
+      overflow="hidden"
+      rounded="md"
+      opacity={opacity}
+    >
+      <Box
+        bg="background.level4"
+        width="full"
+        height="full"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        position="relative"
+      ></Box>
+    </Box>
+  )
 }
 
 export default function StablePoolWeightChart({
@@ -67,10 +118,42 @@ export default function StablePoolWeightChart({
           alignItems="center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { delay: 0.1 } }}
-          width={chartSizeValues.haloWidth}
-          height={chartSizeValues.haloHeigth}
+          width={`${chartSizeValues.boxWidth * 0.58}px`}
+          height={`${chartSizeValues.boxHeight * 0.58}px`}
         >
-          <PoolWeightChartChainIcon chain={chain} isChartLoaded={true} isSmall={isSmall} />
+          <NoisyCard
+            cardProps={{
+              rounded: 'md',
+            }}
+            contentProps={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'relative',
+              shadow: 'innerXl',
+              rounded: 'md',
+            }}
+            shadowContainerProps={{ shadow: 'none' }}
+          >
+            <Box position="absolute" top="50%" transform="translateY(-50%)" zIndex={5}>
+              <Image
+                src={`/images/chains/${chain}.svg`}
+                alt={`Chain icon for ${chain.toLowerCase()}`}
+                width={isSmall ? 15 : 25}
+                height={isSmall ? 15 : 25}
+              />
+            </Box>
+
+            {/* Since these triangles utilise clip-path, we cannot use box-shadow, we need to utilise css filters */}
+            {/* Simply applying an opacity to the background color will achieve weird effects, so to match the designs */}
+            {/* We utilise layers of the same component! */}
+            <OuterSymbolSquare opacity="10%" isSmall={isSmall || false} />
+            <OuterSymbolSquare opacity="20%" isSmall={isSmall || false} />
+            <OuterSymbolSquare opacity="20%" isSmall={isSmall || false} />
+            <InnerSymbolSquare opacity="30%" isSmall={isSmall || false} />
+            <InnerSymbolSquare opacity="30%" isSmall={isSmall || false} />
+            <InnerSymbolSquare opacity="30%" isSmall={isSmall || false} />
+          </NoisyCard>
         </Box>
         {pool.displayTokens.length <= 3 && (
           <HStack spacing="0" zIndex={1} width="full" height="full" rounded="2xl">

@@ -321,6 +321,12 @@ export const tokens = {
       },
       innerXl:
         '4px 4px 4px 0px rgba(0, 0, 0, 0.04) inset, 7px 6px 12px 0px rgba(0, 0, 0, 0.08) inset, 40px 40px 80px 0px rgba(0, 0, 0, 0.05) inset, 0px -1px 1px 0px rgba(255, 255, 255, 0.25) inset',
+      chartIconInner:
+        'drop-shadow(0px 0px 0px rgba(73, 53, 29, 0.02)) drop-shadow(1px 1px 1px rgba(73, 53, 29, 0.06)) drop-shadow(3px 3px 3px rgba(73, 53, 29, 0.06)) drop-shadow(-0.5px -1px 0px #FFF)',
+      chartIconOuter:
+        'drop-shadow(0px 0px 0px rgba(73, 53, 29, 0.02)) drop-shadow(1px 1px 1px rgba(73, 53, 29, 0.06)) drop-shadow(3px 3px 3px rgba(73, 53, 29, 0.06)) drop-shadow(-0.5px -1px 0px #FFF)',
+      chart:
+        'drop-shadow(0px 0px 0px rgba(73, 53, 29, 0.4)) drop-shadow(1px 1px 1px rgba(73, 53, 29, 0.09)) drop-shadow(5px 3px 15px rgba(73, 53, 29, 0.3)) drop-shadow(4px -2px 4px rgba(73, 53, 29, 0.2)) drop-shadow(-0.5px -1px 0px #FFF)',
     },
     dark: {
       sm: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F',
@@ -356,6 +362,13 @@ export const tokens = {
       },
       innerXl:
         '20px 20px 50px 0px rgba(0, 0, 0, 0.25) inset, 10px 10px 25px 0px rgba(0, 0, 0, 0.18) inset, 2px 2px 11px 0px rgba(0, 0, 0, 0.19) inset, 0px -1px 1px 0px #FFFFFF40 inset',
+
+      chartIconInner:
+        'drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.02)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.06)) drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.06))',
+      chartIconOuter:
+        'drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.2)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1)) drop-shadow(3px 5px 5px rgba(0, 0, 0, 0.2))',
+      chart:
+        'drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.02)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1)) drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.1)) drop-shadow(6px 6px 6px rgba(0, 0, 0, 0.1)) drop-shadow(12px 12px 12px rgba(0, 0, 0, 0.06)) drop-shadow(42px 42px 42px rgba(0, 0, 0, 0.06))',
     },
   },
   transition: {
@@ -724,6 +737,18 @@ export const balTheme = {
       innerXl: {
         default: tokens.shadows.light.innerXl,
         _dark: tokens.shadows.dark.innerXl,
+      },
+      chartIconInner: {
+        default: tokens.shadows.light.chartIconInner,
+        _dark: tokens.shadows.dark.chartIconInner,
+      },
+      chartIconOuter: {
+        default: tokens.shadows.light.chartIconOuter,
+        _dark: tokens.shadows.dark.chartIconOuter,
+      },
+      chart: {
+        default: tokens.shadows.light.chart,
+        _dark: tokens.shadows.dark.chart,
       },
       btnDefault: {
         default: tokens.shadows.light.btnDefault,
