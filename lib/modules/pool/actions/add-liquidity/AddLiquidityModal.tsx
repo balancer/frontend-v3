@@ -9,7 +9,6 @@ import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
   Card,
   HStack,
-  Heading,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -96,14 +95,10 @@ export function AddLiquidityModal({
             chain={pool.chain}
           />
         )}
-        <ModalHeader>
-          <Heading fontWeight="bold" size="h5">
-            Add liquidity
-          </Heading>
-        </ModalHeader>
+        <ModalHeader>Add liquidity</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <VStack spacing="md" align="start">
+          <VStack spacing="sm" align="start">
             {isMobile && (
               <MobileStepTracker
                 currentStepIndex={currentStepIndex}
@@ -111,7 +106,7 @@ export function AddLiquidityModal({
                 chain={pool.chain}
               />
             )}
-            <Card variant="level3" p="md" shadow="sm" w="full">
+            <Card variant="subSection">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text color="grayText">{"You're adding"}</Text>
@@ -141,7 +136,7 @@ export function AddLiquidityModal({
               </VStack>
             </Card>
 
-            <Card variant="level3" p="md" shadow="sm" w="full">
+            <Card variant="subSection">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text color="grayText">{"You'll get (if no slippage)"}</Text>
@@ -157,7 +152,7 @@ export function AddLiquidityModal({
               </VStack>
             </Card>
 
-            <Card variant="level2" p="md" shadow="sm" w="full">
+            <Card variant="subSection">
               <VStack align="start" spacing="sm">
                 <HStack justify="space-between" w="full">
                   <Text>Price impact</Text>

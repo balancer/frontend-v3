@@ -3,7 +3,6 @@
 import {
   Card,
   HStack,
-  Heading,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -90,16 +89,10 @@ export function RemoveLiquidityModal({
             chain={pool.chain}
           />
         )}
-        <ModalHeader>
-          <HStack>
-            <Heading fontWeight="bold" size="h5">
-              Remove liquidity
-            </Heading>
-          </HStack>
-        </ModalHeader>
+        <ModalHeader>Remove liquidity</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <VStack spacing="md" align="start">
+          <VStack spacing="sm" align="start">
             {isMobile && (
               <MobileStepTracker
                 currentStepIndex={currentStepIndex}
@@ -107,7 +100,7 @@ export function RemoveLiquidityModal({
                 chain={pool.chain}
               />
             )}
-            <Card variant="level4" shadow="sm" p="md" w="full">
+            <Card variant="modalSubSection">
               <VStack align="start" spacing="md">
                 <Text fontWeight="bold" fontSize="sm">
                   You&apos;re removing
@@ -121,7 +114,7 @@ export function RemoveLiquidityModal({
                 />
               </VStack>
             </Card>
-            <Card variant="level4" shadow="sm" p="md" w="full">
+            <Card variant="modalSubSection">
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text fontWeight="bold" fontSize="sm">
@@ -152,7 +145,7 @@ export function RemoveLiquidityModal({
                 )}
               </VStack>
             </Card>
-            <Card variant="level4" shadow="sm" p="md" w="full">
+            <Card variant="modalSubSection">
               <VStack align="start" spacing="sm">
                 <HStack justify="space-between" w="full">
                   <Text fontWeight="medium" variant="secondary">

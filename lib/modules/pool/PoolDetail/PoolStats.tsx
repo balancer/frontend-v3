@@ -75,15 +75,13 @@ export default function PoolStats() {
 
   return (
     <Card
-      variant="level2"
       width="full"
       height="400px"
       display="flex"
       alignItems="center"
       justifyContent="center"
       position="relative"
-      shadow="2xl"
-      borderWidth={0}
+      p={0}
     >
       <Grid
         columnGap="4"

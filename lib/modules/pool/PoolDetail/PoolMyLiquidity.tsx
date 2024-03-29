@@ -134,7 +134,7 @@ export default function PoolMyLiquidity() {
     : pool.displayTokens
 
   return (
-    <Card variant="level2" shadow="2xl" width="full" minHeight="320px" borderWidth={0}>
+    <Card width="full" minHeight="320px">
       <Grid width="full" templateColumns="1fr 1fr">
         <GridItem>
           <VStack spacing="0" width="full">

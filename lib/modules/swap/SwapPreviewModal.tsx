@@ -92,7 +92,7 @@ export function SwapPreviewModal({
                 chain={selectedChain}
               />
             )}
-            <Card variant="modalSubSection">
+            <Card variant="subSection">
               <CardHeader>You pay</CardHeader>
               <TokenRow
                 address={tokenIn.address}
@@ -102,7 +102,7 @@ export function SwapPreviewModal({
               />
             </Card>
 
-            <Card variant="modalSubSection">
+            <Card variant="subSection">
               <CardHeader>You&apos;ll get (if no slippage)</CardHeader>
               <TokenRow
                 address={tokenOut.address}
@@ -112,11 +112,11 @@ export function SwapPreviewModal({
               />
             </Card>
 
-            <Card variant="modalSubSection">
+            <Card variant="subSection">
               <SwapDetails />
             </Card>
 
-            <Card variant="modalSubSection" fontSize="sm">
+            <Card variant="subSection" fontSize="sm">
               <HStack justify="space-between" w="full">
                 <Text color="grayText">Exchange rate</Text>
                 <SwapRate />
