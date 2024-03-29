@@ -11,8 +11,8 @@ import CLPPoolWeightChart from './CLPPoolWeightChart'
 import { Pool } from '../../usePool'
 
 export interface PoolWeightChartProps {
-  pool?: Pool
-  chain?: GqlChain
+  pool: Pool
+  chain: GqlChain
   hasLegend?: boolean
   isSmall?: boolean
   colors?: PoolWeightChartColorDef[]

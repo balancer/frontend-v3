@@ -7,7 +7,7 @@ import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { MainZenSymbol } from '../pool/PoolDetail/PoolStats'
 import PoolWeightChart from '../pool/PoolDetail/PoolWeightCharts/PoolWeightChart'
 
-const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps } = {
+export const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps } = {
   contentProps: {
     display: 'flex',
     alignItems: 'center',
@@ -73,70 +73,45 @@ export async function FeaturedPools({ ...rest }: BoxProps) {
           p="4"
         >
           <GridItem position="relative" colSpan={2} rowSpan={2}>
-            <NoisyCard
-              cardProps={commonNoisyCardProps.cardProps}
-              contentProps={commonNoisyCardProps.contentProps}
-            >
-              {primaryPool && (
-                <FeaturePoolCard pool={primaryPool} chain={primaryPool.chain} hasLegend />
-              )}
-            </NoisyCard>
+            {primaryPool && (
+              <FeaturePoolCard pool={primaryPool} chain={primaryPool.chain} hasLegend />
+            )}
           </GridItem>
           <GridItem colSpan={1} rowSpan={1}>
-            <NoisyCard
-              cardProps={commonNoisyCardProps.cardProps}
-              contentProps={commonNoisyCardProps.contentProps}
-            >
-              {poolsWithoutPrimary[0] && (
-                <FeaturePoolCard
-                  pool={poolsWithoutPrimary[0]}
-                  chain={poolsWithoutPrimary[0].chain}
-                  isSmall
-                />
-              )}
-            </NoisyCard>
+            {poolsWithoutPrimary[0] && (
+              <FeaturePoolCard
+                pool={poolsWithoutPrimary[0]}
+                chain={poolsWithoutPrimary[0].chain}
+                isSmall
+              />
+            )}
           </GridItem>
           <GridItem colSpan={1} rowSpan={1}>
-            <NoisyCard
-              cardProps={commonNoisyCardProps.cardProps}
-              contentProps={commonNoisyCardProps.contentProps}
-            >
-              {poolsWithoutPrimary[1] && (
-                <FeaturePoolCard
-                  pool={poolsWithoutPrimary[1]}
-                  chain={poolsWithoutPrimary[1].chain}
-                  isSmall
-                />
-              )}
-            </NoisyCard>
+            {poolsWithoutPrimary[1] && (
+              <FeaturePoolCard
+                pool={poolsWithoutPrimary[1]}
+                chain={poolsWithoutPrimary[1].chain}
+                isSmall
+              />
+            )}
           </GridItem>
           <GridItem colSpan={1} rowSpan={1}>
-            <NoisyCard
-              cardProps={commonNoisyCardProps.cardProps}
-              contentProps={commonNoisyCardProps.contentProps}
-            >
-              {poolsWithoutPrimary[2] && (
-                <FeaturePoolCard
-                  pool={poolsWithoutPrimary[2]}
-                  chain={poolsWithoutPrimary[2].chain}
-                  isSmall
-                />
-              )}
-            </NoisyCard>
+            {poolsWithoutPrimary[2] && (
+              <FeaturePoolCard
+                pool={poolsWithoutPrimary[2]}
+                chain={poolsWithoutPrimary[2].chain}
+                isSmall
+              />
+            )}
           </GridItem>
           <GridItem colSpan={1} rowSpan={1}>
-            <NoisyCard
-              cardProps={commonNoisyCardProps.cardProps}
-              contentProps={commonNoisyCardProps.contentProps}
-            >
-              {poolsWithoutPrimary[3] && (
-                <FeaturePoolCard
-                  pool={poolsWithoutPrimary[3]}
-                  chain={poolsWithoutPrimary[3].chain}
-                  isSmall
-                />
-              )}
-            </NoisyCard>
+            {poolsWithoutPrimary[3] && (
+              <FeaturePoolCard
+                pool={poolsWithoutPrimary[3]}
+                chain={poolsWithoutPrimary[3].chain}
+                isSmall
+              />
+            )}
           </GridItem>
         </Grid>
 
