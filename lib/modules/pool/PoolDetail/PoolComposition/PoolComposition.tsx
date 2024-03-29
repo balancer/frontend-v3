@@ -24,7 +24,7 @@ export function PoolComposition() {
   }, [pool])
 
   return (
-    <Card minHeight="320px">
+    <Card p="xs" minHeight="320px">
       <VStack spacing="0" width="full">
         <HStack width="full" p="4" justifyContent="space-between">
           <Heading fontWeight="bold" size="h5">
@@ -32,7 +32,7 @@ export function PoolComposition() {
           </Heading>
         </HStack>
         <Box width="full" p="4" pt="0">
-          <Card variant="level2" borderWidth={1} borderColor="borderColor" shadow="none">
+          <Card variant="subSection">
             <VStack width="full">
               <Box width="full" borderBottomWidth={1} borderColor="border.base">
                 <HStack py="4" px="4" width="full" justifyContent="space-between">

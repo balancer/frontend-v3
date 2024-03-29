@@ -134,7 +134,7 @@ export default function PoolMyLiquidity() {
     : pool.displayTokens
 
   return (
-    <Card width="full" minHeight="320px">
+    <Card p="xs" minHeight="320px">
       <Grid width="full" templateColumns="1fr 1fr">
         <GridItem>
           <VStack spacing="0" width="full">
@@ -145,7 +145,7 @@ export default function PoolMyLiquidity() {
               <ButtonGroup currentOption={activeTab} options={TABS} onChange={handleTabChanged} />
             </HStack>
             <Box width="full" p="4" pt="0">
-              <Card variant="level2" borderWidth={1} borderColor="borderColor" shadow="none">
+              <Card variant="subSection">
                 <VStack width="full">
                   <Box width="full" borderBottomWidth={1} borderColor="borderColor">
                     <HStack py="4" px="4" width="full" justifyContent="space-between">
