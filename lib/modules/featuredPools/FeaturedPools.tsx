@@ -114,46 +114,6 @@ export async function FeaturedPools({ ...rest }: BoxProps) {
             )}
           </GridItem>
         </Grid>
-
-        {/* <Grid */}
-        {/*   w="full" */}
-        {/*   minH="600px" */}
-        {/*   gap="4" */}
-        {/*   alignContent="stretch" */}
-        {/*   templateColumns={{ */}
-        {/*     base: 'repeat(1, 1fr)', */}
-        {/*     md: 'repeat(2, 1fr)', */}
-        {/*     lg: 'repeat(4, 1fr)', // align with PoolListCards */}
-        {/*   }} */}
-        {/*   templateAreas={{ */}
-        {/*     base: `"primary" */}
-        {/*            "one" */}
-        {/*            "two" */}
-        {/*            "three" */}
-        {/*            "four"`, */}
-        {/*     md: `"primary primary" */}
-        {/*          "one     two" */}
-        {/*          "three   four"`, */}
-        {/*     lg: `"primary primary one   two" */}
-        {/*          "primary primary three four"`, // align with PoolListCards */}
-        {/*   }} */}
-        {/* > */}
-        {/*   <GridItem area="primary"> */}
-        {/*     {primaryPool && ( */}
-        {/*       <VStack align="start" w="full" h="full" spacing="xl"> */}
-        {/*         <Heading as="h2" size="xl" variant="special"> */}
-        {/*           Featured pools on<br></br> {projectName} protocol */}
-        {/*         </Heading> */}
-        {/*         <FeaturePoolCard pool={primaryPool} chain={primaryPool.chain} hasLegend /> */}
-        {/*       </VStack> */}
-        {/*     )} */}
-        {/*   </GridItem> */}
-        {/*   {poolsWithoutPrimary.map((pool, index) => ( */}
-        {/*     <GridItem key={index} area={indexAreaHash[index + 1]}> */}
-        {/*       <FeaturePoolCard pool={pool} chain={pool.chain} isSmall /> */}
-        {/*     </GridItem> */}
-        {/*   ))} */}
-        {/* </Grid> */}
       </Card>
     </VStack>
   )
