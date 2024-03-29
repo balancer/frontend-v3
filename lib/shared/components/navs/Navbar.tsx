@@ -2,7 +2,22 @@
 
 import NextLink from 'next/link'
 import DarkModeToggle from '../btns/DarkModeToggle'
-import { Box, Stack, HStack, BoxProps, Link } from '@chakra-ui/react'
+import {
+  Box,
+  Stack,
+  HStack,
+  BoxProps,
+  Link,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  Button,
+  ModalFooter,
+  useDisclosure,
+} from '@chakra-ui/react'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { BalancerLogo } from '../imgs/BalancerLogo'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
@@ -11,10 +26,49 @@ import { UserSettings } from '@/lib/modules/user/settings/UserSettings'
 import RecentTransactions from '../other/RecentTransactions'
 import { usePathname } from 'next/navigation'
 import { isProd } from '@/lib/config/app.config'
+import { ArrowUpRight } from 'react-feather'
 
 type Props = {
   leftSlot?: React.ReactNode
   rightSlot?: React.ReactNode
+}
+
+function VeBalLink() {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  return (
+    <>
+      <Link onClick={onOpen} variant="nav" color="font.primary">
+        veBAL
+      </Link>
+
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>veBAL (redirect to V2)</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody color="grayText">
+            veBAL functionality is under construction in the v3 app. In the meantime please use the
+            v2 app to vote on gauges, lock/unlock your veBAL or sync your veBAL to other networks.
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              as={NextLink}
+              href="https://app.balancer.fi/#/ethereum/vebal"
+              target="_blank"
+              variant="primary"
+              w="full"
+            >
+              <HStack>
+                <span>Proceed to V2</span>
+                <ArrowUpRight size={16} />
+              </HStack>
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  )
 }
 
 export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
@@ -78,6 +132,7 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
               >
                 Portfolio
               </Link>
+              <VeBalLink />
               {!isProd && (
                 <Link
                   as={NextLink}

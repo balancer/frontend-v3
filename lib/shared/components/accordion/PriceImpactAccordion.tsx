@@ -21,7 +21,7 @@ import {
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { ReactNode, useEffect } from 'react'
-import { PriceImpactAcceptModal } from '../modal/PriceImpactAcceptModal'
+import { PriceImpactAcceptModal } from '../modals/PriceImpactAcceptModal'
 
 interface PriceImpactAccordionProps {
   setNeedsToAcceptHighPI: (value: boolean) => void
