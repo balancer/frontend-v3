@@ -46,7 +46,10 @@ const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps } = {
   },
 }
 
-function MainZenSymbol({ poolType }: { poolType: GqlPoolType }) {
+export function MainZenSymbol({ poolType }: { poolType?: GqlPoolType }) {
+  if (!poolType) {
+    return <ZenGarden variant="circle" sizePx="400px" />
+  }
   if (isWeighted(poolType)) {
     return <ZenGarden variant="circle" sizePx="400px" />
   }

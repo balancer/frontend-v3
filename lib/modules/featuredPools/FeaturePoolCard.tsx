@@ -4,7 +4,7 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Pool } from '../pool/usePool'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useRouter } from 'next/navigation'
-import { Card, HStack, VStack, Text, Center } from '@chakra-ui/react'
+import { Card, HStack, VStack, Text, Center, Box } from '@chakra-ui/react'
 import {
   poolClickHandler,
   poolMouseEnterHandler,
@@ -13,6 +13,7 @@ import {
 } from '../pool/pool.utils'
 import PoolWeightChart from '../pool/PoolDetail/PoolWeightCharts/PoolWeightChart'
 import { PoolName } from '../pool/PoolName'
+import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 
 interface Props {
   pool: Pool
@@ -26,16 +27,8 @@ export function FeaturePoolCard({ pool, chain, isSmall = false, hasLegend = fals
   const router = useRouter()
 
   return (
-    <Card
-      variant="gradient"
-      h="full"
-      w="full"
-      p="4"
-      cursor="pointer"
-      onClick={event => poolClickHandler(event, pool.id, pool.chain, router)}
-      onMouseEnter={event => poolMouseEnterHandler(event, pool.id, pool.chain, router)}
-    >
-      <VStack justifyContent="space-between" h="full">
+    <VStack justifyContent="center" spacing={isSmall ? '3' : '4'} h="full">
+      {!isSmall && (
         <HStack justifyContent="center" w="full" spacing="sm">
           <Text variant="secondary" fontWeight="medium">
             {getPoolTypeLabel(pool.type)}
@@ -47,16 +40,18 @@ export function FeaturePoolCard({ pool, chain, isSmall = false, hasLegend = fals
             {toCurrency(pool.dynamicData.totalLiquidity)} TVL
           </Text>
         </HStack>
+      )}
+      <Box>
         <PoolWeightChart pool={pool} chain={chain} hasLegend={hasLegend} isSmall={isSmall} />
-        <Center>
-          <VStack>
-            <PoolName pool={pool} fontWeight="bold" fontSize="lg" noOfLines={1} />
-            <Text variant="secondary" fontWeight="medium">
-              {getAprLabel(pool.dynamicData.apr.apr)} APR
-            </Text>
-          </VStack>
-        </Center>
-      </VStack>
-    </Card>
+      </Box>
+      <Center>
+        <VStack spacing="0">
+          <PoolName pool={pool} fontWeight="bold" fontSize="lg" noOfLines={1} />
+          <Text variant="secondary" fontWeight="medium">
+            {getAprLabel(pool.dynamicData.apr.apr)} APR
+          </Text>
+        </VStack>
+      </Center>
+    </VStack>
   )
 }

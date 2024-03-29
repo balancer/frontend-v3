@@ -14,8 +14,8 @@ import Image from 'next/image'
 
 const smallSize: ChartSizeValues = {
   chartHeight: '150px',
-  boxWidth: 160,
-  boxHeight: 130,
+  boxWidth: 150,
+  boxHeight: 120,
   haloTop: '40%',
   haloLeft: '55px',
   haloWidth: '40px',

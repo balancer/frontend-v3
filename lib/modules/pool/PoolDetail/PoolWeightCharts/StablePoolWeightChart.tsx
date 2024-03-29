@@ -124,6 +124,7 @@ export default function StablePoolWeightChart({
           <NoisyCard
             cardProps={{
               rounded: 'md',
+              shadow: 'none',
             }}
             contentProps={{
               display: 'flex',

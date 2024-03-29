@@ -162,6 +162,7 @@ export default function CLPPoolWeightChart({
             cardProps={{
               rounded: 'md',
               transform: 'rotate(45deg)',
+              shadow: 'none',
             }}
             contentProps={{
               display: 'flex',
