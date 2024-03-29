@@ -27,7 +27,14 @@ export function FeaturePoolCard({ pool, chain, isSmall = false, hasLegend = fals
   const router = useRouter()
 
   return (
-    <VStack justifyContent="center" spacing={isSmall ? '3' : '4'} h="full">
+    <VStack
+      cursor="pointer"
+      onClick={event => poolClickHandler(event, pool.id, pool.chain, router)}
+      onMouseEnter={event => poolMouseEnterHandler(event, pool.id, pool.chain, router)}
+      justifyContent="center"
+      spacing={isSmall ? '3' : '4'}
+      h="full"
+    >
       {!isSmall && (
         <HStack justifyContent="center" w="full" spacing="sm">
           <Text variant="secondary" fontWeight="medium">
