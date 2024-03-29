@@ -21,7 +21,7 @@ export function ClaimNetworkPoolsLayout({ backLink, children, title, ...rest }: 
           </HStack>
         </Link>
 
-        <Card width="full" minWidth={['320px', '320px', '600px']} maxWidth="600px" {...rest}>
+        <Card minWidth={['320px', '320px', '600px']} maxWidth="600px" {...rest}>
           {children}
         </Card>
       </Stack>

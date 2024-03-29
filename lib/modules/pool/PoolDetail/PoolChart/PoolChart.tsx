@@ -65,7 +65,7 @@ export function PoolChart() {
   }
 
   return (
-    <Card width="full" minHeight="320px">
+    <Card minHeight="320px">
       <Stack p="4">
         {isLoading && <Skeleton w="100%" h="300" />}
         {!isLoading && chartData.length > 0 && (

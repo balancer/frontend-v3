@@ -54,7 +54,7 @@ export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="sm">
-            <Card variant="modalSubSection" flex="1" width="100%">
+            <Card variant="modalSubSection">
               <VStack align="start" spacing="md">
                 <Text color="grayText">You&apos;ll get</Text>
                 {protocolRewardsData?.map((reward, idx) => (

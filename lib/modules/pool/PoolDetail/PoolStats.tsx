@@ -75,7 +75,6 @@ export default function PoolStats() {
 
   return (
     <Card
-      width="full"
       height="400px"
       display="flex"
       alignItems="center"

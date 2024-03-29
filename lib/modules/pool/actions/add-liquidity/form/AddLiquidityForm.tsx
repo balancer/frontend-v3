@@ -83,7 +83,7 @@ export function AddLiquidityForm() {
   return (
     <TokenBalancesProvider tokens={validTokens}>
       <Center h="full" w="full" maxW="lg" mx="auto">
-        <Card variant="level2" shadow="xl" w="full" p="md">
+        <Card>
           <VStack spacing="lg" align="start" w="full">
             <HStack w="full" justify="space-between">
               <Heading fontWeight="bold" size="h5">

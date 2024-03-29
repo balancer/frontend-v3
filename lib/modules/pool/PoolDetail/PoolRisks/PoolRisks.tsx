@@ -32,7 +32,7 @@ export function RisksList({ textVariant = 'secondary' }: RisksListProps) {
 
 export function PoolRisks() {
   return (
-    <Card width="full">
+    <Card>
       <VStack alignItems="flex-start" spacing="4" width="full">
         <Heading variant="h4" fontSize="1.25rem">
           Pool risks

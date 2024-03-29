@@ -1315,6 +1315,7 @@ export const balTheme = {
           borderColor: 'input.borderDefault',
           shadow: 'xl',
           p: 'md',
+          width: 'full',
         },
       },
       variants: {

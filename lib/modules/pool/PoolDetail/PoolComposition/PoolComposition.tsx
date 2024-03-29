@@ -24,7 +24,7 @@ export function PoolComposition() {
   }, [pool])
 
   return (
-    <Card width="full" minHeight="320px">
+    <Card minHeight="320px">
       <VStack spacing="0" width="full">
         <HStack width="full" p="4" justifyContent="space-between">
           <Heading fontWeight="bold" size="h5">
