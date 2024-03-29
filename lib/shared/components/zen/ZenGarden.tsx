@@ -1,4 +1,6 @@
 import { Box, BoxProps } from '@chakra-ui/react'
+import { GqlPoolType } from '../../services/api/generated/graphql'
+import { isClp, isStable, isWeighted } from '@/lib/modules/pool/pool.helpers'
 type ZenGardenVariant = 'diamond' | 'circle' | 'square' | 'pill'
 
 type Props = {
@@ -73,4 +75,19 @@ export function ZenGarden({ sizePx, heightPx, variant, transform, ...rest }: Pro
       transform={`${getShapeTransform(variant, i)} ${transform || ''}`}
     />
   ))
+}
+
+export function PoolZenGarden({ poolType, sizePx }: { poolType?: GqlPoolType; sizePx: string }) {
+  if (!poolType) {
+    return <ZenGarden variant="circle" sizePx={sizePx} />
+  }
+  if (isWeighted(poolType)) {
+    return <ZenGarden variant="circle" sizePx={sizePx} />
+  }
+  if (isStable(poolType)) {
+    return <ZenGarden variant="square" sizePx={sizePx} />
+  }
+  if (isClp(poolType)) {
+    return <ZenGarden variant="diamond" sizePx={sizePx} />
+  }
 }

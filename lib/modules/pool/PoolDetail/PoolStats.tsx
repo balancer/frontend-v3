@@ -25,7 +25,7 @@ import { BarChart, Gift, Shield, Users } from 'react-feather'
 import { ElevatedIcon } from '@/lib/shared/components/icons/ElevatedIcon'
 import { isClp, isStable, isWeighted } from '../pool.helpers'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
-import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
+import { PoolZenGarden, ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 
 interface PoolValues {
   totalLiquidity: string
@@ -44,21 +44,6 @@ const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps } = {
     position: 'relative',
     overflow: 'hidden',
   },
-}
-
-export function MainZenSymbol({ poolType }: { poolType?: GqlPoolType }) {
-  if (!poolType) {
-    return <ZenGarden variant="circle" sizePx="400px" />
-  }
-  if (isWeighted(poolType)) {
-    return <ZenGarden variant="circle" sizePx="400px" />
-  }
-  if (isStable(poolType)) {
-    return <ZenGarden variant="square" sizePx="400px" />
-  }
-  if (isClp(poolType)) {
-    return <ZenGarden variant="diamond" sizePx="400px" />
-  }
 }
 
 export default function PoolStats() {
@@ -107,7 +92,7 @@ export default function PoolStats() {
             }}
             contentProps={commonNoisyCardProps.contentProps}
           >
-            <MainZenSymbol poolType={pool.type} />
+            <PoolZenGarden sizePx="400px" poolType={pool.type} />
             <Box mt="-6">
               <PoolWeightChart pool={pool} chain={chain} />
             </Box>

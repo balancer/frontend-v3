@@ -1,11 +1,8 @@
-import { Box, BoxProps, Card, Grid, GridItem, Heading, VStack } from '@chakra-ui/react'
+import { BoxProps, Card, Grid, GridItem, Heading, VStack } from '@chakra-ui/react'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { FeaturePoolCard } from './FeaturePoolCard'
 import { GetFeaturedPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
 import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
-import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
-import { MainZenSymbol } from '../pool/PoolDetail/PoolStats'
-import PoolWeightChart from '../pool/PoolDetail/PoolWeightCharts/PoolWeightChart'
 
 export const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps } = {
   contentProps: {

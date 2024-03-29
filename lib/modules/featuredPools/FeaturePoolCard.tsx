@@ -14,6 +14,7 @@ import {
 import PoolWeightChart from '../pool/PoolDetail/PoolWeightCharts/PoolWeightChart'
 import { PoolName } from '../pool/PoolName'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
+import { PoolZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 
 interface Props {
   pool: Pool
@@ -38,6 +39,7 @@ export function FeaturePoolCard({ pool, chain, isSmall = false, hasLegend = fals
         justifyContent: 'center',
       }}
     >
+      {/* <PoolZenGarden sizePx={isSmall ? '200px' : '500px'} poolType={pool.type} /> */}
       <VStack
         cursor="pointer"
         onClick={event => poolClickHandler(event, pool.id, pool.chain, router)}
