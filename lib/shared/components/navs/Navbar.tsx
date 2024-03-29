@@ -17,6 +17,8 @@ import {
   Button,
   ModalFooter,
   useDisclosure,
+  UnorderedList,
+  ListItem,
 } from '@chakra-ui/react'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { BalancerLogo } from '../imgs/BalancerLogo'
@@ -47,8 +49,14 @@ function VeBalLink() {
           <ModalHeader>veBAL (redirect to V2)</ModalHeader>
           <ModalCloseButton />
           <ModalBody color="grayText">
-            veBAL functionality is coming soon to the V3 (this) app. In the meantime please use the
-            V2 app to vote on gauges, lock/unlock your veBAL or sync your veBAL to other networks.
+            The veBAL experience is being carefully crafted for this new app. In the meantime, go to
+            the v2 app to nurture your veBAL:
+            <UnorderedList>
+              <ListItem>Vote on gauges</ListItem>
+              <ListItem>Lock and unlock veBAL</ListItem>
+              <ListItem>View your balance and expiry date</ListItem>
+              <ListItem>Sync veBAL to other networks</ListItem>
+            </UnorderedList>
           </ModalBody>
 
           <ModalFooter>
