@@ -7,6 +7,8 @@ import { useMulticall } from '../../web3/contracts/useMulticall'
 import { AbiMap } from '../../web3/contracts/AbiMap'
 import { Hex } from 'viem'
 
+type GaugeDataByPool = Record<string, { totalSupply: string; userBalance: string; gauge: GaugeArg }>
+
 export function useGaugesSupplyAndBalance(gauges: GaugeArg[]) {
   const { userAddress } = useUserAccount()
 
@@ -64,7 +66,7 @@ export function useGaugesSupplyAndBalance(gauges: GaugeArg[]) {
       }
     }, {})
 
-    return gauges.reduce((acc: Record<string, any>, gauge) => {
+    return gauges.reduce((acc: GaugeDataByPool, gauge) => {
       const totalSupply = totalSupplyDataGaugeMap[gauge.gaugeAddress]
       const balance = balancesDataGaugeMap[gauge.gaugeAddress]
 

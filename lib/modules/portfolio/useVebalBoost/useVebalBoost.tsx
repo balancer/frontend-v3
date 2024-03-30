@@ -21,6 +21,8 @@ export interface GaugeArg {
   poolId: string
 }
 
+type OnchainVebalBalance = { result: bigint; status: string }
+
 function calcUserBoost({
   userGaugeBalance,
   gaugeTotalSupply,
@@ -57,18 +59,26 @@ export function useVebalBoost(gauges: GaugeArg[]) {
   const calcedBoostsByPool = useMemo(() => {
     return Object.entries(gaugeDataByPoolMap).reduce(
       (acc, [poolId, { totalSupply, userBalance, gauge }]) => {
-        const userVeBALChainBalance = userVeBALBalances.results?.[gauge.chain]?.data as any
+        const userVeBALChainBalance = userVeBALBalances?.[gauge.chain]?.data as
+          | Record<GqlChain, OnchainVebalBalance>
+          | undefined
+        const veBALChainTotalSupply = veBalTotalSupplyL2?.[gauge.chain]?.data as
+          | Record<GqlChain, OnchainVebalBalance>
+          | undefined
 
-        const vebalBalance = userVeBALChainBalance?.[gauge.chain]?.result
+        const userVeBALBalance = userVeBALChainBalance?.[gauge.chain]?.result
 
-        const veBALChainTotalSupply = veBalTotalSupplyL2.results?.[gauge.chain]?.data as any
+        console.log({
+          userVeBALChainBalance,
+          veBALChainTotalSupply,
+        })
         const veBALTotalSupply =
           gauge.chain === GqlChain.Mainnet
             ? mainnetLockedInfo.totalSupply
             : veBALChainTotalSupply?.[gauge.chain]?.result || 0
 
         if (
-          isUndefined(vebalBalance) ||
+          isUndefined(userVeBALBalance) ||
           isUndefined(veBALTotalSupply) ||
           isUndefined(totalSupply) ||
           isUndefined(userBalance)
@@ -79,8 +89,8 @@ export function useVebalBoost(gauges: GaugeArg[]) {
         const userBoost = calcUserBoost({
           userGaugeBalance: userBalance,
           gaugeTotalSupply: totalSupply,
-          userVeBALBalance: vebalBalance,
-          veBALTotalSupply,
+          userVeBALBalance: userVeBALBalance.toString(),
+          veBALTotalSupply: veBALTotalSupply.toString(),
         })
 
         acc[poolId] = userBoost
