@@ -65,6 +65,8 @@ const networkConfig: NetworkConfig = {
       minter: '0x239e55F427D44C3cc793f49bFB507ebe76638a2b',
     },
     feeDistributor: '0xD3cf852898b21fc233251427c2DC93d3d604F3BB',
+    veDelegationProxy: '0x6f5a2eE11E7a772AeB5114A20d0D7c0ff61EB8A0',
+    veBAL: '0xC128a9954e6c874eA3d62ce62B468bA073093F25',
   },
 
   pools: convertHexToLowerCase({

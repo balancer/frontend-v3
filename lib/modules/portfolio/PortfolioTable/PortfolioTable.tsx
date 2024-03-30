@@ -6,6 +6,7 @@ import { PortfolioTableRow } from './PortfolioTableRow'
 import { HStack, Heading, Stack } from '@chakra-ui/react'
 import { useMemo, useState } from 'react'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
+import { useVebalBoost } from '../useVebalBoost/useVebalBoost'
 
 export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr'
 export interface PortfolioSortingData {
@@ -48,6 +49,16 @@ const rowProps = {
 
 export function PortfolioTable() {
   const { portfolioData, isLoadingPortfolio } = usePortfolio()
+  const gaugesList = useMemo(() => {
+    if (!portfolioData?.stakedPools) return []
+    return portfolioData.stakedPools.map(p => ({
+      chain: p.chain,
+      gaugeAddress: p.staking?.gauge?.gaugeAddress || '',
+      poolId: p.id,
+    }))
+  }, [portfolioData?.stakedPools])
+
+  const { calcedBoostsByPool } = useVebalBoost(gaugesList)
 
   const [currentSortingObj, setCurrentSortingObj] = useState<PortfolioSortingData>({
     id: 'staking',
@@ -112,7 +123,14 @@ export function PortfolioTable() {
           />
         )}
         renderTableRow={(item: PoolListItem, index) => {
-          return <PortfolioTableRow keyValue={index} pool={item} {...rowProps} />
+          return (
+            <PortfolioTableRow
+              keyValue={index}
+              pool={item}
+              calcedBoostsByPool={calcedBoostsByPool}
+              {...rowProps}
+            />
+          )
         }}
         showPagination={false}
         paginationProps={null}

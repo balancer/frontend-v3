@@ -175,6 +175,7 @@ function _usePortfolio() {
   }, [protocolRewardsData])
 
   const isLoadingPortfolio = loading || isLoadingUserInfo
+
   return {
     portfolioData,
     balRewardsData,

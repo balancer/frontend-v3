@@ -13,11 +13,12 @@ import { bn } from '@/lib/shared/utils/numbers'
 interface Props extends GridProps {
   pool: PoolListItem
   keyValue: number
+  calcedBoostsByPool: Record<string, string>
 }
 
 const MemoizedAprTooltip = memo(AprTooltip)
 
-export function PortfolioTableRow({ pool, keyValue, ...rest }: Props) {
+export function PortfolioTableRow({ pool, keyValue, calcedBoostsByPool, ...rest }: Props) {
   const { toCurrency } = useCurrency()
 
   return (
@@ -57,7 +58,7 @@ export function PortfolioTableRow({ pool, keyValue, ...rest }: Props) {
               textAlign="right"
               fontWeight="medium"
             >
-              1.5x
+              {calcedBoostsByPool?.[pool.id] ? `${calcedBoostsByPool[pool.id]}x` : '-'}
             </Text>
           </GridItem>
 
