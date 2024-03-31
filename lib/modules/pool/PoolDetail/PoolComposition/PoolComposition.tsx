@@ -5,7 +5,7 @@ import { Box, Card, HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/r
 import React, { useEffect, useState } from 'react'
 import { usePool } from '../../usePool'
 import { Address } from 'viem'
-import { GqlPoolToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolToken, GqlPoolTokenDisplay } from '@/lib/shared/services/api/generated/graphql'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import Image from 'next/image'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -22,6 +22,12 @@ export function PoolComposition() {
       setTotalLiquidity(pool.dynamicData.totalLiquidity)
     }
   }, [pool])
+
+  const displayTokens = pool.tokens.filter(token =>
+    pool.displayTokens.find(
+      (displayToken: GqlPoolTokenDisplay) => token.address === displayToken.address
+    )
+  ) as GqlPoolToken[]
 
   return (
     <Card minHeight="full">
@@ -40,9 +46,9 @@ export function PoolComposition() {
                     <Heading fontWeight="bold" size="h6">
                       Total liquidity
                     </Heading>
-                    <Text variant="secondary" fontSize="0.85rem">
-                      Share of Balancer liquidity
-                    </Text>
+                    {/* <Text variant="secondary" fontSize="0.85rem"> */}
+                    {/*   Share of Balancer liquidity */}
+                    {/* </Text> */}
                   </VStack>
                   <VStack alignItems="flex-end">
                     <Heading fontWeight="bold" size="h6">
@@ -52,14 +58,14 @@ export function PoolComposition() {
                         <Skeleton height="24px" w="75px" />
                       )}
                     </Heading>
-                    <Text variant="secondary" fontSize="0.85rem">
-                      8.69% (TODO INTEGRATE)
-                    </Text>
+                    {/* <Text variant="secondary" fontSize="0.85rem"> */}
+                    {/*   8.69% (TODO INTEGRATE) */}
+                    {/* </Text> */}
                   </VStack>
                 </HStack>
               </Box>
               <VStack spacing="md" width="full">
-                {(pool.tokens as GqlPoolToken[]).map(poolToken => {
+                {displayTokens.map(poolToken => {
                   return (
                     <TokenRow
                       chain={chain}
