@@ -30,6 +30,7 @@ import { bn } from '@/lib/shared/utils/numbers'
 import { hasNestedPools } from '../pool.helpers'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
+import StakedBalanceDistributionChart from './PoolWeightCharts/StakedBalanceDistributionChart'
 
 const TABS = [
   {
@@ -225,7 +226,11 @@ export default function PoolMyLiquidity() {
           </VStack>
         </GridItem>
         <GridItem>
-          <NoisyCard cardProps={{ position: 'relative', overflow: 'hidden' }}>
+          <NoisyCard
+            cardProps={{ position: 'relative', overflow: 'hidden' }}
+            contentProps={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          >
+            <StakedBalanceDistributionChart pool={pool} chain={pool.chain} />
             <ZenGarden variant="pill" sizePx="80%" heightPx="80%" />
           </NoisyCard>
         </GridItem>

@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import * as echarts from 'echarts/core'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
 import PoolWeightChartLegend from './PoolWeightChartLegend'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
@@ -109,6 +109,7 @@ export default function WeightedPoolWeightChart({
         trigger: 'item',
         show: false,
       },
+      animation: false,
       legend: {
         show: false,
       },
@@ -221,17 +222,6 @@ export default function WeightedPoolWeightChart({
           width={`${chartSizeValues.boxWidth}`}
           height={`${chartSizeValues.boxHeight}`}
         >
-          {/* <Box */}
-          {/*   width={`${chartSizeValues.boxWidth}`} */}
-          {/*   height={`${chartSizeValues.boxHeight}`} */}
-          {/*   transform="scale(0.8)" */}
-          {/*   position="absolute" */}
-          {/*   top="0" */}
-          {/*   left="0" */}
-          {/*   right="0" */}
-          {/*   shadow="lg" */}
-          {/*   rounded="full" */}
-          {/* /> */}
           <ReactECharts
             style={{
               width: `${chartSizeValues.boxWidth}px`,

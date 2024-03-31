@@ -5,7 +5,7 @@ type NoisyCardProps = {
   cardProps?: CardProps
   contentProps?: BoxProps
   shadowContainerProps?: BoxProps
-  children: ReactNode | ReactNode[]
+  children?: ReactNode | ReactNode[]
 }
 export function NoisyCard({
   children,
