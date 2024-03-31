@@ -67,7 +67,7 @@ export async function FeaturedPools({ ...rest }: BoxProps) {
           height="full"
           templateColumns="1fr 1fr 1fr 1fr"
           templateRows="1fr 1fr"
-          p="4"
+          p="0"
         >
           <GridItem position="relative" colSpan={2} rowSpan={2}>
             {primaryPool && (
