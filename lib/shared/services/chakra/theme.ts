@@ -142,6 +142,7 @@ export const tokens = {
       border: {
         base: '#FFFFFF',
         highlight: balColors.green['600'],
+        subduedZen: 'rgba(176, 126, 67, 0.08)',
       },
       // Button colors
       button: {
@@ -221,6 +222,8 @@ export const tokens = {
       border: {
         base: '#4C5561',
         highlight: balColors.green['500'],
+        zen: 'rgba(76, 85, 97, 0.50)',
+        subduedZen: 'rgba(229, 211, 190, 0.05)',
       },
       // Button colors
       button: {
@@ -327,6 +330,7 @@ export const tokens = {
         'drop-shadow(0px 0px 0px rgba(73, 53, 29, 0.02)) drop-shadow(1px 1px 1px rgba(73, 53, 29, 0.06)) drop-shadow(3px 3px 3px rgba(73, 53, 29, 0.06)) drop-shadow(-0.5px -1px 0px #FFF)',
       chart:
         'drop-shadow(0px 0px 0px rgba(73, 53, 29, 0.4)) drop-shadow(1px 1px 1px rgba(73, 53, 29, 0.09)) drop-shadow(5px 3px 15px rgba(73, 53, 29, 0.3)) drop-shadow(4px -2px 4px rgba(73, 53, 29, 0.2)) drop-shadow(-0.5px -1px 0px #FFF)',
+      zen: '0px 4px 4px 0px rgba(0, 0, 0, 0.03);',
     },
     dark: {
       sm: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F',
@@ -369,6 +373,7 @@ export const tokens = {
         'drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.2)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1)) drop-shadow(3px 5px 5px rgba(0, 0, 0, 0.2))',
       chart:
         'drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.02)) drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.1)) drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.1)) drop-shadow(6px 6px 6px rgba(0, 0, 0, 0.1)) drop-shadow(12px 12px 12px rgba(0, 0, 0, 0.06)) drop-shadow(42px 42px 42px rgba(0, 0, 0, 0.06))',
+      zen: '0px 4px 4px 0px rgba(0, 0, 0, 0.10)',
     },
   },
   transition: {
@@ -597,6 +602,14 @@ export const balTheme = {
             _dark: tokens.colors.dark.button.border.disabled,
           },
         },
+        zen: {
+          default: 'brown.50',
+          _dark: tokens.colors.dark.border.zen,
+        },
+        subduedZen: {
+          default: tokens.colors.light.border.subduedZen,
+          _dark: tokens.colors.dark.border.subduedZen,
+        },
       },
 
       icon: {
@@ -749,6 +762,10 @@ export const balTheme = {
       chart: {
         default: tokens.shadows.light.chart,
         _dark: tokens.shadows.dark.chart,
+      },
+      zen: {
+        default: tokens.shadows.light.zen,
+        _dark: tokens.shadows.dark.zen,
       },
       btnDefault: {
         default: tokens.shadows.light.btnDefault,

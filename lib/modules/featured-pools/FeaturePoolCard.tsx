@@ -32,6 +32,10 @@ export function FeaturePoolCard({ pool, chain, isSmall = false, hasLegend = fals
       cardProps={{
         position: 'relative',
         overflow: 'hidden',
+        onClick: event => poolClickHandler(event, pool.id, pool.chain, router),
+        onMouseEnter: event => poolMouseEnterHandler(event, pool.id, pool.chain, router),
+        cursor: 'pointer',
+        _hover: { bg: 'background.level1' },
       }}
       contentProps={{
         display: 'flex',
@@ -39,15 +43,8 @@ export function FeaturePoolCard({ pool, chain, isSmall = false, hasLegend = fals
         justifyContent: 'center',
       }}
     >
-      {/* <PoolZenGarden sizePx={isSmall ? '200px' : '500px'} poolType={pool.type} /> */}
-      <VStack
-        cursor="pointer"
-        onClick={event => poolClickHandler(event, pool.id, pool.chain, router)}
-        onMouseEnter={event => poolMouseEnterHandler(event, pool.id, pool.chain, router)}
-        justifyContent="center"
-        spacing={isSmall ? '3' : '4'}
-        h="full"
-      >
+      <PoolZenGarden subdued={isSmall} sizePx={isSmall ? '200px' : '500px'} poolType={pool.type} />
+      <VStack cursor="pointer" justifyContent="center" spacing={isSmall ? '3' : '4'} h="full">
         {!isSmall && (
           <HStack justifyContent="center" w="full" spacing="sm">
             <Text variant="secondary" fontWeight="medium">

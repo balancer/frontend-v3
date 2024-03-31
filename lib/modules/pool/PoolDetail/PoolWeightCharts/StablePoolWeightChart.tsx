@@ -103,8 +103,7 @@ export default function StablePoolWeightChart({
       >
         <Box
           as={motion.div}
-          rounded="full"
-          bg="white"
+          rounded="md"
           position="absolute"
           transform="translateY(-50%)"
           bottom="0"
@@ -120,6 +119,7 @@ export default function StablePoolWeightChart({
           animate={{ opacity: 1, transition: { delay: 0.1 } }}
           width={`${chartSizeValues.boxWidth * 0.58}px`}
           height={`${chartSizeValues.boxHeight * 0.58}px`}
+          bg="background.base"
         >
           <NoisyCard
             cardProps={{

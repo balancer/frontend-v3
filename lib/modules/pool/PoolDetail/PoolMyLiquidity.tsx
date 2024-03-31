@@ -226,13 +226,7 @@ export default function PoolMyLiquidity() {
         </GridItem>
         <GridItem>
           <NoisyCard cardProps={{ position: 'relative', overflow: 'hidden' }}>
-            <ZenGarden
-              variant="pill"
-              sizePx="80%"
-              heightPx="80%"
-              // top="50%"
-              // transform="translateY(-50%)"
-            />
+            <ZenGarden variant="pill" sizePx="80%" heightPx="80%" />
           </NoisyCard>
         </GridItem>
       </Grid>

@@ -134,7 +134,7 @@ export default function BoostedPoolWeightChart({
           labelLine: {
             show: false,
           },
-          top: isSmall ? -130 : -48,
+          top: isSmall ? -145 : -48,
           data: pool.displayTokens.map((token, i) => ({
             value: 33,
             name: token.symbol,
