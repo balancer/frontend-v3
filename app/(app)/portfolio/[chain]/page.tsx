@@ -3,6 +3,7 @@ import { PoolName } from '@/lib/modules/pool/PoolName'
 
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import { ChainSlug, slugToChainMap } from '@/lib/modules/pool/pool.utils'
+// eslint-disable-next-line max-len
 import { ClaimNetworkPoolsLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimNetworkPools/ClaimNetworkPoolsLayout'
 import { ClaimPortfolioModal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimPortfolioModal'
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
@@ -38,12 +39,7 @@ export default function NetworkClaim() {
 
   return (
     <ClaimNetworkPoolsLayout backLink={'/portfolio'} title="Portfolio">
-      <HStack
-        pb="3"
-        justifyContent="space-between"
-        borderBottom="1px"
-        borderColor="input.borderDefault"
-      >
+      <HStack pb="3" justifyContent="space-between">
         <HStack gap={4}>
           <NetworkIcon chain={gqlChain} size={12} />
 
@@ -60,22 +56,12 @@ export default function NetworkClaim() {
         </Heading>
       </HStack>
 
-      <Stack py="4">
+      <Stack py="4" gap="md">
         {isLoadingClaimPoolData ? (
           <Skeleton height="126px" />
         ) : pools && pools.length > 0 ? (
           pools?.map(pool => (
-            <Card
-              variant="level2"
-              gap={4}
-              key={pool.id}
-              p="md"
-              shadow="xl"
-              flex="1"
-              width="100%"
-              border="1px solid"
-              borderColor="border.base"
-            >
+            <Card key={pool.id} variant="subSection">
               <HStack justifyContent="space-between">
                 <HStack>
                   <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} size={24} />
@@ -98,6 +84,7 @@ export default function NetworkClaim() {
                     setModalPools([pool])
                   }}
                   variant="secondary"
+                  size="sm"
                   isDisabled={poolRewardsMap[pool.id]?.totalFiatClaimBalance?.isEqualTo(0)}
                 >
                   Claim

@@ -45,7 +45,7 @@ export function _useAddLiquidity() {
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts'],
-    [hasValidationErrors(), 'Errors in token inputs'],
+    [hasValidationErrors, 'Errors in token inputs'],
     [needsToAcceptHighPI, 'Accept high price impact first'],
     [!acceptPoolRisks, 'Please accept the pool risks first']
   )

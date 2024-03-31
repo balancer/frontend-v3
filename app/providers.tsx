@@ -9,15 +9,8 @@ import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSetting
 import { ReactQueryClientProvider } from './react-query.provider'
 import { ThemeProvider as ColorThemeProvider } from 'next-themes'
 import { DEFAULT_THEME_COLOR_MODE } from '@/lib/shared/services/chakra/theme'
-// import { COOKIE_KEYS } from '@/lib/modules/cookies/cookie.constants'
-// import { cookies } from 'next/headers'
 
 export function Providers({ children }: { children: ReactNode }) {
-  // const initCurrency = cookies().get(COOKIE_KEYS.UserSettings.Currency)?.value
-  // const initSlippage = cookies().get(COOKIE_KEYS.UserSettings.Slippage)?.value
-  // const initEnableSignatures = cookies().get(COOKIE_KEYS.UserSettings.EnableSignatures)?.value
-  // const initPoolListView = cookies().get(COOKIE_KEYS.UserSettings.PoolListView)?.value
-
   return (
     <ColorThemeProvider defaultTheme={DEFAULT_THEME_COLOR_MODE}>
       <ThemeProvider>

@@ -37,7 +37,11 @@ export default function DarkModeToggle() {
   }, [theme])
 
   if (!mounted) {
-    return <Button variant="tertiary" isLoading></Button>
+    return (
+      <Button variant="tertiary" p="0" isDisabled>
+        <Moon size={18} />
+      </Button>
+    )
   }
 
   return (

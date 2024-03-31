@@ -14,7 +14,7 @@ export function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | un
   const { amountOutForToken } = useRemoveLiquidity()
 
   return (
-    <Card variant="level4" p="md" shadow="sm" w="full">
+    <Card variant="subSection">
       <VStack spacing="md">
         <HStack w="full" justify="space-between">
           <Text fontWeight="bold" fontSize="1rem">

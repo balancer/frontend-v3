@@ -13,7 +13,6 @@ import {
   PopoverBody,
   PopoverCloseButton,
   PopoverContent,
-  PopoverHeader,
   PopoverTrigger,
   VStack,
   Text,
@@ -26,7 +25,7 @@ import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { Percent, Settings } from 'react-feather'
 import { CurrencySelect } from './CurrencySelect'
 
-function SlippageInput() {
+export function SlippageInput() {
   const { slippage, setSlippage } = useUserSettings()
   const presetOpts = ['0.5', '1', '2']
 
@@ -87,11 +86,14 @@ export function UserSettings() {
       <PopoverContent>
         <PopoverArrow bg="background.level3" />
         <PopoverCloseButton />
-        <PopoverHeader>
-          <Heading size="md">Settings</Heading>
-        </PopoverHeader>
-        <PopoverBody>
-          <VStack align="start" spacing="24px" py="3">
+        <PopoverBody p="0">
+          <HStack color="font.special" p="md" pb="0">
+            <Settings size={20} />
+            <Heading size="md" variant="special">
+              Settings
+            </Heading>
+          </HStack>
+          <VStack align="start" spacing="24px" p="md">
             <Box w="full">
               <Heading size="sm" pb="2">
                 Currency

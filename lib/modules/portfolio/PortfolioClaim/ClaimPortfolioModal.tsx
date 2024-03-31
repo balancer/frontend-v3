@@ -9,7 +9,6 @@ import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import {
   Button,
   Card,
-  Heading,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -17,7 +16,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Stack,
   Text,
   VStack,
 } from '@chakra-ui/react'
@@ -26,6 +24,7 @@ import { BalTokenReward } from './useBalRewards'
 import { ClaimableReward } from './useClaimableBalances'
 import { ClaimTotal } from './ClaimTotal'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+// eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
@@ -33,7 +32,6 @@ import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/
 type Props = {
   isOpen: boolean
   onClose(): void
-  //   onOpen(): void
   pools: PoolListItem[]
 }
 
@@ -73,31 +71,29 @@ export function ClaimPortfolioModal({ isOpen, onClose, pools, ...rest }: Props) 
           />
         )}
 
-        <ModalHeader>
-          <Heading fontWeight="bold" size="h5">
-            {title}
-          </Heading>
-        </ModalHeader>
+        <ModalHeader>{title}</ModalHeader>
 
         <ModalCloseButton />
 
         <ModalBody>
-          <Stack gap={4}>
-            <Card variant="level2" gap={4} p="md" shadow="xl" flex="1" width="100%">
-              <Text fontWeight="700">You`ll get</Text>
-              {balRewards &&
-                balRewards.map(
-                  reward =>
-                    reward && (
-                      <RewardTokenRow
-                        key={`${reward?.tokenAddress}-${reward?.gaugeAddress}`}
-                        reward={reward}
-                      />
-                    )
-                )}
+          <VStack spacing="sm">
+            <Card variant="modalSubSection">
+              <VStack align="start" spacing="md">
+                <Text color="grayText">You&apos;ll get</Text>
+                {balRewards &&
+                  balRewards.map(
+                    reward =>
+                      reward && (
+                        <RewardTokenRow
+                          key={`${reward?.tokenAddress}-${reward?.gaugeAddress}`}
+                          reward={reward}
+                        />
+                      )
+                  )}
 
-              {nonBalRewards &&
-                nonBalRewards.map((reward, idx) => <RewardTokenRow key={idx} reward={reward} />)}
+                {nonBalRewards &&
+                  nonBalRewards.map((reward, idx) => <RewardTokenRow key={idx} reward={reward} />)}
+              </VStack>
             </Card>
 
             <ClaimTotal
@@ -112,7 +108,7 @@ export function ClaimPortfolioModal({ isOpen, onClose, pools, ...rest }: Props) 
                 chain={chain}
               />
             )}
-          </Stack>
+          </VStack>
         </ModalBody>
 
         <ModalFooter>

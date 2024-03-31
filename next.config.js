@@ -21,7 +21,7 @@ const nextConfig = {
       },
     ],
   },
-  pageExtensions: ['tsx', `${process.env.PROTOCOL}.tsx`],
+  pageExtensions: ['tsx', `${process.env.PROTOCOL}.tsx`, 'ts'],
 }
 
 module.exports = withSentryConfig(nextConfig, sentryWebpackPluginOptions, sentryOptions)

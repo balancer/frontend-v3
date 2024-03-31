@@ -5,6 +5,7 @@ import { usePool } from '../../usePool'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import Image from 'next/image'
 import { fNum } from '@/lib/shared/utils/numbers'
+import { Repeat } from 'react-feather'
 
 export default function PoolMetaBadges() {
   const { pool, chain } = usePool()
@@ -59,13 +60,18 @@ export default function PoolMetaBadges() {
       <Tooltip label="Swap fee">
         <Badge
           fontWeight="normal"
-          p="1"
+          py="xs"
+          px="sm"
           background="background.level2"
           border="1px solid"
           borderColor="border.base"
           shadow="sm"
+          rounded="full"
         >
-          <Text>{fNum('feePercent', pool.dynamicData.swapFee)}</Text>
+          <HStack color="font.primary">
+            <Repeat size={12} />
+            <Text>{fNum('feePercent', pool.dynamicData.swapFee)}</Text>
+          </HStack>
         </Badge>
       </Tooltip>
     </HStack>

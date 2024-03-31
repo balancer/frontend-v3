@@ -14,7 +14,7 @@ export function NoisyCard({
   shadowContainerProps = {},
 }: NoisyCardProps) {
   return (
-    <Card
+    <Box
       backgroundImage={`url('/images/background-noise.png')`}
       height="full"
       width="full"
@@ -39,6 +39,6 @@ export function NoisyCard({
       >
         {children}
       </Box>
-    </Card>
+    </Box>
   )
 }

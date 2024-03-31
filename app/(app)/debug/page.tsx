@@ -11,7 +11,19 @@ export default function Debug() {
         as={NextLink}
         href="pools/ethereum/v2/0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512/add-liquidity"
       >
-        Add liquidity in wjAura-weth (unbalanced)
+        Add liquidity in WEIGHTED (wjAura-weth)
+      </Link>
+      <Link
+        as={NextLink}
+        href="pools/ethereum/v2/0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080/add-liquidity"
+      >
+        Add liquidity in META_STABLE (wstETH_wETH)
+      </Link>
+      <Link
+        as={NextLink}
+        href="pools/optimism/v2/0x3dc09db8e571da76dd04e9176afc7feee0b89106000000000000000000000019/add-liquidity"
+      >
+        Add liquidity in STABLE (FRAX_USDC_MAI)
       </Link>
       <Link
         as={NextLink}
@@ -57,6 +69,9 @@ export default function Debug() {
       </Link>
       <Link as={NextLink} href="/debug/sentry">
         Sentry
+      </Link>
+      <Link as={NextLink} href="/debug/wallet-check">
+        Wallet check
       </Link>
     </VStack>
   )

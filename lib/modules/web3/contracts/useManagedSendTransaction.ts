@@ -15,6 +15,7 @@ import { getGqlChain } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { useChainSwitch } from '../useChainSwitch'
 import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
 export function useManagedSendTransaction(
   labels: TransactionLabels,
@@ -23,6 +24,7 @@ export function useManagedSendTransaction(
   onSimulationError?: (error: unknown) => void
 ) {
   const { shouldChangeNetwork } = useChainSwitch(chainId)
+  const { minConfirmations } = useNetworkConfig()
 
   const prepareQuery = usePrepareSendTransaction({
     ...txConfig,
@@ -39,7 +41,10 @@ export function useManagedSendTransaction(
     },
   })
 
-  const transactionStatusQuery = useWaitForTransaction({ hash: writeQuery.data?.hash })
+  const transactionStatusQuery = useWaitForTransaction({
+    hash: writeQuery.data?.hash,
+    confirmations: minConfirmations,
+  })
 
   const bundle = {
     simulation: {

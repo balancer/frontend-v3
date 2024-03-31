@@ -29,7 +29,6 @@ import { useUserAccount } from '../../web3/useUserAccount'
 import { bn } from '@/lib/shared/utils/numbers'
 import { hasNestedPools } from '../pool.helpers'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
-import { GqlPoolApr } from '@/lib/shared/services/api/generated/graphql'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 
 const TABS = [
@@ -135,22 +134,22 @@ export default function PoolMyLiquidity() {
     : pool.displayTokens
 
   return (
-    <Card variant="level2" shadow="2xl" width="full" minHeight="320px" borderWidth={0}>
-      <Grid width="full" templateColumns="1fr 1fr">
+    <Card minHeight="320px">
+      <Grid width="full" templateColumns="1fr 1fr" gap="md">
         <GridItem>
-          <VStack spacing="0" width="full">
-            <HStack width="full" p="4" justifyContent="space-between">
+          <VStack spacing="md" width="full">
+            <HStack width="full" justifyContent="space-between">
               <Heading bg="font.special" backgroundClip="text" fontWeight="bold" size="h5">
                 My liquidity
               </Heading>
               <ButtonGroup currentOption={activeTab} options={TABS} onChange={handleTabChanged} />
             </HStack>
-            <Box width="full" p="4" pt="0">
-              <Card variant="level2" borderWidth={1} borderColor="borderColor" shadow="none">
-                <VStack width="full">
-                  <Box width="full" borderBottomWidth={1} borderColor="borderColor">
-                    <HStack py="4" px="4" width="full" justifyContent="space-between">
-                      <VStack spacing="1" alignItems="flex-start">
+            <Box width="full">
+              <Card variant="subSection">
+                <VStack spacing="md" width="full">
+                  <Box pb="md" width="full" borderBottomWidth={1} borderColor="border.base">
+                    <HStack width="full" justifyContent="space-between">
+                      <VStack alignItems="flex-start">
                         <Heading fontWeight="bold" size="h6">
                           My {getTitlePrefix()} balance
                         </Heading>
@@ -158,7 +157,7 @@ export default function PoolMyLiquidity() {
                           APR range
                         </Text>
                       </VStack>
-                      <VStack spacing="1" alignItems="flex-end">
+                      <VStack alignItems="flex-end">
                         {isLoadingOnchainUserBalances || isConnecting ? (
                           <Skeleton w="12" h="5" />
                         ) : (
@@ -172,7 +171,7 @@ export default function PoolMyLiquidity() {
                       </VStack>
                     </HStack>
                   </Box>
-                  <VStack spacing="4" p="4" py="2" pb="4" width="full">
+                  <VStack spacing="md" width="full">
                     {displayTokens.map(token => {
                       return (
                         <TokenRow
@@ -185,47 +184,47 @@ export default function PoolMyLiquidity() {
                       )
                     })}
                   </VStack>
+                  <HStack mt="md" width="full" justifyContent="flex-start">
+                    <Button
+                      as={Link}
+                      href={`${pathname}/add-liquidity`}
+                      variant="primary"
+                      prefetch={true}
+                    >
+                      Add
+                    </Button>
+                    <Button
+                      as={Link}
+                      href={`${pathname}/remove-liquidity`}
+                      variant={hasUnstakedBalance ? 'secondary' : 'disabled'}
+                      isDisabled={!hasUnstakedBalance}
+                      prefetch={true}
+                    >
+                      Remove
+                    </Button>
+                    <Button
+                      as={Link}
+                      href={`${pathname}/stake`}
+                      variant={canStake && hasUnstakedBalance ? 'secondary' : 'disabled'}
+                      isDisabled={!(canStake && hasUnstakedBalance)}
+                    >
+                      Stake
+                    </Button>
+                    <Button
+                      as={Link}
+                      href={`${pathname}/unstake`}
+                      variant={hasStakedBalance ? 'secondary' : 'disabled'}
+                      isDisabled={!hasStakedBalance}
+                    >
+                      Unstake
+                    </Button>
+                  </HStack>
                 </VStack>
-                <HStack p="4" width="full" justifyContent="flex-start">
-                  <Button
-                    as={Link}
-                    href={`${pathname}/add-liquidity`}
-                    variant="primary"
-                    prefetch={true}
-                  >
-                    Add
-                  </Button>
-                  <Button
-                    as={Link}
-                    href={`${pathname}/remove-liquidity`}
-                    variant={hasUnstakedBalance ? 'secondary' : 'disabled'}
-                    isDisabled={!hasUnstakedBalance}
-                    prefetch={true}
-                  >
-                    Remove
-                  </Button>
-                  <Button
-                    as={Link}
-                    href={`${pathname}/stake`}
-                    variant={canStake && hasUnstakedBalance ? 'secondary' : 'disabled'}
-                    isDisabled={!(canStake && hasUnstakedBalance)}
-                  >
-                    Stake
-                  </Button>
-                  <Button
-                    as={Link}
-                    href={`${pathname}/unstake`}
-                    variant={hasStakedBalance ? 'secondary' : 'disabled'}
-                    isDisabled={!hasStakedBalance}
-                  >
-                    Unstake
-                  </Button>
-                </HStack>
               </Card>
             </Box>
           </VStack>
         </GridItem>
-        <GridItem p="4" pl="0">
+        <GridItem>
           <NoisyCard cardProps={{ position: 'relative', overflow: 'hidden' }}>
             <ZenGarden
               variant="pill"

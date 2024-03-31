@@ -7,15 +7,7 @@ export function PoolAttributes() {
   const formattedAttributes = useFormattedPoolAttributes()
 
   return (
-    <Card
-      variant="level2"
-      shadow="2xl"
-      width="full"
-      minHeight="320px"
-      px="4"
-      py="5"
-      borderWidth={0}
-    >
+    <Card minHeight="320px">
       <VStack alignItems="flex-start" spacing="4" width="full">
         <Heading variant="h4" fontSize="1.25rem">
           Pool attributes

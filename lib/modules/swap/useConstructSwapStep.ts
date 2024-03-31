@@ -19,9 +19,10 @@ export function useConstructSwapStep() {
 
   const transactionLabels: TransactionLabels = {
     init: capitalize(swapAction),
-    confirming: 'Confirming...',
+    confirming: 'Confirming swap...',
     confirmed: `${swapActionPastTense(swapAction)}!`,
     tooltip: `${capitalize(swapAction)} ${tokenInSymbol} for ${tokenOutSymbol}`,
+    description: `${capitalize(swapAction)} ${tokenInSymbol} for ${tokenOutSymbol}`,
   }
 
   useEffect(() => {

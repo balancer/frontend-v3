@@ -47,6 +47,13 @@ module.exports = {
             message:
               'Import useQuery from wagmi to keep a unified useQuery API until we migrate to wagmi v2',
           },
+          {
+            group: ['@apollo/client'],
+            importNames: ['useQuery'],
+            message:
+              // eslint-disable-next-line max-len
+              'Import useQuery from @apollo/experimental-nextjs-app-support/ssr to avoid u.inFlightLinkObservables errors',
+          },
         ],
       },
     ],

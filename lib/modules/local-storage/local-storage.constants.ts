@@ -1,4 +1,4 @@
-export const COOKIE_KEYS = {
+export const LS_KEYS = {
   UserAddress: 'userAddress',
   UserSettings: {
     ColorMode: 'chakra-ui-color-mode', // Has to be this string to match Chakra's default

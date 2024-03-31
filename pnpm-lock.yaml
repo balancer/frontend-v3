@@ -12,8 +12,8 @@ dependencies:
     specifier: 3.8.0-rc.1
     version: 3.8.0-rc.1(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
   '@balancer/sdk':
-    specifier: ^0.12.0
-    version: 0.12.0(typescript@5.1.6)
+    specifier: ^0.13.0
+    version: 0.13.0(typescript@5.1.6)
   '@chakra-ui/anatomy':
     specifier: ^2.2.2
     version: 2.2.2
@@ -98,9 +98,6 @@ dependencies:
   graphql-tag:
     specifier: ^2.12.6
     version: 2.12.6(graphql@16.8.1)
-  js-cookie:
-    specifier: ^3.0.5
-    version: 3.0.5
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
@@ -1073,8 +1070,8 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@balancer/sdk@0.12.0(typescript@5.1.6):
-    resolution: {integrity: sha512-tp0s2/enC+hkXczcENSOY5Vxbz4vfsvCNroO7EmZzE4hgVMdfHcz+whUQp2iFAIdXSbrYNge+3oYewV5f0btQA==}
+  /@balancer/sdk@0.13.0(typescript@5.1.6):
+    resolution: {integrity: sha512-edDI8gvjjh+1oP/tkLd/k83gjFeRVZSn6sHhmlFfecPwtVwVRi/Rpju5tcNgvYK81xmUSRJFuJDaRAkb0u+O/Q==}
     engines: {node: '>=18.x'}
     dependencies:
       decimal.js-light: 2.5.1
@@ -7001,6 +6998,11 @@ packages:
     engines: {node: '>= 0.6'}
     dev: true
 
+  /cookie@0.6.0:
+    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
+    engines: {node: '>= 0.6'}
+    dev: true
+
   /copy-anything@3.0.5:
     resolution: {integrity: sha512-yCEafptTtb4bk7GLEQoM8KVJpxAfdBJYaXyzQEgQQQgYrZiDp8SJmGKlYza6CYjEDNstAdNdKA3UuoULlEbS6w==}
     engines: {node: '>=12.13'}
@@ -8072,8 +8074,8 @@ packages:
       strip-final-newline: 3.0.0
     dev: true
 
-  /express@4.18.3:
-    resolution: {integrity: sha512-6VyCijWQ+9O7WuVMTRBTl+cjNNIzD5cY5mQ1WM8r/LEkI2u8EYpOotESNwzNlyCn3g+dmjKYI6BmNneSr/FSRw==}
+  /express@4.19.1:
+    resolution: {integrity: sha512-K4w1/Bp7y8iSiVObmCrtq8Cs79XjJc/RU2YYkZQ7wpUu5ZyZ7MtPHkqoMz4pf+mgXfNvo2qft8D9OnrH2ABk9w==}
     engines: {node: '>= 0.10.0'}
     dependencies:
       accepts: 1.3.8
@@ -8081,7 +8083,7 @@ packages:
       body-parser: 1.20.2
       content-disposition: 0.5.4
       content-type: 1.0.5
-      cookie: 0.5.0
+      cookie: 0.6.0
       cookie-signature: 1.0.6
       debug: 2.6.9
       depd: 2.0.0
@@ -9318,11 +9320,6 @@ packages:
   /jose@4.15.4:
     resolution: {integrity: sha512-W+oqK4H+r5sITxfxpSU+MMdr/YSWGvgZMQDIsNoBDGGy4i7GBPTtvFKibQzW06n3U3TqHjhvBJsirShsEJ6eeQ==}
     dev: true
-
-  /js-cookie@3.0.5:
-    resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}
-    engines: {node: '>=14'}
-    dev: false
 
   /js-levenshtein@1.1.6:
     resolution: {integrity: sha512-X2BB11YZtrRqY4EnQcLX5Rh373zbK4alC1FW7D7MBhL2gtcC17cTnr6DmfHZeS0s2rTHjUTMMHfG7gO8SSdw+g==}
@@ -11313,7 +11310,7 @@ packages:
     resolution: {integrity: sha512-b9oa3juBM3EXKDU/v5aL4HEC41yGxQZY4pluFN+nvRJLyvHc+JQWPWxxkOPAAr1vGY/4zH+V9NGS+ojIQkc88w==}
     dependencies:
       body-parser: 1.20.2
-      express: 4.18.3
+      express: 4.19.1
     transitivePeerDependencies:
       - supports-color
     dev: true

@@ -138,7 +138,7 @@ export function aNested50Weth503Pool(...options: Partial<GqlPoolElement>[]): Gql
   ]
 
   const defaultOptions: Partial<GqlPoolElement> = {
-    id: '0x08775ccb6674d6bdceb0797c364c2653ed84f3840002000000000000000004f0',
+    id: '0x08775ccb6674d6bdceb0797c364c2653ed84f3840002000000000000000004f0' as Address,
     address: '0x08775ccb6674d6bdceb0797c364c2653ed84f384',
     type: GqlPoolType.Weighted,
     tokens: tokens as unknown as GqlPoolToken[],

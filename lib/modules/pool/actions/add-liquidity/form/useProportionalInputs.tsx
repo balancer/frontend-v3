@@ -116,9 +116,9 @@ export function _calculateProportionalHumanAmountsIn(
   const amountIn: InputAmount = helpers.toInputAmounts([{ tokenAddress, humanAmount }])[0]
   return (
     calculateProportionalAmounts(helpers.poolStateWithBalances, amountIn)
-      .amountsIn.map(amountIn => ({
-        tokenAddress: amountIn.address,
-        humanAmount: formatUnits(amountIn.rawAmount, amountIn.decimals) as HumanAmount,
+      .tokenAmounts.map(({ address, rawAmount, decimals }) => ({
+        tokenAddress: address,
+        humanAmount: formatUnits(rawAmount, decimals) as HumanAmount,
       }))
       // user updated token must be in the first place of the array because the Proportional handler always calculates bptOut based on the first position
       .sort(sortUpdatedTokenFirst(tokenAddress))

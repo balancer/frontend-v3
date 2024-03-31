@@ -43,7 +43,7 @@ export function SwapDetails() {
   const { tokenInInfo, tokenOutInfo, swapType, tokenIn, tokenOut, handler, simulationQuery } =
     useSwap()
 
-  const { priceImpactLevel, priceImpactColor, getPriceImpactIcon, setPriceImpact, priceImpact } =
+  const { priceImpactLevel, priceImpactColor, PriceImpactIcon, setPriceImpact, priceImpact } =
     usePriceImpact()
 
   const isDefaultSwap = handler instanceof DefaultSwapHandler
@@ -89,7 +89,9 @@ export function SwapDetails() {
             {priceImpactLevel === 'low' ? (
               <InfoOutlineIcon color="grayText" />
             ) : (
-              <Box color={priceImpactColor}>{getPriceImpactIcon(priceImpactLevel)}</Box>
+              <Box>
+                <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
+              </Box>
             )}
           </Tooltip>
         </HStack>

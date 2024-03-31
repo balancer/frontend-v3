@@ -9,8 +9,6 @@ import {
   PopoverBody,
   PopoverCloseButton,
   PopoverContent,
-  PopoverFooter,
-  PopoverHeader,
   PopoverTrigger,
   Text,
   Tooltip,
@@ -18,6 +16,7 @@ import {
   Center,
   CircularProgress,
   CircularProgressLabel,
+  Box,
 } from '@chakra-ui/react'
 import {
   TrackedTransaction,
@@ -25,9 +24,10 @@ import {
   useRecentTransactions,
 } from '@/lib/modules/transactions/RecentTransactionsProvider'
 import { isEmpty, orderBy } from 'lodash'
-import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { useBlockExplorer } from '../../hooks/useBlockExplorer'
-import { Activity, Check, Trash2 } from 'react-feather'
+import { Activity, ArrowUpRight, Check, X } from 'react-feather'
+import { getChainShortName } from '@/lib/config/app.config'
+import { formatDistanceToNow } from 'date-fns'
 
 function TransactionIcon({ status }: { status: TransactionStatus }) {
   switch (status) {
@@ -43,22 +43,16 @@ function TransactionIcon({ status }: { status: TransactionStatus }) {
       )
     case 'confirmed':
       return (
-        <CircularProgress value={100} trackColor="border.base" size="5" color="font.highlight">
-          <CircularProgressLabel fontSize="md" color="font.highlight" pl={1}>
-            <Check size={12} strokeWidth={4} />
-          </CircularProgressLabel>
-        </CircularProgress>
+        <Box color="font.highlight">
+          <Check size={20} />
+        </Box>
       )
     case 'reverted':
     case 'rejected':
       return (
-        <CircularProgress value={100} trackColor="border.base" size={5} color="red.500" mt="1">
-          <CircularProgressLabel>
-            <Text fontWeight="bold" color="red.500" fontSize="xs">
-              !
-            </Text>
-          </CircularProgressLabel>
-        </CircularProgress>
+        <Box color="red.500">
+          <X size={20} />
+        </Box>
       )
     default:
       return null
@@ -76,16 +70,26 @@ function TransactionRow({ transaction }: { transaction: TrackedTransaction }) {
       : transaction.init
 
   return (
-    <HStack key={transaction.hash} p="md">
+    <HStack key={transaction.hash} py="sm" align="start" w="full">
       <TransactionIcon status={transaction.status} />
-      <Tooltip label={label} fontSize="sm">
-        <Text isTruncated maxW="85%">
-          {transaction.init}
-        </Text>
-      </Tooltip>
-      <Link href={getBlockExplorerTxUrl(transaction.hash)} target="_blank">
-        <ExternalLinkIcon color="gray.400" width="1rem" height="1rem" />
-      </Link>
+      <VStack align="start" w="full" spacing="none">
+        <Tooltip label={label} fontSize="sm">
+          <Text isTruncated maxW="85%">
+            {transaction.init}
+          </Text>
+        </Tooltip>
+        <HStack fontSize="xs" spacing="xs">
+          <Text color="grayText">
+            {transaction.chain ? getChainShortName(transaction.chain) : 'Unknown'},&nbsp;
+            {formatDistanceToNow(new Date(transaction.timestamp), {
+              addSuffix: true,
+            })}
+          </Text>
+          <Link href={getBlockExplorerTxUrl(transaction.hash)} target="_blank" color="grayText">
+            <ArrowUpRight size={16} />
+          </Link>
+        </HStack>
+      </VStack>
     </HStack>
   )
 }
@@ -94,7 +98,7 @@ function Transactions({ transactions }: { transactions: Record<string, TrackedTr
   const orderedRecentTransactions = orderBy(Object.values(transactions), 'timestamp', 'desc')
 
   return (
-    <VStack align="start" spacing="none">
+    <VStack align="start" spacing="none" p="md" maxH="250px" overflowY="auto">
       {orderedRecentTransactions.map(transaction => (
         <TransactionRow key={transaction.hash} transaction={transaction} />
       ))}
@@ -103,7 +107,7 @@ function Transactions({ transactions }: { transactions: Record<string, TrackedTr
 }
 
 export default function RecentTransactions() {
-  const { transactions, clearTransactions } = useRecentTransactions()
+  const { transactions } = useRecentTransactions()
   const hasTransactions = !isEmpty(transactions)
 
   const confirmingTxCount = Object.values(transactions).filter(
@@ -128,17 +132,21 @@ export default function RecentTransactions() {
               </CircularProgressLabel>
             </CircularProgress>
           ) : (
-            <Activity size={18} />
+            <Activity size={20} />
           )}
         </Button>
       </PopoverTrigger>
       <PopoverContent w="330px">
         <PopoverArrow bg="background.level3" />
         <PopoverCloseButton />
-        <PopoverHeader>
-          <Heading size="md">Recent transactions</Heading>
-        </PopoverHeader>
-        <PopoverBody maxH="200px" overflowY="auto" p={0}>
+        <PopoverBody p="0">
+          <HStack color="font.special" p="md" pb="0">
+            <Activity size={18} />
+            <Heading size="md" variant="special">
+              Recent activity
+            </Heading>
+          </HStack>
+
           {hasTransactions ? (
             <Transactions transactions={transactions} />
           ) : (
@@ -147,14 +155,6 @@ export default function RecentTransactions() {
             </Center>
           )}
         </PopoverBody>
-        <PopoverFooter>
-          <Button isDisabled={!hasTransactions} onClick={() => clearTransactions()} size="sm">
-            <HStack color="font.primary">
-              <Trash2 size={12} />
-              <Text>Clear transactions</Text>
-            </HStack>
-          </Button>
-        </PopoverFooter>
       </PopoverContent>
     </Popover>
   )

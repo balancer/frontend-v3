@@ -1,7 +1,7 @@
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { fNum, safeTokenFormat, bn } from '@/lib/shared/utils/numbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { HStack, VStack, Text, Tooltip, Icon } from '@chakra-ui/react'
+import { HStack, VStack, Text, Tooltip, Icon, Box } from '@chakra-ui/react'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import { useEffect, useState } from 'react'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
@@ -28,7 +28,7 @@ export function PoolActionsPriceImpactDetails({
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
 
-  const { priceImpactLevel, priceImpactColor, getPriceImpactIcon, priceImpact } = usePriceImpact()
+  const { priceImpactLevel, priceImpactColor, PriceImpactIcon, priceImpact } = usePriceImpact()
 
   const priceImpactLabel = priceImpact ? fNum('priceImpact', priceImpact) : '-'
 
@@ -84,7 +84,9 @@ export function PoolActionsPriceImpactDetails({
             {priceImpactLevel === 'low' ? (
               <InfoOutlineIcon color="grayText" />
             ) : (
-              getPriceImpactIcon(priceImpactLevel)
+              <Box>
+                <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
+              </Box>
             )}
           </Tooltip>
         </HStack>

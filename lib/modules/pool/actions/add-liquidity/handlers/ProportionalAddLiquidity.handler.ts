@@ -37,14 +37,14 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
     // This is an edge-case scenario where the user only enters one humanAmount (that we always move to the first position of the humanAmountsIn array)
     const humanAmountIn = this.helpers.toInputAmounts(humanAmountsIn)[0]
 
-    const { bptOut } = calculateProportionalAmounts(
+    const { bptAmount } = calculateProportionalAmounts(
       this.helpers.poolStateWithBalances,
       humanAmountIn
     )
 
     const addLiquidity = new AddLiquidity()
 
-    const addLiquidityInput = this.constructSdkInput(humanAmountsIn, bptOut)
+    const addLiquidityInput = this.constructSdkInput(humanAmountsIn, bptAmount)
     const sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolState)
 
     return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }

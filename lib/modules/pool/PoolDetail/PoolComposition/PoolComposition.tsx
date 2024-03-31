@@ -24,19 +24,19 @@ export function PoolComposition() {
   }, [pool])
 
   return (
-    <Card variant="level2" shadow="2xl" width="full" minHeight="320px" borderWidth={0}>
-      <VStack spacing="0" width="full">
-        <HStack width="full" p="4" justifyContent="space-between">
+    <Card minHeight="full">
+      <VStack width="full" spacing="md">
+        <HStack width="full" justifyContent="space-between">
           <Heading fontWeight="bold" size="h5">
             Pool composition
           </Heading>
         </HStack>
-        <Box width="full" p="4" pt="0">
-          <Card variant="level2" borderWidth={1} borderColor="borderColor" shadow="none">
-            <VStack width="full">
-              <Box width="full" borderBottomWidth={1} borderColor="border.base">
-                <HStack py="4" px="4" width="full" justifyContent="space-between">
-                  <VStack spacing="1" alignItems="flex-start">
+        <Box width="full">
+          <Card variant="subSection">
+            <VStack spacing="md" width="full">
+              <Box pb="md" width="full" borderBottomWidth={1} borderColor="border.base">
+                <HStack width="full" justifyContent="space-between">
+                  <VStack alignItems="flex-start">
                     <Heading fontWeight="bold" size="h6">
                       Total liquidity
                     </Heading>
@@ -44,7 +44,7 @@ export function PoolComposition() {
                       Share of Balancer liquidity
                     </Text>
                   </VStack>
-                  <VStack spacing="1" alignItems="flex-end">
+                  <VStack alignItems="flex-end">
                     <Heading fontWeight="bold" size="h6">
                       {totalLiquidity ? (
                         toCurrency(totalLiquidity)
@@ -58,7 +58,7 @@ export function PoolComposition() {
                   </VStack>
                 </HStack>
               </Box>
-              <VStack spacing="4" p="4" py="2" pb="4" width="full">
+              <VStack spacing="md" width="full">
                 {(pool.tokens as GqlPoolToken[]).map(poolToken => {
                   return (
                     <TokenRow

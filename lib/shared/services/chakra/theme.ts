@@ -901,20 +901,17 @@ export const balTheme = {
         incentives: {
           root: {
             width: 'full',
-            borderTopWidth: 0,
-            borderBottomWidth: 0,
-            shadow: '2xl',
+            background: 'background.level2',
             rounded: 'lg',
+            borderWidth: '1px',
+            borderColor: 'input.borderDefault',
+            shadow: 'xl',
           },
           container: {
             width: 'full',
-            borderTopWidth: 0,
-            borderBottomWidth: 0,
           },
           panel: {
             width: 'full',
-            borderTopWidth: 0,
-            borderBottomWidth: 0,
           },
           icon: {
             color: 'orange.500',
@@ -1089,6 +1086,7 @@ export const balTheme = {
         color: 'font.primary',
         fontWeight: 'medium',
         letterSpacing: '-0.25px',
+        lineHeight: '1.3',
       },
       variants: {
         secondary: {
@@ -1286,7 +1284,11 @@ export const balTheme = {
         },
         closeButton: {
           top: 3,
-          color: 'grayText',
+          color: 'font.primary',
+          rounded: 'full',
+        },
+        header: {
+          color: 'font.primary',
         },
       },
       defaultProps: {
@@ -1332,21 +1334,43 @@ export const balTheme = {
     Card: {
       baseStyle: {
         container: {
-          background: 'background.level1',
+          background: 'background.level2',
           rounded: 'lg',
           borderWidth: '1px',
-          borderColor: 'border.base',
+          borderColor: 'input.borderDefault',
+          shadow: 'xl',
+          p: 'md',
+          width: 'full',
         },
       },
       variants: {
-        modalSubSection: {
+        subSection: {
           container: {
-            background: 'background.level1',
+            background: 'background.level3',
             borderWidth: '1px',
-            borderColor: 'border.base',
+            borderColor: 'input.borderDefault',
             shadow: 'sm',
             padding: 'md',
             width: 'full',
+            rounded: 'md',
+          },
+          header: {
+            padding: 'none',
+            paddingBottom: 'md',
+            color: 'font.primary',
+            fontWeight: 'bold',
+            fontSize: 'sm',
+          },
+        },
+        modalSubSection: {
+          container: {
+            background: 'background.level2',
+            borderWidth: '1px',
+            borderColor: 'input.borderDefault',
+            shadow: 'sm',
+            padding: 'md',
+            width: 'full',
+            rounded: 'md',
           },
           header: {
             padding: 'none',
@@ -1516,6 +1540,26 @@ export const balTheme = {
           background: 'purple.500',
         },
       },
+    },
+    Alert: {
+      baseStyle: {
+        container: {
+          rounded: 'md',
+          alignItems: 'start',
+          "&[data-status='error']": {
+            border: '1px solid red',
+          },
+        },
+        title: {
+          letterSpacing: '-0.25px',
+          mb: 'xs',
+        },
+        description: {
+          fontWeight: 'medium',
+          letterSpacing: '-0.25px',
+        },
+      },
+      variants: {},
     },
   },
 }

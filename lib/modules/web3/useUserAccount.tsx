@@ -1,31 +1,60 @@
 'use client'
+
+/* eslint-disable react-hooks/exhaustive-deps */
 // eslint-disable-next-line no-restricted-imports
-import { useAccount } from 'wagmi'
+import { useAccount, useDisconnect } from 'wagmi'
 import { emptyAddress } from './contracts/wagmi-helpers'
-import { useIsMounted } from './useIsMounted'
-import { PropsWithChildren, createContext, useEffect } from 'react'
+import { PropsWithChildren, createContext, useEffect, useState } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { isAddress } from 'viem'
-import { COOKIE_KEYS } from '../cookies/cookie.constants'
-import Cookies from 'js-cookie'
+import { Address, isAddress } from 'viem'
 import { setTag, setUser } from '@sentry/nextjs'
+import { config, isProd } from '@/lib/config/app.config'
+import { captureError, ensureError } from '@/lib/shared/utils/errors'
+import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
+
+async function isAuthorizedAddress(address: Address): Promise<boolean> {
+  try {
+    const res = await fetch(`/api/wallet-check/${address}`, { cache: 'no-store' })
+    const data = await res.json()
+
+    return data?.isAuthorized
+  } catch (err) {
+    const error = ensureError(err)
+    if (isProd) captureError(error)
+    return true
+  }
+}
 
 export type UseUserAccountResponse = ReturnType<typeof _useUserAccount>
 export const UserAccountContext = createContext<UseUserAccountResponse | null>(null)
 
 export function _useUserAccount() {
-  const { mounted } = useIsMounted()
+  const isMounted = useIsMounted()
   const query = useAccount()
+  const { disconnect } = useDisconnect()
+  const [checkingAuth, setCheckingAuth] = useState(true)
+  const [isBlocked, setIsBlocked] = useState(false)
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { address, ...queryWithoutAddress } = query
 
-  useEffect(() => {
-    if (address && isAddress(address)) {
-      Cookies.set(COOKIE_KEYS.UserAddress, address)
-    } else {
-      Cookies.remove(COOKIE_KEYS.UserAddress)
+  async function blockUnauthorizedAddress(address: Address | undefined) {
+    if (!address || config.appEnv === 'test') {
+      setCheckingAuth(false)
+      return
     }
+
+    let isAuthorized = true
+    if (isAddress(address)) {
+      isAuthorized = await isAuthorizedAddress(address)
+      if (!isAuthorized) disconnect()
+    }
+
+    setIsBlocked(!isAuthorized)
+    setCheckingAuth(false)
+  }
+
+  useEffect(() => {
+    blockUnauthorizedAddress(address)
   }, [address])
 
   // The usage of mounted helps to overcome nextjs hydration mismatch
@@ -33,12 +62,13 @@ export function _useUserAccount() {
   // than the state on the client side rehydration.
   const result = {
     ...queryWithoutAddress,
-    isLoading: !mounted || query.isConnecting,
-    isConnecting: !mounted || query.isConnecting,
+    isLoading: !isMounted || query.isConnecting || checkingAuth,
+    isConnecting: !isMounted || query.isConnecting || checkingAuth,
     // We use an emptyAddress when the user is not connected to avoid undefined value and satisfy the TS compiler
-    userAddress: mounted ? query.address || emptyAddress : emptyAddress,
-    isConnected: mounted && !!query.address,
-    connector: mounted ? query.connector : undefined,
+    userAddress: isMounted ? query.address || emptyAddress : emptyAddress,
+    isConnected: isMounted && !!query.address && !checkingAuth,
+    connector: isMounted ? query.connector : undefined,
+    isBlocked,
   }
 
   useEffect(() => {
