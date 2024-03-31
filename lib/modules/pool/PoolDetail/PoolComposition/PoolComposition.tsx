@@ -10,6 +10,7 @@ import { useTokens } from '@/lib/modules/tokens/useTokens'
 import Image from 'next/image'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
+import { isStable, isStableLike } from '../../pool.helpers'
 
 export function PoolComposition() {
   const { pool, chain } = usePool()
@@ -28,6 +29,8 @@ export function PoolComposition() {
       (displayToken: GqlPoolTokenDisplay) => token.address === displayToken.address
     )
   ) as GqlPoolToken[]
+
+  const showWeightDistribution = !isStableLike(pool.type)
 
   return (
     <Card minHeight="full">
@@ -73,6 +76,7 @@ export function PoolComposition() {
                       address={poolToken.address as Address}
                       value={poolToken.balance}
                       customRender={() => {
+                        if (!showWeightDistribution) return null
                         return (
                           <VStack minWidth="100px" spacing="1" alignItems="flex-end">
                             <Heading fontWeight="bold" as="h6" fontSize="1rem">
