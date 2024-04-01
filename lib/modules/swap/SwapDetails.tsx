@@ -102,7 +102,7 @@ export function SwapDetails() {
           <NumberText color="grayText">
             -{toCurrency(maxSlippageUsd, { abbreviated: false })} (-{fNum('slippage', _slippage)})
           </NumberText>
-          <Tooltip label="Price impact" fontSize="sm">
+          <Tooltip label="Max slippage" fontSize="sm">
             <InfoOutlineIcon color="grayText" />
           </Tooltip>
         </HStack>
