@@ -11,20 +11,16 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
-  Skeleton,
   Text,
-  Tooltip,
   VStack,
 } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { usePool } from '../../../usePool'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import { Address } from 'viem'
+import { Address, parseUnits } from 'viem'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
 import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
@@ -34,6 +30,7 @@ import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
 
 type Props = {
   isOpen: boolean
@@ -55,21 +52,17 @@ export function RemoveLiquidityModal({
     isProportional,
     isSingleToken,
     singleTokenOutAddress,
-    priceImpactQuery,
     stepConfigs,
     currentStep,
     currentStepIndex,
     quoteBptIn,
-    quotePriceImpact,
+    totalUSDValue,
     amountOutForToken,
     useOnStepCompleted,
   } = useRemoveLiquidity()
   const { pool, chainId } = usePool()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
   const { slippage } = useUserSettings()
-
-  const priceImpactLabel =
-    quotePriceImpact !== undefined ? fNum('priceImpact', quotePriceImpact) : '-'
 
   return (
     <Modal
@@ -89,7 +82,13 @@ export function RemoveLiquidityModal({
             chain={pool.chain}
           />
         )}
-        <ModalHeader>Remove liquidity</ModalHeader>
+        <ModalHeader>
+          <HStack justify="space-between" w="full" pr="lg">
+            <span>Remove liquidity</span>
+            <RemoveLiquidityTimeout />
+          </HStack>
+        </ModalHeader>
+
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="sm" align="start">
@@ -147,23 +146,10 @@ export function RemoveLiquidityModal({
             </Card>
             <Card variant="modalSubSection">
               <VStack align="start" spacing="sm">
-                <HStack justify="space-between" w="full">
-                  <Text fontWeight="medium" variant="secondary">
-                    Price impact
-                  </Text>
-                  <HStack>
-                    {priceImpactQuery.isLoading ? (
-                      <Skeleton w="12" h="full" />
-                    ) : (
-                      <NumberText color="grayText">{priceImpactLabel}</NumberText>
-                    )}
-                    <Tooltip label="Price impact" fontSize="sm">
-                      <InfoOutlineIcon color="grayText" />
-                    </Tooltip>
-                  </HStack>
-                </HStack>
-
-                <RemoveLiquidityTimeout />
+                <PoolActionsPriceImpactDetails
+                  totalUSDValue={totalUSDValue}
+                  bptAmount={BigInt(parseUnits(quoteBptIn, 18))}
+                />
               </VStack>
             </Card>
           </VStack>

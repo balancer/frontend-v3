@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { HStack, Text, Tooltip } from '@chakra-ui/react'
+import { HStack, Text } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
 import { removeLiquidityStepId } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { useShouldFreezeQuote } from '@/lib/modules/transactions/transaction-steps/useShouldFreezeQuote'
+import { NumberText } from '@/lib/shared/components/typography/NumberText'
 
 function useRemoveLiquidityTimeout() {
   // This countdown needs to be nested here and not at a higher level, like in
@@ -61,18 +61,15 @@ export function RemoveLiquidityTimeout() {
 
   return (
     !shouldFreezeQuote && (
-      <HStack justify="space-between" w="full">
-        <Text fontWeight="medium" variant="secondary">
-          Valid for
-        </Text>
-        <HStack>
-          <Text color="GrayText">{secondsToRefetch} secs</Text>
-          <Tooltip
-            label="Quoted numbers above valid until timeout, after which they will be recalculated."
-            fontSize="sm"
-          >
-            <InfoOutlineIcon color="GrayText" />
-          </Tooltip>
+      <HStack spacing="xs" fontSize="sm" fontWeight="normal">
+        <Text color="grayText">Quote refresh in</Text>
+        <HStack spacing="none">
+          <NumberText color="grayText" textAlign="right" fontWeight="bold">
+            {secondsToRefetch}
+          </NumberText>
+          <Text color="grayText" fontWeight="bold">
+            s
+          </Text>
         </HStack>
       </HStack>
     )
