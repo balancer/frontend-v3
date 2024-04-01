@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 'use client'
 
@@ -6,6 +7,7 @@ import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import {
   Box,
+  Button,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -16,7 +18,7 @@ import {
   ModalProps,
   VStack,
 } from '@chakra-ui/react'
-import { RefObject, useRef } from 'react'
+import { RefObject, useEffect, useRef, useState } from 'react'
 import { usePool } from '../../../usePool'
 import { useAddLiquidity } from '../useAddLiquidity'
 // eslint-disable-next-line max-len
@@ -26,6 +28,7 @@ import { AddLiquidityPreview } from './AddLiquidityPreview'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 import { AddLiquiditySuccess } from './AddLiquiditySuccess'
 import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { usePoolRedirect } from '../../../pool.hooks'
 
 type Props = {
   isOpen: boolean
@@ -40,21 +43,36 @@ export function AddLiquidityModal({
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
+  const [didRefetchPool, setDidRefetchPool] = useState(false)
   const { isDesktop, isMobile } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const { stepConfigs, currentStep, currentStepIndex, useOnStepCompleted } = useAddLiquidity()
   const { isFlowComplete } = useCurrentFlowStep()
-  const { pool, chainId } = usePool()
+  const { pool, chainId, refetch } = usePool()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
+  const { redirectToPoolPage } = usePoolRedirect(pool)
 
   function onModalClose() {
     if (isFlowComplete) {
-      console.log('closing modal from success')
-      //TODO: decide where to go (porfolio page?)
-      return
+      if (isLoadingAfterSuccess) return
+      return redirectToPoolPage()
     }
     onClose()
   }
+
+  async function handleRedirectToPoolPage(event: React.MouseEvent<HTMLElement>) {
+    redirectToPoolPage(event)
+  }
+
+  const isLoadingAfterSuccess = isFlowComplete && !didRefetchPool
+
+  useEffect(() => {
+    async function reFetchPool() {
+      await refetch()
+      setDidRefetchPool(true)
+    }
+    if (isFlowComplete) reFetchPool()
+  }, [isFlowComplete])
 
   return (
     <Modal
@@ -92,7 +110,25 @@ export function AddLiquidityModal({
           {shouldSignRelayerApproval ? (
             <SignRelayerButton />
           ) : (
-            <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
+            <VStack w="full">
+              {isFlowComplete ? (
+                /* TODO: implement system to enforce that the new pool balance is loaded in the portfolio
+                  <Button as={Link} w="full" size="lg" isLoading={!didRefetchPool} href="/portfolio">
+                    Visit portfolio
+                  </Button>
+                */
+                <Button
+                  w="full"
+                  size="lg"
+                  onClick={handleRedirectToPoolPage}
+                  isLoading={!didRefetchPool}
+                >
+                  Return to pool
+                </Button>
+              ) : (
+                currentStep.render(useOnStepCompleted)
+              )}
+            </VStack>
           )}
         </ModalFooter>
       </ModalContent>

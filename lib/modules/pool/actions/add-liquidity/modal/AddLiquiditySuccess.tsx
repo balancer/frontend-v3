@@ -35,8 +35,7 @@ export function AddLiquiditySuccess() {
   const { pool, totalApr } = usePool()
   const { flowStep } = useCurrentFlowStep()
 
-  const segments = pathname.split('/')
-  const stakePath = segments.slice(0, segments.length - 1).join('/') + '/stake'
+  const stakePath = pathname.replace('/add-liquidity', '/stake')
   const canStake = pool.staking
 
   const bptOut = simulationQuery?.data?.bptOut

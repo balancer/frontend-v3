@@ -54,7 +54,7 @@ export function AddLiquidityForm() {
   const { pool, totalApr } = usePool()
   const { priceImpactColor, priceImpact, setPriceImpact } = usePriceImpact()
   const { toCurrency } = useCurrency()
-  const { isFlowComplete } = useCurrentFlowStep()
+  const { isFlowComplete, clearCurrentFlowStep } = useCurrentFlowStep()
 
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
@@ -81,6 +81,10 @@ export function AddLiquidityForm() {
   const onModalClose = () => {
     previewModalDisclosure.onClose()
   }
+
+  useEffect(() => {
+    clearCurrentFlowStep()
+  }, [])
 
   return (
     <TokenBalancesProvider tokens={validTokens}>
