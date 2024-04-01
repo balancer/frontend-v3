@@ -116,8 +116,6 @@ export function PortfolioTable() {
         }}
         showPagination={false}
         paginationProps={null}
-        border="1px solid"
-        borderColor="border.base"
         w="full"
         alignItems="flex-start"
       />
