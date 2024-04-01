@@ -714,6 +714,7 @@ export const balTheme = {
       xxs: '0.125rem',
       xs: '0.25rem',
       sm: '0.5rem',
+      ms: '0.75rem',
       md: '1rem',
       lg: '1.5rem',
       xl: '2rem',
@@ -834,7 +835,7 @@ export const balTheme = {
       },
       body: {
         background: 'background.base',
-      },
+      },     
       '::-webkit-scrollbar': {
         width: '10px',
       },
@@ -1087,19 +1088,19 @@ export const balTheme = {
           lineHeight: { base: '2.5rem', md: '3.5rem' },
         },
         h3: {
-          fontSize: { base: '2rem', md: '2rem' },
+          fontSize: { base: '1.5rem', md: '2rem' },
           lineHeight: { base: '2.5rem', md: '3.5rem' },
         },
         h4: {
-          fontSize: { base: '2rem', md: '1.5rem' },
+          fontSize: { base: '1.25rem', md: '1.5rem' },
           lineHeight: { base: '2.5rem', md: '2.5rem' },
         },
         h5: {
-          fontSize: { base: '2rem', md: '1.25rem' },
+          fontSize: { base: '1.0625rem', md: '1.25rem' },
           lineHeight: { base: '2.5rem', md: '1.5rem' },
         },
         h6: {
-          fontSize: { base: '2rem', md: '1.125rem' },
+          fontSize: { base: '1rem', md: '1.0625rem' },
           lineHeight: { base: '2.5rem', md: '1.5rem' },
         },
       },
@@ -1110,6 +1111,7 @@ export const balTheme = {
         fontWeight: 'medium',
         letterSpacing: '-0.25px',
         lineHeight: '1.3',
+        fontSize: [ 'sm', 'md' ],
       },
       variants: {
         secondary: {
@@ -1152,6 +1154,7 @@ export const balTheme = {
         nav: {
           color: 'font.primary',
           transition: tokens.transition.default,
+          fontSize: [ 'sm', 'md'],
           _hover: {
             color: 'font.link',
             textDecoration: 'none',
@@ -1363,7 +1366,7 @@ export const balTheme = {
           borderColor: 'transparent',
           shadow: 'xl',
           width: 'full',
-          padding: 'md',
+          padding: ['ms', 'md'],
         },
         header: {
           padding: 'none',
