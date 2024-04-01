@@ -19,16 +19,16 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { RefObject, useEffect, useRef, useState } from 'react'
-import { usePool } from '../../../usePool'
-import { useAddLiquidity } from '../useAddLiquidity'
+import { usePool } from '../../usePool'
+import { useAddLiquidity } from './useAddLiquidity'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { AddLiquidityPreview } from './AddLiquidityPreview'
+import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
-import { AddLiquiditySuccess } from './AddLiquiditySuccess'
+import { AddLiquiditySuccess } from './modal/AddLiquiditySuccess'
 import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
-import { usePoolRedirect } from '../../../pool.hooks'
+import { usePoolRedirect } from '../../pool.hooks'
 
 type Props = {
   isOpen: boolean

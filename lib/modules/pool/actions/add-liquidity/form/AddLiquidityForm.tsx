@@ -20,7 +20,7 @@ import {
 } from '@chakra-ui/react'
 import { useEffect, useRef } from 'react'
 import { Address } from 'wagmi'
-import { AddLiquidityModal } from '../modal/AddLiquidityModal'
+import { AddLiquidityModal } from '../AddLiquidityModal'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
