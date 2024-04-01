@@ -5,11 +5,12 @@ import { Box, Card, HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/r
 import React, { useEffect, useState } from 'react'
 import { usePool } from '../../usePool'
 import { Address } from 'viem'
-import { GqlPoolToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolToken, GqlPoolTokenDisplay } from '@/lib/shared/services/api/generated/graphql'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import Image from 'next/image'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
+import { isStableLike } from '../../pool.helpers'
 
 export function PoolComposition() {
   const { pool, chain } = usePool()
@@ -22,6 +23,14 @@ export function PoolComposition() {
       setTotalLiquidity(pool.dynamicData.totalLiquidity)
     }
   }, [pool])
+
+  const displayTokens = pool.tokens.filter(token =>
+    pool.displayTokens.find(
+      (displayToken: GqlPoolTokenDisplay) => token.address === displayToken.address
+    )
+  ) as GqlPoolToken[]
+
+  const showWeightDistribution = !isStableLike(pool.type)
 
   return (
     <Card minHeight="full">
@@ -40,9 +49,9 @@ export function PoolComposition() {
                     <Heading fontWeight="bold" size="h6">
                       Total liquidity
                     </Heading>
-                    <Text variant="secondary" fontSize="0.85rem">
-                      Share of Balancer liquidity
-                    </Text>
+                    {/* <Text variant="secondary" fontSize="0.85rem"> */}
+                    {/*   Share of Balancer liquidity */}
+                    {/* </Text> */}
                   </VStack>
                   <VStack alignItems="flex-end">
                     <Heading fontWeight="bold" size="h6">
@@ -52,14 +61,14 @@ export function PoolComposition() {
                         <Skeleton height="24px" w="75px" />
                       )}
                     </Heading>
-                    <Text variant="secondary" fontSize="0.85rem">
-                      8.69% (TODO INTEGRATE)
-                    </Text>
+                    {/* <Text variant="secondary" fontSize="0.85rem"> */}
+                    {/*   8.69% (TODO INTEGRATE) */}
+                    {/* </Text> */}
                   </VStack>
                 </HStack>
               </Box>
               <VStack spacing="md" width="full">
-                {(pool.tokens as GqlPoolToken[]).map(poolToken => {
+                {displayTokens.map(poolToken => {
                   return (
                     <TokenRow
                       chain={chain}
@@ -67,6 +76,7 @@ export function PoolComposition() {
                       address={poolToken.address as Address}
                       value={poolToken.balance}
                       customRender={() => {
+                        if (!showWeightDistribution) return null
                         return (
                           <VStack minWidth="100px" spacing="1" alignItems="flex-end">
                             <Heading fontWeight="bold" as="h6" fontSize="1rem">

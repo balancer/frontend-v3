@@ -63,9 +63,9 @@ export function PriceImpactAccordion({
   }
 
   return (
-    <>
+    <Box w="full">
       <Accordion w="full" variant="button" allowToggle>
-        <AccordionItem isDisabled={isDisabled}>
+        <AccordionItem w="full" isDisabled={isDisabled}>
           <h2>
             <AccordionButton>
               <Box as="span" flex="1" textAlign="left">
@@ -80,14 +80,14 @@ export function PriceImpactAccordion({
               </HStack>
             </AccordionButton>
           </h2>
-          <AccordionPanel pb="md">{accordionPanelComponent}</AccordionPanel>
+          <AccordionPanel py="md">{accordionPanelComponent}</AccordionPanel>
         </AccordionItem>
       </Accordion>
       {(priceImpactLevel === 'high' ||
         priceImpactLevel === 'max' ||
         priceImpactLevel === 'unknown') && (
         <>
-          <VStack align="start" w="full" spacing="md">
+          <VStack align="start" w="full" spacing="md" mt="md">
             <Alert status="error">
               <PriceImpactIcon priceImpactLevel={priceImpactLevel} size={24} mt="1" />
               <Box ml="md">
@@ -99,7 +99,7 @@ export function PriceImpactAccordion({
                       }.00%`}
                 </AlertTitle>
                 <AlertDescription>
-                  <Text color="font.maxContrast">
+                  <Text color="grayText" fontSize="sm">
                     {priceImpactLevel === 'unknown'
                       ? 'The price impact cannot be calculated. Only proceed if you know exactly what you are doing.'
                       : 'The higher the price impact, the worse exchange rate you get for this swap.'}
@@ -108,18 +108,18 @@ export function PriceImpactAccordion({
               </Box>
             </Alert>
             <Card variant="subSection">
-              <CardBody pb="0">
+              <CardBody>
                 <Text mb="sm" fontWeight="bold">
                   Price impact acknowledgement
                 </Text>
                 {priceImpactLevel === 'unknown' ? (
-                  <Text color="grayText">
+                  <Text color="grayText" fontSize="sm">
                     I accept that the price impact of this transaction is unknown. I understand that
                     proceeding may result in losses if my transaction moves the market price
                     unfavorably based on the current depth of the market.
                   </Text>
                 ) : (
-                  <Text color="grayText">
+                  <Text color="grayText" fontSize="sm">
                     I accept the high price impact of{' '}
                     {priceImpact && fNum('priceImpact', priceImpact)}. I understand that this may
                     result in losses, since the size of my swap is likely to move the market price
@@ -148,6 +148,6 @@ export function PriceImpactAccordion({
           />
         </>
       )}
-    </>
+    </Box>
   )
 }

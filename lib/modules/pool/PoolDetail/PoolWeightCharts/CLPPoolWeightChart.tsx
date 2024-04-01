@@ -1,9 +1,10 @@
-import { Box, HStack, Grid, Flex } from '@chakra-ui/react'
+import { Box, HStack, Grid, Flex, useTheme } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
-import PoolWeightChartChainIcon from './PoolWeightChartChainIcon'
 import PoolWeightChartLegend from './PoolWeightChartLegend'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
+import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
+import Image from 'next/image'
 
 const chartSizes: Record<string, Record<string, ChartSizeValues>> = {
   square: {
@@ -46,6 +47,56 @@ const chartSizes: Record<string, Record<string, ChartSizeValues>> = {
       haloHeigth: '60px',
     },
   },
+}
+
+function OuterSymbolDiamond({ opacity, isSmall }: { opacity: string; isSmall: boolean }) {
+  const colorMode = useThemeColorMode()
+  const theme = useTheme()
+  const colorModeKey = colorMode === 'light' ? 'default' : '_dark'
+  const chartOuter = isSmall ? '' : theme.semanticTokens.shadows.chartIconOuter[colorModeKey]
+  return (
+    <Box
+      position="absolute"
+      top="50%"
+      transform="translateY(-50%)"
+      width="55%"
+      height="55%"
+      overflow="hidden"
+      filter={chartOuter}
+      opacity={opacity}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      rounded="md"
+    >
+      <Box bg="background.level3" width="full" height="full" filter={chartOuter} shadow="2xl" />
+    </Box>
+  )
+}
+
+function InnerSymbolDiamond({ opacity }: { opacity: string }) {
+  return (
+    <Box
+      position="absolute"
+      top="50%"
+      transform="translateY(-50%)"
+      width="45%"
+      height="45%"
+      overflow="hidden"
+      rounded="md"
+      opacity={opacity}
+    >
+      <Box
+        bg="background.level4"
+        width="full"
+        height="full"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        position="relative"
+      ></Box>
+    </Box>
+  )
 }
 
 export default function CLPPoolWeightChart({
@@ -104,10 +155,44 @@ export default function CLPPoolWeightChart({
           alignItems="center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { delay: 0.1 } }}
-          width={chartSizeValues.haloWidth}
-          height={chartSizeValues.haloHeigth}
+          width={`${chartSizeValues.boxWidth * 0.7}px`}
+          height={`${chartSizeValues.boxHeight * 0.7}px`}
         >
-          <PoolWeightChartChainIcon chain={chain} isChartLoaded={true} isSmall={isSmall} />
+          <NoisyCard
+            cardProps={{
+              rounded: 'md',
+              transform: 'rotate(45deg)',
+              shadow: 'none',
+            }}
+            contentProps={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'relative',
+              shadow: 'innerXl',
+              rounded: 'md',
+            }}
+            shadowContainerProps={{ shadow: 'none' }}
+          >
+            <Box position="absolute" top="50%" transform="translateY(-50%)" zIndex={5}>
+              <Image
+                src={`/images/chains/${chain}.svg`}
+                alt={`Chain icon for ${chain.toLowerCase()}`}
+                width={isSmall ? 15 : 25}
+                height={isSmall ? 15 : 25}
+              />
+            </Box>
+
+            {/* Since these triangles utilise clip-path, we cannot use box-shadow, we need to utilise css filters */}
+            {/* Simply applying an opacity to the background color will achieve weird effects, so to match the designs */}
+            {/* We utilise layers of the same component! */}
+            <OuterSymbolDiamond opacity="10%" isSmall={isSmall || false} />
+            <OuterSymbolDiamond opacity="20%" isSmall={isSmall || false} />
+            <OuterSymbolDiamond opacity="20%" isSmall={isSmall || false} />
+            <InnerSymbolDiamond opacity="30%" />
+            <InnerSymbolDiamond opacity="30%" />
+            <InnerSymbolDiamond opacity="30%" />
+          </NoisyCard>
         </Box>
         <svg
           style={{ visibility: 'hidden', position: 'absolute' }}

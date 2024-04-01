@@ -1,6 +1,5 @@
 'use client'
 import {
-  Heading,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -11,7 +10,6 @@ import {
   VStack,
   Card,
   Text,
-  Stack,
 } from '@chakra-ui/react'
 
 import { ClaimTotal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimTotal'
