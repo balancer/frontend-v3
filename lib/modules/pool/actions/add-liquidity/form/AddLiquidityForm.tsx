@@ -84,7 +84,7 @@ export function AddLiquidityForm() {
     <TokenBalancesProvider tokens={validTokens}>
       <Center h="full" w="full" maxW="lg" mx="auto">
         <Card>
-          <VStack spacing="lg" align="start" w="full">
+          <VStack spacing="md" align="start" w="full">
             <HStack w="full" justify="space-between">
               <Heading fontWeight="bold" size="h5">
                 Add liquidity
@@ -134,7 +134,7 @@ export function AddLiquidityForm() {
                 }
               />
             </VStack>
-            <Grid w="full" templateColumns="1fr 1fr" gap="2">
+            <Grid w="full" templateColumns="1fr 1fr" gap="md">
               <GridItem>
                 <Card variant="subSection" w="full">
                   <VStack align="start" gap="sm">
