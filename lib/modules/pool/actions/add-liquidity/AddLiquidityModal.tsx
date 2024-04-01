@@ -4,10 +4,9 @@
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { fNum } from '@/lib/shared/utils/numbers'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
   Card,
+  Heading,
   HStack,
   Modal,
   ModalBody,
@@ -17,9 +16,7 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
-  Skeleton,
   Text,
-  Tooltip,
   VStack,
 } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
@@ -31,7 +28,6 @@ import { HumanAmountIn } from '../liquidity-types'
 import { useAddLiquidity } from './useAddLiquidity'
 import { AddLiquidityTimeout } from './AddLiquidityTimeout'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
@@ -39,6 +35,7 @@ import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { PoolActionsPriceImpactDetails } from '../PoolActionsPriceImpactDetails'
 
 type Props = {
   isOpen: boolean
@@ -59,7 +56,6 @@ export function AddLiquidityModal({
     humanAmountsIn,
     totalUSDValue,
     simulationQuery,
-    priceImpactQuery,
     tokens,
     stepConfigs,
     currentStep,
@@ -69,13 +65,9 @@ export function AddLiquidityModal({
   const { toCurrency } = useCurrency()
   const { pool, chainId } = usePool()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
-  const { slippage } = useUserSettings()
 
   const bptOut = simulationQuery?.data?.bptOut
   const bptOutLabel = bptOut ? formatUnits(bptOut.amount, BPT_DECIMALS) : '0'
-
-  const priceImpact = priceImpactQuery?.data
-  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
 
   return (
     <Modal
@@ -95,7 +87,14 @@ export function AddLiquidityModal({
             chain={pool.chain}
           />
         )}
-        <ModalHeader>Add liquidity</ModalHeader>
+        <ModalHeader>
+          <HStack justify="space-between" w="full" pr="lg">
+            <Heading fontWeight="bold" size="h5">
+              Add liquidity
+            </Heading>
+            <AddLiquidityTimeout />
+          </HStack>
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="sm" align="start">
@@ -110,9 +109,7 @@ export function AddLiquidityModal({
               <VStack align="start" spacing="md">
                 <HStack justify="space-between" w="full">
                   <Text color="grayText">{"You're adding"}</Text>
-                  <NumberText fontSize="lg">
-                    {toCurrency(totalUSDValue, { abbreviated: false })}
-                  </NumberText>
+                  <Text>{toCurrency(totalUSDValue, { abbreviated: false })}</Text>
                 </HStack>
                 {tokens.map(token => {
                   if (!token) return <div>Missing token</div>
@@ -154,33 +151,11 @@ export function AddLiquidityModal({
 
             <Card variant="modalSubSection">
               <VStack align="start" spacing="sm">
-                <HStack justify="space-between" w="full">
-                  <Text>Price impact</Text>
-                  <HStack>
-                    {priceImpactQuery.isLoading ? (
-                      <Skeleton w="12" h="full" />
-                    ) : (
-                      <NumberText color="grayText">{priceImpactLabel}</NumberText>
-                    )}
-                    <Tooltip label="Price impact" fontSize="sm">
-                      <InfoOutlineIcon color="grayText" />
-                    </Tooltip>
-                  </HStack>
-                </HStack>
-                <HStack justify="space-between" w="full">
-                  <Text>Max. slippage</Text>
-                  <HStack>
-                    <NumberText color="grayText">{fNum('slippage', slippage)}</NumberText>
-                    <Tooltip
-                      label="Your maximum slippage setting. This can be changed in your
-                      transaction settings (top right on previous input form)."
-                      fontSize="sm"
-                    >
-                      <InfoOutlineIcon color="grayText" />
-                    </Tooltip>
-                  </HStack>
-                </HStack>
-                <AddLiquidityTimeout />
+                <PoolActionsPriceImpactDetails
+                  totalUSDValue={totalUSDValue}
+                  bptAmount={simulationQuery.data?.bptOut.amount}
+                  isAddLiquidity
+                />
               </VStack>
             </Card>
           </VStack>
