@@ -7,7 +7,7 @@ import { PoolActionsNav } from './PoolActionsNav'
 import { usePool } from '../usePool'
 import { usePoolRedirect } from '../pool.hooks'
 
-type Props = PropsWithChildren & { isFlowComplete: boolean }
+type Props = PropsWithChildren & { isFlowComplete?: boolean }
 
 export function PoolActionsLayout({ children, isFlowComplete = false }: Props) {
   const { pool } = usePool()
