@@ -139,7 +139,7 @@ async function updateWithOnChainBalanceData({
   }
 
   clone.dynamicData.totalLiquidity = sumBy(
-    clone.tokens.map(token => pricesMap[token.address]?.price || 0 * parseFloat(token.balance))
+    clone.tokens.map(token => (pricesMap[token.address]?.price || 0) * parseFloat(token.balance))
   ).toString()
 
   return clone
