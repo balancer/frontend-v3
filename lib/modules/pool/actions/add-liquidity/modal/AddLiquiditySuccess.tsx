@@ -57,8 +57,8 @@ export function AddLiquiditySuccess() {
   const transactionHash = flowStep?.result.data?.transactionHash || ''
 
   return (
-    <VStack spacing="md" align="start">
-      <Card variant="level3" p="sm" shadow="sm" w="full" border="1px" borderColor="font.highlight">
+    <VStack spacing="sm" align="start">
+      <Card variant="modalSubSection" border="1px" borderColor="font.highlight">
         <HStack justify="space-between" w="full">
           <HStack justify="flex-start">
             <CircularProgress
@@ -88,7 +88,7 @@ export function AddLiquiditySuccess() {
       </Card>
 
       <HStack justify="space-between" alignItems="stretch" w="full">
-        <Card variant="level3" p="md" shadow="sm" w="full">
+        <Card variant="modalSubSection">
           <VStack alignContent="center" h="full">
             <Text color="grayText">You added</Text>
             <HStack>
@@ -115,7 +115,7 @@ export function AddLiquiditySuccess() {
           </VStack>
         </Card>
 
-        <Card variant="level3" p="md" shadow="sm" w="full">
+        <Card variant="modalSubSection">
           <VStack align="center">
             <Text color="grayText">You got</Text>
             <TokenIcon chain={pool.chain} address={pool.address} size={30} alt={pool.symbol} />
@@ -133,7 +133,7 @@ export function AddLiquiditySuccess() {
         Staking options
       </Heading>
       <HStack w="full" justify="space-between">
-        <Card variant="level3" p="md" shadow="sm" w="full" position="relative">
+        <Card variant="modalSubSection" position="relative">
           <VStack align="left" spacing="2">
             <Text color="grayText">Balancer</Text>
             <HStack>
@@ -169,7 +169,7 @@ export function AddLiquiditySuccess() {
           </VStack>
         </Card>
 
-        <Card variant="level3" p="md" shadow="sm" w="full" position="relative">
+        <Card variant="modalSubSection" position="relative">
           <VStack align="left" spacing="2">
             <Text color="grayText">Aura</Text>
             <HStack>

@@ -15,7 +15,7 @@ import { PoolContracts } from './PoolContracts/PoolContracts'
 export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
   return (
     <Stack width="full">
-      <Grid width="full" rowGap="2xl" columnGap="lg" templateColumns="1fr 1fr">
+      <Grid width="full" rowGap="xl" columnGap="md" templateColumns="1fr 1fr">
         <GridItem colSpan={2}>
           <VStack alignItems="flex-start" spacing="md">
             {isLoading ? <Skeleton h="42px" w="sm" /> : <PoolMetaBadges />}
@@ -41,7 +41,7 @@ export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
           {isLoading ? <Skeleton h="385px" w="full" /> : <PoolAttributes />}
         </GridItem>
         <GridItem colSpan={1}>
-          <VStack spacing="4">
+          <VStack spacing="md" minH="full">
             {isLoading ? <Skeleton h="200px" w="full" /> : <PoolRisks />}
             {isLoading ? <Skeleton h="100px" w="full" /> : <PoolContracts />}
           </VStack>

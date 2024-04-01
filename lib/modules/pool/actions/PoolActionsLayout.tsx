@@ -44,7 +44,6 @@ export function PoolActionsLayout({ children }: PropsWithChildren) {
           <Card
             variant="level1"
             shadow="lg"
-            w="full"
             h="full"
             borderBottomRadius={0}
             borderTopRadius="2xl"

@@ -8,7 +8,7 @@ import { ExternalLink } from 'react-feather'
 export function PoolContracts() {
   const { pool, poolExplorerLink, hasGaugeAddress, gaugeAddress, gaugeExplorerLink } = usePool()
   return (
-    <Card variant="level2" shadow="2xl" width="full" px="4" py="5" borderWidth={0}>
+    <Card flex="1">
       <VStack alignItems="flex-start" spacing="4" width="full">
         <Heading variant="h4" fontSize="1.25rem">
           Pool contracts

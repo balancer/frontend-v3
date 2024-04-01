@@ -6,7 +6,6 @@ import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import {
   Box,
-  Heading,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -78,11 +77,7 @@ export function AddLiquidityModal({
             chain={pool.chain}
           />
         )}
-        <ModalHeader>
-          <Heading fontWeight="bold" size="h5">
-            Add liquidity
-          </Heading>
-        </ModalHeader>
+        <ModalHeader>Add liquidity</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           {isMobile && (

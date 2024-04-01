@@ -21,7 +21,7 @@ import {
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { ReactNode, useEffect } from 'react'
-import { PriceImpactAcceptModal } from '../modal/PriceImpactAcceptModal'
+import { PriceImpactAcceptModal } from '../modals/PriceImpactAcceptModal'
 
 interface PriceImpactAccordionProps {
   setNeedsToAcceptHighPI: (value: boolean) => void
@@ -107,7 +107,7 @@ export function PriceImpactAccordion({
                 </AlertDescription>
               </Box>
             </Alert>
-            <Card w="full" variant="level1">
+            <Card variant="subSection">
               <CardBody pb="0">
                 <Text mb="sm" fontWeight="bold">
                   Price impact acknowledgement

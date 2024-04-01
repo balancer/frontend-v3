@@ -50,24 +50,22 @@ export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
             chain={GqlChain.Mainnet}
           />
         )}
-        <ModalHeader>
-          <Heading fontWeight="bold" size="h5">
-            Balancer protocol revenue
-          </Heading>
-        </ModalHeader>
+        <ModalHeader>Balancer protocol revenue</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Stack gap={4}>
-            <Card variant="level2" gap={4} p="md" shadow="xl" flex="1" width="100%">
-              <Text fontWeight="700">You`ll get</Text>
-              {protocolRewardsData?.map((reward, idx) => (
-                <TokenRow
-                  key={idx}
-                  address={reward.tokenAddress as Hex}
-                  value={reward.formattedBalance}
-                  chain={GqlChain.Mainnet}
-                />
-              ))}
+          <VStack spacing="sm">
+            <Card variant="modalSubSection">
+              <VStack align="start" spacing="md">
+                <Text color="grayText">You&apos;ll get</Text>
+                {protocolRewardsData?.map((reward, idx) => (
+                  <TokenRow
+                    key={idx}
+                    address={reward.tokenAddress as Hex}
+                    value={reward.formattedBalance}
+                    chain={GqlChain.Mainnet}
+                  />
+                ))}
+              </VStack>
             </Card>
             <ClaimTotal total={toCurrency(protocolRewardsBalance)} />
 
@@ -78,7 +76,7 @@ export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
                 chain={GqlChain.Mainnet}
               />
             )}
-          </Stack>
+          </VStack>
         </ModalBody>
         <ModalFooter>
           <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>

@@ -29,8 +29,8 @@ export function AddLiquidityPreview() {
   const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
 
   return (
-    <VStack spacing="md" align="start">
-      <Card variant="level3" p="md" shadow="sm" w="full">
+    <VStack spacing="sm" align="start">
+      <Card variant="modalSubSection">
         <VStack align="start" spacing="md">
           <HStack justify="space-between" w="full">
             <Text color="grayText">{"You're adding"}</Text>
@@ -60,7 +60,7 @@ export function AddLiquidityPreview() {
         </VStack>
       </Card>
 
-      <Card variant="level3" p="md" shadow="sm" w="full">
+      <Card variant="modalSubSection">
         <VStack align="start" spacing="md">
           <HStack justify="space-between" w="full">
             <Text color="grayText">{"You'll get (if no slippage)"}</Text>
@@ -76,7 +76,7 @@ export function AddLiquidityPreview() {
         </VStack>
       </Card>
 
-      <Card variant="level2" p="md" shadow="sm" w="full">
+      <Card variant="modalSubSection">
         <VStack align="start" spacing="sm">
           <HStack justify="space-between" w="full">
             <Text>Price impact</Text>
