@@ -8,9 +8,9 @@ import { isStableLike, isWeightedLike } from '../pool.helpers'
 
 function TokenIconOrIconStack({ token, chain }: { token: GqlPoolTokenDisplay; chain: GqlChain }) {
   return token.nestedTokens ? (
-    <TokenIconStack tokens={token.nestedTokens} chain={chain} size={24} />
+    <TokenIconStack tokens={token.nestedTokens} chain={chain} size={20} />
   ) : (
-    <TokenIcon chain={chain} address={token.address} size={24} alt={token.symbol} />
+    <TokenIcon chain={chain} address={token.address} size={20} alt={token.symbol} />
   )
 }
 
@@ -21,22 +21,20 @@ function WeightedTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; 
         return (
           <WrapItem
             key={token.address}
-            p="2"
-            pr="3"
+            p={[1.5, 2]}
+            pr={[2, 3]}
             bg="background.level2"
             borderRadius="full"
             borderWidth={1}
             borderColor="border.base"
             shadow="sm"
           >
-            <HStack>
+            <HStack gap={[1.5, 2]}>
               <TokenIconOrIconStack token={token} chain={chain} />
               <Text fontWeight="bold" noOfLines={1}>
                 {token.nestedTokens ? token.name : token.symbol}
               </Text>
-              <Text fontWeight="light" fontSize="xs">
-                {fNum('weight', token.weight || '')}
-              </Text>
+              <Text fontSize="xs">{fNum('weight', token.weight || '')}</Text>
             </HStack>
           </WrapItem>
         )
@@ -55,8 +53,8 @@ function StableTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; ch
         return (
           <Box
             key={token.address}
-            p="2"
-            pr="3"
+            p={[1.5, 2]}
+            pr={[2, 3]}
             pl={isFirstToken(i) ? 2 : 12}
             bg="background.level2"
             borderRadius="full"

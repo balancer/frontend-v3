@@ -17,10 +17,10 @@ export function PoolListTableHeader({ ...rest }) {
   const sortingObj = sorting[0]
 
   return (
-    <Grid {...rest} pb="4" w="full" borderBottom="1px solid" borderColor="border.base">
+    <Grid {...rest} pb={['ms', 'md']} w="full" borderBottom="1px solid" borderColor="border.base">
       <GridItem>
         <VStack align="start" w="full">
-          <Icon as={Globe} boxSize="5" ml="1" color="grayText" />
+          <Icon as={Globe} boxSize="5" color="grayText" />
         </VStack>
       </GridItem>
       <GridItem>
