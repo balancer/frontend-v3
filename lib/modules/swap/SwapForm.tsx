@@ -31,6 +31,7 @@ import { Repeat } from 'react-feather'
 import { SwapRate } from './SwapRate'
 import { SwapDetails } from './SwapDetails'
 import { capitalize } from 'lodash'
+import { motion } from 'framer-motion'
 
 export function SwapForm() {
   const {
@@ -143,12 +144,22 @@ export function SwapForm() {
                     }
                   />
                 </VStack>
-                <PriceImpactAccordion
-                  setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
-                  accordionButtonComponent={<SwapRate />}
-                  accordionPanelComponent={<SwapDetails />}
-                  isDisabled={!simulationQuery.data}
-                />
+                {!!simulationQuery.data && (
+                  <motion.div
+                    style={{ width: '100%' }}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <PriceImpactAccordion
+                      setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                      accordionButtonComponent={<SwapRate />}
+                      accordionPanelComponent={<SwapDetails />}
+                      isDisabled={!simulationQuery.data}
+                    />
+                  </motion.div>
+                )}
+
                 <Tooltip label={isDisabled ? disabledReason : ''}>
                   <Button
                     ref={nextBtn}

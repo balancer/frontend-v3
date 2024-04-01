@@ -63,9 +63,9 @@ export function PriceImpactAccordion({
   }
 
   return (
-    <>
+    <Box w="full">
       <Accordion w="full" variant="button" allowToggle>
-        <AccordionItem isDisabled={isDisabled}>
+        <AccordionItem w="full" isDisabled={isDisabled}>
           <h2>
             <AccordionButton>
               <Box as="span" flex="1" textAlign="left">
@@ -80,14 +80,14 @@ export function PriceImpactAccordion({
               </HStack>
             </AccordionButton>
           </h2>
-          <AccordionPanel pb="md">{accordionPanelComponent}</AccordionPanel>
+          <AccordionPanel py="md">{accordionPanelComponent}</AccordionPanel>
         </AccordionItem>
       </Accordion>
       {(priceImpactLevel === 'high' ||
         priceImpactLevel === 'max' ||
         priceImpactLevel === 'unknown') && (
         <>
-          <VStack align="start" w="full" spacing="md">
+          <VStack align="start" w="full" spacing="md" mt="md">
             <Alert status="error">
               <PriceImpactIcon priceImpactLevel={priceImpactLevel} size={24} mt="1" />
               <Box ml="md">
@@ -108,7 +108,7 @@ export function PriceImpactAccordion({
               </Box>
             </Alert>
             <Card variant="subSection">
-              <CardBody pb="0">
+              <CardBody>
                 <Text mb="sm" fontWeight="bold">
                   Price impact acknowledgement
                 </Text>
@@ -148,6 +148,6 @@ export function PriceImpactAccordion({
           />
         </>
       )}
-    </>
+    </Box>
   )
 }
