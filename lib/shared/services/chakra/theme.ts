@@ -860,6 +860,7 @@ export const balTheme = {
           },
           button: {
             color: 'grayText',
+            rounded: 'md',
           },
           panel: {
             borderTop: '1px solid',
@@ -871,6 +872,12 @@ export const balTheme = {
             background: 'background.level1',
             shadow: 'md',
             rounded: 'md',
+          },
+          root: {
+            border: 'none',
+            borderWidth: 0,
+            background: 'background.level1',
+            rounded: 'sm',
           },
         },
         incentives: {
@@ -1312,8 +1319,19 @@ export const balTheme = {
           borderWidth: '1px',
           borderColor: 'transparent',
           shadow: 'xl',
-          p: 'md',
           width: 'full',
+          padding: 'md',
+        },
+        header: {
+          padding: 'none',
+          paddingBottom: 'md',
+        },
+        body: {
+          padding: 'none',
+        },
+        footer: {
+          padding: 'none',
+          paddingTop: 'md',
         },
       },
       variants: {
