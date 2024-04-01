@@ -25,6 +25,8 @@ import { ElevatedIcon } from '@/lib/shared/components/icons/ElevatedIcon'
 import { isClp, isStable, isWeighted } from '../pool.helpers'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { PoolZenGarden, ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
+import PoolMetaBadges from './PoolMetaBadges/PoolMetaBadges'
+import PoolBadges from './PoolBadges'
 
 interface PoolValues {
   totalLiquidity: string
@@ -89,9 +91,12 @@ export default function PoolStats() {
             contentProps={commonNoisyCardProps.contentProps}
           >
             <PoolZenGarden sizePx="400px" poolType={pool.type} />
-            <Box mt="-6">
-              <PoolWeightChart pool={pool} chain={chain} />
-            </Box>
+            <VStack spacing="4">
+              <Box mt="-6">
+                <PoolWeightChart pool={pool} chain={chain} />
+              </Box>
+              <PoolBadges />
+            </VStack>
           </NoisyCard>
         </GridItem>
         <GridItem colSpan={1} rowSpan={1}>
