@@ -39,14 +39,43 @@ export default function StakedBalanceDistributionChart({
   const theme = useTheme()
   const colorMode = useThemeColorMode()
 
+  const unstakedBalance =
+    (pool.userBalance?.totalBalanceUsd || 0) - (pool.userBalance?.stakedBalanceUsd || 0)
+  const userHasLiquidity = pool.userBalance?.totalBalance || 0 > 0
+
   useEffect(() => {
     eChartsRef.current?.getEchartsInstance().on('finished', () => {
       setIsChartLoaded(true)
     })
   }, [])
 
-  const unstakedBalance =
-    (pool.userBalance?.totalBalanceUsd || 0) - (pool.userBalance?.stakedBalanceUsd || 0)
+  function getData() {
+    let data = []
+    if (unstakedBalance > 0) {
+      data.push({
+        value: unstakedBalance,
+        name: 'Unstaked balance',
+        itemStyle: {
+          color: theme.semanticTokens.colors.font.light,
+        },
+      })
+    }
+    if (pool.userBalance?.stakedBalanceUsd || 0 > 0) {
+      data.push({
+        value: pool.userBalance?.stakedBalanceUsd || 0,
+        name: 'Staked balance',
+        itemStyle: { color: theme.semanticTokens.colors.chart.stakedBalance },
+      })
+    }
+
+    if (!userHasLiquidity) {
+      data.push({
+        value: 0,
+        name: 'No current balance',
+      })
+    }
+    return data
+  }
 
   const chartOption = useMemo(() => {
     return {
@@ -83,20 +112,7 @@ export default function StakedBalanceDistributionChart({
           emphasis: {
             scale: false,
           },
-          data: [
-            {
-              value: unstakedBalance,
-              name: 'Unstaked balance',
-              itemStyle: {
-                color: '#E5D3BE',
-              },
-            },
-            {
-              value: pool.userBalance?.stakedBalanceUsd || 0,
-              name: 'Staked balance',
-              itemStyle: { color: '#9F95F0' },
-            },
-          ],
+          data: getData(),
         },
       ],
     }
@@ -157,10 +173,10 @@ export default function StakedBalanceDistributionChart({
           />
         </Box>
       </Box>
-      <VStack>
+      <VStack alignItems="flex-start">
         {unstakedBalance > 0 && (
           <HStack>
-            <Box width="12px" height="12px" bg="#E5D3BE" rounded="full" />
+            <Box width="12px" height="12px" bg="font.light" rounded="full" />
             <Text whiteSpace="nowrap" color="font.secondary">
               Unstaked
             </Text>
@@ -169,9 +185,18 @@ export default function StakedBalanceDistributionChart({
 
         {(pool.userBalance?.stakedBalanceUsd || 0) > 0 && (
           <HStack>
-            <Box width="12px" height="12px" bg="#9F95F0" rounded="full" />
+            <Box width="12px" height="12px" bg="chart.stakedBalance" rounded="full" />
             <Text whiteSpace="nowrap" color="font.secondary">
               Staked on Balancer
+            </Text>
+          </HStack>
+        )}
+
+        {!userHasLiquidity && (
+          <HStack>
+            <Box width="12px" height="12px" bg="font.light" rounded="full" />
+            <Text whiteSpace="nowrap" color="font.secondary">
+              No liquidity
             </Text>
           </HStack>
         )}

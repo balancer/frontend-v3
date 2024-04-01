@@ -684,6 +684,7 @@ export const balTheme = {
       },
 
       chart: {
+        stakedBalance: '#9F95F0',
         pool: {
           bar: {
             volume: {
