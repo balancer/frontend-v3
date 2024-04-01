@@ -41,7 +41,7 @@ export default function StakedBalanceDistributionChart({
 
   const unstakedBalance =
     (pool.userBalance?.totalBalanceUsd || 0) - (pool.userBalance?.stakedBalanceUsd || 0)
-  const userHasLiquidity = pool.userBalance?.totalBalance || 0 > 0
+  const userHasLiquidity = (pool.userBalance?.totalBalanceUsd || 0) > 0
 
   useEffect(() => {
     eChartsRef.current?.getEchartsInstance().on('finished', () => {
@@ -60,7 +60,7 @@ export default function StakedBalanceDistributionChart({
         },
       })
     }
-    if (pool.userBalance?.stakedBalanceUsd || 0 > 0) {
+    if ((pool.userBalance?.stakedBalanceUsd || 0) > 0) {
       data.push({
         value: pool.userBalance?.stakedBalanceUsd || 0,
         name: 'Staked balance',
@@ -72,6 +72,9 @@ export default function StakedBalanceDistributionChart({
       data.push({
         value: 0,
         name: 'No current balance',
+        itemStyle: {
+          color: theme.semanticTokens.colors.font.light,
+        },
       })
     }
     return data
