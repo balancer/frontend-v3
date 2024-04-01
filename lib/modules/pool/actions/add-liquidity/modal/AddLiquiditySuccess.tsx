@@ -129,7 +129,7 @@ export function AddLiquiditySuccess() {
 
       <TransactionDetailsAccordion />
 
-      <Heading fontWeight="bold" size="h6">
+      <Heading fontWeight="bold" size="h6" mt="4">
         Staking options
       </Heading>
       <HStack w="full" justify="space-between">

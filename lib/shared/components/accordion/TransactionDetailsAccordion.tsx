@@ -25,39 +25,37 @@ export function TransactionDetailsAccordion() {
     : '-'
 
   return (
-    <>
-      <Accordion w="full" variant="button" allowToggle>
-        <AccordionItem>
-          <AccordionButton>
-            <Box as="span" color="font.primary" flex="1" textAlign="left">
-              Transaction Details
-            </Box>
-            <AccordionIcon textColor="font.highlight" />
-          </AccordionButton>
-          <AccordionPanel pb="md">
-            <VStack w="full" textColor="grayText">
+    <Accordion w="full" variant="button" allowToggle>
+      <AccordionItem>
+        <AccordionButton>
+          <Box as="span" color="font.primary" flex="1" textAlign="left">
+            Transaction Details
+          </Box>
+          <AccordionIcon textColor="font.highlight" />
+        </AccordionButton>
+        <AccordionPanel pb="md">
+          <VStack w="full" textColor="grayText">
+            <HStack w="full" justifyContent="space-between">
+              <div>Total added</div>
+              <div> {toCurrency(totalUSDValue, { abbreviated: false })}</div>
+            </HStack>
+            {priceImpact && (
               <HStack w="full" justifyContent="space-between">
-                <div>Total added</div>
-                <div> {toCurrency(totalUSDValue, { abbreviated: false })}</div>
+                <div>Price impact</div>
+                <div>{toCurrency(priceImpactUsdValue)}</div>
               </HStack>
-              {priceImpact && (
-                <HStack w="full" justifyContent="space-between">
-                  <div>Price impact</div>
-                  <div>{toCurrency(priceImpactUsdValue)}</div>
-                </HStack>
-              )}
-              <HStack w="full" justifyContent="space-between">
-                <div>Final slippage</div>
-                <div>TODO</div>
-              </HStack>
-              <HStack w="full" justifyContent="space-between">
-                <div>Share of pool</div>
-                <div>{fNum('sharePercent', calcUserShareOfPool(pool))}</div>
-              </HStack>
-            </VStack>
-          </AccordionPanel>
-        </AccordionItem>
-      </Accordion>
-    </>
+            )}
+            <HStack w="full" justifyContent="space-between">
+              <div>Final slippage</div>
+              <div>TODO</div>
+            </HStack>
+            <HStack w="full" justifyContent="space-between">
+              <div>Share of pool</div>
+              <div>{fNum('sharePercent', calcUserShareOfPool(pool))}</div>
+            </HStack>
+          </VStack>
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
   )
 }
