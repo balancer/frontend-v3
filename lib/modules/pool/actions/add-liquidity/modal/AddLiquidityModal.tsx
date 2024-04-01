@@ -24,9 +24,8 @@ import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transacti
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { AddLiquidityPreview } from './AddLiquidityPreview'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
-import { addLiquidityStepId } from '@/lib/modules/transactions/transaction-steps/lib'
-import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 import { AddLiquiditySuccess } from './AddLiquiditySuccess'
+import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 type Props = {
   isOpen: boolean
@@ -44,14 +43,12 @@ export function AddLiquidityModal({
   const { isDesktop, isMobile } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const { stepConfigs, currentStep, currentStepIndex, useOnStepCompleted } = useAddLiquidity()
+  const { isFlowComplete } = useCurrentFlowStep()
   const { pool, chainId } = usePool()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
-  const { isCoreTransactionComplete } = useCurrentFlowStep()
-
-  const isFlowSuccess = isCoreTransactionComplete(addLiquidityStepId)
 
   function onModalClose() {
-    if (isFlowSuccess) {
+    if (isFlowComplete) {
       console.log('closing modal from success')
       //TODO: decide where to go (porfolio page?)
       return
@@ -89,7 +86,7 @@ export function AddLiquidityModal({
               />
             </Box>
           )}
-          {isFlowSuccess ? <AddLiquiditySuccess /> : <AddLiquidityPreview />}
+          {isFlowComplete ? <AddLiquiditySuccess /> : <AddLiquidityPreview />}
         </ModalBody>
         <ModalFooter>
           {shouldSignRelayerApproval ? (
