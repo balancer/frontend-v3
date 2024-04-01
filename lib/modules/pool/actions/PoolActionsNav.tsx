@@ -64,7 +64,7 @@ export function PoolActionsNav() {
 
   return (
     <HStack justify="space-between">
-      <Card variant="level2" p="sm">
+      <Card variant="level2" p="sm" width="auto">
         <Image src={networkConfig.iconPath} width="24" height="24" alt={networkConfig.shortName} />
       </Card>
       <ButtonGroup
