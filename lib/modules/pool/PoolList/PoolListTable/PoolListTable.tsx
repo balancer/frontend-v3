@@ -45,8 +45,6 @@ export function PoolListTable({ pools, count, loading }: Props) {
       }}
       showPagination={showPagination}
       paginationProps={paginationProps}
-      border="1px solid"
-      borderColor="border.base"
       w="full"
       alignItems="flex-start"
     />

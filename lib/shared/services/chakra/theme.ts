@@ -288,7 +288,7 @@ export const tokens = {
   },
   shadows: {
     light: {
-      sm: '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, -0.5px -1px 0px 0px #FFFFFF',
+      sm: '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F',
       md: '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, 6px 6px 6px -3px #49351D0F, -0.5px -0.5px 0px 0px #FFFFFF',
       lg: '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, 6px 6px 6px -3px #49351D0F, 12px 12px 12px -6px #49351D0F, -0.5px -1px 0px 0px #FFFFFF',
       xl: '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, 6px 6px 6px -3px #49351D0F, 12px 12px 12px -6px #49351D0F, 24px 24px 24px -12px #49351D0F, -0.5px -1px 0px 0px #FFFFFF',
@@ -326,7 +326,7 @@ export const tokens = {
       sm: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F',
       md: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000001A, -0.5px -1px 0px 0px #FFFFFF33',
       lg: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000001A, 0px -1px 0px 0px #FFFFFF26',
-      xl: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000000F, 24px 24px 24px -12px #0000001A, 0px -1px 0px 0px #FFFFFF26',
+      xl: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000000F, 24px 24px 24px -12px #0000001A, -0.5px -1px 0px 0px #FFFFFF26',
       '2xl':
         '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000000F, 24px 24px 24px -12px #0000000F, 42px 42px 42px -24px #0000000F, -0.5px -0.5px 0px 0px #FFFFFF26',
       shadowInnerBase:
@@ -878,8 +878,6 @@ export const balTheme = {
             width: 'full',
             background: 'background.level2',
             rounded: 'lg',
-            borderWidth: '1px',
-            borderColor: 'input.borderDefault',
             shadow: 'xl',
           },
           container: {
@@ -1312,7 +1310,7 @@ export const balTheme = {
           background: 'background.level2',
           rounded: 'lg',
           borderWidth: '1px',
-          borderColor: 'input.borderDefault',
+          borderColor: 'transparent',
           shadow: 'xl',
           p: 'md',
           width: 'full',
@@ -1323,7 +1321,7 @@ export const balTheme = {
           container: {
             background: 'background.level3',
             borderWidth: '1px',
-            borderColor: 'input.borderDefault',
+            borderColor: 'border.base',
             shadow: 'sm',
             padding: 'md',
             width: 'full',
@@ -1341,7 +1339,7 @@ export const balTheme = {
           container: {
             background: 'background.level2',
             borderWidth: '1px',
-            borderColor: 'input.borderDefault',
+            borderColor: 'border.base',
             shadow: 'sm',
             padding: 'md',
             width: 'full',
