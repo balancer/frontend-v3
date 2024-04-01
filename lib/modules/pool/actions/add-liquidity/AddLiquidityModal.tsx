@@ -1,12 +1,10 @@
 /* eslint-disable max-len */
 'use client'
 
-import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import {
   Card,
-  Heading,
   HStack,
   Modal,
   ModalBody,
@@ -89,9 +87,7 @@ export function AddLiquidityModal({
         )}
         <ModalHeader>
           <HStack justify="space-between" w="full" pr="lg">
-            <Heading fontWeight="bold" size="h5">
-              Add liquidity
-            </Heading>
+            <span>Add liquidity</span>
             <AddLiquidityTimeout />
           </HStack>
         </ModalHeader>
