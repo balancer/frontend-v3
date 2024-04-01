@@ -31,7 +31,7 @@ import { Repeat } from 'react-feather'
 import { SwapRate } from './SwapRate'
 import { SwapDetails } from './SwapDetails'
 import { capitalize } from 'lodash'
-import { motion } from 'framer-motion'
+import { motion, easeOut } from 'framer-motion'
 
 export function SwapForm() {
   const {
@@ -146,10 +146,10 @@ export function SwapForm() {
                 </VStack>
                 {!!simulationQuery.data && (
                   <motion.div
-                    style={{ width: '100%' }}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.2 }}
+                    style={{ width: '100%', transformOrigin: 'top' }}
+                    initial={{ opacity: 0, scaleY: 0.9 }}
+                    animate={{ opacity: 1, scaleY: 1 }}
+                    transition={{ duration: 0.3, ease: easeOut }}
                   >
                     <PriceImpactAccordion
                       setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
