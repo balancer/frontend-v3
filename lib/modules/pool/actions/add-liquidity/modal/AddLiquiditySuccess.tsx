@@ -28,11 +28,12 @@ import { usePathname } from 'next/navigation'
 import { getBlockExplorerTxUrl, getBlockExplorerName } from '@/lib/shared/hooks/useBlockExplorer'
 
 import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { getAprLabel } from '../../../pool.utils'
 
 export function AddLiquiditySuccess() {
   const pathname = usePathname()
   const { humanAmountsIn, tokens, simulationQuery } = useAddLiquidity()
-  const { pool, totalApr } = usePool()
+  const { pool } = usePool()
   const { flowStep } = useCurrentFlowStep()
 
   const stakePath = pathname.replace('/add-liquidity', '/stake')
@@ -137,21 +138,15 @@ export function AddLiquiditySuccess() {
             <Text color="grayText">Balancer</Text>
             <HStack>
               <Text fontWeight="bold" color="font.primary" fontSize="md">
-                {fNum('apr', totalApr)}
-                {/* SHOULD WE USE RANGE INSTEAD?? */}
-                {/* {getAprLabel(pool.dynamicData.apr.apr)} */}
+                {/* SHOULD WE USE MAX APR instead of the range?? */}
+                {/* {fNum('apr', totalApr)} */}
+                {getAprLabel(pool.dynamicData.apr.apr)}
               </Text>
               <Icon as={StarsIcon} width="20px" height="20px" />
             </HStack>
 
-            <Flex position="absolute" top={4} right={2}>
-              <TokenIcon
-                chain={GqlChain.Mainnet}
-                // TODO: how do we handle this?
-                address={'0xba100000625a3754423978a60c9317c58a424e3d'}
-                size={27}
-                alt="Bal"
-              />
+            <Flex position="absolute" top={3} right={2}>
+              <BalTokenIcon />
             </Flex>
 
             <Button
@@ -179,12 +174,7 @@ export function AddLiquiditySuccess() {
             </HStack>
 
             <Flex position="absolute" top={3} right={2}>
-              <TokenIcon
-                chain={GqlChain.Mainnet}
-                address={'0xc0c293ce456ff0ed870add98a0828dd4d2903dbf'}
-                size={27}
-                alt="Bal"
-              />
+              <AuraTokenIcon />
             </Flex>
 
             <Button
@@ -201,5 +191,27 @@ export function AddLiquiditySuccess() {
         </Card>
       </HStack>
     </VStack>
+  )
+}
+
+export function BalTokenIcon() {
+  return (
+    <TokenIcon
+      chain={GqlChain.Mainnet}
+      address={'0xba100000625a3754423978a60c9317c58a424e3d'}
+      size={27}
+      alt="Bal"
+    />
+  )
+}
+
+export function AuraTokenIcon() {
+  return (
+    <TokenIcon
+      chain={GqlChain.Mainnet}
+      address={'0xc0c293ce456ff0ed870add98a0828dd4d2903dbf'}
+      size={27}
+      alt="Aura"
+    />
   )
 }
