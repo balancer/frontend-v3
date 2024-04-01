@@ -1,12 +1,18 @@
-import { Box, BoxProps, Card, CardProps } from '@chakra-ui/react'
+import { Box, BoxProps, CardProps } from '@chakra-ui/react'
 import { ReactNode } from 'react'
 
 type NoisyCardProps = {
   cardProps?: CardProps
   contentProps?: BoxProps
-  children: ReactNode | ReactNode[]
+  shadowContainerProps?: BoxProps
+  children?: ReactNode | ReactNode[]
 }
-export function NoisyCard({ children, cardProps = {}, contentProps = {} }: NoisyCardProps) {
+export function NoisyCard({
+  children,
+  cardProps = {},
+  contentProps = {},
+  shadowContainerProps = {},
+}: NoisyCardProps) {
   return (
     <Box
       backgroundImage={`url('/images/background-noise.png')`}
@@ -15,10 +21,16 @@ export function NoisyCard({ children, cardProps = {}, contentProps = {} }: Noisy
       rounded="sm"
       position="relative"
       borderWidth={0}
-      shadow="none"
       {...cardProps}
     >
-      <Box position="absolute" width="full" height="full" content="" shadow="innerXl" />
+      <Box
+        position="absolute"
+        width="full"
+        height="full"
+        content=""
+        shadow="innerXl"
+        {...shadowContainerProps}
+      />
       <Box
         width="full"
         height="full"

@@ -18,13 +18,13 @@ import { usePool } from '../usePool'
 import { getAprLabel } from '../pool.utils'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import PoolWeightChart from './PoolWeightCharts/PoolWeightChart'
-import { GqlPoolAprValue, GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolAprValue } from '@/lib/shared/services/api/generated/graphql'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { BarChart, Gift, Shield, Users } from 'react-feather'
 import { ElevatedIcon } from '@/lib/shared/components/icons/ElevatedIcon'
-import { isClp, isStable, isWeighted } from '../pool.helpers'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
-import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
+import { PoolZenGarden, ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
+import PoolBadges from './PoolBadges'
 
 interface PoolValues {
   totalLiquidity: string
@@ -43,18 +43,6 @@ const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps } = {
     position: 'relative',
     overflow: 'hidden',
   },
-}
-
-function MainZenSymbol({ poolType }: { poolType: GqlPoolType }) {
-  if (isWeighted(poolType)) {
-    return <ZenGarden variant="circle" sizePx="400px" />
-  }
-  if (isStable(poolType)) {
-    return <ZenGarden variant="square" sizePx="400px" />
-  }
-  if (isClp(poolType)) {
-    return <ZenGarden variant="diamond" sizePx="400px" />
-  }
 }
 
 export default function PoolStats() {
@@ -100,10 +88,13 @@ export default function PoolStats() {
             }}
             contentProps={commonNoisyCardProps.contentProps}
           >
-            <MainZenSymbol poolType={pool.type} />
-            <Box mt="-6">
-              <PoolWeightChart pool={pool} chain={chain} />
-            </Box>
+            <PoolZenGarden sizePx="400px" poolType={pool.type} />
+            <VStack spacing="4">
+              <Box mt="-6">
+                <PoolWeightChart pool={pool} chain={chain} />
+              </Box>
+              <PoolBadges />
+            </VStack>
           </NoisyCard>
         </GridItem>
         <GridItem colSpan={1} rowSpan={1}>
