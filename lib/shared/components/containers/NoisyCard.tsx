@@ -1,4 +1,4 @@
-import { Box, BoxProps, Card, CardProps } from '@chakra-ui/react'
+import { Box, BoxProps, CardProps } from '@chakra-ui/react'
 import { ReactNode } from 'react'
 
 type NoisyCardProps = {

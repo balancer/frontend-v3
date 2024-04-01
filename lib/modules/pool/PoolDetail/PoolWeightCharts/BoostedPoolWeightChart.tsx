@@ -1,7 +1,7 @@
 'use client'
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Box, HStack, VStack, useTheme } from '@chakra-ui/react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import * as echarts from 'echarts/core'
@@ -100,15 +100,8 @@ export default function BoostedPoolWeightChart({
 }: PoolWeightChartProps) {
   const chartSizeValues = isSmall ? smallSize : normalSize
   const eChartsRef = useRef<EChartsReactCore | null>(null)
-  const [isChartLoaded, setIsChartLoaded] = useState(false)
   const colorMode = useThemeColorMode()
   const theme = useTheme()
-
-  useEffect(() => {
-    eChartsRef.current?.getEchartsInstance().on('finished', () => {
-      setIsChartLoaded(true)
-    })
-  }, [])
 
   const chartOption = useMemo(() => {
     return {

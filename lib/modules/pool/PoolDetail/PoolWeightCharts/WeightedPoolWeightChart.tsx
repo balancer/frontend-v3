@@ -1,17 +1,16 @@
 'use client'
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Box, HStack, VStack, useTheme } from '@chakra-ui/react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import * as echarts from 'echarts/core'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
 import PoolWeightChartLegend from './PoolWeightChartLegend'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import Image from 'next/image'
-import { useSemanticTokenColorMode } from '@/lib/shared/utils/theme'
 
 const smallSize: ChartSizeValues = {
   chartHeight: '150px',
@@ -58,7 +57,7 @@ function OuterSymbolCircle({ opacity, isSmall }: { opacity: string; isSmall: boo
   )
 }
 
-function InnerSymbolCircle({ opacity, isSmall }: { opacity: string; isSmall: boolean }) {
+function InnerSymbolCircle({ opacity }: { opacity: string; isSmall: boolean }) {
   return (
     <Box
       position="absolute"
@@ -92,15 +91,8 @@ export default function WeightedPoolWeightChart({
 }: PoolWeightChartProps) {
   const chartSizeValues = isSmall ? smallSize : normalSize
   const eChartsRef = useRef<EChartsReactCore | null>(null)
-  const [isChartLoaded, setIsChartLoaded] = useState(false)
   const theme = useTheme()
   const colorMode = useThemeColorMode()
-
-  useEffect(() => {
-    eChartsRef.current?.getEchartsInstance().on('finished', () => {
-      setIsChartLoaded(true)
-    })
-  }, [])
 
   const chartOption = useMemo(() => {
     return {

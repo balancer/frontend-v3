@@ -10,7 +10,7 @@ import { useTokens } from '@/lib/modules/tokens/useTokens'
 import Image from 'next/image'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
-import { isStable, isStableLike } from '../../pool.helpers'
+import { isStableLike } from '../../pool.helpers'
 
 export function PoolComposition() {
   const { pool, chain } = usePool()

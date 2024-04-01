@@ -1,7 +1,7 @@
 'use client'
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Box, HStack, Text, VStack, useTheme } from '@chakra-ui/react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import { motion } from 'framer-motion'
@@ -35,7 +35,6 @@ export default function StakedBalanceDistributionChart({
 }: PoolWeightChartProps) {
   const chartSizeValues = isSmall ? smallSize : normalSize
   const eChartsRef = useRef<EChartsReactCore | null>(null)
-  const [isChartLoaded, setIsChartLoaded] = useState(false)
   const theme = useTheme()
   const colorMode = useThemeColorMode()
 
@@ -43,14 +42,8 @@ export default function StakedBalanceDistributionChart({
     (pool.userBalance?.totalBalanceUsd || 0) - (pool.userBalance?.stakedBalanceUsd || 0)
   const userHasLiquidity = (pool.userBalance?.totalBalanceUsd || 0) > 0
 
-  useEffect(() => {
-    eChartsRef.current?.getEchartsInstance().on('finished', () => {
-      setIsChartLoaded(true)
-    })
-  }, [])
-
   function getData() {
-    let data = []
+    const data = []
     if (unstakedBalance > 0) {
       data.push({
         value: unstakedBalance,

@@ -4,7 +4,7 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Pool } from '../pool/usePool'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useRouter } from 'next/navigation'
-import { Card, HStack, VStack, Text, Center, Box, BoxProps } from '@chakra-ui/react'
+import { HStack, VStack, Text, Center, Box } from '@chakra-ui/react'
 import {
   poolClickHandler,
   poolMouseEnterHandler,

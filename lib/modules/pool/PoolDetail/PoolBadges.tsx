@@ -23,7 +23,9 @@ export default function PoolBadges() {
   return (
     <HStack>
       {getPoolBadges(pool).map(badge => (
-        <Badge variant="meta">{badge}</Badge>
+        <Badge key={badge} variant="meta">
+          {badge}
+        </Badge>
       ))}
     </HStack>
   )

@@ -16,15 +16,8 @@ export const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps
   },
 }
 
-const indexAreaHash: { [key: number]: string } = {
-  1: 'one',
-  2: 'two',
-  3: 'three',
-  4: 'four',
-}
-
-export async function FeaturedPools({ ...rest }: BoxProps) {
-  const { projectName, supportedNetworks } = getProjectConfig()
+export async function FeaturedPools() {
+  const { supportedNetworks } = getProjectConfig()
 
   const featuredPoolsQuery = await getApolloServerClient().query({
     query: GetFeaturedPoolsDocument,

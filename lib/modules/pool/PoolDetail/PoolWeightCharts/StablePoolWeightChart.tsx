@@ -53,7 +53,7 @@ function OuterSymbolSquare({ opacity, isSmall }: { opacity: string; isSmall: boo
   )
 }
 
-function InnerSymbolSquare({ opacity, isSmall }: { opacity: string; isSmall: boolean }) {
+function InnerSymbolSquare({ opacity }: { opacity: string }) {
   return (
     <Box
       position="absolute"
@@ -151,9 +151,9 @@ export default function StablePoolWeightChart({
             <OuterSymbolSquare opacity="10%" isSmall={isSmall || false} />
             <OuterSymbolSquare opacity="20%" isSmall={isSmall || false} />
             <OuterSymbolSquare opacity="20%" isSmall={isSmall || false} />
-            <InnerSymbolSquare opacity="30%" isSmall={isSmall || false} />
-            <InnerSymbolSquare opacity="30%" isSmall={isSmall || false} />
-            <InnerSymbolSquare opacity="30%" isSmall={isSmall || false} />
+            <InnerSymbolSquare opacity="30%" />
+            <InnerSymbolSquare opacity="30%" />
+            <InnerSymbolSquare opacity="30%" />
           </NoisyCard>
         </Box>
         {pool.displayTokens.length <= 3 && (

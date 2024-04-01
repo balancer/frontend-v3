@@ -74,7 +74,7 @@ function OuterSymbolDiamond({ opacity, isSmall }: { opacity: string; isSmall: bo
   )
 }
 
-function InnerSymbolDiamond({ opacity, isSmall }: { opacity: string; isSmall: boolean }) {
+function InnerSymbolDiamond({ opacity }: { opacity: string }) {
   return (
     <Box
       position="absolute"
@@ -189,9 +189,9 @@ export default function CLPPoolWeightChart({
             <OuterSymbolDiamond opacity="10%" isSmall={isSmall || false} />
             <OuterSymbolDiamond opacity="20%" isSmall={isSmall || false} />
             <OuterSymbolDiamond opacity="20%" isSmall={isSmall || false} />
-            <InnerSymbolDiamond opacity="30%" isSmall={isSmall || false} />
-            <InnerSymbolDiamond opacity="30%" isSmall={isSmall || false} />
-            <InnerSymbolDiamond opacity="30%" isSmall={isSmall || false} />
+            <InnerSymbolDiamond opacity="30%" />
+            <InnerSymbolDiamond opacity="30%" />
+            <InnerSymbolDiamond opacity="30%" />
           </NoisyCard>
         </Box>
         <svg
