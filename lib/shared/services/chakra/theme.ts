@@ -1164,6 +1164,7 @@ export const balTheme = {
       baseStyle: {
         color: 'font.link',
         transition: tokens.transition.default,
+        fontSize: ['sm', 'md'],
         _hover: {
           color: 'font.linkHover',
         },

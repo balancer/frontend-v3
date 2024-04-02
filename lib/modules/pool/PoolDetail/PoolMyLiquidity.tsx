@@ -203,7 +203,7 @@ export default function PoolMyLiquidity() {
                     <Button
                       as={Link}
                       href={`${pathname}/remove-liquidity`}
-                      variant={hasUnstakedBalance ? 'secondary' : 'disabled'}
+                      variant={hasUnstakedBalance ? 'tertiary' : 'disabled'}
                       isDisabled={!hasUnstakedBalance}
                       prefetch={true}
                       flex="1"
@@ -222,7 +222,7 @@ export default function PoolMyLiquidity() {
                     <Button
                       as={Link}
                       href={`${pathname}/unstake`}
-                      variant={hasStakedBalance ? 'secondary' : 'disabled'}
+                      variant={hasStakedBalance ? 'tertiary' : 'disabled'}
                       isDisabled={!hasStakedBalance}
                       flex="1"
                     >

@@ -112,14 +112,14 @@ export default function PoolStats() {
             <VStack spacing="4" m="auto">
               <ElevatedIcon as={Shield} sizePx="48px" boxSize={5} />
               <VStack spacing="0">
-                <Heading fontSize="2xl">
+                <Heading size="h4">
                   {poolValues ? (
                     toCurrency(poolValues.totalLiquidity)
                   ) : (
                     <Skeleton height="30px" w="100px" />
                   )}
                 </Heading>
-                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm">
+                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="0.5">
                   Pool value
                 </Text>
               </VStack>
@@ -141,14 +141,14 @@ export default function PoolStats() {
               <ElevatedIcon as={Gift} sizePx="48px" boxSize={5} />
               <VStack spacing="0">
                 {poolValues ? (
-                  <HStack>
-                    <Heading fontSize="2xl">{getAprLabel(pool.dynamicData.apr.apr)}</Heading>
+                  <HStack spacing="1">
+                    <Heading size="h4">{getAprLabel(pool.dynamicData.apr.apr)}</Heading>
                     <Icon as={StarsIcon} />
                   </HStack>
                 ) : (
                   <Skeleton height="30px" w="100px" />
                 )}
-                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm">
+                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="0.5">
                   LP yield APR
                 </Text>
               </VStack>
@@ -170,14 +170,14 @@ export default function PoolStats() {
             <VStack spacing="4" m="auto">
               <ElevatedIcon as={BarChart} sizePx="48px" boxSize={5} />
               <VStack spacing="0">
-                <Heading fontSize="2xl">
+                <Heading size="h4">
                   {poolValues ? (
                     toCurrency(poolValues.volume24h)
                   ) : (
                     <Skeleton height="30px" w="100px" />
                   )}
                 </Heading>
-                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm">
+                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="0.5">
                   Swap volume (24h)
                 </Text>
               </VStack>
@@ -199,11 +199,11 @@ export default function PoolStats() {
               <ElevatedIcon as={Users} sizePx="48px" boxSize={5} />
               <VStack spacing="0">
                 {poolValues && pool.dynamicData ? (
-                  <Heading fontSize="2xl">{pool.dynamicData.holdersCount}</Heading>
+                  <Heading size="h4">{pool.dynamicData.holdersCount}</Heading>
                 ) : (
                   <Skeleton height="30px" w="100px" />
                 )}
-                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm">
+                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="0.5">
                   Liquidity providers
                 </Text>
               </VStack>
