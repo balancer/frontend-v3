@@ -45,7 +45,7 @@ export async function FeaturedPools() {
       <Card
         variant="level2"
         width="full"
-        height={{ base: 'auto', md: '550px' }}
+        height="550px"
         display="flex"
         alignItems="center"
         justifyContent="center"
@@ -58,11 +58,11 @@ export async function FeaturedPools() {
           rowGap="4"
           width="full"
           height="full"
-          templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }}
-          templateRows={{ base: 'repeat(4, 1fr)', md: '1fr 1fr' }}
+          templateColumns="1fr 1fr 1fr 1fr"
+          templateRows="1fr 1fr"
           p="0"
         >
-          <GridItem position="relative" gridArea="1 / 1 / 3 / 3">
+          <GridItem position="relative" colSpan={2} rowSpan={2}>
             {primaryPool && (
               <FeaturePoolCard pool={primaryPool} chain={primaryPool.chain} hasLegend />
             )}
