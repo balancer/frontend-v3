@@ -45,7 +45,7 @@ export async function FeaturedPools() {
       <Card
         variant="level2"
         width="full"
-        height={['auto', '550px']}
+        height={{ base: 'auto', md: '550px' }}
         display="flex"
         alignItems="center"
         justifyContent="center"
@@ -58,8 +58,8 @@ export async function FeaturedPools() {
           rowGap="4"
           width="full"
           height="full"
-          templateColumns={['repeat(2, 1fr)', 'repeat(4, 1fr)']}
-          templateRows={['repeat(4, 1fr);', '1fr 1fr']}
+          templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }}
+          templateRows={{ base: 'repeat(4, 1fr)', md: '1fr 1fr' }}
           p="0"
         >
           <GridItem position="relative" gridArea="1 / 1 / 3 / 3">
