@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, HStack, Grid, Flex, useTheme } from '@chakra-ui/react'
+import { Box, HStack, Grid, Flex, useTheme, VStack } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
 import Image from 'next/image'
@@ -89,12 +89,14 @@ export default function StablePoolWeightChart({
   const colorMode = useThemeColorMode()
 
   return (
-    <Flex
+    <VStack
+      mt={isSmall ? '0' : '8'}
       position="relative"
       width="full"
       height="full"
       justifyContent="center"
       alignItems="center"
+      spacing="4"
     >
       <Box
         width={`${chartSizeValues.boxWidth * 0.75}px`}
@@ -200,20 +202,12 @@ export default function StablePoolWeightChart({
             })}
           </Grid>
         )}
-        {hasLegend && (
-          <HStack
-            width="full"
-            bottom="-2.5rem"
-            position="absolute"
-            left="0"
-            right="0"
-            mx="auto"
-            justifyContent="center"
-          >
-            <PoolWeightChartLegend pool={pool} colors={colors} />
-          </HStack>
-        )}
       </Box>
-    </Flex>
+      {hasLegend && (
+        <HStack width="full" justifyContent="center">
+          <PoolWeightChartLegend pool={pool} colors={colors} />
+        </HStack>
+      )}
+    </VStack>
   )
 }
