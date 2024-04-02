@@ -160,7 +160,7 @@ export function AddLiquidityForm() {
                   </Card>
                 </GridItem>
                 <GridItem>
-                <Card variant="subSection" w="full" p={['sm', 'ms']}>
+                  <Card variant="subSection" w="full" p={['sm', 'ms']}>
                     <VStack align="start" spacing="sm">
                       <Text variant="special" fontSize="sm" lineHeight="16px" fontWeight="500">
                         Potential weekly yield

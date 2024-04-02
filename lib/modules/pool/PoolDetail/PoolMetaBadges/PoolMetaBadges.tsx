@@ -1,6 +1,6 @@
 'use client'
 
-import { Badge, Flex, HStack, Text, Tooltip, Center } from '@chakra-ui/react'
+import { Badge, Flex, HStack, Text, Tooltip } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import Image from 'next/image'
@@ -11,7 +11,7 @@ export default function PoolMetaBadges() {
   const { pool, chain } = usePool()
 
   return (
-    <Flex gap={{base: '1', sm: '2'}} alignItems="center" wrap="wrap">
+    <Flex gap={{ base: '1', sm: '2' }} alignItems="center" wrap="wrap">
       <Badge
         py="2.5"
         px="2.5"
@@ -47,7 +47,6 @@ export default function PoolMetaBadges() {
                 address={token.address}
                 size={24}
                 alt={token?.symbol || token.address}
-                
               />
 
               <Text fontWeight="bold" fontSize="md">
@@ -70,7 +69,7 @@ export default function PoolMetaBadges() {
           rounded="full"
           display="flex"
           alignItems="center"
-          h={{base: '28px'}}
+          h={{ base: '28px' }}
         >
           <HStack color="font.primary">
             <Repeat size={12} />

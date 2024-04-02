@@ -196,7 +196,7 @@ export default function PoolMyLiquidity() {
                       href={`${pathname}/add-liquidity`}
                       variant="primary"
                       prefetch={true}
-                      flex='1'
+                      flex="1"
                     >
                       Add
                     </Button>
@@ -206,7 +206,7 @@ export default function PoolMyLiquidity() {
                       variant={hasUnstakedBalance ? 'secondary' : 'disabled'}
                       isDisabled={!hasUnstakedBalance}
                       prefetch={true}
-                      flex='1'
+                      flex="1"
                     >
                       Remove
                     </Button>
@@ -215,7 +215,7 @@ export default function PoolMyLiquidity() {
                       href={`${pathname}/stake`}
                       variant={canStake && hasUnstakedBalance ? 'secondary' : 'disabled'}
                       isDisabled={!(canStake && hasUnstakedBalance)}
-                      flex='1'
+                      flex="1"
                     >
                       Stake
                     </Button>
@@ -224,7 +224,7 @@ export default function PoolMyLiquidity() {
                       href={`${pathname}/unstake`}
                       variant={hasStakedBalance ? 'secondary' : 'disabled'}
                       isDisabled={!hasStakedBalance}
-                      flex='1'
+                      flex="1"
                     >
                       Unstake
                     </Button>
