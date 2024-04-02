@@ -5,7 +5,6 @@ import {
   Card,
   CardHeader,
   HStack,
-  Heading,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -76,9 +75,7 @@ export function SwapPreviewModal({
         )}
         <ModalHeader>
           <HStack justify="space-between" w="full" pr="lg">
-            <Heading fontWeight="bold" size="h5">
-              Review {capitalize(swapAction)}
-            </Heading>
+            <span>Review {capitalize(swapAction)}</span>
             <SwapTimeout />
           </HStack>
         </ModalHeader>

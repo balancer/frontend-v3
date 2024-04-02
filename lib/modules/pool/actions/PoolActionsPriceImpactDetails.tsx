@@ -9,6 +9,7 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePool } from '../usePool'
 import { ArrowRight } from 'react-feather'
 import { calcShareOfPool, calcUserShareOfPool } from '../pool.helpers'
+import { isNumber } from 'lodash'
 
 interface PoolActionsPriceImpactDetailsProps {
   bptAmount: bigint | undefined
@@ -27,7 +28,7 @@ export function PoolActionsPriceImpactDetails({
 
   const { priceImpactLevel, priceImpactColor, PriceImpactIcon, priceImpact } = usePriceImpact()
 
-  const priceImpactLabel = priceImpact ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpactLabel = isNumber(priceImpact) ? fNum('priceImpact', priceImpact) : '-'
 
   const bptLabel = safeTokenFormat(bptAmount, BPT_DECIMALS, { abbreviated: false })
 

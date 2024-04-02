@@ -1,32 +1,23 @@
 'use client'
 
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { fNum } from '@/lib/shared/utils/numbers'
 import { isSameAddress } from '@balancer/sdk'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { Card, HStack, Skeleton, Text, Tooltip, VStack } from '@chakra-ui/react'
+import { Card, HStack, Text, VStack } from '@chakra-ui/react'
 import { Address, formatUnits } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
 import { usePool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
 import { useAddLiquidity } from '../useAddLiquidity'
-import { AddLiquidityTimeout } from './AddLiquidityTimeout'
+import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
 
 export function AddLiquidityPreview() {
-  const { humanAmountsIn, totalUSDValue, priceImpactQuery, tokens, simulationQuery } =
-    useAddLiquidity()
+  const { humanAmountsIn, totalUSDValue, tokens, simulationQuery } = useAddLiquidity()
   const { pool } = usePool()
   const { toCurrency } = useCurrency()
-  const { slippage } = useUserSettings()
 
   const bptOut = simulationQuery?.data?.bptOut
   const bptOutLabel = bptOut ? formatUnits(bptOut.amount, BPT_DECIMALS) : '0'
-
-  const priceImpact = priceImpactQuery?.data
-  const priceImpactLabel = priceImpact !== undefined ? fNum('priceImpact', priceImpact) : '-'
 
   return (
     <VStack spacing="sm" align="start">
@@ -34,9 +25,7 @@ export function AddLiquidityPreview() {
         <VStack align="start" spacing="md">
           <HStack justify="space-between" w="full">
             <Text color="grayText">{"You're adding"}</Text>
-            <NumberText fontSize="lg">
-              {toCurrency(totalUSDValue, { abbreviated: false })}
-            </NumberText>
+            <Text>{toCurrency(totalUSDValue, { abbreviated: false })}</Text>
           </HStack>
           {tokens.map(token => {
             if (!token) return <div>Missing token</div>
@@ -78,33 +67,11 @@ export function AddLiquidityPreview() {
 
       <Card variant="modalSubSection">
         <VStack align="start" spacing="sm">
-          <HStack justify="space-between" w="full">
-            <Text>Price impact</Text>
-            <HStack>
-              {priceImpactQuery.isLoading ? (
-                <Skeleton w="12" h="full" />
-              ) : (
-                <NumberText color="grayText">{priceImpactLabel}</NumberText>
-              )}
-              <Tooltip label="Price impact" fontSize="sm">
-                <InfoOutlineIcon color="grayText" />
-              </Tooltip>
-            </HStack>
-          </HStack>
-          <HStack justify="space-between" w="full">
-            <Text>Max. slippage</Text>
-            <HStack>
-              <NumberText color="grayText">{fNum('slippage', slippage)}</NumberText>
-              <Tooltip
-                label="Your maximum slippage setting. This can be changed in your
-            transaction settings (top right on previous input form)."
-                fontSize="sm"
-              >
-                <InfoOutlineIcon color="grayText" />
-              </Tooltip>
-            </HStack>
-          </HStack>
-          <AddLiquidityTimeout />
+          <PoolActionsPriceImpactDetails
+            totalUSDValue={totalUSDValue}
+            bptAmount={simulationQuery.data?.bptOut.amount}
+            isAddLiquidity
+          />
         </VStack>
       </Card>
     </VStack>

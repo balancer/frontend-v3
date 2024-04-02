@@ -8,6 +8,7 @@ import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps
 import {
   Box,
   Button,
+  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -29,6 +30,7 @@ import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/
 import { AddLiquiditySuccess } from './modal/AddLiquiditySuccess'
 import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 import { usePoolRedirect } from '../../pool.hooks'
+import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
 
 type Props = {
   isOpen: boolean
@@ -92,7 +94,12 @@ export function AddLiquidityModal({
             chain={pool.chain}
           />
         )}
-        <ModalHeader>Add liquidity</ModalHeader>
+        <ModalHeader>
+          <HStack justify="space-between" w="full" pr="lg">
+            <span>Add liquidity</span>
+            <AddLiquidityTimeout />
+          </HStack>
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           {isMobile && (
