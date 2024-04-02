@@ -3,13 +3,13 @@ import { fNum, safeTokenFormat, bn } from '@/lib/shared/utils/numbers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { HStack, VStack, Text, Tooltip, Icon, Box } from '@chakra-ui/react'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
-import { useEffect, useState } from 'react'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { BPT_DECIMALS } from '../pool.constants'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePool } from '../usePool'
-import { parseUnits } from 'viem'
 import { ArrowRight } from 'react-feather'
+import { calcShareOfPool, calcUserShareOfPool } from '../pool.helpers'
+import { isNumber } from 'lodash'
 
 interface PoolActionsPriceImpactDetailsProps {
   bptAmount: bigint | undefined
@@ -22,36 +22,25 @@ export function PoolActionsPriceImpactDetails({
   totalUSDValue,
   isAddLiquidity = false,
 }: PoolActionsPriceImpactDetailsProps) {
-  const [userTotalBalance, setUserTotalBalance] = useState('0')
-
   const { slippage } = useUserSettings()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
 
   const { priceImpactLevel, priceImpactColor, PriceImpactIcon, priceImpact } = usePriceImpact()
 
-  const priceImpactLabel = priceImpact ? fNum('priceImpact', priceImpact) : '-'
+  const priceImpactLabel = isNumber(priceImpact) ? fNum('priceImpact', priceImpact) : '-'
 
   const bptLabel = safeTokenFormat(bptAmount, BPT_DECIMALS, { abbreviated: false })
 
   const priceImpactUsd = bn(priceImpact || 0).times(totalUSDValue)
   const maxSlippageUsd = bn(slippage).div(100).times(totalUSDValue)
 
-  const changedShareOfPool = bn(bptAmount || 0).div(
-    bn(parseUnits(pool.dynamicData.totalShares, 18))
-  )
-  const currentShareOfPool = bn(parseUnits(userTotalBalance, 18)).div(
-    bn(parseUnits(pool.dynamicData.totalShares, 18))
-  )
+  const changedShareOfPool = calcShareOfPool(pool, bptAmount || 0n)
+  const currentShareOfPool = calcUserShareOfPool(pool)
+
   const futureShareOfPool = isAddLiquidity
     ? currentShareOfPool.plus(changedShareOfPool)
     : currentShareOfPool.minus(changedShareOfPool)
-
-  useEffect(() => {
-    if (pool.userBalance) {
-      setUserTotalBalance(pool.userBalance.totalBalance)
-    }
-  }, [pool])
 
   return (
     <VStack spacing="sm" align="start" w="full" fontSize="sm">

@@ -160,7 +160,7 @@ export default function PoolMyLiquidity() {
                           My {getTitlePrefix()} balance
                         </Heading>
                         <Text variant="secondary" fontSize="0.85rem">
-                          APR range
+                          APR
                         </Text>
                       </VStack>
                       <VStack alignItems="flex-end">
