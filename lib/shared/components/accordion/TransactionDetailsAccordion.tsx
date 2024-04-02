@@ -45,10 +45,10 @@ export function TransactionDetailsAccordion() {
                 <div>{toCurrency(priceImpactUsdValue)}</div>
               </HStack>
             )}
-            <HStack w="full" justifyContent="space-between">
+            {/* <HStack w="full" justifyContent="space-between">
               <div>Final slippage</div>
               <div>TODO</div>
-            </HStack>
+            </HStack> */}
             <HStack w="full" justifyContent="space-between">
               <div>Share of pool</div>
               <div>{fNum('sharePercent', calcUserShareOfPool(pool))}</div>

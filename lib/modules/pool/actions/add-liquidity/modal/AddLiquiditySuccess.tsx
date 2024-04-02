@@ -6,6 +6,7 @@ import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { isSameAddress } from '@balancer/sdk'
 import Link from 'next/link'
 import {
+  Box,
   Button,
   Card,
   CircularProgress,
@@ -132,7 +133,7 @@ export function AddLiquiditySuccess() {
       <Heading fontWeight="bold" size="h6" mt="4">
         Staking options
       </Heading>
-      <HStack w="full" justify="space-between">
+      <HStack w="full" justify="space-between" alignItems="stretch">
         <Card variant="modalSubSection" position="relative">
           <VStack align="left" spacing="2">
             <Text color="grayText">Balancer</Text>
@@ -167,10 +168,11 @@ export function AddLiquiditySuccess() {
           <VStack align="left" spacing="2">
             <Text color="grayText">Aura</Text>
             <HStack>
-              <Text fontWeight="bold" color="font.primary" fontSize="md">
-                16.00% TODO
-              </Text>
-              <Icon as={StarsIcon} width="20px" height="20px" />
+              {/* <Text fontWeight="bold" color="font.primary" fontSize="md">
+                TODO {auraAPR}
+              </Text> */}
+              {/* <Icon as={StarsIcon} width="20px" height="20px" /> */}
+              <Box width="20px" height="20px" />
             </HStack>
 
             <Flex position="absolute" top={3} right={2}>
