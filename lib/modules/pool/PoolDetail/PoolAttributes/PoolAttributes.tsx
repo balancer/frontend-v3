@@ -36,7 +36,9 @@ export function PoolAttributes() {
                   direction={{ base: 'column', md: 'row' }}
                 >
                   <Box minWidth="140px">
-                    <Text fontSize="sm" variant={{ base: 'primary', md: 'secondary' }}>{attribute.title}</Text>
+                    <Text fontSize="sm" variant={{ base: 'primary', md: 'secondary' }}>
+                      {attribute.title}
+                    </Text>
                   </Box>
                   <Text
                     variant={{ base: 'secondary', md: 'secondary' }}
