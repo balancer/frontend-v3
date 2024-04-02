@@ -51,7 +51,13 @@ export function FeaturePoolCard({
       }}
     >
       <PoolZenGarden subdued={isSmall} sizePx={bgSize} poolType={pool.type} />
-      <VStack cursor="pointer" justifyContent="center" spacing={isSmall ? 'sm' : 'md'} h="full">
+      <VStack
+        cursor="pointer"
+        justifyContent="center"
+        spacing={isSmall ? 'sm' : 'md'}
+        h="full"
+        zIndex={1}
+      >
         {!isSmall && (
           <HStack justifyContent="center" w="full" spacing="sm">
             <Text variant="secondary" fontWeight="medium">
