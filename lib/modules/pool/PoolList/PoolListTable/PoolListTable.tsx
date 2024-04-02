@@ -26,11 +26,11 @@ export function PoolListTable({ pools, count, loading }: Props) {
 
   const rowProps = {
     px: [3, 0],
-    gridTemplateColumns: `32px minmax(250px, 1fr) 100px ${
+    gridTemplateColumns: `32px minmax(276px, 1fr) 100px ${
       userAddress ? furthestLeftColWidth : ''
     } ${userAddress ? numberColumnWidth : furthestLeftColWidth} ${numberColumnWidth} 200px`,
     alignItems: 'center',
-    gap: ['xs', 'lg'],
+    gap: { base: 'xs', xl: 'lg' },
   }
 
   if (!isMounted) return <Skeleton height="500px" w="full" />
@@ -45,8 +45,10 @@ export function PoolListTable({ pools, count, loading }: Props) {
       }}
       showPagination={showPagination}
       paginationProps={paginationProps}
-      w="full"
+      w={{ base: '100vw', lg: 'full' }}
       alignItems="flex-start"
+      position="relative"
+      left={{ base: '-6px', sm: '0' }}
     />
   )
 }

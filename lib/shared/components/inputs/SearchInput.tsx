@@ -31,7 +31,7 @@ export function SearchInput({
   const debouncedChangeHandler = useDebounce(changeHandler, defaultDebounceMs)
 
   return (
-    <InputGroup size="md">
+    <InputGroup size="md" display="flex" alignItems="center">
       <Input
         {...register(SEARCH)}
         id={SEARCH}
@@ -40,6 +40,8 @@ export function SearchInput({
         bg="input.bgDefault"
         border="1px solid"
         borderColor="input.borderDefault"
+        fontSize={['16px', '16px']}
+        h={['36px', '40px']}
         _hover={{ bg: 'input.bgHover', borderColor: 'input.borderHover' }}
         _focus={{
           bg: 'input.bgFocus',

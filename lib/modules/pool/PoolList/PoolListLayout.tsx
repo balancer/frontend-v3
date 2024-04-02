@@ -17,10 +17,10 @@ export function PoolListLayout() {
   return (
     <VStack align="start" spacing="md" w="full">
       <Stack
-        direction={{ base: 'column', lg: 'row' }}
+        direction={{ base: 'column', md: 'row' }}
         w="full"
         justify="space-between"
-        align={{ base: 'start', lg: 'end' }}
+        align={{ base: 'start', md: 'end' }}
       >
         <VStack align="start" w="full">
           <HStack w="full">
@@ -35,9 +35,9 @@ export function PoolListLayout() {
         </VStack>
 
         <Stack
-          direction={{ base: 'column', md: 'row' }}
+          direction={{ base: 'row', sm: 'row' }}
           w="full"
-          align={{ base: 'end', md: 'center' }}
+          align={{ base: 'end', sm: 'center' }}
         >
           <PoolListFilters />
           <HStack>

@@ -23,6 +23,9 @@ function WeightedTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; 
             key={token.address}
             p={[1.5, 2]}
             pr={[2, 3]}
+            h={['32px', '36px']}
+            display="flex"
+            alignItems="center"
             bg="background.level2"
             borderRadius="full"
             borderWidth={1}
@@ -31,10 +34,12 @@ function WeightedTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; 
           >
             <HStack gap={[1.5, 2]}>
               <TokenIconOrIconStack token={token} chain={chain} />
-              <Text fontWeight="bold" noOfLines={1}>
-                {token.nestedTokens ? token.name : token.symbol}
-              </Text>
-              <Text fontSize="xs">{fNum('weight', token.weight || '')}</Text>
+              <HStack gap={[1, 1.5]}>
+                <Text fontWeight="bold" noOfLines={1}>
+                  {token.nestedTokens ? token.name : token.symbol}
+                </Text>
+                <Text fontSize="xs">{fNum('weight', token.weight || '')}</Text>
+              </HStack>
             </HStack>
           </WrapItem>
         )
@@ -53,8 +58,10 @@ function StableTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; ch
         return (
           <Box
             key={token.address}
-            p={[1.5, 2]}
-            pr={[2, 3]}
+            h={['32px', '36px']}
+            pr="3"
+            display="flex"
+            alignItems="center"
             pl={isFirstToken(i) ? 2 : 12}
             bg="background.level2"
             borderRadius="full"

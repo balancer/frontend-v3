@@ -32,5 +32,12 @@ export function PoolListViewType() {
     setCurrentOption(newOption)
   }, [isTableView])
 
-  return <ButtonGroup currentOption={currentOption} options={options} onChange={changeListView} />
+  return (
+    <ButtonGroup
+      size="xs"
+      currentOption={currentOption}
+      options={options}
+      onChange={changeListView}
+    />
+  )
 }
