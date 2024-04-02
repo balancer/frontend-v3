@@ -2,7 +2,7 @@
 
 import { GqlPoolFeaturedPool } from '@/lib/shared/services/api/generated/graphql'
 import { useState } from 'react'
-import { Box, Card, Center } from '@chakra-ui/react'
+import { Box, BoxProps, Card, Center } from '@chakra-ui/react'
 import { FeaturePoolCard } from './FeaturePoolCard'
 import { Pool } from '../pool/usePool'
 
@@ -10,7 +10,7 @@ type Props = {
   pools: GqlPoolFeaturedPool[]
 }
 
-export function PoolCarousel({ pools }: Props) {
+export function PoolCarousel({ pools, ...rest }: Props & BoxProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
   function next() {
@@ -28,7 +28,7 @@ export function PoolCarousel({ pools }: Props) {
   const currentPool = pools[currentIndex].pool as Pool
 
   return (
-    <>
+    <Box {...rest}>
       <Card
         w="full"
         h="550px"
@@ -62,6 +62,6 @@ export function PoolCarousel({ pools }: Props) {
           />
         ))}
       </Center>
-    </>
+    </Box>
   )
 }
