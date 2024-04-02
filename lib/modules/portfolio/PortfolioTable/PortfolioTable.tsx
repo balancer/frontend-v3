@@ -116,8 +116,10 @@ export function PortfolioTable() {
         }}
         showPagination={false}
         paginationProps={null}
-        w="full"
+        w={{ base: '100vw', lg: 'full' }}
         alignItems="flex-start"
+        position="relative"
+        left={{ base: '-6px', sm: '0' }}
       />
     </Stack>
   )

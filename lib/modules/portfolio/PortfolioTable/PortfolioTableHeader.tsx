@@ -13,7 +13,14 @@ type Props = {
 }
 export function PortfolioTableHeader({ currentSortingObj, setCurrentSortingObj, ...rest }: Props) {
   return (
-    <Grid {...rest} py="3" w="full" borderBottom="1px solid" borderColor="border.base">
+    <Grid
+      {...rest}
+      pb={['ms', 'md']}
+      px="1"
+      w="full"
+      borderBottom="1px solid"
+      borderColor="border.base"
+    >
       <GridItem>
         <VStack align="start" w="full">
           <Icon as={Globe} boxSize="5" ml="1" color="grayText" />
