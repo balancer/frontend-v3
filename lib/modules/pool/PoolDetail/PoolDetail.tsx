@@ -28,19 +28,19 @@ export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
         <GridItem colSpan={2}>
           {isLoading ? <Skeleton h="84px" w="full" /> : <PoolIncentives />}
         </GridItem>
-        <GridItem colSpan={1}>
+        <GridItem colSpan={{ base: '2', md: '1' }}>
           {isLoading ? <Skeleton h="385px" w="full" /> : <PoolComposition />}
         </GridItem>
-        <GridItem colSpan={1}>
+        <GridItem colSpan={{ base: '2', md: '1' }}>
           {isLoading ? <Skeleton h="385px" w="full" /> : <PoolChart />}
         </GridItem>
         <GridItem colSpan={2}>
           {isLoading ? <Skeleton h="385px" w="full" /> : <PoolActivityChart />}
         </GridItem>
-        <GridItem colSpan={1}>
+        <GridItem colSpan={{ base: '2', sm: '1' }}>
           {isLoading ? <Skeleton h="385px" w="full" /> : <PoolAttributes />}
         </GridItem>
-        <GridItem colSpan={1}>
+        <GridItem colSpan={{ base: '2', sm: '1' }}>
           <VStack spacing="md" minH="full">
             {isLoading ? <Skeleton h="200px" w="full" /> : <PoolRisks />}
             {isLoading ? <Skeleton h="100px" w="full" /> : <PoolContracts />}

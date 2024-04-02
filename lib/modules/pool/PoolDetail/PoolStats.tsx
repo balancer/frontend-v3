@@ -63,23 +63,23 @@ export default function PoolStats() {
 
   return (
     <Card
-      height="400px"
+      height={{ base: 'auto', md: '400px' }}
       display="flex"
       alignItems="center"
       justifyContent="center"
       position="relative"
-      p={0}
+      p="4"
     >
       <Grid
         columnGap="4"
         rowGap="4"
         width="full"
         height="full"
-        templateColumns="1fr 1fr 1fr 1fr"
-        templateRows="1fr 1fr"
-        p="4"
+        templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }}
+        templateRows={{ base: 'repeat(4, 1fr)', md: '1fr 1fr' }}
+        p="0"
       >
-        <GridItem position="relative" colSpan={2} rowSpan={2}>
+        <GridItem position="relative" gridArea="1 / 1 / 3 / 3">
           <NoisyCard
             cardProps={{
               ...commonNoisyCardProps.cardProps,

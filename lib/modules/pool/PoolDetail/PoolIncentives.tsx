@@ -1,7 +1,7 @@
 'use client'
 
 import TokenRow from '../../tokens/TokenRow/TokenRow'
-import { Button, HStack, Tooltip, VStack } from '@chakra-ui/react'
+import { Button, Stack, HStack, Tooltip, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { Address } from 'viem'
 import { usePool } from '../usePool'
@@ -50,7 +50,12 @@ export default function PoolIncentives() {
 
   return (
     <VStack width="full">
-      <HStack spacing="4" width="full" alignItems="flex-start">
+      <Stack
+        spacing="4"
+        width="full"
+        alignItems="flex-start"
+        direction={{ base: 'column', md: 'row' }}
+      >
         <IncentiveBadge
           label="Pool incentives (1w)"
           value={toCurrency(totalRewardsPerWeekUsd)}
@@ -103,7 +108,7 @@ export default function PoolIncentives() {
             </HStack>
           </VStack>
         </IncentiveBadge>
-      </HStack>
+      </Stack>
 
       <ClaimModal
         isOpen={previewModalDisclosure.isOpen}

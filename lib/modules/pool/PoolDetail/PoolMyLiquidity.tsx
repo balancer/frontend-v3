@@ -136,14 +136,19 @@ export default function PoolMyLiquidity() {
 
   return (
     <Card minHeight="320px">
-      <Grid width="full" templateColumns="1fr 1fr" gap="md">
+      <Grid width="full" templateColumns={{ base: 'repeat(1, 1fr)', md: '1fr 1fr' }} gap="md">
         <GridItem>
           <VStack spacing="md" width="full">
             <HStack width="full" justifyContent="space-between">
               <Heading bg="font.special" backgroundClip="text" fontWeight="bold" size="h5">
                 My liquidity
               </Heading>
-              <ButtonGroup currentOption={activeTab} options={TABS} onChange={handleTabChanged} />
+              <ButtonGroup
+                size="xxs"
+                currentOption={activeTab}
+                options={TABS}
+                onChange={handleTabChanged}
+              />
             </HStack>
             <Box width="full">
               <Card variant="subSection">
@@ -191,6 +196,7 @@ export default function PoolMyLiquidity() {
                       href={`${pathname}/add-liquidity`}
                       variant="primary"
                       prefetch={true}
+                      flex='1'
                     >
                       Add
                     </Button>
@@ -200,6 +206,7 @@ export default function PoolMyLiquidity() {
                       variant={hasUnstakedBalance ? 'secondary' : 'disabled'}
                       isDisabled={!hasUnstakedBalance}
                       prefetch={true}
+                      flex='1'
                     >
                       Remove
                     </Button>
@@ -208,6 +215,7 @@ export default function PoolMyLiquidity() {
                       href={`${pathname}/stake`}
                       variant={canStake && hasUnstakedBalance ? 'secondary' : 'disabled'}
                       isDisabled={!(canStake && hasUnstakedBalance)}
+                      flex='1'
                     >
                       Stake
                     </Button>
@@ -216,6 +224,7 @@ export default function PoolMyLiquidity() {
                       href={`${pathname}/unstake`}
                       variant={hasStakedBalance ? 'secondary' : 'disabled'}
                       isDisabled={!hasStakedBalance}
+                      flex='1'
                     >
                       Unstake
                     </Button>
