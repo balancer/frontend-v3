@@ -1,11 +1,10 @@
 'use client'
 
-import { BoxProps, Card, Grid, GridItem, Heading, Skeleton, VStack } from '@chakra-ui/react'
+import { BoxProps, Card, Grid, GridItem, Heading, VStack } from '@chakra-ui/react'
 import { FeaturePoolCard } from './FeaturePoolCard'
 import { GetFeaturedPoolsQuery } from '@/lib/shared/services/api/generated/graphql'
 import { PoolCarousel } from './PoolCarousel'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
 export const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps } = {
   contentProps: {
@@ -20,7 +19,6 @@ export const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps
 }
 
 export function FeaturedPools({ pools }: { pools: GetFeaturedPoolsQuery['featuredPools'] }) {
-  const isMounted = useIsMounted()
   const { isMobile } = useBreakpoints()
 
   const featuredPools = pools.slice(0, 5)
@@ -36,9 +34,7 @@ export function FeaturedPools({ pools }: { pools: GetFeaturedPoolsQuery['feature
       <Heading as="h2" size="lg" variant="special">
         Featured pools
       </Heading>
-      {!isMounted ? (
-        <Skeleton h="550px" w="full" />
-      ) : isMobile ? (
+      {isMobile ? (
         <PoolCarousel pools={featuredPools} />
       ) : (
         <Card
