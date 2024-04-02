@@ -7,7 +7,7 @@ import { StepTrackerProps } from './step-tracker.types'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 
 export function getStylesForModalContentWithStepTracker(isDesktop: boolean): ModalContentProps {
-  return isDesktop ? { left: '-100px', position: 'relative' } : {}
+  return isDesktop ? { left: '-100px', position: 'relative', minW: '30%' } : {}
 }
 
 /*

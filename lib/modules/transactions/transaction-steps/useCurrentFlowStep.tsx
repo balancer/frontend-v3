@@ -6,12 +6,15 @@ import {
   FlowStep,
   TransactionState,
   getTransactionState,
+  isCoreStep,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { PropsWithChildren, createContext, useEffect, useState } from 'react'
 
 export function _useCurrentFlowStep() {
   const [flowStep, setCurrentFlowStep] = useState<FlowStep | undefined>()
+
+  const isFlowComplete: boolean = isCoreStep(flowStep?.id) && !!flowStep?.result.isSuccess
 
   /*
     We are only interested in the state of the flow step if it is a concrete CoreStepId
@@ -21,7 +24,17 @@ export function _useCurrentFlowStep() {
     return getTransactionState(flowStep)
   }
 
-  return { flowStep, setCurrentFlowStep, getCoreTransactionState }
+  function clearCurrentFlowStep() {
+    setCurrentFlowStep(undefined)
+  }
+
+  return {
+    flowStep,
+    isFlowComplete,
+    setCurrentFlowStep,
+    clearCurrentFlowStep,
+    getCoreTransactionState,
+  }
 }
 
 export type Result = ReturnType<typeof _useCurrentFlowStep>

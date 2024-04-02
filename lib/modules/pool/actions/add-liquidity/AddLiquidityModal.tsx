@@ -1,10 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 'use client'
 
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
+import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
+import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import {
-  Card,
+  Box,
+  Button,
   HStack,
   Modal,
   ModalBody,
@@ -14,26 +17,20 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
-  Text,
   VStack,
 } from '@chakra-ui/react'
-import { RefObject, useRef } from 'react'
-import { formatUnits } from 'viem'
-import { Address } from 'wagmi'
-import { BPT_DECIMALS } from '../../pool.constants'
+import { RefObject, useEffect, useRef, useState } from 'react'
 import { usePool } from '../../usePool'
-import { HumanAmountIn } from '../liquidity-types'
 import { useAddLiquidity } from './useAddLiquidity'
-import { AddLiquidityTimeout } from './AddLiquidityTimeout'
-import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
-import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
-import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { PoolActionsPriceImpactDetails } from '../PoolActionsPriceImpactDetails'
+import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
+import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
+import { AddLiquiditySuccess } from './modal/AddLiquiditySuccess'
+import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { usePoolRedirect } from '../../pool.hooks'
+import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
 
 type Props = {
   isOpen: boolean
@@ -48,29 +45,41 @@ export function AddLiquidityModal({
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
+  const [didRefetchPool, setDidRefetchPool] = useState(false)
   const { isDesktop, isMobile } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const {
-    humanAmountsIn,
-    totalUSDValue,
-    simulationQuery,
-    tokens,
-    stepConfigs,
-    currentStep,
-    currentStepIndex,
-    useOnStepCompleted,
-  } = useAddLiquidity()
-  const { toCurrency } = useCurrency()
-  const { pool, chainId } = usePool()
+  const { stepConfigs, currentStep, currentStepIndex, useOnStepCompleted } = useAddLiquidity()
+  const { isFlowComplete } = useCurrentFlowStep()
+  const { pool, chainId, refetch } = usePool()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
+  const { redirectToPoolPage } = usePoolRedirect(pool)
 
-  const bptOut = simulationQuery?.data?.bptOut
-  const bptOutLabel = bptOut ? formatUnits(bptOut.amount, BPT_DECIMALS) : '0'
+  function onModalClose() {
+    if (isFlowComplete) {
+      if (isLoadingAfterSuccess) return
+      return redirectToPoolPage()
+    }
+    onClose()
+  }
+
+  async function handleRedirectToPoolPage(event: React.MouseEvent<HTMLElement>) {
+    redirectToPoolPage(event)
+  }
+
+  const isLoadingAfterSuccess = isFlowComplete && !didRefetchPool
+
+  useEffect(() => {
+    async function reFetchPool() {
+      await refetch()
+      setDidRefetchPool(true)
+    }
+    if (isFlowComplete) reFetchPool()
+  }, [isFlowComplete])
 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={onModalClose}
       initialFocusRef={initialFocusRef}
       finalFocusRef={finalFocusRef}
       isCentered
@@ -93,74 +102,40 @@ export function AddLiquidityModal({
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <VStack spacing="sm" align="start">
-            {isMobile && (
+          {isMobile && (
+            <Box mb="md">
               <MobileStepTracker
                 currentStepIndex={currentStepIndex}
                 stepConfigs={stepConfigs}
                 chain={pool.chain}
               />
-            )}
-            <Card variant="modalSubSection">
-              <VStack align="start" spacing="md">
-                <HStack justify="space-between" w="full">
-                  <Text color="grayText">{"You're adding"}</Text>
-                  <Text>{toCurrency(totalUSDValue, { abbreviated: false })}</Text>
-                </HStack>
-                {tokens.map(token => {
-                  if (!token) return <div>Missing token</div>
-
-                  const amountIn = humanAmountsIn.find(amountIn =>
-                    isSameAddress(amountIn.tokenAddress, token?.address)
-                  ) as HumanAmountIn
-
-                  if (!amountIn) return <div key={token.address}>Missing amount in</div>
-
-                  return (
-                    <TokenRow
-                      key={token.address}
-                      value={amountIn.humanAmount}
-                      address={amountIn.tokenAddress}
-                      chain={pool.chain}
-                      abbreviated={false}
-                    />
-                  )
-                })}
-              </VStack>
-            </Card>
-
-            <Card variant="modalSubSection">
-              <VStack align="start" spacing="md">
-                <HStack justify="space-between" w="full">
-                  <Text color="grayText">{"You'll get (if no slippage)"}</Text>
-                </HStack>
-                <TokenRow
-                  value={bptOutLabel}
-                  address={pool.address as Address}
-                  chain={pool.chain}
-                  abbreviated={false}
-                  isBpt={true}
-                  pool={pool}
-                />
-              </VStack>
-            </Card>
-
-            <Card variant="modalSubSection">
-              <VStack align="start" spacing="sm">
-                <PoolActionsPriceImpactDetails
-                  totalUSDValue={totalUSDValue}
-                  bptAmount={simulationQuery.data?.bptOut.amount}
-                  isAddLiquidity
-                />
-              </VStack>
-            </Card>
-          </VStack>
+            </Box>
+          )}
+          {isFlowComplete ? <AddLiquiditySuccess /> : <AddLiquidityPreview />}
         </ModalBody>
         <ModalFooter>
           {shouldSignRelayerApproval ? (
             <SignRelayerButton />
           ) : (
-            <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
+            <VStack w="full">
+              {isFlowComplete ? (
+                /* TODO: implement system to enforce that the new pool balance is loaded in the portfolio
+                  <Button as={Link} w="full" size="lg" isLoading={!didRefetchPool} href="/portfolio">
+                    Visit portfolio
+                  </Button>
+                */
+                <Button
+                  w="full"
+                  size="lg"
+                  onClick={handleRedirectToPoolPage}
+                  isLoading={!didRefetchPool}
+                >
+                  Return to pool
+                </Button>
+              ) : (
+                currentStep.render(useOnStepCompleted)
+              )}
+            </VStack>
           )}
         </ModalFooter>
       </ModalContent>
