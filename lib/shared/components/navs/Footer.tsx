@@ -27,7 +27,7 @@ export function Footer() {
       </Link>
       <Link href="/risks" prefetch={true}>
         <Text fontSize="sm">Risks</Text>
-      </Link>      
+      </Link>
       <Link href="/components" prefetch={true}>
         <Text fontSize="sm">Components</Text>
       </Link>
