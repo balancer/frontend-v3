@@ -2,11 +2,9 @@
 'use client'
 
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { bn } from '@/lib/shared/utils/numbers'
 import { Address, HumanAmount, InputAmount, calculateProportionalAmounts } from '@balancer/sdk'
-import { minBy } from 'lodash'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { usePool } from '../../../usePool'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { useTotalUsdValue } from '../useTotalUsdValue'
@@ -16,9 +14,8 @@ import { formatUnits } from 'viem'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
 
-type TokenWithMinValue = {
+type OptimalToken = {
   tokenAddress: Address
-  balancePrice: number
   userBalance: HumanAmount
 }
 
@@ -27,7 +24,6 @@ export function useProportionalInputs() {
   const { validTokens, helpers, humanAmountsIn, setHumanAmountsIn } = useAddLiquidity()
   const { usdValueFor } = useTotalUsdValue(validTokens)
   const { balanceFor, balances, isBalancesLoading } = useTokenBalances()
-  const { priceForToken } = useTokens()
   const { isLoading: isPoolLoading } = usePool()
   const [isMaximized, setIsMaximized] = useState(false)
 
@@ -36,17 +32,16 @@ export function useProportionalInputs() {
   }
 
   function handleMaximizeUserAmounts() {
-    if (!tokenWithMinValue) return
+    if (!optimalToken) return
     if (isMaximized) return setIsMaximized(false)
-    handleHumanInputChange(tokenWithMinValue.tokenAddress, tokenWithMinValue.userBalance)
+    handleHumanInputChange(optimalToken.tokenAddress, optimalToken.userBalance)
     setIsMaximized(true)
   }
 
   function handleHumanInputChange(tokenAddress: Address, humanAmount: HumanAmount | '') {
     // Checks if the user is entering the max amount for the tokenWithMinValue
     const isMaximizing: boolean =
-      tokenAddress === tokenWithMinValue?.tokenAddress &&
-      humanAmount === tokenWithMinValue?.userBalance
+      tokenAddress === optimalToken?.tokenAddress && humanAmount === optimalToken?.userBalance
 
     setIsMaximized(isMaximizing)
 
@@ -64,40 +59,57 @@ export function useProportionalInputs() {
   const shouldCalculateMaximizeAmounts =
     isConnected && !isBalancesLoading && !isPoolLoading && balances.length > 0
 
-  function calculateTokenWithMinValue() {
+  /*
+    Finds the optimal token.
+    A token is optimal when using its maximum user balance produces a valid proportional amounts result
+    (where the rest of the tokens have enough user balance for that proportional result).
+  */
+  const optimalToken = useMemo((): OptimalToken | undefined => {
     if (!shouldCalculateMaximizeAmounts) return
-    const userTokenUsdValues = validTokens.map(token => {
-      const userBalance = balanceFor(token.address)?.formatted || 0
-      return {
-        tokenAddress: token.address,
-        balancePrice: bn(userBalance).times(priceForToken(token)).toNumber(),
-        userBalance,
-      } as TokenWithMinValue
-    })
 
-    return minBy(userTokenUsdValues, 'balancePrice')
-  }
-
-  const tokenWithMinValue: TokenWithMinValue | undefined = calculateTokenWithMinValue()
-
-  function calculateMaximizedUsdValue() {
-    if (!shouldCalculateMaximizeAmounts) return ''
-    if (!tokenWithMinValue || tokenWithMinValue.balancePrice === 0) {
-      //Avoid maximize calculations when the user does not have balance
-      return ''
+    const humanBalanceFor = (tokenAddress: string): HumanAmount => {
+      return (balanceFor(tokenAddress)?.formatted || '0') as HumanAmount
     }
 
+    const optimalToken = validTokens.find(({ address }) => {
+      const humanBalance = humanBalanceFor(address)
+      if (humanBalance === '0') return false
+
+      const proportionalAmounts = _calculateProportionalHumanAmountsIn(
+        address as Address,
+        humanBalance,
+        helpers
+      )
+
+      // The user must have enough token balance for this proportional result
+      const haveEnoughBalance = proportionalAmounts.every(({ tokenAddress, humanAmount }) => {
+        return bn(humanBalanceFor(tokenAddress)).gte(bn(humanAmount))
+      })
+
+      return haveEnoughBalance
+    })
+
+    if (!optimalToken) return
+
+    return {
+      tokenAddress: optimalToken.address,
+      userBalance: humanBalanceFor(optimalToken.address),
+    } as OptimalToken
+  }, [shouldCalculateMaximizeAmounts])
+
+  const maximizedUsdValue = useMemo(() => {
+    if (!shouldCalculateMaximizeAmounts || !optimalToken) return ''
+
     const maxProportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn(
-      tokenWithMinValue.tokenAddress as Address,
-      tokenWithMinValue.userBalance.toString() as HumanAmount,
+      optimalToken.tokenAddress as Address,
+      optimalToken.userBalance,
       helpers
     )
+
     return usdValueFor(maxProportionalHumanAmountsIn)
-  }
+  }, [shouldCalculateMaximizeAmounts, optimalToken])
 
-  const maximizedUsdValue = calculateMaximizedUsdValue()
-
-  const canMaximize = !!tokenWithMinValue?.userBalance
+  const canMaximize = !!optimalToken?.userBalance
 
   return {
     canMaximize,
