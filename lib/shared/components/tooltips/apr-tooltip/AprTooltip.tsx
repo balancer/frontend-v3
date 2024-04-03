@@ -60,18 +60,20 @@ function AprTooltip({ data, textProps, onlySparkles, placement, aprLabel, apr }:
         )}
         <PopoverTrigger>
           <Button
-            minWidth="0"
+            w="16px"
             h="auto"
             variant="unstyled"
             _active={{ outline: 'none' }}
             _focus={{ outline: 'none' }}
+            px="0"
+            minW="16px"
           >
             {data.hasRewardApr ? (
-              <Center w="16px" mr={{ base: 'md', xl: '0' }}>
+              <Center w="16px">
                 <Icon as={StarsIcon} />
               </Center>
             ) : (
-              <Center w="16px" mr={{ base: 'md', xl: '0' }}>
+              <Center w="16px">
                 <Icon as={Info} boxSize={4} color="gray.400" />
               </Center>
             )}

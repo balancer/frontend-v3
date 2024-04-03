@@ -41,7 +41,7 @@ export function PortfolioTableRow({ pool, keyValue, ...rest }: Props) {
           </GridItem>
 
           <GridItem>
-            <Text textAlign="right" fontWeight="medium" textTransform="capitalize">
+            <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
               {getPoolTypeLabel(pool.type)}
             </Text>
           </GridItem>

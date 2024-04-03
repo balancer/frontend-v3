@@ -59,10 +59,11 @@ function StableTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; ch
           <Box
             key={token.address}
             h={['32px', '36px']}
-            pr="3"
+            p={['xxs', 'sm']}
+            pr={[1.5, 'ms']}
             display="flex"
             alignItems="center"
-            pl={isFirstToken(i) ? 2 : 12}
+            pl={isFirstToken(i) ? 1 : 12}
             bg="background.level2"
             borderRadius="full"
             borderWidth={1}
@@ -71,7 +72,7 @@ function StableTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; ch
             ml={isFirstToken(i) ? 0 : -10}
             zIndex={zIndices[i]}
           >
-            <HStack>
+            <HStack gap={['xs', '1.5']}>
               <TokenIconOrIconStack token={token} chain={chain} />
               <Text fontWeight="bold" noOfLines={1} maxW="20">
                 {token.nestedTokens ? token.name : token.symbol}

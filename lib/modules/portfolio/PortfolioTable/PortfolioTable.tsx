@@ -40,7 +40,7 @@ const furthestLeftColWidth = '140px'
 
 const rowProps = {
   px: [0, 4],
-  gridTemplateColumns: `32px minmax(270px, 1fr) 100px 
+  gridTemplateColumns: `32px minmax(320px, 1fr) 100px 
   ${furthestLeftColWidth} ${numberColumnWidth} ${numberColumnWidth} 145px`,
   alignItems: 'center',
   gap: { base: 'xxs', xl: 'lg' },
