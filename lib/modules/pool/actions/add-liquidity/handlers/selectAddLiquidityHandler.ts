@@ -12,15 +12,12 @@ export function selectAddLiquidityHandler(pool: Pool): AddLiquidityHandler {
   if (pool.id === 'TWAMM-example') return new TwammAddLiquidityHandler(getChainId(pool.chain))
 
   if (requiresProportionalInput(pool.type)) {
-    console.log('PROPORTIONAL ADD')
     return new ProportionalAddLiquidityHandler(pool)
   }
 
   if (shouldUseNestedLiquidity(pool)) {
-    console.log('NESTED ADD')
     return new NestedAddLiquidityHandler(pool)
   }
 
-  console.log('UNBALANCED ADD')
   return new UnbalancedAddLiquidityHandler(pool)
 }
