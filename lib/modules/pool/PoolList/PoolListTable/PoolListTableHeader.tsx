@@ -17,17 +17,19 @@ export function PoolListTableHeader({ ...rest }) {
   const sortingObj = sorting[0]
 
   return (
-    <Grid {...rest} pb="4" w="full" borderBottom="1px solid" borderColor="border.base">
+    <Grid {...rest} p={['ms', 'md']} w="full" borderBottom="1px solid" borderColor="border.base">
       <GridItem>
         <VStack align="start" w="full">
-          <Icon as={Globe} boxSize="5" ml="1" color="grayText" />
+          <Icon as={Globe} boxSize="5" color="grayText" />
         </VStack>
       </GridItem>
       <GridItem>
         <Text fontWeight="bold">Pool name</Text>
       </GridItem>
-      <GridItem justifySelf="end">
-        <Text fontWeight="bold">Type</Text>
+      <GridItem justifySelf="start">
+        <Text fontWeight="bold" textAlign="left">
+          Type
+        </Text>
       </GridItem>
       {orderBy.map((orderByItem, index) => (
         <GridItem key={index} justifySelf="end">

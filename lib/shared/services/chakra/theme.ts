@@ -714,6 +714,7 @@ export const balTheme = {
       xxs: '0.125rem',
       xs: '0.25rem',
       sm: '0.5rem',
+      ms: '0.75rem',
       md: '1rem',
       lg: '1.5rem',
       xl: '2rem',
@@ -1084,23 +1085,23 @@ export const balTheme = {
         },
         h2: {
           fontSize: { base: '2rem', md: '3rem' },
-          lineHeight: { base: '2.5rem', md: '3.5rem' },
+          lineHeight: { base: '2.25rem', md: '3.5rem' },
         },
         h3: {
-          fontSize: { base: '2rem', md: '2rem' },
-          lineHeight: { base: '2.5rem', md: '3.5rem' },
+          fontSize: { base: '1.5rem', md: '2rem' },
+          lineHeight: { base: '1.75rem', md: '2.25rem' },
         },
         h4: {
-          fontSize: { base: '2rem', md: '1.5rem' },
-          lineHeight: { base: '2.5rem', md: '2.5rem' },
+          fontSize: { base: '1.25rem', md: '1.5rem' },
+          lineHeight: { base: '1.5rem', md: '1.75rem' },
         },
         h5: {
-          fontSize: { base: '2rem', md: '1.25rem' },
-          lineHeight: { base: '2.5rem', md: '1.5rem' },
+          fontSize: { base: '1.0625rem', md: '1.25rem' },
+          lineHeight: { base: '1.375rem', md: '1.5rem' },
         },
         h6: {
-          fontSize: { base: '2rem', md: '1.125rem' },
-          lineHeight: { base: '2.5rem', md: '1.5rem' },
+          fontSize: { base: '1rem', md: '1.0625rem' },
+          lineHeight: { base: '1.25rem', md: '1.375rem' },
         },
       },
     },
@@ -1110,6 +1111,25 @@ export const balTheme = {
         fontWeight: 'medium',
         letterSpacing: '-0.25px',
         lineHeight: '1.3',
+        fontSize: ['sm', 'md'],
+      },
+      fontSizes: {
+        xs: {
+          fontSize: ['0.625rem', '0.75rem'],
+          lineHeight: ['0.875rem', '1.125rem'],
+        },
+        sm: {
+          fontSize: ['xs', 'sm'],
+          lineHeight: ['1rem', '1.125rem'],
+        },
+        md: {
+          fontSize: ['sm', 'md'],
+          lineHeight: ['1.125rem', '1.3125rem'],
+        },
+        lg: {
+          fontSize: ['md', 'lg'],
+          lineHeight: ['1.3125rem', '1.5rem'],
+        },
       },
       variants: {
         secondary: {
@@ -1144,6 +1164,7 @@ export const balTheme = {
       baseStyle: {
         color: 'font.link',
         transition: tokens.transition.default,
+        fontSize: ['sm', 'md'],
         _hover: {
           color: 'font.linkHover',
         },
@@ -1152,6 +1173,7 @@ export const balTheme = {
         nav: {
           color: 'font.primary',
           transition: tokens.transition.default,
+          fontSize: ['sm', 'md'],
           _hover: {
             color: 'font.link',
             textDecoration: 'none',
@@ -1214,6 +1236,28 @@ export const balTheme = {
           _disabled: {
             background: 'background.level3',
           },
+        },
+      },
+      sizes: {
+        xxs: {
+          h: { base: '24px', md: '26px' },
+          px: '2',
+        },
+        xs: {
+          h: { base: '28px', md: '32px' },
+          px: '2',
+        },
+        sm: {
+          h: { base: '32px', md: '36px' },
+          px: '2',
+        },
+        md: {
+          h: { base: '36px', md: '40px' },
+          px: { base: '2', md: '3' },
+        },
+        lg: {
+          h: { base: '40px', md: '48px' },
+          px: { base: '3', md: '4' },
         },
       },
       variants: {
@@ -1363,7 +1407,7 @@ export const balTheme = {
           borderColor: 'transparent',
           shadow: 'xl',
           width: 'full',
-          padding: 'md',
+          padding: ['ms', 'md'],
         },
         header: {
           padding: 'none',

@@ -1,6 +1,6 @@
 'use client'
 
-import { Badge, HStack, Text, Tooltip } from '@chakra-ui/react'
+import { Badge, Flex, HStack, Text, Tooltip } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import Image from 'next/image'
@@ -11,7 +11,7 @@ export default function PoolMetaBadges() {
   const { pool, chain } = usePool()
 
   return (
-    <HStack>
+    <Flex gap={{ base: 'xs', sm: 'sm' }} alignItems="center" wrap="wrap">
       <Badge
         py="2.5"
         px="2.5"
@@ -32,7 +32,7 @@ export default function PoolMetaBadges() {
         return (
           <Badge
             py="2"
-            px="3"
+            px="sm"
             rounded="full"
             background="background.level2"
             border="1px solid"
@@ -47,12 +47,11 @@ export default function PoolMetaBadges() {
                 size={24}
                 alt={token?.symbol || token.address}
               />
-              <Text fontSize="1rem">{token.symbol}</Text>
-              {token.weight && (
-                <Text fontWeight="normal" fontSize="1rem">
-                  {fNum('weight', token.weight || 0)}
-                </Text>
-              )}
+
+              <Text fontWeight="bold" fontSize="md">
+                {token.symbol}
+              </Text>
+              {token.weight && <Text fontSize="sm">{fNum('weight', token.weight || 0)}</Text>}
             </HStack>
           </Badge>
         )
@@ -67,13 +66,16 @@ export default function PoolMetaBadges() {
           borderColor="border.base"
           shadow="sm"
           rounded="full"
+          display="flex"
+          alignItems="center"
+          h={{ base: '28px' }}
         >
           <HStack color="font.primary">
             <Repeat size={12} />
-            <Text>{fNum('feePercent', pool.dynamicData.swapFee)}</Text>
+            <Text fontSize="sm">{fNum('feePercent', pool.dynamicData.swapFee)}</Text>
           </HStack>
         </Badge>
       </Tooltip>
-    </HStack>
+    </Flex>
   )
 }

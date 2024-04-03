@@ -91,8 +91,15 @@ export function SwapForm() {
   return (
     <TokenBalancesProvider tokens={tokens}>
       <PriceImpactProvider>
-        <Center h="full" w="full" maxW="lg" mx="auto">
-          <Card>
+        <Center
+          h="full"
+          w={['100vw', 'full']}
+          maxW="lg"
+          mx="auto"
+          position="relative"
+          left={['-12px', '0']}
+        >
+          <Card rounded="xl">
             <VStack spacing="lg" align="start">
               <HStack w="full" justify="space-between">
                 <Heading fontWeight="bold" size="h4">

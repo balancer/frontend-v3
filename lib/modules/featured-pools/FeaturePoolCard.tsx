@@ -63,8 +63,8 @@ export function FeaturePoolCard({ pool, chain, isSmall = false, hasLegend = fals
         </Box>
         <Center>
           <VStack spacing="0">
-            <PoolName pool={pool} fontWeight="bold" fontSize="lg" noOfLines={1} />
-            <Text variant="secondary" fontWeight="medium">
+            <PoolName pool={pool} fontWeight="bold" noOfLines={1} mb="xxs" />
+            <Text variant="secondary" fontWeight="medium" fontSize={['xs', 'sm']}>
               {getAprLabel(pool.dynamicData.apr.apr)} APR
             </Text>
           </VStack>
