@@ -11,7 +11,7 @@ export default function PoolMetaBadges() {
   const { pool, chain } = usePool()
 
   return (
-    <Flex gap={{ base: '1', sm: '2' }} alignItems="center" wrap="wrap">
+    <Flex gap={{ base: 'xs', sm: 'sm' }} alignItems="center" wrap="wrap">
       <Badge
         py="2.5"
         px="2.5"
@@ -32,8 +32,7 @@ export default function PoolMetaBadges() {
         return (
           <Badge
             py="2"
-            pr="2.5"
-            pl="2"
+            px="sm"
             rounded="full"
             background="background.level2"
             border="1px solid"

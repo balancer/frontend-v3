@@ -35,7 +35,7 @@ export function PoolListLayout() {
         </VStack>
 
         <Stack
-          direction={{ base: 'row', sm: 'row' }}
+          direction="row"
           w="full"
           align={{ base: 'end', sm: 'center' }}
         >

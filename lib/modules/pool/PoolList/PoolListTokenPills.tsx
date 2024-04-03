@@ -21,8 +21,8 @@ function WeightedTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; 
         return (
           <WrapItem
             key={token.address}
-            p={[1.5, 2]}
-            pr={[2, 3]}
+            p={['xs', 'sm']}
+            pr={[1.5, 'ms']}
             h={['32px', '36px']}
             display="flex"
             alignItems="center"
@@ -32,9 +32,9 @@ function WeightedTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; 
             borderColor="border.base"
             shadow="sm"
           >
-            <HStack gap={[1.5, 2]}>
+            <HStack gap={['xs', 'sm']}>
               <TokenIconOrIconStack token={token} chain={chain} />
-              <HStack gap={[1, 1.5]}>
+              <HStack gap={['xs', '1.5']}>
                 <Text fontWeight="bold" noOfLines={1}>
                   {token.nestedTokens ? token.name : token.symbol}
                 </Text>

@@ -119,7 +119,7 @@ export function PortfolioTable() {
         w={{ base: '100vw', lg: 'full' }}
         alignItems="flex-start"
         position="relative"
-        left={{ base: '-6px', sm: '0' }}
+        left={{ base: '-4px', sm: '0' }}
       />
     </Stack>
   )

@@ -146,7 +146,7 @@ export function PoolListFilters() {
         <PoolListSearch />
         <Popover>
           <PopoverTrigger>
-            <FilterButton ml="sm" minW={['36px', '40px', 'auto']} />
+            <FilterButton ml="sm" />
           </PopoverTrigger>
           <Box zIndex="popover" shadow="2xl">
             <PopoverContent>

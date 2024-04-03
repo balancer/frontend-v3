@@ -68,7 +68,7 @@ export default function PoolStats() {
       alignItems="center"
       justifyContent="center"
       position="relative"
-      p="4"
+      p="md"
     >
       <Grid
         columnGap="4"
@@ -119,7 +119,7 @@ export default function PoolStats() {
                     <Skeleton height="30px" w="100px" />
                   )}
                 </Heading>
-                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="0.5">
+                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
                   Pool value
                 </Text>
               </VStack>
@@ -141,14 +141,14 @@ export default function PoolStats() {
               <ElevatedIcon as={Gift} sizePx="48px" boxSize={5} />
               <VStack spacing="0">
                 {poolValues ? (
-                  <HStack spacing="1">
+                  <HStack spacing="xs">
                     <Heading size="h4">{getAprLabel(pool.dynamicData.apr.apr)}</Heading>
                     <Icon as={StarsIcon} />
                   </HStack>
                 ) : (
                   <Skeleton height="30px" w="100px" />
                 )}
-                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="0.5">
+                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
                   LP yield APR
                 </Text>
               </VStack>
@@ -177,7 +177,7 @@ export default function PoolStats() {
                     <Skeleton height="30px" w="100px" />
                   )}
                 </Heading>
-                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="0.5">
+                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
                   Swap volume (24h)
                 </Text>
               </VStack>
@@ -203,7 +203,7 @@ export default function PoolStats() {
                 ) : (
                   <Skeleton height="30px" w="100px" />
                 )}
-                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="0.5">
+                <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
                   Liquidity providers
                 </Text>
               </VStack>

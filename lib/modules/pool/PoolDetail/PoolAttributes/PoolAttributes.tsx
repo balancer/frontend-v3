@@ -15,7 +15,7 @@ export function PoolAttributes() {
 
         <VStack width="full">
           <Show above="md">
-            <HStack spacing={{ base: '0', md: '8' }} width="full">
+            <HStack spacing={{ base: '0', md: 'xl' }} width="full">
               <Box minWidth="140px">
                 <Heading variant="h6" fontSize="1rem">
                   Attribute
@@ -31,7 +31,7 @@ export function PoolAttributes() {
               attribute && (
                 <Stack
                   width="full"
-                  spacing={{ base: '0.5', md: '8' }}
+                  spacing={{ base: 'xxs', md: 'xl' }}
                   key={`pool-attribute-${attribute.title}`}
                   direction={{ base: 'column', md: 'row' }}
                 >
@@ -42,7 +42,7 @@ export function PoolAttributes() {
                   </Box>
                   <Text
                     variant={{ base: 'secondary', md: 'secondary' }}
-                    mb={{ base: '2', md: '0' }}
+                    mb={{ base: 'sm', md: '0' }}
                   >
                     {attribute.value}
                   </Text>

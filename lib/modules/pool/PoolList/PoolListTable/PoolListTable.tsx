@@ -25,8 +25,8 @@ export function PoolListTable({ pools, count, loading }: Props) {
   const furthestLeftColWidth = '120px'
 
   const rowProps = {
-    px: [3, 0],
-    gridTemplateColumns: `32px minmax(276px, 1fr) 100px ${
+    px: {base:'sm', sm: '0'},
+    gridTemplateColumns: `32px minmax(270px, 1fr) 100px ${
       userAddress ? furthestLeftColWidth : ''
     } ${userAddress ? numberColumnWidth : furthestLeftColWidth} ${numberColumnWidth} 200px`,
     alignItems: 'center',
@@ -48,7 +48,7 @@ export function PoolListTable({ pools, count, loading }: Props) {
       w={{ base: '100vw', lg: 'full' }}
       alignItems="flex-start"
       position="relative"
-      left={{ base: '-6px', sm: '0' }}
+      left={{ base: '-4px', sm: '0' }}
     />
   )
 }

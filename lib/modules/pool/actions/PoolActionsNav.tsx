@@ -66,7 +66,7 @@ export function PoolActionsNav() {
     <HStack justify="space-between" mb="4">
       <Card
         variant="level2"
-        p={{ base: '1', sm: '1', md: '2' }}
+        p={{ base: 'xs', sm: 'xs', md: 'sm' }}
         width={{ base: '32px', md: '40px' }}
         h={{ base: '32px', md: '40px' }}
         shadow="sm"

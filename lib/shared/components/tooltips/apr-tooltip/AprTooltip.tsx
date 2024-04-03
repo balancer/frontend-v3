@@ -67,11 +67,11 @@ function AprTooltip({ data, textProps, onlySparkles, placement, aprLabel, apr }:
             _focus={{ outline: 'none' }}
           >
             {data.hasRewardApr ? (
-              <Center w="16px" mr={{ base: '4', xl: '0' }}>
+              <Center w="16px" mr={{ base: 'md', xl: '0' }}>
                 <Icon as={StarsIcon} />
               </Center>
             ) : (
-              <Center w="16px" mr={{ base: '4', xl: '0' }}>
+              <Center w="16px" mr={{ base: 'md', xl: '0' }}>
                 <Icon as={Info} boxSize={4} color="gray.400" />
               </Center>
             )}

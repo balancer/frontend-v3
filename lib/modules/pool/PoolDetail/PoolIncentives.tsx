@@ -51,7 +51,7 @@ export default function PoolIncentives() {
   return (
     <VStack width="full">
       <Stack
-        spacing="4"
+        spacing="md"
         width="full"
         alignItems="flex-start"
         direction={{ base: 'column', md: 'row' }}
