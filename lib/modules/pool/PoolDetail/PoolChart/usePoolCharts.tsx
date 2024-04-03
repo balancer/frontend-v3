@@ -113,7 +113,7 @@ const toolTipTheme = {
 
 export const getDefaultPoolChartOptions = (currencyFormatter: NumberFormatter) => ({
   grid: {
-    left: '-2.5%',
+    left: '-6%',
     right: '2.5%',
     top: '7.5%',
     bottom: '0',
