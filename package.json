@@ -71,6 +71,7 @@
     "react-feather": "^2.0.10",
     "react-hook-form": "^7.47.0",
     "react-hotkeys-hook": "^4.4.1",
+    "react-swipeable": "^7.0.1",
     "react-virtuoso": "^4.7.1",
     "tinycolor2": "^1.6.0",
     "use-debounce": "^10.0.0",

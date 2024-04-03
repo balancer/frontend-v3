@@ -1,8 +1,7 @@
 import { BoxProps, Card, Grid, GridItem, Heading, VStack } from '@chakra-ui/react'
-import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { FeaturePoolCard } from './FeaturePoolCard'
-import { GetFeaturedPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
-import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
+import { GetFeaturedPoolsQuery } from '@/lib/shared/services/api/generated/graphql'
+import { PoolCarousel } from './PoolCarousel'
 
 export const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps } = {
   contentProps: {
@@ -16,42 +15,29 @@ export const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps
   },
 }
 
-export async function FeaturedPools() {
-  const { supportedNetworks } = getProjectConfig()
+export function FeaturedPools({ pools }: { pools: GetFeaturedPoolsQuery['featuredPools'] }) {
+  const featuredPools = pools.slice(0, 5)
 
-  const featuredPoolsQuery = await getApolloServerClient().query({
-    query: GetFeaturedPoolsDocument,
-    variables: { chains: supportedNetworks },
-    context: {
-      fetchOptions: {
-        next: { revalidate: 300 }, // 5 minutes
-      },
-    },
-  })
-
-  const queryData = featuredPoolsQuery.data.featuredPools || []
-
-  const featuredPools = queryData.slice(0, 5)
-  const primaryPool = featuredPools.find(featured => featured.primary)?.pool
+  const primaryPool =
+    featuredPools.find(featured => featured.primary)?.pool || featuredPools[0].pool
   const poolsWithoutPrimary = featuredPools
     .filter(featured => !featured.primary)
     .map(featured => featured.pool)
 
   return (
-    <VStack alignItems="flex-start" spacing="4">
+    <VStack alignItems="flex-start" spacing="md">
       <Heading as="h2" size="lg" variant="special">
         Featured pools
       </Heading>
+      <PoolCarousel pools={featuredPools} display={{ base: 'block', lg: 'none' }} w="full" />
       <Card
+        display={{ base: 'none', lg: 'flex' }}
         variant="level2"
         width="full"
         height="550px"
-        display="flex"
         alignItems="center"
         justifyContent="center"
         position="relative"
-        shadow="2xl"
-        borderWidth={0}
       >
         <Grid
           columnGap="4"
@@ -73,6 +59,7 @@ export async function FeaturedPools() {
                 pool={poolsWithoutPrimary[0]}
                 chain={poolsWithoutPrimary[0].chain}
                 isSmall
+                bgSize="200px"
               />
             )}
           </GridItem>
@@ -82,6 +69,7 @@ export async function FeaturedPools() {
                 pool={poolsWithoutPrimary[1]}
                 chain={poolsWithoutPrimary[1].chain}
                 isSmall
+                bgSize="200px"
               />
             )}
           </GridItem>
@@ -91,6 +79,7 @@ export async function FeaturedPools() {
                 pool={poolsWithoutPrimary[2]}
                 chain={poolsWithoutPrimary[2].chain}
                 isSmall
+                bgSize="200px"
               />
             )}
           </GridItem>
@@ -100,6 +89,7 @@ export async function FeaturedPools() {
                 pool={poolsWithoutPrimary[3]}
                 chain={poolsWithoutPrimary[3].chain}
                 isSmall
+                bgSize="200px"
               />
             )}
           </GridItem>
