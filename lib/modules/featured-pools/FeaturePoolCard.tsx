@@ -96,16 +96,9 @@ export function FeaturePoolCard({
         style={{ position: 'relative', width: '100%', height: '100%' }}
         {...anim}
       >
-        <PoolZenGarden subdued={isSmall} sizePx={bgSize} poolType={pool.type} />
-        <VStack
-          cursor="pointer"
-          justifyContent="center"
-          spacing={isSmall ? 'sm' : 'md'}
-          h="full"
-          zIndex={1}
-        >
+        <VStack cursor="pointer" justifyContent="center" spacing={isSmall ? 'sm' : 'md'} h="full">
           {!isSmall && (
-            <HStack justifyContent="center" w="full" spacing="sm">
+            <HStack justifyContent="center" w="full" spacing="sm" zIndex={1}>
               <Text variant="secondary" fontWeight="medium">
                 {getPoolTypeLabel(pool.type)}
               </Text>
@@ -120,13 +113,14 @@ export function FeaturePoolCard({
           <Box>
             <PoolWeightChart pool={pool} chain={chain} hasLegend={hasLegend} isSmall={isSmall} />
           </Box>
-          <VStack spacing="0">
+          <VStack spacing="0" zIndex={1}>
             <PoolName pool={pool} fontWeight="bold" fontSize="lg" noOfLines={1} />
             <Text variant="secondary" fontWeight="medium">
               {getAprLabel(pool.dynamicData.apr.apr)} APR
             </Text>
           </VStack>
         </VStack>
+        <PoolZenGarden subdued={isSmall} sizePx={bgSize} poolType={pool.type} />
       </motion.div>
     </NoisyCard>
   )

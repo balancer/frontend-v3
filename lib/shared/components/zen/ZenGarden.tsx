@@ -104,15 +104,15 @@ export function PoolZenGarden({
   subdued?: boolean
 }) {
   if (!poolType) {
-    return <ZenGarden subdued={subdued} variant="circle" sizePx={sizePx} zIndex={-1} />
+    return <ZenGarden subdued={subdued} variant="circle" sizePx={sizePx} />
   }
   if (isWeighted(poolType)) {
-    return <ZenGarden subdued={subdued} variant="circle" sizePx={sizePx} zIndex={-1} />
+    return <ZenGarden subdued={subdued} variant="circle" sizePx={sizePx} />
   }
   if (isStable(poolType)) {
-    return <ZenGarden subdued={subdued} variant="square" sizePx={sizePx} zIndex={-1} />
+    return <ZenGarden subdued={subdued} variant="square" sizePx={sizePx} />
   }
   if (isClp(poolType)) {
-    return <ZenGarden subdued={subdued} variant="diamond" sizePx={sizePx} zIndex={-1} />
+    return <ZenGarden subdued={subdued} variant="diamond" sizePx={sizePx} />
   }
 }
