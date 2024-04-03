@@ -28,7 +28,7 @@ export function PortfolioTableRow({ pool, keyValue, ...rest }: Props) {
         bg: 'background.base',
       }}
       rounded="md"
-      px="sm"
+      px={{ base: 'ms', sm: '0' }}
       w="full"
     >
       <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>

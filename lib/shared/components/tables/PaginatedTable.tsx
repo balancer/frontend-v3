@@ -21,7 +21,7 @@ export function PaginatedTable({
   ...rest
 }: Props<any>) {
   return (
-    <Card {...rest} px="0">
+    <Card {...rest} p={{ base: '0', sm: '0' }}>
       <VStack spacing={['sm', 'md']} w="full" overflowX="scroll" className="hide-scrollbar">
         {renderTableHeader()}
         <Box w="full" position="relative">

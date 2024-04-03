@@ -15,7 +15,7 @@ export function PortfolioTableHeader({ currentSortingObj, setCurrentSortingObj, 
   return (
     <Grid
       {...rest}
-      pb={['ms', 'md']}
+      p={['ms', 'md']}
       px="xs"
       w="full"
       borderBottom="1px solid"

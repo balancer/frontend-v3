@@ -30,7 +30,7 @@ export function PoolListTable({ pools, count, loading }: Props) {
       userAddress ? furthestLeftColWidth : ''
     } ${userAddress ? numberColumnWidth : furthestLeftColWidth} ${numberColumnWidth} 200px`,
     alignItems: 'center',
-    gap: { base: 'xs', xl: 'lg' },
+    gap: { base: 'xxs', xl: 'lg' },
   }
 
   if (!isMounted) return <Skeleton height="500px" w="full" />

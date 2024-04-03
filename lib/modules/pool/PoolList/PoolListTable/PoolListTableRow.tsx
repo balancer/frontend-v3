@@ -28,7 +28,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
         bg: 'background.level0',
       }}
       rounded="md"
-      px="0"
+      px={{ base: 'ms', sm: 'md' }}
       w="full"
     >
       <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
