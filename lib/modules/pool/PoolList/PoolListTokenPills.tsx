@@ -63,7 +63,7 @@ function StableTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; ch
             pr={[1.5, 'ms']}
             display="flex"
             alignItems="center"
-            pl={isFirstToken(i) ? 1 : 12}
+            pl={[isFirstToken(i) ? 1 : 12, isFirstToken(i) ? 2 : 12]}
             bg="background.level2"
             borderRadius="full"
             borderWidth={1}
