@@ -68,6 +68,12 @@ export const addLiquidityStepId = 'addLiquidityId'
 export const removeLiquidityStepId = 'removeLiquidityId'
 export const swapStepId = 'swapId'
 
+export function isCoreStep(stepId?: string) {
+  if (!stepId) return false
+  const coreSteps = new Set([addLiquidityStepId, removeLiquidityStepId, swapStepId])
+  return coreSteps.has(stepId)
+}
+
 export type CoreStepId =
   | typeof addLiquidityStepId
   | typeof removeLiquidityStepId

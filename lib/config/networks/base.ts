@@ -12,7 +12,7 @@ const networkConfig: NetworkConfig = {
     baseUrl: 'https://basescan.org',
     name: 'BaseScan',
   },
-  rpcUrl: 'https://base-mainnet.g.alchemy.com/v2/cQGZUiTLRCFsQS7kbRxPJK4eH4fTTu88',
+  rpcUrl: 'https://base-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66',
   tokens: {
     addresses: {
       bal: '0x4158734d47fc9692176b5085e0f52ee0da5d47f1',
