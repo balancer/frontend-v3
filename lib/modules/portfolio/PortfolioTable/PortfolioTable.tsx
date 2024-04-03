@@ -40,10 +40,10 @@ const furthestLeftColWidth = '140px'
 
 const rowProps = {
   px: [0, 4],
-  gridTemplateColumns: `50px minmax(400px, 1fr) 100px 
+  gridTemplateColumns: `32px minmax(320px, 1fr) 100px 
   ${furthestLeftColWidth} ${numberColumnWidth} ${numberColumnWidth} 145px`,
   alignItems: 'center',
-  gap: 'lg',
+  gap: { base: 'xxs', xl: 'lg' },
 }
 
 export function PortfolioTable() {
@@ -116,8 +116,10 @@ export function PortfolioTable() {
         }}
         showPagination={false}
         paginationProps={null}
-        w="full"
+        w={{ base: '100vw', lg: 'full' }}
         alignItems="flex-start"
+        position="relative"
+        left={{ base: '-4px', sm: '0' }}
       />
     </Stack>
   )

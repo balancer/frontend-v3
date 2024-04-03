@@ -73,6 +73,7 @@ export function PoolChart() {
             <HStack width="full" justifyContent="space-between">
               <HStack spacing="2" textAlign="right">
                 <ButtonGroup
+                  size="xxs"
                   currentOption={activeTab}
                   options={tabsList}
                   onChange={tab => setActiveTab(tab as PoolChartTypeTab)}

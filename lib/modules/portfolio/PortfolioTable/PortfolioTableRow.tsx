@@ -28,18 +28,20 @@ export function PortfolioTableRow({ pool, keyValue, ...rest }: Props) {
         bg: 'background.base',
       }}
       rounded="md"
+      px={{ base: 'ms', sm: '0' }}
+      w="full"
     >
       <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
         <Grid {...rest} py="sm">
           <GridItem>
-            <NetworkIcon chain={pool.chain} size={10} />
+            <NetworkIcon chain={pool.chain} size={6} />
           </GridItem>
           <GridItem>
             <PoolListTokenPills pool={pool} />
           </GridItem>
 
           <GridItem>
-            <Text textAlign="right" fontWeight="medium" textTransform="capitalize">
+            <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
               {getPoolTypeLabel(pool.type)}
             </Text>
           </GridItem>
