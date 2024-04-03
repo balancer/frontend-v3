@@ -3,15 +3,146 @@
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { isSameAddress } from '@balancer/sdk'
-import { Card, HStack, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Card, Flex, Heading, HStack, Icon, Text, VStack } from '@chakra-ui/react'
 import { Address, formatUnits } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
 import { usePool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
+import { ArrowUpRight, Check } from 'react-feather'
+import { getBlockExplorerName, getBlockExplorerTxUrl } from '@/lib/shared/hooks/useBlockExplorer'
+import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { getAprLabel } from '../../../pool.utils'
+import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
+import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
-export function AddLiquidityPreview() {
+export function BalTokenIcon() {
+  return (
+    <TokenIcon
+      chain={GqlChain.Mainnet}
+      address={'0xba100000625a3754423978a60c9317c58a424e3d'}
+      size={27}
+      alt="Bal"
+    />
+  )
+}
+
+export function AuraTokenIcon() {
+  return (
+    <TokenIcon
+      chain={GqlChain.Mainnet}
+      address={'0xc0c293ce456ff0ed870add98a0828dd4d2903dbf'}
+      size={27}
+      alt="Aura"
+    />
+  )
+}
+
+function StakingOptions() {
+  const { pool } = usePool()
+  const pathname = usePathname()
+
+  const stakePath = pathname.replace('/add-liquidity', '/stake')
+  const canStake = !!pool.staking
+
+  return (
+    <>
+      <Heading fontWeight="bold" size="h6" mt="4">
+        Staking options
+      </Heading>
+      <HStack w="full" justify="space-between" alignItems="stretch">
+        <Card variant="modalSubSection" position="relative">
+          <VStack align="left" spacing="md">
+            <Text color="grayText">Balancer</Text>
+            <HStack>
+              <Text fontWeight="bold" color="font.primary" fontSize="md">
+                {/* SHOULD WE USE MAX APR instead of the range?? */}
+                {/* {fNum('apr', totalApr)} */}
+                {getAprLabel(pool.dynamicData.apr.apr)}
+              </Text>
+              <Icon as={StarsIcon} width="20px" height="20px" />
+            </HStack>
+
+            <Flex position="absolute" top={3} right={2}>
+              <BalTokenIcon />
+            </Flex>
+
+            <Button
+              as={Link}
+              href={stakePath}
+              w="full"
+              variant={canStake ? 'primary' : 'disabled'}
+              isDisabled={!canStake}
+              prefetch={true}
+            >
+              Stake
+            </Button>
+          </VStack>
+        </Card>
+
+        <Card variant="modalSubSection" position="relative">
+          <VStack align="left" spacing="md">
+            <Text color="grayText">Aura</Text>
+            <HStack>
+              {/* <Text fontWeight="bold" color="font.primary" fontSize="md">
+                TODO {auraAPR}
+              </Text> */}
+              {/* <Icon as={StarsIcon} width="20px" height="20px" /> */}
+              <Box width="20px" height="20px" />
+            </HStack>
+
+            <Flex position="absolute" top={3} right={2}>
+              <AuraTokenIcon />
+            </Flex>
+
+            <Button
+              as={Link}
+              target="_blank"
+              href={'https://aura.finance/'}
+              w="full"
+              variant={'secondary'}
+            >
+              Learn more
+            </Button>
+          </VStack>
+        </Card>
+      </HStack>
+    </>
+  )
+}
+
+function ExplorerLink() {
+  const { flowStep } = useCurrentFlowStep()
+  const { pool } = usePool()
+
+  const transactionHash = flowStep?.result.data?.transactionHash || ''
+
+  return (
+    <Card variant="modalSubSection" border="1px" borderColor="font.highlight">
+      <HStack justify="space-between" w="full">
+        <HStack justify="flex-start" color="font.highlight">
+          <Check size={20} />
+          <Text color="font.highlight">Success</Text>
+        </HStack>
+        <Link target="_blank" href={getBlockExplorerTxUrl(transactionHash, pool.chain)}>
+          <HStack color="grayText">
+            <Text fontSize="sm" variant="secondary">
+              View on {getBlockExplorerName(pool.chain)}
+            </Text>
+            <ArrowUpRight size={14} />
+          </HStack>
+        </Link>
+        )
+      </HStack>
+    </Card>
+  )
+}
+
+export function AddLiquidityPreview({ success = false }: { success?: boolean }) {
   const { humanAmountsIn, totalUSDValue, tokens, simulationQuery } = useAddLiquidity()
   const { pool } = usePool()
   const { toCurrency } = useCurrency()
@@ -21,6 +152,8 @@ export function AddLiquidityPreview() {
 
   return (
     <VStack spacing="sm" align="start">
+      {success && <ExplorerLink />}
+
       <Card variant="modalSubSection">
         <VStack align="start" spacing="md">
           <HStack justify="space-between" w="full">
@@ -65,15 +198,19 @@ export function AddLiquidityPreview() {
         </VStack>
       </Card>
 
-      <Card variant="modalSubSection">
-        <VStack align="start" spacing="sm">
-          <PoolActionsPriceImpactDetails
-            totalUSDValue={totalUSDValue}
-            bptAmount={simulationQuery.data?.bptOut.amount}
-            isAddLiquidity
-          />
-        </VStack>
-      </Card>
+      {!success && (
+        <Card variant="modalSubSection">
+          <VStack align="start" spacing="sm">
+            <PoolActionsPriceImpactDetails
+              totalUSDValue={totalUSDValue}
+              bptAmount={simulationQuery.data?.bptOut.amount}
+              isAddLiquidity
+            />
+          </VStack>
+        </Card>
+      )}
+
+      {success && <StakingOptions />}
     </VStack>
   )
 }
