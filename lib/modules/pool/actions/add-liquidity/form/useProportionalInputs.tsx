@@ -12,7 +12,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { HumanAmountIn } from '../../liquidity-types'
 import { formatUnits } from 'viem'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
+import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
 
 type OptimalToken = {
   tokenAddress: Address
@@ -38,14 +38,14 @@ export function useProportionalInputs() {
     setIsMaximized(true)
   }
 
-  function handleHumanInputChange(tokenAddress: Address, humanAmount: HumanAmount | '') {
+  function handleHumanInputChange(tokenAddress: Address, humanAmount: HumanAmount) {
     // Checks if the user is entering the max amount for the tokenWithMinValue
     const isMaximizing: boolean =
       tokenAddress === optimalToken?.tokenAddress && humanAmount === optimalToken?.userBalance
 
     setIsMaximized(isMaximizing)
 
-    if (!humanAmount) return clearAmountsIn()
+    if (isEmptyHumanAmount(humanAmount)) return clearAmountsIn()
 
     const proportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn(
       tokenAddress,
@@ -73,7 +73,7 @@ export function useProportionalInputs() {
 
     const optimalToken = validTokens.find(({ address }) => {
       const humanBalance = humanBalanceFor(address)
-      if (humanBalance === '0') return false
+      if (isEmptyHumanAmount(humanBalance)) return false
 
       const proportionalAmounts = _calculateProportionalHumanAmountsIn(
         address as Address,
