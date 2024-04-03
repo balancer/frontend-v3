@@ -39,7 +39,7 @@ export function SearchInput({
         onChange={debouncedChangeHandler}
         bg="input.bgDefault"
         border="1px solid"
-        borderColor="input.borderDefault"        
+        borderColor="input.borderDefault"
         _hover={{ bg: 'input.bgHover', borderColor: 'input.borderHover' }}
         _focus={{
           bg: 'input.bgFocus',

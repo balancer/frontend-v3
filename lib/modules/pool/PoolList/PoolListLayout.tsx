@@ -34,11 +34,7 @@ export function PoolListLayout() {
           <FilterTags />
         </VStack>
 
-        <Stack
-          direction="row"
-          w="full"
-          align={{ base: 'end', sm: 'center' }}
-        >
+        <Stack direction="row" w="full" align={{ base: 'end', sm: 'center' }}>
           <PoolListFilters />
           <HStack>
             {isCardsView && <PoolListSortType />}
