@@ -68,7 +68,6 @@ export function FeaturePoolCard({
 
   const anim = isCarousel
     ? {
-        key: carouselIndex,
         initial: carouselDirection === 'left' ? 'hiddenLeft' : 'hiddenRight',
         animate: 'visible',
         exit: 'exit',
@@ -92,7 +91,11 @@ export function FeaturePoolCard({
         justifyContent: 'center',
       }}
     >
-      <motion.div style={{ position: 'relative', width: '100%', height: '100%' }} {...anim}>
+      <motion.div
+        key={carouselIndex}
+        style={{ position: 'relative', width: '100%', height: '100%' }}
+        {...anim}
+      >
         <PoolZenGarden subdued={isSmall} sizePx={bgSize} poolType={pool.type} />
         <VStack
           cursor="pointer"

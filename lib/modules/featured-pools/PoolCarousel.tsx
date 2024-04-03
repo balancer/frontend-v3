@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Box, BoxProps, Card, Center } from '@chakra-ui/react'
 import { FeaturePoolCard } from './FeaturePoolCard'
 import { Pool } from '../pool/usePool'
+import { useSwipeable } from 'react-swipeable'
 
 type Props = {
   pools: GqlPoolFeaturedPool[]
@@ -13,6 +14,10 @@ type Props = {
 export function PoolCarousel({ pools, ...rest }: Props & BoxProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [direction, setDirection] = useState<'left' | 'right'>('left')
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => next(),
+    onSwipedRight: () => prev(),
+  })
 
   function next() {
     setDirection('right')
@@ -32,7 +37,7 @@ export function PoolCarousel({ pools, ...rest }: Props & BoxProps) {
   const currentPool = pools[currentIndex].pool as Pool
 
   return (
-    <Box {...rest}>
+    <Box {...swipeHandlers} {...rest}>
       <Card
         w="full"
         h="550px"
