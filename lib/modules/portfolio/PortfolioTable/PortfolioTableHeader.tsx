@@ -30,7 +30,9 @@ export function PortfolioTableHeader({ currentSortingObj, setCurrentSortingObj, 
         <Text fontWeight="bold">Pool name</Text>
       </GridItem>
       <GridItem justifySelf="start">
-        <Text fontWeight="bold" textAlign="left">Type</Text>
+        <Text fontWeight="bold" textAlign="left">
+          Type
+        </Text>
       </GridItem>
       {portfolioOrderBy.map((orderByItem, index) => (
         <GridItem key={index} justifySelf="end">

@@ -27,7 +27,9 @@ export function PoolListTableHeader({ ...rest }) {
         <Text fontWeight="bold">Pool name</Text>
       </GridItem>
       <GridItem justifySelf="start">
-        <Text fontWeight="bold" textAlign="left">Type</Text>
+        <Text fontWeight="bold" textAlign="left">
+          Type
+        </Text>
       </GridItem>
       {orderBy.map((orderByItem, index) => (
         <GridItem key={index} justifySelf="end">
