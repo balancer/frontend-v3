@@ -57,6 +57,11 @@ export function TransactionStepButton({
 
   return (
     <VStack width="full">
+      {/* <div>Tx STATE: {transactionState}</div>
+      <div>isConnected: {JSON.stringify(isConnected)}</div>
+      <div>simulation.isIdle: {JSON.stringify(simulation.isIdle)}</div>
+      <div>hasSimulationError: {JSON.stringify(hasSimulationError)}</div>
+      <div>isIdle: {JSON.stringify(isIdle)}</div> */}
       {(hasSimulationError || transactionState === TransactionState.Error) && (
         <Alert rounded="md" status="error">
           {(execution.error as any)?.shortMessage || (simulation.error as any)?.shortMessage}

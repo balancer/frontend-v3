@@ -27,20 +27,25 @@ export function selectRemoveLiquidityHandler(
   }
 
   if (shouldUseNestedLiquidity(pool) && kind === RemoveLiquidityType.Proportional) {
+    console.log('NESTED PROPORTIONAL remove')
     return new NestedProportionalRemoveLiquidityHandler(pool)
   }
   if (shouldUseNestedLiquidity(pool) && kind === RemoveLiquidityType.SingleToken) {
+    console.log('NESTED SINGLE remove')
     return new NestedSingleTokenRemoveLiquidityHandler(pool)
   }
 
   if (kind === RemoveLiquidityType.Proportional) {
+    console.log('PROPORTIONAL remove')
     return new ProportionalRemoveLiquidityHandler(pool)
   }
 
   if (kind === RemoveLiquidityType.SingleToken) {
+    console.log('SINGLE remove')
     return new SingleTokenRemoveLiquidityHandler(pool)
   }
 
+  console.log('PROPORTIONAL remove')
   // Default type
   return new ProportionalRemoveLiquidityHandler(pool)
 }

@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable max-len */
 'use client'
 
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
@@ -19,7 +17,7 @@ import {
   ModalProps,
   VStack,
 } from '@chakra-ui/react'
-import { RefObject, useEffect, useRef, useState } from 'react'
+import { RefObject, useRef } from 'react'
 import { usePool } from '../../usePool'
 import { useAddLiquidity } from './useAddLiquidity'
 // eslint-disable-next-line max-len
@@ -28,8 +26,7 @@ import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 import { AddLiquiditySuccess } from './modal/AddLiquiditySuccess'
-import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
-import { usePoolRedirect } from '../../pool.hooks'
+import { usePoolRedirect, useRefetchPoolOnFlowComplete } from '../../pool.hooks'
 import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
 
 type Props = {
@@ -45,14 +42,13 @@ export function AddLiquidityModal({
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const [didRefetchPool, setDidRefetchPool] = useState(false)
   const { isDesktop, isMobile } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const { stepConfigs, currentStep, currentStepIndex, useOnStepCompleted } = useAddLiquidity()
-  const { isFlowComplete } = useCurrentFlowStep()
-  const { pool, chainId, refetch } = usePool()
+  const { pool, chainId } = usePool()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
   const { redirectToPoolPage } = usePoolRedirect(pool)
+  const { didRefetchPool, isFlowComplete } = useRefetchPoolOnFlowComplete()
 
   function onModalClose() {
     if (isFlowComplete) {
@@ -62,19 +58,7 @@ export function AddLiquidityModal({
     onClose()
   }
 
-  async function handleRedirectToPoolPage(event: React.MouseEvent<HTMLElement>) {
-    redirectToPoolPage(event)
-  }
-
   const isLoadingAfterSuccess = isFlowComplete && !didRefetchPool
-
-  useEffect(() => {
-    async function reFetchPool() {
-      await refetch()
-      setDidRefetchPool(true)
-    }
-    if (isFlowComplete) reFetchPool()
-  }, [isFlowComplete])
 
   return (
     <Modal
@@ -124,12 +108,7 @@ export function AddLiquidityModal({
                     Visit portfolio
                   </Button>
                 */
-                <Button
-                  w="full"
-                  size="lg"
-                  onClick={handleRedirectToPoolPage}
-                  isLoading={!didRefetchPool}
-                >
+                <Button w="full" size="lg" onClick={redirectToPoolPage} isLoading={!didRefetchPool}>
                   Return to pool
                 </Button>
               ) : (

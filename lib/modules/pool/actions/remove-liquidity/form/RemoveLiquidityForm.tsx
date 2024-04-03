@@ -98,7 +98,7 @@ export function RemoveLiquidityForm() {
               </Heading>
               <TransactionSettings size="sm" />
             </HStack>
-            {!requiresProportionalInput && (
+            {!requiresProportionalInput(pool.type) && (
               <HStack>
                 <ButtonGroup
                   currentOption={activeTab}

@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  Button,
   Card,
   HStack,
   Modal,
@@ -31,6 +32,7 @@ import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transacti
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
+import { usePoolRedirect, useRefetchPoolOnFlowComplete } from '../../../pool.hooks'
 
 type Props = {
   isOpen: boolean
@@ -63,6 +65,8 @@ export function RemoveLiquidityModal({
   const { pool, chainId } = usePool()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
   const { slippage } = useUserSettings()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
+  const { didRefetchPool, isFlowComplete } = useRefetchPoolOnFlowComplete()
 
   return (
     <Modal
@@ -158,7 +162,15 @@ export function RemoveLiquidityModal({
           {shouldSignRelayerApproval && !shouldUseRecoveryRemoveLiquidity(pool) ? (
             <SignRelayerButton />
           ) : (
-            <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
+            <VStack w="full">
+              {isFlowComplete ? (
+                <Button w="full" size="lg" onClick={redirectToPoolPage} isLoading={!didRefetchPool}>
+                  Return to pool
+                </Button>
+              ) : (
+                currentStep.render(useOnStepCompleted)
+              )}
+            </VStack>
           )}
         </ModalFooter>
       </ModalContent>

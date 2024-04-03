@@ -20,7 +20,7 @@ import { keyBy } from 'lodash'
 import { Hex, formatUnits, parseUnits } from 'viem'
 import { Address } from 'wagmi'
 import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
-import { hasNestedPools, isComposableStable, isComposableStableV1, isGyro } from '../pool.helpers'
+import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
 
@@ -162,8 +162,8 @@ export function shouldUseRecoveryRemoveLiquidity(pool: Pool): boolean {
   return false
 }
 
-export function requiresProportionalInput(poolType: GqlPoolType) {
-  return isGyro(poolType) || isComposableStable(poolType)
+export function requiresProportionalInput(poolType: GqlPoolType): boolean {
+  return isGyro(poolType)
 }
 
 export function toPoolState(pool: Pool): PoolState {
