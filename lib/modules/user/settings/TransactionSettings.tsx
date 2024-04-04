@@ -25,7 +25,7 @@ export function TransactionSettings(props: ButtonProps) {
   const { slippage } = useUserSettings()
 
   return (
-    <Popover placement="bottom-end">
+    <Popover placement="bottom-end" isLazy>
       <PopoverTrigger>
         <Button variant="tertiary" {...props}>
           <HStack textColor="grayText">
