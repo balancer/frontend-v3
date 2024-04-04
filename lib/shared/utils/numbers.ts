@@ -66,6 +66,7 @@ function fiatFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): st
 
 // Formats a token value.
 function tokenFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
+  if (bn(val).lt(bn('0.000001'))) return '0'
   const format = abbreviated ? TOKEN_FORMAT_A : TOKEN_FORMAT
   return numeral(toSafeValue(val)).format(format)
 }

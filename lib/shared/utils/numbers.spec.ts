@@ -31,6 +31,8 @@ describe('fiatFormat', () => {
 describe('tokenFormat', () => {
   test('Abbreviated formats', () => {
     expect(fNum('token', '0.000000000000000001')).toBe('0')
+    expect(fNum('token', '0.0000001')).toBe('0')
+    expect(fNum('token', '0.000000493315290277')).toBe('0')
     expect(fNum('token', '0.001')).toBe('0.001')
     expect(fNum('token', '0.006')).toBe('0.006')
     expect(fNum('token', '0.012345')).toBe('0.0123')
