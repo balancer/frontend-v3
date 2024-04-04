@@ -8,9 +8,9 @@ import { isStableLike, isWeightedLike } from '../pool.helpers'
 
 function TokenIconOrIconStack({ token, chain }: { token: GqlPoolTokenDisplay; chain: GqlChain }) {
   return token.nestedTokens ? (
-    <TokenIconStack tokens={token.nestedTokens} chain={chain} size={24} />
+    <TokenIconStack tokens={token.nestedTokens} chain={chain} size={20} />
   ) : (
-    <TokenIcon chain={chain} address={token.address} size={24} alt={token.symbol} />
+    <TokenIcon chain={chain} address={token.address} size={20} alt={token.symbol} />
   )
 }
 
@@ -21,22 +21,25 @@ function WeightedTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; 
         return (
           <WrapItem
             key={token.address}
-            p="2"
-            pr="3"
+            p={['xs', 'sm']}
+            pr={[1.5, 'ms']}
+            h={['32px', '36px']}
+            display="flex"
+            alignItems="center"
             bg="background.level2"
             borderRadius="full"
             borderWidth={1}
             borderColor="border.base"
             shadow="sm"
           >
-            <HStack>
+            <HStack gap={['xs', 'sm']}>
               <TokenIconOrIconStack token={token} chain={chain} />
-              <Text fontWeight="bold" noOfLines={1}>
-                {token.nestedTokens ? token.name : token.symbol}
-              </Text>
-              <Text fontWeight="light" fontSize="xs">
-                {fNum('weight', token.weight || '')}
-              </Text>
+              <HStack gap={['xs', '1.5']}>
+                <Text fontWeight="bold" noOfLines={1}>
+                  {token.nestedTokens ? token.name : token.symbol}
+                </Text>
+                <Text fontSize="xs">{fNum('weight', token.weight || '')}</Text>
+              </HStack>
             </HStack>
           </WrapItem>
         )
@@ -55,9 +58,12 @@ function StableTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; ch
         return (
           <Box
             key={token.address}
-            p="2"
-            pr="3"
-            pl={isFirstToken(i) ? 2 : 12}
+            h={['32px', '36px']}
+            p={['xxs', 'sm']}
+            pr={[1.5, 'ms']}
+            display="flex"
+            alignItems="center"
+            pl={[isFirstToken(i) ? 1 : 12, isFirstToken(i) ? 2 : 12]}
             bg="background.level2"
             borderRadius="full"
             borderWidth={1}
@@ -66,7 +72,7 @@ function StableTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; ch
             ml={isFirstToken(i) ? 0 : -10}
             zIndex={zIndices[i]}
           >
-            <HStack>
+            <HStack gap={['xs', '1.5']}>
               <TokenIconOrIconStack token={token} chain={chain} />
               <Text fontWeight="bold" noOfLines={1} maxW="20">
                 {token.nestedTokens ? token.name : token.symbol}

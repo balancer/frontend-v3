@@ -28,11 +28,13 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
         bg: 'background.level0',
       }}
       rounded="md"
+      px={{ base: '0', sm: 'md' }}
+      w="full"
     >
       <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
-        <Grid {...rest} py="sm">
+        <Grid {...rest} py="sm" pr="4">
           <GridItem>
-            <NetworkIcon chain={pool.chain} size={10} />
+            <NetworkIcon chain={pool.chain} size={6} />
           </GridItem>
           <GridItem>
             <PoolListTokenPills pool={pool} />
@@ -45,7 +47,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
             </GridItem>
           )}
           <GridItem>
-            <Text textAlign="right" fontWeight="medium" textTransform="capitalize">
+            <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
               {getPoolTypeLabel(pool.type)}
             </Text>
           </GridItem>

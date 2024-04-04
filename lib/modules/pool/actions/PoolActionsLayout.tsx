@@ -42,14 +42,13 @@ export function PoolActionsLayout({ children, isFlowComplete = false }: Props) {
             </Text>
           }
         />
-        <Box w="full" px="md" flexGrow="1">
+        <Box w="full" px={['0', 'md']} flexGrow="1">
           <Card
             variant="level1"
             shadow="lg"
             h="full"
             borderBottomRadius={0}
             borderTopRadius="2xl"
-            p="md"
             onClick={e => e.stopPropagation()}
           >
             {isFlowComplete ? <>{/* TODO: success fireworks */}</> : <PoolActionsNav />}

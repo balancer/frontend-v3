@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, HStack, Grid, Flex, useTheme, VStack } from '@chakra-ui/react'
+import { Box, HStack, Grid, useTheme, VStack } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
 import Image from 'next/image'

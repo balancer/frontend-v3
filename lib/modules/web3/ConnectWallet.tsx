@@ -1,5 +1,5 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { Box, Button, HStack, Img } from '@chakra-ui/react'
+import { Box, Button, HStack, Img, Show } from '@chakra-ui/react'
 import { CustomAvatar } from './CustomAvatar'
 import { useUserAccount } from './useUserAccount'
 
@@ -58,7 +58,13 @@ export function ConnectWallet() {
               variant="tertiary"
             >
               {chain.hasIcon && (
-                <Box width={6} height={6} borderRadius="full" overflow="hidden" marginRight="sm">
+                <Box
+                  width={6}
+                  height={6}
+                  borderRadius="full"
+                  overflow="hidden"
+                  mr={{ base: '0', sm: 'sm' }}
+                >
                   {chain.iconUrl && (
                     <Img
                       alt={chain.name ?? 'Chain icon'}
@@ -69,7 +75,7 @@ export function ConnectWallet() {
                   )}
                 </Box>
               )}
-              {chain.name}
+              <Show above="sm">{chain.name}</Show>
             </Button>
             <Button onClick={openAccountModal} variant="tertiary">
               <CustomAvatar
@@ -78,9 +84,9 @@ export function ConnectWallet() {
                 alt="Avatar"
                 size={6}
                 rounded="full"
-                marginRight="sm"
+                mr={{ base: '0', sm: 'sm' }}
               />
-              {account.displayName}
+              <Show above="sm">{account.displayName}</Show>
             </Button>
           </HStack>
         )

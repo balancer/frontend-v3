@@ -95,7 +95,7 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
         fontWeight="medium"
         as="nav"
       >
-        <HStack padding="md" order={{ md: '2' }} onClick={e => e.stopPropagation()}>
+        <HStack p={['ms', 'md']} order={{ md: '2' }} onClick={e => e.stopPropagation()}>
           {rightSlot || (
             <>
               <RecentTransactions />
@@ -105,7 +105,13 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
             </>
           )}
         </HStack>
-        <HStack padding="md" spacing="lg" color="font.primary" onClick={e => e.stopPropagation()}>
+        <HStack
+          p={['ms', 'md']}
+          spacing="lg"
+          color="font.primary"
+          onClick={e => e.stopPropagation()}
+          gap={['md', 'lg']}
+        >
           {leftSlot || (
             <>
               <Link as={NextLink} variant="nav" href="/" prefetch={true}>

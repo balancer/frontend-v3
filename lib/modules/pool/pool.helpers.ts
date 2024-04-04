@@ -181,3 +181,9 @@ export function hasNestedPools(pool: Pool) {
   // and the real TS discriminator is __typename which we don't want to use
   return 'nestingType' in pool && pool.nestingType !== GqlPoolNestingType.NoNesting
 }
+
+export function isNotSupported(pool: Pool) {
+  return (
+    hasNestedPools(pool) && 'nestingType' in pool && pool.nestingType === 'HAS_ONLY_PHANTOM_BPT'
+  )
+}

@@ -5,8 +5,5 @@ import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
 export function AddLiquidityButton() {
   const { addLiquidityStep } = useConstructAddLiquidityStep()
 
-  const isComplete = addLiquidityStep.isComplete()
-
-  if (isComplete) return
   return <TransactionStepButton step={addLiquidityStep} />
 }

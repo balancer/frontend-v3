@@ -26,6 +26,7 @@ import { useAddLiquidityStepConfigs } from './useAddLiquidityStepConfigs'
 import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { useTotalUsdValue } from './useTotalUsdValue'
+import { isGyro } from '../../pool.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -83,7 +84,10 @@ export function _useAddLiquidity() {
   }
 
   const tokens = pool.allTokens
-    .filter(token => token.isMainToken)
+    .filter(token => {
+      if (isGyro(pool.type)) return true
+      return token.isMainToken
+    })
     .map(token => getToken(token.address, pool.chain))
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
 

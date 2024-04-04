@@ -24,7 +24,7 @@ import {
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 import { useRemoveLiquidityStepConfigs } from './modal/useRemoveLiquidityStepConfigs'
-import { hasNestedPools } from '../../pool.helpers'
+import { hasNestedPools, isGyro } from '../../pool.helpers'
 import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
@@ -57,7 +57,7 @@ export function _useRemoveLiquidity() {
 
   const stepConfigs = useRemoveLiquidityStepConfigs()
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
-  const { getCoreTransactionState } = useCurrentFlowStep()
+  const { getCoreTransactionState, clearCurrentFlowStep } = useCurrentFlowStep()
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
@@ -82,7 +82,7 @@ export function _useRemoveLiquidity() {
 
   const tokenFilter = hasNestedPools(pool)
     ? (token: GqlPoolTokenExpanded) => !token.isNested
-    : (token: GqlPoolTokenExpanded) => token.isMainToken
+    : (token: GqlPoolTokenExpanded) => isGyro(pool.type) || token.isMainToken
 
   const tokens = pool.allTokens
     .filter(tokenFilter)
@@ -131,7 +131,7 @@ export function _useRemoveLiquidity() {
     quoteAmountsOut.map(tokenAmount => {
       const tokenAddress: Address = tokenAmount.token.address
       const token = getToken(tokenAddress, pool.chain)
-      if (!token) throw new Error(`Token with address ${tokenAddress} was not found`)
+      if (!token) return [tokenAddress, '0'] // Ignore BPT token addresses included in SDK amountsOut
       const tokenUnits = amountOutForToken(token.address as Address)
       return [tokenAddress, usdValueForToken(token, tokenUnits) as HumanAmount]
     })
@@ -157,6 +157,10 @@ export function _useRemoveLiquidity() {
   /**
    * Side-effects
    */
+  useEffect(() => {
+    clearCurrentFlowStep()
+  }, [])
+
   // If amounts change, update quote state unless the final transaction is
   // confirming or confirmed.
   useEffect(() => {

@@ -63,15 +63,21 @@ export function PoolActionsNav() {
   }
 
   return (
-    <HStack justify="space-between">
-      <Card variant="level2" p="sm" width="auto">
+    <HStack justify="space-between" mb="4">
+      <Card
+        variant="level2"
+        p={{ base: 'xs', sm: 'xs', md: 'sm' }}
+        width={{ base: '32px', md: '40px' }}
+        h={{ base: '32px', md: '40px' }}
+        shadow="sm"
+      >
         <Image src={networkConfig.iconPath} width="24" height="24" alt={networkConfig.shortName} />
       </Card>
       <ButtonGroup
         currentOption={activeTab}
         options={getTabs(activeTabIndex, TABS)}
         onChange={toggleFlow}
-        size="lg"
+        size="xs"
       />
       <IconButton
         as={Link}
