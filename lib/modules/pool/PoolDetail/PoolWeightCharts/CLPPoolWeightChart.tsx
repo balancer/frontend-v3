@@ -1,4 +1,4 @@
-import { Box, HStack, Grid, Flex, useTheme } from '@chakra-ui/react'
+import { Box, HStack, Grid, Flex, useTheme, VStack } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
 import PoolWeightChartLegend from './PoolWeightChartLegend'
@@ -118,15 +118,23 @@ export default function CLPPoolWeightChart({
 
   function getLegendOffset() {
     if (pool.tokens.length === 2) {
-      return '-5rem'
+      return '14'
     }
-    return '-4rem'
+    return '10'
+  }
+
+  function getChainIconContainerRatio() {
+    if (pool.tokens.length === 2) {
+      return 0.55
+    }
+    return 0.7
   }
 
   const chartSizeValues = getChartSizeValues()
 
   return (
-    <Flex
+    <VStack
+      mt={isSmall ? '0' : getLegendOffset()}
       position="relative"
       width="full"
       height="full"
@@ -140,13 +148,11 @@ export default function CLPPoolWeightChart({
       >
         <Box
           as={motion.div}
-          rounded="full"
-          bg="white"
           position="absolute"
-          transform="translateY(-50%)"
+          transform="translateY(-50%) rotate(45deg)"
           bottom="0"
           left="0"
-          right="0"
+          right="-1px"
           top="50%"
           mx="auto"
           zIndex={4}
@@ -155,13 +161,15 @@ export default function CLPPoolWeightChart({
           alignItems="center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { delay: 0.1 } }}
-          width={`${chartSizeValues.boxWidth * 0.7}px`}
-          height={`${chartSizeValues.boxHeight * 0.7}px`}
+          width={`${chartSizeValues.boxWidth * getChainIconContainerRatio()}px`}
+          height={`${chartSizeValues.boxWidth * getChainIconContainerRatio()}px`}
+          bg="background.base"
+          rounded="md"
         >
           <NoisyCard
             cardProps={{
+              // bg: 'background.base',
               rounded: 'md',
-              transform: 'rotate(45deg)',
               shadow: 'none',
             }}
             contentProps={{
@@ -174,7 +182,12 @@ export default function CLPPoolWeightChart({
             }}
             shadowContainerProps={{ shadow: 'none' }}
           >
-            <Box position="absolute" top="50%" transform="translateY(-50%)" zIndex={5}>
+            <Box
+              position="absolute"
+              top="50%"
+              transform="translateY(-50%) rotate(-45deg)"
+              zIndex={5}
+            >
               <Image
                 src={`/images/chains/${chain}.svg`}
                 alt={`Chain icon for ${chain.toLowerCase()}`}
@@ -291,20 +304,12 @@ export default function CLPPoolWeightChart({
             })}
           </Grid>
         )}
-        {hasLegend && (
-          <HStack
-            width="full"
-            bottom={getLegendOffset()}
-            position="absolute"
-            left="0"
-            right="0"
-            mx="auto"
-            justifyContent="center"
-          >
-            <PoolWeightChartLegend pool={pool} colors={colors} />
-          </HStack>
-        )}
       </Box>
-    </Flex>
+      {hasLegend && (
+        <HStack mt={getLegendOffset()} width="full" justifyContent="center">
+          <PoolWeightChartLegend pool={pool} colors={colors} />
+        </HStack>
+      )}
+    </VStack>
   )
 }
