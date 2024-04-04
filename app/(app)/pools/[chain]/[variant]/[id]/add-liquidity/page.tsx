@@ -17,7 +17,7 @@ export default function AddLiquidityPage() {
   if (isNotSupported(pool)) {
     return (
       <Alert status="info" w="fit-content" minW="50%">
-        This pool type is not supported in Balancer V3
+        This pool type is not currently supported in the Balancer V3 UI
       </Alert>
     )
   }

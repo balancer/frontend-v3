@@ -23,7 +23,7 @@ const smallSize: ChartSizeValues = {
 }
 
 const normalSize: ChartSizeValues = {
-  chartHeight: '',
+  chartHeight: '275px',
   boxWidth: 275,
   boxHeight: 275,
   haloTop: '49%',

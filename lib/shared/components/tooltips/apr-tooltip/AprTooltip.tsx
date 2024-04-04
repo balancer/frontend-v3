@@ -1,6 +1,7 @@
 import { GqlBalancePoolAprItem, GqlPoolApr } from '@/lib/shared/services/api/generated/graphql'
 import {
   Box,
+  Center,
   Button,
   Flex,
   HStack,
@@ -59,16 +60,22 @@ function AprTooltip({ data, textProps, onlySparkles, placement, aprLabel, apr }:
         )}
         <PopoverTrigger>
           <Button
-            minWidth="0"
+            w="16px"
             h="auto"
             variant="unstyled"
             _active={{ outline: 'none' }}
             _focus={{ outline: 'none' }}
+            px="0"
+            minW="16px"
           >
             {data.hasRewardApr ? (
-              <Icon as={StarsIcon} />
+              <Center w="16px">
+                <Icon as={StarsIcon} />
+              </Center>
             ) : (
-              <Icon as={Info} boxSize={4} color="gray.400" mx="1" mt="1" />
+              <Center w="16px">
+                <Icon as={Info} boxSize={4} color="gray.400" />
+              </Center>
             )}
           </Button>
         </PopoverTrigger>

@@ -1,37 +1,52 @@
 'use client'
 
-import { Box, Card, HStack, Heading, Text, VStack } from '@chakra-ui/react'
+import { Box, Show, Card, Stack, HStack, Heading, Text, VStack } from '@chakra-ui/react'
 import { useFormattedPoolAttributes } from './useFormattedPoolAttributes'
 
 export function PoolAttributes() {
   const formattedAttributes = useFormattedPoolAttributes()
 
   return (
-    <Card minHeight="320px">
-      <VStack alignItems="flex-start" spacing="4" width="full">
+    <Card minHeight="320px" minW="50%">
+      <VStack alignItems="flex-start" spacing={{ base: 'ms', md: 'md' }} width="full">
         <Heading variant="h4" fontSize="1.25rem">
           Pool attributes
         </Heading>
+
         <VStack width="full">
-          <HStack spacing="8" width="full">
-            <Box minWidth="150px">
+          <Show above="md">
+            <HStack spacing={{ base: '0', md: 'xl' }} width="full">
+              <Box minWidth="140px">
+                <Heading variant="h6" fontSize="1rem">
+                  Attribute
+                </Heading>
+              </Box>
               <Heading variant="h6" fontSize="1rem">
-                Attribute
+                Details
               </Heading>
-            </Box>
-            <Heading variant="h6" fontSize="1rem">
-              Details
-            </Heading>
-          </HStack>
+            </HStack>
+          </Show>
           {formattedAttributes.map(attribute => {
             return (
               attribute && (
-                <HStack width="full" spacing="8" key={`pool-attribute-${attribute.title}`}>
-                  <Box minWidth="150px">
-                    <Text variant="secondary">{attribute.title}</Text>
+                <Stack
+                  width="full"
+                  spacing={{ base: 'xxs', md: 'xl' }}
+                  key={`pool-attribute-${attribute.title}`}
+                  direction={{ base: 'column', md: 'row' }}
+                >
+                  <Box minWidth="140px">
+                    <Text fontSize="sm" variant={{ base: 'primary', md: 'secondary' }}>
+                      {attribute.title}
+                    </Text>
                   </Box>
-                  <Text variant="secondary">{attribute.value}</Text>
-                </HStack>
+                  <Text
+                    variant={{ base: 'secondary', md: 'secondary' }}
+                    mb={{ base: 'sm', md: '0' }}
+                  >
+                    {attribute.value}
+                  </Text>
+                </Stack>
               )
             )
           })}

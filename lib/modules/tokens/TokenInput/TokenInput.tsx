@@ -184,7 +184,7 @@ export const TokenInput = forwardRef(
     return (
       <Box
         borderRadius="md"
-        p="md"
+        p={['ms', 'md']}
         shadow="innerBase"
         bg="background.level0"
         border="white"
