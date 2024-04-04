@@ -23,8 +23,11 @@ export enum RiskKey {
   Boosted = 'boosted-pools',
   Arbitrum = 'arbitrum',
   Polygon = 'polygon',
+  Zkevm = 'polygon-zkevm',
   Optimism = 'optimism',
   Gnosis = 'gnosis',
+  Base = 'base',
+  Avalanche = 'avalanche',
   Mutable = 'mutable-attributes-risk',
   Composability = 'composability-risk',
   RateProvider = 'rate-provider-risk',
@@ -38,10 +41,13 @@ export const RISK_TITLES: Partial<Record<RiskKey, string>> = {
   [RiskKey.ComposableStable]: 'Composable stable pool risks',
   [RiskKey.MetaStable]: 'MetaStable pool risks',
   [RiskKey.Boosted]: 'Boosted pool risks',
-  [RiskKey.Arbitrum]: 'Layer 2 network risks: Arbitrum',
-  [RiskKey.Polygon]: 'Layer 2 network risks: Polygon',
-  [RiskKey.Optimism]: 'Layer 2 network risks: Optimism',
-  [RiskKey.Gnosis]: 'Layer 2 network risks: Gnosis',
+  [RiskKey.Arbitrum]: 'L2 network risks: Arbitrum',
+  [RiskKey.Polygon]: 'Sidechain network risks: Polygon',
+  [RiskKey.Zkevm]: 'L2 network risks: Polygon zkEVM',
+  [RiskKey.Optimism]: 'L2 network risks: Optimism',
+  [RiskKey.Gnosis]: 'Sidechain network risks: Gnosis',
+  [RiskKey.Base]: 'L2 network risks: Base',
+  [RiskKey.Avalanche]: 'L1 network risks: Avalanche',
   [RiskKey.Mutable]: 'Mutable attributes risks',
   [RiskKey.Composability]: 'Composability risks',
   [RiskKey.RateProvider]: 'Rate provider risks',
@@ -56,7 +62,7 @@ export type Risk = {
 function getLink(key: RiskKey, title?: string): Risk {
   return {
     title: title || RISK_TITLES[key] || `Unknown Risk Title - ${key}`,
-    path: `/${key}`,
+    path: `/risks#${key}`,
   }
 }
 
@@ -72,8 +78,11 @@ const metaStableRisks = getLink(RiskKey.ComposableStable, RISK_TITLES[RiskKey.Me
 // const boostedRisks = getLink(RiskKey.Boosted)
 const arbitrumRisks = getLink(RiskKey.Arbitrum)
 const polygonRisks = getLink(RiskKey.Polygon)
+const zkevmRisks = getLink(RiskKey.Zkevm)
 const optimismRisks = getLink(RiskKey.Optimism)
 const gnosisRisks = getLink(RiskKey.Gnosis)
+const baseRisks = getLink(RiskKey.Base)
+const avalancheRisks = getLink(RiskKey.Avalanche)
 const mutableRisks = getLink(RiskKey.Mutable)
 
 export function getPoolRisks(pool: GqlPoolElement): Risk[] {
@@ -93,7 +102,10 @@ export function getPoolRisks(pool: GqlPoolElement): Risk[] {
   if (pool.chain === GqlChain.Arbitrum) result.push(arbitrumRisks)
   if (pool.chain === GqlChain.Optimism) result.push(optimismRisks)
   if (pool.chain === GqlChain.Polygon) result.push(polygonRisks)
+  if (pool.chain === GqlChain.Zkevm) result.push(zkevmRisks)
   if (pool.chain === GqlChain.Gnosis) result.push(gnosisRisks)
+  if (pool.chain === GqlChain.Base) result.push(baseRisks)
+  if (pool.chain === GqlChain.Avalanche) result.push(avalancheRisks)
 
   if (hasOwner(pool)) result.push(mutableRisks)
 

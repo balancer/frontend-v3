@@ -109,7 +109,7 @@ export default function Privacy() {
                       <Link href="risks#polygon">Polygon PoS</Link>
                     </li>
                     <li>
-                      <Link href="risks#polygon-zkevm">Polygon PoS</Link>
+                      <Link href="risks#polygon-zkevm">Polygon zkEVM</Link>
                     </li>
                     <li>
                       <Link href="risks#gnosis">Gnosis chain</Link>
@@ -969,7 +969,7 @@ export default function Privacy() {
         </div>
         <Divider />
         <div className="subsection">
-          <h3 id="network-risks">Layer 2 network risks</h3>
+          <h3 id="network-risks">Network risks (L2s and Sidechains)</h3>
           <p>
             Sidechains and Layer 2 networks can offer advantages over Ethereum Mainnet, like faster
             transaction times and lower fees. However, they come with their own set of risks and
@@ -1045,7 +1045,7 @@ export default function Privacy() {
         </div>
 
         <div className="subsection">
-          <h4 id="base">Polygon zkEVM risks</h4>
+          <h4 id="polygon-zkevm">Polygon zkEVM risks</h4>
           <p>
             <a href="https://polygon.technology/polygon-zkevm">Polygon zkEVM</a> is a EVM-compatible
             ZK Rollup built by Polygon Labs. Polygon zkEVM harnesses the power of ZK proofs to
@@ -1075,7 +1075,7 @@ export default function Privacy() {
         </div>
 
         <div className="subsection">
-          <h4 id="base">Avalanche risks</h4>
+          <h4 id="avalanche">Avalanche risks</h4>
           <p>
             <a href="https://www.avax.network/">Avalanche</a> is a Layer 1 blockchain that is
             completely independent from the Ethereum blockchain. It&apos;s actually a heterogeneous
