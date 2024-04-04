@@ -25,6 +25,9 @@ export function Footer() {
       <Link href="/cookies-policy" prefetch={true}>
         <Text fontSize="sm">Cookies policy</Text>
       </Link>
+      <Link href="/risks" prefetch={true}>
+        <Text fontSize="sm">Risks</Text>
+      </Link>
       <Link href="/components" prefetch={true}>
         <Text fontSize="sm">Components</Text>
       </Link>
