@@ -3,7 +3,7 @@
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { isSameAddress } from '@balancer/sdk'
-import { Box, Button, Card, Flex, Heading, HStack, Icon, Text, VStack } from '@chakra-ui/react'
+import { Button, Card, Flex, Heading, HStack, Icon, Text, VStack } from '@chakra-ui/react'
 import { Address, formatUnits } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
 import { usePool } from '../../../usePool'
@@ -15,32 +15,9 @@ import { getBlockExplorerName, getBlockExplorerTxUrl } from '@/lib/shared/hooks/
 import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 import { getAprLabel } from '../../../pool.utils'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
-import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-
-export function BalTokenIcon() {
-  return (
-    <TokenIcon
-      chain={GqlChain.Mainnet}
-      address={'0xba100000625a3754423978a60c9317c58a424e3d'}
-      size={27}
-      alt="Bal"
-    />
-  )
-}
-
-export function AuraTokenIcon() {
-  return (
-    <TokenIcon
-      chain={GqlChain.Mainnet}
-      address={'0xc0c293ce456ff0ed870add98a0828dd4d2903dbf'}
-      size={27}
-      alt="Aura"
-    />
-  )
-}
+import Image from 'next/image'
 
 function StakingOptions() {
   const { pool } = usePool()
@@ -68,7 +45,7 @@ function StakingOptions() {
             </HStack>
 
             <Flex position="absolute" top={3} right={2}>
-              <BalTokenIcon />
+              <Image src="/images/protocols/balancer.svg" width={30} height={30} alt="balancer" />
             </Flex>
 
             <Button
@@ -94,7 +71,7 @@ function StakingOptions() {
             </HStack>
 
             <Flex position="absolute" top={3} right={2}>
-              <AuraTokenIcon />
+              <Image src="/images/protocols/aura.svg" width={30} height={30} alt="balancer" />
             </Flex>
 
             <Button
