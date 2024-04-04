@@ -127,7 +127,7 @@ export default function CLPPoolWeightChart({
     if (pool.tokens.length === 2) {
       return 0.55
     }
-    return 0.7
+    return 0.75
   }
 
   const chartSizeValues = getChartSizeValues()
