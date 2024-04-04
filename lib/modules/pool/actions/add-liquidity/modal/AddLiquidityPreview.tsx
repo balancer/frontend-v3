@@ -88,11 +88,9 @@ function StakingOptions() {
           <VStack align="left" spacing="md">
             <Text color="grayText">Aura</Text>
             <HStack>
-              {/* <Text fontWeight="bold" color="font.primary" fontSize="md">
-                TODO {auraAPR}
-              </Text> */}
-              {/* <Icon as={StarsIcon} width="20px" height="20px" /> */}
-              <Box width="20px" height="20px" />
+              <Text fontWeight="bold" color="font.primary" fontSize="md" opacity={0.2}>
+                Support coming soon
+              </Text>
             </HStack>
 
             <Flex position="absolute" top={3} right={2}>
@@ -105,6 +103,7 @@ function StakingOptions() {
               href={'https://aura.finance/'}
               w="full"
               variant={'secondary'}
+              isDisabled
             >
               Learn more
             </Button>
