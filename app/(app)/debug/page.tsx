@@ -21,9 +21,15 @@ export default function Debug() {
       </Link>
       <Link
         as={NextLink}
+        href="pools/ethereum/v2/0x1e19cf2d73a72ef1332c882f20534b6519be0276000200000000000000000112/add-liquidity"
+      >
+        Add liquidity in STABLE (B-rETH-STABLE in Mainnet)
+      </Link>
+      <Link
+        as={NextLink}
         href="pools/optimism/v2/0x3dc09db8e571da76dd04e9176afc7feee0b89106000000000000000000000019/add-liquidity"
       >
-        Add liquidity in STABLE (FRAX_USDC_MAI)
+        Add liquidity in STABLE (FRAX_USDC_MAI in Optimism)
       </Link>
       <Link
         as={NextLink}
@@ -33,9 +39,15 @@ export default function Debug() {
       </Link>
       <Link
         as={NextLink}
+        href="pools/ethereum/v2/0xc6853f0539f7d4926c719326d60bd84a752bbb8f00020000000000000000065e/add-liquidity"
+      >
+        Add liquidity in Gyro pool (2CLP-WSTETH-WETH in Mainnet)
+      </Link>
+      <Link
+        as={NextLink}
         href="pools/polygon/v2/0xee278d943584dd8640eaf4cc6c7a5c80c0073e85000200000000000000000bc7/add-liquidity"
       >
-        Add liquidity in Gyro pool (2CLP_WMATIC/MATICX)
+        Add liquidity in Gyro pool (2CLP_WMATIC/MATICX in Polygon)
       </Link>
       <Link
         as={NextLink}

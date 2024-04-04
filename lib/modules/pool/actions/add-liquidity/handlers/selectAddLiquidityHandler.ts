@@ -15,7 +15,9 @@ export function selectAddLiquidityHandler(pool: Pool): AddLiquidityHandler {
     return new ProportionalAddLiquidityHandler(pool)
   }
 
-  if (shouldUseNestedLiquidity(pool)) return new NestedAddLiquidityHandler(pool)
+  if (shouldUseNestedLiquidity(pool)) {
+    return new NestedAddLiquidityHandler(pool)
+  }
 
   return new UnbalancedAddLiquidityHandler(pool)
 }
