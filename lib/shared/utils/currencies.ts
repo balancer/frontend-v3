@@ -1,3 +1,5 @@
+import { mins } from '../hooks/useTime'
+
 export enum SupportedCurrency {
   USD = 'USD',
   EUR = 'EUR',
@@ -32,7 +34,7 @@ export async function getFxRates(): Promise<FxRates | undefined> {
   try {
     const res = await fetch(
       'https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_tjV51qbYMpQeYi3hHUmu2bNyJp0w0TcBZym15REf',
-      { next: { revalidate: 5 * 60 } } // 5 mins
+      { next: { revalidate: mins(10).toSecs() } }
     )
     const { data: rates } = (await res.json()) as FxRatesResponse
     return rates
