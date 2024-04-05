@@ -25,6 +25,7 @@ import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
 import { usePoolRedirect, useRefetchPoolOnFlowComplete } from '../../pool.hooks'
 import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
+import { SuccessFireworks } from '@/lib/shared/components/SuccessFireworks'
 
 type Props = {
   isOpen: boolean
@@ -66,6 +67,7 @@ export function AddLiquidityModal({
       isCentered
       {...rest}
     >
+      {isFlowComplete && <SuccessFireworks />}
       <ModalOverlay />
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && (

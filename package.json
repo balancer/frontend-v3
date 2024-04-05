@@ -42,6 +42,7 @@
     "@dicebear/core": "^7.0.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@fireworks-js/react": "^2.10.7",
     "@nikolovlazar/chakra-ui-prose": "^1.2.1",
     "@rainbow-me/rainbowkit": "^1.1.1",
     "@sentry/nextjs": "^7.86.0",

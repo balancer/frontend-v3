@@ -22,6 +22,8 @@ import { getStylesForModalContentWithStepTracker } from '../transactions/transac
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { capitalize } from 'lodash'
 import { SwapPreview } from './SwapPreview'
+import { useCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
+import { SuccessFireworks } from '@/lib/shared/components/SuccessFireworks'
 
 type Props = {
   isOpen: boolean
@@ -46,6 +48,7 @@ export function SwapPreviewModal({
     selectedChain,
     useOnStepCompleted,
   } = useSwap()
+  const { isFlowComplete } = useCurrentFlowStep()
 
   return (
     <Modal
@@ -56,7 +59,9 @@ export function SwapPreviewModal({
       isCentered
       {...rest}
     >
+      {isFlowComplete && <SuccessFireworks />}
       <ModalOverlay />
+
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && (
           <DesktopStepTracker
