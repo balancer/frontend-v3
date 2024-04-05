@@ -1,6 +1,7 @@
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { FeaturedPools } from '@/lib/modules/featured-pools/FeaturedPools'
 import { PoolList } from '@/lib/modules/pool/PoolList/PoolList'
+import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
 import { GetFeaturedPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
 import { Box, Skeleton } from '@chakra-ui/react'
@@ -23,14 +24,20 @@ export default async function Pools() {
 
   return (
     <>
-      <Box mb="2xl">
-        <FeaturedPools pools={featuredPools} />
+      <Box>
+        <FadeInOnView>
+          <Box mb={{ base: '2xl', sm: '3xl' }}>
+            <FeaturedPools pools={featuredPools} />
+          </Box>
+        </FadeInOnView>
+        <FadeInOnView>
+          <Suspense fallback={<Skeleton w="full" h="500px" />}>
+            <Box>
+              <PoolList />
+            </Box>
+          </Suspense>
+        </FadeInOnView>
       </Box>
-      <Suspense fallback={<Skeleton w="full" h="500px" />}>
-        <Box>
-          <PoolList />
-        </Box>
-      </Suspense>
     </>
   )
 }
