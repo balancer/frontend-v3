@@ -16,6 +16,7 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { useChainSwitch } from '../useChainSwitch'
 import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
 
 export function useManagedSendTransaction(
   labels: TransactionLabels,
@@ -25,6 +26,7 @@ export function useManagedSendTransaction(
 ) {
   const { shouldChangeNetwork } = useChainSwitch(chainId)
   const { minConfirmations } = useNetworkConfig()
+  const { updateTrackedTransaction } = useRecentTransactions()
 
   const prepareQuery = usePrepareSendTransaction({
     ...txConfig,
@@ -77,6 +79,30 @@ export function useManagedSendTransaction(
       // monitor confirmation error here
     }
   }, [bundle.execution?.error, bundle.result?.error])
+
+  useEffect(() => {
+    if (transactionStatusQuery.error) {
+      const txHash = writeQuery.data?.hash
+      captureWagmiExecutionError(transactionStatusQuery.error, 'Error in useWaitForTransaction', {
+        chainId,
+        txHash,
+      })
+
+      if (txHash) {
+        updateTrackedTransaction(txHash, {
+          status: 'timeout',
+          label: 'Unexpected receipt timeout',
+          duration: null,
+          description:
+            // eslint-disable-next-line max-len
+            `An unexpected timeout occurred while waiting for the receipt of your transaction.
+However the transaction appears to have been executed.
+Click on the following link to verify the tx state in the tx explorer.`,
+        })
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transactionStatusQuery.error])
 
   // on successful submission to chain, add tx to cache
   useOnTransactionSubmission({
