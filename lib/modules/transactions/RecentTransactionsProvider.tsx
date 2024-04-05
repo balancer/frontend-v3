@@ -5,7 +5,8 @@ import { getBlockExplorerName, getBlockExplorerTxUrl } from '@/lib/shared/hooks/
 import { secs } from '@/lib/shared/hooks/useTime'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { ensureError } from '@/lib/shared/utils/errors'
+import { captureError, ensureError } from '@/lib/shared/utils/errors'
+import { captureFatalError, captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 import { AlertStatus, VStack, ToastId, useToast, Text, Button, HStack } from '@chakra-ui/react'
 import { keyBy, orderBy, take } from 'lodash'
 import React, { ReactNode, createContext, useCallback, useEffect, useState } from 'react'
@@ -116,10 +117,16 @@ export function _useRecentTransactions() {
           console.error('Error in RecentTransactionsProvider: ', error)
 
           /* This is an edge-case that we found randomly happening in polygon.
-             Debug tip:
-              Enforce a timeout in waitForTransactionReceipt inside node_modules/viem waitForTransactionReceipt
-              to reproduce the issue
-           */
+          Debug tip:
+          Enforce a timeout in waitForTransactionReceipt inside node_modules/viem waitForTransactionReceipt
+          to reproduce the issue
+          */
+          captureFatalError(
+            error,
+            'waitForTransactionReceiptError',
+            'Error in waitForTransactionReceipt inside RecentTransactionsProvider',
+            { txHash: tx.hash }
+          )
           const isTimeoutError = ensureError(error).name === 'WaitForTransactionReceiptTimeoutError'
           updatePayload[tx.hash] = {
             ...tx,
