@@ -77,7 +77,7 @@ const signaturesTooltipLabel = `It's recommended to turn on signatures for gas-f
 
 export function UserSettings() {
   return (
-    <Popover>
+    <Popover isLazy>
       <PopoverTrigger>
         <Button variant="tertiary" p="0">
           <Settings size={18} />

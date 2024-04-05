@@ -25,7 +25,6 @@ import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transacti
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
-import { AddLiquiditySuccess } from './modal/AddLiquiditySuccess'
 import { usePoolRedirect, useRefetchPoolOnFlowComplete } from '../../pool.hooks'
 import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
 
@@ -95,7 +94,7 @@ export function AddLiquidityModal({
               />
             </Box>
           )}
-          {isFlowComplete ? <AddLiquiditySuccess /> : <AddLiquidityPreview />}
+          <AddLiquidityPreview success={isFlowComplete} />
         </ModalBody>
         <ModalFooter>
           {shouldSignRelayerApproval ? (
@@ -108,7 +107,13 @@ export function AddLiquidityModal({
                     Visit portfolio
                   </Button>
                 */
-                <Button w="full" size="lg" onClick={redirectToPoolPage} isLoading={!didRefetchPool}>
+                <Button
+                  variant="tertiary"
+                  w="full"
+                  size="lg"
+                  onClick={redirectToPoolPage}
+                  isLoading={!didRefetchPool}
+                >
                   Return to pool
                 </Button>
               ) : (
