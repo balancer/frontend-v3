@@ -25,12 +25,12 @@ export default async function Pools() {
   return (
     <>
       <Box>
-        <FadeInOnView>
+        <FadeInOnView animateOnce={false}>
           <Box mb={{ base: '2xl', sm: '3xl' }}>
             <FeaturedPools pools={featuredPools} />
           </Box>
         </FadeInOnView>
-        <FadeInOnView>
+        <FadeInOnView animateOnce={false}>
           <Suspense fallback={<Skeleton w="full" h="500px" />}>
             <Box>
               <PoolList />
