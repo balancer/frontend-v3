@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import { useUserAccount } from '../../web3/useUserAccount'
+import { useUserAccount } from '../web3/useUserAccount'
 import { GaugeArg } from './useVebalBoost'
 
-import { useMulticall } from '../../web3/contracts/useMulticall'
+import { useMulticall } from '../web3/contracts/useMulticall'
 
-import { AbiMap } from '../../web3/contracts/AbiMap'
+import { AbiMap } from '../web3/contracts/AbiMap'
 import { Hex } from 'viem'
 
 type GaugeDataByPool = Record<string, { totalSupply: string; userBalance: string; gauge: GaugeArg }>

@@ -3,8 +3,10 @@ import { useMemo } from 'react'
 import { bn } from '@/lib/shared/utils/numbers'
 import { isUndefined } from 'lodash'
 import { useGaugesSupplyAndBalance } from './useGaugesSupplyAndBalance'
-import { useVebalLockInfo } from './useVebalLockInfo'
+
 import { useGaugeTotalSupplyAndUserBalance } from './useGaugeTotalSupplyAndUserBalance'
+import { PoolListItem } from '../pool/pool.types'
+import { useVebalLockInfo } from './useVebalLockInfo'
 
 export type VeBalLockInfo = {
   lockedEndDate: number
@@ -50,13 +52,24 @@ function calcUserBoost({
   return minBoost.toString()
 }
 
-export function useVebalBoost(gauges: GaugeArg[]) {
+export function useVebalBoost(pools: PoolListItem[]) {
   const { mainnetLockedInfo } = useVebalLockInfo()
+
+  const gauges = useMemo(() => {
+    if (!pools) return []
+
+    return pools.map(p => ({
+      chain: p.chain,
+      gaugeAddress: p.staking?.gauge?.gaugeAddress || '',
+      poolId: p.id,
+    }))
+  }, [pools])
+
   const { veBalTotalSupplyL2, userVeBALBalances } = useGaugeTotalSupplyAndUserBalance(gauges)
 
   const { gaugeDataByPoolMap } = useGaugesSupplyAndBalance(gauges)
 
-  const calcedBoostsByPool = useMemo(() => {
+  const veBalBoostMap = useMemo(() => {
     return Object.entries(gaugeDataByPoolMap).reduce(
       (acc, [poolId, { totalSupply, userBalance, gauge }]) => {
         const userVeBALChainBalance = userVeBALBalances?.[gauge.chain]?.data as
@@ -68,10 +81,6 @@ export function useVebalBoost(gauges: GaugeArg[]) {
 
         const userVeBALBalance = userVeBALChainBalance?.[gauge.chain]?.result
 
-        console.log({
-          userVeBALChainBalance,
-          veBALChainTotalSupply,
-        })
         const veBALTotalSupply =
           gauge.chain === GqlChain.Mainnet
             ? mainnetLockedInfo.totalSupply
@@ -101,5 +110,5 @@ export function useVebalBoost(gauges: GaugeArg[]) {
     )
   }, [gaugeDataByPoolMap, veBalTotalSupplyL2, userVeBALBalances, mainnetLockedInfo])
 
-  return { calcedBoostsByPool }
+  return { veBalBoostMap }
 }

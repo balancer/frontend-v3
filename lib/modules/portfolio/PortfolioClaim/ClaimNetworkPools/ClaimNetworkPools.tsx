@@ -18,7 +18,10 @@ export function ClaimNetworkPools() {
   const router = useRouter()
   const emptyChainMap = Object.keys(poolsByChainMap).length === 0
 
-  if (!isConnected || emptyChainMap) {
+  const hasProtocolRewards =
+    protocolRewardsBalance && protocolRewardsBalance.isGreaterThanOrEqualTo(0)
+
+  if (!isConnected || (emptyChainMap && !hasProtocolRewards)) {
     return null
   }
 
@@ -38,7 +41,7 @@ export function ClaimNetworkPools() {
           />
         ))}
 
-        {Number(protocolRewardsBalance) > 0 && (
+        {hasProtocolRewards && (
           <ClaimNetworkBlock
             chain={GqlChain.Mainnet}
             networkTotalClaimableFiatBalance={protocolRewardsBalance.toNumber()}

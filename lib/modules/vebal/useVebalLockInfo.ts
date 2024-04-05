@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
-import { useUserAccount } from '../../web3/useUserAccount'
-import { useMulticall } from '../../web3/contracts/useMulticall'
-import networkConfig from '@/lib/config/networks/mainnet'
+import { useUserAccount } from '../web3/useUserAccount'
+import { useMulticall } from '../web3/contracts/useMulticall'
+import mainnetNetworkConfig from '@/lib/config/networks/mainnet'
 import { Hex, formatUnits } from 'viem'
 import { toJsTimestamp } from '@/lib/shared/hooks/useTime'
 import { bn } from '@/lib/shared/utils/numbers'
-import { AbiMap } from '../../web3/contracts/AbiMap'
+import { AbiMap } from '../web3/contracts/AbiMap'
 
 export function useVebalLockInfo() {
   const { userAddress, isConnected } = useUserAccount()
@@ -29,10 +29,10 @@ export function useVebalLockInfo() {
   // get lock info
   const lockInfoRequests = lockInfoRequestsData.map(v => {
     return {
-      chain: networkConfig.chain,
+      chain: mainnetNetworkConfig.chain,
       id: `${v.path}.${v.fn}`,
       abi: AbiMap['balancer.veBAL'] as any,
-      address: networkConfig.contracts.veBAL as Hex,
+      address: mainnetNetworkConfig.contracts.veBAL as Hex,
       functionName: v.fn,
       args: v.args,
     }
@@ -41,7 +41,7 @@ export function useVebalLockInfo() {
   const { results, refetchAll, isLoading } = useMulticall(lockInfoRequests)
 
   const mainnetLockedInfo = useMemo(() => {
-    const mainnetResults = results[networkConfig.chain]
+    const mainnetResults = results[mainnetNetworkConfig.chain]
 
     if (mainnetResults.status === 'error') {
       // handle error
