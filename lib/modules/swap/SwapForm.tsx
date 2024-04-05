@@ -123,19 +123,23 @@ export function SwapForm() {
                     onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
                     toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
                   />
-                  <Box position="relative" border="red 1px solid">
-                    <IconButton
-                      position="absolute"
-                      variant="tertiary"
-                      size="sm"
-                      fontSize="2xl"
-                      ml="-16px"
-                      mt="-16px"
-                      isRound={true}
-                      aria-label="Switch tokens"
-                      icon={<Repeat size={16} />}
-                      onClick={switchTokens}
-                    />
+                  <Box position="relative">
+                    <Box position="absolute">
+                      <IconButton
+                        variant="tertiary"
+                        size="xs"
+                        aria-label="Switch tokens"
+                        isRound
+                        ml="-4"
+                        mt="-7"
+                        icon={
+                          <Center w="8" h="8">
+                            <Repeat size={16} />
+                          </Center>
+                        }
+                        onClick={switchTokens}
+                      />
+                    </Box>
                   </Box>
                   <TokenInput
                     ref={finalRefTokenOut}
