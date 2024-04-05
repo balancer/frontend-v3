@@ -46,7 +46,7 @@ function VeBalLink() {
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>veBAL (redirect to V2)</ModalHeader>
+          <ModalHeader>veBAL (redirect to v2)</ModalHeader>
           <ModalCloseButton />
           <ModalBody color="grayText">
             The veBAL experience is being carefully crafted for this new app. In the meantime, go to

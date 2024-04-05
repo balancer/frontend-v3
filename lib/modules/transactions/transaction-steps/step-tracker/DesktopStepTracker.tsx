@@ -10,7 +10,7 @@ export function DesktopStepTracker(props: StepTrackerProps) {
   const { currentIndex, steps, chain } = useStepTrackerProps(props)
 
   return (
-    <Card p={0} width="200px" right="-224px" position="absolute">
+    <Card padding={0} width="200px" right="-224px" position="absolute">
       <VStack alignItems="flex-start" w="full">
         <HStack p="sm" pb="0" justify="space-between" w="full">
           <Heading fontWeight="bold" size="h6">
