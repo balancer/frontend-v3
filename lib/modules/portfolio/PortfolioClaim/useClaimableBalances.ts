@@ -103,7 +103,7 @@ export function useClaimableBalances(pools: PoolListItem[]) {
               gaugeAddress,
               balance,
               fiatBalance,
-              formattedBalance: fNum('token', formatUnits(balance, 18)),
+              formattedBalance: fNum('token', formatUnits(balance, 18)) || '0',
               decimals: 18,
             })
           }

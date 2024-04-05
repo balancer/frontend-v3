@@ -73,7 +73,7 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
           gaugeAddress,
           pool,
           balance,
-          formattedBalance: fNum('token', formatUnits(balance, 18)),
+          formattedBalance: fNum('token', formatUnits(balance, 18)) || '0',
           fiatBalance,
           decimals: 18,
           tokenAddress: networkConfigs[pool.chain].tokens.addresses.bal,
