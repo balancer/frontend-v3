@@ -16,10 +16,9 @@ export function ClaimNetworkPools() {
   const [isOpenedProtocolRevenueModal, setIsOpenedProtocolRevenueModal] = useState(false)
   const { isConnected } = useUserAccount()
   const router = useRouter()
-  const emptyChainMap = Object.keys(poolsByChainMap).length === 0
 
-  const hasProtocolRewards =
-    protocolRewardsBalance && protocolRewardsBalance.isGreaterThanOrEqualTo(0)
+  const emptyChainMap = Object.keys(poolsByChainMap).length === 0
+  const hasProtocolRewards = protocolRewardsBalance && protocolRewardsBalance.isGreaterThan(0)
 
   if (!isConnected || (emptyChainMap && !hasProtocolRewards)) {
     return null

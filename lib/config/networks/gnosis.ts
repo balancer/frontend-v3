@@ -37,6 +37,7 @@ const networkConfig: NetworkConfig = {
       relayerV6: '0x2163c2FcD0940e84B8a68991bF926eDfB0Cd926C',
       minter: '0xA8920455934Da4D853faac1f94Fe7bEf72943eF1',
     },
+    veDelegationProxy: '0x7A2535f5fB47b8e44c02Ef5D9990588313fe8F05',
   },
   pools: convertHexToLowerCase({
     issues: { [PoolIssue.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[GqlChain.Gnosis] },
