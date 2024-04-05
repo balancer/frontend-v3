@@ -31,7 +31,7 @@ import { Repeat } from 'react-feather'
 import { SwapRate } from './SwapRate'
 import { SwapDetails } from './SwapDetails'
 import { capitalize } from 'lodash'
-import { motion, easeOut } from 'framer-motion'
+import { motion, useInView, easeOut } from 'framer-motion'
 
 export function SwapForm() {
   const {
@@ -88,6 +88,20 @@ export function SwapForm() {
     tokenSelectDisclosure.onOpen()
   }
 
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true })
+
+  // const fadeIn = {
+  //   hidden: { opacity: 0 },
+  //   show: {
+  //     opacity: 1,
+  //     transition: {
+  //       ease: easeOut,
+  //       duration: 1,
+  //     },
+  //   },
+  // }
+
   return (
     <TokenBalancesProvider tokens={tokens}>
       <PriceImpactProvider>
@@ -98,8 +112,16 @@ export function SwapForm() {
           mx="auto"
           position="relative"
           left={['-12px', '0']}
+          ref={ref}
         >
-          <Card rounded="xl">
+          <Card
+            rounded="xl"
+            style={{
+              transform: isInView ? 'none' : 'translateY(10px)',
+              opacity: isInView ? 1 : 0,
+              transition: 'all 1s cubic-bezier(.17,.67,.53,1.05)',
+            }}
+          >
             <VStack spacing="lg" align="start">
               <HStack w="full" justify="space-between">
                 <Heading fontWeight="bold" size="h4">

@@ -29,6 +29,7 @@ import RecentTransactions from '../other/RecentTransactions'
 import { usePathname } from 'next/navigation'
 import { isProd } from '@/lib/config/app.config'
 import { ArrowUpRight } from 'react-feather'
+import { motion, easeOut } from 'framer-motion'
 
 type Props = {
   leftSlot?: React.ReactNode
@@ -37,6 +38,7 @@ type Props = {
 
 function VeBalLink() {
   const { isOpen, onOpen, onClose } = useDisclosure()
+
   return (
     <>
       <Link onClick={onOpen} variant="nav" color="font.primary">
@@ -87,6 +89,23 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
     return pathname === path ? 'font.highlight' : 'font.primary'
   }
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.02,
+        ease: easeOut,
+        duration: 1,
+      },
+    },
+  }
+
+  const item = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1 },
+  }
+
   return (
     <Box w="full" {...rest}>
       <Stack
@@ -95,13 +114,29 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
         fontWeight="medium"
         as="nav"
       >
-        <HStack p={['ms', 'md']} order={{ md: '2' }} onClick={e => e.stopPropagation()}>
+        <HStack
+          p={['ms', 'md']}
+          order={{ md: '2' }}
+          onClick={e => e.stopPropagation()}
+          as={motion.div}
+          variants={container}
+          initial="hidden"
+          animate="show"
+        >
           {rightSlot || (
             <>
-              <RecentTransactions />
-              <UserSettings />
-              <DarkModeToggle />
-              <ConnectWallet />
+              <Box as={motion.div} variants={item}>
+                <RecentTransactions />
+              </Box>
+              <Box as={motion.div} variants={item}>
+                <UserSettings />
+              </Box>
+              <Box as={motion.div} variants={item}>
+                <DarkModeToggle />
+              </Box>
+              <Box as={motion.div} variants={item}>
+                <ConnectWallet />
+              </Box>
             </>
           )}
         </HStack>
@@ -111,53 +146,70 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
           color="font.primary"
           onClick={e => e.stopPropagation()}
           gap={['md', 'lg']}
+          as={motion.div}
+          variants={container}
+          initial="hidden"
+          animate="show"
         >
           {leftSlot || (
             <>
-              <Link as={NextLink} variant="nav" href="/" prefetch={true}>
-                <Box display="flex" gap="1.5">
-                  {isMobile ? <BalancerLogo width="24px" /> : <BalancerLogoType width="106px" />}
-                </Box>
-              </Link>
-              <Link
-                as={NextLink}
-                href="/pools"
-                prefetch={true}
-                variant="nav"
-                color={linkColorFor('/pools')}
-              >
-                Pools
-              </Link>
-              <Link
-                as={NextLink}
-                variant="nav"
-                href="/swap"
-                prefetch={true}
-                color={linkColorFor('/swap')}
-              >
-                Swap
-              </Link>
-              <Link
-                as={NextLink}
-                variant="nav"
-                href="/portfolio"
-                prefetch={true}
-                color={linkColorFor('/portfolio')}
-              >
-                Portfolio
-              </Link>
-              <VeBalLink />
-              {!isProd && (
+              <Box as={motion.div} variants={item}>
+                <Link as={NextLink} variant="nav" href="/" prefetch={true}>
+                  <Box display="flex" gap="1.5">
+                    {isMobile ? <BalancerLogo width="24px" /> : <BalancerLogoType width="106px" />}
+                  </Box>
+                </Link>
+              </Box>
+
+              <Box as={motion.div} variants={item}>
+                <Link
+                  as={NextLink}
+                  href="/pools"
+                  prefetch={true}
+                  variant="nav"
+                  color={linkColorFor('/pools')}
+                >
+                  Pools
+                </Link>
+              </Box>
+              <Box as={motion.div} variants={item}>
                 <Link
                   as={NextLink}
                   variant="nav"
-                  href="/debug"
+                  href="/swap"
                   prefetch={true}
-                  color={linkColorFor('/debug')}
+                  color={linkColorFor('/swap')}
                 >
-                  Debug
+                  Swap
                 </Link>
-              )}
+              </Box>
+              <Box as={motion.div} variants={item}>
+                <Link
+                  as={NextLink}
+                  variant="nav"
+                  href="/portfolio"
+                  prefetch={true}
+                  color={linkColorFor('/portfolio')}
+                >
+                  Portfolio
+                </Link>
+              </Box>
+              <Box as={motion.div} variants={item}>
+                <VeBalLink />
+              </Box>
+              <Box as={motion.div} variants={item}>
+                {!isProd && (
+                  <Link
+                    as={NextLink}
+                    variant="nav"
+                    href="/debug"
+                    prefetch={true}
+                    color={linkColorFor('/debug')}
+                  >
+                    Debug
+                  </Link>
+                )}
+              </Box>
             </>
           )}
         </HStack>
