@@ -10,20 +10,14 @@ import { Address } from 'viem'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 
 export function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | undefined)[] }) {
-  const { slippage } = useUserSettings()
   const { amountOutForToken } = useRemoveLiquidity()
 
   return (
     <Card variant="subSection">
-      <VStack spacing="md">
-        <HStack w="full" justify="space-between">
-          <Text fontWeight="bold" fontSize="1rem">
-            You&apos;ll get at least
-          </Text>
-          <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-            With max slippage: {fNum('slippage', slippage)}
-          </Text>
-        </HStack>
+      <VStack spacing="md" align="start">
+        <Text fontWeight="bold" fontSize="sm">
+          You&apos;re expected to get (if no slippage)
+        </Text>
         {tokens.map(
           token =>
             token && (

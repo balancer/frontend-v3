@@ -4,7 +4,6 @@ import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerA
 import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import {
-  Box,
   Button,
   HStack,
   Modal,
@@ -24,7 +23,6 @@ import { useAddLiquidity } from './useAddLiquidity'
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
-import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 import { usePoolRedirect, useRefetchPoolOnFlowComplete } from '../../pool.hooks'
 import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
 
@@ -41,7 +39,7 @@ export function AddLiquidityModal({
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const { isDesktop, isMobile } = useBreakpoints()
+  const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const { stepConfigs, currentStep, currentStepIndex, useOnStepCompleted } = useAddLiquidity()
   const { pool, chainId } = usePool()
@@ -85,16 +83,7 @@ export function AddLiquidityModal({
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          {isMobile && (
-            <Box mb="md">
-              <MobileStepTracker
-                currentStepIndex={currentStepIndex}
-                stepConfigs={stepConfigs}
-                chain={pool.chain}
-              />
-            </Box>
-          )}
-          <AddLiquidityPreview success={isFlowComplete} />
+          <AddLiquidityPreview />
         </ModalBody>
         <ModalFooter>
           {shouldSignRelayerApproval ? (
