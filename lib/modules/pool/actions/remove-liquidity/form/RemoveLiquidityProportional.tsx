@@ -2,10 +2,8 @@
 'use client'
 
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { fNum } from '@/lib/shared/utils/numbers'
-import { Card, HStack, Text, VStack } from '@chakra-ui/react'
+import { Card, Text, VStack } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 
