@@ -95,6 +95,7 @@ function GlobalProviders({ children }: WrapperProps) {
                 initSlippage={'0.2'}
                 initPoolListView={'list'}
                 initEnableSignatures="yes"
+                initAcceptedPolicies={true}
               >
                 <CurrentFlowStepProvider>
                   <RecentTransactionsProvider>
