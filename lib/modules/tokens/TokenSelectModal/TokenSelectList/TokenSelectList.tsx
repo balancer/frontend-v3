@@ -23,7 +23,7 @@ type Props = {
 }
 function OtherTokens() {
   return (
-    <Card p="1" my="2">
+    <Card padding="xs" px="md" my="2">
       <HStack>
         <Box color="font.secondary">
           <CoinsIcon />
@@ -42,22 +42,28 @@ interface InYourWalletProps {
 
 function InYourWallet({ isConnected, openConnectModal, hasNoTokensInWallet }: InYourWalletProps) {
   return (
-    <>
-      <Card p="1" pr="4" mb="2">
+    <Box pb="xs">
+      <Card padding="xs" px="md" mt="px">
         <HStack>
           <Box color="font.secondary">
             <WalletIcon />
           </Box>
           <Text color="font.secondary">In your wallet</Text>
           {!isConnected && (
-            <Button ml="auto" variant="link" color="purple.300" onClick={openConnectModal}>
+            <Button
+              ml="auto"
+              size="sm"
+              variant="link"
+              color="purple.300"
+              onClick={openConnectModal}
+            >
               Connect wallet
             </Button>
           )}
         </HStack>
       </Card>
       {isConnected && hasNoTokensInWallet && <Text>No tokens in your wallet</Text>}
-    </>
+    </Box>
   )
 }
 
@@ -134,7 +140,7 @@ export function TokenSelectList({
         <GroupedVirtuoso
           ref={ref}
           groupCounts={groupCounts}
-          style={{ height: listHeight }}
+          style={{ height: listHeight, paddingRight: '0.25rem' }}
           groupContent={index => {
             return groups[index]
           }}
