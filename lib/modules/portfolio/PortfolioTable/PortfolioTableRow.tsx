@@ -9,6 +9,7 @@ import { PoolListItem } from '../../pool/pool.types'
 import { getPoolPath, getPoolTypeLabel } from '../../pool/pool.utils'
 import { PoolListTokenPills } from '../../pool/PoolList/PoolListTokenPills'
 import { bn } from '@/lib/shared/utils/numbers'
+import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -31,51 +32,53 @@ export function PortfolioTableRow({ pool, keyValue, ...rest }: Props) {
       px={{ base: 'ms', sm: '0' }}
       w="full"
     >
-      <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
-        <Grid {...rest} py="sm">
-          <GridItem>
-            <NetworkIcon chain={pool.chain} size={6} />
-          </GridItem>
-          <GridItem>
-            <PoolListTokenPills pool={pool} />
-          </GridItem>
+      <FadeInOnView animateOnce={false}>
+        <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
+          <Grid {...rest} py="sm">
+            <GridItem>
+              <NetworkIcon chain={pool.chain} size={6} />
+            </GridItem>
+            <GridItem>
+              <PoolListTokenPills pool={pool} />
+            </GridItem>
 
-          <GridItem>
-            <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
-              {getPoolTypeLabel(pool.type)}
-            </Text>
-          </GridItem>
-          <GridItem>
-            <Text textAlign="right" fontWeight="medium">
-              {bn(pool.userBalance?.stakedBalance || 0).isGreaterThan(0) ? 'Staked' : 'N/A'}
-            </Text>
-          </GridItem>
-          {/* TO-DO vebal boost */}
-          <GridItem textAlign="right">
-            <Text
-              title={toCurrency(pool.dynamicData.volume24h, { abbreviated: false })}
-              textAlign="right"
-              fontWeight="medium"
-            >
-              1.5x
-            </Text>
-          </GridItem>
+            <GridItem>
+              <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
+                {getPoolTypeLabel(pool.type)}
+              </Text>
+            </GridItem>
+            <GridItem>
+              <Text textAlign="right" fontWeight="medium">
+                {bn(pool.userBalance?.stakedBalance || 0).isGreaterThan(0) ? 'Staked' : 'N/A'}
+              </Text>
+            </GridItem>
+            {/* TO-DO vebal boost */}
+            <GridItem textAlign="right">
+              <Text
+                title={toCurrency(pool.dynamicData.volume24h, { abbreviated: false })}
+                textAlign="right"
+                fontWeight="medium"
+              >
+                1.5x
+              </Text>
+            </GridItem>
 
-          <GridItem>
-            <Text textAlign="right" fontWeight="medium">
-              {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
-            </Text>
-          </GridItem>
+            <GridItem>
+              <Text textAlign="right" fontWeight="medium">
+                {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
+              </Text>
+            </GridItem>
 
-          <GridItem justifySelf="end">
-            <MemoizedAprTooltip
-              data={pool.dynamicData.apr}
-              poolId={pool.id}
-              textProps={{ fontWeight: 'medium' }}
-            />
-          </GridItem>
-        </Grid>
-      </Link>
+            <GridItem justifySelf="end">
+              <MemoizedAprTooltip
+                data={pool.dynamicData.apr}
+                poolId={pool.id}
+                textProps={{ fontWeight: 'medium' }}
+              />
+            </GridItem>
+          </Grid>
+        </Link>
+      </FadeInOnView>
     </Box>
   )
 }

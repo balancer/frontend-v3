@@ -7,6 +7,7 @@ import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { PoolsColumnSort, orderByHash } from '../../pool.types'
 import { usePoolOrderByState } from '../usePoolOrderByState'
 import { Globe } from 'react-feather'
+import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 
 const setIsDesc = (id: GqlPoolOrderBy, currentSortingObj: PoolsColumnSort) =>
   currentSortingObj.id === id ? !currentSortingObj.desc : true
@@ -19,33 +20,41 @@ export function PoolListTableHeader({ ...rest }) {
   return (
     <Grid {...rest} p={['ms', 'md']} w="full" borderBottom="1px solid" borderColor="border.base">
       <GridItem>
-        <VStack align="start" w="full">
-          <Icon as={Globe} boxSize="5" color="grayText" />
-        </VStack>
+        <FadeInOnView animateOnce={false}>
+          <VStack align="start" w="full">
+            <Icon as={Globe} boxSize="5" color="grayText" />
+          </VStack>
+        </FadeInOnView>
       </GridItem>
       <GridItem>
-        <Text fontWeight="bold">Pool name</Text>
+        <FadeInOnView animateOnce={false}>
+          <Text fontWeight="bold">Pool name</Text>
+        </FadeInOnView>
       </GridItem>
       <GridItem justifySelf="start">
-        <Text fontWeight="bold" textAlign="left">
-          Type
-        </Text>
+        <FadeInOnView animateOnce={false}>
+          <Text fontWeight="bold" textAlign="left">
+            Type
+          </Text>
+        </FadeInOnView>
       </GridItem>
       {orderBy.map((orderByItem, index) => (
         <GridItem key={index} justifySelf="end">
-          <PoolListSortButton
-            title={orderByHash[orderByItem]}
-            isCurrentSort={sortingObj.id === orderByItem}
-            isDesc={sortingObj.desc}
-            onClick={() =>
-              setSorting([
-                {
-                  id: orderByItem,
-                  desc: setIsDesc(orderByItem, sortingObj),
-                },
-              ])
-            }
-          />
+          <FadeInOnView animateOnce={false}>
+            <PoolListSortButton
+              title={orderByHash[orderByItem]}
+              isCurrentSort={sortingObj.id === orderByItem}
+              isDesc={sortingObj.desc}
+              onClick={() =>
+                setSorting([
+                  {
+                    id: orderByItem,
+                    desc: setIsDesc(orderByItem, sortingObj),
+                  },
+                ])
+              }
+            />
+          </FadeInOnView>
         </GridItem>
       ))}
     </Grid>
