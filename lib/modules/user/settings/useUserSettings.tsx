@@ -19,7 +19,7 @@ const DEFAULT_CURRENCY = SupportedCurrency.USD
 const DEFAULT_SLIPPAGE = '0.5' // 0.5%
 const DEFAULT_POOL_LIST_VIEW = PoolListView.List
 const DEFAULT_ENABLE_SIGNATURES: EnableSignatures = 'yes'
-const DEFAULT_ACCEPTED_POLICIES = false
+const DEFAULT_ACCEPTED_POLICIES: string[] = []
 
 export type UseUserSettingsResult = ReturnType<typeof _useUserSettings>
 export const UserSettingsContext = createContext<UseUserSettingsResult | null>(null)
@@ -35,7 +35,7 @@ export function _useUserSettings({
   initSlippage: string
   initEnableSignatures: EnableSignatures
   initPoolListView: PoolListView
-  initAcceptedPolicies: boolean
+  initAcceptedPolicies: string[]
 }) {
   const isMounted = useIsMounted()
 
@@ -66,7 +66,7 @@ export function _useUserSettings({
   const slippageDecimal = bn(slippage).div(100).toString()
   const slippageBps = bn(slippage).times(100).toString()
 
-  const [_acceptedPolicies, setAcceptedPolicies] = useLocalStorage<boolean>(
+  const [_acceptedPolicies, setAcceptedPolicies] = useLocalStorage<string[]>(
     LS_KEYS.UserSettings.AcceptedPolicies,
     initAcceptedPolicies
   )
@@ -93,7 +93,7 @@ type ProviderProps = PropsWithChildren<{
   initSlippage: string | undefined
   initPoolListView: string | undefined
   initEnableSignatures: string | undefined
-  initAcceptedPolicies: boolean | undefined
+  initAcceptedPolicies: string[] | undefined
 }>
 
 export function UserSettingsProvider({
