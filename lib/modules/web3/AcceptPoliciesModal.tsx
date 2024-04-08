@@ -16,18 +16,26 @@ import {
   Button,
   VStack,
 } from '@chakra-ui/react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useUserSettings } from '../user/settings/useUserSettings'
 import { useUserAccount } from './useUserAccount'
 
 export function AcceptPoliciesModal() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { acceptedPolicies, setAcceptedPolicies } = useUserSettings()
-  const { isBlocked, isLoading, isConnected } = useUserAccount()
+  const { isBlocked, isLoading, isConnected, userAddress } = useUserAccount()
+  const [isChecked, setIsChecked] = useState(false)
+
+  const isAddressInAcceptedPolicies = acceptedPolicies.includes(userAddress.toLowerCase())
 
   useEffect(() => {
-    if (!isLoading && isConnected && !acceptedPolicies && !isBlocked) onOpen()
+    if (!isLoading && isConnected && !isAddressInAcceptedPolicies && !isBlocked) onOpen()
   }, [acceptedPolicies, isBlocked, isLoading, isConnected])
+
+  function handleClick() {
+    setAcceptedPolicies([...acceptedPolicies, userAddress.toLowerCase()])
+    onClose()
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -47,8 +55,8 @@ export function AcceptPoliciesModal() {
             </UnorderedList>
             <Checkbox
               size="lg"
-              isChecked={acceptedPolicies}
-              onChange={e => setAcceptedPolicies(e.target.checked)}
+              isChecked={isChecked}
+              onChange={e => setIsChecked(e.target.checked)}
             >
               <Text fontSize="md">I agree</Text>
             </Checkbox>
@@ -56,8 +64,8 @@ export function AcceptPoliciesModal() {
               variant="secondary"
               w="full"
               size="lg"
-              isDisabled={!acceptedPolicies}
-              onClick={() => onClose()}
+              isDisabled={!isChecked}
+              onClick={handleClick}
             >
               Proceed
             </Button>
