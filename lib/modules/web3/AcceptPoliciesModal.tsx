@@ -19,18 +19,27 @@ import {
 import { useEffect, useState } from 'react'
 import { useUserSettings } from '../user/settings/useUserSettings'
 import { useUserAccount } from './useUserAccount'
+import { useDisconnect } from 'wagmi'
 
 export function AcceptPoliciesModal() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { acceptedPolicies, setAcceptedPolicies } = useUserSettings()
   const { isBlocked, isLoading, isConnected, userAddress } = useUserAccount()
   const [isChecked, setIsChecked] = useState(false)
+  const { disconnect } = useDisconnect()
 
   const isAddressInAcceptedPolicies = acceptedPolicies.includes(userAddress.toLowerCase())
 
   useEffect(() => {
     if (!isLoading && isConnected && !isAddressInAcceptedPolicies && !isBlocked) onOpen()
   }, [acceptedPolicies, isBlocked, isLoading, isConnected])
+
+  //disconnect wallet if modal is closed without accepting & clicking 'Proceed'
+  useEffect(() => {
+    if (!isOpen && !acceptedPolicies.includes(userAddress.toLowerCase())) {
+      disconnect()
+    }
+  }, [isOpen])
 
   function handleClick() {
     setAcceptedPolicies([...acceptedPolicies, userAddress.toLowerCase()])
