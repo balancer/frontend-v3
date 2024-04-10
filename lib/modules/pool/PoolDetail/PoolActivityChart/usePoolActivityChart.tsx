@@ -328,7 +328,7 @@ export function usePoolActivityChart() {
   }, [activeTab, chartData, options])
 
   return {
-    chartOption: getDefaultPoolChartOptions(theme),
+    chartOption: getDefaultPoolChartOptions(theme as ColorMode),
     activeTab,
     setActiveTab,
     tabsList,
