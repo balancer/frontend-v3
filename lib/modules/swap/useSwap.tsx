@@ -38,6 +38,7 @@ import {
   isWrapOrUnwrap,
 } from './wrap.helpers'
 import { useTokenInputsValidation } from '../tokens/useTokenInputsValidation'
+import { useMakeVarPersisted } from '@/lib/shared/hooks/useMakeVarPersisted'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -74,6 +75,25 @@ function selectSwapHandler(
 }
 
 export function _useSwap() {
+  const swapStateVar = useMakeVarPersisted<SwapState>(
+    {
+      tokenIn: {
+        address: emptyAddress,
+        amount: '',
+        scaledAmount: BigInt(0),
+      },
+      tokenOut: {
+        address: emptyAddress,
+        amount: '',
+        scaledAmount: BigInt(0),
+      },
+      swapType: GqlSorSwapType.ExactIn,
+      selectedChain: GqlChain.Mainnet,
+    },
+    'swapState'
+  )
+
+  //console.log({ swapState })
   const swapState = useReactiveVar(swapStateVar)
   const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
