@@ -170,7 +170,7 @@ export function AddLiquidityPreview() {
         </Card>
       )}
 
-      {isFlowComplete && <StakingOptions />}
+      {isFlowComplete && pool.dynamicData.apr.hasRewardApr && <StakingOptions />}
     </VStack>
   )
 }
