@@ -21,7 +21,7 @@ export interface ClaimableReward {
 }
 
 export function useClaimableBalances(pools: PoolListItem[]) {
-  const { userAddress } = useUserAccount()
+  const { userAddress, isConnected } = useUserAccount()
   const { priceFor } = useTokens()
 
   // Get list of all reward tokens from provided pools
@@ -68,7 +68,9 @@ export function useClaimableBalances(pools: PoolListItem[]) {
     results: poolsRewardTokensQuery,
     refetchAll,
     isLoading,
-  } = useMulticall(poolsRewardTokensRequests)
+  } = useMulticall(poolsRewardTokensRequests, {
+    enabled: isConnected,
+  })
 
   // Format claimable rewards data
   const poolRewardTokensData = Object.values(poolsRewardTokensQuery).reduce(

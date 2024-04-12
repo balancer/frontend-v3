@@ -1,5 +1,5 @@
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { useQueries } from '@tanstack/react-query'
+import { UseQueryOptions, useQueries } from '@tanstack/react-query'
 import { groupBy, keyBy, set } from 'lodash'
 import { ContractFunctionConfig } from 'viem'
 import { multicall } from 'wagmi/actions'
@@ -8,7 +8,7 @@ import { useCallback } from 'react'
 
 export type ChainContractConfig = ContractFunctionConfig & { chain: GqlChain; id: string }
 
-export function useMulticall(multicallRequests: ChainContractConfig[]) {
+export function useMulticall(multicallRequests: ChainContractConfig[], options?: UseQueryOptions) {
   // Want the results for each chain to be independent of each other so we don't have
   // a large blob of queries that resolves at once, but have to option to have the results
   // of each set of multicalls for each chain to 'stream' through
@@ -36,6 +36,7 @@ export function useMulticall(multicallRequests: ChainContractConfig[]) {
           return idMappedResults
         },
         queryKey: multicalls,
+        ...options,
       }
     }),
   })

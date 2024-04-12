@@ -23,7 +23,7 @@ export interface BalTokenReward {
 }
 
 export function useBalTokenRewards(pools: PoolListItem[]) {
-  const { userAddress } = useUserAccount()
+  const { userAddress, isConnected } = useUserAccount()
   const { priceFor } = useTokens()
 
   // Get list of all reward tokens from provided pools
@@ -44,7 +44,13 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
       }
     }) || []
 
-  const { results: balTokensQuery, refetchAll, isLoading } = useMulticall(balIncentivesRequests)
+  const {
+    results: balTokensQuery,
+    refetchAll,
+    isLoading,
+  } = useMulticall(balIncentivesRequests, {
+    enabled: isConnected,
+  })
 
   // Bal incentives
   const balRewardsData = Object.values(balTokensQuery).reduce((acc: BalTokenReward[], chain) => {

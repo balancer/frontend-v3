@@ -7,6 +7,30 @@ import { toJsTimestamp } from '@/lib/shared/hooks/useTime'
 import { bn } from '@/lib/shared/utils/numbers'
 import { AbiMap } from '../web3/contracts/AbiMap'
 
+interface MulticallLockInfoResponse {
+  locked: {
+    locked: {
+      result?: {
+        amount: bigint
+        end: bigint
+      }
+      status: string
+    }
+  }
+  epoch: {
+    epoch: {
+      result?: bigint
+      status: string
+    }
+  }
+  totalSupply: {
+    totalSupply: {
+      result?: bigint
+      status: string
+    }
+  }
+}
+
 export function useVebalLockInfo() {
   const { userAddress, isConnected } = useUserAccount()
 
@@ -38,7 +62,9 @@ export function useVebalLockInfo() {
     }
   })
 
-  const { results, refetchAll, isLoading } = useMulticall(lockInfoRequests)
+  const { results, refetchAll, isLoading } = useMulticall(lockInfoRequests, {
+    enabled: isConnected,
+  })
 
   const mainnetLockedInfo = useMemo(() => {
     const mainnetResults = results[mainnetNetworkConfig.chain]
@@ -53,12 +79,14 @@ export function useVebalLockInfo() {
       return {}
     }
 
-    const data = mainnetResults.data as any
+    const data = mainnetResults.data as MulticallLockInfoResponse
+
     const lockedData = data.locked.locked
-    const totalSupply = data.totalSupply.totalSupply
+    const totalSupply = data.totalSupply.totalSupply.result || BigInt(0)
     const epoch = data.epoch.epoch
 
-    const { amount: lockedAmount, end: lockedEndDate } = lockedData.result
+    const lockedAmount = lockedData.result?.amount || BigInt(0)
+    const lockedEndDate = lockedData.result?.end || BigInt(0)
 
     const hasExistingLock = bn(lockedAmount).gt(0)
     const lockedEndDateNormalised = toJsTimestamp(Number(lockedEndDate))
@@ -67,7 +95,7 @@ export function useVebalLockInfo() {
     return {
       lockedEndDate: lockedEndDateNormalised,
       lockedAmount: formatUnits(lockedAmount, 18),
-      totalSupply: formatUnits(totalSupply.result, 18),
+      totalSupply: formatUnits(totalSupply, 18),
       epoch: String(epoch.result),
       hasExistingLock,
       isExpired,
