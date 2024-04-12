@@ -50,15 +50,14 @@ function getTabs(index: number, tabs: Tabs) {
 export function PoolActionsNav() {
   const pathname = usePathname()
   const pathnameArray = pathname.split('/')
-  const lastPathname = pathnameArray[pathnameArray.length - 1]
-  const activeTabIndex = TABS.findIndex(tab => tab.value === lastPathname)
+  const activeTabIndex = TABS.findIndex(tab => pathnameArray.includes(tab.value))
   const activeTab = TABS[activeTabIndex]
   const { pool } = usePool()
   const networkConfig = getNetworkConfig(pool.chain)
   const router = useRouter()
 
   function toggleFlow(option: ButtonGroupOption) {
-    if (option.value === lastPathname) return
+    if (pathnameArray.includes(option.value)) return
     router.push(`${getPoolPath(pool)}/${option.value}`)
   }
 
