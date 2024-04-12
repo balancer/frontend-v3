@@ -7,7 +7,7 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { getSelectStyles } from '@/lib/shared/services/chakra/theme/chakra-react-select'
 import { HStack, Text } from '@chakra-ui/react'
 import { Select, OptionBase, GroupBase, SingleValue, chakraComponents } from 'chakra-react-select'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { ChevronDown, Globe } from 'react-feather'
 
 interface ChainOption extends OptionBase {
@@ -31,19 +31,20 @@ const networkOptions: ChainOption[] = PROJECT_CONFIG.supportedNetworks.map(netwo
 }))
 
 export function ChainSelect({ value, onChange }: Props) {
+  const [chainValue, setChainValue] = useState<ChainOption | undefined>(undefined)
   const chakraStyles = getSelectStyles<ChainOption>()
 
   function handleChange(newOption: SingleValue<ChainOption>) {
     if (newOption) onChange(newOption.value)
   }
 
-  const _value = networkOptions.find(option => option.value === value)
+  useEffect(() => setChainValue(networkOptions.find(option => option.value === value)), [value])
 
   return (
     <Select<ChainOption, false, GroupBase<ChainOption>>
       instanceId="chain-select"
       name="Chain"
-      value={_value}
+      value={chainValue}
       options={networkOptions}
       chakraStyles={chakraStyles}
       onChange={handleChange}

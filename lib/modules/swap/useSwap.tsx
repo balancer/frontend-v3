@@ -43,21 +43,6 @@ import { useMakeVarPersisted } from '@/lib/shared/hooks/useMakeVarPersisted'
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
 
-const swapStateVar = makeVar<SwapState>({
-  tokenIn: {
-    address: emptyAddress,
-    amount: '',
-    scaledAmount: BigInt(0),
-  },
-  tokenOut: {
-    address: emptyAddress,
-    amount: '',
-    scaledAmount: BigInt(0),
-  },
-  swapType: GqlSorSwapType.ExactIn,
-  selectedChain: GqlChain.Mainnet,
-})
-
 function selectSwapHandler(
   tokenInAddress: Address,
   tokenOutAddress: Address,
@@ -93,7 +78,6 @@ export function _useSwap() {
     'swapState'
   )
 
-  //console.log({ swapState })
   const swapState = useReactiveVar(swapStateVar)
   const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
@@ -317,9 +301,28 @@ export function _useSwap() {
   })
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(swapStepConfigs)
 
-  // On first render, set default tokens
+  // On first render...
   useEffect(() => {
-    swapStateVar(getDefaultTokenState(swapState.selectedChain))
+    // reset token amounts
+    swapStateVar({
+      ...swapState,
+      tokenIn: {
+        ...swapState.tokenIn,
+        amount: '',
+        scaledAmount: BigInt(0),
+      },
+      tokenOut: {
+        ...swapState.tokenOut,
+        amount: '',
+        scaledAmount: BigInt(0),
+      },
+    })
+
+    // If no tokenIn or tokenOut, set default tokens
+    if (!swapState.tokenIn.address && !swapState.tokenOut.address) {
+      swapStateVar(getDefaultTokenState(swapState.selectedChain))
+    }
+    // else tokens from local state will be set
   }, [])
 
   // When a new simulation is triggered, update the state

@@ -27,7 +27,7 @@ import { useTokenInputsValidation } from '../useTokenInputsValidation'
 import { ChevronDown } from 'react-feather'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
@@ -36,18 +36,31 @@ type TokenInputSelectorProps = {
 }
 
 function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSelectorProps) {
-  const label = token ? token?.symbol : toggleTokenSelect ? 'Select token' : 'No token'
+  const [altName, setAltName] = useState('')
+  const [label, setLabel] = useState('')
+  const [variant, setVariant] = useState('')
+
+  useEffect(() => {
+    if (token) {
+      setAltName(token.symbol)
+      setLabel(token.symbol)
+      setVariant('tertiary')
+    } else if (toggleTokenSelect) {
+      setLabel('Select token')
+    } else {
+      setVariant('scondary')
+    }
+  }, [JSON.stringify(token)])
+
   return (
     <Button
-      variant={token ? 'tertiary' : 'secondary'}
+      variant={variant}
       onClick={toggleTokenSelect}
       cursor={toggleTokenSelect ? 'pointer' : 'default'}
     >
-      {token && (
-        <Box mr="sm">
-          <TokenIcon logoURI={token?.logoURI} alt={token?.symbol || 'token icon'} size={22} />
-        </Box>
-      )}
+      <Box mr="sm">
+        <TokenIcon logoURI={token?.logoURI} alt={altName} size={22} loading="lazy" />
+      </Box>
       {label}
       {weight && <Text fontWeight="normal">{weight}%</Text>}
       {toggleTokenSelect && (
