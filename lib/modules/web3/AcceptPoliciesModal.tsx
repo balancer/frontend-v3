@@ -15,6 +15,7 @@ import {
   Checkbox,
   Button,
   VStack,
+  ModalFooter,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useUserSettings } from '../user/settings/useUserSettings'
@@ -55,7 +56,7 @@ export function AcceptPoliciesModal() {
         <ModalBody>
           <VStack align="flex-start" gap="md">
             <Text>By connecting a wallet, you agree to Balancer Foundation’s:</Text>
-            <UnorderedList>
+            <UnorderedList color="font.primary">
               <ListItem>Terms of Use</ListItem>
               <ListItem>Privacy Policy</ListItem>
               <ListItem>Cookies Policy</ListItem>
@@ -69,17 +70,19 @@ export function AcceptPoliciesModal() {
             >
               <Text fontSize="md">I agree</Text>
             </Checkbox>
-            <Button
-              variant="secondary"
-              w="full"
-              size="lg"
-              isDisabled={!isChecked}
-              onClick={handleClick}
-            >
-              Proceed
-            </Button>
           </VStack>
         </ModalBody>
+        <ModalFooter>
+          <Button
+            variant="secondary"
+            w="full"
+            size="lg"
+            isDisabled={!isChecked}
+            onClick={handleClick}
+          >
+            Proceed
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   )
