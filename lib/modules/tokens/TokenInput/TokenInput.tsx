@@ -36,19 +36,18 @@ type TokenInputSelectorProps = {
 }
 
 function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSelectorProps) {
-  const [altName, setAltName] = useState('')
   const [label, setLabel] = useState('')
   const [variant, setVariant] = useState('')
+  const [showIcon, setShowIcon] = useState(false)
 
   useEffect(() => {
     if (token) {
-      setAltName(token.symbol)
       setLabel(token.symbol)
       setVariant('tertiary')
+      setShowIcon(true)
     } else if (toggleTokenSelect) {
       setLabel('Select token')
-    } else {
-      setVariant('scondary')
+      setVariant('secondary')
     }
   }, [JSON.stringify(token)])
 
@@ -58,9 +57,11 @@ function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSele
       onClick={toggleTokenSelect}
       cursor={toggleTokenSelect ? 'pointer' : 'default'}
     >
-      <Box mr="sm">
-        <TokenIcon logoURI={token?.logoURI} alt={altName} size={22} loading="lazy" />
-      </Box>
+      {showIcon && (
+        <Box mr="sm">
+          <TokenIcon logoURI={token?.logoURI} alt={label} size={22} loading="lazy" />
+        </Box>
+      )}
       {label}
       {weight && <Text fontWeight="normal">{weight}%</Text>}
       {toggleTokenSelect && (
