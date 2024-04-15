@@ -4,7 +4,7 @@ import { getNetworkConfig } from '@/lib/config/app.config'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
-interface NetworkConfigProps {
+type NetworkConfigProps = {
   iconPath: string
   shortName: string
 }
