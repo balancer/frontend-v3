@@ -35,41 +35,44 @@ type TokenInputSelectorProps = {
   toggleTokenSelect?: () => void
 }
 
+type TokenConfigProps = {
+  label: string
+  variant: string
+  showIcon: boolean
+}
+
 function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSelectorProps) {
-  const [label, setLabel] = useState('')
-  const [variant, setVariant] = useState('')
-  const [showIcon, setShowIcon] = useState(false)
+  const [tokenConfig, setTokenConfig] = useState<TokenConfigProps | undefined>(undefined)
 
   useEffect(() => {
     if (token) {
-      setLabel(token.symbol)
-      setVariant('tertiary')
-      setShowIcon(true)
+      setTokenConfig({ label: token.symbol, variant: 'tertiary', showIcon: true })
     } else if (toggleTokenSelect) {
-      setLabel('Select token')
-      setVariant('secondary')
+      setTokenConfig({ label: 'Select token', variant: 'secondary', showIcon: false })
     }
   }, [JSON.stringify(token)])
 
   return (
-    <Button
-      variant={variant}
-      onClick={toggleTokenSelect}
-      cursor={toggleTokenSelect ? 'pointer' : 'default'}
-    >
-      {showIcon && (
-        <Box mr="sm">
-          <TokenIcon logoURI={token?.logoURI} alt={label} size={22} loading="lazy" />
-        </Box>
-      )}
-      {label}
-      {weight && <Text fontWeight="normal">{weight}%</Text>}
-      {toggleTokenSelect && (
-        <Box ml="sm">
-          <ChevronDown size={16} />
-        </Box>
-      )}
-    </Button>
+    tokenConfig && (
+      <Button
+        variant={tokenConfig.variant}
+        onClick={toggleTokenSelect}
+        cursor={toggleTokenSelect ? 'pointer' : 'default'}
+      >
+        {tokenConfig.showIcon && (
+          <Box mr="sm">
+            <TokenIcon logoURI={token?.logoURI} alt={tokenConfig.label} size={22} loading="lazy" />
+          </Box>
+        )}
+        {tokenConfig.label}
+        {weight && <Text fontWeight="normal">{weight}%</Text>}
+        {toggleTokenSelect && (
+          <Box ml="sm">
+            <ChevronDown size={16} />
+          </Box>
+        )}
+      </Button>
+    )
   )
 }
 
