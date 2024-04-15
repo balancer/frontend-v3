@@ -17,6 +17,7 @@ import {
   Text,
   Tooltip,
   VStack,
+  useDisclosure,
 } from '@chakra-ui/react'
 import { useEffect, useRef } from 'react'
 import { Address } from 'wagmi'
@@ -34,6 +35,9 @@ import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { AddLiquidityFormCheckbox } from './AddLiquidityFormCheckbox'
 import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { isWrappedNativeToken } from '@/lib/modules/tokens/token.helpers'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { NativeTokenSelectModal } from '@/lib/modules/tokens/NativeTokenSelectModal'
 
 export function AddLiquidityForm() {
   const {
@@ -55,6 +59,7 @@ export function AddLiquidityForm() {
   const { priceImpactColor, priceImpact, setPriceImpact } = usePriceImpact()
   const { toCurrency } = useCurrency()
   const { isFlowComplete, clearCurrentFlowStep } = useCurrentFlowStep()
+  const tokenSelectDisclosure = useDisclosure()
 
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
@@ -86,6 +91,10 @@ export function AddLiquidityForm() {
     clearCurrentFlowStep()
   }, [])
 
+  function handleTokenSelect(token: GqlToken) {
+    console.log({ token })
+  }
+
   return (
     <TokenBalancesProvider tokens={validTokens}>
       <Center h="full" w="full" maxW="lg" mx="auto">
@@ -104,6 +113,8 @@ export function AddLiquidityForm() {
                 <VStack spacing="md" w="full">
                   {tokens.map(token => {
                     if (!token) return <div>Missing token</div>
+                    const isWeth = isWrappedNativeToken(token.address as Address, token.chain)
+                    console.log({ token })
                     return (
                       <TokenInput
                         key={token.address}
@@ -115,6 +126,9 @@ export function AddLiquidityForm() {
                             token.address as Address,
                             e.currentTarget.value as HumanAmount
                           )
+                        }
+                        toggleTokenSelect={
+                          isWeth ? () => tokenSelectDisclosure.onOpen() : undefined
                         }
                       />
                     )
@@ -196,6 +210,14 @@ export function AddLiquidityForm() {
           isOpen={previewModalDisclosure.isOpen}
           onOpen={previewModalDisclosure.onOpen}
           onClose={onModalClose}
+        />
+        <NativeTokenSelectModal
+          title="Select the asset to invest with"
+          chain={validTokens[0].chain}
+          isOpen={tokenSelectDisclosure.isOpen}
+          onOpen={tokenSelectDisclosure.onOpen}
+          onClose={tokenSelectDisclosure.onClose}
+          onTokenSelect={handleTokenSelect}
         />
       </Center>
     </TokenBalancesProvider>
