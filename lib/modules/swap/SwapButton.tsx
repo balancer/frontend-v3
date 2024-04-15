@@ -25,7 +25,7 @@ export function SwapButton({ closeModal }: Props) {
   return (
     <VStack w="full">
       {isComplete ? (
-        <Button w="full" size="lg" onClick={closeModal}>
+        <Button variant="tertiary" w="full" size="lg" onClick={closeModal}>
           Close
         </Button>
       ) : (

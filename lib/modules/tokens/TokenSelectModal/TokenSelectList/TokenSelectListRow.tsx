@@ -46,6 +46,7 @@ export function TokenSelectListRow({
       bg: active ? 'background.level4' : 'background.level1',
     },
     transition: 'all 0.2s ease-in-out',
+    mr: 'xs',
   }
 
   return (

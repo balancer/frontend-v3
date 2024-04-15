@@ -10,14 +10,14 @@ import { usePool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
-import { ArrowUpRight, Check } from 'react-feather'
-import { getBlockExplorerName, getBlockExplorerTxUrl } from '@/lib/shared/hooks/useBlockExplorer'
 import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 import { getAprLabel } from '../../../pool.utils'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
+import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 function StakingOptions() {
   const { pool } = usePool()
@@ -91,44 +91,28 @@ function StakingOptions() {
   )
 }
 
-function ExplorerLink() {
-  const { flowStep } = useCurrentFlowStep()
-  const { pool } = usePool()
-
-  const transactionHash = flowStep?.result.data?.transactionHash || ''
-
-  return (
-    <Card variant="modalSubSection" border="1px" borderColor="font.highlight">
-      <HStack justify="space-between" w="full">
-        <HStack justify="flex-start" color="font.highlight">
-          <Check size={20} />
-          <Text color="font.highlight">Success</Text>
-        </HStack>
-        <Link target="_blank" href={getBlockExplorerTxUrl(transactionHash, pool.chain)}>
-          <HStack color="grayText">
-            <Text fontSize="sm" variant="secondary">
-              View on {getBlockExplorerName(pool.chain)}
-            </Text>
-            <ArrowUpRight size={14} />
-          </HStack>
-        </Link>
-        )
-      </HStack>
-    </Card>
-  )
-}
-
-export function AddLiquidityPreview({ success = false }: { success?: boolean }) {
-  const { humanAmountsIn, totalUSDValue, tokens, simulationQuery } = useAddLiquidity()
+export function AddLiquidityPreview() {
+  const { isFlowComplete, SuccessCard } = useCurrentFlowStep()
+  const { humanAmountsIn, totalUSDValue, tokens, simulationQuery, currentStepIndex, stepConfigs } =
+    useAddLiquidity()
   const { pool } = usePool()
   const { toCurrency } = useCurrency()
+  const { isMobile } = useBreakpoints()
 
   const bptOut = simulationQuery?.data?.bptOut
   const bptOutLabel = bptOut ? formatUnits(bptOut.amount, BPT_DECIMALS) : '0'
 
   return (
     <VStack spacing="sm" align="start">
-      {success && <ExplorerLink />}
+      {isFlowComplete && <SuccessCard chain={pool.chain} />}
+
+      {isMobile && (
+        <MobileStepTracker
+          currentStepIndex={currentStepIndex}
+          stepConfigs={stepConfigs}
+          chain={pool.chain}
+        />
+      )}
 
       <Card variant="modalSubSection">
         <VStack align="start" spacing="md">
@@ -174,7 +158,7 @@ export function AddLiquidityPreview({ success = false }: { success?: boolean }) 
         </VStack>
       </Card>
 
-      {!success && (
+      {!isFlowComplete && (
         <Card variant="modalSubSection">
           <VStack align="start" spacing="sm">
             <PoolActionsPriceImpactDetails
@@ -186,7 +170,7 @@ export function AddLiquidityPreview({ success = false }: { success?: boolean }) 
         </Card>
       )}
 
-      {success && <StakingOptions />}
+      {isFlowComplete && pool.dynamicData.apr.hasRewardApr && <StakingOptions />}
     </VStack>
   )
 }
