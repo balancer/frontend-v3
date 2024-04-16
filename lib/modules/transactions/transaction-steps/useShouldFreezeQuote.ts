@@ -5,7 +5,7 @@ export function useShouldFreezeQuote(stepId: CoreStepId) {
   const { getCoreTransactionState } = useCurrentFlowStep()
 
   const coreTxState = getCoreTransactionState(stepId)
-  const isConfirmingAddLiquidity = coreTxState === TransactionState.Confirming
+  const isConfirming = coreTxState === TransactionState.Confirming
   const isAwaitingUserConfirmation = coreTxState === TransactionState.Loading
   const isComplete = coreTxState === TransactionState.Completed
   const isError = coreTxState === TransactionState.Error
@@ -13,7 +13,6 @@ export function useShouldFreezeQuote(stepId: CoreStepId) {
   // Disable query refetches:
   // if the flow is complete
   // if the core transaction is confirming
-  const shouldFreezeQuote =
-    isComplete || isConfirmingAddLiquidity || isAwaitingUserConfirmation || isError
+  const shouldFreezeQuote = isComplete || isConfirming || isAwaitingUserConfirmation || isError
   return { shouldFreezeQuote }
 }
