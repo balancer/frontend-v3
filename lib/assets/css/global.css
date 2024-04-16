@@ -12,11 +12,10 @@ body {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
-/* Global animation */
 
 .visible {
   opacity: 1;
-  transform: translateY(0px) scale(1);
+  transform: translateY(0) scale(1);
   transition: opacity 1s ease, transform 1s ease;
   transform-origin: top;
 }
