@@ -5,8 +5,8 @@ import { getBlockExplorerName, getBlockExplorerTxUrl } from '@/lib/shared/hooks/
 import { secs } from '@/lib/shared/hooks/useTime'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { captureError, ensureError } from '@/lib/shared/utils/errors'
-import { captureFatalError, captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
+import { ensureError } from '@/lib/shared/utils/errors'
+import { captureFatalError } from '@/lib/shared/utils/query-errors'
 import { AlertStatus, VStack, ToastId, useToast, Text, Button, HStack } from '@chakra-ui/react'
 import { keyBy, orderBy, take } from 'lodash'
 import React, { ReactNode, createContext, useCallback, useEffect, useState } from 'react'
@@ -219,6 +219,11 @@ export function _useRecentTransactions() {
 
     // update the relevant toast too
     if (updatedCachedTransaction.toastId) {
+      if (updatePayload.status === 'timeout' || updatePayload.status === 'unknown') {
+        // Close the toast as these errors are shown as alerts inside the TransactionStepButton
+        return toast.close(updatedCachedTransaction.toastId)
+      }
+
       toast.update(updatedCachedTransaction.toastId, {
         status: TransactionStatusToastStatusMapping[updatePayload.status],
         title: updatedCachedTransaction.label,
