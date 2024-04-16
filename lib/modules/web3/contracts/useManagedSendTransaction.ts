@@ -3,7 +3,7 @@
 
 import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useEffect } from 'react'
-import { usePrepareSendTransaction, useSendTransaction } from 'wagmi'
+import { usePrepareSendTransaction, useSendTransaction, useWaitForTransaction } from 'wagmi'
 import {
   TransactionExecution,
   TransactionSimulation,
@@ -17,7 +17,6 @@ import { useChainSwitch } from '../useChainSwitch'
 import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
-import { useWaitForTransaction } from './useWaitForTransaction'
 
 export function useManagedSendTransaction(
   labels: TransactionLabels,
