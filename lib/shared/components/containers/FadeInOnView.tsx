@@ -1,7 +1,8 @@
 'use client'
 
-import { motion, useInView, cubicBezier } from 'framer-motion'
 import { useRef } from 'react'
+import { useInView } from 'framer-motion'
+import { useBreakpointValue } from '@chakra-ui/react'
 
 interface FadeInOnViewProps {
   children: React.ReactNode
@@ -11,21 +12,17 @@ interface FadeInOnViewProps {
 const FadeInOnView: React.FC<FadeInOnViewProps> = ({ children, animateOnce = true }) => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: animateOnce })
-  const easing = cubicBezier(0.17, 0.67, 0.53, 1.05)
+
+  // Using Chakra UI's useBreakpointValue to adjust the CSS class based on the breakpoint
+  const scaleClass = useBreakpointValue({ base: 'scale-base', md: 'scale-md' }) || 'scale-base'
+
+  const opacityClass =
+    useBreakpointValue({ base: 'opacity-base', md: 'opacity-md' }) || 'opacity-base'
 
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, translateY: 5, scale: 0.98 }}
-      animate={{
-        opacity: isInView ? 1 : 0,
-        translateY: isInView ? 0 : 8,
-        scale: isInView ? 1 : 0.98,
-      }}
-      transition={{ duration: 1, ease: easing }}
-    >
+    <div ref={ref} className={`${isInView ? 'visible' : 'hidden'} ${scaleClass} ${opacityClass}`}>
       {children}
-    </motion.div>
+    </div>
   )
 }
 
