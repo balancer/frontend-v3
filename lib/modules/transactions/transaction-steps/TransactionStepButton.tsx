@@ -9,6 +9,7 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
 import { getGqlChain } from '@/lib/config/app.config'
 import { TransactionTimeoutError } from '@/lib/shared/components/errors/TransactionTimeoutError'
+import { isUserRejectedError } from '@/lib/shared/utils/error-filters'
 
 interface Props {
   step: FlowStep
@@ -86,8 +87,11 @@ function TransactionError({ step }: Props) {
   if (step.simulation.error) {
     return <GenericError error={step.simulation.error} />
   }
-  if (step.execution.error) {
-    return <GenericError error={step.execution.error} />
+
+  const executionError = step.execution.error
+  if (executionError) {
+    if (isUserRejectedError(executionError)) return null
+    return <GenericError error={executionError} />
   }
   const resultError = step.result.error
   if (resultError) {
