@@ -18,7 +18,6 @@ import { useTokens } from './useTokens'
 import { NativeTokenSelectList } from './NativeTokenSelectList'
 
 type Props = {
-  title: string
   chain: GqlChain
   isOpen: boolean
   onClose(): void
@@ -28,7 +27,6 @@ type Props = {
 }
 
 export function NativeTokenSelectModal({
-  title,
   chain,
   isOpen,
   onClose,
@@ -51,7 +49,7 @@ export function NativeTokenSelectModal({
     <Modal isOpen={isOpen} onClose={onClose} finalFocusRef={finalFocusRef} isCentered {...rest}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader color="font.primary">{title}</ModalHeader>
+        <ModalHeader color="font.primary">Select a token</ModalHeader>
         <ModalCloseButton />
         <ModalBody p={0}>
           <VStack w="full" align="start" spacing="md">

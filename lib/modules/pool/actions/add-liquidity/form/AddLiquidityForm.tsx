@@ -212,7 +212,6 @@ export function AddLiquidityForm() {
           onClose={onModalClose}
         />
         <NativeTokenSelectModal
-          title="Select the asset to invest with"
           chain={validTokens[0].chain}
           isOpen={tokenSelectDisclosure.isOpen}
           onOpen={tokenSelectDisclosure.onOpen}
