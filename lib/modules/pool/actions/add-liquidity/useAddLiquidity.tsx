@@ -3,7 +3,7 @@
 
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { isSameAddress, isWrappedNativeAsset } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
@@ -27,6 +27,7 @@ import { useIterateSteps } from '../../../transactions/transaction-steps/useIter
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
+import { getNativeAssetAddress } from '@/lib/config/app.config'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -58,9 +59,10 @@ export function _useAddLiquidity() {
    */
   const helpers = new LiquidityActionHelpers(pool)
   const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
-
   const stepConfigs = useAddLiquidityStepConfigs(inputAmounts)
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
+  const chain = pool.chain
+  const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
 
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -88,8 +90,12 @@ export function _useAddLiquidity() {
       if (isGyro(pool.type)) return true
       return token.isMainToken
     })
-    .map(token => getToken(token.address, pool.chain))
+    .map(token => getToken(token.address, chain))
+
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
+  const containsWrappedNativeAsset = validTokens.some(token =>
+    isWrappedNativeAsset(chain, token.address)
+  )
 
   const { usdValueFor } = useTotalUsdValue(validTokens)
   const totalUSDValue = usdValueFor(humanAmountsIn)
@@ -98,7 +104,6 @@ export function _useAddLiquidity() {
    * Simulation queries:
    */
   const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn)
-
   const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn)
 
   /**
@@ -128,7 +133,8 @@ export function _useAddLiquidity() {
     humanAmountsIn,
     inputAmounts,
     tokens,
-    validTokens,
+    validTokens:
+      containsWrappedNativeAsset && nativeAsset ? [...validTokens, nativeAsset] : validTokens,
     totalUSDValue,
     simulationQuery,
     priceImpactQuery,
