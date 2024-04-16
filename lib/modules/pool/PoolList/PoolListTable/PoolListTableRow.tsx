@@ -8,7 +8,6 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { PoolListItem } from '../../pool.types'
 import { PoolListTokenPills } from '../PoolListTokenPills'
-import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -32,55 +31,53 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
       px={{ base: '0', sm: 'md' }}
       w="full"
     >
-      <FadeInOnView animateOnce={false}>
-        <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
-          <Grid {...rest} py="sm" pr="4">
+      <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
+        <Grid {...rest} py="sm" pr="4">
+          <GridItem>
+            <NetworkIcon chain={pool.chain} size={6} />
+          </GridItem>
+          <GridItem>
+            <PoolListTokenPills pool={pool} />
+          </GridItem>
+          {userAddress && (
             <GridItem>
-              <NetworkIcon chain={pool.chain} size={6} />
-            </GridItem>
-            <GridItem>
-              <PoolListTokenPills pool={pool} />
-            </GridItem>
-            {userAddress && (
-              <GridItem>
-                <Text textAlign="right" fontWeight="medium">
-                  {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
-                </Text>
-              </GridItem>
-            )}
-            <GridItem>
-              <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
-                {getPoolTypeLabel(pool.type)}
+              <Text textAlign="right" fontWeight="medium">
+                {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
               </Text>
             </GridItem>
-            <GridItem>
-              <Text
-                title={toCurrency(pool.dynamicData.totalLiquidity, { abbreviated: false })}
-                textAlign="right"
-                fontWeight="medium"
-              >
-                {toCurrency(pool.dynamicData.totalLiquidity)}
-              </Text>
-            </GridItem>
-            <GridItem textAlign="right">
-              <Text
-                title={toCurrency(pool.dynamicData.volume24h, { abbreviated: false })}
-                textAlign="right"
-                fontWeight="medium"
-              >
-                {toCurrency(pool.dynamicData.volume24h)}
-              </Text>
-            </GridItem>
-            <GridItem justifySelf="end">
-              <MemoizedAprTooltip
-                data={pool.dynamicData.apr}
-                poolId={pool.id}
-                textProps={{ fontWeight: 'medium' }}
-              />
-            </GridItem>
-          </Grid>
-        </Link>
-      </FadeInOnView>
+          )}
+          <GridItem>
+            <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
+              {getPoolTypeLabel(pool.type)}
+            </Text>
+          </GridItem>
+          <GridItem>
+            <Text
+              title={toCurrency(pool.dynamicData.totalLiquidity, { abbreviated: false })}
+              textAlign="right"
+              fontWeight="medium"
+            >
+              {toCurrency(pool.dynamicData.totalLiquidity)}
+            </Text>
+          </GridItem>
+          <GridItem textAlign="right">
+            <Text
+              title={toCurrency(pool.dynamicData.volume24h, { abbreviated: false })}
+              textAlign="right"
+              fontWeight="medium"
+            >
+              {toCurrency(pool.dynamicData.volume24h)}
+            </Text>
+          </GridItem>
+          <GridItem justifySelf="end">
+            <MemoizedAprTooltip
+              data={pool.dynamicData.apr}
+              poolId={pool.id}
+              textProps={{ fontWeight: 'medium' }}
+            />
+          </GridItem>
+        </Grid>
+      </Link>
     </Box>
   )
 }
