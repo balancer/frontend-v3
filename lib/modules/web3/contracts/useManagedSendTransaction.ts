@@ -92,13 +92,8 @@ export function useManagedSendTransaction(
       if (txHash) {
         updateTrackedTransaction(txHash, {
           status: 'timeout',
-          label: 'Unexpected receipt timeout',
+          label: 'Transaction timeout',
           duration: null,
-          description:
-            // eslint-disable-next-line max-len
-            `An unexpected timeout occurred while waiting for the receipt of your transaction.
-However the transaction appears to have been executed.
-Click on the following link to verify the tx state in the tx explorer.`,
         })
       }
     }
