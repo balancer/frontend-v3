@@ -36,6 +36,7 @@ export function _useAddLiquidity() {
   const [humanAmountsIn, setHumanAmountsIn] = useState<HumanAmountIn[]>([])
   const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [acceptPoolRisks, setAcceptPoolRisks] = useState(false)
+  const [wethIsEth, setWethIsEth] = useState(false)
 
   const { pool, refetch: refetchPool } = usePool()
   const { getToken } = useTokens()
@@ -92,6 +93,14 @@ export function _useAddLiquidity() {
     })
     .map(token => getToken(token.address, chain))
 
+  const tokensWithNativeAsset = tokens.map(token => {
+    if (token && isWrappedNativeAsset(chain, token.address as Address)) {
+      return nativeAsset
+    } else {
+      return token
+    }
+  })
+
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
   const containsWrappedNativeAsset = validTokens.some(token =>
     isWrappedNativeAsset(chain, token.address)
@@ -132,7 +141,7 @@ export function _useAddLiquidity() {
   return {
     humanAmountsIn,
     inputAmounts,
-    tokens,
+    tokens: wethIsEth ? tokensWithNativeAsset : tokens,
     validTokens:
       containsWrappedNativeAsset && nativeAsset ? [...validTokens, nativeAsset] : validTokens,
     totalUSDValue,
@@ -153,6 +162,8 @@ export function _useAddLiquidity() {
     setNeedsToAcceptHighPI,
     acceptPoolRisks,
     setAcceptPoolRisks,
+    wethIsEth,
+    setWethIsEth,
   }
 }
 

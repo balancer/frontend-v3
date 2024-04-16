@@ -35,7 +35,7 @@ import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { AddLiquidityFormCheckbox } from './AddLiquidityFormCheckbox'
 import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
-import { isWrappedNativeToken } from '@/lib/modules/tokens/token.helpers'
+import { isNativeToken, isWrappedNativeToken } from '@/lib/modules/tokens/token.helpers'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { NativeTokenSelectModal } from '@/lib/modules/tokens/NativeTokenSelectModal'
 
@@ -53,6 +53,7 @@ export function AddLiquidityForm() {
     previewModalDisclosure,
     setNeedsToAcceptHighPI,
     totalUSDValue,
+    setWethIsEth,
   } = useAddLiquidity()
   const nextBtn = useRef(null)
   const { pool, totalApr } = usePool()
@@ -92,8 +93,21 @@ export function AddLiquidityForm() {
   }, [])
 
   function handleTokenSelect(token: GqlToken) {
-    console.log({ token })
+    if (isNativeToken(token.address as Address, token.chain)) {
+      setWethIsEth(true)
+    } else {
+      setWethIsEth(false)
+    }
   }
+
+  function isNativeOrWrappedNative(token: GqlToken) {
+    return (
+      isWrappedNativeToken(token.address as Address, token.chain) ||
+      isNativeToken(token.address as Address, token.chain)
+    )
+  }
+
+  const nativeTokens = validTokens.filter(isNativeOrWrappedNative)
 
   return (
     <TokenBalancesProvider tokens={validTokens}>
@@ -113,8 +127,7 @@ export function AddLiquidityForm() {
                 <VStack spacing="md" w="full">
                   {tokens.map(token => {
                     if (!token) return <div>Missing token</div>
-                    const isWeth = isWrappedNativeToken(token.address as Address, token.chain)
-                    console.log({ token })
+
                     return (
                       <TokenInput
                         key={token.address}
@@ -128,7 +141,9 @@ export function AddLiquidityForm() {
                           )
                         }
                         toggleTokenSelect={
-                          isWeth ? () => tokenSelectDisclosure.onOpen() : undefined
+                          isNativeOrWrappedNative(token)
+                            ? () => tokenSelectDisclosure.onOpen()
+                            : undefined
                         }
                       />
                     )
@@ -217,6 +232,7 @@ export function AddLiquidityForm() {
           onOpen={tokenSelectDisclosure.onOpen}
           onClose={tokenSelectDisclosure.onClose}
           onTokenSelect={handleTokenSelect}
+          nativeTokens={nativeTokens}
         />
       </Center>
     </TokenBalancesProvider>

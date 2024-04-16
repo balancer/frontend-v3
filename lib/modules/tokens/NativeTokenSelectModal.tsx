@@ -13,7 +13,6 @@ import {
 } from '@chakra-ui/react'
 import { RefObject } from 'react'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 import { useTokens } from './useTokens'
 import { NativeTokenSelectList } from './NativeTokenSelectList'
 
@@ -24,6 +23,7 @@ type Props = {
   onOpen(): void
   finalFocusRef?: RefObject<HTMLInputElement>
   onTokenSelect: (token: GqlToken) => void
+  nativeTokens: GqlToken[]
 }
 
 export function NativeTokenSelectModal({
@@ -32,6 +32,7 @@ export function NativeTokenSelectModal({
   onClose,
   finalFocusRef,
   onTokenSelect,
+  nativeTokens,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const { getToken } = useTokens()
@@ -40,10 +41,6 @@ export function NativeTokenSelectModal({
     onClose()
     onTokenSelect(token)
   }
-
-  const eth = getToken(getNativeAssetAddress(chain), chain)
-  const weth = getToken(getWrappedNativeAssetAddress(chain), chain)
-  const nativeTokens = eth && weth ? [eth, weth] : []
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} finalFocusRef={finalFocusRef} isCentered {...rest}>
