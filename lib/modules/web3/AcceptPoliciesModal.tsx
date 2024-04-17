@@ -52,8 +52,10 @@ export function AcceptPoliciesModal() {
   }
   function handleClick() {
     // just check we don't already have it
-    if (!isAddressInAcceptedPolicies)
+    if (!isAddressInAcceptedPolicies) {
       setAcceptedPolicies([...acceptedPolicies, userAddress.toLowerCase()])
+    }
+
     handleOnClose()
   }
 
