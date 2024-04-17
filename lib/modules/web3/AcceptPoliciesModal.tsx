@@ -42,13 +42,19 @@ export function AcceptPoliciesModal() {
     }
   }, [isOpen])
 
-  function handleClick() {
-    setAcceptedPolicies([...acceptedPolicies, userAddress.toLowerCase()])
+  function handleOnClose() {
+    setIsChecked(false)
     onClose()
+  }
+  function handleClick() {
+    // just check we don't already have it
+    if (!isAddressInAcceptedPolicies)
+      setAcceptedPolicies([...acceptedPolicies, userAddress.toLowerCase()])
+    handleOnClose()
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={handleOnClose} isCentered>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Accept Balancer UI policies</ModalHeader>
