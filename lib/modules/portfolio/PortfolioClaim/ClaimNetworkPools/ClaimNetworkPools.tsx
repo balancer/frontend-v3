@@ -8,6 +8,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useState } from 'react'
 import ClaimProtocolRevenueModal from '../ClaimProtocolRevenueModal'
 import { useRouter } from 'next/navigation'
+import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 
 export function ClaimNetworkPools() {
   const { poolsByChainMap, protocolRewardsBalance, totalFiatClaimableBalanceByChain } =
@@ -25,35 +26,37 @@ export function ClaimNetworkPools() {
   }
 
   return (
-    <Stack gap={5}>
-      <Heading size="lg">Claimable incentives</Heading>
+    <FadeInOnView>
+      <Stack gap={5}>
+        <Heading size="lg">Claimable incentives</Heading>
 
-      <Flex flexDirection={['column', 'column', 'column', 'row']} gap={6} flexWrap="wrap">
-        {Object.entries(poolsByChainMap).map(([chain, pools]) => (
-          <ClaimNetworkBlock
-            key={chain}
-            chain={pools[0].chain}
-            networkTotalClaimableFiatBalance={totalFiatClaimableBalanceByChain[
-              pools[0].chain
-            ].toNumber()}
-            onClick={() => router.push(`/portfolio/${chainToSlugMap[pools[0].chain]}`)}
-          />
-        ))}
+        <Flex flexDirection={['column', 'column', 'column', 'row']} gap={6} flexWrap="wrap">
+          {Object.entries(poolsByChainMap).map(([chain, pools]) => (
+            <ClaimNetworkBlock
+              key={chain}
+              chain={pools[0].chain}
+              networkTotalClaimableFiatBalance={totalFiatClaimableBalanceByChain[
+                pools[0].chain
+              ].toNumber()}
+              onClick={() => router.push(`/portfolio/${chainToSlugMap[pools[0].chain]}`)}
+            />
+          ))}
 
-        {hasProtocolRewards && (
-          <ClaimNetworkBlock
-            chain={GqlChain.Mainnet}
-            networkTotalClaimableFiatBalance={protocolRewardsBalance.toNumber()}
-            title="Balancer protocol revenue"
-            onClick={() => setIsOpenedProtocolRevenueModal(true)}
-          />
-        )}
-      </Flex>
+          {hasProtocolRewards && (
+            <ClaimNetworkBlock
+              chain={GqlChain.Mainnet}
+              networkTotalClaimableFiatBalance={protocolRewardsBalance.toNumber()}
+              title="Balancer protocol revenue"
+              onClick={() => setIsOpenedProtocolRevenueModal(true)}
+            />
+          )}
+        </Flex>
 
-      <ClaimProtocolRevenueModal
-        isOpen={isOpenedProtocolRevenueModal}
-        onClose={() => setIsOpenedProtocolRevenueModal(false)}
-      />
-    </Stack>
+        <ClaimProtocolRevenueModal
+          isOpen={isOpenedProtocolRevenueModal}
+          onClose={() => setIsOpenedProtocolRevenueModal(false)}
+        />
+      </Stack>
+    </FadeInOnView>
   )
 }

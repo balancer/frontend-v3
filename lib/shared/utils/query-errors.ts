@@ -54,7 +54,12 @@ export function captureWagmiExecutionError(error: unknown, errorMessage: string,
 /**
  * Used by all queries to capture fatal sentry errors with metadata
  */
-function captureFatalError(error: unknown, errorName: string, errorMessage: string, extra: Extras) {
+export function captureFatalError(
+  error: unknown,
+  errorName: string,
+  errorMessage: string,
+  extra: Extras
+) {
   captureSentryError(error, createFatalMetadata(errorName, errorMessage, extra))
 }
 

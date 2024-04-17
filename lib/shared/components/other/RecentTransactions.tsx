@@ -25,7 +25,7 @@ import {
 } from '@/lib/modules/transactions/RecentTransactionsProvider'
 import { isEmpty, orderBy } from 'lodash'
 import { useBlockExplorer } from '../../hooks/useBlockExplorer'
-import { Activity, ArrowUpRight, Check, X } from 'react-feather'
+import { Activity, ArrowUpRight, Check, Clock, X, XOctagon } from 'react-feather'
 import { getChainShortName } from '@/lib/config/app.config'
 import { formatDistanceToNow } from 'date-fns'
 
@@ -52,6 +52,18 @@ function TransactionIcon({ status }: { status: TransactionStatus }) {
       return (
         <Box color="red.500">
           <X size={20} />
+        </Box>
+      )
+    case 'timeout':
+      return (
+        <Box color="yellow.500">
+          <Clock size={20} />
+        </Box>
+      )
+    case 'unknown':
+      return (
+        <Box color="yellow.500">
+          <XOctagon size={20} />
         </Box>
       )
     default:

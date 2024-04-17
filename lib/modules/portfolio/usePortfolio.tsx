@@ -84,8 +84,9 @@ function _usePortfolio() {
 
       userTotalBalance = userTotalBalance.plus(pool.userBalance?.totalBalanceUsd || 0)
     })
+
     return {
-      pools: data?.pools,
+      pools: data?.pools || [],
       stakedPools,
       unstakedPools,
       userTotalBalance,

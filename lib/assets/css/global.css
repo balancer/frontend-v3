@@ -12,3 +12,34 @@ body {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 1s ease, transform 1s ease;
+  transform-origin: top;
+}
+
+.hidden {
+  opacity: var(--start-opacity);
+  transform: translateY(5px) scale(var(--start-scale));
+  transition: opacity 1s ease, transform 1s ease;
+  transform-origin: top center;
+  position: relative;
+}
+
+.opacity-base {
+  --start-opacity: 1;
+}
+
+.opacity-md {
+  --start-opacity: 0;
+}
+
+.scale-base {
+  --start-scale: 0.98;
+}
+
+.scale-md {
+  --start-scale: 0.98;
+}
