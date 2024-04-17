@@ -15,6 +15,7 @@ import {
   IconButton,
   Button,
   Box,
+  Text,
 } from '@chakra-ui/react'
 import { useMemo, useRef } from 'react'
 import { useSwap } from './useSwap'
@@ -33,6 +34,7 @@ import { SwapDetails } from './SwapDetails'
 import { capitalize } from 'lodash'
 import { motion, easeOut } from 'framer-motion'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
+import { ErrorAlert } from '@/lib/shared/components/errors/ErrorAlert'
 
 export function SwapForm() {
   const {
@@ -169,6 +171,14 @@ export function SwapForm() {
                     </motion.div>
                   )}
 
+                  {simulationQuery.isError && (
+                    <ErrorAlert title="Error fetching swap">
+                      <Text color="font.maxContrast" variant="secondary">
+                        {simulationQuery.error?.message || 'Unknown error'}
+                      </Text>
+                    </ErrorAlert>
+                  )}
+
                   <Tooltip label={isDisabled ? disabledReason : ''}>
                     <Button
                       ref={nextBtn}
@@ -176,6 +186,7 @@ export function SwapForm() {
                       w="full"
                       size="lg"
                       isDisabled={isDisabled}
+                      isLoading={simulationQuery.isLoading}
                       onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
                     >
                       Next

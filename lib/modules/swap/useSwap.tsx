@@ -321,12 +321,19 @@ export function _useSwap() {
     if (wrapper) setTokenIn(wrapper.wrappedToken)
   }, [swapState.tokenOut.address])
 
+  useEffect(() => {
+    if (simulationQuery.error) {
+      console.error('Error in swap simulation query', simulationQuery.error)
+    }
+  }, [simulationQuery.error])
+
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
-    [simulationQuery.isLoading, 'Swap is loading'],
     [!validAmountOut, 'Invalid amount out'],
     [needsToAcceptHighPI, 'Accept high price impact first'],
-    [hasValidationErrors, 'Invalid input']
+    [hasValidationErrors, 'Invalid input'],
+    [simulationQuery.isError, 'Error fetching swap'],
+    [simulationQuery.isLoading, 'Fetching swap...']
   )
 
   return {
