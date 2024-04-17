@@ -104,7 +104,7 @@ export function RemoveLiquidityForm() {
                   currentOption={activeTab}
                   options={TABS}
                   onChange={toggleTab}
-                  size="lg"
+                  size="xxs"
                 />
                 <Tooltip label="Remove liquidity type" fontSize="sm">
                   <InfoOutlineIcon color="grayText" />
