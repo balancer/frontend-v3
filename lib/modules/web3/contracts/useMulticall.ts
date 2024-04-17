@@ -8,7 +8,10 @@ import { useCallback } from 'react'
 
 export type ChainContractConfig = ContractFunctionConfig & { chain: GqlChain; id: string }
 
-export function useMulticall(multicallRequests: ChainContractConfig[], options?: UseQueryOptions) {
+export function useMulticall(
+  multicallRequests: ChainContractConfig[],
+  options: UseQueryOptions = {}
+) {
   // Want the results for each chain to be independent of each other so we don't have
   // a large blob of queries that resolves at once, but have to option to have the results
   // of each set of multicalls for each chain to 'stream' through
