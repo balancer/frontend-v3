@@ -117,7 +117,7 @@ export const getDefaultPoolChartOptions = (
   theme: ColorMode = 'dark'
 ) => ({
   grid: {
-    left: '-1%',
+    left: '1.5%',
     right: '2.5%',
     top: '7.5%',
     bottom: '0',
