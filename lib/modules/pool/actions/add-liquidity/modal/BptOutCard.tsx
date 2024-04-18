@@ -1,5 +1,5 @@
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import { Card, HStack, Skeleton, Text, VStack } from '@chakra-ui/react'
+import { Card, HStack, Text, VStack } from '@chakra-ui/react'
 import { Address, Hash, formatUnits } from 'viem'
 import { usePool } from '../../../usePool'
 import { useAddLiquidity } from '../useAddLiquidity'
@@ -9,18 +9,13 @@ import { BPT_DECIMALS } from '../../../pool.constants'
 import { useReceipt } from '../../../../transactions/transaction-steps/useReceipt'
 
 export function BptOutCardFromReceipt() {
-  const { isLoading: isLoadingUserAccount, userAddress } = useUserAccount()
+  const { userAddress } = useUserAccount()
   const { txHash } = useReceipt()
 
-  const { isLoading, error, receivedBptUnits } = useAddLiquidityReceipt({
+  const { receivedBptUnits } = useAddLiquidityReceipt({
     userAddress,
     txHash: txHash as Hash,
   })
-
-  if (isLoading || isLoadingUserAccount) return <Skeleton height="30px" w="100px" />
-
-  if (!userAddress) return <Text>User is not connected</Text>
-  if (error) return <Text>We were unable to find this TxnHash</Text>
 
   return <BptOutCard bptOutUnits={receivedBptUnits} type="receipt" />
 }

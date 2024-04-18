@@ -19,10 +19,10 @@ function missingAmountIn(): HumanAmountIn {
 }
 
 export function TokensInCardFromReceipt() {
-  const { isLoading: isLoadingUserAccount, userAddress } = useUserAccount()
+  const { userAddress } = useUserAccount()
   const { txHash } = useReceipt()
 
-  const { isLoading, error, sentTokens } = useAddLiquidityReceipt({
+  const { sentTokens } = useAddLiquidityReceipt({
     userAddress,
     txHash: txHash as Hash,
   })
@@ -30,10 +30,6 @@ export function TokensInCardFromReceipt() {
   const { validTokens } = useAddLiquidity()
   const { usdValueFor } = useTotalUsdValue(validTokens)
   const totalUSDValue = usdValueFor(sentTokens)
-
-  if (isLoading || isLoadingUserAccount) return <Text>Loading...</Text>
-  if (!userAddress) return <Text>User is not connected</Text>
-  if (error) return <Text>We were unable to find this TxnHash</Text>
 
   return <TokensInCard amountsIn={sentTokens} totalUSDValue={totalUSDValue} type="receipt" />
 }
