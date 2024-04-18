@@ -3,7 +3,7 @@
 
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { isSameAddress, isWrappedNativeAsset } from '@/lib/shared/utils/addresses'
+import { isNativeAsset, isSameAddress, isWrappedNativeAsset } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
@@ -27,16 +27,19 @@ import { useIterateSteps } from '../../../transactions/transaction-steps/useIter
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
-import { getNativeAssetAddress } from '@/lib/config/app.config'
+import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
+import { isNativeToken, isWrappedNativeToken } from '@/lib/modules/tokens/token.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
 
 export function _useAddLiquidity() {
   const [humanAmountsIn, setHumanAmountsIn] = useState<HumanAmountIn[]>([])
+  const [humanAmountsInSDK, setHumanAmountsInSDK] = useState<HumanAmountIn[]>([])
   const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [acceptPoolRisks, setAcceptPoolRisks] = useState(false)
   const [wethIsEth, setWethIsEth] = useState(false)
+  const [totalUSDValue, setTotalUSDValue] = useState('0')
 
   const { pool, refetch: refetchPool } = usePool()
   const { getToken } = useTokens()
@@ -59,7 +62,7 @@ export function _useAddLiquidity() {
    * Helper functions & variables
    */
   const helpers = new LiquidityActionHelpers(pool)
-  const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
+  const inputAmounts = helpers.toInputAmounts(humanAmountsInSDK)
   const stepConfigs = useAddLiquidityStepConfigs(inputAmounts)
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
   const chain = pool.chain
@@ -76,9 +79,18 @@ export function _useAddLiquidity() {
     setHumanAmountsIn(amountsIn)
   }
 
-  function setHumanAmountIn(tokenAddress: Address, humanAmount: HumanAmount) {
+  function setHumanAmountIn(tokenAddress: Address, humanAmount: HumanAmount | '') {
     setHumanAmountsIn([
-      ...humanAmountsIn.filter(amountIn => !isSameAddress(amountIn.tokenAddress, tokenAddress)),
+      ...humanAmountsIn.filter(
+        amountIn =>
+          !isSameAddress(amountIn.tokenAddress, tokenAddress) &&
+          !(
+            isNativeToken(tokenAddress, chain) && isWrappedNativeToken(amountIn.tokenAddress, chain)
+          ) &&
+          !(
+            isNativeToken(amountIn.tokenAddress, chain) && isWrappedNativeToken(tokenAddress, chain)
+          )
+      ),
       {
         tokenAddress,
         humanAmount,
@@ -107,13 +119,16 @@ export function _useAddLiquidity() {
   )
 
   const { usdValueFor } = useTotalUsdValue(validTokens)
-  const totalUSDValue = usdValueFor(humanAmountsIn)
+
+  useEffect(() => {
+    setTotalUSDValue(usdValueFor(humanAmountsInSDK))
+  }, [JSON.stringify(humanAmountsInSDK)])
 
   /**
    * Simulation queries:
    */
-  const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn)
-  const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn)
+  const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsInSDK)
+  const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsInSDK)
 
   /**
    * Refetch logic:
@@ -137,6 +152,20 @@ export function _useAddLiquidity() {
   useEffect(() => {
     setInitialHumanAmountsIn()
   }, [])
+
+  useEffect(() => {
+    const amountsIn = humanAmountsIn.map(amountIn => {
+      if (isNativeAsset(chain, amountIn.tokenAddress)) {
+        return {
+          ...amountIn,
+          tokenAddress: getWrappedNativeAssetAddress(chain).toLowerCase() as Address,
+        }
+      } else {
+        return amountIn
+      }
+    })
+    setHumanAmountsInSDK(amountsIn)
+  }, [JSON.stringify(humanAmountsIn)])
 
   return {
     humanAmountsIn,
