@@ -1,3 +1,7 @@
+:root {
+  --ease-out-cubic: cubic-bezier(0.22,0.61,0.36,1);
+}
+
 html,
 body {
   -webkit-font-smoothing: antialiased;
@@ -16,30 +20,28 @@ body {
 .visible {
   opacity: 1;
   transform: translateY(0) scale(1);
-  transition: opacity 1s ease, transform 1s ease;
-  transform-origin: top;
+  transition: opacity 1s var(--ease-out-cubic), transform 1s var(--ease-out-cubic);
+  transform-origin: top center;
 }
 
 .hidden {
   opacity: var(--start-opacity);
   transform: translateY(5px) scale(var(--start-scale));
-  transition: opacity 1s ease, transform 1s ease;
-  transform-origin: top center;
-  position: relative;
 }
 
-.opacity-base {
+.fade-in-opacity {
   --start-opacity: 1;
 }
 
-.opacity-md {
-  --start-opacity: 0;
-}
-
-.scale-base {
+.fade-in-scale {
   --start-scale: 0.98;
 }
 
-.scale-md {
-  --start-scale: 0.98;
+@media only screen and (min-width: 30em) {
+  .fade-in-opacity {
+    --start-opacity: 0;
+  }
+  .fade-in-scale {
+    --start-scale: 0.98;
+  }
 }
