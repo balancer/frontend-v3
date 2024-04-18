@@ -98,6 +98,7 @@ export function AddLiquidityForm() {
     } else {
       setWethIsEth(false)
     }
+    setAmountIn(token.address as Address, '')
   }
 
   function isNativeOrWrappedNative(token: GqlToken) {
