@@ -9,8 +9,7 @@ import { BptOutCardFromReceipt } from './modal/BptOutCard'
 import { StakingOptions } from './modal/StakingOptions'
 import { TokensInCardFromReceipt } from './modal/TokensInCard'
 import { useReceipt } from '../../../transactions/transaction-steps/useReceipt'
-// eslint-disable-next-line max-len
-import { useAddLiquidityReceipt } from '@/app/(app)/pools/[chain]/[variant]/[id]/add-liquidity/[hash]/useTransactionLogsQuery'
+import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
 import { Hash } from 'viem'
 
 export function AddLiquidityReceipt() {

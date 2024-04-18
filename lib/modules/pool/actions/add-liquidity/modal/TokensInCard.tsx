@@ -7,8 +7,7 @@ import { usePool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { useTotalUsdValue } from '../useTotalUsdValue'
-// eslint-disable-next-line max-len
-import { useAddLiquidityReceipt } from '@/app/(app)/pools/[chain]/[variant]/[id]/add-liquidity/[hash]/useTransactionLogsQuery'
+import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useReceipt } from '../../../../transactions/transaction-steps/useReceipt'
 
