@@ -98,7 +98,7 @@ export function getTransactionState(transactionBundle?: TransactionBundle): Tran
   if (!simulation.isError && !execution.isError && !execution.data) {
     return TransactionState.Ready
   }
-  if (simulation.isError || execution.isError) {
+  if (simulation.isError || execution.isError || result.isError) {
     return TransactionState.Error
   }
   return TransactionState.Ready

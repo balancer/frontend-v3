@@ -59,12 +59,6 @@ export function _useRemoveLiquidity() {
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
   const { getCoreTransactionState, clearCurrentFlowStep } = useCurrentFlowStep()
 
-  const { isDisabled, disabledReason } = isDisabledWithReason(
-    [!isConnected, LABELS.walletNotConnected],
-    [Number(humanBptIn) === 0, 'You must specify a valid bpt in'],
-    [needsToAcceptHighPI, 'Accept high price impact first']
-  )
-
   const handler = useMemo(
     () => selectRemoveLiquidityHandler(pool, removalType),
     [pool.id, removalType]
@@ -183,6 +177,16 @@ export function _useRemoveLiquidity() {
     }
     if (isRemoveLiquidityConfirmed) reFetchPool()
   }, [isRemoveLiquidityConfirmed])
+
+  const { isDisabled, disabledReason } = isDisabledWithReason(
+    [!isConnected, LABELS.walletNotConnected],
+    [Number(humanBptIn) === 0, 'You must specify a valid bpt in'],
+    [needsToAcceptHighPI, 'Accept high price impact first'],
+    [simulationQuery.isLoading, 'Fetching quote...'],
+    [simulationQuery.isError, 'Error fetching quote'],
+    [priceImpactQuery.isLoading, 'Fetching price impact...'],
+    [priceImpactQuery.isError, 'Error fetching price impact']
+  )
 
   return {
     tokens,

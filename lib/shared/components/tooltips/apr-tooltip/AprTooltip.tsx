@@ -53,7 +53,7 @@ function AprTooltip({ data, textProps, onlySparkles, placement, aprLabel, apr }:
     <Popover trigger="hover" placement={placement}>
       <HStack align="center" alignItems="center">
         {!onlySparkles && (
-          <Text {...textProps}>
+          <Text {...textProps} textAlign="right">
             {aprToShow}
             {aprLabel ? ' APR' : ''}
           </Text>

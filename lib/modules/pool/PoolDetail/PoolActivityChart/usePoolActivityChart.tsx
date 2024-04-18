@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import * as echarts from 'echarts/core'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -17,9 +16,11 @@ import {
   GetPoolEventsDocument,
 } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
-import { balColors, balTheme } from '@/lib/shared/services/chakra/theme'
+import { balColors, balTheme, tokens } from '@/lib/shared/services/chakra/theme'
 import { ButtonGroupOption } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { ChainSlug, slugToChainMap } from '../../pool.utils'
+import { ColorMode } from '@chakra-ui/react'
+import { useTheme } from 'next-themes'
 
 const toolTipTheme = {
   heading: 'font-weight: bold; color: #E5D3BE',
@@ -27,65 +28,73 @@ const toolTipTheme = {
   text: balColors.gray[400],
 }
 
-const defOptions = {
-  grid: {
-    left: '2.5%',
-    right: '2.5%',
-    top: '7.5%',
-    bottom: '7.5%',
-    containLabel: false,
-  },
-  xAxis: {
-    show: false,
-    type: 'time',
-    minorSplitLine: { show: false },
-    axisTick: { show: false },
-    axisLabel: {
-      formatter: (value: number) => {
-        return format(new Date(value * 1000), 'MMM d')
-      },
-      interval: 'auto',
-      showMaxLabel: false,
-      showMinLabel: false,
+export const getDefaultPoolChartOptions = (
+  theme: ColorMode = 'dark'
+): echarts.EChartsCoreOption => {
+  return {
+    grid: {
+      left: '3.5%',
+      right: '2.5%',
+      top: '7.5%',
+      bottom: '10.5%',
+      containLabel: false,
     },
-    axisPointer: {
-      type: 'line',
-      label: {
-        formatter: (params: any) => {
-          return format(new Date(params.value * 1000), 'MMM d')
+    xAxis: {
+      show: true,
+      type: 'time',
+      minorSplitLine: { show: false },
+      axisTick: { show: false },
+      splitNumber: 3,
+      axisLabel: {
+        formatter: (value: number) => {
+          return format(new Date(value * 1000), 'MMM d')
+        },
+        color: tokens.colors[theme].text.secondary,
+        opacity: 0.5,
+        interval: 'auto',
+        showMaxLabel: false,
+        showMinLabel: false,
+      },
+      axisPointer: {
+        type: 'line',
+        label: {
+          formatter: (params: any) => {
+            return format(new Date(params.value * 1000), 'MMM d')
+          },
+        },
+      },
+      axisLine: { show: false },
+      splitArea: {
+        show: false,
+        areaStyle: {
+          color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)'],
         },
       },
     },
-    axisLine: { show: false },
-    splitArea: {
-      show: false,
-      areaStyle: {
-        color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)'],
+    yAxis: {
+      show: true,
+      type: 'value',
+      axisLine: { show: false },
+      minorSplitLine: { show: false },
+      splitLine: { show: false },
+      splitNumber: 3,
+      axisLabel: {
+        formatter: (value: number) => {
+          return numeral(value).format('($0,0a)')
+        },
+        color: tokens.colors[theme].text.secondary,
+        opacity: 0.5,
+        interval: 'auto',
+        showMaxLabel: false,
+        showMinLabel: false,
       },
     },
-  },
-  yAxis: {
-    show: false,
-    type: 'value',
-    axisLine: { show: false },
-    minorSplitLine: { show: false },
-    splitLine: { show: false },
-    splitNumber: 4,
-    axisLabel: {
-      formatter: (value: number) => {
-        return numeral(value).format('($0,0a)')
-      },
-      interval: 'auto',
-      showMaxLabel: false,
-      showMinLabel: false,
-    },
-  },
-  tooltip: {
-    extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container}`,
-    formatter: (params: any) => {
-      const data = Array.isArray(params) ? params[0] : params
+    tooltip: {
+      extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container}`,
+      formatter: (params: any) => {
+        const data = Array.isArray(params) ? params[0] : params
 
-      return `
+        return `
         <div style="padding: none; display: flex; flex-direction: column; justify-content: center;${
           toolTipTheme.container
         }">
@@ -100,8 +109,9 @@ const defOptions = {
           </div>
         </div>
       `
+      },
     },
-  },
+  }
 }
 
 function getSymbolSize(dataItem?: [number, string]) {
@@ -177,6 +187,7 @@ export function getPoolActivityTabsList({
 
 export function usePoolActivityChart() {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
+  const { theme } = useTheme()
 
   const { id: poolId, variant, chain } = useParams()
   const { pool } = usePool()
@@ -317,7 +328,7 @@ export function usePoolActivityChart() {
   }, [activeTab, chartData, options])
 
   return {
-    chartOption: defOptions,
+    chartOption: getDefaultPoolChartOptions(theme as ColorMode),
     activeTab,
     setActiveTab,
     tabsList,
