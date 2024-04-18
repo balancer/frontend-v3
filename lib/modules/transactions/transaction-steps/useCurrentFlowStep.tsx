@@ -32,6 +32,7 @@ export function _useCurrentFlowStep() {
     setCurrentFlowStep(undefined)
   }
 
+  //TODO: this success card will be deleted when we implement Receipt pages in Remove and Swap flows
   function SuccessCard({ chain }: { chain: GqlChain }) {
     const transactionHash = flowStep?.result.data?.transactionHash
 

@@ -4,7 +4,6 @@ import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerA
 import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import {
-  Button,
   HStack,
   Modal,
   ModalBody,
@@ -16,15 +15,16 @@ import {
   ModalProps,
   VStack,
 } from '@chakra-ui/react'
-import { RefObject, useRef } from 'react'
+import { RefObject, useEffect, useRef } from 'react'
 import { usePool } from '../../usePool'
 import { useAddLiquidity } from './useAddLiquidity'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { sleep } from '@/lib/shared/utils/time'
 import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
-import { usePoolRedirect, useRefetchPoolOnFlowComplete } from '../../pool.hooks'
 import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
+import { useReceipt } from '../../../transactions/transaction-steps/useReceipt'
 
 type Props = {
   isOpen: boolean
@@ -44,23 +44,20 @@ export function AddLiquidityModal({
   const { stepConfigs, currentStep, currentStepIndex, useOnStepCompleted } = useAddLiquidity()
   const { pool, chainId } = usePool()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
-  const { redirectToPoolPage } = usePoolRedirect(pool)
-  const { didRefetchPool, isFlowComplete } = useRefetchPoolOnFlowComplete()
+  const { navigateToReceipt, isFlowComplete } = useReceipt()
 
-  function onModalClose() {
+  useEffect(() => {
     if (isFlowComplete) {
-      if (isLoadingAfterSuccess) return
-      return redirectToPoolPage()
+      // Wait to allow animations in the preview modal before navigating to receipt page
+      sleep(500).then(() => navigateToReceipt())
     }
-    onClose()
-  }
-
-  const isLoadingAfterSuccess = isFlowComplete && !didRefetchPool
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFlowComplete])
 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onModalClose}
+      onClose={onClose}
       initialFocusRef={initialFocusRef}
       finalFocusRef={finalFocusRef}
       isCentered
@@ -89,26 +86,7 @@ export function AddLiquidityModal({
           {shouldSignRelayerApproval ? (
             <SignRelayerButton />
           ) : (
-            <VStack w="full">
-              {isFlowComplete ? (
-                /* TODO: implement system to enforce that the new pool balance is loaded in the portfolio
-                  <Button as={Link} w="full" size="lg" isLoading={!didRefetchPool} href="/portfolio">
-                    Visit portfolio
-                  </Button>
-                */
-                <Button
-                  variant="tertiary"
-                  w="full"
-                  size="lg"
-                  onClick={redirectToPoolPage}
-                  isLoading={!didRefetchPool}
-                >
-                  Return to pool
-                </Button>
-              ) : (
-                currentStep.render(useOnStepCompleted)
-              )}
-            </VStack>
+            <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
           )}
         </ModalFooter>
       </ModalContent>
