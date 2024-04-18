@@ -154,7 +154,7 @@ export function RemoveLiquidityForm() {
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={isDisabled || simulationQuery.isLoading || simulationQuery.isError}
+                isDisabled={isDisabled}
                 onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
               >
                 Next

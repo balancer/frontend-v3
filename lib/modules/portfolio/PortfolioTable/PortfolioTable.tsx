@@ -6,6 +6,8 @@ import { PortfolioTableRow } from './PortfolioTableRow'
 import { HStack, Heading, Stack } from '@chakra-ui/react'
 import { useMemo, useState } from 'react'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
+import { useOnchainUserPoolBalances } from '../../pool/queries/useOnchainUserPoolBalances'
+import { Pool } from '../../pool/usePool'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 
 export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr'
@@ -49,6 +51,9 @@ const rowProps = {
 
 export function PortfolioTable() {
   const { portfolioData, isLoadingPortfolio } = usePortfolio()
+  // To-Do: fix pool type
+  const { data: poolsWithOnchainUserBalances, isLoading: isLoadingOnchainUserBalances } =
+    useOnchainUserPoolBalances(portfolioData.pools as unknown as Pool[])
 
   const [currentSortingObj, setCurrentSortingObj] = useState<PortfolioSortingData>({
     id: 'staking',
@@ -57,7 +62,7 @@ export function PortfolioTable() {
 
   const sortedPools = useMemo(() => {
     if (!portfolioData?.pools) return []
-    const arr = [...portfolioData.pools]
+    const arr = [...poolsWithOnchainUserBalances]
 
     return arr.sort((a, b) => {
       if (currentSortingObj.id === 'staking') {
@@ -95,7 +100,7 @@ export function PortfolioTable() {
 
       return 0
     })
-  }, [currentSortingObj, portfolioData.pools])
+  }, [currentSortingObj, poolsWithOnchainUserBalances, portfolioData?.pools])
 
   return (
     <FadeInOnView>
@@ -105,7 +110,7 @@ export function PortfolioTable() {
         </HStack>
         <PaginatedTable
           items={sortedPools}
-          loading={isLoadingPortfolio}
+          loading={isLoadingPortfolio || isLoadingOnchainUserBalances}
           renderTableHeader={() => (
             <PortfolioTableHeader
               currentSortingObj={currentSortingObj}

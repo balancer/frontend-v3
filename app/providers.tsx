@@ -22,6 +22,7 @@ export function Providers({ children }: { children: ReactNode }) {
                 initSlippage={undefined}
                 initEnableSignatures={undefined}
                 initPoolListView={undefined}
+                initAcceptedPolicies={undefined}
               >
                 <CurrentFlowStepProvider>
                   <RecentTransactionsProvider>
