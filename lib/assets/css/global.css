@@ -1,5 +1,5 @@
 :root {
-  --ease-out-cubic: cubic-bezier(0.22,0.61,0.36,1);
+  --ease-out-cubic: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 html,
@@ -37,10 +37,11 @@ body {
   --start-scale: 0.98;
 }
 
-@media only screen and (min-width: 30em) {
+@media only screen and (width >= 30em) {
   .fade-in-opacity {
     --start-opacity: 0;
   }
+
   .fade-in-scale {
     --start-scale: 0.98;
   }
