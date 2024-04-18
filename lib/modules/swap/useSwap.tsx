@@ -321,12 +321,6 @@ export function _useSwap() {
     if (wrapper) setTokenIn(wrapper.wrappedToken)
   }, [swapState.tokenOut.address])
 
-  useEffect(() => {
-    if (simulationQuery.error) {
-      console.error('Error in swap simulation query', simulationQuery.error)
-    }
-  }, [simulationQuery.error])
-
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [!validAmountOut, 'Invalid amount out'],
