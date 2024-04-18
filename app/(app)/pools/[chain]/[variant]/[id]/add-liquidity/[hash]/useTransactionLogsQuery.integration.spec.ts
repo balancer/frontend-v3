@@ -5,14 +5,14 @@ import { Address, Hash } from 'viem'
 import { useAddLiquidityReceipt, useRemoveLiquidityReceipt } from './useTransactionLogsQuery'
 
 async function testAddReceipt(userAddress: Address, txHash: Hash) {
-  const { result } = testHook(() => useAddLiquidityReceipt({ hash: txHash, userAddress }), {
+  const { result } = testHook(() => useAddLiquidityReceipt({ txHash, userAddress }), {
     wrapper: DefaultPoolTestProvider,
   })
   return result
 }
 
 async function testRemoveReceipt(userAddress: Address, txHash: Hash) {
-  const { result } = testHook(() => useRemoveLiquidityReceipt({ hash: txHash, userAddress }), {
+  const { result } = testHook(() => useRemoveLiquidityReceipt({ txHash, userAddress }), {
     wrapper: DefaultPoolTestProvider,
   })
   return result
