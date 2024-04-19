@@ -3,7 +3,6 @@
 
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { isNativeAsset, isSameAddress, isWrappedNativeAsset } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
@@ -28,7 +27,11 @@ import { useIterateSteps } from '../../../transactions/transaction-steps/useIter
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
-import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
+import { getNativeAssetAddress } from '@/lib/config/app.config'
+import {
+  swapNativeWithWrappedNative,
+  isWrappedNativeToken,
+} from '@/lib/modules/tokens/token.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -58,7 +61,7 @@ export function _useAddLiquidity() {
   const stepConfigs = useAddLiquidityStepConfigs(inputAmounts)
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
   const chain = pool.chain
-  const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
+  const nativeToken = getToken(getNativeAssetAddress(chain), chain)
 
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -90,17 +93,17 @@ export function _useAddLiquidity() {
     })
     .map(token => getToken(token.address, chain))
 
-  const tokensWithNativeAsset = tokens.map(token => {
-    if (token && isWrappedNativeAsset(chain, token.address as Address)) {
-      return nativeAsset
+  const tokensWithNativeToken = tokens.map(token => {
+    if (token && isWrappedNativeToken(token.address as Address, chain)) {
+      return nativeToken
     } else {
       return token
     }
   })
 
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
-  const containsWrappedNativeAsset = validTokens.some(token =>
-    isWrappedNativeAsset(chain, token.address)
+  const containsWrappedNativeToken = validTokens.some(token =>
+    isWrappedNativeToken(token.address as Address, chain)
   )
 
   const { usdValueFor } = useTotalUsdValue(validTokens)
@@ -140,13 +143,9 @@ export function _useAddLiquidity() {
 
   useEffect(() => {
     const amountsIn = humanAmountsIn.map(amountIn => {
-      if (isNativeAsset(chain, amountIn.tokenAddress)) {
-        return {
-          ...amountIn,
-          tokenAddress: getWrappedNativeAssetAddress(chain).toLowerCase() as Address,
-        }
-      } else {
-        return amountIn
+      return {
+        ...amountIn,
+        tokenAddress: swapNativeWithWrappedNative(amountIn.tokenAddress as Address, chain),
       }
     })
     setHumanAmountsInSDK(amountsIn)
@@ -167,9 +166,9 @@ export function _useAddLiquidity() {
   return {
     humanAmountsIn,
     inputAmounts,
-    tokens: wethIsEth ? tokensWithNativeAsset : tokens,
+    tokens: wethIsEth ? tokensWithNativeToken : tokens,
     validTokens:
-      containsWrappedNativeAsset && nativeAsset ? [...validTokens, nativeAsset] : validTokens,
+      containsWrappedNativeToken && nativeToken ? [...validTokens, nativeToken] : validTokens,
     totalUSDValue,
     simulationQuery,
     priceImpactQuery,
