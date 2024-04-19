@@ -114,7 +114,7 @@ export function _useAddLiquidity() {
 
   useEffect(() => {
     setTotalUSDValue(usdValueFor(humanAmountsInSDK))
-  }, [JSON.stringify(humanAmountsInSDK)])
+  }, [humanAmountsInSDK])
 
   /**
    * Simulation queries:
@@ -157,7 +157,7 @@ export function _useAddLiquidity() {
       }
     })
     setHumanAmountsInSDK(amountsIn)
-  }, [JSON.stringify(humanAmountsIn)])
+  }, [humanAmountsIn])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
