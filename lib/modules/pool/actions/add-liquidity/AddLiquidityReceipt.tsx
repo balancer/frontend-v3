@@ -10,18 +10,21 @@ import { ReceiptTokensIn } from './modal/TokensIn'
 import { useReceipt } from '../../../transactions/transaction-steps/useReceipt'
 import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
 import { Hash } from 'viem'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 
 export function AddLiquidityReceipt() {
   const { pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
   const { didRefetchPool } = useRefetchPoolOnFlowComplete()
   const { keepsFlowState, txHash } = useReceipt()
-  const { isLoading, error, userAddress } = useAddLiquidityReceipt({
+  const { userAddress, isLoading: isUserAddressLoading } = useUserAccount()
+  const { isLoading, error, sentTokens, receivedBptUnits } = useAddLiquidityReceipt({
     txHash: txHash as Hash,
+    userAddress,
   })
 
+  if (!isUserAddressLoading && !userAddress) return <Text>User is not connected</Text>
   if (isLoading) return null
-  if (!userAddress) return <Text>User is not connected</Text>
   if (error) return <Text>We were unable to find this transaction hash</Text>
 
   return (
@@ -32,10 +35,10 @@ export function AddLiquidityReceipt() {
           {keepsFlowState && <SuccessCard chain={pool.chain} />}
 
           <Card variant="level2" borderRadius="12px 12px 0px 0px">
-            <ReceiptTokensIn />
+            <ReceiptTokensIn sentTokens={sentTokens} />
           </Card>
           <Card variant="level2" borderRadius="0px">
-            <ReceiptBptOut />
+            <ReceiptBptOut receivedBptUnits={receivedBptUnits} />
           </Card>
           <Card variant="level2" borderRadius="0px 0px 12px 12px" mt="1">
             {keepsFlowState && pool.dynamicData.apr.hasRewardApr && <StakingOptions />}

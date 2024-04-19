@@ -6,20 +6,17 @@ import { getViemClient } from '@/lib/shared/services/viem/viem.client'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { formatUnits, parseAbiItem } from 'viem'
 import { Address, useQuery, useTransaction } from 'wagmi'
-import { useUserAccount } from '../../web3/useUserAccount'
 
-export type Props = { txHash: Address }
-export function useAddLiquidityReceipt({ txHash }: Props) {
-  const { isLoading: isLoadingUserAccount, userAddress } = useUserAccount()
-
+export type ReceiptProps = { txHash: Address; userAddress: Address }
+export function useAddLiquidityReceipt({ txHash, userAddress }: ReceiptProps) {
   const query = useTransactionLogsQuery({ txHash, userAddress })
   const { chain } = usePool()
   const { getToken } = useTokens()
 
-  if (!isLoadingUserAccount && !userAddress) {
+  if (!userAddress) {
     return {
-      isLoading: false,
-      error: 'User is not connected',
+      isLoading: true,
+      error: '',
       sentTokens: [],
       receivedBptUnits: '',
     }
@@ -34,7 +31,6 @@ export function useAddLiquidityReceipt({ txHash }: Props) {
   const receivedBptUnits = formatUnits(receivedBptAmount || 0n, BPT_DECIMALS)
 
   return {
-    userAddress,
     isLoading: query.isLoading,
     error: query.error,
     sentTokens,
@@ -42,7 +38,6 @@ export function useAddLiquidityReceipt({ txHash }: Props) {
   }
 }
 
-export type ReceiptProps = { txHash: Address; userAddress: Address }
 export function useRemoveLiquidityReceipt({ txHash, userAddress }: ReceiptProps) {
   const query = useTransactionLogsQuery({ txHash, userAddress })
   const { chain } = usePool()

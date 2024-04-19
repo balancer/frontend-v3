@@ -66,12 +66,11 @@ test('queries remove liquidity transaction', async () => {
   expect(result.current.sentBptUnits).toBe('6439.400687368663510166')
 })
 
-test('returns query error when user is not connected', async () => {
+test('returns is loading when user is not provided', async () => {
   const userAddress = '' as Address
   const txHash = '0x887f144bdfe73c7e585b0630361038bda9665aa213933f637d1d6fae9046652e'
 
   const result = await testAddReceipt(userAddress, txHash)
 
-  await waitFor(() => expect(result.current.isLoading).toBeFalsy())
-  await waitFor(() => expect(result.current.error).toBe('User is not connected'))
+  await waitFor(() => expect(result.current.isLoading).toBeTruthy())
 })

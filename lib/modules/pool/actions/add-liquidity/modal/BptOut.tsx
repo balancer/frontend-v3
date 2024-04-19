@@ -1,22 +1,12 @@
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { HStack, Text, VStack } from '@chakra-ui/react'
-import { Address, Hash, formatUnits } from 'viem'
-import { useReceipt } from '../../../../transactions/transaction-steps/useReceipt'
+import { Address, formatUnits } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
 import { usePool } from '../../../usePool'
 import { useAddLiquidity } from '../useAddLiquidity'
 
-export function ReceiptBptOut() {
-  const { userAddress } = useUserAccount()
-  const { txHash } = useReceipt()
+export function ReceiptBptOut({ receivedBptUnits }: { receivedBptUnits: string }) {
   const { pool } = usePool()
-
-  const { receivedBptUnits } = useAddLiquidityReceipt({
-    userAddress,
-    txHash: txHash as Hash,
-  })
 
   return (
     <VStack align="start" spacing="md">

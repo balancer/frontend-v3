@@ -1,11 +1,8 @@
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { isSameAddress } from '@balancer/sdk'
 import { HStack, Text, VStack } from '@chakra-ui/react'
-import { Address, Hash } from 'viem'
-import { useReceipt } from '../../../../transactions/transaction-steps/useReceipt'
+import { Address } from 'viem'
 import { usePool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
 import { useAddLiquidity } from '../useAddLiquidity'
@@ -18,15 +15,7 @@ function missingAmountIn(): HumanAmountIn {
   }
 }
 
-export function ReceiptTokensIn() {
-  const { userAddress } = useUserAccount()
-  const { txHash } = useReceipt()
-
-  const { sentTokens } = useAddLiquidityReceipt({
-    userAddress,
-    txHash: txHash as Hash,
-  })
-
+export function ReceiptTokensIn({ sentTokens }: { sentTokens: HumanAmountIn[] }) {
   const { validTokens } = useAddLiquidity()
   const { usdValueFor } = useTotalUsdValue(validTokens)
   const totalUSDValue = usdValueFor(sentTokens)
