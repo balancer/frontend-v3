@@ -3,7 +3,6 @@
 import { Button, Card, Center, Heading, Text, VStack } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
 import { SuccessCard } from '@/lib/modules/transactions/transaction-steps/SuccessCard'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { usePoolRedirect, useRefetchPoolOnFlowComplete } from '../../pool.hooks'
 import { ReceiptBptOut } from './modal/BptOut'
 import { StakingOptions } from './modal/StakingOptions'
@@ -17,13 +16,11 @@ export function AddLiquidityReceipt() {
   const { redirectToPoolPage } = usePoolRedirect(pool)
   const { didRefetchPool } = useRefetchPoolOnFlowComplete()
   const { keepsFlowState, txHash } = useReceipt()
-  const { isLoading: isLoadingUserAccount, userAddress } = useUserAccount()
-  const { isLoading, error } = useAddLiquidityReceipt({
-    userAddress,
+  const { isLoading, error, userAddress } = useAddLiquidityReceipt({
     txHash: txHash as Hash,
   })
 
-  if (isLoading || isLoadingUserAccount) return null
+  if (isLoading) return null
   if (!userAddress) return <Text>User is not connected</Text>
   if (error) return <Text>We were unable to find this transaction hash</Text>
 
