@@ -12,3 +12,7 @@ export function isWrappedNativeToken(token: Address, chain: GqlChain) {
   const networkConfig = getNetworkConfig(chain)
   return isSameAddress(token, networkConfig.tokens.addresses.wNativeAsset)
 }
+
+export function isNativeOrWrappedNative(token: Address, chain: GqlChain) {
+  return isWrappedNativeToken(token, chain) || isNativeToken(token, chain)
+}

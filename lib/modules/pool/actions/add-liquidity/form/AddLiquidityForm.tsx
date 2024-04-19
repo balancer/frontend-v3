@@ -35,7 +35,7 @@ import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { AddLiquidityFormCheckbox } from './AddLiquidityFormCheckbox'
 import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
-import { isNativeToken, isWrappedNativeToken } from '@/lib/modules/tokens/token.helpers'
+import { isNativeOrWrappedNative, isNativeToken } from '@/lib/modules/tokens/token.helpers'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { NativeTokenSelectModal } from '@/lib/modules/tokens/NativeTokenSelectModal'
 
@@ -101,14 +101,9 @@ export function AddLiquidityForm() {
     setAmountIn(token.address as Address, '')
   }
 
-  function isNativeOrWrappedNative(token: GqlToken) {
-    return (
-      isWrappedNativeToken(token.address as Address, token.chain) ||
-      isNativeToken(token.address as Address, token.chain)
-    )
-  }
-
-  const nativeTokens = validTokens.filter(isNativeOrWrappedNative)
+  const nativeTokens = validTokens.filter(token =>
+    isNativeOrWrappedNative(token.address as Address, token.chain)
+  )
 
   return (
     <TokenBalancesProvider tokens={validTokens}>
@@ -142,7 +137,7 @@ export function AddLiquidityForm() {
                           )
                         }
                         toggleTokenSelect={
-                          isNativeOrWrappedNative(token)
+                          isNativeOrWrappedNative(token.address as Address, token.chain)
                             ? () => tokenSelectDisclosure.onOpen()
                             : undefined
                         }
