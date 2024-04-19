@@ -13,7 +13,6 @@ import {
 } from '@chakra-ui/react'
 import { RefObject } from 'react'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { useTokens } from './useTokens'
 import { NativeAssetSelectList } from './NativeAssetSelectList'
 
 type Props = {
@@ -27,7 +26,6 @@ type Props = {
 }
 
 export function NativeAssetSelectModal({
-  chain,
   isOpen,
   onClose,
   finalFocusRef,
@@ -35,8 +33,6 @@ export function NativeAssetSelectModal({
   nativeAssets,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const { getToken } = useTokens()
-
   function closeOnSelect(token: GqlToken) {
     onClose()
     onTokenSelect(token)
@@ -50,7 +46,7 @@ export function NativeAssetSelectModal({
         <ModalCloseButton />
         <ModalBody p={0}>
           <VStack w="full" align="start" spacing="md">
-            <Box px="md" pr="0" w="full">
+            <Box px="md" w="full">
               <NativeAssetSelectList tokens={nativeAssets} onTokenSelect={closeOnSelect} />
             </Box>
           </VStack>
