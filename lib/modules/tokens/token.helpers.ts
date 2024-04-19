@@ -3,18 +3,18 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Address } from 'wagmi'
 
-export function isNativeToken(token: Address, chain: GqlChain) {
+export function isNativeAsset(token: Address, chain: GqlChain) {
   const networkConfig = getNetworkConfig(chain)
   return isSameAddress(token, networkConfig.tokens.nativeAsset.address)
 }
 
-export function isWrappedNativeToken(token: Address, chain: GqlChain) {
+export function isWrappedNativeAsset(token: Address, chain: GqlChain) {
   const networkConfig = getNetworkConfig(chain)
   return isSameAddress(token, networkConfig.tokens.addresses.wNativeAsset)
 }
 
 export function isNativeOrWrappedNative(token: Address, chain: GqlChain) {
-  return isWrappedNativeToken(token, chain) || isNativeToken(token, chain)
+  return isWrappedNativeAsset(token, chain) || isNativeAsset(token, chain)
 }
 
 /**
@@ -27,7 +27,7 @@ export function isNativeOrWrappedNative(token: Address, chain: GqlChain) {
  * @return {Address} The swapped token address.
  */
 export function swapNativeWithWrappedNative(token: Address, chain: GqlChain) {
-  if (isNativeToken(token, chain)) {
+  if (isNativeAsset(token, chain)) {
     return getWrappedNativeAssetAddress(chain).toLowerCase() as Address
   } else {
     return token

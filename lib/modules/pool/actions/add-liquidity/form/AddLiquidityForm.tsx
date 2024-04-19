@@ -35,9 +35,9 @@ import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { AddLiquidityFormCheckbox } from './AddLiquidityFormCheckbox'
 import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
-import { isNativeOrWrappedNative, isNativeToken } from '@/lib/modules/tokens/token.helpers'
+import { isNativeOrWrappedNative, isNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { NativeTokenSelectModal } from '@/lib/modules/tokens/NativeTokenSelectModal'
+import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectModal'
 
 export function AddLiquidityForm() {
   const {
@@ -93,7 +93,7 @@ export function AddLiquidityForm() {
   }, [])
 
   function handleTokenSelect(token: GqlToken) {
-    if (isNativeToken(token.address as Address, token.chain)) {
+    if (isNativeAsset(token.address as Address, token.chain)) {
       setWethIsEth(true)
     } else {
       setWethIsEth(false)
@@ -101,7 +101,7 @@ export function AddLiquidityForm() {
     setAmountIn(token.address as Address, '')
   }
 
-  const nativeTokens = validTokens.filter(token =>
+  const nativeAssets = validTokens.filter(token =>
     isNativeOrWrappedNative(token.address as Address, token.chain)
   )
 
@@ -222,13 +222,13 @@ export function AddLiquidityForm() {
           onOpen={previewModalDisclosure.onOpen}
           onClose={onModalClose}
         />
-        <NativeTokenSelectModal
+        <NativeAssetSelectModal
           chain={validTokens[0].chain}
           isOpen={tokenSelectDisclosure.isOpen}
           onOpen={tokenSelectDisclosure.onOpen}
           onClose={tokenSelectDisclosure.onClose}
           onTokenSelect={handleTokenSelect}
-          nativeTokens={nativeTokens}
+          nativeAssets={nativeAssets}
         />
       </Center>
     </TokenBalancesProvider>

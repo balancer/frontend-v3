@@ -14,7 +14,7 @@ type Props = {
   onTokenSelect: (token: GqlToken) => void
 }
 
-export function NativeTokenSelectList({ tokens, onTokenSelect, ...rest }: Props & BoxProps) {
+export function NativeAssetSelectList({ tokens, onTokenSelect, ...rest }: Props & BoxProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const { balanceFor, isBalancesLoading } = useTokenBalances()
   const { isConnected } = useUserAccount()

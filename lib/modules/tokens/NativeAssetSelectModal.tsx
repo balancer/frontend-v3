@@ -14,7 +14,7 @@ import {
 import { RefObject } from 'react'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useTokens } from './useTokens'
-import { NativeTokenSelectList } from './NativeTokenSelectList'
+import { NativeAssetSelectList } from './NativeAssetSelectList'
 
 type Props = {
   chain: GqlChain
@@ -23,16 +23,16 @@ type Props = {
   onOpen(): void
   finalFocusRef?: RefObject<HTMLInputElement>
   onTokenSelect: (token: GqlToken) => void
-  nativeTokens: GqlToken[]
+  nativeAssets: GqlToken[]
 }
 
-export function NativeTokenSelectModal({
+export function NativeAssetSelectModal({
   chain,
   isOpen,
   onClose,
   finalFocusRef,
   onTokenSelect,
-  nativeTokens,
+  nativeAssets,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const { getToken } = useTokens()
@@ -51,7 +51,7 @@ export function NativeTokenSelectModal({
         <ModalBody p={0}>
           <VStack w="full" align="start" spacing="md">
             <Box px="md" pr="0" w="full">
-              <NativeTokenSelectList tokens={nativeTokens} onTokenSelect={closeOnSelect} />
+              <NativeAssetSelectList tokens={nativeAssets} onTokenSelect={closeOnSelect} />
             </Box>
           </VStack>
         </ModalBody>

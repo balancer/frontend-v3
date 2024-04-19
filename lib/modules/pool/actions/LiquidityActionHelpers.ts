@@ -24,8 +24,8 @@ import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
 import {
-  isNativeToken,
-  isWrappedNativeToken,
+  isNativeAsset,
+  isWrappedNativeAsset,
   swapNativeWithWrappedNative,
 } from '../../tokens/token.helpers'
 
@@ -217,7 +217,7 @@ export function filterHumanAmountsIn(
   return humanAmountsIn.filter(
     amountIn =>
       !isSameAddress(amountIn.tokenAddress, tokenAddress) &&
-      !(isNativeToken(tokenAddress, chain) && isWrappedNativeToken(amountIn.tokenAddress, chain)) &&
-      !(isNativeToken(amountIn.tokenAddress, chain) && isWrappedNativeToken(tokenAddress, chain))
+      !(isNativeAsset(tokenAddress, chain) && isWrappedNativeAsset(amountIn.tokenAddress, chain)) &&
+      !(isNativeAsset(amountIn.tokenAddress, chain) && isWrappedNativeAsset(tokenAddress, chain))
   )
 }

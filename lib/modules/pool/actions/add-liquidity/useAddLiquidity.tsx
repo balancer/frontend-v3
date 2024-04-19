@@ -28,7 +28,7 @@ import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsVal
 import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
 import { getNativeAssetAddress } from '@/lib/config/app.config'
-import { isWrappedNativeToken } from '@/lib/modules/tokens/token.helpers'
+import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -57,7 +57,7 @@ export function _useAddLiquidity() {
   const stepConfigs = useAddLiquidityStepConfigs(inputAmounts)
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
   const chain = pool.chain
-  const nativeToken = getToken(getNativeAssetAddress(chain), chain)
+  const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
 
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -89,17 +89,17 @@ export function _useAddLiquidity() {
     })
     .map(token => getToken(token.address, chain))
 
-  const tokensWithNativeToken = tokens.map(token => {
-    if (token && isWrappedNativeToken(token.address as Address, chain)) {
-      return nativeToken
+  const tokensWithNativeAsset = tokens.map(token => {
+    if (token && isWrappedNativeAsset(token.address as Address, chain)) {
+      return nativeAsset
     } else {
       return token
     }
   })
 
   const validTokens = tokens.filter((token): token is GqlToken => !!token)
-  const containsWrappedNativeToken = validTokens.some(token =>
-    isWrappedNativeToken(token.address as Address, chain)
+  const containsWrappedNativeAsset = validTokens.some(token =>
+    isWrappedNativeAsset(token.address as Address, chain)
   )
 
   const { usdValueFor } = useTotalUsdValue(validTokens)
@@ -152,9 +152,9 @@ export function _useAddLiquidity() {
   return {
     humanAmountsIn,
     inputAmounts,
-    tokens: wethIsEth ? tokensWithNativeToken : tokens,
+    tokens: wethIsEth ? tokensWithNativeAsset : tokens,
     validTokens:
-      containsWrappedNativeToken && nativeToken ? [...validTokens, nativeToken] : validTokens,
+      containsWrappedNativeAsset && nativeAsset ? [...validTokens, nativeAsset] : validTokens,
     totalUSDValue,
     simulationQuery,
     priceImpactQuery,
