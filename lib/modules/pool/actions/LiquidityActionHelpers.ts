@@ -23,7 +23,11 @@ import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
 import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
-import { isNativeToken, isWrappedNativeToken } from '../../tokens/token.helpers'
+import {
+  isNativeToken,
+  isWrappedNativeToken,
+  swapNativeWithWrappedNative,
+} from '../../tokens/token.helpers'
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -89,15 +93,18 @@ export class LiquidityActionHelpers {
 
     // from humanAmountsIn to SDK AmountsIn
     humanAmountsIn.forEach(({ tokenAddress, humanAmount }) => {
-      if (!amountsInByTokenAddress[tokenAddress]) {
+      // if native token swap with wrapped native token
+      const tokenAddressToCheck = swapNativeWithWrappedNative(tokenAddress, this.pool.chain)
+
+      if (!amountsInByTokenAddress[tokenAddressToCheck]) {
         throw new Error(
-          `Provided token address ${tokenAddress} not found in pool tokens [${Object.keys(
+          `Provided token address ${tokenAddressToCheck} not found in pool tokens [${Object.keys(
             amountsInByTokenAddress
           ).join(' , \n')}]`
         )
       }
-      const decimals = amountsInByTokenAddress[tokenAddress].decimals
-      amountsInByTokenAddress[tokenAddress].rawAmount = parseUnits(humanAmount, decimals)
+      const decimals = amountsInByTokenAddress[tokenAddressToCheck].decimals
+      amountsInByTokenAddress[tokenAddressToCheck].rawAmount = parseUnits(humanAmount, decimals)
     })
 
     const amountsIn = Object.values(amountsInByTokenAddress).filter(a => a.rawAmount > 0n)

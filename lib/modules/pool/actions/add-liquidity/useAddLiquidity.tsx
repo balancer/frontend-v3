@@ -28,17 +28,13 @@ import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsVal
 import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
 import { getNativeAssetAddress } from '@/lib/config/app.config'
-import {
-  swapNativeWithWrappedNative,
-  isWrappedNativeToken,
-} from '@/lib/modules/tokens/token.helpers'
+import { isWrappedNativeToken } from '@/lib/modules/tokens/token.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
 
 export function _useAddLiquidity() {
   const [humanAmountsIn, setHumanAmountsIn] = useState<HumanAmountIn[]>([])
-  const [humanAmountsInSDK, setHumanAmountsInSDK] = useState<HumanAmountIn[]>([])
   const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [acceptPoolRisks, setAcceptPoolRisks] = useState(false)
   const [wethIsEth, setWethIsEth] = useState(false)
@@ -57,7 +53,7 @@ export function _useAddLiquidity() {
    * Helper functions & variables
    */
   const helpers = new LiquidityActionHelpers(pool)
-  const inputAmounts = helpers.toInputAmounts(humanAmountsInSDK)
+  const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
   const stepConfigs = useAddLiquidityStepConfigs(inputAmounts)
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
   const chain = pool.chain
@@ -109,14 +105,14 @@ export function _useAddLiquidity() {
   const { usdValueFor } = useTotalUsdValue(validTokens)
 
   useEffect(() => {
-    setTotalUSDValue(usdValueFor(humanAmountsInSDK))
-  }, [humanAmountsInSDK])
+    setTotalUSDValue(usdValueFor(humanAmountsIn))
+  }, [humanAmountsIn])
 
   /**
    * Simulation queries:
    */
-  const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsInSDK)
-  const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsInSDK)
+  const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn)
+  const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn)
 
   /**
    * Refetch logic:
@@ -140,16 +136,6 @@ export function _useAddLiquidity() {
   useEffect(() => {
     setInitialHumanAmountsIn()
   }, [])
-
-  useEffect(() => {
-    const amountsIn = humanAmountsIn.map(amountIn => {
-      return {
-        ...amountIn,
-        tokenAddress: swapNativeWithWrappedNative(amountIn.tokenAddress as Address, chain),
-      }
-    })
-    setHumanAmountsInSDK(amountsIn)
-  }, [humanAmountsIn])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
