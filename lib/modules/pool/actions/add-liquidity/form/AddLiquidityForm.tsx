@@ -222,14 +222,16 @@ export function AddLiquidityForm() {
           onOpen={previewModalDisclosure.onOpen}
           onClose={onModalClose}
         />
-        <NativeAssetSelectModal
-          chain={validTokens[0].chain}
-          isOpen={tokenSelectDisclosure.isOpen}
-          onOpen={tokenSelectDisclosure.onOpen}
-          onClose={tokenSelectDisclosure.onClose}
-          onTokenSelect={handleTokenSelect}
-          nativeAssets={nativeAssets}
-        />
+        {!!validTokens.length && (
+          <NativeAssetSelectModal
+            chain={validTokens[0].chain}
+            isOpen={tokenSelectDisclosure.isOpen}
+            onOpen={tokenSelectDisclosure.onOpen}
+            onClose={tokenSelectDisclosure.onClose}
+            onTokenSelect={handleTokenSelect}
+            nativeAssets={nativeAssets}
+          />
+        )}
       </Center>
     </TokenBalancesProvider>
   )
