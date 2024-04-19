@@ -15,6 +15,7 @@ import { HumanAmountIn } from '../liquidity-types'
 import {
   LiquidityActionHelpers,
   areEmptyAmounts,
+  filterHumanAmountsIn,
   requiresProportionalInput,
 } from '../LiquidityActionHelpers'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
@@ -28,7 +29,6 @@ import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsVal
 import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
 import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
-import { isNativeToken, isWrappedNativeToken } from '@/lib/modules/tokens/token.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -72,17 +72,10 @@ export function _useAddLiquidity() {
   }
 
   function setHumanAmountIn(tokenAddress: Address, humanAmount: HumanAmount | '') {
+    const amountsIn = filterHumanAmountsIn(humanAmountsIn, tokenAddress, chain)
     setHumanAmountsIn([
-      ...humanAmountsIn.filter(
-        amountIn =>
-          !isSameAddress(amountIn.tokenAddress, tokenAddress) &&
-          !(
-            isNativeToken(tokenAddress, chain) && isWrappedNativeToken(amountIn.tokenAddress, chain)
-          ) &&
-          !(
-            isNativeToken(amountIn.tokenAddress, chain) && isWrappedNativeToken(tokenAddress, chain)
-          )
-      ),
+      ...amountsIn,
+
       {
         tokenAddress,
         humanAmount,

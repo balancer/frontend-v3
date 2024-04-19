@@ -1,7 +1,7 @@
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { SentryError } from '@/lib/shared/utils/errors'
 import { bn } from '@/lib/shared/utils/numbers'
@@ -23,6 +23,7 @@ import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
 import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { HumanAmountIn } from './liquidity-types'
+import { isNativeToken, isWrappedNativeToken } from '../../tokens/token.helpers'
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -188,4 +189,28 @@ export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
     })),
     totalShares: pool.dynamicData.totalShares as HumanAmount,
   }
+}
+
+/**
+ * Filters the human amounts based on whether the token to filter:
+ * - is already in the array and
+ * - is native and the wrapped native token is already in the array and
+ * - is wrapped native and the native token is already in the array
+ *
+ * @param {HumanAmountIn[]} humanAmountsIn - The array of human amounts to filter.
+ * @param {Address} tokenAddress - The token address to compare against.
+ * @param {GqlChain} chain - The chain type for comparison.
+ * @return {HumanAmountIn[]} The filtered array of human amounts.
+ */
+export function filterHumanAmountsIn(
+  humanAmountsIn: HumanAmountIn[],
+  tokenAddress: Address,
+  chain: GqlChain
+) {
+  return humanAmountsIn.filter(
+    amountIn =>
+      !isSameAddress(amountIn.tokenAddress, tokenAddress) &&
+      !(isNativeToken(tokenAddress, chain) && isWrappedNativeToken(amountIn.tokenAddress, chain)) &&
+      !(isNativeToken(amountIn.tokenAddress, chain) && isWrappedNativeToken(tokenAddress, chain))
+  )
 }
