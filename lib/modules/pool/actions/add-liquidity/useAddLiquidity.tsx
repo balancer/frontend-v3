@@ -28,7 +28,10 @@ import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsVal
 import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
 import { getNativeAssetAddress } from '@/lib/config/app.config'
-import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
+import {
+  isWrappedNativeAsset,
+  swapNativeWithWrappedNative,
+} from '@/lib/modules/tokens/token.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -105,7 +108,11 @@ export function _useAddLiquidity() {
   const { usdValueFor } = useTotalUsdValue(validTokens)
 
   useEffect(() => {
-    setTotalUSDValue(usdValueFor(humanAmountsIn))
+    const amountsIn = humanAmountsIn.map(amountIn => ({
+      ...amountIn,
+      tokenAddress: swapNativeWithWrappedNative(amountIn.tokenAddress, chain),
+    }))
+    setTotalUSDValue(usdValueFor(amountsIn))
   }, [humanAmountsIn])
 
   /**
