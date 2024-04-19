@@ -1,13 +1,13 @@
 'use client'
 
-import { Button, Center, Heading, Text, VStack } from '@chakra-ui/react'
+import { Button, Card, Center, Heading, Text, VStack } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
 import { SuccessCard } from '@/lib/modules/transactions/transaction-steps/SuccessCard'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { usePoolRedirect, useRefetchPoolOnFlowComplete } from '../../pool.hooks'
-import { BptOutCardFromReceipt } from './modal/BptOutCard'
+import { ReceiptBptOut } from './modal/BptOut'
 import { StakingOptions } from './modal/StakingOptions'
-import { TokensInCardFromReceipt } from './modal/TokensInCard'
+import { ReceiptTokensIn } from './modal/TokensIn'
 import { useReceipt } from '../../../transactions/transaction-steps/useReceipt'
 import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
 import { Hash } from 'viem'
@@ -30,15 +30,19 @@ export function AddLiquidityReceipt() {
   return (
     <Center>
       <VStack w="fit-content" alignContent="center">
-        <Heading>Add liquidity receipt {!keepsFlowState && '(historical)'}</Heading>
-        <VStack spacing="sm" align="start">
+        <Heading>{!keepsFlowState && '(historical)'}</Heading>
+        <VStack spacing="0.5" align="start">
           {keepsFlowState && <SuccessCard chain={pool.chain} />}
 
-          <TokensInCardFromReceipt />
-
-          <BptOutCardFromReceipt />
-
-          {keepsFlowState && pool.dynamicData.apr.hasRewardApr && <StakingOptions />}
+          <Card variant="level2" borderRadius="12px 12px 0px 0px">
+            <ReceiptTokensIn />
+          </Card>
+          <Card variant="level2" borderRadius="0px">
+            <ReceiptBptOut />
+          </Card>
+          <Card variant="level2" borderRadius="0px 0px 12px 12px" mt="1">
+            {keepsFlowState && pool.dynamicData.apr.hasRewardApr && <StakingOptions />}
+          </Card>
         </VStack>
         <Button
           variant="tertiary"

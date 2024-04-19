@@ -6,8 +6,8 @@ import { Card, VStack } from '@chakra-ui/react'
 import { usePool } from '../../../usePool'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
 import { useAddLiquidity } from '../useAddLiquidity'
-import { BptOutCardFromQuote } from './BptOutCard'
-import { TokensInCardFromQuote } from './TokensInCard'
+import { QuoteBptOut } from './BptOut'
+import { QuoteTokensIn } from './TokensIn'
 
 export function AddLiquidityPreview() {
   const { totalUSDValue, simulationQuery, currentStepIndex, stepConfigs } = useAddLiquidity()
@@ -24,9 +24,13 @@ export function AddLiquidityPreview() {
         />
       )}
 
-      <TokensInCardFromQuote />
+      <Card variant="modalSubSection">
+        <QuoteTokensIn />
+      </Card>
 
-      <BptOutCardFromQuote />
+      <Card variant="modalSubSection">
+        <QuoteBptOut />
+      </Card>
 
       <Card variant="modalSubSection">
         <VStack align="start" spacing="sm">

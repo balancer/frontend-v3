@@ -17,9 +17,7 @@ export function StakingOptions() {
 
   return (
     <>
-      <Heading fontWeight="bold" size="h6" mt="4">
-        Staking options
-      </Heading>
+      <Text mb="2">Staking options</Text>
       <HStack w="full" justify="space-between" alignItems="stretch">
         <Card variant="modalSubSection" position="relative">
           <VStack align="left" spacing="md">
