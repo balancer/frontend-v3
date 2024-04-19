@@ -183,6 +183,7 @@ export function AddLiquidityForm() {
                   w="full"
                   size="lg"
                   isDisabled={isDisabled}
+                  isLoading={simulationQuery.isLoading || priceImpactQuery.isLoading}
                   onClick={() => !isDisabled && onModalOpen()}
                 >
                   Next
