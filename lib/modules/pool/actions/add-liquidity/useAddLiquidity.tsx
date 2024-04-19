@@ -39,7 +39,6 @@ export function _useAddLiquidity() {
   const [acceptPoolRisks, setAcceptPoolRisks] = useState(false)
   const [wethIsEth, setWethIsEth] = useState(false)
   const [totalUSDValue, setTotalUSDValue] = useState('0')
-  const [validTokens, setValidTokens] = useState<GqlToken[]>([])
 
   const { pool, refetch: refetchPool } = usePool()
   const { getToken } = useTokens()
@@ -98,16 +97,8 @@ export function _useAddLiquidity() {
     }
   })
 
-  const _validTokens = tokens.filter((token): token is GqlToken => !!token)
-  const containsWrappedNativeAsset = _validTokens.some(token =>
-    isWrappedNativeAsset(token.address as Address, chain)
-  )
-
-  useEffect(() => {
-    const tokens =
-      containsWrappedNativeAsset && nativeAsset ? [..._validTokens, nativeAsset] : _validTokens
-    setValidTokens(tokens)
-  }, [])
+  let validTokens = tokens.filter((token): token is GqlToken => !!token)
+  validTokens = nativeAsset ? [nativeAsset, ...validTokens] : validTokens
 
   const { usdValueFor } = useTotalUsdValue(validTokens)
 
