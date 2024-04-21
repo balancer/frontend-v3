@@ -8,11 +8,12 @@ import { motion } from 'framer-motion'
 import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
+import { useSemanticTokenColorMode } from '@/lib/shared/utils/theme'
 
 const smallSize: ChartSizeValues = {
-  chartHeight: '250px',
-  boxWidth: 250,
-  boxHeight: 250,
+  chartHeight: '225px',
+  boxWidth: 225,
+  boxHeight: 225,
   haloTop: '40%',
   haloLeft: '55px',
   haloWidth: '40px',
@@ -21,8 +22,8 @@ const smallSize: ChartSizeValues = {
 
 const normalSize: ChartSizeValues = {
   chartHeight: '',
-  boxWidth: 275,
-  boxHeight: 275,
+  boxWidth: 225,
+  boxHeight: 225,
   haloTop: '49%',
   haloLeft: '95px',
   haloWidth: '60px',
@@ -43,7 +44,10 @@ export default function StakedBalanceDistributionChart({
   const userHasLiquidity = (pool.userBalance?.totalBalanceUsd || 0) > 0
 
   function getData() {
+    const theme = useTheme()
+    const colorMode = useSemanticTokenColorMode()
     const data = []
+
     if (unstakedBalance > 0) {
       data.push({
         value: unstakedBalance,
@@ -63,10 +67,10 @@ export default function StakedBalanceDistributionChart({
 
     if (!userHasLiquidity) {
       data.push({
-        value: 0,
+        value: 100,
         name: 'No current balance',
         itemStyle: {
-          color: theme.semanticTokens.colors.font.light,
+          color: theme.semanticTokens.colors.background.level2[colorMode],
         },
       })
     }
@@ -93,10 +97,10 @@ export default function StakedBalanceDistributionChart({
         {
           name: 'Access From',
           type: 'pie',
-          radius: ['57%', '80%'],
+          radius: ['49%', '80%'],
           itemStyle: {
             borderColor: theme.colors['chartBorder'][colorMode],
-            borderWidth: 1.5,
+            borderWidth: 0,
           },
           label: {
             show: false,
@@ -115,10 +119,10 @@ export default function StakedBalanceDistributionChart({
   }, [pool, colorMode])
 
   return (
-    <HStack>
+    <HStack spacing="12">
       <Box
         width={`${chartSizeValues.boxWidth}px`}
-        height={`${chartSizeValues.boxHeight}`}
+        height={`${chartSizeValues.boxHeight}px`}
         position="relative"
       >
         <Box
@@ -127,8 +131,9 @@ export default function StakedBalanceDistributionChart({
           bottom="0"
           left="0"
           right="0"
-          width={`${chartSizeValues.boxWidth * 0.58}px`}
-          height={`${chartSizeValues.boxHeight * 0.58}px`}
+          width={`${chartSizeValues.boxWidth * 0.5}px`}
+          height={`${chartSizeValues.boxHeight * 0.5}px`}
+          shadow="lg"
           zIndex={4}
           mx="auto"
           display="flex"
@@ -147,17 +152,34 @@ export default function StakedBalanceDistributionChart({
               justifyContent: 'center',
               alignItems: 'center',
               position: 'relative',
-              shadow: 'innerXl',
               rounded: 'full',
+              bg: 'background.level3',
             }}
             shadowContainerProps={{ shadow: 'none' }}
           ></NoisyCard>
         </Box>
         <Box
           position="relative"
-          width={`${chartSizeValues.boxWidth}`}
-          height={`${chartSizeValues.boxHeight}`}
+          width={`${chartSizeValues.boxWidth}px`}
+          height={`${chartSizeValues.boxHeight}px`}
+          background="background.level3"
+          shadow="lg"
+          rounded="full"
         >
+          <Box
+            position="absolute"
+            top="50%"
+            right="0"
+            left="0"
+            marginX="auto"
+            bg="transparent"
+            zIndex={2}
+            shadow={userHasLiquidity ? 'lg' : 'innerLg'}
+            transform="translateY(-50%)"
+            width={`${chartSizeValues.boxWidth * 0.8}px`}
+            height={`${chartSizeValues.boxHeight * 0.8}px`}
+            rounded="full"
+          />
           <ReactECharts
             style={{
               width: `${chartSizeValues.boxWidth}px`,
@@ -169,34 +191,27 @@ export default function StakedBalanceDistributionChart({
           />
         </Box>
       </Box>
-      <VStack alignItems="flex-start">
-        {unstakedBalance > 0 && (
-          <HStack>
-            <Box width="12px" height="12px" bg="font.light" rounded="full" />
-            <Text whiteSpace="nowrap" color="font.secondary">
-              Unstaked
-            </Text>
-          </HStack>
-        )}
+      {userHasLiquidity && (
+        <VStack alignItems="flex-start">
+          {unstakedBalance > 0 && (
+            <HStack>
+              <Box width="12px" height="12px" bg="font.light" rounded="full" />
+              <Text whiteSpace="nowrap" color="font.secondary">
+                Unstaked
+              </Text>
+            </HStack>
+          )}
 
-        {(pool.userBalance?.stakedBalanceUsd || 0) > 0 && (
-          <HStack>
-            <Box width="12px" height="12px" bg="chart.stakedBalance" rounded="full" />
-            <Text whiteSpace="nowrap" color="font.secondary">
-              Staked on Balancer
-            </Text>
-          </HStack>
-        )}
-
-        {!userHasLiquidity && (
-          <HStack>
-            <Box width="12px" height="12px" bg="font.light" rounded="full" />
-            <Text whiteSpace="nowrap" color="font.secondary">
-              No liquidity
-            </Text>
-          </HStack>
-        )}
-      </VStack>
+          {(pool.userBalance?.stakedBalanceUsd || 0) > 0 && (
+            <HStack>
+              <Box width="12px" height="12px" bg="chart.stakedBalance" rounded="full" />
+              <Text whiteSpace="nowrap" color="font.secondary">
+                Staked on Balancer
+              </Text>
+            </HStack>
+          )}
+        </VStack>
+      )}
     </HStack>
   )
 }
