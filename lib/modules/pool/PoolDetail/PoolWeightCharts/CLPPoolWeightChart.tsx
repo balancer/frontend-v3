@@ -6,47 +6,24 @@ import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMod
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import Image from 'next/image'
 
-const chartSizes: Record<string, Record<string, ChartSizeValues>> = {
-  square: {
-    small: {
-      chartHeight: '150px',
-      boxWidth: 100,
-      boxHeight: 100,
-      haloTop: '40%',
-      haloLeft: '55px',
-      haloWidth: '40px',
-      haloHeigth: '40px',
-    },
-    normal: {
-      chartHeight: '',
-      boxWidth: 160,
-      boxHeight: 160,
-      haloTop: '49%',
-      haloLeft: '95px',
-      haloWidth: '60px',
-      haloHeigth: '60px',
-    },
-  },
-  diamond: {
-    small: {
-      chartHeight: '150px',
-      boxWidth: 150,
-      boxHeight: 150,
-      haloTop: '40%',
-      haloLeft: '55px',
-      haloWidth: '40px',
-      haloHeigth: '40px',
-    },
-    normal: {
-      chartHeight: '',
-      boxWidth: 225,
-      boxHeight: 114,
-      haloTop: '49%',
-      haloLeft: '95px',
-      haloWidth: '60px',
-      haloHeigth: '60px',
-    },
-  },
+const smallSize: ChartSizeValues = {
+  chartHeight: '120px',
+  boxWidth: 120,
+  boxHeight: 120,
+  haloTop: '40%',
+  haloLeft: '55px',
+  haloWidth: '40px',
+  haloHeigth: '40px',
+}
+
+const normalSize: ChartSizeValues = {
+  chartHeight: '',
+  boxWidth: 150,
+  boxHeight: 150,
+  haloTop: '49%',
+  haloLeft: '95px',
+  haloWidth: '60px',
+  haloHeigth: '60px',
 }
 
 function OuterSymbolDiamond({ opacity, isSmall }: { opacity: string; isSmall: boolean }) {
@@ -107,34 +84,11 @@ export default function CLPPoolWeightChart({
   colors = [],
 }: PoolWeightChartProps) {
   const colorMode = useThemeColorMode()
-
-  function getChartSizeValues() {
-    const chartSizeKey = isSmall ? 'small' : 'normal'
-    if (pool.tokens.length === 2) {
-      return chartSizes.diamond[chartSizeKey]
-    }
-    return chartSizes.square[chartSizeKey]
-  }
-
-  function getLegendOffset() {
-    if (pool.tokens.length === 2) {
-      return '14'
-    }
-    return '10'
-  }
-
-  function getChainIconContainerRatio() {
-    if (pool.tokens.length === 2) {
-      return 0.55
-    }
-    return 0.75
-  }
-
-  const chartSizeValues = getChartSizeValues()
+  const chartSizeValues = isSmall ? smallSize : normalSize
 
   return (
     <VStack
-      mt={isSmall ? '0' : getLegendOffset()}
+      mt={isSmall ? '0' : '10'}
       position="relative"
       width="full"
       height="full"
@@ -143,8 +97,9 @@ export default function CLPPoolWeightChart({
     >
       <Box
         width={`${chartSizeValues.boxWidth}px`}
-        height={`${chartSizeValues.boxHeight}px`}
+        height={`${chartSizeValues.boxWidth}px`}
         position="relative"
+        transform={isSmall ? 'scale(0.85)' : ''}
       >
         <Box
           as={motion.div}
@@ -161,14 +116,13 @@ export default function CLPPoolWeightChart({
           alignItems="center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { delay: 0.1 } }}
-          width={`${chartSizeValues.boxWidth * getChainIconContainerRatio()}px`}
-          height={`${chartSizeValues.boxWidth * getChainIconContainerRatio()}px`}
+          width={`${chartSizeValues.boxWidth * 0.7}px`}
+          height={`${chartSizeValues.boxWidth * 0.7}px`}
           bg="background.base"
           rounded="md"
         >
           <NoisyCard
             cardProps={{
-              // bg: 'background.base',
               rounded: 'md',
               shadow: 'none',
             }}
@@ -207,60 +161,15 @@ export default function CLPPoolWeightChart({
             <InnerSymbolDiamond opacity="30%" />
           </NoisyCard>
         </Box>
-        <svg
-          style={{ visibility: 'hidden', position: 'absolute' }}
-          width="0"
-          height="0"
-          xmlns="http://www.w3.org/2000/svg"
-          version="1.1"
-        >
-          <defs>
-            <filter id="round">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur" />
-              <feColorMatrix
-                in="blur"
-                mode="matrix"
-                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
-                result="goo"
-              />
-              <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-            </filter>
-          </defs>
-        </svg>
-        {pool.displayTokens.length === 2 && (
-          <Box filter="url(#round)">
-            <Box
-              bgGradient={`linear(to-r, ${colors[0].from}, ${colors[0].to})`}
-              width={`${chartSizeValues.boxWidth}px`}
-              height={`${chartSizeValues.boxHeight}px`}
-              borderTopRightRadius="xl"
-              clipPath="polygon(50% 0, 100% 100%, 0 100%)"
-              transform="rotate(90deg) translateY(-50%)"
-              position="absolute"
-              borderWidth="2px"
-              borderColor={`chartBorder.${colorMode}`}
-              _hover={{ filter: 'brightness(103%)' }}
-            />
-            <Box
-              bgGradient={`linear(to-r, ${colors[1].from}, ${colors[1].to})`}
-              width={`${chartSizeValues.boxWidth}px`}
-              height={`${chartSizeValues.boxHeight}px`}
-              borderTopRightRadius="xl"
-              clipPath="polygon(50% 0, 100% 100%, 0 100%)"
-              transform="rotate(-90deg) translateY(-50%)"
-              position="absolute"
-              _hover={{ filter: 'brightness(103%)' }}
-            />
-          </Box>
-        )}
-        {pool.displayTokens.length === 3 && (
+
+        {pool.displayTokens.length <= 3 && (
           <HStack
             spacing="0"
             zIndex={1}
             width="full"
             height="full"
             rounded="2xl"
-            transform="rotate(-135deg)"
+            transform="rotate(45deg)"
           >
             {pool.displayTokens.map((_, i) => {
               return (
@@ -306,7 +215,7 @@ export default function CLPPoolWeightChart({
         )}
       </Box>
       {hasLegend && (
-        <HStack mt={getLegendOffset()} width="full" justifyContent="center">
+        <HStack mt="10" width="full" justifyContent="center">
           <PoolWeightChartLegend pool={pool} colors={colors} />
         </HStack>
       )}

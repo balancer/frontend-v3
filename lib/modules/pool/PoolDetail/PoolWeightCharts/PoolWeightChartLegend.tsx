@@ -10,7 +10,7 @@ export default function PoolWeightChartLegend({
   colors?: PoolWeightChartColorDef[]
 }) {
   return (
-    <HStack spacing="6">
+    <HStack spacing="6" zIndex={2}>
       {pool.displayTokens.map((token, i) => {
         return (
           <Box
