@@ -116,6 +116,7 @@ export function SwapForm() {
                     value={selectedChain}
                     onChange={newValue => {
                       setSelectedChain(newValue as GqlChain)
+                      setTokenInAmount('')
                     }}
                   />
                   <VStack w="full">

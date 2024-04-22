@@ -27,7 +27,7 @@ import { useTokenInputsValidation } from '../useTokenInputsValidation'
 import { ChevronDown } from 'react-feather'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
@@ -35,20 +35,35 @@ type TokenInputSelectorProps = {
   toggleTokenSelect?: () => void
 }
 
+type TokenConfigProps = {
+  label: string
+  variant: string
+  showIcon: boolean
+}
+
 function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSelectorProps) {
-  const label = token ? token?.symbol : toggleTokenSelect ? 'Select token' : 'No token'
-  return (
+  const [tokenConfig, setTokenConfig] = useState<TokenConfigProps | undefined>(undefined)
+
+  useEffect(() => {
+    if (token) {
+      setTokenConfig({ label: token.symbol, variant: 'tertiary', showIcon: true })
+    } else if (toggleTokenSelect) {
+      setTokenConfig({ label: 'Select token', variant: 'secondary', showIcon: false })
+    }
+  }, [token])
+
+  return tokenConfig ? (
     <Button
-      variant={token ? 'tertiary' : 'secondary'}
+      variant={tokenConfig.variant}
       onClick={toggleTokenSelect}
       cursor={toggleTokenSelect ? 'pointer' : 'default'}
     >
-      {token && (
+      {tokenConfig && tokenConfig.showIcon && (
         <Box mr="sm">
-          <TokenIcon logoURI={token?.logoURI} alt={token?.symbol || 'token icon'} size={22} />
+          <TokenIcon logoURI={token?.logoURI} alt={tokenConfig.label} size={22} loading="lazy" />
         </Box>
       )}
-      {label}
+      {tokenConfig && tokenConfig.label}
       {weight && <Text fontWeight="normal">{weight}%</Text>}
       {toggleTokenSelect && (
         <Box ml="sm">
@@ -56,6 +71,8 @@ function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSele
         </Box>
       )}
     </Button>
+  ) : (
+    <Skeleton height="40px" width="110px" />
   )
 }
 

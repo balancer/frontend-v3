@@ -1,7 +1,7 @@
 'use client'
 
 import Image, { ImageProps } from 'next/image'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { createAvatar } from '@dicebear/core'
 import { identicon } from '@dicebear/collection'
@@ -28,9 +28,13 @@ export function TokenIcon({
   ...rest
 }: Props & Omit<ImageProps, 'src'>) {
   const [hasError, setHasError] = useState(false)
-
   const { getToken } = useTokens()
-  const token = address && chain ? getToken(address, chain) : undefined
+
+  const token = useMemo(() => {
+    if (address && chain) {
+      return getToken(address, chain)
+    }
+  }, [address, chain])
 
   const fallbackSVG = createAvatar(identicon, {
     seed: address || 'unknown',
@@ -55,7 +59,7 @@ export function TokenIcon({
     }
   }
 
-  const iconSrc = getIconSrc()
+  const iconSrc = useMemo(() => getIconSrc(), [logoURI, token])
 
   return (
     <Image
