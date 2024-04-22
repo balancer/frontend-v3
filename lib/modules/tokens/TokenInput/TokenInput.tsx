@@ -50,29 +50,29 @@ function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSele
     } else if (toggleTokenSelect) {
       setTokenConfig({ label: 'Select token', variant: 'secondary', showIcon: false })
     }
-  }, [JSON.stringify(token)])
+  }, [token])
 
-  return (
-    tokenConfig && (
-      <Button
-        variant={tokenConfig.variant}
-        onClick={toggleTokenSelect}
-        cursor={toggleTokenSelect ? 'pointer' : 'default'}
-      >
-        {tokenConfig.showIcon && (
-          <Box mr="sm">
-            <TokenIcon logoURI={token?.logoURI} alt={tokenConfig.label} size={22} loading="lazy" />
-          </Box>
-        )}
-        {tokenConfig.label}
-        {weight && <Text fontWeight="normal">{weight}%</Text>}
-        {toggleTokenSelect && (
-          <Box ml="sm">
-            <ChevronDown size={16} />
-          </Box>
-        )}
-      </Button>
-    )
+  return tokenConfig ? (
+    <Button
+      variant={tokenConfig.variant}
+      onClick={toggleTokenSelect}
+      cursor={toggleTokenSelect ? 'pointer' : 'default'}
+    >
+      {tokenConfig && tokenConfig.showIcon && (
+        <Box mr="sm">
+          <TokenIcon logoURI={token?.logoURI} alt={tokenConfig.label} size={22} loading="lazy" />
+        </Box>
+      )}
+      {tokenConfig && tokenConfig.label}
+      {weight && <Text fontWeight="normal">{weight}%</Text>}
+      {toggleTokenSelect && (
+        <Box ml="sm">
+          <ChevronDown size={16} />
+        </Box>
+      )}
+    </Button>
+  ) : (
+    <Skeleton height="40px" width="110px" />
   )
 }
 

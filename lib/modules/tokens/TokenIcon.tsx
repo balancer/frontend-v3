@@ -29,7 +29,12 @@ export function TokenIcon({
 }: Props & Omit<ImageProps, 'src'>) {
   const [hasError, setHasError] = useState(false)
   const { getToken } = useTokens()
-  const token = address && chain ? getToken(address, chain) : undefined
+
+  const token = useMemo(() => {
+    if (address && chain) {
+      return getToken(address, chain)
+    }
+  }, [address, chain])
 
   const fallbackSVG = createAvatar(identicon, {
     seed: address || 'unknown',
@@ -54,7 +59,7 @@ export function TokenIcon({
     }
   }
 
-  const iconSrc = useMemo(() => getIconSrc(), [logoURI, JSON.stringify(token)])
+  const iconSrc = useMemo(() => getIconSrc(), [logoURI, token])
 
   return (
     <Image
