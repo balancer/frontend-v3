@@ -19,6 +19,10 @@ import {
   PopoverCloseButton,
   PopoverContent,
   PopoverTrigger,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
   Tag,
   TagCloseButton,
   TagLabel,
@@ -33,6 +37,8 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useEffect, useState } from 'react'
 import { Filter } from 'react-feather'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { fNum } from '@/lib/shared/utils/numbers'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 function UserPoolFilter() {
   const { userAddress, toggleUserAddress } = usePoolListQueryState()
@@ -85,6 +91,35 @@ function PoolNetworkFilters() {
       <Text textTransform="capitalize">{network.toLowerCase()}</Text>
     </Checkbox>
   ))
+}
+
+function PoolMinTvlFilter() {
+  const { toCurrency } = useCurrency()
+  const [sliderValue, setSliderValue] = useState(0)
+
+  return (
+    <VStack w="full">
+      <HStack w="full">
+        <Heading as="h3" size="sm">
+          Minimum TVL
+        </Heading>
+        <Text ml="auto">{toCurrency(sliderValue)}</Text>
+      </HStack>
+      <Slider
+        aria-label="slider-min-tvl"
+        onChange={val => setSliderValue(val)}
+        value={sliderValue}
+        min={0}
+        max={10000000}
+        step={1000}
+      >
+        <SliderTrack>
+          <SliderFilledTrack />
+        </SliderTrack>
+        <SliderThumb />
+      </Slider>
+    </VStack>
+  )
 }
 
 export function FilterTags() {
@@ -163,7 +198,6 @@ export function PoolListFilters() {
                       <Divider />
                     </>
                   )}
-
                   <Heading as="h3" size="sm" mb="1.5">
                     Pool types
                   </Heading>
@@ -173,6 +207,8 @@ export function PoolListFilters() {
                     Networks
                   </Heading>
                   <PoolNetworkFilters />
+                  <Divider />
+                  <PoolMinTvlFilter />
                 </VStack>
               </PopoverBody>
             </PopoverContent>
