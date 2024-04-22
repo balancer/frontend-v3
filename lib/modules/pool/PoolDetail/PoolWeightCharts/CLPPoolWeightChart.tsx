@@ -110,21 +110,21 @@ export default function CLPPoolWeightChart({
 
   function getChartSizeValues() {
     const chartSizeKey = isSmall ? 'small' : 'normal'
-    if (pool.tokens.length === 2) {
+    if (pool.poolTokens.length === 2) {
       return chartSizes.diamond[chartSizeKey]
     }
     return chartSizes.square[chartSizeKey]
   }
 
   function getLegendOffset() {
-    if (pool.tokens.length === 2) {
+    if (pool.poolTokens.length === 2) {
       return '14'
     }
     return '10'
   }
 
   function getChainIconContainerRatio() {
-    if (pool.tokens.length === 2) {
+    if (pool.poolTokens.length === 2) {
       return 0.55
     }
     return 0.75
@@ -285,7 +285,7 @@ export default function CLPPoolWeightChart({
         )}
         {pool.displayTokens.length === 4 && (
           <Grid zIndex={1} templateColumns="1fr 1fr" width="full" height="full" rounded="2xl">
-            {pool.tokens.map((_, i) => {
+            {pool.poolTokens.map((_, i) => {
               return (
                 <Box
                   key={`${pool.address}-token-weight-${i}`}

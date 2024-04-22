@@ -244,7 +244,7 @@ export const metaStablePoolMock: GqlPoolElement = {
     totalBalanceUsd: 0,
   },
   amp: '50.0',
-  tokens: [
+  poolTokens: [
     {
       id: '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080-0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
       index: 0,
@@ -255,7 +255,6 @@ export const metaStablePoolMock: GqlPoolElement = {
       priceRate: '1.16107749091599594',
       decimals: 18,
       weight: null,
-      totalBalance: '554.231313877726282907',
     },
     {
       id: '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080-0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -267,7 +266,6 @@ export const metaStablePoolMock: GqlPoolElement = {
       priceRate: '1.0',
       decimals: 18,
       weight: null,
-      totalBalance: '620.795240782376289612',
     },
   ],
 } as unknown as GqlPoolElement
