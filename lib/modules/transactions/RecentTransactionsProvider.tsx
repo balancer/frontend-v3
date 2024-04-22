@@ -5,6 +5,8 @@ import { getBlockExplorerName, getBlockExplorerTxUrl } from '@/lib/shared/hooks/
 import { secs } from '@/lib/shared/hooks/useTime'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { ensureError } from '@/lib/shared/utils/errors'
+import { captureFatalError } from '@/lib/shared/utils/query-errors'
 import { AlertStatus, VStack, ToastId, useToast, Text, Button, HStack } from '@chakra-ui/react'
 import { keyBy, orderBy, take } from 'lodash'
 import React, { ReactNode, createContext, useCallback, useEffect, useState } from 'react'
@@ -20,7 +22,15 @@ const NUM_RECENT_TRANSACTIONS = 20
 // confirmed = transaction has been mined and is present on chain
 // reverted = transaction has been mined and is present on chain - but the execution was reverted
 // rejected = transaction was rejected by the rpc / other execution error prior to submission to chain
-export type TransactionStatus = 'confirming' | 'confirmed' | 'reverted' | 'rejected'
+// timeout =  the transaction hash was generated but waitForTransactionReceipt throws a timeout error (edge-case in polygon)
+// unknown =  the transaction hash was generated but waitForTransactionReceipt throws a non timeout error (we never had this error)
+export type TransactionStatus =
+  | 'confirming'
+  | 'confirmed'
+  | 'reverted'
+  | 'rejected'
+  | 'timeout'
+  | 'unknown'
 
 export type TrackedTransaction = {
   hash: Hash
@@ -31,15 +41,21 @@ export type TrackedTransaction = {
   timestamp: number
   init?: string
   chain?: GqlChain
+  duration?: number | null
 }
 
-type UpdateTrackedTransaction = Pick<TrackedTransaction, 'label' | 'description' | 'status'>
+type UpdateTrackedTransaction = Pick<
+  TrackedTransaction,
+  'label' | 'description' | 'status' | 'duration'
+>
 
 const TransactionStatusToastStatusMapping: Record<TransactionStatus, AlertStatus> = {
   confirmed: 'success',
   confirming: 'loading',
   reverted: 'error',
   rejected: 'error',
+  timeout: 'warning',
+  unknown: 'warning',
 }
 
 function getDescriptionFor(trackedTransaction: TrackedTransaction): ReactNode {
@@ -83,21 +99,45 @@ export function _useRecentTransactions() {
       // nor can we render multiple useWaitForTransaction hooks
       // so we use the underlying viem call to get the transactions confirmation status
       for (const tx of unconfirmedTransactions) {
-        const receipt = await publicClient.waitForTransactionReceipt({ hash: tx.hash })
-        if (receipt?.status === 'success') {
+        try {
+          const receipt = await publicClient.waitForTransactionReceipt({ hash: tx.hash })
+          if (receipt?.status === 'success') {
+            updatePayload[tx.hash] = {
+              ...tx,
+              status: 'confirmed',
+            }
+          } else {
+            updatePayload[tx.hash] = {
+              ...tx,
+              status: 'reverted',
+            }
+          }
+          setTransactions(updatePayload)
+        } catch (error) {
+          console.error('Error in RecentTransactionsProvider: ', error)
+
+          /* This is an edge-case that we found randomly happening in polygon.
+          Debug tip:
+          Enforce a timeout in waitForTransactionReceipt inside node_modules/viem waitForTransactionReceipt
+          to reproduce the issue
+          */
+          captureFatalError(
+            error,
+            'waitForTransactionReceiptError',
+            'Error in waitForTransactionReceipt inside RecentTransactionsProvider',
+            { txHash: tx.hash }
+          )
+          const isTimeoutError = ensureError(error).name === 'WaitForTransactionReceiptTimeoutError'
           updatePayload[tx.hash] = {
             ...tx,
-            status: 'confirmed',
+            status: isTimeoutError ? 'timeout' : 'unknown',
           }
-        } else {
-          updatePayload[tx.hash] = {
-            ...tx,
-            status: 'reverted',
-          }
+          setTransactions(updatePayload)
         }
-        setTransactions(updatePayload)
       }
+      updateLocalStorage(updatePayload)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [publicClient]
   )
 
@@ -123,7 +163,7 @@ export function _useRecentTransactions() {
       title: trackedTransaction.label,
       description: getDescriptionFor(trackedTransaction),
       status: 'loading',
-      duration: null,
+      duration: trackedTransaction.duration ?? null,
       isClosable: true,
       render: ({ ...rest }) => <Toast {...rest} />,
     })
@@ -175,14 +215,21 @@ export function _useRecentTransactions() {
     setTransactions(updatedCache)
     updateLocalStorage(updatedCache)
 
+    const duration = updatePayload.duration
+
     // update the relevant toast too
     if (updatedCachedTransaction.toastId) {
+      if (updatePayload.status === 'timeout' || updatePayload.status === 'unknown') {
+        // Close the toast as these errors are shown as alerts inside the TransactionStepButton
+        return toast.close(updatedCachedTransaction.toastId)
+      }
+
       toast.update(updatedCachedTransaction.toastId, {
         status: TransactionStatusToastStatusMapping[updatePayload.status],
         title: updatedCachedTransaction.label,
         description: getDescriptionFor(updatedCachedTransaction),
         isClosable: true,
-        duration: secs(10).toMs(),
+        duration: duration || duration === null ? duration : secs(10).toMs(),
         render: ({ ...rest }) => <Toast {...rest} />,
       })
     }

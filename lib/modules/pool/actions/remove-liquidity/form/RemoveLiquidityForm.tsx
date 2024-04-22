@@ -104,7 +104,7 @@ export function RemoveLiquidityForm() {
                   currentOption={activeTab}
                   options={TABS}
                   onChange={toggleTab}
-                  size="lg"
+                  size="xxs"
                 />
                 <Tooltip label="Remove liquidity type" fontSize="sm">
                   <InfoOutlineIcon color="grayText" />
@@ -154,7 +154,8 @@ export function RemoveLiquidityForm() {
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={isDisabled || simulationQuery.isLoading || simulationQuery.isError}
+                isDisabled={isDisabled}
+                isLoading={simulationQuery.isLoading || priceImpactQuery.isLoading}
                 onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
               >
                 Next

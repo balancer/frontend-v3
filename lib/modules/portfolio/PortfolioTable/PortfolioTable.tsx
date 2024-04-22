@@ -6,6 +6,9 @@ import { PortfolioTableRow } from './PortfolioTableRow'
 import { HStack, Heading, Stack } from '@chakra-ui/react'
 import { useMemo, useState } from 'react'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
+import { useOnchainUserPoolBalances } from '../../pool/queries/useOnchainUserPoolBalances'
+import { Pool } from '../../pool/usePool'
+import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 
 export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr'
 export interface PortfolioSortingData {
@@ -48,6 +51,9 @@ const rowProps = {
 
 export function PortfolioTable() {
   const { portfolioData, isLoadingPortfolio } = usePortfolio()
+  // To-Do: fix pool type
+  const { data: poolsWithOnchainUserBalances, isLoading: isLoadingOnchainUserBalances } =
+    useOnchainUserPoolBalances(portfolioData.pools as unknown as Pool[])
 
   const [currentSortingObj, setCurrentSortingObj] = useState<PortfolioSortingData>({
     id: 'staking',
@@ -56,7 +62,7 @@ export function PortfolioTable() {
 
   const sortedPools = useMemo(() => {
     if (!portfolioData?.pools) return []
-    const arr = [...portfolioData.pools]
+    const arr = [...poolsWithOnchainUserBalances]
 
     return arr.sort((a, b) => {
       if (currentSortingObj.id === 'staking') {
@@ -94,33 +100,35 @@ export function PortfolioTable() {
 
       return 0
     })
-  }, [currentSortingObj, portfolioData.pools])
+  }, [currentSortingObj, poolsWithOnchainUserBalances, portfolioData?.pools])
 
   return (
-    <Stack gap={5}>
-      <HStack>
-        <Heading size="lg">Balancer portfolio</Heading>
-      </HStack>
-      <PaginatedTable
-        items={sortedPools}
-        loading={isLoadingPortfolio}
-        renderTableHeader={() => (
-          <PortfolioTableHeader
-            currentSortingObj={currentSortingObj}
-            setCurrentSortingObj={setCurrentSortingObj}
-            {...rowProps}
-          />
-        )}
-        renderTableRow={(item: PoolListItem, index) => {
-          return <PortfolioTableRow keyValue={index} pool={item} {...rowProps} />
-        }}
-        showPagination={false}
-        paginationProps={null}
-        w={{ base: '100vw', lg: 'full' }}
-        alignItems="flex-start"
-        position="relative"
-        left={{ base: '-4px', sm: '0' }}
-      />
-    </Stack>
+    <FadeInOnView>
+      <Stack gap={5}>
+        <HStack>
+          <Heading size="lg">Balancer portfolio</Heading>
+        </HStack>
+        <PaginatedTable
+          items={sortedPools}
+          loading={isLoadingPortfolio || isLoadingOnchainUserBalances}
+          renderTableHeader={() => (
+            <PortfolioTableHeader
+              currentSortingObj={currentSortingObj}
+              setCurrentSortingObj={setCurrentSortingObj}
+              {...rowProps}
+            />
+          )}
+          renderTableRow={(item: PoolListItem, index) => {
+            return <PortfolioTableRow keyValue={index} pool={item} {...rowProps} />
+          }}
+          showPagination={false}
+          paginationProps={null}
+          w={{ base: '100vw', lg: 'full' }}
+          alignItems="flex-start"
+          position="relative"
+          left={{ base: '-4px', sm: '0' }}
+        />
+      </Stack>
+    </FadeInOnView>
   )
 }

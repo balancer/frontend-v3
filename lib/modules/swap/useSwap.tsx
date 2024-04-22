@@ -346,10 +346,11 @@ export function _useSwap() {
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
-    [simulationQuery.isLoading, 'Swap is loading'],
     [!validAmountOut, 'Invalid amount out'],
     [needsToAcceptHighPI, 'Accept high price impact first'],
-    [hasValidationErrors, 'Invalid input']
+    [hasValidationErrors, 'Invalid input'],
+    [simulationQuery.isError, 'Error fetching swap'],
+    [simulationQuery.isLoading, 'Fetching swap...']
   )
 
   return {

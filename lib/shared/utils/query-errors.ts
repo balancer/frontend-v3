@@ -7,6 +7,7 @@ import {
   stringifyHumanAmountsIn,
 } from '@/lib/modules/pool/actions/add-liquidity/queries/add-liquidity-keys'
 import { RemoveLiquidityParams } from '@/lib/modules/pool/actions/remove-liquidity/queries/remove-liquidity-keys'
+import { SimulateSwapParams } from '@/lib/modules/swap/queries/useSimulateSwapQuery'
 
 /**
  * Metadata to be added to the captured Sentry error
@@ -35,6 +36,14 @@ export function captureRemoveLiquidityHandlerError(
   captureSentryError(error, createRemoveHandlerMetadata('HandlerQueryError', errorMessage, params))
 }
 
+export function captureSwapHandlerError(
+  error: unknown,
+  errorMessage: string,
+  params: SimulateSwapParams
+) {
+  captureSentryError(error, createSwapHandlerMetadata('HandlerQueryError', errorMessage, params))
+}
+
 /**
  * Used by all wagmi managed queries to capture simulation errors with sentry metadata
  */
@@ -54,7 +63,12 @@ export function captureWagmiExecutionError(error: unknown, errorMessage: string,
 /**
  * Used by all queries to capture fatal sentry errors with metadata
  */
-function captureFatalError(error: unknown, errorName: string, errorMessage: string, extra: Extras) {
+export function captureFatalError(
+  error: unknown,
+  errorName: string,
+  errorMessage: string,
+  extra: Extras
+) {
   captureSentryError(error, createFatalMetadata(errorName, errorMessage, extra))
 }
 
@@ -87,6 +101,23 @@ function createRemoveHandlerMetadata(
   const extra: Extras = {
     handler: params.handler.constructor.name,
     params,
+  }
+  return createFatalMetadata(errorName, errorMessage, extra)
+}
+
+/**
+ * Creates sentry metadata for errors in swap handlers
+ */
+function createSwapHandlerMetadata(
+  errorName: string,
+  errorMessage: string,
+  params: SimulateSwapParams
+) {
+  const extra: Extras = {
+    handler: params.handler.constructor.name,
+    params: {
+      ...params.swapInputs,
+    },
   }
   return createFatalMetadata(errorName, errorMessage, extra)
 }
