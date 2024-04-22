@@ -8,6 +8,7 @@ type Props = {
   heightPx?: string
   variant: ZenGardenVariant
   subdued?: boolean
+  repetitions?: number
 } & BoxProps
 
 const commonProps = (subdued = false) =>
@@ -79,11 +80,12 @@ export function ZenGarden({
   variant,
   transform,
   subdued = false,
+  repetitions = 8,
   ...rest
 }: Props) {
   const shapeProps = getZenGardenProps(variant, sizePx, heightPx || sizePx, subdued)
 
-  return [...Array(8).keys()].map((_, i) => (
+  return [...Array(repetitions).keys()].map((_, i) => (
     <Box
       zIndex={0}
       key={`zen-garden-${variant}-${i}`}
@@ -98,21 +100,31 @@ export function PoolZenGarden({
   poolType,
   sizePx,
   subdued = false,
+  repetitions,
 }: {
   poolType?: GqlPoolType
   sizePx: string
   subdued?: boolean
+  repetitions?: number
 }) {
   if (!poolType) {
-    return <ZenGarden subdued={subdued} variant="circle" sizePx={sizePx} />
+    return (
+      <ZenGarden repetitions={repetitions} subdued={subdued} variant="circle" sizePx={sizePx} />
+    )
   }
   if (isWeighted(poolType)) {
-    return <ZenGarden subdued={subdued} variant="circle" sizePx={sizePx} />
+    return (
+      <ZenGarden repetitions={repetitions} subdued={subdued} variant="circle" sizePx={sizePx} />
+    )
   }
   if (isStable(poolType)) {
-    return <ZenGarden subdued={subdued} variant="square" sizePx={sizePx} />
+    return (
+      <ZenGarden repetitions={repetitions} subdued={subdued} variant="square" sizePx={sizePx} />
+    )
   }
   if (isClp(poolType)) {
-    return <ZenGarden subdued={subdued} variant="diamond" sizePx={sizePx} />
+    return (
+      <ZenGarden repetitions={repetitions} subdued={subdued} variant="diamond" sizePx={sizePx} />
+    )
   }
 }
