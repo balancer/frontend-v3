@@ -17,7 +17,7 @@ import {
   Box,
   Text,
 } from '@chakra-ui/react'
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useSwap } from './useSwap'
 import { useTokens } from '../tokens/useTokens'
 import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
@@ -36,7 +36,13 @@ import { motion, easeOut } from 'framer-motion'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { ErrorAlert } from '@/lib/shared/components/errors/ErrorAlert'
 
-export function SwapForm() {
+type Props = {
+  pathTokenIn?: string
+  pathTokenOut?: string
+  pathAmountIn?: string
+}
+
+export function SwapForm({ pathTokenIn, pathTokenOut, pathAmountIn }: Props) {
   const {
     tokenIn,
     tokenOut,
@@ -55,6 +61,8 @@ export function SwapForm() {
     setTokenOut,
     switchTokens,
     setNeedsToAcceptHighPI,
+    resetSwapAmounts,
+    setDefaultTokens,
   } = useSwap()
   const { getTokensByChain } = useTokens()
   const tokenSelectDisclosure = useDisclosure()
@@ -90,6 +98,17 @@ export function SwapForm() {
     setTokenSelectKey(tokenSelectKey)
     tokenSelectDisclosure.onOpen()
   }
+
+  useEffect(() => {
+    resetSwapAmounts()
+
+    if (pathTokenIn) setTokenIn(pathTokenIn as Address)
+    if (pathTokenOut) setTokenOut(pathTokenOut as Address)
+    if (pathAmountIn) setTokenInAmount(pathAmountIn as HumanAmount)
+
+    if (!tokenIn && !tokenOut) setDefaultTokens()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <FadeInOnView>

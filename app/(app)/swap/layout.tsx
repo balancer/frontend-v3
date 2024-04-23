@@ -1,15 +1,13 @@
 'use client'
 
-import { SwapForm } from '@/lib/modules/swap/SwapForm'
 import { SwapProvider } from '@/lib/modules/swap/useSwap'
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInputsValidation'
+import { PropsWithChildren } from 'react'
 
-export default function SwapPage() {
+export default function SwapLayout({ children }: PropsWithChildren) {
   return (
     <TokenInputsValidationProvider>
-      <SwapProvider>
-        <SwapForm />
-      </SwapProvider>
+      <SwapProvider>{children}</SwapProvider>
     </TokenInputsValidationProvider>
   )
 }

@@ -4,7 +4,7 @@
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { GqlChain, GqlSorSwapType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { ApolloClient, makeVar, useApolloClient, useReactiveVar } from '@apollo/client'
+import { ApolloClient, useApolloClient, useReactiveVar } from '@apollo/client'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { Address, isAddress, parseUnits } from 'viem'
 import { emptyAddress } from '../web3/contracts/wagmi-helpers'
@@ -261,6 +261,26 @@ export function _useSwap() {
     }
   }
 
+  function resetSwapAmounts() {
+    swapStateVar({
+      ...swapState,
+      tokenIn: {
+        ...swapState.tokenIn,
+        amount: '',
+        scaledAmount: BigInt(0),
+      },
+      tokenOut: {
+        ...swapState.tokenOut,
+        amount: '',
+        scaledAmount: BigInt(0),
+      },
+    })
+  }
+
+  function setDefaultTokens() {
+    swapStateVar(getDefaultTokenState(swapState.selectedChain))
+  }
+
   function scaleTokenAmount(amount: string, token: GqlToken | undefined): bigint {
     if (amount === '') return parseUnits('0', 18)
     if (!token) throw new Error('Cant scale amount without token metadata')
@@ -300,30 +320,6 @@ export function _useSwap() {
     closeModal: previewModalDisclosure.onClose,
   })
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(swapStepConfigs)
-
-  // On first render...
-  useEffect(() => {
-    // reset token amounts
-    swapStateVar({
-      ...swapState,
-      tokenIn: {
-        ...swapState.tokenIn,
-        amount: '',
-        scaledAmount: BigInt(0),
-      },
-      tokenOut: {
-        ...swapState.tokenOut,
-        amount: '',
-        scaledAmount: BigInt(0),
-      },
-    })
-
-    // If no tokenIn or tokenOut, set default tokens
-    if (!swapState.tokenIn.address && !swapState.tokenOut.address) {
-      swapStateVar(getDefaultTokenState(swapState.selectedChain))
-    }
-    // else tokens from local state will be set
-  }, [])
 
   // When a new simulation is triggered, update the state
   useEffect(() => {
@@ -368,6 +364,8 @@ export function _useSwap() {
     swapStepConfigs,
     isNativeAssetIn,
     swapAction,
+    resetSwapAmounts,
+    setDefaultTokens,
     useOnStepCompleted,
     setTokenSelectKey,
     setSelectedChain,
