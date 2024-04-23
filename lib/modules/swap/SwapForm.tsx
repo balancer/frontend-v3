@@ -105,7 +105,7 @@ export function SwapForm() {
           >
             <Card rounded="xl">
               <VStack spacing="lg" align="start">
-                <HStack w="full" justify="space-between">
+                <HStack w="full" justify="space-between" zIndex={11}>
                   <Heading fontWeight="bold" size="h4">
                     {capitalize(swapAction)}
                   </Heading>
