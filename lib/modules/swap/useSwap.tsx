@@ -23,6 +23,7 @@ import {
   SimulateSwapResponse,
   SwapAction,
   SwapState,
+  SwapTokenInput,
 } from './swap.types'
 import { SwapHandler } from './handlers/Swap.handler'
 import { useIterateSteps } from '../transactions/transaction-steps/useIterateSteps'
@@ -39,9 +40,18 @@ import {
 } from './wrap.helpers'
 import { useTokenInputsValidation } from '../tokens/useTokenInputsValidation'
 import { useMakeVarPersisted } from '@/lib/shared/hooks/useMakeVarPersisted'
+import { HumanAmount } from '@balancer/sdk'
+import { ChainSlug, chainToSlugMap, slugToChainMap } from '../pool/pool.utils'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
+
+type PathParams = {
+  chain?: string
+  tokenIn?: string
+  tokenOut?: string
+  amountIn?: string
+}
 
 function selectSwapHandler(
   tokenInAddress: Address,
@@ -59,7 +69,7 @@ function selectSwapHandler(
   return new DefaultSwapHandler(apolloClient)
 }
 
-export function _useSwap() {
+export function _useSwap(pathParams: PathParams) {
   const swapStateVar = useMakeVarPersisted<SwapState>(
     {
       tokenIn: {
@@ -281,6 +291,26 @@ export function _useSwap() {
     swapStateVar(getDefaultTokenState(swapState.selectedChain))
   }
 
+  function replaceUrlPath(
+    selectedChain: GqlChain,
+    tokenIn: SwapTokenInput,
+    tokenOut: SwapTokenInput
+  ) {
+    const chainSlug = chainToSlugMap[selectedChain]
+    const newUrl = [window.location.origin, '/swap']
+
+    if (chainSlug) newUrl.push(`/${chainSlug}`)
+    if (tokenIn.address) newUrl.push(`/${tokenIn.address}`)
+    if (tokenIn.address && tokenOut.address) {
+      console.log('tokenOut', tokenOut.address)
+
+      newUrl.push(`/${tokenOut.address}`)
+    }
+    if (tokenIn.address && tokenOut.address && tokenIn.amount) newUrl.push(`/${tokenIn.amount}`)
+
+    window.history.replaceState({}, '', newUrl.join(''))
+  }
+
   function scaleTokenAmount(amount: string, token: GqlToken | undefined): bigint {
     if (amount === '') return parseUnits('0', 18)
     if (!token) throw new Error('Cant scale amount without token metadata')
@@ -321,6 +351,22 @@ export function _useSwap() {
   })
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(swapStepConfigs)
 
+  // Set state on initial load
+  useEffect(() => {
+    resetSwapAmounts()
+
+    console.log('pathParams', pathParams)
+
+    if (pathParams.chain && pathParams.chain && slugToChainMap[pathParams.chain as ChainSlug]) {
+      setSelectedChain(slugToChainMap[pathParams.chain as ChainSlug])
+    }
+    if (pathParams.tokenIn) setTokenIn(pathParams.tokenIn as Address)
+    if (pathParams.tokenOut) setTokenOut(pathParams.tokenOut as Address)
+    if (pathParams.amountIn) setTokenInAmount(pathParams.amountIn as HumanAmount)
+
+    if (!swapState.tokenIn.address && !swapState.tokenOut.address) setDefaultTokens()
+  }, [])
+
   // When a new simulation is triggered, update the state
   useEffect(() => {
     if (simulationQuery.data) {
@@ -339,6 +385,11 @@ export function _useSwap() {
     const wrapper = getWrapperForBaseToken(swapState.tokenOut.address, swapState.selectedChain)
     if (wrapper) setTokenIn(wrapper.wrappedToken)
   }, [swapState.tokenOut.address])
+
+  // Update the URL path when the tokens change
+  useEffect(() => {
+    replaceUrlPath(swapState.selectedChain, swapState.tokenIn, swapState.tokenOut)
+  }, [swapState.selectedChain, swapState.tokenIn, swapState.tokenOut, swapState.tokenIn.amount])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
@@ -364,8 +415,6 @@ export function _useSwap() {
     swapStepConfigs,
     isNativeAssetIn,
     swapAction,
-    resetSwapAmounts,
-    setDefaultTokens,
     useOnStepCompleted,
     setTokenSelectKey,
     setSelectedChain,
@@ -378,8 +427,12 @@ export function _useSwap() {
   }
 }
 
-export function SwapProvider({ children }: PropsWithChildren) {
-  const hook = _useSwap()
+type Props = PropsWithChildren<{
+  pathParams: PathParams
+}>
+
+export function SwapProvider({ pathParams, children }: Props) {
+  const hook = _useSwap(pathParams)
   return <SwapContext.Provider value={hook}>{children}</SwapContext.Provider>
 }
 
