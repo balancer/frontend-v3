@@ -1,10 +1,9 @@
 import { Badge, HStack } from '@chakra-ui/react'
 import React from 'react'
-import { usePool } from '../usePool'
+import { Pool, usePool } from '../usePool'
 import { isBoosted, isGyro, isStable, isWeighted } from '../pool.helpers'
-import { GqlPoolUnion } from '@/lib/shared/services/api/generated/graphql'
 
-function getPoolBadges(pool: GqlPoolUnion) {
+function getPoolBadges(pool: Pool) {
   const badges = []
 
   if (pool.version === 2) badges.push('V3')
