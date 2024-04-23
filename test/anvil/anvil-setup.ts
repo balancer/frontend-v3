@@ -1,4 +1,5 @@
-import { getNetworkConfig } from '@/lib/config/app.config'
+import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
+import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
@@ -38,7 +39,7 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
   MAINNET: {
     networkName: 'MAINNET',
     rpcEnv: 'NEXT_ETHEREUM_RPC_URL',
-    fallBackRpc: getNetworkConfig(GqlChain.Mainnet).rpcUrl,
+    fallBackRpc: getDefaultRpcUrl(getChainId(GqlChain.Mainnet)),
     port: ANVIL_PORTS.MAINNET,
     // From time to time this block gets outdated having this kind of error in integration tests:
     // ContractFunctionExecutionError: The contract function "queryJoin" returned no data ("0x").
@@ -47,7 +48,7 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
   POLYGON: {
     networkName: 'POLYGON',
     rpcEnv: 'NEXT_POLYGON_RPC_URL',
-    fallBackRpc: getNetworkConfig(GqlChain.Polygon).rpcUrl,
+    fallBackRpc: getDefaultRpcUrl(getChainId(GqlChain.Polygon)),
     port: ANVIL_PORTS.POLYGON,
     // Note - this has to be >= highest blockNo used in tests
     forkBlockNumber: 44215395n,
@@ -56,7 +57,7 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
     networkName: 'FANTOM',
     rpcEnv: 'NEXT_FANTOM_RPC_URL',
     // Public Fantom RPCs are usually unreliable
-    fallBackRpc: getNetworkConfig(GqlChain.Fantom).rpcUrl,
+    fallBackRpc: getDefaultRpcUrl(getChainId(GqlChain.Fantom)),
     port: ANVIL_PORTS.FANTOM,
     forkBlockNumber: 65313450n,
   },
