@@ -43,11 +43,22 @@ import { UserSettingsProvider } from '../user/settings/useUserSettings'
 function buildChain(viemChain: Chain, rpcOverride?: string): Chain {
   const { rpcUrl } = getNetworkConfig(viemChain.id)
 
+  let defaultRpcUrls = viemChain.rpcUrls.default.http
+  let publicRpcUrls = viemChain.rpcUrls.public.http
+
+  if (rpcOverride) {
+    defaultRpcUrls = [rpcOverride, ...defaultRpcUrls]
+    publicRpcUrls = [rpcOverride, ...publicRpcUrls]
+  } else if (rpcUrl) {
+    defaultRpcUrls = [rpcUrl, ...defaultRpcUrls]
+    publicRpcUrls = [rpcUrl, ...publicRpcUrls]
+  }
+
   return defineChain({
     ...viemChain,
     rpcUrls: {
-      default: { http: [rpcOverride || rpcUrl, ...viemChain.rpcUrls.default.http] },
-      public: { http: [rpcOverride || rpcUrl, ...viemChain.rpcUrls.public.http] },
+      default: { http: defaultRpcUrls },
+      public: { http: publicRpcUrls },
     },
   })
 }

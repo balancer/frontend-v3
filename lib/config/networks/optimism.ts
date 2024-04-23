@@ -10,7 +10,6 @@ const networkConfig: NetworkConfig = {
   shortName: 'Optimism',
   chain: GqlChain.Optimism,
   iconPath: '/images/chains/OPTIMISM.svg',
-  rpcUrl: 'https://optimism-mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
   blockExplorer: {
     baseUrl: 'https://optimistic.etherscan.io',
     name: 'Etherscan',

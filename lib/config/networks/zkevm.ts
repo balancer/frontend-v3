@@ -10,7 +10,6 @@ const networkConfig: NetworkConfig = {
   shortName: 'zkEVM',
   chain: GqlChain.Zkevm,
   iconPath: '/images/chains/ZKEVM.svg',
-  rpcUrl: 'https://zkevm-rpc.com',
   blockExplorer: {
     baseUrl: 'https://zkevm.polygonscan.com',
     name: 'Polygonscan',

@@ -53,7 +53,7 @@ export interface NetworkConfig {
   shortName: string
   chain: GqlChain
   iconPath: string
-  rpcUrl: string
+  rpcUrl?: string
   blockExplorer: BlockExplorerConfig
   tokens: TokensConfig
   contracts: ContractsConfig
