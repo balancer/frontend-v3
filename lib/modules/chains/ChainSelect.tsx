@@ -1,6 +1,6 @@
 'use client'
 
-import { getChainName } from '@/lib/config/app.config'
+import { getChainShortName } from '@/lib/config/app.config'
 import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
@@ -24,7 +24,7 @@ const networkOptions: ChainOption[] = PROJECT_CONFIG.supportedNetworks.map(netwo
   label: (
     <HStack>
       <NetworkIcon chain={network} size={6} />
-      <Text>{getChainName(network)}</Text>
+      <Text>{getChainShortName(network)}</Text>
     </HStack>
   ),
   value: network,
