@@ -23,7 +23,6 @@ import {
   SimulateSwapResponse,
   SwapAction,
   SwapState,
-  SwapTokenInput,
 } from './swap.types'
 import { SwapHandler } from './handlers/Swap.handler'
 import { useIterateSteps } from '../transactions/transaction-steps/useIterateSteps'
@@ -291,24 +290,17 @@ export function _useSwap(pathParams: PathParams) {
     swapStateVar(getDefaultTokenState(swapState.selectedChain))
   }
 
-  function replaceUrlPath(
-    selectedChain: GqlChain,
-    tokenIn: SwapTokenInput,
-    tokenOut: SwapTokenInput
-  ) {
+  function replaceUrlPath() {
+    const { selectedChain, tokenIn, tokenOut } = swapState
     const chainSlug = chainToSlugMap[selectedChain]
-    const newUrl = [window.location.origin, '/swap']
+    const newPath = ['/swap']
 
-    if (chainSlug) newUrl.push(`/${chainSlug}`)
-    if (tokenIn.address) newUrl.push(`/${tokenIn.address}`)
-    if (tokenIn.address && tokenOut.address) {
-      console.log('tokenOut', tokenOut.address)
+    if (chainSlug) newPath.push(`/${chainSlug}`)
+    if (tokenIn.address) newPath.push(`/${tokenIn.address}`)
+    if (tokenIn.address && tokenOut.address) newPath.push(`/${tokenOut.address}`)
+    if (tokenIn.address && tokenOut.address && tokenIn.amount) newPath.push(`/${tokenIn.amount}`)
 
-      newUrl.push(`/${tokenOut.address}`)
-    }
-    if (tokenIn.address && tokenOut.address && tokenIn.amount) newUrl.push(`/${tokenIn.amount}`)
-
-    window.history.replaceState({}, '', newUrl.join(''))
+    window.history.replaceState({}, '', newPath.join(''))
   }
 
   function scaleTokenAmount(amount: string, token: GqlToken | undefined): bigint {
@@ -355,14 +347,14 @@ export function _useSwap(pathParams: PathParams) {
   useEffect(() => {
     resetSwapAmounts()
 
-    console.log('pathParams', pathParams)
+    const { chain, tokenIn, tokenOut, amountIn } = pathParams
 
-    if (pathParams.chain && pathParams.chain && slugToChainMap[pathParams.chain as ChainSlug]) {
-      setSelectedChain(slugToChainMap[pathParams.chain as ChainSlug])
+    if (chain && slugToChainMap[chain as ChainSlug]) {
+      setSelectedChain(slugToChainMap[chain as ChainSlug])
     }
-    if (pathParams.tokenIn) setTokenIn(pathParams.tokenIn as Address)
-    if (pathParams.tokenOut) setTokenOut(pathParams.tokenOut as Address)
-    if (pathParams.amountIn) setTokenInAmount(pathParams.amountIn as HumanAmount)
+    if (tokenIn && isAddress(tokenIn)) setTokenIn(tokenIn as Address)
+    if (tokenOut && isAddress(tokenOut)) setTokenOut(tokenOut as Address)
+    if (amountIn && bn(amountIn).gt(0)) setTokenInAmount(amountIn as HumanAmount)
 
     if (!swapState.tokenIn.address && !swapState.tokenOut.address) setDefaultTokens()
   }, [])
@@ -388,7 +380,7 @@ export function _useSwap(pathParams: PathParams) {
 
   // Update the URL path when the tokens change
   useEffect(() => {
-    replaceUrlPath(swapState.selectedChain, swapState.tokenIn, swapState.tokenOut)
+    replaceUrlPath()
   }, [swapState.selectedChain, swapState.tokenIn, swapState.tokenOut, swapState.tokenIn.amount])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
