@@ -26,7 +26,7 @@ import {
 } from './swap.types'
 import { SwapHandler } from './handlers/Swap.handler'
 import { useIterateSteps } from '../transactions/transaction-steps/useIterateSteps'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { isSameAddress, selectByAddress } from '@/lib/shared/utils/addresses'
 import { useVault } from '@/lib/shared/hooks/useVault'
 import { NativeWrapHandler } from './handlers/NativeWrap.handler'
 import {
@@ -41,6 +41,7 @@ import { useTokenInputsValidation } from '../tokens/useTokenInputsValidation'
 import { useMakeVarPersisted } from '@/lib/shared/hooks/useMakeVarPersisted'
 import { HumanAmount } from '@balancer/sdk'
 import { ChainSlug, chainToSlugMap, slugToChainMap } from '../pool/pool.utils'
+import { invert } from 'lodash'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -293,26 +294,20 @@ export function _useSwap(pathParams: PathParams) {
 
   function replaceUrlPath() {
     const { selectedChain, tokenIn, tokenOut, swapType } = swapState
+    const { popularTokens } = networkConfig.tokens
     const chainSlug = chainToSlugMap[selectedChain]
     const newPath = ['/swap']
 
+    const _tokenIn = selectByAddress(popularTokens || {}, tokenIn.address) || tokenIn.address
+    const _tokenOut = selectByAddress(popularTokens || {}, tokenOut.address) || tokenOut.address
+
     if (chainSlug) newPath.push(`/${chainSlug}`)
-    if (tokenIn.address) newPath.push(`/${tokenIn.address}`)
-    if (tokenIn.address && tokenOut.address) newPath.push(`/${tokenOut.address}`)
-    if (
-      tokenIn.address &&
-      tokenOut.address &&
-      tokenIn.amount &&
-      swapType === GqlSorSwapType.ExactIn
-    ) {
+    if (_tokenIn) newPath.push(`/${_tokenIn}`)
+    if (_tokenIn && _tokenOut) newPath.push(`/${_tokenOut}`)
+    if (_tokenIn && _tokenOut && tokenIn.amount && swapType === GqlSorSwapType.ExactIn) {
       newPath.push(`/${tokenIn.amount}`)
     }
-    if (
-      tokenIn.address &&
-      tokenOut.address &&
-      tokenOut.amount &&
-      swapType === GqlSorSwapType.ExactOut
-    ) {
+    if (_tokenIn && _tokenOut && tokenOut.amount && swapType === GqlSorSwapType.ExactOut) {
       newPath.push(`/0/${tokenOut.amount}`)
     }
 
@@ -364,12 +359,24 @@ export function _useSwap(pathParams: PathParams) {
     resetSwapAmounts()
 
     const { chain, tokenIn, tokenOut, amountIn, amountOut } = pathParams
+    const { popularTokens } = networkConfig.tokens
+    const symbolToAddressMap = invert(popularTokens || {}) as Record<string, Address>
 
     if (chain && slugToChainMap[chain as ChainSlug]) {
       setSelectedChain(slugToChainMap[chain as ChainSlug])
     }
-    if (tokenIn && isAddress(tokenIn)) setTokenIn(tokenIn as Address)
-    if (tokenOut && isAddress(tokenOut)) setTokenOut(tokenOut as Address)
+    if (tokenIn) {
+      if (isAddress(tokenIn)) setTokenIn(tokenIn as Address)
+      else if (symbolToAddressMap[tokenIn] && isAddress(symbolToAddressMap[tokenIn])) {
+        setTokenIn(symbolToAddressMap[tokenIn])
+      }
+    }
+    if (tokenOut) {
+      if (isAddress(tokenOut)) setTokenOut(tokenOut as Address)
+      else if (symbolToAddressMap[tokenOut] && isAddress(symbolToAddressMap[tokenOut])) {
+        setTokenOut(symbolToAddressMap[tokenOut])
+      }
+    }
     if (amountIn && !amountOut && bn(amountIn).gt(0)) setTokenInAmount(amountIn as HumanAmount)
     else if (amountOut && bn(amountOut).gt(0)) setTokenOutAmount(amountOut as HumanAmount)
 
