@@ -47,15 +47,15 @@ const networkConfig: NetworkConfig = {
     defaultSwapTokens: {
       tokenIn: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     },
-    popularTokens: [
-      '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', // ETH
-      '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', // WETH
-      '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC
-      '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI
-      '0xdAC17F958D2ee523a2206206994597C13D831ec7', // USDT
-      '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', // WBTC
-      '0xba100000625a3754423978a60c9317c58a424e3D', // BAL
-    ],
+    popularTokens: {
+      '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee': 'ETH',
+      '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2': 'WETH',
+      '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': 'USDC',
+      '0x6B175474E89094C44Da98b954EedeAC495271d0F': 'DAI',
+      '0xdAC17F958D2ee523a2206206994597C13D831ec7': 'USDT',
+      '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599': 'WBTC',
+      '0xba100000625a3754423978a60c9317c58a424e3D': 'BAL',
+    },
   },
   contracts: {
     multicall2: '0x5ba1e12693dc8f9c48aad8770482f4739beed696',
