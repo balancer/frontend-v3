@@ -50,6 +50,7 @@ type PathParams = {
   tokenIn?: string
   tokenOut?: string
   amountIn?: string
+  amountOut?: string
 }
 
 function selectSwapHandler(
@@ -291,14 +292,29 @@ export function _useSwap(pathParams: PathParams) {
   }
 
   function replaceUrlPath() {
-    const { selectedChain, tokenIn, tokenOut } = swapState
+    const { selectedChain, tokenIn, tokenOut, swapType } = swapState
     const chainSlug = chainToSlugMap[selectedChain]
     const newPath = ['/swap']
 
     if (chainSlug) newPath.push(`/${chainSlug}`)
     if (tokenIn.address) newPath.push(`/${tokenIn.address}`)
     if (tokenIn.address && tokenOut.address) newPath.push(`/${tokenOut.address}`)
-    if (tokenIn.address && tokenOut.address && tokenIn.amount) newPath.push(`/${tokenIn.amount}`)
+    if (
+      tokenIn.address &&
+      tokenOut.address &&
+      tokenIn.amount &&
+      swapType === GqlSorSwapType.ExactIn
+    ) {
+      newPath.push(`/${tokenIn.amount}`)
+    }
+    if (
+      tokenIn.address &&
+      tokenOut.address &&
+      tokenOut.amount &&
+      swapType === GqlSorSwapType.ExactOut
+    ) {
+      newPath.push(`/0/${tokenOut.amount}`)
+    }
 
     window.history.replaceState({}, '', newPath.join(''))
   }
@@ -347,14 +363,15 @@ export function _useSwap(pathParams: PathParams) {
   useEffect(() => {
     resetSwapAmounts()
 
-    const { chain, tokenIn, tokenOut, amountIn } = pathParams
+    const { chain, tokenIn, tokenOut, amountIn, amountOut } = pathParams
 
     if (chain && slugToChainMap[chain as ChainSlug]) {
       setSelectedChain(slugToChainMap[chain as ChainSlug])
     }
     if (tokenIn && isAddress(tokenIn)) setTokenIn(tokenIn as Address)
     if (tokenOut && isAddress(tokenOut)) setTokenOut(tokenOut as Address)
-    if (amountIn && bn(amountIn).gt(0)) setTokenInAmount(amountIn as HumanAmount)
+    if (amountIn && !amountOut && bn(amountIn).gt(0)) setTokenInAmount(amountIn as HumanAmount)
+    else if (amountOut && bn(amountOut).gt(0)) setTokenOutAmount(amountOut as HumanAmount)
 
     if (!swapState.tokenIn.address && !swapState.tokenOut.address) setDefaultTokens()
   }, [])
