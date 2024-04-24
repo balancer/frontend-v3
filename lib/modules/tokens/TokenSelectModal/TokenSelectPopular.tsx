@@ -19,7 +19,7 @@ export function TokenSelectPopular({ chain, excludeNativeAsset, onTokenSelect }:
   const { getToken, nativeAssetFilter } = useTokens()
 
   const tokens = useMemo(() => {
-    const tokens = Object.keys(popularTokens || [])
+    const tokens = Object.keys(popularTokens || {})
       .slice(0, 7)
       ?.map(token => getToken(token, chain))
       .filter(Boolean) as GqlToken[]
