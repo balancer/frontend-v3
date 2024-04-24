@@ -1,11 +1,12 @@
 'use client'
 
 import { Navbar } from '@/lib/shared/components/navs/Navbar'
-import { Box, VStack, Card, Text } from '@chakra-ui/react'
+import { Box, VStack, Card } from '@chakra-ui/react'
 import { PropsWithChildren } from 'react'
 import { PoolActionsNav } from './PoolActionsNav'
 import { usePool } from '../usePool'
 import { usePoolRedirect } from '../pool.hooks'
+import { PoolName } from '../PoolName'
 
 type Props = PropsWithChildren & { isFlowComplete?: boolean }
 
@@ -35,13 +36,7 @@ export function PoolActionsLayout({ children, isFlowComplete = false }: Props) {
         zIndex={101}
         onClick={redirectToPoolPage}
       >
-        <Navbar
-          leftSlot={
-            <Text color="white" onClick={redirectToPoolPage} cursor="pointer">
-              {pool.name}
-            </Text>
-          }
-        />
+        <Navbar leftSlot={<PoolName pool={pool} />} />
         <Box w="full" px={['0', 'md']} flexGrow="1">
           <Card
             variant="level1"
