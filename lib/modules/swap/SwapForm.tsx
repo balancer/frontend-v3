@@ -35,6 +35,7 @@ import { capitalize } from 'lodash'
 import { motion, easeOut } from 'framer-motion'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { ErrorAlert } from '@/lib/shared/components/errors/ErrorAlert'
+import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
 export function SwapForm() {
   const {
@@ -61,6 +62,7 @@ export function SwapForm() {
   const nextBtn = useRef(null)
   const finalRefTokenIn = useRef(null)
   const finalRefTokenOut = useRef(null)
+  const isMounted = useIsMounted()
 
   const tokenMap = { tokenIn, tokenOut }
 
@@ -188,8 +190,8 @@ export function SwapForm() {
                       variant="secondary"
                       w="full"
                       size="lg"
-                      isDisabled={isDisabled}
-                      isLoading={simulationQuery.isLoading}
+                      isDisabled={isDisabled || !isMounted}
+                      isLoading={simulationQuery.isLoading || !isMounted}
                       onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
                     >
                       Next
