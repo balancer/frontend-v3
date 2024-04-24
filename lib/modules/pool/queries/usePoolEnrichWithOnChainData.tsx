@@ -72,13 +72,6 @@ async function updateWithOnChainBalanceData({
   clone.dynamicData.totalShares = formatUnits(supplyMap[pool.id].totalSupply, 18)
 
   for (const token of clone.poolTokens) {
-    // if (
-    //   token.__typename === 'GqlPoolTokenLinear' ||
-    //   token.__typename === 'GqlPoolTokenComposableStable'
-    // ) {
-    //   token.pool.totalShares = formatUnits(supplyMap[token.pool.id].totalSupply, 18)
-    // }
-
     const tokenBalance = formatUnits(balancesMap[pool.id].balances[token.index], token.decimals)
     token.balance = tokenBalance
   }
@@ -106,8 +99,6 @@ async function getBalanceDataForPool({
   balances: { poolId: string; balances: bigint[] }[]
   supplies: { poolId: string; totalSupply: bigint }[]
 }> {
-  const poolIds: string[] = [pool.id]
-
   const calls: {
     poolId: string
     type: 'balances' | 'supply' | 'userBalance'
@@ -117,19 +108,6 @@ async function getBalanceDataForPool({
     getBalancesCall(pool.id, vaultV2Address),
     getUserBalancesCall(pool, userAddress),
   ]
-
-  /*
-  for (const token of pool.poolTokens) {
-    if (token.__typename === 'GqlPoolTokenLinear') {
-      poolIds.push(token.pool.id)
-      calls.push(getSupplyCall(token.pool))
-      calls.push(getBalancesCall(token.pool.id, vaultV2Address))
-    } else if (token.__typename === 'GqlPoolTokenComposableStable') {
-      poolIds.push(token.pool.id)
-      calls.push(getSupplyCall(token.pool))
-      calls.push(getBalancesCall(token.pool.id, vaultV2Address))
-    }
-  }*/
 
   const response = await client.multicall({ contracts: calls.map(call => call.call) })
   const balances: { poolId: string; balances: bigint[] }[] = []
