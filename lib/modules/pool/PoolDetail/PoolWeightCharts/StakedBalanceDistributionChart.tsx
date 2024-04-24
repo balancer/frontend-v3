@@ -5,9 +5,10 @@ import { useMemo, useRef } from 'react'
 import ReactECharts from 'echarts-for-react'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import { motion } from 'framer-motion'
-import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
+import { ChartSizeValues } from './PoolWeightChart'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
+import { Pool } from '../../usePool'
 
 const smallSize: ChartSizeValues = {
   chartHeight: '250px',
@@ -32,7 +33,10 @@ const normalSize: ChartSizeValues = {
 export default function StakedBalanceDistributionChart({
   pool,
   isSmall = true,
-}: PoolWeightChartProps) {
+}: {
+  pool: Pool
+  isSmall?: boolean
+}) {
   const chartSizeValues = isSmall ? smallSize : normalSize
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const theme = useTheme()

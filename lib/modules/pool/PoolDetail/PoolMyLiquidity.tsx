@@ -239,7 +239,7 @@ export default function PoolMyLiquidity() {
             cardProps={{ position: 'relative', overflow: 'hidden' }}
             contentProps={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
           >
-            <StakedBalanceDistributionChart pool={pool} chain={pool.chain} />
+            <StakedBalanceDistributionChart pool={pool} />
             <ZenGarden variant="pill" sizePx="80%" heightPx="80%" />
           </NoisyCard>
         </GridItem>
