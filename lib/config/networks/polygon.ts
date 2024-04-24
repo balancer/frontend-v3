@@ -32,9 +32,16 @@ const networkConfig: NetworkConfig = {
     popularTokens: {
       '0x0000000000000000000000000000000000001010': 'MATIC',
       '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270': 'WMATIC',
+      '0xfa68fb4628dff1028cfec22b4162fccd0d45efb6': 'MaticX',
       '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619': 'WETH',
       '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3': 'BAL',
       '0x3a58a54c066fdc0f2d55fc9c89f0415c92ebf3c4': 'stMATIC',
+      '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174': 'USDC',
+      '0xc2132D05D31c914a87C6611C10748AEb04B58e8F': 'USDT',
+      '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063': 'DAI',
+      '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6': 'WBTC',
+      '0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39': 'LINK',
+      '0x1509706a6c66ca549ff0cb464de88231ddbe213b': 'AURA',
     },
   },
   contracts: {
