@@ -105,7 +105,7 @@ export function SwapForm() {
           >
             <Card rounded="xl">
               <VStack spacing="lg" align="start">
-                <HStack w="full" justify="space-between">
+                <HStack w="full" justify="space-between" zIndex={11}>
                   <Heading fontWeight="bold" size="h4">
                     {capitalize(swapAction)}
                   </Heading>
@@ -134,8 +134,10 @@ export function SwapForm() {
                         variant="tertiary"
                         size="sm"
                         fontSize="2xl"
-                        ml="-16px"
-                        mt="-16px"
+                        ml="-4"
+                        mt="-4"
+                        w="8"
+                        h="8"
                         isRound={true}
                         aria-label="Switch tokens"
                         icon={<Repeat size={16} />}

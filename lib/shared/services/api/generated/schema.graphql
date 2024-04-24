@@ -437,9 +437,10 @@ enum GqlPoolEventsDataRange {
 }
 
 input GqlPoolEventsFilter {
-  chainIn: [GqlChain!]
-  poolIdIn: [String!]
-  typeIn: [GqlPoolEventType!]
+  chain: GqlChain!
+  poolId: String!
+  range: GqlPoolEventsDataRange
+  typeIn: [GqlPoolEventType]
   userAddress: String
 }
 
@@ -2009,12 +2010,17 @@ type Query {
   latestSyncedBlocks: GqlLatestSyncedBlocks!
 
   """
-  Will de deprecated in favor of poolGetEvents
+  Getting swap, join and exit events
+  """
+  poolEvents(first: Int, skip: Int, where: GqlPoolEventsFilter!): [GqlPoolEvent!]!
+
+  """
+  Will de deprecated in favor of poolEvents
   """
   poolGetBatchSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolBatchSwap!]!
 
   """
-  Getting swap, join and exit events
+  Will de deprecated in favor of poolEvents
   """
   poolGetEvents(
     chain: GqlChain!
@@ -2045,7 +2051,7 @@ type Query {
   poolGetGyroPools(chains: [GqlChain!]): [GqlPoolGyro!]!
 
   """
-  Will de deprecated in favor of poolGetEvents
+  Will de deprecated in favor of poolEvents
   """
   poolGetJoinExits(first: Int, skip: Int, where: GqlPoolJoinExitFilter): [GqlPoolJoinExit!]!
 
@@ -2093,7 +2099,7 @@ type Query {
   ): [GqlPoolSnapshot!]!
 
   """
-  Will de deprecated in favor of poolGetEvents
+  Will de deprecated in favor of poolEvents
   """
   poolGetSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolSwap!]!
   protocolMetricsAggregated(chains: [GqlChain!]): GqlProtocolMetricsAggregated!

@@ -408,9 +408,10 @@ export enum GqlPoolEventsDataRange {
 }
 
 export type GqlPoolEventsFilter = {
-  chainIn?: InputMaybe<Array<GqlChain>>
-  poolIdIn?: InputMaybe<Array<Scalars['String']['input']>>
-  typeIn?: InputMaybe<Array<GqlPoolEventType>>
+  chain: GqlChain
+  poolId: Scalars['String']['input']
+  range?: InputMaybe<GqlPoolEventsDataRange>
+  typeIn?: InputMaybe<Array<InputMaybe<GqlPoolEventType>>>
   userAddress?: InputMaybe<Scalars['String']['input']>
 }
 
@@ -1788,9 +1789,11 @@ export type Query = {
   blocksGetBlocksPerYear: Scalars['Float']['output']
   contentGetNewsItems: Array<GqlContentNewsItem>
   latestSyncedBlocks: GqlLatestSyncedBlocks
-  /** Will de deprecated in favor of poolGetEvents */
-  poolGetBatchSwaps: Array<GqlPoolBatchSwap>
   /** Getting swap, join and exit events */
+  poolEvents: Array<GqlPoolEvent>
+  /** Will de deprecated in favor of poolEvents */
+  poolGetBatchSwaps: Array<GqlPoolBatchSwap>
+  /** Will de deprecated in favor of poolEvents */
   poolGetEvents: Array<GqlPoolEvent>
   /** Will de deprecated in favor of poolGetFeaturedPools */
   poolGetFeaturedPoolGroups: Array<GqlPoolFeaturedPoolGroup>
@@ -1800,7 +1803,7 @@ export type Query = {
   poolGetFxPools: Array<GqlPoolFx>
   /** Gets all gyro pools */
   poolGetGyroPools: Array<GqlPoolGyro>
-  /** Will de deprecated in favor of poolGetEvents */
+  /** Will de deprecated in favor of poolEvents */
   poolGetJoinExits: Array<GqlPoolJoinExit>
   /** Gets all linear pools */
   poolGetLinearPools: Array<GqlPoolLinear>
@@ -1812,7 +1815,7 @@ export type Query = {
   poolGetPoolsCount: Scalars['Int']['output']
   /** Gets all the snapshots for a given pool on a chain for a certain range */
   poolGetSnapshots: Array<GqlPoolSnapshot>
-  /** Will de deprecated in favor of poolGetEvents */
+  /** Will de deprecated in favor of poolEvents */
   poolGetSwaps: Array<GqlPoolSwap>
   protocolMetricsAggregated: GqlProtocolMetricsAggregated
   protocolMetricsChain: GqlProtocolMetricsChain
@@ -1857,6 +1860,12 @@ export type QueryBeetsPoolGetReliquaryFarmSnapshotsArgs = {
 
 export type QueryContentGetNewsItemsArgs = {
   chain?: InputMaybe<GqlChain>
+}
+
+export type QueryPoolEventsArgs = {
+  first?: InputMaybe<Scalars['Int']['input']>
+  skip?: InputMaybe<Scalars['Int']['input']>
+  where: GqlPoolEventsFilter
 }
 
 export type QueryPoolGetBatchSwapsArgs = {

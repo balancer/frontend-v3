@@ -3,7 +3,7 @@ import {
   GqlChain,
   GqlPoolLinearNested,
   GqlPoolComposableStableNested,
-  GqlTokenPrice,
+  GetTokenPricesQuery,
 } from '@/lib/shared/services/api/generated/graphql'
 import { Address, formatUnits, PublicClient, zeroAddress } from 'viem'
 import { cloneDeep, keyBy, sumBy } from 'lodash'
@@ -53,7 +53,7 @@ async function updateWithOnChainBalanceData({
 }: {
   pool: GetPoolQuery['pool']
   client: PublicClient
-  tokenPrices: GqlTokenPrice[]
+  tokenPrices: GetTokenPricesQuery['tokenPrices']
   vaultV2Address: Address
   userAddress: Address
 }): Promise<GetPoolQuery['pool']> {
