@@ -2,7 +2,7 @@ query GetSorSwaps(
   $tokenIn: String!
   $tokenOut: String!
   $swapType: GqlSorSwapType!
-  $swapAmount: BigDecimal!
+  $swapAmount: AmountHumanReadable!
   $chain: GqlChain!
   $queryBatchSwap: Boolean!
 ) {
