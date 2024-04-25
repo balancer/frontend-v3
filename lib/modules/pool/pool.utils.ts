@@ -4,7 +4,7 @@ import {
   GqlPoolAprValue,
   GqlPoolComposableStableNested,
   GqlPoolLinearNested,
-  GqlPoolTokenBase,
+  GqlPoolTokenDetail,
   GqlPoolType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
@@ -135,7 +135,7 @@ export function isComposableStablePool(
 
 export function getProportionalExitAmountsForBptIn(
   bptInHumanReadable: string,
-  poolTokens: GqlPoolTokenBase[],
+  poolTokens: GqlPoolTokenDetail[],
   poolTotalShares: string
 ): TokenAmountHumanReadable[] {
   const bptInAmountScaled = parseUnits(bptInHumanReadable, 18)
@@ -144,13 +144,13 @@ export function getProportionalExitAmountsForBptIn(
 
 export function getProportionalExitAmountsFromScaledBptIn(
   bptIn: bigint,
-  poolTokens: GqlPoolTokenBase[],
+  poolTokens: GqlPoolTokenDetail[],
   poolTotalShares: string
 ): TokenAmountHumanReadable[] {
   const bptTotalSupply = parseUnits(poolTotalShares, 18)
 
   return poolTokens.map(token => {
-    const tokenBalance = parseUnits(token.totalBalance, token.decimals)
+    const tokenBalance = parseUnits(token.balance, token.decimals)
     const tokenProportionalAmount = (bptIn * tokenBalance) / bptTotalSupply
 
     return {

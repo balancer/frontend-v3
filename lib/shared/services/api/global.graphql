@@ -34,6 +34,7 @@ query GetTokenPrices($chains: [GqlChain!]!) {
     price
     address
     chain
+    updatedAt
   }
 }
 

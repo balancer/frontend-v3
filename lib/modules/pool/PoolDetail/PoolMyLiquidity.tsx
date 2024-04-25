@@ -80,7 +80,7 @@ export default function PoolMyLiquidity() {
     return keyBy(
       getProportionalExitAmountsFromScaledBptIn(
         getBptBalanceForTab(),
-        pool.tokens,
+        pool.poolTokens,
         pool.dynamicData.totalShares
       ),
       'address'
@@ -131,7 +131,7 @@ export default function PoolMyLiquidity() {
 
   const displayTokens = hasNestedPools(pool)
     ? // we don't have the balances for pool.displayTokens for v2 boosted pools so we show bpt tokens balance as a workaround
-      pool.tokens
+      pool.poolTokens
     : pool.displayTokens
 
   return (

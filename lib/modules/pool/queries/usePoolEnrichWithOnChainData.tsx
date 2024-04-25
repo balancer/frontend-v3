@@ -16,7 +16,6 @@ import {
 import { usePublicClient, useQuery } from 'wagmi'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { WAD } from '@balancer/sdk'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { isComposableStablePool, isLinearPool } from '../pool.utils'
 
@@ -72,74 +71,13 @@ async function updateWithOnChainBalanceData({
 
   clone.dynamicData.totalShares = formatUnits(supplyMap[pool.id].totalSupply, 18)
 
-  for (const token of clone.tokens) {
-    if (
-      token.__typename === 'GqlPoolTokenLinear' ||
-      token.__typename === 'GqlPoolTokenComposableStable'
-    ) {
-      token.pool.totalShares = formatUnits(supplyMap[token.pool.id].totalSupply, 18)
-    }
-
+  for (const token of clone.poolTokens) {
     const tokenBalance = formatUnits(balancesMap[pool.id].balances[token.index], token.decimals)
     token.balance = tokenBalance
-    token.totalBalance = tokenBalance
-
-    if (
-      token.__typename === 'GqlPoolTokenLinear' ||
-      token.__typename === 'GqlPoolTokenComposableStable'
-    ) {
-      const percentOfNestedSupply =
-        (balancesMap[pool.id].balances[token.index] * WAD) / supplyMap[token.pool.id].totalSupply
-
-      for (const nestedToken of token.pool.tokens) {
-        if (nestedToken.address === token.pool.address) {
-          continue // skip phantom bpt
-        }
-
-        nestedToken.totalBalance = formatUnits(
-          balancesMap[token.pool.id].balances[nestedToken.index],
-          nestedToken.decimals
-        )
-
-        nestedToken.balance = formatUnits(
-          (balancesMap[token.pool.id].balances[nestedToken.index] * percentOfNestedSupply) / WAD,
-          nestedToken.decimals
-        )
-
-        if (nestedToken.__typename === 'GqlPoolTokenLinear') {
-          nestedToken.pool.totalShares = formatUnits(supplyMap[nestedToken.pool.id].totalSupply, 18)
-
-          const percentOfLinearSupplyNested =
-            (balancesMap[token.pool.id].balances[nestedToken.index] * WAD) /
-            supplyMap[nestedToken.pool.id].totalSupply
-
-          for (const nestedLinearToken of nestedToken.pool.tokens) {
-            if (nestedLinearToken.address === nestedToken.pool.address) {
-              continue // skip phantom bpt
-            }
-
-            const nestedLinearTokenBalance =
-              balancesMap[nestedToken.pool.id].balances[nestedLinearToken.index]
-
-            nestedLinearToken.balance = formatUnits(
-              (((nestedLinearTokenBalance * percentOfNestedSupply) / WAD) *
-                percentOfLinearSupplyNested) /
-                WAD,
-              nestedLinearToken.decimals
-            )
-
-            nestedLinearToken.totalBalance = formatUnits(
-              nestedLinearTokenBalance,
-              nestedLinearToken.decimals
-            )
-          }
-        }
-      }
-    }
   }
 
   clone.dynamicData.totalLiquidity = sumBy(
-    clone.tokens.map(token => {
+    clone.poolTokens.map(token => {
       return (pricesMap[token.address]?.price || 0) * parseFloat(token.balance)
     })
   ).toString()
@@ -161,8 +99,6 @@ async function getBalanceDataForPool({
   balances: { poolId: string; balances: bigint[] }[]
   supplies: { poolId: string; totalSupply: bigint }[]
 }> {
-  const poolIds: string[] = [pool.id]
-
   const calls: {
     poolId: string
     type: 'balances' | 'supply' | 'userBalance'
@@ -172,28 +108,6 @@ async function getBalanceDataForPool({
     getBalancesCall(pool.id, vaultV2Address),
     getUserBalancesCall(pool, userAddress),
   ]
-
-  for (const token of pool.tokens) {
-    if (token.__typename === 'GqlPoolTokenLinear') {
-      poolIds.push(token.pool.id)
-      calls.push(getSupplyCall(token.pool))
-      calls.push(getBalancesCall(token.pool.id, vaultV2Address))
-    } else if (token.__typename === 'GqlPoolTokenComposableStable') {
-      poolIds.push(token.pool.id)
-      calls.push(getSupplyCall(token.pool))
-      calls.push(getBalancesCall(token.pool.id, vaultV2Address))
-    }
-
-    if (token.__typename === 'GqlPoolTokenComposableStable') {
-      for (const nestedToken of token.pool.tokens) {
-        if (nestedToken.__typename === 'GqlPoolTokenLinear') {
-          poolIds.push(nestedToken.pool.id)
-          calls.push(getSupplyCall(nestedToken.pool))
-          calls.push(getBalancesCall(nestedToken.pool.id, vaultV2Address))
-        }
-      }
-    }
-  }
 
   const response = await client.multicall({ contracts: calls.map(call => call.call) })
   const balances: { poolId: string; balances: bigint[] }[] = []
