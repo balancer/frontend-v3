@@ -37,20 +37,3 @@ export function swapNativeWithWrappedNative(token: Address, chain: GqlChain) {
     return token
   }
 }
-
-/**
- * If the provided token is the wrapped native token,
- * returns the token with the native token based on the provided token and chain,
- * else returns the provided token
- *
- * @param {Address} token - The token address.
- * @param {GqlChain} chain - The chain type.
- * @return {Address} The swapped token address.
- */
-export function swapWrappedNativeWithNative(token: Address, chain: GqlChain) {
-  if (isWrappedNativeAsset(token, chain)) {
-    return getNativeAssetAddress(chain).toLowerCase() as Address
-  } else {
-    return token
-  }
-}

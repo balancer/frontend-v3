@@ -8,7 +8,7 @@ import { GqlPoolTokenExpanded, GqlToken } from '@/lib/shared/services/api/genera
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
-import { HumanAmount, TokenAmount } from '@balancer/sdk'
+import { HumanAmount, TokenAmount, isSameAddress } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { usePool } from '../../usePool'
 import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
@@ -27,7 +27,6 @@ import { useRemoveLiquidityStepConfigs } from './modal/useRemoveLiquidityStepCon
 import { hasNestedPools, isGyro } from '../../pool.helpers'
 import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
-import { swapWrappedNativeWithNative } from '@/lib/modules/tokens/token.helpers'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -89,7 +88,9 @@ export function _useRemoveLiquidity() {
     .filter(tokenFilter)
     .map(token => getToken(token.address, pool.chain))
 
-  const validTokens = tokens.filter((token): token is GqlToken => !!token)
+  let validTokens = tokens.filter((token): token is GqlToken => !!token)
+  validTokens = nativeAsset ? [nativeAsset, ...validTokens] : validTokens
+
   const firstTokenAddress = tokens?.[0]?.address as Address
 
   const singleTokenOutAddress = singleTokenAddress || firstTokenAddress
@@ -121,8 +122,11 @@ export function _useRemoveLiquidity() {
 
   const amountOutMap: Record<Address, HumanAmount> = Object.fromEntries(
     quoteAmountsOut.map(tokenAmount => [
-      wethIsEth
-        ? swapWrappedNativeWithNative(tokenAmount.token.address, chain)
+      wethIsEth &&
+      wNativeAsset &&
+      nativeAsset &&
+      isSameAddress(tokenAmount.token.address, wNativeAsset.address as Address)
+        ? nativeAsset.address
         : tokenAmount.token.address,
       toHumanAmount(tokenAmount),
     ])
@@ -202,7 +206,7 @@ export function _useRemoveLiquidity() {
 
   return {
     tokens: isSingleToken && nativeAsset ? [...tokens, nativeAsset] : tokens,
-    validTokens: isSingleToken && nativeAsset ? [nativeAsset, ...validTokens] : validTokens,
+    validTokens,
     singleTokenOutAddress,
     humanBptIn,
     humanBptInPercent,
