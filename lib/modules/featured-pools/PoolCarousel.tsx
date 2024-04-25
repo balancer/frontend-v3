@@ -1,6 +1,6 @@
 'use client'
 
-import { GqlPoolFeaturedPool } from '@/lib/shared/services/api/generated/graphql'
+import { GetFeaturedPoolsQuery } from '@/lib/shared/services/api/generated/graphql'
 import { useState } from 'react'
 import { Box, BoxProps, Card, Center } from '@chakra-ui/react'
 import { FeaturePoolCard } from './FeaturePoolCard'
@@ -8,7 +8,7 @@ import { Pool } from '../pool/usePool'
 import { useSwipeable } from 'react-swipeable'
 
 type Props = {
-  pools: GqlPoolFeaturedPool[]
+  pools: GetFeaturedPoolsQuery['featuredPools']
 }
 
 export function PoolCarousel({ pools, ...rest }: Props & BoxProps) {

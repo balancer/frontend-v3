@@ -14,7 +14,7 @@ import Image from 'next/image'
 
 const smallSize: ChartSizeValues = {
   chartHeight: '150px',
-  boxWidth: 150,
+  boxWidth: 155,
   boxHeight: 120,
   haloTop: '40%',
   haloLeft: '55px',
@@ -105,6 +105,7 @@ export default function BoostedPoolWeightChart({
 
   const chartOption = useMemo(() => {
     return {
+      animation: false,
       tooltip: {
         show: false,
       },
@@ -178,7 +179,7 @@ export default function BoostedPoolWeightChart({
         height={`${chartSizeValues.boxHeight}px`}
         filter="url(#round)"
         overflow="hidden"
-        mt={hasLegend ? '-8' : '0'}
+        mt={hasLegend ? '8' : '0'}
         position="relative"
       >
         <Box
@@ -237,15 +238,7 @@ export default function BoostedPoolWeightChart({
         </Box>
       </Box>
       {hasLegend && (
-        <HStack
-          width="full"
-          bottom="-2.5rem"
-          position="absolute"
-          left="0"
-          right="0"
-          mx="auto"
-          justifyContent="center"
-        >
+        <HStack width="full" mx="auto" justifyContent="center">
           <PoolWeightChartLegend pool={pool} colors={colors} />
         </HStack>
       )}

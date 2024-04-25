@@ -3,7 +3,6 @@
 
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
@@ -15,6 +14,7 @@ import { HumanAmountIn } from '../liquidity-types'
 import {
   LiquidityActionHelpers,
   areEmptyAmounts,
+  filterHumanAmountsIn,
   requiresProportionalInput,
 } from '../LiquidityActionHelpers'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
@@ -27,6 +27,8 @@ import { useIterateSteps } from '../../../transactions/transaction-steps/useIter
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
+import { getNativeAssetAddress } from '@/lib/config/app.config'
+import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -35,6 +37,8 @@ export function _useAddLiquidity() {
   const [humanAmountsIn, setHumanAmountsIn] = useState<HumanAmountIn[]>([])
   const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [acceptPoolRisks, setAcceptPoolRisks] = useState(false)
+  const [wethIsEth, setWethIsEth] = useState(false)
+  const [totalUSDValue, setTotalUSDValue] = useState('0')
 
   const { pool, refetch: refetchPool } = usePool()
   const { getToken } = useTokens()
@@ -50,9 +54,10 @@ export function _useAddLiquidity() {
    */
   const helpers = new LiquidityActionHelpers(pool)
   const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
-
   const stepConfigs = useAddLiquidityStepConfigs(inputAmounts)
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
+  const chain = pool.chain
+  const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
 
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -65,9 +70,11 @@ export function _useAddLiquidity() {
     setHumanAmountsIn(amountsIn)
   }
 
-  function setHumanAmountIn(tokenAddress: Address, humanAmount: HumanAmount) {
+  function setHumanAmountIn(tokenAddress: Address, humanAmount: HumanAmount | '') {
+    const amountsIn = filterHumanAmountsIn(humanAmountsIn, tokenAddress, chain)
     setHumanAmountsIn([
-      ...humanAmountsIn.filter(amountIn => !isSameAddress(amountIn.tokenAddress, tokenAddress)),
+      ...amountsIn,
+
       {
         tokenAddress,
         humanAmount,
@@ -80,17 +87,29 @@ export function _useAddLiquidity() {
       if (isGyro(pool.type)) return true
       return token.isMainToken
     })
-    .map(token => getToken(token.address, pool.chain))
-  const validTokens = tokens.filter((token): token is GqlToken => !!token)
+    .map(token => getToken(token.address, chain))
+
+  const tokensWithNativeAsset = tokens.map(token => {
+    if (token && isWrappedNativeAsset(token.address as Address, chain)) {
+      return nativeAsset
+    } else {
+      return token
+    }
+  })
+
+  let validTokens = tokens.filter((token): token is GqlToken => !!token)
+  validTokens = nativeAsset ? [nativeAsset, ...validTokens] : validTokens
 
   const { usdValueFor } = useTotalUsdValue(validTokens)
-  const totalUSDValue = usdValueFor(humanAmountsIn)
+
+  useEffect(() => {
+    setTotalUSDValue(usdValueFor(humanAmountsIn))
+  }, [humanAmountsIn])
 
   /**
    * Simulation queries:
    */
   const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn)
-
   const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn)
 
   /**
@@ -131,7 +150,7 @@ export function _useAddLiquidity() {
   return {
     humanAmountsIn,
     inputAmounts,
-    tokens,
+    tokens: wethIsEth ? tokensWithNativeAsset : tokens,
     validTokens,
     totalUSDValue,
     simulationQuery,
@@ -151,6 +170,8 @@ export function _useAddLiquidity() {
     setNeedsToAcceptHighPI,
     acceptPoolRisks,
     setAcceptPoolRisks,
+    wethIsEth,
+    setWethIsEth,
   }
 }
 

@@ -16,6 +16,7 @@ import { PoolName } from '../pool/PoolName'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { PoolZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import { motion } from 'framer-motion'
+import { isClp } from '../pool/pool.helpers'
 
 interface Props {
   pool: Pool
@@ -110,17 +111,21 @@ export function FeaturePoolCard({
               </Text>
             </HStack>
           )}
-          <Box>
-            <PoolWeightChart pool={pool} chain={chain} hasLegend={hasLegend} isSmall={isSmall} />
-          </Box>
-          <VStack spacing="0" zIndex={1}>
-            <PoolName pool={pool} fontWeight="bold" fontSize="lg" noOfLines={1} />
-            <Text variant="secondary" fontWeight="medium">
-              {getAprLabel(pool.dynamicData.apr.apr)} APR
-            </Text>
+          <VStack spacing="5">
+            <Box>
+              <PoolWeightChart pool={pool} chain={chain} hasLegend={hasLegend} isSmall={isSmall} />
+            </Box>
+            <VStack spacing="0" zIndex={1}>
+              <Box width={isSmall ? 'full' : '80%'} mt={{ base: isClp(pool.type) ? 8 : 0, md: 0 }}>
+                <PoolName pool={pool} fontWeight="bold" fontSize="lg" noOfLines={isSmall ? 1 : 2} />
+              </Box>
+              <Text variant="secondary" fontWeight="medium">
+                {getAprLabel(pool.dynamicData.apr.apr)} APR
+              </Text>
+            </VStack>
           </VStack>
         </VStack>
-        <PoolZenGarden subdued={isSmall} sizePx={bgSize} poolType={pool.type} />
+        <PoolZenGarden repetitions={10} subdued={isSmall} sizePx={bgSize} poolType={pool.type} />
       </motion.div>
     </NoisyCard>
   )
