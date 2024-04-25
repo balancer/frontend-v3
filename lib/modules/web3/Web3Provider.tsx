@@ -29,7 +29,7 @@ import { keyBy, merge } from 'lodash'
 import { useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/shared/services/chakra/theme'
 import { CustomAvatar } from './CustomAvatar'
-import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import { getProjectConfig, PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { UserAccountProvider } from './useUserAccount'
 import { defineChain } from 'viem'
@@ -39,6 +39,7 @@ import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMod
 import { BlockedAddressModal } from './BlockedAddressModal'
 import { AcceptPoliciesModal } from './AcceptPoliciesModal'
 import { UserSettingsProvider } from '../user/settings/useUserSettings'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 function buildChain(viemChain: Chain, rpcOverride?: string): Chain {
   const { rpcUrl } = getNetworkConfig(viemChain.id)
@@ -52,18 +53,22 @@ function buildChain(viemChain: Chain, rpcOverride?: string): Chain {
   })
 }
 
-export const supportedChains = [
-  buildChain(mainnet),
-  buildChain(arbitrum),
-  buildChain(base),
-  buildChain(avalanche),
-  buildChain(fantom),
-  buildChain(gnosis),
-  buildChain(optimism),
-  buildChain(polygon),
-  buildChain(polygonZkEvm),
-  buildChain(sepolia),
-]
+const gqlChainToWagmiChainMap: Record<GqlChain, Chain> = {
+  [GqlChain.Mainnet]: mainnet,
+  [GqlChain.Arbitrum]: arbitrum,
+  [GqlChain.Base]: base,
+  [GqlChain.Avalanche]: avalanche,
+  [GqlChain.Fantom]: fantom,
+  [GqlChain.Gnosis]: gnosis,
+  [GqlChain.Optimism]: optimism,
+  [GqlChain.Polygon]: polygon,
+  [GqlChain.Zkevm]: polygonZkEvm,
+  [GqlChain.Sepolia]: sepolia,
+}
+
+export const supportedChains = PROJECT_CONFIG.supportedNetworks.map(chain =>
+  buildChain(gqlChainToWagmiChainMap[chain])
+)
 
 const { chains, publicClient } = configureChains(supportedChains, [
   infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string }),
