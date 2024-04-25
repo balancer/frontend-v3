@@ -94,7 +94,6 @@ export const getDefaultPoolChartOptions = (
     },
     tooltip: {
       extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container}`,
-      show: true,
       formatter: (params: any) => {
         const data = Array.isArray(params) ? params[0] : params
         const timestamp = data.value[0]
@@ -105,19 +104,21 @@ export const getDefaultPoolChartOptions = (
         return `
           <div style="padding: none; display: flex; flex-direction: column;${
             toolTipTheme.container
-          }">
-            <div style="font-size: 0.8rem; font-weight: 500; color: ${
+          };margin-right:-15px">
+            <div style="font-size: 14px; font-weight: 700; color: ${
               toolTipTheme.text
             }; display:flex;justify-content:space-between;${toolTipTheme.heading};">
               <span>${data.seriesName}</span>
               <span>${numeral(value).format('($0,0a)')}</span>
             </div>
             <div style="display:flex;flex-direction:column;justify-content:flex-start;gap:0">
-              ${tokens?.map(token => {
+              ${tokens?.map((token, index) => {
                 return `
                   <div style="color: ${
                     toolTipTheme.text
-                  }; display:flex;justify-content:space-between;align-items:center">
+                  }; display:flex;justify-content:space-between;align-items:center;margin-bottom:${
+                  index === tokens.length - 1 ? `5px` : `-20px`
+                }">
                     <img src="${
                       token.token?.logoURI
                     }" style="width: 16px; height: 16px; border-radius: 50%; margin-right: 0.5rem;" />
