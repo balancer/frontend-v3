@@ -27,6 +27,7 @@ import { useRemoveLiquidityStepConfigs } from './modal/useRemoveLiquidityStepCon
 import { hasNestedPools, isGyro } from '../../pool.helpers'
 import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
+import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -87,6 +88,21 @@ export function _useRemoveLiquidity() {
   const tokens = pool.allTokens
     .filter(tokenFilter)
     .map(token => getToken(token.address, pool.chain))
+
+  const tokensWithNativeAsset = tokens.map(token => {
+    if (token && isWrappedNativeAsset(token.address as Address, chain)) {
+      return nativeAsset
+    } else {
+      return token
+    }
+  })
+
+  const tokensToShow =
+    isSingleToken && nativeAsset
+      ? [nativeAsset, ...tokens]
+      : wethIsEth
+      ? tokensWithNativeAsset
+      : tokens
 
   let validTokens = tokens.filter((token): token is GqlToken => !!token)
   validTokens = nativeAsset ? [nativeAsset, ...validTokens] : validTokens
@@ -205,7 +221,7 @@ export function _useRemoveLiquidity() {
   )
 
   return {
-    tokens: isSingleToken && nativeAsset ? [...tokens, nativeAsset] : tokens,
+    tokens: tokensToShow,
     validTokens,
     singleTokenOutAddress,
     humanBptIn,

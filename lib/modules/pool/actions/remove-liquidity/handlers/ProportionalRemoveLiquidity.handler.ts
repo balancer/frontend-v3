@@ -46,6 +46,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
     account,
     slippagePercent,
     queryOutput,
+    wethIsEth,
   }: SdkBuildRemoveLiquidityInput): Promise<TransactionConfig> {
     const removeLiquidity = new RemoveLiquidity()
 
@@ -54,7 +55,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,
-      wethIsEth: false, // assuming we don't want to withdraw the native asset over the wrapped native asset for now.
+      wethIsEth,
     })
 
     return {
