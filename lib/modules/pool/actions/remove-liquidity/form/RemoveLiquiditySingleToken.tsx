@@ -1,17 +1,30 @@
 'use client'
 
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { Box, HStack, Radio, RadioGroup, Text, VStack } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
+import { isNativeAsset } from '@/lib/modules/tokens/token.helpers'
 
 interface RemoveLiquiditySingleTokenProps {
   tokens: (GqlToken | undefined)[]
+  chain: GqlChain
 }
 
-export function RemoveLiquiditySingleToken({ tokens }: RemoveLiquiditySingleTokenProps) {
-  const { singleTokenOutAddress, setSingleTokenAddress, amountOutForToken } = useRemoveLiquidity()
+export function RemoveLiquiditySingleToken({ tokens, chain }: RemoveLiquiditySingleTokenProps) {
+  const { singleTokenOutAddress, setSingleTokenAddress, amountOutForToken, setWethIsEth } =
+    useRemoveLiquidity()
+
+  function onChange(tokenAddress: Address) {
+    if (isNativeAsset(tokenAddress, chain)) {
+      setWethIsEth(true)
+    } else {
+      setWethIsEth(false)
+    }
+    setSingleTokenAddress(tokenAddress)
+  }
+
   return (
     <VStack w="full">
       <HStack w="full" justify="space-between">
@@ -27,10 +40,7 @@ export function RemoveLiquiditySingleToken({ tokens }: RemoveLiquiditySingleToke
         border="white"
         w="full"
       >
-        <RadioGroup
-          onChange={tokenAddress => setSingleTokenAddress(tokenAddress as Address)}
-          value={singleTokenOutAddress ?? tokens[0]?.address}
-        >
+        <RadioGroup onChange={onChange} value={singleTokenOutAddress ?? tokens[0]?.address}>
           <VStack w="full">
             {tokens.map(
               token =>
