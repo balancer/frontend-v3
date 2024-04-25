@@ -194,7 +194,7 @@ export default function CLPPoolWeightChart({
         )}
         {pool.displayTokens.length === 4 && (
           <Grid zIndex={1} templateColumns="1fr 1fr" width="full" height="full" rounded="2xl">
-            {pool.tokens.map((_, i) => {
+            {pool.poolTokens.map((_, i) => {
               return (
                 <Box
                   key={`${pool.address}-token-weight-${i}`}

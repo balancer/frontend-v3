@@ -68,6 +68,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
     account,
     slippagePercent,
     queryOutput,
+    wethIsEth,
   }: SdkBuildRemoveLiquidityInput): Promise<TransactionConfig> {
     const removeLiquidity = new RemoveLiquidity()
 
@@ -76,7 +77,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,
-      wethIsEth: false, // assuming we don't want to withdraw the native asset over the wrapped native asset for now.
+      wethIsEth,
     })
 
     return {

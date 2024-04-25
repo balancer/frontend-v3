@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { usePool } from '../../usePool'
-import { GqlPoolToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
 import { fNum } from '@/lib/shared/utils/numbers'
 
 type CompositionRow = {
@@ -14,10 +14,10 @@ export function usePoolComposition() {
   const { pool, isLoadingOnchainData } = usePool()
 
   const poolComposition = useMemo(() => {
-    return pool.tokens
+    return pool.poolTokens
       .map(token => {
         if (!token) return null
-        const _token = token as GqlPoolToken
+        const _token = token as GqlPoolTokenDetail
 
         return {
           symbol: _token.symbol,

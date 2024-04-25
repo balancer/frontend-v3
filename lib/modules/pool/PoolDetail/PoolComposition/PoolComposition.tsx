@@ -5,7 +5,10 @@ import { Box, Card, HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/r
 import React, { useEffect, useState } from 'react'
 import { usePool } from '../../usePool'
 import { Address } from 'viem'
-import { GqlPoolToken, GqlPoolTokenDisplay } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GqlPoolTokenDetail,
+  GqlPoolTokenDisplay,
+} from '@/lib/shared/services/api/generated/graphql'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import Image from 'next/image'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -24,11 +27,11 @@ export function PoolComposition() {
     }
   }, [pool])
 
-  const displayTokens = pool.tokens.filter(token =>
+  const displayTokens = pool.poolTokens.filter(token =>
     pool.displayTokens.find(
       (displayToken: GqlPoolTokenDisplay) => token.address === displayToken.address
     )
-  ) as GqlPoolToken[]
+  ) as GqlPoolTokenDetail[]
 
   const showWeightDistribution = !isStableLike(pool.type)
 
