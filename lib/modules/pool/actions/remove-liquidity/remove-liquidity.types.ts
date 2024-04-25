@@ -31,6 +31,7 @@ export type BuildRemoveLiquidityInput = {
   slippagePercent: string
   queryOutput: QueryRemoveLiquidityOutput
   relayerApprovalSignature?: Address //only used by Nested Remove Liquidity in signRelayer mode
+  wethIsEth?: boolean // only used by single token removal type
 }
 
 /*

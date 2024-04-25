@@ -2117,6 +2117,7 @@ export type GetTokenPricesQuery = {
     price: number
     address: string
     chain: GqlChain
+    updatedAt: number
   }>
 }
 
@@ -2180,163 +2181,19 @@ export type GetPoolQuery = {
         type: GqlPoolType
         chain: GqlChain
         vaultVersion: number
-        tokens: Array<
-          | {
-              __typename: 'GqlPoolToken'
-              id: string
-              index: number
-              name: string
-              symbol: string
-              balance: string
-              address: string
-              priceRate: string
-              decimals: number
-              weight?: string | null
-              totalBalance: string
-            }
-          | {
-              __typename: 'GqlPoolTokenComposableStable'
-              id: string
-              index: number
-              name: string
-              symbol: string
-              balance: string
-              address: string
-              weight?: string | null
-              priceRate: string
-              decimals: number
-              totalBalance: string
-              pool: {
-                __typename: 'GqlPoolComposableStableNested'
-                id: string
-                type: GqlPoolType
-                version: number
-                name: string
-                symbol: string
-                address: string
-                owner: string
-                factory?: string | null
-                createTime: number
-                totalShares: string
-                totalLiquidity: string
-                nestingType: GqlPoolNestingType
-                swapFee: string
-                amp: string
-                bptPriceRate: string
-                tokens: Array<
-                  | {
-                      __typename: 'GqlPoolToken'
-                      id: string
-                      index: number
-                      name: string
-                      symbol: string
-                      balance: string
-                      address: string
-                      priceRate: string
-                      decimals: number
-                      weight?: string | null
-                      totalBalance: string
-                    }
-                  | {
-                      __typename: 'GqlPoolTokenLinear'
-                      id: string
-                      index: number
-                      name: string
-                      symbol: string
-                      balance: string
-                      address: string
-                      priceRate: string
-                      decimals: number
-                      weight?: string | null
-                      mainTokenBalance: string
-                      wrappedTokenBalance: string
-                      totalMainTokenBalance: string
-                      totalBalance: string
-                      pool: {
-                        __typename: 'GqlPoolLinearNested'
-                        id: string
-                        type: GqlPoolType
-                        version: number
-                        name: string
-                        symbol: string
-                        address: string
-                        owner: string
-                        factory?: string | null
-                        createTime: number
-                        wrappedIndex: number
-                        mainIndex: number
-                        upperTarget: string
-                        lowerTarget: string
-                        totalShares: string
-                        totalLiquidity: string
-                        bptPriceRate: string
-                        tokens: Array<{
-                          __typename: 'GqlPoolToken'
-                          id: string
-                          index: number
-                          name: string
-                          symbol: string
-                          balance: string
-                          address: string
-                          priceRate: string
-                          decimals: number
-                          weight?: string | null
-                          totalBalance: string
-                        }>
-                      }
-                    }
-                >
-              }
-            }
-          | {
-              __typename: 'GqlPoolTokenLinear'
-              id: string
-              index: number
-              name: string
-              symbol: string
-              balance: string
-              address: string
-              priceRate: string
-              decimals: number
-              weight?: string | null
-              mainTokenBalance: string
-              wrappedTokenBalance: string
-              totalMainTokenBalance: string
-              totalBalance: string
-              pool: {
-                __typename: 'GqlPoolLinearNested'
-                id: string
-                name: string
-                type: GqlPoolType
-                version: number
-                symbol: string
-                address: string
-                owner: string
-                factory?: string | null
-                createTime: number
-                wrappedIndex: number
-                mainIndex: number
-                upperTarget: string
-                lowerTarget: string
-                totalShares: string
-                totalLiquidity: string
-                bptPriceRate: string
-                tokens: Array<{
-                  __typename: 'GqlPoolToken'
-                  id: string
-                  index: number
-                  name: string
-                  symbol: string
-                  balance: string
-                  address: string
-                  priceRate: string
-                  decimals: number
-                  weight?: string | null
-                  totalBalance: string
-                }>
-              }
-            }
-        >
+        poolTokens: Array<{
+          __typename: 'GqlPoolTokenDetail'
+          id: string
+          hasNestedPool: boolean
+          index: number
+          name: string
+          symbol: string
+          balance: string
+          address: string
+          priceRate: string
+          decimals: number
+          weight?: string | null
+        }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
           poolId: string
@@ -2539,9 +2396,10 @@ export type GetPoolQuery = {
         type: GqlPoolType
         chain: GqlChain
         vaultVersion: number
-        tokens: Array<{
-          __typename: 'GqlPoolToken'
+        poolTokens: Array<{
+          __typename: 'GqlPoolTokenDetail'
           id: string
+          hasNestedPool: boolean
           index: number
           name: string
           symbol: string
@@ -2550,7 +2408,6 @@ export type GetPoolQuery = {
           priceRate: string
           decimals: number
           weight?: string | null
-          totalBalance: string
         }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
@@ -2756,163 +2613,19 @@ export type GetPoolQuery = {
         type: GqlPoolType
         chain: GqlChain
         vaultVersion: number
-        tokens: Array<
-          | {
-              __typename: 'GqlPoolToken'
-              id: string
-              index: number
-              name: string
-              symbol: string
-              balance: string
-              address: string
-              priceRate: string
-              decimals: number
-              weight?: string | null
-              totalBalance: string
-            }
-          | {
-              __typename: 'GqlPoolTokenComposableStable'
-              id: string
-              index: number
-              name: string
-              symbol: string
-              balance: string
-              address: string
-              weight?: string | null
-              priceRate: string
-              decimals: number
-              totalBalance: string
-              pool: {
-                __typename: 'GqlPoolComposableStableNested'
-                id: string
-                type: GqlPoolType
-                version: number
-                name: string
-                symbol: string
-                address: string
-                owner: string
-                factory?: string | null
-                createTime: number
-                totalShares: string
-                totalLiquidity: string
-                nestingType: GqlPoolNestingType
-                swapFee: string
-                amp: string
-                bptPriceRate: string
-                tokens: Array<
-                  | {
-                      __typename: 'GqlPoolToken'
-                      id: string
-                      index: number
-                      name: string
-                      symbol: string
-                      balance: string
-                      address: string
-                      priceRate: string
-                      decimals: number
-                      weight?: string | null
-                      totalBalance: string
-                    }
-                  | {
-                      __typename: 'GqlPoolTokenLinear'
-                      id: string
-                      index: number
-                      name: string
-                      symbol: string
-                      balance: string
-                      address: string
-                      priceRate: string
-                      decimals: number
-                      weight?: string | null
-                      mainTokenBalance: string
-                      wrappedTokenBalance: string
-                      totalMainTokenBalance: string
-                      totalBalance: string
-                      pool: {
-                        __typename: 'GqlPoolLinearNested'
-                        id: string
-                        type: GqlPoolType
-                        version: number
-                        name: string
-                        symbol: string
-                        address: string
-                        owner: string
-                        factory?: string | null
-                        createTime: number
-                        wrappedIndex: number
-                        mainIndex: number
-                        upperTarget: string
-                        lowerTarget: string
-                        totalShares: string
-                        totalLiquidity: string
-                        bptPriceRate: string
-                        tokens: Array<{
-                          __typename: 'GqlPoolToken'
-                          id: string
-                          index: number
-                          name: string
-                          symbol: string
-                          balance: string
-                          address: string
-                          priceRate: string
-                          decimals: number
-                          weight?: string | null
-                          totalBalance: string
-                        }>
-                      }
-                    }
-                >
-              }
-            }
-          | {
-              __typename: 'GqlPoolTokenLinear'
-              id: string
-              index: number
-              name: string
-              symbol: string
-              balance: string
-              address: string
-              priceRate: string
-              decimals: number
-              weight?: string | null
-              mainTokenBalance: string
-              wrappedTokenBalance: string
-              totalMainTokenBalance: string
-              totalBalance: string
-              pool: {
-                __typename: 'GqlPoolLinearNested'
-                id: string
-                type: GqlPoolType
-                version: number
-                name: string
-                symbol: string
-                address: string
-                owner: string
-                factory?: string | null
-                createTime: number
-                wrappedIndex: number
-                mainIndex: number
-                upperTarget: string
-                lowerTarget: string
-                totalShares: string
-                totalLiquidity: string
-                bptPriceRate: string
-                tokens: Array<{
-                  __typename: 'GqlPoolToken'
-                  id: string
-                  index: number
-                  name: string
-                  symbol: string
-                  balance: string
-                  address: string
-                  priceRate: string
-                  decimals: number
-                  weight?: string | null
-                  totalBalance: string
-                }>
-              }
-            }
-        >
+        poolTokens: Array<{
+          __typename: 'GqlPoolTokenDetail'
+          id: string
+          hasNestedPool: boolean
+          index: number
+          name: string
+          symbol: string
+          balance: string
+          address: string
+          priceRate: string
+          decimals: number
+          weight?: string | null
+        }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
           poolId: string
@@ -3130,163 +2843,19 @@ export type GetPoolQuery = {
         createTime: number
         chain: GqlChain
         vaultVersion: number
-        tokens: Array<
-          | {
-              __typename: 'GqlPoolToken'
-              id: string
-              index: number
-              name: string
-              symbol: string
-              balance: string
-              address: string
-              priceRate: string
-              decimals: number
-              weight?: string | null
-              totalBalance: string
-            }
-          | {
-              __typename: 'GqlPoolTokenComposableStable'
-              id: string
-              index: number
-              name: string
-              symbol: string
-              balance: string
-              address: string
-              weight?: string | null
-              priceRate: string
-              decimals: number
-              totalBalance: string
-              pool: {
-                __typename: 'GqlPoolComposableStableNested'
-                id: string
-                type: GqlPoolType
-                version: number
-                name: string
-                symbol: string
-                address: string
-                owner: string
-                factory?: string | null
-                createTime: number
-                totalShares: string
-                totalLiquidity: string
-                nestingType: GqlPoolNestingType
-                swapFee: string
-                amp: string
-                bptPriceRate: string
-                tokens: Array<
-                  | {
-                      __typename: 'GqlPoolToken'
-                      id: string
-                      index: number
-                      name: string
-                      symbol: string
-                      balance: string
-                      address: string
-                      priceRate: string
-                      decimals: number
-                      weight?: string | null
-                      totalBalance: string
-                    }
-                  | {
-                      __typename: 'GqlPoolTokenLinear'
-                      id: string
-                      index: number
-                      name: string
-                      symbol: string
-                      balance: string
-                      address: string
-                      priceRate: string
-                      decimals: number
-                      weight?: string | null
-                      mainTokenBalance: string
-                      wrappedTokenBalance: string
-                      totalMainTokenBalance: string
-                      totalBalance: string
-                      pool: {
-                        __typename: 'GqlPoolLinearNested'
-                        id: string
-                        type: GqlPoolType
-                        version: number
-                        name: string
-                        symbol: string
-                        address: string
-                        owner: string
-                        factory?: string | null
-                        createTime: number
-                        wrappedIndex: number
-                        mainIndex: number
-                        upperTarget: string
-                        lowerTarget: string
-                        totalShares: string
-                        totalLiquidity: string
-                        bptPriceRate: string
-                        tokens: Array<{
-                          __typename: 'GqlPoolToken'
-                          id: string
-                          index: number
-                          name: string
-                          symbol: string
-                          balance: string
-                          address: string
-                          priceRate: string
-                          decimals: number
-                          weight?: string | null
-                          totalBalance: string
-                        }>
-                      }
-                    }
-                >
-              }
-            }
-          | {
-              __typename: 'GqlPoolTokenLinear'
-              id: string
-              index: number
-              name: string
-              symbol: string
-              balance: string
-              address: string
-              priceRate: string
-              decimals: number
-              weight?: string | null
-              mainTokenBalance: string
-              wrappedTokenBalance: string
-              totalMainTokenBalance: string
-              totalBalance: string
-              pool: {
-                __typename: 'GqlPoolLinearNested'
-                id: string
-                type: GqlPoolType
-                version: number
-                name: string
-                symbol: string
-                address: string
-                owner: string
-                factory?: string | null
-                createTime: number
-                wrappedIndex: number
-                mainIndex: number
-                upperTarget: string
-                lowerTarget: string
-                totalShares: string
-                totalLiquidity: string
-                bptPriceRate: string
-                tokens: Array<{
-                  __typename: 'GqlPoolToken'
-                  id: string
-                  index: number
-                  name: string
-                  symbol: string
-                  balance: string
-                  address: string
-                  priceRate: string
-                  decimals: number
-                  weight?: string | null
-                  totalBalance: string
-                }>
-              }
-            }
-        >
+        poolTokens: Array<{
+          __typename: 'GqlPoolTokenDetail'
+          id: string
+          hasNestedPool: boolean
+          index: number
+          name: string
+          symbol: string
+          balance: string
+          address: string
+          priceRate: string
+          decimals: number
+          weight?: string | null
+        }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
           poolId: string
@@ -3491,9 +3060,10 @@ export type GetPoolQuery = {
         type: GqlPoolType
         chain: GqlChain
         vaultVersion: number
-        tokens: Array<{
-          __typename: 'GqlPoolToken'
+        poolTokens: Array<{
+          __typename: 'GqlPoolTokenDetail'
           id: string
+          hasNestedPool: boolean
           index: number
           name: string
           symbol: string
@@ -3502,7 +3072,6 @@ export type GetPoolQuery = {
           priceRate: string
           decimals: number
           weight?: string | null
-          totalBalance: string
         }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
@@ -3704,163 +3273,19 @@ export type GetPoolQuery = {
         type: GqlPoolType
         chain: GqlChain
         vaultVersion: number
-        tokens: Array<
-          | {
-              __typename: 'GqlPoolToken'
-              id: string
-              index: number
-              name: string
-              symbol: string
-              balance: string
-              address: string
-              priceRate: string
-              decimals: number
-              weight?: string | null
-              totalBalance: string
-            }
-          | {
-              __typename: 'GqlPoolTokenComposableStable'
-              id: string
-              index: number
-              name: string
-              symbol: string
-              balance: string
-              address: string
-              weight?: string | null
-              priceRate: string
-              decimals: number
-              totalBalance: string
-              pool: {
-                __typename: 'GqlPoolComposableStableNested'
-                id: string
-                type: GqlPoolType
-                version: number
-                name: string
-                symbol: string
-                address: string
-                owner: string
-                factory?: string | null
-                createTime: number
-                totalShares: string
-                totalLiquidity: string
-                nestingType: GqlPoolNestingType
-                swapFee: string
-                amp: string
-                bptPriceRate: string
-                tokens: Array<
-                  | {
-                      __typename: 'GqlPoolToken'
-                      id: string
-                      index: number
-                      name: string
-                      symbol: string
-                      balance: string
-                      address: string
-                      priceRate: string
-                      decimals: number
-                      weight?: string | null
-                      totalBalance: string
-                    }
-                  | {
-                      __typename: 'GqlPoolTokenLinear'
-                      id: string
-                      index: number
-                      name: string
-                      symbol: string
-                      balance: string
-                      address: string
-                      priceRate: string
-                      decimals: number
-                      weight?: string | null
-                      mainTokenBalance: string
-                      wrappedTokenBalance: string
-                      totalMainTokenBalance: string
-                      totalBalance: string
-                      pool: {
-                        __typename: 'GqlPoolLinearNested'
-                        id: string
-                        type: GqlPoolType
-                        version: number
-                        name: string
-                        symbol: string
-                        address: string
-                        owner: string
-                        factory?: string | null
-                        createTime: number
-                        wrappedIndex: number
-                        mainIndex: number
-                        upperTarget: string
-                        lowerTarget: string
-                        totalShares: string
-                        totalLiquidity: string
-                        bptPriceRate: string
-                        tokens: Array<{
-                          __typename: 'GqlPoolToken'
-                          id: string
-                          index: number
-                          name: string
-                          symbol: string
-                          balance: string
-                          address: string
-                          priceRate: string
-                          decimals: number
-                          weight?: string | null
-                          totalBalance: string
-                        }>
-                      }
-                    }
-                >
-              }
-            }
-          | {
-              __typename: 'GqlPoolTokenLinear'
-              id: string
-              index: number
-              name: string
-              symbol: string
-              balance: string
-              address: string
-              priceRate: string
-              decimals: number
-              weight?: string | null
-              mainTokenBalance: string
-              wrappedTokenBalance: string
-              totalMainTokenBalance: string
-              totalBalance: string
-              pool: {
-                __typename: 'GqlPoolLinearNested'
-                id: string
-                type: GqlPoolType
-                version: number
-                name: string
-                symbol: string
-                address: string
-                owner: string
-                factory?: string | null
-                createTime: number
-                wrappedIndex: number
-                mainIndex: number
-                upperTarget: string
-                lowerTarget: string
-                totalShares: string
-                totalLiquidity: string
-                bptPriceRate: string
-                tokens: Array<{
-                  __typename: 'GqlPoolToken'
-                  id: string
-                  index: number
-                  name: string
-                  symbol: string
-                  balance: string
-                  address: string
-                  priceRate: string
-                  decimals: number
-                  weight?: string | null
-                  totalBalance: string
-                }>
-              }
-            }
-        >
+        poolTokens: Array<{
+          __typename: 'GqlPoolTokenDetail'
+          id: string
+          hasNestedPool: boolean
+          index: number
+          name: string
+          symbol: string
+          balance: string
+          address: string
+          priceRate: string
+          decimals: number
+          weight?: string | null
+        }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
           poolId: string
@@ -4061,9 +3486,10 @@ export type GetPoolQuery = {
         type: GqlPoolType
         chain: GqlChain
         vaultVersion: number
-        tokens: Array<{
-          __typename: 'GqlPoolToken'
+        poolTokens: Array<{
+          __typename: 'GqlPoolTokenDetail'
           id: string
+          hasNestedPool: boolean
           index: number
           name: string
           symbol: string
@@ -4072,7 +3498,6 @@ export type GetPoolQuery = {
           priceRate: string
           decimals: number
           weight?: string | null
-          totalBalance: string
         }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
@@ -4274,9 +3699,10 @@ export type GetPoolQuery = {
         type: GqlPoolType
         chain: GqlChain
         vaultVersion: number
-        tokens: Array<{
-          __typename: 'GqlPoolToken'
+        poolTokens: Array<{
+          __typename: 'GqlPoolTokenDetail'
           id: string
+          hasNestedPool: boolean
           index: number
           name: string
           symbol: string
@@ -4285,7 +3711,6 @@ export type GetPoolQuery = {
           priceRate: string
           decimals: number
           weight?: string | null
-          totalBalance: string
         }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
@@ -4487,163 +3912,19 @@ export type GetPoolQuery = {
         type: GqlPoolType
         chain: GqlChain
         vaultVersion: number
-        tokens: Array<
-          | {
-              __typename: 'GqlPoolToken'
-              id: string
-              index: number
-              name: string
-              symbol: string
-              balance: string
-              address: string
-              priceRate: string
-              decimals: number
-              weight?: string | null
-              totalBalance: string
-            }
-          | {
-              __typename: 'GqlPoolTokenComposableStable'
-              id: string
-              index: number
-              name: string
-              symbol: string
-              balance: string
-              address: string
-              weight?: string | null
-              priceRate: string
-              decimals: number
-              totalBalance: string
-              pool: {
-                __typename: 'GqlPoolComposableStableNested'
-                id: string
-                type: GqlPoolType
-                version: number
-                name: string
-                symbol: string
-                address: string
-                owner: string
-                factory?: string | null
-                createTime: number
-                totalShares: string
-                totalLiquidity: string
-                nestingType: GqlPoolNestingType
-                swapFee: string
-                amp: string
-                bptPriceRate: string
-                tokens: Array<
-                  | {
-                      __typename: 'GqlPoolToken'
-                      id: string
-                      index: number
-                      name: string
-                      symbol: string
-                      balance: string
-                      address: string
-                      priceRate: string
-                      decimals: number
-                      weight?: string | null
-                      totalBalance: string
-                    }
-                  | {
-                      __typename: 'GqlPoolTokenLinear'
-                      id: string
-                      index: number
-                      name: string
-                      symbol: string
-                      balance: string
-                      address: string
-                      priceRate: string
-                      decimals: number
-                      weight?: string | null
-                      mainTokenBalance: string
-                      wrappedTokenBalance: string
-                      totalMainTokenBalance: string
-                      totalBalance: string
-                      pool: {
-                        __typename: 'GqlPoolLinearNested'
-                        id: string
-                        type: GqlPoolType
-                        version: number
-                        name: string
-                        symbol: string
-                        address: string
-                        owner: string
-                        factory?: string | null
-                        createTime: number
-                        wrappedIndex: number
-                        mainIndex: number
-                        upperTarget: string
-                        lowerTarget: string
-                        totalShares: string
-                        totalLiquidity: string
-                        bptPriceRate: string
-                        tokens: Array<{
-                          __typename: 'GqlPoolToken'
-                          id: string
-                          index: number
-                          name: string
-                          symbol: string
-                          balance: string
-                          address: string
-                          priceRate: string
-                          decimals: number
-                          weight?: string | null
-                          totalBalance: string
-                        }>
-                      }
-                    }
-                >
-              }
-            }
-          | {
-              __typename: 'GqlPoolTokenLinear'
-              id: string
-              index: number
-              name: string
-              symbol: string
-              balance: string
-              address: string
-              priceRate: string
-              decimals: number
-              weight?: string | null
-              mainTokenBalance: string
-              wrappedTokenBalance: string
-              totalMainTokenBalance: string
-              totalBalance: string
-              pool: {
-                __typename: 'GqlPoolLinearNested'
-                id: string
-                type: GqlPoolType
-                version: number
-                name: string
-                symbol: string
-                address: string
-                owner: string
-                factory?: string | null
-                createTime: number
-                wrappedIndex: number
-                mainIndex: number
-                upperTarget: string
-                lowerTarget: string
-                totalShares: string
-                totalLiquidity: string
-                bptPriceRate: string
-                tokens: Array<{
-                  __typename: 'GqlPoolToken'
-                  id: string
-                  index: number
-                  name: string
-                  symbol: string
-                  balance: string
-                  address: string
-                  priceRate: string
-                  decimals: number
-                  weight?: string | null
-                  totalBalance: string
-                }>
-              }
-            }
-        >
+        poolTokens: Array<{
+          __typename: 'GqlPoolTokenDetail'
+          id: string
+          hasNestedPool: boolean
+          index: number
+          name: string
+          symbol: string
+          balance: string
+          address: string
+          priceRate: string
+          decimals: number
+          weight?: string | null
+        }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
           poolId: string
@@ -5723,6 +5004,7 @@ export const GetTokenPricesDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'price' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'address' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'chain' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } },
               ],
             },
           },
@@ -6438,7 +5720,7 @@ export const GetPoolDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'nestingType' } },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'tokens' },
+                        name: { kind: 'Name', value: 'poolTokens' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
@@ -6446,12 +5728,13 @@ export const GetPoolDocument = {
                               kind: 'InlineFragment',
                               typeCondition: {
                                 kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolToken' },
+                                name: { kind: 'Name', value: 'GqlPoolTokenDetail' },
                               },
                               selectionSet: {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -6460,549 +5743,6 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'InlineFragment',
-                              typeCondition: {
-                                kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolTokenLinear' },
-                              },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'index' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'balance' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'mainTokenBalance' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'wrappedTokenBalance' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'totalMainTokenBalance' },
-                                  },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'pool' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'version' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'owner' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'factory' } },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'createTime' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'wrappedIndex' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'mainIndex' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'upperTarget' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'lowerTarget' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalShares' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalLiquidity' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'bptPriceRate' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'tokens' },
-                                          selectionSet: {
-                                            kind: 'SelectionSet',
-                                            selections: [
-                                              {
-                                                kind: 'InlineFragment',
-                                                typeCondition: {
-                                                  kind: 'NamedType',
-                                                  name: { kind: 'Name', value: 'GqlPoolToken' },
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'id' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'index' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'name' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'symbol' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'balance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'address' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'priceRate' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'decimals' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'weight' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'totalBalance' },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                            ],
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'InlineFragment',
-                              typeCondition: {
-                                kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolTokenComposableStable' },
-                              },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'index' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'balance' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'pool' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'version' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'owner' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'factory' } },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'createTime' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalShares' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalLiquidity' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'nestingType' },
-                                        },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'swapFee' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'amp' } },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'bptPriceRate' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'tokens' },
-                                          selectionSet: {
-                                            kind: 'SelectionSet',
-                                            selections: [
-                                              {
-                                                kind: 'InlineFragment',
-                                                typeCondition: {
-                                                  kind: 'NamedType',
-                                                  name: { kind: 'Name', value: 'GqlPoolToken' },
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'id' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'index' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'name' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'symbol' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'balance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'address' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'priceRate' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'decimals' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'weight' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'totalBalance' },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                              {
-                                                kind: 'InlineFragment',
-                                                typeCondition: {
-                                                  kind: 'NamedType',
-                                                  name: {
-                                                    kind: 'Name',
-                                                    value: 'GqlPoolTokenLinear',
-                                                  },
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'id' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'index' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'name' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'symbol' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'balance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'address' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'priceRate' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'decimals' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'weight' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'mainTokenBalance',
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'wrappedTokenBalance',
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'totalMainTokenBalance',
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'totalBalance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'pool' },
-                                                      selectionSet: {
-                                                        kind: 'SelectionSet',
-                                                        selections: [
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'id' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'type' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'version',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'name' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'symbol' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'address',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'owner' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'factory',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'createTime',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'wrappedIndex',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'mainIndex',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'upperTarget',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'lowerTarget',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'totalShares',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'totalLiquidity',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'bptPriceRate',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'tokens' },
-                                                            selectionSet: {
-                                                              kind: 'SelectionSet',
-                                                              selections: [
-                                                                {
-                                                                  kind: 'InlineFragment',
-                                                                  typeCondition: {
-                                                                    kind: 'NamedType',
-                                                                    name: {
-                                                                      kind: 'Name',
-                                                                      value: 'GqlPoolToken',
-                                                                    },
-                                                                  },
-                                                                  selectionSet: {
-                                                                    kind: 'SelectionSet',
-                                                                    selections: [
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'id',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'index',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'name',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'symbol',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'balance',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'address',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'priceRate',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'decimals',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'weight',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'totalBalance',
-                                                                        },
-                                                                      },
-                                                                    ],
-                                                                  },
-                                                                },
-                                                              ],
-                                                            },
-                                                          },
-                                                        ],
-                                                      },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                            ],
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
                                 ],
                               },
                             },
@@ -7024,7 +5764,7 @@ export const GetPoolDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'amp' } },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'tokens' },
+                        name: { kind: 'Name', value: 'poolTokens' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
@@ -7032,12 +5772,13 @@ export const GetPoolDocument = {
                               kind: 'InlineFragment',
                               typeCondition: {
                                 kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolToken' },
+                                name: { kind: 'Name', value: 'GqlPoolTokenDetail' },
                               },
                               selectionSet: {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -7046,7 +5787,6 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
                                 ],
                               },
                             },
@@ -7068,7 +5808,7 @@ export const GetPoolDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'amp' } },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'tokens' },
+                        name: { kind: 'Name', value: 'poolTokens' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
@@ -7076,12 +5816,13 @@ export const GetPoolDocument = {
                               kind: 'InlineFragment',
                               typeCondition: {
                                 kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolToken' },
+                                name: { kind: 'Name', value: 'GqlPoolTokenDetail' },
                               },
                               selectionSet: {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -7090,7 +5831,6 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
                                 ],
                               },
                             },
@@ -7114,7 +5854,7 @@ export const GetPoolDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'baseToken' } },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'tokens' },
+                        name: { kind: 'Name', value: 'poolTokens' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
@@ -7122,12 +5862,13 @@ export const GetPoolDocument = {
                               kind: 'InlineFragment',
                               typeCondition: {
                                 kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolToken' },
+                                name: { kind: 'Name', value: 'GqlPoolTokenDetail' },
                               },
                               selectionSet: {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -7136,7 +5877,6 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
                                 ],
                               },
                             },
@@ -7160,7 +5900,7 @@ export const GetPoolDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'bptPriceRate' } },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'tokens' },
+                        name: { kind: 'Name', value: 'poolTokens' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
@@ -7168,12 +5908,13 @@ export const GetPoolDocument = {
                               kind: 'InlineFragment',
                               typeCondition: {
                                 kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolToken' },
+                                name: { kind: 'Name', value: 'GqlPoolTokenDetail' },
                               },
                               selectionSet: {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -7182,549 +5923,6 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'InlineFragment',
-                              typeCondition: {
-                                kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolTokenLinear' },
-                              },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'index' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'balance' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'mainTokenBalance' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'wrappedTokenBalance' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'totalMainTokenBalance' },
-                                  },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'pool' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'version' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'owner' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'factory' } },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'createTime' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'wrappedIndex' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'mainIndex' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'upperTarget' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'lowerTarget' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalShares' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalLiquidity' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'bptPriceRate' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'tokens' },
-                                          selectionSet: {
-                                            kind: 'SelectionSet',
-                                            selections: [
-                                              {
-                                                kind: 'InlineFragment',
-                                                typeCondition: {
-                                                  kind: 'NamedType',
-                                                  name: { kind: 'Name', value: 'GqlPoolToken' },
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'id' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'index' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'name' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'symbol' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'balance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'address' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'priceRate' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'decimals' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'weight' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'totalBalance' },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                            ],
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'InlineFragment',
-                              typeCondition: {
-                                kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolTokenComposableStable' },
-                              },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'index' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'balance' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'pool' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'version' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'owner' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'factory' } },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'createTime' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalShares' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalLiquidity' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'nestingType' },
-                                        },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'swapFee' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'amp' } },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'bptPriceRate' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'tokens' },
-                                          selectionSet: {
-                                            kind: 'SelectionSet',
-                                            selections: [
-                                              {
-                                                kind: 'InlineFragment',
-                                                typeCondition: {
-                                                  kind: 'NamedType',
-                                                  name: { kind: 'Name', value: 'GqlPoolToken' },
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'id' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'index' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'name' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'symbol' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'balance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'address' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'priceRate' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'decimals' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'weight' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'totalBalance' },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                              {
-                                                kind: 'InlineFragment',
-                                                typeCondition: {
-                                                  kind: 'NamedType',
-                                                  name: {
-                                                    kind: 'Name',
-                                                    value: 'GqlPoolTokenLinear',
-                                                  },
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'id' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'index' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'name' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'symbol' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'balance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'address' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'priceRate' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'decimals' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'weight' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'mainTokenBalance',
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'wrappedTokenBalance',
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'totalMainTokenBalance',
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'totalBalance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'pool' },
-                                                      selectionSet: {
-                                                        kind: 'SelectionSet',
-                                                        selections: [
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'id' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'type' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'version',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'name' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'symbol' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'address',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'owner' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'factory',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'createTime',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'wrappedIndex',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'mainIndex',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'upperTarget',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'lowerTarget',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'totalShares',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'totalLiquidity',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'bptPriceRate',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'tokens' },
-                                                            selectionSet: {
-                                                              kind: 'SelectionSet',
-                                                              selections: [
-                                                                {
-                                                                  kind: 'InlineFragment',
-                                                                  typeCondition: {
-                                                                    kind: 'NamedType',
-                                                                    name: {
-                                                                      kind: 'Name',
-                                                                      value: 'GqlPoolToken',
-                                                                    },
-                                                                  },
-                                                                  selectionSet: {
-                                                                    kind: 'SelectionSet',
-                                                                    selections: [
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'id',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'index',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'name',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'symbol',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'balance',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'address',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'priceRate',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'decimals',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'weight',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'totalBalance',
-                                                                        },
-                                                                      },
-                                                                    ],
-                                                                  },
-                                                                },
-                                                              ],
-                                                            },
-                                                          },
-                                                        ],
-                                                      },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                            ],
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
                                 ],
                               },
                             },
@@ -7750,7 +5948,7 @@ export const GetPoolDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'bptPriceRate' } },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'tokens' },
+                        name: { kind: 'Name', value: 'poolTokens' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
@@ -7758,12 +5956,13 @@ export const GetPoolDocument = {
                               kind: 'InlineFragment',
                               typeCondition: {
                                 kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolToken' },
+                                name: { kind: 'Name', value: 'GqlPoolTokenDetail' },
                               },
                               selectionSet: {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -7772,7 +5971,6 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
                                 ],
                               },
                             },
@@ -7795,7 +5993,7 @@ export const GetPoolDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'nestingType' } },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'tokens' },
+                        name: { kind: 'Name', value: 'poolTokens' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
@@ -7803,12 +6001,13 @@ export const GetPoolDocument = {
                               kind: 'InlineFragment',
                               typeCondition: {
                                 kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolToken' },
+                                name: { kind: 'Name', value: 'GqlPoolTokenDetail' },
                               },
                               selectionSet: {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -7817,549 +6016,6 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'InlineFragment',
-                              typeCondition: {
-                                kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolTokenLinear' },
-                              },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'index' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'balance' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'mainTokenBalance' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'wrappedTokenBalance' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'totalMainTokenBalance' },
-                                  },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'pool' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'version' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'owner' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'factory' } },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'createTime' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'wrappedIndex' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'mainIndex' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'upperTarget' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'lowerTarget' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalShares' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalLiquidity' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'bptPriceRate' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'tokens' },
-                                          selectionSet: {
-                                            kind: 'SelectionSet',
-                                            selections: [
-                                              {
-                                                kind: 'InlineFragment',
-                                                typeCondition: {
-                                                  kind: 'NamedType',
-                                                  name: { kind: 'Name', value: 'GqlPoolToken' },
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'id' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'index' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'name' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'symbol' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'balance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'address' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'priceRate' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'decimals' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'weight' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'totalBalance' },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                            ],
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'InlineFragment',
-                              typeCondition: {
-                                kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolTokenComposableStable' },
-                              },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'index' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'balance' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'pool' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'version' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'owner' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'factory' } },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'createTime' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalShares' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalLiquidity' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'nestingType' },
-                                        },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'swapFee' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'amp' } },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'bptPriceRate' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'tokens' },
-                                          selectionSet: {
-                                            kind: 'SelectionSet',
-                                            selections: [
-                                              {
-                                                kind: 'InlineFragment',
-                                                typeCondition: {
-                                                  kind: 'NamedType',
-                                                  name: { kind: 'Name', value: 'GqlPoolToken' },
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'id' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'index' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'name' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'symbol' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'balance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'address' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'priceRate' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'decimals' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'weight' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'totalBalance' },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                              {
-                                                kind: 'InlineFragment',
-                                                typeCondition: {
-                                                  kind: 'NamedType',
-                                                  name: {
-                                                    kind: 'Name',
-                                                    value: 'GqlPoolTokenLinear',
-                                                  },
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'id' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'index' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'name' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'symbol' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'balance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'address' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'priceRate' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'decimals' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'weight' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'mainTokenBalance',
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'wrappedTokenBalance',
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'totalMainTokenBalance',
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'totalBalance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'pool' },
-                                                      selectionSet: {
-                                                        kind: 'SelectionSet',
-                                                        selections: [
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'id' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'type' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'version',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'name' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'symbol' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'address',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'owner' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'factory',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'createTime',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'wrappedIndex',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'mainIndex',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'upperTarget',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'lowerTarget',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'totalShares',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'totalLiquidity',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'bptPriceRate',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'tokens' },
-                                                            selectionSet: {
-                                                              kind: 'SelectionSet',
-                                                              selections: [
-                                                                {
-                                                                  kind: 'InlineFragment',
-                                                                  typeCondition: {
-                                                                    kind: 'NamedType',
-                                                                    name: {
-                                                                      kind: 'Name',
-                                                                      value: 'GqlPoolToken',
-                                                                    },
-                                                                  },
-                                                                  selectionSet: {
-                                                                    kind: 'SelectionSet',
-                                                                    selections: [
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'id',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'index',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'name',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'symbol',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'balance',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'address',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'priceRate',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'decimals',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'weight',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'totalBalance',
-                                                                        },
-                                                                      },
-                                                                    ],
-                                                                  },
-                                                                },
-                                                              ],
-                                                            },
-                                                          },
-                                                        ],
-                                                      },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                            ],
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
                                 ],
                               },
                             },
@@ -8399,7 +6055,7 @@ export const GetPoolDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'nestingType' } },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'tokens' },
+                        name: { kind: 'Name', value: 'poolTokens' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
@@ -8407,12 +6063,13 @@ export const GetPoolDocument = {
                               kind: 'InlineFragment',
                               typeCondition: {
                                 kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolToken' },
+                                name: { kind: 'Name', value: 'GqlPoolTokenDetail' },
                               },
                               selectionSet: {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -8421,549 +6078,6 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'InlineFragment',
-                              typeCondition: {
-                                kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolTokenLinear' },
-                              },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'index' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'balance' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'mainTokenBalance' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'wrappedTokenBalance' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'totalMainTokenBalance' },
-                                  },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'pool' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'version' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'owner' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'factory' } },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'createTime' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'wrappedIndex' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'mainIndex' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'upperTarget' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'lowerTarget' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalShares' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalLiquidity' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'bptPriceRate' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'tokens' },
-                                          selectionSet: {
-                                            kind: 'SelectionSet',
-                                            selections: [
-                                              {
-                                                kind: 'InlineFragment',
-                                                typeCondition: {
-                                                  kind: 'NamedType',
-                                                  name: { kind: 'Name', value: 'GqlPoolToken' },
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'id' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'index' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'name' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'symbol' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'balance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'address' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'priceRate' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'decimals' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'weight' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'totalBalance' },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                            ],
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'InlineFragment',
-                              typeCondition: {
-                                kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolTokenComposableStable' },
-                              },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'index' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'balance' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'pool' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'version' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'owner' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'factory' } },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'createTime' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalShares' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalLiquidity' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'nestingType' },
-                                        },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'swapFee' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'amp' } },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'bptPriceRate' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'tokens' },
-                                          selectionSet: {
-                                            kind: 'SelectionSet',
-                                            selections: [
-                                              {
-                                                kind: 'InlineFragment',
-                                                typeCondition: {
-                                                  kind: 'NamedType',
-                                                  name: { kind: 'Name', value: 'GqlPoolToken' },
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'id' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'index' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'name' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'symbol' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'balance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'address' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'priceRate' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'decimals' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'weight' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'totalBalance' },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                              {
-                                                kind: 'InlineFragment',
-                                                typeCondition: {
-                                                  kind: 'NamedType',
-                                                  name: {
-                                                    kind: 'Name',
-                                                    value: 'GqlPoolTokenLinear',
-                                                  },
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'id' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'index' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'name' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'symbol' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'balance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'address' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'priceRate' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'decimals' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'weight' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'mainTokenBalance',
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'wrappedTokenBalance',
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'totalMainTokenBalance',
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'totalBalance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'pool' },
-                                                      selectionSet: {
-                                                        kind: 'SelectionSet',
-                                                        selections: [
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'id' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'type' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'version',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'name' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'symbol' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'address',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'owner' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'factory',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'createTime',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'wrappedIndex',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'mainIndex',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'upperTarget',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'lowerTarget',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'totalShares',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'totalLiquidity',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'bptPriceRate',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'tokens' },
-                                                            selectionSet: {
-                                                              kind: 'SelectionSet',
-                                                              selections: [
-                                                                {
-                                                                  kind: 'InlineFragment',
-                                                                  typeCondition: {
-                                                                    kind: 'NamedType',
-                                                                    name: {
-                                                                      kind: 'Name',
-                                                                      value: 'GqlPoolToken',
-                                                                    },
-                                                                  },
-                                                                  selectionSet: {
-                                                                    kind: 'SelectionSet',
-                                                                    selections: [
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'id',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'index',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'name',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'symbol',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'balance',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'address',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'priceRate',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'decimals',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'weight',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'totalBalance',
-                                                                        },
-                                                                      },
-                                                                    ],
-                                                                  },
-                                                                },
-                                                              ],
-                                                            },
-                                                          },
-                                                        ],
-                                                      },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                            ],
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
                                 ],
                               },
                             },
@@ -8986,7 +6100,7 @@ export const GetPoolDocument = {
                       { kind: 'Field', name: { kind: 'Name', value: 'lambda' } },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'tokens' },
+                        name: { kind: 'Name', value: 'poolTokens' },
                         selectionSet: {
                           kind: 'SelectionSet',
                           selections: [
@@ -8994,12 +6108,13 @@ export const GetPoolDocument = {
                               kind: 'InlineFragment',
                               typeCondition: {
                                 kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolToken' },
+                                name: { kind: 'Name', value: 'GqlPoolTokenDetail' },
                               },
                               selectionSet: {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -9008,549 +6123,6 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'InlineFragment',
-                              typeCondition: {
-                                kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolTokenLinear' },
-                              },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'index' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'balance' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'mainTokenBalance' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'wrappedTokenBalance' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'totalMainTokenBalance' },
-                                  },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'pool' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'version' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'owner' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'factory' } },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'createTime' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'wrappedIndex' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'mainIndex' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'upperTarget' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'lowerTarget' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalShares' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalLiquidity' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'bptPriceRate' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'tokens' },
-                                          selectionSet: {
-                                            kind: 'SelectionSet',
-                                            selections: [
-                                              {
-                                                kind: 'InlineFragment',
-                                                typeCondition: {
-                                                  kind: 'NamedType',
-                                                  name: { kind: 'Name', value: 'GqlPoolToken' },
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'id' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'index' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'name' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'symbol' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'balance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'address' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'priceRate' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'decimals' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'weight' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'totalBalance' },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                            ],
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'InlineFragment',
-                              typeCondition: {
-                                kind: 'NamedType',
-                                name: { kind: 'Name', value: 'GqlPoolTokenComposableStable' },
-                              },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'index' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'balance' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'totalBalance' } },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'pool' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'version' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'owner' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'factory' } },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'createTime' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalShares' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'totalLiquidity' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'nestingType' },
-                                        },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'swapFee' } },
-                                        { kind: 'Field', name: { kind: 'Name', value: 'amp' } },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'bptPriceRate' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'tokens' },
-                                          selectionSet: {
-                                            kind: 'SelectionSet',
-                                            selections: [
-                                              {
-                                                kind: 'InlineFragment',
-                                                typeCondition: {
-                                                  kind: 'NamedType',
-                                                  name: { kind: 'Name', value: 'GqlPoolToken' },
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'id' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'index' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'name' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'symbol' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'balance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'address' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'priceRate' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'decimals' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'weight' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'totalBalance' },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                              {
-                                                kind: 'InlineFragment',
-                                                typeCondition: {
-                                                  kind: 'NamedType',
-                                                  name: {
-                                                    kind: 'Name',
-                                                    value: 'GqlPoolTokenLinear',
-                                                  },
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'id' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'index' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'name' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'symbol' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'balance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'address' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'priceRate' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'decimals' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'weight' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'mainTokenBalance',
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'wrappedTokenBalance',
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'totalMainTokenBalance',
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'totalBalance' },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: { kind: 'Name', value: 'pool' },
-                                                      selectionSet: {
-                                                        kind: 'SelectionSet',
-                                                        selections: [
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'id' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'type' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'version',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'name' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'symbol' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'address',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'owner' },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'factory',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'createTime',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'wrappedIndex',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'mainIndex',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'upperTarget',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'lowerTarget',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'totalShares',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'totalLiquidity',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'bptPriceRate',
-                                                            },
-                                                          },
-                                                          {
-                                                            kind: 'Field',
-                                                            name: { kind: 'Name', value: 'tokens' },
-                                                            selectionSet: {
-                                                              kind: 'SelectionSet',
-                                                              selections: [
-                                                                {
-                                                                  kind: 'InlineFragment',
-                                                                  typeCondition: {
-                                                                    kind: 'NamedType',
-                                                                    name: {
-                                                                      kind: 'Name',
-                                                                      value: 'GqlPoolToken',
-                                                                    },
-                                                                  },
-                                                                  selectionSet: {
-                                                                    kind: 'SelectionSet',
-                                                                    selections: [
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'id',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'index',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'name',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'symbol',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'balance',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'address',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'priceRate',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'decimals',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'weight',
-                                                                        },
-                                                                      },
-                                                                      {
-                                                                        kind: 'Field',
-                                                                        name: {
-                                                                          kind: 'Name',
-                                                                          value: 'totalBalance',
-                                                                        },
-                                                                      },
-                                                                    ],
-                                                                  },
-                                                                },
-                                                              ],
-                                                            },
-                                                          },
-                                                        ],
-                                                      },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                            ],
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
                                 ],
                               },
                             },

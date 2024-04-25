@@ -15,6 +15,7 @@ export type RemoveLiquidityParams = {
   slippage: string
   humanBptIn: HumanAmount
   tokenOut?: Address // only used by single token removal type
+  wethIsEth?: boolean // only used by single token removal type
 }
 function liquidityParams({
   handler,
@@ -23,10 +24,11 @@ function liquidityParams({
   slippage,
   humanBptIn,
   tokenOut,
+  wethIsEth,
 }: RemoveLiquidityParams) {
   return `${getHandlerClassName(
     handler
-  )}:${userAddress}:${poolId}:${slippage}:${humanBptIn}:${tokenOut}`
+  )}:${userAddress}:${poolId}:${slippage}:${humanBptIn}:${tokenOut}:${wethIsEth}`
 }
 export const removeLiquidityKeys = {
   priceImpact: (params: RemoveLiquidityParams) =>
