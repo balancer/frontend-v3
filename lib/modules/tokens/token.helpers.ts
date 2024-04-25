@@ -1,4 +1,8 @@
-import { getNetworkConfig, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
+import {
+  getNativeAssetAddress,
+  getNetworkConfig,
+  getWrappedNativeAssetAddress,
+} from '@/lib/config/app.config'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Address } from 'wagmi'

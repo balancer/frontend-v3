@@ -123,7 +123,9 @@ export function RemoveLiquidityForm() {
                 </Text>
               </InputWithSlider>
               {activeTab === TABS[0] && <RemoveLiquidityProportional tokens={tokens} />}
-              {activeTab === TABS[1] && <RemoveLiquiditySingleToken tokens={tokens} />}
+              {activeTab === TABS[1] && (
+                <RemoveLiquiditySingleToken tokens={tokens} chain={pool.chain} />
+              )}
             </VStack>
             <VStack spacing="sm" align="start" w="full">
               <PriceImpactAccordion
