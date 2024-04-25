@@ -17,6 +17,7 @@ export type AddLiquidityParams = {
   slippage: string
   humanAmountsIn: HumanAmountIn[]
 }
+
 function liquidityParams({
   handler,
   userAddress,

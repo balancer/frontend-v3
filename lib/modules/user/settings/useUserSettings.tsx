@@ -19,6 +19,7 @@ const DEFAULT_CURRENCY = SupportedCurrency.USD
 const DEFAULT_SLIPPAGE = '0.5' // 0.5%
 const DEFAULT_POOL_LIST_VIEW = PoolListView.List
 const DEFAULT_ENABLE_SIGNATURES: EnableSignatures = 'yes'
+const DEFAULT_ACCEPTED_POLICIES: string[] = []
 
 export type UseUserSettingsResult = ReturnType<typeof _useUserSettings>
 export const UserSettingsContext = createContext<UseUserSettingsResult | null>(null)
@@ -28,11 +29,13 @@ export function _useUserSettings({
   initSlippage,
   initPoolListView,
   initEnableSignatures,
+  initAcceptedPolicies,
 }: {
   initCurrency: SupportedCurrency
   initSlippage: string
   initEnableSignatures: EnableSignatures
   initPoolListView: PoolListView
+  initAcceptedPolicies: string[]
 }) {
   const isMounted = useIsMounted()
 
@@ -63,6 +66,12 @@ export function _useUserSettings({
   const slippageDecimal = bn(slippage).div(100).toString()
   const slippageBps = bn(slippage).times(100).toString()
 
+  const [_acceptedPolicies, setAcceptedPolicies] = useLocalStorage<string[]>(
+    LS_KEYS.UserSettings.AcceptedPolicies,
+    initAcceptedPolicies
+  )
+  const acceptedPolicies = isMounted ? _acceptedPolicies : initAcceptedPolicies
+
   return {
     currency,
     slippage,
@@ -70,10 +79,12 @@ export function _useUserSettings({
     slippageBps,
     poolListView,
     enableSignatures,
+    acceptedPolicies,
     setCurrency,
     setSlippage,
     setEnableSignatures,
     setPoolListView,
+    setAcceptedPolicies,
   }
 }
 
@@ -82,6 +93,7 @@ type ProviderProps = PropsWithChildren<{
   initSlippage: string | undefined
   initPoolListView: string | undefined
   initEnableSignatures: string | undefined
+  initAcceptedPolicies: string[] | undefined
 }>
 
 export function UserSettingsProvider({
@@ -89,6 +101,7 @@ export function UserSettingsProvider({
   initSlippage,
   initPoolListView,
   initEnableSignatures,
+  initAcceptedPolicies,
   children,
 }: ProviderProps) {
   const _initCurrency = (initCurrency as SupportedCurrency) || DEFAULT_CURRENCY
@@ -96,12 +109,14 @@ export function UserSettingsProvider({
   const _initPoolListView = (initPoolListView as PoolListView) || DEFAULT_POOL_LIST_VIEW
   const _initEnableSignatures =
     (initEnableSignatures as EnableSignatures) || DEFAULT_ENABLE_SIGNATURES
+  const _initAcceptedPolicies = initAcceptedPolicies || DEFAULT_ACCEPTED_POLICIES
 
   const hook = _useUserSettings({
     initCurrency: _initCurrency,
     initSlippage: _initSlippage,
     initPoolListView: _initPoolListView,
     initEnableSignatures: _initEnableSignatures,
+    initAcceptedPolicies: _initAcceptedPolicies,
   })
   return <UserSettingsContext.Provider value={hook}>{children}</UserSettingsContext.Provider>
 }

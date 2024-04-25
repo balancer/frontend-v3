@@ -46,7 +46,7 @@ export function getAllGaugesAddressesFromPool(pool: PoolListItem) {
 export type UsePortfolio = ReturnType<typeof _usePortfolio>
 
 function _usePortfolio() {
-  const { userAddress, isConnected, isLoading: isLoadingUserInfo } = useUserAccount()
+  const { userAddress, isConnected } = useUserAccount()
 
   const { data, loading } = useApolloQuery(GetPoolsDocument, {
     variables: { where: { userAddress } },
@@ -84,8 +84,9 @@ function _usePortfolio() {
 
       userTotalBalance = userTotalBalance.plus(pool.userBalance?.totalBalanceUsd || 0)
     })
+
     return {
-      pools: data?.pools,
+      pools: data?.pools || [],
       stakedPools,
       unstakedPools,
       userTotalBalance,
@@ -174,7 +175,6 @@ function _usePortfolio() {
     }, bn(0))
   }, [protocolRewardsData])
 
-  const isLoadingPortfolio = loading || isLoadingUserInfo
   return {
     portfolioData,
     balRewardsData,
@@ -189,8 +189,8 @@ function _usePortfolio() {
     isLoadingBalRewards,
     isLoadingProtocolRewards,
     isLoadingClaimableRewards,
-    isLoadingPortfolio,
-    isLoadingClaimPoolData: isLoadingBalRewards || isLoadingClaimableRewards || isLoadingPortfolio,
+    isLoadingPortfolio: loading,
+    isLoadingClaimPoolData: isLoadingBalRewards || isLoadingClaimableRewards,
   }
 }
 

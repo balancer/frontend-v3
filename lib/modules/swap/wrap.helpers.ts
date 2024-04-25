@@ -1,6 +1,6 @@
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'wagmi'
-import { isNativeToken, isWrappedNativeToken } from '../tokens/token.helpers'
+import { isNativeAsset, isWrappedNativeAsset } from '../tokens/token.helpers'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { isSameAddress, sameAddresses } from '@/lib/shared/utils/addresses'
 import { LidoWrapHandler } from './handlers/LidoWrap.handler'
@@ -8,8 +8,8 @@ import { SwapHandler } from './handlers/Swap.handler'
 import { OWrapType, SupportedWrapHandler, WrapType } from './swap.types'
 
 export function isNativeWrap(tokenIn: Address, tokenOut: Address, chain: GqlChain) {
-  const tokenInIsNative = isNativeToken(tokenIn, chain) || isWrappedNativeToken(tokenIn, chain)
-  const tokenOutIsNative = isNativeToken(tokenOut, chain) || isWrappedNativeToken(tokenOut, chain)
+  const tokenInIsNative = isNativeAsset(tokenIn, chain) || isWrappedNativeAsset(tokenIn, chain)
+  const tokenOutIsNative = isNativeAsset(tokenOut, chain) || isWrappedNativeAsset(tokenOut, chain)
 
   return tokenInIsNative && tokenOutIsNative
 }
@@ -56,9 +56,9 @@ export function getWrapHandlerClass(
 }
 
 export function getWrapType(tokenIn: Address, tokenOut: Address, chain: GqlChain): WrapType | null {
-  if (isNativeToken(tokenIn, chain) && isWrappedNativeToken(tokenOut, chain)) {
+  if (isNativeAsset(tokenIn, chain) && isWrappedNativeAsset(tokenOut, chain)) {
     return OWrapType.WRAP
-  } else if (isWrappedNativeToken(tokenIn, chain) && isNativeToken(tokenOut, chain)) {
+  } else if (isWrappedNativeAsset(tokenIn, chain) && isNativeAsset(tokenOut, chain)) {
     return OWrapType.UNWRAP
   } else if (isSupportedWrap(tokenIn, tokenOut, chain)) {
     const wrapper = getWrapConfig(tokenIn, tokenOut, chain)

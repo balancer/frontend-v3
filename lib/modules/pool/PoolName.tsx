@@ -13,7 +13,7 @@ export function PoolName({ pool, ...rest }: { pool: PoolListItem | Pool } & Text
   // }
 
   return (
-    <Text display="flex" {...rest}>
+    <Text textAlign="center" display="flex" {...rest}>
       {displayTokens.map((token, idx) => {
         return (
           <Text as="span" key={token.address}>

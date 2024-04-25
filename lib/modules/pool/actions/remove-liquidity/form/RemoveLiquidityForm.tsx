@@ -104,7 +104,7 @@ export function RemoveLiquidityForm() {
                   currentOption={activeTab}
                   options={TABS}
                   onChange={toggleTab}
-                  size="lg"
+                  size="xxs"
                 />
                 <Tooltip label="Remove liquidity type" fontSize="sm">
                   <InfoOutlineIcon color="grayText" />
@@ -123,7 +123,9 @@ export function RemoveLiquidityForm() {
                 </Text>
               </InputWithSlider>
               {activeTab === TABS[0] && <RemoveLiquidityProportional tokens={tokens} />}
-              {activeTab === TABS[1] && <RemoveLiquiditySingleToken tokens={tokens} />}
+              {activeTab === TABS[1] && (
+                <RemoveLiquiditySingleToken tokens={tokens} chain={pool.chain} />
+              )}
             </VStack>
             <VStack spacing="sm" align="start" w="full">
               <PriceImpactAccordion
@@ -154,7 +156,8 @@ export function RemoveLiquidityForm() {
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={isDisabled || simulationQuery.isLoading || simulationQuery.isError}
+                isDisabled={isDisabled}
+                isLoading={simulationQuery.isLoading || priceImpactQuery.isLoading}
                 onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
               >
                 Next

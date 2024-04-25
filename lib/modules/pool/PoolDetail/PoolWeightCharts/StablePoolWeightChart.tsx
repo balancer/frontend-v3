@@ -9,9 +9,9 @@ import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMod
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 
 const smallSize: ChartSizeValues = {
-  chartHeight: '150px',
-  boxWidth: 150,
-  boxHeight: 150,
+  chartHeight: '120px',
+  boxWidth: 120,
+  boxHeight: 120,
   haloTop: '40%',
   haloLeft: '55px',
   haloWidth: '40px',
@@ -99,8 +99,8 @@ export default function StablePoolWeightChart({
       spacing="4"
     >
       <Box
-        width={`${chartSizeValues.boxWidth * 0.75}px`}
-        height={`${chartSizeValues.boxHeight * 0.75}px`}
+        width={`${chartSizeValues.boxWidth}px`}
+        height={`${chartSizeValues.boxHeight}px`}
         position="relative"
       >
         <Box
@@ -119,8 +119,8 @@ export default function StablePoolWeightChart({
           alignItems="center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { delay: 0.1 } }}
-          width={`${chartSizeValues.boxWidth * 0.58}px`}
-          height={`${chartSizeValues.boxHeight * 0.58}px`}
+          width={`${chartSizeValues.boxWidth * 0.75}px`}
+          height={`${chartSizeValues.boxHeight * 0.75}px`}
           bg="background.base"
         >
           <NoisyCard

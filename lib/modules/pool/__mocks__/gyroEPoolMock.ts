@@ -262,7 +262,7 @@ export const gyroEPoolMock: GqlPoolElement = {
   w: '0.1355149244812121776018229293854268',
   z: '-0.041579812808856621982290771533576495',
   nestingType: 'NO_NESTING',
-  tokens: [
+  poolTokens: [
     {
       id: '0xf01b0684c98cd7ada480bfdf6e43876422fa1fc10002000000000000000005de-0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
       index: 0,
@@ -273,7 +273,6 @@ export const gyroEPoolMock: GqlPoolElement = {
       priceRate: '1.161179830902898325',
       decimals: 18,
       weight: null,
-      totalBalance: '1535.699696077969892785',
     },
     {
       id: '0xf01b0684c98cd7ada480bfdf6e43876422fa1fc10002000000000000000005de-0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -285,7 +284,6 @@ export const gyroEPoolMock: GqlPoolElement = {
       priceRate: '1.0',
       decimals: 18,
       weight: null,
-      totalBalance: '3.419868598244269796',
     },
   ],
 } as unknown as GqlPoolElement

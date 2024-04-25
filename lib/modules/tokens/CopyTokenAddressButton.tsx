@@ -1,7 +1,7 @@
 'use client'
 
 import { CheckCircleIcon, CopyIcon } from '@chakra-ui/icons'
-import { IconButton, IconButtonProps } from '@chakra-ui/react'
+import { IconButton, IconButtonProps, Tooltip } from '@chakra-ui/react'
 import { useState } from 'react'
 
 export function CopyTokenAddressButton({
@@ -17,14 +17,18 @@ export function CopyTokenAddressButton({
   }
 
   return (
-    <IconButton
-      size="xs"
-      isRound
-      variant="ghost"
-      aria-label="Copy token address"
-      icon={isCopied ? <CheckCircleIcon /> : <CopyIcon />}
-      onClick={copyToClipboard}
-      {...rest}
-    />
+    <Tooltip label="Copy token address">
+      <IconButton
+        size="xs"
+        isRound
+        variant="ghost"
+        w="6"
+        h="6"
+        aria-label="Copy token address"
+        icon={isCopied ? <CheckCircleIcon /> : <CopyIcon />}
+        onClick={copyToClipboard}
+        {...rest}
+      />
+    </Tooltip>
   )
 }

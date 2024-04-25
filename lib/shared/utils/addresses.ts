@@ -1,4 +1,4 @@
-import { getNativeAssetAddress } from '@/lib/config/app.config'
+import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { Address, checksumAddress, isAddress } from 'viem'
 import { GqlChain } from '../services/api/generated/graphql'
@@ -13,6 +13,13 @@ export function isNativeAsset(
   tokenAddress: Address | string
 ) {
   return isSameAddress(getNativeAssetAddress(chainId), tokenAddress)
+}
+
+export function isWrappedNativeAsset(
+  chainId: GqlChain | SupportedChainId,
+  tokenAddress: Address | string
+) {
+  return isSameAddress(getWrappedNativeAssetAddress(chainId), tokenAddress)
 }
 
 export function includesAddress(addresses: string[], address: string): boolean {

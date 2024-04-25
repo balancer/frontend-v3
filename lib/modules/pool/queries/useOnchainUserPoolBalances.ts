@@ -6,9 +6,8 @@ import {
 } from '../../web3/contracts/abi/generated'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { formatUnits, zeroAddress } from 'viem'
-import { useTokens } from '../../tokens/useTokens'
-import { GqlChain, GqlPoolUserBalance } from '@/lib/shared/services/api/generated/graphql'
-import { bn, safeSum } from '@/lib/shared/utils/numbers'
+import { GqlPoolUserBalance } from '@/lib/shared/services/api/generated/graphql'
+import { bn } from '@/lib/shared/utils/numbers'
 import { calcBptPrice } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { BPT_DECIMALS } from '../pool.constants'
@@ -29,8 +28,7 @@ import { getChainId } from '@/lib/config/app.config'
 function overwriteOnchainPoolBalanceData(
   pools: Pool[],
   ocUnstakedBalances: bigint[],
-  ocStakedBalances: (bigint | null)[],
-  priceFor: (address: string, chain: GqlChain) => number
+  ocStakedBalances: (bigint | null)[]
 ) {
   return pools.map((pool, i) => {
     if (!ocUnstakedBalances.length || !ocStakedBalances.length) return pool
@@ -44,10 +42,7 @@ function overwriteOnchainPoolBalanceData(
     const ocTotalBalanceInt = ocStakedBalanceInt + ocUnstakedBalanceInt
     const totalBalance = formatUnits(ocTotalBalanceInt, BPT_DECIMALS)
 
-    const totalUsdLiquidity = safeSum(
-      pool.tokens.map(token => bn(token.balance).times(priceFor(token.address, pool.chain)))
-    )
-    const bptPrice = calcBptPrice(totalUsdLiquidity, pool.dynamicData.totalShares)
+    const bptPrice = calcBptPrice(pool.dynamicData.totalLiquidity, pool.dynamicData.totalShares)
 
     const userBalance: GqlPoolUserBalance = {
       __typename: 'GqlPoolUserBalance',
@@ -69,7 +64,6 @@ function overwriteOnchainPoolBalanceData(
 
 export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   const { userAddress, isConnected } = useUserAccount()
-  const { priceFor } = useTokens()
 
   const {
     data: unstakedPoolBalances = [],
@@ -120,8 +114,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   const enrichedPools = overwriteOnchainPoolBalanceData(
     pools,
     unstakedPoolBalances,
-    stakedPoolBalances.map(b => b.result || null),
-    priceFor
+    stakedPoolBalances.map(b => b.result || null)
   )
 
   useEffect(() => {
