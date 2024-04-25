@@ -88,8 +88,8 @@ export const getDefaultPoolChartOptions = (
         color: tokens.colors[theme].text.secondary,
         opacity: 0.5,
         interval: 'auto',
-        showMaxLabel: false,
-        showMinLabel: false,
+        showMaxLabel: true,
+        showMinLabel: true,
       },
     },
     tooltip: {
@@ -107,23 +107,25 @@ export const getDefaultPoolChartOptions = (
           };margin-right:-15px">
             <div style="font-size: 14px; font-weight: 700; color: ${
               toolTipTheme.text
-            }; display:flex;justify-content:space-between;${toolTipTheme.heading};">
+            }; display:flex;justify-content:start;gap:4px;letter-spacing:-0.25px;${
+          toolTipTheme.heading
+        };">
               <span>${data.seriesName}</span>
-              <span>${numeral(value).format('($0,0a)')}</span>
+              <span>${numeral(value).format('($0,0.00a)')}</span>
             </div>
-            <div style="display:flex;flex-direction:column;justify-content:flex-start;gap:0">
+            <div style="display:flex;flex-direction:column;justify-content:flex-start;gap:0;margin-top:4px">
               ${tokens?.map((token, index) => {
                 return `
                   <div style="color: ${
                     toolTipTheme.text
-                  }; display:flex;justify-content:space-between;align-items:center;margin-bottom:${
-                  index === tokens.length - 1 ? `5px` : `-20px`
+                  }; display:flex;justify-content:start;align-items:center;gap:6px; margin-bottom:${
+                  index === tokens.length - 1 ? `4px` : `-20px`
                 }">
                     <img src="${
                       token.token?.logoURI
-                    }" style="width: 16px; height: 16px; border-radius: 50%; margin-right: 0.5rem;" />
-                    <div>
-                      <span>${Number(token.amount).toFixed(2)}</span>
+                    }" style="width: 16px; height: 16px; border-radius: 50%; margin-right;letter-spacing:-0.1px" />
+                    <div style="text-align:left">                      
+                      <span>${Number(Number(token.amount).toFixed(2)).toLocaleString()}</span>
                       <span>${token.token?.symbol}</span>
                     </div>
                   </div>
@@ -133,8 +135,12 @@ export const getDefaultPoolChartOptions = (
             <div style="font-size: 0.85rem; font-weight: 500; color: ${toolTipTheme.text};">
               By: ${abbreviateAddress(address)}
             </div>
-            <div style="font-size: 0.85rem; font-weight: 500; color: ${toolTipTheme.text};">
-              ${format(new Date(timestamp * 1000), 'MMM d')}
+            <div style="font-size: 0.75rem; line-height:1;font-weight: 500; margin-top:4px; color: ${
+              toolTipTheme.text
+            };">
+              ${format(new Date(timestamp * 1000), 'MMM d, h:mma')
+                .replace('AM', 'am')
+                .replace('PM', 'pm')}
             </div>
           </div>
       `

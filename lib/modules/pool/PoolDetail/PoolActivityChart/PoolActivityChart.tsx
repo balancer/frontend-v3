@@ -1,6 +1,6 @@
 'use client'
 import ReactECharts from 'echarts-for-react'
-import { Box, Card, Divider, HStack, Heading } from '@chakra-ui/react'
+import { Box, Card, Divider, HStack, Heading, Text } from '@chakra-ui/react'
 import { usePoolActivityChart } from './usePoolActivityChart'
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { balTheme } from '@/lib/shared/services/chakra/theme'
@@ -44,21 +44,22 @@ export function PoolActivityChart() {
         </Box>
       )}
 
-      <Divider></Divider>
-      <HStack gap="3">
+      <Divider pt="2" mb="4" />
+
+      <HStack spacing="4" px={['1', '2']}>
         {legendTabs.map((tab, index) => (
           <HStack alignItems="center" key={index} gap="2">
             <Box
               key={index}
-              height="12px"
-              width="12px"
+              height="2"
+              width="2"
               backgroundImage={tab.color}
               borderRadius="50%"
               display="inline-block"
             />
-            <Heading variant="sand" size="sm">
+            <Text color="font.secondary" fontSize="sm">
               {tab.label}
-            </Heading>
+            </Text>
           </HStack>
         ))}
       </HStack>
