@@ -7,7 +7,6 @@ import ButtonGroup, {
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { InputWithSlider } from '@/lib/shared/components/inputs/InputWithSlider/InputWithSlider'
 import { fNum } from '@/lib/shared/utils/numbers'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { Button, Card, Center, HStack, Heading, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { RemoveLiquidityModal } from '../modal/RemoveLiquidityModal'
@@ -23,6 +22,7 @@ import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetai
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import { parseUnits } from 'viem'
 import { SimulationError } from '@/lib/shared/components/errors/SimulationError'
+import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 
 const TABS: ButtonGroupOption[] = [
   {
@@ -107,7 +107,7 @@ export function RemoveLiquidityForm() {
                   size="xxs"
                 />
                 <Tooltip label="Remove liquidity type" fontSize="sm">
-                  <InfoOutlineIcon color="grayText" />
+                  <InfoIcon />
                 </Tooltip>
               </HStack>
             )}

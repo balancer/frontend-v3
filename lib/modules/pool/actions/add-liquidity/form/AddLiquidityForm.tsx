@@ -200,7 +200,7 @@ export function AddLiquidityForm() {
                   </Card>
                 </GridItem>
               </Grid>
-              <AddLiquidityFormCheckbox />
+              {!isDisabled && <AddLiquidityFormCheckbox />}
               <Tooltip label={isDisabled ? disabledReason : ''}>
                 <Button
                   ref={nextBtn}

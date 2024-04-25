@@ -1,6 +1,5 @@
 import { getBlockExplorerName, useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
   HStack,
   IconButton,
@@ -18,6 +17,7 @@ import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { CoingeckoIcon } from '@/lib/shared/components/icons/CoingeckoIcon'
 import { AddTokenToWalletButton } from './AddTokenToWalletButton'
 import { ExternalLink } from 'react-feather'
+import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 
 type Props = {
   tokenAddress: string | Address
@@ -38,7 +38,7 @@ export function TokenInfoPopover({ tokenAddress, chain }: Props) {
           variant="link"
           aria-label="Token info"
           color="grayText"
-          icon={<InfoOutlineIcon />}
+          icon={<InfoIcon />}
         />
       </PopoverTrigger>
       <PopoverContent w="auto">

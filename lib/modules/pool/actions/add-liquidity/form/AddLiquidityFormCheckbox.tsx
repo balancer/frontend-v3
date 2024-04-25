@@ -14,6 +14,7 @@ import {
 import { RisksList } from '../../../PoolDetail/PoolRisks/PoolRisks'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
+import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 
 export function AddLiquidityFormCheckbox() {
   const { tokens, acceptPoolRisks, setAcceptPoolRisks } = useAddLiquidity()
@@ -24,7 +25,7 @@ export function AddLiquidityFormCheckbox() {
   )
 
   return (
-    <HStack>
+    <HStack spacing="xs">
       <Checkbox
         size="lg"
         isChecked={acceptPoolRisks}
@@ -40,7 +41,7 @@ export function AddLiquidityFormCheckbox() {
             aria-label="pool-risks-info"
             bg="background.level2"
             _hover={{ bg: 'background.level2' }}
-            icon={<InfoOutlineIcon boxSize="4" color="grayText" />}
+            icon={<InfoIcon />}
           />
         </PopoverTrigger>
         <Box zIndex="popover" shadow="2xl">
