@@ -4974,16 +4974,14 @@ export type GetPoolTokensDynamicDataQuery = {
 }
 
 export type GetPoolEventsQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']['input']>
   poolId: Scalars['String']['input']
-  chainId: GqlChain
-  range: GqlPoolEventsDataRange
-  typeIn: Array<GqlPoolEventType> | GqlPoolEventType
-  userAddress?: InputMaybe<Scalars['String']['input']>
+  chain: GqlChain
 }>
 
 export type GetPoolEventsQuery = {
   __typename: 'Query'
-  events: Array<
+  poolEvents: Array<
     | {
         __typename: 'GqlPoolJoinExitEventV3'
         id: string
@@ -4992,6 +4990,13 @@ export type GetPoolEventsQuery = {
         tx: string
         type: GqlPoolEventType
         valueUSD: number
+        userAddress: string
+        tokens: Array<{
+          __typename: 'GqlPoolEventAmount'
+          address: string
+          amount: string
+          valueUSD: number
+        }>
       }
     | {
         __typename: 'GqlPoolSwapEventV3'
@@ -5001,6 +5006,9 @@ export type GetPoolEventsQuery = {
         tx: string
         type: GqlPoolEventType
         valueUSD: number
+        userAddress: string
+        tokenIn: { __typename: 'GqlPoolEventAmount'; address: string; amount: string }
+        tokenOut: { __typename: 'GqlPoolEventAmount'; address: string; amount: string }
       }
   >
 }
@@ -12387,6 +12395,11 @@ export const GetPoolEventsDocument = {
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'first' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'poolId' } },
           type: {
             kind: 'NonNullType',
@@ -12395,38 +12408,11 @@ export const GetPoolEventsDocument = {
         },
         {
           kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'chainId' } },
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'chain' } },
           type: {
             kind: 'NonNullType',
             type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlChain' } },
           },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'range' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlPoolEventsDataRange' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'typeIn' } },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'ListType',
-              type: {
-                kind: 'NonNullType',
-                type: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlPoolEventType' } },
-              },
-            },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'userAddress' } },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
         },
       ],
       selectionSet: {
@@ -12434,33 +12420,31 @@ export const GetPoolEventsDocument = {
         selections: [
           {
             kind: 'Field',
-            alias: { kind: 'Name', value: 'events' },
-            name: { kind: 'Name', value: 'poolGetEvents' },
+            name: { kind: 'Name', value: 'poolEvents' },
             arguments: [
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'poolId' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'poolId' } },
+                name: { kind: 'Name', value: 'first' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'first' } },
               },
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'chain' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'chainId' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'range' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'range' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'typeIn' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'typeIn' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'userAddress' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'userAddress' } },
+                name: { kind: 'Name', value: 'where' },
+                value: {
+                  kind: 'ObjectValue',
+                  fields: [
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'poolId' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'poolId' } },
+                    },
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'chain' },
+                      value: { kind: 'Variable', name: { kind: 'Name', value: 'chain' } },
+                    },
+                  ],
+                },
               },
             ],
             selectionSet: {
@@ -12472,6 +12456,65 @@ export const GetPoolEventsDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'tx' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'type' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'valueUSD' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'userAddress' } },
+                {
+                  kind: 'InlineFragment',
+                  typeCondition: {
+                    kind: 'NamedType',
+                    name: { kind: 'Name', value: 'GqlPoolSwapEventV3' },
+                  },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'tokenIn' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'tokenOut' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'InlineFragment',
+                  typeCondition: {
+                    kind: 'NamedType',
+                    name: { kind: 'Name', value: 'GqlPoolJoinExitEventV3' },
+                  },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'tokens' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'valueUSD' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
               ],
             },
           },
