@@ -1315,14 +1315,14 @@ export const balTheme = {
           fontWeight: 'bold',
           borderRadius: '4px',
           _hover: {
-            background: 'background.button.secondary',
-            color: '#728097',
+            
+            color: 'font.highlight',
             transform: 'none',
           },
           _dark: {
-            color: 'gray.300',
+            color: 'font.secondary',
             _hover: {
-              color: 'background.level3',
+              color: 'font.maxContrast',
             },
           },
         },
