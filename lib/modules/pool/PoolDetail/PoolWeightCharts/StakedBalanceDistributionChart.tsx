@@ -38,14 +38,13 @@ export default function StakedBalanceDistributionChart({
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const theme = useTheme()
   const colorMode = useThemeColorMode()
+  const semColorMode = useSemanticTokenColorMode()
 
   const unstakedBalance =
     (pool.userBalance?.totalBalanceUsd || 0) - (pool.userBalance?.stakedBalanceUsd || 0)
   const userHasLiquidity = (pool.userBalance?.totalBalanceUsd || 0) > 0
 
   function getData() {
-    const theme = useTheme()
-    const colorMode = useSemanticTokenColorMode()
     const data = []
 
     if (unstakedBalance > 0) {
@@ -70,7 +69,7 @@ export default function StakedBalanceDistributionChart({
         value: 100,
         name: 'No current balance',
         itemStyle: {
-          color: theme.semanticTokens.colors.background.level2[colorMode],
+          color: theme.semanticTokens.colors.background.level2[semColorMode],
         },
       })
     }
