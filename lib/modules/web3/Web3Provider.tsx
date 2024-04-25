@@ -66,8 +66,22 @@ const gqlChainToWagmiChainMap: Record<GqlChain, Chain> = {
   [GqlChain.Sepolia]: sepolia,
 }
 
+// Helpful for injecting fork RPCs for specific chains.
+const rpcOverrides: Record<GqlChain, string | undefined> = {
+  [GqlChain.Mainnet]: undefined,
+  [GqlChain.Arbitrum]: undefined,
+  [GqlChain.Base]: undefined,
+  [GqlChain.Avalanche]: undefined,
+  [GqlChain.Fantom]: undefined,
+  [GqlChain.Gnosis]: undefined,
+  [GqlChain.Optimism]: undefined,
+  [GqlChain.Polygon]: undefined,
+  [GqlChain.Zkevm]: undefined,
+  [GqlChain.Sepolia]: undefined,
+}
+
 export const supportedChains = PROJECT_CONFIG.supportedNetworks.map(chain =>
-  buildChain(gqlChainToWagmiChainMap[chain])
+  buildChain(gqlChainToWagmiChainMap[chain], rpcOverrides[chain])
 )
 
 const { chains, publicClient } = configureChains(supportedChains, [
