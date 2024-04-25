@@ -1,9 +1,12 @@
 import { fNum } from '@/lib/shared/utils/numbers'
 import { PoolListItem } from './pool.types'
 import { Text, TextProps } from '@chakra-ui/react'
-import { Pool } from './usePool'
+import { FeaturedPool, Pool } from './usePool'
 
-export function PoolName({ pool, ...rest }: { pool: PoolListItem | Pool } & TextProps) {
+export function PoolName({
+  pool,
+  ...rest
+}: { pool: PoolListItem | Pool | FeaturedPool } & TextProps) {
   const displayTokens = pool.displayTokens
 
   // TODO: We may need a more complex conditional for choosing when to display

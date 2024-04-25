@@ -8,10 +8,10 @@ import { isClp, isStable } from '../../pool.helpers'
 import BoostedPoolWeightChart from './BoostedPoolWeightChart'
 import StablePoolWeightChart from './StablePoolWeightChart'
 import CLPPoolWeightChart from './CLPPoolWeightChart'
-import { Pool } from '../../usePool'
+import { FeaturedPool, Pool } from '../../usePool'
 
 export interface PoolWeightChartProps {
-  pool: Pool
+  pool: Pool | FeaturedPool
   chain: GqlChain
   hasLegend?: boolean
   isSmall?: boolean
