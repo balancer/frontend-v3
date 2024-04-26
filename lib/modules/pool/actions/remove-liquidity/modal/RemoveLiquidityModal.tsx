@@ -26,6 +26,7 @@ import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { usePoolRedirect, useRefetchPoolOnFlowComplete } from '../../../pool.hooks'
 import { RemoveLiquidityPreview } from './RemoveLiquidityPreview'
+import { useClearCurrentFlowStepOnUnmount } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 
 type Props = {
   isOpen: boolean
@@ -47,6 +48,7 @@ export function RemoveLiquidityModal({
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
   const { redirectToPoolPage } = usePoolRedirect(pool)
   const { didRefetchPool, isFlowComplete } = useRefetchPoolOnFlowComplete()
+  useClearCurrentFlowStepOnUnmount()
 
   return (
     <Modal
