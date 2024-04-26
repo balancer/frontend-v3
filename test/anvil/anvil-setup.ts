@@ -9,7 +9,6 @@ export type NetworksWithFork = 'MAINNET' | 'POLYGON' | 'FANTOM'
 
 export type NetworkSetup = {
   networkName: NetworksWithFork
-  rpcEnv: string
   fallBackRpc: string | undefined
   port: number
   forkBlockNumber: bigint
@@ -38,7 +37,6 @@ const ANVIL_PORTS: Record<NetworksWithFork, number> = {
 export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
   MAINNET: {
     networkName: 'MAINNET',
-    rpcEnv: 'NEXT_ETHEREUM_RPC_URL',
     fallBackRpc: getDefaultRpcUrl(getChainId(GqlChain.Polygon)),
     port: ANVIL_PORTS.MAINNET,
     // From time to time this block gets outdated having this kind of error in integration tests:
@@ -47,7 +45,6 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
   },
   POLYGON: {
     networkName: 'POLYGON',
-    rpcEnv: 'NEXT_POLYGON_RPC_URL',
     fallBackRpc: getDefaultRpcUrl(getChainId(GqlChain.Polygon)),
     port: ANVIL_PORTS.POLYGON,
     // Note - this has to be >= highest blockNo used in tests
@@ -55,7 +52,6 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
   },
   FANTOM: {
     networkName: 'FANTOM',
-    rpcEnv: 'NEXT_FANTOM_RPC_URL',
     // Public Fantom RPCs are usually unreliable
     fallBackRpc: getDefaultRpcUrl(getChainId(GqlChain.Fantom)),
     port: ANVIL_PORTS.FANTOM,
@@ -76,15 +72,15 @@ export function getTestRpcUrl(networkName: NetworksWithFork) {
 }
 
 export function getForkUrl(network: NetworkSetup, verbose = false): string {
-  if (process.env[network.rpcEnv]) {
-    return process.env[network.rpcEnv] as string
+  if (network.networkName === 'MAINNET' && process.env['PRIVATE_INFURA_KEY']) {
+    return `https://mainnet.infura.io/v3/${process.env['PRIVATE_INFURA_KEY']}`
   } else {
     if (!network.fallBackRpc) {
-      throw Error(`Please add a environment variable for: ${network.rpcEnv}`)
+      throw Error(`Please add a fallback RPC for ${network.networkName} network.`)
     }
 
     if (verbose) {
-      console.warn(`\`${network.rpcEnv}\` not found. Falling back to \`${network.fallBackRpc}\`.`)
+      console.warn(`Falling back to \`${network.fallBackRpc}\`.`)
     }
     return network.fallBackRpc
   }
