@@ -47,7 +47,7 @@ export function AddLiquidityModal({
   const { navigateToReceipt, isFlowComplete } = useReceipt()
 
   useEffect(() => {
-    if (isFlowComplete) {
+    if (isOpen && isFlowComplete) {
       // Wait to allow animations in the preview modal before navigating to receipt page
       sleep(500).then(() => navigateToReceipt())
     }
