@@ -28,6 +28,15 @@ const networkConfig: NetworkConfig = {
     defaultSwapTokens: {
       tokenIn: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     },
+    popularTokens: {
+      '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee': 'AVAX',
+      '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7': 'WAVAX',
+      '0xa25eaf2906fa1a3a13edac9b9657108af7b703e3': 'ggAVAX',
+      '0xe15bcb9e0ea69e6ab9fa080c4c4a5632896298c3': 'BAL',
+      '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7': 'USDt',
+      '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e': 'USDC',
+      '0x152b9d0fdc40c096757f570a51e494bd4b943e50': 'BTC.b',
+    },
   },
   contracts: {
     multicall2: '0xca11bde05977b3631167028862be2a173976ca11',

@@ -32,6 +32,7 @@ export function _useCurrentFlowStep() {
     setCurrentFlowStep(undefined)
   }
 
+  //TODO: this success card will be deleted when we implement Receipt pages in Remove and Swap flows
   function SuccessCard({ chain }: { chain: GqlChain }) {
     const transactionHash = flowStep?.result.data?.transactionHash
 
@@ -78,4 +79,14 @@ export function useSyncCurrentFlowStep(step: FlowStep): FlowStep {
     setCurrentFlowStep(step)
   }, [step.id, step.simulation.status, step.execution.status, step.result.status])
   return step
+}
+
+export function useClearCurrentFlowStepOnUnmount() {
+  const { clearCurrentFlowStep } = useCurrentFlowStep()
+  useEffect(() => {
+    return () => {
+      clearCurrentFlowStep()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 }
