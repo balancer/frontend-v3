@@ -2184,7 +2184,6 @@ export type GetPoolQuery = {
         poolTokens: Array<{
           __typename: 'GqlPoolTokenDetail'
           id: string
-          hasNestedPool: boolean
           index: number
           name: string
           symbol: string
@@ -2193,6 +2192,19 @@ export type GetPoolQuery = {
           priceRate: string
           decimals: number
           weight?: string | null
+          hasNestedPool: boolean
+          nestedPool?: {
+            __typename: 'GqlNestedPool'
+            id: string
+            address: string
+            type: GqlPoolType
+            tokens: Array<{
+              __typename: 'GqlPoolTokenDetail'
+              index: number
+              address: string
+              decimals: number
+            }>
+          } | null
         }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
@@ -2399,7 +2411,6 @@ export type GetPoolQuery = {
         poolTokens: Array<{
           __typename: 'GqlPoolTokenDetail'
           id: string
-          hasNestedPool: boolean
           index: number
           name: string
           symbol: string
@@ -2408,6 +2419,19 @@ export type GetPoolQuery = {
           priceRate: string
           decimals: number
           weight?: string | null
+          hasNestedPool: boolean
+          nestedPool?: {
+            __typename: 'GqlNestedPool'
+            id: string
+            address: string
+            type: GqlPoolType
+            tokens: Array<{
+              __typename: 'GqlPoolTokenDetail'
+              index: number
+              address: string
+              decimals: number
+            }>
+          } | null
         }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
@@ -2616,7 +2640,6 @@ export type GetPoolQuery = {
         poolTokens: Array<{
           __typename: 'GqlPoolTokenDetail'
           id: string
-          hasNestedPool: boolean
           index: number
           name: string
           symbol: string
@@ -2625,6 +2648,19 @@ export type GetPoolQuery = {
           priceRate: string
           decimals: number
           weight?: string | null
+          hasNestedPool: boolean
+          nestedPool?: {
+            __typename: 'GqlNestedPool'
+            id: string
+            address: string
+            type: GqlPoolType
+            tokens: Array<{
+              __typename: 'GqlPoolTokenDetail'
+              index: number
+              address: string
+              decimals: number
+            }>
+          } | null
         }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
@@ -2846,7 +2882,6 @@ export type GetPoolQuery = {
         poolTokens: Array<{
           __typename: 'GqlPoolTokenDetail'
           id: string
-          hasNestedPool: boolean
           index: number
           name: string
           symbol: string
@@ -2855,6 +2890,19 @@ export type GetPoolQuery = {
           priceRate: string
           decimals: number
           weight?: string | null
+          hasNestedPool: boolean
+          nestedPool?: {
+            __typename: 'GqlNestedPool'
+            id: string
+            address: string
+            type: GqlPoolType
+            tokens: Array<{
+              __typename: 'GqlPoolTokenDetail'
+              index: number
+              address: string
+              decimals: number
+            }>
+          } | null
         }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
@@ -3063,7 +3111,6 @@ export type GetPoolQuery = {
         poolTokens: Array<{
           __typename: 'GqlPoolTokenDetail'
           id: string
-          hasNestedPool: boolean
           index: number
           name: string
           symbol: string
@@ -3072,6 +3119,19 @@ export type GetPoolQuery = {
           priceRate: string
           decimals: number
           weight?: string | null
+          hasNestedPool: boolean
+          nestedPool?: {
+            __typename: 'GqlNestedPool'
+            id: string
+            address: string
+            type: GqlPoolType
+            tokens: Array<{
+              __typename: 'GqlPoolTokenDetail'
+              index: number
+              address: string
+              decimals: number
+            }>
+          } | null
         }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
@@ -3276,7 +3336,6 @@ export type GetPoolQuery = {
         poolTokens: Array<{
           __typename: 'GqlPoolTokenDetail'
           id: string
-          hasNestedPool: boolean
           index: number
           name: string
           symbol: string
@@ -3285,6 +3344,19 @@ export type GetPoolQuery = {
           priceRate: string
           decimals: number
           weight?: string | null
+          hasNestedPool: boolean
+          nestedPool?: {
+            __typename: 'GqlNestedPool'
+            id: string
+            address: string
+            type: GqlPoolType
+            tokens: Array<{
+              __typename: 'GqlPoolTokenDetail'
+              index: number
+              address: string
+              decimals: number
+            }>
+          } | null
         }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
@@ -3489,7 +3561,6 @@ export type GetPoolQuery = {
         poolTokens: Array<{
           __typename: 'GqlPoolTokenDetail'
           id: string
-          hasNestedPool: boolean
           index: number
           name: string
           symbol: string
@@ -3498,6 +3569,19 @@ export type GetPoolQuery = {
           priceRate: string
           decimals: number
           weight?: string | null
+          hasNestedPool: boolean
+          nestedPool?: {
+            __typename: 'GqlNestedPool'
+            id: string
+            address: string
+            type: GqlPoolType
+            tokens: Array<{
+              __typename: 'GqlPoolTokenDetail'
+              index: number
+              address: string
+              decimals: number
+            }>
+          } | null
         }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
@@ -3702,7 +3786,6 @@ export type GetPoolQuery = {
         poolTokens: Array<{
           __typename: 'GqlPoolTokenDetail'
           id: string
-          hasNestedPool: boolean
           index: number
           name: string
           symbol: string
@@ -3711,6 +3794,19 @@ export type GetPoolQuery = {
           priceRate: string
           decimals: number
           weight?: string | null
+          hasNestedPool: boolean
+          nestedPool?: {
+            __typename: 'GqlNestedPool'
+            id: string
+            address: string
+            type: GqlPoolType
+            tokens: Array<{
+              __typename: 'GqlPoolTokenDetail'
+              index: number
+              address: string
+              decimals: number
+            }>
+          } | null
         }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
@@ -3915,7 +4011,6 @@ export type GetPoolQuery = {
         poolTokens: Array<{
           __typename: 'GqlPoolTokenDetail'
           id: string
-          hasNestedPool: boolean
           index: number
           name: string
           symbol: string
@@ -3924,6 +4019,19 @@ export type GetPoolQuery = {
           priceRate: string
           decimals: number
           weight?: string | null
+          hasNestedPool: boolean
+          nestedPool?: {
+            __typename: 'GqlNestedPool'
+            id: string
+            address: string
+            type: GqlPoolType
+            tokens: Array<{
+              __typename: 'GqlPoolTokenDetail'
+              index: number
+              address: string
+              decimals: number
+            }>
+          } | null
         }>
         dynamicData: {
           __typename: 'GqlPoolDynamicData'
@@ -5734,7 +5842,6 @@ export const GetPoolDocument = {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -5743,6 +5850,40 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'nestedPool' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'tokens' },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'index' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'address' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'decimals' },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -5778,7 +5919,6 @@ export const GetPoolDocument = {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -5787,6 +5927,40 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'nestedPool' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'tokens' },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'index' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'address' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'decimals' },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -5822,7 +5996,6 @@ export const GetPoolDocument = {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -5831,6 +6004,40 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'nestedPool' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'tokens' },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'index' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'address' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'decimals' },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -5868,7 +6075,6 @@ export const GetPoolDocument = {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -5877,6 +6083,40 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'nestedPool' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'tokens' },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'index' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'address' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'decimals' },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -5914,7 +6154,6 @@ export const GetPoolDocument = {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -5923,6 +6162,40 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'nestedPool' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'tokens' },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'index' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'address' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'decimals' },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -5962,7 +6235,6 @@ export const GetPoolDocument = {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -5971,6 +6243,40 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'nestedPool' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'tokens' },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'index' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'address' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'decimals' },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -6007,7 +6313,6 @@ export const GetPoolDocument = {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -6016,6 +6321,40 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'nestedPool' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'tokens' },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'index' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'address' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'decimals' },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -6069,7 +6408,6 @@ export const GetPoolDocument = {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -6078,6 +6416,40 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'nestedPool' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'tokens' },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'index' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'address' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'decimals' },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
                                 ],
                               },
                             },
@@ -6114,7 +6486,6 @@ export const GetPoolDocument = {
                                 kind: 'SelectionSet',
                                 selections: [
                                   { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'index' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'symbol' } },
@@ -6123,6 +6494,40 @@ export const GetPoolDocument = {
                                   { kind: 'Field', name: { kind: 'Name', value: 'priceRate' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'decimals' } },
                                   { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'hasNestedPool' } },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'nestedPool' },
+                                    selectionSet: {
+                                      kind: 'SelectionSet',
+                                      selections: [
+                                        { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'address' } },
+                                        { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'tokens' },
+                                          selectionSet: {
+                                            kind: 'SelectionSet',
+                                            selections: [
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'index' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'address' },
+                                              },
+                                              {
+                                                kind: 'Field',
+                                                name: { kind: 'Name', value: 'decimals' },
+                                              },
+                                            ],
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
                                 ],
                               },
                             },
