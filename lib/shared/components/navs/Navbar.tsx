@@ -90,7 +90,16 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
   }
 
   return (
-    <Box w="full" {...rest}>
+    <Box
+      w="full"
+      pos="fixed"
+      zIndex={100}
+      top="0"
+      borderBottom="1px solid"
+      borderBottomColor="border.base"
+      style={{ backdropFilter: 'blur(50px)' }}
+      {...rest}
+    >
       <Stack
         flexDirection={{ base: 'column', md: 'row' }}
         justify={{ base: 'flex-start', md: 'space-between' }}
