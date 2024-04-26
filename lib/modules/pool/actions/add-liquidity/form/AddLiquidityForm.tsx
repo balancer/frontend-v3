@@ -190,7 +190,7 @@ export function AddLiquidityForm() {
                       <Text variant="special" fontSize="md" lineHeight="16px" fontWeight="700">
                         {weeklyYield ? toCurrency(weeklyYield, { abbreviated: false }) : '-'}
                       </Text>
-                      <Icon as={StarsIcon} />
+                      {pool.staking && <Icon as={StarsIcon} />}
                     </HStack>
                   </VStack>
                 </Card>
