@@ -22,9 +22,7 @@ import {
   polygonZkEvm,
   sepolia,
 } from 'wagmi/chains'
-import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
-import { infuraProvider } from 'wagmi/providers/infura'
 import { keyBy, merge } from 'lodash'
 import { useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/shared/services/chakra/theme'
@@ -95,9 +93,7 @@ export const supportedChains = PROJECT_CONFIG.supportedNetworks.map(chain =>
   buildChain(gqlChainToWagmiChainMap[chain], rpcOverrides[chain])
 )
 
-const { chains, publicClient } = configureChains(supportedChains, [
-  publicProvider(),
-])
+const { chains, publicClient } = configureChains(supportedChains, [publicProvider()])
 
 export const chainsByKey = keyBy(chains, 'id')
 

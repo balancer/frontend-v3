@@ -5,7 +5,7 @@ import { Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { mainnet, polygon, fantom } from 'viem/chains'
 
-export type NetworksWithFork = 'MAINNET' | 'POLYGON' | 'FANTOM'
+export type NetworksWithFork = 'MAINNET' | 'POLYGON'
 
 export type NetworkSetup = {
   networkName: NetworksWithFork
@@ -20,18 +20,16 @@ export const defaultAnvilTestPrivateKey =
 // anvil account address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 export const defaultTestUserAccount = privateKeyToAccount(defaultAnvilTestPrivateKey as Hex).address
 
-type viemChainsWithFork = typeof mainnet | typeof polygon | typeof fantom
+type viemChainsWithFork = typeof mainnet | typeof polygon
 export const chainsByNetworkName: Record<NetworksWithFork, viemChainsWithFork> = {
   MAINNET: mainnet,
   POLYGON: polygon,
-  FANTOM: fantom,
 }
 
 const ANVIL_PORTS: Record<NetworksWithFork, number> = {
   //Ports separated by 100 to avoid port collision when running tests in parallel
   MAINNET: 8645,
   POLYGON: 8745,
-  FANTOM: 8845,
 }
 
 export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
@@ -49,13 +47,6 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
     port: ANVIL_PORTS.POLYGON,
     // Note - this has to be >= highest blockNo used in tests
     forkBlockNumber: 44215395n,
-  },
-  FANTOM: {
-    networkName: 'FANTOM',
-    // Public Fantom RPCs are usually unreliable
-    fallBackRpc: getDefaultRpcUrl(getChainId(GqlChain.Fantom)),
-    port: ANVIL_PORTS.FANTOM,
-    forkBlockNumber: 65313450n,
   },
 }
 
