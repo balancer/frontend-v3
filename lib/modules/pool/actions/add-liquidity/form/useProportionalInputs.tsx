@@ -21,7 +21,15 @@ type OptimalToken = {
 
 export function useProportionalInputs() {
   const { isConnected } = useUserAccount()
-  const { validTokens, helpers, humanAmountsIn, setHumanAmountsIn } = useAddLiquidity()
+  const {
+    validTokens,
+    helpers,
+    humanAmountsIn,
+    setHumanAmountsIn,
+    wethIsEth,
+    nativeAsset,
+    wNativeAsset,
+  } = useAddLiquidity()
   const { usdValueFor } = useTotalUsdValue(validTokens)
   const { balanceFor, balances, isBalancesLoading } = useTokenBalances()
   const { isLoading: isPoolLoading } = usePool()
@@ -53,7 +61,15 @@ export function useProportionalInputs() {
       helpers
     )
 
-    setHumanAmountsIn(proportionalHumanAmountsIn)
+    const proportionalAmounts = proportionalHumanAmountsIn.map(amount => {
+      if (wethIsEth && amount.tokenAddress === wNativeAsset?.address) {
+        return { ...amount, tokenAddress: nativeAsset?.address as Address }
+      } else {
+        return amount
+      }
+    })
+
+    setHumanAmountsIn(proportionalAmounts)
   }
 
   const shouldCalculateMaximizeAmounts =

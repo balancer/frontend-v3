@@ -7,11 +7,16 @@ import { useAddLiquidity } from '../useAddLiquidity'
 import { useProportionalInputs } from './useProportionalInputs'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { isNativeOrWrappedNative } from '@/lib/modules/tokens/token.helpers'
 
 /*
    Edge-case UI to show custom inputs when adding proportional liquidity
 */
-export function ProportionalInputs() {
+export function ProportionalInputs({
+  tokenSelectDisclosureOpen,
+}: {
+  tokenSelectDisclosureOpen: () => void
+}) {
   const { isConnected } = useUserAccount()
   const { toCurrency } = useCurrency()
   const { tokens, humanAmountsIn: amountsIn } = useAddLiquidity()
@@ -51,6 +56,11 @@ export function ProportionalInputs() {
             value={currentValueFor(token.address)}
             onChange={e =>
               handleHumanInputChange(token.address as Address, e.currentTarget.value as HumanAmount)
+            }
+            toggleTokenSelect={
+              isNativeOrWrappedNative(token.address as Address, token.chain)
+                ? tokenSelectDisclosureOpen
+                : undefined
             }
           />
         )

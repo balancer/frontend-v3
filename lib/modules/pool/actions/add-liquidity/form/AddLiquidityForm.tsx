@@ -55,6 +55,7 @@ export function AddLiquidityForm() {
     totalUSDValue,
     setWethIsEth,
   } = useAddLiquidity()
+
   const nextBtn = useRef(null)
   const { pool, totalApr } = usePool()
   const { priceImpactColor, priceImpact, setPriceImpact } = usePriceImpact()
@@ -117,7 +118,9 @@ export function AddLiquidityForm() {
               <TransactionSettings size="sm" />
             </HStack>
             {requiresProportionalInput(pool.type) ? (
-              <ProportionalInputs />
+              <ProportionalInputs
+                tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
+              />
             ) : (
               <VStack spacing="md" w="full">
                 {tokens.map(token => {
