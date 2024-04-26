@@ -14,7 +14,7 @@ import {
   GqlChain,
   GqlPoolElement,
   GqlPoolNestingType,
-  GqlPoolToken,
+  GqlPoolTokenDetail,
   GqlPoolTokenExpanded,
   GqlPoolType,
   GqlPoolWeighted,
@@ -34,7 +34,7 @@ export function aBalWethPoolElementMock(...options: Partial<GqlPoolElement>[]): 
     id: poolId,
     address: getPoolAddress(poolId),
     allTokens,
-    tokens: tokens as unknown as GqlPoolToken[],
+    poolTokens: tokens as unknown as GqlPoolTokenDetail[],
     ...options,
   }
 
@@ -51,7 +51,7 @@ export function aWjAuraWethPoolElementMock(...options: Partial<GqlPoolElement>[]
     id: poolId,
     address: getPoolAddress(poolId),
     allTokens: tokens,
-    tokens: tokens as unknown as GqlPoolToken[],
+    poolTokens: tokens as unknown as GqlPoolTokenDetail[],
     ...options,
   }
 
@@ -73,7 +73,7 @@ export function aGqlPoolElementMock(...options: Partial<GqlPoolElement>[]): GqlP
   const defaultPool1: DeepPartial<GqlPoolElement> = {
     __typename: 'GqlPoolElement',
     address: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56',
-    tokens: someGqlTokenMocks(['BAL', 'WETH']),
+    poolTokens: someGqlTokenMocks(['BAL', 'WETH']),
     allTokens: [
       {
         address: balAddress,
@@ -141,7 +141,7 @@ export function aNested50Weth503Pool(...options: Partial<GqlPoolElement>[]): Gql
     id: '0x08775ccb6674d6bdceb0797c364c2653ed84f3840002000000000000000004f0' as Address,
     address: '0x08775ccb6674d6bdceb0797c364c2653ed84f384',
     type: GqlPoolType.Weighted,
-    tokens: tokens as unknown as GqlPoolToken[],
+    poolTokens: tokens as unknown as GqlPoolTokenDetail[],
     allTokens,
   }
 
@@ -182,7 +182,7 @@ export function aPhantomStablePoolMock(): GqlPoolElement {
   return aGqlPoolElementMock({
     id: poolId,
     address: poolAddress,
-    tokens: tokens as unknown as GqlPoolToken[],
+    poolTokens: tokens as unknown as GqlPoolTokenDetail[],
     allTokens: tokens as unknown as GqlPoolTokenExpanded[],
     type: GqlPoolType.ComposableStable,
   })
