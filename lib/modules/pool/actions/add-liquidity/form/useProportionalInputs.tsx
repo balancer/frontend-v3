@@ -62,7 +62,7 @@ export function useProportionalInputs() {
     )
 
     const proportionalAmounts = proportionalHumanAmountsIn.map(amount => {
-      if (wethIsEth && amount.tokenAddress === wNativeAsset?.address) {
+      if (wethIsEth && isSameAddress(amount.tokenAddress, wNativeAsset?.address as Address)) {
         return { ...amount, tokenAddress: nativeAsset?.address as Address }
       } else {
         return amount
