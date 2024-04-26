@@ -13,7 +13,6 @@ type viemChainsWithFork = typeof mainnet | typeof polygon | typeof fantom
 const chainsByNetworkName: Record<NetworksWithFork, viemChainsWithFork> = {
   MAINNET: mainnet,
   POLYGON: polygon,
-  FANTOM: fantom,
 }
 
 export function createMockConnector(networkName: NetworksWithFork): MockConnector {
