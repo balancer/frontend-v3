@@ -9,7 +9,7 @@ import {
   GetTokensQuery,
   GetTokensQueryVariables,
   GqlChain,
-  GqlPoolToken,
+  GqlPoolTokenDetail,
   GqlToken,
 } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
@@ -116,7 +116,7 @@ export function _useTokens(
   }
 
   const getPoolTokenWeightByBalance = useCallback(
-    (poolTotalLiquidity: string, token: GqlPoolToken, chain: GqlChain) => {
+    (poolTotalLiquidity: string, token: GqlPoolTokenDetail, chain: GqlChain) => {
       return (
         (priceFor(token.address, chain) * parseFloat(token.balance)) /
         parseFloat(poolTotalLiquidity)

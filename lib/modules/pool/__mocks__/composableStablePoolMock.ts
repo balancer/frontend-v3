@@ -233,7 +233,7 @@ export const composableStablePoolMock: GqlPoolElement = {
   amp: '50',
   nestingType: 'NO_NESTING',
   bptPriceRate: '1.018385877232728716',
-  tokens: [
+  poolTokens: [
     {
       id: '0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570-0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76',
       index: 0,
@@ -244,7 +244,6 @@ export const composableStablePoolMock: GqlPoolElement = {
       weight: null,
       priceRate: '1.018385877232728716',
       decimals: 18,
-      totalBalance: '2596148429267413.794052669613761796',
       pool: {
         id: '0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570',
         type: 'COMPOSABLE_STABLE',
@@ -284,7 +283,6 @@ export const composableStablePoolMock: GqlPoolElement = {
             priceRate: '1.053700826873821075',
             decimals: 18,
             weight: null,
-            totalBalance: '0.645255000373054104',
           },
           {
             id: '0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570-0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -296,7 +294,6 @@ export const composableStablePoolMock: GqlPoolElement = {
             priceRate: '1.0',
             decimals: 18,
             weight: null,
-            totalBalance: '0.502315206026072355',
           },
         ],
       },

@@ -176,7 +176,7 @@ export default function CLPPoolWeightChart({
                 <Box
                   borderColor={`chartBorder.${colorMode}`}
                   borderWidth="1px"
-                  key={`${pool.address}-token-weight-${i}`}
+                  key={`${pool.id}-token-weight-${i}`}
                   as={motion.div}
                   cursor="pointer"
                   width="full"
@@ -194,10 +194,10 @@ export default function CLPPoolWeightChart({
         )}
         {pool.displayTokens.length === 4 && (
           <Grid zIndex={1} templateColumns="1fr 1fr" width="full" height="full" rounded="2xl">
-            {pool.tokens.map((_, i) => {
+            {pool.displayTokens.map((_, i) => {
               return (
                 <Box
-                  key={`${pool.address}-token-weight-${i}`}
+                  key={`${pool.id}-token-weight-${i}`}
                   as={motion.div}
                   cursor="pointer"
                   bgGradient={`linear(to-b, ${colors[i].from}, ${colors[i].to})`}

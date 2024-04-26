@@ -17,7 +17,7 @@ import {
   Box,
   Text,
 } from '@chakra-ui/react'
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useSwap } from './useSwap'
 import { useTokens } from '../tokens/useTokens'
 import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
@@ -28,13 +28,14 @@ import { TransactionSettings } from '../user/settings/TransactionSettings'
 import { PriceImpactAccordion } from '../../shared/components/accordion/PriceImpactAccordion'
 import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
 import { ChainSelect } from '../chains/ChainSelect'
-import { Repeat } from 'react-feather'
+import { CheckCircle, Link, Repeat } from 'react-feather'
 import { SwapRate } from './SwapRate'
 import { SwapDetails } from './SwapDetails'
 import { capitalize } from 'lodash'
 import { motion, easeOut } from 'framer-motion'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { ErrorAlert } from '@/lib/shared/components/errors/ErrorAlert'
+import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
 export function SwapForm() {
   const {
@@ -56,16 +57,24 @@ export function SwapForm() {
     switchTokens,
     setNeedsToAcceptHighPI,
   } = useSwap()
+  const [copiedDeepLink, setCopiedDeepLink] = useState(false)
   const { getTokensByChain } = useTokens()
   const tokenSelectDisclosure = useDisclosure()
   const nextBtn = useRef(null)
   const finalRefTokenIn = useRef(null)
   const finalRefTokenOut = useRef(null)
+  const isMounted = useIsMounted()
 
   const tokenMap = { tokenIn, tokenOut }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const tokens = useMemo(() => getTokensByChain(selectedChain), [selectedChain])
+
+  function copyDeepLink() {
+    navigator.clipboard.writeText(window.location.href)
+    setCopiedDeepLink(true)
+    setTimeout(() => setCopiedDeepLink(false), 2000)
+  }
 
   // Exclude the currently selected token from the token select modal search.
   const tokenSelectTokens = tokens.filter(
@@ -109,7 +118,15 @@ export function SwapForm() {
                   <Heading fontWeight="bold" size="h4">
                     {capitalize(swapAction)}
                   </Heading>
-                  <TransactionSettings size="sm" />
+                  <HStack>
+                    <Tooltip label={copiedDeepLink ? 'Copied!' : 'Copy deep link'}>
+                      <Button variant="tertiary" size="sm" color="grayText" onClick={copyDeepLink}>
+                        {copiedDeepLink ? <CheckCircle size={16} /> : <Link size={16} />}
+                      </Button>
+                    </Tooltip>
+
+                    <TransactionSettings size="sm" />
+                  </HStack>
                 </HStack>
                 <VStack spacing="md" w="full">
                   <ChainSelect
@@ -188,8 +205,8 @@ export function SwapForm() {
                       variant="secondary"
                       w="full"
                       size="lg"
-                      isDisabled={isDisabled}
-                      isLoading={simulationQuery.isLoading}
+                      isDisabled={isDisabled || !isMounted}
+                      isLoading={simulationQuery.isLoading || !isMounted}
                       onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
                     >
                       Next

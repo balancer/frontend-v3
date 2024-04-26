@@ -106,7 +106,7 @@ export async function getSdkTestUtils({
   }
 
   function getPoolTokens() {
-    return pool.tokens.map(t => new Token(chainId, t.address as Address, t.decimals))
+    return pool.poolTokens.map(t => new Token(chainId, t.address as Address, t.decimals))
   }
 
   // Token addresses to check balance deltas

@@ -213,9 +213,10 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
     }
     ... on GqlPoolWeighted {
       nestingType
-      tokens {
-        ... on GqlPoolToken {
+      poolTokens {
+        ... on GqlPoolTokenDetail {
           id
+          hasNestedPool
           index
           name
           symbol
@@ -224,152 +225,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
-          totalBalance
-        }
-        ... on GqlPoolTokenLinear {
-          id
-          index
-          name
-          symbol
-          balance
-          address
-          priceRate
-          decimals
-          weight
-          mainTokenBalance
-          wrappedTokenBalance
-          totalMainTokenBalance
-          totalBalance
-          pool {
-            id
-            type
-            version
-            name
-            symbol
-            address
-            owner
-            factory
-            createTime
-            wrappedIndex
-            mainIndex
-            upperTarget
-            lowerTarget
-            totalShares
-            totalLiquidity
-            bptPriceRate
-            tokens {
-              ... on GqlPoolToken {
-                id
-                index
-                name
-                symbol
-                balance
-                address
-                priceRate
-                decimals
-                weight
-                totalBalance
-              }
-            }
-          }
-        }
-        ... on GqlPoolTokenComposableStable {
-          id
-          index
-          name
-          symbol
-          balance
-          address
-          weight
-          priceRate
-          decimals
-          totalBalance
-          pool {
-            id
-            type
-            version
-            name
-            symbol
-            address
-            owner
-            factory
-            createTime
-            totalShares
-            totalLiquidity
-            nestingType
-            swapFee
-            amp
-            bptPriceRate
-            tokens {
-              ... on GqlPoolToken {
-                id
-                index
-                name
-                symbol
-                balance
-                address
-                priceRate
-                decimals
-                weight
-                totalBalance
-              }
-              ... on GqlPoolTokenLinear {
-                id
-                index
-                name
-                symbol
-                balance
-                address
-                priceRate
-                decimals
-                weight
-                mainTokenBalance
-                wrappedTokenBalance
-                totalMainTokenBalance
-                totalBalance
-                pool {
-                  id
-                  type
-                  version
-                  name
-                  symbol
-                  address
-                  owner
-                  factory
-                  createTime
-                  wrappedIndex
-                  mainIndex
-                  upperTarget
-                  lowerTarget
-                  totalShares
-                  totalLiquidity
-                  bptPriceRate
-                  tokens {
-                    ... on GqlPoolToken {
-                      id
-                      index
-                      name
-                      symbol
-                      balance
-                      address
-                      priceRate
-                      decimals
-                      weight
-                      totalBalance
-                    }
-                  }
-                }
-              }
-            }
-          }
         }
       }
     }
     ... on GqlPoolStable {
       amp
-      tokens {
-        ... on GqlPoolToken {
+      poolTokens {
+        ... on GqlPoolTokenDetail {
           id
+          hasNestedPool
           index
           name
           symbol
@@ -378,15 +242,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
-          totalBalance
         }
       }
     }
     ... on GqlPoolMetaStable {
       amp
-      tokens {
-        ... on GqlPoolToken {
+      poolTokens {
+        ... on GqlPoolTokenDetail {
           id
+          hasNestedPool
           index
           name
           symbol
@@ -395,7 +259,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
-          totalBalance
         }
       }
     }
@@ -403,9 +266,10 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       unitSeconds
       principalToken
       baseToken
-      tokens {
-        ... on GqlPoolToken {
+      poolTokens {
+        ... on GqlPoolTokenDetail {
           id
+          hasNestedPool
           index
           name
           symbol
@@ -414,7 +278,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
-          totalBalance
         }
       }
     }
@@ -422,9 +285,10 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       amp
       nestingType
       bptPriceRate
-      tokens {
-        ... on GqlPoolToken {
+      poolTokens {
+        ... on GqlPoolTokenDetail {
           id
+          hasNestedPool
           index
           name
           symbol
@@ -433,144 +297,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
-          totalBalance
-        }
-        ... on GqlPoolTokenLinear {
-          id
-          index
-          name
-          symbol
-          balance
-          address
-          priceRate
-          decimals
-          weight
-          mainTokenBalance
-          wrappedTokenBalance
-          totalMainTokenBalance
-          totalBalance
-          pool {
-            id
-            name
-            type
-            version
-            symbol
-            address
-            owner
-            factory
-            createTime
-            wrappedIndex
-            mainIndex
-            upperTarget
-            lowerTarget
-            totalShares
-            totalLiquidity
-            bptPriceRate
-            tokens {
-              ... on GqlPoolToken {
-                id
-                index
-                name
-                symbol
-                balance
-                address
-                priceRate
-                decimals
-                weight
-                totalBalance
-              }
-            }
-          }
-        }
-        ... on GqlPoolTokenComposableStable {
-          id
-          index
-          name
-          symbol
-          balance
-          address
-          weight
-          priceRate
-          decimals
-          totalBalance
-          pool {
-            id
-            type
-            version
-            name
-            symbol
-            address
-            owner
-            factory
-            createTime
-            totalShares
-            totalLiquidity
-            nestingType
-            swapFee
-            amp
-            bptPriceRate
-            tokens {
-              ... on GqlPoolToken {
-                id
-                index
-                name
-                symbol
-                balance
-                address
-                priceRate
-                decimals
-                weight
-                totalBalance
-              }
-              ... on GqlPoolTokenLinear {
-                id
-                index
-                name
-                symbol
-                balance
-                address
-                priceRate
-                decimals
-                weight
-                mainTokenBalance
-                wrappedTokenBalance
-                totalMainTokenBalance
-                totalBalance
-                pool {
-                  id
-                  type
-                  version
-                  name
-                  symbol
-                  address
-                  owner
-                  factory
-                  createTime
-                  wrappedIndex
-                  mainIndex
-                  upperTarget
-                  lowerTarget
-                  totalShares
-                  totalLiquidity
-                  bptPriceRate
-                  tokens {
-                    ... on GqlPoolToken {
-                      id
-                      index
-                      name
-                      symbol
-                      balance
-                      address
-                      priceRate
-                      decimals
-                      weight
-                      totalBalance
-                    }
-                  }
-                }
-              }
-            }
-          }
         }
       }
     }
@@ -580,9 +306,10 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       lowerTarget
       upperTarget
       bptPriceRate
-      tokens {
-        ... on GqlPoolToken {
+      poolTokens {
+        ... on GqlPoolTokenDetail {
           id
+          hasNestedPool
           index
           name
           symbol
@@ -591,16 +318,16 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
-          totalBalance
         }
       }
     }
     ... on GqlPoolLiquidityBootstrapping {
       name
       nestingType
-      tokens {
-        ... on GqlPoolToken {
+      poolTokens {
+        ... on GqlPoolTokenDetail {
           id
+          hasNestedPool
           index
           name
           symbol
@@ -609,144 +336,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
-          totalBalance
-        }
-        ... on GqlPoolTokenLinear {
-          id
-          index
-          name
-          symbol
-          balance
-          address
-          priceRate
-          decimals
-          weight
-          mainTokenBalance
-          wrappedTokenBalance
-          totalMainTokenBalance
-          totalBalance
-          pool {
-            id
-            type
-            version
-            name
-            symbol
-            address
-            owner
-            factory
-            createTime
-            wrappedIndex
-            mainIndex
-            upperTarget
-            lowerTarget
-            totalShares
-            totalLiquidity
-            bptPriceRate
-            tokens {
-              ... on GqlPoolToken {
-                id
-                index
-                name
-                symbol
-                balance
-                address
-                priceRate
-                decimals
-                weight
-                totalBalance
-              }
-            }
-          }
-        }
-        ... on GqlPoolTokenComposableStable {
-          id
-          index
-          name
-          symbol
-          balance
-          address
-          weight
-          priceRate
-          decimals
-          totalBalance
-          pool {
-            id
-            type
-            version
-            name
-            symbol
-            address
-            owner
-            factory
-            createTime
-            totalShares
-            totalLiquidity
-            nestingType
-            swapFee
-            amp
-            bptPriceRate
-            tokens {
-              ... on GqlPoolToken {
-                id
-                index
-                name
-                symbol
-                balance
-                address
-                priceRate
-                decimals
-                weight
-                totalBalance
-              }
-              ... on GqlPoolTokenLinear {
-                id
-                index
-                name
-                symbol
-                balance
-                address
-                priceRate
-                decimals
-                weight
-                mainTokenBalance
-                wrappedTokenBalance
-                totalMainTokenBalance
-                totalBalance
-                pool {
-                  id
-                  type
-                  version
-                  name
-                  symbol
-                  address
-                  owner
-                  factory
-                  createTime
-                  wrappedIndex
-                  mainIndex
-                  upperTarget
-                  lowerTarget
-                  totalShares
-                  totalLiquidity
-                  bptPriceRate
-                  tokens {
-                    ... on GqlPoolToken {
-                      id
-                      index
-                      name
-                      symbol
-                      balance
-                      address
-                      priceRate
-                      decimals
-                      weight
-                      totalBalance
-                    }
-                  }
-                }
-              }
-            }
-          }
         }
       }
     }
@@ -770,9 +359,10 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       w
       z
       nestingType
-      tokens {
-        ... on GqlPoolToken {
+      poolTokens {
+        ... on GqlPoolTokenDetail {
           id
+          hasNestedPool
           index
           name
           symbol
@@ -781,144 +371,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
-          totalBalance
-        }
-        ... on GqlPoolTokenLinear {
-          id
-          index
-          name
-          symbol
-          balance
-          address
-          priceRate
-          decimals
-          weight
-          mainTokenBalance
-          wrappedTokenBalance
-          totalMainTokenBalance
-          totalBalance
-          pool {
-            id
-            type
-            version
-            name
-            symbol
-            address
-            owner
-            factory
-            createTime
-            wrappedIndex
-            mainIndex
-            upperTarget
-            lowerTarget
-            totalShares
-            totalLiquidity
-            bptPriceRate
-            tokens {
-              ... on GqlPoolToken {
-                id
-                index
-                name
-                symbol
-                balance
-                address
-                priceRate
-                decimals
-                weight
-                totalBalance
-              }
-            }
-          }
-        }
-        ... on GqlPoolTokenComposableStable {
-          id
-          index
-          name
-          symbol
-          balance
-          address
-          weight
-          priceRate
-          decimals
-          totalBalance
-          pool {
-            id
-            type
-            version
-            name
-            symbol
-            address
-            owner
-            factory
-            createTime
-            totalShares
-            totalLiquidity
-            nestingType
-            swapFee
-            amp
-            bptPriceRate
-            tokens {
-              ... on GqlPoolToken {
-                id
-                index
-                name
-                symbol
-                balance
-                address
-                priceRate
-                decimals
-                weight
-                totalBalance
-              }
-              ... on GqlPoolTokenLinear {
-                id
-                index
-                name
-                symbol
-                balance
-                address
-                priceRate
-                decimals
-                weight
-                mainTokenBalance
-                wrappedTokenBalance
-                totalMainTokenBalance
-                totalBalance
-                pool {
-                  id
-                  type
-                  version
-                  name
-                  symbol
-                  address
-                  owner
-                  factory
-                  createTime
-                  wrappedIndex
-                  mainIndex
-                  upperTarget
-                  lowerTarget
-                  totalShares
-                  totalLiquidity
-                  bptPriceRate
-                  tokens {
-                    ... on GqlPoolToken {
-                      id
-                      index
-                      name
-                      symbol
-                      balance
-                      address
-                      priceRate
-                      decimals
-                      weight
-                      totalBalance
-                    }
-                  }
-                }
-              }
-            }
-          }
         }
       }
     }
@@ -928,9 +380,10 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       delta
       epsilon
       lambda
-      tokens {
-        ... on GqlPoolToken {
+      poolTokens {
+        ... on GqlPoolTokenDetail {
           id
+          hasNestedPool
           index
           name
           symbol
@@ -939,144 +392,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
-          totalBalance
-        }
-        ... on GqlPoolTokenLinear {
-          id
-          index
-          name
-          symbol
-          balance
-          address
-          priceRate
-          decimals
-          weight
-          mainTokenBalance
-          wrappedTokenBalance
-          totalMainTokenBalance
-          totalBalance
-          pool {
-            id
-            type
-            version
-            name
-            symbol
-            address
-            owner
-            factory
-            createTime
-            wrappedIndex
-            mainIndex
-            upperTarget
-            lowerTarget
-            totalShares
-            totalLiquidity
-            bptPriceRate
-            tokens {
-              ... on GqlPoolToken {
-                id
-                index
-                name
-                symbol
-                balance
-                address
-                priceRate
-                decimals
-                weight
-                totalBalance
-              }
-            }
-          }
-        }
-        ... on GqlPoolTokenComposableStable {
-          id
-          index
-          name
-          symbol
-          balance
-          address
-          weight
-          priceRate
-          decimals
-          totalBalance
-          pool {
-            id
-            type
-            version
-            name
-            symbol
-            address
-            owner
-            factory
-            createTime
-            totalShares
-            totalLiquidity
-            nestingType
-            swapFee
-            amp
-            bptPriceRate
-            tokens {
-              ... on GqlPoolToken {
-                id
-                index
-                name
-                symbol
-                balance
-                address
-                priceRate
-                decimals
-                weight
-                totalBalance
-              }
-              ... on GqlPoolTokenLinear {
-                id
-                index
-                name
-                symbol
-                balance
-                address
-                priceRate
-                decimals
-                weight
-                mainTokenBalance
-                wrappedTokenBalance
-                totalMainTokenBalance
-                totalBalance
-                pool {
-                  id
-                  type
-                  version
-                  name
-                  symbol
-                  address
-                  owner
-                  factory
-                  createTime
-                  wrappedIndex
-                  mainIndex
-                  upperTarget
-                  lowerTarget
-                  totalShares
-                  totalLiquidity
-                  bptPriceRate
-                  tokens {
-                    ... on GqlPoolToken {
-                      id
-                      index
-                      name
-                      symbol
-                      balance
-                      address
-                      priceRate
-                      decimals
-                      weight
-                      totalBalance
-                    }
-                  }
-                }
-              }
-            }
-          }
         }
       }
     }

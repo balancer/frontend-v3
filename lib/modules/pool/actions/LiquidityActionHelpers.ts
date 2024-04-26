@@ -178,7 +178,7 @@ export function toPoolState(pool: Pool): PoolState {
   return {
     id: pool.id as Hex,
     address: pool.address as Address,
-    tokens: pool.tokens as MinimalToken[],
+    tokens: pool.poolTokens as MinimalToken[],
     type: mapPoolType(pool.type),
     vaultVersion: 2, //TODO: change to dynamic version when we implement v3 integration
   }
@@ -189,7 +189,7 @@ type PoolStateWithBalances = Parameters<typeof calculateProportionalAmounts>[0]
 export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
   return {
     address: pool.address as Address,
-    tokens: pool.tokens.map(t => ({
+    tokens: pool.poolTokens.map(t => ({
       address: t.address as Address,
       balance: t.balance as HumanAmount,
       decimals: t.decimals,
