@@ -10,7 +10,6 @@ const networkConfig: NetworkConfig = {
   shortName: 'Arbitrum',
   chain: GqlChain.Arbitrum,
   iconPath: '/images/chains/ARBITRUM.svg',
-  rpcUrl: 'https://arbitrum-mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
   blockExplorer: {
     baseUrl: 'https://arbiscan.io',
     name: 'Arbiscan',
