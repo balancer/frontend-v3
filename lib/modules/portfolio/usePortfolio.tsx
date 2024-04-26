@@ -12,6 +12,7 @@ import BigNumber from 'bignumber.js'
 import { Address } from 'viem'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useUserAccount } from '../web3/useUserAccount'
+import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
@@ -49,7 +50,12 @@ function _usePortfolio() {
   const { userAddress, isConnected } = useUserAccount()
 
   const { data, loading } = useApolloQuery(GetPoolsDocument, {
-    variables: { where: { userAddress } },
+    variables: {
+      where: {
+        userAddress,
+        chainIn: PROJECT_CONFIG.supportedNetworks,
+      },
+    },
     notifyOnNetworkStatusChange: true,
     skip: !isConnected || !userAddress,
   })
