@@ -39,8 +39,7 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
   MAINNET: {
     networkName: 'MAINNET',
     rpcEnv: 'NEXT_ETHEREUM_RPC_URL',
-    // TODO: create .env var in github for CI
-    fallBackRpc: 'https://mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
+    fallBackRpc: getDefaultRpcUrl(getChainId(GqlChain.Polygon)),
     port: ANVIL_PORTS.MAINNET,
     // From time to time this block gets outdated having this kind of error in integration tests:
     // ContractFunctionExecutionError: The contract function "queryJoin" returned no data ("0x").

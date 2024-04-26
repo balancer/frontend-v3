@@ -77,8 +77,6 @@ export const supportedChains = [
 ]
 
 const { chains, publicClient } = configureChains(supportedChains, [
-  infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string }),
-  alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string }),
   publicProvider(),
 ])
 
