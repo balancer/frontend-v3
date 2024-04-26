@@ -4,11 +4,9 @@ import { getPoolPath } from './pool.utils'
 import { Pool, usePool } from './usePool'
 import { useEffect, useState } from 'react'
 import { useCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
-import { sleep } from '@/lib/shared/utils/time'
 
 export function usePoolRedirect(pool: Pool) {
   const router = useRouter()
-  const { clearCurrentFlowStep } = useCurrentFlowStep()
 
   /**
    * Redirects user to pool page and respects ctrl/cmd clicks to open in new tab.
@@ -21,10 +19,7 @@ export function usePoolRedirect(pool: Pool) {
     } else {
       router.push(path)
     }
-    // Clear the current flow step after a delay to prevent flickering
-    sleep(1000).then(() => clearCurrentFlowStep())
   }
-
   return { redirectToPoolPage }
 }
 
