@@ -31,6 +31,7 @@ import { isProd } from '@/lib/config/app.config'
 import { ArrowUpRight } from 'react-feather'
 import { staggeredFadeIn, fadeIn } from '@/lib/shared/utils/animations'
 import { motion } from 'framer-motion'
+import { useWindowScroll } from '@uidotdev/usehooks'
 
 type Props = {
   leftSlot?: React.ReactNode
@@ -84,10 +85,13 @@ function VeBalLink() {
 export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
   const { isMobile } = useBreakpoints()
   const pathname = usePathname()
+  const [{ x, y }] = useWindowScroll()
 
   function linkColorFor(path: string) {
     return pathname === path ? 'font.highlight' : 'font.primary'
   }
+
+  const scrollProps = y && y > 0 ? { borderBottom: '1px solid', shadow: 'md' } : {}
 
   return (
     <Box
@@ -95,9 +99,10 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
       pos="fixed"
       zIndex={100}
       top="0"
-      borderBottom="1px solid"
+      transition="all 0.2s ease-in-out"
+      {...scrollProps}
       borderBottomColor="border.base"
-      style={{ backdropFilter: 'blur(50px)' }}
+      style={{ backdropFilter: 'blur(10px)' }}
       {...rest}
     >
       <Stack
