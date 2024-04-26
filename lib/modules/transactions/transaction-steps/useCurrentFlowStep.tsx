@@ -80,3 +80,13 @@ export function useSyncCurrentFlowStep(step: FlowStep): FlowStep {
   }, [step.id, step.simulation.status, step.execution.status, step.result.status])
   return step
 }
+
+export function useClearCurrentFlowStepOnUnmount() {
+  const { clearCurrentFlowStep } = useCurrentFlowStep()
+  useEffect(() => {
+    return () => {
+      clearCurrentFlowStep()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+}
