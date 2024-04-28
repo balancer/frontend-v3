@@ -1,16 +1,16 @@
 import { Box, HStack, Text } from '@chakra-ui/react'
 import { PoolWeightChartColorDef } from './PoolWeightChart'
-import { Pool } from '../../usePool'
+import { FeaturedPool, Pool } from '../../usePool'
 
 export default function PoolWeightChartLegend({
   pool,
   colors = [],
 }: {
-  pool: Pool
+  pool: Pool | FeaturedPool
   colors?: PoolWeightChartColorDef[]
 }) {
   return (
-    <HStack spacing="6">
+    <HStack spacing="6" zIndex={2}>
       {pool.displayTokens.map((token, i) => {
         return (
           <Box

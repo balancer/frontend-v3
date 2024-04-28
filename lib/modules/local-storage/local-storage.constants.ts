@@ -6,5 +6,6 @@ export const LS_KEYS = {
     Slippage: 'userSettings.Slippage',
     EnableSignatures: 'userSettings.EnableSignatures',
     PoolListView: 'userSettings.PoolListView',
+    AcceptedPolicies: 'userSettings.AcceptedPolicies',
   },
 }

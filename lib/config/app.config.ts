@@ -46,6 +46,10 @@ export function getNativeAssetAddress(chainId: GqlChain | SupportedChainId) {
   return getNetworkConfig(chainId).tokens.nativeAsset.address
 }
 
+export function getWrappedNativeAssetAddress(chainId: GqlChain | SupportedChainId) {
+  return getNetworkConfig(chainId).tokens.addresses.wNativeAsset
+}
+
 export function getChainName(chainId: GqlChain | SupportedChainId) {
   return getNetworkConfig(chainId).name
 }

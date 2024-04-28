@@ -1,4 +1,4 @@
-import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
+import { getChainId } from '@/lib/config/app.config'
 import { SwapHandler } from './Swap.handler'
 import { GetSorSwapsDocument, GqlSorSwapType } from '@/lib/shared/services/api/generated/graphql'
 import { ApolloClient } from '@apollo/client'
@@ -6,13 +6,14 @@ import { Path, Slippage, Swap, SwapKind } from '@balancer/sdk'
 import { formatUnits } from 'viem'
 import { TransactionConfig } from '../../web3/contracts/contract.types'
 import { SdkBuildSwapInputs, SdkSimulateSwapResponse, SimulateSwapInputs } from '../swap.types'
+import { getDefaultRpcUrl } from '../../web3/Web3Provider'
 
 export class DefaultSwapHandler implements SwapHandler {
   constructor(public apolloClient: ApolloClient<object>) {}
 
   async simulate({ ...variables }: SimulateSwapInputs): Promise<SdkSimulateSwapResponse> {
     const { chain, swapType } = variables
-    const networkConfig = getNetworkConfig(variables.chain)
+    const rpcUrl = getDefaultRpcUrl(getChainId(chain))
 
     const { data } = await this.apolloClient.query({
       query: GetSorSwapsDocument,
@@ -28,7 +29,7 @@ export class DefaultSwapHandler implements SwapHandler {
     })
 
     // Get accurate return amount with onchain call
-    const onchainReturnAmount = await swap.query(networkConfig.rpcUrl)
+    const onchainReturnAmount = await swap.query(rpcUrl)
 
     // Format return amount to human readable
     const returnAmount = formatUnits(onchainReturnAmount.amount, onchainReturnAmount.token.decimals)

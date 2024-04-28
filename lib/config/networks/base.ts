@@ -12,7 +12,6 @@ const networkConfig: NetworkConfig = {
     baseUrl: 'https://basescan.org',
     name: 'BaseScan',
   },
-  rpcUrl: 'https://base-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66',
   tokens: {
     addresses: {
       bal: '0x4158734d47fc9692176b5085e0f52ee0da5d47f1',
@@ -26,6 +25,18 @@ const networkConfig: NetworkConfig = {
     },
     defaultSwapTokens: {
       tokenIn: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    },
+    popularTokens: {
+      '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee': 'ETH',
+      '0x4200000000000000000000000000000000000006': 'WETH',
+      '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': 'USDC',
+      '0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca': 'USDbC',
+      '0x4158734d47fc9692176b5085e0f52ee0da5d47f1': 'BAL',
+      '0xb6fe221fe9eef5aba221c348ba20a1bf5e73624c': 'rETH',
+      '0xbefd5c25a59ef2c1316c5a4944931171f30cd3e4': 'GOLD',
+      '0x1509706a6c66ca549ff0cb464de88231ddbe213b': 'AURA',
+      '0x50c5725949a6f0c72e6c4a641f24049a917db0cb': 'DAI',
+      '0x54330d28ca3357f294334bdc454a032e7f353416': 'OLAS',
     },
   },
   contracts: {

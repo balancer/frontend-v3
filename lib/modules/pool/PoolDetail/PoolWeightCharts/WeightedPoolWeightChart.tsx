@@ -13,9 +13,9 @@ import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import Image from 'next/image'
 
 const smallSize: ChartSizeValues = {
-  chartHeight: '150px',
-  boxWidth: 150,
-  boxHeight: 150,
+  chartHeight: '120px',
+  boxWidth: 120,
+  boxHeight: 120,
   haloTop: '40%',
   haloLeft: '55px',
   haloWidth: '40px',
@@ -23,9 +23,9 @@ const smallSize: ChartSizeValues = {
 }
 
 const normalSize: ChartSizeValues = {
-  chartHeight: '275px',
-  boxWidth: 275,
-  boxHeight: 275,
+  chartHeight: '250px',
+  boxWidth: 250,
+  boxHeight: 250,
   haloTop: '49%',
   haloLeft: '95px',
   haloWidth: '60px',
@@ -115,7 +115,7 @@ export default function WeightedPoolWeightChart({
         {
           name: 'Access From',
           type: 'pie',
-          radius: ['57%', '80%'],
+          radius: ['70%', '99%'],
           itemStyle: {
             borderColor: theme.colors['chartBorder'][colorMode],
             borderWidth: 1.5,
@@ -158,14 +158,15 @@ export default function WeightedPoolWeightChart({
         height={`${chartSizeValues.boxHeight}`}
         position="relative"
       >
+        <Box width="full" height="full" rounded="full" shadow="md" top="0" position="absolute" />
         <Box
           position="absolute"
           as={motion.div}
           bottom="0"
           left="0"
           right="0"
-          width={`${chartSizeValues.boxWidth * 0.58}px`}
-          height={`${chartSizeValues.boxHeight * 0.58}px`}
+          width={`${chartSizeValues.boxWidth * 0.7}px`}
+          height={`${chartSizeValues.boxHeight * 0.7}px`}
           zIndex={4}
           mx="auto"
           display="flex"
@@ -225,11 +226,7 @@ export default function WeightedPoolWeightChart({
           />
         </Box>
       </Box>
-      {hasLegend && (
-        <HStack mt="-4">
-          <PoolWeightChartLegend pool={pool} colors={colors} />
-        </HStack>
-      )}
+      {hasLegend && <PoolWeightChartLegend pool={pool} colors={colors} />}
     </VStack>
   )
 }

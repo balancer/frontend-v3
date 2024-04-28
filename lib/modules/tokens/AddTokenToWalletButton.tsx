@@ -37,6 +37,8 @@ export function AddTokenToWalletButton({
       <IconButton
         size="xs"
         isRound
+        w="6"
+        h="6"
         variant="ghost"
         aria-label={label}
         icon={<PlusSquareIcon />}

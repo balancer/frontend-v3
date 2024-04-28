@@ -10,7 +10,6 @@ const networkConfig: NetworkConfig = {
   shortName: 'zkEVM',
   chain: GqlChain.Zkevm,
   iconPath: '/images/chains/ZKEVM.svg',
-  rpcUrl: 'https://zkevm-rpc.com',
   blockExplorer: {
     baseUrl: 'https://zkevm.polygonscan.com',
     name: 'Polygonscan',
@@ -28,6 +27,19 @@ const networkConfig: NetworkConfig = {
     },
     defaultSwapTokens: {
       tokenIn: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    },
+    popularTokens: {
+      '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee': 'ETH',
+      '0x4f9a0e7fd2bf6067db6994cf12e4495df938e6e9': 'WETH',
+      '0xb23c20efce6e24acca0cef9b7b7aa196b84ec942': 'rETH',
+      '0xa8ce8aee21bc2a48a5ef670afcc9274c7bbbc035': 'USDC',
+      '0x5d8cff95d7a57c0bf50b30b43c7cc0d52825d4a9': 'wstETH',
+      '0x8c7d118b5c47a5bcbd47cc51789558b98dad17c5': 'rsETH',
+      '0x120ef59b80774f02211563834d8e3b72cb1649d6': 'BAL',
+      '0x1509706a6c66ca549ff0cb464de88231ddbe213b': 'AURA',
+      '0xa2036f0538221a77a3937f1379699f44945018d0': 'MATIC',
+      '0x1e4a5963abfd975d8c9021ce480b42188849d41d': 'USDT',
+      '0xc5015b9d9161dca7e18e32f6f25c4ad850731fd4': 'DAI',
     },
   },
   contracts: {

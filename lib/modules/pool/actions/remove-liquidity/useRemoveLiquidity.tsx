@@ -8,7 +8,7 @@ import { GqlPoolTokenExpanded, GqlToken } from '@/lib/shared/services/api/genera
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
-import { HumanAmount, TokenAmount } from '@balancer/sdk'
+import { HumanAmount, TokenAmount, isSameAddress } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { usePool } from '../../usePool'
 import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
@@ -26,6 +26,7 @@ import { useIterateSteps } from '../../../transactions/transaction-steps/useIter
 import { useRemoveLiquidityStepConfigs } from './modal/useRemoveLiquidityStepConfigs'
 import { hasNestedPools, isGyro } from '../../pool.helpers'
 import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -40,9 +41,11 @@ export function _useRemoveLiquidity() {
   const [removalType, setRemovalType] = useState<RemoveLiquidityType>(
     RemoveLiquidityType.Proportional
   )
+
   const [singleTokenAddress, setSingleTokenAddress] = useState<Address | undefined>(undefined)
   const [humanBptInPercent, setHumanBptInPercent] = useState<number>(100)
   const [didRefetchPool, setDidRefetchPool] = useState(false)
+  const [wethIsEth, setWethIsEth] = useState(false)
 
   // Quote state, fixed when remove liquidity tx goes into confirming/confirmed
   // state. This is required to maintain amounts in preview dialog on success.
@@ -58,12 +61,9 @@ export function _useRemoveLiquidity() {
   const stepConfigs = useRemoveLiquidityStepConfigs()
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
   const { getCoreTransactionState, clearCurrentFlowStep } = useCurrentFlowStep()
-
-  const { isDisabled, disabledReason } = isDisabledWithReason(
-    [!isConnected, LABELS.walletNotConnected],
-    [Number(humanBptIn) === 0, 'You must specify a valid bpt in'],
-    [needsToAcceptHighPI, 'Accept high price impact first']
-  )
+  const chain = pool.chain
+  const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
+  const wNativeAsset = getToken(getWrappedNativeAssetAddress(chain), chain)
 
   const handler = useMemo(
     () => selectRemoveLiquidityHandler(pool, removalType),
@@ -88,7 +88,9 @@ export function _useRemoveLiquidity() {
     .filter(tokenFilter)
     .map(token => getToken(token.address, pool.chain))
 
-  const validTokens = tokens.filter((token): token is GqlToken => !!token)
+  let validTokens = tokens.filter((token): token is GqlToken => !!token)
+  validTokens = nativeAsset ? [nativeAsset, ...validTokens] : validTokens
+
   const firstTokenAddress = tokens?.[0]?.address as Address
 
   const singleTokenOutAddress = singleTokenAddress || firstTokenAddress
@@ -108,18 +110,26 @@ export function _useRemoveLiquidity() {
     handler,
     pool.id,
     humanBptIn,
-    singleTokenOutAddress
+    wethIsEth && wNativeAsset ? (wNativeAsset.address as Address) : singleTokenOutAddress
   )
 
   const priceImpactQuery = useRemoveLiquidityPriceImpactQuery(
     handler,
     pool.id,
     humanBptIn,
-    singleTokenOutAddress
+    wethIsEth && wNativeAsset ? (wNativeAsset.address as Address) : singleTokenOutAddress
   )
 
   const amountOutMap: Record<Address, HumanAmount> = Object.fromEntries(
-    quoteAmountsOut.map(tokenAmount => [tokenAmount.token.address, toHumanAmount(tokenAmount)])
+    quoteAmountsOut.map(tokenAmount => [
+      wethIsEth &&
+      wNativeAsset &&
+      nativeAsset &&
+      isSameAddress(tokenAmount.token.address, wNativeAsset.address as Address)
+        ? nativeAsset.address
+        : tokenAmount.token.address,
+      toHumanAmount(tokenAmount),
+    ])
   )
 
   const amountOutForToken = (tokenAddress: Address): HumanAmount => {
@@ -184,8 +194,18 @@ export function _useRemoveLiquidity() {
     if (isRemoveLiquidityConfirmed) reFetchPool()
   }, [isRemoveLiquidityConfirmed])
 
+  const { isDisabled, disabledReason } = isDisabledWithReason(
+    [!isConnected, LABELS.walletNotConnected],
+    [Number(humanBptIn) === 0, 'You must specify a valid bpt in'],
+    [needsToAcceptHighPI, 'Accept high price impact first'],
+    [simulationQuery.isLoading, 'Fetching quote...'],
+    [simulationQuery.isError, 'Error fetching quote'],
+    [priceImpactQuery.isLoading, 'Fetching price impact...'],
+    [priceImpactQuery.isError, 'Error fetching price impact']
+  )
+
   return {
-    tokens,
+    tokens: isSingleToken && nativeAsset ? [...tokens, nativeAsset] : tokens,
     validTokens,
     singleTokenOutAddress,
     humanBptIn,
@@ -207,6 +227,7 @@ export function _useRemoveLiquidity() {
     currentStepIndex,
     isTxConfirmingOrConfirmed,
     didRefetchPool,
+    wethIsEth,
     setRemovalType,
     setHumanBptInPercent,
     setProportionalType,
@@ -216,6 +237,7 @@ export function _useRemoveLiquidity() {
     usdOutForToken,
     useOnStepCompleted,
     setNeedsToAcceptHighPI,
+    setWethIsEth,
   }
 }
 

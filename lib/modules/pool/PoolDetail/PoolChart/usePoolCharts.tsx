@@ -1,4 +1,4 @@
-import { theme } from '@chakra-ui/react'
+import { ColorMode, theme } from '@chakra-ui/react'
 import { addMinutes, differenceInDays, format } from 'date-fns'
 import * as echarts from 'echarts/core'
 import {
@@ -14,9 +14,10 @@ import { usePool } from '../../usePool'
 import { PoolVariant } from '../../pool.types'
 import { NumberFormatter } from '@/lib/shared/utils/numbers'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { balColors, balTheme } from '@/lib/shared/services/chakra/theme'
+import { balColors, balTheme, tokens } from '@/lib/shared/services/chakra/theme'
 import numeral from 'numeral'
 import { twentyFourHoursInSecs } from '@/lib/shared/hooks/useTime'
+import { useTheme } from 'next-themes'
 
 const MIN_CHART_VALUES_NUM = 2
 
@@ -111,24 +112,30 @@ const toolTipTheme = {
   text: balColors.gray[400],
 }
 
-export const getDefaultPoolChartOptions = (currencyFormatter: NumberFormatter) => ({
+export const getDefaultPoolChartOptions = (
+  currencyFormatter: NumberFormatter,
+  theme: ColorMode = 'dark'
+) => ({
   grid: {
-    left: '-6%',
+    left: '1.5%',
     right: '2.5%',
     top: '7.5%',
     bottom: '0',
     containLabel: true,
   },
   xAxis: {
-    show: false,
+    show: true,
     type: 'time',
     minorSplitLine: { show: false },
     axisTick: { show: false },
+    splitNumber: 3,
     axisLabel: {
       formatter: (value: number) => {
         return format(new Date(value * 1000), 'MMM d')
       },
-      interval: 'auto',
+      color: tokens.colors[theme].text.secondary,
+      opacity: 0.5,
+      interval: 0,
       showMaxLabel: false,
       showMinLabel: false,
     },
@@ -149,16 +156,18 @@ export const getDefaultPoolChartOptions = (currencyFormatter: NumberFormatter) =
     },
   },
   yAxis: {
-    show: false,
+    show: true,
     type: 'value',
     axisLine: { show: false },
     minorSplitLine: { show: false },
     splitLine: { show: false },
-    splitNumber: 4,
+    splitNumber: 3,
     axisLabel: {
       formatter: (value: number) => {
         return currencyFormatter(value)
       },
+      color: tokens.colors[theme].text.secondary,
+      opacity: 0.5,
       interval: 'auto',
       showMaxLabel: false,
       showMinLabel: false,
@@ -250,6 +259,7 @@ export function usePoolCharts() {
   const { pool } = usePool()
   const { id: poolId, variant } = useParams()
   const { toCurrency } = useCurrency()
+  const { theme } = useTheme()
 
   const tabsList = useMemo(() => {
     const poolType = pool?.type
@@ -343,7 +353,7 @@ export function usePoolCharts() {
     return chartArr
   }, [data?.snapshots, activeTab, pool.createTime])
 
-  const defaultChartOptions = getDefaultPoolChartOptions(toCurrency)
+  const defaultChartOptions = getDefaultPoolChartOptions(toCurrency, theme as 'light' | 'dark')
 
   const options = useMemo(() => {
     const activeTabOptions = poolChartTypeOptions[activeTab.value]

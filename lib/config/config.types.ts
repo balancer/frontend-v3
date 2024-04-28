@@ -25,7 +25,7 @@ export interface TokensConfig {
     tokenIn?: Address
     tokenOut?: Address
   }
-  popularTokens?: Address[]
+  popularTokens?: Record<Address, string>
 }
 
 export interface ContractsConfig {
@@ -55,7 +55,7 @@ export interface NetworkConfig {
   shortName: string
   chain: GqlChain
   iconPath: string
-  rpcUrl: string
+  rpcUrl?: string
   blockExplorer: BlockExplorerConfig
   tokens: TokensConfig
   contracts: ContractsConfig
