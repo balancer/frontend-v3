@@ -22,9 +22,7 @@ import {
   polygonZkEvm,
   sepolia,
 } from 'wagmi/chains'
-import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
-import { infuraProvider } from 'wagmi/providers/infura'
 import { keyBy, merge } from 'lodash'
 import { useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/shared/services/chakra/theme'
@@ -44,11 +42,22 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 function buildChain(viemChain: Chain, rpcOverride?: string): Chain {
   const { rpcUrl } = getNetworkConfig(viemChain.id)
 
+  let defaultRpcUrls = viemChain.rpcUrls.default.http
+  let publicRpcUrls = viemChain.rpcUrls.public.http
+
+  if (rpcOverride) {
+    defaultRpcUrls = [rpcOverride, ...defaultRpcUrls]
+    publicRpcUrls = [rpcOverride, ...publicRpcUrls]
+  } else if (rpcUrl) {
+    defaultRpcUrls = [rpcUrl, ...defaultRpcUrls]
+    publicRpcUrls = [rpcUrl, ...publicRpcUrls]
+  }
+
   return defineChain({
     ...viemChain,
     rpcUrls: {
-      default: { http: [rpcOverride || rpcUrl, ...viemChain.rpcUrls.default.http] },
-      public: { http: [rpcOverride || rpcUrl, ...viemChain.rpcUrls.public.http] },
+      default: { http: defaultRpcUrls },
+      public: { http: publicRpcUrls },
     },
   })
 }
@@ -84,11 +93,7 @@ export const supportedChains = PROJECT_CONFIG.supportedNetworks.map(chain =>
   buildChain(gqlChainToWagmiChainMap[chain], rpcOverrides[chain])
 )
 
-const { chains, publicClient } = configureChains(supportedChains, [
-  infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string }),
-  alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string }),
-  publicProvider(),
-])
+const { chains, publicClient } = configureChains(supportedChains, [publicProvider()])
 
 export const chainsByKey = keyBy(chains, 'id')
 

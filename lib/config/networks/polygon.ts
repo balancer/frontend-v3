@@ -10,7 +10,6 @@ const networkConfig: NetworkConfig = {
   shortName: 'Polygon',
   chain: GqlChain.Polygon,
   iconPath: '/images/chains/POLYGON.svg',
-  rpcUrl: 'https://polygon-mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
   blockExplorer: {
     baseUrl: 'https://polygonscan.com',
     name: 'Polygonscan',
