@@ -1315,7 +1315,6 @@ export const balTheme = {
           fontWeight: 'bold',
           borderRadius: '4px',
           _hover: {
-            
             color: 'font.highlight',
             transform: 'none',
           },
