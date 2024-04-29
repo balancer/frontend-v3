@@ -122,7 +122,7 @@ export default function TokenRow({
       )}
 
       <HStack spacing="8">
-        <VStack spacing="none" alignItems="flex-end">
+        <VStack spacing="2px" alignItems="flex-end">
           {isLoading ? (
             <>
               <Skeleton w="10" h="4" />
