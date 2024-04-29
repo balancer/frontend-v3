@@ -12,8 +12,15 @@ describe.skip('Fetch pool data for mock definition', () => {
   // DAO-st-WMATIC
   const polygonNestedId =
     '0x60f46b189736c0d2ae52a79382b64c1e2a86b0d9000200000000000000000cc4' as const
-  test('Generate nested pool mock', async () => {
+  test('Generate polygon nested pool mock', async () => {
     const pool = await getPoolMock(polygonNestedId, GqlChain.Polygon)
+
+    console.log(JSON.stringify(pool))
+  })
+
+  test('Generate mainnet nested pool mock', async () => {
+    const mainnetNestedPoolId = '0x08775ccb6674d6bdceb0797c364c2653ed84f3840002000000000000000004f0' // Balancer 50WETH-50-3pool
+    const pool = await getPoolMock(mainnetNestedPoolId, GqlChain.Mainnet)
 
     console.log(JSON.stringify(pool))
   })

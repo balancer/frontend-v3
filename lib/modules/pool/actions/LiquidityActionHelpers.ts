@@ -53,7 +53,7 @@ export class LiquidityActionHelpers {
   public get nestedPoolState(): NestedPoolState {
     // TODO: PoolGetPool should be exposed by the SDK
     type PoolGetPool = Parameters<typeof mapPoolToNestedPoolState>[0]
-    return mapPoolToNestedPoolState(this.pool as unknown as PoolGetPool)
+    return mapPoolToNestedPoolState(this.pool as PoolGetPool)
   }
 
   public get poolStateWithBalances(): PoolStateWithBalances {

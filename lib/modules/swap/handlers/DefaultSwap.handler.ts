@@ -2,7 +2,7 @@ import { getChainId } from '@/lib/config/app.config'
 import { SwapHandler } from './Swap.handler'
 import { GetSorSwapsDocument, GqlSorSwapType } from '@/lib/shared/services/api/generated/graphql'
 import { ApolloClient } from '@apollo/client'
-import { Path, Slippage, Swap, SwapKind } from '@balancer/sdk'
+import { Path, Slippage, Swap, SwapKind, TokenAmount } from '@balancer/sdk'
 import { formatUnits } from 'viem'
 import { TransactionConfig } from '../../web3/contracts/contract.types'
 import { SdkBuildSwapInputs, SdkSimulateSwapResponse, SimulateSwapInputs } from '../swap.types'
@@ -29,7 +29,13 @@ export class DefaultSwapHandler implements SwapHandler {
     })
 
     // Get accurate return amount with onchain call
-    const onchainReturnAmount = await swap.query(rpcUrl)
+    const queryOutput = await swap.query(rpcUrl)
+    let onchainReturnAmount: TokenAmount
+    if (queryOutput.swapKind === SwapKind.GivenIn) {
+      onchainReturnAmount = queryOutput.expectedAmountOut
+    } else {
+      onchainReturnAmount = queryOutput.expectedAmountIn
+    }
 
     // Format return amount to human readable
     const returnAmount = formatUnits(onchainReturnAmount.amount, onchainReturnAmount.token.decimals)
@@ -38,12 +44,12 @@ export class DefaultSwapHandler implements SwapHandler {
       ...data.swaps,
       returnAmount,
       swap,
-      onchainReturnAmount,
+      queryOutput,
     }
   }
 
   build({
-    simulateResponse: { swap, onchainReturnAmount },
+    simulateResponse: { swap, queryOutput },
     slippagePercent,
     account,
     selectedChain,
@@ -52,10 +58,10 @@ export class DefaultSwapHandler implements SwapHandler {
     const tx = swap.buildCall({
       slippage: Slippage.fromPercentage(slippagePercent as `${number}`),
       deadline: BigInt(Number.MAX_SAFE_INTEGER),
-      expectedAmountOut: onchainReturnAmount,
       sender: account,
       recipient: account,
       wethIsEth: isNativeAssetIn,
+      queryOutput,
     })
 
     return {
