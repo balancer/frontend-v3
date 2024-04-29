@@ -7,7 +7,7 @@ import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { ReactNode, useEffect, useState } from 'react'
 import { TokenIcon } from '../TokenIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { Numberish, fNum } from '@/lib/shared/utils/numbers'
+import { Numberish, fNum, isZero } from '@/lib/shared/utils/numbers'
 import { Pool } from '../../pool/usePool'
 import { bptUsdValue } from '../../pool/pool.helpers'
 import { TokenInfoPopover } from '../TokenInfoPopover'
@@ -131,10 +131,10 @@ export default function TokenRow({
           ) : (
             <>
               <Heading fontWeight="bold" as="h6" fontSize="lg">
-                {amount}
+                {!isZero(amount) ? amount : '-'}
               </Heading>
               <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                {usdValue ? toCurrency(usdValue, { abbreviated }) : '-'}
+                {usdValue && !isZero(usdValue) ? toCurrency(usdValue, { abbreviated }) : '-'}
               </Text>
             </>
           )}
