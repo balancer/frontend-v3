@@ -36,6 +36,8 @@ export interface ContractsConfig {
     minter: Address
   }
   feeDistributor?: Address
+  veDelegationProxy?: Address
+  veBAL?: Address
 }
 export interface PoolsConfig {
   issues: Partial<Record<PoolIssue, string[]>>

@@ -49,6 +49,7 @@ const networkConfig: NetworkConfig = {
       relayerV6: '0x8e620FfCa2580ed87241D7e10F85EE75d0a906F5',
       minter: '0x475D18169BE8a89357A9ee3Ab00ca386d20fA229',
     },
+    veDelegationProxy: '0xc7E5ED1054A24Ef31D827E6F86caA58B3Bc168d7',
   },
   pools: convertHexToLowerCase({
     issues: { [PoolIssue.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[GqlChain.Zkevm] },

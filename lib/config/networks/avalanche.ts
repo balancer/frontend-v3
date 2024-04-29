@@ -45,6 +45,7 @@ const networkConfig: NetworkConfig = {
       relayerV6: '0xA084c11cb55e67C9becf9607f1DBB20ec4D5E7b2',
       minter: '0x85a80afee867aDf27B50BdB7b76DA70f1E853062',
     },
+    veDelegationProxy: '0x0c6052254551EAe3ECac77B01DFcf1025418828f',
   },
   pools: convertHexToLowerCase({
     issues: {

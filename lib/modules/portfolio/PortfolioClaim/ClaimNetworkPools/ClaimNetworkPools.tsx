@@ -17,9 +17,11 @@ export function ClaimNetworkPools() {
   const [isOpenedProtocolRevenueModal, setIsOpenedProtocolRevenueModal] = useState(false)
   const { isConnected } = useUserAccount()
   const router = useRouter()
-  const emptyChainMap = Object.keys(poolsByChainMap).length === 0
 
-  if (!isConnected || emptyChainMap) {
+  const emptyChainMap = Object.keys(poolsByChainMap).length === 0
+  const hasProtocolRewards = protocolRewardsBalance && protocolRewardsBalance.isGreaterThan(0)
+
+  if (!isConnected || (emptyChainMap && !hasProtocolRewards)) {
     return null
   }
 
@@ -40,7 +42,7 @@ export function ClaimNetworkPools() {
             />
           ))}
 
-          {Number(protocolRewardsBalance) > 0 && (
+          {hasProtocolRewards && (
             <ClaimNetworkBlock
               chain={GqlChain.Mainnet}
               networkTotalClaimableFiatBalance={protocolRewardsBalance.toNumber()}
