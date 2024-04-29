@@ -163,3 +163,7 @@ export function safeTokenFormat(
 
   return fNum('token', formatUnits(amount, decimals), opts)
 }
+
+export function isZero(amount: Numberish): boolean {
+  return bn(amount).isZero()
+}
