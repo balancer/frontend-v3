@@ -99,9 +99,9 @@ export function _useRemoveLiquidity() {
 
   const tokensToShow =
     isSingleToken && nativeAsset
-      ? [nativeAsset, ...tokens]
+      ? [nativeAsset, ...tokens] // for single token we show both the native asset AND the wrapped native asset in the ui
       : wethIsEth
-      ? tokensWithNativeAsset
+      ? tokensWithNativeAsset // else if wethIsEth we only show the native asset
       : tokens
 
   let validTokens = tokens.filter((token): token is GqlToken => !!token)
