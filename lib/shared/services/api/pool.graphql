@@ -430,19 +430,28 @@ query GetPoolSnapshots($poolId: String!, $range: GqlPoolSnapshotDataRange!, $cha
   }
 }
 
-query GetPoolEvents(
-  $poolId: String!
-  $chainId: GqlChain!
-  $range: GqlPoolEventsDataRange!
-  $typeIn: [GqlPoolEventType!]!
-  $userAddress: String
-) {
-  events: poolGetEvents(
-    poolId: $poolId
-    chain: $chainId
-    range: $range
-    typeIn: $typeIn
-    userAddress: $userAddress
+query GetPoolTokensDynamicData($addresses: [String!]!) {
+  staticData: tokenGetTokensData(addresses: $addresses) {
+    id
+    tokenAddress
+    description
+    discordUrl
+    telegramUrl
+    twitterUsername
+    websiteUrl
+  }
+  dynamicData: tokenGetTokensDynamicData(addresses: $addresses) {
+    ...GqlTokenDynamicData
+  }
+}
+
+query GetPoolEvents($first: Int, $poolId: String!, $chain: GqlChain!) {
+  poolEvents(
+    first: $first
+    where: {
+      poolId: $poolId
+      chain: $chain
+    }
   ) {
     id
     poolId
@@ -450,5 +459,23 @@ query GetPoolEvents(
     tx
     type
     valueUSD
+    userAddress
+    ... on GqlPoolSwapEventV3 {
+      tokenIn {
+        address
+        amount
+      }
+      tokenOut {
+        address
+        amount
+      }
+    }
+    ... on GqlPoolJoinExitEventV3 {
+      tokens {
+        address
+        amount
+        valueUSD
+      }
+    }
   }
 }
