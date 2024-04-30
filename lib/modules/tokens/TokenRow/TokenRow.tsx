@@ -133,12 +133,12 @@ export default function TokenRow({
           ) : (
             <>
               <Heading fontWeight="bold" as="h6" fontSize="lg">
-                {isZero(amount) && showZeroAmountAsDash ? '-' : amount}
+                {isZero(amount) && showZeroAmountAsDash ? '-' : amount ? amount : '0'}
               </Heading>
               <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                {usdValue && (!isZero(usdValue) || !showZeroAmountAsDash)
-                  ? toCurrency(usdValue, { abbreviated })
-                  : '-'}
+                {showZeroAmountAsDash && usdValue && isZero(usdValue)
+                  ? '-'
+                  : toCurrency(usdValue ?? '0', { abbreviated })}
               </Text>
             </>
           )}
