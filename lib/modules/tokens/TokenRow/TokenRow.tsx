@@ -25,6 +25,7 @@ type Props = {
   isBpt?: boolean
   pool?: Pool
   toggleTokenSelect?: () => void
+  showZeroAmountAsDash?: boolean
 }
 
 type TemplateProps = {
@@ -83,6 +84,7 @@ export default function TokenRow({
   isBpt,
   pool,
   toggleTokenSelect,
+  showZeroAmountAsDash = false,
 }: Props) {
   const { getToken, usdValueForToken } = useTokens()
   const { toCurrency } = useCurrency()
@@ -131,10 +133,12 @@ export default function TokenRow({
           ) : (
             <>
               <Heading fontWeight="bold" as="h6" fontSize="lg">
-                {!isZero(amount) ? amount : '-'}
+                {!isZero(amount) || !showZeroAmountAsDash ? amount : '-'}
               </Heading>
               <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                {usdValue && !isZero(usdValue) ? toCurrency(usdValue, { abbreviated }) : '-'}
+                {usdValue && (!isZero(usdValue) || !showZeroAmountAsDash)
+                  ? toCurrency(usdValue, { abbreviated })
+                  : '-'}
               </Text>
             </>
           )}

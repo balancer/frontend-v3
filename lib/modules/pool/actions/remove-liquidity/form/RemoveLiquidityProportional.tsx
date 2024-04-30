@@ -10,8 +10,10 @@ import { isNativeAsset, isNativeOrWrappedNative } from '@/lib/modules/tokens/tok
 import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectModal'
 
 export function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | undefined)[] }) {
-  const { amountOutForToken, validTokens, setWethIsEth } = useRemoveLiquidity()
+  const { amountOutForToken, validTokens, setWethIsEth, simulationQuery, priceImpactQuery } =
+    useRemoveLiquidity()
   const tokenSelectDisclosure = useDisclosure()
+  const isLoading = simulationQuery.isLoading || priceImpactQuery.isLoading
 
   const nativeAssets = validTokens.filter(token =>
     isNativeOrWrappedNative(token.address as Address, token.chain)
@@ -45,6 +47,7 @@ export function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | un
                       ? () => tokenSelectDisclosure.onOpen()
                       : undefined
                   }
+                  isLoading={isLoading}
                 />
               )
           )}
