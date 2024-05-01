@@ -47,6 +47,7 @@ export const getDefaultPoolChartOptions = (
     },
     xAxis: {
       show: true,
+      offset: 10,
       type: 'time',
       minorSplitLine: { show: false },
       axisTick: { show: false },
@@ -79,6 +80,7 @@ export const getDefaultPoolChartOptions = (
     },
     yAxis: {
       show: true,
+      offset: 10,
       type: 'value',
       axisLine: { show: false },
       minorSplitLine: { show: false },
@@ -97,7 +99,6 @@ export const getDefaultPoolChartOptions = (
     },
     tooltip: {
       triggerOn: 'click',
-      appendToBody: true,
       extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container};pointer-events: auto!important`,
       formatter: (params: any) => {
         const data = Array.isArray(params) ? params[0] : params
@@ -105,7 +106,12 @@ export const getDefaultPoolChartOptions = (
         const value = data.value[1]
         const metaData = data.data[2]
         const userAddress = metaData.userAddress
-        const tokens = metaData.tokens as ChartInfoTokens[]
+        const tokens = metaData.tokens.filter(token => {
+          if (!token.token) return false
+          if (Number(token.amount) === 0) return false
+          return true
+        }) as ChartInfoTokens[]
+
         const tx = metaData.tx
         const txLink = getBlockExplorerTxUrl(tx)
         const addressLink = getBlockExplorerAddressUrl(userAddress)
@@ -139,7 +145,6 @@ export const getDefaultPoolChartOptions = (
             </div>
             <div style="display:flex;flex-direction:column;justify-content:flex-start;gap:0;margin-top:4px">
               ${tokens?.map((token, index) => {
-                if (!token.token) return ''
                 return `
                   <div style="color: ${
                     toolTipTheme.text
