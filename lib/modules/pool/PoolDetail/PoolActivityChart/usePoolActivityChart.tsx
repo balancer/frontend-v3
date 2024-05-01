@@ -29,6 +29,19 @@ import {
 } from '@/lib/shared/hooks/useBlockExplorer'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
+type ChartInfoTokens = {
+  token?: GqlToken
+  amount: string
+}
+
+export type ChartInfoMetaData = {
+  userAddress: string
+  tokens: ChartInfoTokens[]
+  tx: string
+}
+
+export type ChartInfo = Record<'adds' | 'removes' | 'swaps', [number, string, ChartInfoMetaData][]>
+
 const toolTipTheme = {
   heading: 'font-weight: bold; color: #E5D3BE',
   container: `background: ${balTheme.semanticTokens.colors.background.level3._dark};`,
@@ -106,7 +119,7 @@ export const getDefaultPoolChartOptions = (
         const data = Array.isArray(params) ? params[0] : params
         const timestamp = data.value[0]
         const value = data.value[1]
-        const metaData = data.data[2]
+        const metaData = data.data[2] as ChartInfoMetaData
         const userAddress = metaData.userAddress
         const tokens = metaData.tokens.filter(token => {
           if (!token.token) return false
@@ -213,14 +226,6 @@ function usePoolEvents(poolId: string, chain: GqlChain) {
 
 export type PoolActivityChartTab = 'all' | 'adds' | 'swaps' | 'removes'
 
-type ChartInfoTokens = {
-  token?: GqlToken
-  amount: string
-}
-export type ChartInfo = Record<
-  'adds' | 'removes' | 'swaps',
-  [number, string, { userAddress: string; tokens: ChartInfoTokens[]; tx: string }][]
->
 export interface PoolActivityChartTypeTab {
   value: string
   label: string
