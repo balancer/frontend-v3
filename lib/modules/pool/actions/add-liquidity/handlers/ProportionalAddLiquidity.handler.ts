@@ -54,6 +54,7 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
     account,
     slippagePercent,
     queryOutput,
+    humanAmountsIn,
   }: SdkBuildAddLiquidityInput): Promise<TransactionConfig> {
     const addLiquidity = new AddLiquidity()
 
@@ -62,7 +63,7 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
       recipient: account,
-      wethIsEth: false, // assuming we don't want to withdraw the native asset over the wrapped native asset for now.
+      wethIsEth: this.helpers.isNativeAssetIn(humanAmountsIn),
     })
 
     return {

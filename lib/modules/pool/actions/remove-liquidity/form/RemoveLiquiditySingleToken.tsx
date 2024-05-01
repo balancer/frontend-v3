@@ -13,8 +13,16 @@ interface RemoveLiquiditySingleTokenProps {
 }
 
 export function RemoveLiquiditySingleToken({ tokens, chain }: RemoveLiquiditySingleTokenProps) {
-  const { singleTokenOutAddress, setSingleTokenAddress, amountOutForToken, setWethIsEth } =
-    useRemoveLiquidity()
+  const {
+    singleTokenOutAddress,
+    setSingleTokenAddress,
+    amountOutForToken,
+    setWethIsEth,
+    simulationQuery,
+    priceImpactQuery,
+  } = useRemoveLiquidity()
+
+  const isLoading = simulationQuery.isLoading || priceImpactQuery.isLoading
 
   function onChange(tokenAddress: Address) {
     if (isNativeAsset(tokenAddress, chain)) {
@@ -52,6 +60,8 @@ export function RemoveLiquiditySingleToken({ tokens, chain }: RemoveLiquiditySin
                       address={token.address as Address}
                       value={amountOutForToken(token.address as Address)}
                       disabled={token.address !== singleTokenOutAddress}
+                      showZeroAmountAsDash
+                      isLoading={isLoading}
                     />
                   </HStack>
                 )
