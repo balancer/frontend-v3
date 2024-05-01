@@ -1315,14 +1315,13 @@ export const balTheme = {
           fontWeight: 'bold',
           borderRadius: '4px',
           _hover: {
-            background: 'background.button.secondary',
-            color: '#728097',
+            color: 'font.highlight',
             transform: 'none',
           },
           _dark: {
-            color: 'gray.300',
+            color: 'font.secondary',
             _hover: {
-              color: 'background.level3',
+              color: 'font.maxContrast',
             },
           },
         },
@@ -1617,6 +1616,17 @@ export const balTheme = {
       baseStyle: {
         track: {
           background: 'purple.500',
+        },
+      },
+    },
+    Divider: {
+      baseStyle: {
+        borderColor: 'brown.200',
+        borderWidth: '1px',
+        boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 1)',
+        _dark: {
+          borderColor: 'gray.800',
+          boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.15)',
         },
       },
     },

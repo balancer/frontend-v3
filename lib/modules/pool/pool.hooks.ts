@@ -20,7 +20,6 @@ export function usePoolRedirect(pool: Pool) {
       router.push(path)
     }
   }
-
   return { redirectToPoolPage }
 }
 

@@ -12,8 +12,8 @@ import {
   GqlChain,
   GqlPoolType,
   GqlPoolEventType,
-  GqlPoolEventsDataRange,
   GetPoolEventsDocument,
+  GqlToken,
 } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import { balColors, balTheme, tokens } from '@/lib/shared/services/chakra/theme'
@@ -21,11 +21,14 @@ import { ButtonGroupOption } from '@/lib/shared/components/btns/button-group/But
 import { ChainSlug, slugToChainMap } from '../../pool.utils'
 import { ColorMode } from '@chakra-ui/react'
 import { useTheme } from 'next-themes'
+import { abbreviateAddress } from '@/lib/shared/utils/addresses'
+import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { ArrowRight } from 'react-feather'
 
 const toolTipTheme = {
   heading: 'font-weight: bold; color: #E5D3BE',
-  container: `background: ${balColors.gray[800]};`,
-  text: balColors.gray[400],
+  container: `background: ${balTheme.semanticTokens.colors.background.level3._dark};`,
+  text: balTheme.semanticTokens.colors.font.secondary._dark,
 }
 
 export const getDefaultPoolChartOptions = (
@@ -85,29 +88,61 @@ export const getDefaultPoolChartOptions = (
         color: tokens.colors[theme].text.secondary,
         opacity: 0.5,
         interval: 'auto',
-        showMaxLabel: false,
-        showMinLabel: false,
+        showMaxLabel: true,
+        showMinLabel: true,
       },
     },
     tooltip: {
       extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container}`,
       formatter: (params: any) => {
         const data = Array.isArray(params) ? params[0] : params
+        const timestamp = data.value[0]
+        const value = data.value[1]
+        const address = data.data[2]
+        const tokens: ChartInfoTokens[] | undefined = data.data[3]
 
         return `
-        <div style="padding: none; display: flex; flex-direction: column; justify-content: center;${
-          toolTipTheme.container
-        }">
-          <div style="font-size: 1rem; font-weight: 500; color: ${toolTipTheme.text};">
-            <h6 style="${toolTipTheme.heading}">${data.seriesName}</h6>
+          <div style="padding: none; display: flex; flex-direction: column;${
+            toolTipTheme.container
+          };margin-right:-15px">
+            <div style="font-size: 14px; font-weight: 700; color: ${
+              toolTipTheme.text
+            }; display:flex;justify-content:start;gap:4px;letter-spacing:-0.25px;${
+          toolTipTheme.heading
+        };">
+              <span>${data.seriesName}</span>
+              <span>${numeral(value).format('($0,0.00a)')}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;justify-content:flex-start;gap:0;margin-top:4px">
+              ${tokens?.map((token, index) => {
+                return `
+                  <div style="color: ${
+                    toolTipTheme.text
+                  }; display:flex;justify-content:start;align-items:center;gap:6px; margin-bottom:${
+                  index === tokens.length - 1 ? `4px` : `-20px`
+                }">
+                    <img src="${
+                      token.token?.logoURI
+                    }" style="width: 16px; height: 16px; border-radius: 50%; margin-right;letter-spacing:-0.1px" />
+                    <div style="text-align:left">                      
+                      <span>${Number(Number(token.amount).toFixed(2)).toLocaleString()}</span>
+                      <span>${token.token?.symbol}</span>
+                    </div>
+                  </div>
+                `
+              })}
+            </div>
+            <div style="font-size: 0.85rem; font-weight: 500; color: ${toolTipTheme.text};">
+              By: ${abbreviateAddress(address)}
+            </div>
+            <div style="font-size: 0.75rem; line-height:1;font-weight: 500; margin-top:4px; color: ${
+              toolTipTheme.text
+            };">
+              ${format(new Date(timestamp * 1000), 'MMM d, h:mma')
+                .replace('AM', 'am')
+                .replace('PM', 'pm')}
+            </div>
           </div>
-          <div style="font-size: 0.85rem; font-weight: 500; color: ${toolTipTheme.text};">
-            ${format(new Date(data.value[0] * 1000), 'MMM d')}
-          </div>
-          <div style="font-size: 14px; font-weight: 500; color: ${toolTipTheme.text};">
-            ${numeral(data.value[1]).format('($0,0a)')}
-          </div>
-        </div>
       `
       },
     },
@@ -129,17 +164,23 @@ function getSymbolSize(dataItem?: [number, string]) {
 function usePoolEvents(poolId: string, chain: GqlChain) {
   return useQuery(GetPoolEventsDocument, {
     variables: {
+      first: 1000,
       poolId,
-      chainId: chain,
-      typeIn: [GqlPoolEventType.Join, GqlPoolEventType.Exit, GqlPoolEventType.Swap],
-      range: GqlPoolEventsDataRange.ThirtyDays,
+      chain,
     },
-    notifyOnNetworkStatusChange: true,
   })
 }
 
 export type PoolActivityChartTab = 'all' | 'adds' | 'swaps' | 'removes'
 
+type ChartInfoTokens = {
+  token?: GqlToken
+  amount: string
+}
+export type ChartInfo = Record<
+  'adds' | 'removes' | 'swaps',
+  [number, string, string, ChartInfoTokens[]][]
+>
 export interface PoolActivityChartTypeTab {
   value: string
   label: string
@@ -188,6 +229,7 @@ export function getPoolActivityTabsList({
 export function usePoolActivityChart() {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const { theme } = useTheme()
+  const { getToken } = useTokens()
 
   const { id: poolId, variant, chain } = useParams()
   const { pool } = usePool()
@@ -209,20 +251,43 @@ export function usePoolActivityChart() {
 
   const chartData = useMemo(() => {
     if (!response) return { adds: [], removes: [], swaps: [] }
-    const { events } = response
+    const { poolEvents: events } = response
 
     const data = events.reduce(
-      (acc: Record<'adds' | 'removes' | 'swaps', [number, string][]>, item) => {
-        const { type, timestamp, valueUSD } = item
+      (acc: ChartInfo, item) => {
+        const { type, timestamp, valueUSD, userAddress } = item
+
         const usdValue = valueUSD.toString() ?? ''
+        const tokens: ChartInfoTokens[] = []
+
+        if (item.__typename === 'GqlPoolJoinExitEventV3') {
+          item.tokens.forEach(token => {
+            tokens.push({
+              token: getToken(token.address, _chain),
+              amount: token.amount,
+            })
+          })
+        }
+
+        if (item.__typename === 'GqlPoolSwapEventV3') {
+          tokens.push({
+            token: getToken(item.tokenIn.address, _chain),
+            amount: item.tokenIn.amount,
+          })
+          tokens.push({
+            token: getToken(item.tokenOut.address, _chain),
+            amount: item.tokenOut.amount,
+          })
+        }
+
         if (type === GqlPoolEventType.Join) {
-          acc.adds.push([timestamp, usdValue])
+          acc.adds.push([timestamp, usdValue, userAddress, tokens])
         }
         if (type === GqlPoolEventType.Exit) {
-          acc.removes.push([timestamp, usdValue])
+          acc.removes.push([timestamp, usdValue, userAddress, tokens])
         }
         if (type === GqlPoolEventType.Swap) {
-          acc.swaps.push([timestamp, usdValue])
+          acc.swaps.push([timestamp, usdValue, userAddress, tokens])
         }
 
         return acc

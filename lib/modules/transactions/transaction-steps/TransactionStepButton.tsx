@@ -26,10 +26,11 @@ export function TransactionStepButton({ step }: Props) {
   const isButtonLoading =
     transactionState === TransactionState.Loading ||
     transactionState === TransactionState.Confirming
+  const isComplete = transactionState === TransactionState.Completed
   const hasSimulationError = simulation.isError
   const isIdle = isConnected && simulation.isIdle && !simulation.data
   const isButtonDisabled =
-    transactionState === TransactionState.Loading || hasSimulationError || isIdle
+    transactionState === TransactionState.Loading || hasSimulationError || isIdle || isComplete
 
   function handleOnClick() {
     if (!simulation.isError) {
@@ -52,7 +53,7 @@ export function TransactionStepButton({ step }: Props) {
         case TransactionState.Error:
           return transactionLabels.init
         case TransactionState.Completed:
-          return transactionLabels.init
+          return transactionLabels.confirmed || 'Confirmed transaction'
       }
     }
     return relevantLabel

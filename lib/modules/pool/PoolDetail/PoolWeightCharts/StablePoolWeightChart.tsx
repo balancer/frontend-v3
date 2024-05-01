@@ -165,7 +165,7 @@ export default function StablePoolWeightChart({
                 <Box
                   borderColor={`chartBorder.${colorMode}`}
                   borderWidth="1px"
-                  key={`${pool.address}-token-weight-${i}`}
+                  key={`${pool.id}-token-weight-${i}`}
                   as={motion.div}
                   cursor="pointer"
                   width="full"
@@ -186,7 +186,7 @@ export default function StablePoolWeightChart({
             {pool.displayTokens.map((_, i) => {
               return (
                 <Box
-                  key={`${pool.address}-token-weight-${i}`}
+                  key={`${pool.id}-token-weight-${i}`}
                   as={motion.div}
                   cursor="pointer"
                   bgGradient={`linear(to-b, ${colors[i].from}, ${colors[i].to})`}

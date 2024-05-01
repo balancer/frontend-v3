@@ -105,90 +105,6 @@ export const gyroPoolMock: GqlPoolElement = {
     },
   ],
   staking: null,
-  investConfig: {
-    singleAssetEnabled: true,
-    proportionalEnabled: true,
-    options: [
-      {
-        poolTokenIndex: 0,
-        poolTokenAddress: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-        tokenOptions: [
-          {
-            id: '0xdac42eeb17758daa38caf9a3540c808247527ae3000200000000000000000a2b-0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-            index: 0,
-            name: 'USD Coin (PoS)',
-            symbol: 'USDC',
-            balance: '35493.026642',
-            address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-            priceRate: '1.0',
-            decimals: 6,
-            weight: null,
-            totalBalance: '35493.026642',
-          },
-        ],
-      },
-      {
-        poolTokenIndex: 1,
-        poolTokenAddress: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
-        tokenOptions: [
-          {
-            id: '0xdac42eeb17758daa38caf9a3540c808247527ae3000200000000000000000a2b-0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
-            index: 1,
-            name: '(PoS) Dai Stablecoin',
-            symbol: 'DAI',
-            balance: '33211.476744227281310818',
-            address: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
-            priceRate: '1.0',
-            decimals: 18,
-            weight: null,
-            totalBalance: '33211.476744227281310818',
-          },
-        ],
-      },
-    ],
-  },
-  withdrawConfig: {
-    singleAssetEnabled: true,
-    proportionalEnabled: true,
-    options: [
-      {
-        poolTokenIndex: 0,
-        poolTokenAddress: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-        tokenOptions: [
-          {
-            id: '0xdac42eeb17758daa38caf9a3540c808247527ae3000200000000000000000a2b-0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-            index: 0,
-            name: 'USD Coin (PoS)',
-            symbol: 'USDC',
-            balance: '35493.026642',
-            address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-            priceRate: '1.0',
-            decimals: 6,
-            weight: null,
-            totalBalance: '35493.026642',
-          },
-        ],
-      },
-      {
-        poolTokenIndex: 1,
-        poolTokenAddress: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
-        tokenOptions: [
-          {
-            id: '0xdac42eeb17758daa38caf9a3540c808247527ae3000200000000000000000a2b-0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
-            index: 1,
-            name: '(PoS) Dai Stablecoin',
-            symbol: 'DAI',
-            balance: '33211.476744227281310818',
-            address: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
-            priceRate: '1.0',
-            decimals: 18,
-            weight: null,
-            totalBalance: '33211.476744227281310818',
-          },
-        ],
-      },
-    ],
-  },
   userBalance: {
     stakedBalance: '0',
     totalBalance: '0.0',
@@ -215,7 +131,7 @@ export const gyroPoolMock: GqlPoolElement = {
   w: '',
   z: '',
   nestingType: 'NO_NESTING',
-  tokens: [
+  poolTokens: [
     {
       id: '0xdac42eeb17758daa38caf9a3540c808247527ae3000200000000000000000a2b-0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
       index: 0,
@@ -226,7 +142,6 @@ export const gyroPoolMock: GqlPoolElement = {
       priceRate: '1.0',
       decimals: 6,
       weight: null,
-      totalBalance: '35493.026642',
     },
     {
       id: '0xdac42eeb17758daa38caf9a3540c808247527ae3000200000000000000000a2b-0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
@@ -238,7 +153,6 @@ export const gyroPoolMock: GqlPoolElement = {
       priceRate: '1.0',
       decimals: 18,
       weight: null,
-      totalBalance: '33211.476744227281310818',
     },
   ],
 } as unknown as GqlPoolElement

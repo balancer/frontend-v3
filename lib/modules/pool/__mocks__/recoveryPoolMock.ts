@@ -262,162 +262,6 @@ export const recoveryPoolMock: GqlPoolElement = {
       ],
     },
   },
-  investConfig: {
-    singleAssetEnabled: true,
-    proportionalEnabled: true,
-    options: [
-      {
-        poolTokenIndex: 0,
-        poolTokenAddress: '0x50cf90b954958480b8df7958a9e965752f627124',
-        tokenOptions: [
-          {
-            id: '0x3c640f0d3036ad85afa2d5a9e32be651657b874f00000000000000000000046b-0xdac17f958d2ee523a2206206994597c13d831ec7',
-            index: 2,
-            name: 'Tether USD',
-            symbol: 'USDT',
-            balance: '59.494647',
-            address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-            priceRate: '1.0',
-            decimals: 6,
-            weight: null,
-            totalBalance: '59.494647',
-          },
-        ],
-      },
-      {
-        poolTokenIndex: 0,
-        poolTokenAddress: '0x50cf90b954958480b8df7958a9e965752f627124',
-        tokenOptions: [
-          {
-            id: '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            index: 1,
-            name: 'USD Coin',
-            symbol: 'USDC',
-            balance: '423.306163',
-            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            priceRate: '1.0',
-            decimals: 6,
-            weight: null,
-            totalBalance: '423.306163',
-          },
-        ],
-      },
-      {
-        poolTokenIndex: 0,
-        poolTokenAddress: '0x50cf90b954958480b8df7958a9e965752f627124',
-        tokenOptions: [
-          {
-            id: '0xeb486af868aeb3b6e53066abc9623b1041b42bc000000000000000000000046c-0x6b175474e89094c44da98b954eedeac495271d0f',
-            index: 1,
-            name: 'Dai Stablecoin',
-            symbol: 'DAI',
-            balance: '514.465552577786742881',
-            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-            priceRate: '1.0',
-            decimals: 18,
-            weight: null,
-            totalBalance: '514.465552577786742881',
-          },
-        ],
-      },
-      {
-        poolTokenIndex: 1,
-        poolTokenAddress: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
-        tokenOptions: [
-          {
-            id: '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473-0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
-            index: 1,
-            name: 'Wrapped liquid staked Ether 2.0',
-            symbol: 'wstETH',
-            balance: '0.001754442794244201',
-            address: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
-            priceRate: '1.0',
-            decimals: 18,
-            weight: '0.5',
-            totalBalance: '0.001754442794244201',
-          },
-        ],
-      },
-    ],
-  },
-  withdrawConfig: {
-    singleAssetEnabled: true,
-    proportionalEnabled: true,
-    options: [
-      {
-        poolTokenIndex: 0,
-        poolTokenAddress: '0x50cf90b954958480b8df7958a9e965752f627124',
-        tokenOptions: [
-          {
-            id: '0x3c640f0d3036ad85afa2d5a9e32be651657b874f00000000000000000000046b-0xdac17f958d2ee523a2206206994597c13d831ec7',
-            index: 2,
-            name: 'Tether USD',
-            symbol: 'USDT',
-            balance: '59.494647',
-            address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-            priceRate: '1.0',
-            decimals: 6,
-            weight: null,
-            totalBalance: '59.494647',
-          },
-        ],
-      },
-      {
-        poolTokenIndex: 0,
-        poolTokenAddress: '0x50cf90b954958480b8df7958a9e965752f627124',
-        tokenOptions: [
-          {
-            id: '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            index: 1,
-            name: 'USD Coin',
-            symbol: 'USDC',
-            balance: '423.306163',
-            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            priceRate: '1.0',
-            decimals: 6,
-            weight: null,
-            totalBalance: '423.306163',
-          },
-        ],
-      },
-      {
-        poolTokenIndex: 0,
-        poolTokenAddress: '0x50cf90b954958480b8df7958a9e965752f627124',
-        tokenOptions: [
-          {
-            id: '0xeb486af868aeb3b6e53066abc9623b1041b42bc000000000000000000000046c-0x6b175474e89094c44da98b954eedeac495271d0f',
-            index: 1,
-            name: 'Dai Stablecoin',
-            symbol: 'DAI',
-            balance: '514.465552577786742881',
-            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-            priceRate: '1.0',
-            decimals: 18,
-            weight: null,
-            totalBalance: '514.465552577786742881',
-          },
-        ],
-      },
-      {
-        poolTokenIndex: 1,
-        poolTokenAddress: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
-        tokenOptions: [
-          {
-            id: '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473-0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
-            index: 1,
-            name: 'Wrapped liquid staked Ether 2.0',
-            symbol: 'wstETH',
-            balance: '0.001754442794244201',
-            address: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
-            priceRate: '1.0',
-            decimals: 18,
-            weight: '0.5',
-            totalBalance: '0.001754442794244201',
-          },
-        ],
-      },
-    ],
-  },
   userBalance: {
     stakedBalance: '0',
     totalBalance: '0.0',
@@ -455,7 +299,7 @@ export const recoveryPoolMock: GqlPoolElement = {
         swapFee: '0.1',
         amp: '2000',
         bptPriceRate: '1.000238166815367525',
-        tokens: [
+        poolTokens: [
           {
             id: '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f-0x3c640f0d3036ad85afa2d5a9e32be651657b874f',
             index: 0,
@@ -487,7 +331,7 @@ export const recoveryPoolMock: GqlPoolElement = {
               totalShares: '320334.724137022541529969',
               totalLiquidity: '309975.0631115222',
               bptPriceRate: '1.0',
-              tokens: [
+              poolTokens: [
                 {
                   id: '0x3c640f0d3036ad85afa2d5a9e32be651657b874f00000000000000000000046b-0x4d19f33948b99800b6113ff3e83bec9b537c85d2',
                   index: 1,
@@ -498,7 +342,6 @@ export const recoveryPoolMock: GqlPoolElement = {
                   priceRate: '1.0',
                   decimals: 18,
                   weight: null,
-                  totalBalance: '309605.903066808428169379',
                 },
                 {
                   id: '0x3c640f0d3036ad85afa2d5a9e32be651657b874f00000000000000000000046b-0xdac17f958d2ee523a2206206994597c13d831ec7',
@@ -510,7 +353,6 @@ export const recoveryPoolMock: GqlPoolElement = {
                   priceRate: '1.0',
                   decimals: 6,
                   weight: null,
-                  totalBalance: '59.494647',
                 },
               ],
             },
@@ -525,7 +367,6 @@ export const recoveryPoolMock: GqlPoolElement = {
             priceRate: '1.000238166815367525',
             decimals: 18,
             weight: null,
-            totalBalance: '2596148437667884.096014975802548411',
           },
           {
             id: '0x50cf90b954958480b8df7958a9e965752f62712400000000000000000000046f-0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a4399',
@@ -558,7 +399,7 @@ export const recoveryPoolMock: GqlPoolElement = {
               totalShares: '445151.218410781788489231',
               totalLiquidity: '436450.6684445491',
               bptPriceRate: '0.981283138333550885',
-              tokens: [
+              poolTokens: [
                 {
                   id: '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
                   index: 1,
@@ -569,7 +410,6 @@ export const recoveryPoolMock: GqlPoolElement = {
                   priceRate: '1.0',
                   decimals: 6,
                   weight: null,
-                  totalBalance: '423.306163',
                 },
                 {
                   id: '0xd4e7c1f3da1144c9e2cfd1b015eda7652b4a439900000000000000000000046a-0xeb91861f8a4e1c12333f42dce8fb0ecdc28da716',
@@ -581,7 +421,6 @@ export const recoveryPoolMock: GqlPoolElement = {
                   priceRate: '1.0',
                   decimals: 18,
                   weight: null,
-                  totalBalance: '436795.993810903308934787',
                 },
               ],
             },
@@ -617,7 +456,7 @@ export const recoveryPoolMock: GqlPoolElement = {
               totalShares: '399907.046605083208430053',
               totalLiquidity: '395466.9632890177',
               bptPriceRate: '0.985923389730464468',
-              tokens: [
+              poolTokens: [
                 {
                   id: '0xeb486af868aeb3b6e53066abc9623b1041b42bc000000000000000000000046c-0x6b175474e89094c44da98b954eedeac495271d0f',
                   index: 1,
@@ -628,7 +467,6 @@ export const recoveryPoolMock: GqlPoolElement = {
                   priceRate: '1.0',
                   decimals: 18,
                   weight: null,
-                  totalBalance: '514.465552577786742881',
                 },
                 {
                   id: '0xeb486af868aeb3b6e53066abc9623b1041b42bc000000000000000000000046c-0xe025e3ca2be02316033184551d4d3aa22024d9dc',
@@ -640,7 +478,6 @@ export const recoveryPoolMock: GqlPoolElement = {
                   priceRate: '1.0',
                   decimals: 18,
                   weight: null,
-                  totalBalance: '394163.142520294167179245',
                 },
               ],
             },
@@ -658,7 +495,6 @@ export const recoveryPoolMock: GqlPoolElement = {
       priceRate: '1.0',
       decimals: 18,
       weight: '0.5',
-      totalBalance: '0.001754442794244201',
     },
   ],
 } as unknown as GqlPoolElement

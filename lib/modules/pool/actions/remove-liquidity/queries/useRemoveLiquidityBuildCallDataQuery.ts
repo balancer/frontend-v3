@@ -20,7 +20,8 @@ export function useRemoveLiquidityBuildCallDataQuery() {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const { pool } = usePool()
-  const { humanBptIn, handler, simulationQuery, singleTokenOutAddress } = useRemoveLiquidity()
+  const { humanBptIn, handler, simulationQuery, singleTokenOutAddress, wethIsEth } =
+    useRemoveLiquidity()
   const { relayerApprovalSignature } = useRelayerSignature()
 
   const params: RemoveLiquidityParams = {
@@ -30,6 +31,7 @@ export function useRemoveLiquidityBuildCallDataQuery() {
     poolId: pool.id,
     humanBptIn,
     tokenOut: singleTokenOutAddress, // only required by SingleToken removal
+    wethIsEth, // only required by SingleToken removal
   }
 
   const queryKey = removeLiquidityKeys.buildCallData(params)
@@ -41,6 +43,7 @@ export function useRemoveLiquidityBuildCallDataQuery() {
       slippagePercent: slippage,
       queryOutput,
       relayerApprovalSignature,
+      wethIsEth,
     })
 
     console.log('Call data built:', res)

@@ -13,13 +13,15 @@ import { bn } from '@/lib/shared/utils/numbers'
 interface Props extends GridProps {
   pool: PoolListItem
   keyValue: number
+  veBalBoostMap: Record<string, string>
 }
 
 const MemoizedAprTooltip = memo(AprTooltip)
 
-export function PortfolioTableRow({ pool, keyValue, ...rest }: Props) {
+export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Props) {
   const { toCurrency } = useCurrency()
-
+  const vebalBoostValue = veBalBoostMap?.[pool.id]
+  console.log('veBalBoostMap', veBalBoostMap)
   return (
     <Box
       key={keyValue}
@@ -57,7 +59,7 @@ export function PortfolioTableRow({ pool, keyValue, ...rest }: Props) {
               textAlign="right"
               fontWeight="medium"
             >
-              1.5x
+              {vebalBoostValue ? `${Number(vebalBoostValue).toFixed(2)}x` : '-'}
             </Text>
           </GridItem>
 
@@ -72,6 +74,7 @@ export function PortfolioTableRow({ pool, keyValue, ...rest }: Props) {
               data={pool.dynamicData.apr}
               poolId={pool.id}
               textProps={{ fontWeight: 'medium' }}
+              vebalBoost={Number(vebalBoostValue)}
             />
           </GridItem>
         </Grid>

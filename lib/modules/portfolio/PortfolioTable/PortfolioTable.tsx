@@ -6,6 +6,7 @@ import { PortfolioTableRow } from './PortfolioTableRow'
 import { HStack, Heading, Stack } from '@chakra-ui/react'
 import { useMemo, useState } from 'react'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
+import { useVebalBoost } from '../../vebal/useVebalBoost'
 import { useOnchainUserPoolBalances } from '../../pool/queries/useOnchainUserPoolBalances'
 import { Pool } from '../../pool/usePool'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
@@ -54,6 +55,8 @@ export function PortfolioTable() {
   // To-Do: fix pool type
   const { data: poolsWithOnchainUserBalances, isLoading: isLoadingOnchainUserBalances } =
     useOnchainUserPoolBalances(portfolioData.pools as unknown as Pool[])
+
+  const { veBalBoostMap } = useVebalBoost(portfolioData.stakedPools)
 
   const [currentSortingObj, setCurrentSortingObj] = useState<PortfolioSortingData>({
     id: 'staking',
@@ -110,7 +113,7 @@ export function PortfolioTable() {
         </HStack>
         <PaginatedTable
           items={sortedPools}
-          loading={isLoadingPortfolio || isLoadingOnchainUserBalances}
+          loading={isLoadingPortfolio}
           renderTableHeader={() => (
             <PortfolioTableHeader
               currentSortingObj={currentSortingObj}
@@ -119,7 +122,14 @@ export function PortfolioTable() {
             />
           )}
           renderTableRow={(item: PoolListItem, index) => {
-            return <PortfolioTableRow keyValue={index} pool={item} {...rowProps} />
+            return (
+              <PortfolioTableRow
+                keyValue={index}
+                pool={item}
+                veBalBoostMap={veBalBoostMap}
+                {...rowProps}
+              />
+            )
           }}
           showPagination={false}
           paginationProps={null}

@@ -139,102 +139,6 @@ export const metaStablePoolMock: GqlPoolElement = {
       ],
     },
   },
-  investConfig: {
-    singleAssetEnabled: true,
-    proportionalEnabled: false,
-    options: [
-      {
-        poolTokenIndex: 0,
-        poolTokenAddress: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
-        tokenOptions: [
-          {
-            id: '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080-0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
-            index: 0,
-            name: 'Wrapped liquid staked Ether 2.0',
-            symbol: 'wstETH',
-            balance: '554.231313877726282907',
-            address: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
-            priceRate: '1.16107749091599594',
-            decimals: 18,
-            weight: null,
-            totalBalance: '554.231313877726282907',
-          },
-        ],
-      },
-      {
-        poolTokenIndex: 1,
-        poolTokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-        tokenOptions: [
-          {
-            id: '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080-0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-            index: 1,
-            name: 'Wrapped Ether',
-            symbol: 'WETH',
-            balance: '620.795240782376289612',
-            address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-            priceRate: '1.0',
-            decimals: 18,
-            weight: null,
-            totalBalance: '620.795240782376289612',
-          },
-          {
-            id: '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080-0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-            index: 1,
-            name: 'Ether',
-            symbol: 'ETH',
-            balance: '620.795240782376289612',
-            address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-            priceRate: '1.0',
-            decimals: 18,
-            weight: null,
-            totalBalance: '620.795240782376289612',
-          },
-        ],
-      },
-    ],
-  },
-  withdrawConfig: {
-    singleAssetEnabled: true,
-    proportionalEnabled: true,
-    options: [
-      {
-        poolTokenIndex: 0,
-        poolTokenAddress: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
-        tokenOptions: [
-          {
-            id: '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080-0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
-            index: 0,
-            name: 'Wrapped liquid staked Ether 2.0',
-            symbol: 'wstETH',
-            balance: '554.231313877726282907',
-            address: '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
-            priceRate: '1.16107749091599594',
-            decimals: 18,
-            weight: null,
-            totalBalance: '554.231313877726282907',
-          },
-        ],
-      },
-      {
-        poolTokenIndex: 1,
-        poolTokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-        tokenOptions: [
-          {
-            id: '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080-0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-            index: 1,
-            name: 'Wrapped Ether',
-            symbol: 'WETH',
-            balance: '620.795240782376289612',
-            address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-            priceRate: '1.0',
-            decimals: 18,
-            weight: null,
-            totalBalance: '620.795240782376289612',
-          },
-        ],
-      },
-    ],
-  },
   userBalance: {
     stakedBalance: '0',
     totalBalance: '0.0',
@@ -244,7 +148,7 @@ export const metaStablePoolMock: GqlPoolElement = {
     totalBalanceUsd: 0,
   },
   amp: '50.0',
-  tokens: [
+  poolTokens: [
     {
       id: '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080-0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0',
       index: 0,
@@ -255,7 +159,6 @@ export const metaStablePoolMock: GqlPoolElement = {
       priceRate: '1.16107749091599594',
       decimals: 18,
       weight: null,
-      totalBalance: '554.231313877726282907',
     },
     {
       id: '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080-0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -267,7 +170,6 @@ export const metaStablePoolMock: GqlPoolElement = {
       priceRate: '1.0',
       decimals: 18,
       weight: null,
-      totalBalance: '620.795240782376289612',
     },
   ],
 } as unknown as GqlPoolElement

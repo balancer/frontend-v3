@@ -25,7 +25,7 @@ export interface TokensConfig {
     tokenIn?: Address
     tokenOut?: Address
   }
-  popularTokens?: Address[]
+  popularTokens?: Record<Address, string>
 }
 
 export interface ContractsConfig {
@@ -36,6 +36,8 @@ export interface ContractsConfig {
     minter: Address
   }
   feeDistributor?: Address
+  veDelegationProxy?: Address
+  veBAL?: Address
 }
 export interface PoolsConfig {
   issues: Partial<Record<PoolIssue, string[]>>
@@ -53,7 +55,7 @@ export interface NetworkConfig {
   shortName: string
   chain: GqlChain
   iconPath: string
-  rpcUrl: string
+  rpcUrl?: string
   blockExplorer: BlockExplorerConfig
   tokens: TokensConfig
   contracts: ContractsConfig

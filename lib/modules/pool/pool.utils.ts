@@ -4,12 +4,12 @@ import {
   GqlPoolAprValue,
   GqlPoolComposableStableNested,
   GqlPoolLinearNested,
-  GqlPoolTokenBase,
+  GqlPoolTokenDetail,
   GqlPoolType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolListItem, PoolVariant } from './pool.types'
-import { fNum } from '@/lib/shared/utils/numbers'
+import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { TokenAmountHumanReadable } from '../tokens/token.types'
 import { formatUnits, parseUnits } from 'viem'
@@ -59,9 +59,15 @@ export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolPr
  * @param {GqlPoolAprValue} apr APR value from GraphQL response.
  * @returns {String} Formatted APR value.
  */
-export function getAprLabel(apr: GqlPoolAprValue): string {
+export function getAprLabel(apr: GqlPoolAprValue, vebalBoost?: number): string {
   if (apr.__typename === 'GqlPoolAprRange') {
-    return `${fNum('apr', apr.min)} - ${fNum('apr', apr.max)}`
+    const minApr = bn(apr.min)
+      .multipliedBy(vebalBoost || 1)
+      .toNumber()
+    const maxApr = bn(apr.max)
+      .multipliedBy(vebalBoost || 1)
+      .toNumber()
+    return `${fNum('apr', minApr)} - ${fNum('apr', maxApr)}`
   } else if (apr.__typename === 'GqlPoolAprTotal') {
     return fNum('apr', apr.total)
   } else {
@@ -135,7 +141,7 @@ export function isComposableStablePool(
 
 export function getProportionalExitAmountsForBptIn(
   bptInHumanReadable: string,
-  poolTokens: GqlPoolTokenBase[],
+  poolTokens: GqlPoolTokenDetail[],
   poolTotalShares: string
 ): TokenAmountHumanReadable[] {
   const bptInAmountScaled = parseUnits(bptInHumanReadable, 18)
@@ -144,13 +150,13 @@ export function getProportionalExitAmountsForBptIn(
 
 export function getProportionalExitAmountsFromScaledBptIn(
   bptIn: bigint,
-  poolTokens: GqlPoolTokenBase[],
+  poolTokens: Omit<GqlPoolTokenDetail, 'nestedPool'>[],
   poolTotalShares: string
 ): TokenAmountHumanReadable[] {
   const bptTotalSupply = parseUnits(poolTotalShares, 18)
 
   return poolTokens.map(token => {
-    const tokenBalance = parseUnits(token.totalBalance, token.decimals)
+    const tokenBalance = parseUnits(token.balance, token.decimals)
     const tokenProportionalAmount = (bptIn * tokenBalance) / bptTotalSupply
 
     return {

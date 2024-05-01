@@ -28,6 +28,7 @@ import { ChevronDown } from 'react-feather'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import { useEffect, useState } from 'react'
+import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
@@ -96,6 +97,7 @@ function TokenInputFooter({
   const { toCurrency } = useCurrency()
   const { hasValidationError, getValidationError } = useTokenInputsValidation()
   const { priceImpact, priceImpactColor, priceImpactLevel } = usePriceImpact()
+  const isMounted = useIsMounted()
 
   const hasError = hasValidationError(token)
   // TODO: replace input.fontHintError with proper theme color
@@ -109,7 +111,7 @@ function TokenInputFooter({
 
   return (
     <HStack h="4" w="full" justify="space-between">
-      {isBalancesLoading ? (
+      {isBalancesLoading || !isMounted ? (
         <Skeleton w="12" h="full" />
       ) : (
         <Text
@@ -123,7 +125,7 @@ function TokenInputFooter({
             ` (-${fNum('priceImpact', priceImpact)})`}
         </Text>
       )}
-      {isBalancesLoading ? (
+      {isBalancesLoading || !isMounted ? (
         <Skeleton w="12" h="full" />
       ) : (
         <HStack cursor="pointer" onClick={() => updateValue(userBalance)}>
@@ -176,6 +178,8 @@ export const TokenInput = forwardRef(
     }: InputProps & Props,
     ref
   ) => {
+    const [inputTitle, setInputTitle] = useState<string>('')
+
     const { colors } = useTheme()
     const { getToken } = useTokens()
     const token = address && chain ? getToken(address, chain) : undefined
@@ -196,6 +200,7 @@ export const TokenInput = forwardRef(
 
     useEffect(() => {
       validateInput(value || '')
+      setInputTitle(value || '')
     }, [value])
 
     return (
@@ -226,7 +231,7 @@ export const TokenInput = forwardRef(
                 fontSize="xl"
                 fontWeight="medium"
                 value={value}
-                title={String(value)}
+                title={inputTitle}
                 onChange={handleOnChange}
                 onKeyDown={blockInvalidNumberInput}
                 _hover={{

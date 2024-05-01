@@ -1,4 +1,4 @@
-import { useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
+import { getBlockExplorerName, useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
@@ -10,6 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
   Text,
+  Tooltip,
 } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { CopyTokenAddressButton } from './CopyTokenAddressButton'
@@ -50,29 +51,37 @@ export function TokenInfoPopover({ tokenAddress, chain }: Props) {
             <HStack spacing="xs">
               <CopyTokenAddressButton tokenAddress={tokenAddress} color="inherit" />
               <AddTokenToWalletButton tokenAddress={tokenAddress} chain={chain} color="inherit" />
-              <IconButton
-                size="xs"
-                isRound
-                variant="ghost"
-                aria-label="View on Coingecko"
-                icon={<CoingeckoIcon width={15} height={15} />}
-                as="a"
-                href={coingeckoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              />
-              <IconButton
-                size="xs"
-                isRound
-                variant="ghost"
-                aria-label="View on block explorer"
-                color="grayText"
-                icon={<ExternalLink size={12} />}
-                as="a"
-                href={getBlockExplorerTokenUrl(tokenAddress)}
-                target="_blank"
-                rel="noopener noreferrer"
-              />
+              <Tooltip label="View on Coingecko">
+                <IconButton
+                  size="xs"
+                  isRound
+                  variant="ghost"
+                  aria-label="View on Coingecko"
+                  w="6"
+                  h="6"
+                  icon={<CoingeckoIcon width={15} height={15} />}
+                  as="a"
+                  href={coingeckoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
+              </Tooltip>
+              <Tooltip label={`View on ${getBlockExplorerName(chain)}`}>
+                <IconButton
+                  size="xs"
+                  isRound
+                  variant="ghost"
+                  w="6"
+                  h="6"
+                  aria-label="View on block explorer"
+                  color="grayText"
+                  icon={<ExternalLink size={12} />}
+                  as="a"
+                  href={getBlockExplorerTokenUrl(tokenAddress)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
+              </Tooltip>
             </HStack>
           </HStack>
         </PopoverBody>
