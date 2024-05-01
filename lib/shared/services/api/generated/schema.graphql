@@ -469,6 +469,7 @@ input GqlPoolFilter {
   filterNotIn: [String!]
   idIn: [String!]
   idNotIn: [String!]
+  minTvl: Float
   poolTypeIn: [GqlPoolType!]
   poolTypeNotIn: [GqlPoolType!]
   tokensIn: [String!]
