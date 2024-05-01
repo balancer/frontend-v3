@@ -16,14 +16,17 @@ import {
   GqlToken,
 } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
-import { balColors, balTheme, tokens } from '@/lib/shared/services/chakra/theme'
+import { balTheme, tokens } from '@/lib/shared/services/chakra/theme'
 import { ButtonGroupOption } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { ChainSlug, slugToChainMap } from '../../pool.utils'
 import { ColorMode } from '@chakra-ui/react'
 import { useTheme } from 'next-themes'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { ArrowRight } from 'react-feather'
+import {
+  getBlockExplorerAddressUrl,
+  getBlockExplorerTxUrl,
+} from '@/lib/shared/hooks/useBlockExplorer'
 
 const toolTipTheme = {
   heading: 'font-weight: bold; color: #E5D3BE',
@@ -93,13 +96,34 @@ export const getDefaultPoolChartOptions = (
       },
     },
     tooltip: {
-      extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container}`,
+      triggerOn: 'click',
+      appendToBody: true,
+      extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container};pointer-events: auto!important`,
       formatter: (params: any) => {
         const data = Array.isArray(params) ? params[0] : params
         const timestamp = data.value[0]
         const value = data.value[1]
-        const address = data.data[2]
-        const tokens: ChartInfoTokens[] | undefined = data.data[3]
+        const metaData = data.data[2]
+        const userAddress = metaData.userAddress
+        const tokens = metaData.tokens as ChartInfoTokens[]
+        const tx = metaData.tx
+        const txLink = getBlockExplorerTxUrl(tx)
+        const addressLink = getBlockExplorerAddressUrl(userAddress)
+        const arrow = `<svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                          <polyline points="15 3 21 3 21 9"></polyline>
+                          <line x1="10" y1="14" x2="21" y2="3"></line>
+                      </svg>`
 
         return `
           <div style="padding: none; display: flex; flex-direction: column;${
@@ -115,6 +139,7 @@ export const getDefaultPoolChartOptions = (
             </div>
             <div style="display:flex;flex-direction:column;justify-content:flex-start;gap:0;margin-top:4px">
               ${tokens?.map((token, index) => {
+                if (!token.token) return ''
                 return `
                   <div style="color: ${
                     toolTipTheme.text
@@ -132,15 +157,23 @@ export const getDefaultPoolChartOptions = (
                 `
               })}
             </div>
-            <div style="font-size: 0.85rem; font-weight: 500; color: ${toolTipTheme.text};">
-              By: ${abbreviateAddress(address)}
-            </div>
+            <a style="display:flex;align-items:center;font-size: 0.85rem; font-weight: 500; color: ${
+              toolTipTheme.text
+            };" href=${addressLink} target="_blank">
+              <span style="margin-right:4px;">By: ${abbreviateAddress(userAddress)}</span>
+              ${arrow}
+            </a>
             <div style="font-size: 0.75rem; line-height:1;font-weight: 500; margin-top:4px; color: ${
               toolTipTheme.text
             };">
-              ${format(new Date(timestamp * 1000), 'MMM d, h:mma')
-                .replace('AM', 'am')
-                .replace('PM', 'pm')}
+                <a style="display:flex;align-items:center;" href=${txLink} target="_blank">
+                  <span style="margin-right:4px;">
+                    ${format(new Date(timestamp * 1000), 'MMM d, h:mma')
+                      .replace('AM', 'am')
+                      .replace('PM', 'pm')}
+                  </span>
+                  ${arrow}
+                </a>
             </div>
           </div>
       `
@@ -179,7 +212,7 @@ type ChartInfoTokens = {
 }
 export type ChartInfo = Record<
   'adds' | 'removes' | 'swaps',
-  [number, string, string, ChartInfoTokens[]][]
+  [number, string, { userAddress: string; tokens: ChartInfoTokens[]; tx: string }][]
 >
 export interface PoolActivityChartTypeTab {
   value: string
@@ -255,7 +288,7 @@ export function usePoolActivityChart() {
 
     const data = events.reduce(
       (acc: ChartInfo, item) => {
-        const { type, timestamp, valueUSD, userAddress } = item
+        const { type, timestamp, valueUSD, userAddress, tx } = item
 
         const usdValue = valueUSD.toString() ?? ''
         const tokens: ChartInfoTokens[] = []
@@ -281,13 +314,13 @@ export function usePoolActivityChart() {
         }
 
         if (type === GqlPoolEventType.Join) {
-          acc.adds.push([timestamp, usdValue, userAddress, tokens])
+          acc.adds.push([timestamp, usdValue, { userAddress, tokens, tx }])
         }
         if (type === GqlPoolEventType.Exit) {
-          acc.removes.push([timestamp, usdValue, userAddress, tokens])
+          acc.removes.push([timestamp, usdValue, { userAddress, tokens, tx }])
         }
         if (type === GqlPoolEventType.Swap) {
-          acc.swaps.push([timestamp, usdValue, userAddress, tokens])
+          acc.swaps.push([timestamp, usdValue, { userAddress, tokens, tx }])
         }
 
         return acc
