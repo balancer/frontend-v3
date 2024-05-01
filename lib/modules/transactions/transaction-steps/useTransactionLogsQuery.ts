@@ -4,7 +4,6 @@ import { usePool } from '@/lib/modules/pool/usePool'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { getViemClient } from '@/lib/shared/services/viem/viem.client'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { useEffect } from 'react'
 import { formatUnits, parseAbiItem } from 'viem'
 import { Address, useQuery, useTransaction } from 'wagmi'
 
@@ -13,6 +12,15 @@ export function useAddLiquidityReceipt({ txHash, userAddress }: ReceiptProps) {
   const query = useTransactionLogsQuery({ txHash, userAddress })
   const { chain } = usePool()
   const { getToken } = useTokens()
+
+  if (!userAddress) {
+    return {
+      isLoading: true,
+      error: '',
+      sentTokens: [],
+      receivedBptUnits: '',
+    }
+  }
 
   const sentTokens: HumanAmountIn[] = query.data.outgoing.map(log => {
     const tokenDecimals = getToken(log.address, chain)?.decimals
@@ -83,10 +91,6 @@ export function useTransactionLogsQuery({ txHash, userAddress }: ReceiptProps) {
         args: { from: userAddress },
       })
   )
-
-  useEffect(() => {
-    console.log('outgoingLogsQuery', outgoingLogsQuery.data)
-  }, [outgoingLogsQuery.data])
 
   const incomingLogsQuery = useQuery(
     ['tx.logs.incoming', userAddress, receipt.data?.blockHash],
