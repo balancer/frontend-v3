@@ -10,6 +10,7 @@ import { QueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquid
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
 import { ProportionalRemoveLiquidityHandler } from './ProportionalRemoveLiquidity.handler'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
+import { connectWithDefaultUser } from '@/test/utils/wagmi/wagmi-connections'
 
 const poolMock = aBalWethPoolElementMock() // 80BAL-20WETH
 
@@ -27,7 +28,9 @@ const defaultQueryInput: QueryRemoveLiquidityInput = {
 
 const defaultBuildInput = { account: defaultTestUserAccount, slippagePercent: '0.2' }
 
-describe('When proportionally removing liquidity for a weighted pool', () => {
+await connectWithDefaultUser()
+
+describe('When proportionally removing liquidity for a weighted pool', async () => {
   test('returns ZERO price impact', async () => {
     const handler = selectProportionalHandler(poolMock)
 

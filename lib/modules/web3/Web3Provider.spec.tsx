@@ -1,6 +1,5 @@
-import { mainnet } from 'wagmi'
 import { getDefaultRpcUrl } from './Web3Provider'
-import { optimism } from 'viem/chains'
+import { mainnet, optimism } from 'viem/chains'
 
 test('getRpcUrl by chain id', () => {
   expect(getDefaultRpcUrl(mainnet.id)).toMatch('https://cloudflare-eth.com')

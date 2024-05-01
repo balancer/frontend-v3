@@ -10,10 +10,6 @@ Replacing fetch with cross-fetch implementation solves the issue
 */
 global.fetch = fetch
 
-if (process.env.VITE_USE_PRODUCTION_WAGMI == 'true') {
-  console.log('🚨  Running tests with production wagmi config  🚨')
-}
-
 // Avoid using next/image in tests
 vi.mock('next/image', () => ({
   __esModule: true,

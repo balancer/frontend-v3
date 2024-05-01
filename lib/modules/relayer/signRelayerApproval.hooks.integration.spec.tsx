@@ -8,6 +8,7 @@ import { PropsWithChildren } from 'react'
 import { act } from 'react-dom/test-utils'
 import { useSignRelayerApproval } from './signRelayerApproval.hooks'
 import { useRelayerSignature } from './useRelayerSignature'
+import { connectWithDefaultUser } from '../../../test/utils/wagmi/wagmi-connections'
 
 const Providers = ({ children }: PropsWithChildren) => (
   <DefaultPoolTestProvider>
@@ -16,6 +17,8 @@ const Providers = ({ children }: PropsWithChildren) => (
 )
 
 test('Signs relayer approval and saves signature in the addLiquidity provider state', async () => {
+  await connectWithDefaultUser()
+
   const { result } = testHook(
     () => {
       const { relayerApprovalSignature } = useRelayerSignature()

@@ -1,38 +1,37 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
-import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
-import { useEffect, useState } from 'react'
-import { Address, GetFunctionArgs, InferFunctionName } from 'viem'
-import {
-  UsePrepareContractWriteConfig,
-  erc20ABI,
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-} from 'wagmi'
-import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
-import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
-import { useOnTransactionSubmission } from './useOnTransactionSubmission'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { usdtAbi } from './abi/UsdtAbi'
 import { getGqlChain } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import { useChainSwitch } from '../useChainSwitch'
+import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
+import { useEffect, useState } from 'react'
+import { Address, ContractFunctionArgs, ContractFunctionName, erc20Abi } from 'viem'
+import {
+  UseSimulateContractParameters,
+  useSimulateContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from 'wagmi'
+import { useChainSwitch } from '../useChainSwitch'
+import { usdtAbi } from './abi/UsdtAbi'
+import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
+import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
+import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 
-type Erc20Abi = typeof erc20ABI
+type Erc20Abi = typeof erc20Abi
 export function useManagedErc20Transaction<
-  F extends InferFunctionName<Erc20Abi, string, WriteAbiMutability>
+  F extends ContractFunctionName<Erc20Abi, WriteAbiMutability>
 >(
   tokenAddress: Address,
   functionName: F,
   labels: TransactionLabels,
   chainId: SupportedChainId,
-  args?: GetFunctionArgs<Erc20Abi, F> | null,
+  args?: ContractFunctionArgs<Erc20Abi, WriteAbiMutability> | null,
   additionalConfig?: Omit<
-    UsePrepareContractWriteConfig<Erc20Abi, F, number>,
+    UseSimulateContractParameters<Erc20Abi, F>,
     'abi' | 'address' | 'functionName' | 'args'
   >
 ) {
@@ -43,38 +42,35 @@ export function useManagedErc20Transaction<
   const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7'
   const isUsdt = isSameAddress(tokenAddress, usdtAddress)
 
-  const prepareQuery = usePrepareContractWrite({
+  const enabled = additionalConfig?.query?.enabled ?? true
+
+  const simulateQuery = useSimulateContract({
     /*
       USDTs ABI does not exactly follow the erc20ABI so we need its explicit ABI to avoid errors (e.g. calling approve)
       More info: https://github.com/wevm/wagmi/issues/2749#issuecomment-1638200817
     */
-    abi: isUsdt ? usdtAbi : erc20ABI,
+    abi: isUsdt ? usdtAbi : erc20Abi,
     address: tokenAddress,
-    functionName: functionName as InferFunctionName<any, string, WriteAbiMutability>,
+    functionName: functionName as ContractFunctionName<any, WriteAbiMutability>,
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
-    args: writeArgs?.args as any,
+    args: writeArgs as any,
     ...(additionalConfig as any),
     chainId,
-    enabled: additionalConfig?.enabled && !shouldChangeNetwork,
-  })
-
-  const writeQuery = useContractWrite({
-    ...prepareQuery.config,
-    onError: (error: unknown) => {
-      captureWagmiExecutionError(
-        error,
-        'Error in ERC20 transaction execution',
-        prepareQuery.config.request
-      )
+    query: {
+      enabled: enabled && !shouldChangeNetwork,
     },
   })
-  const transactionStatusQuery = useWaitForTransaction({
-    hash: writeQuery.data?.hash,
+
+  const writeQuery = useWriteContract()
+  const transactionStatusQuery = useWaitForTransactionReceipt({
+    chainId,
+    hash: writeQuery.data,
     confirmations: minConfirmations,
   })
 
   const bundle = {
-    simulation: prepareQuery as TransactionSimulation,
+    chainId,
+    simulation: simulateQuery as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
     result: transactionStatusQuery,
   }
@@ -82,8 +78,8 @@ export function useManagedErc20Transaction<
   // on successful submission to chain, add tx to cache
   useOnTransactionSubmission({
     labels,
-    hash: writeQuery.data?.hash,
-    chain: getGqlChain((writeQuery.variables?.chainId || 1) as SupportedChainId),
+    hash: writeQuery.data,
+    chain: getGqlChain(chainId),
   })
 
   // on confirmation, update tx in tx cache
@@ -99,23 +95,24 @@ export function useManagedErc20Transaction<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(args)])
 
-  const managedWrite = (args?: GetFunctionArgs<Erc20Abi, F>) => {
+  const managedWriteAsync = async (args?: ContractFunctionArgs<Erc20Abi, WriteAbiMutability>) => {
     if (args) {
       setWriteArgs(args)
     }
-    writeQuery.write?.()
-  }
-
-  const managedWriteAsync = async (args?: GetFunctionArgs<Erc20Abi, F>) => {
-    if (args) {
-      setWriteArgs(args)
+    if (!simulateQuery.data) return
+    try {
+      await writeQuery.writeContractAsync(simulateQuery.data.request)
+    } catch (e: unknown) {
+      captureWagmiExecutionError(e, 'Error in ERC20 transaction execution', {
+        chainId,
+        request: simulateQuery.data.request,
+      })
+      throw e
     }
-    await writeQuery.writeAsync?.()
   }
 
   return {
     ...bundle,
-    execute: managedWrite,
     executeAsync: managedWriteAsync,
   } satisfies ManagedResult
 }

@@ -11,6 +11,7 @@ import { bn, fNum } from '@/lib/shared/utils/numbers'
 import networkConfigs from '@/lib/config/networks'
 import { useTokens } from '../../tokens/useTokens'
 import BigNumber from 'bignumber.js'
+import { getChainId } from '@/lib/config/app.config'
 
 export interface BalTokenReward {
   balance: bigint
@@ -39,7 +40,7 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
         address: gaugeAddress as Address,
         functionName: 'claimable_tokens',
         args: [(userAddress || '') as Address],
-        chain: pool.chain,
+        chainId: getChainId(pool.chain),
         id: `${pool.address}.${gaugeAddress}`,
       }
     }) || []

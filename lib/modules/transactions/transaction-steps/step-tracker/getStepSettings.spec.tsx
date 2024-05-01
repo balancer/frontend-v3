@@ -7,9 +7,13 @@ const flowStep = mockDeep<FlowStep>()
 describe('generates step props', () => {
   test('when the step is active and the transaction execution is loading', () => {
     flowStep.simulation.isLoading = false
-    flowStep.execution.isLoading = true
+    flowStep.execution.isPending = true
     flowStep.result.isSuccess = false
 
+    // Avoid "Expression produces a union type that is too complex to represent" only happening in this line
+    // More context: https://github.com/chakra-ui/chakra-ui/issues/7526
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const props: StepProps = {
       currentIndex: 0,
       index: 0,

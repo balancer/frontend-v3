@@ -3,56 +3,58 @@
 
 import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useEffect } from 'react'
-import { usePrepareSendTransaction, useSendTransaction, useWaitForTransaction } from 'wagmi'
-import {
-  TransactionExecution,
-  TransactionSimulation,
-  UsePrepareSendTransactionConfig,
-} from './contract.types'
+import { useEstimateGas, useSendTransaction, useWaitForTransactionReceipt } from 'wagmi'
+import { TransactionExecution, TransactionSimulation, UseEstimateGasConfig } from './contract.types'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { getGqlChain } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { useChainSwitch } from '../useChainSwitch'
-import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
+import {
+  captureWagmiExecutionError,
+  sentryMetaForWagmiExecution,
+} from '@/lib/shared/utils/query-errors'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
 
 export function useManagedSendTransaction(
   labels: TransactionLabels,
   chainId: SupportedChainId,
-  txConfig: UsePrepareSendTransactionConfig | undefined,
-  onSimulationError?: (error: unknown) => void
+  txConfig: UseEstimateGasConfig | undefined,
+  gasEstimationMeta?: Record<string, unknown> | undefined
 ) {
   const { shouldChangeNetwork } = useChainSwitch(chainId)
   const { minConfirmations } = useNetworkConfig()
   const { updateTrackedTransaction } = useRecentTransactions()
 
-  const prepareQuery = usePrepareSendTransaction({
+  const estimateGasQuery = useEstimateGas({
     ...txConfig,
     chainId,
-    enabled: !!txConfig && !shouldChangeNetwork,
-    onError: onSimulationError,
-  })
-
-  const writeQuery = useSendTransaction({
-    chainId: txConfig?.chainId,
-    ...prepareQuery.config,
-    onError: (error: unknown) => {
-      captureWagmiExecutionError(error, 'Error sending transaction', prepareQuery.config)
+    query: {
+      enabled: !!txConfig && !shouldChangeNetwork,
+      meta: gasEstimationMeta,
     },
   })
 
-  const transactionStatusQuery = useWaitForTransaction({
-    hash: writeQuery.data?.hash,
+  const writeQuery = useSendTransaction({
+    mutation: {
+      meta: sentryMetaForWagmiExecution('Error sending transaction', {
+        chainId,
+        txConfig,
+        estimatedGas: estimateGasQuery.data,
+      }),
+    },
+  })
+
+  const transactionStatusQuery = useWaitForTransactionReceipt({
+    chainId,
+    hash: writeQuery.data,
     confirmations: minConfirmations,
   })
 
   const bundle = {
-    simulation: {
-      ...prepareQuery,
-      config: { ...prepareQuery.config, chainId },
-    } as TransactionSimulation,
+    chainId,
+    simulation: estimateGasQuery as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
     result: transactionStatusQuery,
   }
@@ -63,10 +65,10 @@ export function useManagedSendTransaction(
   // when the transaction has an execution error, update that within
   // the global transaction cache too
   useEffect(() => {
-    if (bundle?.execution?.data?.hash) {
+    if (bundle?.execution?.data) {
       // add transaction here
     }
-  }, [bundle.execution?.data?.hash])
+  }, [bundle.execution?.data])
 
   // when the transaction has an execution error, update that within
   // the global transaction cache
@@ -82,7 +84,7 @@ export function useManagedSendTransaction(
 
   useEffect(() => {
     if (transactionStatusQuery.error) {
-      const txHash = writeQuery.data?.hash
+      const txHash = writeQuery.data
       captureWagmiExecutionError(transactionStatusQuery.error, 'Error in useWaitForTransaction', {
         chainId,
         txHash,
@@ -102,8 +104,8 @@ export function useManagedSendTransaction(
   // on successful submission to chain, add tx to cache
   useOnTransactionSubmission({
     labels,
-    hash: writeQuery.data?.hash,
-    chain: getGqlChain((writeQuery.variables?.chainId || 1) as SupportedChainId),
+    hash: writeQuery.data,
+    chain: getGqlChain(chainId),
   })
 
   // on confirmation, update tx in tx cache
@@ -113,9 +115,29 @@ export function useManagedSendTransaction(
     hash: bundle.result.data?.transactionHash,
   })
 
+  const managedSendAsync = async () => {
+    if (!estimateGasQuery.data) return
+    if (!txConfig?.to) return
+    try {
+      return writeQuery.sendTransactionAsync({
+        chainId,
+        to: txConfig.to,
+        data: txConfig.data,
+        value: txConfig.value,
+        gas: estimateGasQuery.data,
+      })
+    } catch (e: unknown) {
+      captureWagmiExecutionError(e, 'Error in send transaction execution', {
+        chainId,
+        txConfig,
+        gas: estimateGasQuery.data,
+      })
+      throw e
+    }
+  }
+
   return {
     ...bundle,
-    execute: writeQuery.sendTransaction,
-    executeAsync: writeQuery.sendTransactionAsync,
+    executeAsync: managedSendAsync,
   } satisfies ManagedResult
 }

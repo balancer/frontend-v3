@@ -5,15 +5,22 @@ import {
   GqlPoolComposableStableNested,
   GetTokenPricesQuery,
 } from '@/lib/shared/services/api/generated/graphql'
-import { Address, formatUnits, PublicClient, zeroAddress } from 'viem'
-import { cloneDeep, keyBy, sumBy } from 'lodash'
-import { ContractFunctionConfig } from 'viem/types/contract'
 import {
-  balancerV2ComposableStablePoolV5ABI,
-  balancerV2Erc4626LinearPoolV3ABI,
-  balancerV2VaultABI,
+  Address,
+  ContractFunctionParameters,
+  formatUnits,
+  PublicClient,
+  ReadContractParameters,
+  zeroAddress,
+} from 'viem'
+import { cloneDeep, keyBy, sumBy } from 'lodash'
+import {
+  balancerV2ComposableStablePoolV5Abi,
+  balancerV2Erc4626LinearPoolV3Abi,
+  balancerV2VaultAbi,
 } from '@/lib/modules/web3/contracts/abi/generated'
-import { usePublicClient, useQuery } from 'wagmi'
+import { usePublicClient } from 'wagmi'
+import { useQuery } from '@tanstack/react-query'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useUserAccount } from '../../web3/useUserAccount'
@@ -33,14 +40,19 @@ export function usePoolEnrichWithOnChainData({
   const poolTokenPrices = prices.filter(price => tokenAddresses.includes(price.address))
   const { userAddress } = useUserAccount()
 
-  return useQuery(['usePoolEnrichWithOnChainData', { pool, userAddress }], async () => {
-    return updateWithOnChainBalanceData({
-      pool,
-      client,
-      tokenPrices: poolTokenPrices,
-      vaultV2Address: config.contracts.balancer.vaultV2,
-      userAddress,
-    })
+  return useQuery({
+    queryKey: ['usePoolEnrichWithOnChainData', { pool, userAddress }],
+    queryFn: async () => {
+      if (!client) return
+      return updateWithOnChainBalanceData({
+        pool,
+        client,
+        tokenPrices: poolTokenPrices,
+        vaultV2Address: config.contracts.balancer.vaultV2,
+        userAddress,
+      })
+    },
+    enabled: !!client,
   })
 }
 
@@ -71,10 +83,10 @@ async function updateWithOnChainBalanceData({
 
   clone.dynamicData.totalShares = formatUnits(supplyMap[pool.id].totalSupply, 18)
 
-  for (const token of clone.poolTokens) {
-    const tokenBalance = formatUnits(balancesMap[pool.id].balances[token.index], token.decimals)
+  clone.poolTokens.forEach((token, index) => {
+    const tokenBalance = formatUnits(balancesMap[pool.id].balances[index], token.decimals)
     token.balance = tokenBalance
-  }
+  })
 
   clone.dynamicData.totalLiquidity = sumBy(
     clone.poolTokens.map(token => {
@@ -102,7 +114,7 @@ async function getBalanceDataForPool({
   const calls: {
     poolId: string
     type: 'balances' | 'supply' | 'userBalance'
-    call: ContractFunctionConfig
+    call: ContractFunctionParameters
   }[] = [
     getSupplyCall(pool),
     getBalancesCall(pool.id, vaultV2Address),
@@ -136,12 +148,12 @@ async function getBalanceDataForPool({
 function getBalancesCall(
   poolId: string,
   vaultV2Address: Address
-): { poolId: string; type: 'balances'; call: ContractFunctionConfig } {
+): { poolId: string; type: 'balances'; call: ReadContractParameters } {
   return {
     poolId,
     type: 'balances',
     call: {
-      abi: balancerV2VaultABI,
+      abi: balancerV2VaultAbi,
       address: vaultV2Address,
       functionName: 'getPoolTokens',
       args: [poolId],
@@ -152,14 +164,14 @@ function getBalancesCall(
 function getUserBalancesCall(
   pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested | GqlPoolLinearNested,
   userAddress: Address
-): { poolId: string; type: 'userBalance'; call: ContractFunctionConfig } {
+): { poolId: string; type: 'userBalance'; call: ReadContractParameters } {
   const isLinear = isLinearPool(pool)
 
   return {
     poolId: pool.id,
     type: 'userBalance',
     call: {
-      abi: isLinear ? balancerV2Erc4626LinearPoolV3ABI : balancerV2ComposableStablePoolV5ABI,
+      abi: isLinear ? balancerV2Erc4626LinearPoolV3Abi : balancerV2ComposableStablePoolV5Abi,
       address: pool.address as Address,
       functionName: 'balanceOf',
       args: [userAddress],
@@ -172,7 +184,7 @@ function getSupplyCall(
 ): {
   poolId: string
   type: 'supply'
-  call: ContractFunctionConfig
+  call: ReadContractParameters
 } {
   const isLinear = isLinearPool(pool)
   const isComposableStable = isComposableStablePool(pool)
@@ -182,9 +194,9 @@ function getSupplyCall(
     type: 'supply',
     call: {
       abi: isLinear
-        ? balancerV2Erc4626LinearPoolV3ABI
+        ? balancerV2Erc4626LinearPoolV3Abi
         : // composable stable pool has actual and total supply functions exposed
-          balancerV2ComposableStablePoolV5ABI,
+          balancerV2ComposableStablePoolV5Abi,
       address: pool.address as Address,
       functionName: isComposableStable
         ? 'getActualSupply'

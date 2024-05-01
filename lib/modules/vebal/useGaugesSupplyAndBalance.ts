@@ -6,6 +6,7 @@ import { useMulticall } from '../web3/contracts/useMulticall'
 
 import { AbiMap } from '../web3/contracts/AbiMap'
 import { Hex } from 'viem'
+import { getChainId } from '@/lib/config/app.config'
 
 type GaugeDataByPool = Record<string, { totalSupply: string; userBalance: string; gauge: GaugeArg }>
 
@@ -14,7 +15,7 @@ export function useGaugesSupplyAndBalance(gauges: GaugeArg[]) {
 
   const gaugesTotalSupplyDataRequests = gauges.map(gauge => {
     return {
-      chain: gauge.chain,
+      chainId: getChainId(gauge.chain),
       id: `${gauge.chain}.${gauge.gaugeAddress}`,
       abi: AbiMap['balancer.LiquidityGauge'] as any,
       address: gauge.gaugeAddress as Hex,
@@ -28,7 +29,7 @@ export function useGaugesSupplyAndBalance(gauges: GaugeArg[]) {
   )
   const gaugesBalancesDataRequests = gauges.map(gauge => {
     return {
-      chain: gauge.chain,
+      chainId: getChainId(gauge.chain),
       id: `${gauge.chain}.${gauge.gaugeAddress}`,
       abi: AbiMap['balancer.LiquidityGauge'] as any,
       address: gauge.gaugeAddress as Hex,

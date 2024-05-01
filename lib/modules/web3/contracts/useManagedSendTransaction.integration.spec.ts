@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { describe, expect, test } from 'vitest'
 
-import { poolId } from '@/lib/debug-helpers'
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { testHook } from '@/test/utils/custom-renderers'
-import { testPublicClient as testClient } from '@/test/utils/wagmi/wagmi-test-setup'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { ChainId, HumanAmount } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
-import { SendTransactionResult } from 'wagmi/actions'
 import { UnbalancedAddLiquidityHandler } from '../../pool/actions/add-liquidity/handlers/UnbalancedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from '../../pool/actions/add-liquidity/handlers/selectAddLiquidityHandler'
 import { HumanAmountIn } from '../../pool/actions/liquidity-types'
+import { connectWithDefaultUser } from '../../../../test/utils/wagmi/wagmi-connections'
+import { Address } from 'viem'
+import { mainnetTestPublicClient } from '@/test/utils/wagmi/wagmi-test-clients'
 
 const chainId = ChainId.MAINNET
 const account = defaultTestUserAccount
@@ -21,7 +21,7 @@ const account = defaultTestUserAccount
 const utils = await getSdkTestUtils({
   account,
   chainId,
-  client: testClient,
+  client: mainnetTestPublicClient,
   pool: aWjAuraWethPoolElementMock(), // Balancer Weighted wjAura and WETH,
 })
 
@@ -29,19 +29,17 @@ const { getPoolTokens, getPoolTokenBalances } = utils
 
 const poolTokens = getPoolTokens()
 
-describe('weighted join test', () => {
-  //   const anvil = startAnvilInPort(port)
-  //   afterAll(() => anvil.stop())
-
+describe('weighted add flow', () => {
   test('Sends transaction after updating amount inputs', async () => {
-    await utils.setupTokens([...getPoolTokens().map(() => '100' as HumanAmount), '100'])
+    await connectWithDefaultUser()
+    await utils.setupTokens([...getPoolTokens().map(() => '1000' as HumanAmount), '1000'])
 
     const handler = selectAddLiquidityHandler(
       aWjAuraWethPoolElementMock()
     ) as UnbalancedAddLiquidityHandler
 
     const humanAmountsIn: HumanAmountIn[] = poolTokens.map(t => ({
-      humanAmount: '1',
+      humanAmount: '0.1',
       tokenAddress: t.address,
     }))
 
@@ -50,7 +48,7 @@ describe('weighted join test', () => {
     const txConfig = await handler.buildCallData({
       humanAmountsIn,
       account: defaultTestUserAccount,
-      slippagePercent: '0.2',
+      slippagePercent: '5',
       queryOutput,
     })
 
@@ -58,19 +56,21 @@ describe('weighted join test', () => {
       return useManagedSendTransaction({ init: 'foo', tooltip: 'bar' }, 1, txConfig)
     })
 
-    await waitFor(() => expect(result.current.executeAsync).toBeDefined())
+    await waitFor(() => expect(result.current.simulation.data).toBeDefined())
 
-    const res = await act(async () => {
-      const res = (await result.current.executeAsync?.()) as SendTransactionResult
-      expect(res.hash).toBeDefined()
-      return res
+    await act(async () => result.current.executeAsync?.())
+
+    const hash = await waitFor(() => {
+      const hash = result.current.execution.data
+      expect(result.current.execution.data).toBeDefined()
+      return hash || ('' as Address)
     })
+
     const transactionReceipt = await act(async () =>
-      testClient.waitForTransactionReceipt({
-        hash: res.hash,
+      mainnetTestPublicClient.waitForTransactionReceipt({
+        hash: hash,
       })
     )
-
     expect(transactionReceipt.status).to.eq('success')
   })
 })
