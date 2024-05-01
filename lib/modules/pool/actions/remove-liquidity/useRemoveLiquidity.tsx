@@ -25,7 +25,7 @@ import {
 import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 import { useRemoveLiquidityStepConfigs } from './modal/useRemoveLiquidityStepConfigs'
 import { hasNestedPools, isGyro } from '../../pool.helpers'
-import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useTransactionFlow } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 
@@ -61,7 +61,7 @@ export function _useRemoveLiquidity() {
 
   const stepConfigs = useRemoveLiquidityStepConfigs()
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
-  const { getCoreTransactionState, clearCurrentFlowStep } = useCurrentFlowStep()
+  const { getCoreTransactionState } = useTransactionFlow()
   const chain = pool.chain
   const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
   const wNativeAsset = getToken(getWrappedNativeAssetAddress(chain), chain)
@@ -183,9 +183,6 @@ export function _useRemoveLiquidity() {
   /**
    * Side-effects
    */
-  useEffect(() => {
-    clearCurrentFlowStep()
-  }, [])
 
   // If amounts change, update quote state unless the final transaction is
   // confirming or confirmed.

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ModalContentProps } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { useCurrentFlowStep } from '../useCurrentFlowStep'
+import { useTransactionFlow } from '../TransactionFlowProvider'
 import { StepConfig } from '../useIterateSteps'
 import { StepTrackerProps } from './step-tracker.types'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
@@ -16,7 +16,7 @@ export function getStylesForModalContentWithStepTracker(isDesktop: boolean): Mod
 export function useStepTrackerProps({ stepConfigs, currentStepIndex, chain }: StepTrackerProps) {
   const [initialStepConfigs, setInitialStepConfigs] = useState<StepConfig[]>([])
 
-  const { flowStep } = useCurrentFlowStep()
+  const { flowStep } = useTransactionFlow()
   const colorMode = useThemeColorMode()
 
   // Number of steps that were completed and deleted from the original stepConfigs list

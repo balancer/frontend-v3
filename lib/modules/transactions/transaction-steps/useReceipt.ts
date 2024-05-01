@@ -1,4 +1,4 @@
-import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useTransactionFlow } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 import { getLastSegment } from '@/lib/shared/utils/paths'
 import { usePathname, useRouter } from 'next/navigation'
 import { Address } from 'viem'
@@ -7,7 +7,7 @@ export function useReceipt() {
   const pathname = usePathname()
   const router = useRouter()
 
-  const { isFlowComplete, flowStep } = useCurrentFlowStep()
+  const { isFlowComplete, flowStep } = useTransactionFlow()
   const isReceiptPage =
     pathname.includes('/add-liquidity/0x') ||
     pathname.includes('/remove-liquidity/0x') ||

@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { getNetworkConfig } from '@/lib/config/app.config'
-import { useSyncCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
+import { useSyncTransactionFlowStep } from '../transactions/transaction-steps/TransactionFlowProvider'
 import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructApproveRelayerStep(chainId: SupportedChainId) {
@@ -47,7 +47,7 @@ export function useConstructApproveRelayerStep(chainId: SupportedChainId) {
     }
   )
 
-  const step = useSyncCurrentFlowStep({
+  const step = useSyncTransactionFlowStep({
     ...approveRelayerTransaction,
     transactionLabels,
     id: 'approveBatchRelayer',

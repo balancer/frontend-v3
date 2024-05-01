@@ -8,7 +8,7 @@ import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuil
 import { useEffect } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
 import { usePool } from '../../usePool'
-import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useSyncTransactionFlowStep } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructAddLiquidityStep() {
@@ -45,7 +45,7 @@ export function useConstructAddLiquidityStep() {
 
   const isComplete = () => addLiquidityTransaction.result.isSuccess
 
-  const addLiquidityStep = useSyncCurrentFlowStep({
+  const addLiquidityStep = useSyncTransactionFlowStep({
     ...addLiquidityTransaction,
     transactionLabels,
     id: addLiquidityStepId,

@@ -39,7 +39,7 @@ import { createMockConnector } from './wagmi/wagmi-mock-connectors'
 import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignature'
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { SupportedChainId } from '@/lib/config/config.types'
-import { CurrentFlowStepProvider } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { TransactionFlowProvider } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 import { createWagmiConfig } from '@/lib/modules/web3/Web3Provider'
 
 export type WrapperProps = { children: ReactNode }
@@ -97,11 +97,11 @@ function GlobalProviders({ children }: WrapperProps) {
                 initEnableSignatures="yes"
                 initAcceptedPolicies={undefined}
               >
-                <CurrentFlowStepProvider>
+                <TransactionFlowProvider>
                   <RecentTransactionsProvider>
                     <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
                   </RecentTransactionsProvider>
-                </CurrentFlowStepProvider>
+                </TransactionFlowProvider>
               </UserSettingsProvider>
             </TokensProvider>
           </UserAccountProvider>

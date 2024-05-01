@@ -10,7 +10,7 @@ import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTr
 import { useBalTokenRewards } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
 import { useClaimableBalances } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
-import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useSyncTransactionFlowStep } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructClaimAndUnstakeStep() {
@@ -61,7 +61,7 @@ export function useConstructClaimAndUnstakeStep() {
     }
   )
 
-  const claimAndUnstakeStep = useSyncCurrentFlowStep({
+  const claimAndUnstakeStep = useSyncTransactionFlowStep({
     ...claimAndUnstakeTransaction,
     transactionLabels,
     id: 'claimAndUnstake',

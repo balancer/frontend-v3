@@ -5,10 +5,10 @@ import { SwapDetails } from './SwapDetails'
 import { SwapRate } from './SwapRate'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { useSwap } from './useSwap'
-import { useCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
+import { useTransactionFlow } from '../transactions/transaction-steps/TransactionFlowProvider'
 
 export function SwapPreview() {
-  const { isFlowComplete, SuccessCard } = useCurrentFlowStep()
+  const { isFlowComplete, SuccessCard } = useTransactionFlow()
   const { isMobile } = useBreakpoints()
   const { tokenIn, tokenOut, currentStepIndex, swapStepConfigs, selectedChain } = useSwap()
 

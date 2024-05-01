@@ -15,16 +15,19 @@ import {
   ModalProps,
   VStack,
 } from '@chakra-ui/react'
-import { RefObject, useEffect, useRef } from 'react'
+import { RefObject, useRef } from 'react'
 import { usePool } from '../../usePool'
 import { useAddLiquidity } from './useAddLiquidity'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { sleep } from '@/lib/shared/utils/time'
+import Image from 'next/image'
 import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
 import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
-import { useReceipt } from '../../../transactions/transaction-steps/useReceipt'
+import { getNetworkConfig } from '@/lib/config/app.config'
+import { AddLiquiditySubmitted } from './AddLiquiditySubmitted'
+import { ActionCompleteModalFooter } from '../ActionCompleteModalFooter'
+import { useTransactionFlow } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 
 type Props = {
   isOpen: boolean
@@ -44,15 +47,8 @@ export function AddLiquidityModal({
   const { stepConfigs, currentStep, currentStepIndex, useOnStepCompleted } = useAddLiquidity()
   const { pool, chainId } = usePool()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
-  const { navigateToReceipt, isFlowComplete } = useReceipt()
-
-  useEffect(() => {
-    if (isOpen && isFlowComplete) {
-      // Wait to allow animations in the preview modal before navigating to receipt page
-      sleep(500).then(() => navigateToReceipt())
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFlowComplete])
+  const { isFlowComplete, isFlowConfirming } = useTransactionFlow()
+  const networkConfig = getNetworkConfig(pool.chain)
 
   return (
     <Modal
@@ -74,16 +70,27 @@ export function AddLiquidityModal({
         )}
         <ModalHeader>
           <HStack justify="space-between" w="full" pr="lg">
-            <span>Add liquidity</span>
+            {isFlowComplete || isFlowConfirming ? (
+              <Image
+                src={networkConfig.iconPath}
+                width="24"
+                height="24"
+                alt={networkConfig.shortName}
+              />
+            ) : (
+              <span>Add liquidity</span>
+            )}
             <AddLiquidityTimeout />
           </HStack>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <AddLiquidityPreview />
+          {isFlowComplete || isFlowConfirming ? <AddLiquiditySubmitted /> : <AddLiquidityPreview />}
         </ModalBody>
         <ModalFooter>
-          {shouldSignRelayerApproval ? (
+          {isFlowComplete || isFlowConfirming ? (
+            <ActionCompleteModalFooter />
+          ) : shouldSignRelayerApproval ? (
             <SignRelayerButton />
           ) : (
             <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>

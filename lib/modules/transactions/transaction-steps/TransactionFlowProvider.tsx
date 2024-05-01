@@ -15,10 +15,17 @@ import { Card, HStack, Text } from '@chakra-ui/react'
 import { PropsWithChildren, createContext, useEffect, useState } from 'react'
 import { Check } from 'react-feather'
 
-export function _useCurrentFlowStep() {
-  const [flowStep, setCurrentFlowStep] = useState<FlowStep | undefined>()
+export function _useTransactionFlow() {
+  const [flowStep, setFlowStep] = useState<FlowStep | undefined>()
+  const [txHash, setTxHash] = useState<string | undefined>()
 
   const isFlowComplete: boolean = isCoreStep(flowStep?.id) && !!flowStep?.result.isSuccess
+  const isFlowConfirming: boolean = isCoreStep(flowStep?.id) && !!flowStep?.result.isLoading
+
+  useEffect(() => {
+    if (!flowStep) return
+    setTxHash(flowStep.result.data?.transactionHash)
+  }, [flowStep?.result.data?.transactionHash])
 
   /*
     We are only interested in the state of the flow step if it is a concrete CoreStepId
@@ -26,10 +33,6 @@ export function _useCurrentFlowStep() {
   function getCoreTransactionState(coreStepId: CoreStepId) {
     if (flowStep?.id !== coreStepId) return TransactionState.Ready
     return getTransactionState(flowStep)
-  }
-
-  function clearCurrentFlowStep() {
-    setCurrentFlowStep(undefined)
   }
 
   //TODO: this success card will be deleted when we implement Receipt pages in Remove and Swap flows
@@ -52,41 +55,32 @@ export function _useCurrentFlowStep() {
   return {
     flowStep,
     isFlowComplete,
+    isFlowConfirming,
+    txHash,
+    setFlowStep,
     SuccessCard,
-    setCurrentFlowStep,
-    clearCurrentFlowStep,
     getCoreTransactionState,
   }
 }
 
-export type Result = ReturnType<typeof _useCurrentFlowStep>
-export const CurrentFlowStepContext = createContext<Result | null>(null)
+export type Result = ReturnType<typeof _useTransactionFlow>
+export const TransactionFlowContext = createContext<Result | null>(null)
 
-export function CurrentFlowStepProvider({ children }: PropsWithChildren) {
-  const validation = _useCurrentFlowStep()
+export function TransactionFlowProvider({ children }: PropsWithChildren) {
+  const validation = _useTransactionFlow()
 
   return (
-    <CurrentFlowStepContext.Provider value={validation}>{children}</CurrentFlowStepContext.Provider>
+    <TransactionFlowContext.Provider value={validation}>{children}</TransactionFlowContext.Provider>
   )
 }
 
-export const useCurrentFlowStep = (): Result =>
-  useMandatoryContext(CurrentFlowStepContext, 'CurrentFlowStep')
+export const useTransactionFlow = (): Result =>
+  useMandatoryContext(TransactionFlowContext, 'TransactionFlow')
 
-export function useSyncCurrentFlowStep(step: FlowStep): FlowStep {
-  const { setCurrentFlowStep } = useCurrentFlowStep()
+export function useSyncTransactionFlowStep(step: FlowStep): FlowStep {
+  const { setFlowStep } = useTransactionFlow()
   useEffect(() => {
-    setCurrentFlowStep(step)
+    setFlowStep(step)
   }, [step.id, step.simulation.status, step.execution.status, step.result.status])
   return step
-}
-
-export function useClearCurrentFlowStepOnUnmount() {
-  const { clearCurrentFlowStep } = useCurrentFlowStep()
-  useEffect(() => {
-    return () => {
-      clearCurrentFlowStep()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 }

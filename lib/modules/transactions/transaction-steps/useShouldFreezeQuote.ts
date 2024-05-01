@@ -1,8 +1,8 @@
 import { CoreStepId, TransactionState } from './lib'
-import { useCurrentFlowStep } from './useCurrentFlowStep'
+import { useTransactionFlow } from './TransactionFlowProvider'
 
 export function useShouldFreezeQuote(stepId: CoreStepId) {
-  const { getCoreTransactionState } = useCurrentFlowStep()
+  const { getCoreTransactionState } = useTransactionFlow()
 
   const coreTxState = getCoreTransactionState(stepId)
   const isConfirming = coreTxState === TransactionState.Confirming

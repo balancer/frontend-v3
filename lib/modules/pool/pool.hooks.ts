@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation'
 import { getPoolPath } from './pool.utils'
 import { Pool, usePool } from './usePool'
 import { useEffect, useState } from 'react'
-import { useCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
+import { useTransactionFlow } from '../transactions/transaction-steps/TransactionFlowProvider'
 
 export function usePoolRedirect(pool: Pool) {
   const router = useRouter()
@@ -25,7 +25,7 @@ export function usePoolRedirect(pool: Pool) {
 
 export function useRefetchPoolOnFlowComplete() {
   const [didRefetchPool, setDidRefetchPool] = useState(false)
-  const { isFlowComplete } = useCurrentFlowStep()
+  const { isFlowComplete } = useTransactionFlow()
   const { refetch } = usePool()
 
   useEffect(() => {

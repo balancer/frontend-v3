@@ -3,7 +3,7 @@ import { claimableVeBalRewardsTokens } from '@/lib/modules/portfolio/PortfolioCl
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
-import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useSyncTransactionFlowStep } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 const transactionLabels: TransactionLabels = {
@@ -38,7 +38,7 @@ export function useConstructClaimVeBalRewardsStep() {
     }
   )
 
-  const claimAllVeBalRewardsStep = useSyncCurrentFlowStep({
+  const claimAllVeBalRewardsStep = useSyncTransactionFlowStep({
     ...claimVeBalRewardsTransaction,
     transactionLabels,
     id: 'claimAllVeBalRewards',

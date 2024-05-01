@@ -4,7 +4,7 @@ import { TransactionLabels, FlowStep } from '@/lib/modules/transactions/transact
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Address } from 'viem'
 import { SupportedChainId } from '@/lib/config/config.types'
-import { useSyncCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
+import { useSyncTransactionFlowStep } from '../transactions/transaction-steps/TransactionFlowProvider'
 import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 function buildStakingDepositLabels(staking?: GqlPoolStaking | null): TransactionLabels {
@@ -92,7 +92,7 @@ export function useConstructStakingDepositActionStep(
     }
   )
 
-  const step = useSyncCurrentFlowStep({
+  const step = useSyncTransactionFlowStep({
     ...deposit,
     id: `${staking?.type}-deposit`,
     stepType: 'stakingDeposit',
@@ -137,7 +137,7 @@ export function useConstructStakingWithdrawActionStep(
     }
   )
 
-  const step = useSyncCurrentFlowStep({
+  const step = useSyncTransactionFlowStep({
     ...withdraw,
     id: `${staking?.type}-withdraw`,
     stepType: 'stakingWithdraw',

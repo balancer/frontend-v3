@@ -8,7 +8,7 @@ import { useRemoveLiquidityBuildCallDataQuery } from '../queries/useRemoveLiquid
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useEffect } from 'react'
 import { usePool } from '../../../usePool'
-import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useSyncTransactionFlowStep } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructRemoveLiquidityStep() {
@@ -46,7 +46,7 @@ export function useConstructRemoveLiquidityStep() {
 
   const isComplete = () => removeLiquidityTransaction.result.isSuccess
 
-  const removeLiquidityStep = useSyncCurrentFlowStep({
+  const removeLiquidityStep = useSyncTransactionFlowStep({
     ...removeLiquidityTransaction,
     transactionLabels,
     id: removeLiquidityStepId,

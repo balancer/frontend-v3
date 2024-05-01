@@ -22,7 +22,7 @@ import { getStylesForModalContentWithStepTracker } from '../transactions/transac
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { capitalize } from 'lodash'
 import { SwapPreview } from './SwapPreview'
-import { useClearCurrentFlowStepOnUnmount } from '../transactions/transaction-steps/useCurrentFlowStep'
+import { useClearCurrentFlowStepOnUnmount } from '../transactions/transaction-steps/TransactionFlowProvider'
 
 type Props = {
   isOpen: boolean
@@ -47,7 +47,6 @@ export function SwapPreviewModal({
     selectedChain,
     useOnStepCompleted,
   } = useSwap()
-  useClearCurrentFlowStepOnUnmount()
 
   return (
     <Modal

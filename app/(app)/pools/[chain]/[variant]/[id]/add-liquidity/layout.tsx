@@ -7,6 +7,7 @@ import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInpu
 import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
 import { Alert } from '@chakra-ui/react'
 import { AddLiquidityProvider } from '../../../../../../../lib/modules/pool/actions/add-liquidity/useAddLiquidity'
+import { TransactionFlowProvider } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 
 /*
   Layout used to share state between add-liquidity page and add-liquidity/[txHash] receipt page
@@ -22,12 +23,14 @@ export default function AddLiquidityLayout({ children }: { children: React.React
   }
 
   return (
-    <RelayerSignatureProvider>
-      <TokenInputsValidationProvider>
-        <AddLiquidityProvider>
-          <PriceImpactProvider>{children}</PriceImpactProvider>
-        </AddLiquidityProvider>
-      </TokenInputsValidationProvider>
-    </RelayerSignatureProvider>
+    <TransactionFlowProvider>
+      <RelayerSignatureProvider>
+        <TokenInputsValidationProvider>
+          <AddLiquidityProvider>
+            <PriceImpactProvider>{children}</PriceImpactProvider>
+          </AddLiquidityProvider>
+        </TokenInputsValidationProvider>
+      </RelayerSignatureProvider>
+    </TransactionFlowProvider>
   )
 }

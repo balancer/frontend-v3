@@ -7,7 +7,7 @@ import { usePool } from '../../../usePool'
 import { Address } from 'wagmi'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
 import { parseUnits } from 'viem'
-import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useTransactionFlow } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 
 export function RemoveLiquidityPreview() {
   const {
@@ -23,7 +23,7 @@ export function RemoveLiquidityPreview() {
   } = useRemoveLiquidity()
   const { isMobile } = useBreakpoints()
   const { pool } = usePool()
-  const { isFlowComplete, SuccessCard } = useCurrentFlowStep()
+  const { isFlowComplete, SuccessCard } = useTransactionFlow()
 
   return (
     <VStack spacing="sm" align="start">

@@ -10,7 +10,7 @@ import { useEffect } from 'react'
 import { getChainId } from '@/lib/config/app.config'
 import { PoolListItem } from '../../pool.types'
 import { getAllGaugesAddressesFromPool } from '@/lib/modules/portfolio/usePortfolio'
-import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
+import { useSyncTransactionFlowStep } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructClaimAllRewardsStep(pools: PoolListItem[]) {
@@ -65,7 +65,7 @@ export function useConstructClaimAllRewardsStep(pools: PoolListItem[]) {
     }
   )
 
-  const claimAllRewardsStep = useSyncCurrentFlowStep({
+  const claimAllRewardsStep = useSyncTransactionFlowStep({
     ...claimAllRewardsTransaction,
     transactionLabels,
     id: 'claimAllRewards',
