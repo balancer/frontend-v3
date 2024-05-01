@@ -36,6 +36,8 @@ export function usePoolListQueryState() {
     poolListQueryStateParsers.userAddress
   )
 
+  const [minTvl, setMinTvl] = useQueryState('minTvl', poolListQueryStateParsers.minTvl)
+
   // Set internal checked state
   function toggleUserAddress(checked: boolean, address: string) {
     if (checked) {
@@ -129,6 +131,7 @@ export function usePoolListQueryState() {
       poolTypeIn: mappedPoolTypes,
       chainIn: networks.length > 0 ? networks : PROJECT_CONFIG.supportedNetworks,
       userAddress,
+      minTvl,
     },
     textSearch,
   }
@@ -150,6 +153,8 @@ export function usePoolListQueryState() {
     setSorting,
     setPagination,
     setSearch,
+    setMinTvl,
+    minTvl,
     searchText: textSearch,
     pagination,
     sorting,

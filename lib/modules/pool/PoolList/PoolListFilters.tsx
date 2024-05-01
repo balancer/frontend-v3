@@ -37,8 +37,9 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useEffect, useState } from 'react'
 import { Filter } from 'react-feather'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { fNum } from '@/lib/shared/utils/numbers'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { useDebouncedCallback } from 'use-debounce'
+import { defaultDebounceMs } from '@/lib/shared/utils/queries'
 
 function UserPoolFilter() {
   const { userAddress, toggleUserAddress } = usePoolListQueryState()
@@ -95,7 +96,17 @@ function PoolNetworkFilters() {
 
 function PoolMinTvlFilter() {
   const { toCurrency } = useCurrency()
-  const [sliderValue, setSliderValue] = useState(0)
+  const { minTvl, setMinTvl } = usePoolListQueryState()
+  const [sliderValue, setSliderValue] = useState(minTvl)
+
+  const debounced = useDebouncedCallback((val: number) => {
+    setMinTvl(val)
+  }, defaultDebounceMs)
+
+  // set min tvl value here to keep slider performant
+  useEffect(() => {
+    debounced(sliderValue)
+  }, [sliderValue])
 
   return (
     <VStack w="full">
