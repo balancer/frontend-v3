@@ -27,6 +27,7 @@ import {
   getBlockExplorerAddressUrl,
   getBlockExplorerTxUrl,
 } from '@/lib/shared/hooks/useBlockExplorer'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 const toolTipTheme = {
   heading: 'font-weight: bold; color: #E5D3BE',
@@ -35,11 +36,12 @@ const toolTipTheme = {
 }
 
 export const getDefaultPoolChartOptions = (
-  theme: ColorMode = 'dark'
+  theme: ColorMode = 'dark',
+  isMobile = false
 ): echarts.EChartsCoreOption => {
   return {
     grid: {
-      left: '3.5%',
+      left: isMobile ? '15%' : '3.5%',
       right: '2.5%',
       top: '7.5%',
       bottom: '10.5%',
@@ -98,7 +100,7 @@ export const getDefaultPoolChartOptions = (
       },
     },
     tooltip: {
-      triggerOn: 'click',
+      triggerOn: isMobile ? 'mousemove|click' : 'click',
       extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container};pointer-events: auto!important`,
       formatter: (params: any) => {
         const data = Array.isArray(params) ? params[0] : params
@@ -266,6 +268,7 @@ export function getPoolActivityTabsList({
 
 export function usePoolActivityChart() {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
+  const { isMobile } = useBreakpoints()
   const { theme } = useTheme()
   const { getToken } = useTokens()
 
@@ -431,7 +434,7 @@ export function usePoolActivityChart() {
   }, [activeTab, chartData, options])
 
   return {
-    chartOption: getDefaultPoolChartOptions(theme as ColorMode),
+    chartOption: getDefaultPoolChartOptions(theme as ColorMode, isMobile),
     activeTab,
     setActiveTab,
     tabsList,
