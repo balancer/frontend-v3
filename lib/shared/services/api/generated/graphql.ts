@@ -442,6 +442,7 @@ export type GqlPoolFilter = {
   filterNotIn?: InputMaybe<Array<Scalars['String']['input']>>
   idIn?: InputMaybe<Array<Scalars['String']['input']>>
   idNotIn?: InputMaybe<Array<Scalars['String']['input']>>
+  minTvl?: InputMaybe<Scalars['Float']['input']>
   poolTypeIn?: InputMaybe<Array<GqlPoolType>>
   poolTypeNotIn?: InputMaybe<Array<GqlPoolType>>
   tokensIn?: InputMaybe<Array<Scalars['String']['input']>>
@@ -3600,6 +3601,29 @@ export type GetPoolSnapshotsQuery = {
   }>
 }
 
+export type GetPoolTokensDynamicDataQueryVariables = Exact<{
+  addresses: Array<Scalars['String']['input']> | Scalars['String']['input']
+}>
+
+export type GetPoolTokensDynamicDataQuery = {
+  __typename: 'Query'
+  staticData: Array<{
+    __typename: 'GqlTokenData'
+    id: string
+    tokenAddress: string
+    description?: string | null
+    discordUrl?: string | null
+    telegramUrl?: string | null
+    twitterUsername?: string | null
+    websiteUrl?: string | null
+  }>
+  dynamicData: Array<
+    { __typename: 'GqlTokenDynamicData' } & {
+      ' $fragmentRefs'?: { GqlTokenDynamicDataFragment: GqlTokenDynamicDataFragment }
+    }
+  >
+}
+
 export type GetPoolEventsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>
   poolId: Scalars['String']['input']
@@ -5710,6 +5734,103 @@ export const GetPoolSnapshotsDocument = {
     },
   ],
 } as unknown as DocumentNode<GetPoolSnapshotsQuery, GetPoolSnapshotsQueryVariables>
+export const GetPoolTokensDynamicDataDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetPoolTokensDynamicData' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'addresses' } },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'staticData' },
+            name: { kind: 'Name', value: 'tokenGetTokensData' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'addresses' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'addresses' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'tokenAddress' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'discordUrl' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'telegramUrl' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'twitterUsername' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'websiteUrl' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'dynamicData' },
+            name: { kind: 'Name', value: 'tokenGetTokensDynamicData' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'addresses' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'addresses' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'GqlTokenDynamicData' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'GqlTokenDynamicData' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'GqlTokenDynamicData' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'tokenAddress' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'ath' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'atl' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'marketCap' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'fdv' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'priceChange24h' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'priceChangePercent24h' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'priceChangePercent7d' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'priceChangePercent14d' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'priceChangePercent30d' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'high24h' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'low24h' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'updatedAt' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetPoolTokensDynamicDataQuery, GetPoolTokensDynamicDataQueryVariables>
 export const GetPoolEventsDocument = {
   kind: 'Document',
   definitions: [

@@ -38,6 +38,7 @@ import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps
 import { isNativeOrWrappedNative, isNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectModal'
+import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 
 export function AddLiquidityForm() {
   const {
@@ -55,12 +56,14 @@ export function AddLiquidityForm() {
     totalUSDValue,
     setWethIsEth,
   } = useAddLiquidity()
+
   const nextBtn = useRef(null)
   const { pool, totalApr } = usePool()
   const { priceImpactColor, priceImpact, setPriceImpact } = usePriceImpact()
   const { toCurrency } = useCurrency()
   const { clearCurrentFlowStep } = useCurrentFlowStep()
   const tokenSelectDisclosure = useDisclosure()
+  const { setValidationError } = useTokenInputsValidation()
 
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
@@ -92,6 +95,10 @@ export function AddLiquidityForm() {
     clearCurrentFlowStep()
   }, [])
 
+  const nativeAssets = validTokens.filter(token =>
+    isNativeOrWrappedNative(token.address as Address, token.chain)
+  )
+
   function handleTokenSelect(token: GqlToken) {
     if (isNativeAsset(token.address as Address, token.chain)) {
       setWethIsEth(true)
@@ -99,11 +106,12 @@ export function AddLiquidityForm() {
       setWethIsEth(false)
     }
     setAmountIn(token.address as Address, '')
-  }
 
-  const nativeAssets = validTokens.filter(token =>
-    isNativeOrWrappedNative(token.address as Address, token.chain)
-  )
+    // reset any validation errors for native assets
+    nativeAssets.forEach(nativeAsset => {
+      setValidationError(nativeAsset.address as Address, '')
+    })
+  }
 
   return (
     <TokenBalancesProvider tokens={validTokens}>
@@ -117,7 +125,9 @@ export function AddLiquidityForm() {
               <TransactionSettings size="sm" />
             </HStack>
             {requiresProportionalInput(pool.type) ? (
-              <ProportionalInputs />
+              <ProportionalInputs
+                tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
+              />
             ) : (
               <VStack spacing="md" w="full">
                 {tokens.map(token => {
