@@ -16,14 +16,13 @@ import {
   GqlToken,
 } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
-import { balColors, balTheme, tokens } from '@/lib/shared/services/chakra/theme'
+import { balTheme, tokens } from '@/lib/shared/services/chakra/theme'
 import { ButtonGroupOption } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { ChainSlug, slugToChainMap } from '../../pool.utils'
 import { ColorMode } from '@chakra-ui/react'
 import { useTheme } from 'next-themes'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { ArrowRight } from 'react-feather'
 
 const toolTipTheme = {
   heading: 'font-weight: bold; color: #E5D3BE',
@@ -124,7 +123,7 @@ export const getDefaultPoolChartOptions = (
                     <img src="${
                       token.token?.logoURI
                     }" style="width: 16px; height: 16px; border-radius: 50%; margin-right;letter-spacing:-0.1px" />
-                    <div style="text-align:left">                      
+                    <div style="text-align:left">
                       <span>${Number(Number(token.amount).toFixed(2)).toLocaleString()}</span>
                       <span>${token.token?.symbol}</span>
                     </div>
