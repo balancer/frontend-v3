@@ -1,10 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { HumanAmount } from '@balancer/sdk'
 import {
   Button,
   Card,
@@ -25,7 +22,7 @@ import { AddLiquidityModal } from '../AddLiquidityModal'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
-import { ProportionalInputs } from './ProportionalInputs'
+import { TokenInputs } from './TokenInputs'
 import { usePool } from '../../../usePool'
 import { requiresProportionalInput } from '../../LiquidityActionHelpers'
 import { PriceImpactAccordion } from '@/lib/shared/components/accordion/PriceImpactAccordion'
@@ -42,9 +39,7 @@ import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsVal
 
 export function AddLiquidityForm() {
   const {
-    humanAmountsIn: amountsIn,
     setHumanAmountIn: setAmountIn,
-    tokens,
     validTokens,
     priceImpactQuery,
     simulationQuery,
@@ -68,11 +63,6 @@ export function AddLiquidityForm() {
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
   }, [priceImpactQuery.data])
-
-  function currentValueFor(tokenAddress: string) {
-    const amountIn = amountsIn.find(amountIn => isSameAddress(amountIn.tokenAddress, tokenAddress))
-    return amountIn ? amountIn.humanAmount : ''
-  }
 
   const priceImpactLabel =
     priceImpact !== undefined && priceImpact !== null ? fNum('priceImpact', priceImpact) : '-'
@@ -124,34 +114,11 @@ export function AddLiquidityForm() {
               </Heading>
               <TransactionSettings size="sm" />
             </HStack>
-            {requiresProportionalInput(pool.type) ? (
-              <ProportionalInputs
-                tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
-              />
-            ) : (
-              <VStack spacing="md" w="full">
-                {tokens.map(token => {
-                  if (!token) return <div>Missing token</div>
-
-                  return (
-                    <TokenInput
-                      key={token.address}
-                      address={token.address}
-                      chain={token.chain}
-                      value={currentValueFor(token.address)}
-                      onChange={e =>
-                        setAmountIn(token.address as Address, e.currentTarget.value as HumanAmount)
-                      }
-                      toggleTokenSelect={
-                        isNativeOrWrappedNative(token.address as Address, token.chain)
-                          ? () => tokenSelectDisclosure.onOpen()
-                          : undefined
-                      }
-                    />
-                  )
-                })}
-              </VStack>
-            )}
+            <TokenInputs
+              tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
+              requiresProportionalInput={requiresProportionalInput(pool.type)}
+              totalUSDValue={totalUSDValue}
+            />
             <VStack spacing="sm" align="start" w="full">
               <PriceImpactAccordion
                 isDisabled={!priceImpactQuery.data}
