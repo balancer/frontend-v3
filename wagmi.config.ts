@@ -54,11 +54,14 @@ export default defineConfig(() => {
             name: 'BalancerV2BalancerRelayer',
             address: '0x35Cea9e57A393ac66Aaa7E25C391D52C74B5648f',
           },
-          // TODO: bring manually added abis from web3/contracts/abi
-          // {
-          //   name: 'veBAL',
-          //   address: '0xC128a9954e6c874eA3d62ce62B468bA073093F25',
-          // },
+          {
+            name: 'BalancerVeBal',
+            address: mainnetNetworkConfig.contracts.veBAL,
+          },
+          {
+            name: 'BalancerFeeDistributor',
+            address: mainnetNetworkConfig.contracts.feeDistributor,
+          },
         ],
       }),
     ],

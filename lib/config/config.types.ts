@@ -1,4 +1,4 @@
-import { Address, Chain } from 'viem'
+import { Address } from 'viem'
 import { GqlChain } from '../shared/services/api/generated/graphql'
 import { supportedChains } from '../modules/web3/Web3Provider'
 import { PoolIssue } from '../modules/pool/alerts/pool-issues/PoolIssue.type'
@@ -15,12 +15,15 @@ export interface TokensConfig {
     symbol: string
     decimals: number
   }
-  supportedWrappers?: {
+  /* We use readonly to allow using:
+    "as const satisfy NetworkConfig" in config files
+  */
+  supportedWrappers?: readonly {
     baseToken: Address
     wrappedToken: Address
     swapHandler: SupportedWrapHandler
   }[]
-  doubleApprovalRequired?: string[]
+  doubleApprovalRequired?: readonly string[]
   defaultSwapTokens?: {
     tokenIn?: Address
     tokenOut?: Address
@@ -49,7 +52,6 @@ export interface BlockExplorerConfig {
 }
 
 export type SupportedChainId = (typeof supportedChains)[number]['id']
-
 export interface NetworkConfig {
   chainId: SupportedChainId
   name: string
@@ -75,6 +77,5 @@ export interface Config {
 export interface ProjectConfig {
   projectId: 'beets' | 'balancer'
   projectName: string
-  supportedChains: readonly Chain[]
   supportedNetworks: GqlChain[]
 }

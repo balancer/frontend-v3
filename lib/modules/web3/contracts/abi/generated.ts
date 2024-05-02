@@ -1,4 +1,300 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// BalancerFeeDistributor
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xD3cf852898b21fc233251427c2DC93d3d604F3BB)
+ */
+export const balancerFeeDistributorAbi = [
+  {
+    type: 'constructor',
+    inputs: [
+      {
+        name: 'votingEscrow',
+        internalType: 'contract IVotingEscrow',
+        type: 'address',
+      },
+      { name: 'startTime', internalType: 'uint256', type: 'uint256' },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'user',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      { name: 'enabled', internalType: 'bool', type: 'bool', indexed: false },
+    ],
+    name: 'OnlyCallerOptIn',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'token',
+        internalType: 'contract IERC20',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'lastCheckpointTimestamp',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'TokenCheckpointed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'user',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'token',
+        internalType: 'contract IERC20',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'userTokenTimeCursor',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'TokensClaimed',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'checkpoint',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'token', internalType: 'contract IERC20', type: 'address' },
+    ],
+    name: 'checkpointToken',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'tokens', internalType: 'contract IERC20[]', type: 'address[]' },
+    ],
+    name: 'checkpointTokens',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'user', internalType: 'address', type: 'address' }],
+    name: 'checkpointUser',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'user', internalType: 'address', type: 'address' },
+      { name: 'token', internalType: 'contract IERC20', type: 'address' },
+    ],
+    name: 'claimToken',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'user', internalType: 'address', type: 'address' },
+      { name: 'tokens', internalType: 'contract IERC20[]', type: 'address[]' },
+    ],
+    name: 'claimTokens',
+    outputs: [{ name: '', internalType: 'uint256[]', type: 'uint256[]' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'token', internalType: 'contract IERC20', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'depositToken',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'tokens', internalType: 'contract IERC20[]', type: 'address[]' },
+      { name: 'amounts', internalType: 'uint256[]', type: 'uint256[]' },
+    ],
+    name: 'depositTokens',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'getDomainSeparator',
+    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'getNextNonce',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'getTimeCursor',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'token', internalType: 'contract IERC20', type: 'address' },
+    ],
+    name: 'getTokenLastBalance',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'token', internalType: 'contract IERC20', type: 'address' },
+    ],
+    name: 'getTokenTimeCursor',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'token', internalType: 'contract IERC20', type: 'address' },
+      { name: 'timestamp', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'getTokensDistributedInWeek',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'timestamp', internalType: 'uint256', type: 'uint256' }],
+    name: 'getTotalSupplyAtTimestamp',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'user', internalType: 'address', type: 'address' },
+      { name: 'timestamp', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'getUserBalanceAtTimestamp',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'user', internalType: 'address', type: 'address' }],
+    name: 'getUserTimeCursor',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'user', internalType: 'address', type: 'address' },
+      { name: 'token', internalType: 'contract IERC20', type: 'address' },
+    ],
+    name: 'getUserTokenTimeCursor',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'getVotingEscrow',
+    outputs: [
+      { name: '', internalType: 'contract IVotingEscrow', type: 'address' },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'user', internalType: 'address', type: 'address' }],
+    name: 'isOnlyCallerEnabled',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'enabled', internalType: 'bool', type: 'bool' }],
+    name: 'setOnlyCallerCheck',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'user', internalType: 'address', type: 'address' },
+      { name: 'enabled', internalType: 'bool', type: 'bool' },
+      { name: 'signature', internalType: 'bytes', type: 'bytes' },
+    ],
+    name: 'setOnlyCallerCheckWithSignature',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+] as const
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xD3cf852898b21fc233251427c2DC93d3d604F3BB)
+ */
+export const balancerFeeDistributorAddress = {
+  1: '0xD3cf852898b21fc233251427c2DC93d3d604F3BB',
+} as const
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xD3cf852898b21fc233251427c2DC93d3d604F3BB)
+ */
+export const balancerFeeDistributorConfig = {
+  address: balancerFeeDistributorAddress,
+  abi: balancerFeeDistributorAbi,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // BalancerMinter
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -7,7 +303,6 @@
  */
 export const balancerMinterAbi = [
   {
-    stateMutability: 'nonpayable',
     type: 'constructor',
     inputs: [
       {
@@ -21,6 +316,7 @@ export const balancerMinterAbi = [
         type: 'address',
       },
     ],
+    stateMutability: 'nonpayable',
   },
   {
     type: 'event',
@@ -63,7 +359,6 @@ export const balancerMinterAbi = [
     name: 'MinterApprovalSet',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [
       { name: 'minter', internalType: 'address', type: 'address' },
@@ -71,16 +366,16 @@ export const balancerMinterAbi = [
     ],
     name: 'allowed_to_mint_for',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getBalancerToken',
     outputs: [{ name: '', internalType: 'contract IERC20', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getBalancerTokenAdmin',
@@ -91,23 +386,25 @@ export const balancerMinterAbi = [
         type: 'address',
       },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getDomainSeparator',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getGaugeController',
-    outputs: [{ name: '', internalType: 'contract IGaugeController', type: 'address' }],
+    outputs: [
+      { name: '', internalType: 'contract IGaugeController', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [
       { name: 'minter', internalType: 'address', type: 'address' },
@@ -115,23 +412,23 @@ export const balancerMinterAbi = [
     ],
     name: 'getMinterApproval',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'user', internalType: 'address', type: 'address' }],
     name: 'getNextNonce',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [{ name: 'gauge', internalType: 'address', type: 'address' }],
     name: 'mint',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'gauge', internalType: 'address', type: 'address' },
@@ -139,16 +436,16 @@ export const balancerMinterAbi = [
     ],
     name: 'mintFor',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [{ name: 'gauges', internalType: 'address[]', type: 'address[]' }],
     name: 'mintMany',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'gauges', internalType: 'address[]', type: 'address[]' },
@@ -156,9 +453,9 @@ export const balancerMinterAbi = [
     ],
     name: 'mintManyFor',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'gauge', internalType: 'address', type: 'address' },
@@ -166,16 +463,18 @@ export const balancerMinterAbi = [
     ],
     name: 'mint_for',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
-    inputs: [{ name: 'gauges', internalType: 'address[8]', type: 'address[8]' }],
+    inputs: [
+      { name: 'gauges', internalType: 'address[8]', type: 'address[8]' },
+    ],
     name: 'mint_many',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [
       { name: 'user', internalType: 'address', type: 'address' },
@@ -183,9 +482,9 @@ export const balancerMinterAbi = [
     ],
     name: 'minted',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'minter', internalType: 'address', type: 'address' },
@@ -193,9 +492,9 @@ export const balancerMinterAbi = [
     ],
     name: 'setMinterApproval',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'minter', internalType: 'address', type: 'address' },
@@ -208,13 +507,14 @@ export const balancerMinterAbi = [
     ],
     name: 'setMinterApprovalWithSignature',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [{ name: 'minter', internalType: 'address', type: 'address' }],
     name: 'toggle_approve_mint',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
 ] as const
 
@@ -242,7 +542,6 @@ export const balancerMinterConfig = {
  */
 export const balancerV2BalancerRelayerAbi = [
   {
-    stateMutability: 'nonpayable',
     type: 'constructor',
     inputs: [
       { name: 'vault', internalType: 'contract IVault', type: 'address' },
@@ -250,50 +549,51 @@ export const balancerV2BalancerRelayerAbi = [
       { name: 'queryLibrary', internalType: 'address', type: 'address' },
       { name: 'version', internalType: 'string', type: 'string' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getLibrary',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getQueryLibrary',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getVault',
     outputs: [{ name: '', internalType: 'contract IVault', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [{ name: 'data', internalType: 'bytes[]', type: 'bytes[]' }],
     name: 'multicall',
     outputs: [{ name: 'results', internalType: 'bytes[]', type: 'bytes[]' }],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [{ name: 'data', internalType: 'bytes[]', type: 'bytes[]' }],
     name: 'vaultActionsQueryMulticall',
     outputs: [{ name: 'results', internalType: 'bytes[]', type: 'bytes[]' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'version',
     outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'view',
   },
-  { stateMutability: 'payable', type: 'receive' },
+  { type: 'receive', stateMutability: 'payable' },
 ] as const
 
 /**
@@ -320,7 +620,6 @@ export const balancerV2BalancerRelayerConfig = {
  */
 export const balancerV2BatchRelayerLibraryAbi = [
   {
-    stateMutability: 'nonpayable',
     type: 'constructor',
     inputs: [
       { name: 'vault', internalType: 'contract IVault', type: 'address' },
@@ -333,9 +632,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
       { name: 'canCallUserCheckpoint', internalType: 'bool', type: 'bool' },
       { name: 'version', internalType: 'string', type: 'string' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       { name: 'token', internalType: 'contract IERC20', type: 'address' },
@@ -343,9 +642,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'approveVault',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       { name: 'kind', internalType: 'enum IVault.SwapKind', type: 'uint8' },
@@ -392,16 +691,16 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'batchSwap',
     outputs: [{ name: 'results', internalType: 'int256[]', type: 'int256[]' }],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'canCallUserCheckpoint',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -443,9 +742,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'exitPool',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       { name: 'user', internalType: 'address', type: 'address' },
@@ -457,9 +756,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'gaugeCheckpoint',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -470,9 +769,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'gaugeClaimRewards',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -486,9 +785,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'gaugeDeposit',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       { name: 'gauges', internalType: 'address[]', type: 'address[]' },
@@ -496,9 +795,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'gaugeMint',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       { name: 'approval', internalType: 'bool', type: 'bool' },
@@ -510,9 +809,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'gaugeSetMinterApproval',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -526,23 +825,25 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'gaugeWithdraw',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getEntrypoint',
-    outputs: [{ name: '', internalType: 'contract IBalancerRelayer', type: 'address' }],
+    outputs: [
+      { name: '', internalType: 'contract IBalancerRelayer', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getVault',
     outputs: [{ name: '', internalType: 'contract IVault', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -577,9 +878,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'joinPool',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -615,16 +916,16 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'manageUserBalance',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [{ name: 'ref', internalType: 'uint256', type: 'uint256' }],
     name: 'peekChainedReferenceValue',
     outputs: [{ name: 'value', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       { name: 'relayer', internalType: 'address', type: 'address' },
@@ -633,9 +934,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'setRelayerApproval',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       { name: 'recipient', internalType: 'address', type: 'address' },
@@ -644,9 +945,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'stakeETH',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       { name: 'recipient', internalType: 'address', type: 'address' },
@@ -655,9 +956,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'stakeETHAndWrap',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -699,9 +1000,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'swap',
     outputs: [{ name: 'result', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -717,9 +1018,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'unwrapAaveStaticToken',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -734,9 +1035,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'unwrapCompoundV2',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -751,9 +1052,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'unwrapERC4626',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -768,9 +1069,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'unwrapEuler',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -785,9 +1086,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'unwrapGearbox',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -802,9 +1103,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'unwrapReaperVaultToken',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -819,9 +1120,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'unwrapShareToken',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -836,9 +1137,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'unwrapTetu',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -853,9 +1154,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'unwrapUnbuttonToken',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       { name: 'sender', internalType: 'address', type: 'address' },
@@ -865,9 +1166,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'unwrapWstETH',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -882,9 +1183,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'unwrapYearn',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       { name: 'token', internalType: 'contract IERC20Permit', type: 'address' },
@@ -897,9 +1198,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'vaultPermit',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -917,9 +1218,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'vaultPermitDAI',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -935,9 +1236,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'wrapAaveDynamicToken',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -952,9 +1253,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'wrapCompoundV2',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -969,9 +1270,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'wrapERC4626',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -987,9 +1288,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'wrapEuler',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -1004,9 +1305,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'wrapGearbox',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -1021,9 +1322,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'wrapReaperVaultToken',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -1038,9 +1339,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'wrapShareToken',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       { name: 'sender', internalType: 'address', type: 'address' },
@@ -1050,9 +1351,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'wrapStETH',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -1067,9 +1368,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'wrapTetu',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -1084,9 +1385,9 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'wrapUnbuttonToken',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -1101,6 +1402,7 @@ export const balancerV2BatchRelayerLibraryAbi = [
     ],
     name: 'wrapYearn',
     outputs: [],
+    stateMutability: 'payable',
   },
 ] as const
 
@@ -1128,7 +1430,6 @@ export const balancerV2BatchRelayerLibraryConfig = {
  */
 export const balancerV2ComposableStablePoolV5Abi = [
   {
-    stateMutability: 'nonpayable',
     type: 'constructor',
     inputs: [
       {
@@ -1189,6 +1490,7 @@ export const balancerV2ComposableStablePoolV5Abi = [
         ],
       },
     ],
+    stateMutability: 'nonpayable',
   },
   {
     type: 'event',
@@ -1262,7 +1564,9 @@ export const balancerV2ComposableStablePoolV5Abi = [
   {
     type: 'event',
     anonymous: false,
-    inputs: [{ name: 'paused', internalType: 'bool', type: 'bool', indexed: false }],
+    inputs: [
+      { name: 'paused', internalType: 'bool', type: 'bool', indexed: false },
+    ],
     name: 'PausedStateChanged',
   },
   {
@@ -1287,7 +1591,9 @@ export const balancerV2ComposableStablePoolV5Abi = [
   {
     type: 'event',
     anonymous: false,
-    inputs: [{ name: 'enabled', internalType: 'bool', type: 'bool', indexed: false }],
+    inputs: [
+      { name: 'enabled', internalType: 'bool', type: 'bool', indexed: false },
+    ],
     name: 'RecoveryModeStateChanged',
   },
   {
@@ -1363,21 +1669,20 @@ export const balancerV2ComposableStablePoolV5Abi = [
     name: 'Transfer',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'DELEGATE_PROTOCOL_SWAP_FEES_SENTINEL',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'DOMAIN_SEPARATOR',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [
       { name: 'owner', internalType: 'address', type: 'address' },
@@ -1385,9 +1690,9 @@ export const balancerV2ComposableStablePoolV5Abi = [
     ],
     name: 'allowance',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'spender', internalType: 'address', type: 'address' },
@@ -1395,23 +1700,23 @@ export const balancerV2ComposableStablePoolV5Abi = [
     ],
     name: 'approve',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
     name: 'balanceOf',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'decimals',
     outputs: [{ name: '', internalType: 'uint8', type: 'uint8' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'spender', internalType: 'address', type: 'address' },
@@ -1419,37 +1724,37 @@ export const balancerV2ComposableStablePoolV5Abi = [
     ],
     name: 'decreaseAllowance',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'disableRecoveryMode',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'enableRecoveryMode',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'selector', internalType: 'bytes4', type: 'bytes4' }],
     name: 'getActionId',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getActualSupply',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getAmplificationParameter',
@@ -1458,30 +1763,32 @@ export const balancerV2ComposableStablePoolV5Abi = [
       { name: 'isUpdating', internalType: 'bool', type: 'bool' },
       { name: 'precision', internalType: 'uint256', type: 'uint256' },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getAuthorizer',
-    outputs: [{ name: '', internalType: 'contract IAuthorizer', type: 'address' }],
+    outputs: [
+      { name: '', internalType: 'contract IAuthorizer', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getBptIndex',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getDomainSeparator',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getLastJoinExitData',
@@ -1497,30 +1804,30 @@ export const balancerV2ComposableStablePoolV5Abi = [
         type: 'uint256',
       },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'pure',
     type: 'function',
     inputs: [],
     name: 'getMinimumBpt',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'pure',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
     name: 'getNextNonce',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getOwner',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getPausedState',
@@ -1529,23 +1836,23 @@ export const balancerV2ComposableStablePoolV5Abi = [
       { name: 'pauseWindowEndTime', internalType: 'uint256', type: 'uint256' },
       { name: 'bufferPeriodEndTime', internalType: 'uint256', type: 'uint256' },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getPoolId',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'feeType', internalType: 'uint256', type: 'uint256' }],
     name: 'getProtocolFeePercentageCache',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getProtocolFeesCollector',
@@ -1556,53 +1863,59 @@ export const balancerV2ComposableStablePoolV5Abi = [
         type: 'address',
       },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getProtocolSwapFeeDelegation',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getRate',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getRateProviders',
-    outputs: [{ name: '', internalType: 'contract IRateProvider[]', type: 'address[]' }],
+    outputs: [
+      { name: '', internalType: 'contract IRateProvider[]', type: 'address[]' },
+    ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getScalingFactors',
     outputs: [{ name: '', internalType: 'uint256[]', type: 'uint256[]' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getSwapFeePercentage',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
-    inputs: [{ name: 'token', internalType: 'contract IERC20', type: 'address' }],
+    inputs: [
+      { name: 'token', internalType: 'contract IERC20', type: 'address' },
+    ],
     name: 'getTokenRate',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
-    inputs: [{ name: 'token', internalType: 'contract IERC20', type: 'address' }],
+    inputs: [
+      { name: 'token', internalType: 'contract IERC20', type: 'address' },
+    ],
     name: 'getTokenRateCache',
     outputs: [
       { name: 'rate', internalType: 'uint256', type: 'uint256' },
@@ -1610,23 +1923,23 @@ export const balancerV2ComposableStablePoolV5Abi = [
       { name: 'duration', internalType: 'uint256', type: 'uint256' },
       { name: 'expires', internalType: 'uint256', type: 'uint256' },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getVault',
     outputs: [{ name: '', internalType: 'contract IVault', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'inRecoveryMode',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'spender', internalType: 'address', type: 'address' },
@@ -1634,37 +1947,39 @@ export const balancerV2ComposableStablePoolV5Abi = [
     ],
     name: 'increaseAllowance',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'isExemptFromYieldProtocolFee',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
-    inputs: [{ name: 'token', internalType: 'contract IERC20', type: 'address' }],
+    inputs: [
+      { name: 'token', internalType: 'contract IERC20', type: 'address' },
+    ],
     name: 'isTokenExemptFromYieldProtocolFee',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'name',
     outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'owner', internalType: 'address', type: 'address' }],
     name: 'nonces',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -1684,9 +1999,9 @@ export const balancerV2ComposableStablePoolV5Abi = [
       { name: '', internalType: 'uint256[]', type: 'uint256[]' },
       { name: '', internalType: 'uint256[]', type: 'uint256[]' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -1706,9 +2021,9 @@ export const balancerV2ComposableStablePoolV5Abi = [
       { name: '', internalType: 'uint256[]', type: 'uint256[]' },
       { name: '', internalType: 'uint256[]', type: 'uint256[]' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       {
@@ -1737,16 +2052,16 @@ export const balancerV2ComposableStablePoolV5Abi = [
     ],
     name: 'onSwap',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'pause',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'owner', internalType: 'address', type: 'address' },
@@ -1759,9 +2074,9 @@ export const balancerV2ComposableStablePoolV5Abi = [
     ],
     name: 'permit',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -1781,9 +2096,9 @@ export const balancerV2ComposableStablePoolV5Abi = [
       { name: 'bptIn', internalType: 'uint256', type: 'uint256' },
       { name: 'amountsOut', internalType: 'uint256[]', type: 'uint256[]' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -1803,9 +2118,9 @@ export const balancerV2ComposableStablePoolV5Abi = [
       { name: 'bptOut', internalType: 'uint256', type: 'uint256' },
       { name: 'amountsIn', internalType: 'uint256[]', type: 'uint256[]' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'token', internalType: 'contract IERC20', type: 'address' },
@@ -1813,16 +2128,18 @@ export const balancerV2ComposableStablePoolV5Abi = [
     ],
     name: 'setAssetManagerPoolConfig',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
-    inputs: [{ name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256' }],
+    inputs: [
+      { name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256' },
+    ],
     name: 'setSwapFeePercentage',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'token', internalType: 'contract IERC20', type: 'address' },
@@ -1830,9 +2147,9 @@ export const balancerV2ComposableStablePoolV5Abi = [
     ],
     name: 'setTokenRateCacheDuration',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'rawEndValue', internalType: 'uint256', type: 'uint256' },
@@ -1840,30 +2157,30 @@ export const balancerV2ComposableStablePoolV5Abi = [
     ],
     name: 'startAmplificationParameterUpdate',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'stopAmplificationParameterUpdate',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'symbol',
     outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'totalSupply',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'recipient', internalType: 'address', type: 'address' },
@@ -1871,9 +2188,9 @@ export const balancerV2ComposableStablePoolV5Abi = [
     ],
     name: 'transfer',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'sender', internalType: 'address', type: 'address' },
@@ -1882,34 +2199,37 @@ export const balancerV2ComposableStablePoolV5Abi = [
     ],
     name: 'transferFrom',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'unpause',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'updateProtocolFeePercentageCache',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
-    inputs: [{ name: 'token', internalType: 'contract IERC20', type: 'address' }],
+    inputs: [
+      { name: 'token', internalType: 'contract IERC20', type: 'address' },
+    ],
     name: 'updateTokenRateCache',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'version',
     outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'view',
   },
 ] as const
 
@@ -1937,7 +2257,6 @@ export const balancerV2ComposableStablePoolV5Config = {
  */
 export const balancerV2Erc4626LinearPoolV3Abi = [
   {
-    stateMutability: 'nonpayable',
     type: 'constructor',
     inputs: [
       {
@@ -1980,6 +2299,7 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
         ],
       },
     ],
+    stateMutability: 'nonpayable',
   },
   {
     type: 'event',
@@ -2009,13 +2329,17 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
   {
     type: 'event',
     anonymous: false,
-    inputs: [{ name: 'paused', internalType: 'bool', type: 'bool', indexed: false }],
+    inputs: [
+      { name: 'paused', internalType: 'bool', type: 'bool', indexed: false },
+    ],
     name: 'PausedStateChanged',
   },
   {
     type: 'event',
     anonymous: false,
-    inputs: [{ name: 'enabled', internalType: 'bool', type: 'bool', indexed: false }],
+    inputs: [
+      { name: 'enabled', internalType: 'bool', type: 'bool', indexed: false },
+    ],
     name: 'RecoveryModeStateChanged',
   },
   {
@@ -2072,14 +2396,13 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
     name: 'Transfer',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'DOMAIN_SEPARATOR',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [
       { name: 'owner', internalType: 'address', type: 'address' },
@@ -2087,9 +2410,9 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
     ],
     name: 'allowance',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'spender', internalType: 'address', type: 'address' },
@@ -2097,23 +2420,23 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
     ],
     name: 'approve',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
     name: 'balanceOf',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'decimals',
     outputs: [{ name: '', internalType: 'uint8', type: 'uint8' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'spender', internalType: 'address', type: 'address' },
@@ -2121,79 +2444,81 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
     ],
     name: 'decreaseAllowance',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'disableRecoveryMode',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'enableRecoveryMode',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'selector', internalType: 'bytes4', type: 'bytes4' }],
     name: 'getActionId',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getAuthorizer',
-    outputs: [{ name: '', internalType: 'contract IAuthorizer', type: 'address' }],
+    outputs: [
+      { name: '', internalType: 'contract IAuthorizer', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'pure',
     type: 'function',
     inputs: [],
     name: 'getBptIndex',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'pure',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getDomainSeparator',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getMainIndex',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getMainToken',
     outputs: [{ name: '', internalType: 'contract IERC20', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
     name: 'getNextNonce',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getOwner',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getPausedState',
@@ -2202,16 +2527,16 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
       { name: 'pauseWindowEndTime', internalType: 'uint256', type: 'uint256' },
       { name: 'bufferPeriodEndTime', internalType: 'uint256', type: 'uint256' },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getPoolId',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getProtocolFeesCollector',
@@ -2222,30 +2547,30 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
         type: 'address',
       },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getRate',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getScalingFactors',
     outputs: [{ name: '', internalType: 'uint256[]', type: 'uint256[]' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getSwapFeePercentage',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getTargets',
@@ -2253,51 +2578,51 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
       { name: 'lowerTarget', internalType: 'uint256', type: 'uint256' },
       { name: 'upperTarget', internalType: 'uint256', type: 'uint256' },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getVault',
     outputs: [{ name: '', internalType: 'contract IVault', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getVirtualSupply',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getWrappedIndex',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getWrappedToken',
     outputs: [{ name: '', internalType: 'contract IERC20', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getWrappedTokenRate',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'inRecoveryMode',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'spender', internalType: 'address', type: 'address' },
@@ -2305,30 +2630,30 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
     ],
     name: 'increaseAllowance',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'initialize',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'name',
     outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'owner', internalType: 'address', type: 'address' }],
     name: 'nonces',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -2344,9 +2669,9 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
       { name: 'amountsOut', internalType: 'uint256[]', type: 'uint256[]' },
       { name: 'dueProtocolFees', internalType: 'uint256[]', type: 'uint256[]' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -2362,9 +2687,9 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
       { name: 'amountsIn', internalType: 'uint256[]', type: 'uint256[]' },
       { name: 'dueProtocolFees', internalType: 'uint256[]', type: 'uint256[]' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       {
@@ -2393,9 +2718,9 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
     ],
     name: 'onSwap',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       {
@@ -2423,16 +2748,16 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
     ],
     name: 'onSwap',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'pause',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'owner', internalType: 'address', type: 'address' },
@@ -2445,9 +2770,9 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
     ],
     name: 'permit',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '', internalType: 'bytes32', type: 'bytes32' },
@@ -2463,9 +2788,9 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
       { name: 'bptIn', internalType: 'uint256', type: 'uint256' },
       { name: 'amountsOut', internalType: 'uint256[]', type: 'uint256[]' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '', internalType: 'bytes32', type: 'bytes32' },
@@ -2481,16 +2806,18 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
       { name: 'bptOut', internalType: 'uint256', type: 'uint256' },
       { name: 'amountsIn', internalType: 'uint256[]', type: 'uint256[]' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
-    inputs: [{ name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256' }],
+    inputs: [
+      { name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256' },
+    ],
     name: 'setSwapFeePercentage',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'newLowerTarget', internalType: 'uint256', type: 'uint256' },
@@ -2498,23 +2825,23 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
     ],
     name: 'setTargets',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'symbol',
     outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'totalSupply',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'recipient', internalType: 'address', type: 'address' },
@@ -2522,9 +2849,9 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
     ],
     name: 'transfer',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'sender', internalType: 'address', type: 'address' },
@@ -2533,20 +2860,21 @@ export const balancerV2Erc4626LinearPoolV3Abi = [
     ],
     name: 'transferFrom',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'unpause',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'version',
     outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'view',
   },
 ] as const
 
@@ -2635,27 +2963,28 @@ export const balancerV2GaugeV5Abi = [
   {
     type: 'event',
     anonymous: false,
-    inputs: [{ name: 'new_relative_weight_cap', type: 'uint256', indexed: false }],
+    inputs: [
+      { name: 'new_relative_weight_cap', type: 'uint256', indexed: false },
+    ],
     name: 'RelativeWeightCapChanged',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'constructor',
     inputs: [
       { name: 'minter', type: 'address' },
       { name: 'veBoostProxy', type: 'address' },
       { name: 'authorizerAdaptor', type: 'address' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [{ name: '_value', type: 'uint256' }],
     name: 'deposit',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '_value', type: 'uint256' },
@@ -2663,9 +2992,9 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'deposit',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '_value', type: 'uint256' },
@@ -2674,16 +3003,16 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'deposit',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [{ name: '_value', type: 'uint256' }],
     name: 'withdraw',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '_value', type: 'uint256' },
@@ -2691,23 +3020,23 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'withdraw',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'claim_rewards',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [{ name: '_addr', type: 'address' }],
     name: 'claim_rewards',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '_addr', type: 'address' },
@@ -2715,9 +3044,9 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'claim_rewards',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '_from', type: 'address' },
@@ -2726,9 +3055,9 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'transferFrom',
     outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '_to', type: 'address' },
@@ -2736,9 +3065,9 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'transfer',
     outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '_spender', type: 'address' },
@@ -2746,9 +3075,9 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'approve',
     outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '_owner', type: 'address' },
@@ -2761,9 +3090,9 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'permit',
     outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '_spender', type: 'address' },
@@ -2771,9 +3100,9 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'increaseAllowance',
     outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '_spender', type: 'address' },
@@ -2781,30 +3110,30 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'decreaseAllowance',
     outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [{ name: 'addr', type: 'address' }],
     name: 'user_checkpoint',
     outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [{ name: '_receiver', type: 'address' }],
     name: 'set_rewards_receiver',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [{ name: 'addr', type: 'address' }],
     name: 'kick',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '_reward_token', type: 'address' },
@@ -2812,9 +3141,9 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'deposit_reward_token',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '_reward_token', type: 'address' },
@@ -2822,9 +3151,9 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'add_reward',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '_reward_token', type: 'address' },
@@ -2832,23 +3161,23 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'set_reward_distributor',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'killGauge',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'unkillGauge',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [
       { name: '_addr', type: 'address' },
@@ -2856,9 +3185,9 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'claimed_reward',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [
       { name: '_user', type: 'address' },
@@ -2866,51 +3195,51 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'claimable_reward',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [{ name: 'addr', type: 'address' }],
     name: 'claimable_tokens',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'integrate_checkpoint',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'future_epoch_time',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'inflation_rate',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'decimals',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'version',
     outputs: [{ name: '', type: 'string' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [
       { name: 'owner', type: 'address' },
@@ -2918,9 +3247,9 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'allowance',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: '_lp_token', type: 'address' },
@@ -2928,100 +3257,100 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'initialize',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [{ name: 'relative_weight_cap', type: 'uint256' }],
     name: 'setRelativeWeightCap',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getRelativeWeightCap',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'time', type: 'uint256' }],
     name: 'getCappedRelativeWeight',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'pure',
     type: 'function',
     inputs: [],
     name: 'getMaxRelativeWeightCap',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'pure',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'arg0', type: 'address' }],
     name: 'balanceOf',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'totalSupply',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'name',
     outputs: [{ name: '', type: 'string' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'symbol',
     outputs: [{ name: '', type: 'string' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'DOMAIN_SEPARATOR',
     outputs: [{ name: '', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'arg0', type: 'address' }],
     name: 'nonces',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'lp_token',
     outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'is_killed',
     outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'reward_count',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'arg0', type: 'address' }],
     name: 'reward_data',
@@ -3039,16 +3368,16 @@ export const balancerV2GaugeV5Abi = [
         ],
       },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'arg0', type: 'address' }],
     name: 'rewards_receiver',
     outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [
       { name: 'arg0', type: 'address' },
@@ -3056,69 +3385,70 @@ export const balancerV2GaugeV5Abi = [
     ],
     name: 'reward_integral_for',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'arg0', type: 'address' }],
     name: 'working_balances',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'working_supply',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'arg0', type: 'address' }],
     name: 'integrate_inv_supply_of',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'arg0', type: 'address' }],
     name: 'integrate_checkpoint_of',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'arg0', type: 'address' }],
     name: 'integrate_fraction',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'period',
     outputs: [{ name: '', type: 'int128' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'arg0', type: 'uint256' }],
     name: 'reward_tokens',
     outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'arg0', type: 'uint256' }],
     name: 'period_timestamp',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'arg0', type: 'uint256' }],
     name: 'integrate_inv_supply',
     outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
   },
 ] as const
 
@@ -3146,7 +3476,6 @@ export const balancerV2GaugeV5Config = {
  */
 export const balancerV2VaultAbi = [
   {
-    stateMutability: 'nonpayable',
     type: 'constructor',
     inputs: [
       {
@@ -3162,6 +3491,7 @@ export const balancerV2VaultAbi = [
         type: 'uint256',
       },
     ],
+    stateMutability: 'nonpayable',
   },
   {
     type: 'event',
@@ -3256,7 +3586,9 @@ export const balancerV2VaultAbi = [
   {
     type: 'event',
     anonymous: false,
-    inputs: [{ name: 'paused', internalType: 'bool', type: 'bool', indexed: false }],
+    inputs: [
+      { name: 'paused', internalType: 'bool', type: 'bool', indexed: false },
+    ],
     name: 'PausedStateChanged',
   },
   {
@@ -3460,14 +3792,13 @@ export const balancerV2VaultAbi = [
     name: 'TokensRegistered',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'WETH',
     outputs: [{ name: '', internalType: 'contract IWETH', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       { name: 'kind', internalType: 'enum IVault.SwapKind', type: 'uint8' },
@@ -3503,10 +3834,12 @@ export const balancerV2VaultAbi = [
       { name: 'deadline', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'batchSwap',
-    outputs: [{ name: 'assetDeltas', internalType: 'int256[]', type: 'int256[]' }],
+    outputs: [
+      { name: 'assetDeltas', internalType: 'int256[]', type: 'int256[]' },
+    ],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -3514,9 +3847,9 @@ export const balancerV2VaultAbi = [
     ],
     name: 'deregisterTokens',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -3544,9 +3877,9 @@ export const balancerV2VaultAbi = [
     ],
     name: 'exitPool',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       {
@@ -3560,47 +3893,51 @@ export const balancerV2VaultAbi = [
     ],
     name: 'flashLoan',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'selector', internalType: 'bytes4', type: 'bytes4' }],
     name: 'getActionId',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getAuthorizer',
-    outputs: [{ name: '', internalType: 'contract IAuthorizer', type: 'address' }],
+    outputs: [
+      { name: '', internalType: 'contract IAuthorizer', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getDomainSeparator',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [
       { name: 'user', internalType: 'address', type: 'address' },
       { name: 'tokens', internalType: 'contract IERC20[]', type: 'address[]' },
     ],
     name: 'getInternalBalance',
-    outputs: [{ name: 'balances', internalType: 'uint256[]', type: 'uint256[]' }],
+    outputs: [
+      { name: 'balances', internalType: 'uint256[]', type: 'uint256[]' },
+    ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'user', internalType: 'address', type: 'address' }],
     name: 'getNextNonce',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getPausedState',
@@ -3609,9 +3946,9 @@ export const balancerV2VaultAbi = [
       { name: 'pauseWindowEndTime', internalType: 'uint256', type: 'uint256' },
       { name: 'bufferPeriodEndTime', internalType: 'uint256', type: 'uint256' },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'poolId', internalType: 'bytes32', type: 'bytes32' }],
     name: 'getPool',
@@ -3623,9 +3960,9 @@ export const balancerV2VaultAbi = [
         type: 'uint8',
       },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -3638,9 +3975,9 @@ export const balancerV2VaultAbi = [
       { name: 'lastChangeBlock', internalType: 'uint256', type: 'uint256' },
       { name: 'assetManager', internalType: 'address', type: 'address' },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'poolId', internalType: 'bytes32', type: 'bytes32' }],
     name: 'getPoolTokens',
@@ -3649,9 +3986,9 @@ export const balancerV2VaultAbi = [
       { name: 'balances', internalType: 'uint256[]', type: 'uint256[]' },
       { name: 'lastChangeBlock', internalType: 'uint256', type: 'uint256' },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getProtocolFeesCollector',
@@ -3662,9 +3999,9 @@ export const balancerV2VaultAbi = [
         type: 'address',
       },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [
       { name: 'user', internalType: 'address', type: 'address' },
@@ -3672,9 +4009,9 @@ export const balancerV2VaultAbi = [
     ],
     name: 'hasApprovedRelayer',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -3702,9 +4039,9 @@ export const balancerV2VaultAbi = [
     ],
     name: 'joinPool',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       {
@@ -3725,9 +4062,9 @@ export const balancerV2VaultAbi = [
     ],
     name: 'managePoolBalance',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -3753,9 +4090,9 @@ export const balancerV2VaultAbi = [
     ],
     name: 'manageUserBalance',
     outputs: [],
+    stateMutability: 'payable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'kind', internalType: 'enum IVault.SwapKind', type: 'uint8' },
@@ -3790,9 +4127,9 @@ export const balancerV2VaultAbi = [
     ],
     name: 'queryBatchSwap',
     outputs: [{ name: '', internalType: 'int256[]', type: 'int256[]' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       {
@@ -3803,9 +4140,9 @@ export const balancerV2VaultAbi = [
     ],
     name: 'registerPool',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -3814,9 +4151,9 @@ export const balancerV2VaultAbi = [
     ],
     name: 'registerTokens',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       {
@@ -3827,16 +4164,16 @@ export const balancerV2VaultAbi = [
     ],
     name: 'setAuthorizer',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [{ name: 'paused', internalType: 'bool', type: 'bool' }],
     name: 'setPaused',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'sender', internalType: 'address', type: 'address' },
@@ -3845,9 +4182,9 @@ export const balancerV2VaultAbi = [
     ],
     name: 'setRelayerApproval',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'payable',
     type: 'function',
     inputs: [
       {
@@ -3886,9 +4223,12 @@ export const balancerV2VaultAbi = [
       { name: 'deadline', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'swap',
-    outputs: [{ name: 'amountCalculated', internalType: 'uint256', type: 'uint256' }],
+    outputs: [
+      { name: 'amountCalculated', internalType: 'uint256', type: 'uint256' },
+    ],
+    stateMutability: 'payable',
   },
-  { stateMutability: 'payable', type: 'receive' },
+  { type: 'receive', stateMutability: 'payable' },
 ] as const
 
 /**
@@ -3915,7 +4255,6 @@ export const balancerV2VaultConfig = {
  */
 export const balancerV2WeightedPoolV4Abi = [
   {
-    stateMutability: 'nonpayable',
     type: 'constructor',
     inputs: [
       {
@@ -3967,6 +4306,7 @@ export const balancerV2WeightedPoolV4Abi = [
       { name: 'owner', internalType: 'address', type: 'address' },
       { name: 'version', internalType: 'string', type: 'string' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
     type: 'event',
@@ -3996,7 +4336,9 @@ export const balancerV2WeightedPoolV4Abi = [
   {
     type: 'event',
     anonymous: false,
-    inputs: [{ name: 'paused', internalType: 'bool', type: 'bool', indexed: false }],
+    inputs: [
+      { name: 'paused', internalType: 'bool', type: 'bool', indexed: false },
+    ],
     name: 'PausedStateChanged',
   },
   {
@@ -4021,7 +4363,9 @@ export const balancerV2WeightedPoolV4Abi = [
   {
     type: 'event',
     anonymous: false,
-    inputs: [{ name: 'enabled', internalType: 'bool', type: 'bool', indexed: false }],
+    inputs: [
+      { name: 'enabled', internalType: 'bool', type: 'bool', indexed: false },
+    ],
     name: 'RecoveryModeStateChanged',
   },
   {
@@ -4053,21 +4397,20 @@ export const balancerV2WeightedPoolV4Abi = [
     name: 'Transfer',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'DELEGATE_PROTOCOL_SWAP_FEES_SENTINEL',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'DOMAIN_SEPARATOR',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [
       { name: 'owner', internalType: 'address', type: 'address' },
@@ -4075,9 +4418,9 @@ export const balancerV2WeightedPoolV4Abi = [
     ],
     name: 'allowance',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'spender', internalType: 'address', type: 'address' },
@@ -4085,23 +4428,23 @@ export const balancerV2WeightedPoolV4Abi = [
     ],
     name: 'approve',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
     name: 'balanceOf',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'decimals',
     outputs: [{ name: '', internalType: 'uint8', type: 'uint8' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'spender', internalType: 'address', type: 'address' },
@@ -4109,93 +4452,95 @@ export const balancerV2WeightedPoolV4Abi = [
     ],
     name: 'decreaseAllowance',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'disableRecoveryMode',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'enableRecoveryMode',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getATHRateProduct',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'selector', internalType: 'bytes4', type: 'bytes4' }],
     name: 'getActionId',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getActualSupply',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getAuthorizer',
-    outputs: [{ name: '', internalType: 'contract IAuthorizer', type: 'address' }],
+    outputs: [
+      { name: '', internalType: 'contract IAuthorizer', type: 'address' },
+    ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getDomainSeparator',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getInvariant',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getLastPostJoinExitInvariant',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
     name: 'getNextNonce',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getNormalizedWeights',
     outputs: [{ name: '', internalType: 'uint256[]', type: 'uint256[]' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getOwner',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getPausedState',
@@ -4204,23 +4549,23 @@ export const balancerV2WeightedPoolV4Abi = [
       { name: 'pauseWindowEndTime', internalType: 'uint256', type: 'uint256' },
       { name: 'bufferPeriodEndTime', internalType: 'uint256', type: 'uint256' },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getPoolId',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'feeType', internalType: 'uint256', type: 'uint256' }],
     name: 'getProtocolFeePercentageCache',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getProtocolFeesCollector',
@@ -4231,51 +4576,53 @@ export const balancerV2WeightedPoolV4Abi = [
         type: 'address',
       },
     ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getProtocolSwapFeeDelegation',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getRateProviders',
-    outputs: [{ name: '', internalType: 'contract IRateProvider[]', type: 'address[]' }],
+    outputs: [
+      { name: '', internalType: 'contract IRateProvider[]', type: 'address[]' },
+    ],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getScalingFactors',
     outputs: [{ name: '', internalType: 'uint256[]', type: 'uint256[]' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getSwapFeePercentage',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'getVault',
     outputs: [{ name: '', internalType: 'contract IVault', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'inRecoveryMode',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'spender', internalType: 'address', type: 'address' },
@@ -4283,23 +4630,23 @@ export const balancerV2WeightedPoolV4Abi = [
     ],
     name: 'increaseAllowance',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'name',
     outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'owner', internalType: 'address', type: 'address' }],
     name: 'nonces',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -4319,9 +4666,9 @@ export const balancerV2WeightedPoolV4Abi = [
       { name: '', internalType: 'uint256[]', type: 'uint256[]' },
       { name: '', internalType: 'uint256[]', type: 'uint256[]' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -4341,9 +4688,9 @@ export const balancerV2WeightedPoolV4Abi = [
       { name: '', internalType: 'uint256[]', type: 'uint256[]' },
       { name: '', internalType: 'uint256[]', type: 'uint256[]' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       {
@@ -4371,16 +4718,16 @@ export const balancerV2WeightedPoolV4Abi = [
     ],
     name: 'onSwap',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'pause',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'owner', internalType: 'address', type: 'address' },
@@ -4393,9 +4740,9 @@ export const balancerV2WeightedPoolV4Abi = [
     ],
     name: 'permit',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -4415,9 +4762,9 @@ export const balancerV2WeightedPoolV4Abi = [
       { name: 'bptIn', internalType: 'uint256', type: 'uint256' },
       { name: 'amountsOut', internalType: 'uint256[]', type: 'uint256[]' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
@@ -4437,9 +4784,9 @@ export const balancerV2WeightedPoolV4Abi = [
       { name: 'bptOut', internalType: 'uint256', type: 'uint256' },
       { name: 'amountsIn', internalType: 'uint256[]', type: 'uint256[]' },
     ],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'token', internalType: 'contract IERC20', type: 'address' },
@@ -4447,30 +4794,32 @@ export const balancerV2WeightedPoolV4Abi = [
     ],
     name: 'setAssetManagerPoolConfig',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
-    inputs: [{ name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256' }],
+    inputs: [
+      { name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256' },
+    ],
     name: 'setSwapFeePercentage',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'symbol',
     outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'totalSupply',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'recipient', internalType: 'address', type: 'address' },
@@ -4478,9 +4827,9 @@ export const balancerV2WeightedPoolV4Abi = [
     ],
     name: 'transfer',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'sender', internalType: 'address', type: 'address' },
@@ -4489,27 +4838,28 @@ export const balancerV2WeightedPoolV4Abi = [
     ],
     name: 'transferFrom',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'unpause',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [],
     name: 'updateProtocolFeePercentageCache',
     outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'version',
     outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'view',
   },
 ] as const
 
@@ -4526,6 +4876,338 @@ export const balancerV2WeightedPoolV4Address = {
 export const balancerV2WeightedPoolV4Config = {
   address: balancerV2WeightedPoolV4Address,
   abi: balancerV2WeightedPoolV4Abi,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// BalancerVeBal
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xC128a9954e6c874eA3d62ce62B468bA073093F25)
+ */
+export const balancerVeBalAbi = [
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'provider', type: 'address', indexed: true },
+      { name: 'value', type: 'uint256', indexed: false },
+      { name: 'locktime', type: 'uint256', indexed: true },
+      { name: 'type', type: 'int128', indexed: false },
+      { name: 'ts', type: 'uint256', indexed: false },
+    ],
+    name: 'Deposit',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'provider', type: 'address', indexed: true },
+      { name: 'value', type: 'uint256', indexed: false },
+      { name: 'ts', type: 'uint256', indexed: false },
+    ],
+    name: 'Withdraw',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'prevSupply', type: 'uint256', indexed: false },
+      { name: 'supply', type: 'uint256', indexed: false },
+    ],
+    name: 'Supply',
+  },
+  {
+    type: 'constructor',
+    inputs: [
+      { name: 'token_addr', type: 'address' },
+      { name: '_name', type: 'string' },
+      { name: '_symbol', type: 'string' },
+      { name: '_authorizer_adaptor', type: 'address' },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'token',
+    outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'name',
+    outputs: [{ name: '', type: 'string' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'symbol',
+    outputs: [{ name: '', type: 'string' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'decimals',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'admin',
+    outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'addr', type: 'address' }],
+    name: 'commit_smart_wallet_checker',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'apply_smart_wallet_checker',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'addr', type: 'address' }],
+    name: 'get_last_user_slope',
+    outputs: [{ name: '', type: 'int128' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: '_addr', type: 'address' },
+      { name: '_idx', type: 'uint256' },
+    ],
+    name: 'user_point_history__ts',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: '_addr', type: 'address' }],
+    name: 'locked__end',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'checkpoint',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: '_addr', type: 'address' },
+      { name: '_value', type: 'uint256' },
+    ],
+    name: 'deposit_for',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: '_value', type: 'uint256' },
+      { name: '_unlock_time', type: 'uint256' },
+    ],
+    name: 'create_lock',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: '_value', type: 'uint256' }],
+    name: 'increase_amount',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: '_unlock_time', type: 'uint256' }],
+    name: 'increase_unlock_time',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'withdraw',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'addr', type: 'address' }],
+    name: 'balanceOf',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'addr', type: 'address' },
+      { name: '_t', type: 'uint256' },
+    ],
+    name: 'balanceOf',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'addr', type: 'address' },
+      { name: '_block', type: 'uint256' },
+    ],
+    name: 'balanceOfAt',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'totalSupply',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 't', type: 'uint256' }],
+    name: 'totalSupply',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: '_block', type: 'uint256' }],
+    name: 'totalSupplyAt',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'supply',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'arg0', type: 'address' }],
+    name: 'locked',
+    outputs: [
+      {
+        name: '',
+        type: 'tuple',
+        components: [
+          { name: 'amount', type: 'int128' },
+          { name: 'end', type: 'uint256' },
+        ],
+      },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'epoch',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'arg0', type: 'uint256' }],
+    name: 'point_history',
+    outputs: [
+      {
+        name: '',
+        type: 'tuple',
+        components: [
+          { name: 'bias', type: 'int128' },
+          { name: 'slope', type: 'int128' },
+          { name: 'ts', type: 'uint256' },
+          { name: 'blk', type: 'uint256' },
+        ],
+      },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'arg0', type: 'address' },
+      { name: 'arg1', type: 'uint256' },
+    ],
+    name: 'user_point_history',
+    outputs: [
+      {
+        name: '',
+        type: 'tuple',
+        components: [
+          { name: 'bias', type: 'int128' },
+          { name: 'slope', type: 'int128' },
+          { name: 'ts', type: 'uint256' },
+          { name: 'blk', type: 'uint256' },
+        ],
+      },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'arg0', type: 'address' }],
+    name: 'user_point_epoch',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'arg0', type: 'uint256' }],
+    name: 'slope_changes',
+    outputs: [{ name: '', type: 'int128' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'future_smart_wallet_checker',
+    outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'smart_wallet_checker',
+    outputs: [{ name: '', type: 'address' }],
+    stateMutability: 'view',
+  },
+] as const
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xC128a9954e6c874eA3d62ce62B468bA073093F25)
+ */
+export const balancerVeBalAddress = {
+  1: '0xC128a9954e6c874eA3d62ce62B468bA073093F25',
+} as const
+
+/**
+ * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xC128a9954e6c874eA3d62ce62B468bA073093F25)
+ */
+export const balancerVeBalConfig = {
+  address: balancerVeBalAddress,
+  abi: balancerVeBalAbi,
 } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -4552,7 +5234,6 @@ export const erc20Abi = [
     name: 'Transfer',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [
       { name: 'owner', type: 'address' },
@@ -4560,9 +5241,9 @@ export const erc20Abi = [
     ],
     name: 'allowance',
     outputs: [{ type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'spender', type: 'address' },
@@ -4570,44 +5251,44 @@ export const erc20Abi = [
     ],
     name: 'approve',
     outputs: [{ type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'account', type: 'address' }],
     name: 'balanceOf',
     outputs: [{ type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'decimals',
     outputs: [{ type: 'uint8' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'name',
     outputs: [{ type: 'string' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'symbol',
     outputs: [{ type: 'string' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'totalSupply',
     outputs: [{ type: 'uint256' }],
+    stateMutability: 'view',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'recipient', type: 'address' },
@@ -4615,9 +5296,9 @@ export const erc20Abi = [
     ],
     name: 'transfer',
     outputs: [{ type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
   {
-    stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
       { name: 'sender', type: 'address' },
@@ -4626,5 +5307,6 @@ export const erc20Abi = [
     ],
     name: 'transferFrom',
     outputs: [{ type: 'bool' }],
+    stateMutability: 'nonpayable',
   },
 ] as const

@@ -1,13 +1,13 @@
-import { FeeDistributorAbi } from './abi/FeeDistributorAbi'
 import { FeeDistributorStaticAbi } from './abi/FeeDistributorStaticAbi'
 import { LiquidityGaugeAbi } from './abi/LiquidityGaugeAbi'
 import {
+  balancerFeeDistributorAbi,
   balancerMinterAbi,
   balancerV2BalancerRelayerAbi,
   balancerV2GaugeV5Abi,
   balancerV2VaultAbi,
+  balancerVeBalAbi,
 } from './abi/generated'
-import { VeBALAbi } from './abi/veBalAbi'
 import { VeDelegationProxyAbi } from './abi/veDelegationProxy'
 import { VeDelegationProxyL2Abi } from './abi/veDelegationProxyL2'
 
@@ -17,10 +17,10 @@ export const AbiMap = {
   'balancer.minter': balancerMinterAbi,
   'balancer.relayerV6': balancerV2BalancerRelayerAbi,
   'balancer.feeDistributorStatic': FeeDistributorStaticAbi,
-  'balancer.feeDistributor': FeeDistributorAbi,
+  'balancer.feeDistributor': balancerFeeDistributorAbi,
   'balancer.veDelegationProxy': VeDelegationProxyAbi,
   'balancer.veDelegationProxyL2': VeDelegationProxyL2Abi,
-  'balancer.veBAL': VeBALAbi,
+  'balancer.veBAL': balancerVeBalAbi,
   'balancer.LiquidityGauge': LiquidityGaugeAbi,
 }
 
