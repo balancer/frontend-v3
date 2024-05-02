@@ -68,7 +68,7 @@ export function useVebalLockInfo() {
   })
 
   const mainnetLockedInfo = useMemo(() => {
-    const mainnetResults = results[mainnetNetworkConfig.chain]
+    const mainnetResults = results[mainnetNetworkConfig.chainId]
 
     if (mainnetResults.status === 'error') {
       // handle error
