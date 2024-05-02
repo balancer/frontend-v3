@@ -38,6 +38,16 @@ import { BlockedAddressModal } from './BlockedAddressModal'
 import { AcceptPoliciesModal } from './AcceptPoliciesModal'
 import { UserSettingsProvider } from '../user/settings/useUserSettings'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { connectorsForWallets } from '@rainbow-me/rainbowkit'
+import {
+  injectedWallet,
+  metaMaskWallet,
+  rabbyWallet,
+  rainbowWallet,
+  walletConnectWallet,
+  safeWallet,
+  coinbaseWallet,
+} from '@rainbow-me/rainbowkit/wallets'
 
 function buildChain(viemChain: Chain, rpcOverride?: string): Chain {
   const { rpcUrl } = getNetworkConfig(viemChain.id)
@@ -77,7 +87,7 @@ const gqlChainToWagmiChainMap: Record<GqlChain, Chain> = {
 
 // Helpful for injecting fork RPCs for specific chains.
 const rpcOverrides: Record<GqlChain, string | undefined> = {
-  [GqlChain.Mainnet]: undefined,
+  [GqlChain.Mainnet]: 'https://rpc.tenderly.co/fork/dd368c4f-5b59-43f7-a17f-6b42b7a1369f',
   [GqlChain.Arbitrum]: undefined,
   [GqlChain.Base]: undefined,
   [GqlChain.Avalanche]: undefined,
@@ -101,11 +111,23 @@ export function getDefaultRpcUrl(chainId: SupportedChainId) {
   return chainsByKey[chainId].rpcUrls.default.http[0]
 }
 
-export const { connectors } = getDefaultWallets({
-  appName: getProjectConfig().projectName,
-  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID as string,
-  chains,
-})
+const appName = getProjectConfig().projectName
+const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || ''
+
+const connectors = connectorsForWallets([
+  {
+    groupName: 'Recommended',
+    wallets: [
+      injectedWallet({ chains }),
+      metaMaskWallet({ chains, projectId }),
+      rabbyWallet({ chains }),
+      rainbowWallet({ chains, projectId }),
+      safeWallet({ chains }),
+      coinbaseWallet({ chains, appName }),
+      walletConnectWallet({ chains, projectId }),
+    ],
+  },
+])
 
 export function createWagmiConfig() {
   return createConfig({
