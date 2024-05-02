@@ -12,7 +12,7 @@ import BigNumber from 'bignumber.js'
 import { Address } from 'viem'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useUserAccount } from '../web3/useUserAccount'
-import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
+import { supportedNetworks } from '../web3/Web3Provider'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
@@ -53,7 +53,7 @@ function _usePortfolio() {
     variables: {
       where: {
         userAddress,
-        chainIn: PROJECT_CONFIG.supportedNetworks,
+        chainIn: supportedNetworks,
       },
     },
     notifyOnNetworkStatusChange: true,

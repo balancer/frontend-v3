@@ -1,7 +1,6 @@
 'use client'
 
 import { getChainShortName } from '@/lib/config/app.config'
-import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { getSelectStyles } from '@/lib/shared/services/chakra/theme/chakra-react-select'
@@ -9,6 +8,7 @@ import { HStack, Text } from '@chakra-ui/react'
 import { Select, OptionBase, GroupBase, SingleValue, chakraComponents } from 'chakra-react-select'
 import { ReactNode, useEffect, useState } from 'react'
 import { ChevronDown, Globe } from 'react-feather'
+import { supportedNetworks } from '../web3/Web3Provider'
 
 interface ChainOption extends OptionBase {
   label: ReactNode
@@ -20,7 +20,7 @@ type Props = {
   onChange(value: GqlChain): void
 }
 
-const networkOptions: ChainOption[] = PROJECT_CONFIG.supportedNetworks.map(network => ({
+const networkOptions: ChainOption[] = supportedNetworks.map(network => ({
   label: (
     <HStack>
       <NetworkIcon chain={network} size={6} />

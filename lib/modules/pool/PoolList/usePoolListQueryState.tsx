@@ -7,7 +7,6 @@ import {
   GqlPoolOrderDirection,
 } from '@/lib/shared/services/api/generated/graphql'
 import { uniq } from 'lodash'
-import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
 import { useQueryState } from 'next-usequerystate'
 import {
   POOL_TYPE_MAP,
@@ -16,6 +15,7 @@ import {
   SortingState,
 } from '../pool.types'
 import { PaginationState } from '@/lib/shared/components/pagination/pagination.types'
+import { supportedNetworks } from '../../web3/Web3Provider'
 
 export function usePoolListQueryState() {
   const [first, setFirst] = useQueryState('first', poolListQueryStateParsers.first)
@@ -127,7 +127,7 @@ export function usePoolListQueryState() {
     orderDirection,
     where: {
       poolTypeIn: mappedPoolTypes,
-      chainIn: networks.length > 0 ? networks : PROJECT_CONFIG.supportedNetworks,
+      chainIn: networks.length > 0 ? networks : supportedNetworks,
       userAddress,
     },
     textSearch,

@@ -33,6 +33,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useEffect, useState } from 'react'
 import { Filter } from 'react-feather'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { supportedNetworks } from '../../web3/Web3Provider'
 
 function UserPoolFilter() {
   const { userAddress, toggleUserAddress } = usePoolListQueryState()
@@ -73,7 +74,6 @@ function PoolTypeFilters() {
 }
 
 function PoolNetworkFilters() {
-  const { supportedNetworks } = getProjectConfig()
   const { networks: toggledNetworks, toggleNetwork } = usePoolListQueryState()
 
   return supportedNetworks.map(network => (

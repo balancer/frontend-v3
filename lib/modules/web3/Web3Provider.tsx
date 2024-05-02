@@ -29,7 +29,7 @@ import { keyBy, merge } from 'lodash'
 import { useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/shared/services/chakra/theme'
 import { CustomAvatar } from './CustomAvatar'
-import { getProjectConfig, PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { UserAccountProvider } from './useUserAccount'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 import { BlockedAddressModal } from './BlockedAddressModal'
@@ -38,12 +38,14 @@ import { UserSettingsProvider } from '../user/settings/useUserSettings'
 import { ReactQueryClientProvider } from '@/app/react-query.provider'
 import { balancerSupportedChains } from '@/lib/config/projects/balancer'
 import { beetsSupportedChains } from '@/lib/config/projects/beets'
+import { getGqlChain } from '@/lib/config/app.config'
 
 // We need this type to satisfy "chains" type in RainbowKit's getDefaultConfig
 type ProjectSupportedChain = typeof balancerSupportedChains | typeof beetsSupportedChains
 type SupportedChain = (typeof supportedChains)[number]
 type SupportedChainId = (typeof supportedChains)[number]['id']
-export const supportedChains = PROJECT_CONFIG.supportedChains
+export const supportedChains = getProjectConfig().supportedChains
+export const supportedNetworks = supportedChains.map(chain => getGqlChain(chain.id))
 
 // Helpful for injecting fork RPCs for specific chains.
 const rpcOverrides: Record<SupportedChainId, string | undefined> = {

@@ -12,10 +12,10 @@ import {
   GetTokenPricesDocument,
   GetTokensDocument,
 } from '@/lib/shared/services/api/generated/graphql'
-import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { TokensProvider } from '@/lib/modules/tokens/useTokens'
 import { FiatFxRatesProvider } from '../../hooks/useFxRates'
 import { getFxRates } from '../../utils/currencies'
+import { supportedNetworks } from '@/lib/modules/web3/Web3Provider'
 
 export const revalidate = 60
 
@@ -23,7 +23,7 @@ export async function ApolloGlobalDataProvider({ children }: React.PropsWithChil
   const client = getApolloServerClient()
 
   const tokensQueryVariables = {
-    chains: getProjectConfig().supportedNetworks,
+    chains: supportedNetworks,
   }
 
   const { data: tokensQueryData } = await client.query({
@@ -39,7 +39,7 @@ export async function ApolloGlobalDataProvider({ children }: React.PropsWithChil
   const { data: tokenPricesQueryData } = await client.query({
     query: GetTokenPricesDocument,
     variables: {
-      chains: getProjectConfig().supportedNetworks,
+      chains: supportedNetworks,
     },
     context: {
       fetchOptions: {

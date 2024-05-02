@@ -11,7 +11,6 @@ import {
   polygonZkEvm,
   sepolia,
 } from 'wagmi/chains'
-import { getGqlChain } from '../app.config'
 
 export const balancerSupportedNetworks = [
   GqlChain.Mainnet,
@@ -40,5 +39,4 @@ export const ProjectConfigBalancer: ProjectConfig = {
   projectId: 'balancer',
   projectName: 'Balancer',
   supportedChains: balancerSupportedChains,
-  supportedNetworks: balancerSupportedChains.map(chain => getGqlChain(chain.id)),
 }

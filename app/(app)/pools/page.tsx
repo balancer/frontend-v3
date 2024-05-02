@@ -1,6 +1,6 @@
-import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { FeaturedPools } from '@/lib/modules/featured-pools/FeaturedPools'
 import { PoolList } from '@/lib/modules/pool/PoolList/PoolList'
+import { supportedNetworks } from '@/lib/modules/web3/Web3Provider'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
 import { GetFeaturedPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
@@ -8,8 +8,6 @@ import { Box, Skeleton } from '@chakra-ui/react'
 import { Suspense } from 'react'
 
 export default async function Pools() {
-  const { supportedNetworks } = getProjectConfig()
-
   const featuredPoolsQuery = await getApolloServerClient().query({
     query: GetFeaturedPoolsDocument,
     variables: { chains: supportedNetworks },

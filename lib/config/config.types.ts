@@ -76,5 +76,4 @@ export interface ProjectConfig {
   projectId: 'beets' | 'balancer'
   projectName: string
   supportedChains: readonly Chain[]
-  supportedNetworks: GqlChain[]
 }
