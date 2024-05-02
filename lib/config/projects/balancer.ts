@@ -1,16 +1,5 @@
 import { ProjectConfig } from '@/lib/config/config.types'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import {
-  arbitrum,
-  avalanche,
-  base,
-  gnosis,
-  mainnet,
-  optimism,
-  polygon,
-  polygonZkEvm,
-  sepolia,
-} from 'wagmi/chains'
 
 export const balancerSupportedNetworks = [
   GqlChain.Mainnet,
@@ -22,19 +11,6 @@ export const balancerSupportedNetworks = [
   GqlChain.Zkevm,
   GqlChain.Optimism,
 ]
-// as const satisfies GqlChain[]
-
-export const balancerSupportedChains = [
-  mainnet,
-  arbitrum,
-  base,
-  avalanche,
-  gnosis,
-  optimism,
-  polygon,
-  polygonZkEvm,
-  sepolia,
-] as const
 
 export const ProjectConfigBalancer: ProjectConfig = {
   projectId: 'balancer',

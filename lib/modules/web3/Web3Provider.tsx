@@ -37,7 +37,6 @@ import { BlockedAddressModal } from './BlockedAddressModal'
 import { AcceptPoliciesModal } from './AcceptPoliciesModal'
 import { UserSettingsProvider } from '../user/settings/useUserSettings'
 import { ReactQueryClientProvider } from '@/app/react-query.provider'
-import { balancerSupportedChains } from '@/lib/config/projects/balancer'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { getGqlChain } from '@/lib/config/app.config'
 import { _chains } from '@rainbow-me/rainbowkit/dist/config/getDefaultConfig'
@@ -67,7 +66,7 @@ const gqlChainToWagmiChainMap: Record<GqlChain, Chain> = {
   [GqlChain.Polygon]: polygon,
   [GqlChain.Zkevm]: polygonZkEvm,
   [GqlChain.Sepolia]: sepolia,
-}
+} as const
 
 export const supportedNetworks = getProjectConfig().supportedNetworks
 export const supportedChains = supportedNetworks.map(gqlChain => gqlChainToWagmiChainMap[gqlChain])
