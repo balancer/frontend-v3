@@ -1,8 +1,8 @@
-import { mockDeep } from 'vitest-mock-extended'
+import { mock } from 'vitest-mock-extended'
 import { StepProps, getStepSettings } from './getStepSettings'
 import { FlowStep } from '@/lib/modules/transactions/transaction-steps/lib'
 
-const flowStep = mockDeep<FlowStep>()
+const flowStep = mock<FlowStep>()
 
 describe('generates step props', () => {
   test('when the step is active and the transaction execution is loading', () => {
@@ -10,10 +10,6 @@ describe('generates step props', () => {
     flowStep.execution.isPending = true
     flowStep.result.isSuccess = false
 
-    // Avoid "Expression produces a union type that is too complex to represent" only happening in this line
-    // More context: https://github.com/chakra-ui/chakra-ui/issues/7526
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     const props: StepProps = {
       currentIndex: 0,
       index: 0,
