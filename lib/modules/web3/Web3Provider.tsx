@@ -87,7 +87,7 @@ const gqlChainToWagmiChainMap: Record<GqlChain, Chain> = {
 
 // Helpful for injecting fork RPCs for specific chains.
 const rpcOverrides: Record<GqlChain, string | undefined> = {
-  [GqlChain.Mainnet]: 'https://rpc.tenderly.co/fork/dd368c4f-5b59-43f7-a17f-6b42b7a1369f',
+  [GqlChain.Mainnet]: undefined,
   [GqlChain.Arbitrum]: undefined,
   [GqlChain.Base]: undefined,
   [GqlChain.Avalanche]: undefined,
