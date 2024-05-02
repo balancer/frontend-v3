@@ -6,7 +6,7 @@ on:
 env:
   NEXT_PUBLIC_BALANCER_API_URL: https://api-v3.balancer.fi/graphql
   NEXT_PUBLIC_WALLET_CONNECT_ID: ${{ secrets.NEXT_PUBLIC_WALLET_CONNECT_ID }}
-  PRIVATE_INFURA_KEY: ${{ secrets.PRIVATE_INFURA_KEY }}
+  NEXT_PRIVATE_INFURA_KEY: ${{ secrets.PRIVATE_INFURA_KEY }}
 
 jobs:
   Build:

@@ -61,10 +61,8 @@ export function getTestRpcSetup(networkName: NetworksWithFork) {
 }
 
 export function getForkUrl(network: NetworkSetup, verbose = false): string {
-  // if (network.networkName === 'Ethereum' && process.env['VITE_PRIVATE_INFURA_KEY']) {
-  // return `https://mainnet.infura.io/v3/${process.env['VITE_PRIVATE_INFURA_KEY']}`
-  if (network.networkName === 'Ethereum') {
-    return 'https://mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23'
+  if (network.networkName === 'Ethereum' && process.env['NEXT_PRIVATE_INFURA_KEY']) {
+    return `https://mainnet.infura.io/v3/${process.env['NEXT_PRIVATE_INFURA_KEY']}`
   } else {
     if (!network.fallBackRpc) {
       throw Error(`Please add a fallback RPC for ${network.networkName} network.`)
