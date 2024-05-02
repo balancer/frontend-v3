@@ -1,12 +1,11 @@
 import { ProjectConfig } from '@/lib/config/config.types'
-import { fantom, optimism } from 'viem/chains'
-import { getGqlChain } from '../app.config'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
-export const beetsSupportedChains = [fantom, optimism] as const
+export const beetsSupportedNetworks = [GqlChain.Fantom, GqlChain.Optimism]
+//  as const satisifies GqlChain[]
 
 export const ProjectConfigBeets: ProjectConfig = {
   projectId: 'beets',
   projectName: 'BeethovenX',
-  supportedChains: beetsSupportedChains,
-  supportedNetworks: beetsSupportedChains.map(chain => getGqlChain(chain.id)),
+  supportedNetworks: beetsSupportedNetworks,
 }

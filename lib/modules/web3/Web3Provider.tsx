@@ -16,6 +16,7 @@ import {
   arbitrum,
   avalanche,
   base,
+  Chain,
   fantom,
   gnosis,
   mainnet,
@@ -29,7 +30,7 @@ import { keyBy, merge } from 'lodash'
 import { useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/shared/services/chakra/theme'
 import { CustomAvatar } from './CustomAvatar'
-import { getProjectConfig, PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { UserAccountProvider } from './useUserAccount'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 import { BlockedAddressModal } from './BlockedAddressModal'
@@ -37,38 +38,48 @@ import { AcceptPoliciesModal } from './AcceptPoliciesModal'
 import { UserSettingsProvider } from '../user/settings/useUserSettings'
 import { ReactQueryClientProvider } from '@/app/react-query.provider'
 import { balancerSupportedChains } from '@/lib/config/projects/balancer'
-import { beetsSupportedChains } from '@/lib/config/projects/beets'
-
-// We need this type to satisfy "chains" type in RainbowKit's getDefaultConfig
-type ProjectSupportedChain = typeof balancerSupportedChains | typeof beetsSupportedChains
-type SupportedChain = (typeof supportedChains)[number]
-type SupportedChainId = (typeof supportedChains)[number]['id']
-export const supportedChains = PROJECT_CONFIG.supportedChains
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { getGqlChain } from '@/lib/config/app.config'
+import { _chains } from '@rainbow-me/rainbowkit/dist/config/getDefaultConfig'
 
 // Helpful for injecting fork RPCs for specific chains.
-const rpcOverrides: Record<SupportedChainId, string | undefined> = {
-  [mainnet.id]: undefined,
-  [arbitrum.id]: undefined,
-  [base.id]: undefined,
-  [avalanche.id]: undefined,
-  [gnosis.id]: undefined,
-  [fantom.id]: undefined,
-  [optimism.id]: undefined,
-  [polygon.id]: undefined,
-  [polygonZkEvm.id]: undefined,
-  [sepolia.id]: undefined,
+const rpcOverrides: Record<GqlChain, string | undefined> = {
+  [GqlChain.Mainnet]: undefined,
+  [GqlChain.Arbitrum]: undefined,
+  [GqlChain.Base]: undefined,
+  [GqlChain.Avalanche]: undefined,
+  [GqlChain.Fantom]: undefined,
+  [GqlChain.Gnosis]: undefined,
+  [GqlChain.Optimism]: undefined,
+  [GqlChain.Polygon]: undefined,
+  [GqlChain.Zkevm]: undefined,
+  [GqlChain.Sepolia]: undefined,
 }
 
-export const chainsByKey = keyBy(balancerSupportedChains, 'id')
+const gqlChainToWagmiChainMap: Record<GqlChain, Chain> = {
+  [GqlChain.Mainnet]: mainnet,
+  [GqlChain.Arbitrum]: arbitrum,
+  [GqlChain.Base]: base,
+  [GqlChain.Avalanche]: avalanche,
+  [GqlChain.Fantom]: fantom,
+  [GqlChain.Gnosis]: gnosis,
+  [GqlChain.Optimism]: optimism,
+  [GqlChain.Polygon]: polygon,
+  [GqlChain.Zkevm]: polygonZkEvm,
+  [GqlChain.Sepolia]: sepolia,
+}
 
-export function getDefaultRpcUrl(chainId: SupportedChainId) {
+export const supportedNetworks = getProjectConfig().supportedNetworks
+export const supportedChains = supportedNetworks.map(gqlChain => gqlChainToWagmiChainMap[gqlChain])
+export const chainsByKey = keyBy(supportedChains, 'id')
+
+export function getDefaultRpcUrl(chainId: number) {
   return chainsByKey[chainId].rpcUrls.default.http[0]
 }
 
 // TODO: define public urls as fallback??
-function getTransports(chain: SupportedChain) {
-  const overridenRpcUrl = rpcOverrides[chain.id]
-
+function getTransports(chain: Chain) {
+  const overridenRpcUrl = rpcOverrides[getGqlChain(chain.id)]
   return fallback([
     http(overridenRpcUrl),
     http(), // Public transport as first option
@@ -78,7 +89,7 @@ function getTransports(chain: SupportedChain) {
 export const wagmiConfig = getDefaultConfig({
   appName: getProjectConfig().projectName,
   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID as string,
-  chains: supportedChains as ProjectSupportedChain,
+  chains: supportedChains as unknown as _chains,
   transports: {
     [mainnet.id]: getTransports(mainnet),
     [arbitrum.id]: getTransports(arbitrum),
