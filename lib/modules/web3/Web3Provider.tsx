@@ -37,41 +37,12 @@ import { BlockedAddressModal } from './BlockedAddressModal'
 import { AcceptPoliciesModal } from './AcceptPoliciesModal'
 import { UserSettingsProvider } from '../user/settings/useUserSettings'
 import { ReactQueryClientProvider } from '@/app/react-query.provider'
-import { balancerSupportedChains } from '@/lib/config/projects/balancer'
-import { beetsSupportedChains } from '@/lib/config/projects/beets'
-import { getGqlChain, getNetworkConfig } from '@/lib/config/app.config'
-import { defineChain } from 'viem'
+import { getGqlChain } from '@/lib/config/app.config'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { _chains } from '@rainbow-me/rainbowkit/dist/config/getDefaultConfig'
 
-function buildChain(viemChain: Chain, rpcOverride?: string): Chain {
-  const { rpcUrl } = getNetworkConfig(viemChain.id)
-
-  let defaultRpcUrls = viemChain.rpcUrls.default.http
-  let publicRpcUrls = viemChain.rpcUrls.public.http
-
-  if (rpcOverride) {
-    defaultRpcUrls = [rpcOverride, ...defaultRpcUrls]
-    publicRpcUrls = [rpcOverride, ...publicRpcUrls]
-  } else if (rpcUrl) {
-    defaultRpcUrls = [rpcUrl, ...defaultRpcUrls]
-    publicRpcUrls = [rpcUrl, ...publicRpcUrls]
-  }
-
-  return defineChain({
-    ...viemChain,
-    rpcUrls: {
-      default: { http: defaultRpcUrls },
-      public: { http: publicRpcUrls },
-    },
-  })
-}
-
-// We need this type to satisfy "chains" type in RainbowKit's getDefaultConfig
-type ProjectSupportedChain = typeof balancerSupportedChains | typeof beetsSupportedChains
-type SupportedChain = (typeof supportedChains)[number]
 type SupportedChainId = (typeof supportedChains)[number]['id']
-export const supportedChains = getProjectConfig().supportedChains
-export const supportedNetworks = supportedChains.map(chain => getGqlChain(chain.id))
+export const supportedNetworks = getProjectConfig().supportedNetworks
 
 // Helpful for injecting fork RPCs for specific chains.
 const rpcOverrides: Record<GqlChain, string | undefined> = {
@@ -100,10 +71,9 @@ const gqlChainToWagmiChainMap: Record<GqlChain, Chain> = {
   [GqlChain.Sepolia]: sepolia,
 }
 
-export const supportedChains2 = supportedNetworks.map(chain =>
-  buildChain(gqlChainToWagmiChainMap[chain], rpcOverrides[chain])
-)
-export const chainsByKey = keyBy(balancerSupportedChains, 'id')
+export const supportedChains = supportedNetworks.map(chain => gqlChainToWagmiChainMap[chain])
+
+export const chainsByKey = keyBy(supportedChains, 'id')
 
 export function getDefaultRpcUrl(chainId: SupportedChainId) {
   return chainsByKey[chainId].rpcUrls.default.http[0]
@@ -122,7 +92,7 @@ function getTransports(chain: Chain) {
 export const wagmiConfig = getDefaultConfig({
   appName: getProjectConfig().projectName,
   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID as string,
-  chains: supportedChains2,
+  chains: supportedChains as unknown as _chains,
   transports: {
     [mainnet.id]: getTransports(mainnet),
     [arbitrum.id]: getTransports(arbitrum),
