@@ -40,6 +40,7 @@ import { ReactQueryClientProvider } from '@/app/react-query.provider'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { getGqlChain } from '@/lib/config/app.config'
 import { _chains } from '@rainbow-me/rainbowkit/dist/config/getDefaultConfig'
+import { SupportedChainId } from '@/lib/config/config.types'
 
 // Helpful for injecting fork RPCs for specific chains.
 const rpcOverrides: Record<GqlChain, string | undefined> = {
@@ -55,7 +56,7 @@ const rpcOverrides: Record<GqlChain, string | undefined> = {
   [GqlChain.Sepolia]: undefined,
 }
 
-const gqlChainToWagmiChainMap: Record<GqlChain, Chain> = {
+const gqlChainToWagmiChainMap = {
   [GqlChain.Mainnet]: mainnet,
   [GqlChain.Arbitrum]: arbitrum,
   [GqlChain.Base]: base,
@@ -66,19 +67,21 @@ const gqlChainToWagmiChainMap: Record<GqlChain, Chain> = {
   [GqlChain.Polygon]: polygon,
   [GqlChain.Zkevm]: polygonZkEvm,
   [GqlChain.Sepolia]: sepolia,
-} as const
+} as const satisfies Record<GqlChain, Chain>
 
 export const supportedNetworks = getProjectConfig().supportedNetworks
-export const supportedChains = supportedNetworks.map(gqlChain => gqlChainToWagmiChainMap[gqlChain])
-export const chainsByKey = keyBy(supportedChains, 'id')
+export const supportedChains: Chain[] = supportedNetworks.map(
+  gqlChain => gqlChainToWagmiChainMap[gqlChain]
+)
 
+const chainsByKey = keyBy(supportedChains, 'id')
 export function getDefaultRpcUrl(chainId: number) {
   return chainsByKey[chainId].rpcUrls.default.http[0]
 }
 
 // TODO: define public urls as fallback??
 function getTransports(chain: Chain) {
-  const overridenRpcUrl = rpcOverrides[getGqlChain(chain.id)]
+  const overridenRpcUrl = rpcOverrides[getGqlChain(chain.id as SupportedChainId)]
   return fallback([
     http(overridenRpcUrl),
     http(), // Public transport as first option
