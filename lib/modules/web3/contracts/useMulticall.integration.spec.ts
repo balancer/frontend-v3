@@ -1,5 +1,5 @@
 import { daiAddress, maticAddress } from '@/lib/debug-helpers'
-import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
+import { alternativeTestUserAccount, defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
 import { erc20Abi } from 'viem'
@@ -22,7 +22,7 @@ describe('Performs multicall in multiple chains', () => {
     abi: erc20Abi,
     address: maticAddress,
     functionName: 'balanceOf',
-    args: [defaultTestUserAccount],
+    args: [alternativeTestUserAccount],
   }
 
   test('including mixed mainnet and polygon contracts', async () => {
