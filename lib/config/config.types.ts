@@ -1,6 +1,6 @@
 import { Address, Chain } from 'viem'
 import { GqlChain } from '../shared/services/api/generated/graphql'
-import { supportedChains } from '../modules/web3/Web3Provider'
+import { chains } from '../modules/web3/Web3Provider'
 import { PoolIssue } from '../modules/pool/alerts/pool-issues/PoolIssue.type'
 import { SupportedWrapHandler } from '../modules/swap/swap.types'
 
@@ -48,7 +48,7 @@ export interface BlockExplorerConfig {
   name: string
 }
 
-export type SupportedChainId = (typeof supportedChains)[number]['id']
+export type SupportedChainId = (typeof chains)[number]['id']
 
 export interface NetworkConfig {
   chainId: SupportedChainId
