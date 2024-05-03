@@ -1,13 +1,13 @@
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
-import { useQuery } from 'wagmi'
+import { useQuery } from '@tanstack/react-query'
 import { usePool } from '../../../usePool'
 import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { AddLiquidityParams, addLiquidityKeys } from './add-liquidity-keys'
 import { useRelayerSignature } from '@/lib/modules/relayer/useRelayerSignature'
-import { captureAddLiquidityHandlerError } from '@/lib/shared/utils/query-errors'
+import { sentryMetaForAddLiquidityHandler } from '@/lib/shared/utils/query-errors'
 
 export type AddLiquidityBuildQueryResponse = ReturnType<typeof useAddLiquidityBuildCallDataQuery>
 
@@ -44,12 +44,12 @@ export function useAddLiquidityBuildCallDataQuery() {
     return response
   }
 
-  return useQuery(queryKey, queryFn, {
+  return useQuery({
+    queryKey,
+    queryFn,
     enabled: isConnected && !!simulationQuery.data,
-    cacheTime: 0,
+    gcTime: 0,
+    meta: sentryMetaForAddLiquidityHandler('Error in add liquidity buildCallData query', params),
     ...onlyExplicitRefetch,
-    onError(error: unknown) {
-      captureAddLiquidityHandlerError(error, 'Error in add liquidity buildCallData query', params)
-    },
   })
 }

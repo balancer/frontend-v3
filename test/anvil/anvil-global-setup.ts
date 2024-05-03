@@ -1,12 +1,34 @@
+import { startProxy } from '@viem/anvil'
+
 import { ANVIL_NETWORKS, getForkUrl } from './anvil-setup'
+import { testChains } from './testWagmiConfig'
 
 export async function setup() {
-  // Show verbose warnings once:
-  const verbose = true
-  getForkUrl(ANVIL_NETWORKS['MAINNET'], verbose)
-  getForkUrl(ANVIL_NETWORKS['POLYGON'], verbose)
-}
+  const promises = []
+  for (const chain of Object.values(testChains)) {
+    console.log('Starting proxy ', {
+      port: chain.port,
+      forkUrl: getForkUrl(ANVIL_NETWORKS[chain.name], true),
+      forkBlockNumber: ANVIL_NETWORKS[chain.name].forkBlockNumber,
+    })
+    promises.push(
+      startProxy({
+        port: chain.port,
+        host: '::',
+        options: {
+          chainId: chain.id,
+          forkUrl: getForkUrl(ANVIL_NETWORKS[chain.name], true),
+          forkBlockNumber: ANVIL_NETWORKS[chain.name].forkBlockNumber,
+          noMining: false,
+        },
+      })
+    )
+  }
+  const results = await Promise.all(promises)
 
-export async function teardown() {
-  // pkill -f "anvil --fork-url"
+  return () => {
+    for (const shutdown of results) {
+      shutdown()
+    }
+  }
 }

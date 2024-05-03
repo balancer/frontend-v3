@@ -1,7 +1,7 @@
 'use client'
 
 import { getChainShortName } from '@/lib/config/app.config'
-import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { getSelectStyles } from '@/lib/shared/services/chakra/theme/chakra-react-select'
@@ -20,7 +20,7 @@ type Props = {
   onChange(value: GqlChain): void
 }
 
-const networkOptions: ChainOption[] = PROJECT_CONFIG.supportedNetworks.map(network => ({
+const networkOptions: ChainOption[] = getProjectConfig().supportedNetworks.map(network => ({
   label: (
     <HStack>
       <NetworkIcon chain={network} size={6} />

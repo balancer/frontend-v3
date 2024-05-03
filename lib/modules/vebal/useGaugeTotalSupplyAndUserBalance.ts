@@ -4,6 +4,7 @@ import { useUserAccount } from '../web3/useUserAccount'
 import networkConfigs from '@/lib/config/networks'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { GaugeArg } from './useVebalBoost'
+import { getChainId } from '@/lib/config/app.config'
 
 export function useGaugeTotalSupplyAndUserBalance(gauges: GaugeArg[]) {
   const { userAddress } = useUserAccount()
@@ -17,7 +18,7 @@ export function useGaugeTotalSupplyAndUserBalance(gauges: GaugeArg[]) {
     if (!address) throw new Error('veDelegationProxy address not found on: ' + chain)
 
     return {
-      chain,
+      chainId: getChainId(chain),
       id: chain,
       abi: AbiMap['balancer.veDelegationProxyL2'] as any,
       address,
@@ -39,7 +40,7 @@ export function useGaugeTotalSupplyAndUserBalance(gauges: GaugeArg[]) {
         : AbiMap['balancer.veDelegationProxyL2']
 
     return {
-      chain,
+      chainId: getChainId(chain),
       id: chain,
       abi: abi as any,
       address,

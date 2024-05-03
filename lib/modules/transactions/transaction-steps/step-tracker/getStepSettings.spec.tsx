@@ -1,13 +1,13 @@
-import { mockDeep } from 'vitest-mock-extended'
+import { mock } from 'vitest-mock-extended'
 import { StepProps, getStepSettings } from './getStepSettings'
 import { FlowStep } from '@/lib/modules/transactions/transaction-steps/lib'
 
-const flowStep = mockDeep<FlowStep>()
+const flowStep = mock<FlowStep>()
 
 describe('generates step props', () => {
   test('when the step is active and the transaction execution is loading', () => {
     flowStep.simulation.isLoading = false
-    flowStep.execution.isLoading = true
+    flowStep.execution.isPending = true
     flowStep.result.isSuccess = false
 
     const props: StepProps = {

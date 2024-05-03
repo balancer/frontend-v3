@@ -8,24 +8,20 @@ import { areEmptyAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { AddLiquidityParams, addLiquidityKeys } from './add-liquidity-keys'
-import { UseQueryOptions } from '@tanstack/react-query'
-import { useQuery } from 'wagmi'
+import { useQuery } from '@tanstack/react-query'
 import { usePool } from '../../../usePool'
-import { captureAddLiquidityHandlerError } from '@/lib/shared/utils/query-errors'
+import { sentryMetaForAddLiquidityHandler } from '@/lib/shared/utils/query-errors'
 
 export type AddLiquiditySimulationQueryResult = ReturnType<typeof useAddLiquiditySimulationQuery>
 
 export function useAddLiquiditySimulationQuery(
   handler: AddLiquidityHandler,
-  humanAmountsIn: HumanAmountIn[],
-  options: UseQueryOptions = {}
+  humanAmountsIn: HumanAmountIn[]
 ) {
   const { userAddress } = useUserAccount()
   const { pool } = usePool()
   const { slippage } = useUserSettings()
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
-
-  const enabled = options.enabled ?? true
 
   const params: AddLiquidityParams = {
     handler,
@@ -40,12 +36,12 @@ export function useAddLiquiditySimulationQuery(
 
   const queryFn = async () => handler.simulate(humanAmountsIn)
 
-  return useQuery(queryKey, queryFn, {
-    enabled: enabled && !areEmptyAmounts(debouncedHumanAmountsIn),
-    cacheTime: 0,
+  return useQuery({
+    queryKey,
+    queryFn,
+    enabled: !areEmptyAmounts(debouncedHumanAmountsIn),
+    gcTime: 0,
+    meta: sentryMetaForAddLiquidityHandler('Error in add liquidity simulation query', params),
     ...onlyExplicitRefetch,
-    onError(error: unknown) {
-      captureAddLiquidityHandlerError(error, 'Error in add liquidity simulation query', params)
-    },
   })
 }

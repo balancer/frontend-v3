@@ -1,5 +1,5 @@
 import { AddLiquidityNestedQueryOutput, AddLiquidityQueryOutput, TokenAmount } from '@balancer/sdk'
-import { Address } from 'wagmi'
+import { Address } from 'viem'
 import { HumanAmountIn } from '../liquidity-types'
 
 /*

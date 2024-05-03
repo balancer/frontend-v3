@@ -1,13 +1,13 @@
 import { defineConfig, loadEnv } from '@wagmi/cli'
-import { etherscan, react } from '@wagmi/cli/plugins'
+import { etherscan } from '@wagmi/cli/plugins'
 import mainnetNetworkConfig from './lib/config/networks/mainnet'
 
-import { erc20ABI } from 'wagmi'
+import { erc20Abi } from 'viem'
 
 const CONTRACTS: Array<{ name: string; abi: any }> = [
   {
     name: 'erc20',
-    abi: erc20ABI,
+    abi: erc20Abi,
   },
 ]
 
@@ -21,16 +21,6 @@ export default defineConfig(() => {
     out: 'lib/modules/web3/contracts/abi/generated.ts',
     contracts: CONTRACTS,
     plugins: [
-      react({
-        useContractRead: true,
-        useContractFunctionRead: false,
-        useContractWrite: false,
-        useContractFunctionWrite: false,
-        usePrepareContractWrite: false,
-        usePrepareContractFunctionWrite: false,
-        useContractItemEvent: false,
-        useContractEvent: false,
-      }),
       etherscan({
         apiKey: env.ETHERSCAN_API_KEY,
         chainId: 1,
@@ -64,6 +54,11 @@ export default defineConfig(() => {
             name: 'BalancerV2BalancerRelayer',
             address: '0x35Cea9e57A393ac66Aaa7E25C391D52C74B5648f',
           },
+          // TODO: bring manually added abis from web3/contracts/abi
+          // {
+          //   name: 'veBAL',
+          //   address: '0xC128a9954e6c874eA3d62ce62B468bA073093F25',
+          // },
         ],
       }),
     ],

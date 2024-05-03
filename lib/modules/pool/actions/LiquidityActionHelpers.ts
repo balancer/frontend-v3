@@ -17,8 +17,7 @@ import {
   mapPoolType,
 } from '@balancer/sdk'
 import { keyBy } from 'lodash'
-import { Hex, formatUnits, parseUnits } from 'viem'
-import { Address } from 'wagmi'
+import { Hex, formatUnits, parseUnits, Address } from 'viem'
 import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
 import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
 import { Pool } from '../usePool'

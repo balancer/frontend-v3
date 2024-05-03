@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
 import {
-  captureAddLiquidityHandlerError,
-  captureRemoveLiquidityHandlerError,
-  captureWagmiSimulationError,
+  sentryMetaForAddLiquidityHandler,
+  sentryMetaForRemoveLiquidityHandler,
+  captureSentryError,
+  sentryMetaForWagmiSimulation,
 } from '@/lib/shared/utils/query-errors'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import * as Sentry from '@sentry/nextjs'
@@ -54,7 +55,9 @@ describe('Captures sentry error', () => {
       humanBptIn: '1',
     }
 
-    captureRemoveLiquidityHandlerError(new Error('test cause error'), 'Test error message', params)
+    const error = new Error('test cause error')
+    const meta = sentryMetaForRemoveLiquidityHandler('Test error message', params)
+    captureSentryError(error, meta)
 
     const report = await getSentryReport()
 
@@ -91,7 +94,9 @@ describe('Captures sentry error', () => {
       ],
     }
 
-    captureAddLiquidityHandlerError(new Error('test cause error'), 'Test error message', params)
+    const error = new Error('test cause error')
+    const meta = sentryMetaForAddLiquidityHandler('Test error message', params)
+    captureSentryError(error, meta)
 
     const report = await getSentryReport()
 
@@ -121,11 +126,9 @@ describe('Captures sentry error', () => {
       tokenAmount: 100,
     }
 
-    captureWagmiSimulationError(
-      new Error('Error in viem'),
-      'Error executing token approval tx',
-      extra
-    )
+    const error = new Error('Error in viem')
+    const meta = sentryMetaForWagmiSimulation('Error executing token approval tx', extra)
+    captureSentryError(error, meta)
 
     const report = await getSentryReport()
 

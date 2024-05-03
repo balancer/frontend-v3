@@ -1,5 +1,5 @@
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { Address } from 'wagmi'
+import { Address } from 'viem'
 import { isNativeAsset, isWrappedNativeAsset } from '../tokens/token.helpers'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { isSameAddress, sameAddresses } from '@/lib/shared/utils/addresses'
