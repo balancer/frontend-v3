@@ -78,9 +78,12 @@ const gqlChainToWagmiChainMap = {
 } as const satisfies Record<GqlChain, Chain>
 
 export const supportedNetworks = getProjectConfig().supportedNetworks
-export const chains: readonly [Chain, ...Chain[]] = [mainnet, ...supportedNetworks.filter(chain => chain !== GqlChain.Mainnet).map(
-  gqlChain => gqlChainToWagmiChainMap[gqlChain]
-)]
+export const chains: readonly [Chain, ...Chain[]] = [
+  mainnet,
+  ...supportedNetworks
+    .filter(chain => chain !== GqlChain.Mainnet)
+    .map(gqlChain => gqlChainToWagmiChainMap[gqlChain]),
+]
 
 const chainsByKey = keyBy(chains, 'id')
 export function getDefaultRpcUrl(chainId: number) {
@@ -102,20 +105,23 @@ const transports = Object.fromEntries(
 
 const appName = getProjectConfig().projectName
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || ''
-const connectors = connectorsForWallets([
-  {
-    groupName: 'Recommended',
-    wallets: [
-      injectedWallet,
-      metaMaskWallet,
-      rabbyWallet,
-      rainbowWallet,
-      safeWallet,
-      coinbaseWallet,
-      walletConnectWallet,
-    ],
-  },
-], { appName, projectId })
+const connectors = connectorsForWallets(
+  [
+    {
+      groupName: 'Recommended',
+      wallets: [
+        injectedWallet,
+        metaMaskWallet,
+        rabbyWallet,
+        rainbowWallet,
+        safeWallet,
+        coinbaseWallet,
+        walletConnectWallet,
+      ],
+    },
+  ],
+  { appName, projectId }
+)
 
 export const wagmiConfig = createConfig({
   chains,
