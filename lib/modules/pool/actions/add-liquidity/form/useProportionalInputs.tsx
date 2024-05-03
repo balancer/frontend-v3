@@ -32,8 +32,11 @@ export function useProportionalInputs() {
   } = useAddLiquidity()
   const { usdValueFor } = useTotalUsdValue(validTokens)
   const { balanceFor, balances, isBalancesLoading, refetchBalances } = useTokenBalances()
-  const { isLoading: isPoolLoading } = usePool()
+  const { pool, isLoading: isPoolLoading } = usePool()
   const [isMaximized, setIsMaximized] = useState(false)
+
+  const tokenWeights: Record<Address, string | null | undefined> = {}
+  pool.poolTokens.forEach(token => (tokenWeights[token.address as Address] = token.weight))
 
   function clearAmountsIn() {
     setHumanAmountsIn(humanAmountsIn.map(amountIn => ({ ...amountIn, humanAmount: '' })))
