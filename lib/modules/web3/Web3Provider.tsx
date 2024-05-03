@@ -39,7 +39,6 @@ import { UserSettingsProvider } from '../user/settings/useUserSettings'
 import { ReactQueryClientProvider } from '@/app/react-query.provider'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { getGqlChain } from '@/lib/config/app.config'
-import { _chains, getDefaultConfig } from '@rainbow-me/rainbowkit/dist/config/getDefaultConfig'
 import { SupportedChainId } from '@/lib/config/config.types'
 import {
   injectedWallet,
