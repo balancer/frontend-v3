@@ -88,21 +88,15 @@ function getTransports(chain: Chain) {
   ])
 }
 
+const transports = Object.fromEntries(
+  supportedChains.map(chain => [chain.id, getTransports(chain)])
+) as Record<number, ReturnType<typeof getTransports>>
+
 export const wagmiConfig = getDefaultConfig({
   appName: getProjectConfig().projectName,
   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID as string,
   chains: supportedChains as unknown as _chains,
-  transports: {
-    [mainnet.id]: getTransports(mainnet),
-    [arbitrum.id]: getTransports(arbitrum),
-    [base.id]: getTransports(base),
-    [avalanche.id]: getTransports(avalanche),
-    [gnosis.id]: getTransports(gnosis),
-    [optimism.id]: getTransports(optimism),
-    [polygon.id]: getTransports(polygon),
-    [polygonZkEvm.id]: getTransports(polygonZkEvm),
-    [sepolia.id]: getTransports(sepolia),
-  },
+  transports,
   ssr: true,
 })
 
