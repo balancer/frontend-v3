@@ -41,6 +41,9 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useDebouncedCallback } from 'use-debounce'
 import { defaultDebounceMs } from '@/lib/shared/utils/queries'
 
+const SLIDER_MAX_VALUE = 10000000
+const SLIDER_STEP_SIZE = 100000
+
 function UserPoolFilter() {
   const { userAddress, toggleUserAddress } = usePoolListQueryState()
   const { userAddress: connectedUserAddress } = useUserAccount()
@@ -108,6 +111,11 @@ function PoolMinTvlFilter() {
     debounced(sliderValue)
   }, [sliderValue])
 
+  // sync slider value with minTvl value
+  useEffect(() => {
+    setSliderValue(minTvl)
+  }, [minTvl])
+
   return (
     <VStack w="full">
       <HStack w="full">
@@ -121,8 +129,8 @@ function PoolMinTvlFilter() {
         onChange={val => setSliderValue(val)}
         value={sliderValue}
         min={0}
-        max={10000000}
-        step={1000}
+        max={SLIDER_MAX_VALUE}
+        step={SLIDER_STEP_SIZE}
       >
         <SliderTrack>
           <SliderFilledTrack />
@@ -134,10 +142,11 @@ function PoolMinTvlFilter() {
 }
 
 export function FilterTags() {
-  const { networks, toggleNetwork, poolTypes, togglePoolType, poolTypeLabel } =
+  const { networks, toggleNetwork, poolTypes, togglePoolType, poolTypeLabel, minTvl, setMinTvl } =
     usePoolListQueryState()
+  const { toCurrency } = useCurrency()
 
-  if (networks.length === 0 && poolTypes.length === 0) {
+  if (networks.length === 0 && poolTypes.length === 0 && minTvl === 0) {
     return <></>
   }
 
@@ -149,7 +158,6 @@ export function FilterTags() {
           <TagCloseButton onClick={() => togglePoolType(false, poolType)} />
         </Tag>
       ))}
-
       {networks.map(network => (
         <Tag key={network} size="lg">
           <TagLabel>
@@ -160,6 +168,14 @@ export function FilterTags() {
           <TagCloseButton onClick={() => toggleNetwork(false, network)} />
         </Tag>
       ))}
+      <Tag key="minTvl" size="lg">
+        <TagLabel>
+          <Text fontWeight="bold" textTransform="capitalize">
+            {`TVL > ${toCurrency(minTvl)}`}
+          </Text>
+        </TagLabel>
+        <TagCloseButton onClick={() => setMinTvl(0)} />
+      </Tag>
     </HStack>
   )
 }
