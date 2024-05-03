@@ -9,10 +9,7 @@ import {
   defaultGetTokensQueryVariablesMock,
 } from '@/lib/modules/tokens/__mocks__/token.builders'
 import { TokensProvider } from '@/lib/modules/tokens/useTokens'
-import {
-  RecentTransactionsProvider,
-  RecentTransactionsProvider,
-} from '@/lib/modules/transactions/RecentTransactionsProvider'
+import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
 import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
 import { AbiMap } from '@/lib/modules/web3/contracts/AbiMap'
 import { WriteAbiMutability } from '@/lib/modules/web3/contracts/contract.types'
