@@ -23,6 +23,7 @@ import { ColorMode } from '@chakra-ui/react'
 import { useTheme } from 'next-themes'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
+
 import {
   getBlockExplorerAddressUrl,
   getBlockExplorerTxUrl,
@@ -169,7 +170,7 @@ export const getDefaultPoolChartOptions = (
                     <img src="${
                       token.token?.logoURI
                     }" style="width: 16px; height: 16px; border-radius: 50%; margin-right;letter-spacing:-0.1px" />
-                    <div style="text-align:left">                      
+                    <div style="text-align:left">
                       <span>${Number(Number(token.amount).toFixed(2)).toLocaleString()}</span>
                       <span>${token.token?.symbol}</span>
                     </div>

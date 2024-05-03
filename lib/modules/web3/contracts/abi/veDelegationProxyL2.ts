@@ -1,4 +1,4 @@
-export const VeDelegationProxyL2ABI = [
+export const VeDelegationProxyL2Abi = [
   {
     inputs: [
       { internalType: 'contract IVault', name: 'vault', type: 'address' },

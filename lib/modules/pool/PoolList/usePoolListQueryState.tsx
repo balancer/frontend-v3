@@ -7,7 +7,7 @@ import {
   GqlPoolOrderDirection,
 } from '@/lib/shared/services/api/generated/graphql'
 import { uniq } from 'lodash'
-import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { useQueryState } from 'next-usequerystate'
 import {
   POOL_TYPE_MAP,
@@ -127,7 +127,7 @@ export function usePoolListQueryState() {
     orderDirection,
     where: {
       poolTypeIn: mappedPoolTypes,
-      chainIn: networks.length > 0 ? networks : PROJECT_CONFIG.supportedNetworks,
+      chainIn: networks.length > 0 ? networks : getProjectConfig().supportedNetworks,
       userAddress,
     },
     textSearch,

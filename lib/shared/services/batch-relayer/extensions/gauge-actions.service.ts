@@ -1,5 +1,5 @@
 import { encodeFunctionData, Hex } from 'viem'
-import { balancerV2BatchRelayerLibraryABI } from '@/lib/modules/web3/contracts/abi/generated'
+import { balancerV2BatchRelayerLibraryAbi } from '@/lib/modules/web3/contracts/abi/generated'
 import {
   EncodeGaugeClaimRewardsInput,
   EncodeGaugeDepositInput,
@@ -10,7 +10,7 @@ import {
 export class GaugeActionsService {
   public encodeDeposit(params: EncodeGaugeDepositInput): Hex {
     return encodeFunctionData({
-      abi: balancerV2BatchRelayerLibraryABI,
+      abi: balancerV2BatchRelayerLibraryAbi,
       functionName: 'gaugeDeposit',
       args: [params.gauge, params.sender, params.recipient, params.amount],
     })
@@ -18,7 +18,7 @@ export class GaugeActionsService {
 
   public encodeWithdraw(params: EncodeGaugeWithdrawInput): Hex {
     return encodeFunctionData({
-      abi: balancerV2BatchRelayerLibraryABI,
+      abi: balancerV2BatchRelayerLibraryAbi,
       functionName: 'gaugeWithdraw',
       args: [params.gauge, params.sender, params.recipient, params.amount],
     })
@@ -26,7 +26,7 @@ export class GaugeActionsService {
 
   public encodeClaimRewards(params: EncodeGaugeClaimRewardsInput): Hex {
     return encodeFunctionData({
-      abi: balancerV2BatchRelayerLibraryABI,
+      abi: balancerV2BatchRelayerLibraryAbi,
       functionName: 'gaugeClaimRewards',
       args: [params.gauges],
     })
@@ -34,7 +34,7 @@ export class GaugeActionsService {
 
   public encodeMint(params: EncodeGaugeMintInput): Hex {
     return encodeFunctionData({
-      abi: balancerV2BatchRelayerLibraryABI,
+      abi: balancerV2BatchRelayerLibraryAbi,
       functionName: 'gaugeMint',
       args: [params.gauges, params.outputReference],
     })

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 'use client'
 import ReactECharts from 'echarts-for-react'
 import { Box, Card, Divider, HStack, Heading, Text } from '@chakra-ui/react'

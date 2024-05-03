@@ -21,7 +21,7 @@ const MemoizedAprTooltip = memo(AprTooltip)
 export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Props) {
   const { toCurrency } = useCurrency()
   const vebalBoostValue = veBalBoostMap?.[pool.id]
-  console.log('veBalBoostMap', veBalBoostMap)
+
   return (
     <Box
       key={keyValue}

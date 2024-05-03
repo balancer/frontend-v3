@@ -6,7 +6,7 @@ export const allProjects = {
   [ProjectConfigBeets.projectId]: { ...ProjectConfigBeets },
 }
 
-export const PROJECT_CONFIG = process.env.NEXT_PUBLIC_PROJECT_ID
+const PROJECT_CONFIG = process.env.NEXT_PUBLIC_PROJECT_ID
   ? allProjects[process.env.NEXT_PUBLIC_PROJECT_ID]
   : ProjectConfigBalancer
 

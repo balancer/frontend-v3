@@ -1,4 +1,4 @@
-export const VeDelegationProxyABI = [
+export const VeDelegationProxyAbi = [
   {
     inputs: [
       {

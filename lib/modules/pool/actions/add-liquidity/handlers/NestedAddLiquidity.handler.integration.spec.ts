@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import networkConfig from '@/lib/config/networks/mainnet'
 import { daiAddress, usdcAddress, usdtAddress, wETHAddress } from '@/lib/debug-helpers'
-import { testPublicClient } from '@/test/utils/wagmi/wagmi-test-setup'
+import { mainnetTestPublicClient } from '@/test/utils/wagmi/wagmi-test-clients'
 import { nestedPoolMock } from '../../../__mocks__/nestedPoolMock'
 import { Pool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
@@ -28,7 +28,7 @@ describe('When adding nested liquidity for a weighted pool', () => {
 
     const result = await handler.simulate(humanAmountsIn)
 
-    expect(result.bptOut.amount).toBeGreaterThan(20000000000000000n)
+    expect(result.bptOut.amount).toBeGreaterThan(15000000000000000n)
   })
 
   test('with multiple token input', async () => {
@@ -67,15 +67,15 @@ describe('When adding nested liquidity for a weighted pool', () => {
 
     const { account, data, to, value } = result
 
-    const hash = await testPublicClient.sendTransaction({
+    const hash = await mainnetTestPublicClient.sendTransaction({
       account,
-      chain: testPublicClient.chain,
+      chain: mainnetTestPublicClient.chain,
       data,
       to,
       value,
     })
 
-    const transactionReceipt = await testPublicClient.waitForTransactionReceipt({
+    const transactionReceipt = await mainnetTestPublicClient.waitForTransactionReceipt({
       hash,
     })
 

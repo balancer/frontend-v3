@@ -4,8 +4,9 @@ import { usePool } from '@/lib/modules/pool/usePool'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { getViemClient } from '@/lib/shared/services/viem/viem.client'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { formatUnits, parseAbiItem } from 'viem'
-import { Address, useQuery, useTransaction } from 'wagmi'
+import { useQuery } from '@tanstack/react-query'
+import { formatUnits, parseAbiItem, Address } from 'viem'
+import { useTransaction } from 'wagmi'
 
 export type ReceiptProps = { txHash: Address; userAddress: Address }
 export function useAddLiquidityReceipt({ txHash, userAddress }: ReceiptProps) {
@@ -80,29 +81,29 @@ export function useTransactionLogsQuery({ txHash, userAddress }: ReceiptProps) {
   const viemClient = getViemClient(pool.chain)
   const receipt = useTransaction({ hash: txHash, chainId })
 
-  const outgoingLogsQuery = useQuery(
-    ['tx.logs.outgoing', userAddress, receipt.data?.blockHash],
-    () =>
+  const outgoingLogsQuery = useQuery({
+    queryKey: ['tx.logs.outgoing', userAddress, receipt.data?.blockHash],
+    queryFn: () =>
       viemClient.getLogs({
         blockHash: receipt?.data?.blockHash,
         event: parseAbiItem(
           'event Transfer(address indexed from, address indexed to, uint256 value)'
         ),
         args: { from: userAddress },
-      })
-  )
+      }),
+  })
 
-  const incomingLogsQuery = useQuery(
-    ['tx.logs.incoming', userAddress, receipt.data?.blockHash],
-    () =>
+  const incomingLogsQuery = useQuery({
+    queryKey: ['tx.logs.incoming', userAddress, receipt.data?.blockHash],
+    queryFn: () =>
       viemClient.getLogs({
         blockHash: receipt?.data?.blockHash,
         event: parseAbiItem(
           'event Transfer(address indexed from, address indexed to, uint256 value)'
         ),
         args: { to: userAddress },
-      })
-  )
+      }),
+  })
 
   const outgoingData =
     outgoingLogsQuery.data?.filter(log => isSameAddress(log.transactionHash, txHash)) || []

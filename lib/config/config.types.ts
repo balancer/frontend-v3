@@ -1,4 +1,4 @@
-import { Address } from 'viem'
+import { Address, Chain } from 'viem'
 import { GqlChain } from '../shared/services/api/generated/graphql'
 import { supportedChains } from '../modules/web3/Web3Provider'
 import { PoolIssue } from '../modules/pool/alerts/pool-issues/PoolIssue.type'
@@ -49,6 +49,7 @@ export interface BlockExplorerConfig {
 }
 
 export type SupportedChainId = (typeof supportedChains)[number]['id']
+
 export interface NetworkConfig {
   chainId: SupportedChainId
   name: string

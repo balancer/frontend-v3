@@ -6,6 +6,7 @@ import { Hex, formatUnits } from 'viem'
 import { toJsTimestamp } from '@/lib/shared/hooks/useTime'
 import { bn } from '@/lib/shared/utils/numbers'
 import { AbiMap } from '../web3/contracts/AbiMap'
+import { mainnet } from 'viem/chains'
 
 interface MulticallLockInfoResponse {
   locked: {
@@ -53,7 +54,7 @@ export function useVebalLockInfo() {
   // get lock info
   const lockInfoRequests = lockInfoRequestsData.map(v => {
     return {
-      chain: mainnetNetworkConfig.chain,
+      chainId: mainnet.id,
       id: `${v.path}.${v.fn}`,
       abi: AbiMap['balancer.veBAL'] as any,
       address: mainnetNetworkConfig.contracts.veBAL as Hex,
@@ -67,14 +68,14 @@ export function useVebalLockInfo() {
   })
 
   const mainnetLockedInfo = useMemo(() => {
-    const mainnetResults = results[mainnetNetworkConfig.chain]
+    const mainnetResults = results[mainnetNetworkConfig.chainId]
 
     if (mainnetResults.status === 'error') {
       // handle error
       return {}
     }
 
-    if (mainnetResults.status === 'loading') {
+    if (mainnetResults.status === 'pending') {
       // handle loading
       return {}
     }
