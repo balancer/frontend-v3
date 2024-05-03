@@ -4,11 +4,14 @@ import { act } from 'react-dom/test-utils'
 import { useConstructApproveRelayerStep } from './useConstructApproveRelayerStep'
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 import { connectWithDefaultUser } from '../../../test/utils/wagmi/wagmi-connections'
+import { TransactionFlowProvider } from '../transactions/transaction-steps/TransactionFlowProvider'
 
 test('Runs relayer approval transaction and queries that it was approved', async () => {
   await connectWithDefaultUser()
 
-  const { result } = testHook(() => useConstructApproveRelayerStep(1))
+  const { result } = testHook(() => useConstructApproveRelayerStep(1), {
+    wrapper: TransactionFlowProvider,
+  })
 
   await waitFor(() => expect(result.current.simulation.isSuccess).toBeTruthy())
 
