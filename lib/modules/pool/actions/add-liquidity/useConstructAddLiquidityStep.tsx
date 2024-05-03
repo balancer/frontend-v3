@@ -1,7 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import {
+  FlowStep,
   TransactionLabels,
+  TxStep,
   addLiquidityStepId,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
@@ -9,7 +11,7 @@ import { useEffect } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
 import { usePool } from '../../usePool'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { useSyncTransactionFlowStep } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
+import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
 
 export function useConstructAddLiquidityStep() {
   const { chainId } = usePool()
@@ -43,15 +45,19 @@ export function useConstructAddLiquidityStep() {
 
   const isComplete = () => addLiquidityTransaction.result.isSuccess
 
-  const addLiquidityStep = useSyncTransactionFlowStep({
+  const flowStep: FlowStep = {
     ...addLiquidityTransaction,
     transactionLabels,
     id: addLiquidityStepId,
     stepType: 'addLiquidity',
     isComplete,
-  })
-
-  return {
-    addLiquidityStep,
   }
+
+  const addLiquidityStep: TxStep = {
+    ...flowStep,
+    title: 'Add liquidity',
+    renderAction: () => <TransactionStepButton step={flowStep} />,
+  }
+
+  return addLiquidityStep
 }

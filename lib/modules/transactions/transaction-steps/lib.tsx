@@ -1,4 +1,5 @@
 import { TransactionBundle } from '@/lib/modules/web3/contracts/contract.types'
+import React from 'react'
 
 export enum TransactionState {
   Ready = 'init',
@@ -48,6 +49,17 @@ type Executable = {
 }
 
 export type FlowStep = TransactionStep & ManagedResult
+
+export type TransactionStep2 = {
+  id: string
+  title: string
+  stepType: StepType
+  transactionLabels: TransactionLabels
+  isComplete: () => boolean
+  renderAction: () => React.ReactNode
+}
+
+export type TxStep = TransactionStep2 & ManagedResult
 
 export type TransactionStep = {
   id: string

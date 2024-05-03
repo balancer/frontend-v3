@@ -29,6 +29,8 @@ import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
 import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
+import { useAddLiquiditySteps } from './useAddLiquiditySteps'
+import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -54,8 +56,11 @@ export function _useAddLiquidity() {
    */
   const helpers = new LiquidityActionHelpers(pool)
   const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
-  const stepConfigs = useAddLiquidityStepConfigs(inputAmounts)
-  const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
+
+  const steps = useAddLiquiditySteps(inputAmounts)
+  const { currentStep, currentStepIndex } = useTransactionSteps(steps)
+  // const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
+
   const chain = pool.chain
   const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
   const wNativeAsset = getToken(getWrappedNativeAssetAddress(chain), chain)
