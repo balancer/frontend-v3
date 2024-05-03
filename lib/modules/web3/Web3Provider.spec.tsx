@@ -1,4 +1,4 @@
-import { getDefaultRpcUrl, supportedChains } from './Web3Provider'
+import { getDefaultRpcUrl, chains } from './Web3Provider'
 import { mainnet, optimism } from 'viem/chains'
 
 test('getRpcUrl by chain id', () => {
@@ -7,7 +7,7 @@ test('getRpcUrl by chain id', () => {
 })
 
 test('Debug', () => {
-  expect(supportedChains[0]).toMatchInlineSnapshot(`
+  expect(chains[0]).toMatchInlineSnapshot(`
     {
       "blockExplorers": {
         "default": {

@@ -4,13 +4,13 @@ import '@rainbow-me/rainbowkit/styles.css'
 
 import {
   darkTheme,
-  getDefaultConfig,
   lightTheme,
   RainbowKitProvider,
   Theme,
+  connectorsForWallets,
 } from '@rainbow-me/rainbowkit'
 
-import { WagmiProvider, http, fallback } from 'wagmi'
+import { WagmiProvider, http, fallback, createConfig } from 'wagmi'
 
 import {
   arbitrum,
@@ -39,8 +39,16 @@ import { UserSettingsProvider } from '../user/settings/useUserSettings'
 import { ReactQueryClientProvider } from '@/app/react-query.provider'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { getGqlChain } from '@/lib/config/app.config'
-import { _chains } from '@rainbow-me/rainbowkit/dist/config/getDefaultConfig'
 import { SupportedChainId } from '@/lib/config/config.types'
+import {
+  injectedWallet,
+  metaMaskWallet,
+  rabbyWallet,
+  rainbowWallet,
+  walletConnectWallet,
+  safeWallet,
+  coinbaseWallet,
+} from '@rainbow-me/rainbowkit/wallets'
 
 // Helpful for injecting fork RPCs for specific chains.
 const rpcOverrides: Record<GqlChain, string | undefined> = {
@@ -70,11 +78,14 @@ const gqlChainToWagmiChainMap = {
 } as const satisfies Record<GqlChain, Chain>
 
 export const supportedNetworks = getProjectConfig().supportedNetworks
-export const supportedChains: Chain[] = supportedNetworks.map(
-  gqlChain => gqlChainToWagmiChainMap[gqlChain]
-)
+export const chains: readonly [Chain, ...Chain[]] = [
+  mainnet,
+  ...supportedNetworks
+    .filter(chain => chain !== GqlChain.Mainnet)
+    .map(gqlChain => gqlChainToWagmiChainMap[gqlChain]),
+]
 
-const chainsByKey = keyBy(supportedChains, 'id')
+const chainsByKey = keyBy(chains, 'id')
 export function getDefaultRpcUrl(chainId: number) {
   return chainsByKey[chainId].rpcUrls.default.http[0]
 }
@@ -89,14 +100,33 @@ function getTransports(chain: Chain) {
 }
 
 const transports = Object.fromEntries(
-  supportedChains.map(chain => [chain.id, getTransports(chain)])
+  chains.map(chain => [chain.id, getTransports(chain)])
 ) as Record<number, ReturnType<typeof getTransports>>
 
-export const wagmiConfig = getDefaultConfig({
-  appName: getProjectConfig().projectName,
-  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID as string,
-  chains: supportedChains as unknown as _chains,
+const appName = getProjectConfig().projectName
+const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || ''
+const connectors = connectorsForWallets(
+  [
+    {
+      groupName: 'Recommended',
+      wallets: [
+        injectedWallet,
+        metaMaskWallet,
+        rabbyWallet,
+        rainbowWallet,
+        safeWallet,
+        coinbaseWallet,
+        walletConnectWallet,
+      ],
+    },
+  ],
+  { appName, projectId }
+)
+
+export const wagmiConfig = createConfig({
+  chains,
   transports,
+  connectors,
   ssr: true,
 })
 
