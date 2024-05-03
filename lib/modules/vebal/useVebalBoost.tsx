@@ -7,6 +7,7 @@ import { useGaugesSupplyAndBalance } from './useGaugesSupplyAndBalance'
 import { useGaugeTotalSupplyAndUserBalance } from './useGaugeTotalSupplyAndUserBalance'
 import { PoolListItem } from '../pool/pool.types'
 import { useVebalLockInfo } from './useVebalLockInfo'
+import { getChainId } from '@/lib/config/app.config'
 
 export type VeBalLockInfo = {
   lockedEndDate: number
@@ -72,10 +73,12 @@ export function useVebalBoost(pools: PoolListItem[]) {
   const veBalBoostMap = useMemo(() => {
     return Object.entries(gaugeDataByPoolMap).reduce(
       (acc, [poolId, { totalSupply, userBalance, gauge }]) => {
-        const userVeBALChainBalance = userVeBALBalances?.[gauge.chain]?.data as
+        const gaugeChainId = getChainId(gauge.chain)
+
+        const userVeBALChainBalance = userVeBALBalances?.[gaugeChainId]?.data as
           | Record<GqlChain, OnchainVebalBalance>
           | undefined
-        const veBALChainTotalSupply = veBalTotalSupplyL2?.[gauge.chain]?.data as
+        const veBALChainTotalSupply = veBalTotalSupplyL2?.[gaugeChainId]?.data as
           | Record<GqlChain, OnchainVebalBalance>
           | undefined
 

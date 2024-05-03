@@ -6,7 +6,7 @@ import { useMulticall } from '../web3/contracts/useMulticall'
 
 import { AbiMap } from '../web3/contracts/AbiMap'
 import { Hex } from 'viem'
-import { getChainId } from '@/lib/config/app.config'
+import { getChainId, getGqlChain } from '@/lib/config/app.config'
 
 type GaugeDataByPool = Record<string, { totalSupply: string; userBalance: string; gauge: GaugeArg }>
 
@@ -51,9 +51,11 @@ export function useGaugesSupplyAndBalance(gauges: GaugeArg[]) {
       if (v.status === 'error' || v.status === 'pending') {
         return acc
       }
+      const chain = getGqlChain(Number(v.chainId))
+
       return {
         ...acc,
-        ...v.data[v.chain],
+        ...v.data[chain],
       }
     }, {})
 
@@ -61,9 +63,11 @@ export function useGaugesSupplyAndBalance(gauges: GaugeArg[]) {
       if (v.status === 'error' || v.status === 'pending') {
         return acc
       }
+      const chain = getGqlChain(Number(v.chainId))
+
       return {
         ...acc,
-        ...v.data[v.chain],
+        ...v.data[chain],
       }
     }, {})
 
