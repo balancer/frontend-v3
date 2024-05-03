@@ -48,7 +48,7 @@ export function useGaugesSupplyAndBalance(gauges: GaugeArg[]) {
     const balancesData = Object.values(gaugesBalances) as any[]
 
     const totalSupplyDataGaugeMap = totalSupplyData.reduce((acc, v) => {
-      if (v.status === 'error' || v.status === 'loading') {
+      if (v.status === 'error' || v.status === 'pending') {
         return acc
       }
       return {
@@ -58,7 +58,7 @@ export function useGaugesSupplyAndBalance(gauges: GaugeArg[]) {
     }, {})
 
     const balancesDataGaugeMap = balancesData.reduce((acc, v) => {
-      if (v.status === 'error' || v.status === 'loading') {
+      if (v.status === 'error' || v.status === 'pending') {
         return acc
       }
       return {

@@ -54,7 +54,6 @@ function AprTooltip({
   apr,
   vebalBoost,
 }: Props) {
-  console.log('data', data)
   const aprToShow = apr || getAprLabel(data.apr, vebalBoost)
 
   const aprItems = sortAprItems(data.items)
