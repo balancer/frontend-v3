@@ -5,11 +5,11 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { HumanAmount } from '@balancer/sdk'
 import { useDebounce } from 'use-debounce'
-import { Address, useQuery } from 'wagmi'
+import { useQuery } from '@tanstack/react-query'
 import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
 import { RemoveLiquidityParams, removeLiquidityKeys } from './remove-liquidity-keys'
-import { UseQueryOptions } from '@tanstack/react-query'
-import { captureRemoveLiquidityHandlerError } from '@/lib/shared/utils/query-errors'
+import { sentryMetaForRemoveLiquidityHandler } from '@/lib/shared/utils/query-errors'
+import { Address } from 'viem'
 
 export type RemoveLiquiditySimulationQueryResult = ReturnType<
   typeof useRemoveLiquiditySimulationQuery
@@ -19,14 +19,11 @@ export function useRemoveLiquiditySimulationQuery(
   handler: RemoveLiquidityHandler,
   poolId: string,
   humanBptIn: HumanAmount,
-  tokenOut: Address,
-  options: UseQueryOptions = {}
+  tokenOut: Address
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const debouncedHumanBptIn = useDebounce(humanBptIn, defaultDebounceMs)[0]
-
-  const enabled = options.enabled ?? true
 
   const params: RemoveLiquidityParams = {
     handler,
@@ -44,16 +41,12 @@ export function useRemoveLiquiditySimulationQuery(
       tokenOut,
     })
 
-  const result = useQuery(queryKey, queryFn, {
-    enabled: enabled && isConnected && Number(debouncedHumanBptIn) > 0,
-    cacheTime: 0,
-    onError(error: unknown) {
-      captureRemoveLiquidityHandlerError(
-        error,
-        'Error in remove liquidity simulation query',
-        params
-      )
-    },
+  const result = useQuery({
+    queryKey,
+    queryFn,
+    enabled: isConnected && Number(debouncedHumanBptIn) > 0,
+    gcTime: 0,
+    meta: sentryMetaForRemoveLiquidityHandler('Error in remove liquidity simulation query', params),
     ...onlyExplicitRefetch,
   })
   return result

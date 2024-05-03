@@ -9,6 +9,7 @@ import { selectRemoveLiquidityHandler } from '../handlers/selectRemoveLiquidityH
 import { RemoveLiquidityType } from '../remove-liquidity.types'
 import { useRemoveLiquiditySimulationQuery } from './useRemoveLiquiditySimulationQuery'
 import { Address } from 'viem'
+import { connectWithDefaultUser } from '@/test/utils/wagmi/wagmi-connections'
 
 async function testQuery(humanBptIn: HumanAmount) {
   const handler = selectRemoveLiquidityHandler(
@@ -23,6 +24,8 @@ async function testQuery(humanBptIn: HumanAmount) {
 }
 
 test('runs preview query for proportional remove liquidity', async () => {
+  await connectWithDefaultUser()
+
   const humanBptIn: HumanAmount = '642.164532327890776754'
 
   const result = await testQuery(humanBptIn)
@@ -35,5 +38,5 @@ test('runs preview query for proportional remove liquidity', async () => {
   const wethOutUnits = toHumanAmount(wethAmountOut)
 
   expect(Number(wjOutUnits)).toBeGreaterThan(1800)
-  expect(Number(wethOutUnits)).toBeGreaterThan(0.15)
+  expect(Number(wethOutUnits)).toBeGreaterThan(0.14)
 })

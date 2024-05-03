@@ -8,6 +8,7 @@ import { act } from 'react-dom/test-utils'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { TokenAmountToApprove } from './approval-rules'
 import { useConstructApproveTokenStep } from './useConstructApproveTokenStep'
+import { connectWithDefaultUser } from '../../../../test/utils/wagmi/wagmi-connections'
 
 function testUseConstruct() {
   const { result } = testHook(
@@ -42,6 +43,7 @@ function testUseConstruct() {
 }
 
 test('Approves a token allowance', async () => {
+  await connectWithDefaultUser()
   const result = testUseConstruct()
 
   expect(result.current.transactionLabels).toMatchInlineSnapshot(`

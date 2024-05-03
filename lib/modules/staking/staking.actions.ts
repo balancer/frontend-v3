@@ -4,8 +4,8 @@ import { TransactionLabels, FlowStep } from '@/lib/modules/transactions/transact
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Address } from 'viem'
 import { SupportedChainId } from '@/lib/config/config.types'
+import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useSyncTransactionFlowStep } from '../transactions/transaction-steps/TransactionFlowProvider'
-import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 function buildStakingDepositLabels(staking?: GqlPoolStaking | null): TransactionLabels {
   const labels: TransactionLabels = {
@@ -73,12 +73,11 @@ export function useConstructStakingDepositActionStep(
     'deposit',
     transactionLabels,
     chainId,
-    { args: stakingConfig?.args },
+    stakingConfig?.args,
     {
-      enabled: !!staking || !!depositAmount,
-      onError(error: unknown) {
-        captureWagmiSimulationError(
-          error,
+      query: {
+        enabled: !!staking || !!depositAmount,
+        meta: sentryMetaForWagmiSimulation(
           'Error in wagmi tx simulation (Staking deposit transaction)',
           {
             chainId,
@@ -87,7 +86,7 @@ export function useConstructStakingDepositActionStep(
             depositAmount,
             stakingConfig,
           }
-        )
+        ),
       },
     }
   )
@@ -118,12 +117,11 @@ export function useConstructStakingWithdrawActionStep(
     'withdraw',
     transactionLabels,
     chainId,
-    { args: stakingConfig?.args },
+    stakingConfig?.args,
     {
-      enabled: !!staking || !!withdrawAmount,
-      onError(error: unknown) {
-        captureWagmiSimulationError(
-          error,
+      query: {
+        enabled: !!staking || !!withdrawAmount,
+        meta: sentryMetaForWagmiSimulation(
           'Error in wagmi tx simulation (Staking withdraw transaction)',
           {
             chainId,
@@ -132,7 +130,7 @@ export function useConstructStakingWithdrawActionStep(
             withdrawAmount,
             stakingConfig,
           }
-        )
+        ),
       },
     }
   )

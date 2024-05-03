@@ -10,8 +10,8 @@ import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTr
 import { useBalTokenRewards } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
 import { useClaimableBalances } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
+import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useSyncTransactionFlowStep } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
-import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructClaimAndUnstakeStep() {
   const { pool, chainId } = usePool()
@@ -44,19 +44,18 @@ export function useConstructClaimAndUnstakeStep() {
     'multicall',
     transactionLabels,
     chainId,
-    { args: [data] },
+    [data],
     {
-      enabled: !!pool,
-      onError(error: unknown) {
-        captureWagmiSimulationError(
-          error,
+      query: {
+        enabled: !!pool,
+        meta: sentryMetaForWagmiSimulation(
           'Error in wagmi tx simulation (Claim and unstake transaction)',
           {
             poolId: pool.id,
             chainId,
             unstakeArgs: data,
           }
-        )
+        ),
       },
     }
   )

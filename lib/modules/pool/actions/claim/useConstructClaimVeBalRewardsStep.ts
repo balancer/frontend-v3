@@ -3,8 +3,8 @@ import { claimableVeBalRewardsTokens } from '@/lib/modules/portfolio/PortfolioCl
 import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
+import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useSyncTransactionFlowStep } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
-import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 const transactionLabels: TransactionLabels = {
   init: 'Claim all',
@@ -22,18 +22,17 @@ export function useConstructClaimVeBalRewardsStep() {
     'claimTokens',
     transactionLabels,
     1, // only on mainnet
-    { args: [userAddress, claimableVeBalRewardsTokens] },
+    [userAddress, claimableVeBalRewardsTokens],
     {
-      enabled: !!userAddress,
-      onError(error: unknown) {
-        captureWagmiSimulationError(
-          error,
+      query: {
+        enabled: !!userAddress,
+        meta: sentryMetaForWagmiSimulation(
           'Error in wagmi tx simulation (Claim veBal rewards transaction)',
           {
             userAddress,
             feeDistributor: networkConfig.contracts.feeDistributor,
           }
-        )
+        ),
       },
     }
   )

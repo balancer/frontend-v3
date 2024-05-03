@@ -2,27 +2,24 @@
 
 import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { useDebounce } from 'use-debounce'
-import { useQuery } from 'wagmi'
-import { UseQueryOptions } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { SwapHandler } from '../handlers/Swap.handler'
 import { swapQueryKeys } from './swapQueryKeys'
 import { SimulateSwapInputs, SimulateSwapResponse } from '../swap.types'
-import { captureSwapHandlerError } from '@/lib/shared/utils/query-errors'
+import { sentryMetaForSwapHandler } from '@/lib/shared/utils/query-errors'
 
 export type SimulateSwapParams = {
   handler: SwapHandler
   swapInputs: SimulateSwapInputs
-  options?: UseQueryOptions
+  enabled: boolean
 }
 
 export function useSimulateSwapQuery({
   handler,
   swapInputs: { swapAmount, chain, tokenIn, tokenOut, swapType },
-  options = {},
+  enabled = true,
 }: SimulateSwapParams) {
   const debouncedSwapAmount = useDebounce(swapAmount, defaultDebounceMs)[0]
-
-  const enabled = options.enabled ?? true
 
   const inputs = {
     swapAmount: debouncedSwapAmount,
@@ -36,17 +33,16 @@ export function useSimulateSwapQuery({
 
   const queryFn = async () => handler.simulate(inputs)
 
-  const queryOpts = {
+  return useQuery<SimulateSwapResponse, Error>({
+    queryKey,
+    queryFn,
     enabled,
-    cacheTime: 0,
+    gcTime: 0,
+    meta: sentryMetaForSwapHandler('Error in add liquidity simulation query', {
+      handler,
+      swapInputs: inputs,
+      enabled,
+    }),
     ...onlyExplicitRefetch,
-    onError(error: unknown) {
-      captureSwapHandlerError(error, 'Error in add liquidity simulation query', {
-        handler,
-        swapInputs: inputs,
-      })
-    },
-  }
-
-  return useQuery<SimulateSwapResponse, Error>(queryKey, queryFn, queryOpts)
+  })
 }

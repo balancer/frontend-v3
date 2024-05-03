@@ -2,14 +2,14 @@
 
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { useQuery } from 'wagmi'
+import { useQuery } from '@tanstack/react-query'
 import { RemoveLiquidityParams, removeLiquidityKeys } from './remove-liquidity-keys'
 import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
 import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { usePool } from '../../../usePool'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useRelayerSignature } from '@/lib/modules/relayer/useRelayerSignature'
-import { captureRemoveLiquidityHandlerError } from '@/lib/shared/utils/query-errors'
+import { sentryMetaForRemoveLiquidityHandler } from '@/lib/shared/utils/query-errors'
 
 export type RemoveLiquidityBuildQueryResponse = ReturnType<
   typeof useRemoveLiquidityBuildCallDataQuery
@@ -50,16 +50,15 @@ export function useRemoveLiquidityBuildCallDataQuery() {
     return res
   }
 
-  return useQuery(queryKey, queryFn, {
+  return useQuery({
+    queryKey,
+    queryFn,
     enabled: isConnected && !!simulationQuery.data,
-    cacheTime: 0,
-    onError(error: unknown) {
-      captureRemoveLiquidityHandlerError(
-        error,
-        'Error in remove liquidity buildCallData query',
-        params
-      )
-    },
+    gcTime: 0,
+    meta: sentryMetaForRemoveLiquidityHandler(
+      'Error in remove liquidity buildCallData query',
+      params
+    ),
     ...onlyExplicitRefetch,
   })
 }

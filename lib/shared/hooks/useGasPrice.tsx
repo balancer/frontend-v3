@@ -1,4 +1,4 @@
-import { useQuery } from 'wagmi'
+import { useQuery } from '@tanstack/react-query'
 import { GqlChain } from '../services/api/generated/graphql'
 import { getViemClient } from '../services/viem/viem.client'
 import { formatUnits } from 'viem'
@@ -40,9 +40,11 @@ export function GasPriceCard({ chain }: { chain: GqlChain }) {
 }
 
 export function useGasPriceQuery(chain: GqlChain) {
-  const query = useQuery(['gasPrice', chain], () => getGasPrice(chain), {
+  const query = useQuery({
+    queryKey: ['gasPrice', chain],
+    queryFn: () => getGasPrice(chain),
     refetchInterval: secs(30).toMs(),
-    cacheTime: secs(30).toMs(),
+    gcTime: secs(30).toMs(),
     ...onlyExplicitRefetch,
   })
 

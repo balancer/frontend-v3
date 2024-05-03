@@ -1,6 +1,6 @@
-import { useContractRead } from 'wagmi'
+import { useReadContract } from 'wagmi'
 import { useUserAccount } from '../../web3/useUserAccount'
-import { FeeDistributorStaticABI } from '../../web3/contracts/abi/FeeDistributorStaticABI'
+import { FeeDistributorStaticAbi } from '../../web3/contracts/abi/FeeDistributorStaticAbi'
 import networkConfigs from '@/lib/config/networks'
 import { formatUnits } from 'viem'
 import { useTokens } from '../../tokens/useTokens'
@@ -22,25 +22,27 @@ export function useProtocolRewards() {
     data: protocolRewardsData = [],
     isLoading: isLoadingProtocolRewards,
     error: protocolRewardsError,
-  } = useContractRead({
+  } = useReadContract({
     chainId: networkConfigs.MAINNET.chainId,
-    enabled: isConnected,
     address: networkConfigs.MAINNET.contracts.feeDistributor,
-    abi: FeeDistributorStaticABI,
+    abi: FeeDistributorStaticAbi,
     functionName: 'claimTokens',
     args: [userAddress, claimableVeBalRewardsTokens],
-    select: data => {
-      return (data as bigint[]).map((clBalance, index) => {
-        const tokenAddress = claimableVeBalRewardsTokens[index]
-        const tokenPrice = priceFor(tokenAddress, networkConfigs.MAINNET.chain)
-        const formattedBalance = formatUnits(clBalance, 18)
-        return {
-          tokenAddress,
-          balance: clBalance,
-          formattedBalance,
-          fiatBalance: bn(formattedBalance).multipliedBy(tokenPrice),
-        }
-      })
+    query: {
+      enabled: isConnected,
+      select: data => {
+        return (data as bigint[]).map((clBalance, index) => {
+          const tokenAddress = claimableVeBalRewardsTokens[index]
+          const tokenPrice = priceFor(tokenAddress, networkConfigs.MAINNET.chain)
+          const formattedBalance = formatUnits(clBalance, 18)
+          return {
+            tokenAddress,
+            balance: clBalance,
+            formattedBalance,
+            fiatBalance: bn(formattedBalance).multipliedBy(tokenPrice),
+          }
+        })
+      },
     },
   })
 

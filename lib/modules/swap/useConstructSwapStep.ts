@@ -8,7 +8,7 @@ import { getChainId } from '@/lib/config/app.config'
 import { useSyncTransactionFlowStep } from '../transactions/transaction-steps/TransactionFlowProvider'
 import { capitalize } from 'lodash'
 import { swapActionPastTense } from './swap.helpers'
-import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
+import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 
 export function useConstructSwapStep() {
   const { simulationQuery, selectedChain, swapAction, tokenInInfo, tokenOutInfo } = useSwap()
@@ -38,13 +38,7 @@ export function useConstructSwapStep() {
     transactionLabels,
     chainId,
     buildSwapQuery.data,
-    (error: unknown) => {
-      captureWagmiSimulationError(
-        error,
-        'Error in swap send transaction simulation',
-        buildSwapQuery.data || {}
-      )
-    }
+    sentryMetaForWagmiSimulation('Error in swap gas estimation', buildSwapQuery.data || {})
   )
 
   const isComplete = () => swapTransaction.result.isSuccess

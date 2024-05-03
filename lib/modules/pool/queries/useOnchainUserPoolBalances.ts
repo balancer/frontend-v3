@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Address, useContractReads } from 'wagmi'
+import { useReadContracts } from 'wagmi'
+import { Address } from 'viem'
 import {
-  balancerV2GaugeV5ABI,
-  balancerV2WeightedPoolV4ABI,
+  balancerV2GaugeV5Abi,
+  balancerV2WeightedPoolV4Abi,
 } from '../../web3/contracts/abi/generated'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { formatUnits, zeroAddress } from 'viem'
@@ -70,13 +71,15 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
     isLoading: isLoadingUnstakedPoolBalances,
     refetch: refetchUnstakedBalances,
     error: unstakedPoolBalancesError,
-  } = useContractReads({
+  } = useReadContracts({
     allowFailure: false,
-    enabled: isConnected,
+    query: {
+      enabled: isConnected,
+    },
     contracts: pools.map(
       pool =>
         ({
-          abi: balancerV2WeightedPoolV4ABI,
+          abi: balancerV2WeightedPoolV4Abi,
           address: pool.address as Address,
           functionName: 'balanceOf',
           args: [userAddress],
@@ -90,12 +93,12 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
     isLoading: isLoadingStakedPoolBalances,
     refetch: refetchedStakedBalances,
     error: stakedPoolBalancesError,
-  } = useContractReads({
-    enabled: isConnected,
+  } = useReadContracts({
+    query: { enabled: isConnected },
     contracts: pools.map(
       pool =>
         ({
-          abi: balancerV2GaugeV5ABI,
+          abi: balancerV2GaugeV5Abi,
           // We have to let the contract call fail if there is no gauge address so the array is the right size.
           address: (pool.staking?.gauge?.gaugeAddress as Address) || zeroAddress,
           functionName: 'balanceOf',

@@ -12,7 +12,8 @@ import { keyBy, orderBy, take } from 'lodash'
 import React, { ReactNode, createContext, useCallback, useEffect, useState } from 'react'
 import { ExternalLink } from 'react-feather'
 import { Hash } from 'viem'
-import { usePublicClient } from 'wagmi'
+import { useConfig, usePublicClient } from 'wagmi'
+import { waitForTransactionReceipt } from 'wagmi/actions'
 
 export type RecentTransactionsResponse = ReturnType<typeof _useRecentTransactions>
 export const TransactionsContext = createContext<RecentTransactionsResponse | null>(null)
@@ -83,6 +84,7 @@ export function _useRecentTransactions() {
   const [transactions, setTransactions] = useState<Record<string, TrackedTransaction>>({})
   const toast = useToast()
   const publicClient = usePublicClient()
+  const config = useConfig()
 
   // when loading transactions from the localStorage cache and we identify any unconfirmed
   // transactions, we should fetch the receipt of the transactions
@@ -100,7 +102,7 @@ export function _useRecentTransactions() {
       // so we use the underlying viem call to get the transactions confirmation status
       for (const tx of unconfirmedTransactions) {
         try {
-          const receipt = await publicClient.waitForTransactionReceipt({ hash: tx.hash })
+          const receipt = await waitForTransactionReceipt(config, { hash: tx.hash })
           if (receipt?.status === 'success') {
             updatePayload[tx.hash] = {
               ...tx,

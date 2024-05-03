@@ -10,8 +10,8 @@ import { useEffect } from 'react'
 import { getChainId } from '@/lib/config/app.config'
 import { PoolListItem } from '../../pool.types'
 import { getAllGaugesAddressesFromPool } from '@/lib/modules/portfolio/usePortfolio'
+import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useSyncTransactionFlowStep } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
-import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructClaimAllRewardsStep(pools: PoolListItem[]) {
   const { isConnected } = useUserAccount()
@@ -46,12 +46,11 @@ export function useConstructClaimAllRewardsStep(pools: PoolListItem[]) {
     'multicall',
     transactionLabels,
     getChainId(chain),
-    { args: [claimData] },
+    [claimData],
     {
-      enabled: gaugeAddresses.length > 0 && claimData && claimData.length > 0,
-      onError(error: unknown) {
-        captureWagmiSimulationError(
-          error,
+      query: {
+        enabled: gaugeAddresses.length > 0 && claimData && claimData.length > 0,
+        meta: sentryMetaForWagmiSimulation(
           'Error in wagmi tx simulation (Claim all rewards transaction)',
           {
             poolId: pool.id,
@@ -60,7 +59,7 @@ export function useConstructClaimAllRewardsStep(pools: PoolListItem[]) {
             stakingType,
             gaugeAddresses,
           }
-        )
+        ),
       },
     }
   )

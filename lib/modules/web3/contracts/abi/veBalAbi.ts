@@ -1,4 +1,4 @@
-export const VeBALABI = [
+export const VeBALAbi = [
   {
     name: 'CommitOwnership',
     inputs: [

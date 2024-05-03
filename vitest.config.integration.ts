@@ -10,7 +10,7 @@ function setupFilesWithoutMswSetup() {
 const integrationTestOptions: Partial<InlineConfig> = {
   include: ['./**/*.integration.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
   // Avoid msw in integration tests
-  setupFiles: [...setupFilesWithoutMswSetup(), 'test/vitest/setup-integration.ts'],
+  setupFiles: [...setupFilesWithoutMswSetup()],
   globalSetup: ['./test/anvil/anvil-global-setup.ts'],
   testTimeout: 20_000,
   // Consider disabling threads if we detect problems with anvil

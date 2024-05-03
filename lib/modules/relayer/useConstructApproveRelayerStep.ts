@@ -6,8 +6,8 @@ import { useEffect } from 'react'
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { getNetworkConfig } from '@/lib/config/app.config'
+import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useSyncTransactionFlowStep } from '../transactions/transaction-steps/TransactionFlowProvider'
-import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructApproveRelayerStep(chainId: SupportedChainId) {
   const { userAddress, isConnected } = useUserAccount()
@@ -31,18 +31,16 @@ export function useConstructApproveRelayerStep(chainId: SupportedChainId) {
     'setRelayerApproval',
     transactionLabels,
     chainId,
+    [userAddress, relayerAddress, true],
     {
-      args: [userAddress, relayerAddress, true],
-    },
-    {
-      enabled: !isLoading,
-      onError(error: unknown) {
-        captureWagmiSimulationError(error, 'Error in wagmi tx simulation: Approving Relayer', {
+      query: {
+        enabled: !!userAddress && !isLoading,
+        meta: sentryMetaForWagmiSimulation('Error in wagmi tx simulation: Approving Relayer', {
           vaultAddress,
           userAddress,
           relayerAddress,
           chainId,
-        })
+        }),
       },
     }
   )

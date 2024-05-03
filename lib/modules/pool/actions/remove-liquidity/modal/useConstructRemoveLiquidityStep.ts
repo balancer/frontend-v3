@@ -8,8 +8,8 @@ import { useRemoveLiquidityBuildCallDataQuery } from '../queries/useRemoveLiquid
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useEffect } from 'react'
 import { usePool } from '../../../usePool'
+import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useSyncTransactionFlowStep } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
-import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructRemoveLiquidityStep() {
   const { chainId } = usePool()
@@ -35,13 +35,10 @@ export function useConstructRemoveLiquidityStep() {
     transactionLabels,
     chainId,
     buildCallDataQuery.data,
-    (error: unknown) => {
-      captureWagmiSimulationError(
-        error,
-        'Error in RemoveLiquidity send transaction simulation',
-        buildCallDataQuery.data || {}
-      )
-    }
+    sentryMetaForWagmiSimulation(
+      'Error in RemoveLiquidity gas estimation',
+      buildCallDataQuery.data || {}
+    )
   )
 
   const isComplete = () => removeLiquidityTransaction.result.isSuccess

@@ -7,8 +7,8 @@ import { Address } from 'viem'
 import { UseTokenAllowancesResponse } from '../../web3/useTokenAllowances'
 import { ApprovalAction, TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
 import { TokenAmountToApprove } from './approval-rules'
+import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useSyncTransactionFlowStep } from '../../transactions/transaction-steps/TransactionFlowProvider'
-import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export type ApproveTokenProps = {
   tokenAllowances: UseTokenAllowancesResponse
@@ -44,15 +44,14 @@ export function useConstructApproveTokenStep({
     'approve',
     tokenApprovalLabels,
     getChainId(chain),
-    { args: [spenderAddress, requestedRawAmount] },
+    [spenderAddress, requestedRawAmount],
     {
-      enabled: !!spenderAddress && !isAllowancesLoading,
-      onError(error: unknown) {
-        captureWagmiSimulationError(
-          error,
+      query: {
+        enabled: !!spenderAddress && !isAllowancesLoading,
+        meta: sentryMetaForWagmiSimulation(
           'Error in wagmi tx simulation: Approving token',
           tokenAmountToApprove
-        )
+        ),
       },
     }
   )

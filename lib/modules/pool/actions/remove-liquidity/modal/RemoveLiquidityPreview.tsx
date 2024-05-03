@@ -4,9 +4,8 @@ import { Card, VStack, Text } from '@chakra-ui/react'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { usePool } from '../../../usePool'
-import { Address } from 'wagmi'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
-import { parseUnits } from 'viem'
+import { parseUnits, Address } from 'viem'
 import { useTransactionFlow } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 
 export function RemoveLiquidityPreview() {

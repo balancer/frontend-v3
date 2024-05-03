@@ -8,8 +8,8 @@ import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuil
 import { useEffect } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
 import { usePool } from '../../usePool'
+import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useSyncTransactionFlowStep } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
-import { captureWagmiSimulationError } from '@/lib/shared/utils/query-errors'
 
 export function useConstructAddLiquidityStep() {
   const { chainId } = usePool()
@@ -35,12 +35,10 @@ export function useConstructAddLiquidityStep() {
     transactionLabels,
     chainId,
     buildCallDataQuery.data,
-    (error: unknown) => {
-      captureWagmiSimulationError(error, 'Error in AddLiquidity transaction simulation', {
-        simulationQueryData: simulationQuery.data,
-        buildCallQueryData: buildCallDataQuery.data,
-      })
-    }
+    sentryMetaForWagmiSimulation('Error in AddLiquidity gas estimation', {
+      simulationQueryData: simulationQuery.data,
+      buildCallQueryData: buildCallDataQuery.data,
+    })
   )
 
   const isComplete = () => addLiquidityTransaction.result.isSuccess

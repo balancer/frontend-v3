@@ -19,6 +19,10 @@ import {
   PopoverCloseButton,
   PopoverContent,
   PopoverTrigger,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
   Tag,
   TagCloseButton,
   TagLabel,
@@ -33,6 +37,12 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useEffect, useState } from 'react'
 import { Filter } from 'react-feather'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { useDebouncedCallback } from 'use-debounce'
+import { defaultDebounceMs } from '@/lib/shared/utils/queries'
+
+const SLIDER_MAX_VALUE = 10000000
+const SLIDER_STEP_SIZE = 100000
 
 function UserPoolFilter() {
   const { userAddress, toggleUserAddress } = usePoolListQueryState()
@@ -87,11 +97,56 @@ function PoolNetworkFilters() {
   ))
 }
 
-export function FilterTags() {
-  const { networks, toggleNetwork, poolTypes, togglePoolType, poolTypeLabel } =
-    usePoolListQueryState()
+function PoolMinTvlFilter() {
+  const { toCurrency } = useCurrency()
+  const { minTvl, setMinTvl } = usePoolListQueryState()
+  const [sliderValue, setSliderValue] = useState(minTvl)
 
-  if (networks.length === 0 && poolTypes.length === 0) {
+  const debounced = useDebouncedCallback((val: number) => {
+    setMinTvl(val)
+  }, defaultDebounceMs)
+
+  // set min tvl value here to keep slider performant
+  useEffect(() => {
+    debounced(sliderValue)
+  }, [sliderValue])
+
+  // sync slider value with minTvl value
+  useEffect(() => {
+    setSliderValue(minTvl)
+  }, [minTvl])
+
+  return (
+    <VStack w="full">
+      <HStack w="full">
+        <Heading as="h3" size="sm">
+          Minimum TVL
+        </Heading>
+        <Text ml="auto">{toCurrency(sliderValue)}</Text>
+      </HStack>
+      <Slider
+        aria-label="slider-min-tvl"
+        onChange={val => setSliderValue(val)}
+        value={sliderValue}
+        min={0}
+        max={SLIDER_MAX_VALUE}
+        step={SLIDER_STEP_SIZE}
+      >
+        <SliderTrack>
+          <SliderFilledTrack />
+        </SliderTrack>
+        <SliderThumb />
+      </Slider>
+    </VStack>
+  )
+}
+
+export function FilterTags() {
+  const { networks, toggleNetwork, poolTypes, togglePoolType, poolTypeLabel, minTvl, setMinTvl } =
+    usePoolListQueryState()
+  const { toCurrency } = useCurrency()
+
+  if (networks.length === 0 && poolTypes.length === 0 && minTvl === 0) {
     return <></>
   }
 
@@ -103,7 +158,6 @@ export function FilterTags() {
           <TagCloseButton onClick={() => togglePoolType(false, poolType)} />
         </Tag>
       ))}
-
       {networks.map(network => (
         <Tag key={network} size="lg">
           <TagLabel>
@@ -114,6 +168,14 @@ export function FilterTags() {
           <TagCloseButton onClick={() => toggleNetwork(false, network)} />
         </Tag>
       ))}
+      <Tag key="minTvl" size="lg">
+        <TagLabel>
+          <Text fontWeight="bold" textTransform="capitalize">
+            {`TVL > ${toCurrency(minTvl)}`}
+          </Text>
+        </TagLabel>
+        <TagCloseButton onClick={() => setMinTvl(0)} />
+      </Tag>
     </HStack>
   )
 }
@@ -163,7 +225,6 @@ export function PoolListFilters() {
                       <Divider />
                     </>
                   )}
-
                   <Heading as="h3" size="sm" mb="1.5">
                     Pool types
                   </Heading>
@@ -173,6 +234,8 @@ export function PoolListFilters() {
                     Networks
                   </Heading>
                   <PoolNetworkFilters />
+                  <Divider />
+                  <PoolMinTvlFilter />
                 </VStack>
               </PopoverBody>
             </PopoverContent>

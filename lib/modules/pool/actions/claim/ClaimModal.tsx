@@ -14,7 +14,7 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { useClaiming } from './useClaiming'
-import { Address } from 'wagmi'
+import { Address } from 'viem'
 import { BalTokenReward } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
 import { ClaimableReward } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
