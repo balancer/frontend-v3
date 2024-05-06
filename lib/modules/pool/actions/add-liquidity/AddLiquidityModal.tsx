@@ -21,13 +21,8 @@ import { useAddLiquidity } from './useAddLiquidity'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import Image from 'next/image'
 import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
 import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
-import { getNetworkConfig } from '@/lib/config/app.config'
-import { AddLiquiditySubmitted } from './AddLiquiditySubmitted'
-import { ActionCompleteModalFooter } from '../ActionCompleteModalFooter'
-import { useTransactionFlow } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 
 type Props = {
   isOpen: boolean
@@ -47,8 +42,6 @@ export function AddLiquidityModal({
   const { stepConfigs, currentStep, currentStepIndex, useOnStepCompleted } = useAddLiquidity()
   const { pool, chainId } = usePool()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
-  const { isFlowComplete, isFlowConfirming } = useTransactionFlow()
-  const networkConfig = getNetworkConfig(pool.chain)
 
   return (
     <Modal
@@ -70,27 +63,16 @@ export function AddLiquidityModal({
         )}
         <ModalHeader>
           <HStack justify="space-between" w="full" pr="lg">
-            {isFlowComplete || isFlowConfirming ? (
-              <Image
-                src={networkConfig.iconPath}
-                width="24"
-                height="24"
-                alt={networkConfig.shortName}
-              />
-            ) : (
-              <span>Add liquidity</span>
-            )}
+            <span>Add liquidity</span>
             <AddLiquidityTimeout />
           </HStack>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          {isFlowComplete || isFlowConfirming ? <AddLiquiditySubmitted /> : <AddLiquidityPreview />}
+          <AddLiquidityPreview />
         </ModalBody>
         <ModalFooter>
-          {isFlowComplete || isFlowConfirming ? (
-            <ActionCompleteModalFooter />
-          ) : shouldSignRelayerApproval ? (
+          {shouldSignRelayerApproval ? (
             <SignRelayerButton />
           ) : (
             <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
