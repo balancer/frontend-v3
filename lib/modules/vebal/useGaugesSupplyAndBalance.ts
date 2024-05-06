@@ -6,6 +6,7 @@ import { useMulticall } from '../web3/contracts/useMulticall'
 
 import { AbiMap } from '../web3/contracts/AbiMap'
 import { Hex } from 'viem'
+import { getChainId, getGqlChain } from '@/lib/config/app.config'
 
 type GaugeDataByPool = Record<string, { totalSupply: string; userBalance: string; gauge: GaugeArg }>
 
@@ -14,7 +15,7 @@ export function useGaugesSupplyAndBalance(gauges: GaugeArg[]) {
 
   const gaugesTotalSupplyDataRequests = gauges.map(gauge => {
     return {
-      chain: gauge.chain,
+      chainId: getChainId(gauge.chain),
       id: `${gauge.chain}.${gauge.gaugeAddress}`,
       abi: AbiMap['balancer.LiquidityGauge'] as any,
       address: gauge.gaugeAddress as Hex,
@@ -28,7 +29,7 @@ export function useGaugesSupplyAndBalance(gauges: GaugeArg[]) {
   )
   const gaugesBalancesDataRequests = gauges.map(gauge => {
     return {
-      chain: gauge.chain,
+      chainId: getChainId(gauge.chain),
       id: `${gauge.chain}.${gauge.gaugeAddress}`,
       abi: AbiMap['balancer.LiquidityGauge'] as any,
       address: gauge.gaugeAddress as Hex,
@@ -47,22 +48,26 @@ export function useGaugesSupplyAndBalance(gauges: GaugeArg[]) {
     const balancesData = Object.values(gaugesBalances) as any[]
 
     const totalSupplyDataGaugeMap = totalSupplyData.reduce((acc, v) => {
-      if (v.status === 'error' || v.status === 'loading') {
+      if (v.status === 'error' || v.status === 'pending') {
         return acc
       }
+      const chain = getGqlChain(Number(v.chainId))
+
       return {
         ...acc,
-        ...v.data[v.chain],
+        ...v.data[chain],
       }
     }, {})
 
     const balancesDataGaugeMap = balancesData.reduce((acc, v) => {
-      if (v.status === 'error' || v.status === 'loading') {
+      if (v.status === 'error' || v.status === 'pending') {
         return acc
       }
+      const chain = getGqlChain(Number(v.chainId))
+
       return {
         ...acc,
-        ...v.data[v.chain],
+        ...v.data[chain],
       }
     }, {})
 

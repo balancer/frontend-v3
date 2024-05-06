@@ -1,7 +1,7 @@
 'use client'
 
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
-import { Button, Card, Flex, Heading, HStack, Icon, Text, VStack } from '@chakra-ui/react'
+import { Button, Card, Flex, HStack, Icon, Text, VStack } from '@chakra-ui/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'

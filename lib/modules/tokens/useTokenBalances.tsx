@@ -1,17 +1,15 @@
 'use client'
 
 import { useUserAccount } from '../web3/useUserAccount'
-import { Address, erc20ABI, useBalance, useQuery } from 'wagmi'
+import { useBalance, useReadContracts } from 'wagmi'
+import { erc20Abi } from 'viem'
 import { useTokens } from './useTokens'
 import { TokenAmount, TokenBase } from './token.types'
-import { formatUnits } from 'viem'
+import { Address, formatUnits } from 'viem'
 import { isLoadingQueries, isRefetchingQueries, refetchQueries } from '@/lib/shared/utils/queries'
-import { multicall } from 'wagmi/actions'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { PropsWithChildren, createContext } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import crypto from 'crypto'
-import { orderBy } from 'lodash'
 import { getNetworkConfig } from '@/lib/config/app.config'
 
 const BALANCE_CACHE_TIME_MS = 30_000
@@ -33,57 +31,27 @@ export function _useTokenBalances(tokens: TokenBase[]) {
   const nativeBalanceQuery = useBalance({
     chainId,
     address: userAddress,
-    enabled: !!userAddress && includesNativeAsset,
-    cacheTime: BALANCE_CACHE_TIME_MS,
+    query: {
+      enabled: !!userAddress && includesNativeAsset,
+      gcTime: BALANCE_CACHE_TIME_MS,
+    },
   })
 
-  // TODO: Revert to useReadContracts when it's supported in wagmi, and remove multicall.
-  // Onces it's supported in wagmi we can then manually set the queryKey to
-  // avoid the overflow issue.
-  // const contracts: ContractFunctionConfig<Erc20Abi, 'balanceOf'>[] = _tokens.map(token => ({
-  //   address: token.address as Address,
-  //   abi: erc20ABI,
-  //   functionName: 'balanceOf',
-  //   args: [userAddress as Address],
-  // }))
-
-  // const tokenBalancesQuery = useReadContracts({
-  //   contracts,
-  //   allowFailure: true,
-  //   enabled: !!userAddress,
-  //   cacheTime: BALANCE_CACHE_TIME_MS,
-  // })
-
-  // Generates a consistent hash key for the query based on the tokens provided.
-  function hashKey() {
-    const hash = crypto.createHash('sha256')
-    const orderedTokens = orderBy(tokens, 'address')
-      .map(t => t.address)
-      .join('')
-    hash.update(orderedTokens)
-    return hash.digest('hex')
-  }
-
-  const tokenBalancesQuery = useQuery(
+  const tokenBalancesQuery = useReadContracts(
     // This query key can potentially collide, but it will overflow the useQuery
     // cache if this list of tokens is large.
-    [`useTokenBalances:${userAddress}:${chainId}:${hashKey()}`],
-    async () => {
-      const data = await multicall({
-        chainId,
-        contracts: _tokens.map(token => ({
-          abi: erc20ABI,
-          address: token.address as Address,
-          functionName: 'balanceOf',
-          args: [(userAddress || '') as Address],
-        })),
-      })
-
-      return data
-    },
     {
-      enabled: !!userAddress && _tokens.length > 0,
-      cacheTime: BALANCE_CACHE_TIME_MS,
+      query: {
+        enabled: !!userAddress && _tokens.length > 0,
+        gcTime: BALANCE_CACHE_TIME_MS,
+      },
+      contracts: _tokens.map(token => ({
+        chainId,
+        abi: erc20Abi,
+        address: token.address as Address,
+        functionName: 'balanceOf',
+        args: [(userAddress || '') as Address],
+      })),
     }
   )
 

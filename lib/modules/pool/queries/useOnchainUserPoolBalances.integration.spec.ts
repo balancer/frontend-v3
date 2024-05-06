@@ -4,12 +4,13 @@ import {
   toGqlWeighedPoolMock,
 } from '@/test/msw/builders/gqlPoolElement.builders'
 import { testHook } from '@/test/utils/custom-renderers'
-import { testPublicClient } from '@/test/utils/wagmi/wagmi-test-setup'
+import { mainnetTestPublicClient } from '@/test/utils/wagmi/wagmi-test-clients'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { ChainId } from '@balancer/sdk'
 import { waitFor } from '@testing-library/react'
 import { useOnchainUserPoolBalances } from './useOnchainUserPoolBalances'
 import { GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
+import { connectWithDefaultUser } from '@/test/utils/wagmi/wagmi-connections'
 
 async function testUseChainPoolBalances(pool: GqlPoolElement) {
   const weightedPoolMock = toGqlWeighedPoolMock(pool)
@@ -24,10 +25,12 @@ async function createSdkUtils(pool: GqlPoolElement) {
   return getSdkTestUtils({
     account: defaultTestUserAccount,
     chainId: ChainId.MAINNET,
-    client: testPublicClient,
+    client: mainnetTestPublicClient,
     pool,
   })
 }
+
+await connectWithDefaultUser()
 
 test('fetches onchain user balances', async () => {
   const poolMock = aBalWethPoolElementMock() // Provides 80BAL-20WETH pool by default

@@ -1,7 +1,7 @@
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
-import { useQuery } from 'wagmi'
+import { useQuery } from '@tanstack/react-query'
 import { useSwap } from '../useSwap'
 import { swapQueryKeys } from './swapQueryKeys'
 import { SimulateSwapResponse } from '../swap.types'
@@ -27,7 +27,7 @@ export function useBuildSwapQuery() {
   const queryFn = async () => {
     const simulateResponse = ensureLastQueryResponse('Swap query', simulationQuery.data)
 
-    const response = await handler.build({
+    const response = handler.build({
       tokenIn,
       tokenOut,
       swapType,
@@ -42,11 +42,11 @@ export function useBuildSwapQuery() {
     return response
   }
 
-  const queryOpts = {
+  return useQuery({
+    queryKey,
+    queryFn,
     enabled: isConnected && !!simulationQuery.data,
-    cacheTime: 0,
+    gcTime: 0,
     ...onlyExplicitRefetch,
-  }
-
-  return useQuery(queryKey, queryFn, queryOpts)
+  })
 }

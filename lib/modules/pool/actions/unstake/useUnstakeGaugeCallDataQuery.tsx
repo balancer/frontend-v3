@@ -1,4 +1,4 @@
-import { useQuery } from 'wagmi'
+import { useQuery } from '@tanstack/react-query'
 import { usePool } from '../../usePool'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { GaugeService } from '@/lib/shared/services/staking/gauge.service'
@@ -26,9 +26,12 @@ export function useUnstakeGaugeCallDataQuery(
   const queryKey = ['unstake', 'gauge', 'callData', inputData]
   const queryFn = () =>
     gaugeService && gaugeService.getGaugeClaimRewardsAndWithdrawContractCallData(inputData)
-  const queryOpts = { enabled: gaugeService && amount.toString() !== '0' }
 
-  const query = useQuery(queryKey, queryFn, queryOpts)
+  const query = useQuery({
+    queryKey,
+    queryFn,
+    enabled: gaugeService && amount.toString() !== '0',
+  })
 
   return {
     ...query,

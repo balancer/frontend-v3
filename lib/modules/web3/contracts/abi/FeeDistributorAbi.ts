@@ -1,4 +1,4 @@
-export const FeeDistributorABI = [
+export const FeeDistributorAbi = [
   {
     inputs: [
       {

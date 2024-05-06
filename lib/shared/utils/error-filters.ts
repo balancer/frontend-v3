@@ -1,6 +1,6 @@
 import { ensureError } from './errors'
 
-export function shouldIgnoreExecutionError(error: unknown): boolean {
+export function shouldIgnoreExecutionError(error: Error): boolean {
   const e = ensureError(error)
   return isUserRejectedError(e)
 }

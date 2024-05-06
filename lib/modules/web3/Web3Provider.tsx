@@ -4,16 +4,19 @@ import '@rainbow-me/rainbowkit/styles.css'
 
 import {
   darkTheme,
-  getDefaultWallets,
   lightTheme,
   RainbowKitProvider,
   Theme,
+  connectorsForWallets,
 } from '@rainbow-me/rainbowkit'
-import { configureChains, createConfig, WagmiConfig } from 'wagmi'
+
+import { WagmiProvider, http, fallback, createConfig } from 'wagmi'
+
 import {
   arbitrum,
   avalanche,
   base,
+  Chain,
   fantom,
   gnosis,
   mainnet,
@@ -21,59 +24,31 @@ import {
   polygon,
   polygonZkEvm,
   sepolia,
-} from 'wagmi/chains'
-import { publicProvider } from 'wagmi/providers/public'
+} from 'viem/chains'
+
 import { keyBy, merge } from 'lodash'
 import { useTheme } from '@chakra-ui/react'
 import { balTheme } from '@/lib/shared/services/chakra/theme'
 import { CustomAvatar } from './CustomAvatar'
-import { getProjectConfig, PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
-import { SupportedChainId } from '@/lib/config/config.types'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { UserAccountProvider } from './useUserAccount'
-import { defineChain } from 'viem'
-import { Chain } from 'viem'
-import { getNetworkConfig } from '@/lib/config/app.config'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 import { BlockedAddressModal } from './BlockedAddressModal'
 import { AcceptPoliciesModal } from './AcceptPoliciesModal'
 import { UserSettingsProvider } from '../user/settings/useUserSettings'
+import { ReactQueryClientProvider } from '@/app/react-query.provider'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-
-function buildChain(viemChain: Chain, rpcOverride?: string): Chain {
-  const { rpcUrl } = getNetworkConfig(viemChain.id)
-
-  let defaultRpcUrls = viemChain.rpcUrls.default.http
-  let publicRpcUrls = viemChain.rpcUrls.public.http
-
-  if (rpcOverride) {
-    defaultRpcUrls = [rpcOverride, ...defaultRpcUrls]
-    publicRpcUrls = [rpcOverride, ...publicRpcUrls]
-  } else if (rpcUrl) {
-    defaultRpcUrls = [rpcUrl, ...defaultRpcUrls]
-    publicRpcUrls = [rpcUrl, ...publicRpcUrls]
-  }
-
-  return defineChain({
-    ...viemChain,
-    rpcUrls: {
-      default: { http: defaultRpcUrls },
-      public: { http: publicRpcUrls },
-    },
-  })
-}
-
-const gqlChainToWagmiChainMap: Record<GqlChain, Chain> = {
-  [GqlChain.Mainnet]: mainnet,
-  [GqlChain.Arbitrum]: arbitrum,
-  [GqlChain.Base]: base,
-  [GqlChain.Avalanche]: avalanche,
-  [GqlChain.Fantom]: fantom,
-  [GqlChain.Gnosis]: gnosis,
-  [GqlChain.Optimism]: optimism,
-  [GqlChain.Polygon]: polygon,
-  [GqlChain.Zkevm]: polygonZkEvm,
-  [GqlChain.Sepolia]: sepolia,
-}
+import { getGqlChain } from '@/lib/config/app.config'
+import { SupportedChainId } from '@/lib/config/config.types'
+import {
+  injectedWallet,
+  metaMaskWallet,
+  rabbyWallet,
+  rainbowWallet,
+  walletConnectWallet,
+  safeWallet,
+  coinbaseWallet,
+} from '@rainbow-me/rainbowkit/wallets'
 
 // Helpful for injecting fork RPCs for specific chains.
 const rpcOverrides: Record<GqlChain, string | undefined> = {
@@ -89,31 +64,71 @@ const rpcOverrides: Record<GqlChain, string | undefined> = {
   [GqlChain.Sepolia]: undefined,
 }
 
-export const supportedChains = PROJECT_CONFIG.supportedNetworks.map(chain =>
-  buildChain(gqlChainToWagmiChainMap[chain], rpcOverrides[chain])
-)
+const gqlChainToWagmiChainMap = {
+  [GqlChain.Mainnet]: mainnet,
+  [GqlChain.Arbitrum]: arbitrum,
+  [GqlChain.Base]: base,
+  [GqlChain.Avalanche]: avalanche,
+  [GqlChain.Fantom]: fantom,
+  [GqlChain.Gnosis]: gnosis,
+  [GqlChain.Optimism]: optimism,
+  [GqlChain.Polygon]: polygon,
+  [GqlChain.Zkevm]: polygonZkEvm,
+  [GqlChain.Sepolia]: sepolia,
+} as const satisfies Record<GqlChain, Chain>
 
-const { chains, publicClient } = configureChains(supportedChains, [publicProvider()])
+export const supportedNetworks = getProjectConfig().supportedNetworks
+export const chains: readonly [Chain, ...Chain[]] = [
+  mainnet,
+  ...supportedNetworks
+    .filter(chain => chain !== GqlChain.Mainnet)
+    .map(gqlChain => gqlChainToWagmiChainMap[gqlChain]),
+]
 
-export const chainsByKey = keyBy(chains, 'id')
-
-export function getDefaultRpcUrl(chainId: SupportedChainId) {
+const chainsByKey = keyBy(chains, 'id')
+export function getDefaultRpcUrl(chainId: number) {
   return chainsByKey[chainId].rpcUrls.default.http[0]
 }
 
-export const { connectors } = getDefaultWallets({
-  appName: getProjectConfig().projectName,
-  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID as string,
-  chains,
-})
-
-export function createWagmiConfig() {
-  return createConfig({
-    autoConnect: true,
-    connectors,
-    publicClient,
-  })
+// TODO: define public urls as fallback??
+function getTransports(chain: Chain) {
+  const overridenRpcUrl = rpcOverrides[getGqlChain(chain.id as SupportedChainId)]
+  return fallback([
+    http(overridenRpcUrl),
+    http(), // Public transport as first option
+  ])
 }
+
+const transports = Object.fromEntries(
+  chains.map(chain => [chain.id, getTransports(chain)])
+) as Record<number, ReturnType<typeof getTransports>>
+
+const appName = getProjectConfig().projectName
+const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || ''
+const connectors = connectorsForWallets(
+  [
+    {
+      groupName: 'Recommended',
+      wallets: [
+        injectedWallet,
+        metaMaskWallet,
+        rabbyWallet,
+        rainbowWallet,
+        safeWallet,
+        coinbaseWallet,
+        walletConnectWallet,
+      ],
+    },
+  ],
+  { appName, projectId }
+)
+
+export const wagmiConfig = createConfig({
+  chains,
+  transports,
+  connectors,
+  ssr: true,
+})
 
 export function Web3Provider({ children }: { children: React.ReactNode }) {
   const { colors, radii, shadows } = useTheme()
@@ -183,22 +198,24 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   const customTheme = colorMode === 'dark' ? _darkTheme : _lightTheme
 
   return (
-    <WagmiConfig config={createWagmiConfig()}>
-      <RainbowKitProvider chains={chains} theme={customTheme} avatar={CustomAvatar}>
-        <UserAccountProvider>
-          <UserSettingsProvider
-            initCurrency={undefined}
-            initSlippage={undefined}
-            initEnableSignatures={undefined}
-            initPoolListView={undefined}
-            initAcceptedPolicies={undefined}
-          >
-            {children}
-            <BlockedAddressModal />
-            <AcceptPoliciesModal />
-          </UserSettingsProvider>
-        </UserAccountProvider>
-      </RainbowKitProvider>
-    </WagmiConfig>
+    <ReactQueryClientProvider>
+      <WagmiProvider config={wagmiConfig}>
+        <RainbowKitProvider theme={customTheme} avatar={CustomAvatar}>
+          <UserAccountProvider>
+            <UserSettingsProvider
+              initCurrency={undefined}
+              initSlippage={undefined}
+              initEnableSignatures={undefined}
+              initPoolListView={undefined}
+              initAcceptedPolicies={undefined}
+            >
+              {children}
+              <BlockedAddressModal />
+              <AcceptPoliciesModal />
+            </UserSettingsProvider>
+          </UserAccountProvider>
+        </RainbowKitProvider>
+      </WagmiProvider>
+    </ReactQueryClientProvider>
   )
 }

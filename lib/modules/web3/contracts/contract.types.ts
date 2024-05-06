@@ -1,25 +1,24 @@
 import {
-  erc20ABI,
-  useContractWrite,
-  usePrepareContractWrite,
-  usePrepareSendTransaction,
+  UseWaitForTransactionReceiptReturnType,
+  useEstimateGas,
   useSendTransaction,
-  useWaitForTransaction,
+  useSimulateContract,
+  useWriteContract,
 } from 'wagmi'
-import { Abi, Address } from 'viem'
+import { Abi, Address, erc20Abi } from 'viem'
 import { SupportedChainId } from '@/lib/config/config.types'
 
-export type TransactionSimulation =
-  | (ReturnType<typeof usePrepareContractWrite> & { config: { chainId: number } }) // somehow the config prop gets dropped somewhere
-  | ReturnType<typeof usePrepareSendTransaction>
+export type TransactionSimulation = (
+  | ReturnType<typeof useSimulateContract>
+  | ReturnType<typeof useEstimateGas>
+) & { variables: { chainId: SupportedChainId } }
 
 export type TransactionExecution =
-  | ReturnType<typeof useContractWrite>
+  | ReturnType<typeof useWriteContract>
   | ReturnType<typeof useSendTransaction>
-export type TransactionResult =
-  | ReturnType<typeof useWaitForTransaction>
-  | ReturnType<typeof useWaitForTransaction>
+export type TransactionResult = UseWaitForTransactionReceiptReturnType
 export type TransactionBundle = {
+  chainId: SupportedChainId
   simulation: TransactionSimulation
   execution: TransactionExecution
   result: TransactionResult
@@ -37,9 +36,6 @@ export type TransactionConfig = {
   value?: bigint
 }
 
-export type UsePrepareSendTransactionConfig = Exclude<
-  Parameters<typeof usePrepareSendTransaction>[0],
-  undefined
->
+export type UseEstimateGasConfig = Exclude<Parameters<typeof useEstimateGas>[0], undefined>
 
-export type Erc20Abi = typeof erc20ABI
+export type Erc20Abi = typeof erc20Abi

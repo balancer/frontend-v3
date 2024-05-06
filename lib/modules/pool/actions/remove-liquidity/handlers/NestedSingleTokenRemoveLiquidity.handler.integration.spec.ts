@@ -5,7 +5,7 @@ import { nestedPoolMock } from '../../../__mocks__/nestedPoolMock'
 import { Pool } from '../../../usePool'
 import { QueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquidity.types'
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
-import { testPublicClient } from '@/test/utils/wagmi/wagmi-test-setup'
+import { mainnetTestPublicClient } from '@/test/utils/wagmi/wagmi-test-clients'
 import { NestedSingleTokenRemoveLiquidityHandler } from './NestedSingleTokenRemoveLiquidity.handler'
 
 function selectNestedSingleTokenHandler(pool: Pool): NestedSingleTokenRemoveLiquidityHandler {
@@ -56,13 +56,13 @@ describe('When removing liquidity with single token in a nested pool', () => {
     expect(result.to).toBe(networkConfig.contracts.balancer.relayerV6)
     expect(result.data).toBeDefined()
 
-    const hash = await testPublicClient.sendTransaction({
+    const hash = await mainnetTestPublicClient.sendTransaction({
       ...result,
       account: defaultTestUserAccount,
-      chain: testPublicClient.chain,
+      chain: mainnetTestPublicClient.chain,
     })
 
-    const transactionReceipt = await testPublicClient.waitForTransactionReceipt({
+    const transactionReceipt = await mainnetTestPublicClient.waitForTransactionReceipt({
       hash,
     })
 

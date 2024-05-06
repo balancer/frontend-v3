@@ -8,22 +8,18 @@ import { areEmptyAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { AddLiquidityParams, addLiquidityKeys } from './add-liquidity-keys'
-import { UseQueryOptions } from '@tanstack/react-query'
-import { useQuery } from 'wagmi'
+import { useQuery } from '@tanstack/react-query'
 import { usePool } from '../../../usePool'
-import { captureAddLiquidityHandlerError } from '@/lib/shared/utils/query-errors'
+import { sentryMetaForAddLiquidityHandler } from '@/lib/shared/utils/query-errors'
 
 export function useAddLiquidityPriceImpactQuery(
   handler: AddLiquidityHandler,
-  humanAmountsIn: HumanAmountIn[],
-  options: UseQueryOptions = {}
+  humanAmountsIn: HumanAmountIn[]
 ) {
   const { pool } = usePool()
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
-
-  const enabled = options.enabled ?? true
 
   const params: AddLiquidityParams = {
     handler,
@@ -38,12 +34,12 @@ export function useAddLiquidityPriceImpactQuery(
 
   const queryFn = async () => handler.getPriceImpact(humanAmountsIn)
 
-  return useQuery(queryKey, queryFn, {
-    enabled: enabled && isConnected && !areEmptyAmounts(debouncedHumanAmountsIn),
-    cacheTime: 0,
+  return useQuery({
+    queryKey,
+    queryFn,
+    enabled: isConnected && !areEmptyAmounts(debouncedHumanAmountsIn),
+    gcTime: 0,
+    meta: sentryMetaForAddLiquidityHandler('Error in add liquidity priceImpact query', params),
     ...onlyExplicitRefetch,
-    onError(error: unknown) {
-      captureAddLiquidityHandlerError(error, 'Error in add liquidity priceImpact query', params)
-    },
   })
 }

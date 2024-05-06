@@ -1,61 +1,38 @@
 import { daiAddress, maticAddress } from '@/lib/debug-helpers'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { startFork } from '@/test/anvil/anvil-runner'
-import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
+import { alternativeTestUserAccount, defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
-import { erc20ABI } from 'wagmi'
+import { erc20Abi } from 'viem'
 import { ChainContractConfig, useMulticall } from './useMulticall'
+import { mainnet, polygon } from 'viem/chains'
 
-// In wagmi v1 we cannot test 2 chains at the same time but this will be possible in wagmi v2
-// (check wagmi-test-setup.ts comments)
 describe('Performs multicall in multiple chains', () => {
-  const polygonRequest: ChainContractConfig = {
-    id: 'maticBalance',
-    chain: GqlChain.Polygon,
-    abi: erc20ABI,
-    address: maticAddress,
-    functionName: 'balanceOf',
-    args: [defaultTestUserAccount],
-  }
-
   const mainnetRequest: ChainContractConfig = {
     id: 'ethBalance',
-    chain: GqlChain.Mainnet,
-    abi: erc20ABI,
+    chainId: mainnet.id,
+    abi: erc20Abi,
     address: daiAddress,
     functionName: 'balanceOf',
     args: [defaultTestUserAccount],
   }
 
-  test('including polygon contracts', async () => {
-    await startFork('POLYGON')
+  const polygonRequest: ChainContractConfig = {
+    id: 'maticBalance',
+    chainId: polygon.id,
+    abi: erc20Abi,
+    address: maticAddress,
+    functionName: 'balanceOf',
+    args: [alternativeTestUserAccount],
+  }
 
-    const multicallRequests: ChainContractConfig[] = [polygonRequest]
-
-    const { result } = testHook(() => useMulticall(multicallRequests))
-
-    await waitFor(() => expect(result.current.results.POLYGON.data).toBeDefined())
-    expect(result.current.results.POLYGON.data).toMatchInlineSnapshot(`
-    {
-      "maticBalance": {
-        "result": 10000000000000000000000n,
-        "status": "success",
-      },
-    }
-  `)
-  })
-
-  test('including mainnet contracts', async () => {
-    const multicallRequests: ChainContractConfig[] = [mainnetRequest]
-
-    await startFork('MAINNET')
+  test('including mixed mainnet and polygon contracts', async () => {
+    const multicallRequests: ChainContractConfig[] = [mainnetRequest, polygonRequest]
 
     const { result } = testHook(() => useMulticall(multicallRequests))
 
-    await waitFor(() => expect(result.current.results.MAINNET.data).toBeDefined())
+    await waitFor(() => expect(result.current.results[mainnet.id].data).toBeDefined())
 
-    expect(result.current.results.MAINNET.data).toMatchInlineSnapshot(`
+    expect(result.current.results[mainnet.id].data).toMatchInlineSnapshot(`
       {
         "ethBalance": {
           "result": 0n,
@@ -63,5 +40,15 @@ describe('Performs multicall in multiple chains', () => {
         },
       }
     `)
+
+    await waitFor(() => expect(result.current.results[polygon.id].data).toBeDefined())
+    expect(result.current.results[polygon.id].data).toMatchInlineSnapshot(`
+    {
+      "maticBalance": {
+        "result": 10000000000000000000000n,
+        "status": "success",
+      },
+    }
+  `)
   })
 })

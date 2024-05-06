@@ -17,7 +17,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { useEffect, useRef } from 'react'
-import { Address } from 'wagmi'
+import { Address } from 'viem'
 import { AddLiquidityModal } from '../AddLiquidityModal'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
