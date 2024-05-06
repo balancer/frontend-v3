@@ -27,10 +27,11 @@ import {
   toHex,
   trim,
 } from 'viem'
-import { erc20ABI, mainnet } from 'wagmi'
+import { erc20Abi } from 'viem'
 import { aWjAuraWethPoolElementMock } from '../msw/builders/gqlPoolElement.builders'
-import { testPublicClient } from '../utils/wagmi/wagmi-test-setup'
 import { defaultTestUserAccount } from '../anvil/anvil-setup'
+import { mainnet } from 'viem/chains'
+import { mainnetTestPublicClient } from '../utils/wagmi/wagmi-test-clients'
 
 /*
   Given chain, user account and pool
@@ -39,7 +40,7 @@ import { defaultTestUserAccount } from '../anvil/anvil-setup'
   - Check the new state of the pool after the test updates (i.e check the balances of the tokens in the pool)
 */
 export async function getSdkTestUtils({
-  client = testPublicClient,
+  client = mainnetTestPublicClient,
   chainId = ChainId.MAINNET,
   account = defaultTestUserAccount,
   pool = aWjAuraWethPoolElementMock(),
@@ -69,7 +70,7 @@ export async function getSdkTestUtils({
       account,
       chain: client.chain,
       address: token,
-      abi: erc20ABI,
+      abi: erc20Abi,
       functionName: 'approve',
       args: [VAULT[client?.chain?.id || mainnet.id], amount],
     })
@@ -83,7 +84,7 @@ export async function getSdkTestUtils({
   function getErc20Balance(token: Address, holder: Address): Promise<bigint> {
     return client.readContract({
       address: token,
-      abi: erc20ABI,
+      abi: erc20Abi,
       functionName: 'balanceOf',
       args: [holder],
     })

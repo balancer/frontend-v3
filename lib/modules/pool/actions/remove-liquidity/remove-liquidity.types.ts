@@ -4,7 +4,7 @@ import {
   RemoveLiquidityKind as SdkRemoveLiquidityKind,
   TokenAmount,
 } from '@balancer/sdk'
-import { Address } from 'wagmi'
+import { Address } from 'viem'
 
 // There are other kinds but we only support two of them
 export enum RemoveLiquidityType {

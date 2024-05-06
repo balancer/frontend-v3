@@ -17,8 +17,7 @@ import {
   mapPoolType,
 } from '@balancer/sdk'
 import { keyBy } from 'lodash'
-import { Hex, formatUnits, parseUnits } from 'viem'
-import { Address } from 'wagmi'
+import { Hex, formatUnits, parseUnits, Address } from 'viem'
 import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
 import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
 import { Pool } from '../usePool'
@@ -53,7 +52,7 @@ export class LiquidityActionHelpers {
   public get nestedPoolState(): NestedPoolState {
     // TODO: PoolGetPool should be exposed by the SDK
     type PoolGetPool = Parameters<typeof mapPoolToNestedPoolState>[0]
-    return mapPoolToNestedPoolState(this.pool as unknown as PoolGetPool)
+    return mapPoolToNestedPoolState(this.pool as PoolGetPool)
   }
 
   public get poolStateWithBalances(): PoolStateWithBalances {

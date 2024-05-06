@@ -27,7 +27,7 @@ import { useIterateSteps } from '../../../transactions/transaction-steps/useIter
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
-import { getNativeAssetAddress } from '@/lib/config/app.config'
+import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
@@ -58,6 +58,7 @@ export function _useAddLiquidity() {
   const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
   const chain = pool.chain
   const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
+  const wNativeAsset = getToken(getWrappedNativeAssetAddress(chain), chain)
 
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -172,6 +173,8 @@ export function _useAddLiquidity() {
     setAcceptPoolRisks,
     wethIsEth,
     setWethIsEth,
+    nativeAsset,
+    wNativeAsset,
   }
 }
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { Pool } from '../pool/usePool'
+import { FeaturedPool } from '../pool/usePool'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useRouter } from 'next/navigation'
 import { HStack, VStack, Text, Box } from '@chakra-ui/react'
@@ -19,7 +19,7 @@ import { motion } from 'framer-motion'
 import { isClp } from '../pool/pool.helpers'
 
 interface Props {
-  pool: Pool
+  pool: FeaturedPool
   chain: GqlChain
   bgSize?: string
   isSmall?: boolean

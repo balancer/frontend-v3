@@ -33,6 +33,7 @@ export function TokenInfoPopover({ tokenAddress, chain }: Props) {
     <Popover placement="right" variant="tooltip" arrowSize={12}>
       <PopoverTrigger>
         <IconButton
+          h="24px"
           size="xs"
           isRound
           variant="link"

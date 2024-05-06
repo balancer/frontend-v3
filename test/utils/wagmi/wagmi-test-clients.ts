@@ -1,20 +1,14 @@
-import { supportedChains } from '@/lib/modules/web3/Web3Provider'
-import { createClient, http, publicActions, testActions, walletActions } from 'viem'
-import { NetworksWithFork, chainsByNetworkName, getTestRpcUrl } from '../../anvil/anvil-setup'
+import { testWagmiConfig } from '@/test/anvil/testWagmiConfig'
+import { publicActions, testActions, walletActions } from 'viem'
+import { mainnet, polygon } from 'viem/chains'
 
-export function createTestHttpClient(networkName: NetworksWithFork) {
-  const testClient = createClient({
-    batch: {
-      multicall: { batchSize: 4096 }, // change depending on chain (some have limits)
-    },
-    chain: chainsByNetworkName[networkName],
-    transport: http(getTestRpcUrl(networkName)),
-  })
+export function createTestHttpClient(chainId: 1 | 137) {
+  return testWagmiConfig
+    .getClient({ chainId })
     .extend(testActions({ mode: 'anvil' }))
     .extend(publicActions)
     .extend(walletActions)
-
-  return Object.assign(testClient, {
-    chains: supportedChains,
-  })
 }
+
+export const mainnetTestPublicClient = createTestHttpClient(mainnet.id)
+export const polygonTestPublicClient = createTestHttpClient(polygon.id)

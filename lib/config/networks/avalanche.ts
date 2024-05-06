@@ -10,7 +10,6 @@ const networkConfig: NetworkConfig = {
   shortName: 'Avalanche',
   chain: GqlChain.Avalanche,
   iconPath: '/images/chains/AVALANCHE.svg',
-  rpcUrl: 'https://avalanche-mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
   blockExplorer: {
     baseUrl: 'https://snowtrace.io',
     name: 'Snowtrace',
@@ -46,6 +45,7 @@ const networkConfig: NetworkConfig = {
       relayerV6: '0xA084c11cb55e67C9becf9607f1DBB20ec4D5E7b2',
       minter: '0x85a80afee867aDf27B50BdB7b76DA70f1E853062',
     },
+    veDelegationProxy: '0x0c6052254551EAe3ECac77B01DFcf1025418828f',
   },
   pools: convertHexToLowerCase({
     issues: {

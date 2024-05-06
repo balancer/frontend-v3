@@ -1,20 +1,26 @@
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useQueries } from '@tanstack/react-query'
 import { groupBy, keyBy, set } from 'lodash'
-import { ContractFunctionConfig } from 'viem'
+import { ReadContractParameters } from 'viem'
 import { multicall } from 'wagmi/actions'
-import { getChainId } from '@/lib/config/app.config'
 import { useCallback } from 'react'
+import { useConfig } from 'wagmi'
+import { SupportedChainId } from '@/lib/config/config.types'
 
-export type ChainContractConfig = ContractFunctionConfig & { chain: GqlChain; id: string }
+export type ChainContractConfig = ReadContractParameters & {
+  chainId: SupportedChainId
+  id: string
+}
 
-export function useMulticall(multicallRequests: ChainContractConfig[]) {
-  // Want the results for each chain to be independent of each other so we don't have
+type Options = { enabled?: boolean }
+
+export function useMulticall(multicallRequests: ChainContractConfig[], options: Options = {}) {
+  const config = useConfig()
+  // Want the results for each chainId to be independent of each other so we don't have
   // a large blob of queries that resolves at once, but have to option to have the results
-  // of each set of multicalls for each chain to 'stream' through
+  // of each set of multicalls for each chainId to 'stream' through
 
   // first group all the requests passed in per chain
-  const multicallsPerChain = groupBy(multicallRequests, 'chain')
+  const multicallsPerChain = groupBy(multicallRequests, 'chainId')
 
   // key order is preserved
   const suppliedChains = Object.keys(multicallsPerChain)
@@ -24,9 +30,9 @@ export function useMulticall(multicallRequests: ChainContractConfig[]) {
       const multicalls = multicallsPerChain[chain]
       return {
         queryFn: async () => {
-          const results = await multicall({
+          const results = await multicall(config, {
             contracts: multicalls,
-            chainId: getChainId(chain as GqlChain),
+            chainId: Number(chain),
           })
 
           // map the result to its id based on the call index
@@ -36,6 +42,7 @@ export function useMulticall(multicallRequests: ChainContractConfig[]) {
           return idMappedResults
         },
         queryKey: multicalls,
+        ...options,
       }
     }),
   })
@@ -46,8 +53,10 @@ export function useMulticall(multicallRequests: ChainContractConfig[]) {
 
   return {
     results: keyBy(
-      multicallResults.map((result, i) => ({ ...result, chain: suppliedChains[i] })),
-      'chain'
+      multicallResults.map((result, i) => {
+        return { ...result, chainId: suppliedChains[i] }
+      }),
+      'chainId'
     ),
     isLoading: multicallResults.some(result => result.isLoading),
     refetchAll,

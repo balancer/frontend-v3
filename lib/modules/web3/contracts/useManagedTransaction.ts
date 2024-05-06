@@ -1,38 +1,38 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
+import { getGqlChain } from '@/lib/config/app.config'
+import { SupportedChainId } from '@/lib/config/config.types'
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useEffect, useState } from 'react'
-import { Abi, GetFunctionArgs, InferFunctionName } from 'viem'
+import { Abi, ContractFunctionArgs, ContractFunctionName } from 'viem'
 import {
-  UsePrepareContractWriteConfig,
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
+  UseSimulateContractParameters,
+  useSimulateContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
 } from 'wagmi'
+import { useChainSwitch } from '../useChainSwitch'
 import { AbiMap } from './AbiMap'
 import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
-import { getGqlChain } from '@/lib/config/app.config'
-import { SupportedChainId } from '@/lib/config/config.types'
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import { useChainSwitch } from '../useChainSwitch'
 import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 
 export function useManagedTransaction<
   T extends typeof AbiMap,
   M extends keyof typeof AbiMap,
-  F extends InferFunctionName<T[M], string, WriteAbiMutability>
+  F extends ContractFunctionName<T[M], WriteAbiMutability>
 >(
   contractAddress: string,
   contractId: M,
   functionName: F,
   transactionLabels: TransactionLabels,
   chainId: SupportedChainId,
-  args?: GetFunctionArgs<T[M], F> | null,
+  args?: ContractFunctionArgs<T[M], WriteAbiMutability> | null,
   additionalConfig?: Omit<
-    UsePrepareContractWriteConfig<T[M], F, number>,
+    UseSimulateContractParameters<T[M], F>,
     'abi' | 'address' | 'functionName' | 'args'
   >
 ) {
@@ -40,33 +40,32 @@ export function useManagedTransaction<
   const { minConfirmations } = useNetworkConfig()
   const { shouldChangeNetwork } = useChainSwitch(chainId)
 
-  const prepareQuery = usePrepareContractWrite({
+  const enabled = additionalConfig?.query?.enabled ?? true
+
+  const simulateQuery = useSimulateContract({
     abi: AbiMap[contractId] as Abi,
     address: contractAddress,
-    functionName: functionName as InferFunctionName<any, string, WriteAbiMutability>,
+    functionName: functionName as ContractFunctionName<any, WriteAbiMutability>,
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
-    args: writeArgs?.args as any,
+    args: writeArgs as any,
     ...(additionalConfig as any),
     chainId,
-    enabled: additionalConfig?.enabled && !shouldChangeNetwork,
-  })
-
-  const writeQuery = useContractWrite({
-    ...prepareQuery.config,
-    onError: (error: unknown) => {
-      captureWagmiExecutionError(
-        error,
-        'Error in managed transaction execution',
-        prepareQuery.config.request
-      )
+    query: {
+      enabled: enabled && !shouldChangeNetwork,
+      meta: additionalConfig?.query?.meta,
     },
   })
-  const transactionStatusQuery = useWaitForTransaction({
-    hash: writeQuery.data?.hash,
+
+  const writeQuery = useWriteContract()
+
+  const transactionStatusQuery = useWaitForTransactionReceipt({
+    chainId,
+    hash: writeQuery.data,
     confirmations: minConfirmations,
   })
   const bundle = {
-    simulation: prepareQuery as TransactionSimulation,
+    chainId,
+    simulation: simulateQuery as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
     result: transactionStatusQuery,
   }
@@ -74,8 +73,8 @@ export function useManagedTransaction<
   // on successful submission to chain, add tx to cache
   useOnTransactionSubmission({
     labels: transactionLabels,
-    hash: writeQuery.data?.hash,
-    chain: getGqlChain((writeQuery.variables?.chainId || 1) as SupportedChainId),
+    hash: writeQuery.data,
+    chain: getGqlChain(chainId as SupportedChainId),
   })
 
   // on confirmation, update tx in tx cache
@@ -91,23 +90,27 @@ export function useManagedTransaction<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(args)])
 
-  const managedWrite = (args?: GetFunctionArgs<T[M], F>) => {
+  const managedWriteAsync = async (args?: ContractFunctionArgs<T[M], WriteAbiMutability>) => {
     if (args) {
       setWriteArgs(args)
     }
-    writeQuery.write?.()
-  }
-
-  const managedWriteAsync = async (args?: GetFunctionArgs<T[M], F>) => {
-    if (args) {
-      setWriteArgs(args)
+    if (!simulateQuery.data) return
+    try {
+      await writeQuery.writeContractAsync({
+        ...simulateQuery.data.request,
+        chainId: chainId,
+      })
+    } catch (e: unknown) {
+      captureWagmiExecutionError(e, 'Error in managed transaction execution', {
+        chainId,
+        request: simulateQuery.data.request,
+      })
+      throw e
     }
-    await writeQuery.writeAsync?.()
   }
 
   return {
     ...bundle,
-    execute: managedWrite,
     executeAsync: managedWriteAsync,
   } satisfies ManagedResult
 }

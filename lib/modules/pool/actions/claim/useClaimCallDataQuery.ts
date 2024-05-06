@@ -1,4 +1,4 @@
-import { useQuery } from 'wagmi'
+import { useQuery } from '@tanstack/react-query'
 import { Address } from 'viem'
 import { GaugeService } from '@/lib/shared/services/staking/gauge.service'
 
@@ -17,9 +17,12 @@ export function useClaimCallDataQuery(
 
   const queryKey = ['claim', 'gauge', 'callData', inputData]
   const queryFn = () => gaugeService && gaugeService.getGaugeClaimRewardsContractCallData(inputData)
-  const queryOpts = { enabled: gaugeService && gaugeAddresses.length > 0 }
 
-  const query = useQuery(queryKey, queryFn, queryOpts)
+  const query = useQuery({
+    queryKey,
+    queryFn,
+    enabled: gaugeService && gaugeAddresses.length > 0,
+  })
 
   return {
     ...query,

@@ -1,6 +1,3 @@
-import { useContractRead, UseContractReadConfig } from 'wagmi'
-import { ReadContractResult } from 'wagmi/actions'
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // BalancerMinter
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -8,22 +5,45 @@ import { ReadContractResult } from 'wagmi/actions'
 /**
  * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x239e55F427D44C3cc793f49bFB507ebe76638a2b)
  */
-export const balancerMinterABI = [
+export const balancerMinterAbi = [
   {
     stateMutability: 'nonpayable',
     type: 'constructor',
     inputs: [
-      { name: 'tokenAdmin', internalType: 'contract IBalancerTokenAdmin', type: 'address' },
-      { name: 'gaugeController', internalType: 'contract IGaugeController', type: 'address' },
+      {
+        name: 'tokenAdmin',
+        internalType: 'contract IBalancerTokenAdmin',
+        type: 'address',
+      },
+      {
+        name: 'gaugeController',
+        internalType: 'contract IGaugeController',
+        type: 'address',
+      },
     ],
   },
   {
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'recipient', internalType: 'address', type: 'address', indexed: true },
-      { name: 'gauge', internalType: 'address', type: 'address', indexed: false },
-      { name: 'minted', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'recipient',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'gauge',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'minted',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'Minted',
   },
@@ -32,7 +52,12 @@ export const balancerMinterABI = [
     anonymous: false,
     inputs: [
       { name: 'user', internalType: 'address', type: 'address', indexed: true },
-      { name: 'minter', internalType: 'address', type: 'address', indexed: true },
+      {
+        name: 'minter',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
       { name: 'approval', internalType: 'bool', type: 'bool', indexed: false },
     ],
     name: 'MinterApprovalSet',
@@ -59,7 +84,13 @@ export const balancerMinterABI = [
     type: 'function',
     inputs: [],
     name: 'getBalancerTokenAdmin',
-    outputs: [{ name: '', internalType: 'contract IBalancerTokenAdmin', type: 'address' }],
+    outputs: [
+      {
+        name: '',
+        internalType: 'contract IBalancerTokenAdmin',
+        type: 'address',
+      },
+    ],
   },
   {
     stateMutability: 'view',
@@ -199,7 +230,7 @@ export const balancerMinterAddress = {
  */
 export const balancerMinterConfig = {
   address: balancerMinterAddress,
-  abi: balancerMinterABI,
+  abi: balancerMinterAbi,
 } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,7 +240,7 @@ export const balancerMinterConfig = {
 /**
  * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x35Cea9e57A393ac66Aaa7E25C391D52C74B5648f)
  */
-export const balancerV2BalancerRelayerABI = [
+export const balancerV2BalancerRelayerAbi = [
   {
     stateMutability: 'nonpayable',
     type: 'constructor',
@@ -277,7 +308,7 @@ export const balancerV2BalancerRelayerAddress = {
  */
 export const balancerV2BalancerRelayerConfig = {
   address: balancerV2BalancerRelayerAddress,
-  abi: balancerV2BalancerRelayerABI,
+  abi: balancerV2BalancerRelayerAbi,
 } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -287,14 +318,18 @@ export const balancerV2BalancerRelayerConfig = {
 /**
  * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xea66501df1a00261e3bb79d1e90444fc6a186b62)
  */
-export const balancerV2BatchRelayerLibraryABI = [
+export const balancerV2BatchRelayerLibraryAbi = [
   {
     stateMutability: 'nonpayable',
     type: 'constructor',
     inputs: [
       { name: 'vault', internalType: 'contract IVault', type: 'address' },
       { name: 'wstETH', internalType: 'contract IERC20', type: 'address' },
-      { name: 'minter', internalType: 'contract IBalancerMinter', type: 'address' },
+      {
+        name: 'minter',
+        internalType: 'contract IBalancerMinter',
+        type: 'address',
+      },
       { name: 'canCallUserCheckpoint', internalType: 'bool', type: 'bool' },
       { name: 'version', internalType: 'string', type: 'string' },
     ],
@@ -334,7 +369,11 @@ export const balancerV2BatchRelayerLibraryABI = [
         components: [
           { name: 'sender', internalType: 'address', type: 'address' },
           { name: 'fromInternalBalance', internalType: 'bool', type: 'bool' },
-          { name: 'recipient', internalType: 'address payable', type: 'address' },
+          {
+            name: 'recipient',
+            internalType: 'address payable',
+            type: 'address',
+          },
           { name: 'toInternalBalance', internalType: 'bool', type: 'bool' },
         ],
       },
@@ -366,7 +405,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'kind', internalType: 'enum VaultActions.PoolKind', type: 'uint8' },
+      {
+        name: 'kind',
+        internalType: 'enum VaultActions.PoolKind',
+        type: 'uint8',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address payable', type: 'address' },
       {
@@ -374,8 +417,16 @@ export const balancerV2BatchRelayerLibraryABI = [
         internalType: 'struct IVault.ExitPoolRequest',
         type: 'tuple',
         components: [
-          { name: 'assets', internalType: 'contract IAsset[]', type: 'address[]' },
-          { name: 'minAmountsOut', internalType: 'uint256[]', type: 'uint256[]' },
+          {
+            name: 'assets',
+            internalType: 'contract IAsset[]',
+            type: 'address[]',
+          },
+          {
+            name: 'minAmountsOut',
+            internalType: 'uint256[]',
+            type: 'uint256[]',
+          },
           { name: 'userData', internalType: 'bytes', type: 'bytes' },
           { name: 'toInternalBalance', internalType: 'bool', type: 'bool' },
         ],
@@ -398,7 +449,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     type: 'function',
     inputs: [
       { name: 'user', internalType: 'address', type: 'address' },
-      { name: 'gauges', internalType: 'contract IStakingLiquidityGauge[]', type: 'address[]' },
+      {
+        name: 'gauges',
+        internalType: 'contract IStakingLiquidityGauge[]',
+        type: 'address[]',
+      },
     ],
     name: 'gaugeCheckpoint',
     outputs: [],
@@ -407,7 +462,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'gauges', internalType: 'contract IStakingLiquidityGauge[]', type: 'address[]' },
+      {
+        name: 'gauges',
+        internalType: 'contract IStakingLiquidityGauge[]',
+        type: 'address[]',
+      },
     ],
     name: 'gaugeClaimRewards',
     outputs: [],
@@ -416,7 +475,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'gauge', internalType: 'contract IStakingLiquidityGauge', type: 'address' },
+      {
+        name: 'gauge',
+        internalType: 'contract IStakingLiquidityGauge',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -452,7 +515,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'gauge', internalType: 'contract IStakingLiquidityGauge', type: 'address' },
+      {
+        name: 'gauge',
+        internalType: 'contract IStakingLiquidityGauge',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -479,7 +546,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     type: 'function',
     inputs: [
       { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'kind', internalType: 'enum VaultActions.PoolKind', type: 'uint8' },
+      {
+        name: 'kind',
+        internalType: 'enum VaultActions.PoolKind',
+        type: 'uint8',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       {
@@ -487,8 +558,16 @@ export const balancerV2BatchRelayerLibraryABI = [
         internalType: 'struct IVault.JoinPoolRequest',
         type: 'tuple',
         components: [
-          { name: 'assets', internalType: 'contract IAsset[]', type: 'address[]' },
-          { name: 'maxAmountsIn', internalType: 'uint256[]', type: 'uint256[]' },
+          {
+            name: 'assets',
+            internalType: 'contract IAsset[]',
+            type: 'address[]',
+          },
+          {
+            name: 'maxAmountsIn',
+            internalType: 'uint256[]',
+            type: 'uint256[]',
+          },
           { name: 'userData', internalType: 'bytes', type: 'bytes' },
           { name: 'fromInternalBalance', internalType: 'bool', type: 'bool' },
         ],
@@ -508,11 +587,19 @@ export const balancerV2BatchRelayerLibraryABI = [
         internalType: 'struct IVault.UserBalanceOp[]',
         type: 'tuple[]',
         components: [
-          { name: 'kind', internalType: 'enum IVault.UserBalanceOpKind', type: 'uint8' },
+          {
+            name: 'kind',
+            internalType: 'enum IVault.UserBalanceOpKind',
+            type: 'uint8',
+          },
           { name: 'asset', internalType: 'contract IAsset', type: 'address' },
           { name: 'amount', internalType: 'uint256', type: 'uint256' },
           { name: 'sender', internalType: 'address', type: 'address' },
-          { name: 'recipient', internalType: 'address payable', type: 'address' },
+          {
+            name: 'recipient',
+            internalType: 'address payable',
+            type: 'address',
+          },
         ],
       },
       { name: 'value', internalType: 'uint256', type: 'uint256' },
@@ -581,7 +668,11 @@ export const balancerV2BatchRelayerLibraryABI = [
           { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
           { name: 'kind', internalType: 'enum IVault.SwapKind', type: 'uint8' },
           { name: 'assetIn', internalType: 'contract IAsset', type: 'address' },
-          { name: 'assetOut', internalType: 'contract IAsset', type: 'address' },
+          {
+            name: 'assetOut',
+            internalType: 'contract IAsset',
+            type: 'address',
+          },
           { name: 'amount', internalType: 'uint256', type: 'uint256' },
           { name: 'userData', internalType: 'bytes', type: 'bytes' },
         ],
@@ -593,7 +684,11 @@ export const balancerV2BatchRelayerLibraryABI = [
         components: [
           { name: 'sender', internalType: 'address', type: 'address' },
           { name: 'fromInternalBalance', internalType: 'bool', type: 'bool' },
-          { name: 'recipient', internalType: 'address payable', type: 'address' },
+          {
+            name: 'recipient',
+            internalType: 'address payable',
+            type: 'address',
+          },
           { name: 'toInternalBalance', internalType: 'bool', type: 'bool' },
         ],
       },
@@ -609,7 +704,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'staticToken', internalType: 'contract IStaticATokenLM', type: 'address' },
+      {
+        name: 'staticToken',
+        internalType: 'contract IStaticATokenLM',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -623,7 +722,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrappedToken', internalType: 'contract ICToken', type: 'address' },
+      {
+        name: 'wrappedToken',
+        internalType: 'contract ICToken',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -636,7 +739,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrappedToken', internalType: 'contract IERC4626', type: 'address' },
+      {
+        name: 'wrappedToken',
+        internalType: 'contract IERC4626',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -649,7 +756,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrappedToken', internalType: 'contract IEulerToken', type: 'address' },
+      {
+        name: 'wrappedToken',
+        internalType: 'contract IEulerToken',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -662,7 +773,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrappedToken', internalType: 'contract IGearboxDieselToken', type: 'address' },
+      {
+        name: 'wrappedToken',
+        internalType: 'contract IGearboxDieselToken',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'dieselAmount', internalType: 'uint256', type: 'uint256' },
@@ -675,7 +790,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'vaultToken', internalType: 'contract IReaperTokenVault', type: 'address' },
+      {
+        name: 'vaultToken',
+        internalType: 'contract IReaperTokenVault',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -688,7 +807,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrappedToken', internalType: 'contract IShareToken', type: 'address' },
+      {
+        name: 'wrappedToken',
+        internalType: 'contract IShareToken',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -701,7 +824,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrappedToken', internalType: 'contract ITetuSmartVault', type: 'address' },
+      {
+        name: 'wrappedToken',
+        internalType: 'contract ITetuSmartVault',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -714,7 +841,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrapperToken', internalType: 'contract IUnbuttonToken', type: 'address' },
+      {
+        name: 'wrapperToken',
+        internalType: 'contract IUnbuttonToken',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -739,7 +870,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrappedToken', internalType: 'contract IYearnTokenVault', type: 'address' },
+      {
+        name: 'wrappedToken',
+        internalType: 'contract IYearnTokenVault',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -767,7 +902,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'token', internalType: 'contract IERC20PermitDAI', type: 'address' },
+      {
+        name: 'token',
+        internalType: 'contract IERC20PermitDAI',
+        type: 'address',
+      },
       { name: 'holder', internalType: 'address', type: 'address' },
       { name: 'nonce', internalType: 'uint256', type: 'uint256' },
       { name: 'expiry', internalType: 'uint256', type: 'uint256' },
@@ -783,7 +922,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'staticToken', internalType: 'contract IStaticATokenLM', type: 'address' },
+      {
+        name: 'staticToken',
+        internalType: 'contract IStaticATokenLM',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -797,7 +940,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrappedToken', internalType: 'contract ICToken', type: 'address' },
+      {
+        name: 'wrappedToken',
+        internalType: 'contract ICToken',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -810,7 +957,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrappedToken', internalType: 'contract IERC4626', type: 'address' },
+      {
+        name: 'wrappedToken',
+        internalType: 'contract IERC4626',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -823,7 +974,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrappedToken', internalType: 'contract IEulerToken', type: 'address' },
+      {
+        name: 'wrappedToken',
+        internalType: 'contract IEulerToken',
+        type: 'address',
+      },
       { name: 'eulerProtocol', internalType: 'address', type: 'address' },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
@@ -837,7 +992,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrappedToken', internalType: 'contract IGearboxDieselToken', type: 'address' },
+      {
+        name: 'wrappedToken',
+        internalType: 'contract IGearboxDieselToken',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'mainAmount', internalType: 'uint256', type: 'uint256' },
@@ -850,7 +1009,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'vaultToken', internalType: 'contract IReaperTokenVault', type: 'address' },
+      {
+        name: 'vaultToken',
+        internalType: 'contract IReaperTokenVault',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -863,7 +1026,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrappedToken', internalType: 'contract IShareToken', type: 'address' },
+      {
+        name: 'wrappedToken',
+        internalType: 'contract IShareToken',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -888,7 +1055,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrappedToken', internalType: 'contract ITetuSmartVault', type: 'address' },
+      {
+        name: 'wrappedToken',
+        internalType: 'contract ITetuSmartVault',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -901,7 +1072,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrapperToken', internalType: 'contract IUnbuttonToken', type: 'address' },
+      {
+        name: 'wrapperToken',
+        internalType: 'contract IUnbuttonToken',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'uAmount', internalType: 'uint256', type: 'uint256' },
@@ -914,7 +1089,11 @@ export const balancerV2BatchRelayerLibraryABI = [
     stateMutability: 'payable',
     type: 'function',
     inputs: [
-      { name: 'wrappedToken', internalType: 'contract IYearnTokenVault', type: 'address' },
+      {
+        name: 'wrappedToken',
+        internalType: 'contract IYearnTokenVault',
+        type: 'address',
+      },
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -937,7 +1116,7 @@ export const balancerV2BatchRelayerLibraryAddress = {
  */
 export const balancerV2BatchRelayerLibraryConfig = {
   address: balancerV2BatchRelayerLibraryAddress,
-  abi: balancerV2BatchRelayerLibraryABI,
+  abi: balancerV2BatchRelayerLibraryAbi,
 } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -947,7 +1126,7 @@ export const balancerV2BatchRelayerLibraryConfig = {
 /**
  * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xdacf5fa19b1f720111609043ac67a9818262850c)
  */
-export const balancerV2ComposableStablePoolV5ABI = [
+export const balancerV2ComposableStablePoolV5Abi = [
   {
     stateMutability: 'nonpayable',
     type: 'constructor',
@@ -965,14 +1144,46 @@ export const balancerV2ComposableStablePoolV5ABI = [
           },
           { name: 'name', internalType: 'string', type: 'string' },
           { name: 'symbol', internalType: 'string', type: 'string' },
-          { name: 'tokens', internalType: 'contract IERC20[]', type: 'address[]' },
-          { name: 'rateProviders', internalType: 'contract IRateProvider[]', type: 'address[]' },
-          { name: 'tokenRateCacheDurations', internalType: 'uint256[]', type: 'uint256[]' },
-          { name: 'exemptFromYieldProtocolFeeFlag', internalType: 'bool', type: 'bool' },
-          { name: 'amplificationParameter', internalType: 'uint256', type: 'uint256' },
-          { name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256' },
-          { name: 'pauseWindowDuration', internalType: 'uint256', type: 'uint256' },
-          { name: 'bufferPeriodDuration', internalType: 'uint256', type: 'uint256' },
+          {
+            name: 'tokens',
+            internalType: 'contract IERC20[]',
+            type: 'address[]',
+          },
+          {
+            name: 'rateProviders',
+            internalType: 'contract IRateProvider[]',
+            type: 'address[]',
+          },
+          {
+            name: 'tokenRateCacheDurations',
+            internalType: 'uint256[]',
+            type: 'uint256[]',
+          },
+          {
+            name: 'exemptFromYieldProtocolFeeFlag',
+            internalType: 'bool',
+            type: 'bool',
+          },
+          {
+            name: 'amplificationParameter',
+            internalType: 'uint256',
+            type: 'uint256',
+          },
+          {
+            name: 'swapFeePercentage',
+            internalType: 'uint256',
+            type: 'uint256',
+          },
+          {
+            name: 'pauseWindowDuration',
+            internalType: 'uint256',
+            type: 'uint256',
+          },
+          {
+            name: 'bufferPeriodDuration',
+            internalType: 'uint256',
+            type: 'uint256',
+          },
           { name: 'owner', internalType: 'address', type: 'address' },
           { name: 'version', internalType: 'string', type: 'string' },
         ],
@@ -983,26 +1194,68 @@ export const balancerV2ComposableStablePoolV5ABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'startValue', internalType: 'uint256', type: 'uint256', indexed: false },
-      { name: 'endValue', internalType: 'uint256', type: 'uint256', indexed: false },
-      { name: 'startTime', internalType: 'uint256', type: 'uint256', indexed: false },
-      { name: 'endTime', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'startValue',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'endValue',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'startTime',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'endTime',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'AmpUpdateStarted',
   },
   {
     type: 'event',
     anonymous: false,
-    inputs: [{ name: 'currentValue', internalType: 'uint256', type: 'uint256', indexed: false }],
+    inputs: [
+      {
+        name: 'currentValue',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
     name: 'AmpUpdateStopped',
   },
   {
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'owner', internalType: 'address', type: 'address', indexed: true },
-      { name: 'spender', internalType: 'address', type: 'address', indexed: true },
-      { name: 'value', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'owner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'spender',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'value',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'Approval',
   },
@@ -1016,8 +1269,18 @@ export const balancerV2ComposableStablePoolV5ABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'feeType', internalType: 'uint256', type: 'uint256', indexed: true },
-      { name: 'protocolFeePercentage', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'feeType',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'protocolFeePercentage',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'ProtocolFeePercentageCacheUpdated',
   },
@@ -1031,7 +1294,12 @@ export const balancerV2ComposableStablePoolV5ABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'swapFeePercentage',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'SwapFeePercentageChanged',
   },
@@ -1039,8 +1307,18 @@ export const balancerV2ComposableStablePoolV5ABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'tokenIndex', internalType: 'uint256', type: 'uint256', indexed: true },
-      { name: 'rate', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'tokenIndex',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'rate',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'TokenRateCacheUpdated',
   },
@@ -1048,9 +1326,24 @@ export const balancerV2ComposableStablePoolV5ABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'tokenIndex', internalType: 'uint256', type: 'uint256', indexed: true },
-      { name: 'provider', internalType: 'contract IRateProvider', type: 'address', indexed: true },
-      { name: 'cacheDuration', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'tokenIndex',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'provider',
+        internalType: 'contract IRateProvider',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'cacheDuration',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'TokenRateProviderSet',
   },
@@ -1060,7 +1353,12 @@ export const balancerV2ComposableStablePoolV5ABI = [
     inputs: [
       { name: 'from', internalType: 'address', type: 'address', indexed: true },
       { name: 'to', internalType: 'address', type: 'address', indexed: true },
-      { name: 'value', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'value',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'Transfer',
   },
@@ -1188,8 +1486,16 @@ export const balancerV2ComposableStablePoolV5ABI = [
     inputs: [],
     name: 'getLastJoinExitData',
     outputs: [
-      { name: 'lastJoinExitAmplification', internalType: 'uint256', type: 'uint256' },
-      { name: 'lastPostJoinExitInvariant', internalType: 'uint256', type: 'uint256' },
+      {
+        name: 'lastJoinExitAmplification',
+        internalType: 'uint256',
+        type: 'uint256',
+      },
+      {
+        name: 'lastPostJoinExitInvariant',
+        internalType: 'uint256',
+        type: 'uint256',
+      },
     ],
   },
   {
@@ -1243,7 +1549,13 @@ export const balancerV2ComposableStablePoolV5ABI = [
     type: 'function',
     inputs: [],
     name: 'getProtocolFeesCollector',
-    outputs: [{ name: '', internalType: 'contract IProtocolFeesCollector', type: 'address' }],
+    outputs: [
+      {
+        name: '',
+        internalType: 'contract IProtocolFeesCollector',
+        type: 'address',
+      },
+    ],
   },
   {
     stateMutability: 'view',
@@ -1360,7 +1672,11 @@ export const balancerV2ComposableStablePoolV5ABI = [
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'balances', internalType: 'uint256[]', type: 'uint256[]' },
       { name: 'lastChangeBlock', internalType: 'uint256', type: 'uint256' },
-      { name: 'protocolSwapFeePercentage', internalType: 'uint256', type: 'uint256' },
+      {
+        name: 'protocolSwapFeePercentage',
+        internalType: 'uint256',
+        type: 'uint256',
+      },
       { name: 'userData', internalType: 'bytes', type: 'bytes' },
     ],
     name: 'onExitPool',
@@ -1378,7 +1694,11 @@ export const balancerV2ComposableStablePoolV5ABI = [
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'balances', internalType: 'uint256[]', type: 'uint256[]' },
       { name: 'lastChangeBlock', internalType: 'uint256', type: 'uint256' },
-      { name: 'protocolSwapFeePercentage', internalType: 'uint256', type: 'uint256' },
+      {
+        name: 'protocolSwapFeePercentage',
+        internalType: 'uint256',
+        type: 'uint256',
+      },
       { name: 'userData', internalType: 'bytes', type: 'bytes' },
     ],
     name: 'onJoinPool',
@@ -1398,7 +1718,11 @@ export const balancerV2ComposableStablePoolV5ABI = [
         components: [
           { name: 'kind', internalType: 'enum IVault.SwapKind', type: 'uint8' },
           { name: 'tokenIn', internalType: 'contract IERC20', type: 'address' },
-          { name: 'tokenOut', internalType: 'contract IERC20', type: 'address' },
+          {
+            name: 'tokenOut',
+            internalType: 'contract IERC20',
+            type: 'address',
+          },
           { name: 'amount', internalType: 'uint256', type: 'uint256' },
           { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
           { name: 'lastChangeBlock', internalType: 'uint256', type: 'uint256' },
@@ -1414,7 +1738,13 @@ export const balancerV2ComposableStablePoolV5ABI = [
     name: 'onSwap',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
   },
-  { stateMutability: 'nonpayable', type: 'function', inputs: [], name: 'pause', outputs: [] },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [],
+    name: 'pause',
+    outputs: [],
+  },
   {
     stateMutability: 'nonpayable',
     type: 'function',
@@ -1439,7 +1769,11 @@ export const balancerV2ComposableStablePoolV5ABI = [
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'balances', internalType: 'uint256[]', type: 'uint256[]' },
       { name: 'lastChangeBlock', internalType: 'uint256', type: 'uint256' },
-      { name: 'protocolSwapFeePercentage', internalType: 'uint256', type: 'uint256' },
+      {
+        name: 'protocolSwapFeePercentage',
+        internalType: 'uint256',
+        type: 'uint256',
+      },
       { name: 'userData', internalType: 'bytes', type: 'bytes' },
     ],
     name: 'queryExit',
@@ -1457,7 +1791,11 @@ export const balancerV2ComposableStablePoolV5ABI = [
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'balances', internalType: 'uint256[]', type: 'uint256[]' },
       { name: 'lastChangeBlock', internalType: 'uint256', type: 'uint256' },
-      { name: 'protocolSwapFeePercentage', internalType: 'uint256', type: 'uint256' },
+      {
+        name: 'protocolSwapFeePercentage',
+        internalType: 'uint256',
+        type: 'uint256',
+      },
       { name: 'userData', internalType: 'bytes', type: 'bytes' },
     ],
     name: 'queryJoin',
@@ -1545,7 +1883,13 @@ export const balancerV2ComposableStablePoolV5ABI = [
     name: 'transferFrom',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
   },
-  { stateMutability: 'nonpayable', type: 'function', inputs: [], name: 'unpause', outputs: [] },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [],
+    name: 'unpause',
+    outputs: [],
+  },
   {
     stateMutability: 'nonpayable',
     type: 'function',
@@ -1581,7 +1925,7 @@ export const balancerV2ComposableStablePoolV5Address = {
  */
 export const balancerV2ComposableStablePoolV5Config = {
   address: balancerV2ComposableStablePoolV5Address,
-  abi: balancerV2ComposableStablePoolV5ABI,
+  abi: balancerV2ComposableStablePoolV5Abi,
 } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1591,7 +1935,7 @@ export const balancerV2ComposableStablePoolV5Config = {
 /**
  * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x6667c6fa9f2b3fc1cc8d85320b62703d938e4385)
  */
-export const balancerV2Erc4626LinearPoolV3ABI = [
+export const balancerV2Erc4626LinearPoolV3Abi = [
   {
     stateMutability: 'nonpayable',
     type: 'constructor',
@@ -1604,13 +1948,33 @@ export const balancerV2Erc4626LinearPoolV3ABI = [
           { name: 'vault', internalType: 'contract IVault', type: 'address' },
           { name: 'name', internalType: 'string', type: 'string' },
           { name: 'symbol', internalType: 'string', type: 'string' },
-          { name: 'mainToken', internalType: 'contract IERC20', type: 'address' },
-          { name: 'wrappedToken', internalType: 'contract IERC20', type: 'address' },
+          {
+            name: 'mainToken',
+            internalType: 'contract IERC20',
+            type: 'address',
+          },
+          {
+            name: 'wrappedToken',
+            internalType: 'contract IERC20',
+            type: 'address',
+          },
           { name: 'assetManager', internalType: 'address', type: 'address' },
           { name: 'upperTarget', internalType: 'uint256', type: 'uint256' },
-          { name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256' },
-          { name: 'pauseWindowDuration', internalType: 'uint256', type: 'uint256' },
-          { name: 'bufferPeriodDuration', internalType: 'uint256', type: 'uint256' },
+          {
+            name: 'swapFeePercentage',
+            internalType: 'uint256',
+            type: 'uint256',
+          },
+          {
+            name: 'pauseWindowDuration',
+            internalType: 'uint256',
+            type: 'uint256',
+          },
+          {
+            name: 'bufferPeriodDuration',
+            internalType: 'uint256',
+            type: 'uint256',
+          },
           { name: 'owner', internalType: 'address', type: 'address' },
           { name: 'version', internalType: 'string', type: 'string' },
         ],
@@ -1621,9 +1985,24 @@ export const balancerV2Erc4626LinearPoolV3ABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'owner', internalType: 'address', type: 'address', indexed: true },
-      { name: 'spender', internalType: 'address', type: 'address', indexed: true },
-      { name: 'value', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'owner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'spender',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'value',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'Approval',
   },
@@ -1643,7 +2022,12 @@ export const balancerV2Erc4626LinearPoolV3ABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'swapFeePercentage',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'SwapFeePercentageChanged',
   },
@@ -1651,9 +2035,24 @@ export const balancerV2Erc4626LinearPoolV3ABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'token', internalType: 'contract IERC20', type: 'address', indexed: true },
-      { name: 'lowerTarget', internalType: 'uint256', type: 'uint256', indexed: false },
-      { name: 'upperTarget', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'token',
+        internalType: 'contract IERC20',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'lowerTarget',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'upperTarget',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'TargetsSet',
   },
@@ -1663,7 +2062,12 @@ export const balancerV2Erc4626LinearPoolV3ABI = [
     inputs: [
       { name: 'from', internalType: 'address', type: 'address', indexed: true },
       { name: 'to', internalType: 'address', type: 'address', indexed: true },
-      { name: 'value', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'value',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'Transfer',
   },
@@ -1811,7 +2215,13 @@ export const balancerV2Erc4626LinearPoolV3ABI = [
     type: 'function',
     inputs: [],
     name: 'getProtocolFeesCollector',
-    outputs: [{ name: '', internalType: 'contract IProtocolFeesCollector', type: 'address' }],
+    outputs: [
+      {
+        name: '',
+        internalType: 'contract IProtocolFeesCollector',
+        type: 'address',
+      },
+    ],
   },
   {
     stateMutability: 'view',
@@ -1896,7 +2306,13 @@ export const balancerV2Erc4626LinearPoolV3ABI = [
     name: 'increaseAllowance',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
   },
-  { stateMutability: 'nonpayable', type: 'function', inputs: [], name: 'initialize', outputs: [] },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [],
+    name: 'initialize',
+    outputs: [],
+  },
   {
     stateMutability: 'view',
     type: 'function',
@@ -1958,7 +2374,11 @@ export const balancerV2Erc4626LinearPoolV3ABI = [
         components: [
           { name: 'kind', internalType: 'enum IVault.SwapKind', type: 'uint8' },
           { name: 'tokenIn', internalType: 'contract IERC20', type: 'address' },
-          { name: 'tokenOut', internalType: 'contract IERC20', type: 'address' },
+          {
+            name: 'tokenOut',
+            internalType: 'contract IERC20',
+            type: 'address',
+          },
           { name: 'amount', internalType: 'uint256', type: 'uint256' },
           { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
           { name: 'lastChangeBlock', internalType: 'uint256', type: 'uint256' },
@@ -1985,7 +2405,11 @@ export const balancerV2Erc4626LinearPoolV3ABI = [
         components: [
           { name: 'kind', internalType: 'enum IVault.SwapKind', type: 'uint8' },
           { name: 'tokenIn', internalType: 'contract IERC20', type: 'address' },
-          { name: 'tokenOut', internalType: 'contract IERC20', type: 'address' },
+          {
+            name: 'tokenOut',
+            internalType: 'contract IERC20',
+            type: 'address',
+          },
           { name: 'amount', internalType: 'uint256', type: 'uint256' },
           { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
           { name: 'lastChangeBlock', internalType: 'uint256', type: 'uint256' },
@@ -2000,7 +2424,13 @@ export const balancerV2Erc4626LinearPoolV3ABI = [
     name: 'onSwap',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
   },
-  { stateMutability: 'nonpayable', type: 'function', inputs: [], name: 'pause', outputs: [] },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [],
+    name: 'pause',
+    outputs: [],
+  },
   {
     stateMutability: 'nonpayable',
     type: 'function',
@@ -2104,7 +2534,13 @@ export const balancerV2Erc4626LinearPoolV3ABI = [
     name: 'transferFrom',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
   },
-  { stateMutability: 'nonpayable', type: 'function', inputs: [], name: 'unpause', outputs: [] },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [],
+    name: 'unpause',
+    outputs: [],
+  },
   {
     stateMutability: 'view',
     type: 'function',
@@ -2126,7 +2562,7 @@ export const balancerV2Erc4626LinearPoolV3Address = {
  */
 export const balancerV2Erc4626LinearPoolV3Config = {
   address: balancerV2Erc4626LinearPoolV3Address,
-  abi: balancerV2Erc4626LinearPoolV3ABI,
+  abi: balancerV2Erc4626LinearPoolV3Abi,
 } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2136,7 +2572,7 @@ export const balancerV2Erc4626LinearPoolV3Config = {
 /**
  * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xbc02ef87f4e15ef78a571f3b2adcc726fee70d8b)
  */
-export const balancerV2GaugeV5ABI = [
+export const balancerV2GaugeV5Abi = [
   {
     type: 'event',
     anonymous: false,
@@ -2397,8 +2833,20 @@ export const balancerV2GaugeV5ABI = [
     name: 'set_reward_distributor',
     outputs: [],
   },
-  { stateMutability: 'nonpayable', type: 'function', inputs: [], name: 'killGauge', outputs: [] },
-  { stateMutability: 'nonpayable', type: 'function', inputs: [], name: 'unkillGauge', outputs: [] },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [],
+    name: 'killGauge',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [],
+    name: 'unkillGauge',
+    outputs: [],
+  },
   {
     stateMutability: 'view',
     type: 'function',
@@ -2686,7 +3134,7 @@ export const balancerV2GaugeV5Address = {
  */
 export const balancerV2GaugeV5Config = {
   address: balancerV2GaugeV5Address,
-  abi: balancerV2GaugeV5ABI,
+  abi: balancerV2GaugeV5Abi,
 } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2696,15 +3144,23 @@ export const balancerV2GaugeV5Config = {
 /**
  * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xBA12222222228d8Ba445958a75a0704d566BF2C8)
  */
-export const balancerV2VaultABI = [
+export const balancerV2VaultAbi = [
   {
     stateMutability: 'nonpayable',
     type: 'constructor',
     inputs: [
-      { name: 'authorizer', internalType: 'contract IAuthorizer', type: 'address' },
+      {
+        name: 'authorizer',
+        internalType: 'contract IAuthorizer',
+        type: 'address',
+      },
       { name: 'weth', internalType: 'contract IWETH', type: 'address' },
       { name: 'pauseWindowDuration', internalType: 'uint256', type: 'uint256' },
-      { name: 'bufferPeriodDuration', internalType: 'uint256', type: 'uint256' },
+      {
+        name: 'bufferPeriodDuration',
+        internalType: 'uint256',
+        type: 'uint256',
+      },
     ],
   },
   {
@@ -2724,10 +3180,30 @@ export const balancerV2VaultABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'token', internalType: 'contract IERC20', type: 'address', indexed: true },
-      { name: 'sender', internalType: 'address', type: 'address', indexed: true },
-      { name: 'recipient', internalType: 'address', type: 'address', indexed: false },
-      { name: 'amount', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'token',
+        internalType: 'contract IERC20',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'sender',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'recipient',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'ExternalBalanceTransfer',
   },
@@ -2741,9 +3217,24 @@ export const balancerV2VaultABI = [
         type: 'address',
         indexed: true,
       },
-      { name: 'token', internalType: 'contract IERC20', type: 'address', indexed: true },
-      { name: 'amount', internalType: 'uint256', type: 'uint256', indexed: false },
-      { name: 'feeAmount', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'token',
+        internalType: 'contract IERC20',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'feeAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'FlashLoan',
   },
@@ -2752,7 +3243,12 @@ export const balancerV2VaultABI = [
     anonymous: false,
     inputs: [
       { name: 'user', internalType: 'address', type: 'address', indexed: true },
-      { name: 'token', internalType: 'contract IERC20', type: 'address', indexed: true },
+      {
+        name: 'token',
+        internalType: 'contract IERC20',
+        type: 'address',
+        indexed: true,
+      },
       { name: 'delta', internalType: 'int256', type: 'int256', indexed: false },
     ],
     name: 'InternalBalanceChanged',
@@ -2767,11 +3263,36 @@ export const balancerV2VaultABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'poolId', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: 'liquidityProvider', internalType: 'address', type: 'address', indexed: true },
-      { name: 'tokens', internalType: 'contract IERC20[]', type: 'address[]', indexed: false },
-      { name: 'deltas', internalType: 'int256[]', type: 'int256[]', indexed: false },
-      { name: 'protocolFeeAmounts', internalType: 'uint256[]', type: 'uint256[]', indexed: false },
+      {
+        name: 'poolId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'liquidityProvider',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'tokens',
+        internalType: 'contract IERC20[]',
+        type: 'address[]',
+        indexed: false,
+      },
+      {
+        name: 'deltas',
+        internalType: 'int256[]',
+        type: 'int256[]',
+        indexed: false,
+      },
+      {
+        name: 'protocolFeeAmounts',
+        internalType: 'uint256[]',
+        type: 'uint256[]',
+        indexed: false,
+      },
     ],
     name: 'PoolBalanceChanged',
   },
@@ -2779,11 +3300,36 @@ export const balancerV2VaultABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'poolId', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: 'assetManager', internalType: 'address', type: 'address', indexed: true },
-      { name: 'token', internalType: 'contract IERC20', type: 'address', indexed: true },
-      { name: 'cashDelta', internalType: 'int256', type: 'int256', indexed: false },
-      { name: 'managedDelta', internalType: 'int256', type: 'int256', indexed: false },
+      {
+        name: 'poolId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'assetManager',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'token',
+        internalType: 'contract IERC20',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'cashDelta',
+        internalType: 'int256',
+        type: 'int256',
+        indexed: false,
+      },
+      {
+        name: 'managedDelta',
+        internalType: 'int256',
+        type: 'int256',
+        indexed: false,
+      },
     ],
     name: 'PoolBalanceManaged',
   },
@@ -2791,8 +3337,18 @@ export const balancerV2VaultABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'poolId', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: 'poolAddress', internalType: 'address', type: 'address', indexed: true },
+      {
+        name: 'poolId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'poolAddress',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
       {
         name: 'specialization',
         internalType: 'enum IVault.PoolSpecialization',
@@ -2806,8 +3362,18 @@ export const balancerV2VaultABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'relayer', internalType: 'address', type: 'address', indexed: true },
-      { name: 'sender', internalType: 'address', type: 'address', indexed: true },
+      {
+        name: 'relayer',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'sender',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
       { name: 'approved', internalType: 'bool', type: 'bool', indexed: false },
     ],
     name: 'RelayerApprovalChanged',
@@ -2816,11 +3382,36 @@ export const balancerV2VaultABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'poolId', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: 'tokenIn', internalType: 'contract IERC20', type: 'address', indexed: true },
-      { name: 'tokenOut', internalType: 'contract IERC20', type: 'address', indexed: true },
-      { name: 'amountIn', internalType: 'uint256', type: 'uint256', indexed: false },
-      { name: 'amountOut', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'poolId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'tokenIn',
+        internalType: 'contract IERC20',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'tokenOut',
+        internalType: 'contract IERC20',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'amountIn',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'amountOut',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'Swap',
   },
@@ -2828,8 +3419,18 @@ export const balancerV2VaultABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'poolId', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: 'tokens', internalType: 'contract IERC20[]', type: 'address[]', indexed: false },
+      {
+        name: 'poolId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'tokens',
+        internalType: 'contract IERC20[]',
+        type: 'address[]',
+        indexed: false,
+      },
     ],
     name: 'TokensDeregistered',
   },
@@ -2837,9 +3438,24 @@ export const balancerV2VaultABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'poolId', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: 'tokens', internalType: 'contract IERC20[]', type: 'address[]', indexed: false },
-      { name: 'assetManagers', internalType: 'address[]', type: 'address[]', indexed: false },
+      {
+        name: 'poolId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'tokens',
+        internalType: 'contract IERC20[]',
+        type: 'address[]',
+        indexed: false,
+      },
+      {
+        name: 'assetManagers',
+        internalType: 'address[]',
+        type: 'address[]',
+        indexed: false,
+      },
     ],
     name: 'TokensRegistered',
   },
@@ -2875,7 +3491,11 @@ export const balancerV2VaultABI = [
         components: [
           { name: 'sender', internalType: 'address', type: 'address' },
           { name: 'fromInternalBalance', internalType: 'bool', type: 'bool' },
-          { name: 'recipient', internalType: 'address payable', type: 'address' },
+          {
+            name: 'recipient',
+            internalType: 'address payable',
+            type: 'address',
+          },
           { name: 'toInternalBalance', internalType: 'bool', type: 'bool' },
         ],
       },
@@ -2907,8 +3527,16 @@ export const balancerV2VaultABI = [
         internalType: 'struct IVault.ExitPoolRequest',
         type: 'tuple',
         components: [
-          { name: 'assets', internalType: 'contract IAsset[]', type: 'address[]' },
-          { name: 'minAmountsOut', internalType: 'uint256[]', type: 'uint256[]' },
+          {
+            name: 'assets',
+            internalType: 'contract IAsset[]',
+            type: 'address[]',
+          },
+          {
+            name: 'minAmountsOut',
+            internalType: 'uint256[]',
+            type: 'uint256[]',
+          },
           { name: 'userData', internalType: 'bytes', type: 'bytes' },
           { name: 'toInternalBalance', internalType: 'bool', type: 'bool' },
         ],
@@ -2921,7 +3549,11 @@ export const balancerV2VaultABI = [
     stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
-      { name: 'recipient', internalType: 'contract IFlashLoanRecipient', type: 'address' },
+      {
+        name: 'recipient',
+        internalType: 'contract IFlashLoanRecipient',
+        type: 'address',
+      },
       { name: 'tokens', internalType: 'contract IERC20[]', type: 'address[]' },
       { name: 'amounts', internalType: 'uint256[]', type: 'uint256[]' },
       { name: 'userData', internalType: 'bytes', type: 'bytes' },
@@ -2985,7 +3617,11 @@ export const balancerV2VaultABI = [
     name: 'getPool',
     outputs: [
       { name: '', internalType: 'address', type: 'address' },
-      { name: '', internalType: 'enum IVault.PoolSpecialization', type: 'uint8' },
+      {
+        name: '',
+        internalType: 'enum IVault.PoolSpecialization',
+        type: 'uint8',
+      },
     ],
   },
   {
@@ -3019,7 +3655,13 @@ export const balancerV2VaultABI = [
     type: 'function',
     inputs: [],
     name: 'getProtocolFeesCollector',
-    outputs: [{ name: '', internalType: 'contract ProtocolFeesCollector', type: 'address' }],
+    outputs: [
+      {
+        name: '',
+        internalType: 'contract ProtocolFeesCollector',
+        type: 'address',
+      },
+    ],
   },
   {
     stateMutability: 'view',
@@ -3043,8 +3685,16 @@ export const balancerV2VaultABI = [
         internalType: 'struct IVault.JoinPoolRequest',
         type: 'tuple',
         components: [
-          { name: 'assets', internalType: 'contract IAsset[]', type: 'address[]' },
-          { name: 'maxAmountsIn', internalType: 'uint256[]', type: 'uint256[]' },
+          {
+            name: 'assets',
+            internalType: 'contract IAsset[]',
+            type: 'address[]',
+          },
+          {
+            name: 'maxAmountsIn',
+            internalType: 'uint256[]',
+            type: 'uint256[]',
+          },
           { name: 'userData', internalType: 'bytes', type: 'bytes' },
           { name: 'fromInternalBalance', internalType: 'bool', type: 'bool' },
         ],
@@ -3062,7 +3712,11 @@ export const balancerV2VaultABI = [
         internalType: 'struct IVault.PoolBalanceOp[]',
         type: 'tuple[]',
         components: [
-          { name: 'kind', internalType: 'enum IVault.PoolBalanceOpKind', type: 'uint8' },
+          {
+            name: 'kind',
+            internalType: 'enum IVault.PoolBalanceOpKind',
+            type: 'uint8',
+          },
           { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
           { name: 'token', internalType: 'contract IERC20', type: 'address' },
           { name: 'amount', internalType: 'uint256', type: 'uint256' },
@@ -3081,11 +3735,19 @@ export const balancerV2VaultABI = [
         internalType: 'struct IVault.UserBalanceOp[]',
         type: 'tuple[]',
         components: [
-          { name: 'kind', internalType: 'enum IVault.UserBalanceOpKind', type: 'uint8' },
+          {
+            name: 'kind',
+            internalType: 'enum IVault.UserBalanceOpKind',
+            type: 'uint8',
+          },
           { name: 'asset', internalType: 'contract IAsset', type: 'address' },
           { name: 'amount', internalType: 'uint256', type: 'uint256' },
           { name: 'sender', internalType: 'address', type: 'address' },
-          { name: 'recipient', internalType: 'address payable', type: 'address' },
+          {
+            name: 'recipient',
+            internalType: 'address payable',
+            type: 'address',
+          },
         ],
       },
     ],
@@ -3117,7 +3779,11 @@ export const balancerV2VaultABI = [
         components: [
           { name: 'sender', internalType: 'address', type: 'address' },
           { name: 'fromInternalBalance', internalType: 'bool', type: 'bool' },
-          { name: 'recipient', internalType: 'address payable', type: 'address' },
+          {
+            name: 'recipient',
+            internalType: 'address payable',
+            type: 'address',
+          },
           { name: 'toInternalBalance', internalType: 'bool', type: 'bool' },
         ],
       },
@@ -3129,7 +3795,11 @@ export const balancerV2VaultABI = [
     stateMutability: 'nonpayable',
     type: 'function',
     inputs: [
-      { name: 'specialization', internalType: 'enum IVault.PoolSpecialization', type: 'uint8' },
+      {
+        name: 'specialization',
+        internalType: 'enum IVault.PoolSpecialization',
+        type: 'uint8',
+      },
     ],
     name: 'registerPool',
     outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
@@ -3148,7 +3818,13 @@ export const balancerV2VaultABI = [
   {
     stateMutability: 'nonpayable',
     type: 'function',
-    inputs: [{ name: 'newAuthorizer', internalType: 'contract IAuthorizer', type: 'address' }],
+    inputs: [
+      {
+        name: 'newAuthorizer',
+        internalType: 'contract IAuthorizer',
+        type: 'address',
+      },
+    ],
     name: 'setAuthorizer',
     outputs: [],
   },
@@ -3182,7 +3858,11 @@ export const balancerV2VaultABI = [
           { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
           { name: 'kind', internalType: 'enum IVault.SwapKind', type: 'uint8' },
           { name: 'assetIn', internalType: 'contract IAsset', type: 'address' },
-          { name: 'assetOut', internalType: 'contract IAsset', type: 'address' },
+          {
+            name: 'assetOut',
+            internalType: 'contract IAsset',
+            type: 'address',
+          },
           { name: 'amount', internalType: 'uint256', type: 'uint256' },
           { name: 'userData', internalType: 'bytes', type: 'bytes' },
         ],
@@ -3194,7 +3874,11 @@ export const balancerV2VaultABI = [
         components: [
           { name: 'sender', internalType: 'address', type: 'address' },
           { name: 'fromInternalBalance', internalType: 'bool', type: 'bool' },
-          { name: 'recipient', internalType: 'address payable', type: 'address' },
+          {
+            name: 'recipient',
+            internalType: 'address payable',
+            type: 'address',
+          },
           { name: 'toInternalBalance', internalType: 'bool', type: 'bool' },
         ],
       },
@@ -3219,7 +3903,7 @@ export const balancerV2VaultAddress = {
  */
 export const balancerV2VaultConfig = {
   address: balancerV2VaultAddress,
-  abi: balancerV2VaultABI,
+  abi: balancerV2VaultAbi,
 } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3229,7 +3913,7 @@ export const balancerV2VaultConfig = {
 /**
  * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x3ff3a210e57cfe679d9ad1e9ba6453a716c56a2e)
  */
-export const balancerV2WeightedPoolV4ABI = [
+export const balancerV2WeightedPoolV4Abi = [
   {
     stateMutability: 'nonpayable',
     type: 'constructor',
@@ -3241,11 +3925,31 @@ export const balancerV2WeightedPoolV4ABI = [
         components: [
           { name: 'name', internalType: 'string', type: 'string' },
           { name: 'symbol', internalType: 'string', type: 'string' },
-          { name: 'tokens', internalType: 'contract IERC20[]', type: 'address[]' },
-          { name: 'normalizedWeights', internalType: 'uint256[]', type: 'uint256[]' },
-          { name: 'rateProviders', internalType: 'contract IRateProvider[]', type: 'address[]' },
-          { name: 'assetManagers', internalType: 'address[]', type: 'address[]' },
-          { name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256' },
+          {
+            name: 'tokens',
+            internalType: 'contract IERC20[]',
+            type: 'address[]',
+          },
+          {
+            name: 'normalizedWeights',
+            internalType: 'uint256[]',
+            type: 'uint256[]',
+          },
+          {
+            name: 'rateProviders',
+            internalType: 'contract IRateProvider[]',
+            type: 'address[]',
+          },
+          {
+            name: 'assetManagers',
+            internalType: 'address[]',
+            type: 'address[]',
+          },
+          {
+            name: 'swapFeePercentage',
+            internalType: 'uint256',
+            type: 'uint256',
+          },
         ],
       },
       { name: 'vault', internalType: 'contract IVault', type: 'address' },
@@ -3255,7 +3959,11 @@ export const balancerV2WeightedPoolV4ABI = [
         type: 'address',
       },
       { name: 'pauseWindowDuration', internalType: 'uint256', type: 'uint256' },
-      { name: 'bufferPeriodDuration', internalType: 'uint256', type: 'uint256' },
+      {
+        name: 'bufferPeriodDuration',
+        internalType: 'uint256',
+        type: 'uint256',
+      },
       { name: 'owner', internalType: 'address', type: 'address' },
       { name: 'version', internalType: 'string', type: 'string' },
     ],
@@ -3264,9 +3972,24 @@ export const balancerV2WeightedPoolV4ABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'owner', internalType: 'address', type: 'address', indexed: true },
-      { name: 'spender', internalType: 'address', type: 'address', indexed: true },
-      { name: 'value', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'owner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'spender',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'value',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'Approval',
   },
@@ -3280,8 +4003,18 @@ export const balancerV2WeightedPoolV4ABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'feeType', internalType: 'uint256', type: 'uint256', indexed: true },
-      { name: 'protocolFeePercentage', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'feeType',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'protocolFeePercentage',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'ProtocolFeePercentageCacheUpdated',
   },
@@ -3295,7 +4028,12 @@ export const balancerV2WeightedPoolV4ABI = [
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'swapFeePercentage',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'SwapFeePercentageChanged',
   },
@@ -3305,7 +4043,12 @@ export const balancerV2WeightedPoolV4ABI = [
     inputs: [
       { name: 'from', internalType: 'address', type: 'address', indexed: true },
       { name: 'to', internalType: 'address', type: 'address', indexed: true },
-      { name: 'value', internalType: 'uint256', type: 'uint256', indexed: false },
+      {
+        name: 'value',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
     ],
     name: 'Transfer',
   },
@@ -3481,7 +4224,13 @@ export const balancerV2WeightedPoolV4ABI = [
     type: 'function',
     inputs: [],
     name: 'getProtocolFeesCollector',
-    outputs: [{ name: '', internalType: 'contract IProtocolFeesCollector', type: 'address' }],
+    outputs: [
+      {
+        name: '',
+        internalType: 'contract IProtocolFeesCollector',
+        type: 'address',
+      },
+    ],
   },
   {
     stateMutability: 'view',
@@ -3558,7 +4307,11 @@ export const balancerV2WeightedPoolV4ABI = [
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'balances', internalType: 'uint256[]', type: 'uint256[]' },
       { name: 'lastChangeBlock', internalType: 'uint256', type: 'uint256' },
-      { name: 'protocolSwapFeePercentage', internalType: 'uint256', type: 'uint256' },
+      {
+        name: 'protocolSwapFeePercentage',
+        internalType: 'uint256',
+        type: 'uint256',
+      },
       { name: 'userData', internalType: 'bytes', type: 'bytes' },
     ],
     name: 'onExitPool',
@@ -3576,7 +4329,11 @@ export const balancerV2WeightedPoolV4ABI = [
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'balances', internalType: 'uint256[]', type: 'uint256[]' },
       { name: 'lastChangeBlock', internalType: 'uint256', type: 'uint256' },
-      { name: 'protocolSwapFeePercentage', internalType: 'uint256', type: 'uint256' },
+      {
+        name: 'protocolSwapFeePercentage',
+        internalType: 'uint256',
+        type: 'uint256',
+      },
       { name: 'userData', internalType: 'bytes', type: 'bytes' },
     ],
     name: 'onJoinPool',
@@ -3596,7 +4353,11 @@ export const balancerV2WeightedPoolV4ABI = [
         components: [
           { name: 'kind', internalType: 'enum IVault.SwapKind', type: 'uint8' },
           { name: 'tokenIn', internalType: 'contract IERC20', type: 'address' },
-          { name: 'tokenOut', internalType: 'contract IERC20', type: 'address' },
+          {
+            name: 'tokenOut',
+            internalType: 'contract IERC20',
+            type: 'address',
+          },
           { name: 'amount', internalType: 'uint256', type: 'uint256' },
           { name: 'poolId', internalType: 'bytes32', type: 'bytes32' },
           { name: 'lastChangeBlock', internalType: 'uint256', type: 'uint256' },
@@ -3611,7 +4372,13 @@ export const balancerV2WeightedPoolV4ABI = [
     name: 'onSwap',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
   },
-  { stateMutability: 'nonpayable', type: 'function', inputs: [], name: 'pause', outputs: [] },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [],
+    name: 'pause',
+    outputs: [],
+  },
   {
     stateMutability: 'nonpayable',
     type: 'function',
@@ -3636,7 +4403,11 @@ export const balancerV2WeightedPoolV4ABI = [
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'balances', internalType: 'uint256[]', type: 'uint256[]' },
       { name: 'lastChangeBlock', internalType: 'uint256', type: 'uint256' },
-      { name: 'protocolSwapFeePercentage', internalType: 'uint256', type: 'uint256' },
+      {
+        name: 'protocolSwapFeePercentage',
+        internalType: 'uint256',
+        type: 'uint256',
+      },
       { name: 'userData', internalType: 'bytes', type: 'bytes' },
     ],
     name: 'queryExit',
@@ -3654,7 +4425,11 @@ export const balancerV2WeightedPoolV4ABI = [
       { name: 'recipient', internalType: 'address', type: 'address' },
       { name: 'balances', internalType: 'uint256[]', type: 'uint256[]' },
       { name: 'lastChangeBlock', internalType: 'uint256', type: 'uint256' },
-      { name: 'protocolSwapFeePercentage', internalType: 'uint256', type: 'uint256' },
+      {
+        name: 'protocolSwapFeePercentage',
+        internalType: 'uint256',
+        type: 'uint256',
+      },
       { name: 'userData', internalType: 'bytes', type: 'bytes' },
     ],
     name: 'queryJoin',
@@ -3715,7 +4490,13 @@ export const balancerV2WeightedPoolV4ABI = [
     name: 'transferFrom',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
   },
-  { stateMutability: 'nonpayable', type: 'function', inputs: [], name: 'unpause', outputs: [] },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [],
+    name: 'unpause',
+    outputs: [],
+  },
   {
     stateMutability: 'nonpayable',
     type: 'function',
@@ -3744,14 +4525,14 @@ export const balancerV2WeightedPoolV4Address = {
  */
 export const balancerV2WeightedPoolV4Config = {
   address: balancerV2WeightedPoolV4Address,
-  abi: balancerV2WeightedPoolV4ABI,
+  abi: balancerV2WeightedPoolV4Abi,
 } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // erc20
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const erc20ABI = [
+export const erc20Abi = [
   {
     type: 'event',
     inputs: [
@@ -3778,7 +4559,7 @@ export const erc20ABI = [
       { name: 'spender', type: 'address' },
     ],
     name: 'allowance',
-    outputs: [{ name: '', type: 'uint256' }],
+    outputs: [{ type: 'uint256' }],
   },
   {
     stateMutability: 'nonpayable',
@@ -3788,42 +4569,42 @@ export const erc20ABI = [
       { name: 'amount', type: 'uint256' },
     ],
     name: 'approve',
-    outputs: [{ name: '', type: 'bool' }],
+    outputs: [{ type: 'bool' }],
   },
   {
     stateMutability: 'view',
     type: 'function',
     inputs: [{ name: 'account', type: 'address' }],
     name: 'balanceOf',
-    outputs: [{ name: '', type: 'uint256' }],
+    outputs: [{ type: 'uint256' }],
   },
   {
     stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'decimals',
-    outputs: [{ name: '', type: 'uint8' }],
+    outputs: [{ type: 'uint8' }],
   },
   {
     stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'name',
-    outputs: [{ name: '', type: 'string' }],
+    outputs: [{ type: 'string' }],
   },
   {
     stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'symbol',
-    outputs: [{ name: '', type: 'string' }],
+    outputs: [{ type: 'string' }],
   },
   {
     stateMutability: 'view',
     type: 'function',
     inputs: [],
     name: 'totalSupply',
-    outputs: [{ name: '', type: 'uint256' }],
+    outputs: [{ type: 'uint256' }],
   },
   {
     stateMutability: 'nonpayable',
@@ -3833,7 +4614,7 @@ export const erc20ABI = [
       { name: 'amount', type: 'uint256' },
     ],
     name: 'transfer',
-    outputs: [{ name: '', type: 'bool' }],
+    outputs: [{ type: 'bool' }],
   },
   {
     stateMutability: 'nonpayable',
@@ -3844,197 +4625,6 @@ export const erc20ABI = [
       { name: 'amount', type: 'uint256' },
     ],
     name: 'transferFrom',
-    outputs: [{ name: '', type: 'bool' }],
+    outputs: [{ type: 'bool' }],
   },
 ] as const
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// React
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link balancerMinterABI}__.
- *
- * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x239e55F427D44C3cc793f49bFB507ebe76638a2b)
- */
-export function useBalancerMinterRead<
-  TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerMinterABI, TFunctionName>
->(
-  config: Omit<
-    UseContractReadConfig<typeof balancerMinterABI, TFunctionName, TSelectData>,
-    'abi' | 'address'
-  > & { chainId?: keyof typeof balancerMinterAddress } = {} as any
-) {
-  return useContractRead({
-    abi: balancerMinterABI,
-    address: balancerMinterAddress[1],
-    ...config,
-  } as UseContractReadConfig<typeof balancerMinterABI, TFunctionName, TSelectData>)
-}
-
-/**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link balancerV2BalancerRelayerABI}__.
- *
- * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x35Cea9e57A393ac66Aaa7E25C391D52C74B5648f)
- */
-export function useBalancerV2BalancerRelayerRead<
-  TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerV2BalancerRelayerABI, TFunctionName>
->(
-  config: Omit<
-    UseContractReadConfig<typeof balancerV2BalancerRelayerABI, TFunctionName, TSelectData>,
-    'abi' | 'address'
-  > & { chainId?: keyof typeof balancerV2BalancerRelayerAddress } = {} as any
-) {
-  return useContractRead({
-    abi: balancerV2BalancerRelayerABI,
-    address: balancerV2BalancerRelayerAddress[1],
-    ...config,
-  } as UseContractReadConfig<typeof balancerV2BalancerRelayerABI, TFunctionName, TSelectData>)
-}
-
-/**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link balancerV2BatchRelayerLibraryABI}__.
- *
- * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xea66501df1a00261e3bb79d1e90444fc6a186b62)
- */
-export function useBalancerV2BatchRelayerLibraryRead<
-  TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerV2BatchRelayerLibraryABI, TFunctionName>
->(
-  config: Omit<
-    UseContractReadConfig<typeof balancerV2BatchRelayerLibraryABI, TFunctionName, TSelectData>,
-    'abi' | 'address'
-  > & { chainId?: keyof typeof balancerV2BatchRelayerLibraryAddress } = {} as any
-) {
-  return useContractRead({
-    abi: balancerV2BatchRelayerLibraryABI,
-    address: balancerV2BatchRelayerLibraryAddress[1],
-    ...config,
-  } as UseContractReadConfig<typeof balancerV2BatchRelayerLibraryABI, TFunctionName, TSelectData>)
-}
-
-/**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link balancerV2ComposableStablePoolV5ABI}__.
- *
- * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xdacf5fa19b1f720111609043ac67a9818262850c)
- */
-export function useBalancerV2ComposableStablePoolV5Read<
-  TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerV2ComposableStablePoolV5ABI, TFunctionName>
->(
-  config: Omit<
-    UseContractReadConfig<typeof balancerV2ComposableStablePoolV5ABI, TFunctionName, TSelectData>,
-    'abi' | 'address'
-  > & { chainId?: keyof typeof balancerV2ComposableStablePoolV5Address } = {} as any
-) {
-  return useContractRead({
-    abi: balancerV2ComposableStablePoolV5ABI,
-    address: balancerV2ComposableStablePoolV5Address[1],
-    ...config,
-  } as UseContractReadConfig<typeof balancerV2ComposableStablePoolV5ABI, TFunctionName, TSelectData>)
-}
-
-/**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link balancerV2Erc4626LinearPoolV3ABI}__.
- *
- * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x6667c6fa9f2b3fc1cc8d85320b62703d938e4385)
- */
-export function useBalancerV2Erc4626LinearPoolV3Read<
-  TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerV2Erc4626LinearPoolV3ABI, TFunctionName>
->(
-  config: Omit<
-    UseContractReadConfig<typeof balancerV2Erc4626LinearPoolV3ABI, TFunctionName, TSelectData>,
-    'abi' | 'address'
-  > & { chainId?: keyof typeof balancerV2Erc4626LinearPoolV3Address } = {} as any
-) {
-  return useContractRead({
-    abi: balancerV2Erc4626LinearPoolV3ABI,
-    address: balancerV2Erc4626LinearPoolV3Address[1],
-    ...config,
-  } as UseContractReadConfig<typeof balancerV2Erc4626LinearPoolV3ABI, TFunctionName, TSelectData>)
-}
-
-/**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link balancerV2GaugeV5ABI}__.
- *
- * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xbc02ef87f4e15ef78a571f3b2adcc726fee70d8b)
- */
-export function useBalancerV2GaugeV5Read<
-  TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerV2GaugeV5ABI, TFunctionName>
->(
-  config: Omit<
-    UseContractReadConfig<typeof balancerV2GaugeV5ABI, TFunctionName, TSelectData>,
-    'abi' | 'address'
-  > & { chainId?: keyof typeof balancerV2GaugeV5Address } = {} as any
-) {
-  return useContractRead({
-    abi: balancerV2GaugeV5ABI,
-    address: balancerV2GaugeV5Address[1],
-    ...config,
-  } as UseContractReadConfig<typeof balancerV2GaugeV5ABI, TFunctionName, TSelectData>)
-}
-
-/**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link balancerV2VaultABI}__.
- *
- * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0xBA12222222228d8Ba445958a75a0704d566BF2C8)
- */
-export function useBalancerV2VaultRead<
-  TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerV2VaultABI, TFunctionName>
->(
-  config: Omit<
-    UseContractReadConfig<typeof balancerV2VaultABI, TFunctionName, TSelectData>,
-    'abi' | 'address'
-  > & { chainId?: keyof typeof balancerV2VaultAddress } = {} as any
-) {
-  return useContractRead({
-    abi: balancerV2VaultABI,
-    address: balancerV2VaultAddress[1],
-    ...config,
-  } as UseContractReadConfig<typeof balancerV2VaultABI, TFunctionName, TSelectData>)
-}
-
-/**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link balancerV2WeightedPoolV4ABI}__.
- *
- * [__View Contract on Ethereum Etherscan__](https://etherscan.io/address/0x3ff3a210e57cfe679d9ad1e9ba6453a716c56a2e)
- */
-export function useBalancerV2WeightedPoolV4Read<
-  TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof balancerV2WeightedPoolV4ABI, TFunctionName>
->(
-  config: Omit<
-    UseContractReadConfig<typeof balancerV2WeightedPoolV4ABI, TFunctionName, TSelectData>,
-    'abi' | 'address'
-  > & { chainId?: keyof typeof balancerV2WeightedPoolV4Address } = {} as any
-) {
-  return useContractRead({
-    abi: balancerV2WeightedPoolV4ABI,
-    address: balancerV2WeightedPoolV4Address[1],
-    ...config,
-  } as UseContractReadConfig<typeof balancerV2WeightedPoolV4ABI, TFunctionName, TSelectData>)
-}
-
-/**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc20ABI}__.
- */
-export function useErc20Read<
-  TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
->(
-  config: Omit<
-    UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
-    'abi'
-  > = {} as any
-) {
-  return useContractRead({ abi: erc20ABI, ...config } as UseContractReadConfig<
-    typeof erc20ABI,
-    TFunctionName,
-    TSelectData
-  >)
-}

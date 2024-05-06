@@ -6,6 +6,7 @@ import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.b
 import { HumanAmountIn } from '../../liquidity-types'
 import { selectAddLiquidityHandler } from '../handlers/selectAddLiquidityHandler'
 import { useAddLiquidityPriceImpactQuery } from './useAddLiquidityPriceImpactQuery'
+import { connectWithDefaultUser } from '@/test/utils/wagmi/wagmi-connections'
 
 async function testQuery(humanAmountsIn: HumanAmountIn[]) {
   const handler = selectAddLiquidityHandler(aWjAuraWethPoolElementMock())
@@ -16,6 +17,7 @@ async function testQuery(humanAmountsIn: HumanAmountIn[]) {
 }
 
 test('queries price impact for add liquidity', async () => {
+  await connectWithDefaultUser()
   const humanAmountsIn: HumanAmountIn[] = [
     { tokenAddress: wETHAddress, humanAmount: '1' },
     { tokenAddress: wjAuraAddress, humanAmount: '1' },

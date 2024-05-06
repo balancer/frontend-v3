@@ -33,7 +33,7 @@ export const INTEGER_PERCENTAGE_FORMAT = '0%'
 export const APR_UPPER_THRESHOLD = 1_000_000
 export const APR_LOWER_THRESHOLD = 0.0000001
 
-const NUMERAL_DECIMAL_LIMIT = 17
+const NUMERAL_DECIMAL_LIMIT = 9
 
 export type Numberish = string | number | bigint | BigNumber
 export type NumberFormatter = (val: Numberish) => string
@@ -162,4 +162,8 @@ export function safeTokenFormat(
   if (!amount) return '-'
 
   return fNum('token', formatUnits(amount, decimals), opts)
+}
+
+export function isZero(amount: Numberish): boolean {
+  return bn(amount).isZero()
 }

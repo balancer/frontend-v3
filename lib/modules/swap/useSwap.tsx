@@ -141,9 +141,7 @@ export function _useSwap(pathParams: PathParams) {
       swapType: swapState.swapType,
       swapAmount: getSwapAmount(swapState),
     },
-    options: {
-      enabled: shouldFetchSwap(swapState),
-    },
+    enabled: shouldFetchSwap(swapState),
   })
 
   function handleSimulationResponse({ returnAmount, swapType }: SimulateSwapResponse) {

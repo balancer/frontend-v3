@@ -1,6 +1,6 @@
-import { Address } from 'viem'
+import { Address, Chain } from 'viem'
 import { GqlChain } from '../shared/services/api/generated/graphql'
-import { supportedChains } from '../modules/web3/Web3Provider'
+import { chains } from '../modules/web3/Web3Provider'
 import { PoolIssue } from '../modules/pool/alerts/pool-issues/PoolIssue.type'
 import { SupportedWrapHandler } from '../modules/swap/swap.types'
 
@@ -36,6 +36,8 @@ export interface ContractsConfig {
     minter: Address
   }
   feeDistributor?: Address
+  veDelegationProxy?: Address
+  veBAL?: Address
 }
 export interface PoolsConfig {
   issues: Partial<Record<PoolIssue, string[]>>
@@ -46,14 +48,15 @@ export interface BlockExplorerConfig {
   name: string
 }
 
-export type SupportedChainId = (typeof supportedChains)[number]['id']
+export type SupportedChainId = (typeof chains)[number]['id']
+
 export interface NetworkConfig {
   chainId: SupportedChainId
   name: string
   shortName: string
   chain: GqlChain
   iconPath: string
-  rpcUrl: string
+  rpcUrl?: string
   blockExplorer: BlockExplorerConfig
   tokens: TokensConfig
   contracts: ContractsConfig

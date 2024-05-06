@@ -6,7 +6,6 @@ import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTra
 import { CurrentFlowStepProvider } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 import { ApolloGlobalDataProvider } from '@/lib/shared/services/api/apollo-global-data.provider'
 import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
-import { ReactQueryClientProvider } from './react-query.provider'
 import { ThemeProvider as ColorThemeProvider } from 'next-themes'
 import { DEFAULT_THEME_COLOR_MODE } from '@/lib/shared/services/chakra/theme'
 
@@ -25,9 +24,7 @@ export function Providers({ children }: { children: ReactNode }) {
                 initAcceptedPolicies={undefined}
               >
                 <CurrentFlowStepProvider>
-                  <RecentTransactionsProvider>
-                    <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
-                  </RecentTransactionsProvider>
+                  <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
                 </CurrentFlowStepProvider>
               </UserSettingsProvider>
             </ApolloGlobalDataProvider>

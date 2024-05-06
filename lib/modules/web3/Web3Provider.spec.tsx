@@ -1,8 +1,51 @@
-import { mainnet } from 'wagmi'
-import { getDefaultRpcUrl } from './Web3Provider'
-import { optimism } from 'viem/chains'
+import { getDefaultRpcUrl, chains } from './Web3Provider'
+import { mainnet, optimism } from 'viem/chains'
 
 test('getRpcUrl by chain id', () => {
-  expect(getDefaultRpcUrl(mainnet.id)).toMatch('https://mainnet.infura.io/v3/')
-  expect(getDefaultRpcUrl(optimism.id)).toMatch('https://optimism-mainnet.infura.io/')
+  expect(getDefaultRpcUrl(mainnet.id)).toMatch('https://cloudflare-eth.com')
+  expect(getDefaultRpcUrl(optimism.id)).toMatch('https://mainnet.optimism.io')
+})
+
+test('Debug', () => {
+  expect(chains[0]).toMatchInlineSnapshot(`
+    {
+      "blockExplorers": {
+        "default": {
+          "apiUrl": "https://api.etherscan.io/api",
+          "name": "Etherscan",
+          "url": "https://etherscan.io",
+        },
+      },
+      "contracts": {
+        "ensRegistry": {
+          "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+        },
+        "ensUniversalResolver": {
+          "address": "0x8cab227b1162f03b8338331adaad7aadc83b895e",
+          "blockCreated": 18958930,
+        },
+        "multicall3": {
+          "address": "0xca11bde05977b3631167028862be2a173976ca11",
+          "blockCreated": 14353601,
+        },
+      },
+      "fees": undefined,
+      "formatters": undefined,
+      "id": 1,
+      "name": "Ethereum",
+      "nativeCurrency": {
+        "decimals": 18,
+        "name": "Ether",
+        "symbol": "ETH",
+      },
+      "rpcUrls": {
+        "default": {
+          "http": [
+            "https://cloudflare-eth.com",
+          ],
+        },
+      },
+      "serializers": undefined,
+    }
+  `)
 })

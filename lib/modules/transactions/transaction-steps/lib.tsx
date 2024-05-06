@@ -43,8 +43,6 @@ export type ManagedResult = TransactionBundle & Executable
 */
 type Executable = {
   // eslint-disable-next-line @typescript-eslint/ban-types
-  execute?: Function
-  // eslint-disable-next-line @typescript-eslint/ban-types
   executeAsync?: Function
   setTxConfig?: any
 }
@@ -86,7 +84,7 @@ export function getTransactionState(transactionBundle?: TransactionBundle): Tran
   if (simulation.isLoading) {
     return TransactionState.Preparing
   }
-  if (execution.isLoading) {
+  if (execution.isPending) {
     return TransactionState.Loading
   }
   if (result.isSuccess) {

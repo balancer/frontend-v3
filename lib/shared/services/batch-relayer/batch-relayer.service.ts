@@ -5,7 +5,7 @@ import {
   EncodeGaugeWithdrawInput,
 } from './relayer-types'
 import { GaugeActionsService } from './extensions/gauge-actions.service'
-import { balancerV2BatchRelayerLibraryABI } from '@/lib/modules/web3/contracts/abi/generated'
+import { balancerV2BatchRelayerLibraryAbi } from '@/lib/modules/web3/contracts/abi/generated'
 import { encodeFunctionData, Hex } from 'viem'
 
 export class BatchRelayerService {
@@ -16,7 +16,7 @@ export class BatchRelayerService {
 
   public encodePeekChainedReferenceValue(reference: bigint): string {
     return encodeFunctionData({
-      abi: balancerV2BatchRelayerLibraryABI,
+      abi: balancerV2BatchRelayerLibraryAbi,
       functionName: 'peekChainedReferenceValue',
       args: [reference],
     })

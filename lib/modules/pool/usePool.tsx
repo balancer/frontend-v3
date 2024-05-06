@@ -2,6 +2,7 @@
 'use client'
 
 import {
+  GetFeaturedPoolsQuery,
   GetPoolDocument,
   GetPoolQuery,
   GqlChain,
@@ -22,6 +23,7 @@ export type UsePoolResponse = ReturnType<typeof _usePool> & {
 export const PoolContext = createContext<UsePoolResponse | null>(null)
 
 export type Pool = GetPoolQuery['pool']
+export type FeaturedPool = GetFeaturedPoolsQuery['featuredPools'][0]['pool']
 
 export function _usePool({
   id,

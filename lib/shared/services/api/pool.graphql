@@ -16,38 +16,13 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       poolId
       swapEnabled
       totalLiquidity
-      totalLiquidity24hAgo
       totalShares
-      totalShares24hAgo
       fees24h
       swapFee
       volume24h
-      fees48h
-      volume48h
-      lifetimeVolume
-      lifetimeSwapFees
       holdersCount
       isInRecoveryMode
       isPaused
-      swapsCount
-      sharePriceAth
-      sharePriceAthTimestamp
-      sharePriceAtl
-      sharePriceAtlTimestamp
-      totalLiquidityAth
-      totalLiquidityAthTimestamp
-      totalLiquidityAtl
-      totalLiquidityAtlTimestamp
-      volume24hAth
-      volume24hAthTimestamp
-      volume24hAtl
-      volume24hAtlTimestamp
-      fees24hAth
-      fees24hAthTimestamp
-      fees24hAtl
-      fees24hAtlTimestamp
-      yieldCapture24h
-      yieldCapture48h
       apr {
         hasRewardApr
         thirdPartyApr {
@@ -159,50 +134,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
         }
       }
     }
-    investConfig {
-      singleAssetEnabled
-      proportionalEnabled
-      options {
-        poolTokenIndex
-        poolTokenAddress
-        tokenOptions {
-          ... on GqlPoolToken {
-            id
-            index
-            name
-            symbol
-            balance
-            address
-            priceRate
-            decimals
-            weight
-            totalBalance
-          }
-        }
-      }
-    }
-    withdrawConfig {
-      singleAssetEnabled
-      proportionalEnabled
-      options {
-        poolTokenIndex
-        poolTokenAddress
-        tokenOptions {
-          ... on GqlPoolToken {
-            id
-            index
-            name
-            symbol
-            balance
-            address
-            priceRate
-            decimals
-            weight
-            totalBalance
-          }
-        }
-      }
-    }
     userBalance {
       stakedBalance
       totalBalance
@@ -216,7 +147,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       poolTokens {
         ... on GqlPoolTokenDetail {
           id
-          hasNestedPool
           index
           name
           symbol
@@ -225,6 +155,17 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
+          hasNestedPool
+          nestedPool {
+            id
+            address
+            type
+            tokens {
+              index
+              address
+              decimals
+            }
+          }
         }
       }
     }
@@ -233,7 +174,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       poolTokens {
         ... on GqlPoolTokenDetail {
           id
-          hasNestedPool
           index
           name
           symbol
@@ -242,6 +182,17 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
+          hasNestedPool
+          nestedPool {
+            id
+            address
+            type
+            tokens {
+              index
+              address
+              decimals
+            }
+          }
         }
       }
     }
@@ -250,7 +201,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       poolTokens {
         ... on GqlPoolTokenDetail {
           id
-          hasNestedPool
           index
           name
           symbol
@@ -259,6 +209,17 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
+          hasNestedPool
+          nestedPool {
+            id
+            address
+            type
+            tokens {
+              index
+              address
+              decimals
+            }
+          }
         }
       }
     }
@@ -269,7 +230,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       poolTokens {
         ... on GqlPoolTokenDetail {
           id
-          hasNestedPool
           index
           name
           symbol
@@ -278,6 +238,17 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
+          hasNestedPool
+          nestedPool {
+            id
+            address
+            type
+            tokens {
+              index
+              address
+              decimals
+            }
+          }
         }
       }
     }
@@ -288,7 +259,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       poolTokens {
         ... on GqlPoolTokenDetail {
           id
-          hasNestedPool
           index
           name
           symbol
@@ -297,6 +267,17 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
+          hasNestedPool
+          nestedPool {
+            id
+            address
+            type
+            tokens {
+              index
+              address
+              decimals
+            }
+          }
         }
       }
     }
@@ -309,7 +290,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       poolTokens {
         ... on GqlPoolTokenDetail {
           id
-          hasNestedPool
           index
           name
           symbol
@@ -318,6 +298,17 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
+          hasNestedPool
+          nestedPool {
+            id
+            address
+            type
+            tokens {
+              index
+              address
+              decimals
+            }
+          }
         }
       }
     }
@@ -327,7 +318,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       poolTokens {
         ... on GqlPoolTokenDetail {
           id
-          hasNestedPool
           index
           name
           symbol
@@ -336,6 +326,17 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
+          hasNestedPool
+          nestedPool {
+            id
+            address
+            type
+            tokens {
+              index
+              address
+              decimals
+            }
+          }
         }
       }
     }
@@ -362,7 +363,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       poolTokens {
         ... on GqlPoolTokenDetail {
           id
-          hasNestedPool
           index
           name
           symbol
@@ -371,6 +371,17 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
+          hasNestedPool
+          nestedPool {
+            id
+            address
+            type
+            tokens {
+              index
+              address
+              decimals
+            }
+          }
         }
       }
     }
@@ -383,7 +394,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       poolTokens {
         ... on GqlPoolTokenDetail {
           id
-          hasNestedPool
           index
           name
           symbol
@@ -392,76 +402,20 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           priceRate
           decimals
           weight
+          hasNestedPool
+          nestedPool {
+            id
+            address
+            type
+            tokens {
+              index
+              address
+              decimals
+            }
+          }
         }
       }
     }
-  }
-}
-
-query GetPoolSwaps($first: Int, $skip: Int, $where: GqlPoolSwapFilter) {
-  swaps: poolGetSwaps(first: $first, skip: $skip, where: $where) {
-    id
-    poolId
-    timestamp
-    tokenAmountIn
-    tokenAmountOut
-    tokenIn
-    tokenOut
-    tx
-    userAddress
-    valueUSD
-  }
-}
-
-query GetPoolJoinExits($first: Int, $skip: Int, $poolId: String!) {
-  joinExits: poolGetJoinExits(first: $first, skip: $skip, where: { poolIdIn: [$poolId] }) {
-    id
-    timestamp
-    tx
-    type
-    poolId
-    valueUSD
-    amounts {
-      address
-      amount
-    }
-  }
-}
-
-query GetPoolBptPriceChartData($address: String!, $range: GqlTokenChartDataRange!) {
-  prices: tokenGetPriceChartData(address: $address, range: $range) {
-    id
-    price
-    timestamp
-  }
-}
-
-query GetPoolUserJoinExits($first: Int, $skip: Int, $poolId: String!) {
-  joinExits: userGetPoolJoinExits(poolId: $poolId, first: $first, skip: $skip) {
-    id
-    timestamp
-    tx
-    type
-    poolId
-    valueUSD
-    amounts {
-      address
-      amount
-    }
-  }
-}
-
-query GetUserSwaps($first: Int, $skip: Int, $poolId: String!) {
-  swaps: userGetSwaps(first: $first, skip: $skip, poolId: $poolId) {
-    id
-    poolId
-    timestamp
-    tokenAmountIn
-    tokenAmountOut
-    tokenIn
-    tokenOut
-    tx
-    valueUSD
   }
 }
 
@@ -491,19 +445,13 @@ query GetPoolTokensDynamicData($addresses: [String!]!) {
   }
 }
 
-query GetPoolEvents(
-  $poolId: String!
-  $chainId: GqlChain!
-  $range: GqlPoolEventsDataRange!
-  $typeIn: [GqlPoolEventType!]!
-  $userAddress: String
-) {
-  events: poolGetEvents(
-    poolId: $poolId
-    chain: $chainId
-    range: $range
-    typeIn: $typeIn
-    userAddress: $userAddress
+query GetPoolEvents($first: Int, $poolId: String!, $chain: GqlChain!) {
+  poolEvents(
+    first: $first
+    where: {
+      poolId: $poolId
+      chain: $chain
+    }
   ) {
     id
     poolId
@@ -511,5 +459,23 @@ query GetPoolEvents(
     tx
     type
     valueUSD
+    userAddress
+    ... on GqlPoolSwapEventV3 {
+      tokenIn {
+        address
+        amount
+      }
+      tokenOut {
+        address
+        amount
+      }
+    }
+    ... on GqlPoolJoinExitEventV3 {
+      tokens {
+        address
+        amount
+        valueUSD
+      }
+    }
   }
 }

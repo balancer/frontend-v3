@@ -1,3 +1,5 @@
+'use client'
+
 import { AddLiquidityProvider } from '@/lib/modules/pool/actions/add-liquidity/useAddLiquidity'
 import { PoolVariant } from '@/lib/modules/pool/pool.types'
 import { PoolProvider } from '@/lib/modules/pool/usePool'
@@ -15,32 +17,22 @@ import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTr
 import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { GqlChain, GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 import { ApolloProvider } from '@apollo/client'
-import { RenderHookOptions, act, renderHook, waitFor } from '@testing-library/react'
-import { PropsWithChildren, ReactElement, ReactNode } from 'react'
-import { GetFunctionArgs, InferFunctionName } from 'viem'
-import {
-  Config,
-  UsePrepareContractWriteConfig,
-  WagmiConfig,
-  // eslint-disable-next-line no-restricted-imports
-  useAccount,
-  useConnect,
-  useWalletClient,
-} from 'wagmi'
+import { RenderHookOptions, renderHook, waitFor } from '@testing-library/react'
+import { PropsWithChildren, ReactNode } from 'react'
+import { ContractFunctionArgs, ContractFunctionName } from 'viem'
+import { UseSimulateContractParameters, WagmiProvider } from 'wagmi'
 import { aGqlPoolElementMock } from '../msw/builders/gqlPoolElement.builders'
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
-import { createWagmiTestConfig } from './wagmi/wagmi-test-setup'
 import { RemoveLiquidityProvider } from '@/lib/modules/pool/actions/remove-liquidity/useRemoveLiquidity'
 import { UserAccountProvider } from '@/lib/modules/web3/useUserAccount'
-import { ReactQueryClientProvider } from '@/app/react-query.provider'
-import { defaultTestUserAccount } from '../anvil/anvil-setup'
-import { createMockConnector } from './wagmi/wagmi-mock-connectors'
 import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignature'
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { CurrentFlowStepProvider } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
-import { createWagmiConfig } from '@/lib/modules/web3/Web3Provider'
+import { testQueryClient } from './react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { testWagmiConfig } from '@/test/anvil/testWagmiConfig'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -49,9 +41,9 @@ export const EmptyWrapper = ({ children }: WrapperProps) => <>{children}</>
 
 export function testHook<TResult, TProps>(
   hook: (props: TProps) => TResult,
-  options?: RenderHookOptions<TProps>
+  options?: RenderHookOptions<TProps> | undefined
 ) {
-  function MixedProviders({ children }: { children: ReactElement }): ReactElement {
+  function MixedProviders({ children }: WrapperProps) {
     const LocalProviders = options?.wrapper || EmptyWrapper
 
     return (
@@ -65,6 +57,7 @@ export function testHook<TResult, TProps>(
     ...options,
     wrapper: MixedProviders,
   })
+
   return {
     ...result,
     waitForLoadedUseQuery,
@@ -73,41 +66,35 @@ export function testHook<TResult, TProps>(
 
 function GlobalProviders({ children }: WrapperProps) {
   const defaultRouterOptions = {}
-  let wagmiConfig: Config
-  if (process.env.VITE_USE_PRODUCTION_WAGMI == 'true') {
-    wagmiConfig = createWagmiConfig() as Config
-  } else {
-    wagmiConfig = createWagmiTestConfig() as Config
-  }
 
   return (
-    <WagmiConfig config={wagmiConfig}>
-      <AppRouterContextProviderMock router={defaultRouterOptions}>
-        <ApolloProvider client={apolloTestClient}>
-          <UserAccountProvider>
-            <TokensProvider
-              tokensData={defaultGetTokensQueryMock}
-              tokenPricesData={defaultGetTokenPricesQueryMock}
-              variables={defaultGetTokensQueryVariablesMock}
-            >
-              <UserSettingsProvider
-                initCurrency={'USD'}
-                initSlippage={'0.2'}
-                initPoolListView={'list'}
-                initEnableSignatures="yes"
-                initAcceptedPolicies={undefined}
+    <WagmiProvider config={testWagmiConfig} reconnectOnMount={false}>
+      <QueryClientProvider client={testQueryClient}>
+        <AppRouterContextProviderMock router={defaultRouterOptions}>
+          <ApolloProvider client={apolloTestClient}>
+            <UserAccountProvider>
+              <TokensProvider
+                tokensData={defaultGetTokensQueryMock}
+                tokenPricesData={defaultGetTokenPricesQueryMock}
+                variables={defaultGetTokensQueryVariablesMock}
               >
-                <CurrentFlowStepProvider>
-                  <RecentTransactionsProvider>
-                    <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
-                  </RecentTransactionsProvider>
-                </CurrentFlowStepProvider>
-              </UserSettingsProvider>
-            </TokensProvider>
-          </UserAccountProvider>
-        </ApolloProvider>
-      </AppRouterContextProviderMock>
-    </WagmiConfig>
+                <UserSettingsProvider
+                  initCurrency={'USD'}
+                  initSlippage={'0.2'}
+                  initPoolListView={'list'}
+                  initEnableSignatures="yes"
+                  initAcceptedPolicies={undefined}
+                >
+                  <CurrentFlowStepProvider>
+                    <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+                  </CurrentFlowStepProvider>
+                </UserSettingsProvider>
+              </TokensProvider>
+            </UserAccountProvider>
+          </ApolloProvider>
+        </AppRouterContextProviderMock>
+      </QueryClientProvider>
+    </WagmiProvider>
   )
 }
 
@@ -132,15 +119,15 @@ export async function waitForLoadedUseQuery(hookResult: { current: { loading: bo
 export function testManagedTransaction<
   T extends typeof AbiMap,
   M extends keyof typeof AbiMap,
-  F extends InferFunctionName<T[M], string, WriteAbiMutability>
+  F extends ContractFunctionName<T[M], WriteAbiMutability>
 >(
   contractAddress: string,
   contractId: M,
   functionName: F,
   chainId: SupportedChainId,
-  args?: GetFunctionArgs<T[M], F>,
+  args?: ContractFunctionArgs<T[M], WriteAbiMutability>,
   additionalConfig?: Omit<
-    UsePrepareContractWriteConfig<T[M], F, number>,
+    UseSimulateContractParameters<T[M], F>,
     'abi' | 'address' | 'functionName' | 'args'
   >
 ) {
@@ -156,35 +143,6 @@ export function testManagedTransaction<
     )
   )
   return result
-}
-
-/**
- * Called from integration tests to setup a connection with the default anvil test account (defaultTestUserAccount)
- */
-export async function useConnectTestAccount() {
-  function useConnectWallet() {
-    const config = { connector: createMockConnector('MAINNET') }
-    return {
-      account: useAccount(),
-      connect: useConnect(config),
-      walletClient: useWalletClient(),
-    }
-  }
-  const { result } = testHook(useConnectWallet)
-
-  await act(async () => result.current.connect.connect())
-  await waitFor(() =>
-    expect(result.current.connect.isSuccess && result.current.account.isConnected).toBeTruthy()
-  )
-  expect(result.current.walletClient).toBeDefined()
-
-  expect(result.current.connect.data?.account).toBe(defaultTestUserAccount)
-
-  return {
-    account: result.current.account,
-    connect: result.current.connect,
-    walletClient: result.current.walletClient,
-  }
 }
 
 export const DefaultAddLiquidityTestProvider = ({ children }: PropsWithChildren) => (

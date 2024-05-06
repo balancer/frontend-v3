@@ -1,14 +1,14 @@
 import { PoolListItem } from '../../pool/pool.types'
-import { Address } from 'wagmi'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { useMulticall } from '../../web3/contracts/useMulticall'
 import { AbiMap } from '../../web3/contracts/AbiMap'
 import { ClaimableBalanceResult } from '../usePortfolio'
 import { useMemo } from 'react'
-import { formatUnits } from 'viem'
+import { formatUnits, Address } from 'viem'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { useTokens } from '../../tokens/useTokens'
 import BigNumber from 'bignumber.js'
+import { getChainId } from '@/lib/config/app.config'
 
 export interface ClaimableReward {
   balance: bigint
@@ -21,7 +21,7 @@ export interface ClaimableReward {
 }
 
 export function useClaimableBalances(pools: PoolListItem[]) {
-  const { userAddress } = useUserAccount()
+  const { userAddress, isConnected } = useUserAccount()
   const { priceFor } = useTokens()
 
   // Get list of all reward tokens from provided pools
@@ -55,7 +55,7 @@ export function useClaimableBalances(pools: PoolListItem[]) {
   // Get claimable rewards for each reward token
   const poolsRewardTokensRequests = rewardTokensList.map(r => {
     return {
-      chain: r.pool.chain,
+      chainId: getChainId(r.pool.chain),
       id: `${r.gaugeAddress}.${r.tokenAddress}`,
       abi: AbiMap['balancer.gaugeV5'],
       address: r.gaugeAddress,
@@ -68,7 +68,9 @@ export function useClaimableBalances(pools: PoolListItem[]) {
     results: poolsRewardTokensQuery,
     refetchAll,
     isLoading,
-  } = useMulticall(poolsRewardTokensRequests)
+  } = useMulticall(poolsRewardTokensRequests, {
+    enabled: isConnected,
+  })
 
   // Format claimable rewards data
   const poolRewardTokensData = Object.values(poolsRewardTokensQuery).reduce(
@@ -103,7 +105,7 @@ export function useClaimableBalances(pools: PoolListItem[]) {
               gaugeAddress,
               balance,
               fiatBalance,
-              formattedBalance: fNum('token', formatUnits(balance, 18)),
+              formattedBalance: fNum('token', formatUnits(balance, 18)) || '0',
               decimals: 18,
             })
           }

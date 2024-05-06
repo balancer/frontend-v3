@@ -7,7 +7,8 @@ import { Pool } from '../../../usePool'
 import { QueryRemoveLiquidityInput, RemoveLiquidityType } from '../remove-liquidity.types'
 import { NestedProportionalRemoveLiquidityHandler } from './NestedProportionalRemoveLiquidity.handler'
 import { selectRemoveLiquidityHandler } from './selectRemoveLiquidityHandler'
-import { testPublicClient } from '@/test/utils/wagmi/wagmi-test-setup'
+import { mainnetTestPublicClient } from '@/test/utils/wagmi/wagmi-test-clients'
+import { connectWithDefaultUser } from '@/test/utils/wagmi/wagmi-connections'
 
 function selectNestedProportionalHandler(pool: Pool): NestedProportionalRemoveLiquidityHandler {
   return selectRemoveLiquidityHandler(
@@ -22,6 +23,7 @@ const defaultQueryInput: QueryRemoveLiquidityInput = {
 }
 
 const defaultBuildInput = { account: defaultTestUserAccount, slippagePercent: '0.2' }
+await connectWithDefaultUser()
 
 describe('When proportionally removing liquidity for a nested pool', () => {
   test('returns ZERO price impact', async () => {
@@ -57,13 +59,13 @@ describe('When proportionally removing liquidity for a nested pool', () => {
     expect(result.to).toBe(networkConfig.contracts.balancer.relayerV6)
     expect(result.data).toBeDefined()
 
-    const hash = await testPublicClient.sendTransaction({
+    const hash = await mainnetTestPublicClient.sendTransaction({
       ...result,
       account: defaultTestUserAccount,
-      chain: testPublicClient.chain,
+      chain: mainnetTestPublicClient.chain,
     })
 
-    const transactionReceipt = await testPublicClient.waitForTransactionReceipt({
+    const transactionReceipt = await mainnetTestPublicClient.waitForTransactionReceipt({
       hash,
     })
 

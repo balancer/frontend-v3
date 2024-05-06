@@ -10,7 +10,6 @@ const networkConfig: NetworkConfig = {
   shortName: 'Polygon',
   chain: GqlChain.Polygon,
   iconPath: '/images/chains/POLYGON.svg',
-  rpcUrl: 'https://polygon-mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
   blockExplorer: {
     baseUrl: 'https://polygonscan.com',
     name: 'Polygonscan',
@@ -51,6 +50,7 @@ const networkConfig: NetworkConfig = {
       relayerV6: '0xB1ED8d3b5059b3281D43306cC9D043cE8B22599b',
       minter: '0x47B489bf5836f83ABD928C316F8e39bC0587B020',
     },
+    veDelegationProxy: '0x0f08eEf2C785AA5e7539684aF04755dEC1347b7c',
   },
   minConfirmations: 13,
   pools: convertHexToLowerCase({

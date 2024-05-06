@@ -28,6 +28,7 @@ interface Props {
   aprLabel?: boolean
   poolId?: string
   apr?: string
+  vebalBoost?: number
 }
 
 function sortAprItems(aprItems: GqlBalancePoolAprItem[]) {
@@ -44,8 +45,16 @@ function sortAprItems(aprItems: GqlBalancePoolAprItem[]) {
   return [balApr, ...aprItemsSortedWithoutBalAndSwap, swapApr]
 }
 
-function AprTooltip({ data, textProps, onlySparkles, placement, aprLabel, apr }: Props) {
-  const aprToShow = apr || getAprLabel(data.apr)
+function AprTooltip({
+  data,
+  textProps,
+  onlySparkles,
+  placement,
+  aprLabel,
+  apr,
+  vebalBoost,
+}: Props) {
+  const aprToShow = apr || getAprLabel(data.apr, vebalBoost)
 
   const aprItems = sortAprItems(data.items)
 

@@ -21,8 +21,8 @@ async function getAuthKey(): Promise<string | null> {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: process.env.HYPERNATIVE_EMAIL || '',
-        password: process.env.HYPERNATIVE_PASSWORD || '',
+        email: process.env.PRIVATE_HYPERNATIVE_EMAIL || '',
+        password: process.env.PRIVATE_HYPERNATIVE_PASSWORD || '',
       }),
       next: {
         revalidate: hours(12).toSecs(), // Token needs to be refetched every 24 hours. Set to 12 hours to be safe.

@@ -3,8 +3,8 @@ import {
   GqlChain,
   GqlSorSwapType,
 } from '@/lib/shared/services/api/generated/graphql'
-import { Swap, TokenAmount } from '@balancer/sdk'
-import { Address } from 'wagmi'
+import { ExactInQueryOutput, ExactOutQueryOutput, Swap } from '@balancer/sdk'
+import { Address } from 'viem'
 
 export type SwapTokenInput = {
   address: Address
@@ -36,7 +36,7 @@ export type SimulateSwapResponse = Pick<
 
 export interface SdkSimulateSwapResponse extends SimulateSwapResponse, ApiSwapQuery {
   swap: Swap
-  onchainReturnAmount: TokenAmount
+  queryOutput: ExactInQueryOutput | ExactOutQueryOutput
 }
 
 export interface BuildSwapInputs extends SwapState {

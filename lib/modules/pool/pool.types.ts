@@ -11,6 +11,7 @@ import {
   parseAsInteger,
   parseAsString,
   parseAsStringEnum,
+  parseAsFloat,
 } from 'next-usequerystate/parsers'
 import { Hex } from 'viem'
 
@@ -101,4 +102,5 @@ export const poolListQueryStateParsers = {
   networks: parseAsArrayOf(parseAsStringEnum<GqlChain>(Object.values(GqlChain))).withDefault([]),
   textSearch: parseAsString,
   userAddress: parseAsString,
+  minTvl: parseAsFloat.withDefault(0),
 }

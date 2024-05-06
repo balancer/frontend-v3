@@ -8,9 +8,9 @@ import { usePool } from '../usePool'
 import { usePoolRedirect } from '../pool.hooks'
 import { PoolName } from '../PoolName'
 
-type Props = PropsWithChildren & { isFlowComplete?: boolean }
+type Props = PropsWithChildren
 
-export function PoolActionsLayout({ children, isFlowComplete = false }: Props) {
+export function PoolActionsLayout({ children }: Props) {
   const { pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
 
@@ -46,7 +46,7 @@ export function PoolActionsLayout({ children, isFlowComplete = false }: Props) {
             borderTopRadius="2xl"
             onClick={e => e.stopPropagation()}
           >
-            {isFlowComplete ? <>{/* TODO: success fireworks */}</> : <PoolActionsNav />}
+            <PoolActionsNav />
             {children}
           </Card>
         </Box>

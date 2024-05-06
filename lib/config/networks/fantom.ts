@@ -10,7 +10,6 @@ const networkConfig: NetworkConfig = {
   shortName: 'Fantom',
   chain: GqlChain.Fantom,
   iconPath: '/images/chains/FANTOM.svg',
-  rpcUrl: 'https://mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
   blockExplorer: {
     baseUrl: 'https://ftmscan.com',
     name: 'FTMScan',

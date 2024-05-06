@@ -11,7 +11,7 @@ import { SimulateSwapParams } from '@/lib/modules/swap/queries/useSimulateSwapQu
 
 /**
  * Metadata to be added to the captured Sentry error
- * We will use this type in query "meta" property once we migrate to wagmi v2 (with react-query v5)
+ * We use this type in react-query v5 "meta" property (exposed by wagmi v2)
  * More info: https://tkdodo.eu/blog/breaking-react-querys-api-on-purpose#defining-on-demand-messages
  */
 export type SentryMetadata = {
@@ -20,48 +20,41 @@ export type SentryMetadata = {
   context: Partial<ScopeContext>
 }
 
-export function captureAddLiquidityHandlerError(
-  error: unknown,
-  errorMessage: string,
-  params: AddLiquidityParams
-) {
-  captureSentryError(error, createAddHandlerMetadata('HandlerQueryError', errorMessage, params))
+export function sentryMetaForAddLiquidityHandler(errorMessage: string, params: AddLiquidityParams) {
+  return createAddHandlerMetadata('HandlerQueryError', errorMessage, params)
 }
 
-export function captureRemoveLiquidityHandlerError(
-  error: unknown,
+export function sentryMetaForRemoveLiquidityHandler(
   errorMessage: string,
   params: RemoveLiquidityParams
 ) {
-  captureSentryError(error, createRemoveHandlerMetadata('HandlerQueryError', errorMessage, params))
+  return createRemoveHandlerMetadata('HandlerQueryError', errorMessage, params)
 }
 
-export function captureSwapHandlerError(
-  error: unknown,
-  errorMessage: string,
-  params: SimulateSwapParams
-) {
-  captureSentryError(error, createSwapHandlerMetadata('HandlerQueryError', errorMessage, params))
+export function sentryMetaForSwapHandler(errorMessage: string, params: SimulateSwapParams) {
+  return createSwapHandlerMetadata('HandlerQueryError', errorMessage, params)
 }
 
 /**
- * Used by all wagmi managed queries to capture simulation errors with sentry metadata
+ * Used by all wagmi managed queries to create sentry metadata for simulation errors
  */
-export function captureWagmiSimulationError(error: unknown, errorMessage: string, extra: Extras) {
-  captureFatalError(error, 'WagmiSimulationError', errorMessage, extra)
+export function sentryMetaForWagmiSimulation(errorMessage: string, extra: Extras) {
+  return createFatalErrorMetadata('WagmiSimulationError', errorMessage, extra)
 }
 
 /**
- * Used by all wagmi managed queries to capture execution errors with sentry metadata
+ * Used by all wagmi managed queries to create sentry metadata for execution errors
  */
+export function sentryMetaForWagmiExecution(errorMessage: string, extra: Extras) {
+  return createFatalErrorMetadata('WagmiExecutionError', errorMessage, extra)
+}
+
 export function captureWagmiExecutionError(error: unknown, errorMessage: string, extra: Extras) {
-  if (shouldIgnoreExecutionError(error)) return
-
-  captureFatalError(error, 'WagmiExecutionError', errorMessage, extra)
+  captureSentryError(error, sentryMetaForWagmiExecution(errorMessage, extra))
 }
 
 /**
- * Used by all queries to capture fatal sentry errors with metadata
+ * Only used in edge-cases when we want to capture a fatal error outside the context of a react-query
  */
 export function captureFatalError(
   error: unknown,
@@ -70,6 +63,13 @@ export function captureFatalError(
   extra: Extras
 ) {
   captureSentryError(error, createFatalMetadata(errorName, errorMessage, extra))
+}
+
+/**
+ * Used by all queries to capture fatal sentry errors with metadata
+ */
+export function createFatalErrorMetadata(errorName: string, errorMessage: string, extra: Extras) {
+  return createFatalMetadata(errorName, errorMessage, extra)
 }
 
 /**
@@ -140,12 +140,15 @@ function createFatalMetadata(
 
 /**
  * Creates a SentryError with metadata and sends it to sentry
- * Used by all queries from onError option
- * We will move this call to global QueryCache options once we migrate to wagmi v2 (with react-query v5)
+ * Used by all queries from QueryCache onError in global queryClient
  * More info: https://tkdodo.eu/blog/breaking-react-querys-api-on-purpose#a-bad-api
  */
-function captureSentryError(e: unknown, { context, errorMessage, errorName }: SentryMetadata) {
+export function captureSentryError(
+  e: unknown,
+  { context, errorMessage, errorName }: SentryMetadata
+) {
   const error = ensureError(e)
+  if (shouldIgnoreExecutionError(error)) return
   const sentryError = new SentryError(errorMessage, {
     cause: error,
     name: errorName,

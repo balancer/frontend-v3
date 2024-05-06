@@ -1,14 +1,15 @@
-import { getNetworkConfig } from '@/lib/config/app.config'
+import { getChainId } from '@/lib/config/app.config'
+import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet, polygon, fantom } from 'viem/chains'
+import { mainnet, polygon } from 'viem/chains'
 
-export type NetworksWithFork = 'MAINNET' | 'POLYGON' | 'FANTOM'
+const networksWithFork = [mainnet, polygon]
+export type NetworksWithFork = (typeof networksWithFork)[number]['name']
 
 export type NetworkSetup = {
   networkName: NetworksWithFork
-  rpcEnv: string
   fallBackRpc: string | undefined
   port: number
   forkBlockNumber: bigint
@@ -19,71 +20,56 @@ export const defaultAnvilTestPrivateKey =
 
 // anvil account address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 export const defaultTestUserAccount = privateKeyToAccount(defaultAnvilTestPrivateKey as Hex).address
-
-type viemChainsWithFork = typeof mainnet | typeof polygon | typeof fantom
-export const chainsByNetworkName: Record<NetworksWithFork, viemChainsWithFork> = {
-  MAINNET: mainnet,
-  POLYGON: polygon,
-  FANTOM: fantom,
-}
+export const alternativeTestUserAccount = '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
 
 const ANVIL_PORTS: Record<NetworksWithFork, number> = {
   //Ports separated by 100 to avoid port collision when running tests in parallel
-  MAINNET: 8645,
-  POLYGON: 8745,
-  FANTOM: 8845,
+  Ethereum: 8645,
+  Polygon: 8745,
 }
 
 export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
-  MAINNET: {
-    networkName: 'MAINNET',
-    rpcEnv: 'NEXT_ETHEREUM_RPC_URL',
-    fallBackRpc: getNetworkConfig(GqlChain.Mainnet).rpcUrl,
-    port: ANVIL_PORTS.MAINNET,
+  Ethereum: {
+    networkName: 'Ethereum',
+    fallBackRpc: getDefaultRpcUrl(getChainId(GqlChain.Mainnet)),
+    port: ANVIL_PORTS.Ethereum,
     // From time to time this block gets outdated having this kind of error in integration tests:
     // ContractFunctionExecutionError: The contract function "queryJoin" returned no data ("0x").
-    forkBlockNumber: 18936208n,
+    forkBlockNumber: 19769489n,
   },
-  POLYGON: {
-    networkName: 'POLYGON',
-    rpcEnv: 'NEXT_POLYGON_RPC_URL',
-    fallBackRpc: getNetworkConfig(GqlChain.Polygon).rpcUrl,
-    port: ANVIL_PORTS.POLYGON,
+  Polygon: {
+    networkName: 'Polygon',
+    fallBackRpc: getDefaultRpcUrl(getChainId(GqlChain.Polygon)),
+    port: ANVIL_PORTS.Polygon,
     // Note - this has to be >= highest blockNo used in tests
     forkBlockNumber: 44215395n,
   },
-  FANTOM: {
-    networkName: 'FANTOM',
-    rpcEnv: 'NEXT_FANTOM_RPC_URL',
-    // Public Fantom RPCs are usually unreliable
-    fallBackRpc: getNetworkConfig(GqlChain.Fantom).rpcUrl,
-    port: ANVIL_PORTS.FANTOM,
-    forkBlockNumber: 65313450n,
-  },
 }
 
-export function getPort(network: NetworkSetup) {
-  return network.port + (Number(process.env.VITEST_WORKER_ID) || 0)
-}
+/*
+    In vitest, each thread is assigned a unique numerical id (`process.env.VITEST_POOL_ID`).
+    When jobId is provided, the fork proxy uses this id to create a different local rpc url (e.g. `http://127.0.0.1:/port/jobId>/`
+    so that tests can be run in parallel (depending on the number of threads of the host machine)
+*/
+export const pool = Number(process.env.VITEST_POOL_ID ?? 1)
 
-export function getTestRpcUrl(networkName: NetworksWithFork) {
+export function getTestRpcSetup(networkName: NetworksWithFork) {
   const network = ANVIL_NETWORKS[networkName]
-
-  const port = getPort(network)
-
-  return `http://127.0.0.1:${port}`
+  const port = network.port
+  const rpcUrl = `http://127.0.0.1:${port}/${pool}`
+  return { port, rpcUrl }
 }
 
 export function getForkUrl(network: NetworkSetup, verbose = false): string {
-  if (process.env[network.rpcEnv]) {
-    return process.env[network.rpcEnv] as string
+  if (network.networkName === 'Ethereum' && process.env['NEXT_PRIVATE_INFURA_KEY']) {
+    return `https://mainnet.infura.io/v3/${process.env['NEXT_PRIVATE_INFURA_KEY']}`
   } else {
     if (!network.fallBackRpc) {
-      throw Error(`Please add a environment variable for: ${network.rpcEnv}`)
+      throw Error(`Please add a fallback RPC for ${network.networkName} network.`)
     }
 
     if (verbose) {
-      console.warn(`\`${network.rpcEnv}\` not found. Falling back to \`${network.fallBackRpc}\`.`)
+      console.warn(`Falling back to \`${network.fallBackRpc}\`.`)
     }
     return network.fallBackRpc
   }

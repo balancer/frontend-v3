@@ -12,7 +12,6 @@ const networkConfig: NetworkConfig = {
     baseUrl: 'https://basescan.org',
     name: 'BaseScan',
   },
-  rpcUrl: 'https://base-mainnet.infura.io/v3/daaa68ec242643719749dd1caba2fc66',
   tokens: {
     addresses: {
       bal: '0x4158734d47fc9692176b5085e0f52ee0da5d47f1',
@@ -47,6 +46,7 @@ const networkConfig: NetworkConfig = {
       relayerV6: '0x7C3C773C878d2238a9b64d8CEE02377BF07ED06a',
       minter: '0x0c5538098EBe88175078972F514C9e101D325D4F',
     },
+    veDelegationProxy: '0xD87F44Df0159DC78029AB9CA7D7e57E7249F5ACD',
   },
   pools: convertHexToLowerCase({ issues: {} }),
 }

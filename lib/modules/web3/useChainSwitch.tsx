@@ -1,22 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { useNetwork, useSwitchNetwork } from 'wagmi'
+import { useSwitchChain } from 'wagmi'
 import { Button } from '@chakra-ui/react'
 import { getChainShortName } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
+import { useUserAccount } from './useUserAccount'
 
 export function useChainSwitch(chainId: SupportedChainId) {
-  const { chain: connectedChain } = useNetwork()
-  const { isLoading, switchNetwork } = useSwitchNetwork()
+  const { chain: connectedChain } = useUserAccount()
+  const { isPending, switchChain } = useSwitchChain()
 
   const shouldChangeNetwork = chainId !== connectedChain?.id
 
   const networkSwitchButtonProps = {
     name: getChainShortName(chainId),
-    switchNetwork,
+    switchChain,
     chainId,
-    isLoading,
+    isPending,
   }
 
   return {
@@ -28,9 +29,9 @@ export function useChainSwitch(chainId: SupportedChainId) {
 
 export interface NetworkSwitchButtonProps {
   name: string
-  switchNetwork: ((chainId_?: number | undefined) => void) | undefined
-  chainId: number
-  isLoading: boolean
+  switchChain?: (variables: { chainId: SupportedChainId }) => void
+  chainId: SupportedChainId
+  isPending: boolean
 }
 
 export const NetworkSwitchButton: React.FC<NetworkSwitchButtonProps> = function ({
@@ -41,8 +42,10 @@ export const NetworkSwitchButton: React.FC<NetworkSwitchButtonProps> = function 
       w="full"
       size="lg"
       variant="primary"
-      onClick={() => networkSwitchButtonProps.switchNetwork?.(networkSwitchButtonProps.chainId)}
-      isLoading={networkSwitchButtonProps.isLoading}
+      onClick={() =>
+        networkSwitchButtonProps.switchChain?.({ chainId: networkSwitchButtonProps.chainId })
+      }
+      isLoading={networkSwitchButtonProps.isPending}
     >
       Switch network to {networkSwitchButtonProps.name}
     </Button>

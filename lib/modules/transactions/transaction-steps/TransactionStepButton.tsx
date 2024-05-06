@@ -5,39 +5,44 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Button, VStack } from '@chakra-ui/react'
 import { FlowStep, TransactionState, getTransactionState } from './lib'
 import { useChainSwitch } from '@/lib/modules/web3/useChainSwitch'
-import { SupportedChainId } from '@/lib/config/config.types'
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
 import { getGqlChain } from '@/lib/config/app.config'
 import { TransactionTimeoutError } from '@/lib/shared/components/errors/TransactionTimeoutError'
-import { isUserRejectedError } from '@/lib/shared/utils/error-filters'
+import { useState } from 'react'
+import { ensureError } from '@/lib/shared/utils/errors'
 
 interface Props {
   step: FlowStep
 }
 
 export function TransactionStepButton({ step }: Props) {
-  const { simulation, execution, result, transactionLabels, execute: managedRun } = step
+  const { chainId, simulation, transactionLabels, executeAsync } = step
+  const [executionError, setExecutionError] = useState<Error>()
   const { isConnected } = useUserAccount()
-  const { shouldChangeNetwork, NetworkSwitchButton, networkSwitchButtonProps } = useChainSwitch(
-    simulation.config.chainId as SupportedChainId
-  )
+  const { shouldChangeNetwork, NetworkSwitchButton, networkSwitchButtonProps } =
+    useChainSwitch(chainId)
   const isTransactButtonVisible = isConnected
-  const transactionState = getTransactionState({ simulation, execution, result })
+  const transactionState = getTransactionState(step)
   const isButtonLoading =
     transactionState === TransactionState.Loading ||
     transactionState === TransactionState.Confirming
+  const isComplete = transactionState === TransactionState.Completed
   const hasSimulationError = simulation.isError
-  const isIdle = isConnected && simulation.isIdle && !simulation.data
+  const isIdle = isConnected && simulation.isStale && !simulation.data
   const isButtonDisabled =
-    transactionState === TransactionState.Loading || hasSimulationError || isIdle
+    transactionState === TransactionState.Loading || hasSimulationError || isIdle || isComplete
 
-  function handleOnClick() {
-    if (!simulation.isError) {
-      managedRun?.()
+  async function handleOnClick() {
+    setExecutionError(undefined)
+    try {
+      await executeAsync?.()
+    } catch (e: unknown) {
+      setExecutionError(ensureError(e))
     }
   }
 
   function getButtonLabel() {
+    if (executionError) return transactionLabels.init
     // sensible defaults for loading / confirm if not provided
     const relevantLabel = transactionLabels[transactionState as keyof typeof transactionLabels]
 
@@ -52,7 +57,7 @@ export function TransactionStepButton({ step }: Props) {
         case TransactionState.Error:
           return transactionLabels.init
         case TransactionState.Completed:
-          return transactionLabels.init
+          return transactionLabels.confirmed || 'Confirmed transaction'
       }
     }
     return relevantLabel
@@ -61,6 +66,7 @@ export function TransactionStepButton({ step }: Props) {
   return (
     <VStack width="full">
       {transactionState === TransactionState.Error && <TransactionError step={step} />}
+      {executionError && <GenericError error={executionError} />}
       {!isTransactButtonVisible && <ConnectWallet width="full" />}
       {shouldChangeNetwork && isTransactButtonVisible && (
         <NetworkSwitchButton {...networkSwitchButtonProps} />
@@ -89,16 +95,14 @@ function TransactionError({ step }: Props) {
   }
 
   const executionError = step.execution.error
-  if (executionError) {
-    if (isUserRejectedError(executionError)) return null
-    return <GenericError error={executionError} />
-  }
+  if (executionError) return <GenericError error={executionError} />
+
   const resultError = step.result.error
   if (resultError) {
-    const isTimeoutError = resultError.name === 'WaitForTransactionReceiptTimeoutError'
-    const transactionHash = step.execution.data?.hash
+    const isTimeoutError = resultError.name === 'TimeoutError'
+    const transactionHash = step.execution.data
     if (isTimeoutError && transactionHash) {
-      const chain = getGqlChain(step.simulation.config.chainId || 1)
+      const chain = getGqlChain(step.chainId)
       return <TransactionTimeoutError chain={chain} transactionHash={transactionHash} />
     }
     return <GenericError error={resultError} />

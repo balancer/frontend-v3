@@ -7,7 +7,7 @@ import {
   GqlPoolOrderDirection,
 } from '@/lib/shared/services/api/generated/graphql'
 import { uniq } from 'lodash'
-import { PROJECT_CONFIG } from '@/lib/config/getProjectConfig'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { useQueryState } from 'next-usequerystate'
 import {
   POOL_TYPE_MAP,
@@ -35,6 +35,8 @@ export function usePoolListQueryState() {
     'userAddress',
     poolListQueryStateParsers.userAddress
   )
+
+  const [minTvl, setMinTvl] = useQueryState('minTvl', poolListQueryStateParsers.minTvl)
 
   // Set internal checked state
   function toggleUserAddress(checked: boolean, address: string) {
@@ -104,7 +106,8 @@ export function usePoolListQueryState() {
     }
   }
 
-  const totalFilterCount = networks.length + poolTypes.length + (userAddress ? 1 : 0)
+  const totalFilterCount =
+    networks.length + poolTypes.length + (userAddress ? 1 : 0) + (minTvl > 0 ? 1 : 0)
   const sorting: SortingState = orderBy
     ? [{ id: orderBy, desc: orderDirection === GqlPoolOrderDirection.Desc }]
     : []
@@ -127,8 +130,9 @@ export function usePoolListQueryState() {
     orderDirection,
     where: {
       poolTypeIn: mappedPoolTypes,
-      chainIn: networks.length > 0 ? networks : PROJECT_CONFIG.supportedNetworks,
+      chainIn: networks.length > 0 ? networks : getProjectConfig().supportedNetworks,
       userAddress,
+      minTvl,
     },
     textSearch,
   }
@@ -150,6 +154,8 @@ export function usePoolListQueryState() {
     setSorting,
     setPagination,
     setSearch,
+    setMinTvl,
+    minTvl,
     searchText: textSearch,
     pagination,
     sorting,

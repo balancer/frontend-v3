@@ -10,7 +10,6 @@ const networkConfig: NetworkConfig = {
   shortName: 'Optimism',
   chain: GqlChain.Optimism,
   iconPath: '/images/chains/OPTIMISM.svg',
-  rpcUrl: 'https://optimism-mainnet.infura.io/v3/77ab387b59ac47ee8acf46916b4d7c23',
   blockExplorer: {
     baseUrl: 'https://optimistic.etherscan.io',
     name: 'Etherscan',
@@ -52,6 +51,7 @@ const networkConfig: NetworkConfig = {
       relayerV6: '0x015ACA20a1422F3c729086c17f15F10e0CfbC75A',
       minter: '0x4fb47126Fa83A8734991E41B942Ac29A3266C968',
     },
+    veDelegationProxy: '0x9dA18982a33FD0c7051B19F0d7C76F2d5E7e017c',
   },
   pools: convertHexToLowerCase({
     issues: {
