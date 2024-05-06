@@ -3,7 +3,7 @@
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Button, VStack } from '@chakra-ui/react'
-import { FlowStep, TransactionState, getTransactionState } from './lib'
+import { ManagedResult, TransactionLabels, TransactionState, getTransactionState } from './lib'
 import { useChainSwitch } from '@/lib/modules/web3/useChainSwitch'
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
 import { getGqlChain } from '@/lib/config/app.config'
@@ -12,11 +12,11 @@ import { useState } from 'react'
 import { ensureError } from '@/lib/shared/utils/errors'
 
 interface Props {
-  step: FlowStep
+  step: { labels: TransactionLabels } & ManagedResult
 }
 
 export function TransactionStepButton({ step }: Props) {
-  const { chainId, simulation, transactionLabels, executeAsync } = step
+  const { chainId, simulation, labels, executeAsync } = step
   const [executionError, setExecutionError] = useState<Error>()
   const { isConnected } = useUserAccount()
   const { shouldChangeNetwork, NetworkSwitchButton, networkSwitchButtonProps } =
@@ -42,9 +42,9 @@ export function TransactionStepButton({ step }: Props) {
   }
 
   function getButtonLabel() {
-    if (executionError) return transactionLabels.init
+    if (executionError) return labels.init
     // sensible defaults for loading / confirm if not provided
-    const relevantLabel = transactionLabels[transactionState as keyof typeof transactionLabels]
+    const relevantLabel = labels[transactionState as keyof typeof labels]
 
     if (!relevantLabel) {
       switch (transactionState) {
@@ -55,9 +55,9 @@ export function TransactionStepButton({ step }: Props) {
         case TransactionState.Confirming:
           return 'Confirming transaction'
         case TransactionState.Error:
-          return transactionLabels.init
+          return labels.init
         case TransactionState.Completed:
-          return transactionLabels.confirmed || 'Confirmed transaction'
+          return labels.confirmed || 'Confirmed transaction'
       }
     }
     return relevantLabel

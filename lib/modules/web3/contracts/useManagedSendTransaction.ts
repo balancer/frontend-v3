@@ -17,12 +17,19 @@ import {
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
 
-export function useManagedSendTransaction(
-  labels: TransactionLabels,
-  chainId: SupportedChainId,
-  txConfig: UseEstimateGasConfig | undefined,
-  gasEstimationMeta?: Record<string, unknown> | undefined
-) {
+export type ManagedSendTransactionInput = {
+  labels: TransactionLabels
+  chainId: SupportedChainId
+  txConfig?: UseEstimateGasConfig
+  gasEstimationMeta?: Record<string, unknown>
+}
+
+export function useManagedSendTransaction({
+  labels,
+  chainId,
+  txConfig,
+  gasEstimationMeta,
+}: ManagedSendTransactionInput) {
   const { shouldChangeNetwork } = useChainSwitch(chainId)
   const { minConfirmations } = useNetworkConfig()
   const { updateTrackedTransaction } = useRecentTransactions()

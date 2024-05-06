@@ -12,6 +12,7 @@ export enum TransactionState {
 
 export type TransactionLabels = {
   init: string
+  title?: string
   loading?: string
   confirming?: string
   tooltip: string
@@ -36,6 +37,19 @@ export type StepType =
   | 'claim'
   | 'swap'
 
+export type TxActionId =
+  | 'SignBatchRelayer'
+  | 'ApproveBatchRelayer'
+  | 'TokenApproval'
+  | 'AddLiquidity'
+  | 'RemoveLiquidity'
+  | 'StakingDeposit'
+  | 'StakingWithdraw'
+  | 'MinterApproval'
+  | 'ClaimAndUnstake'
+  | 'Claim'
+  | 'Swap'
+
 export type ManagedResult = TransactionBundle & Executable
 
 /* This type unifies wagmi writeTransaction and sendTransaction types:
@@ -48,24 +62,31 @@ type Executable = {
   setTxConfig?: any
 }
 
-export type FlowStep = TransactionStep & ManagedResult
-
-export type TransactionStep2 = {
-  id: string
-  title: string
-  stepType: StepType
-  transactionLabels: TransactionLabels
-  isComplete: () => boolean
-  renderAction: () => React.ReactNode
-}
-
-export type TxStep = TransactionStep2 & ManagedResult
-
 export type TransactionStep = {
   id: string
   stepType: StepType
   transactionLabels: TransactionLabels
   isComplete: () => boolean
+}
+
+export type FlowStep = TransactionStep & ManagedResult
+
+export type TxMeta = ManagedResult & {
+  id: TxActionId
+  transactionLabels: TransactionLabels
+  isComplete: () => boolean
+}
+
+export type TransactionStep2 = TxMeta & {
+  renderAction: () => React.ReactNode
+}
+
+export type TxStep = {
+  id: TxActionId
+  labels: TransactionLabels
+  transaction: ManagedResult | undefined
+  isComplete: () => boolean
+  renderAction: () => React.ReactNode
 }
 
 // Allows adding extra properties like set state callbacks to TransactionStep

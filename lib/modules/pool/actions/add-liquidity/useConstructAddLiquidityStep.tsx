@@ -1,23 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import {
-  FlowStep,
+  ManagedResult,
   TransactionLabels,
   TxStep,
-  addLiquidityStepId,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
 import { usePool } from '../../usePool'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
+import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 
-export function useConstructAddLiquidityStep() {
+export function useConstructAddLiquidityStep(): TxStep {
+  const [transaction, setTransaction] = useState<ManagedResult>()
   const { chainId } = usePool()
 
-  const transactionLabels: TransactionLabels = {
+  const labels: TransactionLabels = {
     init: 'Add liquidity',
+    title: 'Add liquidity',
     confirming: 'Confirming...',
     confirmed: `Liquidity added to pool!`,
     tooltip: 'Add liquidity to pool.',
@@ -33,31 +33,26 @@ export function useConstructAddLiquidityStep() {
     }
   }, [simulationQuery.data])
 
-  const addLiquidityTransaction = useManagedSendTransaction(
-    transactionLabels,
-    chainId,
-    buildCallDataQuery.data,
-    sentryMetaForWagmiSimulation('Error in AddLiquidity gas estimation', {
-      simulationQueryData: simulationQuery.data,
-      buildCallQueryData: buildCallDataQuery.data,
-    })
-  )
+  const gasEstimationMeta = sentryMetaForWagmiSimulation('Error in AddLiquidity gas estimation', {
+    simulationQueryData: simulationQuery.data,
+    buildCallQueryData: buildCallDataQuery.data,
+  })
 
-  const isComplete = () => addLiquidityTransaction.result.isSuccess
+  const isComplete = () => transaction?.result.isSuccess || false
 
-  const flowStep: FlowStep = {
-    ...addLiquidityTransaction,
-    transactionLabels,
-    id: addLiquidityStepId,
-    stepType: 'addLiquidity',
+  return {
+    id: 'AddLiquidity',
+    labels,
+    transaction,
     isComplete,
+    renderAction: () => (
+      <ManagedSendTransactionButton
+        labels={labels}
+        chainId={chainId}
+        txConfig={buildCallDataQuery.data}
+        gasEstimationMeta={gasEstimationMeta}
+        setTransaction={setTransaction}
+      />
+    ),
   }
-
-  const addLiquidityStep: TxStep = {
-    ...flowStep,
-    title: 'Add liquidity',
-    renderAction: () => <TransactionStepButton step={flowStep} />,
-  }
-
-  return addLiquidityStep
 }
