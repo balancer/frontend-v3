@@ -9,11 +9,12 @@ import {
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { useTokens } from '../useTokens'
-import { ApprovalAction } from './approval-labels'
+import { ApprovalAction, buildTokenApprovalLabels } from './approval-labels'
 import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
 import { ApproveTokenProps, useConstructApproveTokenStep } from './useConstructApproveTokenStep'
 import { getChainId, getNativeAssetAddress } from '@/lib/config/app.config'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { TxStep } from '../../transactions/transaction-steps/lib'
 
 type Props = ApproveTokenProps & CommonStepProps
 
@@ -39,7 +40,7 @@ export function useTokenApprovalSteps({
   approvalAmounts,
   actionType,
   bptSymbol,
-}: Params): StepConfig[] {
+}: Params): TxStep[] {
   const { userAddress } = useUserAccount()
   const { getToken } = useTokens()
   const nativeAssetAddress = getNativeAssetAddress(chain)
@@ -66,6 +67,7 @@ export function useTokenApprovalSteps({
   return tokenAmountsToApprove.map(tokenAmountToApprove => {
     const token = getToken(tokenAmountToApprove.tokenAddress, chain)
     const symbol = bptSymbol ?? (token && token?.symbol) ?? 'Unknown'
+    const labels = buildTokenApprovalLabels({ actionType, symbol })
 
     const props: ApproveTokenProps = {
       tokenAllowances,
@@ -75,7 +77,11 @@ export function useTokenApprovalSteps({
       symbol,
       spenderAddress,
     }
-    return buildTokenApprovalConfig(props)
+    return {
+      id: 'TokenApproval',
+      labels,
+      // TODO manage transaction map, e.g. tokenAddress -> transaction in state
+    }
   })
 }
 
