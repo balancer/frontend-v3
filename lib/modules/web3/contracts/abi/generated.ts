@@ -103,9 +103,7 @@ export const balancerMinterAbi = [
     type: 'function',
     inputs: [],
     name: 'getGaugeController',
-    outputs: [
-      { name: '', internalType: 'contract IGaugeController', type: 'address' },
-    ],
+    outputs: [{ name: '', internalType: 'contract IGaugeController', type: 'address' }],
     stateMutability: 'view',
   },
   {
@@ -171,9 +169,7 @@ export const balancerMinterAbi = [
   },
   {
     type: 'function',
-    inputs: [
-      { name: 'gauges', internalType: 'address[8]', type: 'address[8]' },
-    ],
+    inputs: [{ name: 'gauges', internalType: 'address[8]', type: 'address[8]' }],
     name: 'mint_many',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -535,9 +531,7 @@ export const balancerV2BatchRelayerLibraryAbi = [
     type: 'function',
     inputs: [],
     name: 'getEntrypoint',
-    outputs: [
-      { name: '', internalType: 'contract IBalancerRelayer', type: 'address' },
-    ],
+    outputs: [{ name: '', internalType: 'contract IBalancerRelayer', type: 'address' }],
     stateMutability: 'view',
   },
   {
@@ -1268,9 +1262,7 @@ export const balancerV2ComposableStablePoolV5Abi = [
   {
     type: 'event',
     anonymous: false,
-    inputs: [
-      { name: 'paused', internalType: 'bool', type: 'bool', indexed: false },
-    ],
+    inputs: [{ name: 'paused', internalType: 'bool', type: 'bool', indexed: false }],
     name: 'PausedStateChanged',
   },
   {
@@ -1295,9 +1287,7 @@ export const balancerV2ComposableStablePoolV5Abi = [
   {
     type: 'event',
     anonymous: false,
-    inputs: [
-      { name: 'enabled', internalType: 'bool', type: 'bool', indexed: false },
-    ],
+    inputs: [{ name: 'enabled', internalType: 'bool', type: 'bool', indexed: false }],
     name: 'RecoveryModeStateChanged',
   },
   {
@@ -1473,9 +1463,7 @@ export const balancerV2ComposableStablePoolV5Abi = [
     type: 'function',
     inputs: [],
     name: 'getAuthorizer',
-    outputs: [
-      { name: '', internalType: 'contract IAuthorizer', type: 'address' },
-    ],
+    outputs: [{ name: '', internalType: 'contract IAuthorizer', type: 'address' }],
     stateMutability: 'view',
   },
   {
@@ -1587,9 +1575,7 @@ export const balancerV2ComposableStablePoolV5Abi = [
     type: 'function',
     inputs: [],
     name: 'getRateProviders',
-    outputs: [
-      { name: '', internalType: 'contract IRateProvider[]', type: 'address[]' },
-    ],
+    outputs: [{ name: '', internalType: 'contract IRateProvider[]', type: 'address[]' }],
     stateMutability: 'view',
   },
   {
@@ -1608,18 +1594,14 @@ export const balancerV2ComposableStablePoolV5Abi = [
   },
   {
     type: 'function',
-    inputs: [
-      { name: 'token', internalType: 'contract IERC20', type: 'address' },
-    ],
+    inputs: [{ name: 'token', internalType: 'contract IERC20', type: 'address' }],
     name: 'getTokenRate',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
     stateMutability: 'view',
   },
   {
     type: 'function',
-    inputs: [
-      { name: 'token', internalType: 'contract IERC20', type: 'address' },
-    ],
+    inputs: [{ name: 'token', internalType: 'contract IERC20', type: 'address' }],
     name: 'getTokenRateCache',
     outputs: [
       { name: 'rate', internalType: 'uint256', type: 'uint256' },
@@ -1662,9 +1644,7 @@ export const balancerV2ComposableStablePoolV5Abi = [
   },
   {
     type: 'function',
-    inputs: [
-      { name: 'token', internalType: 'contract IERC20', type: 'address' },
-    ],
+    inputs: [{ name: 'token', internalType: 'contract IERC20', type: 'address' }],
     name: 'isTokenExemptFromYieldProtocolFee',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
     stateMutability: 'view',
@@ -1836,9 +1816,7 @@ export const balancerV2ComposableStablePoolV5Abi = [
   },
   {
     type: 'function',
-    inputs: [
-      { name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256' },
-    ],
+    inputs: [{ name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256' }],
     name: 'setSwapFeePercentage',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -1921,9 +1899,7 @@ export const balancerV2ComposableStablePoolV5Abi = [
   },
   {
     type: 'function',
-    inputs: [
-      { name: 'token', internalType: 'contract IERC20', type: 'address' },
-    ],
+    inputs: [{ name: 'token', internalType: 'contract IERC20', type: 'address' }],
     name: 'updateTokenRateCache',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -2022,9 +1998,7 @@ export const balancerV2GaugeV5Abi = [
   {
     type: 'event',
     anonymous: false,
-    inputs: [
-      { name: 'new_relative_weight_cap', type: 'uint256', indexed: false },
-    ],
+    inputs: [{ name: 'new_relative_weight_cap', type: 'uint256', indexed: false }],
     name: 'RelativeWeightCapChanged',
   },
   {
@@ -2645,9 +2619,7 @@ export const balancerV2VaultAbi = [
   {
     type: 'event',
     anonymous: false,
-    inputs: [
-      { name: 'paused', internalType: 'bool', type: 'bool', indexed: false },
-    ],
+    inputs: [{ name: 'paused', internalType: 'bool', type: 'bool', indexed: false }],
     name: 'PausedStateChanged',
   },
   {
@@ -2893,9 +2865,7 @@ export const balancerV2VaultAbi = [
       { name: 'deadline', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'batchSwap',
-    outputs: [
-      { name: 'assetDeltas', internalType: 'int256[]', type: 'int256[]' },
-    ],
+    outputs: [{ name: 'assetDeltas', internalType: 'int256[]', type: 'int256[]' }],
     stateMutability: 'payable',
   },
   {
@@ -2965,9 +2935,7 @@ export const balancerV2VaultAbi = [
     type: 'function',
     inputs: [],
     name: 'getAuthorizer',
-    outputs: [
-      { name: '', internalType: 'contract IAuthorizer', type: 'address' },
-    ],
+    outputs: [{ name: '', internalType: 'contract IAuthorizer', type: 'address' }],
     stateMutability: 'view',
   },
   {
@@ -2984,9 +2952,7 @@ export const balancerV2VaultAbi = [
       { name: 'tokens', internalType: 'contract IERC20[]', type: 'address[]' },
     ],
     name: 'getInternalBalance',
-    outputs: [
-      { name: 'balances', internalType: 'uint256[]', type: 'uint256[]' },
-    ],
+    outputs: [{ name: 'balances', internalType: 'uint256[]', type: 'uint256[]' }],
     stateMutability: 'view',
   },
   {
@@ -3282,9 +3248,7 @@ export const balancerV2VaultAbi = [
       { name: 'deadline', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'swap',
-    outputs: [
-      { name: 'amountCalculated', internalType: 'uint256', type: 'uint256' },
-    ],
+    outputs: [{ name: 'amountCalculated', internalType: 'uint256', type: 'uint256' }],
     stateMutability: 'payable',
   },
   { type: 'receive', stateMutability: 'payable' },
@@ -3395,9 +3359,7 @@ export const balancerV2WeightedPoolV4Abi = [
   {
     type: 'event',
     anonymous: false,
-    inputs: [
-      { name: 'paused', internalType: 'bool', type: 'bool', indexed: false },
-    ],
+    inputs: [{ name: 'paused', internalType: 'bool', type: 'bool', indexed: false }],
     name: 'PausedStateChanged',
   },
   {
@@ -3422,9 +3384,7 @@ export const balancerV2WeightedPoolV4Abi = [
   {
     type: 'event',
     anonymous: false,
-    inputs: [
-      { name: 'enabled', internalType: 'bool', type: 'bool', indexed: false },
-    ],
+    inputs: [{ name: 'enabled', internalType: 'bool', type: 'bool', indexed: false }],
     name: 'RecoveryModeStateChanged',
   },
   {
@@ -3552,9 +3512,7 @@ export const balancerV2WeightedPoolV4Abi = [
     type: 'function',
     inputs: [],
     name: 'getAuthorizer',
-    outputs: [
-      { name: '', internalType: 'contract IAuthorizer', type: 'address' },
-    ],
+    outputs: [{ name: '', internalType: 'contract IAuthorizer', type: 'address' }],
     stateMutability: 'view',
   },
   {
@@ -3648,9 +3606,7 @@ export const balancerV2WeightedPoolV4Abi = [
     type: 'function',
     inputs: [],
     name: 'getRateProviders',
-    outputs: [
-      { name: '', internalType: 'contract IRateProvider[]', type: 'address[]' },
-    ],
+    outputs: [{ name: '', internalType: 'contract IRateProvider[]', type: 'address[]' }],
     stateMutability: 'view',
   },
   {
@@ -3857,9 +3813,7 @@ export const balancerV2WeightedPoolV4Abi = [
   },
   {
     type: 'function',
-    inputs: [
-      { name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256' },
-    ],
+    inputs: [{ name: 'swapFeePercentage', internalType: 'uint256', type: 'uint256' }],
     name: 'setSwapFeePercentage',
     outputs: [],
     stateMutability: 'nonpayable',
