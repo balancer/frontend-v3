@@ -45,7 +45,7 @@ export function useProportionalInputs() {
     wNativeAsset,
   } = useAddLiquidity()
   const { usdValueFor } = useTotalUsdValue(validTokens)
-  const { balanceFor, balances, isBalancesLoading, refetchBalances } = useTokenBalances()
+  const { balanceFor, balances, isBalancesLoading } = useTokenBalances()
   const { pool, isLoading: isPoolLoading } = usePool()
   const [isMaximized, setIsMaximized] = useState(false)
 
@@ -163,7 +163,6 @@ export function useProportionalInputs() {
     handleProportionalHumanInputChange,
     handleMaximizeUserAmounts,
     setIsMaximized,
-    refetchBalances,
   }
 }
 
