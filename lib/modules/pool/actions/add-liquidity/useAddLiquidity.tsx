@@ -57,7 +57,6 @@ export function _useAddLiquidity() {
 
   const steps = useAddLiquiditySteps(inputAmounts)
   setTransactionSteps(steps)
-  // const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
   const chain = pool.chain
   const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
@@ -164,11 +163,9 @@ export function _useAddLiquidity() {
     disabledReason,
     previewModalDisclosure,
     currentStep,
-    useOnStepCompleted,
     handler,
     setHumanAmountIn,
     setHumanAmountsIn,
-    stepConfigs,
     currentStepIndex,
     helpers,
     setNeedsToAcceptHighPI,

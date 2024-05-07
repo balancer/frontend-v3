@@ -44,7 +44,7 @@ export function AddLiquidityModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { stepConfigs, currentStep, currentStepIndex, useOnStepCompleted } = useAddLiquidity()
+  const { currentStep, currentStepIndex } = useAddLiquidity()
   const { pool, chainId } = usePool()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
   const { isFlowComplete, isFlowConfirming } = useTransactionFlow()
@@ -93,7 +93,7 @@ export function AddLiquidityModal({
           ) : shouldSignRelayerApproval ? (
             <SignRelayerButton />
           ) : (
-            <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
+            <VStack w="full">{currentStep.renderAction()}</VStack>
           )}
         </ModalFooter>
       </ModalContent>
