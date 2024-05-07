@@ -7,7 +7,7 @@ export async function setup() {
   const promises = []
   const results: Anvil[] = []
   for (const chain of Object.values(testChains)) {
-    console.log('Starting proxy ', {
+    console.log('Starting anvil ', {
       port: chain.port,
       forkUrl: getForkUrl(ANVIL_NETWORKS[chain.name], true),
       forkBlockNumber: ANVIL_NETWORKS[chain.name].forkBlockNumber,
