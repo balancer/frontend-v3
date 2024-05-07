@@ -26,7 +26,7 @@ export function TokenInputs({
   const { toCurrency } = useCurrency()
   const { tokens, humanAmountsIn, setHumanAmountIn } = useAddLiquidity()
   const {
-    handleHumanInputChange,
+    handleProportionalHumanInputChange,
     handleMaximizeUserAmounts,
     isMaximized,
     maximizedUsdValue,
@@ -42,7 +42,9 @@ export function TokenInputs({
     return amountIn ? amountIn.humanAmount : ''
   }
 
-  const setAmountIn = requiresProportionalInput ? handleHumanInputChange : setHumanAmountIn
+  const setAmountIn = requiresProportionalInput
+    ? handleProportionalHumanInputChange
+    : setHumanAmountIn
 
   useEffect(() => {
     refetchBalances()

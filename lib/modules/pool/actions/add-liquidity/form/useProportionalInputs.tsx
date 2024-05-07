@@ -65,11 +65,11 @@ export function useProportionalInputs() {
   function handleMaximizeUserAmounts() {
     if (!optimalToken) return
     if (isMaximized) return setIsMaximized(false)
-    handleHumanInputChange(optimalToken.tokenAddress, optimalToken.userBalance)
+    handleProportionalHumanInputChange(optimalToken.tokenAddress, optimalToken.userBalance)
     setIsMaximized(true)
   }
 
-  function handleHumanInputChange(tokenAddress: Address, humanAmount: HumanAmount) {
+  function handleProportionalHumanInputChange(tokenAddress: Address, humanAmount: HumanAmount) {
     // Checks if the user is entering the max amount for the tokenWithMinValue
     const isMaximizing: boolean =
       tokenAddress === optimalToken?.tokenAddress && humanAmount === optimalToken?.userBalance
@@ -160,7 +160,7 @@ export function useProportionalInputs() {
     canMaximize,
     isMaximized,
     maximizedUsdValue,
-    handleHumanInputChange,
+    handleProportionalHumanInputChange,
     handleMaximizeUserAmounts,
     setIsMaximized,
     refetchBalances,
