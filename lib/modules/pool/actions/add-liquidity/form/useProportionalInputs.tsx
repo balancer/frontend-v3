@@ -27,7 +27,7 @@ type PoolToken = {
   chain: any
 }
 
-type TokenHelpers = {
+export type TokenHelpers = {
   amountTokenForUsdValue: (token: GqlToken | undefined, usdValue: Numberish) => string
   getToken: (address: string, chain: number | GqlChain) => GqlToken | undefined
   usdValueForToken: (token: GqlToken | undefined, amount: Numberish) => string
