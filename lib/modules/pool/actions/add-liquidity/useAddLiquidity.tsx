@@ -136,17 +136,25 @@ export function _useAddLiquidity() {
     setInitialHumanAmountsIn()
   }, [])
 
-  const { isDisabled, disabledReason } = isDisabledWithReason(
+  const disabledConditions: [boolean, string][] = [
     [!isConnected, LABELS.walletNotConnected],
     [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts'],
     [hasValidationErrors, 'Errors in token inputs'],
     [needsToAcceptHighPI, 'Accept high price impact first'],
-    [!acceptPoolRisks, 'Please accept the pool risks first'],
     [simulationQuery.isLoading, 'Fetching quote...'],
     [simulationQuery.isError, 'Error fetching quote'],
     [priceImpactQuery.isLoading, 'Fetching price impact...'],
-    [priceImpactQuery.isError, 'Error fetching price impact']
-  )
+    [priceImpactQuery.isError, 'Error fetching price impact'],
+  ]
+
+  const { isDisabled: isPreDisabled } = isDisabledWithReason(...disabledConditions)
+  const showAcceptPoolRisks = acceptPoolRisks || (!isPreDisabled && !!simulationQuery.data)
+
+  const allDisabledConditions: [boolean, string][] = [
+    ...disabledConditions,
+    [!acceptPoolRisks, 'Please accept the pool risks first'],
+  ]
+  const { isDisabled, disabledReason } = isDisabledWithReason(...allDisabledConditions)
 
   return {
     humanAmountsIn,
@@ -158,6 +166,7 @@ export function _useAddLiquidity() {
     priceImpactQuery,
     refetchQuote,
     isDisabled,
+    showAcceptPoolRisks,
     disabledReason,
     previewModalDisclosure,
     currentStep,

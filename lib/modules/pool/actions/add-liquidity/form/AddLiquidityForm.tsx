@@ -51,6 +51,7 @@ export function AddLiquidityForm() {
     refetchQuote,
     isDisabled,
     disabledReason,
+    showAcceptPoolRisks,
     previewModalDisclosure,
     setNeedsToAcceptHighPI,
     totalUSDValue,
@@ -206,7 +207,7 @@ export function AddLiquidityForm() {
                 </Card>
               </GridItem>
             </Grid>
-            <AddLiquidityFormCheckbox />
+            {showAcceptPoolRisks && <AddLiquidityFormCheckbox />}
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}

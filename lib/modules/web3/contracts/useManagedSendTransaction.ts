@@ -4,11 +4,10 @@
 import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useEffect } from 'react'
 import { useEstimateGas, useSendTransaction, useWaitForTransactionReceipt } from 'wagmi'
-import { TransactionExecution, TransactionSimulation, UseEstimateGasConfig } from './contract.types'
+import { TransactionConfig, TransactionExecution, TransactionSimulation } from './contract.types'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { getGqlChain } from '@/lib/config/app.config'
-import { SupportedChainId } from '@/lib/config/config.types'
 import { useChainSwitch } from '../useChainSwitch'
 import {
   captureWagmiExecutionError,
@@ -16,20 +15,21 @@ import {
 } from '@/lib/shared/utils/query-errors'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
+import { mainnet } from 'viem/chains'
 
 export function useManagedSendTransaction(
   labels: TransactionLabels,
-  chainId: SupportedChainId,
-  txConfig: UseEstimateGasConfig | undefined,
+  txConfig: TransactionConfig | undefined,
   gasEstimationMeta?: Record<string, unknown> | undefined
 ) {
-  const { shouldChangeNetwork } = useChainSwitch(chainId)
+  // chainId will always have the correct value as the transaction is disabled when txConfig is undefined
+  const chainId = txConfig?.chainId || mainnet.id
+  const { shouldChangeNetwork } = useChainSwitch(txConfig?.chainId || 1)
   const { minConfirmations } = useNetworkConfig()
   const { updateTrackedTransaction } = useRecentTransactions()
 
   const estimateGasQuery = useEstimateGas({
     ...txConfig,
-    chainId,
     query: {
       enabled: !!txConfig && !shouldChangeNetwork,
       meta: gasEstimationMeta,
@@ -39,7 +39,6 @@ export function useManagedSendTransaction(
   const writeQuery = useSendTransaction({
     mutation: {
       meta: sentryMetaForWagmiExecution('Error sending transaction', {
-        chainId,
         txConfig,
         estimatedGas: estimateGasQuery.data,
       }),

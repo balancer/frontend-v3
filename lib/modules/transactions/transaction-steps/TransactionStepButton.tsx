@@ -67,7 +67,7 @@ export function TransactionStepButton({ step }: Props) {
     <VStack width="full">
       {transactionState === TransactionState.Error && <TransactionError step={step} />}
       {executionError && <GenericError error={executionError} />}
-      {!isTransactButtonVisible && <ConnectWallet />}
+      {!isTransactButtonVisible && <ConnectWallet width="full" />}
       {shouldChangeNetwork && isTransactButtonVisible && (
         <NetworkSwitchButton {...networkSwitchButtonProps} />
       )}

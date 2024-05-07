@@ -32,6 +32,8 @@ export const INTEGER_PERCENTAGE_FORMAT = '0%'
 // These can arise from pools with extremely low balances (e.g., completed LBPs)
 export const APR_UPPER_THRESHOLD = 1_000_000
 export const APR_LOWER_THRESHOLD = 0.0000001
+// Do not display bn values lower than this amount; they are likely to be generate NaN results
+export const BN_LOWER_THRESHOLD = 0.0000001
 
 const NUMERAL_DECIMAL_LIMIT = 9
 
@@ -55,11 +57,13 @@ function toSafeValue(val: Numberish): string {
 
 // Formats an integer value.
 function integerFormat(val: Numberish): string {
+  if (isDust(val)) return '0'
   return numeral(toSafeValue(val)).format(INTEGER_FORMAT)
 }
 
 // Formats a fiat value.
 function fiatFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
+  if (isDust(val)) return '0.00'
   const format = abbreviated ? FIAT_FORMAT_A : FIAT_FORMAT
   return numeral(toSafeValue(val)).format(format)
 }
@@ -81,26 +85,31 @@ function aprFormat(apr: Numberish): string {
 
 // Formats a slippage value as a percentage.
 function slippageFormat(slippage: Numberish): string {
+  if (isDust(slippage)) return '0%'
   return numeral(bn(slippage).div(100)).format(SLIPPAGE_FORMAT)
 }
 
 // Formats a fee value as a percentage.
 function feePercentFormat(fee: Numberish): string {
+  if (isDust(fee)) return '0%'
   return numeral(fee.toString()).format(FEE_FORMAT)
 }
 
 // Formats a weight value as a percentage.
 function weightFormat(val: Numberish): string {
+  if (isDust(val)) return '0%'
   return numeral(val.toString()).format(WEIGHT_FORMAT)
 }
 
 // Formats a price impact value as a percentage.
 function priceImpactFormat(val: Numberish): string {
+  if (isDust(val)) return '0%'
   return numeral(val.toString()).format(PRICE_IMPACT_FORMAT)
 }
 
 // Formats an integer value as a percentage.
 function integerPercentageFormat(val: Numberish): string {
+  if (isDust(val)) return '0%'
   return numeral(val.toString()).format(INTEGER_PERCENTAGE_FORMAT)
 }
 
@@ -151,6 +160,10 @@ export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): s
     default:
       throw new Error(`Number format not implemented: ${format}`)
   }
+}
+
+function isDust(value: Numberish): boolean {
+  return bn(value).lte(BN_LOWER_THRESHOLD)
 }
 
 // Returns dash if token amount is null, otherwise returns humanized token amount in token display format.
