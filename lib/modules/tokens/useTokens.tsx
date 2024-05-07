@@ -39,7 +39,7 @@ export function _useTokens(
     variables,
     skip: skipQuery,
   })
-  const { data: tokenPricesData } = useQuery(GetTokenPricesDocument, {
+  const { data: tokenPricesData, refetch: refetchPrices } = useQuery(GetTokenPricesDocument, {
     variables,
     initialFetchPolicy: 'cache-only',
     nextFetchPolicy: 'cache-first',
@@ -130,8 +130,6 @@ export function _useTokens(
       if (!token) return '0'
       if (usdValue === '') return '0'
 
-      console.log({ usdValue, price: priceForToken(token), token })
-
       return bn(usdValue).div(priceForToken(token)).toFixed(2)
     },
     [JSON.stringify(prices)]
@@ -150,6 +148,7 @@ export function _useTokens(
     usdValueForToken,
     getPoolTokenWeightByBalance,
     amountTokenForUsdValue,
+    refetchPrices,
   }
 }
 

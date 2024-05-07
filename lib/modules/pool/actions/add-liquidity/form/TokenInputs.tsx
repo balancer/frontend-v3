@@ -10,6 +10,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { isNativeOrWrappedNative } from '@/lib/modules/tokens/token.helpers'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 import { useEffect } from 'react'
+import { useTokens } from '@/lib/modules/tokens/useTokens'
 
 type Props = {
   tokenSelectDisclosureOpen: () => void
@@ -25,6 +26,7 @@ export function TokenInputs({
   const { isConnected } = useUserAccount()
   const { toCurrency } = useCurrency()
   const { tokens, humanAmountsIn, setHumanAmountIn } = useAddLiquidity()
+
   const {
     handleProportionalHumanInputChange,
     handleMaximizeUserAmounts,
@@ -33,6 +35,8 @@ export function TokenInputs({
     canMaximize,
     setIsMaximized,
   } = useProportionalInputs()
+
+  const { refetchPrices } = useTokens()
 
   function currentValueFor(tokenAddress: string) {
     const amountIn = humanAmountsIn.find(amountIn =>
@@ -46,8 +50,12 @@ export function TokenInputs({
     : setHumanAmountIn
 
   useEffect(() => {
+    // refetch prices so both totalUSDValue and maximizedUsdValue are up to date
+    refetchPrices()
     if (totalUSDValue !== maximizedUsdValue) {
       setIsMaximized(false)
+    } else {
+      setIsMaximized(true)
     }
   }, [totalUSDValue])
 
