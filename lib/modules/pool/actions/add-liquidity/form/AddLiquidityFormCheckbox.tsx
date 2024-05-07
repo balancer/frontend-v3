@@ -1,4 +1,3 @@
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
   Checkbox,
   HStack,
