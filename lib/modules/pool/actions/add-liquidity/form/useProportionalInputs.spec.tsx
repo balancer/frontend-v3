@@ -1,29 +1,15 @@
-import { Address } from '@balancer/sdk'
 import { gyroPoolMock } from '../../../__mocks__/gyroPoolMock'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
-import { TokenHelpers, _calculateProportionalHumanAmountsIn } from './useProportionalInputs'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { _calculateProportionalHumanAmountsIn } from './useProportionalInputs'
 
 const helpers = new LiquidityActionHelpers(gyroPoolMock)
 
 describe('calculates and sorts proportional human amounts in', () => {
   const usdcAddress = '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
   const daiAddress = '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063'
-  const poolTokens = [
-    { address: usdcAddress as Address, weight: undefined, chain: 'MAINNET' },
-    { address: daiAddress as Address, weight: undefined, chain: 'MAINNET' },
-  ]
-  const { amountTokenForUsdValue, getToken, usdValueForToken } = useTokens()
-  const tokenHelpers: TokenHelpers = { amountTokenForUsdValue, getToken, usdValueForToken }
 
   it('given a new human amount for the first token (USDC)', () => {
-    const humanAmountsIn = _calculateProportionalHumanAmountsIn(
-      usdcAddress,
-      '100',
-      helpers,
-      poolTokens,
-      tokenHelpers
-    )
+    const humanAmountsIn = _calculateProportionalHumanAmountsIn(usdcAddress, '100', helpers)
 
     expect(humanAmountsIn).toEqual([
       {
@@ -40,13 +26,7 @@ describe('calculates and sorts proportional human amounts in', () => {
   it('given a new human amount for the second token (DAI)', () => {
     const helpers = new LiquidityActionHelpers(gyroPoolMock)
 
-    const humanAmountsIn = _calculateProportionalHumanAmountsIn(
-      daiAddress,
-      '50',
-      helpers,
-      poolTokens,
-      tokenHelpers
-    )
+    const humanAmountsIn = _calculateProportionalHumanAmountsIn(daiAddress, '50', helpers)
 
     // Sorts the results moving DAI human amount to the first position
     expect(humanAmountsIn).toEqual([
