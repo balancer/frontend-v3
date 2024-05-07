@@ -1,7 +1,6 @@
 import {
   GetPoolQuery,
   GqlChain,
-  GqlPoolLinearNested,
   GqlPoolComposableStableNested,
   GetTokenPricesQuery,
 } from '@/lib/shared/services/api/generated/graphql'
@@ -16,7 +15,6 @@ import {
 import { cloneDeep, keyBy, sumBy } from 'lodash'
 import {
   balancerV2ComposableStablePoolV5Abi,
-  balancerV2Erc4626LinearPoolV3Abi,
   balancerV2VaultAbi,
 } from '@/lib/modules/web3/contracts/abi/generated'
 import { usePublicClient } from 'wagmi'
@@ -24,7 +22,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { useUserAccount } from '../../web3/useUserAccount'
-import { isComposableStablePool, isLinearPool } from '../pool.utils'
+import { isComposableStablePool } from '../pool.utils'
 
 export function usePoolEnrichWithOnChainData({
   chain,
@@ -162,16 +160,14 @@ function getBalancesCall(
 }
 
 function getUserBalancesCall(
-  pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested | GqlPoolLinearNested,
+  pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested,
   userAddress: Address
 ): { poolId: string; type: 'userBalance'; call: ReadContractParameters } {
-  const isLinear = isLinearPool(pool)
-
   return {
     poolId: pool.id,
     type: 'userBalance',
     call: {
-      abi: isLinear ? balancerV2Erc4626LinearPoolV3Abi : balancerV2ComposableStablePoolV5Abi,
+      abi: balancerV2ComposableStablePoolV5Abi,
       address: pool.address as Address,
       functionName: 'balanceOf',
       args: [userAddress],
@@ -179,30 +175,21 @@ function getUserBalancesCall(
   }
 }
 
-function getSupplyCall(
-  pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested | GqlPoolLinearNested
-): {
+function getSupplyCall(pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested): {
   poolId: string
   type: 'supply'
   call: ReadContractParameters
 } {
-  const isLinear = isLinearPool(pool)
   const isComposableStable = isComposableStablePool(pool)
 
   return {
     poolId: pool.id,
     type: 'supply',
     call: {
-      abi: isLinear
-        ? balancerV2Erc4626LinearPoolV3Abi
-        : // composable stable pool has actual and total supply functions exposed
-          balancerV2ComposableStablePoolV5Abi,
+      // composable stable pool has actual and total supply functions exposed
+      abi: balancerV2ComposableStablePoolV5Abi,
       address: pool.address as Address,
-      functionName: isComposableStable
-        ? 'getActualSupply'
-        : isLinear
-        ? 'getVirtualSupply'
-        : 'totalSupply',
+      functionName: isComposableStable ? 'getActualSupply' : 'totalSupply',
     },
   }
 }
