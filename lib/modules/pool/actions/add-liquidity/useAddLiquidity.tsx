@@ -41,7 +41,7 @@ export function _useAddLiquidity() {
   const [totalUSDValue, setTotalUSDValue] = useState('0')
 
   const { pool, refetch: refetchPool } = usePool()
-  const { getToken } = useTokens()
+  const { getToken, prices } = useTokens()
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
 
@@ -105,7 +105,7 @@ export function _useAddLiquidity() {
 
   useEffect(() => {
     setTotalUSDValue(usdValueFor(humanAmountsIn))
-  }, [humanAmountsIn])
+  }, [humanAmountsIn, prices])
 
   /**
    * Simulation queries:

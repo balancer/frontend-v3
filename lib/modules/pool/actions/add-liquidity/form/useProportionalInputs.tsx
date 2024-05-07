@@ -48,6 +48,7 @@ export function useProportionalInputs() {
   const { balanceFor, balances, isBalancesLoading } = useTokenBalances()
   const { pool, isLoading: isPoolLoading } = usePool()
   const [isMaximized, setIsMaximized] = useState(false)
+  const { prices } = useTokens()
 
   const { amountTokenForUsdValue, getToken, usdValueForToken } = useTokens()
   const tokenHelpers: TokenHelpers = { amountTokenForUsdValue, getToken, usdValueForToken }
@@ -152,7 +153,7 @@ export function useProportionalInputs() {
     )
 
     return usdValueFor(maxProportionalHumanAmountsIn)
-  }, [shouldCalculateMaximizeAmounts, optimalToken])
+  }, [shouldCalculateMaximizeAmounts, optimalToken, prices])
 
   const canMaximize = !!optimalToken?.userBalance
 
