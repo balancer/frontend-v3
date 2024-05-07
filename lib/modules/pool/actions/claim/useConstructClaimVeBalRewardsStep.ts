@@ -5,6 +5,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useSyncCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
+import { Address } from 'viem'
 
 const transactionLabels: TransactionLabels = {
   init: 'Claim all',
@@ -22,7 +23,7 @@ export function useConstructClaimVeBalRewardsStep() {
     'claimTokens',
     transactionLabels,
     1, // only on mainnet
-    [userAddress, claimableVeBalRewardsTokens],
+    [userAddress, claimableVeBalRewardsTokens as Address[]],
     {
       query: {
         enabled: !!userAddress,

@@ -23,4 +23,4 @@ export const FeeDistributorStaticAbi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-]
+] as const
