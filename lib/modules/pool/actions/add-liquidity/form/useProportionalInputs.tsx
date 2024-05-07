@@ -2,7 +2,7 @@
 'use client'
 
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
-import { bn } from '@/lib/shared/utils/numbers'
+import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import { Address, HumanAmount, InputAmount, calculateProportionalAmounts } from '@balancer/sdk'
 import { useMemo, useState } from 'react'
 import { usePool } from '../../../usePool'
@@ -13,10 +13,24 @@ import { HumanAmountIn } from '../../liquidity-types'
 import { formatUnits } from 'viem'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
+import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { GqlToken, GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 type OptimalToken = {
   tokenAddress: Address
   userBalance: HumanAmount
+}
+
+type PoolToken = {
+  address: Address
+  weight: string | null | undefined
+  chain: any
+}
+
+type TokenHelpers = {
+  amountTokenForUsdValue: (token: GqlToken | undefined, usdValue: Numberish) => string
+  getToken: (address: string, chain: number | GqlChain) => GqlToken | undefined
+  usdValueForToken: (token: GqlToken | undefined, amount: Numberish) => string
 }
 
 export function useProportionalInputs() {
@@ -35,8 +49,14 @@ export function useProportionalInputs() {
   const { pool, isLoading: isPoolLoading } = usePool()
   const [isMaximized, setIsMaximized] = useState(false)
 
-  const tokenWeights: Record<Address, string | null | undefined> = {}
-  pool.poolTokens.forEach(token => (tokenWeights[token.address as Address] = token.weight))
+  const { amountTokenForUsdValue, getToken, usdValueForToken } = useTokens()
+  const tokenHelpers: TokenHelpers = { amountTokenForUsdValue, getToken, usdValueForToken }
+
+  const poolTokens: PoolToken[] = pool.poolTokens.map(token => ({
+    address: token.address as Address,
+    weight: token.weight,
+    chain: pool.chain,
+  }))
 
   function clearAmountsIn() {
     setHumanAmountsIn(humanAmountsIn.map(amountIn => ({ ...amountIn, humanAmount: '' })))
@@ -61,7 +81,9 @@ export function useProportionalInputs() {
     const proportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn(
       tokenAddress,
       humanAmount,
-      helpers
+      helpers,
+      poolTokens,
+      tokenHelpers
     )
 
     const proportionalAmounts = proportionalHumanAmountsIn.map(amount => {
@@ -97,7 +119,9 @@ export function useProportionalInputs() {
       const proportionalAmounts = _calculateProportionalHumanAmountsIn(
         address as Address,
         humanBalance,
-        helpers
+        helpers,
+        poolTokens,
+        tokenHelpers
       )
 
       // The user must have enough token balance for this proportional result
@@ -122,7 +146,9 @@ export function useProportionalInputs() {
     const maxProportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn(
       optimalToken.tokenAddress as Address,
       optimalToken.userBalance,
-      helpers
+      helpers,
+      poolTokens,
+      tokenHelpers
     )
 
     return usdValueFor(maxProportionalHumanAmountsIn)
@@ -144,18 +170,48 @@ export function useProportionalInputs() {
 export function _calculateProportionalHumanAmountsIn(
   tokenAddress: Address,
   humanAmount: HumanAmount,
-  helpers: LiquidityActionHelpers
+  helpers: LiquidityActionHelpers,
+  poolTokens: PoolToken[],
+  tokenHelpers: TokenHelpers
 ): HumanAmountIn[] {
-  const amountIn: InputAmount = helpers.toInputAmounts([{ tokenAddress, humanAmount }])[0]
-  return (
-    calculateProportionalAmounts(helpers.poolStateWithBalances, amountIn)
-      .tokenAmounts.map(({ address, rawAmount, decimals }) => ({
-        tokenAddress: address,
-        humanAmount: formatUnits(rawAmount, decimals) as HumanAmount,
-      }))
-      // user updated token must be in the first place of the array because the Proportional handler always calculates bptOut based on the first position
-      .sort(sortUpdatedTokenFirst(tokenAddress))
-  )
+  const poolToken = poolTokens.find(token => token.address === tokenAddress)
+
+  if (poolToken?.weight) {
+    const { amountTokenForUsdValue, getToken, usdValueForToken } = tokenHelpers
+    const token = getToken(tokenAddress, poolTokens[0].chain)
+    const tokenUsdValue = usdValueForToken(token, humanAmount)
+    const usdValuePerWeightPercentage = bn(tokenUsdValue).div(poolToken.weight)
+
+    const otherPoolTokens = poolTokens
+      .filter(poolToken => poolToken.address !== tokenAddress)
+      .map(poolToken => {
+        const token = getToken(poolToken.address, poolTokens[0].chain)
+        const weightedTokenUsdValue =
+          poolToken.weight && bn(usdValuePerWeightPercentage).times(poolToken.weight)
+        const humanAmount =
+          weightedTokenUsdValue && amountTokenForUsdValue(token, weightedTokenUsdValue)
+        return { tokenAddress: poolToken.address, humanAmount: humanAmount as `${number}` }
+      })
+
+    return [
+      {
+        tokenAddress,
+        humanAmount,
+      },
+      ...otherPoolTokens,
+    ]
+  } else {
+    const amountIn: InputAmount = helpers.toInputAmounts([{ tokenAddress, humanAmount }])[0]
+    return (
+      calculateProportionalAmounts(helpers.poolStateWithBalances, amountIn)
+        .tokenAmounts.map(({ address, rawAmount, decimals }) => ({
+          tokenAddress: address,
+          humanAmount: formatUnits(rawAmount, decimals) as HumanAmount,
+        }))
+        // user updated token must be in the first place of the array because the Proportional handler always calculates bptOut based on the first position
+        .sort(sortUpdatedTokenFirst(tokenAddress))
+    )
+  }
 
   function sortUpdatedTokenFirst(tokenAddress: Address | null) {
     return (a: HumanAmountIn, b: HumanAmountIn) => {
