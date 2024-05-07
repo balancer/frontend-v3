@@ -32,7 +32,6 @@ export function TokenInputs({
     maximizedUsdValue,
     canMaximize,
     setIsMaximized,
-    refetchBalances,
   } = useProportionalInputs()
 
   function currentValueFor(tokenAddress: string) {
@@ -47,7 +46,6 @@ export function TokenInputs({
     : setHumanAmountIn
 
   useEffect(() => {
-    refetchBalances()
     if (totalUSDValue !== maximizedUsdValue) {
       setIsMaximized(false)
     }
