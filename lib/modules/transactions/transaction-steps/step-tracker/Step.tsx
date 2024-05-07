@@ -3,9 +3,12 @@ import { StepProps, getStepSettings } from './getStepSettings'
 import { Check } from 'react-feather'
 import { useSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
 import { signRelayerStepTitle } from '../SignRelayerButton'
+import { useTransactionSteps } from '../TransactionStepsProvider'
 
 export function Step(props: StepProps) {
-  const { color, isActive, title } = getStepSettings(props)
+  const { getTransaction } = useTransactionSteps()
+  const transaction = getTransaction(props.step.id)
+  const { color, isActive, title } = getStepSettings(props, transaction)
 
   return (
     <HStack alignItems="center">

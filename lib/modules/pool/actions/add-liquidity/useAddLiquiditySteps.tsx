@@ -4,7 +4,7 @@ import { InputAmount } from '@balancer/sdk'
 import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import { useApproveRelayerStep } from '@/lib/modules/relayer/approveRelayerConfig'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { signRelayerStep2 } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
+import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { TransactionStep2 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useAddLiquidityStep } from './useAddLiquidityStep'
 import { useTokenApprovalSteps } from '@/lib/modules/tokens/approvals/useTokenApprovalSteps'
@@ -15,6 +15,7 @@ export function useAddLiquiditySteps(inputAmounts: InputAmount[]): TransactionSt
   const relayerMode = useRelayerMode()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
   const approveRelayerStep = useApproveRelayerStep(chainId)
+  const signRelayerStep = useSignRelayerStep()
 
   const tokenApprovalSteps = useTokenApprovalSteps({
     spenderAddress: vaultAddress,
@@ -28,7 +29,7 @@ export function useAddLiquiditySteps(inputAmounts: InputAmount[]): TransactionSt
   let steps: TransactionStep2[] = [...tokenApprovalSteps, addLiquidityStep]
 
   if (shouldSignRelayerApproval) {
-    steps = [signRelayerStep2, ...steps]
+    steps = [signRelayerStep, ...steps]
   }
 
   if (relayerMode === 'approveRelayer') {

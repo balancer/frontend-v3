@@ -21,9 +21,12 @@ export function _useTransactionSteps() {
     setCurrentStepIndex(prev => prev + 1)
   }
 
+  function isLastStep(index: number) {
+    return index === transactionSteps.length - 1
+  }
+
   const currentStep = transactionSteps[currentStepIndex]
   const currentTransaction = transactionMap.get(currentStep.id)
-
   const isCurrentStepComplete = currentStep.isComplete()
 
   // Trigger side effects on transaction completion. The step itself decides
@@ -47,6 +50,7 @@ export function _useTransactionSteps() {
     currentTransaction,
     currentStepIndex,
     goToNextStep,
+    isLastStep,
     setTransactionSteps,
     setCurrentStepIndex,
     getTransaction,

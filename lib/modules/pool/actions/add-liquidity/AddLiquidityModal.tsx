@@ -1,7 +1,5 @@
 'use client'
 
-import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import {
   HStack,
@@ -21,12 +19,9 @@ import { useAddLiquidity } from './useAddLiquidity'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import Image from 'next/image'
 import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
 import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
-import { getNetworkConfig } from '@/lib/config/app.config'
 import { AddLiquiditySubmitted } from './AddLiquiditySubmitted'
-import { ActionCompleteModalFooter } from '../ActionCompleteModalFooter'
 import { useTransactionFlow } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 
 type Props = {
@@ -44,11 +39,9 @@ export function AddLiquidityModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { currentStep, currentStepIndex } = useAddLiquidity()
-  const { pool, chainId } = usePool()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
+  const { currentStep } = useAddLiquidity()
+  const { pool } = usePool()
   const { isFlowComplete, isFlowConfirming } = useTransactionFlow()
-  const networkConfig = getNetworkConfig(pool.chain)
 
   return (
     <Modal
@@ -61,40 +54,19 @@ export function AddLiquidityModal({
     >
       <ModalOverlay />
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
-        {isDesktop && (
-          <DesktopStepTracker
-            currentStepIndex={currentStepIndex}
-            stepConfigs={stepConfigs}
-            chain={pool.chain}
-          />
-        )}
+        {isDesktop && <DesktopStepTracker chain={pool.chain} />}
         <ModalHeader>
           <HStack justify="space-between" w="full" pr="lg">
-            {isFlowComplete || isFlowConfirming ? (
-              <Image
-                src={networkConfig.iconPath}
-                width="24"
-                height="24"
-                alt={networkConfig.shortName}
-              />
-            ) : (
-              <span>Add liquidity</span>
-            )}
+            <span>Add liquidity</span>
             <AddLiquidityTimeout />
           </HStack>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          {isFlowComplete || isFlowConfirming ? <AddLiquiditySubmitted /> : <AddLiquidityPreview />}
+          <AddLiquidityPreview />
         </ModalBody>
         <ModalFooter>
-          {isFlowComplete || isFlowConfirming ? (
-            <ActionCompleteModalFooter />
-          ) : shouldSignRelayerApproval ? (
-            <SignRelayerButton />
-          ) : (
-            <VStack w="full">{currentStep.renderAction()}</VStack>
-          )}
+          <VStack w="full">{currentStep.renderAction()}</VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>

@@ -1,29 +1,21 @@
 import { Box, VStack } from '@chakra-ui/react'
-import { useTransactionFlow } from '../TransactionFlowProvider'
 import { Step } from './Step'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
+import { useTransactionSteps } from '../TransactionStepsProvider'
 
-type StepsProps = {
-  currentIndex: number
-  steps: { title: string }[]
-}
-
-export function Steps({ currentIndex, steps }: StepsProps) {
-  const { flowStep } = useTransactionFlow()
+export function Steps() {
+  const { transactionSteps, currentStepIndex, isLastStep } = useTransactionSteps()
   const colorMode = useThemeColorMode()
-
-  const isLastStep = (index: number) => index === steps.length - 1
 
   return (
     <VStack align="start" spacing="xs">
-      {steps.map((step, index) => (
-        <div key={step.title}>
+      {transactionSteps.map((step, index) => (
+        <div key={step.labels.title}>
           <Step
-            currentIndex={currentIndex}
+            currentIndex={currentStepIndex}
             index={index}
             step={step}
             colorMode={colorMode}
-            flowStep={flowStep}
             isLastStep={isLastStep(index)}
           />
           {!isLastStep(index) && (
