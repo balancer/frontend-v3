@@ -2,6 +2,7 @@
 
 import { GqlChain, GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 
+// TODO: remove linear (nested) pools
 export const recoveryPoolMock: GqlPoolElement = {
   id: '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023000200000000000000000473',
   address: '0x4fd4687ec38220f805b6363c3c1e52d0df3b5023',

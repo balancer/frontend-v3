@@ -281,37 +281,6 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
         }
       }
     }
-    ... on GqlPoolLinear {
-      mainIndex
-      wrappedIndex
-      lowerTarget
-      upperTarget
-      bptPriceRate
-      poolTokens {
-        ... on GqlPoolTokenDetail {
-          id
-          index
-          name
-          symbol
-          balance
-          address
-          priceRate
-          decimals
-          weight
-          hasNestedPool
-          nestedPool {
-            id
-            address
-            type
-            tokens {
-              index
-              address
-              decimals
-            }
-          }
-        }
-      }
-    }
     ... on GqlPoolLiquidityBootstrapping {
       name
       nestingType
@@ -446,13 +415,7 @@ query GetPoolTokensDynamicData($addresses: [String!]!) {
 }
 
 query GetPoolEvents($first: Int, $poolId: String!, $chain: GqlChain!) {
-  poolEvents(
-    first: $first
-    where: {
-      poolId: $poolId
-      chain: $chain
-    }
-  ) {
+  poolEvents(first: $first, where: { poolId: $poolId, chain: $chain }) {
     id
     poolId
     timestamp
