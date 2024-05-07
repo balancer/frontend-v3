@@ -5,6 +5,7 @@ import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Alert, Button, VStack } from '@chakra-ui/react'
 import { StepConfig } from './useIterateSteps'
+import { TransactionStep2 } from './lib'
 
 export const signRelayerStepTitle = 'Sign relayer'
 
@@ -13,6 +14,17 @@ export const signRelayerStepTitle = 'Sign relayer'
   but we still need a StepConfig (with no render) to display the step in the StepTracker
  */
 export const signRelayerStep: StepConfig = { title: signRelayerStepTitle, render: () => <></> }
+
+export const signRelayerStep2: TransactionStep2 = {
+  id: 'sign-relayer',
+  stepType: 'signBatchRelayer',
+  labels: {
+    title: 'Sign relayer',
+    init: 'Sign relayer',
+    tooltip: 'Sign relayer',
+  },
+  renderAction: () => <SignRelayerButton />,
+}
 
 export function SignRelayerButton() {
   const { isConnected } = useUserAccount()

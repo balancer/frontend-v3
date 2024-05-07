@@ -1,19 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-  ManagedResult,
   TransactionLabels,
-  TxStep,
+  TransactionStep2,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useAddLiquidity } from './useAddLiquidity'
 import { usePool } from '../../usePool'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
+import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/TransactionStepsProvider'
 
-export function useConstructAddLiquidityStep(): TxStep {
-  const [transaction, setTransaction] = useState<ManagedResult>()
+export function useAddLiquidityStep(): TransactionStep2 {
   const { chainId } = usePool()
+  const { getTransaction } = useTransactionSteps()
 
   const labels: TransactionLabels = {
     init: 'Add liquidity',
@@ -38,20 +38,24 @@ export function useConstructAddLiquidityStep(): TxStep {
     buildCallQueryData: buildCallDataQuery.data,
   })
 
+  const id = 'add-liquidity'
+
+  const transaction = getTransaction(id)
+
   const isComplete = () => transaction?.result.isSuccess || false
 
   return {
-    id: 'AddLiquidity',
+    id,
+    stepType: 'addLiquidity',
     labels,
-    transaction,
     isComplete,
     renderAction: () => (
       <ManagedSendTransactionButton
+        id={id}
         labels={labels}
         chainId={chainId}
         txConfig={buildCallDataQuery.data}
         gasEstimationMeta={gasEstimationMeta}
-        setTransaction={setTransaction}
       />
     ),
   }

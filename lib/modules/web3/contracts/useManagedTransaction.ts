@@ -20,22 +20,36 @@ import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 
-export function useManagedTransaction<
-  T extends typeof AbiMap,
-  M extends keyof typeof AbiMap,
-  F extends ContractFunctionName<T[M], WriteAbiMutability>
->(
-  contractAddress: string,
-  contractId: M,
-  functionName: F,
-  transactionLabels: TransactionLabels,
-  chainId: SupportedChainId,
-  args?: ContractFunctionArgs<T[M], WriteAbiMutability> | null,
-  additionalConfig?: Omit<
-    UseSimulateContractParameters<T[M], F>,
-    'abi' | 'address' | 'functionName' | 'args'
-  >
-) {
+type IAbiMap = typeof AbiMap
+type AbiMapKey = keyof typeof AbiMap
+
+type AdditionalConfig = Omit<
+  UseSimulateContractParameters<
+    (typeof AbiMap)[keyof typeof AbiMap],
+    ContractFunctionName<(typeof AbiMap)[keyof typeof AbiMap], WriteAbiMutability>
+  >,
+  'abi' | 'address' | 'functionName' | 'args'
+>
+
+export interface ManagedTransactionInput {
+  contractAddress: string
+  contractId: AbiMapKey
+  functionName: ContractFunctionName<IAbiMap[AbiMapKey], WriteAbiMutability>
+  labels: TransactionLabels
+  chainId: SupportedChainId
+  args?: ContractFunctionArgs<IAbiMap[AbiMapKey], WriteAbiMutability> | null
+  additionalConfig?: AdditionalConfig
+}
+
+export function useManagedTransaction({
+  contractAddress,
+  contractId,
+  functionName,
+  labels,
+  chainId,
+  args,
+  additionalConfig,
+}: ManagedTransactionInput) {
   const [writeArgs, setWriteArgs] = useState(args)
   const { minConfirmations } = useNetworkConfig()
   const { shouldChangeNetwork } = useChainSwitch(chainId)
@@ -72,14 +86,14 @@ export function useManagedTransaction<
 
   // on successful submission to chain, add tx to cache
   useOnTransactionSubmission({
-    labels: transactionLabels,
+    labels,
     hash: writeQuery.data,
     chain: getGqlChain(chainId as SupportedChainId),
   })
 
   // on confirmation, update tx in tx cache
   useOnTransactionConfirmation({
-    labels: transactionLabels,
+    labels,
     status: bundle.result.data?.status,
     hash: bundle.result.data?.transactionHash,
   })
@@ -90,7 +104,9 @@ export function useManagedTransaction<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(args)])
 
-  const managedWriteAsync = async (args?: ContractFunctionArgs<T[M], WriteAbiMutability>) => {
+  const managedWriteAsync = async (
+    args?: ContractFunctionArgs<IAbiMap[AbiMapKey], WriteAbiMutability>
+  ) => {
     if (args) {
       setWriteArgs(args)
     }

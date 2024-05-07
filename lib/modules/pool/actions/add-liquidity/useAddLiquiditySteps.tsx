@@ -1,22 +1,20 @@
 import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
 import { usePool } from '../../usePool'
-import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useTokenApprovalConfigs'
 import { InputAmount } from '@balancer/sdk'
 import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
-import { getApproveRelayerConfig } from '@/lib/modules/relayer/approveRelayerConfig'
-import { AddLiquidityButton } from './AddLiquidityButton'
-import { StepConfig } from '../../../transactions/transaction-steps/useIterateSteps'
+import { useApproveRelayerStep } from '@/lib/modules/relayer/approveRelayerConfig'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { signRelayerStep } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
-import { TxStep } from '@/lib/modules/transactions/transaction-steps/lib'
-import { useConstructAddLiquidityStep } from './useConstructAddLiquidityStep'
+import { signRelayerStep2 } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
+import { TransactionStep2 } from '@/lib/modules/transactions/transaction-steps/lib'
+import { useAddLiquidityStep } from './useAddLiquidityStep'
 import { useTokenApprovalSteps } from '@/lib/modules/tokens/approvals/useTokenApprovalSteps'
 
-export function useAddLiquiditySteps(inputAmounts: InputAmount[]): TxStep[] {
+export function useAddLiquiditySteps(inputAmounts: InputAmount[]): TransactionStep2[] {
   const vaultAddress = useContractAddress('balancer.vaultV2')
   const { pool, chainId } = usePool()
   const relayerMode = useRelayerMode()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
+  const approveRelayerStep = useApproveRelayerStep(chainId)
 
   const tokenApprovalSteps = useTokenApprovalSteps({
     spenderAddress: vaultAddress,
@@ -25,17 +23,17 @@ export function useAddLiquiditySteps(inputAmounts: InputAmount[]): TxStep[] {
     actionType: 'AddLiquidity',
   })
 
-  const addLiquidityStep = useConstructAddLiquidityStep()
+  const addLiquidityStep = useAddLiquidityStep()
 
-  const steps: TxStep[] = [addLiquidityStep]
+  let steps: TransactionStep2[] = [...tokenApprovalSteps, addLiquidityStep]
 
-  // if (shouldSignRelayerApproval) {
-  //   stepConfigs = [signRelayerStep, ...stepConfigs]
-  // }
+  if (shouldSignRelayerApproval) {
+    steps = [signRelayerStep2, ...steps]
+  }
 
-  // if (relayerMode === 'approveRelayer') {
-  //   stepConfigs = [getApproveRelayerConfig(chainId), ...stepConfigs]
-  // }
+  if (relayerMode === 'approveRelayer') {
+    steps = [approveRelayerStep, ...steps]
+  }
 
   return steps
 }

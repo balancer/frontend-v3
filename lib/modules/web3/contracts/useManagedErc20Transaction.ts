@@ -22,19 +22,27 @@ import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 
 type Erc20Abi = typeof erc20Abi
-export function useManagedErc20Transaction<
-  F extends ContractFunctionName<Erc20Abi, WriteAbiMutability>
->(
-  tokenAddress: Address,
-  functionName: F,
-  labels: TransactionLabels,
-  chainId: SupportedChainId,
-  args?: ContractFunctionArgs<Erc20Abi, WriteAbiMutability> | null,
+
+export interface ManagedErc20TransactionInput {
+  tokenAddress: Address
+  functionName: ContractFunctionName<Erc20Abi, WriteAbiMutability>
+  labels: TransactionLabels
+  chainId: SupportedChainId
+  args?: ContractFunctionArgs<Erc20Abi, WriteAbiMutability> | null
   additionalConfig?: Omit<
-    UseSimulateContractParameters<Erc20Abi, F>,
+    UseSimulateContractParameters<Erc20Abi, ContractFunctionName<Erc20Abi, WriteAbiMutability>>,
     'abi' | 'address' | 'functionName' | 'args'
   >
-) {
+}
+
+export function useManagedErc20Transaction({
+  tokenAddress,
+  functionName,
+  labels,
+  chainId,
+  args,
+  additionalConfig,
+}: ManagedErc20TransactionInput) {
   const [writeArgs, setWriteArgs] = useState(args)
   const { minConfirmations } = useNetworkConfig()
   const { shouldChangeNetwork } = useChainSwitch(chainId)

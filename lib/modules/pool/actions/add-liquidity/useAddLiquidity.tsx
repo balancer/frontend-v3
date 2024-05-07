@@ -22,15 +22,13 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { useAddLiquidityStepConfigs } from './useAddLiquidityStepConfigs'
-import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
 import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
-import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
+import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/TransactionStepsProvider'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -46,8 +44,8 @@ export function _useAddLiquidity() {
   const { getToken } = useTokens()
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
-
   const { hasValidationErrors } = useTokenInputsValidation()
+  const { setTransactionSteps, currentStep, currentStepIndex } = useTransactionSteps()
 
   const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id])
 
@@ -58,7 +56,7 @@ export function _useAddLiquidity() {
   const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
 
   const steps = useAddLiquiditySteps(inputAmounts)
-  const { currentStep, currentStepIndex } = useTransactionSteps(steps)
+  setTransactionSteps(steps)
   // const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
   const chain = pool.chain

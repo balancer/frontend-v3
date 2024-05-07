@@ -1,22 +1,19 @@
-import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
-import {
-  CommonStepProps,
-  OnStepCompleted,
-  StepConfig,
-} from '../../transactions/transaction-steps/useIterateSteps'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { useTokens } from '../useTokens'
 import { ApprovalAction, buildTokenApprovalLabels } from './approval-labels'
 import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
-import { ApproveTokenProps, useConstructApproveTokenStep } from './useConstructApproveTokenStep'
+import { ApproveTokenProps } from './useConstructApproveTokenStep'
 import { getChainId, getNativeAssetAddress } from '@/lib/config/app.config'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { TxStep } from '../../transactions/transaction-steps/lib'
-
-type Props = ApproveTokenProps & CommonStepProps
+import { TransactionStep2 } from '../../transactions/transaction-steps/lib'
+import { ManagedErc20TransactionButton } from '../../transactions/transaction-steps/TransactionButton'
+import { ManagedErc20TransactionInput } from '../../web3/contracts/useManagedErc20Transaction'
+import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
+import { useEffect } from 'react'
+import { useTransactionSteps } from '../../transactions/transaction-steps/TransactionStepsProvider'
 
 export interface ApproveTokenConfig {
   type: 'approveToken'
@@ -40,10 +37,11 @@ export function useTokenApprovalSteps({
   approvalAmounts,
   actionType,
   bptSymbol,
-}: Params): TxStep[] {
+}: Params): TransactionStep2[] {
   const { userAddress } = useUserAccount()
   const { getToken } = useTokens()
   const nativeAssetAddress = getNativeAssetAddress(chain)
+  const { getTransaction } = useTransactionSteps()
 
   const _approvalAmounts = approvalAmounts
     .filter(amount => amount.rawAmount > 0)
@@ -64,41 +62,49 @@ export function useTokenApprovalSteps({
     allowanceFor: tokenAllowances.allowanceFor,
   })
 
+  useEffect(() => {
+    // refetch allowances after the approval transaction was executed
+    async function saveExecutedApproval() {
+      if (approvalTransaction.result.isSuccess) {
+        await refetchAllowances()
+        setDidRefetchAllowances(true)
+      }
+    }
+    saveExecutedApproval()
+  }, [approvalTransaction.result.isSuccess])
+
   return tokenAmountsToApprove.map(tokenAmountToApprove => {
-    const token = getToken(tokenAmountToApprove.tokenAddress, chain)
+    const { tokenAddress, requestedRawAmount } = tokenAmountToApprove
+    const token = getToken(tokenAddress, chain)
     const symbol = bptSymbol ?? (token && token?.symbol) ?? 'Unknown'
     const labels = buildTokenApprovalLabels({ actionType, symbol })
+    const id = tokenAddress
 
-    const props: ApproveTokenProps = {
-      tokenAllowances,
-      tokenAmountToApprove,
-      actionType,
-      chain,
-      symbol,
-      spenderAddress,
-    }
-    return {
-      id: 'TokenApproval',
+    const isComplete = () => tokenAllowances.allowanceFor(tokenAddress) >= requestedRawAmount
+
+    const props: ManagedErc20TransactionInput = {
+      tokenAddress,
+      functionName: 'approve',
       labels,
-      // TODO manage transaction map, e.g. tokenAddress -> transaction in state
+      chainId: getChainId(chain),
+      args: [spenderAddress, requestedRawAmount],
+      additionalConfig: {
+        query: {
+          enabled: !!spenderAddress && !tokenAllowances.isAllowancesLoading,
+          meta: sentryMetaForWagmiSimulation(
+            'Error in wagmi tx simulation: Approving token',
+            tokenAmountToApprove
+          ),
+        },
+      },
+    }
+
+    return {
+      id,
+      stepType: 'tokenApproval',
+      labels,
+      isComplete,
+      renderAction: () => <ManagedErc20TransactionButton id={id} {...props} />,
     }
   })
-}
-
-function buildTokenApprovalConfig(props: ApproveTokenProps): StepConfig {
-  const approvalStepConfig: StepConfig = {
-    title: `Approve ${props.symbol}`,
-    render(useOnStepCompleted: OnStepCompleted) {
-      return <ApproveTokenButton {...props} useOnStepCompleted={useOnStepCompleted} />
-    },
-  }
-  return approvalStepConfig
-}
-
-export function ApproveTokenButton(props: Props) {
-  const step = useConstructApproveTokenStep(props)
-
-  props.useOnStepCompleted(step)
-
-  return <TransactionStepButton step={step} />
 }

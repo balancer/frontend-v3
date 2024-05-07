@@ -71,22 +71,13 @@ export type TransactionStep = {
 
 export type FlowStep = TransactionStep & ManagedResult
 
-export type TxMeta = ManagedResult & {
-  id: TxActionId
-  transactionLabels: TransactionLabels
-  isComplete: () => boolean
-}
-
-export type TransactionStep2 = TxMeta & {
-  renderAction: () => React.ReactNode
-}
-
-export type TxStep = {
-  id: TxActionId
+export type TransactionStep2 = {
+  id: string
+  stepType: StepType
   labels: TransactionLabels
-  transaction: ManagedResult | undefined
   isComplete: () => boolean
   renderAction: () => React.ReactNode
+  onSuccess?: () => void
 }
 
 // Allows adding extra properties like set state callbacks to TransactionStep
