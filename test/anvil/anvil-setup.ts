@@ -56,7 +56,7 @@ export const pool = Number(process.env.VITEST_POOL_ID ?? 1)
 export function getTestRpcSetup(networkName: NetworksWithFork) {
   const network = ANVIL_NETWORKS[networkName]
   const port = network.port
-  const rpcUrl = `http://127.0.0.1:${port}/${pool}`
+  const rpcUrl = `http://127.0.0.1:${port}`
   return { port, rpcUrl }
 }
 
