@@ -10,6 +10,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { isNativeOrWrappedNative } from '@/lib/modules/tokens/token.helpers'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 import { useEffect } from 'react'
+import { XOctagon } from 'react-feather'
 
 type Props = {
   tokenSelectDisclosureOpen: () => void
@@ -62,7 +63,7 @@ export function TokenInputs({
           This pool requires liquidity to be added proportionally
         </Alert>
       )}
-      {isConnected && canMaximize && (
+      {isConnected && (
         <Card variant="subSection" w="full" p={['sm', 'ms']}>
           <HStack w="full">
             <Box as="span" color="grayText">
@@ -72,17 +73,38 @@ export function TokenInputs({
               Addable pool tokens
             </Text>
             <Spacer />
-            <Text fontSize="md" color="grayText">
-              {toCurrency(maximizedUsdValue, { abbreviated: false })}
-            </Text>
-            <Text
-              fontSize="md"
-              color={isMaximized ? 'grayText' : 'font.highlight'}
-              onClick={() => !isMaximized && handleMaximizeUserAmounts()}
-              cursor={isMaximized ? 'default' : 'pointer'}
-            >
-              Max
-            </Text>
+            {canMaximize && (
+              <>
+                <Text fontSize="md" color="grayText">
+                  {toCurrency(maximizedUsdValue, { abbreviated: false })}
+                </Text>
+                {isMaximized && (
+                  <Text fontSize="md" color="grayText" cursor="default">
+                    Maxed
+                  </Text>
+                )}
+                {!isMaximized && (
+                  <Text
+                    fontSize="md"
+                    color="font.highlight"
+                    onClick={() => handleMaximizeUserAmounts()}
+                    cursor="pointer"
+                  >
+                    Max
+                  </Text>
+                )}
+              </>
+            )}
+            {!canMaximize && (
+              <HStack>
+                <Text fontSize="md" color="red.400">
+                  {toCurrency('0', { abbreviated: false })}
+                </Text>
+                <Box color="red.400">
+                  <XOctagon size={16} />
+                </Box>
+              </HStack>
+            )}
           </HStack>
         </Card>
       )}
