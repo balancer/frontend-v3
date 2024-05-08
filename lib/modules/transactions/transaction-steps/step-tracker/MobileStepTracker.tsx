@@ -18,10 +18,13 @@ import { useTransactionSteps } from '../TransactionStepsProvider'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 
 export function MobileStepTracker({ chain }: { chain: GqlChain }) {
-  const { currentStep, currentStepIndex, transactionSteps, isLastStep } = useTransactionSteps()
+  const { currentStep, currentTransaction, currentStepIndex, transactionSteps, isLastStep } =
+    useTransactionSteps()
   const colorMode = useThemeColorMode()
 
-  const stepLabel = `Step ${currentStepIndex + 1}/${transactionSteps.length}`
+  const totalSteps = transactionSteps?.length || 1
+
+  const stepLabel = `Step ${currentStepIndex + 1}/${totalSteps}`
 
   return (
     <Accordion width="full" variant="button" allowToggle textAlign="left">
@@ -30,14 +33,17 @@ export function MobileStepTracker({ chain }: { chain: GqlChain }) {
           <>
             <AccordionButton>
               <HStack width="full" justify="flex-start" fontSize="md">
-                <StepIndicator
-                  currentIndex={currentStepIndex}
-                  index={currentStepIndex}
-                  step={currentStep}
-                  colorMode={colorMode}
-                  isLastStep={isLastStep(currentStepIndex)}
-                />
-                <Text>{currentStep.labels.title}</Text>
+                {currentStep && (
+                  <StepIndicator
+                    transaction={currentTransaction}
+                    currentIndex={currentStepIndex}
+                    index={currentStepIndex}
+                    step={currentStep}
+                    colorMode={colorMode}
+                    isLastStep={isLastStep(currentStepIndex)}
+                  />
+                )}
+                <Text>{currentStep?.labels.title}</Text>
               </HStack>
               <HStack justify="flex-end" fontSize="sm">
                 {isExpanded && <GasPriceCard chain={chain} />}
