@@ -107,7 +107,7 @@ export function _useAddLiquidity() {
   }, [humanAmountsIn])
 
   /**
-   * Simulation queries:
+   * Simulation queries
    */
   const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn)
   const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn)
@@ -118,7 +118,13 @@ export function _useAddLiquidity() {
   )
 
   /**
-   * Refetch logic:
+   * Step construction
+   */
+  const steps = useAddLiquiditySteps(inputAmounts, simulationQuery, buildCallDataQuery)
+  const transactionSteps = useTransactionSteps(steps)
+
+  /**
+   * Refetch logic
    */
   async function refetchQuote() {
     if (requiresProportionalInput(pool.type)) {
@@ -146,13 +152,6 @@ export function _useAddLiquidity() {
       buildCallDataQuery.refetch()
     }
   }, [simulationQuery.data])
-
-  const steps = useAddLiquiditySteps(inputAmounts, simulationQuery, buildCallDataQuery)
-  const transactionSteps = useTransactionSteps(steps)
-
-  useEffect(() => {
-    console.log('steps', steps)
-  }, [steps])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
