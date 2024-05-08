@@ -37,7 +37,7 @@ export function AddLiquidityModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { currentStep } = useAddLiquidity()
+  const { transactionSteps } = useAddLiquidity()
   const { pool } = usePool()
 
   return (
@@ -51,7 +51,7 @@ export function AddLiquidityModal({
     >
       <ModalOverlay />
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
-        {isDesktop && <DesktopStepTracker chain={pool.chain} />}
+        {isDesktop && <DesktopStepTracker chain={pool.chain} transactionSteps={transactionSteps} />}
         <ModalHeader>
           <HStack justify="space-between" w="full" pr="lg">
             <span>Add liquidity</span>
@@ -63,7 +63,7 @@ export function AddLiquidityModal({
           <AddLiquidityPreview />
         </ModalBody>
         <ModalFooter>
-          <VStack w="full">{currentStep?.renderAction()}</VStack>
+          <VStack w="full">{transactionSteps.currentStep?.renderAction()}</VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>

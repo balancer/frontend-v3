@@ -148,7 +148,11 @@ export function _useAddLiquidity() {
   }, [simulationQuery.data])
 
   const steps = useAddLiquiditySteps(inputAmounts, simulationQuery, buildCallDataQuery)
-  const transactionStepsHookResult = useTransactionSteps(steps)
+  const transactionSteps = useTransactionSteps(steps)
+
+  useEffect(() => {
+    console.log('steps', steps)
+  }, [steps])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
@@ -163,6 +167,7 @@ export function _useAddLiquidity() {
   )
 
   return {
+    transactionSteps,
     humanAmountsIn,
     inputAmounts,
     tokens: wethIsEth ? tokensWithNativeAsset : tokens,
@@ -170,22 +175,21 @@ export function _useAddLiquidity() {
     totalUSDValue,
     simulationQuery,
     priceImpactQuery,
-    refetchQuote,
     isDisabled,
     disabledReason,
     previewModalDisclosure,
     handler,
-    setHumanAmountIn,
-    setHumanAmountsIn,
     helpers,
-    setNeedsToAcceptHighPI,
     acceptPoolRisks,
-    setAcceptPoolRisks,
     wethIsEth,
-    setWethIsEth,
     nativeAsset,
     wNativeAsset,
-    ...transactionStepsHookResult,
+    refetchQuote,
+    setHumanAmountIn,
+    setHumanAmountsIn,
+    setNeedsToAcceptHighPI,
+    setAcceptPoolRisks,
+    setWethIsEth,
   }
 }
 

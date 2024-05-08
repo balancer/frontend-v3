@@ -38,7 +38,9 @@ export function useAddLiquiditySteps(
       return [approveRelayerStep, ...tokenApprovalSteps, addLiquidityStep]
     } else if (shouldSignRelayerApproval) {
       return [signRelayerStep, ...tokenApprovalSteps, addLiquidityStep]
-    } else return [...tokenApprovalSteps, addLiquidityStep]
+    }
+
+    return [...tokenApprovalSteps, addLiquidityStep]
   }, [
     relayerMode,
     shouldSignRelayerApproval,

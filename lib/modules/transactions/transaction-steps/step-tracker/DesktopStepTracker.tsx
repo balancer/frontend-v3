@@ -4,8 +4,14 @@ import { Card, Box, Divider, HStack, Heading, VStack } from '@chakra-ui/react'
 import { Steps } from './Steps'
 import { GasPriceCard } from '@/lib/shared/hooks/useGasPrice'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { TransactionStepsResponse } from '../useTransactionSteps'
 
-export function DesktopStepTracker({ chain }: { chain: GqlChain }) {
+type Props = {
+  chain: GqlChain
+  transactionSteps: TransactionStepsResponse
+}
+
+export function DesktopStepTracker({ chain, transactionSteps }: Props) {
   return (
     <Card padding={0} width="200px" right="-224px" position="absolute">
       <VStack alignItems="flex-start" w="full">
@@ -18,7 +24,7 @@ export function DesktopStepTracker({ chain }: { chain: GqlChain }) {
 
         <Divider p="0" />
         <Box p="sm" pb="md">
-          <Steps />
+          <Steps transactionSteps={transactionSteps} />
         </Box>
       </VStack>
     </Card>

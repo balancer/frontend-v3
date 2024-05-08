@@ -1,8 +1,8 @@
-import { useTransactionMap } from './TransactionMapProvider'
+import { useTransactionState } from './TransactionStateProvider'
 import { getTransactionState, TransactionState } from './lib'
 
 export function useShouldFreezeQuote(stepId: string) {
-  const { getTransaction } = useTransactionMap()
+  const { getTransaction } = useTransactionState()
 
   const transaction = getTransaction(stepId)
   const transactionState = getTransactionState(transaction)

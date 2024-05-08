@@ -1,23 +1,24 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { ManagedResult, TransactionStep2 } from './lib'
-import { useTransactionMap } from './TransactionMapProvider'
+import { TransactionStep2 } from './lib'
+import { useTransactionState } from './TransactionStateProvider'
 
-export function useTransactionSteps(transactionSteps: TransactionStep2[] = []) {
+export type TransactionStepsResponse = ReturnType<typeof useTransactionSteps>
+
+export function useTransactionSteps(steps: TransactionStep2[] = []) {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
-  const [currentTransactionStep, setCurrentTransactionStep] = useState<ManagedResult>()
-  const { getTransaction } = useTransactionMap()
+  const { getTransaction } = useTransactionState()
 
   function goToNextStep() {
     setCurrentStepIndex(prev => prev + 1)
   }
 
   function isLastStep(index: number) {
-    return transactionSteps?.length ? index === transactionSteps.length - 1 : false
+    return steps?.length ? index === steps.length - 1 : false
   }
 
-  const currentStep = transactionSteps?.[currentStepIndex]
+  const currentStep = steps?.[currentStepIndex]
   const currentTransaction = currentStep ? getTransaction(currentStep.id) : undefined
   const isCurrentStepComplete = currentStep?.isComplete() || false
 
@@ -37,16 +38,12 @@ export function useTransactionSteps(transactionSteps: TransactionStep2[] = []) {
   }, [isCurrentStepComplete])
 
   return {
-    transactionSteps,
+    steps,
     currentStep,
     currentTransaction,
     currentStepIndex,
     goToNextStep,
     isLastStep,
     setCurrentStepIndex,
-    currentTransactionStep,
-    setCurrentTransactionStep,
   }
 }
-
-export type TransactionStepsResult = ReturnType<typeof useTransactionSteps>

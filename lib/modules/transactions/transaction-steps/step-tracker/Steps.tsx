@@ -1,17 +1,20 @@
 import { Box, VStack } from '@chakra-ui/react'
 import { Step } from './Step'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
-import { useAddLiquidity } from '@/lib/modules/pool/actions/add-liquidity/useAddLiquidity'
+import { TransactionStepsResponse } from '../useTransactionSteps'
 
-export function Steps() {
-  // TODO: generalize for all flows
-  const { transactionSteps, currentStepIndex, isLastStep } = useAddLiquidity()
+type Props = {
+  transactionSteps: TransactionStepsResponse
+}
+
+export function Steps({ transactionSteps }: Props) {
+  const { steps, currentStepIndex, isLastStep } = transactionSteps
   const colorMode = useThemeColorMode()
 
   return (
     <VStack align="start" spacing="xs">
-      {transactionSteps &&
-        transactionSteps.map((step, index) => (
+      {steps &&
+        steps.map((step, index) => (
           <div key={step.id}>
             <Step
               currentIndex={currentStepIndex}
