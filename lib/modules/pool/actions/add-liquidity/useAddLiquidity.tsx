@@ -54,7 +54,7 @@ export function _useAddLiquidity() {
    * Helper functions & variables
    */
   const helpers = new LiquidityActionHelpers(pool)
-  const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
+  const inputAmounts = useMemo(() => helpers.toInputAmounts(humanAmountsIn), [humanAmountsIn])
 
   const chain = pool.chain
   const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
@@ -152,7 +152,7 @@ export function _useAddLiquidity() {
   useEffect(() => {
     console.log('steps', steps)
     setTransactionSteps(steps)
-  }, [steps.length])
+  }, [steps])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],

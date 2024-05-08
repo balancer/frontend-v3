@@ -7,6 +7,7 @@ import { Alert, Button, VStack } from '@chakra-ui/react'
 import { StepConfig } from './useIterateSteps'
 import { TransactionStep2 } from './lib'
 import { SignRelayerState } from '../../relayer/useRelayerSignature'
+import { useMemo } from 'react'
 
 export const signRelayerStepTitle = 'Sign relayer'
 
@@ -48,17 +49,20 @@ export function useSignRelayerStep(): TransactionStep2 {
 
   const isComplete = () => signRelayerState === SignRelayerState.Completed
 
-  return {
-    id: 'sign-relayer',
-    stepType: 'signBatchRelayer',
-    labels: {
-      title: 'Sign relayer',
-      init: 'Sign relayer',
-      tooltip: 'Sign relayer',
-    },
-    isComplete,
-    renderAction: () => <SignRelayerButton />,
-  }
+  return useMemo(
+    () => ({
+      id: 'sign-relayer',
+      stepType: 'signBatchRelayer',
+      labels: {
+        title: 'Sign relayer',
+        init: 'Sign relayer',
+        tooltip: 'Sign relayer',
+      },
+      isComplete,
+      renderAction: () => <SignRelayerButton />,
+    }),
+    [signRelayerState]
+  )
 }
 
 export function SignRelayerButton() {

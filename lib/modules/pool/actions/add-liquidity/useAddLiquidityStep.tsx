@@ -9,6 +9,7 @@ import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/TransactionStepsProvider'
 import { AddLiquiditySimulationQueryResult } from './queries/useAddLiquiditySimulationQuery'
+import { useMemo } from 'react'
 
 export const addLiquidityStepId = 'add-liquidity'
 
@@ -36,19 +37,22 @@ export function useAddLiquidityStep(
 
   const isComplete = () => transaction?.result.isSuccess || false
 
-  return {
-    id: addLiquidityStepId,
-    stepType: 'addLiquidity',
-    labels,
-    isComplete,
-    renderAction: () => (
-      <ManagedSendTransactionButton
-        id={addLiquidityStepId}
-        labels={labels}
-        chainId={chainId}
-        txConfig={buildCallDataQuery.data}
-        gasEstimationMeta={gasEstimationMeta}
-      />
-    ),
-  }
+  return useMemo(
+    () => ({
+      id: addLiquidityStepId,
+      stepType: 'addLiquidity',
+      labels,
+      isComplete,
+      renderAction: () => (
+        <ManagedSendTransactionButton
+          id={addLiquidityStepId}
+          labels={labels}
+          chainId={chainId}
+          txConfig={buildCallDataQuery.data}
+          gasEstimationMeta={gasEstimationMeta}
+        />
+      ),
+    }),
+    [transaction, simulationQuery.data, buildCallDataQuery.data]
+  )
 }

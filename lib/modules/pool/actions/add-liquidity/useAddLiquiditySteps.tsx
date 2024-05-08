@@ -10,6 +10,7 @@ import { useAddLiquidityStep } from './useAddLiquidityStep'
 import { useTokenApprovalSteps } from '@/lib/modules/tokens/approvals/useTokenApprovalSteps'
 import { AddLiquiditySimulationQueryResult } from './queries/useAddLiquiditySimulationQuery'
 import { AddLiquidityBuildQueryResponse } from './queries/useAddLiquidityBuildCallDataQuery'
+import { useMemo } from 'react'
 
 export function useAddLiquiditySteps(
   inputAmounts: InputAmount[],
@@ -32,15 +33,18 @@ export function useAddLiquiditySteps(
 
   const addLiquidityStep = useAddLiquidityStep(simulationQuery, buildCallDataQuery)
 
-  let steps: TransactionStep2[] = [...tokenApprovalSteps, addLiquidityStep]
-
-  if (shouldSignRelayerApproval) {
-    steps = [signRelayerStep, ...steps]
-  }
-
-  if (relayerMode === 'approveRelayer') {
-    steps = [approveRelayerStep, ...steps]
-  }
-
-  return steps
+  return useMemo(() => {
+    if (relayerMode === 'approveRelayer') {
+      return [approveRelayerStep, ...tokenApprovalSteps, addLiquidityStep]
+    } else if (shouldSignRelayerApproval) {
+      return [signRelayerStep, ...tokenApprovalSteps, addLiquidityStep]
+    } else return [...tokenApprovalSteps, addLiquidityStep]
+  }, [
+    relayerMode,
+    shouldSignRelayerApproval,
+    tokenApprovalSteps,
+    addLiquidityStep,
+    approveRelayerStep,
+    signRelayerStep,
+  ])
 }

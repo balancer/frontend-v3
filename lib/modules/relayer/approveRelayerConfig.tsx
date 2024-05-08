@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
 import {
   CommonStepProps,
@@ -13,6 +14,7 @@ import { useUserAccount } from '../web3/useUserAccount'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
+import { useMemo } from 'react'
 
 export const getApproveRelayerConfig = (chainId: SupportedChainId): StepConfig => ({
   title: 'Approve relayer',
@@ -65,12 +67,17 @@ export function useApproveRelayerStep(chainId: SupportedChainId): TransactionSte
 
   const id = 'approve-relayer'
 
-  return {
-    id,
-    stepType: 'approveBatchRelayer',
-    labels,
-    renderAction: () => <ManagedTransactionButton id={id} {...props} />,
-  }
+  return useMemo(
+    () => ({
+      id,
+      stepType: 'approveBatchRelayer',
+      labels,
+      isComplete: () => isConnected && hasApprovedRelayer,
+      renderAction: () => <ManagedTransactionButton id={id} {...props} />,
+      onSuccess: () => refetch(),
+    }),
+    [hasApprovedRelayer, isConnected]
+  )
 }
 
 function ApproveRelayerButton({

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { useEffect } from 'react'
@@ -24,8 +25,9 @@ export function ManagedTransactionButton({
   const { updateTransactionMap } = useTransactionSteps()
 
   useEffect(() => {
+    console.log('updateTransactionMap', id, transaction)
     updateTransactionMap(id, transaction)
-  }, [id, transaction, updateTransactionMap])
+  }, [id, transaction])
 
   return <TransactionStepButton step={{ labels: params.labels, ...transaction }} />
 }
@@ -38,8 +40,9 @@ export function ManagedSendTransactionButton({
   const { updateTransactionMap } = useTransactionSteps()
 
   useEffect(() => {
+    console.log('updateTransactionMap', id, transaction)
     updateTransactionMap(id, transaction)
-  }, [id, transaction, updateTransactionMap])
+  }, [id, transaction])
 
   return <TransactionStepButton step={{ labels: params.labels, ...transaction }} />
 }
@@ -52,8 +55,10 @@ export function ManagedErc20TransactionButton({
   const { updateTransactionMap } = useTransactionSteps()
 
   useEffect(() => {
+    console.log('updateTransactionMap', id, transaction)
+
     updateTransactionMap(id, transaction)
-  }, [id, transaction, updateTransactionMap])
+  }, [id, transaction])
 
   return <TransactionStepButton step={{ labels: params.labels, ...transaction }} />
 }
