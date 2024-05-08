@@ -28,8 +28,8 @@ import { isGyro } from '../../pool.helpers'
 import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
-import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/TransactionStepsProvider'
 import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
+import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -46,7 +46,6 @@ export function _useAddLiquidity() {
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
   const { hasValidationErrors } = useTokenInputsValidation()
-  const { setTransactionSteps, currentStep, currentStepIndex } = useTransactionSteps()
 
   const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id])
 
@@ -149,9 +148,10 @@ export function _useAddLiquidity() {
   }, [simulationQuery.data])
 
   const steps = useAddLiquiditySteps(inputAmounts, simulationQuery, buildCallDataQuery)
+  const transactionSteps = useTransactionSteps(steps)
+
   useEffect(() => {
     console.log('steps', steps)
-    setTransactionSteps(steps)
   }, [steps])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
@@ -167,6 +167,7 @@ export function _useAddLiquidity() {
   )
 
   return {
+    transactionSteps,
     humanAmountsIn,
     inputAmounts,
     tokens: wethIsEth ? tokensWithNativeAsset : tokens,
@@ -174,23 +175,21 @@ export function _useAddLiquidity() {
     totalUSDValue,
     simulationQuery,
     priceImpactQuery,
-    refetchQuote,
     isDisabled,
     disabledReason,
     previewModalDisclosure,
-    currentStep,
     handler,
-    setHumanAmountIn,
-    setHumanAmountsIn,
-    currentStepIndex,
     helpers,
-    setNeedsToAcceptHighPI,
     acceptPoolRisks,
-    setAcceptPoolRisks,
     wethIsEth,
-    setWethIsEth,
     nativeAsset,
     wNativeAsset,
+    refetchQuote,
+    setHumanAmountIn,
+    setHumanAmountsIn,
+    setNeedsToAcceptHighPI,
+    setAcceptPoolRisks,
+    setWethIsEth,
   }
 }
 

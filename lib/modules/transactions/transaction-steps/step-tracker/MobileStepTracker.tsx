@@ -14,15 +14,19 @@ import { StepIndicator } from './Step'
 import { Steps } from './Steps'
 import { GasPriceCard } from '@/lib/shared/hooks/useGasPrice'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { useTransactionSteps } from '../TransactionStepsProvider'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
+import { TransactionStepsResponse } from '../useTransactionSteps'
 
-export function MobileStepTracker({ chain }: { chain: GqlChain }) {
-  const { currentStep, currentTransaction, currentStepIndex, transactionSteps, isLastStep } =
-    useTransactionSteps()
+type Props = {
+  chain: GqlChain
+  transactionSteps: TransactionStepsResponse
+}
+
+export function MobileStepTracker({ chain, transactionSteps }: Props) {
+  const { steps, currentStepIndex, currentStep, currentTransaction, isLastStep } = transactionSteps
   const colorMode = useThemeColorMode()
 
-  const totalSteps = transactionSteps?.length || 1
+  const totalSteps = steps?.length || 1
 
   const stepLabel = `Step ${currentStepIndex + 1}/${totalSteps}`
 
@@ -54,7 +58,7 @@ export function MobileStepTracker({ chain }: { chain: GqlChain }) {
               </HStack>
             </AccordionButton>
             <AccordionPanel pt="md">
-              <Steps />
+              <Steps transactionSteps={transactionSteps} />
             </AccordionPanel>
           </>
         )}

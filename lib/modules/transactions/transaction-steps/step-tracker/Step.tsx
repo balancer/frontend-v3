@@ -3,11 +3,11 @@ import { StepProps, getStepSettings } from './getStepSettings'
 import { Check } from 'react-feather'
 import { useSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
 import { signRelayerStepTitle } from '../SignRelayerButton'
-import { useTransactionSteps } from '../TransactionStepsProvider'
 import { ManagedResult } from '../lib'
+import { useTransactionState } from '../TransactionStateProvider'
 
 export function Step(props: StepProps) {
-  const { getTransaction } = useTransactionSteps()
+  const { getTransaction } = useTransactionState()
   const transaction = getTransaction(props.step.id)
   const { color, isActive, title } = getStepSettings(props, transaction)
 

@@ -7,9 +7,9 @@ import { AddLiquidityBuildQueryResponse } from './queries/useAddLiquidityBuildCa
 import { usePool } from '../../usePool'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
-import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/TransactionStepsProvider'
 import { AddLiquiditySimulationQueryResult } from './queries/useAddLiquiditySimulationQuery'
 import { useMemo } from 'react'
+import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 
 export const addLiquidityStepId = 'add-liquidity'
 
@@ -18,7 +18,7 @@ export function useAddLiquidityStep(
   buildCallDataQuery: AddLiquidityBuildQueryResponse
 ): TransactionStep2 {
   const { chainId } = usePool()
-  const { getTransaction } = useTransactionSteps()
+  const { getTransaction } = useTransactionState()
 
   const labels: TransactionLabels = {
     init: 'Add liquidity',
