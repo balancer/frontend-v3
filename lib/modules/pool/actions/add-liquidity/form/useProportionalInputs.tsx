@@ -27,7 +27,7 @@ type PoolToken = {
   chain: any
 }
 
-type TokenHelpers = {
+type TokensHookFunctions = {
   amountTokenForUsdValue: (token: GqlToken | undefined, usdValue: Numberish) => string
   getToken: (address: string, chain: number | GqlChain) => GqlToken | undefined
   usdValueForToken: (token: GqlToken | undefined, amount: Numberish) => string
@@ -51,7 +51,11 @@ export function useProportionalInputs() {
   const { prices } = useTokens()
 
   const { amountTokenForUsdValue, getToken, usdValueForToken } = useTokens()
-  const tokenHelpers: TokenHelpers = { amountTokenForUsdValue, getToken, usdValueForToken }
+  const tokensHookFunctions: TokensHookFunctions = {
+    amountTokenForUsdValue,
+    getToken,
+    usdValueForToken,
+  }
 
   const poolTokens: PoolToken[] = pool.poolTokens.map(token => ({
     address: token.address as Address,
@@ -84,7 +88,7 @@ export function useProportionalInputs() {
       humanAmount,
       helpers,
       poolTokens,
-      tokenHelpers
+      tokensHookFunctions
     )
 
     const proportionalAmounts = proportionalHumanAmountsIn.map(amount => {
@@ -122,7 +126,7 @@ export function useProportionalInputs() {
         humanBalance,
         helpers,
         poolTokens,
-        tokenHelpers
+        tokensHookFunctions
       )
 
       // The user must have enough token balance for this proportional result
@@ -149,13 +153,15 @@ export function useProportionalInputs() {
       optimalToken.userBalance,
       helpers,
       poolTokens,
-      tokenHelpers
+      tokensHookFunctions
     )
 
     return usdValueFor(maxProportionalHumanAmountsIn)
   }, [shouldCalculateMaximizeAmounts, optimalToken, prices])
 
   const canMaximize = !!optimalToken?.userBalance
+
+  console.log({ maximizedUsdValue })
 
   return {
     canMaximize,
@@ -172,12 +178,12 @@ export function _calculateProportionalHumanAmountsIn(
   humanAmount: HumanAmount,
   helpers: LiquidityActionHelpers,
   poolTokens: PoolToken[],
-  tokenHelpers: TokenHelpers
+  tokensHookFunctions: TokensHookFunctions // pass in the hook functions as we're not allowed to use a hook in a hook
 ): HumanAmountIn[] {
   const poolToken = poolTokens.find(token => token.address === tokenAddress)
 
   if (poolToken?.weight) {
-    const { amountTokenForUsdValue, getToken, usdValueForToken } = tokenHelpers
+    const { amountTokenForUsdValue, getToken, usdValueForToken } = tokensHookFunctions
     const token = getToken(tokenAddress, poolTokens[0].chain)
     const tokenUsdValue = usdValueForToken(token, humanAmount)
     const usdValuePerWeightPercentage = bn(tokenUsdValue).div(poolToken.weight)
