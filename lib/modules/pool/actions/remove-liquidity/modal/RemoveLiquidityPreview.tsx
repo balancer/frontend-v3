@@ -6,35 +6,24 @@ import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { usePool } from '../../../usePool'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
 import { parseUnits, Address } from 'viem'
-import { useTransactionFlow } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 
 export function RemoveLiquidityPreview() {
   const {
+    transactionSteps,
     tokens,
     isProportional,
     isSingleToken,
     singleTokenOutAddress,
-    stepConfigs,
-    currentStepIndex,
     quoteBptIn,
     totalUSDValue,
     amountOutForToken,
   } = useRemoveLiquidity()
   const { isMobile } = useBreakpoints()
   const { pool } = usePool()
-  const { isFlowComplete, SuccessCard } = useTransactionFlow()
 
   return (
     <VStack spacing="sm" align="start">
-      {isFlowComplete && <SuccessCard chain={pool.chain} />}
-
-      {isMobile && (
-        <MobileStepTracker
-          currentStepIndex={currentStepIndex}
-          stepConfigs={stepConfigs}
-          chain={pool.chain}
-        />
-      )}
+      {isMobile && <MobileStepTracker transactionSteps={transactionSteps} chain={pool.chain} />}
 
       <Card variant="modalSubSection">
         <VStack align="start" spacing="md">
@@ -78,16 +67,14 @@ export function RemoveLiquidityPreview() {
         </VStack>
       </Card>
 
-      {!isFlowComplete && (
-        <Card variant="modalSubSection">
-          <VStack align="start" spacing="sm">
-            <PoolActionsPriceImpactDetails
-              totalUSDValue={totalUSDValue}
-              bptAmount={BigInt(parseUnits(quoteBptIn, 18))}
-            />
-          </VStack>
-        </Card>
-      )}
+      <Card variant="modalSubSection">
+        <VStack align="start" spacing="sm">
+          <PoolActionsPriceImpactDetails
+            totalUSDValue={totalUSDValue}
+            bptAmount={BigInt(parseUnits(quoteBptIn, 18))}
+          />
+        </VStack>
+      </Card>
     </VStack>
   )
 }

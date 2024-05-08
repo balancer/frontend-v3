@@ -18,35 +18,24 @@ import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address } from 'viem'
 import { toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
-import {
-  TransactionState,
-  removeLiquidityStepId,
-} from '@/lib/modules/transactions/transaction-steps/lib'
-import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
-import { useRemoveLiquidityStepConfigs } from './modal/useRemoveLiquidityStepConfigs'
 import { hasNestedPools, isGyro } from '../../pool.helpers'
-import { useTransactionFlow } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
+import { useRemoveLiquidityBuildCallDataQuery } from './queries/useRemoveLiquidityBuildCallDataQuery'
+import { useRemoveLiquiditySteps } from './modal/useRemoveLiquiditySteps'
+import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
 
 export function _useRemoveLiquidity() {
-  const { pool, bptPrice, refetch: refetchPoolUserBalances } = usePool()
-  const { getToken, usdValueForToken } = useTokens()
-  const { isConnected } = useUserAccount()
+  const [singleTokenAddress, setSingleTokenAddress] = useState<Address | undefined>(undefined)
+  const [humanBptInPercent, setHumanBptInPercent] = useState<number>(100)
+  const [wethIsEth, setWethIsEth] = useState(false)
   const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
-  const previewModalDisclosure = useDisclosure()
-
   const [removalType, setRemovalType] = useState<RemoveLiquidityType>(
     RemoveLiquidityType.Proportional
   )
-
-  const [singleTokenAddress, setSingleTokenAddress] = useState<Address | undefined>(undefined)
-  const [humanBptInPercent, setHumanBptInPercent] = useState<number>(100)
-  const [didRefetchPool, setDidRefetchPool] = useState(false)
-  const [wethIsEth, setWethIsEth] = useState(false)
 
   // Quote state, fixed when remove liquidity tx goes into confirming/confirmed
   // state. This is required to maintain amounts in preview dialog on success.
@@ -54,14 +43,16 @@ export function _useRemoveLiquidity() {
   const [quoteAmountsOut, setQuoteAmountsOut] = useState<TokenAmount[]>([])
   const [quotePriceImpact, setQuotePriceImpact] = useState<number>()
 
+  const { pool, bptPrice } = usePool()
+  const { getToken, usdValueForToken } = useTokens()
+  const { isConnected } = useUserAccount()
+  const previewModalDisclosure = useDisclosure()
+
   const maxHumanBptIn: HumanAmount = (pool?.userBalance?.totalBalance || '0') as HumanAmount
   const humanBptIn: HumanAmount = bn(maxHumanBptIn)
     .times(humanBptInPercent / 100)
     .toString() as HumanAmount
 
-  const stepConfigs = useRemoveLiquidityStepConfigs()
-  const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
-  const { getCoreTransactionState } = useTransactionFlow()
   const chain = pool.chain
   const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
   const wNativeAsset = getToken(getWrappedNativeAssetAddress(chain), chain)
@@ -71,9 +62,6 @@ export function _useRemoveLiquidity() {
     [pool.id, removalType]
   )
 
-  /**
-   * Helper functions & variables
-   */
   const totalUsdFromBprPrice = bn(humanBptIn).times(bptPrice).toFixed(2)
 
   const setProportionalType = () => setRemovalType(RemoveLiquidityType.Proportional)
@@ -111,14 +99,6 @@ export function _useRemoveLiquidity() {
 
   const singleTokenOutAddress = singleTokenAddress || firstTokenAddress
 
-  const removeLiquidityTxState = getCoreTransactionState(removeLiquidityStepId)
-
-  const isTxConfirmingOrConfirmed =
-    removeLiquidityTxState === TransactionState.Confirming ||
-    removeLiquidityTxState === TransactionState.Completed
-
-  const isRemoveLiquidityConfirmed = removeLiquidityTxState === TransactionState.Completed
-
   /**
    * Queries
    */
@@ -136,6 +116,23 @@ export function _useRemoveLiquidity() {
     wethIsEth && wNativeAsset ? (wNativeAsset.address as Address) : singleTokenOutAddress
   )
 
+  const buildCallDataQuery = useRemoveLiquidityBuildCallDataQuery({
+    humanBptIn,
+    handler,
+    simulationQuery,
+    singleTokenOutAddress,
+    wethIsEth,
+  })
+
+  /**
+   * Step construction
+   */
+  const steps = useRemoveLiquiditySteps(simulationQuery, buildCallDataQuery)
+  const transactionSteps = useTransactionSteps(steps)
+
+  /**
+   * Derived state
+   */
   const amountOutMap: Record<Address, HumanAmount> = Object.fromEntries(
     quoteAmountsOut.map(tokenAmount => [
       wethIsEth &&
@@ -148,11 +145,6 @@ export function _useRemoveLiquidity() {
     ])
   )
 
-  const amountOutForToken = (tokenAddress: Address): HumanAmount => {
-    const amountOut = amountOutMap[tokenAddress]
-    return amountOut ? amountOut : '0'
-  }
-
   const usdAmountOutMap: Record<Address, HumanAmount> = Object.fromEntries(
     quoteAmountsOut.map(tokenAmount => {
       const tokenAddress: Address = tokenAmount.token.address
@@ -163,12 +155,30 @@ export function _useRemoveLiquidity() {
     })
   )
 
+  const totalUSDValue: string = safeSum(Object.values(usdAmountOutMap))
+
+  const { isDisabled, disabledReason } = isDisabledWithReason(
+    [!isConnected, LABELS.walletNotConnected],
+    [Number(humanBptIn) === 0, 'You must specify a valid bpt in'],
+    [needsToAcceptHighPI, 'Accept high price impact first'],
+    [simulationQuery.isLoading, 'Fetching quote...'],
+    [simulationQuery.isError, 'Error fetching quote'],
+    [priceImpactQuery.isLoading, 'Fetching price impact...'],
+    [priceImpactQuery.isError, 'Error fetching price impact']
+  )
+
+  /**
+   * Methods
+   */
+  const amountOutForToken = (tokenAddress: Address): HumanAmount => {
+    const amountOut = amountOutMap[tokenAddress]
+    return amountOut ? amountOut : '0'
+  }
+
   const usdOutForToken = (tokenAddress: Address): HumanAmount => {
     const usdOut = usdAmountOutMap[tokenAddress]
     return usdOut ? usdOut : '0'
   }
-
-  const totalUSDValue: string = safeSum(Object.values(usdAmountOutMap))
 
   function updateQuoteState(
     bptIn: HumanAmount,
@@ -183,41 +193,30 @@ export function _useRemoveLiquidity() {
   /**
    * Side-effects
    */
-
   // If amounts change, update quote state unless the final transaction is
   // confirming or confirmed.
   useEffect(() => {
-    if (!isTxConfirmingOrConfirmed) {
+    console.log('updateQuoteState')
+
+    if (!transactionSteps.lastTransactionConfirmingOrConfirmed) {
       updateQuoteState(humanBptIn, simulationQuery.data?.amountsOut, priceImpactQuery.data)
     }
   }, [
     humanBptIn,
-    JSON.stringify(simulationQuery.data?.amountsOut),
+    simulationQuery.data,
     priceImpactQuery.data,
-    removeLiquidityTxState,
+    transactionSteps.lastTransactionState,
   ])
 
-  // When the remove liquidity transaction is confirmed, refetch the user's pool
-  // balances so that they are up to date when navigating back to the pool page.
   useEffect(() => {
-    async function reFetchPool() {
-      await refetchPoolUserBalances()
-      setDidRefetchPool(true)
+    // simulationQuery is refetched every 30 seconds by RemoveLiquidityTimeout
+    if (simulationQuery.data) {
+      buildCallDataQuery.refetch()
     }
-    if (isRemoveLiquidityConfirmed) reFetchPool()
-  }, [isRemoveLiquidityConfirmed])
-
-  const { isDisabled, disabledReason } = isDisabledWithReason(
-    [!isConnected, LABELS.walletNotConnected],
-    [Number(humanBptIn) === 0, 'You must specify a valid bpt in'],
-    [needsToAcceptHighPI, 'Accept high price impact first'],
-    [simulationQuery.isLoading, 'Fetching quote...'],
-    [simulationQuery.isError, 'Error fetching quote'],
-    [priceImpactQuery.isLoading, 'Fetching price impact...'],
-    [priceImpactQuery.isError, 'Error fetching price impact']
-  )
+  }, [simulationQuery.data])
 
   return {
+    transactionSteps,
     tokens: tokensToShow,
     validTokens,
     singleTokenOutAddress,
@@ -231,15 +230,11 @@ export function _useRemoveLiquidity() {
     totalUSDValue,
     simulationQuery,
     priceImpactQuery,
+    buildCallDataQuery,
     isDisabled,
     disabledReason,
     previewModalDisclosure,
     handler,
-    stepConfigs,
-    currentStep,
-    currentStepIndex,
-    isTxConfirmingOrConfirmed,
-    didRefetchPool,
     wethIsEth,
     setRemovalType,
     setHumanBptInPercent,
@@ -248,9 +243,9 @@ export function _useRemoveLiquidity() {
     setSingleTokenAddress,
     amountOutForToken,
     usdOutForToken,
-    useOnStepCompleted,
     setNeedsToAcceptHighPI,
     setWethIsEth,
+    updateQuoteState,
   }
 }
 

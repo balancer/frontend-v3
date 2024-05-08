@@ -1,8 +1,8 @@
 import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
-import { useConstructRemoveLiquidityStep } from './modal/useConstructRemoveLiquidityStep'
+import { useRemoveLiquidityStep } from './modal/useRemoveLiquidityStep'
 
 export function RemoveLiquidityButton() {
-  const { removeLiquidityStep } = useConstructRemoveLiquidityStep()
+  const { removeLiquidityStep } = useRemoveLiquidityStep()
 
   return <TransactionStepButton step={removeLiquidityStep} />
 }

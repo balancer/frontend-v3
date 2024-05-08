@@ -7,21 +7,36 @@ import { RemoveLiquidityParams, removeLiquidityKeys } from './remove-liquidity-k
 import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
 import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { usePool } from '../../../usePool'
-import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useRelayerSignature } from '@/lib/modules/relayer/useRelayerSignature'
 import { sentryMetaForRemoveLiquidityHandler } from '@/lib/shared/utils/query-errors'
+import { HumanAmount } from '@balancer/sdk'
+import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
+import { Address } from 'viem/accounts'
+import { RemoveLiquiditySimulationQueryResult } from './useRemoveLiquiditySimulationQuery'
 
 export type RemoveLiquidityBuildQueryResponse = ReturnType<
   typeof useRemoveLiquidityBuildCallDataQuery
 >
 
+type Props = {
+  humanBptIn: HumanAmount
+  handler: RemoveLiquidityHandler
+  simulationQuery: RemoveLiquiditySimulationQueryResult
+  singleTokenOutAddress: Address
+  wethIsEth: boolean
+}
+
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
-export function useRemoveLiquidityBuildCallDataQuery() {
+export function useRemoveLiquidityBuildCallDataQuery({
+  humanBptIn,
+  handler,
+  simulationQuery,
+  singleTokenOutAddress,
+  wethIsEth,
+}: Props) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const { pool } = usePool()
-  const { humanBptIn, handler, simulationQuery, singleTokenOutAddress, wethIsEth } =
-    useRemoveLiquidity()
   const { relayerApprovalSignature } = useRelayerSignature()
 
   const params: RemoveLiquidityParams = {
