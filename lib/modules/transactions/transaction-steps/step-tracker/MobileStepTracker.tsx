@@ -18,7 +18,7 @@ import { useTransactionSteps } from '../TransactionStepsProvider'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 
 export function MobileStepTracker({ chain }: { chain: GqlChain }) {
-  const { currentStep, currentStepIndex, transactionSteps } = useTransactionSteps()
+  const { currentStep, currentStepIndex, transactionSteps, isLastStep } = useTransactionSteps()
   const colorMode = useThemeColorMode()
 
   const stepLabel = `Step ${currentStepIndex + 1}/${transactionSteps.length}`
@@ -30,7 +30,13 @@ export function MobileStepTracker({ chain }: { chain: GqlChain }) {
           <>
             <AccordionButton>
               <HStack width="full" justify="flex-start" fontSize="md">
-                <StepIndicator step={currentStep} index={currentStepIndex} colorMode={colorMode} />
+                <StepIndicator
+                  currentIndex={currentStepIndex}
+                  index={currentStepIndex}
+                  step={currentStep}
+                  colorMode={colorMode}
+                  isLastStep={isLastStep(currentStepIndex)}
+                />
                 <Text>{currentStep.labels.title}</Text>
               </HStack>
               <HStack justify="flex-end" fontSize="sm">

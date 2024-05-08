@@ -21,8 +21,6 @@ import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transacti
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
 import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
-import { AddLiquiditySubmitted } from './AddLiquiditySubmitted'
-import { useTransactionFlow } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 
 type Props = {
   isOpen: boolean
@@ -41,7 +39,6 @@ export function AddLiquidityModal({
   const initialFocusRef = useRef(null)
   const { currentStep } = useAddLiquidity()
   const { pool } = usePool()
-  const { isFlowComplete, isFlowConfirming } = useTransactionFlow()
 
   return (
     <Modal
@@ -66,7 +63,7 @@ export function AddLiquidityModal({
           <AddLiquidityPreview />
         </ModalBody>
         <ModalFooter>
-          <VStack w="full">{currentStep.renderAction()}</VStack>
+          <VStack w="full">{currentStep?.renderAction()}</VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>

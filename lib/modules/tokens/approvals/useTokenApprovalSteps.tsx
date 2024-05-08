@@ -12,8 +12,6 @@ import { TransactionStep2 } from '../../transactions/transaction-steps/lib'
 import { ManagedErc20TransactionButton } from '../../transactions/transaction-steps/TransactionButton'
 import { ManagedErc20TransactionInput } from '../../web3/contracts/useManagedErc20Transaction'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { useEffect } from 'react'
-import { useTransactionSteps } from '../../transactions/transaction-steps/TransactionStepsProvider'
 
 export interface ApproveTokenConfig {
   type: 'approveToken'
@@ -41,11 +39,10 @@ export function useTokenApprovalSteps({
   const { userAddress } = useUserAccount()
   const { getToken } = useTokens()
   const nativeAssetAddress = getNativeAssetAddress(chain)
-  const { getTransaction } = useTransactionSteps()
 
-  const _approvalAmounts = approvalAmounts
-    .filter(amount => amount.rawAmount > 0)
-    .filter(amount => !isSameAddress(amount.address, nativeAssetAddress))
+  const _approvalAmounts = approvalAmounts.filter(
+    amount => !isSameAddress(amount.address, nativeAssetAddress)
+  )
 
   const approvalTokenAddresses = _approvalAmounts.map(amount => amount.address)
 
@@ -61,17 +58,6 @@ export function useTokenApprovalSteps({
     rawAmounts: _approvalAmounts,
     allowanceFor: tokenAllowances.allowanceFor,
   })
-
-  useEffect(() => {
-    // refetch allowances after the approval transaction was executed
-    async function saveExecutedApproval() {
-      if (approvalTransaction.result.isSuccess) {
-        await refetchAllowances()
-        setDidRefetchAllowances(true)
-      }
-    }
-    saveExecutedApproval()
-  }, [approvalTransaction.result.isSuccess])
 
   return tokenAmountsToApprove.map(tokenAmountToApprove => {
     const { tokenAddress, requestedRawAmount } = tokenAmountToApprove
@@ -105,6 +91,7 @@ export function useTokenApprovalSteps({
       labels,
       isComplete,
       renderAction: () => <ManagedErc20TransactionButton id={id} {...props} />,
+      onSuccess: () => tokenAllowances.refetchAllowances(),
     }
   })
 }

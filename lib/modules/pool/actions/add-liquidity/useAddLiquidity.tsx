@@ -29,6 +29,7 @@ import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/confi
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/TransactionStepsProvider'
+import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -54,9 +55,6 @@ export function _useAddLiquidity() {
    */
   const helpers = new LiquidityActionHelpers(pool)
   const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
-
-  const steps = useAddLiquiditySteps(inputAmounts)
-  setTransactionSteps(steps)
 
   const chain = pool.chain
   const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
@@ -114,6 +112,11 @@ export function _useAddLiquidity() {
    */
   const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn)
   const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn)
+  const buildCallDataQuery = useAddLiquidityBuildCallDataQuery(
+    handler,
+    humanAmountsIn,
+    simulationQuery
+  )
 
   /**
    * Refetch logic:
@@ -137,6 +140,19 @@ export function _useAddLiquidity() {
   useEffect(() => {
     setInitialHumanAmountsIn()
   }, [])
+
+  useEffect(() => {
+    // simulationQuery is refetched every 30 seconds by AddLiquidityTimeout
+    if (simulationQuery.data) {
+      buildCallDataQuery.refetch()
+    }
+  }, [simulationQuery.data])
+
+  const steps = useAddLiquiditySteps(inputAmounts, simulationQuery, buildCallDataQuery)
+  useEffect(() => {
+    console.log('steps', steps)
+    setTransactionSteps(steps)
+  }, [steps.length])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],

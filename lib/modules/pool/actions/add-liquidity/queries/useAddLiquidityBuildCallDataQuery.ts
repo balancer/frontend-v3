@@ -4,20 +4,26 @@ import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { useQuery } from '@tanstack/react-query'
 import { usePool } from '../../../usePool'
 import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
-import { useAddLiquidity } from '../useAddLiquidity'
 import { AddLiquidityParams, addLiquidityKeys } from './add-liquidity-keys'
 import { useRelayerSignature } from '@/lib/modules/relayer/useRelayerSignature'
 import { sentryMetaForAddLiquidityHandler } from '@/lib/shared/utils/query-errors'
+import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
+import { HumanAmountIn } from '../../liquidity-types'
+import { AddLiquiditySimulationQueryResult } from './useAddLiquiditySimulationQuery'
 
 export type AddLiquidityBuildQueryResponse = ReturnType<typeof useAddLiquidityBuildCallDataQuery>
 
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
-export function useAddLiquidityBuildCallDataQuery() {
+export function useAddLiquidityBuildCallDataQuery(
+  handler: AddLiquidityHandler,
+  humanAmountsIn: HumanAmountIn[],
+  simulationQuery: AddLiquiditySimulationQueryResult
+) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const { pool } = usePool()
 
-  const { humanAmountsIn, handler, simulationQuery } = useAddLiquidity()
+  // const { humanAmountsIn, handler, simulationQuery } = useAddLiquidity()
   const { relayerApprovalSignature } = useRelayerSignature()
 
   const params: AddLiquidityParams = {

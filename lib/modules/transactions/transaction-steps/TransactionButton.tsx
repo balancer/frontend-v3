@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import {
   ManagedErc20TransactionInput,
   useManagedErc20Transaction,
@@ -22,7 +23,9 @@ export function ManagedTransactionButton({
   const transaction = useManagedTransaction(params)
   const { updateTransactionMap } = useTransactionSteps()
 
-  updateTransactionMap(id, transaction)
+  useEffect(() => {
+    updateTransactionMap(id, transaction)
+  }, [id, transaction, updateTransactionMap])
 
   return <TransactionStepButton step={{ labels: params.labels, ...transaction }} />
 }
@@ -34,7 +37,9 @@ export function ManagedSendTransactionButton({
   const transaction = useManagedSendTransaction(params)
   const { updateTransactionMap } = useTransactionSteps()
 
-  updateTransactionMap(id, transaction)
+  useEffect(() => {
+    updateTransactionMap(id, transaction)
+  }, [id, transaction, updateTransactionMap])
 
   return <TransactionStepButton step={{ labels: params.labels, ...transaction }} />
 }
@@ -46,7 +51,9 @@ export function ManagedErc20TransactionButton({
   const transaction = useManagedErc20Transaction(params)
   const { updateTransactionMap } = useTransactionSteps()
 
-  updateTransactionMap(id, transaction)
+  useEffect(() => {
+    updateTransactionMap(id, transaction)
+  }, [id, transaction, updateTransactionMap])
 
   return <TransactionStepButton step={{ labels: params.labels, ...transaction }} />
 }

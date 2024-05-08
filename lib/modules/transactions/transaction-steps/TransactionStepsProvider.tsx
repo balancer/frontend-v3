@@ -6,7 +6,7 @@ import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 
 export function _useTransactionSteps() {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
-  const [transactionSteps, setTransactionSteps] = useState<TransactionStep2[]>([])
+  const [transactionSteps, setTransactionSteps] = useState<TransactionStep2[]>()
   const [transactionMap, setTransactionMap] = useState<Map<string, ManagedResult>>(new Map())
 
   function updateTransactionMap(k: string, v: ManagedResult) {
@@ -22,12 +22,12 @@ export function _useTransactionSteps() {
   }
 
   function isLastStep(index: number) {
-    return index === transactionSteps.length - 1
+    return transactionSteps?.length ? index === transactionSteps.length - 1 : false
   }
 
-  const currentStep = transactionSteps[currentStepIndex]
-  const currentTransaction = transactionMap.get(currentStep.id)
-  const isCurrentStepComplete = currentStep.isComplete()
+  const currentStep = transactionSteps?.[currentStepIndex]
+  const currentTransaction = currentStep ? transactionMap.get(currentStep.id) : undefined
+  const isCurrentStepComplete = currentStep?.isComplete() || false
 
   // Trigger side effects on transaction completion. The step itself decides
   // when it's complete. e.g. so approvals can refectch to check correct
@@ -35,7 +35,7 @@ export function _useTransactionSteps() {
   useEffect(() => {
     console.log('currentTransaction', currentTransaction?.execution.isSuccess)
     if (currentTransaction?.execution.isSuccess) {
-      currentStep.onSuccess?.()
+      currentStep?.onSuccess?.()
     }
   }, [currentTransaction?.execution.isSuccess, currentStep])
 

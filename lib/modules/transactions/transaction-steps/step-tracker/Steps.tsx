@@ -9,20 +9,21 @@ export function Steps() {
 
   return (
     <VStack align="start" spacing="xs">
-      {transactionSteps.map((step, index) => (
-        <div key={step.labels.title}>
-          <Step
-            currentIndex={currentStepIndex}
-            index={index}
-            step={step}
-            colorMode={colorMode}
-            isLastStep={isLastStep(index)}
-          />
-          {!isLastStep(index) && (
-            <Box h="4" w="1" rounded="full" background="border.base" ml="3" mt="1" />
-          )}
-        </div>
-      ))}
+      {transactionSteps &&
+        transactionSteps.map((step, index) => (
+          <div key={step.id}>
+            <Step
+              currentIndex={currentStepIndex}
+              index={index}
+              step={step}
+              colorMode={colorMode}
+              isLastStep={isLastStep(index)}
+            />
+            {!isLastStep(index) && (
+              <Box h="4" w="1" rounded="full" background="border.base" ml="3" mt="1" />
+            )}
+          </div>
+        ))}
     </VStack>
   )
 }

@@ -8,8 +8,14 @@ import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps
 import { TransactionStep2 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useAddLiquidityStep } from './useAddLiquidityStep'
 import { useTokenApprovalSteps } from '@/lib/modules/tokens/approvals/useTokenApprovalSteps'
+import { AddLiquiditySimulationQueryResult } from './queries/useAddLiquiditySimulationQuery'
+import { AddLiquidityBuildQueryResponse } from './queries/useAddLiquidityBuildCallDataQuery'
 
-export function useAddLiquiditySteps(inputAmounts: InputAmount[]): TransactionStep2[] {
+export function useAddLiquiditySteps(
+  inputAmounts: InputAmount[],
+  simulationQuery: AddLiquiditySimulationQueryResult,
+  buildCallDataQuery: AddLiquidityBuildQueryResponse
+): TransactionStep2[] {
   const vaultAddress = useContractAddress('balancer.vaultV2')
   const { pool, chainId } = usePool()
   const relayerMode = useRelayerMode()
@@ -24,7 +30,7 @@ export function useAddLiquiditySteps(inputAmounts: InputAmount[]): TransactionSt
     actionType: 'AddLiquidity',
   })
 
-  const addLiquidityStep = useAddLiquidityStep()
+  const addLiquidityStep = useAddLiquidityStep(simulationQuery, buildCallDataQuery)
 
   let steps: TransactionStep2[] = [...tokenApprovalSteps, addLiquidityStep]
 

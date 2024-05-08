@@ -106,7 +106,9 @@ export class LiquidityActionHelpers {
       amountsInByTokenAddress[tokenAddressToCheck].rawAmount = parseUnits(humanAmount, decimals)
     })
 
-    const amountsIn = Object.values(amountsInByTokenAddress).filter(a => a.rawAmount > 0n)
+    const amountsIn = Object.values(amountsInByTokenAddress).filter(
+      a => !isSameAddress(a.address, this.pool.address)
+    )
     return amountsIn
   }
 

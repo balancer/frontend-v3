@@ -7,7 +7,6 @@ import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInpu
 import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
 import { Alert } from '@chakra-ui/react'
 import { AddLiquidityProvider } from '../../../../../../../lib/modules/pool/actions/add-liquidity/useAddLiquidity'
-import { TransactionFlowProvider } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
 import { TransactionStepsProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStepsProvider'
 
 /*
@@ -15,6 +14,7 @@ import { TransactionStepsProvider } from '@/lib/modules/transactions/transaction
  */
 export default function AddLiquidityLayout({ children }: { children: React.ReactNode }) {
   const { pool } = usePool()
+
   if (isNotSupported(pool)) {
     return (
       <Alert status="info" w="fit-content" minW="50%">
@@ -25,15 +25,13 @@ export default function AddLiquidityLayout({ children }: { children: React.React
 
   return (
     <TransactionStepsProvider>
-      <TransactionFlowProvider>
-        <RelayerSignatureProvider>
-          <TokenInputsValidationProvider>
-            <AddLiquidityProvider>
-              <PriceImpactProvider>{children}</PriceImpactProvider>
-            </AddLiquidityProvider>
-          </TokenInputsValidationProvider>
-        </RelayerSignatureProvider>
-      </TransactionFlowProvider>
+      <RelayerSignatureProvider>
+        <TokenInputsValidationProvider>
+          <AddLiquidityProvider>
+            <PriceImpactProvider>{children}</PriceImpactProvider>
+          </AddLiquidityProvider>
+        </TokenInputsValidationProvider>
+      </RelayerSignatureProvider>
     </TransactionStepsProvider>
   )
 }

@@ -36,7 +36,7 @@ export function getRequiredTokenApprovals({
   if (!chainId) return []
   if (skipAllowanceCheck) return []
 
-  let tokenAmountsToApprove: TokenAmountToApprove[] = rawAmounts.map(({ address, rawAmount }) => {
+  const tokenAmountsToApprove: TokenAmountToApprove[] = rawAmounts.map(({ address, rawAmount }) => {
     return {
       tokenAddress: address,
       requiredRawAmount: rawAmount,
@@ -44,31 +44,32 @@ export function getRequiredTokenApprovals({
       requestedRawAmount: approveMaxBigInt ? MAX_BIGINT : rawAmount,
     }
   })
+  return tokenAmountsToApprove
 
-  tokenAmountsToApprove = tokenAmountsToApprove.filter(({ tokenAddress, requiredRawAmount }) => {
-    if (isNativeAsset(chainId, tokenAddress)) return false
+  // tokenAmountsToApprove = tokenAmountsToApprove.filter(({ tokenAddress, requiredRawAmount }) => {
+  //   if (isNativeAsset(chainId, tokenAddress)) return false
 
-    const hasEnoughAllowedAmount = allowanceFor(tokenAddress) >= requiredRawAmount
-    if (hasEnoughAllowedAmount) return false
-    return true
-  })
+  //   const hasEnoughAllowedAmount = allowanceFor(tokenAddress) >= requiredRawAmount
+  //   if (hasEnoughAllowedAmount) return false
+  //   return true
+  // })
 
-  /**
-   * Some tokens (e.g. USDT) require setting their approval amount to 0n before being
-   * able to adjust the value up again (only when there was an existing allowance)
-   */
-  return tokenAmountsToApprove.flatMap(t => {
-    if (isDoubleApprovalRequired(chainId, t.tokenAddress, allowanceFor)) {
-      const zeroTokenAmountToApprove: TokenAmountToApprove = {
-        requiredRawAmount: 0n,
-        requestedRawAmount: 0n,
-        tokenAddress: t.tokenAddress,
-      }
-      // Prepend approval for ZERO amount
-      return [zeroTokenAmountToApprove, t]
-    }
-    return t
-  })
+  // /**
+  //  * Some tokens (e.g. USDT) require setting their approval amount to 0n before being
+  //  * able to adjust the value up again (only when there was an existing allowance)
+  //  */
+  // return tokenAmountsToApprove.flatMap(t => {
+  //   if (isDoubleApprovalRequired(chainId, t.tokenAddress, allowanceFor)) {
+  //     const zeroTokenAmountToApprove: TokenAmountToApprove = {
+  //       requiredRawAmount: 0n,
+  //       requestedRawAmount: 0n,
+  //       tokenAddress: t.tokenAddress,
+  //     }
+  //     // Prepend approval for ZERO amount
+  //     return [zeroTokenAmountToApprove, t]
+  //   }
+  //   return t
+  // })
 }
 
 /**
