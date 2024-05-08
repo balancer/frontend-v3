@@ -33,11 +33,11 @@ export function _useTransactionSteps() {
   // when it's complete. e.g. so approvals can refectch to check correct
   // allowance has been given.
   useEffect(() => {
-    console.log('currentTransaction', currentTransaction?.execution.isSuccess)
-    if (currentTransaction?.execution.isSuccess) {
+    console.log('currentTransaction', currentTransaction?.result.isSuccess)
+    if (currentTransaction?.result.isSuccess) {
       currentStep?.onSuccess?.()
     }
-  }, [currentTransaction?.execution.isSuccess, currentStep])
+  }, [currentTransaction?.result.isSuccess, currentStep])
 
   // Control step flow here.
   useEffect(() => {
