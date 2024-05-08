@@ -180,20 +180,26 @@ export function _calculateProportionalHumanAmountsIn(
   poolTokens: PoolToken[],
   tokensHookFunctions: TokensHookFunctions // pass in the hook functions as we're not allowed to use a hook in a hook
 ): HumanAmountIn[] {
+  // base token to calculate proportional amounts of the other pool tokens to
   const poolToken = poolTokens.find(token => token.address === tokenAddress)
 
   if (poolToken?.weight) {
     const { amountTokenForUsdValue, getToken, usdValueForToken } = tokensHookFunctions
     const token = getToken(tokenAddress, poolTokens[0].chain)
     const tokenUsdValue = usdValueForToken(token, humanAmount)
-    const usdValuePerWeightPercentage = bn(tokenUsdValue).div(poolToken.weight)
+    const usdValuePerWeightPercentage = bn(tokenUsdValue).div(bn(poolToken.weight).div(100)) // get the usd value for 100% 'weight'
 
+    // get the proportional amounts for the other pool tokens
     const otherPoolTokens = poolTokens
       .filter(poolToken => poolToken.address !== tokenAddress)
       .map(poolToken => {
         const token = getToken(poolToken.address, poolTokens[0].chain)
+
+        // calculate usd value of the token for its given weight
         const weightedTokenUsdValue =
-          poolToken.weight && bn(usdValuePerWeightPercentage).times(poolToken.weight)
+          poolToken.weight && bn(usdValuePerWeightPercentage).times(bn(poolToken.weight).div(100))
+
+        // calculate the amount of the token for its calculated usd value
         const humanAmount =
           weightedTokenUsdValue && amountTokenForUsdValue(token, weightedTokenUsdValue)
         return { tokenAddress: poolToken.address, humanAmount: humanAmount as `${number}` }
