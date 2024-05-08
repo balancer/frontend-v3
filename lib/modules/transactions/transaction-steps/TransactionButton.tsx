@@ -25,9 +25,8 @@ export function ManagedTransactionButton({
   const { updateTransactionMap } = useTransactionSteps()
 
   useEffect(() => {
-    console.log('updateTransactionMap', id, transaction)
     updateTransactionMap(id, transaction)
-  }, [id, transaction])
+  }, [id, transaction.execution.status, transaction.simulation.status, transaction.result.status])
 
   return <TransactionStepButton step={{ labels: params.labels, ...transaction }} />
 }
@@ -40,9 +39,8 @@ export function ManagedSendTransactionButton({
   const { updateTransactionMap } = useTransactionSteps()
 
   useEffect(() => {
-    console.log('updateTransactionMap', id, transaction)
     updateTransactionMap(id, transaction)
-  }, [id, transaction])
+  }, [id, transaction.execution.status, transaction.simulation.status, transaction.result.status])
 
   return <TransactionStepButton step={{ labels: params.labels, ...transaction }} />
 }
@@ -55,10 +53,8 @@ export function ManagedErc20TransactionButton({
   const { updateTransactionMap } = useTransactionSteps()
 
   useEffect(() => {
-    console.log('updateTransactionMap', id, transaction)
-
     updateTransactionMap(id, transaction)
-  }, [id, transaction])
+  }, [id, transaction.execution.status, transaction.simulation.status, transaction.result.status])
 
   return <TransactionStepButton step={{ labels: params.labels, ...transaction }} />
 }
