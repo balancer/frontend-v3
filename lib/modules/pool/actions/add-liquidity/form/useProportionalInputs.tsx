@@ -2,35 +2,22 @@
 'use client'
 
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
-import { Numberish, bn } from '@/lib/shared/utils/numbers'
+import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { bn } from '@/lib/shared/utils/numbers'
 import { Address, HumanAmount, InputAmount, calculateProportionalAmounts } from '@balancer/sdk'
 import { useMemo, useState } from 'react'
+import { formatUnits } from 'viem'
 import { usePool } from '../../../usePool'
+import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
+import { HumanAmountIn } from '../../liquidity-types'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { useTotalUsdValue } from '../useTotalUsdValue'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { HumanAmountIn } from '../../liquidity-types'
-import { formatUnits } from 'viem'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { GqlToken, GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 type OptimalToken = {
   tokenAddress: Address
   userBalance: HumanAmount
-}
-
-type PoolToken = {
-  address: Address
-  weight: string | null | undefined
-  chain: any
-}
-
-type TokensHookFunctions = {
-  amountTokenForUsdValue: (token: GqlToken | undefined, usdValue: Numberish) => string
-  getToken: (address: string, chain: number | GqlChain) => GqlToken | undefined
-  usdValueForToken: (token: GqlToken | undefined, amount: Numberish) => string
 }
 
 export function useProportionalInputs() {
@@ -46,22 +33,9 @@ export function useProportionalInputs() {
   } = useAddLiquidity()
   const { usdValueFor } = useTotalUsdValue(validTokens)
   const { balanceFor, balances, isBalancesLoading } = useTokenBalances()
-  const { pool, isLoading: isPoolLoading } = usePool()
+  const { isLoading: isPoolLoading } = usePool()
   const [isMaximized, setIsMaximized] = useState(false)
   const { prices } = useTokens()
-
-  const { amountTokenForUsdValue, getToken, usdValueForToken } = useTokens()
-  const tokensHookFunctions: TokensHookFunctions = {
-    amountTokenForUsdValue,
-    getToken,
-    usdValueForToken,
-  }
-
-  const poolTokens: PoolToken[] = pool.poolTokens.map(token => ({
-    address: token.address as Address,
-    weight: token.weight,
-    chain: pool.chain,
-  }))
 
   function clearAmountsIn() {
     setHumanAmountsIn(humanAmountsIn.map(amountIn => ({ ...amountIn, humanAmount: '' })))
@@ -86,9 +60,7 @@ export function useProportionalInputs() {
     const proportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn(
       tokenAddress,
       humanAmount,
-      helpers,
-      poolTokens,
-      tokensHookFunctions
+      helpers
     )
 
     const proportionalAmounts = proportionalHumanAmountsIn.map(amount => {
@@ -124,9 +96,7 @@ export function useProportionalInputs() {
       const proportionalAmounts = _calculateProportionalHumanAmountsIn(
         address as Address,
         humanBalance,
-        helpers,
-        poolTokens,
-        tokensHookFunctions
+        helpers
       )
 
       // The user must have enough token balance for this proportional result
@@ -151,17 +121,13 @@ export function useProportionalInputs() {
     const maxProportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn(
       optimalToken.tokenAddress as Address,
       optimalToken.userBalance,
-      helpers,
-      poolTokens,
-      tokensHookFunctions
+      helpers
     )
 
     return usdValueFor(maxProportionalHumanAmountsIn)
   }, [shouldCalculateMaximizeAmounts, optimalToken, prices])
 
   const canMaximize = !!optimalToken?.userBalance
-
-  console.log({ maximizedUsdValue })
 
   return {
     canMaximize,
@@ -176,54 +142,18 @@ export function useProportionalInputs() {
 export function _calculateProportionalHumanAmountsIn(
   tokenAddress: Address,
   humanAmount: HumanAmount,
-  helpers: LiquidityActionHelpers,
-  poolTokens: PoolToken[],
-  tokensHookFunctions: TokensHookFunctions // pass in the hook functions as we're not allowed to use a hook in a hook
+  helpers: LiquidityActionHelpers
 ): HumanAmountIn[] {
-  // base token to calculate proportional amounts of the other pool tokens to
-  const poolToken = poolTokens.find(token => token.address === tokenAddress)
-
-  if (poolToken?.weight) {
-    const { amountTokenForUsdValue, getToken, usdValueForToken } = tokensHookFunctions
-    const token = getToken(tokenAddress, poolTokens[0].chain)
-    const tokenUsdValue = usdValueForToken(token, humanAmount)
-    const usdValuePerWeightPercentage = bn(tokenUsdValue).div(bn(poolToken.weight).div(100)) // get the usd value for 100% 'weight'
-
-    // get the proportional amounts for the other pool tokens
-    const otherPoolTokens = poolTokens
-      .filter(poolToken => poolToken.address !== tokenAddress)
-      .map(poolToken => {
-        const token = getToken(poolToken.address, poolTokens[0].chain)
-
-        // calculate usd value of the token for its given weight
-        const weightedTokenUsdValue =
-          poolToken.weight && bn(usdValuePerWeightPercentage).times(bn(poolToken.weight).div(100))
-
-        // calculate the amount of the token for its calculated usd value
-        const humanAmount =
-          weightedTokenUsdValue && amountTokenForUsdValue(token, weightedTokenUsdValue)
-        return { tokenAddress: poolToken.address, humanAmount: humanAmount as `${number}` }
-      })
-
-    return [
-      {
-        tokenAddress,
-        humanAmount,
-      },
-      ...otherPoolTokens,
-    ]
-  } else {
-    const amountIn: InputAmount = helpers.toInputAmounts([{ tokenAddress, humanAmount }])[0]
-    return (
-      calculateProportionalAmounts(helpers.poolStateWithBalances, amountIn)
-        .tokenAmounts.map(({ address, rawAmount, decimals }) => ({
-          tokenAddress: address,
-          humanAmount: formatUnits(rawAmount, decimals) as HumanAmount,
-        }))
-        // user updated token must be in the first place of the array because the Proportional handler always calculates bptOut based on the first position
-        .sort(sortUpdatedTokenFirst(tokenAddress))
-    )
-  }
+  const amountIn: InputAmount = helpers.toInputAmounts([{ tokenAddress, humanAmount }])[0]
+  return (
+    calculateProportionalAmounts(helpers.poolStateWithBalances, amountIn)
+      .tokenAmounts.map(({ address, rawAmount, decimals }) => ({
+        tokenAddress: address,
+        humanAmount: roundToFiveDecimals(formatUnits(rawAmount, decimals)) as HumanAmount,
+      }))
+      // user updated token must be in the first place of the array because the Proportional handler always calculates bptOut based on the first position
+      .sort(sortUpdatedTokenFirst(tokenAddress))
+  )
 
   function sortUpdatedTokenFirst(tokenAddress: Address | null) {
     return (a: HumanAmountIn, b: HumanAmountIn) => {
@@ -233,4 +163,9 @@ export function _calculateProportionalHumanAmountsIn(
       return 0
     }
   }
+}
+
+// If we pass more than 5 decimals the SDK priceImpact crashes due to some problem with ZeroDelta calculations
+function roundToFiveDecimals(number: string) {
+  return Number(number).toFixed(5)
 }
