@@ -39,7 +39,7 @@ export function _useTokens(
     variables,
     skip: skipQuery,
   })
-  const { data: tokenPricesData, refetch: refetchPrices } = useQuery(GetTokenPricesDocument, {
+  const { data: tokenPricesData } = useQuery(GetTokenPricesDocument, {
     variables,
     initialFetchPolicy: 'cache-only',
     nextFetchPolicy: 'cache-first',
@@ -148,7 +148,6 @@ export function _useTokens(
     usdValueForToken,
     getPoolTokenWeightByBalance,
     amountTokenForUsdValue,
-    refetchPrices,
   }
 }
 
