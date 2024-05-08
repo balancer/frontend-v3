@@ -14,12 +14,13 @@ import { StepIndicator } from './Step'
 import { Steps } from './Steps'
 import { GasPriceCard } from '@/lib/shared/hooks/useGasPrice'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { useTransactionSteps } from '../TransactionStepsProvider'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
+import { useAddLiquidity } from '@/lib/modules/pool/actions/add-liquidity/useAddLiquidity'
 
 export function MobileStepTracker({ chain }: { chain: GqlChain }) {
+  // TODO: generalize for all flows
   const { currentStep, currentTransaction, currentStepIndex, transactionSteps, isLastStep } =
-    useTransactionSteps()
+    useAddLiquidity()
   const colorMode = useThemeColorMode()
 
   const totalSteps = transactionSteps?.length || 1

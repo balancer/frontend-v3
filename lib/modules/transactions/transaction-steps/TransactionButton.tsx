@@ -15,14 +15,14 @@ import {
   useManagedTransaction,
 } from '../../web3/contracts/useManagedTransaction'
 import { TransactionStepButton } from './TransactionStepButton'
-import { useTransactionSteps } from './TransactionStepsProvider'
+import { useTransactionMap } from './TransactionMapProvider'
 
 export function ManagedTransactionButton({
   id,
   ...params
 }: { id: string } & ManagedTransactionInput) {
   const transaction = useManagedTransaction(params)
-  const { updateTransactionMap } = useTransactionSteps()
+  const { updateTransactionMap } = useTransactionMap()
 
   useEffect(() => {
     updateTransactionMap(id, transaction)
@@ -36,7 +36,7 @@ export function ManagedSendTransactionButton({
   ...params
 }: { id: string } & ManagedSendTransactionInput) {
   const transaction = useManagedSendTransaction(params)
-  const { updateTransactionMap } = useTransactionSteps()
+  const { updateTransactionMap } = useTransactionMap()
 
   useEffect(() => {
     updateTransactionMap(id, transaction)
@@ -50,7 +50,7 @@ export function ManagedErc20TransactionButton({
   ...params
 }: { id: string } & ManagedErc20TransactionInput) {
   const transaction = useManagedErc20Transaction(params)
-  const { updateTransactionMap } = useTransactionSteps()
+  const { updateTransactionMap } = useTransactionMap()
 
   useEffect(() => {
     updateTransactionMap(id, transaction)
