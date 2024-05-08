@@ -2,7 +2,7 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
 import { convertHexToLowerCase } from '@/lib/shared/utils/objects'
 
-const networkConfig: NetworkConfig = {
+const networkConfig = {
   chainId: 11155111,
   name: 'Ethereum Testnet Sepolia',
   shortName: 'Sepolia',
@@ -35,10 +35,11 @@ const networkConfig: NetworkConfig = {
       minter: '0x1783Cd84b3d01854A96B4eD5843753C2CcbD574A',
     },
     veBAL: '0x150A72e4D4d81BbF045565E232c50Ed0931ad795',
+    veDelegationProxy: null,
   },
   pools: convertHexToLowerCase({
     issues: {},
   }),
-}
+} as const satisfies NetworkConfig
 
 export default networkConfig

@@ -4,7 +4,7 @@ import { zeroAddress } from 'viem'
 import { convertHexToLowerCase } from '@/lib/shared/utils/objects'
 import { emptyAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 
-const networkConfig: NetworkConfig = {
+const networkConfig = {
   chainId: 250,
   name: 'Fantom Opera',
   shortName: 'Fantom',
@@ -36,8 +36,9 @@ const networkConfig: NetworkConfig = {
       relayerV6: '0x0faa25293a36241c214f3760c6ff443e1b731981',
       minter: zeroAddress,
     },
+    veDelegationProxy: null,
   },
   pools: convertHexToLowerCase({ issues: {} }),
-}
+} as const satisfies NetworkConfig
 
 export default networkConfig

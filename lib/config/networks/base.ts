@@ -2,7 +2,7 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { NetworkConfig } from '../config.types'
 import { convertHexToLowerCase } from '@/lib/shared/utils/objects'
 
-const networkConfig: NetworkConfig = {
+const networkConfig = {
   chainId: 8453,
   name: 'Base Mainnet',
   shortName: 'Base',
@@ -49,6 +49,6 @@ const networkConfig: NetworkConfig = {
     veDelegationProxy: '0xD87F44Df0159DC78029AB9CA7D7e57E7249F5ACD',
   },
   pools: convertHexToLowerCase({ issues: {} }),
-}
+} as const satisfies NetworkConfig
 
 export default networkConfig

@@ -4,7 +4,7 @@ import { convertHexToLowerCase } from '@/lib/shared/utils/objects'
 import { PoolIssue } from '@/lib/modules/pool/alerts/pool-issues/PoolIssue.type'
 import { CSP_ISSUE_POOL_IDS } from '@/lib/shared/data/csp-issue'
 
-const networkConfig: NetworkConfig = {
+const networkConfig = {
   chainId: 1101,
   name: 'Polygon zkEVM Mainnet',
   shortName: 'zkEVM',
@@ -54,6 +54,6 @@ const networkConfig: NetworkConfig = {
   pools: convertHexToLowerCase({
     issues: { [PoolIssue.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[GqlChain.Zkevm] },
   }),
-}
+} as const satisfies NetworkConfig
 
 export default networkConfig

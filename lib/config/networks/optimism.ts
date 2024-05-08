@@ -4,7 +4,7 @@ import { convertHexToLowerCase } from '@/lib/shared/utils/objects'
 import { CSP_ISSUE_POOL_IDS } from '@/lib/shared/data/csp-issue'
 import { PoolIssue } from '@/lib/modules/pool/alerts/pool-issues/PoolIssue.type'
 
-const networkConfig: NetworkConfig = {
+const networkConfig = {
   chainId: 10,
   name: 'Optimism Mainnet',
   shortName: 'Optimism',
@@ -58,6 +58,6 @@ const networkConfig: NetworkConfig = {
       [PoolIssue.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[GqlChain.Optimism],
     },
   }),
-}
+} as const satisfies NetworkConfig
 
 export default networkConfig

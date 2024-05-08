@@ -36,7 +36,8 @@ export interface ContractsConfig {
     minter: Address
   }
   feeDistributor?: Address
-  veDelegationProxy?: Address
+  // this field cannot be optional to allow exporting configs as const
+  veDelegationProxy: Address | null
   veBAL?: Address
 }
 export interface PoolsConfig {

@@ -4,7 +4,7 @@ import { convertHexToLowerCase } from '@/lib/shared/utils/objects'
 import { CSP_ISSUE_POOL_IDS } from '@/lib/shared/data/csp-issue'
 import { PoolIssue } from '@/lib/modules/pool/alerts/pool-issues/PoolIssue.type'
 
-const networkConfig: NetworkConfig = {
+const networkConfig = {
   chainId: 100,
   name: 'Gnosis Chain',
   shortName: 'Gnosis',
@@ -59,6 +59,6 @@ const networkConfig: NetworkConfig = {
   pools: convertHexToLowerCase({
     issues: { [PoolIssue.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[GqlChain.Gnosis] },
   }),
-}
+} as const satisfies NetworkConfig
 
 export default networkConfig
