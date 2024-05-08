@@ -8,13 +8,10 @@ import { HumanAmountIn } from '../../liquidity-types'
 import { NestedAddLiquidityHandler } from './NestedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
-import { connectWithDefaultUser } from '@/test/utils/wagmi/wagmi-connections'
 
 function selectNestedHandler(pool: Pool) {
   return selectAddLiquidityHandler(pool) as NestedAddLiquidityHandler
 }
-
-await connectWithDefaultUser()
 
 describe('When adding nested liquidity for a weighted pool', () => {
   test('has zero price impact', async () => {
