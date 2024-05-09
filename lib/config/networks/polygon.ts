@@ -10,6 +10,7 @@ const networkConfig: NetworkConfig = {
   shortName: 'Polygon',
   chain: GqlChain.Polygon,
   iconPath: '/images/chains/POLYGON.svg',
+  minConfirmations: 8,
   blockExplorer: {
     baseUrl: 'https://polygonscan.com',
     name: 'Polygonscan',
@@ -52,7 +53,6 @@ const networkConfig: NetworkConfig = {
     },
     veDelegationProxy: '0x0f08eEf2C785AA5e7539684aF04755dEC1347b7c',
   },
-  minConfirmations: 13,
   pools: convertHexToLowerCase({
     issues: {
       [PoolIssue.PoolProtocolFeeVulnWarning]: [
