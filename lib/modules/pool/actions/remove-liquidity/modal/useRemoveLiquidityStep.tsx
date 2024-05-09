@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-  getTransactionState,
   TransactionLabels,
   TransactionStep2,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { RemoveLiquidityBuildQueryResponse } from '../queries/useRemoveLiquidityBuildCallDataQuery'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { usePool } from '../../../usePool'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { RemoveLiquiditySimulationQueryResult } from '../queries/useRemoveLiquiditySimulationQuery'
@@ -23,6 +22,7 @@ export function useRemoveLiquidityStep(
 
   const labels: TransactionLabels = {
     init: 'Remove liquidity',
+    title: 'Add liquidity',
     confirming: 'Confirming...',
     confirmed: `Liquidity removed from pool!`,
     tooltip: 'Remove liquidity from pool.',
