@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -6,7 +7,7 @@ import { useTransactionState } from './TransactionStateProvider'
 
 export type TransactionStepsResponse = ReturnType<typeof useTransactionSteps>
 
-export function useTransactionSteps(steps: TransactionStep2[] = []) {
+export function useTransactionSteps(steps: TransactionStep2[] = [], isLoading = false) {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
   const { getTransaction } = useTransactionState()
 
@@ -45,8 +46,19 @@ export function useTransactionSteps(steps: TransactionStep2[] = []) {
     if (isCurrentStepComplete) goToNextStep()
   }, [isCurrentStepComplete])
 
+  // On step change, call activation callbacks if they exist
+  useEffect(() => {
+    // Run deactivation callbacks first
+    steps.forEach((step, index) => {
+      if (index !== currentStepIndex) step.onDeactivated?.()
+    })
+
+    steps?.[currentStepIndex]?.onActivated?.()
+  }, [currentStepIndex, isLoading, steps.length])
+
   return {
     steps,
+    isLoading,
     currentStep,
     currentTransaction,
     currentStepIndex,

@@ -3,22 +3,34 @@ import {
   TransactionLabels,
   TransactionStep2,
 } from '@/lib/modules/transactions/transaction-steps/lib'
-import { AddLiquidityBuildQueryResponse } from './queries/useAddLiquidityBuildCallDataQuery'
+import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 import { usePool } from '../../usePool'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 import { AddLiquiditySimulationQueryResult } from './queries/useAddLiquiditySimulationQuery'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
+import { AddLiquidityHandler } from './handlers/AddLiquidity.handler'
+import { HumanAmountIn } from '../liquidity-types'
 
 export const addLiquidityStepId = 'add-liquidity'
 
 export function useAddLiquidityStep(
-  simulationQuery: AddLiquiditySimulationQueryResult,
-  buildCallDataQuery: AddLiquidityBuildQueryResponse
+  handler: AddLiquidityHandler,
+  humanAmountsIn: HumanAmountIn[],
+  simulationQuery: AddLiquiditySimulationQueryResult
 ): TransactionStep2 {
+  const [isBuildQueryEnabled, setIsBuildQueryEnabled] = useState(false)
+
   const { chainId } = usePool()
   const { getTransaction } = useTransactionState()
+
+  const buildCallDataQuery = useAddLiquidityBuildCallDataQuery(
+    handler,
+    humanAmountsIn,
+    simulationQuery,
+    isBuildQueryEnabled
+  )
 
   const labels: TransactionLabels = {
     init: 'Add liquidity',
@@ -37,12 +49,21 @@ export function useAddLiquidityStep(
 
   const isComplete = () => transaction?.result.isSuccess || false
 
+  useEffect(() => {
+    // simulationQuery is refetched every 30 seconds by AddLiquidityTimeout
+    if (simulationQuery.data && isBuildQueryEnabled) {
+      buildCallDataQuery.refetch()
+    }
+  }, [simulationQuery.data])
+
   return useMemo(
     () => ({
       id: addLiquidityStepId,
       stepType: 'addLiquidity',
       labels,
       isComplete,
+      onActivated: () => setIsBuildQueryEnabled(true),
+      onDeactivated: () => setIsBuildQueryEnabled(false),
       renderAction: () => (
         <ManagedSendTransactionButton
           id={addLiquidityStepId}
