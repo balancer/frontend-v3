@@ -22,7 +22,7 @@ export function useRemoveLiquidityStep(
 
   const labels: TransactionLabels = {
     init: 'Remove liquidity',
-    title: 'Add liquidity',
+    title: 'Remove liquidity',
     confirming: 'Confirming...',
     confirmed: `Liquidity removed from pool!`,
     tooltip: 'Remove liquidity from pool.',
