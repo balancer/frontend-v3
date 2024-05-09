@@ -131,6 +131,29 @@ export function _useRemoveLiquidity() {
   const transactionSteps = useTransactionSteps(steps)
 
   /**
+   * Methods
+   */
+  const amountOutForToken = (tokenAddress: Address): HumanAmount => {
+    const amountOut = amountOutMap[tokenAddress]
+    return amountOut ? amountOut : '0'
+  }
+
+  const usdOutForToken = (tokenAddress: Address): HumanAmount => {
+    const usdOut = usdAmountOutMap[tokenAddress]
+    return usdOut ? usdOut : '0'
+  }
+
+  function updateQuoteState(
+    bptIn: HumanAmount,
+    amountsOut: TokenAmount[] | undefined,
+    priceImpact: number | undefined
+  ) {
+    setQuoteBptIn(bptIn)
+    if (amountsOut) setQuoteAmountsOut(amountsOut)
+    if (priceImpact) setQuotePriceImpact(priceImpact)
+  }
+
+  /**
    * Derived state
    */
   const amountOutMap: Record<Address, HumanAmount> = Object.fromEntries(
@@ -166,29 +189,6 @@ export function _useRemoveLiquidity() {
     [priceImpactQuery.isLoading, 'Fetching price impact...'],
     [priceImpactQuery.isError, 'Error fetching price impact']
   )
-
-  /**
-   * Methods
-   */
-  const amountOutForToken = (tokenAddress: Address): HumanAmount => {
-    const amountOut = amountOutMap[tokenAddress]
-    return amountOut ? amountOut : '0'
-  }
-
-  const usdOutForToken = (tokenAddress: Address): HumanAmount => {
-    const usdOut = usdAmountOutMap[tokenAddress]
-    return usdOut ? usdOut : '0'
-  }
-
-  function updateQuoteState(
-    bptIn: HumanAmount,
-    amountsOut: TokenAmount[] | undefined,
-    priceImpact: number | undefined
-  ) {
-    setQuoteBptIn(bptIn)
-    if (amountsOut) setQuoteAmountsOut(amountsOut)
-    if (priceImpact) setQuotePriceImpact(priceImpact)
-  }
 
   /**
    * Side-effects
