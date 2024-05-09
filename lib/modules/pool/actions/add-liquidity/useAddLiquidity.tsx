@@ -113,8 +113,13 @@ export function _useAddLiquidity() {
   /**
    * Step construction
    */
-  const steps = useAddLiquiditySteps(helpers, handler, humanAmountsIn, simulationQuery)
-  const transactionSteps = useTransactionSteps(steps)
+  const { steps, isLoadingSteps } = useAddLiquiditySteps(
+    helpers,
+    handler,
+    humanAmountsIn,
+    simulationQuery
+  )
+  const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
   async function refetchQuote() {
     if (requiresProportionalInput(pool.type)) {

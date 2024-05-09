@@ -3,10 +3,7 @@ import {
   TransactionLabels,
   TransactionStep2,
 } from '@/lib/modules/transactions/transaction-steps/lib'
-import {
-  AddLiquidityBuildQueryResponse,
-  useAddLiquidityBuildCallDataQuery,
-} from './queries/useAddLiquidityBuildCallDataQuery'
+import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 import { usePool } from '../../usePool'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
@@ -54,7 +51,7 @@ export function useAddLiquidityStep(
 
   useEffect(() => {
     // simulationQuery is refetched every 30 seconds by AddLiquidityTimeout
-    if (simulationQuery.data) {
+    if (simulationQuery.data && isBuildQueryEnabled) {
       buildCallDataQuery.refetch()
     }
   }, [simulationQuery.data])
@@ -65,7 +62,8 @@ export function useAddLiquidityStep(
       stepType: 'addLiquidity',
       labels,
       isComplete,
-      onActive: () => setIsBuildQueryEnabled(true),
+      onActivated: () => setIsBuildQueryEnabled(true),
+      onDeactivated: () => setIsBuildQueryEnabled(false),
       renderAction: () => (
         <ManagedSendTransactionButton
           id={addLiquidityStepId}

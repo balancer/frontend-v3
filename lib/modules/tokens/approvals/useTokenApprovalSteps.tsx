@@ -37,7 +37,7 @@ export function useTokenApprovalSteps({
   approvalAmounts,
   actionType,
   bptSymbol,
-}: Params): TransactionStep2[] {
+}: Params): { isLoading: boolean; steps: TransactionStep2[] } {
   const { userAddress } = useUserAccount()
   const { getToken } = useTokens()
   const nativeAssetAddress = getNativeAssetAddress(chain)
@@ -65,7 +65,7 @@ export function useTokenApprovalSteps({
     allowanceFor: tokenAllowances.allowanceFor,
   })
 
-  return useMemo(() => {
+  const steps = useMemo((): TransactionStep2[] => {
     return tokenAmountsToApprove.map(tokenAmountToApprove => {
       const { tokenAddress, requestedRawAmount } = tokenAmountToApprove
       const token = getToken(tokenAddress, chain)
@@ -102,4 +102,9 @@ export function useTokenApprovalSteps({
       }
     })
   }, [tokenAllowances.allowances, userAddress])
+
+  return {
+    isLoading: tokenAllowances.isAllowancesLoading,
+    steps,
+  }
 }
