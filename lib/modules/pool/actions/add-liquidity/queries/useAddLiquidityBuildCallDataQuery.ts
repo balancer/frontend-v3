@@ -1,6 +1,6 @@
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
+import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { useQuery } from '@tanstack/react-query'
 import { usePool } from '../../../usePool'
 import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
@@ -10,6 +10,7 @@ import { sentryMetaForAddLiquidityHandler } from '@/lib/shared/utils/query-error
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquiditySimulationQueryResult } from './useAddLiquiditySimulationQuery'
+import { useDebounce } from 'use-debounce'
 
 export type AddLiquidityBuildQueryResponse = ReturnType<typeof useAddLiquidityBuildCallDataQuery>
 
@@ -23,9 +24,8 @@ export function useAddLiquidityBuildCallDataQuery(
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const { pool } = usePool()
-
-  // const { humanAmountsIn, handler, simulationQuery } = useAddLiquidity()
   const { relayerApprovalSignature } = useRelayerSignature()
+  const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
 
   const params: AddLiquidityParams = {
     handler,
@@ -33,7 +33,7 @@ export function useAddLiquidityBuildCallDataQuery(
     slippage,
     poolId: pool.id,
     poolType: pool.type,
-    humanAmountsIn,
+    humanAmountsIn: debouncedHumanAmountsIn,
   }
 
   const queryKey = addLiquidityKeys.buildCallData(params)
@@ -42,7 +42,7 @@ export function useAddLiquidityBuildCallDataQuery(
     const queryOutput = ensureLastQueryResponse('Add liquidity query', simulationQuery.data)
     const response = await handler.buildCallData({
       account: userAddress,
-      humanAmountsIn,
+      humanAmountsIn: debouncedHumanAmountsIn,
       slippagePercent: slippage,
       queryOutput,
       relayerApprovalSignature, // only present in Add Nested Liquidity with sign relayer mode
