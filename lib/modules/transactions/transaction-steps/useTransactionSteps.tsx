@@ -46,7 +46,7 @@ export function useTransactionSteps(steps: TransactionStep2[] = [], isLoading = 
     if (isCurrentStepComplete) goToNextStep()
   }, [isCurrentStepComplete])
 
-  // On step change, call activation callbacks if it exists
+  // On step change, call activation callbacks if they exist
   useEffect(() => {
     // Run deactivation callbacks first
     steps.forEach((step, index) => {
