@@ -58,7 +58,7 @@ export function MobileStepTracker({ chain }: Props) {
               </HStack>
             </AccordionButton>
             <AccordionPanel pt="md">
-              <Steps transactionSteps={transactionSteps} />
+              <Steps />
             </AccordionPanel>
           </>
         )}
