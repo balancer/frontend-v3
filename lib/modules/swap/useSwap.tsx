@@ -16,7 +16,7 @@ import { bn } from '@/lib/shared/utils/numbers'
 import { useSimulateSwapQuery } from './queries/useSimulateSwapQuery'
 import { useTokens } from '../tokens/useTokens'
 import { useDisclosure } from '@chakra-ui/react'
-import { useSwapStepConfigs } from './useSwapStepConfigs'
+import { useSwapSteps } from './useSwapSteps'
 import {
   OSwapAction,
   SdkSimulateSwapResponse,
@@ -25,7 +25,6 @@ import {
   SwapState,
 } from './swap.types'
 import { SwapHandler } from './handlers/Swap.handler'
-import { useIterateSteps } from '../transactions/transaction-steps/useIterateSteps'
 import { isSameAddress, selectByAddress } from '@/lib/shared/utils/addresses'
 import { useVault } from '@/lib/shared/hooks/useVault'
 import { NativeWrapHandler } from './handlers/NativeWrap.handler'
@@ -42,6 +41,7 @@ import { useMakeVarPersisted } from '@/lib/shared/hooks/useMakeVarPersisted'
 import { HumanAmount } from '@balancer/sdk'
 import { ChainSlug, chainToSlugMap, slugToChainMap } from '../pool/pool.utils'
 import { invert } from 'lodash'
+import { useTransactionSteps } from '../transactions/transaction-steps/useTransactionSteps'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -342,15 +342,21 @@ export function _useSwap(pathParams: PathParams) {
     return OSwapAction.SWAP
   }, [swapState.tokenIn.address, swapState.tokenOut.address, swapState.selectedChain])
 
-  const swapStepConfigs = useSwapStepConfigs({
-    action: swapAction,
-    humanAmountIn: swapState.tokenIn.amount,
-    tokenIn: tokenInInfo,
-    selectedChain: swapState.selectedChain,
+  /**
+   * Step construction
+   */
+  const { steps, isLoadingSteps } = useSwapSteps({
     vaultAddress,
-    closeModal: previewModalDisclosure.onClose,
+    swapState,
+    handler,
+    simulationQuery,
+    isNativeAssetIn,
+    swapAction,
+    tokenInInfo,
+    tokenOutInfo,
   })
-  const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(swapStepConfigs)
+
+  const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
   // Set state on initial load
   useEffect(() => {
@@ -416,6 +422,7 @@ export function _useSwap(pathParams: PathParams) {
 
   return {
     ...swapState,
+    transactionSteps,
     tokenInInfo,
     tokenOutInfo,
     tokenSelectKey,
@@ -424,12 +431,8 @@ export function _useSwap(pathParams: PathParams) {
     disabledReason,
     previewModalDisclosure,
     handler,
-    currentStep,
-    currentStepIndex,
-    swapStepConfigs,
     isNativeAssetIn,
     swapAction,
-    useOnStepCompleted,
     setTokenSelectKey,
     setSelectedChain,
     setTokenInAmount,
