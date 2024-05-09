@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -44,6 +45,11 @@ export function useTransactionSteps(steps: TransactionStep2[] = []) {
   useEffect(() => {
     if (isCurrentStepComplete) goToNextStep()
   }, [isCurrentStepComplete])
+
+  // On step change, call onActive callback if it exists
+  useEffect(() => {
+    steps?.[currentStepIndex]?.onActive?.()
+  }, [currentStepIndex])
 
   return {
     steps,

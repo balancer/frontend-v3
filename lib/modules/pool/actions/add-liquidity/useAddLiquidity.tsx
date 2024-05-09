@@ -28,7 +28,6 @@ import { isGyro } from '../../pool.helpers'
 import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
-import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
@@ -53,7 +52,6 @@ export function _useAddLiquidity() {
    * Helper functions & variables
    */
   const helpers = new LiquidityActionHelpers(pool)
-  const inputAmounts = useMemo(() => helpers.toInputAmounts(humanAmountsIn), [humanAmountsIn])
 
   const chain = pool.chain
   const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
@@ -107,25 +105,17 @@ export function _useAddLiquidity() {
   }, [humanAmountsIn])
 
   /**
-   * Simulation queries
+   * Queries
    */
   const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn)
   const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn)
-  const buildCallDataQuery = useAddLiquidityBuildCallDataQuery(
-    handler,
-    humanAmountsIn,
-    simulationQuery
-  )
 
   /**
    * Step construction
    */
-  const steps = useAddLiquiditySteps(inputAmounts, simulationQuery, buildCallDataQuery)
+  const steps = useAddLiquiditySteps(helpers, handler, humanAmountsIn, simulationQuery)
   const transactionSteps = useTransactionSteps(steps)
 
-  /**
-   * Refetch logic
-   */
   async function refetchQuote() {
     if (requiresProportionalInput(pool.type)) {
       /*
@@ -138,20 +128,10 @@ export function _useAddLiquidity() {
     await Promise.all([simulationQuery.refetch(), priceImpactQuery.refetch()])
   }
 
-  /**
-   * Side-effects
-   */
   // On initial render, set the initial humanAmountsIn
   useEffect(() => {
     setInitialHumanAmountsIn()
   }, [])
-
-  useEffect(() => {
-    // simulationQuery is refetched every 30 seconds by AddLiquidityTimeout
-    if (simulationQuery.data) {
-      buildCallDataQuery.refetch()
-    }
-  }, [simulationQuery.data])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
@@ -168,7 +148,6 @@ export function _useAddLiquidity() {
   return {
     transactionSteps,
     humanAmountsIn,
-    inputAmounts,
     tokens: wethIsEth ? tokensWithNativeAsset : tokens,
     validTokens,
     totalUSDValue,

@@ -78,6 +78,7 @@ export type TransactionStep2 = {
   isComplete: () => boolean
   renderAction: () => React.ReactNode
   onSuccess?: () => void
+  onActive?: () => void
 }
 
 // Allows adding extra properties like set state callbacks to TransactionStep

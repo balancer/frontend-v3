@@ -17,7 +17,8 @@ export type AddLiquidityBuildQueryResponse = ReturnType<typeof useAddLiquidityBu
 export function useAddLiquidityBuildCallDataQuery(
   handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
-  simulationQuery: AddLiquiditySimulationQueryResult
+  simulationQuery: AddLiquiditySimulationQueryResult,
+  enabled = true
 ) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
@@ -53,7 +54,7 @@ export function useAddLiquidityBuildCallDataQuery(
   return useQuery({
     queryKey,
     queryFn,
-    enabled: isConnected && !!simulationQuery.data,
+    enabled: enabled && isConnected && !!simulationQuery.data,
     gcTime: 0,
     meta: sentryMetaForAddLiquidityHandler('Error in add liquidity buildCallData query', params),
     ...onlyExplicitRefetch,
