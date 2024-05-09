@@ -2,6 +2,7 @@
 import {
   TransactionLabels,
   TransactionStep2,
+  removeLiquidityStepId,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { RemoveLiquidityBuildQueryResponse } from '../queries/useRemoveLiquidityBuildCallDataQuery'
 import { useMemo } from 'react'
@@ -10,8 +11,6 @@ import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { RemoveLiquiditySimulationQueryResult } from '../queries/useRemoveLiquiditySimulationQuery'
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
-
-const removeLiquidityId = 'remove-liquidity'
 
 export function useRemoveLiquidityStep(
   simulationQuery: RemoveLiquiditySimulationQueryResult,
@@ -36,19 +35,19 @@ export function useRemoveLiquidityStep(
     }
   )
 
-  const transaction = getTransaction(removeLiquidityId)
+  const transaction = getTransaction(removeLiquidityStepId)
 
   const isComplete = () => transaction?.result.isSuccess || false
 
   return useMemo(
     () => ({
-      id: removeLiquidityId,
+      id: removeLiquidityStepId,
       stepType: 'removeLiquidity',
       labels,
       isComplete,
       renderAction: () => (
         <ManagedSendTransactionButton
-          id={removeLiquidityId}
+          id={removeLiquidityStepId}
           labels={labels}
           chainId={chainId}
           txConfig={buildCallDataQuery.data}
