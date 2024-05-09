@@ -15,15 +15,15 @@ import { Steps } from './Steps'
 import { GasPriceCard } from '@/lib/shared/hooks/useGasPrice'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
-import { TransactionStepsResponse } from '../useTransactionSteps'
+import { useTransactionStepsFromFlowProvider } from '../useTransactionSteps'
 
 type Props = {
   chain: GqlChain
-  transactionSteps: TransactionStepsResponse
 }
 
-export function MobileStepTracker({ chain, transactionSteps }: Props) {
-  const { steps, currentStepIndex, currentStep, currentTransaction, isLastStep } = transactionSteps
+export function MobileStepTracker({ chain }: Props) {
+  const { steps, currentStepIndex, currentStep, currentTransaction, isLastStep } =
+    useTransactionStepsFromFlowProvider()
   const colorMode = useThemeColorMode()
 
   const totalSteps = steps?.length || 1

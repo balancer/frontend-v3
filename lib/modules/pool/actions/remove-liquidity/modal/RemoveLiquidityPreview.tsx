@@ -9,7 +9,6 @@ import { parseUnits, Address } from 'viem'
 
 export function RemoveLiquidityPreview() {
   const {
-    transactionSteps,
     tokens,
     isProportional,
     isSingleToken,
@@ -23,7 +22,7 @@ export function RemoveLiquidityPreview() {
 
   return (
     <VStack spacing="sm" align="start">
-      {isMobile && <MobileStepTracker transactionSteps={transactionSteps} chain={pool.chain} />}
+      {isMobile && <MobileStepTracker chain={pool.chain} />}
 
       <Card variant="modalSubSection">
         <VStack align="start" spacing="md">
