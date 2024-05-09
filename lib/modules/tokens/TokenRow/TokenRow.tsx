@@ -58,7 +58,8 @@ function TokenRowTemplate({
           >
             {token?.symbol || pool?.symbol}
           </Heading>
-          <TokenInfoPopover tokenAddress={address} chain={chain} />
+          {/* Fixed in main */}
+          {/* <TokenInfoPopover tokenAddress={address} chain={chain} /> */}
         </HStack>
         <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
           {token?.name || pool?.name}
