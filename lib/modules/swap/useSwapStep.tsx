@@ -34,7 +34,8 @@ export function useSwapStep({
   tokenOutInfo,
 }: SwapStepParams): TransactionStep2 {
   const [isBuildQueryEnabled, setIsBuildQueryEnabled] = useState(false)
-  const { refetchBalances } = useTokenBalances()
+  //TODO: This throws
+  // const { refetchBalances } = useTokenBalances()
   const { getTransaction } = useTransactionState()
   const buildSwapQuery = useBuildSwapQuery({
     handler,
@@ -84,7 +85,8 @@ export function useSwapStep({
       onActivated: () => setIsBuildQueryEnabled(true),
       onDeactivated: () => setIsBuildQueryEnabled(false),
       onSuccess: () => {
-        refetchBalances()
+        console.log('Swap successful: refetching balances...')
+        // refetchBalances()
       },
       renderAction: () => (
         <VStack w="full">

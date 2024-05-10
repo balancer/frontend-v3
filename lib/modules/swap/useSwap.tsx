@@ -39,10 +39,9 @@ import {
 import { useTokenInputsValidation } from '../tokens/useTokenInputsValidation'
 import { useMakeVarPersisted } from '@/lib/shared/hooks/useMakeVarPersisted'
 import { HumanAmount } from '@balancer/sdk'
-import { chainToSlugMap } from '../pool/pool.utils'
+import { ChainSlug, chainToSlugMap, slugToChainMap } from '../pool/pool.utils'
 import { invert } from 'lodash'
 import { useTransactionSteps } from '../transactions/transaction-steps/useTransactionSteps'
-import { useTokenBalances } from '../tokens/useTokenBalances'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -71,11 +70,7 @@ function selectSwapHandler(
   return new DefaultSwapHandler(apolloClient)
 }
 
-export function _useSwap(
-  pathParams: PathParams,
-  updateTokensProviderChain: (chain: GqlChain) => void
-) {
-  const { tokens: selectedChainTokens } = useTokenBalances()
+export function _useSwap(pathParams: PathParams) {
   const swapStateVar = useMakeVarPersisted<SwapState>(
     {
       tokenIn: {
@@ -163,7 +158,6 @@ export function _useSwap(
   }
 
   function setSelectedChain(selectedChain: GqlChain) {
-    updateTokensProviderChain(selectedChain)
     const defaultTokenState = getDefaultTokenState(selectedChain)
     swapStateVar({
       ...defaultTokenState,
@@ -368,10 +362,13 @@ export function _useSwap(
   useEffect(() => {
     resetSwapAmounts()
 
-    const { tokenIn, tokenOut, amountIn, amountOut } = pathParams
+    const { chain, tokenIn, tokenOut, amountIn, amountOut } = pathParams
     const { popularTokens } = networkConfig.tokens
     const symbolToAddressMap = invert(popularTokens || {}) as Record<string, Address>
 
+    if (chain && slugToChainMap[chain as ChainSlug]) {
+      setSelectedChain(slugToChainMap[chain as ChainSlug])
+    }
     if (tokenIn) {
       if (isAddress(tokenIn)) setTokenIn(tokenIn as Address)
       else if (symbolToAddressMap[tokenIn] && isAddress(symbolToAddressMap[tokenIn])) {
@@ -426,7 +423,6 @@ export function _useSwap(
   return {
     ...swapState,
     transactionSteps,
-    selectedChainTokens,
     tokenInInfo,
     tokenOutInfo,
     tokenSelectKey,
@@ -450,11 +446,10 @@ export function _useSwap(
 
 type Props = PropsWithChildren<{
   pathParams: PathParams
-  updateTokensProviderChain: (chain: GqlChain) => void
 }>
 
-export function SwapProvider({ pathParams, updateTokensProviderChain, children }: Props) {
-  const hook = _useSwap(pathParams, updateTokensProviderChain)
+export function SwapProvider({ pathParams, children }: Props) {
+  const hook = _useSwap(pathParams)
   return <SwapContext.Provider value={hook}>{children}</SwapContext.Provider>
 }
 
