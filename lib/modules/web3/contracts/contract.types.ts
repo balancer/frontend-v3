@@ -36,6 +36,4 @@ export type TransactionConfig = {
   value?: bigint
 }
 
-export type UseEstimateGasConfig = Exclude<Parameters<typeof useEstimateGas>[0], undefined>
-
 export type Erc20Abi = typeof erc20Abi

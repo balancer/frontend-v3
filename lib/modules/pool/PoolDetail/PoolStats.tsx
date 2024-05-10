@@ -143,7 +143,7 @@ export default function PoolStats() {
                 {poolValues ? (
                   <HStack spacing="xs">
                     <Heading size="h4">{getAprLabel(pool.dynamicData.apr.apr)}</Heading>
-                    {pool.dynamicData.apr.hasRewardApr && <Icon as={StarsIcon} />}
+                    {pool.staking && <Icon as={StarsIcon} />}
                   </HStack>
                 ) : (
                   <Skeleton height="30px" w="100px" />

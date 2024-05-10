@@ -1,4 +1,4 @@
-import { Address, Chain } from 'viem'
+import { Address } from 'viem'
 import { GqlChain } from '../shared/services/api/generated/graphql'
 import { chains } from '../modules/web3/Web3Provider'
 import { PoolIssue } from '../modules/pool/alerts/pool-issues/PoolIssue.type'

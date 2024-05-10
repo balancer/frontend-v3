@@ -4,14 +4,13 @@ import { TransactionLabels, swapStepId } from '@/lib/modules/transactions/transa
 import { useEffect } from 'react'
 import { useSwap } from './useSwap'
 import { useBuildSwapQuery } from './queries/useBuildSwapQuery'
-import { getChainId } from '@/lib/config/app.config'
 import { useSyncTransactionFlowStep } from '../transactions/transaction-steps/TransactionFlowProvider'
 import { capitalize } from 'lodash'
 import { swapActionPastTense } from './swap.helpers'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 
 export function useConstructSwapStep() {
-  const { simulationQuery, selectedChain, swapAction, tokenInInfo, tokenOutInfo } = useSwap()
+  const { simulationQuery, swapAction, tokenInInfo, tokenOutInfo } = useSwap()
   const buildSwapQuery = useBuildSwapQuery()
 
   const tokenInSymbol = tokenInInfo?.symbol || 'Unknown'
@@ -32,11 +31,8 @@ export function useConstructSwapStep() {
     }
   }, [JSON.stringify(simulationQuery.data)])
 
-  const chainId = buildSwapQuery.data?.chainId || getChainId(selectedChain)
-
   const swapTransaction = useManagedSendTransaction(
     transactionLabels,
-    chainId,
     buildSwapQuery.data,
     sentryMetaForWagmiSimulation('Error in swap gas estimation', buildSwapQuery.data || {})
   )
