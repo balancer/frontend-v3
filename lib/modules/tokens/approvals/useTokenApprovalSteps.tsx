@@ -13,7 +13,7 @@ import { TransactionStep2 } from '../../transactions/transaction-steps/lib'
 import { ManagedErc20TransactionButton } from '../../transactions/transaction-steps/TransactionButton'
 import { ManagedErc20TransactionInput } from '../../web3/contracts/useManagedErc20Transaction'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 export interface ApproveTokenConfig {
   type: 'approveToken'
@@ -38,8 +38,6 @@ export function useTokenApprovalSteps({
   actionType,
   bptSymbol,
 }: Params): { isLoading: boolean; steps: TransactionStep2[] } {
-  const [initSortComplete, setInitSortComplete] = useState(false)
-
   const { userAddress } = useUserAccount()
   const { getToken } = useTokens()
   const nativeAssetAddress = getNativeAssetAddress(chain)
@@ -67,62 +65,43 @@ export function useTokenApprovalSteps({
     allowanceFor: tokenAllowances.allowanceFor,
   })
 
-  const sortByComplete = (a: TransactionStep2, b: TransactionStep2) => {
-    console.log('initSortComplete', initSortComplete)
-
-    if (!initSortComplete) {
-      setInitSortComplete(true)
-      return a.isComplete() && !b.isComplete() ? -1 : !a.isComplete() && b.isComplete() ? 1 : 0
-    }
-
-    return 0
-  }
-
   const steps = useMemo(() => {
-    return tokenAmountsToApprove
-      .map(tokenAmountToApprove => {
-        const { tokenAddress, requestedRawAmount } = tokenAmountToApprove
-        const token = getToken(tokenAddress, chain)
-        const symbol = bptSymbol ?? (token && token?.symbol) ?? 'Unknown'
-        const labels = buildTokenApprovalLabels({ actionType, symbol })
-        const id = tokenAddress
+    return tokenAmountsToApprove.map(tokenAmountToApprove => {
+      const { tokenAddress, requestedRawAmount } = tokenAmountToApprove
+      const token = getToken(tokenAddress, chain)
+      const symbol = bptSymbol ?? (token && token?.symbol) ?? 'Unknown'
+      const labels = buildTokenApprovalLabels({ actionType, symbol })
+      const id = tokenAddress
 
-        const isComplete = () => tokenAllowances.allowanceFor(tokenAddress) >= requestedRawAmount
+      const isComplete = () => tokenAllowances.allowanceFor(tokenAddress) >= requestedRawAmount
 
-        const props: ManagedErc20TransactionInput = {
-          tokenAddress,
-          functionName: 'approve',
-          labels,
-          chainId: getChainId(chain),
-          args: [spenderAddress, requestedRawAmount],
-          additionalConfig: {
-            query: {
-              enabled: !!spenderAddress && !tokenAllowances.isAllowancesLoading,
-              meta: sentryMetaForWagmiSimulation(
-                'Error in wagmi tx simulation: Approving token',
-                tokenAmountToApprove
-              ),
-            },
+      const props: ManagedErc20TransactionInput = {
+        tokenAddress,
+        functionName: 'approve',
+        labels,
+        chainId: getChainId(chain),
+        args: [spenderAddress, requestedRawAmount],
+        additionalConfig: {
+          query: {
+            enabled: !!spenderAddress && !tokenAllowances.isAllowancesLoading,
+            meta: sentryMetaForWagmiSimulation(
+              'Error in wagmi tx simulation: Approving token',
+              tokenAmountToApprove
+            ),
           },
-        }
+        },
+      }
 
-        return {
-          id,
-          stepType: 'tokenApproval',
-          labels,
-          isComplete,
-          renderAction: () => <ManagedErc20TransactionButton key={id} id={id} {...props} />,
-          onSuccess: () => tokenAllowances.refetchAllowances(),
-        } as const satisfies TransactionStep2
-      })
-      .sort(sortByComplete) // sort completed steps to the start
+      return {
+        id,
+        stepType: 'tokenApproval',
+        labels,
+        isComplete,
+        renderAction: () => <ManagedErc20TransactionButton key={id} id={id} {...props} />,
+        onSuccess: () => tokenAllowances.refetchAllowances(),
+      } as const satisfies TransactionStep2
+    })
   }, [tokenAllowances.allowances, userAddress])
-
-  useEffect(() => {
-    console.log('steps', steps)
-
-    setInitSortComplete(false)
-  }, [steps.length])
 
   return {
     isLoading: tokenAllowances.isAllowancesLoading,

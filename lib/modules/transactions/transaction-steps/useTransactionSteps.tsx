@@ -24,6 +24,7 @@ export function useTransactionSteps(steps: TransactionStep2[] = [], isLoading = 
     lastTransactionState === TransactionState.Completed
 
   function goToNextStep() {
+    if (currentStepIndex === lastStepIndex) return
     setCurrentStepIndex(prev => prev + 1)
   }
 
@@ -44,7 +45,7 @@ export function useTransactionSteps(steps: TransactionStep2[] = [], isLoading = 
   // Control step flow here.
   useEffect(() => {
     if (isCurrentStepComplete) goToNextStep()
-  }, [isCurrentStepComplete])
+  }, [currentStepIndex, isCurrentStepComplete])
 
   // On step change, call activation callbacks if they exist
   useEffect(() => {
