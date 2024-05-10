@@ -18,11 +18,11 @@ import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Hex } from 'viem'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { useClaimProtocolRewardsStepConfigs } from '../useClaimProtocolRewardsStepConfigs'
-import { useIterateSteps } from '../../transactions/transaction-steps/useIterateSteps'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { DesktopStepTracker } from '../../transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { MobileStepTracker } from '../../transactions/transaction-steps/step-tracker/MobileStepTracker'
+import { useClaimProtocolRewardsSteps } from '../useClaimProtocolRewardsSteps'
+import { useTransactionSteps } from '../../transactions/transaction-steps/useTransactionSteps'
 
 type Props = {
   isOpen: boolean
@@ -34,19 +34,15 @@ export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
   const { toCurrency } = useCurrency()
   const { isDesktop, isMobile } = useBreakpoints()
 
-  const { stepConfigs } = useClaimProtocolRewardsStepConfigs()
-  const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
+  const { steps, isLoadingSteps } = useClaimProtocolRewardsSteps()
+  const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
   return (
     <Modal size="xl" isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent>
         {isDesktop && (
-          <DesktopStepTracker
-            currentStepIndex={currentStepIndex}
-            stepConfigs={stepConfigs}
-            chain={GqlChain.Mainnet}
-          />
+          <DesktopStepTracker transactionSteps={transactionSteps} chain={GqlChain.Mainnet} />
         )}
         <ModalHeader>Balancer protocol revenue</ModalHeader>
         <ModalCloseButton />
@@ -68,16 +64,12 @@ export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
             <ClaimTotal total={toCurrency(protocolRewardsBalance)} />
 
             {isMobile && (
-              <MobileStepTracker
-                currentStepIndex={currentStepIndex}
-                stepConfigs={stepConfigs}
-                chain={GqlChain.Mainnet}
-              />
+              <MobileStepTracker transactionSteps={transactionSteps} chain={GqlChain.Mainnet} />
             )}
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
+          <VStack w="full">{transactionSteps.currentStep?.renderAction()}</VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>
