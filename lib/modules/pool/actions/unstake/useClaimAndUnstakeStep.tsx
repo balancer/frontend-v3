@@ -46,7 +46,7 @@ export function useClaimAndUnstakeStep(pool: Pool): { isLoading: boolean; step: 
     balRewards.length > 0
   )
 
-  const meta = sentryMetaForWagmiSimulation(
+  const txSimulationMeta = sentryMetaForWagmiSimulation(
     'Error in wagmi tx simulation (Claim and unstake transaction)',
     {
       poolId: pool.id,
@@ -62,12 +62,8 @@ export function useClaimAndUnstakeStep(pool: Pool): { isLoading: boolean; step: 
     labels,
     chainId,
     args: [data],
-    additionalConfig: {
-      query: {
-        enabled: !!pool,
-        meta,
-      },
-    },
+    enabled: !!pool && !!isLoading,
+    txSimulationMeta,
   }
 
   const transaction = getTransaction(claimAndUnstakeStepId)
