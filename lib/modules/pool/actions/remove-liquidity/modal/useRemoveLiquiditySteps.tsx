@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useApproveRelayerStep } from '@/lib/modules/relayer/approveRelayerConfig'
+import { useApproveRelayerStep } from '@/lib/modules/relayer/useApproveRelayerStep'
 import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import { usePool } from '../../../usePool'
 import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
