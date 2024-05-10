@@ -6,7 +6,6 @@ import { useUserAccount } from '../../web3/useUserAccount'
 import { useTokens } from '../useTokens'
 import { ApprovalAction, buildTokenApprovalLabels } from './approval-labels'
 import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
-import { ApproveTokenProps } from './useConstructApproveTokenStep'
 import { getChainId, getNativeAssetAddress } from '@/lib/config/app.config'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { TransactionStep2 } from '../../transactions/transaction-steps/lib'
@@ -14,11 +13,6 @@ import { ManagedErc20TransactionButton } from '../../transactions/transaction-st
 import { ManagedErc20TransactionInput } from '../../web3/contracts/useManagedErc20Transaction'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useMemo } from 'react'
-
-export interface ApproveTokenConfig {
-  type: 'approveToken'
-  props: ApproveTokenProps
-}
 
 export type Params = {
   spenderAddress: Address
