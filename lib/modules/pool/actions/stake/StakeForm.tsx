@@ -8,7 +8,7 @@ import { useStaking } from './useStaking'
 
 export function StakeForm() {
   const { pool } = usePool()
-  const { currentStep, useOnStepCompleted } = useStaking()
+  const { transactionSteps } = useStaking()
 
   return (
     <Center h="full" w="full" maxW="lg" mx="auto">
@@ -31,7 +31,7 @@ export function StakeForm() {
           </Card>
         </CardBody>
         <CardFooter>
-          <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
+          <VStack w="full">{transactionSteps.currentStep?.renderAction()}</VStack>
         </CardFooter>
       </Card>
     </Center>

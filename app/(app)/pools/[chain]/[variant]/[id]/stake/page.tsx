@@ -2,14 +2,14 @@
 
 import { PoolActionsLayout } from '@/lib/modules/pool/actions/PoolActionsLayout'
 import { StakeForm } from '@/lib/modules/pool/actions/stake/StakeForm'
-import { TransactionFlowProvider } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
+import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 
 export default function StakePage() {
   return (
-    <TransactionFlowProvider>
+    <TransactionStateProvider>
       <PoolActionsLayout>
         <StakeForm />
       </PoolActionsLayout>
-    </TransactionFlowProvider>
+    </TransactionStateProvider>
   )
 }
