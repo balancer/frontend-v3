@@ -13,7 +13,7 @@ export function PoolDetailAttributesRisksContracts({ isLoading = false }: { isLo
         rowGap="md"
         columnGap="md"
         templateColumns={{ base: '1fr', lg: 'repeat(2,1fr)' }}
-        templateRows={{ base: 'repeat(3,1fr)', lg: 'repeat(2,1fr)' }}
+        templateRows={{ base: undefined, lg: 'repeat(2,1fr)' }}
         templateAreas={{
           base: `"attributes"
                  "risks"
