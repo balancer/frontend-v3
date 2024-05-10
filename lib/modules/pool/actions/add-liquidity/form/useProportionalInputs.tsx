@@ -35,7 +35,7 @@ export function useProportionalInputs() {
   const { balanceFor, balances, isBalancesLoading } = useTokenBalances()
   const { isLoading: isPoolLoading } = usePool()
   const [isMaximized, setIsMaximized] = useState(false)
-  const { prices } = useTokens()
+  const { isLoadingTokenPrices } = useTokens()
 
   function clearAmountsIn() {
     setHumanAmountsIn(humanAmountsIn.map(amountIn => ({ ...amountIn, humanAmount: '' })))
@@ -83,7 +83,7 @@ export function useProportionalInputs() {
     (where the rest of the tokens have enough user balance for that proportional result).
   */
   const optimalToken = useMemo((): OptimalToken | undefined => {
-    if (!shouldCalculateMaximizeAmounts) return
+    if (isLoadingTokenPrices || !shouldCalculateMaximizeAmounts) return
 
     const humanBalanceFor = (tokenAddress: string): HumanAmount => {
       return (balanceFor(tokenAddress)?.formatted || '0') as HumanAmount
@@ -125,7 +125,7 @@ export function useProportionalInputs() {
     )
 
     return usdValueFor(maxProportionalHumanAmountsIn)
-  }, [shouldCalculateMaximizeAmounts, optimalToken, prices])
+  }, [shouldCalculateMaximizeAmounts, optimalToken, isLoadingTokenPrices])
 
   const canMaximize = !!optimalToken?.userBalance
 

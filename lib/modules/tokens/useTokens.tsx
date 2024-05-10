@@ -39,12 +39,16 @@ export function _useTokens(
     variables,
     skip: skipQuery,
   })
-  const { data: tokenPricesData } = useQuery(GetTokenPricesDocument, {
-    variables,
-    initialFetchPolicy: 'cache-only',
-    nextFetchPolicy: 'cache-first',
-    pollInterval: minsToMs(3),
-  })
+  const { data: tokenPricesData, loading: isLoadingTokenPrices } = useQuery(
+    GetTokenPricesDocument,
+    {
+      variables,
+      initialFetchPolicy: 'cache-only',
+      nextFetchPolicy: 'cache-first',
+      pollInterval: minsToMs(3),
+      notifyOnNetworkStatusChange: true,
+    }
+  )
 
   const tokens = tokensData?.tokens || initTokenData.tokens
   const prices = tokenPricesData?.tokenPrices || initTokenPricesData.tokenPrices
@@ -128,6 +132,7 @@ export function _useTokens(
   return {
     tokens,
     prices,
+    isLoadingTokenPrices,
     getToken,
     priceFor,
     priceForToken,
