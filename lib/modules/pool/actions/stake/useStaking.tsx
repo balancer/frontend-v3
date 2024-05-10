@@ -1,18 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
+import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
+import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
-import { HumanAmountIn } from '../liquidity-types'
-import { Address, parseUnits } from 'viem'
-import { useTokenAllowances } from '@/lib/modules/web3/useTokenAllowances'
-import { usePool } from '../../usePool'
-import { BPT_DECIMALS } from '../../pool.constants'
+import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useEffect, useState } from 'react'
-import { useTokenApprovalConfigs } from '@/lib/modules/tokens/approvals/useTokenApprovalConfigs'
-import { stakeConfig } from './stakeConfig'
-import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
+import { Address } from 'viem'
+import { usePool } from '../../usePool'
+import { HumanAmountIn } from '../liquidity-types'
+import { useStakingSteps } from './useStakingSteps'
 
 export function useStaking() {
   const [humanAmountIn, setHumanAmountIn] = useState<HumanAmountIn | null>(null)
@@ -40,24 +38,11 @@ export function useStaking() {
     tokenAddresses: [humanAmountIn?.tokenAddress as Address],
   })
 
-  const rawAmount = parseUnits(humanAmountIn?.humanAmount || '', BPT_DECIMALS)
-
-  const amountToApprove = {
-    rawAmount,
-    address: pool.address as Address,
-  }
-
-  const bptApprovalStepConfig = useTokenApprovalConfigs({
-    spenderAddress: pool.staking?.address as Address,
-    chain: pool.chain,
-    approvalAmounts: [amountToApprove],
-    actionType: 'Staking',
-    bptSymbol: pool.symbol,
-  })
-
-  const stepConfigs = [...bptApprovalStepConfig, stakeConfig]
-
-  const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
+  /**
+   * Step construction
+   */
+  const { isLoadingSteps, steps } = useStakingSteps(pool, humanAmountIn)
+  const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
   /**
    * Side-effects
@@ -68,14 +53,10 @@ export function useStaking() {
   }, [])
 
   return {
+    transactionSteps,
     isDisabled,
     disabledReason,
     humanAmountIn,
-    rawAmount,
     tokenAllowances,
-    amountToApprove,
-    bptApprovalStepConfig,
-    currentStep,
-    useOnStepCompleted,
   }
 }

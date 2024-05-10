@@ -33,7 +33,7 @@ export function useTransactionSteps(steps: TransactionStep2[] = [], isLoading = 
   }
 
   // Trigger side effects on transaction completion. The step itself decides
-  // when it's complete. e.g. so approvals can refectch to check correct
+  // when it's complete. e.g. so approvals can refetch to check correct
   // allowance has been given.
   useEffect(() => {
     // console.log('currentTransaction', currentTransaction?.execution.isSuccess)

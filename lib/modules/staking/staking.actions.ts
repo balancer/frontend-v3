@@ -7,7 +7,7 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useSyncTransactionFlowStep } from '../transactions/transaction-steps/TransactionFlowProvider'
 
-function buildStakingDepositLabels(staking?: GqlPoolStaking | null): TransactionLabels {
+export function buildStakingDepositLabels(staking?: GqlPoolStaking | null): TransactionLabels {
   const labels: TransactionLabels = {
     init: 'Stake',
     confirming: 'Confirming...',
@@ -27,7 +27,7 @@ function buildStakingWithdrawLabels(staking?: GqlPoolStaking | null): Transactio
   return labels
 }
 
-function getStakingConfig(
+export function getStakingConfig(
   staking?: GqlPoolStaking | null,
   amount?: bigint,
   userAddress?: Address
@@ -56,50 +56,6 @@ function getStakingConfig(
         }
     }
   }
-}
-
-export function useConstructStakingDepositActionStep(
-  chainId: SupportedChainId,
-  staking?: GqlPoolStaking | null,
-  depositAmount?: bigint
-): FlowStep {
-  const transactionLabels = buildStakingDepositLabels(staking)
-  const { userAddress } = useUserAccount()
-  const stakingConfig = getStakingConfig(staking, depositAmount, userAddress)
-
-  const deposit = useManagedTransaction(
-    stakingConfig?.contractAddress || '',
-    stakingConfig?.contractId,
-    'deposit',
-    transactionLabels,
-    chainId,
-    stakingConfig?.args,
-    {
-      query: {
-        enabled: !!staking || !!depositAmount,
-        meta: sentryMetaForWagmiSimulation(
-          'Error in wagmi tx simulation (Staking deposit transaction)',
-          {
-            chainId,
-            userAddress,
-            staking,
-            depositAmount,
-            stakingConfig,
-          }
-        ),
-      },
-    }
-  )
-
-  const step = useSyncTransactionFlowStep({
-    ...deposit,
-    id: `${staking?.type}-deposit`,
-    stepType: 'stakingDeposit',
-    transactionLabels,
-    isComplete: () => deposit.result.isSuccess,
-  })
-
-  return step
 }
 
 export function useConstructStakingWithdrawActionStep(
