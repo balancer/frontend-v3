@@ -69,7 +69,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
               {toCurrency(pool.dynamicData.volume24h)}
             </Text>
           </GridItem>
-          <GridItem justifySelf="end">
+          <GridItem justifySelf="end" pr={{base: "md", xl: "0"}}>
             <MemoizedAprTooltip
               data={pool.dynamicData.apr}
               poolId={pool.id}
