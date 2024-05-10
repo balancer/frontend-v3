@@ -74,7 +74,6 @@ export function useSwapStep({
   const transaction = getTransaction(swapStepId)
 
   const isComplete = () => transaction?.result.isSuccess || false
-  // const completed = isComplete()
 
   return useMemo(
     () => ({
