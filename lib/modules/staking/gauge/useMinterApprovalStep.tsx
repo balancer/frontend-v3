@@ -1,0 +1,71 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import {
+  TransactionLabels,
+  TransactionStep2,
+} from '@/lib/modules/transactions/transaction-steps/lib'
+import { ManagedTransactionInput } from '@/lib/modules/web3/contracts/useManagedTransaction'
+import { getNetworkConfig } from '@/lib/config/app.config'
+import { useHasMinterApproval } from './useHasMinterApproval'
+import { useMemo } from 'react'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
+import { ManagedTransactionButton } from '../../transactions/transaction-steps/TransactionButton'
+
+const approveMinterStepId = 'approve-minter'
+export function useApproveMinterStep(chain: GqlChain): {
+  isLoading: boolean
+  step: TransactionStep2
+} {
+  const { isConnected } = useUserAccount()
+  const { contracts, chainId } = getNetworkConfig(chain)
+
+  const { hasMinterApproval, isLoading, refetch } = useHasMinterApproval()
+
+  const labels: TransactionLabels = {
+    init: 'Approve relayer as minter',
+    title: 'Approve minter',
+    confirming: 'Confirming...',
+    confirmed: `Relayer approved as minter!`,
+    tooltip: 'Approvel relayer as minter',
+  }
+
+  const meta = sentryMetaForWagmiSimulation(
+    'Error in wagmi tx simulation (Minter approval transaction)',
+    {
+      minter: contracts.balancer.minter,
+    }
+  )
+
+  const props: ManagedTransactionInput = {
+    contractAddress: contracts.balancer.minter,
+    contractId: 'balancer.minter',
+    functionName: 'setMinterApproval',
+    labels,
+    chainId,
+    args: [contracts.balancer.relayerV6, true],
+    additionalConfig: {
+      query: {
+        enabled: !isLoading,
+        meta,
+      },
+    },
+  }
+
+  const step = useMemo(
+    (): TransactionStep2 => ({
+      id: approveMinterStepId,
+      stepType: 'minterApproval',
+      labels,
+      isComplete: () => isConnected && hasMinterApproval,
+      renderAction: () => <ManagedTransactionButton id={approveMinterStepId} {...props} />,
+      onSuccess: () => refetch(),
+    }),
+    [hasMinterApproval, isConnected]
+  )
+
+  return {
+    isLoading,
+    step,
+  }
+}

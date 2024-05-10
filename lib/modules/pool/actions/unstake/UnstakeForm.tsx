@@ -6,7 +6,7 @@ import { useUnstaking } from './useUnstaking'
 
 export function UnstakeForm() {
   const { pool } = usePool()
-  const { currentStep, useOnStepCompleted } = useUnstaking(pool.chain)
+  const { transactionSteps } = useUnstaking(pool)
 
   return (
     <Center h="full" w="full" maxW="lg" mx="auto">
@@ -28,7 +28,7 @@ export function UnstakeForm() {
             />
           </Card>
         </CardBody>
-        <CardFooter>{currentStep.render(useOnStepCompleted)}</CardFooter>
+        <CardFooter>{transactionSteps?.currentStep?.renderAction()}</CardFooter>
       </Card>
     </Center>
   )

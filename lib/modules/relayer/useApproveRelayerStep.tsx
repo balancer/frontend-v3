@@ -1,11 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { TransactionStepButton } from '@/lib/modules/transactions/transaction-steps/TransactionStepButton'
-import {
-  CommonStepProps,
-  OnStepCompleted,
-  StepConfig,
-} from '../transactions/transaction-steps/useIterateSteps'
-import { useConstructApproveRelayerStep } from './useConstructApproveRelayerStep'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { TransactionLabels, TransactionStep2 } from '../transactions/transaction-steps/lib'
 import { ManagedTransactionButton } from '../transactions/transaction-steps/TransactionButton'
@@ -16,13 +9,7 @@ import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useMemo } from 'react'
 
-export const getApproveRelayerConfig = (chainId: SupportedChainId): StepConfig => ({
-  title: 'Approve relayer',
-  render(useOnStepCompleted: OnStepCompleted) {
-    return <ApproveRelayerButton useOnStepCompleted={useOnStepCompleted} chainId={chainId} />
-  },
-})
-
+const approveRelayerStepId = 'approve-relayer'
 export function useApproveRelayerStep(chainId: SupportedChainId): TransactionStep2 {
   const { userAddress, isConnected } = useUserAccount()
   const config = getNetworkConfig(chainId)
@@ -65,28 +52,15 @@ export function useApproveRelayerStep(chainId: SupportedChainId): TransactionSte
     },
   }
 
-  const id = 'approve-relayer'
-
   return useMemo(
     () => ({
-      id,
+      id: approveRelayerStepId,
       stepType: 'approveBatchRelayer',
       labels,
       isComplete: () => isConnected && hasApprovedRelayer,
-      renderAction: () => <ManagedTransactionButton id={id} {...props} />,
+      renderAction: () => <ManagedTransactionButton id={approveRelayerStepId} {...props} />,
       onSuccess: () => refetch(),
     }),
     [hasApprovedRelayer, isConnected]
   )
-}
-
-function ApproveRelayerButton({
-  useOnStepCompleted,
-  chainId,
-}: CommonStepProps & { chainId: SupportedChainId }) {
-  const step = useConstructApproveRelayerStep(chainId)
-
-  useOnStepCompleted(step)
-
-  return <TransactionStepButton step={step} />
 }
