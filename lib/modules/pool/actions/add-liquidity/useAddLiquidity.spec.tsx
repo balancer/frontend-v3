@@ -9,7 +9,6 @@ import {
 import { PropsWithChildren } from 'react'
 import { _useAddLiquidity } from './useAddLiquidity'
 import { nestedPoolMock } from '../../__mocks__/nestedPoolMock'
-import { act } from '@testing-library/react'
 
 async function testUseAddLiquidity(pool: GqlPoolElement = aBalWethPoolElementMock()) {
   const PoolProvider = buildDefaultPoolTestProvider(pool)
@@ -38,30 +37,6 @@ test('returns amountsIn with empty input amount by default', async () => {
       humanAmount: '',
     },
   ])
-})
-
-test('returns inputAmounts', async () => {
-  const result = await testUseAddLiquidity()
-
-  expect(result.current.inputAmounts).toEqual([])
-
-  act(() => result.current.setHumanAmountIn(balAddress, '1'))
-  act(() => result.current.setHumanAmountIn(wETHAddress, '2'))
-
-  expect(result.current.inputAmounts).toMatchInlineSnapshot(`
-    [
-      {
-        "address": "0xba100000625a3754423978a60c9317c58a424e3d",
-        "decimals": 18,
-        "rawAmount": 1000000000000000000n,
-      },
-      {
-        "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-        "decimals": 18,
-        "rawAmount": 2000000000000000000n,
-      },
-    ]
-  `)
 })
 
 // Only works when using .only

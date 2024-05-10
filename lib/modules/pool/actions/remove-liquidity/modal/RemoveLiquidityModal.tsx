@@ -17,7 +17,7 @@ import { usePool } from '../../../usePool'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
 // eslint-disable-next-line max-len
-import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
+import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { RemoveLiquidityPreview } from './RemoveLiquidityPreview'

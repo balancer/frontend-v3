@@ -27,7 +27,7 @@ export function useApproveRelayerStep(chainId: SupportedChainId): TransactionSte
     description: `🎉 Relayer Approved`,
   }
 
-  const errorMeta = sentryMetaForWagmiSimulation(
+  const txSimulationMeta = sentryMetaForWagmiSimulation(
     'Error in wagmi tx simulation: Approving Relayer',
     {
       vaultAddress,
@@ -44,12 +44,8 @@ export function useApproveRelayerStep(chainId: SupportedChainId): TransactionSte
     labels,
     chainId,
     args: [userAddress, relayerAddress, true],
-    additionalConfig: {
-      query: {
-        enabled: !!userAddress && !isLoading,
-        meta: errorMeta,
-      },
-    },
+    enabled: !!userAddress && !isLoading,
+    txSimulationMeta,
   }
 
   return useMemo(

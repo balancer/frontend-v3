@@ -27,7 +27,7 @@ import { ClaimableReward } from './useClaimableBalances'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 // eslint-disable-next-line max-len
-import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
+import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { useTransactionSteps } from '../../transactions/transaction-steps/useTransactionSteps'
 
 type Props = {
