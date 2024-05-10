@@ -65,12 +65,12 @@ export function PoolChart() {
   }
 
   return (
-    <Card minHeight="320px">
-      <Stack>
-        {isLoading && <Skeleton w="100%" h="300" />}
+    <Card minHeight="320px" h="full">
+      <Stack h="full">
+        {isLoading && <Skeleton w="100%" h="300px" />}
         {!isLoading && chartData.length > 0 && (
-          <VStack width="full" height="full">
-            <HStack width="full" justifyContent="space-between">
+          <VStack w="full" h="full">
+            <HStack w="full" justifyContent="space-between">
               <HStack spacing="2" textAlign="right">
                 <ButtonGroup
                   size="xxs"
@@ -88,8 +88,9 @@ export function PoolChart() {
                 <Text fontSize="0.9rem">{getActiveTabLabel()}</Text>
               </VStack>
             </HStack>
-            <Box width="full" height="full" onMouseLeave={handleMouseLeave}>
+            <Box w="full" h="full" onMouseLeave={handleMouseLeave}>
               <ReactECharts
+                style={{ height: '100%' }}
                 option={options}
                 onEvents={{
                   updateAxisPointer: handleAxisMoved,
@@ -99,7 +100,7 @@ export function PoolChart() {
           </VStack>
         )}
         {!isLoading && chartData.length <= 0 && (
-          <Flex h="100" alignItems="center">
+          <Flex h="full" alignItems="center">
             <Text fontSize="2xl" variant="secondary" p="lg">
               Not enough data
             </Text>
