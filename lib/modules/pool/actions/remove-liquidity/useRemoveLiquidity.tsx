@@ -51,7 +51,7 @@ export function _useRemoveLiquidity() {
   const maxHumanBptIn: HumanAmount = (pool?.userBalance?.totalBalance || '0') as HumanAmount
   const humanBptIn: HumanAmount = bn(maxHumanBptIn)
     .times(humanBptInPercent / 100)
-    .toString() as HumanAmount
+    .toFixed() as HumanAmount
 
   const chain = pool.chain
   const nativeAsset = getToken(getNativeAssetAddress(chain), chain)

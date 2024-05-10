@@ -34,10 +34,6 @@ export default defineConfig(() => {
             address: '0xdacf5fa19b1f720111609043ac67a9818262850c',
           },
           {
-            name: 'BalancerV2ERC4626LinearPoolV3',
-            address: '0x6667c6fa9f2b3fc1cc8d85320b62703d938e4385',
-          },
-          {
             name: 'BalancerV2WeightedPoolV4',
             address: '0x3ff3a210e57cfe679d9ad1e9ba6453a716c56a2e',
           },
@@ -51,14 +47,21 @@ export default defineConfig(() => {
           },
           { name: 'BalancerMinter', address: '0x239e55F427D44C3cc793f49bFB507ebe76638a2b' },
           {
-            name: 'BalancerV2BalancerRelayer',
+            name: 'BalancerV2BalancerRelayerV6',
             address: '0x35Cea9e57A393ac66Aaa7E25C391D52C74B5648f',
           },
-          // TODO: bring manually added abis from web3/contracts/abi
-          // {
-          //   name: 'veBAL',
-          //   address: '0xC128a9954e6c874eA3d62ce62B468bA073093F25',
-          // },
+          {
+            name: 'veBal',
+            address: mainnetNetworkConfig.contracts.veBAL,
+          },
+          {
+            name: 'feeDistributor',
+            address: mainnetNetworkConfig.contracts.feeDistributor,
+          },
+          {
+            name: 'veDelegationProxy',
+            address: mainnetNetworkConfig.contracts.veDelegationProxy,
+          },
         ],
       }),
     ],

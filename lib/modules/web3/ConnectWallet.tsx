@@ -1,9 +1,9 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { Box, Button, HStack, Img, Show } from '@chakra-ui/react'
+import { Box, Button, ButtonProps, HStack, Img, Show } from '@chakra-ui/react'
 import { CustomAvatar } from './CustomAvatar'
 import { useUserAccount } from './useUserAccount'
 
-export function ConnectWallet() {
+export function ConnectWallet({ ...rest }: ButtonProps) {
   const { isLoading: isLoadingAccount, isConnected: isConnectedAccount } = useUserAccount()
 
   return (
@@ -34,6 +34,7 @@ export function ConnectWallet() {
               type="button"
               isDisabled={isLoading || !mounted}
               loadingText="Connect wallet"
+              {...rest}
             >
               Connect wallet
             </Button>
@@ -42,7 +43,7 @@ export function ConnectWallet() {
 
         if (chain.unsupported) {
           return (
-            <Button onClick={openChainModal} type="button" variant="tertiary">
+            <Button onClick={openChainModal} type="button" variant="tertiary" {...rest}>
               Unsupported network
             </Button>
           )
@@ -56,6 +57,7 @@ export function ConnectWallet() {
               alignItems="center"
               type="button"
               variant="tertiary"
+              {...rest}
             >
               {chain.hasIcon && (
                 <Box
@@ -77,7 +79,7 @@ export function ConnectWallet() {
               )}
               <Show above="sm">{chain.name}</Show>
             </Button>
-            <Button onClick={openAccountModal} variant="tertiary">
+            <Button onClick={openAccountModal} variant="tertiary" {...rest}>
               <CustomAvatar
                 ensImage={account.ensAvatar}
                 address={account.address}

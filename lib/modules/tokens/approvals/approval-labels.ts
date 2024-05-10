@@ -28,9 +28,9 @@ export const buildTokenApprovalLabels: BuildTransactionLabels = (args: TokenAppr
 function initApprovalLabelFor(actionType: ApprovalAction, symbol: string) {
   switch (actionType) {
     case 'Locking':
-      return `Approve ${symbol} for locking`
+      return `Approve LP token for locking`
     case 'Staking':
-      return `Approve ${symbol} for staking`
+      return `Approve LP token for staking`
     case 'Swapping':
       return `Approve ${symbol} for swapping`
     case 'Unapprove':

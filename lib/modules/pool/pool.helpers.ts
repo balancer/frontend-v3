@@ -21,10 +21,6 @@ export function addressFor(poolId: string): string {
   return getAddress(poolId.slice(0, 42))
 }
 
-export function isLinear(poolType: GqlPoolType): boolean {
-  return poolType === GqlPoolType.Linear
-}
-
 export function isStable(poolType: GqlPoolType): boolean {
   return (
     poolType === GqlPoolType.Stable ||

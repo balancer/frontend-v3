@@ -1,6 +1,5 @@
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { fNum, safeTokenFormat, bn } from '@/lib/shared/utils/numbers'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { HStack, VStack, Text, Tooltip, Icon, Box } from '@chakra-ui/react'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
@@ -10,6 +9,7 @@ import { usePool } from '../usePool'
 import { ArrowRight } from 'react-feather'
 import { calcShareOfPool, calcUserShareOfPool } from '../pool.helpers'
 import { isNumber } from 'lodash'
+import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 
 interface PoolActionsPriceImpactDetailsProps {
   bptAmount: bigint | undefined
@@ -55,7 +55,7 @@ export function PoolActionsPriceImpactDetails({
             )}).`}
             fontSize="sm"
           >
-            <InfoOutlineIcon color="grayText" />
+            <InfoIcon />
           </Tooltip>
         </HStack>
       </HStack>
@@ -71,7 +71,7 @@ export function PoolActionsPriceImpactDetails({
           )}
           <Tooltip label="Price impact" fontSize="sm">
             {priceImpactLevel === 'low' ? (
-              <InfoOutlineIcon color="grayText" />
+              <InfoIcon />
             ) : (
               <Box>
                 <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
@@ -87,7 +87,7 @@ export function PoolActionsPriceImpactDetails({
             {toCurrency(maxSlippageUsd, { abbreviated: false })} ({fNum('slippage', slippage)})
           </NumberText>
           <Tooltip label="Max slippage" fontSize="sm">
-            <InfoOutlineIcon color="grayText" />
+            <InfoIcon />
           </Tooltip>
         </HStack>
       </HStack>
@@ -100,7 +100,7 @@ export function PoolActionsPriceImpactDetails({
             <NumberText color="grayText">{fNum('sharePercent', futureShareOfPool)}</NumberText>
           </HStack>
           <Tooltip label="Share of pool" fontSize="sm">
-            <InfoOutlineIcon color="grayText" />
+            <InfoIcon />
           </Tooltip>
         </HStack>
       </HStack>

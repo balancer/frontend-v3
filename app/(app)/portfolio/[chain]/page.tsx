@@ -72,12 +72,7 @@ export default function NetworkClaim() {
                 </Text>
               </HStack>
               <HStack justifyContent="space-between">
-                <Stack gap={0}>
-                  <Text variant="secondary" fontWeight="medium">
-                    {pool.name}
-                  </Text>
-                  <PoolName pool={pool} fontWeight="bold" color="fontDefault" />
-                </Stack>
+                <PoolName pool={pool} fontWeight="bold" color="fontDefault" />
 
                 <Button
                   onClick={() => {

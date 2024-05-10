@@ -41,7 +41,7 @@ export function _useAddLiquidity() {
   const [totalUSDValue, setTotalUSDValue] = useState('0')
 
   const { pool, refetch: refetchPool } = usePool()
-  const { getToken } = useTokens()
+  const { getToken, isLoadingTokenPrices } = useTokens()
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
   const { hasValidationErrors } = useTokenInputsValidation()
@@ -101,8 +101,10 @@ export function _useAddLiquidity() {
   const { usdValueFor } = useTotalUsdValue(validTokens)
 
   useEffect(() => {
-    setTotalUSDValue(usdValueFor(humanAmountsIn))
-  }, [humanAmountsIn])
+    if (!isLoadingTokenPrices) {
+      setTotalUSDValue(usdValueFor(humanAmountsIn))
+    }
+  }, [humanAmountsIn, isLoadingTokenPrices])
 
   /**
    * Queries
@@ -138,17 +140,25 @@ export function _useAddLiquidity() {
     setInitialHumanAmountsIn()
   }, [])
 
-  const { isDisabled, disabledReason } = isDisabledWithReason(
+  const disabledConditions: [boolean, string][] = [
     [!isConnected, LABELS.walletNotConnected],
     [areEmptyAmounts(humanAmountsIn), 'You must specify one or more token amounts'],
     [hasValidationErrors, 'Errors in token inputs'],
     [needsToAcceptHighPI, 'Accept high price impact first'],
-    [!acceptPoolRisks, 'Please accept the pool risks first'],
     [simulationQuery.isLoading, 'Fetching quote...'],
     [simulationQuery.isError, 'Error fetching quote'],
     [priceImpactQuery.isLoading, 'Fetching price impact...'],
-    [priceImpactQuery.isError, 'Error fetching price impact']
-  )
+    [priceImpactQuery.isError, 'Error fetching price impact'],
+  ]
+
+  const { isDisabled: isPreDisabled } = isDisabledWithReason(...disabledConditions)
+  const showAcceptPoolRisks = acceptPoolRisks || (!isPreDisabled && !!simulationQuery.data)
+
+  const allDisabledConditions: [boolean, string][] = [
+    ...disabledConditions,
+    [!acceptPoolRisks, 'Please accept the pool risks first'],
+  ]
+  const { isDisabled, disabledReason } = isDisabledWithReason(...allDisabledConditions)
 
   return {
     transactionSteps,
@@ -159,6 +169,7 @@ export function _useAddLiquidity() {
     simulationQuery,
     priceImpactQuery,
     isDisabled,
+    showAcceptPoolRisks,
     disabledReason,
     previewModalDisclosure,
     handler,
