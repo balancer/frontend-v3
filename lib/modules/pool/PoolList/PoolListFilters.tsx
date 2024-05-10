@@ -103,7 +103,8 @@ function PoolMinTvlFilter() {
   const [sliderValue, setSliderValue] = useState(minTvl)
 
   const debounced = useDebouncedCallback((val: number) => {
-    setMinTvl(val)
+    const minTvl = val > 0 ? val : null
+    setMinTvl(minTvl)
   }, defaultDebounceMs)
 
   // set min tvl value here to keep slider performant

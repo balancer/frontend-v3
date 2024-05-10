@@ -33,7 +33,6 @@ export function useConstructAddLiquidityStep() {
 
   const addLiquidityTransaction = useManagedSendTransaction(
     transactionLabels,
-    chainId,
     buildCallDataQuery.data,
     sentryMetaForWagmiSimulation('Error in AddLiquidity gas estimation', {
       simulationQueryData: simulationQuery.data,

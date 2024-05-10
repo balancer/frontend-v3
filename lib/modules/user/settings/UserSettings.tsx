@@ -21,9 +21,9 @@ import {
 } from '@chakra-ui/react'
 import { useUserSettings } from './useUserSettings'
 import { blockInvalidNumberInput } from '@/lib/shared/utils/numbers'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { Percent, Settings } from 'react-feather'
 import { CurrencySelect } from './CurrencySelect'
+import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 
 export function SlippageInput() {
   const { slippage, setSlippage } = useUserSettings()
@@ -112,7 +112,7 @@ export function UserSettings() {
                   Use Signatures
                 </Heading>
                 <Tooltip label={signaturesTooltipLabel} fontSize="sm">
-                  <InfoOutlineIcon color="grayText" />
+                  <InfoIcon />
                 </Tooltip>
               </HStack>
               <EnableSignaturesSelect />

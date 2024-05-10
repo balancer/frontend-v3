@@ -3,7 +3,6 @@ import {
   GqlChain,
   GqlPoolAprValue,
   GqlPoolComposableStableNested,
-  GqlPoolLinearNested,
   GqlPoolTokenDetail,
   GqlPoolType,
 } from '@/lib/shared/services/api/generated/graphql'
@@ -83,7 +82,6 @@ const poolTypeLabelMap: { [key in GqlPoolType]: string } = {
   [GqlPoolType.Gyro3]: 'Gyro 3-CLP',
   [GqlPoolType.Gyroe]: 'Gyro E-CLP',
   [GqlPoolType.Investment]: 'Managed',
-  [GqlPoolType.Linear]: 'Linear',
   [GqlPoolType.LiquidityBootstrapping]: 'LBP',
   [GqlPoolType.MetaStable]: 'Stable',
   [GqlPoolType.PhantomStable]: 'Stable',
@@ -124,15 +122,7 @@ export const poolMouseEnterHandler = (
   router.prefetch(poolPath)
 }
 
-export function isLinearPool(
-  pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested | GqlPoolLinearNested
-) {
-  return pool.__typename === 'GqlPoolLinear' || pool.__typename == 'GqlPoolLinearNested'
-}
-
-export function isComposableStablePool(
-  pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested | GqlPoolLinearNested
-) {
+export function isComposableStablePool(pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested) {
   return (
     pool.__typename === 'GqlPoolComposableStable' ||
     pool.__typename == 'GqlPoolComposableStableNested'

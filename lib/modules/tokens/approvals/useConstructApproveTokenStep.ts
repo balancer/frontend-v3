@@ -73,6 +73,7 @@ export function useConstructApproveTokenStep({
     // refetch allowances after the approval transaction was executed
     async function saveExecutedApproval() {
       if (approvalTransaction.result.isSuccess) {
+        step.execution.reset() // Needed when the flow requires multiple approvals
         await refetchAllowances()
         setDidRefetchAllowances(true)
       }

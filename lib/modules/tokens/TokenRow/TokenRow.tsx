@@ -35,6 +35,7 @@ type TemplateProps = {
   pool?: Pool
   disabled?: boolean
   showSelect?: boolean
+  showInfoPopover?: boolean
 }
 
 function TokenRowTemplate({
@@ -44,6 +45,7 @@ function TokenRowTemplate({
   pool,
   disabled,
   showSelect = false,
+  showInfoPopover = true,
 }: TemplateProps) {
   return (
     <HStack spacing="sm">
@@ -58,7 +60,7 @@ function TokenRowTemplate({
           >
             {token?.symbol || pool?.symbol}
           </Heading>
-          <TokenInfoPopover tokenAddress={address} chain={chain} />
+          {showInfoPopover && <TokenInfoPopover tokenAddress={address} chain={chain} />}
         </HStack>
         <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
           {token?.name || pool?.name}
@@ -117,7 +119,7 @@ export default function TokenRow({
     <HStack width="full" justifyContent="space-between">
       {toggleTokenSelect ? (
         <Button variant="tertiary" onClick={toggleTokenSelect} cursor="pointer" size="xl" p="2">
-          <TokenRowTemplate {...props} showSelect />
+          <TokenRowTemplate {...props} showInfoPopover={false} showSelect />
         </Button>
       ) : (
         <TokenRowTemplate {...props} />

@@ -2,7 +2,6 @@
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { HStack, VStack, Text, Tooltip, Box } from '@chakra-ui/react'
 import { useSwap } from './useSwap'
 import { GqlSorSwapType } from '@/lib/shared/services/api/generated/graphql'
@@ -13,6 +12,7 @@ import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
 import { useTokens } from '../tokens/useTokens'
 import { NativeWrapHandler } from './handlers/NativeWrap.handler'
 import { useEffect } from 'react'
+import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 
 export function OrderRoute() {
   const { simulationQuery } = useSwap()
@@ -29,7 +29,7 @@ export function OrderRoute() {
           BV{orderRouteVersion}: {hopCount} hops
         </Text>
         <Tooltip label="Balancer vault version and number of hops" fontSize="sm">
-          <InfoOutlineIcon color="grayText" />
+          <InfoIcon />
         </Tooltip>
       </HStack>
     </HStack>
@@ -87,7 +87,7 @@ export function SwapDetails() {
           )}
           <Tooltip label="Price impact" fontSize="sm">
             {priceImpactLevel === 'low' ? (
-              <InfoOutlineIcon color="grayText" />
+              <InfoIcon />
             ) : (
               <Box>
                 <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
@@ -103,7 +103,7 @@ export function SwapDetails() {
             -{toCurrency(maxSlippageUsd, { abbreviated: false })} (-{fNum('slippage', _slippage)})
           </NumberText>
           <Tooltip label="Max slippage" fontSize="sm">
-            <InfoOutlineIcon color="grayText" />
+            <InfoIcon />
           </Tooltip>
         </HStack>
       </HStack>
@@ -114,7 +114,7 @@ export function SwapDetails() {
             {fNum('token', limitValue, { abbreviated: false })} {limitToken?.symbol}
           </NumberText>
           <Tooltip label="This is the result if maximum slippage occurs." fontSize="sm">
-            <InfoOutlineIcon color="grayText" />
+            <InfoIcon />
           </Tooltip>
         </HStack>
       </HStack>
