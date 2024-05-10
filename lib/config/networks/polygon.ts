@@ -10,7 +10,7 @@ const networkConfig: NetworkConfig = {
   shortName: 'Polygon',
   chain: GqlChain.Polygon,
   iconPath: '/images/chains/POLYGON.svg',
-  minConfirmations: 8,
+  minConfirmations: 13,
   blockExplorer: {
     baseUrl: 'https://polygonscan.com',
     name: 'Polygonscan',
