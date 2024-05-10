@@ -109,7 +109,7 @@ export function AddLiquidityForm() {
   }
 
   return (
-    <TokenBalancesProvider tokens={validTokens}>
+    <TokenBalancesProvider extTokens={validTokens}>
       <Center h="full" w="full" maxW="lg" mx="auto">
         <Card>
           <VStack spacing="md" align="start" w="full">

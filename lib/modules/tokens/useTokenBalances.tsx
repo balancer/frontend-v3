@@ -125,11 +125,11 @@ export function _useTokenBalances(initTokens?: TokenBase[], extTokens?: TokenBas
 
 type ProviderProps = PropsWithChildren<{
   initTokens?: TokenBase[]
-  tokens?: TokenBase[]
+  extTokens?: TokenBase[]
 }>
 
-export function TokenBalancesProvider({ initTokens, tokens, children }: ProviderProps) {
-  const hook = _useTokenBalances(initTokens, tokens)
+export function TokenBalancesProvider({ initTokens, extTokens, children }: ProviderProps) {
+  const hook = _useTokenBalances(initTokens, extTokens)
   return <TokenBalancesContext.Provider value={hook}>{children}</TokenBalancesContext.Provider>
 }
 
