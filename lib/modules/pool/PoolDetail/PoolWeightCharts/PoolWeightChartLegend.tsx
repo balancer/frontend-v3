@@ -21,7 +21,7 @@ export default function PoolWeightChartLegend({
           >
             <HStack spacing="1">
               <Box width="8px" height="8px" bg={colors[i].from} rounded="full" />
-              <Text whiteSpace="nowrap" color="font.secondary" fontSize="sm"> 
+              <Text whiteSpace="nowrap" color="font.secondary" fontSize="sm">
                 {token.symbol}
               </Text>
             </HStack>

@@ -80,7 +80,7 @@ export default function PoolWeightChart({
   if (isStable(pool.type) && pool.displayTokens.length === 3) {
     return <WeightedPoolWeightChart pool={pool} {...commonProps} />
   }
-  if (isStable(pool.type)) {    
+  if (isStable(pool.type)) {
     return <WeightedPoolWeightChart pool={pool} {...commonProps} />
   }
   if (isClp(pool.type)) {

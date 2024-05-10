@@ -192,7 +192,15 @@ export default function WeightedPoolWeightChart({
             }}
             shadowContainerProps={{ shadow: 'none' }}
           >
-            <Box position="absolute" top="50%" transformOrigin="center" transform="translateY(-50%)" zIndex={5} transition="all 0.2s ease-out"  _groupHover={{ transform: "scale(1.15) translateY(-50%)" }}>
+            <Box
+              position="absolute"
+              top="50%"
+              transformOrigin="center"
+              transform="translateY(-50%)"
+              zIndex={5}
+              transition="all 0.2s ease-out"
+              _groupHover={{ transform: 'scale(1.15) translateY(-50%)' }}
+            >
               <Image
                 src={`/images/chains/${chain}.svg`}
                 alt={`Chain icon for ${chain.toLowerCase()}`}

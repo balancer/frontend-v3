@@ -50,14 +50,14 @@ function getZenGardenProps(
         ...commonProps(subdued),
         height: heightPx,
         width: widthPx,
-        rounded: '80px'
+        rounded: '80px',
       }
     case 'diamond':
       return {
         ...commonProps(subdued),
         height: heightPx,
         width: widthPx,
-        rounded: '80px'
+        rounded: '80px',
       }
     default:
       return {
