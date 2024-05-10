@@ -23,7 +23,7 @@ export default function SwapLayout({ params: { slug }, children }: Props) {
   return (
     <TransactionStateProvider>
       <TokenInputsValidationProvider>
-        <TokenBalancesProvider tokens={initTokens}>
+        <TokenBalancesProvider initTokens={initTokens}>
           <SwapProvider pathParams={{ chain, tokenIn, tokenOut, amountIn, amountOut }}>
             {children}
           </SwapProvider>
