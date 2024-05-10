@@ -18,7 +18,7 @@ import { useSwap } from './useSwap'
 import { SwapTimeout } from './SwapTimeout'
 import { DesktopStepTracker } from '../transactions/transaction-steps/step-tracker/DesktopStepTracker'
 // eslint-disable-next-line max-len
-import { getStylesForModalContentWithStepTracker } from '../transactions/transaction-steps/step-tracker/useStepTrackerProps'
+import { getStylesForModalContentWithStepTracker } from '../transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { capitalize } from 'lodash'
 import { SwapPreview } from './SwapPreview'

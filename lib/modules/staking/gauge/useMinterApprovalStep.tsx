@@ -30,7 +30,7 @@ export function useApproveMinterStep(chain: GqlChain): {
     tooltip: 'Approvel relayer as minter',
   }
 
-  const meta = sentryMetaForWagmiSimulation(
+  const txSimulationMeta = sentryMetaForWagmiSimulation(
     'Error in wagmi tx simulation (Minter approval transaction)',
     {
       minter: contracts.balancer.minter,
@@ -44,12 +44,8 @@ export function useApproveMinterStep(chain: GqlChain): {
     labels,
     chainId,
     args: [contracts.balancer.relayerV6, true],
-    additionalConfig: {
-      query: {
-        enabled: !isLoading,
-        meta,
-      },
-    },
+    enabled: !isLoading && isConnected && !hasMinterApproval,
+    txSimulationMeta,
   }
 
   const step = useMemo(
@@ -61,7 +57,7 @@ export function useApproveMinterStep(chain: GqlChain): {
       renderAction: () => <ManagedTransactionButton id={approveMinterStepId} {...props} />,
       onSuccess: () => refetch(),
     }),
-    [hasMinterApproval, isConnected]
+    [hasMinterApproval, isConnected, isLoading]
   )
 
   return {
