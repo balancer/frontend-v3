@@ -125,16 +125,6 @@ export function _useTokens(
     []
   )
 
-  const amountTokenForUsdValue = useCallback(
-    (token: GqlToken | undefined, usdValue: Numberish) => {
-      if (!token) return '0'
-      if (usdValue === '') return '0'
-
-      return bn(usdValue).div(priceForToken(token)).toFixed(2)
-    },
-    [JSON.stringify(prices)]
-  )
-
   return {
     tokens,
     prices,
@@ -147,7 +137,6 @@ export function _useTokens(
     nativeAssetFilter,
     usdValueForToken,
     getPoolTokenWeightByBalance,
-    amountTokenForUsdValue,
   }
 }
 
