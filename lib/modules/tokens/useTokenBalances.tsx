@@ -11,6 +11,7 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { PropsWithChildren, createContext, useState } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { getNetworkConfig } from '@/lib/config/app.config'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
@@ -21,11 +22,11 @@ export const TokenBalancesContext = createContext<UseTokenBalancesResponse | nul
  * If initTokens are provided the tokens state will be managed internally.
  * If extTokens are provided the tokens state will be managed externally.
  */
-export function _useTokenBalances(initTokens?: TokenBase[], extTokens?: TokenBase[]) {
+export function _useTokenBalances(initTokens?: GqlToken[], extTokens?: GqlToken[]) {
   if (!initTokens && !extTokens) throw new Error('initTokens or tokens must be provided')
   if (initTokens && extTokens) throw new Error('initTokens and tokens cannot be provided together')
 
-  const [_tokens, _setTokens] = useState<TokenBase[]>(initTokens || [])
+  const [_tokens, _setTokens] = useState<GqlToken[]>(initTokens || [])
 
   const { userAddress } = useUserAccount()
   const { exclNativeAssetFilter, nativeAssetFilter } = useTokens()
@@ -107,7 +108,7 @@ export function _useTokenBalances(initTokens?: TokenBase[], extTokens?: TokenBas
     return balances.find(balance => isSameAddress(balance.address, address))
   }
 
-  function setTokens(tokens: TokenBase[]) {
+  function setTokens(tokens: GqlToken[]) {
     if (extTokens) throw new Error('Cannot set tokens when using external tokens')
     _setTokens(tokens)
   }
@@ -124,8 +125,8 @@ export function _useTokenBalances(initTokens?: TokenBase[], extTokens?: TokenBas
 }
 
 type ProviderProps = PropsWithChildren<{
-  initTokens?: TokenBase[]
-  extTokens?: TokenBase[]
+  initTokens?: GqlToken[]
+  extTokens?: GqlToken[]
 }>
 
 export function TokenBalancesProvider({ initTokens, extTokens, children }: ProviderProps) {

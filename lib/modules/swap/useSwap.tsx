@@ -39,7 +39,7 @@ import {
 import { useTokenInputsValidation } from '../tokens/useTokenInputsValidation'
 import { useMakeVarPersisted } from '@/lib/shared/hooks/useMakeVarPersisted'
 import { HumanAmount } from '@balancer/sdk'
-import { chainToSlugMap } from '../pool/pool.utils'
+import { ChainSlug, chainToSlugMap, slugToChainMap } from '../pool/pool.utils'
 import { invert } from 'lodash'
 import { useTransactionSteps } from '../transactions/transaction-steps/useTransactionSteps'
 import { useTokenBalances } from '../tokens/useTokenBalances'
@@ -364,10 +364,13 @@ export function _useSwap(pathParams: PathParams) {
   useEffect(() => {
     resetSwapAmounts()
 
-    const { tokenIn, tokenOut, amountIn, amountOut } = pathParams
+    const { chain, tokenIn, tokenOut, amountIn, amountOut } = pathParams
     const { popularTokens } = networkConfig.tokens
     const symbolToAddressMap = invert(popularTokens || {}) as Record<string, Address>
 
+    if (chain && slugToChainMap[chain as ChainSlug]) {
+      setSelectedChain(slugToChainMap[chain as ChainSlug])
+    }
     if (tokenIn) {
       if (isAddress(tokenIn)) setTokenIn(tokenIn as Address)
       else if (symbolToAddressMap[tokenIn] && isAddress(symbolToAddressMap[tokenIn])) {
