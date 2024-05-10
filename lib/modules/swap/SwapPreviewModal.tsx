@@ -13,7 +13,7 @@ import {
   ModalProps,
   VStack,
 } from '@chakra-ui/react'
-import { RefObject, useEffect, useRef } from 'react'
+import { RefObject, useRef } from 'react'
 import { useSwap } from './useSwap'
 import { SwapTimeout } from './SwapTimeout'
 import { DesktopStepTracker } from '../transactions/transaction-steps/step-tracker/DesktopStepTracker'
@@ -22,9 +22,6 @@ import { getStylesForModalContentWithStepTracker } from '../transactions/transac
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { capitalize } from 'lodash'
 import { SwapPreview } from './SwapPreview'
-import { useTransactionState } from '../transactions/transaction-steps/TransactionStateProvider'
-import { swapStepId } from './useSwapStep'
-import { useTokenBalances } from '../tokens/useTokenBalances'
 
 type Props = {
   isOpen: boolean
@@ -39,19 +36,10 @@ export function SwapPreviewModal({
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const { refetchBalances } = useTokenBalances()
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
 
   const { transactionSteps, swapAction, selectedChain } = useSwap()
-
-  const { getTransaction } = useTransactionState()
-  const transaction = getTransaction(swapStepId)
-
-  useEffect(() => {
-    if (transaction?.result.isSuccess) refetchBalances()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transaction?.result.isSuccess])
 
   return (
     <Modal

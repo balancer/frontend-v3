@@ -35,6 +35,8 @@ export function useSwapStep({
 }: SwapStepParams): TransactionStep2 {
   const [isBuildQueryEnabled, setIsBuildQueryEnabled] = useState(false)
   const { getTransaction } = useTransactionState()
+  const { refetchBalances } = useTokenBalances()
+
   const buildSwapQuery = useBuildSwapQuery({
     handler,
     simulationQuery,
@@ -82,6 +84,7 @@ export function useSwapStep({
       isComplete,
       onActivated: () => setIsBuildQueryEnabled(true),
       onDeactivated: () => setIsBuildQueryEnabled(false),
+      onSuccess: () => refetchBalances(),
       renderAction: () => (
         <VStack w="full">
           <ManagedSendTransactionButton
