@@ -6,7 +6,7 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useEffect, useState } from 'react'
-import { Abi, ContractFunctionArgs, ContractFunctionName } from 'viem'
+import { Abi, Address, ContractFunctionArgs, ContractFunctionName } from 'viem'
 import {
   UseSimulateContractParameters,
   useSimulateContract,
@@ -23,13 +23,13 @@ import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 type IAbiMap = typeof AbiMap
 type AbiMapKey = keyof typeof AbiMap
 
-type AdditionalConfig = Omit<
-  UseSimulateContractParameters<
-    (typeof AbiMap)[keyof typeof AbiMap],
-    ContractFunctionName<(typeof AbiMap)[keyof typeof AbiMap], WriteAbiMutability>
-  >,
-  'abi' | 'address' | 'functionName' | 'args'
->
+// type AdditionalConfig = Omit<
+//   UseSimulateContractParameters<
+//     (typeof AbiMap)[keyof typeof AbiMap],
+//     ContractFunctionName<(typeof AbiMap)[keyof typeof AbiMap], WriteAbiMutability>
+//   >,
+//   'abi' | 'address' | 'functionName' | 'args'
+// >
 
 export interface ManagedTransactionInput {
   contractAddress: string
@@ -38,7 +38,10 @@ export interface ManagedTransactionInput {
   labels: TransactionLabels
   chainId: SupportedChainId
   args?: ContractFunctionArgs<IAbiMap[AbiMapKey], WriteAbiMutability> | null
-  additionalConfig?: AdditionalConfig
+  // TODO: is this YAGNI?
+  // additionalConfig?: AdditionalConfig
+  txSimulationMeta?: Record<string, unknown>
+  enabled: boolean
 }
 
 export function useManagedTransaction({
@@ -48,25 +51,25 @@ export function useManagedTransaction({
   labels,
   chainId,
   args,
-  additionalConfig,
+  // additionalConfig,
+  txSimulationMeta,
+  enabled = true,
 }: ManagedTransactionInput) {
   const [writeArgs, setWriteArgs] = useState(args)
   const { minConfirmations } = useNetworkConfig()
   const { shouldChangeNetwork } = useChainSwitch(chainId)
 
-  const enabled = additionalConfig?.query?.enabled ?? true
-
   const simulateQuery = useSimulateContract({
     abi: AbiMap[contractId] as Abi,
-    address: contractAddress,
+    address: contractAddress as Address,
     functionName: functionName as ContractFunctionName<any, WriteAbiMutability>,
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
     args: writeArgs as any,
-    ...(additionalConfig as any),
+    // ...(additionalConfig as any),
     chainId,
     query: {
       enabled: enabled && !shouldChangeNetwork,
-      meta: additionalConfig?.query?.meta,
+      meta: txSimulationMeta,
     },
   })
 
