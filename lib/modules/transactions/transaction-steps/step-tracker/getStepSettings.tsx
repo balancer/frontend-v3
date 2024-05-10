@@ -32,6 +32,7 @@ export function getStepSettings(
 
   function getStatus(index: number): StepStatus {
     if (index < currentIndex) return 'complete'
+    if (step.isComplete()) return 'complete'
     // When the last step is complete
     if (isActive && isLastStep && transaction?.result.isSuccess) return 'complete'
     if (isActive) return 'active'

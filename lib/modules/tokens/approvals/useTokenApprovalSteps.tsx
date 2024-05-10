@@ -65,7 +65,7 @@ export function useTokenApprovalSteps({
     allowanceFor: tokenAllowances.allowanceFor,
   })
 
-  const steps = useMemo((): TransactionStep2[] => {
+  const steps = useMemo(() => {
     return tokenAmountsToApprove.map(tokenAmountToApprove => {
       const { tokenAddress, requestedRawAmount } = tokenAmountToApprove
       const token = getToken(tokenAddress, chain)
@@ -97,9 +97,9 @@ export function useTokenApprovalSteps({
         stepType: 'tokenApproval',
         labels,
         isComplete,
-        renderAction: () => <ManagedErc20TransactionButton id={id} {...props} />,
+        renderAction: () => <ManagedErc20TransactionButton key={id} id={id} {...props} />,
         onSuccess: () => tokenAllowances.refetchAllowances(),
-      }
+      } as const satisfies TransactionStep2
     })
   }, [tokenAllowances.allowances, userAddress])
 
