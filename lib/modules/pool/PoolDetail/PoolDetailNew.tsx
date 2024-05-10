@@ -3,7 +3,6 @@
 import { Grid, GridItem, Skeleton, Stack } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolCompositionNew'
 // import PoolMyLiquidity from './PoolMyLiquidity'
-import PoolMetaBadges from './PoolMetaBadges/PoolMetaBadges'
 import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
 import { PoolDetailStatsChart } from './PoolDetailStatsChart'
 import { PoolDetailAttributesRisksContracts } from './PoolDetailAttributesRisksContracts'
@@ -13,17 +12,13 @@ export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
     <Stack w="full">
       <Grid
         w="full"
-        rowGap="2xl"
+        rowGap={{ base: 'md', lg: '2xl' }}
         templateColumns="1fr"
-        templateAreas={`"meta-badges"
-               "stats-chart"
-               "activity"
-               "composition"
-               "attributes-risks-contracts"`}
+        templateAreas={`"stats-chart"
+                        "activity"
+                        "composition"
+                        "attributes-risks-contracts"`}
       >
-        <GridItem area="meta-badges">
-          {isLoading ? <Skeleton h="42px" w="sm" /> : <PoolMetaBadges />}
-        </GridItem>
         <GridItem area="stats-chart">
           <PoolDetailStatsChart isLoading={isLoading} />
         </GridItem>
