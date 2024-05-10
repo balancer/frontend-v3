@@ -71,11 +71,7 @@ function selectSwapHandler(
   return new DefaultSwapHandler(apolloClient)
 }
 
-export function _useSwap(
-  pathParams: PathParams,
-  updateTokensProviderChain: (chain: GqlChain) => void
-) {
-  const { tokens: selectedChainTokens } = useTokenBalances()
+export function _useSwap(pathParams: PathParams) {
   const swapStateVar = useMakeVarPersisted<SwapState>(
     {
       tokenIn: {
@@ -99,7 +95,8 @@ export function _useSwap(
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
 
   const { isConnected } = useUserAccount()
-  const { getToken } = useTokens()
+  const { getToken, getTokensByChain } = useTokens()
+  const { tokens, setTokens } = useTokenBalances()
   const { hasValidationErrors } = useTokenInputsValidation()
 
   const networkConfig = getNetworkConfig(swapState.selectedChain)
@@ -163,7 +160,6 @@ export function _useSwap(
   }
 
   function setSelectedChain(selectedChain: GqlChain) {
-    updateTokensProviderChain(selectedChain)
     const defaultTokenState = getDefaultTokenState(selectedChain)
     swapStateVar({
       ...defaultTokenState,
@@ -414,6 +410,10 @@ export function _useSwap(
     replaceUrlPath()
   }, [swapState.selectedChain, swapState.tokenIn, swapState.tokenOut, swapState.tokenIn.amount])
 
+  useEffect(() => {
+    setTokens(getTokensByChain(swapState.selectedChain))
+  }, [swapState.selectedChain])
+
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [!validAmountOut, 'Invalid amount out'],
@@ -426,7 +426,7 @@ export function _useSwap(
   return {
     ...swapState,
     transactionSteps,
-    selectedChainTokens,
+    tokens,
     tokenInInfo,
     tokenOutInfo,
     tokenSelectKey,
@@ -450,11 +450,10 @@ export function _useSwap(
 
 type Props = PropsWithChildren<{
   pathParams: PathParams
-  updateTokensProviderChain: (chain: GqlChain) => void
 }>
 
-export function SwapProvider({ pathParams, updateTokensProviderChain, children }: Props) {
-  const hook = _useSwap(pathParams, updateTokensProviderChain)
+export function SwapProvider({ pathParams, children }: Props) {
+  const hook = _useSwap(pathParams)
   return <SwapContext.Provider value={hook}>{children}</SwapContext.Provider>
 }
 

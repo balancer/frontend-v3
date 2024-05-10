@@ -8,7 +8,7 @@ import { TokenAmount, TokenBase } from './token.types'
 import { Address, formatUnits } from 'viem'
 import { isLoadingQueries, isRefetchingQueries, refetchQueries } from '@/lib/shared/utils/queries'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { PropsWithChildren, createContext } from 'react'
+import { PropsWithChildren, createContext, useState } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { getNetworkConfig } from '@/lib/config/app.config'
 
@@ -17,7 +17,8 @@ const BALANCE_CACHE_TIME_MS = 30_000
 export type UseTokenBalancesResponse = ReturnType<typeof _useTokenBalances>
 export const TokenBalancesContext = createContext<UseTokenBalancesResponse | null>(null)
 
-export function _useTokenBalances(tokens: TokenBase[]) {
+export function _useTokenBalances(initTokens: TokenBase[]) {
+  const [tokens, setTokens] = useState<TokenBase[]>(initTokens)
   const { userAddress } = useUserAccount()
   const { exclNativeAssetFilter, nativeAssetFilter } = useTokens()
 
@@ -101,6 +102,7 @@ export function _useTokenBalances(tokens: TokenBase[]) {
     balances,
     isBalancesLoading: isLoadingQueries(tokenBalancesQuery, nativeBalanceQuery),
     isBalancesRefetching: isRefetchingQueries(tokenBalancesQuery, nativeBalanceQuery),
+    setTokens,
     refetchBalances,
     balanceFor,
   }

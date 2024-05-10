@@ -40,7 +40,7 @@ export function SwapForm() {
     tokenIn,
     tokenOut,
     selectedChain,
-    selectedChainTokens,
+    tokens,
     tokenSelectKey,
     isDisabled,
     disabledReason,
@@ -72,7 +72,7 @@ export function SwapForm() {
   }
 
   // Exclude the currently selected token from the token select modal search.
-  const tokenSelectTokens = selectedChainTokens.filter(
+  const tokenSelectTokens = tokens.filter(
     token =>
       !isSameAddress(
         token.address,
