@@ -8,25 +8,37 @@ import { TokenAmount, TokenBase } from './token.types'
 import { Address, formatUnits } from 'viem'
 import { isLoadingQueries, isRefetchingQueries, refetchQueries } from '@/lib/shared/utils/queries'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { PropsWithChildren, createContext } from 'react'
+import { PropsWithChildren, createContext, useState } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { getNetworkConfig } from '@/lib/config/app.config'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
 export type UseTokenBalancesResponse = ReturnType<typeof _useTokenBalances>
 export const TokenBalancesContext = createContext<UseTokenBalancesResponse | null>(null)
 
-export function _useTokenBalances(tokens: TokenBase[]) {
+/**
+ * If initTokens are provided the tokens state will be managed internally.
+ * If extTokens are provided the tokens state will be managed externally.
+ */
+export function _useTokenBalances(initTokens?: GqlToken[], extTokens?: GqlToken[]) {
+  if (!initTokens && !extTokens) throw new Error('initTokens or tokens must be provided')
+  if (initTokens && extTokens) throw new Error('initTokens and tokens cannot be provided together')
+
+  const [_tokens, _setTokens] = useState<GqlToken[]>(initTokens || [])
+
   const { userAddress } = useUserAccount()
   const { exclNativeAssetFilter, nativeAssetFilter } = useTokens()
+
+  const tokens = extTokens || _tokens
+
+  const includesNativeAsset = tokens.some(nativeAssetFilter)
+  const tokensExclNativeAsset = tokens.filter(exclNativeAssetFilter)
 
   const NO_TOKENS_CHAIN_ID = 1 // this should never be used as the multicall is disabled when no tokens
   const chainId = tokens.length ? tokens[0].chainId : NO_TOKENS_CHAIN_ID
   const networkConfig = getNetworkConfig(chainId)
-
-  const includesNativeAsset = tokens.some(nativeAssetFilter)
-  const _tokens = tokens.filter(exclNativeAssetFilter)
 
   const nativeBalanceQuery = useBalance({
     chainId,
@@ -42,10 +54,10 @@ export function _useTokenBalances(tokens: TokenBase[]) {
     // cache if this list of tokens is large.
     {
       query: {
-        enabled: !!userAddress && _tokens.length > 0,
+        enabled: !!userAddress && tokensExclNativeAsset.length > 0,
         gcTime: BALANCE_CACHE_TIME_MS,
       },
-      contracts: _tokens.map(token => ({
+      contracts: tokensExclNativeAsset.map(token => ({
         chainId,
         abi: erc20Abi,
         address: token.address as Address,
@@ -63,7 +75,7 @@ export function _useTokenBalances(tokens: TokenBase[]) {
 
   const balances = (tokenBalancesQuery.data || [])
     .map((balance, index) => {
-      const token = _tokens[index]
+      const token = tokensExclNativeAsset[index]
       if (!token) return
       const amount = balance.status === 'success' ? (balance.result as bigint) : 0n
 
@@ -96,21 +108,29 @@ export function _useTokenBalances(tokens: TokenBase[]) {
     return balances.find(balance => isSameAddress(balance.address, address))
   }
 
+  function setTokens(tokens: GqlToken[]) {
+    if (extTokens) throw new Error('Cannot set tokens when using external tokens')
+    _setTokens(tokens)
+  }
+
   return {
+    tokens,
     balances,
     isBalancesLoading: isLoadingQueries(tokenBalancesQuery, nativeBalanceQuery),
     isBalancesRefetching: isRefetchingQueries(tokenBalancesQuery, nativeBalanceQuery),
+    setTokens,
     refetchBalances,
     balanceFor,
   }
 }
 
 type ProviderProps = PropsWithChildren<{
-  tokens: TokenBase[]
+  initTokens?: GqlToken[]
+  extTokens?: GqlToken[]
 }>
 
-export function TokenBalancesProvider({ tokens, children }: ProviderProps) {
-  const hook = _useTokenBalances(tokens)
+export function TokenBalancesProvider({ initTokens, extTokens, children }: ProviderProps) {
+  const hook = _useTokenBalances(initTokens, extTokens)
   return <TokenBalancesContext.Provider value={hook}>{children}</TokenBalancesContext.Provider>
 }
 

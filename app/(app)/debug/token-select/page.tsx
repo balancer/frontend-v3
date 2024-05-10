@@ -18,7 +18,7 @@ export default function TokenSelectPage() {
   }
 
   return (
-    <TokenBalancesProvider tokens={getTokensByChain(1)}>
+    <TokenBalancesProvider extTokens={getTokensByChain(1)}>
       <h1>TokenSelectPage</h1>
       <Text>Selected token: {selectedToken?.symbol}</Text>
       <Button ref={tokenSelectBtn} onClick={tokenSelectDisclosure.onOpen}>

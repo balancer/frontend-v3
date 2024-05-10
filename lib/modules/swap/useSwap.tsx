@@ -42,6 +42,7 @@ import { HumanAmount } from '@balancer/sdk'
 import { ChainSlug, chainToSlugMap, slugToChainMap } from '../pool/pool.utils'
 import { invert } from 'lodash'
 import { useTransactionSteps } from '../transactions/transaction-steps/useTransactionSteps'
+import { useTokenBalances } from '../tokens/useTokenBalances'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -94,7 +95,8 @@ export function _useSwap(pathParams: PathParams) {
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
 
   const { isConnected } = useUserAccount()
-  const { getToken } = useTokens()
+  const { getToken, getTokensByChain } = useTokens()
+  const { tokens, setTokens } = useTokenBalances()
   const { hasValidationErrors } = useTokenInputsValidation()
 
   const networkConfig = getNetworkConfig(swapState.selectedChain)
@@ -411,6 +413,10 @@ export function _useSwap(pathParams: PathParams) {
     replaceUrlPath()
   }, [swapState.selectedChain, swapState.tokenIn, swapState.tokenOut, swapState.tokenIn.amount])
 
+  useEffect(() => {
+    setTokens(getTokensByChain(swapState.selectedChain))
+  }, [swapState.selectedChain])
+
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [!validAmountOut, 'Invalid amount out'],
@@ -423,6 +429,7 @@ export function _useSwap(pathParams: PathParams) {
   return {
     ...swapState,
     transactionSteps,
+    tokens,
     tokenInInfo,
     tokenOutInfo,
     tokenSelectKey,
