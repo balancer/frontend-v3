@@ -217,8 +217,8 @@ export default function BoostedPoolWeightChart({
               <Image
                 src={`/images/chains/${chain}.svg`}
                 alt={`Chain icon for ${chain.toLowerCase()}`}
-                width={isSmall ? 15 : 25}
-                height={isSmall ? 15 : 25}
+                width={isSmall ? 28 : 36}
+                height={isSmall ? 28 : 36}
               />
             </Box>
 
