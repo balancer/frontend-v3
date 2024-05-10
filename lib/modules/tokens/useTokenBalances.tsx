@@ -97,6 +97,7 @@ export function _useTokenBalances(tokens: TokenBase[]) {
   }
 
   return {
+    tokens,
     balances,
     isBalancesLoading: isLoadingQueries(tokenBalancesQuery, nativeBalanceQuery),
     isBalancesRefetching: isRefetchingQueries(tokenBalancesQuery, nativeBalanceQuery),
