@@ -3,7 +3,7 @@ import { getChainId } from '@/lib/config/app.config'
 import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 import {
   TransactionLabels,
-  TransactionStep2,
+  TransactionStep,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
@@ -32,7 +32,7 @@ export function useSwapStep({
   isNativeAssetIn,
   tokenInInfo,
   tokenOutInfo,
-}: SwapStepParams): TransactionStep2 {
+}: SwapStepParams): TransactionStep {
   const [isBuildQueryEnabled, setIsBuildQueryEnabled] = useState(false)
   const { getTransaction } = useTransactionState()
   const { refetchBalances } = useTokenBalances()

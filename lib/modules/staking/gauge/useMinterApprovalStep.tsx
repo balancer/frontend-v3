@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   TransactionLabels,
-  TransactionStep2,
+  TransactionStep,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { ManagedTransactionInput } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { getNetworkConfig } from '@/lib/config/app.config'
@@ -15,7 +15,7 @@ import { ManagedTransactionButton } from '../../transactions/transaction-steps/T
 const approveMinterStepId = 'approve-minter'
 export function useApproveMinterStep(chain: GqlChain): {
   isLoading: boolean
-  step: TransactionStep2
+  step: TransactionStep
 } {
   const { isConnected } = useUserAccount()
   const { contracts, chainId } = getNetworkConfig(chain)
@@ -49,7 +49,7 @@ export function useApproveMinterStep(chain: GqlChain): {
   }
 
   const step = useMemo(
-    (): TransactionStep2 => ({
+    (): TransactionStep => ({
       id: approveMinterStepId,
       stepType: 'minterApproval',
       labels,

@@ -5,7 +5,7 @@ import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { Alert, Button, VStack } from '@chakra-ui/react'
 import { StepConfig } from './useIterateSteps'
-import { TransactionStep2 } from './lib'
+import { TransactionStep } from './lib'
 import { SignRelayerState } from '../../relayer/useRelayerSignature'
 import { useMemo } from 'react'
 
@@ -17,7 +17,7 @@ export const signRelayerStepTitle = 'Sign relayer'
  */
 export const signRelayerStep: StepConfig = { title: signRelayerStepTitle, render: () => <></> }
 
-export function useSignRelayerStep(): TransactionStep2 {
+export function useSignRelayerStep(): TransactionStep {
   const { isConnected } = useUserAccount()
   const { signRelayer, signRelayerState, isLoading, isDisabled, buttonLabel, error } =
     useSignRelayerApproval()

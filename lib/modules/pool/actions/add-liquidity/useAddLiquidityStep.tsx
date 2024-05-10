@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   TransactionLabels,
-  TransactionStep2,
+  TransactionStep,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
 import { usePool } from '../../usePool'
@@ -19,7 +19,7 @@ export function useAddLiquidityStep(
   handler: AddLiquidityHandler,
   humanAmountsIn: HumanAmountIn[],
   simulationQuery: AddLiquiditySimulationQueryResult
-): TransactionStep2 {
+): TransactionStep {
   const [isBuildQueryEnabled, setIsBuildQueryEnabled] = useState(false)
 
   const { chainId } = usePool()

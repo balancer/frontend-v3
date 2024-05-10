@@ -1,7 +1,7 @@
 import {
   ManagedResult,
   TransactionState,
-  TransactionStep2,
+  TransactionStep,
   getTransactionState,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { ColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
@@ -9,7 +9,7 @@ import { ColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 type StepStatus = 'active' | 'complete' | 'incomplete'
 
 export type StepProps = {
-  step: TransactionStep2
+  step: TransactionStep
   index: number
   currentIndex: number
   colorMode: ColorMode

@@ -6,7 +6,7 @@ import { ManagedTransactionButton } from '@/lib/modules/transactions/transaction
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import {
   TransactionLabels,
-  TransactionStep2,
+  TransactionStep,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { GqlChain, GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
@@ -73,7 +73,7 @@ export function useClaimAllRewardsStep(pools: PoolListItem[]) {
   const isComplete = () => isConnected && !!transaction?.result.isSuccess
 
   const step = useMemo(
-    (): TransactionStep2 => ({
+    (): TransactionStep => ({
       id: claimAllRewardsStepId,
       labels,
       stepType: 'claim',

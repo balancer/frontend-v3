@@ -1,6 +1,6 @@
 import { ManagedTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
-import { TransactionStep2, swapStepId } from '@/lib/modules/transactions/transaction-steps/lib'
+import { TransactionStep, swapStepId } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useMemo, useState } from 'react'
@@ -9,7 +9,7 @@ import { Pool, usePool } from '../../usePool'
 
 const stakeStepId = 'stake'
 
-export function useStakingStep(pool: Pool, rawDepositAmount: bigint): TransactionStep2 {
+export function useStakingStep(pool: Pool, rawDepositAmount: bigint): TransactionStep {
   const [isStakeEnabled, setIsStakeEnabled] = useState(false)
 
   const { refetch: refetchPool, chainId } = usePool()

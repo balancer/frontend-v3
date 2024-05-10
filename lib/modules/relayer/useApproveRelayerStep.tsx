@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { SupportedChainId } from '@/lib/config/config.types'
-import { TransactionLabels, TransactionStep2 } from '../transactions/transaction-steps/lib'
+import { TransactionLabels, TransactionStep } from '../transactions/transaction-steps/lib'
 import { ManagedTransactionButton } from '../transactions/transaction-steps/TransactionButton'
 import { ManagedTransactionInput } from '../web3/contracts/useManagedTransaction'
 import { useUserAccount } from '../web3/useUserAccount'
@@ -10,7 +10,7 @@ import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useMemo } from 'react'
 
 const approveRelayerStepId = 'approve-relayer'
-export function useApproveRelayerStep(chainId: SupportedChainId): TransactionStep2 {
+export function useApproveRelayerStep(chainId: SupportedChainId): TransactionStep {
   const { userAddress, isConnected } = useUserAccount()
   const config = getNetworkConfig(chainId)
 

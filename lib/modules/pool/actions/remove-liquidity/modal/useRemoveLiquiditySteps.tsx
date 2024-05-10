@@ -4,7 +4,7 @@ import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import { usePool } from '../../../usePool'
 import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { TransactionStep2 } from '@/lib/modules/transactions/transaction-steps/lib'
+import { TransactionStep } from '@/lib/modules/transactions/transaction-steps/lib'
 import { RemoveLiquiditySimulationQueryResult } from '../queries/useRemoveLiquiditySimulationQuery'
 import { RemoveLiquidityBuildQueryResponse } from '../queries/useRemoveLiquidityBuildCallDataQuery'
 import { useRemoveLiquidityStep } from './useRemoveLiquidityStep'
@@ -14,7 +14,7 @@ import { shouldUseRecoveryRemoveLiquidity } from '../../LiquidityActionHelpers'
 export function useRemoveLiquiditySteps(
   simulationQuery: RemoveLiquiditySimulationQueryResult,
   buildCallDataQuery: RemoveLiquidityBuildQueryResponse
-): TransactionStep2[] {
+): TransactionStep[] {
   const relayerMode = useRelayerMode()
   const { chainId, pool } = usePool()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)

@@ -65,15 +65,6 @@ type Executable = {
 export type TransactionStep = {
   id: string
   stepType: StepType
-  transactionLabels: TransactionLabels
-  isComplete: () => boolean
-}
-
-export type FlowStep = TransactionStep & ManagedResult
-
-export type TransactionStep2 = {
-  id: string
-  stepType: StepType
   labels: TransactionLabels
   isComplete: () => boolean
   renderAction: () => React.ReactNode
@@ -82,27 +73,6 @@ export type TransactionStep2 = {
   onActivated?: () => void
   onDeactivated?: () => void
 }
-
-// Allows adding extra properties like set state callbacks to TransactionStep
-export type TransactionStepHook = {
-  transactionStep: TransactionStep
-}
-
-// Core steps that require frozen quotes
-export const addLiquidityStepId = 'addLiquidityId'
-export const removeLiquidityStepId = 'removeLiquidityId'
-export const swapStepId = 'swapId'
-
-export function isCoreStep(stepId?: string) {
-  if (!stepId) return false
-  const coreSteps = new Set([addLiquidityStepId, removeLiquidityStepId, swapStepId])
-  return coreSteps.has(stepId)
-}
-
-export type CoreStepId =
-  | typeof addLiquidityStepId
-  | typeof removeLiquidityStepId
-  | typeof swapStepId
 
 export function getTransactionState(transactionBundle?: TransactionBundle): TransactionState {
   if (!transactionBundle) return TransactionState.Ready

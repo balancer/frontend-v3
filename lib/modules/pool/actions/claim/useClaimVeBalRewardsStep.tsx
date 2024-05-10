@@ -4,7 +4,7 @@ import { ManagedTransactionButton } from '@/lib/modules/transactions/transaction
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import {
   TransactionLabels,
-  TransactionStep2,
+  TransactionStep,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { ManagedTransactionInput } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
@@ -21,7 +21,7 @@ const labels: TransactionLabels = {
 
 export const claimVeBalRewardsStepId = 'claim-vebal-rewards'
 
-export function useClaimVeBalRewardsStep(): TransactionStep2 {
+export function useClaimVeBalRewardsStep(): TransactionStep {
   const { userAddress } = useUserAccount()
   const { getTransaction } = useTransactionState()
 

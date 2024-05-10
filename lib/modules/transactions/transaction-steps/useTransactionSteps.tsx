@@ -2,12 +2,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { getTransactionState, TransactionState, TransactionStep2 } from './lib'
+import { getTransactionState, TransactionState, TransactionStep } from './lib'
 import { useTransactionState } from './TransactionStateProvider'
 
 export type TransactionStepsResponse = ReturnType<typeof useTransactionSteps>
 
-export function useTransactionSteps(steps: TransactionStep2[] = [], isLoading = false) {
+export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = false) {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
   const { getTransaction } = useTransactionState()
 

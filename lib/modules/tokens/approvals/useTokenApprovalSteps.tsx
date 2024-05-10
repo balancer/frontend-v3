@@ -8,7 +8,7 @@ import { ApprovalAction, buildTokenApprovalLabels } from './approval-labels'
 import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
 import { getChainId, getNativeAssetAddress } from '@/lib/config/app.config'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { TransactionStep2 } from '../../transactions/transaction-steps/lib'
+import { TransactionStep } from '../../transactions/transaction-steps/lib'
 import { ManagedErc20TransactionButton } from '../../transactions/transaction-steps/TransactionButton'
 import { ManagedErc20TransactionInput } from '../../web3/contracts/useManagedErc20Transaction'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
@@ -31,7 +31,7 @@ export function useTokenApprovalSteps({
   approvalAmounts,
   actionType,
   bptSymbol,
-}: Params): { isLoading: boolean; steps: TransactionStep2[] } {
+}: Params): { isLoading: boolean; steps: TransactionStep[] } {
   const { userAddress } = useUserAccount()
   const { getToken } = useTokens()
   const nativeAssetAddress = getNativeAssetAddress(chain)
@@ -93,7 +93,7 @@ export function useTokenApprovalSteps({
         isComplete,
         renderAction: () => <ManagedErc20TransactionButton key={id} id={id} {...props} />,
         onSuccess: () => tokenAllowances.refetchAllowances(),
-      } as const satisfies TransactionStep2
+      } as const satisfies TransactionStep
     })
   }, [tokenAllowances.allowances, userAddress])
 

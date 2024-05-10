@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   TransactionLabels,
-  TransactionStep2,
+  TransactionStep,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { parseUnits } from 'viem'
 import { BPT_DECIMALS } from '../../pool.constants'
@@ -20,7 +20,7 @@ import { useTransactionState } from '@/lib/modules/transactions/transaction-step
 
 const claimAndUnstakeStepId = 'claim-and-unstake'
 
-export function useClaimAndUnstakeStep(pool: Pool): { isLoading: boolean; step: TransactionStep2 } {
+export function useClaimAndUnstakeStep(pool: Pool): { isLoading: boolean; step: TransactionStep } {
   const { getTransaction } = useTransactionState()
   const { contracts, chainId } = getNetworkConfig(pool.chain)
 
@@ -71,7 +71,7 @@ export function useClaimAndUnstakeStep(pool: Pool): { isLoading: boolean; step: 
   const isComplete = () => transaction?.result.isSuccess || false
 
   const step = useMemo(
-    (): TransactionStep2 => ({
+    (): TransactionStep => ({
       id: claimAndUnstakeStepId,
       stepType: 'claimAndUnstake',
       labels,

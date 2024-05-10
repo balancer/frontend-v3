@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   TransactionLabels,
-  TransactionStep2,
+  TransactionStep,
   removeLiquidityStepId,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { RemoveLiquidityBuildQueryResponse } from '../queries/useRemoveLiquidityBuildCallDataQuery'
@@ -15,7 +15,7 @@ import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transac
 export function useRemoveLiquidityStep(
   simulationQuery: RemoveLiquiditySimulationQueryResult,
   buildCallDataQuery: RemoveLiquidityBuildQueryResponse
-): TransactionStep2 {
+): TransactionStep {
   const { chainId, refetch: refetchPoolUserBalances } = usePool()
   const { getTransaction } = useTransactionState()
 

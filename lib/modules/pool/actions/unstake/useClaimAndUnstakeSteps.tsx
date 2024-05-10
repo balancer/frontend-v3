@@ -2,7 +2,7 @@ import { useHasApprovedRelayer } from '@/lib/modules/relayer/useHasApprovedRelay
 import { useHasMinterApproval } from '@/lib/modules/staking/gauge/useHasMinterApproval'
 import { useApproveRelayerStep } from '@/lib/modules/relayer/useApproveRelayerStep'
 import { getChainId } from '@/lib/config/app.config'
-import { TransactionStep2 } from '@/lib/modules/transactions/transaction-steps/lib'
+import { TransactionStep } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useClaimAndUnstakeStep } from './useClaimAndUnstakeStep'
 import { Pool } from '../../usePool'
 import { useMemo } from 'react'
@@ -10,7 +10,7 @@ import { useApproveMinterStep } from '@/lib/modules/staking/gauge/useMinterAppro
 
 export function useClaimAndUnstakeSteps(pool: Pool): {
   isLoading: boolean
-  steps: TransactionStep2[]
+  steps: TransactionStep[]
 } {
   const chainId = getChainId(pool.chain)
 
@@ -24,7 +24,7 @@ export function useClaimAndUnstakeSteps(pool: Pool): {
   const { step: claimAndUnstakeStep, isLoading: isLoadingClaimAndUnstakeStep } =
     useClaimAndUnstakeStep(pool)
 
-  const steps = useMemo((): TransactionStep2[] => {
+  const steps = useMemo((): TransactionStep[] => {
     const _steps = [claimAndUnstakeStep]
     if (!hasApprovedRelayer) _steps.unshift(approveRelayerStep)
     if (!hasMinterApproval) _steps.unshift(minterApprovalStep)
