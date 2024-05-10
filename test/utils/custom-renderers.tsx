@@ -32,7 +32,7 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { testQueryClient } from './react-query'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { testWagmiConfig } from '@/test/anvil/testWagmiConfig'
-import { TransactionFlowProvider } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
+import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -163,7 +163,7 @@ export const buildDefaultPoolTestProvider =
   // eslint-disable-next-line react/display-name
   ({ children }: PropsWithChildren) => {
     return (
-      <TransactionFlowProvider>
+      <TransactionStateProvider>
         <PoolProvider
           id={pool.id}
           chain={GqlChain.Mainnet}
@@ -175,7 +175,7 @@ export const buildDefaultPoolTestProvider =
         >
           {children}
         </PoolProvider>
-      </TransactionFlowProvider>
+      </TransactionStateProvider>
     )
   }
 

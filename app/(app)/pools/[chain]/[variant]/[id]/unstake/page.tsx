@@ -2,14 +2,14 @@
 
 import { PoolActionsLayout } from '@/lib/modules/pool/actions/PoolActionsLayout'
 import { UnstakeForm } from '@/lib/modules/pool/actions/unstake/UnstakeForm'
-import { TransactionFlowProvider } from '@/lib/modules/transactions/transaction-steps/TransactionFlowProvider'
+import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 
 export default function UnstakePage() {
   return (
-    <TransactionFlowProvider>
+    <TransactionStateProvider>
       <PoolActionsLayout>
         <UnstakeForm />
       </PoolActionsLayout>
-    </TransactionFlowProvider>
+    </TransactionStateProvider>
   )
 }
