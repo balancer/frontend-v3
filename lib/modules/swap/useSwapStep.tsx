@@ -62,7 +62,7 @@ export function useSwapStep({
     if (simulationQuery.data) {
       buildSwapQuery.refetch()
     }
-  }, [JSON.stringify(simulationQuery.data)])
+  }, [simulationQuery.data])
 
   const chainId = buildSwapQuery.data?.chainId || getChainId(swapState.selectedChain)
 
