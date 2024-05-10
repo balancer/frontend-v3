@@ -1,4 +1,4 @@
-import { BoxProps, Card, Grid, GridItem, Heading, VStack } from '@chakra-ui/react'
+import { BoxProps, Card, Grid, GridItem, Heading, VStack, Box, Text } from '@chakra-ui/react'
 import { FeaturePoolCard } from './FeaturePoolCard'
 import { GetFeaturedPoolsQuery } from '@/lib/shared/services/api/generated/graphql'
 import { PoolCarousel } from './PoolCarousel'
@@ -26,40 +26,46 @@ export function FeaturedPools({ pools }: { pools: GetFeaturedPoolsQuery['feature
 
   return (
     <VStack alignItems="flex-start" spacing="md">
-      <Heading as="h2" size="lg" variant="special">
-        Featured pools
-      </Heading>
-      <PoolCarousel pools={featuredPools} display={{ base: 'block', lg: 'none' }} w="full" />
+      <PoolCarousel pools={featuredPools} display={{ base: 'block', md: 'none' }} w="full" />
       <Card
-        display={{ base: 'none', lg: 'flex' }}
+        display={{ base: 'none', md: 'flex' }}
         variant="level2"
         width="full"
-        height="550px"
         alignItems="center"
         justifyContent="center"
         position="relative"
       >
+        <Box position="absolute" top="0">
+          <Text color="font.secondary" variant="eyebrow" px="4" py="1.5" fontSize="11px">
+            Featured pools
+          </Text>
+        </Box>
         <Grid
           columnGap="4"
-          rowGap="4"
           width="full"
           height="full"
-          templateColumns="1fr 1fr 1fr 1fr"
-          templateRows="1fr 1fr"
+          templateColumns="1fr 1fr 1fr"
+          templateRows="1fr"
           p="0"
+          pt="3"
         >
-          <GridItem position="relative" colSpan={2} rowSpan={2}>
-            {primaryPool && (
-              <FeaturePoolCard pool={primaryPool} chain={primaryPool.chain} hasLegend />
-            )}
+          <GridItem colSpan={1} rowSpan={1} role="group">
+            <FeaturePoolCard
+              pool={primaryPool}
+              chain={primaryPool.chain}
+              featuredReason="Liquid staked $SOL on an L2" //replace with {primaryPool.description} once API is updated
+              isSmall
+              bgSize="275px"
+            />
           </GridItem>
           <GridItem colSpan={1} rowSpan={1}>
             {poolsWithoutPrimary[0] && (
               <FeaturePoolCard
                 pool={poolsWithoutPrimary[0]}
                 chain={poolsWithoutPrimary[0].chain}
+                featuredReason="For LRT points maxxing" //replace with {poolsWithoutPrimary[0].description} once API is updated
                 isSmall
-                bgSize="200px"
+                bgSize="300px"
               />
             )}
           </GridItem>
@@ -68,28 +74,9 @@ export function FeaturedPools({ pools }: { pools: GetFeaturedPoolsQuery['feature
               <FeaturePoolCard
                 pool={poolsWithoutPrimary[1]}
                 chain={poolsWithoutPrimary[1].chain}
+                featuredReason="For concentrated liquidity enjoyooors" //replace with {poolsWithoutPrimary[1].description} once API is updated
                 isSmall
-                bgSize="200px"
-              />
-            )}
-          </GridItem>
-          <GridItem colSpan={1} rowSpan={1}>
-            {poolsWithoutPrimary[2] && (
-              <FeaturePoolCard
-                pool={poolsWithoutPrimary[2]}
-                chain={poolsWithoutPrimary[2].chain}
-                isSmall
-                bgSize="200px"
-              />
-            )}
-          </GridItem>
-          <GridItem colSpan={1} rowSpan={1}>
-            {poolsWithoutPrimary[3] && (
-              <FeaturePoolCard
-                pool={poolsWithoutPrimary[3]}
-                chain={poolsWithoutPrimary[3].chain}
-                isSmall
-                bgSize="200px"
+                bgSize="300px"
               />
             )}
           </GridItem>
