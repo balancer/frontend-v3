@@ -8,6 +8,8 @@ import { swapQueryKeys } from './swapQueryKeys'
 import { SimulateSwapInputs, SimulateSwapResponse } from '../swap.types'
 import { sentryMetaForSwapHandler } from '@/lib/shared/utils/query-errors'
 
+export type SwapSimulationQueryResult = ReturnType<typeof useSimulateSwapQuery>
+
 export type SimulateSwapParams = {
   handler: SwapHandler
   swapInputs: SimulateSwapInputs

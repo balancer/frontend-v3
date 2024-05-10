@@ -38,14 +38,8 @@ export function SwapPreviewModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const {
-    currentStep,
-    currentStepIndex,
-    swapStepConfigs,
-    swapAction,
-    selectedChain,
-    useOnStepCompleted,
-  } = useSwap()
+
+  const { transactionSteps, swapAction, selectedChain } = useSwap()
 
   return (
     <Modal
@@ -59,11 +53,7 @@ export function SwapPreviewModal({
       <ModalOverlay />
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && (
-          <DesktopStepTracker
-            currentStepIndex={currentStepIndex}
-            stepConfigs={swapStepConfigs}
-            chain={selectedChain}
-          />
+          <DesktopStepTracker transactionSteps={transactionSteps} chain={selectedChain} />
         )}
         <ModalHeader>
           <HStack justify="space-between" w="full" pr="lg">
@@ -76,7 +66,7 @@ export function SwapPreviewModal({
           <SwapPreview />
         </ModalBody>
         <ModalFooter>
-          <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
+          <VStack w="full">{transactionSteps.currentStep?.renderAction()}</VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>
