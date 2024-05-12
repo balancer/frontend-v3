@@ -53,8 +53,9 @@ const rowProps = {
 export function PortfolioTable() {
   const { portfolioData, isLoadingPortfolio } = usePortfolio()
   // To-Do: fix pool type
-  const { data: poolsWithOnchainUserBalances, isLoading: isLoadingOnchainUserBalances } =
-    useOnchainUserPoolBalances(portfolioData.pools as unknown as Pool[])
+  const { data: poolsWithOnchainUserBalances } = useOnchainUserPoolBalances(
+    portfolioData.pools as unknown as Pool[]
+  )
 
   const { veBalBoostMap } = useVebalBoost(portfolioData.stakedPools)
 
@@ -77,9 +78,10 @@ export function PortfolioTable() {
           : aStakedBalance - bStakedBalance
       }
 
-      // To-Do: implement sorting by vebal boost
       if (currentSortingObj.id === 'vebal') {
-        return 0
+        const aVebalBoost = Number(veBalBoostMap?.[a.id] || 0)
+        const bVebalBoost = Number(veBalBoostMap?.[b.id] || 0)
+        return currentSortingObj.desc ? bVebalBoost - aVebalBoost : aVebalBoost - bVebalBoost
       }
 
       if (currentSortingObj.id === 'liquidity') {
@@ -87,8 +89,8 @@ export function PortfolioTable() {
         const bTotalBalance = b.userBalance?.totalBalanceUsd || 0
 
         return currentSortingObj.desc
-          ? aTotalBalance - bTotalBalance
-          : bTotalBalance - aTotalBalance
+          ? bTotalBalance - aTotalBalance
+          : aTotalBalance - bTotalBalance
       }
 
       if (currentSortingObj.id === 'apr') {
@@ -103,7 +105,7 @@ export function PortfolioTable() {
 
       return 0
     })
-  }, [currentSortingObj, poolsWithOnchainUserBalances, portfolioData?.pools])
+  }, [currentSortingObj, poolsWithOnchainUserBalances, portfolioData?.pools, veBalBoostMap])
 
   return (
     <FadeInOnView>

@@ -58,15 +58,9 @@ export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolPr
  * @param {GqlPoolAprValue} apr APR value from GraphQL response.
  * @returns {String} Formatted APR value.
  */
-export function getAprLabel(apr: GqlPoolAprValue, vebalBoost?: number): string {
+export function getAprLabel(apr: GqlPoolAprValue): string {
   if (apr.__typename === 'GqlPoolAprRange') {
-    const minApr = bn(apr.min)
-      .multipliedBy(vebalBoost || 1)
-      .toNumber()
-    const maxApr = bn(apr.max)
-      .multipliedBy(vebalBoost || 1)
-      .toNumber()
-    return `${fNum('apr', minApr)} - ${fNum('apr', maxApr)}`
+    return `${fNum('apr', apr.min)} - ${fNum('apr', apr.max)}`
   } else if (apr.__typename === 'GqlPoolAprTotal') {
     return fNum('apr', apr.total)
   } else {

@@ -20,7 +20,7 @@ const MemoizedAprTooltip = memo(AprTooltip)
 
 export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Props) {
   const { toCurrency } = useCurrency()
-  const vebalBoostValue = veBalBoostMap?.[pool.id]
+  const vebalBoostValue = veBalBoostMap?.[pool.id] ? Number(veBalBoostMap[pool.id]) : undefined
 
   return (
     <Box
@@ -74,7 +74,7 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
               data={pool.dynamicData.apr}
               poolId={pool.id}
               textProps={{ fontWeight: 'medium' }}
-              vebalBoost={Number(vebalBoostValue)}
+              vebalBoost={vebalBoostValue}
             />
           </GridItem>
         </Grid>
