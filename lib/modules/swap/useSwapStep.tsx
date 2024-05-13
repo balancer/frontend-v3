@@ -16,7 +16,7 @@ import { swapActionPastTense } from './swap.helpers'
 import { SwapAction } from './swap.types'
 import { useTokenBalances } from '../tokens/useTokenBalances'
 
-export const swapStepId = 'swapId'
+export const swapStepId = 'swap'
 
 export type SwapStepParams = BuildSwapQueryParams & {
   swapAction: SwapAction

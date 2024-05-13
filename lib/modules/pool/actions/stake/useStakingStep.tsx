@@ -1,11 +1,12 @@
 import { ManagedTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
-import { TransactionStep, swapStepId } from '@/lib/modules/transactions/transaction-steps/lib'
+import { TransactionStep } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useMemo, useState } from 'react'
 import { buildStakingDepositLabels, getStakingConfig } from '../../../staking/staking.actions'
 import { Pool, usePool } from '../../usePool'
+import { swapStepId } from '@/lib/modules/swap/useSwapStep'
 
 const stakeStepId = 'stake'
 

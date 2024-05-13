@@ -72,6 +72,8 @@ export type TransactionStep = {
   onSuccess?: () => void
   onActivated?: () => void
   onDeactivated?: () => void
+  // Testing purposes
+  _props?: any
 }
 
 export function getTransactionState(transactionBundle?: TransactionBundle): TransactionState {

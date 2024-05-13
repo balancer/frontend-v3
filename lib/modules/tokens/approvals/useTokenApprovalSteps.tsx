@@ -1,18 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { getChainId, getNativeAssetAddress } from '@/lib/config/app.config'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
+import { useMemo } from 'react'
 import { Address } from 'viem'
+import { ManagedErc20TransactionButton } from '../../transactions/transaction-steps/TransactionButton'
+import { TransactionStep } from '../../transactions/transaction-steps/lib'
+import { ManagedErc20TransactionInput } from '../../web3/contracts/useManagedErc20Transaction'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { useTokens } from '../useTokens'
 import { ApprovalAction, buildTokenApprovalLabels } from './approval-labels'
 import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
-import { getChainId, getNativeAssetAddress } from '@/lib/config/app.config'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { TransactionStep } from '../../transactions/transaction-steps/lib'
-import { ManagedErc20TransactionButton } from '../../transactions/transaction-steps/TransactionButton'
-import { ManagedErc20TransactionInput } from '../../web3/contracts/useManagedErc20Transaction'
-import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { useMemo } from 'react'
 
 export type Params = {
   spenderAddress: Address
@@ -75,15 +75,11 @@ export function useTokenApprovalSteps({
         labels,
         chainId: getChainId(chain),
         args: [spenderAddress, requestedRawAmount],
-        additionalConfig: {
-          query: {
-            enabled: !!spenderAddress && !tokenAllowances.isAllowancesLoading,
-            meta: sentryMetaForWagmiSimulation(
-              'Error in wagmi tx simulation: Approving token',
-              tokenAmountToApprove
-            ),
-          },
-        },
+        enabled: !!spenderAddress && !tokenAllowances.isAllowancesLoading,
+        simulationMeta: sentryMetaForWagmiSimulation(
+          'Error in wagmi tx simulation: Approving token',
+          tokenAmountToApprove
+        ),
       }
 
       return {
@@ -92,6 +88,8 @@ export function useTokenApprovalSteps({
         labels,
         isComplete,
         renderAction: () => <ManagedErc20TransactionButton key={id} id={id} {...props} />,
+        //Testing purposes
+        _props: props,
         onSuccess: () => tokenAllowances.refetchAllowances(),
       } as const satisfies TransactionStep
     })

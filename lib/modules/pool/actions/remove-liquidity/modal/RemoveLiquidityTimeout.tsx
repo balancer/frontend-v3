@@ -2,10 +2,10 @@
 import { HStack, Text } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
-import { removeLiquidityStepId } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useShouldFreezeQuote } from '@/lib/modules/transactions/transaction-steps/useShouldFreezeQuote'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
+import { removeLiquidityStepId } from './useRemoveLiquidityStep'
 
 function useRemoveLiquidityTimeout() {
   // This countdown needs to be nested here and not at a higher level, like in

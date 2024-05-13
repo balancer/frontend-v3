@@ -53,7 +53,11 @@ describe('weighted add flow', () => {
     })
 
     const { result } = testHook(() => {
-      return useManagedSendTransaction({ init: 'foo', tooltip: 'bar' }, txConfig)
+      return useManagedSendTransaction({
+        chainId: ChainId.MAINNET,
+        labels: { init: 'foo', tooltip: 'bar' },
+        txConfig,
+      })
     })
 
     await waitFor(() => expect(result.current.simulation.data).toBeDefined())

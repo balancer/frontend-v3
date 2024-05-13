@@ -2,7 +2,6 @@
 import {
   TransactionLabels,
   TransactionStep,
-  removeLiquidityStepId,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { RemoveLiquidityBuildQueryResponse } from '../queries/useRemoveLiquidityBuildCallDataQuery'
 import { useMemo } from 'react'
@@ -11,6 +10,8 @@ import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { RemoveLiquiditySimulationQueryResult } from '../queries/useRemoveLiquiditySimulationQuery'
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
+
+export const removeLiquidityStepId = 'remove-liquidity'
 
 export function useRemoveLiquidityStep(
   simulationQuery: RemoveLiquiditySimulationQueryResult,
