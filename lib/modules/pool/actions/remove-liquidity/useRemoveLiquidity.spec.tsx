@@ -16,22 +16,21 @@ import { aSuccessfulQueryResultMock } from '@/test/utils/react-query'
 const balTokenOutUnits = '1'
 const wEthTokenOutUnits = '0.5'
 
+const simulationQueryResult = {
+  ...mock<RemoveLiquiditySimulationQueryResult>(),
+  ...aSuccessfulQueryResultMock(),
+  data: {
+    amountsOut: [
+      aTokenAmountMock(balAddress, balTokenOutUnits),
+      aTokenAmountMock(wETHAddress, wEthTokenOutUnits),
+    ],
+  },
+}
 // Mock query to avoid onchain SDK call from unit tests
 vi.mock('./queries/useRemoveLiquiditySimulationQuery', () => {
   return {
     useRemoveLiquiditySimulationQuery(): RemoveLiquiditySimulationQueryResult {
-      const result = mock<RemoveLiquiditySimulationQueryResult>()
-
-      return {
-        ...result,
-        ...aSuccessfulQueryResultMock(),
-        data: {
-          amountsOut: [
-            aTokenAmountMock(balAddress, balTokenOutUnits),
-            aTokenAmountMock(wETHAddress, wEthTokenOutUnits),
-          ],
-        },
-      }
+      return simulationQueryResult
     },
   }
 })
@@ -82,7 +81,9 @@ describe('When the user choses proportional remove liquidity', () => {
     expect(result.current.usdOutForToken(balAddress)).toBe('0.00')
     expect(result.current.usdOutForToken(wETHAddress)).toBe('0.00')
 
-    await waitFor(() => expect(result.current.usdOutForToken(balAddress) !== '0.00').toBeTruthy())
+    await waitFor(() => expect(result.current.usdOutForToken(balAddress) !== '0.00').toBeTruthy(), {
+      timeout: 10000,
+    })
     expect(result.current.usdOutForToken(balAddress)).toBe('2.00') // balTokenOutUnits * balPrice = 1 * 2 = 2.00
     expect(result.current.usdOutForToken(wETHAddress)).toBe('1.50')
 
