@@ -30,7 +30,7 @@ export function ReceiptTokensIn({ sentTokens }: { sentTokens: HumanAmountIn[] })
         <Text>{toCurrency(totalUSDValue, { abbreviated: false })}</Text>
       </HStack>
       {sentTokens.map(amountIn => {
-        if (!amountIn.tokenAddress) return <div>Missing token</div>
+        if (!amountIn.tokenAddress) return <div key={JSON.stringify(amountIn)}>Missing token</div>
 
         return (
           <TokenRow
