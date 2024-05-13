@@ -36,7 +36,7 @@ export function useFormattedPoolAttributes() {
 
   const formattedPoolAttributes = useMemo(() => {
     if (!pool) return []
-    const { name, symbol, createTime, address, dynamicData, type } = pool
+    const { name, symbol, createTime, dynamicData, type } = pool
 
     return [
       {
@@ -65,10 +65,6 @@ export function useFormattedPoolAttributes() {
             value: poolOwnerData.title,
           }
         : null,
-      {
-        title: 'Contract address',
-        value: abbreviateAddress(address),
-      },
       {
         title: 'Creation date',
         value: format(createTime * 1000, 'dd MMMM yyyy'),
