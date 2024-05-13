@@ -67,7 +67,7 @@ export function PoolChart() {
   return (
     <Card minHeight="320px" h="full">
       <Stack h="full">
-        {isLoading && <Skeleton w="100%" h="300px" />}
+        {isLoading && <Skeleton w="full" h="full" />}
         {!isLoading && chartData.length > 0 && (
           <VStack w="full" h="full">
             <HStack w="full" justifyContent="space-between">
