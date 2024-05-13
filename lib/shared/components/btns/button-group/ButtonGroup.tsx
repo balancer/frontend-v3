@@ -4,6 +4,7 @@ import React, { ReactNode } from 'react'
 export type ButtonGroupOption = {
   value: string
   label: string | ReactNode
+  disabled?: boolean
 }
 
 type Props = {
@@ -11,9 +12,10 @@ type Props = {
   options: ButtonGroupOption[]
   onChange: (option: ButtonGroupOption) => void
   size?: ButtonProps['size']
+  width?: string
 }
 
-export default function ButtonGroup({ currentOption, options, onChange, size }: Props) {
+export default function ButtonGroup({ currentOption, options, onChange, size, width }: Props) {
   return (
     <HStack rounded="md" p="1" spacing="1" background="level0" shadow="innerXl">
       {options.map(option => {
@@ -26,6 +28,8 @@ export default function ButtonGroup({ currentOption, options, onChange, size }: 
             id={`button-group-${option.value}`}
             size={size}
             shadow={isActive ? 'md' : 'none'}
+            width={width}
+            isDisabled={option.disabled}
           >
             {option.label}
           </Button>
