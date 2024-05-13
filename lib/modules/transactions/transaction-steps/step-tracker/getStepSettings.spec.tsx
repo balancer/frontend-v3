@@ -1,24 +1,25 @@
 import { mock } from 'vitest-mock-extended'
 import { StepProps, getStepSettings } from './getStepSettings'
-import { FlowStep } from '@/lib/modules/transactions/transaction-steps/lib'
+import { ManagedResult, TransactionStep } from '../lib'
 
-const flowStep = mock<FlowStep>()
+const transaction = mock<ManagedResult>()
+const step = mock<TransactionStep>()
+step.labels.title = 'Add Liquidity'
 
 describe('generates step props', () => {
   test('when the step is active and the transaction execution is loading', () => {
-    flowStep.simulation.isLoading = false
-    flowStep.execution.isPending = true
-    flowStep.result.isSuccess = false
+    transaction.simulation.isLoading = false
+    transaction.execution.isPending = true
+    transaction.result.isSuccess = false
 
     const props: StepProps = {
       currentIndex: 0,
       index: 0,
-      step: { title: 'Add Liquidity' },
+      step,
       colorMode: 'light',
-      flowStep,
       isLastStep: true,
     }
-    const state = getStepSettings(props)
+    const state = getStepSettings(props, transaction)
 
     expect(state).toMatchInlineSnapshot(`
       {
@@ -33,17 +34,16 @@ describe('generates step props', () => {
   })
 
   test('when the last step transaction is complete (result is success)', () => {
-    flowStep.result.isSuccess = true
+    transaction.result.isSuccess = true
 
     const props: StepProps = {
       currentIndex: 0,
       index: 0,
-      step: { title: 'Add Liquidity' },
+      step,
       colorMode: 'light',
-      flowStep,
       isLastStep: true,
     }
-    const state = getStepSettings(props)
+    const state = getStepSettings(props, transaction)
 
     expect(state).toMatchInlineSnapshot(`
       {
@@ -61,12 +61,11 @@ describe('generates step props', () => {
     const props: StepProps = {
       currentIndex: 0,
       index: 1,
-      step: { title: 'Add Liquidity' },
+      step,
       colorMode: 'light',
-      flowStep: undefined,
       isLastStep: true,
     }
-    const state = getStepSettings(props)
+    const state = getStepSettings(props, transaction)
 
     expect(state).toMatchInlineSnapshot(`
       {
