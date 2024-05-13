@@ -153,6 +153,23 @@ export type GqlNestedPool = {
   version: Scalars['Int']['output']
 }
 
+export type GqlPoolAddRemoveEventV3 = GqlPoolEvent & {
+  __typename: 'GqlPoolAddRemoveEventV3'
+  blockNumber: Scalars['Int']['output']
+  blockTimestamp: Scalars['Int']['output']
+  chain: GqlChain
+  id: Scalars['ID']['output']
+  logIndex: Scalars['Int']['output']
+  poolId: Scalars['String']['output']
+  sender: Scalars['String']['output']
+  timestamp: Scalars['Int']['output']
+  tokens: Array<GqlPoolEventAmount>
+  tx: Scalars['String']['output']
+  type: GqlPoolEventType
+  userAddress: Scalars['String']['output']
+  valueUSD: Scalars['Float']['output']
+}
+
 export type GqlPoolApr = {
   __typename: 'GqlPoolApr'
   apr: GqlPoolAprValue
@@ -396,8 +413,8 @@ export type GqlPoolEventAmount = {
 }
 
 export enum GqlPoolEventType {
-  Exit = 'EXIT',
-  Join = 'JOIN',
+  Add = 'ADD',
+  Remove = 'REMOVE',
   Swap = 'SWAP',
 }
 
@@ -417,6 +434,7 @@ export type GqlPoolEventsFilter = {
 
 export type GqlPoolFeaturedPool = {
   __typename: 'GqlPoolFeaturedPool'
+  description: Scalars['String']['output']
   pool: GqlPoolBase
   poolId: Scalars['ID']['output']
   primary: Scalars['Boolean']['output']
@@ -560,23 +578,6 @@ export type GqlPoolJoinExitAmount = {
   __typename: 'GqlPoolJoinExitAmount'
   address: Scalars['String']['output']
   amount: Scalars['String']['output']
-}
-
-export type GqlPoolJoinExitEventV3 = GqlPoolEvent & {
-  __typename: 'GqlPoolJoinExitEventV3'
-  blockNumber: Scalars['Int']['output']
-  blockTimestamp: Scalars['Int']['output']
-  chain: GqlChain
-  id: Scalars['ID']['output']
-  logIndex: Scalars['Int']['output']
-  poolId: Scalars['String']['output']
-  sender: Scalars['String']['output']
-  timestamp: Scalars['Int']['output']
-  tokens: Array<GqlPoolEventAmount>
-  tx: Scalars['String']['output']
-  type: GqlPoolEventType
-  userAddress: Scalars['String']['output']
-  valueUSD: Scalars['Float']['output']
 }
 
 export type GqlPoolJoinExitFilter = {
@@ -1569,7 +1570,6 @@ export type Mutation = {
   poolReloadAllPoolAprs: Scalars['String']['output']
   poolReloadAllTokenNestedPoolIds: Scalars['String']['output']
   poolReloadStakingForAllPools: Scalars['String']['output']
-  poolSetPoolsWithPreferredGaugesAsIncentivized: Scalars['String']['output']
   poolSyncAllPoolsFromSubgraph: Array<Scalars['String']['output']>
   poolSyncLatestSnapshotsForAllPools: Scalars['String']['output']
   poolSyncNewPoolsFromSubgraph: Array<Scalars['String']['output']>
@@ -1679,20 +1679,16 @@ export type Query = {
   blocksGetBlocksPerYear: Scalars['Float']['output']
   contentGetNewsItems: Array<GqlContentNewsItem>
   latestSyncedBlocks: GqlLatestSyncedBlocks
-  /** Getting swap, join and exit events */
+  /** Getting swap, add and remove events with paging */
   poolEvents: Array<GqlPoolEvent>
   /** Will de deprecated in favor of poolEvents */
   poolGetBatchSwaps: Array<GqlPoolBatchSwap>
-  /** Will de deprecated in favor of poolEvents */
+  /** Getting swap, add and remove events with range */
   poolGetEvents: Array<GqlPoolEvent>
   /** Will de deprecated in favor of poolGetFeaturedPools */
   poolGetFeaturedPoolGroups: Array<GqlPoolFeaturedPoolGroup>
   /** Returns the list of featured pools for chains */
   poolGetFeaturedPools: Array<GqlPoolFeaturedPool>
-  /** Gets all FX pools */
-  poolGetFxPools: Array<GqlPoolFx>
-  /** Gets all gyro pools */
-  poolGetGyroPools: Array<GqlPoolGyro>
   /** Will de deprecated in favor of poolEvents */
   poolGetJoinExits: Array<GqlPoolJoinExit>
   /** Returns one pool. If a user address is provided, the user balances for the given pool will also be returned. */
@@ -1776,14 +1772,6 @@ export type QueryPoolGetFeaturedPoolGroupsArgs = {
 
 export type QueryPoolGetFeaturedPoolsArgs = {
   chains: Array<GqlChain>
-}
-
-export type QueryPoolGetFxPoolsArgs = {
-  chains?: InputMaybe<Array<GqlChain>>
-}
-
-export type QueryPoolGetGyroPoolsArgs = {
-  chains?: InputMaybe<Array<GqlChain>>
 }
 
 export type QueryPoolGetJoinExitsArgs = {
@@ -3359,7 +3347,7 @@ export type GetPoolEventsQuery = {
   __typename: 'Query'
   poolEvents: Array<
     | {
-        __typename: 'GqlPoolJoinExitEventV3'
+        __typename: 'GqlPoolAddRemoveEventV3'
         id: string
         poolId: string
         timestamp: number
@@ -5549,7 +5537,7 @@ export const GetPoolEventsDocument = {
                   kind: 'InlineFragment',
                   typeCondition: {
                     kind: 'NamedType',
-                    name: { kind: 'Name', value: 'GqlPoolJoinExitEventV3' },
+                    name: { kind: 'Name', value: 'GqlPoolAddRemoveEventV3' },
                   },
                   selectionSet: {
                     kind: 'SelectionSet',
