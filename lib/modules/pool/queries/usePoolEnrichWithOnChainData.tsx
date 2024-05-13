@@ -78,6 +78,9 @@ async function updateWithOnChainBalanceData({
   const supplyMap = keyBy(supplies, 'poolId')
   const pricesMap = keyBy(tokenPrices, 'address')
   const clone = cloneDeep(pool)
+  const filteredTokens = clone.poolTokens.filter(token =>
+    pool.displayTokens.find(displayToken => token.address === displayToken.address)
+  )
 
   clone.dynamicData.totalShares = formatUnits(supplyMap[pool.id].totalSupply, 18)
 
@@ -87,7 +90,7 @@ async function updateWithOnChainBalanceData({
   })
 
   clone.dynamicData.totalLiquidity = sumBy(
-    clone.poolTokens.map(token => {
+    filteredTokens.map(token => {
       return (pricesMap[token.address]?.price || 0) * parseFloat(token.balance)
     })
   ).toString()
