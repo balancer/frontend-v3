@@ -169,14 +169,16 @@ export function FilterTags() {
           <TagCloseButton onClick={() => toggleNetwork(false, network)} />
         </Tag>
       ))}
-      <Tag key="minTvl" size="lg">
-        <TagLabel>
-          <Text fontWeight="bold" textTransform="capitalize">
-            {`TVL > ${toCurrency(minTvl)}`}
-          </Text>
-        </TagLabel>
-        <TagCloseButton onClick={() => setMinTvl(0)} />
-      </Tag>
+      {minTvl > 0 && (
+        <Tag key="minTvl" size="lg">
+          <TagLabel>
+            <Text fontWeight="bold" textTransform="capitalize">
+              {`TVL > ${toCurrency(minTvl)}`}
+            </Text>
+          </TagLabel>
+          <TagCloseButton onClick={() => setMinTvl(0)} />
+        </Tag>
+      )}
     </HStack>
   )
 }
