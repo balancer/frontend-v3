@@ -16,7 +16,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { usePool } from '../usePool'
 import { Address, parseUnits } from 'viem'
 import { usePathname } from 'next/navigation'
@@ -34,8 +34,8 @@ import StakedBalanceDistributionChart from './PoolWeightCharts/StakedBalanceDist
 
 const TABS = [
   {
-    value: 'all',
-    label: 'All',
+    value: 'total',
+    label: 'Total',
   },
   {
     value: 'unstaked',
@@ -65,7 +65,7 @@ export default function PoolMyLiquidity() {
     const parsedUnstakedBalance = parseUnits(pool.userBalance?.walletBalance || '0', BPT_DECIMALS)
 
     switch (activeTab.value) {
-      case 'all':
+      case 'total':
         return parsedTotalBalance
       case 'staked':
         return parsedStakedBalance
@@ -89,7 +89,7 @@ export default function PoolMyLiquidity() {
 
   function getTitlePrefix() {
     switch (activeTab.value) {
-      case 'all':
+      case 'total':
         return 'total'
       case 'staked':
         return 'staked'
@@ -104,7 +104,7 @@ export default function PoolMyLiquidity() {
     if (!isConnected || isConnecting) return 0
 
     switch (activeTab.value) {
-      case 'all':
+      case 'total':
         return pool.userBalance?.totalBalanceUsd || 0
       case 'staked':
         return pool.userBalance?.stakedBalanceUsd || 0
@@ -134,116 +134,126 @@ export default function PoolMyLiquidity() {
       pool.poolTokens
     : pool.displayTokens
 
+  const options = useMemo(() => {
+    return TABS.map(tab => ({
+      ...tab,
+      disabled: tab.value !== 'total' && !canStake,
+    }))
+  }, [pool])
+
   return (
-    <Card minHeight="320px">
-      <Grid width="full" templateColumns={{ base: 'repeat(1, 1fr)', md: '1fr 1fr' }} gap="md">
-        <GridItem>
-          <VStack spacing="md" width="full">
-            <HStack width="full" justifyContent="space-between">
-              <Heading bg="font.special" backgroundClip="text" fontWeight="bold" size="h5">
-                My liquidity
-              </Heading>
-              <ButtonGroup
-                size="xxs"
-                currentOption={activeTab}
-                options={TABS}
-                onChange={handleTabChanged}
-              />
-            </HStack>
-            <Box width="full">
-              <Card variant="subSection">
-                <VStack spacing="md" width="full">
-                  <Box pb="md" width="full" borderBottomWidth={1} borderColor="border.base">
-                    <HStack width="full" justifyContent="space-between">
-                      <VStack alignItems="flex-start">
-                        <Heading fontWeight="bold" size="h6">
-                          My {getTitlePrefix()} balance
-                        </Heading>
-                        <Text variant="secondary" fontSize="0.85rem">
-                          APR
-                        </Text>
-                      </VStack>
-                      <VStack alignItems="flex-end">
-                        {isLoadingOnchainUserBalances || isConnecting ? (
-                          <Skeleton w="12" h="5" />
-                        ) : (
-                          <Heading fontWeight="bold" size="h6">
-                            {toCurrency(totalBalanceUsd)}
-                          </Heading>
-                        )}
-                        <Text variant="secondary" fontSize="0.85rem">
-                          {aprLabel}
-                        </Text>
-                      </VStack>
-                    </HStack>
-                  </Box>
+    pool.userBalance?.totalBalance && (
+      <Card minHeight="320px">
+        <Grid width="full" templateColumns={{ base: 'repeat(1, 1fr)', md: '1fr 1fr' }} gap="md">
+          <GridItem>
+            <VStack spacing="md" width="full">
+              <HStack width="full" justifyContent="space-between">
+                <Heading bg="font.special" backgroundClip="text" fontWeight="bold" size="h5">
+                  My liquidity
+                </Heading>
+                <ButtonGroup
+                  size="xxs"
+                  currentOption={activeTab}
+                  options={options}
+                  onChange={handleTabChanged}
+                  width="70px"
+                />
+              </HStack>
+              <Box width="full">
+                <Card variant="subSection">
                   <VStack spacing="md" width="full">
-                    {displayTokens.map(token => {
-                      return (
-                        <TokenRow
-                          chain={chain}
-                          key={`my-liquidity-token-${token.address}`}
-                          address={token.address as Address}
-                          value={tokenBalanceFor(token.address)}
-                          isLoading={isLoadingOnchainUserBalances || isConnecting}
-                        />
-                      )
-                    })}
+                    <Box pb="md" width="full" borderBottomWidth={1} borderColor="border.base">
+                      <HStack width="full" justifyContent="space-between">
+                        <VStack alignItems="flex-start">
+                          <Heading fontWeight="bold" size="h6">
+                            My {getTitlePrefix()} balance
+                          </Heading>
+                          <Text variant="secondary" fontSize="0.85rem">
+                            APR
+                          </Text>
+                        </VStack>
+                        <VStack alignItems="flex-end">
+                          {isLoadingOnchainUserBalances || isConnecting ? (
+                            <Skeleton w="12" h="5" />
+                          ) : (
+                            <Heading fontWeight="bold" size="h6">
+                              {toCurrency(totalBalanceUsd)}
+                            </Heading>
+                          )}
+                          <Text variant="secondary" fontSize="0.85rem">
+                            {aprLabel}
+                          </Text>
+                        </VStack>
+                      </HStack>
+                    </Box>
+                    <VStack spacing="md" width="full">
+                      {displayTokens.map(token => {
+                        return (
+                          <TokenRow
+                            chain={chain}
+                            key={`my-liquidity-token-${token.address}`}
+                            address={token.address as Address}
+                            value={tokenBalanceFor(token.address)}
+                            isLoading={isLoadingOnchainUserBalances || isConnecting}
+                          />
+                        )
+                      })}
+                    </VStack>
+                    <HStack mt="md" width="full" justifyContent="flex-start">
+                      <Button
+                        as={Link}
+                        href={`${pathname}/add-liquidity`}
+                        variant="primary"
+                        prefetch={true}
+                        flex="1"
+                      >
+                        Add
+                      </Button>
+                      <Button
+                        as={Link}
+                        href={`${pathname}/remove-liquidity`}
+                        variant={hasUnstakedBalance ? 'tertiary' : 'disabled'}
+                        isDisabled={!hasUnstakedBalance}
+                        prefetch={true}
+                        flex="1"
+                      >
+                        Remove
+                      </Button>
+                      <Button
+                        as={Link}
+                        href={`${pathname}/stake`}
+                        variant={canStake && hasUnstakedBalance ? 'secondary' : 'disabled'}
+                        isDisabled={!(canStake && hasUnstakedBalance)}
+                        flex="1"
+                      >
+                        Stake
+                      </Button>
+                      <Button
+                        as={Link}
+                        href={`${pathname}/unstake`}
+                        variant={hasStakedBalance ? 'tertiary' : 'disabled'}
+                        isDisabled={!hasStakedBalance}
+                        flex="1"
+                      >
+                        Unstake
+                      </Button>
+                    </HStack>
                   </VStack>
-                  <HStack mt="md" width="full" justifyContent="flex-start">
-                    <Button
-                      as={Link}
-                      href={`${pathname}/add-liquidity`}
-                      variant="primary"
-                      prefetch={true}
-                      flex="1"
-                    >
-                      Add
-                    </Button>
-                    <Button
-                      as={Link}
-                      href={`${pathname}/remove-liquidity`}
-                      variant={hasUnstakedBalance ? 'tertiary' : 'disabled'}
-                      isDisabled={!hasUnstakedBalance}
-                      prefetch={true}
-                      flex="1"
-                    >
-                      Remove
-                    </Button>
-                    <Button
-                      as={Link}
-                      href={`${pathname}/stake`}
-                      variant={canStake && hasUnstakedBalance ? 'secondary' : 'disabled'}
-                      isDisabled={!(canStake && hasUnstakedBalance)}
-                      flex="1"
-                    >
-                      Stake
-                    </Button>
-                    <Button
-                      as={Link}
-                      href={`${pathname}/unstake`}
-                      variant={hasStakedBalance ? 'tertiary' : 'disabled'}
-                      isDisabled={!hasStakedBalance}
-                      flex="1"
-                    >
-                      Unstake
-                    </Button>
-                  </HStack>
-                </VStack>
-              </Card>
-            </Box>
-          </VStack>
-        </GridItem>
-        <GridItem>
-          <NoisyCard
-            cardProps={{ position: 'relative', overflow: 'hidden' }}
-            contentProps={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-          >
-            <StakedBalanceDistributionChart pool={pool} />
-            <ZenGarden variant="pill" sizePx="80%" heightPx="80%" />
-          </NoisyCard>
-        </GridItem>
-      </Grid>
-    </Card>
+                </Card>
+              </Box>
+            </VStack>
+          </GridItem>
+          <GridItem>
+            <NoisyCard
+              cardProps={{ position: 'relative', overflow: 'hidden' }}
+              contentProps={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >
+              <StakedBalanceDistributionChart pool={pool} />
+              <ZenGarden variant="pill" sizePx="80%" heightPx="80%" />
+            </NoisyCard>
+          </GridItem>
+        </Grid>
+      </Card>
+    )
   )
 }
