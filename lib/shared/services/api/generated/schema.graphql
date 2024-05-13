@@ -132,6 +132,22 @@ type GqlNestedPool {
   version: Int!
 }
 
+type GqlPoolAddRemoveEventV3 implements GqlPoolEvent {
+  blockNumber: Int!
+  blockTimestamp: Int!
+  chain: GqlChain!
+  id: ID!
+  logIndex: Int!
+  poolId: String!
+  sender: String!
+  timestamp: Int!
+  tokens: [GqlPoolEventAmount!]!
+  tx: String!
+  type: GqlPoolEventType!
+  userAddress: String!
+  valueUSD: Float!
+}
+
 type GqlPoolApr {
   apr: GqlPoolAprValue!
   hasRewardApr: Boolean!
@@ -425,8 +441,8 @@ type GqlPoolEventAmount {
 }
 
 enum GqlPoolEventType {
-  EXIT
-  JOIN
+  ADD
+  REMOVE
   SWAP
 }
 
@@ -445,6 +461,7 @@ input GqlPoolEventsFilter {
 }
 
 type GqlPoolFeaturedPool {
+  description: String!
   pool: GqlPoolBase!
   poolId: ID!
   primary: Boolean!
@@ -581,22 +598,6 @@ type GqlPoolJoinExit {
 type GqlPoolJoinExitAmount {
   address: String!
   amount: String!
-}
-
-type GqlPoolJoinExitEventV3 implements GqlPoolEvent {
-  blockNumber: Int!
-  blockTimestamp: Int!
-  chain: GqlChain!
-  id: ID!
-  logIndex: Int!
-  poolId: String!
-  sender: String!
-  timestamp: Int!
-  tokens: [GqlPoolEventAmount!]!
-  tx: String!
-  type: GqlPoolEventType!
-  userAddress: String!
-  valueUSD: Float!
 }
 
 input GqlPoolJoinExitFilter {
@@ -1858,7 +1859,6 @@ type Mutation {
   poolReloadAllPoolAprs(chain: GqlChain!): String!
   poolReloadAllTokenNestedPoolIds: String!
   poolReloadStakingForAllPools(stakingTypes: [GqlPoolStakingType!]!): String!
-  poolSetPoolsWithPreferredGaugesAsIncentivized: String!
   poolSyncAllPoolsFromSubgraph: [String!]!
   poolSyncLatestSnapshotsForAllPools(daysToSync: Int): String!
   poolSyncNewPoolsFromSubgraph: [String!]!
@@ -1906,7 +1906,7 @@ type Query {
   latestSyncedBlocks: GqlLatestSyncedBlocks!
 
   """
-  Getting swap, join and exit events
+  Getting swap, add and remove events with paging
   """
   poolEvents(first: Int, skip: Int, where: GqlPoolEventsFilter!): [GqlPoolEvent!]!
 
@@ -1916,7 +1916,7 @@ type Query {
   poolGetBatchSwaps(first: Int, skip: Int, where: GqlPoolSwapFilter): [GqlPoolBatchSwap!]!
 
   """
-  Will de deprecated in favor of poolEvents
+  Getting swap, add and remove events with range
   """
   poolGetEvents(
     chain: GqlChain!
@@ -1935,16 +1935,6 @@ type Query {
   Returns the list of featured pools for chains
   """
   poolGetFeaturedPools(chains: [GqlChain!]!): [GqlPoolFeaturedPool!]!
-
-  """
-  Gets all FX pools
-  """
-  poolGetFxPools(chains: [GqlChain!]): [GqlPoolFx!]!
-
-  """
-  Gets all gyro pools
-  """
-  poolGetGyroPools(chains: [GqlChain!]): [GqlPoolGyro!]!
 
   """
   Will de deprecated in favor of poolEvents

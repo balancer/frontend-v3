@@ -433,7 +433,7 @@ query GetPoolEvents($first: Int, $poolId: String!, $chain: GqlChain!) {
         amount
       }
     }
-    ... on GqlPoolJoinExitEventV3 {
+    ... on GqlPoolAddRemoveEventV3 {
       tokens {
         address
         amount
