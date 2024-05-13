@@ -6,7 +6,6 @@ import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useMemo, useState } from 'react'
 import { buildStakingDepositLabels, getStakingConfig } from '../../../staking/staking.actions'
 import { Pool, usePool } from '../../usePool'
-import { swapStepId } from '@/lib/modules/swap/useSwapStep'
 
 const stakeStepId = 'stake'
 
@@ -30,7 +29,7 @@ export function useStakingStep(pool: Pool, rawDepositAmount: bigint): Transactio
     }
   )
 
-  const transaction = getTransaction(swapStepId)
+  const transaction = getTransaction(stakeStepId)
 
   const isComplete = () => transaction?.result.isSuccess || false
 
@@ -46,7 +45,7 @@ export function useStakingStep(pool: Pool, rawDepositAmount: bigint): Transactio
       renderAction: () => (
         <ManagedTransactionButton
           enabled={(isStakeEnabled && !!pool.staking) || !!rawDepositAmount}
-          id={swapStepId}
+          id={stakeStepId}
           labels={labels}
           chainId={chainId}
           contractId={stakingConfig?.contractId}

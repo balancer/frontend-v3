@@ -10,12 +10,6 @@ import { useMemo } from 'react'
 
 export const signRelayerStepTitle = 'Sign relayer'
 
-/**
-  The sign relayer step is an edge-case step where there's no transaction
-  but we still need a Step (with no render) to display the step in the StepTracker
- */
-export const signRelayerStep = { labels: { title: signRelayerStepTitle }, render: () => <></> }
-
 export function useSignRelayerStep(): TransactionStep {
   const { isConnected } = useUserAccount()
   const { signRelayer, signRelayerState, isLoading, isDisabled, buttonLabel, error } =
