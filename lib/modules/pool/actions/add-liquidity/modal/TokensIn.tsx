@@ -68,7 +68,7 @@ export function QuoteTokensIn() {
         <Text>{toCurrency(totalUSDValue, { abbreviated: false })}</Text>
       </HStack>
       {amountsIn.map(amountIn => {
-        if (!amountIn.tokenAddress) return <div>Missing token</div>
+        if (!amountIn.tokenAddress) return <div key={JSON.stringify(amountIn)}>Missing token</div>
 
         return (
           <TokenRow
