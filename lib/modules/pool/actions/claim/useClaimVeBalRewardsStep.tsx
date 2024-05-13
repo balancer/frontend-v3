@@ -10,6 +10,7 @@ import { ManagedTransactionInput } from '@/lib/modules/web3/contracts/useManaged
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useMemo } from 'react'
+import { Address } from 'viem'
 
 const labels: TransactionLabels = {
   init: 'Claim all',
@@ -38,8 +39,8 @@ export function useClaimVeBalRewardsStep(): TransactionStep {
     chainId: 1, // only on mainnet
     contractAddress: networkConfig.contracts.feeDistributor as string,
     contractId: 'balancer.feeDistributor',
-    functionName: 'claimTokens', //TODO: review ABI
-    args: [userAddress, claimableVeBalRewardsTokens],
+    functionName: 'claimTokens',
+    args: [userAddress, claimableVeBalRewardsTokens as Address[]],
     enabled: !!userAddress,
     txSimulationMeta,
   }
