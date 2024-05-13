@@ -6,8 +6,12 @@ import { PoolComposition } from './PoolComposition/PoolCompositionNew'
 import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
 import { PoolDetailStatsChart } from './PoolDetailStatsChart'
 import { PoolDetailAttributesRisksContracts } from './PoolDetailAttributesRisksContracts'
+import { usePool } from '../usePool'
+import PoolMyLiquidity from './PoolMyLiquidity'
 
 export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
+  const { isLoading: isLoadingPool } = usePool()
+
   return (
     <Stack w="full">
       <Grid
@@ -17,6 +21,7 @@ export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
         templateAreas={`"stats-chart"
                         "activity"
                         "composition"
+                        "my-liquidity"
                         "attributes-risks-contracts"`}
       >
         <GridItem area="stats-chart">
@@ -28,9 +33,9 @@ export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
         <GridItem area="composition">
           {isLoading ? <Skeleton h="385px" w="full" /> : <PoolComposition />}
         </GridItem>
-        {/* <GridItem colSpan={2}>
-          {isLoading ? <Skeleton h="370px" w="full" /> : <PoolMyLiquidity />}
-        </GridItem> */}
+        <GridItem area="my-liquidity">
+          {isLoadingPool ? <Skeleton h="370px" w="full" /> : <PoolMyLiquidity />}
+        </GridItem>
         <GridItem area="attributes-risks-contracts">
           <PoolDetailAttributesRisksContracts isLoading={isLoading} />
         </GridItem>
