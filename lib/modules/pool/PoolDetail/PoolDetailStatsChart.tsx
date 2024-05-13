@@ -16,7 +16,7 @@ export function PoolDetailStatsChart({ isLoading = false }: { isLoading?: boolea
       w="full"
       rowGap="md"
       columnGap="md"
-      templateColumns={{ base: '1fr', lg: 'repeat(4,1fr)' }}
+      templateColumns={{ base: '1fr', md: 'repeat(4,1fr)' }}
       templateAreas={{
         base: `"meta-badges"
                  "stats"

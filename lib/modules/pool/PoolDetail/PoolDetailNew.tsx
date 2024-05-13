@@ -12,7 +12,7 @@ export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
     <Stack w="full">
       <Grid
         w="full"
-        rowGap={{ base: 'md', lg: '2xl' }}
+        rowGap={{ base: 'md', md: '2xl' }}
         templateColumns="1fr"
         templateAreas={`"stats-chart"
                         "activity"
