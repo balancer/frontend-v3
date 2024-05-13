@@ -60,82 +60,81 @@ export function PoolComposition() {
     >
       <Grid w="full" h="full" templateColumns={{ base: '1fr)', lg: 'repeat(2,1fr)' }} gap="md">
         <GridItem>
-          <VStack w="full" spacing="md">
-            <HStack width="full" justifyContent="space-between">
-              <Heading fontWeight="bold" size="h5">
-                Pool composition
-              </Heading>
-            </HStack>
-            <Box width="full">
-              <Card variant="subSection">
+          <VStack w="full" h="full" spacing="md" align="flex-start">
+            <Heading fontWeight="bold" size="h5">
+              Pool composition
+            </Heading>
+            <Card variant="subSection" w="full">
+              <VStack spacing="md" width="full">
+                <Box pb="md" width="full" borderBottomWidth={1} borderColor="border.base">
+                  <HStack width="full" justifyContent="space-between">
+                    <VStack alignItems="flex-start">
+                      <Heading fontWeight="bold" size="h6">
+                        Total liquidity
+                      </Heading>
+                      {/* <Text variant="secondary" fontSize="0.85rem"> */}
+                      {/*   Share of Balancer liquidity */}
+                      {/* </Text> */}
+                    </VStack>
+                    <VStack alignItems="flex-end">
+                      <Heading fontWeight="bold" size="h6">
+                        {totalLiquidity ? (
+                          toCurrency(totalLiquidity)
+                        ) : (
+                          <Skeleton height="24px" w="75px" />
+                        )}
+                      </Heading>
+                      {/* <Text variant="secondary" fontSize="0.85rem"> */}
+                      {/*   8.69% (TODO INTEGRATE) */}
+                      {/* </Text> */}
+                    </VStack>
+                  </HStack>
+                </Box>
                 <VStack spacing="md" width="full">
-                  <Box pb="md" width="full" borderBottomWidth={1} borderColor="border.base">
-                    <HStack width="full" justifyContent="space-between">
-                      <VStack alignItems="flex-start">
-                        <Heading fontWeight="bold" size="h6">
-                          Total liquidity
-                        </Heading>
-                        {/* <Text variant="secondary" fontSize="0.85rem"> */}
-                        {/*   Share of Balancer liquidity */}
-                        {/* </Text> */}
-                      </VStack>
-                      <VStack alignItems="flex-end">
-                        <Heading fontWeight="bold" size="h6">
-                          {totalLiquidity ? (
-                            toCurrency(totalLiquidity)
-                          ) : (
-                            <Skeleton height="24px" w="75px" />
-                          )}
-                        </Heading>
-                        {/* <Text variant="secondary" fontSize="0.85rem"> */}
-                        {/*   8.69% (TODO INTEGRATE) */}
-                        {/* </Text> */}
-                      </VStack>
-                    </HStack>
-                  </Box>
-                  <VStack spacing="md" width="full">
-                    {displayTokens.map(poolToken => {
-                      return (
-                        <TokenRow
-                          chain={chain}
-                          key={`my-liquidity-token-${poolToken.address}`}
-                          address={poolToken.address as Address}
-                          value={poolToken.balance}
-                          customRender={() => {
-                            if (!showWeightDistribution) return null
-                            return (
-                              <VStack minWidth="100px" spacing="1" alignItems="flex-end">
-                                <Heading fontWeight="bold" as="h6" fontSize="1rem">
-                                  {totalLiquidity ? (
-                                    fNum(
-                                      'weight',
-                                      getPoolTokenWeightByBalance(totalLiquidity, poolToken, chain)
-                                    )
-                                  ) : (
-                                    <Skeleton height="24px" w="75px" />
-                                  )}
-                                </Heading>
-                                <HStack spacing="1">
-                                  <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                                    {fNum('weight', poolToken.weight || '0')}
-                                  </Text>
-                                  <Image
-                                    src="/images/icons/bullseye.svg"
-                                    width="16"
-                                    height="16"
-                                    alt="Token weight - Bullseye"
-                                  />
-                                </HStack>
-                              </VStack>
-                            )
-                          }}
-                        />
-                      )
-                    })}
-                  </VStack>
+                  {displayTokens.map(poolToken => {
+                    return (
+                      <TokenRow
+                        chain={chain}
+                        key={`my-liquidity-token-${poolToken.address}`}
+                        address={poolToken.address as Address}
+                        value={poolToken.balance}
+                        customRender={() => {
+                          if (!showWeightDistribution) return null
+                          return (
+                            <VStack minWidth="100px" spacing="1" alignItems="flex-end">
+                              <Heading fontWeight="bold" as="h6" fontSize="1rem">
+                                {totalLiquidity ? (
+                                  fNum(
+                                    'weight',
+                                    getPoolTokenWeightByBalance(totalLiquidity, poolToken, chain)
+                                  )
+                                ) : (
+                                  <Skeleton height="24px" w="75px" />
+                                )}
+                              </Heading>
+                              <HStack spacing="1">
+                                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+                                  {fNum('weight', poolToken.weight || '0')}
+                                </Text>
+                                <Image
+                                  src="/images/icons/bullseye.svg"
+                                  width="16"
+                                  height="16"
+                                  alt="Token weight - Bullseye"
+                                />
+                              </HStack>
+                            </VStack>
+                          )
+                        }}
+                      />
+                    )
+                  })}
                 </VStack>
-              </Card>
-            </Box>
+              </VStack>
+            </Card>
+            <Text color="grayText" mt="auto" fontSize="sm">
+              From {pool.dynamicData.holdersCount} Liquidity Providers
+            </Text>
           </VStack>
         </GridItem>
         <GridItem>
