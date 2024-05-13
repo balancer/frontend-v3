@@ -6,6 +6,8 @@ export enum SupportedCurrency {
   GBP = 'GBP',
   JPY = 'JPY',
   CNY = 'CNY',
+  BTC = 'BTC',
+  ETH = 'ETH',
 }
 
 export type FxRates = Record<SupportedCurrency, { code: string; value: number }>
@@ -25,6 +27,10 @@ export function symbolForCurrency(currency: SupportedCurrency): string {
       return '¥'
     case SupportedCurrency.CNY:
       return '¥'
+    case SupportedCurrency.BTC:
+      return '₿'
+    case SupportedCurrency.ETH:
+      return 'Ξ'
     default:
       return '$'
   }
