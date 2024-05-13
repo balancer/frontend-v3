@@ -78,13 +78,13 @@ export default function PoolWeightChart({
   }
   // if (isBoosted(pool.type)) {
   if (isStable(pool.type) && pool.displayTokens.length === 3) {
-    return <BoostedPoolWeightChart pool={pool as GqlPoolStable} {...commonProps} />
+    return <WeightedPoolWeightChart pool={pool} {...commonProps} />
   }
   if (isStable(pool.type)) {
-    return <StablePoolWeightChart pool={pool as GqlPoolStable} {...commonProps} />
+    return <WeightedPoolWeightChart pool={pool} {...commonProps} />
   }
   if (isClp(pool.type)) {
-    return <CLPPoolWeightChart pool={pool as GqlPoolStable} {...commonProps} />
+    return <WeightedPoolWeightChart pool={pool} {...commonProps} />
   }
   if (pool.__typename === 'GqlPoolWeighted') {
     return <WeightedPoolWeightChart pool={pool} {...commonProps} />
