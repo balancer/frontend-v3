@@ -21,16 +21,28 @@ export function useFormattedPoolAttributes() {
     if (!owner) return
 
     if (owner === zeroAddress) {
-      return { title: 'No owner', link: '' }
+      return {
+        title: 'No owner',
+        link: '',
+        swapFeeText: 'non-editable',
+        attributeImmutabilityText: '',
+      }
     }
 
     if (owner === DELEGATE_OWNER) {
-      return { title: 'Delegate owner', link: '' }
+      return {
+        title: 'Delegate owner',
+        link: '',
+        swapFeeText: 'editable by governance',
+        attributeImmutabilityText: ' except for swap fees editable by governance',
+      }
     }
 
     return {
       title: abbreviateAddress(owner || ''),
       link: '',
+      swapFeeText: 'editable by pool owner',
+      attributeImmutabilityText: ' except for swap fees editable by the pool owner',
     }
   }, [pool])
 
@@ -57,7 +69,7 @@ export function useFormattedPoolAttributes() {
       },
       {
         title: 'Swap fees',
-        value: fNum('feePercent', dynamicData.swapFee),
+        value: `${fNum('feePercent', dynamicData.swapFee)} (${poolOwnerData?.swapFeeText})`,
       },
       {
         title: 'Pool Manager',
@@ -69,6 +81,10 @@ export function useFormattedPoolAttributes() {
             value: poolOwnerData.title,
           }
         : null,
+      {
+        title: 'Attribute immutability',
+        value: `Immutable${poolOwnerData?.attributeImmutabilityText}`,
+      },
       {
         title: 'Creation date',
         value: format(createTime * 1000, 'dd MMMM yyyy'),
