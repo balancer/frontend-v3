@@ -1,11 +1,15 @@
 'use client'
 
-import { Grid, GridItem, Skeleton } from '@chakra-ui/react'
+import { Button, Grid, GridItem, HStack, Skeleton } from '@chakra-ui/react'
 import { PoolChart } from './PoolChart/PoolChart'
 import PoolStats from './PoolStatsNew'
 import PoolMetaBadges from './PoolMetaBadges/PoolMetaBadges'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 
 export function PoolDetailStatsChart({ isLoading = false }: { isLoading?: boolean }) {
+  const pathname = usePathname()
+
   return (
     <Grid
       h="full"
@@ -22,7 +26,18 @@ export function PoolDetailStatsChart({ isLoading = false }: { isLoading?: boolea
       }}
     >
       <GridItem area="meta-badges">
-        <PoolMetaBadges />
+        <HStack>
+          <PoolMetaBadges />
+          <Button
+            as={Link}
+            href={`${pathname}/add-liquidity`}
+            variant="primary"
+            prefetch={true}
+            ml="auto"
+          >
+            Add liquidity
+          </Button>
+        </HStack>
       </GridItem>
       <GridItem area="stats">
         <PoolStats />
