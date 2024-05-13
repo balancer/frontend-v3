@@ -2,7 +2,7 @@
 
 import { Button, Grid, GridItem, HStack, Skeleton } from '@chakra-ui/react'
 import { PoolChart } from './PoolChart/PoolChart'
-import PoolStats from './PoolStatsNew'
+import PoolStatsOverview from './PoolStatsOverview'
 import PoolMetaBadges from './PoolMetaBadges/PoolMetaBadges'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
@@ -40,7 +40,7 @@ export function PoolDetailStatsChart({ isLoading = false }: { isLoading?: boolea
         </HStack>
       </GridItem>
       <GridItem area="stats">
-        <PoolStats />
+        <PoolStatsOverview />
       </GridItem>
       <GridItem area="chart">
         {isLoading ? <Skeleton h="385px" w="full" /> : <PoolChart />}
