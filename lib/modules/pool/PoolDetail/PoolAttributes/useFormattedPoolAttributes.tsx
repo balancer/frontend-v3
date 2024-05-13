@@ -52,6 +52,10 @@ export function useFormattedPoolAttributes() {
         value: upperFirst(type.toLowerCase()),
       },
       {
+        title: 'Protocol version',
+        value: `Balancer V${pool.vaultVersion}`,
+      },
+      {
         title: 'Swap fees',
         value: fNum('feePercent', dynamicData.swapFee),
       },
