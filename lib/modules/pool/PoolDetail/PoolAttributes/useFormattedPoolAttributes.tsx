@@ -8,9 +8,12 @@ import { zeroAddress } from 'viem'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { upperFirst } from 'lodash'
 import { fNum } from '@/lib/shared/utils/numbers'
+import { bptUsdValue } from '../../pool.helpers'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 export function useFormattedPoolAttributes() {
   const { pool } = usePool()
+  const { toCurrency } = useCurrency()
 
   const poolOwnerData = useMemo(() => {
     if (!pool) return
@@ -31,7 +34,7 @@ export function useFormattedPoolAttributes() {
     }
   }, [pool])
 
-  const foramttedPoolAttributes = useMemo(() => {
+  const formattedPoolAttributes = useMemo(() => {
     if (!pool) return []
     const { name, symbol, createTime, address, dynamicData, type } = pool
 
@@ -70,8 +73,12 @@ export function useFormattedPoolAttributes() {
         title: 'Creation date',
         value: format(createTime * 1000, 'dd MMMM yyyy'),
       },
+      {
+        title: 'BPT price',
+        value: toCurrency(bptUsdValue(pool, '1')),
+      },
     ]
   }, [pool, poolOwnerData])
 
-  return foramttedPoolAttributes
+  return formattedPoolAttributes
 }
