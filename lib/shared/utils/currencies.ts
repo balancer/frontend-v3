@@ -8,7 +8,7 @@ export enum SupportedCurrency {
   CNY = 'CNY',
 }
 
-export type FxRates = Record<SupportedCurrency, number>
+export type FxRates = Record<SupportedCurrency, { code: string; value: number }>
 type FxRatesResponse = {
   data: FxRates
 }

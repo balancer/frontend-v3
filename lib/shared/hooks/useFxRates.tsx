@@ -12,7 +12,7 @@ export function _useFxRates(rates: FxRates | undefined) {
 
   function getFxRate(currency: SupportedCurrency): number {
     if (!rates) return 1
-    return rates[currency] || 1
+    return rates[currency]?.value || 1
   }
 
   return { hasFxRates, getFxRate }
