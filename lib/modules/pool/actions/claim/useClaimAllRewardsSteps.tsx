@@ -4,12 +4,11 @@ import { useHasMinterApproval } from '@/lib/modules/staking/gauge/useHasMinterAp
 import { useApproveMinterStep } from '@/lib/modules/staking/gauge/useMinterApprovalStep'
 import { TransactionStep } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useMemo } from 'react'
-import { PoolListItem } from '../../pool.types'
-import { useClaimAllRewardsStep } from './useClaimAllRewardsStep'
+import { ClaimAllRewardsStepParams, useClaimAllRewardsStep } from './useClaimAllRewardsStep'
 import { useApproveRelayerStep } from '@/lib/modules/relayer/useApproveRelayerStep'
 
-export function useClaimAllRewardsSteps(pools: PoolListItem[]) {
-  const { chain } = pools[0]
+export function useClaimAllRewardsSteps(params: ClaimAllRewardsStepParams) {
+  const { chain } = params.pools[0]
   const chainId = getChainId(chain)
 
   const { hasMinterApproval } = useHasMinterApproval()
@@ -19,7 +18,7 @@ export function useClaimAllRewardsSteps(pools: PoolListItem[]) {
     useApproveMinterStep(chain)
 
   const { step: claimAllRewardsStep, isLoading: isLoadingClaimAllRewards } =
-    useClaimAllRewardsStep(pools)
+    useClaimAllRewardsStep(params)
 
   const steps = useMemo((): TransactionStep[] => {
     const _steps = [claimAllRewardsStep]

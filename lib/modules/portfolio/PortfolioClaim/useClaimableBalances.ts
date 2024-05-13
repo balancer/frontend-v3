@@ -20,6 +20,8 @@ export interface ClaimableReward {
   fiatBalance: BigNumber
 }
 
+export type ClaimableBalancesResult = ReturnType<typeof useClaimableBalances>
+
 export function useClaimableBalances(pools: PoolListItem[]) {
   const { userAddress, isConnected } = useUserAccount()
   const { priceFor } = useTokens()
