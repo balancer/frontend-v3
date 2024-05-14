@@ -28,7 +28,7 @@ import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
-import { useTransactionSteps } from '../../transactions/transaction-steps/useTransactionSteps'
+import { useClaiming } from '../../pool/actions/claim/useClaiming'
 
 type Props = {
   isOpen: boolean
@@ -57,8 +57,7 @@ export function ClaimPortfolioModal({ isOpen, onClose, pools, ...rest }: Props) 
 
   const nonBalRewards = pools.flatMap(pool => poolRewardsMap?.[pool.id]?.claimableRewards || [])
 
-  const { steps, isLoading } = useClaimAllRewardsSteps(pools)
-  const transactionSteps = useTransactionSteps(steps, isLoading)
+  const { transactionSteps } = useClaiming(pools)
 
   const hasNoRewards = !nonBalRewards?.length && !balRewards.length
   const chain = pools[0]?.chain

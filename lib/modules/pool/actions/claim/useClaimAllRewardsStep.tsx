@@ -51,6 +51,7 @@ export function useClaimAllRewardsStep({
 
   const labels: TransactionLabels = {
     init: `Claim${shouldClaimMany ? ' all' : ''}`,
+    title: `Claim${shouldClaimMany ? ' all' : ''}`,
     confirming: 'Confirming...',
     confirmed: 'Claimed',
     tooltip: shouldClaimMany
