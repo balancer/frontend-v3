@@ -25,7 +25,8 @@ export function TransactionStepButton({ step }: Props) {
   const transactionState = getTransactionState(step)
   const isButtonLoading =
     transactionState === TransactionState.Loading ||
-    transactionState === TransactionState.Confirming
+    transactionState === TransactionState.Confirming ||
+    transactionState === TransactionState.Preparing
   const isComplete = transactionState === TransactionState.Completed
   const hasSimulationError = simulation.isError
   const isIdle = isConnected && simulation.isStale && !simulation.data
@@ -72,18 +73,24 @@ export function TransactionStepButton({ step }: Props) {
         <NetworkSwitchButton {...networkSwitchButtonProps} />
       )}
       {!shouldChangeNetwork && isTransactButtonVisible && (
-        <Button
-          width="full"
-          w="full"
-          size="lg"
-          variant="primary"
-          isDisabled={isButtonDisabled}
-          isLoading={isButtonLoading}
-          onClick={handleOnClick}
-          loadingText={getButtonLabel()}
-        >
-          {getButtonLabel()}
-        </Button>
+        <div>
+          <div>Step id {step.labels.title} </div>
+          <div>step simulation status {step.simulation.status} </div>
+          <div>step execution status {step.execution.status} </div>
+          <div>step result status {step.result.status} </div>
+          <Button
+            width="full"
+            w="full"
+            size="lg"
+            variant="primary"
+            isDisabled={isButtonDisabled}
+            isLoading={isButtonLoading}
+            onClick={handleOnClick}
+            loadingText={getButtonLabel()}
+          >
+            {getButtonLabel()}
+          </Button>
+        </div>
       )}
     </VStack>
   )
