@@ -243,13 +243,14 @@ export function getPoolTabsList({
 
 export function usePoolSnapshots(
   poolId: string,
+  chainId: GqlChain,
   range: GqlPoolSnapshotDataRange = GqlPoolSnapshotDataRange.ThirtyDays
 ) {
   return useQuery(GetPoolSnapshotsDocument, {
     variables: {
       poolId,
       range,
-      chainId: GqlChain.Mainnet,
+      chainId,
     },
     notifyOnNetworkStatusChange: true,
   })
@@ -278,6 +279,7 @@ export function usePoolCharts() {
 
   const { data, loading: isLoadingSnapshots } = usePoolSnapshots(
     poolId as string,
+    pool.chain,
     activePeriod.value
   )
 
