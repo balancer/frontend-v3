@@ -112,7 +112,7 @@ const toolTipTheme = {
   text: balColors.gray[400],
 }
 
-export const getDefaultPoolChartOptions = (
+const getDefaultPoolChartOptions = (
   currencyFormatter: NumberFormatter,
   theme: ColorMode = 'dark'
 ) => ({
@@ -197,7 +197,7 @@ export const getDefaultPoolChartOptions = (
               ${format(new Date(data.value[0] * 1000), 'MMM d')}
             </div>
             <div style="font-size: 14px; font-weight: 500; color: ${toolTipTheme.text};">
-              ${numeral(data.value[1]).format('($0,0a)')}
+              ${currencyFormatter(data.value[1])}
             </div>
           </div>
         `

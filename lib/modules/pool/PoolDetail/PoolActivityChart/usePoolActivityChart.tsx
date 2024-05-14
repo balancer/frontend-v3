@@ -29,6 +29,8 @@ import {
   getBlockExplorerTxUrl,
 } from '@/lib/shared/hooks/useBlockExplorer'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { NumberFormatter } from '@/lib/shared/utils/numbers'
 
 type ChartInfoTokens = {
   token?: GqlToken
@@ -49,8 +51,9 @@ const toolTipTheme = {
   text: balTheme.semanticTokens.colors.font.secondary._dark,
 }
 
-export const getDefaultPoolChartOptions = (
+const getDefaultPoolActivityChartOptions = (
   theme: ColorMode = 'dark',
+  currencyFormatter: NumberFormatter,
   isMobile = false
 ): echarts.EChartsCoreOption => {
   return {
@@ -157,7 +160,7 @@ export const getDefaultPoolChartOptions = (
           toolTipTheme.heading
         };">
               <span>${data.seriesName}</span>
-              <span>${numeral(value).format('($0,0.00a)')}</span>
+              <span>${currencyFormatter(value)}</span>
             </div>
             <div style="display:flex;flex-direction:column;justify-content:flex-start;gap:0;margin-top:4px">
               ${tokens?.map((token, index) => {
@@ -277,6 +280,7 @@ export function usePoolActivityChart() {
   const { isMobile } = useBreakpoints()
   const { theme } = useTheme()
   const { getToken } = useTokens()
+  const { toCurrency } = useCurrency()
 
   const { id: poolId, variant, chain } = useParams()
   const { pool } = usePool()
@@ -440,7 +444,7 @@ export function usePoolActivityChart() {
   }, [activeTab, chartData, options])
 
   return {
-    chartOption: getDefaultPoolChartOptions(theme as ColorMode, isMobile),
+    chartOption: getDefaultPoolActivityChartOptions(theme as ColorMode, toCurrency, isMobile),
     activeTab,
     setActiveTab,
     tabsList,
