@@ -15,15 +15,26 @@ import { ManagedTransactionInput } from '../../../web3/contracts/useManagedTrans
 import { useUserAccount } from '../../../web3/useUserAccount'
 import { PoolListItem } from '../../pool.types'
 import { useClaimCallDataQuery } from './useClaimCallDataQuery'
-import { useClaiming } from './useClaiming'
+import { BalTokenRewardsResult } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
+import { ClaimableBalancesResult } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
 
 const claimAllRewardsStepId = 'claim-all-rewards'
 
-export function useClaimAllRewardsStep(pools: PoolListItem[]) {
+export type ClaimAllRewardsStepParams = {
+  pools: PoolListItem[]
+  claimableBalancesQuery: ClaimableBalancesResult
+  balTokenRewardsQuery: BalTokenRewardsResult
+}
+
+export function useClaimAllRewardsStep({
+  pools,
+  claimableBalancesQuery,
+  balTokenRewardsQuery,
+}: ClaimAllRewardsStepParams) {
   const { getTransaction } = useTransactionState()
   const { isConnected } = useUserAccount()
-  const { nonBalRewards, balRewards, refetchClaimableRewards, refetchBalRewards } =
-    useClaiming(pools)
+  const { claimableRewards: nonBalRewards, refetchClaimableRewards } = claimableBalancesQuery
+  const { balRewardsData: balRewards, refetchBalRewards } = balTokenRewardsQuery
 
   const pool = pools[0]
   const chain = pool.chain as GqlChain
@@ -40,6 +51,7 @@ export function useClaimAllRewardsStep(pools: PoolListItem[]) {
 
   const labels: TransactionLabels = {
     init: `Claim${shouldClaimMany ? ' all' : ''}`,
+    title: `Claim${shouldClaimMany ? ' all' : ''}`,
     confirming: 'Confirming...',
     confirmed: 'Claimed',
     tooltip: shouldClaimMany
