@@ -12,7 +12,6 @@ import { HumanAmount, TokenAmount, isSameAddress } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { usePool } from '../../usePool'
 import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
-import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address } from 'viem'
@@ -21,7 +20,7 @@ import { useDisclosure } from '@chakra-ui/hooks'
 import { hasNestedPools, isGyro } from '../../pool.helpers'
 import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
-import { useRemoveLiquidityBuildCallDataQuery } from './queries/useRemoveLiquidityBuildCallDataQuery'
+import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
 import { useRemoveLiquiditySteps } from './modal/useRemoveLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 
@@ -116,18 +115,16 @@ export function _useRemoveLiquidity() {
     wethIsEth && wNativeAsset ? (wNativeAsset.address as Address) : singleTokenOutAddress
   )
 
-  const buildCallDataQuery = useRemoveLiquidityBuildCallDataQuery({
-    humanBptIn,
-    handler,
-    simulationQuery,
-    singleTokenOutAddress,
-    wethIsEth,
-  })
-
   /**
    * Step construction
    */
-  const steps = useRemoveLiquiditySteps(simulationQuery, buildCallDataQuery)
+  const steps = useRemoveLiquiditySteps({
+    handler,
+    simulationQuery,
+    humanBptIn,
+    wethIsEth,
+    singleTokenOutAddress,
+  })
   const transactionSteps = useTransactionSteps(steps)
 
   /**
@@ -196,8 +193,6 @@ export function _useRemoveLiquidity() {
   // If amounts change, update quote state unless the final transaction is
   // confirming or confirmed.
   useEffect(() => {
-    console.log('updateQuoteState')
-
     if (!transactionSteps.lastTransactionConfirmingOrConfirmed) {
       updateQuoteState(humanBptIn, simulationQuery.data?.amountsOut, priceImpactQuery.data)
     }
@@ -207,13 +202,6 @@ export function _useRemoveLiquidity() {
     priceImpactQuery.data,
     transactionSteps.lastTransactionState,
   ])
-
-  useEffect(() => {
-    // simulationQuery is refetched every 30 seconds by RemoveLiquidityTimeout
-    if (simulationQuery.data) {
-      buildCallDataQuery.refetch()
-    }
-  }, [simulationQuery.data])
 
   return {
     transactionSteps,
@@ -230,7 +218,6 @@ export function _useRemoveLiquidity() {
     totalUSDValue,
     simulationQuery,
     priceImpactQuery,
-    buildCallDataQuery,
     isDisabled,
     disabledReason,
     previewModalDisclosure,

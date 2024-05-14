@@ -1,23 +1,32 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
+import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import {
   TransactionLabels,
   TransactionStep,
-  removeLiquidityStepId,
 } from '@/lib/modules/transactions/transaction-steps/lib'
-import { RemoveLiquidityBuildQueryResponse } from '../queries/useRemoveLiquidityBuildCallDataQuery'
-import { useMemo } from 'react'
-import { usePool } from '../../../usePool'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { RemoveLiquiditySimulationQueryResult } from '../queries/useRemoveLiquiditySimulationQuery'
-import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
-import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
+import { useEffect, useMemo, useState } from 'react'
+import { usePool } from '../../../usePool'
+import {
+  RemoveLiquidityBuildQueryParams,
+  useRemoveLiquidityBuildCallDataQuery,
+} from '../queries/useRemoveLiquidityBuildCallDataQuery'
 
-export function useRemoveLiquidityStep(
-  simulationQuery: RemoveLiquiditySimulationQueryResult,
-  buildCallDataQuery: RemoveLiquidityBuildQueryResponse
-): TransactionStep {
+export const removeLiquidityStepId = 'remove-liquidity'
+
+export type RemoveLiquidityStepParams = RemoveLiquidityBuildQueryParams
+
+export function useRemoveLiquidityStep(params: RemoveLiquidityStepParams): TransactionStep {
+  const [isBuildQueryEnabled, setIsBuildQueryEnabled] = useState(false)
   const { chainId, refetch: refetchPoolUserBalances } = usePool()
   const { getTransaction } = useTransactionState()
+
+  const buildCallDataQuery = useRemoveLiquidityBuildCallDataQuery({
+    ...params,
+    enabled: isBuildQueryEnabled,
+  })
+  const simulationQuery = params.simulationQuery
 
   const labels: TransactionLabels = {
     init: 'Remove liquidity',
@@ -39,6 +48,13 @@ export function useRemoveLiquidityStep(
 
   const isComplete = () => transaction?.result.isSuccess || false
 
+  useEffect(() => {
+    // simulationQuery is refetched every 30 seconds by RemoveLiquidityTimeout
+    if (simulationQuery.data && isBuildQueryEnabled) {
+      buildCallDataQuery.refetch()
+    }
+  }, [simulationQuery.data])
+
   return useMemo(
     () => ({
       id: removeLiquidityStepId,
@@ -54,6 +70,8 @@ export function useRemoveLiquidityStep(
           gasEstimationMeta={gasEstimationMeta}
         />
       ),
+      onActivated: () => setIsBuildQueryEnabled(true),
+      onDeactivated: () => setIsBuildQueryEnabled(false),
       onSuccess: () => refetchPoolUserBalances(),
     }),
     [transaction, simulationQuery.data, buildCallDataQuery.data]

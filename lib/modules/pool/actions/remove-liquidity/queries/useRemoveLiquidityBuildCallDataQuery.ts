@@ -19,12 +19,14 @@ export type RemoveLiquidityBuildQueryResponse = ReturnType<
   typeof useRemoveLiquidityBuildCallDataQuery
 >
 
-type Props = {
+export type RemoveLiquidityBuildQueryParams = {
   humanBptIn: HumanAmount
   handler: RemoveLiquidityHandler
   simulationQuery: RemoveLiquiditySimulationQueryResult
   singleTokenOutAddress: Address
   wethIsEth: boolean
+} & {
+  enabled?: boolean
 }
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
@@ -34,7 +36,8 @@ export function useRemoveLiquidityBuildCallDataQuery({
   simulationQuery,
   singleTokenOutAddress,
   wethIsEth,
-}: Props) {
+  enabled = true,
+}: RemoveLiquidityBuildQueryParams) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const { pool } = usePool()
@@ -70,7 +73,7 @@ export function useRemoveLiquidityBuildCallDataQuery({
   return useQuery({
     queryKey,
     queryFn,
-    enabled: isConnected && !!simulationQuery.data,
+    enabled: enabled && isConnected && !!simulationQuery.data,
     gcTime: 0,
     meta: sentryMetaForRemoveLiquidityHandler(
       'Error in remove liquidity buildCallData query',
