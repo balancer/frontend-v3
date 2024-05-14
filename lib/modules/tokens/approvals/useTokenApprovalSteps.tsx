@@ -88,8 +88,6 @@ export function useTokenApprovalSteps({
         labels,
         isComplete,
         renderAction: () => <ManagedErc20TransactionButton key={id} id={id} {...props} />,
-        //Testing purposes
-        _props: props,
         onSuccess: () => tokenAllowances.refetchAllowances(),
       } as const satisfies TransactionStep
     })
