@@ -1418,7 +1418,7 @@ export const balTheme = {
           borderColor: 'transparent',
           shadow: 'xl',
           width: 'full',
-          padding: ['xs', 'md'],
+          padding: ['sm', 'md'],
         },
         header: {
           padding: 'none',

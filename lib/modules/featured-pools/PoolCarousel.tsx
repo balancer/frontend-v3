@@ -2,7 +2,7 @@
 
 import { GetFeaturedPoolsQuery } from '@/lib/shared/services/api/generated/graphql'
 import { useState } from 'react'
-import { Box, BoxProps, Card, Center } from '@chakra-ui/react'
+import { Box, BoxProps, Card, Center, Text } from '@chakra-ui/react'
 import { FeaturePoolCard } from './FeaturePoolCard'
 import { Pool } from '../pool/usePool'
 import { useSwipeable } from 'react-swipeable'
@@ -40,13 +40,18 @@ export function PoolCarousel({ pools, ...rest }: Props & BoxProps) {
     <Box {...swipeHandlers} {...rest}>
       <Card
         w="full"
-        h="550px"
         pos="relative"
         display="flex"
         alignItems="center"
         justifyContent="center"
         position="relative"
+        paddingTop="26px !important"
       >
+        <Box position="absolute" top="0">
+          <Text color="font.secondary" variant="eyebrow" px="4" py="1.5" fontSize="10px">
+            Featured pools
+          </Text>
+        </Box>
         <Box pos="absolute" w="8" h="full" top="0" left="0" cursor="pointer" onClick={prev} />
         <Box pos="absolute" w="8" h="full" top="0" right="0" cursor="pointer" onClick={next} />
         <FeaturePoolCard
@@ -55,8 +60,10 @@ export function PoolCarousel({ pools, ...rest }: Props & BoxProps) {
           bgSize="300px"
           hasLegend={false}
           isCarousel
+          isSmall
           carouselIndex={currentIndex}
           carouselDirection={direction}
+          featuredReason="Liquid staked $SOL on an L2" //replace with {currentPool.description} once API is updated
         />
       </Card>
       <Center w="full" mt="md">
@@ -69,8 +76,8 @@ export function PoolCarousel({ pools, ...rest }: Props & BoxProps) {
             borderRadius="full"
             cursor="pointer"
             onClick={() => pick(index)}
-            mx="sm"
-            transition="all 0.3s ease-in-out"
+            mx="xs"
+            transition="all 0.2s ease-out"
           />
         ))}
       </Center>

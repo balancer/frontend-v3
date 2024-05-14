@@ -2,17 +2,18 @@
 'use client'
 
 import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
+import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { bn } from '@/lib/shared/utils/numbers'
 import { Address, HumanAmount, InputAmount, calculateProportionalAmounts } from '@balancer/sdk'
 import { useMemo, useState } from 'react'
+import { formatUnits } from 'viem'
 import { usePool } from '../../../usePool'
+import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
+import { HumanAmountIn } from '../../liquidity-types'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { useTotalUsdValue } from '../useTotalUsdValue'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { HumanAmountIn } from '../../liquidity-types'
-import { formatUnits } from 'viem'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
-import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
 
 type OptimalToken = {
   tokenAddress: Address
@@ -34,6 +35,7 @@ export function useProportionalInputs() {
   const { balanceFor, balances, isBalancesLoading } = useTokenBalances()
   const { isLoading: isPoolLoading } = usePool()
   const [isMaximized, setIsMaximized] = useState(false)
+  const { isLoadingTokenPrices } = useTokens()
 
   function clearAmountsIn() {
     setHumanAmountsIn(humanAmountsIn.map(amountIn => ({ ...amountIn, humanAmount: '' })))
@@ -42,11 +44,11 @@ export function useProportionalInputs() {
   function handleMaximizeUserAmounts() {
     if (!optimalToken) return
     if (isMaximized) return setIsMaximized(false)
-    handleHumanInputChange(optimalToken.tokenAddress, optimalToken.userBalance)
+    handleProportionalHumanInputChange(optimalToken.tokenAddress, optimalToken.userBalance)
     setIsMaximized(true)
   }
 
-  function handleHumanInputChange(tokenAddress: Address, humanAmount: HumanAmount) {
+  function handleProportionalHumanInputChange(tokenAddress: Address, humanAmount: HumanAmount) {
     // Checks if the user is entering the max amount for the tokenWithMinValue
     const isMaximizing: boolean =
       tokenAddress === optimalToken?.tokenAddress && humanAmount === optimalToken?.userBalance
@@ -81,7 +83,7 @@ export function useProportionalInputs() {
     (where the rest of the tokens have enough user balance for that proportional result).
   */
   const optimalToken = useMemo((): OptimalToken | undefined => {
-    if (!shouldCalculateMaximizeAmounts) return
+    if (isLoadingTokenPrices || !shouldCalculateMaximizeAmounts) return
 
     const humanBalanceFor = (tokenAddress: string): HumanAmount => {
       return (balanceFor(tokenAddress)?.formatted || '0') as HumanAmount
@@ -123,7 +125,7 @@ export function useProportionalInputs() {
     )
 
     return usdValueFor(maxProportionalHumanAmountsIn)
-  }, [shouldCalculateMaximizeAmounts, optimalToken])
+  }, [shouldCalculateMaximizeAmounts, optimalToken, isLoadingTokenPrices])
 
   const canMaximize = !!optimalToken?.userBalance
 
@@ -131,8 +133,9 @@ export function useProportionalInputs() {
     canMaximize,
     isMaximized,
     maximizedUsdValue,
-    handleHumanInputChange,
+    handleProportionalHumanInputChange,
     handleMaximizeUserAmounts,
+    setIsMaximized,
   }
 }
 
@@ -146,7 +149,7 @@ export function _calculateProportionalHumanAmountsIn(
     calculateProportionalAmounts(helpers.poolStateWithBalances, amountIn)
       .tokenAmounts.map(({ address, rawAmount, decimals }) => ({
         tokenAddress: address,
-        humanAmount: formatUnits(rawAmount, decimals) as HumanAmount,
+        humanAmount: roundToFiveDecimals(formatUnits(rawAmount, decimals)) as HumanAmount,
       }))
       // user updated token must be in the first place of the array because the Proportional handler always calculates bptOut based on the first position
       .sort(sortUpdatedTokenFirst(tokenAddress))
@@ -160,4 +163,9 @@ export function _calculateProportionalHumanAmountsIn(
       return 0
     }
   }
+}
+
+// If we pass more than 5 decimals the SDK priceImpact crashes due to some problem with ZeroDelta calculations
+function roundToFiveDecimals(number: string) {
+  return Number(number).toFixed(5)
 }

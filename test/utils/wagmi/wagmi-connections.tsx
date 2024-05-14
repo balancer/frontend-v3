@@ -29,9 +29,12 @@ export async function disconnectAlternativeUser() {
 
 async function connectWithTestConnector(connector: Connector) {
   return act(() =>
-    connect(testWagmiConfig, { connector }).catch(
-      e => console.error(e.message) // Log connection errors without making the test fail
-    )
+    connect(testWagmiConfig, { connector }).catch(e => {
+      //Ignore error
+      if (e.message.startsWith('Connector already connected')) return
+      // Log connection errors without making the test fail
+      console.error(e.message)
+    })
   )
 }
 
