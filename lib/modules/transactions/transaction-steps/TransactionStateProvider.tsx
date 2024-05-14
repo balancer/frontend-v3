@@ -8,6 +8,15 @@ export function _useTransactionState() {
   const [transactionMap, setTransactionMap] = useState<Map<string, ManagedResult>>(new Map())
 
   function updateTransaction(k: string, v: ManagedResult) {
+    // if creating transaction
+    if (!transactionMap.has(k)) {
+      /*
+      Avoid useWriteContract() to keep state from previous transaction
+      More info: https://wagmi.sh/react/api/hooks/useWriteContract#data
+      */
+      v.execution.reset()
+    }
+
     setTransactionMap(new Map(transactionMap.set(k, v)))
   }
 

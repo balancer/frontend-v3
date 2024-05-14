@@ -36,7 +36,6 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
   // when it's complete. e.g. so approvals can refetch to check correct
   // allowance has been given.
   useEffect(() => {
-    // console.log('currentTransaction', currentTransaction?.execution.isSuccess)
     if (currentTransaction?.result.isSuccess) {
       currentStep?.onSuccess?.()
     }
@@ -65,8 +64,6 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
     currentStepIndex,
     lastTransactionState,
     lastTransactionConfirmingOrConfirmed,
-    goToNextStep,
     isLastStep,
-    setCurrentStepIndex,
   }
 }

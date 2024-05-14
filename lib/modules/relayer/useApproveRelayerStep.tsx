@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { SupportedChainId } from '@/lib/config/config.types'
 import { TransactionLabels, TransactionStep } from '../transactions/transaction-steps/lib'
 import { ManagedTransactionButton } from '../transactions/transaction-steps/TransactionButton'
@@ -57,6 +56,7 @@ export function useApproveRelayerStep(chainId: SupportedChainId): TransactionSte
       renderAction: () => <ManagedTransactionButton id={approveRelayerStepId} {...props} />,
       onSuccess: () => refetch(),
     }),
-    [hasApprovedRelayer, isConnected]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [hasApprovedRelayer, isConnected, isLoading]
   )
 }

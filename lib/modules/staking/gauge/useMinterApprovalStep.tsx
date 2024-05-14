@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
   TransactionLabels,
   TransactionStep,
@@ -27,7 +26,7 @@ export function useApproveMinterStep(chain: GqlChain): {
     title: 'Approve minter',
     confirming: 'Confirming...',
     confirmed: `Relayer approved as minter!`,
-    tooltip: 'Approvel relayer as minter',
+    tooltip: 'Approval relayer as minter',
   }
 
   const txSimulationMeta = sentryMetaForWagmiSimulation(
@@ -57,6 +56,7 @@ export function useApproveMinterStep(chain: GqlChain): {
       renderAction: () => <ManagedTransactionButton id={approveMinterStepId} {...props} />,
       onSuccess: () => refetch(),
     }),
+    /* eslint-disable react-hooks/exhaustive-deps */
     [hasMinterApproval, isConnected, isLoading]
   )
 
