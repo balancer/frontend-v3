@@ -41,4 +41,4 @@ next-env.d.ts
 .sentryclirc
 
 # GrapgQL Codegen
-/lib/shared/api/generated/
+/lib/shared/services/api/generated/
