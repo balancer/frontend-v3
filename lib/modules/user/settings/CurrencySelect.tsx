@@ -19,6 +19,8 @@ const currencyIconMap: Record<SupportedCurrency, string> = {
   [SupportedCurrency.GBP]: '/images/currencies/GBP.svg',
   [SupportedCurrency.JPY]: '/images/currencies/JPY.svg',
   [SupportedCurrency.CNY]: '/images/currencies/CNY.svg',
+  [SupportedCurrency.BTC]: '/images/currencies/BTC.svg',
+  [SupportedCurrency.ETH]: '/images/currencies/ETH.svg',
 }
 
 const options: CurrencyOption[] = Object.values(SupportedCurrency).map(currency => ({

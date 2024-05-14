@@ -16,3 +16,6 @@ runs:
     - name: Install dependencies
       shell: bash
       run: pnpm i --frozen-lockfile
+    - name: Generate api typings
+      shell: bash
+      run: pnpm gen:graphql:prod

@@ -6,9 +6,11 @@ export enum SupportedCurrency {
   GBP = 'GBP',
   JPY = 'JPY',
   CNY = 'CNY',
+  BTC = 'BTC',
+  ETH = 'ETH',
 }
 
-export type FxRates = Record<SupportedCurrency, number>
+export type FxRates = Record<SupportedCurrency, { code: string; value: number }>
 type FxRatesResponse = {
   data: FxRates
 }
@@ -25,17 +27,22 @@ export function symbolForCurrency(currency: SupportedCurrency): string {
       return '¥'
     case SupportedCurrency.CNY:
       return '¥'
+    case SupportedCurrency.BTC:
+      return '₿'
+    case SupportedCurrency.ETH:
+      return 'Ξ'
     default:
       return '$'
   }
 }
 
+const API_KEY = process.env.PRIVATE_CURRENCYAPI_KEY || ''
+
 export async function getFxRates(): Promise<FxRates | undefined> {
   try {
-    const res = await fetch(
-      'https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_tjV51qbYMpQeYi3hHUmu2bNyJp0w0TcBZym15REf',
-      { next: { revalidate: mins(10).toSecs() } }
-    )
+    const res = await fetch(`https://api.currencyapi.com/v3/latest?apikey=${API_KEY}`, {
+      next: { revalidate: mins(5).toSecs() },
+    })
     const { data: rates } = (await res.json()) as FxRatesResponse
     return rates
   } catch (error) {

@@ -19,7 +19,7 @@ export function PoolName({
     <Text textAlign="center" display="flex" {...rest}>
       {displayTokens.map((token, idx) => {
         return (
-          <Text as="span" key={token.address}>
+          <Text as="span" fontWeight="bold" key={token.address}>
             {token.nestedTokens ? token.name : token.symbol}
             {token.weight && ` ${fNum('weight', token.weight || '')}`}
             {idx <= displayTokens.length - 2 && ' / '}

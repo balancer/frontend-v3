@@ -32,7 +32,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <NextTopLoader showSpinner={false} color="#7f6ae8" />
         <Providers>
           <Navbar />
-          <Container maxW="maxContent" py={['xl', '2xl']} px={['ms', 'md']}>
+          <Container
+            maxW="maxContent"
+            py={['xl', '2xl']}
+            px={['ms', 'md']}
+            overflowX={{ base: 'hidden', md: 'visible' }}
+          >
             {children}
             <SpeedInsights />
           </Container>

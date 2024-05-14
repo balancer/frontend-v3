@@ -13,9 +13,9 @@ import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import Image from 'next/image'
 
 const smallSize: ChartSizeValues = {
-  chartHeight: '120px',
-  boxWidth: 120,
-  boxHeight: 120,
+  chartHeight: '140px',
+  boxWidth: 140,
+  boxHeight: 140,
   haloTop: '40%',
   haloLeft: '55px',
   haloWidth: '40px',
@@ -157,6 +157,8 @@ export default function WeightedPoolWeightChart({
         width={`${chartSizeValues.boxWidth}px`}
         height={`${chartSizeValues.boxHeight}`}
         position="relative"
+        transition="all 0.2s var(--ease-out-cubic)"
+        _groupHover={{ transform: 'translateY(0) scale(1.05)' }}
       >
         <Box width="full" height="full" rounded="full" shadow="md" top="0" position="absolute" />
         <Box
@@ -190,12 +192,20 @@ export default function WeightedPoolWeightChart({
             }}
             shadowContainerProps={{ shadow: 'none' }}
           >
-            <Box position="absolute" top="50%" transform="translateY(-50%)" zIndex={5}>
+            <Box
+              position="absolute"
+              top="50%"
+              transformOrigin="center"
+              transform="translateY(-50%)"
+              zIndex={5}
+              transition="all 0.2s ease-out"
+              _groupHover={{ transform: 'scale(1.15) translateY(-50%)' }}
+            >
               <Image
                 src={`/images/chains/${chain}.svg`}
                 alt={`Chain icon for ${chain.toLowerCase()}`}
-                width={isSmall ? 15 : 25}
-                height={isSmall ? 15 : 25}
+                width={isSmall ? 28 : 36}
+                height={isSmall ? 28 : 36}
               />
             </Box>
 

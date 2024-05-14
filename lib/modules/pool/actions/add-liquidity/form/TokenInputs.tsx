@@ -108,8 +108,9 @@ export function TokenInputs({
           </HStack>
         </Card>
       )}
-      {tokens.map(token => {
-        if (!token) return <div>Missing token</div>
+      {tokens.map((token, i) => {
+        if (!token) return <div key={i}>Missing token</div>
+
         return (
           <TokenInput
             key={token.address}

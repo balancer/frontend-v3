@@ -307,7 +307,7 @@ export function usePoolActivityChart() {
         const usdValue = valueUSD.toString() ?? ''
         const tokens: ChartInfoTokens[] = []
 
-        if (item.__typename === 'GqlPoolJoinExitEventV3') {
+        if (item.__typename === 'GqlPoolAddRemoveEventV3') {
           item.tokens.forEach(token => {
             tokens.push({
               token: getToken(token.address, _chain),
@@ -327,10 +327,10 @@ export function usePoolActivityChart() {
           })
         }
 
-        if (type === GqlPoolEventType.Join) {
+        if (type === GqlPoolEventType.Add) {
           acc.adds.push([timestamp, usdValue, { userAddress, tokens, tx }])
         }
-        if (type === GqlPoolEventType.Exit) {
+        if (type === GqlPoolEventType.Remove) {
           acc.removes.push([timestamp, usdValue, { userAddress, tokens, tx }])
         }
         if (type === GqlPoolEventType.Swap) {
