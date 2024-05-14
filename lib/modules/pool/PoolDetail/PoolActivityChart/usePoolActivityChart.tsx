@@ -5,7 +5,6 @@ import * as echarts from 'echarts/core'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { format } from 'date-fns'
-import numeral from 'numeral'
 import { usePool } from '../../usePool'
 import { PoolVariant } from '../../pool.types'
 import {
@@ -107,7 +106,7 @@ const getDefaultPoolActivityChartOptions = (
       splitNumber: 3,
       axisLabel: {
         formatter: (value: number) => {
-          return numeral(value).format('($0,0a)')
+          return currencyFormatter(value)
         },
         color: tokens.colors[theme].text.secondary,
         opacity: 0.5,
