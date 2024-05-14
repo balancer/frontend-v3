@@ -63,6 +63,7 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
     currentStep,
     currentTransaction,
     currentStepIndex,
+    lastTransaction,
     lastTransactionState,
     lastTransactionConfirmingOrConfirmed,
     goToNextStep,

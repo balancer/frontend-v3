@@ -21,6 +21,7 @@ import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transacti
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
 import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
+import { AddLiquidityReceipt } from './AddLiquidityReceipt'
 
 type Props = {
   isOpen: boolean
@@ -37,7 +38,7 @@ export function AddLiquidityModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps } = useAddLiquidity()
+  const { transactionSteps, addLiquidityTxHash } = useAddLiquidity()
   const { pool } = usePool()
 
   return (
@@ -60,7 +61,11 @@ export function AddLiquidityModal({
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <AddLiquidityPreview />
+          {addLiquidityTxHash ? (
+            <AddLiquidityReceipt txHash={addLiquidityTxHash} />
+          ) : (
+            <AddLiquidityPreview />
+          )}
         </ModalBody>
         <ModalFooter>
           <VStack w="full">{transactionSteps.currentStep?.renderAction()}</VStack>

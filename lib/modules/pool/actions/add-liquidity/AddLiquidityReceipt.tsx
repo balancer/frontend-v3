@@ -2,7 +2,7 @@
 
 import { Card, Center, Heading, Text, VStack } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
-import { ReceiptBptOut } from './modal/BptOut'
+import { BptRow, QuoteBptOut, ReceiptBptOut } from './modal/BptOut'
 import { StakingOptions } from './modal/StakingOptions'
 import { ReceiptTokensIn } from './modal/TokensIn'
 import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
@@ -26,21 +26,16 @@ export function AddLiquidityReceipt({ txHash }: { txHash: Hash }) {
   if (error) return <Text>We were unable to find this transaction hash</Text>
 
   return (
-    <Center>
-      <VStack w="fit-content" alignContent="center">
-        <Heading>{!hasQuoteContext && '(historical)'}</Heading>
-        <VStack spacing="0.5" align="start">
-          <Card variant="level2" borderRadius="12px 12px 0px 0px">
-            <ReceiptTokensIn sentTokens={sentTokens} />
-          </Card>
-          <Card variant="level2" borderRadius="0px">
-            <ReceiptBptOut receivedBptUnits={receivedBptUnits} />
-          </Card>
-          <Card variant="level2" borderRadius="0px 0px 12px 12px" mt="1">
-            {pool.dynamicData.apr.hasRewardApr && <StakingOptions />}
-          </Card>
-        </VStack>
-      </VStack>
-    </Center>
+    <VStack spacing="sm" align="start">
+      <Card variant="modalSubSection">
+        <ReceiptTokensIn sentTokens={sentTokens} />
+      </Card>
+      <Card variant="modalSubSection">
+        <ReceiptBptOut actualBptOut={receivedBptUnits} />
+      </Card>
+      <Card variant="modalSubSection">
+        {pool.dynamicData.apr.hasRewardApr && <StakingOptions />}
+      </Card>
+    </VStack>
   )
 }

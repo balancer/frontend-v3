@@ -123,6 +123,8 @@ export function _useAddLiquidity() {
   )
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
+  const addLiquidityTxHash = transactionSteps.lastTransaction?.result?.data?.transactionHash
+
   async function refetchQuote() {
     if (requiresProportionalInput(pool.type)) {
       /*
@@ -178,6 +180,7 @@ export function _useAddLiquidity() {
     wethIsEth,
     nativeAsset,
     wNativeAsset,
+    addLiquidityTxHash,
     refetchQuote,
     setHumanAmountIn,
     setHumanAmountsIn,
