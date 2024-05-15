@@ -1,12 +1,9 @@
 import { Address } from 'viem'
-import { includesAddress } from '../shared/utils/addresses'
-import { getNetworkConfig } from './app.config'
-import { SupportedChainId } from './config.types'
 import { GqlChain } from '../shared/services/api/generated/graphql'
-
-export function getNativeAssetAddress(chainId: SupportedChainId) {
-  return getNetworkConfig(chainId).tokens.nativeAsset.address
-}
+import { includesAddress, isSameAddress } from '../shared/utils/addresses'
+import { getNativeAssetAddress, getNetworkConfig, getWrappedNativeAssetAddress } from './app.config'
+import { SupportedChainId } from './config.types'
+import { TokenBase } from '../modules/tokens/token.types'
 
 export function requiresDoubleApproval(
   chainId: GqlChain | SupportedChainId,
@@ -16,4 +13,34 @@ export function requiresDoubleApproval(
     getNetworkConfig(chainId).tokens.doubleApprovalRequired || [],
     tokenAddress
   )
+}
+
+export function getNativeAssetFilter(chain: GqlChain | SupportedChainId) {
+  return (token: TokenBase | string) => {
+    const nativeAssetAddress = getNativeAssetAddress(chain)
+    if (typeof token === 'string') {
+      return isSameAddress(token, nativeAssetAddress)
+    }
+    return isSameAddress(token.address, nativeAssetAddress)
+  }
+}
+
+export function getExclNativeAssetFilter(chain: GqlChain | SupportedChainId) {
+  return (token: TokenBase | string) => {
+    const nativeAssetAddress = getNativeAssetAddress(chain)
+    if (typeof token === 'string') {
+      return !isSameAddress(token, nativeAssetAddress)
+    }
+    return !isSameAddress(token.address, nativeAssetAddress)
+  }
+}
+
+export function getExclWrappedNativeAssetFilter(chain: GqlChain | SupportedChainId) {
+  return (token: TokenBase | string) => {
+    const wrappedNativeAssetAddress = getWrappedNativeAssetAddress(chain)
+    if (typeof token === 'string') {
+      return !isSameAddress(token, wrappedNativeAssetAddress)
+    }
+    return !isSameAddress(token.address, wrappedNativeAssetAddress)
+  }
 }
