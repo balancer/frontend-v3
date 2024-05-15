@@ -25,8 +25,6 @@ export type RemoveLiquidityBuildQueryParams = {
   simulationQuery: RemoveLiquiditySimulationQueryResult
   singleTokenOutAddress: Address
   wethIsEth: boolean
-} & {
-  enabled?: boolean
 }
 
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
@@ -36,8 +34,10 @@ export function useRemoveLiquidityBuildCallDataQuery({
   simulationQuery,
   singleTokenOutAddress,
   wethIsEth,
-  enabled = true,
-}: RemoveLiquidityBuildQueryParams) {
+  enabled,
+}: RemoveLiquidityBuildQueryParams & {
+  enabled: boolean
+}) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const { pool } = usePool()

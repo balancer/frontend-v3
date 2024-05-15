@@ -124,6 +124,7 @@ export function _useRemoveLiquidity() {
     humanBptIn,
     wethIsEth,
     singleTokenOutAddress,
+    isPreviewModalOpen: previewModalDisclosure.isOpen,
   })
   const transactionSteps = useTransactionSteps(steps)
 

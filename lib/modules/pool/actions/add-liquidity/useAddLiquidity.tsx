@@ -115,12 +115,13 @@ export function _useAddLiquidity() {
   /**
    * Step construction
    */
-  const { steps, isLoadingSteps } = useAddLiquiditySteps(
+  const { steps, isLoadingSteps } = useAddLiquiditySteps({
     helpers,
     handler,
     humanAmountsIn,
-    simulationQuery
-  )
+    simulationQuery,
+    isPreviewModalOpen: previewModalDisclosure.isOpen,
+  })
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
   async function refetchQuote() {

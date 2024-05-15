@@ -1,36 +1,37 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
+import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import {
   TransactionLabels,
   TransactionStep,
 } from '@/lib/modules/transactions/transaction-steps/lib'
-import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
-import { usePool } from '../../usePool'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
-import { AddLiquiditySimulationQueryResult } from './queries/useAddLiquiditySimulationQuery'
 import { useEffect, useMemo, useState } from 'react'
-import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
-import { AddLiquidityHandler } from './handlers/AddLiquidity.handler'
-import { HumanAmountIn } from '../liquidity-types'
+import { usePool } from '../../usePool'
+import {
+  AddLiquidityBuildQueryParams,
+  useAddLiquidityBuildCallDataQuery,
+} from './queries/useAddLiquidityBuildCallDataQuery'
 
 export const addLiquidityStepId = 'add-liquidity'
 
-export function useAddLiquidityStep(
-  handler: AddLiquidityHandler,
-  humanAmountsIn: HumanAmountIn[],
-  simulationQuery: AddLiquiditySimulationQueryResult
-): TransactionStep {
-  const [isBuildQueryEnabled, setIsBuildQueryEnabled] = useState(false)
+export type AddLiquidityStepParams = AddLiquidityBuildQueryParams & {
+  isPreviewModalOpen: boolean
+}
 
+export function useAddLiquidityStep(params: AddLiquidityStepParams): TransactionStep {
+  const [isStepActivated, setIsStepActivated] = useState(false)
   const { chainId } = usePool()
   const { getTransaction } = useTransactionState()
 
-  const buildCallDataQuery = useAddLiquidityBuildCallDataQuery(
-    handler,
-    humanAmountsIn,
-    simulationQuery,
-    isBuildQueryEnabled
-  )
+  const { simulationQuery, isPreviewModalOpen } = params
+  // Avoid running unnecessary build queries from form
+  const isBuildQueryEnabled = isStepActivated && isPreviewModalOpen
+
+  const buildCallDataQuery = useAddLiquidityBuildCallDataQuery({
+    ...params,
+    enabled: isBuildQueryEnabled,
+  })
 
   const labels: TransactionLabels = {
     init: 'Add liquidity',
@@ -62,8 +63,8 @@ export function useAddLiquidityStep(
       stepType: 'addLiquidity',
       labels,
       isComplete,
-      onActivated: () => setIsBuildQueryEnabled(true),
-      onDeactivated: () => setIsBuildQueryEnabled(false),
+      onActivated: () => setIsStepActivated(true),
+      onDeactivated: () => setIsStepActivated(false),
       renderAction: () => (
         <ManagedSendTransactionButton
           id={addLiquidityStepId}
