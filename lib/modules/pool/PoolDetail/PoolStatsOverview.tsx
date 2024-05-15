@@ -210,7 +210,7 @@ export default function PoolStatsOverview() {
   const options = useMemo(() => {
     return TABS.map(tab => ({
       ...tab,
-      disabled: tab.value === 'myStats' && !pool.userBalance?.totalBalance,
+      disabled: tab.value === 'myStats' && pool.userBalance?.totalBalance === '0.0',
     }))
   }, [pool])
 
