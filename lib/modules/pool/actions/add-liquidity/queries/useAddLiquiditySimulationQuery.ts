@@ -14,10 +14,13 @@ import { sentryMetaForAddLiquidityHandler } from '@/lib/shared/utils/query-error
 
 export type AddLiquiditySimulationQueryResult = ReturnType<typeof useAddLiquiditySimulationQuery>
 
-export function useAddLiquiditySimulationQuery(
-  handler: AddLiquidityHandler,
+type Params = {
+  handler: AddLiquidityHandler
   humanAmountsIn: HumanAmountIn[]
-) {
+  enabled: boolean
+}
+
+export function useAddLiquiditySimulationQuery({ handler, humanAmountsIn, enabled }: Params) {
   const { userAddress } = useUserAccount()
   const { pool } = usePool()
   const { slippage } = useUserSettings()
@@ -39,7 +42,7 @@ export function useAddLiquiditySimulationQuery(
   return useQuery({
     queryKey,
     queryFn,
-    enabled: !areEmptyAmounts(debouncedHumanAmountsIn),
+    enabled: enabled && !areEmptyAmounts(debouncedHumanAmountsIn),
     gcTime: 0,
     meta: sentryMetaForAddLiquidityHandler('Error in add liquidity simulation query', params),
     ...onlyExplicitRefetch,

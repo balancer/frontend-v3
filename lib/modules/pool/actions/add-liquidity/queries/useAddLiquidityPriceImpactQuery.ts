@@ -12,10 +12,13 @@ import { useQuery } from '@tanstack/react-query'
 import { usePool } from '../../../usePool'
 import { sentryMetaForAddLiquidityHandler } from '@/lib/shared/utils/query-errors'
 
-export function useAddLiquidityPriceImpactQuery(
-  handler: AddLiquidityHandler,
+type Params = {
+  handler: AddLiquidityHandler
   humanAmountsIn: HumanAmountIn[]
-) {
+  enabled: boolean
+}
+
+export function useAddLiquidityPriceImpactQuery({ handler, humanAmountsIn, enabled }: Params) {
   const { pool } = usePool()
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
@@ -37,7 +40,7 @@ export function useAddLiquidityPriceImpactQuery(
   return useQuery({
     queryKey,
     queryFn,
-    enabled: isConnected && !areEmptyAmounts(debouncedHumanAmountsIn),
+    enabled: enabled && isConnected && !areEmptyAmounts(debouncedHumanAmountsIn),
     gcTime: 0,
     meta: sentryMetaForAddLiquidityHandler('Error in add liquidity priceImpact query', params),
     ...onlyExplicitRefetch,

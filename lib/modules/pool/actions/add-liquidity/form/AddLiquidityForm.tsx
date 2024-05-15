@@ -42,13 +42,14 @@ export function AddLiquidityForm() {
     validTokens,
     priceImpactQuery,
     simulationQuery,
-    refetchQuote,
     isDisabled,
     disabledReason,
     showAcceptPoolRisks,
     previewModalDisclosure,
-    setNeedsToAcceptHighPI,
     totalUSDValue,
+    addLiquidityTxHash,
+    setNeedsToAcceptHighPI,
+    refetchQuote,
     setWethIsEth,
   } = useAddLiquidity()
 
@@ -97,6 +98,12 @@ export function AddLiquidityForm() {
       setValidationError(nativeAsset.address as Address, '')
     })
   }
+
+  useEffect(() => {
+    if (addLiquidityTxHash) {
+      previewModalDisclosure.onOpen()
+    }
+  }, [addLiquidityTxHash])
 
   return (
     <TokenBalancesProvider extTokens={validTokens}>

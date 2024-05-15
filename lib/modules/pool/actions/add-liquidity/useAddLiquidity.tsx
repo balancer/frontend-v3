@@ -6,7 +6,7 @@ import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
-import { Address } from 'viem'
+import { Address, Hash } from 'viem'
 import { usePool } from '../../usePool'
 import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulationQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
@@ -33,7 +33,7 @@ import { useTransactionSteps } from '@/lib/modules/transactions/transaction-step
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
 
-export function _useAddLiquidity() {
+export function _useAddLiquidity(urlTxHash?: Hash) {
   const [humanAmountsIn, setHumanAmountsIn] = useState<HumanAmountIn[]>([])
   const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [acceptPoolRisks, setAcceptPoolRisks] = useState(false)
@@ -109,8 +109,16 @@ export function _useAddLiquidity() {
   /**
    * Queries
    */
-  const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn)
-  const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn)
+  const simulationQuery = useAddLiquiditySimulationQuery({
+    handler,
+    humanAmountsIn,
+    enabled: !urlTxHash,
+  })
+  const priceImpactQuery = useAddLiquidityPriceImpactQuery({
+    handler,
+    humanAmountsIn,
+    enabled: !urlTxHash,
+  })
 
   /**
    * Step construction
@@ -123,7 +131,10 @@ export function _useAddLiquidity() {
   )
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
-  const addLiquidityTxHash = transactionSteps.lastTransaction?.result?.data?.transactionHash
+  const addLiquidityTxHash =
+    urlTxHash || transactionSteps.lastTransaction?.result?.data?.transactionHash
+
+  const hasQuoteContext = !!simulationQuery.data
 
   async function refetchQuote() {
     if (requiresProportionalInput(pool.type)) {
@@ -180,7 +191,9 @@ export function _useAddLiquidity() {
     wethIsEth,
     nativeAsset,
     wNativeAsset,
+    urlTxHash,
     addLiquidityTxHash,
+    hasQuoteContext,
     refetchQuote,
     setHumanAmountIn,
     setHumanAmountsIn,
@@ -190,8 +203,12 @@ export function _useAddLiquidity() {
   }
 }
 
-export function AddLiquidityProvider({ children }: PropsWithChildren) {
-  const hook = _useAddLiquidity()
+type Props = PropsWithChildren<{
+  urlTxHash?: Hash
+}>
+
+export function AddLiquidityProvider({ urlTxHash, children }: Props) {
+  const hook = _useAddLiquidity(urlTxHash)
   return <AddLiquidityContext.Provider value={hook}>{children}</AddLiquidityContext.Provider>
 }
 

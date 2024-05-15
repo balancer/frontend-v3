@@ -2,7 +2,7 @@
 
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
-import { RefObject, useRef } from 'react'
+import { RefObject, useEffect, useRef } from 'react'
 import { usePool } from '../../usePool'
 import { useAddLiquidity } from './useAddLiquidity'
 // eslint-disable-next-line max-len
@@ -31,8 +31,14 @@ export function AddLiquidityModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps, addLiquidityTxHash } = useAddLiquidity()
+  const { transactionSteps, addLiquidityTxHash, hasQuoteContext } = useAddLiquidity()
   const { pool } = usePool()
+
+  useEffect(() => {
+    if (addLiquidityTxHash && !window.location.pathname.includes(addLiquidityTxHash)) {
+      window.history.replaceState({}, '', `./add-liquidity/${addLiquidityTxHash}`)
+    }
+  }, [addLiquidityTxHash])
 
   return (
     <Modal
@@ -45,8 +51,10 @@ export function AddLiquidityModal({
     >
       <FireworksOverlay startFireworks={!!addLiquidityTxHash} />
 
-      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
-        {isDesktop && <DesktopStepTracker chain={pool.chain} transactionSteps={transactionSteps} />}
+      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop && hasQuoteContext)}>
+        {isDesktop && hasQuoteContext && (
+          <DesktopStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
+        )}
         <TransactionModalHeader
           label="Add liquidity"
           timeout={<AddLiquidityTimeout />}
