@@ -189,6 +189,7 @@ export default function PoolStatsOverview() {
     nonBalRewards,
   } = useClaiming([pool] as unknown[] as PoolListItem[])
 
+  // TODO: only uses Balancer rewards rn
   const claimableRewards = [...balRewards, ...nonBalRewards]
   const myClaimableIncentives = sumBy(claimableRewards, reward => reward.fiatBalance.toNumber())
 
@@ -198,13 +199,17 @@ export default function PoolStatsOverview() {
   }, [veBalBoostMap])
 
   const myApr = getTotalAprLabel(pool.dynamicData?.apr.items, boost)
+
+  // myApr should always be a 'single' percentage
   const myAprRaw = myApr.substring(0, myApr.length - 1)
 
   const poolMyStatsValues: PoolMyStatsValues | undefined = useMemo(() => {
     if (pool && pool.userBalance && !isLoadingPool && !isLoadingClaiming) {
       return {
+        // TODO: only uses Balancer balances rn
         myLiquidity: toCurrency(pool.userBalance.totalBalanceUsd),
         myApr,
+        // TODO: only uses Balancer balances rn
         myPotentialWeeklyYield: toCurrency(
           bn(pool.userBalance.stakedBalanceUsd)
             .times(bn(bn(myAprRaw).div(100)).div(52))
