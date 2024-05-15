@@ -7,7 +7,6 @@ import {
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useEffect, useMemo, useState } from 'react'
-import { usePool } from '../../usePool'
 import {
   AddLiquidityBuildQueryParams,
   useAddLiquidityBuildCallDataQuery,
@@ -21,7 +20,6 @@ export type AddLiquidityStepParams = AddLiquidityBuildQueryParams & {
 
 export function useAddLiquidityStep(params: AddLiquidityStepParams): TransactionStep {
   const [isStepActivated, setIsStepActivated] = useState(false)
-  const { chainId } = usePool()
   const { getTransaction } = useTransactionState()
 
   const { simulationQuery, isPreviewModalOpen } = params
@@ -69,7 +67,6 @@ export function useAddLiquidityStep(params: AddLiquidityStepParams): Transaction
         <ManagedSendTransactionButton
           id={addLiquidityStepId}
           labels={labels}
-          chainId={chainId}
           txConfig={buildCallDataQuery.data}
           gasEstimationMeta={gasEstimationMeta}
         />

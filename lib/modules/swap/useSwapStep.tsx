@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { getChainId } from '@/lib/config/app.config'
 import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 import {
   TransactionLabels,
@@ -64,8 +63,6 @@ export function useSwapStep({
     }
   }, [simulationQuery.data])
 
-  const chainId = buildSwapQuery.data?.chainId || getChainId(swapState.selectedChain)
-
   const gasEstimationMeta = sentryMetaForWagmiSimulation(
     'Error in swap gas estimation',
     buildSwapQuery.data || {}
@@ -89,7 +86,6 @@ export function useSwapStep({
           <ManagedSendTransactionButton
             id={swapStepId}
             labels={labels}
-            chainId={chainId}
             txConfig={buildSwapQuery.data}
             gasEstimationMeta={gasEstimationMeta}
           />

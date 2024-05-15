@@ -21,7 +21,7 @@ export type RemoveLiquidityStepParams = RemoveLiquidityBuildQueryParams & {
 
 export function useRemoveLiquidityStep(params: RemoveLiquidityStepParams): TransactionStep {
   const [isStepActivated, setIsStepActivated] = useState(false)
-  const { chainId, refetch: refetchPoolUserBalances } = usePool()
+  const { refetch: refetchPoolUserBalances } = usePool()
   const { getTransaction } = useTransactionState()
 
   const { simulationQuery, isPreviewModalOpen } = params
@@ -71,7 +71,6 @@ export function useRemoveLiquidityStep(params: RemoveLiquidityStepParams): Trans
         <ManagedSendTransactionButton
           id={removeLiquidityStepId}
           labels={labels}
-          chainId={chainId}
           txConfig={buildCallDataQuery.data}
           gasEstimationMeta={gasEstimationMeta}
         />
