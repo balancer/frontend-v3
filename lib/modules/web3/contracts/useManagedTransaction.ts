@@ -60,7 +60,6 @@ export function useManagedTransaction({
 
   const transactionStatusQuery = useWaitForTransactionReceipt({
     chainId,
-    // hash: simulateQuery.isSuccess ? writeQuery.data : undefined,
     hash: writeQuery.data,
     confirmations: minConfirmations,
   })
