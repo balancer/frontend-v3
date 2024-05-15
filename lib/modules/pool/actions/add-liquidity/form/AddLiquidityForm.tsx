@@ -35,6 +35,7 @@ import { isNativeOrWrappedNative, isNativeAsset } from '@/lib/modules/tokens/tok
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectModal'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
+import { usePoolRedirect } from '../../../pool.hooks'
 
 export function AddLiquidityForm() {
   const {
@@ -59,6 +60,7 @@ export function AddLiquidityForm() {
   const { toCurrency } = useCurrency()
   const tokenSelectDisclosure = useDisclosure()
   const { setValidationError } = useTokenInputsValidation()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
 
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
@@ -78,7 +80,11 @@ export function AddLiquidityForm() {
   }
 
   const onModalClose = () => {
-    previewModalDisclosure.onClose()
+    if (addLiquidityTxHash) {
+      redirectToPoolPage()
+    } else {
+      previewModalDisclosure.onClose()
+    }
   }
 
   const nativeAssets = validTokens.filter(token =>

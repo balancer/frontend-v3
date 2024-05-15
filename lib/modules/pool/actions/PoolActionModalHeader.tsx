@@ -54,7 +54,7 @@ export function TransactionModalHeader({
             </HStack>
           ) : (
             <>
-              <Text>{label}</Text>
+              <span>{label}</span>
               {timeout}
             </>
           )}
