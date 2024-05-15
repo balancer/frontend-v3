@@ -53,7 +53,7 @@ export function StakingOptions() {
             <Text color="grayText">Aura</Text>
             <HStack>
               <Text fontWeight="bold" color="font.primary" fontSize="md" opacity={0.2}>
-                Support coming soon
+                Coming soon
               </Text>
             </HStack>
 
@@ -67,7 +67,6 @@ export function StakingOptions() {
               href={'https://aura.finance/'}
               w="full"
               variant={'secondary'}
-              isDisabled
             >
               Learn more
             </Button>

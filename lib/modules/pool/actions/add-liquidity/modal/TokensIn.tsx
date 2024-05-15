@@ -1,12 +1,13 @@
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { isSameAddress } from '@balancer/sdk'
-import { HStack, Text, VStack } from '@chakra-ui/react'
+import { HStack, Skeleton, Text, VStack } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { usePool } from '../../../usePool'
 import { HumanAmountIn } from '../../liquidity-types'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { useTotalUsdValue } from '../useTotalUsdValue'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 function missingAmountIn(): HumanAmountIn {
   return {
@@ -15,21 +16,32 @@ function missingAmountIn(): HumanAmountIn {
   }
 }
 
-export function ReceiptTokensIn({ sentTokens }: { sentTokens: HumanAmountIn[] }) {
-  const { validTokens } = useAddLiquidity()
-  const { usdValueFor } = useTotalUsdValue(validTokens)
-  const totalUSDValue = usdValueFor(sentTokens)
-
+export function TokensIn({
+  label,
+  amountsIn,
+  totalUSDValue,
+  chain,
+  isLoading,
+}: {
+  label: string
+  amountsIn: HumanAmountIn[]
+  totalUSDValue: string
+  chain: GqlChain
+  isLoading?: boolean
+}) {
   const { toCurrency } = useCurrency()
-  const { pool } = usePool()
 
   return (
     <VStack align="start" spacing="md">
       <HStack justify="space-between" w="full">
-        <Text>You added</Text>
-        <Text>{toCurrency(totalUSDValue, { abbreviated: false })}</Text>
+        <Text color="grayText">{label}</Text>
+        {isLoading ? (
+          <Skeleton h="5" w="12" />
+        ) : (
+          <Text>{toCurrency(totalUSDValue, { abbreviated: false })}</Text>
+        )}
       </HStack>
-      {sentTokens.map(amountIn => {
+      {amountsIn.map(amountIn => {
         if (!amountIn.tokenAddress) return <div key={JSON.stringify(amountIn)}>Missing token</div>
 
         return (
@@ -37,8 +49,9 @@ export function ReceiptTokensIn({ sentTokens }: { sentTokens: HumanAmountIn[] })
             key={amountIn.tokenAddress}
             value={amountIn.humanAmount}
             address={amountIn.tokenAddress}
-            chain={pool.chain}
+            chain={chain}
             abbreviated={false}
+            isLoading={isLoading}
           />
         )
       })}
@@ -46,7 +59,31 @@ export function ReceiptTokensIn({ sentTokens }: { sentTokens: HumanAmountIn[] })
   )
 }
 
+export function ReceiptTokensIn({
+  sentTokens,
+  isLoading,
+}: {
+  sentTokens: HumanAmountIn[]
+  isLoading?: boolean
+}) {
+  const { pool } = usePool()
+  const { validTokens } = useAddLiquidity()
+  const { usdValueFor } = useTotalUsdValue(validTokens)
+  const totalUSDValue = usdValueFor(sentTokens)
+
+  return (
+    <TokensIn
+      label="You added"
+      amountsIn={sentTokens}
+      totalUSDValue={totalUSDValue}
+      chain={pool.chain}
+      isLoading={isLoading}
+    />
+  )
+}
+
 export function QuoteTokensIn() {
+  const { pool } = usePool()
   const { humanAmountsIn, totalUSDValue, tokens } = useAddLiquidity()
 
   const amountsIn: HumanAmountIn[] = tokens.map(token => {
@@ -58,28 +95,12 @@ export function QuoteTokensIn() {
     return amountIn
   })
 
-  const { toCurrency } = useCurrency()
-  const { pool } = usePool()
-
   return (
-    <VStack align="start" spacing="md">
-      <HStack justify="space-between" w="full">
-        <Text color="grayText">{"You're adding"}</Text>
-        <Text>{toCurrency(totalUSDValue, { abbreviated: false })}</Text>
-      </HStack>
-      {amountsIn.map(amountIn => {
-        if (!amountIn.tokenAddress) return <div key={JSON.stringify(amountIn)}>Missing token</div>
-
-        return (
-          <TokenRow
-            key={amountIn.tokenAddress}
-            value={amountIn.humanAmount}
-            address={amountIn.tokenAddress}
-            chain={pool.chain}
-            abbreviated={false}
-          />
-        )
-      })}
-    </VStack>
+    <TokensIn
+      label="You're adding"
+      amountsIn={amountsIn}
+      totalUSDValue={totalUSDValue}
+      chain={pool.chain}
+    />
   )
 }

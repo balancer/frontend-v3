@@ -4,18 +4,20 @@ import { Address, formatUnits } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
 import { Pool, usePool } from '../../../usePool'
 import { useAddLiquidity } from '../useAddLiquidity'
-import { bn } from '@/lib/shared/utils/numbers'
+import { bn, fNum } from '@/lib/shared/utils/numbers'
 
 export function BptRow({
   label,
   rightLabel,
   bptAmount,
   pool,
+  isLoading,
 }: {
   label: string
   rightLabel?: string
   bptAmount: string
   pool: Pool
+  isLoading?: boolean
 }) {
   return (
     <VStack align="start" spacing="md">
@@ -30,12 +32,19 @@ export function BptRow({
         abbreviated={false}
         isBpt={true}
         pool={pool}
+        isLoading={isLoading}
       />
     </VStack>
   )
 }
 
-export function ReceiptBptOut({ actualBptOut }: { actualBptOut: string }) {
+export function ReceiptBptOut({
+  actualBptOut,
+  isLoading,
+}: {
+  actualBptOut: string
+  isLoading?: boolean
+}) {
   const { pool } = usePool()
   const { simulationQuery } = useAddLiquidity()
   const expectedBptOutInt = simulationQuery?.data?.bptOut
@@ -45,13 +54,24 @@ export function ReceiptBptOut({ actualBptOut }: { actualBptOut: string }) {
 
   const bptDiff = bn(actualBptOut).minus(expectedBptOut)
 
-  const diffLabel = !bptDiff.isZero()
-    ? bptDiff.isNegative()
-      ? `-${bptDiff.abs().toString()} on quote`
-      : `+${bptDiff.abs().toString()} on quote`
-    : 'No slippage'
+  const diffLabel = () => {
+    if (!simulationQuery?.data || isLoading) return ''
+    if (bptDiff.isZero()) return 'Slippage: 0%'
 
-  return <BptRow label="You got" rightLabel={diffLabel} bptAmount={actualBptOut} pool={pool} />
+    const slippage = bptDiff.div(expectedBptOut).times(100).toString()
+
+    return `Slippage: ${fNum('slippage', slippage)}%`
+  }
+
+  return (
+    <BptRow
+      label="You got"
+      rightLabel={diffLabel()}
+      bptAmount={actualBptOut}
+      pool={pool}
+      isLoading={isLoading}
+    />
+  )
 }
 
 export function QuoteBptOut({ label }: { label?: string }) {

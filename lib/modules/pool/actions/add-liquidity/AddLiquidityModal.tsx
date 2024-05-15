@@ -1,18 +1,7 @@
 'use client'
 
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
-import {
-  HStack,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  ModalProps,
-  VStack,
-} from '@chakra-ui/react'
+import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
 import { usePool } from '../../usePool'
 import { useAddLiquidity } from './useAddLiquidity'
@@ -22,6 +11,10 @@ import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
 import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
 import { AddLiquidityReceipt } from './AddLiquidityReceipt'
+import { PoolActionModalFooter } from '../PoolActionModalFooter'
+import { AnimatePresence, motion } from 'framer-motion'
+import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
+import { TransactionModalHeader } from '../PoolActionModalHeader'
 
 type Props = {
   isOpen: boolean
@@ -50,26 +43,46 @@ export function AddLiquidityModal({
       isCentered
       {...rest}
     >
-      <ModalOverlay />
+      <FireworksOverlay startFireworks={!!addLiquidityTxHash} />
+
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && <DesktopStepTracker chain={pool.chain} transactionSteps={transactionSteps} />}
-        <ModalHeader>
-          <HStack justify="space-between" w="full" pr="lg">
-            <span>Add liquidity</span>
-            <AddLiquidityTimeout />
-          </HStack>
-        </ModalHeader>
+        <TransactionModalHeader
+          label="Add liquidity"
+          timeout={<AddLiquidityTimeout />}
+          txHash={addLiquidityTxHash}
+          chain={pool.chain}
+        />
         <ModalCloseButton />
         <ModalBody>
-          {addLiquidityTxHash ? (
-            <AddLiquidityReceipt txHash={addLiquidityTxHash} />
-          ) : (
-            <AddLiquidityPreview />
-          )}
+          <AnimatePresence mode="wait" initial={false}>
+            {addLiquidityTxHash ? (
+              <motion.div
+                key="receipt"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+              >
+                <AddLiquidityReceipt txHash={addLiquidityTxHash} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="preview"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+              >
+                <AddLiquidityPreview />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </ModalBody>
-        <ModalFooter>
-          <VStack w="full">{transactionSteps.currentStep?.renderAction()}</VStack>
-        </ModalFooter>
+        <PoolActionModalFooter
+          isSuccess={!!addLiquidityTxHash}
+          currentStep={transactionSteps.currentStep}
+        />
       </ModalContent>
     </Modal>
   )
