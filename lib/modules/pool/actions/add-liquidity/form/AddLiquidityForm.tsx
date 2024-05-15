@@ -23,8 +23,9 @@ import { useAddLiquidity } from '../useAddLiquidity'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
 import { TokenInputs } from './TokenInputs'
+import { TokenInputsWithAddable } from './TokenInputsWithAddable'
 import { usePool } from '../../../usePool'
-import { requiresProportionalInput } from '../../LiquidityActionHelpers'
+import { requiresProportionalInput, supportsProportionalAdds } from '../../LiquidityActionHelpers'
 import { PriceImpactAccordion } from '@/lib/shared/components/accordion/PriceImpactAccordion'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
@@ -36,6 +37,7 @@ import { isNativeOrWrappedNative, isNativeAsset } from '@/lib/modules/tokens/tok
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectModal'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
+import { GenericError } from '@/lib/shared/components/errors/GenericError'
 
 export function AddLiquidityForm() {
   const {
@@ -115,11 +117,17 @@ export function AddLiquidityForm() {
               </Heading>
               <TransactionSettings size="sm" />
             </HStack>
-            <TokenInputs
-              tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
-              requiresProportionalInput={requiresProportionalInput(pool.type)}
-              totalUSDValue={totalUSDValue}
-            />
+            {supportsProportionalAdds(pool) ? (
+              <TokenInputsWithAddable
+                tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
+                requiresProportionalInput={requiresProportionalInput(pool.type)}
+                totalUSDValue={totalUSDValue}
+              />
+            ) : (
+              <TokenInputs
+                tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
+              ></TokenInputs>
+            )}
             <VStack spacing="sm" align="start" w="full">
               <PriceImpactAccordion
                 isDisabled={!priceImpactQuery.data}
@@ -175,6 +183,18 @@ export function AddLiquidityForm() {
               </GridItem>
             </Grid>
             {showAcceptPoolRisks && <AddLiquidityFormCheckbox />}
+            {priceImpactQuery.isError && (
+              <GenericError
+                customErrorName={'Error calculating price impact'}
+                error={priceImpactQuery.error}
+              ></GenericError>
+            )}
+            {simulationQuery.isError && (
+              <GenericError
+                customErrorName={'Error in query simulation'}
+                error={simulationQuery.error}
+              ></GenericError>
+            )}
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}
