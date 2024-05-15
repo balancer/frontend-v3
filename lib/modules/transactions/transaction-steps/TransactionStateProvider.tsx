@@ -11,7 +11,8 @@ export function _useTransactionState() {
     // if creating transaction
     if (!transactionMap.has(k)) {
       /*
-      Avoid useWriteContract() to keep state from previous transaction
+      When there was a previous transaction useWriteContract() will return the execution hash from that previous transaction,
+      So we need to reset it to avoid issues with multiple "managedTransaction" steps running in sequence.
       More info: https://wagmi.sh/react/api/hooks/useWriteContract#data
       */
       v.execution.reset()
