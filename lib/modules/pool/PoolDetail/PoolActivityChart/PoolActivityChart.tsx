@@ -37,6 +37,7 @@ export function PoolActivityChart() {
             setActiveTab(option)
           }}
           size="xxs"
+          width="70px"
         />
       </HStack>
       {chartOption && (

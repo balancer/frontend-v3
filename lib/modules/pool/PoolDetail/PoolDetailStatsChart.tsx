@@ -43,7 +43,7 @@ export function PoolDetailStatsChart({ isLoading = false }: { isLoading?: boolea
         <PoolStatsOverview />
       </GridItem>
       <GridItem area="chart">
-        {isLoading ? <Skeleton h="385px" w="full" /> : <PoolChart />}
+        <PoolChart />
       </GridItem>
     </Grid>
   )

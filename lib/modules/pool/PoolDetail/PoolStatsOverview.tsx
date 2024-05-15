@@ -39,6 +39,9 @@ const COMMON_NOISY_CARD_PROPS: { contentProps: BoxProps; cardProps: BoxProps } =
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    borderBottomLeftRadius: 'none',
+    borderTopLeftRadius: 'none',
+    borderBottomRightRadius: 'none',
   },
   cardProps: {
     position: 'relative',
@@ -252,12 +255,7 @@ export default function PoolStatsOverview() {
   return (
     <Card h="full" position="relative" p="md">
       <NoisyCard
-        cardProps={{
-          ...COMMON_NOISY_CARD_PROPS.cardProps,
-          borderBottomLeftRadius: 'none',
-          borderTopLeftRadius: 'none',
-          borderBottomRightRadius: 'none',
-        }}
+        cardProps={COMMON_NOISY_CARD_PROPS.cardProps}
         contentProps={COMMON_NOISY_CARD_PROPS.contentProps}
       >
         <ZenGarden variant="diamond" sizePx="225px" />
