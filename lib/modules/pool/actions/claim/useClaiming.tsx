@@ -19,11 +19,18 @@ export function useClaiming(pools: PoolListItem[]) {
     LABELS.walletNotConnected,
   ])
 
-  const { claimableRewards: nonBalRewards, refetchClaimableRewards } = useClaimableBalances(pools)
-  const { balRewardsData: balRewards, refetchBalRewards } = useBalTokenRewards(pools)
+  const {
+    claimableRewards: nonBalRewards,
+    refetchClaimableRewards,
+    isLoadingClaimableRewards,
+  } = useClaimableBalances(pools)
+  const {
+    balRewardsData: balRewards,
+    refetchBalRewards,
+    isLoadingBalRewards,
+  } = useBalTokenRewards(pools)
 
   const hasNoRewards = !nonBalRewards.length && !balRewards.length
-
   const stepConfigs = useClaimStepConfigs(pools)
   const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
 
@@ -38,5 +45,6 @@ export function useClaiming(pools: PoolListItem[]) {
     refetchClaimableRewards,
     refetchBalRewards,
     hasNoRewards,
+    isLoading: isLoadingClaimableRewards || isLoadingBalRewards,
   }
 }

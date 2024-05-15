@@ -1,5 +1,6 @@
 import {
   GetPoolQuery,
+  GqlBalancePoolAprItem,
   GqlChain,
   GqlPoolAprValue,
   GqlPoolComposableStableNested,
@@ -53,6 +54,7 @@ export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolPr
   return `/pools/${chainToSlugMap[chain]}/${variant}/${id}`
 }
 
+// TODO: the following 2 functions (getAprLabel & getTotalAprLabel) most likely need revisiting somewhere in the near future
 /**
  * Returns formatted APR value from GraphQL response.
  * @param {GqlPoolAprValue} apr APR value from GraphQL response.
@@ -71,6 +73,34 @@ export function getAprLabel(apr: GqlPoolAprValue, vebalBoost?: number): string {
     return fNum('apr', apr.total)
   } else {
     return '-'
+  }
+}
+
+/**
+ * Calculates the total APR label based on the array of APR items and an optional boost value.
+ *
+ * @param {GqlBalancePoolAprItem[]} aprItems - The array of APR items to calculate the total APR label from.
+ * @param {string} [vebalBoost] - An optional boost value for calculation.
+ * @returns {string} The formatted total APR label.
+ */
+export function getTotalAprLabel(aprItems: GqlBalancePoolAprItem[], vebalBoost?: string): string {
+  let minTotal = '0'
+  let maxTotal = '0'
+  const boost = vebalBoost || 1
+
+  aprItems.forEach(item => {
+    const [min, max] =
+      item.apr.__typename === 'GqlPoolAprRange'
+        ? [bn(item.apr.min).times(boost), item.apr.max]
+        : [item.apr.total, item.apr.total]
+    minTotal = bn(min).plus(minTotal).toString()
+    maxTotal = bn(max).plus(maxTotal).toString()
+  })
+
+  if (minTotal === maxTotal || vebalBoost) {
+    return fNum('apr', minTotal)
+  } else {
+    return `${fNum('apr', minTotal)} - ${fNum('apr', maxTotal)}`
   }
 }
 

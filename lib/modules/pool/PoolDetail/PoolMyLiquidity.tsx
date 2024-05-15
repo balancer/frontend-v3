@@ -23,7 +23,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { keyBy } from 'lodash'
-import { getAprLabel, getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
+import { getTotalAprLabel, getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
 import { BPT_DECIMALS } from '../pool.constants'
 import { useUserAccount } from '../../web3/useUserAccount'
 import { bn } from '@/lib/shared/utils/numbers'
@@ -127,7 +127,7 @@ export default function PoolMyLiquidity() {
   const canStake = pool.staking
   const hasUnstakedBalance = bn(pool.userBalance?.walletBalance || '0').gt(0)
   const hasStakedBalance = bn(pool.userBalance?.stakedBalance || '0').gt(0)
-  const aprLabel = getAprLabel(pool.dynamicData?.apr.apr)
+  const aprLabel = getTotalAprLabel(pool.dynamicData?.apr.items)
 
   const displayTokens = hasNestedPools(pool)
     ? // we don't have the balances for pool.displayTokens for v2 boosted pools so we show bpt tokens balance as a workaround
