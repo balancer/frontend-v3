@@ -10,7 +10,7 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { PropsWithChildren, createContext } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { getNetworkConfig } from '@/lib/config/app.config'
-import { getNativeAssetFilter } from '@/lib/config/tokens.config'
+import { getExclNativeAssetFilter, getNativeAssetFilter } from '@/lib/config/tokens.config'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
@@ -25,7 +25,7 @@ export function _useTokenBalances(tokens: TokenBase[]) {
   const networkConfig = getNetworkConfig(chainId)
 
   const includesNativeAsset = tokens.some(getNativeAssetFilter(chainId))
-  const _tokens = tokens.filter(getNativeAssetFilter(chainId))
+  const _tokens = tokens.filter(getExclNativeAssetFilter(chainId))
 
   const nativeBalanceQuery = useBalance({
     chainId,
