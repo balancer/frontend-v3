@@ -15,10 +15,15 @@ test('token approval transaction (wETH)', async () => {
   const chainId = 1
 
   const { result } = testHook(() =>
-    useManagedErc20Transaction(wEthAddress, 'approve', {} as TransactionLabels, chainId, [
-      vault2,
-      parseUnits('100', 18),
-    ])
+    useManagedErc20Transaction({
+      chainId,
+      tokenAddress: wEthAddress as Address,
+      functionName: 'approve',
+      args: [vault2, parseUnits('100', 18)],
+      enabled: true,
+      simulationMeta: {},
+      labels: {} as TransactionLabels,
+    })
   )
 
   await waitFor(() => expect(result.current.simulation.isSuccess).toBeTruthy())

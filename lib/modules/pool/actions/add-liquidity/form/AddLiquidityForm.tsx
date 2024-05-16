@@ -32,7 +32,6 @@ import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { AddLiquidityFormCheckbox } from './AddLiquidityFormCheckbox'
-import { useCurrentFlowStep } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 import { isNativeOrWrappedNative, isNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectModal'
@@ -59,7 +58,6 @@ export function AddLiquidityForm() {
   const { pool, totalApr } = usePool()
   const { priceImpactColor, priceImpact, setPriceImpact } = usePriceImpact()
   const { toCurrency } = useCurrency()
-  const { clearCurrentFlowStep } = useCurrentFlowStep()
   const tokenSelectDisclosure = useDisclosure()
   const { setValidationError } = useTokenInputsValidation()
 
@@ -84,10 +82,6 @@ export function AddLiquidityForm() {
     previewModalDisclosure.onClose()
   }
 
-  useEffect(() => {
-    clearCurrentFlowStep()
-  }, [])
-
   const nativeAssets = validTokens.filter(token =>
     isNativeOrWrappedNative(token.address as Address, token.chain)
   )
@@ -107,7 +101,7 @@ export function AddLiquidityForm() {
   }
 
   return (
-    <TokenBalancesProvider tokens={validTokens}>
+    <TokenBalancesProvider extTokens={validTokens}>
       <Center h="full" w="full" maxW="lg" mx="auto">
         <Card>
           <VStack spacing="md" align="start" w="full">

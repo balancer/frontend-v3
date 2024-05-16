@@ -9,12 +9,7 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 import { useEffect, useState } from 'react'
 import { Address, ContractFunctionArgs, ContractFunctionName, erc20Abi } from 'viem'
-import {
-  UseSimulateContractParameters,
-  useSimulateContract,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from 'wagmi'
+import { useSimulateContract, useWaitForTransactionReceipt, useWriteContract } from 'wagmi'
 import { useChainSwitch } from '../useChainSwitch'
 import { usdtAbi } from './abi/UsdtAbi'
 import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
@@ -22,27 +17,32 @@ import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 
 type Erc20Abi = typeof erc20Abi
-export function useManagedErc20Transaction<
-  F extends ContractFunctionName<Erc20Abi, WriteAbiMutability>
->(
-  tokenAddress: Address,
-  functionName: F,
-  labels: TransactionLabels,
-  chainId: SupportedChainId,
-  args?: ContractFunctionArgs<Erc20Abi, WriteAbiMutability> | null,
-  additionalConfig?: Omit<
-    UseSimulateContractParameters<Erc20Abi, F>,
-    'abi' | 'address' | 'functionName' | 'args'
-  >
-) {
+
+export interface ManagedErc20TransactionInput {
+  tokenAddress: Address
+  functionName: ContractFunctionName<Erc20Abi, WriteAbiMutability>
+  labels: TransactionLabels
+  chainId: SupportedChainId
+  args?: ContractFunctionArgs<Erc20Abi, WriteAbiMutability> | null
+  enabled: boolean
+  simulationMeta: Record<string, unknown>
+}
+
+export function useManagedErc20Transaction({
+  tokenAddress,
+  functionName,
+  labels,
+  chainId,
+  args,
+  enabled = true,
+  simulationMeta,
+}: ManagedErc20TransactionInput) {
   const [writeArgs, setWriteArgs] = useState(args)
   const { minConfirmations } = useNetworkConfig()
   const { shouldChangeNetwork } = useChainSwitch(chainId)
 
   const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7'
   const isUsdt = isSameAddress(tokenAddress, usdtAddress)
-
-  const enabled = additionalConfig?.query?.enabled ?? true
 
   const simulateQuery = useSimulateContract({
     /*
@@ -54,10 +54,10 @@ export function useManagedErc20Transaction<
     functionName: functionName as ContractFunctionName<any, WriteAbiMutability>,
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
     args: writeArgs as any,
-    ...(additionalConfig as any),
     chainId,
     query: {
       enabled: enabled && !shouldChangeNetwork,
+      meta: simulationMeta,
     },
   })
 

@@ -3,13 +3,17 @@ import { StepProps, getStepSettings } from './getStepSettings'
 import { Check } from 'react-feather'
 import { useSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
 import { signRelayerStepTitle } from '../SignRelayerButton'
+import { ManagedResult } from '../lib'
+import { useTransactionState } from '../TransactionStateProvider'
 
 export function Step(props: StepProps) {
-  const { color, isActive, title } = getStepSettings(props)
+  const { getTransaction } = useTransactionState()
+  const transaction = getTransaction(props.step.id)
+  const { color, isActive, title } = getStepSettings(props, transaction)
 
   return (
     <HStack alignItems="center">
-      <StepIndicator {...props}></StepIndicator>
+      <StepIndicator transaction={transaction} {...props}></StepIndicator>
       <VStack spacing="0" alignItems="start">
         <Text mt={isActive ? -0.3 : 0} color={color}>
           {title}
@@ -19,8 +23,11 @@ export function Step(props: StepProps) {
   )
 }
 
-export function StepIndicator(props: StepProps) {
-  const { color, isActiveLoading, status, stepNumber, title } = getStepSettings(props)
+export function StepIndicator({
+  transaction,
+  ...props
+}: StepProps & { transaction?: ManagedResult }) {
+  const { color, isActiveLoading, status, stepNumber, title } = getStepSettings(props, transaction)
   const { isLoading } = useSignRelayerApproval()
   const isSignRelayerStepLoading = isLoading && title === signRelayerStepTitle
 

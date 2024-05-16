@@ -51,6 +51,11 @@ export function SearchInput({
           shadow: 'input.innerFocus',
           color: 'input.fontFocus',
         }}
+        onKeyDown={event => {
+          if (event.key === 'Enter') {
+            event.preventDefault()
+          }
+        }}
         {...rest}
       />
       <InputRightElement>

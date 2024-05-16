@@ -10,19 +10,13 @@ import { QuoteBptOut } from './BptOut'
 import { QuoteTokensIn } from './TokensIn'
 
 export function AddLiquidityPreview() {
-  const { totalUSDValue, simulationQuery, currentStepIndex, stepConfigs } = useAddLiquidity()
+  const { totalUSDValue, simulationQuery, transactionSteps } = useAddLiquidity()
   const { pool } = usePool()
   const { isMobile } = useBreakpoints()
 
   return (
     <VStack spacing="sm" align="start">
-      {isMobile && (
-        <MobileStepTracker
-          currentStepIndex={currentStepIndex}
-          stepConfigs={stepConfigs}
-          chain={pool.chain}
-        />
-      )}
+      {isMobile && <MobileStepTracker chain={pool.chain} transactionSteps={transactionSteps} />}
 
       <Card variant="modalSubSection">
         <QuoteTokensIn />

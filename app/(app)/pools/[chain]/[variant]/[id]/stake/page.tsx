@@ -3,6 +3,7 @@
 
 import { PoolActionsLayout } from '@/lib/modules/pool/actions/PoolActionsLayout'
 import { StakeForm } from '@/lib/modules/pool/actions/stake/StakeForm'
+import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { usePoolRedirect } from '@/lib/modules/pool/pool.hooks'
 import { usePool } from '@/lib/modules/pool/usePool'
 import { bn } from '@/lib/shared/utils/numbers'
@@ -23,8 +24,10 @@ export default function StakePage() {
   if (!canStake) return null
 
   return (
-    <PoolActionsLayout>
-      <StakeForm />
-    </PoolActionsLayout>
+    <TransactionStateProvider>
+      <PoolActionsLayout>
+        <StakeForm />
+      </PoolActionsLayout>
+    </TransactionStateProvider>
   )
 }

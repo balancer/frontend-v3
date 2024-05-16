@@ -18,11 +18,10 @@ import { useSwap } from './useSwap'
 import { SwapTimeout } from './SwapTimeout'
 import { DesktopStepTracker } from '../transactions/transaction-steps/step-tracker/DesktopStepTracker'
 // eslint-disable-next-line max-len
-import { getStylesForModalContentWithStepTracker } from '../transactions/transaction-steps/step-tracker/useStepTrackerProps'
+import { getStylesForModalContentWithStepTracker } from '../transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { capitalize } from 'lodash'
 import { SwapPreview } from './SwapPreview'
-import { useClearCurrentFlowStepOnUnmount } from '../transactions/transaction-steps/useCurrentFlowStep'
 
 type Props = {
   isOpen: boolean
@@ -39,15 +38,8 @@ export function SwapPreviewModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const {
-    currentStep,
-    currentStepIndex,
-    swapStepConfigs,
-    swapAction,
-    selectedChain,
-    useOnStepCompleted,
-  } = useSwap()
-  useClearCurrentFlowStepOnUnmount()
+
+  const { transactionSteps, swapAction, selectedChain } = useSwap()
 
   return (
     <Modal
@@ -61,11 +53,7 @@ export function SwapPreviewModal({
       <ModalOverlay />
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && (
-          <DesktopStepTracker
-            currentStepIndex={currentStepIndex}
-            stepConfigs={swapStepConfigs}
-            chain={selectedChain}
-          />
+          <DesktopStepTracker transactionSteps={transactionSteps} chain={selectedChain} />
         )}
         <ModalHeader>
           <HStack justify="space-between" w="full" pr="lg">
@@ -78,7 +66,7 @@ export function SwapPreviewModal({
           <SwapPreview />
         </ModalBody>
         <ModalFooter>
-          <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
+          <VStack w="full">{transactionSteps.currentStep?.renderAction()}</VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>

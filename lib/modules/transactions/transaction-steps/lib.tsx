@@ -1,4 +1,5 @@
 import { TransactionBundle } from '@/lib/modules/web3/contracts/contract.types'
+import React from 'react'
 
 export enum TransactionState {
   Ready = 'init',
@@ -11,6 +12,7 @@ export enum TransactionState {
 
 export type TransactionLabels = {
   init: string
+  title?: string
   loading?: string
   confirming?: string
   tooltip: string
@@ -35,6 +37,19 @@ export type StepType =
   | 'claim'
   | 'swap'
 
+export type TxActionId =
+  | 'SignBatchRelayer'
+  | 'ApproveBatchRelayer'
+  | 'TokenApproval'
+  | 'AddLiquidity'
+  | 'RemoveLiquidity'
+  | 'StakingDeposit'
+  | 'StakingWithdraw'
+  | 'MinterApproval'
+  | 'ClaimAndUnstake'
+  | 'Claim'
+  | 'Swap'
+
 export type ManagedResult = TransactionBundle & Executable
 
 /* This type unifies wagmi writeTransaction and sendTransaction types:
@@ -47,41 +62,23 @@ type Executable = {
   setTxConfig?: any
 }
 
-export type FlowStep = TransactionStep & ManagedResult
-
 export type TransactionStep = {
   id: string
   stepType: StepType
-  transactionLabels: TransactionLabels
+  labels: TransactionLabels
   isComplete: () => boolean
+  renderAction: () => React.ReactNode
+  // All callbacks should be idempotent
+  onSuccess?: () => void
+  onActivated?: () => void
+  onDeactivated?: () => void
 }
-
-// Allows adding extra properties like set state callbacks to TransactionStep
-export type TransactionStepHook = {
-  transactionStep: TransactionStep
-}
-
-// Core steps that require frozen quotes
-export const addLiquidityStepId = 'addLiquidityId'
-export const removeLiquidityStepId = 'removeLiquidityId'
-export const swapStepId = 'swapId'
-
-export function isCoreStep(stepId?: string) {
-  if (!stepId) return false
-  const coreSteps = new Set([addLiquidityStepId, removeLiquidityStepId, swapStepId])
-  return coreSteps.has(stepId)
-}
-
-export type CoreStepId =
-  | typeof addLiquidityStepId
-  | typeof removeLiquidityStepId
-  | typeof swapStepId
 
 export function getTransactionState(transactionBundle?: TransactionBundle): TransactionState {
   if (!transactionBundle) return TransactionState.Ready
   const { simulation, execution, result } = transactionBundle
 
-  if (simulation.isLoading) {
+  if (simulation.isLoading || simulation.isPending) {
     return TransactionState.Preparing
   }
   if (execution.isPending) {

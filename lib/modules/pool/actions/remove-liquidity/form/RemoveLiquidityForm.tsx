@@ -37,6 +37,7 @@ const TABS: ButtonGroupOption[] = [
 
 export function RemoveLiquidityForm() {
   const {
+    transactionSteps,
     tokens,
     validTokens,
     humanBptInPercent,
@@ -46,7 +47,6 @@ export function RemoveLiquidityForm() {
     isDisabled,
     disabledReason,
     simulationQuery,
-    isTxConfirmingOrConfirmed,
     quoteBptIn,
     setProportionalType,
     setSingleTokenType,
@@ -77,7 +77,7 @@ export function RemoveLiquidityForm() {
   }
 
   const onModalClose = () => {
-    if (isTxConfirmingOrConfirmed) {
+    if (transactionSteps.lastTransactionConfirmingOrConfirmed) {
       // If the transaction is confirming or confirmed, it's very likely that
       // they no longer have a pool balance. To be safe, always redirect to the
       // pool page when closing the modal in this state.
@@ -88,7 +88,7 @@ export function RemoveLiquidityForm() {
   }
 
   return (
-    <TokenBalancesProvider tokens={validTokens}>
+    <TokenBalancesProvider extTokens={validTokens}>
       <Center h="full" w="full" maxW="lg" mx="auto">
         <Card>
           <VStack spacing="md" align="start">

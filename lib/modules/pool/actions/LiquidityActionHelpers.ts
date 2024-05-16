@@ -106,8 +106,7 @@ export class LiquidityActionHelpers {
       amountsInByTokenAddress[tokenAddressToCheck].rawAmount = parseUnits(humanAmount, decimals)
     })
 
-    const amountsIn = Object.values(amountsInByTokenAddress).filter(a => a.rawAmount > 0n)
-    return amountsIn
+    return Object.values(amountsInByTokenAddress).filter(a => a.rawAmount > 0n)
   }
 
   public isNativeAssetIn(humanAmountsIn: HumanAmountIn[]): boolean {

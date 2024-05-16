@@ -33,9 +33,7 @@ export function ClaimModal({
   pool,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const { currentStep, useOnStepCompleted, nonBalRewards, balRewards, hasNoRewards } = useClaiming([
-    pool,
-  ])
+  const { transactionSteps, nonBalRewards, balRewards, hasNoRewards } = useClaiming([pool])
 
   function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
     if (reward.formattedBalance === '0') return null
@@ -74,7 +72,7 @@ export function ClaimModal({
                 Close
               </Button>
             ) : (
-              currentStep.render(useOnStepCompleted)
+              transactionSteps.currentStep?.renderAction()
             )}
           </VStack>
         </ModalFooter>

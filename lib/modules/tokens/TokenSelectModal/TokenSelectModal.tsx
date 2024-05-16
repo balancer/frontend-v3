@@ -76,6 +76,7 @@ export function TokenSelectModal({
             )}
             <Box px="md" pr="0" w="full">
               <TokenSelectList
+                chain={chain}
                 tokens={tokens}
                 excludeNativeAsset={excludeNativeAsset}
                 pinNativeAsset={pinNativeAsset}

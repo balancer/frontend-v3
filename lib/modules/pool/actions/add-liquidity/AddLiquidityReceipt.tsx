@@ -1,27 +1,25 @@
 'use client'
 
-import { Button, Card, Center, Heading, Text, VStack } from '@chakra-ui/react'
+import { Card, Center, Heading, Text, VStack } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
-import { SuccessCard } from '@/lib/modules/transactions/transaction-steps/SuccessCard'
-import { usePoolRedirect, useRefetchPoolOnFlowComplete } from '../../pool.hooks'
 import { ReceiptBptOut } from './modal/BptOut'
 import { StakingOptions } from './modal/StakingOptions'
 import { ReceiptTokensIn } from './modal/TokensIn'
-import { useReceipt } from '../../../transactions/transaction-steps/useReceipt'
 import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
 import { Hash } from 'viem'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useAddLiquidity } from './useAddLiquidity'
 
-export function AddLiquidityReceipt() {
+export function AddLiquidityReceipt({ txHash }: { txHash: Hash }) {
   const { pool } = usePool()
-  const { redirectToPoolPage } = usePoolRedirect(pool)
-  const { didRefetchPool } = useRefetchPoolOnFlowComplete()
-  const { keepsFlowState, txHash } = useReceipt()
   const { userAddress, isLoading: isUserAddressLoading } = useUserAccount()
   const { isLoading, error, sentTokens, receivedBptUnits } = useAddLiquidityReceipt({
-    txHash: txHash as Hash,
+    txHash,
     userAddress,
   })
+  const { simulationQuery } = useAddLiquidity()
+
+  const hasQuoteContext = !!simulationQuery.data
 
   if (!isUserAddressLoading && !userAddress) return <Text>User is not connected</Text>
   if (isLoading) return null
@@ -30,10 +28,8 @@ export function AddLiquidityReceipt() {
   return (
     <Center>
       <VStack w="fit-content" alignContent="center">
-        <Heading>{!keepsFlowState && '(historical)'}</Heading>
+        <Heading>{!hasQuoteContext && '(historical)'}</Heading>
         <VStack spacing="0.5" align="start">
-          {keepsFlowState && <SuccessCard chain={pool.chain} />}
-
           <Card variant="level2" borderRadius="12px 12px 0px 0px">
             <ReceiptTokensIn sentTokens={sentTokens} />
           </Card>
@@ -41,18 +37,9 @@ export function AddLiquidityReceipt() {
             <ReceiptBptOut receivedBptUnits={receivedBptUnits} />
           </Card>
           <Card variant="level2" borderRadius="0px 0px 12px 12px" mt="1">
-            {keepsFlowState && pool.dynamicData.apr.hasRewardApr && <StakingOptions />}
+            {pool.dynamicData.apr.hasRewardApr && <StakingOptions />}
           </Card>
         </VStack>
-        <Button
-          variant="tertiary"
-          w="full"
-          size="lg"
-          onClick={redirectToPoolPage}
-          isLoading={!didRefetchPool && keepsFlowState}
-        >
-          Return to pool
-        </Button>
       </VStack>
     </Center>
   )
