@@ -5,7 +5,7 @@ import { HStack, Tag, Text, Wrap, WrapItem } from '@chakra-ui/react'
 import { useTokens } from '../useTokens'
 import { useMemo } from 'react'
 import { TokenIcon } from '../TokenIcon'
-import { getNativeAssetFilter } from '@/lib/config/tokens.config'
+import { nativeAssetFilter } from '@/lib/config/tokens.config'
 
 type Props = {
   chain: GqlChain
@@ -24,7 +24,7 @@ export function TokenSelectPopular({ chain, excludeNativeAsset, onTokenSelect }:
       .slice(0, 7)
       ?.map(token => getToken(token, chain))
       .filter(Boolean) as GqlToken[]
-    return excludeNativeAsset ? tokens.filter(getNativeAssetFilter(chain)) : tokens
+    return excludeNativeAsset ? tokens.filter(nativeAssetFilter(chain)) : tokens
   }, [popularTokens, excludeNativeAsset, chain])
 
   return (

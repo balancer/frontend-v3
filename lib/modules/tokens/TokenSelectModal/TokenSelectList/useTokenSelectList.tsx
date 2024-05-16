@@ -3,7 +3,7 @@ import { useTokens } from '../../useTokens'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { orderBy } from 'lodash'
 import { useTokenBalances } from '../../useTokenBalances'
-import { getExclNativeAssetFilter, getNativeAssetFilter } from '@/lib/config/tokens.config'
+import { exclNativeAssetFilter, nativeAssetFilter } from '@/lib/config/tokens.config'
 
 export function useTokenSelectList(
   chain: GqlChain,
@@ -25,7 +25,7 @@ export function useTokenSelectList(
     let filteredTokens = tokens
 
     if (excludeNativeAsset) {
-      filteredTokens = filteredTokens.filter(getExclNativeAssetFilter(chain))
+      filteredTokens = filteredTokens.filter(exclNativeAssetFilter(chain))
     }
 
     if (searchTerm) {
@@ -53,10 +53,10 @@ export function useTokenSelectList(
   )
 
   if (pinNativeAsset) {
-    const nativeAsset = orderedTokens.find(getNativeAssetFilter(chain))
+    const nativeAsset = orderedTokens.find(nativeAssetFilter(chain))
 
     if (nativeAsset) {
-      orderedTokens = [nativeAsset, ...orderedTokens.filter(getExclNativeAssetFilter(chain))]
+      orderedTokens = [nativeAsset, ...orderedTokens.filter(exclNativeAssetFilter(chain))]
     }
   }
 

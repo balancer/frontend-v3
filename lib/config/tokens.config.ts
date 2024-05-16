@@ -15,7 +15,7 @@ export function requiresDoubleApproval(
   )
 }
 
-export function getNativeAssetFilter(chain: GqlChain | SupportedChainId) {
+export function nativeAssetFilter(chain: GqlChain | SupportedChainId) {
   return (token: TokenBase | string) => {
     const nativeAssetAddress = getNativeAssetAddress(chain)
     if (typeof token === 'string') {
@@ -25,7 +25,7 @@ export function getNativeAssetFilter(chain: GqlChain | SupportedChainId) {
   }
 }
 
-export function getExclNativeAssetFilter(chain: GqlChain | SupportedChainId) {
+export function exclNativeAssetFilter(chain: GqlChain | SupportedChainId) {
   return (token: TokenBase | string) => {
     const nativeAssetAddress = getNativeAssetAddress(chain)
     if (typeof token === 'string') {
@@ -35,7 +35,7 @@ export function getExclNativeAssetFilter(chain: GqlChain | SupportedChainId) {
   }
 }
 
-export function getExclWrappedNativeAssetFilter(chain: GqlChain | SupportedChainId) {
+export function exclWrappedNativeAssetFilter(chain: GqlChain | SupportedChainId) {
   return (token: TokenBase | string) => {
     const wrappedNativeAssetAddress = getWrappedNativeAssetAddress(chain)
     if (typeof token === 'string') {
