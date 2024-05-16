@@ -1,9 +1,15 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
-import { AddLiquidityNested, AddLiquidityNestedInput, ChainId, Slippage } from '@balancer/sdk'
+import {
+  AddLiquidityNested,
+  AddLiquidityNestedInput,
+  ChainId,
+  PriceImpact,
+  Slippage,
+} from '@balancer/sdk'
 import { Pool } from '../../../usePool'
-import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
+import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { NestedBuildAddLiquidityInput, NestedQueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
@@ -22,9 +28,14 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
     this.helpers = new LiquidityActionHelpers(pool)
   }
 
-  public async getPriceImpact(): Promise<number> {
-    // TODO: implemented in a different PR
-    return 0
+  public async getPriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number> {
+    if (areEmptyAmounts(humanAmountsIn)) {
+      // Avoid price impact calculation when there are no amounts in
+      return 0
+    }
+    const input = this.constructSdkInput(humanAmountsIn)
+    const priceImpactABA = await PriceImpact.addLiquidityNested(input, this.helpers.nestedPoolState)
+    return priceImpactABA.decimal
   }
 
   public async simulate(humanAmountsIn: HumanAmountIn[]): Promise<NestedQueryAddLiquidityOutput> {
