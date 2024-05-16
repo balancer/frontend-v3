@@ -1,23 +1,23 @@
-import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
-import { usePool } from '../../usePool'
-import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
-import { useApproveRelayerStep } from '@/lib/modules/relayer/useApproveRelayerStep'
 import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
-import { useAddLiquidityStep } from './useAddLiquidityStep'
+import { useApproveRelayerStep } from '@/lib/modules/relayer/useApproveRelayerStep'
+import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import { useTokenApprovalSteps } from '@/lib/modules/tokens/approvals/useTokenApprovalSteps'
-import { AddLiquiditySimulationQueryResult } from './queries/useAddLiquiditySimulationQuery'
+import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
+import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
 import { useMemo } from 'react'
-import { HumanAmountIn } from '../liquidity-types'
+import { usePool } from '../../usePool'
 import { LiquidityActionHelpers } from '../LiquidityActionHelpers'
-import { AddLiquidityHandler } from './handlers/AddLiquidity.handler'
+import { AddLiquidityStepParams, useAddLiquidityStep } from './useAddLiquidityStep'
 
-export function useAddLiquiditySteps(
-  helpers: LiquidityActionHelpers,
-  handler: AddLiquidityHandler,
-  humanAmountsIn: HumanAmountIn[],
-  simulationQuery: AddLiquiditySimulationQueryResult
-) {
+type AddLiquidityStepsParams = AddLiquidityStepParams & {
+  helpers: LiquidityActionHelpers
+}
+export function useAddLiquiditySteps({
+  helpers,
+  handler,
+  humanAmountsIn,
+  simulationQuery,
+}: AddLiquidityStepsParams) {
   const vaultAddress = useContractAddress('balancer.vaultV2')
   const { pool, chainId } = usePool()
   const relayerMode = useRelayerMode()
@@ -38,7 +38,11 @@ export function useAddLiquiditySteps(
       actionType: 'AddLiquidity',
     })
 
-  const addLiquidityStep = useAddLiquidityStep(handler, humanAmountsIn, simulationQuery)
+  const addLiquidityStep = useAddLiquidityStep({
+    handler,
+    humanAmountsIn,
+    simulationQuery,
+  })
 
   const steps = useMemo(() => {
     if (relayerMode === 'approveRelayer') {
@@ -55,6 +59,7 @@ export function useAddLiquiditySteps(
     addLiquidityStep,
     approveRelayerStep,
     signRelayerStep,
+    humanAmountsIn,
   ])
 
   return {

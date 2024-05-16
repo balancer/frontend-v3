@@ -10,7 +10,7 @@ import {
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { GqlChain, GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { ManagedTransactionInput } from '../../../web3/contracts/useManagedTransaction'
 import { useUserAccount } from '../../../web3/useUserAccount'
 import { PoolListItem } from '../../pool.types'
@@ -31,6 +31,7 @@ export function useClaimAllRewardsStep({
   claimableBalancesQuery,
   balTokenRewardsQuery,
 }: ClaimAllRewardsStepParams) {
+  const [isClaimQueryEnabled, setIsClaimQueryEnabled] = useState(false)
   const { getTransaction } = useTransactionState()
   const { isConnected } = useUserAccount()
   const { claimableRewards: nonBalRewards, refetchClaimableRewards } = claimableBalancesQuery
@@ -46,7 +47,8 @@ export function useClaimAllRewardsStep({
     gaugeAddresses,
     stakingService,
     nonBalRewards.length > 0,
-    balRewards.length > 0
+    balRewards.length > 0,
+    isClaimQueryEnabled
   )
 
   const labels: TransactionLabels = {
@@ -90,13 +92,16 @@ export function useClaimAllRewardsStep({
       labels,
       stepType: 'claim',
       isComplete,
+      onActivated: () => setIsClaimQueryEnabled(true),
+      onDeactivated: () => setIsClaimQueryEnabled(false),
       onSuccess: () => {
         refetchClaimableRewards()
         refetchBalRewards()
       },
       renderAction: () => <ManagedTransactionButton id={claimAllRewardsStepId} {...props} />,
     }),
-    [transaction, claimData]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [transaction, claimData, isLoading]
   )
   return { step, isLoading }
 }

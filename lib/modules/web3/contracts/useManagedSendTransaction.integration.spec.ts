@@ -54,7 +54,6 @@ describe('weighted add flow', () => {
 
     const { result } = testHook(() => {
       return useManagedSendTransaction({
-        chainId: ChainId.MAINNET,
         labels: { init: 'foo', tooltip: 'bar' },
         txConfig,
       })

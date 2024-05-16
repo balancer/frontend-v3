@@ -14,13 +14,21 @@ import { useDebounce } from 'use-debounce'
 
 export type AddLiquidityBuildQueryResponse = ReturnType<typeof useAddLiquidityBuildCallDataQuery>
 
+export type AddLiquidityBuildQueryParams = {
+  handler: AddLiquidityHandler
+  humanAmountsIn: HumanAmountIn[]
+  simulationQuery: AddLiquiditySimulationQueryResult
+}
+
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
-export function useAddLiquidityBuildCallDataQuery(
-  handler: AddLiquidityHandler,
-  humanAmountsIn: HumanAmountIn[],
-  simulationQuery: AddLiquiditySimulationQueryResult,
-  enabled = true
-) {
+export function useAddLiquidityBuildCallDataQuery({
+  handler,
+  humanAmountsIn,
+  simulationQuery,
+  enabled,
+}: AddLiquidityBuildQueryParams & {
+  enabled: boolean
+}) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const { pool } = usePool()

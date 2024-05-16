@@ -18,15 +18,16 @@ export const removeLiquidityStepId = 'remove-liquidity'
 export type RemoveLiquidityStepParams = RemoveLiquidityBuildQueryParams
 
 export function useRemoveLiquidityStep(params: RemoveLiquidityStepParams): TransactionStep {
-  const [isBuildQueryEnabled, setIsBuildQueryEnabled] = useState(false)
-  const { chainId, refetch: refetchPoolUserBalances } = usePool()
+  const [isStepActivated, setIsStepActivated] = useState(false)
+  const { refetch: refetchPoolUserBalances } = usePool()
   const { getTransaction } = useTransactionState()
+
+  const { simulationQuery } = params
 
   const buildCallDataQuery = useRemoveLiquidityBuildCallDataQuery({
     ...params,
-    enabled: isBuildQueryEnabled,
+    enabled: isStepActivated,
   })
-  const simulationQuery = params.simulationQuery
 
   const labels: TransactionLabels = {
     init: 'Remove liquidity',
@@ -50,7 +51,7 @@ export function useRemoveLiquidityStep(params: RemoveLiquidityStepParams): Trans
 
   useEffect(() => {
     // simulationQuery is refetched every 30 seconds by RemoveLiquidityTimeout
-    if (simulationQuery.data && isBuildQueryEnabled) {
+    if (simulationQuery.data && isStepActivated) {
       buildCallDataQuery.refetch()
     }
   }, [simulationQuery.data])
@@ -65,13 +66,12 @@ export function useRemoveLiquidityStep(params: RemoveLiquidityStepParams): Trans
         <ManagedSendTransactionButton
           id={removeLiquidityStepId}
           labels={labels}
-          chainId={chainId}
           txConfig={buildCallDataQuery.data}
           gasEstimationMeta={gasEstimationMeta}
         />
       ),
-      onActivated: () => setIsBuildQueryEnabled(true),
-      onDeactivated: () => setIsBuildQueryEnabled(false),
+      onActivated: () => setIsStepActivated(true),
+      onDeactivated: () => setIsStepActivated(false),
       onSuccess: () => refetchPoolUserBalances(),
     }),
     [transaction, simulationQuery.data, buildCallDataQuery.data]
