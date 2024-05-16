@@ -19,17 +19,19 @@ import { ClaimModal } from '../actions/claim/ClaimModal'
 import { Hex } from 'viem'
 
 export type PoolMyStatsValues = {
-  myLiquidity: string
+  myLiquidity: number
   myApr: string
   myPotentialWeeklyYield: string
-  myClaimableRewards: string
+  myClaimableRewards: number
 }
+
+const POSSIBLE_STAKED_BALANCE_USD = 10000
 
 export function PoolMyStats() {
   const { pool, chain, isLoading: isLoadingPool } = usePool()
   const { toCurrency } = useCurrency()
   const { veBalBoostMap } = useVebalBoost([pool as unknown as GqlPoolMinimal])
-  const { priceFor, getToken } = useTokens()
+  const { getToken } = useTokens()
 
   const {
     isLoading: isLoadingClaiming,
@@ -58,11 +60,6 @@ export function PoolMyStats() {
     getToken(reward.tokenAddress, chain)
   ) as GqlToken[]
 
-  const weeklyRewards = sumBy(
-    currentRewardsPerWeek,
-    reward => priceFor(reward.tokenAddress, chain) * reward.rewardPerWeek
-  )
-
   const boost = useMemo(() => {
     if (isEmpty(veBalBoostMap)) return
     return veBalBoostMap[pool.id]
@@ -75,17 +72,22 @@ export function PoolMyStats() {
 
   const poolMyStatsValues: PoolMyStatsValues | undefined = useMemo(() => {
     if (pool && pool.userBalance && !isLoadingPool && !isLoadingClaiming) {
+      const totalBalanceUsd = pool.userBalance.totalBalanceUsd
+
+      // TODO: only uses Balancer balances rn
+      const stakedBalanceUsd = totalBalanceUsd
+        ? pool.userBalance.stakedBalanceUsd
+        : POSSIBLE_STAKED_BALANCE_USD
+
       return {
         // TODO: only uses Balancer balances rn
-        myLiquidity: toCurrency(pool.userBalance.totalBalanceUsd),
+        myLiquidity: totalBalanceUsd,
         myApr,
         // TODO: only uses Balancer balances rn
-        myPotentialWeeklyYield: toCurrency(
-          bn(pool.userBalance.stakedBalanceUsd)
-            .times(bn(bn(myAprRaw).div(100)).div(52))
-            .toFixed(2)
-        ),
-        myClaimableRewards: toCurrency(myClaimableRewards),
+        myPotentialWeeklyYield: bn(stakedBalanceUsd)
+          .times(bn(bn(myAprRaw).div(100)).div(52))
+          .toFixed(2),
+        myClaimableRewards: myClaimableRewards,
       }
     }
   }, [veBalBoostMap, pool])
@@ -101,7 +103,13 @@ export function PoolMyStats() {
           My liquidity
         </Text>
         {poolMyStatsValues ? (
-          <Heading size="h4">{poolMyStatsValues.myLiquidity}</Heading>
+          <Heading size="h4">
+            {poolMyStatsValues.myLiquidity ? (
+              toCurrency(poolMyStatsValues.myLiquidity)
+            ) : (
+              <>&mdash;</>
+            )}
+          </Heading>
         ) : (
           <Skeleton height="28px" w="100px" />
         )}
@@ -112,8 +120,10 @@ export function PoolMyStats() {
         </Text>
         {poolMyStatsValues ? (
           <HStack spacing="xs">
-            <Heading size="h4">{poolMyStatsValues.myApr}</Heading>
-            {pool.staking && <Icon as={StarsIcon} />}
+            <Heading size="h4">
+              {poolMyStatsValues.myLiquidity ? poolMyStatsValues.myApr : <>&mdash;</>}
+            </Heading>
+            {poolMyStatsValues.myLiquidity && pool.staking && <Icon as={StarsIcon} />}
           </HStack>
         ) : (
           <Skeleton height="28px" w="100px" />
@@ -121,10 +131,12 @@ export function PoolMyStats() {
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
         <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
-          My potential weekly yield
+          {`My potential weekly yield${
+            poolMyStatsValues && !poolMyStatsValues.myLiquidity && ' on $10k'
+          }`}
         </Text>
         {poolMyStatsValues ? (
-          <Heading size="h4">{poolMyStatsValues.myPotentialWeeklyYield}</Heading>
+          <Heading size="h4">{toCurrency(poolMyStatsValues.myPotentialWeeklyYield)}</Heading>
         ) : (
           <Skeleton height="28px" w="100px" />
         )}
@@ -135,10 +147,10 @@ export function PoolMyStats() {
         </Text>
         {poolMyStatsValues ? (
           hasNoRewards ? (
-            <Heading size="h4">--</Heading>
+            <Heading size="h4">&mdash;</Heading>
           ) : (
             <HStack>
-              <Heading size="h4">{poolMyStatsValues.myClaimableRewards}</Heading>
+              <Heading size="h4">{toCurrency(poolMyStatsValues.myClaimableRewards)}</Heading>
               <TokenIconStack tokens={tokens} chain={chain} size={20} />
               <Tooltip label={isDisabled ? disabledReason : ''}>
                 <Button
