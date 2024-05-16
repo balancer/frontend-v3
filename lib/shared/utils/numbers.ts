@@ -20,6 +20,8 @@ export const INTEGER_FORMAT = '0,0'
 export const FIAT_FORMAT_A = '0,0.00a'
 export const FIAT_FORMAT = '0,0.00'
 export const TOKEN_FORMAT_A = '0,0.[0000]a'
+// Uses 2 decimals then value is > thousand
+export const TOKEN_FORMAT_A_BIG = '0,0.[00]a'
 export const TOKEN_FORMAT = '0,0.[0000]'
 export const APR_FORMAT = '0.[00]%'
 export const SLIPPAGE_FORMAT = '0.00%'
@@ -71,7 +73,11 @@ function fiatFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): st
 // Formats a token value.
 function tokenFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
   if (!bn(val).isZero() && bn(val).lte(bn('0.00001'))) return '< 0.00001'
-  const format = abbreviated ? TOKEN_FORMAT_A : TOKEN_FORMAT
+
+  // Uses 2 decimals then value is > thousand
+  const TOKEN_FORMAT_ABBREVIATED = bn(val).gte(bn('1000')) ? TOKEN_FORMAT_A_BIG : TOKEN_FORMAT_A
+  const format = abbreviated ? TOKEN_FORMAT_ABBREVIATED : TOKEN_FORMAT
+
   return numeral(toSafeValue(val)).format(format)
 }
 
