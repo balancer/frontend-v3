@@ -25,7 +25,8 @@ export function TransactionStepButton({ step }: Props) {
   const transactionState = getTransactionState(step)
   const isButtonLoading =
     transactionState === TransactionState.Loading ||
-    transactionState === TransactionState.Confirming
+    transactionState === TransactionState.Confirming ||
+    transactionState === TransactionState.Preparing
   const isComplete = transactionState === TransactionState.Completed
   const hasSimulationError = simulation.isError
   const isIdle = isConnected && simulation.isStale && !simulation.data
@@ -66,7 +67,6 @@ export function TransactionStepButton({ step }: Props) {
   return (
     <VStack width="full">
       {transactionState === TransactionState.Error && <TransactionError step={step} />}
-      {executionError && <GenericError error={executionError} />}
       {!isTransactButtonVisible && <ConnectWallet width="full" />}
       {shouldChangeNetwork && isTransactButtonVisible && (
         <NetworkSwitchButton {...networkSwitchButtonProps} />

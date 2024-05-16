@@ -16,6 +16,7 @@ export type TransactionLabels = {
   tooltip: string
   // State labels
   init: string
+  title?: string
   loading?: string
   confirming?: string
   reverted?: string
@@ -79,7 +80,7 @@ export function getTransactionState(transactionBundle?: TransactionBundle): Tran
   if (!transactionBundle) return TransactionState.Ready
   const { simulation, execution, result } = transactionBundle
 
-  if (simulation.isLoading) {
+  if (simulation.isLoading || simulation.isPending) {
     return TransactionState.Preparing
   }
   if (execution.isPending) {

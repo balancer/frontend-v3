@@ -1,5 +1,3 @@
-import { useHasApprovedRelayer } from '@/lib/modules/relayer/useHasApprovedRelayer'
-import { useHasMinterApproval } from '@/lib/modules/staking/gauge/useHasMinterApproval'
 import { useApproveRelayerStep } from '@/lib/modules/relayer/useApproveRelayerStep'
 import { getChainId } from '@/lib/config/app.config'
 import { TransactionStep } from '@/lib/modules/transactions/transaction-steps/lib'
@@ -14,8 +12,6 @@ export function useClaimAndUnstakeSteps(pool: Pool): {
 } {
   const chainId = getChainId(pool.chain)
 
-  const { hasMinterApproval } = useHasMinterApproval()
-  const { hasApprovedRelayer } = useHasApprovedRelayer(chainId)
   const approveRelayerStep = useApproveRelayerStep(chainId)
   const { step: minterApprovalStep, isLoading: isLoadingMinterApprovalStep } = useApproveMinterStep(
     pool.chain
@@ -25,17 +21,8 @@ export function useClaimAndUnstakeSteps(pool: Pool): {
     useClaimAndUnstakeStep(pool)
 
   const steps = useMemo((): TransactionStep[] => {
-    const _steps = [claimAndUnstakeStep]
-    if (!hasApprovedRelayer) _steps.unshift(approveRelayerStep)
-    if (!hasMinterApproval) _steps.unshift(minterApprovalStep)
-    return _steps
-  }, [
-    approveRelayerStep,
-    claimAndUnstakeStep,
-    hasApprovedRelayer,
-    hasMinterApproval,
-    minterApprovalStep,
-  ])
+    return [minterApprovalStep, approveRelayerStep, claimAndUnstakeStep]
+  }, [approveRelayerStep, claimAndUnstakeStep, minterApprovalStep])
 
   return {
     isLoading: isLoadingMinterApprovalStep || isLoadingClaimAndUnstakeStep,

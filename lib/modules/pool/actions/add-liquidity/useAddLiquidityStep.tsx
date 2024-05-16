@@ -1,36 +1,33 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
+import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import {
   TransactionLabels,
   TransactionStep,
 } from '@/lib/modules/transactions/transaction-steps/lib'
-import { useAddLiquidityBuildCallDataQuery } from './queries/useAddLiquidityBuildCallDataQuery'
-import { usePool } from '../../usePool'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { ManagedSendTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
-import { AddLiquiditySimulationQueryResult } from './queries/useAddLiquiditySimulationQuery'
 import { useEffect, useMemo, useState } from 'react'
-import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
-import { AddLiquidityHandler } from './handlers/AddLiquidity.handler'
-import { HumanAmountIn } from '../liquidity-types'
+import {
+  AddLiquidityBuildQueryParams,
+  useAddLiquidityBuildCallDataQuery,
+} from './queries/useAddLiquidityBuildCallDataQuery'
+import { usePool } from '../../usePool'
 
 export const addLiquidityStepId = 'add-liquidity'
 
-export function useAddLiquidityStep(
-  handler: AddLiquidityHandler,
-  humanAmountsIn: HumanAmountIn[],
-  simulationQuery: AddLiquiditySimulationQueryResult
-): TransactionStep {
-  const [isBuildQueryEnabled, setIsBuildQueryEnabled] = useState(false)
+export type AddLiquidityStepParams = AddLiquidityBuildQueryParams
 
-  const { chainId, pool } = usePool()
+export function useAddLiquidityStep(params: AddLiquidityStepParams): TransactionStep {
+  const { pool } = usePool()
+  const [isStepActivated, setIsStepActivated] = useState(false)
   const { getTransaction } = useTransactionState()
 
-  const buildCallDataQuery = useAddLiquidityBuildCallDataQuery(
-    handler,
-    humanAmountsIn,
-    simulationQuery,
-    isBuildQueryEnabled
-  )
+  const { simulationQuery } = params
+
+  const buildCallDataQuery = useAddLiquidityBuildCallDataQuery({
+    ...params,
+    enabled: isStepActivated,
+  })
 
   const labels: TransactionLabels = {
     init: 'Add liquidity',
@@ -52,7 +49,7 @@ export function useAddLiquidityStep(
 
   useEffect(() => {
     // simulationQuery is refetched every 30 seconds by AddLiquidityTimeout
-    if (simulationQuery.data && isBuildQueryEnabled) {
+    if (simulationQuery.data && isStepActivated) {
       buildCallDataQuery.refetch()
     }
   }, [simulationQuery.data])
@@ -63,13 +60,12 @@ export function useAddLiquidityStep(
       stepType: 'addLiquidity',
       labels,
       isComplete,
-      onActivated: () => setIsBuildQueryEnabled(true),
-      onDeactivated: () => setIsBuildQueryEnabled(false),
+      onActivated: () => setIsStepActivated(true),
+      onDeactivated: () => setIsStepActivated(false),
       renderAction: () => (
         <ManagedSendTransactionButton
           id={addLiquidityStepId}
           labels={labels}
-          chainId={chainId}
           txConfig={buildCallDataQuery.data}
           gasEstimationMeta={gasEstimationMeta}
         />

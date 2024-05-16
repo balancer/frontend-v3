@@ -15,21 +15,21 @@ import {
 } from '@/lib/shared/utils/query-errors'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
-import { SupportedChainId } from '@/lib/config/config.types'
+import { mainnet } from 'viem/chains'
 
 export type ManagedSendTransactionInput = {
   labels: TransactionLabels
-  chainId: SupportedChainId
   txConfig?: TransactionConfig
   gasEstimationMeta?: Record<string, unknown>
 }
 
 export function useManagedSendTransaction({
   labels,
-  chainId,
   txConfig,
   gasEstimationMeta,
 }: ManagedSendTransactionInput) {
+  // chainId will always have the correct value as the transaction is disabled when txConfig is undefined
+  const chainId = txConfig?.chainId || mainnet.id
   const { shouldChangeNetwork } = useChainSwitch(chainId)
   const { minConfirmations } = useNetworkConfig()
   const { updateTrackedTransaction } = useRecentTransactions()

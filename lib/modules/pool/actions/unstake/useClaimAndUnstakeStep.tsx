@@ -62,7 +62,7 @@ export function useClaimAndUnstakeStep(pool: Pool): { isLoading: boolean; step: 
     labels,
     chainId,
     args: [data],
-    enabled: !!pool && !!isLoading,
+    enabled: !!pool && !isLoading,
     txSimulationMeta,
   }
 

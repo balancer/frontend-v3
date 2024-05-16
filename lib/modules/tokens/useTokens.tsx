@@ -19,7 +19,6 @@ import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { Dictionary, zipObject } from 'lodash'
 import { createContext, PropsWithChildren, useCallback } from 'react'
 import { Address } from 'viem'
-import { TokenBase } from './token.types'
 import { minsToMs } from '@/lib/shared/hooks/useTime'
 import { useSkipInitialQuery } from '@/lib/shared/hooks/useSkipInitialQuery'
 
@@ -31,7 +30,6 @@ export function _useTokens(
   initTokenPricesData: GetTokenPricesQuery,
   variables: GetTokensQueryVariables
 ) {
-  const networkConfig = useNetworkConfig()
   const skipQuery = useSkipInitialQuery(variables)
 
   // skip initial fetch on mount so that initialData is used
@@ -52,20 +50,6 @@ export function _useTokens(
 
   const tokens = tokensData?.tokens || initTokenData.tokens
   const prices = tokenPricesData?.tokenPrices || initTokenPricesData.tokenPrices
-
-  const nativeAssetFilter = (token: TokenBase | string) => {
-    if (typeof token === 'string') {
-      return isSameAddress(token, networkConfig.tokens.nativeAsset.address)
-    }
-    return isSameAddress(token.address, networkConfig.tokens.nativeAsset.address)
-  }
-
-  const exclNativeAssetFilter = (token: TokenBase | string) => {
-    if (typeof token === 'string') {
-      return !isSameAddress(token, networkConfig.tokens.nativeAsset.address)
-    }
-    return !isSameAddress(token.address, networkConfig.tokens.nativeAsset.address)
-  }
 
   /*
     It can return undefined when the token address belongs to a pool token (not included in the provided tokens)
@@ -138,8 +122,6 @@ export function _useTokens(
     priceForToken,
     getTokensByChain,
     getTokensByTokenAddress,
-    exclNativeAssetFilter,
-    nativeAssetFilter,
     usdValueForToken,
     getPoolTokenWeightByBalance,
   }

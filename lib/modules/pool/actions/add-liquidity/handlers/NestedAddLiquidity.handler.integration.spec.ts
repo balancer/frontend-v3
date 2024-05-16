@@ -17,8 +17,9 @@ describe('When adding nested liquidity for a weighted pool', () => {
   test('has zero price impact', async () => {
     const handler = selectNestedHandler(nestedPoolMock)
 
-    const priceImpact = await handler.getPriceImpact()
-    expect(priceImpact).toBe(0)
+    const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '100', tokenAddress: daiAddress }]
+    const priceImpact = await handler.getPriceImpact(humanAmountsIn)
+    expect(priceImpact).toBeGreaterThan(0)
   })
 
   test('with single token input', async () => {

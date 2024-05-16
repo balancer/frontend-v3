@@ -1,16 +1,18 @@
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useTokens } from '../../useTokens'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { orderBy } from 'lodash'
 import { useTokenBalances } from '../../useTokenBalances'
+import { exclNativeAssetFilter, nativeAssetFilter } from '@/lib/config/tokens.config'
 
 export function useTokenSelectList(
+  chain: GqlChain,
   tokens: GqlToken[],
   excludeNativeAsset: boolean,
   pinNativeAsset: boolean,
   searchTerm?: string
 ) {
-  const { usdValueForToken, exclNativeAssetFilter, nativeAssetFilter } = useTokens()
+  const { usdValueForToken } = useTokens()
   const { balanceFor } = useTokenBalances()
 
   const symbolMatch = (token: GqlToken, searchTerm: string) =>
@@ -23,7 +25,7 @@ export function useTokenSelectList(
     let filteredTokens = tokens
 
     if (excludeNativeAsset) {
-      filteredTokens = filteredTokens.filter(exclNativeAssetFilter)
+      filteredTokens = filteredTokens.filter(exclNativeAssetFilter(chain))
     }
 
     if (searchTerm) {
@@ -51,10 +53,10 @@ export function useTokenSelectList(
   )
 
   if (pinNativeAsset) {
-    const nativeAsset = orderedTokens.find(nativeAssetFilter)
+    const nativeAsset = orderedTokens.find(nativeAssetFilter(chain))
 
     if (nativeAsset) {
-      orderedTokens = [nativeAsset, ...orderedTokens.filter(exclNativeAssetFilter)]
+      orderedTokens = [nativeAsset, ...orderedTokens.filter(exclNativeAssetFilter(chain))]
     }
   }
 

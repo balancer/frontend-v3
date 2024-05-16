@@ -1,18 +1,9 @@
 import { Box, HStack, Text, Wrap, WrapItem } from '@chakra-ui/react'
 import { GqlChain, GqlPoolTokenDisplay } from '@/lib/shared/services/api/generated/graphql'
 import { PoolListItem } from '../pool.types'
-import { TokenIconStack } from '../../tokens/TokenIconStack'
 import { TokenIcon } from '../../tokens/TokenIcon'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { isStableLike, isWeightedLike } from '../pool.helpers'
-
-function TokenIconOrIconStack({ token, chain }: { token: GqlPoolTokenDisplay; chain: GqlChain }) {
-  return token.nestedTokens ? (
-    <TokenIconStack tokens={token.nestedTokens} chain={chain} size={20} />
-  ) : (
-    <TokenIcon chain={chain} address={token.address} size={20} alt={token.symbol} />
-  )
-}
 
 function WeightedTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; chain: GqlChain }) {
   return (
@@ -33,10 +24,10 @@ function WeightedTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; 
             shadow="sm"
           >
             <HStack gap={['xs', 'sm']}>
-              <TokenIconOrIconStack token={token} chain={chain} />
+              <TokenIcon chain={chain} address={token.address} size={20} alt={token.symbol} />
               <HStack gap={['xs', '1.5']}>
                 <Text fontWeight="bold" noOfLines={1}>
-                  {token.nestedTokens ? token.name : token.symbol}
+                  {token.symbol}
                 </Text>
                 <Text fontSize="xs">{fNum('weight', token.weight || '')}</Text>
               </HStack>
@@ -73,9 +64,9 @@ function StableTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; ch
             zIndex={zIndices[i]}
           >
             <HStack gap={['xs', '1.5']}>
-              <TokenIconOrIconStack token={token} chain={chain} />
+              <TokenIcon chain={chain} address={token.address} size={20} alt={token.symbol} />
               <Text fontWeight="bold" noOfLines={1} maxW="20">
-                {token.nestedTokens ? token.name : token.symbol}
+                {token.symbol}
               </Text>
             </HStack>
           </Box>

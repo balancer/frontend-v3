@@ -123,12 +123,12 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   /**
    * Step construction
    */
-  const { steps, isLoadingSteps } = useAddLiquiditySteps(
+  const { steps, isLoadingSteps } = useAddLiquiditySteps({
     helpers,
     handler,
     humanAmountsIn,
-    simulationQuery
-  )
+    simulationQuery,
+  })
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
   const addLiquidityTxHash =

@@ -164,7 +164,7 @@ export function getProportionalExitAmountsFromScaledBptIn(
 
   return poolTokens.map(token => {
     const tokenBalance = parseUnits(token.balance, token.decimals)
-    const tokenProportionalAmount = (bptIn * tokenBalance) / bptTotalSupply
+    const tokenProportionalAmount = bptTotalSupply ? (bptIn * tokenBalance) / bptTotalSupply : 0n
 
     return {
       address: token.address,

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { describe, expect, test } from 'vitest'
 
-import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
+import { useManagedSendTransaction } from './useManagedSendTransaction.1'
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { testHook } from '@/test/utils/custom-renderers'
@@ -54,7 +54,6 @@ describe('weighted add flow', () => {
 
     const { result } = testHook(() => {
       return useManagedSendTransaction({
-        chainId: ChainId.MAINNET,
         labels: { init: 'foo', tooltip: 'bar' },
         txConfig,
       })

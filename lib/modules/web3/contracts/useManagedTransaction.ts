@@ -7,12 +7,7 @@ import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useEffect, useState } from 'react'
 import { Abi, Address, ContractFunctionArgs, ContractFunctionName } from 'viem'
-import {
-  UseSimulateContractParameters,
-  useSimulateContract,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from 'wagmi'
+import { useSimulateContract, useWaitForTransactionReceipt, useWriteContract } from 'wagmi'
 import { useChainSwitch } from '../useChainSwitch'
 import { AbiMap } from './AbiMap'
 import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
@@ -23,14 +18,6 @@ import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 type IAbiMap = typeof AbiMap
 type AbiMapKey = keyof typeof AbiMap
 
-// type AdditionalConfig = Omit<
-//   UseSimulateContractParameters<
-//     (typeof AbiMap)[keyof typeof AbiMap],
-//     ContractFunctionName<(typeof AbiMap)[keyof typeof AbiMap], WriteAbiMutability>
-//   >,
-//   'abi' | 'address' | 'functionName' | 'args'
-// >
-
 export interface ManagedTransactionInput {
   contractAddress: string
   contractId: AbiMapKey
@@ -38,8 +25,6 @@ export interface ManagedTransactionInput {
   labels: TransactionLabels
   chainId: SupportedChainId
   args?: ContractFunctionArgs<IAbiMap[AbiMapKey], WriteAbiMutability> | null
-  // TODO: is this YAGNI?
-  // additionalConfig?: AdditionalConfig
   txSimulationMeta?: Record<string, unknown>
   enabled: boolean
 }
@@ -51,7 +36,6 @@ export function useManagedTransaction({
   labels,
   chainId,
   args,
-  // additionalConfig,
   txSimulationMeta,
   enabled = true,
 }: ManagedTransactionInput) {
@@ -65,7 +49,6 @@ export function useManagedTransaction({
     functionName: functionName as ContractFunctionName<any, WriteAbiMutability>,
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
     args: writeArgs as any,
-    // ...(additionalConfig as any),
     chainId,
     query: {
       enabled: enabled && !shouldChangeNetwork,
@@ -80,6 +63,7 @@ export function useManagedTransaction({
     hash: writeQuery.data,
     confirmations: minConfirmations,
   })
+
   const bundle = {
     chainId,
     simulation: simulateQuery as TransactionSimulation,
