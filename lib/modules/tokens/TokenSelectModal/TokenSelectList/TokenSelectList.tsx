@@ -2,7 +2,7 @@
 
 import { Box, BoxProps, Button, Card, Center, HStack, Text } from '@chakra-ui/react'
 import { TokenSelectListRow } from './TokenSelectListRow'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useTokenBalances } from '../../useTokenBalances'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useEffect, useRef, useState } from 'react'
@@ -14,6 +14,7 @@ import { CoinsIcon } from '@/lib/shared/components/icons/CoinsIcon'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 
 type Props = {
+  chain: GqlChain
   tokens: GqlToken[]
   excludeNativeAsset?: boolean
   pinNativeAsset?: boolean
@@ -68,6 +69,7 @@ function InYourWallet({ isConnected, openConnectModal, hasNoTokensInWallet }: In
 }
 
 export function TokenSelectList({
+  chain,
   tokens,
   excludeNativeAsset = false,
   pinNativeAsset = false,
@@ -81,6 +83,7 @@ export function TokenSelectList({
   const { balanceFor, isBalancesLoading } = useTokenBalances()
   const { isConnected } = useUserAccount()
   const { orderedTokens } = useTokenSelectList(
+    chain,
     tokens,
     excludeNativeAsset,
     pinNativeAsset,
