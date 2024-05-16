@@ -41,14 +41,26 @@ function calcUserBoost({
   const _gaugeTotalSupply = bn(gaugeTotalSupply)
   const _userVeBALBalance = bn(userVeBALBalance)
   const _veBALTotalSupply = bn(veBALTotalSupply)
-  const boost = bn(1).plus(
-    bn(1.5)
-      .times(_userVeBALBalance)
-      .div(_veBALTotalSupply)
-      .times(_gaugeTotalSupply)
-      .div(_userGaugeBalance)
-  )
+
+  const boost = bn(_userGaugeBalance).gt(0)
+    ? bn(1).plus(
+        bn(1.5)
+          .times(_userVeBALBalance)
+          .div(_veBALTotalSupply)
+          .times(_gaugeTotalSupply)
+          .div(_userGaugeBalance)
+      )
+    : bn(1)
+
   const minBoost = bn(2.5).lt(boost) ? 2.5 : boost
+
+  console.log({
+    boost: boost.toFixed(2),
+    userGaugeBalance,
+    gaugeTotalSupply,
+    userVeBALBalance,
+    veBALTotalSupply,
+  })
 
   return minBoost.toString()
 }
