@@ -86,7 +86,6 @@ export function Toast({ id, status, isClosable, title, description, linkUrl }: P
                 top="xs"
                 right="8"
                 aria-label="View on explorer"
-                style={{ zIndex: 99999 }}
                 w="6"
                 h="6"
                 icon={<ArrowUpRight size={12} strokeWidth={3} />}
