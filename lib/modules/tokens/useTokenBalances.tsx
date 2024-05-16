@@ -3,7 +3,6 @@
 import { useUserAccount } from '../web3/useUserAccount'
 import { useBalance, useReadContracts } from 'wagmi'
 import { erc20Abi } from 'viem'
-import { useTokens } from './useTokens'
 import { TokenAmount, TokenBase } from './token.types'
 import { Address, formatUnits } from 'viem'
 import { isLoadingQueries, isRefetchingQueries, refetchQueries } from '@/lib/shared/utils/queries'
@@ -11,6 +10,7 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { PropsWithChildren, createContext } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { getNetworkConfig } from '@/lib/config/app.config'
+import { exclNativeAssetFilter, nativeAssetFilter } from '@/lib/config/tokens.config'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 
@@ -19,14 +19,13 @@ export const TokenBalancesContext = createContext<UseTokenBalancesResponse | nul
 
 export function _useTokenBalances(tokens: TokenBase[]) {
   const { userAddress } = useUserAccount()
-  const { exclNativeAssetFilter, nativeAssetFilter } = useTokens()
 
   const NO_TOKENS_CHAIN_ID = 1 // this should never be used as the multicall is disabled when no tokens
   const chainId = tokens.length ? tokens[0].chainId : NO_TOKENS_CHAIN_ID
   const networkConfig = getNetworkConfig(chainId)
 
-  const includesNativeAsset = tokens.some(nativeAssetFilter)
-  const _tokens = tokens.filter(exclNativeAssetFilter)
+  const includesNativeAsset = tokens.some(nativeAssetFilter(chainId))
+  const _tokens = tokens.filter(exclNativeAssetFilter(chainId))
 
   const nativeBalanceQuery = useBalance({
     chainId,
