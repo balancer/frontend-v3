@@ -4,24 +4,23 @@
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
-import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
-import { useClaimAndUnstakeStepConfigs } from './useClaimAndUnstakeStepConfigs'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { useClaimAndUnstakeSteps } from './useClaimAndUnstakeSteps'
+import { Pool } from '../../usePool'
+import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 
-export function useUnstaking(chain: GqlChain) {
+export function useUnstaking(pool: Pool) {
   const { isConnected } = useUserAccount()
   const { isDisabled, disabledReason } = isDisabledWithReason([
     !isConnected,
     LABELS.walletNotConnected,
   ])
 
-  const stepConfigs = useClaimAndUnstakeStepConfigs(chain)
-  const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
+  const { steps, isLoading } = useClaimAndUnstakeSteps(pool)
+  const transactionSteps = useTransactionSteps(steps, isLoading)
 
   return {
+    transactionSteps,
     isDisabled,
     disabledReason,
-    currentStep,
-    useOnStepCompleted,
   }
 }

@@ -12,15 +12,23 @@ import {
 
 import { StepIndicator } from './Step'
 import { Steps } from './Steps'
-import { StepTrackerProps } from './step-tracker.types'
-import { useStepTrackerProps } from './useStepTrackerProps'
 import { GasPriceCard } from '@/lib/shared/hooks/useGasPrice'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
+import { TransactionStepsResponse } from '../useTransactionSteps'
 
-export function MobileStepTracker(props: StepTrackerProps) {
-  const currentStepProps = useStepTrackerProps(props)
-  if (!currentStepProps.step) return null
-  const currentStepTitle = currentStepProps.step.title
-  const { currentStepPosition, currentIndex, steps, chain } = currentStepProps
+type Props = {
+  chain: GqlChain
+  transactionSteps: TransactionStepsResponse
+}
+
+export function MobileStepTracker({ chain, transactionSteps }: Props) {
+  const { steps, currentStepIndex, currentStep, currentTransaction, isLastStep } = transactionSteps
+  const colorMode = useThemeColorMode()
+
+  const totalSteps = steps?.length || 1
+
+  const stepLabel = `Step ${currentStepIndex + 1}/${totalSteps}`
 
   return (
     <Accordion width="full" variant="button" allowToggle textAlign="left">
@@ -29,19 +37,28 @@ export function MobileStepTracker(props: StepTrackerProps) {
           <>
             <AccordionButton>
               <HStack width="full" justify="flex-start" fontSize="md">
-                <StepIndicator {...currentStepProps} index={currentIndex} />
-                <Text>{currentStepTitle}</Text>
+                {currentStep && (
+                  <StepIndicator
+                    transaction={currentTransaction}
+                    currentIndex={currentStepIndex}
+                    index={currentStepIndex}
+                    step={currentStep}
+                    colorMode={colorMode}
+                    isLastStep={isLastStep(currentStepIndex)}
+                  />
+                )}
+                <Text>{currentStep?.labels.title}</Text>
               </HStack>
               <HStack justify="flex-end" fontSize="sm">
                 {isExpanded && <GasPriceCard chain={chain} />}
                 <Text whiteSpace="nowrap" color={isExpanded ? 'font.link' : 'font.highlight'}>
-                  {currentStepPosition}
+                  {stepLabel}
                 </Text>
                 <AccordionIcon textColor={isExpanded ? 'font.link' : 'font.highlight'} />
               </HStack>
             </AccordionButton>
             <AccordionPanel pt="md">
-              <Steps currentIndex={currentIndex} steps={steps}></Steps>
+              <Steps transactionSteps={transactionSteps} />
             </AccordionPanel>
           </>
         )}

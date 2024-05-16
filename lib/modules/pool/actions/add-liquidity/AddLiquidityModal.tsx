@@ -1,7 +1,5 @@
 'use client'
 
-import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { SignRelayerButton } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import {
   HStack,
@@ -15,16 +13,14 @@ import {
   ModalProps,
   VStack,
 } from '@chakra-ui/react'
-import { RefObject, useEffect, useRef } from 'react'
+import { RefObject, useRef } from 'react'
 import { usePool } from '../../usePool'
 import { useAddLiquidity } from './useAddLiquidity'
 // eslint-disable-next-line max-len
-import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/useStepTrackerProps'
+import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { sleep } from '@/lib/shared/utils/time'
 import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
 import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
-import { useReceipt } from '../../../transactions/transaction-steps/useReceipt'
 
 type Props = {
   isOpen: boolean
@@ -41,18 +37,8 @@ export function AddLiquidityModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { stepConfigs, currentStep, currentStepIndex, useOnStepCompleted } = useAddLiquidity()
-  const { pool, chainId } = usePool()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
-  const { navigateToReceipt, isFlowComplete } = useReceipt()
-
-  useEffect(() => {
-    if (isOpen && isFlowComplete) {
-      // Wait to allow animations in the preview modal before navigating to receipt page
-      sleep(500).then(() => navigateToReceipt())
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFlowComplete])
+  const { transactionSteps } = useAddLiquidity()
+  const { pool } = usePool()
 
   return (
     <Modal
@@ -65,13 +51,7 @@ export function AddLiquidityModal({
     >
       <ModalOverlay />
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
-        {isDesktop && (
-          <DesktopStepTracker
-            currentStepIndex={currentStepIndex}
-            stepConfigs={stepConfigs}
-            chain={pool.chain}
-          />
-        )}
+        {isDesktop && <DesktopStepTracker chain={pool.chain} transactionSteps={transactionSteps} />}
         <ModalHeader>
           <HStack justify="space-between" w="full" pr="lg">
             <span>Add liquidity</span>
@@ -83,11 +63,7 @@ export function AddLiquidityModal({
           <AddLiquidityPreview />
         </ModalBody>
         <ModalFooter>
-          {shouldSignRelayerApproval ? (
-            <SignRelayerButton />
-          ) : (
-            <VStack w="full">{currentStep.render(useOnStepCompleted)}</VStack>
-          )}
+          <VStack w="full">{transactionSteps.currentStep?.renderAction()}</VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>

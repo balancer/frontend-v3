@@ -3,7 +3,6 @@ import { ApolloClientProvider } from '@/lib/shared/services/api/apollo-client-pr
 import { ThemeProvider } from '@/lib/shared/services/chakra/ThemeProvider'
 import { ReactNode } from 'react'
 import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
-import { CurrentFlowStepProvider } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 import { ApolloGlobalDataProvider } from '@/lib/shared/services/api/apollo-global-data.provider'
 import { UserSettingsProvider } from '@/lib/modules/user/settings/useUserSettings'
 import { ThemeProvider as ColorThemeProvider } from 'next-themes'
@@ -23,9 +22,7 @@ export function Providers({ children }: { children: ReactNode }) {
                 initPoolListView={undefined}
                 initAcceptedPolicies={undefined}
               >
-                <CurrentFlowStepProvider>
-                  <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
-                </CurrentFlowStepProvider>
+                <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
               </UserSettingsProvider>
             </ApolloGlobalDataProvider>
           </ApolloClientProvider>

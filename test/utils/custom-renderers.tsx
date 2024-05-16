@@ -29,10 +29,10 @@ import { UserAccountProvider } from '@/lib/modules/web3/useUserAccount'
 import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignature'
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { SupportedChainId } from '@/lib/config/config.types'
-import { CurrentFlowStepProvider } from '@/lib/modules/transactions/transaction-steps/useCurrentFlowStep'
 import { testQueryClient } from './react-query'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { testWagmiConfig } from '@/test/anvil/testWagmiConfig'
+import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 
 export type WrapperProps = { children: ReactNode }
 export type Wrapper = ({ children }: WrapperProps) => ReactNode
@@ -85,9 +85,7 @@ function GlobalProviders({ children }: WrapperProps) {
                   initEnableSignatures="yes"
                   initAcceptedPolicies={undefined}
                 >
-                  <CurrentFlowStepProvider>
-                    <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
-                  </CurrentFlowStepProvider>
+                  <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
                 </UserSettingsProvider>
               </TokensProvider>
             </UserAccountProvider>
@@ -113,38 +111,6 @@ export async function waitForLoadedUseQuery(hookResult: { current: { loading: bo
   await waitFor(() => expect(hookResult.current.loading).toBeFalsy())
 }
 
-/**
- * Wrapper over testHook to test useManagedTransaction hook with full TS inference
- */
-export function testManagedTransaction<
-  T extends typeof AbiMap,
-  M extends keyof typeof AbiMap,
-  F extends ContractFunctionName<T[M], WriteAbiMutability>
->(
-  contractAddress: string,
-  contractId: M,
-  functionName: F,
-  chainId: SupportedChainId,
-  args?: ContractFunctionArgs<T[M], WriteAbiMutability>,
-  additionalConfig?: Omit<
-    UseSimulateContractParameters<T[M], F>,
-    'abi' | 'address' | 'functionName' | 'args'
-  >
-) {
-  const { result } = testHook(() =>
-    useManagedTransaction(
-      contractAddress,
-      contractId,
-      functionName,
-      {} as TransactionLabels,
-      chainId,
-      args,
-      additionalConfig
-    )
-  )
-  return result
-}
-
 export const DefaultAddLiquidityTestProvider = ({ children }: PropsWithChildren) => (
   <RelayerSignatureProvider>
     <TokenInputsValidationProvider>
@@ -165,17 +131,19 @@ export const buildDefaultPoolTestProvider =
   // eslint-disable-next-line react/display-name
   ({ children }: PropsWithChildren) => {
     return (
-      <PoolProvider
-        id={pool.id}
-        chain={GqlChain.Mainnet}
-        variant={PoolVariant.v2}
-        data={{
-          __typename: 'Query',
-          pool,
-        }}
-      >
-        {children}
-      </PoolProvider>
+      <TransactionStateProvider>
+        <PoolProvider
+          id={pool.id}
+          chain={GqlChain.Mainnet}
+          variant={PoolVariant.v2}
+          data={{
+            __typename: 'Query',
+            pool,
+          }}
+        >
+          {children}
+        </PoolProvider>
+      </TransactionStateProvider>
     )
   }
 

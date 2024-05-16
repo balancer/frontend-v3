@@ -23,6 +23,8 @@ export interface BalTokenReward {
   fiatBalance: BigNumber
 }
 
+export type BalTokenRewardsResult = ReturnType<typeof useBalTokenRewards>
+
 export function useBalTokenRewards(pools: PoolListItem[]) {
   const { userAddress, isConnected } = useUserAccount()
   const { priceFor } = useTokens()

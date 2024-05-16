@@ -1,7 +1,6 @@
 'use client'
 
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
-import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { HumanAmount } from '@balancer/sdk'
 import {
@@ -17,9 +16,8 @@ import {
   Box,
   Text,
 } from '@chakra-ui/react'
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useSwap } from './useSwap'
-import { useTokens } from '../tokens/useTokens'
 import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
@@ -42,6 +40,7 @@ export function SwapForm() {
     tokenIn,
     tokenOut,
     selectedChain,
+    tokens,
     tokenSelectKey,
     isDisabled,
     disabledReason,
@@ -58,7 +57,6 @@ export function SwapForm() {
     setNeedsToAcceptHighPI,
   } = useSwap()
   const [copiedDeepLink, setCopiedDeepLink] = useState(false)
-  const { getTokensByChain } = useTokens()
   const tokenSelectDisclosure = useDisclosure()
   const nextBtn = useRef(null)
   const finalRefTokenIn = useRef(null)
@@ -66,9 +64,6 @@ export function SwapForm() {
   const isMounted = useIsMounted()
 
   const tokenMap = { tokenIn, tokenOut }
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const tokens = useMemo(() => getTokensByChain(selectedChain), [selectedChain])
 
   function copyDeepLink() {
     navigator.clipboard.writeText(window.location.href)
@@ -102,137 +97,135 @@ export function SwapForm() {
 
   return (
     <FadeInOnView>
-      <TokenBalancesProvider tokens={tokens}>
-        <PriceImpactProvider>
-          <Center
-            h="full"
-            w={['100vw', 'full']}
-            maxW="lg"
-            mx="auto"
-            position="relative"
-            left={['-12px', '0']}
-          >
-            <Card rounded="xl">
-              <VStack spacing="lg" align="start">
-                <HStack w="full" justify="space-between" zIndex={11}>
-                  <Heading fontWeight="bold" size="h4">
-                    {capitalize(swapAction)}
-                  </Heading>
-                  <HStack>
-                    <Tooltip label={copiedDeepLink ? 'Copied!' : 'Copy deep link'}>
-                      <Button variant="tertiary" size="sm" color="grayText" onClick={copyDeepLink}>
-                        {copiedDeepLink ? <CheckCircle size={16} /> : <Link size={16} />}
-                      </Button>
-                    </Tooltip>
-
-                    <TransactionSettings size="sm" />
-                  </HStack>
-                </HStack>
-                <VStack spacing="md" w="full">
-                  <ChainSelect
-                    value={selectedChain}
-                    onChange={newValue => {
-                      setSelectedChain(newValue as GqlChain)
-                      setTokenInAmount('')
-                    }}
-                  />
-                  <VStack w="full">
-                    <TokenInput
-                      ref={finalRefTokenIn}
-                      address={tokenIn.address}
-                      chain={selectedChain}
-                      value={tokenIn.amount}
-                      onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
-                      toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
-                    />
-                    <Box position="relative" border="red 1px solid">
-                      <IconButton
-                        position="absolute"
-                        variant="tertiary"
-                        size="sm"
-                        fontSize="2xl"
-                        ml="-4"
-                        mt="-4"
-                        w="8"
-                        h="8"
-                        isRound={true}
-                        aria-label="Switch tokens"
-                        icon={<Repeat size={16} />}
-                        onClick={switchTokens}
-                      />
-                    </Box>
-                    <TokenInput
-                      ref={finalRefTokenOut}
-                      address={tokenOut.address}
-                      chain={selectedChain}
-                      value={tokenOut.amount}
-                      onChange={e => setTokenOutAmount(e.currentTarget.value as HumanAmount)}
-                      toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
-                      hasPriceImpact
-                      disableBalanceValidation
-                      isLoadingPriceImpact={
-                        simulationQuery.isLoading || !simulationQuery.data || !tokenIn.amount
-                      }
-                    />
-                  </VStack>
-                  {!!simulationQuery.data && (
-                    <motion.div
-                      style={{ width: '100%', transformOrigin: 'top' }}
-                      initial={{ opacity: 0, scaleY: 0.9 }}
-                      animate={{ opacity: 1, scaleY: 1 }}
-                      transition={{ duration: 0.3, ease: easeOut }}
-                    >
-                      <PriceImpactAccordion
-                        setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
-                        accordionButtonComponent={<SwapRate />}
-                        accordionPanelComponent={<SwapDetails />}
-                        isDisabled={!simulationQuery.data}
-                      />
-                    </motion.div>
-                  )}
-
-                  {simulationQuery.isError && (
-                    <ErrorAlert title="Error fetching swap">
-                      <Text color="font.maxContrast" variant="secondary">
-                        {simulationQuery.error?.message || 'Unknown error'}
-                      </Text>
-                    </ErrorAlert>
-                  )}
-
-                  <Tooltip label={isDisabled ? disabledReason : ''}>
-                    <Button
-                      ref={nextBtn}
-                      variant="secondary"
-                      w="full"
-                      size="lg"
-                      isDisabled={isDisabled || !isMounted}
-                      isLoading={simulationQuery.isLoading || !isMounted}
-                      onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
-                    >
-                      Next
+      <PriceImpactProvider>
+        <Center
+          h="full"
+          w={['100vw', 'full']}
+          maxW="lg"
+          mx="auto"
+          position="relative"
+          left={['-12px', '0']}
+        >
+          <Card rounded="xl">
+            <VStack spacing="lg" align="start">
+              <HStack w="full" justify="space-between" zIndex={11}>
+                <Heading fontWeight="bold" size="h4">
+                  {capitalize(swapAction)}
+                </Heading>
+                <HStack>
+                  <Tooltip label={copiedDeepLink ? 'Copied!' : 'Copy deep link'}>
+                    <Button variant="tertiary" size="sm" color="grayText" onClick={copyDeepLink}>
+                      {copiedDeepLink ? <CheckCircle size={16} /> : <Link size={16} />}
                     </Button>
                   </Tooltip>
+
+                  <TransactionSettings size="sm" />
+                </HStack>
+              </HStack>
+              <VStack spacing="md" w="full">
+                <ChainSelect
+                  value={selectedChain}
+                  onChange={newValue => {
+                    setSelectedChain(newValue as GqlChain)
+                    setTokenInAmount('')
+                  }}
+                />
+                <VStack w="full">
+                  <TokenInput
+                    ref={finalRefTokenIn}
+                    address={tokenIn.address}
+                    chain={selectedChain}
+                    value={tokenIn.amount}
+                    onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
+                    toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
+                  />
+                  <Box position="relative" border="red 1px solid">
+                    <IconButton
+                      position="absolute"
+                      variant="tertiary"
+                      size="sm"
+                      fontSize="2xl"
+                      ml="-4"
+                      mt="-4"
+                      w="8"
+                      h="8"
+                      isRound={true}
+                      aria-label="Switch tokens"
+                      icon={<Repeat size={16} />}
+                      onClick={switchTokens}
+                    />
+                  </Box>
+                  <TokenInput
+                    ref={finalRefTokenOut}
+                    address={tokenOut.address}
+                    chain={selectedChain}
+                    value={tokenOut.amount}
+                    onChange={e => setTokenOutAmount(e.currentTarget.value as HumanAmount)}
+                    toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
+                    hasPriceImpact
+                    disableBalanceValidation
+                    isLoadingPriceImpact={
+                      simulationQuery.isLoading || !simulationQuery.data || !tokenIn.amount
+                    }
+                  />
                 </VStack>
+                {!!simulationQuery.data && (
+                  <motion.div
+                    style={{ width: '100%', transformOrigin: 'top' }}
+                    initial={{ opacity: 0, scaleY: 0.9 }}
+                    animate={{ opacity: 1, scaleY: 1 }}
+                    transition={{ duration: 0.3, ease: easeOut }}
+                  >
+                    <PriceImpactAccordion
+                      setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                      accordionButtonComponent={<SwapRate />}
+                      accordionPanelComponent={<SwapDetails />}
+                      isDisabled={!simulationQuery.data}
+                    />
+                  </motion.div>
+                )}
+
+                {simulationQuery.isError && (
+                  <ErrorAlert title="Error fetching swap">
+                    <Text color="font.maxContrast" variant="secondary">
+                      {simulationQuery.error?.message || 'Unknown error'}
+                    </Text>
+                  </ErrorAlert>
+                )}
+
+                <Tooltip label={isDisabled ? disabledReason : ''}>
+                  <Button
+                    ref={nextBtn}
+                    variant="secondary"
+                    w="full"
+                    size="lg"
+                    isDisabled={isDisabled || !isMounted}
+                    isLoading={simulationQuery.isLoading || !isMounted}
+                    onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
+                  >
+                    Next
+                  </Button>
+                </Tooltip>
               </VStack>
-            </Card>
-          </Center>
-          <TokenSelectModal
-            finalFocusRef={tokenSelectKey === 'tokenIn' ? finalRefTokenIn : finalRefTokenOut}
-            chain={selectedChain}
-            tokens={tokenSelectTokens}
-            isOpen={tokenSelectDisclosure.isOpen}
-            onOpen={tokenSelectDisclosure.onOpen}
-            onClose={tokenSelectDisclosure.onClose}
-            onTokenSelect={handleTokenSelect}
-          />
-          <SwapPreviewModal
-            finalFocusRef={nextBtn}
-            isOpen={previewModalDisclosure.isOpen}
-            onOpen={previewModalDisclosure.onOpen}
-            onClose={previewModalDisclosure.onClose}
-          />
-        </PriceImpactProvider>
-      </TokenBalancesProvider>
+            </VStack>
+          </Card>
+        </Center>
+        <TokenSelectModal
+          finalFocusRef={tokenSelectKey === 'tokenIn' ? finalRefTokenIn : finalRefTokenOut}
+          chain={selectedChain}
+          tokens={tokenSelectTokens}
+          isOpen={tokenSelectDisclosure.isOpen}
+          onOpen={tokenSelectDisclosure.onOpen}
+          onClose={tokenSelectDisclosure.onClose}
+          onTokenSelect={handleTokenSelect}
+        />
+        <SwapPreviewModal
+          finalFocusRef={nextBtn}
+          isOpen={previewModalDisclosure.isOpen}
+          onOpen={previewModalDisclosure.onOpen}
+          onClose={previewModalDisclosure.onClose}
+        />
+      </PriceImpactProvider>
     </FadeInOnView>
   )
 }

@@ -5,24 +5,14 @@ import { SwapDetails } from './SwapDetails'
 import { SwapRate } from './SwapRate'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { useSwap } from './useSwap'
-import { useCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
 
 export function SwapPreview() {
-  const { isFlowComplete, SuccessCard } = useCurrentFlowStep()
   const { isMobile } = useBreakpoints()
-  const { tokenIn, tokenOut, currentStepIndex, swapStepConfigs, selectedChain } = useSwap()
+  const { tokenIn, tokenOut, transactionSteps, selectedChain } = useSwap()
 
   return (
     <VStack spacing="sm" align="start">
-      {isFlowComplete && <SuccessCard chain={selectedChain} />}
-
-      {isMobile && (
-        <MobileStepTracker
-          currentStepIndex={currentStepIndex}
-          stepConfigs={swapStepConfigs}
-          chain={selectedChain}
-        />
-      )}
+      {isMobile && <MobileStepTracker transactionSteps={transactionSteps} chain={selectedChain} />}
 
       <Card variant="modalSubSection">
         <CardHeader>You pay</CardHeader>

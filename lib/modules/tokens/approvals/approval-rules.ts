@@ -45,13 +45,9 @@ export function getRequiredTokenApprovals({
     }
   })
 
-  tokenAmountsToApprove = tokenAmountsToApprove.filter(({ tokenAddress, requiredRawAmount }) => {
-    if (isNativeAsset(chainId, tokenAddress)) return false
-
-    const hasEnoughAllowedAmount = allowanceFor(tokenAddress) >= requiredRawAmount
-    if (hasEnoughAllowedAmount) return false
-    return true
-  })
+  tokenAmountsToApprove = tokenAmountsToApprove.filter(
+    ({ tokenAddress }) => !isNativeAsset(chainId, tokenAddress)
+  )
 
   /**
    * Some tokens (e.g. USDT) require setting their approval amount to 0n before being

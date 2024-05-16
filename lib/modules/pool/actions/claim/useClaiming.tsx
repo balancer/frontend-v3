@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { LABELS } from '@/lib/shared/labels'
-import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
-import { useClaimStepConfigs } from './useClaimStepConfigs'
-import { useDisclosure } from '@chakra-ui/hooks'
 import { useBalTokenRewards } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
 import { useClaimableBalances } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
+import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { LABELS } from '@/lib/shared/labels'
+import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
+import { useDisclosure } from '@chakra-ui/hooks'
 import { PoolListItem } from '../../pool.types'
+import { useClaimAllRewardsSteps } from './useClaimAllRewardsSteps'
 
 export function useClaiming(pools: PoolListItem[]) {
   const { isConnected } = useUserAccount()
@@ -19,24 +19,27 @@ export function useClaiming(pools: PoolListItem[]) {
     LABELS.walletNotConnected,
   ])
 
-  const { claimableRewards: nonBalRewards, refetchClaimableRewards } = useClaimableBalances(pools)
-  const { balRewardsData: balRewards, refetchBalRewards } = useBalTokenRewards(pools)
+  const claimableBalancesQuery = useClaimableBalances(pools)
+  const nonBalRewards = claimableBalancesQuery.claimableRewards
+  const balTokenRewardsQuery = useBalTokenRewards(pools)
+  const balRewards = balTokenRewardsQuery.balRewardsData
 
   const hasNoRewards = !nonBalRewards.length && !balRewards.length
 
-  const stepConfigs = useClaimStepConfigs(pools)
-  const { currentStep, useOnStepCompleted } = useIterateSteps(stepConfigs)
+  const { steps, isLoading } = useClaimAllRewardsSteps({
+    pools,
+    claimableBalancesQuery,
+    balTokenRewardsQuery,
+  })
+  const transactionSteps = useTransactionSteps(steps, isLoading)
 
   return {
+    transactionSteps,
     isDisabled,
     disabledReason,
-    currentStep,
-    useOnStepCompleted,
     previewModalDisclosure,
     nonBalRewards,
     balRewards,
-    refetchClaimableRewards,
-    refetchBalRewards,
     hasNoRewards,
   }
 }

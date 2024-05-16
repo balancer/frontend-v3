@@ -22,13 +22,13 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { useAddLiquidityStepConfigs } from './useAddLiquidityStepConfigs'
-import { useIterateSteps } from '../../../transactions/transaction-steps/useIterateSteps'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
 import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
+import { useAddLiquiditySteps } from './useAddLiquiditySteps'
+import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -44,7 +44,6 @@ export function _useAddLiquidity() {
   const { getToken, isLoadingTokenPrices } = useTokens()
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
-
   const { hasValidationErrors } = useTokenInputsValidation()
 
   const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id])
@@ -53,9 +52,7 @@ export function _useAddLiquidity() {
    * Helper functions & variables
    */
   const helpers = new LiquidityActionHelpers(pool)
-  const inputAmounts = helpers.toInputAmounts(humanAmountsIn)
-  const stepConfigs = useAddLiquidityStepConfigs(inputAmounts)
-  const { currentStep, currentStepIndex, useOnStepCompleted } = useIterateSteps(stepConfigs)
+
   const chain = pool.chain
   const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
   const wNativeAsset = getToken(getWrappedNativeAssetAddress(chain), chain)
@@ -110,14 +107,22 @@ export function _useAddLiquidity() {
   }, [humanAmountsIn, isLoadingTokenPrices])
 
   /**
-   * Simulation queries:
+   * Queries
    */
   const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn)
   const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn)
 
   /**
-   * Refetch logic:
+   * Step construction
    */
+  const { steps, isLoadingSteps } = useAddLiquiditySteps({
+    helpers,
+    handler,
+    humanAmountsIn,
+    simulationQuery,
+  })
+  const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
+
   async function refetchQuote() {
     if (requiresProportionalInput(pool.type)) {
       /*
@@ -130,9 +135,6 @@ export function _useAddLiquidity() {
     await Promise.all([simulationQuery.refetch(), priceImpactQuery.refetch()])
   }
 
-  /**
-   * Side-effects
-   */
   // On initial render, set the initial humanAmountsIn
   useEffect(() => {
     setInitialHumanAmountsIn()
@@ -159,33 +161,29 @@ export function _useAddLiquidity() {
   const { isDisabled, disabledReason } = isDisabledWithReason(...allDisabledConditions)
 
   return {
+    transactionSteps,
     humanAmountsIn,
-    inputAmounts,
     tokens: wethIsEth ? tokensWithNativeAsset : tokens,
     validTokens,
     totalUSDValue,
     simulationQuery,
     priceImpactQuery,
-    refetchQuote,
     isDisabled,
     showAcceptPoolRisks,
     disabledReason,
     previewModalDisclosure,
-    currentStep,
-    useOnStepCompleted,
     handler,
-    setHumanAmountIn,
-    setHumanAmountsIn,
-    stepConfigs,
-    currentStepIndex,
     helpers,
-    setNeedsToAcceptHighPI,
     acceptPoolRisks,
-    setAcceptPoolRisks,
     wethIsEth,
-    setWethIsEth,
     nativeAsset,
     wNativeAsset,
+    refetchQuote,
+    setHumanAmountIn,
+    setHumanAmountsIn,
+    setNeedsToAcceptHighPI,
+    setAcceptPoolRisks,
+    setWethIsEth,
   }
 }
 

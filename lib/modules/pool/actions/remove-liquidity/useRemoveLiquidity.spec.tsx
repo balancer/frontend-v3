@@ -16,22 +16,21 @@ import { aSuccessfulQueryResultMock } from '@/test/utils/react-query'
 const balTokenOutUnits = '1'
 const wEthTokenOutUnits = '0.5'
 
+const simulationQueryResult = {
+  ...mock<RemoveLiquiditySimulationQueryResult>(),
+  ...aSuccessfulQueryResultMock(),
+  data: {
+    amountsOut: [
+      aTokenAmountMock(balAddress, balTokenOutUnits),
+      aTokenAmountMock(wETHAddress, wEthTokenOutUnits),
+    ],
+  },
+}
 // Mock query to avoid onchain SDK call from unit tests
 vi.mock('./queries/useRemoveLiquiditySimulationQuery', () => {
   return {
     useRemoveLiquiditySimulationQuery(): RemoveLiquiditySimulationQueryResult {
-      const result = mock<RemoveLiquiditySimulationQueryResult>()
-
-      return {
-        ...result,
-        ...aSuccessfulQueryResultMock(),
-        data: {
-          amountsOut: [
-            aTokenAmountMock(balAddress, balTokenOutUnits),
-            aTokenAmountMock(wETHAddress, wEthTokenOutUnits),
-          ],
-        },
-      }
+      return simulationQueryResult
     },
   }
 })
