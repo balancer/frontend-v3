@@ -22,7 +22,7 @@ export function useAddLiquidityStep(
 ): TransactionStep {
   const [isBuildQueryEnabled, setIsBuildQueryEnabled] = useState(false)
 
-  const { chainId } = usePool()
+  const { chainId, pool } = usePool()
   const { getTransaction } = useTransactionState()
 
   const buildCallDataQuery = useAddLiquidityBuildCallDataQuery(
@@ -35,9 +35,10 @@ export function useAddLiquidityStep(
   const labels: TransactionLabels = {
     init: 'Add liquidity',
     title: 'Add liquidity',
-    confirming: 'Confirming...',
-    confirmed: `Liquidity added to pool!`,
-    tooltip: 'Add liquidity to pool.',
+    description: `Adding liquidity to ${pool.name || 'pool'}.`,
+    confirming: 'Confirming add liquidity...',
+    confirmed: `Liquidity added!`,
+    tooltip: `Add liquidity to ${pool.name || 'pool'}.`,
   }
 
   const gasEstimationMeta = sentryMetaForWagmiSimulation('Error in AddLiquidity gas estimation', {

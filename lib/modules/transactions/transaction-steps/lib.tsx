@@ -11,12 +11,13 @@ export enum TransactionState {
 }
 
 export type TransactionLabels = {
-  init: string
   title?: string
+  description?: string
+  tooltip: string
+  // State labels
+  init: string
   loading?: string
   confirming?: string
-  tooltip: string
-  description?: string
   reverted?: string
   confirmed?: string
   rejected?: string

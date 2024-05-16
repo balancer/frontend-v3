@@ -11,17 +11,26 @@ import {
   HStack,
   CircularProgressLabel,
   Text,
+  Tooltip,
 } from '@chakra-ui/react'
-import { Check, X } from 'react-feather'
+import Link from 'next/link'
+import { useRef } from 'react'
+import { ArrowUpRight, Check, X } from 'react-feather'
 
-export function Toast({ id, status, isClosable, title, description }: ToastProps) {
+type Props = ToastProps & {
+  linkUrl?: string
+}
+
+export function Toast({ id, status, isClosable, title, description, linkUrl }: Props) {
   const toast = useToast()
+
   const containerStyles: BoxProps = {
     background: 'background.level3',
     border: 'none',
     rounded: 'md',
     shadow: 'xl',
     zIndex: '1000',
+    width: 'xs',
   }
 
   const statusOverlayStyles: BoxProps = {
@@ -57,10 +66,35 @@ export function Toast({ id, status, isClosable, title, description }: ToastProps
     if (id) toast.close(id)
   }
 
+  // Hach to make tooltip zIndex work in toast
+  const ref = useRef(null)
+
   return (
     <Box position="relative" {...containerStyles}>
       <Box {...statusOverlayStyles} />
       <Box {...contentStyles}>
+        {linkUrl && (
+          <>
+            <div ref={ref} />
+            <Tooltip label="View on explorer" portalProps={{ containerRef: ref }}>
+              <IconButton
+                as={Link}
+                href={linkUrl}
+                target="_blank"
+                position="absolute"
+                size="xs"
+                top="xs"
+                right="8"
+                aria-label="View on explorer"
+                style={{ zIndex: 99999 }}
+                w="6"
+                h="6"
+                icon={<ArrowUpRight size={12} strokeWidth={3} />}
+              />
+            </Tooltip>
+          </>
+        )}
+
         {isClosable && (
           <IconButton
             onClick={closeToast}
@@ -69,7 +103,9 @@ export function Toast({ id, status, isClosable, title, description }: ToastProps
             top="xs"
             right="xs"
             aria-label="Close toast"
-            icon={<X size={16} />}
+            w="6"
+            h="6"
+            icon={<X size={12} strokeWidth={3} />}
           />
         )}
         <HStack align="start">
@@ -104,11 +140,11 @@ export function Toast({ id, status, isClosable, title, description }: ToastProps
               </CircularProgressLabel>
             </CircularProgress>
           )}
-          <VStack align="start">
-            <Box color="font.primary" fontWeight="bold" fontSize="lg">
+          <VStack align="start" spacing="none">
+            <Box color="font.primary" fontWeight="bold" fontSize="md">
               {title}
             </Box>
-            {description && <Box color="grayText">{description}</Box>}
+            {description && <Box fontSize="sm">{description}</Box>}
           </VStack>
         </HStack>
       </Box>
