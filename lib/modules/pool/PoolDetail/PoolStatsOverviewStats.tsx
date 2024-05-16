@@ -1,11 +1,16 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { HStack, Heading, Icon, Skeleton, Text, VStack } from '@chakra-ui/react'
-import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
-
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { TokenIconStack } from '../../tokens/TokenIconStack'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { SECONDS_IN_DAY } from '@/test/utils/numbers'
+import { sumBy } from 'lodash'
+import { useTokens } from '../../tokens/useTokens'
+import { getTotalAprLabel } from '../pool.utils'
+import { usePool } from '../usePool'
 
 export type PoolStatsValues = {
   totalLiquidity: string
@@ -14,33 +19,47 @@ export type PoolStatsValues = {
   weeklyRewards: string
 }
 
-export type TokenAndReward = {
-  tokenAddress: string
-  rewardUsdPerWeek: number
-}
+export function PoolStats() {
+  const { pool, chain } = usePool()
+  const { toCurrency } = useCurrency()
+  const { priceFor, getToken } = useTokens()
 
-type PoolStatsProps = {
-  poolStatsValues: PoolStatsValues | undefined
-  showStarsIcon: boolean
-  tokens: GqlToken[]
-  chain: GqlChain
-  tokensAndRewards?: TokenAndReward[]
-}
+  // TODO: only uses Balancer rewards rn
+  const currentRewards = pool.staking?.gauge?.rewards || []
+  const currentRewardsPerWeek = currentRewards.map(reward => {
+    return {
+      ...reward,
+      rewardPerWeek: parseFloat(reward.rewardPerSecond) * SECONDS_IN_DAY * 7,
+    }
+  })
 
-export function PoolStats({
-  poolStatsValues,
-  showStarsIcon,
-  tokensAndRewards,
-  tokens,
-  chain,
-}: PoolStatsProps) {
+  // reward tokens will always be there?
+  const tokens = currentRewardsPerWeek.map(reward =>
+    getToken(reward.tokenAddress, chain)
+  ) as GqlToken[]
+
+  const weeklyRewards = sumBy(
+    currentRewardsPerWeek,
+    reward => priceFor(reward.tokenAddress, chain) * reward.rewardPerWeek
+  )
+
+  const poolStatsValues: PoolStatsValues | undefined = useMemo(() => {
+    if (pool) {
+      return {
+        totalLiquidity: toCurrency(pool.dynamicData.totalLiquidity),
+        fees24h: toCurrency(pool.dynamicData.fees24h),
+        apr: getTotalAprLabel(pool.dynamicData.apr.items),
+        weeklyRewards: toCurrency(weeklyRewards),
+      }
+    }
+  }, [pool])
+
   return (
     <>
       <VStack spacing="0" align="flex-start" w="full">
         <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
           TVL
         </Text>
-
         {poolStatsValues ? (
           <Heading size="h4">{poolStatsValues.totalLiquidity}</Heading>
         ) : (
@@ -54,7 +73,7 @@ export function PoolStats({
         {poolStatsValues ? (
           <HStack spacing="xs">
             <Heading size="h4">{poolStatsValues.apr}</Heading>
-            {showStarsIcon && <Icon as={StarsIcon} />}
+            {pool.staking && <Icon as={StarsIcon} />}
           </HStack>
         ) : (
           <Skeleton height="30px" w="100px" />
