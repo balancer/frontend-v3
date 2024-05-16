@@ -32,7 +32,7 @@ export function useAddLiquidityStep(params: AddLiquidityStepParams): Transaction
   const labels: TransactionLabels = {
     init: 'Add liquidity',
     title: 'Add liquidity',
-    description: `Adding liquidity to ${pool.name || 'pool'}.`,
+    description: `Liquidity add to ${pool.name || 'pool'}.`,
     confirming: 'Confirming add liquidity...',
     confirmed: `Liquidity added!`,
     tooltip: `Add liquidity to ${pool.name || 'pool'}.`,
