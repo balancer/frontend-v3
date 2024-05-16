@@ -3,7 +3,7 @@ import { useTokens } from '../../useTokens'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { orderBy } from 'lodash'
 import { useTokenBalances } from '../../useTokenBalances'
-import { exclNativeAssetFilter, nativeAssetFilter } from '@/lib/config/tokens.config'
+import { exclNativeAssetFilter, nativeAssetFilter } from '../../token.helpers'
 
 export function useTokenSelectList(
   chain: GqlChain,
