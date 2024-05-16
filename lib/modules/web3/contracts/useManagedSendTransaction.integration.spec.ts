@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { describe, expect, test } from 'vitest'
 
-import { useManagedSendTransaction } from './useManagedSendTransaction.1'
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { testHook } from '@/test/utils/custom-renderers'
@@ -14,6 +13,7 @@ import { HumanAmountIn } from '../../pool/actions/liquidity-types'
 import { connectWithDefaultUser } from '../../../../test/utils/wagmi/wagmi-connections'
 import { Address } from 'viem'
 import { mainnetTestPublicClient } from '@/test/utils/wagmi/wagmi-test-clients'
+import { useManagedSendTransaction } from './useManagedSendTransaction'
 
 const chainId = ChainId.MAINNET
 const account = defaultTestUserAccount
