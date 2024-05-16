@@ -120,7 +120,6 @@ export function _useAddLiquidity() {
     handler,
     humanAmountsIn,
     simulationQuery,
-    isPreviewModalOpen: previewModalDisclosure.isOpen,
   })
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 

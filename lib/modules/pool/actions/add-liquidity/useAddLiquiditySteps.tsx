@@ -17,7 +17,6 @@ export function useAddLiquiditySteps({
   handler,
   humanAmountsIn,
   simulationQuery,
-  isPreviewModalOpen,
 }: AddLiquidityStepsParams) {
   const vaultAddress = useContractAddress('balancer.vaultV2')
   const { pool, chainId } = usePool()
@@ -43,7 +42,6 @@ export function useAddLiquiditySteps({
     handler,
     humanAmountsIn,
     simulationQuery,
-    isPreviewModalOpen,
   })
 
   const steps = useMemo(() => {

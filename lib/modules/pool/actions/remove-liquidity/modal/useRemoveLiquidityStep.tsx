@@ -15,23 +15,18 @@ import {
 
 export const removeLiquidityStepId = 'remove-liquidity'
 
-export type RemoveLiquidityStepParams = RemoveLiquidityBuildQueryParams & {
-  isPreviewModalOpen: boolean
-}
+export type RemoveLiquidityStepParams = RemoveLiquidityBuildQueryParams
 
 export function useRemoveLiquidityStep(params: RemoveLiquidityStepParams): TransactionStep {
   const [isStepActivated, setIsStepActivated] = useState(false)
   const { refetch: refetchPoolUserBalances } = usePool()
   const { getTransaction } = useTransactionState()
 
-  const { simulationQuery, isPreviewModalOpen } = params
-
-  // Avoid running unnecessary build queries from form
-  const isBuildQueryEnabled = isStepActivated && isPreviewModalOpen
+  const { simulationQuery } = params
 
   const buildCallDataQuery = useRemoveLiquidityBuildCallDataQuery({
     ...params,
-    enabled: isBuildQueryEnabled,
+    enabled: isStepActivated,
   })
 
   const labels: TransactionLabels = {
@@ -56,7 +51,7 @@ export function useRemoveLiquidityStep(params: RemoveLiquidityStepParams): Trans
 
   useEffect(() => {
     // simulationQuery is refetched every 30 seconds by RemoveLiquidityTimeout
-    if (simulationQuery.data && isBuildQueryEnabled) {
+    if (simulationQuery.data && isStepActivated) {
       buildCallDataQuery.refetch()
     }
   }, [simulationQuery.data])

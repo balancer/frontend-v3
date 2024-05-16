@@ -14,21 +14,17 @@ import {
 
 export const addLiquidityStepId = 'add-liquidity'
 
-export type AddLiquidityStepParams = AddLiquidityBuildQueryParams & {
-  isPreviewModalOpen: boolean
-}
+export type AddLiquidityStepParams = AddLiquidityBuildQueryParams
 
 export function useAddLiquidityStep(params: AddLiquidityStepParams): TransactionStep {
   const [isStepActivated, setIsStepActivated] = useState(false)
   const { getTransaction } = useTransactionState()
 
-  const { simulationQuery, isPreviewModalOpen } = params
-  // Avoid running unnecessary build queries from form
-  const isBuildQueryEnabled = isStepActivated && isPreviewModalOpen
+  const { simulationQuery } = params
 
   const buildCallDataQuery = useAddLiquidityBuildCallDataQuery({
     ...params,
-    enabled: isBuildQueryEnabled,
+    enabled: isStepActivated,
   })
 
   const labels: TransactionLabels = {
@@ -50,7 +46,7 @@ export function useAddLiquidityStep(params: AddLiquidityStepParams): Transaction
 
   useEffect(() => {
     // simulationQuery is refetched every 30 seconds by AddLiquidityTimeout
-    if (simulationQuery.data && isBuildQueryEnabled) {
+    if (simulationQuery.data && isStepActivated) {
       buildCallDataQuery.refetch()
     }
   }, [simulationQuery.data])
