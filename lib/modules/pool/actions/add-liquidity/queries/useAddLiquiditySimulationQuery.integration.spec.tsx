@@ -9,9 +9,12 @@ import { HumanAmountIn } from '../../liquidity-types'
 
 async function testQuery(humanAmountsIn: HumanAmountIn[]) {
   const handler = selectAddLiquidityHandler(aWjAuraWethPoolElementMock())
-  const { result } = testHook(() => useAddLiquiditySimulationQuery(handler, humanAmountsIn), {
-    wrapper: DefaultPoolTestProvider,
-  })
+  const { result } = testHook(
+    () => useAddLiquiditySimulationQuery({ handler, humanAmountsIn, enabled: true }),
+    {
+      wrapper: DefaultPoolTestProvider,
+    }
+  )
   return result
 }
 

@@ -16,7 +16,6 @@ export type TransactionLabels = {
   tooltip: string
   // State labels
   init: string
-  title?: string
   loading?: string
   confirming?: string
   reverted?: string
