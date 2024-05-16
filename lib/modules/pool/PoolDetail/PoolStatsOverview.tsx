@@ -1,13 +1,12 @@
 'use client'
 
 import React, { useMemo, useState } from 'react'
-import { BoxProps, Card, HStack, Heading, Icon, Skeleton, Text, VStack } from '@chakra-ui/react'
+import { BoxProps, Card, VStack } from '@chakra-ui/react'
 import { usePool } from '../usePool'
 import { getTotalAprLabel } from '../pool.utils'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { GqlPoolMinimal } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolMinimal, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
-import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import ButtonGroup, {
   ButtonGroupOption,
@@ -19,20 +18,8 @@ import { bn } from '@/lib/shared/utils/numbers'
 import { useVebalBoost } from '../../vebal/useVebalBoost'
 import { useClaiming } from '../actions/claim/useClaiming'
 import { PoolListItem } from '../pool.types'
-
-type PoolStatsValues = {
-  totalLiquidity: string
-  fees24h: string
-  apr: string
-  weeklyIncentives: string
-}
-
-type PoolMyStatsValues = {
-  myLiquidity: string
-  myApr: string
-  myPotentialWeeklyYield: string
-  myClaimableIncentives: string
-}
+import { PoolMyStats, PoolMyStatsValues } from './PoolStatsOverviewMyStats'
+import { PoolStats, PoolStatsValues, TokenAndReward } from './PoolStatsOverviewStats'
 
 const COMMON_NOISY_CARD_PROPS: { contentProps: BoxProps; cardProps: BoxProps } = {
   contentProps: {
@@ -60,127 +47,12 @@ const TABS = [
   },
 ]
 
-function PoolStats({
-  poolStatsValues,
-  showStarsIcon,
-}: {
-  poolStatsValues: PoolStatsValues | undefined
-  showStarsIcon: boolean
-}) {
-  return (
-    <>
-      <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
-          TVL
-        </Text>
-
-        {poolStatsValues ? (
-          <Heading size="h4">{poolStatsValues.totalLiquidity}</Heading>
-        ) : (
-          <Skeleton height="30px" w="100px" />
-        )}
-      </VStack>
-      <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
-          APR for LPs
-        </Text>
-        {poolStatsValues ? (
-          <HStack spacing="xs">
-            <Heading size="h4">{poolStatsValues.apr}</Heading>
-            {showStarsIcon && <Icon as={StarsIcon} />}
-          </HStack>
-        ) : (
-          <Skeleton height="30px" w="100px" />
-        )}
-      </VStack>
-      <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
-          Fees (24h)
-        </Text>
-        {poolStatsValues ? (
-          <Heading size="h4">{poolStatsValues.fees24h}</Heading>
-        ) : (
-          <Skeleton height="30px" w="100px" />
-        )}
-      </VStack>
-      <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
-          Weekly incentives
-        </Text>
-        {poolStatsValues ? (
-          <Heading size="h4">
-            {poolStatsValues.weeklyIncentives ? poolStatsValues.weeklyIncentives : 'N/A'}
-          </Heading>
-        ) : (
-          <Skeleton height="30px" w="100px" />
-        )}
-      </VStack>
-    </>
-  )
-}
-
-function PoolMyStats({
-  poolMyStatsValues,
-  showStarsIcon,
-}: {
-  poolMyStatsValues: PoolMyStatsValues | undefined
-  showStarsIcon: boolean
-}) {
-  return (
-    <>
-      <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
-          My liquidity
-        </Text>
-        {poolMyStatsValues ? (
-          <Heading size="h4">{poolMyStatsValues.myLiquidity}</Heading>
-        ) : (
-          <Skeleton height="30px" w="100px" />
-        )}
-      </VStack>
-      <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
-          My APR
-        </Text>
-        {poolMyStatsValues ? (
-          <HStack spacing="xs">
-            <Heading size="h4">{poolMyStatsValues.myApr}</Heading>
-            {showStarsIcon && <Icon as={StarsIcon} />}
-          </HStack>
-        ) : (
-          <Skeleton height="30px" w="100px" />
-        )}
-      </VStack>
-      <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
-          My potential weekly yield
-        </Text>
-        {poolMyStatsValues ? (
-          <Heading size="h4">{poolMyStatsValues.myPotentialWeeklyYield}</Heading>
-        ) : (
-          <Skeleton height="30px" w="100px" />
-        )}
-      </VStack>
-      <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
-          My claimable incentives
-        </Text>
-        {poolMyStatsValues ? (
-          <Heading size="h4">{poolMyStatsValues.myClaimableIncentives}</Heading>
-        ) : (
-          <Skeleton height="30px" w="100px" />
-        )}
-      </VStack>
-    </>
-  )
-}
-
 export default function PoolStatsOverview() {
   const [activeTab, setActiveTab] = useState<ButtonGroupOption>(TABS[0])
   const { pool, chain, isLoading: isLoadingPool } = usePool()
   const { toCurrency } = useCurrency()
   const { veBalBoostMap } = useVebalBoost([pool as unknown as GqlPoolMinimal])
-  const { priceFor } = useTokens()
+  const { priceFor, getToken } = useTokens()
 
   const {
     isLoading: isLoadingClaiming,
@@ -191,7 +63,29 @@ export default function PoolStatsOverview() {
 
   // TODO: only uses Balancer rewards rn
   const claimableRewards = [...balRewards, ...nonBalRewards]
-  const myClaimableIncentives = sumBy(claimableRewards, reward => reward.fiatBalance.toNumber())
+  const myClaimableRewards = sumBy(claimableRewards, reward => reward.fiatBalance.toNumber())
+
+  const currentRewards = pool.staking?.gauge?.rewards || []
+  const currentRewardsPerWeek = currentRewards.map(reward => {
+    return {
+      ...reward,
+      rewardPerWeek: parseFloat(reward.rewardPerSecond) * SECONDS_IN_DAY * 7,
+    }
+  })
+
+  const tokensAndRewards: TokenAndReward[] = currentRewardsPerWeek.map(reward => {
+    return {
+      tokenAddress: reward.tokenAddress,
+      rewardUsdPerWeek: priceFor(reward.tokenAddress, chain) * reward.rewardPerWeek,
+    }
+  })
+
+  // reward tokens will always be there?
+  const tokens = currentRewardsPerWeek.map(reward =>
+    getToken(reward.tokenAddress, chain)
+  ) as GqlToken[]
+
+  const weeklyRewards = sumBy(tokensAndRewards, reward => reward.rewardUsdPerWeek)
 
   const boost = useMemo(() => {
     if (isEmpty(veBalBoostMap)) return
@@ -215,33 +109,18 @@ export default function PoolStatsOverview() {
             .times(bn(bn(myAprRaw).div(100)).div(52))
             .toFixed(2)
         ),
-        myClaimableIncentives: hasNoRewards
-          ? 'No incentives to claim'
-          : toCurrency(myClaimableIncentives),
+        myClaimableRewards: toCurrency(myClaimableRewards),
       }
     }
   }, [veBalBoostMap, pool])
 
   const poolStatsValues: PoolStatsValues | undefined = useMemo(() => {
     if (pool) {
-      const currentRewards = pool.staking?.gauge?.rewards || []
-      const currentRewardsPerWeek = currentRewards.map(reward => {
-        return {
-          ...reward,
-          rewardPerWeek: parseFloat(reward.rewardPerSecond) * SECONDS_IN_DAY * 7,
-        }
-      })
-
-      const weeklyIncentives = sumBy(
-        currentRewardsPerWeek,
-        reward => priceFor(reward.tokenAddress, chain) * reward.rewardPerWeek
-      )
-
       return {
         totalLiquidity: toCurrency(pool.dynamicData.totalLiquidity),
         fees24h: toCurrency(pool.dynamicData.fees24h),
         apr: getTotalAprLabel(pool.dynamicData.apr.items),
-        weeklyIncentives: toCurrency(weeklyIncentives),
+        weeklyRewards: toCurrency(weeklyRewards),
       }
     }
   }, [pool])
@@ -256,6 +135,12 @@ export default function PoolStatsOverview() {
       disabled: tab.value === 'myStats' && pool.userBalance?.totalBalance === '0.0',
     }))
   }, [pool])
+
+  const commonProps = {
+    showStarsIcon: !!pool.staking,
+    tokens,
+    chain,
+  }
 
   return (
     <Card h="full" position="relative" p="md">
@@ -282,10 +167,14 @@ export default function PoolStatsOverview() {
             width="70px"
           />
           {activeTab.value === 'poolStats' && (
-            <PoolStats poolStatsValues={poolStatsValues} showStarsIcon={!!pool.staking} />
+            <PoolStats {...commonProps} poolStatsValues={poolStatsValues} />
           )}
           {activeTab.value === 'myStats' && (
-            <PoolMyStats poolMyStatsValues={poolMyStatsValues} showStarsIcon={!!pool.staking} />
+            <PoolMyStats
+              {...commonProps}
+              poolMyStatsValues={poolMyStatsValues}
+              hasNoRewards={hasNoRewards}
+            />
           )}
         </VStack>
       </NoisyCard>
