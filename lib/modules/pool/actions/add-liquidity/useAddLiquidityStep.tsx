@@ -18,7 +18,7 @@ export const addLiquidityStepId = 'add-liquidity'
 export type AddLiquidityStepParams = AddLiquidityBuildQueryParams
 
 export function useAddLiquidityStep(params: AddLiquidityStepParams): TransactionStep {
-  const { pool } = usePool()
+  const { pool, refetch: refetchPoolBalances } = usePool()
   const [isStepActivated, setIsStepActivated] = useState(false)
   const { getTransaction } = useTransactionState()
 
@@ -62,6 +62,7 @@ export function useAddLiquidityStep(params: AddLiquidityStepParams): Transaction
       isComplete,
       onActivated: () => setIsStepActivated(true),
       onDeactivated: () => setIsStepActivated(false),
+      onSuccess: () => refetchPoolBalances(),
       renderAction: () => (
         <ManagedSendTransactionButton
           id={addLiquidityStepId}
