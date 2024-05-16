@@ -28,9 +28,11 @@ export function AddLiquidityReceipt({ txHash }: { txHash: Hash }) {
       <Card variant="modalSubSection">
         <ReceiptBptOut actualBptOut={receivedBptUnits} isLoading={isLoading} />
       </Card>
-      <Card variant="modalSubSection">
-        {pool.dynamicData.apr.hasRewardApr && <StakingOptions />}
-      </Card>
+      {pool.staking && (
+        <Card variant="modalSubSection">
+          <StakingOptions />
+        </Card>
+      )}
     </VStack>
   )
 }
