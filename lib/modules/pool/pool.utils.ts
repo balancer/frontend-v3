@@ -7,7 +7,7 @@ import {
   GqlPoolType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
-import { FetchPoolProps, PoolListItem, PoolVariant } from './pool.types'
+import { FetchPoolProps, PoolAction, PoolListItem, PoolVariant } from './pool.types'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { TokenAmountHumanReadable } from '../tokens/token.types'
@@ -51,6 +51,23 @@ export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlCha
  */
 export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolProps) {
   return `/pools/${chainToSlugMap[chain]}/${variant}/${id}`
+}
+
+/**
+ * Constructs path to pool action page.
+ * @param {String} id Pool ID could be ID or address depending on variant.
+ * @param {GqlChain} chain Chain enum.
+ * @param {String} variant Pool variant, defaults to v2.
+ * @param {PoolAction} action Pool action.
+ * @returns {String} Path to pool detail page.
+ */
+export function getPoolActionPath({
+  id,
+  chain,
+  variant = PoolVariant.v2,
+  action,
+}: FetchPoolProps & { action: PoolAction }) {
+  return `/pools/${chainToSlugMap[chain]}/${variant}/${id}/${action}`
 }
 
 /**

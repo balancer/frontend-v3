@@ -4,16 +4,17 @@ import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { Button, Card, Flex, HStack, Icon, Text, VStack } from '@chakra-ui/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { getAprLabel } from '../../../pool.utils'
+import { getAprLabel, getPoolActionPath } from '../../../pool.utils'
 import { usePool } from '../../../usePool'
 
 export function StakingOptions() {
   const { pool } = usePool()
-  const pathname = usePathname()
-
-  const stakePath = pathname.replace('/add-liquidity', '/stake')
   const canStake = !!pool.staking
+  const stakePath = getPoolActionPath({
+    id: pool.id,
+    chain: pool.chain,
+    action: 'stake',
+  })
 
   return (
     <>

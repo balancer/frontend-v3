@@ -49,7 +49,7 @@ export function AddLiquidityModal({
       isCentered
       {...rest}
     >
-      <FireworksOverlay startFireworks={!!addLiquidityTxHash} />
+      <FireworksOverlay startFireworks={!!addLiquidityTxHash && hasQuoteContext} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop && hasQuoteContext)}>
         {isDesktop && hasQuoteContext && (
