@@ -6,6 +6,7 @@ import {
   GqlPoolComposableStableNested,
   GqlPoolTokenDetail,
   GqlPoolType,
+  GqlBalancePoolAprSubItem,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolListItem, PoolVariant } from './pool.types'
@@ -83,7 +84,10 @@ export function getAprLabel(apr: GqlPoolAprValue, vebalBoost?: number): string {
  * @param {string} [vebalBoost] - An optional boost value for calculation.
  * @returns {string} The formatted total APR label.
  */
-export function getTotalAprLabel(aprItems: GqlBalancePoolAprItem[], vebalBoost?: string): string {
+export function getTotalAprLabel(
+  aprItems: (GqlBalancePoolAprItem | GqlBalancePoolAprSubItem)[],
+  vebalBoost?: string
+): string {
   let minTotal = '0'
   let maxTotal = '0'
   const boost = vebalBoost || 1
