@@ -28,8 +28,7 @@ import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { useClaiming } from '../../pool/actions/claim/useClaiming'
-import { formatUnits } from 'viem'
-import { BPT_DECIMALS } from '../../pool/pool.constants'
+import { isZero } from '@/lib/shared/utils/numbers'
 
 type Props = {
   isOpen: boolean
@@ -38,13 +37,9 @@ type Props = {
 }
 
 function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
-  if (reward.formattedBalance === '0') return null
+  if (isZero(reward.humanBalance)) return null
   return (
-    <TokenRow
-      address={reward.tokenAddress}
-      value={formatUnits(reward.balance, BPT_DECIMALS)}
-      chain={reward.pool.chain}
-    />
+    <TokenRow address={reward.tokenAddress} value={reward.humanBalance} chain={reward.pool.chain} />
   )
 }
 

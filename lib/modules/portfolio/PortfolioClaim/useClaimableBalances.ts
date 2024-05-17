@@ -5,15 +5,16 @@ import { AbiMap } from '../../web3/contracts/AbiMap'
 import { ClaimableBalanceResult } from '../usePortfolio'
 import { useMemo } from 'react'
 import { formatUnits, Address } from 'viem'
-import { bn, fNum } from '@/lib/shared/utils/numbers'
+import { bn } from '@/lib/shared/utils/numbers'
 import { useTokens } from '../../tokens/useTokens'
 import BigNumber from 'bignumber.js'
 import { getChainId } from '@/lib/config/app.config'
+import { HumanAmount } from '@balancer/sdk'
 
 export interface ClaimableReward {
   balance: bigint
   decimals?: number
-  formattedBalance: string
+  humanBalance: HumanAmount
   gaugeAddress: string
   pool: PoolListItem
   tokenAddress: Address
@@ -107,7 +108,7 @@ export function useClaimableBalances(pools: PoolListItem[]) {
               gaugeAddress,
               balance,
               fiatBalance,
-              formattedBalance: fNum('token', formatUnits(balance, 18)) || '0',
+              humanBalance: formatUnits(balance, 18) || '0',
               decimals: 18,
             })
           }
