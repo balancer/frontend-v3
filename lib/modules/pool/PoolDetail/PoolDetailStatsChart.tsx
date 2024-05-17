@@ -1,13 +1,13 @@
 'use client'
 
-import { Button, Grid, GridItem, HStack, Skeleton } from '@chakra-ui/react'
+import { Button, Grid, GridItem, HStack } from '@chakra-ui/react'
 import { PoolChart } from './PoolChart/PoolChart'
 import PoolStatsOverview from './PoolStatsOverview'
 import PoolMetaBadges from './PoolMetaBadges/PoolMetaBadges'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 
-export function PoolDetailStatsChart({ isLoading = false }: { isLoading?: boolean }) {
+export function PoolDetailStatsChart() {
   const pathname = usePathname()
 
   return (

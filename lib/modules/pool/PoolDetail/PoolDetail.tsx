@@ -32,7 +32,7 @@ export function PoolDetail() {
                "attributes-risks-contracts"`}
       >
         <GridItem area="stats-chart">
-          <PoolDetailStatsChart isLoading={isLoading} />
+          <PoolDetailStatsChart />
         </GridItem>
         <GridItem area="activity">
           <PoolActivityChart />
