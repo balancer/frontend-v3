@@ -1,10 +1,10 @@
 import { SupportedChainId } from '@/lib/config/config.types'
 import { isNativeAsset } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
-import { requiresDoubleApproval } from '@/lib/config/tokens.config'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 import { InputAmount } from '@balancer/sdk'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { requiresDoubleApproval } from '../token.helpers'
 
 export type TokenAmountToApprove = {
   tokenAddress: Address

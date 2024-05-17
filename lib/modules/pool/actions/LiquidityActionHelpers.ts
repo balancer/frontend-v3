@@ -152,6 +152,11 @@ export function shouldUseNestedLiquidity(pool: Pool) {
   return supportsNestedLiquidity(pool) && hasNestedPools(pool)
 }
 
+export function supportsProportionalAdds(pool: Pool) {
+  // Nested pools do not support proportional adds (addable tokens feature)
+  return !shouldUseNestedLiquidity(pool)
+}
+
 export function shouldUseRecoveryRemoveLiquidity(pool: Pool): boolean {
   // DEBUG: Uncomment following if condition to allow testing pools in recovery mode (but note paused). Examples:
   // pools/ethereum/v2/0x0da692ac0611397027c91e559cfd482c4197e4030002000000000000000005c9 (WEIGHTED)
