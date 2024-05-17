@@ -79,9 +79,9 @@ export function useClaimableBalances(pools: PoolListItem[]) {
       const balance = data.result as bigint
       if (!balance) return // Discard calls with no reward
 
-      const gaugeAddress = rewardTokensList[i].gaugeAddress
-      const tokenAddress = rewardTokensList[i].tokenAddress
       const gaugeData = rewardTokensList[i]
+      const gaugeAddress = gaugeData.gaugeAddress
+      const tokenAddress = gaugeData.tokenAddress
       const tokenPrice = priceFor(tokenAddress, gaugeData.pool.chain)
       const decimals = getToken(tokenAddress, gaugeData.pool.chain)?.decimals || BPT_DECIMALS
       const fiatBalance = tokenPrice
