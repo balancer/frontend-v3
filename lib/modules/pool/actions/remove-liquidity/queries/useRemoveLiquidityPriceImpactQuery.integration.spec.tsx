@@ -18,7 +18,13 @@ async function testQuery(humanBptIn: HumanAmount) {
     RemoveLiquidityType.Proportional
   )
   const { result } = testHook(() =>
-    useRemoveLiquidityPriceImpactQuery(handler, poolMock.id, humanBptIn, emptyTokenOut)
+    useRemoveLiquidityPriceImpactQuery({
+      handler,
+      poolId: poolMock.id,
+      humanBptIn,
+      tokenOut: emptyTokenOut,
+      enabled: true,
+    })
   )
   return result
 }
