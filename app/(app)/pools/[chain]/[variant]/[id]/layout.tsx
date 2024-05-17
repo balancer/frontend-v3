@@ -10,7 +10,7 @@ type Props = PropsWithChildren<{
 
 export default async function PoolLayout({ params: { id, chain, variant }, children }: Props) {
   return (
-    <Suspense fallback={<PoolDetail isLoading />}>
+    <Suspense fallback={<PoolDetail />}>
       <PoolLoader id={id} chain={chain} variant={variant}>
         {children}
       </PoolLoader>
