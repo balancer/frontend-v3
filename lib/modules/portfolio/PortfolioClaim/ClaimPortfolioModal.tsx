@@ -1,5 +1,4 @@
 'use client'
-import { useClaimAllRewardsSteps } from '@/lib/modules/pool/actions/claim/useClaimAllRewardsSteps'
 
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -29,6 +28,8 @@ import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { useClaiming } from '../../pool/actions/claim/useClaiming'
+import { formatUnits } from 'viem'
+import { BPT_DECIMALS } from '../../pool/pool.constants'
 
 type Props = {
   isOpen: boolean
@@ -41,7 +42,7 @@ function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }
   return (
     <TokenRow
       address={reward.tokenAddress}
-      value={reward.formattedBalance}
+      value={formatUnits(reward.balance, BPT_DECIMALS)}
       chain={reward.pool.chain}
     />
   )
