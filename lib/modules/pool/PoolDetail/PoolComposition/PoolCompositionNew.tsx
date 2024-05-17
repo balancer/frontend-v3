@@ -106,7 +106,8 @@ export function PoolComposition() {
                                 {totalLiquidity ? (
                                   fNum(
                                     'weight',
-                                    getPoolTokenWeightByBalance(totalLiquidity, poolToken, chain)
+                                    getPoolTokenWeightByBalance(totalLiquidity, poolToken, chain),
+                                    { abbreviated: false }
                                   )
                                 ) : (
                                   <Skeleton height="24px" w="75px" />
@@ -114,7 +115,7 @@ export function PoolComposition() {
                               </Heading>
                               <HStack spacing="1">
                                 <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                                  {fNum('weight', poolToken.weight || '0')}
+                                  {fNum('weight', poolToken.weight || '0', { abbreviated: false })}
                                 </Text>
                                 <Image
                                   src="/images/icons/bullseye.svg"
