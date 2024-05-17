@@ -4,7 +4,7 @@ import { TransactionStateProvider } from '@/lib/modules/transactions/transaction
 export default async function PoolPage() {
   return (
     <TransactionStateProvider>
-      <PoolDetail isLoading={false} />
+      <PoolDetail />
     </TransactionStateProvider>
   )
 }

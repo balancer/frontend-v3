@@ -1,11 +1,11 @@
 'use client'
 
-import { Grid, GridItem, Skeleton, Stack } from '@chakra-ui/react'
+import { Grid, GridItem, Stack } from '@chakra-ui/react'
 import { PoolAttributes } from './PoolAttributes/PoolAttributes'
 import { PoolContracts } from './PoolContracts/PoolContracts'
 import { PoolRisks } from './PoolRisks/PoolRisks'
 
-export function PoolDetailAttributesRisksContracts({ isLoading = false }: { isLoading?: boolean }) {
+export function PoolDetailAttributesRisksContracts() {
   return (
     <Stack w="full">
       <Grid
@@ -23,13 +23,13 @@ export function PoolDetailAttributesRisksContracts({ isLoading = false }: { isLo
         }}
       >
         <GridItem area="attributes">
-          {isLoading ? <Skeleton h="385px" w="full" /> : <PoolAttributes />}
+          <PoolAttributes />
         </GridItem>
         <GridItem area="risks">
-          {isLoading ? <Skeleton h="200px" w="full" /> : <PoolRisks />}
+          <PoolRisks />
         </GridItem>
         <GridItem area="contracts">
-          {isLoading ? <Skeleton h="100px" w="full" /> : <PoolContracts />}
+          <PoolContracts />
         </GridItem>
       </Grid>
     </Stack>
