@@ -1,17 +1,16 @@
-import { useMemo } from 'react'
-import { PoolListItem } from '../../pool/pool.types'
-import { AbiMap } from '../../web3/contracts/AbiMap'
-import { Address } from 'viem'
-import { useUserAccount } from '../../web3/useUserAccount'
-import { formatUnits } from 'viem'
-import { useMulticall } from '../../web3/contracts/useMulticall'
-import { getPoolsByGaugesMap } from '../../pool/pool.utils'
-import { ClaimableBalanceResult } from '../usePortfolio'
-import { bn, fNum } from '@/lib/shared/utils/numbers'
-import networkConfigs from '@/lib/config/networks'
-import { useTokens } from '../../tokens/useTokens'
-import BigNumber from 'bignumber.js'
 import { getChainId } from '@/lib/config/app.config'
+import networkConfigs from '@/lib/config/networks'
+import { bn } from '@/lib/shared/utils/numbers'
+import BigNumber from 'bignumber.js'
+import { useMemo } from 'react'
+import { Address, formatUnits } from 'viem'
+import { useReadContracts } from 'wagmi'
+import { BPT_DECIMALS } from '../../pool/pool.constants'
+import { PoolListItem } from '../../pool/pool.types'
+import { getPoolsByGaugesMap } from '../../pool/pool.utils'
+import { useTokens } from '../../tokens/useTokens'
+import { AbiMap } from '../../web3/contracts/AbiMap'
+import { useUserAccount } from '../../web3/useUserAccount'
 
 export interface BalTokenReward {
   balance: bigint
@@ -43,58 +42,45 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
         functionName: 'claimable_tokens',
         args: [(userAddress || '') as Address],
         chainId: getChainId(pool.chain),
-        id: `${pool.address}.${gaugeAddress}`,
       }
     }) || []
 
-  const {
-    results: balTokensQuery,
-    refetchAll,
-    isLoading,
-  } = useMulticall(balIncentivesRequests, {
-    enabled: isConnected,
+  const { data, refetch, isLoading } = useReadContracts({
+    contracts: balIncentivesRequests,
+    query: { enabled: isConnected },
   })
 
-  // Bal incentives
-  const balRewardsData = Object.values(balTokensQuery).reduce((acc: BalTokenReward[], chain) => {
-    if (!chain.data) return acc
-
-    const chainDataArr = Object.values(chain.data) as Record<Address, ClaimableBalanceResult>[]
-    chainDataArr.forEach(claimableBalance => {
-      const gaugesAddresses = Object.keys(claimableBalance) as Address[]
-
-      gaugesAddresses.forEach(gaugeAddress => {
-        const gaugeData = claimableBalance[gaugeAddress]
-        const pool = poolByGaugeMap[gaugeAddress]
-        let balance = BigInt(0)
-        if (gaugeData.status === 'success') {
-          balance = gaugeData.result
-        }
-
-        if (!balance) return
-        const balTokenAddress = networkConfigs[pool.chain].tokens.addresses.bal
-        const tokenPrice = balTokenAddress ? priceFor(balTokenAddress, pool.chain) : 0
-        const fiatBalance = tokenPrice
-          ? bn(formatUnits(balance, 18)).multipliedBy(tokenPrice)
-          : bn(0)
-
-        acc.push({
-          gaugeAddress,
-          pool,
-          balance,
-          formattedBalance: fNum('token', formatUnits(balance, 18)) || '0',
-          fiatBalance,
-          decimals: 18,
-          tokenAddress: networkConfigs[pool.chain].tokens.addresses.bal,
-        })
-      })
+  const balRewardsData = (data || [])
+    .map((data, i) => {
+      if (data.status === 'failure') return // Discard failed requests
+      const balance = data.result as bigint
+      if (!balance) return // Discard pool without claimable balance
+      const pool = pools[i]
+      const gaugeAddress = balIncentivesRequests[i].address as Address
+      const balTokenAddress = networkConfigs[pool.chain].tokens.addresses.bal
+      const tokenPrice = balTokenAddress ? priceFor(balTokenAddress, pool.chain) : 0
+      const fiatBalance = tokenPrice
+        ? bn(formatUnits(balance, BPT_DECIMALS)).multipliedBy(tokenPrice)
+        : bn(0)
+      const reward: BalTokenReward = {
+        gaugeAddress,
+        pool,
+        balance,
+        // Bal amounts always have 18 decimals
+        decimals: BPT_DECIMALS,
+        formattedBalance: formatUnits(balance, BPT_DECIMALS) || '0',
+        fiatBalance,
+        tokenAddress: networkConfigs[pool.chain].tokens.addresses.bal,
+      }
+      return reward
     })
-    return acc
-  }, [])
+    .filter(item => item !== undefined)
+
+  console.log('YUHIUUI')
 
   return {
-    balRewardsData,
-    refetchBalRewards: refetchAll,
+    balRewardsData: balRewardsData,
+    refetchBalRewards: refetch,
     isLoadingBalRewards: isLoading,
   }
 }
