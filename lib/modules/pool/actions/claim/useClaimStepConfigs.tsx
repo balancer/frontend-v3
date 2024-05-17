@@ -15,7 +15,7 @@ export function useClaimStepConfigs(pools: PoolListItem[]): StepConfig[] {
 
   let stepConfigs: StepConfig[] = [
     {
-      title: 'Claim',
+      title: 'Confirm claim',
       render: () => <ClaimAllRewardsButton pools={pools} />,
     },
   ]
