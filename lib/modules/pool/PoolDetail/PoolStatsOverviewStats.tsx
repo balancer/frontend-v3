@@ -1,21 +1,19 @@
 'use client'
 
-import React, { useMemo } from 'react'
-import { HStack, Heading, Icon, Skeleton, Text, VStack } from '@chakra-ui/react'
+import React, { memo, useMemo } from 'react'
+import { HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { TokenIconStack } from '../../tokens/TokenIconStack'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { SECONDS_IN_DAY } from '@/test/utils/numbers'
 import { sumBy } from 'lodash'
 import { useTokens } from '../../tokens/useTokens'
-import { getTotalAprLabel } from '../pool.utils'
 import { usePool } from '../usePool'
+import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 
 export type PoolStatsValues = {
   totalLiquidity: string
   fees24h: string
-  apr: string
   weeklyRewards: string
 }
 
@@ -23,6 +21,8 @@ export function PoolStats() {
   const { pool, chain } = usePool()
   const { toCurrency } = useCurrency()
   const { priceFor, getToken } = useTokens()
+
+  const MemoizedAprTooltip = memo(AprTooltip)
 
   // TODO: only uses Balancer rewards rn
   const currentRewards = pool.staking?.gauge?.rewards || []
@@ -69,14 +69,11 @@ export function PoolStats() {
         <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
           APR for LPs
         </Text>
-        {poolStatsValues ? (
-          <HStack spacing="xs">
-            <Heading size="h4">{poolStatsValues.apr}</Heading>
-            {pool.staking && <Icon as={StarsIcon} />}
-          </HStack>
-        ) : (
-          <Skeleton height="30px" w="100px" />
-        )}
+        <MemoizedAprTooltip
+          data={pool.dynamicData.apr}
+          poolId={pool.id}
+          textProps={{ fontWeight: 'medium', fontSize: '2xl', lineHeight: '28px' }}
+        />
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
         <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">

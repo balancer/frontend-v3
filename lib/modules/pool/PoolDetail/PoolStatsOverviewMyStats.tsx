@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useMemo } from 'react'
-import { Button, HStack, Heading, Icon, Skeleton, Text, Tooltip, VStack } from '@chakra-ui/react'
-import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
+import React, { memo, useMemo } from 'react'
+import { Button, HStack, Heading, Skeleton, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { TokenIconStack } from '../../tokens/TokenIconStack'
 import { GqlToken, GqlPoolMinimal } from '@/lib/shared/services/api/generated/graphql'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -12,15 +11,15 @@ import { useTokens } from '../../tokens/useTokens'
 import { useVebalBoost } from '../../vebal/useVebalBoost'
 import { useClaiming } from '../actions/claim/useClaiming'
 import { PoolListItem } from '../pool.types'
-import { getTotalAprLabel } from '../pool.utils'
+import { getTotalAprRaw } from '../pool.utils'
 import { usePool } from '../usePool'
 import { bn } from '@/lib/shared/utils/numbers'
 import { ClaimModal } from '../actions/claim/ClaimModal'
 import { Hex } from 'viem'
+import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 
 export type PoolMyStatsValues = {
   myLiquidity: number
-  myApr: string
   myPotentialWeeklyYield: string
   myClaimableRewards: number
 }
@@ -42,6 +41,8 @@ export function PoolMyStats() {
     disabledReason,
     isDisabled,
   } = useClaiming([pool] as unknown[] as PoolListItem[])
+
+  const MemoizedAprTooltip = memo(AprTooltip)
 
   // TODO: only uses Balancer rewards rn
   const claimableRewards = [...balRewards, ...nonBalRewards]
@@ -79,7 +80,6 @@ export function PoolMyStats() {
       return {
         // TODO: only uses Balancer balances rn
         myLiquidity: totalBalanceUsd,
-        myApr,
         // TODO: only uses Balancer balances rn
         myPotentialWeeklyYield: bn(stakedBalanceUsd)
           .times(bn(bn(myAprRaw).div(100)).div(52))
@@ -115,16 +115,12 @@ export function PoolMyStats() {
         <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
           My APR
         </Text>
-        {poolMyStatsValues ? (
-          <HStack spacing="xs">
-            <Heading size="h4">
-              {poolMyStatsValues.myLiquidity ? poolMyStatsValues.myApr : <>&mdash;</>}
-            </Heading>
-            {poolMyStatsValues.myLiquidity && pool.staking && <Icon as={StarsIcon} />}
-          </HStack>
-        ) : (
-          <Skeleton height="28px" w="100px" />
-        )}
+        <MemoizedAprTooltip
+          data={pool.dynamicData.apr}
+          poolId={pool.id}
+          textProps={{ fontWeight: 'medium', fontSize: '2xl', lineHeight: '28px' }}
+          vebalBoost={boost || '1'}
+        />
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
         <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
