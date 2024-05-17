@@ -55,7 +55,7 @@ export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolPr
   return `/pools/${chainToSlugMap[chain]}/${variant}/${id}`
 }
 
-// TODO: the following 2 functions (getAprLabel & getTotalAprLabel) most likely need revisiting somewhere in the near future
+// TODO: the following 2 functions (getAprLabel & getTotalAprLabel) most likely need revisiting somewhere in the near future and refactored to just one
 /**
  * Returns formatted APR value from GraphQL response.
  * @param {GqlPoolAprValue} apr APR value from GraphQL response.
