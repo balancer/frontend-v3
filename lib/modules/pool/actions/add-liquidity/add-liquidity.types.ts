@@ -1,6 +1,6 @@
 import { AddLiquidityNestedQueryOutput, AddLiquidityQueryOutput, TokenAmount } from '@balancer/sdk'
 import { Address } from 'viem'
-import { HumanAmountIn } from '../liquidity-types'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 /*
   Base interface that every handler must implement.
@@ -12,7 +12,7 @@ export interface QueryAddLiquidityOutput {
 }
 
 export interface BuildAddLiquidityInput {
-  humanAmountsIn: HumanAmountIn[]
+  humanAmountsIn: HumanTokenAmountWithAddress[]
   account: Address
   slippagePercent: string
   queryOutput: QueryAddLiquidityOutput

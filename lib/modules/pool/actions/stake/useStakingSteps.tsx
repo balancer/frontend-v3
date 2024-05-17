@@ -3,11 +3,14 @@ import { Pool } from '../../usePool'
 import { useTokenApprovalSteps } from '@/lib/modules/tokens/approvals/useTokenApprovalSteps'
 import { RawAmount } from '@/lib/modules/tokens/approvals/approval-rules'
 import { BPT_DECIMALS } from '../../pool.constants'
-import { HumanAmountIn } from '../liquidity-types'
 import { useMemo } from 'react'
 import { useStakingStep } from './useStakingStep'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
-export function useStakingSteps(pool: Pool, humanAmountToApprove: HumanAmountIn | null) {
+export function useStakingSteps(
+  pool: Pool,
+  humanAmountToApprove: HumanTokenAmountWithAddress | null
+) {
   const rawAmount = parseUnits(humanAmountToApprove?.humanAmount || '', BPT_DECIMALS)
 
   const amountToApprove: RawAmount = {

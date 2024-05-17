@@ -15,12 +15,21 @@ export type RemoveLiquiditySimulationQueryResult = ReturnType<
   typeof useRemoveLiquiditySimulationQuery
 >
 
-export function useRemoveLiquiditySimulationQuery(
-  handler: RemoveLiquidityHandler,
-  poolId: string,
-  humanBptIn: HumanAmount,
+type Params = {
+  handler: RemoveLiquidityHandler
+  poolId: string
+  humanBptIn: HumanAmount
   tokenOut: Address
-) {
+  enabled?: boolean
+}
+
+export function useRemoveLiquiditySimulationQuery({
+  handler,
+  poolId,
+  humanBptIn,
+  tokenOut,
+  enabled = true,
+}: Params) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const debouncedHumanBptIn = useDebounce(humanBptIn, defaultDebounceMs)[0]
@@ -44,7 +53,7 @@ export function useRemoveLiquiditySimulationQuery(
   const result = useQuery({
     queryKey,
     queryFn,
-    enabled: isConnected && Number(debouncedHumanBptIn) > 0,
+    enabled: enabled && isConnected && Number(debouncedHumanBptIn) > 0,
     gcTime: 0,
     meta: sentryMetaForRemoveLiquidityHandler('Error in remove liquidity simulation query', params),
     ...onlyExplicitRefetch,
