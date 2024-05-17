@@ -78,7 +78,7 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
     .filter(item => item !== undefined) as BalTokenReward[]
 
   return {
-    balRewardsData: balRewardsData,
+    balRewardsData,
     refetchBalRewards: refetch,
     isLoadingBalRewards: isLoading,
   }
