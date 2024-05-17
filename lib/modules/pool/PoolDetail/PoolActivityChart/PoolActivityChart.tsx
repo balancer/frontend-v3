@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 'use client'
 import ReactECharts from 'echarts-for-react'
-import { Box, Card, Divider, HStack, Heading, Text } from '@chakra-ui/react'
+import { Box, Card, Divider, HStack, Heading, Stack, Text } from '@chakra-ui/react'
 import { usePoolActivityChart } from './usePoolActivityChart'
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { balTheme } from '@/lib/shared/services/chakra/theme'
@@ -25,11 +25,10 @@ export function PoolActivityChart() {
 
   return (
     <Card>
-      <HStack width="full" justifyContent="space-between">
+      <Stack w="full" direction={{ base: 'column', md: 'row' }} justify="space-between">
         <Heading fontWeight="bold" size="h5">
           Transactions
         </Heading>
-
         <ButtonGroup
           currentOption={activeTab}
           options={tabsList}
@@ -39,15 +38,13 @@ export function PoolActivityChart() {
           size="xxs"
           width="70px"
         />
-      </HStack>
+      </Stack>
       {chartOption && (
         <Box>
           <ReactECharts option={chartOption} onEvents={{}} ref={eChartsRef} />
         </Box>
       )}
-
       <Divider pt="2" mb="4" />
-
       <HStack spacing="4" px={['1', '2']}>
         {legendTabs.map((tab, index) => (
           <HStack alignItems="center" key={index} gap="2">

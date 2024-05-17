@@ -99,7 +99,7 @@ export function PoolChart() {
             contentProps={COMMON_NOISY_CARD_PROPS.contentProps}
           >
             <VStack w="full" h="full" p="md">
-              <HStack w="full">
+              <Stack w="full" direction={{ base: 'column', md: 'row' }}>
                 <HStack alignSelf="flex-start">
                   <ButtonGroup
                     size="xxs"
@@ -110,7 +110,11 @@ export function PoolChart() {
                   />
                   <PeriodSelect value={activePeriod} onChange={setActivePeriod} />
                 </HStack>
-                <VStack spacing="0" alignItems="flex-end" ml="auto">
+                <VStack
+                  spacing="0"
+                  alignItems={{ base: undefined, md: 'flex-end' }}
+                  ml={{ base: undefined, md: 'auto' }}
+                >
                   <Heading fontWeight="bold" size="h5">
                     {chartValueSum}
                   </Heading>
@@ -118,7 +122,7 @@ export function PoolChart() {
                     {getActiveTabLabel()}
                   </Text>
                 </VStack>
-              </HStack>
+              </Stack>
               <Box w="full" h="full" onMouseLeave={handleMouseLeave}>
                 <ReactECharts
                   style={{ height: '100%' }}

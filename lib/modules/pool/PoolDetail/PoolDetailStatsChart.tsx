@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, Grid, GridItem, HStack } from '@chakra-ui/react'
+import { Button, Grid, GridItem, Stack } from '@chakra-ui/react'
 import { PoolChart } from './PoolChart/PoolChart'
 import PoolStatsOverview from './PoolStatsOverview'
 import PoolMetaBadges from './PoolMetaBadges/PoolMetaBadges'
@@ -19,14 +19,14 @@ export function PoolDetailStatsChart() {
       templateColumns={{ base: '1fr', md: 'repeat(4,1fr)' }}
       templateAreas={{
         base: `"meta-badges"
-                 "stats"
-                 "chart"`,
+               "stats"
+               "chart"`,
         lg: `"meta-badges meta-badges meta-badges meta-badges"
-               "stats chart chart chart"`,
+             "stats chart chart chart"`,
       }}
     >
       <GridItem area="meta-badges">
-        <HStack>
+        <Stack direction={{ base: 'column-reverse', md: 'row' }}>
           <PoolMetaBadges />
           <Button
             as={Link}
@@ -37,7 +37,7 @@ export function PoolDetailStatsChart() {
           >
             Add liquidity
           </Button>
-        </HStack>
+        </Stack>
       </GridItem>
       <GridItem area="stats">
         <PoolStatsOverview />
