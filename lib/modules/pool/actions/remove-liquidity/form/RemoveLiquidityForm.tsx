@@ -48,6 +48,7 @@ export function RemoveLiquidityForm() {
     disabledReason,
     simulationQuery,
     quoteBptIn,
+    removeLiquidityTxHash,
     setProportionalType,
     setSingleTokenType,
     setHumanBptInPercent,
@@ -86,6 +87,12 @@ export function RemoveLiquidityForm() {
       previewModalDisclosure.onClose()
     }
   }
+
+  useEffect(() => {
+    if (removeLiquidityTxHash) {
+      previewModalDisclosure.onOpen()
+    }
+  }, [removeLiquidityTxHash])
 
   return (
     <TokenBalancesProvider extTokens={validTokens}>
