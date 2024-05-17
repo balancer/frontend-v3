@@ -23,11 +23,11 @@ import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
-import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
+import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)

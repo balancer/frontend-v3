@@ -7,11 +7,11 @@ import {
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useEffect, useMemo, useState } from 'react'
-import { usePool } from '../../../usePool'
+import { usePool } from '../../usePool'
 import {
   RemoveLiquidityBuildQueryParams,
   useRemoveLiquidityBuildCallDataQuery,
-} from '../queries/useRemoveLiquidityBuildCallDataQuery'
+} from './queries/useRemoveLiquidityBuildCallDataQuery'
 
 export const removeLiquidityStepId = 'remove-liquidity'
 

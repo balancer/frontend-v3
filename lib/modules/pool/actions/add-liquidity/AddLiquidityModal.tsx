@@ -10,7 +10,7 @@ import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transacti
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
 import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
-import { AddLiquidityReceipt } from './AddLiquidityReceipt'
+import { AddLiquidityReceipt } from './modal/AddLiquidityReceipt'
 import { PoolActionModalFooter } from '../PoolActionModalFooter'
 import { AnimatePresence, motion } from 'framer-motion'
 import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'

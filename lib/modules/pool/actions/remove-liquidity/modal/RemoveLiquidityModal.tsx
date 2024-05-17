@@ -21,6 +21,9 @@ import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transacti
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { RemoveLiquidityPreview } from './RemoveLiquidityPreview'
+import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
+import { TransactionModalHeader } from '../../PoolActionModalHeader'
+import { AnimatePresence, motion } from 'framer-motion'
 
 type Props = {
   isOpen: boolean
@@ -37,7 +40,7 @@ export function RemoveLiquidityModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps } = useRemoveLiquidity()
+  const { transactionSteps, removeLiquidityTxHash, hasQuoteContext } = useRemoveLiquidity()
   const { pool } = usePool()
 
   return (
@@ -49,19 +52,45 @@ export function RemoveLiquidityModal({
       isCentered
       {...rest}
     >
-      <ModalOverlay />
+      <FireworksOverlay startFireworks={!!removeLiquidityTxHash && hasQuoteContext} />
+
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
-        {isDesktop && <DesktopStepTracker transactionSteps={transactionSteps} chain={pool.chain} />}
-        <ModalHeader>
-          <HStack justify="space-between" w="full" pr="lg">
-            <span>Remove liquidity</span>
-            <RemoveLiquidityTimeout />
-          </HStack>
-        </ModalHeader>
+        {isDesktop && hasQuoteContext && (
+          <DesktopStepTracker transactionSteps={transactionSteps} chain={pool.chain} />
+        )}
+
+        <TransactionModalHeader
+          label="Remove liquidity"
+          timeout={<RemoveLiquidityTimeout />}
+          txHash={removeLiquidityTxHash}
+          chain={pool.chain}
+        />
 
         <ModalCloseButton />
         <ModalBody>
-          <RemoveLiquidityPreview />
+          <AnimatePresence mode="wait" initial={false}>
+            {removeLiquidityTxHash ? (
+              <motion.div
+                key="receipt"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+              >
+                {/* <AddLiquidityReceipt txHash={removeLiquidityTxHash} /> */}
+              </motion.div>
+            ) : (
+              <motion.div
+                key="preview"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+              >
+                <RemoveLiquidityPreview />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </ModalBody>
         <ModalFooter>
           <VStack w="full">{transactionSteps.currentStep?.renderAction()}</VStack>

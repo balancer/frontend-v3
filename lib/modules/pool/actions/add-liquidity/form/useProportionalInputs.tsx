@@ -13,7 +13,7 @@ import { usePool } from '../../../usePool'
 import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
 import { HumanAmountIn } from '../../liquidity-types'
 import { useAddLiquidity } from '../useAddLiquidity'
-import { useTotalUsdValue } from '../useTotalUsdValue'
+import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 
 type OptimalToken = {
   tokenAddress: Address

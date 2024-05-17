@@ -5,16 +5,19 @@ import { usePool } from '../../usePool'
 import { ReceiptBptOut } from './modal/BptOut'
 import { StakingOptions } from './modal/StakingOptions'
 import { ReceiptTokensIn } from './modal/TokensIn'
-import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
+import {
+  useAddLiquidityReceipt,
+  useRemoveLiquidityReceipt,
+} from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
 import { Hash } from 'viem'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { isVebalPool } from '../../pool.helpers'
 import { VebalRedirectModal } from '@/lib/modules/vebal/VebalRedirectModal'
 
-export function AddLiquidityReceipt({ txHash }: { txHash: Hash }) {
+export function RemoveLiquidityReceipt({ txHash }: { txHash: Hash }) {
   const { pool } = usePool()
   const { userAddress, isLoading: isUserAddressLoading } = useUserAccount()
-  const { isLoading, error, sentTokens, receivedBptUnits } = useAddLiquidityReceipt({
+  const { isLoading, error, receivedTokens, sentBptUnits } = useRemoveLiquidityReceipt({
     txHash,
     userAddress,
   })
