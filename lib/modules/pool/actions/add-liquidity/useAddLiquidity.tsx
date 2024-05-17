@@ -10,7 +10,6 @@ import { Address, Hash } from 'viem'
 import { usePool } from '../../usePool'
 import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulationQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
-import { HumanAmountIn } from '../liquidity-types'
 import {
   LiquidityActionHelpers,
   areEmptyAmounts,
@@ -64,7 +63,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
         ({
           tokenAddress: token.address,
           humanAmount: '',
-        } as HumanAmountIn)
+        } as HumanTokenAmountWithAddress)
     )
     setHumanAmountsIn(amountsIn)
   }

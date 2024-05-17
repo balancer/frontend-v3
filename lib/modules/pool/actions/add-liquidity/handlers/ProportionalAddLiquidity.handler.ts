@@ -11,9 +11,9 @@ import {
 } from '@balancer/sdk'
 import { Pool } from '../../../usePool'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
-import { HumanAmountIn } from '../../liquidity-types'
 import { SdkBuildAddLiquidityInput, SdkQueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 /**
  * ProportionalAddLiquidityHandler is a handler that implements the
@@ -33,7 +33,9 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
     return 0 // Proportional joins don't have price impact
   }
 
-  public async simulate(humanAmountsIn: HumanAmountIn[]): Promise<SdkQueryAddLiquidityOutput> {
+  public async simulate(
+    humanAmountsIn: HumanTokenAmountWithAddress[]
+  ): Promise<SdkQueryAddLiquidityOutput> {
     // This is an edge-case scenario where the user only enters one humanAmount (that we always move to the first position of the humanAmountsIn array)
     const humanAmountIn = this.helpers.toInputAmounts(humanAmountsIn)[0]
 
@@ -79,7 +81,7 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
    * PRIVATE METHODS
    */
   private constructSdkInput(
-    humanAmountsIn: HumanAmountIn[],
+    humanAmountsIn: HumanTokenAmountWithAddress[],
     bptOut: InputAmount
   ): AddLiquidityProportionalInput {
     return {

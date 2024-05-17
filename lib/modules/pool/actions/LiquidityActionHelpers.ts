@@ -21,12 +21,12 @@ import { Hex, formatUnits, parseUnits, Address } from 'viem'
 import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
 import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
 import { Pool } from '../usePool'
-import { HumanAmountIn } from './liquidity-types'
 import {
   isNativeAsset,
   isWrappedNativeAsset,
   swapNativeWithWrappedNative,
 } from '../../tokens/token.helpers'
+import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -67,7 +67,9 @@ export class LiquidityActionHelpers {
     return getChainId(this.pool.chain)
   }
 
-  public getAmountsToApprove(humanAmountsIn: HumanAmountIn[]): TokenAmountToApprove[] {
+  public getAmountsToApprove(
+    humanAmountsIn: HumanTokenAmountWithAddress[]
+  ): TokenAmountToApprove[] {
     return this.toInputAmounts(humanAmountsIn).map(({ address, rawAmount }) => {
       return {
         tokenAddress: address,
@@ -77,7 +79,7 @@ export class LiquidityActionHelpers {
     })
   }
 
-  public toInputAmounts(humanAmountsIn: HumanAmountIn[]): InputAmount[] {
+  public toInputAmounts(humanAmountsIn: HumanTokenAmountWithAddress[]): InputAmount[] {
     if (!humanAmountsIn.length) return []
 
     const amountsInList: InputAmount[] = this.pool.allTokens.map(t => {
@@ -109,19 +111,20 @@ export class LiquidityActionHelpers {
     return Object.values(amountsInByTokenAddress).filter(a => a.rawAmount > 0n)
   }
 
-  public isNativeAssetIn(humanAmountsIn: HumanAmountIn[]): boolean {
+  public isNativeAssetIn(humanAmountsIn: HumanTokenAmountWithAddress[]): boolean {
     const nativeAssetAddress = this.networkConfig.tokens.nativeAsset.address
 
     return humanAmountsIn.some(amountIn => isSameAddress(amountIn.tokenAddress, nativeAssetAddress))
   }
 }
 
-export const isEmptyAmount = (amountIn: HumanAmountIn) => isEmptyHumanAmount(amountIn.humanAmount)
+export const isEmptyAmount = (amountIn: HumanTokenAmountWithAddress) =>
+  isEmptyHumanAmount(amountIn.humanAmount)
 
 export const isEmptyHumanAmount = (humanAmount: HumanAmount | '') =>
   !humanAmount || bn(humanAmount).eq(0)
 
-export const areEmptyAmounts = (humanAmountsIn: HumanAmountIn[]) =>
+export const areEmptyAmounts = (humanAmountsIn: HumanTokenAmountWithAddress[]) =>
   !humanAmountsIn || humanAmountsIn.length === 0 || humanAmountsIn.every(isEmptyAmount)
 
 export function toHumanAmount(tokenAmount: TokenAmount): HumanAmount {
@@ -207,13 +210,13 @@ export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
  * - is native and the wrapped native token is already in the array and
  * - is wrapped native and the native token is already in the array
  *
- * @param {HumanAmountIn[]} humanAmountsIn - The array of human amounts to filter.
+ * @param {HumanAmoHumanTokenAmountWithAddressuntIn[]} humanAmountsIn - The array of human amounts to filter.
  * @param {Address} tokenAddress - The token address to compare against.
  * @param {GqlChain} chain - The chain type for comparison.
- * @return {HumanAmountIn[]} The filtered array of human amounts.
+ * @return {HumanTokenAmountWithAddress[]} The filtered array of human amounts.
  */
 export function filterHumanAmountsIn(
-  humanAmountsIn: HumanAmountIn[],
+  humanAmountsIn: HumanTokenAmountWithAddress[],
   tokenAddress: Address,
   chain: GqlChain
 ) {

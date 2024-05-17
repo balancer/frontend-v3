@@ -3,9 +3,9 @@ import networkConfig from '@/lib/config/networks/mainnet'
 import { balAddress, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
-import { HumanAmountIn } from '../../liquidity-types'
 import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 function selectUnbalancedHandler() {
   return selectAddLiquidityHandler(aWjAuraWethPoolElementMock()) as UnbalancedAddLiquidityHandler
@@ -15,7 +15,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
   test('calculates price impact', async () => {
     const handler = selectUnbalancedHandler()
 
-    const humanAmountsIn: HumanAmountIn[] = [
+    const humanAmountsIn: HumanTokenAmountWithAddress[] = [
       { humanAmount: '1', tokenAddress: wETHAddress },
       { humanAmount: '1', tokenAddress: wjAuraAddress },
     ]
@@ -27,7 +27,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
   test('returns zero price impact when amounts in are zero or empty', async () => {
     const handler = selectUnbalancedHandler()
 
-    const humanAmountsIn: HumanAmountIn[] = [
+    const humanAmountsIn: HumanTokenAmountWithAddress[] = [
       { humanAmount: '0', tokenAddress: wETHAddress },
       { humanAmount: '', tokenAddress: balAddress },
     ]
@@ -38,7 +38,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
   })
 
   test('queries bptOut', async () => {
-    const humanAmountsIn: HumanAmountIn[] = [
+    const humanAmountsIn: HumanTokenAmountWithAddress[] = [
       { humanAmount: '1', tokenAddress: wETHAddress },
       { humanAmount: '1', tokenAddress: wjAuraAddress },
     ]
@@ -51,7 +51,7 @@ describe('When adding unbalanced liquidity for a weighted  pool', () => {
   })
 
   test('builds Tx Config', async () => {
-    const humanAmountsIn: HumanAmountIn[] = [
+    const humanAmountsIn: HumanTokenAmountWithAddress[] = [
       { humanAmount: '1', tokenAddress: wETHAddress },
       { humanAmount: '1', tokenAddress: wjAuraAddress },
     ]
