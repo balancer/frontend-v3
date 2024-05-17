@@ -1,50 +1,52 @@
 'use client'
 
-import { Grid, GridItem, Skeleton, Stack, VStack } from '@chakra-ui/react'
+import { Grid, GridItem, Skeleton, Stack } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
-import PoolStats from './PoolStats'
-import PoolMyLiquidity from './PoolMyLiquidity'
-import PoolIncentives from './PoolIncentives'
-import PoolMetaBadges from './PoolMetaBadges/PoolMetaBadges'
-import { PoolChart } from './PoolChart/PoolChart'
 import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
-import { PoolAttributes } from './PoolAttributes/PoolAttributes'
-import { PoolRisks } from './PoolRisks/PoolRisks'
-import { PoolContracts } from './PoolContracts/PoolContracts'
+import { PoolDetailStatsChart } from './PoolDetailStatsChart'
+import { PoolDetailAttributesRisksContracts } from './PoolDetailAttributesRisksContracts'
+import { usePool } from '../usePool'
+import PoolMyLiquidity from './PoolMyLiquidity'
+import { useEffect, useState } from 'react'
 
 export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
+  const { isLoading: isLoadingPool, pool } = usePool()
+  const [showMyLiquidity, setShowMyLiquidity] = useState(false)
+
+  useEffect(() => {
+    if (!isLoadingPool && pool.userBalance?.totalBalance !== '0') {
+      setShowMyLiquidity(true)
+    }
+  }, [isLoadingPool])
+
   return (
-    <Stack width="full">
-      <Grid width="full" rowGap="xl" columnGap="md" templateColumns="1fr 1fr">
-        <GridItem colSpan={2}>
-          <VStack alignItems="flex-start" spacing="md">
-            {isLoading ? <Skeleton h="42px" w="sm" /> : <PoolMetaBadges />}
-            {isLoading ? <Skeleton h="400px" w="full" /> : <PoolStats />}
-          </VStack>
+    <Stack w="full">
+      <Grid
+        w="full"
+        rowGap={{ base: 'md', md: '2xl' }}
+        templateColumns="1fr"
+        templateAreas={`"stats-chart"
+               "activity"
+               "composition"
+               ${showMyLiquidity ? '"my-liquidity"' : ''}
+               "attributes-risks-contracts"`}
+      >
+        <GridItem area="stats-chart">
+          <PoolDetailStatsChart isLoading={isLoading} />
         </GridItem>
-        <GridItem colSpan={2}>
-          {isLoading ? <Skeleton h="370px" w="full" /> : <PoolMyLiquidity />}
-        </GridItem>
-        <GridItem colSpan={2}>
-          {isLoading ? <Skeleton h="84px" w="full" /> : <PoolIncentives />}
-        </GridItem>
-        <GridItem colSpan={{ base: 2, md: 1 }}>
-          {isLoading ? <Skeleton h="385px" w="full" /> : <PoolComposition />}
-        </GridItem>
-        <GridItem colSpan={{ base: 2, md: 1 }}>
-          {isLoading ? <Skeleton h="385px" w="full" /> : <PoolChart />}
-        </GridItem>
-        <GridItem colSpan={2}>
+        <GridItem area="activity">
           {isLoading ? <Skeleton h="385px" w="full" /> : <PoolActivityChart />}
         </GridItem>
-        <GridItem colSpan={{ base: 2, sm: 1 }}>
-          {isLoading ? <Skeleton h="385px" w="full" /> : <PoolAttributes />}
+        <GridItem area="composition">
+          {isLoading ? <Skeleton h="385px" w="full" /> : <PoolComposition />}
         </GridItem>
-        <GridItem colSpan={{ base: 2, sm: 1 }}>
-          <VStack spacing="md" minH="full">
-            {isLoading ? <Skeleton h="200px" w="full" /> : <PoolRisks />}
-            {isLoading ? <Skeleton h="100px" w="full" /> : <PoolContracts />}
-          </VStack>
+        {showMyLiquidity && (
+          <GridItem area="my-liquidity">
+            <PoolMyLiquidity />
+          </GridItem>
+        )}
+        <GridItem area="attributes-risks-contracts">
+          <PoolDetailAttributesRisksContracts isLoading={isLoading} />
         </GridItem>
       </Grid>
     </Stack>
