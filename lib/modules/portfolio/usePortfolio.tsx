@@ -56,6 +56,7 @@ function _usePortfolio() {
         chainIn: getProjectConfig().supportedNetworks,
       },
     },
+    fetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
     skip: !isConnected || !userAddress,
   })

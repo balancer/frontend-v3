@@ -1,36 +1,33 @@
 import { Box, VStack } from '@chakra-ui/react'
-import { useCurrentFlowStep } from '../useCurrentFlowStep'
 import { Step } from './Step'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
+import { TransactionStepsResponse } from '../useTransactionSteps'
 
-type StepsProps = {
-  currentIndex: number
-  steps: { title: string }[]
+type Props = {
+  transactionSteps: TransactionStepsResponse
 }
 
-export function Steps({ currentIndex, steps }: StepsProps) {
-  const { flowStep } = useCurrentFlowStep()
+export function Steps({ transactionSteps }: Props) {
+  const { steps, currentStepIndex, isLastStep } = transactionSteps
   const colorMode = useThemeColorMode()
-
-  const isLastStep = (index: number) => index === steps.length - 1
 
   return (
     <VStack align="start" spacing="xs">
-      {steps.map((step, index) => (
-        <div key={step.title}>
-          <Step
-            currentIndex={currentIndex}
-            index={index}
-            step={step}
-            colorMode={colorMode}
-            flowStep={flowStep}
-            isLastStep={isLastStep(index)}
-          />
-          {!isLastStep(index) && (
-            <Box h="4" w="1" rounded="full" background="border.base" ml="3" mt="1" />
-          )}
-        </div>
-      ))}
+      {steps &&
+        steps.map((step, index) => (
+          <div key={step.id}>
+            <Step
+              currentIndex={currentStepIndex}
+              index={index}
+              step={step}
+              colorMode={colorMode}
+              isLastStep={isLastStep(index)}
+            />
+            {!isLastStep(index) && (
+              <Box h="4" w="1" rounded="full" background="border.base" ml="3" mt="1" />
+            )}
+          </div>
+        ))}
     </VStack>
   )
 }

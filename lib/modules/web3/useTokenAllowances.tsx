@@ -3,6 +3,7 @@ import { Address, ReadContractParameters, erc20Abi } from 'viem'
 import { useReadContracts } from 'wagmi'
 import { Erc20Abi } from './contracts/contract.types'
 import { SupportedChainId } from '@/lib/config/config.types'
+import { useCallback, useMemo } from 'react'
 
 export type TokenAllowances = Record<Address, bigint>
 
@@ -37,12 +38,18 @@ export function useTokenAllowances({
     query: { enabled: !!spenderAddress && !!userAddress },
   })
 
-  const allowancesByTokenAddress = result.data ? zipObject(tokenAddresses, result.data) : {}
+  const allowancesByTokenAddress = useMemo(
+    () => (result.data ? zipObject(tokenAddresses, result.data) : {}),
+    [result.data, tokenAddresses]
+  )
 
-  function allowanceFor(tokenAddress: Address): bigint {
-    // We don't need isSameAddress cause we use the same tokensAddresses source
-    return allowancesByTokenAddress[tokenAddress] ?? 0n
-  }
+  const allowanceFor = useCallback(
+    (tokenAddress: Address): bigint => {
+      // We don't need isSameAddress cause we use the same tokensAddresses source
+      return allowancesByTokenAddress[tokenAddress] ?? 0n
+    },
+    [allowancesByTokenAddress]
+  )
 
   return {
     isAllowancesLoading: result.isLoading,

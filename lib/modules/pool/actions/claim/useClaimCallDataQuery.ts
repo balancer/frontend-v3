@@ -6,7 +6,8 @@ export function useClaimCallDataQuery(
   gaugeAddresses: Address[],
   gaugeService: GaugeService | undefined,
   hasPendingNonBalRewards: boolean,
-  hasPendingBalRewards: boolean
+  hasPendingBalRewards: boolean,
+  enabled = true
 ) {
   const inputData = {
     hasPendingNonBalRewards,
@@ -21,7 +22,7 @@ export function useClaimCallDataQuery(
   const query = useQuery({
     queryKey,
     queryFn,
-    enabled: gaugeService && gaugeAddresses.length > 0,
+    enabled: enabled && gaugeService && gaugeAddresses.length > 0,
   })
 
   return {

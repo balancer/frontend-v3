@@ -6,13 +6,8 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useEffect, useState } from 'react'
-import { Abi, ContractFunctionArgs, ContractFunctionName } from 'viem'
-import {
-  UseSimulateContractParameters,
-  useSimulateContract,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from 'wagmi'
+import { Abi, Address, ContractFunctionArgs, ContractFunctionName } from 'viem'
+import { useSimulateContract, useWaitForTransactionReceipt, useWriteContract } from 'wagmi'
 import { useChainSwitch } from '../useChainSwitch'
 import { AbiMap } from './AbiMap'
 import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
@@ -20,39 +15,44 @@ import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 
-export function useManagedTransaction<
-  T extends typeof AbiMap,
-  M extends keyof typeof AbiMap,
-  F extends ContractFunctionName<T[M], WriteAbiMutability>
->(
-  contractAddress: string,
-  contractId: M,
-  functionName: F,
-  transactionLabels: TransactionLabels,
-  chainId: SupportedChainId,
-  args?: ContractFunctionArgs<T[M], WriteAbiMutability> | null,
-  additionalConfig?: Omit<
-    UseSimulateContractParameters<T[M], F>,
-    'abi' | 'address' | 'functionName' | 'args'
-  >
-) {
+type IAbiMap = typeof AbiMap
+type AbiMapKey = keyof typeof AbiMap
+
+export interface ManagedTransactionInput {
+  contractAddress: string
+  contractId: AbiMapKey
+  functionName: ContractFunctionName<IAbiMap[AbiMapKey], WriteAbiMutability>
+  labels: TransactionLabels
+  chainId: SupportedChainId
+  args?: ContractFunctionArgs<IAbiMap[AbiMapKey], WriteAbiMutability> | null
+  txSimulationMeta?: Record<string, unknown>
+  enabled: boolean
+}
+
+export function useManagedTransaction({
+  contractAddress,
+  contractId,
+  functionName,
+  labels,
+  chainId,
+  args,
+  txSimulationMeta,
+  enabled = true,
+}: ManagedTransactionInput) {
   const [writeArgs, setWriteArgs] = useState(args)
   const { minConfirmations } = useNetworkConfig()
   const { shouldChangeNetwork } = useChainSwitch(chainId)
 
-  const enabled = additionalConfig?.query?.enabled ?? true
-
   const simulateQuery = useSimulateContract({
     abi: AbiMap[contractId] as Abi,
-    address: contractAddress,
+    address: contractAddress as Address,
     functionName: functionName as ContractFunctionName<any, WriteAbiMutability>,
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
     args: writeArgs as any,
-    ...(additionalConfig as any),
     chainId,
     query: {
       enabled: enabled && !shouldChangeNetwork,
-      meta: additionalConfig?.query?.meta,
+      meta: txSimulationMeta,
     },
   })
 
@@ -63,6 +63,7 @@ export function useManagedTransaction<
     hash: writeQuery.data,
     confirmations: minConfirmations,
   })
+
   const bundle = {
     chainId,
     simulation: simulateQuery as TransactionSimulation,
@@ -72,14 +73,14 @@ export function useManagedTransaction<
 
   // on successful submission to chain, add tx to cache
   useOnTransactionSubmission({
-    labels: transactionLabels,
+    labels,
     hash: writeQuery.data,
     chain: getGqlChain(chainId as SupportedChainId),
   })
 
   // on confirmation, update tx in tx cache
   useOnTransactionConfirmation({
-    labels: transactionLabels,
+    labels,
     status: bundle.result.data?.status,
     hash: bundle.result.data?.transactionHash,
   })
@@ -90,7 +91,9 @@ export function useManagedTransaction<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(args)])
 
-  const managedWriteAsync = async (args?: ContractFunctionArgs<T[M], WriteAbiMutability>) => {
+  const managedWriteAsync = async (
+    args?: ContractFunctionArgs<IAbiMap[AbiMapKey], WriteAbiMutability>
+  ) => {
     if (args) {
       setWriteArgs(args)
     }

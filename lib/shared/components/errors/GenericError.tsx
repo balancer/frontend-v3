@@ -5,13 +5,17 @@ import { ErrorAlert } from './ErrorAlert'
 import { isUserRejectedError } from '../../utils/error-filters'
 
 type ErrorWithOptionalShortMessage = Error & { shortMessage?: string }
-type Props = AlertProps & { error: ErrorWithOptionalShortMessage }
+type Props = AlertProps & {
+  error: ErrorWithOptionalShortMessage
+  customErrorName?: string
+}
 
-export function GenericError({ error, ...rest }: Props) {
+export function GenericError({ error, customErrorName, ...rest }: Props) {
   if (isUserRejectedError(error)) return null
+  const errorName = customErrorName ? `${customErrorName} (${error.name})` : error.name
   const errorMessage = error?.shortMessage || error.message
   return (
-    <ErrorAlert title={error.name} {...rest}>
+    <ErrorAlert title={errorName} {...rest}>
       <Text color="font.maxContrast" variant="secondary">
         Error details: {errorMessage}
       </Text>

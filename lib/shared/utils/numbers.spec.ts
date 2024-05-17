@@ -45,8 +45,9 @@ describe('tokenFormat', () => {
     expect(fNum('token', '10.1234')).toBe('10.1234')
     expect(fNum('token', '100')).toBe('100')
     expect(fNum('token', '123.456')).toBe('123.456')
-    expect(fNum('token', '12345')).toBe('12.345k')
-    expect(fNum('token', '123456789.12345678')).toBe('123.4568m')
+    expect(fNum('token', '12345')).toBe('12.35k')
+    expect(fNum('token', '2157.12345')).toBe('2.16k')
+    expect(fNum('token', '123456789.12345678')).toBe('123.46m')
   })
 
   test('Non-abbreviated formats', () => {

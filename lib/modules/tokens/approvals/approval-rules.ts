@@ -1,10 +1,10 @@
 import { SupportedChainId } from '@/lib/config/config.types'
 import { isNativeAsset } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
-import { requiresDoubleApproval } from '@/lib/config/tokens.config'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 import { InputAmount } from '@balancer/sdk'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { requiresDoubleApproval } from '../token.helpers'
 
 export type TokenAmountToApprove = {
   tokenAddress: Address
@@ -45,13 +45,9 @@ export function getRequiredTokenApprovals({
     }
   })
 
-  tokenAmountsToApprove = tokenAmountsToApprove.filter(({ tokenAddress, requiredRawAmount }) => {
-    if (isNativeAsset(chainId, tokenAddress)) return false
-
-    const hasEnoughAllowedAmount = allowanceFor(tokenAddress) >= requiredRawAmount
-    if (hasEnoughAllowedAmount) return false
-    return true
-  })
+  tokenAmountsToApprove = tokenAmountsToApprove.filter(
+    ({ tokenAddress }) => !isNativeAsset(chainId, tokenAddress)
+  )
 
   /**
    * Some tokens (e.g. USDT) require setting their approval amount to 0n before being

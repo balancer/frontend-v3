@@ -1,13 +1,8 @@
 import { GqlPoolStaking } from '@/lib/shared/services/api/generated/graphql'
-import { useManagedTransaction } from '@/lib/modules/web3/contracts/useManagedTransaction'
-import { TransactionLabels, FlowStep } from '@/lib/modules/transactions/transaction-steps/lib'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { Address } from 'viem'
-import { SupportedChainId } from '@/lib/config/config.types'
-import { useSyncCurrentFlowStep } from '../transactions/transaction-steps/useCurrentFlowStep'
-import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 
-function buildStakingDepositLabels(staking?: GqlPoolStaking | null): TransactionLabels {
+export function buildStakingDepositLabels(staking?: GqlPoolStaking | null): TransactionLabels {
   const labels: TransactionLabels = {
     init: 'Stake',
     confirming: 'Confirming...',
@@ -17,17 +12,7 @@ function buildStakingDepositLabels(staking?: GqlPoolStaking | null): Transaction
   return labels
 }
 
-function buildStakingWithdrawLabels(staking?: GqlPoolStaking | null): TransactionLabels {
-  const labels: TransactionLabels = {
-    init: 'Unstake',
-    confirming: 'Confirming...',
-    confirmed: `BPT withdrawn from  ${staking?.type}!`,
-    tooltip: 'TODO WITHDRAW TOOLTIP',
-  }
-  return labels
-}
-
-function getStakingConfig(
+export function getStakingConfig(
   staking?: GqlPoolStaking | null,
   amount?: bigint,
   userAddress?: Address
@@ -56,91 +41,4 @@ function getStakingConfig(
         }
     }
   }
-}
-
-export function useConstructStakingDepositActionStep(
-  chainId: SupportedChainId,
-  staking?: GqlPoolStaking | null,
-  depositAmount?: bigint
-): FlowStep {
-  const transactionLabels = buildStakingDepositLabels(staking)
-  const { userAddress } = useUserAccount()
-  const stakingConfig = getStakingConfig(staking, depositAmount, userAddress)
-
-  const deposit = useManagedTransaction(
-    stakingConfig?.contractAddress || '',
-    stakingConfig?.contractId,
-    'deposit',
-    transactionLabels,
-    chainId,
-    stakingConfig?.args,
-    {
-      query: {
-        enabled: !!staking || !!depositAmount,
-        meta: sentryMetaForWagmiSimulation(
-          'Error in wagmi tx simulation (Staking deposit transaction)',
-          {
-            chainId,
-            userAddress,
-            staking,
-            depositAmount,
-            stakingConfig,
-          }
-        ),
-      },
-    }
-  )
-
-  const step = useSyncCurrentFlowStep({
-    ...deposit,
-    id: `${staking?.type}-deposit`,
-    stepType: 'stakingDeposit',
-    transactionLabels,
-    isComplete: () => deposit.result.isSuccess,
-  })
-
-  return step
-}
-
-export function useConstructStakingWithdrawActionStep(
-  chainId: SupportedChainId,
-  staking?: GqlPoolStaking | null,
-  withdrawAmount?: bigint
-): FlowStep {
-  const transactionLabels = buildStakingWithdrawLabels(staking)
-  const { userAddress } = useUserAccount()
-  const stakingConfig = getStakingConfig(staking, withdrawAmount, userAddress)
-
-  const withdraw = useManagedTransaction(
-    stakingConfig?.contractAddress || '',
-    stakingConfig?.contractId,
-    'withdraw',
-    transactionLabels,
-    chainId,
-    stakingConfig?.args,
-    {
-      query: {
-        enabled: !!staking || !!withdrawAmount,
-        meta: sentryMetaForWagmiSimulation(
-          'Error in wagmi tx simulation (Staking withdraw transaction)',
-          {
-            chainId,
-            userAddress,
-            staking,
-            withdrawAmount,
-            stakingConfig,
-          }
-        ),
-      },
-    }
-  )
-
-  const step = useSyncCurrentFlowStep({
-    ...withdraw,
-    id: `${staking?.type}-withdraw`,
-    stepType: 'stakingWithdraw',
-    transactionLabels,
-    isComplete: () => withdraw.result.isSuccess,
-  })
-  return step
 }

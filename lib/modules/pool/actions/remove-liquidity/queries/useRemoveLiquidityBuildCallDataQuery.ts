@@ -5,31 +5,51 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useQuery } from '@tanstack/react-query'
 import { RemoveLiquidityParams, removeLiquidityKeys } from './remove-liquidity-keys'
 import { ensureLastQueryResponse } from '../../LiquidityActionHelpers'
-import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
+import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { usePool } from '../../../usePool'
-import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useRelayerSignature } from '@/lib/modules/relayer/useRelayerSignature'
 import { sentryMetaForRemoveLiquidityHandler } from '@/lib/shared/utils/query-errors'
+import { HumanAmount } from '@balancer/sdk'
+import { RemoveLiquidityHandler } from '../handlers/RemoveLiquidity.handler'
+import { Address } from 'viem/accounts'
+import { RemoveLiquiditySimulationQueryResult } from './useRemoveLiquiditySimulationQuery'
+import { useDebounce } from 'use-debounce'
 
 export type RemoveLiquidityBuildQueryResponse = ReturnType<
   typeof useRemoveLiquidityBuildCallDataQuery
 >
 
+export type RemoveLiquidityBuildQueryParams = {
+  humanBptIn: HumanAmount
+  handler: RemoveLiquidityHandler
+  simulationQuery: RemoveLiquiditySimulationQueryResult
+  singleTokenOutAddress: Address
+  wethIsEth: boolean
+}
+
 // Queries the SDK to create a transaction config to be used by wagmi's useManagedSendTransaction
-export function useRemoveLiquidityBuildCallDataQuery() {
+export function useRemoveLiquidityBuildCallDataQuery({
+  humanBptIn,
+  handler,
+  simulationQuery,
+  singleTokenOutAddress,
+  wethIsEth,
+  enabled,
+}: RemoveLiquidityBuildQueryParams & {
+  enabled: boolean
+}) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const { pool } = usePool()
-  const { humanBptIn, handler, simulationQuery, singleTokenOutAddress, wethIsEth } =
-    useRemoveLiquidity()
   const { relayerApprovalSignature } = useRelayerSignature()
+  const debouncedHumanBptIn = useDebounce(humanBptIn, defaultDebounceMs)[0]
 
   const params: RemoveLiquidityParams = {
     handler,
     userAddress,
     slippage,
     poolId: pool.id,
-    humanBptIn,
+    humanBptIn: debouncedHumanBptIn,
     tokenOut: singleTokenOutAddress, // only required by SingleToken removal
     wethIsEth, // only required by SingleToken removal
   }
@@ -53,7 +73,7 @@ export function useRemoveLiquidityBuildCallDataQuery() {
   return useQuery({
     queryKey,
     queryFn,
-    enabled: isConnected && !!simulationQuery.data,
+    enabled: enabled && isConnected && !!simulationQuery.data,
     gcTime: 0,
     meta: sentryMetaForRemoveLiquidityHandler(
       'Error in remove liquidity buildCallData query',

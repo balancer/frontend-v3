@@ -27,7 +27,7 @@ export default function TokenInputPage() {
   return (
     <TokenInputsValidationProvider>
       <PriceImpactProvider>
-        <TokenBalancesProvider tokens={tokens}>
+        <TokenBalancesProvider extTokens={tokens}>
           <VStack width="sm" align="start" p="md">
             <Heading>Token Input</Heading>
             <Text>Current value: {currentValue}</Text>
