@@ -20,35 +20,33 @@ export function PoolDetail() {
   }, [isLoading])
 
   return (
-    <Stack w="full">
-      <Grid
-        w="full"
-        rowGap={{ base: 'md', md: '2xl' }}
-        templateColumns="1fr"
-        templateAreas={`"stats-chart"
-               "activity"
-               "composition"
-               ${showMyLiquidity ? '"my-liquidity"' : ''}
-               "attributes-risks-contracts"`}
-      >
-        <GridItem area="stats-chart">
-          <PoolDetailStatsChart />
+    <Grid
+      w="full"
+      rowGap={{ base: 'md', md: '2xl' }}
+      templateColumns="1fr"
+      templateAreas={`"stats-chart"
+                      "activity"
+                      "composition"
+                      ${showMyLiquidity ? '"my-liquidity"' : ''}
+                      "attributes-risks-contracts"`}
+    >
+      <GridItem area="stats-chart">
+        <PoolDetailStatsChart />
+      </GridItem>
+      <GridItem area="activity">
+        <PoolActivityChart />
+      </GridItem>
+      <GridItem area="composition">
+        <PoolComposition />
+      </GridItem>
+      {showMyLiquidity && (
+        <GridItem area="my-liquidity">
+          <PoolMyLiquidity />
         </GridItem>
-        <GridItem area="activity">
-          <PoolActivityChart />
-        </GridItem>
-        <GridItem area="composition">
-          <PoolComposition />
-        </GridItem>
-        {showMyLiquidity && (
-          <GridItem area="my-liquidity">
-            <PoolMyLiquidity />
-          </GridItem>
-        )}
-        <GridItem area="attributes-risks-contracts">
-          <PoolDetailAttributesRisksContracts />
-        </GridItem>
-      </Grid>
-    </Stack>
+      )}
+      <GridItem area="attributes-risks-contracts">
+        <PoolDetailAttributesRisksContracts />
+      </GridItem>
+    </Grid>
   )
 }
