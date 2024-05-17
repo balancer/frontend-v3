@@ -50,6 +50,7 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
     query: { enabled: isConnected },
   })
 
+  // Bal incentives
   const balRewardsData = (data || [])
     .map((data, i) => {
       if (data.status === 'failure') return // Discard failed requests
@@ -75,8 +76,6 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
       return reward
     })
     .filter(item => item !== undefined)
-
-  console.log('YUHIUUI')
 
   return {
     balRewardsData: balRewardsData,
