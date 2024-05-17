@@ -26,7 +26,6 @@ import { fNum } from '@/lib/shared/utils/numbers'
 import { isStableLike } from '../../pool.helpers'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { PoolZenGarden } from '@/lib/shared/components/zen/ZenGarden'
-import PoolBadges from '../PoolBadges'
 import PoolWeightChart from '../PoolWeightCharts/PoolWeightChart'
 
 export function PoolComposition() {
@@ -79,7 +78,7 @@ export function PoolComposition() {
                     <VStack alignItems="flex-end">
                       <Heading fontWeight="bold" size="h6">
                         {totalLiquidity ? (
-                          toCurrency(totalLiquidity)
+                          toCurrency(totalLiquidity, { abbreviated: false })
                         ) : (
                           <Skeleton height="24px" w="75px" />
                         )}
@@ -98,6 +97,7 @@ export function PoolComposition() {
                         key={`my-liquidity-token-${poolToken.address}`}
                         address={poolToken.address as Address}
                         value={poolToken.balance}
+                        abbreviated={false}
                         customRender={() => {
                           if (!showWeightDistribution) return null
                           return (
