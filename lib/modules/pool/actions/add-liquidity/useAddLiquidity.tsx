@@ -25,7 +25,6 @@ import { useDisclosure } from '@chakra-ui/hooks'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
-import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
@@ -41,7 +40,8 @@ export function _useAddLiquidity() {
   const [totalUSDValue, setTotalUSDValue] = useState('0')
 
   const { pool, refetch: refetchPool } = usePool()
-  const { getToken, isLoadingTokenPrices } = useTokens()
+  const { getToken, getNativeAssetToken, getWrappedNativeAssetToken, isLoadingTokenPrices } =
+    useTokens()
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
   const { hasValidationErrors } = useTokenInputsValidation()
@@ -54,8 +54,8 @@ export function _useAddLiquidity() {
   const helpers = new LiquidityActionHelpers(pool)
 
   const chain = pool.chain
-  const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
-  const wNativeAsset = getToken(getWrappedNativeAssetAddress(chain), chain)
+  const nativeAsset = getNativeAssetToken(chain)
+  const wNativeAsset = getWrappedNativeAssetToken(chain)
 
   function setInitialHumanAmountsIn() {
     const amountsIn = pool.allTokens.map(
@@ -87,8 +87,10 @@ export function _useAddLiquidity() {
     })
     .map(token => getToken(token.address, chain))
 
+  let isWrappedNativeAssetInPool = false
   const tokensWithNativeAsset = tokens.map(token => {
     if (token && isWrappedNativeAsset(token.address as Address, chain)) {
+      isWrappedNativeAssetInPool = true
       return nativeAsset
     } else {
       return token
@@ -96,7 +98,8 @@ export function _useAddLiquidity() {
   })
 
   let validTokens = tokens.filter((token): token is GqlToken => !!token)
-  validTokens = nativeAsset ? [nativeAsset, ...validTokens] : validTokens
+  validTokens =
+    isWrappedNativeAssetInPool && nativeAsset ? [nativeAsset, ...validTokens] : validTokens
 
   const { usdValueFor } = useTotalUsdValue(validTokens)
 

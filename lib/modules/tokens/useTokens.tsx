@@ -21,6 +21,7 @@ import { createContext, PropsWithChildren, useCallback } from 'react'
 import { Address } from 'viem'
 import { minsToMs } from '@/lib/shared/hooks/useTime'
 import { useSkipInitialQuery } from '@/lib/shared/hooks/useSkipInitialQuery'
+import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 
 export type UseTokensResult = ReturnType<typeof _useTokens>
 export const TokensContext = createContext<UseTokensResult | null>(null)
@@ -58,6 +59,14 @@ export function _useTokens(
   function getToken(address: string, chain: GqlChain | number): GqlToken | undefined {
     const chainKey = typeof chain === 'number' ? 'chainId' : 'chain'
     return tokens.find(token => isSameAddress(token.address, address) && token[chainKey] === chain)
+  }
+
+  function getNativeAssetToken(chain: GqlChain | number) {
+    return getToken(getNativeAssetAddress(chain), chain)
+  }
+
+  function getWrappedNativeAssetToken(chain: GqlChain | number) {
+    return getToken(getWrappedNativeAssetAddress(chain), chain)
   }
 
   const getTokensByChain = useCallback(
@@ -118,6 +127,8 @@ export function _useTokens(
     prices,
     isLoadingTokenPrices,
     getToken,
+    getNativeAssetToken,
+    getWrappedNativeAssetToken,
     priceFor,
     priceForToken,
     getTokensByChain,

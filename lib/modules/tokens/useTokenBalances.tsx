@@ -11,7 +11,7 @@ import { PropsWithChildren, createContext, useState } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { exclNativeAssetFilter, nativeAssetFilter } from '@/lib/config/tokens.config'
+import { exclNativeAssetFilter, nativeAssetFilter } from './token.helpers'
 
 const BALANCE_CACHE_TIME_MS = 30_000
 

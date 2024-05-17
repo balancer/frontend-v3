@@ -5,7 +5,7 @@ import { HStack, Tag, Text, Wrap, WrapItem } from '@chakra-ui/react'
 import { useTokens } from '../useTokens'
 import { useMemo } from 'react'
 import { TokenIcon } from '../TokenIcon'
-import { nativeAssetFilter } from '@/lib/config/tokens.config'
+import { nativeAssetFilter } from '../token.helpers'
 
 type Props = {
   chain: GqlChain
