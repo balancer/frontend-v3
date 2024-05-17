@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react'
 import { useEffect, useRef } from 'react'
 import { Address } from 'viem'
-import { AddLiquidityModal } from '../AddLiquidityModal'
+import { AddLiquidityModal } from '../modal/AddLiquidityModal'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
@@ -131,9 +131,7 @@ export function AddLiquidityForm() {
                 totalUSDValue={totalUSDValue}
               />
             ) : (
-              <TokenInputs
-                tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
-              ></TokenInputs>
+              <TokenInputs tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()} />
             )}
             <VStack spacing="sm" align="start" w="full">
               <PriceImpactAccordion

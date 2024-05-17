@@ -133,7 +133,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const removeLiquidityTxHash =
     urlTxHash || transactionSteps.lastTransaction?.result?.data?.transactionHash
 
-  const hasQuoteContext = !!simulationQuery.data
+  const hasQuoteContext = quoteAmountsOut.length > 0
 
   /**
    * Methods

@@ -19,7 +19,7 @@ export type RemoveLiquidityStepParams = RemoveLiquidityBuildQueryParams
 
 export function useRemoveLiquidityStep(params: RemoveLiquidityStepParams): TransactionStep {
   const [isStepActivated, setIsStepActivated] = useState(false)
-  const { refetch: refetchPoolUserBalances } = usePool()
+  const { pool, refetch: refetchPoolUserBalances } = usePool()
   const { getTransaction } = useTransactionState()
 
   const { simulationQuery } = params
@@ -32,9 +32,10 @@ export function useRemoveLiquidityStep(params: RemoveLiquidityStepParams): Trans
   const labels: TransactionLabels = {
     init: 'Remove liquidity',
     title: 'Remove liquidity',
-    confirming: 'Confirming...',
-    confirmed: `Liquidity removed from pool!`,
-    tooltip: 'Remove liquidity from pool.',
+    description: `Remove liquidity from ${pool.name || 'pool'}.`,
+    confirming: 'Confirming remove...',
+    confirmed: `Liquidity removed!`,
+    tooltip: `Remove liquidity from ${pool.name || 'pool'}.`,
   }
 
   const gasEstimationMeta = sentryMetaForWagmiSimulation(

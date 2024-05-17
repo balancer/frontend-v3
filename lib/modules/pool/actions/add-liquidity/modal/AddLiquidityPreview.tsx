@@ -8,12 +8,24 @@ import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetai
 import { useAddLiquidity } from '../useAddLiquidity'
 import { QuoteBptOut } from './BptOut'
 import { TokenRowGroup } from '@/lib/modules/tokens/TokenRow/TokenRowGroup'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 export function AddLiquidityPreview() {
-  const { totalUSDValue, simulationQuery, transactionSteps, humanAmountsIn, hasQuoteContext } =
-    useAddLiquidity()
+  const {
+    totalUSDValue,
+    simulationQuery,
+    transactionSteps,
+    humanAmountsIn,
+    hasQuoteContext,
+    tokens,
+  } = useAddLiquidity()
   const { pool } = usePool()
   const { isMobile } = useBreakpoints()
+
+  // Order amountsIn like the form inputs which uses the tokens array.
+  const amountsIn = tokens
+    .map(token => humanAmountsIn.find(amount => amount.tokenAddress === token?.address))
+    .filter(Boolean) as HumanTokenAmountWithAddress[]
 
   return (
     <VStack spacing="sm" align="start">
@@ -24,7 +36,7 @@ export function AddLiquidityPreview() {
       <Card variant="modalSubSection">
         <TokenRowGroup
           label="You're adding"
-          amounts={humanAmountsIn}
+          amounts={amountsIn}
           totalUSDValue={totalUSDValue}
           chain={pool.chain}
         />

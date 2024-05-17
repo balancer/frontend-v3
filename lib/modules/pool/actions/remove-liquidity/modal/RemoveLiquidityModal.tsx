@@ -1,18 +1,7 @@
 'use client'
 
-import {
-  HStack,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  ModalProps,
-  VStack,
-} from '@chakra-ui/react'
-import { RefObject, useRef } from 'react'
+import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
+import { RefObject, useEffect, useRef } from 'react'
 import { usePool } from '../../../usePool'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
@@ -24,6 +13,8 @@ import { RemoveLiquidityPreview } from './RemoveLiquidityPreview'
 import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
 import { TransactionModalHeader } from '../../PoolActionModalHeader'
 import { AnimatePresence, motion } from 'framer-motion'
+import { PoolActionModalFooter } from '../../PoolActionModalFooter'
+import { RemoveLiquidityReceipt } from './RemoveLiquidityReceipt'
 
 type Props = {
   isOpen: boolean
@@ -42,6 +33,12 @@ export function RemoveLiquidityModal({
   const initialFocusRef = useRef(null)
   const { transactionSteps, removeLiquidityTxHash, hasQuoteContext } = useRemoveLiquidity()
   const { pool } = usePool()
+
+  useEffect(() => {
+    if (removeLiquidityTxHash && !window.location.pathname.includes(removeLiquidityTxHash)) {
+      window.history.replaceState({}, '', `./remove-liquidity/${removeLiquidityTxHash}`)
+    }
+  }, [removeLiquidityTxHash])
 
   return (
     <Modal
@@ -77,7 +74,7 @@ export function RemoveLiquidityModal({
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
               >
-                {/* <AddLiquidityReceipt txHash={removeLiquidityTxHash} /> */}
+                <RemoveLiquidityReceipt txHash={removeLiquidityTxHash} />
               </motion.div>
             ) : (
               <motion.div
@@ -92,9 +89,10 @@ export function RemoveLiquidityModal({
             )}
           </AnimatePresence>
         </ModalBody>
-        <ModalFooter>
-          <VStack w="full">{transactionSteps.currentStep?.renderAction()}</VStack>
-        </ModalFooter>
+        <PoolActionModalFooter
+          isSuccess={!!removeLiquidityTxHash}
+          currentStep={transactionSteps.currentStep}
+        />
       </ModalContent>
     </Modal>
   )

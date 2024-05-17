@@ -3,18 +3,18 @@
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
 import { RefObject, useEffect, useRef } from 'react'
-import { usePool } from '../../usePool'
-import { useAddLiquidity } from './useAddLiquidity'
+import { usePool } from '../../../usePool'
+import { useAddLiquidity } from '../useAddLiquidity'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { AddLiquidityPreview } from './modal/AddLiquidityPreview'
-import { AddLiquidityTimeout } from './modal/AddLiquidityTimeout'
-import { AddLiquidityReceipt } from './modal/AddLiquidityReceipt'
-import { PoolActionModalFooter } from '../PoolActionModalFooter'
+import { AddLiquidityPreview } from './AddLiquidityPreview'
+import { AddLiquidityTimeout } from './AddLiquidityTimeout'
+import { AddLiquidityReceipt } from './AddLiquidityReceipt'
+import { PoolActionModalFooter } from '../../PoolActionModalFooter'
 import { AnimatePresence, motion } from 'framer-motion'
 import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
-import { TransactionModalHeader } from '../PoolActionModalHeader'
+import { TransactionModalHeader } from '../../PoolActionModalHeader'
 
 type Props = {
   isOpen: boolean

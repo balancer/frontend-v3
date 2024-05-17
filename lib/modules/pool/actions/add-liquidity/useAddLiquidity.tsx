@@ -28,12 +28,13 @@ import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
 
 export function _useAddLiquidity(urlTxHash?: Hash) {
-  const [humanAmountsIn, setHumanAmountsIn] = useState<HumanAmountIn[]>([])
+  const [humanAmountsIn, setHumanAmountsIn] = useState<HumanTokenAmountWithAddress[]>([])
   const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [acceptPoolRisks, setAcceptPoolRisks] = useState(false)
   const [wethIsEth, setWethIsEth] = useState(false)
