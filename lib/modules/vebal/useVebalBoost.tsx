@@ -54,14 +54,6 @@ function calcUserBoost({
 
   const minBoost = bn(2.5).lt(boost) ? 2.5 : boost
 
-  console.log({
-    boost: boost.toFixed(2),
-    userGaugeBalance,
-    gaugeTotalSupply,
-    userVeBALBalance,
-    veBALTotalSupply,
-  })
-
   return minBoost.toString()
 }
 
