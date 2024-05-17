@@ -14,6 +14,7 @@ import { TokenInfoPopover } from '../TokenInfoPopover'
 import { ChevronDown } from 'react-feather'
 
 type Props = {
+  label?: string | ReactNode
   address: Address
   chain: GqlChain
   value: Numberish
@@ -76,6 +77,7 @@ function TokenRowTemplate({
 }
 
 export default function TokenRow({
+  label,
   address,
   value,
   customRender,
@@ -116,37 +118,40 @@ export default function TokenRow({
   }, [value])
 
   return (
-    <HStack width="full" justifyContent="space-between">
-      {toggleTokenSelect ? (
-        <Button variant="tertiary" onClick={toggleTokenSelect} cursor="pointer" size="xl" p="2">
-          <TokenRowTemplate {...props} showInfoPopover={false} showSelect />
-        </Button>
-      ) : (
-        <TokenRowTemplate {...props} />
-      )}
+    <VStack align="start" w="full" spacing="md">
+      {label && typeof label === 'string' ? <Text color="grayText">{label}</Text> : label}
+      <HStack width="full" justifyContent="space-between">
+        {toggleTokenSelect ? (
+          <Button variant="tertiary" onClick={toggleTokenSelect} cursor="pointer" size="xl" p="2">
+            <TokenRowTemplate {...props} showInfoPopover={false} showSelect />
+          </Button>
+        ) : (
+          <TokenRowTemplate {...props} />
+        )}
 
-      <HStack spacing="8">
-        <VStack spacing="2px" alignItems="flex-end">
-          {isLoading ? (
-            <>
-              <Skeleton w="10" h="4" />
-              <Skeleton w="10" h="4" />
-            </>
-          ) : (
-            <>
-              <Heading fontWeight="bold" as="h6" fontSize="lg">
-                {isZero(amount) && showZeroAmountAsDash ? '-' : amount ? amount : '0'}
-              </Heading>
-              <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                {showZeroAmountAsDash && usdValue && isZero(usdValue)
-                  ? '-'
-                  : toCurrency(usdValue ?? '0', { abbreviated })}
-              </Text>
-            </>
-          )}
-        </VStack>
-        {customRender && token && customRender(token)}
+        <HStack spacing="8">
+          <VStack spacing="2px" alignItems="flex-end">
+            {isLoading ? (
+              <>
+                <Skeleton w="10" h="4" />
+                <Skeleton w="10" h="4" />
+              </>
+            ) : (
+              <>
+                <Heading fontWeight="bold" as="h6" fontSize="lg">
+                  {isZero(amount) && showZeroAmountAsDash ? '-' : amount ? amount : '0'}
+                </Heading>
+                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+                  {showZeroAmountAsDash && usdValue && isZero(usdValue)
+                    ? '-'
+                    : toCurrency(usdValue ?? '0', { abbreviated })}
+                </Text>
+              </>
+            )}
+          </VStack>
+          {customRender && token && customRender(token)}
+        </HStack>
       </HStack>
-    </HStack>
+    </VStack>
   )
 }

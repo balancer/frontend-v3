@@ -16,6 +16,7 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/queries/usePoolEnrichWithOnChainData'
 import { useOnchainUserPoolBalances } from './queries/useOnchainUserPoolBalances'
 import { useSkipInitialQuery } from '@/lib/shared/hooks/useSkipInitialQuery'
+import { bn, Numberish } from '@/lib/shared/utils/numbers'
 
 export type UsePoolResponse = ReturnType<typeof _usePool> & {
   chain: GqlChain
@@ -73,6 +74,10 @@ export function _usePool({
       ? parseFloat(pool.dynamicData.apr.apr.max)
       : parseFloat(pool.dynamicData.apr.apr.total)
 
+  function calcPotentialYieldFor(amountUsd: Numberish): string {
+    return bn(amountUsd).times(totalApr).div(52).toString()
+  }
+
   return {
     pool,
     bptPrice,
@@ -80,6 +85,7 @@ export function _usePool({
     isLoadingOnchainData,
     isLoadingOnchainUserBalances,
     totalApr,
+    calcPotentialYieldFor,
     // TODO: we assume here that we never need to reload the entire pool.
     // this assumption may need to be questioned
     refetch,

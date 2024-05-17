@@ -45,6 +45,8 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
 
   // Control step flow here.
   useEffect(() => {
+    console.log('isCurrentStepComplete', currentStepIndex, isCurrentStepComplete)
+
     if (isCurrentStepComplete) goToNextStep()
   }, [currentStepIndex, isCurrentStepComplete])
 
@@ -57,6 +59,13 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
 
     steps?.[currentStepIndex]?.onActivated?.()
   }, [currentStepIndex, isLoading, steps.length])
+
+  // // If steps length changes reset to first step
+  // useEffect(() => {
+  //   if (steps.length && currentStepIndex > steps.length - 1) {
+  //     setCurrentStepIndex(0)
+  //   }
+  // }, [steps.length])
 
   // On last transaction success, play success sound.
   // TODO move this to a global tx state management system in later refactor.

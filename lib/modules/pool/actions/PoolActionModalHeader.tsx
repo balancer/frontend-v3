@@ -15,7 +15,7 @@ export function TransactionModalHeader({
   label: string
   txHash?: Hash
   chain: GqlChain
-  timeout: React.ReactNode
+  timeout?: React.ReactNode
 }) {
   const { getBlockExplorerTxUrl } = useBlockExplorer(chain)
 
@@ -55,7 +55,7 @@ export function TransactionModalHeader({
           ) : (
             <>
               <span>{label}</span>
-              {timeout}
+              {timeout || null}
             </>
           )}
         </AnimatePresence>

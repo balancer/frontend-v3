@@ -44,6 +44,8 @@ export function useStaking() {
   const { isLoadingSteps, steps } = useStakingSteps(pool, humanAmountIn)
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
+  const stakeTxHash = transactionSteps.lastTransaction?.result?.data?.transactionHash
+
   /**
    * Side-effects
    */
@@ -58,5 +60,7 @@ export function useStaking() {
     disabledReason,
     humanAmountIn,
     tokenAllowances,
+    stakeTxHash,
+    isLoading: isLoadingSteps,
   }
 }

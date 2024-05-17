@@ -1,11 +1,14 @@
 import { ManagedTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
-import { TransactionStep } from '@/lib/modules/transactions/transaction-steps/lib'
+import {
+  TransactionLabels,
+  TransactionStep,
+} from '@/lib/modules/transactions/transaction-steps/lib'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { useMemo, useState } from 'react'
-import { buildStakingDepositLabels, getStakingConfig } from '../../../staking/staking.actions'
+import { useEffect, useMemo, useState } from 'react'
 import { Pool, usePool } from '../../usePool'
+import { ManagedTransactionInput } from '@/lib/modules/web3/contracts/useManagedTransaction'
 
 const stakeStepId = 'stake'
 
@@ -14,9 +17,19 @@ export function useStakingStep(pool: Pool, rawDepositAmount: bigint): Transactio
 
   const { refetch: refetchPool, chainId } = usePool()
   const { getTransaction } = useTransactionState()
-  const labels = buildStakingDepositLabels(pool.staking)
   const { userAddress } = useUserAccount()
-  const stakingConfig = getStakingConfig(pool.staking, rawDepositAmount, userAddress)
+
+  const labels: TransactionLabels = useMemo(
+    () => ({
+      init: 'Stake LP tokens',
+      title: 'Stake LP tokens',
+      description: 'Stake LP tokens in a pool to earn rewards',
+      confirming: 'Confirming stake...',
+      confirmed: `LP tokens deposited in ${pool.staking?.type}!`,
+      tooltip: 'Stake LP tokens in a pool to earn rewards',
+    }),
+    [pool.staking]
+  )
 
   const txSimulationMeta = sentryMetaForWagmiSimulation(
     'Error in wagmi tx simulation (Staking deposit transaction)',
@@ -25,37 +38,42 @@ export function useStakingStep(pool: Pool, rawDepositAmount: bigint): Transactio
       userAddress,
       staking: pool.staking,
       rawDepositAmount,
-      stakingConfig,
     }
   )
 
   const transaction = getTransaction(stakeStepId)
 
-  const isComplete = () => transaction?.result.isSuccess || false
+  const props: ManagedTransactionInput = useMemo(
+    () => ({
+      enabled: (isStakeEnabled && !!pool.staking) || !!rawDepositAmount,
+      labels,
+      chainId,
+      contractId: 'balancer.gaugeV5',
+      contractAddress: pool.staking?.gauge?.gaugeAddress || '',
+      functionName: 'deposit',
+      args: [rawDepositAmount || 0n],
+      txSimulationMeta,
+    }),
+    [chainId, isStakeEnabled, labels, pool.staking, rawDepositAmount, txSimulationMeta]
+  )
 
-  return useMemo(
+  const step: TransactionStep = useMemo(
     () => ({
       id: stakeStepId,
       stepType: 'stakingDeposit',
       labels,
-      isComplete,
+      isComplete: () => transaction?.result.isSuccess || false,
       onActivated: () => setIsStakeEnabled(true),
       onDeactivated: () => setIsStakeEnabled(false),
       onSuccess: () => refetchPool(),
-      renderAction: () => (
-        <ManagedTransactionButton
-          enabled={(isStakeEnabled && !!pool.staking) || !!rawDepositAmount}
-          id={stakeStepId}
-          labels={labels}
-          chainId={chainId}
-          contractId={stakingConfig?.contractId}
-          contractAddress={stakingConfig?.contractAddress || ''}
-          functionName="deposit"
-          args={stakingConfig?.args}
-          txSimulationMeta={txSimulationMeta}
-        />
-      ),
+      renderAction: () => <ManagedTransactionButton id={stakeStepId} {...props} />,
     }),
-    [transaction, isStakeEnabled, pool.staking, rawDepositAmount, stakingConfig]
+    [labels, transaction?.result.isSuccess, refetchPool, props]
   )
+
+  // useEffect(() => {
+  //   console.log('step', step.isComplete())
+  // }, [step])
+
+  return step
 }
