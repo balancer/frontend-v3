@@ -125,7 +125,7 @@ export function PoolMyStats() {
       <VStack spacing="0" align="flex-start" w="full">
         <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
           {`My potential weekly yield${
-            poolMyStatsValues && !poolMyStatsValues.myLiquidity && ' on $10k'
+            poolMyStatsValues && !poolMyStatsValues.myLiquidity ? ' on $10k' : ''
           }`}
         </Text>
         {poolMyStatsValues ? (
