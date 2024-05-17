@@ -108,6 +108,14 @@ export function getTotalAprLabel(
   }
 }
 
+export function getTotalAprRaw(
+  aprItems: (GqlBalancePoolAprItem | GqlBalancePoolAprSubItem)[],
+  vebalBoost?: string
+): string {
+  const apr = getTotalAprLabel(aprItems, vebalBoost)
+  return apr.substring(0, apr.length - 1)
+}
+
 // Maps GraphQL pool type enum to human readable label for UI.
 const poolTypeLabelMap: { [key in GqlPoolType]: string } = {
   [GqlPoolType.Weighted]: 'Weighted',

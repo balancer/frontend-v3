@@ -65,10 +65,7 @@ export function PoolMyStats() {
     return veBalBoostMap[pool.id]
   }, [veBalBoostMap])
 
-  const myApr = getTotalAprLabel(pool.dynamicData?.apr.items, boost)
-
-  // myApr should always be a 'single' percentage
-  const myAprRaw = myApr.substring(0, myApr.length - 1)
+  const myAprRaw = getTotalAprRaw(pool.dynamicData?.apr.items, boost)
 
   const poolMyStatsValues: PoolMyStatsValues | undefined = useMemo(() => {
     if (pool && pool.userBalance && !isLoadingPool && !isLoadingClaiming) {
