@@ -95,7 +95,7 @@ export function useClaimableBalances(pools: PoolListItem[]) {
         balance,
         fiatBalance,
         formattedBalance: fNum('token', formatUnits(balance, decimals)) || '0',
-        decimals: 18,
+        decimals,
       }
 
       return reward
