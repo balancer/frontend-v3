@@ -8,9 +8,17 @@ import { PoolDetailStatsChart } from './PoolDetailStatsChart'
 import { PoolDetailAttributesRisksContracts } from './PoolDetailAttributesRisksContracts'
 import { usePool } from '../usePool'
 import PoolMyLiquidity from './PoolMyLiquidity'
+import { useEffect, useState } from 'react'
 
 export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
-  const { isLoading: isLoadingPool } = usePool()
+  const { isLoading: isLoadingPool, pool } = usePool()
+  const [showMyLiquidity, setShowMyLiquidity] = useState(false)
+
+  useEffect(() => {
+    if (!isLoadingPool && pool.userBalance?.totalBalance !== '0') {
+      setShowMyLiquidity(true)
+    }
+  }, [isLoadingPool])
 
   return (
     <Stack w="full">
@@ -19,10 +27,10 @@ export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
         rowGap={{ base: 'md', md: '2xl' }}
         templateColumns="1fr"
         templateAreas={`"stats-chart"
-                        "activity"
-                        "composition"
-                        "my-liquidity"
-                        "attributes-risks-contracts"`}
+               "activity"
+               "composition"
+               ${showMyLiquidity ? '"my-liquidity"' : ''}
+               "attributes-risks-contracts"`}
       >
         <GridItem area="stats-chart">
           <PoolDetailStatsChart isLoading={isLoading} />
@@ -33,9 +41,11 @@ export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
         <GridItem area="composition">
           {isLoading ? <Skeleton h="385px" w="full" /> : <PoolComposition />}
         </GridItem>
-        <GridItem area="my-liquidity">
-          {isLoadingPool ? <Skeleton h="370px" w="full" /> : <PoolMyLiquidity />}
-        </GridItem>
+        {showMyLiquidity && (
+          <GridItem area="my-liquidity">
+            <PoolMyLiquidity />
+          </GridItem>
+        )}
         <GridItem area="attributes-risks-contracts">
           <PoolDetailAttributesRisksContracts isLoading={isLoading} />
         </GridItem>
