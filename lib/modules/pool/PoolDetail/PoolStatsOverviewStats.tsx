@@ -46,9 +46,8 @@ export function PoolStats() {
   const poolStatsValues: PoolStatsValues | undefined = useMemo(() => {
     if (pool) {
       return {
-        totalLiquidity: toCurrency(pool.dynamicData.totalLiquidity),
+        totalLiquidity: toCurrency(pool.dynamicData.totalLiquidity, { abbreviated: false }),
         fees24h: toCurrency(pool.dynamicData.fees24h),
-        apr: getTotalAprLabel(pool.dynamicData.apr.items),
         weeklyRewards: toCurrency(weeklyRewards),
       }
     }
