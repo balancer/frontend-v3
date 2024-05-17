@@ -6,14 +6,20 @@ import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignat
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
 import { Alert } from '@chakra-ui/react'
-import { AddLiquidityProvider } from '../../../../../../../lib/modules/pool/actions/add-liquidity/useAddLiquidity'
+import { AddLiquidityProvider } from '../../../../../../../../lib/modules/pool/actions/add-liquidity/useAddLiquidity'
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
+import { PropsWithChildren } from 'react'
+import { isHash } from 'viem'
 
-/*
-  Layout used to share state between add-liquidity page and add-liquidity/[txHash] receipt page
- */
-export default function AddLiquidityLayout({ children }: { children: React.ReactNode }) {
+type Props = PropsWithChildren<{
+  params: { txHash?: string[] }
+}>
+
+export default function AddLiquidityLayout({ params: { txHash }, children }: Props) {
   const { pool } = usePool()
+
+  const maybeTxHash = txHash?.[0] || ''
+  const urlTxHash = isHash(maybeTxHash) ? maybeTxHash : undefined
 
   if (isNotSupported(pool)) {
     return (
@@ -27,7 +33,7 @@ export default function AddLiquidityLayout({ children }: { children: React.React
     <TransactionStateProvider>
       <RelayerSignatureProvider>
         <TokenInputsValidationProvider>
-          <AddLiquidityProvider>
+          <AddLiquidityProvider urlTxHash={urlTxHash}>
             <PriceImpactProvider>{children}</PriceImpactProvider>
           </AddLiquidityProvider>
         </TokenInputsValidationProvider>

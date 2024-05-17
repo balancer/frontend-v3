@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, Center, Heading, Text, VStack } from '@chakra-ui/react'
+import { Button, Card, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import { usePool } from '../../usePool'
 import { ReceiptBptOut } from './modal/BptOut'
 import { StakingOptions } from './modal/StakingOptions'
@@ -8,7 +8,8 @@ import { ReceiptTokensIn } from './modal/TokensIn'
 import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
 import { Hash } from 'viem'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { useAddLiquidity } from './useAddLiquidity'
+import { isVebalPool } from '../../pool.helpers'
+import { VebalRedirectModal } from '@/lib/modules/vebal/VebalRedirectModal'
 
 export function AddLiquidityReceipt({ txHash }: { txHash: Hash }) {
   const { pool } = usePool()
@@ -17,30 +18,36 @@ export function AddLiquidityReceipt({ txHash }: { txHash: Hash }) {
     txHash,
     userAddress,
   })
-  const { simulationQuery } = useAddLiquidity()
-
-  const hasQuoteContext = !!simulationQuery.data
+  const { isOpen, onClose, onOpen } = useDisclosure()
 
   if (!isUserAddressLoading && !userAddress) return <Text>User is not connected</Text>
-  if (isLoading) return null
   if (error) return <Text>We were unable to find this transaction hash</Text>
 
   return (
-    <Center>
-      <VStack w="fit-content" alignContent="center">
-        <Heading>{!hasQuoteContext && '(historical)'}</Heading>
-        <VStack spacing="0.5" align="start">
-          <Card variant="level2" borderRadius="12px 12px 0px 0px">
-            <ReceiptTokensIn sentTokens={sentTokens} />
-          </Card>
-          <Card variant="level2" borderRadius="0px">
-            <ReceiptBptOut receivedBptUnits={receivedBptUnits} />
-          </Card>
-          <Card variant="level2" borderRadius="0px 0px 12px 12px" mt="1">
-            {pool.dynamicData.apr.hasRewardApr && <StakingOptions />}
-          </Card>
-        </VStack>
-      </VStack>
-    </Center>
+    <VStack spacing="sm" align="start">
+      <Card variant="modalSubSection">
+        <ReceiptTokensIn sentTokens={sentTokens} isLoading={isLoading} />
+      </Card>
+      <Card variant="modalSubSection">
+        <ReceiptBptOut actualBptOut={receivedBptUnits} isLoading={isLoading} />
+      </Card>
+      {pool.staking && (
+        <Card variant="modalSubSection">
+          <StakingOptions />
+        </Card>
+      )}
+      {isVebalPool(pool.id) && (
+        <Card variant="modalSubSection">
+          <VStack align="start" w="full" spacing="md">
+            <Text>Get extra incentives with veBAL</Text>
+            <Button variant="primary" size="lg" onClick={onOpen} w="full">
+              Lock to get veBAL
+            </Button>
+          </VStack>
+
+          <VebalRedirectModal isOpen={isOpen} onClose={onClose} />
+        </Card>
+      )}
+    </VStack>
   )
 }

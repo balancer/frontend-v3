@@ -10,9 +10,12 @@ import { connectWithDefaultUser } from '@/test/utils/wagmi/wagmi-connections'
 
 async function testQuery(humanAmountsIn: HumanAmountIn[]) {
   const handler = selectAddLiquidityHandler(aWjAuraWethPoolElementMock())
-  const { result } = testHook(() => useAddLiquidityPriceImpactQuery(handler, humanAmountsIn), {
-    wrapper: DefaultPoolTestProvider,
-  })
+  const { result } = testHook(
+    () => useAddLiquidityPriceImpactQuery({ handler, humanAmountsIn, enabled: true }),
+    {
+      wrapper: DefaultPoolTestProvider,
+    }
+  )
   return result
 }
 

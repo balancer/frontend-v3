@@ -28,6 +28,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script async src="https://w.appzi.io/w.js?token=8TY8k"></script>
+      </head>
       <body className={satoshiFont.className} suppressHydrationWarning>
         <NextTopLoader showSpinner={false} color="#7f6ae8" />
         <Providers>

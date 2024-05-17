@@ -36,6 +36,7 @@ import { isNativeOrWrappedNative, isNativeAsset } from '@/lib/modules/tokens/tok
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectModal'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
+import { usePoolRedirect } from '../../../pool.hooks'
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
 
 export function AddLiquidityForm() {
@@ -44,13 +45,14 @@ export function AddLiquidityForm() {
     validTokens,
     priceImpactQuery,
     simulationQuery,
-    refetchQuote,
     isDisabled,
     disabledReason,
     showAcceptPoolRisks,
     previewModalDisclosure,
-    setNeedsToAcceptHighPI,
     totalUSDValue,
+    addLiquidityTxHash,
+    setNeedsToAcceptHighPI,
+    refetchQuote,
     setWethIsEth,
   } = useAddLiquidity()
 
@@ -60,6 +62,7 @@ export function AddLiquidityForm() {
   const { toCurrency } = useCurrency()
   const tokenSelectDisclosure = useDisclosure()
   const { setValidationError } = useTokenInputsValidation()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
 
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
@@ -79,7 +82,11 @@ export function AddLiquidityForm() {
   }
 
   const onModalClose = () => {
-    previewModalDisclosure.onClose()
+    if (addLiquidityTxHash) {
+      redirectToPoolPage()
+    } else {
+      previewModalDisclosure.onClose()
+    }
   }
 
   const nativeAssets = validTokens.filter(token =>
@@ -99,6 +106,12 @@ export function AddLiquidityForm() {
       setValidationError(nativeAsset.address as Address, '')
     })
   }
+
+  useEffect(() => {
+    if (addLiquidityTxHash) {
+      previewModalDisclosure.onOpen()
+    }
+  }, [addLiquidityTxHash])
 
   return (
     <TokenBalancesProvider extTokens={validTokens}>

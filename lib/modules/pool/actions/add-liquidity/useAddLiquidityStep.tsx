@@ -11,12 +11,14 @@ import {
   AddLiquidityBuildQueryParams,
   useAddLiquidityBuildCallDataQuery,
 } from './queries/useAddLiquidityBuildCallDataQuery'
+import { usePool } from '../../usePool'
 
 export const addLiquidityStepId = 'add-liquidity'
 
 export type AddLiquidityStepParams = AddLiquidityBuildQueryParams
 
 export function useAddLiquidityStep(params: AddLiquidityStepParams): TransactionStep {
+  const { pool, refetch: refetchPoolBalances } = usePool()
   const [isStepActivated, setIsStepActivated] = useState(false)
   const { getTransaction } = useTransactionState()
 
@@ -30,9 +32,10 @@ export function useAddLiquidityStep(params: AddLiquidityStepParams): Transaction
   const labels: TransactionLabels = {
     init: 'Add liquidity',
     title: 'Add liquidity',
-    confirming: 'Confirming...',
-    confirmed: `Liquidity added to pool!`,
-    tooltip: 'Add liquidity to pool.',
+    description: `Liquidity add to ${pool.name || 'pool'}.`,
+    confirming: 'Confirming add liquidity...',
+    confirmed: `Liquidity added!`,
+    tooltip: `Add liquidity to ${pool.name || 'pool'}.`,
   }
 
   const gasEstimationMeta = sentryMetaForWagmiSimulation('Error in AddLiquidity gas estimation', {
@@ -59,6 +62,7 @@ export function useAddLiquidityStep(params: AddLiquidityStepParams): Transaction
       isComplete,
       onActivated: () => setIsStepActivated(true),
       onDeactivated: () => setIsStepActivated(false),
+      onSuccess: () => refetchPoolBalances(),
       renderAction: () => (
         <ManagedSendTransactionButton
           id={addLiquidityStepId}
