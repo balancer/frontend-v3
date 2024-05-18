@@ -23,6 +23,9 @@ export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
           </VStack>
         </GridItem>
         <GridItem colSpan={2}>
+          {isLoading ? <Skeleton h="385px" w="full" /> : <PoolActivityChart />}
+        </GridItem>
+        <GridItem colSpan={2}>
           {isLoading ? <Skeleton h="370px" w="full" /> : <PoolMyLiquidity />}
         </GridItem>
         <GridItem colSpan={2}>
@@ -33,9 +36,6 @@ export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
         </GridItem>
         <GridItem colSpan={{ base: 2, md: 1 }}>
           {isLoading ? <Skeleton h="385px" w="full" /> : <PoolChart />}
-        </GridItem>
-        <GridItem colSpan={2}>
-          {isLoading ? <Skeleton h="385px" w="full" /> : <PoolActivityChart />}
         </GridItem>
         <GridItem colSpan={{ base: 2, sm: 1 }}>
           {isLoading ? <Skeleton h="385px" w="full" /> : <PoolAttributes />}

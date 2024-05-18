@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import * as echarts from 'echarts/core'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { format } from 'date-fns'
+import { differenceInCalendarDays, format } from 'date-fns'
 import { usePool } from '../../usePool'
 import { PoolVariant } from '../../pool.types'
 import {
@@ -40,9 +40,12 @@ export type ChartInfoMetaData = {
   userAddress: string
   tokens: ChartInfoTokens[]
   tx: string
+  usdValue: string
 }
 
-export type ChartInfo = Record<'adds' | 'removes' | 'swaps', [number, string, ChartInfoMetaData][]>
+type ChartEl = [number, string, ChartInfoMetaData]
+
+export type ChartInfo = Record<'adds' | 'removes' | 'swaps', ChartEl[]>
 
 const toolTipTheme = {
   heading: 'font-weight: bold; color: #E5D3BE',
@@ -53,18 +56,19 @@ const toolTipTheme = {
 const getDefaultPoolActivityChartOptions = (
   theme: ColorMode = 'dark',
   currencyFormatter: NumberFormatter,
-  isMobile = false
+  isMobile = false,
+  isExpanded = false
 ): echarts.EChartsCoreOption => {
   return {
     grid: {
-      left: isMobile ? '15%' : '3.5%',
+      left: !isExpanded ? '2.5%' : isMobile ? '15%' : '5.5%',
       right: '2.5%',
       top: '7.5%',
-      bottom: '10.5%',
+      bottom: !isExpanded ? '50%' : '10.5%',
       containLabel: false,
     },
     xAxis: {
-      show: true,
+      show: isExpanded,
       offset: 10,
       type: 'time',
       minorSplitLine: { show: false },
@@ -97,7 +101,7 @@ const getDefaultPoolActivityChartOptions = (
       },
     },
     yAxis: {
-      show: true,
+      show: isExpanded,
       offset: 10,
       type: 'value',
       axisLine: { show: false },
@@ -205,10 +209,10 @@ const getDefaultPoolActivityChartOptions = (
   }
 }
 
-function getSymbolSize(dataItem?: [number, string]) {
+function getSymbolSize(dataItem?: ChartEl) {
   if (!dataItem) return 0
 
-  const value = Number(dataItem[1])
+  const value = Number(dataItem[2].usdValue)
   if (value < 10000) return 10
   if (value < 100000) return 15
   if (value < 1000000) return 25
@@ -274,7 +278,7 @@ export function getPoolActivityTabsList({
   ]
 }
 
-export function usePoolActivityChart() {
+export function usePoolActivityChart(isExpanded: boolean) {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const { isMobile } = useBreakpoints()
   const { theme } = useTheme()
@@ -297,7 +301,7 @@ export function usePoolActivityChart() {
 
   const [activeTab, setActiveTab] = useState<ButtonGroupOption>(tabsList[0])
 
-  const { data: response } = usePoolEvents(poolId as string, _chain)
+  const { loading, data: response } = usePoolEvents(poolId as string, _chain)
 
   const chartData = useMemo(() => {
     if (!response) return { adds: [], removes: [], swaps: [] }
@@ -331,13 +335,13 @@ export function usePoolActivityChart() {
         }
 
         if (type === GqlPoolEventType.Add) {
-          acc.adds.push([timestamp, usdValue, { userAddress, tokens, tx }])
+          acc.adds.push([timestamp, usdValue, { userAddress, tokens, usdValue, tx }])
         }
         if (type === GqlPoolEventType.Remove) {
-          acc.removes.push([timestamp, usdValue, { userAddress, tokens, tx }])
+          acc.removes.push([timestamp, usdValue, { userAddress, tokens, usdValue, tx }])
         }
         if (type === GqlPoolEventType.Swap) {
-          acc.swaps.push([timestamp, usdValue, { userAddress, tokens, tx }])
+          acc.swaps.push([timestamp, usdValue, { userAddress, tokens, usdValue, tx }])
         }
 
         return acc
@@ -346,7 +350,7 @@ export function usePoolActivityChart() {
     )
 
     return data
-  }, [response])
+  }, [response, isExpanded])
 
   const options = useMemo(() => {
     return {
@@ -442,11 +446,81 @@ export function usePoolActivityChart() {
     }
   }, [activeTab, chartData, options])
 
+  function getChartDateCaption() {
+    try {
+      if (!chartData.adds.length && !chartData.removes.length && !chartData.swaps.length) return ''
+
+      let diffInDays = 0
+      if (activeTab.value === 'adds') {
+        const timestamp = chartData.adds[chartData.adds.length - 1][0]
+        diffInDays = differenceInCalendarDays(new Date(), new Date(timestamp * 1000))
+      }
+
+      if (activeTab.value === 'removes') {
+        const timestamp = chartData.removes[chartData.removes.length - 1][0]
+        diffInDays = differenceInCalendarDays(new Date(), new Date(timestamp * 1000))
+      }
+
+      if (activeTab.value === 'swaps') {
+        const timestamp = chartData.swaps[chartData.swaps.length - 1][0]
+        diffInDays = differenceInCalendarDays(new Date(), new Date(timestamp * 1000))
+      }
+
+      if (activeTab.value === 'all') {
+        const addsTimestamp = chartData.adds[chartData.adds.length - 1][0]
+        const removesTimestamp = chartData.removes[chartData.removes.length - 1][0]
+        const swapsTimestamp = chartData.swaps[chartData.swaps.length - 1][0]
+
+        const lastTimestamp = Math.max(addsTimestamp, removesTimestamp, swapsTimestamp)
+        diffInDays = differenceInCalendarDays(new Date(), new Date(lastTimestamp * 1000))
+      }
+
+      return diffInDays > 0 ? `In last ${diffInDays} days` : 'today'
+    } catch (e) {
+      console.error(e)
+      return ''
+    }
+  }
+
+  function getChartTitle() {
+    if (activeTab.value === 'all') {
+      return 'transactions'
+    }
+
+    return activeTab.value
+  }
+
+  const dataSize = useMemo(() => {
+    let dataSize = 0
+
+    if (['all', 'adds'].includes(activeTab.value)) {
+      dataSize += chartData.adds.length
+    }
+    if (['all', 'removes'].includes(activeTab.value)) {
+      dataSize += chartData.removes.length
+    }
+    if (['all', 'swaps'].includes(activeTab.value)) {
+      dataSize += chartData.swaps.length
+    }
+
+    return dataSize
+  }, [activeTab, chartData])
+
   return {
-    chartOption: getDefaultPoolActivityChartOptions(theme as ColorMode, toCurrency, isMobile),
+    isLoading: loading,
+    chartOption: getDefaultPoolActivityChartOptions(
+      theme as ColorMode,
+      toCurrency,
+      isMobile,
+      isExpanded
+    ),
     activeTab,
     setActiveTab,
     tabsList,
     eChartsRef,
+    chartData,
+    getChartDateCaption,
+    getChartTitle,
+    dataSize,
   }
 }
