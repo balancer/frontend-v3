@@ -11,13 +11,13 @@ import {
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react'
-import { useStaking } from './useStaking'
+import { useStake } from './StakeProvider'
 import { useRef } from 'react'
 import { StakeModal } from './StakeModal'
 import { StakePreview } from './StakePreview'
 
 export function StakeForm() {
-  const { isDisabled, disabledReason, isLoading } = useStaking()
+  const { isDisabled, disabledReason, isLoading } = useStake()
   const nextBtn = useRef(null)
   const { onClose, onOpen, isOpen } = useDisclosure()
 

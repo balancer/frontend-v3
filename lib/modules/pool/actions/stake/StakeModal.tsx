@@ -7,7 +7,7 @@ import { RefObject, useRef } from 'react'
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
-import { useStaking } from './useStaking'
+import { useStake } from './StakeProvider'
 import { usePool } from '../../usePool'
 import { TransactionModalHeader } from '../PoolActionModalHeader'
 import { PoolActionModalFooter } from '../PoolActionModalFooter'
@@ -28,7 +28,7 @@ export function StakeModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps, stakeTxHash } = useStaking()
+  const { transactionSteps, stakeTxHash } = useStake()
   const { pool } = usePool()
 
   return (

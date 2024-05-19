@@ -4,10 +4,10 @@ import { useTokenApprovalSteps } from '@/lib/modules/tokens/approvals/useTokenAp
 import { RawAmount } from '@/lib/modules/tokens/approvals/approval-rules'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { useMemo } from 'react'
-import { useStakingStep } from './useStakingStep'
+import { useStakeStep } from './useStakeStep'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
-export function useStakingSteps(
+export function useStakeSteps(
   pool: Pool,
   humanAmountToApprove: HumanTokenAmountWithAddress | null
 ) {
@@ -26,7 +26,7 @@ export function useStakingSteps(
       bptSymbol: pool.symbol,
     })
 
-  const stakingStep = useStakingStep(pool, rawAmount)
+  const stakingStep = useStakeStep(pool, rawAmount)
 
   const steps = useMemo(
     () => [...tokenApprovalSteps, stakingStep],

@@ -9,14 +9,14 @@ import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWit
 import { createContext, PropsWithChildren, useEffect, useState } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
-import { useStakingSteps } from './useStakingSteps'
+import { useStakeSteps } from './useStakeSteps'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 
-export type UseStakingResponse = ReturnType<typeof _useStaking>
-export const StakeContext = createContext<UseStakingResponse | null>(null)
+export type UseStakeResponse = ReturnType<typeof _useStake>
+export const StakeContext = createContext<UseStakeResponse | null>(null)
 
-export function _useStaking() {
+export function _useStake() {
   const [humanAmountIn, setHumanAmountIn] = useState<HumanTokenAmountWithAddress | null>(null)
 
   const { userAddress, isConnected } = useUserAccount()
@@ -45,7 +45,7 @@ export function _useStaking() {
   /**
    * Step construction
    */
-  const { isLoadingSteps, steps } = useStakingSteps(pool, humanAmountIn)
+  const { isLoadingSteps, steps } = useStakeSteps(pool, humanAmountIn)
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
   const stakeTxHash = transactionSteps.lastTransaction?.result?.data?.transactionHash
@@ -69,9 +69,9 @@ export function _useStaking() {
   }
 }
 
-export function StakingProvider({ children }: PropsWithChildren) {
-  const hook = _useStaking()
+export function StakeProvider({ children }: PropsWithChildren) {
+  const hook = _useStake()
   return <StakeContext.Provider value={hook}>{children}</StakeContext.Provider>
 }
 
-export const useStaking = (): UseStakingResponse => useMandatoryContext(StakeContext, 'Stake')
+export const useStake = (): UseStakeResponse => useMandatoryContext(StakeContext, 'Stake')
