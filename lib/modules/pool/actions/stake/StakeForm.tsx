@@ -17,7 +17,7 @@ import { StakeModal } from './StakeModal'
 import { StakePreview } from './StakePreview'
 
 export function StakeForm() {
-  const { isDisabled, disabledReason, isLoading } = useStake()
+  const { isDisabled, disabledReason, isLoading, stakableBalance, stakableBalanceUsd } = useStake()
   const nextBtn = useRef(null)
   const { onClose, onOpen, isOpen } = useDisclosure()
 
@@ -30,7 +30,7 @@ export function StakeForm() {
           </Heading>
         </CardHeader>
         <CardBody>
-          <StakePreview />
+          <StakePreview stakableBalance={stakableBalance} stakableBalanceUsd={stakableBalanceUsd} />
         </CardBody>
         <CardFooter>
           <Tooltip label={isDisabled ? disabledReason : ''}>

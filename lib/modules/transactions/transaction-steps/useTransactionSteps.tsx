@@ -25,11 +25,6 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
     lastTransactionState === TransactionState.Confirming ||
     lastTransactionState === TransactionState.Completed
 
-  function goToNextStep() {
-    if (currentStepIndex === lastStepIndex) return
-    setCurrentStepIndex(prev => prev + 1)
-  }
-
   function isLastStep(index: number) {
     return steps?.length ? index === lastStepIndex : false
   }
@@ -45,9 +40,9 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
 
   // Control step flow here.
   useEffect(() => {
-    console.log('isCurrentStepComplete', currentStepIndex, isCurrentStepComplete)
-
-    if (isCurrentStepComplete) goToNextStep()
+    if (isCurrentStepComplete && currentStepIndex < lastStepIndex) {
+      setCurrentStepIndex(currentStepIndex + 1)
+    }
   }, [currentStepIndex, isCurrentStepComplete])
 
   // On step change, call activation callbacks if they exist
@@ -62,7 +57,7 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
 
   // If steps length changes reset to first step
   useEffect(() => {
-    if (steps.length && currentStepIndex > steps.length - 1) {
+    if (steps.length && currentStepIndex > 0) {
       setCurrentStepIndex(0)
     }
   }, [steps.length])
@@ -84,7 +79,6 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
     lastTransaction,
     lastTransactionState,
     lastTransactionConfirmingOrConfirmed,
-    goToNextStep,
     isLastStep,
     setCurrentStepIndex,
   }

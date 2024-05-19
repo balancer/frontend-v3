@@ -5,24 +5,32 @@ import { Address } from 'viem'
 import { usePool } from '../../usePool'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
+import { HumanAmount } from '@balancer/sdk'
+import { useStake } from './StakeProvider'
 
-export function StakePreview() {
+export function StakePreview({
+  stakableBalance,
+  stakableBalanceUsd,
+}: {
+  stakableBalance: HumanAmount
+  stakableBalanceUsd: HumanAmount
+}) {
   const { pool, calcPotentialYieldFor } = usePool()
   const { toCurrency } = useCurrency()
-
-  const stakableBalance = pool.userBalance?.walletBalance || '0'
-  const stakableBalanceUsd = pool.userBalance?.walletBalanceUsd.toString() || '0'
+  const { stakeTxHash } = useStake()
 
   const weeklyYield = calcPotentialYieldFor(stakableBalanceUsd)
 
   return (
-    <VStack spacing="sm">
+    <VStack spacing="sm" w="full">
       <Card variant="subSection">
         <TokenRow
           label={
             <HStack color="grayText">
               <WalletIcon />
-              <Text color="grayText">Stakable LP tokens</Text>
+              <Text color="grayText">
+                {stakeTxHash ? 'Staked LP tokens' : 'Stakable LP tokens'}
+              </Text>
             </HStack>
           }
           address={pool.address as Address}

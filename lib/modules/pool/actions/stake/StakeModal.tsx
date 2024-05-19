@@ -1,7 +1,14 @@
 'use client'
 
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
-import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
+import {
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalProps,
+  VStack,
+} from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
@@ -12,6 +19,7 @@ import { usePool } from '../../usePool'
 import { TransactionModalHeader } from '../PoolActionModalHeader'
 import { PoolActionModalFooter } from '../PoolActionModalFooter'
 import { StakePreview } from './StakePreview'
+import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 
 type Props = {
   isOpen: boolean
@@ -28,8 +36,9 @@ export function StakeModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps, stakeTxHash } = useStake()
+  const { transactionSteps, stakeTxHash, quoteAmountIn, quoteAmountInUsd } = useStake()
   const { pool } = usePool()
+  const { isMobile } = useBreakpoints()
 
   return (
     <Modal
@@ -47,7 +56,12 @@ export function StakeModal({
         <TransactionModalHeader label="Stake LP tokens" txHash={stakeTxHash} chain={pool.chain} />
         <ModalCloseButton />
         <ModalBody>
-          <StakePreview />
+          <VStack spacing="sm" w="full">
+            {isMobile && (
+              <MobileStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
+            )}
+            <StakePreview stakableBalance={quoteAmountIn} stakableBalanceUsd={quoteAmountInUsd} />
+          </VStack>
         </ModalBody>
         <PoolActionModalFooter
           isSuccess={!!stakeTxHash}

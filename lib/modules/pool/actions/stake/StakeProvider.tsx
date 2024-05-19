@@ -10,42 +10,39 @@ import { createContext, PropsWithChildren, useEffect, useState } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
 import { useStakeSteps } from './useStakeSteps'
-import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { bn } from '@/lib/shared/utils/numbers'
+import { HumanAmount } from '@balancer/sdk'
 
 export type UseStakeResponse = ReturnType<typeof _useStake>
 export const StakeContext = createContext<UseStakeResponse | null>(null)
 
 export function _useStake() {
-  const [humanAmountIn, setHumanAmountIn] = useState<HumanTokenAmountWithAddress | null>(null)
-
   const { userAddress, isConnected } = useUserAccount()
-  const { pool, chainId } = usePool()
+  const { pool, chainId, isLoadingOnchainUserBalances } = usePool()
   const { isDisabled, disabledReason } = isDisabledWithReason([
     !isConnected,
     LABELS.walletNotConnected,
   ])
 
-  function setInitialHumanAmountIn() {
-    const amountIn = {
-      tokenAddress: pool.address,
-      humanAmount: pool.userBalance?.walletBalance,
-    } as HumanTokenAmountWithAddress
+  // To maintain amount in modal after confirmation
+  const [quoteAmountIn, setQuoteAmountIn] = useState<HumanAmount>('0')
+  const [quoteAmountInUsd, setQuoteAmountInUsd] = useState<HumanAmount>('0')
 
-    setHumanAmountIn(amountIn)
-  }
+  const stakableBalance = (pool.userBalance?.walletBalance || '0') as HumanAmount
+  const stakableBalanceUsd = (pool.userBalance?.walletBalanceUsd || '0') as HumanAmount
 
   const tokenAllowances = useTokenAllowances({
     chainId,
     userAddress,
     spenderAddress: pool.staking?.address as Address,
-    tokenAddresses: [humanAmountIn?.tokenAddress as Address],
+    tokenAddresses: [pool.address as Address],
   })
 
   /**
    * Step construction
    */
-  const { isLoadingSteps, steps } = useStakeSteps(pool, humanAmountIn)
+  const { isLoadingSteps, steps } = useStakeSteps(pool)
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
   const stakeTxHash = transactionSteps.lastTransaction?.result?.data?.transactionHash
@@ -53,16 +50,24 @@ export function _useStake() {
   /**
    * Side-effects
    */
-  // On initial render, set the initial humanAmountsIn
   useEffect(() => {
-    setInitialHumanAmountIn()
-  }, [])
+    const newBalance = (pool.userBalance?.walletBalance || '0') as HumanAmount
+    const newBalanceUsd = (pool.userBalance?.walletBalanceUsd || '0') as HumanAmount
+
+    if (bn(newBalance).gt(0)) {
+      setQuoteAmountIn(newBalance)
+      setQuoteAmountInUsd(newBalanceUsd)
+    }
+  }, [pool.userBalance?.walletBalance, isLoadingOnchainUserBalances])
 
   return {
     transactionSteps,
     isDisabled,
     disabledReason,
-    humanAmountIn,
+    quoteAmountIn,
+    quoteAmountInUsd,
+    stakableBalance,
+    stakableBalanceUsd,
     tokenAllowances,
     stakeTxHash,
     isLoading: isLoadingSteps,

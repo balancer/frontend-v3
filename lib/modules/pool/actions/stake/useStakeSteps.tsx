@@ -5,18 +5,15 @@ import { RawAmount } from '@/lib/modules/tokens/approvals/approval-rules'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { useMemo } from 'react'
 import { useStakeStep } from './useStakeStep'
-import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
-export function useStakeSteps(
-  pool: Pool,
-  humanAmountToApprove: HumanTokenAmountWithAddress | null
-) {
-  const rawAmount = parseUnits(humanAmountToApprove?.humanAmount || '', BPT_DECIMALS)
+export function useStakeSteps(pool: Pool) {
+  const rawAmount = parseUnits(pool.userBalance?.walletBalance || '0', BPT_DECIMALS)
 
   const amountToApprove: RawAmount = {
     rawAmount,
     address: pool.address as Address,
   }
+
   const { isLoading: isLoadingTokenApprovalSteps, steps: tokenApprovalSteps } =
     useTokenApprovalSteps({
       spenderAddress: pool.staking?.address as Address,

@@ -28,7 +28,9 @@ export function MobileStepTracker({ chain, transactionSteps }: Props) {
 
   const totalSteps = steps?.length || 1
 
-  const stepLabel = `Step ${currentStepIndex + 1}/${totalSteps}`
+  const currentStepNumber = Math.min(currentStepIndex + 1, totalSteps)
+
+  const stepLabel = `Step ${currentStepNumber}/${totalSteps}`
 
   return (
     <Accordion width="full" variant="button" allowToggle textAlign="left">
