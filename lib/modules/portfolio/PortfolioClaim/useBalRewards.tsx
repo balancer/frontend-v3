@@ -7,16 +7,18 @@ import { formatUnits } from 'viem'
 import { useMulticall } from '../../web3/contracts/useMulticall'
 import { getPoolsByGaugesMap } from '../../pool/pool.utils'
 import { ClaimableBalanceResult } from '../usePortfolio'
-import { bn, fNum } from '@/lib/shared/utils/numbers'
+import { bn } from '@/lib/shared/utils/numbers'
 import networkConfigs from '@/lib/config/networks'
 import { useTokens } from '../../tokens/useTokens'
 import BigNumber from 'bignumber.js'
 import { getChainId } from '@/lib/config/app.config'
+import { BPT_DECIMALS } from '../../pool/pool.constants'
+import { HumanAmount } from '@balancer/sdk'
 
 export interface BalTokenReward {
   balance: bigint
   decimals: number
-  formattedBalance: string
+  humanBalance: HumanAmount
   gaugeAddress: string
   pool: PoolListItem
   tokenAddress: Address
@@ -82,7 +84,7 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
           gaugeAddress,
           pool,
           balance,
-          formattedBalance: fNum('token', formatUnits(balance, 18)) || '0',
+          humanBalance: formatUnits(balance, BPT_DECIMALS) || '0',
           fiatBalance,
           decimals: 18,
           tokenAddress: networkConfigs[pool.chain].tokens.addresses.bal,

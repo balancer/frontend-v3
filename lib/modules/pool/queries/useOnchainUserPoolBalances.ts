@@ -13,8 +13,9 @@ import { calcBptPrice } from '../pool.helpers'
 import { Pool } from '../usePool'
 import { BPT_DECIMALS } from '../pool.constants'
 import { useEffect } from 'react'
-import { SentryError, ensureError } from '@/lib/shared/utils/errors'
 import { getChainId } from '@/lib/config/app.config'
+import { captureNonFatalError } from '@/lib/shared/utils/query-errors'
+import { ReadContractsErrorType } from 'wagmi/actions'
 
 /**
  * Overwrites the pool's userBalance with onchain data.
@@ -121,16 +122,11 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   )
 
   useEffect(() => {
-    if (unstakedPoolBalancesError || stakedPoolBalancesError) {
-      const error = ensureError(unstakedPoolBalancesError || stakedPoolBalancesError)
-      console.log(
-        'Failed useOnchainUserPoolBalances',
-        unstakedPoolBalancesError || stakedPoolBalancesError
-      )
-      throw new SentryError('Failed useOnchainUserPoolBalances', {
-        cause: error,
-        context: { extra: { userAddress } },
-      })
+    if (stakedPoolBalancesError) {
+      captureStakedMulticallError(stakedPoolBalancesError)
+    }
+    if (unstakedPoolBalancesError) {
+      captureUnstakedMulticallError(unstakedPoolBalancesError)
     }
   }, [unstakedPoolBalancesError, stakedPoolBalancesError])
 
@@ -141,4 +137,28 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
     refetchedStakedBalances,
     refetch,
   }
+}
+
+function captureStakedMulticallError(stakedPoolBalancesError: ReadContractsErrorType) {
+  console.log(
+    'Error in stake pool balances multicall in useOnchainUserPoolBalances',
+    stakedPoolBalancesError
+  )
+  captureNonFatalError({
+    error: stakedPoolBalancesError,
+    errorName: 'UseOnchainUserPoolBalancesError',
+    errorMessage: 'Error in staked pool balances multicall',
+  })
+}
+
+function captureUnstakedMulticallError(unstakedPoolBalancesError: ReadContractsErrorType) {
+  console.log(
+    'Error in  unstake pool balances multicall in useOnchainUserPoolBalances',
+    unstakedPoolBalancesError
+  )
+  captureNonFatalError({
+    error: unstakedPoolBalancesError,
+    errorName: 'UseOnchainUserPoolBalancesError',
+    errorMessage: 'Error in unstaked pool balances multicall',
+  })
 }
