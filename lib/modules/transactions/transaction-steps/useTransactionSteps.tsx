@@ -25,11 +25,6 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
     lastTransactionState === TransactionState.Confirming ||
     lastTransactionState === TransactionState.Completed
 
-  function goToNextStep() {
-    if (currentStepIndex === lastStepIndex) return
-    setCurrentStepIndex(prev => prev + 1)
-  }
-
   function isLastStep(index: number) {
     return steps?.length ? index === lastStepIndex : false
   }
@@ -45,7 +40,9 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
 
   // Control step flow here.
   useEffect(() => {
-    if (isCurrentStepComplete) goToNextStep()
+    if (isCurrentStepComplete && currentStepIndex < lastStepIndex) {
+      setCurrentStepIndex(currentStepIndex + 1)
+    }
   }, [currentStepIndex, isCurrentStepComplete])
 
   // On step change, call activation callbacks if they exist
@@ -57,6 +54,13 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
 
     steps?.[currentStepIndex]?.onActivated?.()
   }, [currentStepIndex, isLoading, steps.length])
+
+  // If steps length changes reset to first step
+  useEffect(() => {
+    if (steps.length && currentStepIndex > 0) {
+      setCurrentStepIndex(0)
+    }
+  }, [steps.length])
 
   // On last transaction success, play success sound.
   // TODO move this to a global tx state management system in later refactor.
@@ -75,7 +79,6 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
     lastTransaction,
     lastTransactionState,
     lastTransactionConfirmingOrConfirmed,
-    goToNextStep,
     isLastStep,
     setCurrentStepIndex,
   }

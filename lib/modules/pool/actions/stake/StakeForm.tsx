@@ -1,14 +1,25 @@
 'use client'
 
-import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import { Card, CardBody, CardFooter, CardHeader, Center, Heading, VStack } from '@chakra-ui/react'
-import { usePool } from '../../usePool'
-import { Address } from 'viem'
-import { useStaking } from './useStaking'
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Center,
+  Heading,
+  Button,
+  Tooltip,
+  useDisclosure,
+} from '@chakra-ui/react'
+import { useStake } from './StakeProvider'
+import { useRef } from 'react'
+import { StakeModal } from './StakeModal'
+import { StakePreview } from './StakePreview'
 
 export function StakeForm() {
-  const { pool } = usePool()
-  const { transactionSteps } = useStaking()
+  const { isDisabled, disabledReason, isLoading, stakableBalance, stakableBalanceUsd } = useStake()
+  const nextBtn = useRef(null)
+  const { onClose, onOpen, isOpen } = useDisclosure()
 
   return (
     <Center h="full" w="full" maxW="lg" mx="auto">
@@ -19,21 +30,25 @@ export function StakeForm() {
           </Heading>
         </CardHeader>
         <CardBody>
-          <Card variant="subSection">
-            <TokenRow
-              address={pool.address as Address}
-              value={pool.userBalance?.walletBalance || '0'}
-              usdValue={pool.userBalance?.walletBalanceUsd.toString()}
-              chain={pool.chain}
-              pool={pool}
-              isBpt
-            />
-          </Card>
+          <StakePreview stakableBalance={stakableBalance} stakableBalanceUsd={stakableBalanceUsd} />
         </CardBody>
         <CardFooter>
-          <VStack w="full">{transactionSteps.currentStep?.renderAction()}</VStack>
+          <Tooltip label={isDisabled ? disabledReason : ''}>
+            <Button
+              ref={nextBtn}
+              variant="secondary"
+              w="full"
+              size="lg"
+              isDisabled={isDisabled}
+              isLoading={isLoading}
+              onClick={() => !isDisabled && onOpen()}
+            >
+              Next
+            </Button>
+          </Tooltip>
         </CardFooter>
       </Card>
+      <StakeModal finalFocusRef={nextBtn} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
     </Center>
   )
 }
