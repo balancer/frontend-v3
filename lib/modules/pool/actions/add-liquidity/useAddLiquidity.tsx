@@ -6,11 +6,10 @@ import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
-import { Address } from 'viem'
+import { Address, Hash } from 'viem'
 import { usePool } from '../../usePool'
 import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulationQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
-import { HumanAmountIn } from '../liquidity-types'
 import {
   LiquidityActionHelpers,
   areEmptyAmounts,
@@ -23,17 +22,18 @@ import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
-import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
+import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
 
-export function _useAddLiquidity() {
-  const [humanAmountsIn, setHumanAmountsIn] = useState<HumanAmountIn[]>([])
+export function _useAddLiquidity(urlTxHash?: Hash) {
+  const [humanAmountsIn, setHumanAmountsIn] = useState<HumanTokenAmountWithAddress[]>([])
   const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [acceptPoolRisks, setAcceptPoolRisks] = useState(false)
   const [wethIsEth, setWethIsEth] = useState(false)
@@ -63,7 +63,7 @@ export function _useAddLiquidity() {
         ({
           tokenAddress: token.address,
           humanAmount: '',
-        } as HumanAmountIn)
+        } as HumanTokenAmountWithAddress)
     )
     setHumanAmountsIn(amountsIn)
   }
@@ -112,8 +112,16 @@ export function _useAddLiquidity() {
   /**
    * Queries
    */
-  const simulationQuery = useAddLiquiditySimulationQuery(handler, humanAmountsIn)
-  const priceImpactQuery = useAddLiquidityPriceImpactQuery(handler, humanAmountsIn)
+  const simulationQuery = useAddLiquiditySimulationQuery({
+    handler,
+    humanAmountsIn,
+    enabled: !urlTxHash,
+  })
+  const priceImpactQuery = useAddLiquidityPriceImpactQuery({
+    handler,
+    humanAmountsIn,
+    enabled: !urlTxHash,
+  })
 
   /**
    * Step construction
@@ -125,6 +133,11 @@ export function _useAddLiquidity() {
     simulationQuery,
   })
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
+
+  const addLiquidityTxHash =
+    urlTxHash || transactionSteps.lastTransaction?.result?.data?.transactionHash
+
+  const hasQuoteContext = !!simulationQuery.data
 
   async function refetchQuote() {
     if (requiresProportionalInput(pool.type)) {
@@ -181,6 +194,9 @@ export function _useAddLiquidity() {
     wethIsEth,
     nativeAsset,
     wNativeAsset,
+    urlTxHash,
+    addLiquidityTxHash,
+    hasQuoteContext,
     refetchQuote,
     setHumanAmountIn,
     setHumanAmountsIn,
@@ -190,8 +206,12 @@ export function _useAddLiquidity() {
   }
 }
 
-export function AddLiquidityProvider({ children }: PropsWithChildren) {
-  const hook = _useAddLiquidity()
+type Props = PropsWithChildren<{
+  urlTxHash?: Hash
+}>
+
+export function AddLiquidityProvider({ urlTxHash, children }: Props) {
+  const hook = _useAddLiquidity(urlTxHash)
   return <AddLiquidityContext.Provider value={hook}>{children}</AddLiquidityContext.Provider>
 }
 

@@ -8,15 +8,15 @@ import { AddLiquidityParams, addLiquidityKeys } from './add-liquidity-keys'
 import { useRelayerSignature } from '@/lib/modules/relayer/useRelayerSignature'
 import { sentryMetaForAddLiquidityHandler } from '@/lib/shared/utils/query-errors'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
-import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquiditySimulationQueryResult } from './useAddLiquiditySimulationQuery'
 import { useDebounce } from 'use-debounce'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 export type AddLiquidityBuildQueryResponse = ReturnType<typeof useAddLiquidityBuildCallDataQuery>
 
 export type AddLiquidityBuildQueryParams = {
   handler: AddLiquidityHandler
-  humanAmountsIn: HumanAmountIn[]
+  humanAmountsIn: HumanTokenAmountWithAddress[]
   simulationQuery: AddLiquiditySimulationQueryResult
 }
 

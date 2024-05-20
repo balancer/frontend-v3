@@ -4,12 +4,14 @@
 import { useEffect, useState } from 'react'
 import { getTransactionState, TransactionState, TransactionStep } from './lib'
 import { useTransactionState } from './TransactionStateProvider'
+import useSound from 'use-sound'
 
 export type TransactionStepsResponse = ReturnType<typeof useTransactionSteps>
 
 export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = false) {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
   const { getTransaction } = useTransactionState()
+  const [playGong] = useSound('/sounds/gong.mp3')
 
   const currentStep = steps?.[currentStepIndex]
   const currentTransaction = currentStep ? getTransaction(currentStep.id) : undefined
@@ -56,14 +58,25 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
     steps?.[currentStepIndex]?.onActivated?.()
   }, [currentStepIndex, isLoading, steps.length])
 
+  // On last transaction success, play success sound.
+  // TODO move this to a global tx state management system in later refactor.
+  useEffect(() => {
+    if (lastTransaction?.result.isSuccess) {
+      playGong()
+    }
+  }, [lastTransaction?.result.isSuccess])
+
   return {
     steps,
     isLoading,
     currentStep,
     currentTransaction,
     currentStepIndex,
+    lastTransaction,
     lastTransactionState,
     lastTransactionConfirmingOrConfirmed,
+    goToNextStep,
     isLastStep,
+    setCurrentStepIndex,
   }
 }

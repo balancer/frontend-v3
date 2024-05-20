@@ -5,17 +5,20 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { useDebounce } from 'use-debounce'
 import { areEmptyAmounts } from '../../LiquidityActionHelpers'
-import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { AddLiquidityParams, addLiquidityKeys } from './add-liquidity-keys'
 import { useQuery } from '@tanstack/react-query'
 import { usePool } from '../../../usePool'
 import { sentryMetaForAddLiquidityHandler } from '@/lib/shared/utils/query-errors'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
-export function useAddLiquidityPriceImpactQuery(
-  handler: AddLiquidityHandler,
-  humanAmountsIn: HumanAmountIn[]
-) {
+type Params = {
+  handler: AddLiquidityHandler
+  humanAmountsIn: HumanTokenAmountWithAddress[]
+  enabled: boolean
+}
+
+export function useAddLiquidityPriceImpactQuery({ handler, humanAmountsIn, enabled }: Params) {
   const { pool } = usePool()
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
@@ -37,7 +40,7 @@ export function useAddLiquidityPriceImpactQuery(
   return useQuery({
     queryKey,
     queryFn,
-    enabled: isConnected && !areEmptyAmounts(debouncedHumanAmountsIn),
+    enabled: enabled && isConnected && !areEmptyAmounts(debouncedHumanAmountsIn),
     gcTime: 0,
     meta: sentryMetaForAddLiquidityHandler('Error in add liquidity priceImpact query', params),
     ...onlyExplicitRefetch,

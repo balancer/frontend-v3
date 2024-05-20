@@ -5,7 +5,7 @@ import {
   buildDefaultPoolTestProvider,
 } from '@/test/utils/custom-renderers'
 import { PropsWithChildren } from 'react'
-import { RemoveLiquidityProvider } from '../useRemoveLiquidity'
+import { RemoveLiquidityProvider } from './useRemoveLiquidity'
 
 const PoolProvider = buildDefaultPoolTestProvider(aWjAuraWethPoolElementMock())
 

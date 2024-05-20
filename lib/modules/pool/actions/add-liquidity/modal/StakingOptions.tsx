@@ -4,16 +4,17 @@ import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { Button, Card, Flex, HStack, Icon, Text, VStack } from '@chakra-ui/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { getAprLabel } from '../../../pool.utils'
+import { getAprLabel, getPoolActionPath } from '../../../pool.utils'
 import { usePool } from '../../../usePool'
 
 export function StakingOptions() {
   const { pool } = usePool()
-  const pathname = usePathname()
-
-  const stakePath = pathname.replace('/add-liquidity', '/stake')
   const canStake = !!pool.staking
+  const stakePath = getPoolActionPath({
+    id: pool.id,
+    chain: pool.chain,
+    action: 'stake',
+  })
 
   return (
     <>
@@ -53,7 +54,7 @@ export function StakingOptions() {
             <Text color="grayText">Aura</Text>
             <HStack>
               <Text fontWeight="bold" color="font.primary" fontSize="md" opacity={0.2}>
-                Support coming soon
+                Coming soon
               </Text>
             </HStack>
 
@@ -67,7 +68,6 @@ export function StakingOptions() {
               href={'https://aura.finance/'}
               w="full"
               variant={'secondary'}
-              isDisabled
             >
               Learn more
             </Button>

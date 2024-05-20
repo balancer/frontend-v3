@@ -18,13 +18,14 @@ import {
 } from '@chakra-ui/react'
 import { useEffect, useRef } from 'react'
 import { Address } from 'viem'
-import { AddLiquidityModal } from '../AddLiquidityModal'
+import { AddLiquidityModal } from '../modal/AddLiquidityModal'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
 import { TokenInputs } from './TokenInputs'
+import { TokenInputsWithAddable } from './TokenInputsWithAddable'
 import { usePool } from '../../../usePool'
-import { requiresProportionalInput } from '../../LiquidityActionHelpers'
+import { requiresProportionalInput, supportsProportionalAdds } from '../../LiquidityActionHelpers'
 import { PriceImpactAccordion } from '@/lib/shared/components/accordion/PriceImpactAccordion'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
@@ -35,6 +36,8 @@ import { isNativeOrWrappedNative, isNativeAsset } from '@/lib/modules/tokens/tok
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectModal'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
+import { usePoolRedirect } from '../../../pool.hooks'
+import { GenericError } from '@/lib/shared/components/errors/GenericError'
 
 export function AddLiquidityForm() {
   const {
@@ -42,13 +45,14 @@ export function AddLiquidityForm() {
     validTokens,
     priceImpactQuery,
     simulationQuery,
-    refetchQuote,
     isDisabled,
     disabledReason,
     showAcceptPoolRisks,
     previewModalDisclosure,
-    setNeedsToAcceptHighPI,
     totalUSDValue,
+    addLiquidityTxHash,
+    setNeedsToAcceptHighPI,
+    refetchQuote,
     setWethIsEth,
   } = useAddLiquidity()
 
@@ -58,6 +62,7 @@ export function AddLiquidityForm() {
   const { toCurrency } = useCurrency()
   const tokenSelectDisclosure = useDisclosure()
   const { setValidationError } = useTokenInputsValidation()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
 
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
@@ -77,7 +82,11 @@ export function AddLiquidityForm() {
   }
 
   const onModalClose = () => {
-    previewModalDisclosure.onClose()
+    if (addLiquidityTxHash) {
+      redirectToPoolPage()
+    } else {
+      previewModalDisclosure.onClose()
+    }
   }
 
   const nativeAssets = validTokens.filter(token =>
@@ -98,6 +107,12 @@ export function AddLiquidityForm() {
     })
   }
 
+  useEffect(() => {
+    if (addLiquidityTxHash) {
+      previewModalDisclosure.onOpen()
+    }
+  }, [addLiquidityTxHash])
+
   return (
     <TokenBalancesProvider extTokens={validTokens}>
       <Center h="full" w="full" maxW="lg" mx="auto">
@@ -109,11 +124,15 @@ export function AddLiquidityForm() {
               </Heading>
               <TransactionSettings size="sm" />
             </HStack>
-            <TokenInputs
-              tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
-              requiresProportionalInput={requiresProportionalInput(pool.type)}
-              totalUSDValue={totalUSDValue}
-            />
+            {supportsProportionalAdds(pool) ? (
+              <TokenInputsWithAddable
+                tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
+                requiresProportionalInput={requiresProportionalInput(pool.type)}
+                totalUSDValue={totalUSDValue}
+              />
+            ) : (
+              <TokenInputs tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()} />
+            )}
             <VStack spacing="sm" align="start" w="full">
               <PriceImpactAccordion
                 isDisabled={!priceImpactQuery.data}
@@ -169,6 +188,18 @@ export function AddLiquidityForm() {
               </GridItem>
             </Grid>
             {showAcceptPoolRisks && <AddLiquidityFormCheckbox />}
+            {priceImpactQuery.isError && (
+              <GenericError
+                customErrorName={'Error calculating price impact'}
+                error={priceImpactQuery.error}
+              ></GenericError>
+            )}
+            {simulationQuery.isError && (
+              <GenericError
+                customErrorName={'Error in query simulation'}
+                error={simulationQuery.error}
+              ></GenericError>
+            )}
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}

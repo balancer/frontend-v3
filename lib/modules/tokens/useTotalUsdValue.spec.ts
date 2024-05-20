@@ -2,11 +2,11 @@ import { balAddress, wETHAddress } from '@/lib/debug-helpers'
 import { fakeTokenBySymbol } from '@/test/data/all-gql-tokens.fake'
 import { testHook } from '@/test/utils/custom-renderers'
 import { act } from '@testing-library/react'
-import { HumanAmountIn } from '../liquidity-types'
 import { useTotalUsdValue } from './useTotalUsdValue'
 import { mockTokenPricesList } from '@/test/msw/handlers/Tokens.handlers'
 import { aTokenPriceMock } from '@/lib/modules/tokens/__mocks__/token.builders'
 import { actSleep } from '@/lib/shared/utils/time'
+import { HumanTokenAmountWithAddress } from './token.types'
 
 const balPrice = 2
 const wethPrice = 3
@@ -22,7 +22,7 @@ test('calculates total USD for human amounts in', async () => {
     return useTotalUsdValue(tokens)
   })
 
-  const humanAmountsIn: HumanAmountIn[] = [
+  const humanAmountsIn: HumanTokenAmountWithAddress[] = [
     { tokenAddress: balAddress, humanAmount: '100' },
     { tokenAddress: wETHAddress, humanAmount: '50' },
   ]

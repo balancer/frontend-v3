@@ -1,10 +1,10 @@
-import { getChainId } from '@/lib/config/app.config'
 import { useApproveRelayerStep } from '@/lib/modules/relayer/useApproveRelayerStep'
-import { useApproveMinterStep } from '@/lib/modules/staking/gauge/useMinterApprovalStep'
+import { getChainId } from '@/lib/config/app.config'
 import { TransactionStep } from '@/lib/modules/transactions/transaction-steps/lib'
-import { useMemo } from 'react'
-import { Pool } from '../../usePool'
 import { useClaimAndUnstakeStep } from './useClaimAndUnstakeStep'
+import { Pool } from '../../usePool'
+import { useMemo } from 'react'
+import { useApproveMinterStep } from '@/lib/modules/staking/gauge/useMinterApprovalStep'
 
 export function useClaimAndUnstakeSteps(pool: Pool): {
   isLoading: boolean

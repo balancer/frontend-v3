@@ -14,20 +14,21 @@ import { usePool } from '../../usePool'
 import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 import { RemoveLiquidityType } from './remove-liquidity.types'
-import { Address } from 'viem'
+import { Address, Hash } from 'viem'
 import { toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { hasNestedPools, isGyro } from '../../pool.helpers'
 import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
-import { useRemoveLiquiditySteps } from './modal/useRemoveLiquiditySteps'
+import { useRemoveLiquiditySteps } from './useRemoveLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
 
-export function _useRemoveLiquidity() {
+export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const [singleTokenAddress, setSingleTokenAddress] = useState<Address | undefined>(undefined)
   const [humanBptInPercent, setHumanBptInPercent] = useState<number>(100)
   const [wethIsEth, setWethIsEth] = useState(false)
@@ -101,19 +102,21 @@ export function _useRemoveLiquidity() {
   /**
    * Queries
    */
-  const simulationQuery = useRemoveLiquiditySimulationQuery(
+  const simulationQuery = useRemoveLiquiditySimulationQuery({
     handler,
-    pool.id,
+    poolId: pool.id,
     humanBptIn,
-    wethIsEth && wNativeAsset ? (wNativeAsset.address as Address) : singleTokenOutAddress
-  )
+    tokenOut: wethIsEth && wNativeAsset ? (wNativeAsset.address as Address) : singleTokenOutAddress,
+    enabled: !urlTxHash,
+  })
 
-  const priceImpactQuery = useRemoveLiquidityPriceImpactQuery(
+  const priceImpactQuery = useRemoveLiquidityPriceImpactQuery({
     handler,
-    pool.id,
+    poolId: pool.id,
     humanBptIn,
-    wethIsEth && wNativeAsset ? (wNativeAsset.address as Address) : singleTokenOutAddress
-  )
+    tokenOut: wethIsEth && wNativeAsset ? (wNativeAsset.address as Address) : singleTokenOutAddress,
+    enabled: !urlTxHash,
+  })
 
   /**
    * Step construction
@@ -126,6 +129,11 @@ export function _useRemoveLiquidity() {
     singleTokenOutAddress,
   })
   const transactionSteps = useTransactionSteps(steps)
+
+  const removeLiquidityTxHash =
+    urlTxHash || transactionSteps.lastTransaction?.result?.data?.transactionHash
+
+  const hasQuoteContext = quoteAmountsOut.length > 0
 
   /**
    * Methods
@@ -163,6 +171,10 @@ export function _useRemoveLiquidity() {
         : tokenAmount.token.address,
       toHumanAmount(tokenAmount),
     ])
+  )
+
+  const amountsOut: HumanTokenAmountWithAddress[] = Object.entries(amountOutMap).map(
+    ([address, amount]) => ({ tokenAddress: address as Address, humanAmount: amount })
   )
 
   const usdAmountOutMap: Record<Address, HumanAmount> = Object.fromEntries(
@@ -223,6 +235,9 @@ export function _useRemoveLiquidity() {
     previewModalDisclosure,
     handler,
     wethIsEth,
+    removeLiquidityTxHash,
+    hasQuoteContext,
+    amountsOut,
     setRemovalType,
     setHumanBptInPercent,
     setProportionalType,
@@ -236,8 +251,10 @@ export function _useRemoveLiquidity() {
   }
 }
 
-export function RemoveLiquidityProvider({ children }: PropsWithChildren) {
-  const hook = _useRemoveLiquidity()
+type Props = PropsWithChildren<{ urlTxHash?: Hash }>
+
+export function RemoveLiquidityProvider({ urlTxHash, children }: Props) {
+  const hook = _useRemoveLiquidity(urlTxHash)
   return <RemoveLiquidityContext.Provider value={hook}>{children}</RemoveLiquidityContext.Provider>
 }
 

@@ -26,6 +26,8 @@ export enum PoolVariant {
   v3 = 'v3',
 }
 
+export type PoolAction = 'add-liquidity' | 'remove-liquidity' | 'stake' | 'unstake'
+
 export interface FetchPoolProps {
   id: string
   // chain & variant are not used yet, but will be needed in the future.

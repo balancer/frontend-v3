@@ -9,7 +9,7 @@ import {
   GqlBalancePoolAprSubItem,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
-import { FetchPoolProps, PoolListItem, PoolVariant } from './pool.types'
+import { FetchPoolProps, PoolAction, PoolListItem, PoolVariant } from './pool.types'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { TokenAmountHumanReadable } from '../tokens/token.types'
@@ -56,6 +56,23 @@ export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolPr
 }
 
 // TODO: the following 2 functions (getAprLabel & getTotalAprLabel) most likely need revisiting somewhere in the near future and refactored to just one
+/**
+ * Constructs path to pool action page.
+ * @param {String} id Pool ID could be ID or address depending on variant.
+ * @param {GqlChain} chain Chain enum.
+ * @param {String} variant Pool variant, defaults to v2.
+ * @param {PoolAction} action Pool action.
+ * @returns {String} Path to pool detail page.
+ */
+export function getPoolActionPath({
+  id,
+  chain,
+  variant = PoolVariant.v2,
+  action,
+}: FetchPoolProps & { action: PoolAction }) {
+  return `/pools/${chainToSlugMap[chain]}/${variant}/${id}/${action}`
+}
+
 /**
  * Returns formatted APR value from GraphQL response.
  * @param {GqlPoolAprValue} apr APR value from GraphQL response.

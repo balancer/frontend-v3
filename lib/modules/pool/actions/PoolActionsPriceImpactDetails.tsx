@@ -1,9 +1,8 @@
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { fNum, safeTokenFormat, bn } from '@/lib/shared/utils/numbers'
+import { fNum, bn } from '@/lib/shared/utils/numbers'
 import { HStack, VStack, Text, Tooltip, Icon, Box } from '@chakra-ui/react'
 import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { BPT_DECIMALS } from '../pool.constants'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePool } from '../usePool'
 import { ArrowRight } from 'react-feather'
@@ -30,8 +29,6 @@ export function PoolActionsPriceImpactDetails({
 
   const priceImpactLabel = isNumber(priceImpact) ? fNum('priceImpact', priceImpact) : '-'
 
-  const bptLabel = safeTokenFormat(bptAmount, BPT_DECIMALS, { abbreviated: false })
-
   const priceImpactUsd = bn(priceImpact || 0).times(totalUSDValue)
   const maxSlippageUsd = bn(slippage).div(100).times(totalUSDValue)
 
@@ -44,21 +41,6 @@ export function PoolActionsPriceImpactDetails({
 
   return (
     <VStack spacing="sm" align="start" w="full" fontSize="sm">
-      <HStack justify="space-between" w="full">
-        <Text color="grayText">Expected LP tokens</Text>
-        <HStack>
-          <NumberText color="grayText">{bptLabel}</NumberText>
-          <Tooltip
-            label={`LP tokens you are expected to receive. Does not include potential slippage (${fNum(
-              'slippage',
-              slippage
-            )}).`}
-            fontSize="sm"
-          >
-            <InfoIcon />
-          </Tooltip>
-        </HStack>
-      </HStack>
       <HStack justify="space-between" w="full">
         <Text color="grayText">Price impact</Text>
         <HStack>

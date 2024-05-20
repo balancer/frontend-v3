@@ -11,12 +11,21 @@ import { HumanAmount } from '@balancer/sdk'
 import { useQuery } from '@tanstack/react-query'
 import { sentryMetaForRemoveLiquidityHandler } from '@/lib/shared/utils/query-errors'
 
-export function useRemoveLiquidityPriceImpactQuery(
-  handler: RemoveLiquidityHandler,
-  poolId: string,
-  humanBptIn: HumanAmount,
+type Params = {
+  handler: RemoveLiquidityHandler
+  poolId: string
+  humanBptIn: HumanAmount
   tokenOut: Address
-) {
+  enabled?: boolean
+}
+
+export function useRemoveLiquidityPriceImpactQuery({
+  handler,
+  poolId,
+  humanBptIn,
+  tokenOut,
+  enabled = true,
+}: Params) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
   const debouncedBptIn = useDebounce(humanBptIn, defaultDebounceMs)[0]
@@ -41,7 +50,7 @@ export function useRemoveLiquidityPriceImpactQuery(
   return useQuery({
     queryKey,
     queryFn,
-    enabled: isConnected && Number(debouncedBptIn) > 0,
+    enabled: enabled && isConnected && Number(debouncedBptIn) > 0,
     gcTime: 0,
     meta: sentryMetaForRemoveLiquidityHandler(
       'Error in remove liquidity price impact query',

@@ -10,9 +10,9 @@ import {
 } from '@balancer/sdk'
 import { Pool } from '../../../usePool'
 import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
-import { HumanAmountIn } from '../../liquidity-types'
 import { NestedBuildAddLiquidityInput, NestedQueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 /**
  * NestedAddLiquidityHandler is a handler that implements the
@@ -28,7 +28,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
     this.helpers = new LiquidityActionHelpers(pool)
   }
 
-  public async getPriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number> {
+  public async getPriceImpact(humanAmountsIn: HumanTokenAmountWithAddress[]): Promise<number> {
     if (areEmptyAmounts(humanAmountsIn)) {
       // Avoid price impact calculation when there are no amounts in
       return 0
@@ -38,7 +38,9 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
     return priceImpactABA.decimal
   }
 
-  public async simulate(humanAmountsIn: HumanAmountIn[]): Promise<NestedQueryAddLiquidityOutput> {
+  public async simulate(
+    humanAmountsIn: HumanTokenAmountWithAddress[]
+  ): Promise<NestedQueryAddLiquidityOutput> {
     const addLiquidity = new AddLiquidityNested()
 
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
@@ -76,7 +78,9 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
   /**
    * PRIVATE METHODS
    */
-  private constructSdkInput(humanAmountsIn: HumanAmountIn[]): AddLiquidityNestedInput {
+  private constructSdkInput(
+    humanAmountsIn: HumanTokenAmountWithAddress[]
+  ): AddLiquidityNestedInput {
     const amountsIn = this.helpers.toInputAmounts(humanAmountsIn)
 
     const nonEmptyAmountsIn = amountsIn.filter(a => a.rawAmount !== 0n)

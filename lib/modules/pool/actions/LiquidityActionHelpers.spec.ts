@@ -5,7 +5,6 @@ import {
   shouldUseNestedLiquidity,
   shouldUseRecoveryRemoveLiquidity,
 } from './LiquidityActionHelpers'
-import { HumanAmountIn } from './liquidity-types'
 import { nestedPoolMock } from '../__mocks__/nestedPoolMock'
 import {
   bpt3PoolAddress,
@@ -18,10 +17,11 @@ import {
 import { recoveryPoolMock } from '../__mocks__/recoveryPoolMock'
 import { Pool } from '../usePool'
 import { mock } from 'vitest-mock-extended'
+import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
 
 describe('areEmptyAmounts', () => {
   test('when all humanAmounts are empty, zero or zero with decimals', () => {
-    const humanAmountsIn: HumanAmountIn[] = [
+    const humanAmountsIn: HumanTokenAmountWithAddress[] = [
       { tokenAddress: '0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f', humanAmount: '' },
       { tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', humanAmount: '0' },
       { tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756bb3', humanAmount: '0.00' },
@@ -30,7 +30,7 @@ describe('areEmptyAmounts', () => {
   })
 
   test('when  humanAmounts is an empty array', () => {
-    const humanAmountsIn: HumanAmountIn[] = []
+    const humanAmountsIn: HumanTokenAmountWithAddress[] = []
     expect(areEmptyAmounts(humanAmountsIn)).toBeTruthy()
   })
 })

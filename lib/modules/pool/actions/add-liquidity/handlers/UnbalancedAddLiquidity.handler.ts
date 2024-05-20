@@ -11,9 +11,9 @@ import {
 } from '@balancer/sdk'
 import { Pool } from '../../../usePool'
 import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
-import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 import { SdkBuildAddLiquidityInput, SdkQueryAddLiquidityOutput } from '../add-liquidity.types'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 /**
  * UnbalancedAddLiquidityHandler is a handler that implements the
@@ -29,7 +29,9 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     this.helpers = new LiquidityActionHelpers(pool)
   }
 
-  public async simulate(humanAmountsIn: HumanAmountIn[]): Promise<SdkQueryAddLiquidityOutput> {
+  public async simulate(
+    humanAmountsIn: HumanTokenAmountWithAddress[]
+  ): Promise<SdkQueryAddLiquidityOutput> {
     const addLiquidity = new AddLiquidity()
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
@@ -38,7 +40,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
   }
 
-  public async getPriceImpact(humanAmountsIn: HumanAmountIn[]): Promise<number> {
+  public async getPriceImpact(humanAmountsIn: HumanTokenAmountWithAddress[]): Promise<number> {
     if (areEmptyAmounts(humanAmountsIn)) {
       // Avoid price impact calculation when there are no amounts in
       return 0
@@ -82,7 +84,9 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   /**
    * PRIVATE METHODS
    */
-  private constructSdkInput(humanAmountsIn: HumanAmountIn[]): AddLiquidityUnbalancedInput {
+  private constructSdkInput(
+    humanAmountsIn: HumanTokenAmountWithAddress[]
+  ): AddLiquidityUnbalancedInput {
     const amountsIn = this.helpers.toInputAmounts(humanAmountsIn)
 
     return {

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { describe, expect, test } from 'vitest'
 
-import { useManagedSendTransaction } from '@/lib/modules/web3/contracts/useManagedSendTransaction'
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { testHook } from '@/test/utils/custom-renderers'
@@ -10,10 +9,11 @@ import { ChainId, HumanAmount } from '@balancer/sdk'
 import { act, waitFor } from '@testing-library/react'
 import { UnbalancedAddLiquidityHandler } from '../../pool/actions/add-liquidity/handlers/UnbalancedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from '../../pool/actions/add-liquidity/handlers/selectAddLiquidityHandler'
-import { HumanAmountIn } from '../../pool/actions/liquidity-types'
 import { connectWithDefaultUser } from '../../../../test/utils/wagmi/wagmi-connections'
 import { Address } from 'viem'
 import { mainnetTestPublicClient } from '@/test/utils/wagmi/wagmi-test-clients'
+import { useManagedSendTransaction } from './useManagedSendTransaction'
+import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
 
 const chainId = ChainId.MAINNET
 const account = defaultTestUserAccount
@@ -38,7 +38,7 @@ describe('weighted add flow', () => {
       aWjAuraWethPoolElementMock()
     ) as UnbalancedAddLiquidityHandler
 
-    const humanAmountsIn: HumanAmountIn[] = poolTokens.map(t => ({
+    const humanAmountsIn: HumanTokenAmountWithAddress[] = poolTokens.map(t => ({
       humanAmount: '0.1',
       tokenAddress: t.address,
     }))
