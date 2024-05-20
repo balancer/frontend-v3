@@ -23,7 +23,7 @@ export const TOKEN_FORMAT_A = '0,0.[0000]a'
 // Uses 2 decimals then value is > thousand
 export const TOKEN_FORMAT_A_BIG = '0,0.[00]a'
 export const TOKEN_FORMAT = '0,0.[0000]'
-export const APR_FORMAT = '0.[00]%'
+export const APR_FORMAT = '0.00%'
 export const SLIPPAGE_FORMAT = '0.00%'
 export const FEE_FORMAT = '0.[0000]%'
 export const WEIGHT_FORMAT = '(%0,0)'
@@ -83,7 +83,7 @@ function tokenFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): s
 
 // Formats an APR value as a percentage.
 function aprFormat(apr: Numberish): string {
-  if (bn(apr).lt(APR_LOWER_THRESHOLD)) return '0%'
+  if (bn(apr).lt(APR_LOWER_THRESHOLD)) return '0.00%'
   if (bn(apr).gt(APR_UPPER_THRESHOLD)) return '-'
 
   return numeral(apr.toString()).format(APR_FORMAT)
