@@ -89,7 +89,11 @@ export function SwapPreviewModal({
             )}
           </AnimatePresence>
         </ModalBody>
-        <ActionModalFooter isSuccess={!!swapTxHash} currentStep={transactionSteps.currentStep} />
+        <ActionModalFooter
+          isSuccess={!!swapTxHash}
+          currentStep={transactionSteps.currentStep}
+          onClose={onClose}
+        />
       </ModalContent>
     </Modal>
   )

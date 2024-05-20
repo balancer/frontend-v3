@@ -9,7 +9,7 @@ import { TransactionStep } from '../../../modules/transactions/transaction-steps
 import { PropsWithChildren } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 
-export function SuccessActions() {
+export function SuccessActions({ onClose }: { onClose?: () => void }) {
   const { openNpsModal } = useAppzi()
   const router = useRouter()
   const pathname = usePathname()
@@ -20,7 +20,15 @@ export function SuccessActions() {
       <Divider />
       <HStack justify="space-between" w="full">
         {isSwap ? (
-          <ReturnButton onClick={() => router.push('/swap')}>Return to swap</ReturnButton>
+          <ReturnButton
+            onClick={() => {
+              // window.history.replaceState({}, '', '/swap')
+              // router.push('/swap')
+              onClose?.()
+            }}
+          >
+            Return to swap
+          </ReturnButton>
         ) : (
           <ReturnToPoolButton />
         )}
@@ -60,9 +68,11 @@ function ReturnButton({ onClick, children }: ActionProps) {
 export function ActionModalFooter({
   isSuccess,
   currentStep,
+  onClose,
 }: {
   isSuccess: boolean
   currentStep: TransactionStep
+  onClose?: () => void
 }) {
   return (
     <ModalFooter>
@@ -76,7 +86,7 @@ export function ActionModalFooter({
             transition={{ duration: 0.3 }}
             style={{ width: '100%' }}
           >
-            <SuccessActions />
+            <SuccessActions onClose={onClose} />
           </motion.div>
         ) : (
           <motion.div
