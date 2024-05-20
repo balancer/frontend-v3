@@ -472,8 +472,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
 }
 
 type Props = PropsWithChildren<{
-  pathParams: PathParams //TODO: refactor to remove path Params when tx hash is present
-  urlTxHash?: Hash
+  pathParams: PathParams
 }>
 
 export function SwapProvider({ pathParams, children }: Props) {
