@@ -15,7 +15,7 @@ import { useUserAccount } from '../../web3/useUserAccount'
 export interface BalTokenReward {
   balance: bigint
   decimals: number
-  formattedBalance: string
+  humanBalance: string
   gaugeAddress: string
   pool: PoolListItem
   tokenAddress: Address
@@ -69,7 +69,7 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
         balance,
         // Bal amounts always have 18 decimals
         decimals: BPT_DECIMALS,
-        formattedBalance: formatUnits(balance, BPT_DECIMALS) || '0',
+        humanBalance: formatUnits(balance, BPT_DECIMALS) || '0',
         fiatBalance,
         tokenAddress: networkConfigs[pool.chain].tokens.addresses.bal,
       }

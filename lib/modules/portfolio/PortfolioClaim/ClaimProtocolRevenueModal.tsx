@@ -23,6 +23,7 @@ import { DesktopStepTracker } from '../../transactions/transaction-steps/step-tr
 import { MobileStepTracker } from '../../transactions/transaction-steps/step-tracker/MobileStepTracker'
 import { useClaimProtocolRewardsSteps } from '../useClaimProtocolRewardsSteps'
 import { useTransactionSteps } from '../../transactions/transaction-steps/useTransactionSteps'
+import { isZero } from '@/lib/shared/utils/numbers'
 
 type Props = {
   isOpen: boolean
@@ -51,14 +52,16 @@ export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
             <Card variant="modalSubSection">
               <VStack align="start" spacing="md">
                 <Text color="grayText">You&apos;ll get</Text>
-                {protocolRewardsData?.map((reward, idx) => (
-                  <TokenRow
-                    key={idx}
-                    address={reward.tokenAddress as Hex}
-                    value={reward.formattedBalance}
-                    chain={GqlChain.Mainnet}
-                  />
-                ))}
+                {protocolRewardsData?.map((reward, idx) =>
+                  isZero(reward.humanBalance) ? null : (
+                    <TokenRow
+                      key={idx}
+                      address={reward.tokenAddress as Hex}
+                      value={reward.humanBalance}
+                      chain={GqlChain.Mainnet}
+                    />
+                  )
+                )}
               </VStack>
             </Card>
             <ClaimTotal total={toCurrency(protocolRewardsBalance)} />

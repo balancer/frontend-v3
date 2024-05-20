@@ -4,9 +4,9 @@ import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { polygonTestPublicClient } from '@/test/utils/wagmi/wagmi-test-clients'
 import { gyroPoolMock } from '../../../__mocks__/gyroPoolMock'
 import { Pool } from '../../../usePool'
-import { HumanAmountIn } from '../../liquidity-types'
 import { ProportionalAddLiquidityHandler } from './ProportionalAddLiquidity.handler'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 function selectProportionalHandler(pool: Pool) {
   return selectAddLiquidityHandler(pool) as ProportionalAddLiquidityHandler
@@ -27,7 +27,9 @@ describe('When adding proportional liquidity for a gyro pool', () => {
   test('simulates given a single human amount', async () => {
     const handler = selectProportionalHandler(gyroPoolMock)
 
-    const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '1', tokenAddress: usdcAddress }]
+    const humanAmountsIn: HumanTokenAmountWithAddress[] = [
+      { humanAmount: '1', tokenAddress: usdcAddress },
+    ]
 
     const result = await handler.simulate(humanAmountsIn)
 
@@ -42,7 +44,9 @@ describe('When adding proportional liquidity for a gyro pool', () => {
   })
 
   test('builds Tx Config', async () => {
-    const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '1', tokenAddress: usdcAddress }]
+    const humanAmountsIn: HumanTokenAmountWithAddress[] = [
+      { humanAmount: '1', tokenAddress: usdcAddress },
+    ]
 
     const handler = selectProportionalHandler(gyroPoolMock)
 

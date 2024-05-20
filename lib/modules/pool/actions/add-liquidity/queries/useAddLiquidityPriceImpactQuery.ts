@@ -5,16 +5,16 @@ import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { useDebounce } from 'use-debounce'
 import { areEmptyAmounts } from '../../LiquidityActionHelpers'
-import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
 import { AddLiquidityParams, addLiquidityKeys } from './add-liquidity-keys'
 import { useQuery } from '@tanstack/react-query'
 import { usePool } from '../../../usePool'
 import { sentryMetaForAddLiquidityHandler } from '@/lib/shared/utils/query-errors'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 type Params = {
   handler: AddLiquidityHandler
-  humanAmountsIn: HumanAmountIn[]
+  humanAmountsIn: HumanTokenAmountWithAddress[]
   enabled: boolean
 }
 

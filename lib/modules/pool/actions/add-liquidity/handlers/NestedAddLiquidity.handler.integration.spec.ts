@@ -4,10 +4,10 @@ import { daiAddress, usdcAddress, usdtAddress, wETHAddress } from '@/lib/debug-h
 import { mainnetTestPublicClient } from '@/test/utils/wagmi/wagmi-test-clients'
 import { nestedPoolMock } from '../../../__mocks__/nestedPoolMock'
 import { Pool } from '../../../usePool'
-import { HumanAmountIn } from '../../liquidity-types'
 import { NestedAddLiquidityHandler } from './NestedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 function selectNestedHandler(pool: Pool) {
   return selectAddLiquidityHandler(pool) as NestedAddLiquidityHandler
@@ -17,7 +17,9 @@ describe('When adding nested liquidity for a weighted pool', () => {
   test('has zero price impact', async () => {
     const handler = selectNestedHandler(nestedPoolMock)
 
-    const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '100', tokenAddress: daiAddress }]
+    const humanAmountsIn: HumanTokenAmountWithAddress[] = [
+      { humanAmount: '100', tokenAddress: daiAddress },
+    ]
     const priceImpact = await handler.getPriceImpact(humanAmountsIn)
     expect(priceImpact).toBeGreaterThan(0)
   })
@@ -25,7 +27,9 @@ describe('When adding nested liquidity for a weighted pool', () => {
   test('with single token input', async () => {
     const handler = selectNestedHandler(nestedPoolMock)
 
-    const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '1', tokenAddress: daiAddress }]
+    const humanAmountsIn: HumanTokenAmountWithAddress[] = [
+      { humanAmount: '1', tokenAddress: daiAddress },
+    ]
 
     const result = await handler.simulate(humanAmountsIn)
 
@@ -35,7 +39,7 @@ describe('When adding nested liquidity for a weighted pool', () => {
   test('with multiple token input', async () => {
     const handler = selectNestedHandler(nestedPoolMock)
 
-    const humanAmountsIn: HumanAmountIn[] = [
+    const humanAmountsIn: HumanTokenAmountWithAddress[] = [
       { humanAmount: '1', tokenAddress: wETHAddress },
       { humanAmount: '1', tokenAddress: daiAddress },
       { humanAmount: '1', tokenAddress: usdcAddress },
@@ -48,7 +52,9 @@ describe('When adding nested liquidity for a weighted pool', () => {
   })
 
   test('builds Tx Config', async () => {
-    const humanAmountsIn: HumanAmountIn[] = [{ humanAmount: '1', tokenAddress: daiAddress }]
+    const humanAmountsIn: HumanTokenAmountWithAddress[] = [
+      { humanAmount: '1', tokenAddress: daiAddress },
+    ]
 
     const handler = selectNestedHandler(nestedPoolMock)
 

@@ -13,7 +13,7 @@ import { BPT_DECIMALS } from '../../pool/pool.constants'
 export interface ClaimableReward {
   balance: bigint
   decimals?: number
-  formattedBalance: string
+  humanBalance: string
   gaugeAddress: string
   pool: PoolListItem
   tokenAddress: Address
@@ -94,7 +94,7 @@ export function useClaimableBalances(pools: PoolListItem[]) {
         gaugeAddress,
         balance,
         fiatBalance,
-        formattedBalance: fNum('token', formatUnits(balance, decimals)) || '0',
+        humanBalance: formatUnits(balance, decimals) || '0',
         decimals,
       }
 

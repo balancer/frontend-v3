@@ -5,7 +5,7 @@ import { useCountdown } from 'usehooks-ts'
 import { useRemoveLiquidity } from '../useRemoveLiquidity'
 import { useShouldFreezeQuote } from '@/lib/modules/transactions/transaction-steps/useShouldFreezeQuote'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { removeLiquidityStepId } from './useRemoveLiquidityStep'
+import { removeLiquidityStepId } from '../useRemoveLiquidityStep'
 
 function useRemoveLiquidityTimeout() {
   // This countdown needs to be nested here and not at a higher level, like in

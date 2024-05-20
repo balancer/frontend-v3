@@ -9,11 +9,11 @@ import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWit
 import { useEffect, useState } from 'react'
 import { Address } from 'viem'
 import { usePool } from '../../usePool'
-import { HumanAmountIn } from '../liquidity-types'
 import { useStakingSteps } from './useStakingSteps'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 export function useStaking() {
-  const [humanAmountIn, setHumanAmountIn] = useState<HumanAmountIn | null>(null)
+  const [humanAmountIn, setHumanAmountIn] = useState<HumanTokenAmountWithAddress | null>(null)
 
   const { userAddress, isConnected } = useUserAccount()
   const { pool, chainId } = usePool()
@@ -26,7 +26,7 @@ export function useStaking() {
     const amountIn = {
       tokenAddress: pool.address,
       humanAmount: pool.userBalance?.walletBalance,
-    } as HumanAmountIn
+    } as HumanTokenAmountWithAddress
 
     setHumanAmountIn(amountIn)
   }
