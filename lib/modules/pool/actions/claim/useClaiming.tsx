@@ -10,6 +10,7 @@ import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWit
 import { useDisclosure } from '@chakra-ui/hooks'
 import { PoolListItem } from '../../pool.types'
 import { useClaimAllRewardsSteps } from './useClaimAllRewardsSteps'
+import { safeSum } from '@/lib/shared/utils/numbers'
 
 export function useClaiming(pools: PoolListItem[]) {
   const { isConnected } = useUserAccount()
@@ -24,6 +25,10 @@ export function useClaiming(pools: PoolListItem[]) {
   const balTokenRewardsQuery = useBalTokenRewards(pools)
   const balRewards = balTokenRewardsQuery.balRewardsData
 
+  const allClaimableRewards = [...balRewards, ...nonBalRewards]
+
+  const totalClaimableUsd = safeSum(allClaimableRewards.map(reward => reward.fiatBalance))
+
   const hasNoRewards = !nonBalRewards.length && !balRewards.length
 
   const { steps, isLoading } = useClaimAllRewardsSteps({
@@ -34,12 +39,18 @@ export function useClaiming(pools: PoolListItem[]) {
   const transactionSteps = useTransactionSteps(steps, isLoading)
 
   return {
+    isLoading:
+      claimableBalancesQuery.isLoadingClaimableRewards ||
+      balTokenRewardsQuery.isLoadingBalRewards ||
+      isLoading,
     transactionSteps,
     isDisabled,
     disabledReason,
     previewModalDisclosure,
     nonBalRewards,
     balRewards,
+    allClaimableRewards,
+    totalClaimableUsd,
     hasNoRewards,
   }
 }
