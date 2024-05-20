@@ -27,6 +27,7 @@ export const APR_FORMAT = '0.[00]%'
 export const SLIPPAGE_FORMAT = '0.00%'
 export const FEE_FORMAT = '0.[0000]%'
 export const WEIGHT_FORMAT = '(%0,0)'
+export const WEIGHT_FORMAT_TWO_DECIMALS = '(%0,0.00)'
 export const PRICE_IMPACT_FORMAT = '0.00%'
 export const INTEGER_PERCENTAGE_FORMAT = '0%'
 
@@ -102,9 +103,10 @@ function feePercentFormat(fee: Numberish): string {
 }
 
 // Formats a weight value as a percentage.
-function weightFormat(val: Numberish): string {
+function weightFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
   if (isDust(val)) return '0%'
-  return numeral(val.toString()).format(WEIGHT_FORMAT)
+  const format = abbreviated ? WEIGHT_FORMAT : WEIGHT_FORMAT_TWO_DECIMALS
+  return numeral(val.toString()).format(format)
 }
 
 // Formats a price impact value as a percentage.
@@ -156,7 +158,7 @@ export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): s
     case 'sharePercent':
       return feePercentFormat(val)
     case 'weight':
-      return weightFormat(val)
+      return weightFormat(val, opts)
     case 'priceImpact':
       return priceImpactFormat(val)
     case 'percentage':
