@@ -1,20 +1,19 @@
-import { PoolListItem } from '../../pool/pool.types'
-import { useUserAccount } from '../../web3/useUserAccount'
-import { useMulticall } from '../../web3/contracts/useMulticall'
-import { AbiMap } from '../../web3/contracts/AbiMap'
-import { ClaimableBalanceResult } from '../usePortfolio'
-import { useMemo } from 'react'
-import { formatUnits, Address } from 'viem'
-import { bn } from '@/lib/shared/utils/numbers'
-import { useTokens } from '../../tokens/useTokens'
-import BigNumber from 'bignumber.js'
 import { getChainId } from '@/lib/config/app.config'
-import { HumanAmount } from '@balancer/sdk'
+import { bn, fNum } from '@/lib/shared/utils/numbers'
+import BigNumber from 'bignumber.js'
+import { useMemo } from 'react'
+import { Address, formatUnits } from 'viem'
+import { useReadContracts } from 'wagmi'
+import { PoolListItem } from '../../pool/pool.types'
+import { useTokens } from '../../tokens/useTokens'
+import { AbiMap } from '../../web3/contracts/AbiMap'
+import { useUserAccount } from '../../web3/useUserAccount'
+import { BPT_DECIMALS } from '../../pool/pool.constants'
 
 export interface ClaimableReward {
   balance: bigint
   decimals?: number
-  humanBalance: HumanAmount
+  humanBalance: string
   gaugeAddress: string
   pool: PoolListItem
   tokenAddress: Address
@@ -25,7 +24,7 @@ export type ClaimableBalancesResult = ReturnType<typeof useClaimableBalances>
 
 export function useClaimableBalances(pools: PoolListItem[]) {
   const { userAddress, isConnected } = useUserAccount()
-  const { priceFor } = useTokens()
+  const { priceFor, getToken } = useTokens()
 
   // Get list of all reward tokens from provided pools
   const rewardTokensList = useMemo(
@@ -67,57 +66,41 @@ export function useClaimableBalances(pools: PoolListItem[]) {
     }
   })
 
-  const {
-    results: poolsRewardTokensQuery,
-    refetchAll,
-    isLoading,
-  } = useMulticall(poolsRewardTokensRequests, {
-    enabled: isConnected,
+  const { data, refetch, isLoading } = useReadContracts({
+    contracts: poolsRewardTokensRequests,
+    query: { enabled: isConnected },
   })
 
   // Format claimable rewards data
-  const poolRewardTokensData = Object.values(poolsRewardTokensQuery).reduce(
-    (acc: ClaimableReward[], chain) => {
-      if (!chain.data) return acc
-      const chainData = chain.data
-      const chainDataArr = Object.values(chainData) as Record<string, ClaimableBalanceResult>[]
-      const gaugeAddresses = Object.keys(chainData)
+  const poolRewardTokensData = (data || [])
+    .map((data, i) => {
+      if (data.status === 'failure') return // Discard calls with error
 
-      chainDataArr.forEach((claimableRewardRecord, idx) => {
-        const gaugeAddress = gaugeAddresses[idx]
-        const tokenAddresses = Object.keys(claimableRewardRecord)
-        const results = Object.values(claimableRewardRecord)
+      const balance = data.result as bigint
+      if (!balance) return // Discard calls with no reward
 
-        results.forEach((result, idx) => {
-          if (result.status === 'success') {
-            const balance = result.result
-            if (!balance) return
+      const gaugeData = rewardTokensList[i]
+      const gaugeAddress = gaugeData.gaugeAddress
+      const tokenAddress = gaugeData.tokenAddress
+      const tokenPrice = priceFor(tokenAddress, gaugeData.pool.chain)
+      const decimals = getToken(tokenAddress, gaugeData.pool.chain)?.decimals || BPT_DECIMALS
+      const fiatBalance = tokenPrice
+        ? bn(formatUnits(balance, decimals)).multipliedBy(tokenPrice)
+        : bn(0)
 
-            const gaugeData = rewardTokensList.find(r => r.gaugeAddress === gaugeAddress)
-            if (!gaugeData) return
+      const reward: ClaimableReward = {
+        pool: gaugeData?.pool,
+        tokenAddress,
+        gaugeAddress,
+        balance,
+        fiatBalance,
+        humanBalance: formatUnits(balance, decimals) || '0',
+        decimals,
+      }
 
-            const tokenPrice = priceFor(tokenAddresses[idx], gaugeData.pool.chain)
-
-            const fiatBalance = tokenPrice
-              ? bn(formatUnits(balance, 18)).multipliedBy(tokenPrice)
-              : bn(0)
-
-            acc.push({
-              pool: gaugeData?.pool,
-              tokenAddress: tokenAddresses[idx] as Address,
-              gaugeAddress,
-              balance,
-              fiatBalance,
-              humanBalance: formatUnits(balance, 18) || '0',
-              decimals: 18,
-            })
-          }
-        })
-      })
-      return acc
-    },
-    []
-  )
+      return reward
+    })
+    .filter(Boolean) as ClaimableReward[]
 
   const claimableRewardsByPoolMap = useMemo(() => {
     return poolRewardTokensData.reduce((acc: Record<string, ClaimableReward[]>, reward) => {
@@ -131,7 +114,7 @@ export function useClaimableBalances(pools: PoolListItem[]) {
   return {
     claimableRewardsByPoolMap,
     claimableRewards: poolRewardTokensData,
-    refetchClaimableRewards: refetchAll,
+    refetchClaimableRewards: refetch,
     isLoadingClaimableRewards: isLoading,
   }
 }
