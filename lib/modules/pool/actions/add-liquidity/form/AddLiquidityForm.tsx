@@ -57,7 +57,7 @@ export function AddLiquidityForm() {
   } = useAddLiquidity()
 
   const nextBtn = useRef(null)
-  const { pool, totalApr } = usePool()
+  const { pool, calcPotentialYieldFor } = usePool()
   const { priceImpactColor, priceImpact, setPriceImpact } = usePriceImpact()
   const { toCurrency } = useCurrency()
   const tokenSelectDisclosure = useDisclosure()
@@ -71,7 +71,7 @@ export function AddLiquidityForm() {
   const priceImpactLabel =
     priceImpact !== undefined && priceImpact !== null ? fNum('priceImpact', priceImpact) : '-'
 
-  const weeklyYield = bn(totalUSDValue).times(totalApr).div(52)
+  const weeklyYield = calcPotentialYieldFor(totalUSDValue)
 
   const onModalOpen = async () => {
     previewModalDisclosure.onOpen()

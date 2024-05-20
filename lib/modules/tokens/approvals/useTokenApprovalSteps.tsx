@@ -91,7 +91,7 @@ export function useTokenApprovalSteps({
         onSuccess: () => tokenAllowances.refetchAllowances(),
       } as const satisfies TransactionStep
     })
-  }, [tokenAllowances.allowances, userAddress])
+  }, [tokenAllowances.allowances, userAddress, tokenAmountsToApprove])
 
   return {
     isLoading: tokenAllowances.isAllowancesLoading,
