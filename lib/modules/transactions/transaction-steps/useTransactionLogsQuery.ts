@@ -7,11 +7,15 @@ import { useQuery } from '@tanstack/react-query'
 import { formatUnits, parseAbiItem, Address } from 'viem'
 import { useTransaction } from 'wagmi'
 import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { getChainId } from '@/lib/config/app.config'
+
+const userNotConnected = 'User is not connected'
 
 export type ReceiptProps = { txHash: Address; userAddress: Address }
 export function useAddLiquidityReceipt({ txHash, userAddress }: ReceiptProps) {
-  const query = useTransactionLogsQuery({ txHash, userAddress })
   const { chain } = usePool()
+  const query = useTransactionLogsQuery({ txHash, userAddress, chain })
   const { getToken } = useTokens()
 
   if (!userAddress) {
@@ -25,7 +29,7 @@ export function useAddLiquidityReceipt({ txHash, userAddress }: ReceiptProps) {
 
   const sentTokens: HumanTokenAmountWithAddress[] = query.data.outgoing.map(log => {
     const tokenDecimals = getToken(log.address, chain)?.decimals
-    return _toHumanAmountIn(log.address, log.args.value, tokenDecimals)
+    return _toHumanAmountWithAddress(log.address, log.args.value, tokenDecimals)
   })
 
   const receivedBptAmount = query.data.incoming?.[0]?.args?.value
@@ -40,21 +44,21 @@ export function useAddLiquidityReceipt({ txHash, userAddress }: ReceiptProps) {
 }
 
 export function useRemoveLiquidityReceipt({ txHash, userAddress }: ReceiptProps) {
-  const query = useTransactionLogsQuery({ txHash, userAddress })
   const { chain } = usePool()
+  const query = useTransactionLogsQuery({ txHash, userAddress, chain })
   const { getToken } = useTokens()
 
   if (!userAddress) {
     return {
       isLoading: false,
-      error: 'User is not connected',
+      error: userNotConnected,
       receivedTokens: [],
       sentBptUnits: '',
     }
   }
   const receivedTokens: HumanTokenAmountWithAddress[] = query.data.incoming.map(log => {
     const tokenDecimals = getToken(log.address, chain)?.decimals
-    return _toHumanAmountIn(log.address, log.args.value, tokenDecimals)
+    return _toHumanAmountWithAddress(log.address, log.args.value, tokenDecimals)
   })
 
   const sentBptAmount = query.data.outgoing?.[0]?.args?.value
@@ -68,17 +72,60 @@ export function useRemoveLiquidityReceipt({ txHash, userAddress }: ReceiptProps)
   }
 }
 
+export function useSwapReceipt({ txHash, userAddress, chain }: ReceiptProps & { chain: GqlChain }) {
+  const query = useTransactionLogsQuery({ txHash, userAddress, chain })
+  const { getToken } = useTokens()
+
+  const outgoingData = query.data.outgoing[0]
+  const sentTokenAddress = outgoingData?.address
+  const sentToken = getToken(sentTokenAddress, chain)
+  // console.log({ data: query.data, txHash, chain })
+  const sentHumanAmountWithAddress = _toHumanAmountWithAddress(
+    sentTokenAddress,
+    outgoingData?.args?.value,
+    sentToken?.decimals
+  )
+
+  const incomingData = query.data.incoming[0]
+  const receivedTokenAddress = incomingData?.address
+  const receivedToken = getToken(receivedTokenAddress, chain)
+  const receivedHumanAmountWithAddress = _toHumanAmountWithAddress(
+    receivedTokenAddress,
+    incomingData?.args?.value,
+    receivedToken?.decimals
+  )
+
+  if (!userAddress) {
+    return {
+      isLoading: false,
+      error: userNotConnected,
+      sentToken: null,
+      receivedToken: null,
+    }
+  }
+  return {
+    isLoading: query.isLoading,
+    error: undefined,
+    sentToken: sentHumanAmountWithAddress,
+    receivedToken: receivedHumanAmountWithAddress,
+  }
+}
+
 /*
   rawValue and tokenDecimals should always be valid so we use default values to avoid complex error handling
 */
-function _toHumanAmountIn(tokenAddress: Address, rawValue = 0n, tokenDecimals = 18) {
+function _toHumanAmountWithAddress(tokenAddress: Address, rawValue = 0n, tokenDecimals = 18) {
   const humanAmount = formatUnits(rawValue, tokenDecimals)
   return { tokenAddress: tokenAddress, humanAmount: humanAmount } as HumanTokenAmountWithAddress
 }
 
-export function useTransactionLogsQuery({ txHash, userAddress }: ReceiptProps) {
-  const { pool, chainId } = usePool()
-  const viemClient = getViemClient(pool.chain)
+export function useTransactionLogsQuery({
+  txHash,
+  userAddress,
+  chain,
+}: ReceiptProps & { chain: GqlChain }) {
+  const chainId = getChainId(chain)
+  const viemClient = getViemClient(chain)
   const receipt = useTransaction({ hash: txHash, chainId })
 
   const outgoingLogsQuery = useQuery({

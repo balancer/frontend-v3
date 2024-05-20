@@ -11,9 +11,9 @@ import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { RemoveLiquidityPreview } from './RemoveLiquidityPreview'
 import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
-import { TransactionModalHeader } from '../../PoolActionModalHeader'
+import { TransactionModalHeader } from '../../../../../shared/components/modals/TransactionModalHeader'
 import { AnimatePresence, motion } from 'framer-motion'
-import { PoolActionModalFooter } from '../../PoolActionModalFooter'
+import { ActionModalFooter } from '../../../../../shared/components/modals/ActionModalFooter'
 import { RemoveLiquidityReceipt } from './RemoveLiquidityReceipt'
 
 type Props = {
@@ -89,7 +89,7 @@ export function RemoveLiquidityModal({
             )}
           </AnimatePresence>
         </ModalBody>
-        <PoolActionModalFooter
+        <ActionModalFooter
           isSuccess={!!removeLiquidityTxHash}
           currentStep={transactionSteps.currentStep}
         />

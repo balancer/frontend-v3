@@ -16,10 +16,10 @@ import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
 import { useStake } from './StakeProvider'
 import { usePool } from '../../usePool'
-import { TransactionModalHeader } from '../PoolActionModalHeader'
-import { PoolActionModalFooter } from '../PoolActionModalFooter'
 import { StakePreview } from './StakePreview'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
+import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
+import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 
 type Props = {
   isOpen: boolean
@@ -63,10 +63,7 @@ export function StakeModal({
             <StakePreview stakableBalance={quoteAmountIn} stakableBalanceUsd={quoteAmountInUsd} />
           </VStack>
         </ModalBody>
-        <PoolActionModalFooter
-          isSuccess={!!stakeTxHash}
-          currentStep={transactionSteps.currentStep}
-        />
+        <ActionModalFooter isSuccess={!!stakeTxHash} currentStep={transactionSteps.currentStep} />
       </ModalContent>
     </Modal>
   )

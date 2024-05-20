@@ -2,7 +2,13 @@ import { DefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers
 import { waitFor } from '@testing-library/react'
 
 import { Address, Hash } from 'viem'
-import { useAddLiquidityReceipt, useRemoveLiquidityReceipt } from './useTransactionLogsQuery'
+import {
+  useAddLiquidityReceipt,
+  useRemoveLiquidityReceipt,
+  useSwapReceipt,
+} from './useTransactionLogsQuery'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 
 async function testAddReceipt(userAddress: Address, txHash: Hash) {
   const { result } = testHook(() => useAddLiquidityReceipt({ txHash, userAddress }), {
@@ -13,6 +19,13 @@ async function testAddReceipt(userAddress: Address, txHash: Hash) {
 
 async function testRemoveReceipt(userAddress: Address, txHash: Hash) {
   const { result } = testHook(() => useRemoveLiquidityReceipt({ txHash, userAddress }), {
+    wrapper: DefaultPoolTestProvider,
+  })
+  return result
+}
+
+async function testSwapReceipt(userAddress: Address, txHash: Hash, chain: GqlChain) {
+  const { result } = testHook(() => useSwapReceipt({ txHash, userAddress, chain }), {
     wrapper: DefaultPoolTestProvider,
   })
   return result
@@ -64,6 +77,50 @@ test('queries remove liquidity transaction', async () => {
   ])
 
   expect(result.current.sentBptUnits).toBe('6439.400687368663510166')
+})
+
+test('queries swap transaction', async () => {
+  // https://polygonscan.com/tx/0x11380dcffb24c512da18f032d9f7354d154cfda6bbab0633df182fcd202c4244
+
+  const userAddress = '0xf76142b79Db34E57852d68F9c52C0E24f7349647'
+  const txHash = '0x11380dcffb24c512da18f032d9f7354d154cfda6bbab0633df182fcd202c4244'
+
+  const result = await testSwapReceipt(userAddress, txHash, GqlChain.Polygon)
+
+  await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+
+  expect(result.current.sentToken).toEqual({
+    humanAmount: '1',
+    tokenAddress: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
+  })
+
+  expect(result.current.receivedToken).toEqual({
+    humanAmount: '1.419839650912753603',
+    tokenAddress: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
+  })
+})
+test.only('queries swap transaction2', async () => {
+  // https://polygonscan.com/tx/0x11380dcffb24c512da18f032d9f7354d154cfda6bbab0633df182fcd202c4244
+
+  const userAddress = defaultTestUserAccount
+  const txHash = '0x60ea9d764740d4ec3992297c4267e76859c6ef1931689ab7f2a231fa7698e654'
+
+  const result = await testSwapReceipt(userAddress, txHash, GqlChain.Mainnet)
+
+  await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+
+  console.log(result.current.sentToken)
+  console.log(result.current.receivedToken)
+
+  // expect(result.current.sentToken).toEqual({
+  //   humanAmount: '1',
+  //   tokenAddress: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
+  // })
+
+  // expect(result.current.receivedToken).toEqual({
+  //   humanAmount: '1.419839650912753603',
+  //   tokenAddress: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
+  // })
 })
 
 test('returns is loading when user is not provided', async () => {
