@@ -18,6 +18,7 @@ import { Address } from 'viem'
 import { BalTokenReward } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
 import { ClaimableReward } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
+import { isZero } from '@/lib/shared/utils/numbers'
 
 type Props = {
   isOpen: boolean
@@ -36,11 +37,11 @@ export function ClaimModal({
   const { transactionSteps, nonBalRewards, balRewards, hasNoRewards } = useClaiming([pool])
 
   function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
-    if (reward.formattedBalance === '0') return null
+    if (isZero(reward.humanBalance)) return null
     return (
       <TokenRow
         address={reward.tokenAddress}
-        value={reward.formattedBalance}
+        value={reward.humanBalance}
         chain={reward.pool.chain}
       />
     )

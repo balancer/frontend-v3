@@ -66,6 +66,24 @@ export function captureFatalError(
 }
 
 /**
+ * Only used in edge-cases when we want to capture a non-fatal error outside the context of a react-query
+ */
+type NonFatalErrorParams = {
+  error: unknown
+  errorName: string
+  errorMessage?: string
+  extra?: Extras
+}
+export function captureNonFatalError({
+  error,
+  errorName,
+  extra = {},
+  errorMessage = '',
+}: NonFatalErrorParams) {
+  captureSentryError(error, createNonFatalMetadata(errorName, errorMessage, extra))
+}
+
+/**
  * Used by all queries to capture fatal sentry errors with metadata
  */
 export function createFatalErrorMetadata(errorName: string, errorMessage: string, extra: Extras) {
@@ -130,6 +148,38 @@ function createFatalMetadata(
   const context: Partial<ScopeContext> = {
     extra,
     level: 'fatal',
+  }
+  return {
+    errorMessage,
+    errorName,
+    context,
+  }
+}
+
+function createNonFatalMetadata(
+  errorName: string,
+  errorMessage = '',
+  extra: Extras = {}
+): SentryMetadata {
+  const context: Partial<ScopeContext> = {
+    extra,
+    level: 'error',
+  }
+  return {
+    errorMessage,
+    errorName,
+    context,
+  }
+}
+
+export function createErrorMetadata(
+  errorName: string,
+  errorMessage: string,
+  extra: Extras
+): SentryMetadata {
+  const context: Partial<ScopeContext> = {
+    extra,
+    level: 'error',
   }
   return {
     errorMessage,

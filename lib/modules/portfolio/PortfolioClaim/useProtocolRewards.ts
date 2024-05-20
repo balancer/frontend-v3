@@ -5,6 +5,7 @@ import networkConfigs from '@/lib/config/networks'
 import { formatUnits } from 'viem'
 import { useTokens } from '../../tokens/useTokens'
 import { bn } from '@/lib/shared/utils/numbers'
+import { BPT_DECIMALS } from '../../pool/pool.constants'
 
 export const claimableVeBalRewardsTokens: string[] = [
   '0x7B50775383d3D6f0215A8F290f2C9e2eEBBEceb2', // bb-a-USD v1
@@ -34,12 +35,12 @@ export function useProtocolRewards() {
         return (data as bigint[]).map((clBalance, index) => {
           const tokenAddress = claimableVeBalRewardsTokens[index]
           const tokenPrice = priceFor(tokenAddress, networkConfigs.MAINNET.chain)
-          const formattedBalance = formatUnits(clBalance, 18)
+          const humanBalance = formatUnits(clBalance, BPT_DECIMALS)
           return {
             tokenAddress,
             balance: clBalance,
-            formattedBalance,
-            fiatBalance: bn(formattedBalance).multipliedBy(tokenPrice),
+            humanBalance,
+            fiatBalance: bn(humanBalance).multipliedBy(tokenPrice),
           }
         })
       },
