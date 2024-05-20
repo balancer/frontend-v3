@@ -1,23 +1,18 @@
 'use client'
 
-import { Grid, GridItem, Stack } from '@chakra-ui/react'
+import { Grid, GridItem } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
 import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
 import { PoolDetailStatsChart } from './PoolDetailStatsChart'
 import { PoolDetailAttributesRisksContracts } from './PoolDetailAttributesRisksContracts'
 import { usePool } from '../usePool'
 import PoolMyLiquidity from './PoolMyLiquidity'
-import { useEffect, useState } from 'react'
+import { bn } from '@/lib/shared/utils/numbers'
 
 export function PoolDetail() {
-  const { isLoading, pool } = usePool()
-  const [showMyLiquidity, setShowMyLiquidity] = useState(false)
+  const { pool } = usePool()
 
-  useEffect(() => {
-    if (!isLoading && pool.userBalance?.totalBalance !== '0') {
-      setShowMyLiquidity(true)
-    }
-  }, [isLoading])
+  const userHasLiquidity = bn(pool.userBalance?.totalBalance || '0').gt(0)
 
   return (
     <Grid
@@ -27,7 +22,7 @@ export function PoolDetail() {
       templateAreas={`"stats-chart"
                       "activity"
                       "composition"
-                      ${showMyLiquidity ? '"my-liquidity"' : ''}
+                      ${userHasLiquidity ? '"my-liquidity"' : ''}
                       "attributes-risks-contracts"`}
     >
       <GridItem area="stats-chart">
@@ -39,7 +34,7 @@ export function PoolDetail() {
       <GridItem area="composition">
         <PoolComposition />
       </GridItem>
-      {showMyLiquidity && (
+      {userHasLiquidity && (
         <GridItem area="my-liquidity">
           <PoolMyLiquidity />
         </GridItem>

@@ -72,7 +72,11 @@ export function PoolStats() {
         <MemoizedAprTooltip
           data={pool.dynamicData.apr}
           poolId={pool.id}
-          textProps={{ fontWeight: 'medium', fontSize: '2xl', lineHeight: '28px' }}
+          textProps={{
+            fontWeight: 'medium',
+            fontSize: '2xl',
+            lineHeight: '28px',
+          }}
         />
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
