@@ -20,10 +20,11 @@ export function useApproveRelayerStep(chainId: SupportedChainId): TransactionSte
 
   const labels: TransactionLabels = {
     title: 'Approve relayer',
+    description: 'Approve the Balancer relayer.',
     init: 'Approve relayer',
-    confirming: 'Confirm relayer approval in wallet',
-    tooltip: 'TODO',
-    description: `🎉 Relayer Approved`,
+    confirming: 'Confirming approval...',
+    confirmed: 'Relayer approved!',
+    tooltip: 'Approve the Balancer relayer.',
   }
 
   const txSimulationMeta = sentryMetaForWagmiSimulation(

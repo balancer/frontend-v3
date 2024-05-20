@@ -58,9 +58,13 @@ export function UnstakeModal({
     >
       <FireworksOverlay startFireworks={!!unstakeTxHash} />
 
-      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop && !unstakeTxHash)}>
+      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && <DesktopStepTracker chain={pool.chain} transactionSteps={transactionSteps} />}
-        <TransactionModalHeader label="Stake LP tokens" txHash={unstakeTxHash} chain={pool.chain} />
+        <TransactionModalHeader
+          label="Unstake LP tokens"
+          txHash={unstakeTxHash}
+          chain={pool.chain}
+        />
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="sm" w="full">

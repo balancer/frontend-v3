@@ -25,7 +25,7 @@ export function _useUnstake() {
   const [quoteRewardAmounts, setQuoteRewardAmounts] = useState<HumanTokenAmountWithAddress[]>([])
   const [quoteTotalClaimableUsd, setQuoteTotalClaimableUsd] = useState<string>('0')
 
-  const { pool, isLoadingOnchainUserBalances } = usePool()
+  const { pool, isLoadingOnchainUserBalances, refetch: refetchPoolBalances } = usePool()
   const { isConnected } = useUserAccount()
 
   const {
@@ -46,7 +46,7 @@ export function _useUnstake() {
     [allClaimableRewards]
   )
 
-  const { steps, isLoading } = useClaimAndUnstakeSteps(pool)
+  const { steps, isLoading } = useClaimAndUnstakeSteps(pool, refetchPoolBalances)
   const transactionSteps = useTransactionSteps(steps, isLoading)
 
   const unstakeTxHash = transactionSteps.lastTransaction?.result?.data?.transactionHash

@@ -51,7 +51,7 @@ export function StakeModal({
     >
       <FireworksOverlay startFireworks={!!stakeTxHash} />
 
-      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop && !stakeTxHash)}>
+      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && <DesktopStepTracker chain={pool.chain} transactionSteps={transactionSteps} />}
         <TransactionModalHeader label="Stake LP tokens" txHash={stakeTxHash} chain={pool.chain} />
         <ModalCloseButton />
