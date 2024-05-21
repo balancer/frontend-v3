@@ -104,7 +104,6 @@ export function PoolComposition() {
       alignItems="center"
       justifyContent="center"
       position="relative"
-      p="md"
     >
       <Grid w="full" h="full" templateColumns={{ base: '1fr)', lg: 'repeat(2,1fr)' }} gap="md">
         <GridItem>

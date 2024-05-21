@@ -53,7 +53,7 @@ export default function PoolStatsOverview() {
   }, [pool])
 
   return (
-    <Card h="full" position="relative" p="md">
+    <Card h="full" position="relative">
       <NoisyCard
         cardProps={COMMON_NOISY_CARD_PROPS.cardProps}
         contentProps={COMMON_NOISY_CARD_PROPS.contentProps}
