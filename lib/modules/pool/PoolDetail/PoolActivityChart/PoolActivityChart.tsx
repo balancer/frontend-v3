@@ -1,7 +1,17 @@
 /* eslint-disable max-len */
 'use client'
 import ReactECharts from 'echarts-for-react'
-import { Box, Card, Divider, HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  Card,
+  Divider,
+  HStack,
+  Heading,
+  Skeleton,
+  Stack,
+  Text,
+  VStack,
+} from '@chakra-ui/react'
 import { usePoolActivityChart } from './usePoolActivityChart'
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { balTheme } from '@/lib/shared/services/chakra/theme'
@@ -53,7 +63,10 @@ export function PoolActivityChart() {
         {isLoading && <Skeleton w="100%" h="100%" position="absolute" />}
 
         <Box opacity={isLoading ? 0 : 1}>
-          <HStack
+          <Stack
+            w="full"
+            direction={isExpanded ? { base: 'column', sm: 'row' } : 'row'}
+            justify="space-between"
             width="full"
             justifyContent="space-between"
             alignItems="start"
@@ -101,7 +114,7 @@ export function PoolActivityChart() {
                 _groupHover={{ color: 'green.400 !important' }}
               />
             )}
-          </HStack>
+          </Stack>
           {chartOption && (
             <Box>
               <motion.div
