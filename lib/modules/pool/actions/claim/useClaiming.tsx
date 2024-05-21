@@ -33,9 +33,12 @@ export function useClaiming(pools: PoolListItem[]) {
   })
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
+  const claimTxHash = transactionSteps.lastTransaction?.result?.data?.transactionHash
+
   return {
     isLoading: isLoadingData || isLoadingSteps,
     transactionSteps,
+    claimTxHash,
     isDisabled,
     disabledReason,
     previewModalDisclosure,

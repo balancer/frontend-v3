@@ -1,6 +1,6 @@
 import { fNum } from '@/lib/shared/utils/numbers'
 import { PoolListItem } from './pool.types'
-import { Text, TextProps } from '@chakra-ui/react'
+import { HStack, Text, TextProps } from '@chakra-ui/react'
 import { FeaturedPool, Pool } from './usePool'
 
 export function PoolName({
@@ -16,16 +16,18 @@ export function PoolName({
   // }
 
   return (
-    <Text textAlign="center" display="flex" {...rest}>
+    <HStack alignItems="center" justify="start">
       {displayTokens.map((token, idx) => {
         return (
-          <Text as="span" fontWeight="bold" key={token.address}>
-            {token.nestedTokens ? token.name : token.symbol}
-            {token.weight && ` ${fNum('weight', token.weight || '')}`}
-            {idx <= displayTokens.length - 2 && ' / '}
-          </Text>
+          <HStack key={token.address} alignItems="center" justify="start">
+            <Text as="span" fontWeight="bold" {...rest}>
+              {token.nestedTokens ? token.name : token.symbol}
+              {token.weight && ` ${fNum('weight', token.weight || '')}`}
+            </Text>
+            <Text {...rest}>{idx <= displayTokens.length - 2 && '/'}</Text>
+          </HStack>
         )
       })}
-    </Text>
+    </HStack>
   )
 }

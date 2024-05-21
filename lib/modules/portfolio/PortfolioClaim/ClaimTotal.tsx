@@ -7,11 +7,11 @@ type Props = {
 export function ClaimTotal({ total }: Props) {
   return (
     <Card variant="modalSubSection">
-      <HStack justify="space-between">
+      <HStack justify="space-between" alignItems="end">
         <Text size="lg" variant="secondary">
-          Total:
+          Total
         </Text>
-        <Text size="lg" variant="secondary">
+        <Text fontSize="2xl" fontWeight="bold" variant="special">
           {total}
         </Text>
       </HStack>
