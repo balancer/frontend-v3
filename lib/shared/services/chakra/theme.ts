@@ -108,11 +108,15 @@ export const balColors = {
   gradient: {
     // dusk: 'linear(to-tr, purple.300 5%, #D7CBE7 50%, #EAA879 95%)',
     // sand: 'linear(to-t, #E6C6A0 0%, #E5D3BE 100%)',
-    
-    dawnLight: 'linear-gradient(90deg, hsla(245, 97%, 76%, 1) 0%, hsla(266, 85%, 69%, 1) 40%, hsla(9, 85%, 71%, 1) 100%)',
-    dawnLightAlpha15: 'linear-gradient(90deg, hsla(245, 97%, 76%, 0.15) 0%, hsla(266, 85%, 69%, 0.15) 40%, hsla(9, 85%, 71%, 0.15) 100%)',
-    dawnDark: 'linear-gradient(90deg, hsla(244, 78%, 82%, 1) 0%, hsla(266, 37%, 85%, 1) 25%, hsla(0, 36%, 84%, 1) 50%, hsla(25, 73%, 70%, 1) 100%)',
-    dawnDarkAlpha15: 'linear-gradient(90deg, hsla(244, 78%, 82%, 0.15) 0%, hsla(266, 37%, 85%, 0.15) 25%, hsla(0, 36%, 84%, 0.15) 50%, hsla(25, 73%, 70%, 0.15) 100%)',
+
+    dawnLight:
+      'linear-gradient(90deg, hsla(245, 97%, 76%, 1) 0%, hsla(266, 85%, 69%, 1) 40%, hsla(9, 85%, 71%, 1) 100%)',
+    dawnLightAlpha15:
+      'linear-gradient(90deg, hsla(245, 97%, 76%, 0.15) 0%, hsla(266, 85%, 69%, 0.15) 40%, hsla(9, 85%, 71%, 0.15) 100%)',
+    dawnDark:
+      'linear-gradient(90deg, hsla(244, 78%, 82%, 1) 0%, hsla(266, 37%, 85%, 1) 25%, hsla(0, 36%, 84%, 1) 50%, hsla(25, 73%, 70%, 1) 100%)',
+    dawnDarkAlpha15:
+      'linear-gradient(90deg, hsla(244, 78%, 82%, 0.15) 0%, hsla(266, 37%, 85%, 0.15) 25%, hsla(0, 36%, 84%, 0.15) 50%, hsla(25, 73%, 70%, 0.15) 100%)',
     sunsetLight: 'linear-gradient(45deg, #F06147 0%, #EA9A43 100%)',
     sunsetDark: 'linear-gradient(45deg, #F06147 0%, #EA9A43 100%)',
     sandLight: 'linear-gradient(180deg, #E5D3BE 0%, #E6C6A0 100%)',
@@ -350,7 +354,7 @@ export const tokens = {
       '2xl':
         '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000000F, 24px 24px 24px -12px #0000000F, 42px 42px 42px -24px #0000000F, -0.5px -0.5px 0px 0px #FFFFFF26',
       '3xl':
-        '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000000F, 24px 24px 24px -12px #0000000F, 42px 42px 42px -24px #0000000F, 0px 42px 84px 0 rgba(0,0,0,0.3), -0.5px -0.5px 0px 0px #FFFFFF26',        
+        '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000000F, 24px 24px 24px -12px #0000000F, 42px 42px 42px -24px #0000000F, 0px 42px 84px 0 rgba(0,0,0,0.3), -0.5px -0.5px 0px 0px #FFFFFF26',
       shadowInnerBase:
         '0px 2px 4px 0px rgba(0, 0, 0, 0.10) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.10) inset, 0px 10px 20px 0px rgba(0, 0, 0, 0.10) inset',
       btnDefault:
@@ -470,7 +474,7 @@ export const balTheme = {
         specialAlpha15: {
           default: tokens.colors.light.background.specialAlpha15,
           _dark: tokens.colors.dark.background.specialAlpha15,
-        },        
+        },
         specialSecondary: {
           default: tokens.colors.light.background.specialSecondary,
           _dark: tokens.colors.dark.background.specialSecondary,
@@ -648,7 +652,7 @@ export const balTheme = {
         secondaryAlpha50: {
           default: tokens.colors.light.text.secondaryAlpha50,
           _dark: tokens.colors.dark.text.secondaryAlpha50,
-        },        
+        },
         primaryGradient: {
           default: tokens.colors.light.text.primaryGradient,
           _dark: tokens.colors.dark.text.primaryGradient,
@@ -1391,6 +1395,14 @@ export const balTheme = {
         },
         header: {
           color: 'font.primary',
+          letterSpacing: '-0.04rem',
+        },
+        overlay: {
+          bg: 'rgba(0,0,0,0.85)',
+          backdropFilter: 'blur(4px)',
+          _dark: {
+            bg: 'rgba(0,0,0,0.7)',
+          },
         },
       },
       defaultProps: {
@@ -1656,13 +1668,12 @@ export const balTheme = {
     },
     Divider: {
       baseStyle: {
-        borderColor: 'brown.200',
+        borderColor: 'brown.100',
         borderWidth: '1px',
-        boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 1)',
-        opacity: "0.4",
+        boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.8)',        
         _dark: {
           borderColor: 'gray.800',
-          boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.15)',
+          boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.1)',
         },
       },
     },
