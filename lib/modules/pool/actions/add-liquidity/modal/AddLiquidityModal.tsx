@@ -15,6 +15,7 @@ import { ActionModalFooter } from '../../../../../shared/components/modals/Actio
 import { AnimatePresence, motion } from 'framer-motion'
 import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
 import { TransactionModalHeader } from '../../../../../shared/components/modals/TransactionModalHeader'
+import { ReturnToPoolButton } from '@/lib/shared/components/modals/return.buttons'
 
 type Props = {
   isOpen: boolean
@@ -90,7 +91,9 @@ export function AddLiquidityModal({
         <ActionModalFooter
           isSuccess={!!addLiquidityTxHash}
           currentStep={transactionSteps.currentStep}
-        />
+        >
+          <ReturnToPoolButton />
+        </ActionModalFooter>
       </ModalContent>
     </Modal>
   )

@@ -15,6 +15,7 @@ import { TransactionModalHeader } from '../../../../../shared/components/modals/
 import { AnimatePresence, motion } from 'framer-motion'
 import { ActionModalFooter } from '../../../../../shared/components/modals/ActionModalFooter'
 import { RemoveLiquidityReceipt } from './RemoveLiquidityReceipt'
+import { ReturnToPoolButton } from '@/lib/shared/components/modals/return.buttons'
 
 type Props = {
   isOpen: boolean
@@ -92,7 +93,9 @@ export function RemoveLiquidityModal({
         <ActionModalFooter
           isSuccess={!!removeLiquidityTxHash}
           currentStep={transactionSteps.currentStep}
-        />
+        >
+          <ReturnToPoolButton />
+        </ActionModalFooter>
       </ModalContent>
     </Modal>
   )

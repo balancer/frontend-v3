@@ -1,37 +1,19 @@
 import { useAppzi } from '@/lib/shared/hooks/useAppzi'
 import { Button, Divider, HStack, ModalFooter, VStack } from '@chakra-ui/react'
-import Link from 'next/link'
-import { CornerDownLeft, MessageSquare, ThumbsUp } from 'react-feather'
-import { usePool } from '../../../modules/pool/usePool'
-import { usePoolRedirect } from '../../../modules/pool/pool.hooks'
 import { AnimatePresence, motion } from 'framer-motion'
-import { TransactionStep } from '../../../modules/transactions/transaction-steps/lib'
+import Link from 'next/link'
 import { PropsWithChildren } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
+import { MessageSquare, ThumbsUp } from 'react-feather'
+import { TransactionStep } from '../../../modules/transactions/transaction-steps/lib'
 
-export function SuccessActions({ onClose }: { onClose?: () => void }) {
+export function SuccessActions({ children }: PropsWithChildren) {
   const { openNpsModal } = useAppzi()
-  const router = useRouter()
-  const pathname = usePathname()
-  const isSwap = pathname.startsWith('/swap')
 
   return (
     <VStack w="full">
       <Divider />
       <HStack justify="space-between" w="full">
-        {isSwap ? (
-          <ReturnButton
-            onClick={() => {
-              // window.history.replaceState({}, '', '/swap')
-              // router.push('/swap')
-              onClose?.()
-            }}
-          >
-            Return to swap
-          </ReturnButton>
-        ) : (
-          <ReturnToPoolButton />
-        )}
+        {children}
         <Button variant="ghost" leftIcon={<ThumbsUp size="14" />} size="xs" onClick={openNpsModal}>
           Give feedback
         </Button>
@@ -50,30 +32,11 @@ export function SuccessActions({ onClose }: { onClose?: () => void }) {
   )
 }
 
-function ReturnToPoolButton() {
-  const { pool } = usePool()
-  const { redirectToPoolPage } = usePoolRedirect(pool)
-  return <ReturnButton onClick={redirectToPoolPage}>Return to pool</ReturnButton>
-}
-
-type ActionProps = PropsWithChildren<{ onClick: () => void }>
-function ReturnButton({ onClick, children }: ActionProps) {
-  return (
-    <Button variant="ghost" leftIcon={<CornerDownLeft size="14" />} size="xs" onClick={onClick}>
-      {children}
-    </Button>
-  )
-}
-
-export function ActionModalFooter({
-  isSuccess,
-  currentStep,
-  onClose,
-}: {
+type Props = PropsWithChildren<{
   isSuccess: boolean
   currentStep: TransactionStep
-  onClose?: () => void
-}) {
+}>
+export function ActionModalFooter({ isSuccess, currentStep, children }: Props) {
   return (
     <ModalFooter>
       <AnimatePresence mode="wait" initial={false}>
@@ -86,7 +49,7 @@ export function ActionModalFooter({
             transition={{ duration: 0.3 }}
             style={{ width: '100%' }}
           >
-            <SuccessActions onClose={onClose} />
+            <SuccessActions>{children}</SuccessActions>
           </motion.div>
         ) : (
           <motion.div
