@@ -79,7 +79,6 @@ export function useSwapReceipt({ txHash, userAddress, chain }: ReceiptProps & { 
   const outgoingData = query.data.outgoing[0]
   const sentTokenAddress = outgoingData?.address
   const sentToken = getToken(sentTokenAddress, chain)
-  // console.log({ data: query.data, txHash, chain })
   const sentHumanAmountWithAddress = _toHumanAmountWithAddress(
     sentTokenAddress,
     outgoingData?.args?.value,
