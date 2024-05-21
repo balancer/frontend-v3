@@ -3,8 +3,8 @@ import { TransactionStateProvider } from '@/lib/modules/transactions/transaction
 
 export default function PoolPage() {
   return (
-    <TransactionStateProvider>
-      <PoolDetail />
-    </TransactionStateProvider>
+    // <TransactionStateProvider>
+    <PoolDetail />
+    // </TransactionStateProvider>
   )
 }

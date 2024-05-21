@@ -6,10 +6,14 @@ import { useUserAccount } from '../web3/useUserAccount'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 const approveRelayerStepId = 'approve-relayer'
-export function useApproveRelayerStep(chainId: SupportedChainId): TransactionStep {
+
+export function useApproveRelayerStep(chainId: SupportedChainId): {
+  isLoading: boolean
+  step: TransactionStep
+} {
   const { userAddress, isConnected } = useUserAccount()
   const config = getNetworkConfig(chainId)
 
@@ -48,8 +52,8 @@ export function useApproveRelayerStep(chainId: SupportedChainId): TransactionSte
     txSimulationMeta,
   }
 
-  return useMemo(
-    () => ({
+  const step = useMemo(
+    (): TransactionStep => ({
       id: approveRelayerStepId,
       stepType: 'approveBatchRelayer',
       labels,
@@ -60,4 +64,9 @@ export function useApproveRelayerStep(chainId: SupportedChainId): TransactionSte
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [hasApprovedRelayer, isConnected, isLoading]
   )
+
+  return {
+    isLoading,
+    step,
+  }
 }

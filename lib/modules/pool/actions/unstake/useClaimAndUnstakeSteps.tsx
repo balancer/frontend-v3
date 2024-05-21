@@ -15,7 +15,8 @@ export function useClaimAndUnstakeSteps(
 } {
   const chainId = getChainId(pool.chain)
 
-  const approveRelayerStep = useApproveRelayerStep(chainId)
+  const { step: relayerApprovalStep, isLoading: isLoadingRelayerApprovalStep } =
+    useApproveRelayerStep(chainId)
   const { step: minterApprovalStep, isLoading: isLoadingMinterApprovalStep } = useApproveMinterStep(
     pool.chain
   )
@@ -24,11 +25,12 @@ export function useClaimAndUnstakeSteps(
     useClaimAndUnstakeStep(pool, refetchPoolBalances)
 
   const steps = useMemo((): TransactionStep[] => {
-    return [minterApprovalStep, approveRelayerStep, claimAndUnstakeStep]
-  }, [approveRelayerStep, claimAndUnstakeStep, minterApprovalStep])
+    return [minterApprovalStep, relayerApprovalStep, claimAndUnstakeStep]
+  }, [relayerApprovalStep, claimAndUnstakeStep, minterApprovalStep])
 
   return {
-    isLoading: isLoadingMinterApprovalStep || isLoadingClaimAndUnstakeStep,
+    isLoading:
+      isLoadingMinterApprovalStep || isLoadingRelayerApprovalStep || isLoadingClaimAndUnstakeStep,
     steps,
   }
 }

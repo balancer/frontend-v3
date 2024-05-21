@@ -9,11 +9,11 @@ import { useTransactionSteps } from '@/lib/modules/transactions/transaction-step
 import { createContext, PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { usePool } from '../../usePool'
-import { useClaiming } from '../claim/useClaiming'
 import { PoolListItem } from '../../pool.types'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { HumanAmount } from '@balancer/sdk'
 import { bn } from '@/lib/shared/utils/numbers'
+import { useClaimsData } from '../claim/useClaimsData'
 
 export type UseUnstakeResponse = ReturnType<typeof _useUnstake>
 export const UnstakeContext = createContext<UseUnstakeResponse | null>(null)
@@ -32,10 +32,8 @@ export function _useUnstake() {
     hasNoRewards,
     allClaimableRewards,
     totalClaimableUsd,
-    isDisabled: isClaimDisabled,
-    disabledReason: claimDisabledReason,
     isLoading: isLoadingClaims,
-  } = useClaiming([pool] as unknown[] as PoolListItem[])
+  } = useClaimsData([pool] as unknown[] as PoolListItem[])
 
   const rewardAmounts: HumanTokenAmountWithAddress[] = useMemo(
     () =>
@@ -77,8 +75,8 @@ export function _useUnstake() {
   return {
     isLoading: isLoadingClaims || isLoading,
     transactionSteps,
-    isDisabled: isDisabled || isClaimDisabled,
-    disabledReason: disabledReason || claimDisabledReason,
+    isDisabled: isDisabled,
+    disabledReason: disabledReason,
     rewardAmounts,
     totalClaimableUsd,
     hasNoRewards,

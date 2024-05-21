@@ -17,6 +17,7 @@ import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useMemo } from 'react'
 import { ManagedTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
+import { useHasApprovedRelayer } from '@/lib/modules/relayer/useHasApprovedRelayer'
 
 const claimAndUnstakeStepId = 'claim-and-unstake'
 
@@ -31,6 +32,8 @@ export function useClaimAndUnstakeStep(
   const { claimableRewards: nonBalrewards } = useClaimableBalances([convertedPool])
   const { balRewardsData: balRewards } = useBalTokenRewards([convertedPool])
 
+  const { hasApprovedRelayer, isLoading: isLoadingRelayerApproval } = useHasApprovedRelayer(chainId)
+
   const labels: TransactionLabels = {
     init: 'Claim & unstake',
     title: 'Claim & unstake',
@@ -43,6 +46,7 @@ export function useClaimAndUnstakeStep(
   const stakingService = pool.staking
     ? selectStakingService(pool.chain, pool.staking?.type)
     : undefined
+
   const { data, isLoading } = useUnstakeGaugeCallDataQuery(
     parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS),
     stakingService,
@@ -66,7 +70,7 @@ export function useClaimAndUnstakeStep(
     labels,
     chainId,
     args: [data],
-    enabled: !!pool && !isLoading,
+    enabled: !!pool && !isLoadingRelayerApproval && hasApprovedRelayer && !isLoading,
     txSimulationMeta,
   }
 
@@ -83,7 +87,7 @@ export function useClaimAndUnstakeStep(
       onSuccess: () => refetchPoolBalances(),
       renderAction: () => <ManagedTransactionButton id={claimAndUnstakeStepId} {...props} />,
     }),
-    [transaction, data, isLoading]
+    [transaction, data, isLoading, props]
   )
 
   return {
