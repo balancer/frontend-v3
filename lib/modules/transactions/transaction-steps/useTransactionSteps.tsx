@@ -40,10 +40,10 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
 
   // Control step flow here.
   useEffect(() => {
-    if (isCurrentStepComplete && !isLoading && currentStepIndex < lastStepIndex) {
+    if (isCurrentStepComplete && currentStepIndex < lastStepIndex) {
       setCurrentStepIndex(currentStepIndex + 1)
     }
-  }, [isCurrentStepComplete, isLoading])
+  }, [isCurrentStepComplete, currentStepIndex])
 
   // On step change, call activation callbacks if they exist
   useEffect(() => {
