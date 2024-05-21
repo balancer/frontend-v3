@@ -4,13 +4,17 @@ type Props = {
   sizePx: string
   as: any
 }
-export function ElevatedIcon({ sizePx, ...rest }: Props & IconProps) {
+export function ElevatedIcon({
+  sizePx,
+  background = 'background.level2',
+  ...rest
+}: Props & IconProps) {
   return (
     <Box
       rounded="full"
       width={sizePx}
       height={sizePx}
-      background="background.level2"
+      background={background}
       shadow="2xl"
       display="flex"
       justifyContent="center"
