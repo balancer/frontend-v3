@@ -1,52 +1,47 @@
 'use client'
 
-import { Grid, GridItem, Skeleton, Stack, VStack } from '@chakra-ui/react'
+import { Grid, GridItem } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
-import PoolStats from './PoolStats'
-import PoolMyLiquidity from './PoolMyLiquidity'
-import PoolIncentives from './PoolIncentives'
-import PoolMetaBadges from './PoolMetaBadges/PoolMetaBadges'
-import { PoolChart } from './PoolChart/PoolChart'
 import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
-import { PoolAttributes } from './PoolAttributes/PoolAttributes'
-import { PoolRisks } from './PoolRisks/PoolRisks'
-import { PoolContracts } from './PoolContracts/PoolContracts'
+import { PoolDetailStatsChart } from './PoolDetailStatsChart'
+import { PoolDetailAttributesRisksContracts } from './PoolDetailAttributesRisksContracts'
+import { usePool } from '../usePool'
+import PoolMyLiquidity from './PoolMyLiquidity'
+import { bn } from '@/lib/shared/utils/numbers'
 
-export function PoolDetail({ isLoading = false }: { isLoading?: boolean }) {
+export function PoolDetail() {
+  const { pool } = usePool()
+
+  const userHasLiquidity = bn(pool.userBalance?.totalBalance || '0').gt(0)
+
   return (
-    <Stack width="full">
-      <Grid width="full" rowGap="xl" columnGap="md" templateColumns="1fr 1fr">
-        <GridItem colSpan={2}>
-          <VStack alignItems="flex-start" spacing="md">
-            {isLoading ? <Skeleton h="42px" w="sm" /> : <PoolMetaBadges />}
-            {isLoading ? <Skeleton h="400px" w="full" /> : <PoolStats />}
-          </VStack>
+    <Grid
+      w="full"
+      rowGap={{ base: 'md', md: '2xl' }}
+      templateColumns="1fr"
+      templateAreas={`"stats-chart"
+                      "activity"
+                      "composition"
+                      ${userHasLiquidity ? '"my-liquidity"' : ''}
+                      "attributes-risks-contracts"`}
+    >
+      <GridItem area="stats-chart">
+        <PoolDetailStatsChart />
+      </GridItem>
+      <GridItem area="activity">
+        <PoolActivityChart />
+      </GridItem>
+      <GridItem area="composition">
+        <PoolComposition />
+      </GridItem>
+      {userHasLiquidity && (
+        <GridItem area="my-liquidity">
+          <PoolMyLiquidity />
         </GridItem>
-        <GridItem colSpan={2}>
-          {isLoading ? <Skeleton h="385px" w="full" /> : <PoolActivityChart />}
-        </GridItem>
-        <GridItem colSpan={2}>
-          {isLoading ? <Skeleton h="370px" w="full" /> : <PoolMyLiquidity />}
-        </GridItem>
-        <GridItem colSpan={2}>
-          {isLoading ? <Skeleton h="84px" w="full" /> : <PoolIncentives />}
-        </GridItem>
-        <GridItem colSpan={{ base: 2, md: 1 }}>
-          {isLoading ? <Skeleton h="385px" w="full" /> : <PoolComposition />}
-        </GridItem>
-        <GridItem colSpan={{ base: 2, md: 1 }}>
-          {isLoading ? <Skeleton h="385px" w="full" /> : <PoolChart />}
-        </GridItem>
-        <GridItem colSpan={{ base: 2, sm: 1 }}>
-          {isLoading ? <Skeleton h="385px" w="full" /> : <PoolAttributes />}
-        </GridItem>
-        <GridItem colSpan={{ base: 2, sm: 1 }}>
-          <VStack spacing="md" minH="full">
-            {isLoading ? <Skeleton h="200px" w="full" /> : <PoolRisks />}
-            {isLoading ? <Skeleton h="100px" w="full" /> : <PoolContracts />}
-          </VStack>
-        </GridItem>
-      </Grid>
-    </Stack>
+      )}
+      <GridItem area="attributes-risks-contracts">
+        <PoolDetailAttributesRisksContracts />
+      </GridItem>
+    </Grid>
   )
 }

@@ -4,6 +4,7 @@ import { useReadContracts } from 'wagmi'
 import { Erc20Abi } from './contracts/contract.types'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { useCallback, useMemo } from 'react'
+import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 
 export type TokenAllowances = Record<Address, bigint>
 
@@ -32,15 +33,15 @@ export function useTokenAllowances({
     })
   )
 
-  const result = useReadContracts({
+  const { data, isLoading, isRefetching, refetch } = useReadContracts({
     contracts,
     allowFailure: false,
-    query: { enabled: !!spenderAddress && !!userAddress },
+    query: { enabled: !!spenderAddress && !!userAddress, ...onlyExplicitRefetch },
   })
 
   const allowancesByTokenAddress = useMemo(
-    () => (result.data ? zipObject(tokenAddresses, result.data) : {}),
-    [result.data, tokenAddresses]
+    () => (data ? zipObject(tokenAddresses, data) : {}),
+    [data, tokenAddresses]
   )
 
   const allowanceFor = useCallback(
@@ -52,11 +53,11 @@ export function useTokenAllowances({
   )
 
   return {
-    isAllowancesLoading: result.isLoading,
-    isAllowancesRefetching: result.isRefetching,
+    isAllowancesLoading: isLoading,
+    isAllowancesRefetching: isRefetching,
     allowances: allowancesByTokenAddress,
     spenderAddress,
-    refetchAllowances: result.refetch,
+    refetchAllowances: refetch,
     allowanceFor,
   }
 }

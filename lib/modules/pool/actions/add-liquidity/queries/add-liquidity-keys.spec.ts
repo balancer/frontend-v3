@@ -1,14 +1,14 @@
 /* eslint-disable max-len */
 import { gyroPoolMock } from '../../../__mocks__/gyroPoolMock'
 import { Pool } from '../../../usePool'
-import { HumanAmountIn } from '../../liquidity-types'
 import { addLiquidityKeys } from './add-liquidity-keys'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
 import { UnbalancedAddLiquidityHandler } from '../handlers/UnbalancedAddLiquidity.handler'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 function testGenerateLiquidityKeys(pool: Pool) {
-  const humanAmountsIn: HumanAmountIn[] = [
+  const humanAmountsIn: HumanTokenAmountWithAddress[] = [
     { tokenAddress: '0x198d7387fa97a73f05b8578cdeff8f2a1f34cd1f', humanAmount: '0' },
     { tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', humanAmount: '0' },
   ]

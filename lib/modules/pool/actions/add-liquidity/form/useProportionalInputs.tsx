@@ -11,9 +11,9 @@ import { useMemo, useState } from 'react'
 import { formatUnits } from 'viem'
 import { usePool } from '../../../usePool'
 import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
-import { HumanAmountIn } from '../../liquidity-types'
 import { useAddLiquidity } from '../useAddLiquidity'
-import { useTotalUsdValue } from '../useTotalUsdValue'
+import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 type OptimalToken = {
   tokenAddress: Address
@@ -143,7 +143,7 @@ export function _calculateProportionalHumanAmountsIn(
   tokenAddress: Address,
   humanAmount: HumanAmount,
   helpers: LiquidityActionHelpers
-): HumanAmountIn[] {
+): HumanTokenAmountWithAddress[] {
   const amountIn: InputAmount = helpers.toInputAmounts([{ tokenAddress, humanAmount }])[0]
   return (
     calculateProportionalAmounts(helpers.poolStateWithBalances, amountIn)
@@ -156,7 +156,7 @@ export function _calculateProportionalHumanAmountsIn(
   )
 
   function sortUpdatedTokenFirst(tokenAddress: Address | null) {
-    return (a: HumanAmountIn, b: HumanAmountIn) => {
+    return (a: HumanTokenAmountWithAddress, b: HumanTokenAmountWithAddress) => {
       if (!tokenAddress) return 0
       if (isSameAddress(a.tokenAddress, tokenAddress)) return -1
       if (isSameAddress(b.tokenAddress, tokenAddress)) return 1

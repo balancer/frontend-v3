@@ -3,17 +3,17 @@ import { Pool } from '../../usePool'
 import { useTokenApprovalSteps } from '@/lib/modules/tokens/approvals/useTokenApprovalSteps'
 import { RawAmount } from '@/lib/modules/tokens/approvals/approval-rules'
 import { BPT_DECIMALS } from '../../pool.constants'
-import { HumanAmountIn } from '../liquidity-types'
 import { useMemo } from 'react'
-import { useStakingStep } from './useStakingStep'
+import { useStakeStep } from './useStakeStep'
 
-export function useStakingSteps(pool: Pool, humanAmountToApprove: HumanAmountIn | null) {
-  const rawAmount = parseUnits(humanAmountToApprove?.humanAmount || '', BPT_DECIMALS)
+export function useStakeSteps(pool: Pool) {
+  const rawAmount = parseUnits(pool.userBalance?.walletBalance || '0', BPT_DECIMALS)
 
   const amountToApprove: RawAmount = {
     rawAmount,
     address: pool.address as Address,
   }
+
   const { isLoading: isLoadingTokenApprovalSteps, steps: tokenApprovalSteps } =
     useTokenApprovalSteps({
       spenderAddress: pool.staking?.address as Address,
@@ -23,7 +23,7 @@ export function useStakingSteps(pool: Pool, humanAmountToApprove: HumanAmountIn 
       bptSymbol: pool.symbol,
     })
 
-  const stakingStep = useStakingStep(pool, rawAmount)
+  const stakingStep = useStakeStep(pool, rawAmount)
 
   const steps = useMemo(
     () => [...tokenApprovalSteps, stakingStep],

@@ -49,10 +49,10 @@ export function PoolActivityChart() {
 
   return (
     <Card>
-      <div style={{ position: 'relative' }}>
+      <Box position="relative">
         {isLoading && <Skeleton w="100%" h="100%" position="absolute" />}
 
-        <div style={{ opacity: isLoading ? 0 : 1 }}>
+        <Box opacity={isLoading ? 0 : 1}>
           <HStack
             width="full"
             justifyContent="space-between"
@@ -142,8 +142,8 @@ export function PoolActivityChart() {
               </HStack>
             </AnimateOpacity>
           )}
-        </div>
-      </div>
+        </Box>
+      </Box>
     </Card>
   )
 }

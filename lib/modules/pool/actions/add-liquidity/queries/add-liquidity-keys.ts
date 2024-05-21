@@ -1,7 +1,7 @@
 import { GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
 import { requiresProportionalInput } from '../../LiquidityActionHelpers'
-import { HumanAmountIn } from '../../liquidity-types'
 import { AddLiquidityHandler } from '../handlers/AddLiquidity.handler'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 const addLiquidity = 'add-liquidity'
 
@@ -15,7 +15,7 @@ export type AddLiquidityParams = {
   poolId: string
   poolType: GqlPoolType
   slippage: string
-  humanAmountsIn: HumanAmountIn[]
+  humanAmountsIn: HumanTokenAmountWithAddress[]
 }
 
 function liquidityParams({
@@ -33,7 +33,7 @@ function liquidityParams({
 
 export function stringifyHumanAmountsIn(
   poolType: GqlPoolType,
-  humanAmountsIn: HumanAmountIn[]
+  humanAmountsIn: HumanTokenAmountWithAddress[]
 ): string {
   if (humanAmountsIn.length === 0) return ''
   if (requiresProportionalInput(poolType)) {

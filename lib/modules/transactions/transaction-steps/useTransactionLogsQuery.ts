@@ -1,4 +1,3 @@
-import { HumanAmountIn } from '@/lib/modules/pool/actions/liquidity-types'
 import { BPT_DECIMALS } from '@/lib/modules/pool/pool.constants'
 import { usePool } from '@/lib/modules/pool/usePool'
 import { useTokens } from '@/lib/modules/tokens/useTokens'
@@ -7,6 +6,7 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useQuery } from '@tanstack/react-query'
 import { formatUnits, parseAbiItem, Address } from 'viem'
 import { useTransaction } from 'wagmi'
+import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
 
 export type ReceiptProps = { txHash: Address; userAddress: Address }
 export function useAddLiquidityReceipt({ txHash, userAddress }: ReceiptProps) {
@@ -23,7 +23,7 @@ export function useAddLiquidityReceipt({ txHash, userAddress }: ReceiptProps) {
     }
   }
 
-  const sentTokens: HumanAmountIn[] = query.data.outgoing.map(log => {
+  const sentTokens: HumanTokenAmountWithAddress[] = query.data.outgoing.map(log => {
     const tokenDecimals = getToken(log.address, chain)?.decimals
     return _toHumanAmountIn(log.address, log.args.value, tokenDecimals)
   })
@@ -52,7 +52,7 @@ export function useRemoveLiquidityReceipt({ txHash, userAddress }: ReceiptProps)
       sentBptUnits: '',
     }
   }
-  const receivedTokens: HumanAmountIn[] = query.data.incoming.map(log => {
+  const receivedTokens: HumanTokenAmountWithAddress[] = query.data.incoming.map(log => {
     const tokenDecimals = getToken(log.address, chain)?.decimals
     return _toHumanAmountIn(log.address, log.args.value, tokenDecimals)
   })
@@ -73,7 +73,7 @@ export function useRemoveLiquidityReceipt({ txHash, userAddress }: ReceiptProps)
 */
 function _toHumanAmountIn(tokenAddress: Address, rawValue = 0n, tokenDecimals = 18) {
   const humanAmount = formatUnits(rawValue, tokenDecimals)
-  return { tokenAddress: tokenAddress, humanAmount: humanAmount } as HumanAmountIn
+  return { tokenAddress: tokenAddress, humanAmount: humanAmount } as HumanTokenAmountWithAddress
 }
 
 export function useTransactionLogsQuery({ txHash, userAddress }: ReceiptProps) {

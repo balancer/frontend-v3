@@ -1,5 +1,4 @@
 'use client'
-import { useClaimAllRewardsSteps } from '@/lib/modules/pool/actions/claim/useClaimAllRewardsSteps'
 
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -29,6 +28,7 @@ import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { useClaiming } from '../../pool/actions/claim/useClaiming'
+import { isZero } from '@/lib/shared/utils/numbers'
 
 type Props = {
   isOpen: boolean
@@ -37,13 +37,9 @@ type Props = {
 }
 
 function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
-  if (reward.formattedBalance === '0') return null
+  if (isZero(reward.humanBalance)) return null
   return (
-    <TokenRow
-      address={reward.tokenAddress}
-      value={reward.formattedBalance}
-      chain={reward.pool.chain}
-    />
+    <TokenRow address={reward.tokenAddress} value={reward.humanBalance} chain={reward.pool.chain} />
   )
 }
 

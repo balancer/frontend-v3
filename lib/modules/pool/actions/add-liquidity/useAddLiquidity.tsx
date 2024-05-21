@@ -10,7 +10,6 @@ import { Address, Hash } from 'viem'
 import { usePool } from '../../usePool'
 import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulationQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
-import { HumanAmountIn } from '../liquidity-types'
 import {
   LiquidityActionHelpers,
   areEmptyAmounts,
@@ -23,17 +22,18 @@ import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
-import { useTotalUsdValue } from './useTotalUsdValue'
 import { isGyro } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
+import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
 
 export function _useAddLiquidity(urlTxHash?: Hash) {
-  const [humanAmountsIn, setHumanAmountsIn] = useState<HumanAmountIn[]>([])
+  const [humanAmountsIn, setHumanAmountsIn] = useState<HumanTokenAmountWithAddress[]>([])
   const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [acceptPoolRisks, setAcceptPoolRisks] = useState(false)
   const [wethIsEth, setWethIsEth] = useState(false)
@@ -63,7 +63,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
         ({
           tokenAddress: token.address,
           humanAmount: '',
-        } as HumanAmountIn)
+        } as HumanTokenAmountWithAddress)
     )
     setHumanAmountsIn(amountsIn)
   }
