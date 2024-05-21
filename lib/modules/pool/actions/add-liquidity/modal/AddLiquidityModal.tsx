@@ -13,7 +13,7 @@ import { AddLiquidityTimeout } from './AddLiquidityTimeout'
 import { AddLiquidityReceipt } from './AddLiquidityReceipt'
 import { PoolActionModalFooter } from '../../PoolActionModalFooter'
 import { AnimatePresence, motion } from 'framer-motion'
-import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
+import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { TransactionModalHeader } from '../../PoolActionModalHeader'
 
 type Props = {
@@ -49,7 +49,7 @@ export function AddLiquidityModal({
       isCentered
       {...rest}
     >
-      <FireworksOverlay startFireworks={!!addLiquidityTxHash && hasQuoteContext} />
+      <SuccessOverlay startAnimation={!!addLiquidityTxHash && hasQuoteContext} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop && hasQuoteContext)}>
         {isDesktop && hasQuoteContext && (

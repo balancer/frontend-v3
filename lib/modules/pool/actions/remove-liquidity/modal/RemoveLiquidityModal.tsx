@@ -10,7 +10,7 @@ import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transacti
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { RemoveLiquidityPreview } from './RemoveLiquidityPreview'
-import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
+import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { TransactionModalHeader } from '../../PoolActionModalHeader'
 import { AnimatePresence, motion } from 'framer-motion'
 import { PoolActionModalFooter } from '../../PoolActionModalFooter'
@@ -49,7 +49,7 @@ export function RemoveLiquidityModal({
       isCentered
       {...rest}
     >
-      <FireworksOverlay startFireworks={!!removeLiquidityTxHash && hasQuoteContext} />
+      <SuccessOverlay startAnimation={!!removeLiquidityTxHash && hasQuoteContext} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && hasQuoteContext && (

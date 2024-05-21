@@ -13,7 +13,7 @@ import { RefObject, useRef } from 'react'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
+import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { useStake } from './StakeProvider'
 import { usePool } from '../../usePool'
 import { TransactionModalHeader } from '../PoolActionModalHeader'
@@ -49,7 +49,7 @@ export function StakeModal({
       isCentered
       {...rest}
     >
-      <FireworksOverlay startFireworks={!!stakeTxHash} />
+      <SuccessOverlay startAnimation={!!stakeTxHash} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && <DesktopStepTracker chain={pool.chain} transactionSteps={transactionSteps} />}
