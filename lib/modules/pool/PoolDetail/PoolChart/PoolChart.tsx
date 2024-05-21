@@ -98,7 +98,7 @@ export function PoolChart() {
             cardProps={COMMON_NOISY_CARD_PROPS.cardProps}
             contentProps={COMMON_NOISY_CARD_PROPS.contentProps}
           >
-            <VStack w="full" h="full" p="md">
+            <VStack w="full" h="full" p={{ base: 'sm', md: 'md' }}>
               <Stack w="full" direction={{ base: 'column', md: 'row' }}>
                 <HStack alignSelf="flex-start">
                   <ButtonGroup

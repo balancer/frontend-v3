@@ -66,7 +66,7 @@ export default function PoolStatsOverview() {
           w="full"
           justify="flex-start"
           mb="8"
-          p="md"
+          p={{ base: 'sm', md: 'md' }}
           zIndex={1}
         >
           <ButtonGroup
