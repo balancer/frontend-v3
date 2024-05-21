@@ -9,7 +9,8 @@ export function useClaimAllRewardsSteps(params: ClaimAllRewardsStepParams) {
   const { chain } = params.pools[0]
   const chainId = getChainId(chain)
 
-  const approveRelayerStep = useApproveRelayerStep(chainId)
+  const { step: approveRelayerStep, isLoading: isLoadingRelayerApproval } =
+    useApproveRelayerStep(chainId)
   const { step: minterApprovalStep, isLoading: isLoadingMinterApprovalStep } =
     useApproveMinterStep(chain)
 
@@ -21,7 +22,7 @@ export function useClaimAllRewardsSteps(params: ClaimAllRewardsStepParams) {
   }, [approveRelayerStep, claimAllRewardsStep, minterApprovalStep])
 
   return {
-    isLoading: isLoadingMinterApprovalStep || isLoadingClaimAllRewards,
+    isLoading: isLoadingMinterApprovalStep || isLoadingClaimAllRewards || isLoadingRelayerApproval,
     steps,
   }
 }

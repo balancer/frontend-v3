@@ -14,7 +14,8 @@ export function useRemoveLiquiditySteps(params: RemoveLiquidityStepParams): Tran
   const { chainId, pool } = usePool()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
   const signRelayerStep = useSignRelayerStep()
-  const approveRelayerStep = useApproveRelayerStep(chainId)
+  const { step: approveRelayerStep, isLoading: isLoadingRelayerApproval } =
+    useApproveRelayerStep(chainId)
 
   const removeLiquidityStep = useRemoveLiquidityStep(params)
 
@@ -32,5 +33,6 @@ export function useRemoveLiquiditySteps(params: RemoveLiquidityStepParams): Tran
     removeLiquidityStep,
     approveRelayerStep,
     signRelayerStep,
+    isLoadingRelayerApproval,
   ])
 }
