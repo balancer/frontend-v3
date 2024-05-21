@@ -128,7 +128,7 @@ export function PoolComposition() {
               </Card>
             )}
             {isMobile && <Divider />}
-            <Text color="grayText" mt="auto" fontSize="sm">
+            <Text color="grayText" mt="auto" fontSize="sm" pb="sm">
               From {fNum('integer', pool.dynamicData.holdersCount)} Liquidity Providers
             </Text>
           </VStack>
@@ -138,9 +138,9 @@ export function PoolComposition() {
             cardProps={{ position: 'relative', overflow: 'hidden' }}
             contentProps={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
           >
-            <PoolZenGarden sizePx="400px" poolType={pool.type} />
+            <PoolZenGarden sizePx={isMobile ? '300px' : '400px'} poolType={pool.type} />
             <VStack spacing="4">
-              <Box mt="-6">
+              <Box mt={{ base: '0', md: '-6' }} p={{ base: 'sm', md: '0' }}>
                 <PoolWeightChart pool={pool} chain={chain} />
               </Box>
             </VStack>
