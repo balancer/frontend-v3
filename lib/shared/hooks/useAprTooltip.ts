@@ -76,11 +76,6 @@ export function useAprTooltip({
     apr: roundToFourDecimals((item.apr as GqlPoolAprTotal).total),
   }))
 
-  let stakingIncentivesAprDisplayed = stakingIncentivesDisplayed.reduce(
-    (acc, item) => item.apr + acc,
-    0
-  )
-
   // Bal Reward
   const balReward = aprItems.find(item => item.title === 'BAL reward APR')
 
@@ -98,6 +93,11 @@ export function useAprTooltip({
       apr: roundToFourDecimals((balReward.apr as GqlPoolAprRange).min),
     })
   }
+
+  let stakingIncentivesAprDisplayed = stakingIncentivesDisplayed.reduce(
+    (acc, item) => item.apr + acc,
+    0
+  )
 
   const totalBaseDisplayedRoundingError =
     totalBaseDisplayed -
