@@ -9,5 +9,5 @@ export function slippageDiffLabel(actualAmount: HumanAmount, expectedAmount: Hum
 
   const slippage = bptDiff.div(expectedAmount).times(100).toString()
 
-  return `Slippage: ${fNum('slippage', slippage)}%`
+  return `Slippage: ${fNum('slippage', slippage)}`
 }
