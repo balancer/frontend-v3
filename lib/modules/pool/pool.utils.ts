@@ -1,10 +1,12 @@
 import {
   GetPoolQuery,
+  GqlBalancePoolAprItem,
   GqlChain,
   GqlPoolAprValue,
   GqlPoolComposableStableNested,
   GqlPoolTokenDetail,
   GqlPoolType,
+  GqlBalancePoolAprSubItem,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolAction, PoolListItem, PoolVariant } from './pool.types'
@@ -53,6 +55,7 @@ export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolPr
   return `/pools/${chainToSlugMap[chain]}/${variant}/${id}`
 }
 
+// TODO: the following 2 functions (getAprLabel & getTotalAprLabel) most likely need revisiting somewhere in the near future and refactored to just one
 /**
  * Constructs path to pool action page.
  * @param {String} id Pool ID could be ID or address depending on variant.
@@ -89,6 +92,45 @@ export function getAprLabel(apr: GqlPoolAprValue, vebalBoost?: number): string {
   } else {
     return '-'
   }
+}
+
+/**
+ * Calculates the total APR label based on the array of APR items and an optional boost value.
+ *
+ * @param {GqlBalancePoolAprItem[]} aprItems - The array of APR items to calculate the total APR label from.
+ * @param {string} [vebalBoost] - An optional boost value for calculation.
+ * @returns {string} The formatted total APR label.
+ */
+export function getTotalAprLabel(
+  aprItems: (GqlBalancePoolAprItem | GqlBalancePoolAprSubItem)[],
+  vebalBoost?: string
+): string {
+  let minTotal = '0'
+  let maxTotal = '0'
+  const boost = vebalBoost || 1
+
+  aprItems.forEach(item => {
+    const [min, max] =
+      item.apr.__typename === 'GqlPoolAprRange'
+        ? [bn(item.apr.min).times(boost), item.apr.max]
+        : [item.apr.total, item.apr.total]
+    minTotal = bn(min).plus(minTotal).toString()
+    maxTotal = bn(max).plus(maxTotal).toString()
+  })
+
+  if (minTotal === maxTotal || vebalBoost) {
+    return fNum('apr', minTotal)
+  } else {
+    return `${fNum('apr', minTotal)} - ${fNum('apr', maxTotal)}`
+  }
+}
+
+export function getTotalAprRaw(
+  aprItems: (GqlBalancePoolAprItem | GqlBalancePoolAprSubItem)[],
+  vebalBoost?: string
+): string {
+  const apr = getTotalAprLabel(aprItems, vebalBoost)
+  return apr.substring(0, apr.length - 1)
 }
 
 // Maps GraphQL pool type enum to human readable label for UI.

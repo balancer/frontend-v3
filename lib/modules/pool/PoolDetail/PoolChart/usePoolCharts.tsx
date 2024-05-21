@@ -306,7 +306,7 @@ export function usePoolCharts() {
       }, 0)
     }
 
-    return toCurrency(val)
+    return toCurrency(val, { abbreviated: false })
   }, [data?.snapshots, activeTab, toCurrency])
 
   const chartData = useMemo(() => {

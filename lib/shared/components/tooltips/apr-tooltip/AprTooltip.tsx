@@ -16,7 +16,7 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
-import { getAprLabel } from '@/lib/modules/pool/pool.utils'
+import { getTotalAprLabel } from '@/lib/modules/pool/pool.utils'
 import { sortBy } from 'lodash'
 import { Info } from 'react-feather'
 
@@ -28,7 +28,7 @@ interface Props {
   aprLabel?: boolean
   poolId?: string
   apr?: string
-  vebalBoost?: number
+  vebalBoost?: string
 }
 
 function sortAprItems(aprItems: GqlBalancePoolAprItem[]) {
@@ -54,7 +54,7 @@ function AprTooltip({
   apr,
   vebalBoost,
 }: Props) {
-  const aprToShow = apr || getAprLabel(data.apr, vebalBoost)
+  const aprToShow = apr || getTotalAprLabel(data.items, vebalBoost)
 
   const aprItems = sortAprItems(data.items)
 
@@ -62,7 +62,7 @@ function AprTooltip({
     <Popover trigger="hover" placement={placement}>
       <HStack align="center" alignItems="center">
         {!onlySparkles && (
-          <Text {...textProps} textAlign="right">
+          <Text {...textProps}>
             {aprToShow}
             {aprLabel ? ' APR' : ''}
           </Text>
@@ -93,7 +93,7 @@ function AprTooltip({
         <PopoverHeader>
           <VStack alignItems="flex-start">
             <Text textAlign="left">Total APR</Text>
-            <Text>{getAprLabel(data.apr)}</Text>
+            <Text>{getTotalAprLabel(data.items, vebalBoost)}</Text>
           </VStack>
         </PopoverHeader>
         <Box p="2" fontSize="sm">
@@ -102,7 +102,7 @@ function AprTooltip({
               item && (
                 <Box key={index}>
                   <HStack>
-                    <Text>{getAprLabel(item.apr)}</Text>
+                    <Text>{getTotalAprLabel([item], vebalBoost)}</Text>
                     <Text>{item.title}</Text>
                   </HStack>
                   {item.subItems?.map((subItem, subItemIndex) => {
@@ -125,7 +125,7 @@ function AprTooltip({
                         />
                         <Box h="1px" w="0.75rem" mr="0.25rem" ml="-0.25rem" bgColor="red" />
                         <HStack>
-                          <Text>{getAprLabel(subItem.apr)}</Text>
+                          <Text>{getTotalAprLabel([subItem])}</Text>
                           <Text>{subItem.title}</Text>
                         </HStack>
                       </Flex>
