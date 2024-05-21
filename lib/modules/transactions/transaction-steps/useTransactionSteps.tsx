@@ -40,21 +40,6 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
 
   // Control step flow here.
   useEffect(() => {
-    console.log(
-      'isCurrentStepComplete',
-      isCurrentStepComplete,
-      'currentStepIndex',
-      currentStepIndex,
-      'currentStepId',
-      currentStep?.id,
-      'lastStepIndex',
-      lastStepIndex,
-      'lastStepId',
-      lastStep?.id,
-      'txHash',
-      currentTransaction?.execution?.data
-    )
-
     if (isCurrentStepComplete && !isLoading && currentStepIndex < lastStepIndex) {
       setCurrentStepIndex(prev => prev + 1)
     }
