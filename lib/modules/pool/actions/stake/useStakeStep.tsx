@@ -71,9 +71,5 @@ export function useStakeStep(pool: Pool, rawDepositAmount: bigint): TransactionS
     [labels, transaction?.result.isSuccess, refetchPool, props]
   )
 
-  // useEffect(() => {
-  //   console.log('step', step.isComplete())
-  // }, [step])
-
   return step
 }

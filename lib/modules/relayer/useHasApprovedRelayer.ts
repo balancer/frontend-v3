@@ -19,6 +19,7 @@ export function useHasApprovedRelayer(chainId: SupportedChainId) {
     args: [userAddress, config.contracts.balancer.relayerV6],
     query: { enabled: isConnected && !shouldChangeNetwork },
   })
+
   return {
     ...query,
     hasApprovedRelayer: query.data ?? false,

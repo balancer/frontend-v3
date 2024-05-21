@@ -11,5 +11,5 @@ test('Runs relayer approval transaction and queries that it was approved', async
     wrapper: TransactionStateProvider,
   })
 
-  await waitFor(() => expect(result.current.stepType).toBe('approveBatchRelayer'))
+  await waitFor(() => expect(result.current.step.stepType).toBe('approveBatchRelayer'))
 })
