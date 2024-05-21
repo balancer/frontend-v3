@@ -134,7 +134,7 @@ export function PoolComposition() {
               </VStack>
             </Card>
             <Text color="grayText" mt="auto" fontSize="sm">
-              From {pool.dynamicData.holdersCount} Liquidity Providers
+              From {fNum('integer', pool.dynamicData.holdersCount)} Liquidity Providers
             </Text>
           </VStack>
         </GridItem>
