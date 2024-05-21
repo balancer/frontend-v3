@@ -8,9 +8,12 @@ import { zeroAddress } from 'viem'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { upperFirst } from 'lodash'
 import { fNum } from '@/lib/shared/utils/numbers'
+import { bptUsdValue } from '../../pool.helpers'
+import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 export function useFormattedPoolAttributes() {
   const { pool } = usePool()
+  const { toCurrency } = useCurrency()
 
   const poolOwnerData = useMemo(() => {
     if (!pool) return
@@ -18,22 +21,34 @@ export function useFormattedPoolAttributes() {
     if (!owner) return
 
     if (owner === zeroAddress) {
-      return { title: 'No owner', link: '' }
+      return {
+        title: 'No owner',
+        link: '',
+        swapFeeText: 'non-editable',
+        attributeImmutabilityText: '',
+      }
     }
 
     if (owner === DELEGATE_OWNER) {
-      return { title: 'Delegate owner', link: '' }
+      return {
+        title: 'Delegate owner',
+        link: '',
+        swapFeeText: 'editable by governance',
+        attributeImmutabilityText: ' except for swap fees editable by governance',
+      }
     }
 
     return {
       title: abbreviateAddress(owner || ''),
       link: '',
+      swapFeeText: 'editable by pool owner',
+      attributeImmutabilityText: ' except for swap fees editable by the pool owner',
     }
   }, [pool])
 
-  const foramttedPoolAttributes = useMemo(() => {
+  const formattedPoolAttributes = useMemo(() => {
     if (!pool) return []
-    const { name, symbol, createTime, address, dynamicData, type } = pool
+    const { name, symbol, createTime, dynamicData, type } = pool
 
     return [
       {
@@ -49,8 +64,12 @@ export function useFormattedPoolAttributes() {
         value: upperFirst(type.toLowerCase()),
       },
       {
+        title: 'Protocol version',
+        value: `Balancer V${pool.vaultVersion}`,
+      },
+      {
         title: 'Swap fees',
-        value: fNum('feePercent', dynamicData.swapFee),
+        value: `${fNum('feePercent', dynamicData.swapFee)} (${poolOwnerData?.swapFeeText})`,
       },
       {
         title: 'Pool Manager',
@@ -63,15 +82,19 @@ export function useFormattedPoolAttributes() {
           }
         : null,
       {
-        title: 'Contract address',
-        value: abbreviateAddress(address),
+        title: 'Attribute immutability',
+        value: `Immutable${poolOwnerData?.attributeImmutabilityText}`,
       },
       {
         title: 'Creation date',
         value: format(createTime * 1000, 'dd MMMM yyyy'),
       },
+      {
+        title: 'BPT price',
+        value: toCurrency(bptUsdValue(pool, '1')),
+      },
     ]
   }, [pool, poolOwnerData])
 
-  return foramttedPoolAttributes
+  return formattedPoolAttributes
 }

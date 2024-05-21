@@ -1,9 +1,9 @@
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { Alert, AlertIcon, Box, Card, HStack, Spacer, Text, VStack } from '@chakra-ui/react'
+// import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+// import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
+// import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { Alert, AlertIcon, VStack } from '@chakra-ui/react'
 import { useEffect } from 'react'
-import { XOctagon } from 'react-feather'
+// import { XOctagon } from 'react-feather'
 import { useAddLiquidity } from '../useAddLiquidity'
 import { TokenInputs } from './TokenInputs'
 import { useProportionalInputs } from './useProportionalInputs'
@@ -19,16 +19,16 @@ export function TokenInputsWithAddable({
   requiresProportionalInput,
   totalUSDValue,
 }: Props) {
-  const { isConnected } = useUserAccount()
-  const { toCurrency } = useCurrency()
+  // const { isConnected } = useUserAccount()
+  // const { toCurrency } = useCurrency()
   const { setHumanAmountIn } = useAddLiquidity()
 
   const {
     handleProportionalHumanInputChange,
-    handleMaximizeUserAmounts,
-    isMaximized,
+    // handleMaximizeUserAmounts,
+    // isMaximized,
     maximizedUsdValue,
-    canMaximize,
+    // canMaximize,
     setIsMaximized,
   } = useProportionalInputs()
 
@@ -53,7 +53,7 @@ export function TokenInputsWithAddable({
           This pool requires liquidity to be added proportionally
         </Alert>
       )}
-      {isConnected && (
+      {/* {isConnected && (
         <Card variant="subSection" w="full" p={['sm', 'ms']}>
           <HStack w="full">
             <Box as="span" color="grayText">
@@ -97,7 +97,7 @@ export function TokenInputsWithAddable({
             )}
           </HStack>
         </Card>
-      )}
+      )} */}
       <TokenInputs
         tokenSelectDisclosureOpen={tokenSelectDisclosureOpen}
         customSetAmountIn={setAmountIn}

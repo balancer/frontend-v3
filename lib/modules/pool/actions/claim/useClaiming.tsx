@@ -52,5 +52,7 @@ export function useClaiming(pools: PoolListItem[]) {
     allClaimableRewards,
     totalClaimableUsd,
     hasNoRewards,
+    isLoading:
+      claimableBalancesQuery.isLoadingClaimableRewards || balTokenRewardsQuery.isLoadingBalRewards,
   }
 }
