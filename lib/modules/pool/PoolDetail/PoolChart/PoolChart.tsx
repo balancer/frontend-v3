@@ -1,13 +1,23 @@
 'use client'
-import { Box, Card, Flex, HStack, Heading, Skeleton, Stack, Text, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  BoxProps,
+  Card,
+  Flex,
+  HStack,
+  Heading,
+  Skeleton,
+  Stack,
+  Text,
+  VStack,
+} from '@chakra-ui/react'
 import ReactECharts from 'echarts-for-react'
-
 import { PoolChartTab, PoolChartTypeTab, poolChartPeriods, usePoolCharts } from './usePoolCharts'
-
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { GroupBase, OptionBase, Select, SingleValue } from 'chakra-react-select'
 import { GqlPoolSnapshotDataRange } from '@/lib/shared/services/api/generated/graphql'
 import { getSelectStyles } from '@/lib/shared/services/chakra/theme/chakra-react-select'
+import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 
 interface PeriodOption extends OptionBase {
   label: string
@@ -17,6 +27,21 @@ interface PeriodOption extends OptionBase {
 type Props = {
   value: PeriodOption
   onChange(value: PeriodOption): void
+}
+
+const COMMON_NOISY_CARD_PROPS: { contentProps: BoxProps; cardProps: BoxProps } = {
+  contentProps: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomLeftRadius: 'none',
+    borderTopLeftRadius: 'none',
+    borderBottomRightRadius: 'none',
+  },
+  cardProps: {
+    position: 'relative',
+    overflow: 'hidden',
+  },
 }
 
 export function PeriodSelect({ value, onChange }: Props) {
@@ -65,41 +90,53 @@ export function PoolChart() {
   }
 
   return (
-    <Card minHeight="320px">
-      <Stack>
-        {isLoading && <Skeleton w="100%" h="300" />}
+    <Card minHeight="320px" h="full">
+      <Stack h="full">
+        {isLoading && <Skeleton w="full" h="full" />}
         {!isLoading && chartData.length > 0 && (
-          <VStack width="full" height="full">
-            <HStack width="full" justifyContent="space-between">
-              <HStack spacing="2" textAlign="right">
-                <ButtonGroup
-                  size="xxs"
-                  currentOption={activeTab}
-                  options={tabsList}
-                  onChange={tab => setActiveTab(tab as PoolChartTypeTab)}
+          <NoisyCard
+            cardProps={COMMON_NOISY_CARD_PROPS.cardProps}
+            contentProps={COMMON_NOISY_CARD_PROPS.contentProps}
+          >
+            <VStack w="full" h="full" p="md">
+              <Stack w="full" direction={{ base: 'column', md: 'row' }}>
+                <HStack alignSelf="flex-start">
+                  <ButtonGroup
+                    size="xxs"
+                    currentOption={activeTab}
+                    options={tabsList}
+                    onChange={tab => setActiveTab(tab as PoolChartTypeTab)}
+                    width="70px"
+                  />
+                  <PeriodSelect value={activePeriod} onChange={setActivePeriod} />
+                </HStack>
+                <VStack
+                  spacing="0"
+                  alignItems={{ base: undefined, md: 'flex-end' }}
+                  ml={{ base: undefined, md: 'auto' }}
+                >
+                  <Heading fontWeight="bold" size="h5">
+                    {chartValueSum}
+                  </Heading>
+                  <Text fontSize="sm" color="grayText">
+                    {getActiveTabLabel()}
+                  </Text>
+                </VStack>
+              </Stack>
+              <Box w="full" h="full" onMouseLeave={handleMouseLeave}>
+                <ReactECharts
+                  style={{ height: '100%' }}
+                  option={options}
+                  onEvents={{
+                    updateAxisPointer: handleAxisMoved,
+                  }}
                 />
-
-                <PeriodSelect value={activePeriod} onChange={setActivePeriod} />
-              </HStack>
-              <VStack spacing="0" alignItems="flex-end">
-                <Heading fontWeight="bold" size="h5">
-                  {chartValueSum}
-                </Heading>
-                <Text fontSize="0.9rem">{getActiveTabLabel()}</Text>
-              </VStack>
-            </HStack>
-            <Box width="full" height="full" onMouseLeave={handleMouseLeave}>
-              <ReactECharts
-                option={options}
-                onEvents={{
-                  updateAxisPointer: handleAxisMoved,
-                }}
-              />
-            </Box>
-          </VStack>
+              </Box>
+            </VStack>
+          </NoisyCard>
         )}
         {!isLoading && chartData.length <= 0 && (
-          <Flex h="100" alignItems="center">
+          <Flex h="full" alignItems="center">
             <Text fontSize="2xl" variant="secondary" p="lg">
               Not enough data
             </Text>

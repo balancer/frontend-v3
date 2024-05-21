@@ -1,6 +1,5 @@
 import { Box, Grid, GridItem, GridProps, Text } from '@chakra-ui/react'
 import Link from 'next/link'
-
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { memo } from 'react'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
@@ -41,7 +40,6 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
           <GridItem>
             <PoolListTokenPills pool={pool} />
           </GridItem>
-
           <GridItem>
             <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
               {getPoolTypeLabel(pool.type)}
@@ -62,13 +60,11 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
               {vebalBoostValue ? `${Number(vebalBoostValue).toFixed(2)}x` : '-'}
             </Text>
           </GridItem>
-
           <GridItem>
             <Text textAlign="right" fontWeight="medium">
               {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
             </Text>
           </GridItem>
-
           <GridItem justifySelf="end">
             <MemoizedAprTooltip
               data={pool.dynamicData.apr}

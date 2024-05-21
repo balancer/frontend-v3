@@ -1341,12 +1341,23 @@ export const balTheme = {
           _hover: {
             color: 'font.highlight',
             transform: 'none',
+            _disabled: {
+              background: 'transparent',
+              color: 'font.secondary',
+            },
           },
           _dark: {
             color: 'font.secondary',
             _hover: {
               color: 'font.maxContrast',
+              _disabled: {
+                color: 'font.secondary',
+              },
             },
+          },
+          _disabled: {
+            backgroundColor: 'transparent',
+            border: 0,
           },
         },
         buttonGroupActive: {

@@ -15,7 +15,7 @@ import {
   Stack,
 } from '@chakra-ui/react'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
-import { getAprLabel } from '@/lib/modules/pool/pool.utils'
+import { getTotalAprLabel } from '@/lib/modules/pool/pool.utils'
 import { Info } from 'react-feather'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 import {
@@ -35,7 +35,7 @@ interface Props {
   aprLabel?: boolean
   poolId?: string
   apr?: string
-  vebalBoost?: number
+  vebalBoost?: string
 }
 
 const balRewardGradient =
@@ -61,9 +61,8 @@ function AprTooltip({
   apr,
   vebalBoost,
 }: Props) {
+  const aprToShow = apr || getTotalAprLabel(data.items, vebalBoost)
   const colorMode = useThemeColorMode()
-
-  const aprToShow = apr || getAprLabel(data.apr)
 
   const {
     totalBaseDisplayed,
@@ -82,7 +81,7 @@ function AprTooltip({
   } = useAprTooltip({
     aprItems: data.items,
     apr: data,
-    vebalBoost,
+    vebalBoost: Number(vebalBoost),
   })
 
   return (
