@@ -8,7 +8,7 @@ type PriceImpactLevel = 'low' | 'medium' | 'high' | 'max' | 'unknown'
 export function _usePriceImpact() {
   const [priceImpactLevel, setPriceImpactLevel] = useState<PriceImpactLevel>('low')
   const [priceImpactColor, setPriceImpactColor] = useState('green.400')
-  const [acceptHighPriceImpact, setAcceptHighPriceImpact] = useState(false)
+  const [acceptPriceImpactRisk, setAcceptPriceImpactRisk] = useState(false)
   const [priceImpact, setPriceImpact] = useState<string | number | undefined | null>()
   const [hasToAcceptHighPriceImpact, setHasToAcceptHighPriceImpact] = useState(false)
 
@@ -64,7 +64,7 @@ export function _usePriceImpact() {
       const priceImpactValue = typeof priceImpact === 'string' ? Number(priceImpact) : priceImpact
       setPriceImpactLevel(getPriceImpactLevel(priceImpactValue))
       // reset accept high price impact when price impact changes
-      setAcceptHighPriceImpact(false)
+      setAcceptPriceImpactRisk(false)
     } else {
       setPriceImpactLevel('low')
     }
@@ -90,8 +90,8 @@ export function _usePriceImpact() {
     priceImpactLevel,
     priceImpactColor,
     setPriceImpactColor,
-    acceptHighPriceImpact,
-    setAcceptHighPriceImpact,
+    acceptPriceImpactRisk,
+    setAcceptPriceImpactRisk,
     getPriceImpactColor,
     PriceImpactIcon,
     hasToAcceptHighPriceImpact,

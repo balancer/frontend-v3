@@ -177,7 +177,7 @@ export function SwapForm() {
                     transition={{ duration: 0.3, ease: easeOut }}
                   >
                     <PriceImpactAccordion
-                      setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                      setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
                       accordionButtonComponent={<SwapRate />}
                       accordionPanelComponent={<SwapDetails />}
                       isDisabled={!simulationQuery.data}

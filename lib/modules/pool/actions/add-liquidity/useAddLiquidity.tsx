@@ -9,7 +9,10 @@ import { PropsWithChildren, createContext, useEffect, useMemo, useState } from '
 import { Address, Hash } from 'viem'
 import { usePool } from '../../usePool'
 import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulationQuery'
-import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
+import {
+  isUnhandledAddPriceImpactError,
+  useAddLiquidityPriceImpactQuery,
+} from './queries/useAddLiquidityPriceImpactQuery'
 import {
   LiquidityActionHelpers,
   areEmptyAmounts,
@@ -164,7 +167,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     [simulationQuery.isLoading, 'Fetching quote...'],
     [simulationQuery.isError, 'Error fetching quote'],
     [priceImpactQuery.isLoading, 'Fetching price impact...'],
-    [priceImpactQuery.isError, 'Error fetching price impact'],
+    [isUnhandledAddPriceImpactError(priceImpactQuery.error), 'Error fetching price impact'],
   ]
 
   const { isDisabled: isPreDisabled } = isDisabledWithReason(...disabledConditions)

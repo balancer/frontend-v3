@@ -20,7 +20,7 @@ import { useEffect, useRef } from 'react'
 import { Address } from 'viem'
 import { AddLiquidityModal } from '../modal/AddLiquidityModal'
 import { useAddLiquidity } from '../useAddLiquidity'
-import { bn, fNum } from '@/lib/shared/utils/numbers'
+import { fNum } from '@/lib/shared/utils/numbers'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
 import { TokenInputs } from './TokenInputs'
 import { TokenInputsWithAddable } from './TokenInputsWithAddable'
@@ -38,6 +38,8 @@ import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectMo
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { usePoolRedirect } from '../../../pool.hooks'
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
+import { PriceImpactError } from './PriceImpactError'
+import { cannotCalculatePriceImpactError } from '../queries/useAddLiquidityPriceImpactQuery'
 
 export function AddLiquidityForm() {
   const {
@@ -136,7 +138,8 @@ export function AddLiquidityForm() {
             <VStack spacing="sm" align="start" w="full">
               <PriceImpactAccordion
                 isDisabled={!priceImpactQuery.data}
-                setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                cannotCalculatePriceImpact={cannotCalculatePriceImpactError(priceImpactQuery.error)}
+                setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
                 accordionButtonComponent={
                   <HStack>
                     <Text variant="secondary" fontSize="sm" color="gray.400">
@@ -188,12 +191,7 @@ export function AddLiquidityForm() {
               </GridItem>
             </Grid>
             {showAcceptPoolRisks && <AddLiquidityFormCheckbox />}
-            {priceImpactQuery.isError && (
-              <GenericError
-                customErrorName={'Error calculating price impact'}
-                error={priceImpactQuery.error}
-              ></GenericError>
-            )}
+            {priceImpactQuery.isError && <PriceImpactError priceImpactQuery={priceImpactQuery} />}
             {simulationQuery.isError && (
               <GenericError
                 customErrorName={'Error in query simulation'}

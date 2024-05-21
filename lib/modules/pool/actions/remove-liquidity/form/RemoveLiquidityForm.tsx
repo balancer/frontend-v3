@@ -136,7 +136,7 @@ export function RemoveLiquidityForm() {
             </VStack>
             <VStack spacing="sm" align="start" w="full">
               <PriceImpactAccordion
-                setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
                 accordionButtonComponent={
                   <HStack>
                     <Text variant="secondary" fontSize="sm" color="gray.400">
