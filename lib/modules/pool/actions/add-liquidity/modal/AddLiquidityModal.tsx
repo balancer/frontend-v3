@@ -15,7 +15,7 @@ import { ActionModalFooter } from '../../../../../shared/components/modals/Actio
 import { AnimatePresence, motion } from 'framer-motion'
 import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
 import { TransactionModalHeader } from '../../../../../shared/components/modals/TransactionModalHeader'
-import { ReturnToPoolButton } from '@/lib/shared/components/modals/return.buttons'
+import { usePoolRedirect } from '../../../pool.hooks'
 
 type Props = {
   isOpen: boolean
@@ -34,6 +34,7 @@ export function AddLiquidityModal({
   const initialFocusRef = useRef(null)
   const { transactionSteps, addLiquidityTxHash, hasQuoteContext } = useAddLiquidity()
   const { pool } = usePool()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
 
   useEffect(() => {
     if (addLiquidityTxHash && !window.location.pathname.includes(addLiquidityTxHash)) {
@@ -91,9 +92,9 @@ export function AddLiquidityModal({
         <ActionModalFooter
           isSuccess={!!addLiquidityTxHash}
           currentStep={transactionSteps.currentStep}
-        >
-          <ReturnToPoolButton />
-        </ActionModalFooter>
+          returnLabel="Return to pool"
+          returnAction={redirectToPoolPage}
+        />
       </ModalContent>
     </Modal>
   )
