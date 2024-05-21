@@ -11,6 +11,8 @@ function StarsIcon({ gradFrom = 'yellow', gradTo = 'pink', variant = 'gradient',
   const theme = useTheme()
   const gradientId = `stars-gradient-${gradFrom}-${gradTo}`
 
+  const startColor = theme.colors[gradTo] ? theme.colors[gradTo]['500'] : gradTo
+  const stopColor = theme.colors[gradFrom] ? theme.colors[gradFrom]['500'] : gradFrom
   return (
     <svg viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
       <defs>
@@ -22,8 +24,8 @@ function StarsIcon({ gradFrom = 'yellow', gradTo = 'pink', variant = 'gradient',
           y2="16.3182"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor={theme.colors[gradTo]['500']} />
-          <stop offset="1" stopColor={theme.colors[gradFrom]['500']} />
+          <stop stopColor={startColor} />
+          <stop offset="1" stopColor={stopColor} />
         </linearGradient>
       </defs>
       <path

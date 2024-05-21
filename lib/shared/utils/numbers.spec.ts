@@ -80,7 +80,7 @@ describe('bn', () => {
 
 test('all formats types do not break with super small inputs (AKA dust)', () => {
   const dust = BN_LOWER_THRESHOLD
-  expect(fNum('apr', dust)).toBe('0%')
+  expect(fNum('apr', dust)).toBe('0.00%')
   expect(fNum('feePercent', dust)).toBe('0%')
   expect(fNum('fiat', dust)).toBe('0.00')
   expect(fNum('integer', dust)).toBe('0')
