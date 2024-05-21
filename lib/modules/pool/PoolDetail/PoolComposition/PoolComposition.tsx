@@ -1,9 +1,9 @@
 'use client'
 
-import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import {
   Box,
   Card,
+  Divider,
   Grid,
   GridItem,
   HStack,
@@ -16,23 +16,74 @@ import React, { useEffect, useState } from 'react'
 import { usePool } from '../../usePool'
 import { Address } from 'viem'
 import {
+  GqlChain,
   GqlPoolTokenDetail,
   GqlPoolTokenDisplay,
 } from '@/lib/shared/services/api/generated/graphql'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
-import Image from 'next/image'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
-import { isStableLike } from '../../pool.helpers'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { PoolZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import PoolWeightChart from '../PoolWeightCharts/PoolWeightChart'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import PoolCompositionTokenRow from './PoolCompositionTokenRow'
+
+type CardContentProps = {
+  totalLiquidity: string
+  displayTokens: GqlPoolTokenDetail[]
+  chain: GqlChain
+}
+
+function CardContent({ totalLiquidity, displayTokens, chain }: CardContentProps) {
+  const { toCurrency } = useCurrency()
+
+  return (
+    <VStack spacing="md" width="full">
+      <HStack width="full" justifyContent="space-between">
+        <VStack alignItems="flex-start">
+          <Heading fontWeight="bold" size="h6">
+            Total liquidity
+          </Heading>
+          {/* <Text variant="secondary" fontSize="0.85rem"> */}
+          {/*   Share of Balancer liquidity */}
+          {/* </Text> */}
+        </VStack>
+        <VStack alignItems="flex-end">
+          <Heading fontWeight="bold" size="h6">
+            {totalLiquidity ? (
+              toCurrency(totalLiquidity, { abbreviated: false })
+            ) : (
+              <Skeleton height="24px" w="75px" />
+            )}
+          </Heading>
+          {/* <Text variant="secondary" fontSize="0.85rem"> */}
+          {/*   8.69% (TODO INTEGRATE) */}
+          {/* </Text> */}
+        </VStack>
+      </HStack>
+      <Divider />
+      <VStack spacing="md" width="full">
+        {displayTokens.map(poolToken => {
+          return (
+            <PoolCompositionTokenRow
+              chain={chain}
+              key={`my-liquidity-token-${poolToken.address}`}
+              address={poolToken.address as Address}
+              value={poolToken.balance}
+              poolToken={poolToken}
+              totalLiquidity={totalLiquidity}
+            />
+          )
+        })}
+      </VStack>
+    </VStack>
+  )
+}
 
 export function PoolComposition() {
   const { pool, chain } = usePool()
-  const { toCurrency } = useCurrency()
-  const { getPoolTokenWeightByBalance } = useTokens()
   const [totalLiquidity, setTotalLiquidity] = useState('')
+  const { isMobile } = useBreakpoints()
 
   useEffect(() => {
     if (pool) {
@@ -45,8 +96,6 @@ export function PoolComposition() {
       (displayToken: GqlPoolTokenDisplay) => token.address === displayToken.address
     )
   ) as GqlPoolTokenDetail[]
-
-  const showWeightDistribution = !isStableLike(pool.type)
 
   return (
     <Card
@@ -63,76 +112,22 @@ export function PoolComposition() {
             <Heading fontWeight="bold" size="h5">
               Pool composition
             </Heading>
-            <Card variant="subSection" w="full">
-              <VStack spacing="md" width="full">
-                <Box pb="md" width="full" borderBottomWidth={1} borderColor="border.base">
-                  <HStack width="full" justifyContent="space-between">
-                    <VStack alignItems="flex-start">
-                      <Heading fontWeight="bold" size="h6">
-                        Total liquidity
-                      </Heading>
-                      {/* <Text variant="secondary" fontSize="0.85rem"> */}
-                      {/*   Share of Balancer liquidity */}
-                      {/* </Text> */}
-                    </VStack>
-                    <VStack alignItems="flex-end">
-                      <Heading fontWeight="bold" size="h6">
-                        {totalLiquidity ? (
-                          toCurrency(totalLiquidity, { abbreviated: false })
-                        ) : (
-                          <Skeleton height="24px" w="75px" />
-                        )}
-                      </Heading>
-                      {/* <Text variant="secondary" fontSize="0.85rem"> */}
-                      {/*   8.69% (TODO INTEGRATE) */}
-                      {/* </Text> */}
-                    </VStack>
-                  </HStack>
-                </Box>
-                <VStack spacing="md" width="full">
-                  {displayTokens.map(poolToken => {
-                    return (
-                      <TokenRow
-                        chain={chain}
-                        key={`my-liquidity-token-${poolToken.address}`}
-                        address={poolToken.address as Address}
-                        value={poolToken.balance}
-                        abbreviated={false}
-                        customRender={() => {
-                          if (!showWeightDistribution) return null
-                          return (
-                            <VStack minWidth="100px" spacing="1" alignItems="flex-end">
-                              <Heading fontWeight="bold" as="h6" fontSize="1rem">
-                                {totalLiquidity ? (
-                                  fNum(
-                                    'weight',
-                                    getPoolTokenWeightByBalance(totalLiquidity, poolToken, chain),
-                                    { abbreviated: false }
-                                  )
-                                ) : (
-                                  <Skeleton height="24px" w="75px" />
-                                )}
-                              </Heading>
-                              <HStack spacing="1">
-                                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                                  {fNum('weight', poolToken.weight || '0', { abbreviated: false })}
-                                </Text>
-                                <Image
-                                  src="/images/icons/bullseye.svg"
-                                  width="16"
-                                  height="16"
-                                  alt="Token weight - Bullseye"
-                                />
-                              </HStack>
-                            </VStack>
-                          )
-                        }}
-                      />
-                    )
-                  })}
-                </VStack>
-              </VStack>
-            </Card>
+            {isMobile ? (
+              <CardContent
+                totalLiquidity={totalLiquidity}
+                displayTokens={displayTokens}
+                chain={chain}
+              />
+            ) : (
+              <Card variant="subSection" w="full">
+                <CardContent
+                  totalLiquidity={totalLiquidity}
+                  displayTokens={displayTokens}
+                  chain={chain}
+                />
+              </Card>
+            )}
+            {isMobile && <Divider />}
             <Text color="grayText" mt="auto" fontSize="sm">
               From {fNum('integer', pool.dynamicData.holdersCount)} Liquidity Providers
             </Text>
