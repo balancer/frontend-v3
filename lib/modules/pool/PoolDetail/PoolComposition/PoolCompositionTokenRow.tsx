@@ -35,7 +35,7 @@ export default function PoolCompositionTokenRow({
   const { toCurrency } = useCurrency()
   const [amount, setAmount] = useState<string>('')
   const [usdValue, setUsdValue] = useState<string | undefined>(undefined)
-  const { pool } = usePool()
+  const { pool, isLoading } = usePool()
   const { isMobile } = useBreakpoints()
   const token = getToken(address, chain)
   const showWeightDistribution = !isStableLike(pool.type)
@@ -47,7 +47,9 @@ export default function PoolCompositionTokenRow({
     }
   }, [value])
 
-  return (
+  return isLoading ? (
+    <Skeleton w="full" h="50px" />
+  ) : (
     <Grid
       w="full"
       templateRows={{

@@ -81,7 +81,7 @@ function CardContent({ totalLiquidity, displayTokens, chain }: CardContentProps)
 }
 
 export function PoolComposition() {
-  const { pool, chain } = usePool()
+  const { pool, chain, isLoading } = usePool()
   const [totalLiquidity, setTotalLiquidity] = useState('')
   const { isMobile } = useBreakpoints()
 
@@ -138,11 +138,13 @@ export function PoolComposition() {
             contentProps={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
           >
             <PoolZenGarden sizePx={isMobile ? '300px' : '400px'} poolType={pool.type} />
-            <VStack spacing="4">
+            {isLoading ? (
+              <Skeleton w="full" h="250px" />
+            ) : (
               <Box mt={{ base: '0', md: '-6' }} p={{ base: 'sm', md: '0' }}>
                 <PoolWeightChart pool={pool} chain={chain} />
               </Box>
-            </VStack>
+            )}
           </NoisyCard>
         </GridItem>
       </Grid>
