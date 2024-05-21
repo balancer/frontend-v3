@@ -115,12 +115,16 @@ export function PoolMyStats() {
         <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
           My APR
         </Text>
-        <MemoizedAprTooltip
-          data={pool.dynamicData.apr}
-          poolId={pool.id}
-          textProps={{ fontWeight: 'medium', fontSize: '2xl', lineHeight: '28px' }}
-          vebalBoost={boost || '1'}
-        />
+        {poolMyStatsValues && poolMyStatsValues.myLiquidity ? (
+          <MemoizedAprTooltip
+            data={pool.dynamicData.apr}
+            poolId={pool.id}
+            textProps={{ fontWeight: 'medium', fontSize: '2xl', lineHeight: '28px' }}
+            vebalBoost={boost || '1'}
+          />
+        ) : (
+          <Heading size="h4">&mdash;</Heading>
+        )}
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
         <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
