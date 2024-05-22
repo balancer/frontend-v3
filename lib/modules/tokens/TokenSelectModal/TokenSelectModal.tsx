@@ -16,6 +16,7 @@ import { TokenSelectList } from './TokenSelectList/TokenSelectList'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { TokenSelectPopular } from './TokenSelectPopular'
 import { SearchInput } from '@/lib/shared/components/inputs/SearchInput'
+import { getChainShortName } from '@/lib/config/app.config'
 
 type Props = {
   tokens: GqlToken[]
@@ -52,7 +53,7 @@ export function TokenSelectModal({
     <Modal isOpen={isOpen} onClose={onClose} finalFocusRef={finalFocusRef} isCentered {...rest}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader color="font.primary">Select a token</ModalHeader>
+        <ModalHeader color="font.primary">Select a token: {getChainShortName(chain)}</ModalHeader>
         <ModalCloseButton />
         <ModalBody p={0}>
           <VStack w="full" align="start" spacing="md">
@@ -74,7 +75,7 @@ export function TokenSelectModal({
                 />
               </Box>
             )}
-            <Box px="md" pr="0" w="full">
+            <Box pr="0" w="full">
               <TokenSelectList
                 chain={chain}
                 tokens={tokens}
