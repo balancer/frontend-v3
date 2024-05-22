@@ -24,7 +24,8 @@ export function useApproveMinterStep(chain: GqlChain): {
   const labels: TransactionLabels = {
     init: 'Approve relayer as minter',
     title: 'Approve minter',
-    confirming: 'Confirming...',
+    description: 'Approve relayer as minter',
+    confirming: 'Confirming approval...',
     confirmed: `Relayer approved as minter!`,
     tooltip: 'Approval relayer as minter',
   }

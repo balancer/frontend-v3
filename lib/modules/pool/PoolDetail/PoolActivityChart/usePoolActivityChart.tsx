@@ -448,30 +448,27 @@ export function usePoolActivityChart(isExpanded: boolean) {
 
   function getChartDateCaption() {
     try {
-      if (!chartData.adds.length && !chartData.removes.length && !chartData.swaps.length) return ''
-
       let diffInDays = 0
-      if (activeTab.value === 'adds') {
-        const timestamp = chartData.adds[chartData.adds.length - 1][0]
+      const firstAddTimeStamp = chartData.adds[chartData.adds.length - 1]?.[0] ?? 0
+      const firstRemoveTimeStamp = chartData.removes[chartData.removes.length - 1]?.[0] ?? 0
+      const firstSwapTimeStamp = chartData.swaps[chartData.swaps.length - 1]?.[0] ?? 0
+
+      if (activeTab.value === 'adds' && firstAddTimeStamp) {
+        diffInDays = differenceInCalendarDays(new Date(), new Date(firstAddTimeStamp * 1000))
+      }
+
+      if (activeTab.value === 'removes' && firstRemoveTimeStamp) {
+        const timestamp = firstRemoveTimeStamp
         diffInDays = differenceInCalendarDays(new Date(), new Date(timestamp * 1000))
       }
 
-      if (activeTab.value === 'removes') {
-        const timestamp = chartData.removes[chartData.removes.length - 1][0]
-        diffInDays = differenceInCalendarDays(new Date(), new Date(timestamp * 1000))
-      }
-
-      if (activeTab.value === 'swaps') {
+      if (activeTab.value === 'swaps' && firstSwapTimeStamp) {
         const timestamp = chartData.swaps[chartData.swaps.length - 1][0]
         diffInDays = differenceInCalendarDays(new Date(), new Date(timestamp * 1000))
       }
 
       if (activeTab.value === 'all') {
-        const addsTimestamp = chartData.adds[chartData.adds.length - 1][0]
-        const removesTimestamp = chartData.removes[chartData.removes.length - 1][0]
-        const swapsTimestamp = chartData.swaps[chartData.swaps.length - 1][0]
-
-        const lastTimestamp = Math.max(addsTimestamp, removesTimestamp, swapsTimestamp)
+        const lastTimestamp = Math.max(firstSwapTimeStamp, firstRemoveTimeStamp, firstAddTimeStamp)
         diffInDays = differenceInCalendarDays(new Date(), new Date(lastTimestamp * 1000))
       }
 

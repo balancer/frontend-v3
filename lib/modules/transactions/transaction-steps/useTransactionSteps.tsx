@@ -43,7 +43,7 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
     if (isCurrentStepComplete && currentStepIndex < lastStepIndex) {
       setCurrentStepIndex(currentStepIndex + 1)
     }
-  }, [currentStepIndex, isCurrentStepComplete])
+  }, [isCurrentStepComplete, currentStepIndex])
 
   // On step change, call activation callbacks if they exist
   useEffect(() => {

@@ -37,10 +37,14 @@ export function TokenSelectPopular({ chain, excludeNativeAsset, onTokenSelect }:
             size="lg"
             pl="xs"
             cursor="pointer"
+            shadow="sm"
+            role="group"
+            transition="all 0.2s var(--ease-out-cubic)"
+            _hover={{ bg: 'background.level4', shadow: 'none' }}
           >
             <HStack>
-              <TokenIcon address={token.address} chain={chain} size={22} alt={token.symbol} />
-              <Text>{token.symbol}</Text>
+              <TokenIcon address={token.address} chain={chain} size={20} alt={token.symbol} />
+              <Text fontSize="sm">{token.symbol}</Text>
             </HStack>
           </Tag>
         </WrapItem>

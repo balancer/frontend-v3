@@ -108,8 +108,15 @@ export const balColors = {
   gradient: {
     // dusk: 'linear(to-tr, purple.300 5%, #D7CBE7 50%, #EAA879 95%)',
     // sand: 'linear(to-t, #E6C6A0 0%, #E5D3BE 100%)',
-    dawnLight: 'linear-gradient(90deg, #8F86FD 0%, #A66CF3 40%, #F48975 100%)',
-    dawnDark: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
+
+    dawnLight:
+      'linear-gradient(90deg, hsla(245, 97%, 76%, 1) 0%, hsla(266, 85%, 69%, 1) 40%, hsla(9, 85%, 71%, 1) 100%)',
+    dawnLightAlpha15:
+      'linear-gradient(90deg, hsla(245, 97%, 76%, 0.15) 0%, hsla(266, 85%, 69%, 0.15) 40%, hsla(9, 85%, 71%, 0.15) 100%)',
+    dawnDark:
+      'linear-gradient(90deg, hsla(244, 78%, 82%, 1) 0%, hsla(266, 37%, 85%, 1) 25%, hsla(0, 36%, 84%, 1) 50%, hsla(25, 73%, 70%, 1) 100%)',
+    dawnDarkAlpha15:
+      'linear-gradient(90deg, hsla(244, 78%, 82%, 0.15) 0%, hsla(266, 37%, 85%, 0.15) 25%, hsla(0, 36%, 84%, 0.15) 50%, hsla(25, 73%, 70%, 0.15) 100%)',
     sunsetLight: 'linear-gradient(45deg, #F06147 0%, #EA9A43 100%)',
     sunsetDark: 'linear-gradient(45deg, #F06147 0%, #EA9A43 100%)',
     sandLight: 'linear-gradient(180deg, #E5D3BE 0%, #E6C6A0 100%)',
@@ -136,6 +143,7 @@ export const tokens = {
         base: balColors.base.light,
         baseWithOpacity: createBackgroundOpacity(balColors.base.hslLight, 0.5),
         special: balColors.gradient.dawnLight,
+        specialAlpha15: balColors.gradient.dawnLightAlpha15,
         specialSecondary: balColors.gradient.sunsetLight,
         highlight: balColors.green['600'],
       },
@@ -162,6 +170,7 @@ export const tokens = {
       text: {
         primary: balColors.gray['700'],
         secondary: balColors.gray['500'],
+        secondaryAlpha50: tinycolor(balColors.gray['500']).setAlpha(0.5),
         primaryGradient: primaryTextColor,
         secondaryGradient: 'linear-gradient(45deg, #728097 0%, #909BAD 100%)',
         special: balColors.gradient.dawnLight,
@@ -215,6 +224,7 @@ export const tokens = {
         baseWithOpacity: createBackgroundOpacity(balColors.base.hslDark, 0.97),
         level0WithOpacity: 'rgba(49, 55, 63, 0.96)',
         special: balColors.gradient.dawnDark,
+        specialAlpha15: balColors.gradient.dawnDarkAlpha15,
         specialSecondary: balColors.gradient.sunsetDark,
         highlight: balColors.green['500'],
       },
@@ -247,6 +257,7 @@ export const tokens = {
       text: {
         primary: '#E5D3BE',
         secondary: balColors.gray['400'],
+        secondaryAlpha50: tinycolor(balColors.gray['400']).setAlpha(0.15),
         primaryGradient: 'linear-gradient(45deg, #E6C6A0 0%, #E5D3BE 100%)',
         secondaryGradient: 'linear-gradient(45deg, #909BAD 0%, #728097 100%)',
         special: 'linear-gradient(90deg, #B3AEF5 0%, #D7CBE7 25%, #E5C8C8 50%, #EAA879 100%)',
@@ -297,6 +308,9 @@ export const tokens = {
       xl: '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, 6px 6px 6px -3px #49351D0F, 12px 12px 12px -6px #49351D0F, 24px 24px 24px -12px #49351D0F, -0.5px -1px 0px 0px #FFFFFF',
       '2xl':
         '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, 6px 6px 6px -3px #49351D0F, 12px 12px 12px -6px #49351D0F, 24px 24px 24px -12px #49351D0F, 42px 42px 42px -24px #49351D0F, -0.5px -1px 0px 0px #FFFFFF',
+      '3xl':
+        '0px 0px 0px 1px #49351D05, 1px 1px 1px -0.5px #49351D0F, 3px 3px 3px -1.5px #49351D0F, 6px 6px 6px -3px #49351D0F, 12px 12px 12px -6px #49351D0F, 24px 24px 24px -12px #49351D0F, 42px 42px 42px -24px #49351D0F, 0px 42px 84px 0 #49351D0F, -0.5px -1px 0px 0px #FFFFFF',
+
       shadowInnerBase:
         '0px 2px 4px 0px rgba(0, 0, 0, 0.05) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.05) inset, 0px 10px 20px 0px rgba(0, 0, 0, 0.05) inset',
       btnDefault:
@@ -339,6 +353,8 @@ export const tokens = {
       xl: '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000000F, 24px 24px 24px -12px #0000001A, -0.5px -1px 0px 0px #FFFFFF26',
       '2xl':
         '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000000F, 24px 24px 24px -12px #0000000F, 42px 42px 42px -24px #0000000F, -0.5px -0.5px 0px 0px #FFFFFF26',
+      '3xl':
+        '0px 0px 0px 1px #00000005, 1px 1px 1px -0.5px #0000000F, 3px 3px 3px -1.5px #0000000F, 6px 6px 6px -3px #0000000F, 12px 12px 12px -6px #0000000F, 24px 24px 24px -12px #0000000F, 42px 42px 42px -24px #0000000F, 0px 42px 84px 0 rgba(0,0,0,0.3), -0.5px -0.5px 0px 0px #FFFFFF26',
       shadowInnerBase:
         '0px 2px 4px 0px rgba(0, 0, 0, 0.10) inset, 0px 4px 8px 0px rgba(0, 0, 0, 0.10) inset, 0px 10px 20px 0px rgba(0, 0, 0, 0.10) inset',
       btnDefault:
@@ -454,6 +470,10 @@ export const balTheme = {
         special: {
           default: tokens.colors.light.background.special,
           _dark: tokens.colors.dark.background.special,
+        },
+        specialAlpha15: {
+          default: tokens.colors.light.background.specialAlpha15,
+          _dark: tokens.colors.dark.background.specialAlpha15,
         },
         specialSecondary: {
           default: tokens.colors.light.background.specialSecondary,
@@ -629,6 +649,10 @@ export const balTheme = {
           default: tokens.colors.light.text.secondary,
           _dark: tokens.colors.dark.text.secondary,
         },
+        secondaryAlpha50: {
+          default: tokens.colors.light.text.secondaryAlpha50,
+          _dark: tokens.colors.dark.text.secondaryAlpha50,
+        },
         primaryGradient: {
           default: tokens.colors.light.text.primaryGradient,
           _dark: tokens.colors.dark.text.primaryGradient,
@@ -741,6 +765,10 @@ export const balTheme = {
       '2xl': {
         default: tokens.shadows.light['2xl'],
         _dark: tokens.shadows.dark['2xl'],
+      },
+      '3xl': {
+        default: tokens.shadows.light['3xl'],
+        _dark: tokens.shadows.dark['3xl'],
       },
       innerSm: 'inset 0 0 4px 0 rgba(0, 0, 0, 0.06)',
       innerBase: {
@@ -1367,6 +1395,14 @@ export const balTheme = {
         },
         header: {
           color: 'font.primary',
+          letterSpacing: '-0.04rem',
+        },
+        overlay: {
+          bg: 'rgba(0,0,0,0.85)',
+          backdropFilter: 'blur(4px)',
+          _dark: {
+            bg: 'rgba(0,0,0,0.7)',
+          },
         },
       },
       defaultProps: {
@@ -1377,7 +1413,7 @@ export const balTheme = {
       baseStyle: {
         content: {
           bg: 'background.level3',
-          shadow: '2xl',
+          shadow: '3xl',
           border: '1px solid',
           borderColor: 'border.base',
         },
@@ -1398,7 +1434,7 @@ export const balTheme = {
             borderColor: 'transparent',
             color: 'grayText',
             fontWeight: 'bold',
-            shadow: 'lg',
+            shadow: '3xl',
           },
           body: {
             background: 'background.level2',
@@ -1418,7 +1454,7 @@ export const balTheme = {
           borderColor: 'transparent',
           shadow: 'xl',
           width: 'full',
-          padding: ['sm', 'md'],
+          padding: ['xs', 'md'],
         },
         header: {
           padding: 'none',
@@ -1632,12 +1668,12 @@ export const balTheme = {
     },
     Divider: {
       baseStyle: {
-        borderColor: 'brown.200',
+        borderColor: 'brown.100',
         borderWidth: '1px',
-        boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 1)',
+        boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.8)',        
         _dark: {
           borderColor: 'gray.800',
-          boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.15)',
+          boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.1)',
         },
       },
     },

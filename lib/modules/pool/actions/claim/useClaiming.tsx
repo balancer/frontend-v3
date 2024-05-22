@@ -1,15 +1,13 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { useBalTokenRewards } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
-import { useClaimableBalances } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
-import { LABELS } from '@/lib/shared/labels'
-import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
-import { useDisclosure } from '@chakra-ui/hooks'
 import { PoolListItem } from '../../pool.types'
 import { useClaimAllRewardsSteps } from './useClaimAllRewardsSteps'
+import { useClaimsData } from './useClaimsData'
+import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useDisclosure } from '@chakra-ui/hooks'
+import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
+import { LABELS } from '@/lib/shared/labels'
 
 export function useClaiming(pools: PoolListItem[]) {
   const { isConnected } = useUserAccount()
@@ -19,29 +17,28 @@ export function useClaiming(pools: PoolListItem[]) {
     LABELS.walletNotConnected,
   ])
 
-  const claimableBalancesQuery = useClaimableBalances(pools)
-  const nonBalRewards = claimableBalancesQuery.claimableRewards
-  const balTokenRewardsQuery = useBalTokenRewards(pools)
-  const balRewards = balTokenRewardsQuery.balRewardsData
+  const claimsData = useClaimsData(pools)
 
-  const hasNoRewards = !nonBalRewards.length && !balRewards.length
+  const {
+    claimableBalancesQuery,
+    balTokenRewardsQuery,
+    isLoading: isLoadingData,
+    ...claimsState
+  } = claimsData
 
-  const { steps, isLoading } = useClaimAllRewardsSteps({
+  const { steps, isLoading: isLoadingSteps } = useClaimAllRewardsSteps({
     pools,
     claimableBalancesQuery,
     balTokenRewardsQuery,
   })
-  const transactionSteps = useTransactionSteps(steps, isLoading)
+  const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
   return {
+    isLoading: isLoadingData || isLoadingSteps,
     transactionSteps,
     isDisabled,
     disabledReason,
     previewModalDisclosure,
-    nonBalRewards,
-    balRewards,
-    hasNoRewards,
-    isLoading:
-      claimableBalancesQuery.isLoadingClaimableRewards || balTokenRewardsQuery.isLoadingBalRewards,
+    ...claimsState,
   }
 }

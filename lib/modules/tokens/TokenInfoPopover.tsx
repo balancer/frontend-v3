@@ -40,6 +40,10 @@ export function TokenInfoPopover({ tokenAddress, chain }: Props) {
           aria-label="Token info"
           color="grayText"
           icon={<InfoIcon />}
+          opacity="0.5"
+          _hover={{
+            opacity: '1',
+          }}
         />
       </PopoverTrigger>
       <PopoverContent w="auto">

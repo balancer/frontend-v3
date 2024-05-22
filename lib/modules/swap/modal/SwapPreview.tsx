@@ -1,10 +1,10 @@
-import { Card, CardHeader, HStack, VStack, Text } from '@chakra-ui/react'
-import { MobileStepTracker } from '../transactions/transaction-steps/step-tracker/MobileStepTracker'
-import TokenRow from '../tokens/TokenRow/TokenRow'
-import { SwapDetails } from './SwapDetails'
-import { SwapRate } from './SwapRate'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { useSwap } from './useSwap'
+import { Card, HStack, Text, VStack } from '@chakra-ui/react'
+import { SwapTokenRow } from '../../tokens/TokenRow/SwapTokenRow'
+import { MobileStepTracker } from '../../transactions/transaction-steps/step-tracker/MobileStepTracker'
+import { SwapDetails } from '../SwapDetails'
+import { SwapRate } from '../SwapRate'
+import { useSwap } from '../useSwap'
 
 export function SwapPreview() {
   const { isMobile } = useBreakpoints()
@@ -15,22 +15,20 @@ export function SwapPreview() {
       {isMobile && <MobileStepTracker transactionSteps={transactionSteps} chain={selectedChain} />}
 
       <Card variant="modalSubSection">
-        <CardHeader>You pay</CardHeader>
-        <TokenRow
-          address={tokenIn.address}
-          value={tokenIn.amount}
+        <SwapTokenRow
+          label="You pay"
           chain={selectedChain}
-          abbreviated={false}
+          tokenAmount={tokenIn.amount}
+          tokenAddress={tokenIn.address}
         />
       </Card>
 
       <Card variant="modalSubSection">
-        <CardHeader>You&apos;ll get (if no slippage)</CardHeader>
-        <TokenRow
-          address={tokenOut.address}
-          value={tokenOut.amount}
+        <SwapTokenRow
+          label="You'll get (if no slippage)"
           chain={selectedChain}
-          abbreviated={false}
+          tokenAmount={tokenOut.amount}
+          tokenAddress={tokenOut.address}
         />
       </Card>
 

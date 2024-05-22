@@ -6,26 +6,31 @@ import { Pool } from '../../usePool'
 import { useMemo } from 'react'
 import { useApproveMinterStep } from '@/lib/modules/staking/gauge/useMinterApprovalStep'
 
-export function useClaimAndUnstakeSteps(pool: Pool): {
+export function useClaimAndUnstakeSteps(
+  pool: Pool,
+  refetchPoolBalances: () => void
+): {
   isLoading: boolean
   steps: TransactionStep[]
 } {
   const chainId = getChainId(pool.chain)
 
-  const approveRelayerStep = useApproveRelayerStep(chainId)
+  const { step: relayerApprovalStep, isLoading: isLoadingRelayerApprovalStep } =
+    useApproveRelayerStep(chainId)
   const { step: minterApprovalStep, isLoading: isLoadingMinterApprovalStep } = useApproveMinterStep(
     pool.chain
   )
 
   const { step: claimAndUnstakeStep, isLoading: isLoadingClaimAndUnstakeStep } =
-    useClaimAndUnstakeStep(pool)
+    useClaimAndUnstakeStep(pool, refetchPoolBalances)
 
   const steps = useMemo((): TransactionStep[] => {
-    return [minterApprovalStep, approveRelayerStep, claimAndUnstakeStep]
-  }, [approveRelayerStep, claimAndUnstakeStep, minterApprovalStep])
+    return [minterApprovalStep, relayerApprovalStep, claimAndUnstakeStep]
+  }, [relayerApprovalStep, claimAndUnstakeStep, minterApprovalStep])
 
   return {
-    isLoading: isLoadingMinterApprovalStep || isLoadingClaimAndUnstakeStep,
+    isLoading:
+      isLoadingMinterApprovalStep || isLoadingRelayerApprovalStep || isLoadingClaimAndUnstakeStep,
     steps,
   }
 }
