@@ -101,7 +101,7 @@ export function SwapForm() {
   function onModalClose() {
     previewModalDisclosure.onClose()
     if (swapTxHash) {
-      router.push('/swap')
+      router.back()
     }
   }
 

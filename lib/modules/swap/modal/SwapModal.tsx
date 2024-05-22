@@ -37,7 +37,7 @@ export function SwapPreviewModal({
 
   useEffect(() => {
     if (swapTxHash && !window.location.pathname.includes(swapTxHash)) {
-      window.history.replaceState({}, '', `/swap/${chainToSlugMap[selectedChain]}/${swapTxHash}`)
+      window.history.pushState({}, '', `/swap/${chainToSlugMap[selectedChain]}/${swapTxHash}`)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [swapTxHash])
