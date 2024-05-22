@@ -32,6 +32,7 @@ import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import StakedBalanceDistributionChart from './PoolWeightCharts/StakedBalanceDistributionChart'
 import { MyLiquidityRefContext } from './PoolDetail'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 
 const TABS = [
   {
@@ -53,6 +54,7 @@ export default function PoolMyLiquidity() {
   const { pool, chain, isLoadingOnchainUserBalances } = usePool()
   const { toCurrency } = useCurrency()
   const { isConnected, isConnecting } = useUserAccount()
+  const { isMobile } = useBreakpoints()
 
   // context is used to scroll to the My liquidity section
   const myLiquidity = useContext(MyLiquidityRefContext)
@@ -252,8 +254,8 @@ export default function PoolMyLiquidity() {
               cardProps={{ position: 'relative', overflow: 'hidden' }}
               contentProps={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
             >
-              <StakedBalanceDistributionChart pool={pool} />
-              <ZenGarden variant="pill" sizePx="80%" heightPx="80%" />
+              <StakedBalanceDistributionChart pool={pool} isSmall={isMobile} />
+              {!isMobile && <ZenGarden variant="pill" sizePx="80%" heightPx="80%" />}
             </NoisyCard>
           </GridItem>
         </Grid>

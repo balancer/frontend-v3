@@ -11,9 +11,9 @@ import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { Pool } from '../../usePool'
 
 const smallSize: ChartSizeValues = {
-  chartHeight: '225px',
-  boxWidth: 225,
-  boxHeight: 225,
+  chartHeight: '125px',
+  boxWidth: 125,
+  boxHeight: 125,
   haloTop: '40%',
   haloLeft: '55px',
   haloWidth: '40px',
@@ -21,7 +21,7 @@ const smallSize: ChartSizeValues = {
 }
 
 const normalSize: ChartSizeValues = {
-  chartHeight: '',
+  chartHeight: '225px',
   boxWidth: 225,
   boxHeight: 225,
   haloTop: '49%',
@@ -107,7 +107,7 @@ export default function StakedBalanceDistributionChart({
   }, [pool, colorMode])
 
   return (
-    <HStack spacing="12">
+    <HStack p={{ base: 'sm', md: '0' }} spacing={{ base: 'sm', md: '2xl' }}>
       <Box
         width={`${chartSizeValues.boxWidth}px`}
         height={`${chartSizeValues.boxHeight}px`}
