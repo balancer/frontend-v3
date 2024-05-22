@@ -6,7 +6,7 @@ import { GqlChain, GqlSorSwapType, GqlToken } from '@/lib/shared/services/api/ge
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { ApolloClient, useApolloClient, useReactiveVar } from '@apollo/client'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
-import { Address, isAddress, parseUnits } from 'viem'
+import { Address, Hash, isAddress, parseUnits } from 'viem'
 import { emptyAddress } from '../web3/contracts/wagmi-helpers'
 import { useUserAccount } from '../web3/useUserAccount'
 import { LABELS } from '@/lib/shared/labels'
@@ -47,12 +47,14 @@ import { useTokenBalances } from '../tokens/useTokenBalances'
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
 
-type PathParams = {
+export type PathParams = {
   chain?: string
   tokenIn?: string
   tokenOut?: string
   amountIn?: string
   amountOut?: string
+  // When urlTxHash is present the rest of the params above are not used
+  urlTxHash?: Hash
 }
 
 function selectSwapHandler(
@@ -71,7 +73,7 @@ function selectSwapHandler(
   return new DefaultSwapHandler(apolloClient)
 }
 
-export function _useSwap(pathParams: PathParams) {
+export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   const swapStateVar = useMakeVarPersisted<SwapState>(
     {
       tokenIn: {
@@ -124,11 +126,15 @@ export function _useSwap(pathParams: PathParams) {
     throw new Error('Token metadata not found')
   }
 
-  const shouldFetchSwap = (state: SwapState) =>
-    isAddress(state.tokenIn.address) &&
-    isAddress(state.tokenOut.address) &&
-    !!state.swapType &&
-    bn(getSwapAmount(swapState)).gt(0)
+  const shouldFetchSwap = (state: SwapState, urlTxHash?: Hash) => {
+    if (urlTxHash) return false
+    return (
+      isAddress(state.tokenIn.address) &&
+      isAddress(state.tokenOut.address) &&
+      !!state.swapType &&
+      bn(getSwapAmount(swapState)).gt(0)
+    )
+  }
 
   const getSwapAmount = (state: SwapState) =>
     (state.swapType === GqlSorSwapType.ExactIn ? state.tokenIn.amount : state.tokenOut.amount) ||
@@ -143,7 +149,7 @@ export function _useSwap(pathParams: PathParams) {
       swapType: swapState.swapType,
       swapAmount: getSwapAmount(swapState),
     },
-    enabled: shouldFetchSwap(swapState),
+    enabled: shouldFetchSwap(swapState, urlTxHash),
   })
 
   function handleSimulationResponse({ returnAmount, swapType }: SimulateSwapResponse) {
@@ -360,9 +366,14 @@ export function _useSwap(pathParams: PathParams) {
 
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
+  const swapTxHash = urlTxHash || transactionSteps.lastTransaction?.result?.data?.transactionHash
+
+  const hasQuoteContext = !!simulationQuery.data
+
   // Set state on initial load
   useEffect(() => {
     resetSwapAmounts()
+    if (urlTxHash) return
 
     const { chain, tokenIn, tokenOut, amountIn, amountOut } = pathParams
     const { popularTokens } = networkConfig.tokens
@@ -410,12 +421,18 @@ export function _useSwap(pathParams: PathParams) {
 
   // Update the URL path when the tokens change
   useEffect(() => {
-    replaceUrlPath()
+    if (!swapTxHash) replaceUrlPath()
   }, [swapState.selectedChain, swapState.tokenIn, swapState.tokenOut, swapState.tokenIn.amount])
 
   useEffect(() => {
     setTokens(getTokensByChain(swapState.selectedChain))
   }, [swapState.selectedChain])
+
+  useEffect(() => {
+    if (swapTxHash) {
+      previewModalDisclosure.onOpen()
+    }
+  }, [swapTxHash])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
@@ -440,6 +457,9 @@ export function _useSwap(pathParams: PathParams) {
     handler,
     isNativeAssetIn,
     swapAction,
+    urlTxHash,
+    swapTxHash,
+    hasQuoteContext,
     setTokenSelectKey,
     setSelectedChain,
     setTokenInAmount,

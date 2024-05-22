@@ -1,15 +1,18 @@
 import { useAppzi } from '@/lib/shared/hooks/useAppzi'
 import { Button, Divider, HStack, ModalFooter, VStack } from '@chakra-ui/react'
-import Link from 'next/link'
-import { CornerDownLeft, MessageSquare, ThumbsUp } from 'react-feather'
-import { usePool } from '../usePool'
-import { usePoolRedirect } from '../pool.hooks'
 import { AnimatePresence, motion } from 'framer-motion'
-import { TransactionStep } from '../../transactions/transaction-steps/lib'
+import Link from 'next/link'
+import { PropsWithChildren } from 'react'
+import { CornerDownLeft, MessageSquare, ThumbsUp } from 'react-feather'
+import { TransactionStep } from '../../../modules/transactions/transaction-steps/lib'
 
-export function SuccessActions() {
-  const { pool } = usePool()
-  const { redirectToPoolPage } = usePoolRedirect(pool)
+export function SuccessActions({
+  returnLabel,
+  returnAction,
+}: {
+  returnLabel?: string
+  returnAction?: () => void
+}) {
   const { openNpsModal } = useAppzi()
 
   return (
@@ -20,9 +23,9 @@ export function SuccessActions() {
           variant="ghost"
           leftIcon={<CornerDownLeft size="14" />}
           size="xs"
-          onClick={redirectToPoolPage}
+          onClick={returnAction}
         >
-          Return to pool
+          {returnLabel}
         </Button>
         <Button variant="ghost" leftIcon={<ThumbsUp size="14" />} size="xs" onClick={openNpsModal}>
           Give feedback
@@ -42,13 +45,14 @@ export function SuccessActions() {
   )
 }
 
-export function PoolActionModalFooter({
-  isSuccess,
-  currentStep,
-}: {
+type Props = {
   isSuccess: boolean
   currentStep: TransactionStep
-}) {
+  returnLabel: string
+  returnAction: () => void
+}
+
+export function ActionModalFooter({ isSuccess, currentStep, returnLabel, returnAction }: Props) {
   return (
     <ModalFooter>
       <AnimatePresence mode="wait" initial={false}>
@@ -61,7 +65,7 @@ export function PoolActionModalFooter({
             transition={{ duration: 0.3 }}
             style={{ width: '100%' }}
           >
-            <SuccessActions />
+            <SuccessActions returnLabel={returnLabel} returnAction={returnAction} />
           </motion.div>
         ) : (
           <motion.div

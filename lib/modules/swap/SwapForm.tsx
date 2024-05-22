@@ -21,10 +21,10 @@ import { useSwap } from './useSwap'
 import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
-import { SwapPreviewModal } from './SwapPreviewModal'
+import { SwapPreviewModal } from './modal/SwapModal'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
-import { PriceImpactAccordion } from '../../shared/components/accordion/PriceImpactAccordion'
-import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
+import { PriceImpactAccordion } from '../price-impact/PriceImpactAccordion'
+import { PriceImpactProvider } from '@/lib/modules/price-impact/usePriceImpact'
 import { ChainSelect } from '../chains/ChainSelect'
 import { CheckCircle, Link, Repeat } from 'react-feather'
 import { SwapRate } from './SwapRate'
@@ -34,8 +34,10 @@ import { motion, easeOut } from 'framer-motion'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { ErrorAlert } from '@/lib/shared/components/errors/ErrorAlert'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
+import { useRouter } from 'next/navigation'
 
 export function SwapForm() {
+  const router = useRouter()
   const {
     tokenIn,
     tokenOut,
@@ -47,6 +49,7 @@ export function SwapForm() {
     previewModalDisclosure,
     simulationQuery,
     swapAction,
+    swapTxHash,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
@@ -93,6 +96,13 @@ export function SwapForm() {
   function openTokenSelectModal(tokenSelectKey: 'tokenIn' | 'tokenOut') {
     setTokenSelectKey(tokenSelectKey)
     tokenSelectDisclosure.onOpen()
+  }
+
+  function onModalClose() {
+    previewModalDisclosure.onClose()
+    if (swapTxHash) {
+      router.back()
+    }
   }
 
   return (
@@ -177,7 +187,7 @@ export function SwapForm() {
                     transition={{ duration: 0.3, ease: easeOut }}
                   >
                     <PriceImpactAccordion
-                      setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                      setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
                       accordionButtonComponent={<SwapRate />}
                       accordionPanelComponent={<SwapDetails />}
                       isDisabled={!simulationQuery.data}
@@ -223,7 +233,7 @@ export function SwapForm() {
           finalFocusRef={nextBtn}
           isOpen={previewModalDisclosure.isOpen}
           onOpen={previewModalDisclosure.onOpen}
-          onClose={previewModalDisclosure.onClose}
+          onClose={onModalClose}
         />
       </PriceImpactProvider>
     </FadeInOnView>

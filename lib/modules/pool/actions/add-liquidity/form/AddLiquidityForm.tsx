@@ -20,15 +20,15 @@ import { useEffect, useRef } from 'react'
 import { Address } from 'viem'
 import { AddLiquidityModal } from '../modal/AddLiquidityModal'
 import { useAddLiquidity } from '../useAddLiquidity'
-import { bn, fNum } from '@/lib/shared/utils/numbers'
+import { fNum } from '@/lib/shared/utils/numbers'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
 import { TokenInputs } from './TokenInputs'
 import { TokenInputsWithAddable } from './TokenInputsWithAddable'
 import { usePool } from '../../../usePool'
 import { requiresProportionalInput, supportsProportionalAdds } from '../../LiquidityActionHelpers'
-import { PriceImpactAccordion } from '@/lib/shared/components/accordion/PriceImpactAccordion'
+import { PriceImpactAccordion } from '@/lib/modules/price-impact/PriceImpactAccordion'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
-import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
+import { usePriceImpact } from '@/lib/modules/price-impact/usePriceImpact'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { AddLiquidityFormCheckbox } from './AddLiquidityFormCheckbox'
@@ -38,6 +38,8 @@ import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectMo
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { usePoolRedirect } from '../../../pool.hooks'
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
+import { PriceImpactError } from '../../../../price-impact/PriceImpactError'
+import { cannotCalculatePriceImpactError } from '@/lib/modules/price-impact/priceImpact.helpers'
 
 export function AddLiquidityForm() {
   const {
@@ -136,7 +138,8 @@ export function AddLiquidityForm() {
             <VStack spacing="sm" align="start" w="full">
               <PriceImpactAccordion
                 isDisabled={!priceImpactQuery.data}
-                setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                cannotCalculatePriceImpact={cannotCalculatePriceImpactError(priceImpactQuery.error)}
+                setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
                 accordionButtonComponent={
                   <HStack>
                     <Text variant="secondary" fontSize="sm" color="gray.400">
@@ -188,12 +191,7 @@ export function AddLiquidityForm() {
               </GridItem>
             </Grid>
             {showAcceptPoolRisks && <AddLiquidityFormCheckbox />}
-            {priceImpactQuery.isError && (
-              <GenericError
-                customErrorName={'Error calculating price impact'}
-                error={priceImpactQuery.error}
-              ></GenericError>
-            )}
+            {priceImpactQuery.isError && <PriceImpactError priceImpactQuery={priceImpactQuery} />}
             {simulationQuery.isError && (
               <GenericError
                 customErrorName={'Error in query simulation'}

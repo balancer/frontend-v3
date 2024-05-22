@@ -11,10 +11,11 @@ import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { RemoveLiquidityPreview } from './RemoveLiquidityPreview'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
-import { TransactionModalHeader } from '../../PoolActionModalHeader'
 import { AnimatePresence, motion } from 'framer-motion'
-import { PoolActionModalFooter } from '../../PoolActionModalFooter'
+import { ActionModalFooter } from '../../../../../shared/components/modals/ActionModalFooter'
 import { RemoveLiquidityReceipt } from './RemoveLiquidityReceipt'
+import { usePoolRedirect } from '../../../pool.hooks'
+import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 
 type Props = {
   isOpen: boolean
@@ -33,6 +34,7 @@ export function RemoveLiquidityModal({
   const initialFocusRef = useRef(null)
   const { transactionSteps, removeLiquidityTxHash, hasQuoteContext } = useRemoveLiquidity()
   const { pool } = usePool()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
 
   useEffect(() => {
     if (removeLiquidityTxHash && !window.location.pathname.includes(removeLiquidityTxHash)) {
@@ -89,9 +91,11 @@ export function RemoveLiquidityModal({
             )}
           </AnimatePresence>
         </ModalBody>
-        <PoolActionModalFooter
+        <ActionModalFooter
           isSuccess={!!removeLiquidityTxHash}
           currentStep={transactionSteps.currentStep}
+          returnLabel="Return to pool"
+          returnAction={redirectToPoolPage}
         />
       </ModalContent>
     </Modal>

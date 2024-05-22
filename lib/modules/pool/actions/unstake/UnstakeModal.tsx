@@ -15,11 +15,12 @@ import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transacti
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { usePool } from '../../usePool'
-import { TransactionModalHeader } from '../PoolActionModalHeader'
-import { PoolActionModalFooter } from '../PoolActionModalFooter'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 import { useUnstake } from './UnstakeProvider'
 import { UnstakePreview } from './UnstakePreview'
+import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
+import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
+import { usePoolRedirect } from '../../pool.hooks'
 
 type Props = {
   isOpen: boolean
@@ -46,6 +47,7 @@ export function UnstakeModal({
   } = useUnstake()
   const { pool } = usePool()
   const { isMobile } = useBreakpoints()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
 
   return (
     <Modal
@@ -79,9 +81,11 @@ export function UnstakeModal({
             />
           </VStack>
         </ModalBody>
-        <PoolActionModalFooter
+        <ActionModalFooter
           isSuccess={!!unstakeTxHash}
           currentStep={transactionSteps.currentStep}
+          returnLabel="Return to pool"
+          returnAction={redirectToPoolPage}
         />
       </ModalContent>
     </Modal>
