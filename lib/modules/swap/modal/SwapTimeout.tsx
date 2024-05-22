@@ -2,10 +2,10 @@
 import { HStack, Text } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
-import { useSwap } from './useSwap'
+import { useSwap } from '../useSwap'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
-import { useShouldFreezeQuote } from '../transactions/transaction-steps/useShouldFreezeQuote'
-import { swapStepId } from './useSwapStep'
+import { useShouldFreezeQuote } from '../../transactions/transaction-steps/useShouldFreezeQuote'
+import { swapStepId } from '../useSwapStep'
 
 function useSwapTimeout() {
   // This countdown needs to be nested here and not at a higher level, like in
