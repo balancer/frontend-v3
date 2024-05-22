@@ -5,7 +5,6 @@ import { RefObject, useEffect, useRef } from 'react'
 import { DesktopStepTracker } from '../../transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { useSwap } from '../useSwap'
 import { SwapTimeout } from './SwapTimeout'
-import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { AnimatePresence, motion } from 'framer-motion'
 import { capitalize } from 'lodash'
@@ -16,6 +15,7 @@ import { chainToSlugMap } from '../../pool/pool.utils'
 import { getStylesForModalContentWithStepTracker } from '../../transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { SwapPreview } from './SwapPreview'
 import { SwapReceipt } from './SwapReceipt'
+import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 
 type Props = {
   isOpen: boolean
@@ -51,7 +51,7 @@ export function SwapPreviewModal({
       isCentered
       {...rest}
     >
-      <FireworksOverlay startFireworks={!!swapTxHash && hasQuoteContext} />
+      <SuccessOverlay startAnimation={!!swapTxHash && hasQuoteContext} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop && hasQuoteContext)}>
         {isDesktop && hasQuoteContext && (
