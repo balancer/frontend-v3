@@ -1,12 +1,11 @@
 'use client'
 
-import { Box, BoxProps, HStack, VStack, Text } from '@chakra-ui/react'
+import { Box, BoxProps, HStack, VStack, Text, Flex } from '@chakra-ui/react'
 import { TokenIcon } from '../../TokenIcon'
 import { TokenAmount } from '../../token.types'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
 import { useTokens } from '../../useTokens'
-import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { TokenInfoPopover } from '../../TokenInfoPopover'
@@ -36,26 +35,30 @@ export function TokenSelectListRow({
   const fiatValue = userBalance && !isBalancesLoading ? toCurrency(usdValue) : '-'
 
   const boxStyles: BoxProps = {
-    bg: active ? 'background.level3' : 'transparent',
+    bg: active ? 'background.level2' : 'transparent',
     border: '1px solid',
-    borderColor: active ? 'border.base' : 'transparent',
-    borderRadius: 'md',
-    p: 'sm',
+    borderColor: active ? 'transparent' : 'transparent',
+    py: 'sm',
+    px: 'md',
     cursor: 'pointer',
     _hover: {
-      bg: active ? 'background.level4' : 'background.level1',
+      bg: active ? 'background.level3' : 'background.level2',
     },
-    transition: 'all 0.2s ease-in-out',
-    mr: 'xs',
+    transition: 'all 0.2s var(--ease-out-cubic)',
   }
 
   return (
-    <Box {...boxStyles} {...rest}>
+    <Box {...boxStyles} {...rest} role="group">
       <HStack height="full" spacing="md" justify="space-between" maxW="full">
-        <HStack height="full" spacing="md" maxW="full">
-          <TokenIcon address={token.address} chain={token.chain} alt={token.symbol} />
+        <HStack height="full" spacing="ms" maxW="full">
+          <Box
+            transition="all 0.2s var(--ease-out-cubic)"
+            _groupHover={{ transform: 'scale(1.075)' }}
+          >
+            <TokenIcon address={token.address} chain={token.chain} alt={token.symbol} />
+          </Box>
           <VStack height="full" align="start" justify="center" spacing="none" maxW="full">
-            <HStack spacing="xs">
+            <HStack spacing="xxs">
               <Text color={active ? 'font.link' : 'font.primary'} fontWeight="bold">
                 {token.symbol}
               </Text>
@@ -66,10 +69,12 @@ export function TokenSelectListRow({
             <Text
               title={token.name}
               fontSize="sm"
-              w="40"
-              isTruncated={true}
+              whiteSpace="normal"
               color="grayText"
               fontWeight="medium"
+              lineHeight="1"
+              pr="lg"
+              maxW="80"
             >
               {token.name}
             </Text>
@@ -77,16 +82,16 @@ export function TokenSelectListRow({
         </HStack>
         {isConnected && tokenBalance !== '0' && (
           <VStack align="end" justify="center" spacing="none">
-            <NumberText
+            <Text
               title={userBalance?.amount.toString()}
               color={active ? 'font.link' : 'font.primary'}
               fontWeight="bold"
             >
               {tokenBalance}
-            </NumberText>
-            <NumberText fontSize="sm" color="grayText" fontWeight="medium">
+            </Text>
+            <Text fontSize="sm" color="grayText" fontWeight="medium">
               {fiatValue}
-            </NumberText>
+            </Text>
           </VStack>
         )}
       </HStack>

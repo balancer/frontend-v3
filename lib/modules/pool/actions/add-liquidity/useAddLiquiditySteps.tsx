@@ -23,7 +23,8 @@ export function useAddLiquiditySteps({
   const { pool, chainId } = usePool()
   const relayerMode = useRelayerMode()
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
-  const approveRelayerStep = useApproveRelayerStep(chainId)
+  const { step: approveRelayerStep, isLoading: isLoadingRelayerApproval } =
+    useApproveRelayerStep(chainId)
   const signRelayerStep = useSignRelayerStep()
 
   const inputAmounts = useMemo(
@@ -64,7 +65,7 @@ export function useAddLiquiditySteps({
   ])
 
   return {
-    isLoadingSteps: isLoadingTokenApprovalSteps,
+    isLoadingSteps: isLoadingTokenApprovalSteps || isLoadingRelayerApproval,
     steps,
   }
 }

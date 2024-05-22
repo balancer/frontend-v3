@@ -14,13 +14,12 @@ import { RefObject, useRef } from 'react'
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
-import { useStake } from './StakeProvider'
 import { usePool } from '../../usePool'
-import { StakePreview } from './StakePreview'
+import { TransactionModalHeader } from '../PoolActionModalHeader'
+import { PoolActionModalFooter } from '../PoolActionModalFooter'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
-import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
-import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
-import { usePoolRedirect } from '../../pool.hooks'
+import { useUnstake } from './UnstakeProvider'
+import { UnstakePreview } from './UnstakePreview'
 
 type Props = {
   isOpen: boolean
@@ -29,7 +28,7 @@ type Props = {
   finalFocusRef?: RefObject<HTMLInputElement>
 }
 
-export function StakeModal({
+export function UnstakeModal({
   isOpen,
   onClose,
   finalFocusRef,
@@ -37,9 +36,15 @@ export function StakeModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps, stakeTxHash, quoteAmountIn, quoteAmountInUsd } = useStake()
+  const {
+    transactionSteps,
+    unstakeTxHash,
+    quoteAmountOut,
+    quoteAmountOutUsd,
+    quoteRewardAmounts,
+    quoteTotalClaimableUsd,
+  } = useUnstake()
   const { pool } = usePool()
-  const { redirectToPoolPage } = usePoolRedirect(pool)
   const { isMobile } = useBreakpoints()
 
   return (
@@ -51,25 +56,32 @@ export function StakeModal({
       isCentered
       {...rest}
     >
-      <FireworksOverlay startFireworks={!!stakeTxHash} />
+      <FireworksOverlay startFireworks={!!unstakeTxHash} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && <DesktopStepTracker chain={pool.chain} transactionSteps={transactionSteps} />}
-        <TransactionModalHeader label="Stake LP tokens" txHash={stakeTxHash} chain={pool.chain} />
+        <TransactionModalHeader
+          label="Unstake LP tokens"
+          txHash={unstakeTxHash}
+          chain={pool.chain}
+        />
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="sm" w="full">
             {isMobile && (
               <MobileStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
             )}
-            <StakePreview stakableBalance={quoteAmountIn} stakableBalanceUsd={quoteAmountInUsd} />
+            <UnstakePreview
+              stakedBalance={quoteAmountOut}
+              stakedBalanceUsd={quoteAmountOutUsd}
+              rewardAmounts={quoteRewardAmounts}
+              totalClaimableUsd={quoteTotalClaimableUsd}
+            />
           </VStack>
         </ModalBody>
-        <ActionModalFooter
-          isSuccess={!!stakeTxHash}
+        <PoolActionModalFooter
+          isSuccess={!!unstakeTxHash}
           currentStep={transactionSteps.currentStep}
-          returnLabel="Return to pool"
-          returnAction={redirectToPoolPage}
         />
       </ModalContent>
     </Modal>

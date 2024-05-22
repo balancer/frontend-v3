@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo, useState } from 'react'
-import { BoxProps, Card, VStack } from '@chakra-ui/react'
+import { Box, BoxProps, Card, VStack } from '@chakra-ui/react'
 import { usePool } from '../usePool'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
@@ -22,7 +22,6 @@ const COMMON_NOISY_CARD_PROPS: { contentProps: BoxProps; cardProps: BoxProps } =
   },
   cardProps: {
     position: 'relative',
-    overflow: 'hidden',
   },
 }
 
@@ -58,7 +57,9 @@ export default function PoolStatsOverview() {
         cardProps={COMMON_NOISY_CARD_PROPS.cardProps}
         contentProps={COMMON_NOISY_CARD_PROPS.contentProps}
       >
-        <ZenGarden variant="diamond" sizePx="225px" />
+        <Box top={0} bottom={0} left={0} right={0} position="absolute" overflow="hidden">
+          <ZenGarden variant="diamond" sizePx="225px" />
+        </Box>
         <VStack
           spacing="xl"
           m="auto"
