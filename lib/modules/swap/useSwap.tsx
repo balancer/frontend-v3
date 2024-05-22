@@ -350,6 +350,8 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     return OSwapAction.SWAP
   }, [swapState.tokenIn.address, swapState.tokenOut.address, swapState.selectedChain])
 
+  const isWrap = swapAction === 'wrap' || swapAction === 'unwrap'
+
   /**
    * Step construction
    */
@@ -460,6 +462,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     urlTxHash,
     swapTxHash,
     hasQuoteContext,
+    isWrap,
     setTokenSelectKey,
     setSelectedChain,
     setTokenInAmount,

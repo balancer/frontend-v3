@@ -99,9 +99,10 @@ export function SwapForm() {
   }
 
   function onModalClose() {
-    previewModalDisclosure.onClose()
     if (swapTxHash) {
       router.back()
+    } else {
+      previewModalDisclosure.onClose()
     }
   }
 
