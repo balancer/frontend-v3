@@ -54,8 +54,8 @@ export function useClaimAllRewardsStep({
   const labels: TransactionLabels = {
     init: `Claim${shouldClaimMany ? ' all' : ''}`,
     title: `Claim${shouldClaimMany ? ' all' : ''}`,
-    confirming: 'Confirming...',
-    confirmed: 'Claimed',
+    confirming: 'Confirming claim...',
+    confirmed: 'Claimed!',
     tooltip: shouldClaimMany
       ? 'Claim all rewards from your gauges'
       : 'Claim all rewards from your gauge',
@@ -71,6 +71,7 @@ export function useClaimAllRewardsStep({
       gaugeAddresses,
     }
   )
+
   const props: ManagedTransactionInput = {
     labels,
     chainId: getChainId(chain),
