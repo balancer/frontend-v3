@@ -16,7 +16,6 @@ import { chainToSlugMap } from '../../pool/pool.utils'
 import { getStylesForModalContentWithStepTracker } from '../../transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { SwapPreview } from './SwapPreview'
 import { SwapReceipt } from './SwapReceipt'
-import { useRouter } from 'next/navigation'
 
 type Props = {
   isOpen: boolean
@@ -31,7 +30,6 @@ export function SwapPreviewModal({
   finalFocusRef,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const router = useRouter()
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
 
@@ -95,7 +93,7 @@ export function SwapPreviewModal({
           isSuccess={!!swapTxHash}
           currentStep={transactionSteps.currentStep}
           returnLabel="Swap again"
-          returnAction={() => router.push(`/swap`)}
+          returnAction={onClose}
         />
       </ModalContent>
     </Modal>
