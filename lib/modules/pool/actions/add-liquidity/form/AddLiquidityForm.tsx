@@ -38,8 +38,8 @@ import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectMo
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { usePoolRedirect } from '../../../pool.hooks'
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
-import { PriceImpactError } from './PriceImpactError'
-import { cannotCalculatePriceImpactError } from '../queries/useAddLiquidityPriceImpactQuery'
+import { PriceImpactError } from '../../../../../shared/components/errors/PriceImpactError'
+import { cannotCalculatePriceImpactError } from '@/lib/shared/utils/price-impact'
 
 export function AddLiquidityForm() {
   const {

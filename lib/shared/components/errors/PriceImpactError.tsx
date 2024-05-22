@@ -1,13 +1,11 @@
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
-import {
-  PriceImpactQueryResult,
-  isUnhandledAddPriceImpactError,
-} from '../queries/useAddLiquidityPriceImpactQuery'
+import { isUnhandledAddPriceImpactError } from '../../utils/price-impact'
+import { UseQueryResult } from '@tanstack/react-query'
 
 export function PriceImpactError({
   priceImpactQuery,
 }: {
-  priceImpactQuery: PriceImpactQueryResult
+  priceImpactQuery: UseQueryResult<number, Error>
 }) {
   if (!priceImpactQuery.error) return null
 

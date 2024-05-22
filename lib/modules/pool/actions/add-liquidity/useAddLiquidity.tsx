@@ -9,10 +9,7 @@ import { PropsWithChildren, createContext, useEffect, useMemo, useState } from '
 import { Address, Hash } from 'viem'
 import { usePool } from '../../usePool'
 import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulationQuery'
-import {
-  isUnhandledAddPriceImpactError,
-  useAddLiquidityPriceImpactQuery,
-} from './queries/useAddLiquidityPriceImpactQuery'
+import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import {
   LiquidityActionHelpers,
   areEmptyAmounts,
@@ -31,6 +28,7 @@ import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
+import { isUnhandledAddPriceImpactError } from '@/lib/shared/utils/price-impact'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
