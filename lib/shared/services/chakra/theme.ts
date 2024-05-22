@@ -1670,7 +1670,7 @@ export const balTheme = {
       baseStyle: {
         borderColor: 'brown.100',
         borderWidth: '1px',
-        boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.8)',        
+        boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.8)',
         _dark: {
           borderColor: 'gray.800',
           boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.1)',
