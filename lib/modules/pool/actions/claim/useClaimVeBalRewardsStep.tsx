@@ -13,11 +13,12 @@ import { useMemo } from 'react'
 import { Address } from 'viem'
 
 const labels: TransactionLabels = {
-  init: 'Claim all',
-  title: 'Claim protocol revenue',
-  confirming: 'Confirming...',
-  confirmed: 'Claimed',
-  tooltip: 'Claim protocol revenue',
+  init: 'Claim',
+  title: 'Claim',
+  description: 'Claim all protocol revenue.',
+  confirming: 'Confirming claim...',
+  confirmed: 'Claimed!',
+  tooltip: 'Claim all protocol revenue',
 }
 
 export const claimVeBalRewardsStepId = 'claim-vebal-rewards'
@@ -57,6 +58,7 @@ export function useClaimVeBalRewardsStep(): TransactionStep {
       isComplete,
       renderAction: () => <ManagedTransactionButton id={claimVeBalRewardsStepId} {...props} />,
     }),
-    [transaction, claimableVeBalRewardsTokens]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [transaction, userAddress]
   )
 }
