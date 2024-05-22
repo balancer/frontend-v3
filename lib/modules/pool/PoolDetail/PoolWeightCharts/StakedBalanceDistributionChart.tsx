@@ -107,7 +107,7 @@ export default function StakedBalanceDistributionChart({
   }, [pool, colorMode])
 
   return (
-    <HStack p={{ base: 'sm', md: '0' }} spacing={{ base: 'sm', md: '2xl' }}>
+    <HStack p={{ base: 'sm', md: '0' }} spacing={{ base: 'lg', md: '2xl' }}>
       <Box
         width={`${chartSizeValues.boxWidth}px`}
         height={`${chartSizeValues.boxHeight}px`}
