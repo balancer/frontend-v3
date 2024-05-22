@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BoxProps, Card, VStack } from '@chakra-ui/react'
 import { usePool } from '../usePool'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
@@ -45,11 +45,10 @@ export default function PoolStatsOverview() {
     setActiveTab(option)
   }
 
-  const options = useMemo(() => {
-    return TABS.map(tab => ({
-      ...tab,
-      disabled: tab.value === 'myStats' && pool.userBalance?.totalBalance === '0.0',
-    }))
+  useEffect(() => {
+    if (pool.userBalance?.totalBalance !== '0.0') {
+      setActiveTab(TABS[1])
+    }
   }, [pool])
 
   return (
@@ -72,7 +71,7 @@ export default function PoolStatsOverview() {
           <ButtonGroup
             size="xxs"
             currentOption={activeTab}
-            options={options}
+            options={TABS}
             onChange={handleTabChanged}
             width="70px"
           />
