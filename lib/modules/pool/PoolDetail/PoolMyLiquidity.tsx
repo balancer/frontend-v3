@@ -16,7 +16,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react'
-import React, { useMemo, useState } from 'react'
+import React, { useContext, useMemo, useState } from 'react'
 import { usePool } from '../usePool'
 import { Address, parseUnits } from 'viem'
 import { usePathname } from 'next/navigation'
@@ -31,6 +31,7 @@ import { hasNestedPools } from '../pool.helpers'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import StakedBalanceDistributionChart from './PoolWeightCharts/StakedBalanceDistributionChart'
+import { MyLiquidityRefContext } from './PoolDetail'
 
 const TABS = [
   {
@@ -52,6 +53,9 @@ export default function PoolMyLiquidity() {
   const { pool, chain, isLoadingOnchainUserBalances } = usePool()
   const { toCurrency } = useCurrency()
   const { isConnected, isConnecting } = useUserAccount()
+
+  // context is used to scroll to the My liquidity section
+  const myLiquidity = useContext(MyLiquidityRefContext)
 
   const pathname = usePathname()
 
@@ -143,7 +147,7 @@ export default function PoolMyLiquidity() {
 
   return (
     pool.userBalance?.totalBalance && (
-      <Card minHeight="320px">
+      <Card minHeight="320px" ref={myLiquidity?.ref}>
         <Grid width="full" templateColumns={{ base: 'repeat(1, 1fr)', md: '1fr 1fr' }} gap="md">
           <GridItem>
             <VStack spacing="md" width="full">

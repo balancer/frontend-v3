@@ -8,40 +8,51 @@ import { PoolDetailAttributesRisksContracts } from './PoolDetailAttributesRisksC
 import { usePool } from '../usePool'
 import PoolMyLiquidity from './PoolMyLiquidity'
 import { bn } from '@/lib/shared/utils/numbers'
+import { MutableRefObject, createContext, useRef } from 'react'
+
+// context is used to scroll to the My liquidity section
+export type MyLiquidityRefContextType = {
+  ref: MutableRefObject<HTMLDivElement | null>
+}
+
+export const MyLiquidityRefContext = createContext<MyLiquidityRefContextType | null>(null)
 
 export function PoolDetail() {
   const { pool } = usePool()
+  const ref = useRef<HTMLDivElement | null>(null)
 
   const userHasLiquidity = bn(pool.userBalance?.totalBalance || '0').gt(0)
 
   return (
-    <Grid
-      w="full"
-      rowGap={{ base: 'md', md: '2xl' }}
-      templateColumns="1fr"
-      templateAreas={`"stats-chart"
+    <MyLiquidityRefContext.Provider value={{ ref }}>
+      <Grid
+        w="full"
+        rowGap={{ base: 'md', md: '2xl' }}
+        templateColumns="1fr"
+        templateAreas={`"stats-chart"
                       "activity"
                       "composition"
                       ${userHasLiquidity ? '"my-liquidity"' : ''}
                       "attributes-risks-contracts"`}
-    >
-      <GridItem area="stats-chart">
-        <PoolDetailStatsChart />
-      </GridItem>
-      <GridItem area="activity">
-        <PoolActivityChart />
-      </GridItem>
-      <GridItem area="composition">
-        <PoolComposition />
-      </GridItem>
-      {userHasLiquidity && (
-        <GridItem area="my-liquidity">
-          <PoolMyLiquidity />
+      >
+        <GridItem area="stats-chart">
+          <PoolDetailStatsChart />
         </GridItem>
-      )}
-      <GridItem area="attributes-risks-contracts">
-        <PoolDetailAttributesRisksContracts />
-      </GridItem>
-    </Grid>
+        <GridItem area="activity">
+          <PoolActivityChart />
+        </GridItem>
+        <GridItem area="composition">
+          <PoolComposition />
+        </GridItem>
+        {userHasLiquidity && (
+          <GridItem area="my-liquidity">
+            <PoolMyLiquidity />
+          </GridItem>
+        )}
+        <GridItem area="attributes-risks-contracts">
+          <PoolDetailAttributesRisksContracts />
+        </GridItem>
+      </Grid>
+    </MyLiquidityRefContext.Provider>
   )
 }

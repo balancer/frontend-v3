@@ -1,6 +1,6 @@
 'use client'
 
-import React, { memo, useMemo } from 'react'
+import React, { memo, useContext, useMemo } from 'react'
 import { Button, HStack, Heading, Skeleton, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { TokenIconStack } from '../../tokens/TokenIconStack'
 import { GqlToken, GqlPoolMinimal } from '@/lib/shared/services/api/generated/graphql'
@@ -17,6 +17,7 @@ import { bn } from '@/lib/shared/utils/numbers'
 import { ClaimModal } from '../actions/claim/ClaimModal'
 import { Hex } from 'viem'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
+import { MyLiquidityRefContext } from './PoolDetail'
 
 export type PoolMyStatsValues = {
   myLiquidity: number
@@ -31,6 +32,9 @@ export function PoolMyStats() {
   const { toCurrency } = useCurrency()
   const { veBalBoostMap } = useVebalBoost([pool as unknown as GqlPoolMinimal])
   const { getToken } = useTokens()
+
+  // context is used to scroll to the My liquidity section
+  const myLiquidity = useContext(MyLiquidityRefContext)
 
   const {
     isLoading: isLoadingClaiming,
@@ -93,6 +97,10 @@ export function PoolMyStats() {
     previewModalDisclosure.onClose()
   }
 
+  function handleClick() {
+    myLiquidity?.ref?.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <>
       <VStack spacing="0" align="flex-start" w="full">
@@ -100,13 +108,16 @@ export function PoolMyStats() {
           My liquidity
         </Text>
         {poolMyStatsValues ? (
-          <Heading size="h4">
-            {poolMyStatsValues.myLiquidity ? (
-              toCurrency(poolMyStatsValues.myLiquidity)
-            ) : (
-              <>&mdash;</>
-            )}
-          </Heading>
+          poolMyStatsValues.myLiquidity ? (
+            <HStack>
+              <Heading size="h4">{toCurrency(poolMyStatsValues.myLiquidity)}</Heading>
+              <Text color="font.link" onClick={handleClick} cursor="pointer">
+                Manage
+              </Text>
+            </HStack>
+          ) : (
+            <Heading size="h4">&mdash;</Heading>
+          )
         ) : (
           <Skeleton height="28px" w="100px" />
         )}
