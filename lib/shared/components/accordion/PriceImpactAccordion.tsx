@@ -36,7 +36,7 @@ export function PriceImpactAccordion({
   accordionButtonComponent,
   accordionPanelComponent,
   isDisabled,
-  cannotCalculatePriceImpact = true,
+  cannotCalculatePriceImpact = false,
 }: PriceImpactAccordionProps) {
   const acceptHighImpactDisclosure = useDisclosure()
   const {
