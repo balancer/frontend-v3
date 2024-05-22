@@ -3,17 +3,30 @@ import { Button, Divider, HStack, ModalFooter, VStack } from '@chakra-ui/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import { PropsWithChildren } from 'react'
-import { MessageSquare, ThumbsUp } from 'react-feather'
+import { CornerDownLeft, MessageSquare, ThumbsUp } from 'react-feather'
 import { TransactionStep } from '../../../modules/transactions/transaction-steps/lib'
 
-export function SuccessActions({ children }: PropsWithChildren) {
+export function SuccessActions({
+  returnLabel,
+  returnAction,
+}: {
+  returnLabel?: string
+  returnAction?: () => void
+}) {
   const { openNpsModal } = useAppzi()
 
   return (
     <VStack w="full">
       <Divider />
       <HStack justify="space-between" w="full">
-        {children}
+        <Button
+          variant="ghost"
+          leftIcon={<CornerDownLeft size="14" />}
+          size="xs"
+          onClick={returnAction}
+        >
+          {returnLabel}
+        </Button>
         <Button variant="ghost" leftIcon={<ThumbsUp size="14" />} size="xs" onClick={openNpsModal}>
           Give feedback
         </Button>
@@ -32,11 +45,14 @@ export function SuccessActions({ children }: PropsWithChildren) {
   )
 }
 
-type Props = PropsWithChildren<{
+type Props = {
   isSuccess: boolean
   currentStep: TransactionStep
-}>
-export function ActionModalFooter({ isSuccess, currentStep, children }: Props) {
+  returnLabel: string
+  returnAction: () => void
+}
+
+export function ActionModalFooter({ isSuccess, currentStep, returnLabel, returnAction }: Props) {
   return (
     <ModalFooter>
       <AnimatePresence mode="wait" initial={false}>
@@ -49,7 +65,7 @@ export function ActionModalFooter({ isSuccess, currentStep, children }: Props) {
             transition={{ duration: 0.3 }}
             style={{ width: '100%' }}
           >
-            <SuccessActions>{children}</SuccessActions>
+            <SuccessActions returnLabel={returnLabel} returnAction={returnAction} />
           </motion.div>
         ) : (
           <motion.div

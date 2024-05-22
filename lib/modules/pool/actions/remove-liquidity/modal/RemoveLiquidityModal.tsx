@@ -15,7 +15,7 @@ import { TransactionModalHeader } from '../../../../../shared/components/modals/
 import { AnimatePresence, motion } from 'framer-motion'
 import { ActionModalFooter } from '../../../../../shared/components/modals/ActionModalFooter'
 import { RemoveLiquidityReceipt } from './RemoveLiquidityReceipt'
-import { ReturnToPoolButton } from '@/lib/shared/components/modals/return.buttons'
+import { usePoolRedirect } from '../../../pool.hooks'
 
 type Props = {
   isOpen: boolean
@@ -34,6 +34,7 @@ export function RemoveLiquidityModal({
   const initialFocusRef = useRef(null)
   const { transactionSteps, removeLiquidityTxHash, hasQuoteContext } = useRemoveLiquidity()
   const { pool } = usePool()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
 
   useEffect(() => {
     if (removeLiquidityTxHash && !window.location.pathname.includes(removeLiquidityTxHash)) {
@@ -93,9 +94,9 @@ export function RemoveLiquidityModal({
         <ActionModalFooter
           isSuccess={!!removeLiquidityTxHash}
           currentStep={transactionSteps.currentStep}
-        >
-          <ReturnToPoolButton />
-        </ActionModalFooter>
+          returnLabel="Return to pool"
+          returnAction={redirectToPoolPage}
+        />
       </ModalContent>
     </Modal>
   )
