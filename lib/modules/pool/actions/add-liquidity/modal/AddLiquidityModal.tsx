@@ -13,9 +13,9 @@ import { AddLiquidityTimeout } from './AddLiquidityTimeout'
 import { AddLiquidityReceipt } from './AddLiquidityReceipt'
 import { ActionModalFooter } from '../../../../../shared/components/modals/ActionModalFooter'
 import { AnimatePresence, motion } from 'framer-motion'
-import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
-import { TransactionModalHeader } from '../../../../../shared/components/modals/TransactionModalHeader'
+import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { usePoolRedirect } from '../../../pool.hooks'
+import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 
 type Props = {
   isOpen: boolean
@@ -51,7 +51,7 @@ export function AddLiquidityModal({
       isCentered
       {...rest}
     >
-      <FireworksOverlay startFireworks={!!addLiquidityTxHash && hasQuoteContext} />
+      <SuccessOverlay startAnimation={!!addLiquidityTxHash && hasQuoteContext} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop && hasQuoteContext)}>
         {isDesktop && hasQuoteContext && (
