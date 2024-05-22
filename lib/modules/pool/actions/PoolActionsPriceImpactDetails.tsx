@@ -1,7 +1,7 @@
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { fNum, bn } from '@/lib/shared/utils/numbers'
 import { HStack, VStack, Text, Tooltip, Icon, Box } from '@chakra-ui/react'
-import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
+import { usePriceImpact } from '@/lib/modules/price-impact/usePriceImpact'
 import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePool } from '../usePool'

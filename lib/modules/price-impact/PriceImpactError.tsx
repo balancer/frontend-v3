@@ -1,5 +1,5 @@
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
-import { isUnhandledAddPriceImpactError } from '../../utils/price-impact'
+import { isUnhandledAddPriceImpactError } from './priceImpact.helpers'
 import { UseQueryResult } from '@tanstack/react-query'
 
 export function PriceImpactError({

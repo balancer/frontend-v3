@@ -26,9 +26,9 @@ import { TokenInputs } from './TokenInputs'
 import { TokenInputsWithAddable } from './TokenInputsWithAddable'
 import { usePool } from '../../../usePool'
 import { requiresProportionalInput, supportsProportionalAdds } from '../../LiquidityActionHelpers'
-import { PriceImpactAccordion } from '@/lib/shared/components/accordion/PriceImpactAccordion'
+import { PriceImpactAccordion } from '@/lib/modules/price-impact/PriceImpactAccordion'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
-import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
+import { usePriceImpact } from '@/lib/modules/price-impact/usePriceImpact'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { AddLiquidityFormCheckbox } from './AddLiquidityFormCheckbox'
@@ -38,8 +38,8 @@ import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectMo
 import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
 import { usePoolRedirect } from '../../../pool.hooks'
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
-import { PriceImpactError } from '../../../../../shared/components/errors/PriceImpactError'
-import { cannotCalculatePriceImpactError } from '@/lib/shared/utils/price-impact'
+import { PriceImpactError } from '../../../../price-impact/PriceImpactError'
+import { cannotCalculatePriceImpactError } from '@/lib/modules/price-impact/priceImpact.helpers'
 
 export function AddLiquidityForm() {
   const {

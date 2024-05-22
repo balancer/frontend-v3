@@ -18,10 +18,10 @@ import {
   CardFooter,
   CardBody,
 } from '@chakra-ui/react'
-import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
+import { usePriceImpact } from '@/lib/modules/price-impact/usePriceImpact'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { ReactNode, useEffect } from 'react'
-import { PriceImpactAcceptModal } from '../modals/PriceImpactAcceptModal'
+import { PriceImpactAcceptModal } from './PriceImpactAcceptModal'
 
 interface PriceImpactAccordionProps {
   setNeedsToAcceptPIRisk: (value: boolean) => void
