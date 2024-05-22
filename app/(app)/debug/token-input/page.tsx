@@ -10,7 +10,7 @@ import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { daiAddress } from '@/lib/debug-helpers'
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/useTokenInputsValidation'
-import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
+import { PriceImpactProvider } from '@/lib/modules/price-impact/usePriceImpact'
 
 export default function TokenInputPage() {
   const [currentValue, setCurrentValue] = useState('')

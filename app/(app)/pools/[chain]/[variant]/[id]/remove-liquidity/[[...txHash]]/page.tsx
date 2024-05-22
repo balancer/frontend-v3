@@ -5,7 +5,7 @@ import { RemoveLiquidityForm } from '@/lib/modules/pool/actions/remove-liquidity
 import { RemoveLiquidityProvider } from '@/lib/modules/pool/actions/remove-liquidity/useRemoveLiquidity'
 import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignature'
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
-import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
+import { PriceImpactProvider } from '@/lib/modules/price-impact/usePriceImpact'
 import { isHash } from 'viem'
 
 type Props = {

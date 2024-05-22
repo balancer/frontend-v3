@@ -28,6 +28,7 @@ import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
+import { isUnhandledAddPriceImpactError } from '@/lib/modules/price-impact/priceImpact.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -164,7 +165,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     [simulationQuery.isLoading, 'Fetching quote...'],
     [simulationQuery.isError, 'Error fetching quote'],
     [priceImpactQuery.isLoading, 'Fetching price impact...'],
-    [priceImpactQuery.isError, 'Error fetching price impact'],
+    [isUnhandledAddPriceImpactError(priceImpactQuery.error), 'Error fetching price impact'],
   ]
 
   const { isDisabled: isPreDisabled } = isDisabledWithReason(...disabledConditions)

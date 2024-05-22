@@ -10,12 +10,12 @@ import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transacti
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { RemoveLiquidityPreview } from './RemoveLiquidityPreview'
-import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
-import { TransactionModalHeader } from '../../../../../shared/components/modals/TransactionModalHeader'
+import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ActionModalFooter } from '../../../../../shared/components/modals/ActionModalFooter'
 import { RemoveLiquidityReceipt } from './RemoveLiquidityReceipt'
 import { usePoolRedirect } from '../../../pool.hooks'
+import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 
 type Props = {
   isOpen: boolean
@@ -51,7 +51,7 @@ export function RemoveLiquidityModal({
       isCentered
       {...rest}
     >
-      <FireworksOverlay startFireworks={!!removeLiquidityTxHash && hasQuoteContext} />
+      <SuccessOverlay startAnimation={!!removeLiquidityTxHash && hasQuoteContext} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && hasQuoteContext && (
