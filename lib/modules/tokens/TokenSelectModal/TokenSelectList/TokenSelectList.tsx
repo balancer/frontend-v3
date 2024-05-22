@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, BoxProps, Button, Card, Center, HStack, Text } from '@chakra-ui/react'
+import { Box, BoxProps, Button, HStack, Text, Divider } from '@chakra-ui/react'
 import { TokenSelectListRow } from './TokenSelectListRow'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useTokenBalances } from '../../useTokenBalances'
@@ -24,14 +24,18 @@ type Props = {
 }
 function OtherTokens() {
   return (
-    <Card padding="xs" px="md" my="2">
-      <HStack>
+    <Box bg="background.level1">
+      <Divider />
+      <HStack px="md" pt="sm">
         <Box color="font.secondary">
-          <CoinsIcon />
+          <CoinsIcon size={20} />
         </Box>
-        <Text color="font.secondary">Other tokens</Text>
+        <Text color="font.secondary" fontSize="sm">
+          Other tokens
+        </Text>
       </HStack>
-    </Card>
+      <Divider pt="2" />
+    </Box>
   )
 }
 
@@ -43,27 +47,40 @@ interface InYourWalletProps {
 
 function InYourWallet({ isConnected, openConnectModal, hasNoTokensInWallet }: InYourWalletProps) {
   return (
-    <Box pb="xs">
-      <Card padding="xs" px="md" mt="px">
-        <HStack>
+    <Box pb="0" mr="0">
+      <Divider />
+      <Box py="sm" px="md" bg="background.level1">
+        <HStack zIndex="1">
           <Box color="font.secondary">
-            <WalletIcon />
+            <WalletIcon size={20} />
           </Box>
-          <Text color="font.secondary">In your wallet</Text>
+          <Text color="font.secondary" fontSize="sm">
+            In your wallet
+          </Text>
           {!isConnected && (
             <Button
               ml="auto"
               size="sm"
               variant="link"
-              color="purple.300"
+              color="font.link"
+              height="24px !important"
+              padding="0"
+              _hover={{ color: 'font.linkHover' }}
               onClick={openConnectModal}
             >
               Connect wallet
             </Button>
           )}
+          {isConnected && hasNoTokensInWallet && (
+            <Box ml="auto">
+              <Text fontSize="sm" fontWeight="bold" color="red.500">
+                No tokens on this network
+              </Text>
+            </Box>
+          )}
         </HStack>
-      </Card>
-      {isConnected && hasNoTokensInWallet && <Text>No tokens in your wallet</Text>}
+      </Box>
+      {isConnected && !hasNoTokensInWallet && <Divider />}
     </Box>
   )
 }
@@ -134,16 +151,22 @@ export function TokenSelectList({
   return (
     <Box height={listHeight} {...rest}>
       {tokensToShow.length === 0 ? (
-        <Center h="60">
-          <Text color="gray.500" fontSize="sm">
+        <Box p="lg">
+          <Text mb="xxs" fontWeight="bold" color="font.error">
             No tokens found
           </Text>
-        </Center>
+          <Text color="font.secondary" fontSize="sm">
+            Are you sure this token is on this network?
+          </Text>
+          <Text color="font.secondary" fontSize="sm">
+            You can search by token name, symbol or address
+          </Text>
+        </Box>
       ) : (
         <GroupedVirtuoso
           ref={ref}
           groupCounts={groupCounts}
-          style={{ height: listHeight, paddingRight: '0.25rem' }}
+          style={{ height: listHeight }}
           groupContent={index => {
             return groups[index]
           }}

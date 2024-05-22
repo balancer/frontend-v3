@@ -16,10 +16,11 @@ import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
 import { useStake } from './StakeProvider'
 import { usePool } from '../../usePool'
-import { TransactionModalHeader } from '../PoolActionModalHeader'
-import { PoolActionModalFooter } from '../PoolActionModalFooter'
 import { StakePreview } from './StakePreview'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
+import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
+import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
+import { usePoolRedirect } from '../../pool.hooks'
 
 type Props = {
   isOpen: boolean
@@ -38,6 +39,7 @@ export function StakeModal({
   const initialFocusRef = useRef(null)
   const { transactionSteps, stakeTxHash, quoteAmountIn, quoteAmountInUsd } = useStake()
   const { pool } = usePool()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
   const { isMobile } = useBreakpoints()
 
   return (
@@ -63,9 +65,11 @@ export function StakeModal({
             <StakePreview stakableBalance={quoteAmountIn} stakableBalanceUsd={quoteAmountInUsd} />
           </VStack>
         </ModalBody>
-        <PoolActionModalFooter
+        <ActionModalFooter
           isSuccess={!!stakeTxHash}
           currentStep={transactionSteps.currentStep}
+          returnLabel="Return to pool"
+          returnAction={redirectToPoolPage}
         />
       </ModalContent>
     </Modal>

@@ -72,6 +72,7 @@ export function removeAddress(address: string, addresses: string[]): string[] {
 }
 
 export function abbreviateAddress(address: string | Address, segLength = 4) {
+  if (!address) return ''
   if (isAddress(address)) address = checksumAddress(address)
   const firstSegment = address.substring(0, segLength + 2)
   const lastSegment = address.substring(address.length, address.length - segLength)

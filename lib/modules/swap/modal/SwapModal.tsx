@@ -1,21 +1,21 @@
 'use client'
 
-import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
 import { RefObject, useEffect, useRef } from 'react'
-import { usePool } from '../../../usePool'
-import { useAddLiquidity } from '../useAddLiquidity'
-// eslint-disable-next-line max-len
-import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
-import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { AddLiquidityPreview } from './AddLiquidityPreview'
-import { AddLiquidityTimeout } from './AddLiquidityTimeout'
-import { AddLiquidityReceipt } from './AddLiquidityReceipt'
-import { ActionModalFooter } from '../../../../../shared/components/modals/ActionModalFooter'
-import { AnimatePresence, motion } from 'framer-motion'
+import { DesktopStepTracker } from '../../transactions/transaction-steps/step-tracker/DesktopStepTracker'
+import { useSwap } from '../useSwap'
+import { SwapTimeout } from './SwapTimeout'
 import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
-import { TransactionModalHeader } from '../../../../../shared/components/modals/TransactionModalHeader'
-import { usePoolRedirect } from '../../../pool.hooks'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { AnimatePresence, motion } from 'framer-motion'
+import { capitalize } from 'lodash'
+import { ActionModalFooter } from '../../../shared/components/modals/ActionModalFooter'
+import { TransactionModalHeader } from '../../../shared/components/modals/TransactionModalHeader'
+import { chainToSlugMap } from '../../pool/pool.utils'
+// eslint-disable-next-line max-len
+import { getStylesForModalContentWithStepTracker } from '../../transactions/transaction-steps/step-tracker/step-tracker.utils'
+import { SwapPreview } from './SwapPreview'
+import { SwapReceipt } from './SwapReceipt'
 
 type Props = {
   isOpen: boolean
@@ -24,7 +24,7 @@ type Props = {
   finalFocusRef?: RefObject<HTMLInputElement>
 }
 
-export function AddLiquidityModal({
+export function SwapPreviewModal({
   isOpen,
   onClose,
   finalFocusRef,
@@ -32,15 +32,15 @@ export function AddLiquidityModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps, addLiquidityTxHash, hasQuoteContext } = useAddLiquidity()
-  const { pool } = usePool()
-  const { redirectToPoolPage } = usePoolRedirect(pool)
+
+  const { transactionSteps, swapAction, selectedChain, swapTxHash, hasQuoteContext } = useSwap()
 
   useEffect(() => {
-    if (addLiquidityTxHash && !window.location.pathname.includes(addLiquidityTxHash)) {
-      window.history.replaceState({}, '', `./add-liquidity/${addLiquidityTxHash}`)
+    if (swapTxHash && !window.location.pathname.includes(swapTxHash)) {
+      window.history.pushState({}, '', `/swap/${chainToSlugMap[selectedChain]}/${swapTxHash}`)
     }
-  }, [addLiquidityTxHash])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [swapTxHash])
 
   return (
     <Modal
@@ -51,22 +51,22 @@ export function AddLiquidityModal({
       isCentered
       {...rest}
     >
-      <FireworksOverlay startFireworks={!!addLiquidityTxHash && hasQuoteContext} />
+      <FireworksOverlay startFireworks={!!swapTxHash && hasQuoteContext} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop && hasQuoteContext)}>
         {isDesktop && hasQuoteContext && (
-          <DesktopStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
+          <DesktopStepTracker transactionSteps={transactionSteps} chain={selectedChain} />
         )}
         <TransactionModalHeader
-          label="Add liquidity"
-          timeout={<AddLiquidityTimeout />}
-          txHash={addLiquidityTxHash}
-          chain={pool.chain}
+          label={`Review ${capitalize(swapAction)}`}
+          timeout={<SwapTimeout />}
+          txHash={swapTxHash}
+          chain={selectedChain}
         />
         <ModalCloseButton />
         <ModalBody>
           <AnimatePresence mode="wait" initial={false}>
-            {addLiquidityTxHash ? (
+            {swapTxHash ? (
               <motion.div
                 key="receipt"
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -74,7 +74,7 @@ export function AddLiquidityModal({
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
               >
-                <AddLiquidityReceipt txHash={addLiquidityTxHash} />
+                <SwapReceipt txHash={swapTxHash} />
               </motion.div>
             ) : (
               <motion.div
@@ -84,16 +84,16 @@ export function AddLiquidityModal({
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
               >
-                <AddLiquidityPreview />
+                <SwapPreview />
               </motion.div>
             )}
           </AnimatePresence>
         </ModalBody>
         <ActionModalFooter
-          isSuccess={!!addLiquidityTxHash}
+          isSuccess={!!swapTxHash}
           currentStep={transactionSteps.currentStep}
-          returnLabel="Return to pool"
-          returnAction={redirectToPoolPage}
+          returnLabel="Swap again"
+          returnAction={onClose}
         />
       </ModalContent>
     </Modal>

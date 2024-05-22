@@ -8,25 +8,26 @@ import { useTokens } from '@/lib/modules/tokens/useTokens'
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { PropsWithChildren } from 'react'
+import { getSwapPathParams } from './getSwapPathParams'
 
 type Props = PropsWithChildren<{
   params: { slug?: string[] }
 }>
 
 export default function SwapLayout({ params: { slug }, children }: Props) {
-  const [chain, tokenIn, tokenOut, amountIn, amountOut] = slug ?? []
+  const pathParams = getSwapPathParams(slug)
 
   const { getTokensByChain } = useTokens()
-  const initChain = chain ? slugToChainMap[chain as ChainSlug] : GqlChain.Mainnet
+  const initChain = pathParams.chain
+    ? slugToChainMap[pathParams.chain as ChainSlug]
+    : GqlChain.Mainnet
   const initTokens = getTokensByChain(initChain)
 
   return (
     <TransactionStateProvider>
       <TokenInputsValidationProvider>
         <TokenBalancesProvider initTokens={initTokens}>
-          <SwapProvider pathParams={{ chain, tokenIn, tokenOut, amountIn, amountOut }}>
-            {children}
-          </SwapProvider>
+          <SwapProvider pathParams={{ ...pathParams }}>{children}</SwapProvider>
         </TokenBalancesProvider>
       </TokenInputsValidationProvider>
     </TransactionStateProvider>
