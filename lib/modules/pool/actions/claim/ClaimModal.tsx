@@ -1,11 +1,9 @@
 import {
-  Button,
   Card,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalProps,
   Text,
   VStack,
@@ -22,6 +20,7 @@ import { TokenRowGroup } from '@/lib/modules/tokens/TokenRow/TokenRowGroup'
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
+import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
 
 type Props = {
   isOpen: boolean
@@ -75,17 +74,13 @@ export function ClaimModal({
             )}
           </VStack>
         </ModalBody>
-        <ModalFooter>
-          <VStack w="full">
-            {hasNoRewards ? (
-              <Button size="lg" onClick={onClose}>
-                Close
-              </Button>
-            ) : (
-              transactionSteps.currentStep?.renderAction()
-            )}
-          </VStack>
-        </ModalFooter>
+
+        <ActionModalFooter
+          isSuccess={!!claimTxHash}
+          currentStep={transactionSteps.currentStep}
+          returnLabel="Return to pool"
+          returnAction={onClose}
+        />
       </ModalContent>
     </Modal>
   )

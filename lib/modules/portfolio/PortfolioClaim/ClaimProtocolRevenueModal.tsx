@@ -1,14 +1,6 @@
 'use client'
 
-import {
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  VStack,
-  Card,
-} from '@chakra-ui/react'
+import { Modal, ModalBody, ModalCloseButton, ModalContent, VStack, Card } from '@chakra-ui/react'
 
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
@@ -25,6 +17,7 @@ import { getStylesForModalContentWithStepTracker } from '../../transactions/tran
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 import { TokenRowGroup } from '../../tokens/TokenRow/TokenRowGroup'
 import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
+import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
 
 type Props = {
   isOpen: boolean
@@ -77,9 +70,12 @@ export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
             </Card>
           </VStack>
         </ModalBody>
-        <ModalFooter>
-          <VStack w="full">{transactionSteps.currentStep?.renderAction()}</VStack>
-        </ModalFooter>
+        <ActionModalFooter
+          isSuccess={!!claimTxHash}
+          currentStep={transactionSteps.currentStep}
+          returnLabel="Return to portfolio"
+          returnAction={onClose}
+        />
       </ModalContent>
     </Modal>
   )

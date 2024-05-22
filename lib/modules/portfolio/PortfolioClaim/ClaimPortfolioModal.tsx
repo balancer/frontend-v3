@@ -3,16 +3,7 @@
 import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import {
-  Button,
-  Card,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  VStack,
-} from '@chakra-ui/react'
+import { Card, Modal, ModalBody, ModalCloseButton, ModalContent, VStack } from '@chakra-ui/react'
 // eslint-disable-next-line max-len
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
@@ -24,7 +15,9 @@ import { HumanAmount } from '@balancer/sdk'
 import { Address } from 'viem'
 import { TokenRowGroup } from '../../tokens/TokenRow/TokenRowGroup'
 import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
-import { TransactionModalHeader } from '../../pool/actions/PoolActionModalHeader'
+import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
+import { useRouter } from 'next/navigation'
+import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 
 type Props = {
   isOpen: boolean
@@ -35,6 +28,7 @@ type Props = {
 export function ClaimPortfolioModal({ isOpen, onClose, pools, ...rest }: Props) {
   const { poolRewardsMap } = usePortfolio()
   const { isDesktop, isMobile } = useBreakpoints()
+  const router = useRouter()
 
   const balRewards: HumanTokenAmountWithAddress[] = pools
     .map(pool => poolRewardsMap?.[pool.id]?.balReward)
@@ -58,7 +52,6 @@ export function ClaimPortfolioModal({ isOpen, onClose, pools, ...rest }: Props) 
 
   const { transactionSteps, claimTxHash } = useClaiming(pools)
 
-  const hasNoRewards = !nonBalRewards?.length && !balRewards.length
   const chain = pools[0]?.chain
 
   return (
@@ -86,24 +79,12 @@ export function ClaimPortfolioModal({ isOpen, onClose, pools, ...rest }: Props) 
           </VStack>
         </ModalBody>
 
-        {/* TODO replace with <ActionModalFooter /> when merged */}
-        <ModalFooter>
-          <VStack w="full">
-            {hasNoRewards ? (
-              <Button
-                w="full"
-                size="lg"
-                onClick={() => {
-                  onClose()
-                }}
-              >
-                Close
-              </Button>
-            ) : (
-              transactionSteps.currentStep?.renderAction()
-            )}
-          </VStack>
-        </ModalFooter>
+        <ActionModalFooter
+          isSuccess={!!claimTxHash}
+          currentStep={transactionSteps.currentStep}
+          returnLabel="Return to portfolio"
+          returnAction={() => router.push('/portfolio')}
+        />
       </ModalContent>
     </Modal>
   )
