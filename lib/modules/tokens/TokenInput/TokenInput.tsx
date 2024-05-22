@@ -26,7 +26,7 @@ import { TokenIcon } from '../TokenIcon'
 import { useTokenInputsValidation } from '../useTokenInputsValidation'
 import { ChevronDown } from 'react-feather'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
-import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
+import { usePriceImpact } from '@/lib/modules/price-impact/usePriceImpact'
 import { useEffect, useState } from 'react'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
