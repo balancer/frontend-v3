@@ -13,6 +13,7 @@ import {
   Icon,
   Divider,
   Stack,
+  Portal,
 } from '@chakra-ui/react'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { getTotalAprLabel } from '@/lib/modules/pool/pool.utils'
@@ -125,98 +126,100 @@ function AprTooltip({
             </PopoverTrigger>
           </HStack>
 
-          <PopoverContent w="fit-content" shadow="3xl" minWidth={['100px', '300px']} p="0">
-            <TooltipAprItem
-              {...basePopoverAprItemProps}
-              pt={3}
-              title="Swap fees"
-              apr={swapFeesDisplayed}
-              aprOpacity={isSwapFeePresent ? 1 : 0.5}
-              tooltipText={swapFeesTooltipText}
-              bg="background.level3"
-            />
-            <TooltipAprItem
-              {...basePopoverAprItemProps}
-              title="Staking incentives"
-              apr={stakingIncentivesAprDisplayed}
-              aprOpacity={isStakingPresent ? 1 : 0.5}
-              bg="background.level3"
-            >
-              {stakingIncentivesDisplayed.map((item, index) => {
-                return (
-                  <TooltipAprItem
-                    {...subitemPopoverAprItemProps}
-                    key={index}
-                    title={item.title}
-                    apr={item.apr}
-                    aprOpacity={1}
-                    tooltipText={baseAprTooltipText}
-                    bg="background.level3"
-                  />
-                )
-              })}
-            </TooltipAprItem>
-            <TooltipAprItem
-              {...basePopoverAprItemProps}
-              title="Yield bearing tokens"
-              apr={yieldBearingTokensAprDisplayed}
-              aprOpacity={isYieldPresent ? 1 : 0.5}
-              bg="background.level3"
-            >
-              {yieldBearingTokensDisplayed.map((item, index) => {
-                return (
-                  <TooltipAprItem
-                    {...subitemPopoverAprItemProps}
-                    key={index}
-                    title={item.title}
-                    apr={item.apr}
-                    aprOpacity={1}
-                    tooltipText={inherentTokenYieldTooltipText}
-                    bg="background.level3"
-                  />
-                )
-              })}
-            </TooltipAprItem>
-            <Divider />
-            <TooltipAprItem
-              {...basePopoverAprItemProps}
-              pt={3}
-              backgroundColor="background.level4"
-              fontColor="font.maxContrast"
-              title={`Total ${balReward ? 'base' : ''} APR`}
-              apr={totalBaseDisplayed}
-            />
-            {balReward && (
-              <>
-                <Divider />
-                <Stack roundedBottom="md" gap={0}>
-                  <TooltipAprItem
-                    {...basePopoverAprItemProps}
-                    pt={3}
-                    fontWeight={500}
-                    fontColor={colorMode == 'light' ? 'gray.600' : 'gray.400'}
-                    title="Extra BAL (veBAL boost)"
-                    apr={extraBalAprDisplayed.toNumber()}
-                    tooltipText={extraBalTooltipText}
-                    bg="background.level3"
-                  />
+          <Portal>
+            <PopoverContent w="fit-content" shadow="3xl" minWidth={['100px', '300px']} p="0">
+              <TooltipAprItem
+                {...basePopoverAprItemProps}
+                pt={3}
+                title="Swap fees"
+                apr={swapFeesDisplayed}
+                aprOpacity={isSwapFeePresent ? 1 : 0.5}
+                tooltipText={swapFeesTooltipText}
+                bg="background.level3"
+              />
+              <TooltipAprItem
+                {...basePopoverAprItemProps}
+                title="Staking incentives"
+                apr={stakingIncentivesAprDisplayed}
+                aprOpacity={isStakingPresent ? 1 : 0.5}
+                bg="background.level3"
+              >
+                {stakingIncentivesDisplayed.map((item, index) => {
+                  return (
+                    <TooltipAprItem
+                      {...subitemPopoverAprItemProps}
+                      key={index}
+                      title={item.title}
+                      apr={item.apr}
+                      aprOpacity={1}
+                      tooltipText={baseAprTooltipText}
+                      bg="background.level3"
+                    />
+                  )
+                })}
+              </TooltipAprItem>
+              <TooltipAprItem
+                {...basePopoverAprItemProps}
+                title="Yield bearing tokens"
+                apr={yieldBearingTokensAprDisplayed}
+                aprOpacity={isYieldPresent ? 1 : 0.5}
+                bg="background.level3"
+              >
+                {yieldBearingTokensDisplayed.map((item, index) => {
+                  return (
+                    <TooltipAprItem
+                      {...subitemPopoverAprItemProps}
+                      key={index}
+                      title={item.title}
+                      apr={item.apr}
+                      aprOpacity={1}
+                      tooltipText={inherentTokenYieldTooltipText}
+                      bg="background.level3"
+                    />
+                  )
+                })}
+              </TooltipAprItem>
+              <Divider />
+              <TooltipAprItem
+                {...basePopoverAprItemProps}
+                pt={3}
+                backgroundColor="background.level4"
+                fontColor="font.maxContrast"
+                title={`Total ${balReward ? 'base' : ''} APR`}
+                apr={totalBaseDisplayed}
+              />
+              {balReward && (
+                <>
                   <Divider />
+                  <Stack roundedBottom="md" gap={0}>
+                    <TooltipAprItem
+                      {...basePopoverAprItemProps}
+                      pt={3}
+                      fontWeight={500}
+                      fontColor={colorMode == 'light' ? 'gray.600' : 'gray.400'}
+                      title="Extra BAL (veBAL boost)"
+                      apr={extraBalAprDisplayed.toNumber()}
+                      tooltipText={extraBalTooltipText}
+                      bg="background.level3"
+                    />
+                    <Divider />
 
-                  <TooltipAprItem
-                    {...basePopoverAprItemProps}
-                    pt={3}
-                    fontColor="font.special"
-                    title="Max veBAL APR"
-                    apr={maxVeBalDisplayed.toNumber()}
-                    boxBackground={balRewardGradient}
-                    textBackground="background.special"
-                    textBackgroundClip="text"
-                    roundedBottom="md"
-                  />
-                </Stack>
-              </>
-            )}
-          </PopoverContent>
+                    <TooltipAprItem
+                      {...basePopoverAprItemProps}
+                      pt={3}
+                      fontColor="font.special"
+                      title="Max veBAL APR"
+                      apr={maxVeBalDisplayed.toNumber()}
+                      boxBackground={balRewardGradient}
+                      textBackground="background.special"
+                      textBackgroundClip="text"
+                      roundedBottom="md"
+                    />
+                  </Stack>
+                </>
+              )}
+            </PopoverContent>
+          </Portal>
         </>
       )}
     </Popover>
