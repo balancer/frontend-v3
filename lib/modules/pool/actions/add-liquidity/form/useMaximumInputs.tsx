@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { useTokenBalances } from '@/lib/modules/tokens/useTokenBalances'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useTokenBalances } from '@/lib/modules/tokens/TokenBalancesProvider'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { bn } from '@/lib/shared/utils/numbers'
 import { Address, HumanAmount } from '@balancer/sdk'
 import { useMemo, useState } from 'react'
-import { usePool } from '../../../usePool'
-import { useAddLiquidity } from '../useAddLiquidity'
+import { usePool } from '../../../PoolProvider'
+import { useAddLiquidity } from '../AddLiquidityProvider'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 
 export function useMaximumInputs() {
