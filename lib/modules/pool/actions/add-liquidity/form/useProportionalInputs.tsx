@@ -136,6 +136,7 @@ export function useProportionalInputs() {
     handleProportionalHumanInputChange,
     handleMaximizeUserAmounts,
     setIsMaximized,
+    clearAmountsIn,
   }
 }
 
