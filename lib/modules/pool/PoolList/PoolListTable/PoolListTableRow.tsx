@@ -39,6 +39,11 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
           <GridItem>
             <PoolListTokenPills pool={pool} />
           </GridItem>
+          <GridItem>
+            <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
+              {getPoolTypeLabel(pool.type)}
+            </Text>
+          </GridItem>
           {userAddress && (
             <GridItem>
               <Text textAlign="right" fontWeight="medium">
@@ -46,11 +51,6 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
               </Text>
             </GridItem>
           )}
-          <GridItem>
-            <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
-              {getPoolTypeLabel(pool.type)}
-            </Text>
-          </GridItem>
           <GridItem>
             <Text
               title={toCurrency(pool.dynamicData.totalLiquidity, { abbreviated: false })}
