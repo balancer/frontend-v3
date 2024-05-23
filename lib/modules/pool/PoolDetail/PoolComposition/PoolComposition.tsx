@@ -13,13 +13,13 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 import { Address } from 'viem'
 import {
   GqlPoolTokenDetail,
   GqlPoolTokenDisplay,
 } from '@/lib/shared/services/api/generated/graphql'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import Image from 'next/image'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'

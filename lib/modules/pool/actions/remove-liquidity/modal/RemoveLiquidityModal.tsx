@@ -2,8 +2,8 @@
 
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
 import { RefObject, useEffect, useRef } from 'react'
-import { usePool } from '../../../usePool'
-import { useRemoveLiquidity } from '../useRemoveLiquidity'
+import { usePool } from '../../../PoolProvider'
+import { useRemoveLiquidity } from '../RemoveLiquidityProvider'
 import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'

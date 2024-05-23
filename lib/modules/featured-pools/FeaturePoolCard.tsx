@@ -1,7 +1,7 @@
 'use client'
 
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { FeaturedPool } from '../pool/usePool'
+import { FeaturedPool } from '../pool/PoolProvider'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useRouter } from 'next/navigation'
 import { HStack, VStack, Text, Box } from '@chakra-ui/react'

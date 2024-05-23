@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
+import { TokenBalancesProvider } from '@/lib/modules/tokens/TokenBalancesProvider'
 import {
   Button,
   Card,
@@ -19,23 +19,23 @@ import {
 import { useEffect, useRef } from 'react'
 import { Address } from 'viem'
 import { AddLiquidityModal } from '../modal/AddLiquidityModal'
-import { useAddLiquidity } from '../useAddLiquidity'
+import { useAddLiquidity } from '../AddLiquidityProvider'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
 import { TokenInputs } from './TokenInputs'
 import { TokenInputsWithAddable } from './TokenInputsWithAddable'
-import { usePool } from '../../../usePool'
+import { usePool } from '../../../PoolProvider'
 import { requiresProportionalInput, supportsProportionalAdds } from '../../LiquidityActionHelpers'
 import { PriceImpactAccordion } from '@/lib/modules/price-impact/PriceImpactAccordion'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
-import { usePriceImpact } from '@/lib/modules/price-impact/usePriceImpact'
+import { usePriceImpact } from '@/lib/modules/price-impact/PriceImpactProvider'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { AddLiquidityFormCheckbox } from './AddLiquidityFormCheckbox'
 import { isNativeOrWrappedNative, isNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectModal'
-import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
+import { useTokenInputsValidation } from '@/lib/modules/tokens/TokenInputsValidationProvider'
 import { usePoolRedirect } from '../../../pool.hooks'
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
 import { PriceImpactError } from '../../../../price-impact/PriceImpactError'

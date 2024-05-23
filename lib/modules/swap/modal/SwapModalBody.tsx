@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { PropsWithChildren } from 'react'
-import { useSwap } from '../useSwap'
+import { useSwap } from '../SwapProvider'
 import { SwapPreview } from './SwapPreview'
 import { SwapReceipt } from './SwapReceipt'
 

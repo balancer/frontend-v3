@@ -5,7 +5,7 @@ import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { TransactionStep } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useMemo } from 'react'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 import { shouldUseRecoveryRemoveLiquidity } from '../LiquidityActionHelpers'
 import { RemoveLiquidityStepParams, useRemoveLiquidityStep } from './useRemoveLiquidityStep'
 

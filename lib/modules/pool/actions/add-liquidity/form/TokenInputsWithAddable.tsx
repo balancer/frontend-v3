@@ -4,7 +4,7 @@
 import { Alert, AlertIcon, VStack } from '@chakra-ui/react'
 import { useEffect } from 'react'
 // import { XOctagon } from 'react-feather'
-import { useAddLiquidity } from '../useAddLiquidity'
+import { useAddLiquidity } from '../AddLiquidityProvider'
 import { TokenInputs } from './TokenInputs'
 import { useProportionalInputs } from './useProportionalInputs'
 

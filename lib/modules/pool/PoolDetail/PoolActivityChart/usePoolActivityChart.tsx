@@ -5,7 +5,7 @@ import * as echarts from 'echarts/core'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { differenceInCalendarDays, format } from 'date-fns'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 import { PoolVariant } from '../../pool.types'
 import {
   GqlChain,
@@ -21,7 +21,7 @@ import { ChainSlug, slugToChainMap } from '../../pool.utils'
 import { ColorMode } from '@chakra-ui/react'
 import { useTheme } from 'next-themes'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 
 import {
   getBlockExplorerAddressUrl,

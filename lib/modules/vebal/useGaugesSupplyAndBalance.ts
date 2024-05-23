@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useUserAccount } from '../web3/useUserAccount'
+import { useUserAccount } from '../web3/UserAccountProvider'
 import { GaugeArg } from './useVebalBoost'
 
 import { useMulticall } from '../web3/contracts/useMulticall'

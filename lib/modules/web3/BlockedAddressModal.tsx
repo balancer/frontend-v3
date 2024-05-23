@@ -12,7 +12,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { useEffect } from 'react'
-import { useUserAccount } from './useUserAccount'
+import { useUserAccount } from './UserAccountProvider'
 
 export function BlockedAddressModal() {
   const { isOpen, onOpen, onClose } = useDisclosure()

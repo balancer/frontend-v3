@@ -10,7 +10,7 @@ import {
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 import { PoolVariant } from '../../pool.types'
 import { NumberFormatter } from '@/lib/shared/utils/numbers'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'

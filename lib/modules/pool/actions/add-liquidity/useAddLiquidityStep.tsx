@@ -11,7 +11,7 @@ import {
   AddLiquidityBuildQueryParams,
   useAddLiquidityBuildCallDataQuery,
 } from './queries/useAddLiquidityBuildCallDataQuery'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 
 export const addLiquidityStepId = 'add-liquidity'
 

@@ -1,8 +1,8 @@
 'use client'
 
 import { TokenSelectModal } from '@/lib/modules/tokens/TokenSelectModal/TokenSelectModal'
-import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { TokenBalancesProvider } from '@/lib/modules/tokens/TokenBalancesProvider'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { Button, useDisclosure, Text } from '@chakra-ui/react'
 import { useRef, useState } from 'react'

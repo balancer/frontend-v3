@@ -6,7 +6,7 @@ import { ManagedTransactionInput } from '@/lib/modules/web3/contracts/useManaged
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useHasMinterApproval } from './useHasMinterApproval'
 import { useMemo } from 'react'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { ManagedTransactionButton } from '../../transactions/transaction-steps/TransactionButton'

@@ -3,7 +3,7 @@ import { defaultPoolMock, defaultPoolResponseMock } from '@/test/msw/handlers/Po
 import { testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
 import { PoolVariant } from './pool.types'
-import { _usePool } from './usePool'
+import { _usePool } from './PoolProvider'
 import { defaultGaugeAddressMock } from '@/test/msw/builders/gqlStaking.builders'
 
 async function testUsePool({

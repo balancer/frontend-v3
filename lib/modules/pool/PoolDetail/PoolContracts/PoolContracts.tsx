@@ -2,7 +2,7 @@
 
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { Box, Card, HStack, Heading, Link, Text, VStack } from '@chakra-ui/react'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 import { ExternalLink } from 'react-feather'
 
 export function PoolContracts() {

@@ -18,8 +18,8 @@ import {
   ModalFooter,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { useUserSettings } from '../user/settings/useUserSettings'
-import { useUserAccount } from './useUserAccount'
+import { useUserSettings } from '../user/settings/UserSettingsProvider'
+import { useUserAccount } from './UserAccountProvider'
 import { useDisconnect } from 'wagmi'
 
 export function AcceptPoliciesModal() {

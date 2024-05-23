@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, Heading, Link, ListItem, Text, UnorderedList, VStack } from '@chakra-ui/react'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 import { GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 import { getPoolRisks, risksTitle } from './usePoolRisks'
 
