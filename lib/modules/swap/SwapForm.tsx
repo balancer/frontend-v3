@@ -7,7 +7,6 @@ import {
   Card,
   Center,
   HStack,
-  Heading,
   VStack,
   Tooltip,
   useDisclosure,
@@ -15,6 +14,9 @@ import {
   Button,
   Box,
   Text,
+  CardHeader,
+  CardFooter,
+  CardBody,
 } from '@chakra-ui/react'
 import { useRef, useState } from 'react'
 import { useSwap } from './SwapProvider'
@@ -120,21 +122,19 @@ export function SwapForm() {
           left={['-12px', '0']}
         >
           <Card rounded="xl">
-            <VStack spacing="lg" align="start">
-              <HStack w="full" justify="space-between" zIndex={11}>
-                <Heading fontWeight="bold" size="h4">
-                  {capitalize(swapAction)}
-                </Heading>
-                <HStack>
-                  <Tooltip label={copiedDeepLink ? 'Copied!' : 'Copy deep link'}>
-                    <Button variant="tertiary" size="sm" color="grayText" onClick={copyDeepLink}>
-                      {copiedDeepLink ? <CheckCircle size={16} /> : <Link size={16} />}
-                    </Button>
-                  </Tooltip>
+            <CardHeader as={HStack} w="full" justify="space-between" zIndex={11}>
+              <span>{capitalize(swapAction)}</span>
+              <HStack>
+                <Tooltip label={copiedDeepLink ? 'Copied!' : 'Copy deep link'}>
+                  <Button variant="tertiary" size="sm" color="grayText" onClick={copyDeepLink}>
+                    {copiedDeepLink ? <CheckCircle size={16} /> : <Link size={16} />}
+                  </Button>
+                </Tooltip>
 
-                  <TransactionSettings size="sm" />
-                </HStack>
+                <TransactionSettings size="sm" />
               </HStack>
+            </CardHeader>
+            <CardBody as={VStack} align="start">
               <VStack spacing="md" w="full">
                 <ChainSelect
                   value={selectedChain}
@@ -205,22 +205,23 @@ export function SwapForm() {
                     </Text>
                   </ErrorAlert>
                 )}
-
-                <Tooltip label={isDisabled ? disabledReason : ''}>
-                  <Button
-                    ref={nextBtn}
-                    variant="secondary"
-                    w="full"
-                    size="lg"
-                    isDisabled={isDisabled || !isMounted}
-                    isLoading={simulationQuery.isLoading || !isMounted}
-                    onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
-                  >
-                    Next
-                  </Button>
-                </Tooltip>
               </VStack>
-            </VStack>
+            </CardBody>
+            <CardFooter>
+              <Tooltip label={isDisabled ? disabledReason : ''}>
+                <Button
+                  ref={nextBtn}
+                  variant="secondary"
+                  w="full"
+                  size="lg"
+                  isDisabled={isDisabled || !isMounted}
+                  isLoading={simulationQuery.isLoading || !isMounted}
+                  onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
+                >
+                  Next
+                </Button>
+              </Tooltip>
+            </CardFooter>
           </Card>
         </Center>
         <TokenSelectModal
