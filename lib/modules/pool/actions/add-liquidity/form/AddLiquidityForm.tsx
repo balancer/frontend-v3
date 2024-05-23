@@ -5,11 +5,11 @@ import { TokenBalancesProvider } from '@/lib/modules/tokens/TokenBalancesProvide
 import {
   Button,
   Card,
+  CardHeader,
   Center,
   Grid,
   GridItem,
   HStack,
-  Heading,
   Icon,
   Text,
   Tooltip,
@@ -119,13 +119,13 @@ export function AddLiquidityForm() {
     <TokenBalancesProvider extTokens={validTokens}>
       <Center h="full" w="full" maxW="lg" mx="auto">
         <Card>
-          <VStack spacing="md" align="start" w="full">
+          <CardHeader>
             <HStack w="full" justify="space-between">
-              <Heading fontWeight="bold" size="h5">
-                Add liquidity
-              </Heading>
+              <span>Add liquidity</span>
               <TransactionSettings size="sm" />
             </HStack>
+          </CardHeader>
+          <VStack spacing="md" align="start" w="full">
             {supportsProportionalAdds(pool) ? (
               <TokenInputsWithAddable
                 tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
