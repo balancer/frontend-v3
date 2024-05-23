@@ -2,7 +2,7 @@
 import { HStack, Text } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useCountdown } from 'usehooks-ts'
-import { useAddLiquidity } from '../useAddLiquidity'
+import { useAddLiquidity } from '../AddLiquidityProvider'
 import { useShouldFreezeQuote } from '@/lib/modules/transactions/transaction-steps/useShouldFreezeQuote'
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { addLiquidityStepId } from '../useAddLiquidityStep'

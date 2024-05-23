@@ -20,8 +20,8 @@ import {
 import { usePublicClient } from 'wagmi'
 import { useQuery } from '@tanstack/react-query'
 import { getNetworkConfig } from '@/lib/config/app.config'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { useUserAccount } from '../../web3/useUserAccount'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
+import { useUserAccount } from '../../web3/UserAccountProvider'
 import { isComposableStablePool } from '../pool.utils'
 
 export function usePoolEnrichWithOnChainData({

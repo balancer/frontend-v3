@@ -7,7 +7,7 @@ import {
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useEffect, useMemo, useState } from 'react'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 import {
   RemoveLiquidityBuildQueryParams,
   useRemoveLiquidityBuildCallDataQuery,

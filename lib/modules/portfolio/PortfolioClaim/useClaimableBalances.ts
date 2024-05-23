@@ -5,9 +5,9 @@ import { useMemo } from 'react'
 import { Address, formatUnits } from 'viem'
 import { useReadContracts } from 'wagmi'
 import { PoolListItem } from '../../pool/pool.types'
-import { useTokens } from '../../tokens/useTokens'
+import { useTokens } from '../../tokens/TokensProvider'
 import { AbiMap } from '../../web3/contracts/AbiMap'
-import { useUserAccount } from '../../web3/useUserAccount'
+import { useUserAccount } from '../../web3/UserAccountProvider'
 import { BPT_DECIMALS } from '../../pool/pool.constants'
 
 export interface ClaimableReward {

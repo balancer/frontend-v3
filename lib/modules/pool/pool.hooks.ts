@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useRouter } from 'next/navigation'
 import { getPoolPath } from './pool.utils'
-import { Pool } from './usePool'
+import { Pool } from './PoolProvider'
 
 export function usePoolRedirect(pool: Pool) {
   const router = useRouter()

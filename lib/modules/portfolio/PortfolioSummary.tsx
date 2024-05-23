@@ -1,5 +1,5 @@
 import { BoxProps, Card, Heading, Icon } from '@chakra-ui/react'
-import { usePortfolio } from './usePortfolio'
+import { usePortfolio } from './PortfolioProvider'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { BarChart } from 'react-feather'

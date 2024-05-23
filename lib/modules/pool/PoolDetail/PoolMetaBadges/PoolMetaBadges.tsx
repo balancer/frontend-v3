@@ -1,7 +1,7 @@
 'use client'
 
 import { Badge, Flex, HStack, Text, Tooltip } from '@chakra-ui/react'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import Image from 'next/image'
 import { fNum } from '@/lib/shared/utils/numbers'

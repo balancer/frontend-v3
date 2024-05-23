@@ -1,16 +1,16 @@
 'use client'
 
 import { Button, Card, Text, useDisclosure, VStack } from '@chakra-ui/react'
-import { usePool } from '../../../usePool'
+import { usePool } from '../../../PoolProvider'
 import { ReceiptBptOut } from './BptOut'
 import { StakingOptions } from './StakingOptions'
 import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
 import { Hash } from 'viem'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { isVebalPool } from '../../../pool.helpers'
 import { VebalRedirectModal } from '@/lib/modules/vebal/VebalRedirectModal'
 import { TokenRowGroup } from '@/lib/modules/tokens/TokenRow/TokenRowGroup'
-import { useAddLiquidity } from '../useAddLiquidity'
+import { useAddLiquidity } from '../AddLiquidityProvider'
 
 export function AddLiquidityReceipt({ txHash }: { txHash: Hash }) {
   const { pool } = usePool()

@@ -4,10 +4,10 @@ import {
   TransactionLabels,
   TransactionStep,
 } from '@/lib/modules/transactions/transaction-steps/lib'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useMemo, useState } from 'react'
-import { Pool, usePool } from '../../usePool'
+import { Pool, usePool } from '../../PoolProvider'
 import { ManagedTransactionInput } from '@/lib/modules/web3/contracts/useManagedTransaction'
 
 const stakeStepId = 'stake'

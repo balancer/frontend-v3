@@ -9,7 +9,7 @@ import {
   Slippage,
   calculateProportionalAmounts,
 } from '@balancer/sdk'
-import { Pool } from '../../../usePool'
+import { Pool } from '../../../PoolProvider'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
 import { SdkBuildAddLiquidityInput, SdkQueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'

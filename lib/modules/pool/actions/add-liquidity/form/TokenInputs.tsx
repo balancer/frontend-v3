@@ -2,7 +2,7 @@ import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { isNativeOrWrappedNative } from '@/lib/modules/tokens/token.helpers'
 import { HumanAmount, isSameAddress } from '@balancer/sdk'
 import { Address } from 'viem'
-import { useAddLiquidity } from '../useAddLiquidity'
+import { useAddLiquidity } from '../AddLiquidityProvider'
 import { VStack } from '@chakra-ui/react'
 
 type Props = {

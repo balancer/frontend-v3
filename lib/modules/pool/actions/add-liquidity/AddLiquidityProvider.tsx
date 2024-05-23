@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { Address, Hash } from 'viem'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 import { useAddLiquiditySimulationQuery } from './queries/useAddLiquiditySimulationQuery'
 import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceImpactQuery'
 import {
@@ -17,11 +17,11 @@ import {
   requiresProportionalInput,
 } from '../LiquidityActionHelpers'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { useTokenInputsValidation } from '@/lib/modules/tokens/useTokenInputsValidation'
+import { useTokenInputsValidation } from '@/lib/modules/tokens/TokenInputsValidationProvider'
 import { isGyro } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'

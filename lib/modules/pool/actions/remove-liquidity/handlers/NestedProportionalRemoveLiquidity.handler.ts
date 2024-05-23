@@ -8,7 +8,7 @@ import {
   Slippage,
 } from '@balancer/sdk'
 import { parseEther } from 'viem'
-import { Pool } from '../../../usePool'
+import { Pool } from '../../../PoolProvider'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
 import {
   BuildRemoveLiquidityInput,

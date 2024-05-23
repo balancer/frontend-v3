@@ -11,7 +11,7 @@ import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { Address } from 'viem'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { useUserAccount } from '../web3/useUserAccount'
+import { useUserAccount } from '../web3/UserAccountProvider'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
 export interface ClaimableBalanceResult {

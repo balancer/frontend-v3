@@ -2,7 +2,7 @@
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { HStack, Tag, Text, Wrap, WrapItem } from '@chakra-ui/react'
-import { useTokens } from '../useTokens'
+import { useTokens } from '../TokensProvider'
 import { useMemo } from 'react'
 import { TokenIcon } from '../TokenIcon'
 import { nativeAssetFilter } from '../token.helpers'

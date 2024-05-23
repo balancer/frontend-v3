@@ -2,10 +2,10 @@
 
 import { useSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { Alert, Button, VStack } from '@chakra-ui/react'
 import { TransactionStep } from './lib'
-import { SignRelayerState } from '../../relayer/useRelayerSignature'
+import { SignRelayerState } from '../../relayer/RelayerSignatureProvider'
 import { useMemo } from 'react'
 
 export const signRelayerStepTitle = 'Sign relayer'

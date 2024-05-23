@@ -1,7 +1,7 @@
 'use client'
 
 import { usePoolListViewType } from './usePoolListViewType'
-import { PoolListView } from '@/lib/modules/user/settings/useUserSettings'
+import { PoolListView } from '@/lib/modules/user/settings/UserSettingsProvider'
 import { Grid, List } from 'react-feather'
 import ButtonGroup, {
   ButtonGroupOption,

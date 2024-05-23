@@ -13,7 +13,7 @@ import { useTransactionState } from '../transactions/transaction-steps/Transacti
 import { BuildSwapQueryParams, useBuildSwapQuery } from './queries/useBuildSwapQuery'
 import { swapActionPastTense } from './swap.helpers'
 import { SwapAction } from './swap.types'
-import { useTokenBalances } from '../tokens/useTokenBalances'
+import { useTokenBalances } from '../tokens/TokenBalancesProvider'
 
 export const swapStepId = 'swap'
 

@@ -5,7 +5,7 @@ import { useSwitchChain } from 'wagmi'
 import { Button } from '@chakra-ui/react'
 import { getChainShortName } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
-import { useUserAccount } from './useUserAccount'
+import { useUserAccount } from './UserAccountProvider'
 
 export function useChainSwitch(chainId: SupportedChainId) {
   const { chain: connectedChain } = useUserAccount()

@@ -3,11 +3,11 @@
 import { Card, Text, VStack } from '@chakra-ui/react'
 import { useRemoveLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
 import { Hash } from 'viem'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { TokenRowGroup } from '@/lib/modules/tokens/TokenRow/TokenRowGroup'
 import { BptRow } from '@/lib/modules/tokens/TokenRow/BptRow'
-import { useRemoveLiquidity } from '../useRemoveLiquidity'
-import { usePool } from '../../../usePool'
+import { useRemoveLiquidity } from '../RemoveLiquidityProvider'
+import { usePool } from '../../../PoolProvider'
 
 export function RemoveLiquidityReceipt({ txHash }: { txHash: Hash }) {
   const { pool } = usePool()

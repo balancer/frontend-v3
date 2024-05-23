@@ -1,8 +1,8 @@
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import { ChangeEvent } from 'react'
-import { useTokenBalances } from '../useTokenBalances'
-import { useTokenInputsValidation } from '../useTokenInputsValidation'
+import { useTokenBalances } from '../TokenBalancesProvider'
+import { useTokenInputsValidation } from '../TokenInputsValidationProvider'
 import { Address } from 'viem'
 
 export function overflowProtected(value: Numberish, decimalLimit: number): string {

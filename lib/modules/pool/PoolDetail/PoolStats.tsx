@@ -14,7 +14,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react'
-import { usePool } from '../usePool'
+import { usePool } from '../PoolProvider'
 import { getAprLabel } from '../pool.utils'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import PoolWeightChart from './PoolWeightCharts/PoolWeightChart'

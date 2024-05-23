@@ -1,7 +1,7 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { Box, Button, ButtonProps, HStack, Img, Show } from '@chakra-ui/react'
 import { CustomAvatar } from './CustomAvatar'
-import { useUserAccount } from './useUserAccount'
+import { useUserAccount } from './UserAccountProvider'
 
 export function ConnectWallet({ ...rest }: ButtonProps) {
   const { isLoading: isLoadingAccount, isConnected: isConnectedAccount } = useUserAccount()

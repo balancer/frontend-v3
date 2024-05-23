@@ -1,7 +1,7 @@
 'use client'
 
-import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { useFxRates } from './useFxRates'
+import { useUserSettings } from '@/lib/modules/user/settings/UserSettingsProvider'
+import { useFxRates } from './FxRatesProvider'
 import { symbolForCurrency } from '../utils/currencies'
 import { Numberish, bn, fNum } from '../utils/numbers'
 

@@ -1,6 +1,6 @@
 import { useMulticall } from '../web3/contracts/useMulticall'
 import { AbiMap } from '../web3/contracts/AbiMap'
-import { useUserAccount } from '../web3/useUserAccount'
+import { useUserAccount } from '../web3/UserAccountProvider'
 import networkConfigs from '@/lib/config/networks'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { GaugeArg } from './useVebalBoost'

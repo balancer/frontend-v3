@@ -2,7 +2,7 @@ import { useApproveRelayerStep } from '@/lib/modules/relayer/useApproveRelayerSt
 import { getChainId } from '@/lib/config/app.config'
 import { TransactionStep } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useClaimAndUnstakeStep } from './useClaimAndUnstakeStep'
-import { Pool } from '../../usePool'
+import { Pool } from '../../PoolProvider'
 import { useMemo } from 'react'
 import { useApproveMinterStep } from '@/lib/modules/staking/gauge/useMinterApprovalStep'
 
