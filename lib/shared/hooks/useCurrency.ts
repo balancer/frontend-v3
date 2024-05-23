@@ -37,6 +37,10 @@ export function useCurrency() {
     const convertedAmount = toUserCurrency(usdVal)
     const formattedAmount = fNum('fiat', convertedAmount, { abbreviated })
 
+    if (formattedAmount.startsWith('<')) {
+      return withSymbol ? '<' + symbol + formattedAmount.substring(1) : formattedAmount
+    }
+
     return withSymbol ? symbol + formattedAmount : formattedAmount
   }
 
