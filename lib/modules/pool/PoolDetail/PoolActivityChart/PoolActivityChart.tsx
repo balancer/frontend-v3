@@ -19,6 +19,7 @@ import { FC, PropsWithChildren, useState } from 'react'
 import { ExpandIcon } from '@/lib/shared/components/icons/ExpandIcon'
 import { ElevatedIcon } from '@/lib/shared/components/icons/ElevatedIcon'
 import { motion } from 'framer-motion'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 const legendTabs = [
   {
@@ -82,7 +83,7 @@ export function PoolActivityChart() {
                 size="h5"
                 _groupHover={isExpanded ? {} : { color: 'font.maxContrast' }}
               >
-                {dataSize} {getChartTitle()}
+                {fNum('integer', dataSize)} {getChartTitle()}
               </Heading>
               <Text
                 variant="primary"

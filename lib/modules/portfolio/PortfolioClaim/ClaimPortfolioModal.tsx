@@ -1,6 +1,6 @@
 'use client'
 
-import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
+import { usePortfolio } from '@/lib/modules/portfolio/PortfolioProvider'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 import { PoolListItem } from '@/lib/modules/pool/pool.types'

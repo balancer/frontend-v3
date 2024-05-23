@@ -4,7 +4,7 @@ import { SwapTokenRow } from '../../tokens/TokenRow/SwapTokenRow'
 import { MobileStepTracker } from '../../transactions/transaction-steps/step-tracker/MobileStepTracker'
 import { SwapDetails } from '../SwapDetails'
 import { SwapRate } from '../SwapRate'
-import { useSwap } from '../useSwap'
+import { useSwap } from '../SwapProvider'
 import { Hash } from 'viem'
 
 export function SwapPreview() {

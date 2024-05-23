@@ -1,4 +1,4 @@
-import { PoolListView, useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
+import { PoolListView, useUserSettings } from '@/lib/modules/user/settings/UserSettingsProvider'
 
 export function usePoolListViewType() {
   const { poolListView, setPoolListView } = useUserSettings()

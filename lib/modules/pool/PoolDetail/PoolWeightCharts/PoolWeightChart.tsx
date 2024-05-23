@@ -8,7 +8,7 @@ import { isClp, isStable } from '../../pool.helpers'
 import BoostedPoolWeightChart from './BoostedPoolWeightChart'
 import StablePoolWeightChart from './StablePoolWeightChart'
 import CLPPoolWeightChart from './CLPPoolWeightChart'
-import { FeaturedPool, Pool } from '../../usePool'
+import { FeaturedPool, Pool } from '../../PoolProvider'
 
 export interface PoolWeightChartProps {
   pool: Pool | FeaturedPool

@@ -3,7 +3,7 @@
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
 import { RefObject, useEffect, useRef } from 'react'
 import { DesktopStepTracker } from '../../transactions/transaction-steps/step-tracker/DesktopStepTracker'
-import { useSwap } from '../useSwap'
+import { useSwap } from '../SwapProvider'
 import { SwapTimeout } from './SwapTimeout'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { AnimatePresence } from 'framer-motion'

@@ -6,7 +6,7 @@ import { useTokenApprovalSteps } from '@/lib/modules/tokens/approvals/useTokenAp
 import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
 import { useMemo } from 'react'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 import { LiquidityActionHelpers } from '../LiquidityActionHelpers'
 import { AddLiquidityStepParams, useAddLiquidityStep } from './useAddLiquidityStep'
 

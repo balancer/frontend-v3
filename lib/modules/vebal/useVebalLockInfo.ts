@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useUserAccount } from '../web3/useUserAccount'
+import { useUserAccount } from '../web3/UserAccountProvider'
 import { useMulticall } from '../web3/contracts/useMulticall'
 import mainnetNetworkConfig from '@/lib/config/networks/mainnet'
 import { Hex, formatUnits } from 'viem'

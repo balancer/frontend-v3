@@ -3,8 +3,8 @@
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
 import { RefObject, useEffect, useRef } from 'react'
-import { usePool } from '../../../usePool'
-import { useAddLiquidity } from '../useAddLiquidity'
+import { usePool } from '../../../PoolProvider'
+import { useAddLiquidity } from '../AddLiquidityProvider'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'

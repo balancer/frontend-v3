@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
 import { GqlPoolTokenExpanded, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
@@ -10,7 +10,7 @@ import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWit
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import { HumanAmount, TokenAmount, isSameAddress } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 import { RemoveLiquidityType } from './remove-liquidity.types'

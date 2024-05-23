@@ -1,4 +1,4 @@
-import { PortfolioProvider } from '@/lib/modules/portfolio/usePortfolio'
+import { PortfolioProvider } from '@/lib/modules/portfolio/PortfolioProvider'
 
 type Props = {
   children: React.ReactNode

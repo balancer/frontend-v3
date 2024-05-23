@@ -1,7 +1,7 @@
 'use client'
 
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { Button, VStack } from '@chakra-ui/react'
 import { ManagedResult, TransactionLabels, TransactionState, getTransactionState } from './lib'
 import { useChainSwitch } from '@/lib/modules/web3/useChainSwitch'

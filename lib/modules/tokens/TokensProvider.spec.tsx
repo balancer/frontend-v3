@@ -8,7 +8,7 @@ import {
   defaultGetTokensQueryVariablesMock,
   defaultTokenListMock,
 } from './__mocks__/token.builders'
-import { _useTokens } from './useTokens'
+import { _useTokens } from './TokensProvider'
 
 const initTokensData = defaultGetTokensQueryMock
 const initTokenPricesData = defaultGetTokenPricesQueryMock

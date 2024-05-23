@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 
 import { ClaimTotal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimTotal'
-import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
+import { usePortfolio } from '@/lib/modules/portfolio/PortfolioProvider'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Hex } from 'viem'

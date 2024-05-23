@@ -15,7 +15,7 @@ import {
   usdtAddress,
 } from '@/lib/debug-helpers'
 import { recoveryPoolMock } from '../__mocks__/recoveryPoolMock'
-import { Pool } from '../usePool'
+import { Pool } from '../PoolProvider'
 import { mock } from 'vitest-mock-extended'
 import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
 

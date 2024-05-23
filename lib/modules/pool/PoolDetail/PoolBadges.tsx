@@ -1,6 +1,6 @@
 import { Badge, HStack } from '@chakra-ui/react'
 import React from 'react'
-import { Pool, usePool } from '../usePool'
+import { Pool, usePool } from '../PoolProvider'
 import { isBoosted, isGyro, isStable, isWeighted } from '../pool.helpers'
 
 function getPoolBadges(pool: Pool) {

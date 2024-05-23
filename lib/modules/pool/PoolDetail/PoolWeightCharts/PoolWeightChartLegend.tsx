@@ -1,6 +1,6 @@
 import { Box, HStack, Text } from '@chakra-ui/react'
 import { PoolWeightChartColorDef } from './PoolWeightChart'
-import { FeaturedPool, Pool } from '../../usePool'
+import { FeaturedPool, Pool } from '../../PoolProvider'
 
 export default function PoolWeightChartLegend({
   pool,

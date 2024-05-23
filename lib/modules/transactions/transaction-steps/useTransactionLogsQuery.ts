@@ -1,6 +1,6 @@
 import { BPT_DECIMALS } from '@/lib/modules/pool/pool.constants'
-import { usePool } from '@/lib/modules/pool/usePool'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { usePool } from '@/lib/modules/pool/PoolProvider'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { getViemClient } from '@/lib/shared/services/viem/viem.client'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useQuery } from '@tanstack/react-query'

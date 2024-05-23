@@ -1,7 +1,7 @@
 import { formatUnits } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
-import { usePool } from '../../../usePool'
-import { useAddLiquidity } from '../useAddLiquidity'
+import { usePool } from '../../../PoolProvider'
+import { useAddLiquidity } from '../AddLiquidityProvider'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { BptRow } from '@/lib/modules/tokens/TokenRow/BptRow'
 

@@ -5,12 +5,12 @@ import {
   balancerV2GaugeV5Abi,
   balancerV2WeightedPoolV4Abi,
 } from '../../web3/contracts/abi/generated'
-import { useUserAccount } from '../../web3/useUserAccount'
+import { useUserAccount } from '../../web3/UserAccountProvider'
 import { formatUnits, zeroAddress } from 'viem'
 import { GqlPoolUserBalance } from '@/lib/shared/services/api/generated/graphql'
 import { bn } from '@/lib/shared/utils/numbers'
 import { calcBptPrice } from '../pool.helpers'
-import { Pool } from '../usePool'
+import { Pool } from '../PoolProvider'
 import { BPT_DECIMALS } from '../pool.constants'
 import { useEffect } from 'react'
 import { getChainId } from '@/lib/config/app.config'

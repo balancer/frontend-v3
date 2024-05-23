@@ -5,7 +5,7 @@ import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { Card, Text, VStack, useDisclosure } from '@chakra-ui/react'
 import { Address } from 'viem'
-import { useRemoveLiquidity } from '../useRemoveLiquidity'
+import { useRemoveLiquidity } from '../RemoveLiquidityProvider'
 import { isNativeAsset, isNativeOrWrappedNative } from '@/lib/modules/tokens/token.helpers'
 import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectModal'
 

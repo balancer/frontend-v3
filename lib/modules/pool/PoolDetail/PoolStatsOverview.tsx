@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react'
 import { Box, BoxProps, Card, VStack } from '@chakra-ui/react'
-import { usePool } from '../usePool'
+import { usePool } from '../PoolProvider'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import ButtonGroup, {

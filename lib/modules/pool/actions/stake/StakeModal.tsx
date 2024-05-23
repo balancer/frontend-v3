@@ -15,7 +15,7 @@ import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transacti
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { useStake } from './StakeProvider'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 import { StakePreview } from './StakePreview'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'

@@ -1,5 +1,5 @@
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
-import { Pool } from '../../usePool'
+import { Pool } from '../../PoolProvider'
 import { PoolId } from '../../pool.types'
 import { PoolIssue } from './PoolIssue.type'
 import { jsxTitleByVulnerability } from './PoolIssue.labels'

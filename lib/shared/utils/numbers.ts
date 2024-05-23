@@ -23,7 +23,7 @@ export const TOKEN_FORMAT_A = '0,0.[0000]a'
 // Uses 2 decimals then value is > thousand
 export const TOKEN_FORMAT_A_BIG = '0,0.[00]a'
 export const TOKEN_FORMAT = '0,0.[0000]'
-export const APR_FORMAT = '0.00%'
+export const APR_FORMAT = '0,0.00%'
 export const SLIPPAGE_FORMAT = '0.00%'
 export const FEE_FORMAT = '0.[0000]%'
 export const WEIGHT_FORMAT = '(%0,0)'
@@ -36,7 +36,7 @@ export const INTEGER_PERCENTAGE_FORMAT = '0%'
 export const APR_UPPER_THRESHOLD = 1_000_000
 export const APR_LOWER_THRESHOLD = 0.0000001
 // Do not display bn values lower than this amount; they are likely to be generate NaN results
-export const BN_LOWER_THRESHOLD = 0.0000001
+export const BN_LOWER_THRESHOLD = 0.000001
 
 const NUMERAL_DECIMAL_LIMIT = 9
 
