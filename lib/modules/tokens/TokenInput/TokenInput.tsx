@@ -65,7 +65,11 @@ function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSele
         </Box>
       )}
       {tokenConfig && tokenConfig.label}
-      {weight && <Text fontWeight="normal">{weight}%</Text>}
+      {weight && (
+        <Text fontWeight="normal" ml="sm" fontSize="sm">
+          {fNum('weight', weight)}
+        </Text>
+      )}
       {toggleTokenSelect && (
         <Box ml="sm">
           <ChevronDown size={16} />
