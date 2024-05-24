@@ -54,6 +54,7 @@ export async function GET(request: Request, { params: { address } }: Params) {
       },
       body: JSON.stringify({
         addresses: [address],
+        flagIds: ['F-1101', 'F-1102', 'F-1103', 'F-1111', 'F-1112', 'F-1113', 'F-1301'],
         expandDetails: true,
       }),
       next: {
