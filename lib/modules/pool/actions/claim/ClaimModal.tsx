@@ -11,7 +11,6 @@ import {
 import { useClaiming } from './useClaiming'
 import { Address } from 'viem'
 import { PoolListItem } from '../../pool.types'
-import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
 import { HumanAmount } from '@balancer/sdk'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
@@ -21,6 +20,7 @@ import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transacti
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
+import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 
 type Props = {
   isOpen: boolean
@@ -49,7 +49,7 @@ export function ClaimModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered {...rest}>
-      <FireworksOverlay startFireworks={!!claimTxHash} />
+      <SuccessOverlay startAnimation={!!claimTxHash} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && <DesktopStepTracker transactionSteps={transactionSteps} chain={pool.chain} />}
