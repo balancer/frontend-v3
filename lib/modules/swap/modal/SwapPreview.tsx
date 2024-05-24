@@ -4,11 +4,12 @@ import { SwapTokenRow } from '../../tokens/TokenRow/SwapTokenRow'
 import { MobileStepTracker } from '../../transactions/transaction-steps/step-tracker/MobileStepTracker'
 import { SwapDetails } from '../SwapDetails'
 import { SwapRate } from '../SwapRate'
-import { useSwap } from '../useSwap'
+import { useSwap } from '../SwapProvider'
+import { Hash } from 'viem'
 
 export function SwapPreview() {
   const { isMobile } = useBreakpoints()
-  const { tokenIn, tokenOut, transactionSteps, selectedChain } = useSwap()
+  const { tokenIn, tokenOut, transactionSteps, selectedChain, isWrap, swapTxHash } = useSwap()
 
   return (
     <VStack spacing="sm" align="start">
@@ -16,7 +17,7 @@ export function SwapPreview() {
 
       <Card variant="modalSubSection">
         <SwapTokenRow
-          label="You pay"
+          label={swapTxHash ? 'You payed' : 'You pay'}
           chain={selectedChain}
           tokenAmount={tokenIn.amount}
           tokenAddress={tokenIn.address}
@@ -25,16 +26,18 @@ export function SwapPreview() {
 
       <Card variant="modalSubSection">
         <SwapTokenRow
-          label="You'll get (if no slippage)"
+          label={tokenOutLabel(isWrap, swapTxHash)}
           chain={selectedChain}
           tokenAmount={tokenOut.amount}
           tokenAddress={tokenOut.address}
         />
       </Card>
 
-      <Card variant="modalSubSection">
-        <SwapDetails />
-      </Card>
+      {!swapTxHash && (
+        <Card variant="modalSubSection">
+          <SwapDetails />
+        </Card>
+      )}
 
       <Card variant="modalSubSection" fontSize="sm">
         <HStack justify="space-between" w="full">
@@ -44,4 +47,10 @@ export function SwapPreview() {
       </Card>
     </VStack>
   )
+}
+
+function tokenOutLabel(isWrap: boolean, swapTxHash?: Hash) {
+  if (swapTxHash) return 'You got'
+  if (!swapTxHash && isWrap) return "You'll get"
+  return "You'll get (if no slippage)"
 }

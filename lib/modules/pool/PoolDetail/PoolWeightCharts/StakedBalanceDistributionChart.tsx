@@ -8,7 +8,7 @@ import { motion } from 'framer-motion'
 import { ChartSizeValues } from './PoolWeightChart'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
-import { Pool } from '../../usePool'
+import { Pool } from '../../PoolProvider'
 
 const smallSize: ChartSizeValues = {
   chartHeight: '125px',

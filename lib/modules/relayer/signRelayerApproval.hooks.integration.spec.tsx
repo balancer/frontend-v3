@@ -7,7 +7,7 @@ import { waitFor } from '@testing-library/react'
 import { PropsWithChildren } from 'react'
 import { act } from 'react-dom/test-utils'
 import { useSignRelayerApproval } from './signRelayerApproval.hooks'
-import { useRelayerSignature } from './useRelayerSignature'
+import { useRelayerSignature } from './RelayerSignatureProvider'
 import { connectWithDefaultUser } from '../../../test/utils/wagmi/wagmi-connections'
 
 const Providers = ({ children }: PropsWithChildren) => (

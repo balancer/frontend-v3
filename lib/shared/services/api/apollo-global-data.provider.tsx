@@ -13,8 +13,8 @@ import {
   GetTokensDocument,
 } from '@/lib/shared/services/api/generated/graphql'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import { TokensProvider } from '@/lib/modules/tokens/useTokens'
-import { FiatFxRatesProvider } from '../../hooks/useFxRates'
+import { TokensProvider } from '@/lib/modules/tokens/TokensProvider'
+import { FiatFxRatesProvider } from '../../hooks/FxRatesProvider'
 import { getFxRates } from '../../utils/currencies'
 
 export const revalidate = 60

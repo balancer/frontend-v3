@@ -1,10 +1,10 @@
 'use client'
 
 import { useSwapReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { Card, Skeleton, Text, VStack } from '@chakra-ui/react'
 import { Hash } from 'viem'
-import { useSwap } from '../useSwap'
+import { useSwap } from '../SwapProvider'
 import { ReceiptTokenOutRow, SwapTokenRow } from '../../tokens/TokenRow/SwapTokenRow'
 
 export function SwapReceipt({ txHash }: { txHash: Hash }) {

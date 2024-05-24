@@ -1,6 +1,6 @@
 import { getChainId } from '@/lib/config/app.config'
 import networkConfigs from '@/lib/config/networks'
-import { getAllGaugesAddressesFromPool } from '@/lib/modules/portfolio/usePortfolio'
+import { getAllGaugesAddressesFromPool } from '@/lib/modules/portfolio/PortfolioProvider'
 import { selectStakingService } from '@/lib/modules/staking/selectStakingService'
 import { ManagedTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
@@ -12,7 +12,7 @@ import { GqlChain, GqlPoolStakingType } from '@/lib/shared/services/api/generate
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useMemo, useState } from 'react'
 import { ManagedTransactionInput } from '../../../web3/contracts/useManagedTransaction'
-import { useUserAccount } from '../../../web3/useUserAccount'
+import { useUserAccount } from '../../../web3/UserAccountProvider'
 import { PoolListItem } from '../../pool.types'
 import { useClaimCallDataQuery } from './useClaimCallDataQuery'
 import { BalTokenRewardsResult } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
@@ -54,8 +54,8 @@ export function useClaimAllRewardsStep({
   const labels: TransactionLabels = {
     init: `Claim${shouldClaimMany ? ' all' : ''}`,
     title: `Claim${shouldClaimMany ? ' all' : ''}`,
-    confirming: 'Confirming...',
-    confirmed: 'Claimed',
+    confirming: 'Confirming claim...',
+    confirmed: 'Claimed!',
     tooltip: shouldClaimMany
       ? 'Claim all rewards from your gauges'
       : 'Claim all rewards from your gauge',
@@ -71,6 +71,7 @@ export function useClaimAllRewardsStep({
       gaugeAddresses,
     }
   )
+
   const props: ManagedTransactionInput = {
     labels,
     chainId: getChainId(chain),

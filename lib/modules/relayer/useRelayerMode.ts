@@ -1,7 +1,7 @@
 import { shouldUseNestedLiquidity } from '../pool/actions/LiquidityActionHelpers'
-import { usePool } from '../pool/usePool'
-import { useUserSettings } from '../user/settings/useUserSettings'
-import { useUserAccount } from '../web3/useUserAccount'
+import { usePool } from '../pool/PoolProvider'
+import { useUserSettings } from '../user/settings/UserSettingsProvider'
+import { useUserAccount } from '../web3/UserAccountProvider'
 
 type RelayerMode = 'signRelayer' | 'approveRelayer' | 'no-relayer-needed'
 

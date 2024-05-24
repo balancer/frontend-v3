@@ -3,19 +3,18 @@
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
 import { RefObject, useEffect, useRef } from 'react'
 import { DesktopStepTracker } from '../../transactions/transaction-steps/step-tracker/DesktopStepTracker'
-import { useSwap } from '../useSwap'
+import { useSwap } from '../SwapProvider'
 import { SwapTimeout } from './SwapTimeout'
-import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { capitalize } from 'lodash'
 import { ActionModalFooter } from '../../../shared/components/modals/ActionModalFooter'
 import { TransactionModalHeader } from '../../../shared/components/modals/TransactionModalHeader'
 import { chainToSlugMap } from '../../pool/pool.utils'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '../../transactions/transaction-steps/step-tracker/step-tracker.utils'
-import { SwapPreview } from './SwapPreview'
-import { SwapReceipt } from './SwapReceipt'
+import { SwapModalBody } from './SwapModalBody'
+import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 
 type Props = {
   isOpen: boolean
@@ -33,10 +32,11 @@ export function SwapPreviewModal({
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
 
-  const { transactionSteps, swapAction, selectedChain, swapTxHash, hasQuoteContext } = useSwap()
+  const { transactionSteps, swapAction, isWrap, selectedChain, swapTxHash, hasQuoteContext } =
+    useSwap()
 
   useEffect(() => {
-    if (swapTxHash && !window.location.pathname.includes(swapTxHash)) {
+    if (!isWrap && swapTxHash && !window.location.pathname.includes(swapTxHash)) {
       window.history.pushState({}, '', `/swap/${chainToSlugMap[selectedChain]}/${swapTxHash}`)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -51,7 +51,7 @@ export function SwapPreviewModal({
       isCentered
       {...rest}
     >
-      <FireworksOverlay startFireworks={!!swapTxHash && hasQuoteContext} />
+      <SuccessOverlay startAnimation={!!swapTxHash && hasQuoteContext} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop && hasQuoteContext)}>
         {isDesktop && hasQuoteContext && (
@@ -66,27 +66,7 @@ export function SwapPreviewModal({
         <ModalCloseButton />
         <ModalBody>
           <AnimatePresence mode="wait" initial={false}>
-            {swapTxHash ? (
-              <motion.div
-                key="receipt"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-              >
-                <SwapReceipt txHash={swapTxHash} />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="preview"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-              >
-                <SwapPreview />
-              </motion.div>
-            )}
+            <SwapModalBody />
           </AnimatePresence>
         </ModalBody>
         <ActionModalFooter

@@ -17,19 +17,19 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { useRef, useState } from 'react'
-import { useSwap } from './useSwap'
+import { useSwap } from './SwapProvider'
 import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
 import { SwapPreviewModal } from './modal/SwapModal'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
-import { PriceImpactAccordion } from '../../shared/components/accordion/PriceImpactAccordion'
-import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
+import { PriceImpactAccordion } from '../price-impact/PriceImpactAccordion'
+import { PriceImpactProvider } from '@/lib/modules/price-impact/PriceImpactProvider'
 import { ChainSelect } from '../chains/ChainSelect'
 import { CheckCircle, Link, Repeat } from 'react-feather'
 import { SwapRate } from './SwapRate'
 import { SwapDetails } from './SwapDetails'
-import { capitalize } from 'lodash'
+import { capitalize, now } from 'lodash'
 import { motion, easeOut } from 'framer-motion'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { ErrorAlert } from '@/lib/shared/components/errors/ErrorAlert'
@@ -101,7 +101,10 @@ export function SwapForm() {
   function onModalClose() {
     previewModalDisclosure.onClose()
     if (swapTxHash) {
-      router.back()
+      // We are going to reload the swap page with the same inputs again so, we need to refetch the simulation
+      simulationQuery.refetch()
+      // Push an invalid dynamic route to force a re-render of the swap layout
+      router.push(`/swap/${now()}`)
     }
   }
 
@@ -187,7 +190,7 @@ export function SwapForm() {
                     transition={{ duration: 0.3, ease: easeOut }}
                   >
                     <PriceImpactAccordion
-                      setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                      setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
                       accordionButtonComponent={<SwapRate />}
                       accordionPanelComponent={<SwapDetails />}
                       isDisabled={!simulationQuery.data}

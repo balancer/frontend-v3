@@ -20,7 +20,7 @@ import { keyBy } from 'lodash'
 import { Hex, formatUnits, parseUnits, Address } from 'viem'
 import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
 import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
-import { Pool } from '../usePool'
+import { Pool } from '../PoolProvider'
 import {
   isNativeAsset,
   isWrappedNativeAsset,

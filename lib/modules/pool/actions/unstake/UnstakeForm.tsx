@@ -11,7 +11,7 @@ import {
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 import { useRef } from 'react'
 import { useUnstake } from './UnstakeProvider'
 import { UnstakePreview } from './UnstakePreview'

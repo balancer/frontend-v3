@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { gyroPoolMock } from '../../../__mocks__/gyroPoolMock'
-import { Pool } from '../../../usePool'
+import { Pool } from '../../../PoolProvider'
 import { addLiquidityKeys } from './add-liquidity-keys'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'

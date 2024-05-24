@@ -7,8 +7,8 @@ import { TokenIconStack } from '../../tokens/TokenIconStack'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { SECONDS_IN_DAY } from '@/test/utils/numbers'
 import { sumBy } from 'lodash'
-import { useTokens } from '../../tokens/useTokens'
-import { usePool } from '../usePool'
+import { useTokens } from '../../tokens/TokensProvider'
+import { usePool } from '../PoolProvider'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 
 export type PoolStatsValues = {

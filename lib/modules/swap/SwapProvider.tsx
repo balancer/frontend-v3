@@ -8,13 +8,13 @@ import { ApolloClient, useApolloClient, useReactiveVar } from '@apollo/client'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
 import { Address, Hash, isAddress, parseUnits } from 'viem'
 import { emptyAddress } from '../web3/contracts/wagmi-helpers'
-import { useUserAccount } from '../web3/useUserAccount'
+import { useUserAccount } from '../web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
 import { bn } from '@/lib/shared/utils/numbers'
 import { useSimulateSwapQuery } from './queries/useSimulateSwapQuery'
-import { useTokens } from '../tokens/useTokens'
+import { useTokens } from '../tokens/TokensProvider'
 import { useDisclosure } from '@chakra-ui/react'
 import { useSwapSteps } from './useSwapSteps'
 import {
@@ -36,13 +36,13 @@ import {
   isSupportedWrap,
   isWrapOrUnwrap,
 } from './wrap.helpers'
-import { useTokenInputsValidation } from '../tokens/useTokenInputsValidation'
+import { useTokenInputsValidation } from '../tokens/TokenInputsValidationProvider'
 import { useMakeVarPersisted } from '@/lib/shared/hooks/useMakeVarPersisted'
 import { HumanAmount } from '@balancer/sdk'
 import { ChainSlug, chainToSlugMap, slugToChainMap } from '../pool/pool.utils'
 import { invert } from 'lodash'
 import { useTransactionSteps } from '../transactions/transaction-steps/useTransactionSteps'
-import { useTokenBalances } from '../tokens/useTokenBalances'
+import { useTokenBalances } from '../tokens/TokenBalancesProvider'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -350,6 +350,8 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     return OSwapAction.SWAP
   }, [swapState.tokenIn.address, swapState.tokenOut.address, swapState.selectedChain])
 
+  const isWrap = swapAction === 'wrap' || swapAction === 'unwrap'
+
   /**
    * Step construction
    */
@@ -460,6 +462,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     urlTxHash,
     swapTxHash,
     hasQuoteContext,
+    isWrap,
     setTokenSelectKey,
     setSelectedChain,
     setTokenInAmount,

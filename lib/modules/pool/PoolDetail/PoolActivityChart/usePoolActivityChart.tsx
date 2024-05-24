@@ -5,7 +5,7 @@ import * as echarts from 'echarts/core'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { differenceInCalendarDays, format } from 'date-fns'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 import { PoolVariant } from '../../pool.types'
 import {
   GqlChain,
@@ -21,7 +21,7 @@ import { ChainSlug, slugToChainMap } from '../../pool.utils'
 import { ColorMode } from '@chakra-ui/react'
 import { useTheme } from 'next-themes'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 
 import {
   getBlockExplorerAddressUrl,
@@ -125,7 +125,6 @@ const getDefaultPoolActivityChartOptions = (
       formatter: (params: any) => {
         const data = Array.isArray(params) ? params[0] : params
         const timestamp = data.value[0]
-        const value = data.value[1]
         const metaData = data.data[2] as ChartInfoMetaData
         const userAddress = metaData.userAddress
         const tokens = metaData.tokens.filter(token => {
@@ -163,7 +162,7 @@ const getDefaultPoolActivityChartOptions = (
           toolTipTheme.heading
         };">
               <span>${data.seriesName}</span>
-              <span>${currencyFormatter(value)}</span>
+              <span>${currencyFormatter(metaData.usdValue)}</span>
             </div>
             <div style="display:flex;flex-direction:column;justify-content:flex-start;gap:0;margin-top:4px">
               ${tokens?.map((token, index) => {
@@ -334,14 +333,16 @@ export function usePoolActivityChart(isExpanded: boolean) {
           })
         }
 
+        const chartYAxisValue = isExpanded ? usdValue : '0'
+
         if (type === GqlPoolEventType.Add) {
-          acc.adds.push([timestamp, usdValue, { userAddress, tokens, usdValue, tx }])
+          acc.adds.push([timestamp, chartYAxisValue, { userAddress, tokens, usdValue, tx }])
         }
         if (type === GqlPoolEventType.Remove) {
-          acc.removes.push([timestamp, usdValue, { userAddress, tokens, usdValue, tx }])
+          acc.removes.push([timestamp, chartYAxisValue, { userAddress, tokens, usdValue, tx }])
         }
         if (type === GqlPoolEventType.Swap) {
-          acc.swaps.push([timestamp, usdValue, { userAddress, tokens, usdValue, tx }])
+          acc.swaps.push([timestamp, chartYAxisValue, { userAddress, tokens, usdValue, tx }])
         }
 
         return acc

@@ -1,4 +1,4 @@
-import { BN_LOWER_THRESHOLD, bn, fNum, safeTokenFormat } from './numbers'
+import { bn, fNum, safeTokenFormat, BN_LOWER_THRESHOLD } from './numbers'
 
 test('Stringifies bigints', () => {
   expect(JSON.stringify(12345n)).toBe('"12345"')
@@ -6,8 +6,9 @@ test('Stringifies bigints', () => {
 
 describe('fiatFormat', () => {
   test('Abbreviated formats', () => {
-    expect(fNum('fiat', '0.000000000000000001')).toBe('0.00')
-    expect(fNum('fiat', '0.001')).toBe('0.00')
+    expect(fNum('fiat', '0.000000000000000001')).toBe('<0.001')
+    expect(fNum('fiat', '0.00013843061948487287')).toBe('<0.001')
+    expect(fNum('fiat', '0.001')).toBe('<0.001')
     expect(fNum('fiat', '0.006')).toBe('0.01')
     expect(fNum('fiat', '0.012345')).toBe('0.01')
     expect(fNum('fiat', '0.123456789')).toBe('0.12')
@@ -81,13 +82,13 @@ describe('bn', () => {
 test('all formats types do not break with super small inputs (AKA dust)', () => {
   const dust = BN_LOWER_THRESHOLD
   expect(fNum('apr', dust)).toBe('0.00%')
-  expect(fNum('feePercent', dust)).toBe('0%')
-  expect(fNum('fiat', dust)).toBe('0.00')
+  expect(fNum('feePercent', dust)).toBe('<0.01%')
+  expect(fNum('fiat', dust)).toBe('<0.001')
   expect(fNum('integer', dust)).toBe('0')
-  expect(fNum('percentage', dust)).toBe('0%')
-  expect(fNum('priceImpact', dust)).toBe('0%')
-  expect(fNum('sharePercent', dust)).toBe('0%')
-  expect(fNum('slippage', dust)).toBe('0%')
+  expect(fNum('percentage', dust)).toBe('<0.01%')
+  expect(fNum('priceImpact', dust)).toBe('<0.01%')
+  expect(fNum('sharePercent', dust)).toBe('<0.01%')
+  expect(fNum('slippage', dust)).toBe('<0.01%')
   expect(fNum('token', dust)).toBe('< 0.00001')
-  expect(fNum('weight', dust)).toBe('0%')
+  expect(fNum('weight', dust)).toBe('<0.01%')
 })

@@ -1,7 +1,7 @@
 'use client'
 
-import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useUserSettings } from '@/lib/modules/user/settings/UserSettingsProvider'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { HumanAmount } from '@balancer/sdk'
 import { useDebounce } from 'use-debounce'

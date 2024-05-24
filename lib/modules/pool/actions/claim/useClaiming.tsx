@@ -4,7 +4,7 @@ import { useTransactionSteps } from '@/lib/modules/transactions/transaction-step
 import { PoolListItem } from '../../pool.types'
 import { useClaimAllRewardsSteps } from './useClaimAllRewardsSteps'
 import { useClaimsData } from './useClaimsData'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { LABELS } from '@/lib/shared/labels'
@@ -33,9 +33,12 @@ export function useClaiming(pools: PoolListItem[]) {
   })
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
+  const claimTxHash = transactionSteps.lastTransaction?.result?.data?.transactionHash
+
   return {
     isLoading: isLoadingData || isLoadingSteps,
     transactionSteps,
+    claimTxHash,
     isDisabled,
     disabledReason,
     previewModalDisclosure,

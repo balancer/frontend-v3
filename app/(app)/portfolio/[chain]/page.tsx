@@ -6,13 +6,13 @@ import { ChainSlug, slugToChainMap } from '@/lib/modules/pool/pool.utils'
 // eslint-disable-next-line max-len
 import { ClaimNetworkPoolsLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimNetworkPools/ClaimNetworkPoolsLayout'
 import { ClaimPortfolioModal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimPortfolioModal'
-import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
+import { usePortfolio } from '@/lib/modules/portfolio/PortfolioProvider'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
-import { Button, Card, HStack, Heading, Skeleton, Stack, Text } from '@chakra-ui/react'
+import { Button, Card, HStack, Heading, Skeleton, Stack, Text, VStack } from '@chakra-ui/react'
 import { capitalize } from 'lodash'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
@@ -42,10 +42,10 @@ export default function NetworkClaim() {
     <TransactionStateProvider>
       <ClaimNetworkPoolsLayout backLink={'/portfolio'} title="Portfolio">
         <HStack pb="3" justifyContent="space-between">
-          <HStack gap={4}>
-            <NetworkIcon chain={gqlChain} size={12} />
+          <HStack spacing="sm">
+            <NetworkIcon chain={gqlChain} size={16} />
 
-            <Stack gap={0}>
+            <Stack spacing="none">
               <Heading size="md">{chainName}</Heading>
               <Text variant="secondary" fontWeight="700">
                 Liquidity incentives
@@ -53,7 +53,7 @@ export default function NetworkClaim() {
             </Stack>
           </HStack>
 
-          <Heading size="md" variant="special">
+          <Heading size="lg" variant="special">
             {claimableFiatBalance && toCurrency(claimableFiatBalance)}
           </Heading>
         </HStack>
@@ -65,27 +65,31 @@ export default function NetworkClaim() {
             pools?.map(pool => (
               <Card key={pool.id} variant="subSection">
                 <HStack justifyContent="space-between">
-                  <HStack>
-                    <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} size={24} />
-                  </HStack>
+                  <VStack align="start">
+                    <HStack>
+                      <Text fontWeight="bold" fontSize="lg">
+                        Pool
+                      </Text>
+                      <PoolName pool={pool} fontWeight="bold" fontSize="lg" />
+                    </HStack>
+                    <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} size={36} />
+                  </VStack>
 
-                  <Text fontWeight="700">
-                    {toCurrency(poolRewardsMap[pool.id]?.totalFiatClaimBalance?.toNumber() || 0)}
-                  </Text>
-                </HStack>
-                <HStack justifyContent="space-between">
-                  <PoolName pool={pool} fontWeight="bold" color="fontDefault" />
-
-                  <Button
-                    onClick={() => {
-                      setModalPools([pool])
-                    }}
-                    variant="secondary"
-                    size="sm"
-                    isDisabled={poolRewardsMap[pool.id]?.totalFiatClaimBalance?.isEqualTo(0)}
-                  >
-                    Claim
-                  </Button>
+                  <VStack>
+                    <Text fontSize="xl" variant="special">
+                      {toCurrency(poolRewardsMap[pool.id]?.totalFiatClaimBalance?.toNumber() || 0)}
+                    </Text>
+                    <Button
+                      onClick={() => {
+                        setModalPools([pool])
+                      }}
+                      variant="secondary"
+                      size="sm"
+                      isDisabled={poolRewardsMap[pool.id]?.totalFiatClaimBalance?.isEqualTo(0)}
+                    >
+                      Claim
+                    </Button>
+                  </VStack>
                 </HStack>
               </Card>
             ))
@@ -103,6 +107,7 @@ export default function NetworkClaim() {
             }}
             width="100%"
             variant="secondary"
+            size="lg"
             isDisabled={isClaimAllDisabled}
           >
             Claim all

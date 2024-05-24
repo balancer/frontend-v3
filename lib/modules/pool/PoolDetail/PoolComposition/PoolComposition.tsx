@@ -13,7 +13,7 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
-import { usePool } from '../../usePool'
+import { usePool } from '../../PoolProvider'
 import { Address } from 'viem'
 import {
   GqlChain,

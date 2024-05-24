@@ -9,8 +9,8 @@ import { ManagedErc20TransactionButton } from '../../transactions/transaction-st
 import { TransactionStep } from '../../transactions/transaction-steps/lib'
 import { ManagedErc20TransactionInput } from '../../web3/contracts/useManagedErc20Transaction'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
-import { useUserAccount } from '../../web3/useUserAccount'
-import { useTokens } from '../useTokens'
+import { useUserAccount } from '../../web3/UserAccountProvider'
+import { useTokens } from '../TokensProvider'
 import { ApprovalAction, buildTokenApprovalLabels } from './approval-labels'
 import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
 

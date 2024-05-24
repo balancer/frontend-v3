@@ -1,8 +1,8 @@
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { useTokens } from '../../useTokens'
+import { useTokens } from '../../TokensProvider'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { orderBy } from 'lodash'
-import { useTokenBalances } from '../../useTokenBalances'
+import { useTokenBalances } from '../../TokenBalancesProvider'
 import { exclNativeAssetFilter, nativeAssetFilter } from '../../token.helpers'
 
 export function useTokenSelectList(

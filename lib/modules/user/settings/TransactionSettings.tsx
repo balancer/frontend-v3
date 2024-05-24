@@ -15,7 +15,7 @@ import {
   Text,
   ButtonProps,
 } from '@chakra-ui/react'
-import { useUserSettings } from './useUserSettings'
+import { useUserSettings } from './UserSettingsProvider'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { Settings } from 'react-feather'
 import { CurrencySelect } from './CurrencySelect'

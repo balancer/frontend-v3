@@ -1,6 +1,6 @@
 'use client'
 
-import { useUserAccount } from '../web3/useUserAccount'
+import { useUserAccount } from '../web3/UserAccountProvider'
 import { useBalance, useReadContracts } from 'wagmi'
 import { erc20Abi } from 'viem'
 import { TokenAmount, TokenBase } from './token.types'

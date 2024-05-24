@@ -1,5 +1,5 @@
-import { useUserSettings } from '@/lib/modules/user/settings/useUserSettings'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useUserSettings } from '@/lib/modules/user/settings/UserSettingsProvider'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { useQuery } from '@tanstack/react-query'
 import { ensureLastQueryResponse } from '../../pool/actions/LiquidityActionHelpers'
