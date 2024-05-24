@@ -17,8 +17,11 @@ export function PoolDetail() {
 
   return (
     <>
-      <VStack>
-        <PoolHeader />
+      <VStack w="full" spacing="xl">
+        <VStack w="full" spacing="xs">
+          <PoolHeader />
+          <PoolStats />
+        </VStack>
       </VStack>
       <Grid
         w="full"
@@ -30,9 +33,6 @@ export function PoolDetail() {
                   ${userHasLiquidity ? '"my-liquidity"' : ''}
                   "attributes-risks-contracts"`}
       >
-        <GridItem area="stats-chart">
-          <PoolStats />
-        </GridItem>
         <GridItem area="activity">
           <PoolActivityChart />
         </GridItem>
