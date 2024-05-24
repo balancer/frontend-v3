@@ -2,8 +2,9 @@ import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { isNativeOrWrappedNative } from '@/lib/modules/tokens/token.helpers'
 import { HumanAmount, isSameAddress } from '@balancer/sdk'
 import { Address } from 'viem'
-import { useAddLiquidity } from '../useAddLiquidity'
+import { useAddLiquidity } from '../AddLiquidityProvider'
 import { VStack } from '@chakra-ui/react'
+import { usePool } from '../../../PoolProvider'
 
 type Props = {
   tokenSelectDisclosureOpen: () => void
@@ -15,6 +16,7 @@ type Props = {
   customSetAmountIn?: (tokenAddress: Address, humanAmount: HumanAmount) => void
 }
 export function TokenInputs({ tokenSelectDisclosureOpen, customSetAmountIn }: Props) {
+  const { pool } = usePool()
   const { tokens, humanAmountsIn } = useAddLiquidity()
 
   const { setHumanAmountIn } = useAddLiquidity()
@@ -28,6 +30,14 @@ export function TokenInputs({ tokenSelectDisclosureOpen, customSetAmountIn }: Pr
     return amountIn ? amountIn.humanAmount : ''
   }
 
+  function weightFor(tokenAddress: string) {
+    return (
+      pool.poolTokens.find(token =>
+        isSameAddress(token.address as Address, tokenAddress as Address)
+      )?.weight ?? undefined
+    )
+  }
+
   return (
     <VStack spacing="md" w="full">
       {tokens.map((token, i) => {
@@ -38,6 +48,7 @@ export function TokenInputs({ tokenSelectDisclosureOpen, customSetAmountIn }: Pr
             key={token.address}
             address={token.address}
             chain={token.chain}
+            weight={weightFor(token.address)}
             value={currentValueFor(token.address as Address)}
             onChange={e =>
               setAmountIn(token.address as Address, e.currentTarget.value as HumanAmount)

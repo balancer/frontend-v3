@@ -18,45 +18,50 @@ import {
   CardFooter,
   CardBody,
 } from '@chakra-ui/react'
-import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
+import { usePriceImpact } from '@/lib/modules/price-impact/PriceImpactProvider'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { ReactNode, useEffect } from 'react'
-import { PriceImpactAcceptModal } from '../modals/PriceImpactAcceptModal'
+import { PriceImpactAcceptModal } from './PriceImpactAcceptModal'
 
 interface PriceImpactAccordionProps {
-  setNeedsToAcceptHighPI: (value: boolean) => void
+  setNeedsToAcceptPIRisk: (value: boolean) => void
   accordionButtonComponent: ReactNode
   accordionPanelComponent: ReactNode
   isDisabled?: boolean
+  // Unknown price impact due to limitations in ABA priceImpact calculation
+  cannotCalculatePriceImpact?: boolean
 }
 export function PriceImpactAccordion({
-  setNeedsToAcceptHighPI,
+  setNeedsToAcceptPIRisk,
   accordionButtonComponent,
   accordionPanelComponent,
   isDisabled,
+  cannotCalculatePriceImpact = false,
 }: PriceImpactAccordionProps) {
   const acceptHighImpactDisclosure = useDisclosure()
   const {
     priceImpactLevel,
     priceImpactColor,
-    acceptHighPriceImpact,
+    acceptPriceImpactRisk,
     hasToAcceptHighPriceImpact,
-    setAcceptHighPriceImpact,
+    setAcceptPriceImpactRisk,
     PriceImpactIcon,
     priceImpact,
   } = usePriceImpact()
 
+  const isUnknownPriceImpact = cannotCalculatePriceImpact || priceImpactLevel === 'unknown'
+
   useEffect(() => {
-    if (hasToAcceptHighPriceImpact && !acceptHighPriceImpact) {
-      setNeedsToAcceptHighPI(true)
+    if ((hasToAcceptHighPriceImpact || isUnknownPriceImpact) && !acceptPriceImpactRisk) {
+      setNeedsToAcceptPIRisk(true)
     } else {
-      setNeedsToAcceptHighPI(false)
+      setNeedsToAcceptPIRisk(false)
     }
-  }, [acceptHighPriceImpact, hasToAcceptHighPriceImpact])
+  }, [acceptPriceImpactRisk, hasToAcceptHighPriceImpact, isUnknownPriceImpact])
 
   const handleClick = () => {
-    if (priceImpactLevel === 'high' || priceImpactLevel === 'unknown') {
-      setAcceptHighPriceImpact(true)
+    if (priceImpactLevel === 'high' || isUnknownPriceImpact) {
+      setAcceptPriceImpactRisk(true)
     } else {
       acceptHighImpactDisclosure.onOpen()
     }
@@ -83,16 +88,14 @@ export function PriceImpactAccordion({
           <AccordionPanel py="md">{accordionPanelComponent}</AccordionPanel>
         </AccordionItem>
       </Accordion>
-      {(priceImpactLevel === 'high' ||
-        priceImpactLevel === 'max' ||
-        priceImpactLevel === 'unknown') && (
+      {(priceImpactLevel === 'high' || priceImpactLevel === 'max' || isUnknownPriceImpact) && (
         <>
           <VStack align="start" w="full" spacing="md" mt="md">
             <Alert status="error">
               <PriceImpactIcon priceImpactLevel={priceImpactLevel} size={24} mt="1" />
               <Box ml="md">
                 <AlertTitle>
-                  {priceImpactLevel === 'unknown'
+                  {isUnknownPriceImpact
                     ? 'Unknown price impact'
                     : `Price impact is high: Exceeds ${
                         priceImpactLevel === 'high' ? '1' : '5'
@@ -100,7 +103,7 @@ export function PriceImpactAccordion({
                 </AlertTitle>
                 <AlertDescription>
                   <Text color="grayText" fontSize="sm">
-                    {priceImpactLevel === 'unknown'
+                    {isUnknownPriceImpact
                       ? 'The price impact cannot be calculated. Only proceed if you know exactly what you are doing.'
                       : 'The higher the price impact, the worse exchange rate you get for this swap.'}
                   </Text>
@@ -112,7 +115,7 @@ export function PriceImpactAccordion({
                 <Text mb="sm" fontWeight="bold">
                   Price impact acknowledgement
                 </Text>
-                {priceImpactLevel === 'unknown' ? (
+                {isUnknownPriceImpact ? (
                   <Text color="grayText" fontSize="sm">
                     I accept that the price impact of this transaction is unknown. I understand that
                     proceeding may result in losses if my transaction moves the market price
@@ -128,13 +131,13 @@ export function PriceImpactAccordion({
                 )}
               </CardBody>
               <CardFooter pt="md">
-                {!acceptHighPriceImpact ? (
+                {!acceptPriceImpactRisk ? (
                   <Button w="full" variant="secondary" onClick={handleClick}>
-                    I accept {priceImpactLevel === 'unknown' ? 'unknown' : 'high'} price impact
+                    I accept {isUnknownPriceImpact ? 'unknown' : 'high'} price impact
                   </Button>
                 ) : (
                   <Button w="full" variant="secondary" isDisabled>
-                    {priceImpactLevel === 'unknown' ? 'Unknown' : 'High'} price impact accepted
+                    {isUnknownPriceImpact ? 'Unknown' : 'High'} price impact accepted
                   </Button>
                 )}
               </CardFooter>
@@ -144,7 +147,7 @@ export function PriceImpactAccordion({
             isOpen={acceptHighImpactDisclosure.isOpen}
             onOpen={acceptHighImpactDisclosure.onOpen}
             onClose={acceptHighImpactDisclosure.onClose}
-            setAcceptHighPriceImpact={setAcceptHighPriceImpact}
+            setAcceptHighPriceImpact={setAcceptPriceImpactRisk}
           />
         </>
       )}

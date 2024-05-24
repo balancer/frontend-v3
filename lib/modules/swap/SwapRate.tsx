@@ -1,8 +1,8 @@
 import { Text } from '@chakra-ui/react'
 import { useState } from 'react'
-import { useSwap } from './useSwap'
+import { useSwap } from './SwapProvider'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { useTokens } from '../tokens/useTokens'
+import { useTokens } from '../tokens/TokensProvider'
 import { fNum } from '@/lib/shared/utils/numbers'
 
 export function SwapRate() {

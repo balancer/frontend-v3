@@ -5,7 +5,7 @@ import {
   connectWithAlternativeUser,
   disconnectAlternativeUser,
 } from '../../../test/utils/wagmi/wagmi-connections'
-import { useUserAccount } from './useUserAccount'
+import { useUserAccount } from './UserAccountProvider'
 
 function testUseUserAccount() {
   const { result } = testHook(() => useUserAccount())

@@ -1,5 +1,5 @@
 import { PaginatedTable } from '@/lib/shared/components/tables/PaginatedTable'
-import { usePortfolio } from '../usePortfolio'
+import { usePortfolio } from '../PortfolioProvider'
 import { PortfolioTableHeader } from './PortfolioTableHeader'
 import { PoolListItem } from '../../pool/pool.types'
 import { PortfolioTableRow } from './PortfolioTableRow'
@@ -8,7 +8,7 @@ import { useMemo, useState } from 'react'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { useVebalBoost } from '../../vebal/useVebalBoost'
 import { useOnchainUserPoolBalances } from '../../pool/queries/useOnchainUserPoolBalances'
-import { Pool } from '../../pool/usePool'
+import { Pool } from '../../pool/PoolProvider'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 
 export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr'
@@ -44,7 +44,7 @@ const furthestLeftColWidth = '140px'
 
 const rowProps = {
   px: [0, 4],
-  gridTemplateColumns: `32px minmax(320px, 1fr) 100px 
+  gridTemplateColumns: `32px minmax(320px, 1fr) 100px
   ${furthestLeftColWidth} ${numberColumnWidth} ${numberColumnWidth} 145px`,
   alignItems: 'center',
   gap: { base: 'xxs', xl: 'lg' },

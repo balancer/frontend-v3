@@ -1,4 +1,4 @@
-import { Pool } from '../../../usePool'
+import { Pool } from '../../../PoolProvider'
 import {
   shouldUseNestedLiquidity,
   shouldUseRecoveryRemoveLiquidity,

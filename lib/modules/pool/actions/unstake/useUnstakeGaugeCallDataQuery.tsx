@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { usePool } from '../../usePool'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { usePool } from '../../PoolProvider'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { GaugeService } from '@/lib/shared/services/staking/gauge.service'
 import { Address } from 'viem'
 

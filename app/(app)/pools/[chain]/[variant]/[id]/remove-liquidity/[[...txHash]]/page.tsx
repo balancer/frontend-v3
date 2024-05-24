@@ -2,10 +2,10 @@
 
 import { PoolActionsLayout } from '@/lib/modules/pool/actions/PoolActionsLayout'
 import { RemoveLiquidityForm } from '@/lib/modules/pool/actions/remove-liquidity/form/RemoveLiquidityForm'
-import { RemoveLiquidityProvider } from '@/lib/modules/pool/actions/remove-liquidity/useRemoveLiquidity'
-import { RelayerSignatureProvider } from '@/lib/modules/relayer/useRelayerSignature'
+import { RemoveLiquidityProvider } from '@/lib/modules/pool/actions/remove-liquidity/RemoveLiquidityProvider'
+import { RelayerSignatureProvider } from '@/lib/modules/relayer/RelayerSignatureProvider'
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
-import { PriceImpactProvider } from '@/lib/shared/hooks/usePriceImpact'
+import { PriceImpactProvider } from '@/lib/modules/price-impact/PriceImpactProvider'
 import { isHash } from 'viem'
 
 type Props = {

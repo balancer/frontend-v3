@@ -17,16 +17,16 @@ import {
   useTheme,
 } from '@chakra-ui/react'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { useTokens } from '../useTokens'
-import { useTokenBalances } from '../useTokenBalances'
+import { useTokens } from '../TokensProvider'
+import { useTokenBalances } from '../TokenBalancesProvider'
 import { useTokenInput } from './useTokenInput'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { blockInvalidNumberInput, fNum } from '@/lib/shared/utils/numbers'
 import { TokenIcon } from '../TokenIcon'
-import { useTokenInputsValidation } from '../useTokenInputsValidation'
+import { useTokenInputsValidation } from '../TokenInputsValidationProvider'
 import { ChevronDown } from 'react-feather'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
-import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
+import { usePriceImpact } from '@/lib/modules/price-impact/PriceImpactProvider'
 import { useEffect, useState } from 'react'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
@@ -65,7 +65,11 @@ function TokenInputSelector({ token, weight, toggleTokenSelect }: TokenInputSele
         </Box>
       )}
       {tokenConfig && tokenConfig.label}
-      {weight && <Text fontWeight="normal">{weight}%</Text>}
+      {weight && (
+        <Text fontWeight="normal" ml="sm" fontSize="sm">
+          {fNum('weight', weight)}
+        </Text>
+      )}
       {toggleTokenSelect && (
         <Box ml="sm">
           <ChevronDown size={16} />

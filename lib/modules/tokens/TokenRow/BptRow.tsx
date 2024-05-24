@@ -1,7 +1,7 @@
 import { VStack, HStack, Text } from '@chakra-ui/react'
 import { Address } from 'viem'
 import TokenRow from './TokenRow'
-import { Pool } from '../../pool/usePool'
+import { Pool } from '../../pool/PoolProvider'
 
 export function BptRow({
   label,

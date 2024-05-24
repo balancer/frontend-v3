@@ -52,3 +52,42 @@ body {
 div[id^='bkln'] {
   background-color: rgb(0 0 0 / 90%) !important;
 }
+
+/* Success screen ripple animation */
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ripple {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: ripple 4s ease-in-out 3 both;
+  will-change: transform, opacity;
+}
+
+.ripple-1 {
+  background-color: rgb(255 255 255 / 15%);
+  animation-delay: 0s;
+}
+
+.ripple-2 {
+  background-color: rgb(255 255 255 / 10%);
+  animation-delay: 1s;
+}
+
+.ripple-3 {
+  background-color: rgb(255 255 255 / 5%);
+  animation-delay: 2s;
+}

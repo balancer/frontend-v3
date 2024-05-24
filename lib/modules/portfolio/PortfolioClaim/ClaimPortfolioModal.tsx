@@ -1,6 +1,6 @@
 'use client'
 
-import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
+import { usePortfolio } from '@/lib/modules/portfolio/PortfolioProvider'
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { Card, Modal, ModalBody, ModalCloseButton, ModalContent, VStack } from '@chakra-ui/react'
@@ -14,10 +14,10 @@ import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
 import { HumanAmount } from '@balancer/sdk'
 import { Address } from 'viem'
 import { TokenRowGroup } from '../../tokens/TokenRow/TokenRowGroup'
-import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
 import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
 import { useRouter } from 'next/navigation'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
+import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 
 type Props = {
   isOpen: boolean
@@ -56,7 +56,7 @@ export function ClaimPortfolioModal({ isOpen, onClose, pools, ...rest }: Props) 
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered {...rest}>
-      <FireworksOverlay startFireworks={!!claimTxHash} />
+      <SuccessOverlay startAnimation={!!claimTxHash} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && <DesktopStepTracker transactionSteps={transactionSteps} chain={chain} />}

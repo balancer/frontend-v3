@@ -7,7 +7,7 @@ import { PoolListViewType } from './PoolListViewType/PoolListViewType'
 import { PoolListCards } from './PoolListCards/PoolListCards'
 import { PoolListTable } from './PoolListTable/PoolListTable'
 import { usePoolListViewType } from './PoolListViewType/usePoolListViewType'
-import { usePoolList } from './usePoolList'
+import { usePoolList } from './PoolListProvider'
 import { fNum } from '@/lib/shared/utils/numbers'
 
 export function PoolListLayout() {

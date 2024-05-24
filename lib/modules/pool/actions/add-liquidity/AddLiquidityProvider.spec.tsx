@@ -7,7 +7,7 @@ import {
   testHook,
 } from '@/test/utils/custom-renderers'
 import { PropsWithChildren } from 'react'
-import { _useAddLiquidity } from './useAddLiquidity'
+import { _useAddLiquidity } from './AddLiquidityProvider'
 import { nestedPoolMock } from '../../__mocks__/nestedPoolMock'
 
 async function testUseAddLiquidity(pool: GqlPoolElement = aBalWethPoolElementMock()) {

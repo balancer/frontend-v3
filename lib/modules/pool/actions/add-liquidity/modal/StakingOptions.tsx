@@ -5,7 +5,7 @@ import { Button, Card, Flex, HStack, Icon, Text, VStack } from '@chakra-ui/react
 import Image from 'next/image'
 import Link from 'next/link'
 import { getAprLabel, getPoolActionPath } from '../../../pool.utils'
-import { usePool } from '../../../usePool'
+import { usePool } from '../../../PoolProvider'
 
 export function StakingOptions() {
   const { pool } = usePool()

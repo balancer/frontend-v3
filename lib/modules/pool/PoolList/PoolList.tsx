@@ -1,4 +1,4 @@
-import { PoolListProvider } from '@/lib/modules/pool/PoolList/usePoolList'
+import { PoolListProvider } from '@/lib/modules/pool/PoolList/PoolListProvider'
 import { PoolListLayout } from './PoolListLayout'
 
 export async function PoolList() {

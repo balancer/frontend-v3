@@ -10,7 +10,7 @@ import { act } from 'react-dom/test-utils'
 import { mock } from 'vitest-mock-extended'
 import { aTokenAmountMock } from '../__mocks__/liquidity.builders'
 import { RemoveLiquiditySimulationQueryResult } from './queries/useRemoveLiquiditySimulationQuery'
-import { _useRemoveLiquidity } from './useRemoveLiquidity'
+import { _useRemoveLiquidity } from './RemoveLiquidityProvider'
 import { aSuccessfulQueryResultMock } from '@/test/utils/react-query'
 
 const balTokenOutUnits = '1'

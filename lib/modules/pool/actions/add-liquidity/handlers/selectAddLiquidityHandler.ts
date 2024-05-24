@@ -1,5 +1,5 @@
 import { getChainId } from '@/lib/config/app.config'
-import { Pool } from '../../../usePool'
+import { Pool } from '../../../PoolProvider'
 import { TwammAddLiquidityHandler } from './TwammAddLiquidity.handler'
 import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
 import { AddLiquidityHandler } from './AddLiquidity.handler'

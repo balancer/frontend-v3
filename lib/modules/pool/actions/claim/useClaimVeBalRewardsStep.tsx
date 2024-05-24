@@ -7,7 +7,7 @@ import {
   TransactionStep,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { ManagedTransactionInput } from '@/lib/modules/web3/contracts/useManagedTransaction'
-import { useUserAccount } from '@/lib/modules/web3/useUserAccount'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useMemo } from 'react'
 import { Address } from 'viem'

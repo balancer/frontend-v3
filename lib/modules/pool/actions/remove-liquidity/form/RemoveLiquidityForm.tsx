@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { TokenBalancesProvider } from '@/lib/modules/tokens/useTokenBalances'
+import { TokenBalancesProvider } from '@/lib/modules/tokens/TokenBalancesProvider'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
@@ -10,16 +10,16 @@ import { fNum } from '@/lib/shared/utils/numbers'
 import { Button, Card, Center, HStack, Heading, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { RemoveLiquidityModal } from '../modal/RemoveLiquidityModal'
-import { useRemoveLiquidity } from '../useRemoveLiquidity'
+import { useRemoveLiquidity } from '../RemoveLiquidityProvider'
 import { RemoveLiquidityProportional } from './RemoveLiquidityProportional'
 import { RemoveLiquiditySingleToken } from './RemoveLiquiditySingleToken'
-import { usePool } from '../../../usePool'
+import { usePool } from '../../../PoolProvider'
 import { usePoolRedirect } from '../../../pool.hooks'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
 import { requiresProportionalInput } from '../../LiquidityActionHelpers'
-import { PriceImpactAccordion } from '@/lib/shared/components/accordion/PriceImpactAccordion'
+import { PriceImpactAccordion } from '@/lib/modules/price-impact/PriceImpactAccordion'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
-import { usePriceImpact } from '@/lib/shared/hooks/usePriceImpact'
+import { usePriceImpact } from '@/lib/modules/price-impact/PriceImpactProvider'
 import { parseUnits } from 'viem'
 import { SimulationError } from '@/lib/shared/components/errors/SimulationError'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
@@ -136,7 +136,7 @@ export function RemoveLiquidityForm() {
             </VStack>
             <VStack spacing="sm" align="start" w="full">
               <PriceImpactAccordion
-                setNeedsToAcceptHighPI={setNeedsToAcceptHighPI}
+                setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
                 accordionButtonComponent={
                   <HStack>
                     <Text variant="secondary" fontSize="sm" color="gray.400">

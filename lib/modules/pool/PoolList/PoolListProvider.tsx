@@ -6,7 +6,7 @@ import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { useUserAccount } from '../../web3/useUserAccount'
+import { useUserAccount } from '../../web3/UserAccountProvider'
 import { isAddress } from 'viem'
 
 export function _usePoolList() {

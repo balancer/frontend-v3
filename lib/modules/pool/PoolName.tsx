@@ -1,7 +1,7 @@
 import { fNum } from '@/lib/shared/utils/numbers'
 import { PoolListItem } from './pool.types'
 import { HStack, Text, TextProps } from '@chakra-ui/react'
-import { FeaturedPool, Pool } from './usePool'
+import { FeaturedPool, Pool } from './PoolProvider'
 
 export function PoolName({
   pool,

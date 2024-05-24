@@ -6,7 +6,7 @@ import { ChainSlug, slugToChainMap } from '@/lib/modules/pool/pool.utils'
 // eslint-disable-next-line max-len
 import { ClaimNetworkPoolsLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimNetworkPools/ClaimNetworkPoolsLayout'
 import { ClaimPortfolioModal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimPortfolioModal'
-import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
+import { usePortfolio } from '@/lib/modules/portfolio/PortfolioProvider'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'

@@ -1,8 +1,7 @@
 'use client'
 
 import { Modal, ModalBody, ModalCloseButton, ModalContent, VStack, Card } from '@chakra-ui/react'
-
-import { usePortfolio } from '@/lib/modules/portfolio/usePortfolio'
+import { usePortfolio } from '@/lib/modules/portfolio/PortfolioProvider'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
@@ -11,13 +10,13 @@ import { MobileStepTracker } from '../../transactions/transaction-steps/step-tra
 import { useClaimProtocolRewardsSteps } from '../useClaimProtocolRewardsSteps'
 import { useTransactionSteps } from '../../transactions/transaction-steps/useTransactionSteps'
 import { bn } from '@/lib/shared/utils/numbers'
-import { FireworksOverlay } from '@/lib/shared/components/modals/FireworksOverlay'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '../../transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 import { TokenRowGroup } from '../../tokens/TokenRow/TokenRowGroup'
 import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
 import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
+import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 
 type Props = {
   isOpen: boolean
@@ -42,7 +41,7 @@ export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
-      <FireworksOverlay startFireworks={!!claimTxHash} />
+      <SuccessOverlay startAnimation={!!claimTxHash} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && (

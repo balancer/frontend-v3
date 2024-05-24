@@ -12,7 +12,7 @@ import {
 } from '@balancer/sdk'
 import { Address, parseEther } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
-import { Pool } from '../../../usePool'
+import { Pool } from '../../../PoolProvider'
 import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
 import {
   SdkBuildRemoveLiquidityInput,
