@@ -1,13 +1,13 @@
 'use client'
 
 import { Button, Grid, GridItem, Stack } from '@chakra-ui/react'
-import { PoolChart } from './PoolChart/PoolChart'
-import PoolStatsOverview from './PoolStatsOverview'
-import PoolMetaBadges from './PoolMetaBadges/PoolMetaBadges'
+import { PoolCharts } from './PoolCharts/PoolCharts'
+import PoolMetaBadges from '../PoolMetaBadges/PoolMetaBadges'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { PoolSnapshot } from './PoolSnapshot/PoolSnapshot'
 
-export function PoolDetailStatsChart() {
+export function PoolStats() {
   const pathname = usePathname()
 
   return (
@@ -40,10 +40,10 @@ export function PoolDetailStatsChart() {
         </Stack>
       </GridItem>
       <GridItem area="stats">
-        <PoolStatsOverview />
+        <PoolSnapshot />
       </GridItem>
       <GridItem area="chart">
-        <PoolChart />
+        <PoolCharts />
       </GridItem>
     </Grid>
   )

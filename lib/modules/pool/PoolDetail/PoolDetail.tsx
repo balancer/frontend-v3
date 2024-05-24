@@ -3,11 +3,11 @@
 import { Grid, GridItem } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
 import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
-import { PoolDetailStatsChart } from './PoolDetailStatsChart'
 import { PoolDetailAttributesRisksContracts } from './PoolDetailAttributesRisksContracts'
 import { usePool } from '../PoolProvider'
 import PoolMyLiquidity from './PoolMyLiquidity'
 import { bn } from '@/lib/shared/utils/numbers'
+import { PoolStats } from './PoolStats/PoolStats'
 
 export function PoolDetail() {
   const { pool } = usePool()
@@ -26,7 +26,7 @@ export function PoolDetail() {
                       "attributes-risks-contracts"`}
     >
       <GridItem area="stats-chart">
-        <PoolDetailStatsChart />
+        <PoolStats />
       </GridItem>
       <GridItem area="activity">
         <PoolActivityChart />

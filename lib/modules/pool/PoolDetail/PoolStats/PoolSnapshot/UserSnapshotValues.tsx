@@ -2,19 +2,19 @@
 
 import React, { memo, useMemo } from 'react'
 import { Button, HStack, Heading, Skeleton, Text, Tooltip, VStack } from '@chakra-ui/react'
-import { TokenIconStack } from '../../tokens/TokenIconStack'
+import { TokenIconStack } from '../../../../tokens/TokenIconStack'
 import { GqlToken, GqlPoolMinimal } from '@/lib/shared/services/api/generated/graphql'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { SECONDS_IN_DAY } from '@/test/utils/numbers'
 import { sumBy, isEmpty } from 'lodash'
-import { useTokens } from '../../tokens/TokensProvider'
-import { useVebalBoost } from '../../vebal/useVebalBoost'
-import { useClaiming } from '../actions/claim/useClaiming'
-import { PoolListItem } from '../pool.types'
-import { getTotalAprRaw } from '../pool.utils'
-import { usePool } from '../PoolProvider'
+import { useTokens } from '../../../../tokens/TokensProvider'
+import { useVebalBoost } from '../../../../vebal/useVebalBoost'
+import { useClaiming } from '../../../actions/claim/useClaiming'
+import { PoolListItem } from '../../../pool.types'
+import { getTotalAprRaw } from '../../../pool.utils'
+import { usePool } from '../../../PoolProvider'
 import { bn } from '@/lib/shared/utils/numbers'
-import { ClaimModal } from '../actions/claim/ClaimModal'
+import { ClaimModal } from '../../../actions/claim/ClaimModal'
 import { Hex } from 'viem'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 
@@ -26,7 +26,7 @@ export type PoolMyStatsValues = {
 
 const POSSIBLE_STAKED_BALANCE_USD = 10000
 
-export function PoolMyStats() {
+export function UserSnapshotValues() {
   const { pool, chain, isLoading: isLoadingPool, myLiquiditySectionRef } = usePool()
   const { toCurrency } = useCurrency()
   const { veBalBoostMap } = useVebalBoost([pool as unknown as GqlPoolMinimal])

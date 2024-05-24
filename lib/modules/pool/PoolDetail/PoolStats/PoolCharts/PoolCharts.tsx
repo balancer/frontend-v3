@@ -63,7 +63,7 @@ export function PeriodSelect({ value, onChange }: Props) {
   )
 }
 
-export function PoolChart() {
+export function PoolCharts() {
   const {
     activeTab,
     setActiveTab,

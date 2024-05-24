@@ -2,14 +2,14 @@
 
 import React, { useEffect, useState } from 'react'
 import { Box, BoxProps, Card, VStack } from '@chakra-ui/react'
-import { usePool } from '../PoolProvider'
+import { usePool } from '../../../PoolProvider'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { PoolMyStats } from './PoolStatsOverviewMyStats'
-import { PoolStats } from './PoolStatsOverviewStats'
+import { UserSnapshotValues } from './UserSnapshotValues'
+import { PoolSnapshotValues } from './PoolSnapshotValues'
 
 const COMMON_NOISY_CARD_PROPS: { contentProps: BoxProps; cardProps: BoxProps } = {
   contentProps: {
@@ -36,7 +36,7 @@ const TABS = [
   },
 ]
 
-export default function PoolStatsOverview() {
+export function PoolSnapshot() {
   const [activeTab, setActiveTab] = useState<ButtonGroupOption>(TABS[0])
   const { pool } = usePool()
 
@@ -76,8 +76,8 @@ export default function PoolStatsOverview() {
             onChange={handleTabChanged}
             width="70px"
           />
-          {activeTab.value === 'poolStats' && <PoolStats />}
-          {activeTab.value === 'myStats' && <PoolMyStats />}
+          {activeTab.value === 'poolStats' && <PoolSnapshotValues />}
+          {activeTab.value === 'myStats' && <UserSnapshotValues />}
         </VStack>
       </NoisyCard>
     </Card>
