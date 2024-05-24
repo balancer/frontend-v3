@@ -7,7 +7,7 @@ import {
   GetPoolQuery,
   GqlChain,
 } from '@/lib/shared/services/api/generated/graphql'
-import { createContext, PropsWithChildren } from 'react'
+import { createContext, PropsWithChildren, useRef } from 'react'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { FetchPoolProps } from './pool.types'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
@@ -34,6 +34,7 @@ export function _usePool({
   const { userAddress } = useUserAccount()
   const queryVariables = { id, chain, userAddress }
   const skipQuery = useSkipInitialQuery(queryVariables)
+  const myLiquiditySectionRef = useRef<HTMLDivElement | null>(null)
 
   const { data } = useQuery(GetPoolDocument, {
     variables: queryVariables,
@@ -85,6 +86,7 @@ export function _usePool({
     isLoadingOnchainData,
     isLoadingOnchainUserBalances,
     totalApr,
+    myLiquiditySectionRef,
     calcPotentialYieldFor,
     // TODO: we assume here that we never need to reload the entire pool.
     // this assumption may need to be questioned

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { memo, useContext, useMemo } from 'react'
+import React, { memo, useMemo } from 'react'
 import { Button, HStack, Heading, Skeleton, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { TokenIconStack } from '../../tokens/TokenIconStack'
 import { GqlToken, GqlPoolMinimal } from '@/lib/shared/services/api/generated/graphql'
@@ -17,7 +17,6 @@ import { bn } from '@/lib/shared/utils/numbers'
 import { ClaimModal } from '../actions/claim/ClaimModal'
 import { Hex } from 'viem'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
-import { MyLiquidityRefContext } from './PoolDetail'
 
 export type PoolMyStatsValues = {
   myLiquidity: number
@@ -28,13 +27,10 @@ export type PoolMyStatsValues = {
 const POSSIBLE_STAKED_BALANCE_USD = 10000
 
 export function PoolMyStats() {
-  const { pool, chain, isLoading: isLoadingPool } = usePool()
+  const { pool, chain, isLoading: isLoadingPool, myLiquiditySectionRef } = usePool()
   const { toCurrency } = useCurrency()
   const { veBalBoostMap } = useVebalBoost([pool as unknown as GqlPoolMinimal])
   const { getToken } = useTokens()
-
-  // context is used to scroll to the My liquidity section
-  const myLiquidity = useContext(MyLiquidityRefContext)
 
   const {
     isLoading: isLoadingClaiming,
@@ -68,6 +64,7 @@ export function PoolMyStats() {
   const boost = useMemo(() => {
     if (isEmpty(veBalBoostMap)) return
     return veBalBoostMap[pool.id]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [veBalBoostMap])
 
   const myAprRaw = getTotalAprRaw(pool.dynamicData?.apr.items, boost)
@@ -91,6 +88,7 @@ export function PoolMyStats() {
         myClaimableRewards: myClaimableRewards,
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [veBalBoostMap, pool])
 
   function onModalClose() {
@@ -98,7 +96,7 @@ export function PoolMyStats() {
   }
 
   function handleClick() {
-    myLiquidity?.ref?.current?.scrollIntoView({ behavior: 'smooth' })
+    myLiquiditySectionRef?.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
