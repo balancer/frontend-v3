@@ -8,11 +8,11 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { Numberish, fNum, isZero } from '@/lib/shared/utils/numbers'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { TokenInfoPopover } from '@/lib/modules/tokens/TokenInfoPopover'
-import { useTokens } from '@/lib/modules/tokens/useTokens'
-import { usePool } from '../../usePool'
 import { isStableLike } from '../../pool.helpers'
 import Image from 'next/image'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
+import { usePool } from '../../PoolProvider'
 
 type Props = {
   address: Address
