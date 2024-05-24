@@ -1,34 +1,23 @@
 'use client'
 
 import { usePortfolio } from '@/lib/modules/portfolio/PortfolioProvider'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
-import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import {
-  Button,
-  Card,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-  VStack,
-} from '@chakra-ui/react'
-import { ClaimTotal } from './ClaimTotal'
-import { BalTokenReward } from './useBalRewards'
-import { ClaimableReward } from './useClaimableBalances'
+import { Card, Modal, ModalBody, ModalCloseButton, ModalContent, VStack } from '@chakra-ui/react'
 // eslint-disable-next-line max-len
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { useClaiming } from '../../pool/actions/claim/useClaiming'
-import { isZero } from '@/lib/shared/utils/numbers'
+import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
+import { HumanAmount } from '@balancer/sdk'
+import { Address } from 'viem'
+import { TokenRowGroup } from '../../tokens/TokenRow/TokenRowGroup'
+import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
+import { useRouter } from 'next/navigation'
+import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
+import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 
 type Props = {
   isOpen: boolean
@@ -36,85 +25,66 @@ type Props = {
   pools: PoolListItem[]
 }
 
-function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
-  if (isZero(reward.humanBalance)) return null
-  return (
-    <TokenRow address={reward.tokenAddress} value={reward.humanBalance} chain={reward.pool.chain} />
-  )
-}
-
 export function ClaimPortfolioModal({ isOpen, onClose, pools, ...rest }: Props) {
   const { poolRewardsMap } = usePortfolio()
-  const { toCurrency } = useCurrency()
   const { isDesktop, isMobile } = useBreakpoints()
+  const router = useRouter()
 
-  const title = pools.length > 1 ? `Review claim: ${pools[0].chain}` : `Review claim`
-  const balRewards = pools.map(pool => poolRewardsMap?.[pool.id]?.balReward)
+  const balRewards: HumanTokenAmountWithAddress[] = pools
+    .map(pool => poolRewardsMap?.[pool.id]?.balReward)
+    .map(reward => ({
+      humanAmount: (reward?.humanBalance || '0') as HumanAmount,
+      tokenAddress: (reward?.tokenAddress || '') as Address,
+    }))
+    .filter(Boolean)
 
-  const nonBalRewards = pools.flatMap(pool => poolRewardsMap?.[pool.id]?.claimableRewards || [])
+  const nonBalRewards: HumanTokenAmountWithAddress[] = pools
+    .flatMap(pool => poolRewardsMap?.[pool.id]?.claimableRewards || [])
+    .map(reward => ({
+      humanAmount: (reward?.humanBalance || '0') as HumanAmount,
+      tokenAddress: (reward?.tokenAddress || '') as Address,
+    }))
+    .filter(Boolean)
 
-  const { transactionSteps } = useClaiming(pools)
+  const rewards = [...balRewards, ...nonBalRewards]
 
-  const hasNoRewards = !nonBalRewards?.length && !balRewards.length
+  const totalValueUsd = poolRewardsMap[pools[0].id]?.totalFiatClaimBalance?.toString() || '0'
+
+  const { transactionSteps, claimTxHash } = useClaiming(pools)
+
   const chain = pools[0]?.chain
 
   return (
-    <Modal size="xl" isOpen={isOpen} onClose={onClose} isCentered {...rest}>
-      <ModalOverlay />
+    <Modal isOpen={isOpen} onClose={onClose} isCentered {...rest}>
+      <SuccessOverlay startAnimation={!!claimTxHash} />
+
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && <DesktopStepTracker transactionSteps={transactionSteps} chain={chain} />}
 
-        <ModalHeader>{title}</ModalHeader>
+        <TransactionModalHeader label="Claim rewards" txHash={claimTxHash} chain={chain} />
 
         <ModalCloseButton />
 
         <ModalBody>
           <VStack spacing="sm">
-            <Card variant="modalSubSection">
-              <VStack align="start" spacing="md">
-                <Text color="grayText">You&apos;ll get</Text>
-                {balRewards &&
-                  balRewards.map(
-                    reward =>
-                      reward && (
-                        <RewardTokenRow
-                          key={`${reward?.tokenAddress}-${reward?.gaugeAddress}`}
-                          reward={reward}
-                        />
-                      )
-                  )}
-
-                {nonBalRewards &&
-                  nonBalRewards.map((reward, idx) => <RewardTokenRow key={idx} reward={reward} />)}
-              </VStack>
-            </Card>
-
-            <ClaimTotal
-              total={toCurrency(
-                poolRewardsMap[pools[0].id]?.totalFiatClaimBalance?.toNumber() || 0
-              )}
-            />
             {isMobile && <MobileStepTracker transactionSteps={transactionSteps} chain={chain} />}
+            <Card variant="modalSubSection">
+              <TokenRowGroup
+                amounts={rewards}
+                chain={chain}
+                label="You'll get"
+                totalUSDValue={totalValueUsd}
+              />
+            </Card>
           </VStack>
         </ModalBody>
 
-        <ModalFooter>
-          <VStack w="full">
-            {hasNoRewards ? (
-              <Button
-                w="full"
-                size="lg"
-                onClick={() => {
-                  onClose()
-                }}
-              >
-                Close
-              </Button>
-            ) : (
-              transactionSteps.currentStep?.renderAction()
-            )}
-          </VStack>
-        </ModalFooter>
+        <ActionModalFooter
+          isSuccess={!!claimTxHash}
+          currentStep={transactionSteps.currentStep}
+          returnLabel="Return to portfolio"
+          returnAction={() => router.push('/portfolio')}
+        />
       </ModalContent>
     </Modal>
   )
