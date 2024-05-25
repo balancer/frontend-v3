@@ -1,14 +1,14 @@
 'use client'
 
 import { useMemo } from 'react'
-import { usePool } from '../../PoolProvider'
+import { usePool } from '../../../PoolProvider'
 import { format } from 'date-fns'
 import { DELEGATE_OWNER } from '@/lib/config/app.config'
 import { zeroAddress } from 'viem'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { upperFirst } from 'lodash'
 import { fNum } from '@/lib/shared/utils/numbers'
-import { bptUsdValue } from '../../pool.helpers'
+import { bptUsdValue } from '../../../pool.helpers'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 
 export function useFormattedPoolAttributes() {

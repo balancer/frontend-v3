@@ -4,11 +4,10 @@ import {
   Box,
   Card,
   Divider,
-  Grid,
-  GridItem,
   HStack,
   Heading,
   Skeleton,
+  Stack,
   Text,
   VStack,
 } from '@chakra-ui/react'
@@ -26,7 +25,7 @@ import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { PoolZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import PoolWeightChart from '../PoolWeightCharts/PoolWeightChart'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import PoolCompositionTokenRow from './PoolCompositionTokenRow'
+import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 
 type CardContentProps = {
   totalLiquidity: string
@@ -41,37 +40,29 @@ function CardContent({ totalLiquidity, displayTokens, chain }: CardContentProps)
     <VStack spacing="md" width="full">
       <HStack width="full" justifyContent="space-between">
         <VStack alignItems="flex-start">
-          <Heading fontWeight="bold" size="h6">
+          <Heading fontWeight="bold" size={{ base: 'h5', md: 'h6' }}>
             Total liquidity
           </Heading>
-          {/* <Text variant="secondary" fontSize="0.85rem"> */}
-          {/*   Share of Balancer liquidity */}
-          {/* </Text> */}
         </VStack>
         <VStack alignItems="flex-end">
-          <Heading fontWeight="bold" size="h6">
+          <Heading fontWeight="bold" size={{ base: 'h5', md: 'h6' }}>
             {totalLiquidity ? (
               toCurrency(totalLiquidity, { abbreviated: false })
             ) : (
               <Skeleton height="24px" w="75px" />
             )}
           </Heading>
-          {/* <Text variant="secondary" fontSize="0.85rem"> */}
-          {/*   8.69% (TODO INTEGRATE) */}
-          {/* </Text> */}
         </VStack>
       </HStack>
       <Divider />
       <VStack spacing="md" width="full">
         {displayTokens.map(poolToken => {
           return (
-            <PoolCompositionTokenRow
+            <TokenRow
               chain={chain}
               key={`my-liquidity-token-${poolToken.address}`}
               address={poolToken.address as Address}
               value={poolToken.balance}
-              poolToken={poolToken}
-              totalLiquidity={totalLiquidity}
             />
           )
         })}
@@ -98,56 +89,51 @@ export function PoolComposition() {
   ) as GqlPoolTokenDetail[]
 
   return (
-    <Card
-      height={{ base: 'auto', md: '400px' }}
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      position="relative"
-    >
-      <Grid w="full" h="full" templateColumns={{ base: '1fr)', lg: 'repeat(2,1fr)' }} gap="md">
-        <GridItem>
-          <VStack w="full" h="full" spacing="md" align="flex-start">
-            <Heading fontWeight="bold" size="h5">
-              Pool composition
-            </Heading>
-            {isMobile ? (
+    <Card>
+      <Stack
+        spacing="md"
+        minH="400px"
+        direction={{ base: 'column', md: 'row' }}
+        justifyContent="stretch"
+      >
+        <VStack w="full" spacing="md" align="flex-start">
+          <Heading fontWeight="bold" size={{ base: 'h4', md: 'h5' }}>
+            Pool composition
+          </Heading>
+          {isMobile ? (
+            <CardContent
+              totalLiquidity={totalLiquidity}
+              displayTokens={displayTokens}
+              chain={chain}
+            />
+          ) : (
+            <Card variant="subSection" w="full">
               <CardContent
                 totalLiquidity={totalLiquidity}
                 displayTokens={displayTokens}
                 chain={chain}
               />
-            ) : (
-              <Card variant="subSection" w="full">
-                <CardContent
-                  totalLiquidity={totalLiquidity}
-                  displayTokens={displayTokens}
-                  chain={chain}
-                />
-              </Card>
-            )}
-            {isMobile && <Divider />}
-            <Text color="grayText" mt="auto" fontSize="sm" pb="sm">
-              From {fNum('integer', pool.dynamicData.holdersCount)} Liquidity Providers
-            </Text>
-          </VStack>
-        </GridItem>
-        <GridItem>
-          <NoisyCard
-            cardProps={{ position: 'relative', overflow: 'hidden' }}
-            contentProps={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-          >
-            <PoolZenGarden sizePx={isMobile ? '300px' : '400px'} poolType={pool.type} />
-            {isLoading ? (
-              <Skeleton w="full" h="250px" />
-            ) : (
-              <Box mt={{ base: '0', md: '-6' }} p={{ base: 'sm', md: '0' }}>
-                <PoolWeightChart pool={pool} chain={chain} />
-              </Box>
-            )}
-          </NoisyCard>
-        </GridItem>
-      </Grid>
+            </Card>
+          )}
+          {isMobile && <Divider />}
+          <Text color="grayText" mt="auto" fontSize="sm" pb="sm">
+            From {fNum('integer', pool.dynamicData.holdersCount)} Liquidity Providers
+          </Text>
+        </VStack>
+        <NoisyCard
+          cardProps={{ position: 'relative', overflow: 'hidden' }}
+          contentProps={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        >
+          <PoolZenGarden sizePx={isMobile ? '300px' : '400px'} poolType={pool.type} />
+          {isLoading ? (
+            <Skeleton w="full" h="250px" />
+          ) : (
+            <Box mt={{ base: '0', md: '-6' }} p={{ base: 'sm', md: '0' }}>
+              <PoolWeightChart pool={pool} chain={chain} />
+            </Box>
+          )}
+        </NoisyCard>
+      </Stack>
     </Card>
   )
 }

@@ -13,6 +13,7 @@ import {
   HStack,
   Heading,
   Skeleton,
+  Stack,
   Text,
   VStack,
 } from '@chakra-ui/react'
@@ -146,107 +147,110 @@ export default function PoolMyLiquidity() {
 
   return (
     pool.userBalance?.totalBalance && (
-      <Card minHeight="320px" ref={myLiquiditySectionRef}>
-        <Grid width="full" templateColumns={{ base: 'repeat(1, 1fr)', md: '1fr 1fr' }} gap="md">
-          <GridItem>
-            <VStack spacing="md" width="full">
-              <HStack width="full" justifyContent="space-between">
-                <Heading bg="font.special" backgroundClip="text" fontWeight="bold" size="h5">
-                  My liquidity
-                </Heading>
-                <ButtonGroup
-                  size="xxs"
-                  currentOption={activeTab}
-                  options={options}
-                  onChange={handleTabChanged}
-                  width="70px"
-                />
-              </HStack>
-              <Box width="full">
-                <Card variant="subSection">
-                  <VStack spacing="md" width="full">
-                    <Box pb="md" width="full" borderBottomWidth={1} borderColor="border.base">
-                      <HStack width="full" justifyContent="space-between">
-                        <VStack alignItems="flex-start">
+      <Card ref={myLiquiditySectionRef}>
+        <Stack
+          w="full"
+          spacing="md"
+          direction={{ base: 'column', lg: 'row' }}
+          justifyContent="stretch"
+        >
+          <VStack spacing="md" width="full">
+            <HStack width="full" justifyContent="space-between">
+              <Heading bg="font.special" backgroundClip="text" fontWeight="bold" size="h5">
+                My liquidity
+              </Heading>
+              <ButtonGroup
+                size="xxs"
+                currentOption={activeTab}
+                options={options}
+                onChange={handleTabChanged}
+                width="70px"
+              />
+            </HStack>
+            <Box width="full">
+              <Card variant="subSection">
+                <VStack spacing="md" width="full">
+                  <Box pb="md" width="full" borderBottomWidth={1} borderColor="border.base">
+                    <HStack width="full" justifyContent="space-between">
+                      <VStack alignItems="flex-start">
+                        <Heading fontWeight="bold" size="h6">
+                          My {getTitlePrefix()} balance
+                        </Heading>
+                        <Text variant="secondary" fontSize="0.85rem">
+                          APR
+                        </Text>
+                      </VStack>
+                      <VStack alignItems="flex-end">
+                        {isLoadingOnchainUserBalances || isConnecting ? (
+                          <Skeleton w="12" h="5" />
+                        ) : (
                           <Heading fontWeight="bold" size="h6">
-                            My {getTitlePrefix()} balance
+                            {toCurrency(totalBalanceUsd)}
                           </Heading>
-                          <Text variant="secondary" fontSize="0.85rem">
-                            APR
-                          </Text>
-                        </VStack>
-                        <VStack alignItems="flex-end">
-                          {isLoadingOnchainUserBalances || isConnecting ? (
-                            <Skeleton w="12" h="5" />
-                          ) : (
-                            <Heading fontWeight="bold" size="h6">
-                              {toCurrency(totalBalanceUsd)}
-                            </Heading>
-                          )}
-                          <Text variant="secondary" fontSize="0.85rem">
-                            {aprLabel}
-                          </Text>
-                        </VStack>
-                      </HStack>
-                    </Box>
-                    <VStack spacing="md" width="full">
-                      {displayTokens.map(token => {
-                        return (
-                          <TokenRow
-                            chain={chain}
-                            key={`my-liquidity-token-${token.address}`}
-                            address={token.address as Address}
-                            value={tokenBalanceFor(token.address)}
-                            isLoading={isLoadingOnchainUserBalances || isConnecting}
-                          />
-                        )
-                      })}
-                    </VStack>
-                    <HStack mt="md" width="full" justifyContent="flex-start">
-                      <Button
-                        as={Link}
-                        href={`${pathname}/add-liquidity`}
-                        variant="primary"
-                        prefetch={true}
-                        flex="1"
-                      >
-                        Add
-                      </Button>
-                      <Button
-                        as={Link}
-                        href={`${pathname}/remove-liquidity`}
-                        variant={hasUnstakedBalance ? 'tertiary' : 'disabled'}
-                        isDisabled={!hasUnstakedBalance}
-                        prefetch={true}
-                        flex="1"
-                      >
-                        Remove
-                      </Button>
-                      <Button
-                        as={Link}
-                        href={`${pathname}/stake`}
-                        variant={canStake && hasUnstakedBalance ? 'secondary' : 'disabled'}
-                        isDisabled={!(canStake && hasUnstakedBalance)}
-                        flex="1"
-                      >
-                        Stake
-                      </Button>
-                      <Button
-                        as={Link}
-                        href={`${pathname}/unstake`}
-                        variant={hasStakedBalance ? 'tertiary' : 'disabled'}
-                        isDisabled={!hasStakedBalance}
-                        flex="1"
-                      >
-                        Unstake
-                      </Button>
+                        )}
+                        <Text variant="secondary" fontSize="0.85rem">
+                          {aprLabel}
+                        </Text>
+                      </VStack>
                     </HStack>
+                  </Box>
+                  <VStack spacing="md" width="full">
+                    {displayTokens.map(token => {
+                      return (
+                        <TokenRow
+                          chain={chain}
+                          key={`my-liquidity-token-${token.address}`}
+                          address={token.address as Address}
+                          value={tokenBalanceFor(token.address)}
+                          isLoading={isLoadingOnchainUserBalances || isConnecting}
+                        />
+                      )
+                    })}
                   </VStack>
-                </Card>
-              </Box>
-            </VStack>
-          </GridItem>
-          <GridItem>
+                  <HStack mt="md" width="full" justifyContent="flex-start">
+                    <Button
+                      as={Link}
+                      href={`${pathname}/add-liquidity`}
+                      variant="primary"
+                      prefetch={true}
+                      flex="1"
+                    >
+                      Add
+                    </Button>
+                    <Button
+                      as={Link}
+                      href={`${pathname}/remove-liquidity`}
+                      variant={hasUnstakedBalance ? 'tertiary' : 'disabled'}
+                      isDisabled={!hasUnstakedBalance}
+                      prefetch={true}
+                      flex="1"
+                    >
+                      Remove
+                    </Button>
+                    <Button
+                      as={Link}
+                      href={`${pathname}/stake`}
+                      variant={canStake && hasUnstakedBalance ? 'secondary' : 'disabled'}
+                      isDisabled={!(canStake && hasUnstakedBalance)}
+                      flex="1"
+                    >
+                      Stake
+                    </Button>
+                    <Button
+                      as={Link}
+                      href={`${pathname}/unstake`}
+                      variant={hasStakedBalance ? 'tertiary' : 'disabled'}
+                      isDisabled={!hasStakedBalance}
+                      flex="1"
+                    >
+                      Unstake
+                    </Button>
+                  </HStack>
+                </VStack>
+              </Card>
+            </Box>
+          </VStack>
+          <Box w="full" minH="320px" display="flex" justifyContent="stretch">
             <NoisyCard
               cardProps={{ position: 'relative', overflow: 'hidden' }}
               contentProps={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
@@ -254,8 +258,8 @@ export default function PoolMyLiquidity() {
               <StakedBalanceDistributionChart pool={pool} isSmall={isMobile} />
               {!isMobile && <ZenGarden variant="pill" sizePx="80%" heightPx="80%" />}
             </NoisyCard>
-          </GridItem>
-        </Grid>
+          </Box>
+        </Stack>
       </Card>
     )
   )

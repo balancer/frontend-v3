@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Box, BoxProps, Card, VStack } from '@chakra-ui/react'
+import { Box, BoxProps, Card, CardProps, VStack } from '@chakra-ui/react'
 import { usePool } from '../../../PoolProvider'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
@@ -10,6 +10,7 @@ import ButtonGroup, {
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { UserSnapshotValues } from './UserSnapshotValues'
 import { PoolSnapshotValues } from './PoolSnapshotValues'
+import { bn } from '@/lib/shared/utils/numbers'
 
 const COMMON_NOISY_CARD_PROPS: { contentProps: BoxProps; cardProps: BoxProps } = {
   contentProps: {
@@ -36,7 +37,7 @@ const TABS = [
   },
 ]
 
-export function PoolSnapshot() {
+export function PoolSnapshot({ ...props }: CardProps) {
   const [activeTab, setActiveTab] = useState<ButtonGroupOption>(TABS[0])
   const { pool } = usePool()
 
@@ -45,13 +46,13 @@ export function PoolSnapshot() {
   }
 
   useEffect(() => {
-    if (pool.userBalance?.totalBalance !== '0.0') {
+    if (bn(pool.userBalance?.totalBalance || '0').gt(0)) {
       setActiveTab(TABS[1])
     }
   }, [pool])
 
   return (
-    <Card h="full" position="relative">
+    <Card position="relative" {...props}>
       <NoisyCard
         cardProps={COMMON_NOISY_CARD_PROPS.cardProps}
         contentProps={COMMON_NOISY_CARD_PROPS.contentProps}

@@ -1,7 +1,7 @@
 import { Stack, Button } from '@chakra-ui/react'
-import PoolMetaBadges from './PoolMetaBadges/PoolMetaBadges'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import PoolMetaBadges from './PoolMetaBadges'
 
 export function PoolHeader() {
   const pathname = usePathname()
