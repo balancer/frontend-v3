@@ -7,7 +7,7 @@ import ButtonGroup, {
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { InputWithSlider } from '@/lib/shared/components/inputs/InputWithSlider/InputWithSlider'
 import { fNum } from '@/lib/shared/utils/numbers'
-import { Button, Card, Center, HStack, Heading, Text, Tooltip, VStack } from '@chakra-ui/react'
+import { Button, Card, CardHeader, Center, HStack, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { RemoveLiquidityModal } from '../modal/RemoveLiquidityModal'
 import { useRemoveLiquidity } from '../RemoveLiquidityProvider'
@@ -98,13 +98,13 @@ export function RemoveLiquidityForm() {
     <TokenBalancesProvider extTokens={validTokens}>
       <Center h="full" w="full" maxW="lg" mx="auto">
         <Card>
-          <VStack spacing="md" align="start">
+          <CardHeader>
             <HStack justify="space-between" w="full">
-              <Heading fontWeight="bold" size="h5">
-                Remove liquidity
-              </Heading>
+              <span>Remove liquidity</span>
               <TransactionSettings size="sm" />
             </HStack>
+          </CardHeader>
+          <VStack spacing="md" align="start">
             {!requiresProportionalInput(pool.type) && (
               <HStack>
                 <ButtonGroup

@@ -24,11 +24,7 @@ export function StakeForm() {
   return (
     <Center h="full" w="full" maxW="lg" mx="auto">
       <Card>
-        <CardHeader>
-          <Heading fontWeight="bold" size="h5">
-            Stake
-          </Heading>
-        </CardHeader>
+        <CardHeader>Stake for rewards</CardHeader>
         <CardBody>
           <StakePreview stakableBalance={stakableBalance} stakableBalanceUsd={stakableBalanceUsd} />
         </CardBody>

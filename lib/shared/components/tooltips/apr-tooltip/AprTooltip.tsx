@@ -27,6 +27,7 @@ import {
   extraBalTooltipText,
 } from '@/lib/shared/hooks/useAprTooltip'
 import { TooltipAprItem } from './TooltipAprItem'
+import { useRef } from 'react'
 
 interface Props {
   data: GqlPoolApr
@@ -64,6 +65,7 @@ function AprTooltip({
 }: Props) {
   const aprToShow = apr || getTotalAprLabel(data.items, vebalBoost)
   const colorMode = useThemeColorMode()
+  const ref = useRef(null)
 
   const {
     totalBaseDisplayed,
@@ -89,7 +91,7 @@ function AprTooltip({
     <Popover trigger="hover" placement={placement}>
       {({ isOpen }) => (
         <>
-          <HStack align="center" alignItems="center">
+          <HStack align="center" alignItems="center" ref={ref}>
             <PopoverTrigger>
               <Button variant="unstyled" _focus={{ outline: 'none' }} px="0">
                 <HStack
@@ -125,8 +127,7 @@ function AprTooltip({
               </Button>
             </PopoverTrigger>
           </HStack>
-
-          <Portal>
+          <Portal containerRef={ref}>
             <PopoverContent w="fit-content" shadow="3xl" minWidth={['100px', '300px']} p="0">
               <TooltipAprItem
                 {...basePopoverAprItemProps}

@@ -27,11 +27,7 @@ export function UnstakeForm() {
   return (
     <Center h="full" w="full" maxW="lg" mx="auto">
       <Card>
-        <CardHeader>
-          <Heading fontWeight="bold" size="h5">
-            Claim & Unstake
-          </Heading>
-        </CardHeader>
+        <CardHeader>Claim & Unstake</CardHeader>
         <CardBody>
           <UnstakePreview
             stakedBalance={pool.userBalance?.stakedBalance || '0'}
