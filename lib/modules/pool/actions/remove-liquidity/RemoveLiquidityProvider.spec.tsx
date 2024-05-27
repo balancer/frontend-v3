@@ -78,12 +78,12 @@ describe('When the user choses proportional remove liquidity', () => {
     const result = await testUseRemoveLiquidity()
 
     // By default token prices are 0.00
-    expect(result.current.usdOutForToken(balAddress)).toBe('0.00')
-    expect(result.current.usdOutForToken(wETHAddress)).toBe('0.00')
+    expect(result.current.usdOutForToken(balAddress)).toBe('0')
+    expect(result.current.usdOutForToken(wETHAddress)).toBe('0')
 
     await waitFor(() => expect(result.current.usdOutForToken(balAddress) !== '0.00').toBeTruthy())
-    expect(result.current.usdOutForToken(balAddress)).toBe('2.00') // balTokenOutUnits * balPrice = 1 * 2 = 2.00
-    expect(result.current.usdOutForToken(wETHAddress)).toBe('1.50')
+    expect(result.current.usdOutForToken(balAddress)).toBe('2') // balTokenOutUnits * balPrice = 1 * 2 = 2.00
+    expect(result.current.usdOutForToken(wETHAddress)).toBe('1.5')
 
     // total usd value is the sum of the token out usd values (2.00 + 1.50 = 3.50)
     expect(result.current.totalUSDValue).toBe('3.5')
