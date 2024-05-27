@@ -3,6 +3,7 @@ import {
   Box,
   BoxProps,
   Card,
+  CardProps,
   Flex,
   HStack,
   Heading,
@@ -41,6 +42,7 @@ const COMMON_NOISY_CARD_PROPS: { contentProps: BoxProps; cardProps: BoxProps } =
   cardProps: {
     position: 'relative',
     overflow: 'hidden',
+    height: 'full',
   },
 }
 
@@ -63,7 +65,7 @@ export function PeriodSelect({ value, onChange }: Props) {
   )
 }
 
-export function PoolChart() {
+export function PoolCharts({ ...props }: CardProps) {
   const {
     activeTab,
     setActiveTab,
@@ -90,7 +92,7 @@ export function PoolChart() {
   }
 
   return (
-    <Card minHeight="320px" h="full">
+    <Card {...props}>
       <Stack h="full">
         {isLoading && <Skeleton w="full" h="full" />}
         {!isLoading && chartData.length > 0 && (
@@ -98,7 +100,7 @@ export function PoolChart() {
             cardProps={COMMON_NOISY_CARD_PROPS.cardProps}
             contentProps={COMMON_NOISY_CARD_PROPS.contentProps}
           >
-            <VStack w="full" h="full" p="md">
+            <VStack w="full" h="full" p={{ base: 'sm', md: 'md' }}>
               <Stack w="full" direction={{ base: 'column', md: 'row' }}>
                 <HStack alignSelf="flex-start">
                   <ButtonGroup

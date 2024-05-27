@@ -9,12 +9,11 @@ import { ChartSizeValues } from './PoolWeightChart'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { Pool } from '../../PoolProvider'
-import { useSemanticTokenColorMode } from '@/lib/shared/utils/theme'
 
 const smallSize: ChartSizeValues = {
-  chartHeight: '225px',
-  boxWidth: 225,
-  boxHeight: 225,
+  chartHeight: '125px',
+  boxWidth: 125,
+  boxHeight: 125,
   haloTop: '40%',
   haloLeft: '55px',
   haloWidth: '40px',
@@ -22,7 +21,7 @@ const smallSize: ChartSizeValues = {
 }
 
 const normalSize: ChartSizeValues = {
-  chartHeight: '',
+  chartHeight: '225px',
   boxWidth: 225,
   boxHeight: 225,
   haloTop: '49%',
@@ -42,41 +41,27 @@ export default function StakedBalanceDistributionChart({
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const theme = useTheme()
   const colorMode = useThemeColorMode()
-  const semColorMode = useSemanticTokenColorMode()
 
   const unstakedBalance =
     (pool.userBalance?.totalBalanceUsd || 0) - (pool.userBalance?.stakedBalanceUsd || 0)
-  const userHasLiquidity = (pool.userBalance?.totalBalanceUsd || 0) > 0
 
   function getData() {
     const data = []
 
-    if (unstakedBalance > 0) {
-      data.push({
-        value: unstakedBalance,
-        name: 'Unstaked balance',
-        itemStyle: {
-          color: theme.semanticTokens.colors.font.light,
-        },
-      })
-    }
-    if ((pool.userBalance?.stakedBalanceUsd || 0) > 0) {
-      data.push({
-        value: pool.userBalance?.stakedBalanceUsd || 0,
-        name: 'Staked balance',
-        itemStyle: { color: theme.semanticTokens.colors.chart.stakedBalance },
-      })
-    }
+    data.push({
+      value: unstakedBalance,
+      name: 'Unstaked balance',
+      itemStyle: {
+        color: theme.semanticTokens.colors.font.light,
+      },
+    })
 
-    if (!userHasLiquidity) {
-      data.push({
-        value: 100,
-        name: 'No current balance',
-        itemStyle: {
-          color: theme.semanticTokens.colors.background.level2[semColorMode],
-        },
-      })
-    }
+    data.push({
+      value: pool.userBalance?.stakedBalanceUsd || 0,
+      name: 'Staked balance',
+      itemStyle: { color: theme.semanticTokens.colors.chart.stakedBalance },
+    })
+
     return data
   }
 
@@ -122,7 +107,7 @@ export default function StakedBalanceDistributionChart({
   }, [pool, colorMode])
 
   return (
-    <HStack spacing="12">
+    <HStack p={{ base: 'sm', md: '0' }} spacing={{ base: 'lg', md: '2xl' }}>
       <Box
         width={`${chartSizeValues.boxWidth}px`}
         height={`${chartSizeValues.boxHeight}px`}
@@ -177,7 +162,7 @@ export default function StakedBalanceDistributionChart({
             marginX="auto"
             bg="transparent"
             zIndex={2}
-            shadow={userHasLiquidity ? 'lg' : 'innerLg'}
+            shadow={'lg'}
             transform="translateY(-50%)"
             width={`${chartSizeValues.boxWidth * 0.8}px`}
             height={`${chartSizeValues.boxHeight * 0.8}px`}
@@ -194,27 +179,20 @@ export default function StakedBalanceDistributionChart({
           />
         </Box>
       </Box>
-      {userHasLiquidity && (
-        <VStack alignItems="flex-start">
-          {unstakedBalance > 0 && (
-            <HStack>
-              <Box width="12px" height="12px" bg="font.light" rounded="full" />
-              <Text whiteSpace="nowrap" color="font.secondary">
-                Unstaked
-              </Text>
-            </HStack>
-          )}
-
-          {(pool.userBalance?.stakedBalanceUsd || 0) > 0 && (
-            <HStack>
-              <Box width="12px" height="12px" bg="chart.stakedBalance" rounded="full" />
-              <Text whiteSpace="nowrap" color="font.secondary">
-                Staked on Balancer
-              </Text>
-            </HStack>
-          )}
-        </VStack>
-      )}
+      <VStack alignItems="flex-start">
+        <HStack>
+          <Box width="12px" height="12px" bg="font.light" rounded="full" />
+          <Text whiteSpace="nowrap" color="font.secondary">
+            Unstaked
+          </Text>
+        </HStack>
+        <HStack>
+          <Box width="12px" height="12px" bg="chart.stakedBalance" rounded="full" />
+          <Text whiteSpace="nowrap" color="font.secondary">
+            Staked on Balancer
+          </Text>
+        </HStack>
+      </VStack>
     </HStack>
   )
 }

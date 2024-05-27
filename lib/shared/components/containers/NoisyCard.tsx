@@ -16,10 +16,8 @@ export function NoisyCard({
   return (
     <Box
       backgroundImage={`url('/images/background-noise.png')`}
-      height="full"
       width="full"
       rounded="sm"
-      position="relative"
       borderWidth={0}
       {...cardProps}
     >

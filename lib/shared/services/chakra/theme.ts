@@ -1459,6 +1459,9 @@ export const balTheme = {
         header: {
           padding: 'none',
           paddingBottom: 'md',
+          fontSize: '2xl',
+          fontWeight: 'bold',
+          color: 'font.primary',
         },
         body: {
           padding: 'none',

@@ -10,7 +10,7 @@ import {
   Box,
   Text,
 } from '@chakra-ui/react'
-import { RisksList } from '../../../PoolDetail/PoolRisks/PoolRisks'
+import { RisksList } from '../../../PoolDetail/PoolInfo/PoolRisks/PoolRisks'
 import { useAddLiquidity } from '../AddLiquidityProvider'
 import { useTokenBalances } from '@/lib/modules/tokens/TokenBalancesProvider'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'

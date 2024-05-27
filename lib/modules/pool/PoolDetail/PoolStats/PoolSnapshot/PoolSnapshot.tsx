@@ -1,15 +1,16 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
-import { Box, BoxProps, Card, VStack } from '@chakra-ui/react'
-import { usePool } from '../PoolProvider'
+import React, { useEffect, useState } from 'react'
+import { Box, BoxProps, Card, CardProps, VStack } from '@chakra-ui/react'
+import { usePool } from '../../../PoolProvider'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { PoolMyStats } from './PoolStatsOverviewMyStats'
-import { PoolStats } from './PoolStatsOverviewStats'
+import { UserSnapshotValues } from './UserSnapshotValues'
+import { PoolSnapshotValues } from './PoolSnapshotValues'
+import { bn } from '@/lib/shared/utils/numbers'
 
 const COMMON_NOISY_CARD_PROPS: { contentProps: BoxProps; cardProps: BoxProps } = {
   contentProps: {
@@ -36,7 +37,7 @@ const TABS = [
   },
 ]
 
-export default function PoolStatsOverview() {
+export function PoolSnapshot({ ...props }: CardProps) {
   const [activeTab, setActiveTab] = useState<ButtonGroupOption>(TABS[0])
   const { pool } = usePool()
 
@@ -44,15 +45,14 @@ export default function PoolStatsOverview() {
     setActiveTab(option)
   }
 
-  const options = useMemo(() => {
-    return TABS.map(tab => ({
-      ...tab,
-      disabled: tab.value === 'myStats' && pool.userBalance?.totalBalance === '0.0',
-    }))
+  useEffect(() => {
+    if (bn(pool.userBalance?.totalBalance || '0').gt(0)) {
+      setActiveTab(TABS[1])
+    }
   }, [pool])
 
   return (
-    <Card h="full" position="relative" p="md">
+    <Card position="relative" {...props}>
       <NoisyCard
         cardProps={COMMON_NOISY_CARD_PROPS.cardProps}
         contentProps={COMMON_NOISY_CARD_PROPS.contentProps}
@@ -67,18 +67,18 @@ export default function PoolStatsOverview() {
           w="full"
           justify="flex-start"
           mb="8"
-          p="md"
+          p={{ base: 'sm', md: 'md' }}
           zIndex={1}
         >
           <ButtonGroup
             size="xxs"
             currentOption={activeTab}
-            options={options}
+            options={TABS}
             onChange={handleTabChanged}
             width="70px"
           />
-          {activeTab.value === 'poolStats' && <PoolStats />}
-          {activeTab.value === 'myStats' && <PoolMyStats />}
+          {activeTab.value === 'poolStats' && <PoolSnapshotValues />}
+          {activeTab.value === 'myStats' && <UserSnapshotValues />}
         </VStack>
       </NoisyCard>
     </Card>

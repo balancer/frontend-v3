@@ -1,7 +1,16 @@
 'use client'
 
-import { Card, Heading, Link, ListItem, Text, UnorderedList, VStack } from '@chakra-ui/react'
-import { usePool } from '../../PoolProvider'
+import {
+  Card,
+  CardProps,
+  Heading,
+  Link,
+  ListItem,
+  Text,
+  UnorderedList,
+  VStack,
+} from '@chakra-ui/react'
+import { usePool } from '../../../PoolProvider'
 import { GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 import { getPoolRisks, risksTitle } from './usePoolRisks'
 
@@ -30,9 +39,9 @@ export function RisksList({ textVariant = 'secondary' }: RisksListProps) {
   )
 }
 
-export function PoolRisks() {
+export function PoolRisks({ ...props }: CardProps) {
   return (
-    <Card h="full" pb="4">
+    <Card {...props}>
       <VStack alignItems="flex-start" spacing="4" width="full">
         <Heading variant="h4" fontSize="1.25rem">
           Pool risks

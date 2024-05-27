@@ -1,24 +1,26 @@
-import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import {
-  Button,
-  Heading,
+  Card,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   ModalProps,
   Text,
   VStack,
 } from '@chakra-ui/react'
 import { useClaiming } from './useClaiming'
 import { Address } from 'viem'
-import { BalTokenReward } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
-import { ClaimableReward } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
 import { PoolListItem } from '../../pool.types'
-import { isZero } from '@/lib/shared/utils/numbers'
+import { HumanAmount } from '@balancer/sdk'
+import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
+import { TokenRowGroup } from '@/lib/modules/tokens/TokenRow/TokenRowGroup'
+// eslint-disable-next-line max-len
+import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
+import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
+import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
+import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
+import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 
 type Props = {
   isOpen: boolean
@@ -34,49 +36,51 @@ export function ClaimModal({
   pool,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const { transactionSteps, nonBalRewards, balRewards, hasNoRewards } = useClaiming([pool])
+  const { isDesktop, isMobile } = useBreakpoints()
+  const { transactionSteps, hasNoRewards, claimTxHash, allClaimableRewards, totalClaimableUsd } =
+    useClaiming([pool])
 
-  function RewardTokenRow({ reward }: { reward: ClaimableReward | BalTokenReward }) {
-    if (isZero(reward.humanBalance)) return null
-    return (
-      <TokenRow
-        address={reward.tokenAddress}
-        value={reward.humanBalance}
-        chain={reward.pool.chain}
-      />
-    )
-  }
+  const rewards = allClaimableRewards
+    .map(reward => ({
+      humanAmount: (reward?.humanBalance || '0') as HumanAmount,
+      tokenAddress: (reward?.tokenAddress || '') as Address,
+    }))
+    .filter(Boolean)
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered {...rest}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>
-          <Heading fontWeight="bold" size="h5">
-            Claim rewards
-          </Heading>
-        </ModalHeader>
+      <SuccessOverlay startAnimation={!!claimTxHash} />
+
+      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
+        {isDesktop && <DesktopStepTracker transactionSteps={transactionSteps} chain={pool.chain} />}
+        <TransactionModalHeader label="Claim rewards" txHash={claimTxHash} chain={pool.chain} />
         <ModalCloseButton />
         <ModalBody>
-          {hasNoRewards && <Text>Nothing to claim</Text>}
-          {balRewards.map((reward, idx) => (
-            <RewardTokenRow key={idx} reward={reward} />
-          ))}
-          {nonBalRewards.map((reward, idx) => (
-            <RewardTokenRow key={idx} reward={reward} />
-          ))}
-        </ModalBody>
-        <ModalFooter>
-          <VStack w="full">
+          <VStack spacing="sm">
+            {isMobile && (
+              <MobileStepTracker transactionSteps={transactionSteps} chain={pool.chain} />
+            )}
             {hasNoRewards ? (
-              <Button size="lg" onClick={onClose}>
-                Close
-              </Button>
+              <Text>Nothing to claim</Text>
             ) : (
-              transactionSteps.currentStep?.renderAction()
+              <Card variant="modalSubSection">
+                <TokenRowGroup
+                  amounts={rewards}
+                  chain={pool.chain}
+                  label="You'll get"
+                  totalUSDValue={totalClaimableUsd}
+                />
+              </Card>
             )}
           </VStack>
-        </ModalFooter>
+        </ModalBody>
+
+        <ActionModalFooter
+          isSuccess={!!claimTxHash}
+          currentStep={transactionSteps.currentStep}
+          returnLabel="Return to pool"
+          returnAction={onClose}
+        />
       </ModalContent>
     </Modal>
   )

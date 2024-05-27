@@ -35,8 +35,16 @@ export const INTEGER_PERCENTAGE_FORMAT = '0%'
 // These can arise from pools with extremely low balances (e.g., completed LBPs)
 export const APR_UPPER_THRESHOLD = 1_000_000
 export const APR_LOWER_THRESHOLD = 0.0000001
-// Do not display bn values lower than this amount; they are likely to be generate NaN results
+
+// Do not display bn values lower than this amount; they are likely to generate NaN results
 export const BN_LOWER_THRESHOLD = 0.000001
+
+// Display <0.001 for small amounts
+export const AMOUNT_LOWER_THRESHOLD = 0.001
+export const SMALL_AMOUNT_LABEL = '<0.001'
+// Display <0.01% for small percentages
+export const PERCENTAGE_LOWER_THRESHOLD = 0.01
+export const SMALL_PERCENTAGE_LABEL = '<0.01%'
 
 const NUMERAL_DECIMAL_LIMIT = 9
 
@@ -60,13 +68,13 @@ function toSafeValue(val: Numberish): string {
 
 // Formats an integer value.
 function integerFormat(val: Numberish): string {
-  if (isDust(val)) return '0'
+  if (isSmallAmount(val)) return '0'
   return numeral(toSafeValue(val)).format(INTEGER_FORMAT)
 }
 
 // Formats a fiat value.
 function fiatFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
-  if (isDust(val)) return '0.00'
+  if (isSmallAmount(val)) return SMALL_AMOUNT_LABEL
   const format = abbreviated ? FIAT_FORMAT_A : FIAT_FORMAT
   return numeral(toSafeValue(val)).format(format)
 }
@@ -92,32 +100,32 @@ function aprFormat(apr: Numberish): string {
 
 // Formats a slippage value as a percentage.
 function slippageFormat(slippage: Numberish): string {
-  if (isDust(slippage)) return '0%'
+  if (isSmallPercentage(slippage)) return SMALL_PERCENTAGE_LABEL
   return numeral(bn(slippage).div(100)).format(SLIPPAGE_FORMAT)
 }
 
 // Formats a fee value as a percentage.
 function feePercentFormat(fee: Numberish): string {
-  if (isDust(fee)) return '0%'
+  if (isSmallPercentage(fee)) return SMALL_PERCENTAGE_LABEL
   return numeral(fee.toString()).format(FEE_FORMAT)
 }
 
 // Formats a weight value as a percentage.
 function weightFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
-  if (isDust(val)) return '0%'
+  if (isSmallPercentage(val)) return SMALL_PERCENTAGE_LABEL
   const format = abbreviated ? WEIGHT_FORMAT : WEIGHT_FORMAT_TWO_DECIMALS
   return numeral(val.toString()).format(format)
 }
 
 // Formats a price impact value as a percentage.
 function priceImpactFormat(val: Numberish): string {
-  if (isDust(val)) return '0%'
+  if (isSmallPercentage(val)) return SMALL_PERCENTAGE_LABEL
   return numeral(val.toString()).format(PRICE_IMPACT_FORMAT)
 }
 
 // Formats an integer value as a percentage.
 function integerPercentageFormat(val: Numberish): string {
-  if (isDust(val)) return '0%'
+  if (isSmallPercentage(val)) return SMALL_PERCENTAGE_LABEL
   return numeral(val.toString()).format(INTEGER_PERCENTAGE_FORMAT)
 }
 
@@ -170,7 +178,15 @@ export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): s
   }
 }
 
-function isDust(value: Numberish): boolean {
+function isSmallAmount(value: Numberish): boolean {
+  return !isZero(value) && bn(value).lte(AMOUNT_LOWER_THRESHOLD)
+}
+
+function isSmallPercentage(value: Numberish): boolean {
+  return !isZero(value) && bn(value).lte(PERCENTAGE_LOWER_THRESHOLD)
+}
+
+export function isSuperSmallAmount(value: Numberish): boolean {
   return bn(value).lte(BN_LOWER_THRESHOLD)
 }
 
