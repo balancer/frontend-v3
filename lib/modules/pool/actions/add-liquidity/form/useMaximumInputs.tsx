@@ -54,7 +54,7 @@ export function useMaximumInputs() {
     return usdValueFor(maximumAmounts)
   }, [shouldCalculateMaximizeAmounts, isLoadingTokenPrices, wethIsEth])
 
-  const canMaximize = balances.some(balance => bn(balance.amount).gt(0))
+  const canMaximize = filteredBalances.some(balance => bn(balance.amount).gt(0))
 
   return {
     canMaximize,
