@@ -36,6 +36,8 @@ describe('tokenFormat', () => {
     expect(fNum('token', '0.0001')).toBe('0.0001')
     expect(fNum('token', '0.00001')).toBe('< 0.00001')
     expect(fNum('token', '0.0000001')).toBe('< 0.00001')
+    expect(fNum('token', '0.000493315290277')).toBe('0.0005')
+    expect(fNum('token', '0.0000493315290277')).toBe('< 0.0001')
     expect(fNum('token', '0.000000493315290277')).toBe('< 0.00001')
     expect(fNum('token', '0.012345')).toBe('0.0123')
     expect(fNum('token', '0.123456789')).toBe('0.1235')

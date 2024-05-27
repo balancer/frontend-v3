@@ -81,10 +81,13 @@ function fiatFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): st
 
 // Formats a token value.
 function tokenFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
-  if (!bn(val).isZero() && bn(val).lte(bn('0.00001'))) return '< 0.00001'
+  const bnVal = bn(val)
+
+  if (!bnVal.isZero() && bnVal.lte(bn('0.00001'))) return '< 0.00001'
+  if (!bnVal.isZero() && bnVal.lt(bn('0.0001'))) return '< 0.0001'
 
   // Uses 2 decimals then value is > thousand
-  const TOKEN_FORMAT_ABBREVIATED = bn(val).gte(bn('1000')) ? TOKEN_FORMAT_A_BIG : TOKEN_FORMAT_A
+  const TOKEN_FORMAT_ABBREVIATED = bnVal.gte(bn('1000')) ? TOKEN_FORMAT_A_BIG : TOKEN_FORMAT_A
   const format = abbreviated ? TOKEN_FORMAT_ABBREVIATED : TOKEN_FORMAT
 
   return numeral(toSafeValue(val)).format(format)
