@@ -9,11 +9,26 @@ import PoolMyLiquidity from './PoolMyLiquidity'
 import { bn } from '@/lib/shared/utils/numbers'
 import { PoolStatsLayout } from './PoolStats/PoolStatsLayout'
 import { PoolHeader } from './PoolHeader/PoolHeader'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 export function PoolDetail() {
   const { pool } = usePool()
+  const router = useRouter()
+  const pathname = usePathname()
 
   const userHasLiquidity = bn(pool.userBalance?.totalBalance || '0').gt(0)
+
+  useEffect(() => {
+    // Prefetch pool action pages.
+    router.prefetch(`${pathname}/add-liquidity`)
+    if (userHasLiquidity) {
+      router.prefetch(`${pathname}/remove-liquidity`)
+      router.prefetch(`${pathname}/stake-liquidity`)
+      router.prefetch(`${pathname}/unstake-liquidity`)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router])
 
   return (
     <VStack w="full" spacing="2xl">

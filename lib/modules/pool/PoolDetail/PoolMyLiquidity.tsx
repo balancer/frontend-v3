@@ -4,24 +4,11 @@ import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import {
-  Box,
-  Button,
-  Card,
-  Grid,
-  GridItem,
-  HStack,
-  Heading,
-  Skeleton,
-  Stack,
-  Text,
-  VStack,
-} from '@chakra-ui/react'
+import { Box, Button, Card, HStack, Heading, Skeleton, Stack, Text, VStack } from '@chakra-ui/react'
 import React, { useMemo, useState } from 'react'
 import { usePool } from '../PoolProvider'
 import { Address, parseUnits } from 'viem'
-import { usePathname } from 'next/navigation'
-import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { keyBy } from 'lodash'
 import { getTotalAprLabel, getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
@@ -55,6 +42,7 @@ export default function PoolMyLiquidity() {
   const { toCurrency } = useCurrency()
   const { isConnected, isConnecting } = useUserAccount()
   const { isMobile } = useBreakpoints()
+  const router = useRouter()
 
   const pathname = usePathname()
 
@@ -209,27 +197,22 @@ export default function PoolMyLiquidity() {
                   </VStack>
                   <HStack mt="md" width="full" justifyContent="flex-start">
                     <Button
-                      as={Link}
-                      href={`${pathname}/add-liquidity`}
+                      onClick={() => router.push(`${pathname}/add-liquidity`)}
                       variant="primary"
-                      prefetch={true}
                       flex="1"
                     >
                       Add
                     </Button>
                     <Button
-                      as={Link}
-                      href={`${pathname}/remove-liquidity`}
+                      onClick={() => router.push(`${pathname}/remove-liquidity`)}
                       variant={hasUnstakedBalance ? 'tertiary' : 'disabled'}
                       isDisabled={!hasUnstakedBalance}
-                      prefetch={true}
                       flex="1"
                     >
                       Remove
                     </Button>
                     <Button
-                      as={Link}
-                      href={`${pathname}/stake`}
+                      onClick={() => router.push(`${pathname}/stake`)}
                       variant={canStake && hasUnstakedBalance ? 'secondary' : 'disabled'}
                       isDisabled={!(canStake && hasUnstakedBalance)}
                       flex="1"
@@ -237,8 +220,7 @@ export default function PoolMyLiquidity() {
                       Stake
                     </Button>
                     <Button
-                      as={Link}
-                      href={`${pathname}/unstake`}
+                      onClick={() => router.push(`${pathname}/unstake`)}
                       variant={hasStakedBalance ? 'tertiary' : 'disabled'}
                       isDisabled={!hasStakedBalance}
                       flex="1"
