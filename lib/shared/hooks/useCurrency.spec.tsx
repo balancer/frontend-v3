@@ -27,6 +27,9 @@ describe('toCurrency', () => {
 
   test('with small amount', () => {
     expect(result.current.toCurrency('0.001')).toBe('<$0.001')
+    expect(result.current.toCurrency('0.001234')).toBe('$0.001')
+    expect(result.current.toCurrency('0.002344')).toBe('$0.002')
+    expect(result.current.toCurrency('0.0019')).toBe('$0.002')
     expect(result.current.toCurrency('0.000001234')).toBe('<$0.001')
   })
 })

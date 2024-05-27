@@ -18,6 +18,7 @@ export const MAX_BIGINT = BigInt(MAX_UINT256)
 
 export const INTEGER_FORMAT = '0,0'
 export const FIAT_FORMAT_A = '0,0.00a'
+export const FIAT_FORMAT_3_DECIMALS = '0,0.000a'
 export const FIAT_FORMAT = '0,0.00'
 export const TOKEN_FORMAT_A = '0,0.[0000]a'
 // Uses 2 decimals then value is > thousand
@@ -75,6 +76,7 @@ function integerFormat(val: Numberish): string {
 // Formats a fiat value.
 function fiatFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
   if (isSmallAmount(val)) return SMALL_AMOUNT_LABEL
+  if (requiresThreeDecimals(val, abbreviated)) return formatWith3Decimals(val)
   const format = abbreviated ? FIAT_FORMAT_A : FIAT_FORMAT
   return numeral(toSafeValue(val)).format(format)
 }
@@ -181,8 +183,19 @@ export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): s
   }
 }
 
+// Edge case where we need to display 3 decimals for small amounts between 0.001 and 0.01
+function requiresThreeDecimals(value: Numberish, abbreviated: boolean): boolean {
+  return (
+    abbreviated && !isZero(value) && bn(value).gte(AMOUNT_LOWER_THRESHOLD) && bn(value).lt(0.01)
+  )
+}
+
+function formatWith3Decimals(value: Numberish): string {
+  return numeral(toSafeValue(value)).format(FIAT_FORMAT_3_DECIMALS)
+}
+
 function isSmallAmount(value: Numberish): boolean {
-  return !isZero(value) && bn(value).lte(AMOUNT_LOWER_THRESHOLD)
+  return !isZero(value) && bn(value).lt(AMOUNT_LOWER_THRESHOLD)
 }
 
 function isSmallPercentage(value: Numberish): boolean {
