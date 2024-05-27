@@ -90,7 +90,7 @@ export function TokenInputsWithAddable({
             <Text fontSize="sm" color="grayText">
               Addable pool tokens
             </Text>
-            {canMaximizeForProportionalInput && (
+            {!requiresProportionalInput && canMaximizeForProportionalInput && (
               <Text
                 fontSize="md"
                 color="font.highlight"
