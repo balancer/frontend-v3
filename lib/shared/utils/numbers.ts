@@ -185,9 +185,7 @@ export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): s
 
 // Edge case where we need to display 3 decimals for small amounts between 0.001 and 0.01
 function requiresThreeDecimals(value: Numberish, abbreviated: boolean): boolean {
-  return (
-    abbreviated && !isZero(value) && bn(value).gte(AMOUNT_LOWER_THRESHOLD) && bn(value).lt(0.01)
-  )
+  return abbreviated && !isZero(value) && bn(value).gte(0.001) && bn(value).lte(0.009)
 }
 
 function formatWith3Decimals(value: Numberish): string {
