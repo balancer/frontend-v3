@@ -1,14 +1,14 @@
 'use client'
 
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
-import { Box, Card, HStack, Heading, Link, Text, VStack } from '@chakra-ui/react'
+import { Box, Card, CardProps, HStack, Heading, Link, Text, VStack } from '@chakra-ui/react'
 import { usePool } from '../../PoolProvider'
 import { ExternalLink } from 'react-feather'
 
-export function PoolContracts() {
+export function PoolContracts({ ...props }: CardProps) {
   const { pool, poolExplorerLink, hasGaugeAddress, gaugeAddress, gaugeExplorerLink } = usePool()
   return (
-    <Card flex="1" h="full" pb="4">
+    <Card {...props}>
       <VStack alignItems="flex-start" spacing="4" width="full">
         <Heading variant="h4" fontSize="1.25rem">
           Pool contracts

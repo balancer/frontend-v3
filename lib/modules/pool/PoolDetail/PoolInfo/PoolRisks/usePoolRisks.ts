@@ -1,5 +1,5 @@
 import { GqlChain, GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
-import { isMetaStable, isStable, isWeighted } from '../../pool.helpers'
+import { isMetaStable, isStable, isWeighted } from '../../../pool.helpers'
 import { zeroAddress } from 'viem'
 
 export enum RiskKey {

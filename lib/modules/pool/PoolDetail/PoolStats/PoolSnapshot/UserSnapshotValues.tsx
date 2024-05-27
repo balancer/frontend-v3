@@ -2,19 +2,19 @@
 
 import React, { memo, useMemo } from 'react'
 import { Button, HStack, Heading, Skeleton, Text, Tooltip, VStack } from '@chakra-ui/react'
-import { TokenIconStack } from '../../tokens/TokenIconStack'
+import { TokenIconStack } from '../../../../tokens/TokenIconStack'
 import { GqlToken, GqlPoolMinimal } from '@/lib/shared/services/api/generated/graphql'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { SECONDS_IN_DAY } from '@/test/utils/numbers'
 import { sumBy, isEmpty } from 'lodash'
-import { useTokens } from '../../tokens/TokensProvider'
-import { useVebalBoost } from '../../vebal/useVebalBoost'
-import { useClaiming } from '../actions/claim/useClaiming'
-import { PoolListItem } from '../pool.types'
-import { getTotalAprRaw } from '../pool.utils'
-import { usePool } from '../PoolProvider'
+import { useTokens } from '../../../../tokens/TokensProvider'
+import { useVebalBoost } from '../../../../vebal/useVebalBoost'
+import { useClaiming } from '../../../actions/claim/useClaiming'
+import { PoolListItem } from '../../../pool.types'
+import { getTotalAprRaw } from '../../../pool.utils'
+import { usePool } from '../../../PoolProvider'
 import { bn } from '@/lib/shared/utils/numbers'
-import { ClaimModal } from '../actions/claim/ClaimModal'
+import { ClaimModal } from '../../../actions/claim/ClaimModal'
 import { Hex } from 'viem'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 
@@ -26,8 +26,8 @@ export type PoolMyStatsValues = {
 
 const POSSIBLE_STAKED_BALANCE_USD = 10000
 
-export function PoolMyStats() {
-  const { pool, chain, isLoading: isLoadingPool } = usePool()
+export function UserSnapshotValues() {
+  const { pool, chain, isLoading: isLoadingPool, myLiquiditySectionRef } = usePool()
   const { toCurrency } = useCurrency()
   const { veBalBoostMap } = useVebalBoost([pool as unknown as GqlPoolMinimal])
   const { getToken } = useTokens()
@@ -64,6 +64,7 @@ export function PoolMyStats() {
   const boost = useMemo(() => {
     if (isEmpty(veBalBoostMap)) return
     return veBalBoostMap[pool.id]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [veBalBoostMap])
 
   const myAprRaw = getTotalAprRaw(pool.dynamicData?.apr.items, boost)
@@ -87,10 +88,15 @@ export function PoolMyStats() {
         myClaimableRewards: myClaimableRewards,
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [veBalBoostMap, pool])
 
   function onModalClose() {
     previewModalDisclosure.onClose()
+  }
+
+  function handleClick() {
+    myLiquiditySectionRef?.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
@@ -100,13 +106,16 @@ export function PoolMyStats() {
           My liquidity
         </Text>
         {poolMyStatsValues ? (
-          <Heading size="h4">
-            {poolMyStatsValues.myLiquidity ? (
-              toCurrency(poolMyStatsValues.myLiquidity)
-            ) : (
-              <>&mdash;</>
-            )}
-          </Heading>
+          poolMyStatsValues.myLiquidity ? (
+            <HStack>
+              <Heading size="h4">{toCurrency(poolMyStatsValues.myLiquidity)}</Heading>
+              <Text color="font.link" onClick={handleClick} cursor="pointer">
+                Manage
+              </Text>
+            </HStack>
+          ) : (
+            <Heading size="h4">&mdash;</Heading>
+          )
         ) : (
           <Skeleton height="28px" w="100px" />
         )}
@@ -115,12 +124,16 @@ export function PoolMyStats() {
         <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
           My APR
         </Text>
-        <MemoizedAprTooltip
-          data={pool.dynamicData.apr}
-          poolId={pool.id}
-          textProps={{ fontWeight: 'medium', fontSize: '2xl', lineHeight: '28px' }}
-          vebalBoost={boost || '1'}
-        />
+        {poolMyStatsValues && poolMyStatsValues.myLiquidity ? (
+          <MemoizedAprTooltip
+            data={pool.dynamicData.apr}
+            poolId={pool.id}
+            textProps={{ fontWeight: 'medium', fontSize: '2xl', lineHeight: '28px' }}
+            vebalBoost={boost || '1'}
+          />
+        ) : (
+          <Heading size="h4">&mdash;</Heading>
+        )}
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
         <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">

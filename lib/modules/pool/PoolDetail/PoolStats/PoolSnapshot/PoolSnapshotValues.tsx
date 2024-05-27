@@ -3,12 +3,12 @@
 import React, { memo, useMemo } from 'react'
 import { HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { TokenIconStack } from '../../tokens/TokenIconStack'
+import { TokenIconStack } from '../../../../tokens/TokenIconStack'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { SECONDS_IN_DAY } from '@/test/utils/numbers'
 import { sumBy } from 'lodash'
-import { useTokens } from '../../tokens/TokensProvider'
-import { usePool } from '../PoolProvider'
+import { useTokens } from '../../../../tokens/TokensProvider'
+import { usePool } from '../../../PoolProvider'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 
 export type PoolStatsValues = {
@@ -17,7 +17,7 @@ export type PoolStatsValues = {
   weeklyRewards: string
 }
 
-export function PoolStats() {
+export function PoolSnapshotValues() {
   const { pool, chain } = usePool()
   const { toCurrency } = useCurrency()
   const { priceFor, getToken } = useTokens()
@@ -51,6 +51,7 @@ export function PoolStats() {
         weeklyRewards: toCurrency(weeklyRewards),
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool])
 
   return (
