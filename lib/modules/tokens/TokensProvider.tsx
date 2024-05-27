@@ -100,7 +100,7 @@ export function _useTokens(
     (token: GqlToken | undefined, amount: Numberish) => {
       if (!token) return '0'
       if (amount === '') return '0'
-      return bn(amount).times(priceForToken(token)).toFixed(2)
+      return bn(amount).times(priceForToken(token)).toFixed()
     },
     [JSON.stringify(prices)]
   )
