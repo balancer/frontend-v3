@@ -37,6 +37,14 @@ export function useProportionalInputs() {
   const [isMaximized, setIsMaximized] = useState(false)
   const { isLoadingTokenPrices } = useTokens()
 
+  const filteredBalances = useMemo(() => {
+    return balances.filter(balance =>
+      wethIsEth
+        ? wNativeAsset && balance.address !== wNativeAsset.address
+        : nativeAsset && balance.address !== nativeAsset.address
+    )
+  }, [wethIsEth, isBalancesLoading])
+
   function clearAmountsIn() {
     setHumanAmountsIn(humanAmountsIn.map(amountIn => ({ ...amountIn, humanAmount: '' })))
   }
@@ -89,7 +97,7 @@ export function useProportionalInputs() {
       return (balanceFor(tokenAddress)?.formatted || '0') as HumanAmount
     }
 
-    const optimalToken = validTokens.find(({ address }) => {
+    const optimalToken = filteredBalances.find(({ address }) => {
       const humanBalance = humanBalanceFor(address)
       if (isEmptyHumanAmount(humanBalance)) return false
 
@@ -101,7 +109,11 @@ export function useProportionalInputs() {
 
       // The user must have enough token balance for this proportional result
       const haveEnoughBalance = proportionalAmounts.every(({ tokenAddress, humanAmount }) => {
-        return bn(humanBalanceFor(tokenAddress)).gte(bn(humanAmount))
+        const humanBalanceTokenAddress =
+          wethIsEth && wNativeAsset && isSameAddress(wNativeAsset.address, tokenAddress)
+            ? (nativeAsset?.address as Address)
+            : tokenAddress
+        return bn(humanBalanceFor(humanBalanceTokenAddress)).gte(bn(humanAmount))
       })
 
       return haveEnoughBalance
@@ -113,7 +125,7 @@ export function useProportionalInputs() {
       tokenAddress: optimalToken.address,
       userBalance: humanBalanceFor(optimalToken.address),
     } as OptimalToken
-  }, [shouldCalculateMaximizeAmounts])
+  }, [shouldCalculateMaximizeAmounts, filteredBalances])
 
   const maximizedUsdValue = useMemo(() => {
     if (!shouldCalculateMaximizeAmounts || !optimalToken) return ''
