@@ -9,9 +9,7 @@ export const CustomAvatar = ({
   alt,
   ...props
 }: ImageProps & AvatarComponentProps) => {
-  const avatarUrl = ensImage
-    ? ensImage
-    : `https://api.dicebear.com/7.x/personas/svg?seed=${address}`
+  const avatarUrl = ensImage ? ensImage : `https://api.dicebear.com/7.x/thumbs/svg?seed=${address}`
 
   return <Image src={avatarUrl} alt={alt} width={size} height={size} {...props} />
 }
