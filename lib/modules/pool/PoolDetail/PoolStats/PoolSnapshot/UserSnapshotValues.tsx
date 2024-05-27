@@ -56,10 +56,9 @@ export function UserSnapshotValues() {
     }
   })
 
-  // reward tokens will always be there?
-  const tokens = currentRewardsPerWeek.map(reward =>
-    getToken(reward.tokenAddress, chain)
-  ) as GqlToken[]
+  const tokens = currentRewardsPerWeek
+    .filter(reward => bn(reward.rewardPerSecond).gt(0))
+    .map(reward => getToken(reward.tokenAddress, chain)) as GqlToken[]
 
   const boost = useMemo(() => {
     if (isEmpty(veBalBoostMap)) return
