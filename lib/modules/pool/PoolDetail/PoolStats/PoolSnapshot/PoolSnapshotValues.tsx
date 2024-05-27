@@ -10,6 +10,7 @@ import { sumBy } from 'lodash'
 import { useTokens } from '../../../../tokens/TokensProvider'
 import { usePool } from '../../../PoolProvider'
 import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
+import { bn } from '@/lib/shared/utils/numbers'
 
 export type PoolStatsValues = {
   totalLiquidity: string
@@ -24,8 +25,8 @@ export function PoolSnapshotValues() {
 
   const MemoizedAprTooltip = memo(AprTooltip)
 
-  // TODO: only uses Balancer rewards rn
   const currentRewards = pool.staking?.gauge?.rewards || []
+
   const currentRewardsPerWeek = currentRewards.map(reward => {
     return {
       ...reward,
@@ -34,9 +35,9 @@ export function PoolSnapshotValues() {
   })
 
   // reward tokens will always be there?
-  const tokens = currentRewardsPerWeek.map(reward =>
-    getToken(reward.tokenAddress, chain)
-  ) as GqlToken[]
+  const tokens = currentRewardsPerWeek
+    .filter(reward => bn(reward.rewardPerSecond).gt(0))
+    .map(reward => getToken(reward.tokenAddress, chain)) as GqlToken[]
 
   const weeklyRewards = sumBy(
     currentRewardsPerWeek,
