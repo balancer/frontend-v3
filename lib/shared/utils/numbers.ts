@@ -76,7 +76,7 @@ function integerFormat(val: Numberish): string {
 // Formats a fiat value.
 function fiatFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): string {
   if (isSmallAmount(val)) return SMALL_AMOUNT_LABEL
-  if (requiresThreeDecimals(val, abbreviated)) return formatWith3Decimals(val)
+  if (requiresThreeDecimals(val)) return formatWith3Decimals(val)
   const format = abbreviated ? FIAT_FORMAT_A : FIAT_FORMAT
   return numeral(toSafeValue(val)).format(format)
 }
@@ -184,8 +184,8 @@ export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): s
 }
 
 // Edge case where we need to display 3 decimals for small amounts between 0.001 and 0.01
-function requiresThreeDecimals(value: Numberish, abbreviated: boolean): boolean {
-  return abbreviated && !isZero(value) && bn(value).gte(0.001) && bn(value).lte(0.009)
+function requiresThreeDecimals(value: Numberish): boolean {
+  return !isZero(value) && bn(value).gte(0.001) && bn(value).lte(0.009)
 }
 
 function formatWith3Decimals(value: Numberish): string {

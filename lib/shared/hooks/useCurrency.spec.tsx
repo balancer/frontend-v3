@@ -32,6 +32,13 @@ describe('toCurrency', () => {
     expect(result.current.toCurrency('0.0019')).toBe('$0.002')
     expect(result.current.toCurrency('0.000001234')).toBe('<$0.001')
   })
+
+  test('not abbreviated', () => {
+    expect(result.current.toCurrency('0.001', { abbreviated: false })).toBe('$0.001')
+    expect(result.current.toCurrency('123456789.12345678', { abbreviated: false })).toBe(
+      '$123,456,789.12'
+    )
+  })
 })
 
 test('formatCurrency', () => {

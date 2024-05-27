@@ -26,6 +26,8 @@ describe('fiatFormat', () => {
   })
 
   test('Non-abbreviated formats', () => {
+    expect(fNum('fiat', '0.000000000000000001')).toBe('<0.001')
+    expect(fNum('fiat', '0.00269693621158015889', { abbreviated: false })).toBe('0.003')
     expect(fNum('fiat', '123456789.12345678', { abbreviated: false })).toBe('123,456,789.12')
   })
 })
