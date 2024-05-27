@@ -85,9 +85,9 @@ export function TokenInputsWithAddable({
         <Card variant="subSection" w="full" p={['sm', 'ms']}>
           <HStack w="full">
             <Box as="span" color="grayText">
-              <WalletIcon size={20} />
+              <WalletIcon size={18} />
             </Box>
-            <Text fontSize="md" color="grayText">
+            <Text fontSize="sm" color="grayText">
               Addable pool tokens
             </Text>
             {canMaximizeForProportionalInput && (
@@ -103,17 +103,17 @@ export function TokenInputsWithAddable({
             <Spacer />
             {canMaximize && (
               <>
-                <Text fontSize="md" color="grayText">
+                <Text fontSize="sm" color="grayText">
                   {toCurrency(maximizedUsdValue, { abbreviated: false })}
                 </Text>
                 {isMaximized && (
-                  <Text fontSize="md" color="grayText" cursor="default">
+                  <Text fontSize="sm" color="grayText" cursor="not-allowed" opacity="0.5">
                     Maxed
                   </Text>
                 )}
                 {!isMaximized && (
                   <Text
-                    fontSize="md"
+                    fontSize="sm"
                     color="font.highlight"
                     onClick={() => handleMaximizeUserAmounts()}
                     cursor="pointer"
@@ -125,11 +125,11 @@ export function TokenInputsWithAddable({
             )}
             {!canMaximize && (
               <HStack>
-                <Text fontSize="md" color="red.400">
+                <Text fontSize="sm" color="red.400">
                   {toCurrency('0', { abbreviated: false })}
                 </Text>
                 <Box color="red.400">
-                  <XOctagon size={16} />
+                  <XOctagon size={14} />
                 </Box>
               </HStack>
             )}
