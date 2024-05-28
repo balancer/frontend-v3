@@ -66,12 +66,16 @@ export function TokenInputsWithAddable({
   useEffect(() => {
     if (totalUSDValue !== maximizedUsdValue) {
       setIsMaximized(false)
-      clearAmountsIn()
     } else {
       setIsMaximized(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [totalUSDValue, wantsProportional])
+
+  function handleWantProportional() {
+    setWantsProportional(!wantsProportional)
+    clearAmountsIn()
+  }
 
   return (
     <VStack spacing="md" w="full">
@@ -94,7 +98,7 @@ export function TokenInputsWithAddable({
               <Text
                 fontSize="md"
                 color="font.highlight"
-                onClick={() => setWantsProportional(!wantsProportional)}
+                onClick={handleWantProportional}
                 cursor="pointer"
               >
                 {`${wantsProportional ? 'Proportional' : 'Custom'}`}
