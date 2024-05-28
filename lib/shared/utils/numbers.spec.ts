@@ -1,3 +1,4 @@
+import numeral from 'numeral'
 import { bn, fNum, safeTokenFormat, BN_LOWER_THRESHOLD } from './numbers'
 
 test('Stringifies bigints', () => {
@@ -61,6 +62,65 @@ describe('tokenFormat', () => {
   })
 })
 
+describe('aprFormat', () => {
+  test('Abbreviated formats', () => {
+    expect(fNum('apr', '0.10')).toBe('10.00%')
+    expect(fNum('apr', '0.0010')).toBe('0.10%')
+    expect(fNum('apr', '0.0016')).toBe('0.16%')
+    expect(fNum('apr', '0.0001')).toBe('0.01%')
+    expect(fNum('apr', '0.00001')).toBe('<0.01%')
+    expect(fNum('apr', '0.00009')).toBe('<0.01%')
+    expect(fNum('apr', '0.000007595846919227514')).toBe('<0.01%')
+  })
+})
+
+describe('fee Percent', () => {
+  test('Abbreviated formats', () => {
+    expect(fNum('feePercent', '0.10')).toBe('10%')
+    expect(fNum('feePercent', '0.0010')).toBe('0.1%')
+    expect(fNum('feePercent', '0.0016')).toBe('0.16%')
+    expect(fNum('feePercent', '0.0001')).toBe('0.01%')
+    expect(fNum('feePercent', '0.00001')).toBe('<0.01%')
+    expect(fNum('feePercent', '0.00009')).toBe('<0.01%')
+    expect(fNum('feePercent', '0.000007595846919227514')).toBe('<0.01%')
+  })
+})
+
+describe('percentage', () => {
+  test('Abbreviated formats', () => {
+    expect(fNum('percentage', '0.10')).toBe('10%')
+    expect(fNum('percentage', '0.0010')).toBe('0%')
+    expect(fNum('percentage', '0.0016')).toBe('0%')
+    expect(fNum('percentage', '0.0001')).toBe('0%')
+    expect(fNum('percentage', '0.00001')).toBe('0%')
+    expect(fNum('percentage', '0.00009')).toBe('0%')
+    expect(fNum('percentage', '0.000007595846919227514')).toBe('0%')
+  })
+})
+
+describe('sharePercent', () => {
+  test.only('Abbreviated formats', () => {
+    expect(fNum('sharePercent', '0.10')).toBe('10%')
+    expect(fNum('sharePercent', '0.0010')).toBe('0.1%')
+    expect(fNum('sharePercent', '0.0016')).toBe('0.16%')
+    expect(fNum('sharePercent', '0.0001')).toBe('0.01%')
+    expect(fNum('sharePercent', '0.00001')).toBe('<0.01%')
+    expect(fNum('sharePercent', '0.00009')).toBe('<0.01%')
+    expect(fNum('sharePercent', '0.000007595846919227514')).toBe('<0.01%')
+  })
+})
+
+describe('slippage', () => {
+  test('Abbreviated formats', () => {
+    expect(fNum('slippage', '0.10')).toBe('0.10%')
+    expect(fNum('slippage', '0.0010')).toBe('<0.01%')
+    expect(fNum('slippage', '0.0016')).toBe('<0.01%')
+    expect(fNum('slippage', '0.0001')).toBe('<0.01%')
+    expect(fNum('slippage', '0.00009')).toBe('<0.01%')
+    expect(fNum('slippage', '0.000007595846919227514')).toBe('<0.01%')
+  })
+})
+
 describe('safeTokenFormat', () => {
   test('for a bigint amount', () => {
     expect(safeTokenFormat(251359380787607529n, 18)).toBe('0.2514')
@@ -86,7 +146,7 @@ describe('bn', () => {
 
 test('all formats types do not break with super small inputs (AKA dust)', () => {
   const dust = BN_LOWER_THRESHOLD
-  expect(fNum('apr', dust)).toBe('0.00%')
+  expect(fNum('apr', dust)).toBe('<0.01%')
   expect(fNum('feePercent', dust)).toBe('<0.01%')
   expect(fNum('fiat', dust)).toBe('<0.001')
   expect(fNum('integer', dust)).toBe('0')
