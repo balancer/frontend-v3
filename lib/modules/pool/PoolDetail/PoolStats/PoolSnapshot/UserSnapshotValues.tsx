@@ -16,7 +16,7 @@ import { usePool } from '../../../PoolProvider'
 import { bn } from '@/lib/shared/utils/numbers'
 import { ClaimModal } from '../../../actions/claim/ClaimModal'
 import { Hex } from 'viem'
-import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
+import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
 
 export type PoolMyStatsValues = {
   myLiquidity: number
@@ -42,7 +42,7 @@ export function UserSnapshotValues() {
     isDisabled,
   } = useClaiming([pool] as unknown[] as PoolListItem[])
 
-  const MemoizedAprTooltip = memo(AprTooltip)
+  const MemoizedMainAprTooltip = memo(MainAprTooltip)
 
   // TODO: only uses Balancer rewards rn
   const claimableRewards = [...balRewards, ...nonBalRewards]
@@ -124,7 +124,7 @@ export function UserSnapshotValues() {
           My APR
         </Text>
         {poolMyStatsValues && poolMyStatsValues.myLiquidity ? (
-          <MemoizedAprTooltip
+          <MemoizedMainAprTooltip
             data={pool.dynamicData.apr}
             poolId={pool.id}
             textProps={{ fontWeight: 'medium', fontSize: '2xl', lineHeight: '28px' }}

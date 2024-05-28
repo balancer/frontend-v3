@@ -7,8 +7,7 @@ import {
 } from '../services/api/generated/graphql'
 import { useThemeColorMode } from '../services/chakra/useThemeColorMode'
 import { bn } from '../utils/numbers'
-
-const roundToFourDecimals = (numStr: string) => Math.round(parseFloat(numStr) * 10000) / 10000
+import BigNumber from 'bignumber.js'
 
 export const swapFeesTooltipText = `LPs get swap fees anytime a swap is routed through this pool. 
 These fees automatically accumulate into the LPs position, so there is no need to periodically claim.`
@@ -39,17 +38,19 @@ function absMaxApr(apr: GqlPoolApr, boost?: number) {
 export function useAprTooltip({
   apr,
   aprItems,
+  numberFormatter,
   vebalBoost,
 }: {
   aprItems: GqlBalancePoolAprItem[]
   apr: GqlPoolApr
+  numberFormatter: (value: string) => BigNumber
   vebalBoost?: number
 }) {
   const colorMode = useThemeColorMode()
 
   // Swap fees
   const swapFee = aprItems.find(item => item.title === 'Swap fees APR')
-  let swapFeesDisplayed = swapFee ? roundToFourDecimals((swapFee.apr as GqlPoolAprTotal).total) : 0
+  let swapFeesDisplayed = numberFormatter(swapFee ? (swapFee.apr as GqlPoolAprTotal).total : '0')
 
   // Yield bearing tokens
   const yieldBearingTokens = aprItems.filter(item => {
@@ -58,12 +59,12 @@ export function useAprTooltip({
 
   const yieldBearingTokensDisplayed = yieldBearingTokens.map(item => ({
     title: item.title.replace(' APR', ''),
-    apr: roundToFourDecimals((item.apr as GqlPoolAprTotal).total),
+    apr: numberFormatter((item.apr as GqlPoolAprTotal).total),
   }))
 
   let yieldBearingTokensAprDisplayed = yieldBearingTokensDisplayed.reduce(
-    (acc, item) => item.apr + acc,
-    0
+    (acc, item) => acc.plus(item.apr),
+    bn(0)
   )
 
   // Staking incentives
@@ -73,57 +74,65 @@ export function useAprTooltip({
 
   const stakingIncentivesDisplayed = stakingIncentives.map(item => ({
     title: item.title.replace(' reward APR', ''),
-    apr: roundToFourDecimals((item.apr as GqlPoolAprTotal).total),
+    apr: numberFormatter((item.apr as GqlPoolAprTotal).total),
   }))
 
   // Bal Reward
   const balReward = aprItems.find(item => item.title === 'BAL reward APR')
 
-  const maxVeBalDisplayed = balReward ? absMaxApr(apr, vebalBoost) : bn(0)
+  const maxVeBal = balReward ? absMaxApr(apr, vebalBoost).toString() : '0'
+  const maxVeBalDisplayed = numberFormatter(maxVeBal)
 
-  const totalBaseDisplayed = roundToFourDecimals(
-    apr.apr.__typename === 'GqlPoolAprRange' ? apr.apr.min : apr.apr.total
-  )
+  const totalBase = apr.apr.__typename === 'GqlPoolAprRange' ? apr.apr.min : apr.apr.total
+  const totalBaseDisplayed = numberFormatter(totalBase)
 
   const extraBalAprDisplayed = balReward ? maxVeBalDisplayed.minus(totalBaseDisplayed) : bn(0)
 
   if (balReward) {
     stakingIncentivesDisplayed.push({
       title: 'BAL',
-      apr: roundToFourDecimals((balReward.apr as GqlPoolAprRange).min),
+      apr: numberFormatter((balReward.apr as GqlPoolAprRange).min),
     })
   }
 
   let stakingIncentivesAprDisplayed = stakingIncentivesDisplayed.reduce(
-    (acc, item) => item.apr + acc,
-    0
+    (acc, item) => acc.plus(item.apr),
+    bn(0)
   )
 
-  const totalBaseDisplayedRoundingError =
-    totalBaseDisplayed -
-    (swapFeesDisplayed + yieldBearingTokensAprDisplayed + stakingIncentivesAprDisplayed)
+  const totalBaseDisplayedRoundingError = totalBaseDisplayed.minus(
+    swapFeesDisplayed.plus(yieldBearingTokensAprDisplayed).plus(stakingIncentivesAprDisplayed)
+  )
 
-  if (totalBaseDisplayedRoundingError != 0) {
-    if (swapFeesDisplayed !== 0) {
-      swapFeesDisplayed += totalBaseDisplayedRoundingError
+  if (!totalBaseDisplayedRoundingError.isZero()) {
+    if (!swapFeesDisplayed.isZero()) {
+      swapFeesDisplayed = swapFeesDisplayed.plus(totalBaseDisplayedRoundingError)
     }
 
-    if (yieldBearingTokensAprDisplayed !== 0) {
-      yieldBearingTokensAprDisplayed += totalBaseDisplayedRoundingError
+    if (!yieldBearingTokensAprDisplayed.isZero()) {
+      yieldBearingTokensAprDisplayed = yieldBearingTokensAprDisplayed.plus(
+        totalBaseDisplayedRoundingError
+      )
 
       const highestYieldBearingToken = sortBy(yieldBearingTokensDisplayed, 'apr').reverse()[0]
-      highestYieldBearingToken.apr += totalBaseDisplayedRoundingError
+      highestYieldBearingToken.apr = highestYieldBearingToken.apr.plus(
+        totalBaseDisplayedRoundingError
+      )
     } else {
-      stakingIncentivesAprDisplayed += totalBaseDisplayedRoundingError
+      stakingIncentivesAprDisplayed = stakingIncentivesAprDisplayed.plus(
+        totalBaseDisplayedRoundingError
+      )
 
       const highestStakingIncentive = sortBy(stakingIncentivesDisplayed, 'apr').reverse()[0]
-      highestStakingIncentive.apr += totalBaseDisplayedRoundingError
+      highestStakingIncentive.apr = highestStakingIncentive.apr.plus(
+        totalBaseDisplayedRoundingError
+      )
     }
   }
 
-  const isSwapFeePresent = swapFeesDisplayed !== 0
-  const isYieldPresent = yieldBearingTokensAprDisplayed !== 0
-  const isStakingPresent = stakingIncentivesAprDisplayed !== 0
+  const isSwapFeePresent = !swapFeesDisplayed.isZero()
+  const isYieldPresent = !yieldBearingTokensAprDisplayed.isZero()
+  const isStakingPresent = !stakingIncentivesAprDisplayed.isZero()
 
   const subitemPopoverAprItemProps = {
     pt: 2,
@@ -146,5 +155,7 @@ export function useAprTooltip({
     stakingIncentivesDisplayed,
     subitemPopoverAprItemProps,
     balReward,
+    maxVeBal,
+    totalBase,
   }
 }
