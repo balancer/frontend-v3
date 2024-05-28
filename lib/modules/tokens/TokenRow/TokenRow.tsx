@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-import { Box, Button, HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, HStack, Heading, Skeleton, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { useTokens } from '../TokensProvider'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
@@ -12,6 +12,7 @@ import { Pool } from '../../pool/PoolProvider'
 import { bptUsdValue } from '../../pool/pool.helpers'
 import { TokenInfoPopover } from '../TokenInfoPopover'
 import { ChevronDown } from 'react-feather'
+import { BullseyeIcon } from '@/lib/shared/components/icons/BullseyeIcon'
 
 type DataProps = {
   address: Address
@@ -23,7 +24,7 @@ type DataProps = {
   showInfoPopover?: boolean
 }
 
-function RowData({
+function TokenInfo({
   address,
   chain,
   token,
@@ -65,6 +66,8 @@ type Props = {
   address: Address
   chain: GqlChain
   value: Numberish
+  actualWeight?: string
+  targetWeight?: string
   usdValue?: string
   disabled?: boolean
   isLoading?: boolean
@@ -79,6 +82,8 @@ export default function TokenRow({
   label,
   address,
   value,
+  actualWeight,
+  targetWeight,
   chain,
   disabled,
   isLoading,
@@ -121,13 +126,13 @@ export default function TokenRow({
       <HStack width="full" justifyContent="space-between">
         {toggleTokenSelect ? (
           <Button variant="tertiary" onClick={toggleTokenSelect} cursor="pointer" size="xl" p="2">
-            <RowData {...props} showInfoPopover={false} showSelect />
+            <TokenInfo {...props} showInfoPopover={false} showSelect />
           </Button>
         ) : (
-          <RowData {...props} />
+          <TokenInfo {...props} />
         )}
 
-        <HStack spacing="2xl">
+        <HStack align="start" spacing="2xl">
           <VStack spacing="xs" alignItems="flex-end">
             {isLoading ? (
               <>
@@ -139,7 +144,7 @@ export default function TokenRow({
                 <Heading fontWeight="bold" as="h6" fontSize="lg">
                   {isZero(amount) && showZeroAmountAsDash ? '-' : amount ? amount : '0'}
                 </Heading>
-                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+                <Text fontWeight="medium" variant="secondary" fontSize="sm">
                   {showZeroAmountAsDash && usdValue && isZero(usdValue)
                     ? '-'
                     : toCurrency(usdValue ?? '0', { abbreviated })}
@@ -147,23 +152,34 @@ export default function TokenRow({
               </>
             )}
           </VStack>
-          <VStack spacing="xs" alignItems="flex-end">
-            {isLoading ? (
-              <>
-                <Skeleton w="10" h="4" />
-                <Skeleton w="10" h="4" />
-              </>
-            ) : (
-              <>
-                <Heading fontWeight="bold" as="h6" fontSize="lg">
-                  20.2%
-                </Heading>
-                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                  20%
-                </Text>
-              </>
-            )}
-          </VStack>
+          {actualWeight && (
+            <VStack spacing="xs" alignItems="flex-end">
+              {isLoading ? (
+                <>
+                  <Skeleton w="10" h="4" />
+                  <Skeleton w="10" h="4" />
+                </>
+              ) : (
+                <>
+                  <Heading fontWeight="bold" as="h6" fontSize="lg">
+                    {fNum('weight', actualWeight, { abbreviated: false })}
+                  </Heading>
+                  {targetWeight && (
+                    <HStack spacing="xs" align="start">
+                      <Text fontWeight="medium" variant="secondary" fontSize="sm">
+                        {fNum('weight', targetWeight)}
+                      </Text>
+                      <Tooltip label="Target weight">
+                        <Box>
+                          <BullseyeIcon />
+                        </Box>
+                      </Tooltip>
+                    </HStack>
+                  )}
+                </>
+              )}
+            </VStack>
+          )}
         </HStack>
       </HStack>
     </VStack>
