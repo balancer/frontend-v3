@@ -9,6 +9,8 @@ import fantom from './fantom'
 import optimism from './optimism'
 import base from './base'
 import sepolia from './sepolia'
+import mode from './mode'
+import fraxtal from './fraxtal'
 
 const networkConfigs = {
   [GqlChain.Arbitrum]: arbitrum,
@@ -21,6 +23,8 @@ const networkConfigs = {
   [GqlChain.Fantom]: fantom,
   [GqlChain.Optimism]: optimism,
   [GqlChain.Sepolia]: sepolia,
+  [GqlChain.Mode]: mode,
+  [GqlChain.Fraxtal]: fraxtal,
 }
 
 export default networkConfigs
