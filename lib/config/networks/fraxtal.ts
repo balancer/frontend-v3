@@ -9,7 +9,7 @@ const networkConfig: NetworkConfig = {
   name: 'Fraxtal',
   shortName: 'Fraxtal',
   chain: GqlChain.Fraxtal,
-  iconPath: '/images/chains/OPTIMISM.svg',
+  iconPath: '/images/chains/FRAXTAL.svg',
   blockExplorer: {
     baseUrl: 'https://fraxscan.com',
     name: 'Fraxscan',

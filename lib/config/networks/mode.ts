@@ -9,7 +9,7 @@ const networkConfig: NetworkConfig = {
   name: 'Mode',
   shortName: 'Mode',
   chain: GqlChain.Mode,
-  iconPath: '/images/chains/OPTIMISM.svg',
+  iconPath: '/images/chains/MODE.svg',
   blockExplorer: {
     baseUrl: 'https://modescan.io',
     name: 'Modescan',
