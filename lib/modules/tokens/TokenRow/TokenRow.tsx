@@ -13,23 +13,7 @@ import { bptUsdValue } from '../../pool/pool.helpers'
 import { TokenInfoPopover } from '../TokenInfoPopover'
 import { ChevronDown } from 'react-feather'
 
-type Props = {
-  label?: string | ReactNode
-  address: Address
-  chain: GqlChain
-  value: Numberish
-  usdValue?: string
-  customRender?: (token: GqlToken) => ReactNode | ReactNode[]
-  disabled?: boolean
-  isLoading?: boolean
-  abbreviated?: boolean
-  isBpt?: boolean
-  pool?: Pool
-  toggleTokenSelect?: () => void
-  showZeroAmountAsDash?: boolean
-}
-
-type TemplateProps = {
+type DataProps = {
   address: Address
   chain: GqlChain
   token?: GqlToken
@@ -39,7 +23,7 @@ type TemplateProps = {
   showInfoPopover?: boolean
 }
 
-function TokenRowTemplate({
+function RowData({
   address,
   chain,
   token,
@@ -47,7 +31,7 @@ function TokenRowTemplate({
   disabled,
   showSelect = false,
   showInfoPopover = true,
-}: TemplateProps) {
+}: DataProps) {
   return (
     <HStack spacing="sm">
       <TokenIcon chain={chain} address={address} size={40} alt={token?.symbol || address} />
@@ -76,19 +60,33 @@ function TokenRowTemplate({
   )
 }
 
+type Props = {
+  label?: string | ReactNode
+  address: Address
+  chain: GqlChain
+  value: Numberish
+  usdValue?: string
+  disabled?: boolean
+  isLoading?: boolean
+  abbreviated?: boolean
+  isBpt?: boolean
+  pool?: Pool
+  showZeroAmountAsDash?: boolean
+  toggleTokenSelect?: () => void
+}
+
 export default function TokenRow({
   label,
   address,
   value,
-  customRender,
   chain,
   disabled,
   isLoading,
-  abbreviated = true,
   isBpt,
   pool,
-  toggleTokenSelect,
+  abbreviated = true,
   showZeroAmountAsDash = false,
+  toggleTokenSelect,
 }: Props) {
   const { getToken, usdValueForToken } = useTokens()
   const { toCurrency } = useCurrency()
@@ -123,14 +121,14 @@ export default function TokenRow({
       <HStack width="full" justifyContent="space-between">
         {toggleTokenSelect ? (
           <Button variant="tertiary" onClick={toggleTokenSelect} cursor="pointer" size="xl" p="2">
-            <TokenRowTemplate {...props} showInfoPopover={false} showSelect />
+            <RowData {...props} showInfoPopover={false} showSelect />
           </Button>
         ) : (
-          <TokenRowTemplate {...props} />
+          <RowData {...props} />
         )}
 
-        <HStack spacing="8">
-          <VStack spacing="2px" alignItems="flex-end">
+        <HStack spacing="2xl">
+          <VStack spacing="xs" alignItems="flex-end">
             {isLoading ? (
               <>
                 <Skeleton w="10" h="4" />
@@ -149,7 +147,23 @@ export default function TokenRow({
               </>
             )}
           </VStack>
-          {customRender && token && customRender(token)}
+          <VStack spacing="xs" alignItems="flex-end">
+            {isLoading ? (
+              <>
+                <Skeleton w="10" h="4" />
+                <Skeleton w="10" h="4" />
+              </>
+            ) : (
+              <>
+                <Heading fontWeight="bold" as="h6" fontSize="lg">
+                  20.2%
+                </Heading>
+                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+                  20%
+                </Text>
+              </>
+            )}
+          </VStack>
         </HStack>
       </HStack>
     </VStack>
