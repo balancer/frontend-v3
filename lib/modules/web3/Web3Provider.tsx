@@ -8,6 +8,7 @@ import {
   RainbowKitProvider,
   Theme,
   connectorsForWallets,
+  Chain,
 } from '@rainbow-me/rainbowkit'
 
 import { WagmiProvider, http, fallback, createConfig } from 'wagmi'
@@ -16,7 +17,6 @@ import {
   arbitrum,
   avalanche,
   base,
-  Chain,
   fantom,
   gnosis,
   mainnet,
@@ -24,7 +24,7 @@ import {
   polygon,
   polygonZkEvm,
   sepolia,
-} from 'viem/chains'
+} from 'wagmi/chains'
 
 import { keyBy, merge } from 'lodash'
 import { useTheme } from '@chakra-ui/react'
@@ -65,15 +65,15 @@ const rpcOverrides: Record<GqlChain, string | undefined> = {
 }
 
 const gqlChainToWagmiChainMap = {
-  [GqlChain.Mainnet]: mainnet,
-  [GqlChain.Arbitrum]: arbitrum,
-  [GqlChain.Base]: base,
-  [GqlChain.Avalanche]: avalanche,
+  [GqlChain.Mainnet]: { iconUrl: '/images/chains/MAINNET.svg', ...mainnet },
+  [GqlChain.Arbitrum]: { iconUrl: '/images/chains/ARBITRUM.svg', ...arbitrum },
+  [GqlChain.Base]: { iconUrl: '/images/chains/BASE.svg', ...base },
+  [GqlChain.Avalanche]: { iconUrl: '/images/chains/AVALANCHE.svg', ...avalanche },
   [GqlChain.Fantom]: fantom,
-  [GqlChain.Gnosis]: gnosis,
-  [GqlChain.Optimism]: optimism,
-  [GqlChain.Polygon]: polygon,
-  [GqlChain.Zkevm]: polygonZkEvm,
+  [GqlChain.Gnosis]: { iconUrl: '/images/chains/GNOSIS.svg', ...gnosis },
+  [GqlChain.Optimism]: { iconUrl: '/images/chains/OPTIMISM.svg', ...optimism },
+  [GqlChain.Polygon]: { iconUrl: '/images/chains/POLYGON.svg', ...polygon },
+  [GqlChain.Zkevm]: { iconUrl: '/images/chains/ZKEVM.svg', ...polygonZkEvm },
   [GqlChain.Sepolia]: sepolia,
 } as const satisfies Record<GqlChain, Chain>
 
@@ -131,7 +131,9 @@ export const wagmiConfig = createConfig({
 })
 
 export function Web3Provider({ children }: { children: React.ReactNode }) {
-  const { colors, radii, shadows } = useTheme()
+  const { colors, radii, shadows, semanticTokens } = useTheme()
+  const colorMode = useThemeColorMode()
+  const colorModeKey = colorMode === 'light' ? 'default' : '_dark'
 
   const sharedConfig = {
     fonts: {
@@ -153,7 +155,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
       walletLogo: shadows.md,
     },
     colors: {
-      accentColor: colors.primary[500],
+      accentColor: colors.purple[500],
       // accentColorForeground: '...',
       // actionButtonBorder: '...',
       // actionButtonBorderMobile: '...',
@@ -173,9 +175,9 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
       // generalBorderDim: '...',
       // menuItemBackground: '...',
       // modalBackdrop: '...',
-      // modalBackground: '...',
+      modalBackground: semanticTokens.colors.background.base[colorModeKey],
       // modalBorder: '...',
-      // modalText: '...',
+      modalText: semanticTokens.colors.font.primary[colorModeKey],
       // modalTextDim: '...',
       // modalTextSecondary: '...',
       // profileAction: '...',
@@ -194,7 +196,6 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     ...sharedConfig,
   } as Theme)
 
-  const colorMode = useThemeColorMode()
   const customTheme = colorMode === 'dark' ? _darkTheme : _lightTheme
 
   return (
