@@ -2,11 +2,10 @@
 
 import NextLink from 'next/link'
 import DarkModeToggle from '../btns/DarkModeToggle'
-import { Box, Stack, HStack, BoxProps, Link, useDisclosure } from '@chakra-ui/react'
+import { Box, HStack, BoxProps, Link, useDisclosure } from '@chakra-ui/react'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { BalancerLogo } from '../imgs/BalancerLogo'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
-import { useBreakpoints } from '../../hooks/useBreakpoints'
 import { UserSettings } from '@/lib/modules/user/settings/UserSettings'
 import RecentTransactions from '../other/RecentTransactions'
 import { usePathname } from 'next/navigation'
@@ -33,7 +32,7 @@ function VeBalLink() {
   )
 }
 
-function NavLinks() {
+function NavLinks({ ...props }: BoxProps) {
   const pathname = usePathname()
 
   function linkColorFor(path: string) {
@@ -41,7 +40,7 @@ function NavLinks() {
   }
 
   return (
-    <>
+    <HStack spacing="lg" fontWeight="medium" {...props}>
       <Box as={motion.div} variants={fadeIn}>
         <Link
           as={NextLink}
@@ -91,18 +90,21 @@ function NavLinks() {
           </Link>
         </Box>
       )}
-    </>
+    </HStack>
   )
 }
 
 function NavLogo() {
-  const { isMobile } = useBreakpoints()
-
   return (
     <Box as={motion.div} variants={fadeIn}>
       <Link as={NextLink} variant="nav" href="/" prefetch={true}>
-        <Box display="flex" gap="1.5">
-          {isMobile ? <BalancerLogo width="24px" /> : <BalancerLogoType width="106px" />}
+        <Box>
+          <Box display={{ base: 'block', md: 'none' }}>
+            <BalancerLogo width="26px" />
+          </Box>
+          <Box display={{ base: 'none', md: 'block' }}>
+            <BalancerLogoType width="106px" />
+          </Box>
         </Box>
       </Link>
     </Box>
@@ -131,18 +133,10 @@ function NavActions() {
 export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
   return (
     <Box w="full" {...rest}>
-      <Stack
-        flexDirection={{ base: 'column', md: 'row' }}
-        justify={{ base: 'flex-start', md: 'space-between' }}
-        fontWeight="medium"
-        as="nav"
-      >
+      <HStack padding={{ base: 'sm', md: 'md' }} justify="space-between" as="nav">
         <HStack
-          p={['ms', 'md']}
           spacing="lg"
-          color="font.primary"
           onClick={e => e.stopPropagation()}
-          gap={['md', 'lg']}
           as={motion.div}
           variants={staggeredFadeIn}
           initial="hidden"
@@ -151,12 +145,11 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
           {leftSlot || (
             <>
               <NavLogo />
-              <NavLinks />
+              <NavLinks display={{ base: 'none', lg: 'flex' }} />
             </>
           )}
         </HStack>
         <HStack
-          p={['ms', 'md']}
           order={{ md: '2' }}
           onClick={e => e.stopPropagation()}
           as={motion.div}
@@ -166,7 +159,7 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
         >
           {rightSlot || <NavActions />}
         </HStack>
-      </Stack>
+      </HStack>
     </Box>
   )
 }
