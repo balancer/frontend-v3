@@ -11,54 +11,44 @@ const apr = {
   },
   nativeRewardApr: {
     __typename: 'GqlPoolAprRange',
-    min: '0.006170657675830251',
-    max: '0.01542664418957563',
+    min: '0.01227364307382197',
+    max: '0.03068410768455493',
   },
-  swapApr: '0.000350284482429801',
+  swapApr: '0.0002217078418900592',
   apr: {
     __typename: 'GqlPoolAprRange',
-    min: '0.02030913402973963',
-    max: '0.02956512054348501',
+    min: '0.02313540147234497',
+    max: '0.04154586608307793',
   },
   items: [
     {
       __typename: 'GqlBalancePoolAprItem',
-      id: '0x05ff47afada98a98982113758878f9a8b9fdda0a000000000000000000000645-weETH-yield-apr',
-      title: 'weETH APR',
-      apr: {
-        __typename: 'GqlPoolAprTotal',
-        total: '0.007535148019485108',
-      },
-      subItems: [],
-    },
-    {
-      __typename: 'GqlBalancePoolAprItem',
-      id: '0x05ff47afada98a98982113758878f9a8b9fdda0a000000000000000000000645-rETH-yield-apr',
-      title: 'rETH APR',
-      apr: {
-        __typename: 'GqlPoolAprTotal',
-        total: '0.006253043851994472',
-      },
-      subItems: [],
-    },
-    {
-      __typename: 'GqlBalancePoolAprItem',
-      id: '0xc859bf9d7b8c557bbd229565124c2c09269f3aef-BAL-apr',
+      id: '0x27519f69b2ac912aeb6fe066180fb25a17c71755-BAL-apr',
       title: 'BAL reward APR',
       apr: {
         __typename: 'GqlPoolAprRange',
-        min: '0.006170657675830251',
-        max: '0.01542664418957563',
+        min: '0.01227364307382197',
+        max: '0.03068410768455493',
       },
       subItems: [],
     },
     {
       __typename: 'GqlBalancePoolAprItem',
-      id: '0x05ff47afada98a98982113758878f9a8b9fdda0a000000000000000000000645-swap-apr',
+      id: '0xbad20c15a773bf03ab973302f61fabcea5101f0a000000000000000000000034-wstETH-yield-apr',
+      title: 'wstETH APR',
+      apr: {
+        __typename: 'GqlPoolAprTotal',
+        total: '0.01064005055663294',
+      },
+      subItems: [],
+    },
+    {
+      __typename: 'GqlBalancePoolAprItem',
+      id: '0xbad20c15a773bf03ab973302f61fabcea5101f0a000000000000000000000034-swap-apr',
       title: 'Swap fees APR',
       apr: {
         __typename: 'GqlPoolAprTotal',
-        total: '0.000350284482429801',
+        total: '0.0002217078418900592',
       },
       subItems: [],
     },
@@ -68,42 +58,32 @@ const apr = {
 const aprItems = [
   {
     __typename: 'GqlBalancePoolAprItem',
-    id: '0x05ff47afada98a98982113758878f9a8b9fdda0a000000000000000000000645-weETH-yield-apr',
-    title: 'weETH APR',
-    apr: {
-      __typename: 'GqlPoolAprTotal',
-      total: '0.007535148019485108',
-    },
-    subItems: [],
-  },
-  {
-    __typename: 'GqlBalancePoolAprItem',
-    id: '0x05ff47afada98a98982113758878f9a8b9fdda0a000000000000000000000645-rETH-yield-apr',
-    title: 'rETH APR',
-    apr: {
-      __typename: 'GqlPoolAprTotal',
-      total: '0.006253043851994472',
-    },
-    subItems: [],
-  },
-  {
-    __typename: 'GqlBalancePoolAprItem',
-    id: '0xc859bf9d7b8c557bbd229565124c2c09269f3aef-BAL-apr',
+    id: '0x27519f69b2ac912aeb6fe066180fb25a17c71755-BAL-apr',
     title: 'BAL reward APR',
     apr: {
       __typename: 'GqlPoolAprRange',
-      min: '0.006170657675830251',
-      max: '0.01542664418957563',
+      min: '0.01227364307382197',
+      max: '0.03068410768455493',
     },
     subItems: [],
   },
   {
     __typename: 'GqlBalancePoolAprItem',
-    id: '0x05ff47afada98a98982113758878f9a8b9fdda0a000000000000000000000645-swap-apr',
+    id: '0xbad20c15a773bf03ab973302f61fabcea5101f0a000000000000000000000034-wstETH-yield-apr',
+    title: 'wstETH APR',
+    apr: {
+      __typename: 'GqlPoolAprTotal',
+      total: '0.01064005055663294',
+    },
+    subItems: [],
+  },
+  {
+    __typename: 'GqlBalancePoolAprItem',
+    id: '0xbad20c15a773bf03ab973302f61fabcea5101f0a000000000000000000000034-swap-apr',
     title: 'Swap fees APR',
     apr: {
       __typename: 'GqlPoolAprTotal',
-      total: '0.000350284482429801',
+      total: '0.0002217078418900592',
     },
     subItems: [],
   },

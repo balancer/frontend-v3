@@ -37,33 +37,31 @@ describe('useAprTooltip', () => {
     aprTooltipDataMock1
     const { result } = testHook(() => useAprTooltip(aprTooltipDataMock2))
 
-    expect(result.current.swapFeesDisplayed).toBe('0.000350284482429801')
-    expect(fNum('apr', result.current.swapFeesDisplayed)).toBe('0.04%')
+    expect(result.current.swapFeesDisplayed).toBe('0.0002217078418900592')
+    expect(fNum('apr', result.current.swapFeesDisplayed)).toBe('0.02%')
 
     const stakingIncentivesApr = result.current.stakingIncentivesDisplayed[0].apr
-    expect(stakingIncentivesApr).toBe('0.006170657675830251')
-    expect(fNum('apr', stakingIncentivesApr)).toBe('0.62%')
+    expect(stakingIncentivesApr).toBe('0.01227364307382197')
+    expect(fNum('apr', stakingIncentivesApr)).toBe('1.23%')
 
     const yieldBearingTokensApr = result.current.yieldBearingTokensDisplayed[0].apr
-    expect(yieldBearingTokensApr).toBe('0.007535148019485108')
-    expect(fNum('apr', yieldBearingTokensApr)).toBe('0.75%')
-    const yieldBearingTokensApr2 = result.current.yieldBearingTokensDisplayed[1].apr
-    expect(yieldBearingTokensApr2).toBe('0.006253043851994472')
-    expect(fNum('apr', yieldBearingTokensApr2)).toBe('0.63%')
+    expect(yieldBearingTokensApr).toBe('0.01064005055663294')
+    expect(fNum('apr', yieldBearingTokensApr)).toBe('1.06%')
+
     const yieldBearingTokensAprDisplayed = result.current.yieldBearingTokensAprDisplayed
-    expect(yieldBearingTokensAprDisplayed).toBe('0.01378819187147958')
-    expect(fNum('apr', yieldBearingTokensAprDisplayed)).toBe('1.38%') // 0.75 + 0.63 = 1.38
+    expect(yieldBearingTokensAprDisplayed).toBe('0.01064005055663294')
+    expect(fNum('apr', yieldBearingTokensAprDisplayed)).toBe('1.06%')
 
     const totalBaseDisplayed = result.current.totalBaseDisplayed
-    expect(totalBaseDisplayed).toBe('0.02030913402973963')
-    expect(fNum('apr', totalBaseDisplayed)).toBe('2.03%') // 0.04 + 0.62 + 1.38 = 2.04 // rounding error
+    expect(totalBaseDisplayed).toBe('0.02313540147234497')
+    expect(fNum('apr', totalBaseDisplayed)).toBe('2.31%') // 0.02 + 1.23 + 1.06  = 2.31
 
     const extraBalApr = result.current.extraBalAprDisplayed
-    expect(extraBalApr.toFixed()).toBe('0.00925598651374538')
-    expect(fNum('apr', extraBalApr)).toBe('0.93%')
+    expect(extraBalApr.toFixed()).toBe('0.01841046461073296')
+    expect(fNum('apr', extraBalApr)).toBe('1.84%')
 
     const maxVeBalApr = result.current.maxVeBalDisplayed
-    expect(maxVeBalApr.toFixed()).toBe('0.02956512054348501')
-    expect(fNum('apr', maxVeBalApr)).toBe('2.96%') // 2.03 + 0.93 = 2.96
+    expect(maxVeBalApr.toFixed()).toBe('0.04154586608307793')
+    expect(fNum('apr', maxVeBalApr)).toBe('4.15%') // 2.31 + 1.84 = 4.15
   })
 })
