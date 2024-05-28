@@ -26,6 +26,7 @@ import { PoolZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import PoolWeightChart from '../PoolWeightCharts/PoolWeightChart'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 
 type CardContentProps = {
   totalLiquidity: string
@@ -35,6 +36,7 @@ type CardContentProps = {
 
 function CardContent({ totalLiquidity, displayTokens, chain }: CardContentProps) {
   const { toCurrency } = useCurrency()
+  const { calcWeightForBalance } = useTokens()
 
   return (
     <VStack spacing="md" width="full">
@@ -63,6 +65,13 @@ function CardContent({ totalLiquidity, displayTokens, chain }: CardContentProps)
               key={`my-liquidity-token-${poolToken.address}`}
               address={poolToken.address as Address}
               value={poolToken.balance}
+              actualWeight={calcWeightForBalance(
+                poolToken.address,
+                poolToken.balance,
+                totalLiquidity,
+                chain
+              )}
+              targetWeight={poolToken.weight || undefined}
             />
           )
         })}
