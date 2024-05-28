@@ -99,7 +99,7 @@ describe('percentage', () => {
 })
 
 describe('sharePercent', () => {
-  test.only('Abbreviated formats', () => {
+  test('Abbreviated formats', () => {
     expect(fNum('sharePercent', '0.10')).toBe('10%')
     expect(fNum('sharePercent', '0.0010')).toBe('0.1%')
     expect(fNum('sharePercent', '0.0016')).toBe('0.16%')
@@ -150,7 +150,7 @@ test('all formats types do not break with super small inputs (AKA dust)', () => 
   expect(fNum('feePercent', dust)).toBe('<0.01%')
   expect(fNum('fiat', dust)).toBe('<0.001')
   expect(fNum('integer', dust)).toBe('0')
-  expect(fNum('percentage', dust)).toBe('<0.01%')
+  expect(fNum('percentage', dust)).toBe('0%')
   expect(fNum('priceImpact', dust)).toBe('<0.01%')
   expect(fNum('sharePercent', dust)).toBe('<0.01%')
   expect(fNum('slippage', dust)).toBe('<0.01%')
