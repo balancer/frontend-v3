@@ -149,7 +149,7 @@ export function _calculateProportionalHumanAmountsIn(
     calculateProportionalAmounts(helpers.poolStateWithBalances, amountIn)
       .tokenAmounts.map(({ address, rawAmount, decimals }) => ({
         tokenAddress: address,
-        humanAmount: roundToFiveDecimals(formatUnits(rawAmount, decimals)) as HumanAmount,
+        humanAmount: formatUnits(rawAmount, decimals) as HumanAmount,
       }))
       // user updated token must be in the first place of the array because the Proportional handler always calculates bptOut based on the first position
       .sort(sortUpdatedTokenFirst(tokenAddress))
@@ -163,9 +163,4 @@ export function _calculateProportionalHumanAmountsIn(
       return 0
     }
   }
-}
-
-// If we pass more than 5 decimals the SDK priceImpact crashes due to some problem with ZeroDelta calculations
-function roundToFiveDecimals(number: string) {
-  return Number(number).toFixed(5)
 }
