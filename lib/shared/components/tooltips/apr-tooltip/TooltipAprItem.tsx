@@ -13,7 +13,7 @@ interface PopoverAprItemProps extends BoxProps {
   fontColor?: string
 
   title: string
-  apr: number
+  apr: number | string
   aprOpacity?: number
 
   boxBackground?: string
