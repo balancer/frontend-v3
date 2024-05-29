@@ -8,8 +8,9 @@ describe('fiatFormat', () => {
   test('Abbreviated formats', () => {
     expect(fNum('fiat', '0.000000000000000001')).toBe('<0.001')
     expect(fNum('fiat', '0.00013843061948487287')).toBe('<0.001')
-    expect(fNum('fiat', '0.001')).toBe('<0.001')
-    expect(fNum('fiat', '0.006')).toBe('0.01')
+    expect(fNum('fiat', '0.001234')).toBe('0.001')
+    expect(fNum('fiat', '0.001987')).toBe('0.002')
+    expect(fNum('fiat', '0.006')).toBe('0.006')
     expect(fNum('fiat', '0.012345')).toBe('0.01')
     expect(fNum('fiat', '0.123456789')).toBe('0.12')
     expect(fNum('fiat', '0')).toBe('0.00')
@@ -25,6 +26,8 @@ describe('fiatFormat', () => {
   })
 
   test('Non-abbreviated formats', () => {
+    expect(fNum('fiat', '0.000000000000000001')).toBe('<0.001')
+    expect(fNum('fiat', '0.00269693621158015889', { abbreviated: false })).toBe('0.003')
     expect(fNum('fiat', '123456789.12345678', { abbreviated: false })).toBe('123,456,789.12')
   })
 })
@@ -36,6 +39,8 @@ describe('tokenFormat', () => {
     expect(fNum('token', '0.0001')).toBe('0.0001')
     expect(fNum('token', '0.00001')).toBe('< 0.00001')
     expect(fNum('token', '0.0000001')).toBe('< 0.00001')
+    expect(fNum('token', '0.000493315290277')).toBe('0.0005')
+    expect(fNum('token', '0.0000493315290277')).toBe('< 0.0001')
     expect(fNum('token', '0.000000493315290277')).toBe('< 0.00001')
     expect(fNum('token', '0.012345')).toBe('0.0123')
     expect(fNum('token', '0.123456789')).toBe('0.1235')

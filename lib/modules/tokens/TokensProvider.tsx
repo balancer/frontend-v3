@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import {
   GetTokenPricesDocument,
   GetTokenPricesQuery,
@@ -9,7 +8,6 @@ import {
   GetTokensQuery,
   GetTokensQueryVariables,
   GqlChain,
-  GqlPoolTokenDetail,
   GqlToken,
 } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
@@ -100,7 +98,7 @@ export function _useTokens(
     (token: GqlToken | undefined, amount: Numberish) => {
       if (!token) return '0'
       if (amount === '') return '0'
-      return bn(amount).times(priceForToken(token)).toFixed(2)
+      return bn(amount).times(priceForToken(token)).toFixed()
     },
     [JSON.stringify(prices)]
   )
@@ -112,12 +110,16 @@ export function _useTokens(
     return priceForToken(token)
   }
 
-  const getPoolTokenWeightByBalance = useCallback(
-    (poolTotalLiquidity: string, token: GqlPoolTokenDetail, chain: GqlChain) => {
-      return (
-        (priceFor(token.address, chain) * parseFloat(token.balance)) /
-        parseFloat(poolTotalLiquidity)
-      )
+  const calcWeightForBalance = useCallback(
+    (
+      tokenAddress: Address | string,
+      tokenBalance: string,
+      totalLiquidity: string,
+      chain: GqlChain
+    ): string => {
+      const tokenPrice = priceFor(tokenAddress, chain)
+
+      return bn(tokenPrice).times(tokenBalance).div(totalLiquidity).toString()
     },
     []
   )
@@ -134,7 +136,7 @@ export function _useTokens(
     getTokensByChain,
     getTokensByTokenAddress,
     usdValueForToken,
-    getPoolTokenWeightByBalance,
+    calcWeightForBalance,
   }
 }
 

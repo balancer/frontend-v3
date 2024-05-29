@@ -33,14 +33,102 @@ function VeBalLink() {
   )
 }
 
-export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
-  const { isMobile } = useBreakpoints()
+function NavLinks() {
   const pathname = usePathname()
 
   function linkColorFor(path: string) {
     return pathname === path ? 'font.highlight' : 'font.primary'
   }
 
+  return (
+    <>
+      <Box as={motion.div} variants={fadeIn}>
+        <Link
+          as={NextLink}
+          href="/pools"
+          prefetch={true}
+          variant="nav"
+          color={linkColorFor('/pools')}
+        >
+          Pools
+        </Link>
+      </Box>
+      <Box as={motion.div} variants={fadeIn}>
+        <Link
+          as={NextLink}
+          variant="nav"
+          href="/swap"
+          prefetch={true}
+          color={linkColorFor('/swap')}
+        >
+          Swap
+        </Link>
+      </Box>
+      <Box as={motion.div} variants={fadeIn}>
+        <Link
+          as={NextLink}
+          variant="nav"
+          href="/portfolio"
+          prefetch={true}
+          color={linkColorFor('/portfolio')}
+        >
+          Portfolio
+        </Link>
+      </Box>
+      <Box as={motion.div} variants={fadeIn}>
+        <VeBalLink />
+      </Box>
+      {!isProd && (
+        <Box as={motion.div} variants={fadeIn}>
+          <Link
+            as={NextLink}
+            variant="nav"
+            href="/debug"
+            prefetch={true}
+            color={linkColorFor('/debug')}
+          >
+            Debug
+          </Link>
+        </Box>
+      )}
+    </>
+  )
+}
+
+function NavLogo() {
+  const { isMobile } = useBreakpoints()
+
+  return (
+    <Box as={motion.div} variants={fadeIn}>
+      <Link as={NextLink} variant="nav" href="/" prefetch={true}>
+        <Box display="flex" gap="1.5">
+          {isMobile ? <BalancerLogo width="24px" /> : <BalancerLogoType width="106px" />}
+        </Box>
+      </Link>
+    </Box>
+  )
+}
+
+function NavActions() {
+  return (
+    <>
+      <Box as={motion.div} variants={fadeIn}>
+        <RecentTransactions />
+      </Box>
+      <Box as={motion.div} variants={fadeIn}>
+        <UserSettings />
+      </Box>
+      <Box as={motion.div} variants={fadeIn}>
+        <DarkModeToggle />
+      </Box>
+      <Box as={motion.div} variants={fadeIn}>
+        <ConnectWallet />
+      </Box>
+    </>
+  )
+}
+
+export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
   return (
     <Box w="full" {...rest}>
       <Stack
@@ -49,32 +137,6 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
         fontWeight="medium"
         as="nav"
       >
-        <HStack
-          p={['ms', 'md']}
-          order={{ md: '2' }}
-          onClick={e => e.stopPropagation()}
-          as={motion.div}
-          variants={staggeredFadeIn}
-          initial="hidden"
-          animate="show"
-        >
-          {rightSlot || (
-            <>
-              <Box as={motion.div} variants={fadeIn}>
-                <RecentTransactions />
-              </Box>
-              <Box as={motion.div} variants={fadeIn}>
-                <UserSettings />
-              </Box>
-              <Box as={motion.div} variants={fadeIn}>
-                <DarkModeToggle />
-              </Box>
-              <Box as={motion.div} variants={fadeIn}>
-                <ConnectWallet />
-              </Box>
-            </>
-          )}
-        </HStack>
         <HStack
           p={['ms', 'md']}
           spacing="lg"
@@ -88,64 +150,21 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
         >
           {leftSlot || (
             <>
-              <Box as={motion.div} variants={fadeIn}>
-                <Link as={NextLink} variant="nav" href="/" prefetch={true}>
-                  <Box display="flex" gap="1.5">
-                    {isMobile ? <BalancerLogo width="24px" /> : <BalancerLogoType width="106px" />}
-                  </Box>
-                </Link>
-              </Box>
-              <Box as={motion.div} variants={fadeIn}>
-                <Link
-                  as={NextLink}
-                  href="/pools"
-                  prefetch={true}
-                  variant="nav"
-                  color={linkColorFor('/pools')}
-                >
-                  Pools
-                </Link>
-              </Box>
-              <Box as={motion.div} variants={fadeIn}>
-                <Link
-                  as={NextLink}
-                  variant="nav"
-                  href="/swap"
-                  prefetch={true}
-                  color={linkColorFor('/swap')}
-                >
-                  Swap
-                </Link>
-              </Box>
-              <Box as={motion.div} variants={fadeIn}>
-                <Link
-                  as={NextLink}
-                  variant="nav"
-                  href="/portfolio"
-                  prefetch={true}
-                  color={linkColorFor('/portfolio')}
-                >
-                  Portfolio
-                </Link>
-              </Box>
-              <Box as={motion.div} variants={fadeIn}>
-                <VeBalLink />
-              </Box>
-              {!isProd && (
-                <Box as={motion.div} variants={fadeIn}>
-                  <Link
-                    as={NextLink}
-                    variant="nav"
-                    href="/debug"
-                    prefetch={true}
-                    color={linkColorFor('/debug')}
-                  >
-                    Debug
-                  </Link>
-                </Box>
-              )}
+              <NavLogo />
+              <NavLinks />
             </>
           )}
+        </HStack>
+        <HStack
+          p={['ms', 'md']}
+          order={{ md: '2' }}
+          onClick={e => e.stopPropagation()}
+          as={motion.div}
+          variants={staggeredFadeIn}
+          initial="hidden"
+          animate="show"
+        >
+          {rightSlot || <NavActions />}
         </HStack>
       </Stack>
     </Box>

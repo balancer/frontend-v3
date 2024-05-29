@@ -62,7 +62,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     [pool.id, removalType]
   )
 
-  const totalUsdFromBprPrice = bn(humanBptIn).times(bptPrice).toFixed(2)
+  const totalUsdFromBprPrice = bn(humanBptIn).times(bptPrice).toFixed()
 
   const setProportionalType = () => setRemovalType(RemoveLiquidityType.Proportional)
   const setSingleTokenType = () => setRemovalType(RemoveLiquidityType.SingleToken)
