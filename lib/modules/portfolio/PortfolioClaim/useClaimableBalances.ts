@@ -1,5 +1,5 @@
 import { getChainId } from '@/lib/config/app.config'
-import { bn, fNum } from '@/lib/shared/utils/numbers'
+import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
 import { Address, formatUnits } from 'viem'
