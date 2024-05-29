@@ -106,7 +106,6 @@ function aprFormat(apr: Numberish): string {
 // Formats a slippage value as a percentage.
 function slippageFormat(slippage: Numberish): string {
   if (isSmallPercentage(slippage, { isPercentage: true })) return SMALL_PERCENTAGE_LABEL
-  /* slippage is already a percentage so we divide by 100 so that slippageFormat('10') is '10%' */
   return numeral(bn(slippage).div(100)).format(SLIPPAGE_FORMAT)
 }
 
