@@ -28,7 +28,7 @@ export function useSwapStep({
   simulationQuery,
   swapState,
   swapAction,
-  isNativeAssetIn,
+  wethIsEth,
   tokenInInfo,
   tokenOutInfo,
 }: SwapStepParams): TransactionStep {
@@ -39,7 +39,7 @@ export function useSwapStep({
   const buildSwapQuery = useBuildSwapQuery({
     handler,
     simulationQuery,
-    isNativeAssetIn,
+    wethIsEth,
     swapState,
     enabled: isBuildQueryEnabled,
   })
