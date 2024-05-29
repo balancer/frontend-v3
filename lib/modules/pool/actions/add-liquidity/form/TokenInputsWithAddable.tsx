@@ -72,7 +72,7 @@ export function TokenInputsWithAddable({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [totalUSDValue, wantsProportional])
 
-  function handleWantProportional() {
+  function handleWantsProportional() {
     setWantsProportional(!wantsProportional)
     clearAmountsIn()
   }
@@ -93,19 +93,17 @@ export function TokenInputsWithAddable({
             </Box>
             <HStack spacing="xs">
               {!requiresProportionalInput && canMaximizeForProportionalInput ? (
-                <>
-                  <Text
-                    fontSize="sm"
+                <Text fontSize="sm" color="grayText">
+                  <Box
+                    as="span"
                     color="font.highlight"
-                    onClick={handleWantProportional}
+                    onClick={handleWantsProportional}
                     cursor="pointer"
                   >
-                    {`${wantsProportional ? 'Proportional' : 'Total'}`}
-                  </Text>
-                  <Text fontSize="sm" color="grayText">
-                    addable pool tokens
-                  </Text>
-                </>
+                    {`${wantsProportional ? 'Proportional ' : 'Total '}`}
+                  </Box>
+                  addable pool tokens
+                </Text>
               ) : (
                 <Text fontSize="sm" color="grayText">
                   Addable pool tokens
