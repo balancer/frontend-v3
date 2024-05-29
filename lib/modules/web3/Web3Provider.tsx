@@ -24,6 +24,8 @@ import {
   polygon,
   polygonZkEvm,
   sepolia,
+  mode,
+  fraxtal,
 } from 'wagmi/chains'
 
 import { keyBy, merge } from 'lodash'
@@ -62,6 +64,8 @@ const rpcOverrides: Record<GqlChain, string | undefined> = {
   [GqlChain.Polygon]: undefined,
   [GqlChain.Zkevm]: undefined,
   [GqlChain.Sepolia]: undefined,
+  [GqlChain.Mode]: undefined,
+  [GqlChain.Fraxtal]: undefined,
 }
 
 const gqlChainToWagmiChainMap = {
@@ -75,6 +79,8 @@ const gqlChainToWagmiChainMap = {
   [GqlChain.Polygon]: { iconUrl: '/images/chains/POLYGON.svg', ...polygon },
   [GqlChain.Zkevm]: { iconUrl: '/images/chains/ZKEVM.svg', ...polygonZkEvm },
   [GqlChain.Sepolia]: sepolia,
+  [GqlChain.Mode]: { iconUrl: '/images/chains/MODE.svg', ...mode },
+  [GqlChain.Fraxtal]: { iconUrl: '/images/chains/FRAXTAL.svg', ...fraxtal },
 } as const satisfies Record<GqlChain, Chain>
 
 export const supportedNetworks = getProjectConfig().supportedNetworks
