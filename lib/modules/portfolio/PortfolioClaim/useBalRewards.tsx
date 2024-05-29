@@ -4,7 +4,7 @@ import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
 import { Address, formatUnits } from 'viem'
-import { useReadContracts } from 'wagmi'
+import { useReadContracts, type UseReadContractsReturnType } from 'wagmi'
 import { BPT_DECIMALS } from '../../pool/pool.constants'
 import { PoolListItem } from '../../pool/pool.types'
 import { getPoolsByGaugesMap } from '../../pool/pool.utils'
@@ -45,7 +45,7 @@ export function useBalTokenRewards(pools: PoolListItem[]) {
       }
     }) || []
 
-  const { data, refetch, isLoading } = useReadContracts({
+  const { data, refetch, isLoading }: UseReadContractsReturnType = useReadContracts({
     contracts: balIncentivesRequests,
     query: { enabled: isConnected },
   })
