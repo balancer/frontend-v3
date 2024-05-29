@@ -34,7 +34,7 @@ const networkConfig: NetworkConfig = {
     },
   },
   contracts: {
-    multicall2: '0x2dc0e2aa608532da689e89e237df582b783e552c', // TODO: check
+    multicall2: '0xca11bde05977b3631167028862be2a173976ca11', // TODO: this is v3, check if it works
     balancer: {
       vaultV2: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
       relayerV6: '0xb541765F540447646A9545E0A4800A0Bacf9E13D',
