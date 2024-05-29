@@ -11,7 +11,6 @@ import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMod
 import {
   swapFeesTooltipText,
   useAprTooltip,
-  baseAprTooltipText,
   inherentTokenYieldTooltipText,
   extraBalTooltipText,
 } from '@/lib/shared/hooks/useAprTooltip'
@@ -127,7 +126,7 @@ function BaseAprTooltip({
                       title={item.title}
                       apr={item.apr}
                       aprOpacity={1}
-                      tooltipText={baseAprTooltipText}
+                      tooltipText={item.tooltipText}
                       bg="background.level3"
                     />
                   )
