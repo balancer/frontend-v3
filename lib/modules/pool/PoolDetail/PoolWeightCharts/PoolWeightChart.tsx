@@ -17,6 +17,7 @@ import Image from 'next/image'
 import ReactECharts from 'echarts-for-react'
 import * as echarts from 'echarts/core'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 export interface PoolWeightChartProps {
   pool: Pool
@@ -166,7 +167,7 @@ export function PoolWeightChart({
       ...(chartSizeValues.chartHeight && { height: chartSizeValues.chartHeight }),
       tooltip: {
         trigger: 'item',
-        show: false,
+        valueFormatter: (value: string) => fNum('weight', value, { abbreviated: false }),
       },
       animation: false,
       legend: {
@@ -180,7 +181,7 @@ export function PoolWeightChart({
       },
       series: [
         {
-          name: 'Access From',
+          name: 'Pool composition',
           type: 'pie',
           radius: ['70%', '99%'],
           itemStyle: {
