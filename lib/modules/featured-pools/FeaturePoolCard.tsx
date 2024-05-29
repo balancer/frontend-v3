@@ -2,16 +2,15 @@
 
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { FeaturedPool } from '../pool/PoolProvider'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useRouter } from 'next/navigation'
-import { HStack, VStack, Text, Box } from '@chakra-ui/react'
+import { VStack, Text, Box } from '@chakra-ui/react'
 import {
   poolClickHandler,
   poolMouseEnterHandler,
   getAprLabel,
   getPoolTypeLabel,
 } from '../pool/pool.utils'
-import PoolWeightChart from '../pool/PoolDetail/PoolWeightCharts/PoolWeightChart'
+import { PoolWeightChart } from '../pool/PoolDetail/PoolWeightCharts/PoolWeightChart'
 import { PoolName } from '../pool/PoolName'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { PoolZenGarden } from '@/lib/shared/components/zen/ZenGarden'
@@ -65,7 +64,6 @@ export function FeaturePoolCard({
   carouselDirection = 'left',
   carouselIndex = 1,
 }: Props) {
-  const { toCurrency } = useCurrency()
   const router = useRouter()
 
   const anim = isCarousel

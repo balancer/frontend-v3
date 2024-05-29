@@ -23,7 +23,7 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { PoolZenGarden } from '@/lib/shared/components/zen/ZenGarden'
-import PoolWeightChart from '../PoolWeightCharts/PoolWeightChart'
+import { PoolWeightChart } from '../PoolWeightCharts/PoolWeightChart'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
@@ -135,7 +135,7 @@ export function PoolComposition() {
         >
           <PoolZenGarden sizePx={isMobile ? '300px' : '400px'} poolType={pool.type} />
           {isLoading ? (
-            <Skeleton w="full" h="250px" />
+            <Skeleton w="full" h="full" />
           ) : (
             <Box mt={{ base: '0', md: '-6' }} p={{ base: 'sm', md: '0' }}>
               <PoolWeightChart pool={pool} chain={chain} />
