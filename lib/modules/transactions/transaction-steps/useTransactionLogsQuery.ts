@@ -78,26 +78,37 @@ export function useSwapReceipt({ txHash, userAddress, chain }: ReceiptProps & { 
   const query = useTransactionLogsQuery({ txHash, userAddress, chain })
   const { getToken } = useTokens()
 
+  /**
+   * GET SENT AMOUNT
+   */
   const nativeAssetSent = query.data.value || 0n
+
   const outgoingData = query.data.outgoing[0]
   const sentTokenValue = outgoingData?.args?.value || 0n
   const sentTokenAddress = outgoingData?.address
   const sentToken = getToken(sentTokenAddress, chain)
+
   const sentHumanAmountWithAddress = bn(sentTokenValue).gt(0)
     ? _toHumanAmountWithAddress(sentTokenAddress, outgoingData?.args?.value, sentToken?.decimals)
     : bn(nativeAssetSent).gt(0)
     ? _toHumanAmountWithAddress(getNativeAssetAddress(chain), nativeAssetSent, 18)
     : { tokenAddress: '', humanAmount: '' }
 
+  /**
+   * GET RECEIVED AMOUNT
+   */
+  const nativeAssetReceived = query.data.incomingWithdawals[0]?.args?.wad || 0n
+
   const incomingData = query.data.incoming[0]
   const receivedTokenValue = incomingData?.args?.value || 0n
   const receivedTokenAddress = incomingData?.address
   const receivedToken = getToken(receivedTokenAddress, chain)
-  const receivedHumanAmountWithAddress = _toHumanAmountWithAddress(
-    receivedTokenAddress,
-    incomingData?.args?.value,
-    receivedToken?.decimals
-  )
+
+  const receivedHumanAmountWithAddress = bn(receivedTokenValue).gt(0)
+    ? _toHumanAmountWithAddress(receivedTokenAddress, receivedTokenValue, receivedToken?.decimals)
+    : bn(nativeAssetReceived).gt(0)
+    ? _toHumanAmountWithAddress(getNativeAssetAddress(chain), nativeAssetReceived, 18)
+    : { tokenAddress: '', humanAmount: '' }
 
   if (!userAddress) {
     return {
@@ -157,13 +168,17 @@ export function useTransactionLogsQuery({
       }),
   })
 
-  // Catches when the native asset is received from the vault.
+  // Catches when the wNativeAsset is withdrawn from the vault, assumption is
+  // that his means the user is getting the same value in the native asset.
+  // TODO V3 - This works for v2 vault but may not work for v3
   const incomingWithdawalsQuery = useQuery({
     queryKey: ['tx.logs.incoming.withdrawals', userAddress, receipt.data?.blockHash],
     queryFn: () =>
       viemClient.getLogs({
+        address: networkConfig.tokens.addresses.wNativeAsset,
         blockHash: receipt?.data?.blockHash,
-        address: networkConfig.contracts.balancer.vaultV2,
+        event: parseAbiItem('event Withdrawal(address indexed src, uint256 wad)'),
+        args: { src: networkConfig.contracts.balancer.vaultV2 },
       }),
   })
 
@@ -184,10 +199,6 @@ export function useTransactionLogsQuery({
       incomingWithdawalsQuery.data?.filter(log => isSameAddress(log.transactionHash, txHash)) || [],
     [incomingWithdawalsQuery.data, txHash]
   )
-
-  useEffect(() => {
-    console.log('incomingWithdawalsData', incomingWithdawalsData, receipt)
-  }, [incomingWithdawalsData])
 
   return {
     error:
