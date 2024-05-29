@@ -137,9 +137,7 @@ export function PoolComposition() {
           {isLoading ? (
             <Skeleton w="full" h="full" />
           ) : (
-            <Box mt={{ base: '0', md: '-6' }} p={{ base: 'sm', md: '0' }}>
-              <PoolWeightChart pool={pool} chain={chain} />
-            </Box>
+            <PoolWeightChart pool={pool} chain={chain} />
           )}
         </NoisyCard>
       </Stack>
