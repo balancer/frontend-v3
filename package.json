@@ -78,7 +78,7 @@
     "use-debounce": "^10.0.0",
     "use-sound": "^4.0.1",
     "usehooks-ts": "^2.9.2",
-    "viem": "^2.13.1",
+    "viem": "^2.7.6",
     "wagmi": "^2.5.20"
   },
   "devDependencies": {

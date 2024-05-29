@@ -150,7 +150,7 @@ importers:
         specifier: ^2.9.2
         version: 2.9.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       viem:
-        specifier: ^2.13.1
+        specifier: ^2.7.6
         version: 2.13.1(bufferutil@4.0.8)(typescript@5.4.5)(zod@3.22.4)
       wagmi:
         specifier: ^2.5.20
