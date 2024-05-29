@@ -1,7 +1,7 @@
 'use client'
 
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { FeaturedPool, Pool } from '../../PoolProvider'
+import { FeaturedPool } from '../../PoolProvider'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 import { Box, VStack, useTheme } from '@chakra-ui/react'
@@ -137,7 +137,7 @@ function InnerSymbolCircle({ opacity }: { opacity: string; isSmall: boolean }) {
   )
 }
 
-export function PoolWeightChart({
+export function FeaturedPoolWeightChart({
   pool,
   chain,
   hasLegend,

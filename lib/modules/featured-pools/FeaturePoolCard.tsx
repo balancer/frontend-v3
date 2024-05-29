@@ -10,11 +10,11 @@ import {
   getAprLabel,
   getPoolTypeLabel,
 } from '../pool/pool.utils'
-import { PoolWeightChart } from '../pool/PoolDetail/PoolWeightCharts/PoolWeightChart'
 import { PoolName } from '../pool/PoolName'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { PoolZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import { motion } from 'framer-motion'
+import { FeaturedPoolWeightChart } from '../pool/PoolDetail/PoolWeightCharts/FeaturedPoolWeightChart'
 
 interface Props {
   pool: FeaturedPool
@@ -127,7 +127,12 @@ export function FeaturePoolCard({
               </Text>
             </Box>
             <Box>
-              <PoolWeightChart pool={pool} chain={chain} hasLegend={hasLegend} isSmall={isSmall} />
+              <FeaturedPoolWeightChart
+                pool={pool}
+                chain={chain}
+                hasLegend={hasLegend}
+                isSmall={isSmall}
+              />
             </Box>
             <VStack spacing="0" zIndex={1}>
               <Box mb="1" px="2">
