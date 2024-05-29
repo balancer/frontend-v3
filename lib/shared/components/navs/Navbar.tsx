@@ -8,11 +8,12 @@ import { BalancerLogo } from '../imgs/BalancerLogo'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { UserSettings } from '@/lib/modules/user/settings/UserSettings'
 import RecentTransactions from '../other/RecentTransactions'
-import { usePathname } from 'next/navigation'
 import { isProd } from '@/lib/config/app.config'
 import { staggeredFadeIn, fadeIn } from '@/lib/shared/utils/animations'
 import { motion } from 'framer-motion'
 import { VebalRedirectModal } from '@/lib/modules/vebal/VebalRedirectModal'
+import { MobileNav } from './MobileNav'
+import { useNav } from './useNav'
 
 type Props = {
   leftSlot?: React.ReactNode
@@ -33,47 +34,23 @@ function VeBalLink() {
 }
 
 function NavLinks({ ...props }: BoxProps) {
-  const pathname = usePathname()
-
-  function linkColorFor(path: string) {
-    return pathname === path ? 'font.highlight' : 'font.primary'
-  }
+  const { appLinks, linkColorFor } = useNav()
 
   return (
     <HStack spacing="lg" fontWeight="medium" {...props}>
-      <Box as={motion.div} variants={fadeIn}>
-        <Link
-          as={NextLink}
-          href="/pools"
-          prefetch={true}
-          variant="nav"
-          color={linkColorFor('/pools')}
-        >
-          Pools
-        </Link>
-      </Box>
-      <Box as={motion.div} variants={fadeIn}>
-        <Link
-          as={NextLink}
-          variant="nav"
-          href="/swap"
-          prefetch={true}
-          color={linkColorFor('/swap')}
-        >
-          Swap
-        </Link>
-      </Box>
-      <Box as={motion.div} variants={fadeIn}>
-        <Link
-          as={NextLink}
-          variant="nav"
-          href="/portfolio"
-          prefetch={true}
-          color={linkColorFor('/portfolio')}
-        >
-          Portfolio
-        </Link>
-      </Box>
+      {appLinks.map(link => (
+        <Box key={link.href} as={motion.div} variants={fadeIn}>
+          <Link
+            as={NextLink}
+            href={link.href}
+            prefetch={true}
+            variant="nav"
+            color={linkColorFor(link.href)}
+          >
+            {link.label}
+          </Link>
+        </Box>
+      ))}
       <Box as={motion.div} variants={fadeIn}>
         <VeBalLink />
       </Box>
@@ -114,17 +91,20 @@ function NavLogo() {
 function NavActions() {
   return (
     <>
-      <Box as={motion.div} variants={fadeIn}>
+      <Box as={motion.div} variants={fadeIn} display={{ base: 'none', lg: 'block' }}>
         <RecentTransactions />
       </Box>
-      <Box as={motion.div} variants={fadeIn}>
+      <Box as={motion.div} variants={fadeIn} display={{ base: 'none', lg: 'block' }}>
         <UserSettings />
       </Box>
-      <Box as={motion.div} variants={fadeIn}>
+      <Box as={motion.div} variants={fadeIn} display={{ base: 'none', lg: 'block' }}>
         <DarkModeToggle />
       </Box>
       <Box as={motion.div} variants={fadeIn}>
         <ConnectWallet />
+      </Box>
+      <Box as={motion.div} variants={fadeIn} display={{ base: 'block', lg: 'none' }}>
+        <MobileNav />
       </Box>
     </>
   )

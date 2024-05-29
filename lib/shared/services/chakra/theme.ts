@@ -1409,6 +1409,25 @@ export const balTheme = {
         size: 'md',
       },
     },
+    Drawer: {
+      baseStyle: {
+        closeButton: {
+          top: 3,
+          color: 'font.primary',
+          rounded: 'full',
+        },
+        header: {
+          color: 'font.primary',
+        },
+        overlay: {
+          bg: 'rgba(0,0,0,0.85)',
+          backdropFilter: 'blur(4px)',
+          _dark: {
+            bg: 'rgba(0,0,0,0.7)',
+          },
+        },
+      },
+    },
     Popover: {
       baseStyle: {
         content: {
