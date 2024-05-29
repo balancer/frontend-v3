@@ -91,19 +91,27 @@ export function TokenInputsWithAddable({
             <Box as="span" color="grayText">
               <WalletIcon size={18} />
             </Box>
-            <Text fontSize="sm" color="grayText">
-              Addable pool tokens
-            </Text>
-            {!requiresProportionalInput && canMaximizeForProportionalInput && (
-              <Text
-                fontSize="md"
-                color="font.highlight"
-                onClick={handleWantProportional}
-                cursor="pointer"
-              >
-                {`${wantsProportional ? 'Proportional' : 'Custom'}`}
-              </Text>
-            )}
+            <HStack spacing="xs">
+              {!requiresProportionalInput && canMaximizeForProportionalInput ? (
+                <>
+                  <Text
+                    fontSize="sm"
+                    color="font.highlight"
+                    onClick={handleWantProportional}
+                    cursor="pointer"
+                  >
+                    {`${wantsProportional ? 'Proportional' : 'Total'}`}
+                  </Text>
+                  <Text fontSize="sm" color="grayText">
+                    addable pool tokens
+                  </Text>
+                </>
+              ) : (
+                <Text fontSize="sm" color="grayText">
+                  Addable pool tokens
+                </Text>
+              )}
+            </HStack>
             <Spacer />
             {canMaximize && (
               <>
