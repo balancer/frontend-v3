@@ -10,7 +10,9 @@ import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { getChainId, getNativeAssetAddress, getNetworkConfig } from '@/lib/config/app.config'
 import { bn } from '@/lib/shared/utils/numbers'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
+import { emptyAddress } from '../../web3/contracts/wagmi-helpers'
+import { HumanAmount } from '@balancer/sdk'
 
 const userNotConnected = 'User is not connected'
 
@@ -88,11 +90,11 @@ export function useSwapReceipt({ txHash, userAddress, chain }: ReceiptProps & { 
   const sentTokenAddress = outgoingData?.address
   const sentToken = getToken(sentTokenAddress, chain)
 
-  const sentHumanAmountWithAddress = bn(sentTokenValue).gt(0)
+  const sentHumanAmountWithAddress: HumanTokenAmountWithAddress = bn(sentTokenValue).gt(0)
     ? _toHumanAmountWithAddress(sentTokenAddress, outgoingData?.args?.value, sentToken?.decimals)
     : bn(nativeAssetSent).gt(0)
     ? _toHumanAmountWithAddress(getNativeAssetAddress(chain), nativeAssetSent, 18)
-    : { tokenAddress: '', humanAmount: '' }
+    : { tokenAddress: emptyAddress, humanAmount: '0' as HumanAmount }
 
   /**
    * GET RECEIVED AMOUNT
@@ -108,7 +110,7 @@ export function useSwapReceipt({ txHash, userAddress, chain }: ReceiptProps & { 
     ? _toHumanAmountWithAddress(receivedTokenAddress, receivedTokenValue, receivedToken?.decimals)
     : bn(nativeAssetReceived).gt(0)
     ? _toHumanAmountWithAddress(getNativeAssetAddress(chain), nativeAssetReceived, 18)
-    : { tokenAddress: '', humanAmount: '' }
+    : { tokenAddress: emptyAddress, humanAmount: '0' as HumanAmount }
 
   if (!userAddress) {
     return {
