@@ -5,7 +5,6 @@ import BigNumber from 'bignumber.js'
 import numeral from 'numeral'
 import { KeyboardEvent } from 'react'
 import { formatUnits } from 'viem'
-import { b } from 'vitest/dist/suite-xGC-mxBC'
 
 // Allows calling JSON.stringify with bigints
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#use_within_json
