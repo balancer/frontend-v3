@@ -326,10 +326,9 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     return parseUnits(amount, token.decimals)
   }
 
-  const isNativeAssetIn = isSameAddress(
-    swapState.tokenIn.address,
-    networkConfig.tokens.nativeAsset.address
-  )
+  const wethIsEth =
+    isSameAddress(swapState.tokenIn.address, networkConfig.tokens.nativeAsset.address) ||
+    isSameAddress(swapState.tokenOut.address, networkConfig.tokens.nativeAsset.address)
   const validAmountOut = bn(swapState.tokenOut.amount).gt(0)
 
   const vaultVersion = (simulationQuery.data as SdkSimulateSwapResponse)?.vaultVersion || 2
@@ -360,7 +359,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     swapState,
     handler,
     simulationQuery,
-    isNativeAssetIn,
+    wethIsEth,
     swapAction,
     tokenInInfo,
     tokenOutInfo,
@@ -457,7 +456,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     disabledReason,
     previewModalDisclosure,
     handler,
-    isNativeAssetIn,
+    wethIsEth,
     swapAction,
     urlTxHash,
     swapTxHash,

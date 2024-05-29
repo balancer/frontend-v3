@@ -70,7 +70,7 @@ export function TokenIcon({
       style={{
         borderRadius: '100%',
         border,
-        backgroundColor: 'white',
+        backgroundColor: 'transparent',
         width: `${size}px`,
         height: `${size}px`,
       }}

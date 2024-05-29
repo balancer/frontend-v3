@@ -9,18 +9,18 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
-  Text,
-  UnorderedList,
-  ListItem,
   Checkbox,
   Button,
   VStack,
   ModalFooter,
+  Box,
+  Link,
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useUserSettings } from '../user/settings/UserSettingsProvider'
 import { useUserAccount } from './UserAccountProvider'
 import { useDisconnect } from 'wagmi'
+import NextLink from 'next/link'
 
 export function AcceptPoliciesModal() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -67,20 +67,35 @@ export function AcceptPoliciesModal() {
         <ModalCloseButton />
         <ModalBody>
           <VStack align="flex-start" gap="md">
-            <Text>By connecting a wallet, you agree to Balancer Foundation’s:</Text>
-            <UnorderedList color="font.primary">
-              <ListItem>Terms of Use</ListItem>
-              <ListItem>Privacy Policy</ListItem>
-              <ListItem>Cookies Policy</ListItem>
-              <ListItem>Risks</ListItem>
-              <ListItem>3rd party services</ListItem>
-            </UnorderedList>
             <Checkbox
               size="lg"
               isChecked={isChecked}
               onChange={e => setIsChecked(e.target.checked)}
+              alignItems="start"
             >
-              <Text fontSize="md">I agree</Text>
+              <Box fontSize="md" color="font.primary" mt="-3px">
+                By connecting my wallet, I agree to Balancer Foundation&apos;s{' '}
+                <Link as={NextLink} href="/terms-of-use">
+                  Terms of Use
+                </Link>
+                ,{' '}
+                <Link as={NextLink} href="/risks">
+                  Risks
+                </Link>
+                ,{' '}
+                <Link as={NextLink} href="/cookies-policy">
+                  Cookies Policy
+                </Link>
+                , use of{' '}
+                <Link as={NextLink} href="/3rd-party-services">
+                  3rd party services
+                </Link>{' '}
+                and{' '}
+                <Link as={NextLink} href="/privacy-policy">
+                  Privacy Policy
+                </Link>
+                .
+              </Box>
             </Checkbox>
           </VStack>
         </ModalBody>

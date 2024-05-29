@@ -4,6 +4,7 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { orderBy } from 'lodash'
 import { useTokenBalances } from '../../TokenBalancesProvider'
 import { exclNativeAssetFilter, nativeAssetFilter } from '../../token.helpers'
+import { useCallback, useMemo } from 'react'
 
 export function useTokenSelectList(
   chain: GqlChain,
@@ -21,7 +22,7 @@ export function useTokenSelectList(
   const nameMatch = (token: GqlToken, searchTerm: string) =>
     token.name.toLowerCase().includes(searchTerm.toLowerCase())
 
-  const getFilteredTokens = () => {
+  const getFilteredTokens = useCallback(() => {
     let filteredTokens = tokens
 
     if (excludeNativeAsset) {
@@ -39,26 +40,30 @@ export function useTokenSelectList(
     }
 
     return filteredTokens
-  }
+  }, [excludeNativeAsset, searchTerm, tokens, chain])
 
-  let orderedTokens = orderBy(
-    getFilteredTokens(),
-    [
-      token => {
-        const userBalance = balanceFor(token)
-        return userBalance ? Number(usdValueForToken(token, userBalance?.formatted || 0)) : 0
-      },
-    ],
-    ['desc', 'desc']
-  )
+  const orderedTokens = useMemo(() => {
+    let _tokens = orderBy(
+      getFilteredTokens(),
+      [
+        token => {
+          const userBalance = balanceFor(token)
+          return userBalance ? Number(usdValueForToken(token, userBalance?.formatted || 0)) : 0
+        },
+      ],
+      ['desc', 'desc']
+    )
 
-  if (pinNativeAsset) {
-    const nativeAsset = orderedTokens.find(nativeAssetFilter(chain))
+    if (pinNativeAsset) {
+      const nativeAsset = _tokens.find(nativeAssetFilter(chain))
 
-    if (nativeAsset) {
-      orderedTokens = [nativeAsset, ...orderedTokens.filter(exclNativeAssetFilter(chain))]
+      if (nativeAsset) {
+        _tokens = [nativeAsset, ..._tokens.filter(exclNativeAssetFilter(chain))]
+      }
     }
-  }
+
+    return _tokens
+  }, [chain, pinNativeAsset, searchTerm, tokens])
 
   return {
     orderedTokens,

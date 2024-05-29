@@ -14,11 +14,11 @@ describe('calculates and sorts proportional human amounts in', () => {
     expect(humanAmountsIn).toEqual([
       {
         tokenAddress: usdcAddress,
-        humanAmount: '100.00000',
+        humanAmount: '100',
       },
       {
         tokenAddress: daiAddress,
-        humanAmount: '93.57184',
+        humanAmount: '93.571836178454023742',
       },
     ])
   })
@@ -32,11 +32,11 @@ describe('calculates and sorts proportional human amounts in', () => {
     expect(humanAmountsIn).toEqual([
       {
         tokenAddress: daiAddress,
-        humanAmount: '50.00000',
+        humanAmount: '50',
       },
       {
         tokenAddress: usdcAddress,
-        humanAmount: '53.43488',
+        humanAmount: '53.434881',
       },
     ])
   })
