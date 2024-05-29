@@ -8,7 +8,9 @@ import { formatUnits, parseAbiItem, Address } from 'viem'
 import { useTransaction } from 'wagmi'
 import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { getChainId } from '@/lib/config/app.config'
+import { getChainId, getNativeAssetAddress, getNetworkConfig } from '@/lib/config/app.config'
+import { bn } from '@/lib/shared/utils/numbers'
+import { useEffect, useMemo } from 'react'
 
 const userNotConnected = 'User is not connected'
 
@@ -76,16 +78,19 @@ export function useSwapReceipt({ txHash, userAddress, chain }: ReceiptProps & { 
   const query = useTransactionLogsQuery({ txHash, userAddress, chain })
   const { getToken } = useTokens()
 
+  const nativeAssetSent = query.data.value || 0n
   const outgoingData = query.data.outgoing[0]
+  const sentTokenValue = outgoingData?.args?.value || 0n
   const sentTokenAddress = outgoingData?.address
   const sentToken = getToken(sentTokenAddress, chain)
-  const sentHumanAmountWithAddress = _toHumanAmountWithAddress(
-    sentTokenAddress,
-    outgoingData?.args?.value,
-    sentToken?.decimals
-  )
+  const sentHumanAmountWithAddress = bn(sentTokenValue).gt(0)
+    ? _toHumanAmountWithAddress(sentTokenAddress, outgoingData?.args?.value, sentToken?.decimals)
+    : bn(nativeAssetSent).gt(0)
+    ? _toHumanAmountWithAddress(getNativeAssetAddress(chain), nativeAssetSent, 18)
+    : { tokenAddress: '', humanAmount: '' }
 
   const incomingData = query.data.incoming[0]
+  const receivedTokenValue = incomingData?.args?.value || 0n
   const receivedTokenAddress = incomingData?.address
   const receivedToken = getToken(receivedTokenAddress, chain)
   const receivedHumanAmountWithAddress = _toHumanAmountWithAddress(
@@ -124,10 +129,11 @@ export function useTransactionLogsQuery({
   chain,
 }: ReceiptProps & { chain: GqlChain }) {
   const chainId = getChainId(chain)
+  const networkConfig = getNetworkConfig(chain)
   const viemClient = getViemClient(chain)
   const receipt = useTransaction({ hash: txHash, chainId })
 
-  const outgoingLogsQuery = useQuery({
+  const outgoingTransfersQuery = useQuery({
     queryKey: ['tx.logs.outgoing', userAddress, receipt.data?.blockHash],
     queryFn: () =>
       viemClient.getLogs({
@@ -139,8 +145,8 @@ export function useTransactionLogsQuery({
       }),
   })
 
-  const incomingLogsQuery = useQuery({
-    queryKey: ['tx.logs.incoming', userAddress, receipt.data?.blockHash],
+  const incomingTransfersQuery = useQuery({
+    queryKey: ['tx.logs.incoming.transfers', userAddress, receipt.data?.blockHash],
     queryFn: () =>
       viemClient.getLogs({
         blockHash: receipt?.data?.blockHash,
@@ -151,15 +157,54 @@ export function useTransactionLogsQuery({
       }),
   })
 
-  const outgoingData =
-    outgoingLogsQuery.data?.filter(log => isSameAddress(log.transactionHash, txHash)) || []
+  // Catches when the native asset is received from the vault.
+  const incomingWithdawalsQuery = useQuery({
+    queryKey: ['tx.logs.incoming.withdrawals', userAddress, receipt.data?.blockHash],
+    queryFn: () =>
+      viemClient.getLogs({
+        blockHash: receipt?.data?.blockHash,
+        address: networkConfig.contracts.balancer.vaultV2,
+      }),
+  })
 
-  const incomingData =
-    incomingLogsQuery.data?.filter(log => isSameAddress(log.transactionHash, txHash)) || []
+  const outgoingTransfersData = useMemo(
+    () =>
+      outgoingTransfersQuery.data?.filter(log => isSameAddress(log.transactionHash, txHash)) || [],
+    [outgoingTransfersQuery.data, txHash]
+  )
+
+  const incomingTransfersData = useMemo(
+    () =>
+      incomingTransfersQuery.data?.filter(log => isSameAddress(log.transactionHash, txHash)) || [],
+    [incomingTransfersQuery.data, txHash]
+  )
+
+  const incomingWithdawalsData = useMemo(
+    () =>
+      incomingWithdawalsQuery.data?.filter(log => isSameAddress(log.transactionHash, txHash)) || [],
+    [incomingWithdawalsQuery.data, txHash]
+  )
+
+  useEffect(() => {
+    console.log('incomingWithdawalsData', incomingWithdawalsData, receipt)
+  }, [incomingWithdawalsData])
 
   return {
-    error: receipt.error || outgoingLogsQuery.error || incomingLogsQuery.error,
-    isLoading: receipt.isLoading || outgoingLogsQuery.isLoading || incomingLogsQuery.isLoading,
-    data: { outgoing: outgoingData, incoming: incomingData },
+    error:
+      receipt.error ||
+      outgoingTransfersQuery.error ||
+      incomingTransfersQuery.error ||
+      incomingWithdawalsQuery.error,
+    isLoading:
+      receipt.isLoading ||
+      outgoingTransfersQuery.isLoading ||
+      incomingTransfersQuery.isLoading ||
+      incomingWithdawalsQuery.isLoading,
+    data: {
+      value: receipt?.data?.value,
+      outgoing: outgoingTransfersData,
+      incoming: incomingTransfersData,
+      incomingWithdawals: incomingWithdawalsData,
+    },
   }
 }
