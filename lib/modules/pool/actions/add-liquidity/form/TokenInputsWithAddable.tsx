@@ -1,7 +1,18 @@
+/* eslint-disable max-len */
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { Alert, AlertIcon, Card, HStack, Spacer, VStack, Text, Box } from '@chakra-ui/react'
+import {
+  Alert,
+  AlertIcon,
+  Card,
+  HStack,
+  Spacer,
+  VStack,
+  Text,
+  Box,
+  Tooltip,
+} from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { XOctagon } from 'react-feather'
 import { useAddLiquidity } from '../AddLiquidityProvider'
@@ -134,14 +145,22 @@ export function TokenInputsWithAddable({
               </>
             )}
             {!canMaximize && (
-              <HStack>
-                <Text fontSize="sm" color="red.400">
-                  {toCurrency('0', { abbreviated: false })}
-                </Text>
-                <Box color="red.400">
-                  <XOctagon size={14} />
-                </Box>
-              </HStack>
+              <Tooltip
+                label={
+                  requiresProportionalInput
+                    ? 'For pools that require proportional liquidity, you need a balance above zero for every token in order to add any liquidity.'
+                    : 'You have no eligible tokens that can be added to this pool. Go swap to get at least one pool token. '
+                }
+              >
+                <HStack align="flex-start">
+                  <Text fontSize="sm" color="red.400">
+                    {toCurrency('0', { abbreviated: false })}
+                  </Text>
+                  <Box color="red.400">
+                    <XOctagon size={14} />
+                  </Box>
+                </HStack>
+              </Tooltip>
             )}
           </HStack>
         </Card>
