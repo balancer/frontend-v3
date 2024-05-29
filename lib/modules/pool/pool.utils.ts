@@ -27,6 +27,8 @@ export enum ChainSlug {
   Zkevm = 'zkevm',
   Gnosis = 'gnosis',
   Sepolia = 'sepolia',
+  Mode = 'mode',
+  Fraxtal = 'fraxtal',
 }
 
 // Maps GraphQL chain enum to URL slug
@@ -41,6 +43,8 @@ export const chainToSlugMap: Record<GqlChain, ChainSlug> = {
   [GqlChain.Zkevm]: ChainSlug.Zkevm,
   [GqlChain.Gnosis]: ChainSlug.Gnosis,
   [GqlChain.Sepolia]: ChainSlug.Sepolia,
+  [GqlChain.Mode]: ChainSlug.Mode,
+  [GqlChain.Fraxtal]: ChainSlug.Fraxtal,
 }
 export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlChain>
 

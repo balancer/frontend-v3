@@ -1,9 +1,9 @@
 import { getChainId } from '@/lib/config/app.config'
-import { bn, fNum } from '@/lib/shared/utils/numbers'
+import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
 import { Address, formatUnits } from 'viem'
-import { useReadContracts } from 'wagmi'
+import { useReadContracts, type UseReadContractsReturnType } from 'wagmi'
 import { PoolListItem } from '../../pool/pool.types'
 import { useTokens } from '../../tokens/TokensProvider'
 import { AbiMap } from '../../web3/contracts/AbiMap'
@@ -66,7 +66,7 @@ export function useClaimableBalances(pools: PoolListItem[]) {
     }
   })
 
-  const { data, refetch, isLoading } = useReadContracts({
+  const { data, refetch, isLoading }: UseReadContractsReturnType = useReadContracts({
     contracts: poolsRewardTokensRequests,
     query: { enabled: isConnected },
   })
