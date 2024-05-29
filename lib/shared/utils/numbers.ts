@@ -43,8 +43,8 @@ export const BN_LOWER_THRESHOLD = 0.000001
 // Display <0.001 for small amounts
 export const AMOUNT_LOWER_THRESHOLD = 0.001
 export const SMALL_AMOUNT_LABEL = '<0.001'
-// Display <0.01% for small percentages
-export const PERCENTAGE_LOWER_THRESHOLD = 0.01
+// Display <0.01% for small percentages)
+export const PERCENTAGE_LOWER_THRESHOLD = 0.0001
 export const SMALL_PERCENTAGE_LABEL = '<0.01%'
 
 const NUMERAL_DECIMAL_LIMIT = 9
@@ -97,15 +97,15 @@ function tokenFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): s
 
 // Formats an APR value as a percentage.
 function aprFormat(apr: Numberish): string {
-  if (bn(apr).lt(APR_LOWER_THRESHOLD)) return '0.00%'
   if (bn(apr).gt(APR_UPPER_THRESHOLD)) return '-'
+  if (isSmallPercentage(apr)) return SMALL_PERCENTAGE_LABEL
 
   return numeral(apr.toString()).format(APR_FORMAT)
 }
 
 // Formats a slippage value as a percentage.
 function slippageFormat(slippage: Numberish): string {
-  if (isSmallPercentage(slippage)) return SMALL_PERCENTAGE_LABEL
+  if (isSmallPercentage(slippage, { isPercentage: true })) return SMALL_PERCENTAGE_LABEL
   return numeral(bn(slippage).div(100)).format(SLIPPAGE_FORMAT)
 }
 
@@ -130,7 +130,6 @@ function priceImpactFormat(val: Numberish): string {
 
 // Formats an integer value as a percentage.
 function integerPercentageFormat(val: Numberish): string {
-  if (isSmallPercentage(val)) return SMALL_PERCENTAGE_LABEL
   return numeral(val.toString()).format(INTEGER_PERCENTAGE_FORMAT)
 }
 
@@ -196,8 +195,13 @@ function isSmallAmount(value: Numberish): boolean {
   return !isZero(value) && bn(value).lt(AMOUNT_LOWER_THRESHOLD)
 }
 
-function isSmallPercentage(value: Numberish): boolean {
-  return !isZero(value) && bn(value).lte(PERCENTAGE_LOWER_THRESHOLD)
+function isSmallPercentage(
+  value: Numberish,
+  { isPercentage = false }: { isPercentage?: boolean } = {}
+): boolean {
+  // if the value is already a percentage (like in slippageFormat) we divide by 100 so that slippageFormat('10') is '10%'
+  const val = isPercentage ? bn(value).div(100) : bn(value)
+  return !isZero(value) && val.lt(PERCENTAGE_LOWER_THRESHOLD)
 }
 
 export function isSuperSmallAmount(value: Numberish): boolean {
