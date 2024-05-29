@@ -43,7 +43,7 @@ export interface BuildSwapInputs extends SwapState {
   account: Address
   slippagePercent: string
   simulateResponse: SimulateSwapResponse
-  isNativeAssetIn: boolean
+  wethIsEth: boolean
 }
 
 export interface SdkBuildSwapInputs extends BuildSwapInputs {
