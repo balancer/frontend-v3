@@ -9,8 +9,8 @@ import { SECONDS_IN_DAY } from '@/test/utils/numbers'
 import { sumBy } from 'lodash'
 import { useTokens } from '../../../../tokens/TokensProvider'
 import { usePool } from '../../../PoolProvider'
-import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
 import { bn } from '@/lib/shared/utils/numbers'
+import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
 
 export type PoolStatsValues = {
   totalLiquidity: string
@@ -23,7 +23,7 @@ export function PoolSnapshotValues() {
   const { toCurrency } = useCurrency()
   const { priceFor, getToken } = useTokens()
 
-  const MemoizedAprTooltip = memo(AprTooltip)
+  const MemoizedMainAprTooltip = memo(MainAprTooltip)
 
   const currentRewards = pool.staking?.gauge?.rewards || []
 
@@ -71,7 +71,7 @@ export function PoolSnapshotValues() {
         <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
           APR for LPs
         </Text>
-        <MemoizedAprTooltip
+        <MemoizedMainAprTooltip
           data={pool.dynamicData.apr}
           poolId={pool.id}
           textProps={{

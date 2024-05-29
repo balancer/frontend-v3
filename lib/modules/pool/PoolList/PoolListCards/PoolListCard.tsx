@@ -1,6 +1,6 @@
 import { Card, HStack, VStack, Text, Grid, GridItem } from '@chakra-ui/react'
 import { PoolListItem } from '../../pool.types'
-import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
+import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
 import { ReactNode, isValidElement, memo } from 'react'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -37,7 +37,7 @@ function StatCard({ label, value }: { label: ReactNode; value: ReactNode }) {
   )
 }
 
-const MemoizedAprTooltip = memo(AprTooltip)
+const MemoizedMainAprTooltip = memo(MainAprTooltip)
 
 export function PoolListCard({ pool }: Props) {
   const { toCurrency } = useCurrency()
@@ -88,7 +88,7 @@ export function PoolListCard({ pool }: Props) {
                     <Text fontWeight="medium" variant="secondary" fontSize="sm">
                       APR
                     </Text>
-                    <MemoizedAprTooltip
+                    <MemoizedMainAprTooltip
                       data={pool.dynamicData.apr}
                       poolId={pool.id}
                       textProps={{ fontSize: '1rem', fontWeight: 'bold' }}

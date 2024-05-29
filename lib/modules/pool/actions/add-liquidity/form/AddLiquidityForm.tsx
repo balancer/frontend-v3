@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-
 import { TokenBalancesProvider } from '@/lib/modules/tokens/TokenBalancesProvider'
 import {
   Button,
@@ -10,7 +9,6 @@ import {
   Grid,
   GridItem,
   HStack,
-  Icon,
   Text,
   Tooltip,
   VStack,
@@ -29,7 +27,6 @@ import { requiresProportionalInput, supportsProportionalAdds } from '../../Liqui
 import { PriceImpactAccordion } from '@/lib/modules/price-impact/PriceImpactAccordion'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
 import { usePriceImpact } from '@/lib/modules/price-impact/PriceImpactProvider'
-import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { AddLiquidityFormCheckbox } from './AddLiquidityFormCheckbox'
 import { isNativeOrWrappedNative, isNativeAsset } from '@/lib/modules/tokens/token.helpers'
@@ -40,6 +37,7 @@ import { usePoolRedirect } from '../../../pool.hooks'
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
 import { PriceImpactError } from '../../../../price-impact/PriceImpactError'
 import { cannotCalculatePriceImpactError } from '@/lib/modules/price-impact/priceImpact.helpers'
+import AddLiquidityAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AddLiquidityAprTooltip'
 
 export function AddLiquidityForm() {
   const {
@@ -175,19 +173,12 @@ export function AddLiquidityForm() {
                 </Card>
               </GridItem>
               <GridItem>
-                <Card variant="subSection" w="full" p={['sm', 'ms']}>
-                  <VStack align="start" spacing="sm">
-                    <Text variant="special" fontSize="sm" lineHeight="16px" fontWeight="500">
-                      Potential weekly yield
-                    </Text>
-                    <HStack spacing="xs">
-                      <Text variant="special" fontSize="md" lineHeight="16px" fontWeight="700">
-                        {weeklyYield ? toCurrency(weeklyYield, { abbreviated: false }) : '-'}
-                      </Text>
-                      {pool.staking && <Icon as={StarsIcon} />}
-                    </HStack>
-                  </VStack>
-                </Card>
+                <AddLiquidityAprTooltip
+                  data={pool.dynamicData.apr}
+                  totalUsdValue={totalUSDValue}
+                  weeklyYield={weeklyYield}
+                  pool={pool}
+                />
               </GridItem>
             </Grid>
             {showAcceptPoolRisks && <AddLiquidityFormCheckbox />}

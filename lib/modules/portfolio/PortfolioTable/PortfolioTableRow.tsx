@@ -1,6 +1,6 @@
 import { Box, Grid, GridItem, GridProps, Text } from '@chakra-ui/react'
 import Link from 'next/link'
-import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
+import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
 import { memo } from 'react'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -15,7 +15,7 @@ interface Props extends GridProps {
   veBalBoostMap: Record<string, string>
 }
 
-const MemoizedAprTooltip = memo(AprTooltip)
+const MemoizedMainAprTooltip = memo(MainAprTooltip)
 
 export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Props) {
   const { toCurrency } = useCurrency()
@@ -66,7 +66,7 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
             </Text>
           </GridItem>
           <GridItem justifySelf="end">
-            <MemoizedAprTooltip
+            <MemoizedMainAprTooltip
               data={pool.dynamicData.apr}
               poolId={pool.id}
               textProps={{ fontWeight: 'medium' }}
