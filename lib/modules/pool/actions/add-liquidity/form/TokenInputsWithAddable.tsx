@@ -152,7 +152,7 @@ export function TokenInputsWithAddable({
                     : 'You have no eligible tokens that can be added to this pool. Go swap to get at least one pool token. '
                 }
               >
-                <HStack align="flex-start">
+                <HStack>
                   <Text fontSize="sm" color="red.400">
                     {toCurrency('0', { abbreviated: false })}
                   </Text>
