@@ -17,6 +17,7 @@ import { HumanAmount } from '@balancer/sdk'
 const userNotConnected = 'User is not connected'
 
 export type ReceiptProps = { txHash: Address; userAddress: Address }
+
 export function useAddLiquidityReceipt({ txHash, userAddress }: ReceiptProps) {
   const { chain } = usePool()
   const query = useTransactionLogsQuery({ txHash, userAddress, chain })
@@ -31,10 +32,19 @@ export function useAddLiquidityReceipt({ txHash, userAddress }: ReceiptProps) {
     }
   }
 
-  const sentTokens: HumanTokenAmountWithAddress[] = query.data.outgoing.map(log => {
+  const nativeAssetSent = query.data.value || 0n
+
+  const sentErc20Tokens: HumanTokenAmountWithAddress[] = query.data.outgoing.map(log => {
     const tokenDecimals = getToken(log.address, chain)?.decimals
     return _toHumanAmountWithAddress(log.address, log.args.value, tokenDecimals)
   })
+
+  const sentTokens = bn(nativeAssetSent).gt(0)
+    ? [
+        ...sentErc20Tokens,
+        _toHumanAmountWithAddress(getNativeAssetAddress(chain), nativeAssetSent, 18),
+      ]
+    : sentErc20Tokens
 
   const receivedBptAmount = query.data.incoming?.[0]?.args?.value
   const receivedBptUnits = formatUnits(receivedBptAmount || 0n, BPT_DECIMALS)
@@ -60,10 +70,19 @@ export function useRemoveLiquidityReceipt({ txHash, userAddress }: ReceiptProps)
       sentBptUnits: '',
     }
   }
-  const receivedTokens: HumanTokenAmountWithAddress[] = query.data.incoming.map(log => {
+  const nativeAssetReceived = query.data.incomingWithdawals[0]?.args?.wad || 0n
+
+  const receivedErc20Tokens: HumanTokenAmountWithAddress[] = query.data.incoming.map(log => {
     const tokenDecimals = getToken(log.address, chain)?.decimals
     return _toHumanAmountWithAddress(log.address, log.args.value, tokenDecimals)
   })
+
+  const receivedTokens = bn(nativeAssetReceived).gt(0)
+    ? [
+        ...receivedErc20Tokens,
+        _toHumanAmountWithAddress(getNativeAssetAddress(chain), nativeAssetReceived, 18),
+      ]
+    : receivedErc20Tokens
 
   const sentBptAmount = query.data.outgoing?.[0]?.args?.value
   const sentBptUnits = formatUnits(sentBptAmount || 0n, BPT_DECIMALS)
