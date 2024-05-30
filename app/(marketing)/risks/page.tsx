@@ -14,7 +14,7 @@ export default function Privacy() {
             <Box pb="md">
               <h1>Risks of using&nbsp;Balancer</h1>
               <p>
-                <em>Last Updated: April 2024</em>
+                <em>Last Updated: May 2024</em>
               </p>
               <p>
                 <em>
@@ -94,6 +94,11 @@ export default function Privacy() {
                       </li>
                       <li>
                         <Link href="risks#boosted-pools">Boosted Pools</Link>
+                      </li>
+                      <li>
+                        <Link href="risks#concentrated-liquidity-pools">
+                          Concentrated Liquidity Pools
+                        </Link>
                       </li>
                     </ul>
                   </li>
@@ -1022,6 +1027,85 @@ export default function Privacy() {
                   </p>
                 </div>
               </FadeInOnView>
+
+              <FadeInOnView>
+                <div className="subsection">
+                  <h4 id="concentrated-liquidity-pools">Concentrated Liquidity Pools</h4>
+                  <p>
+                    <a href="https://gyro.finance">Gyroscope&rsquo;s</a>&nbsp; &lsquo;Concentrated
+                    Liquidity Pools&rsquo; (CLPs) are a class of AMMs that price the exchange of
+                    assets within a defined range. As such, any CLP only provides liquidity for
+                    trading activity restricted to this specific region. The goal is to use the
+                    pool&rsquo;s capital efficiently. There&rsquo;s a few different types of CLPs:
+                  </p>
+                  <ul>
+                    <li>
+                      <em>2-CLPs:</em> Pools with two assets, known as Quadratic-CLPs or 2-CLPs,
+                      named after the quadratic invariant curve—are similar to Uniswap v3&rsquo;s
+                      concentrated liquidity pools. But unlike Uniswap, a 2-CLP effectively offers a
+                      &lsquo;single tick&rsquo;, where liquidity is distributed evenly across a
+                      single active trading range. Learn more about{' '}
+                      <a href="https://docs.gyro.finance/gyroscope-protocol/concentrated-liquidity-pools/2-clps">
+                        2-CLP&rsquo;s and their risks
+                      </a>
+                      .
+                    </li>
+                    <li>
+                      <em>3-CLPs:</em> Pools with three assets, known as Cubic-CLPs or 3-CLPs,
+                      support three assets and are functionally best understood as an extension of
+                      2-CLPs. As a high-level summary, they amplify the benefits of 2-CLPs. Learn
+                      more about{' '}
+                      <a href="https://docs.gyro.finance/gyroscope-protocol/concentrated-liquidity-pools/3-clps">
+                        3-CLP&rsquo;s and their risks
+                      </a>
+                      .
+                    </li>
+                    <li>
+                      <em>E-CLPs:</em> Also known as &lsquo;Elliptic-CLPs&rsquo; support asymmetric
+                      concentrated liqudity for two assets. They provide a new type of concentrated
+                      liquidity that allows highly flexible and asymmetric liquidity profiles in a
+                      single pool position. Learn more about{' '}
+                      <a href="https://docs.gyro.finance/gyroscope-protocol/concentrated-liquidity-pools/e-clps">
+                        E-CLP&rsquo;s and their risks
+                      </a>
+                      .
+                    </li>
+                    <li>
+                      <em>Rehype E-CLPs:</em> Arguably the most capital efficient pools, these
+                      E-CLPs combine asymmetric concentrated liquidity with auto-rehypothecation to
+                      lending markets. Learn more about{' '}
+                      <a href="https://docs.gyro.finance/gyroscope-protocol/concentrated-liquidity-pools/rehype-e-clps">
+                        Rehype E-CLP&rsquo;s and their risks
+                      </a>
+                      .
+                    </li>
+                  </ul>
+                  <p>
+                    Other risks:
+                    <ul>
+                      <li>
+                        The Balancer UI allows people to manage their liquidity in certain Gyroscope
+                        pools. This is not an endorsement of their products or of the the safety of
+                        their smart contracts. The Gyroscope GYD system and E-CLPs have been audited
+                        several times. You can review the{' '}
+                        <a href="https://docs.gyro.finance/gyroscope-protocol/audit-reports">
+                          audit reports here
+                        </a>
+                        .
+                      </li>
+                      <li>
+                        Some concentrated liquidity pools also contain Gyroscope&requo;s Gyro
+                        Dollars (GYD). Here are some of the{' '}
+                        <a href="https://docs.gyro.finance/gyroscope-protocol/risks">
+                          risks of using GYD
+                        </a>
+                        .
+                      </li>
+                    </ul>
+                  </p>
+                </div>
+              </FadeInOnView>
+
               <Divider />
               <FadeInOnView>
                 <div className="subsection">
