@@ -7,6 +7,7 @@ import {
   GqlPoolTokenDetail,
   GqlPoolType,
   GqlBalancePoolAprSubItem,
+  GqlPoolFilterCategory,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolAction, PoolListItem, PoolVariant } from './pool.types'
@@ -150,6 +151,16 @@ const poolTypeLabelMap: { [key in GqlPoolType]: string } = {
 
 export function getPoolTypeLabel(type: GqlPoolType): string {
   return poolTypeLabelMap[type] ?? type.replace(/_/g, ' ').toLowerCase()
+}
+
+// Maps GraphQL pool category enum to human readable label for UI.
+const poolCategoryLabelMap: { [key in GqlPoolFilterCategory]: string } = {
+  [GqlPoolFilterCategory.BlackListed]: 'Blacklisted',
+  [GqlPoolFilterCategory.Incentivized]: 'Incentivized',
+}
+
+export function getPoolCategoryLabel(category: GqlPoolFilterCategory): string {
+  return poolCategoryLabelMap[category] ?? category.replace(/_/g, ' ').toLowerCase()
 }
 
 export const poolClickHandler = (

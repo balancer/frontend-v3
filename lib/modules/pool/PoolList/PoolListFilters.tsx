@@ -32,7 +32,12 @@ import {
 import { PoolListSearch } from './PoolListSearch'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { usePoolListQueryState } from './usePoolListQueryState'
-import { PoolFilterType, poolTypeFilters } from '../pool.types'
+import {
+  PoolFilterType,
+  poolTypeFilters,
+  PoolCategoryType,
+  poolCategoryFilters,
+} from '../pool.types'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { useEffect, useState } from 'react'
 import { Filter } from 'react-feather'
@@ -40,6 +45,7 @@ import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useDebouncedCallback } from 'use-debounce'
 import { defaultDebounceMs } from '@/lib/shared/utils/queries'
+import { getPoolCategoryLabel } from '../pool.utils'
 
 const SLIDER_MAX_VALUE = 10000000
 const SLIDER_STEP_SIZE = 100000
@@ -68,8 +74,36 @@ function UserPoolFilter() {
   )
 }
 
+function PoolCategoryFilters() {
+  const { togglePoolCategory, poolCategories, setPoolCategories } = usePoolListQueryState()
+
+  // remove query param when empty
+  useEffect(() => {
+    if (!poolCategories.length) {
+      setPoolCategories(null)
+    }
+  }, [poolCategories])
+
+  return poolCategoryFilters.map(category => (
+    <Checkbox
+      key={category}
+      isChecked={!!poolCategories.find(selected => selected === category)}
+      onChange={e => togglePoolCategory(e.target.checked, category as PoolCategoryType)}
+    >
+      <Text>{getPoolCategoryLabel(category)}</Text>
+    </Checkbox>
+  ))
+}
+
 function PoolTypeFilters() {
-  const { togglePoolType, poolTypes, poolTypeLabel } = usePoolListQueryState()
+  const { togglePoolType, poolTypes, poolTypeLabel, setPoolTypes } = usePoolListQueryState()
+
+  // remove query param when empty
+  useEffect(() => {
+    if (!poolTypes.length) {
+      setPoolTypes(null)
+    }
+  }, [poolTypes])
 
   return poolTypeFilters.map(poolType => (
     <Checkbox
@@ -143,11 +177,26 @@ function PoolMinTvlFilter() {
 }
 
 export function FilterTags() {
-  const { networks, toggleNetwork, poolTypes, togglePoolType, poolTypeLabel, minTvl, setMinTvl } =
-    usePoolListQueryState()
+  const {
+    networks,
+    toggleNetwork,
+    poolTypes,
+    togglePoolType,
+    poolTypeLabel,
+    minTvl,
+    setMinTvl,
+    poolCategories,
+    togglePoolCategory,
+    poolCategoryLabel,
+  } = usePoolListQueryState()
   const { toCurrency } = useCurrency()
 
-  if (networks.length === 0 && poolTypes.length === 0 && minTvl === 0) {
+  if (
+    networks.length === 0 &&
+    poolTypes.length === 0 &&
+    minTvl === 0 &&
+    poolCategories.length === 0
+  ) {
     return <></>
   }
 
@@ -179,6 +228,12 @@ export function FilterTags() {
           <TagCloseButton onClick={() => setMinTvl(0)} />
         </Tag>
       )}
+      {poolCategories.map(poolCategory => (
+        <Tag key={poolCategory} size="lg">
+          <TagLabel>{poolCategoryLabel(poolCategory)}</TagLabel>
+          <TagCloseButton onClick={() => togglePoolCategory(false, poolCategory)} />
+        </Tag>
+      ))}
     </HStack>
   )
 }
@@ -228,6 +283,11 @@ export function PoolListFilters() {
                       <Divider />
                     </>
                   )}
+                  <Heading as="h3" size="sm" mb="1.5">
+                    Staking rewards
+                  </Heading>
+                  <PoolCategoryFilters />
+                  <Divider />
                   <Heading as="h3" size="sm" mb="1.5">
                     Pool types
                   </Heading>
