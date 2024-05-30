@@ -9,7 +9,6 @@ import { useTokens } from '../../TokensProvider'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { TokenInfoPopover } from '../../TokenInfoPopover'
-import { useEffect, useState } from 'react'
 
 type Props = {
   token: GqlToken
