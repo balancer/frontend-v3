@@ -42,7 +42,7 @@ export function createApolloClient() {
           keyFields: ['address', 'chainId'],
         },
         GqlTokenPrice: {
-          keyFields: ['address'],
+          keyFields: ['address', 'chain'],
         },
         GqlUserPoolBalance: {
           keyFields: ['poolId'],
