@@ -69,7 +69,14 @@ function UserPoolFilter() {
 }
 
 function PoolTypeFilters() {
-  const { togglePoolType, poolTypes, poolTypeLabel } = usePoolListQueryState()
+  const { togglePoolType, poolTypes, poolTypeLabel, setPoolTypes } = usePoolListQueryState()
+
+  // remove query param when empty
+  useEffect(() => {
+    if (!poolTypes.length) {
+      setPoolTypes(null)
+    }
+  }, [poolTypes])
 
   return poolTypeFilters.map(poolType => (
     <Checkbox
