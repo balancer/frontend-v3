@@ -93,6 +93,9 @@ export function _useTokens(
   }
 
   function priceForToken(token: GqlToken): number {
+    if (isSameAddress(token.address, getNativeAssetAddress(token.chain))) {
+      console.log('prices', getPricesForChain(token.chain))
+    }
     const price = getPricesForChain(token.chain).find(price =>
       isSameAddress(price.address, token.address)
     )

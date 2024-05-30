@@ -29,18 +29,10 @@ export function TokenSelectListRow({
   const { toCurrency } = useCurrency()
   const { usdValueForToken } = useTokens()
 
-  const [usdValue, setUsdValue] = useState<string>('-')
-  useEffect(() => {
-    if (userBalance && !isBalancesLoading) {
-      setUsdValue(usdValueForToken(token, userBalance.formatted))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userBalance, isBalancesLoading, token])
-
   const tokenBalance =
     userBalance && !isBalancesLoading ? fNum('token', userBalance.formatted) : '-'
-  // const usdValue =
-  //   userBalance && !isBalancesLoading ? usdValueForToken(token, userBalance.formatted) : '0'
+  const usdValue =
+    userBalance && !isBalancesLoading ? usdValueForToken(token, userBalance.formatted) : '0'
   const fiatValue = userBalance && !isBalancesLoading ? toCurrency(usdValue) : '-'
 
   const boxStyles: BoxProps = {
