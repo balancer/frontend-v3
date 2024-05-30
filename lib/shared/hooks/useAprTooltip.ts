@@ -22,7 +22,7 @@ The more veBAL held, the higher the boost.`
 const stakingBalTooltipText = `The base APR all stakers in this pool get (determined by weekly gauge voting). 
 In addition, veBAL holders can get an extra boost of up to 2.5x.`
 
-const stakingTokenTooltipText = 'Staking incentives provided by a third party.'
+const stakingTokenTooltipText = '3rd party incentives (outside the veBAL system)'
 
 function absMaxApr(apr: GqlPoolApr, boost?: number) {
   if (apr.apr.__typename === 'GqlPoolAprRange') {
