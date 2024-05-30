@@ -53,14 +53,14 @@ export class DefaultSwapHandler implements SwapHandler {
     slippagePercent,
     account,
     selectedChain,
-    isNativeAssetIn,
+    wethIsEth,
   }: SdkBuildSwapInputs): TransactionConfig {
     const tx = swap.buildCall({
       slippage: Slippage.fromPercentage(slippagePercent as `${number}`),
       deadline: BigInt(Number.MAX_SAFE_INTEGER),
       sender: account,
       recipient: account,
-      wethIsEth: isNativeAssetIn,
+      wethIsEth,
       queryOutput,
     })
 

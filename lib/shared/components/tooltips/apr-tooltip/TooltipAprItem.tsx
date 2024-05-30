@@ -1,11 +1,11 @@
-import { fNum } from '@/lib/shared/utils/numbers'
+import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 import { BoxProps, TextProps, Box, HStack, Text, Tooltip } from '@chakra-ui/react'
+import BigNumber from 'bignumber.js'
 
 const tooltipTextDecorationStyles: TextProps = {
   textDecoration: 'underline',
-  textDecorationStyle: 'dotted',
+  textDecorationStyle: 'dashed',
   textUnderlineOffset: '4px',
-  textDecorationColor: 'font.secondaryAlpha50',
 }
 
 interface PopoverAprItemProps extends BoxProps {
@@ -13,8 +13,9 @@ interface PopoverAprItemProps extends BoxProps {
   fontColor?: string
 
   title: string
-  apr: number
+  apr: BigNumber
   aprOpacity?: number
+  displayValueFormatter: (value: BigNumber) => string
 
   boxBackground?: string
   textBackground?: string
@@ -28,6 +29,7 @@ export function TooltipAprItem({
   title,
   apr,
   aprOpacity,
+  displayValueFormatter,
   boxBackground,
   textBackground,
   textBackgroundClip,
@@ -38,6 +40,10 @@ export function TooltipAprItem({
   tooltipText,
   ...props
 }: PopoverAprItemProps) {
+  const colorMode = useThemeColorMode()
+
+  const tootltipTextDecorationColor = colorMode === 'light' ? 'font.secondaryAlpha50' : 'gray.500'
+
   return (
     <Box fontSize="sm" background={boxBackground} {...props}>
       <HStack justifyContent="space-between">
@@ -59,8 +65,9 @@ export function TooltipAprItem({
             color={fontColor}
             variant={textVariant}
             {...(tooltipText ? tooltipTextDecorationStyles : {})}
+            textDecorationColor={tootltipTextDecorationColor}
           >
-            {fNum('apr', apr.toString())}
+            {displayValueFormatter(apr)}
           </Text>
         </Tooltip>
       </HStack>

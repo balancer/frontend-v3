@@ -44,13 +44,17 @@ export function TokenSelectModal({
   const [searchTerm, setSearchTerm] = useState('')
 
   function closeOnSelect(token: GqlToken) {
-    onClose()
     onTokenSelect(token)
+    closeModal()
+  }
+
+  function closeModal() {
     setSearchTerm('')
+    onClose()
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} finalFocusRef={finalFocusRef} isCentered {...rest}>
+    <Modal isOpen={isOpen} onClose={closeModal} finalFocusRef={finalFocusRef} isCentered {...rest}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader color="font.primary">Select a token: {getChainShortName(chain)}</ModalHeader>

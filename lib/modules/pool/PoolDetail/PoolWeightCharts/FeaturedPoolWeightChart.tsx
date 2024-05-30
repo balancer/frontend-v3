@@ -1,16 +1,71 @@
 'use client'
-/* eslint-disable react-hooks/exhaustive-deps */
-import { Box, HStack, VStack, useTheme } from '@chakra-ui/react'
-import { useMemo, useRef } from 'react'
-import ReactECharts from 'echarts-for-react'
-import EChartsReactCore from 'echarts-for-react/lib/core'
-import * as echarts from 'echarts/core'
-import { motion } from 'framer-motion'
-import { ChartSizeValues, PoolWeightChartProps } from './PoolWeightChart'
-import PoolWeightChartLegend from './PoolWeightChartLegend'
-import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
+
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { FeaturedPool } from '../../PoolProvider'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
+import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
+import { Box, VStack, useTheme } from '@chakra-ui/react'
+import EChartsReactCore from 'echarts-for-react/lib/core'
+import { motion } from 'framer-motion'
+import { useRef, useMemo } from 'react'
+import PoolWeightChartLegend from './PoolWeightChartLegend'
 import Image from 'next/image'
+import ReactECharts from 'echarts-for-react'
+import * as echarts from 'echarts/core'
+
+interface PoolWeightChartProps {
+  pool: FeaturedPool
+  chain: GqlChain
+  hasLegend?: boolean
+  isSmall?: boolean
+  colors?: PoolWeightChartColorDef[]
+}
+
+export interface ChartSizeValues {
+  chartHeight: string
+  boxWidth: number
+  boxHeight: number
+  haloTop: string
+  haloLeft: string
+  haloWidth: string
+  haloHeigth: string
+}
+
+export interface PoolWeightChartColorDef {
+  from: string
+  to: string
+}
+
+export const DEFAULT_POOL_WEIGHT_CHART_COLORS: PoolWeightChartColorDef[] = [
+  {
+    from: '#1E4CF1',
+    to: '#00FFAA',
+  },
+  {
+    from: '#B2C4DB',
+    to: '#FDFDFD',
+  },
+  {
+    from: '#EF4A2B',
+    to: '#F48975',
+  },
+  {
+    from: '#FFD600',
+    to: '#F48975',
+  },
+  {
+    from: '#9C68AA',
+    to: '#C03BE4',
+  },
+  {
+    from: '#FFBD91',
+    to: '#FF957B',
+  },
+  {
+    from: '#30CEF0',
+    to: '#02A2FE',
+  },
+]
 
 const smallSize: ChartSizeValues = {
   chartHeight: '140px',
@@ -82,12 +137,12 @@ function InnerSymbolCircle({ opacity }: { opacity: string; isSmall: boolean }) {
   )
 }
 
-export default function WeightedPoolWeightChart({
+export function FeaturedPoolWeightChart({
   pool,
   chain,
   hasLegend,
   isSmall,
-  colors = [],
+  colors = DEFAULT_POOL_WEIGHT_CHART_COLORS,
 }: PoolWeightChartProps) {
   const chartSizeValues = isSmall ? smallSize : normalSize
   const eChartsRef = useRef<EChartsReactCore | null>(null)
@@ -149,6 +204,7 @@ export default function WeightedPoolWeightChart({
         },
       ],
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool, colorMode])
 
   return (

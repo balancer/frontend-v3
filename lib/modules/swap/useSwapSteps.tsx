@@ -14,7 +14,7 @@ export function useSwapSteps({
   swapState,
   vaultAddress,
   handler,
-  isNativeAssetIn,
+  wethIsEth,
   simulationQuery,
   swapAction,
   tokenInInfo,
@@ -44,7 +44,7 @@ export function useSwapSteps({
 
   const swapStep = useSwapStep({
     handler,
-    isNativeAssetIn,
+    wethIsEth,
     swapState,
     simulationQuery,
     swapAction,
