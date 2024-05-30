@@ -1,16 +1,17 @@
+import { GqlChain, GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
+import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { getSdkTestUtils } from '@/test/integration/sdk-utils'
 import {
   aBalWethPoolElementMock,
   toGqlWeighedPoolMock,
 } from '@/test/msw/builders/gqlPoolElement.builders'
 import { testHook } from '@/test/utils/custom-renderers'
+import { connectWith, connectWithDefaultUser } from '@/test/utils/wagmi/wagmi-connections'
 import { mainnetTestPublicClient } from '@/test/utils/wagmi/wagmi-test-clients'
-import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { ChainId } from '@balancer/sdk'
 import { waitFor } from '@testing-library/react'
+import { getPoolMock } from '../__mocks__/getPoolMock'
 import { useOnchainUserPoolBalances } from './useOnchainUserPoolBalances'
-import { GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
-import { connectWithDefaultUser } from '@/test/utils/wagmi/wagmi-connections'
 
 async function testUseChainPoolBalances(pool: GqlPoolElement) {
   const weightedPoolMock = toGqlWeighedPoolMock(pool)
@@ -60,7 +61,7 @@ test('fetches onchain user balances when the pool does not have staking info', a
   await waitFor(() => expect(result.current.data[0].userBalance?.walletBalance).toBe('50'))
 })
 
-test('fetches onchain user balances when the pool has empty gaugeAddress', async () => {
+test('fetches onchain user balances when the pool has no gaugeAddress', async () => {
   const poolMockWithEmptyGaugeAddress = aBalWethPoolElementMock() // Provides 80BAL-20WETH pool by default
   // Empty staking address
   if (poolMockWithEmptyGaugeAddress.staking?.gauge?.gaugeAddress) {
@@ -87,4 +88,27 @@ test('fetches onchain user balances when the pool has empty gaugeAddress', async
   const result = await testUseChainPoolBalances(poolMockWithEmptyGaugeAddress)
 
   await waitFor(() => expect(result.current.data[0].userBalance?.walletBalance).toBe('60'))
+})
+
+test('@slow: fetches onchain user balances when the pool user is staked in a non-preferential gauge', async () => {
+  const holder = '0xE0Dd0C6a3F0A34c5175b65Bbd227710d9A5E09c8'
+  await connectWith(holder)
+  const poolId = '0xeab6455f8a99390b941a33bbdaf615abdf93455e000200000000000000000a66' // Pool with user staked in non preferential gauge
+  const pool = await getPoolMock(poolId, GqlChain.Polygon, holder)
+
+  const result = await testUseChainPoolBalances(pool)
+
+  await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+
+  expect(result.current.data[0].userBalance).toEqual({
+    __typename: 'GqlPoolUserBalance',
+    stakedBalance: '0',
+    stakedBalanceUsd: 0,
+    nonPreferentialStakedBalance: '52.364668984347889717',
+    nonPreferentialStakedBalanceUsd: expect.any(Number),
+    totalBalance: '52.364668984347889717',
+    totalBalanceUsd: expect.any(Number),
+    walletBalance: '0',
+    walletBalanceUsd: 0,
+  })
 })

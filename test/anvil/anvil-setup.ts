@@ -1,7 +1,7 @@
 import { getChainId } from '@/lib/config/app.config'
 import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { Hex } from 'viem'
+import { Address, Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { mainnet, polygon } from 'viem/chains'
 
@@ -21,6 +21,23 @@ export const defaultAnvilTestPrivateKey =
 // anvil account address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 export const defaultTestUserAccount = privateKeyToAccount(defaultAnvilTestPrivateKey as Hex).address
 export const alternativeTestUserAccount = '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
+export const userStakedInNonPreferentialGauge = '0xE0Dd0C6a3F0A34c5175b65Bbd227710d9A5E09c8'
+
+export const testAccounts: Address[] = [
+  // Wagmi accounts
+  defaultTestUserAccount,
+  alternativeTestUserAccount,
+  // Real accounts
+  userStakedInNonPreferentialGauge,
+]
+
+export function testAccountIndex(account: Address) {
+  const index = testAccounts.indexOf(account)
+  if (!index) {
+    throw Error(`Account ${account} not found in test accounts.`)
+  }
+  return index
+}
 
 const ANVIL_PORTS: Record<NetworksWithFork, number> = {
   //Ports separated by 100 to avoid port collision when running tests in parallel
@@ -42,7 +59,7 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
     fallBackRpc: getDefaultRpcUrl(getChainId(GqlChain.Polygon)),
     port: ANVIL_PORTS.Polygon,
     // Note - this has to be >= highest blockNo used in tests
-    forkBlockNumber: 44215395n,
+    forkBlockNumber: 57569322n,
   },
 }
 
