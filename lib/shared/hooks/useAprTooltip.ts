@@ -12,15 +12,17 @@ import BigNumber from 'bignumber.js'
 export const swapFeesTooltipText = `LPs get swap fees anytime a swap is routed through this pool. 
 These fees automatically accumulate into the LPs position, so there is no need to periodically claim.`
 
-export const baseAprTooltipText = `The base APR all stakers in this pool get (determined by weekly gauge voting). 
-In addition, veBAL holders can get an extra boost of up to 2.5x.`
-
 export const inherentTokenYieldTooltipText = `Inherent token yield, 
  acccounting for the token's share of the overall pool,
  minus any protocol fees.`
 
 export const extraBalTooltipText = `veBAL holders can get an extra boost of up to 2.5x on their staking yield. 
 The more veBAL held, the higher the boost.`
+
+const stakingBalTooltipText = `The base APR all stakers in this pool get (determined by weekly gauge voting). 
+In addition, veBAL holders can get an extra boost of up to 2.5x.`
+
+const stakingTokenTooltipText = '3rd party incentives (outside the veBAL system)'
 
 function absMaxApr(apr: GqlPoolApr, boost?: number) {
   if (apr.apr.__typename === 'GqlPoolAprRange') {
@@ -75,6 +77,7 @@ export function useAprTooltip({
   const stakingIncentivesDisplayed = stakingIncentives.map(item => ({
     title: item.title.replace(' reward APR', ''),
     apr: numberFormatter((item.apr as GqlPoolAprTotal).total),
+    tooltipText: stakingTokenTooltipText,
   }))
 
   // Bal Reward
@@ -92,6 +95,7 @@ export function useAprTooltip({
     stakingIncentivesDisplayed.push({
       title: 'BAL',
       apr: numberFormatter((balReward.apr as GqlPoolAprRange).min),
+      tooltipText: stakingBalTooltipText,
     })
   }
 
