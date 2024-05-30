@@ -462,6 +462,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     swapTxHash,
     hasQuoteContext,
     isWrap,
+    resetSwapAmounts,
     setTokenSelectKey,
     setSelectedChain,
     setTokenInAmount,
