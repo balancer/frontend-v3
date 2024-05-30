@@ -23,6 +23,7 @@ const COMMON_NOISY_CARD_PROPS: { contentProps: BoxProps; cardProps: BoxProps } =
   },
   cardProps: {
     position: 'relative',
+    height: 'full',
   },
 }
 
@@ -69,6 +70,7 @@ export function PoolSnapshot({ ...props }: CardProps) {
           mb="8"
           p={{ base: 'sm', md: 'md' }}
           zIndex={1}
+          h="full"
         >
           <ButtonGroup
             size="xxs"
