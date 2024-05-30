@@ -1094,7 +1094,7 @@ export default function Privacy() {
                         .
                       </li>
                       <li>
-                        Some concentrated liquidity pools also contain Gyroscope&requo;s Gyro
+                        Some concentrated liquidity pools also contain Gyroscope&rsquo;s Gyro
                         Dollars (GYD). Here are some of the{' '}
                         <a href="https://docs.gyro.finance/gyroscope-protocol/risks">
                           risks of using GYD
