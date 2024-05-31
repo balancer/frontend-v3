@@ -3,10 +3,10 @@
 
 import { TokenBalancesProvider, useTokenBalances } from '@/lib/modules/tokens/TokenBalancesProvider'
 import {
+  Box,
   Button,
   Card,
   CardHeader,
-  Center,
   Grid,
   GridItem,
   HStack,
@@ -144,7 +144,7 @@ function AddLiquidityMainForm() {
   }, [addLiquidityTxHash])
 
   return (
-    <Center h="full" w="full" maxW="lg" mx="auto">
+    <Box w="full" maxW="lg" mx="auto">
       <Card>
         <CardHeader>
           <HStack w="full" justify="space-between">
@@ -249,6 +249,6 @@ function AddLiquidityMainForm() {
           nativeAssets={nativeAssets}
         />
       )}
-    </Center>
+    </Box>
   )
 }
