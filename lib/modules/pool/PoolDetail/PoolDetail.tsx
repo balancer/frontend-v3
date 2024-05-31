@@ -33,7 +33,10 @@ export function PoolDetail() {
   }, [router])
 
   useEffect(() => {
-    toggleTheme('gyro')
+    // sDAI/GYD on mainnet
+    if (pool.id === '0x2191df821c198600499aa1f0031b1a7514d7a7d9000200000000000000000639') {
+      toggleTheme('gyro')
+    }
     return () => toggleTheme('bal')
   }, [])
 
