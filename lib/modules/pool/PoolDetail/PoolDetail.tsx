@@ -10,12 +10,14 @@ import { bn } from '@/lib/shared/utils/numbers'
 import { PoolStatsLayout } from './PoolStats/PoolStatsLayout'
 import { PoolHeader } from './PoolHeader/PoolHeader'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
+import { ThemeContext } from '@/lib/shared/services/chakra/ThemeProvider'
 
 export function PoolDetail() {
   const { pool } = usePool()
   const router = useRouter()
   const pathname = usePathname()
+  const { toggleTheme } = useContext(ThemeContext)
 
   const userHasLiquidity = bn(pool.userBalance?.totalBalance || '0').gt(0)
 
@@ -29,6 +31,10 @@ export function PoolDetail() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
+
+  useEffect(() => {
+    toggleTheme('gyro')
+  }, [])
 
   return (
     <VStack w="full" spacing="2xl">

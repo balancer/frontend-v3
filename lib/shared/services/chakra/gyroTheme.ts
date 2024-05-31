@@ -1,4 +1,5 @@
-import { ThemeTypings, extendTheme, textDecoration } from '@chakra-ui/react'
+/* eslint-disable max-len */
+import { ThemeTypings, extendTheme } from '@chakra-ui/react'
 import { withProse } from '@nikolovlazar/chakra-ui-prose'
 import tinycolor from 'tinycolor2'
 
@@ -96,9 +97,9 @@ export const balColors = {
   },
   // sand: 'hsla(43,23%,91%,1)',
   base: {
-    light: 'hsla(44,22%,90%,1)',
+    light: 'blue.200',
     hslLight: '44,22%,90%',
-    dark: 'hsla(216,12%,25%,1)',
+    dark: 'blue.500',
     hslDark: '216,12%,25%',
   },
   chartBorder: {
