@@ -87,7 +87,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   private constructSdkInput(
     humanAmountsIn: HumanTokenAmountWithAddress[]
   ): AddLiquidityUnbalancedInput {
-    const amountsIn = this.helpers.toInputAmounts(humanAmountsIn)
+    const amountsIn = this.helpers.toSdkInputAmounts(humanAmountsIn)
 
     return {
       chainId: this.helpers.chainId,

@@ -1,4 +1,9 @@
-import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
+import {
+  getChainId,
+  getNativeAsset,
+  getNetworkConfig,
+  getWrappedNativeAssetAddress,
+} from '@/lib/config/app.config'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { GqlChain, GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
@@ -16,16 +21,11 @@ import {
   mapPoolToNestedPoolState,
   mapPoolType,
 } from '@balancer/sdk'
-import { keyBy } from 'lodash'
 import { Hex, formatUnits, parseUnits, Address } from 'viem'
 import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
 import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
 import { Pool } from '../PoolProvider'
-import {
-  isNativeAsset,
-  isWrappedNativeAsset,
-  swapNativeWithWrappedNative,
-} from '../../tokens/token.helpers'
+import { isNativeAsset, isWrappedNativeAsset } from '../../tokens/token.helpers'
 import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
 
 // Null object used to avoid conditional checks during hook loading state
@@ -70,7 +70,7 @@ export class LiquidityActionHelpers {
   public getAmountsToApprove(
     humanAmountsIn: HumanTokenAmountWithAddress[]
   ): TokenAmountToApprove[] {
-    return this.toInputAmounts(humanAmountsIn).map(({ address, rawAmount }) => {
+    return this.toSdkInputAmounts(humanAmountsIn).map(({ address, rawAmount }) => {
       return {
         tokenAddress: address,
         requiredRawAmount: rawAmount,
@@ -82,33 +82,50 @@ export class LiquidityActionHelpers {
   public toInputAmounts(humanAmountsIn: HumanTokenAmountWithAddress[]): InputAmount[] {
     if (!humanAmountsIn.length) return []
 
-    const amountsInList: InputAmount[] = this.pool.allTokens.map(t => {
-      return {
-        rawAmount: 0n,
-        decimals: t.decimals,
-        address: t.address as Address,
+    return humanAmountsIn
+      .filter(({ humanAmount }) => bn(humanAmount).gt(0))
+      .map(({ tokenAddress, humanAmount }) => {
+        const chain = this.pool.chain
+        if (isNativeAsset(tokenAddress, chain)) {
+          const decimals = getNativeAsset(chain).decimals
+          return {
+            address: tokenAddress as Address,
+            rawAmount: parseUnits(humanAmount, decimals),
+            decimals,
+          }
+        }
+        const token = this.pool.allTokens.find(token => isSameAddress(token.address, tokenAddress))
+        if (!token) {
+          throw new Error(
+            `Provided token address ${tokenAddress} not found in pool tokens [${Object.keys(
+              this.pool.allTokens.map(t => t.address)
+            ).join(' , \n')}]`
+          )
+        }
+        return {
+          address: token.address as Address,
+          rawAmount: parseUnits(humanAmount, token.decimals),
+          decimals: token.decimals,
+        }
+      })
+  }
+
+  /*
+   1. Converts humanAmountsIn into SDK InputAmounts
+   2. When the input includes it, it swaps the native asset with the wrapped native asset
+  */
+  public toSdkInputAmounts(humanAmountsIn: HumanTokenAmountWithAddress[]): InputAmount[] {
+    const inputAmounts = this.toInputAmounts(humanAmountsIn).map(inputAmount => {
+      if (isNativeAsset(inputAmount.address, this.pool.chain)) {
+        return {
+          ...inputAmount,
+          address: getWrappedNativeAssetAddress(this.pool.chain),
+        }
       }
+      return inputAmount
     })
 
-    const amountsInByTokenAddress = keyBy(amountsInList, a => a.address)
-
-    // from humanAmountsIn to SDK AmountsIn
-    humanAmountsIn.forEach(({ tokenAddress, humanAmount }) => {
-      // if native token swap with wrapped native token
-      const tokenAddressToCheck = swapNativeWithWrappedNative(tokenAddress, this.pool.chain)
-
-      if (!amountsInByTokenAddress[tokenAddressToCheck]) {
-        throw new Error(
-          `Provided token address ${tokenAddressToCheck} not found in pool tokens [${Object.keys(
-            amountsInByTokenAddress
-          ).join(' , \n')}]`
-        )
-      }
-      const decimals = amountsInByTokenAddress[tokenAddressToCheck].decimals
-      amountsInByTokenAddress[tokenAddressToCheck].rawAmount = parseUnits(humanAmount, decimals)
-    })
-
-    return Object.values(amountsInByTokenAddress).filter(a => a.rawAmount > 0n)
+    return inputAmounts
   }
 
   public isNativeAssetIn(humanAmountsIn: HumanTokenAmountWithAddress[]): boolean {

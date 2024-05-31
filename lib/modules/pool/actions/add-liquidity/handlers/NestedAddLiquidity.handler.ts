@@ -81,7 +81,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
   private constructSdkInput(
     humanAmountsIn: HumanTokenAmountWithAddress[]
   ): AddLiquidityNestedInput {
-    const amountsIn = this.helpers.toInputAmounts(humanAmountsIn)
+    const amountsIn = this.helpers.toSdkInputAmounts(humanAmountsIn)
 
     const nonEmptyAmountsIn = amountsIn.filter(a => a.rawAmount !== 0n)
 
