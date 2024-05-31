@@ -17,7 +17,7 @@ import { PoolChartTab, PoolChartTypeTab, poolChartPeriods, usePoolCharts } from 
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { GroupBase, OptionBase, Select, SingleValue } from 'chakra-react-select'
 import { GqlPoolSnapshotDataRange } from '@/lib/shared/services/api/generated/graphql'
-import { getSelectStyles } from '@/lib/shared/services/chakra/theme/chakra-react-select'
+import { getSelectStyles } from '@/lib/shared/services/chakra/custom/chakra-react-select'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 
 interface PeriodOption extends OptionBase {

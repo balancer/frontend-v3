@@ -6,7 +6,7 @@ import { orderByHash, SortingState } from '../pool.types'
 import { usePoolOrderByState } from './usePoolOrderByState'
 import { GroupBase, OptionBase, Select, SingleValue } from 'chakra-react-select'
 import { ReactNode, useMemo } from 'react'
-import { getSelectStyles } from '@/lib/shared/services/chakra/theme/chakra-react-select'
+import { getSelectStyles } from '@/lib/shared/services/chakra/custom/chakra-react-select'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
 interface SortOption extends OptionBase {
