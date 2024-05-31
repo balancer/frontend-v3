@@ -34,6 +34,7 @@ export function PoolDetail() {
 
   useEffect(() => {
     toggleTheme('gyro')
+    return () => toggleTheme('bal')
   }, [])
 
   return (
