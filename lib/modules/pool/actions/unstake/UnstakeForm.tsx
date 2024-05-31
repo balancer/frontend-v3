@@ -1,13 +1,12 @@
 'use client'
 
 import {
+  Box,
   Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
-  Center,
-  Heading,
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react'
@@ -25,7 +24,7 @@ export function UnstakeForm() {
   const { rewardAmounts, totalClaimableUsd, isDisabled, disabledReason, isLoading } = useUnstake()
 
   return (
-    <Center h="full" w="full" maxW="lg" mx="auto">
+    <Box h="full" w="full" maxW="lg" mx="auto">
       <Card>
         <CardHeader>Claim & Unstake</CardHeader>
         <CardBody>
@@ -53,6 +52,6 @@ export function UnstakeForm() {
         </CardFooter>
       </Card>
       <UnstakeModal finalFocusRef={nextBtn} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
-    </Center>
+    </Box>
   )
 }
