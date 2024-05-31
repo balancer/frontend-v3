@@ -10,14 +10,14 @@ import { bn } from '@/lib/shared/utils/numbers'
 import { PoolStatsLayout } from './PoolStats/PoolStatsLayout'
 import { PoolHeader } from './PoolHeader/PoolHeader'
 import { usePathname, useRouter } from 'next/navigation'
-import { useContext, useEffect } from 'react'
-import { ThemeContext } from '@/lib/shared/services/chakra/ThemeProvider'
+import { useEffect } from 'react'
+import { usePartnerTheme } from '@/lib/shared/services/chakra/PartnerThemeProvider'
 
 export function PoolDetail() {
   const { pool } = usePool()
   const router = useRouter()
   const pathname = usePathname()
-  const { toggleTheme } = useContext(ThemeContext)
+  const { toggleTheme } = usePartnerTheme()
 
   const userHasLiquidity = bn(pool.userBalance?.totalBalance || '0').gt(0)
 
