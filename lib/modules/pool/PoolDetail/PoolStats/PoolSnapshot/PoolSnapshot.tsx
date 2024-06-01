@@ -77,7 +77,7 @@ export function PoolSnapshot({ ...props }: CardProps) {
             currentOption={activeTab}
             options={TABS}
             onChange={handleTabChanged}
-            width="70px"
+            groupId="pool-stats"
           />
           {activeTab.value === 'poolStats' && <PoolSnapshotValues />}
           {activeTab.value === 'myStats' && <UserSnapshotValues />}

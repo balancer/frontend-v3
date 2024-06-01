@@ -108,7 +108,8 @@ export function PoolCharts({ ...props }: CardProps) {
                     currentOption={activeTab}
                     options={tabsList}
                     onChange={tab => setActiveTab(tab as PoolChartTypeTab)}
-                    width="70px"
+                    width="56px"
+                    groupId="chart"
                   />
                   <PeriodSelect value={activePeriod} onChange={setActivePeriod} />
                 </HStack>

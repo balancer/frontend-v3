@@ -103,6 +103,7 @@ export function PoolActivityChart() {
                     setActiveTab(option)
                   }}
                   size="xxs"
+                  groupId="pool-activity"
                 />
               </AnimateOpacity>
             ) : (
