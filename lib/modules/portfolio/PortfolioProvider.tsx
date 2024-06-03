@@ -166,6 +166,7 @@ function _usePortfolio() {
   }, [protocolRewardsData])
 
   return {
+    pools: data?.pools || [],
     portfolioData,
     balRewardsData,
     protocolRewardsData,

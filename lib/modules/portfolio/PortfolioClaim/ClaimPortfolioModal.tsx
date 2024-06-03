@@ -9,7 +9,6 @@ import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
-import { useClaiming } from '../../pool/actions/claim/ClaimProvider'
 import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
 import { HumanAmount } from '@balancer/sdk'
 import { Address } from 'viem'
@@ -18,6 +17,7 @@ import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFoo
 import { useRouter } from 'next/navigation'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
+import { useClaim } from '../../pool/actions/claim/ClaimProvider'
 
 type Props = {
   isOpen: boolean
@@ -50,7 +50,7 @@ export function ClaimPortfolioModal({ isOpen, onClose, pools, ...rest }: Props) 
 
   const totalValueUsd = poolRewardsMap[pools[0].id]?.totalFiatClaimBalance?.toString() || '0'
 
-  const { transactionSteps, claimTxHash } = useClaiming(pools)
+  const { transactionSteps, claimTxHash } = useClaim()
 
   const chain = pools[0]?.chain
 
