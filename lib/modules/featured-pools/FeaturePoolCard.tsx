@@ -80,8 +80,8 @@ export function FeaturePoolCard({
       cardProps={{
         position: 'relative',
         overflow: 'hidden',
-        onClick: event => poolClickHandler(event, pool.id, pool.chain, router),
-        onMouseEnter: event => poolMouseEnterHandler(event, pool.id, pool.chain, router),
+        onClick: event => poolClickHandler(event, pool.id, pool.chain, pool.type, router),
+        onMouseEnter: event => poolMouseEnterHandler(event, pool.id, pool.chain, pool.type, router),
         cursor: 'pointer',
         _hover: { bg: 'background.base' },
       }}

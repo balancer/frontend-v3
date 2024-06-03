@@ -49,8 +49,8 @@ export function PoolListCard({ pool }: Props) {
       <Card
         variant="gradient"
         cursor="pointer"
-        onClick={event => poolClickHandler(event, pool.id, pool.chain, router)}
-        onMouseEnter={event => poolMouseEnterHandler(event, pool.id, pool.chain, router)}
+        onClick={event => poolClickHandler(event, pool.id, pool.chain, pool.type, router)}
+        onMouseEnter={event => poolMouseEnterHandler(event, pool.id, pool.chain, pool.type, router)}
         p="md"
       >
         <VStack alignItems="flex-start" h="full">
