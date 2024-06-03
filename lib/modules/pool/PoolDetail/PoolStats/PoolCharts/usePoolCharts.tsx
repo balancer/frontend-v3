@@ -1,4 +1,4 @@
-import { ColorMode, theme } from '@chakra-ui/react'
+import { ColorMode, theme as defaultTheme, useTheme as useChakraTheme } from '@chakra-ui/react'
 import { addMinutes, differenceInDays, format } from 'date-fns'
 import * as echarts from 'echarts/core'
 import {
@@ -14,10 +14,8 @@ import { usePool } from '../../../PoolProvider'
 import { PoolVariant } from '../../../pool.types'
 import { NumberFormatter } from '@/lib/shared/utils/numbers'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { balColors, balTheme, tokens } from '@/lib/shared/services/chakra/theme'
-import numeral from 'numeral'
 import { twentyFourHoursInSecs } from '@/lib/shared/hooks/useTime'
-import { useTheme } from 'next-themes'
+import { useTheme as useNextTheme } from 'next-themes'
 
 const MIN_CHART_VALUES_NUM = 2
 
@@ -66,130 +64,94 @@ export interface PoolChartTypeTab {
   label: string
 }
 
-export const poolChartTypeOptions: Record<PoolChartTab, PoolChartTypeOptions> = {
-  [PoolChartTab.VOLUME]: {
-    type: 'bar',
-    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-      {
-        offset: 0,
-        color: balTheme.semanticTokens.colors.chart.pool.bar.volume.from,
-      },
-      {
-        offset: 1,
-        color: balTheme.semanticTokens.colors.chart.pool.bar.volume.to,
-      },
-    ]),
-    hoverColor: theme.colors.pink[500],
-  },
-  [PoolChartTab.TVL]: {
-    type: 'line',
-    color: theme.colors.blue[600],
-    hoverBorderColor: theme.colors.pink[500],
-    hoverColor: theme.colors.gray[900],
-    areaStyle: {
-      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-        {
-          offset: 0,
-          color: 'rgba(14, 165, 233, 0.08)',
-        },
-        {
-          offset: 1,
-          color: 'rgba(68, 9, 236, 0)',
-        },
-      ]),
-    },
-  },
-  [PoolChartTab.FEES]: {
-    type: 'bar',
-    color: theme.colors.yellow[400],
-    hoverColor: theme.colors.pink[500],
-  },
-}
-
-const toolTipTheme = {
-  heading: 'font-weight: bold; color: #E5D3BE',
-  container: `background: ${balColors.gray[800]};`,
-  text: balColors.gray[400],
-}
-
 const getDefaultPoolChartOptions = (
   currencyFormatter: NumberFormatter,
-  theme: ColorMode = 'dark'
-) => ({
-  grid: {
-    left: '1.5%',
-    right: '2.5%',
-    top: '7.5%',
-    bottom: '0',
-    containLabel: true,
-  },
-  xAxis: {
-    show: true,
-    type: 'time',
-    minorSplitLine: { show: false },
-    axisTick: { show: false },
-    splitNumber: 3,
-    axisLabel: {
-      formatter: (value: number) => {
-        return format(new Date(value * 1000), 'MMM d')
-      },
-      color: tokens.colors[theme].text.secondary,
-      opacity: 0.5,
-      interval: 0,
-      showMaxLabel: false,
-      showMinLabel: false,
+  nextTheme: ColorMode = 'dark',
+  theme: any // TODO: type this
+) => {
+  const toolTipTheme = {
+    heading: 'font-weight: bold; color: #E5D3BE',
+    container: `background: ${theme.colors.gray[800]};`,
+    text: theme.colors.gray[400],
+  }
+
+  const colorMode = nextTheme === 'dark' ? '_dark' : 'default'
+
+  return {
+    grid: {
+      left: '1.5%',
+      right: '2.5%',
+      top: '7.5%',
+      bottom: '0',
+      containLabel: true,
     },
-    axisPointer: {
-      type: 'line',
-      label: {
-        formatter: (params: any) => {
-          return format(new Date(params.value * 1000), 'MMM d')
+    xAxis: {
+      show: true,
+      type: 'time',
+      minorSplitLine: { show: false },
+      axisTick: { show: false },
+      splitNumber: 3,
+      axisLabel: {
+        formatter: (value: number) => {
+          return format(new Date(value * 1000), 'MMM d')
+        },
+        color: theme.semanticTokens.colors.font.primary[colorMode],
+        opacity: 0.5,
+        interval: 0,
+        showMaxLabel: false,
+        showMinLabel: false,
+      },
+      axisPointer: {
+        type: 'line',
+        label: {
+          formatter: (params: any) => {
+            return format(new Date(params.value * 1000), 'MMM d')
+          },
+        },
+      },
+      axisLine: { show: false },
+      splitArea: {
+        show: false,
+        areaStyle: {
+          color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)'],
         },
       },
     },
-    axisLine: { show: false },
-    splitArea: {
-      show: false,
-      areaStyle: {
-        color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)'],
+    yAxis: {
+      show: true,
+      type: 'value',
+      axisLine: { show: false },
+      minorSplitLine: { show: false },
+      splitLine: { show: false },
+      splitNumber: 3,
+      axisLabel: {
+        formatter: (value: number) => {
+          return currencyFormatter(value)
+        },
+        color: theme.semanticTokens.colors.font.primary[colorMode],
+        opacity: 0.5,
+        interval: 'auto',
+        showMaxLabel: false,
+        showMinLabel: false,
       },
     },
-  },
-  yAxis: {
-    show: true,
-    type: 'value',
-    axisLine: { show: false },
-    minorSplitLine: { show: false },
-    splitLine: { show: false },
-    splitNumber: 3,
-    axisLabel: {
-      formatter: (value: number) => {
-        return currencyFormatter(value)
-      },
-      color: tokens.colors[theme].text.secondary,
-      opacity: 0.5,
-      interval: 'auto',
-      showMaxLabel: false,
-      showMinLabel: false,
-    },
-  },
 
-  tooltip: {
-    show: true,
-    showContent: true,
-    trigger: 'axis',
-    confine: true,
-    axisPointer: {
-      animation: false,
-      type: 'shadow',
-      label: {
-        show: false,
+    tooltip: {
+      show: true,
+      showContent: true,
+      trigger: 'axis',
+      confine: true,
+      axisPointer: {
+        animation: false,
+        type: 'shadow',
+        label: {
+          show: false,
+        },
       },
-    },
-    extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container}`,
-    formatter: (params: any) => {
-      const data = Array.isArray(params) ? params[0] : params
-      return `
+      extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container}`,
+      formatter: (params: any) => {
+        const data = Array.isArray(params) ? params[0] : params
+        return `
           <div style="padding: none; display: flex; flex-direction: column; justify-content: center;${
             toolTipTheme.container
           }">
@@ -201,9 +163,10 @@ const getDefaultPoolChartOptions = (
             </div>
           </div>
         `
+      },
     },
-  },
-})
+  }
+}
 
 export function getPoolTabsList({
   variant,
@@ -260,7 +223,10 @@ export function usePoolCharts() {
   const { pool } = usePool()
   const { id: poolId, variant } = useParams()
   const { toCurrency } = useCurrency()
-  const { theme } = useTheme()
+  const { theme: nextTheme } = useNextTheme()
+  const theme = useChakraTheme()
+
+  console.log({ theme })
 
   const tabsList = useMemo(() => {
     const poolType = pool?.type
@@ -355,7 +321,47 @@ export function usePoolCharts() {
     return chartArr
   }, [data?.snapshots, activeTab, pool.createTime])
 
-  const defaultChartOptions = getDefaultPoolChartOptions(toCurrency, theme as 'light' | 'dark')
+  const defaultChartOptions = getDefaultPoolChartOptions(toCurrency, nextTheme as ColorMode, theme)
+
+  const poolChartTypeOptions: Record<PoolChartTab, PoolChartTypeOptions> = {
+    [PoolChartTab.VOLUME]: {
+      type: 'bar',
+      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        {
+          offset: 0,
+          color: theme.semanticTokens.colors.chart.pool.bar.volume.from,
+        },
+        {
+          offset: 1,
+          color: theme.semanticTokens.colors.chart.pool.bar.volume.to,
+        },
+      ]),
+      hoverColor: defaultTheme.colors.pink[500],
+    },
+    [PoolChartTab.TVL]: {
+      type: 'line',
+      color: defaultTheme.colors.blue[600],
+      hoverBorderColor: defaultTheme.colors.pink[500],
+      hoverColor: defaultTheme.colors.gray[900],
+      areaStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: 'rgba(14, 165, 233, 0.08)',
+          },
+          {
+            offset: 1,
+            color: 'rgba(68, 9, 236, 0)',
+          },
+        ]),
+      },
+    },
+    [PoolChartTab.FEES]: {
+      type: 'bar',
+      color: defaultTheme.colors.yellow[400],
+      hoverColor: defaultTheme.colors.pink[500],
+    },
+  }
 
   const options = useMemo(() => {
     const activeTabOptions = poolChartTypeOptions[activeTab.value]
