@@ -9,7 +9,6 @@ import { ClaimableReward, useClaimableBalances } from './PortfolioClaim/useClaim
 import { BalTokenReward, useBalTokenRewards } from './PortfolioClaim/useBalRewards'
 import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
-import { Address } from 'viem'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useUserAccount } from '../web3/UserAccountProvider'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
@@ -166,7 +165,6 @@ function _usePortfolio() {
   }, [protocolRewardsData])
 
   return {
-    pools: data?.pools || [],
     portfolioData,
     balRewardsData,
     protocolRewardsData,
