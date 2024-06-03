@@ -1,6 +1,5 @@
 import { getChainId } from '@/lib/config/app.config'
 import networkConfigs from '@/lib/config/networks'
-import { getAllGaugesAddressesFromPool } from '@/lib/modules/portfolio/PortfolioProvider'
 import { selectStakingService } from '@/lib/modules/staking/selectStakingService'
 import { ManagedTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
@@ -17,6 +16,7 @@ import { PoolListItem } from '../../pool.types'
 import { useClaimCallDataQuery } from './useClaimCallDataQuery'
 import { BalTokenRewardsResult } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
 import { ClaimableBalancesResult } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
+import { allClaimableGaugeAddressesFor } from '../../pool.helpers'
 
 const claimAllRewardsStepId = 'claim-all-rewards'
 
@@ -40,7 +40,7 @@ export function useClaimAllRewardsStep({
   const pool = pools[0]
   const chain = pool.chain as GqlChain
   const stakingType = pool.staking?.type || GqlPoolStakingType.Gauge
-  const gaugeAddresses = pools.flatMap(pool => getAllGaugesAddressesFromPool(pool))
+  const gaugeAddresses = pools.flatMap(pool => allClaimableGaugeAddressesFor(pool))
   const shouldClaimMany = gaugeAddresses.length > 1
   const stakingService = selectStakingService(chain, stakingType)
   const { data: claimData, isLoading } = useClaimCallDataQuery(

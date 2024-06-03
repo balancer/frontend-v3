@@ -27,23 +27,6 @@ export interface PoolRewardsData extends PoolListItem {
 
 export type PoolRewardsDataMap = Record<string, PoolRewardsData>
 
-export function getAllGaugesAddressesFromPool(pool: PoolListItem) {
-  const arr = []
-  const staking = pool.staking
-
-  if (staking?.gauge) {
-    if (staking.gauge.version > 1) {
-      arr.push(staking.gauge.gaugeAddress)
-    }
-  }
-
-  if (staking?.gauge?.otherGauges) {
-    arr.push(...staking.gauge.otherGauges.filter(g => g.version > 1).map(g => g.gaugeAddress))
-  }
-
-  return arr as Address[]
-}
-
 export type UsePortfolio = ReturnType<typeof _usePortfolio>
 
 function _usePortfolio() {
