@@ -30,7 +30,6 @@ import {
 
 import { keyBy, merge } from 'lodash'
 import { useTheme } from '@chakra-ui/react'
-import { balTheme } from '@/lib/shared/services/chakra/theme'
 import { CustomAvatar } from './CustomAvatar'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { UserAccountProvider } from './UserAccountProvider'
@@ -137,13 +136,13 @@ export const wagmiConfig = createConfig({
 })
 
 export function Web3Provider({ children }: { children: React.ReactNode }) {
-  const { colors, radii, shadows, semanticTokens } = useTheme()
+  const { colors, radii, shadows, semanticTokens, fonts } = useTheme()
   const colorMode = useThemeColorMode()
   const colorModeKey = colorMode === 'light' ? 'default' : '_dark'
 
   const sharedConfig = {
     fonts: {
-      body: balTheme.fonts?.body,
+      body: fonts.body,
     },
     radii: {
       connectButton: radii.md,
