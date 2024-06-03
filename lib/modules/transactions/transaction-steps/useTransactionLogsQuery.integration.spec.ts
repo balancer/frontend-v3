@@ -8,7 +8,6 @@ import {
   useSwapReceipt,
 } from './useTransactionLogsQuery'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 
 async function testAddReceipt(userAddress: Address, txHash: Hash) {
   const { result } = testHook(() => useAddLiquidityReceipt({ txHash, userAddress }), {
@@ -79,23 +78,69 @@ test('queries remove liquidity transaction', async () => {
   expect(result.current.sentBptUnits).toBe('6439.400687368663510166')
 })
 
-test('queries swap transaction', async () => {
-  const userAddress = '0xf76142b79Db34E57852d68F9c52C0E24f7349647'
-  // https://polygonscan.com/tx/0x11380dcffb24c512da18f032d9f7354d154cfda6bbab0633df182fcd202c4244
-  const txHash = '0x11380dcffb24c512da18f032d9f7354d154cfda6bbab0633df182fcd202c4244'
+describe('queries swap transaction', () => {
+  const maticAddress = '0x0000000000000000000000000000000000001010'
+  const wMaticAddress = '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270'
+  const daiAddress = '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063'
 
-  const result = await testSwapReceipt(userAddress, txHash, GqlChain.Polygon)
+  test('when the native asset is not included (from DAI to WMATIC)', async () => {
+    const userAddress = '0xf76142b79Db34E57852d68F9c52C0E24f7349647'
+    // https://polygonscan.com/tx/0x11380dcffb24c512da18f032d9f7354d154cfda6bbab0633df182fcd202c4244
+    const txHash = '0x11380dcffb24c512da18f032d9f7354d154cfda6bbab0633df182fcd202c4244'
 
-  await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+    const result = await testSwapReceipt(userAddress, txHash, GqlChain.Polygon)
 
-  expect(result.current.sentToken).toEqual({
-    humanAmount: '1',
-    tokenAddress: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
+    await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+
+    expect(result.current.sentToken).toEqual({
+      humanAmount: '1',
+      tokenAddress: daiAddress,
+    })
+
+    expect(result.current.receivedToken).toEqual({
+      humanAmount: '1.419839650912753603',
+      tokenAddress: wMaticAddress,
+    })
   })
 
-  expect(result.current.receivedToken).toEqual({
-    humanAmount: '1.419839650912753603',
-    tokenAddress: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
+  test('when the native asset is the token in (from MATIC to DAI)', async () => {
+    const userAddress = '0xf76142b79Db34E57852d68F9c52C0E24f7349647'
+    // https://polygonscan.com/tx/0x78ddd90502509a264a5e8f4f3732668db669e7614f4887f2a233ce39e5eafa7c
+    const txHash = '0x78ddd90502509a264a5e8f4f3732668db669e7614f4887f2a233ce39e5eafa7c'
+
+    const result = await testSwapReceipt(userAddress, txHash, GqlChain.Polygon)
+
+    await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+
+    expect(result.current.sentToken).toEqual({
+      humanAmount: '1',
+      tokenAddress: maticAddress,
+    })
+
+    expect(result.current.receivedToken).toEqual({
+      humanAmount: '0.693570611425675513',
+      tokenAddress: daiAddress,
+    })
+  })
+
+  test('when the native asset is the token out (from DAI to MATIC)', async () => {
+    const userAddress = '0xf76142b79Db34E57852d68F9c52C0E24f7349647'
+    // https://polygonscan.com/tx/0xc66780aebb4ec2f3d2f6c2e10358bbb6396574dc161f437982373c09e315479c
+    const txHash = '0xc66780aebb4ec2f3d2f6c2e10358bbb6396574dc161f437982373c09e315479c'
+
+    const result = await testSwapReceipt(userAddress, txHash, GqlChain.Polygon)
+
+    await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+
+    expect(result.current.sentToken).toEqual({
+      humanAmount: '1',
+      tokenAddress: daiAddress,
+    })
+
+    expect(result.current.receivedToken).toEqual({
+      humanAmount: '1.44262244738485634',
+      tokenAddress: maticAddress,
+    })
   })
 })
 

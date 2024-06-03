@@ -8,13 +8,14 @@ import { UserSettingsProvider } from '@/lib/modules/user/settings/UserSettingsPr
 import { ThemeProvider as ColorThemeProvider } from 'next-themes'
 import { DEFAULT_THEME_COLOR_MODE } from '@/lib/shared/services/chakra/themes/bal/theme'
 import { PartnerThemeProvider } from '@/lib/shared/services/chakra/PartnerThemeProvider'
+import { wagmiConfig } from '@/lib/modules/web3/WagmiConfig'
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <ColorThemeProvider defaultTheme={DEFAULT_THEME_COLOR_MODE}>
       <PartnerThemeProvider>
         <ThemeProvider>
-          <Web3Provider>
+          <Web3Provider wagmiConfig={wagmiConfig}>
             <ApolloClientProvider>
               <ApolloGlobalDataProvider>
                 <UserSettingsProvider

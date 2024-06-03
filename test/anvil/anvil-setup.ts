@@ -1,5 +1,5 @@
 import { getChainId } from '@/lib/config/app.config'
-import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
+import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'

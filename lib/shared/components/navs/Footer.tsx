@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { Stack, Text, Box } from '@chakra-ui/react'
 import { staggeredFadeIn, fadeIn } from '@/lib/shared/utils/animations'
+import { isProd } from '@/lib/config/app.config'
 import { motion } from 'framer-motion'
 
 export function Footer() {
@@ -40,11 +41,14 @@ export function Footer() {
             <Text fontSize="sm">Risks</Text>
           </Link>
         </Box>
-        <Box as={motion.div} variants={fadeIn}>
-          <Link href="/components" prefetch={true}>
-            <Text fontSize="sm">Components</Text>
-          </Link>
-        </Box>
+
+        {!isProd && (
+          <Box as={motion.div} variants={fadeIn}>
+            <Link href="/components" prefetch={true}>
+              <Text fontSize="sm">Components</Text>
+            </Link>
+          </Box>
+        )}
       </Stack>
     </Box>
   )

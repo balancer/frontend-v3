@@ -38,6 +38,7 @@ export function PoolListViewType() {
       currentOption={currentOption}
       options={options}
       onChange={changeListView}
+      groupId="pool-list-view"
     />
   )
 }

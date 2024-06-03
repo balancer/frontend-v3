@@ -7,7 +7,7 @@ import { parseUnits } from 'viem'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { Pool } from '../../PoolProvider'
 import { selectStakingService } from '@/lib/modules/staking/selectStakingService'
-import { useUnstakeGaugeCallDataQuery } from './useUnstakeGaugeCallDataQuery'
+import { useBuildUnstakeCallData } from './useBuildUnstakeCallData'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { ManagedTransactionInput } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { useBalTokenRewards } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
@@ -18,6 +18,7 @@ import { useMemo } from 'react'
 import { ManagedTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { useHasApprovedRelayer } from '@/lib/modules/relayer/useHasApprovedRelayer'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 
 const claimAndUnstakeStepId = 'claim-and-unstake'
 
@@ -25,6 +26,7 @@ export function useClaimAndUnstakeStep(
   pool: Pool,
   refetchPoolBalances: () => void
 ): { isLoading: boolean; step: TransactionStep } {
+  const { userAddress } = useUserAccount()
   const { getTransaction } = useTransactionState()
   const { contracts, chainId } = getNetworkConfig(pool.chain)
 
@@ -47,12 +49,13 @@ export function useClaimAndUnstakeStep(
     ? selectStakingService(pool.chain, pool.staking?.type)
     : undefined
 
-  const { data, isLoading } = useUnstakeGaugeCallDataQuery(
-    parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS),
-    stakingService,
-    nonBalrewards.length > 0,
-    balRewards.length > 0
-  )
+  const data = useBuildUnstakeCallData({
+    amount: parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS),
+    gaugeService: stakingService,
+    hasPendingNonBalRewards: nonBalrewards.length > 0,
+    hasPendingBalRewards: balRewards.length > 0,
+    userAddress,
+  })
 
   const txSimulationMeta = sentryMetaForWagmiSimulation(
     'Error in wagmi tx simulation (Claim and unstake transaction)',
@@ -70,7 +73,7 @@ export function useClaimAndUnstakeStep(
     labels,
     chainId,
     args: [data],
-    enabled: !!pool && !isLoadingRelayerApproval && hasApprovedRelayer && !isLoading,
+    enabled: !!pool && !isLoadingRelayerApproval && hasApprovedRelayer,
     txSimulationMeta,
   }
 
@@ -87,11 +90,11 @@ export function useClaimAndUnstakeStep(
       onSuccess: () => refetchPoolBalances(),
       renderAction: () => <ManagedTransactionButton id={claimAndUnstakeStepId} {...props} />,
     }),
-    [transaction, data, isLoading, props]
+    [transaction, data, props]
   )
 
   return {
-    isLoading,
+    isLoading: isLoadingRelayerApproval,
     step,
   }
 }

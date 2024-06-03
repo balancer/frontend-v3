@@ -70,7 +70,7 @@ export function useRemoveLiquidityReceipt({ txHash, userAddress }: ReceiptProps)
       sentBptUnits: '',
     }
   }
-  const nativeAssetReceived = query.data.incomingWithdawals[0]?.args?.wad || 0n
+  const nativeAssetReceived = query.data.incomingWithdrawals[0]?.args?.wad || 0n
 
   const receivedErc20Tokens: HumanTokenAmountWithAddress[] = query.data.incoming.map(log => {
     const tokenDecimals = getToken(log.address, chain)?.decimals
@@ -118,7 +118,7 @@ export function useSwapReceipt({ txHash, userAddress, chain }: ReceiptProps & { 
   /**
    * GET RECEIVED AMOUNT
    */
-  const nativeAssetReceived = query.data.incomingWithdawals[0]?.args?.wad || 0n
+  const nativeAssetReceived = query.data.incomingWithdrawals[0]?.args?.wad || 0n
 
   const incomingData = query.data.incoming[0]
   const receivedTokenValue = incomingData?.args?.value || 0n
@@ -192,7 +192,7 @@ export function useTransactionLogsQuery({
   // Catches when the wNativeAsset is withdrawn from the vault, assumption is
   // that his means the user is getting the same value in the native asset.
   // TODO V3 - This works for v2 vault but may not work for v3
-  const incomingWithdawalsQuery = useQuery({
+  const incomingWithdrawalsQuery = useQuery({
     queryKey: ['tx.logs.incoming.withdrawals', userAddress, receipt.data?.blockHash],
     queryFn: () =>
       viemClient.getLogs({
@@ -215,10 +215,11 @@ export function useTransactionLogsQuery({
     [incomingTransfersQuery.data, txHash]
   )
 
-  const incomingWithdawalsData = useMemo(
+  const incomingWithdrawalsData = useMemo(
     () =>
-      incomingWithdawalsQuery.data?.filter(log => isSameAddress(log.transactionHash, txHash)) || [],
-    [incomingWithdawalsQuery.data, txHash]
+      incomingWithdrawalsQuery.data?.filter(log => isSameAddress(log.transactionHash, txHash)) ||
+      [],
+    [incomingWithdrawalsQuery.data, txHash]
   )
 
   return {
@@ -226,17 +227,17 @@ export function useTransactionLogsQuery({
       receipt.error ||
       outgoingTransfersQuery.error ||
       incomingTransfersQuery.error ||
-      incomingWithdawalsQuery.error,
+      incomingWithdrawalsQuery.error,
     isLoading:
       receipt.isLoading ||
       outgoingTransfersQuery.isLoading ||
       incomingTransfersQuery.isLoading ||
-      incomingWithdawalsQuery.isLoading,
+      incomingWithdrawalsQuery.isLoading,
     data: {
       value: receipt?.data?.value,
       outgoing: outgoingTransfersData,
       incoming: incomingTransfersData,
-      incomingWithdawals: incomingWithdawalsData,
+      incomingWithdrawals: incomingWithdrawalsData,
     },
   }
 }

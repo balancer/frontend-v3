@@ -152,7 +152,7 @@ export default function PoolMyLiquidity() {
                 currentOption={activeTab}
                 options={options}
                 onChange={handleTabChanged}
-                width="70px"
+                groupId="my-liquidity"
               />
             </HStack>
             <Box width="full">
