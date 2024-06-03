@@ -81,7 +81,6 @@ const getDefaultPoolChartOptions = (
   }
 
   const colorMode = nextTheme === 'dark' ? '_dark' : 'default'
-
   return {
     grid: {
       left: '1.5%',
@@ -113,49 +112,50 @@ const getDefaultPoolChartOptions = (
             return format(new Date(params.value * 1000), 'MMM d')
           },
         },
-        axisLine: { show: false },
-        splitArea: {
-          show: false,
-          areaStyle: {
-            color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)'],
-          },
+      },
+      axisLine: { show: false },
+      splitArea: {
+        show: false,
+        areaStyle: {
+          color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)'],
         },
       },
-      yAxis: {
-        show: true,
-        type: 'value',
-        axisLine: { show: false },
-        minorSplitLine: { show: false },
-        splitLine: { show: false },
-        splitNumber: 3,
-        axisLabel: {
-          formatter: (value: number) => {
-            return currencyFormatter(value)
-          },
-          color: theme.semanticTokens.colors.font.primary[colorMode],
-          opacity: 0.5,
-          interval: 'auto',
-          showMaxLabel: false,
-          showMinLabel: false,
+    },
+    yAxis: {
+      show: true,
+      type: 'value',
+      axisLine: { show: false },
+      minorSplitLine: { show: false },
+      splitLine: { show: false },
+      splitNumber: 3,
+      axisLabel: {
+        formatter: (value: number) => {
+          return currencyFormatter(value)
         },
+        color: theme.semanticTokens.colors.font.primary[colorMode],
+        opacity: 0.5,
+        interval: 'auto',
+        showMaxLabel: false,
+        showMinLabel: false,
       },
+    },
 
-      tooltip: {
-        show: true,
-        showContent: true,
-        trigger: 'axis',
-        confine: true,
-        axisPointer: {
-          animation: false,
-          type: 'shadow',
-          label: {
-            show: false,
-          },
+    tooltip: {
+      show: true,
+      showContent: true,
+      trigger: 'axis',
+      confine: true,
+      axisPointer: {
+        animation: false,
+        type: 'shadow',
+        label: {
+          show: false,
         },
-        extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container}`,
-        formatter: (params: any) => {
-          const data = Array.isArray(params) ? params[0] : params
-          return `
+      },
+      extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container}`,
+      formatter: (params: any) => {
+        const data = Array.isArray(params) ? params[0] : params
+        return `
           <div style="padding: none; display: flex; flex-direction: column; justify-content: center;${
             toolTipTheme.container
           }">
@@ -167,7 +167,6 @@ const getDefaultPoolChartOptions = (
             </div>
           </div>
         `
-        },
       },
     },
   }
@@ -230,8 +229,6 @@ export function usePoolCharts() {
   const { toCurrency } = useCurrency()
   const { theme: nextTheme } = useNextTheme()
   const theme = useChakraTheme()
-
-  console.log({ theme })
 
   const tabsList = useMemo(() => {
     const poolType = pool?.type
