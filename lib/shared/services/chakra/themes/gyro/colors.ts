@@ -3,9 +3,9 @@ import { colors as baseColors } from '../base/colors'
 export const colors = {
   ...baseColors,
   base: {
-    light: 'blue.300',
+    light: 'hsla(210, 100%, 80%,1)',
     hslLight: '44,22%,90%',
-    dark: 'blue.800',
+    dark: 'hsla(240, 100%, 50%,1)',
     hslDark: '216,12%,25%',
   },
 }
