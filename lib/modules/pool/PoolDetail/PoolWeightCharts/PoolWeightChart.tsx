@@ -71,7 +71,16 @@ export const DEFAULT_POOL_WEIGHT_CHART_COLORS: PoolWeightChartColorDef[] = [
     from: '#30CEF0',
     to: '#02A2FE',
   },
+  {
+    from: '#30CEF0',
+    to: '#02A2FE',
+  },
 ]
+
+const defaultColor: PoolWeightChartColorDef = {
+  from: '#30CEF0',
+  to: '#02A2FE',
+}
 
 const smallSize: ChartSizeValues = {
   chartHeight: '140px',
@@ -210,11 +219,11 @@ export function PoolWeightChart({
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
                   offset: 1,
-                  color: colors[i].from,
+                  color: colors[i]?.from || defaultColor.from,
                 },
                 {
                   offset: 0,
-                  color: colors[i].to,
+                  color: colors[i]?.to || defaultColor.to,
                 },
               ]),
             },

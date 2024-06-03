@@ -228,23 +228,25 @@ export const TokenInput = forwardRef(
                 autoComplete="off"
                 autoCorrect="off"
                 min={0}
-                border="transparent"
+                border="0px solid transparent"
                 bg="transparent"
                 shadow="none"
                 p="0"
-                fontSize="xl"
+                fontSize="3xl"
                 fontWeight="medium"
                 value={value}
                 title={inputTitle}
                 onChange={handleOnChange}
                 onKeyDown={blockInvalidNumberInput}
+                outline="none"
+                boxShadow="none"
                 _hover={{
-                  borderColor: 'transparent',
+                  border: '0px solid transparent',
                   boxShadow: 'none',
                 }}
                 _focus={{
                   outline: 'none',
-                  borderColor: 'transparent',
+                  border: '0px solid transparent',
                   boxShadow: 'none',
                 }}
                 {...inputProps}
