@@ -2,8 +2,8 @@
 
 import { ThemeTypings } from '@chakra-ui/react'
 import { ReactNode, createContext, useState } from 'react'
-import { theme as balTheme } from './theme'
-import { theme as gyroTheme } from './gyroTheme'
+import { theme as balTheme } from './themes/bal/theme'
+import { theme as gyroTheme } from './themes/gyro/theme'
 import { useMandatoryContext } from '../../utils/contexts'
 
 export type usePartnerTheme = ReturnType<typeof _usePartnerTheme>

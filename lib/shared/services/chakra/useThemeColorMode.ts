@@ -1,5 +1,5 @@
 import { useTheme } from 'next-themes'
-import { DEFAULT_THEME_COLOR_MODE } from './theme'
+import { DEFAULT_THEME_COLOR_MODE } from './themes/bal/theme'
 
 export type ColorMode = 'light' | 'dark'
 
