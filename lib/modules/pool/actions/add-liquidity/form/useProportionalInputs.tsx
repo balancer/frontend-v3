@@ -66,12 +66,12 @@ export function useProportionalInputs() {
 
     if (isEmptyHumanAmount(humanAmount)) return clearAmountsIn()
 
-    const proportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn(
+    const proportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn({
       tokenAddress,
       humanAmount,
       helpers,
-      wethIsEth
-    )
+      wethIsEth,
+    })
 
     setHumanAmountsIn(proportionalHumanAmountsIn)
   }
@@ -95,12 +95,12 @@ export function useProportionalInputs() {
       const humanBalance = humanBalanceFor(address)
       if (isEmptyHumanAmount(humanBalance)) return false
 
-      const proportionalAmounts = _calculateProportionalHumanAmountsIn(
-        address as Address,
-        humanBalance,
+      const proportionalAmounts = _calculateProportionalHumanAmountsIn({
+        tokenAddress: address as Address,
+        humanAmount: humanBalance,
         helpers,
-        wethIsEth
-      )
+        wethIsEth,
+      })
 
       // The user must have enough token balance for this proportional result
       const haveEnoughBalance = proportionalAmounts.every(({ tokenAddress, humanAmount }) => {
@@ -121,12 +121,12 @@ export function useProportionalInputs() {
   const maximizedUsdValue = useMemo(() => {
     if (!shouldCalculateMaximizeAmounts || !optimalToken) return ''
 
-    const maxProportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn(
-      optimalToken.tokenAddress as Address,
-      optimalToken.userBalance,
+    const maxProportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn({
+      tokenAddress: optimalToken.tokenAddress as Address,
+      humanAmount: optimalToken.userBalance,
       helpers,
-      wethIsEth
-    )
+      wethIsEth,
+    })
 
     return usdValueFor(maxProportionalHumanAmountsIn)
   }, [shouldCalculateMaximizeAmounts, optimalToken, isLoadingTokenPrices])
@@ -144,12 +144,18 @@ export function useProportionalInputs() {
   }
 }
 
-export function _calculateProportionalHumanAmountsIn(
-  tokenAddress: Address,
-  humanAmount: HumanAmount,
-  helpers: LiquidityActionHelpers,
+type Params = {
+  tokenAddress: Address
+  humanAmount: HumanAmount
+  helpers: LiquidityActionHelpers
   wethIsEth: boolean
-): HumanTokenAmountWithAddress[] {
+}
+export function _calculateProportionalHumanAmountsIn({
+  tokenAddress,
+  humanAmount,
+  helpers,
+  wethIsEth,
+}: Params): HumanTokenAmountWithAddress[] {
   const amountIn: InputAmount = helpers.toSdkInputAmounts([{ tokenAddress, humanAmount }])[0]
   const proportionalAmounts = calculateProportionalAmounts(helpers.poolStateWithBalances, amountIn)
     .tokenAmounts.map(({ address, rawAmount, decimals }) => ({
