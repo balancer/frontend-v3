@@ -12,16 +12,16 @@ import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useMemo, useState } from 'react'
 import { ManagedTransactionInput } from '../../../web3/contracts/useManagedTransaction'
 import { useUserAccount } from '../../../web3/UserAccountProvider'
-import { PoolListItem } from '../../pool.types'
 import { useClaimCallDataQuery } from './useClaimCallDataQuery'
 import { BalTokenRewardsResult } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
 import { ClaimableBalancesResult } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
 import { allClaimableGaugeAddressesFor } from '../../pool.helpers'
+import { ClaimablePool } from './ClaimProvider'
 
 const claimAllRewardsStepId = 'claim-all-rewards'
 
 export type ClaimAllRewardsStepParams = {
-  pools: PoolListItem[]
+  pools: ClaimablePool[]
   claimableBalancesQuery: ClaimableBalancesResult
   balTokenRewardsQuery: BalTokenRewardsResult
 }

@@ -15,8 +15,8 @@ import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { Address, getAddress, parseUnits } from 'viem'
 import { BPT_DECIMALS } from './pool.constants'
-import { PoolListItem } from './pool.types'
 import { isNotMainet } from '../chains/chain.utils'
+import { ClaimablePool } from './actions/claim/ClaimProvider'
 
 /**
  * METHODS
@@ -210,7 +210,7 @@ function isClaimableGauge(
  * Returns all gauge addresses for a pool that are claimable. See
  * `isClaimableGauge()` for info about why some gauges are not claimable.
  */
-export function allClaimableGaugeAddressesFor(pool: PoolListItem) {
+export function allClaimableGaugeAddressesFor(pool: ClaimablePool) {
   const addresses: Address[] = []
   const staking = pool.staking
 

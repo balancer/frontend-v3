@@ -9,7 +9,7 @@ import { SECONDS_IN_DAY } from '@/test/utils/numbers'
 import { sumBy, isEmpty } from 'lodash'
 import { useTokens } from '../../../../tokens/TokensProvider'
 import { useVebalBoost } from '../../../../vebal/useVebalBoost'
-import { useClaiming } from '../../../actions/claim/useClaiming'
+import { useClaim } from '../../../actions/claim/ClaimProvider'
 import { PoolListItem } from '../../../pool.types'
 import { getTotalAprRaw } from '../../../pool.utils'
 import { usePool } from '../../../PoolProvider'
@@ -40,7 +40,7 @@ export function UserSnapshotValues() {
     previewModalDisclosure,
     disabledReason,
     isDisabled,
-  } = useClaiming([pool] as unknown[] as PoolListItem[])
+  } = useClaim()
 
   const MemoizedMainAprTooltip = memo(MainAprTooltip)
 

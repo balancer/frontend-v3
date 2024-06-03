@@ -11,20 +11,21 @@ import { getPoolsByGaugesMap } from '../../pool/pool.utils'
 import { useTokens } from '../../tokens/TokensProvider'
 import { AbiMap } from '../../web3/contracts/AbiMap'
 import { useUserAccount } from '../../web3/UserAccountProvider'
+import { ClaimablePool } from '../../pool/actions/claim/ClaimProvider'
 
 export interface BalTokenReward {
   balance: bigint
   decimals: number
   humanBalance: string
   gaugeAddress: string
-  pool: PoolListItem
+  pool: ClaimablePool
   tokenAddress: Address
   fiatBalance: BigNumber
 }
 
 export type BalTokenRewardsResult = ReturnType<typeof useBalTokenRewards>
 
-export function useBalTokenRewards(pools: PoolListItem[]) {
+export function useBalTokenRewards(pools: ClaimablePool[]) {
   const { userAddress, isConnected } = useUserAccount()
   const { priceFor } = useTokens()
 
