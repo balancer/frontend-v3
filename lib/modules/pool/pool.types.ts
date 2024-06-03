@@ -25,6 +25,7 @@ export type PoolListItem = PoolList[0]
 export enum PoolVariant {
   v2 = 'v2',
   v3 = 'v3',
+  gyro = 'gyro',
 }
 
 export type PoolAction = 'add-liquidity' | 'remove-liquidity' | 'stake' | 'unstake'
@@ -34,6 +35,10 @@ export interface FetchPoolProps {
   // chain & variant are not used yet, but will be needed in the future.
   chain: GqlChain
   variant?: PoolVariant
+}
+
+export interface PoolPathProps extends Omit<FetchPoolProps, 'variant'> {
+  poolType: GqlPoolType
 }
 
 export interface PoolSearchParams {

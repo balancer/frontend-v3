@@ -11,13 +11,11 @@ import { PoolStatsLayout } from './PoolStats/PoolStatsLayout'
 import { PoolHeader } from './PoolHeader/PoolHeader'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import { usePartnerTheme } from '@/lib/shared/services/chakra/PartnerThemeProvider'
 
 export function PoolDetail() {
   const { pool } = usePool()
   const router = useRouter()
   const pathname = usePathname()
-  const { toggleTheme } = usePartnerTheme()
 
   const userHasLiquidity = bn(pool.userBalance?.totalBalance || '0').gt(0)
 
@@ -31,14 +29,6 @@ export function PoolDetail() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
-
-  useEffect(() => {
-    // sDAI/GYD on mainnet
-    if (pool.id === '0x2191df821c198600499aa1f0031b1a7514d7a7d9000200000000000000000639') {
-      toggleTheme('gyro')
-    }
-    return () => toggleTheme('bal')
-  }, [])
 
   return (
     <VStack w="full" spacing="2xl">

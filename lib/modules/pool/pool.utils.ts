@@ -10,7 +10,7 @@ import {
   GqlPoolFilterCategory,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
-import { FetchPoolProps, PoolAction, PoolListItem, PoolVariant } from './pool.types'
+import { FetchPoolProps, PoolAction, PoolListItem, PoolPathProps, PoolVariant } from './pool.types'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { TokenAmountHumanReadable } from '../tokens/token.types'
@@ -49,6 +49,17 @@ export const chainToSlugMap: Record<GqlChain, ChainSlug> = {
 }
 export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlChain>
 
+function getVariant(poolType: GqlPoolType) {
+  switch (poolType) {
+    case GqlPoolType.Gyro:
+    case GqlPoolType.Gyro3:
+    case GqlPoolType.Gyroe:
+      return PoolVariant.gyro
+    default:
+      return PoolVariant.v2
+  }
+}
+
 /**
  * Constructs path to pool detail page.
  * @param {String} id Pool ID could be ID or address depending on variant.
@@ -56,7 +67,8 @@ export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlCha
  * @param {String} variant Pool variant, defaults to v2.
  * @returns {String} Path to pool detail page.
  */
-export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolProps) {
+export function getPoolPath({ id, chain, poolType }: PoolPathProps) {
+  const variant = getVariant(poolType)
   return `/pools/${chainToSlugMap[chain]}/${variant}/${id}`
 }
 
@@ -167,9 +179,10 @@ export const poolClickHandler = (
   event: React.MouseEvent<HTMLElement>,
   id: string,
   chain: GqlChain,
+  poolType: GqlPoolType,
   router: AppRouterInstance
 ) => {
-  const poolPath = getPoolPath({ id, chain })
+  const poolPath = getPoolPath({ id, chain, poolType })
 
   if (event.ctrlKey || event.metaKey) {
     window.open(poolPath, '_blank')
@@ -184,9 +197,10 @@ export const poolMouseEnterHandler = (
   event: React.MouseEvent<HTMLElement>,
   id: string,
   chain: GqlChain,
+  poolType: GqlPoolType,
   router: AppRouterInstance
 ) => {
-  const poolPath = getPoolPath({ id, chain })
+  const poolPath = getPoolPath({ id, chain, poolType })
   router.prefetch(poolPath)
 }
 

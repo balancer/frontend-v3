@@ -15,13 +15,16 @@ export const PartnerThemeContext = createContext<ThemeContext>({} as ThemeContex
 function _usePartnerTheme() {
   const [theme, setTheme] = useState<ThemeTypings>(balTheme)
 
-  const toggleTheme = (theme: string) => {
-    switch (theme) {
+  const toggleTheme = (themeName: string) => {
+    switch (themeName) {
       case 'gyro':
         setTheme(gyroTheme)
         break
-      case 'bal':
+      case 'balancer':
         setTheme(balTheme)
+        break
+      case 'beets':
+        //setTheme(beetsTheme) // TODO implement beets theme
         break
       default:
         setTheme(balTheme)

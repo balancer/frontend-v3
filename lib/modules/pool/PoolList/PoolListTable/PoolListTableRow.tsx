@@ -31,7 +31,10 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
       px={{ base: '0', sm: 'md' }}
       w="full"
     >
-      <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
+      <Link
+        href={getPoolPath({ id: pool.id, chain: pool.chain, poolType: pool.type })}
+        prefetch={true}
+      >
         <Grid {...rest} py="sm" pr="4">
           <GridItem>
             <NetworkIcon chain={pool.chain} size={6} />
