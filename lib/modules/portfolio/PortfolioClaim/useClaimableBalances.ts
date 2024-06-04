@@ -4,25 +4,25 @@ import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
 import { Address, formatUnits } from 'viem'
 import { useReadContracts, type UseReadContractsReturnType } from 'wagmi'
-import { PoolListItem } from '../../pool/pool.types'
 import { useTokens } from '../../tokens/TokensProvider'
 import { AbiMap } from '../../web3/contracts/AbiMap'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { BPT_DECIMALS } from '../../pool/pool.constants'
+import { ClaimablePool } from '../../pool/actions/claim/ClaimProvider'
 
 export interface ClaimableReward {
   balance: bigint
   decimals?: number
   humanBalance: string
   gaugeAddress: string
-  pool: PoolListItem
+  pool: ClaimablePool
   tokenAddress: Address
   fiatBalance: BigNumber
 }
 
 export type ClaimableBalancesResult = ReturnType<typeof useClaimableBalances>
 
-export function useClaimableBalances(pools: PoolListItem[]) {
+export function useClaimableBalances(pools: ClaimablePool[]) {
   const { userAddress, isConnected } = useUserAccount()
   const { priceFor, getToken } = useTokens()
 

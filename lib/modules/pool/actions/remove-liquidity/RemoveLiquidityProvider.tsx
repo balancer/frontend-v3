@@ -158,17 +158,22 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     if (priceImpact) setQuotePriceImpact(priceImpact)
   }
 
+  // If wethIsEth is true, we need to return the native asset address for the token amount
+  function getAddressForTokenAmount(tokenAmount: TokenAmount): Address {
+    return wethIsEth &&
+      wNativeAsset &&
+      nativeAsset &&
+      isSameAddress(tokenAmount.token.address, wNativeAsset.address as Address)
+      ? (nativeAsset.address as Address)
+      : tokenAmount.token.address
+  }
+
   /**
    * Derived state
    */
   const amountOutMap: Record<Address, HumanAmount> = Object.fromEntries(
     quoteAmountsOut.map(tokenAmount => [
-      wethIsEth &&
-      wNativeAsset &&
-      nativeAsset &&
-      isSameAddress(tokenAmount.token.address, wNativeAsset.address as Address)
-        ? nativeAsset.address
-        : tokenAmount.token.address,
+      getAddressForTokenAmount(tokenAmount),
       toHumanAmount(tokenAmount),
     ])
   )
@@ -179,10 +184,12 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
 
   const usdAmountOutMap: Record<Address, HumanAmount> = Object.fromEntries(
     quoteAmountsOut.map(tokenAmount => {
-      const tokenAddress: Address = tokenAmount.token.address
+      const tokenAddress = getAddressForTokenAmount(tokenAmount)
       const token = getToken(tokenAddress, pool.chain)
       if (!token) return [tokenAddress, '0'] // Ignore BPT token addresses included in SDK amountsOut
+
       const tokenUnits = amountOutForToken(token.address as Address)
+
       return [tokenAddress, usdValueForToken(token, tokenUnits) as HumanAmount]
     })
   )

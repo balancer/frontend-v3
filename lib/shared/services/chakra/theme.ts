@@ -1684,7 +1684,10 @@ export const balTheme = {
     Switch: {
       baseStyle: {
         track: {
-          background: 'purple.500',
+          bg: 'gray.500',
+          _checked: {
+            bg: 'purple.500',
+          },
         },
       },
     },

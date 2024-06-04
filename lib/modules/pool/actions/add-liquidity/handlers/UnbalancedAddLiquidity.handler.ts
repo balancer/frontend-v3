@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
+import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   AddLiquidity,
@@ -64,7 +64,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   }: SdkBuildAddLiquidityInput): Promise<TransactionConfig> {
     const addLiquidity = new AddLiquidity()
 
-    const { call, to, value } = addLiquidity.buildCall({
+    const { callData, to, value } = addLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
@@ -75,7 +75,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     return {
       account,
       chainId: this.helpers.chainId,
-      data: call,
+      data: callData,
       to,
       value,
     }
@@ -87,7 +87,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   private constructSdkInput(
     humanAmountsIn: HumanTokenAmountWithAddress[]
   ): AddLiquidityUnbalancedInput {
-    const amountsIn = this.helpers.toInputAmounts(humanAmountsIn)
+    const amountsIn = this.helpers.toSdkInputAmounts(humanAmountsIn)
 
     return {
       chainId: this.helpers.chainId,

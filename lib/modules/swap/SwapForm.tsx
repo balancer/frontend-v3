@@ -60,6 +60,7 @@ export function SwapForm() {
     setTokenOut,
     switchTokens,
     setNeedsToAcceptHighPI,
+    resetSwapAmounts,
   } = useSwap()
   const [copiedDeepLink, setCopiedDeepLink] = useState(false)
   const tokenSelectDisclosure = useDisclosure()
@@ -103,8 +104,7 @@ export function SwapForm() {
   function onModalClose() {
     previewModalDisclosure.onClose()
     if (swapTxHash) {
-      // We are going to reload the swap page with the same inputs again so, we need to refetch the simulation
-      simulationQuery.refetch()
+      resetSwapAmounts()
       // Push an invalid dynamic route to force a re-render of the swap layout
       router.push(`/swap/${now()}`)
     }

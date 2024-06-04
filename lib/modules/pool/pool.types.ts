@@ -5,6 +5,7 @@ import {
   GqlPoolType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
+  GqlPoolFilterCategory,
 } from '@/lib/shared/services/api/generated/graphql'
 import {
   parseAsArrayOf,
@@ -65,6 +66,13 @@ export const poolTypeFilters = [
 
 export type PoolFilterType = (typeof poolTypeFilters)[number]
 
+export const poolCategoryFilters = [
+  //GqlPoolFilterCategory.BlackListed, NOT USED
+  GqlPoolFilterCategory.Incentivized,
+] as const
+
+export type PoolCategoryType = (typeof poolCategoryFilters)[number]
+
 export type SortingState = PoolsColumnSort[]
 
 // We need to map toggalable pool types to their corresponding set of GqlPoolTypes.
@@ -105,4 +113,7 @@ export const poolListQueryStateParsers = {
   textSearch: parseAsString,
   userAddress: parseAsString,
   minTvl: parseAsFloat.withDefault(0),
+  poolCategories: parseAsArrayOf(
+    parseAsStringEnum<PoolCategoryType>(Object.values(poolCategoryFilters))
+  ).withDefault([]),
 }

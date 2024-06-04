@@ -6,7 +6,7 @@ import { Path, Slippage, Swap, SwapKind, TokenAmount } from '@balancer/sdk'
 import { formatUnits } from 'viem'
 import { TransactionConfig } from '../../web3/contracts/contract.types'
 import { SdkBuildSwapInputs, SdkSimulateSwapResponse, SimulateSwapInputs } from '../swap.types'
-import { getDefaultRpcUrl } from '../../web3/Web3Provider'
+import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 
 export class DefaultSwapHandler implements SwapHandler {
   constructor(public apolloClient: ApolloClient<object>) {}
