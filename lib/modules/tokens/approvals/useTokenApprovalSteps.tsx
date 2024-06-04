@@ -61,13 +61,13 @@ export function useTokenApprovalSteps({
 
   const steps = useMemo(() => {
     return tokenAmountsToApprove.map(tokenAmountToApprove => {
-      const { tokenAddress, requestedRawAmount } = tokenAmountToApprove
+      const { tokenAddress, requiredRawAmount, requestedRawAmount } = tokenAmountToApprove
       const token = getToken(tokenAddress, chain)
       const symbol = bptSymbol ?? (token && token?.symbol) ?? 'Unknown'
       const labels = buildTokenApprovalLabels({ actionType, symbol })
       const id = tokenAddress
 
-      const isComplete = () => tokenAllowances.allowanceFor(tokenAddress) >= requestedRawAmount
+      const isComplete = () => tokenAllowances.allowanceFor(tokenAddress) >= requiredRawAmount
 
       const props: ManagedErc20TransactionInput = {
         tokenAddress,
