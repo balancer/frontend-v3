@@ -3,14 +3,15 @@ import networkConfigs from '@/lib/config/networks'
 import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
-import { Address, formatUnits } from 'viem'
-import { useReadContracts, type UseReadContractsReturnType } from 'wagmi'
+import { Address, formatUnits, ReadContractParameters } from 'viem'
+import { useReadContracts } from 'wagmi'
 import { BPT_DECIMALS } from '../../pool/pool.constants'
 import { getPoolsByGaugesMap } from '../../pool/pool.utils'
 import { useTokens } from '../../tokens/TokensProvider'
 import { AbiMap } from '../../web3/contracts/AbiMap'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { ClaimablePool } from '../../pool/actions/claim/ClaimProvider'
+import { balancerV2GaugeV5Abi } from '../../web3/contracts/abi/generated'
 
 export interface BalTokenReward {
   balance: bigint
@@ -47,13 +48,15 @@ export function useBalTokenRewards(pools: ClaimablePool[]) {
     }
   }
 
-  const contractCalls = gaugeAddresses.map(claimableTokensCall)
+  const contractCalls: ReadContractParameters<typeof balancerV2GaugeV5Abi, 'claimable_tokens'>[] =
+    gaugeAddresses.map(claimableTokensCall)
 
   const {
     data: claimableTokensData,
     refetch,
     isLoading,
-  }: UseReadContractsReturnType = useReadContracts({
+  } = useReadContracts({
+    allowFailure: true,
     contracts: contractCalls,
     query: { enabled: isConnected && !!pools.length },
   })
