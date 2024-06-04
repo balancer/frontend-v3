@@ -10,13 +10,17 @@ import {
   DrawerFooter,
   VStack,
   Link,
+  Divider,
+  Box,
+  Text,
 } from '@chakra-ui/react'
 import { useRef } from 'react'
-import { Menu } from 'react-feather'
+import { ArrowUpRight, Menu } from 'react-feather'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { useNav } from './useNav'
 import NextLink from 'next/link'
 import { useRouter } from 'next/navigation'
+import { VeBalLink } from '@/lib/modules/vebal/VebalRedirectModal'
 
 function NavLinks({ onClick }: { onClick?: () => void }) {
   const { appLinks, linkColorFor } = useNav()
@@ -32,8 +36,38 @@ function NavLinks({ onClick }: { onClick?: () => void }) {
           variant="nav"
           color={linkColorFor(link.href)}
           onClick={onClick}
+          fontSize="xl"
         >
           {link.label}
+        </Link>
+      ))}
+      <VeBalLink fontSize="xl" />
+    </VStack>
+  )
+}
+
+function EcosystemLinks() {
+  const { ecosystemLinks } = useNav()
+
+  return (
+    <VStack align="start" w="full">
+      <Text color="grayText" size="xs" mb="sm">
+        Ecosystem
+      </Text>
+      {ecosystemLinks.map(link => (
+        <Link
+          key={link.href}
+          href={link.href}
+          variant="nav"
+          isExternal
+          display="flex"
+          alignItems="center"
+          gap="xs"
+        >
+          {link.label}
+          <Box color="grayText">
+            <ArrowUpRight size={14} />
+          </Box>
         </Link>
       ))}
     </VStack>
@@ -65,6 +99,8 @@ export function MobileNav() {
 
           <DrawerBody>
             <NavLinks onClick={onClose} />
+            <Divider my={4} />
+            <EcosystemLinks />
           </DrawerBody>
 
           <DrawerFooter></DrawerFooter>

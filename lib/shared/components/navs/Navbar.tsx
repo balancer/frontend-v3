@@ -2,7 +2,7 @@
 
 import NextLink from 'next/link'
 import DarkModeToggle from '../btns/DarkModeToggle'
-import { Box, HStack, BoxProps, Link, useDisclosure } from '@chakra-ui/react'
+import { Box, HStack, BoxProps, Link } from '@chakra-ui/react'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { BalancerLogo } from '../imgs/BalancerLogo'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
@@ -11,26 +11,13 @@ import RecentTransactions from '../other/RecentTransactions'
 import { isProd } from '@/lib/config/app.config'
 import { staggeredFadeIn, fadeIn } from '@/lib/shared/utils/animations'
 import { motion } from 'framer-motion'
-import { VebalRedirectModal } from '@/lib/modules/vebal/VebalRedirectModal'
+import { VeBalLink } from '@/lib/modules/vebal/VebalRedirectModal'
 import { MobileNav } from './MobileNav'
 import { useNav } from './useNav'
 
 type Props = {
   leftSlot?: React.ReactNode
   rightSlot?: React.ReactNode
-}
-
-function VeBalLink() {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  return (
-    <>
-      <Link onClick={onOpen} variant="nav" color="font.primary">
-        veBAL
-      </Link>
-
-      <VebalRedirectModal isOpen={isOpen} onClose={onClose} />
-    </>
-  )
 }
 
 function NavLinks({ ...props }: BoxProps) {
