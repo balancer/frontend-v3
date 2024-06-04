@@ -16,8 +16,9 @@ import { Menu } from 'react-feather'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { useNav } from './useNav'
 import NextLink from 'next/link'
+import { useRouter } from 'next/navigation'
 
-function NavLinks() {
+function NavLinks({ onClick }: { onClick?: () => void }) {
   const { appLinks, linkColorFor } = useNav()
 
   return (
@@ -30,6 +31,7 @@ function NavLinks() {
           prefetch={true}
           variant="nav"
           color={linkColorFor(link.href)}
+          onClick={onClick}
         >
           {link.label}
         </Link>
@@ -41,6 +43,12 @@ function NavLinks() {
 export function MobileNav() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = useRef(null)
+  const router = useRouter()
+
+  function hommRedirect() {
+    onClose()
+    router.push('/')
+  }
 
   return (
     <>
@@ -52,11 +60,11 @@ export function MobileNav() {
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>
-            <BalancerLogoType width="106px" />
+            <BalancerLogoType width="106px" onClick={hommRedirect} />
           </DrawerHeader>
 
           <DrawerBody>
-            <NavLinks />
+            <NavLinks onClick={onClose} />
           </DrawerBody>
 
           <DrawerFooter></DrawerFooter>
