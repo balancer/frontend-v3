@@ -1,3 +1,5 @@
+export const DEFAULT_THEME_COLOR_MODE = 'dark'
+
 export const config = {
   initialColorMode: 'light',
   useSystemColorMode: false,

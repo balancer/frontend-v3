@@ -6,7 +6,7 @@ import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTra
 import { ApolloGlobalDataProvider } from '@/lib/shared/services/api/apollo-global-data.provider'
 import { UserSettingsProvider } from '@/lib/modules/user/settings/UserSettingsProvider'
 import { ThemeProvider as ColorThemeProvider } from 'next-themes'
-import { DEFAULT_THEME_COLOR_MODE } from '@/lib/shared/services/chakra/themes/bal/theme'
+import { DEFAULT_THEME_COLOR_MODE } from '@/lib/shared/services/chakra/themes/base/foundations'
 import { PartnerThemeProvider } from '@/lib/shared/services/chakra/PartnerThemeProvider'
 import { wagmiConfig } from '@/lib/modules/web3/WagmiConfig'
 
