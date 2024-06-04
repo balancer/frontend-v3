@@ -59,7 +59,7 @@ export const chains: readonly [Chain, ...Chain[]] = [
     .map(gqlChain => gqlChainToWagmiChainMap[gqlChain]),
 ]
 
-const chainsByKey = keyBy(chains, 'id')
+export const chainsByKey = keyBy(chains, 'id')
 export function getDefaultRpcUrl(chainId: number) {
   return chainsByKey[chainId].rpcUrls.default.http[0]
 }
