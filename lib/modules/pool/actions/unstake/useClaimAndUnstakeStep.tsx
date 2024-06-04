@@ -12,7 +12,6 @@ import { getNetworkConfig } from '@/lib/config/app.config'
 import { ManagedTransactionInput } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { useBalTokenRewards } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
 import { useClaimableBalances } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
-import { PoolListItem } from '../../pool.types'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useMemo } from 'react'
 import { ManagedTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
@@ -30,9 +29,8 @@ export function useClaimAndUnstakeStep(
   const { getTransaction } = useTransactionState()
   const { contracts, chainId } = getNetworkConfig(pool.chain)
 
-  const convertedPool = pool as unknown as PoolListItem // need to change type going from pool to pools for hooks
-  const { claimableRewards: nonBalrewards } = useClaimableBalances([convertedPool])
-  const { balRewardsData: balRewards } = useBalTokenRewards([convertedPool])
+  const { claimableRewards: nonBalrewards } = useClaimableBalances([pool])
+  const { balRewardsData: balRewards } = useBalTokenRewards([pool])
 
   const { hasApprovedRelayer, isLoading: isLoadingRelayerApproval } = useHasApprovedRelayer(chainId)
 
