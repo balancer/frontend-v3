@@ -1,7 +1,7 @@
 import { getChainId, getNativeAsset, getNetworkConfig } from '@/lib/config/app.config'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { SentryError } from '@/lib/shared/utils/errors'
 import { bn } from '@/lib/shared/utils/numbers'
@@ -20,7 +20,11 @@ import { Hex, formatUnits, parseUnits, Address } from 'viem'
 import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
 import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
 import { Pool } from '../PoolProvider'
-import { isNativeAsset, swapNativeWithWrapped } from '../../tokens/token.helpers'
+import {
+  isNativeAsset,
+  isWrappedNativeAsset,
+  swapNativeWithWrapped,
+} from '../../tokens/token.helpers'
 import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
 
 // Null object used to avoid conditional checks during hook loading state
@@ -214,4 +218,28 @@ export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
     totalShares: pool.dynamicData.totalShares as HumanAmount,
     vaultVersion: pool.vaultVersion as VaultVersion,
   }
+}
+
+/**
+ * Filters the human amounts based on whether the token to filter:
+ * - is already in the array and
+ * - is native and the wrapped native token is already in the array and
+ * - is wrapped native and the native token is already in the array
+ *
+ * @param {HumanAmoHumanTokenAmountWithAddressuntIn[]} humanAmountsIn - The array of human amounts to filter.
+ * @param {Address} tokenAddress - The token address to compare against.
+ * @param {GqlChain} chain - The chain type for comparison.
+ * @return {HumanTokenAmountWithAddress[]} The filtered array of human amounts.
+ */
+export function filterHumanAmountsIn(
+  humanAmountsIn: HumanTokenAmountWithAddress[],
+  tokenAddress: Address,
+  chain: GqlChain
+) {
+  return humanAmountsIn.filter(
+    amountIn =>
+      !isSameAddress(amountIn.tokenAddress, tokenAddress) &&
+      !(isNativeAsset(tokenAddress, chain) && isWrappedNativeAsset(amountIn.tokenAddress, chain)) &&
+      !(isNativeAsset(amountIn.tokenAddress, chain) && isWrappedNativeAsset(tokenAddress, chain))
+  )
 }

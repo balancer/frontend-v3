@@ -13,6 +13,7 @@ import { useAddLiquidityPriceImpactQuery } from './queries/useAddLiquidityPriceI
 import {
   LiquidityActionHelpers,
   areEmptyAmounts,
+  filterHumanAmountsIn,
   requiresProportionalInput,
 } from '../LiquidityActionHelpers'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
@@ -69,9 +70,9 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   }
 
   function setHumanAmountIn(tokenAddress: Address, humanAmount: HumanAmount | '') {
+    const amountsIn = filterHumanAmountsIn(humanAmountsIn, tokenAddress, chain)
     setHumanAmountsIn([
-      ...humanAmountsIn,
-
+      ...amountsIn,
       {
         tokenAddress,
         humanAmount,
