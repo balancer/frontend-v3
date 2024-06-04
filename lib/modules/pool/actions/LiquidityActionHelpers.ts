@@ -12,9 +12,9 @@ import {
   NestedPoolState,
   PoolState,
   TokenAmount,
-  calculateProportionalAmounts,
   mapPoolToNestedPoolState,
   mapPoolType,
+  PoolStateWithBalances,
 } from '@balancer/sdk'
 import { keyBy } from 'lodash'
 import { Hex, formatUnits, parseUnits, Address } from 'viem'
@@ -180,27 +180,31 @@ export function requiresProportionalInput(poolType: GqlPoolType): boolean {
   return isGyro(poolType)
 }
 
+type VaultVersion = PoolState['vaultVersion']
+
 export function toPoolState(pool: Pool): PoolState {
   return {
     id: pool.id as Hex,
     address: pool.address as Address,
     tokens: pool.poolTokens as MinimalToken[],
     type: mapPoolType(pool.type),
-    vaultVersion: 2, //TODO: change to dynamic version when we implement v3 integration
+    vaultVersion: pool.vaultVersion as VaultVersion,
   }
 }
 
-type PoolStateWithBalances = Parameters<typeof calculateProportionalAmounts>[0]
-
 export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
   return {
+    id: pool.id as Hex,
     address: pool.address as Address,
-    tokens: pool.poolTokens.map(t => ({
+    type: mapPoolType(pool.type),
+    tokens: pool.poolTokens.map((t, index) => ({
+      index,
       address: t.address as Address,
       balance: t.balance as HumanAmount,
       decimals: t.decimals,
     })),
     totalShares: pool.dynamicData.totalShares as HumanAmount,
+    vaultVersion: pool.vaultVersion as VaultVersion,
   }
 }
 
