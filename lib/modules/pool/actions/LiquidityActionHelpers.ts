@@ -12,7 +12,6 @@ import {
   NestedPoolState,
   PoolState,
   TokenAmount,
-  //calculateProportionalAmounts,
   mapPoolToNestedPoolState,
   mapPoolType,
   PoolStateWithBalances,
@@ -55,10 +54,6 @@ export class LiquidityActionHelpers {
     type PoolGetPool = Parameters<typeof mapPoolToNestedPoolState>[0]
     return mapPoolToNestedPoolState(this.pool as PoolGetPool)
   }
-
-  // public get poolStateWithBalances(): PoolStateWithBalances {
-  //   return toPoolStateWithBalances(this.pool)
-  // }
 
   public get poolStateWithBalances(): PoolStateWithBalances {
     return toPoolStateWithBalances(this.pool)
@@ -194,20 +189,6 @@ export function toPoolState(pool: Pool): PoolState {
     vaultVersion: 2, //TODO: change to dynamic version when we implement v3 integration
   }
 }
-
-// type PoolStateWithBalances = Parameters<typeof calculateProportionalAmounts>[0]
-
-// export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
-//   return {
-//     address: pool.address as Address,
-//     tokens: pool.poolTokens.map(t => ({
-//       address: t.address as Address,
-//       balance: t.balance as HumanAmount,
-//       decimals: t.decimals,
-//     })),
-//     totalShares: pool.dynamicData.totalShares as HumanAmount,
-//   }
-// }
 
 export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
   return {
