@@ -132,8 +132,8 @@ export default function TokenRow({
           <TokenInfo {...props} />
         )}
 
-        <HStack align="start" spacing="2xl">
-          <VStack spacing="xs" alignItems="flex-end">
+        <HStack align="start" spacing="none">
+          <VStack spacing="xs" alignItems="flex-end" textAlign="right">
             {isLoading ? (
               <>
                 <Skeleton w="10" h="4" />
@@ -153,7 +153,7 @@ export default function TokenRow({
             )}
           </VStack>
           {actualWeight && (
-            <VStack spacing="xs" alignItems="flex-end">
+            <VStack spacing="xs" alignItems="flex-end" w="24">
               {isLoading ? (
                 <>
                   <Skeleton w="10" h="4" />

@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-import { TokenBalancesProvider } from '@/lib/modules/tokens/TokenBalancesProvider'
+
+import { TokenBalancesProvider, useTokenBalances } from '@/lib/modules/tokens/TokenBalancesProvider'
 import {
+  Box,
   Button,
   Card,
   CardHeader,
-  Center,
   Grid,
   GridItem,
   HStack,
@@ -18,7 +19,7 @@ import { useEffect, useRef } from 'react'
 import { Address } from 'viem'
 import { AddLiquidityModal } from '../modal/AddLiquidityModal'
 import { useAddLiquidity } from '../AddLiquidityProvider'
-import { fNum } from '@/lib/shared/utils/numbers'
+import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
 import { TokenInputs } from './TokenInputs'
 import { TokenInputsWithAddable } from './TokenInputsWithAddable'
@@ -39,7 +40,18 @@ import { PriceImpactError } from '../../../../price-impact/PriceImpactError'
 import { cannotCalculatePriceImpactError } from '@/lib/modules/price-impact/priceImpact.helpers'
 import AddLiquidityAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AddLiquidityAprTooltip'
 
+// small wrapper to prevent out of context error
 export function AddLiquidityForm() {
+  const { validTokens } = useAddLiquidity()
+
+  return (
+    <TokenBalancesProvider extTokens={validTokens}>
+      <AddLiquidityMainForm />
+    </TokenBalancesProvider>
+  )
+}
+
+function AddLiquidityMainForm() {
   const {
     setHumanAmountIn: setAmountIn,
     validTokens,
@@ -54,6 +66,8 @@ export function AddLiquidityForm() {
     setNeedsToAcceptHighPI,
     refetchQuote,
     setWethIsEth,
+    nativeAsset,
+    wNativeAsset,
   } = useAddLiquidity()
 
   const nextBtn = useRef(null)
@@ -63,6 +77,7 @@ export function AddLiquidityForm() {
   const tokenSelectDisclosure = useDisclosure()
   const { setValidationError } = useTokenInputsValidation()
   const { redirectToPoolPage } = usePoolRedirect(pool)
+  const { balanceFor, isBalancesLoading } = useTokenBalances()
 
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
@@ -93,6 +108,21 @@ export function AddLiquidityForm() {
     isNativeOrWrappedNative(token.address as Address, token.chain)
   )
 
+  // if native asset balance is higher set that asset as the 'default'
+  useEffect(() => {
+    if (!isBalancesLoading && nativeAsset && wNativeAsset) {
+      const nativeAssetBalance = balanceFor(nativeAsset.address)
+      const wNativeAssetBalance = balanceFor(wNativeAsset.address)
+      if (
+        nativeAssetBalance &&
+        wNativeAssetBalance &&
+        bn(nativeAssetBalance.amount).gt(bn(wNativeAssetBalance.amount))
+      ) {
+        setWethIsEth(true)
+      }
+    }
+  }, [isBalancesLoading])
+
   function handleTokenSelect(token: GqlToken) {
     if (isNativeAsset(token.address as Address, token.chain)) {
       setWethIsEth(true)
@@ -114,113 +144,111 @@ export function AddLiquidityForm() {
   }, [addLiquidityTxHash])
 
   return (
-    <TokenBalancesProvider extTokens={validTokens}>
-      <Center h="full" w="full" maxW="lg" mx="auto">
-        <Card>
-          <CardHeader>
-            <HStack w="full" justify="space-between">
-              <span>Add liquidity</span>
-              <TransactionSettings size="sm" />
-            </HStack>
-          </CardHeader>
-          <VStack spacing="md" align="start" w="full">
-            {supportsProportionalAdds(pool) ? (
-              <TokenInputsWithAddable
-                tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
-                requiresProportionalInput={requiresProportionalInput(pool.type)}
-                totalUSDValue={totalUSDValue}
-              />
-            ) : (
-              <TokenInputs tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()} />
-            )}
-            <VStack spacing="sm" align="start" w="full">
-              <PriceImpactAccordion
-                isDisabled={!priceImpactQuery.data}
-                cannotCalculatePriceImpact={cannotCalculatePriceImpactError(priceImpactQuery.error)}
-                setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
-                accordionButtonComponent={
-                  <HStack>
-                    <Text variant="secondary" fontSize="sm" color="gray.400">
-                      Price impact:{' '}
-                    </Text>
-                    <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
-                      {priceImpactLabel}
-                    </Text>
-                  </HStack>
-                }
-                accordionPanelComponent={
-                  <PoolActionsPriceImpactDetails
-                    totalUSDValue={totalUSDValue}
-                    bptAmount={simulationQuery.data?.bptOut.amount}
-                    isAddLiquidity
-                  />
-                }
-              />
-            </VStack>
-            <Grid w="full" templateColumns="1fr 1fr" gap="sm">
-              <GridItem>
-                <Card minHeight="full" variant="subSection" w="full" p={['sm', 'ms']}>
-                  <VStack align="start" gap="sm">
-                    <Text fontSize="sm" lineHeight="16px" fontWeight="500">
-                      Total
-                    </Text>
-                    <Text fontSize="md" lineHeight="16px" fontWeight="700">
-                      {totalUSDValue !== '0'
-                        ? toCurrency(totalUSDValue, { abbreviated: false })
-                        : '-'}
-                    </Text>
-                  </VStack>
-                </Card>
-              </GridItem>
-              <GridItem>
-                <AddLiquidityAprTooltip
-                  data={pool.dynamicData.apr}
-                  totalUsdValue={totalUSDValue}
-                  weeklyYield={weeklyYield}
-                  pool={pool}
+    <Box w="full" maxW="lg" mx="auto">
+      <Card>
+        <CardHeader>
+          <HStack w="full" justify="space-between">
+            <span>Add liquidity</span>
+            <TransactionSettings size="sm" />
+          </HStack>
+        </CardHeader>
+        <VStack spacing="md" align="start" w="full">
+          {supportsProportionalAdds(pool) ? (
+            <TokenInputsWithAddable
+              tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
+              requiresProportionalInput={requiresProportionalInput(pool.type)}
+              totalUSDValue={totalUSDValue}
+            />
+          ) : (
+            <TokenInputs tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()} />
+          )}
+          <VStack spacing="sm" align="start" w="full">
+            <PriceImpactAccordion
+              isDisabled={!priceImpactQuery.data}
+              cannotCalculatePriceImpact={cannotCalculatePriceImpactError(priceImpactQuery.error)}
+              setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
+              accordionButtonComponent={
+                <HStack>
+                  <Text variant="secondary" fontSize="sm" color="gray.400">
+                    Price impact:{' '}
+                  </Text>
+                  <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
+                    {priceImpactLabel}
+                  </Text>
+                </HStack>
+              }
+              accordionPanelComponent={
+                <PoolActionsPriceImpactDetails
+                  totalUSDValue={totalUSDValue}
+                  bptAmount={simulationQuery.data?.bptOut.amount}
+                  isAddLiquidity
                 />
-              </GridItem>
-            </Grid>
-            {showAcceptPoolRisks && <AddLiquidityFormCheckbox />}
-            {priceImpactQuery.isError && <PriceImpactError priceImpactQuery={priceImpactQuery} />}
-            {simulationQuery.isError && (
-              <GenericError
-                customErrorName={'Error in query simulation'}
-                error={simulationQuery.error}
-              ></GenericError>
-            )}
-            <Tooltip label={isDisabled ? disabledReason : ''}>
-              <Button
-                ref={nextBtn}
-                variant="secondary"
-                w="full"
-                size="lg"
-                isDisabled={isDisabled}
-                isLoading={simulationQuery.isLoading || priceImpactQuery.isLoading}
-                onClick={() => !isDisabled && onModalOpen()}
-              >
-                Next
-              </Button>
-            </Tooltip>
+              }
+            />
           </VStack>
-        </Card>
-        <AddLiquidityModal
-          finalFocusRef={nextBtn}
-          isOpen={previewModalDisclosure.isOpen}
-          onOpen={previewModalDisclosure.onOpen}
-          onClose={onModalClose}
+          <Grid w="full" templateColumns="1fr 1fr" gap="sm">
+            <GridItem>
+              <Card minHeight="full" variant="subSection" w="full" p={['sm', 'ms']}>
+                <VStack align="start" gap="sm">
+                  <Text fontSize="sm" lineHeight="16px" fontWeight="500">
+                    Total
+                  </Text>
+                  <Text fontSize="md" lineHeight="16px" fontWeight="700">
+                    {totalUSDValue !== '0'
+                      ? toCurrency(totalUSDValue, { abbreviated: false })
+                      : '-'}
+                  </Text>
+                </VStack>
+              </Card>
+            </GridItem>
+            <GridItem>
+              <AddLiquidityAprTooltip
+                data={pool.dynamicData.apr}
+                totalUsdValue={totalUSDValue}
+                weeklyYield={weeklyYield}
+                pool={pool}
+              />
+            </GridItem>
+          </Grid>
+          {showAcceptPoolRisks && <AddLiquidityFormCheckbox />}
+          {priceImpactQuery.isError && <PriceImpactError priceImpactQuery={priceImpactQuery} />}
+          {simulationQuery.isError && (
+            <GenericError
+              customErrorName={'Error in query simulation'}
+              error={simulationQuery.error}
+            ></GenericError>
+          )}
+          <Tooltip label={isDisabled ? disabledReason : ''}>
+            <Button
+              ref={nextBtn}
+              variant="secondary"
+              w="full"
+              size="lg"
+              isDisabled={isDisabled}
+              isLoading={simulationQuery.isLoading || priceImpactQuery.isLoading}
+              onClick={() => !isDisabled && onModalOpen()}
+            >
+              Next
+            </Button>
+          </Tooltip>
+        </VStack>
+      </Card>
+      <AddLiquidityModal
+        finalFocusRef={nextBtn}
+        isOpen={previewModalDisclosure.isOpen}
+        onOpen={previewModalDisclosure.onOpen}
+        onClose={onModalClose}
+      />
+      {!!validTokens.length && (
+        <NativeAssetSelectModal
+          chain={validTokens[0].chain}
+          isOpen={tokenSelectDisclosure.isOpen}
+          onOpen={tokenSelectDisclosure.onOpen}
+          onClose={tokenSelectDisclosure.onClose}
+          onTokenSelect={handleTokenSelect}
+          nativeAssets={nativeAssets}
         />
-        {!!validTokens.length && (
-          <NativeAssetSelectModal
-            chain={validTokens[0].chain}
-            isOpen={tokenSelectDisclosure.isOpen}
-            onOpen={tokenSelectDisclosure.onOpen}
-            onClose={tokenSelectDisclosure.onClose}
-            onTokenSelect={handleTokenSelect}
-            nativeAssets={nativeAssets}
-          />
-        )}
-      </Center>
-    </TokenBalancesProvider>
+      )}
+    </Box>
   )
 }

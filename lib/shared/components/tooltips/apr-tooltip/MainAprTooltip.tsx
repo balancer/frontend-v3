@@ -33,7 +33,7 @@ function MainAprTooltip({
     >
       {({ isOpen }) => (
         <HStack align="center" alignItems="center">
-          <Button variant="unstyled" _focus={{ outline: 'none' }} px="0">
+          <Button variant="unstyled" _focus={{ outline: 'none' }} px="0" h="16px">
             <HStack
               _hover={{ color: 'font.link' }}
               color={isOpen ? 'font.highlight' : 'font.primary'}

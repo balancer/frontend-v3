@@ -6,12 +6,12 @@ import { Hash } from 'viem'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { TokenRowGroup } from '@/lib/modules/tokens/TokenRow/TokenRowGroup'
 import { BptRow } from '@/lib/modules/tokens/TokenRow/BptRow'
-import { useRemoveLiquidity } from '../RemoveLiquidityProvider'
 import { usePool } from '../../../PoolProvider'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 
 export function RemoveLiquidityReceipt({ txHash }: { txHash: Hash }) {
   const { pool } = usePool()
-  const { totalUSDValue } = useRemoveLiquidity()
+  const { getTokensByChain } = useTokens()
   const { userAddress, isLoading: isUserAddressLoading } = useUserAccount()
   const { isLoading, error, receivedTokens, sentBptUnits } = useRemoveLiquidityReceipt({
     txHash,
@@ -29,9 +29,9 @@ export function RemoveLiquidityReceipt({ txHash }: { txHash: Hash }) {
       <Card variant="modalSubSection">
         <TokenRowGroup
           label="You received"
+          tokens={getTokensByChain(pool.chain)}
           amounts={receivedTokens}
           chain={pool.chain}
-          totalUSDValue={totalUSDValue}
           isLoading={isLoading}
         />
       </Card>

@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, BoxProps, HStack, VStack, Text, Flex } from '@chakra-ui/react'
+import { Box, BoxProps, HStack, VStack, Text } from '@chakra-ui/react'
 import { TokenIcon } from '../../TokenIcon'
 import { TokenAmount } from '../../token.types'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'

@@ -1,5 +1,5 @@
 import { GqlChain, GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
-import { isMetaStable, isStable, isWeighted } from '../../../pool.helpers'
+import { isMetaStable, isStable, isWeighted, isGyro } from '../../../pool.helpers'
 import { zeroAddress } from 'viem'
 
 export enum RiskKey {
@@ -21,6 +21,7 @@ export enum RiskKey {
   ComposableStable = 'composable-pools',
   MetaStable = 'meta-stable-pools',
   Boosted = 'boosted-pools',
+  Clp = 'concentrated-liquidity-pools',
   Arbitrum = 'arbitrum',
   Polygon = 'polygon',
   Zkevm = 'polygon-zkevm',
@@ -41,6 +42,7 @@ export const RISK_TITLES: Partial<Record<RiskKey, string>> = {
   [RiskKey.ComposableStable]: 'Composable stable pool risks',
   [RiskKey.MetaStable]: 'MetaStable pool risks',
   [RiskKey.Boosted]: 'Boosted pool risks',
+  [RiskKey.Clp]: 'Concentrated Liquidity pool risks',
   [RiskKey.Arbitrum]: 'L2 network risks: Arbitrum',
   [RiskKey.Polygon]: 'Sidechain network risks: Polygon',
   [RiskKey.Zkevm]: 'L2 network risks: Polygon zkEVM',
@@ -76,6 +78,7 @@ const stableRisks = getLink(RiskKey.Stable)
 // )
 const metaStableRisks = getLink(RiskKey.ComposableStable, RISK_TITLES[RiskKey.MetaStable])
 // const boostedRisks = getLink(RiskKey.Boosted)
+const clpRisks = getLink(RiskKey.Clp)
 const arbitrumRisks = getLink(RiskKey.Arbitrum)
 const polygonRisks = getLink(RiskKey.Polygon)
 const zkevmRisks = getLink(RiskKey.Zkevm)
@@ -92,7 +95,7 @@ export function getPoolRisks(pool: GqlPoolElement): Risk[] {
   if (isStable(pool.type)) result.push(stableRisks)
   //   if (isComposableStable(pool.poolType)) result.push(composableRisks)
   if (isMetaStable(pool.type)) result.push(metaStableRisks)
-
+  if (isGyro(pool.type)) result.push(clpRisks)
   //   if (isBoosted(pool)) {
   //     result.push(boostedRisks)
   //     const thirdPartyRisks = generateThirdPartyComposabilityRisks(pool)

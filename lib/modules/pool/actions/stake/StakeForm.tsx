@@ -5,11 +5,10 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-  Center,
-  Heading,
   Button,
   Tooltip,
   useDisclosure,
+  Box,
 } from '@chakra-ui/react'
 import { useStake } from './StakeProvider'
 import { useRef } from 'react'
@@ -22,7 +21,7 @@ export function StakeForm() {
   const { onClose, onOpen, isOpen } = useDisclosure()
 
   return (
-    <Center h="full" w="full" maxW="lg" mx="auto">
+    <Box h="full" w="full" maxW="lg" mx="auto">
       <Card>
         <CardHeader>Stake for rewards</CardHeader>
         <CardBody>
@@ -45,6 +44,6 @@ export function StakeForm() {
         </CardFooter>
       </Card>
       <StakeModal finalFocusRef={nextBtn} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
-    </Center>
+    </Box>
   )
 }

@@ -9,7 +9,6 @@ import { ClaimableReward, useClaimableBalances } from './PortfolioClaim/useClaim
 import { BalTokenReward, useBalTokenRewards } from './PortfolioClaim/useBalRewards'
 import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
-import { Address } from 'viem'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useUserAccount } from '../web3/UserAccountProvider'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
@@ -26,23 +25,6 @@ export interface PoolRewardsData extends PoolListItem {
 }
 
 export type PoolRewardsDataMap = Record<string, PoolRewardsData>
-
-export function getAllGaugesAddressesFromPool(pool: PoolListItem) {
-  const arr = []
-  const staking = pool.staking
-
-  if (staking?.gauge) {
-    if (staking.gauge.version > 1) {
-      arr.push(staking.gauge.gaugeAddress)
-    }
-  }
-
-  if (staking?.gauge?.otherGauges) {
-    arr.push(...staking.gauge.otherGauges.filter(g => g.version > 1).map(g => g.gaugeAddress))
-  }
-
-  return arr as Address[]
-}
 
 export type UsePortfolio = ReturnType<typeof _usePortfolio>
 

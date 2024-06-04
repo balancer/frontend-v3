@@ -72,7 +72,7 @@ test('fetches onchain user balances when the pool has no gaugeAddress', async ()
     {
       "__typename": "GqlPoolStakingGauge",
       "gaugeAddress": "",
-      "id": "test gauge id",
+      "id": "0x2d42910d826e5500579d121596e98a6eb33c0a1b",
       "rewards": [],
       "status": "ACTIVE",
       "version": 2,

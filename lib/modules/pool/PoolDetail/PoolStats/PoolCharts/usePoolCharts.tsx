@@ -1,5 +1,5 @@
 import { ColorMode, theme } from '@chakra-ui/react'
-import { addMinutes, differenceInDays, format } from 'date-fns'
+import { differenceInDays, format } from 'date-fns'
 import * as echarts from 'echarts/core'
 import {
   GetPoolSnapshotsDocument,
@@ -15,11 +15,9 @@ import { PoolVariant } from '../../../pool.types'
 import { NumberFormatter } from '@/lib/shared/utils/numbers'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { balColors, balTheme, tokens } from '@/lib/shared/services/chakra/theme'
-import numeral from 'numeral'
-import { twentyFourHoursInSecs } from '@/lib/shared/hooks/useTime'
 import { useTheme } from 'next-themes'
 
-const MIN_CHART_VALUES_NUM = 2
+const MIN_DISPLAY_PERIOD_DAYS = 30
 
 export enum PoolChartTab {
   VOLUME = 'volume',
@@ -110,6 +108,12 @@ const toolTipTheme = {
   heading: 'font-weight: bold; color: #E5D3BE',
   container: `background: ${balColors.gray[800]};`,
   text: balColors.gray[400],
+}
+
+const dataRangeToDaysMap: { [key in GqlPoolSnapshotDataRange]?: number } = {
+  [GqlPoolSnapshotDataRange.ThirtyDays]: 30,
+  [GqlPoolSnapshotDataRange.NinetyDays]: 90,
+  [GqlPoolSnapshotDataRange.OneHundredEightyDays]: 180,
 }
 
 const getDefaultPoolChartOptions = (
@@ -313,7 +317,7 @@ export function usePoolCharts() {
     const snapshots = data?.snapshots
     if (!snapshots) return []
 
-    let chartArr: (string | number)[][] = []
+    let chartArr: [number, string][] = []
     if (activeTab.value === PoolChartTab.TVL) {
       chartArr = snapshots.map(snapshot => {
         return [snapshot.timestamp, snapshot.totalLiquidity]
@@ -330,30 +334,80 @@ export function usePoolCharts() {
         return [snapshot.timestamp, snapshot.volume24h]
       })
     }
+    return chartArr
+  }, [data?.snapshots, activeTab])
 
-    const isPoolOlder30Days = differenceInDays(new Date().getTime(), pool.createTime * 1000) > 30
+  const processedChartData = useMemo(() => {
+    const today = new Date()
+    today.setUTCHours(0, 0, 0, 0)
 
-    // add lagging timestamps
-    if (!isPoolOlder30Days && chartArr.length < 30 && chartArr.length > MIN_CHART_VALUES_NUM) {
-      const firstDate = chartArr[0][0] || 0
-      const days = 30 - chartArr.length
+    const lastChartDataEl = chartData[chartData.length - 1]
+    const processedElements: [number, string][] = []
+    const isSelectedTabTVL = activeTab.value === PoolChartTab.TVL
 
-      const timestampsArr: number[] = []
-      for (let i = 1; i <= days; i++) {
-        const timestamp = Number(firstDate) - i * twentyFourHoursInSecs
-        timestampsArr.push(timestamp * 1000)
+    const minDataDate = lastChartDataEl ? Number(lastChartDataEl[0]) * 1000 : today.getTime()
+    const daysSinceMinDataDate = differenceInDays(today, new Date(minDataDate))
+    const initialTotalLiquidity = isSelectedTabTVL
+      ? lastChartDataEl
+        ? lastChartDataEl[1]
+        : pool.dynamicData.totalLiquidity
+      : undefined
+
+    const iterateTo =
+      activePeriod.value in dataRangeToDaysMap
+        ? dataRangeToDaysMap[activePeriod.value]!
+        : daysSinceMinDataDate > MIN_DISPLAY_PERIOD_DAYS
+        ? daysSinceMinDataDate
+        : MIN_DISPLAY_PERIOD_DAYS
+
+    for (let i = 0; i < iterateTo; i++) {
+      const currentDay = new Date(today)
+      currentDay.setUTCDate(today.getUTCDate() - i)
+      const timestamp = currentDay.getTime() / 1000
+
+      // If the active tab is TVL, we check if there is enough data to display
+      // and if not, add current TVL to the last item
+      // and fill start of the selected range with initialTotalLiquidity
+      if (activeTab.value === PoolChartTab.TVL) {
+        if (i === 0) {
+          const existingEntry = chartData.find(item => item[0] === timestamp)
+
+          if (existingEntry) {
+            processedElements.push(existingEntry)
+          } else {
+            processedElements.push([timestamp, pool.dynamicData.totalLiquidity])
+          }
+        } else if (i === iterateTo - 1) {
+          const existingEntry = chartData.find(item => item[0] === timestamp)
+
+          if (existingEntry) {
+            processedElements.push(existingEntry)
+          } else {
+            processedElements.push([timestamp, initialTotalLiquidity!])
+          }
+        } else {
+          const existingEntry = chartData.find(item => item[0] === timestamp)
+
+          if (existingEntry) {
+            processedElements.push(existingEntry)
+          }
+        }
+
+        continue
       }
 
-      const laggingTimestamps = timestampsArr.map(timestamp => [
-        addMinutes(timestamp, new Date(timestamp).getTimezoneOffset()).getTime() / 1000,
-        '0',
-      ])
-
-      chartArr = [...laggingTimestamps, ...chartArr]
+      // If the active tab is not TVL, we check if there is enough data to display
+      // for each day and if not, add 0 to days without data
+      if (chartData.some(item => item[0] === timestamp)) {
+        const existingEntry = chartData.find(item => item[0] === timestamp)!
+        processedElements.push(existingEntry)
+      } else {
+        processedElements.push([timestamp, '0'])
+      }
     }
 
-    return chartArr
-  }, [data?.snapshots, activeTab, pool.createTime])
+    return processedElements
+  }, [activePeriod.value, activeTab.value, chartData, pool.dynamicData.totalLiquidity])
 
   const defaultChartOptions = getDefaultPoolChartOptions(toCurrency, theme as 'light' | 'dark')
 
@@ -365,7 +419,7 @@ export function usePoolCharts() {
       series: [
         {
           type: activeTabOptions.type,
-          data: chartData,
+          data: processedChartData,
           smooth: true,
           symbol: 'none',
           lineStyle: {

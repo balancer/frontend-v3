@@ -1,7 +1,7 @@
 import { createPublicClient, http } from 'viem'
 import { GqlChain } from '../api/generated/graphql'
 import { getNetworkConfig } from '@/lib/config/app.config'
-import { chains } from '@/lib/modules/web3/Web3Provider'
+import { chains } from '@/lib/modules/web3/ChainConfig'
 import { Chain } from 'viem'
 
 function getViemChain(chainId: number): Chain {

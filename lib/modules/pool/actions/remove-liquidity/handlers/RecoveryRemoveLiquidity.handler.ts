@@ -13,7 +13,7 @@ import {
   SdkBuildRemoveLiquidityInput,
   SdkQueryRemoveLiquidityOutput,
 } from '../remove-liquidity.types'
-import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
+import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { parseEther } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'

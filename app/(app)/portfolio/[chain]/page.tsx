@@ -1,11 +1,12 @@
 'use client'
 import { PoolName } from '@/lib/modules/pool/PoolName'
+import { ClaimModal } from '@/lib/modules/pool/actions/claim/ClaimModal'
+import { ClaimProvider } from '@/lib/modules/pool/actions/claim/ClaimProvider'
 
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import { ChainSlug, slugToChainMap } from '@/lib/modules/pool/pool.utils'
 // eslint-disable-next-line max-len
 import { ClaimNetworkPoolsLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimNetworkPools/ClaimNetworkPoolsLayout'
-import { ClaimPortfolioModal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimPortfolioModal'
 import { usePortfolio } from '@/lib/modules/portfolio/PortfolioProvider'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
@@ -20,15 +21,15 @@ import { useState } from 'react'
 export default function NetworkClaim() {
   const { toCurrency } = useCurrency()
   const { chain } = useParams()
+  const {
+    poolsByChainMap,
+    poolRewardsMap,
+    totalFiatClaimableBalanceByChain,
+    isLoadingClaimPoolData,
+  } = usePortfolio()
 
-  const { poolsByChainMap } = usePortfolio()
   const gqlChain = slugToChainMap[chain as ChainSlug]
-
   const pools = poolsByChainMap[gqlChain]
-
-  const { poolRewardsMap, totalFiatClaimableBalanceByChain, isLoadingClaimPoolData } =
-    usePortfolio()
-
   const chainName = capitalize(chain as string)
   const claimableFiatBalance = totalFiatClaimableBalanceByChain[gqlChain]
 
@@ -115,11 +116,13 @@ export default function NetworkClaim() {
         )}
 
         {modalPools.length > 0 && (
-          <ClaimPortfolioModal
-            isOpen={modalPools.length > 0}
-            onClose={() => setModalPools([])}
-            pools={modalPools}
-          />
+          <ClaimProvider pools={modalPools}>
+            <ClaimModal
+              isOpen={modalPools.length > 0}
+              onClose={() => setModalPools([])}
+              chain={gqlChain}
+            />
+          </ClaimProvider>
         )}
       </ClaimNetworkPoolsLayout>
     </TransactionStateProvider>
