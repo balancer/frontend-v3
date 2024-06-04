@@ -1,15 +1,29 @@
 'use client'
 
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider, ThemeTypings } from '@chakra-ui/react'
 import { ReactNode } from 'react'
-import { usePartnerTheme } from './PartnerThemeProvider'
+import { useParams } from 'next/navigation'
+import { PoolVariant } from '@/lib/modules/pool/pool.types'
+import { theme as balTheme } from './themes/bal/theme'
+import { theme as gyroTheme } from './themes/gyro/theme'
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const { theme } = usePartnerTheme()
+  const { variant } = useParams<{ variant?: PoolVariant }>()
+
+  function getTheme(): ThemeTypings {
+    switch (variant) {
+      case PoolVariant.gyro:
+        return gyroTheme
+      case PoolVariant.v2:
+        return balTheme
+      default:
+        return balTheme
+    }
+  }
 
   return (
     <ChakraProvider
-      theme={theme}
+      theme={getTheme()}
       cssVarsRoot="body"
       toastOptions={{ defaultOptions: { position: 'bottom-left' } }}
     >
