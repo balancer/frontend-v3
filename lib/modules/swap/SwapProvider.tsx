@@ -412,6 +412,10 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   useEffect(() => {
     const wrapper = getWrapperForBaseToken(swapState.tokenIn.address, swapState.selectedChain)
     if (wrapper) setTokenOut(wrapper.wrappedToken)
+
+    // If the token in address changes we should reset tx step index because
+    // the first approval may be different.
+    transactionSteps.setCurrentStepIndex(0)
   }, [swapState.tokenIn.address])
 
   // Check if tokenOut is a base wrap token and set tokenIn as the wrapped token.
