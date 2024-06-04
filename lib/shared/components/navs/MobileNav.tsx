@@ -13,6 +13,7 @@ import {
   Divider,
   Box,
   Text,
+  HStack,
 } from '@chakra-ui/react'
 import { useRef } from 'react'
 import { ArrowUpRight, Menu } from 'react-feather'
@@ -74,6 +75,20 @@ function EcosystemLinks() {
   )
 }
 
+function SocialLinks() {
+  const { socialLinks } = useNav()
+
+  return (
+    <HStack justify="space-between" w="full">
+      {socialLinks.map(({ href, icon }) => (
+        <Button as={Link} key={href} href={href} variant="tertiary" isExternal>
+          {icon}
+        </Button>
+      ))}
+    </HStack>
+  )
+}
+
 export function MobileNav() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = useRef(null)
@@ -103,7 +118,9 @@ export function MobileNav() {
             <EcosystemLinks />
           </DrawerBody>
 
-          <DrawerFooter></DrawerFooter>
+          <DrawerFooter>
+            <SocialLinks />
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>

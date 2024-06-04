@@ -1,4 +1,9 @@
 import { usePathname } from 'next/navigation'
+import { TwitterIcon } from '../icons/social/TwitterIcon'
+import { DiscordIcon } from '../icons/social/DiscordIcon'
+import { MediumIcon } from '../icons/social/MediumIcon'
+import { YoutubeIcon } from '../icons/social/YoutubeIcon'
+import { GithubIcon } from '../icons/social/GithubIcon'
 
 export function useNav() {
   const pathname = usePathname()
@@ -31,34 +36,32 @@ export function useNav() {
     },
   ]
 
-  // const socialLinks = {
-  //   TwitterIcon: {
-  //     icon: TwitterIcon,
-  //     url: 'https://twitter.com/BalancerLabs',
-  //   },
-  //   DiscordIcon: {
-  //     component: DiscordIcon,
-  //     url: 'https://discord.balancer.fi/',
-  //   },
-  //   MediumIcon: {
-  //     component: MediumIcon,
-  //     url: 'https://medium.com/balancer-protocol',
-  //   },
-
-  //   YoutubeIcon: {
-  //     component: YoutubeIcon,
-  //     url: 'https://www.youtube.com/channel/UCBRHug6Hu3nmbxwVMt8x_Ow',
-  //   },
-
-  //   GithubIcon: {
-  //     url: 'https://github.com/balancer/',
-  //     component: GithubIcon,
-  //   },
-  // }
+  const socialLinks = [
+    {
+      icon: <TwitterIcon />,
+      href: 'https://twitter.com/Balancer',
+    },
+    {
+      icon: <DiscordIcon />,
+      href: 'https://discord.balancer.fi/',
+    },
+    {
+      icon: <MediumIcon />,
+      href: 'https://medium.com/balancer-protocol',
+    },
+    {
+      icon: <YoutubeIcon />,
+      href: 'https://www.youtube.com/channel/UCBRHug6Hu3nmbxwVMt8x_Ow',
+    },
+    {
+      icon: <GithubIcon />,
+      href: 'https://github.com/balancer/',
+    },
+  ]
 
   function linkColorFor(path: string) {
     return pathname === path ? 'font.highlight' : 'font.primary'
   }
 
-  return { appLinks, ecosystemLinks, linkColorFor }
+  return { appLinks, ecosystemLinks, socialLinks, linkColorFor }
 }
