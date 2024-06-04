@@ -5,7 +5,6 @@ import { Box } from '@chakra-ui/react'
 import { GetPoolDocument } from '@/lib/shared/services/api/generated/graphql'
 import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
 import { PropsWithChildren } from 'react'
-import { PartnerThemeToggle } from '@/lib/shared/services/chakra/PartnerThemeToggle'
 
 export const revalidate = 30
 
@@ -31,7 +30,6 @@ export default async function PoolLoader({ id, chain, variant, children }: Props
 
   return (
     <PoolProvider id={id} chain={_chain} variant={variant} data={data}>
-      {variant && <PartnerThemeToggle themeName={variant} />}
       {children}
     </PoolProvider>
   )
