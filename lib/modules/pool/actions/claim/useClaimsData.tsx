@@ -3,18 +3,25 @@
 
 import { useBalTokenRewards } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
 import { useClaimableBalances } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
-import { PoolListItem } from '../../pool.types'
 import { safeSum } from '@/lib/shared/utils/numbers'
+import { useMemo } from 'react'
+import { ClaimablePool } from './ClaimProvider'
 
-export function useClaimsData(pools: PoolListItem[]) {
+export function useClaimsData(pools: ClaimablePool[]) {
   const claimableBalancesQuery = useClaimableBalances(pools)
   const nonBalRewards = claimableBalancesQuery.claimableRewards
   const balTokenRewardsQuery = useBalTokenRewards(pools)
   const balRewards = balTokenRewardsQuery.balRewardsData
 
-  const allClaimableRewards = [...balRewards, ...nonBalRewards]
+  const allClaimableRewards = useMemo(
+    () => [...balRewards, ...nonBalRewards],
+    [balRewards, nonBalRewards]
+  )
 
-  const totalClaimableUsd = safeSum(allClaimableRewards.map(reward => reward.fiatBalance))
+  const totalClaimableUsd = useMemo(
+    () => safeSum(allClaimableRewards.map(reward => reward.fiatBalance)),
+    [allClaimableRewards]
+  )
 
   const hasNoRewards = !nonBalRewards.length && !balRewards.length
 

@@ -60,7 +60,7 @@ export class NestedProportionalRemoveLiquidityHandler implements RemoveLiquidity
   }: NestedProportionalQueryRemoveLiquidityInput): Promise<TransactionConfig> {
     const removeLiquidity = new RemoveLiquidityNested()
 
-    const { call, to } = removeLiquidity.buildCall({
+    const { callData, to } = removeLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       accountAddress: account,
@@ -71,7 +71,7 @@ export class NestedProportionalRemoveLiquidityHandler implements RemoveLiquidity
     return {
       account,
       chainId: this.helpers.chainId,
-      data: call,
+      data: callData,
       to,
     }
   }

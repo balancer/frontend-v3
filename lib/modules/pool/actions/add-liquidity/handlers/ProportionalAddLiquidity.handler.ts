@@ -60,7 +60,7 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   }: SdkBuildAddLiquidityInput): Promise<TransactionConfig> {
     const addLiquidity = new AddLiquidity()
 
-    const { call, to, value } = addLiquidity.buildCall({
+    const { callData, to, value } = addLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
@@ -71,7 +71,7 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
     return {
       account,
       chainId: this.helpers.chainId,
-      data: call,
+      data: callData,
       to,
       value,
     }
