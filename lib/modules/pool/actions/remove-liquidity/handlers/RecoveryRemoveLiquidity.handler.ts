@@ -43,7 +43,7 @@ export class RecoveryRemoveLiquidityHandler {
 
     const sdkQueryOutput = await removeLiquidity.queryRemoveLiquidityRecovery(
       removeLiquidityInput,
-      this.helpers.poolState
+      this.helpers.poolStateWithBalances
     )
 
     return { amountsOut: sdkQueryOutput.amountsOut.filter(a => a.amount > 0n), sdkQueryOutput }
@@ -56,7 +56,7 @@ export class RecoveryRemoveLiquidityHandler {
   }: SdkBuildRemoveLiquidityInput): Promise<TransactionConfig> {
     const removeLiquidity = new RemoveLiquidity()
 
-    const { call, to, value } = removeLiquidity.buildCall({
+    const { callData, to, value } = removeLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
@@ -67,7 +67,7 @@ export class RecoveryRemoveLiquidityHandler {
     return {
       account,
       chainId: this.helpers.chainId,
-      data: call,
+      data: callData,
       to,
       value,
     }

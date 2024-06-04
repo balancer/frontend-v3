@@ -12,9 +12,10 @@ import {
   NestedPoolState,
   PoolState,
   TokenAmount,
-  calculateProportionalAmounts,
+  //calculateProportionalAmounts,
   mapPoolToNestedPoolState,
   mapPoolType,
+  PoolStateWithBalances,
 } from '@balancer/sdk'
 import { keyBy } from 'lodash'
 import { Hex, formatUnits, parseUnits, Address } from 'viem'
@@ -54,6 +55,10 @@ export class LiquidityActionHelpers {
     type PoolGetPool = Parameters<typeof mapPoolToNestedPoolState>[0]
     return mapPoolToNestedPoolState(this.pool as PoolGetPool)
   }
+
+  // public get poolStateWithBalances(): PoolStateWithBalances {
+  //   return toPoolStateWithBalances(this.pool)
+  // }
 
   public get poolStateWithBalances(): PoolStateWithBalances {
     return toPoolStateWithBalances(this.pool)
@@ -190,17 +195,33 @@ export function toPoolState(pool: Pool): PoolState {
   }
 }
 
-type PoolStateWithBalances = Parameters<typeof calculateProportionalAmounts>[0]
+// type PoolStateWithBalances = Parameters<typeof calculateProportionalAmounts>[0]
+
+// export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
+//   return {
+//     address: pool.address as Address,
+//     tokens: pool.poolTokens.map(t => ({
+//       address: t.address as Address,
+//       balance: t.balance as HumanAmount,
+//       decimals: t.decimals,
+//     })),
+//     totalShares: pool.dynamicData.totalShares as HumanAmount,
+//   }
+// }
 
 export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
   return {
+    id: pool.id as Hex,
     address: pool.address as Address,
-    tokens: pool.poolTokens.map(t => ({
+    type: mapPoolType(pool.type),
+    tokens: pool.poolTokens.map((t, index) => ({
+      index,
       address: t.address as Address,
       balance: t.balance as HumanAmount,
       decimals: t.decimals,
     })),
     totalShares: pool.dynamicData.totalShares as HumanAmount,
+    vaultVersion: 2, //TODO: change to dynamic version when we implement v3 integration
   }
 }
 

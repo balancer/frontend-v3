@@ -58,7 +58,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
   }: NestedBuildAddLiquidityInput): Promise<TransactionConfig> {
     const addLiquidity = new AddLiquidityNested()
 
-    const { call, to, value } = addLiquidity.buildCall({
+    const { callData, to, value } = addLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       accountAddress: account,
@@ -69,7 +69,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
     return {
       account,
       chainId: this.helpers.chainId,
-      data: call,
+      data: callData,
       to,
       value,
     }
