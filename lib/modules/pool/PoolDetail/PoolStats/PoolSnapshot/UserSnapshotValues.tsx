@@ -9,13 +9,11 @@ import { SECONDS_IN_DAY } from '@/test/utils/numbers'
 import { sumBy, isEmpty } from 'lodash'
 import { useTokens } from '../../../../tokens/TokensProvider'
 import { useVebalBoost } from '../../../../vebal/useVebalBoost'
-import { useClaiming } from '../../../actions/claim/useClaiming'
-import { PoolListItem } from '../../../pool.types'
+import { useClaim } from '../../../actions/claim/ClaimProvider'
 import { getTotalAprRaw } from '../../../pool.utils'
 import { usePool } from '../../../PoolProvider'
 import { bn } from '@/lib/shared/utils/numbers'
 import { ClaimModal } from '../../../actions/claim/ClaimModal'
-import { Hex } from 'viem'
 import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
 
 export type PoolMyStatsValues = {
@@ -40,7 +38,7 @@ export function UserSnapshotValues() {
     previewModalDisclosure,
     disabledReason,
     isDisabled,
-  } = useClaiming([pool] as unknown[] as PoolListItem[])
+  } = useClaim()
 
   const MemoizedMainAprTooltip = memo(MainAprTooltip)
 
@@ -176,10 +174,8 @@ export function UserSnapshotValues() {
       </VStack>
       <ClaimModal
         isOpen={previewModalDisclosure.isOpen}
-        onOpen={previewModalDisclosure.onOpen}
         onClose={onModalClose}
-        gaugeAddresses={[(pool.staking?.id || '') as Hex]}
-        pool={pool as unknown as PoolListItem}
+        chain={pool.chain}
       />
     </>
   )

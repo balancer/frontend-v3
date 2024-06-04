@@ -1,4 +1,4 @@
-import { BoxProps, Card, Heading, Icon } from '@chakra-ui/react'
+import { BoxProps, Card, Heading, Icon, Skeleton } from '@chakra-ui/react'
 import { usePortfolio } from './PortfolioProvider'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
@@ -24,7 +24,13 @@ const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps } = {
   },
 }
 export function PortfolioSummary() {
-  const { portfolioData, totalFiatClaimableBalance, protocolRewardsBalance } = usePortfolio()
+  const {
+    portfolioData,
+    totalFiatClaimableBalance,
+    protocolRewardsBalance,
+    isLoadingPortfolio,
+    isLoadingClaimableRewards,
+  } = usePortfolio()
   const { toCurrency } = useCurrency()
   const totalBalance = portfolioData?.userTotalBalance?.toNumber()
   const totalClaimableBalance = totalFiatClaimableBalance.plus(protocolRewardsBalance)
@@ -51,9 +57,15 @@ export function PortfolioSummary() {
           contentProps={commonNoisyCardProps.contentProps}
         >
           <ZenGarden variant="diamond" sizePx="225px" />
-          <Icon as={BarChart} mb={5} width="30px" height="30px" />
-          <Heading size="sm">My Balancer liquidity</Heading>
-          <Heading size="lg">{toCurrency(totalBalance)}</Heading>
+          <Icon as={BarChart} color="font.primary" mb="sm" width="30px" height="30px" />
+          <Heading size="sm" color="grayText" mb="sm">
+            My Balancer liquidity
+          </Heading>
+          {isLoadingPortfolio ? (
+            <Skeleton height="10" w="36" />
+          ) : (
+            <Heading size="lg">{toCurrency(totalBalance)}</Heading>
+          )}
         </NoisyCard>
 
         <NoisyCard
@@ -63,11 +75,18 @@ export function PortfolioSummary() {
           contentProps={commonNoisyCardProps.contentProps}
         >
           <ZenGarden variant="diamond" sizePx="225px" />
-          <Icon as={StarsIcon} mb={5} width="30px" height="30px" />
-          <Heading size="sm">Claimable incentives</Heading>
-          <Heading variant="special" size="lg">
-            {toCurrency(totalClaimableBalance)}
+          <Icon as={StarsIcon} mb="sm" width="30px" height="30px" />
+          <Heading size="sm" mb="sm" color="grayText">
+            Claimable incentives
           </Heading>
+
+          {isLoadingPortfolio || isLoadingClaimableRewards ? (
+            <Skeleton height="10" w="36" />
+          ) : (
+            <Heading variant="special" size="lg">
+              {toCurrency(totalClaimableBalance)}
+            </Heading>
+          )}
         </NoisyCard>
       </Card>
     </FadeInOnView>

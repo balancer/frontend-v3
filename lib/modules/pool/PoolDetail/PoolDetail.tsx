@@ -11,6 +11,7 @@ import { PoolStatsLayout } from './PoolStats/PoolStatsLayout'
 import { PoolHeader } from './PoolHeader/PoolHeader'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { ClaimProvider } from '../actions/claim/ClaimProvider'
 
 export function PoolDetail() {
   const { pool } = usePool()
@@ -31,15 +32,17 @@ export function PoolDetail() {
   }, [router])
 
   return (
-    <VStack w="full" spacing="2xl">
-      <VStack w="full" spacing="md">
-        <PoolHeader />
-        <PoolStatsLayout />
+    <ClaimProvider pools={[pool]}>
+      <VStack w="full" spacing="2xl">
+        <VStack w="full" spacing="md">
+          <PoolHeader />
+          <PoolStatsLayout />
+        </VStack>
+        <PoolActivityChart />
+        <PoolComposition />
+        {userHasLiquidity && <PoolMyLiquidity />}
+        <PoolInfoLayout />
       </VStack>
-      <PoolActivityChart />
-      <PoolComposition />
-      {userHasLiquidity && <PoolMyLiquidity />}
-      <PoolInfoLayout />
-    </VStack>
+    </ClaimProvider>
   )
 }
