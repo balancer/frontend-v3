@@ -3,7 +3,7 @@ import networkConfigs from '@/lib/config/networks'
 import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
-import { Address, formatUnits, ReadContractParameters } from 'viem'
+import { Address, formatUnits } from 'viem'
 import { useReadContracts } from 'wagmi'
 import { BPT_DECIMALS } from '../../pool/pool.constants'
 import { getPoolsByGaugesMap } from '../../pool/pool.utils'
@@ -12,6 +12,7 @@ import { AbiMap } from '../../web3/contracts/AbiMap'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { ClaimablePool } from '../../pool/actions/claim/ClaimProvider'
 import { balancerV2GaugeV5Abi } from '../../web3/contracts/abi/generated'
+import { WriteContractParameters } from 'wagmi/actions'
 
 export interface BalTokenReward {
   balance: bigint
@@ -36,7 +37,9 @@ export function useBalTokenRewards(pools: ClaimablePool[]) {
 
   const gaugeAddresses = Object.keys(poolByGaugeMap)
 
-  function claimableTokensCall(gaugeAddress: Address | string) {
+  function claimableTokensCall(
+    gaugeAddress: Address | string
+  ): WriteContractParameters<typeof balancerV2GaugeV5Abi, 'claimable_tokens'> {
     const pool = poolByGaugeMap[gaugeAddress]
 
     return {
@@ -45,11 +48,10 @@ export function useBalTokenRewards(pools: ClaimablePool[]) {
       functionName: 'claimable_tokens',
       args: [(userAddress || '') as Address],
       chainId: getChainId(pool.chain),
-    }
+    } as const
   }
 
-  const contractCalls: ReadContractParameters<typeof balancerV2GaugeV5Abi, 'claimable_tokens'>[] =
-    gaugeAddresses.map(claimableTokensCall)
+  const contractCalls = gaugeAddresses.map(claimableTokensCall)
 
   const {
     data: claimableTokensData,
