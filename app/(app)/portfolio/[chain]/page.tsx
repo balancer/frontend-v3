@@ -1,12 +1,12 @@
 'use client'
 import { PoolName } from '@/lib/modules/pool/PoolName'
+import { ClaimModal } from '@/lib/modules/pool/actions/claim/ClaimModal'
 import { ClaimProvider } from '@/lib/modules/pool/actions/claim/ClaimProvider'
 
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import { ChainSlug, slugToChainMap } from '@/lib/modules/pool/pool.utils'
 // eslint-disable-next-line max-len
 import { ClaimNetworkPoolsLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimNetworkPools/ClaimNetworkPoolsLayout'
-import { ClaimPortfolioModal } from '@/lib/modules/portfolio/PortfolioClaim/ClaimPortfolioModal'
 import { usePortfolio } from '@/lib/modules/portfolio/PortfolioProvider'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
@@ -117,10 +117,10 @@ export default function NetworkClaim() {
 
         {modalPools.length > 0 && (
           <ClaimProvider pools={modalPools}>
-            <ClaimPortfolioModal
+            <ClaimModal
               isOpen={modalPools.length > 0}
               onClose={() => setModalPools([])}
-              pools={modalPools}
+              chain={gqlChain}
             />
           </ClaimProvider>
         )}

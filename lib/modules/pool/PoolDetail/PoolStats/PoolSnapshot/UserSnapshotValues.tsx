@@ -10,12 +10,10 @@ import { sumBy, isEmpty } from 'lodash'
 import { useTokens } from '../../../../tokens/TokensProvider'
 import { useVebalBoost } from '../../../../vebal/useVebalBoost'
 import { useClaim } from '../../../actions/claim/ClaimProvider'
-import { PoolListItem } from '../../../pool.types'
 import { getTotalAprRaw } from '../../../pool.utils'
 import { usePool } from '../../../PoolProvider'
 import { bn } from '@/lib/shared/utils/numbers'
 import { ClaimModal } from '../../../actions/claim/ClaimModal'
-import { Hex } from 'viem'
 import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
 
 export type PoolMyStatsValues = {
@@ -176,10 +174,8 @@ export function UserSnapshotValues() {
       </VStack>
       <ClaimModal
         isOpen={previewModalDisclosure.isOpen}
-        onOpen={previewModalDisclosure.onOpen}
         onClose={onModalClose}
-        gaugeAddresses={[(pool.staking?.id || '') as Hex]}
-        pool={pool as unknown as PoolListItem}
+        chain={pool.chain}
       />
     </>
   )

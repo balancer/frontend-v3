@@ -10,7 +10,6 @@ import {
 } from '@chakra-ui/react'
 import { useClaim } from './ClaimProvider'
 import { Address } from 'viem'
-import { PoolListItem } from '../../pool.types'
 import { HumanAmount } from '@balancer/sdk'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
@@ -23,19 +22,18 @@ import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFoo
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { useEffect, useMemo, useState } from 'react'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 type Props = {
   isOpen: boolean
   onClose(): void
-  onOpen(): void
-  gaugeAddresses: Address[]
-  pool: PoolListItem
+  chain: GqlChain
 }
 
 export function ClaimModal({
   isOpen,
   onClose,
-  pool,
+  chain,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const [quoteRewards, setQuoteRewards] = useState<HumanTokenAmountWithAddress[]>([])
@@ -70,21 +68,19 @@ export function ClaimModal({
       <SuccessOverlay startAnimation={!!claimTxHash} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
-        {isDesktop && <DesktopStepTracker transactionSteps={transactionSteps} chain={pool.chain} />}
-        <TransactionModalHeader label="Claim rewards" txHash={claimTxHash} chain={pool.chain} />
+        {isDesktop && <DesktopStepTracker transactionSteps={transactionSteps} chain={chain} />}
+        <TransactionModalHeader label="Claim rewards" txHash={claimTxHash} chain={chain} />
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="sm">
-            {isMobile && (
-              <MobileStepTracker transactionSteps={transactionSteps} chain={pool.chain} />
-            )}
+            {isMobile && <MobileStepTracker transactionSteps={transactionSteps} chain={chain} />}
             {noQuoteRewards ? (
               <Text>Nothing to claim</Text>
             ) : (
               <Card variant="modalSubSection">
                 <TokenRowGroup
                   amounts={quoteRewards}
-                  chain={pool.chain}
+                  chain={chain}
                   label="You'll get"
                   totalUSDValue={quoteTotalUsd}
                 />
