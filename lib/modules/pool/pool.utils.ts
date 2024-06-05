@@ -51,7 +51,7 @@ export const chainToSlugMap: Record<GqlChain, ChainSlug> = {
 }
 export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlChain>
 
-function getVariant(pool: Pool | PoolListItem) {
+function getVariant(pool: Pool | PoolListItem): PoolVariant {
   // if a pool has certain properties return a custom variant
 
   // default variant
