@@ -1,44 +1,103 @@
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { Pool } from '../../PoolProvider'
-import { PoolId } from '../../pool.types'
 import { PoolIssue } from './PoolIssue.type'
-import { jsxTitleByVulnerability } from './PoolIssue.labels'
-import { PoolAlertProps, PoolAlertRuleFunc } from '../PoolAlerts'
+import { VulnerabilityDataMap } from './PoolIssue.labels'
 import { AlertStatus } from '@chakra-ui/react'
+import { zeroAddress } from 'viem'
 
-export const getPoolIssueAlerts: PoolAlertRuleFunc = (pool: Pool) => {
-  const poolIssues = getNetworkConfig(pool.chain).pools?.issues
+export type PoolAlert = {
+  identifier: string
+  title: string | JSX.Element
+  learnMoreLink?: string
+  status: AlertStatus
+  isSoftWarning: boolean
+}
 
-  if (!poolIssues) return
+export const getNetworkPoolAlerts = (pool: Pool): PoolAlert[] => {
+  const networkPoolsIssues = getNetworkConfig(pool.chain).pools?.issues
 
-  return Object.keys(poolIssues)
-    .map(issue => {
-      const poolIds = poolIssues[issue as PoolIssue]
-      if (!poolIds) return
-      if (poolIds.includes(pool.id as PoolId)) return anAlert(issue as PoolIssue)
+  if (!networkPoolsIssues) return []
+
+  const poolIssues: string[] = []
+
+  Object.keys(networkPoolsIssues).forEach(issue => {
+    const poolIds = networkPoolsIssues[issue as PoolIssue]
+
+    if (!poolIds) return
+    if (!poolIds.includes(pool.id)) return
+
+    poolIssues.push(issue)
+  })
+
+  return poolIssues.map(issue => {
+    const vulnerabilityData = VulnerabilityDataMap[issue as PoolIssue]
+
+    return {
+      identifier: issue,
+      title: vulnerabilityData.jsxTitle,
+      learnMoreLink: vulnerabilityData.learnMoreLink,
+      status: 'error',
+      isSoftWarning: false,
+    }
+  })
+}
+
+export const getTokenPoolAlerts = (pool: Pool): PoolAlert[] => {
+  const { poolTokens } = pool
+
+  const alerts: PoolAlert[] = []
+
+  poolTokens.forEach(token => {
+    if (!token.isAllowed) {
+      alerts.push({
+        identifier: `TokenNotAllowed-${token.symbol}`,
+        // eslint-disable-next-line max-len
+        title: `The token ${token.symbol} is currently not supported.`,
+        status: 'error',
+        isSoftWarning: false,
+      })
+    }
+
+    if (token.hasNestedPool || token.priceRateProvider === zeroAddress) {
       return
+    }
+
+    if (token.priceRateProviderData?.summary !== 'safe') {
+      alerts.push({
+        identifier: `UnsafePriceProvider-${token.symbol}`,
+        // eslint-disable-next-line max-len
+        title: `The price data provider for ${token.symbol} is currently deemed unreliable.`,
+        status: 'error',
+        isSoftWarning: false,
+      })
+    }
+
+    token.priceRateProviderData?.warnings?.forEach(warning => {
+      alerts.push({
+        identifier: `PriceProviderWarning-${token.symbol}-${warning}`,
+        title: `Attention: ${token.symbol} Price Provider Alert - ${warning}`,
+        status: 'warning',
+        isSoftWarning: true,
+      })
     })
-    .filter(w => w !== undefined) as PoolAlertProps[]
-}
+  })
 
-function anAlert(poolIssue: PoolIssue): PoolAlertProps {
-  return {
-    id: poolIssue,
-    type: 'Vulnerability',
-    status: getStatus(poolIssue),
-    title: jsxTitleByVulnerability[poolIssue],
-    labels: [],
-  }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function getStatus(poolIssue: PoolIssue): AlertStatus {
-  //For now, all issues are vulnerabilities with default error status
-  return 'error'
+  return alerts
 }
 
 export function isAffectedByCspIssue(pool: Pool) {
   return isAffectedBy(pool, PoolIssue.CspPoolVulnWarning)
+}
+
+export function checkIfHasIssuesWithAddLiquidity(pool: Pool) {
+  return pool.poolTokens.some(token => {
+    if (!token.isAllowed) return true
+    if (token.hasNestedPool) return false
+    if (token.priceRateProvider === zeroAddress) return false
+    if (token.priceRateProviderData?.summary !== 'safe') return true
+
+    return false
+  })
 }
 
 function isAffectedBy(pool: Pool, poolIssue: PoolIssue) {

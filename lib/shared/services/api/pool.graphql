@@ -156,6 +156,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
@@ -183,6 +192,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
@@ -210,6 +228,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
@@ -239,6 +266,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
@@ -268,6 +304,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
@@ -296,6 +341,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
@@ -341,6 +395,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
@@ -372,6 +435,13 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
