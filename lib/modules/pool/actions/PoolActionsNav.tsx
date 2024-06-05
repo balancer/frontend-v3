@@ -26,7 +26,7 @@ export function PoolActionsNav() {
 
       <IconButton
         as={Link}
-        href={getPoolPath({ id: pool.id, chain: pool.chain, poolType: pool.type })}
+        href={getPoolPath(pool)}
         isRound={true}
         variant="outline"
         aria-label="Close"

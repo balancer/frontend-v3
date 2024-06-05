@@ -32,10 +32,7 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
       px={{ base: 'ms', sm: '0' }}
       w="full"
     >
-      <Link
-        href={getPoolPath({ id: pool.id, chain: pool.chain, poolType: pool.type })}
-        prefetch={true}
-      >
+      <Link href={getPoolPath(pool)} prefetch={true}>
         <Grid {...rest} py="sm">
           <GridItem>
             <NetworkIcon chain={pool.chain} size={6} />
