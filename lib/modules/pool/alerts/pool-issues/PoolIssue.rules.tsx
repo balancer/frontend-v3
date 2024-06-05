@@ -49,6 +49,7 @@ export const getTokenPoolAlerts = (pool: Pool): PoolAlert[] => {
   const alerts: PoolAlert[] = []
 
   poolTokens.forEach(token => {
+    // Token is not allowed
     if (!token.isAllowed) {
       alerts.push({
         identifier: `TokenNotAllowed-${token.symbol}`,
@@ -59,11 +60,12 @@ export const getTokenPoolAlerts = (pool: Pool): PoolAlert[] => {
       })
     }
 
-    if (
-      token.hasNestedPool ||
-      isNil(token.priceRateProvider) ||
-      token.priceRateProvider === zeroAddress
-    ) {
+    const isPriceRateProviderLegit =
+      isNil(token.priceRateProvider) || // if null, we consider rate provider as zero address
+      token.priceRateProvider === zeroAddress ||
+      token.priceRateProvider === token.nestedPool?.address
+
+    if (isNil(token.priceRateProviderData) && isPriceRateProviderLegit) {
       return
     }
 
