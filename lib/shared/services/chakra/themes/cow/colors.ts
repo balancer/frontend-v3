@@ -3,10 +3,10 @@ import { colors as baseColors } from '../base/colors'
 export const colors = {
   ...baseColors,
   base: {
-    light: 'hsla(210, 100%, 80%,1)',
-    hslLight: '44,22%,90%',
-    dark: 'hsla(240, 100%, 50%,1)',
-    hslDark: '216,12%,25%',
+    light: 'hsla(103, 49%, 71%,1)',
+    hslLight: '103, 49%, 71%',
+    dark: 'hsla(103, 100%, 6%,1)',
+    hslDark: '103, 100%, 6%',
   },
 }
 

@@ -52,10 +52,8 @@ export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlCha
 
 function getVariant(poolType: GqlPoolType) {
   switch (poolType) {
-    case GqlPoolType.Gyro:
-    case GqlPoolType.Gyro3:
-    case GqlPoolType.Gyroe:
-      return PoolVariant.gyro
+    // case GqlPoolType.Cow:
+    //   return PoolVariant.cow
     default:
       return PoolVariant.v2
   }

@@ -5,15 +5,15 @@ import { ReactNode } from 'react'
 import { useParams } from 'next/navigation'
 import { PoolVariant } from '@/lib/modules/pool/pool.types'
 import { theme as balTheme } from './themes/bal/theme'
-import { theme as gyroTheme } from './themes/gyro/theme'
+import { theme as cowTheme } from './themes/cow/theme'
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const { variant } = useParams<{ variant?: PoolVariant }>()
 
   function getTheme(): ThemeTypings {
     switch (variant) {
-      case PoolVariant.gyro:
-        return gyroTheme
+      case PoolVariant.cow:
+        return cowTheme
       case PoolVariant.v2:
         return balTheme
       default:
