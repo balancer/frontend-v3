@@ -48,8 +48,8 @@ export function useClaimAndUnstakeStep(
   const data = useBuildUnstakeCallData({
     amount: parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS),
     gaugeService: stakingService,
-    hasPendingNonBalRewards: nonBalrewards.length > 0,
-    hasPendingBalRewards: balRewards.length > 0,
+    hasUnclaimedNonBalRewards: nonBalrewards.length > 0,
+    hasUnclaimedBalRewards: balRewards.length > 0,
     userAddress,
   })
 

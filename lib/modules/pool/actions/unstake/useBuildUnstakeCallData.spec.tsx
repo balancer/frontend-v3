@@ -20,8 +20,8 @@ function testBuildUnstakeCallData(amount: bigint, userAddress: Address = default
         amount,
         gaugeService,
         userAddress,
-        hasPendingBalRewards: false,
-        hasPendingNonBalRewards: false,
+        hasUnclaimedBalRewards: false,
+        hasUnclaimedNonBalRewards: false,
       }),
     {
       wrapper: DefaultPoolTestProvider,

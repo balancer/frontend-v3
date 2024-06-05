@@ -5,15 +5,15 @@ import { usePool } from '../../PoolProvider'
 type Params = {
   amount: bigint
   gaugeService: GaugeService | undefined
-  hasPendingNonBalRewards: boolean
-  hasPendingBalRewards: boolean
+  hasUnclaimedNonBalRewards: boolean
+  hasUnclaimedBalRewards: boolean
   userAddress: Address
 }
 export function useBuildUnstakeCallData({
   amount,
   gaugeService,
-  hasPendingNonBalRewards,
-  hasPendingBalRewards,
+  hasUnclaimedNonBalRewards,
+  hasUnclaimedBalRewards,
   userAddress,
 }: Params): Hex[] {
   const { pool } = usePool()
@@ -23,8 +23,8 @@ export function useBuildUnstakeCallData({
   if (!userAddress) return []
 
   const inputData = {
-    hasPendingNonBalRewards,
-    hasPendingBalRewards,
+    hasUnclaimedNonBalRewards,
+    hasUnclaimedBalRewards,
     gauges: [(pool.staking?.id || '') as Address],
     sender: userAddress || '',
     recipient: userAddress || '',
