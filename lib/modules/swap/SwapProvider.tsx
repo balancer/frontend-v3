@@ -43,6 +43,7 @@ import { ChainSlug, chainToSlugMap, slugToChainMap } from '../pool/pool.utils'
 import { invert } from 'lodash'
 import { useTransactionSteps } from '../transactions/transaction-steps/useTransactionSteps'
 import { useTokenBalances } from '../tokens/TokenBalancesProvider'
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -97,6 +98,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
 
   const { isConnected } = useUserAccount()
+  const { chain: walletChain } = useNetworkConfig()
   const { getToken, getTokensByChain } = useTokens()
   const { tokens, setTokens } = useTokenBalances()
   const { hasValidationErrors } = useTokenInputsValidation()
@@ -379,10 +381,11 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     const { chain, tokenIn, tokenOut, amountIn, amountOut } = pathParams
     const { popularTokens } = networkConfig.tokens
     const symbolToAddressMap = invert(popularTokens || {}) as Record<string, Address>
+    const _chain =
+      chain && slugToChainMap[chain as ChainSlug] ? slugToChainMap[chain as ChainSlug] : walletChain
 
-    if (chain && slugToChainMap[chain as ChainSlug]) {
-      setSelectedChain(slugToChainMap[chain as ChainSlug])
-    }
+    setSelectedChain(_chain)
+
     if (tokenIn) {
       if (isAddress(tokenIn)) setTokenIn(tokenIn as Address)
       else if (symbolToAddressMap[tokenIn] && isAddress(symbolToAddressMap[tokenIn])) {
@@ -412,6 +415,10 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   useEffect(() => {
     const wrapper = getWrapperForBaseToken(swapState.tokenIn.address, swapState.selectedChain)
     if (wrapper) setTokenOut(wrapper.wrappedToken)
+
+    // If the token in address changes we should reset tx step index because
+    // the first approval may be different.
+    transactionSteps.setCurrentStepIndex(0)
   }, [swapState.tokenIn.address])
 
   // Check if tokenOut is a base wrap token and set tokenIn as the wrapped token.
@@ -462,6 +469,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     swapTxHash,
     hasQuoteContext,
     isWrap,
+    resetSwapAmounts,
     setTokenSelectKey,
     setSelectedChain,
     setTokenInAmount,

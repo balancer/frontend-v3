@@ -7,13 +7,15 @@ import {
   GqlPoolTokenDetail,
   GqlPoolType,
   GqlBalancePoolAprSubItem,
+  GqlPoolFilterCategory,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
-import { FetchPoolProps, PoolAction, PoolListItem, PoolVariant } from './pool.types'
+import { FetchPoolProps, PoolAction, PoolVariant } from './pool.types'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { TokenAmountHumanReadable } from '../tokens/token.types'
 import { formatUnits, parseUnits } from 'viem'
+import { ClaimablePool } from './actions/claim/ClaimProvider'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -152,6 +154,16 @@ export function getPoolTypeLabel(type: GqlPoolType): string {
   return poolTypeLabelMap[type] ?? type.replace(/_/g, ' ').toLowerCase()
 }
 
+// Maps GraphQL pool category enum to human readable label for UI.
+const poolCategoryLabelMap: { [key in GqlPoolFilterCategory]: string } = {
+  [GqlPoolFilterCategory.BlackListed]: 'Blacklisted',
+  [GqlPoolFilterCategory.Incentivized]: 'Incentivized',
+}
+
+export function getPoolCategoryLabel(category: GqlPoolFilterCategory): string {
+  return poolCategoryLabelMap[category] ?? category.replace(/_/g, ' ').toLowerCase()
+}
+
 export const poolClickHandler = (
   event: React.MouseEvent<HTMLElement>,
   id: string,
@@ -218,8 +230,8 @@ export function getProportionalExitAmountsFromScaledBptIn(
  * @description Returns a map of pool by gauge id
  * @example getPoolsByGaugesMap(pools) => { '0x123': pool1, '0x456': pool2 }
  */
-export function getPoolsByGaugesMap(pools: PoolListItem[]) {
-  return pools.reduce((acc: Record<string, PoolListItem>, pool) => {
+export function getPoolsByGaugesMap(pools: ClaimablePool[]) {
+  return pools.reduce((acc: Record<string, ClaimablePool>, pool) => {
     const gaugeId = pool.staking?.gauge?.id || ''
     if (gaugeId) {
       acc[gaugeId] = pool

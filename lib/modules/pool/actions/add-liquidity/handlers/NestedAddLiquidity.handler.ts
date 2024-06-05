@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
+import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   AddLiquidityNested,
@@ -58,7 +58,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
   }: NestedBuildAddLiquidityInput): Promise<TransactionConfig> {
     const addLiquidity = new AddLiquidityNested()
 
-    const { call, to, value } = addLiquidity.buildCall({
+    const { callData, to, value } = addLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       accountAddress: account,
@@ -69,7 +69,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
     return {
       account,
       chainId: this.helpers.chainId,
-      data: call,
+      data: callData,
       to,
       value,
     }
@@ -81,7 +81,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
   private constructSdkInput(
     humanAmountsIn: HumanTokenAmountWithAddress[]
   ): AddLiquidityNestedInput {
-    const amountsIn = this.helpers.toInputAmounts(humanAmountsIn)
+    const amountsIn = this.helpers.toSdkInputAmounts(humanAmountsIn)
 
     const nonEmptyAmountsIn = amountsIn.filter(a => a.rawAmount !== 0n)
 

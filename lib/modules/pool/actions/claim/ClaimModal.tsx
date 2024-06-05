@@ -8,9 +8,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react'
-import { useClaiming } from './useClaiming'
+import { useClaim } from './ClaimProvider'
 import { Address } from 'viem'
-import { PoolListItem } from '../../pool.types'
 import { HumanAmount } from '@balancer/sdk'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
@@ -21,54 +20,69 @@ import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
+import { useEffect, useMemo, useState } from 'react'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 type Props = {
   isOpen: boolean
   onClose(): void
-  onOpen(): void
-  gaugeAddresses: Address[]
-  pool: PoolListItem
+  chain: GqlChain
 }
 
 export function ClaimModal({
   isOpen,
   onClose,
-  pool,
+  chain,
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
-  const { isDesktop, isMobile } = useBreakpoints()
-  const { transactionSteps, hasNoRewards, claimTxHash, allClaimableRewards, totalClaimableUsd } =
-    useClaiming([pool])
+  const [quoteRewards, setQuoteRewards] = useState<HumanTokenAmountWithAddress[]>([])
+  const [quoteTotalUsd, setQuoteTotalUsd] = useState<string>('0')
 
-  const rewards = allClaimableRewards
-    .map(reward => ({
-      humanAmount: (reward?.humanBalance || '0') as HumanAmount,
-      tokenAddress: (reward?.tokenAddress || '') as Address,
-    }))
-    .filter(Boolean)
+  const { isDesktop, isMobile } = useBreakpoints()
+  const { transactionSteps, claimTxHash, allClaimableRewards, totalClaimableUsd } = useClaim()
+
+  const rewards = useMemo(
+    () =>
+      allClaimableRewards
+        .map(reward => ({
+          humanAmount: (reward?.humanBalance || '0') as HumanAmount,
+          tokenAddress: (reward?.tokenAddress || '') as Address,
+        }))
+        .filter(Boolean) as HumanTokenAmountWithAddress[],
+    [allClaimableRewards]
+  )
+
+  useEffect(() => {
+    if (rewards.length > 0) {
+      setQuoteRewards(rewards)
+      setQuoteTotalUsd(totalClaimableUsd)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rewards])
+
+  const noQuoteRewards = quoteRewards.length === 0
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered {...rest}>
       <SuccessOverlay startAnimation={!!claimTxHash} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
-        {isDesktop && <DesktopStepTracker transactionSteps={transactionSteps} chain={pool.chain} />}
-        <TransactionModalHeader label="Claim rewards" txHash={claimTxHash} chain={pool.chain} />
+        {isDesktop && <DesktopStepTracker transactionSteps={transactionSteps} chain={chain} />}
+        <TransactionModalHeader label="Claim rewards" txHash={claimTxHash} chain={chain} />
         <ModalCloseButton />
         <ModalBody>
           <VStack spacing="sm">
-            {isMobile && (
-              <MobileStepTracker transactionSteps={transactionSteps} chain={pool.chain} />
-            )}
-            {hasNoRewards ? (
+            {isMobile && <MobileStepTracker transactionSteps={transactionSteps} chain={chain} />}
+            {noQuoteRewards ? (
               <Text>Nothing to claim</Text>
             ) : (
               <Card variant="modalSubSection">
                 <TokenRowGroup
-                  amounts={rewards}
-                  chain={pool.chain}
+                  amounts={quoteRewards}
+                  chain={chain}
                   label="You'll get"
-                  totalUSDValue={totalClaimableUsd}
+                  totalUSDValue={quoteTotalUsd}
                 />
               </Card>
             )}

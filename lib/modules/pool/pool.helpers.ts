@@ -6,6 +6,8 @@ import {
   GqlChain,
   GqlPoolBase,
   GqlPoolNestingType,
+  GqlPoolStakingGauge,
+  GqlPoolStakingOtherGauge,
   GqlPoolType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
@@ -13,6 +15,8 @@ import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { Address, getAddress, parseUnits } from 'viem'
 import { BPT_DECIMALS } from './pool.constants'
+import { isNotMainet } from '../chains/chain.utils'
+import { ClaimablePool } from './actions/claim/ClaimProvider'
 
 /**
  * METHODS
@@ -188,4 +192,40 @@ export function isNotSupported(pool: Pool) {
   return (
     hasNestedPools(pool) && 'nestingType' in pool && pool.nestingType === 'HAS_ONLY_PHANTOM_BPT'
   )
+}
+
+/**
+ * Returns true if the gauge is claimable within this UI. We don't support
+ * claiming for v1 gauges on child-chains because they are deprecated and don't
+ * conform to the the same interface as v1 gauges on mainnet and v2 gauges on child-chains.
+ */
+function isClaimableGauge(
+  gauge: GqlPoolStakingGauge | GqlPoolStakingOtherGauge,
+  chain: GqlChain | number
+): boolean {
+  return !(gauge.version === 1 && isNotMainet(chain))
+}
+
+/**
+ * Returns all gauge addresses for a pool that are claimable. See
+ * `isClaimableGauge()` for info about why some gauges are not claimable.
+ */
+export function allClaimableGaugeAddressesFor(pool: ClaimablePool) {
+  const addresses: Address[] = []
+  const staking = pool.staking
+
+  if (!staking?.gauge) return addresses
+
+  if (isClaimableGauge(staking.gauge, pool.chain)) {
+    addresses.push(staking.gauge.gaugeAddress as Address)
+  }
+
+  const otherGauges = staking.gauge?.otherGauges || []
+  const otherClaimableGaugeAddresses = otherGauges
+    .filter(gauge => isClaimableGauge(gauge, pool.chain))
+    .map(g => g.gaugeAddress as Address)
+
+  addresses.push(...otherClaimableGaugeAddresses)
+
+  return addresses
 }

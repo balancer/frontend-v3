@@ -23,6 +23,7 @@ const COMMON_NOISY_CARD_PROPS: { contentProps: BoxProps; cardProps: BoxProps } =
   },
   cardProps: {
     position: 'relative',
+    height: 'full',
   },
 }
 
@@ -69,13 +70,14 @@ export function PoolSnapshot({ ...props }: CardProps) {
           mb="8"
           p={{ base: 'sm', md: 'md' }}
           zIndex={1}
+          h="full"
         >
           <ButtonGroup
             size="xxs"
             currentOption={activeTab}
             options={TABS}
             onChange={handleTabChanged}
-            width="70px"
+            groupId="pool-stats"
           />
           {activeTab.value === 'poolStats' && <PoolSnapshotValues />}
           {activeTab.value === 'myStats' && <UserSnapshotValues />}

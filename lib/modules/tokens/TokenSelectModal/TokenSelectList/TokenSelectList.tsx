@@ -12,6 +12,7 @@ import { GroupedVirtuoso, GroupedVirtuosoHandle } from 'react-virtuoso'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { CoinsIcon } from '@/lib/shared/components/icons/CoinsIcon'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
+import { useTokens } from '../../TokensProvider'
 
 type Props = {
   chain: GqlChain
@@ -98,6 +99,7 @@ export function TokenSelectList({
   const ref = useRef<GroupedVirtuosoHandle>(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const { balanceFor, isBalancesLoading } = useTokenBalances()
+  const { isLoadingTokenPrices } = useTokens()
   const { isConnected } = useUserAccount()
   const { orderedTokens } = useTokenSelectList(
     chain,
@@ -181,7 +183,7 @@ export function TokenSelectList({
                 onClick={() => onTokenSelect(token)}
                 token={token}
                 userBalance={userBalance}
-                isBalancesLoading={isBalancesLoading}
+                isBalancesLoading={isBalancesLoading || isLoadingTokenPrices}
               />
             )
           }}

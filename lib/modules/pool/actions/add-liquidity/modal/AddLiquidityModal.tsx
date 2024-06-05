@@ -16,6 +16,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { usePoolRedirect } from '../../../pool.hooks'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
+import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
 type Props = {
   isOpen: boolean
@@ -32,15 +34,26 @@ export function AddLiquidityModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps, addLiquidityTxHash, hasQuoteContext } = useAddLiquidity()
+  const { transactionSteps, addLiquidityTxHash, hasQuoteContext, setInitialHumanAmountsIn } =
+    useAddLiquidity()
   const { pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
+  const isMounted = useIsMounted()
+  const { userAddress } = useUserAccount()
 
   useEffect(() => {
     if (addLiquidityTxHash && !window.location.pathname.includes(addLiquidityTxHash)) {
       window.history.replaceState({}, '', `./add-liquidity/${addLiquidityTxHash}`)
     }
   }, [addLiquidityTxHash])
+
+  useEffect(() => {
+    if (isMounted) {
+      setInitialHumanAmountsIn()
+      onClose()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userAddress])
 
   return (
     <Modal

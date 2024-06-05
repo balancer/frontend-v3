@@ -14,6 +14,7 @@ import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActio
 import { useAddLiquidity } from '../AddLiquidityProvider'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
+import { swapWrappedWithNative } from '@/lib/modules/tokens/token.helpers'
 
 type OptimalToken = {
   tokenAddress: Address
@@ -37,6 +38,14 @@ export function useProportionalInputs() {
   const [isMaximized, setIsMaximized] = useState(false)
   const { isLoadingTokenPrices } = useTokens()
 
+  const filteredBalances = useMemo(() => {
+    return balances.filter(balance =>
+      wethIsEth
+        ? wNativeAsset && balance.address !== wNativeAsset.address
+        : nativeAsset && balance.address !== nativeAsset.address
+    )
+  }, [wethIsEth, isBalancesLoading])
+
   function clearAmountsIn() {
     setHumanAmountsIn(humanAmountsIn.map(amountIn => ({ ...amountIn, humanAmount: '' })))
   }
@@ -57,21 +66,14 @@ export function useProportionalInputs() {
 
     if (isEmptyHumanAmount(humanAmount)) return clearAmountsIn()
 
-    const proportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn(
+    const proportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn({
       tokenAddress,
       humanAmount,
-      helpers
-    )
-
-    const proportionalAmounts = proportionalHumanAmountsIn.map(amount => {
-      if (wethIsEth && isSameAddress(amount.tokenAddress, wNativeAsset?.address as Address)) {
-        return { ...amount, tokenAddress: nativeAsset?.address as Address }
-      } else {
-        return amount
-      }
+      helpers,
+      wethIsEth,
     })
 
-    setHumanAmountsIn(proportionalAmounts)
+    setHumanAmountsIn(proportionalHumanAmountsIn)
   }
 
   const shouldCalculateMaximizeAmounts =
@@ -89,15 +91,16 @@ export function useProportionalInputs() {
       return (balanceFor(tokenAddress)?.formatted || '0') as HumanAmount
     }
 
-    const optimalToken = validTokens.find(({ address }) => {
+    const optimalToken = filteredBalances.find(({ address }) => {
       const humanBalance = humanBalanceFor(address)
       if (isEmptyHumanAmount(humanBalance)) return false
 
-      const proportionalAmounts = _calculateProportionalHumanAmountsIn(
-        address as Address,
-        humanBalance,
-        helpers
-      )
+      const proportionalAmounts = _calculateProportionalHumanAmountsIn({
+        tokenAddress: address as Address,
+        humanAmount: humanBalance,
+        helpers,
+        wethIsEth,
+      })
 
       // The user must have enough token balance for this proportional result
       const haveEnoughBalance = proportionalAmounts.every(({ tokenAddress, humanAmount }) => {
@@ -113,16 +116,17 @@ export function useProportionalInputs() {
       tokenAddress: optimalToken.address,
       userBalance: humanBalanceFor(optimalToken.address),
     } as OptimalToken
-  }, [shouldCalculateMaximizeAmounts])
+  }, [shouldCalculateMaximizeAmounts, filteredBalances])
 
   const maximizedUsdValue = useMemo(() => {
     if (!shouldCalculateMaximizeAmounts || !optimalToken) return ''
 
-    const maxProportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn(
-      optimalToken.tokenAddress as Address,
-      optimalToken.userBalance,
-      helpers
-    )
+    const maxProportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn({
+      tokenAddress: optimalToken.tokenAddress as Address,
+      humanAmount: optimalToken.userBalance,
+      helpers,
+      wethIsEth,
+    })
 
     return usdValueFor(maxProportionalHumanAmountsIn)
   }, [shouldCalculateMaximizeAmounts, optimalToken, isLoadingTokenPrices])
@@ -136,24 +140,35 @@ export function useProportionalInputs() {
     handleProportionalHumanInputChange,
     handleMaximizeUserAmounts,
     setIsMaximized,
+    clearAmountsIn,
   }
 }
 
-export function _calculateProportionalHumanAmountsIn(
-  tokenAddress: Address,
-  humanAmount: HumanAmount,
+type Params = {
+  tokenAddress: Address
+  humanAmount: HumanAmount
   helpers: LiquidityActionHelpers
-): HumanTokenAmountWithAddress[] {
-  const amountIn: InputAmount = helpers.toInputAmounts([{ tokenAddress, humanAmount }])[0]
-  return (
-    calculateProportionalAmounts(helpers.poolStateWithBalances, amountIn)
-      .tokenAmounts.map(({ address, rawAmount, decimals }) => ({
-        tokenAddress: address,
-        humanAmount: formatUnits(rawAmount, decimals) as HumanAmount,
-      }))
-      // user updated token must be in the first place of the array because the Proportional handler always calculates bptOut based on the first position
-      .sort(sortUpdatedTokenFirst(tokenAddress))
-  )
+  wethIsEth: boolean
+}
+export function _calculateProportionalHumanAmountsIn({
+  tokenAddress,
+  humanAmount,
+  helpers,
+  wethIsEth,
+}: Params): HumanTokenAmountWithAddress[] {
+  const amountIn: InputAmount = helpers.toSdkInputAmounts([{ tokenAddress, humanAmount }])[0]
+  const proportionalAmounts = calculateProportionalAmounts(helpers.poolStateWithBalances, amountIn)
+    .tokenAmounts.map(({ address, rawAmount, decimals }) => ({
+      tokenAddress: address,
+      humanAmount: formatUnits(rawAmount, decimals) as HumanAmount,
+    }))
+    // user updated token must be in the first place of the array because the Proportional handler always calculates bptOut based on the first position
+    .sort(sortUpdatedTokenFirst(tokenAddress))
+
+  return wethIsEth
+    ? // toSdkInputAmounts swapped native to wrapped so we need to swap back
+      swapWrappedWithNative(proportionalAmounts, helpers.pool.chain)
+    : proportionalAmounts
 
   function sortUpdatedTokenFirst(tokenAddress: Address | null) {
     return (a: HumanTokenAmountWithAddress, b: HumanTokenAmountWithAddress) => {

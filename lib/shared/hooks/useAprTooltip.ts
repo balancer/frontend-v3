@@ -128,9 +128,12 @@ export function useAprTooltip({
       )
 
       const highestStakingIncentive = sortBy(stakingIncentivesDisplayed, 'apr').reverse()[0]
-      highestStakingIncentive.apr = highestStakingIncentive.apr.plus(
-        totalBaseDisplayedRoundingError
-      )
+
+      if (highestStakingIncentive) {
+        highestStakingIncentive.apr = highestStakingIncentive.apr.plus(
+          totalBaseDisplayedRoundingError
+        )
+      }
     }
   }
 
