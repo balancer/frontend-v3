@@ -43,6 +43,7 @@ import { ChainSlug, chainToSlugMap, slugToChainMap } from '../pool/pool.utils'
 import { invert } from 'lodash'
 import { useTransactionSteps } from '../transactions/transaction-steps/useTransactionSteps'
 import { useTokenBalances } from '../tokens/TokenBalancesProvider'
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -97,6 +98,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
 
   const { isConnected } = useUserAccount()
+  const { chain: walletChain } = useNetworkConfig()
   const { getToken, getTokensByChain } = useTokens()
   const { tokens, setTokens } = useTokenBalances()
   const { hasValidationErrors } = useTokenInputsValidation()
@@ -174,22 +176,32 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   }
 
   function setTokenIn(tokenAddress: Address) {
+    const isSameAsTokenOut = isSameAddress(tokenAddress, swapState.tokenOut.address)
+
     swapStateVar({
       ...swapState,
       tokenIn: {
         ...swapState.tokenIn,
         address: tokenAddress,
       },
+      tokenOut: isSameAsTokenOut
+        ? { ...swapState.tokenOut, address: emptyAddress }
+        : swapState.tokenOut,
     })
   }
 
   function setTokenOut(tokenAddress: Address) {
+    const isSameAsTokenIn = isSameAddress(tokenAddress, swapState.tokenIn.address)
+
     swapStateVar({
       ...swapState,
       tokenOut: {
         ...swapState.tokenOut,
         address: tokenAddress,
       },
+      tokenIn: isSameAsTokenIn
+        ? { ...swapState.tokenIn, address: emptyAddress }
+        : swapState.tokenIn,
     })
   }
 
@@ -379,10 +391,11 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     const { chain, tokenIn, tokenOut, amountIn, amountOut } = pathParams
     const { popularTokens } = networkConfig.tokens
     const symbolToAddressMap = invert(popularTokens || {}) as Record<string, Address>
+    const _chain =
+      chain && slugToChainMap[chain as ChainSlug] ? slugToChainMap[chain as ChainSlug] : walletChain
 
-    if (chain && slugToChainMap[chain as ChainSlug]) {
-      setSelectedChain(slugToChainMap[chain as ChainSlug])
-    }
+    setSelectedChain(_chain)
+
     if (tokenIn) {
       if (isAddress(tokenIn)) setTokenIn(tokenIn as Address)
       else if (symbolToAddressMap[tokenIn] && isAddress(symbolToAddressMap[tokenIn])) {

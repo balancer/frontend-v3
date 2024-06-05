@@ -2,10 +2,10 @@
 
 import { Badge, Flex, HStack, Text, Tooltip } from '@chakra-ui/react'
 import { usePool } from '../../PoolProvider'
-import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import Image from 'next/image'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { Repeat } from 'react-feather'
+import { PoolListTokenPills } from '../../PoolList/PoolListTokenPills'
 
 export default function PoolMetaBadges() {
   const { pool, chain } = usePool()
@@ -28,34 +28,7 @@ export default function PoolMetaBadges() {
           height={20}
         />
       </Badge>
-      {pool.displayTokens.map(token => {
-        return (
-          <Badge
-            py="2"
-            px="sm"
-            rounded="full"
-            background="background.level2"
-            border="1px solid"
-            borderColor="border.base"
-            key={`meta-badge-${token.address}`}
-            shadow="sm"
-          >
-            <HStack>
-              <TokenIcon
-                chain={chain}
-                address={token.address}
-                size={24}
-                alt={token?.symbol || token.address}
-              />
-
-              <Text fontWeight="bold" fontSize="md">
-                {token.symbol}
-              </Text>
-              {token.weight && <Text fontSize="sm">{fNum('weight', token.weight || 0)}</Text>}
-            </HStack>
-          </Badge>
-        )
-      })}
+      <PoolListTokenPills pool={pool} py="2" px="sm" />
       <Tooltip label="Swap fee">
         <Badge
           fontWeight="normal"

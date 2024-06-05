@@ -9,6 +9,7 @@ interface Props extends Omit<BaseAprTooltipProps, 'children' | 'totalBaseText' |
   onlySparkles?: boolean
   aprLabel?: boolean
   apr?: string
+  height?: string
 }
 
 const hoverColor = 'font.highlight'
@@ -20,6 +21,7 @@ function MainAprTooltip({
   data,
   vebalBoost,
   aprLabel,
+  height = '16px',
   ...props
 }: Props) {
   const aprToShow = apr || getTotalAprLabel(data.items, vebalBoost)
@@ -33,7 +35,7 @@ function MainAprTooltip({
     >
       {({ isOpen }) => (
         <HStack align="center" alignItems="center">
-          <Button variant="unstyled" _focus={{ outline: 'none' }} px="0" h="16px">
+          <Button variant="unstyled" _focus={{ outline: 'none' }} px="0" h={height}>
             <HStack
               _hover={{ color: 'font.link' }}
               color={isOpen ? 'font.highlight' : 'font.primary'}
