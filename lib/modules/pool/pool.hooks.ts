@@ -10,7 +10,7 @@ export function usePoolRedirect(pool: Pool) {
    * Redirects user to pool page and respects ctrl/cmd clicks to open in new tab.
    */
   function redirectToPoolPage(event?: React.MouseEvent<HTMLElement>) {
-    const path = getPoolPath({ id: pool.id, chain: pool.chain, poolType: pool.type })
+    const path = getPoolPath(pool)
 
     if (event && (event.ctrlKey || event.metaKey)) {
       window.open(path, '_blank')

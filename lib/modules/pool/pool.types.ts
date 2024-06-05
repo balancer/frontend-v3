@@ -38,10 +38,6 @@ export interface FetchPoolProps {
   variant?: PoolVariant
 }
 
-export interface PoolPathProps extends Omit<FetchPoolProps, 'variant'> {
-  poolType: GqlPoolType
-}
-
 export interface PoolSearchParams {
   first?: string
   skip?: string

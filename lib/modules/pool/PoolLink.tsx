@@ -1,11 +1,12 @@
 'use client'
 
 import { Link, LinkProps } from '@chakra-ui/react'
-import { PoolPathProps } from './pool.types'
 import { getPoolPath } from './pool.utils'
+import { PoolListItem } from './pool.types'
+import { Pool } from './PoolProvider'
 
-type Props = PoolPathProps & LinkProps
+type Props = { pool: Pool | PoolListItem } & LinkProps
 
-export function PoolLink({ id, chain, poolType, ...props }: Props) {
-  return <Link href={getPoolPath({ id, chain, poolType })} {...props} />
+export function PoolLink({ pool, ...props }: Props) {
+  return <Link href={getPoolPath(pool)} {...props} />
 }

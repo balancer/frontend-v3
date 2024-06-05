@@ -10,12 +10,13 @@ import {
   GqlPoolFilterCategory,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
-import { FetchPoolProps, PoolAction, PoolPathProps, PoolVariant } from './pool.types'
+import { FetchPoolProps, PoolAction, PoolListItem, PoolVariant } from './pool.types'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { TokenAmountHumanReadable } from '../tokens/token.types'
 import { formatUnits, parseUnits } from 'viem'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
+import { Pool } from './PoolProvider'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -50,13 +51,11 @@ export const chainToSlugMap: Record<GqlChain, ChainSlug> = {
 }
 export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlChain>
 
-function getVariant(poolType: GqlPoolType) {
-  switch (poolType) {
-    // case GqlPoolType.Cow:
-    //   return PoolVariant.cow
-    default:
-      return PoolVariant.v2
-  }
+function getVariant(pool: Pool | PoolListItem) {
+  // if a pool has certain properties return a custom variant
+
+  // default variant
+  return PoolVariant.v2
 }
 
 /**
@@ -66,9 +65,9 @@ function getVariant(poolType: GqlPoolType) {
  * @param {String} variant Pool variant, defaults to v2.
  * @returns {String} Path to pool detail page.
  */
-export function getPoolPath({ id, chain, poolType }: PoolPathProps) {
-  const variant = getVariant(poolType)
-  return `/pools/${chainToSlugMap[chain]}/${variant}/${id}`
+export function getPoolPath(pool: Pool | PoolListItem) {
+  const variant = getVariant(pool)
+  return `/pools/${chainToSlugMap[pool.chain]}/${variant}/${pool.id}`
 }
 
 // TODO: the following 2 functions (getAprLabel & getTotalAprLabel) most likely need revisiting somewhere in the near future and refactored to just one
@@ -176,12 +175,10 @@ export function getPoolCategoryLabel(category: GqlPoolFilterCategory): string {
 
 export const poolClickHandler = (
   event: React.MouseEvent<HTMLElement>,
-  id: string,
-  chain: GqlChain,
-  poolType: GqlPoolType,
+  pool: Pool | PoolListItem,
   router: AppRouterInstance
 ) => {
-  const poolPath = getPoolPath({ id, chain, poolType })
+  const poolPath = getPoolPath(pool)
 
   if (event.ctrlKey || event.metaKey) {
     window.open(poolPath, '_blank')
@@ -194,12 +191,10 @@ export const poolClickHandler = (
 // between clicking the pool and the pool page loading.
 export const poolMouseEnterHandler = (
   event: React.MouseEvent<HTMLElement>,
-  id: string,
-  chain: GqlChain,
-  poolType: GqlPoolType,
+  pool: Pool | PoolListItem,
   router: AppRouterInstance
 ) => {
-  const poolPath = getPoolPath({ id, chain, poolType })
+  const poolPath = getPoolPath(pool)
   router.prefetch(poolPath)
 }
 
