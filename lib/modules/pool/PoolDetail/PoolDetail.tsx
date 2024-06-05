@@ -34,8 +34,9 @@ export function PoolDetail() {
 
   return (
     <ClaimProvider pools={[pool]}>
-      <PoolAlerts />
       <VStack w="full" spacing="2xl">
+        <PoolAlerts />
+
         <VStack w="full" spacing="md">
           <PoolHeader />
           <PoolStatsLayout />

@@ -4,6 +4,7 @@ import { PoolIssue } from './PoolIssue.type'
 import { VulnerabilityDataMap } from './PoolIssue.labels'
 import { AlertStatus } from '@chakra-ui/react'
 import { zeroAddress } from 'viem'
+import { isNil } from 'lodash'
 
 export type PoolAlert = {
   identifier: string
@@ -58,7 +59,11 @@ export const getTokenPoolAlerts = (pool: Pool): PoolAlert[] => {
       })
     }
 
-    if (token.hasNestedPool || token.priceRateProvider === zeroAddress) {
+    if (
+      token.hasNestedPool ||
+      isNil(token.priceRateProvider) ||
+      token.priceRateProvider === zeroAddress
+    ) {
       return
     }
 

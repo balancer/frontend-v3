@@ -1,6 +1,6 @@
 'use client'
 
-import { Alert, AlertStatus, AlertTitle, Box, IconButton, Link } from '@chakra-ui/react'
+import { Alert, AlertStatus, AlertTitle, Box, IconButton, Link, Stack } from '@chakra-ui/react'
 import { usePool } from '../PoolProvider'
 import { PoolAlert, getNetworkPoolAlerts, getTokenPoolAlerts } from './pool-issues/PoolIssue.rules'
 import { WarningIcon } from '@/lib/shared/components/icons/WarningIcon'
@@ -27,16 +27,22 @@ export function PoolAlerts() {
     setPoolAlerts([...networkPoolAlerts, ...tokenPoolAlerts])
   }, [])
 
-  return poolAlerts.map(alert => (
-    <PoolAlertDisplay
-      key={alert.identifier}
-      onClose={e => {
-        e.preventDefault()
-        setPoolAlerts(poolAlerts.filter(a => a.identifier !== alert.identifier))
-      }}
-      {...alert}
-    ></PoolAlertDisplay>
-  ))
+  if (poolAlerts.length === 0) return null
+
+  return (
+    <Stack width="100%">
+      {poolAlerts.map(alert => (
+        <PoolAlertDisplay
+          key={alert.identifier}
+          onClose={e => {
+            e.preventDefault()
+            setPoolAlerts(poolAlerts.filter(a => a.identifier !== alert.identifier))
+          }}
+          {...alert}
+        ></PoolAlertDisplay>
+      ))}
+    </Stack>
+  )
 }
 
 export function PoolAlertDisplay({
