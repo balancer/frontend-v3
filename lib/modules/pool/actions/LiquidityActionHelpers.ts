@@ -209,8 +209,8 @@ export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
     id: pool.id as Hex,
     address: pool.address as Address,
     type: mapPoolType(pool.type),
-    tokens: pool.poolTokens.map((t, index) => ({
-      index,
+    tokens: pool.poolTokens.map(t => ({
+      index: t.index,
       address: t.address as Address,
       balance: t.balance as HumanAmount,
       decimals: t.decimals,
