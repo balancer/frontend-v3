@@ -125,7 +125,7 @@ export function UserSnapshotValues() {
           <MemoizedMainAprTooltip
             data={pool.dynamicData.apr}
             poolId={pool.id}
-            textProps={{ fontWeight: 'medium', fontSize: '2xl', lineHeight: '28px' }}
+            textProps={{ fontWeight: 'bold', fontSize: '2xl', lineHeight: '28px' }}
             vebalBoost={boost || '1'}
           />
         ) : (
