@@ -10,7 +10,7 @@ const tokens = getTokens(colors, primaryTextColor)
 const components = getComponents(tokens, primaryTextColor)
 const semanticTokens = getSemanticTokens(tokens, colors)
 
-export const gyroTheme = {
+export const cowTheme = {
   config,
   fonts,
   styles,
@@ -19,4 +19,4 @@ export const gyroTheme = {
   components,
 }
 
-export const theme = extendTheme(gyroTheme, proseTheme) as ThemeTypings
+export const theme = extendTheme(cowTheme, proseTheme) as ThemeTypings
