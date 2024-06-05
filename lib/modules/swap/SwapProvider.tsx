@@ -12,7 +12,7 @@ import { useUserAccount } from '../web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
-import { bn } from '@/lib/shared/utils/numbers'
+import { bn, Numberish } from '@/lib/shared/utils/numbers'
 import { useSimulateSwapQuery } from './queries/useSimulateSwapQuery'
 import { useTokens } from '../tokens/TokensProvider'
 import { useDisclosure } from '@chakra-ui/react'
@@ -44,6 +44,9 @@ import { invert } from 'lodash'
 import { useTransactionSteps } from '../transactions/transaction-steps/useTransactionSteps'
 import { useTokenBalances } from '../tokens/TokenBalancesProvider'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import BigNumber from 'bignumber.js'
+import { log } from '@wagmi/cli/dist/types/logger'
+import { usePriceImpact } from '../price-impact/PriceImpactProvider'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -99,9 +102,10 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
 
   const { isConnected } = useUserAccount()
   const { chain: walletChain } = useNetworkConfig()
-  const { getToken, getTokensByChain } = useTokens()
+  const { getToken, getTokensByChain, usdValueForToken } = useTokens()
   const { tokens, setTokens } = useTokenBalances()
   const { hasValidationErrors } = useTokenInputsValidation()
+  const { setPriceImpact } = usePriceImpact()
 
   const networkConfig = getNetworkConfig(swapState.selectedChain)
   const previewModalDisclosure = useDisclosure()
@@ -127,6 +131,22 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   if ((isTokenInSet && !tokenInInfo) || (isTokenOutSet && !tokenOutInfo)) {
     throw new Error('Token metadata not found')
   }
+
+  const tokenInUsd = usdValueForToken(tokenInInfo, swapState.tokenIn.amount)
+  const tokenOutUsd = usdValueForToken(tokenOutInfo, swapState.tokenOut.amount)
+
+  useEffect(() => {
+    function calcPriceImpact(usdIn: string, usdOut: string) {
+      if (bn(usdIn).isZero() || bn(usdOut).isZero()) return '0'
+
+      const priceImpact = bn(1).minus(bn(usdIn).div(usdOut))
+
+      return BigNumber.min(priceImpact, 0).toString()
+    }
+
+    // setPriceImpact(calcPriceImpact(tokenInUsd, tokenOutUsd))
+    console.log('priceImpact', calcPriceImpact(tokenInUsd, tokenOutUsd))
+  }, [tokenInUsd, tokenOutUsd])
 
   const shouldFetchSwap = (state: SwapState, urlTxHash?: Hash) => {
     if (urlTxHash) return false
@@ -442,10 +462,12 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     if (!swapTxHash) replaceUrlPath()
   }, [swapState.selectedChain, swapState.tokenIn, swapState.tokenOut, swapState.tokenIn.amount])
 
+  // Update selecteable tokens when the chain changes
   useEffect(() => {
     setTokens(getTokensByChain(swapState.selectedChain))
   }, [swapState.selectedChain])
 
+  // Open the preview modal when a swap tx hash is present
   useEffect(() => {
     if (swapTxHash) {
       previewModalDisclosure.onOpen()
