@@ -12,6 +12,7 @@ import { PoolHeader } from './PoolHeader/PoolHeader'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { ClaimProvider } from '../actions/claim/ClaimProvider'
+import { PoolBanner } from './PoolBanner'
 
 export function PoolDetail() {
   const { pool } = usePool()
@@ -36,12 +37,14 @@ export function PoolDetail() {
       <VStack w="full" spacing="2xl">
         <VStack w="full" spacing="md">
           <PoolHeader />
+          <PoolBanner placement="header" />
           <PoolStatsLayout />
         </VStack>
         <PoolActivityChart />
         <PoolComposition />
         {userHasLiquidity && <PoolMyLiquidity />}
         <PoolInfoLayout />
+        <PoolBanner placement="footer" />
       </VStack>
     </ClaimProvider>
   )
