@@ -16,6 +16,7 @@ import { getStylesForModalContentWithStepTracker } from '../../transactions/tran
 import { SwapModalBody } from './SwapModalBody'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { useUserAccount } from '../../web3/UserAccountProvider'
+import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
 type Props = {
   isOpen: boolean
@@ -32,6 +33,7 @@ export function SwapPreviewModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const { userAddress } = useUserAccount()
+  const isMounted = useIsMounted()
   const initialFocusRef = useRef(null)
 
   const {
@@ -52,8 +54,11 @@ export function SwapPreviewModal({
   }, [swapTxHash])
 
   useEffect(() => {
-    resetSwapAmounts()
-    onClose()
+    if (isMounted) {
+      resetSwapAmounts()
+      onClose()
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAddress])
 
