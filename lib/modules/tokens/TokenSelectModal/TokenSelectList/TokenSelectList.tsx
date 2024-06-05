@@ -13,6 +13,8 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { CoinsIcon } from '@/lib/shared/components/icons/CoinsIcon'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 import { useTokens } from '../../TokensProvider'
+import { Address } from 'viem'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 
 type Props = {
   chain: GqlChain
@@ -21,6 +23,7 @@ type Props = {
   pinNativeAsset?: boolean
   listHeight: number
   searchTerm?: string
+  currentToken?: Address
   onTokenSelect: (token: GqlToken) => void
 }
 function OtherTokens() {
@@ -93,6 +96,7 @@ export function TokenSelectList({
   pinNativeAsset = false,
   listHeight,
   searchTerm,
+  currentToken,
   onTokenSelect,
   ...rest
 }: Props & BoxProps) {
@@ -115,6 +119,9 @@ export function TokenSelectList({
     : []
   const tokensWithoutBalance = orderedTokens.filter(token => !tokensWithBalance.includes(token))
   const tokensToShow = [...tokensWithBalance, ...tokensWithoutBalance]
+
+  const isCurrentToken = (token: GqlToken) =>
+    currentToken && isSameAddress(token.address, currentToken)
 
   const groups = [
     <InYourWallet
@@ -180,7 +187,8 @@ export function TokenSelectList({
               <TokenSelectListRow
                 key={keyFor(token, index)}
                 active={index === activeIndex}
-                onClick={() => onTokenSelect(token)}
+                onClick={() => !isCurrentToken(token) && onTokenSelect(token)}
+                isCurrentToken={isCurrentToken(token)}
                 token={token}
                 userBalance={userBalance}
                 isBalancesLoading={isBalancesLoading || isLoadingTokenPrices}
