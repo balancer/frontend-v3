@@ -73,7 +73,6 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     const amountsIn = filterHumanAmountsIn(humanAmountsIn, tokenAddress, chain)
     setHumanAmountsIn([
       ...amountsIn,
-
       {
         tokenAddress,
         humanAmount,
@@ -204,6 +203,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     setNeedsToAcceptHighPI,
     setAcceptPoolRisks,
     setWethIsEth,
+    setInitialHumanAmountsIn,
   }
 }
 

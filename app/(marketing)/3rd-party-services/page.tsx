@@ -35,7 +35,7 @@ export default function Cookies() {
       name: 'Hypernative',
       description:
         'Used to securely check wallet addresses and shares it with Hypernative Inc. for risk and compliance reasons.',
-      iconUrl: '/images/services/alchemy.svg',
+      iconUrl: '/images/services/hypernative.svg',
     },
     {
       name: 'Sentry',
