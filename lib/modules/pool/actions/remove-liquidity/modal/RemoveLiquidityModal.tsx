@@ -16,6 +16,7 @@ import { ActionModalFooter } from '../../../../../shared/components/modals/Actio
 import { RemoveLiquidityReceipt } from './RemoveLiquidityReceipt'
 import { usePoolRedirect } from '../../../pool.hooks'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 
 type Props = {
   isOpen: boolean
@@ -35,12 +36,18 @@ export function RemoveLiquidityModal({
   const { transactionSteps, removeLiquidityTxHash, hasQuoteContext } = useRemoveLiquidity()
   const { pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
+  const { userAddress } = useUserAccount()
 
   useEffect(() => {
     if (removeLiquidityTxHash && !window.location.pathname.includes(removeLiquidityTxHash)) {
       window.history.replaceState({}, '', `./remove-liquidity/${removeLiquidityTxHash}`)
     }
   }, [removeLiquidityTxHash])
+
+  useEffect(() => {
+    redirectToPoolPage()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userAddress])
 
   return (
     <Modal

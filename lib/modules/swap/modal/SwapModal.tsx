@@ -15,6 +15,7 @@ import { chainToSlugMap } from '../../pool/pool.utils'
 import { getStylesForModalContentWithStepTracker } from '../../transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { SwapModalBody } from './SwapModalBody'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
+import { useUserAccount } from '../../web3/UserAccountProvider'
 
 type Props = {
   isOpen: boolean
@@ -30,10 +31,18 @@ export function SwapPreviewModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
+  const { userAddress } = useUserAccount()
   const initialFocusRef = useRef(null)
 
-  const { transactionSteps, swapAction, isWrap, selectedChain, swapTxHash, hasQuoteContext } =
-    useSwap()
+  const {
+    transactionSteps,
+    swapAction,
+    isWrap,
+    selectedChain,
+    swapTxHash,
+    hasQuoteContext,
+    resetSwapAmounts,
+  } = useSwap()
 
   useEffect(() => {
     if (!isWrap && swapTxHash && !window.location.pathname.includes(swapTxHash)) {
@@ -41,6 +50,12 @@ export function SwapPreviewModal({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [swapTxHash])
+
+  useEffect(() => {
+    resetSwapAmounts()
+    onClose()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userAddress])
 
   return (
     <Modal

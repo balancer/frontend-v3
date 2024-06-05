@@ -203,6 +203,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     setNeedsToAcceptHighPI,
     setAcceptPoolRisks,
     setWethIsEth,
+    setInitialHumanAmountsIn,
   }
 }
 
