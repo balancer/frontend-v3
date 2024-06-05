@@ -75,7 +75,7 @@ export function PoolSnapshotValues() {
           data={pool.dynamicData.apr}
           poolId={pool.id}
           textProps={{
-            fontWeight: 'medium',
+            fontWeight: 'bold',
             fontSize: '2xl',
             lineHeight: '28px',
           }}
