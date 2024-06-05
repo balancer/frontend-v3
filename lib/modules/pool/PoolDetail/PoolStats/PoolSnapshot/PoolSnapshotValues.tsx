@@ -74,6 +74,7 @@ export function PoolSnapshotValues() {
         <MemoizedMainAprTooltip
           data={pool.dynamicData.apr}
           poolId={pool.id}
+          height="28px"
           textProps={{
             fontWeight: 'bold',
             fontSize: '2xl',
