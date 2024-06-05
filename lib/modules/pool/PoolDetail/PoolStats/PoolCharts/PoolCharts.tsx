@@ -47,7 +47,7 @@ const COMMON_NOISY_CARD_PROPS: { contentProps: BoxProps; cardProps: BoxProps } =
 }
 
 export function PeriodSelect({ value, onChange }: Props) {
-  const chakraStyles = getSelectStyles<PeriodOption>('gradient')
+  const chakraStyles = getSelectStyles<PeriodOption>()
 
   function handleChange(newOption: SingleValue<PeriodOption>) {
     if (newOption) onChange(newOption)
