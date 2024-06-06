@@ -176,22 +176,32 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   }
 
   function setTokenIn(tokenAddress: Address) {
+    const isSameAsTokenOut = isSameAddress(tokenAddress, swapState.tokenOut.address)
+
     swapStateVar({
       ...swapState,
       tokenIn: {
         ...swapState.tokenIn,
         address: tokenAddress,
       },
+      tokenOut: isSameAsTokenOut
+        ? { ...swapState.tokenOut, address: emptyAddress }
+        : swapState.tokenOut,
     })
   }
 
   function setTokenOut(tokenAddress: Address) {
+    const isSameAsTokenIn = isSameAddress(tokenAddress, swapState.tokenIn.address)
+
     swapStateVar({
       ...swapState,
       tokenOut: {
         ...swapState.tokenOut,
         address: tokenAddress,
       },
+      tokenIn: isSameAsTokenIn
+        ? { ...swapState.tokenIn, address: emptyAddress }
+        : swapState.tokenIn,
     })
   }
 

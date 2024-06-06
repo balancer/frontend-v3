@@ -41,9 +41,9 @@ export function PoolDetail() {
           {banners?.headerSrc && <Image src={banners.headerSrc} alt={`${variant}-header`} />}
           <PoolStatsLayout />
         </VStack>
+        {userHasLiquidity && <PoolMyLiquidity />}
         <PoolActivityChart />
         <PoolComposition />
-        {userHasLiquidity && <PoolMyLiquidity />}
         <PoolInfoLayout />
         {banners?.footerSrc && <Image src={banners.footerSrc} alt={`${variant}-footer`} />}
       </VStack>

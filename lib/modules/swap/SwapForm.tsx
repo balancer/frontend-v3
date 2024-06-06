@@ -21,7 +21,6 @@ import {
 import { useRef, useState } from 'react'
 import { useSwap } from './SwapProvider'
 import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
 import { SwapPreviewModal } from './modal/SwapModal'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
@@ -69,22 +68,11 @@ export function SwapForm() {
   const finalRefTokenOut = useRef(null)
   const isMounted = useIsMounted()
 
-  const tokenMap = { tokenIn, tokenOut }
-
   function copyDeepLink() {
     navigator.clipboard.writeText(window.location.href)
     setCopiedDeepLink(true)
     setTimeout(() => setCopiedDeepLink(false), 2000)
   }
-
-  // Exclude the currently selected token from the token select modal search.
-  const tokenSelectTokens = tokens.filter(
-    token =>
-      !isSameAddress(
-        token.address,
-        tokenMap[tokenSelectKey === 'tokenIn' ? 'tokenOut' : 'tokenIn'].address
-      )
-  )
 
   function handleTokenSelect(token: GqlToken) {
     if (tokenSelectKey === 'tokenIn') {
@@ -227,7 +215,8 @@ export function SwapForm() {
         <TokenSelectModal
           finalFocusRef={tokenSelectKey === 'tokenIn' ? finalRefTokenIn : finalRefTokenOut}
           chain={selectedChain}
-          tokens={tokenSelectTokens}
+          tokens={tokens}
+          currentToken={tokenSelectKey === 'tokenIn' ? tokenIn.address : tokenOut.address}
           isOpen={tokenSelectDisclosure.isOpen}
           onOpen={tokenSelectDisclosure.onOpen}
           onClose={tokenSelectDisclosure.onClose}
