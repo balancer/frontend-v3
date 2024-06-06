@@ -24,7 +24,7 @@ const claimAndUnstakeStepId = 'claim-and-unstake'
 export function useClaimAndUnstakeStep(
   pool: Pool,
   refetchPoolBalances: () => void
-): { isLoading: boolean; step: TransactionStep } {
+): { isLoading: boolean; step: TransactionStep; hasUnclaimedBalRewards: boolean } {
   const { userAddress } = useUserAccount()
   const { getTransaction } = useTransactionState()
   const { contracts, chainId } = getNetworkConfig(pool.chain)
@@ -47,11 +47,13 @@ export function useClaimAndUnstakeStep(
     ? selectStakingService(pool.chain, pool.staking?.type)
     : undefined
 
+  const hasUnclaimedBalRewards = balRewards.length > 0
+
   const data = useBuildUnstakeCallData({
     amount: parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS),
     gaugeService: stakingService,
     hasUnclaimedNonBalRewards: nonBalrewards.length > 0,
-    hasUnclaimedBalRewards: balRewards.length > 0,
+    hasUnclaimedBalRewards,
     userAddress,
   })
 
@@ -94,5 +96,6 @@ export function useClaimAndUnstakeStep(
   return {
     isLoading: isLoadingRelayerApproval,
     step,
+    hasUnclaimedBalRewards,
   }
 }
