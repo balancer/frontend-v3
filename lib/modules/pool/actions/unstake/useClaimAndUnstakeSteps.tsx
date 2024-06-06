@@ -1,3 +1,5 @@
+import { useApproveRelayerStep } from '@/lib/modules/relayer/useApproveRelayerStep'
+import { getChainId } from '@/lib/config/app.config'
 import { TransactionStep } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useClaimAndUnstakeStep } from './useClaimAndUnstakeStep'
 import { Pool } from '../../PoolProvider'
@@ -11,26 +13,24 @@ export function useClaimAndUnstakeSteps(
   isLoading: boolean
   steps: TransactionStep[]
 } {
+  const chainId = getChainId(pool.chain)
+
+  const { step: relayerApprovalStep, isLoading: isLoadingRelayerApprovalStep } =
+    useApproveRelayerStep(chainId)
   const { step: minterApprovalStep, isLoading: isLoadingMinterApprovalStep } = useApproveMinterStep(
     pool.chain
   )
 
-  const {
-    step: claimAndUnstakeStep,
-    hasPendingBalRewards,
-    isLoading: isLoadingClaimAndUnstake,
-  } = useClaimAndUnstakeStep(pool, refetchPoolBalances)
+  const { step: claimAndUnstakeStep, isLoading: isLoadingClaimAndUnstakeStep } =
+    useClaimAndUnstakeStep(pool, refetchPoolBalances)
 
   const steps = useMemo((): TransactionStep[] => {
-    const steps = [claimAndUnstakeStep]
-    if (hasPendingBalRewards) {
-      steps.unshift(minterApprovalStep)
-    }
-    return steps
-  }, [claimAndUnstakeStep, minterApprovalStep, hasPendingBalRewards])
+    return [minterApprovalStep, relayerApprovalStep, claimAndUnstakeStep]
+  }, [relayerApprovalStep, claimAndUnstakeStep, minterApprovalStep])
 
   return {
-    isLoading: isLoadingMinterApprovalStep || isLoadingClaimAndUnstake,
+    isLoading:
+      isLoadingMinterApprovalStep || isLoadingRelayerApprovalStep || isLoadingClaimAndUnstakeStep,
     steps,
   }
 }
