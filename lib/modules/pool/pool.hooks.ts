@@ -2,6 +2,9 @@
 import { useRouter } from 'next/navigation'
 import { getPoolPath } from './pool.utils'
 import { Pool } from './PoolProvider'
+import { useParams } from 'next/navigation'
+import { PoolVariant } from '@/lib/modules/pool/pool.types'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
 export function usePoolRedirect(pool: Pool) {
   const router = useRouter()
@@ -19,4 +22,16 @@ export function usePoolRedirect(pool: Pool) {
     }
   }
   return { redirectToPoolPage }
+}
+
+export function usePoolVariant() {
+  const { variant } = useParams<{ variant: PoolVariant }>()
+
+  const { variantConfig } = getProjectConfig()
+  const config = variantConfig[variant]
+
+  return {
+    variant,
+    banners: config.banners,
+  }
 }
