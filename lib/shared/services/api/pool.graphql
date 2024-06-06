@@ -435,6 +435,8 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
           priceRateProviderData {
             address
             name
