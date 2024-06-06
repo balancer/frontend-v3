@@ -12,11 +12,11 @@ export function _usePriceImpact() {
   const [priceImpact, setPriceImpact] = useState<string | number | undefined | null>()
   const [hasToAcceptHighPriceImpact, setHasToAcceptHighPriceImpact] = useState(false)
 
-  function getPriceImpactLevel(priceImpact: number) {
+  function getPriceImpactLevel(priceImpact: number): PriceImpactLevel {
     if (priceImpact === null || priceImpact === undefined) return 'unknown'
-    if (priceImpact < 0.005) return 'low' // 0.5%
-    if (priceImpact < 0.01) return 'medium' // 1%
-    if (priceImpact < 0.05) return 'high' // 5%
+    if (priceImpact < 0.01) return 'low' // 1%
+    if (priceImpact < 0.05) return 'medium' // 5%
+    if (priceImpact < 0.1) return 'high' // 10%
     return 'max'
   }
 
