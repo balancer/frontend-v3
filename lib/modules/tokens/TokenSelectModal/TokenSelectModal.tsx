@@ -17,10 +17,12 @@ import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { TokenSelectPopular } from './TokenSelectPopular'
 import { SearchInput } from '@/lib/shared/components/inputs/SearchInput'
 import { getChainShortName } from '@/lib/config/app.config'
+import { Address } from 'viem'
 
 type Props = {
   tokens: GqlToken[]
   chain: GqlChain
+  currentToken?: Address
   excludeNativeAsset?: boolean
   pinNativeAsset?: boolean
   isOpen: boolean
@@ -33,6 +35,7 @@ type Props = {
 export function TokenSelectModal({
   tokens,
   chain,
+  currentToken,
   excludeNativeAsset = false,
   pinNativeAsset = false,
   isOpen,
@@ -76,6 +79,7 @@ export function TokenSelectModal({
                   chain={chain}
                   excludeNativeAsset={excludeNativeAsset}
                   onTokenSelect={closeOnSelect}
+                  currentToken={currentToken}
                 />
               </Box>
             )}
@@ -87,6 +91,7 @@ export function TokenSelectModal({
                 pinNativeAsset={pinNativeAsset}
                 listHeight={500}
                 searchTerm={searchTerm}
+                currentToken={currentToken}
                 onTokenSelect={closeOnSelect}
               />
             </Box>

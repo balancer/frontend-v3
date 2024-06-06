@@ -1,12 +1,12 @@
 'use client'
 
-import Image, { ImageProps } from 'next/image'
 import { useMemo, useState } from 'react'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { createAvatar } from '@dicebear/core'
 import { identicon } from '@dicebear/collection'
 import { Address } from 'viem'
 import { useTokens } from './TokensProvider'
+import { Image, ImageProps } from '@chakra-ui/react'
 
 type Props = {
   address?: Address | string
@@ -34,6 +34,7 @@ export function TokenIcon({
     if (address && chain) {
       return getToken(address, chain)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, chain])
 
   const fallbackSVG = createAvatar(identicon, {
@@ -59,21 +60,18 @@ export function TokenIcon({
     }
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const iconSrc = useMemo(() => getIconSrc(), [logoURI, token])
 
   return (
     <Image
       src={hasError || !iconSrc ? fallbackSVG.toDataUriSync() : iconSrc}
       alt={alt}
-      width={size}
-      height={size}
-      style={{
-        borderRadius: '100%',
-        border,
-        backgroundColor: 'transparent',
-        width: `${size}px`,
-        height: `${size}px`,
-      }}
+      width={`${size}px`}
+      height={`${size}px`}
+      borderRadius="100%"
+      border={border}
+      backgroundColor="background.level4"
       onError={() => !hasError && setHasError(true)}
       {...rest}
     />

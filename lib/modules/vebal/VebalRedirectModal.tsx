@@ -10,9 +10,26 @@ import {
   ModalFooter,
   Button,
   HStack,
+  Link,
+  useDisclosure,
+  LinkProps,
 } from '@chakra-ui/react'
 import { ArrowUpRight } from 'react-feather'
 import NextLink from 'next/link'
+
+export function VeBalLink({ ...props }: LinkProps) {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  return (
+    <>
+      <Link onClick={onOpen} variant="nav" color="font.primary" {...props}>
+        veBAL
+      </Link>
+
+      <VebalRedirectModal isOpen={isOpen} onClose={onClose} />
+    </>
+  )
+}
 
 export function VebalRedirectModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   return (

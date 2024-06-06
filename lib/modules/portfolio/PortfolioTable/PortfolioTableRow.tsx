@@ -38,7 +38,13 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
             <NetworkIcon chain={pool.chain} size={6} />
           </GridItem>
           <GridItem>
-            <PoolListTokenPills pool={pool} />
+            <PoolListTokenPills
+              pool={pool}
+              h={['32px', '36px']}
+              p={['xxs', 'sm']}
+              pr={[1.5, 'ms']}
+              iconSize={20}
+            />
           </GridItem>
           <GridItem>
             <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
