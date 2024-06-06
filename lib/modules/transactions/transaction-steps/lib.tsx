@@ -35,6 +35,7 @@ export type StepType =
   | 'stakingWithdraw'
   | 'minterApproval'
   | 'claimAndUnstake'
+  | 'unstake'
   | 'claim'
   | 'swap'
 

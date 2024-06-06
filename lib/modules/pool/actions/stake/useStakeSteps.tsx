@@ -6,8 +6,8 @@ import { BPT_DECIMALS } from '../../pool.constants'
 import { useMemo } from 'react'
 import { useStakeStep } from './useStakeStep'
 
-export function useStakeSteps(pool: Pool) {
-  const rawAmount = parseUnits(pool.userBalance?.walletBalance || '0', BPT_DECIMALS)
+export function useStakeSteps(pool: Pool, stakeAmount = pool.userBalance?.walletBalance) {
+  const rawAmount = parseUnits(stakeAmount || '0', BPT_DECIMALS)
 
   const amountToApprove: RawAmount = {
     rawAmount,
