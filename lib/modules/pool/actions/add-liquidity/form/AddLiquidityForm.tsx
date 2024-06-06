@@ -38,7 +38,7 @@ import { usePoolRedirect } from '../../../pool.hooks'
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
 import { PriceImpactError } from '../../../../price-impact/PriceImpactError'
 import AddLiquidityAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AddLiquidityAprTooltip'
-import { cannotCalculatePriceImpactError } from '@/lib/modules/price-impact/priceImpact.utils'
+import { cannotCalculatePriceImpactError } from '@/lib/modules/price-impact/price-impact.utils'
 
 // small wrapper to prevent out of context error
 export function AddLiquidityForm() {

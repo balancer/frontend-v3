@@ -45,7 +45,7 @@ import { useTransactionSteps } from '../transactions/transaction-steps/useTransa
 import { useTokenBalances } from '../tokens/TokenBalancesProvider'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { usePriceImpact } from '../price-impact/PriceImpactProvider'
-import { calcMarketPriceImpact } from '../price-impact/priceImpact.utils'
+import { calcMarketPriceImpact } from '../price-impact/price-impact.utils'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
