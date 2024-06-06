@@ -69,10 +69,6 @@ export function SwapDetails() {
       ? bn(tokenOut.amount).minus(bn(tokenOut.amount).times(_slippageDecimal)).toString()
       : bn(tokenIn.amount).plus(bn(tokenIn.amount).times(_slippageDecimal)).toString()
 
-  useEffect(() => {
-    setPriceImpact(simulationQuery.data?.priceImpact?.priceImpact)
-  }, [simulationQuery.data])
-
   return (
     <VStack spacing="sm" align="start" w="full" fontSize="sm">
       <HStack justify="space-between" w="full">

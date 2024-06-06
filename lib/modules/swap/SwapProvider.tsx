@@ -12,7 +12,7 @@ import { useUserAccount } from '../web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
-import { bn, Numberish } from '@/lib/shared/utils/numbers'
+import { bn } from '@/lib/shared/utils/numbers'
 import { useSimulateSwapQuery } from './queries/useSimulateSwapQuery'
 import { useTokens } from '../tokens/TokensProvider'
 import { useDisclosure } from '@chakra-ui/react'
@@ -44,9 +44,8 @@ import { invert } from 'lodash'
 import { useTransactionSteps } from '../transactions/transaction-steps/useTransactionSteps'
 import { useTokenBalances } from '../tokens/TokenBalancesProvider'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import BigNumber from 'bignumber.js'
-import { log } from '@wagmi/cli/dist/types/logger'
 import { usePriceImpact } from '../price-impact/PriceImpactProvider'
+import { calcMarketPriceImpact } from '../price-impact/priceImpact.utils'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -105,7 +104,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   const { getToken, getTokensByChain, usdValueForToken } = useTokens()
   const { tokens, setTokens } = useTokenBalances()
   const { hasValidationErrors } = useTokenInputsValidation()
-  const { setPriceImpact } = usePriceImpact()
+  const { setPriceImpact, setPriceImpactLevel } = usePriceImpact()
 
   const networkConfig = getNetworkConfig(swapState.selectedChain)
   const previewModalDisclosure = useDisclosure()
@@ -134,19 +133,6 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
 
   const tokenInUsd = usdValueForToken(tokenInInfo, swapState.tokenIn.amount)
   const tokenOutUsd = usdValueForToken(tokenOutInfo, swapState.tokenOut.amount)
-
-  useEffect(() => {
-    function calcPriceImpact(usdIn: string, usdOut: string) {
-      if (bn(usdIn).isZero() || bn(usdOut).isZero()) return '0'
-
-      const priceImpact = bn(1).minus(bn(usdIn).div(usdOut))
-
-      return BigNumber.min(priceImpact, 0).toString()
-    }
-
-    // setPriceImpact(calcPriceImpact(tokenInUsd, tokenOutUsd))
-    console.log('priceImpact', calcPriceImpact(tokenInUsd, tokenOutUsd))
-  }, [tokenInUsd, tokenOutUsd])
 
   const shouldFetchSwap = (state: SwapState, urlTxHash?: Hash) => {
     if (urlTxHash) return false
@@ -473,6 +459,16 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
       previewModalDisclosure.onOpen()
     }
   }, [swapTxHash])
+
+  // Set price impact when value of token in or out changes.
+  useEffect(() => {
+    if (!bn(tokenInUsd).isZero() && !bn(tokenOutUsd).isZero()) {
+      setPriceImpact(calcMarketPriceImpact(tokenInUsd, tokenOutUsd))
+    } else if (simulationQuery.data) {
+      setPriceImpact(undefined)
+      setPriceImpactLevel('unknown')
+    }
+  }, [tokenInUsd, tokenOutUsd])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],

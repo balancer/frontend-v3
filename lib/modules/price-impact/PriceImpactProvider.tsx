@@ -19,6 +19,7 @@ export function _usePriceImpact() {
     if (priceImpact < 0.05) return 'high' // 5%
     return 'max'
   }
+
   function getPriceImpactColor(priceImpactLevel: PriceImpactLevel) {
     switch (priceImpactLevel) {
       case 'unknown':
@@ -91,14 +92,15 @@ export function _usePriceImpact() {
   return {
     priceImpactLevel,
     priceImpactColor,
-    setPriceImpactColor,
     acceptPriceImpactRisk,
+    hasToAcceptHighPriceImpact,
+    priceImpact,
+    setPriceImpactColor,
     setAcceptPriceImpactRisk,
     getPriceImpactColor,
     PriceImpactIcon,
-    hasToAcceptHighPriceImpact,
-    priceImpact,
     setPriceImpact,
+    setPriceImpactLevel,
   }
 }
 
