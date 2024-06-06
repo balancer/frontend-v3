@@ -25,7 +25,6 @@ export type PoolListItem = PoolList[0]
 export enum PoolVariant {
   v2 = 'v2',
   v3 = 'v3',
-  gyro = 'gyro',
   cow = 'cow',
 }
 
