@@ -28,10 +28,10 @@ export function usePoolVariant() {
   const { variant } = useParams<{ variant: PoolVariant }>()
 
   const { variantConfig } = getProjectConfig()
-  const config = variantConfig[variant]
+  const config = variantConfig?.[variant] || {}
 
   return {
     variant,
-    banners: config.banners,
+    ...config,
   }
 }

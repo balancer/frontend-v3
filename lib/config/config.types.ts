@@ -87,5 +87,5 @@ export interface ProjectConfig {
   projectId: 'beets' | 'balancer'
   projectName: string
   supportedNetworks: GqlChain[]
-  variantConfig: VariantConfig
+  variantConfig?: VariantConfig
 }
