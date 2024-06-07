@@ -18,6 +18,7 @@ import { BPT_DECIMALS } from './pool.constants'
 import { isNotMainet } from '../chains/chain.utils'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
 import { PoolIssue } from './alerts/pool-issues/PoolIssue.type'
+import { isNil } from 'lodash'
 
 /**
  * METHODS
@@ -239,6 +240,8 @@ export function shouldBlockAddLiquidity(pool: Pool) {
     if (!token.isAllowed) return true
     if (token.hasNestedPool) return false
     if (token.priceRateProvider === zeroAddress) return false
+    if (isNil(token.priceRateProvider)) return false
+    if (token.priceRateProvider === token.nestedPool?.address) return false
     if (token.priceRateProviderData?.summary !== 'safe') return true
 
     return false
