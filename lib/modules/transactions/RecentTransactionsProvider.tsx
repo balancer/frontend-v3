@@ -42,6 +42,7 @@ export type TrackedTransaction = {
   init?: string
   chain?: GqlChain
   duration?: number | null
+  poolId?: string
 }
 
 type UpdateTrackedTransaction = Pick<
