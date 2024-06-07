@@ -22,10 +22,17 @@ export type PoolList = GetPoolsQuery['pools']
 
 export type PoolListItem = PoolList[0]
 
-export enum PoolVariant {
+export enum BaseVariant {
   v2 = 'v2',
   v3 = 'v3',
 }
+
+// these variants support extra features in project config
+export enum PartnerVariant {
+  cow = 'cow',
+}
+
+export type PoolVariant = BaseVariant | PartnerVariant
 
 export type PoolAction = 'add-liquidity' | 'remove-liquidity' | 'stake' | 'unstake'
 

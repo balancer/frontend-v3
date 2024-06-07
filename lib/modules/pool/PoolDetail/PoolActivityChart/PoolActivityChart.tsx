@@ -11,30 +11,15 @@ import {
   Stack,
   Text,
   VStack,
+  useTheme,
 } from '@chakra-ui/react'
 import { usePoolActivityChart } from './usePoolActivityChart'
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { balTheme } from '@/lib/shared/services/chakra/theme'
 import { FC, PropsWithChildren, useState } from 'react'
 import { ExpandIcon } from '@/lib/shared/components/icons/ExpandIcon'
 import { ElevatedIcon } from '@/lib/shared/components/icons/ElevatedIcon'
 import { motion } from 'framer-motion'
 import { fNum } from '@/lib/shared/utils/numbers'
-
-const legendTabs = [
-  {
-    label: 'Adds',
-    color: `linear-gradient(to bottom, ${balTheme.semanticTokens.colors.chart.pool.scatter.add.from}, ${balTheme.semanticTokens.colors.chart.pool.scatter.add.to})`,
-  },
-  {
-    label: 'Removes',
-    color: `linear-gradient(to bottom, ${balTheme.semanticTokens.colors.chart.pool.scatter.remove.from}, ${balTheme.semanticTokens.colors.chart.pool.scatter.remove.to})`,
-  },
-  {
-    label: 'Swaps',
-    color: `linear-gradient(to bottom, ${balTheme.semanticTokens.colors.chart.pool.scatter.swap.from}, ${balTheme.semanticTokens.colors.chart.pool.scatter.swap.to})`,
-  },
-]
 
 const AnimateOpacity: FC<PropsWithChildren<object>> = ({ children }) => (
   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
@@ -57,6 +42,23 @@ export function PoolActivityChart() {
     getChartTitle,
     getChartDateCaption,
   } = usePoolActivityChart(isExpanded)
+
+  const theme = useTheme()
+
+  const legendTabs = [
+    {
+      label: 'Adds',
+      color: `linear-gradient(to bottom, ${theme.semanticTokens.colors.chart.pool.scatter.add.from}, ${theme.semanticTokens.colors.chart.pool.scatter.add.to})`,
+    },
+    {
+      label: 'Removes',
+      color: `linear-gradient(to bottom, ${theme.semanticTokens.colors.chart.pool.scatter.remove.from}, ${theme.semanticTokens.colors.chart.pool.scatter.remove.to})`,
+    },
+    {
+      label: 'Swaps',
+      color: `linear-gradient(to bottom, ${theme.semanticTokens.colors.chart.pool.scatter.swap.from}, ${theme.semanticTokens.colors.chart.pool.scatter.swap.to})`,
+    },
+  ]
 
   return (
     <Card>

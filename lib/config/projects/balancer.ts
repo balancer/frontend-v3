@@ -1,4 +1,5 @@
 import { ProjectConfig } from '@/lib/config/config.types'
+import { PartnerVariant } from '@/lib/modules/pool/pool.types'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 export const ProjectConfigBalancer: ProjectConfig = {
@@ -16,4 +17,12 @@ export const ProjectConfigBalancer: ProjectConfig = {
     // GqlChain.Mode,
     // GqlChain.Fraxtal,
   ],
+  variantConfig: {
+    [PartnerVariant.cow]: {
+      banners: {
+        headerSrc: '/images/partners/cow-header.svg',
+        footerSrc: '/images/partners/cow-footer.svg',
+      },
+    },
+  },
 }
