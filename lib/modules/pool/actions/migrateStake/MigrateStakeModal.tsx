@@ -16,8 +16,8 @@ import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { usePool } from '../../PoolProvider'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
-import { useRestake } from './RestakeProvider'
-import { RestakePreview } from './RestakePreview'
+import { useMigrateStake } from './MigrateStakeProvider'
+import { MigrateStakePreview } from './MigrateStakePreview'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
 import { usePoolRedirect } from '../../pool.hooks'
@@ -29,7 +29,7 @@ type Props = {
   finalFocusRef?: RefObject<HTMLInputElement>
 }
 
-export function RestakeModal({
+export function MigrateStakeModal({
   isOpen,
   onClose,
   finalFocusRef,
@@ -37,7 +37,7 @@ export function RestakeModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps, restakeTxHash } = useRestake()
+  const { transactionSteps, restakeTxHash } = useMigrateStake()
   const { pool } = usePool()
   const { isMobile } = useBreakpoints()
   const { redirectToPoolPage } = usePoolRedirect(pool)
@@ -56,7 +56,7 @@ export function RestakeModal({
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && <DesktopStepTracker chain={pool.chain} transactionSteps={transactionSteps} />}
         <TransactionModalHeader
-          label="Restake LP tokens"
+          label="Confirm gauge migration"
           txHash={restakeTxHash}
           chain={pool.chain}
         />
@@ -66,7 +66,7 @@ export function RestakeModal({
             {isMobile && (
               <MobileStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
             )}
-            <RestakePreview />
+            <MigrateStakePreview />
           </VStack>
         </ModalBody>
         <ActionModalFooter

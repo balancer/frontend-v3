@@ -13,12 +13,14 @@ import { useMemo } from 'react'
 import { parseUnits } from 'viem'
 import { Pool } from '../../PoolProvider'
 import { BPT_DECIMALS } from '../../pool.constants'
-import { useNonPreferentialStaking } from '../restake/useNonPreferentialStaking'
+import { findNonPreferentialStaking } from '../stake.helpers'
+import { isZero } from '@/lib/shared/utils/numbers'
 
 const unstakeStepId = 'unstake-non-preferential-gauge'
 /*
-  Used in the edge case of a user staked in a non-preferential gauge of a L2 pool.
-  We need to only unstake, but not claim, because claiming would not work in old v1 L2 gauges.
+  Only used in the edge case of a user staked in a non-preferential gauge that is not claimable.
+  In this case we run a single unstake transaction instead of unstake + claim multicall.
+  See isClaimableGauge function for more details about non claimable gauges.
 */
 export function useUnstakeFromNonPreferentialGaugeStep(
   pool: Pool,
@@ -28,11 +30,8 @@ export function useUnstakeFromNonPreferentialGaugeStep(
   const { getTransaction } = useTransactionState()
   const { chainId } = getNetworkConfig(pool.chain)
 
-  const {
-    nonPreferentialGaugeAddress,
-    nonPreferentialStakedBalance,
-    hasNonPreferentialStakedBalance,
-  } = useNonPreferentialStaking(pool)
+  const { nonPreferentialGaugeAddress, nonPreferentialStakedBalance } =
+    findNonPreferentialStaking(pool)
 
   const labels: TransactionLabels = {
     init: 'Unstake from deprecated gauge',
@@ -67,7 +66,8 @@ export function useUnstakeFromNonPreferentialGaugeStep(
 
   const transaction = getTransaction(unstakeStepId)
 
-  const isComplete = () => !hasNonPreferentialStakedBalance
+  // Completed once the non preferential amount was unstaked
+  const isComplete = () => isZero(nonPreferentialStakedBalance)
 
   const step = useMemo(
     (): TransactionStep => ({

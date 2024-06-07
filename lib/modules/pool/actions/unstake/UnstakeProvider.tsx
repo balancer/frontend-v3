@@ -8,12 +8,13 @@ import { LABELS } from '@/lib/shared/labels'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn } from '@/lib/shared/utils/numbers'
-import { Address, HumanAmount } from '@balancer/sdk'
+import { HumanAmount } from '@balancer/sdk'
 import { createContext, PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import { PoolListItem } from '../../pool.types'
-import { Pool, usePool } from '../../PoolProvider'
+import { usePool } from '../../PoolProvider'
 import { useClaimsData } from '../claim/useClaimsData'
 import { useClaimAndUnstakeSteps } from './useClaimAndUnstakeSteps'
+import { getUnstakeQuote } from '../stake.helpers'
 
 export type UseUnstakeResponse = ReturnType<typeof _useUnstake>
 export const UnstakeContext = createContext<UseUnstakeResponse | null>(null)
@@ -98,19 +99,3 @@ export function UnstakeProvider({ children }: PropsWithChildren) {
 }
 
 export const useUnstake = (): UseUnstakeResponse => useMandatoryContext(UnstakeContext, 'Unstake')
-
-type UnstakeQuote = {
-  gaugeAddress: Address
-  amountOut: HumanAmount
-}
-/*
-  //TODO: we will deal with non-preferential gauges in an incoming PR
-  If the user has non-preferential staked balance it returns the non preferential unstake quote
-  If not, it returns the preferential unstake quote
-*/
-function getUnstakeQuote(pool: Pool): UnstakeQuote {
-  return {
-    gaugeAddress: pool.staking?.gauge?.id as Address,
-    amountOut: pool.userBalance?.stakedBalance as HumanAmount,
-  }
-}

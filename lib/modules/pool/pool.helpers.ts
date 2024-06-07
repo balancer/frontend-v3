@@ -15,7 +15,7 @@ import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { Address, getAddress, parseUnits } from 'viem'
 import { BPT_DECIMALS } from './pool.constants'
-import { isNotMainet } from '../chains/chain.utils'
+import { isNotMainnet } from '../chains/chain.utils'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
 
 /**
@@ -199,11 +199,11 @@ export function isNotSupported(pool: Pool) {
  * claiming for v1 gauges on child-chains because they are deprecated and don't
  * conform to the the same interface as v1 gauges on mainnet and v2 gauges on child-chains.
  */
-function isClaimableGauge(
+export function isClaimableGauge(
   gauge: GqlPoolStakingGauge | GqlPoolStakingOtherGauge,
   chain: GqlChain | number
 ): boolean {
-  return !(gauge.version === 1 && isNotMainet(chain))
+  return !(gauge.version === 1 && isNotMainnet(chain))
 }
 
 /**
