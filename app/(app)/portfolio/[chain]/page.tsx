@@ -1,5 +1,6 @@
 'use client'
 import { PoolName } from '@/lib/modules/pool/PoolName'
+import { Pool } from '@/lib/modules/pool/PoolProvider'
 import { ClaimModal } from '@/lib/modules/pool/actions/claim/ClaimModal'
 import { ClaimProvider } from '@/lib/modules/pool/actions/claim/ClaimProvider'
 
@@ -37,7 +38,7 @@ export default function NetworkClaim() {
     poolRewardsMap[pool.id]?.totalFiatClaimBalance?.isEqualTo(0)
   )
 
-  const [modalPools, setModalPools] = useState<PoolListItem[]>([])
+  const [modalPools, setModalPools] = useState<Pool[]>([])
 
   return (
     <TransactionStateProvider>
@@ -45,7 +46,6 @@ export default function NetworkClaim() {
         <HStack pb="3" justifyContent="space-between">
           <HStack spacing="sm">
             <NetworkIcon chain={gqlChain} size={16} />
-
             <Stack spacing="none">
               <Heading size="md">{chainName}</Heading>
               <Text variant="secondary" fontWeight="700">
@@ -53,12 +53,10 @@ export default function NetworkClaim() {
               </Text>
             </Stack>
           </HStack>
-
           <Heading size="lg" variant="special">
             {claimableFiatBalance && toCurrency(claimableFiatBalance)}
           </Heading>
         </HStack>
-
         <Stack py="4" gap="md">
           {isLoadingClaimPoolData ? (
             <Skeleton height="126px" />
@@ -75,7 +73,6 @@ export default function NetworkClaim() {
                     </HStack>
                     <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} size={36} />
                   </VStack>
-
                   <VStack>
                     <Text fontSize="xl" variant="special">
                       {toCurrency(poolRewardsMap[pool.id]?.totalFiatClaimBalance?.toNumber() || 0)}
@@ -100,7 +97,6 @@ export default function NetworkClaim() {
             </Text>
           )}
         </Stack>
-
         {pools && pools.length > 0 && (
           <Button
             onClick={() => {
@@ -114,7 +110,6 @@ export default function NetworkClaim() {
             Claim all
           </Button>
         )}
-
         {modalPools.length > 0 && (
           <ClaimProvider pools={modalPools}>
             <ClaimModal

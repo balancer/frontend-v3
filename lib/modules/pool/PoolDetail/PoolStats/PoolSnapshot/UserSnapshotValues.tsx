@@ -3,7 +3,7 @@
 import React, { memo, useMemo } from 'react'
 import { Button, HStack, Heading, Skeleton, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { TokenIconStack } from '../../../../tokens/TokenIconStack'
-import { GqlToken, GqlPoolMinimal } from '@/lib/shared/services/api/generated/graphql'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { SECONDS_IN_DAY } from '@/test/utils/numbers'
 import { sumBy, isEmpty } from 'lodash'
@@ -27,7 +27,7 @@ const POSSIBLE_STAKED_BALANCE_USD = 10000
 export function UserSnapshotValues() {
   const { pool, chain, isLoading: isLoadingPool, myLiquiditySectionRef } = usePool()
   const { toCurrency } = useCurrency()
-  const { veBalBoostMap } = useVebalBoost([pool as unknown as GqlPoolMinimal])
+  const { veBalBoostMap } = useVebalBoost([pool])
   const { getToken } = useTokens()
 
   const {
