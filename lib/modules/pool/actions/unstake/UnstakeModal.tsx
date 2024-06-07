@@ -37,14 +37,7 @@ export function UnstakeModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const {
-    transactionSteps,
-    unstakeTxHash,
-    quoteAmountOut,
-    quoteAmountOutUsd,
-    quoteRewardAmounts,
-    quoteTotalClaimableUsd,
-  } = useUnstake()
+  const { transactionSteps, unstakeTxHash } = useUnstake()
   const { pool } = usePool()
   const { isMobile } = useBreakpoints()
   const { redirectToPoolPage } = usePoolRedirect(pool)
@@ -73,12 +66,7 @@ export function UnstakeModal({
             {isMobile && (
               <MobileStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
             )}
-            <UnstakePreview
-              stakedBalance={quoteAmountOut}
-              stakedBalanceUsd={quoteAmountOutUsd}
-              rewardAmounts={quoteRewardAmounts}
-              totalClaimableUsd={quoteTotalClaimableUsd}
-            />
+            <UnstakePreview />
           </VStack>
         </ModalBody>
         <ActionModalFooter
