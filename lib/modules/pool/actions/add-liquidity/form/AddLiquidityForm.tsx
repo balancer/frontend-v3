@@ -38,6 +38,7 @@ import { usePoolRedirect } from '../../../pool.hooks'
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
 import { PriceImpactError } from '../../../../price-impact/PriceImpactError'
 import AddLiquidityAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AddLiquidityAprTooltip'
+import { calcPotentialYieldFor } from '../../../pool.utils'
 import { cannotCalculatePriceImpactError } from '@/lib/modules/price-impact/price-impact.utils'
 
 // small wrapper to prevent out of context error
@@ -71,7 +72,7 @@ function AddLiquidityMainForm() {
   } = useAddLiquidity()
 
   const nextBtn = useRef(null)
-  const { pool, calcPotentialYieldFor } = usePool()
+  const { pool } = usePool()
   const { priceImpactColor, priceImpact, setPriceImpact } = usePriceImpact()
   const { toCurrency } = useCurrency()
   const tokenSelectDisclosure = useDisclosure()
@@ -86,7 +87,7 @@ function AddLiquidityMainForm() {
   const priceImpactLabel =
     priceImpact !== undefined && priceImpact !== null ? fNum('priceImpact', priceImpact) : '-'
 
-  const weeklyYield = calcPotentialYieldFor(totalUSDValue)
+  const weeklyYield = calcPotentialYieldFor(pool, totalUSDValue)
 
   const onModalOpen = async () => {
     previewModalDisclosure.onOpen()

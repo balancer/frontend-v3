@@ -37,7 +37,7 @@ export function StakeModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps, stakeTxHash, quoteAmountIn, quoteAmountInUsd } = useStake()
+  const { transactionSteps, stakeTxHash } = useStake()
   const { pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
   const { isMobile } = useBreakpoints()
@@ -62,7 +62,7 @@ export function StakeModal({
             {isMobile && (
               <MobileStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
             )}
-            <StakePreview stakableBalance={quoteAmountIn} stakableBalanceUsd={quoteAmountInUsd} />
+            <StakePreview />
           </VStack>
         </ModalBody>
         <ActionModalFooter
