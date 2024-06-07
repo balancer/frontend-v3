@@ -8,7 +8,6 @@ import {
   ButtonProps,
   Center,
   Checkbox,
-  Divider,
   forwardRef,
   Heading,
   HStack,
@@ -46,8 +45,9 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useDebouncedCallback } from 'use-debounce'
 import { defaultDebounceMs } from '@/lib/shared/utils/queries'
 import { getPoolCategoryLabel } from '../pool.utils'
-import { motion, AnimatePresence, easeOut } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { staggeredFadeInUp } from '@/lib/shared/utils/animations'
+import { getChainShortName } from '@/lib/config/app.config'
 
 const SLIDER_MAX_VALUE = 10000000
 const SLIDER_STEP_SIZE = 100000
@@ -144,7 +144,7 @@ function PoolNetworkFilters() {
             onChange={e => toggleNetwork(e.target.checked, network)}
           >
             <Text fontSize="sm" textTransform="capitalize">
-              {network.toLowerCase()}
+              {getChainShortName(network)}
             </Text>
           </Checkbox>
         </Box>

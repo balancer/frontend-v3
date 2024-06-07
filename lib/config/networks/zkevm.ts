@@ -7,7 +7,7 @@ import { CSP_ISSUE_POOL_IDS } from '@/lib/shared/data/csp-issue'
 const networkConfig: NetworkConfig = {
   chainId: 1101,
   name: 'Polygon zkEVM Mainnet',
-  shortName: 'zkEVM',
+  shortName: 'Polygon zkEVM',
   chain: GqlChain.Zkevm,
   iconPath: '/images/chains/ZKEVM.svg',
   blockExplorer: {
