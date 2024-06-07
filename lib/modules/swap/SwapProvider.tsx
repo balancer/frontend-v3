@@ -44,6 +44,8 @@ import { invert } from 'lodash'
 import { useTransactionSteps } from '../transactions/transaction-steps/useTransactionSteps'
 import { useTokenBalances } from '../tokens/TokenBalancesProvider'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import { usePriceImpact } from '../price-impact/PriceImpactProvider'
+import { calcMarketPriceImpact } from '../price-impact/price-impact.utils'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -99,9 +101,10 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
 
   const { isConnected } = useUserAccount()
   const { chain: walletChain } = useNetworkConfig()
-  const { getToken, getTokensByChain } = useTokens()
+  const { getToken, getTokensByChain, usdValueForToken } = useTokens()
   const { tokens, setTokens } = useTokenBalances()
   const { hasValidationErrors } = useTokenInputsValidation()
+  const { setPriceImpact, setPriceImpactLevel } = usePriceImpact()
 
   const networkConfig = getNetworkConfig(swapState.selectedChain)
   const previewModalDisclosure = useDisclosure()
@@ -127,6 +130,9 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   if ((isTokenInSet && !tokenInInfo) || (isTokenOutSet && !tokenOutInfo)) {
     throw new Error('Token metadata not found')
   }
+
+  const tokenInUsd = usdValueForToken(tokenInInfo, swapState.tokenIn.amount)
+  const tokenOutUsd = usdValueForToken(tokenOutInfo, swapState.tokenOut.amount)
 
   const shouldFetchSwap = (state: SwapState, urlTxHash?: Hash) => {
     if (urlTxHash) return false
@@ -442,15 +448,27 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     if (!swapTxHash) replaceUrlPath()
   }, [swapState.selectedChain, swapState.tokenIn, swapState.tokenOut, swapState.tokenIn.amount])
 
+  // Update selecteable tokens when the chain changes
   useEffect(() => {
     setTokens(getTokensByChain(swapState.selectedChain))
   }, [swapState.selectedChain])
 
+  // Open the preview modal when a swap tx hash is present
   useEffect(() => {
     if (swapTxHash) {
       previewModalDisclosure.onOpen()
     }
   }, [swapTxHash])
+
+  // Set price impact when value of token in or out changes.
+  useEffect(() => {
+    if (!bn(tokenInUsd).isZero() && !bn(tokenOutUsd).isZero()) {
+      setPriceImpact(calcMarketPriceImpact(tokenInUsd, tokenOutUsd))
+    } else if (simulationQuery.data) {
+      setPriceImpact(undefined)
+      setPriceImpactLevel('unknown')
+    }
+  }, [tokenInUsd, tokenOutUsd])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
