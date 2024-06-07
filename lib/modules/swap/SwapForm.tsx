@@ -35,6 +35,7 @@ import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { ErrorAlert } from '@/lib/shared/components/errors/ErrorAlert'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 import { useRouter } from 'next/navigation'
+import { parseSwapError } from './swap.helpers'
 
 export function SwapForm() {
   const router = useRouter()
@@ -187,7 +188,7 @@ export function SwapForm() {
               {simulationQuery.isError && (
                 <ErrorAlert title="Error fetching swap">
                   <Text color="font.maxContrast" variant="secondary">
-                    {simulationQuery.error?.message || 'Unknown error'}
+                    {parseSwapError(simulationQuery.error?.message)}
                   </Text>
                 </ErrorAlert>
               )}
