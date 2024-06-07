@@ -12,13 +12,13 @@ import { PoolHeader } from './PoolHeader/PoolHeader'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { ClaimProvider } from '../actions/claim/ClaimProvider'
-import { usePoolVariant } from '../pool.hooks'
+import { usePartnerVariant } from '../pool.hooks'
 
 export function PoolDetail() {
   const { pool } = usePool()
   const router = useRouter()
   const pathname = usePathname()
-  const { variant, banners } = usePoolVariant()
+  const { variant, banners } = usePartnerVariant()
 
   const userHasLiquidity = bn(pool.userBalance?.totalBalance || '0').gt(0)
 

@@ -2,7 +2,7 @@
 
 import { AddLiquidityProvider } from '@/lib/modules/pool/actions/add-liquidity/AddLiquidityProvider'
 import { RemoveLiquidityProvider } from '@/lib/modules/pool/actions/remove-liquidity/RemoveLiquidityProvider'
-import { PoolVariant } from '@/lib/modules/pool/pool.types'
+import { BaseVariant } from '@/lib/modules/pool/pool.types'
 import { PoolProvider } from '@/lib/modules/pool/PoolProvider'
 import { RelayerSignatureProvider } from '@/lib/modules/relayer/RelayerSignatureProvider'
 import {
@@ -129,7 +129,7 @@ export const buildDefaultPoolTestProvider =
         <PoolProvider
           id={pool.id}
           chain={GqlChain.Mainnet}
-          variant={PoolVariant.v2}
+          variant={BaseVariant.v2}
           data={{
             __typename: 'Query',
             pool,

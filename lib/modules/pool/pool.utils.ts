@@ -10,7 +10,7 @@ import {
   GqlPoolFilterCategory,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
-import { FetchPoolProps, PoolAction, PoolListItem, PoolVariant } from './pool.types'
+import { BaseVariant, FetchPoolProps, PoolAction, PoolListItem, PoolVariant } from './pool.types'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { TokenAmountHumanReadable } from '../tokens/token.types'
@@ -55,7 +55,7 @@ function getVariant(pool: Pool | PoolListItem): PoolVariant {
   // if a pool has certain properties return a custom variant
 
   // default variant
-  return PoolVariant.v2
+  return BaseVariant.v2
 }
 
 /**
@@ -82,7 +82,7 @@ export function getPoolPath(pool: Pool | PoolListItem) {
 export function getPoolActionPath({
   id,
   chain,
-  variant = PoolVariant.v2,
+  variant = BaseVariant.v2,
   action,
 }: FetchPoolProps & { action: PoolAction }) {
   return `/pools/${chainToSlugMap[chain]}/${variant}/${id}/${action}`

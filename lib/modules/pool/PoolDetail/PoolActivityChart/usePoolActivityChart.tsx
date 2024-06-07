@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { differenceInCalendarDays, format } from 'date-fns'
 import { usePool } from '../../PoolProvider'
-import { PoolVariant } from '../../pool.types'
+import { PoolVariant, BaseVariant } from '../../pool.types'
 import {
   GqlChain,
   GqlPoolType,
@@ -246,7 +246,7 @@ export function getPoolActivityTabsList({
   variant: PoolVariant
   poolType: GqlPoolType
 }): PoolActivityChartTypeTab[] {
-  if (poolType === GqlPoolType.LiquidityBootstrapping && variant === PoolVariant.v2) {
+  if (poolType === GqlPoolType.LiquidityBootstrapping && variant === BaseVariant.v2) {
     return [
       {
         value: 'adds',
