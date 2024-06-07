@@ -344,6 +344,15 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     return parseUnits(amount, token.decimals)
   }
 
+  function calcPriceImpact() {
+    if (!bn(tokenInUsd).isZero() && !bn(tokenOutUsd).isZero()) {
+      setPriceImpact(calcMarketPriceImpact(tokenInUsd, tokenOutUsd))
+    } else if (simulationQuery.data) {
+      setPriceImpact(undefined)
+      setPriceImpactLevel('unknown')
+    }
+  }
+
   const wethIsEth =
     isSameAddress(swapState.tokenIn.address, networkConfig.tokens.nativeAsset.address) ||
     isSameAddress(swapState.tokenOut.address, networkConfig.tokens.nativeAsset.address)
@@ -433,7 +442,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     if (wrapper) setTokenOut(wrapper.wrappedToken)
 
     // If the token in address changes we should reset tx step index because
-    // the first approval may be different.
+    // the first approval will be different.
     transactionSteps.setCurrentStepIndex(0)
   }, [swapState.tokenIn.address])
 
@@ -460,15 +469,19 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     }
   }, [swapTxHash])
 
-  // Set price impact when value of token in or out changes.
+  // If token out value changes when swapping exact in, recalculate price impact.
   useEffect(() => {
-    if (!bn(tokenInUsd).isZero() && !bn(tokenOutUsd).isZero()) {
-      setPriceImpact(calcMarketPriceImpact(tokenInUsd, tokenOutUsd))
-    } else if (simulationQuery.data) {
-      setPriceImpact(undefined)
-      setPriceImpactLevel('unknown')
+    if (swapState.swapType === GqlSorSwapType.ExactIn) {
+      calcPriceImpact()
     }
-  }, [tokenInUsd, tokenOutUsd])
+  }, [tokenOutUsd])
+
+  // If token in value changes when swapping exact out, recalculate price impact.
+  useEffect(() => {
+    if (swapState.swapType === GqlSorSwapType.ExactOut) {
+      calcPriceImpact()
+    }
+  }, [tokenInUsd])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
