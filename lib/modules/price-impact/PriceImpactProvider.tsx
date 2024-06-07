@@ -62,8 +62,6 @@ export function _usePriceImpact() {
 
   useEffect(() => {
     if (priceImpact) {
-      console.log('priceImpactProvider', priceImpact)
-
       const priceImpactValue = typeof priceImpact === 'string' ? Number(priceImpact) : priceImpact
       setPriceImpactLevel(getPriceImpactLevel(priceImpactValue))
       // reset accept high price impact when price impact changes
