@@ -1,18 +1,16 @@
 import { useApproveRelayerStep } from '@/lib/modules/relayer/useApproveRelayerStep'
 import { getChainId } from '@/lib/config/app.config'
 import { TransactionStep } from '@/lib/modules/transactions/transaction-steps/lib'
-import { useClaimAndUnstakeStep } from './useClaimAndUnstakeStep'
-import { Pool } from '../../PoolProvider'
+import { UnstakeParams, useClaimAndUnstakeStep } from './useClaimAndUnstakeStep'
+
 import { useMemo } from 'react'
 import { useApproveMinterStep } from '@/lib/modules/staking/gauge/useMinterApprovalStep'
 
-export function useClaimAndUnstakeSteps(
-  pool: Pool,
-  refetchPoolBalances: () => void
-): {
+export function useClaimAndUnstakeSteps(unstakeParams: UnstakeParams): {
   isLoading: boolean
   steps: TransactionStep[]
 } {
+  const pool = unstakeParams.pool
   const chainId = getChainId(pool.chain)
 
   const { step: relayerApprovalStep, isLoading: isLoadingRelayerApprovalStep } =
@@ -22,7 +20,7 @@ export function useClaimAndUnstakeSteps(
   )
 
   const { step: claimAndUnstakeStep, isLoading: isLoadingClaimAndUnstakeStep } =
-    useClaimAndUnstakeStep(pool, refetchPoolBalances)
+    useClaimAndUnstakeStep(unstakeParams)
 
   const steps = useMemo((): TransactionStep[] => {
     return [minterApprovalStep, relayerApprovalStep, claimAndUnstakeStep]

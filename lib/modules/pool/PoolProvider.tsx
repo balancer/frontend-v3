@@ -70,24 +70,13 @@ export function _usePool({
 
   const isLoading = isLoadingOnchainData || isLoadingOnchainUserBalances
 
-  const totalApr =
-    pool.dynamicData.apr.apr.__typename === 'GqlPoolAprRange'
-      ? parseFloat(pool.dynamicData.apr.apr.max)
-      : parseFloat(pool.dynamicData.apr.apr.total)
-
-  function calcPotentialYieldFor(amountUsd: Numberish): string {
-    return bn(amountUsd).times(totalApr).div(52).toString()
-  }
-
   return {
     pool,
     bptPrice,
     isLoading,
     isLoadingOnchainData,
     isLoadingOnchainUserBalances,
-    totalApr,
     myLiquiditySectionRef,
-    calcPotentialYieldFor,
     // TODO: we assume here that we never need to reload the entire pool.
     // this assumption may need to be questioned
     refetch,
