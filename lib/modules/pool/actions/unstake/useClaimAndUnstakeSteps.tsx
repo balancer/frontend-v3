@@ -19,12 +19,19 @@ export function useClaimAndUnstakeSteps(unstakeParams: UnstakeParams): {
     pool.chain
   )
 
-  const { step: claimAndUnstakeStep, isLoading: isLoadingClaimAndUnstakeStep } =
-    useClaimAndUnstakeStep(unstakeParams)
+  const {
+    step: claimAndUnstakeStep,
+    isLoading: isLoadingClaimAndUnstakeStep,
+    hasUnclaimedBalRewards,
+  } = useClaimAndUnstakeStep(unstakeParams)
 
   const steps = useMemo((): TransactionStep[] => {
-    return [minterApprovalStep, relayerApprovalStep, claimAndUnstakeStep]
-  }, [relayerApprovalStep, claimAndUnstakeStep, minterApprovalStep])
+    const steps = [relayerApprovalStep, claimAndUnstakeStep]
+    if (hasUnclaimedBalRewards) {
+      steps.unshift(minterApprovalStep)
+    }
+    return steps
+  }, [relayerApprovalStep, claimAndUnstakeStep, minterApprovalStep, hasUnclaimedBalRewards])
 
   return {
     isLoading:

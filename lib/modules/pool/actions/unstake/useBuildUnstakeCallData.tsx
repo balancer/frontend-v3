@@ -5,16 +5,16 @@ type Params = {
   amount: bigint
   gaugeService: GaugeService | undefined
   gauges: Address[]
-  hasPendingNonBalRewards: boolean
-  hasPendingBalRewards: boolean
+  hasUnclaimedNonBalRewards: boolean
+  hasUnclaimedBalRewards: boolean
   userAddress: Address
 }
 export function useBuildUnstakeCallData({
   amount,
   gaugeService,
   gauges,
-  hasPendingNonBalRewards,
-  hasPendingBalRewards,
+  hasUnclaimedNonBalRewards,
+  hasUnclaimedBalRewards,
   userAddress,
 }: Params): Hex[] {
   if (!amount) return []
@@ -22,8 +22,8 @@ export function useBuildUnstakeCallData({
   if (!userAddress) return []
 
   const inputData = {
-    hasPendingNonBalRewards,
-    hasPendingBalRewards,
+    hasUnclaimedNonBalRewards,
+    hasUnclaimedBalRewards,
     gauges,
     sender: userAddress || '',
     recipient: userAddress || '',

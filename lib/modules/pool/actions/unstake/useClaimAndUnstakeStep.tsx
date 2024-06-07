@@ -36,6 +36,7 @@ export function useClaimAndUnstakeStep({
 }: UnstakeParams): {
   isLoading: boolean
   step: TransactionStep
+  hasUnclaimedBalRewards: boolean
 } {
   const { userAddress } = useUserAccount()
   const { getTransaction } = useTransactionState()
@@ -59,12 +60,14 @@ export function useClaimAndUnstakeStep({
     ? selectStakingService(pool.chain, pool.staking?.type)
     : undefined
 
+  const hasUnclaimedBalRewards = balRewards.length > 0
+
   const data = useBuildUnstakeCallData({
     amount: parseUnits(amountOut, BPT_DECIMALS),
     gaugeService: stakingService,
     gauges: [gaugeAddress],
-    hasPendingNonBalRewards: nonBalrewards.length > 0,
-    hasPendingBalRewards: balRewards.length > 0,
+    hasUnclaimedNonBalRewards: nonBalrewards.length > 0,
+    hasUnclaimedBalRewards,
     userAddress,
   })
 
@@ -107,5 +110,6 @@ export function useClaimAndUnstakeStep({
   return {
     isLoading: isLoadingRelayerApproval,
     step,
+    hasUnclaimedBalRewards,
   }
 }
