@@ -1,7 +1,7 @@
 'use client'
 
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { FeaturedPool } from '../pool/PoolProvider'
+import { FeaturedPool, Pool } from '../pool/PoolProvider'
 import { useRouter } from 'next/navigation'
 import { VStack, Text, Box } from '@chakra-ui/react'
 import {
@@ -80,8 +80,8 @@ export function FeaturePoolCard({
       cardProps={{
         position: 'relative',
         overflow: 'hidden',
-        onClick: event => poolClickHandler(event, pool.id, pool.chain, router),
-        onMouseEnter: event => poolMouseEnterHandler(event, pool.id, pool.chain, router),
+        onClick: event => poolClickHandler(event, pool as Pool, router),
+        onMouseEnter: event => poolMouseEnterHandler(event, pool as Pool, router),
         cursor: 'pointer',
         _hover: { bg: 'background.base' },
       }}

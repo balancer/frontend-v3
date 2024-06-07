@@ -21,8 +21,8 @@ function testBuildUnstakeCallData(amount: bigint, userAddress: Address = default
       amount,
       gaugeService,
       gauges,
-      hasPendingBalRewards: false,
-      hasPendingNonBalRewards: false,
+      hasUnclaimedBalRewards: false,
+      hasUnclaimedNonBalRewards: false,
       userAddress,
     })
   )

@@ -1,6 +1,6 @@
 'use client'
 
-import { VStack } from '@chakra-ui/react'
+import { VStack, Image } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
 import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
 import { PoolInfoLayout } from './PoolInfo/PoolInfoLayout'
@@ -12,11 +12,13 @@ import { PoolHeader } from './PoolHeader/PoolHeader'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { ClaimProvider } from '../actions/claim/ClaimProvider'
+import { usePoolVariant } from '../pool.hooks'
 
 export function PoolDetail() {
   const { pool } = usePool()
   const router = useRouter()
   const pathname = usePathname()
+  const { variant, banners } = usePoolVariant()
 
   const userHasLiquidity = bn(pool.userBalance?.totalBalance || '0').gt(0)
 
@@ -36,12 +38,14 @@ export function PoolDetail() {
       <VStack w="full" spacing="2xl">
         <VStack w="full" spacing="md">
           <PoolHeader />
+          {banners?.headerSrc && <Image src={banners.headerSrc} alt={`${variant}-header`} />}
           <PoolStatsLayout />
         </VStack>
         {userHasLiquidity && <PoolMyLiquidity />}
         <PoolActivityChart />
         <PoolComposition />
         <PoolInfoLayout />
+        {banners?.footerSrc && <Image src={banners.footerSrc} alt={`${variant}-footer`} />}
       </VStack>
     </ClaimProvider>
   )
