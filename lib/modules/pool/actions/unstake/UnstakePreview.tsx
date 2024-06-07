@@ -3,24 +3,11 @@ import { TokenRowGroup } from '@/lib/modules/tokens/TokenRow/TokenRowGroup'
 import { VStack, Card } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { usePool } from '../../PoolProvider'
-import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { useUnstake } from './UnstakeProvider'
 
-type Props = {
-  stakedBalance: string
-  stakedBalanceUsd: string
-  rewardAmounts: HumanTokenAmountWithAddress[]
-  totalClaimableUsd: string
-}
-
-export function UnstakePreview({
-  stakedBalance,
-  stakedBalanceUsd,
-  rewardAmounts,
-  totalClaimableUsd,
-}: Props) {
+export function UnstakePreview() {
   const { pool } = usePool()
-  const { unstakeTxHash } = useUnstake()
+  const { unstakeTxHash, quoteAmountOut, rewardAmounts, totalClaimableUsd } = useUnstake()
 
   return (
     <VStack spacing="sm" w="full">
@@ -28,8 +15,7 @@ export function UnstakePreview({
         <TokenRow
           label={unstakeTxHash ? 'Unstaked LP tokens' : 'Staked LP tokens'}
           address={pool.address as Address}
-          value={stakedBalance}
-          usdValue={stakedBalanceUsd}
+          value={quoteAmountOut}
           chain={pool.chain}
           pool={pool}
           isBpt

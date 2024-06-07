@@ -28,7 +28,7 @@ import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
-import { isUnhandledAddPriceImpactError } from '@/lib/modules/price-impact/priceImpact.helpers'
+import { isUnhandledAddPriceImpactError } from '@/lib/modules/price-impact/price-impact.utils'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -203,6 +203,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     setNeedsToAcceptHighPI,
     setAcceptPoolRisks,
     setWethIsEth,
+    setInitialHumanAmountsIn,
   }
 }
 

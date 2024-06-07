@@ -1,10 +1,10 @@
 import { GaugeService } from '@/lib/shared/services/staking/gauge.service'
 import { Address, Hex } from 'viem'
-import { usePool } from '../../PoolProvider'
 
 type Params = {
   amount: bigint
   gaugeService: GaugeService | undefined
+  gauges: Address[]
   hasUnclaimedNonBalRewards: boolean
   hasUnclaimedBalRewards: boolean
   userAddress: Address
@@ -12,12 +12,11 @@ type Params = {
 export function useBuildUnstakeCallData({
   amount,
   gaugeService,
+  gauges,
   hasUnclaimedNonBalRewards,
   hasUnclaimedBalRewards,
   userAddress,
 }: Params): Hex[] {
-  const { pool } = usePool()
-
   if (!amount) return []
   if (!gaugeService) return []
   if (!userAddress) return []
@@ -25,7 +24,7 @@ export function useBuildUnstakeCallData({
   const inputData = {
     hasUnclaimedNonBalRewards,
     hasUnclaimedBalRewards,
-    gauges: [(pool.staking?.id || '') as Address],
+    gauges,
     sender: userAddress || '',
     recipient: userAddress || '',
     amount,

@@ -3,21 +3,12 @@ import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 import { VStack, Card, HStack, Text } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { usePool } from '../../PoolProvider'
-import { HumanAmount } from '@balancer/sdk'
 import { useStake } from './StakeProvider'
 import StakeAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/StakeAprTooltip'
 
-export function StakePreview({
-  stakableBalance,
-  stakableBalanceUsd,
-}: {
-  stakableBalance: HumanAmount
-  stakableBalanceUsd: HumanAmount
-}) {
-  const { pool, calcPotentialYieldFor } = usePool()
-  const { stakeTxHash } = useStake()
-
-  const weeklyYield = calcPotentialYieldFor(stakableBalanceUsd)
+export function StakePreview() {
+  const { pool } = usePool()
+  const { stakeTxHash, quoteAmountIn, quoteAmountInUsd } = useStake()
 
   return (
     <VStack spacing="sm" w="full">
@@ -32,20 +23,14 @@ export function StakePreview({
             </HStack>
           }
           address={pool.address as Address}
-          value={stakableBalance}
-          usdValue={stakableBalanceUsd}
+          value={quoteAmountIn}
           chain={pool.chain}
           pool={pool}
           isBpt
         />
       </Card>
 
-      <StakeAprTooltip
-        data={pool.dynamicData.apr}
-        weeklyYield={weeklyYield}
-        totalUsdValue={stakableBalanceUsd}
-        pool={pool}
-      />
+      <StakeAprTooltip pool={pool} totalUsdValue={quoteAmountInUsd} />
     </VStack>
   )
 }

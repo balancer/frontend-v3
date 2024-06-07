@@ -38,9 +38,9 @@ export function PoolDetail() {
           <PoolHeader />
           <PoolStatsLayout />
         </VStack>
+        {userHasLiquidity && <PoolMyLiquidity />}
         <PoolActivityChart />
         <PoolComposition />
-        {userHasLiquidity && <PoolMyLiquidity />}
         <PoolInfoLayout />
       </VStack>
     </ClaimProvider>

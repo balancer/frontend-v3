@@ -1,20 +1,24 @@
-import { Box, HStack, Text, Wrap, WrapItem } from '@chakra-ui/react'
+import { Badge, BadgeProps, HStack, Text, Wrap } from '@chakra-ui/react'
 import { GqlChain, GqlPoolTokenDisplay } from '@/lib/shared/services/api/generated/graphql'
 import { PoolListItem } from '../pool.types'
 import { TokenIcon } from '../../tokens/TokenIcon'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { isStableLike, isWeightedLike } from '../pool.helpers'
+import { Pool } from '../PoolProvider'
 
-function WeightedTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; chain: GqlChain }) {
+function WeightedTokenPills({
+  tokens,
+  chain,
+  iconSize = 24,
+  ...badgeProps
+}: { tokens: GqlPoolTokenDisplay[]; chain: GqlChain; iconSize?: number } & BadgeProps) {
   return (
     <Wrap spacing="xs">
       {tokens.map(token => {
         return (
-          <WrapItem
+          <Badge
             key={token.address}
-            p={['xs', 'sm']}
-            pr={[1.5, 'ms']}
-            h={['32px', '36px']}
+            {...badgeProps}
             display="flex"
             alignItems="center"
             bg="background.level2"
@@ -24,7 +28,7 @@ function WeightedTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; 
             shadow="sm"
           >
             <HStack gap={['xs', 'sm']}>
-              <TokenIcon chain={chain} address={token.address} size={20} alt={token.symbol} />
+              <TokenIcon chain={chain} address={token.address} size={iconSize} alt={token.symbol} />
               <HStack gap={['xs', '1.5']}>
                 <Text fontWeight="bold" noOfLines={1}>
                   {token.symbol}
@@ -32,14 +36,19 @@ function WeightedTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; 
                 <Text fontSize="xs">{fNum('weight', token.weight || '')}</Text>
               </HStack>
             </HStack>
-          </WrapItem>
+          </Badge>
         )
       })}
     </Wrap>
   )
 }
 
-function StableTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; chain: GqlChain }) {
+function StableTokenPills({
+  tokens,
+  chain,
+  iconSize = 24,
+  ...badgeProps
+}: { tokens: GqlPoolTokenDisplay[]; chain: GqlChain; iconSize?: number } & BadgeProps) {
   const isFirstToken = (index: number) => index === 0
   const zIndices = Array.from({ length: tokens.length }, (_, index) => index).reverse()
 
@@ -47,11 +56,9 @@ function StableTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; ch
     <HStack spacing={0}>
       {tokens.map((token, i) => {
         return (
-          <Box
+          <Badge
             key={token.address}
-            h={['32px', '36px']}
-            p={['xxs', 'sm']}
-            pr={[1.5, 'ms']}
+            {...badgeProps}
             display="flex"
             alignItems="center"
             pl={[isFirstToken(i) ? 1 : 12, isFirstToken(i) ? 2 : 12]}
@@ -64,12 +71,12 @@ function StableTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; ch
             zIndex={zIndices[i]}
           >
             <HStack gap={['xs', '1.5']}>
-              <TokenIcon chain={chain} address={token.address} size={20} alt={token.symbol} />
+              <TokenIcon chain={chain} address={token.address} size={iconSize} alt={token.symbol} />
               <Text fontWeight="bold" noOfLines={1} maxW="20">
                 {token.symbol}
               </Text>
             </HStack>
-          </Box>
+          </Badge>
         )
       })}
     </HStack>
@@ -77,20 +84,42 @@ function StableTokenPills({ tokens, chain }: { tokens: GqlPoolTokenDisplay[]; ch
 }
 
 type Props = {
-  pool: PoolListItem
+  pool: Pool | PoolListItem
+  iconSize?: number
 }
 
-export function PoolListTokenPills({ pool }: Props) {
+export function PoolListTokenPills({ pool, iconSize = 24, ...badgeProps }: Props & BadgeProps) {
   const shouldUseWeightedPills = isWeightedLike(pool.type)
   const shouldUseStablePills = isStableLike(pool.type)
 
-  if (shouldUseWeightedPills) {
-    return <WeightedTokenPills tokens={pool.displayTokens} chain={pool.chain} />
-  }
-
   if (shouldUseStablePills) {
-    return <StableTokenPills tokens={pool.displayTokens} chain={pool.chain} />
+    return (
+      <StableTokenPills
+        tokens={pool.displayTokens}
+        chain={pool.chain}
+        iconSize={iconSize}
+        {...badgeProps}
+      />
+    )
   }
 
-  return <WeightedTokenPills tokens={pool.displayTokens} chain={pool.chain} />
+  if (shouldUseWeightedPills) {
+    return (
+      <WeightedTokenPills
+        tokens={pool.displayTokens}
+        chain={pool.chain}
+        iconSize={iconSize}
+        {...badgeProps}
+      />
+    )
+  }
+
+  return (
+    <WeightedTokenPills
+      tokens={pool.displayTokens}
+      chain={pool.chain}
+      iconSize={iconSize}
+      {...badgeProps}
+    />
+  )
 }
