@@ -24,7 +24,7 @@ export function usePoolRedirect(pool: Pool) {
   return { redirectToPoolPage }
 }
 
-export function usePartnerVariant() {
+export function usePoolVariant() {
   const { variant } = useParams<{ variant: PartnerVariant }>()
 
   const { variantConfig } = getProjectConfig()
