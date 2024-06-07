@@ -90,7 +90,7 @@ export function useFormattedPoolAttributes() {
         value: format(createTime * 1000, 'dd MMMM yyyy'),
       },
       {
-        title: 'BPT price',
+        title: 'LP token price',
         value: toCurrency(bptUsdValue(pool, '1')),
       },
     ]
