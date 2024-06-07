@@ -52,11 +52,6 @@ const rowProps = {
 
 export function PortfolioTable() {
   const { portfolioData, isLoadingPortfolio } = usePortfolio()
-  // To-Do: fix pool type
-  const { data: poolsWithOnchainUserBalances } = useOnchainUserPoolBalances(
-    portfolioData.pools as unknown as Pool[]
-  )
-
   const { veBalBoostMap } = useVebalBoost(portfolioData.stakedPools)
 
   const [currentSortingObj, setCurrentSortingObj] = useState<PortfolioSortingData>({
@@ -66,7 +61,7 @@ export function PortfolioTable() {
 
   const sortedPools = useMemo(() => {
     if (!portfolioData?.pools) return []
-    const arr = [...poolsWithOnchainUserBalances]
+    const arr = [...portfolioData.pools]
 
     return arr.sort((a, b) => {
       if (currentSortingObj.id === 'staking') {
@@ -105,7 +100,7 @@ export function PortfolioTable() {
 
       return 0
     })
-  }, [currentSortingObj, poolsWithOnchainUserBalances, portfolioData?.pools, veBalBoostMap])
+  }, [currentSortingObj, portfolioData?.pools, veBalBoostMap])
 
   return (
     <FadeInOnView>

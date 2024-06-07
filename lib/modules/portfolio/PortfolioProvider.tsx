@@ -2,7 +2,6 @@
 
 import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery as useApolloQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { PoolListItem } from '../pool/pool.types'
 import { createContext, useMemo } from 'react'
 import { useProtocolRewards } from './PortfolioClaim/useProtocolRewards'
 import { ClaimableReward, useClaimableBalances } from './PortfolioClaim/useClaimableBalances'
@@ -12,13 +11,17 @@ import BigNumber from 'bignumber.js'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useUserAccount } from '../web3/UserAccountProvider'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import { useOnchainUserPoolBalances } from '../pool/queries/useOnchainUserPoolBalances'
+import { Pool } from '../pool/PoolProvider'
+import { useRecentTransactions } from '../transactions/RecentTransactionsProvider'
+import { millisecondsToSeconds } from 'date-fns'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
   result: bigint
 }
 
-export interface PoolRewardsData extends PoolListItem {
+export type PoolRewardsData = Pool & {
   balReward?: BalTokenReward
   claimableRewards?: ClaimableReward[]
   totalFiatClaimBalance?: BigNumber
@@ -30,6 +33,14 @@ export type UsePortfolio = ReturnType<typeof _usePortfolio>
 
 function _usePortfolio() {
   const { userAddress, isConnected } = useUserAccount()
+  const { transactions } = useRecentTransactions()
+
+  const now = millisecondsToSeconds(new Date().getTime())
+  const transactionsWithPoolIds = Object.values(transactions).filter(
+    tx => tx.timestamp > now - 3000 && tx.poolId
+  )
+
+  const idIn = transactionsWithPoolIds.map(tx => tx.poolId)
 
   const { data, loading } = useApolloQuery(GetPoolsDocument, {
     variables: {
@@ -43,6 +54,9 @@ function _usePortfolio() {
     skip: !isConnected || !userAddress,
   })
 
+  const { data: poolWithOnchainUserBalances, isLoading: isLoadingOnchainUserBalances } =
+    useOnchainUserPoolBalances((data?.pools as unknown as Pool[]) || [])
+
   const portfolioData = useMemo(() => {
     if (!isConnected || !userAddress) {
       return {
@@ -53,11 +67,11 @@ function _usePortfolio() {
       }
     }
 
-    const stakedPools: PoolListItem[] = []
-    const unstakedPools: PoolListItem[] = []
+    const stakedPools: Pool[] = []
+    const unstakedPools: Pool[] = []
     let userTotalBalance = bn(0)
 
-    data?.pools.forEach(pool => {
+    poolWithOnchainUserBalances.forEach(pool => {
       const stakedBalance = bn(pool.userBalance?.stakedBalance || 0)
       const poolTotalBalance = bn(pool.userBalance?.totalBalance || 0)
       const unstakedBalance = poolTotalBalance.minus(stakedBalance)
@@ -75,12 +89,12 @@ function _usePortfolio() {
     })
 
     return {
-      pools: data?.pools || [],
+      pools: poolWithOnchainUserBalances || [],
       stakedPools,
       unstakedPools,
       userTotalBalance,
     }
-  }, [data?.pools, isConnected, userAddress])
+  }, [poolWithOnchainUserBalances, isConnected, userAddress])
 
   // Bal token rewards
   const { balRewardsData, isLoadingBalRewards } = useBalTokenRewards(
@@ -129,7 +143,7 @@ function _usePortfolio() {
   }, [portfolioData.stakedPools, poolRewardsMap])
 
   const poolsByChainMap = useMemo(() => {
-    return portfolioData.stakedPools?.reduce((acc: Record<string, PoolListItem[]>, pool) => {
+    return portfolioData.stakedPools?.reduce((acc: Record<string, Pool[]>, pool) => {
       if (!acc[pool.chain]) acc[pool.chain] = []
       acc[pool.chain].push(pool)
       return acc
@@ -178,7 +192,7 @@ function _usePortfolio() {
     isLoadingBalRewards,
     isLoadingProtocolRewards,
     isLoadingClaimableRewards,
-    isLoadingPortfolio: loading,
+    isLoadingPortfolio: loading || isLoadingOnchainUserBalances,
     isLoadingClaimPoolData: isLoadingBalRewards || isLoadingClaimableRewards,
   }
 }
