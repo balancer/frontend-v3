@@ -29,9 +29,6 @@ export function _useStake() {
   const [quoteAmountIn, setQuoteAmountIn] = useState<HumanAmount>('0')
   const [quoteAmountInUsd, setQuoteAmountInUsd] = useState<HumanAmount>('0')
 
-  const stakableBalance = (pool.userBalance?.walletBalance || '0') as HumanAmount
-  const stakableBalanceUsd = (pool.userBalance?.walletBalanceUsd || '0') as HumanAmount
-
   const tokenAllowances = useTokenAllowances({
     chainId,
     userAddress,
@@ -51,12 +48,12 @@ export function _useStake() {
    * Side-effects
    */
   useEffect(() => {
-    const newBalance = (pool.userBalance?.walletBalance || '0') as HumanAmount
-    const newBalanceUsd = (pool.userBalance?.walletBalanceUsd || '0') as HumanAmount
+    const stakableBalance = (pool.userBalance?.walletBalance || '0') as HumanAmount
+    const stakableBalanceUsd = (pool.userBalance?.walletBalanceUsd || '0') as HumanAmount
 
-    if (bn(newBalance).gt(0)) {
-      setQuoteAmountIn(newBalance)
-      setQuoteAmountInUsd(newBalanceUsd)
+    if (bn(stakableBalance).gt(0)) {
+      setQuoteAmountIn(stakableBalance)
+      setQuoteAmountInUsd(stakableBalanceUsd)
     }
   }, [pool.userBalance?.walletBalance, isLoadingOnchainUserBalances])
 
@@ -66,8 +63,6 @@ export function _useStake() {
     disabledReason,
     quoteAmountIn,
     quoteAmountInUsd,
-    stakableBalance,
-    stakableBalanceUsd,
     tokenAllowances,
     stakeTxHash,
     isLoading: isLoadingSteps,

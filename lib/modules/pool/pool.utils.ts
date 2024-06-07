@@ -11,11 +11,12 @@ import {
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { FetchPoolProps, PoolAction, PoolVariant } from './pool.types'
-import { bn, fNum } from '@/lib/shared/utils/numbers'
+import { Numberish, bn, fNum } from '@/lib/shared/utils/numbers'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { TokenAmountHumanReadable } from '../tokens/token.types'
 import { formatUnits, parseUnits } from 'viem'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
+import { Pool } from './PoolProvider'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -245,4 +246,13 @@ export function getPoolsByGaugesMap(pools: ClaimablePool[]) {
 
     return acc
   }, {})
+}
+
+export function calcPotentialYieldFor(pool: Pool, amountUsd: Numberish): string {
+  const totalApr =
+    pool.dynamicData.apr.apr.__typename === 'GqlPoolAprRange'
+      ? parseFloat(pool.dynamicData.apr.apr.max)
+      : parseFloat(pool.dynamicData.apr.apr.total)
+
+  return bn(amountUsd).times(totalApr).div(52).toString()
 }
