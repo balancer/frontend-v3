@@ -68,6 +68,8 @@ export function SwapForm() {
   const finalRefTokenOut = useRef(null)
   const isMounted = useIsMounted()
 
+  const isLoadingSwaps = simulationQuery.isLoading
+
   function copyDeepLink() {
     navigator.clipboard.writeText(window.location.href)
     setCopiedDeepLink(true)
@@ -202,7 +204,8 @@ export function SwapForm() {
                 w="full"
                 size="lg"
                 isDisabled={isDisabled || !isMounted}
-                isLoading={simulationQuery.isLoading || !isMounted}
+                isLoading={isLoadingSwaps || !isMounted}
+                loadingText={isLoadingSwaps ? 'Fetching swap...' : undefined}
                 onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
               >
                 Next
