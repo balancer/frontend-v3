@@ -2,6 +2,7 @@
 /* eslint-disable max-len */
 import { Link } from '@chakra-ui/react'
 import { PoolIssue } from './PoolIssue.type'
+import { ReactNode } from 'react'
 
 const vulnerabilityTitle =
   'A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately.'
@@ -14,7 +15,7 @@ const vulnerabilityDisclosure = `This pool is affected by a disclosed vulnerabil
 const vulnerabilityDisclosureLink = 'https://forum.balancer.fi/t/vulnerability-disclosure/3179'
 
 type VunerabilityData = {
-  jsxTitle: JSX.Element
+  jsxTitle: ReactNode
   learnMoreLink?: string
 }
 

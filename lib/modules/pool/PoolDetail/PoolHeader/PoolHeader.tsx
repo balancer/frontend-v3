@@ -2,33 +2,29 @@ import { Stack, Button } from '@chakra-ui/react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import PoolMetaBadges from './PoolMetaBadges'
-import { checkIfHasIssuesWithAddLiquidity } from '../../alerts/pool-issues/PoolIssue.rules'
+
 import { usePool } from '../../PoolProvider'
+import { shouldBlockAddLiquidity } from '../../pool.helpers'
 
 export function PoolHeader() {
   const pathname = usePathname()
   const { pool } = usePool()
 
-  const isAddLiquidityBlocked = checkIfHasIssuesWithAddLiquidity(pool)
+  const isAddLiquidityBlocked = shouldBlockAddLiquidity(pool)
 
   return (
     <Stack w="full" justify="space-between" direction={{ base: 'column', sm: 'row' }}>
       <PoolMetaBadges />
-      {isAddLiquidityBlocked ? (
-        <Button isDisabled={true} variant="primary" size="lg">
-          Add liquidity
-        </Button>
-      ) : (
-        <Button
-          as={Link}
-          href={`${pathname}/add-liquidity`}
-          variant="primary"
-          prefetch={true}
-          size="lg"
-        >
-          Add liquidity
-        </Button>
-      )}
+      <Button
+        as={Link}
+        href={isAddLiquidityBlocked ? '' : `${pathname}/add-liquidity`}
+        variant="primary"
+        prefetch={true}
+        size="lg"
+        isDisabled={isAddLiquidityBlocked}
+      >
+        Add liquidity
+      </Button>
     </Stack>
   )
 }

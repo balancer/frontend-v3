@@ -17,8 +17,8 @@ import {
   PoolStateWithBalances,
 } from '@balancer/sdk'
 import { Hex, formatUnits, parseUnits, Address } from 'viem'
-import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
-import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
+
+import { hasNestedPools, isAffectedByCspIssue, isComposableStableV1, isGyro } from '../pool.helpers'
 import { Pool } from '../PoolProvider'
 import {
   isNativeAsset,

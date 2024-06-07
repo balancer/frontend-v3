@@ -1,15 +1,25 @@
 'use client'
 
-import { Alert, AlertStatus, AlertTitle, Box, IconButton, Link, Stack } from '@chakra-ui/react'
+import {
+  Alert,
+  AlertStatus,
+  AlertTitle,
+  Box,
+  HStack,
+  IconButton,
+  Link,
+  Stack,
+} from '@chakra-ui/react'
 import { usePool } from '../PoolProvider'
-import { PoolAlert, getNetworkPoolAlerts, getTokenPoolAlerts } from './pool-issues/PoolIssue.rules'
-import { WarningIcon } from '@/lib/shared/components/icons/WarningIcon'
+
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
-import { ArrowForwardIcon, CloseIcon } from '@chakra-ui/icons'
-import { MouseEvent, useCallback, useEffect, useState } from 'react'
+
+import { MouseEvent, ReactNode, useCallback } from 'react'
+import { AlertTriangle, ArrowRight, XCircle } from 'react-feather'
+import { usePoolAlerts } from './usePoolAlerts'
 
 export type PoolAlertProps = {
-  title: JSX.Element | string
+  title: ReactNode | string
   learnMoreLink?: string
   status: AlertStatus
   isSoftWarning: boolean
@@ -18,15 +28,7 @@ export type PoolAlertProps = {
 
 export function PoolAlerts() {
   const { pool } = usePool()
-  const [poolAlerts, setPoolAlerts] = useState<PoolAlert[]>([])
-
-  useEffect(() => {
-    const networkPoolAlerts = getNetworkPoolAlerts(pool)
-    const tokenPoolAlerts = getTokenPoolAlerts(pool)
-
-    setPoolAlerts([...networkPoolAlerts, ...tokenPoolAlerts])
-  }, [])
-
+  const { poolAlerts, setPoolAlerts } = usePoolAlerts(pool)
   if (poolAlerts.length === 0) return null
 
   return (
@@ -39,7 +41,7 @@ export function PoolAlerts() {
             setPoolAlerts(poolAlerts.filter(a => a.identifier !== alert.identifier))
           }}
           {...alert}
-        ></PoolAlertDisplay>
+        />
       ))}
     </Stack>
   )
@@ -55,7 +57,7 @@ export function PoolAlertDisplay({
   const colorMode = useThemeColorMode()
 
   const tryWrapInLink = useCallback(
-    (children: JSX.Element) => {
+    (children: ReactNode) => {
       if (!learnMoreLink) return children
 
       return (
@@ -75,6 +77,8 @@ export function PoolAlertDisplay({
 
   return tryWrapInLink(
     <Alert
+      display="flex"
+      justifyContent="space-between"
       bg={colorMode === 'dark' ? 'orange.300' : 'orange.200'}
       status={status}
       rounded="lg"
@@ -82,48 +86,45 @@ export function PoolAlertDisplay({
       alignItems="center"
       role="group"
     >
-      <Box flex="0 0 auto">
-        <WarningIcon width="24px" height="24px" />
-      </Box>
-      <AlertTitle
-        ml={3}
-        sx={{ a: { textDecoration: 'underline' } }}
-        fontWeight={500}
-        color="font.dark"
-        mr={isSoftWarning ? 7 : 'none'}
-      >
-        {title}
+      <HStack>
+        <Box flex="0 0 auto">
+          <AlertTriangle width="24px" height="24px" />
+        </Box>
+        <AlertTitle
+          gap={1}
+          display="flex"
+          alignItems="center"
+          ml="md"
+          sx={{ a: { textDecoration: 'underline' } }}
+          fontWeight={500}
+          color="font.dark"
+          mr={isSoftWarning ? 7 : 'none'}
+        >
+          {title}
 
-        {learnMoreLink && (
-          <>
-            {' '}
-            <Link
-              color="font.dark"
-              sx={{ textDecoration: 'underline' }}
-              _groupHover={{ color: 'font.maxContrast' }}
-            >
-              Learn more
-              <ArrowForwardIcon />
-            </Link>
-          </>
-        )}
-      </AlertTitle>
+          {learnMoreLink && (
+            <>
+              <Link
+                display="flex"
+                color="font.dark"
+                sx={{ textDecoration: 'underline' }}
+                _groupHover={{ color: 'font.maxContrast' }}
+              >
+                Learn more
+                <ArrowRight width="16px" />
+              </Link>
+            </>
+          )}
+        </AlertTitle>
+      </HStack>
+
       {isSoftWarning && (
         <IconButton
+          variant="ghost"
+          icon={<XCircle />}
           onClick={onClose}
-          position="absolute"
-          right="12px"
-          top="14px"
-          width="24px !important"
-          height="24px !important"
-          minWidth={0}
-          padding={0}
-          icon={<CloseIcon width="10px" height="10px" />}
-          aria-label="Close button"
-          bg="white"
-          color="black"
-          borderRadius="full"
-          _hover={{ bg: 'gray.200' }}
+          width="24x"
+          aria-label="Close"
         />
       )}
     </Alert>

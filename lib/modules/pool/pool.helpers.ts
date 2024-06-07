@@ -1,4 +1,4 @@
-import { getChainId } from '@/lib/config/app.config'
+import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { getBlockExplorerAddressUrl } from '@/lib/shared/hooks/useBlockExplorer'
 import { dateToUnixTimestamp } from '@/lib/shared/hooks/useTime'
 import {
@@ -13,10 +13,11 @@ import {
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
-import { Address, getAddress, parseUnits } from 'viem'
+import { Address, getAddress, parseUnits, zeroAddress } from 'viem'
 import { BPT_DECIMALS } from './pool.constants'
 import { isNotMainet } from '../chains/chain.utils'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
+import { PoolIssue } from './alerts/pool-issues/PoolIssue.type'
 
 /**
  * METHODS
@@ -228,4 +229,28 @@ export function allClaimableGaugeAddressesFor(pool: ClaimablePool) {
   addresses.push(...otherClaimableGaugeAddresses)
 
   return addresses
+}
+
+/**
+ * Returns true if we should block the user from adding liquidity to the pool.
+ */
+export function shouldBlockAddLiquidity(pool: Pool) {
+  return pool.poolTokens.some(token => {
+    if (!token.isAllowed) return true
+    if (token.hasNestedPool) return false
+    if (token.priceRateProvider === zeroAddress) return false
+    if (token.priceRateProviderData?.summary !== 'safe') return true
+
+    return false
+  })
+}
+
+export function isAffectedByCspIssue(pool: Pool) {
+  return isAffectedBy(pool, PoolIssue.CspPoolVulnWarning)
+}
+
+function isAffectedBy(pool: Pool, poolIssue: PoolIssue) {
+  const issues = getNetworkConfig(getChainId(pool.chain)).pools.issues
+  const affectedPoolIds = issues[poolIssue] ?? []
+  return affectedPoolIds.includes(pool.id.toLowerCase())
 }
