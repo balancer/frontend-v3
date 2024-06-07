@@ -15,6 +15,7 @@ import { useOnchainUserPoolBalances } from '../pool/queries/useOnchainUserPoolBa
 import { Pool } from '../pool/PoolProvider'
 import { useRecentTransactions } from '../transactions/RecentTransactionsProvider'
 import { millisecondsToSeconds } from 'date-fns'
+import { uniqBy } from 'lodash'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
@@ -36,13 +37,34 @@ function _usePortfolio() {
   const { transactions } = useRecentTransactions()
 
   const now = millisecondsToSeconds(new Date().getTime())
+
+  // filter out recent transactions that are more than 500 seconds old
   const transactionsWithPoolIds = Object.values(transactions).filter(
-    tx => tx.timestamp > now - 3000 && tx.poolId
+    tx => tx.timestamp > now - 500 && tx.poolId
   )
 
   const idIn = transactionsWithPoolIds.map(tx => tx.poolId)
 
-  const { data, loading } = useApolloQuery(GetPoolsDocument, {
+  console.log({ idIn })
+
+  // fetch pools with a user balance
+  const { data: poolsUserAddressData, loading: isLoadingPoolsUserAddress } = useApolloQuery(
+    GetPoolsDocument,
+    {
+      variables: {
+        where: {
+          userAddress,
+          chainIn: getProjectConfig().supportedNetworks,
+        },
+      },
+      fetchPolicy: 'no-cache',
+      notifyOnNetworkStatusChange: true,
+      skip: !isConnected || !userAddress,
+    }
+  )
+
+  // fetch pools with an id in recent transactions
+  const { data: poolsIdData, loading: isLoadingPoolsId } = useApolloQuery(GetPoolsDocument, {
     variables: {
       where: {
         userAddress,
@@ -51,11 +73,16 @@ function _usePortfolio() {
     },
     fetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
-    skip: !isConnected || !userAddress,
+    skip: !isConnected || idIn.length === 0,
   })
 
+  const poolsData = uniqBy(
+    [...(poolsUserAddressData?.pools || []), ...(poolsIdData?.pools || [])],
+    'id'
+  )
+
   const { data: poolWithOnchainUserBalances, isLoading: isLoadingOnchainUserBalances } =
-    useOnchainUserPoolBalances((data?.pools as unknown as Pool[]) || [])
+    useOnchainUserPoolBalances((poolsData as unknown as Pool[]) || [])
 
   const portfolioData = useMemo(() => {
     if (!isConnected || !userAddress) {
@@ -192,7 +219,8 @@ function _usePortfolio() {
     isLoadingBalRewards,
     isLoadingProtocolRewards,
     isLoadingClaimableRewards,
-    isLoadingPortfolio: loading || isLoadingOnchainUserBalances,
+    isLoadingPortfolio:
+      isLoadingPoolsUserAddress || isLoadingOnchainUserBalances || isLoadingPoolsId,
     isLoadingClaimPoolData: isLoadingBalRewards || isLoadingClaimableRewards,
   }
 }
