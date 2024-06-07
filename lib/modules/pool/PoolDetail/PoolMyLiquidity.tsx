@@ -20,6 +20,7 @@ import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import StakedBalanceDistributionChart from './PoolWeightCharts/StakedBalanceDistributionChart'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { hasNonPreferentialStakedBalance } from '../actions/stake.helpers'
 
 const TABS = [
   {
@@ -115,7 +116,9 @@ export default function PoolMyLiquidity() {
     return poolTokenBalancesForTab[tokenAddress].amount
   }
 
-  const canStake = pool.staking
+  const hasNonPreferentialBalance = hasNonPreferentialStakedBalance(pool)
+  const canStake = pool.staking && !hasNonPreferentialBalance
+  const shouldMigrateStake = hasNonPreferentialBalance
   const hasUnstakedBalance = bn(pool.userBalance?.walletBalance || '0').gt(0)
   const hasStakedBalance = bn(pool.userBalance?.stakedBalance || '0').gt(0)
   const aprLabel = getTotalAprLabel(pool.dynamicData?.apr.items)
@@ -219,14 +222,24 @@ export default function PoolMyLiquidity() {
                     >
                       Stake
                     </Button>
-                    <Button
-                      onClick={() => router.push(`${pathname}/unstake`)}
-                      variant={hasStakedBalance ? 'tertiary' : 'disabled'}
-                      isDisabled={!hasStakedBalance}
-                      flex="1"
-                    >
-                      Unstake
-                    </Button>
+                    {shouldMigrateStake ? (
+                      <Button
+                        onClick={() => router.push(`${pathname}/migrate-stake`)}
+                        variant="primary"
+                        flex="1"
+                      >
+                        Migrate stake
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => router.push(`${pathname}/unstake`)}
+                        variant={hasStakedBalance ? 'tertiary' : 'disabled'}
+                        isDisabled={!hasStakedBalance}
+                        flex="1"
+                      >
+                        Unstake
+                      </Button>
+                    )}
                   </HStack>
                 </VStack>
               </Card>

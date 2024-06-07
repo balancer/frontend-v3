@@ -31,7 +31,7 @@ export function getUnstakeQuote(pool: Pool): UnstakeQuote {
   }
 }
 
-function hasNonPreferentialStakedBalance(pool: Pool) {
+export function hasNonPreferentialStakedBalance(pool: Pool) {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
   const nonPreferentialStakedBalance = bn(pool.userBalance?.nonPreferentialStakedBalance || '0')
