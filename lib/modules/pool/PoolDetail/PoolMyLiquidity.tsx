@@ -4,7 +4,18 @@ import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { Box, Button, Card, HStack, Heading, Skeleton, Stack, Text, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Card,
+  HStack,
+  Heading,
+  Skeleton,
+  Stack,
+  Text,
+  Tooltip,
+  VStack,
+} from '@chakra-ui/react'
 import React, { useMemo, useState } from 'react'
 import { usePool } from '../PoolProvider'
 import { Address, parseUnits } from 'viem'
@@ -20,7 +31,8 @@ import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import StakedBalanceDistributionChart from './PoolWeightCharts/StakedBalanceDistributionChart'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { hasNonPreferentialStakedBalance } from '../actions/stake.helpers'
+import { hasNonPreferentialStakedBalance, migrateStakeTooltipLabel } from '../actions/stake.helpers'
+import { InfoOutlineIcon } from '@chakra-ui/icons'
 
 const TABS = [
   {
@@ -223,13 +235,16 @@ export default function PoolMyLiquidity() {
                       Stake
                     </Button>
                     {shouldMigrateStake ? (
-                      <Button
-                        onClick={() => router.push(`${pathname}/migrate-stake`)}
-                        variant="primary"
-                        flex="1"
-                      >
-                        Migrate stake
-                      </Button>
+                      <Tooltip label={migrateStakeTooltipLabel}>
+                        <Button
+                          onClick={() => router.push(`${pathname}/migrate-stake`)}
+                          variant="secondary"
+                          rightIcon={<InfoOutlineIcon fontSize="sm" />}
+                          flex="1"
+                        >
+                          Migrate stake
+                        </Button>
+                      </Tooltip>
                     ) : (
                       <Button
                         onClick={() => router.push(`${pathname}/unstake`)}

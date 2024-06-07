@@ -15,6 +15,7 @@ import { useMigrateStake } from './MigrateStakeProvider'
 import { MigrateStakePreview } from './MigrateStakePreview'
 import { MigrateStakeModal } from './MigrateStakeModal'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { migrateStakeTooltipLabel } from '../stake.helpers'
 
 export function MigrateStakeForm() {
   const nextBtn = useRef(null)
@@ -22,17 +23,12 @@ export function MigrateStakeForm() {
 
   const { isDisabled, disabledReason, isLoading } = useMigrateStake()
 
-  // eslint-disable-next-line max-len
-  const tooltipLabel = `veBAL gauges are the mechanism to distribute BAL liquidity incentives following community voting.
-The gauge where you have staked your LP tokens has been deprecated.
-So it's likely best for you to migrate to the new gauge in order to get future BAL liquidity incentives.`
-
   return (
     <Box h="full" w="full" maxW="lg" mx="auto">
       <Card>
         <CardHeader isTruncated>
           Migrate to new staking gauge{' '}
-          <Tooltip label={tooltipLabel}>
+          <Tooltip label={migrateStakeTooltipLabel}>
             <InfoOutlineIcon fontSize="sm" color="grayText" />
           </Tooltip>
         </CardHeader>

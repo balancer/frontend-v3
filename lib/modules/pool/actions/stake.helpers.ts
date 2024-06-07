@@ -5,6 +5,11 @@ import { HumanAmount } from '@balancer/sdk'
 import { isClaimableGauge } from '../pool.helpers'
 import { GqlPoolStakingOtherGauge } from '@/lib/shared/services/api/generated/graphql'
 
+// eslint-disable-next-line max-len
+export const migrateStakeTooltipLabel = `veBAL gauges are the mechanism to distribute BAL liquidity incentives following community voting.
+The gauge where you have staked your LP tokens has been deprecated.
+So it's likely best for you to migrate to the new gauge in order to get future BAL liquidity incentives.`
+
 export type UnstakeQuote = {
   gaugeAddress: Address
   amountOut: HumanAmount
