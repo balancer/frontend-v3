@@ -32,11 +32,7 @@ export const jsxTitleByVulnerability: Record<PoolIssue, JSX.Element> = {
   [PoolIssue.PoolProtocolFeeVulnWarning]: (
     <div>
       {vulnerabilityTitle}
-      <a
-        href="https://twitter.com/Balancer/status/1611363559685898247"
-        target="blank"
-        rel="noreferrer"
-      >
+      <a href="https://x.com/Balancer/status/1611363559685898247" target="blank" rel="noreferrer">
         Read more
       </a>
       .
@@ -104,7 +100,7 @@ export const jsxTitleByVulnerability: Record<PoolIssue, JSX.Element> = {
       in December 2022. This will render this version of the renBTC token as valueless, which will
       trend the overall pool value towards zero. Ren Protocol also strongly advises to{' '}
       <a
-        href="https://twitter.com/renprotocol/status/1595807696296751104"
+        href="https://x.com/renprotocol/status/1595807696296751104"
         target="blank"
         rel="noreferrer"
       >
@@ -144,7 +140,7 @@ export const jsxTitleByVulnerability: Record<PoolIssue, JSX.Element> = {
       Xave's FXPools are potentially affected by a bug. Xave recommends that LPs temporarily remove
       liquidity from this pool.{' '}
       <a
-        href="https://twitter.com/XaveFinance/status/1725089131330756628"
+        href="https://x.com/XaveFinance/status/1725089131330756628"
         target="blank"
         rel="noreferrer"
       >
