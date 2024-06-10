@@ -16,6 +16,7 @@ export function getCowTokens(colors: any, primaryTextColor: any) {
           level2: '#0C2602',
           level3: '#0C2602',
           level4: '#408A13',
+          level0WithOpacity: 'rgba(9, 29, 2, 0.96)',
         },
       },
       dark: {
@@ -27,6 +28,7 @@ export function getCowTokens(colors: any, primaryTextColor: any) {
           level2: '#0C2602',
           level3: '#0C2602',
           level4: '#408A13',
+          level0WithOpacity: 'rgba(9, 29, 2, 0.96)',
         },
       },
     },
