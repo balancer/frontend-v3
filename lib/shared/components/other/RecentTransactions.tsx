@@ -152,7 +152,7 @@ export default function RecentTransactions() {
         <PopoverArrow bg="background.level3" />
         <PopoverCloseButton />
         <PopoverBody p="0">
-          <HStack color="font.special" p="md" pb="0">
+          <HStack color="font.primary" p="md" pb="0">
             <Activity size={18} />
             <Heading size="md" variant="special">
               Recent activity

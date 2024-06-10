@@ -3,7 +3,7 @@ import { isMetaStable, isStable, isWeighted, isGyro } from '../../../pool.helper
 import { zeroAddress } from 'viem'
 
 export enum RiskKey {
-  General = 'general-risks',
+  General = 'general',
   Economic = 'economic-risk',
   ToxicToken = 'toxic-token-risk',
   RebaseToken = 'rebasing-tokens',

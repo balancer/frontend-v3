@@ -1,15 +1,10 @@
 'use client'
 
 import '@rainbow-me/rainbowkit/styles.css'
-
 import { RainbowKitProvider, Theme, darkTheme, lightTheme } from '@rainbow-me/rainbowkit'
-
 import { WagmiProvider } from 'wagmi'
-
 import { ReactQueryClientProvider } from '@/app/react-query.provider'
-import { balTheme } from '@/lib/shared/services/chakra/theme'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
-
 import { useTheme } from '@chakra-ui/react'
 import { merge } from 'lodash'
 import { UserSettingsProvider } from '../user/settings/UserSettingsProvider'
@@ -24,13 +19,13 @@ export function Web3Provider({
   children,
   wagmiConfig,
 }: PropsWithChildren<{ wagmiConfig: WagmiConfig }>) {
-  const { colors, radii, shadows, semanticTokens } = useTheme()
+  const { colors, radii, shadows, semanticTokens, fonts } = useTheme()
   const colorMode = useThemeColorMode()
   const colorModeKey = colorMode === 'light' ? 'default' : '_dark'
 
   const sharedConfig = {
     fonts: {
-      body: balTheme.fonts?.body,
+      body: fonts.body,
     },
     radii: {
       connectButton: radii.md,

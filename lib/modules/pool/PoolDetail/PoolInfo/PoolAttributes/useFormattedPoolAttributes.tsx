@@ -6,10 +6,10 @@ import { format } from 'date-fns'
 import { DELEGATE_OWNER } from '@/lib/config/app.config'
 import { zeroAddress } from 'viem'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
-import { upperFirst } from 'lodash'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { bptUsdValue } from '../../../pool.helpers'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { getPoolTypeLabel } from '../../../pool.utils'
 
 export function useFormattedPoolAttributes() {
   const { pool } = usePool()
@@ -61,7 +61,7 @@ export function useFormattedPoolAttributes() {
       },
       {
         title: 'Pool type',
-        value: upperFirst(type.toLowerCase()),
+        value: getPoolTypeLabel(type),
       },
       {
         title: 'Protocol version',
@@ -90,10 +90,11 @@ export function useFormattedPoolAttributes() {
         value: format(createTime * 1000, 'dd MMMM yyyy'),
       },
       {
-        title: 'BPT price',
+        title: 'LP token price',
         value: toCurrency(bptUsdValue(pool, '1')),
       },
     ]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool, poolOwnerData])
 
   return formattedPoolAttributes

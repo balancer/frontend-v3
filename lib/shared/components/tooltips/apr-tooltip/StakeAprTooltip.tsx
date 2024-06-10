@@ -1,19 +1,21 @@
 import { Card, HStack, Icon, Text, VStack } from '@chakra-ui/react'
-import BaseAprTooltip, { BaseAprTooltipProps } from './BaseAprTooltip'
+import BaseAprTooltip from './BaseAprTooltip'
 import StarsIcon from '../../icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useCallback } from 'react'
 import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { Pool } from '@/lib/modules/pool/PoolProvider'
+import { calcPotentialYieldFor } from '@/lib/modules/pool/pool.utils'
 
-interface Props extends Omit<BaseAprTooltipProps, 'children' | 'totalBaseText' | 'maxVeBalText'> {
+interface Props {
   totalUsdValue: string
-  weeklyYield: string
   pool: Pool
 }
 
-function StakeAprTooltip({ weeklyYield, totalUsdValue, ...props }: Props) {
+function StakeAprTooltip({ pool, totalUsdValue }: Props) {
+  const weeklyYield = calcPotentialYieldFor(pool, totalUsdValue)
+
   const { toCurrency } = useCurrency()
 
   const numberFormatter = useCallback(
@@ -29,7 +31,7 @@ function StakeAprTooltip({ weeklyYield, totalUsdValue, ...props }: Props) {
 
   return (
     <BaseAprTooltip
-      {...props}
+      data={pool.dynamicData.apr}
       totalBaseText="Total weekly base"
       maxVeBalText="Total with max veBAL"
       placement="top-start"

@@ -10,12 +10,13 @@ import {
   GqlPoolFilterCategory,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
-import { FetchPoolProps, PoolAction, PoolVariant } from './pool.types'
-import { bn, fNum } from '@/lib/shared/utils/numbers'
+import { BaseVariant, FetchPoolProps, PoolAction, PoolListItem, PoolVariant } from './pool.types'
+import { Numberish, bn, fNum } from '@/lib/shared/utils/numbers'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { TokenAmountHumanReadable } from '../tokens/token.types'
 import { formatUnits, parseUnits } from 'viem'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
+import { Pool } from './PoolProvider'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -50,6 +51,13 @@ export const chainToSlugMap: Record<GqlChain, ChainSlug> = {
 }
 export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlChain>
 
+function getVariant(pool: Pool | PoolListItem): PoolVariant {
+  // if a pool has certain properties return a custom variant
+
+  // default variant
+  return BaseVariant.v2
+}
+
 /**
  * Constructs path to pool detail page.
  * @param {String} id Pool ID could be ID or address depending on variant.
@@ -57,8 +65,9 @@ export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlCha
  * @param {String} variant Pool variant, defaults to v2.
  * @returns {String} Path to pool detail page.
  */
-export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolProps) {
-  return `/pools/${chainToSlugMap[chain]}/${variant}/${id}`
+export function getPoolPath(pool: Pool | PoolListItem) {
+  const variant = getVariant(pool)
+  return `/pools/${chainToSlugMap[pool.chain]}/${variant}/${pool.id}`
 }
 
 // TODO: the following 2 functions (getAprLabel & getTotalAprLabel) most likely need revisiting somewhere in the near future and refactored to just one
@@ -73,7 +82,7 @@ export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolPr
 export function getPoolActionPath({
   id,
   chain,
-  variant = PoolVariant.v2,
+  variant = BaseVariant.v2,
   action,
 }: FetchPoolProps & { action: PoolAction }) {
   return `/pools/${chainToSlugMap[chain]}/${variant}/${id}/${action}`
@@ -166,11 +175,10 @@ export function getPoolCategoryLabel(category: GqlPoolFilterCategory): string {
 
 export const poolClickHandler = (
   event: React.MouseEvent<HTMLElement>,
-  id: string,
-  chain: GqlChain,
+  pool: Pool | PoolListItem,
   router: AppRouterInstance
 ) => {
-  const poolPath = getPoolPath({ id, chain })
+  const poolPath = getPoolPath(pool)
 
   if (event.ctrlKey || event.metaKey) {
     window.open(poolPath, '_blank')
@@ -183,11 +191,10 @@ export const poolClickHandler = (
 // between clicking the pool and the pool page loading.
 export const poolMouseEnterHandler = (
   event: React.MouseEvent<HTMLElement>,
-  id: string,
-  chain: GqlChain,
+  pool: Pool | PoolListItem,
   router: AppRouterInstance
 ) => {
-  const poolPath = getPoolPath({ id, chain })
+  const poolPath = getPoolPath(pool)
   router.prefetch(poolPath)
 }
 
@@ -245,4 +252,13 @@ export function getPoolsByGaugesMap(pools: ClaimablePool[]) {
 
     return acc
   }, {})
+}
+
+export function calcPotentialYieldFor(pool: Pool, amountUsd: Numberish): string {
+  const totalApr =
+    pool.dynamicData.apr.apr.__typename === 'GqlPoolAprRange'
+      ? parseFloat(pool.dynamicData.apr.apr.max)
+      : parseFloat(pool.dynamicData.apr.apr.total)
+
+  return bn(amountUsd).times(totalApr).div(52).toString()
 }

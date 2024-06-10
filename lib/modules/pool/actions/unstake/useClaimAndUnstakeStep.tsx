@@ -3,7 +3,7 @@ import {
   TransactionLabels,
   TransactionStep,
 } from '@/lib/modules/transactions/transaction-steps/lib'
-import { parseUnits } from 'viem'
+import { Address, parseUnits } from 'viem'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { Pool } from '../../PoolProvider'
 import { selectStakingService } from '@/lib/modules/staking/selectStakingService'
@@ -18,13 +18,26 @@ import { ManagedTransactionButton } from '@/lib/modules/transactions/transaction
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { useHasApprovedRelayer } from '@/lib/modules/relayer/useHasApprovedRelayer'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
+import { HumanAmount } from '@balancer/sdk'
 
 const claimAndUnstakeStepId = 'claim-and-unstake'
 
-export function useClaimAndUnstakeStep(
-  pool: Pool,
+export type UnstakeParams = {
+  pool: Pool
+  gaugeAddress: Address
+  amountOut: HumanAmount
   refetchPoolBalances: () => void
-): { isLoading: boolean; step: TransactionStep } {
+}
+export function useClaimAndUnstakeStep({
+  pool,
+  gaugeAddress,
+  amountOut, // amount to unstake
+  refetchPoolBalances,
+}: UnstakeParams): {
+  isLoading: boolean
+  step: TransactionStep
+  hasUnclaimedBalRewards: boolean
+} {
   const { userAddress } = useUserAccount()
   const { getTransaction } = useTransactionState()
   const { contracts, chainId } = getNetworkConfig(pool.chain)
@@ -47,11 +60,14 @@ export function useClaimAndUnstakeStep(
     ? selectStakingService(pool.chain, pool.staking?.type)
     : undefined
 
+  const hasUnclaimedBalRewards = balRewards.length > 0
+
   const data = useBuildUnstakeCallData({
-    amount: parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS),
+    amount: parseUnits(amountOut, BPT_DECIMALS),
     gaugeService: stakingService,
-    hasPendingNonBalRewards: nonBalrewards.length > 0,
-    hasPendingBalRewards: balRewards.length > 0,
+    gauges: [gaugeAddress],
+    hasUnclaimedNonBalRewards: nonBalrewards.length > 0,
+    hasUnclaimedBalRewards,
     userAddress,
   })
 
@@ -94,5 +110,6 @@ export function useClaimAndUnstakeStep(
   return {
     isLoading: isLoadingRelayerApproval,
     step,
+    hasUnclaimedBalRewards,
   }
 }

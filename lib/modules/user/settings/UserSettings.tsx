@@ -87,13 +87,13 @@ export function UserSettings() {
         <PopoverArrow bg="background.level3" />
         <PopoverCloseButton />
         <PopoverBody p="0">
-          <HStack color="font.special" p="md" pb="0">
+          <HStack color="font.primary" p="md" pb="0">
             <Settings size={20} />
             <Heading size="md" variant="special">
               Settings
             </Heading>
           </HStack>
-          <VStack align="start" spacing="24px" p="md">
+          <VStack align="start" spacing="md" p="md">
             <Box w="full">
               <Heading size="sm" pb="2">
                 Currency
@@ -107,10 +107,8 @@ export function UserSettings() {
               <SlippageInput />
             </Box>
             <Box w="full">
-              <HStack>
-                <Heading size="sm" pb="2">
-                  Use Signatures
-                </Heading>
+              <HStack pb="sm">
+                <Heading size="sm">Use Signatures</Heading>
                 <Tooltip label={signaturesTooltipLabel} fontSize="sm">
                   <InfoIcon />
                 </Tooltip>

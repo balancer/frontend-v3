@@ -143,11 +143,7 @@ export function DataTable<Data extends object>({
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       {cell.id.includes('_detail') && (
-                        <Link
-                          href={getPoolPath({ id: pool.id, chain: pool.chain })}
-                          prefetch={true}
-                          style={{ color: '#2299DD' }}
-                        >
+                        <Link href={getPoolPath(pool)} prefetch={true} style={{ color: '#2299DD' }}>
                           Pre-Fetched Link
                         </Link>
                       )}

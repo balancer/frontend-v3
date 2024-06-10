@@ -15,6 +15,7 @@ type Props = {
   userBalance?: TokenAmount
   isBalancesLoading?: boolean
   active?: boolean
+  isCurrentToken?: boolean
 }
 
 export function TokenSelectListRow({
@@ -22,6 +23,7 @@ export function TokenSelectListRow({
   userBalance,
   isBalancesLoading = true,
   active = false,
+  isCurrentToken = false,
   ...rest
 }: Props & BoxProps) {
   const { isConnected } = useUserAccount()
@@ -40,10 +42,13 @@ export function TokenSelectListRow({
     borderColor: active ? 'transparent' : 'transparent',
     py: 'sm',
     px: 'md',
-    cursor: 'pointer',
-    _hover: {
-      bg: active ? 'background.level3' : 'background.level2',
-    },
+    cursor: isCurrentToken ? 'not-allowed' : 'pointer',
+    opacity: isCurrentToken ? 0.5 : 1,
+    _hover: isCurrentToken
+      ? {}
+      : {
+          bg: active ? 'background.level3' : 'background.level2',
+        },
     transition: 'all 0.2s var(--ease-out-cubic)',
   }
 
@@ -53,7 +58,7 @@ export function TokenSelectListRow({
         <HStack height="full" spacing="ms" maxW="full">
           <Box
             transition="all 0.2s var(--ease-out-cubic)"
-            _groupHover={{ transform: 'scale(1.075)' }}
+            _groupHover={isCurrentToken ? {} : { transform: 'scale(1.075)' }}
           >
             <TokenIcon address={token.address} chain={token.chain} alt={token.symbol} />
           </Box>
