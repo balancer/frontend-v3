@@ -3,12 +3,12 @@ import { colors, primaryTextColor } from './colors'
 import { getTokens } from '../base/tokens'
 import { getComponents } from '../base/components'
 import { config, fonts, styles } from '../base/foundations'
-import { getSemanticTokens } from '../base/semantic-tokens'
 import { proseTheme } from '../base/prose'
+import { getCowSemanticTokens } from './semantic-tokens'
 
 const tokens = getTokens(colors, primaryTextColor)
 const components = getComponents(tokens, primaryTextColor)
-const semanticTokens = getSemanticTokens(tokens, colors)
+const semanticTokens = getCowSemanticTokens(tokens, colors)
 
 export const cowTheme = {
   config,

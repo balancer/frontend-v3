@@ -1,3 +1,5 @@
+export type SemanticTokens = ReturnType<typeof getSemanticTokens>
+
 export function getSemanticTokens(tokens: any, colors: any) {
   return {
     colors: {
