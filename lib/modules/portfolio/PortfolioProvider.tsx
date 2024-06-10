@@ -97,6 +97,8 @@ function _usePortfolio() {
     let userTotalBalance = bn(0)
 
     poolWithOnchainUserBalances.forEach(pool => {
+      if (pool.userBalance && pool.userBalance.totalBalance === '0.0') return
+
       const stakedBalance = bn(pool.userBalance?.stakedBalance || 0)
       const poolTotalBalance = bn(pool.userBalance?.totalBalance || 0)
       const unstakedBalance = poolTotalBalance.minus(stakedBalance)
