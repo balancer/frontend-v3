@@ -26,7 +26,7 @@ import { getTotalAprLabel, getProportionalExitAmountsFromScaledBptIn } from '../
 import { BPT_DECIMALS } from '../pool.constants'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { bn } from '@/lib/shared/utils/numbers'
-import { hasNestedPools } from '../pool.helpers'
+import { hasNestedPools, shouldBlockAddLiquidity } from '../pool.helpers'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import StakedBalanceDistributionChart from './PoolWeightCharts/StakedBalanceDistributionChart'
@@ -58,6 +58,7 @@ export default function PoolMyLiquidity() {
   const router = useRouter()
 
   const pathname = usePathname()
+  const isAddLiquidityBlocked = shouldBlockAddLiquidity(pool)
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
@@ -215,6 +216,7 @@ export default function PoolMyLiquidity() {
                       onClick={() => router.push(`${pathname}/add-liquidity`)}
                       variant="primary"
                       flex="1"
+                      isDisabled={isAddLiquidityBlocked}
                     >
                       Add
                     </Button>

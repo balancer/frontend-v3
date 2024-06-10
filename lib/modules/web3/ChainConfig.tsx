@@ -36,8 +36,9 @@ export const rpcOverrides: Record<GqlChain, string | undefined> = {
   [GqlChain.Fraxtal]: undefined,
 }
 
+const customMainnet = { iconUrl: '/images/chains/MAINNET.svg', ...mainnet }
 const gqlChainToWagmiChainMap = {
-  [GqlChain.Mainnet]: { iconUrl: '/images/chains/MAINNET.svg', ...mainnet },
+  [GqlChain.Mainnet]: customMainnet,
   [GqlChain.Arbitrum]: { iconUrl: '/images/chains/ARBITRUM.svg', ...arbitrum },
   [GqlChain.Base]: { iconUrl: '/images/chains/BASE.svg', ...base },
   [GqlChain.Avalanche]: { iconUrl: '/images/chains/AVALANCHE.svg', ...avalanche },
@@ -53,7 +54,7 @@ const gqlChainToWagmiChainMap = {
 
 export const supportedNetworks = getProjectConfig().supportedNetworks
 export const chains: readonly [Chain, ...Chain[]] = [
-  mainnet,
+  customMainnet,
   ...supportedNetworks
     .filter(chain => chain !== GqlChain.Mainnet)
     .map(gqlChain => gqlChainToWagmiChainMap[gqlChain]),
