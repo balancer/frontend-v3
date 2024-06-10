@@ -17,7 +17,7 @@ export const claimableVeBalRewardsTokens: string[] = [
 
 export function useProtocolRewards() {
   const { userAddress, isConnected } = useUserAccount()
-  const { priceFor } = useTokens()
+  const { priceFor, getToken } = useTokens()
 
   const {
     data: protocolRewardsData = [],
@@ -35,7 +35,9 @@ export function useProtocolRewards() {
         return (data as bigint[]).map((clBalance, index) => {
           const tokenAddress = claimableVeBalRewardsTokens[index]
           const tokenPrice = priceFor(tokenAddress, networkConfigs.MAINNET.chain)
-          const humanBalance = formatUnits(clBalance, BPT_DECIMALS)
+          const decimals =
+            getToken(tokenAddress, networkConfigs.MAINNET.chain)?.decimals || BPT_DECIMALS
+          const humanBalance = formatUnits(clBalance, decimals)
           return {
             tokenAddress,
             balance: clBalance,
