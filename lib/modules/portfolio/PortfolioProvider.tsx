@@ -37,6 +37,7 @@ function _usePortfolio() {
   const { transactions } = useRecentTransactions()
 
   const now = millisecondsToSeconds(new Date().getTime())
+  const chainIn = getProjectConfig().supportedNetworks
 
   // filter out recent transactions that are more than 500 seconds old
   const transactionsWithPoolIds = Object.values(transactions).filter(
@@ -52,7 +53,7 @@ function _usePortfolio() {
       variables: {
         where: {
           userAddress,
-          chainIn: getProjectConfig().supportedNetworks,
+          chainIn,
         },
       },
       fetchPolicy: 'no-cache',
@@ -66,7 +67,7 @@ function _usePortfolio() {
     variables: {
       where: {
         idIn,
-        chainIn: getProjectConfig().supportedNetworks,
+        chainIn,
       },
     },
     fetchPolicy: 'no-cache',
