@@ -37,9 +37,8 @@ export function PoolDetail() {
   return (
     <ClaimProvider pools={[pool]}>
       <VStack w="full" spacing="2xl">
-        <PoolAlerts />
-
         <VStack w="full" spacing="md">
+          <PoolAlerts />
           <PoolHeader />
           {banners?.headerSrc && <Image src={banners.headerSrc} alt={`${variant}-header`} />}
           <PoolStatsLayout />

@@ -234,14 +234,19 @@ export function allClaimableGaugeAddressesFor(pool: ClaimablePool) {
 
 /**
  * Returns true if we should block the user from adding liquidity to the pool.
+ * @see https://github.com/balancer/frontend-v3/issues/613#issuecomment-2149443249
  */
 export function shouldBlockAddLiquidity(pool: Pool) {
   return pool.poolTokens.some(token => {
+    // if token is not allowed - we should block adding liquidity
     if (!token.isAllowed) return true
-    if (token.hasNestedPool) return false
-    if (token.priceRateProvider === zeroAddress) return false
-    if (isNil(token.priceRateProvider)) return false
+
+    // if rateProvider is null - we consider it as zero address and not block adding liquidity
+    if (isNil(token.priceRateProvider) || token.priceRateProvider === zeroAddress) return false
+
+    // if rateProvider is the nested pool address - we consider it as safe
     if (token.priceRateProvider === token.nestedPool?.address) return false
+
     if (token.priceRateProviderData?.summary !== 'safe') return true
 
     return false

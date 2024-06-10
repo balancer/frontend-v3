@@ -8,7 +8,7 @@ import {
   HStack,
   IconButton,
   Link,
-  Stack,
+  VStack,
 } from '@chakra-ui/react'
 import { usePool } from '../PoolProvider'
 
@@ -32,9 +32,9 @@ export function PoolAlerts() {
   if (poolAlerts.length === 0) return null
 
   return (
-    <Stack width="100%">
+    <VStack width="full">
       {poolAlerts.map(alert => (
-        <PoolAlertDisplay
+        <PoolAlert
           key={alert.identifier}
           onClose={e => {
             e.preventDefault()
@@ -43,11 +43,11 @@ export function PoolAlerts() {
           {...alert}
         />
       ))}
-    </Stack>
+    </VStack>
   )
 }
 
-export function PoolAlertDisplay({
+export function PoolAlert({
   title,
   learnMoreLink,
   status,
@@ -84,6 +84,7 @@ export function PoolAlertDisplay({
       rounded="lg"
       border="none !important"
       alignItems="center"
+      color="font.dark"
       role="group"
     >
       <HStack>
