@@ -11,6 +11,7 @@ import { PoolStatsLayout } from './PoolStats/PoolStatsLayout'
 import { PoolHeader } from './PoolHeader/PoolHeader'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { PoolAlerts } from '../alerts/PoolAlerts'
 import { ClaimProvider } from '../actions/claim/ClaimProvider'
 import { usePoolVariant } from '../pool.hooks'
 
@@ -37,6 +38,7 @@ export function PoolDetail() {
     <ClaimProvider pools={[pool]}>
       <VStack w="full" spacing="2xl">
         <VStack w="full" spacing="md">
+          <PoolAlerts />
           <PoolHeader />
           {banners?.headerSrc && <Image src={banners.headerSrc} alt={`${variant}-header`} />}
           <PoolStatsLayout />

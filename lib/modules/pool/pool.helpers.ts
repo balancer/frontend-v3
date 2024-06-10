@@ -1,4 +1,4 @@
-import { getChainId } from '@/lib/config/app.config'
+import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { getBlockExplorerAddressUrl } from '@/lib/shared/hooks/useBlockExplorer'
 import { dateToUnixTimestamp } from '@/lib/shared/hooks/useTime'
 import {
@@ -13,10 +13,12 @@ import {
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
-import { Address, getAddress, parseUnits } from 'viem'
+import { Address, getAddress, parseUnits, zeroAddress } from 'viem'
 import { BPT_DECIMALS } from './pool.constants'
 import { isNotMainet } from '../chains/chain.utils'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
+import { PoolIssue } from './alerts/pool-issues/PoolIssue.type'
+import { isNil } from 'lodash'
 
 /**
  * METHODS
@@ -228,4 +230,35 @@ export function allClaimableGaugeAddressesFor(pool: ClaimablePool) {
   addresses.push(...otherClaimableGaugeAddresses)
 
   return addresses
+}
+
+/**
+ * Returns true if we should block the user from adding liquidity to the pool.
+ * @see https://github.com/balancer/frontend-v3/issues/613#issuecomment-2149443249
+ */
+export function shouldBlockAddLiquidity(pool: Pool) {
+  return pool.poolTokens.some(token => {
+    // if token is not allowed - we should block adding liquidity
+    if (!token.isAllowed) return true
+
+    // if rateProvider is null - we consider it as zero address and not block adding liquidity
+    if (isNil(token.priceRateProvider) || token.priceRateProvider === zeroAddress) return false
+
+    // if rateProvider is the nested pool address - we consider it as safe
+    if (token.priceRateProvider === token.nestedPool?.address) return false
+
+    if (token.priceRateProviderData?.summary !== 'safe') return true
+
+    return false
+  })
+}
+
+export function isAffectedByCspIssue(pool: Pool) {
+  return isAffectedBy(pool, PoolIssue.CspPoolVulnWarning)
+}
+
+function isAffectedBy(pool: Pool, poolIssue: PoolIssue) {
+  const issues = getNetworkConfig(getChainId(pool.chain)).pools.issues
+  const affectedPoolIds = issues[poolIssue] ?? []
+  return affectedPoolIds.includes(pool.id.toLowerCase())
 }
