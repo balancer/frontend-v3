@@ -45,8 +45,6 @@ function _usePortfolio() {
 
   const idIn = uniq(transactionsWithPoolIds.map(tx => tx.poolId))
 
-  console.log({ transactionsWithPoolIds, idIn })
-
   // fetch pools with a user balance
   const { data: poolsUserAddressData, loading: isLoadingPoolsUserAddress } = useApolloQuery(
     GetPoolsDocument,
@@ -81,8 +79,6 @@ function _usePortfolio() {
     'id'
   )
 
-  console.log({ poolsIdData, poolsUserAddressData, poolsData })
-
   const { data: poolWithOnchainUserBalances, isLoading: isLoadingOnchainUserBalances } =
     useOnchainUserPoolBalances((poolsData as unknown as Pool[]) || [])
 
@@ -101,7 +97,6 @@ function _usePortfolio() {
     let userTotalBalance = bn(0)
 
     poolWithOnchainUserBalances.forEach(pool => {
-      console.log({ pool })
       if (pool.userBalance && pool.userBalance.totalBalance === '0.0') return
 
       const stakedBalance = bn(pool.userBalance?.stakedBalance || 0)
