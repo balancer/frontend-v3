@@ -114,7 +114,7 @@ export function SwapForm() {
           <CardHeader as={HStack} w="full" justify="space-between" zIndex={11}>
             <span>{capitalize(swapAction)}</span>
             <HStack>
-              <Tooltip label={copiedDeepLink ? 'Copied!' : 'Copy deep link'}>
+              <Tooltip label={copiedDeepLink ? 'Copied!' : 'Copy swap link'}>
                 <Button variant="tertiary" size="sm" color="grayText" onClick={copyDeepLink}>
                   {copiedDeepLink ? <CheckCircle size={16} /> : <Link size={16} />}
                 </Button>
