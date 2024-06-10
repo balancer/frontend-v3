@@ -15,7 +15,7 @@ import { useOnchainUserPoolBalances } from '../pool/queries/useOnchainUserPoolBa
 import { Pool } from '../pool/PoolProvider'
 import { useRecentTransactions } from '../transactions/RecentTransactionsProvider'
 import { millisecondsToSeconds } from 'date-fns'
-import { uniq, uniqBy } from 'lodash'
+import { compact, uniq, uniqBy } from 'lodash'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
@@ -43,7 +43,7 @@ function _usePortfolio() {
     tx => tx.timestamp > now - 500 && tx.poolId
   )
 
-  const idIn = uniq(transactionsWithPoolIds.map(tx => tx.poolId))
+  const idIn = uniq(compact(transactionsWithPoolIds.map(tx => tx.poolId)))
 
   // fetch pools with a user balance
   const { data: poolsUserAddressData, loading: isLoadingPoolsUserAddress } = useApolloQuery(
@@ -65,7 +65,7 @@ function _usePortfolio() {
   const { data: poolsIdData, loading: isLoadingPoolsId } = useApolloQuery(GetPoolsDocument, {
     variables: {
       where: {
-        userAddress,
+        idIn,
         chainIn: getProjectConfig().supportedNetworks,
       },
     },
@@ -97,7 +97,7 @@ function _usePortfolio() {
     let userTotalBalance = bn(0)
 
     poolWithOnchainUserBalances.forEach(pool => {
-      if (pool.userBalance && pool.userBalance.totalBalance === '0.0') return
+      if (pool.userBalance && pool.userBalance.totalBalance === '0') return
 
       const stakedBalance = bn(pool.userBalance?.stakedBalance || 0)
       const poolTotalBalance = bn(pool.userBalance?.totalBalance || 0)
@@ -116,12 +116,17 @@ function _usePortfolio() {
     })
 
     return {
-      pools: poolWithOnchainUserBalances || [],
+      pools:
+        poolWithOnchainUserBalances.filter(
+          pool => pool.userBalance && pool.userBalance.totalBalance !== '0'
+        ) || [],
       stakedPools,
       unstakedPools,
       userTotalBalance,
     }
   }, [poolWithOnchainUserBalances, isConnected, userAddress])
+
+  console.log({ portfolioData })
 
   // Bal token rewards
   const { balRewardsData, isLoadingBalRewards } = useBalTokenRewards(
