@@ -1,5 +1,5 @@
 import { usePathname } from 'next/navigation'
-import { TwitterIcon } from '../icons/social/TwitterIcon'
+import { XIcon } from '../icons/social/XIcon'
 import { DiscordIcon } from '../icons/social/DiscordIcon'
 import { MediumIcon } from '../icons/social/MediumIcon'
 import { YoutubeIcon } from '../icons/social/YoutubeIcon'
@@ -38,8 +38,8 @@ export function useNav() {
 
   const socialLinks = [
     {
-      icon: <TwitterIcon />,
-      href: 'https://twitter.com/Balancer',
+      icon: <XIcon />,
+      href: 'https://x.com/Balancer',
     },
     {
       icon: <DiscordIcon />,
