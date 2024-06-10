@@ -15,7 +15,7 @@ import { useOnchainUserPoolBalances } from '../pool/queries/useOnchainUserPoolBa
 import { Pool } from '../pool/PoolProvider'
 import { useRecentTransactions } from '../transactions/RecentTransactionsProvider'
 import { millisecondsToSeconds } from 'date-fns'
-import { uniqBy } from 'lodash'
+import { uniq, uniqBy } from 'lodash'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
@@ -43,9 +43,7 @@ function _usePortfolio() {
     tx => tx.timestamp > now - 500 && tx.poolId
   )
 
-  const idIn = transactionsWithPoolIds.map(tx => tx.poolId)
-
-  console.log({ idIn })
+  const idIn = uniq(transactionsWithPoolIds.map(tx => tx.poolId))
 
   // fetch pools with a user balance
   const { data: poolsUserAddressData, loading: isLoadingPoolsUserAddress } = useApolloQuery(
