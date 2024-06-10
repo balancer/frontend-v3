@@ -14,6 +14,7 @@ import { useEffect } from 'react'
 import { PoolAlerts } from '../alerts/PoolAlerts'
 import { ClaimProvider } from '../actions/claim/ClaimProvider'
 import { usePoolVariant } from '../pool.hooks'
+import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
 
 export function PoolDetail() {
   const { pool } = usePool()
@@ -35,20 +36,24 @@ export function PoolDetail() {
   }, [router])
 
   return (
-    <ClaimProvider pools={[pool]}>
-      <VStack w="full" spacing="2xl">
-        <VStack w="full" spacing="md">
-          <PoolAlerts />
-          <PoolHeader />
-          {banners?.headerSrc && <Image src={banners.headerSrc} alt={`${variant}-header`} />}
-          <PoolStatsLayout />
-        </VStack>
-        {userHasLiquidity && <PoolMyLiquidity />}
-        <PoolActivityChart />
-        <PoolComposition />
-        <PoolInfoLayout />
-        {banners?.footerSrc && <Image src={banners.footerSrc} alt={`${variant}-footer`} />}
-      </VStack>
-    </ClaimProvider>
+    <>
+      <DefaultPageContainer>
+        <ClaimProvider pools={[pool]}>
+          <VStack w="full" spacing="2xl">
+            <VStack w="full" spacing="md">
+              <PoolAlerts />
+              <PoolHeader />
+              {banners?.headerSrc && <Image src={banners.headerSrc} alt={`${variant}-header`} />}
+              <PoolStatsLayout />
+            </VStack>
+            {userHasLiquidity && <PoolMyLiquidity />}
+            <PoolActivityChart />
+            <PoolComposition />
+            <PoolInfoLayout />
+          </VStack>
+        </ClaimProvider>
+      </DefaultPageContainer>
+      {banners?.footerSrc && <Image src={banners.footerSrc} alt={`${variant}-footer`} />}
+    </>
   )
 }
