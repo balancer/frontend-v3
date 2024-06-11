@@ -14,7 +14,7 @@ import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { useOnchainUserPoolBalances } from '../pool/queries/useOnchainUserPoolBalances'
 import { Pool } from '../pool/PoolProvider'
 import { useRecentTransactions } from '../transactions/RecentTransactionsProvider'
-import { millisecondsToSeconds } from 'date-fns'
+import { millisecondsToSeconds, sub, isAfter } from 'date-fns'
 import { compact, uniq, uniqBy } from 'lodash'
 
 export interface ClaimableBalanceResult {
@@ -36,12 +36,12 @@ function _usePortfolio() {
   const { userAddress, isConnected } = useUserAccount()
   const { transactions } = useRecentTransactions()
 
-  const now = millisecondsToSeconds(new Date().getTime())
+  const fiveMinutesAgo = sub(millisecondsToSeconds(new Date().getTime()), { seconds: 300 })
   const chainIn = getProjectConfig().supportedNetworks
 
-  // filter out recent transactions that are more than 500 seconds old
+  // filter out recent transactions that are more than 300 seconds old
   const transactionsWithPoolIds = Object.values(transactions).filter(
-    tx => tx.timestamp > now - 500 && tx.poolId
+    tx => isAfter(tx.timestamp, fiveMinutesAgo) && tx.poolId
   )
 
   const idIn = uniq(compact(transactionsWithPoolIds.map(tx => tx.poolId)))
