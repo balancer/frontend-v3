@@ -39,7 +39,7 @@ function _usePortfolio() {
   const fiveMinutesAgo = sub(millisecondsToSeconds(new Date().getTime()), { seconds: 300 })
   const chainIn = getProjectConfig().supportedNetworks
 
-  // filter out recent transactions that are more than 300 seconds old
+  // filter in recent transactions that took place in the last 5 minutes
   const transactionsWithPoolIds = Object.values(transactions).filter(
     tx => isAfter(tx.timestamp, fiveMinutesAgo) && tx.poolId
   )
