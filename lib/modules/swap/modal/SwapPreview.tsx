@@ -17,7 +17,7 @@ export function SwapPreview() {
 
       <Card variant="modalSubSection">
         <SwapTokenRow
-          label={swapTxHash ? 'You payed' : 'You pay'}
+          label={swapTxHash ? 'You paid' : 'You pay'}
           chain={selectedChain}
           tokenAmount={tokenIn.amount}
           tokenAddress={tokenIn.address}
