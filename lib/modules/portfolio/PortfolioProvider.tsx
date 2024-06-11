@@ -80,7 +80,7 @@ function _usePortfolio() {
     'id'
   )
 
-  const { data: poolWithOnchainUserBalances, isLoading: isLoadingOnchainUserBalances } =
+  const { data: poolsWithOnchainUserBalances, isLoading: isLoadingOnchainUserBalances } =
     useOnchainUserPoolBalances((poolsData as unknown as Pool[]) || [])
 
   const portfolioData = useMemo(() => {
@@ -97,7 +97,7 @@ function _usePortfolio() {
     const unstakedPools: Pool[] = []
     let userTotalBalance = bn(0)
 
-    poolWithOnchainUserBalances.forEach(pool => {
+    poolsWithOnchainUserBalances.forEach(pool => {
       if (pool.userBalance && pool.userBalance.totalBalance === '0') return
 
       const stakedBalance = bn(pool.userBalance?.stakedBalance || 0)
@@ -118,14 +118,14 @@ function _usePortfolio() {
 
     return {
       pools:
-        poolWithOnchainUserBalances.filter(
+        poolsWithOnchainUserBalances.filter(
           pool => pool.userBalance && pool.userBalance.totalBalance !== '0'
         ) || [],
       stakedPools,
       unstakedPools,
       userTotalBalance,
     }
-  }, [poolWithOnchainUserBalances, isConnected, userAddress])
+  }, [poolsWithOnchainUserBalances, isConnected, userAddress])
 
   console.log({ portfolioData })
 
