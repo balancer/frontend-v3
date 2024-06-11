@@ -16,7 +16,6 @@ import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/queries/usePoolEnrichWithOnChainData'
 import { useOnchainUserPoolBalances } from './queries/useOnchainUserPoolBalances'
 import { useSkipInitialQuery } from '@/lib/shared/hooks/useSkipInitialQuery'
-import { bn, Numberish } from '@/lib/shared/utils/numbers'
 
 export type UsePoolResponse = ReturnType<typeof _usePool> & {
   chain: GqlChain

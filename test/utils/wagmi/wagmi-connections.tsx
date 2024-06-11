@@ -1,5 +1,7 @@
-import { testWagmiConfig } from '@/test/anvil/testWagmiConfig'
+import { testAccountIndex } from '@/test/anvil/anvil-setup'
+import { addTestUserAddress, testWagmiConfig } from '@/test/anvil/testWagmiConfig'
 import { act } from '@testing-library/react'
+import { Address } from 'viem'
 import { Connector } from 'wagmi'
 import { connect, disconnect } from 'wagmi/actions'
 
@@ -21,9 +23,20 @@ export async function connectWithAlternativeUser() {
   await connectWithTestConnector(connector)
 }
 
+export async function connectWith(testAccount: Address) {
+  addTestUserAddress(testAccount)
+  const connector = testWagmiConfig.connectors[testAccountIndex(testAccount)]
+  await connectWithTestConnector(connector)
+}
+
 export async function disconnectAlternativeUser() {
   // Disconnect with alternativeTestUserAccount 0xa0Ee7A142d267C1f36714E4a8F75612F20a79720
   const connector = testWagmiConfig.connectors[1]
+  await act(() => disconnectFromTestConnector(connector))
+}
+
+export async function disconnectWith(testAccount: Address) {
+  const connector = testWagmiConfig.connectors[testAccountIndex(testAccount)]
   await act(() => disconnectFromTestConnector(connector))
 }
 

@@ -6,7 +6,6 @@ import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
 import { PoolInfoLayout } from './PoolInfo/PoolInfoLayout'
 import { usePool } from '../PoolProvider'
 import PoolMyLiquidity from './PoolMyLiquidity'
-import { bn } from '@/lib/shared/utils/numbers'
 import { PoolStatsLayout } from './PoolStats/PoolStatsLayout'
 import { PoolHeader } from './PoolHeader/PoolHeader'
 import { usePathname, useRouter } from 'next/navigation'
@@ -14,6 +13,7 @@ import { useEffect } from 'react'
 import { PoolAlerts } from '../alerts/PoolAlerts'
 import { ClaimProvider } from '../actions/claim/ClaimProvider'
 import { usePoolVariant } from '../pool.hooks'
+import { hasTotalBalance } from '../userBalance.helpers'
 
 export function PoolDetail() {
   const { pool } = usePool()
@@ -21,7 +21,7 @@ export function PoolDetail() {
   const pathname = usePathname()
   const { variant, banners } = usePoolVariant()
 
-  const userHasLiquidity = bn(pool.userBalance?.totalBalance || '0').gt(0)
+  const userHasLiquidity = hasTotalBalance(pool)
 
   useEffect(() => {
     // Prefetch pool action pages.

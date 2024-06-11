@@ -7,19 +7,29 @@ import ButtonGroup, {
 import { Box, Button, Card, HStack, Heading, Skeleton, Stack, Text, VStack } from '@chakra-ui/react'
 import React, { useMemo, useState } from 'react'
 import { usePool } from '../PoolProvider'
-import { Address, parseUnits } from 'viem'
+import { Address } from 'viem'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { keyBy } from 'lodash'
 import { getTotalAprLabel, getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
-import { BPT_DECIMALS } from '../pool.constants'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { bn } from '@/lib/shared/utils/numbers'
+import {
+  calcRawStakedBalance,
+  calcRawTotalBalance,
+  calcRawWalletBalance,
+  calcStakedBalance,
+  calcStakedBalanceUsd,
+  calcTotalBalanceUsd,
+  calcWalletBalance,
+  calcWalletBalanceUsd,
+} from '../userBalance.helpers'
 import { hasNestedPools, shouldBlockAddLiquidity } from '../pool.helpers'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import StakedBalanceDistributionChart from './PoolWeightCharts/StakedBalanceDistributionChart'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
+import { hasNonPreferentialStakedBalance } from '../actions/stake.helpers'
 
 const TABS = [
   {
@@ -52,19 +62,17 @@ export default function PoolMyLiquidity() {
   }
 
   function getBptBalanceForTab() {
-    const parsedTotalBalance = parseUnits(pool.userBalance?.totalBalance || '0', BPT_DECIMALS)
-    const parsedStakedBalance = parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS)
-    const parsedUnstakedBalance = parseUnits(pool.userBalance?.walletBalance || '0', BPT_DECIMALS)
+    const rawTotalBalance = calcRawTotalBalance(pool)
 
     switch (activeTab.value) {
       case 'total':
-        return parsedTotalBalance
+        return rawTotalBalance
       case 'staked':
-        return parsedStakedBalance
+        return calcRawStakedBalance(pool)
       case 'unstaked':
-        return parsedUnstakedBalance
+        return calcRawWalletBalance(pool)
       default:
-        return parsedTotalBalance
+        return rawTotalBalance
     }
   }
 
@@ -97,13 +105,13 @@ export default function PoolMyLiquidity() {
 
     switch (activeTab.value) {
       case 'total':
-        return pool.userBalance?.totalBalanceUsd || 0
+        return calcTotalBalanceUsd(pool)
       case 'staked':
-        return pool.userBalance?.stakedBalanceUsd || 0
+        return calcStakedBalanceUsd(pool)
       case 'unstaked':
-        return pool.userBalance?.walletBalanceUsd || 0
+        return calcWalletBalanceUsd(pool)
       default:
-        return pool.userBalance?.totalBalanceUsd || 0
+        return calcTotalBalanceUsd(pool)
     }
   }
 
@@ -116,9 +124,11 @@ export default function PoolMyLiquidity() {
     return poolTokenBalancesForTab[tokenAddress].amount
   }
 
-  const canStake = pool.staking
-  const hasUnstakedBalance = bn(pool.userBalance?.walletBalance || '0').gt(0)
-  const hasStakedBalance = bn(pool.userBalance?.stakedBalance || '0').gt(0)
+  const hasNonPreferentialBalance = hasNonPreferentialStakedBalance(pool)
+  const canStake = pool.staking && !hasNonPreferentialBalance
+  const shouldMigrateStake = hasNonPreferentialBalance
+  const hasUnstakedBalance = bn(calcWalletBalance(pool)).gt(0)
+  const hasStakedBalance = bn(calcStakedBalance(pool)).gt(0)
   const aprLabel = getTotalAprLabel(pool.dynamicData?.apr.items)
 
   const displayTokens = hasNestedPools(pool)

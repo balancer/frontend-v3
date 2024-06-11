@@ -24,6 +24,7 @@ import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquidityS
 import { useRemoveLiquiditySteps } from './useRemoveLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
+import { calcTotalBalance } from '../../userBalance.helpers'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -48,7 +49,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
 
-  const maxHumanBptIn: HumanAmount = (pool?.userBalance?.totalBalance || '0') as HumanAmount
+  const maxHumanBptIn: HumanAmount = calcTotalBalance(pool)
   const humanBptIn: HumanAmount = bn(maxHumanBptIn)
     .times(humanBptInPercent / 100)
     .toFixed() as HumanAmount

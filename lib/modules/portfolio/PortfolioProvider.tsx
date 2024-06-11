@@ -12,6 +12,11 @@ import BigNumber from 'bignumber.js'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useUserAccount } from '../web3/UserAccountProvider'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import {
+  calcStakedBalance,
+  calcTotalBalance,
+  calcTotalBalanceUsd,
+} from '../pool/userBalance.helpers'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
@@ -58,8 +63,8 @@ function _usePortfolio() {
     let userTotalBalance = bn(0)
 
     data?.pools.forEach(pool => {
-      const stakedBalance = bn(pool.userBalance?.stakedBalance || 0)
-      const poolTotalBalance = bn(pool.userBalance?.totalBalance || 0)
+      const stakedBalance = bn(calcStakedBalance(pool))
+      const poolTotalBalance = bn(calcTotalBalance(pool))
       const unstakedBalance = poolTotalBalance.minus(stakedBalance)
       const isStaked = stakedBalance.gt(0)
       const isUnstaked = unstakedBalance.gt(0)
@@ -71,7 +76,7 @@ function _usePortfolio() {
         unstakedPools.push(pool)
       }
 
-      userTotalBalance = userTotalBalance.plus(pool.userBalance?.totalBalanceUsd || 0)
+      userTotalBalance = userTotalBalance.plus(calcTotalBalanceUsd(pool))
     })
 
     return {
