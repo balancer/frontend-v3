@@ -21,7 +21,7 @@ import { useTokens } from '../TokensProvider'
 import { useTokenBalances } from '../TokenBalancesProvider'
 import { useTokenInput } from './useTokenInput'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { blockInvalidNumberInput, fNum } from '@/lib/shared/utils/numbers'
+import { blockInvalidNumberInput, bn, fNum } from '@/lib/shared/utils/numbers'
 import { TokenIcon } from '../TokenIcon'
 import { useTokenInputsValidation } from '../TokenInputsValidationProvider'
 import { ChevronDown } from 'react-feather'
@@ -111,7 +111,19 @@ function TokenInputFooter({
   const userBalance = token ? balance?.formatted || '0' : '0'
   const usdValue = value && token ? usdValueForToken(token, value) : '0'
 
+  const noBalance = !token || bn(userBalance).isZero()
+
   const showPriceImpact = !isLoadingPriceImpact && hasPriceImpact && priceImpact
+
+  function handleBalanceClick() {
+    if (noBalance) return
+
+    if (value && bn(value).eq(userBalance)) {
+      updateValue('')
+    } else {
+      updateValue(userBalance)
+    }
+  }
 
   return (
     <HStack h="4" w="full" justify="space-between">
@@ -132,16 +144,22 @@ function TokenInputFooter({
       {isBalancesLoading || !isMounted ? (
         <Skeleton w="12" h="full" />
       ) : (
-        <HStack cursor="pointer" onClick={() => updateValue(userBalance)}>
+        <HStack
+          title="Use wallet balance"
+          cursor="pointer"
+          onClick={handleBalanceClick}
+          color={inputLabelColor}
+          _hover={noBalance ? {} : { color: 'font.highlight' }}
+        >
           {hasError && (
-            <Text variant="secondary" fontSize="sm" color={inputLabelColor}>
+            <Text fontSize="sm" color="inherit">
               {getValidationError(token)}
             </Text>
           )}
-          <Text fontSize="sm" variant="secondary" color={inputLabelColor}>
+          <Text fontSize="sm" color="inherit">
             {fNum('token', userBalance, { abbreviated: false })}
           </Text>
-          <Box color={hasError ? 'input.fontHintError' : 'icon.base'}>
+          <Box>
             <WalletIcon size={16} />
           </Box>
         </HStack>
