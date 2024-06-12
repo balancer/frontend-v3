@@ -9,6 +9,7 @@ import { ChartSizeValues } from './PoolWeightChart'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { Pool } from '../../PoolProvider'
+import { calcTotalStakedBalanceUsd, getUserWalletBalanceUsd } from '../../user-balance.helpers'
 
 const smallSize: ChartSizeValues = {
   chartHeight: '125px',
@@ -42,14 +43,11 @@ export default function StakedBalanceDistributionChart({
   const theme = useTheme()
   const colorMode = useThemeColorMode()
 
-  const unstakedBalance =
-    (pool.userBalance?.totalBalanceUsd || 0) - (pool.userBalance?.stakedBalanceUsd || 0)
-
   function getData() {
     const data = []
 
     data.push({
-      value: unstakedBalance,
+      value: getUserWalletBalanceUsd(pool),
       name: 'Unstaked balance',
       itemStyle: {
         color: theme.semanticTokens.colors.font.light,
@@ -57,7 +55,7 @@ export default function StakedBalanceDistributionChart({
     })
 
     data.push({
-      value: pool.userBalance?.stakedBalanceUsd || 0,
+      value: calcTotalStakedBalanceUsd(pool),
       name: 'Staked balance',
       itemStyle: { color: theme.semanticTokens.colors.chart.stakedBalance },
     })
