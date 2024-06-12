@@ -27,7 +27,7 @@ export function SwapReceipt({ txHash }: { txHash: Hash }) {
         <Card variant="modalSubSection">
           {sentToken && (
             <SwapTokenRow
-              label="You payed"
+              label="You paid"
               chain={selectedChain}
               tokenAmount={sentToken.humanAmount}
               tokenAddress={sentToken.tokenAddress}

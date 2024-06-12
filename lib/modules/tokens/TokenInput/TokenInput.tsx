@@ -29,6 +29,7 @@ import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 import { usePriceImpact } from '@/lib/modules/price-impact/PriceImpactProvider'
 import { useEffect, useState } from 'react'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
+import { isNativeAsset } from '@/lib/shared/utils/addresses'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
@@ -104,7 +105,6 @@ function TokenInputFooter({
   const isMounted = useIsMounted()
 
   const hasError = hasValidationError(token)
-  // TODO: replace input.fontHintError with proper theme color
   const inputLabelColor = hasError ? 'input.fontHintError' : 'grayText'
 
   const balance = token ? balanceFor(token?.address) : undefined
@@ -112,11 +112,14 @@ function TokenInputFooter({
   const usdValue = value && token ? usdValueForToken(token, value) : '0'
 
   const noBalance = !token || bn(userBalance).isZero()
+  const _isNativeAsset = token && isNativeAsset(token.chain, token.address)
 
   const showPriceImpact = !isLoadingPriceImpact && hasPriceImpact && priceImpact
 
   function handleBalanceClick() {
-    if (noBalance) return
+    // We return for _isNativeAsset because you can't use your full native asset
+    // balance, you need to save some for a swap.
+    if (noBalance || _isNativeAsset) return
 
     if (value && bn(value).eq(userBalance)) {
       updateValue('')
@@ -146,10 +149,10 @@ function TokenInputFooter({
       ) : (
         <HStack
           title="Use wallet balance"
-          cursor="pointer"
+          cursor={noBalance || _isNativeAsset ? 'default' : 'pointer'}
           onClick={handleBalanceClick}
           color={inputLabelColor}
-          _hover={noBalance ? {} : { color: 'font.highlight' }}
+          _hover={noBalance || _isNativeAsset ? {} : { color: 'font.highlight' }}
         >
           {hasError && (
             <Text fontSize="sm" color="inherit">
