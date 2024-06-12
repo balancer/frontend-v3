@@ -13,7 +13,7 @@ import { useEffect } from 'react'
 import { PoolAlerts } from '../alerts/PoolAlerts'
 import { ClaimProvider } from '../actions/claim/ClaimProvider'
 import { usePoolVariant } from '../pool.hooks'
-import { hasTotalBalance } from '../userBalance.helpers'
+import { hasTotalBalance } from '../user-balance.helpers'
 
 export function PoolDetail() {
   const { pool } = usePool()

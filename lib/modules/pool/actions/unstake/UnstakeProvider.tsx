@@ -14,7 +14,7 @@ import { PoolListItem } from '../../pool.types'
 import { Pool, usePool } from '../../PoolProvider'
 import { useClaimsData } from '../claim/useClaimsData'
 import { useClaimAndUnstakeSteps } from './useClaimAndUnstakeSteps'
-import { calcStakedBalance } from '../../userBalance.helpers'
+import { calcTotalStakedBalance } from '../../user-balance.helpers'
 
 export type UseUnstakeResponse = ReturnType<typeof _useUnstake>
 export const UnstakeContext = createContext<UseUnstakeResponse | null>(null)
@@ -112,6 +112,6 @@ type UnstakeQuote = {
 function getUnstakeQuote(pool: Pool): UnstakeQuote {
   return {
     gaugeAddress: pool.staking?.gauge?.id as Address,
-    amountOut: calcStakedBalance(pool),
+    amountOut: calcTotalStakedBalance(pool),
   }
 }

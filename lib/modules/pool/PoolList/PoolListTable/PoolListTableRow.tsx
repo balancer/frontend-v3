@@ -8,7 +8,7 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { PoolListItem } from '../../pool.types'
 import { PoolListTokenPills } from '../PoolListTokenPills'
-import { calcTotalBalanceUsd } from '../../userBalance.helpers'
+import { getUserTotalBalanceUsd } from '../../user-balance.helpers'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -54,7 +54,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
           {userAddress && (
             <GridItem>
               <Text textAlign="right" fontWeight="medium">
-                {toCurrency(calcTotalBalanceUsd(pool), { abbreviated: false })}
+                {toCurrency(getUserTotalBalanceUsd(pool), { abbreviated: false })}
               </Text>
             </GridItem>
           )}

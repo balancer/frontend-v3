@@ -8,7 +8,7 @@ import { PoolListItem } from '../../pool/pool.types'
 import { getPoolPath, getPoolTypeLabel } from '../../pool/pool.utils'
 import { PoolListTokenPills } from '../../pool/PoolList/PoolListTokenPills'
 import { bn } from '@/lib/shared/utils/numbers'
-import { calcStakedBalance, calcTotalBalanceUsd } from '../../pool/userBalance.helpers'
+import { calcTotalStakedBalance, getUserTotalBalanceUsd } from '../../pool/user-balance.helpers'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -54,7 +54,7 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
           </GridItem>
           <GridItem>
             <Text textAlign="right" fontWeight="medium">
-              {bn(calcStakedBalance(pool)).isGreaterThan(0) ? 'Staked' : 'N/A'}
+              {bn(calcTotalStakedBalance(pool)).isGreaterThan(0) ? 'Staked' : 'N/A'}
             </Text>
           </GridItem>
           {/* TO-DO vebal boost */}
@@ -69,7 +69,7 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
           </GridItem>
           <GridItem>
             <Text textAlign="right" fontWeight="medium">
-              {toCurrency(calcTotalBalanceUsd(pool), { abbreviated: false })}
+              {toCurrency(getUserTotalBalanceUsd(pool), { abbreviated: false })}
             </Text>
           </GridItem>
           <GridItem justifySelf="end">

@@ -10,7 +10,7 @@ import ButtonGroup, {
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { UserSnapshotValues } from './UserSnapshotValues'
 import { PoolSnapshotValues } from './PoolSnapshotValues'
-import { hasTotalBalance } from '../../../userBalance.helpers'
+import { hasTotalBalance } from '../../../user-balance.helpers'
 
 const COMMON_NOISY_CARD_PROPS: { contentProps: BoxProps; cardProps: BoxProps } = {
   contentProps: {

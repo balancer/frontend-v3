@@ -5,17 +5,17 @@ import {
   GqlUserStakedBalance,
 } from '@/lib/shared/services/api/generated/graphql'
 import {
-  calcNonGaugeStakedBalance,
-  calcRawStakedBalance,
-  calcRawTotalBalance,
-  calcRawWalletBalance,
-  calcStakedBalance,
-  calcStakedBalanceUsd,
-  calcTotalBalance,
-  calcTotalBalanceUsd,
-  calcWalletBalance,
-  calcWalletBalanceUsd,
-} from './userBalance.helpers'
+  calcNonVeBalStakedBalance,
+  calcTotalStakedBalanceInt,
+  getUserTotalBalanceInt,
+  getUserWalletBalanceInt,
+  calcTotalStakedBalance,
+  calcTotalStakedBalanceUsd,
+  getUserTotalBalance,
+  getUserTotalBalanceUsd,
+  getUserWalletBalance,
+  getUserWalletBalanceUsd,
+} from './user-balance.helpers'
 
 const apiStakedBalances: GqlUserStakedBalance[] = [
   {
@@ -53,17 +53,17 @@ test('Calculates pool totals', () => {
   }
   pool.userBalance = userBalanceMock
 
-  expect(calcTotalBalance(pool)).toBe('175')
-  expect(calcTotalBalanceUsd(pool)).toBe(300)
-  expect(calcRawTotalBalance(pool)).toBe(175000000000000000000n)
+  expect(getUserTotalBalance(pool)).toBe('175')
+  expect(getUserTotalBalanceUsd(pool)).toBe(300)
+  expect(getUserTotalBalanceInt(pool)).toBe(175000000000000000000n)
 
-  expect(calcStakedBalance(pool)).toBe('74.123') // (preferential staked + non-preferential staked + aura staked) = 0 + 52.123 + 22
-  expect(calcStakedBalanceUsd(pool)).toBe(57.9)
-  expect(calcRawStakedBalance(pool)).toBe(74123000000000000000n)
+  expect(calcTotalStakedBalance(pool)).toBe('74.123') // (preferential staked + non-preferential staked + aura staked) = 0 + 52.123 + 22
+  expect(calcTotalStakedBalanceUsd(pool)).toBe(57.9)
+  expect(calcTotalStakedBalanceInt(pool)).toBe(74123000000000000000n)
 
-  expect(calcWalletBalance(pool)).toBe('100')
-  expect(calcWalletBalanceUsd(pool)).toBe(200)
-  expect(calcRawWalletBalance(pool)).toBe(100000000000000000000n)
+  expect(getUserWalletBalance(pool)).toBe('100')
+  expect(getUserWalletBalanceUsd(pool)).toBe(200)
+  expect(getUserWalletBalanceInt(pool)).toBe(100000000000000000000n)
 
-  expect(calcNonGaugeStakedBalance(pool)).toBe(22) // aura staked
+  expect(calcNonVeBalStakedBalance(pool)).toBe(22) // aura staked
 })

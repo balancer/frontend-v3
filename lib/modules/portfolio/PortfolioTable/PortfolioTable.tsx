@@ -10,7 +10,7 @@ import { useVebalBoost } from '../../vebal/useVebalBoost'
 import { useOnchainUserPoolBalances } from '../../pool/queries/useOnchainUserPoolBalances'
 import { Pool } from '../../pool/PoolProvider'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { calcStakedBalance, calcTotalBalanceUsd } from '../../pool/userBalance.helpers'
+import { calcTotalStakedBalance, getUserTotalBalanceUsd } from '../../pool/user-balance.helpers'
 
 export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr'
 export interface PortfolioSortingData {
@@ -71,8 +71,8 @@ export function PortfolioTable() {
 
     return arr.sort((a, b) => {
       if (currentSortingObj.id === 'staking') {
-        const aStakedBalance = Number(calcStakedBalance(a))
-        const bStakedBalance = Number(calcStakedBalance(b))
+        const aStakedBalance = Number(calcTotalStakedBalance(a))
+        const bStakedBalance = Number(calcTotalStakedBalance(b))
 
         return currentSortingObj.desc
           ? bStakedBalance - aStakedBalance
@@ -86,8 +86,8 @@ export function PortfolioTable() {
       }
 
       if (currentSortingObj.id === 'liquidity') {
-        const aTotalBalance = calcTotalBalanceUsd(a)
-        const bTotalBalance = calcTotalBalanceUsd(b)
+        const aTotalBalance = getUserTotalBalanceUsd(a)
+        const bTotalBalance = getUserTotalBalanceUsd(b)
 
         return currentSortingObj.desc
           ? bTotalBalance - aTotalBalance

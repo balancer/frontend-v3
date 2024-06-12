@@ -19,7 +19,7 @@ import { isNotMainet } from '../chains/chain.utils'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
 import { PoolIssue } from './alerts/pool-issues/PoolIssue.type'
 import { isNil } from 'lodash'
-import { calcRawTotalBalance } from './userBalance.helpers'
+import { getUserTotalBalanceInt } from './user-balance.helpers'
 
 /**
  * METHODS
@@ -154,7 +154,7 @@ export function createdAfterTimestamp(pool: GqlPoolBase): boolean {
 }
 
 export function calcUserShareOfPool(pool: Pool) {
-  const userBalance = calcRawTotalBalance(pool)
+  const userBalance = getUserTotalBalanceInt(pool)
   return calcShareOfPool(pool, userBalance)
 }
 

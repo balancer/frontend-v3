@@ -12,7 +12,7 @@ import { useEffect } from 'react'
 import { ReadContractsErrorType } from 'wagmi/actions'
 import { Pool as OriginalPool } from '../PoolProvider'
 import { calcBptPriceFor } from '../pool.helpers'
-import { calcNonGaugeStakedBalance } from '../userBalance.helpers'
+import { calcNonVeBalStakedBalance } from '../user-balance.helpers'
 import { GaugeStakedBalancesByPoolId, useUserStakedBalance } from './useUserStakedBalance'
 import { UnstakedBalanceByPoolId, useUserUnstakedBalance } from './useUserUnstakedBalance'
 
@@ -126,7 +126,7 @@ function overwriteOnchainPoolBalanceData(
 
     // Total balances
     const totalBalance =
-      calcNonGaugeStakedBalance(pool) + onchainTotalGaugeStakedBalance + onchainUnstakedBalance
+      calcNonVeBalStakedBalance(pool) + onchainTotalGaugeStakedBalance + onchainUnstakedBalance
     const totalBalanceUsd = Number(bn(totalBalance).times(bptPrice))
 
     const userBalance: GqlPoolUserBalance = {

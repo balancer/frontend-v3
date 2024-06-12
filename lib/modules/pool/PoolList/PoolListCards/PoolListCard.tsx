@@ -15,7 +15,7 @@ import {
 import { useRouter } from 'next/navigation'
 import { PoolName } from '../../PoolName'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { calcTotalBalanceUsd } from '../../userBalance.helpers'
+import { getUserTotalBalanceUsd } from '../../user-balance.helpers'
 
 interface Props {
   pool: PoolListItem
@@ -76,7 +76,9 @@ export function PoolListCard({ pool }: Props) {
               <StatCard
                 label="My Liquidity"
                 value={
-                  userAddress ? toCurrency(calcTotalBalanceUsd(pool), { abbreviated: false }) : '-'
+                  userAddress
+                    ? toCurrency(getUserTotalBalanceUsd(pool), { abbreviated: false })
+                    : '-'
                 }
               />
             </GridItem>

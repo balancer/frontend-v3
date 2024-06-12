@@ -15,15 +15,15 @@ import { getTotalAprLabel, getProportionalExitAmountsFromScaledBptIn } from '../
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { bn } from '@/lib/shared/utils/numbers'
 import {
-  calcRawStakedBalance,
-  calcRawTotalBalance,
-  calcRawWalletBalance,
-  calcStakedBalance,
-  calcStakedBalanceUsd,
-  calcTotalBalanceUsd,
-  calcWalletBalance,
-  calcWalletBalanceUsd,
-} from '../userBalance.helpers'
+  calcTotalStakedBalanceInt,
+  getUserTotalBalanceInt,
+  getUserWalletBalanceInt,
+  calcTotalStakedBalance,
+  calcTotalStakedBalanceUsd,
+  getUserTotalBalanceUsd,
+  getUserWalletBalance,
+  getUserWalletBalanceUsd,
+} from '../user-balance.helpers'
 import { hasNestedPools, shouldBlockAddLiquidity } from '../pool.helpers'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
@@ -63,15 +63,15 @@ export default function PoolMyLiquidity() {
   }
 
   function getBptBalanceForTab() {
-    const rawTotalBalance = calcRawTotalBalance(pool)
+    const rawTotalBalance = getUserTotalBalanceInt(pool)
 
     switch (activeTab.value) {
       case 'total':
         return rawTotalBalance
       case 'staked':
-        return calcRawStakedBalance(pool)
+        return calcTotalStakedBalanceInt(pool)
       case 'unstaked':
-        return calcRawWalletBalance(pool)
+        return getUserWalletBalanceInt(pool)
       default:
         return rawTotalBalance
     }
@@ -106,13 +106,13 @@ export default function PoolMyLiquidity() {
 
     switch (activeTab.value) {
       case 'total':
-        return calcTotalBalanceUsd(pool)
+        return getUserTotalBalanceUsd(pool)
       case 'staked':
-        return calcStakedBalanceUsd(pool)
+        return calcTotalStakedBalanceUsd(pool)
       case 'unstaked':
-        return calcWalletBalanceUsd(pool)
+        return getUserWalletBalanceUsd(pool)
       default:
-        return calcTotalBalanceUsd(pool)
+        return getUserTotalBalanceUsd(pool)
     }
   }
 
@@ -130,8 +130,8 @@ export default function PoolMyLiquidity() {
   const hasNonPreferentialBalance = false
   const canStake = pool.staking && !hasNonPreferentialBalance
   const shouldMigrateStake = hasNonPreferentialBalance
-  const hasUnstakedBalance = bn(calcWalletBalance(pool)).gt(0)
-  const hasStakedBalance = bn(calcStakedBalance(pool)).gt(0)
+  const hasUnstakedBalance = bn(getUserWalletBalance(pool)).gt(0)
+  const hasStakedBalance = bn(calcTotalStakedBalance(pool)).gt(0)
   const aprLabel = getTotalAprLabel(pool.dynamicData?.apr.items)
 
   const displayTokens = hasNestedPools(pool)

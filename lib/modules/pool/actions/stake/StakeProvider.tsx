@@ -13,7 +13,7 @@ import { useStakeSteps } from './useStakeSteps'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { bn } from '@/lib/shared/utils/numbers'
 import { HumanAmount } from '@balancer/sdk'
-import { calcWalletBalance, calcWalletBalanceUsd } from '../../userBalance.helpers'
+import { getUserWalletBalance, getUserWalletBalanceUsd } from '../../user-balance.helpers'
 
 export type UseStakeResponse = ReturnType<typeof _useStake>
 export const StakeContext = createContext<UseStakeResponse | null>(null)
@@ -49,8 +49,8 @@ export function _useStake() {
    * Side-effects
    */
   useEffect(() => {
-    const stakableBalance: HumanAmount = calcWalletBalance(pool)
-    const stakableBalanceUsd: HumanAmount = calcWalletBalanceUsd(pool).toFixed() as HumanAmount
+    const stakableBalance: HumanAmount = getUserWalletBalance(pool)
+    const stakableBalanceUsd: HumanAmount = getUserWalletBalanceUsd(pool).toFixed() as HumanAmount
 
     if (bn(stakableBalance).gt(0)) {
       setQuoteAmountIn(stakableBalance)

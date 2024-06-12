@@ -6,7 +6,7 @@ import { BPT_DECIMALS } from './pool.constants'
 import { HumanAmount } from '@balancer/sdk'
 import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 
-export function calcStakedBalance(pool: Pool | PoolListItem): HumanAmount {
+export function calcTotalStakedBalance(pool: Pool | PoolListItem): HumanAmount {
   const userBalance = pool.userBalance
   if (!userBalance) return '0'
 
@@ -15,7 +15,7 @@ export function calcStakedBalance(pool: Pool | PoolListItem): HumanAmount {
   ) as HumanAmount
 }
 
-export function calcStakedBalanceUsd(pool: Pool): number {
+export function calcTotalStakedBalanceUsd(pool: Pool): number {
   const userBalance = pool.userBalance
   if (!userBalance) return 0
 
@@ -24,51 +24,51 @@ export function calcStakedBalanceUsd(pool: Pool): number {
   )
 }
 
-export function calcRawStakedBalance(pool: Pool): bigint {
-  return parseUnits(calcStakedBalance(pool), BPT_DECIMALS)
+export function calcTotalStakedBalanceInt(pool: Pool): bigint {
+  return parseUnits(calcTotalStakedBalance(pool), BPT_DECIMALS)
 }
 
-export function calcTotalBalance(pool: Pool | PoolListItem): HumanAmount {
+export function getUserTotalBalance(pool: Pool | PoolListItem): HumanAmount {
   const userBalance = pool.userBalance
   if (!userBalance) return '0'
 
   return userBalance.totalBalance as HumanAmount
 }
 
-export function calcWalletBalance(pool: Pool): HumanAmount {
+export function getUserWalletBalance(pool: Pool): HumanAmount {
   const userBalance = pool.userBalance
   if (!userBalance) return '0'
 
   return userBalance.walletBalance as HumanAmount
 }
 
-export function calcWalletBalanceUsd(pool: Pool): number {
+export function getUserWalletBalanceUsd(pool: Pool): number {
   const userBalance = pool.userBalance
   if (!userBalance) return 0
 
   return userBalance.walletBalanceUsd
 }
 
-export function calcRawWalletBalance(pool: Pool): bigint {
-  return parseUnits(calcWalletBalance(pool), BPT_DECIMALS)
+export function getUserWalletBalanceInt(pool: Pool): bigint {
+  return parseUnits(getUserWalletBalance(pool), BPT_DECIMALS)
 }
 
-export function calcTotalBalanceUsd(pool: Pool | PoolListItem): number {
+export function getUserTotalBalanceUsd(pool: Pool | PoolListItem): number {
   const userBalance = pool.userBalance
   if (!userBalance) return 0
 
   return userBalance.totalBalanceUsd
 }
 
-export function calcRawTotalBalance(pool: Pool): bigint {
-  return parseUnits(calcTotalBalance(pool), BPT_DECIMALS)
+export function getUserTotalBalanceInt(pool: Pool): bigint {
+  return parseUnits(getUserTotalBalance(pool), BPT_DECIMALS)
 }
 
 /*
-   The api provides staked balances tha, for now, we don't fetch onchain (AURA, FARMING, etc.)
-   We need this to use this "non gauge staked balance" in the totalBalance calculation
+   The api provides staked balances that, for now, we don't fetch onchain (AURA, FARMING, etc.)
+   We need this "non veBal staked balance" in the totalBalance calculation
 */
-export function calcNonGaugeStakedBalance(pool: Pool): number {
+export function calcNonVeBalStakedBalance(pool: Pool): number {
   const userBalance = pool.userBalance
   if (!userBalance) return 0
 
@@ -80,5 +80,5 @@ export function calcNonGaugeStakedBalance(pool: Pool): number {
 }
 
 export function hasTotalBalance(pool: Pool) {
-  return bn(calcTotalBalance(pool)).gt(0)
+  return bn(getUserTotalBalance(pool)).gt(0)
 }
