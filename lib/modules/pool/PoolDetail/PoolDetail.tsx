@@ -1,6 +1,6 @@
 'use client'
 
-import { VStack, Image } from '@chakra-ui/react'
+import { VStack, Image, Stack } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
 import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
 import { PoolInfoLayout } from './PoolInfo/PoolInfoLayout'
@@ -10,16 +10,33 @@ import { bn } from '@/lib/shared/utils/numbers'
 import { PoolStatsLayout } from './PoolStats/PoolStatsLayout'
 import { PoolHeader } from './PoolHeader/PoolHeader'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { PoolAlerts } from '../alerts/PoolAlerts'
 import { ClaimProvider } from '../actions/claim/ClaimProvider'
 import { usePoolVariant } from '../pool.hooks'
+import { GqlPoolEventsDataRange } from '@/lib/shared/services/api/generated/graphql'
+import { usePoolUserEvents } from './PoolUserEvents/usePoolUserEvents'
+import { useUserAccount } from '../../web3/UserAccountProvider'
+import PoolUserEvents from './PoolUserEvents/PoolUserEvents'
 
 export function PoolDetail() {
-  const { pool } = usePool()
+  const { pool, chain } = usePool()
   const router = useRouter()
   const pathname = usePathname()
   const { variant, banners } = usePoolVariant()
+  const { userAddress } = useUserAccount()
+  const { data: userPoolEventsData } = usePoolUserEvents({
+    chain,
+    poolId: pool.id,
+    range: GqlPoolEventsDataRange.SevenDays,
+    userAddress,
+  })
+
+  const userhasPoolEvents = useMemo(() => {
+    if (userPoolEventsData) {
+      return userPoolEventsData.events?.length > 0
+    }
+  }, [userPoolEventsData])
 
   const userHasLiquidity = bn(pool.userBalance?.totalBalance || '0').gt(0)
 
@@ -43,7 +60,12 @@ export function PoolDetail() {
           {banners?.headerSrc && <Image src={banners.headerSrc} alt={`${variant}-header`} />}
           <PoolStatsLayout />
         </VStack>
-        {userHasLiquidity && <PoolMyLiquidity />}
+        {(userHasLiquidity || userhasPoolEvents) && (
+          <Stack direction={{ base: 'column', md: 'row' }} w="full">
+            <PoolMyLiquidity />
+            {userPoolEventsData && <PoolUserEvents poolEvents={userPoolEventsData.events} />}
+          </Stack>
+        )}
         <PoolActivityChart />
         <PoolComposition />
         <PoolInfoLayout />

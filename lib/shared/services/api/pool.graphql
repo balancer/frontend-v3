@@ -514,3 +514,32 @@ query GetPoolEvents($first: Int, $poolId: String!, $chain: GqlChain!) {
     }
   }
 }
+
+query GetPoolUserEvents(
+  $chain: GqlChain!
+  $poolId: String!
+  $range: GqlPoolEventsDataRange!
+  $typeIn: [GqlPoolEventType!]!
+  $userAddress: String
+) {
+  events: poolGetEvents(
+    chain: $chain
+    poolId: $poolId
+    range: $range
+    typeIn: $typeIn
+    userAddress: $userAddress
+  ) {
+    id
+    timestamp
+    tx
+    type
+    valueUSD
+    ... on GqlPoolAddRemoveEventV3 {
+      tokens {
+        address
+        amount
+        valueUSD
+      }
+    }
+  }
+}
