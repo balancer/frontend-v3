@@ -18,7 +18,7 @@ export const defaultAnvilTestPrivateKey =
 // anvil account address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 export const defaultTestUserAccount = privateKeyToAccount(defaultAnvilTestPrivateKey as Hex).address
 export const alternativeTestUserAccount = '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
-export const userStakedInNonPreferentialGauge = '0xE0Dd0C6a3F0A34c5175b65Bbd227710d9A5E09c8'
+export const userStakedInNonPreferentialGauge = '0x8163A459AC37f79D7E6845D4A3839AAa7F7f1bAd'
 
 export const testAccounts: Address[] = [
   // Wagmi accounts
@@ -49,7 +49,8 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
     port: ANVIL_PORTS.Ethereum,
     // From time to time this block gets outdated having this kind of error in integration tests:
     // ContractFunctionExecutionError: The contract function "queryJoin" returned no data ("0x").
-    forkBlockNumber: 19769489n,
+    // forkBlockNumber: 19769489n,
+    forkBlockNumber: 20061849n,
   },
   Polygon: {
     networkName: 'Polygon',

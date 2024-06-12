@@ -129,6 +129,11 @@ query GetPools(
           tokenAddress
         }
       }
+      aura {
+        id
+        apr
+        auraPoolAddress
+      }
     }
     factory
     id
@@ -139,8 +144,14 @@ query GetPools(
     userBalance {
       totalBalance
       totalBalanceUsd
-      stakedBalance
       walletBalance
+      walletBalanceUsd
+      stakedBalances {
+        balance
+        balanceUsd
+        stakingType
+        stakingId
+      }
     }
   }
   count: poolGetPoolsCount(

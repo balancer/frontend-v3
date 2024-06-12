@@ -1,16 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { GqlPoolUserBalance } from '@/lib/shared/services/api/generated/graphql'
-import { bn } from '@/lib/shared/utils/numbers'
+import {
+  GqlPoolUserBalance,
+  GqlUserStakedBalance,
+} from '@/lib/shared/services/api/generated/graphql'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import { captureNonFatalError } from '@/lib/shared/utils/query-errors'
 import { HumanAmount } from '@balancer/sdk'
+import BigNumber from 'bignumber.js'
 import { useEffect } from 'react'
-import { formatUnits } from 'viem'
 import { ReadContractsErrorType } from 'wagmi/actions'
-import { Pool } from '../PoolProvider'
-import { BPT_DECIMALS } from '../pool.constants'
-import { calcBptPrice } from '../pool.helpers'
-import { StakedBalancesByPoolId, useUserStakedBalance } from './useUserStakedBalance'
+import { Pool as OriginalPool } from '../PoolProvider'
+import { calcBptPriceFor } from '../pool.helpers'
+import { calcNonVeBalStakedBalance } from '../user-balance.helpers'
+import { GaugeStakedBalancesByPoolId, useUserStakedBalance } from './useUserStakedBalance'
 import { UnstakedBalanceByPoolId, useUserUnstakedBalance } from './useUserUnstakedBalance'
+
+type Pool = OriginalPool & {
+  nonGaugeStakedBalance?: BigNumber
+}
 
 export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   const {
@@ -21,7 +29,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   } = useUserUnstakedBalance(pools)
 
   const {
-    stakedBalancesByPoolId,
+    gaugeStakedBalancesByPoolId,
     isLoading: isLoadingStakedPoolBalances,
     refetch: refetchedStakedBalances,
     error: stakedPoolBalancesError,
@@ -36,7 +44,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   const enrichedPools = overwriteOnchainPoolBalanceData(
     pools,
     unstakedBalanceByPoolId,
-    stakedBalancesByPoolId
+    gaugeStakedBalancesByPoolId
   )
 
   useEffect(() => {
@@ -94,53 +102,41 @@ function captureUnstakedMulticallError(unstakedPoolBalancesError: ReadContractsE
 function overwriteOnchainPoolBalanceData(
   pools: Pool[],
   ocUnstakedBalances: UnstakedBalanceByPoolId,
-  ocStakedBalances: StakedBalancesByPoolId
+  gaugeStakedBalancesByPoolId: GaugeStakedBalancesByPoolId
 ) {
-  return pools.map((pool, i) => {
-    if (!Object.keys(ocUnstakedBalances).length || !Object.keys(ocStakedBalances).length) {
+  return pools.map(pool => {
+    if (
+      !Object.keys(ocUnstakedBalances).length ||
+      !Object.keys(gaugeStakedBalancesByPoolId).length
+    ) {
       return pool
     }
-    const bptPrice = calcBptPrice(pool.dynamicData.totalLiquidity, pool.dynamicData.totalShares)
+    const bptPrice = calcBptPriceFor(pool)
 
     // Unstaked balances
-    const poolUnstakedBalance = ocUnstakedBalances[pool.id]
-    const unstakedBalance = poolUnstakedBalance.unstakedBalance as HumanAmount
-    const unstakedBalanceUsd = bn(unstakedBalance).times(bptPrice).toNumber()
+    const onchainUnstakedBalances = ocUnstakedBalances[pool.id]
+    const onchainUnstakedBalance = onchainUnstakedBalances.unstakedBalance as HumanAmount
+    const onchainUnstakedBalanceUsd = bn(onchainUnstakedBalance).times(bptPrice).toNumber()
 
     // Staked balances
-    const poolStakedBalances = ocStakedBalances[pool.id]
-    const stakedBalance = poolStakedBalances.stakedBalance as HumanAmount //TODO: add third party staked balance from API
-    const stakedBalanceUsd = bn(poolStakedBalances.stakedBalanceUsd).toNumber()
-    const nonPreferentialStakedBalance =
-      poolStakedBalances.nonPreferentialStakedBalance as HumanAmount
-    const nonPreferentialStakedBalanceUsd = bn(
-      poolStakedBalances.nonPreferentialStakedBalanceUsd
-    ).toNumber()
+    const onchainGaugeStakedBalances = gaugeStakedBalancesByPoolId[pool.id]
+    const onchainTotalGaugeStakedBalance = Number(
+      safeSum(onchainGaugeStakedBalances.map(stakedBalance => bn(stakedBalance.balance)))
+    )
 
-    //Totals
-    const totalStakedBalanceRaw =
-      BigInt(poolUnstakedBalance.rawUnstakedBalance) + // BigInt casting here is needed because, weirdly, result can be a string of 0.
-      poolStakedBalances.rawStakedBalance +
-      poolStakedBalances.nonPreferentialRawStakedBalance
-    const totalBalance = formatUnits(totalStakedBalanceRaw, BPT_DECIMALS)
-    const totalBalanceUsd = bn(totalBalance).times(bptPrice).toNumber()
+    // Total balances
+    const totalBalance =
+      calcNonVeBalStakedBalance(pool) + onchainTotalGaugeStakedBalance + onchainUnstakedBalance
+    const totalBalanceUsd = Number(bn(totalBalance).times(bptPrice))
 
-    // These fields do not exist in API yet but they will be added soon
-    type FutureApiFields = {
-      nonPreferentialStakedBalance: string
-      nonPreferentialStakedBalanceUsd: number
-    }
-    const userBalance: GqlPoolUserBalance & FutureApiFields = {
+    const userBalance: GqlPoolUserBalance = {
       __typename: 'GqlPoolUserBalance',
       ...(pool.userBalance || {}),
-      stakedBalance,
-      stakedBalanceUsd,
-      walletBalance: unstakedBalance,
-      walletBalanceUsd: unstakedBalanceUsd,
+      stakedBalances: overrideStakedBalances(pool, gaugeStakedBalancesByPoolId[pool.id]),
+      walletBalance: onchainUnstakedBalance,
+      walletBalanceUsd: onchainUnstakedBalanceUsd,
       totalBalance,
       totalBalanceUsd,
-      nonPreferentialStakedBalance,
-      nonPreferentialStakedBalanceUsd,
     }
 
     return {
@@ -148,4 +144,27 @@ function overwriteOnchainPoolBalanceData(
       userBalance,
     }
   })
+}
+
+/* Returns a GqlUserStakedBalance[] array by overriding pool.userBalance.stakedBalances with the given onchain gauge staking balances.
+ */
+function overrideStakedBalances(
+  pool: Pool,
+  onChainGaugeStakedBalances: GqlUserStakedBalance[]
+): GqlUserStakedBalance[] {
+  if (!pool.userBalance) return onChainGaugeStakedBalances
+  const apiStakedBalances = [...pool.userBalance.stakedBalances]
+
+  onChainGaugeStakedBalances.forEach(onchainStakedBalance => {
+    // Index of the onchain gauge in the api staked balances
+    const index = apiStakedBalances.findIndex(apiBalance =>
+      isSameAddress(apiBalance.stakingId, onchainStakedBalance.stakingId)
+    )
+    if (index === -1) {
+      apiStakedBalances.push(onchainStakedBalance)
+    } else {
+      apiStakedBalances[index] = onchainStakedBalance
+    }
+  })
+  return apiStakedBalances
 }

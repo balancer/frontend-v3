@@ -11,7 +11,6 @@ import { SdkSimulateSwapResponse } from './swap.types'
 import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
 import { useTokens } from '../tokens/TokensProvider'
 import { NativeWrapHandler } from './handlers/NativeWrap.handler'
-import { useEffect } from 'react'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 
 export function OrderRoute() {
@@ -40,11 +39,9 @@ export function SwapDetails() {
   const { toCurrency } = useCurrency()
   const { slippage, slippageDecimal } = useUserSettings()
   const { usdValueForToken } = useTokens()
-  const { tokenInInfo, tokenOutInfo, swapType, tokenIn, tokenOut, handler, simulationQuery } =
-    useSwap()
+  const { tokenInInfo, tokenOutInfo, swapType, tokenIn, tokenOut, handler } = useSwap()
 
-  const { priceImpactLevel, priceImpactColor, PriceImpactIcon, setPriceImpact, priceImpact } =
-    usePriceImpact()
+  const { priceImpactLevel, priceImpactColor, PriceImpactIcon, priceImpact } = usePriceImpact()
 
   const isDefaultSwap = handler instanceof DefaultSwapHandler
   const isNativeWrapOrUnwrap = handler instanceof NativeWrapHandler
@@ -61,13 +58,24 @@ export function SwapDetails() {
   const priceImpacUsd = bn(priceImpact || 0).times(returnAmountUsd)
   const maxSlippageUsd = bn(_slippage).div(100).times(returnAmountUsd)
 
-  const limitLabel =
-    swapType === GqlSorSwapType.ExactIn ? "You'll get at least" : "You'll pay at most"
-  const limitToken = swapType === GqlSorSwapType.ExactIn ? tokenOutInfo : tokenInInfo
-  const limitValue =
-    swapType === GqlSorSwapType.ExactIn
-      ? bn(tokenOut.amount).minus(bn(tokenOut.amount).times(_slippageDecimal)).toString()
-      : bn(tokenIn.amount).plus(bn(tokenIn.amount).times(_slippageDecimal)).toString()
+  const isExactIn = swapType === GqlSorSwapType.ExactIn
+
+  const limitLabel = isExactIn ? "You'll get at least" : "You'll pay at most"
+  const limitToken = isExactIn ? tokenOutInfo : tokenInInfo
+  const limitValue = isExactIn
+    ? bn(tokenOut.amount).minus(bn(tokenOut.amount).times(_slippageDecimal)).toString()
+    : bn(tokenIn.amount).plus(bn(tokenIn.amount).times(_slippageDecimal)).toString()
+  const limitTooltip = isExactIn
+    ? 'You will get at least this amount of token out.'
+    : 'You will pay at most this amount of token in.'
+
+  const slippageLabel = isExactIn
+    ? `This is the maximum slippage that the swap will allow. 
+        It is based on the quoted amount out minus your slippage tolerance, using current market prices.
+        You can change your slippage tolerance in your settings.`
+    : `This is the maximum slippage that the swap will allow. 
+        It is based on the quoted amount in plus your slippage tolerance, using current market prices.
+        You can change your slippage tolerance in your settings.`
 
   return (
     <VStack spacing="sm" align="start" w="full" fontSize="sm">
@@ -81,7 +89,11 @@ export function SwapDetails() {
               -{toCurrency(priceImpacUsd, { abbreviated: false })} (-{priceImpactLabel})
             </NumberText>
           )}
-          <Tooltip label="Price impact" fontSize="sm">
+          <Tooltip
+            // eslint-disable-next-line max-len
+            label="This is the negative price impact of the swap based on the current market prices of the token in vs token out."
+            fontSize="sm"
+          >
             {priceImpactLevel === 'low' ? (
               <InfoIcon />
             ) : (
@@ -98,7 +110,7 @@ export function SwapDetails() {
           <NumberText color="grayText">
             -{toCurrency(maxSlippageUsd, { abbreviated: false })} (-{fNum('slippage', _slippage)})
           </NumberText>
-          <Tooltip label="Max slippage" fontSize="sm">
+          <Tooltip label={slippageLabel} fontSize="sm">
             <InfoIcon />
           </Tooltip>
         </HStack>
@@ -109,7 +121,7 @@ export function SwapDetails() {
           <NumberText color="grayText">
             {fNum('token', limitValue, { abbreviated: false })} {limitToken?.symbol}
           </NumberText>
-          <Tooltip label="This is the result if maximum slippage occurs." fontSize="sm">
+          <Tooltip label={limitTooltip} fontSize="sm">
             <InfoIcon />
           </Tooltip>
         </HStack>

@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { useUnstakeFromNonPreferentialGaugeStep } from './useUnstakeFromNonPreferentialGaugeStep'
 import { useStakeSteps } from '../stake/useStakeSteps'
 import { HumanAmount } from '@balancer/sdk'
-import { findNonPreferentialStaking } from '../stake.helpers'
+import { findFirstNonPreferentialStaking } from '../stake.helpers'
 import { useClaimAndUnstakeSteps } from '../unstake/useClaimAndUnstakeSteps'
 import { Address } from 'viem'
 
@@ -14,7 +14,7 @@ export function useMigrateStakeSteps(
   refetchPoolBalances: () => void
 ) {
   const { nonPreferentialGaugeAddress, nonPreferentialStakedBalance, isClaimable } =
-    findNonPreferentialStaking(pool)
+    findFirstNonPreferentialStaking(pool)
   const { step: unstakeStep } = useUnstakeFromNonPreferentialGaugeStep(pool, refetchPoolBalances)
   const { steps: claimAndUnstakeSteps } = useClaimAndUnstakeSteps({
     pool,

@@ -1,7 +1,10 @@
 import { getChainId } from '@/lib/config/app.config'
-import { bn, isZero, safeSum } from '@/lib/shared/utils/numbers'
-import { HumanAmount } from '@balancer/sdk'
-import { groupBy, mapValues } from 'lodash'
+import {
+  GqlPoolStakingType,
+  GqlUserStakedBalance,
+} from '@/lib/shared/services/api/generated/graphql'
+import { bn } from '@/lib/shared/utils/numbers'
+import { groupBy } from 'lodash'
 import { Address, formatUnits } from 'viem'
 import { useReadContracts } from 'wagmi'
 import { useUserAccount } from '../../web3/UserAccountProvider'
@@ -10,9 +13,9 @@ import { Pool } from '../PoolProvider'
 import { BPT_DECIMALS } from '../pool.constants'
 import { calcBptPrice } from '../pool.helpers'
 
-export type StakedBalancesByPoolId = ReturnType<
+export type GaugeStakedBalancesByPoolId = ReturnType<
   typeof useUserStakedBalance
->['stakedBalancesByPoolId']
+>['gaugeStakedBalancesByPoolId']
 
 export function useUserStakedBalance(pools: Pool[] = []) {
   const { userAddress, isConnected } = useUserAccount()
@@ -30,76 +33,37 @@ export function useUserStakedBalance(pools: Pool[] = []) {
     contracts,
   })
 
-  // for each pool get the staked balance by gauge address
-  const stakedBalancesByGauge = stakedPoolBalances.map((rawBalance, index) => {
+  // for each pool replicate APIs GqlPoolUserBalance.stakedBalances api's type
+  const gaugeStakedBalances = stakedPoolBalances.map((rawBalance, index) => {
     const gaugeAddress = contracts[index].address
     const pool = poolByGauge[contracts[index].address]
     const bptPrice = calcBptPrice(pool.dynamicData.totalLiquidity, pool.dynamicData.totalShares)
     const humanStakedBalance = formatUnits(rawBalance || 0n, BPT_DECIMALS)
+
+    const stakedBalance: GqlUserStakedBalance = {
+      __typename: 'GqlUserStakedBalance',
+      stakingId: gaugeAddress,
+      balance: humanStakedBalance,
+      balanceUsd: bn(humanStakedBalance).times(bptPrice).toNumber(),
+      stakingType: GqlPoolStakingType.Gauge,
+    }
     return {
       poolId: pool.id,
-      gaugeAddress,
-      isPreferential: gaugeAddress === pool.staking?.gauge?.gaugeAddress,
-      rawStakedBalance: rawBalance,
-      stakedBalance: humanStakedBalance,
-      stakedBalanceUsd: bn(humanStakedBalance).times(bptPrice),
+      ...stakedBalance,
     }
   })
 
-  // group staked balances and calculate totals by poolId
-  const stakedBalancesByPoolId = mapValues(groupBy(stakedBalancesByGauge, 'poolId'), balances => {
-    // Staked balance in preferential gauge
-    const preferentialBalance = balances.find(balance => balance.isPreferential)
-    const rawStakedBalance = preferentialBalance?.rawStakedBalance || 0n
-    const stakedBalance = formatUnits(rawStakedBalance || 0n, BPT_DECIMALS) as HumanAmount
-    const stakedBalanceUsd = preferentialBalance?.stakedBalanceUsd || '0'
-
-    // Staked balance in non-preferential gauges
-    const nonPreferentialBalances = balances.filter(balance => !balance.isPreferential)
-    const nonPreferentialRawStakedBalance = BigInt(
-      safeSum(nonPreferentialBalances.map(balance => balance.rawStakedBalance))
-    )
-    const nonPreferentialStakedBalance = formatUnits(
-      nonPreferentialRawStakedBalance || 0n,
-      BPT_DECIMALS
-    ) as HumanAmount
-    const nonPreferentialStakedBalanceUsd = safeSum(
-      balances.filter(balance => !balance.isPreferential).map(balance => balance.stakedBalanceUsd)
-    )
-
-    return {
-      // Includes gauges with 0 balance
-      allStakedBalances: balances,
-      // Only gauges with positive balance
-      positiveStakedBalances: balances.filter(balance => !isZero(balance.stakedBalance)),
-      stakedBalance,
-      stakedBalanceUsd,
-      rawStakedBalance,
-      nonPreferentialStakedBalance,
-      nonPreferentialStakedBalanceUsd,
-      nonPreferentialRawStakedBalance,
-    }
-  })
+  const gaugeStakedBalancesByPoolId = groupBy(gaugeStakedBalances, 'poolId')
 
   // return empty results for pools without gauges
   pools.forEach(pool => {
-    if (!stakedBalancesByPoolId[pool.id]) {
-      stakedBalancesByPoolId[pool.id] = {
-        allStakedBalances: [],
-        positiveStakedBalances: [],
-        stakedBalance: '0',
-        stakedBalanceUsd: '0',
-        rawStakedBalance: BigInt(0),
-        nonPreferentialStakedBalance: '0',
-        nonPreferentialStakedBalanceUsd: '0',
-        nonPreferentialRawStakedBalance: 0n,
-      }
+    if (!gaugeStakedBalancesByPoolId[pool.id]) {
+      gaugeStakedBalancesByPoolId[pool.id] = []
     }
   })
 
   return {
-    stakedBalances: stakedBalancesByGauge,
-    stakedBalancesByPoolId,
+    gaugeStakedBalancesByPoolId,
     isLoading,
     refetch,
     error,

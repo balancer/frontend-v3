@@ -3,7 +3,11 @@ import { Pool } from '../PoolProvider'
 import { Address } from 'viem'
 import { HumanAmount } from '@balancer/sdk'
 import { isClaimableGauge } from '../pool.helpers'
-import { GqlPoolStakingOtherGauge } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GqlPoolStakingType,
+  GqlUserStakedBalance,
+} from '@/lib/shared/services/api/generated/graphql'
+import { getGaugeStakedBalance, calcTotalStakedBalance } from '../user-balance.helpers'
 
 // eslint-disable-next-line max-len
 export const migrateStakeTooltipLabel = `veBAL gauges are the mechanism to distribute BAL liquidity incentives following community voting.
@@ -16,53 +20,78 @@ export type UnstakeQuote = {
 }
 
 /*
-  // TODO: we will deal with non-preferential gauges in an incoming PR
   If the user has non-preferential staked balance it returns the non preferential unstake data
   If not, it returns the preferential unstake data
 */
 export function getUnstakeQuote(pool: Pool): UnstakeQuote {
   if (hasNonPreferentialStakedBalance(pool)) {
     const { nonPreferentialGaugeAddress, nonPreferentialStakedBalance } =
-      findNonPreferentialStaking(pool)
+      findFirstNonPreferentialStaking(pool)
     return {
       gaugeAddress: nonPreferentialGaugeAddress as Address,
       amountOut: nonPreferentialStakedBalance as HumanAmount,
     }
   }
 
+  const preferentialGaugeAddress = pool.staking?.gauge?.id as Address
   return {
-    gaugeAddress: pool.staking?.gauge?.id as Address,
-    amountOut: pool.userBalance?.stakedBalance as HumanAmount,
+    gaugeAddress: preferentialGaugeAddress,
+    amountOut: getGaugeStakedBalance(pool, preferentialGaugeAddress) as HumanAmount,
   }
 }
 
-export function hasNonPreferentialStakedBalance(pool: Pool) {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  const nonPreferentialStakedBalance = bn(pool.userBalance?.nonPreferentialStakedBalance || '0')
-  return nonPreferentialStakedBalance.gt(0)
+export function hasNonPreferentialStakedBalance(pool: Pool): boolean {
+  return filterNonPreferentialStakingWithBalance(pool).length > 0
 }
 
-export function findNonPreferentialStaking(pool: Pool) {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  const nonPreferentialStakedBalance = bn(pool.userBalance?.nonPreferentialStakedBalance || '0')
+export function findFirstNonPreferentialStakedWithBalance(
+  pool: Pool
+): GqlUserStakedBalance | undefined {
+  const found = filterNonPreferentialStakingWithBalance(pool)
+  if (found.length === 0) return undefined
+  return found[0]
+}
 
-  //TODO: throw if staked in more than 2 non preferential gauges
+export function findFirstNonPreferentialStaking(pool: Pool) {
+  const nonPreferentialStaking = findFirstNonPreferentialStakedWithBalance(pool)
 
-  //TODO: fix this when new API schema is deployed
-  // Probably we will just find the first other gauge with balance and assume there is no more than one
-  const otherGaugeWithBalanceIndex = 0
-  const nonPreferentialGauge = pool.staking?.gauge?.otherGauges?.[
-    otherGaugeWithBalanceIndex
-  ] as GqlPoolStakingOtherGauge
-  const nonPreferentialGaugeAddress = nonPreferentialGauge?.gaugeAddress || ''
+  if (!nonPreferentialStaking) {
+    throw new Error('Non preferential staking gauge not found in user balance')
+  }
+
+  const nonPreferentialStakedBalance = nonPreferentialStaking.balance || '0'
+  const nonPreferentialGaugeAddress = nonPreferentialStaking.stakingId
+
+  const nonPreferentialGauge = pool.staking?.gauge?.otherGauges?.find(
+    otherGauge => otherGauge.id === nonPreferentialGaugeAddress
+  )
+
+  if (!nonPreferentialGauge) throw new Error('Non preferential gauge not found in other gauges')
 
   const isClaimable = isClaimableGauge(nonPreferentialGauge, pool.chain)
 
   return {
-    nonPreferentialStakedBalance: nonPreferentialStakedBalance.toFixed(),
+    nonPreferentialStakedBalance,
     nonPreferentialGaugeAddress,
     isClaimable,
   }
+}
+
+/*
+  This is a very rare edge case that should not happen to any user
+*/
+export function hasMultipleNonPreferentialStakedBalance(pool: Pool): boolean {
+  return filterNonPreferentialStakingWithBalance(pool).length > 1
+}
+
+function filterNonPreferentialStakingWithBalance(pool: Pool): GqlUserStakedBalance[] {
+  if (!pool.userBalance) return []
+
+  const found = pool.userBalance.stakedBalances.filter(
+    stakedBalance =>
+      stakedBalance.stakingType === GqlPoolStakingType.Gauge &&
+      stakedBalance.stakingId !== pool.staking?.gauge?.id &&
+      bn(stakedBalance.balance).gt(0)
+  )
+  return found
 }

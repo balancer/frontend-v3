@@ -13,7 +13,7 @@ import { useMemo } from 'react'
 import { parseUnits } from 'viem'
 import { Pool } from '../../PoolProvider'
 import { BPT_DECIMALS } from '../../pool.constants'
-import { findNonPreferentialStaking } from '../stake.helpers'
+import { findFirstNonPreferentialStaking } from '../stake.helpers'
 import { isZero } from '@/lib/shared/utils/numbers'
 
 const unstakeStepId = 'unstake-non-preferential-gauge'
@@ -31,7 +31,7 @@ export function useUnstakeFromNonPreferentialGaugeStep(
   const { chainId } = getNetworkConfig(pool.chain)
 
   const { nonPreferentialGaugeAddress, nonPreferentialStakedBalance } =
-    findNonPreferentialStaking(pool)
+    findFirstNonPreferentialStaking(pool)
 
   const labels: TransactionLabels = {
     init: 'Unstake from deprecated gauge',

@@ -15,6 +15,7 @@ import {
 import { useRouter } from 'next/navigation'
 import { PoolName } from '../../PoolName'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
+import { getUserTotalBalanceUsd } from '../../user-balance.helpers'
 
 interface Props {
   pool: PoolListItem
@@ -76,7 +77,7 @@ export function PoolListCard({ pool }: Props) {
                 label="My Liquidity"
                 value={
                   userAddress
-                    ? toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })
+                    ? toCurrency(getUserTotalBalanceUsd(pool), { abbreviated: false })
                     : '-'
                 }
               />
