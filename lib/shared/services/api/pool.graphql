@@ -133,14 +133,23 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           tokenAddress
         }
       }
+      aura {
+        id
+        apr
+        auraPoolAddress
+      }
     }
     userBalance {
-      stakedBalance
       totalBalance
-      walletBalance
-      stakedBalanceUsd
-      walletBalanceUsd
       totalBalanceUsd
+      walletBalance
+      walletBalanceUsd
+      stakedBalances {
+        balance
+        balanceUsd
+        stakingType
+        stakingId
+      }
     }
     ... on GqlPoolWeighted {
       nestingType

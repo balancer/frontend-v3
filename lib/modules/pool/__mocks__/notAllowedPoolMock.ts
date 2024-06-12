@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
   GqlChain,
   GqlPoolNestingType,
@@ -95,12 +96,11 @@ export const notAllowedPoolMock: Pool = {
   ],
   staking: null,
   userBalance: {
-    stakedBalance: '0',
     totalBalance: '0.0',
     walletBalance: '0',
-    stakedBalanceUsd: 0,
     walletBalanceUsd: 0,
     totalBalanceUsd: 0,
+    stakedBalances: [],
     __typename: 'GqlPoolUserBalance',
   },
   nestingType: GqlPoolNestingType.NoNesting,

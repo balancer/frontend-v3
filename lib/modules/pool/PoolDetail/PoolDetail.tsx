@@ -6,7 +6,6 @@ import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
 import { PoolInfoLayout } from './PoolInfo/PoolInfoLayout'
 import { usePool } from '../PoolProvider'
 import PoolMyLiquidity from './PoolMyLiquidity'
-import { bn } from '@/lib/shared/utils/numbers'
 import { PoolStatsLayout } from './PoolStats/PoolStatsLayout'
 import { PoolHeader } from './PoolHeader/PoolHeader'
 import { usePathname, useRouter } from 'next/navigation'
@@ -18,6 +17,7 @@ import { GqlPoolEventsDataRange } from '@/lib/shared/services/api/generated/grap
 import { usePoolUserEvents } from './PoolUserEvents/usePoolUserEvents'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import PoolUserEvents from './PoolUserEvents/PoolUserEvents'
+import { hasTotalBalance } from '../user-balance.helpers'
 
 export function PoolDetail() {
   const { pool, chain } = usePool()
@@ -38,7 +38,7 @@ export function PoolDetail() {
     }
   }, [userPoolEventsData])
 
-  const userHasLiquidity = bn(pool.userBalance?.totalBalance || '0').gt(0)
+  const userHasLiquidity = hasTotalBalance(pool)
 
   useEffect(() => {
     // Prefetch pool action pages.
