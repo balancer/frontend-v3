@@ -15,7 +15,7 @@ import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHa
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address, Hash } from 'viem'
-import { toHumanAmount } from '../LiquidityActionHelpers'
+import { emptyTokenAmounts, toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { hasNestedPools, isGyro } from '../../pool.helpers'
 import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
@@ -155,6 +155,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     priceImpact: number | undefined
   ) {
     setQuoteBptIn(bptIn)
+    if (!amountsOut) setQuoteAmountsOut(emptyTokenAmounts(pool))
     if (amountsOut) setQuoteAmountsOut(amountsOut)
     if (priceImpact) setQuotePriceImpact(priceImpact)
   }
