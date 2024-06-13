@@ -9,13 +9,13 @@ import { TransactionStateProvider } from '@/lib/modules/transactions/transaction
 export default function MigrateStakePage() {
   return (
     <TransactionStateProvider>
-      <PoolActionsLayout>
-        <UnstakeProvider>
-          <MigrateStakeProvider>
+      <UnstakeProvider>
+        <MigrateStakeProvider>
+          <PoolActionsLayout>
             <MigrateStakeForm />
-          </MigrateStakeProvider>
-        </UnstakeProvider>
-      </PoolActionsLayout>
+          </PoolActionsLayout>
+        </MigrateStakeProvider>
+      </UnstakeProvider>
     </TransactionStateProvider>
   )
 }

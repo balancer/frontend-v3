@@ -8,11 +8,11 @@ import { TransactionStateProvider } from '@/lib/modules/transactions/transaction
 export default function UnstakePage() {
   return (
     <TransactionStateProvider>
-      <PoolActionsLayout>
-        <UnstakeProvider>
+      <UnstakeProvider>
+        <PoolActionsLayout>
           <UnstakeForm />
-        </UnstakeProvider>
-      </PoolActionsLayout>
+        </PoolActionsLayout>
+      </UnstakeProvider>
     </TransactionStateProvider>
   )
 }
