@@ -14,7 +14,6 @@ import { parseUnits } from 'viem'
 import { Pool } from '../../PoolProvider'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { findFirstNonPreferentialStaking } from '../stake.helpers'
-import { isZero } from '@/lib/shared/utils/numbers'
 
 const unstakeStepId = 'unstake-non-preferential-gauge'
 /*
@@ -66,8 +65,7 @@ export function useUnstakeFromNonPreferentialGaugeStep(
 
   const transaction = getTransaction(unstakeStepId)
 
-  // Completed once the non preferential amount is unstaked
-  const isComplete = () => nonPreferentialGaugeAddress && isZero(nonPreferentialStakedBalance)
+  const isComplete = () => transaction?.result.isSuccess || false
 
   const step = useMemo(
     (): TransactionStep => ({
