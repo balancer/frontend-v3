@@ -40,7 +40,11 @@ import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import StakedBalanceDistributionChart from './PoolWeightCharts/StakedBalanceDistributionChart'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { hasNonPreferentialStakedBalance, migrateStakeTooltipLabel } from '../actions/stake.helpers'
+import {
+  hasNonPreferentialStakedBalance,
+  migrateStakeTooltipLabel,
+  hasPreferentialGauge,
+} from '../actions/stake.helpers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 
 const TABS = [
@@ -138,7 +142,7 @@ export default function PoolMyLiquidity() {
 
   const hasNonPreferentialBalance = hasNonPreferentialStakedBalance(pool)
   const canStake = pool.staking && !hasNonPreferentialBalance
-  const shouldMigrateStake = hasNonPreferentialBalance
+  const shouldMigrateStake = hasPreferentialGauge(pool) && hasNonPreferentialBalance
   const hasUnstakedBalance = bn(getUserWalletBalance(pool)).gt(0)
   const hasStakedBalance = bn(calcTotalStakedBalance(pool)).gt(0)
   const aprLabel = getTotalAprLabel(pool.dynamicData?.apr.items)

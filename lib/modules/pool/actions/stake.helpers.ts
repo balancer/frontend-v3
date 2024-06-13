@@ -40,6 +40,10 @@ export function getUnstakeQuote(pool: Pool): UnstakeQuote {
   }
 }
 
+export function hasPreferentialGauge(pool: Pool): boolean {
+  return !!pool.staking?.gauge?.id
+}
+
 export function hasNonPreferentialStakedBalance(pool: Pool): boolean {
   return filterNonPreferentialStakingWithBalance(pool).length > 0
 }
