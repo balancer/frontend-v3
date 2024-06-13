@@ -66,8 +66,8 @@ export function useUnstakeFromNonPreferentialGaugeStep(
 
   const transaction = getTransaction(unstakeStepId)
 
-  // Completed once the non preferential amount was unstaked
-  const isComplete = () => isZero(nonPreferentialStakedBalance)
+  // Completed once the non preferential amount is unstaked
+  const isComplete = () => nonPreferentialGaugeAddress && isZero(nonPreferentialStakedBalance)
 
   const step = useMemo(
     (): TransactionStep => ({

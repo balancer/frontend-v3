@@ -89,7 +89,7 @@ export function getGaugeStakedBalance(pool: Pool, gaugeAddress: Address): HumanA
   )
 
   if (!gaugeStakedBalance) {
-    throw new Error(`Gauge with address ${gaugeAddress} not found in user staked balances`)
+    return '0'
   }
 
   return gaugeStakedBalance.balance as HumanAmount

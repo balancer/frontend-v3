@@ -1,6 +1,6 @@
 import { TransactionStep } from '@/lib/modules/transactions/transaction-steps/lib'
 import { Pool } from '../../PoolProvider'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useUnstakeFromNonPreferentialGaugeStep } from './useUnstakeFromNonPreferentialGaugeStep'
 import { useStakeSteps } from '../stake/useStakeSteps'
 import { HumanAmount } from '@balancer/sdk'
@@ -13,6 +13,7 @@ export function useMigrateStakeSteps(
   migratedAmount: HumanAmount,
   refetchPoolBalances: () => void
 ) {
+  const [hasClaimStep, setHasClaimStep] = useState(false)
   const { nonPreferentialGaugeAddress, nonPreferentialStakedBalance, isClaimable } =
     findFirstNonPreferentialStaking(pool)
   const { step: unstakeStep } = useUnstakeFromNonPreferentialGaugeStep(pool, refetchPoolBalances)
@@ -27,9 +28,16 @@ export function useMigrateStakeSteps(
   const { steps: stakeSteps, isLoadingSteps } = useStakeSteps(pool, migratedAmount)
 
   const steps = useMemo((): TransactionStep[] => {
-    if (isClaimable) return [...claimAndUnstakeSteps, ...stakeSteps]
+    if (hasClaimStep) return [...claimAndUnstakeSteps, ...stakeSteps]
     return [unstakeStep, ...stakeSteps]
-  }, [unstakeStep, stakeSteps, claimAndUnstakeSteps, isClaimable])
+  }, [unstakeStep, stakeSteps, claimAndUnstakeSteps, hasClaimStep])
+
+  useEffect(() => {
+    if (isClaimable) {
+      // We need to save this state to keep using claimAndUnstakeSteps during the whole flow
+      setHasClaimStep(true)
+    }
+  }, [isClaimable])
 
   return {
     isLoading: isLoadingSteps,

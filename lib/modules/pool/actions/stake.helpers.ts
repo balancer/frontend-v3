@@ -7,7 +7,7 @@ import {
   GqlPoolStakingType,
   GqlUserStakedBalance,
 } from '@/lib/shared/services/api/generated/graphql'
-import { getGaugeStakedBalance, calcTotalStakedBalance } from '../user-balance.helpers'
+import { getGaugeStakedBalance } from '../user-balance.helpers'
 
 // eslint-disable-next-line max-len
 export const migrateStakeTooltipLabel = `veBAL gauges are the mechanism to distribute BAL liquidity incentives following community voting.
@@ -52,15 +52,24 @@ export function findFirstNonPreferentialStakedWithBalance(
   return found[0]
 }
 
-export function findFirstNonPreferentialStaking(pool: Pool) {
+type StakingData = {
+  nonPreferentialGaugeAddress: Address
+  nonPreferentialStakedBalance: HumanAmount
+  isClaimable: boolean
+}
+export function findFirstNonPreferentialStaking(pool: Pool): StakingData {
   const nonPreferentialStaking = findFirstNonPreferentialStakedWithBalance(pool)
 
   if (!nonPreferentialStaking) {
-    throw new Error('Non preferential staking gauge not found in user balance')
+    return {
+      nonPreferentialGaugeAddress: '' as Address,
+      nonPreferentialStakedBalance: '0',
+      isClaimable: false,
+    }
   }
 
-  const nonPreferentialStakedBalance = nonPreferentialStaking.balance || '0'
-  const nonPreferentialGaugeAddress = nonPreferentialStaking.stakingId
+  const nonPreferentialStakedBalance = (nonPreferentialStaking.balance as HumanAmount) || '0'
+  const nonPreferentialGaugeAddress = nonPreferentialStaking.stakingId as Address
 
   const nonPreferentialGauge = pool.staking?.gauge?.otherGauges?.find(
     otherGauge => otherGauge.id === nonPreferentialGaugeAddress
@@ -71,8 +80,8 @@ export function findFirstNonPreferentialStaking(pool: Pool) {
   const isClaimable = isClaimableGauge(nonPreferentialGauge, pool.chain)
 
   return {
-    nonPreferentialStakedBalance,
     nonPreferentialGaugeAddress,
+    nonPreferentialStakedBalance,
     isClaimable,
   }
 }

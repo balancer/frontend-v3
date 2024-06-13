@@ -18,7 +18,7 @@ export const MigrateStakeContext = createContext<UseMigrateStakeResponse | null>
 export function _useMigrateStake() {
   const { quoteAmountOut: migratedAmount } = useUnstake()
 
-  const { pool, refetch: refetchPoolBalances } = usePool()
+  const { pool, refetch: refetchPoolBalances, isLoading: isLoadingPool } = usePool()
   const { isConnected } = useUserAccount()
 
   const { steps, isLoading, isClaimable } = useMigrateStakeSteps(
@@ -36,7 +36,7 @@ export function _useMigrateStake() {
   )
 
   return {
-    isLoading,
+    isLoading: isLoadingPool || isLoading,
     transactionSteps,
     isDisabled,
     disabledReason,

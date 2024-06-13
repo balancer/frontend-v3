@@ -25,7 +25,7 @@ export function _useUnstake() {
   const [quoteRewardAmounts, setQuoteRewardAmounts] = useState<HumanTokenAmountWithAddress[]>([])
   const [quoteTotalClaimableUsd, setQuoteTotalClaimableUsd] = useState<string>('0')
 
-  const { pool, refetch: refetchPoolBalances } = usePool()
+  const { pool, refetch: refetchPoolBalances, isLoading: isLoadingPool } = usePool()
   const { isConnected } = useUserAccount()
 
   const {
@@ -46,14 +46,14 @@ export function _useUnstake() {
 
   const { gaugeAddress, amountOut } = getUnstakeQuote(pool)
 
-  const { steps, isLoading } = useClaimAndUnstakeSteps({
+  const { steps, isLoading: isLoadingSteps } = useClaimAndUnstakeSteps({
     pool,
     gaugeAddress,
     amountOut: amountOut,
     refetchPoolBalances,
   })
 
-  const transactionSteps = useTransactionSteps(steps, isLoading)
+  const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
   const unstakeTxHash = transactionSteps.lastTransaction?.result?.data?.transactionHash
 
@@ -79,7 +79,7 @@ export function _useUnstake() {
   }, [isLoadingClaims])
 
   return {
-    isLoading: isLoadingClaims || isLoading,
+    isLoading: isLoadingClaims || isLoadingSteps || isLoadingPool,
     transactionSteps,
     isDisabled: isDisabled,
     disabledReason: disabledReason,
