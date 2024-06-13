@@ -1,34 +1,16 @@
 'use client'
 
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Button,
-  Tooltip,
-  useDisclosure,
-  Box,
-} from '@chakra-ui/react'
+import { Card, CardBody, CardFooter, CardHeader, Button, Tooltip, Box } from '@chakra-ui/react'
 import { useStake } from './StakeProvider'
 import { useRef } from 'react'
 import { StakeModal } from './StakeModal'
 import { StakePreview } from './StakePreview'
-import { usePoolRedirect } from '../../pool.hooks'
+import { useModalWithPoolRedirect } from '../../useModalWithPoolRedirect'
 
 export function StakeForm() {
   const { isDisabled, disabledReason, isLoading, stakeTxHash, pool } = useStake()
   const nextBtn = useRef(null)
-  const { onClose, onOpen, isOpen } = useDisclosure()
-  const { redirectToPoolPage } = usePoolRedirect(pool)
-
-  const onModalClose = () => {
-    if (stakeTxHash) {
-      redirectToPoolPage()
-    } else {
-      onClose()
-    }
-  }
+  const { onClose, onOpen, isOpen } = useModalWithPoolRedirect(pool, stakeTxHash)
 
   return (
     <Box h="full" w="full" maxW="lg" mx="auto">
@@ -53,7 +35,7 @@ export function StakeForm() {
           </Tooltip>
         </CardFooter>
       </Card>
-      <StakeModal finalFocusRef={nextBtn} isOpen={isOpen} onOpen={onOpen} onClose={onModalClose} />
+      <StakeModal finalFocusRef={nextBtn} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
     </Box>
   )
 }

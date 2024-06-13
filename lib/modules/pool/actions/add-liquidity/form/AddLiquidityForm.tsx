@@ -34,12 +34,12 @@ import { isNativeOrWrappedNative, isNativeAsset } from '@/lib/modules/tokens/tok
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectModal'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/TokenInputsValidationProvider'
-import { usePoolRedirect } from '../../../pool.hooks'
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
 import { PriceImpactError } from '../../../../price-impact/PriceImpactError'
 import AddLiquidityAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AddLiquidityAprTooltip'
 import { calcPotentialYieldFor } from '../../../pool.utils'
 import { cannotCalculatePriceImpactError } from '@/lib/modules/price-impact/price-impact.utils'
+import { useModalWithPoolRedirect } from '../../../useModalWithPoolRedirect'
 
 // small wrapper to prevent out of context error
 export function AddLiquidityForm() {
@@ -61,7 +61,6 @@ function AddLiquidityMainForm() {
     isDisabled,
     disabledReason,
     showAcceptPoolRisks,
-    previewModalDisclosure,
     totalUSDValue,
     addLiquidityTxHash,
     setNeedsToAcceptHighPI,
@@ -77,7 +76,6 @@ function AddLiquidityMainForm() {
   const { toCurrency } = useCurrency()
   const tokenSelectDisclosure = useDisclosure()
   const { setValidationError } = useTokenInputsValidation()
-  const { redirectToPoolPage } = usePoolRedirect(pool)
   const { balanceFor, isBalancesLoading } = useTokenBalances()
 
   useEffect(() => {
@@ -89,19 +87,13 @@ function AddLiquidityMainForm() {
 
   const weeklyYield = calcPotentialYieldFor(pool, totalUSDValue)
 
+  const previewModalDisclosure = useModalWithPoolRedirect(pool, addLiquidityTxHash)
+
   const onModalOpen = async () => {
     previewModalDisclosure.onOpen()
     if (requiresProportionalInput(pool.type)) {
       // Edge-case refetch to avoid mismatches in proportional bptOut calculations
       await refetchQuote()
-    }
-  }
-
-  const onModalClose = () => {
-    if (addLiquidityTxHash) {
-      redirectToPoolPage()
-    } else {
-      previewModalDisclosure.onClose()
     }
   }
 
@@ -238,7 +230,7 @@ function AddLiquidityMainForm() {
         finalFocusRef={nextBtn}
         isOpen={previewModalDisclosure.isOpen}
         onOpen={previewModalDisclosure.onOpen}
-        onClose={onModalClose}
+        onClose={previewModalDisclosure.onClose}
       />
       {!!validTokens.length && (
         <NativeAssetSelectModal
