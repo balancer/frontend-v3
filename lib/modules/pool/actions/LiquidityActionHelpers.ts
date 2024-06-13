@@ -15,6 +15,7 @@ import {
   mapPoolToNestedPoolState,
   mapPoolType,
   PoolStateWithBalances,
+  Token,
 } from '@balancer/sdk'
 import { Hex, formatUnits, parseUnits, Address } from 'viem'
 
@@ -254,4 +255,8 @@ export function roundDecimals(humanAmountsIn: HumanTokenAmountWithAddress[], max
     humanAmount: bn(humanAmount).toFixed(maxDecimals, BigNumber.ROUND_DOWN) as HumanAmount,
     tokenAddress,
   }))
+}
+
+export function emptyTokenAmounts(pool: Pool): TokenAmount[] {
+  return pool.poolTokens.map(token => TokenAmount.fromHumanAmount(token as unknown as Token, '0'))
 }
