@@ -59,6 +59,7 @@ export function _useStake() {
   }, [pool.userBalance?.walletBalance, isLoadingOnchainUserBalances])
 
   return {
+    pool,
     transactionSteps,
     isDisabled,
     disabledReason,

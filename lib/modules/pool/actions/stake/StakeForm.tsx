@@ -14,11 +14,21 @@ import { useStake } from './StakeProvider'
 import { useRef } from 'react'
 import { StakeModal } from './StakeModal'
 import { StakePreview } from './StakePreview'
+import { usePoolRedirect } from '../../pool.hooks'
 
 export function StakeForm() {
-  const { isDisabled, disabledReason, isLoading } = useStake()
+  const { isDisabled, disabledReason, isLoading, stakeTxHash, pool } = useStake()
   const nextBtn = useRef(null)
   const { onClose, onOpen, isOpen } = useDisclosure()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
+
+  const onModalClose = () => {
+    if (stakeTxHash) {
+      redirectToPoolPage()
+    } else {
+      onClose()
+    }
+  }
 
   return (
     <Box h="full" w="full" maxW="lg" mx="auto">
@@ -43,7 +53,7 @@ export function StakeForm() {
           </Tooltip>
         </CardFooter>
       </Card>
-      <StakeModal finalFocusRef={nextBtn} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
+      <StakeModal finalFocusRef={nextBtn} isOpen={isOpen} onOpen={onOpen} onClose={onModalClose} />
     </Box>
   )
 }

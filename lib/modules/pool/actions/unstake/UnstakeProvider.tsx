@@ -90,6 +90,7 @@ export function _useUnstake() {
     quoteAmountOut,
     quoteRewardAmounts,
     quoteTotalClaimableUsd,
+    pool,
   }
 }
 
