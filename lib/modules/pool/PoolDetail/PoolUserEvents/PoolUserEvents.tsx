@@ -63,13 +63,13 @@ function PoolEventRow({ poolEvent, usdValue, chain, txUrl }: PoolEventRowProps) 
   return (
     <Grid
       w="full"
-      templateColumns={{ base: 'repeat(3, 1fr)', md: GRID_COLUMNS }}
+      templateColumns={{ base: 'fit-content(150px) 50px 1fr', md: GRID_COLUMNS }}
       templateAreas={{
         base: `"action value time"
-               "tokens tokens ."`,
+               "tokens tokens tokens"`,
         md: `"action tokens value time"`,
       }}
-      gap="4"
+      gap={{ base: '2', md: '4' }}
       mb="4"
     >
       <GridItem area="action">
@@ -78,12 +78,12 @@ function PoolEventRow({ poolEvent, usdValue, chain, txUrl }: PoolEventRowProps) 
       <GridItem area="tokens">
         <Tokens />
       </GridItem>
-      <GridItem area="value" textAlign="right">
+      <GridItem area="value" textAlign={{ base: 'left', md: 'right' }}>
         <Text>{usdValue}</Text>
       </GridItem>
       <GridItem area="time" mr="sm">
         <HStack justifyContent="flex-end" gap="1">
-          <Text>
+          <Text color="grayText">
             {formatDistanceToNow(new Date(secondsToMilliseconds(poolEvent.timestamp)), {
               addSuffix: true,
             })}
@@ -123,20 +123,22 @@ export default function PoolUserEvents({ poolEvents }: { poolEvents: PoolEventIt
           My transactions
         </Heading>
         <Divider />
-        <Grid w="full" templateColumns={{ base: '1fr', md: GRID_COLUMNS }} gap="4">
-          {['Action', 'Tokens', 'Value', 'Time'].map((label, index) => (
-            <GridItem
-              key={index}
-              textAlign={index > 1 ? 'right' : 'left'}
-              mr={index === 3 ? 'md' : 0}
-            >
-              <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                {label}
-              </Text>
-            </GridItem>
-          ))}
-        </Grid>
-        <Divider />
+        <Box display={{ base: 'none', md: 'block' }}>
+          <Grid w="full" templateColumns={{ base: '1fr', md: GRID_COLUMNS }} gap="4">
+            {['Action', 'Tokens', 'Value', 'Time'].map((label, index) => (
+              <GridItem
+                key={index}
+                textAlign={index > 1 ? 'right' : 'left'}
+                mr={index === 3 ? 'md' : 0}
+              >
+                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+                  {label}
+                </Text>
+              </GridItem>
+            ))}
+          </Grid>
+          <Divider />
+        </Box>
         <Box w="full" overflowY="auto">
           {poolEvents.map(poolEvent => (
             <PoolEventRow
