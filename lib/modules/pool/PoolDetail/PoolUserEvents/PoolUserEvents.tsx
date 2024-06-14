@@ -19,6 +19,9 @@ import { formatDistanceToNow, secondsToMilliseconds } from 'date-fns'
 import { useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
 import { ArrowUpRight } from 'react-feather'
 import { PoolEventItem } from '../../usePoolEvents'
+import { calcTotalStakedBalance, getUserTotalBalance } from '../../user-balance.helpers'
+import { fNum, bn } from '@/lib/shared/utils/numbers'
+
 
 type PoolEventRowProps = {
   poolEvent: PoolEventItem
@@ -98,7 +101,7 @@ function PoolEventRow({ poolEvent, usdValue, chain, txUrl }: PoolEventRowProps) 
 }
 
 export default function PoolUserEvents({ poolEvents }: { poolEvents: PoolEventItem[] }) {
-  const { myLiquiditySectionRef, chain } = usePool()
+  const { myLiquiditySectionRef, chain, pool } = usePool()
   const [height, setHeight] = useState(0)
   const { toCurrency } = useCurrency()
   const { getBlockExplorerTxUrl } = useBlockExplorer(chain)
@@ -109,6 +112,20 @@ export default function PoolUserEvents({ poolEvents }: { poolEvents: PoolEventIt
       setHeight(myLiquiditySectionRef.current.offsetHeight)
     }
   }, [])
+
+  function getStakedPercentage() {
+    const totalBalance = getUserTotalBalance(pool)
+    const stakedBalance = calcTotalStakedBalance(pool)
+
+    // TODO: api returns double zero, will be fixed
+    if (totalBalance === '00') {
+      return fNum('percentage', 0)
+    } else if (totalBalance === stakedBalance) {
+      return fNum('percentage', 100)
+    } else {
+      return fNum('stakedPercentage', bn(stakedBalance).div(totalBalance).times(100))
+    }
+  }
 
   return (
     <Card h={height}>
@@ -151,11 +168,17 @@ export default function PoolUserEvents({ poolEvents }: { poolEvents: PoolEventIt
           ))}
         </Box>
         <Divider />
-        <Box>
+        <HStack spacing="4">
           <Text variant="secondary" fontSize="0.85rem">
-            staked - boost
+            {`${getStakedPercentage()} staked`}
           </Text>
-        </Box>
+          <Text variant="secondary" fontSize="0.85rem">
+            &middot;
+          </Text>
+          <Text variant="secondary" fontSize="0.85rem">
+            boost
+          </Text>
+        </HStack>
       </VStack>
     </Card>
   )
