@@ -13,11 +13,10 @@ import { useEffect, useMemo } from 'react'
 import { PoolAlerts } from '../alerts/PoolAlerts'
 import { ClaimProvider } from '../actions/claim/ClaimProvider'
 import { usePoolVariant } from '../pool.hooks'
-import { GqlPoolEventsDataRange } from '@/lib/shared/services/api/generated/graphql'
-import { usePoolUserEvents } from './PoolUserEvents/usePoolUserEvents'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import PoolUserEvents from './PoolUserEvents/PoolUserEvents'
 import { hasTotalBalance } from '../user-balance.helpers'
+import { usePoolEvents } from '../usePoolEvents'
 
 export function PoolDetail() {
   const { pool, chain } = usePool()
@@ -25,16 +24,15 @@ export function PoolDetail() {
   const pathname = usePathname()
   const { variant, banners } = usePoolVariant()
   const { userAddress } = useUserAccount()
-  const { data: userPoolEventsData } = usePoolUserEvents({
+  const { data: userPoolEventsData } = usePoolEvents({
     chain,
     poolId: pool.id,
-    range: GqlPoolEventsDataRange.SevenDays,
     userAddress,
   })
 
   const userhasPoolEvents = useMemo(() => {
     if (userPoolEventsData) {
-      return userPoolEventsData.events?.length > 0
+      return userPoolEventsData.poolEvents?.length > 0
     }
   }, [userPoolEventsData])
 
@@ -63,7 +61,7 @@ export function PoolDetail() {
         {(userHasLiquidity || userhasPoolEvents) && (
           <Stack direction={{ base: 'column', md: 'row' }} w="full">
             <PoolMyLiquidity />
-            {userPoolEventsData && <PoolUserEvents poolEvents={userPoolEventsData.events} />}
+            {userPoolEventsData && <PoolUserEvents poolEvents={userPoolEventsData.poolEvents} />}
           </Stack>
         )}
         <PoolActivityChart />

@@ -10,7 +10,6 @@ import {
   HStack,
   Link,
 } from '@chakra-ui/react'
-import { PoolEventItem } from './usePoolUserEvents'
 import { usePool } from '../../PoolProvider'
 import { useLayoutEffect, useState } from 'react'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -19,6 +18,7 @@ import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { formatDistanceToNow, secondsToMilliseconds } from 'date-fns'
 import { useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
 import { ArrowUpRight } from 'react-feather'
+import { PoolEventItem } from '../../usePoolEvents'
 
 type PoolEventRowProps = {
   poolEvent: PoolEventItem
