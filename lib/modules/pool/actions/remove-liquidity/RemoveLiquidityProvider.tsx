@@ -45,7 +45,8 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const [quotePriceImpact, setQuotePriceImpact] = useState<number>()
 
   const { pool, bptPrice } = usePool()
-  const { getToken, usdValueForToken } = useTokens()
+  const { getToken, usdValueForToken, getNativeAssetToken, getWrappedNativeAssetToken } =
+    useTokens()
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
 
@@ -55,8 +56,11 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     .toFixed() as HumanAmount
 
   const chain = pool.chain
-  const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
-  const wNativeAsset = getToken(getWrappedNativeAssetAddress(chain), chain)
+  const nativeAsset = getNativeAssetToken(chain)
+  const wNativeAsset = getWrappedNativeAssetToken(chain)
+  const includesWrappedNativeAsset: boolean = pool.poolTokens.some(token =>
+    isWrappedNativeAsset(token.address as Address, chain)
+  )
 
   const handler = useMemo(
     () => selectRemoveLiquidityHandler(pool, removalType),
@@ -78,20 +82,24 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     .filter(tokenFilter)
     .map(token => getToken(token.address, pool.chain))
 
-  const tokensWithNativeAsset = tokens.map(token => {
-    if (token && isWrappedNativeAsset(token.address as Address, chain)) {
-      return nativeAsset
-    } else {
-      return token
-    }
-  })
+  function tokensToShow() {
+    // for single token we show both the native asset AND the wrapped native asset in the ui
+    if (includesWrappedNativeAsset && isSingleToken && nativeAsset) return [...tokens, nativeAsset]
 
-  const tokensToShow =
-    isSingleToken && nativeAsset
-      ? [...tokens, nativeAsset] // for single token we show both the native asset AND the wrapped native asset in the ui
-      : wethIsEth
-      ? tokensWithNativeAsset // else if wethIsEth we only show the native asset
-      : tokens
+    // if wethIsEth we only show the native asset
+    if (includesWrappedNativeAsset && wethIsEth) {
+      // replace the wrapped native asset with the native asset
+      return tokens.map(token => {
+        if (token && isWrappedNativeAsset(token.address as Address, chain)) {
+          return nativeAsset
+        } else {
+          return token
+        }
+      })
+    }
+
+    return tokens
+  }
 
   let validTokens = tokens.filter((token): token is GqlToken => !!token)
   validTokens = nativeAsset ? [nativeAsset, ...validTokens] : validTokens
@@ -226,7 +234,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
 
   return {
     transactionSteps,
-    tokens: tokensToShow,
+    tokens: tokensToShow(),
     validTokens,
     singleTokenOutAddress,
     humanBptIn,
