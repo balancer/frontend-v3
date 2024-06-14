@@ -35,7 +35,7 @@ function TokenInfo({
   showInfoPopover = true,
   isBpt = false,
 }: DataProps) {
-  const tokenSymbol = isBpt ? 'LP Token' : token?.symbol || pool?.symbol
+  const tokenSymbol = isBpt ? 'LP token' : token?.symbol || pool?.symbol
   return (
     <HStack spacing="sm">
       {!isBpt && (
