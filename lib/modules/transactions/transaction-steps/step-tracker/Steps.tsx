@@ -15,7 +15,7 @@ export function Steps({ transactionSteps }: Props) {
     <VStack align="start" spacing="xs">
       {steps &&
         steps.map((step, index) => (
-          <div key={step.id}>
+          <div key={step.id + index}>
             <Step
               currentIndex={currentStepIndex}
               index={index}

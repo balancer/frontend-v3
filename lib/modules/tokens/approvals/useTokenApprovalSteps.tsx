@@ -13,6 +13,7 @@ import { useUserAccount } from '../../web3/UserAccountProvider'
 import { useTokens } from '../TokensProvider'
 import { ApprovalAction, buildTokenApprovalLabels } from './approval-labels'
 import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
+import { requiresDoubleApproval } from '../token.helpers'
 
 export type Params = {
   spenderAddress: Address
@@ -64,10 +65,15 @@ export function useTokenApprovalSteps({
       const { tokenAddress, requiredRawAmount, requestedRawAmount } = tokenAmountToApprove
       const token = getToken(tokenAddress, chain)
       const symbol = bptSymbol ?? (token && token?.symbol) ?? 'Unknown'
-      const labels = buildTokenApprovalLabels({ actionType, symbol })
+      const labels = buildTokenApprovalLabels({ actionType, symbol, requiredRawAmount })
       const id = tokenAddress
 
-      const isComplete = () => tokenAllowances.allowanceFor(tokenAddress) >= requiredRawAmount
+      const isComplete = () => {
+        const isAllowed = tokenAllowances.allowanceFor(tokenAddress) >= requiredRawAmount
+        // USDT edge-case: requires setting approval to 0n before adjusting the value up again
+        if (requiresDoubleApproval(chain, tokenAddress)) return isAllowed
+        return requiredRawAmount > 0n && isAllowed
+      }
 
       const props: ManagedErc20TransactionInput = {
         tokenAddress,
