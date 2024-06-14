@@ -27,6 +27,8 @@ type PoolEventRowProps = {
   txUrl: string
 }
 
+const GRID_COLUMNS = '100px 150px 100px 1fr'
+
 function PoolEventRow({ poolEvent, usdValue, chain, txUrl }: PoolEventRowProps) {
   if (poolEvent.__typename !== 'GqlPoolAddRemoveEventV3') {
     return null
@@ -61,7 +63,7 @@ function PoolEventRow({ poolEvent, usdValue, chain, txUrl }: PoolEventRowProps) 
   return (
     <Grid
       w="full"
-      templateColumns={{ base: 'repeat(3, 1fr)', md: '100px 150px 150px 1fr' }}
+      templateColumns={{ base: 'repeat(3, 1fr)', md: GRID_COLUMNS }}
       templateAreas={{
         base: `"action value time"
                "tokens tokens ."`,
@@ -121,7 +123,7 @@ export default function PoolUserEvents({ poolEvents }: { poolEvents: PoolEventIt
           My transactions
         </Heading>
         <Divider />
-        <Grid w="full" templateColumns={{ base: '1fr', md: '100px 150px 150px 1fr' }} gap="4">
+        <Grid w="full" templateColumns={{ base: '1fr', md: GRID_COLUMNS }} gap="4">
           {['Action', 'Tokens', 'Value', 'Time'].map((label, index) => (
             <GridItem
               key={index}
