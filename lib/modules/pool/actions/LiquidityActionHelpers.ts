@@ -27,6 +27,7 @@ import {
   swapNativeWithWrapped,
 } from '../../tokens/token.helpers'
 import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
+import BigNumber from 'bignumber.js'
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -243,6 +244,17 @@ export function filterHumanAmountsIn(
       !(isNativeAsset(tokenAddress, chain) && isWrappedNativeAsset(amountIn.tokenAddress, chain)) &&
       !(isNativeAsset(amountIn.tokenAddress, chain) && isWrappedNativeAsset(tokenAddress, chain))
   )
+}
+
+/**
+ * Used to avoid problems with proportional SDK priceImpact queries
+ * Rounds down to avoid balance overflow issues
+ */
+export function roundDecimals(humanAmountsIn: HumanTokenAmountWithAddress[], maxDecimals = 10) {
+  return humanAmountsIn.map(({ humanAmount, tokenAddress }) => ({
+    humanAmount: bn(humanAmount).toFixed(maxDecimals, BigNumber.ROUND_DOWN) as HumanAmount,
+    tokenAddress,
+  }))
 }
 
 export function emptyTokenAmounts(pool: Pool): TokenAmount[] {
