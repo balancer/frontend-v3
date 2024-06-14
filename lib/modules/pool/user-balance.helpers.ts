@@ -82,3 +82,29 @@ export function calcNonVeBalStakedBalance(pool: Pool): number {
 export function hasTotalBalance(pool: Pool) {
   return bn(getUserTotalBalance(pool)).gt(0)
 }
+
+export function hasAuraStakedBalance(pool: Pool | PoolListItem): boolean {
+  return hasStakedBalanceFor(pool, GqlPoolStakingType.Aura)
+}
+
+export function hasBalancerStakedBalance(pool: Pool | PoolListItem): boolean {
+  return hasStakedBalanceFor(pool, GqlPoolStakingType.Gauge)
+}
+
+export function hasStakedBalanceFor(
+  pool: Pool | PoolListItem,
+  stakingType: GqlPoolStakingType
+): boolean {
+  const userBalance = pool.userBalance
+  if (!userBalance) return false
+
+  return userBalance.stakedBalances.some(
+    balance => balance.stakingType === stakingType && bn(balance.balance).gt(0)
+  )
+}
+
+export function hasTinyBalance(pool: Pool | PoolListItem, minUsdBalance = 0.01): boolean {
+  const userBalance = pool.userBalance
+  if (!userBalance) return false
+  return bn(getUserTotalBalanceUsd(pool)).lt(minUsdBalance)
+}
