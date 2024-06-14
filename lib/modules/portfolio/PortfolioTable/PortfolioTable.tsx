@@ -10,7 +10,11 @@ import { useVebalBoost } from '../../vebal/useVebalBoost'
 import { useOnchainUserPoolBalances } from '../../pool/queries/useOnchainUserPoolBalances'
 import { Pool } from '../../pool/PoolProvider'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { calcTotalStakedBalance, getUserTotalBalanceUsd } from '../../pool/user-balance.helpers'
+import {
+  calcTotalStakedBalance,
+  getUserTotalBalanceUsd,
+  hasTinyBalance,
+} from '../../pool/user-balance.helpers'
 
 export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr'
 export interface PortfolioSortingData {
@@ -58,6 +62,12 @@ export function PortfolioTable() {
     portfolioData.pools as unknown as Pool[]
   )
 
+  // Filter out pools with tiny balances (<0.01 USD)
+  const minUsdBalance = 0.01
+  const significantBalancePools = poolsWithOnchainUserBalances.filter(
+    pool => !hasTinyBalance(pool, minUsdBalance)
+  )
+
   const { veBalBoostMap } = useVebalBoost(portfolioData.stakedPools)
 
   const [currentSortingObj, setCurrentSortingObj] = useState<PortfolioSortingData>({
@@ -67,7 +77,7 @@ export function PortfolioTable() {
 
   const sortedPools = useMemo(() => {
     if (!portfolioData?.pools) return []
-    const arr = [...poolsWithOnchainUserBalances]
+    const arr = [...significantBalancePools]
 
     return arr.sort((a, b) => {
       if (currentSortingObj.id === 'staking') {
@@ -106,7 +116,7 @@ export function PortfolioTable() {
 
       return 0
     })
-  }, [currentSortingObj, poolsWithOnchainUserBalances, portfolioData?.pools, veBalBoostMap])
+  }, [currentSortingObj, significantBalancePools, portfolioData?.pools, veBalBoostMap])
 
   return (
     <FadeInOnView>
