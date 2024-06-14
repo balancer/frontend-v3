@@ -22,6 +22,7 @@ type DataProps = {
   disabled?: boolean
   showSelect?: boolean
   showInfoPopover?: boolean
+  isBpt?: boolean
 }
 
 function TokenInfo({
@@ -32,10 +33,14 @@ function TokenInfo({
   disabled,
   showSelect = false,
   showInfoPopover = true,
+  isBpt = false,
 }: DataProps) {
+  const tokenSymbol = isBpt ? 'LP Token' : token?.symbol || pool?.symbol
   return (
     <HStack spacing="sm">
-      <TokenIcon chain={chain} address={address} size={40} alt={token?.symbol || address} />
+      {!isBpt && (
+        <TokenIcon chain={chain} address={address} size={40} alt={token?.symbol || address} />
+      )}
       <VStack spacing="none" alignItems="flex-start">
         <HStack spacing="none">
           <Heading
@@ -44,7 +49,7 @@ function TokenInfo({
             fontSize="lg"
             variant={disabled ? 'secondary' : 'primary'}
           >
-            {token?.symbol || pool?.symbol}
+            {tokenSymbol}
           </Heading>
           {showInfoPopover && <TokenInfoPopover tokenAddress={address} chain={chain} />}
         </HStack>
@@ -129,7 +134,7 @@ export default function TokenRow({
             <TokenInfo {...props} showInfoPopover={false} showSelect />
           </Button>
         ) : (
-          <TokenInfo {...props} />
+          <TokenInfo {...props} isBpt={isBpt} />
         )}
 
         <HStack align="start" spacing="none">
