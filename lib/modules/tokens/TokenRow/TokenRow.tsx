@@ -51,7 +51,9 @@ function TokenInfo({
           >
             {tokenSymbol}
           </Heading>
-          {showInfoPopover && <TokenInfoPopover tokenAddress={address} chain={chain} />}
+          {showInfoPopover && (
+            <TokenInfoPopover tokenAddress={address} chain={chain} isBpt={isBpt} />
+          )}
         </HStack>
         <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
           {token?.name || pool?.name}
