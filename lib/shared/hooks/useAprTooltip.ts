@@ -1,10 +1,4 @@
-import { sortBy } from 'lodash'
-import {
-  GqlBalancePoolAprItem,
-  GqlPoolApr,
-  GqlPoolAprRange,
-  GqlPoolAprTotal,
-} from '../services/api/generated/graphql'
+import { GqlPoolAprItem, GqlPoolAprItemType } from '../services/api/generated/graphql'
 import { useThemeColorMode } from '../services/chakra/useThemeColorMode'
 import { bn } from '../utils/numbers'
 import BigNumber from 'bignumber.js'
@@ -24,122 +18,111 @@ In addition, veBAL holders can get an extra boost of up to 2.5x.`
 
 const stakingTokenTooltipText = '3rd party incentives (outside the veBAL system)'
 
-function absMaxApr(apr: GqlPoolApr, boost?: number) {
-  if (apr.apr.__typename === 'GqlPoolAprRange') {
-    if (boost && boost > 1 && apr.nativeRewardApr.__typename === 'GqlPoolAprRange') {
-      const boostedNativeRewardApr = bn(apr.nativeRewardApr.min).times(boost)
-      return bn(apr.apr.min).minus(apr.nativeRewardApr.min).plus(boostedNativeRewardApr)
+function absMaxApr(aprItems: GqlPoolAprItem[], boost?: number) {
+  return aprItems.reduce((acc, item) => {
+    if (item.title !== 'BAL reward APR') {
+      return acc.plus(bn(item.apr))
     }
 
-    return bn(apr.apr.max)
-  }
-
-  return bn(apr.apr.total)
+    return acc.plus(bn(item.apr).times(boost && boost > 1 ? boost : 2.5))
+  }, bn(0))
 }
 
 export function useAprTooltip({
-  apr,
+  // apr,
   aprItems,
   numberFormatter,
   vebalBoost,
 }: {
-  aprItems: GqlBalancePoolAprItem[]
-  apr: GqlPoolApr
+  aprItems: GqlPoolAprItem[]
+  // apr: GqlPoolApr
   numberFormatter: (value: string) => BigNumber
   vebalBoost?: number
 }) {
   const colorMode = useThemeColorMode()
 
+  // There may be two instances of 'BAL reward APR'. We need to remove the second one
+  let hasBalReward = false
+  const filteredAprItems = aprItems.filter(item => {
+    if (item.title === 'BAL reward APR') {
+      if (hasBalReward) {
+        return false
+      }
+
+      hasBalReward = true
+    }
+
+    return true
+  })
+
   // Swap fees
-  const swapFee = aprItems.find(item => item.title === 'Swap fees APR')
-  let swapFeesDisplayed = numberFormatter(swapFee ? (swapFee.apr as GqlPoolAprTotal).total : '0')
+  const swapFee = filteredAprItems.find(item => item.type === GqlPoolAprItemType.SwapFee)
+  const swapFeesDisplayed = numberFormatter(swapFee ? swapFee.apr.toString() : '0')
 
   // Yield bearing tokens
-  const yieldBearingTokens = aprItems.filter(item => {
-    return item && item.title.indexOf('reward') === -1 && item.title.indexOf('Swap fees') === -1
+  const yieldBearingTokens = filteredAprItems.filter(item => {
+    return item.type === GqlPoolAprItemType.IbYield
   })
 
   const yieldBearingTokensDisplayed = yieldBearingTokens.map(item => ({
     title: item.title.replace(' APR', ''),
-    apr: numberFormatter((item.apr as GqlPoolAprTotal).total),
+    apr: numberFormatter(item.apr.toString()),
   }))
 
-  let yieldBearingTokensAprDisplayed = yieldBearingTokensDisplayed.reduce(
+  const yieldBearingTokensAprDisplayed = yieldBearingTokensDisplayed.reduce(
     (acc, item) => acc.plus(item.apr),
     bn(0)
   )
 
   // Staking incentives
-  const stakingIncentives = aprItems.filter(item => {
-    return item && item.title.indexOf('reward') > -1 && item.title.indexOf('BAL reward') === -1
+  const stakingIncentives = filteredAprItems.filter(item => {
+    return item.type === GqlPoolAprItemType.Staking && item.title.indexOf('BAL reward') === -1
   })
 
   const stakingIncentivesDisplayed = stakingIncentives.map(item => ({
     title: item.title.replace(' reward APR', ''),
-    apr: numberFormatter((item.apr as GqlPoolAprTotal).total),
+    apr: numberFormatter(item.apr.toString()),
     tooltipText: stakingTokenTooltipText,
   }))
 
+  const votingApr = filteredAprItems.find(item => item.type === GqlPoolAprItemType.Voting)
+  const votingAprDisplayed = numberFormatter(votingApr ? votingApr.apr.toString() : '0')
+
+  const lockingApr = filteredAprItems.find(item => item.type === GqlPoolAprItemType.Locking)
+  const lockingAprDisplayed = numberFormatter(lockingApr ? lockingApr.apr.toString() : '0')
+
   // Bal Reward
-  const balReward = aprItems.find(item => item.title === 'BAL reward APR')
+  const balReward = filteredAprItems.find(item => item.title === 'BAL reward APR')
 
-  const maxVeBal = balReward ? absMaxApr(apr, vebalBoost).toString() : '0'
-  const maxVeBalDisplayed = numberFormatter(maxVeBal)
+  const maxVeBal = balReward ? absMaxApr(filteredAprItems, vebalBoost) : bn(0)
+  const maxVeBalDisplayed = numberFormatter(maxVeBal.toString())
 
-  const totalBase = apr.apr.__typename === 'GqlPoolAprRange' ? apr.apr.min : apr.apr.total
-  const totalBaseDisplayed = numberFormatter(totalBase)
+  const totalBase = filteredAprItems.reduce((acc, item) => acc.plus(item.apr), bn(0))
+  const totalBaseDisplayed = numberFormatter(totalBase.toString())
 
   const extraBalAprDisplayed = balReward ? maxVeBalDisplayed.minus(totalBaseDisplayed) : bn(0)
 
   if (balReward) {
     stakingIncentivesDisplayed.push({
       title: 'BAL',
-      apr: numberFormatter((balReward.apr as GqlPoolAprRange).min),
+      apr: numberFormatter(balReward.apr.toString()),
       tooltipText: stakingBalTooltipText,
     })
   }
 
-  let stakingIncentivesAprDisplayed = stakingIncentivesDisplayed.reduce(
+  const stakingIncentivesAprDisplayed = stakingIncentivesDisplayed.reduce(
     (acc, item) => acc.plus(item.apr),
     bn(0)
   )
 
-  const totalBaseDisplayedRoundingError = totalBaseDisplayed.minus(
-    swapFeesDisplayed.plus(yieldBearingTokensAprDisplayed).plus(stakingIncentivesAprDisplayed)
-  )
-
-  if (!totalBaseDisplayedRoundingError.isZero()) {
-    if (!swapFeesDisplayed.isZero()) {
-      swapFeesDisplayed = swapFeesDisplayed.plus(totalBaseDisplayedRoundingError)
-    }
-
-    if (!yieldBearingTokensAprDisplayed.isZero()) {
-      yieldBearingTokensAprDisplayed = yieldBearingTokensAprDisplayed.plus(
-        totalBaseDisplayedRoundingError
-      )
-
-      const highestYieldBearingToken = sortBy(yieldBearingTokensDisplayed, 'apr').reverse()[0]
-      highestYieldBearingToken.apr = highestYieldBearingToken.apr.plus(
-        totalBaseDisplayedRoundingError
-      )
-    } else {
-      stakingIncentivesAprDisplayed = stakingIncentivesAprDisplayed.plus(
-        totalBaseDisplayedRoundingError
-      )
-
-      const highestStakingIncentive = sortBy(stakingIncentivesDisplayed, 'apr').reverse()[0]
-
-      if (highestStakingIncentive) {
-        highestStakingIncentive.apr = highestStakingIncentive.apr.plus(
-          totalBaseDisplayedRoundingError
-        )
-      }
-    }
-  }
-
   const isSwapFeePresent = !swapFeesDisplayed.isZero()
   const isYieldPresent = !yieldBearingTokensAprDisplayed.isZero()
   const isStakingPresent = !stakingIncentivesAprDisplayed.isZero()
+
+  const isVotingDisplayed = Boolean(votingApr)
+  const isVotingPresent = !votingAprDisplayed.isZero()
+  const isLockingDisplayed = Boolean(lockingApr)
+  const isLockingAprPresent = !lockingAprDisplayed.isZero()
 
   const subitemPopoverAprItemProps = {
     pt: 2,
@@ -160,6 +143,12 @@ export function useAprTooltip({
     maxVeBalDisplayed,
     yieldBearingTokensDisplayed,
     stakingIncentivesDisplayed,
+    votingAprDisplayed,
+    lockingAprDisplayed,
+    isVotingDisplayed,
+    isLockingDisplayed,
+    isVotingPresent,
+    isLockingAprPresent,
     subitemPopoverAprItemProps,
     balReward,
     maxVeBal,

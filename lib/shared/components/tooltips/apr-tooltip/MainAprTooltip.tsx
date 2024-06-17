@@ -18,17 +18,19 @@ function MainAprTooltip({
   onlySparkles,
   textProps,
   apr,
-  data,
+  aprItems,
   vebalBoost,
   aprLabel,
   height = '16px',
   ...props
 }: Props) {
-  const aprToShow = apr || getTotalAprLabel(data.items, vebalBoost)
+  const aprToShow = apr || getTotalAprLabel(aprItems, vebalBoost)
+
+  const hasRewardApr = aprItems.some(item => item.title === 'BAL reward APR')
 
   return (
     <BaseAprTooltip
-      data={data}
+      aprItems={aprItems}
       {...props}
       maxVeBalText="Max veBAL APR"
       totalBaseText={balReward => `Total ${balReward ? 'base' : ''} APR`}
@@ -47,7 +49,7 @@ function MainAprTooltip({
                 </Text>
               )}
               <Box w="16px" h="auto" minW="16px">
-                {data.hasRewardApr ? (
+                {hasRewardApr ? (
                   <Center w="16px">
                     <Icon
                       as={StarsIcon}

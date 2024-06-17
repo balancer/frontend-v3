@@ -31,7 +31,7 @@ function StakeAprTooltip({ pool, totalUsdValue }: Props) {
 
   return (
     <BaseAprTooltip
-      data={pool.dynamicData.apr}
+      aprItems={pool.dynamicData.aprItems}
       totalBaseText="Total weekly base"
       maxVeBalText="Total with max veBAL"
       placement="top-start"
@@ -40,6 +40,7 @@ function StakeAprTooltip({ pool, totalUsdValue }: Props) {
       displayValueFormatter={displayValueFormatter}
       shouldDisplayBaseTooltip
       shouldDisplayMaxVeBalTooltip
+      usePortal={false}
     >
       <Card cursor="pointer" variant="subSection" w="full">
         <VStack align="start" w="full" spacing="sm">

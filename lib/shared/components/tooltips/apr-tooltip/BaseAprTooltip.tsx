@@ -1,4 +1,4 @@
-import { GqlBalancePoolAprItem, GqlPoolApr } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolAprItem } from '@/lib/shared/services/api/generated/graphql'
 import {
   PlacementWithLogical,
   Popover,
@@ -20,17 +20,18 @@ import BigNumber from 'bignumber.js'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 
 interface Props {
-  data: GqlPoolApr
+  aprItems: GqlPoolAprItem[]
   numberFormatter?: (value: string) => BigNumber
   displayValueFormatter?: (value: BigNumber) => string
   placement?: PlacementWithLogical
   poolId?: string
   vebalBoost?: string
-  totalBaseText: string | ((balReward?: GqlBalancePoolAprItem) => string)
+  totalBaseText: string | ((balReward?: GqlPoolAprItem) => string)
   maxVeBalText: string
   customPopoverContent?: React.ReactNode
   shouldDisplayBaseTooltip?: boolean
   shouldDisplayMaxVeBalTooltip?: boolean
+  usePortal?: boolean
   children?: React.ReactNode | (({ isOpen }: { isOpen: boolean }) => React.ReactNode)
 }
 
@@ -50,7 +51,7 @@ const defaultDisplayValueFormatter = (value: BigNumber) => fNum('apr', value.toS
 const defaultNumberFormatter = (value: string) => bn(bn(value).toFixed(4, BigNumber.ROUND_HALF_UP))
 
 function BaseAprTooltip({
-  data,
+  aprItems,
   numberFormatter,
   displayValueFormatter,
   placement,
@@ -61,6 +62,7 @@ function BaseAprTooltip({
   shouldDisplayBaseTooltip,
   shouldDisplayMaxVeBalTooltip,
   children,
+  usePortal = true,
 }: Props) {
   const colorMode = useThemeColorMode()
 
@@ -83,12 +85,152 @@ function BaseAprTooltip({
     balReward,
     totalBase,
     maxVeBal,
+    isLockingDisplayed,
+    isVotingDisplayed,
+    lockingAprDisplayed,
+    votingAprDisplayed,
+    isVotingPresent,
+    isLockingAprPresent,
   } = useAprTooltip({
-    aprItems: data.items,
-    apr: data,
+    aprItems,
     vebalBoost: Number(vebalBoost),
     numberFormatter: usedNumberFormatter,
   })
+
+  const popoverContent = customPopoverContent || (
+    <PopoverContent w="fit-content" shadow="3xl" minWidth={['100px', '300px']} p="0">
+      <TooltipAprItem
+        {...basePopoverAprItemProps}
+        displayValueFormatter={usedDisplayValueFormatter}
+        pt={3}
+        title="Swap fees"
+        apr={swapFeesDisplayed}
+        aprOpacity={isSwapFeePresent ? 1 : 0.5}
+        tooltipText={swapFeesTooltipText}
+        bg="background.level3"
+      />
+      <TooltipAprItem
+        {...basePopoverAprItemProps}
+        displayValueFormatter={usedDisplayValueFormatter}
+        title="Staking incentives"
+        apr={stakingIncentivesAprDisplayed}
+        aprOpacity={isStakingPresent ? 1 : 0.5}
+        bg="background.level3"
+      >
+        {stakingIncentivesDisplayed.map((item, index) => {
+          return (
+            <TooltipAprItem
+              {...subitemPopoverAprItemProps}
+              displayValueFormatter={usedDisplayValueFormatter}
+              key={index}
+              title={item.title}
+              apr={item.apr}
+              aprOpacity={1}
+              tooltipText={item.tooltipText}
+              bg="background.level3"
+            />
+          )
+        })}
+      </TooltipAprItem>
+      <TooltipAprItem
+        {...basePopoverAprItemProps}
+        displayValueFormatter={usedDisplayValueFormatter}
+        title="Yield bearing tokens"
+        apr={yieldBearingTokensAprDisplayed}
+        aprOpacity={isYieldPresent ? 1 : 0.5}
+        bg="background.level3"
+      >
+        {yieldBearingTokensDisplayed.map((item, index) => {
+          return (
+            <TooltipAprItem
+              {...subitemPopoverAprItemProps}
+              displayValueFormatter={usedDisplayValueFormatter}
+              key={index}
+              title={item.title}
+              apr={item.apr}
+              aprOpacity={1}
+              tooltipText={inherentTokenYieldTooltipText}
+              bg="background.level3"
+            />
+          )
+        })}
+      </TooltipAprItem>
+      {isVotingDisplayed && (
+        <TooltipAprItem
+          {...basePopoverAprItemProps}
+          displayValueFormatter={usedDisplayValueFormatter}
+          title="Voting incentives"
+          apr={votingAprDisplayed}
+          aprOpacity={isVotingPresent ? 1 : 0.5}
+          bg="background.level3"
+        />
+      )}
+      {isLockingDisplayed && (
+        <TooltipAprItem
+          {...basePopoverAprItemProps}
+          displayValueFormatter={usedDisplayValueFormatter}
+          title="Locking incentives"
+          apr={lockingAprDisplayed}
+          aprOpacity={isLockingAprPresent ? 1 : 0.5}
+          bg="background.level3"
+        />
+      )}
+      <Divider />
+      <TooltipAprItem
+        {...basePopoverAprItemProps}
+        displayValueFormatter={usedDisplayValueFormatter}
+        pt={3}
+        backgroundColor="background.level4"
+        fontColor="font.maxContrast"
+        tooltipText={
+          shouldDisplayBaseTooltip
+            ? `${defaultDisplayValueFormatter(defaultNumberFormatter(totalBase.toString()))} APR`
+            : ''
+        }
+        title={typeof totalBaseText === 'function' ? totalBaseText(balReward) : totalBaseText}
+        apr={totalBaseDisplayed}
+      />
+      {balReward && (
+        <>
+          <Divider />
+          <Stack roundedBottom="md" gap={0}>
+            <TooltipAprItem
+              {...basePopoverAprItemProps}
+              displayValueFormatter={usedDisplayValueFormatter}
+              pt={3}
+              fontWeight={500}
+              fontColor={colorMode == 'light' ? 'gray.600' : 'gray.400'}
+              title="Extra BAL (veBAL boost)"
+              apr={extraBalAprDisplayed}
+              tooltipText={extraBalTooltipText}
+              bg="background.level3"
+            />
+            <Divider />
+
+            <TooltipAprItem
+              {...basePopoverAprItemProps}
+              displayValueFormatter={usedDisplayValueFormatter}
+              pt={3}
+              fontColor="font.special"
+              title={maxVeBalText || 'Max veBAL APR'}
+              tooltipText={
+                shouldDisplayMaxVeBalTooltip
+                  ? `${defaultDisplayValueFormatter(
+                      defaultNumberFormatter(maxVeBal.toString())
+                    )} APR`
+                  : ''
+              }
+              apr={maxVeBalDisplayed}
+              boxBackground={balRewardGradient}
+              textBackground="background.special"
+              textBackgroundClip="text"
+              roundedBottom="md"
+            />
+          </Stack>
+        </>
+      )}
+    </PopoverContent>
+  )
 
   return (
     <Popover trigger="hover" placement={placement}>
@@ -98,124 +240,7 @@ function BaseAprTooltip({
             {typeof children === 'function' ? children({ isOpen }) : children}
           </PopoverTrigger>
 
-          <Portal>
-            {customPopoverContent || (
-              <PopoverContent w="fit-content" shadow="3xl" minWidth={['100px', '300px']} p="0">
-                <TooltipAprItem
-                  {...basePopoverAprItemProps}
-                  displayValueFormatter={usedDisplayValueFormatter}
-                  pt={3}
-                  title="Swap fees"
-                  apr={swapFeesDisplayed}
-                  aprOpacity={isSwapFeePresent ? 1 : 0.5}
-                  tooltipText={swapFeesTooltipText}
-                  bg="background.level3"
-                />
-                <TooltipAprItem
-                  {...basePopoverAprItemProps}
-                  displayValueFormatter={usedDisplayValueFormatter}
-                  title="Staking incentives"
-                  apr={stakingIncentivesAprDisplayed}
-                  aprOpacity={isStakingPresent ? 1 : 0.5}
-                  bg="background.level3"
-                >
-                  {stakingIncentivesDisplayed.map((item, index) => {
-                    return (
-                      <TooltipAprItem
-                        {...subitemPopoverAprItemProps}
-                        displayValueFormatter={usedDisplayValueFormatter}
-                        key={index}
-                        title={item.title}
-                        apr={item.apr}
-                        aprOpacity={1}
-                        tooltipText={item.tooltipText}
-                        bg="background.level3"
-                      />
-                    )
-                  })}
-                </TooltipAprItem>
-                <TooltipAprItem
-                  {...basePopoverAprItemProps}
-                  displayValueFormatter={usedDisplayValueFormatter}
-                  title="Yield bearing tokens"
-                  apr={yieldBearingTokensAprDisplayed}
-                  aprOpacity={isYieldPresent ? 1 : 0.5}
-                  bg="background.level3"
-                >
-                  {yieldBearingTokensDisplayed.map((item, index) => {
-                    return (
-                      <TooltipAprItem
-                        {...subitemPopoverAprItemProps}
-                        displayValueFormatter={usedDisplayValueFormatter}
-                        key={index}
-                        title={item.title}
-                        apr={item.apr}
-                        aprOpacity={1}
-                        tooltipText={inherentTokenYieldTooltipText}
-                        bg="background.level3"
-                      />
-                    )
-                  })}
-                </TooltipAprItem>
-                <Divider />
-                <TooltipAprItem
-                  {...basePopoverAprItemProps}
-                  displayValueFormatter={usedDisplayValueFormatter}
-                  pt={3}
-                  backgroundColor="background.level4"
-                  fontColor="font.maxContrast"
-                  tooltipText={
-                    shouldDisplayBaseTooltip
-                      ? `${defaultDisplayValueFormatter(defaultNumberFormatter(totalBase))} APR`
-                      : ''
-                  }
-                  title={
-                    typeof totalBaseText === 'function' ? totalBaseText(balReward) : totalBaseText
-                  }
-                  apr={totalBaseDisplayed}
-                />
-                {balReward && (
-                  <>
-                    <Divider />
-                    <Stack roundedBottom="md" gap={0}>
-                      <TooltipAprItem
-                        {...basePopoverAprItemProps}
-                        displayValueFormatter={usedDisplayValueFormatter}
-                        pt={3}
-                        fontWeight={500}
-                        fontColor={colorMode == 'light' ? 'gray.600' : 'gray.400'}
-                        title="Extra BAL (veBAL boost)"
-                        apr={extraBalAprDisplayed}
-                        tooltipText={extraBalTooltipText}
-                        bg="background.level3"
-                      />
-                      <Divider />
-
-                      <TooltipAprItem
-                        {...basePopoverAprItemProps}
-                        displayValueFormatter={usedDisplayValueFormatter}
-                        pt={3}
-                        fontColor="font.special"
-                        title={maxVeBalText || 'Max veBAL APR'}
-                        tooltipText={
-                          shouldDisplayMaxVeBalTooltip
-                            ? `${defaultDisplayValueFormatter(
-                                defaultNumberFormatter(maxVeBal)
-                              )} APR`
-                            : ''
-                        }
-                        apr={maxVeBalDisplayed}
-                        boxBackground={balRewardGradient}
-                        textBackground="background.special"
-                        textBackgroundClip="text"
-                        roundedBottom="md"
-                      />
-                    </Stack>
-                  </>
-                )}
-              </PopoverContent>
-            )}
-          </Portal>
+          {usePortal ? <Portal>{popoverContent}</Portal> : popoverContent}
         </>
       )}
     </Popover>

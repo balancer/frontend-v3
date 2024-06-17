@@ -50,6 +50,7 @@ function AddLiquidityAprTooltip({ weeklyYield, totalUsdValue, pool, ...props }: 
       customPopoverContent={customPopoverContent}
       shouldDisplayBaseTooltip
       shouldDisplayMaxVeBalTooltip
+      usePortal={false}
     >
       <HStack align="center" alignItems="center">
         <Card cursor="pointer" variant="subSection" w="full" p={['sm', 'ms']}>

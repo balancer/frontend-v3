@@ -30,7 +30,7 @@ export function StakePreview() {
         />
       </Card>
 
-      <StakeAprTooltip pool={pool} totalUsdValue={quoteAmountInUsd} />
+      <StakeAprTooltip totalUsdValue={quoteAmountInUsd} pool={pool} />
     </VStack>
   )
 }
