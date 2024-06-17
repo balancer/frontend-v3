@@ -15,6 +15,10 @@ import {
   getUserTotalBalanceUsd,
   getUserWalletBalance,
   getUserWalletBalanceUsd,
+  hasAuraStakedBalance,
+  hasStakedBalanceFor,
+  hasBalancerStakedBalance,
+  hasTinyBalance,
 } from './user-balance.helpers'
 
 const apiStakedBalances: GqlUserStakedBalance[] = [
@@ -41,7 +45,7 @@ const apiStakedBalances: GqlUserStakedBalance[] = [
   },
 ]
 
-test('Calculates pool totals', () => {
+test('User balance helpers', () => {
   const pool = aWjAuraWethPoolElementMock()
   const userBalanceMock: GqlPoolUserBalance = {
     __typename: 'GqlPoolUserBalance',
@@ -66,4 +70,23 @@ test('Calculates pool totals', () => {
   expect(getUserWalletBalanceInt(pool)).toBe(100000000000000000000n)
 
   expect(calcNonVeBalStakedBalance(pool)).toBe(22) // aura staked
+
+  expect(hasAuraStakedBalance(pool)).toBeTruthy()
+  expect(hasBalancerStakedBalance(pool)).toBeTruthy()
+  expect(hasStakedBalanceFor(pool, GqlPoolStakingType.FreshBeets)).toBeFalsy()
+  expect(hasTinyBalance(pool)).toBeFalsy()
+})
+
+test('has tiny balance', () => {
+  const pool = aWjAuraWethPoolElementMock()
+  const userBalanceMock: GqlPoolUserBalance = {
+    __typename: 'GqlPoolUserBalance',
+    walletBalance: '0.1',
+    walletBalanceUsd: 0,
+    totalBalance: '0.12345',
+    totalBalanceUsd: 0.0009,
+    stakedBalances: [],
+  }
+  pool.userBalance = userBalanceMock
+  expect(hasTinyBalance(pool)).toBeTruthy()
 })
