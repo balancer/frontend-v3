@@ -22,6 +22,7 @@ import { PoolEventItem } from '../../usePoolEvents'
 import { calcTotalStakedBalance, getUserTotalBalance } from '../../user-balance.helpers'
 import { fNum, bn } from '@/lib/shared/utils/numbers'
 import { useVebalBoost } from '@/lib/modules/vebal/useVebalBoost'
+import { isEmpty } from 'lodash'
 
 type PoolEventRowProps = {
   poolEvent: PoolEventItem
@@ -168,15 +169,19 @@ export default function PoolUserEvents({ poolEvents }: { poolEvents: PoolEventIt
           <Divider mt="md" />
         </Box>
         <Box w="full" overflowY="auto">
-          {poolEvents.map(poolEvent => (
-            <PoolEventRow
-              poolEvent={poolEvent}
-              key={poolEvent.id}
-              usdValue={toCurrency(poolEvent.valueUSD)}
-              chain={chain}
-              txUrl={getBlockExplorerTxUrl(poolEvent.tx)}
-            />
-          ))}
+          {isEmpty(poolEvents) ? (
+            <Text variant="secondary">No recent transactions</Text>
+          ) : (
+            poolEvents.map(poolEvent => (
+              <PoolEventRow
+                poolEvent={poolEvent}
+                key={poolEvent.id}
+                usdValue={toCurrency(poolEvent.valueUSD)}
+                chain={chain}
+                txUrl={getBlockExplorerTxUrl(poolEvent.tx)}
+              />
+            ))
+          )}
         </Box>
         <Divider />
         <HStack spacing="4">
