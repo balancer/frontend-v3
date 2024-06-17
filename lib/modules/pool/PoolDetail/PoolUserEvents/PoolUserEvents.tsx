@@ -140,7 +140,7 @@ export default function PoolUserEvents({ poolEvents }: { poolEvents: PoolEventIt
           My transactions
         </Heading>
         <Divider />
-        <Box display={{ base: 'none', md: 'block' }}>
+        <Box display={{ base: 'none', md: 'block' }} w="full">
           <Grid w="full" templateColumns={{ base: '1fr', md: GRID_COLUMNS }} gap="4">
             {['Action', 'Tokens', 'Value', 'Time'].map((label, index) => (
               <GridItem
@@ -154,7 +154,7 @@ export default function PoolUserEvents({ poolEvents }: { poolEvents: PoolEventIt
               </GridItem>
             ))}
           </Grid>
-          <Divider />
+          <Divider mt="md" />
         </Box>
         <Box w="full" overflowY="auto">
           {poolEvents.map(poolEvent => (
