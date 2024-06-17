@@ -15,6 +15,7 @@ import {
   parseAsFloat,
 } from 'next-usequerystate/parsers'
 import { Hex } from 'viem'
+import { isProd } from '@/lib/config/app.config'
 
 export type PoolId = Hex
 
@@ -69,6 +70,7 @@ export const poolTypeFilters = [
   GqlPoolType.Stable,
   GqlPoolType.LiquidityBootstrapping,
   GqlPoolType.Gyro,
+  GqlPoolType.CowAmm,
 ] as const
 
 export type PoolFilterType = (typeof poolTypeFilters)[number]
@@ -88,6 +90,7 @@ export const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolType[] } = {
   [GqlPoolType.Stable]: [GqlPoolType.Stable, GqlPoolType.ComposableStable, GqlPoolType.MetaStable],
   [GqlPoolType.LiquidityBootstrapping]: [GqlPoolType.LiquidityBootstrapping],
   [GqlPoolType.Gyro]: [GqlPoolType.Gyro, GqlPoolType.Gyro3, GqlPoolType.Gyroe],
+  [GqlPoolType.CowAmm]: [GqlPoolType.CowAmm],
 }
 
 export const orderByHash: { [key: string]: string } = {
