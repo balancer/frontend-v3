@@ -270,7 +270,7 @@ export function usePoolCharts() {
 
     if (activeTab.value === PoolChartTab.VOLUME) {
       val = data?.snapshots.reduce((acc, snapshot) => {
-        return (acc += Number(snapshot.totalLiquidity))
+        return (acc += Number(snapshot.volume24h))
       }, 0)
     }
 
