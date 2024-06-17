@@ -24,11 +24,20 @@ export function PoolDetail() {
   const pathname = usePathname()
   const { variant, banners } = usePoolVariant()
   const { userAddress } = useUserAccount()
-  const { data: userPoolEventsData } = usePoolEvents({
+  const {
+    data: userPoolEventsData,
+    startPolling,
+    stopPolling,
+  } = usePoolEvents({
     chain,
     poolId: pool.id,
     userAddress,
   })
+
+  useEffect(() => {
+    startPolling(120000)
+    return () => stopPolling()
+  }, [])
 
   const userhasPoolEvents = useMemo(() => {
     if (userPoolEventsData) {
