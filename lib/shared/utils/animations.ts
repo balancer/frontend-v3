@@ -43,3 +43,11 @@ export const fadeInUp = {
     },
   },
 }
+
+export const pulseOnceWithDelay = {
+  opacity: [1, 0, 1],
+  transition: {
+    delay: 0.75,
+    duration: 1,
+  },
+}
