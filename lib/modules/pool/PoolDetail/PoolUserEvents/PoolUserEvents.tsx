@@ -172,7 +172,12 @@ export default function PoolUserEvents({ poolEvents }: { poolEvents: PoolEventIt
         </Box>
         <Box w="full" overflowY="auto">
           {isEmpty(poolEvents) ? (
-            <Text variant="secondary">No recent transactions</Text>
+            <>
+              <Text variant="secondary">No recent transactions</Text>
+              <Text variant="secondary">
+                Note: Recent transactions may take a few minutes to display here.
+              </Text>
+            </>
           ) : (
             poolEvents.map(poolEvent => (
               <PoolEventRow
