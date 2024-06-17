@@ -4,7 +4,11 @@ import { Info } from 'react-feather'
 import { getTotalAprLabel } from '@/lib/modules/pool/pool.utils'
 import StarsIcon from '../../icons/StarsIcon'
 
-interface Props extends Omit<BaseAprTooltipProps, 'children' | 'totalBaseText' | 'maxVeBalText'> {
+interface Props
+  extends Omit<
+    BaseAprTooltipProps,
+    'children' | 'totalBaseText' | 'totalBaseBALWETHText' | 'maxVeBalText'
+  > {
   textProps?: TextProps
   onlySparkles?: boolean
   aprLabel?: boolean
@@ -34,6 +38,7 @@ function MainAprTooltip({
       {...props}
       maxVeBalText="Max veBAL APR"
       totalBaseText={balReward => `Total ${balReward ? 'base' : ''} APR`}
+      totalBaseBALWETHText="Total base APR"
     >
       {({ isOpen }) => (
         <HStack align="center" alignItems="center">

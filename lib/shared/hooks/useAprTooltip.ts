@@ -13,6 +13,13 @@ export const inherentTokenYieldTooltipText = `Inherent token yield,
 export const extraBalTooltipText = `veBAL holders can get an extra boost of up to 2.5x on their staking yield. 
 The more veBAL held, the higher the boost.`
 
+export const lockingIncentivesTooltipText = `Special incentives for liquidity providers who lock 
+their Balancer ve8020 pool tokens.`
+
+export const votingIncentivesTooltipText = `To get voting incentives from Hidden Hand, 
+you must hold veBAL and have active votes for vote-incentivized pools in the weekly gauge vote. 
+The APR listed is the average. Your incentives will be based on your veBAL voting weight vs other voters.`
+
 const stakingBalTooltipText = `The base APR all stakers in this pool get (determined by weekly gauge voting). 
 In addition, veBAL holders can get an extra boost of up to 2.5x.`
 
@@ -97,8 +104,15 @@ export function useAprTooltip({
   const maxVeBal = balReward ? absMaxApr(filteredAprItems, vebalBoost) : bn(0)
   const maxVeBalDisplayed = numberFormatter(maxVeBal.toString())
 
-  const totalBase = filteredAprItems.reduce((acc, item) => acc.plus(item.apr), bn(0))
+  const totalBase = filteredAprItems
+    .filter(
+      item => item.type !== GqlPoolAprItemType.Voting && item.type !== GqlPoolAprItemType.Locking
+    )
+    .reduce((acc, item) => acc.plus(item.apr), bn(0))
   const totalBaseDisplayed = numberFormatter(totalBase.toString())
+
+  const totalCombined = filteredAprItems.reduce((acc, item) => acc.plus(item.apr), bn(0))
+  const totalCombinedDisplayed = numberFormatter(totalCombined.toString())
 
   const extraBalAprDisplayed = balReward ? maxVeBalDisplayed.minus(totalBaseDisplayed) : bn(0)
 
@@ -153,5 +167,7 @@ export function useAprTooltip({
     balReward,
     maxVeBal,
     totalBase,
+    totalCombined,
+    totalCombinedDisplayed,
   }
 }

@@ -14,6 +14,8 @@ import {
   useAprTooltip,
   inherentTokenYieldTooltipText,
   extraBalTooltipText,
+  lockingIncentivesTooltipText,
+  votingIncentivesTooltipText,
 } from '@/lib/shared/hooks/useAprTooltip'
 import { TooltipAprItem } from './TooltipAprItem'
 import BigNumber from 'bignumber.js'
@@ -27,6 +29,8 @@ interface Props {
   poolId?: string
   vebalBoost?: string
   totalBaseText: string | ((balReward?: GqlPoolAprItem) => string)
+  totalBaseBALWETHText: string
+  totalBALWETHTitle?: string
   maxVeBalText: string
   customPopoverContent?: React.ReactNode
   shouldDisplayBaseTooltip?: boolean
@@ -58,6 +62,8 @@ function BaseAprTooltip({
   vebalBoost,
   customPopoverContent,
   totalBaseText,
+  totalBaseBALWETHText,
+  totalBALWETHTitle,
   maxVeBalText,
   shouldDisplayBaseTooltip,
   shouldDisplayMaxVeBalTooltip,
@@ -91,11 +97,20 @@ function BaseAprTooltip({
     votingAprDisplayed,
     isVotingPresent,
     isLockingAprPresent,
+    totalCombinedDisplayed,
   } = useAprTooltip({
     aprItems,
     vebalBoost: Number(vebalBoost),
     numberFormatter: usedNumberFormatter,
   })
+
+  const isBALWETH = isVotingDisplayed && isLockingDisplayed
+
+  const totalBaseTitle = isBALWETH
+    ? totalBaseBALWETHText
+    : typeof totalBaseText === 'function'
+    ? totalBaseText(balReward)
+    : totalBaseText
 
   const popoverContent = customPopoverContent || (
     <PopoverContent w="fit-content" shadow="3xl" minWidth={['100px', '300px']} p="0">
@@ -155,26 +170,6 @@ function BaseAprTooltip({
           )
         })}
       </TooltipAprItem>
-      {isVotingDisplayed && (
-        <TooltipAprItem
-          {...basePopoverAprItemProps}
-          displayValueFormatter={usedDisplayValueFormatter}
-          title="Voting incentives"
-          apr={votingAprDisplayed}
-          aprOpacity={isVotingPresent ? 1 : 0.5}
-          bg="background.level3"
-        />
-      )}
-      {isLockingDisplayed && (
-        <TooltipAprItem
-          {...basePopoverAprItemProps}
-          displayValueFormatter={usedDisplayValueFormatter}
-          title="Locking incentives"
-          apr={lockingAprDisplayed}
-          aprOpacity={isLockingAprPresent ? 1 : 0.5}
-          bg="background.level3"
-        />
-      )}
       <Divider />
       <TooltipAprItem
         {...basePopoverAprItemProps}
@@ -187,9 +182,49 @@ function BaseAprTooltip({
             ? `${defaultDisplayValueFormatter(defaultNumberFormatter(totalBase.toString()))} APR`
             : ''
         }
-        title={typeof totalBaseText === 'function' ? totalBaseText(balReward) : totalBaseText}
+        title={totalBaseTitle}
         apr={totalBaseDisplayed}
       />
+      {isBALWETH && (
+        <>
+          <Divider />
+          <Stack roundedBottom="md" gap={0}>
+            <TooltipAprItem
+              pt={3}
+              {...basePopoverAprItemProps}
+              displayValueFormatter={usedDisplayValueFormatter}
+              title="Max locking incentives"
+              tooltipText={lockingIncentivesTooltipText}
+              apr={lockingAprDisplayed}
+              aprOpacity={isLockingAprPresent ? 1 : 0.5}
+              bg="background.level3"
+            />
+            <TooltipAprItem
+              {...basePopoverAprItemProps}
+              displayValueFormatter={usedDisplayValueFormatter}
+              title="Average voting incentives"
+              tooltipText={votingIncentivesTooltipText}
+              apr={votingAprDisplayed}
+              aprOpacity={isVotingPresent ? 1 : 0.5}
+              bg="background.level3"
+            />
+            <Divider />
+
+            <TooltipAprItem
+              {...basePopoverAprItemProps}
+              displayValueFormatter={usedDisplayValueFormatter}
+              pt={3}
+              fontColor="font.special"
+              title={totalBALWETHTitle || 'Total APR'}
+              apr={totalCombinedDisplayed}
+              boxBackground={balRewardGradient}
+              textBackground="background.special"
+              textBackgroundClip="text"
+              roundedBottom="md"
+            />
+          </Stack>
+        </>
+      )}
       {balReward && (
         <>
           <Divider />
