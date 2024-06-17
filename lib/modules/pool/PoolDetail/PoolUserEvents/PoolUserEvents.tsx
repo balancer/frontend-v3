@@ -55,14 +55,16 @@ function PoolEventRow({ poolEvent, usdValue, chain, txUrl }: PoolEventRowProps) 
   )
 
   const Tokens = () =>
-    poolEvent.tokens.map(token => (
-      <HStack gap={['xs', 'sm']} key={token.address} mb="sm">
-        <TokenIcon chain={chain} address={token.address} size={24} alt={token.address} />
-        <Text textOverflow="ellipsis" whiteSpace="nowrap" overflow="hidden">
-          {token.amount}
-        </Text>
-      </HStack>
-    ))
+    poolEvent.tokens
+      .filter(token => token.amount !== '0')
+      .map(token => (
+        <HStack gap={['xs', 'sm']} key={token.address} mb="sm">
+          <TokenIcon chain={chain} address={token.address} size={24} alt={token.address} />
+          <Text textOverflow="ellipsis" whiteSpace="nowrap" overflow="hidden">
+            {token.amount}
+          </Text>
+        </HStack>
+      ))
 
   return (
     <Grid
