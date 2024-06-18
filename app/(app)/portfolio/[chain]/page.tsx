@@ -61,37 +61,38 @@ export default function NetworkClaim() {
           {isLoadingClaimPoolData ? (
             <Skeleton height="126px" />
           ) : pools && pools.length > 0 ? (
-            pools?.map(pool => (
-              <Card key={pool.id} variant="subSection">
-                <VStack align="start">
-                  <HStack w="full">
-                    <Text fontWeight="bold" fontSize="lg">
-                      Pool
-                    </Text>
-                    <PoolName pool={pool} fontWeight="bold" fontSize="lg" />
-                    <Text fontSize="xl" variant="special" ml="auto">
-                      {toCurrency(poolRewardsMap[pool.id]?.totalFiatClaimBalance?.toNumber() || 0)}
-                    </Text>
-                  </HStack>
-                  <HStack w="full">
-                    <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} size={36} />
-                    {hasMultipleClaims && (
-                      <Button
-                        onClick={() => {
-                          setModalPools([pool])
-                        }}
-                        variant="secondary"
-                        size="sm"
-                        isDisabled={poolRewardsMap[pool.id]?.totalFiatClaimBalance?.isEqualTo(0)}
-                        ml="auto"
-                      >
-                        Claim
-                      </Button>
-                    )}
-                  </HStack>
-                </VStack>
-              </Card>
-            ))
+            pools?.map(
+              pool =>
+                poolRewardsMap[pool.id]?.totalFiatClaimBalance?.isGreaterThan(0) && (
+                  <Card key={pool.id} variant="subSection">
+                    <VStack align="start">
+                      <HStack w="full">
+                        <PoolName pool={pool} fontWeight="bold" fontSize="lg" />
+                        <Text fontSize="xl" variant="special" ml="auto">
+                          {toCurrency(
+                            poolRewardsMap[pool.id]?.totalFiatClaimBalance?.toNumber() || 0
+                          )}
+                        </Text>
+                      </HStack>
+                      <HStack w="full">
+                        <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} size={36} />
+                        {hasMultipleClaims && (
+                          <Button
+                            onClick={() => {
+                              setModalPools([pool])
+                            }}
+                            variant="secondary"
+                            size="sm"
+                            ml="auto"
+                          >
+                            Claim
+                          </Button>
+                        )}
+                      </HStack>
+                    </VStack>
+                  </Card>
+                )
+            )
           ) : (
             <Text p="10" variant="secondary" textAlign="center">
               You have no liquidity incentives to claim
