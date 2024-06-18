@@ -65,7 +65,7 @@ export function useFormattedPoolAttributes() {
       },
       {
         title: 'Protocol version',
-        value: `Balancer V${pool.vaultVersion}`,
+        value: `Balancer V${pool.protocolVersion}`,
       },
       {
         title: 'Swap fees',
