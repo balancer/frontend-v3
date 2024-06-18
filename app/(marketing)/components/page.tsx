@@ -811,6 +811,9 @@ export default function Components() {
             Custom{' '}
           </Heading>
           <Flex gap="3" align={'center'} wrap="wrap">
+            <Button variant="TxSignature" minW="160px">
+              Signature
+            </Button>
             <Button variant="primary" minW="160px">
               Primary
             </Button>

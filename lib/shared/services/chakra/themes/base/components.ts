@@ -357,6 +357,7 @@ export function getComponents(tokens: any, primaryTextColor: string) {
         borderRadius: 'lg',
         color: 'text-body',
         letterSpacing: '-0.02em',
+        transition: '0.1s ease-in-out',
         _disabled: {
           background: 'background.level3',
           border: '1px solid',
@@ -397,7 +398,6 @@ export function getComponents(tokens: any, primaryTextColor: string) {
           background: 'background.button.primary',
           backgroundPosition: '100% 0',
           backgroundSize: '100% 100%',
-          transition: '0.1s ease-in-out',
           shadow: 'md',
           _hover: {
             shadow: 'sm',
@@ -427,11 +427,17 @@ export function getComponents(tokens: any, primaryTextColor: string) {
         solid: {
           color: 'text-body',
         },
-        'tx-gas': {
-          bgGradient: 'linear(to-tr, blue.300 0%, #D7CBE7 50%, #EAA879 100%)',
-          borderTop: '2px solid',
-          borderColor: 'purple.200',
-          color: 'black',
+        TxSignature: {
+          bgGradient: 'linear(to-r, purple.300 0%, purple.200 51%, purple.400 100%)',
+          shadow: 'md',
+          color: 'font.dark',
+          transition: '0.3s ease-in-out',
+          backgroundSize: '200% auto',
+          _hover: {
+            shadow: 'sm',
+            color: 'black',
+            backgroundPosition: 'right',
+          },
         },
         buttonGroupInactive: {
           backgroundColor: 'transparent',
