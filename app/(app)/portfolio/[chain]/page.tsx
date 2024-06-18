@@ -12,7 +12,6 @@ import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-
 import { Button, Card, HStack, Heading, Skeleton, Stack, Text, VStack } from '@chakra-ui/react'
 import { capitalize } from 'lodash'
 import { useParams } from 'next/navigation'
@@ -39,13 +38,14 @@ export default function NetworkClaim() {
 
   const [modalPools, setModalPools] = useState<PoolListItem[]>([])
 
+  const hasMultipleClaims = pools?.length > 1
+
   return (
     <TransactionStateProvider>
       <ClaimNetworkPoolsLayout backLink={'/portfolio'} title="Portfolio">
         <HStack pb="3" justifyContent="space-between">
           <HStack spacing="sm">
             <NetworkIcon chain={gqlChain} size={16} />
-
             <Stack spacing="none">
               <Heading size="md">{chainName}</Heading>
               <Text variant="secondary" fontWeight="700">
@@ -53,45 +53,43 @@ export default function NetworkClaim() {
               </Text>
             </Stack>
           </HStack>
-
           <Heading size="lg" variant="special">
             {claimableFiatBalance && toCurrency(claimableFiatBalance)}
           </Heading>
         </HStack>
-
         <Stack py="4" gap="md">
           {isLoadingClaimPoolData ? (
             <Skeleton height="126px" />
           ) : pools && pools.length > 0 ? (
             pools?.map(pool => (
               <Card key={pool.id} variant="subSection">
-                <HStack justifyContent="space-between">
-                  <VStack align="start">
-                    <HStack>
-                      <Text fontWeight="bold" fontSize="lg">
-                        Pool
-                      </Text>
-                      <PoolName pool={pool} fontWeight="bold" fontSize="lg" />
-                    </HStack>
-                    <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} size={36} />
-                  </VStack>
-
-                  <VStack>
-                    <Text fontSize="xl" variant="special">
+                <VStack align="start">
+                  <HStack w="full">
+                    <Text fontWeight="bold" fontSize="lg">
+                      Pool
+                    </Text>
+                    <PoolName pool={pool} fontWeight="bold" fontSize="lg" />
+                    <Text fontSize="xl" variant="special" ml="auto">
                       {toCurrency(poolRewardsMap[pool.id]?.totalFiatClaimBalance?.toNumber() || 0)}
                     </Text>
-                    <Button
-                      onClick={() => {
-                        setModalPools([pool])
-                      }}
-                      variant="secondary"
-                      size="sm"
-                      isDisabled={poolRewardsMap[pool.id]?.totalFiatClaimBalance?.isEqualTo(0)}
-                    >
-                      Claim
-                    </Button>
-                  </VStack>
-                </HStack>
+                  </HStack>
+                  <HStack w="full">
+                    <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} size={36} />
+                    {hasMultipleClaims && (
+                      <Button
+                        onClick={() => {
+                          setModalPools([pool])
+                        }}
+                        variant="secondary"
+                        size="sm"
+                        isDisabled={poolRewardsMap[pool.id]?.totalFiatClaimBalance?.isEqualTo(0)}
+                        ml="auto"
+                      >
+                        Claim
+                      </Button>
+                    )}
+                  </HStack>
+                </VStack>
               </Card>
             ))
           ) : (
@@ -100,7 +98,6 @@ export default function NetworkClaim() {
             </Text>
           )}
         </Stack>
-
         {pools && pools.length > 0 && (
           <Button
             onClick={() => {
@@ -111,10 +108,9 @@ export default function NetworkClaim() {
             size="lg"
             isDisabled={isClaimAllDisabled}
           >
-            Claim all
+            {`Claim${hasMultipleClaims ? ' all' : ''}`}
           </Button>
         )}
-
         {modalPools.length > 0 && (
           <ClaimProvider pools={modalPools}>
             <ClaimModal
