@@ -22,9 +22,10 @@ import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 type Props = {
   tokenAddress: string | Address
   chain: GqlChain
+  isBpt?: boolean
 }
 
-export function TokenInfoPopover({ tokenAddress, chain }: Props) {
+export function TokenInfoPopover({ tokenAddress, chain, isBpt = false }: Props) {
   const { getBlockExplorerTokenUrl } = useBlockExplorer(chain)
 
   const coingeckoUrl = `https://www.coingecko.com/en/coins/${tokenAddress}`
@@ -56,21 +57,23 @@ export function TokenInfoPopover({ tokenAddress, chain }: Props) {
             <HStack spacing="xs">
               <CopyTokenAddressButton tokenAddress={tokenAddress} color="inherit" />
               <AddTokenToWalletButton tokenAddress={tokenAddress} chain={chain} color="inherit" />
-              <Tooltip label="View on Coingecko">
-                <IconButton
-                  size="xs"
-                  isRound
-                  variant="ghost"
-                  aria-label="View on Coingecko"
-                  w="6"
-                  h="6"
-                  icon={<CoingeckoIcon width={15} height={15} />}
-                  as="a"
-                  href={coingeckoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                />
-              </Tooltip>
+              {!isBpt && (
+                <Tooltip label="View on Coingecko">
+                  <IconButton
+                    size="xs"
+                    isRound
+                    variant="ghost"
+                    aria-label="View on Coingecko"
+                    w="6"
+                    h="6"
+                    icon={<CoingeckoIcon width={15} height={15} />}
+                    as="a"
+                    href={coingeckoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  />
+                </Tooltip>
+              )}
               <Tooltip label={`View on ${getBlockExplorerName(chain)}`}>
                 <IconButton
                   size="xs"
