@@ -14,7 +14,7 @@ export const metaStablePoolMock: GqlPoolElement = {
   createTime: 1628875520,
   type: GqlPoolType.MetaStable,
   chain: GqlChain.Mainnet,
-  vaultVersion: 2,
+  protocolVersion: 2,
   dynamicData: {
     poolId: '0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080',
     swapEnabled: true,

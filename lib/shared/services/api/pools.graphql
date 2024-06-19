@@ -18,7 +18,7 @@ query GetPools(
     chain
     createTime
     decimals
-    vaultVersion
+    protocolVersion
     displayTokens {
       id
       address
@@ -175,7 +175,7 @@ query GetFeaturedPools($chains: [GqlChain!]!) {
       symbol
       type
       chain
-      vaultVersion
+      protocolVersion
       dynamicData {
         totalLiquidity
         apr {
