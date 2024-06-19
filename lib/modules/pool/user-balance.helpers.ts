@@ -55,7 +55,7 @@ export function getUserWalletBalanceInt(pool: Pool): bigint {
 
 export function getUserTotalBalanceUsd(pool: Pool | PoolListItem): number {
   const userBalance = pool.userBalance
-  if (!userBalance) return 0
+  if (!userBalance || !userBalance.totalBalanceUsd) return 0
 
   return userBalance.totalBalanceUsd
 }
