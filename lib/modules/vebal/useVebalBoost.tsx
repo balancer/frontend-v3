@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import { bn } from '@/lib/shared/utils/numbers'
 import { isUndefined } from 'lodash'
 import { useGaugesSupplyAndBalance } from './useGaugesSupplyAndBalance'
-
 import { useGaugeTotalSupplyAndUserBalance } from './useGaugeTotalSupplyAndUserBalance'
 import { PoolListItem } from '../pool/pool.types'
 import { useVebalLockInfo } from './useVebalLockInfo'
@@ -63,11 +62,17 @@ export function useVebalBoost(pools: PoolListItem[]) {
   const gauges = useMemo(() => {
     if (!pools) return []
 
-    return pools.map(p => ({
-      chain: p.chain,
-      gaugeAddress: p.staking?.gauge?.gaugeAddress || '',
-      poolId: p.id,
-    }))
+    const gauges = pools.map(p => {
+      if (p.staking?.gauge?.status === 'KILLED') return []
+
+      return {
+        chain: p.chain,
+        gaugeAddress: p.staking?.gauge?.gaugeAddress || '',
+        poolId: p.id,
+      }
+    })
+
+    return gauges.flat()
   }, [pools])
 
   const { veBalTotalSupplyL2, userVeBALBalances } = useGaugeTotalSupplyAndUserBalance(gauges)
