@@ -14,7 +14,7 @@ import { PoolAlerts } from '../alerts/PoolAlerts'
 import { ClaimProvider } from '../actions/claim/ClaimProvider'
 import { usePoolVariant } from '../pool.hooks'
 import { useUserAccount } from '../../web3/UserAccountProvider'
-import PoolUserEvents from './PoolUserEvents/PoolUserEvents'
+import PoolUserEvents from './PoolUserEvents'
 import { hasTotalBalance } from '../user-balance.helpers'
 import { usePoolEvents } from '../usePoolEvents'
 
