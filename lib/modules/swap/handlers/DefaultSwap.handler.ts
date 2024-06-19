@@ -22,9 +22,17 @@ export class DefaultSwapHandler implements SwapHandler {
       notifyOnNetworkStatusChange: true,
     })
 
+    const paths = data.swaps.paths.map(
+      path =>
+        ({
+          ...path,
+          vaultVersion: path.protocolVersion,
+        } as unknown as Path)
+    )
+
     const swap = new Swap({
       chainId: getChainId(chain),
-      paths: data.swaps.paths as unknown as Path[],
+      paths,
       swapKind: this.swapTypeToKind(swapType),
     })
 
