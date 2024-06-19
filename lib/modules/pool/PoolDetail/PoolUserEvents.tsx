@@ -61,7 +61,7 @@ function PoolEventRow({ poolEvent, usdValue, chain, txUrl }: PoolEventRowProps) 
         <HStack gap={['xs', 'sm']} key={token.address} mb="sm">
           <TokenIcon chain={chain} address={token.address} size={24} alt={token.address} />
           <Text textOverflow="ellipsis" whiteSpace="nowrap" overflow="hidden">
-            {token.amount}
+            {fNum('token', token.amount)}
           </Text>
         </HStack>
       ))
