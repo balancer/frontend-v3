@@ -1,6 +1,6 @@
 'use client'
 
-import { VStack, Image, Stack } from '@chakra-ui/react'
+import { VStack, Image, Grid, GridItem } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
 import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
 import { PoolInfoLayout } from './PoolInfo/PoolInfoLayout'
@@ -69,12 +69,14 @@ export function PoolDetail() {
           <PoolStatsLayout />
         </VStack>
         {(userHasLiquidity || userhasPoolEvents) && (
-          <Stack direction={{ base: 'column', md: 'row' }} w="full">
-            <PoolMyLiquidity />
-            {userPoolEventsData && (
-              <PoolUserEvents poolEvents={userPoolEventsData.poolEvents} isLoading={isLoading} />
-            )}
-          </Stack>
+          <Grid w="full" templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap="2">
+            <GridItem>
+              <PoolMyLiquidity />
+            </GridItem>
+            <GridItem>
+              <PoolUserEvents />
+            </GridItem>
+          </Grid>
         )}
         <PoolActivityChart />
         <PoolComposition />

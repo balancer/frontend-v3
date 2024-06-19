@@ -12,18 +12,19 @@ import {
   Skeleton,
 } from '@chakra-ui/react'
 import { usePool } from '../PoolProvider'
-import { useLayoutEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { GqlChain, GqlPoolMinimal } from '@/lib/shared/services/api/generated/graphql'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { formatDistanceToNow, secondsToMilliseconds } from 'date-fns'
 import { useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
 import { ArrowUpRight } from 'react-feather'
-import { PoolEventItem } from '../usePoolEvents'
+import { PoolEventItem, usePoolEvents } from '../usePoolEvents'
 import { calcTotalStakedBalance, getUserTotalBalance } from '../user-balance.helpers'
 import { fNum, bn } from '@/lib/shared/utils/numbers'
 import { useVebalBoost } from '@/lib/modules/vebal/useVebalBoost'
 import { isEmpty } from 'lodash'
+import { useUserAccount } from '../../web3/UserAccountProvider'
 
 type PoolEventRowProps = {
   poolEvent: PoolEventItem
@@ -104,18 +105,19 @@ function PoolEventRow({ poolEvent, usdValue, chain, txUrl }: PoolEventRowProps) 
   )
 }
 
-export default function PoolUserEvents({
-  poolEvents,
-  isLoading,
-}: {
-  poolEvents: PoolEventItem[]
-  isLoading: boolean
-}) {
+export default function PoolUserEvents() {
   const { myLiquiditySectionRef, chain, pool } = usePool()
   const [height, setHeight] = useState(0)
+  const [poolEvents, setPoolEvents] = useState<PoolEventItem[]>([])
   const { toCurrency } = useCurrency()
   const { getBlockExplorerTxUrl } = useBlockExplorer(chain)
   const { veBalBoostMap } = useVebalBoost([pool as unknown as GqlPoolMinimal])
+  const { userAddress } = useUserAccount()
+  const { data: userPoolEventsData, loading: isLoading } = usePoolEvents({
+    chain,
+    poolId: pool.id,
+    userAddress,
+  })
 
   // keep this card the same height as the 'My liquidity' section
   useLayoutEffect(() => {
@@ -123,6 +125,12 @@ export default function PoolUserEvents({
       setHeight(myLiquiditySectionRef.current.offsetHeight)
     }
   }, [])
+
+  useEffect(() => {
+    if (!isLoading && userPoolEventsData?.poolEvents.length) {
+      setPoolEvents(userPoolEventsData.poolEvents)
+    }
+  }, [userPoolEventsData, isLoading])
 
   const stakedPercentage = useMemo(() => {
     const totalBalance = getUserTotalBalance(pool)
@@ -151,8 +159,8 @@ export default function PoolUserEvents({
 
   return (
     <Card h={height}>
-      {isLoading && <Skeleton w="full" h="full" />}
-      {!isLoading && (
+      {isLoading && !poolEvents.length && <Skeleton w="full" h="full" />}
+      {!isLoading && poolEvents.length && (
         <VStack spacing="md" w="full" h="full" alignItems="flex-start">
           <Heading
             bg="font.special"
