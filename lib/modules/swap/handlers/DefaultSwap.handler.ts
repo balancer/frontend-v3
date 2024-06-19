@@ -22,6 +22,7 @@ export class DefaultSwapHandler implements SwapHandler {
       notifyOnNetworkStatusChange: true,
     })
 
+    // TODO: workaround while we wait for sdk team to also start using 'protocolVersion'
     const paths = data.swaps.paths.map(
       path =>
         ({
