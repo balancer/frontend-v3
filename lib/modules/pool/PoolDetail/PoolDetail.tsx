@@ -28,7 +28,6 @@ export function PoolDetail() {
     data: userPoolEventsData,
     startPolling,
     stopPolling,
-    loading: isLoading,
   } = usePoolEvents({
     chain,
     poolId: pool.id,
