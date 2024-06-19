@@ -120,14 +120,15 @@ export default function PoolUserEvents({ poolEvents }: { poolEvents: PoolEventIt
   const stakedPercentage = useMemo(() => {
     const totalBalance = getUserTotalBalance(pool)
     const stakedBalance = calcTotalStakedBalance(pool)
+    const ratio = bn(stakedBalance).div(totalBalance)
 
-    // TODO: api returns double zero, will be fixed
-    if (totalBalance === '00') {
+    if (stakedBalance === '0') {
       return fNum('percentage', 0)
-    } else if (totalBalance === stakedBalance) {
-      return fNum('percentage', 100)
+    } else if (ratio.isGreaterThan(0.99999) && ratio.isLessThan(1.00001)) {
+      // to avoid very small rounding errors
+      return fNum('percentage', 1)
     } else {
-      return fNum('stakedPercentage', bn(stakedBalance).div(totalBalance).times(100))
+      return fNum('stakedPercentage', ratio)
     }
   }, [pool])
 
