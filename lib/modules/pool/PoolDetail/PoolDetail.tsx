@@ -28,6 +28,7 @@ export function PoolDetail() {
     data: userPoolEventsData,
     startPolling,
     stopPolling,
+    loading: isLoading,
   } = usePoolEvents({
     chain,
     poolId: pool.id,
@@ -70,7 +71,9 @@ export function PoolDetail() {
         {(userHasLiquidity || userhasPoolEvents) && (
           <Stack direction={{ base: 'column', md: 'row' }} w="full">
             <PoolMyLiquidity />
-            {userPoolEventsData && <PoolUserEvents poolEvents={userPoolEventsData.poolEvents} />}
+            {userPoolEventsData && (
+              <PoolUserEvents poolEvents={userPoolEventsData.poolEvents} isLoading={isLoading} />
+            )}
           </Stack>
         )}
         <PoolActivityChart />

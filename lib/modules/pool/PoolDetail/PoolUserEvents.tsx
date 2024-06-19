@@ -9,6 +9,7 @@ import {
   Box,
   HStack,
   Link,
+  Skeleton,
 } from '@chakra-ui/react'
 import { usePool } from '../PoolProvider'
 import { useLayoutEffect, useMemo, useState } from 'react'
@@ -103,7 +104,13 @@ function PoolEventRow({ poolEvent, usdValue, chain, txUrl }: PoolEventRowProps) 
   )
 }
 
-export default function PoolUserEvents({ poolEvents }: { poolEvents: PoolEventItem[] }) {
+export default function PoolUserEvents({
+  poolEvents,
+  isLoading,
+}: {
+  poolEvents: PoolEventItem[]
+  isLoading: boolean
+}) {
   const { myLiquiditySectionRef, chain, pool } = usePool()
   const [height, setHeight] = useState(0)
   const { toCurrency } = useCurrency()
@@ -144,66 +151,69 @@ export default function PoolUserEvents({ poolEvents }: { poolEvents: PoolEventIt
 
   return (
     <Card h={height}>
-      <VStack spacing="md" w="full" h="full" alignItems="flex-start">
-        <Heading
-          bg="font.special"
-          backgroundClip="text"
-          fontWeight="bold"
-          size="h5"
-          lineHeight="34px" // to align with 'My liquidity'
-        >
-          My transactions
-        </Heading>
-        <Divider />
-        <Box display={{ base: 'none', md: 'block' }} w="full">
-          <Grid w="full" templateColumns={{ base: '1fr', md: GRID_COLUMNS }} gap="4">
-            {['Action', 'Tokens', 'Value', 'Time'].map((label, index) => (
-              <GridItem
-                key={index}
-                textAlign={index > 1 ? 'right' : 'left'}
-                mr={index === 3 ? 'md' : 0}
-              >
-                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-                  {label}
+      {isLoading && <Skeleton w="full" h="full" />}
+      {!isLoading && (
+        <VStack spacing="md" w="full" h="full" alignItems="flex-start">
+          <Heading
+            bg="font.special"
+            backgroundClip="text"
+            fontWeight="bold"
+            size="h5"
+            lineHeight="34px" // to align with 'My liquidity'
+          >
+            My transactions
+          </Heading>
+          <Divider />
+          <Box display={{ base: 'none', md: 'block' }} w="full">
+            <Grid w="full" templateColumns={{ base: '1fr', md: GRID_COLUMNS }} gap="4">
+              {['Action', 'Tokens', 'Value', 'Time'].map((label, index) => (
+                <GridItem
+                  key={index}
+                  textAlign={index > 1 ? 'right' : 'left'}
+                  mr={index === 3 ? 'md' : 0}
+                >
+                  <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+                    {label}
+                  </Text>
+                </GridItem>
+              ))}
+            </Grid>
+            <Divider mt="md" />
+          </Box>
+          <Box w="full" overflowY="auto">
+            {isEmpty(poolEvents) ? (
+              <>
+                <Text variant="secondary">No recent transactions</Text>
+                <Text variant="secondary">
+                  Note: Recent transactions may take a few minutes to display here.
                 </Text>
-              </GridItem>
-            ))}
-          </Grid>
-          <Divider mt="md" />
-        </Box>
-        <Box w="full" overflowY="auto">
-          {isEmpty(poolEvents) ? (
-            <>
-              <Text variant="secondary">No recent transactions</Text>
-              <Text variant="secondary">
-                Note: Recent transactions may take a few minutes to display here.
-              </Text>
-            </>
-          ) : (
-            poolEvents.map(poolEvent => (
-              <PoolEventRow
-                poolEvent={poolEvent}
-                key={poolEvent.id}
-                usdValue={toCurrency(poolEvent.valueUSD)}
-                chain={chain}
-                txUrl={getBlockExplorerTxUrl(poolEvent.tx)}
-              />
-            ))
-          )}
-        </Box>
-        <Divider />
-        <HStack spacing="4">
-          <Text variant="secondary" fontSize="0.85rem">
-            {`${stakedPercentage} staked`}
-          </Text>
-          <Text variant="secondary" fontSize="0.85rem">
-            &middot;
-          </Text>
-          <Text variant="secondary" fontSize="0.85rem">
-            {`${boost}x boost`}
-          </Text>
-        </HStack>
-      </VStack>
+              </>
+            ) : (
+              poolEvents.map(poolEvent => (
+                <PoolEventRow
+                  poolEvent={poolEvent}
+                  key={poolEvent.id}
+                  usdValue={toCurrency(poolEvent.valueUSD)}
+                  chain={chain}
+                  txUrl={getBlockExplorerTxUrl(poolEvent.tx)}
+                />
+              ))
+            )}
+          </Box>
+          <Divider />
+          <HStack spacing="4">
+            <Text variant="secondary" fontSize="0.85rem">
+              {`${stakedPercentage} staked`}
+            </Text>
+            <Text variant="secondary" fontSize="0.85rem">
+              &middot;
+            </Text>
+            <Text variant="secondary" fontSize="0.85rem">
+              {`${boost}x boost`}
+            </Text>
+          </HStack>
+        </VStack>
+      )}
     </Card>
   )
 }
