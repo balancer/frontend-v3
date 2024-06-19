@@ -191,6 +191,7 @@ export default function PoolMyLiquidity() {
                   address={token.address as Address}
                   value={tokenBalanceFor(token.address)}
                   isLoading={isLoadingOnchainUserBalances || isConnecting}
+                  abbreviated={false}
                 />
               )
             })}
