@@ -132,8 +132,6 @@ function _usePortfolio() {
     }
   }, [poolsWithOnchainUserBalances, isConnected, userAddress])
 
-  console.log({ portfolioData })
-
   // Bal token rewards
   const { balRewardsData, isLoadingBalRewards } = useBalTokenRewards(
     portfolioData.stakedPools || []
