@@ -29,6 +29,7 @@ import {
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { NumberFormatter } from '@/lib/shared/utils/numbers'
+import { usePoolEvents } from '../../usePoolEvents'
 
 type ChartInfoTokens = {
   token?: GqlToken
@@ -222,16 +223,6 @@ function getSymbolSize(dataItem?: ChartEl) {
   return 80
 }
 
-function usePoolEvents(poolId: string, chain: GqlChain) {
-  return useQuery(GetPoolEventsDocument, {
-    variables: {
-      first: 1000,
-      poolId,
-      chain,
-    },
-  })
-}
-
 export type PoolActivityChartTab = 'all' | 'adds' | 'swaps' | 'removes'
 
 export interface PoolActivityChartTypeTab {
@@ -302,7 +293,7 @@ export function usePoolActivityChart(isExpanded: boolean) {
 
   const [activeTab, setActiveTab] = useState<ButtonGroupOption>(tabsList[0])
 
-  const { loading, data: response } = usePoolEvents(poolId as string, _chain)
+  const { loading, data: response } = usePoolEvents({ poolId: poolId as string, chain: _chain })
 
   const chartData = useMemo(() => {
     if (!response) return { adds: [], removes: [], swaps: [] }
