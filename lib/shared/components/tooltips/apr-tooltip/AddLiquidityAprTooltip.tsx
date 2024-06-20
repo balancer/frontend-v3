@@ -11,7 +11,7 @@ import { Pool } from '@/lib/modules/pool/PoolProvider'
 interface Props
   extends Omit<
     BaseAprTooltipProps,
-    'children' | 'totalBaseText' | 'totalBaseBALWETHText' | 'maxVeBalText'
+    'children' | 'totalBaseText' | 'totalBaseVeBalText' | 'maxVeBalText' | 'poolId'
   > {
   totalUsdValue: string
   weeklyYield: string
@@ -45,11 +45,12 @@ function AddLiquidityAprTooltip({ weeklyYield, totalUsdValue, pool, ...props }: 
   return (
     <BaseAprTooltip
       {...props}
+      poolId={pool.id}
       numberFormatter={numberFormatter}
       displayValueFormatter={displayValueFormatter}
       totalBaseText="Total weekly base"
-      totalBaseBALWETHText="Total weekly base"
-      totalBALWETHTitle="Total weekly"
+      totalBaseVeBalText="Total weekly base"
+      totalVeBalTitle="Total weekly"
       maxVeBalText="Total with max veBAL"
       placement="top-start"
       vebalBoost="1"

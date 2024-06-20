@@ -20,17 +20,18 @@ import {
 import { TooltipAprItem } from './TooltipAprItem'
 import BigNumber from 'bignumber.js'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
+import { isVebalPool } from '@/lib/modules/pool/pool.helpers'
 
 interface Props {
   aprItems: GqlPoolAprItem[]
   numberFormatter?: (value: string) => BigNumber
   displayValueFormatter?: (value: BigNumber) => string
   placement?: PlacementWithLogical
-  poolId?: string
+  poolId: string
   vebalBoost?: string
   totalBaseText: string | ((balReward?: GqlPoolAprItem) => string)
-  totalBaseBALWETHText: string
-  totalBALWETHTitle?: string
+  totalBaseVeBalText: string
+  totalVeBalTitle?: string
   maxVeBalText: string
   customPopoverContent?: React.ReactNode
   shouldDisplayBaseTooltip?: boolean
@@ -56,14 +57,15 @@ const defaultNumberFormatter = (value: string) => bn(bn(value).toFixed(4, BigNum
 
 function BaseAprTooltip({
   aprItems,
+  poolId,
   numberFormatter,
   displayValueFormatter,
   placement,
   vebalBoost,
   customPopoverContent,
   totalBaseText,
-  totalBaseBALWETHText,
-  totalBALWETHTitle,
+  totalBaseVeBalText,
+  totalVeBalTitle,
   maxVeBalText,
   shouldDisplayBaseTooltip,
   shouldDisplayMaxVeBalTooltip,
@@ -91,8 +93,6 @@ function BaseAprTooltip({
     balReward,
     totalBase,
     maxVeBal,
-    isLockingDisplayed,
-    isVotingDisplayed,
     lockingAprDisplayed,
     votingAprDisplayed,
     isVotingPresent,
@@ -104,10 +104,10 @@ function BaseAprTooltip({
     numberFormatter: usedNumberFormatter,
   })
 
-  const isBALWETH = isVotingDisplayed && isLockingDisplayed
+  const isVebal = isVebalPool(poolId)
 
-  const totalBaseTitle = isBALWETH
-    ? totalBaseBALWETHText
+  const totalBaseTitle = isVebal
+    ? totalBaseVeBalText
     : typeof totalBaseText === 'function'
     ? totalBaseText(balReward)
     : totalBaseText
@@ -185,7 +185,7 @@ function BaseAprTooltip({
         title={totalBaseTitle}
         apr={totalBaseDisplayed}
       />
-      {isBALWETH && (
+      {isVebal && (
         <>
           <Divider />
           <Stack roundedBottom="md" gap={0}>
@@ -215,7 +215,7 @@ function BaseAprTooltip({
               displayValueFormatter={usedDisplayValueFormatter}
               pt={3}
               fontColor="font.special"
-              title={totalBALWETHTitle || 'Total APR'}
+              title={totalVeBalTitle || 'Total APR'}
               apr={totalCombinedDisplayed}
               boxBackground={balRewardGradient}
               textBackground="background.special"

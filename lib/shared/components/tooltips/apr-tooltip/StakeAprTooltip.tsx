@@ -32,9 +32,10 @@ function StakeAprTooltip({ pool, totalUsdValue }: Props) {
   return (
     <BaseAprTooltip
       aprItems={pool.dynamicData.aprItems}
+      poolId={pool.id}
       totalBaseText="Total weekly base"
-      totalBaseBALWETHText="Total weekly base"
-      totalBALWETHTitle="Total weekly"
+      totalBaseVeBalText="Total weekly base"
+      totalVeBalTitle="Total weekly"
       maxVeBalText="Total with max veBAL"
       placement="top-start"
       vebalBoost="1"

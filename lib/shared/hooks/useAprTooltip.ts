@@ -133,9 +133,7 @@ export function useAprTooltip({
   const isYieldPresent = !yieldBearingTokensAprDisplayed.isZero()
   const isStakingPresent = !stakingIncentivesAprDisplayed.isZero()
 
-  const isVotingDisplayed = Boolean(votingApr)
   const isVotingPresent = !votingAprDisplayed.isZero()
-  const isLockingDisplayed = Boolean(lockingApr)
   const isLockingAprPresent = !lockingAprDisplayed.isZero()
 
   const subitemPopoverAprItemProps = {
@@ -159,8 +157,6 @@ export function useAprTooltip({
     stakingIncentivesDisplayed,
     votingAprDisplayed,
     lockingAprDisplayed,
-    isVotingDisplayed,
-    isLockingDisplayed,
     isVotingPresent,
     isLockingAprPresent,
     subitemPopoverAprItemProps,
