@@ -8,4 +8,5 @@ export const ProjectConfigBeets: ProjectConfig = {
   projectId: 'beets',
   projectName: 'BeethovenX',
   supportedNetworks: beetsSupportedNetworks,
+  votingPoolId: '0x9e4341acef4147196e99d648c5e43b3fc9d026780002000000000000000005ec',
 }
