@@ -15,6 +15,7 @@ import { usePool } from '../../../PoolProvider'
 import { bn } from '@/lib/shared/utils/numbers'
 import { ClaimModal } from '../../../actions/claim/ClaimModal'
 import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
+import { calcTotalStakedBalanceUsd } from '../../../user-balance.helpers'
 
 export type PoolMyStatsValues = {
   myLiquidity: number
@@ -72,7 +73,7 @@ export function UserSnapshotValues() {
 
       // TODO: only uses Balancer balances rn
       const stakedBalanceUsd = totalBalanceUsd
-        ? pool.userBalance.stakedBalanceUsd
+        ? calcTotalStakedBalanceUsd(pool)
         : POSSIBLE_STAKED_BALANCE_USD
 
       return {

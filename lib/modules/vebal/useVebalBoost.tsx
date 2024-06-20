@@ -62,11 +62,17 @@ export function useVebalBoost(pools: Pool[]) {
   const gauges = useMemo(() => {
     if (!pools) return []
 
-    return pools.map(p => ({
-      chain: p.chain,
-      gaugeAddress: p.staking?.gauge?.gaugeAddress || '',
-      poolId: p.id,
-    }))
+    const gauges = pools.map(p => {
+      if (p.staking?.gauge?.status === 'KILLED') return []
+
+      return {
+        chain: p.chain,
+        gaugeAddress: p.staking?.gauge?.gaugeAddress || '',
+        poolId: p.id,
+      }
+    })
+
+    return gauges.flat()
   }, [pools])
 
   const { veBalTotalSupplyL2, userVeBALBalances } = useGaugeTotalSupplyAndUserBalance(gauges)

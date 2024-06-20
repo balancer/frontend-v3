@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { differenceInCalendarDays, format } from 'date-fns'
 import { usePool } from '../../PoolProvider'
-import { PoolVariant } from '../../pool.types'
+import { PoolVariant, BaseVariant } from '../../pool.types'
 import {
   GqlChain,
   GqlPoolType,
@@ -15,11 +15,10 @@ import {
   GqlToken,
 } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
-import { balTheme, tokens } from '@/lib/shared/services/chakra/theme'
 import { ButtonGroupOption } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { ChainSlug, slugToChainMap } from '../../pool.utils'
-import { ColorMode } from '@chakra-ui/react'
-import { useTheme } from 'next-themes'
+import { ColorMode, useTheme as useChakraTheme } from '@chakra-ui/react'
+import { useTheme as useNextTheme } from 'next-themes'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 
@@ -30,6 +29,7 @@ import {
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { NumberFormatter } from '@/lib/shared/utils/numbers'
+import { usePoolEvents } from '../../usePoolEvents'
 
 type ChartInfoTokens = {
   token?: GqlToken
@@ -47,18 +47,21 @@ type ChartEl = [number, string, ChartInfoMetaData]
 
 export type ChartInfo = Record<'adds' | 'removes' | 'swaps', ChartEl[]>
 
-const toolTipTheme = {
-  heading: 'font-weight: bold; color: #E5D3BE',
-  container: `background: ${balTheme.semanticTokens.colors.background.level3._dark};`,
-  text: balTheme.semanticTokens.colors.font.secondary._dark,
-}
-
 const getDefaultPoolActivityChartOptions = (
-  theme: ColorMode = 'dark',
+  nextTheme: ColorMode = 'dark',
+  theme: any, // TODO: type this
   currencyFormatter: NumberFormatter,
   isMobile = false,
   isExpanded = false
 ): echarts.EChartsCoreOption => {
+  const toolTipTheme = {
+    heading: 'font-weight: bold; color: #E5D3BE',
+    container: `background: ${theme.semanticTokens.colors.background.level3._dark};`,
+    text: theme.semanticTokens.colors.font.secondary._dark,
+  }
+
+  const colorMode = nextTheme === 'dark' ? '_dark' : 'default'
+
   return {
     grid: {
       left: !isExpanded ? '2.5%' : isMobile ? '15%' : '5.5%',
@@ -78,7 +81,7 @@ const getDefaultPoolActivityChartOptions = (
         formatter: (value: number) => {
           return format(new Date(value * 1000), 'MMM d')
         },
-        color: tokens.colors[theme].text.secondary,
+        color: theme.semanticTokens.colors.font.primary[colorMode],
         opacity: 0.5,
         interval: 'auto',
         showMaxLabel: false,
@@ -112,7 +115,7 @@ const getDefaultPoolActivityChartOptions = (
         formatter: (value: number) => {
           return currencyFormatter(value)
         },
-        color: tokens.colors[theme].text.secondary,
+        color: theme.semanticTokens.colors.font.primary[colorMode],
         opacity: 0.5,
         interval: 'auto',
         showMaxLabel: true,
@@ -220,16 +223,6 @@ function getSymbolSize(dataItem?: ChartEl) {
   return 80
 }
 
-function usePoolEvents(poolId: string, chain: GqlChain) {
-  return useQuery(GetPoolEventsDocument, {
-    variables: {
-      first: 1000,
-      poolId,
-      chain,
-    },
-  })
-}
-
 export type PoolActivityChartTab = 'all' | 'adds' | 'swaps' | 'removes'
 
 export interface PoolActivityChartTypeTab {
@@ -244,7 +237,7 @@ export function getPoolActivityTabsList({
   variant: PoolVariant
   poolType: GqlPoolType
 }): PoolActivityChartTypeTab[] {
-  if (poolType === GqlPoolType.LiquidityBootstrapping && variant === PoolVariant.v2) {
+  if (poolType === GqlPoolType.LiquidityBootstrapping && variant === BaseVariant.v2) {
     return [
       {
         value: 'adds',
@@ -280,12 +273,12 @@ export function getPoolActivityTabsList({
 export function usePoolActivityChart(isExpanded: boolean) {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const { isMobile } = useBreakpoints()
-  const { theme } = useTheme()
+  const { theme: nextTheme } = useNextTheme()
   const { getToken } = useTokens()
   const { toCurrency } = useCurrency()
-
   const { id: poolId, variant, chain } = useParams()
   const { pool } = usePool()
+  const theme = useChakraTheme()
   const _chain = slugToChainMap[chain as ChainSlug]
 
   const tabsList = useMemo(() => {
@@ -300,7 +293,7 @@ export function usePoolActivityChart(isExpanded: boolean) {
 
   const [activeTab, setActiveTab] = useState<ButtonGroupOption>(tabsList[0])
 
-  const { loading, data: response } = usePoolEvents(poolId as string, _chain)
+  const { loading, data: response } = usePoolEvents({ poolId: poolId as string, chain: _chain })
 
   const chartData = useMemo(() => {
     if (!response) return { adds: [], removes: [], swaps: [] }
@@ -361,11 +354,11 @@ export function usePoolActivityChart(isExpanded: boolean) {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             {
               offset: 0,
-              color: balTheme.semanticTokens.colors.chart.pool.scatter.add.from,
+              color: theme.semanticTokens.colors.chart.pool.scatter.add.from,
             },
             {
               offset: 1,
-              color: balTheme.semanticTokens.colors.chart.pool.scatter.add.to,
+              color: theme.semanticTokens.colors.chart.pool.scatter.add.to,
             },
           ]),
         },
@@ -382,11 +375,11 @@ export function usePoolActivityChart(isExpanded: boolean) {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             {
               offset: 0,
-              color: balTheme.semanticTokens.colors.chart.pool.scatter.remove.from,
+              color: theme.semanticTokens.colors.chart.pool.scatter.remove.from,
             },
             {
               offset: 1,
-              color: balTheme.semanticTokens.colors.chart.pool.scatter.remove.to,
+              color: theme.semanticTokens.colors.chart.pool.scatter.remove.to,
             },
           ]),
         },
@@ -403,11 +396,11 @@ export function usePoolActivityChart(isExpanded: boolean) {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             {
               offset: 0,
-              color: balTheme.semanticTokens.colors.chart.pool.scatter.swap.from,
+              color: theme.semanticTokens.colors.chart.pool.scatter.swap.from,
             },
             {
               offset: 1,
-              color: balTheme.semanticTokens.colors.chart.pool.scatter.swap.to,
+              color: theme.semanticTokens.colors.chart.pool.scatter.swap.to,
             },
           ]),
         },
@@ -507,7 +500,8 @@ export function usePoolActivityChart(isExpanded: boolean) {
   return {
     isLoading: loading,
     chartOption: getDefaultPoolActivityChartOptions(
-      theme as ColorMode,
+      nextTheme as ColorMode,
+      theme,
       toCurrency,
       isMobile,
       isExpanded

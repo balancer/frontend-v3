@@ -10,23 +10,23 @@ export function SwapModalBody() {
   // Wrap and unwrap receipts will not have slippage so we don't need a receipt for them
   if (swapTxHash && !isWrap) {
     return (
-      <MotionDiv key="receipt">
+      <MotionDiv id="receipt">
         <SwapReceipt txHash={swapTxHash} />
       </MotionDiv>
     )
   }
 
   return (
-    <MotionDiv key="preview">
+    <MotionDiv id="preview">
       <SwapPreview />
     </MotionDiv>
   )
 }
 
-function MotionDiv({ key, children }: PropsWithChildren<{ key: string }>) {
+function MotionDiv({ id, children }: PropsWithChildren<{ id: string }>) {
   return (
     <motion.div
-      key={key}
+      key={id}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}

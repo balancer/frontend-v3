@@ -4,6 +4,7 @@ import {
   areEmptyAmounts,
   shouldUseNestedLiquidity,
   shouldUseRecoveryRemoveLiquidity,
+  roundDecimals,
 } from './LiquidityActionHelpers'
 import { nestedPoolMock } from '../__mocks__/nestedPoolMock'
 import {
@@ -153,4 +154,21 @@ describe('toSdkInputAmounts', () => {
       },
     ])
   })
+})
+
+test('trimDecimals', () => {
+  const humanTokenAmountsWithAddress: HumanTokenAmountWithAddress[] = [
+    { tokenAddress: ethAddress, humanAmount: '0.001013801345314809' },
+    { tokenAddress: wETHAddress, humanAmount: '0.001302248169953014' },
+  ]
+  expect(roundDecimals(humanTokenAmountsWithAddress)).toEqual([
+    {
+      humanAmount: '0.0010138013',
+      tokenAddress: ethAddress,
+    },
+    {
+      humanAmount: '0.0013022481',
+      tokenAddress: wETHAddress,
+    },
+  ])
 })

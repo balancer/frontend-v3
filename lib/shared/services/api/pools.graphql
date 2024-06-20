@@ -18,7 +18,7 @@ query GetPools(
     chain
     createTime
     decimals
-    vaultVersion
+    protocolVersion
     displayTokens {
       id
       address
@@ -129,6 +129,11 @@ query GetPools(
           tokenAddress
         }
       }
+      aura {
+        id
+        apr
+        auraPoolAddress
+      }
     }
     factory
     id
@@ -139,8 +144,14 @@ query GetPools(
     userBalance {
       totalBalance
       totalBalanceUsd
-      stakedBalance
       walletBalance
+      walletBalanceUsd
+      stakedBalances {
+        balance
+        balanceUsd
+        stakingType
+        stakingId
+      }
     }
   }
   count: poolGetPoolsCount(
@@ -164,7 +175,7 @@ query GetFeaturedPools($chains: [GqlChain!]!) {
       symbol
       type
       chain
-      vaultVersion
+      protocolVersion
       dynamicData {
         totalLiquidity
         apr {

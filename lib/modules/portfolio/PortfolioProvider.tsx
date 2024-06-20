@@ -16,6 +16,11 @@ import { Pool } from '../pool/PoolProvider'
 import { useRecentTransactions } from '../transactions/RecentTransactionsProvider'
 import { millisecondsToSeconds, sub, isAfter } from 'date-fns'
 import { compact, uniq, uniqBy } from 'lodash'
+import {
+  calcTotalStakedBalance,
+  getUserTotalBalance,
+  getUserTotalBalanceUsd,
+} from '../pool/user-balance.helpers'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
@@ -100,8 +105,8 @@ function _usePortfolio() {
     poolsWithOnchainUserBalances.forEach(pool => {
       if (pool.userBalance && pool.userBalance.totalBalance === '0') return
 
-      const stakedBalance = bn(pool.userBalance?.stakedBalance || 0)
-      const poolTotalBalance = bn(pool.userBalance?.totalBalance || 0)
+      const stakedBalance = bn(calcTotalStakedBalance(pool))
+      const poolTotalBalance = bn(getUserTotalBalance(pool))
       const unstakedBalance = poolTotalBalance.minus(stakedBalance)
       const isStaked = stakedBalance.gt(0)
       const isUnstaked = unstakedBalance.gt(0)
@@ -113,7 +118,7 @@ function _usePortfolio() {
         unstakedPools.push(pool)
       }
 
-      userTotalBalance = userTotalBalance.plus(pool.userBalance?.totalBalanceUsd || 0)
+      userTotalBalance = userTotalBalance.plus(getUserTotalBalanceUsd(pool))
     })
 
     return {

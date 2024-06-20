@@ -117,9 +117,9 @@ export function usePoolListQueryState() {
       case GqlPoolType.Stable:
         return 'Stable'
       case GqlPoolType.LiquidityBootstrapping:
-        return 'Liquidity Bootstrapping'
+        return 'Liquidity Bootstrapping (LBP)'
       case GqlPoolType.Gyro:
-        return 'CLP'
+        return 'Gyro CLP'
       default:
         return poolType.toLowerCase()
     }

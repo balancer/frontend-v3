@@ -1,6 +1,6 @@
 'use client'
 
-import { isNotSupported } from '@/lib/modules/pool/pool.helpers'
+import { isNotSupported, shouldBlockAddLiquidity } from '@/lib/modules/pool/pool.helpers'
 import { usePool } from '@/lib/modules/pool/PoolProvider'
 import { RelayerSignatureProvider } from '@/lib/modules/relayer/RelayerSignatureProvider'
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/TokenInputsValidationProvider'
@@ -10,6 +10,7 @@ import { AddLiquidityProvider } from '../../../../../../../../lib/modules/pool/a
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { PropsWithChildren } from 'react'
 import { isHash } from 'viem'
+import { usePoolRedirect } from '@/lib/modules/pool/pool.hooks'
 
 type Props = PropsWithChildren<{
   params: { txHash?: string[] }
@@ -17,9 +18,14 @@ type Props = PropsWithChildren<{
 
 export default function AddLiquidityLayout({ params: { txHash }, children }: Props) {
   const { pool } = usePool()
+  const { redirectToPoolPage } = usePoolRedirect(pool)
 
   const maybeTxHash = txHash?.[0] || ''
   const urlTxHash = isHash(maybeTxHash) ? maybeTxHash : undefined
+
+  if (shouldBlockAddLiquidity(pool)) {
+    return redirectToPoolPage()
+  }
 
   if (isNotSupported(pool)) {
     return (

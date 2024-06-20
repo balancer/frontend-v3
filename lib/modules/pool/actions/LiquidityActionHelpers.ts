@@ -15,10 +15,11 @@ import {
   mapPoolToNestedPoolState,
   mapPoolType,
   PoolStateWithBalances,
+  Token,
 } from '@balancer/sdk'
 import { Hex, formatUnits, parseUnits, Address } from 'viem'
-import { isAffectedByCspIssue } from '../alerts/pool-issues/PoolIssue.rules'
-import { hasNestedPools, isComposableStableV1, isGyro } from '../pool.helpers'
+
+import { hasNestedPools, isAffectedByCspIssue, isComposableStableV1, isGyro } from '../pool.helpers'
 import { Pool } from '../PoolProvider'
 import {
   isNativeAsset,
@@ -26,6 +27,7 @@ import {
   swapNativeWithWrapped,
 } from '../../tokens/token.helpers'
 import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
+import BigNumber from 'bignumber.js'
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -200,7 +202,7 @@ export function toPoolState(pool: Pool): PoolState {
     address: pool.address as Address,
     tokens: pool.poolTokens as MinimalToken[],
     type: mapPoolType(pool.type),
-    vaultVersion: pool.vaultVersion as VaultVersion,
+    vaultVersion: pool.protocolVersion as VaultVersion,
   }
 }
 
@@ -216,7 +218,7 @@ export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
       decimals: t.decimals,
     })),
     totalShares: pool.dynamicData.totalShares as HumanAmount,
-    vaultVersion: pool.vaultVersion as VaultVersion,
+    vaultVersion: pool.protocolVersion as VaultVersion,
   }
 }
 
@@ -242,4 +244,19 @@ export function filterHumanAmountsIn(
       !(isNativeAsset(tokenAddress, chain) && isWrappedNativeAsset(amountIn.tokenAddress, chain)) &&
       !(isNativeAsset(amountIn.tokenAddress, chain) && isWrappedNativeAsset(tokenAddress, chain))
   )
+}
+
+/**
+ * Used to avoid problems with proportional SDK priceImpact queries
+ * Rounds down to avoid balance overflow issues
+ */
+export function roundDecimals(humanAmountsIn: HumanTokenAmountWithAddress[], maxDecimals = 10) {
+  return humanAmountsIn.map(({ humanAmount, tokenAddress }) => ({
+    humanAmount: bn(humanAmount).toFixed(maxDecimals, BigNumber.ROUND_DOWN) as HumanAmount,
+    tokenAddress,
+  }))
+}
+
+export function emptyTokenAmounts(pool: Pool): TokenAmount[] {
+  return pool.poolTokens.map(token => TokenAmount.fromHumanAmount(token as unknown as Token, '0'))
 }

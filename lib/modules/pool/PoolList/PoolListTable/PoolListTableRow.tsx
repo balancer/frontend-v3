@@ -8,6 +8,7 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { PoolListItem } from '../../pool.types'
 import { PoolListTokenPills } from '../PoolListTokenPills'
+import { getUserTotalBalanceUsd } from '../../user-balance.helpers'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -31,7 +32,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
       px={{ base: '0', sm: 'md' }}
       w="full"
     >
-      <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
+      <Link href={getPoolPath(pool)} prefetch={true}>
         <Grid {...rest} py="sm" pr="4">
           <GridItem>
             <NetworkIcon chain={pool.chain} size={6} />
@@ -53,7 +54,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
           {userAddress && (
             <GridItem>
               <Text textAlign="right" fontWeight="medium">
-                {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
+                {toCurrency(getUserTotalBalanceUsd(pool), { abbreviated: false })}
               </Text>
             </GridItem>
           )}

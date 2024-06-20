@@ -17,7 +17,7 @@ import { PoolChartTab, PoolChartTypeTab, poolChartPeriods, usePoolCharts } from 
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { GroupBase, OptionBase, Select, SingleValue } from 'chakra-react-select'
 import { GqlPoolSnapshotDataRange } from '@/lib/shared/services/api/generated/graphql'
-import { getSelectStyles } from '@/lib/shared/services/chakra/theme/chakra-react-select'
+import { getSelectStyles } from '@/lib/shared/services/chakra/custom/chakra-react-select'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 
 interface PeriodOption extends OptionBase {
@@ -94,7 +94,7 @@ export function PoolCharts({ ...props }: CardProps) {
   return (
     <Card {...props}>
       <Stack h="full">
-        {isLoading && <Skeleton w="full" h="full" />}
+        {isLoading && <Skeleton w="full" h="full" minH="200px" />}
         {!isLoading && chartData.length > 0 && (
           <NoisyCard
             cardProps={COMMON_NOISY_CARD_PROPS.cardProps}

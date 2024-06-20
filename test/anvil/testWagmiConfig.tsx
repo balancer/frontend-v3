@@ -1,10 +1,5 @@
-import {
-  NetworksWithFork,
-  alternativeTestUserAccount,
-  defaultTestUserAccount,
-  getTestRpcSetup,
-} from '@/test/anvil/anvil-setup'
-import { Chain, http } from 'viem'
+import { NetworksWithFork, getTestRpcSetup, testAccounts } from '@/test/anvil/anvil-setup'
+import { Address, Chain, http } from 'viem'
 import { mainnet, polygon } from 'viem/chains'
 import { createConfig } from 'wagmi'
 import { mock } from 'wagmi/connectors'
@@ -37,17 +32,25 @@ function getTestRpcUrls(networkName: NetworksWithFork) {
   } as const
 }
 
-export const testWagmiConfig = createConfig({
-  chains: [mainnetTest, polygonTest],
-  connectors: [
-    mock({ accounts: [defaultTestUserAccount] }),
-    mock({ accounts: [alternativeTestUserAccount] }),
-  ],
-  pollingInterval: 100,
-  storage: null,
-  transports: {
-    [mainnetTest.id]: http(),
-    [polygonTest.id]: http(),
-  },
-  ssr: false,
-})
+export let testWagmiConfig = createTestWagmiConfig()
+
+function createTestWagmiConfig() {
+  return createConfig({
+    chains: [mainnetTest, polygonTest],
+    connectors: testAccounts.map(testAccount => mock({ accounts: [testAccount] })),
+    pollingInterval: 100,
+    storage: null,
+    transports: {
+      [mainnetTest.id]: http(),
+      [polygonTest.id]: http(),
+    },
+    ssr: false,
+  })
+}
+
+// Allows tests dynamically connecting to any test account
+export function addTestUserAddress(testAccount: Address) {
+  if (testAccounts.includes(testAccount)) return
+  testAccounts.push(testAccount)
+  testWagmiConfig = createTestWagmiConfig()
+}

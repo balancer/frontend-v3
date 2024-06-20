@@ -7,9 +7,9 @@ import {
   GetPoolQueryVariables,
   GqlChain,
   GetPoolQuery,
+  GqlPoolElement,
 } from '@/lib/shared/services/api/generated/graphql'
 import { nested50WETH_50_3poolId } from '@/lib/debug-helpers'
-import { Pool } from '../PoolProvider'
 import { Address } from 'viem'
 
 function astToQueryString(ast: any): string {
@@ -18,13 +18,15 @@ function astToQueryString(ast: any): string {
 
 export async function getPoolMock(
   poolId: Address = nested50WETH_50_3poolId,
-  chain: GqlChain = GqlChain.Mainnet
-): Promise<Pool> {
+  chain: GqlChain = GqlChain.Mainnet,
+  userAddress?: Address
+): Promise<GqlPoolElement> {
   const queryString = astToQueryString(visit(GetPoolDocument, {}))
 
   const variables: GetPoolQueryVariables = {
     id: poolId,
     chain,
+    userAddress,
   }
 
   const getPoolQuery = (await fetch(process.env.NEXT_PUBLIC_BALANCER_API_URL as string, {
@@ -37,5 +39,5 @@ export async function getPoolMock(
     .then(response => response.json())
     .then(result => result.data)) as GetPoolQuery
 
-  return getPoolQuery.pool as Pool
+  return getPoolQuery.pool as GqlPoolElement
 }

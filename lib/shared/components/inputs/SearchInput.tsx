@@ -35,6 +35,7 @@ export function SearchInput({
       <Input
         {...register(SEARCH)}
         id={SEARCH}
+        autoComplete="off"
         placeholder={placeholder}
         onChange={debouncedChangeHandler}
         bg="input.bgDefault"

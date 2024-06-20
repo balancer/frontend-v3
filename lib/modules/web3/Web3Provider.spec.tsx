@@ -31,6 +31,7 @@ test('Debug', () => {
       },
       "fees": undefined,
       "formatters": undefined,
+      "iconUrl": "/images/chains/MAINNET.svg",
       "id": 1,
       "name": "Ethereum",
       "nativeCurrency": {
