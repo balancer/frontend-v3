@@ -88,6 +88,7 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
               poolId={pool.id}
               textProps={{ fontWeight: 'medium' }}
               vebalBoost={vebalBoostValue}
+              pool={pool}
             />
           </GridItem>
         </Grid>

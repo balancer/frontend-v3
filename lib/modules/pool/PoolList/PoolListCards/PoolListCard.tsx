@@ -94,6 +94,7 @@ export function PoolListCard({ pool }: Props) {
                       poolId={pool.id}
                       textProps={{ fontSize: '1rem', fontWeight: 'bold' }}
                       onlySparkles
+                      pool={pool}
                     />
                   </HStack>
                 }
