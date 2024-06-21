@@ -7,6 +7,7 @@ import { useCallback } from 'react'
 import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { Pool } from '@/lib/modules/pool/PoolProvider'
+import { SparklesIcon } from './MainAprTooltip'
 
 interface Props extends Omit<BaseAprTooltipProps, 'children' | 'totalBaseText' | 'maxVeBalText'> {
   totalUsdValue: string
@@ -61,7 +62,7 @@ function AddLiquidityAprTooltip({ weeklyYield, totalUsdValue, pool, ...props }: 
               <Text variant="special" fontSize="md" lineHeight="16px" fontWeight="700">
                 {weeklyYield ? toCurrency(weeklyYield, { abbreviated: false }) : '-'}
               </Text>
-              {pool.staking ? <Icon as={StarsIcon} /> : <Icon as={Info} color="gray.400" />}
+              <SparklesIcon isOpen={false} pool={pool} />
             </HStack>
           </VStack>
         </Card>

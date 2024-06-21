@@ -19,7 +19,7 @@ interface Props extends Omit<BaseAprTooltipProps, 'children' | 'totalBaseText' |
 
 const hoverColor = 'font.highlight'
 
-const SparklesIcon = ({ isOpen, pool }: { isOpen: boolean; pool: Pool | PoolListItem }) => {
+export const SparklesIcon = ({ isOpen, pool }: { isOpen: boolean; pool: Pool | PoolListItem }) => {
   const theme = useTheme()
   const { votingPoolId } = getProjectConfig()
 
