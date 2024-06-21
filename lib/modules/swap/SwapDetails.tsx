@@ -17,7 +17,7 @@ export function OrderRoute() {
   const { simulationQuery } = useSwap()
 
   const queryData = simulationQuery.data as SdkSimulateSwapResponse
-  const orderRouteVersion = queryData ? queryData.vaultVersion : 2
+  const orderRouteVersion = queryData ? queryData.protocolVersion : 2
   const hopCount = queryData ? queryData.routes[0].hops.length : 0
 
   return (

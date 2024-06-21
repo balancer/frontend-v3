@@ -18,7 +18,7 @@ export const notAllowedPoolMock: Pool = {
   createTime: 1647948468,
   type: GqlPoolType.Weighted,
   chain: GqlChain.Polygon,
-  vaultVersion: 2,
+  protocolVersion: 2,
   dynamicData: {
     poolId: '0x241df159b03a90455edee61625655fc0ea5fa3dd0002000000000000000003fc',
     swapEnabled: true,

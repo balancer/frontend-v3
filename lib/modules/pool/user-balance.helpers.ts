@@ -55,7 +55,7 @@ export function getUserWalletBalanceInt(pool: Pool): bigint {
 
 export function getUserTotalBalanceUsd(pool: Pool | PoolListItem): number {
   const userBalance = pool.userBalance
-  if (!userBalance) return 0
+  if (!userBalance || !userBalance.totalBalanceUsd) return 0
 
   return userBalance.totalBalanceUsd
 }
@@ -97,4 +97,30 @@ export function getGaugeStakedBalance(pool: Pool, gaugeAddress: Address): HumanA
 
 export function hasTotalBalance(pool: Pool) {
   return bn(getUserTotalBalance(pool)).gt(0)
+}
+
+export function hasAuraStakedBalance(pool: Pool | PoolListItem): boolean {
+  return hasStakedBalanceFor(pool, GqlPoolStakingType.Aura)
+}
+
+export function hasBalancerStakedBalance(pool: Pool | PoolListItem): boolean {
+  return hasStakedBalanceFor(pool, GqlPoolStakingType.Gauge)
+}
+
+export function hasStakedBalanceFor(
+  pool: Pool | PoolListItem,
+  stakingType: GqlPoolStakingType
+): boolean {
+  const userBalance = pool.userBalance
+  if (!userBalance) return false
+
+  return userBalance.stakedBalances.some(
+    balance => balance.stakingType === stakingType && bn(balance.balance).gt(0)
+  )
+}
+
+export function hasTinyBalance(pool: Pool | PoolListItem, minUsdBalance = 0.01): boolean {
+  const userBalance = pool.userBalance
+  if (!userBalance) return false
+  return bn(getUserTotalBalanceUsd(pool)).lt(minUsdBalance)
 }

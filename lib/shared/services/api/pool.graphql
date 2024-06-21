@@ -11,7 +11,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
     createTime
     type
     chain
-    vaultVersion
+    protocolVersion
     dynamicData {
       poolId
       swapEnabled
@@ -495,8 +495,26 @@ query GetPoolTokensDynamicData($addresses: [String!]!) {
   }
 }
 
-query GetPoolEvents($first: Int, $poolId: String!, $chain: GqlChain!) {
-  poolEvents(first: $first, where: { poolId: $poolId, chain: $chain }) {
+query GetPoolEvents(
+  $first: Int
+  $skip: Int
+  $poolId: String!
+  $chain: GqlChain!
+  $range: GqlPoolEventsDataRange
+  $typeIn: [GqlPoolEventType]
+  $userAddress: String
+) {
+  poolEvents(
+    first: $first
+    skip: $skip
+    where: {
+      poolId: $poolId
+      chain: $chain
+      range: $range
+      typeIn: $typeIn
+      userAddress: $userAddress
+    }
+  ) {
     id
     poolId
     timestamp
