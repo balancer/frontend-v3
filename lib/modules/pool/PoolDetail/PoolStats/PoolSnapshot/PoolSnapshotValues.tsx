@@ -72,7 +72,7 @@ export function PoolSnapshotValues() {
           APR for LPs
         </Text>
         <MemoizedMainAprTooltip
-          data={pool.dynamicData.apr}
+          aprItems={pool.dynamicData.aprItems}
           poolId={pool.id}
           height="28px"
           textProps={{

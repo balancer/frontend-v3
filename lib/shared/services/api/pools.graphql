@@ -43,62 +43,11 @@ query GetPools(
       swapFee
       swapsCount
       totalShares
-      apr {
-        apr {
-          ... on GqlPoolAprTotal {
-            total
-          }
-          ... on GqlPoolAprRange {
-            min
-            max
-          }
-        }
-        hasRewardApr
-        thirdPartyApr {
-          ... on GqlPoolAprTotal {
-            total
-          }
-          ... on GqlPoolAprRange {
-            min
-            max
-          }
-        }
-        nativeRewardApr {
-          ... on GqlPoolAprTotal {
-            total
-          }
-          ... on GqlPoolAprRange {
-            min
-            max
-          }
-        }
-        swapApr
-        items {
-          id
-          title
-          apr {
-            ... on GqlPoolAprTotal {
-              total
-            }
-            ... on GqlPoolAprRange {
-              min
-              max
-            }
-          }
-          subItems {
-            id
-            title
-            apr {
-              ... on GqlPoolAprTotal {
-                total
-              }
-              ... on GqlPoolAprRange {
-                min
-                max
-              }
-            }
-          }
-        }
+      aprItems {
+        id
+        title
+        apr
+        type
       }
     }
     staking {
@@ -178,16 +127,11 @@ query GetFeaturedPools($chains: [GqlChain!]!) {
       protocolVersion
       dynamicData {
         totalLiquidity
-        apr {
-          apr {
-            ... on GqlPoolAprTotal {
-              total
-            }
-            ... on GqlPoolAprRange {
-              min
-              max
-            }
-          }
+        aprItems {
+          id
+          title
+          apr
+          type
         }
       }
       displayTokens {

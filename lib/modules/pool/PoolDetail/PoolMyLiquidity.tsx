@@ -127,7 +127,7 @@ export default function PoolMyLiquidity() {
   const shouldMigrateStake = hasNonPreferentialBalance
   const hasUnstakedBalance = bn(getUserWalletBalance(pool)).gt(0)
   const hasStakedBalance = bn(calcTotalStakedBalance(pool)).gt(0)
-  const aprLabel = getTotalAprLabel(pool.dynamicData?.apr.items)
+  const aprLabel = getTotalAprLabel(pool.dynamicData.aprItems)
 
   const displayTokens = hasNestedPools(pool)
     ? // we don't have the balances for pool.displayTokens for v2 boosted pools so we show bpt tokens balance as a workaround
