@@ -18,7 +18,7 @@ export function StakePreview() {
             <HStack color="grayText">
               <WalletIcon />
               <Text color="grayText">
-                {stakeTxHash ? 'Staked LP tokens' : 'Stakable LP tokens'}
+                {stakeTxHash ? 'Staked LP tokens' : 'Stakeable LP tokens'}
               </Text>
             </HStack>
           }
