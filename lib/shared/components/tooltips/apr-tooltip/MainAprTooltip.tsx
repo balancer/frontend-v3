@@ -23,17 +23,11 @@ interface Props
 
 const hoverColor = 'font.highlight'
 
-export const SparklesIcon = ({
-  isOpen,
-  pool,
-  hasRewardApr,
-}: {
-  isOpen: boolean
-  pool: Pool | PoolListItem
-  hasRewardApr: boolean
-}) => {
+export const SparklesIcon = ({ isOpen, pool }: { isOpen: boolean; pool: Pool | PoolListItem }) => {
   const theme = useTheme()
   const { votingPoolId } = getProjectConfig()
+
+  const hasRewardApr = pool.dynamicData.aprItems.some(item => item.title === 'BAL reward APR')
 
   let gradFromColor = theme.colors.sparkles.default.from
   let gradToColor = theme.colors.sparkles.default.to
@@ -69,20 +63,16 @@ function MainAprTooltip({
   onlySparkles,
   textProps,
   apr,
-  aprItems,
   vebalBoost,
   aprLabel,
   height = '16px',
   pool,
   ...props
 }: Props) {
-  const aprToShow = apr || getTotalAprLabel(aprItems, vebalBoost)
-
-  const hasRewardApr = aprItems.some(item => item.title === 'BAL reward APR')
+  const aprToShow = apr || getTotalAprLabel(pool.dynamicData.aprItems, vebalBoost)
 
   return (
     <BaseAprTooltip
-      aprItems={aprItems}
       {...props}
       maxVeBalText="Max veBAL APR"
       totalBaseText={balReward => `Total ${balReward ? 'base' : ''} APR`}
@@ -101,7 +91,7 @@ function MainAprTooltip({
                   {aprLabel ? ' APR' : ''}
                 </Text>
               )}
-              <SparklesIcon isOpen={isOpen} pool={pool} hasRewardApr={hasRewardApr} />
+              <SparklesIcon isOpen={isOpen} pool={pool} />
             </HStack>
           </Button>
         </HStack>
