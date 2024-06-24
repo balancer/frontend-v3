@@ -70,7 +70,7 @@ export function PoolListCard({ pool }: Props) {
               <StatCard label="TVL" value={toCurrency(pool.dynamicData.totalLiquidity)} />
             </GridItem>
             <GridItem>
-              <StatCard label="Volume(24h)" value={toCurrency(pool.dynamicData.volume24h)} />
+              <StatCard label="Volume (24h)" value={toCurrency(pool.dynamicData.volume24h)} />
             </GridItem>
             <GridItem>
               <StatCard
