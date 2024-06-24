@@ -36,13 +36,11 @@ function absMaxApr(aprItems: GqlPoolAprItem[], boost?: number) {
 }
 
 export function useAprTooltip({
-  // apr,
   aprItems,
   numberFormatter,
   vebalBoost,
 }: {
   aprItems: GqlPoolAprItem[]
-  // apr: GqlPoolApr
   numberFormatter: (value: string) => BigNumber
   vebalBoost?: number
 }) {
