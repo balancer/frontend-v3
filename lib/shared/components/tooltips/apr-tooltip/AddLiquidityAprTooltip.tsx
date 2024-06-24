@@ -8,7 +8,11 @@ import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { Pool } from '@/lib/modules/pool/PoolProvider'
 
-interface Props extends Omit<BaseAprTooltipProps, 'children' | 'totalBaseText' | 'maxVeBalText'> {
+interface Props
+  extends Omit<
+    BaseAprTooltipProps,
+    'children' | 'totalBaseText' | 'totalBaseVeBalText' | 'maxVeBalText' | 'poolId'
+  > {
   totalUsdValue: string
   weeklyYield: string
   pool: Pool
@@ -41,15 +45,19 @@ function AddLiquidityAprTooltip({ weeklyYield, totalUsdValue, pool, ...props }: 
   return (
     <BaseAprTooltip
       {...props}
+      poolId={pool.id}
       numberFormatter={numberFormatter}
       displayValueFormatter={displayValueFormatter}
       totalBaseText="Total weekly base"
+      totalBaseVeBalText="Total weekly base"
+      totalVeBalTitle="Total weekly"
       maxVeBalText="Total with max veBAL"
       placement="top-start"
       vebalBoost="1"
       customPopoverContent={customPopoverContent}
       shouldDisplayBaseTooltip
       shouldDisplayMaxVeBalTooltip
+      usePortal={false}
     >
       <HStack align="center" alignItems="center">
         <Card cursor="pointer" variant="subSection" w="full" p={['sm', 'ms']}>

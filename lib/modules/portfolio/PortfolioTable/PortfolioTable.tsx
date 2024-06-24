@@ -17,6 +17,7 @@ import {
   hasTinyBalance,
 } from '../../pool/user-balance.helpers'
 import { bn } from '@/lib/shared/utils/numbers'
+import { getTotalApr } from '../../pool/pool.utils'
 
 export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr'
 export interface PortfolioSortingData {
@@ -114,13 +115,10 @@ export function PortfolioTable() {
       }
 
       if (currentSortingObj.id === 'apr') {
-        const aApr = a.dynamicData.apr.apr as any
-        const bApr = b.dynamicData.apr.apr as any
+        const [aApr] = getTotalApr(a.dynamicData.aprItems)
+        const [bApr] = getTotalApr(b.dynamicData.aprItems)
 
-        const aArpValue = aApr.total || aApr.min
-        const bArpValue = bApr.total || bApr.min
-
-        return currentSortingObj.desc ? bArpValue - aArpValue : aArpValue - bArpValue
+        return currentSortingObj.desc ? bApr.minus(aApr).toNumber() : aApr.minus(bApr).toNumber()
       }
 
       return 0

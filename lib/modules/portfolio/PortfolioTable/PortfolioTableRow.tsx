@@ -84,7 +84,7 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
           </GridItem>
           <GridItem justifySelf="end">
             <MemoizedMainAprTooltip
-              data={pool.dynamicData.apr}
+              aprItems={pool.dynamicData.aprItems}
               poolId={pool.id}
               textProps={{ fontWeight: 'medium' }}
               vebalBoost={vebalBoostValue}

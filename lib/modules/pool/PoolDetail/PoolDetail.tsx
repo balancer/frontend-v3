@@ -23,7 +23,7 @@ export function PoolDetail() {
   const router = useRouter()
   const pathname = usePathname()
   const { variant, banners } = usePoolVariant()
-  const { userAddress } = useUserAccount()
+  const { userAddress, isConnected } = useUserAccount()
   const {
     data: userPoolEventsData,
     startPolling,
@@ -67,7 +67,7 @@ export function PoolDetail() {
           {banners?.headerSrc && <Image src={banners.headerSrc} alt={`${variant}-header`} />}
           <PoolStatsLayout />
         </VStack>
-        {(userHasLiquidity || userhasPoolEvents) && (
+        {isConnected && (userHasLiquidity || userhasPoolEvents) && (
           <Grid w="full" templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap="2">
             <GridItem>
               <PoolMyLiquidity />
