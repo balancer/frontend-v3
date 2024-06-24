@@ -65,7 +65,7 @@ export function UserSnapshotValues() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [veBalBoostMap])
 
-  const myAprRaw = getTotalAprRaw(pool.dynamicData?.apr.items, boost)
+  const myAprRaw = getTotalAprRaw(pool.dynamicData.aprItems, boost)
 
   const poolMyStatsValues: PoolMyStatsValues | undefined = useMemo(() => {
     if (pool && pool.userBalance && !isLoadingPool && !isLoadingClaiming) {
@@ -124,7 +124,7 @@ export function UserSnapshotValues() {
         </Text>
         {poolMyStatsValues && poolMyStatsValues.myLiquidity ? (
           <MemoizedMainAprTooltip
-            data={pool.dynamicData.apr}
+            aprItems={pool.dynamicData.aprItems}
             poolId={pool.id}
             textProps={{ fontWeight: 'bold', fontSize: '2xl', lineHeight: '28px' }}
             vebalBoost={boost || '1'}

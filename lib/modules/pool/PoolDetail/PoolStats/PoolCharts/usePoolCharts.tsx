@@ -298,6 +298,10 @@ export function usePoolCharts() {
         return [snapshot.timestamp, snapshot.volume24h]
       })
     }
+
+    // Sort the data by timestamp
+    chartArr.sort((a, b) => a[0] - b[0])
+
     return chartArr
   }, [data?.snapshots, activeTab])
 
@@ -305,24 +309,28 @@ export function usePoolCharts() {
     const today = new Date()
     today.setUTCHours(0, 0, 0, 0)
 
-    const lastChartDataEl = chartData[chartData.length - 1]
+    const firstChartDataEl = chartData[0]
     const processedElements: [number, string][] = []
     const isSelectedTabTVL = activeTab.value === PoolChartTab.TVL
 
-    const minDataDate = lastChartDataEl ? Number(lastChartDataEl[0]) * 1000 : today.getTime()
+    const minDataDate = firstChartDataEl ? Number(firstChartDataEl[0]) * 1000 : today.getTime()
     const daysSinceMinDataDate = differenceInDays(today, new Date(minDataDate))
     const initialTotalLiquidity = isSelectedTabTVL
-      ? lastChartDataEl
-        ? lastChartDataEl[1]
+      ? firstChartDataEl
+        ? firstChartDataEl[1]
         : pool.dynamicData.totalLiquidity
       : undefined
 
     const iterateTo =
       activePeriod.value in dataRangeToDaysMap
-        ? dataRangeToDaysMap[activePeriod.value]!
+        ? dataRangeToDaysMap[activePeriod.value]
         : daysSinceMinDataDate > MIN_DISPLAY_PERIOD_DAYS
         ? daysSinceMinDataDate
         : MIN_DISPLAY_PERIOD_DAYS
+
+    if (iterateTo === undefined) {
+      throw new Error("DataRangeToDaysMap doesn't have a value for the selected period")
+    }
 
     for (let i = 0; i < iterateTo; i++) {
       const currentDay = new Date(today)
@@ -347,7 +355,13 @@ export function usePoolCharts() {
           if (existingEntry) {
             processedElements.push(existingEntry)
           } else {
-            processedElements.push([timestamp, initialTotalLiquidity!])
+            const isEarlierThanCreation = pool.createTime > timestamp
+
+            if (initialTotalLiquidity === undefined) {
+              throw new Error('Initial total liquidity should be defined')
+            }
+
+            processedElements.push([timestamp, isEarlierThanCreation ? '0' : initialTotalLiquidity])
           }
         } else {
           const existingEntry = chartData.find(item => item[0] === timestamp)
@@ -362,8 +376,9 @@ export function usePoolCharts() {
 
       // If the active tab is not TVL, we check if there is enough data to display
       // for each day and if not, add 0 to days without data
-      if (chartData.some(item => item[0] === timestamp)) {
-        const existingEntry = chartData.find(item => item[0] === timestamp)!
+      const existingEntry = chartData.find(item => item[0] === timestamp)
+
+      if (existingEntry) {
         processedElements.push(existingEntry)
       } else {
         processedElements.push([timestamp, '0'])
@@ -371,7 +386,13 @@ export function usePoolCharts() {
     }
 
     return processedElements
-  }, [activePeriod.value, activeTab.value, chartData, pool.dynamicData.totalLiquidity])
+  }, [
+    activePeriod.value,
+    activeTab.value,
+    chartData,
+    pool.createTime,
+    pool.dynamicData.totalLiquidity,
+  ])
 
   const defaultChartOptions = getDefaultPoolChartOptions(toCurrency, nextTheme as ColorMode, theme)
 
@@ -446,7 +467,8 @@ export function usePoolCharts() {
         },
       ],
     }
-  }, [chartData, activeTab, defaultChartOptions])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab.value, defaultChartOptions, processedChartData])
 
   const handleAxisMoved = useCallback(
     ({ dataIndex }: { dataIndex: number }) => {

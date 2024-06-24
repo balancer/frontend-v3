@@ -8,7 +8,11 @@ import { Pool } from '@/lib/modules/pool/PoolProvider'
 import { isLBP } from '@/lib/modules/pool/pool.helpers'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
-interface Props extends Omit<BaseAprTooltipProps, 'children' | 'totalBaseText' | 'maxVeBalText'> {
+interface Props
+  extends Omit<
+    BaseAprTooltipProps,
+    'children' | 'totalBaseText' | 'totalBaseVeBalText' | 'maxVeBalText'
+  > {
   textProps?: TextProps
   onlySparkles?: boolean
   aprLabel?: boolean
@@ -19,7 +23,15 @@ interface Props extends Omit<BaseAprTooltipProps, 'children' | 'totalBaseText' |
 
 const hoverColor = 'font.highlight'
 
-export const SparklesIcon = ({ isOpen, pool }: { isOpen: boolean; pool: Pool | PoolListItem }) => {
+export const SparklesIcon = ({
+  isOpen,
+  pool,
+  hasRewardApr,
+}: {
+  isOpen: boolean
+  pool: Pool | PoolListItem
+  hasRewardApr: boolean
+}) => {
   const theme = useTheme()
   const { votingPoolId } = getProjectConfig()
 
@@ -31,7 +43,7 @@ export const SparklesIcon = ({ isOpen, pool }: { isOpen: boolean; pool: Pool | P
     gradToColor = theme.colors.sparkles.voting.to
   }
 
-  if (pool.dynamicData.apr.hasRewardApr) {
+  if (hasRewardApr) {
     gradFromColor = theme.colors.sparkles.rewards.from
     gradToColor = theme.colors.sparkles.rewards.to
   }
@@ -57,21 +69,24 @@ function MainAprTooltip({
   onlySparkles,
   textProps,
   apr,
-  data,
+  aprItems,
   vebalBoost,
   aprLabel,
   height = '16px',
   pool,
   ...props
 }: Props) {
-  const aprToShow = apr || getTotalAprLabel(data.items, vebalBoost)
+  const aprToShow = apr || getTotalAprLabel(aprItems, vebalBoost)
+
+  const hasRewardApr = aprItems.some(item => item.title === 'BAL reward APR')
 
   return (
     <BaseAprTooltip
-      data={data}
+      aprItems={aprItems}
       {...props}
       maxVeBalText="Max veBAL APR"
       totalBaseText={balReward => `Total ${balReward ? 'base' : ''} APR`}
+      totalBaseVeBalText="Total base APR"
     >
       {({ isOpen }) => (
         <HStack align="center" alignItems="center">
@@ -86,7 +101,7 @@ function MainAprTooltip({
                   {aprLabel ? ' APR' : ''}
                 </Text>
               )}
-              <SparklesIcon isOpen={isOpen} pool={pool} />
+              <SparklesIcon isOpen={isOpen} pool={pool} hasRewardApr={hasRewardApr} />
             </HStack>
           </Button>
         </HStack>

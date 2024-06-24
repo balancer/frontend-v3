@@ -7,8 +7,8 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
 import {
-  getAprLabel,
   getPoolTypeLabel,
+  getTotalAprLabel,
   poolClickHandler,
   poolMouseEnterHandler,
 } from '../../pool.utils'
@@ -70,7 +70,7 @@ export function PoolListCard({ pool }: Props) {
               <StatCard label="TVL" value={toCurrency(pool.dynamicData.totalLiquidity)} />
             </GridItem>
             <GridItem>
-              <StatCard label="Volume(24h)" value={toCurrency(pool.dynamicData.volume24h)} />
+              <StatCard label="Volume (24h)" value={toCurrency(pool.dynamicData.volume24h)} />
             </GridItem>
             <GridItem>
               <StatCard
@@ -90,7 +90,7 @@ export function PoolListCard({ pool }: Props) {
                       APR
                     </Text>
                     <MemoizedMainAprTooltip
-                      data={pool.dynamicData.apr}
+                      aprItems={pool.dynamicData.aprItems}
                       poolId={pool.id}
                       textProps={{ fontSize: '1rem', fontWeight: 'bold' }}
                       onlySparkles
@@ -100,7 +100,7 @@ export function PoolListCard({ pool }: Props) {
                 }
                 value={
                   <Text fontWeight="bold" fontSize="sm">
-                    {getAprLabel(pool.dynamicData.apr.apr)}
+                    {getTotalAprLabel(pool.dynamicData.aprItems)}
                   </Text>
                 }
               />

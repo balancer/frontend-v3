@@ -30,24 +30,7 @@ export const notAllowedPoolMock: Pool = {
     holdersCount: '2',
     isInRecoveryMode: false,
     isPaused: false,
-    apr: {
-      hasRewardApr: false,
-      thirdPartyApr: {
-        total: '0',
-        __typename: 'GqlPoolAprTotal',
-      },
-      nativeRewardApr: {
-        total: '0',
-        __typename: 'GqlPoolAprTotal',
-      },
-      swapApr: '0',
-      apr: {
-        total: '0',
-        __typename: 'GqlPoolAprTotal',
-      },
-      items: [],
-      __typename: 'GqlPoolApr',
-    },
+    aprItems: [],
     __typename: 'GqlPoolDynamicData',
   },
   allTokens: [
@@ -96,10 +79,10 @@ export const notAllowedPoolMock: Pool = {
   ],
   staking: null,
   userBalance: {
-    totalBalance: '0.0',
+    totalBalance: '0',
+    totalBalanceUsd: 0,
     walletBalance: '0',
     walletBalanceUsd: 0,
-    totalBalanceUsd: 0,
     stakedBalances: [],
     __typename: 'GqlPoolUserBalance',
   },
