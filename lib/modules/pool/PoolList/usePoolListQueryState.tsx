@@ -120,8 +120,6 @@ export function usePoolListQueryState() {
         return 'Liquidity Bootstrapping (LBP)'
       case GqlPoolType.Gyro:
         return 'Gyro CLP'
-      case GqlPoolType.CowAmm:
-        return 'Cow AMM'
       default:
         return poolType.toLowerCase()
     }
