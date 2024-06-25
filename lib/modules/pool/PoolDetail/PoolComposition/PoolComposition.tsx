@@ -23,9 +23,10 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { PoolZenGarden } from '@/lib/shared/components/zen/ZenGarden'
-import PoolWeightChart from '../PoolWeightCharts/PoolWeightChart'
+import { PoolWeightChart } from '../PoolWeightCharts/PoolWeightChart'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 
 type CardContentProps = {
   totalLiquidity: string
@@ -35,6 +36,7 @@ type CardContentProps = {
 
 function CardContent({ totalLiquidity, displayTokens, chain }: CardContentProps) {
   const { toCurrency } = useCurrency()
+  const { calcWeightForBalance } = useTokens()
 
   return (
     <VStack spacing="md" width="full">
@@ -63,6 +65,13 @@ function CardContent({ totalLiquidity, displayTokens, chain }: CardContentProps)
               key={`my-liquidity-token-${poolToken.address}`}
               address={poolToken.address as Address}
               value={poolToken.balance}
+              actualWeight={calcWeightForBalance(
+                poolToken.address,
+                poolToken.balance,
+                totalLiquidity,
+                chain
+              )}
+              targetWeight={poolToken.weight || undefined}
             />
           )
         })}
@@ -126,11 +135,9 @@ export function PoolComposition() {
         >
           <PoolZenGarden sizePx={isMobile ? '300px' : '400px'} poolType={pool.type} />
           {isLoading ? (
-            <Skeleton w="full" h="250px" />
+            <Skeleton w="full" h="full" />
           ) : (
-            <Box mt={{ base: '0', md: '-6' }} p={{ base: 'sm', md: '0' }}>
-              <PoolWeightChart pool={pool} chain={chain} />
-            </Box>
+            <PoolWeightChart pool={pool} chain={chain} />
           )}
         </NoisyCard>
       </Stack>

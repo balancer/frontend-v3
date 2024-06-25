@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
+import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   AddLiquidity,
@@ -10,7 +10,11 @@ import {
   Slippage,
 } from '@balancer/sdk'
 import { Pool } from '../../../PoolProvider'
-import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
+import {
+  LiquidityActionHelpers,
+  areEmptyAmounts,
+  roundDecimals,
+} from '../../LiquidityActionHelpers'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 import { SdkBuildAddLiquidityInput, SdkQueryAddLiquidityOutput } from '../add-liquidity.types'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
@@ -46,7 +50,8 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
       return 0
     }
 
-    const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
+    // trims amounts in to 10 decimals to workaround an SDK error in price impact calculation when proportional amounts have more than 10 decimals
+    const addLiquidityInput = this.constructSdkInput(roundDecimals(humanAmountsIn))
 
     const priceImpactABA: PriceImpactAmount = await PriceImpact.addLiquidityUnbalanced(
       addLiquidityInput,
@@ -64,7 +69,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   }: SdkBuildAddLiquidityInput): Promise<TransactionConfig> {
     const addLiquidity = new AddLiquidity()
 
-    const { call, to, value } = addLiquidity.buildCall({
+    const { callData, to, value } = addLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
@@ -75,7 +80,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     return {
       account,
       chainId: this.helpers.chainId,
-      data: call,
+      data: callData,
       to,
       value,
     }
@@ -87,7 +92,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   private constructSdkInput(
     humanAmountsIn: HumanTokenAmountWithAddress[]
   ): AddLiquidityUnbalancedInput {
-    const amountsIn = this.helpers.toInputAmounts(humanAmountsIn)
+    const amountsIn = this.helpers.toSdkInputAmounts(humanAmountsIn)
 
     return {
       chainId: this.helpers.chainId,

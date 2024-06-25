@@ -17,9 +17,7 @@ type Props = {
 }
 export function TokenInputs({ tokenSelectDisclosureOpen, customSetAmountIn }: Props) {
   const { pool } = usePool()
-  const { tokens, humanAmountsIn } = useAddLiquidity()
-
-  const { setHumanAmountIn } = useAddLiquidity()
+  const { tokens, humanAmountsIn, setHumanAmountIn } = useAddLiquidity()
 
   const setAmountIn = customSetAmountIn || setHumanAmountIn
 

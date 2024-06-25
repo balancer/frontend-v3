@@ -35,13 +35,6 @@ vi.mock('./queries/useRemoveLiquiditySimulationQuery', () => {
   }
 })
 
-const balPrice = 2
-const wethPrice = 3
-mockTokenPricesList([
-  aTokenPriceMock({ address: balAddress, price: balPrice }),
-  aTokenPriceMock({ address: wETHAddress, price: wethPrice }),
-])
-
 const poolMock = aBalWethPoolElementMock() // 80BAL-20WETH
 
 poolMock.userBalance = aUserPoolBalance({ totalBalance: '200' }) // maxBptUnits
@@ -57,6 +50,15 @@ async function testUseRemoveLiquidity(pool: GqlPoolElement = poolMock) {
 }
 
 describe('When the user choses proportional remove liquidity', () => {
+  const balPrice = 2
+  const wethPrice = 3
+  beforeEach(() => {
+    mockTokenPricesList([
+      aTokenPriceMock({ address: balAddress, price: balPrice }),
+      aTokenPriceMock({ address: wETHAddress, price: wethPrice }),
+    ])
+  })
+
   test('recalculates totalUSDValue when changing the slider', async () => {
     const result = await testUseRemoveLiquidity(poolMock)
 

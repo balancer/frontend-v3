@@ -1,20 +1,21 @@
 import { Card, HStack, VStack, Text, Grid, GridItem } from '@chakra-ui/react'
 import { PoolListItem } from '../../pool.types'
-import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
+import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
 import { ReactNode, isValidElement, memo } from 'react'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
 import {
-  getAprLabel,
   getPoolTypeLabel,
+  getTotalAprLabel,
   poolClickHandler,
   poolMouseEnterHandler,
 } from '../../pool.utils'
 import { useRouter } from 'next/navigation'
 import { PoolName } from '../../PoolName'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
+import { getUserTotalBalanceUsd } from '../../user-balance.helpers'
 
 interface Props {
   pool: PoolListItem
@@ -37,7 +38,7 @@ function StatCard({ label, value }: { label: ReactNode; value: ReactNode }) {
   )
 }
 
-const MemoizedAprTooltip = memo(AprTooltip)
+const MemoizedMainAprTooltip = memo(MainAprTooltip)
 
 export function PoolListCard({ pool }: Props) {
   const { toCurrency } = useCurrency()
@@ -49,8 +50,8 @@ export function PoolListCard({ pool }: Props) {
       <Card
         variant="gradient"
         cursor="pointer"
-        onClick={event => poolClickHandler(event, pool.id, pool.chain, router)}
-        onMouseEnter={event => poolMouseEnterHandler(event, pool.id, pool.chain, router)}
+        onClick={event => poolClickHandler(event, pool, router)}
+        onMouseEnter={event => poolMouseEnterHandler(event, pool, router)}
         p="md"
       >
         <VStack alignItems="flex-start" h="full">
@@ -69,14 +70,14 @@ export function PoolListCard({ pool }: Props) {
               <StatCard label="TVL" value={toCurrency(pool.dynamicData.totalLiquidity)} />
             </GridItem>
             <GridItem>
-              <StatCard label="Volume(24h)" value={toCurrency(pool.dynamicData.volume24h)} />
+              <StatCard label="Volume (24h)" value={toCurrency(pool.dynamicData.volume24h)} />
             </GridItem>
             <GridItem>
               <StatCard
                 label="My Liquidity"
                 value={
                   userAddress
-                    ? toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })
+                    ? toCurrency(getUserTotalBalanceUsd(pool), { abbreviated: false })
                     : '-'
                 }
               />
@@ -88,8 +89,8 @@ export function PoolListCard({ pool }: Props) {
                     <Text fontWeight="medium" variant="secondary" fontSize="sm">
                       APR
                     </Text>
-                    <MemoizedAprTooltip
-                      data={pool.dynamicData.apr}
+                    <MemoizedMainAprTooltip
+                      aprItems={pool.dynamicData.aprItems}
                       poolId={pool.id}
                       textProps={{ fontSize: '1rem', fontWeight: 'bold' }}
                       onlySparkles
@@ -98,7 +99,7 @@ export function PoolListCard({ pool }: Props) {
                 }
                 value={
                   <Text fontWeight="bold" fontSize="sm">
-                    {getAprLabel(pool.dynamicData.apr.apr)}
+                    {getTotalAprLabel(pool.dynamicData.aprItems)}
                   </Text>
                 }
               />

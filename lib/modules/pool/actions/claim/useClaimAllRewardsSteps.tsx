@@ -1,16 +1,11 @@
-import { getChainId } from '@/lib/config/app.config'
 import { useApproveMinterStep } from '@/lib/modules/staking/gauge/useMinterApprovalStep'
 import { TransactionStep } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useMemo } from 'react'
 import { ClaimAllRewardsStepParams, useClaimAllRewardsStep } from './useClaimAllRewardsStep'
-import { useApproveRelayerStep } from '@/lib/modules/relayer/useApproveRelayerStep'
 
 export function useClaimAllRewardsSteps(params: ClaimAllRewardsStepParams) {
   const { chain } = params.pools[0]
-  const chainId = getChainId(chain)
 
-  const { step: approveRelayerStep, isLoading: isLoadingRelayerApproval } =
-    useApproveRelayerStep(chainId)
   const { step: minterApprovalStep, isLoading: isLoadingMinterApprovalStep } =
     useApproveMinterStep(chain)
 
@@ -18,11 +13,15 @@ export function useClaimAllRewardsSteps(params: ClaimAllRewardsStepParams) {
     useClaimAllRewardsStep(params)
 
   const steps = useMemo((): TransactionStep[] => {
-    return [minterApprovalStep, approveRelayerStep, claimAllRewardsStep]
-  }, [approveRelayerStep, claimAllRewardsStep, minterApprovalStep])
+    const steps = [claimAllRewardsStep]
+    if (params.balTokenRewardsQuery.balRewardsData.length > 0) {
+      steps.unshift(minterApprovalStep)
+    }
+    return steps
+  }, [claimAllRewardsStep, minterApprovalStep, params])
 
   return {
-    isLoading: isLoadingMinterApprovalStep || isLoadingClaimAllRewards || isLoadingRelayerApproval,
+    isLoading: isLoadingMinterApprovalStep || isLoadingClaimAllRewards,
     steps,
   }
 }

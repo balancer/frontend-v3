@@ -1,8 +1,9 @@
 import { Address } from 'viem'
 import { GqlChain } from '../shared/services/api/generated/graphql'
-import { chains } from '../modules/web3/Web3Provider'
+import { chains } from '@/lib/modules/web3/ChainConfig'
 import { PoolIssue } from '../modules/pool/alerts/pool-issues/PoolIssue.type'
 import { SupportedWrapHandler } from '../modules/swap/swap.types'
+import { PartnerVariant, PoolVariant } from '../modules/pool/pool.types'
 
 export interface TokensConfig {
   addresses: {
@@ -72,8 +73,20 @@ export interface Config {
   }
 }
 
+interface Banners {
+  headerSrc: string
+  footerSrc: string
+}
+
+type VariantConfig = {
+  [key in PartnerVariant]: {
+    banners?: Banners
+  }
+}
+
 export interface ProjectConfig {
   projectId: 'beets' | 'balancer'
   projectName: string
   supportedNetworks: GqlChain[]
+  variantConfig?: VariantConfig
 }

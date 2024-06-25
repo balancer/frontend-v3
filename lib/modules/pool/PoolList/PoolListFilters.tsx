@@ -8,7 +8,6 @@ import {
   ButtonProps,
   Center,
   Checkbox,
-  Divider,
   forwardRef,
   Heading,
   HStack,
@@ -32,7 +31,12 @@ import {
 import { PoolListSearch } from './PoolListSearch'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { usePoolListQueryState } from './usePoolListQueryState'
-import { PoolFilterType, poolTypeFilters } from '../pool.types'
+import {
+  PoolFilterType,
+  poolTypeFilters,
+  PoolCategoryType,
+  poolCategoryFilters,
+} from '../pool.types'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { useEffect, useState } from 'react'
 import { Filter } from 'react-feather'
@@ -40,6 +44,10 @@ import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useDebouncedCallback } from 'use-debounce'
 import { defaultDebounceMs } from '@/lib/shared/utils/queries'
+import { getPoolCategoryLabel } from '../pool.utils'
+import { motion, AnimatePresence } from 'framer-motion'
+import { staggeredFadeInUp } from '@/lib/shared/utils/animations'
+import { getChainShortName } from '@/lib/config/app.config'
 
 const SLIDER_MAX_VALUE = 10000000
 const SLIDER_STEP_SIZE = 100000
@@ -60,41 +68,89 @@ function UserPoolFilter() {
 
   return (
     <Checkbox
+      mb="xxs"
       isChecked={checked}
       onChange={e => toggleUserAddress(e.target.checked, connectedUserAddress as string)}
     >
-      <Text>Only show my pools</Text>
+      <Text fontSize="sm">My positions</Text>
     </Checkbox>
   )
 }
 
-function PoolTypeFilters() {
-  const { togglePoolType, poolTypes, poolTypeLabel } = usePoolListQueryState()
+function PoolCategoryFilters() {
+  const { togglePoolCategory, poolCategories, setPoolCategories } = usePoolListQueryState()
 
-  return poolTypeFilters.map(poolType => (
-    <Checkbox
-      key={poolType}
-      isChecked={!!poolTypes.find(selected => selected === poolType)}
-      onChange={e => togglePoolType(e.target.checked, poolType as PoolFilterType)}
-    >
-      <Text textTransform="capitalize">{poolTypeLabel(poolType)}</Text>
-    </Checkbox>
-  ))
+  // remove query param when empty
+  useEffect(() => {
+    if (!poolCategories.length) {
+      setPoolCategories(null)
+    }
+  }, [poolCategories])
+
+  return (
+    <Box as={motion.div} initial="hidden" animate="show" exit="exit" variants={staggeredFadeInUp}>
+      {poolCategoryFilters.map(category => (
+        <Box key={category} as={motion.div} variants={staggeredFadeInUp}>
+          <Checkbox
+            isChecked={!!poolCategories.find(selected => selected === category)}
+            onChange={e => togglePoolCategory(e.target.checked, category as PoolCategoryType)}
+          >
+            <Text fontSize="sm">{getPoolCategoryLabel(category)}</Text>
+          </Checkbox>
+        </Box>
+      ))}
+    </Box>
+  )
+}
+
+function PoolTypeFilters() {
+  const { togglePoolType, poolTypes, poolTypeLabel, setPoolTypes } = usePoolListQueryState()
+
+  // remove query param when empty
+  useEffect(() => {
+    if (!poolTypes.length) {
+      setPoolTypes(null)
+    }
+  }, [poolTypes])
+
+  return (
+    <Box as={motion.div} initial="hidden" animate="show" exit="exit" variants={staggeredFadeInUp}>
+      {poolTypeFilters.map(poolType => (
+        <Box key={poolType} as={motion.div} variants={staggeredFadeInUp}>
+          <Checkbox
+            isChecked={!!poolTypes.find(selected => selected === poolType)}
+            onChange={e => togglePoolType(e.target.checked, poolType as PoolFilterType)}
+          >
+            <Text fontSize="sm" textTransform="capitalize">
+              {poolTypeLabel(poolType)}
+            </Text>
+          </Checkbox>
+        </Box>
+      ))}
+    </Box>
+  )
 }
 
 function PoolNetworkFilters() {
   const { supportedNetworks } = getProjectConfig()
   const { networks: toggledNetworks, toggleNetwork } = usePoolListQueryState()
 
-  return supportedNetworks.map(network => (
-    <Checkbox
-      key={network}
-      isChecked={!!toggledNetworks.find(toggledNetwork => toggledNetwork === network)}
-      onChange={e => toggleNetwork(e.target.checked, network)}
-    >
-      <Text textTransform="capitalize">{network.toLowerCase()}</Text>
-    </Checkbox>
-  ))
+  return (
+    <Box as={motion.div} initial="hidden" animate="show" exit="exit" variants={staggeredFadeInUp}>
+      {supportedNetworks.map(network => (
+        <Box key={network} as={motion.div} variants={staggeredFadeInUp}>
+          <Checkbox
+            isChecked={!!toggledNetworks.find(toggledNetwork => toggledNetwork === network)}
+            onChange={e => toggleNetwork(e.target.checked, network)}
+          >
+            <Text fontSize="sm" textTransform="capitalize">
+              {getChainShortName(network)}
+            </Text>
+          </Checkbox>
+        </Box>
+      ))}
+    </Box>
+  )
 }
 
 function PoolMinTvlFilter() {
@@ -120,10 +176,12 @@ function PoolMinTvlFilter() {
   return (
     <VStack w="full">
       <HStack w="full">
-        <Heading as="h3" size="sm">
+        <Heading as="h3" size="sm" mt="sm" mb="xs">
           Minimum TVL
         </Heading>
-        <Text ml="auto">{toCurrency(sliderValue)}</Text>
+        <Text fontSize="sm" ml="auto">
+          {toCurrency(sliderValue)}
+        </Text>
       </HStack>
       <Slider
         aria-label="slider-min-tvl"
@@ -132,6 +190,7 @@ function PoolMinTvlFilter() {
         min={0}
         max={SLIDER_MAX_VALUE}
         step={SLIDER_STEP_SIZE}
+        ml="sm"
       >
         <SliderTrack>
           <SliderFilledTrack />
@@ -143,11 +202,26 @@ function PoolMinTvlFilter() {
 }
 
 export function FilterTags() {
-  const { networks, toggleNetwork, poolTypes, togglePoolType, poolTypeLabel, minTvl, setMinTvl } =
-    usePoolListQueryState()
+  const {
+    networks,
+    toggleNetwork,
+    poolTypes,
+    togglePoolType,
+    poolTypeLabel,
+    minTvl,
+    setMinTvl,
+    poolCategories,
+    togglePoolCategory,
+    poolCategoryLabel,
+  } = usePoolListQueryState()
   const { toCurrency } = useCurrency()
 
-  if (networks.length === 0 && poolTypes.length === 0 && minTvl === 0) {
+  if (
+    networks.length === 0 &&
+    poolTypes.length === 0 &&
+    minTvl === 0 &&
+    poolCategories.length === 0
+  ) {
     return <></>
   }
 
@@ -179,6 +253,12 @@ export function FilterTags() {
           <TagCloseButton onClick={() => setMinTvl(0)} />
         </Tag>
       )}
+      {poolCategories.map(poolCategory => (
+        <Tag key={poolCategory} size="lg">
+          <TagLabel>{poolCategoryLabel(poolCategory)}</TagLabel>
+          <TagCloseButton onClick={() => togglePoolCategory(false, poolCategory)} />
+        </Tag>
+      ))}
     </HStack>
   )
 }
@@ -204,42 +284,88 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
 
 export function PoolListFilters() {
   const { isConnected } = useUserAccount()
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
   return (
     <VStack w="full">
       <HStack w="full" spacing="none" justify="end">
         <PoolListSearch />
-        <Popover>
+        <Popover
+          isOpen={isPopoverOpen}
+          onOpen={() => setIsPopoverOpen(true)}
+          onClose={() => setIsPopoverOpen(false)}
+        >
           <PopoverTrigger>
             <FilterButton ml="sm" />
           </PopoverTrigger>
           <Box zIndex="popover" shadow="2xl">
             <PopoverContent>
               <PopoverArrow bg="background.level3" />
-              <PopoverCloseButton />
+              <PopoverCloseButton top="sm" />
               <PopoverBody p="md">
-                <VStack align="start">
-                  {isConnected && (
-                    <>
-                      <Heading as="h3" size="sm" mb="1.5">
-                        My Liquidity
-                      </Heading>
-                      <UserPoolFilter />
-                      <Divider />
-                    </>
+                <AnimatePresence>
+                  {isPopoverOpen && (
+                    <VStack
+                      align="start"
+                      spacing="xxs"
+                      as={motion.div}
+                      initial="hidden"
+                      animate="show"
+                      exit="exit"
+                      variants={staggeredFadeInUp}
+                    >
+                      <Box
+                        lineHeight="0"
+                        p="0"
+                        mb="sm"
+                        as={motion.div}
+                        variants={staggeredFadeInUp}
+                      >
+                        <Text
+                          variant="eyebrow"
+                          background="font.special"
+                          backgroundClip="text"
+                          fontSize="xs"
+                          display="inline"
+                          lineHeight="1"
+                        >
+                          Filters
+                        </Text>
+                      </Box>
+
+                      {isConnected && (
+                        <Box as={motion.div} variants={staggeredFadeInUp}>
+                          <Heading as="h3" size="sm" my="sm">
+                            My liquidity
+                          </Heading>
+                          <UserPoolFilter />
+                        </Box>
+                      )}
+                      <Box as={motion.div} variants={staggeredFadeInUp}>
+                        <Heading as="h3" size="sm" my="sm">
+                          Networks
+                        </Heading>
+                        <PoolNetworkFilters />
+                      </Box>
+                      <Box as={motion.div} variants={staggeredFadeInUp}>
+                        <Heading as="h3" size="sm" my="sm">
+                          Pool types
+                        </Heading>
+                        <PoolTypeFilters />
+                      </Box>
+                      <Box as={motion.div} variants={staggeredFadeInUp}>
+                        <Heading as="h3" size="sm" my="sm">
+                          Pool attributes
+                        </Heading>
+                        <PoolCategoryFilters />
+                      </Box>
+
+                      <Box mb="xs" as={motion.div} variants={staggeredFadeInUp} w="full">
+                        <PoolMinTvlFilter />
+                      </Box>
+                    </VStack>
                   )}
-                  <Heading as="h3" size="sm" mb="1.5">
-                    Pool types
-                  </Heading>
-                  <PoolTypeFilters />
-                  <Divider />
-                  <Heading as="h3" size="sm">
-                    Networks
-                  </Heading>
-                  <PoolNetworkFilters />
-                  <Divider />
-                  <PoolMinTvlFilter />
-                </VStack>
+                </AnimatePresence>
               </PopoverBody>
             </PopoverContent>
           </Box>

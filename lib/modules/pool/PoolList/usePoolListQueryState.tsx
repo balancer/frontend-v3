@@ -5,12 +5,14 @@ import {
   GqlPoolType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
+  GqlPoolFilterCategory,
 } from '@/lib/shared/services/api/generated/graphql'
 import { uniq } from 'lodash'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { useQueryState } from 'next-usequerystate'
 import {
   POOL_TYPE_MAP,
+  PoolCategoryType,
   PoolFilterType,
   poolListQueryStateParsers,
   SortingState,
@@ -21,16 +23,20 @@ export function usePoolListQueryState() {
   const [first, setFirst] = useQueryState('first', poolListQueryStateParsers.first)
   const [skip, setSkip] = useQueryState('skip', poolListQueryStateParsers.skip)
   const [orderBy, setOrderBy] = useQueryState('orderBy', poolListQueryStateParsers.orderBy)
+
   const [orderDirection, setOrderDirection] = useQueryState(
     'orderDirection',
     poolListQueryStateParsers.orderDirection
   )
+
   const [poolTypes, setPoolTypes] = useQueryState('poolTypes', poolListQueryStateParsers.poolTypes)
   const [networks, setNetworks] = useQueryState('networks', poolListQueryStateParsers.networks)
+
   const [textSearch, setTextSearch] = useQueryState(
     'textSearch',
     poolListQueryStateParsers.textSearch
   )
+
   const [userAddress, setUserAddress] = useQueryState(
     'userAddress',
     poolListQueryStateParsers.userAddress
@@ -38,12 +44,26 @@ export function usePoolListQueryState() {
 
   const [minTvl, setMinTvl] = useQueryState('minTvl', poolListQueryStateParsers.minTvl)
 
+  const [poolCategories, setPoolCategories] = useQueryState(
+    'poolCategories',
+    poolListQueryStateParsers.poolCategories
+  )
+
   // Set internal checked state
   function toggleUserAddress(checked: boolean, address: string) {
     if (checked) {
       setUserAddress(address)
     } else {
       setUserAddress('')
+    }
+  }
+
+  // Set internal checked state
+  function togglePoolCategory(checked: boolean, poolCategory: PoolCategoryType) {
+    if (checked) {
+      setPoolCategories(current => uniq([...current, poolCategory]))
+    } else {
+      setPoolCategories(current => current.filter(item => item !== poolCategory))
     }
   }
 
@@ -87,7 +107,6 @@ export function usePoolListQueryState() {
     if (text.length > 0) {
       setSkip(0)
     }
-
     setTextSearch(text)
   }
 
@@ -98,16 +117,30 @@ export function usePoolListQueryState() {
       case GqlPoolType.Stable:
         return 'Stable'
       case GqlPoolType.LiquidityBootstrapping:
-        return 'Liquidity Bootstrapping'
+        return 'Liquidity Bootstrapping (LBP)'
       case GqlPoolType.Gyro:
-        return 'CLP'
+        return 'Gyro CLP'
       default:
         return poolType.toLowerCase()
     }
   }
 
+  function poolCategoryLabel(poolCategory: GqlPoolFilterCategory) {
+    switch (poolCategory) {
+      case GqlPoolFilterCategory.BlackListed:
+        return 'Blacklisted'
+      case GqlPoolFilterCategory.Incentivized:
+        return 'Incentivized'
+    }
+  }
+
   const totalFilterCount =
-    networks.length + poolTypes.length + (userAddress ? 1 : 0) + (minTvl > 0 ? 1 : 0)
+    networks.length +
+    poolTypes.length +
+    (userAddress ? 1 : 0) +
+    (minTvl > 0 ? 1 : 0) +
+    poolCategories.length
+
   const sorting: SortingState = orderBy
     ? [{ id: orderBy, desc: orderDirection === GqlPoolOrderDirection.Desc }]
     : []
@@ -133,6 +166,7 @@ export function usePoolListQueryState() {
       chainIn: networks.length > 0 ? networks : getProjectConfig().supportedNetworks,
       userAddress,
       minTvl,
+      categoryIn: poolCategories.length > 0 ? poolCategories : null,
     },
     textSearch,
   }
@@ -150,11 +184,16 @@ export function usePoolListQueryState() {
     toggleUserAddress,
     toggleNetwork,
     togglePoolType,
+    togglePoolCategory,
     poolTypeLabel,
+    poolCategoryLabel,
     setSorting,
     setPagination,
     setSearch,
     setMinTvl,
+    setPoolTypes,
+    setPoolCategories,
+    poolCategories,
     minTvl,
     searchText: textSearch,
     pagination,

@@ -53,7 +53,7 @@ export function FeaturedPools({ pools }: { pools: GetFeaturedPoolsQuery['feature
             <FeaturePoolCard
               pool={primaryPool}
               chain={primaryPool.chain}
-              featuredReason="Liquid staked $SOL on an L2" //replace with {primaryPool.description} once API is updated
+              featuredReason="Liquid staked $SOL on Arbitrum" //replace with {primaryPool.description} once API is updated
               isSmall
               bgSize="275px"
             />
@@ -63,7 +63,7 @@ export function FeaturedPools({ pools }: { pools: GetFeaturedPoolsQuery['feature
               <FeaturePoolCard
                 pool={poolsWithoutPrimary[0]}
                 chain={poolsWithoutPrimary[0].chain}
-                featuredReason="For LRT points maxxing" //replace with {poolsWithoutPrimary[0].description} once API is updated
+                featuredReason="For LRT points" //replace with {poolsWithoutPrimary[0].description} once API is updated
                 isSmall
                 bgSize="300px"
               />
@@ -74,7 +74,7 @@ export function FeaturedPools({ pools }: { pools: GetFeaturedPoolsQuery['feature
               <FeaturePoolCard
                 pool={poolsWithoutPrimary[1]}
                 chain={poolsWithoutPrimary[1].chain}
-                featuredReason="For concentrated liquidity enjoyooors" //replace with {poolsWithoutPrimary[1].description} once API is updated
+                featuredReason="Yield-bearing concentrated liquidity" //replace with {poolsWithoutPrimary[1].description} once API is updated
                 isSmall
                 bgSize="300px"
               />

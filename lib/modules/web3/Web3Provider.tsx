@@ -1,141 +1,31 @@
 'use client'
 
 import '@rainbow-me/rainbowkit/styles.css'
-
-import {
-  darkTheme,
-  lightTheme,
-  RainbowKitProvider,
-  Theme,
-  connectorsForWallets,
-} from '@rainbow-me/rainbowkit'
-
-import { WagmiProvider, http, fallback, createConfig } from 'wagmi'
-
-import {
-  arbitrum,
-  avalanche,
-  base,
-  Chain,
-  fantom,
-  gnosis,
-  mainnet,
-  optimism,
-  polygon,
-  polygonZkEvm,
-  sepolia,
-} from 'viem/chains'
-
-import { keyBy, merge } from 'lodash'
-import { useTheme } from '@chakra-ui/react'
-import { balTheme } from '@/lib/shared/services/chakra/theme'
-import { CustomAvatar } from './CustomAvatar'
-import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import { UserAccountProvider } from './UserAccountProvider'
-import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
-import { BlockedAddressModal } from './BlockedAddressModal'
-import { AcceptPoliciesModal } from './AcceptPoliciesModal'
-import { UserSettingsProvider } from '../user/settings/UserSettingsProvider'
+import { RainbowKitProvider, Theme, darkTheme, lightTheme } from '@rainbow-me/rainbowkit'
+import { WagmiProvider } from 'wagmi'
 import { ReactQueryClientProvider } from '@/app/react-query.provider'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { getGqlChain } from '@/lib/config/app.config'
-import { SupportedChainId } from '@/lib/config/config.types'
-import {
-  injectedWallet,
-  metaMaskWallet,
-  rabbyWallet,
-  rainbowWallet,
-  walletConnectWallet,
-  safeWallet,
-  coinbaseWallet,
-} from '@rainbow-me/rainbowkit/wallets'
+import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
+import { useTheme } from '@chakra-ui/react'
+import { merge } from 'lodash'
+import { UserSettingsProvider } from '../user/settings/UserSettingsProvider'
+import { AcceptPoliciesModal } from './AcceptPoliciesModal'
+import { BlockedAddressModal } from './BlockedAddressModal'
+import { CustomAvatar } from './CustomAvatar'
+import { UserAccountProvider } from './UserAccountProvider'
+import { PropsWithChildren } from 'react'
+import { WagmiConfig } from './WagmiConfig'
 
-// Helpful for injecting fork RPCs for specific chains.
-const rpcOverrides: Record<GqlChain, string | undefined> = {
-  [GqlChain.Mainnet]: undefined,
-  [GqlChain.Arbitrum]: undefined,
-  [GqlChain.Base]: undefined,
-  [GqlChain.Avalanche]: undefined,
-  [GqlChain.Fantom]: undefined,
-  [GqlChain.Gnosis]: undefined,
-  [GqlChain.Optimism]: undefined,
-  [GqlChain.Polygon]: undefined,
-  [GqlChain.Zkevm]: undefined,
-  [GqlChain.Sepolia]: undefined,
-}
-
-const gqlChainToWagmiChainMap = {
-  [GqlChain.Mainnet]: mainnet,
-  [GqlChain.Arbitrum]: arbitrum,
-  [GqlChain.Base]: base,
-  [GqlChain.Avalanche]: avalanche,
-  [GqlChain.Fantom]: fantom,
-  [GqlChain.Gnosis]: gnosis,
-  [GqlChain.Optimism]: optimism,
-  [GqlChain.Polygon]: polygon,
-  [GqlChain.Zkevm]: polygonZkEvm,
-  [GqlChain.Sepolia]: sepolia,
-} as const satisfies Record<GqlChain, Chain>
-
-export const supportedNetworks = getProjectConfig().supportedNetworks
-export const chains: readonly [Chain, ...Chain[]] = [
-  mainnet,
-  ...supportedNetworks
-    .filter(chain => chain !== GqlChain.Mainnet)
-    .map(gqlChain => gqlChainToWagmiChainMap[gqlChain]),
-]
-
-const chainsByKey = keyBy(chains, 'id')
-export function getDefaultRpcUrl(chainId: number) {
-  return chainsByKey[chainId].rpcUrls.default.http[0]
-}
-
-// TODO: define public urls as fallback??
-function getTransports(chain: Chain) {
-  const overridenRpcUrl = rpcOverrides[getGqlChain(chain.id as SupportedChainId)]
-  return fallback([
-    http(overridenRpcUrl),
-    http(), // Public transport as first option
-  ])
-}
-
-const transports = Object.fromEntries(
-  chains.map(chain => [chain.id, getTransports(chain)])
-) as Record<number, ReturnType<typeof getTransports>>
-
-const appName = getProjectConfig().projectName
-const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || ''
-const connectors = connectorsForWallets(
-  [
-    {
-      groupName: 'Recommended',
-      wallets: [
-        injectedWallet,
-        metaMaskWallet,
-        rabbyWallet,
-        rainbowWallet,
-        safeWallet,
-        coinbaseWallet,
-        walletConnectWallet,
-      ],
-    },
-  ],
-  { appName, projectId }
-)
-
-export const wagmiConfig = createConfig({
-  chains,
-  transports,
-  connectors,
-  ssr: true,
-})
-
-export function Web3Provider({ children }: { children: React.ReactNode }) {
-  const { colors, radii, shadows } = useTheme()
+export function Web3Provider({
+  children,
+  wagmiConfig,
+}: PropsWithChildren<{ wagmiConfig: WagmiConfig }>) {
+  const { colors, radii, shadows, semanticTokens, fonts } = useTheme()
+  const colorMode = useThemeColorMode()
+  const colorModeKey = colorMode === 'light' ? 'default' : '_dark'
 
   const sharedConfig = {
     fonts: {
-      body: balTheme.fonts?.body,
+      body: fonts.body,
     },
     radii: {
       connectButton: radii.md,
@@ -153,7 +43,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
       walletLogo: shadows.md,
     },
     colors: {
-      accentColor: colors.primary[500],
+      accentColor: colors.purple[500],
       // accentColorForeground: '...',
       // actionButtonBorder: '...',
       // actionButtonBorderMobile: '...',
@@ -173,9 +63,9 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
       // generalBorderDim: '...',
       // menuItemBackground: '...',
       // modalBackdrop: '...',
-      // modalBackground: '...',
+      modalBackground: semanticTokens.colors.background.base[colorModeKey],
       // modalBorder: '...',
-      // modalText: '...',
+      modalText: semanticTokens.colors.font.primary[colorModeKey],
       // modalTextDim: '...',
       // modalTextSecondary: '...',
       // profileAction: '...',
@@ -194,7 +84,6 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     ...sharedConfig,
   } as Theme)
 
-  const colorMode = useThemeColorMode()
   const customTheme = colorMode === 'dark' ? _darkTheme : _lightTheme
 
   return (

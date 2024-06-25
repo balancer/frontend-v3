@@ -1,18 +1,26 @@
-import { getChainId } from '@/lib/config/app.config'
+import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { getBlockExplorerAddressUrl } from '@/lib/shared/hooks/useBlockExplorer'
-import { dateToUnixTimestamp } from '@/lib/shared/hooks/useTime'
 import {
   GetPoolQuery,
   GqlChain,
   GqlPoolBase,
   GqlPoolNestingType,
+  GqlPoolStakingGauge,
+  GqlPoolStakingOtherGauge,
+  GqlPoolTokenDetail,
   GqlPoolType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
-import { Address, getAddress, parseUnits } from 'viem'
+import { isNil } from 'lodash'
+import { Address, getAddress, parseUnits, zeroAddress } from 'viem'
+import { isNotMainet } from '../chains/chain.utils'
+import { ClaimablePool } from './actions/claim/ClaimProvider'
+import { PoolIssue } from './alerts/pool-issues/PoolIssue.type'
 import { BPT_DECIMALS } from './pool.constants'
+import { getUserTotalBalanceInt } from './user-balance.helpers'
+import { dateToUnixTimestamp } from '@/lib/shared/utils/time'
 
 /**
  * METHODS
@@ -147,7 +155,7 @@ export function createdAfterTimestamp(pool: GqlPoolBase): boolean {
 }
 
 export function calcUserShareOfPool(pool: Pool) {
-  const userBalance = parseUnits(pool?.userBalance?.totalBalance || '0', BPT_DECIMALS)
+  const userBalance = getUserTotalBalanceInt(pool)
   return calcShareOfPool(pool, userBalance)
 }
 
@@ -188,4 +196,80 @@ export function isNotSupported(pool: Pool) {
   return (
     hasNestedPools(pool) && 'nestingType' in pool && pool.nestingType === 'HAS_ONLY_PHANTOM_BPT'
   )
+}
+
+/**
+ * Returns true if the gauge is claimable within this UI. We don't support
+ * claiming for v1 gauges on child-chains because they are deprecated and don't
+ * conform to the the same interface as v1 gauges on mainnet and v2 gauges on child-chains.
+ */
+function isClaimableGauge(
+  gauge: GqlPoolStakingGauge | GqlPoolStakingOtherGauge,
+  chain: GqlChain | number
+): boolean {
+  return !(gauge.version === 1 && isNotMainet(chain))
+}
+
+/**
+ * Returns all gauge addresses for a pool that are claimable. See
+ * `isClaimableGauge()` for info about why some gauges are not claimable.
+ */
+export function allClaimableGaugeAddressesFor(pool: ClaimablePool) {
+  const addresses: Address[] = []
+  const staking = pool.staking
+
+  if (!staking?.gauge) return addresses
+
+  if (isClaimableGauge(staking.gauge, pool.chain)) {
+    addresses.push(staking.gauge.gaugeAddress as Address)
+  }
+
+  const otherGauges = staking.gauge?.otherGauges || []
+  const otherClaimableGaugeAddresses = otherGauges
+    .filter(gauge => isClaimableGauge(gauge, pool.chain))
+    .map(g => g.gaugeAddress as Address)
+
+  addresses.push(...otherClaimableGaugeAddresses)
+
+  return addresses
+}
+
+export function hasUnreviewedRateProvider(token: GqlPoolTokenDetail): boolean {
+  return !!token.priceRateProvider && !token.priceRateProviderData
+}
+
+/**
+ * Returns true if we should block the user from adding liquidity to the pool.
+ * @see https://github.com/balancer/frontend-v3/issues/613#issuecomment-2149443249
+ */
+export function shouldBlockAddLiquidity(pool: Pool) {
+  const poolTokens = pool.poolTokens as GqlPoolTokenDetail[]
+
+  return poolTokens.some(token => {
+    // if token is not allowed - we should block adding liquidity
+    if (!token.isAllowed) return true
+
+    // if rateProvider is null - we consider it as zero address and not block adding liquidity
+    if (isNil(token.priceRateProvider) || token.priceRateProvider === zeroAddress) return false
+
+    // if rateProvider is the nested pool address - we consider it as safe
+    if (token.priceRateProvider === token.nestedPool?.address) return false
+
+    // if price rate provider is set but is not reviewed - we should block adding liquidity
+    if (hasUnreviewedRateProvider(token)) return true
+
+    if (token.priceRateProviderData?.summary !== 'safe') return true
+
+    return false
+  })
+}
+
+export function isAffectedByCspIssue(pool: Pool) {
+  return isAffectedBy(pool, PoolIssue.CspPoolVulnWarning)
+}
+
+function isAffectedBy(pool: Pool, poolIssue: PoolIssue) {
+  const issues = getNetworkConfig(getChainId(pool.chain)).pools.issues
+  const affectedPoolIds = issues[poolIssue] ?? []
+  return affectedPoolIds.includes(pool.id.toLowerCase())
 }

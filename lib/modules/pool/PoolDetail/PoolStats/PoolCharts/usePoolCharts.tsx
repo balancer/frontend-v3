@@ -1,5 +1,5 @@
-import { ColorMode, theme } from '@chakra-ui/react'
-import { addMinutes, differenceInDays, format } from 'date-fns'
+import { ColorMode, theme as defaultTheme, useTheme as useChakraTheme } from '@chakra-ui/react'
+import { differenceInDays, format } from 'date-fns'
 import * as echarts from 'echarts/core'
 import {
   GetPoolSnapshotsDocument,
@@ -11,15 +11,12 @@ import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { usePool } from '../../../PoolProvider'
-import { PoolVariant } from '../../../pool.types'
+import { PoolVariant, BaseVariant } from '../../../pool.types'
 import { NumberFormatter } from '@/lib/shared/utils/numbers'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { balColors, balTheme, tokens } from '@/lib/shared/services/chakra/theme'
-import numeral from 'numeral'
-import { twentyFourHoursInSecs } from '@/lib/shared/hooks/useTime'
-import { useTheme } from 'next-themes'
+import { useTheme as useNextTheme } from 'next-themes'
 
-const MIN_CHART_VALUES_NUM = 2
+const MIN_DISPLAY_PERIOD_DAYS = 30
 
 export enum PoolChartTab {
   VOLUME = 'volume',
@@ -66,130 +63,99 @@ export interface PoolChartTypeTab {
   label: string
 }
 
-export const poolChartTypeOptions: Record<PoolChartTab, PoolChartTypeOptions> = {
-  [PoolChartTab.VOLUME]: {
-    type: 'bar',
-    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-      {
-        offset: 0,
-        color: balTheme.semanticTokens.colors.chart.pool.bar.volume.from,
-      },
-      {
-        offset: 1,
-        color: balTheme.semanticTokens.colors.chart.pool.bar.volume.to,
-      },
-    ]),
-    hoverColor: theme.colors.pink[500],
-  },
-  [PoolChartTab.TVL]: {
-    type: 'line',
-    color: theme.colors.blue[600],
-    hoverBorderColor: theme.colors.pink[500],
-    hoverColor: theme.colors.gray[900],
-    areaStyle: {
-      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-        {
-          offset: 0,
-          color: 'rgba(14, 165, 233, 0.08)',
-        },
-        {
-          offset: 1,
-          color: 'rgba(68, 9, 236, 0)',
-        },
-      ]),
-    },
-  },
-  [PoolChartTab.FEES]: {
-    type: 'bar',
-    color: theme.colors.yellow[400],
-    hoverColor: theme.colors.pink[500],
-  },
-}
-
-const toolTipTheme = {
-  heading: 'font-weight: bold; color: #E5D3BE',
-  container: `background: ${balColors.gray[800]};`,
-  text: balColors.gray[400],
+const dataRangeToDaysMap: { [key in GqlPoolSnapshotDataRange]?: number } = {
+  [GqlPoolSnapshotDataRange.ThirtyDays]: 30,
+  [GqlPoolSnapshotDataRange.NinetyDays]: 90,
+  [GqlPoolSnapshotDataRange.OneHundredEightyDays]: 180,
 }
 
 const getDefaultPoolChartOptions = (
   currencyFormatter: NumberFormatter,
-  theme: ColorMode = 'dark'
-) => ({
-  grid: {
-    left: '1.5%',
-    right: '2.5%',
-    top: '7.5%',
-    bottom: '0',
-    containLabel: true,
-  },
-  xAxis: {
-    show: true,
-    type: 'time',
-    minorSplitLine: { show: false },
-    axisTick: { show: false },
-    splitNumber: 3,
-    axisLabel: {
-      formatter: (value: number) => {
-        return format(new Date(value * 1000), 'MMM d')
-      },
-      color: tokens.colors[theme].text.secondary,
-      opacity: 0.5,
-      interval: 0,
-      showMaxLabel: false,
-      showMinLabel: false,
+  nextTheme: ColorMode = 'dark',
+  theme: any // TODO: type this
+) => {
+  const toolTipTheme = {
+    heading: 'font-weight: bold; color: #E5D3BE',
+    container: `background: ${theme.colors.gray[800]};`,
+    text: theme.colors.gray[400],
+  }
+
+  const colorMode = nextTheme === 'dark' ? '_dark' : 'default'
+  return {
+    grid: {
+      left: '1.5%',
+      right: '2.5%',
+      top: '7.5%',
+      bottom: '0',
+      containLabel: true,
     },
-    axisPointer: {
-      type: 'line',
-      label: {
-        formatter: (params: any) => {
-          return format(new Date(params.value * 1000), 'MMM d')
+    xAxis: {
+      show: true,
+      type: 'time',
+      minorSplitLine: { show: false },
+      axisTick: { show: false },
+      splitNumber: 3,
+      axisLabel: {
+        formatter: (value: number) => {
+          return format(new Date(value * 1000), 'MMM d')
+        },
+        color: theme.semanticTokens.colors.font.primary[colorMode],
+        opacity: 0.5,
+        interval: 0,
+        showMaxLabel: false,
+        showMinLabel: false,
+      },
+      axisPointer: {
+        type: 'line',
+        label: {
+          formatter: (params: any) => {
+            return format(new Date(params.value * 1000), 'MMM d')
+          },
+        },
+      },
+      axisLine: { show: false },
+      splitArea: {
+        show: false,
+        areaStyle: {
+          color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)'],
         },
       },
     },
-    axisLine: { show: false },
-    splitArea: {
-      show: false,
-      areaStyle: {
-        color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)'],
+    yAxis: {
+      show: true,
+      type: 'value',
+      axisLine: { show: false },
+      minorSplitLine: { show: false },
+      splitLine: { show: false },
+      splitNumber: 3,
+      axisLabel: {
+        formatter: (value: number) => {
+          return currencyFormatter(value)
+        },
+        color: theme.semanticTokens.colors.font.primary[colorMode],
+        opacity: 0.5,
+        interval: 'auto',
+        showMaxLabel: false,
+        showMinLabel: false,
       },
     },
-  },
-  yAxis: {
-    show: true,
-    type: 'value',
-    axisLine: { show: false },
-    minorSplitLine: { show: false },
-    splitLine: { show: false },
-    splitNumber: 3,
-    axisLabel: {
-      formatter: (value: number) => {
-        return currencyFormatter(value)
-      },
-      color: tokens.colors[theme].text.secondary,
-      opacity: 0.5,
-      interval: 'auto',
-      showMaxLabel: false,
-      showMinLabel: false,
-    },
-  },
 
-  tooltip: {
-    show: true,
-    showContent: true,
-    trigger: 'axis',
-    confine: true,
-    axisPointer: {
-      animation: false,
-      type: 'shadow',
-      label: {
-        show: false,
+    tooltip: {
+      show: true,
+      showContent: true,
+      trigger: 'axis',
+      confine: true,
+      axisPointer: {
+        animation: false,
+        type: 'shadow',
+        label: {
+          show: false,
+        },
       },
-    },
-    extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container}`,
-    formatter: (params: any) => {
-      const data = Array.isArray(params) ? params[0] : params
-      return `
+      extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container}`,
+      formatter: (params: any) => {
+        const data = Array.isArray(params) ? params[0] : params
+        return `
           <div style="padding: none; display: flex; flex-direction: column; justify-content: center;${
             toolTipTheme.container
           }">
@@ -201,9 +167,10 @@ const getDefaultPoolChartOptions = (
             </div>
           </div>
         `
+      },
     },
-  },
-})
+  }
+}
 
 export function getPoolTabsList({
   variant,
@@ -212,7 +179,7 @@ export function getPoolTabsList({
   variant: PoolVariant
   poolType: GqlPoolType
 }): PoolChartTypeTab[] {
-  if (poolType === GqlPoolType.LiquidityBootstrapping && variant === PoolVariant.v2) {
+  if (poolType === GqlPoolType.LiquidityBootstrapping && variant === BaseVariant.v2) {
     return [
       {
         value: PoolChartTab.VOLUME,
@@ -260,7 +227,8 @@ export function usePoolCharts() {
   const { pool } = usePool()
   const { id: poolId, variant } = useParams()
   const { toCurrency } = useCurrency()
-  const { theme } = useTheme()
+  const { theme: nextTheme } = useNextTheme()
+  const theme = useChakraTheme()
 
   const tabsList = useMemo(() => {
     const poolType = pool?.type
@@ -302,7 +270,7 @@ export function usePoolCharts() {
 
     if (activeTab.value === PoolChartTab.VOLUME) {
       val = data?.snapshots.reduce((acc, snapshot) => {
-        return (acc += Number(snapshot.totalLiquidity))
+        return (acc += Number(snapshot.volume24h))
       }, 0)
     }
 
@@ -313,7 +281,7 @@ export function usePoolCharts() {
     const snapshots = data?.snapshots
     if (!snapshots) return []
 
-    let chartArr: (string | number)[][] = []
+    let chartArr: [number, string][] = []
     if (activeTab.value === PoolChartTab.TVL) {
       chartArr = snapshots.map(snapshot => {
         return [snapshot.timestamp, snapshot.totalLiquidity]
@@ -331,31 +299,142 @@ export function usePoolCharts() {
       })
     }
 
-    const isPoolOlder30Days = differenceInDays(new Date().getTime(), pool.createTime * 1000) > 30
-
-    // add lagging timestamps
-    if (!isPoolOlder30Days && chartArr.length < 30 && chartArr.length > MIN_CHART_VALUES_NUM) {
-      const firstDate = chartArr[0][0] || 0
-      const days = 30 - chartArr.length
-
-      const timestampsArr: number[] = []
-      for (let i = 1; i <= days; i++) {
-        const timestamp = Number(firstDate) - i * twentyFourHoursInSecs
-        timestampsArr.push(timestamp * 1000)
-      }
-
-      const laggingTimestamps = timestampsArr.map(timestamp => [
-        addMinutes(timestamp, new Date(timestamp).getTimezoneOffset()).getTime() / 1000,
-        '0',
-      ])
-
-      chartArr = [...laggingTimestamps, ...chartArr]
-    }
+    // Sort the data by timestamp
+    chartArr.sort((a, b) => a[0] - b[0])
 
     return chartArr
-  }, [data?.snapshots, activeTab, pool.createTime])
+  }, [data?.snapshots, activeTab])
 
-  const defaultChartOptions = getDefaultPoolChartOptions(toCurrency, theme as 'light' | 'dark')
+  const processedChartData = useMemo(() => {
+    const today = new Date()
+    today.setUTCHours(0, 0, 0, 0)
+
+    const firstChartDataEl = chartData[0]
+    const processedElements: [number, string][] = []
+    const isSelectedTabTVL = activeTab.value === PoolChartTab.TVL
+
+    const minDataDate = firstChartDataEl ? Number(firstChartDataEl[0]) * 1000 : today.getTime()
+    const daysSinceMinDataDate = differenceInDays(today, new Date(minDataDate))
+    const initialTotalLiquidity = isSelectedTabTVL
+      ? firstChartDataEl
+        ? firstChartDataEl[1]
+        : pool.dynamicData.totalLiquidity
+      : undefined
+
+    const iterateTo =
+      activePeriod.value in dataRangeToDaysMap
+        ? dataRangeToDaysMap[activePeriod.value]
+        : daysSinceMinDataDate > MIN_DISPLAY_PERIOD_DAYS
+        ? daysSinceMinDataDate
+        : MIN_DISPLAY_PERIOD_DAYS
+
+    if (iterateTo === undefined) {
+      throw new Error("DataRangeToDaysMap doesn't have a value for the selected period")
+    }
+
+    for (let i = 0; i < iterateTo; i++) {
+      const currentDay = new Date(today)
+      currentDay.setUTCDate(today.getUTCDate() - i)
+      const timestamp = currentDay.getTime() / 1000
+
+      // If the active tab is TVL, we check if there is enough data to display
+      // and if not, add current TVL to the last item
+      // and fill start of the selected range with initialTotalLiquidity
+      if (activeTab.value === PoolChartTab.TVL) {
+        if (i === 0) {
+          const existingEntry = chartData.find(item => item[0] === timestamp)
+
+          if (existingEntry) {
+            processedElements.push(existingEntry)
+          } else {
+            processedElements.push([timestamp, pool.dynamicData.totalLiquidity])
+          }
+        } else if (i === iterateTo - 1) {
+          const existingEntry = chartData.find(item => item[0] === timestamp)
+
+          if (existingEntry) {
+            processedElements.push(existingEntry)
+          } else {
+            const isEarlierThanCreation = pool.createTime > timestamp
+
+            if (initialTotalLiquidity === undefined) {
+              throw new Error('Initial total liquidity should be defined')
+            }
+
+            processedElements.push([timestamp, isEarlierThanCreation ? '0' : initialTotalLiquidity])
+          }
+        } else {
+          const existingEntry = chartData.find(item => item[0] === timestamp)
+
+          if (existingEntry) {
+            processedElements.push(existingEntry)
+          }
+        }
+
+        continue
+      }
+
+      // If the active tab is not TVL, we check if there is enough data to display
+      // for each day and if not, add 0 to days without data
+      const existingEntry = chartData.find(item => item[0] === timestamp)
+
+      if (existingEntry) {
+        processedElements.push(existingEntry)
+      } else {
+        processedElements.push([timestamp, '0'])
+      }
+    }
+
+    return processedElements
+  }, [
+    activePeriod.value,
+    activeTab.value,
+    chartData,
+    pool.createTime,
+    pool.dynamicData.totalLiquidity,
+  ])
+
+  const defaultChartOptions = getDefaultPoolChartOptions(toCurrency, nextTheme as ColorMode, theme)
+
+  const poolChartTypeOptions: Record<PoolChartTab, PoolChartTypeOptions> = {
+    [PoolChartTab.VOLUME]: {
+      type: 'bar',
+      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        {
+          offset: 0,
+          color: theme.semanticTokens.colors.chart.pool.bar.volume.from,
+        },
+        {
+          offset: 1,
+          color: theme.semanticTokens.colors.chart.pool.bar.volume.to,
+        },
+      ]),
+      hoverColor: defaultTheme.colors.pink[500],
+    },
+    [PoolChartTab.TVL]: {
+      type: 'line',
+      color: defaultTheme.colors.blue[600],
+      hoverBorderColor: defaultTheme.colors.pink[500],
+      hoverColor: defaultTheme.colors.gray[900],
+      areaStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: 'rgba(14, 165, 233, 0.08)',
+          },
+          {
+            offset: 1,
+            color: 'rgba(68, 9, 236, 0)',
+          },
+        ]),
+      },
+    },
+    [PoolChartTab.FEES]: {
+      type: 'bar',
+      color: defaultTheme.colors.yellow[400],
+      hoverColor: defaultTheme.colors.pink[500],
+    },
+  }
 
   const options = useMemo(() => {
     const activeTabOptions = poolChartTypeOptions[activeTab.value]
@@ -365,7 +444,7 @@ export function usePoolCharts() {
       series: [
         {
           type: activeTabOptions.type,
-          data: chartData,
+          data: processedChartData,
           smooth: true,
           symbol: 'none',
           lineStyle: {
@@ -388,7 +467,8 @@ export function usePoolCharts() {
         },
       ],
     }
-  }, [chartData, activeTab, defaultChartOptions])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab.value, defaultChartOptions, processedChartData])
 
   const handleAxisMoved = useCallback(
     ({ dataIndex }: { dataIndex: number }) => {

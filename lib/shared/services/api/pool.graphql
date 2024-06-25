@@ -11,7 +11,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
     createTime
     type
     chain
-    vaultVersion
+    protocolVersion
     dynamicData {
       poolId
       swapEnabled
@@ -23,62 +23,11 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       holdersCount
       isInRecoveryMode
       isPaused
-      apr {
-        hasRewardApr
-        thirdPartyApr {
-          ... on GqlPoolAprTotal {
-            total
-          }
-          ... on GqlPoolAprRange {
-            min
-            max
-          }
-        }
-        nativeRewardApr {
-          ... on GqlPoolAprTotal {
-            total
-          }
-          ... on GqlPoolAprRange {
-            min
-            max
-          }
-        }
-        swapApr
-        apr {
-          ... on GqlPoolAprTotal {
-            total
-          }
-          ... on GqlPoolAprRange {
-            min
-            max
-          }
-        }
-        items {
-          id
-          title
-          apr {
-            ... on GqlPoolAprTotal {
-              total
-            }
-            ... on GqlPoolAprRange {
-              min
-              max
-            }
-          }
-          subItems {
-            id
-            title
-            apr {
-              ... on GqlPoolAprTotal {
-                total
-              }
-              ... on GqlPoolAprRange {
-                min
-                max
-              }
-            }
-          }
-        }
+      aprItems {
+        id
+        title
+        apr
+        type
       }
     }
     allTokens {
@@ -133,14 +82,23 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           tokenAddress
         }
       }
+      aura {
+        id
+        apr
+        auraPoolAddress
+      }
     }
     userBalance {
-      stakedBalance
       totalBalance
-      walletBalance
-      stakedBalanceUsd
-      walletBalanceUsd
       totalBalanceUsd
+      walletBalance
+      walletBalanceUsd
+      stakedBalances {
+        balance
+        balanceUsd
+        stakingType
+        stakingId
+      }
     }
     ... on GqlPoolWeighted {
       nestingType
@@ -156,6 +114,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
@@ -183,6 +150,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
@@ -210,6 +186,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
@@ -239,6 +224,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
@@ -268,6 +262,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
@@ -296,6 +299,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
@@ -341,6 +353,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
@@ -372,6 +393,15 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           decimals
           weight
           hasNestedPool
+          isAllowed
+          priceRateProvider
+          priceRateProviderData {
+            address
+            name
+            summary
+            reviewed
+            warnings
+          }
           nestedPool {
             id
             address
@@ -414,8 +444,26 @@ query GetPoolTokensDynamicData($addresses: [String!]!) {
   }
 }
 
-query GetPoolEvents($first: Int, $poolId: String!, $chain: GqlChain!) {
-  poolEvents(first: $first, where: { poolId: $poolId, chain: $chain }) {
+query GetPoolEvents(
+  $first: Int
+  $skip: Int
+  $poolId: String!
+  $chain: GqlChain!
+  $range: GqlPoolEventsDataRange
+  $typeIn: [GqlPoolEventType]
+  $userAddress: String
+) {
+  poolEvents(
+    first: $first
+    skip: $skip
+    where: {
+      poolId: $poolId
+      chain: $chain
+      range: $range
+      typeIn: $typeIn
+      userAddress: $userAddress
+    }
+  ) {
     id
     poolId
     timestamp

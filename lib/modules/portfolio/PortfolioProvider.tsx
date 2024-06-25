@@ -9,10 +9,14 @@ import { ClaimableReward, useClaimableBalances } from './PortfolioClaim/useClaim
 import { BalTokenReward, useBalTokenRewards } from './PortfolioClaim/useBalRewards'
 import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
-import { Address } from 'viem'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useUserAccount } from '../web3/UserAccountProvider'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import {
+  calcTotalStakedBalance,
+  getUserTotalBalance,
+  getUserTotalBalanceUsd,
+} from '../pool/user-balance.helpers'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
@@ -26,23 +30,6 @@ export interface PoolRewardsData extends PoolListItem {
 }
 
 export type PoolRewardsDataMap = Record<string, PoolRewardsData>
-
-export function getAllGaugesAddressesFromPool(pool: PoolListItem) {
-  const arr = []
-  const staking = pool.staking
-
-  if (staking?.gauge) {
-    if (staking.gauge.version > 1) {
-      arr.push(staking.gauge.gaugeAddress)
-    }
-  }
-
-  if (staking?.gauge?.otherGauges) {
-    arr.push(...staking.gauge.otherGauges.filter(g => g.version > 1).map(g => g.gaugeAddress))
-  }
-
-  return arr as Address[]
-}
 
 export type UsePortfolio = ReturnType<typeof _usePortfolio>
 
@@ -76,8 +63,8 @@ function _usePortfolio() {
     let userTotalBalance = bn(0)
 
     data?.pools.forEach(pool => {
-      const stakedBalance = bn(pool.userBalance?.stakedBalance || 0)
-      const poolTotalBalance = bn(pool.userBalance?.totalBalance || 0)
+      const stakedBalance = bn(calcTotalStakedBalance(pool))
+      const poolTotalBalance = bn(getUserTotalBalance(pool))
       const unstakedBalance = poolTotalBalance.minus(stakedBalance)
       const isStaked = stakedBalance.gt(0)
       const isUnstaked = unstakedBalance.gt(0)
@@ -89,7 +76,7 @@ function _usePortfolio() {
         unstakedPools.push(pool)
       }
 
-      userTotalBalance = userTotalBalance.plus(pool.userBalance?.totalBalanceUsd || 0)
+      userTotalBalance = userTotalBalance.plus(getUserTotalBalanceUsd(pool))
     })
 
     return {

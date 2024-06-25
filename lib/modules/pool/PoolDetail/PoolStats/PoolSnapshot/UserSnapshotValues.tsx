@@ -9,14 +9,13 @@ import { SECONDS_IN_DAY } from '@/test/utils/numbers'
 import { sumBy, isEmpty } from 'lodash'
 import { useTokens } from '../../../../tokens/TokensProvider'
 import { useVebalBoost } from '../../../../vebal/useVebalBoost'
-import { useClaiming } from '../../../actions/claim/useClaiming'
-import { PoolListItem } from '../../../pool.types'
+import { useClaim } from '../../../actions/claim/ClaimProvider'
 import { getTotalAprRaw } from '../../../pool.utils'
 import { usePool } from '../../../PoolProvider'
 import { bn } from '@/lib/shared/utils/numbers'
 import { ClaimModal } from '../../../actions/claim/ClaimModal'
-import { Hex } from 'viem'
-import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
+import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
+import { calcTotalStakedBalanceUsd } from '../../../user-balance.helpers'
 
 export type PoolMyStatsValues = {
   myLiquidity: number
@@ -40,9 +39,9 @@ export function UserSnapshotValues() {
     previewModalDisclosure,
     disabledReason,
     isDisabled,
-  } = useClaiming([pool] as unknown[] as PoolListItem[])
+  } = useClaim()
 
-  const MemoizedAprTooltip = memo(AprTooltip)
+  const MemoizedMainAprTooltip = memo(MainAprTooltip)
 
   // TODO: only uses Balancer rewards rn
   const claimableRewards = [...balRewards, ...nonBalRewards]
@@ -66,7 +65,7 @@ export function UserSnapshotValues() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [veBalBoostMap])
 
-  const myAprRaw = getTotalAprRaw(pool.dynamicData?.apr.items, boost)
+  const myAprRaw = getTotalAprRaw(pool.dynamicData.aprItems, boost)
 
   const poolMyStatsValues: PoolMyStatsValues | undefined = useMemo(() => {
     if (pool && pool.userBalance && !isLoadingPool && !isLoadingClaiming) {
@@ -74,7 +73,7 @@ export function UserSnapshotValues() {
 
       // TODO: only uses Balancer balances rn
       const stakedBalanceUsd = totalBalanceUsd
-        ? pool.userBalance.stakedBalanceUsd
+        ? calcTotalStakedBalanceUsd(pool)
         : POSSIBLE_STAKED_BALANCE_USD
 
       return {
@@ -124,10 +123,10 @@ export function UserSnapshotValues() {
           My APR
         </Text>
         {poolMyStatsValues && poolMyStatsValues.myLiquidity ? (
-          <MemoizedAprTooltip
-            data={pool.dynamicData.apr}
+          <MemoizedMainAprTooltip
+            aprItems={pool.dynamicData.aprItems}
             poolId={pool.id}
-            textProps={{ fontWeight: 'medium', fontSize: '2xl', lineHeight: '28px' }}
+            textProps={{ fontWeight: 'bold', fontSize: '2xl', lineHeight: '28px' }}
             vebalBoost={boost || '1'}
           />
         ) : (
@@ -176,10 +175,8 @@ export function UserSnapshotValues() {
       </VStack>
       <ClaimModal
         isOpen={previewModalDisclosure.isOpen}
-        onOpen={previewModalDisclosure.onOpen}
         onClose={onModalClose}
-        gaugeAddresses={[(pool.staking?.id || '') as Hex]}
-        pool={pool as unknown as PoolListItem}
+        chain={pool.chain}
       />
     </>
   )

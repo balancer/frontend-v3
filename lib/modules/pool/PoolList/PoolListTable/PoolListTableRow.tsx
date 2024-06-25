@@ -1,20 +1,21 @@
 import { Box, Grid, GridItem, GridProps, Text } from '@chakra-ui/react'
 import Link from 'next/link'
 import { getPoolPath, getPoolTypeLabel } from '../../pool.utils'
-import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
+import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
 import { memo } from 'react'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { PoolListItem } from '../../pool.types'
 import { PoolListTokenPills } from '../PoolListTokenPills'
+import { getUserTotalBalanceUsd } from '../../user-balance.helpers'
 
 interface Props extends GridProps {
   pool: PoolListItem
   keyValue: number
 }
 
-const MemoizedAprTooltip = memo(AprTooltip)
+const MemoizedMainAprTooltip = memo(MainAprTooltip)
 
 export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
   const { userAddress } = usePoolListQueryState()
@@ -31,13 +32,19 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
       px={{ base: '0', sm: 'md' }}
       w="full"
     >
-      <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
+      <Link href={getPoolPath(pool)} prefetch={true}>
         <Grid {...rest} py="sm" pr="4">
           <GridItem>
             <NetworkIcon chain={pool.chain} size={6} />
           </GridItem>
           <GridItem>
-            <PoolListTokenPills pool={pool} />
+            <PoolListTokenPills
+              pool={pool}
+              h={['32px', '36px']}
+              p={['xxs', 'sm']}
+              pr={[1.5, 'ms']}
+              iconSize={20}
+            />
           </GridItem>
           <GridItem>
             <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
@@ -47,7 +54,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
           {userAddress && (
             <GridItem>
               <Text textAlign="right" fontWeight="medium">
-                {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
+                {toCurrency(getUserTotalBalanceUsd(pool), { abbreviated: false })}
               </Text>
             </GridItem>
           )}
@@ -70,8 +77,8 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
             </Text>
           </GridItem>
           <GridItem justifySelf="end" pr={{ base: 'md', xl: '0' }}>
-            <MemoizedAprTooltip
-              data={pool.dynamicData.apr}
+            <MemoizedMainAprTooltip
+              aprItems={pool.dynamicData.aprItems}
               poolId={pool.id}
               textProps={{ fontWeight: 'medium' }}
             />

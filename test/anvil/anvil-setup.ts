@@ -1,7 +1,4 @@
-import { getChainId } from '@/lib/config/app.config'
-import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { Hex } from 'viem'
+import { Address, Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { mainnet, polygon } from 'viem/chains'
 
@@ -21,6 +18,23 @@ export const defaultAnvilTestPrivateKey =
 // anvil account address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 export const defaultTestUserAccount = privateKeyToAccount(defaultAnvilTestPrivateKey as Hex).address
 export const alternativeTestUserAccount = '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720'
+export const userStakedInNonPreferentialGauge = '0x8163A459AC37f79D7E6845D4A3839AAa7F7f1bAd'
+
+export const testAccounts: Address[] = [
+  // Wagmi accounts
+  defaultTestUserAccount,
+  alternativeTestUserAccount,
+  // Real accounts
+  userStakedInNonPreferentialGauge,
+]
+
+export function testAccountIndex(account: Address) {
+  const index = testAccounts.indexOf(account)
+  if (!index) {
+    throw Error(`Account ${account} not found in test accounts.`)
+  }
+  return index
+}
 
 const ANVIL_PORTS: Record<NetworksWithFork, number> = {
   //Ports separated by 100 to avoid port collision when running tests in parallel
@@ -31,15 +45,16 @@ const ANVIL_PORTS: Record<NetworksWithFork, number> = {
 export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
   Ethereum: {
     networkName: 'Ethereum',
-    fallBackRpc: getDefaultRpcUrl(getChainId(GqlChain.Mainnet)),
+    fallBackRpc: 'https://cloudflare-eth.com',
     port: ANVIL_PORTS.Ethereum,
     // From time to time this block gets outdated having this kind of error in integration tests:
     // ContractFunctionExecutionError: The contract function "queryJoin" returned no data ("0x").
-    forkBlockNumber: 19769489n,
+    // forkBlockNumber: 19769489n,
+    forkBlockNumber: 20061849n,
   },
   Polygon: {
     networkName: 'Polygon',
-    fallBackRpc: getDefaultRpcUrl(getChainId(GqlChain.Polygon)),
+    fallBackRpc: 'https://polygon-rpc.com',
     port: ANVIL_PORTS.Polygon,
     // Note - this has to be >= highest blockNo used in tests
     forkBlockNumber: 44215395n,

@@ -27,7 +27,7 @@ export function ReceiptBptOut({
 
     const slippage = bptDiff.div(expectedBptOut).times(100).toString()
 
-    return `Slippage: ${fNum('slippage', slippage)}%`
+    return `Slippage: ${fNum('slippage', slippage)}`
   }
 
   return (

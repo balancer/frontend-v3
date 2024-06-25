@@ -1,4 +1,4 @@
-import { getDefaultRpcUrl } from '@/lib/modules/web3/Web3Provider'
+import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   HumanAmount,
@@ -50,7 +50,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
   }: SdkBuildRemoveLiquidityInput): Promise<TransactionConfig> {
     const removeLiquidity = new RemoveLiquidity()
 
-    const { call, to, value } = removeLiquidity.buildCall({
+    const { callData, to, value } = removeLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       sender: account,
@@ -61,7 +61,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
     return {
       account,
       chainId: this.helpers.chainId,
-      data: call,
+      data: callData,
       to,
       value,
     }

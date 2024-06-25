@@ -10,7 +10,7 @@ import ButtonGroup, {
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { UserSnapshotValues } from './UserSnapshotValues'
 import { PoolSnapshotValues } from './PoolSnapshotValues'
-import { bn } from '@/lib/shared/utils/numbers'
+import { hasTotalBalance } from '../../../user-balance.helpers'
 
 const COMMON_NOISY_CARD_PROPS: { contentProps: BoxProps; cardProps: BoxProps } = {
   contentProps: {
@@ -23,6 +23,7 @@ const COMMON_NOISY_CARD_PROPS: { contentProps: BoxProps; cardProps: BoxProps } =
   },
   cardProps: {
     position: 'relative',
+    height: 'full',
   },
 }
 
@@ -46,7 +47,7 @@ export function PoolSnapshot({ ...props }: CardProps) {
   }
 
   useEffect(() => {
-    if (bn(pool.userBalance?.totalBalance || '0').gt(0)) {
+    if (hasTotalBalance(pool)) {
       setActiveTab(TABS[1])
     }
   }, [pool])
@@ -69,13 +70,14 @@ export function PoolSnapshot({ ...props }: CardProps) {
           mb="8"
           p={{ base: 'sm', md: 'md' }}
           zIndex={1}
+          h="full"
         >
           <ButtonGroup
             size="xxs"
             currentOption={activeTab}
             options={TABS}
             onChange={handleTabChanged}
-            width="70px"
+            groupId="pool-stats"
           />
           {activeTab.value === 'poolStats' && <PoolSnapshotValues />}
           {activeTab.value === 'myStats' && <UserSnapshotValues />}

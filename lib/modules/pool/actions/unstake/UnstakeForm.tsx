@@ -1,40 +1,25 @@
 'use client'
 
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Center,
-  Heading,
-  Tooltip,
-  useDisclosure,
-} from '@chakra-ui/react'
-import { usePool } from '../../PoolProvider'
+import { Box, Button, Card, CardBody, CardFooter, CardHeader, Tooltip } from '@chakra-ui/react'
 import { useRef } from 'react'
 import { useUnstake } from './UnstakeProvider'
 import { UnstakePreview } from './UnstakePreview'
 import { UnstakeModal } from './UnstakeModal'
+import { useModalWithPoolRedirect } from '../../useModalWithPoolRedirect'
 
 export function UnstakeForm() {
-  const { pool } = usePool()
   const nextBtn = useRef(null)
-  const { onClose, onOpen, isOpen } = useDisclosure()
 
-  const { rewardAmounts, totalClaimableUsd, isDisabled, disabledReason, isLoading } = useUnstake()
+  const { isDisabled, disabledReason, isLoading, unstakeTxHash, pool } = useUnstake()
+
+  const { onClose, onOpen, isOpen } = useModalWithPoolRedirect(pool, unstakeTxHash)
 
   return (
-    <Center h="full" w="full" maxW="lg" mx="auto">
+    <Box h="full" w="full" maxW="lg" mx="auto">
       <Card>
         <CardHeader>Claim & Unstake</CardHeader>
         <CardBody>
-          <UnstakePreview
-            stakedBalance={pool.userBalance?.stakedBalance || '0'}
-            stakedBalanceUsd={pool.userBalance?.stakedBalanceUsd.toString() || '0'}
-            rewardAmounts={rewardAmounts}
-            totalClaimableUsd={totalClaimableUsd}
-          />
+          <UnstakePreview />
         </CardBody>
         <CardFooter>
           <Tooltip label={isDisabled ? disabledReason : ''}>
@@ -53,6 +38,6 @@ export function UnstakeForm() {
         </CardFooter>
       </Card>
       <UnstakeModal finalFocusRef={nextBtn} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
-    </Center>
+    </Box>
   )
 }

@@ -13,7 +13,7 @@ export type BuildSwapQueryResponse = ReturnType<typeof useBuildSwapQuery>
 export type BuildSwapQueryParams = {
   handler: SwapHandler
   simulationQuery: SwapSimulationQueryResult
-  isNativeAssetIn: boolean
+  wethIsEth: boolean
   swapState: SwapState
 }
 
@@ -21,7 +21,7 @@ export type BuildSwapQueryParams = {
 export function useBuildSwapQuery({
   handler,
   simulationQuery,
-  isNativeAssetIn,
+  wethIsEth,
   swapState,
   enabled,
 }: BuildSwapQueryParams & {
@@ -50,7 +50,7 @@ export function useBuildSwapQuery({
       slippagePercent: slippage,
       selectedChain,
       simulateResponse,
-      isNativeAssetIn,
+      wethIsEth,
     })
     console.log('Swap callData built:', response)
 

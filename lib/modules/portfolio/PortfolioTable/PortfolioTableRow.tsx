@@ -1,6 +1,6 @@
-import { Box, Grid, GridItem, GridProps, Text } from '@chakra-ui/react'
+import { Box, Grid, GridItem, GridProps, HStack, Text } from '@chakra-ui/react'
 import Link from 'next/link'
-import AprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AprTooltip'
+import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
 import { memo } from 'react'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -8,6 +8,14 @@ import { PoolListItem } from '../../pool/pool.types'
 import { getPoolPath, getPoolTypeLabel } from '../../pool/pool.utils'
 import { PoolListTokenPills } from '../../pool/PoolList/PoolListTokenPills'
 import { bn } from '@/lib/shared/utils/numbers'
+import {
+  calcTotalStakedBalance,
+  getUserTotalBalanceUsd,
+  hasAuraStakedBalance,
+  hasBalancerStakedBalance,
+} from '../../pool/user-balance.helpers'
+import { ProtocolIcon } from '@/lib/shared/components/icons/ProtocolIcon'
+import { Protocol } from '../../protocols/useProtocols'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -15,7 +23,7 @@ interface Props extends GridProps {
   veBalBoostMap: Record<string, string>
 }
 
-const MemoizedAprTooltip = memo(AprTooltip)
+const MemoizedMainAprTooltip = memo(MainAprTooltip)
 
 export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Props) {
   const { toCurrency } = useCurrency()
@@ -32,23 +40,32 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
       px={{ base: 'ms', sm: '0' }}
       w="full"
     >
-      <Link href={getPoolPath({ id: pool.id, chain: pool.chain })} prefetch={true}>
+      <Link href={getPoolPath(pool)} prefetch={true}>
         <Grid {...rest} py="sm">
           <GridItem>
             <NetworkIcon chain={pool.chain} size={6} />
           </GridItem>
           <GridItem>
-            <PoolListTokenPills pool={pool} />
+            <PoolListTokenPills
+              pool={pool}
+              h={['32px', '36px']}
+              p={['xxs', 'sm']}
+              pr={[1.5, 'ms']}
+              iconSize={20}
+            />
           </GridItem>
           <GridItem>
             <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
               {getPoolTypeLabel(pool.type)}
             </Text>
           </GridItem>
-          <GridItem>
-            <Text textAlign="right" fontWeight="medium">
-              {bn(pool.userBalance?.stakedBalance || 0).isGreaterThan(0) ? 'Staked' : 'N/A'}
-            </Text>
+          <GridItem display="flex" justifyContent="right">
+            <HStack>
+              <Text textAlign="right" fontWeight="medium">
+                {bn(calcTotalStakedBalance(pool)).isGreaterThan(0) ? 'Staked' : 'N/A'}{' '}
+              </Text>
+              <StakingIcons pool={pool} />
+            </HStack>
           </GridItem>
           {/* TO-DO vebal boost */}
           <GridItem textAlign="right">
@@ -62,12 +79,12 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
           </GridItem>
           <GridItem>
             <Text textAlign="right" fontWeight="medium">
-              {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
+              {toCurrency(getUserTotalBalanceUsd(pool), { abbreviated: false })}
             </Text>
           </GridItem>
           <GridItem justifySelf="end">
-            <MemoizedAprTooltip
-              data={pool.dynamicData.apr}
+            <MemoizedMainAprTooltip
+              aprItems={pool.dynamicData.aprItems}
               poolId={pool.id}
               textProps={{ fontWeight: 'medium' }}
               vebalBoost={vebalBoostValue}
@@ -76,5 +93,14 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
         </Grid>
       </Link>
     </Box>
+  )
+}
+
+function StakingIcons({ pool }: { pool: PoolListItem }) {
+  return (
+    <>
+      {hasAuraStakedBalance(pool) && <ProtocolIcon protocol={Protocol.Aura} />}
+      {hasBalancerStakedBalance(pool) && <ProtocolIcon protocol={Protocol.Balancer} />}
+    </>
   )
 }

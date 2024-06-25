@@ -20,7 +20,6 @@ import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWit
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
-import { useDisclosure } from '@chakra-ui/hooks'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/TokenInputsValidationProvider'
 import { isGyro } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
@@ -28,7 +27,8 @@ import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
-import { isUnhandledAddPriceImpactError } from '@/lib/modules/price-impact/priceImpact.helpers'
+import { isUnhandledAddPriceImpactError } from '@/lib/modules/price-impact/price-impact.utils'
+import { useModalWithPoolRedirect } from '../../useModalWithPoolRedirect'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -44,7 +44,6 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   const { getToken, getNativeAssetToken, getWrappedNativeAssetToken, isLoadingTokenPrices } =
     useTokens()
   const { isConnected } = useUserAccount()
-  const previewModalDisclosure = useDisclosure()
   const { hasValidationErrors } = useTokenInputsValidation()
 
   const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id])
@@ -73,7 +72,6 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     const amountsIn = filterHumanAmountsIn(humanAmountsIn, tokenAddress, chain)
     setHumanAmountsIn([
       ...amountsIn,
-
       {
         tokenAddress,
         humanAmount,
@@ -177,6 +175,8 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   ]
   const { isDisabled, disabledReason } = isDisabledWithReason(...allDisabledConditions)
 
+  const previewModalDisclosure = useModalWithPoolRedirect(pool, addLiquidityTxHash)
+
   return {
     transactionSteps,
     humanAmountsIn,
@@ -204,6 +204,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     setNeedsToAcceptHighPI,
     setAcceptPoolRisks,
     setWethIsEth,
+    setInitialHumanAmountsIn,
   }
 }
 

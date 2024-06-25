@@ -1,19 +1,22 @@
 import {
   GetPoolQuery,
-  GqlBalancePoolAprItem,
   GqlChain,
   GqlPoolAprValue,
   GqlPoolComposableStableNested,
   GqlPoolTokenDetail,
   GqlPoolType,
-  GqlBalancePoolAprSubItem,
+  GqlPoolFilterCategory,
+  GqlPoolAprItem,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
-import { FetchPoolProps, PoolAction, PoolListItem, PoolVariant } from './pool.types'
-import { bn, fNum } from '@/lib/shared/utils/numbers'
+import { BaseVariant, FetchPoolProps, PoolAction, PoolListItem, PoolVariant } from './pool.types'
+import { Numberish, bn, fNum } from '@/lib/shared/utils/numbers'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { TokenAmountHumanReadable } from '../tokens/token.types'
 import { formatUnits, parseUnits } from 'viem'
+import { ClaimablePool } from './actions/claim/ClaimProvider'
+import { Pool } from './PoolProvider'
+import BigNumber from 'bignumber.js'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -27,6 +30,8 @@ export enum ChainSlug {
   Zkevm = 'zkevm',
   Gnosis = 'gnosis',
   Sepolia = 'sepolia',
+  Mode = 'mode',
+  Fraxtal = 'fraxtal',
 }
 
 // Maps GraphQL chain enum to URL slug
@@ -41,8 +46,17 @@ export const chainToSlugMap: Record<GqlChain, ChainSlug> = {
   [GqlChain.Zkevm]: ChainSlug.Zkevm,
   [GqlChain.Gnosis]: ChainSlug.Gnosis,
   [GqlChain.Sepolia]: ChainSlug.Sepolia,
+  [GqlChain.Mode]: ChainSlug.Mode,
+  [GqlChain.Fraxtal]: ChainSlug.Fraxtal,
 }
 export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlChain>
+
+function getVariant(pool: Pool | PoolListItem): PoolVariant {
+  // if a pool has certain properties return a custom variant
+
+  // default variant
+  return BaseVariant.v2
+}
 
 /**
  * Constructs path to pool detail page.
@@ -51,8 +65,9 @@ export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlCha
  * @param {String} variant Pool variant, defaults to v2.
  * @returns {String} Path to pool detail page.
  */
-export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolProps) {
-  return `/pools/${chainToSlugMap[chain]}/${variant}/${id}`
+export function getPoolPath(pool: Pool | PoolListItem) {
+  const variant = getVariant(pool)
+  return `/pools/${chainToSlugMap[pool.chain]}/${variant}/${pool.id}`
 }
 
 // TODO: the following 2 functions (getAprLabel & getTotalAprLabel) most likely need revisiting somewhere in the near future and refactored to just one
@@ -67,62 +82,64 @@ export function getPoolPath({ id, chain, variant = PoolVariant.v2 }: FetchPoolPr
 export function getPoolActionPath({
   id,
   chain,
-  variant = PoolVariant.v2,
+  variant = BaseVariant.v2,
   action,
 }: FetchPoolProps & { action: PoolAction }) {
   return `/pools/${chainToSlugMap[chain]}/${variant}/${id}/${action}`
 }
 
 /**
- * Returns formatted APR value from GraphQL response.
- * @param {GqlPoolAprValue} apr APR value from GraphQL response.
- * @returns {String} Formatted APR value.
+ * Calculates the total APR based on the array of APR items and an optional boost value.
+ *
+ * @param {GqlPoolAprItem[]} aprItems - The array of APR items to calculate the total APR from.
+ * @param {string} [vebalBoost] - An optional boost value for calculation.
+ * @returns {[BigNumber, BigNumber]} The total APR range.
  */
-export function getAprLabel(apr: GqlPoolAprValue): string {
-  if (apr.__typename === 'GqlPoolAprRange') {
-    return `${fNum('apr', apr.min)} - ${fNum('apr', apr.max)}`
-  } else if (apr.__typename === 'GqlPoolAprTotal') {
-    return fNum('apr', apr.total)
-  } else {
-    return '-'
-  }
+export function getTotalApr(
+  aprItems: GqlPoolAprItem[],
+  vebalBoost?: string
+): [BigNumber, BigNumber] {
+  let minTotal = bn(0)
+  let maxTotal = bn(0)
+  const boost = vebalBoost || 1
+  let usedBalReward = false
+
+  aprItems.forEach(item => {
+    if (item.title === 'BAL reward APR') {
+      if (!usedBalReward) {
+        minTotal = bn(item.apr).times(boost).plus(minTotal)
+        maxTotal = bn(item.apr).times(2.5).plus(maxTotal)
+        usedBalReward = true
+      }
+
+      return
+    }
+
+    minTotal = bn(item.apr).plus(minTotal)
+    maxTotal = bn(item.apr).plus(maxTotal)
+  })
+
+  return [minTotal, maxTotal]
 }
 
 /**
  * Calculates the total APR label based on the array of APR items and an optional boost value.
  *
- * @param {GqlBalancePoolAprItem[]} aprItems - The array of APR items to calculate the total APR label from.
+ * @param {GqlPoolAprItem[]} aprItems - The array of APR items to calculate the total APR label from.
  * @param {string} [vebalBoost] - An optional boost value for calculation.
  * @returns {string} The formatted total APR label.
  */
-export function getTotalAprLabel(
-  aprItems: (GqlBalancePoolAprItem | GqlBalancePoolAprSubItem)[],
-  vebalBoost?: string
-): string {
-  let minTotal = '0'
-  let maxTotal = '0'
-  const boost = vebalBoost || 1
+export function getTotalAprLabel(aprItems: GqlPoolAprItem[], vebalBoost?: string): string {
+  const [minTotal, maxTotal] = getTotalApr(aprItems, vebalBoost)
 
-  aprItems.forEach(item => {
-    const [min, max] =
-      item.apr.__typename === 'GqlPoolAprRange'
-        ? [bn(item.apr.min).times(boost), item.apr.max]
-        : [item.apr.total, item.apr.total]
-    minTotal = bn(min).plus(minTotal).toString()
-    maxTotal = bn(max).plus(maxTotal).toString()
-  })
-
-  if (minTotal === maxTotal || vebalBoost) {
-    return fNum('apr', minTotal)
+  if (minTotal.eq(maxTotal) || vebalBoost) {
+    return fNum('apr', minTotal.toString())
   } else {
-    return `${fNum('apr', minTotal)} - ${fNum('apr', maxTotal)}`
+    return `${fNum('apr', minTotal.toString())} - ${fNum('apr', maxTotal.toString())}`
   }
 }
 
-export function getTotalAprRaw(
-  aprItems: (GqlBalancePoolAprItem | GqlBalancePoolAprSubItem)[],
-  vebalBoost?: string
-): string {
+export function getTotalAprRaw(aprItems: GqlPoolAprItem[], vebalBoost?: string): string {
   const apr = getTotalAprLabel(aprItems, vebalBoost)
   return apr.substring(0, apr.length - 1)
 }
@@ -142,19 +159,29 @@ const poolTypeLabelMap: { [key in GqlPoolType]: string } = {
   [GqlPoolType.Unknown]: 'Unknown',
   [GqlPoolType.Fx]: 'FX',
   [GqlPoolType.ComposableStable]: 'Stable',
+  [GqlPoolType.CowAmm]: 'CowAmm',
 }
 
 export function getPoolTypeLabel(type: GqlPoolType): string {
   return poolTypeLabelMap[type] ?? type.replace(/_/g, ' ').toLowerCase()
 }
 
+// Maps GraphQL pool category enum to human readable label for UI.
+const poolCategoryLabelMap: { [key in GqlPoolFilterCategory]: string } = {
+  [GqlPoolFilterCategory.BlackListed]: 'Blacklisted',
+  [GqlPoolFilterCategory.Incentivized]: 'Incentivized',
+}
+
+export function getPoolCategoryLabel(category: GqlPoolFilterCategory): string {
+  return poolCategoryLabelMap[category] ?? category.replace(/_/g, ' ').toLowerCase()
+}
+
 export const poolClickHandler = (
   event: React.MouseEvent<HTMLElement>,
-  id: string,
-  chain: GqlChain,
+  pool: Pool | PoolListItem,
   router: AppRouterInstance
 ) => {
-  const poolPath = getPoolPath({ id, chain })
+  const poolPath = getPoolPath(pool)
 
   if (event.ctrlKey || event.metaKey) {
     window.open(poolPath, '_blank')
@@ -167,11 +194,10 @@ export const poolClickHandler = (
 // between clicking the pool and the pool page loading.
 export const poolMouseEnterHandler = (
   event: React.MouseEvent<HTMLElement>,
-  id: string,
-  chain: GqlChain,
+  pool: Pool | PoolListItem,
   router: AppRouterInstance
 ) => {
-  const poolPath = getPoolPath({ id, chain })
+  const poolPath = getPoolPath(pool)
   router.prefetch(poolPath)
 }
 
@@ -214,8 +240,8 @@ export function getProportionalExitAmountsFromScaledBptIn(
  * @description Returns a map of pool by gauge id
  * @example getPoolsByGaugesMap(pools) => { '0x123': pool1, '0x456': pool2 }
  */
-export function getPoolsByGaugesMap(pools: PoolListItem[]) {
-  return pools.reduce((acc: Record<string, PoolListItem>, pool) => {
+export function getPoolsByGaugesMap(pools: ClaimablePool[]) {
+  return pools.reduce((acc: Record<string, ClaimablePool>, pool) => {
     const gaugeId = pool.staking?.gauge?.id || ''
     if (gaugeId) {
       acc[gaugeId] = pool
@@ -229,4 +255,10 @@ export function getPoolsByGaugesMap(pools: PoolListItem[]) {
 
     return acc
   }, {})
+}
+
+export function calcPotentialYieldFor(pool: Pool, amountUsd: Numberish): string {
+  const [, maxTotalApr] = getTotalApr(pool.dynamicData.aprItems)
+
+  return bn(amountUsd).times(maxTotalApr).div(52).toString()
 }

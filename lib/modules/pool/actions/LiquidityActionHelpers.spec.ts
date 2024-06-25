@@ -4,6 +4,7 @@ import {
   areEmptyAmounts,
   shouldUseNestedLiquidity,
   shouldUseRecoveryRemoveLiquidity,
+  roundDecimals,
 } from './LiquidityActionHelpers'
 import { nestedPoolMock } from '../__mocks__/nestedPoolMock'
 import {
@@ -13,6 +14,8 @@ import {
   daiAddress,
   usdcAddress,
   usdtAddress,
+  wjAuraAddress,
+  ethAddress,
 } from '@/lib/debug-helpers'
 import { recoveryPoolMock } from '../__mocks__/recoveryPoolMock'
 import { Pool } from '../PoolProvider'
@@ -83,5 +86,89 @@ it('returns NestedPoolState for nested pools', () => {
     usdtAddress,
     daiAddress,
     usdcAddress,
+  ])
+})
+
+describe('toInputAmounts', () => {
+  it('when the token input is empty', () => {
+    const helpers = new LiquidityActionHelpers(aWjAuraWethPoolElementMock())
+    const humanTokenAmountsWithAddress: HumanTokenAmountWithAddress[] = []
+    expect(helpers.toInputAmounts(humanTokenAmountsWithAddress)).toEqual([])
+  })
+
+  it('when the token input includes the wrapped native asset', () => {
+    const helpers = new LiquidityActionHelpers(aWjAuraWethPoolElementMock())
+    const humanTokenAmountsWithAddress: HumanTokenAmountWithAddress[] = [
+      { tokenAddress: wjAuraAddress, humanAmount: '10' },
+      { tokenAddress: wETHAddress, humanAmount: '20' },
+    ]
+    expect(helpers.toInputAmounts(humanTokenAmountsWithAddress)).toEqual([
+      {
+        address: wjAuraAddress,
+        decimals: 18,
+        rawAmount: 10000000000000000000n,
+      },
+      {
+        address: wETHAddress,
+        decimals: 18,
+        rawAmount: 20000000000000000000n,
+      },
+    ])
+  })
+
+  it('when the token input is the native asset', () => {
+    const helpers = new LiquidityActionHelpers(aWjAuraWethPoolElementMock())
+    const humanTokenAmountsWithAddress: HumanTokenAmountWithAddress[] = [
+      { tokenAddress: ethAddress, humanAmount: '30' },
+    ]
+    expect(helpers.toInputAmounts(humanTokenAmountsWithAddress)).toEqual([
+      {
+        address: ethAddress,
+        decimals: 18,
+        rawAmount: 30000000000000000000n,
+      },
+    ])
+  })
+
+  it('when the token input is zero', () => {
+    const helpers = new LiquidityActionHelpers(aWjAuraWethPoolElementMock())
+    const humanTokenAmountsWithAddress: HumanTokenAmountWithAddress[] = [
+      { tokenAddress: wETHAddress, humanAmount: '0' },
+    ]
+    expect(helpers.toInputAmounts(humanTokenAmountsWithAddress)).toEqual([])
+  })
+})
+
+describe('toSdkInputAmounts', () => {
+  it('swaps the native asset by the wrapped native asset', () => {
+    const helpers = new LiquidityActionHelpers(aWjAuraWethPoolElementMock())
+    const humanTokenAmountsWithAddress: HumanTokenAmountWithAddress[] = [
+      { tokenAddress: ethAddress, humanAmount: '30' },
+    ]
+    const wethAddress = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+    expect(helpers.toSdkInputAmounts(humanTokenAmountsWithAddress)).toEqual([
+      {
+        address: wethAddress,
+        decimals: 18,
+        rawAmount: 30000000000000000000n,
+      },
+    ])
+  })
+})
+
+test('trimDecimals', () => {
+  const humanTokenAmountsWithAddress: HumanTokenAmountWithAddress[] = [
+    { tokenAddress: ethAddress, humanAmount: '0.001013801345314809' },
+    { tokenAddress: wETHAddress, humanAmount: '0.001302248169953014' },
+  ]
+  expect(roundDecimals(humanTokenAmountsWithAddress)).toEqual([
+    {
+      humanAmount: '0.0010138013',
+      tokenAddress: ethAddress,
+    },
+    {
+      humanAmount: '0.0013022481',
+      tokenAddress: wETHAddress,
+    },
   ])
 })

@@ -43,6 +43,9 @@ import { ChainSlug, chainToSlugMap, slugToChainMap } from '../pool/pool.utils'
 import { invert } from 'lodash'
 import { useTransactionSteps } from '../transactions/transaction-steps/useTransactionSteps'
 import { useTokenBalances } from '../tokens/TokenBalancesProvider'
+import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
+import { usePriceImpact } from '../price-impact/PriceImpactProvider'
+import { calcMarketPriceImpact } from '../price-impact/price-impact.utils'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -97,9 +100,11 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
 
   const { isConnected } = useUserAccount()
-  const { getToken, getTokensByChain } = useTokens()
+  const { chain: walletChain } = useNetworkConfig()
+  const { getToken, getTokensByChain, usdValueForToken } = useTokens()
   const { tokens, setTokens } = useTokenBalances()
   const { hasValidationErrors } = useTokenInputsValidation()
+  const { setPriceImpact, setPriceImpactLevel } = usePriceImpact()
 
   const networkConfig = getNetworkConfig(swapState.selectedChain)
   const previewModalDisclosure = useDisclosure()
@@ -125,6 +130,9 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   if ((isTokenInSet && !tokenInInfo) || (isTokenOutSet && !tokenOutInfo)) {
     throw new Error('Token metadata not found')
   }
+
+  const tokenInUsd = usdValueForToken(tokenInInfo, swapState.tokenIn.amount)
+  const tokenOutUsd = usdValueForToken(tokenOutInfo, swapState.tokenOut.amount)
 
   const shouldFetchSwap = (state: SwapState, urlTxHash?: Hash) => {
     if (urlTxHash) return false
@@ -174,22 +182,32 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   }
 
   function setTokenIn(tokenAddress: Address) {
+    const isSameAsTokenOut = isSameAddress(tokenAddress, swapState.tokenOut.address)
+
     swapStateVar({
       ...swapState,
       tokenIn: {
         ...swapState.tokenIn,
         address: tokenAddress,
       },
+      tokenOut: isSameAsTokenOut
+        ? { ...swapState.tokenOut, address: emptyAddress }
+        : swapState.tokenOut,
     })
   }
 
   function setTokenOut(tokenAddress: Address) {
+    const isSameAsTokenIn = isSameAddress(tokenAddress, swapState.tokenIn.address)
+
     swapStateVar({
       ...swapState,
       tokenOut: {
         ...swapState.tokenOut,
         address: tokenAddress,
       },
+      tokenIn: isSameAsTokenIn
+        ? { ...swapState.tokenIn, address: emptyAddress }
+        : swapState.tokenIn,
     })
   }
 
@@ -326,14 +344,22 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     return parseUnits(amount, token.decimals)
   }
 
-  const isNativeAssetIn = isSameAddress(
-    swapState.tokenIn.address,
-    networkConfig.tokens.nativeAsset.address
-  )
+  function calcPriceImpact() {
+    if (!bn(tokenInUsd).isZero() && !bn(tokenOutUsd).isZero()) {
+      setPriceImpact(calcMarketPriceImpact(tokenInUsd, tokenOutUsd))
+    } else if (simulationQuery.data) {
+      setPriceImpact(undefined)
+      setPriceImpactLevel('unknown')
+    }
+  }
+
+  const wethIsEth =
+    isSameAddress(swapState.tokenIn.address, networkConfig.tokens.nativeAsset.address) ||
+    isSameAddress(swapState.tokenOut.address, networkConfig.tokens.nativeAsset.address)
   const validAmountOut = bn(swapState.tokenOut.amount).gt(0)
 
-  const vaultVersion = (simulationQuery.data as SdkSimulateSwapResponse)?.vaultVersion || 2
-  const { vaultAddress } = useVault(vaultVersion)
+  const protocolVersion = (simulationQuery.data as SdkSimulateSwapResponse)?.protocolVersion || 2
+  const { vaultAddress } = useVault(protocolVersion)
 
   const swapAction: SwapAction = useMemo(() => {
     if (
@@ -360,7 +386,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     swapState,
     handler,
     simulationQuery,
-    isNativeAssetIn,
+    wethIsEth,
     swapAction,
     tokenInInfo,
     tokenOutInfo,
@@ -380,10 +406,11 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     const { chain, tokenIn, tokenOut, amountIn, amountOut } = pathParams
     const { popularTokens } = networkConfig.tokens
     const symbolToAddressMap = invert(popularTokens || {}) as Record<string, Address>
+    const _chain =
+      chain && slugToChainMap[chain as ChainSlug] ? slugToChainMap[chain as ChainSlug] : walletChain
 
-    if (chain && slugToChainMap[chain as ChainSlug]) {
-      setSelectedChain(slugToChainMap[chain as ChainSlug])
-    }
+    setSelectedChain(_chain)
+
     if (tokenIn) {
       if (isAddress(tokenIn)) setTokenIn(tokenIn as Address)
       else if (symbolToAddressMap[tokenIn] && isAddress(symbolToAddressMap[tokenIn])) {
@@ -413,6 +440,10 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   useEffect(() => {
     const wrapper = getWrapperForBaseToken(swapState.tokenIn.address, swapState.selectedChain)
     if (wrapper) setTokenOut(wrapper.wrappedToken)
+
+    // If the token in address changes we should reset tx step index because
+    // the first approval will be different.
+    transactionSteps.setCurrentStepIndex(0)
   }, [swapState.tokenIn.address])
 
   // Check if tokenOut is a base wrap token and set tokenIn as the wrapped token.
@@ -426,15 +457,31 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     if (!swapTxHash) replaceUrlPath()
   }, [swapState.selectedChain, swapState.tokenIn, swapState.tokenOut, swapState.tokenIn.amount])
 
+  // Update selecteable tokens when the chain changes
   useEffect(() => {
     setTokens(getTokensByChain(swapState.selectedChain))
   }, [swapState.selectedChain])
 
+  // Open the preview modal when a swap tx hash is present
   useEffect(() => {
     if (swapTxHash) {
       previewModalDisclosure.onOpen()
     }
   }, [swapTxHash])
+
+  // If token out value changes when swapping exact in, recalculate price impact.
+  useEffect(() => {
+    if (swapState.swapType === GqlSorSwapType.ExactIn) {
+      calcPriceImpact()
+    }
+  }, [tokenOutUsd])
+
+  // If token in value changes when swapping exact out, recalculate price impact.
+  useEffect(() => {
+    if (swapState.swapType === GqlSorSwapType.ExactOut) {
+      calcPriceImpact()
+    }
+  }, [tokenInUsd])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
@@ -457,12 +504,13 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     disabledReason,
     previewModalDisclosure,
     handler,
-    isNativeAssetIn,
+    wethIsEth,
     swapAction,
     urlTxHash,
     swapTxHash,
     hasQuoteContext,
     isWrap,
+    resetSwapAmounts,
     setTokenSelectKey,
     setSelectedChain,
     setTokenInAmount,

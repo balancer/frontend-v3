@@ -21,7 +21,7 @@ import { useTokens } from '../TokensProvider'
 import { useTokenBalances } from '../TokenBalancesProvider'
 import { useTokenInput } from './useTokenInput'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { blockInvalidNumberInput, fNum } from '@/lib/shared/utils/numbers'
+import { blockInvalidNumberInput, bn, fNum } from '@/lib/shared/utils/numbers'
 import { TokenIcon } from '../TokenIcon'
 import { useTokenInputsValidation } from '../TokenInputsValidationProvider'
 import { ChevronDown } from 'react-feather'
@@ -29,6 +29,7 @@ import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 import { usePriceImpact } from '@/lib/modules/price-impact/PriceImpactProvider'
 import { useEffect, useState } from 'react'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
+import { isNativeAsset } from '@/lib/shared/utils/addresses'
 
 type TokenInputSelectorProps = {
   token: GqlToken | undefined
@@ -104,14 +105,28 @@ function TokenInputFooter({
   const isMounted = useIsMounted()
 
   const hasError = hasValidationError(token)
-  // TODO: replace input.fontHintError with proper theme color
   const inputLabelColor = hasError ? 'input.fontHintError' : 'grayText'
 
   const balance = token ? balanceFor(token?.address) : undefined
   const userBalance = token ? balance?.formatted || '0' : '0'
   const usdValue = value && token ? usdValueForToken(token, value) : '0'
 
+  const noBalance = !token || bn(userBalance).isZero()
+  const _isNativeAsset = token && isNativeAsset(token.chain, token.address)
+
   const showPriceImpact = !isLoadingPriceImpact && hasPriceImpact && priceImpact
+
+  function handleBalanceClick() {
+    // We return for _isNativeAsset because you can't use your full native asset
+    // balance, you need to save some for a swap.
+    if (noBalance || _isNativeAsset) return
+
+    if (value && bn(value).eq(userBalance)) {
+      updateValue('')
+    } else {
+      updateValue(userBalance)
+    }
+  }
 
   return (
     <HStack h="4" w="full" justify="space-between">
@@ -132,16 +147,22 @@ function TokenInputFooter({
       {isBalancesLoading || !isMounted ? (
         <Skeleton w="12" h="full" />
       ) : (
-        <HStack cursor="pointer" onClick={() => updateValue(userBalance)}>
+        <HStack
+          title="Use wallet balance"
+          cursor={noBalance || _isNativeAsset ? 'default' : 'pointer'}
+          onClick={handleBalanceClick}
+          color={inputLabelColor}
+          _hover={noBalance || _isNativeAsset ? {} : { color: 'font.highlight' }}
+        >
           {hasError && (
-            <Text variant="secondary" fontSize="sm" color={inputLabelColor}>
+            <Text fontSize="sm" color="inherit">
               {getValidationError(token)}
             </Text>
           )}
-          <Text fontSize="sm" variant="secondary" color={inputLabelColor}>
+          <Text fontSize="sm" color="inherit">
             {fNum('token', userBalance, { abbreviated: false })}
           </Text>
-          <Box color={hasError ? 'input.fontHintError' : 'icon.base'}>
+          <Box>
             <WalletIcon size={16} />
           </Box>
         </HStack>
@@ -205,7 +226,7 @@ export const TokenInput = forwardRef(
     useEffect(() => {
       validateInput(value || '')
       setInputTitle(value || '')
-    }, [value])
+    }, [value, token?.address])
 
     return (
       <Box
@@ -228,23 +249,25 @@ export const TokenInput = forwardRef(
                 autoComplete="off"
                 autoCorrect="off"
                 min={0}
-                border="transparent"
+                border="0px solid transparent"
                 bg="transparent"
                 shadow="none"
                 p="0"
-                fontSize="xl"
+                fontSize="3xl"
                 fontWeight="medium"
                 value={value}
                 title={inputTitle}
                 onChange={handleOnChange}
                 onKeyDown={blockInvalidNumberInput}
+                outline="none"
+                boxShadow="none"
                 _hover={{
-                  borderColor: 'transparent',
+                  border: '0px solid transparent',
                   boxShadow: 'none',
                 }}
                 _focus={{
                   outline: 'none',
-                  borderColor: 'transparent',
+                  border: '0px solid transparent',
                   boxShadow: 'none',
                 }}
                 {...inputProps}

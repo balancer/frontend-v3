@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-import { Box, Button, HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, HStack, Heading, Skeleton, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { useTokens } from '../TokensProvider'
 import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
@@ -12,24 +12,9 @@ import { Pool } from '../../pool/PoolProvider'
 import { bptUsdValue } from '../../pool/pool.helpers'
 import { TokenInfoPopover } from '../TokenInfoPopover'
 import { ChevronDown } from 'react-feather'
+import { BullseyeIcon } from '@/lib/shared/components/icons/BullseyeIcon'
 
-type Props = {
-  label?: string | ReactNode
-  address: Address
-  chain: GqlChain
-  value: Numberish
-  usdValue?: string
-  customRender?: (token: GqlToken) => ReactNode | ReactNode[]
-  disabled?: boolean
-  isLoading?: boolean
-  abbreviated?: boolean
-  isBpt?: boolean
-  pool?: Pool
-  toggleTokenSelect?: () => void
-  showZeroAmountAsDash?: boolean
-}
-
-type TemplateProps = {
+type DataProps = {
   address: Address
   chain: GqlChain
   token?: GqlToken
@@ -37,9 +22,10 @@ type TemplateProps = {
   disabled?: boolean
   showSelect?: boolean
   showInfoPopover?: boolean
+  isBpt?: boolean
 }
 
-function TokenRowTemplate({
+function TokenInfo({
   address,
   chain,
   token,
@@ -47,10 +33,14 @@ function TokenRowTemplate({
   disabled,
   showSelect = false,
   showInfoPopover = true,
-}: TemplateProps) {
+  isBpt = false,
+}: DataProps) {
+  const tokenSymbol = isBpt ? 'LP token' : token?.symbol || pool?.symbol
   return (
     <HStack spacing="sm">
-      <TokenIcon chain={chain} address={address} size={40} alt={token?.symbol || address} />
+      {!isBpt && (
+        <TokenIcon chain={chain} address={address} size={40} alt={token?.symbol || address} />
+      )}
       <VStack spacing="none" alignItems="flex-start">
         <HStack spacing="none">
           <Heading
@@ -59,9 +49,11 @@ function TokenRowTemplate({
             fontSize="lg"
             variant={disabled ? 'secondary' : 'primary'}
           >
-            {token?.symbol || pool?.symbol}
+            {tokenSymbol}
           </Heading>
-          {showInfoPopover && <TokenInfoPopover tokenAddress={address} chain={chain} />}
+          {showInfoPopover && (
+            <TokenInfoPopover tokenAddress={address} chain={chain} isBpt={isBpt} />
+          )}
         </HStack>
         <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
           {token?.name || pool?.name}
@@ -76,19 +68,37 @@ function TokenRowTemplate({
   )
 }
 
+type Props = {
+  label?: string | ReactNode
+  address: Address
+  chain: GqlChain
+  value: Numberish
+  actualWeight?: string
+  targetWeight?: string
+  usdValue?: string
+  disabled?: boolean
+  isLoading?: boolean
+  abbreviated?: boolean
+  isBpt?: boolean
+  pool?: Pool
+  showZeroAmountAsDash?: boolean
+  toggleTokenSelect?: () => void
+}
+
 export default function TokenRow({
   label,
   address,
   value,
-  customRender,
+  actualWeight,
+  targetWeight,
   chain,
   disabled,
   isLoading,
-  abbreviated = true,
   isBpt,
   pool,
-  toggleTokenSelect,
+  abbreviated = true,
   showZeroAmountAsDash = false,
+  toggleTokenSelect,
 }: Props) {
   const { getToken, usdValueForToken } = useTokens()
   const { toCurrency } = useCurrency()
@@ -123,14 +133,14 @@ export default function TokenRow({
       <HStack width="full" justifyContent="space-between">
         {toggleTokenSelect ? (
           <Button variant="tertiary" onClick={toggleTokenSelect} cursor="pointer" size="xl" p="2">
-            <TokenRowTemplate {...props} showInfoPopover={false} showSelect />
+            <TokenInfo {...props} showInfoPopover={false} showSelect />
           </Button>
         ) : (
-          <TokenRowTemplate {...props} />
+          <TokenInfo {...props} isBpt={isBpt} />
         )}
 
-        <HStack spacing="8">
-          <VStack spacing="2px" alignItems="flex-end">
+        <HStack align="start" spacing="none">
+          <VStack spacing="xs" alignItems="flex-end" textAlign="right">
             {isLoading ? (
               <>
                 <Skeleton w="10" h="4" />
@@ -141,7 +151,7 @@ export default function TokenRow({
                 <Heading fontWeight="bold" as="h6" fontSize="lg">
                   {isZero(amount) && showZeroAmountAsDash ? '-' : amount ? amount : '0'}
                 </Heading>
-                <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
+                <Text fontWeight="medium" variant="secondary" fontSize="sm">
                   {showZeroAmountAsDash && usdValue && isZero(usdValue)
                     ? '-'
                     : toCurrency(usdValue ?? '0', { abbreviated })}
@@ -149,7 +159,34 @@ export default function TokenRow({
               </>
             )}
           </VStack>
-          {customRender && token && customRender(token)}
+          {actualWeight && (
+            <VStack spacing="xs" alignItems="flex-end" w="24">
+              {isLoading ? (
+                <>
+                  <Skeleton w="10" h="4" />
+                  <Skeleton w="10" h="4" />
+                </>
+              ) : (
+                <>
+                  <Heading fontWeight="bold" as="h6" fontSize="lg">
+                    {fNum('weight', actualWeight, { abbreviated: false })}
+                  </Heading>
+                  {targetWeight && (
+                    <HStack spacing="xs" align="start">
+                      <Text fontWeight="medium" variant="secondary" fontSize="sm">
+                        {fNum('weight', targetWeight)}
+                      </Text>
+                      <Tooltip label="Target weight">
+                        <Box>
+                          <BullseyeIcon />
+                        </Box>
+                      </Tooltip>
+                    </HStack>
+                  )}
+                </>
+              )}
+            </VStack>
+          )}
         </HStack>
       </HStack>
     </VStack>

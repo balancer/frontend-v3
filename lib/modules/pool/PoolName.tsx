@@ -16,7 +16,7 @@ export function PoolName({
   // }
 
   return (
-    <HStack alignItems="center" justify="start">
+    <HStack alignItems="center" justify="start" wrap="wrap">
       {displayTokens.map((token, idx) => {
         return (
           <HStack key={token.address} alignItems="center" justify="start">

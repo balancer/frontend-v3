@@ -3,34 +3,47 @@ import {
   TransactionLabels,
   TransactionStep,
 } from '@/lib/modules/transactions/transaction-steps/lib'
-import { parseUnits } from 'viem'
+import { Address, parseUnits } from 'viem'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { Pool } from '../../PoolProvider'
 import { selectStakingService } from '@/lib/modules/staking/selectStakingService'
-import { useUnstakeGaugeCallDataQuery } from './useUnstakeGaugeCallDataQuery'
+import { useBuildUnstakeCallData } from './useBuildUnstakeCallData'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { ManagedTransactionInput } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { useBalTokenRewards } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
 import { useClaimableBalances } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
-import { PoolListItem } from '../../pool.types'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useMemo } from 'react'
 import { ManagedTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { useHasApprovedRelayer } from '@/lib/modules/relayer/useHasApprovedRelayer'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
+import { HumanAmount } from '@balancer/sdk'
 
 const claimAndUnstakeStepId = 'claim-and-unstake'
 
-export function useClaimAndUnstakeStep(
-  pool: Pool,
+export type UnstakeParams = {
+  pool: Pool
+  gaugeAddress: Address
+  amountOut: HumanAmount
   refetchPoolBalances: () => void
-): { isLoading: boolean; step: TransactionStep } {
+}
+export function useClaimAndUnstakeStep({
+  pool,
+  gaugeAddress,
+  amountOut, // amount to unstake
+  refetchPoolBalances,
+}: UnstakeParams): {
+  isLoading: boolean
+  step: TransactionStep
+  hasUnclaimedBalRewards: boolean
+} {
+  const { userAddress } = useUserAccount()
   const { getTransaction } = useTransactionState()
   const { contracts, chainId } = getNetworkConfig(pool.chain)
 
-  const convertedPool = pool as unknown as PoolListItem // need to change type going from pool to pools for hooks
-  const { claimableRewards: nonBalrewards } = useClaimableBalances([convertedPool])
-  const { balRewardsData: balRewards } = useBalTokenRewards([convertedPool])
+  const { claimableRewards: nonBalrewards } = useClaimableBalances([pool])
+  const { balRewardsData: balRewards } = useBalTokenRewards([pool])
 
   const { hasApprovedRelayer, isLoading: isLoadingRelayerApproval } = useHasApprovedRelayer(chainId)
 
@@ -47,12 +60,16 @@ export function useClaimAndUnstakeStep(
     ? selectStakingService(pool.chain, pool.staking?.type)
     : undefined
 
-  const { data, isLoading } = useUnstakeGaugeCallDataQuery(
-    parseUnits(pool.userBalance?.stakedBalance || '0', BPT_DECIMALS),
-    stakingService,
-    nonBalrewards.length > 0,
-    balRewards.length > 0
-  )
+  const hasUnclaimedBalRewards = balRewards.length > 0
+
+  const data = useBuildUnstakeCallData({
+    amount: parseUnits(amountOut, BPT_DECIMALS),
+    gaugeService: stakingService,
+    gauges: [gaugeAddress],
+    hasUnclaimedNonBalRewards: nonBalrewards.length > 0,
+    hasUnclaimedBalRewards,
+    userAddress,
+  })
 
   const txSimulationMeta = sentryMetaForWagmiSimulation(
     'Error in wagmi tx simulation (Claim and unstake transaction)',
@@ -70,7 +87,7 @@ export function useClaimAndUnstakeStep(
     labels,
     chainId,
     args: [data],
-    enabled: !!pool && !isLoadingRelayerApproval && hasApprovedRelayer && !isLoading,
+    enabled: !!pool && !isLoadingRelayerApproval && hasApprovedRelayer,
     txSimulationMeta,
   }
 
@@ -87,11 +104,12 @@ export function useClaimAndUnstakeStep(
       onSuccess: () => refetchPoolBalances(),
       renderAction: () => <ManagedTransactionButton id={claimAndUnstakeStepId} {...props} />,
     }),
-    [transaction, data, isLoading, props]
+    [transaction, data, props]
   )
 
   return {
-    isLoading,
+    isLoading: isLoadingRelayerApproval,
     step,
+    hasUnclaimedBalRewards,
   }
 }

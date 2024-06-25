@@ -6,7 +6,7 @@ import { Path, Slippage, Swap, SwapKind, TokenAmount } from '@balancer/sdk'
 import { formatUnits } from 'viem'
 import { TransactionConfig } from '../../web3/contracts/contract.types'
 import { SdkBuildSwapInputs, SdkSimulateSwapResponse, SimulateSwapInputs } from '../swap.types'
-import { getDefaultRpcUrl } from '../../web3/Web3Provider'
+import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 
 export class DefaultSwapHandler implements SwapHandler {
   constructor(public apolloClient: ApolloClient<object>) {}
@@ -22,9 +22,18 @@ export class DefaultSwapHandler implements SwapHandler {
       notifyOnNetworkStatusChange: true,
     })
 
+    // TODO: workaround while we wait for sdk team to also start using 'protocolVersion'
+    const paths = data.swaps.paths.map(
+      path =>
+        ({
+          ...path,
+          vaultVersion: path.protocolVersion,
+        } as unknown as Path)
+    )
+
     const swap = new Swap({
       chainId: getChainId(chain),
-      paths: data.swaps.paths as unknown as Path[],
+      paths,
       swapKind: this.swapTypeToKind(swapType),
     })
 
@@ -53,14 +62,14 @@ export class DefaultSwapHandler implements SwapHandler {
     slippagePercent,
     account,
     selectedChain,
-    isNativeAssetIn,
+    wethIsEth,
   }: SdkBuildSwapInputs): TransactionConfig {
     const tx = swap.buildCall({
       slippage: Slippage.fromPercentage(slippagePercent as `${number}`),
       deadline: BigInt(Number.MAX_SAFE_INTEGER),
       sender: account,
       recipient: account,
-      wethIsEth: isNativeAssetIn,
+      wethIsEth,
       queryOutput,
     })
 

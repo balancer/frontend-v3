@@ -405,6 +405,8 @@ export const CSP_ISSUE_POOL_IDS: Record<GqlChain, PoolId[]> = {
     '0x593acbfb1eaf3b6ec86fa60325d816996fdcbc0d000000000000000000000038',
     '0xd1af4974fcc995cf36ba40b189caa92964a9126d0000000000000000000000f1',
   ],
+  [GqlChain.Mode]: [],
+  [GqlChain.Fraxtal]: [],
 }
 
 export const HIGH_RISK_POOL_IDS: string[] = [

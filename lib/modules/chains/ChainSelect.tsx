@@ -4,11 +4,13 @@ import { getChainShortName } from '@/lib/config/app.config'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { getSelectStyles } from '@/lib/shared/services/chakra/theme/chakra-react-select'
-import { HStack, Text } from '@chakra-ui/react'
+import { getSelectStyles } from '@/lib/shared/services/chakra/custom/chakra-react-select'
+import { Box, HStack, Text } from '@chakra-ui/react'
 import { Select, OptionBase, GroupBase, SingleValue, chakraComponents } from 'chakra-react-select'
 import { ReactNode, useEffect, useState } from 'react'
 import { ChevronDown, Globe } from 'react-feather'
+import { motion } from 'framer-motion'
+import { pulseOnceWithDelay } from '@/lib/shared/utils/animations'
 
 interface ChainOption extends OptionBase {
   label: ReactNode
@@ -41,23 +43,25 @@ export function ChainSelect({ value, onChange }: Props) {
   useEffect(() => setChainValue(networkOptions.find(option => option.value === value)), [value])
 
   return (
-    <Select<ChainOption, false, GroupBase<ChainOption>>
-      instanceId="chain-select"
-      name="Chain"
-      value={chainValue}
-      options={networkOptions}
-      chakraStyles={chakraStyles}
-      onChange={handleChange}
-      components={{
-        DropdownIndicator: props => (
-          <chakraComponents.DropdownIndicator {...props}>
-            <HStack>
-              <Globe size={16} />
-              <ChevronDown size={16} />
-            </HStack>
-          </chakraComponents.DropdownIndicator>
-        ),
-      }}
-    />
+    <Box as={motion.div} animate={pulseOnceWithDelay} w="full" zIndex="10">
+      <Select<ChainOption, false, GroupBase<ChainOption>>
+        instanceId="chain-select"
+        name="Chain"
+        value={chainValue}
+        options={networkOptions}
+        chakraStyles={chakraStyles}
+        onChange={handleChange}
+        components={{
+          DropdownIndicator: props => (
+            <chakraComponents.DropdownIndicator {...props}>
+              <HStack>
+                <Globe size={16} />
+                <ChevronDown size={16} />
+              </HStack>
+            </chakraComponents.DropdownIndicator>
+          ),
+        }}
+      />
+    </Box>
   )
 }

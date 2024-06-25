@@ -1,32 +1,23 @@
 'use client'
 
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Center,
-  Heading,
-  Button,
-  Tooltip,
-  useDisclosure,
-} from '@chakra-ui/react'
+import { Card, CardBody, CardFooter, CardHeader, Button, Tooltip, Box } from '@chakra-ui/react'
 import { useStake } from './StakeProvider'
 import { useRef } from 'react'
 import { StakeModal } from './StakeModal'
 import { StakePreview } from './StakePreview'
+import { useModalWithPoolRedirect } from '../../useModalWithPoolRedirect'
 
 export function StakeForm() {
-  const { isDisabled, disabledReason, isLoading, stakableBalance, stakableBalanceUsd } = useStake()
+  const { isDisabled, disabledReason, isLoading, stakeTxHash, pool } = useStake()
   const nextBtn = useRef(null)
-  const { onClose, onOpen, isOpen } = useDisclosure()
+  const { onClose, onOpen, isOpen } = useModalWithPoolRedirect(pool, stakeTxHash)
 
   return (
-    <Center h="full" w="full" maxW="lg" mx="auto">
+    <Box h="full" w="full" maxW="lg" mx="auto">
       <Card>
         <CardHeader>Stake for rewards</CardHeader>
         <CardBody>
-          <StakePreview stakableBalance={stakableBalance} stakableBalanceUsd={stakableBalanceUsd} />
+          <StakePreview />
         </CardBody>
         <CardFooter>
           <Tooltip label={isDisabled ? disabledReason : ''}>
@@ -45,6 +36,6 @@ export function StakeForm() {
         </CardFooter>
       </Card>
       <StakeModal finalFocusRef={nextBtn} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
-    </Center>
+    </Box>
   )
 }

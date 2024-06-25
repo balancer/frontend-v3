@@ -7,7 +7,8 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { includesAddress, isSameAddress } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
-import { TokenBase } from './token.types'
+import { HumanTokenAmountWithAddress, TokenBase } from './token.types'
+import { InputAmount } from '@balancer/sdk'
 
 export function isNativeAsset(token: TokenBase | string, chain: GqlChain | SupportedChainId) {
   return nativeAssetFilter(chain)(token)
@@ -67,21 +68,37 @@ export function exclWrappedNativeAssetFilter(chain: GqlChain | SupportedChainId)
   }
 }
 
-/**
- * If the provided token is the native token,
- * returns the token with the wrapped native token based on the provided token and chain,
- * else returns the provided token
- *
- * @param {Address} token - The token address.
- * @param {GqlChain} chain - The chain type.
- * @return {Address} The swapped token address.
- */
-export function swapNativeWithWrappedNative(token: Address, chain: GqlChain) {
-  if (isNativeAsset(token, chain)) {
-    return getWrappedNativeAssetAddress(chain).toLowerCase() as Address
-  } else {
-    return token
-  }
+/*
+  If the given array contains the native asset, it is replaced with the wrapped native asset
+*/
+export function swapNativeWithWrapped(inputAmounts: InputAmount[], chain: GqlChain) {
+  return inputAmounts.map(inputAmount => {
+    if (isNativeAsset(inputAmount.address, chain)) {
+      return {
+        ...inputAmount,
+        address: getWrappedNativeAssetAddress(chain),
+      }
+    }
+    return inputAmount
+  })
+}
+
+/*
+  If the given array contains the wrapped native asset, it is replaced with the native asset
+*/
+export function swapWrappedWithNative(
+  inputAmounts: HumanTokenAmountWithAddress[],
+  chain: GqlChain
+) {
+  return inputAmounts.map(inputAmount => {
+    if (isWrappedNativeAsset(inputAmount.tokenAddress, chain)) {
+      return {
+        ...inputAmount,
+        tokenAddress: getNativeAssetAddress(chain),
+      } as HumanTokenAmountWithAddress
+    }
+    return inputAmount
+  })
 }
 
 export function requiresDoubleApproval(

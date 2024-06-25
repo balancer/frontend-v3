@@ -1,21 +1,20 @@
 'use client'
 
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { FeaturedPool } from '../pool/PoolProvider'
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
+import { FeaturedPool, Pool } from '../pool/PoolProvider'
 import { useRouter } from 'next/navigation'
-import { HStack, VStack, Text, Box } from '@chakra-ui/react'
+import { VStack, Text, Box } from '@chakra-ui/react'
 import {
   poolClickHandler,
   poolMouseEnterHandler,
-  getAprLabel,
   getPoolTypeLabel,
+  getTotalAprLabel,
 } from '../pool/pool.utils'
-import PoolWeightChart from '../pool/PoolDetail/PoolWeightCharts/PoolWeightChart'
 import { PoolName } from '../pool/PoolName'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { PoolZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import { motion } from 'framer-motion'
+import { FeaturedPoolWeightChart } from '../pool/PoolDetail/PoolWeightCharts/FeaturedPoolWeightChart'
 
 interface Props {
   pool: FeaturedPool
@@ -65,7 +64,6 @@ export function FeaturePoolCard({
   carouselDirection = 'left',
   carouselIndex = 1,
 }: Props) {
-  const { toCurrency } = useCurrency()
   const router = useRouter()
 
   const anim = isCarousel
@@ -82,8 +80,8 @@ export function FeaturePoolCard({
       cardProps={{
         position: 'relative',
         overflow: 'hidden',
-        onClick: event => poolClickHandler(event, pool.id, pool.chain, router),
-        onMouseEnter: event => poolMouseEnterHandler(event, pool.id, pool.chain, router),
+        onClick: event => poolClickHandler(event, pool as Pool, router),
+        onMouseEnter: event => poolMouseEnterHandler(event, pool as Pool, router),
         cursor: 'pointer',
         _hover: { bg: 'background.base' },
       }}
@@ -125,11 +123,16 @@ export function FeaturePoolCard({
                 {featuredReason}
               </Text>
               <Text variant="secondary" fontWeight="medium" fontSize="sm">
-                APR: {getAprLabel(pool.dynamicData.apr.apr)}
+                APR: {getTotalAprLabel(pool.dynamicData.aprItems)}
               </Text>
             </Box>
             <Box>
-              <PoolWeightChart pool={pool} chain={chain} hasLegend={hasLegend} isSmall={isSmall} />
+              <FeaturedPoolWeightChart
+                pool={pool}
+                chain={chain}
+                hasLegend={hasLegend}
+                isSmall={isSmall}
+              />
             </Box>
             <VStack spacing="0" zIndex={1}>
               <Box mb="1" px="2">
