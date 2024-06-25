@@ -21,7 +21,7 @@ query GetSorSwaps(
       inputAmountRaw
       outputAmountRaw
       pools
-      vaultVersion
+      protocolVersion
       tokens {
         address
         decimals
@@ -61,7 +61,7 @@ query GetSorSwaps(
     tokenInAmount
     tokenOut
     tokenOutAmount
-    vaultVersion
+    protocolVersion
   }
 }
 

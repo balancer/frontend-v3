@@ -31,6 +31,7 @@ export const WEIGHT_FORMAT = '(%0,0)'
 export const WEIGHT_FORMAT_TWO_DECIMALS = '(%0,0.00)'
 export const PRICE_IMPACT_FORMAT = '0.00%'
 export const INTEGER_PERCENTAGE_FORMAT = '0%'
+export const BOOST_FORMAT = '0.000'
 
 // Do not display APR values greater than this amount; they are likely to be nonsensical
 // These can arise from pools with extremely low balances (e.g., completed LBPs)
@@ -133,6 +134,10 @@ function integerPercentageFormat(val: Numberish): string {
   return numeral(val.toString()).format(INTEGER_PERCENTAGE_FORMAT)
 }
 
+function boostFormat(val: Numberish): string {
+  return numeral(val.toString()).format(BOOST_FORMAT)
+}
+
 // Sums an array of numbers safely using bignumber.js.
 export function safeSum(amounts: Numberish[]): string {
   return amounts.reduce((a, b) => bn(a).plus(b.toString()), bn(0)).toString()
@@ -154,6 +159,8 @@ type NumberFormat =
   | 'percentage'
   | 'slippage'
   | 'sharePercent'
+  | 'stakedPercentage'
+  | 'boost'
 
 // General number formatting function.
 export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): string {
@@ -171,12 +178,15 @@ export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): s
       return feePercentFormat(val)
     case 'weight':
       return weightFormat(val, opts)
+    case 'stakedPercentage':
     case 'priceImpact':
       return priceImpactFormat(val)
     case 'percentage':
       return integerPercentageFormat(val)
     case 'slippage':
       return slippageFormat(val)
+    case 'boost':
+      return boostFormat(val)
     default:
       throw new Error(`Number format not implemented: ${format}`)
   }

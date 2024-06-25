@@ -14,7 +14,7 @@ export const gyroEPoolMock: GqlPoolElement = {
   createTime: 1693249103,
   type: 'GYROE',
   chain: 'MAINNET',
-  vaultVersion: 2,
+  protocolVersion: 2,
   dynamicData: {
     poolId: '0xf01b0684c98cd7ada480bfdf6e43876422fa1fc10002000000000000000005de',
     swapEnabled: true,

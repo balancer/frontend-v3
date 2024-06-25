@@ -202,7 +202,7 @@ export function toPoolState(pool: Pool): PoolState {
     address: pool.address as Address,
     tokens: pool.poolTokens as MinimalToken[],
     type: mapPoolType(pool.type),
-    vaultVersion: pool.vaultVersion as VaultVersion,
+    vaultVersion: pool.protocolVersion as VaultVersion,
   }
 }
 
@@ -218,7 +218,7 @@ export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
       decimals: t.decimals,
     })),
     totalShares: pool.dynamicData.totalShares as HumanAmount,
-    vaultVersion: pool.vaultVersion as VaultVersion,
+    vaultVersion: pool.protocolVersion as VaultVersion,
   }
 }
 

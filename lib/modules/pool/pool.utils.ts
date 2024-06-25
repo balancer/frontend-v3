@@ -1,13 +1,12 @@
 import {
   GetPoolQuery,
-  GqlBalancePoolAprItem,
   GqlChain,
   GqlPoolAprValue,
   GqlPoolComposableStableNested,
   GqlPoolTokenDetail,
   GqlPoolType,
-  GqlBalancePoolAprSubItem,
   GqlPoolFilterCategory,
+  GqlPoolAprItem,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import { BaseVariant, FetchPoolProps, PoolAction, PoolListItem, PoolVariant } from './pool.types'
@@ -17,6 +16,7 @@ import { TokenAmountHumanReadable } from '../tokens/token.types'
 import { formatUnits, parseUnits } from 'viem'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
 import { Pool } from './PoolProvider'
+import BigNumber from 'bignumber.js'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -89,55 +89,57 @@ export function getPoolActionPath({
 }
 
 /**
- * Returns formatted APR value from GraphQL response.
- * @param {GqlPoolAprValue} apr APR value from GraphQL response.
- * @returns {String} Formatted APR value.
+ * Calculates the total APR based on the array of APR items and an optional boost value.
+ *
+ * @param {GqlPoolAprItem[]} aprItems - The array of APR items to calculate the total APR from.
+ * @param {string} [vebalBoost] - An optional boost value for calculation.
+ * @returns {[BigNumber, BigNumber]} The total APR range.
  */
-export function getAprLabel(apr: GqlPoolAprValue): string {
-  if (apr.__typename === 'GqlPoolAprRange') {
-    return `${fNum('apr', apr.min)} - ${fNum('apr', apr.max)}`
-  } else if (apr.__typename === 'GqlPoolAprTotal') {
-    return fNum('apr', apr.total)
-  } else {
-    return '-'
-  }
+export function getTotalApr(
+  aprItems: GqlPoolAprItem[],
+  vebalBoost?: string
+): [BigNumber, BigNumber] {
+  let minTotal = bn(0)
+  let maxTotal = bn(0)
+  const boost = vebalBoost || 1
+  let usedBalReward = false
+
+  aprItems.forEach(item => {
+    if (item.title === 'BAL reward APR') {
+      if (!usedBalReward) {
+        minTotal = bn(item.apr).times(boost).plus(minTotal)
+        maxTotal = bn(item.apr).times(2.5).plus(maxTotal)
+        usedBalReward = true
+      }
+
+      return
+    }
+
+    minTotal = bn(item.apr).plus(minTotal)
+    maxTotal = bn(item.apr).plus(maxTotal)
+  })
+
+  return [minTotal, maxTotal]
 }
 
 /**
  * Calculates the total APR label based on the array of APR items and an optional boost value.
  *
- * @param {GqlBalancePoolAprItem[]} aprItems - The array of APR items to calculate the total APR label from.
+ * @param {GqlPoolAprItem[]} aprItems - The array of APR items to calculate the total APR label from.
  * @param {string} [vebalBoost] - An optional boost value for calculation.
  * @returns {string} The formatted total APR label.
  */
-export function getTotalAprLabel(
-  aprItems: (GqlBalancePoolAprItem | GqlBalancePoolAprSubItem)[],
-  vebalBoost?: string
-): string {
-  let minTotal = '0'
-  let maxTotal = '0'
-  const boost = vebalBoost || 1
+export function getTotalAprLabel(aprItems: GqlPoolAprItem[], vebalBoost?: string): string {
+  const [minTotal, maxTotal] = getTotalApr(aprItems, vebalBoost)
 
-  aprItems.forEach(item => {
-    const [min, max] =
-      item.apr.__typename === 'GqlPoolAprRange'
-        ? [bn(item.apr.min).times(boost), item.apr.max]
-        : [item.apr.total, item.apr.total]
-    minTotal = bn(min).plus(minTotal).toString()
-    maxTotal = bn(max).plus(maxTotal).toString()
-  })
-
-  if (minTotal === maxTotal || vebalBoost) {
-    return fNum('apr', minTotal)
+  if (minTotal.eq(maxTotal) || vebalBoost) {
+    return fNum('apr', minTotal.toString())
   } else {
-    return `${fNum('apr', minTotal)} - ${fNum('apr', maxTotal)}`
+    return `${fNum('apr', minTotal.toString())} - ${fNum('apr', maxTotal.toString())}`
   }
 }
 
-export function getTotalAprRaw(
-  aprItems: (GqlBalancePoolAprItem | GqlBalancePoolAprSubItem)[],
-  vebalBoost?: string
-): string {
+export function getTotalAprRaw(aprItems: GqlPoolAprItem[], vebalBoost?: string): string {
   const apr = getTotalAprLabel(aprItems, vebalBoost)
   return apr.substring(0, apr.length - 1)
 }
@@ -256,10 +258,7 @@ export function getPoolsByGaugesMap(pools: ClaimablePool[]) {
 }
 
 export function calcPotentialYieldFor(pool: Pool, amountUsd: Numberish): string {
-  const totalApr =
-    pool.dynamicData.apr.apr.__typename === 'GqlPoolAprRange'
-      ? parseFloat(pool.dynamicData.apr.apr.max)
-      : parseFloat(pool.dynamicData.apr.apr.total)
+  const [, maxTotalApr] = getTotalApr(pool.dynamicData.aprItems)
 
-  return bn(amountUsd).times(totalApr).div(52).toString()
+  return bn(amountUsd).times(maxTotalApr).div(52).toString()
 }

@@ -196,7 +196,7 @@ function AddLiquidityMainForm() {
             </GridItem>
             <GridItem>
               <AddLiquidityAprTooltip
-                data={pool.dynamicData.apr}
+                aprItems={pool.dynamicData.aprItems}
                 totalUsdValue={totalUSDValue}
                 weeklyYield={weeklyYield}
                 pool={pool}

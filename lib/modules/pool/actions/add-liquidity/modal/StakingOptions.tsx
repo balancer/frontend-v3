@@ -4,7 +4,7 @@ import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { Button, Card, Flex, HStack, Icon, Text, VStack } from '@chakra-ui/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getAprLabel, getPoolActionPath } from '../../../pool.utils'
+import { getPoolActionPath, getTotalAprLabel } from '../../../pool.utils'
 import { usePool } from '../../../PoolProvider'
 
 export function StakingOptions() {
@@ -27,7 +27,7 @@ export function StakingOptions() {
               <Text fontWeight="bold" color="font.primary" fontSize="md">
                 {/* SHOULD WE USE MAX APR instead of the range?? */}
                 {/* {fNum('apr', totalApr)} */}
-                {getAprLabel(pool.dynamicData.apr.apr)}
+                {getTotalAprLabel(pool.dynamicData.aprItems)}
               </Text>
               <Icon as={StarsIcon} width="20px" height="20px" />
             </HStack>

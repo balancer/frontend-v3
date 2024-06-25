@@ -14,7 +14,7 @@ export const composableStablePoolMock: GqlPoolElement = {
   createTime: 1686959963,
   type: GqlPoolType.ComposableStable,
   chain: GqlChain.Mainnet,
-  vaultVersion: 2,
+  protocolVersion: 2,
   dynamicData: {
     poolId: '0x156c02f3f7fef64a3a9d80ccf7085f23cce91d76000000000000000000000570',
     swapEnabled: true,

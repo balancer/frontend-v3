@@ -1,4 +1,4 @@
-import { Box, Grid, GridItem, GridProps, Text } from '@chakra-ui/react'
+import { Box, Grid, GridItem, GridProps, HStack, Text } from '@chakra-ui/react'
 import Link from 'next/link'
 import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
 import { memo } from 'react'
@@ -8,7 +8,14 @@ import { PoolListItem } from '../../pool/pool.types'
 import { getPoolPath, getPoolTypeLabel } from '../../pool/pool.utils'
 import { PoolListTokenPills } from '../../pool/PoolList/PoolListTokenPills'
 import { bn } from '@/lib/shared/utils/numbers'
-import { calcTotalStakedBalance, getUserTotalBalanceUsd } from '../../pool/user-balance.helpers'
+import {
+  calcTotalStakedBalance,
+  getUserTotalBalanceUsd,
+  hasAuraStakedBalance,
+  hasBalancerStakedBalance,
+} from '../../pool/user-balance.helpers'
+import { ProtocolIcon } from '@/lib/shared/components/icons/ProtocolIcon'
+import { Protocol } from '../../protocols/useProtocols'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -52,10 +59,13 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
               {getPoolTypeLabel(pool.type)}
             </Text>
           </GridItem>
-          <GridItem>
-            <Text textAlign="right" fontWeight="medium">
-              {bn(calcTotalStakedBalance(pool)).isGreaterThan(0) ? 'Staked' : 'N/A'}
-            </Text>
+          <GridItem display="flex" justifyContent="right">
+            <HStack>
+              <Text textAlign="right" fontWeight="medium">
+                {bn(calcTotalStakedBalance(pool)).isGreaterThan(0) ? 'Staked' : 'N/A'}{' '}
+              </Text>
+              <StakingIcons pool={pool} />
+            </HStack>
           </GridItem>
           {/* TO-DO vebal boost */}
           <GridItem textAlign="right">
@@ -74,7 +84,7 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
           </GridItem>
           <GridItem justifySelf="end">
             <MemoizedMainAprTooltip
-              data={pool.dynamicData.apr}
+              aprItems={pool.dynamicData.aprItems}
               poolId={pool.id}
               textProps={{ fontWeight: 'medium' }}
               vebalBoost={vebalBoostValue}
@@ -83,5 +93,14 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
         </Grid>
       </Link>
     </Box>
+  )
+}
+
+function StakingIcons({ pool }: { pool: PoolListItem }) {
+  return (
+    <>
+      {hasAuraStakedBalance(pool) && <ProtocolIcon protocol={Protocol.Aura} />}
+      {hasBalancerStakedBalance(pool) && <ProtocolIcon protocol={Protocol.Balancer} />}
+    </>
   )
 }

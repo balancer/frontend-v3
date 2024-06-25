@@ -94,7 +94,7 @@ export function PoolCharts({ ...props }: CardProps) {
   return (
     <Card {...props}>
       <Stack h="full">
-        {isLoading && <Skeleton w="full" h="full" />}
+        {isLoading && <Skeleton w="full" h="full" minH="200px" />}
         {!isLoading && chartData.length > 0 && (
           <NoisyCard
             cardProps={COMMON_NOISY_CARD_PROPS.cardProps}

@@ -1,6 +1,5 @@
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { getBlockExplorerAddressUrl } from '@/lib/shared/hooks/useBlockExplorer'
-import { dateToUnixTimestamp } from '@/lib/shared/hooks/useTime'
 import {
   GetPoolQuery,
   GqlChain,
@@ -8,18 +7,20 @@ import {
   GqlPoolNestingType,
   GqlPoolStakingGauge,
   GqlPoolStakingOtherGauge,
+  GqlPoolTokenDetail,
   GqlPoolType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
+import { isNil } from 'lodash'
 import { Address, getAddress, parseUnits, zeroAddress } from 'viem'
-import { BPT_DECIMALS } from './pool.constants'
 import { isNotMainet } from '../chains/chain.utils'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
 import { PoolIssue } from './alerts/pool-issues/PoolIssue.type'
-import { isNil } from 'lodash'
+import { BPT_DECIMALS } from './pool.constants'
 import { getUserTotalBalanceInt } from './user-balance.helpers'
+import { dateToUnixTimestamp } from '@/lib/shared/utils/time'
 
 /**
  * METHODS
@@ -233,12 +234,18 @@ export function allClaimableGaugeAddressesFor(pool: ClaimablePool) {
   return addresses
 }
 
+export function hasUnreviewedRateProvider(token: GqlPoolTokenDetail): boolean {
+  return !!token.priceRateProvider && !token.priceRateProviderData
+}
+
 /**
  * Returns true if we should block the user from adding liquidity to the pool.
  * @see https://github.com/balancer/frontend-v3/issues/613#issuecomment-2149443249
  */
 export function shouldBlockAddLiquidity(pool: Pool) {
-  return pool.poolTokens.some(token => {
+  const poolTokens = pool.poolTokens as GqlPoolTokenDetail[]
+
+  return poolTokens.some(token => {
     // if token is not allowed - we should block adding liquidity
     if (!token.isAllowed) return true
 
@@ -247,6 +254,9 @@ export function shouldBlockAddLiquidity(pool: Pool) {
 
     // if rateProvider is the nested pool address - we consider it as safe
     if (token.priceRateProvider === token.nestedPool?.address) return false
+
+    // if price rate provider is set but is not reviewed - we should block adding liquidity
+    if (hasUnreviewedRateProvider(token)) return true
 
     if (token.priceRateProviderData?.summary !== 'safe') return true
 

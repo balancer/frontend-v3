@@ -7,7 +7,7 @@ export const gyroPoolMock: GqlPoolElement = {
   address: '0xdac42eeb17758daa38caf9a3540c808247527ae3',
   name: 'Gyroscope 2-CLP USDC/DAI',
   version: 1,
-  vaultVersion: 2,
+  protocolVersion: 2,
   owner: '0x0000000000000000000000000000000000000000',
   decimals: 18,
   factory: '0x5d8545a7330245150be0ce88f8afb0edc41dfc34',

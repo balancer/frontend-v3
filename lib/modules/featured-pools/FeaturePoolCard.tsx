@@ -7,8 +7,8 @@ import { VStack, Text, Box } from '@chakra-ui/react'
 import {
   poolClickHandler,
   poolMouseEnterHandler,
-  getAprLabel,
   getPoolTypeLabel,
+  getTotalAprLabel,
 } from '../pool/pool.utils'
 import { PoolName } from '../pool/PoolName'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
@@ -123,7 +123,7 @@ export function FeaturePoolCard({
                 {featuredReason}
               </Text>
               <Text variant="secondary" fontWeight="medium" fontSize="sm">
-                APR: {getAprLabel(pool.dynamicData.apr.apr)}
+                APR: {getTotalAprLabel(pool.dynamicData.aprItems)}
               </Text>
             </Box>
             <Box>

@@ -1,6 +1,8 @@
 export enum Protocol {
   Aave = 'aave',
+  Aura = 'aura',
   Agave = 'agave',
+  Balancer = 'balancer',
   Beefy = 'beefy',
   Euler = 'euler',
   Yearn = 'yearn',
@@ -19,6 +21,11 @@ export enum Protocol {
 export const protocolIconPaths: Record<Protocol, string> = {
   [Protocol.Aave]: '/images/icons/protocols/aave.svg',
   [Protocol.Agave]: '/images/icons/protocols/agave.png',
+
+  /* For now we only use these icons (Aura and Balancer)*/
+  [Protocol.Aura]: '/images/protocols/aura.svg',
+  [Protocol.Balancer]: '/images/protocols/balancer.svg',
+
   [Protocol.Beefy]: '/images/icons/protocols/beefy.svg',
   [Protocol.Euler]: '/images/icons/protocols/euler.svg',
   [Protocol.Yearn]: '/images/icons/protocols/yearn.svg',

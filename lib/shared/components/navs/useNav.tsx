@@ -4,9 +4,13 @@ import { DiscordIcon } from '../icons/social/DiscordIcon'
 import { MediumIcon } from '../icons/social/MediumIcon'
 import { YoutubeIcon } from '../icons/social/YoutubeIcon'
 import { GithubIcon } from '../icons/social/GithubIcon'
+import { useParams } from 'next/navigation'
 
 export function useNav() {
   const pathname = usePathname()
+
+  const { chain } = useParams()
+  const swapHref = chain ? '/swap/' + chain : '/swap'
 
   const appLinks = [
     {
@@ -14,7 +18,7 @@ export function useNav() {
       label: 'Pools',
     },
     {
-      href: '/swap',
+      href: swapHref,
       label: 'Swap',
     },
     {
