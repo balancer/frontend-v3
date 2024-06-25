@@ -9,6 +9,7 @@ import { useMemo } from 'react'
 import { usePool } from '../../PoolProvider'
 import { LiquidityActionHelpers } from '../LiquidityActionHelpers'
 import { AddLiquidityStepParams, useAddLiquidityStep } from './useAddLiquidityStep'
+import { useBatchTransactions } from '@/lib/modules/web3/useBatchTransactions'
 
 type AddLiquidityStepsParams = AddLiquidityStepParams & {
   helpers: LiquidityActionHelpers
@@ -26,6 +27,7 @@ export function useAddLiquiditySteps({
   const { step: approveRelayerStep, isLoading: isLoadingRelayerApproval } =
     useApproveRelayerStep(chainId)
   const signRelayerStep = useSignRelayerStep()
+  const { supportsBatchTransactions, isLoadingBatchTransactions } = useBatchTransactions(chainId)
 
   const inputAmounts = useMemo(
     () => helpers.toInputAmounts(humanAmountsIn),
@@ -47,13 +49,21 @@ export function useAddLiquiditySteps({
   })
 
   const steps = useMemo(() => {
-    if (relayerMode === 'approveRelayer') {
-      return [approveRelayerStep, ...tokenApprovalSteps, addLiquidityStep]
-    } else if (shouldSignRelayerApproval) {
-      return [signRelayerStep, ...tokenApprovalSteps, addLiquidityStep]
+    let batchableTransactions = [...tokenApprovalSteps, addLiquidityStep]
+
+    // TODO: This could be generalized but we keep it simple for now
+    if (supportsBatchTransactions) {
+      addLiquidityStep.nestedSteps = tokenApprovalSteps
+      batchableTransactions = [addLiquidityStep]
     }
 
-    return [...tokenApprovalSteps, addLiquidityStep]
+    if (relayerMode === 'approveRelayer') {
+      return [approveRelayerStep, ...batchableTransactions]
+    } else if (shouldSignRelayerApproval) {
+      return [signRelayerStep, ...batchableTransactions, supportsBatchTransactions]
+    }
+
+    return [...batchableTransactions]
   }, [
     relayerMode,
     shouldSignRelayerApproval,
@@ -65,7 +75,8 @@ export function useAddLiquiditySteps({
   ])
 
   return {
-    isLoadingSteps: isLoadingTokenApprovalSteps || isLoadingRelayerApproval,
+    isLoadingSteps:
+      isLoadingTokenApprovalSteps || isLoadingRelayerApproval || isLoadingBatchTransactions,
     steps,
   }
 }

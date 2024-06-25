@@ -4,6 +4,7 @@ import { useTransactionState } from '@/lib/modules/transactions/transaction-step
 import {
   TransactionLabels,
   TransactionStep,
+  TxCall,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useEffect, useMemo, useState } from 'react'
@@ -12,13 +13,14 @@ import {
   useAddLiquidityBuildCallDataQuery,
 } from './queries/useAddLiquidityBuildCallDataQuery'
 import { usePool } from '../../PoolProvider'
+import { TransactionBatchButton } from '@/lib/modules/transactions/transaction-steps/TransactionBatchButton'
 
 export const addLiquidityStepId = 'add-liquidity'
 
 export type AddLiquidityStepParams = AddLiquidityBuildQueryParams
 
 export function useAddLiquidityStep(params: AddLiquidityStepParams): TransactionStep {
-  const { pool, refetch: refetchPoolBalances } = usePool()
+  const { pool, refetch: refetchPoolBalances, chainId } = usePool()
   const [isStepActivated, setIsStepActivated] = useState(false)
   const { getTransaction } = useTransactionState()
 
@@ -63,14 +65,31 @@ export function useAddLiquidityStep(params: AddLiquidityStepParams): Transaction
       onActivated: () => setIsStepActivated(true),
       onDeactivated: () => setIsStepActivated(false),
       onSuccess: () => refetchPoolBalances(),
-      renderAction: () => (
-        <ManagedSendTransactionButton
-          id={addLiquidityStepId}
-          labels={labels}
-          txConfig={buildCallDataQuery.data}
-          gasEstimationMeta={gasEstimationMeta}
-        />
-      ),
+      renderAction: () => {
+        return (
+          <ManagedSendTransactionButton
+            id={addLiquidityStepId}
+            labels={labels}
+            txConfig={buildCallDataQuery.data}
+            gasEstimationMeta={gasEstimationMeta}
+          />
+        )
+      },
+      renderBatchAction: (txCalls: TxCall[]) => {
+        return (
+          <TransactionBatchButton
+            id={addLiquidityStepId}
+            chainId={chainId}
+            labels={labels}
+            txCalls={txCalls}
+          />
+        )
+      },
+      // Last step in smart account batch
+      isBatchEnd: true,
+      batchableTxCall: buildCallDataQuery.data
+        ? { data: buildCallDataQuery.data.data, to: buildCallDataQuery.data.to }
+        : undefined,
     }),
     [transaction, simulationQuery.data, buildCallDataQuery.data]
   )

@@ -1,5 +1,6 @@
 import { TransactionBundle } from '@/lib/modules/web3/contracts/contract.types'
 import React from 'react'
+import { Address, Hash } from 'viem'
 
 export enum TransactionState {
   Ready = 'init',
@@ -63,6 +64,31 @@ type Executable = {
   setTxConfig?: any
 }
 
+export type TxCall = {
+  to: Address
+  data: Hash
+}
+
+/*
+  Smart accounts like Gnosis safe, support batching multiple transactions into an atomic one by using wagmi's useSendCalls
+  More info:
+  https://wagmi.sh/react/api/hooks/useSendCalls
+  https://wagmi.sh/react/api/hooks/useSendCalls
+*/
+type MaybeBatchableTx = {
+  batchableTxCall?: TxCall
+  /*
+    true when the current transaction step is the last one in the batch
+    Example:
+    we have 3 transactions in a batch (2 token approval transactions and 1 add liquidity transaction)
+    the add liquidity transaction should have isBatchEnd = true
+  */
+  isBatchEnd?: boolean
+  renderBatchAction?: (txCalls: TxCall[]) => React.ReactNode
+  // Example: token approval steps are nested inside addLiquidity step
+  nestedSteps?: TransactionStep[]
+}
+
 export type TransactionStep = {
   id: string
   stepType: StepType
@@ -73,7 +99,7 @@ export type TransactionStep = {
   onSuccess?: () => void
   onActivated?: () => void
   onDeactivated?: () => void
-}
+} & MaybeBatchableTx
 
 export function getTransactionState(transactionBundle?: TransactionBundle): TransactionState {
   if (!transactionBundle) return TransactionState.Ready
