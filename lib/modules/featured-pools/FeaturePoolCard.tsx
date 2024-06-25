@@ -3,7 +3,7 @@
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { FeaturedPool, Pool } from '../pool/PoolProvider'
 import { useRouter } from 'next/navigation'
-import { VStack, Text, Box } from '@chakra-ui/react'
+import { VStack, Text, Box, HStack } from '@chakra-ui/react'
 import {
   poolClickHandler,
   poolMouseEnterHandler,
@@ -15,6 +15,7 @@ import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { PoolZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import { motion } from 'framer-motion'
 import { FeaturedPoolWeightChart } from '../pool/PoolDetail/PoolWeightCharts/FeaturedPoolWeightChart'
+import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
 
 interface Props {
   pool: FeaturedPool
@@ -122,9 +123,6 @@ export function FeaturePoolCard({
               <Text variant="special" fontWeight="bold" fontSize="sm" textAlign="center" mb="1">
                 {featuredReason}
               </Text>
-              <Text variant="secondary" fontWeight="medium" fontSize="sm">
-                APR: {getTotalAprLabel(pool.dynamicData.aprItems)}
-              </Text>
             </Box>
             <Box>
               <FeaturedPoolWeightChart
@@ -135,10 +133,15 @@ export function FeaturePoolCard({
               />
             </Box>
             <VStack spacing="0" zIndex={1}>
-              <Box mb="1" px="2">
+              <HStack mb="1" gap="0">
                 <PoolName pool={pool} fontSize="md" noOfLines={1} />
-              </Box>
-
+                <MainAprTooltip
+                  poolId={pool.id}
+                  aprItems={pool.dynamicData.aprItems}
+                  pool={pool}
+                  onlySparkles
+                />
+              </HStack>
               <Text mb="0.5" variant="secondary" fontWeight="medium" fontSize="sm">
                 {getPoolTypeLabel(pool.type)} pool
               </Text>
