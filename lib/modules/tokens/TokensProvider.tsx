@@ -17,9 +17,9 @@ import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { Dictionary, zipObject } from 'lodash'
 import { createContext, PropsWithChildren, useCallback } from 'react'
 import { Address } from 'viem'
-import { minsToMs } from '@/lib/shared/hooks/useTime'
 import { useSkipInitialQuery } from '@/lib/shared/hooks/useSkipInitialQuery'
 import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
+import { mins } from '@/lib/shared/utils/time'
 
 export type UseTokensResult = ReturnType<typeof _useTokens>
 export const TokensContext = createContext<UseTokensResult | null>(null)
@@ -42,7 +42,7 @@ export function _useTokens(
       variables,
       initialFetchPolicy: 'cache-only',
       nextFetchPolicy: 'cache-first',
-      pollInterval: minsToMs(3),
+      pollInterval: mins(3).toMs(),
       notifyOnNetworkStatusChange: true,
     }
   )
