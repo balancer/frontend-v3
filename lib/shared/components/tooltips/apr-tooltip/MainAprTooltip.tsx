@@ -25,14 +25,14 @@ const hoverColor = 'font.highlight'
 
 export const SparklesIcon = ({ isOpen, pool }: { isOpen: boolean; pool: Pool | PoolListItem }) => {
   const theme = useTheme()
-  const { votingPoolId } = getProjectConfig()
+  const { corePoolId } = getProjectConfig()
 
   const hasRewardApr = pool.dynamicData.aprItems.some(item => item.title === 'BAL reward APR')
 
   let gradFromColor = theme.colors.sparkles.default.from
   let gradToColor = theme.colors.sparkles.default.to
 
-  if (pool.id === votingPoolId) {
+  if (pool.id === corePoolId) {
     gradFromColor = theme.colors.sparkles.voting.from
     gradToColor = theme.colors.sparkles.voting.to
   }
