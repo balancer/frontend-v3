@@ -88,6 +88,6 @@ export interface ProjectConfig {
   projectId: 'beets' | 'balancer'
   projectName: string
   supportedNetworks: GqlChain[]
-  votingPoolId: string
+  corePoolId: string // this prop is used to adjust the color of the SparklesIcon
   variantConfig?: VariantConfig
 }
