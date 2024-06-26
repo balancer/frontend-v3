@@ -19,7 +19,6 @@ import { BPT_DECIMALS } from './pool.constants'
 import { isNotMainnet } from '../chains/chain.utils'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
 import { PoolIssue } from './alerts/pool-issues/PoolIssue.type'
-import { BPT_DECIMALS } from './pool.constants'
 import { getUserTotalBalanceInt } from './user-balance.helpers'
 import { dateToUnixTimestamp } from '@/lib/shared/utils/time'
 
