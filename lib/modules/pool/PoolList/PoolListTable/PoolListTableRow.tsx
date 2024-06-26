@@ -81,6 +81,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
               aprItems={pool.dynamicData.aprItems}
               poolId={pool.id}
               textProps={{ fontWeight: 'medium' }}
+              pool={pool}
             />
           </GridItem>
         </Grid>

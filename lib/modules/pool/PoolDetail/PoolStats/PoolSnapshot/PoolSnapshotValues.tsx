@@ -80,6 +80,7 @@ export function PoolSnapshotValues() {
             fontSize: '2xl',
             lineHeight: '28px',
           }}
+          pool={pool}
         />
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">

@@ -128,6 +128,7 @@ export function UserSnapshotValues() {
             poolId={pool.id}
             textProps={{ fontWeight: 'bold', fontSize: '2xl', lineHeight: '28px' }}
             vebalBoost={boost || '1'}
+            pool={pool}
           />
         ) : (
           <Heading size="h4">&mdash;</Heading>

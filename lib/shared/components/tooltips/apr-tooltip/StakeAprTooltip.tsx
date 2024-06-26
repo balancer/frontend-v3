@@ -7,6 +7,7 @@ import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { Pool } from '@/lib/modules/pool/PoolProvider'
 import { calcPotentialYieldFor } from '@/lib/modules/pool/pool.utils'
+import { SparklesIcon } from './MainAprTooltip'
 
 interface Props {
   totalUsdValue: string
@@ -52,7 +53,7 @@ function StakeAprTooltip({ pool, totalUsdValue }: Props) {
             <Text variant="special" fontSize="lg" fontWeight="bold">
               {weeklyYield ? toCurrency(weeklyYield, { abbreviated: false }) : '-'}
             </Text>
-            <Icon as={StarsIcon} />
+            <SparklesIcon isOpen={false} pool={pool} />
           </HStack>
         </VStack>
       </Card>
