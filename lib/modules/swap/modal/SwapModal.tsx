@@ -36,15 +36,8 @@ export function SwapPreviewModal({
   const isMounted = useIsMounted()
   const initialFocusRef = useRef(null)
 
-  const {
-    transactionSteps,
-    swapAction,
-    isWrap,
-    selectedChain,
-    swapTxHash,
-    hasQuoteContext,
-    resetSwapAmounts,
-  } = useSwap()
+  const { transactionSteps, swapAction, isWrap, selectedChain, swapTxHash, hasQuoteContext } =
+    useSwap()
 
   useEffect(() => {
     if (!isWrap && swapTxHash && !window.location.pathname.includes(swapTxHash)) {
@@ -55,7 +48,6 @@ export function SwapPreviewModal({
 
   useEffect(() => {
     if (isMounted) {
-      resetSwapAmounts()
       onClose()
     }
 

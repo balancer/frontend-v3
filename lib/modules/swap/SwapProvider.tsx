@@ -398,33 +398,55 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
 
   const hasQuoteContext = !!simulationQuery.data
 
+  function setInitialTokenIn(slugTokenIn?: string) {
+    const { popularTokens } = networkConfig.tokens
+    const symbolToAddressMap = invert(popularTokens || {}) as Record<string, Address>
+    if (slugTokenIn) {
+      if (isAddress(slugTokenIn)) setTokenIn(slugTokenIn as Address)
+      else if (symbolToAddressMap[slugTokenIn] && isAddress(symbolToAddressMap[slugTokenIn])) {
+        setTokenIn(symbolToAddressMap[slugTokenIn])
+      }
+    }
+  }
+
+  function setInitialTokenOut(slugTokenOut?: string) {
+    const { popularTokens } = networkConfig.tokens
+    const symbolToAddressMap = invert(popularTokens || {}) as Record<string, Address>
+    if (slugTokenOut) {
+      if (isAddress(slugTokenOut)) setTokenOut(slugTokenOut as Address)
+      else if (symbolToAddressMap[slugTokenOut] && isAddress(symbolToAddressMap[slugTokenOut])) {
+        setTokenOut(symbolToAddressMap[slugTokenOut])
+      }
+    }
+  }
+
+  function setInitialChain(slugChain?: string) {
+    const _chain =
+      slugChain && slugToChainMap[slugChain as ChainSlug]
+        ? slugToChainMap[slugChain as ChainSlug]
+        : walletChain
+
+    setSelectedChain(_chain)
+  }
+
+  function setInitialAmounts(slugAmountIn?: string, slugAmountOut?: string) {
+    if (slugAmountIn && !slugAmountOut && bn(slugAmountIn).gt(0)) {
+      setTokenInAmount(slugAmountIn as HumanAmount)
+    } else if (slugAmountOut && bn(slugAmountOut).gt(0)) {
+      setTokenOutAmount(slugAmountOut as HumanAmount)
+    } else resetSwapAmounts()
+  }
+
   // Set state on initial load
   useEffect(() => {
-    resetSwapAmounts()
     if (urlTxHash) return
 
     const { chain, tokenIn, tokenOut, amountIn, amountOut } = pathParams
-    const { popularTokens } = networkConfig.tokens
-    const symbolToAddressMap = invert(popularTokens || {}) as Record<string, Address>
-    const _chain =
-      chain && slugToChainMap[chain as ChainSlug] ? slugToChainMap[chain as ChainSlug] : walletChain
 
-    setSelectedChain(_chain)
-
-    if (tokenIn) {
-      if (isAddress(tokenIn)) setTokenIn(tokenIn as Address)
-      else if (symbolToAddressMap[tokenIn] && isAddress(symbolToAddressMap[tokenIn])) {
-        setTokenIn(symbolToAddressMap[tokenIn])
-      }
-    }
-    if (tokenOut) {
-      if (isAddress(tokenOut)) setTokenOut(tokenOut as Address)
-      else if (symbolToAddressMap[tokenOut] && isAddress(symbolToAddressMap[tokenOut])) {
-        setTokenOut(symbolToAddressMap[tokenOut])
-      }
-    }
-    if (amountIn && !amountOut && bn(amountIn).gt(0)) setTokenInAmount(amountIn as HumanAmount)
-    else if (amountOut && bn(amountOut).gt(0)) setTokenOutAmount(amountOut as HumanAmount)
+    setInitialChain(chain)
+    setInitialTokenIn(tokenIn)
+    setInitialTokenOut(tokenOut)
+    setInitialAmounts(amountIn, amountOut)
 
     if (!swapState.tokenIn.address && !swapState.tokenOut.address) setDefaultTokens()
   }, [])
