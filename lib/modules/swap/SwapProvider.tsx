@@ -98,6 +98,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   const swapState = useReactiveVar(swapStateVar)
   const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
+  const [initUserChain, setInitUserChain] = useState<GqlChain | undefined>(undefined)
 
   const { isConnected } = useUserAccount()
   const { chain: walletChain } = useNetworkConfig()
@@ -173,12 +174,9 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     }
   }
 
-  function setSelectedChain(selectedChain: GqlChain) {
-    const defaultTokenState = getDefaultTokenState(selectedChain)
-    swapStateVar({
-      ...defaultTokenState,
-      selectedChain,
-    })
+  function setSelectedChain(_selectedChain: GqlChain) {
+    const defaultTokenState = getDefaultTokenState(_selectedChain)
+    swapStateVar(defaultTokenState)
   }
 
   function setTokenIn(tokenAddress: Address) {
@@ -284,7 +282,8 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     const { tokenIn, tokenOut } = defaultSwapTokens || {}
 
     return {
-      ...swapState,
+      swapType: GqlSorSwapType.ExactIn,
+      selectedChain: chain,
       tokenIn: {
         ...swapState.tokenIn,
         address: tokenIn ? tokenIn : emptyAddress,
@@ -297,15 +296,17 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   }
 
   function resetSwapAmounts() {
+    const state = swapStateVar()
+
     swapStateVar({
-      ...swapState,
+      ...state,
       tokenIn: {
-        ...swapState.tokenIn,
+        ...state.tokenIn,
         amount: '',
         scaledAmount: BigInt(0),
       },
       tokenOut: {
-        ...swapState.tokenOut,
+        ...state.tokenOut,
         amount: '',
         scaledAmount: BigInt(0),
       },
@@ -450,6 +451,15 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
 
     if (!swapState.tokenIn.address && !swapState.tokenOut.address) setDefaultTokens()
   }, [])
+
+  // When wallet chain changes, update the swap form chain
+  useEffect(() => {
+    if (isConnected && initUserChain && walletChain !== swapState.selectedChain) {
+      setSelectedChain(walletChain)
+    } else if (isConnected) {
+      setInitUserChain(walletChain)
+    }
+  }, [walletChain])
 
   // When a new simulation is triggered, update the state
   useEffect(() => {
