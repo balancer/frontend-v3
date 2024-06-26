@@ -1,6 +1,5 @@
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { getBlockExplorerAddressUrl } from '@/lib/shared/hooks/useBlockExplorer'
-import { dateToUnixTimestamp } from '@/lib/shared/hooks/useTime'
 import {
   GetPoolQuery,
   GqlChain,
@@ -21,6 +20,7 @@ import { ClaimablePool } from './actions/claim/ClaimProvider'
 import { PoolIssue } from './alerts/pool-issues/PoolIssue.type'
 import { BPT_DECIMALS } from './pool.constants'
 import { getUserTotalBalanceInt } from './user-balance.helpers'
+import { dateToUnixTimestamp } from '@/lib/shared/utils/time'
 
 /**
  * METHODS

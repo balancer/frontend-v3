@@ -29,7 +29,9 @@ export function useGaugeTotalSupplyAndUserBalance(gauges: GaugeArg[]) {
 
   const { results: veBalTotalSupplyL2, isLoading } = useMulticall(vebalTotalSupplyRequests)
 
-  const userVebalBalanceRequestChains = gauges.map(gauge => gauge.chain)
+  const userVebalBalanceRequestChains = gauges
+    .map(gauge => gauge.chain)
+    .filter(v => v !== GqlChain.Sepolia)
 
   const userVeBALBalanceRequests = userVebalBalanceRequestChains.map(chain => {
     const address = networkConfigs[chain].contracts.veDelegationProxy

@@ -2,6 +2,11 @@
   --ease-out-cubic: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
+*:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 html,
 body {
   -webkit-font-smoothing: antialiased;
