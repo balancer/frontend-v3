@@ -133,6 +133,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }
@@ -169,6 +170,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }
@@ -205,6 +207,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }
@@ -243,6 +246,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }
@@ -281,6 +285,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }
@@ -318,6 +323,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }
@@ -372,6 +378,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }
@@ -412,6 +419,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }

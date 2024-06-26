@@ -7,7 +7,6 @@ import { Checkbox, HStack, Heading, Stack, Text } from '@chakra-ui/react'
 import { useMemo, useState } from 'react'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { useVebalBoost } from '../../vebal/useVebalBoost'
-import { useOnchainUserPoolBalances } from '../../pool/queries/useOnchainUserPoolBalances'
 import { Pool } from '../../pool/PoolProvider'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import {
@@ -69,22 +68,15 @@ const generateStakingWeightForSort = (pool: Pool) => {
 
 export function PortfolioTable() {
   const [shouldFilterTinyBalances, setShouldFilterTinyBalances] = useState(true)
-
   const { portfolioData, isLoadingPortfolio } = usePortfolio()
-  // To-Do: fix pool type
-  const { data: poolsWithOnchainUserBalances } = useOnchainUserPoolBalances(
-    portfolioData.pools as unknown as Pool[]
-  )
 
   // Filter out pools with tiny balances (<0.01 USD)
   const minUsdBalance = 0.01
   const filteredBalancePools = shouldFilterTinyBalances
-    ? poolsWithOnchainUserBalances.filter(pool => !hasTinyBalance(pool, minUsdBalance))
-    : poolsWithOnchainUserBalances
+    ? portfolioData.pools.filter(pool => !hasTinyBalance(pool, minUsdBalance))
+    : portfolioData.pools
 
-  const hasTinyBalances = poolsWithOnchainUserBalances.some(pool =>
-    hasTinyBalance(pool, minUsdBalance)
-  )
+  const hasTinyBalances = portfolioData.pools.some(pool => hasTinyBalance(pool, minUsdBalance))
 
   const { veBalBoostMap } = useVebalBoost(portfolioData.stakedPools)
 

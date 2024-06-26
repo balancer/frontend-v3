@@ -1,4 +1,4 @@
-import { sub } from 'date-fns'
+import { sub, millisecondsToSeconds } from 'date-fns'
 
 export const oneSecondInMs = 1000
 export const oneMinInMs = 60 * oneSecondInMs
@@ -114,4 +114,10 @@ export function getTimestampInMinsFromNow(mins: number) {
  */
 export function getSecondsSince(timestamp: number): number {
   return Math.ceil(Date.now() / 1000) - timestamp
+}
+
+export function getTimestamp() {
+  return {
+    minsAgo: (minutes: number) => sub(millisecondsToSeconds(new Date().getTime()), { minutes }),
+  }
 }
