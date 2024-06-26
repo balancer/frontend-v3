@@ -36,14 +36,14 @@ export function PoolListLayout() {
 
         <Stack direction="row" w="full" align={{ base: 'end', sm: 'center' }}>
           <PoolListFilters />
-          <HStack>
+          {/* <HStack>
             {isCardsView && <PoolListSortType />}
             <PoolListViewType />
-          </HStack>
+          </HStack> */}
         </Stack>
       </Stack>
-      {isTableView && <PoolListTable pools={pools} count={count || 0} loading={loading} />}
-      {isCardsView && <PoolListCards pools={pools} count={count || 0} loading={loading} />}
+      <PoolListTable pools={pools} count={count || 0} loading={loading} />
+      {/* {isCardsView && <PoolListCards pools={pools} count={count || 0} loading={loading} />} */}
     </VStack>
   )
 }
