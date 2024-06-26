@@ -1,4 +1,4 @@
-import { mins } from '../hooks/useTime'
+import { mins } from './time'
 
 export enum SupportedCurrency {
   USD = 'USD',

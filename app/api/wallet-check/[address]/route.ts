@@ -1,6 +1,6 @@
 import { isProd } from '@/lib/config/app.config'
-import { hours } from '@/lib/shared/hooks/useTime'
 import { captureError, ensureError } from '@/lib/shared/utils/errors'
+import { hours } from '@/lib/shared/utils/time'
 import { NextResponse } from 'next/server'
 
 type Params = {

@@ -2,11 +2,11 @@
 
 import { Toast } from '@/lib/shared/components/toasts/Toast'
 import { getBlockExplorerTxUrl } from '@/lib/shared/hooks/useBlockExplorer'
-import { secs } from '@/lib/shared/hooks/useTime'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { ensureError } from '@/lib/shared/utils/errors'
 import { captureFatalError } from '@/lib/shared/utils/query-errors'
+import { secs } from '@/lib/shared/utils/time'
 import { AlertStatus, ToastId, useToast } from '@chakra-ui/react'
 import { keyBy, orderBy, take } from 'lodash'
 import React, { ReactNode, createContext, useCallback, useEffect, useState } from 'react'
