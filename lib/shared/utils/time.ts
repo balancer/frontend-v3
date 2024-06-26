@@ -1,4 +1,5 @@
 import { act } from '@testing-library/react'
+import { sub, millisecondsToSeconds } from 'date-fns'
 
 export async function sleep(time: number) {
   return new Promise(resolve => {
@@ -17,4 +18,10 @@ export async function actSleep(ms: number) {
   return act(async () => {
     await sleep(ms)
   })
+}
+
+export function getTimestamp() {
+  return {
+    minsAgo: (minutes: number) => sub(millisecondsToSeconds(new Date().getTime()), { minutes }),
+  }
 }

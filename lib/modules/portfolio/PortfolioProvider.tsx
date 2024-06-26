@@ -21,6 +21,7 @@ import {
   getUserTotalBalance,
   getUserTotalBalanceUsd,
 } from '../pool/user-balance.helpers'
+import { getTimestamp } from '@/lib/shared/utils/time'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
@@ -41,7 +42,7 @@ function _usePortfolio() {
   const { userAddress, isConnected } = useUserAccount()
   const { transactions } = useRecentTransactions()
 
-  const fiveMinutesAgo = sub(millisecondsToSeconds(new Date().getTime()), { seconds: 300 })
+  const fiveMinutesAgo = getTimestamp().minsAgo(5)
   const chainIn = getProjectConfig().supportedNetworks
 
   // filter in recent transactions that took place in the last 5 minutes
