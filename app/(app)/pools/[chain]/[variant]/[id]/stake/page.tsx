@@ -9,11 +9,11 @@ import { StakeProvider } from '@/lib/modules/pool/actions/stake/StakeProvider'
 export default function StakePage() {
   return (
     <TransactionStateProvider>
-      <PoolActionsLayout>
-        <StakeProvider>
+      <StakeProvider>
+        <PoolActionsLayout>
           <StakeForm />
-        </StakeProvider>
-      </PoolActionsLayout>
+        </PoolActionsLayout>
+      </StakeProvider>
     </TransactionStateProvider>
   )
 }

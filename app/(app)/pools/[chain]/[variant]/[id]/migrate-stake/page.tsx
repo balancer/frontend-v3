@@ -1,17 +1,20 @@
 'use client'
 
 import { PoolActionsLayout } from '@/lib/modules/pool/actions/PoolActionsLayout'
-import { UnstakeForm } from '@/lib/modules/pool/actions/unstake/UnstakeForm'
+import { MigrateStakeForm } from '@/lib/modules/pool/actions/migrateStake/MigrateStakeForm'
+import { MigrateStakeProvider } from '@/lib/modules/pool/actions/migrateStake/MigrateStakeProvider'
 import { UnstakeProvider } from '@/lib/modules/pool/actions/unstake/UnstakeProvider'
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 
-export default function UnstakePage() {
+export default function MigrateStakePage() {
   return (
     <TransactionStateProvider>
       <UnstakeProvider>
-        <PoolActionsLayout>
-          <UnstakeForm />
-        </PoolActionsLayout>
+        <MigrateStakeProvider>
+          <PoolActionsLayout>
+            <MigrateStakeForm />
+          </PoolActionsLayout>
+        </MigrateStakeProvider>
       </UnstakeProvider>
     </TransactionStateProvider>
   )

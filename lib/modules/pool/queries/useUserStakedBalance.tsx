@@ -20,7 +20,6 @@ export type GaugeStakedBalancesByPoolId = ReturnType<
 export function useUserStakedBalance(pools: Pool[] = []) {
   const { userAddress, isConnected } = useUserAccount()
   const poolByGauge = createPoolByGaugeRecord(pools)
-
   const contracts = poolContracts(poolByGauge, userAddress)
 
   const {
