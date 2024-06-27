@@ -1,9 +1,8 @@
 'use client'
 import { PoolName } from '@/lib/modules/pool/PoolName'
+import { Pool } from '@/lib/modules/pool/PoolProvider'
 import { ClaimModal } from '@/lib/modules/pool/actions/claim/ClaimModal'
 import { ClaimProvider } from '@/lib/modules/pool/actions/claim/ClaimProvider'
-
-import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import { ChainSlug, slugToChainMap } from '@/lib/modules/pool/pool.utils'
 // eslint-disable-next-line max-len
 import { ClaimNetworkPoolsLayout } from '@/lib/modules/portfolio/PortfolioClaim/ClaimNetworkPools/ClaimNetworkPoolsLayout'
@@ -36,7 +35,7 @@ export default function NetworkClaim() {
     poolRewardsMap[pool.id]?.totalFiatClaimBalance?.isEqualTo(0)
   )
 
-  const [modalPools, setModalPools] = useState<PoolListItem[]>([])
+  const [modalPools, setModalPools] = useState<Pool[]>([])
 
   const hasMultipleClaims = pools?.length > 1
 
