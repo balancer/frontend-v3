@@ -23,6 +23,7 @@ export type TransactionLabels = {
   rejected?: string
   error?: string
   preparing?: string
+  poolId?: string
 }
 
 export type StepType =
@@ -35,6 +36,7 @@ export type StepType =
   | 'stakingWithdraw'
   | 'minterApproval'
   | 'claimAndUnstake'
+  | 'unstake'
   | 'claim'
   | 'swap'
 

@@ -15,7 +15,7 @@ import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHa
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address, Hash } from 'viem'
-import { toHumanAmount } from '../LiquidityActionHelpers'
+import { emptyTokenAmounts, toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { hasNestedPools, isGyro } from '../../pool.helpers'
 import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
@@ -24,6 +24,7 @@ import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquidityS
 import { useRemoveLiquiditySteps } from './useRemoveLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
+import { getUserTotalBalance } from '../../user-balance.helpers'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -44,18 +45,22 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const [quotePriceImpact, setQuotePriceImpact] = useState<number>()
 
   const { pool, bptPrice } = usePool()
-  const { getToken, usdValueForToken } = useTokens()
+  const { getToken, usdValueForToken, getNativeAssetToken, getWrappedNativeAssetToken } =
+    useTokens()
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
 
-  const maxHumanBptIn: HumanAmount = (pool?.userBalance?.totalBalance || '0') as HumanAmount
+  const maxHumanBptIn: HumanAmount = getUserTotalBalance(pool)
   const humanBptIn: HumanAmount = bn(maxHumanBptIn)
     .times(humanBptInPercent / 100)
     .toFixed() as HumanAmount
 
   const chain = pool.chain
-  const nativeAsset = getToken(getNativeAssetAddress(chain), chain)
-  const wNativeAsset = getToken(getWrappedNativeAssetAddress(chain), chain)
+  const nativeAsset = getNativeAssetToken(chain)
+  const wNativeAsset = getWrappedNativeAssetToken(chain)
+  const includesWrappedNativeAsset: boolean = pool.poolTokens.some(token =>
+    isWrappedNativeAsset(token.address as Address, chain)
+  )
 
   const handler = useMemo(
     () => selectRemoveLiquidityHandler(pool, removalType),
@@ -77,20 +82,24 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     .filter(tokenFilter)
     .map(token => getToken(token.address, pool.chain))
 
-  const tokensWithNativeAsset = tokens.map(token => {
-    if (token && isWrappedNativeAsset(token.address as Address, chain)) {
-      return nativeAsset
-    } else {
-      return token
-    }
-  })
+  function tokensToShow() {
+    // for single token we show both the native asset AND the wrapped native asset in the ui
+    if (includesWrappedNativeAsset && isSingleToken && nativeAsset) return [...tokens, nativeAsset]
 
-  const tokensToShow =
-    isSingleToken && nativeAsset
-      ? [...tokens, nativeAsset] // for single token we show both the native asset AND the wrapped native asset in the ui
-      : wethIsEth
-      ? tokensWithNativeAsset // else if wethIsEth we only show the native asset
-      : tokens
+    // if wethIsEth we only show the native asset
+    if (includesWrappedNativeAsset && wethIsEth) {
+      // replace the wrapped native asset with the native asset
+      return tokens.map(token => {
+        if (token && isWrappedNativeAsset(token.address as Address, chain)) {
+          return nativeAsset
+        } else {
+          return token
+        }
+      })
+    }
+
+    return tokens
+  }
 
   let validTokens = tokens.filter((token): token is GqlToken => !!token)
   validTokens = nativeAsset ? [nativeAsset, ...validTokens] : validTokens
@@ -154,6 +163,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     priceImpact: number | undefined
   ) {
     setQuoteBptIn(bptIn)
+    if (!amountsOut) setQuoteAmountsOut(emptyTokenAmounts(pool))
     if (amountsOut) setQuoteAmountsOut(amountsOut)
     if (priceImpact) setQuotePriceImpact(priceImpact)
   }
@@ -224,7 +234,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
 
   return {
     transactionSteps,
-    tokens: tokensToShow,
+    tokens: tokensToShow(),
     validTokens,
     singleTokenOutAddress,
     humanBptIn,

@@ -36,6 +36,7 @@ export function useAddLiquidityStep(params: AddLiquidityStepParams): Transaction
     confirming: 'Confirming add liquidity...',
     confirmed: `Liquidity added!`,
     tooltip: `Add liquidity to ${pool.name || 'pool'}.`,
+    poolId: pool.id,
   }
 
   const gasEstimationMeta = sentryMetaForWagmiSimulation('Error in AddLiquidity gas estimation', {

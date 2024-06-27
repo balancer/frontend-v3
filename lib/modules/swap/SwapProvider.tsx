@@ -98,6 +98,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   const swapState = useReactiveVar(swapStateVar)
   const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
+  const [initUserChain, setInitUserChain] = useState<GqlChain | undefined>(undefined)
 
   const { isConnected } = useUserAccount()
   const { chain: walletChain } = useNetworkConfig()
@@ -173,12 +174,9 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     }
   }
 
-  function setSelectedChain(selectedChain: GqlChain) {
-    const defaultTokenState = getDefaultTokenState(selectedChain)
-    swapStateVar({
-      ...defaultTokenState,
-      selectedChain,
-    })
+  function setSelectedChain(_selectedChain: GqlChain) {
+    const defaultTokenState = getDefaultTokenState(_selectedChain)
+    swapStateVar(defaultTokenState)
   }
 
   function setTokenIn(tokenAddress: Address) {
@@ -284,7 +282,8 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     const { tokenIn, tokenOut } = defaultSwapTokens || {}
 
     return {
-      ...swapState,
+      swapType: GqlSorSwapType.ExactIn,
+      selectedChain: chain,
       tokenIn: {
         ...swapState.tokenIn,
         address: tokenIn ? tokenIn : emptyAddress,
@@ -297,15 +296,17 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   }
 
   function resetSwapAmounts() {
+    const state = swapStateVar()
+
     swapStateVar({
-      ...swapState,
+      ...state,
       tokenIn: {
-        ...swapState.tokenIn,
+        ...state.tokenIn,
         amount: '',
         scaledAmount: BigInt(0),
       },
       tokenOut: {
-        ...swapState.tokenOut,
+        ...state.tokenOut,
         amount: '',
         scaledAmount: BigInt(0),
       },
@@ -358,8 +359,8 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     isSameAddress(swapState.tokenOut.address, networkConfig.tokens.nativeAsset.address)
   const validAmountOut = bn(swapState.tokenOut.amount).gt(0)
 
-  const vaultVersion = (simulationQuery.data as SdkSimulateSwapResponse)?.vaultVersion || 2
-  const { vaultAddress } = useVault(vaultVersion)
+  const protocolVersion = (simulationQuery.data as SdkSimulateSwapResponse)?.protocolVersion || 2
+  const { vaultAddress } = useVault(protocolVersion)
 
   const swapAction: SwapAction = useMemo(() => {
     if (
@@ -398,36 +399,67 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
 
   const hasQuoteContext = !!simulationQuery.data
 
+  function setInitialTokenIn(slugTokenIn?: string) {
+    const { popularTokens } = networkConfig.tokens
+    const symbolToAddressMap = invert(popularTokens || {}) as Record<string, Address>
+    if (slugTokenIn) {
+      if (isAddress(slugTokenIn)) setTokenIn(slugTokenIn as Address)
+      else if (symbolToAddressMap[slugTokenIn] && isAddress(symbolToAddressMap[slugTokenIn])) {
+        setTokenIn(symbolToAddressMap[slugTokenIn])
+      }
+    }
+  }
+
+  function setInitialTokenOut(slugTokenOut?: string) {
+    const { popularTokens } = networkConfig.tokens
+    const symbolToAddressMap = invert(popularTokens || {}) as Record<string, Address>
+    if (slugTokenOut) {
+      if (isAddress(slugTokenOut)) setTokenOut(slugTokenOut as Address)
+      else if (symbolToAddressMap[slugTokenOut] && isAddress(symbolToAddressMap[slugTokenOut])) {
+        setTokenOut(symbolToAddressMap[slugTokenOut])
+      }
+    }
+  }
+
+  function setInitialChain(slugChain?: string) {
+    const _chain =
+      slugChain && slugToChainMap[slugChain as ChainSlug]
+        ? slugToChainMap[slugChain as ChainSlug]
+        : walletChain
+
+    setSelectedChain(_chain)
+  }
+
+  function setInitialAmounts(slugAmountIn?: string, slugAmountOut?: string) {
+    if (slugAmountIn && !slugAmountOut && bn(slugAmountIn).gt(0)) {
+      setTokenInAmount(slugAmountIn as HumanAmount)
+    } else if (slugAmountOut && bn(slugAmountOut).gt(0)) {
+      setTokenOutAmount(slugAmountOut as HumanAmount)
+    } else resetSwapAmounts()
+  }
+
   // Set state on initial load
   useEffect(() => {
-    resetSwapAmounts()
     if (urlTxHash) return
 
     const { chain, tokenIn, tokenOut, amountIn, amountOut } = pathParams
-    const { popularTokens } = networkConfig.tokens
-    const symbolToAddressMap = invert(popularTokens || {}) as Record<string, Address>
-    const _chain =
-      chain && slugToChainMap[chain as ChainSlug] ? slugToChainMap[chain as ChainSlug] : walletChain
 
-    setSelectedChain(_chain)
-
-    if (tokenIn) {
-      if (isAddress(tokenIn)) setTokenIn(tokenIn as Address)
-      else if (symbolToAddressMap[tokenIn] && isAddress(symbolToAddressMap[tokenIn])) {
-        setTokenIn(symbolToAddressMap[tokenIn])
-      }
-    }
-    if (tokenOut) {
-      if (isAddress(tokenOut)) setTokenOut(tokenOut as Address)
-      else if (symbolToAddressMap[tokenOut] && isAddress(symbolToAddressMap[tokenOut])) {
-        setTokenOut(symbolToAddressMap[tokenOut])
-      }
-    }
-    if (amountIn && !amountOut && bn(amountIn).gt(0)) setTokenInAmount(amountIn as HumanAmount)
-    else if (amountOut && bn(amountOut).gt(0)) setTokenOutAmount(amountOut as HumanAmount)
+    setInitialChain(chain)
+    setInitialTokenIn(tokenIn)
+    setInitialTokenOut(tokenOut)
+    setInitialAmounts(amountIn, amountOut)
 
     if (!swapState.tokenIn.address && !swapState.tokenOut.address) setDefaultTokens()
   }, [])
+
+  // When wallet chain changes, update the swap form chain
+  useEffect(() => {
+    if (isConnected && initUserChain && walletChain !== swapState.selectedChain) {
+      setSelectedChain(walletChain)
+    } else if (isConnected) {
+      setInitUserChain(walletChain)
+    }
+  }, [walletChain])
 
   // When a new simulation is triggered, update the state
   useEffect(() => {

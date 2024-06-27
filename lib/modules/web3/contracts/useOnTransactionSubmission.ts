@@ -24,6 +24,7 @@ export function useOnTransactionSubmission({ labels, hash, chain }: NewTrackedTr
         status: 'confirming',
         timestamp: Date.now(),
         init: labels.init,
+        poolId: labels.poolId,
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

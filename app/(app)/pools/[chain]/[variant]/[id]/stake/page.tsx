@@ -11,11 +11,11 @@ export default function StakePage() {
   return (
     <DefaultPageContainer>
       <TransactionStateProvider>
-        <PoolActionsLayout>
-          <StakeProvider>
+        <StakeProvider>
+          <PoolActionsLayout>
             <StakeForm />
-          </StakeProvider>
-        </PoolActionsLayout>
+          </PoolActionsLayout>
+        </StakeProvider>
       </TransactionStateProvider>
     </DefaultPageContainer>
   )

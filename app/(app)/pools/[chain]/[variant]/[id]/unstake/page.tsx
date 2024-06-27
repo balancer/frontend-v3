@@ -10,11 +10,11 @@ export default function UnstakePage() {
   return (
     <DefaultPageContainer>
       <TransactionStateProvider>
-        <PoolActionsLayout>
-          <UnstakeProvider>
+        <UnstakeProvider>
+          <PoolActionsLayout>
             <UnstakeForm />
-          </UnstakeProvider>
-        </PoolActionsLayout>
+          </PoolActionsLayout>
+        </UnstakeProvider>
       </TransactionStateProvider>
     </DefaultPageContainer>
   )

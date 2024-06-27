@@ -8,6 +8,7 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { PoolListItem } from '../../pool.types'
 import { PoolListTokenPills } from '../PoolListTokenPills'
+import { getUserTotalBalanceUsd } from '../../user-balance.helpers'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -53,7 +54,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
           {userAddress && (
             <GridItem>
               <Text textAlign="right" fontWeight="medium">
-                {toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })}
+                {toCurrency(getUserTotalBalanceUsd(pool), { abbreviated: false })}
               </Text>
             </GridItem>
           )}
@@ -77,9 +78,10 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
           </GridItem>
           <GridItem justifySelf="end" pr={{ base: 'md', xl: '0' }}>
             <MemoizedMainAprTooltip
-              data={pool.dynamicData.apr}
+              aprItems={pool.dynamicData.aprItems}
               poolId={pool.id}
               textProps={{ fontWeight: 'medium' }}
+              pool={pool}
             />
           </GridItem>
         </Grid>

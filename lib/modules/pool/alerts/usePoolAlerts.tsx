@@ -6,6 +6,8 @@ import { AlertStatus } from '@chakra-ui/react'
 import { PoolIssue } from './pool-issues/PoolIssue.type'
 import { VulnerabilityDataMap } from './pool-issues/PoolIssue.labels'
 import { isNil } from 'lodash'
+import { hasUnreviewedRateProvider } from '../pool.helpers'
+import { GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
 
 export type PoolAlert = {
   identifier: string
@@ -48,7 +50,7 @@ export function usePoolAlerts(pool: Pool) {
   }
 
   const getTokenPoolAlerts = (pool: Pool): PoolAlert[] => {
-    const { poolTokens } = pool
+    const poolTokens = pool.poolTokens as GqlPoolTokenDetail[]
 
     const alerts: PoolAlert[] = []
 
@@ -69,6 +71,15 @@ export function usePoolAlerts(pool: Pool) {
 
       if (isNil(token.priceRateProviderData) && isPriceRateProviderLegit) {
         return
+      }
+
+      if (hasUnreviewedRateProvider(token)) {
+        alerts.push({
+          identifier: `PriceProviderNotReviewed-${token.symbol}`,
+          title: `The price data provider for ${token.symbol} has not been reviewed.`,
+          status: 'error',
+          isSoftWarning: false,
+        })
       }
 
       if (token.priceRateProviderData?.summary !== 'safe') {

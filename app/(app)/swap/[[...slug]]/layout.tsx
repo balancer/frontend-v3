@@ -8,9 +8,9 @@ import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { PropsWithChildren } from 'react'
-import { getSwapPathParams } from './getSwapPathParams'
 import { PriceImpactProvider } from '@/lib/modules/price-impact/PriceImpactProvider'
 import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
+import { getSwapPathParams } from './getSwapPathParams'
 
 type Props = PropsWithChildren<{
   params: { slug?: string[] }

@@ -13,6 +13,7 @@ import { useStakeSteps } from './useStakeSteps'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { bn } from '@/lib/shared/utils/numbers'
 import { HumanAmount } from '@balancer/sdk'
+import { getUserWalletBalance, getUserWalletBalanceUsd } from '../../user-balance.helpers'
 
 export type UseStakeResponse = ReturnType<typeof _useStake>
 export const StakeContext = createContext<UseStakeResponse | null>(null)
@@ -48,8 +49,8 @@ export function _useStake() {
    * Side-effects
    */
   useEffect(() => {
-    const stakableBalance = (pool.userBalance?.walletBalance || '0') as HumanAmount
-    const stakableBalanceUsd = (pool.userBalance?.walletBalanceUsd || '0') as HumanAmount
+    const stakableBalance: HumanAmount = getUserWalletBalance(pool)
+    const stakableBalanceUsd: HumanAmount = getUserWalletBalanceUsd(pool).toFixed() as HumanAmount
 
     if (bn(stakableBalance).gt(0)) {
       setQuoteAmountIn(stakableBalance)
@@ -58,6 +59,7 @@ export function _useStake() {
   }, [pool.userBalance?.walletBalance, isLoadingOnchainUserBalances])
 
   return {
+    pool,
     transactionSteps,
     isDisabled,
     disabledReason,

@@ -1,25 +1,18 @@
 'use client'
 
-import {
-  Box,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Tooltip,
-  useDisclosure,
-} from '@chakra-ui/react'
+import { Box, Button, Card, CardBody, CardFooter, CardHeader, Tooltip } from '@chakra-ui/react'
 import { useRef } from 'react'
 import { useUnstake } from './UnstakeProvider'
 import { UnstakePreview } from './UnstakePreview'
 import { UnstakeModal } from './UnstakeModal'
+import { useModalWithPoolRedirect } from '../../useModalWithPoolRedirect'
 
 export function UnstakeForm() {
   const nextBtn = useRef(null)
-  const { onClose, onOpen, isOpen } = useDisclosure()
 
-  const { isDisabled, disabledReason, isLoading } = useUnstake()
+  const { isDisabled, disabledReason, isLoading, unstakeTxHash, pool } = useUnstake()
+
+  const { onClose, onOpen, isOpen } = useModalWithPoolRedirect(pool, unstakeTxHash)
 
   return (
     <Box h="full" w="full" maxW="lg" mx="auto">

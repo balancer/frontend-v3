@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
   GqlChain,
   GqlPoolNestingType,
@@ -17,7 +18,7 @@ export const notAllowedPoolMock: Pool = {
   createTime: 1647948468,
   type: GqlPoolType.Weighted,
   chain: GqlChain.Polygon,
-  vaultVersion: 2,
+  protocolVersion: 2,
   dynamicData: {
     poolId: '0x241df159b03a90455edee61625655fc0ea5fa3dd0002000000000000000003fc',
     swapEnabled: true,
@@ -29,24 +30,7 @@ export const notAllowedPoolMock: Pool = {
     holdersCount: '2',
     isInRecoveryMode: false,
     isPaused: false,
-    apr: {
-      hasRewardApr: false,
-      thirdPartyApr: {
-        total: '0',
-        __typename: 'GqlPoolAprTotal',
-      },
-      nativeRewardApr: {
-        total: '0',
-        __typename: 'GqlPoolAprTotal',
-      },
-      swapApr: '0',
-      apr: {
-        total: '0',
-        __typename: 'GqlPoolAprTotal',
-      },
-      items: [],
-      __typename: 'GqlPoolApr',
-    },
+    aprItems: [],
     __typename: 'GqlPoolDynamicData',
   },
   allTokens: [
@@ -95,12 +79,11 @@ export const notAllowedPoolMock: Pool = {
   ],
   staking: null,
   userBalance: {
-    stakedBalance: '0',
-    totalBalance: '0.0',
-    walletBalance: '0',
-    stakedBalanceUsd: 0,
-    walletBalanceUsd: 0,
+    totalBalance: '0',
     totalBalanceUsd: 0,
+    walletBalance: '0',
+    walletBalanceUsd: 0,
+    stakedBalances: [],
     __typename: 'GqlPoolUserBalance',
   },
   nestingType: GqlPoolNestingType.NoNesting,

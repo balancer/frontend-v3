@@ -5,9 +5,10 @@ import { RawAmount } from '@/lib/modules/tokens/approvals/approval-rules'
 import { BPT_DECIMALS } from '../../pool.constants'
 import { useMemo } from 'react'
 import { useStakeStep } from './useStakeStep'
+import { getUserWalletBalance } from '../../user-balance.helpers'
 
-export function useStakeSteps(pool: Pool) {
-  const rawAmount = parseUnits(pool.userBalance?.walletBalance || '0', BPT_DECIMALS)
+export function useStakeSteps(pool: Pool, stakeAmount = getUserWalletBalance(pool)) {
+  const rawAmount = parseUnits(stakeAmount || '0', BPT_DECIMALS)
 
   const amountToApprove: RawAmount = {
     rawAmount,

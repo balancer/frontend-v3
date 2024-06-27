@@ -8,12 +8,13 @@ import { LABELS } from '@/lib/shared/labels'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn } from '@/lib/shared/utils/numbers'
-import { Address, HumanAmount } from '@balancer/sdk'
+import { HumanAmount } from '@balancer/sdk'
 import { createContext, PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import { PoolListItem } from '../../pool.types'
-import { Pool, usePool } from '../../PoolProvider'
+import { usePool } from '../../PoolProvider'
 import { useClaimsData } from '../claim/useClaimsData'
 import { useClaimAndUnstakeSteps } from './useClaimAndUnstakeSteps'
+import { getUnstakeQuote } from '../stake.helpers'
 
 export type UseUnstakeResponse = ReturnType<typeof _useUnstake>
 export const UnstakeContext = createContext<UseUnstakeResponse | null>(null)
@@ -24,7 +25,7 @@ export function _useUnstake() {
   const [quoteRewardAmounts, setQuoteRewardAmounts] = useState<HumanTokenAmountWithAddress[]>([])
   const [quoteTotalClaimableUsd, setQuoteTotalClaimableUsd] = useState<string>('0')
 
-  const { pool, refetch: refetchPoolBalances } = usePool()
+  const { pool, refetch: refetchPoolBalances, isLoading: isLoadingPool } = usePool()
   const { isConnected } = useUserAccount()
 
   const {
@@ -45,14 +46,14 @@ export function _useUnstake() {
 
   const { gaugeAddress, amountOut } = getUnstakeQuote(pool)
 
-  const { steps, isLoading } = useClaimAndUnstakeSteps({
+  const { steps, isLoading: isLoadingSteps } = useClaimAndUnstakeSteps({
     pool,
     gaugeAddress,
     amountOut: amountOut,
     refetchPoolBalances,
   })
 
-  const transactionSteps = useTransactionSteps(steps, isLoading)
+  const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
   const unstakeTxHash = transactionSteps.lastTransaction?.result?.data?.transactionHash
 
@@ -78,7 +79,7 @@ export function _useUnstake() {
   }, [isLoadingClaims])
 
   return {
-    isLoading: isLoadingClaims || isLoading,
+    isLoading: isLoadingClaims || isLoadingSteps || isLoadingPool,
     transactionSteps,
     isDisabled: isDisabled,
     disabledReason: disabledReason,
@@ -89,6 +90,7 @@ export function _useUnstake() {
     quoteAmountOut,
     quoteRewardAmounts,
     quoteTotalClaimableUsd,
+    pool,
   }
 }
 
@@ -98,19 +100,3 @@ export function UnstakeProvider({ children }: PropsWithChildren) {
 }
 
 export const useUnstake = (): UseUnstakeResponse => useMandatoryContext(UnstakeContext, 'Unstake')
-
-type UnstakeQuote = {
-  gaugeAddress: Address
-  amountOut: HumanAmount
-}
-/*
-  //TODO: we will deal with non-preferential gauges in an incoming PR
-  If the user has non-preferential staked balance it returns the non preferential unstake quote
-  If not, it returns the preferential unstake quote
-*/
-function getUnstakeQuote(pool: Pool): UnstakeQuote {
-  return {
-    gaugeAddress: pool.staking?.gauge?.id as Address,
-    amountOut: pool.userBalance?.stakedBalance as HumanAmount,
-  }
-}

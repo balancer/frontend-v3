@@ -3,13 +3,21 @@ import { usePortfolio } from '../PortfolioProvider'
 import { PortfolioTableHeader } from './PortfolioTableHeader'
 import { PoolListItem } from '../../pool/pool.types'
 import { PortfolioTableRow } from './PortfolioTableRow'
-import { HStack, Heading, Stack } from '@chakra-ui/react'
+import { Checkbox, HStack, Heading, Stack, Text } from '@chakra-ui/react'
 import { useMemo, useState } from 'react'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { useVebalBoost } from '../../vebal/useVebalBoost'
-import { useOnchainUserPoolBalances } from '../../pool/queries/useOnchainUserPoolBalances'
 import { Pool } from '../../pool/PoolProvider'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
+import {
+  calcTotalStakedBalance,
+  getUserTotalBalanceUsd,
+  hasAuraStakedBalance,
+  hasBalancerStakedBalance,
+  hasTinyBalance,
+} from '../../pool/user-balance.helpers'
+import { bn } from '@/lib/shared/utils/numbers'
+import { getTotalApr } from '../../pool/pool.utils'
 
 export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr'
 export interface PortfolioSortingData {
@@ -50,12 +58,25 @@ const rowProps = {
   gap: { base: 'xxs', xl: 'lg' },
 }
 
-export function PortfolioTable() {
-  const { portfolioData, isLoadingPortfolio } = usePortfolio()
-  // To-Do: fix pool type
-  const { data: poolsWithOnchainUserBalances } = useOnchainUserPoolBalances(
-    portfolioData.pools as unknown as Pool[]
+const generateStakingWeightForSort = (pool: Pool) => {
+  return (
+    Number(bn(calcTotalStakedBalance(pool)).isGreaterThan(0)) +
+    Number(hasBalancerStakedBalance(pool)) +
+    Number(hasAuraStakedBalance(pool)) * 2
   )
+}
+
+export function PortfolioTable() {
+  const [shouldFilterTinyBalances, setShouldFilterTinyBalances] = useState(true)
+  const { portfolioData, isLoadingPortfolio } = usePortfolio()
+
+  // Filter out pools with tiny balances (<0.01 USD)
+  const minUsdBalance = 0.01
+  const filteredBalancePools = shouldFilterTinyBalances
+    ? portfolioData.pools.filter(pool => !hasTinyBalance(pool, minUsdBalance))
+    : portfolioData.pools
+
+  const hasTinyBalances = portfolioData.pools.some(pool => hasTinyBalance(pool, minUsdBalance))
 
   const { veBalBoostMap } = useVebalBoost(portfolioData.stakedPools)
 
@@ -66,16 +87,16 @@ export function PortfolioTable() {
 
   const sortedPools = useMemo(() => {
     if (!portfolioData?.pools) return []
-    const arr = [...poolsWithOnchainUserBalances]
+    const arr = [...filteredBalancePools]
 
     return arr.sort((a, b) => {
       if (currentSortingObj.id === 'staking') {
-        const aStakedBalance = Number(a.userBalance?.stakedBalance || 0)
-        const bStakedBalance = Number(b.userBalance?.stakedBalance || 0)
+        const aStakingWeight = generateStakingWeightForSort(a)
+        const bStakingWeight = generateStakingWeightForSort(b)
 
         return currentSortingObj.desc
-          ? bStakedBalance - aStakedBalance
-          : aStakedBalance - bStakedBalance
+          ? bStakingWeight - aStakingWeight
+          : aStakingWeight - bStakingWeight
       }
 
       if (currentSortingObj.id === 'vebal') {
@@ -85,8 +106,8 @@ export function PortfolioTable() {
       }
 
       if (currentSortingObj.id === 'liquidity') {
-        const aTotalBalance = a.userBalance?.totalBalanceUsd || 0
-        const bTotalBalance = b.userBalance?.totalBalanceUsd || 0
+        const aTotalBalance = getUserTotalBalanceUsd(a)
+        const bTotalBalance = getUserTotalBalanceUsd(b)
 
         return currentSortingObj.desc
           ? bTotalBalance - aTotalBalance
@@ -94,18 +115,21 @@ export function PortfolioTable() {
       }
 
       if (currentSortingObj.id === 'apr') {
-        const aApr = a.dynamicData.apr.apr as any
-        const bApr = b.dynamicData.apr.apr as any
+        const [aApr] = getTotalApr(a.dynamicData.aprItems)
+        const [bApr] = getTotalApr(b.dynamicData.aprItems)
 
-        const aArpValue = aApr.total || aApr.min
-        const bArpValue = bApr.total || bApr.min
-
-        return currentSortingObj.desc ? bArpValue - aArpValue : aArpValue - bArpValue
+        return currentSortingObj.desc ? bApr.minus(aApr).toNumber() : aApr.minus(bApr).toNumber()
       }
 
       return 0
     })
-  }, [currentSortingObj, poolsWithOnchainUserBalances, portfolioData?.pools, veBalBoostMap])
+  }, [
+    portfolioData?.pools,
+    filteredBalancePools,
+    currentSortingObj.id,
+    currentSortingObj.desc,
+    veBalBoostMap,
+  ])
 
   return (
     <FadeInOnView>
@@ -140,6 +164,19 @@ export function PortfolioTable() {
           position="relative"
           left={{ base: '-4px', sm: '0' }}
         />
+        {hasTinyBalances && (
+          <Checkbox
+            size="lg"
+            isChecked={shouldFilterTinyBalances}
+            onChange={() => {
+              setShouldFilterTinyBalances(!shouldFilterTinyBalances)
+            }}
+          >
+            <Text variant="secondary" fontSize="md">
+              Hide pools under $0.01
+            </Text>
+          </Checkbox>
+        )}
       </Stack>
     </FadeInOnView>
   )

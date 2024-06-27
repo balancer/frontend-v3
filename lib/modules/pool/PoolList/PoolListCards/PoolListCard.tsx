@@ -7,14 +7,15 @@ import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePoolListQueryState } from '../usePoolListQueryState'
 import { TokenIconStack } from '@/lib/modules/tokens/TokenIconStack'
 import {
-  getAprLabel,
   getPoolTypeLabel,
+  getTotalAprLabel,
   poolClickHandler,
   poolMouseEnterHandler,
 } from '../../pool.utils'
 import { useRouter } from 'next/navigation'
 import { PoolName } from '../../PoolName'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
+import { getUserTotalBalanceUsd } from '../../user-balance.helpers'
 
 interface Props {
   pool: PoolListItem
@@ -69,14 +70,14 @@ export function PoolListCard({ pool }: Props) {
               <StatCard label="TVL" value={toCurrency(pool.dynamicData.totalLiquidity)} />
             </GridItem>
             <GridItem>
-              <StatCard label="Volume(24h)" value={toCurrency(pool.dynamicData.volume24h)} />
+              <StatCard label="Volume (24h)" value={toCurrency(pool.dynamicData.volume24h)} />
             </GridItem>
             <GridItem>
               <StatCard
                 label="My Liquidity"
                 value={
                   userAddress
-                    ? toCurrency(pool.userBalance?.totalBalanceUsd || '0', { abbreviated: false })
+                    ? toCurrency(getUserTotalBalanceUsd(pool), { abbreviated: false })
                     : '-'
                 }
               />
@@ -89,16 +90,17 @@ export function PoolListCard({ pool }: Props) {
                       APR
                     </Text>
                     <MemoizedMainAprTooltip
-                      data={pool.dynamicData.apr}
+                      aprItems={pool.dynamicData.aprItems}
                       poolId={pool.id}
                       textProps={{ fontSize: '1rem', fontWeight: 'bold' }}
                       onlySparkles
+                      pool={pool}
                     />
                   </HStack>
                 }
                 value={
                   <Text fontWeight="bold" fontSize="sm">
-                    {getAprLabel(pool.dynamicData.apr.apr)}
+                    {getTotalAprLabel(pool.dynamicData.aprItems)}
                   </Text>
                 }
               />

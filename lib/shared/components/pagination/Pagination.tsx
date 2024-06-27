@@ -93,7 +93,7 @@ export function Pagination({
         <GridItem area="goto" justifySelf={{ base: 'start', lg: 'end' }}>
           <HStack alignContent="space-between">
             <Text flexShrink="0" color="grayText" fontSize="sm">
-              Goto page:
+              Go to page:
             </Text>{' '}
             <NumberInput
               ml="2"
