@@ -52,7 +52,7 @@ export function TokenInfoPopover({ tokenAddress, chain, isBpt = false }: Props) 
         />
       </PopoverTrigger>
       <PopoverContent w="auto">
-        <PopoverArrow />
+        <PopoverArrow bg="background.level2" />
         <PopoverBody>
           <HStack>
             <Text color="inherit" fontWeight="medium" fontSize="sm">
