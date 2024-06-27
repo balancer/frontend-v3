@@ -16,6 +16,7 @@ import { PoolZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import { motion } from 'framer-motion'
 import { FeaturedPoolWeightChart } from '../pool/PoolDetail/PoolWeightCharts/FeaturedPoolWeightChart'
 import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
+import { memo } from 'react'
 
 interface Props {
   pool: FeaturedPool
@@ -66,6 +67,8 @@ export function FeaturePoolCard({
   carouselIndex = 1,
 }: Props) {
   const router = useRouter()
+
+  const MemoizedMainAprTooltip = memo(MainAprTooltip)
 
   const anim = isCarousel
     ? {
@@ -135,7 +138,7 @@ export function FeaturePoolCard({
             <VStack spacing="0" zIndex={1}>
               <HStack mb="1" gap="0">
                 <PoolName pool={pool} fontSize="md" noOfLines={1} />
-                <MainAprTooltip
+                <MemoizedMainAprTooltip
                   poolId={pool.id}
                   aprItems={pool.dynamicData.aprItems}
                   pool={pool}
