@@ -288,3 +288,7 @@ export function getVaultSetup(pool: Pool) {
 
   return { vaultAddress, balancerVaultAbi }
 }
+
+export function isV3Pool(pool: Pool): boolean {
+  return pool.protocolVersion === 3
+}

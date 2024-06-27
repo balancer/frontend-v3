@@ -19,7 +19,13 @@ import {
 } from '@balancer/sdk'
 import { Hex, formatUnits, parseUnits, Address } from 'viem'
 
-import { hasNestedPools, isAffectedByCspIssue, isComposableStableV1, isGyro } from '../pool.helpers'
+import {
+  hasNestedPools,
+  isAffectedByCspIssue,
+  isComposableStableV1,
+  isGyro,
+  isV3Pool,
+} from '../pool.helpers'
 import { Pool } from '../PoolProvider'
 import {
   isNativeAsset,
@@ -112,7 +118,7 @@ export class LiquidityActionHelpers {
   }
 
   public isV3Pool(): boolean {
-    return this.pool.protocolVersion === 3
+    return isV3Pool(this.pool)
   }
 
   /*

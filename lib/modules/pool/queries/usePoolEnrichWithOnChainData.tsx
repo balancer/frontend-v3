@@ -1,190 +1,136 @@
-import {
-  GetPoolQuery,
-  GqlChain,
-  GqlPoolComposableStableNested,
-  GetTokenPricesQuery,
-} from '@/lib/shared/services/api/generated/graphql'
-import {
-  Address,
-  ContractFunctionParameters,
-  formatUnits,
-  PublicClient,
-  ReadContractParameters,
-  zeroAddress,
-} from 'viem'
-import { cloneDeep, keyBy, sumBy } from 'lodash'
-import { balancerV2ComposableStablePoolV5Abi } from '@/lib/modules/web3/contracts/abi/generated'
-import { usePublicClient } from 'wagmi'
-import { useQuery } from '@tanstack/react-query'
-import { getNetworkConfig } from '@/lib/config/app.config'
-import { useTokens } from '@/lib/modules/tokens/TokensProvider'
-import { useUserAccount } from '../../web3/UserAccountProvider'
-import { isComposableStablePool } from '../pool.utils'
+import { cloneDeep } from 'lodash'
+import { Address, formatUnits } from 'viem'
+import { useReadContracts } from 'wagmi'
+import { useTokens } from '../../tokens/TokensProvider'
+import { balancerV3VaultAbi } from '../../web3/contracts/abi/balancerV3Abi'
+import { weightedPoolV3Abi } from '../../web3/contracts/abi/weightedPoolV3Abi'
 import { Pool } from '../PoolProvider'
-import { getVaultSetup } from '../pool.helpers'
+import { BPT_DECIMALS } from '../pool.constants'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { safeSum } from '@/lib/shared/utils/numbers'
+import { getVaultSetup, isV3Pool } from '../pool.helpers'
+import { getChainId } from '@/lib/config/app.config'
+import {
+  balancerV2ComposableStablePoolV5Abi,
+  balancerV2VaultAbi,
+} from '../../web3/contracts/abi/generated'
+import { isComposableStablePool } from '../pool.utils'
 
-export function usePoolEnrichWithOnChainData({
-  chain,
-  pool,
-}: {
-  chain: GqlChain
-  pool: GetPoolQuery['pool']
-}) {
-  const config = getNetworkConfig(chain)
-  const client = usePublicClient({ chainId: config.chainId })
-  const { prices } = useTokens()
-  const tokenAddresses = pool.allTokens.map(token => token.address)
-  const poolTokenPrices = prices.filter(price => tokenAddresses.includes(price.address))
-  const { userAddress } = useUserAccount()
+export function usePoolEnrichWithOnChainData(pool: Pool) {
+  const { priceFor } = useTokens()
 
-  return useQuery({
-    queryKey: ['usePoolEnrichWithOnChainData', { pool, userAddress }],
-    queryFn: async () => {
-      if (!client) return
-      return updateWithOnChainBalanceData({
-        pool,
-        client,
-        tokenPrices: poolTokenPrices,
-        userAddress,
-      })
+  const { isLoading, poolTokenBalances, totalSupply, refetch } = usePoolOnchainData(pool)
+
+  const clone = enrichPool({ isLoading, pool, priceFor, poolTokenBalances, totalSupply })
+  return { isLoading, pool: clone, refetch }
+}
+
+function usePoolOnchainData(pool: Pool) {
+  const v2Query = useV2PoolOnchainData(pool)
+  const v2Result = {
+    ...v2Query,
+    poolTokenBalances: v2Query.data?.[0][1],
+    totalSupply: v2Query.data?.[1],
+  }
+
+  const v3Query = useV3PoolOnchainData(pool)
+  const v3Result = {
+    ...v3Query,
+    poolTokenBalances: v3Query.data?.[0][2],
+    totalSupply: v3Query.data?.[1],
+  }
+
+  return isV3Pool(pool) ? v3Result : v2Result
+}
+
+function useV3PoolOnchainData(pool: Pool) {
+  const { vaultAddress } = getVaultSetup(pool)
+
+  const chainId = getChainId(pool.chain)
+
+  return useReadContracts({
+    query: {
+      enabled: isV3Pool(pool),
     },
-    enabled: !!client,
+    allowFailure: false,
+    contracts: [
+      {
+        chainId,
+        abi: balancerV3VaultAbi,
+        address: vaultAddress,
+        functionName: 'getPoolTokenInfo',
+        args: [pool.address as Address],
+      },
+      {
+        chainId,
+        abi: weightedPoolV3Abi,
+        address: pool.address as Address,
+        functionName: 'totalSupply',
+        args: [],
+      },
+    ],
   })
 }
 
-async function updateWithOnChainBalanceData({
-  pool,
-  client,
-  tokenPrices,
-  userAddress = zeroAddress,
-}: {
-  pool: GetPoolQuery['pool']
-  client: PublicClient
-  tokenPrices: GetTokenPricesQuery['tokenPrices']
-  userAddress: Address
-}): Promise<GetPoolQuery['pool']> {
-  const { balances, supplies } = await getBalanceDataForPool({
-    pool,
-    client,
-    userAddress,
-  })
+function useV2PoolOnchainData(pool: Pool) {
+  const { vaultAddress } = getVaultSetup(pool)
 
-  const balancesMap = keyBy(balances, 'poolId')
-  const supplyMap = keyBy(supplies, 'poolId')
-  const pricesMap = keyBy(tokenPrices, 'address')
+  const chainId = getChainId(pool.chain)
+
+  const isComposableStable = isComposableStablePool(pool)
+
+  return useReadContracts({
+    query: {
+      enabled: !isV3Pool(pool),
+    },
+    allowFailure: false,
+    contracts: [
+      {
+        chainId,
+        abi: balancerV2VaultAbi,
+        address: vaultAddress,
+        functionName: 'getPoolTokens',
+        args: [pool.id as Address],
+      },
+      {
+        chainId,
+        // composable stable pool has actual and total supply functions exposed
+        abi: balancerV2ComposableStablePoolV5Abi,
+        address: pool.address as Address,
+        functionName: isComposableStable ? 'getActualSupply' : 'totalSupply',
+      } as const,
+    ],
+  })
+}
+
+type Params = {
+  isLoading: boolean
+  pool: Pool
+  priceFor: (address: string, chain: GqlChain) => number
+  poolTokenBalances: readonly bigint[] | undefined
+  totalSupply: bigint | undefined
+}
+function enrichPool({ isLoading, pool, priceFor, poolTokenBalances, totalSupply }: Params) {
+  if (isLoading) return pool
+
   const clone = cloneDeep(pool)
+
   const filteredTokens = clone.poolTokens.filter(token =>
     pool.displayTokens.find(displayToken => token.address === displayToken.address)
   )
 
-  clone.dynamicData.totalShares = formatUnits(supplyMap[pool.id].totalSupply, 18)
-
   clone.poolTokens.forEach((token, index) => {
-    const tokenBalance = formatUnits(balancesMap[pool.id].balances[index], token.decimals)
+    if (!poolTokenBalances) return
+    const tokenBalance = formatUnits(poolTokenBalances[index], token.decimals)
     token.balance = tokenBalance
   })
 
-  clone.dynamicData.totalLiquidity = sumBy(
-    filteredTokens.map(token => {
-      return (pricesMap[token.address]?.price || 0) * parseFloat(token.balance)
-    })
-  ).toString()
+  clone.dynamicData.totalLiquidity = safeSum(
+    filteredTokens.map(
+      token => (priceFor(token.address, pool.chain) || 0) * parseFloat(token.balance)
+    )
+  )
 
+  clone.dynamicData.totalShares = formatUnits(totalSupply || 0n, BPT_DECIMALS)
   return clone
-}
-
-async function getBalanceDataForPool({
-  pool,
-  client,
-  userAddress = zeroAddress,
-}: {
-  pool: GetPoolQuery['pool']
-  client: PublicClient
-  userAddress?: Address
-}): Promise<{
-  balances: { poolId: string; balances: bigint[] }[]
-  supplies: { poolId: string; totalSupply: bigint }[]
-}> {
-  const calls: {
-    poolId: string
-    type: 'balances' | 'supply' | 'userBalance'
-    call: ContractFunctionParameters
-  }[] = [getSupplyCall(pool), getBalancesCall(pool), getUserBalancesCall(pool, userAddress)]
-
-  const response = await client.multicall({ contracts: calls.map(call => call.call) })
-  const balances: { poolId: string; balances: bigint[] }[] = []
-  const supplies: { poolId: string; totalSupply: bigint }[] = []
-
-  for (let i = 0; i < calls.length; i++) {
-    if (calls[i].type === 'balances') {
-      balances.push({
-        poolId: calls[i].poolId,
-        balances: response[i].error ? [] : ((response[i].result as any)[1] as bigint[]),
-      })
-    } else if (calls[i].type === 'supply') {
-      supplies.push({
-        poolId: calls[i].poolId,
-        totalSupply: response[i].error ? 0n : (response[i].result as bigint),
-      })
-    }
-  }
-
-  return {
-    balances,
-    supplies,
-  }
-}
-
-function getBalancesCall(pool: Pool): {
-  poolId: string
-  type: 'balances'
-  call: ReadContractParameters
-} {
-  const { vaultAddress, balancerVaultAbi } = getVaultSetup(pool)
-
-  return {
-    poolId: pool.id,
-    type: 'balances',
-    call: {
-      abi: balancerVaultAbi,
-      address: vaultAddress,
-      functionName: 'getPoolTokens',
-      args: [pool.id],
-    },
-  }
-}
-
-function getUserBalancesCall(
-  pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested,
-  userAddress: Address
-): { poolId: string; type: 'userBalance'; call: ReadContractParameters } {
-  return {
-    poolId: pool.id,
-    type: 'userBalance',
-    call: {
-      abi: balancerV2ComposableStablePoolV5Abi,
-      address: pool.address as Address,
-      functionName: 'balanceOf',
-      args: [userAddress],
-    },
-  }
-}
-
-function getSupplyCall(pool: GetPoolQuery['pool'] | GqlPoolComposableStableNested): {
-  poolId: string
-  type: 'supply'
-  call: ReadContractParameters
-} {
-  const isComposableStable = isComposableStablePool(pool)
-
-  return {
-    poolId: pool.id,
-    type: 'supply',
-    call: {
-      // composable stable pool has actual and total supply functions exposed
-      abi: balancerV2ComposableStablePoolV5Abi,
-      address: pool.address as Address,
-      functionName: isComposableStable ? 'getActualSupply' : 'totalSupply',
-    },
-  }
 }
