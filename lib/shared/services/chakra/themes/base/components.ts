@@ -1,5 +1,3 @@
-import { background } from '@chakra-ui/react'
-
 export function getComponents(tokens: any, primaryTextColor: string) {
   return {
     Accordion: {
@@ -541,7 +539,7 @@ export function getComponents(tokens: any, primaryTextColor: string) {
           borderColor: 'border.base',
         },
         arrow: {
-          background: 'red',
+          bg: 'background.level3',
           borderColor: 'background.level3',
           color: 'background.level3',
         },
