@@ -39,8 +39,8 @@ export const SparklesIcon = ({
   let gradToColor = theme.colors.sparkles.default.to
 
   if (pool.id === corePoolId) {
-    gradFromColor = theme.colors.sparkles.voting.from
-    gradToColor = theme.colors.sparkles.voting.to
+    gradFromColor = theme.colors.sparkles.corePool.from
+    gradToColor = theme.colors.sparkles.corePool.to
   }
 
   if (hasRewardApr) {
