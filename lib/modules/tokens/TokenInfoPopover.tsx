@@ -18,6 +18,7 @@ import { CoingeckoIcon } from '@/lib/shared/components/icons/CoingeckoIcon'
 import { AddTokenToWalletButton } from './AddTokenToWalletButton'
 import { ExternalLink } from 'react-feather'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
+import { useTokens } from './TokensProvider'
 
 type Props = {
   tokenAddress: string | Address
@@ -27,8 +28,11 @@ type Props = {
 
 export function TokenInfoPopover({ tokenAddress, chain, isBpt = false }: Props) {
   const { getBlockExplorerTokenUrl } = useBlockExplorer(chain)
+  const { getToken } = useTokens()
+  const token = getToken(tokenAddress, chain)
+  const coingeckoId = token?.coingeckoId
 
-  const coingeckoUrl = `https://www.coingecko.com/en/coins/${tokenAddress}`
+  const coingeckoUrl = coingeckoId ? `https://www.coingecko.com/en/coins/${coingeckoId}` : undefined
 
   return (
     <Popover placement="right" variant="tooltip" arrowSize={12}>
@@ -57,7 +61,7 @@ export function TokenInfoPopover({ tokenAddress, chain, isBpt = false }: Props) 
             <HStack spacing="xs">
               <CopyTokenAddressButton tokenAddress={tokenAddress} color="inherit" />
               <AddTokenToWalletButton tokenAddress={tokenAddress} chain={chain} color="inherit" />
-              {!isBpt && (
+              {!isBpt && coingeckoUrl && (
                 <Tooltip label="View on Coingecko">
                   <IconButton
                     size="xs"

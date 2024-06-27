@@ -26,6 +26,7 @@ query GetTokens($chains: [GqlChain!]!) {
     logoURI
     priority
     tradable
+    coingeckoId
   }
 }
 
