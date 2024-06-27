@@ -562,6 +562,7 @@ export function getComponents(tokens: any, primaryTextColor: string) {
             color: 'grayText',
             px: 'sm',
             py: 'xs',
+            rounded: 'md',
           },
         },
       },
