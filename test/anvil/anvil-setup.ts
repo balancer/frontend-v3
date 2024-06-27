@@ -64,7 +64,8 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
     networkName: 'Sepolia',
     fallBackRpc: 'https://gateway.tenderly.co/public/sepolia',
     port: ANVIL_PORTS.Sepolia,
-    // forkBlockNumber: 1719387390n,
+    // For now we will use the last block until v3 deployments are final
+    // forkBlockNumber: ,
   },
 }
 
