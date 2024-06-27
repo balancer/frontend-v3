@@ -1,15 +1,15 @@
 import { Address, Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { mainnet, polygon } from 'viem/chains'
+import { mainnet, polygon, sepolia } from 'viem/chains'
 
-const networksWithFork = [mainnet, polygon]
+const networksWithFork = [mainnet, polygon, sepolia]
 export type NetworksWithFork = (typeof networksWithFork)[number]['name']
 
 export type NetworkSetup = {
   networkName: NetworksWithFork
   fallBackRpc: string | undefined
   port: number
-  forkBlockNumber: bigint
+  forkBlockNumber?: bigint
 }
 
 export const defaultAnvilTestPrivateKey =
@@ -40,6 +40,7 @@ const ANVIL_PORTS: Record<NetworksWithFork, number> = {
   //Ports separated by 100 to avoid port collision when running tests in parallel
   Ethereum: 8645,
   Polygon: 8745,
+  Sepolia: 8845,
 }
 
 export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
@@ -58,6 +59,12 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
     port: ANVIL_PORTS.Polygon,
     // Note - this has to be >= highest blockNo used in tests
     forkBlockNumber: 57569322n,
+  },
+  Sepolia: {
+    networkName: 'Sepolia',
+    fallBackRpc: 'https://gateway.tenderly.co/public/sepolia',
+    port: ANVIL_PORTS.Sepolia,
+    // forkBlockNumber: 1719387390n,
   },
 }
 

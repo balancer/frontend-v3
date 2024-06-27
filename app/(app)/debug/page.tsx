@@ -9,6 +9,9 @@ export default function Debug() {
     <FadeInOnView>
       <VStack padding="lg" margin="lg">
         <Heading size="md">Demos</Heading>
+        <Link as={NextLink} href="pools/sepolia/v3/0x204d4194e4e42364e3d1841d0a9b1ef857879c31">
+          Sepolia V3 pool (Balancer 50 BAL 50 WETH)
+        </Link>
         <Link
           as={NextLink}
           href="pools/ethereum/v2/0x68e3266c9c8bbd44ad9dca5afbfe629022aee9fe000200000000000000000512/add-liquidity"

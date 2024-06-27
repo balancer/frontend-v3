@@ -13,16 +13,15 @@ import {
   zeroAddress,
 } from 'viem'
 import { cloneDeep, keyBy, sumBy } from 'lodash'
-import {
-  balancerV2ComposableStablePoolV5Abi,
-  balancerV2VaultAbi,
-} from '@/lib/modules/web3/contracts/abi/generated'
+import { balancerV2ComposableStablePoolV5Abi } from '@/lib/modules/web3/contracts/abi/generated'
 import { usePublicClient } from 'wagmi'
 import { useQuery } from '@tanstack/react-query'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { isComposableStablePool } from '../pool.utils'
+import { Pool } from '../PoolProvider'
+import { getVaultSetup } from '../pool.helpers'
 
 export function usePoolEnrichWithOnChainData({
   chain,
@@ -46,7 +45,6 @@ export function usePoolEnrichWithOnChainData({
         pool,
         client,
         tokenPrices: poolTokenPrices,
-        vaultV2Address: config.contracts.balancer.vaultV2,
         userAddress,
       })
     },
@@ -58,19 +56,16 @@ async function updateWithOnChainBalanceData({
   pool,
   client,
   tokenPrices,
-  vaultV2Address,
   userAddress = zeroAddress,
 }: {
   pool: GetPoolQuery['pool']
   client: PublicClient
   tokenPrices: GetTokenPricesQuery['tokenPrices']
-  vaultV2Address: Address
   userAddress: Address
 }): Promise<GetPoolQuery['pool']> {
   const { balances, supplies } = await getBalanceDataForPool({
     pool,
     client,
-    vaultV2Address,
     userAddress,
   })
 
@@ -101,12 +96,10 @@ async function updateWithOnChainBalanceData({
 async function getBalanceDataForPool({
   pool,
   client,
-  vaultV2Address,
   userAddress = zeroAddress,
 }: {
   pool: GetPoolQuery['pool']
   client: PublicClient
-  vaultV2Address: Address
   userAddress?: Address
 }): Promise<{
   balances: { poolId: string; balances: bigint[] }[]
@@ -116,11 +109,7 @@ async function getBalanceDataForPool({
     poolId: string
     type: 'balances' | 'supply' | 'userBalance'
     call: ContractFunctionParameters
-  }[] = [
-    getSupplyCall(pool),
-    getBalancesCall(pool.id, vaultV2Address),
-    getUserBalancesCall(pool, userAddress),
-  ]
+  }[] = [getSupplyCall(pool), getBalancesCall(pool), getUserBalancesCall(pool, userAddress)]
 
   const response = await client.multicall({ contracts: calls.map(call => call.call) })
   const balances: { poolId: string; balances: bigint[] }[] = []
@@ -146,18 +135,21 @@ async function getBalanceDataForPool({
   }
 }
 
-function getBalancesCall(
-  poolId: string,
-  vaultV2Address: Address
-): { poolId: string; type: 'balances'; call: ReadContractParameters } {
+function getBalancesCall(pool: Pool): {
+  poolId: string
+  type: 'balances'
+  call: ReadContractParameters
+} {
+  const { vaultAddress, balancerVaultAbi } = getVaultSetup(pool)
+
   return {
-    poolId,
+    poolId: pool.id,
     type: 'balances',
     call: {
-      abi: balancerV2VaultAbi,
-      address: vaultV2Address,
+      abi: balancerVaultAbi,
+      address: vaultAddress,
       functionName: 'getPoolTokens',
-      args: [poolId],
+      args: [pool.id],
     },
   }
 }

@@ -40,7 +40,6 @@ export function _usePool({
     skip: skipQuery,
   })
 
-  // TODO: usePoolEnrichWithOnChainData is v2 specific. We need to make this more generic.
   const {
     data: poolWithOnChainData,
     refetch: refetchOnchainData,

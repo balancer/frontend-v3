@@ -111,6 +111,10 @@ export class LiquidityActionHelpers {
       })
   }
 
+  public isV3Pool(): boolean {
+    return this.pool.protocolVersion === 3
+  }
+
   /*
    1. Converts humanAmountsIn into SDK InputAmounts
    2. When the input includes it, it swaps the native asset with the wrapped native asset
