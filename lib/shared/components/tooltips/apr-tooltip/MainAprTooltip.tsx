@@ -4,7 +4,7 @@ import { Info } from 'react-feather'
 import { getTotalAprLabel } from '@/lib/modules/pool/pool.utils'
 import StarsIcon from '../../icons/StarsIcon'
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
-import { Pool } from '@/lib/modules/pool/PoolProvider'
+import { FeaturedPool, Pool } from '@/lib/modules/pool/PoolProvider'
 import { isLBP } from '@/lib/modules/pool/pool.helpers'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
@@ -18,12 +18,18 @@ interface Props
   aprLabel?: boolean
   apr?: string
   height?: string
-  pool: Pool | PoolListItem
+  pool: Pool | PoolListItem | FeaturedPool
 }
 
 const hoverColor = 'font.highlight'
 
-export const SparklesIcon = ({ isOpen, pool }: { isOpen: boolean; pool: Pool | PoolListItem }) => {
+export const SparklesIcon = ({
+  isOpen,
+  pool,
+}: {
+  isOpen: boolean
+  pool: Pool | PoolListItem | FeaturedPool
+}) => {
   const theme = useTheme()
   const { corePoolId } = getProjectConfig()
 
