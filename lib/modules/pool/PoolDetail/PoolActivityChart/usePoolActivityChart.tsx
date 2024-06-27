@@ -123,7 +123,9 @@ const getDefaultPoolActivityChartOptions = (
       },
     },
     tooltip: {
-      triggerOn: isMobile ? 'mousemove|click' : 'click',
+      triggerOn: 'mousemove|click',
+      enterable: true,
+      hideDelay: 300,
       extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container};pointer-events: auto!important`,
       formatter: (params: any) => {
         const data = Array.isArray(params) ? params[0] : params
