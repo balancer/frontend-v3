@@ -61,32 +61,34 @@ export function PoolDetail() {
   }, [router])
 
   return (
-    <DefaultPageContainer>
-      <ClaimProvider pools={[pool]}>
-        <VStack w="full" spacing="2xl">
-          <VStack w="full" spacing="md">
-            <PoolAlerts />
-            <PoolHeader />
-            {banners?.headerSrc && <Image src={banners.headerSrc} alt={`${variant}-header`} />}
-            <PoolStatsLayout />
+    <>
+      <DefaultPageContainer>
+        <ClaimProvider pools={[pool]}>
+          <VStack w="full" spacing="2xl">
+            <VStack w="full" spacing="md">
+              <PoolAlerts />
+              <PoolHeader />
+              {banners?.headerSrc && <Image src={banners.headerSrc} alt={`${variant}-header`} />}
+              <PoolStatsLayout />
+            </VStack>
+            {isConnected && (userHasLiquidity || userhasPoolEvents) && (
+              <Stack
+                w="full"
+                spacing="md"
+                direction={{ base: 'column', xl: 'row' }}
+                justifyContent="stretch"
+              >
+                <PoolMyLiquidity />
+                <PoolUserEvents />
+              </Stack>
+            )}
+            <PoolActivityChart />
+            <PoolComposition />
+            <PoolInfoLayout />
           </VStack>
-          {isConnected && (userHasLiquidity || userhasPoolEvents) && (
-            <Stack
-              w="full"
-              spacing="md"
-              direction={{ base: 'column', xl: 'row' }}
-              justifyContent="stretch"
-            >
-              <PoolMyLiquidity />
-              <PoolUserEvents />
-            </Stack>
-          )}
-          <PoolActivityChart />
-          <PoolComposition />
-          <PoolInfoLayout />
-          {banners?.footerSrc && <Image src={banners.footerSrc} alt={`${variant}-footer`} />}
-        </VStack>
-      </ClaimProvider>
-    </DefaultPageContainer>
+        </ClaimProvider>
+      </DefaultPageContainer>
+      {banners?.footerSrc && <Image src={banners.footerSrc} alt={`${variant}-footer`} />}
+    </>
   )
 }
