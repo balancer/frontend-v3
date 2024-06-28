@@ -4,7 +4,17 @@ import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { Divider, Button, Card, HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
+import {
+  Divider,
+  Button,
+  Card,
+  HStack,
+  Heading,
+  Skeleton,
+  Text,
+  VStack,
+  Tooltip,
+} from '@chakra-ui/react'
 import React, { useMemo, useState } from 'react'
 import { usePool } from '../PoolProvider'
 import { Address } from 'viem'
@@ -25,8 +35,12 @@ import {
   getUserWalletBalanceUsd,
 } from '../user-balance.helpers'
 import { hasNestedPools, shouldBlockAddLiquidity } from '../pool.helpers'
-// TODO: will be implemented in a different PR
-// import { hasNonPreferentialStakedBalance } from '../actions/stake.helpers'
+import {
+  hasNonPreferentialStakedBalance,
+  migrateStakeTooltipLabel,
+  hasPreferentialGauge,
+} from '../actions/stake.helpers'
+import { InfoOutlineIcon } from '@chakra-ui/icons'
 
 const TABS = [
   {
@@ -120,11 +134,9 @@ export default function PoolMyLiquidity() {
     return poolTokenBalancesForTab[tokenAddress].amount
   }
 
-  // const hasNonPreferentialBalance = hasNonPreferentialStakedBalance(pool)
-  // TODO: will be implemented in a different PR
-  const hasNonPreferentialBalance = false
+  const hasNonPreferentialBalance = hasNonPreferentialStakedBalance(pool)
   const canStake = pool.staking && !hasNonPreferentialBalance
-  const shouldMigrateStake = hasNonPreferentialBalance
+  const shouldMigrateStake = hasPreferentialGauge(pool) && hasNonPreferentialBalance
   const hasUnstakedBalance = bn(getUserWalletBalance(pool)).gt(0)
   const hasStakedBalance = bn(calcTotalStakedBalance(pool)).gt(0)
   const aprLabel = getTotalAprLabel(pool.dynamicData.aprItems)
@@ -222,14 +234,27 @@ export default function PoolMyLiquidity() {
             >
               Stake
             </Button>
-            <Button
-              onClick={() => router.push(`${pathname}/unstake`)}
-              variant={hasStakedBalance ? 'tertiary' : 'disabled'}
-              isDisabled={!hasStakedBalance}
-              flex="1"
-            >
-              Unstake
-            </Button>
+            {shouldMigrateStake ? (
+              <Tooltip label={migrateStakeTooltipLabel}>
+                <Button
+                  onClick={() => router.push(`${pathname}/migrate-stake`)}
+                  variant="secondary"
+                  rightIcon={<InfoOutlineIcon fontSize="sm" />}
+                  flex="1"
+                >
+                  Migrate stake
+                </Button>
+              </Tooltip>
+            ) : (
+              <Button
+                onClick={() => router.push(`${pathname}/unstake`)}
+                variant={hasStakedBalance ? 'tertiary' : 'disabled'}
+                isDisabled={!hasStakedBalance}
+                flex="1"
+              >
+                Unstake
+              </Button>
+            )}
           </HStack>
         </VStack>
       </VStack>

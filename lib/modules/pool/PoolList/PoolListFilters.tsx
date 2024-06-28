@@ -285,6 +285,7 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
 export function PoolListFilters() {
   const { isConnected } = useUserAccount()
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
+  const { resetFilters, totalFilterCount } = usePoolListQueryState()
 
   return (
     <VStack w="full">
@@ -332,6 +333,12 @@ export function PoolListFilters() {
                           Filters
                         </Text>
                       </Box>
+
+                      {totalFilterCount > 0 && (
+                        <Button size="xs" w="full" onClick={resetFilters}>
+                          Reset filters
+                        </Button>
+                      )}
 
                       {isConnected && (
                         <Box as={motion.div} variants={staggeredFadeInUp}>

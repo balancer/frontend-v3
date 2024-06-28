@@ -1,6 +1,5 @@
-import { Card, HStack, Icon, Text, VStack } from '@chakra-ui/react'
+import { Card, HStack, Text, VStack } from '@chakra-ui/react'
 import BaseAprTooltip from './BaseAprTooltip'
-import StarsIcon from '../../icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useCallback } from 'react'
 import { bn } from '@/lib/shared/utils/numbers'

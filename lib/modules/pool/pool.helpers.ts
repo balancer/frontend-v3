@@ -15,10 +15,10 @@ import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { isNil } from 'lodash'
 import { Address, getAddress, parseUnits, zeroAddress } from 'viem'
-import { isNotMainet } from '../chains/chain.utils'
+import { BPT_DECIMALS } from './pool.constants'
+import { isNotMainnet } from '../chains/chain.utils'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
 import { PoolIssue } from './alerts/pool-issues/PoolIssue.type'
-import { BPT_DECIMALS } from './pool.constants'
 import { getUserTotalBalanceInt } from './user-balance.helpers'
 import { dateToUnixTimestamp } from '@/lib/shared/utils/time'
 
@@ -203,11 +203,11 @@ export function isNotSupported(pool: Pool) {
  * claiming for v1 gauges on child-chains because they are deprecated and don't
  * conform to the the same interface as v1 gauges on mainnet and v2 gauges on child-chains.
  */
-function isClaimableGauge(
+export function isClaimableGauge(
   gauge: GqlPoolStakingGauge | GqlPoolStakingOtherGauge,
   chain: GqlChain | number
 ): boolean {
-  return !(gauge.version === 1 && isNotMainet(chain))
+  return !(gauge.version === 1 && isNotMainnet(chain))
 }
 
 /**

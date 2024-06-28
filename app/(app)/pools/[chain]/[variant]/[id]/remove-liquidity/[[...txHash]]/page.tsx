@@ -7,6 +7,7 @@ import { RelayerSignatureProvider } from '@/lib/modules/relayer/RelayerSignature
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { PriceImpactProvider } from '@/lib/modules/price-impact/PriceImpactProvider'
 import { isHash } from 'viem'
+import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
 
 type Props = {
   params: { txHash?: string[] }
@@ -17,16 +18,18 @@ export default function RemoveLiquidityPage({ params: { txHash } }: Props) {
   const urlTxHash = isHash(maybeTxHash) ? maybeTxHash : undefined
 
   return (
-    <TransactionStateProvider>
-      <RelayerSignatureProvider>
-        <RemoveLiquidityProvider urlTxHash={urlTxHash}>
-          <PoolActionsLayout>
-            <PriceImpactProvider>
-              <RemoveLiquidityForm />
-            </PriceImpactProvider>
-          </PoolActionsLayout>
-        </RemoveLiquidityProvider>
-      </RelayerSignatureProvider>
-    </TransactionStateProvider>
+    <DefaultPageContainer>
+      <TransactionStateProvider>
+        <RelayerSignatureProvider>
+          <RemoveLiquidityProvider urlTxHash={urlTxHash}>
+            <PoolActionsLayout>
+              <PriceImpactProvider>
+                <RemoveLiquidityForm />
+              </PriceImpactProvider>
+            </PoolActionsLayout>
+          </RemoveLiquidityProvider>
+        </RelayerSignatureProvider>
+      </TransactionStateProvider>
+    </DefaultPageContainer>
   )
 }
