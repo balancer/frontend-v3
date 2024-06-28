@@ -1,10 +1,13 @@
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import { Pool } from './PoolProvider'
 import { PoolListItem } from './pool.types'
-import { Address, parseUnits } from 'viem'
+import { parseUnits } from 'viem'
 import { BPT_DECIMALS } from './pool.constants'
 import { HumanAmount } from '@balancer/sdk'
-import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GqlPoolStakingType,
+  GqlUserStakedBalance,
+} from '@/lib/shared/services/api/generated/graphql'
 
 export function calcTotalStakedBalance(pool: Pool | PoolListItem): HumanAmount {
   const userBalance = pool.userBalance
@@ -79,20 +82,36 @@ export function calcNonVeBalStakedBalance(pool: Pool): number {
   return Number(safeSum(nonGaugeStakedBalances))
 }
 
-export function getGaugeStakedBalance(pool: Pool, gaugeAddress: Address): HumanAmount {
-  const userBalance = pool.userBalance
-  if (!userBalance) return '0'
+type StakedBalance = Omit<GqlUserStakedBalance, '__typename' | 'stakingType' | 'stakingId'>
 
-  const gaugeStakedBalance = userBalance.stakedBalances.find(
-    balance =>
-      balance.stakingType === GqlPoolStakingType.Gauge && balance.stakingId === gaugeAddress
-  )
-
-  if (!gaugeStakedBalance) {
-    return '0'
+export function getStakedBalance(pool: Pool, stakingType: GqlPoolStakingType): StakedBalance {
+  const zeroStakedBalance = {
+    balance: '0',
+    balanceUsd: 0,
   }
 
-  return gaugeStakedBalance.balance as HumanAmount
+  const userBalance = pool.userBalance
+  if (!userBalance) return zeroStakedBalance
+
+  const stakingAddress =
+    stakingType === GqlPoolStakingType.Gauge ? pool.staking?.gauge?.id : pool.staking?.aura?.id
+  const stakedBalance = userBalance.stakedBalances.find(
+    balance => balance.stakingType === stakingType && balance.stakingId === stakingAddress
+  )
+
+  if (!stakedBalance) {
+    return zeroStakedBalance
+  }
+
+  return stakedBalance
+}
+
+export function calcStakedBalanceInt(pool: Pool, stakingType: GqlPoolStakingType) {
+  return parseUnits(getStakedBalance(pool, stakingType).balance as HumanAmount, BPT_DECIMALS)
+}
+
+export function calcStakedBalanceUsd(pool: Pool, stakingType: GqlPoolStakingType): number {
+  return Number(bn(getStakedBalance(pool, stakingType).balanceUsd))
 }
 
 export function hasTotalBalance(pool: Pool) {

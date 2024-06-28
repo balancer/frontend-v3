@@ -25,14 +25,14 @@ import { getTotalAprLabel, getProportionalExitAmountsFromScaledBptIn } from '../
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { bn } from '@/lib/shared/utils/numbers'
 import {
-  calcTotalStakedBalanceInt,
   getUserTotalBalanceInt,
   getUserWalletBalanceInt,
   calcTotalStakedBalance,
-  calcTotalStakedBalanceUsd,
   getUserTotalBalanceUsd,
   getUserWalletBalance,
   getUserWalletBalanceUsd,
+  calcStakedBalanceInt,
+  calcStakedBalanceUsd,
 } from '../user-balance.helpers'
 import { hasNestedPools, shouldBlockAddLiquidity } from '../pool.helpers'
 import {
@@ -41,6 +41,7 @@ import {
   hasPreferentialGauge,
 } from '../actions/stake.helpers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 
 const TABS = [
   {
@@ -52,8 +53,12 @@ const TABS = [
     label: 'Unstaked',
   },
   {
-    value: 'staked',
+    value: 'gauge',
     label: 'Staked',
+  },
+  {
+    value: 'aura',
+    label: 'Aura',
   },
 ]
 
@@ -71,14 +76,26 @@ export default function PoolMyLiquidity() {
     setActiveTab(option)
   }
 
+  function getStakingType(tabsValue: string) {
+    switch (tabsValue) {
+      case 'gauge':
+        return GqlPoolStakingType.Gauge
+      case 'aura':
+        return GqlPoolStakingType.Aura
+      default:
+        return GqlPoolStakingType.Gauge
+    }
+  }
+
   function getBptBalanceForTab() {
     const rawTotalBalance = getUserTotalBalanceInt(pool)
 
     switch (activeTab.value) {
       case 'total':
         return rawTotalBalance
-      case 'staked':
-        return calcTotalStakedBalanceInt(pool)
+      case 'gauge':
+      case 'aura':
+        return calcStakedBalanceInt(pool, getStakingType(activeTab.value))
       case 'unstaked':
         return getUserWalletBalanceInt(pool)
       default:
@@ -100,11 +117,13 @@ export default function PoolMyLiquidity() {
   function getTitlePrefix() {
     switch (activeTab.value) {
       case 'total':
-        return 'total'
-      case 'staked':
-        return 'staked'
+        return 'My total balance'
+      case 'gauge':
+        return 'Staked on Balancer'
+      case 'aura':
+        return 'Staked on Aura'
       case 'unstaked':
-        return 'unstaked'
+        return 'My unstaked balance'
       default:
         return ''
     }
@@ -116,8 +135,9 @@ export default function PoolMyLiquidity() {
     switch (activeTab.value) {
       case 'total':
         return getUserTotalBalanceUsd(pool)
-      case 'staked':
-        return calcTotalStakedBalanceUsd(pool)
+      case 'gauge':
+      case 'aura':
+        return calcStakedBalanceUsd(pool, getStakingType(activeTab.value))
       case 'unstaked':
         return getUserWalletBalanceUsd(pool)
       default:
@@ -174,7 +194,7 @@ export default function PoolMyLiquidity() {
           <HStack width="full" justifyContent="space-between">
             <VStack alignItems="flex-start">
               <Heading fontWeight="bold" size="h6">
-                My {getTitlePrefix()} balance
+                {getTitlePrefix()}
               </Heading>
               <Text variant="secondary" fontSize="0.85rem">
                 APR
