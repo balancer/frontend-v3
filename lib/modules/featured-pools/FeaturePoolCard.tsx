@@ -143,6 +143,7 @@ export function FeaturePoolCard({
                   aprItems={pool.dynamicData.aprItems}
                   pool={pool}
                   onlySparkles
+                  id={`featured-${pool.id.slice(2, 6)}`}
                 />
               </HStack>
               <Text mb="0.5" variant="secondary" fontWeight="medium" fontSize="sm">

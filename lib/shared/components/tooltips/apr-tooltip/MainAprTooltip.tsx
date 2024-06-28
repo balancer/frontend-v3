@@ -19,6 +19,7 @@ interface Props
   apr?: string
   height?: string
   pool: Pool | PoolListItem | FeaturedPool
+  id?: string
 }
 
 const hoverColor = 'font.highlight'
@@ -26,9 +27,11 @@ const hoverColor = 'font.highlight'
 export const SparklesIcon = ({
   isOpen,
   pool,
+  id,
 }: {
   isOpen: boolean
   pool: Pool | PoolListItem | FeaturedPool
+  id?: string
 }) => {
   const theme = useTheme()
   const { corePoolId } = getProjectConfig()
@@ -58,6 +61,7 @@ export const SparklesIcon = ({
             as={StarsIcon}
             gradFrom={isOpen ? 'green' : gradFromColor}
             gradTo={isOpen ? 'green' : gradToColor}
+            id={id || ''}
           />
         )}
       </Center>
@@ -73,6 +77,7 @@ function MainAprTooltip({
   aprLabel,
   height = '16px',
   pool,
+  id,
   ...props
 }: Props) {
   const aprToShow = apr || getTotalAprLabel(pool.dynamicData.aprItems, vebalBoost)
@@ -97,7 +102,7 @@ function MainAprTooltip({
                   {aprLabel ? ' APR' : ''}
                 </Text>
               )}
-              <SparklesIcon isOpen={isOpen} pool={pool} />
+              <SparklesIcon isOpen={isOpen} pool={pool} id={id} />
             </HStack>
           </Button>
         </HStack>
