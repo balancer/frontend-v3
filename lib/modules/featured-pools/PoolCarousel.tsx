@@ -1,6 +1,5 @@
 'use client'
 
-import { GetFeaturedPoolsQuery } from '@/lib/shared/services/api/generated/graphql'
 import { useState } from 'react'
 import { Box, BoxProps, Card, Center, Text } from '@chakra-ui/react'
 import { FeaturePoolCard } from './FeaturePoolCard'
@@ -8,7 +7,7 @@ import { Pool } from '../pool/PoolProvider'
 import { useSwipeable } from 'react-swipeable'
 
 type Props = {
-  pools: GetFeaturedPoolsQuery['featuredPools']
+  pools: Pool[]
 }
 
 export function PoolCarousel({ pools, ...rest }: Props & BoxProps) {
@@ -34,7 +33,7 @@ export function PoolCarousel({ pools, ...rest }: Props & BoxProps) {
     setCurrentIndex(index)
   }
 
-  const currentPool = pools[currentIndex].pool as Pool
+  const currentPool = pools[currentIndex]
 
   return (
     <Box {...swipeHandlers} {...rest}>
@@ -69,7 +68,7 @@ export function PoolCarousel({ pools, ...rest }: Props & BoxProps) {
       <Center w="full" mt="md">
         {pools.map((pool, index) => (
           <Box
-            key={pool.pool.id}
+            key={pool.id}
             w="3"
             h="3"
             bg={index === currentIndex ? 'font.highlight' : 'border.base'}
