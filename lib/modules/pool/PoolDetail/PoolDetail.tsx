@@ -17,6 +17,7 @@ import { useUserAccount } from '../../web3/UserAccountProvider'
 import PoolUserEvents from './PoolUserEvents'
 import { hasTotalBalance } from '../user-balance.helpers'
 import { usePoolEvents } from '../usePoolEvents'
+import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
 
 export function PoolDetail() {
   const { pool, chain } = usePool()
@@ -37,6 +38,7 @@ export function PoolDetail() {
   useEffect(() => {
     startPolling(120000)
     return () => stopPolling()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const userhasPoolEvents = useMemo(() => {
@@ -59,30 +61,34 @@ export function PoolDetail() {
   }, [router])
 
   return (
-    <ClaimProvider pools={[pool]}>
-      <VStack w="full" spacing="2xl">
-        <VStack w="full" spacing="md">
-          <PoolAlerts />
-          <PoolHeader />
-          {banners?.headerSrc && <Image src={banners.headerSrc} alt={`${variant}-header`} />}
-          <PoolStatsLayout />
-        </VStack>
-        {isConnected && (userHasLiquidity || userhasPoolEvents) && (
-          <Stack
-            w="full"
-            spacing="md"
-            direction={{ base: 'column', xl: 'row' }}
-            justifyContent="stretch"
-          >
-            <PoolMyLiquidity />
-            <PoolUserEvents />
-          </Stack>
-        )}
-        <PoolActivityChart />
-        <PoolComposition />
-        <PoolInfoLayout />
-        {banners?.footerSrc && <Image src={banners.footerSrc} alt={`${variant}-footer`} />}
-      </VStack>
-    </ClaimProvider>
+    <>
+      <DefaultPageContainer>
+        <ClaimProvider pools={[pool]}>
+          <VStack w="full" spacing="2xl">
+            <VStack w="full" spacing="md">
+              <PoolAlerts />
+              <PoolHeader />
+              {banners?.headerSrc && <Image src={banners.headerSrc} alt={`${variant}-header`} />}
+              <PoolStatsLayout />
+            </VStack>
+            {isConnected && (userHasLiquidity || userhasPoolEvents) && (
+              <Stack
+                w="full"
+                spacing="md"
+                direction={{ base: 'column', xl: 'row' }}
+                justifyContent="stretch"
+              >
+                <PoolMyLiquidity />
+                <PoolUserEvents />
+              </Stack>
+            )}
+            <PoolActivityChart />
+            <PoolComposition />
+            <PoolInfoLayout />
+          </VStack>
+        </ClaimProvider>
+      </DefaultPageContainer>
+      {banners?.footerSrc && <Image src={banners.footerSrc} alt={`${variant}-footer`} />}
+    </>
   )
 }
