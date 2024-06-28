@@ -11,7 +11,8 @@ function testPoolEnrichWithOnChainData(pool: Pool) {
   return result
 }
 
-test('enriches V3 pool with on-chain data', async () => {
+// TODO: un-skip when pool 0x7cf221fa36584f59a4f7fd7b946b8571c78e3692 is available in production api
+test.skip('enriches V3 pool with on-chain data', async () => {
   const poolId = '0x7cf221fa36584f59a4f7fd7b946b8571c78e3692' // V3 Balancer 50 BAL 50 WETH (sepolia experimental)
   const pool = await getPoolMock(poolId, GqlChain.Sepolia, defaultTestUserAccount)
 
