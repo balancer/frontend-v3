@@ -8,7 +8,7 @@ import { Pool } from '../PoolProvider'
 import { BPT_DECIMALS } from '../pool.constants'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { safeSum } from '@/lib/shared/utils/numbers'
-import { getVaultSetup, isV3Pool } from '../pool.helpers'
+import { getVaultConfig, isV3Pool } from '../pool.helpers'
 import { getChainId } from '@/lib/config/app.config'
 import {
   balancerV2ComposableStablePoolV5Abi,
@@ -44,7 +44,7 @@ function usePoolOnchainData(pool: Pool) {
 }
 
 function useV3PoolOnchainData(pool: Pool) {
-  const { vaultAddress } = getVaultSetup(pool)
+  const { vaultAddress } = getVaultConfig(pool)
 
   const chainId = getChainId(pool.chain)
 
@@ -73,7 +73,7 @@ function useV3PoolOnchainData(pool: Pool) {
 }
 
 function useV2PoolOnchainData(pool: Pool) {
-  const { vaultAddress } = getVaultSetup(pool)
+  const { vaultAddress } = getVaultConfig(pool)
 
   const chainId = getChainId(pool.chain)
 

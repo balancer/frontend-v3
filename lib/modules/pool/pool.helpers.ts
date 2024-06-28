@@ -276,7 +276,7 @@ function isAffectedBy(pool: Pool, poolIssue: PoolIssue) {
   return affectedPoolIds.includes(pool.id.toLowerCase())
 }
 
-export function getVaultSetup(pool: Pool) {
+export function getVaultConfig(pool: Pool) {
   const networkConfig = getNetworkConfig(pool.chain)
   const vaultAddress =
     pool.protocolVersion === 3 && pool.chain === GqlChain.Sepolia
