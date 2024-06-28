@@ -2,7 +2,6 @@ import { BoxProps, Card, Box, Text, HStack } from '@chakra-ui/react'
 import { FeaturePoolCard } from './FeaturePoolCard'
 import { GetFeaturedPoolsQuery } from '@/lib/shared/services/api/generated/graphql'
 import { PoolCarousel } from './PoolCarousel'
-import { Pool } from '../pool/PoolProvider'
 
 export const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps } = {
   contentProps: {
@@ -16,12 +15,18 @@ export const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps
   },
 }
 
-export function FeaturedPools({ pools }: { pools: GetFeaturedPoolsQuery['featuredPools'] }) {
-  const featuredPools = pools.map(p => p.pool as Pool).slice(0, 3)
-
+export function FeaturedPools({
+  featuredPools,
+}: {
+  featuredPools: GetFeaturedPoolsQuery['featuredPools']
+}) {
   return (
     <>
-      <PoolCarousel pools={featuredPools} display={{ base: 'block', md: 'none' }} w="full" />
+      <PoolCarousel
+        featuredPools={featuredPools}
+        display={{ base: 'block', md: 'none' }}
+        w="full"
+      />
       <Card
         display={{ base: 'none', md: 'flex' }}
         variant="level2"
@@ -36,13 +41,13 @@ export function FeaturedPools({ pools }: { pools: GetFeaturedPoolsQuery['feature
           </Text>
         </Box>
         <HStack w="full" pt="2">
-          {featuredPools.map((pool, index) => {
+          {featuredPools.slice(0, 3).map((featured, index) => {
             return (
               <FeaturePoolCard
                 key={index}
-                pool={pool}
-                chain={pool.chain}
-                featuredReason="Liquid staked $SOL on Arbitrum" //replace with {primaryPool.description} once API is updated
+                pool={featured.pool}
+                chain={featured.pool.chain}
+                featuredReason={featured.description}
                 isSmall
                 bgSize="300px"
               />
