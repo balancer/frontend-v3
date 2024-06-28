@@ -143,7 +143,7 @@ export function FeaturePoolCard({
                   aprItems={pool.dynamicData.aprItems}
                   pool={pool}
                   onlySparkles
-                  id={`featured-${pool.id.slice(2, 6)}`}
+                  id={`featured-${isCarousel ? 'mobile' : 'desktop'}`}
                 />
               </HStack>
               <Text mb="0.5" variant="secondary" fontWeight="medium" fontSize="sm">
