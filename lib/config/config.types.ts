@@ -33,6 +33,8 @@ export interface ContractsConfig {
   multicall2: Address
   balancer: {
     vaultV2: Address
+    // TODO: make it required when v3 is deployed in all networks
+    vaultV3?: Address
     relayerV6: Address
     minter: Address
   }
@@ -88,5 +90,6 @@ export interface ProjectConfig {
   projectId: 'beets' | 'balancer'
   projectName: string
   supportedNetworks: GqlChain[]
+  corePoolId: string // this prop is used to adjust the color of the SparklesIcon
   variantConfig?: VariantConfig
 }

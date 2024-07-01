@@ -15,12 +15,14 @@ import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { isNil } from 'lodash'
 import { Address, getAddress, parseUnits, zeroAddress } from 'viem'
-import { isNotMainet } from '../chains/chain.utils'
+import { BPT_DECIMALS } from './pool.constants'
+import { isNotMainnet } from '../chains/chain.utils'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
 import { PoolIssue } from './alerts/pool-issues/PoolIssue.type'
-import { BPT_DECIMALS } from './pool.constants'
 import { getUserTotalBalanceInt } from './user-balance.helpers'
 import { dateToUnixTimestamp } from '@/lib/shared/utils/time'
+import { balancerV2VaultAbi } from '../web3/contracts/abi/generated'
+import { balancerV3VaultAbi } from '../web3/contracts/abi/balancerV3Abi'
 
 /**
  * METHODS
@@ -203,11 +205,11 @@ export function isNotSupported(pool: Pool) {
  * claiming for v1 gauges on child-chains because they are deprecated and don't
  * conform to the the same interface as v1 gauges on mainnet and v2 gauges on child-chains.
  */
-function isClaimableGauge(
+export function isClaimableGauge(
   gauge: GqlPoolStakingGauge | GqlPoolStakingOtherGauge,
   chain: GqlChain | number
 ): boolean {
-  return !(gauge.version === 1 && isNotMainet(chain))
+  return !(gauge.version === 1 && isNotMainnet(chain))
 }
 
 /**
@@ -272,4 +274,21 @@ function isAffectedBy(pool: Pool, poolIssue: PoolIssue) {
   const issues = getNetworkConfig(getChainId(pool.chain)).pools.issues
   const affectedPoolIds = issues[poolIssue] ?? []
   return affectedPoolIds.includes(pool.id.toLowerCase())
+}
+
+export function getVaultConfig(pool: Pool) {
+  const networkConfig = getNetworkConfig(pool.chain)
+  const vaultAddress =
+    pool.protocolVersion === 3 && pool.chain === GqlChain.Sepolia
+      ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        networkConfig.contracts.balancer.vaultV3!
+      : networkConfig.contracts.balancer.vaultV2
+
+  const balancerVaultAbi = pool.protocolVersion === 3 ? balancerV3VaultAbi : balancerV2VaultAbi
+
+  return { vaultAddress, balancerVaultAbi }
+}
+
+export function isV3Pool(pool: Pool): boolean {
+  return pool.protocolVersion === 3
 }

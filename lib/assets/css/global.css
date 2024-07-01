@@ -2,6 +2,16 @@
   --ease-out-cubic: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
+:focus,
+:focus-visible,
+*[data-focus] {
+  box-shadow: none !important;
+  outline: none !important;
+  outline-width: 0 !important;
+  outline-color: transparent !important;
+  border-color: inherit !important;
+}
+
 html,
 body {
   -webkit-font-smoothing: antialiased;

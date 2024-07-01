@@ -205,7 +205,7 @@ export function SwapForm() {
                 size="lg"
                 isDisabled={isDisabled || !isMounted}
                 isLoading={isLoadingSwaps || !isMounted}
-                loadingText={isLoadingSwaps ? 'Fetching swap...' : undefined}
+                loadingText={isLoadingSwaps || !isMounted ? 'Fetching swap...' : undefined}
                 onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
               >
                 Next

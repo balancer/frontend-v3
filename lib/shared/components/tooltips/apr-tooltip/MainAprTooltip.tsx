@@ -1,8 +1,12 @@
-import { Box, Button, Center, HStack, Icon, Text, TextProps } from '@chakra-ui/react'
+import { Box, Button, Center, HStack, Icon, Text, TextProps, useTheme } from '@chakra-ui/react'
 import BaseAprTooltip, { BaseAprTooltipProps } from './BaseAprTooltip'
 import { Info } from 'react-feather'
 import { getTotalAprLabel } from '@/lib/modules/pool/pool.utils'
 import StarsIcon from '../../icons/StarsIcon'
+import { PoolListItem } from '@/lib/modules/pool/pool.types'
+import { FeaturedPool, Pool } from '@/lib/modules/pool/PoolProvider'
+import { isLBP } from '@/lib/modules/pool/pool.helpers'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
 interface Props
   extends Omit<
@@ -14,27 +18,72 @@ interface Props
   aprLabel?: boolean
   apr?: string
   height?: string
+  pool: Pool | PoolListItem | FeaturedPool
+  id?: string
 }
 
 const hoverColor = 'font.highlight'
+
+export const SparklesIcon = ({
+  isOpen,
+  pool,
+  id,
+}: {
+  isOpen: boolean
+  pool: Pool | PoolListItem | FeaturedPool
+  id?: string
+}) => {
+  const theme = useTheme()
+  const { corePoolId } = getProjectConfig()
+
+  const hasRewardApr = pool.dynamicData.aprItems.some(item => item.title === 'BAL reward APR')
+
+  let gradFromColor = theme.colors.sparkles.default.from
+  let gradToColor = theme.colors.sparkles.default.to
+
+  if (pool.id === corePoolId) {
+    gradFromColor = theme.colors.sparkles.corePool.from
+    gradToColor = theme.colors.sparkles.corePool.to
+  }
+
+  if (hasRewardApr) {
+    gradFromColor = theme.colors.sparkles.rewards.from
+    gradToColor = theme.colors.sparkles.rewards.to
+  }
+
+  return (
+    <Box w="16px" h="auto" minW="16px">
+      <Center w="16px">
+        {isLBP(pool.type) ? (
+          <Icon as={Info} boxSize={4} color={isOpen ? hoverColor : 'gray.400'} />
+        ) : (
+          <Icon
+            as={StarsIcon}
+            gradFrom={isOpen ? 'green' : gradFromColor}
+            gradTo={isOpen ? 'green' : gradToColor}
+            id={id || ''}
+          />
+        )}
+      </Center>
+    </Box>
+  )
+}
 
 function MainAprTooltip({
   onlySparkles,
   textProps,
   apr,
-  aprItems,
   vebalBoost,
   aprLabel,
   height = '16px',
+  pool,
+  id,
   ...props
 }: Props) {
-  const aprToShow = apr || getTotalAprLabel(aprItems, vebalBoost)
-
-  const hasRewardApr = aprItems.some(item => item.title === 'BAL reward APR')
+  const aprToShow = apr || getTotalAprLabel(pool.dynamicData.aprItems, vebalBoost)
 
   return (
     <BaseAprTooltip
-      aprItems={aprItems}
       {...props}
       maxVeBalText="Max veBAL APR"
       totalBaseText={balReward => `Total ${balReward ? 'base' : ''} APR`}
@@ -53,21 +102,7 @@ function MainAprTooltip({
                   {aprLabel ? ' APR' : ''}
                 </Text>
               )}
-              <Box w="16px" h="auto" minW="16px">
-                {hasRewardApr ? (
-                  <Center w="16px">
-                    <Icon
-                      as={StarsIcon}
-                      gradFrom={isOpen ? 'green' : undefined}
-                      gradTo={isOpen ? 'green' : undefined}
-                    />
-                  </Center>
-                ) : (
-                  <Center w="16px">
-                    <Icon as={Info} boxSize={4} color={isOpen ? hoverColor : 'gray.400'} />
-                  </Center>
-                )}
-              </Box>
+              <SparklesIcon isOpen={isOpen} pool={pool} id={id} />
             </HStack>
           </Button>
         </HStack>

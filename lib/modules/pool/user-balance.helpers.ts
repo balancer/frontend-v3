@@ -1,7 +1,7 @@
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import { Pool } from './PoolProvider'
 import { PoolListItem } from './pool.types'
-import { parseUnits } from 'viem'
+import { Address, parseUnits } from 'viem'
 import { BPT_DECIMALS } from './pool.constants'
 import { HumanAmount } from '@balancer/sdk'
 import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
@@ -77,6 +77,22 @@ export function calcNonVeBalStakedBalance(pool: Pool): number {
     .map(stakedBalance => stakedBalance.balance)
 
   return Number(safeSum(nonGaugeStakedBalances))
+}
+
+export function getGaugeStakedBalance(pool: Pool, gaugeAddress: Address): HumanAmount {
+  const userBalance = pool.userBalance
+  if (!userBalance) return '0'
+
+  const gaugeStakedBalance = userBalance.stakedBalances.find(
+    balance =>
+      balance.stakingType === GqlPoolStakingType.Gauge && balance.stakingId === gaugeAddress
+  )
+
+  if (!gaugeStakedBalance) {
+    return '0'
+  }
+
+  return gaugeStakedBalance.balance as HumanAmount
 }
 
 export function hasTotalBalance(pool: Pool) {

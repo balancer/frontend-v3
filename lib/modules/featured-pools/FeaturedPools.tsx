@@ -1,4 +1,4 @@
-import { BoxProps, Card, Grid, GridItem, Heading, VStack, Box, Text } from '@chakra-ui/react'
+import { BoxProps, Card, Box, Text, HStack } from '@chakra-ui/react'
 import { FeaturePoolCard } from './FeaturePoolCard'
 import { GetFeaturedPoolsQuery } from '@/lib/shared/services/api/generated/graphql'
 import { PoolCarousel } from './PoolCarousel'
@@ -15,18 +15,18 @@ export const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps
   },
 }
 
-export function FeaturedPools({ pools }: { pools: GetFeaturedPoolsQuery['featuredPools'] }) {
-  const featuredPools = pools.slice(0, 5)
-
-  const primaryPool =
-    featuredPools.find(featured => featured.primary)?.pool || featuredPools[0].pool
-  const poolsWithoutPrimary = featuredPools
-    .filter(featured => !featured.primary)
-    .map(featured => featured.pool)
-
+export function FeaturedPools({
+  featuredPools,
+}: {
+  featuredPools: GetFeaturedPoolsQuery['featuredPools']
+}) {
   return (
-    <VStack alignItems="flex-start" spacing="md">
-      <PoolCarousel pools={featuredPools} display={{ base: 'block', md: 'none' }} w="full" />
+    <>
+      <PoolCarousel
+        featuredPools={featuredPools}
+        display={{ base: 'block', md: 'none' }}
+        w="full"
+      />
       <Card
         display={{ base: 'none', md: 'flex' }}
         variant="level2"
@@ -40,48 +40,21 @@ export function FeaturedPools({ pools }: { pools: GetFeaturedPoolsQuery['feature
             Featured pools
           </Text>
         </Box>
-        <Grid
-          columnGap="4"
-          width="full"
-          height="full"
-          templateColumns="1fr 1fr 1fr"
-          templateRows="1fr"
-          p="0"
-          pt="3"
-        >
-          <GridItem colSpan={1} rowSpan={1} role="group">
-            <FeaturePoolCard
-              pool={primaryPool}
-              chain={primaryPool.chain}
-              featuredReason="Liquid staked $SOL on Arbitrum" //replace with {primaryPool.description} once API is updated
-              isSmall
-              bgSize="275px"
-            />
-          </GridItem>
-          <GridItem colSpan={1} rowSpan={1}>
-            {poolsWithoutPrimary[0] && (
+        <HStack w="full" pt="2">
+          {featuredPools.slice(0, 3).map((featured, index) => {
+            return (
               <FeaturePoolCard
-                pool={poolsWithoutPrimary[0]}
-                chain={poolsWithoutPrimary[0].chain}
-                featuredReason="For LRT points" //replace with {poolsWithoutPrimary[0].description} once API is updated
+                key={index}
+                pool={featured.pool}
+                chain={featured.pool.chain}
+                featuredReason={featured.description}
                 isSmall
                 bgSize="300px"
               />
-            )}
-          </GridItem>
-          <GridItem colSpan={1} rowSpan={1}>
-            {poolsWithoutPrimary[1] && (
-              <FeaturePoolCard
-                pool={poolsWithoutPrimary[1]}
-                chain={poolsWithoutPrimary[1].chain}
-                featuredReason="Yield-bearing concentrated liquidity" //replace with {poolsWithoutPrimary[1].description} once API is updated
-                isSmall
-                bgSize="300px"
-              />
-            )}
-          </GridItem>
-        </Grid>
+            )
+          })}
+        </HStack>
       </Card>
-    </VStack>
+    </>
   )
 }

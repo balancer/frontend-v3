@@ -111,7 +111,7 @@ export default function PoolUserEvents() {
   const [poolEvents, setPoolEvents] = useState<PoolEventItem[]>([])
   const { toCurrency } = useCurrency()
   const { getBlockExplorerTxUrl } = useBlockExplorer(chain)
-  const { veBalBoostMap } = useVebalBoost([pool as unknown as GqlPoolMinimal])
+  const { veBalBoostMap } = useVebalBoost([pool])
   const { userAddress } = useUserAccount()
   const { data: userPoolEventsData, loading: isLoading } = usePoolEvents({
     chain,

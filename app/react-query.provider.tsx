@@ -9,6 +9,7 @@ export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     // Global handler for every react-query error
     onError: (error, query) => {
+      console.log('Sentry capturing error: ', error)
       if (query?.meta) return captureSentryError(error, query?.meta as SentryMetadata)
       captureError(error)
     },

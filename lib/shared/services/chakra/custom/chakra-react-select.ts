@@ -9,7 +9,7 @@ const defaultStyles = <T>(): ChakraStylesConfig<T> => ({
     cursor: 'pointer',
     rounded: 'md',
     background: 'background.level3',
-    zIndex: 10,
+    zIndex: 9,
   }),
   control: provided => ({
     ...provided,

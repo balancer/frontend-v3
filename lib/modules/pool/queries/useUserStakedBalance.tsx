@@ -20,7 +20,6 @@ export type GaugeStakedBalancesByPoolId = ReturnType<
 export function useUserStakedBalance(pools: Pool[] = []) {
   const { userAddress, isConnected } = useUserAccount()
   const poolByGauge = createPoolByGaugeRecord(pools)
-
   const contracts = poolContracts(poolByGauge, userAddress)
 
   const {
@@ -76,11 +75,14 @@ export function useUserStakedBalance(pools: Pool[] = []) {
   One contract call for each gaugeAddress in a pool.
 */
 function poolContracts(poolByGauge: Record<Address, Pool>, userAddress: Address) {
+  // All gauges should implement balanceOf so we take this abi that should work for v2 and v3 pools
+  const gaugeAbi = balancerV2GaugeV5Abi
+
   const gaugeAddresses = Object.keys(poolByGauge) as Address[]
   return gaugeAddresses.map(
     gaugeAddress =>
       ({
-        abi: balancerV2GaugeV5Abi,
+        abi: gaugeAbi,
         address: gaugeAddress,
         functionName: 'balanceOf',
         args: [userAddress],

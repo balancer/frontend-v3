@@ -5,6 +5,6 @@ export function isMainnet(chain: GqlChain | number): boolean {
   return chain === GqlChain.Mainnet || chain === getChainId(GqlChain.Mainnet)
 }
 
-export function isNotMainet(chain: GqlChain | number): boolean {
+export function isNotMainnet(chain: GqlChain | number): boolean {
   return !isMainnet(chain)
 }
