@@ -112,7 +112,7 @@ export const colors = {
     sandDark: 'linear-gradient(180deg, #E5D3BE 0%, #E6C6A0 100%)',
   },
   sparkles: {
-    voting: {
+    corePool: {
       from: '#936927',
       to: '#F4EAD2',
     },

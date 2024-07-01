@@ -5,11 +5,18 @@ interface Props extends SVGProps<SVGSVGElement> {
   gradFrom?: string
   gradTo?: string
   variant?: 'gradient' | 'solid'
+  id?: string
 }
 
-function StarsIcon({ gradFrom = 'yellow', gradTo = 'pink', variant = 'gradient', ...rest }: Props) {
+function StarsIcon({
+  gradFrom = 'yellow',
+  gradTo = 'pink',
+  variant = 'gradient',
+  id,
+  ...rest
+}: Props) {
   const theme = useTheme()
-  const gradientId = `stars-gradient-${gradFrom}-${gradTo}`
+  const gradientId = `stars-gradient-${gradFrom}-${gradTo}-${id}`
 
   const startColor = theme.colors[gradTo] ? theme.colors[gradTo]['500'] : gradTo
   const stopColor = theme.colors[gradFrom] ? theme.colors[gradFrom]['500'] : gradFrom

@@ -426,6 +426,10 @@ export function getComponents(tokens: any, primaryTextColor: string) {
         },
         solid: {
           color: 'text-body',
+          bg: 'background.level2',
+          _hover: {
+            bg: 'background.level1',
+          },
         },
         'tx-gas': {
           bgGradient: 'linear(to-tr, blue.300 0%, #D7CBE7 50%, #EAA879 100%)',
@@ -562,6 +566,7 @@ export function getComponents(tokens: any, primaryTextColor: string) {
             color: 'grayText',
             px: 'sm',
             py: 'xs',
+            rounded: 'md',
           },
         },
       },

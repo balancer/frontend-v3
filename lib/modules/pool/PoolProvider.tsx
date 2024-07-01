@@ -40,15 +40,11 @@ export function _usePool({
     skip: skipQuery,
   })
 
-  // TODO: usePoolEnrichWithOnChainData is v2 specific. We need to make this more generic.
   const {
-    data: poolWithOnChainData,
+    pool: poolWithOnChainData,
     refetch: refetchOnchainData,
     isLoading: isLoadingOnchainData,
-  } = usePoolEnrichWithOnChainData({
-    chain,
-    pool: data?.pool || initialData.pool,
-  })
+  } = usePoolEnrichWithOnChainData(data?.pool || initialData.pool)
 
   // fallbacks to ensure the pool is always present. We prefer the pool with on chain data
   let pool: Pool = poolWithOnChainData || data?.pool || initialData.pool

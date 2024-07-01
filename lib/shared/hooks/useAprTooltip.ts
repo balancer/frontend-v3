@@ -4,7 +4,7 @@ import { bn } from '../utils/numbers'
 import BigNumber from 'bignumber.js'
 
 export const swapFeesTooltipText = `LPs get swap fees anytime a swap is routed through this pool. 
-These fees automatically accumulate into the LPs position, so there is no need to periodically claim.`
+These fees automatically accumulate into the LP's position, so there is no need to periodically claim.`
 
 export const inherentTokenYieldTooltipText = `Inherent token yield, 
  acccounting for the token's share of the overall pool,
