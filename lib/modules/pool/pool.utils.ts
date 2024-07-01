@@ -219,7 +219,8 @@ export function getProportionalExitAmountsForBptIn(
 
 export function getProportionalExitAmountsFromScaledBptIn(
   bptIn: bigint,
-  poolTokens: Omit<GqlPoolTokenDetail, 'nestedPool'>[],
+  // TODO: remove balanceUSD when https://github.com/balancer/frontend-v3/pull/709 is merged
+  poolTokens: Omit<GqlPoolTokenDetail, 'nestedPool' | 'balanceUSD'>[],
   poolTotalShares: string
 ): TokenAmountHumanReadable[] {
   const bptTotalSupply = parseUnits(poolTotalShares, 18)
