@@ -105,6 +105,7 @@ export function AddLiquidityModal({
         <ActionModalFooter
           isSuccess={!!addLiquidityTxHash}
           currentStep={transactionSteps.currentStep}
+          transactionSteps={transactionSteps}
           returnLabel="Return to pool"
           returnAction={redirectToPoolPage}
         />

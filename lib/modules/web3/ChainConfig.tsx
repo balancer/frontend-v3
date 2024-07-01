@@ -23,7 +23,9 @@ import { keyBy } from 'lodash'
 // Helpful for injecting fork RPCs for specific chains.
 export const rpcOverrides: Record<GqlChain, string | undefined> = {
   [GqlChain.Mainnet]: undefined,
-  [GqlChain.Arbitrum]: undefined,
+  [GqlChain.Arbitrum]:
+    // DEBUG:
+    'https://virtual.arbitrum.rpc.tenderly.co/b002bfcd-695e-411b-b8cf-10a32cf2c279',
   [GqlChain.Base]: undefined,
   [GqlChain.Avalanche]: undefined,
   [GqlChain.Fantom]: undefined,

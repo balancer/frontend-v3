@@ -4,9 +4,9 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useMemo } from 'react'
-import { Address } from 'viem'
+import { Address, encodeFunctionData, erc20Abi } from 'viem'
 import { ManagedErc20TransactionButton } from '../../transactions/transaction-steps/TransactionButton'
-import { TransactionStep } from '../../transactions/transaction-steps/lib'
+import { TransactionStep, TxCall } from '../../transactions/transaction-steps/lib'
 import { ManagedErc20TransactionInput } from '../../web3/contracts/useManagedErc20Transaction'
 import { useTokenAllowances } from '../../web3/useTokenAllowances'
 import { useUserAccount } from '../../web3/UserAccountProvider'
@@ -75,7 +75,7 @@ export function useTokenApprovalSteps({
         return requiredRawAmount > 0n && isAllowed
       }
 
-      const props: ManagedErc20TransactionInput = {
+      const props = {
         tokenAddress,
         functionName: 'approve',
         labels,
@@ -86,7 +86,7 @@ export function useTokenApprovalSteps({
           'Error in wagmi tx simulation: Approving token',
           tokenAmountToApprove
         ),
-      }
+      } as const satisfies ManagedErc20TransactionInput
 
       return {
         id,
@@ -94,6 +94,7 @@ export function useTokenApprovalSteps({
         labels,
         isComplete,
         renderAction: () => <ManagedErc20TransactionButton key={id} id={id} {...props} />,
+        batchableTxCall: buildBatchableTxCall({ tokenAddress, args: props.args }),
         onSuccess: () => tokenAllowances.refetchAllowances(),
       } as const satisfies TransactionStep
     })
@@ -102,5 +103,24 @@ export function useTokenApprovalSteps({
   return {
     isLoading: tokenAllowances.isAllowancesLoading,
     steps,
+  }
+}
+
+// Only used when wallet supports atomic bath (smart accounts)
+function buildBatchableTxCall({
+  tokenAddress,
+  args,
+}: {
+  tokenAddress: Address
+  args: readonly [Address, bigint]
+}): TxCall {
+  const data = encodeFunctionData({
+    abi: erc20Abi, // TODO: support usdtAbi
+    functionName: 'approve',
+    args,
+  })
+  return {
+    to: tokenAddress,
+    data: data,
   }
 }
