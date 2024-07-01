@@ -68,18 +68,22 @@ export function getUserTotalBalanceInt(pool: Pool): bigint {
 }
 
 /*
-   The api provides staked balances that, for now, we don't fetch onchain (AURA, FARMING, etc.)
-   We need this "non veBal staked balance" in the totalBalance calculation
+   The api provides staked balances that, for now, we don't fetch onchain (FARMING, etc.)
+   We need this "non onChain fetched staked balance" in the totalBalance calculation
 */
-export function calcNonVeBalStakedBalance(pool: Pool): number {
+export function calcNonOnChainFetchedStakedBalance(pool: Pool): number {
   const userBalance = pool.userBalance
   if (!userBalance) return 0
 
-  const nonGaugeStakedBalances = userBalance.stakedBalances
-    .filter(balance => balance.stakingType !== GqlPoolStakingType.Gauge)
+  const nonOnChainFetchedStakedBalances = userBalance.stakedBalances
+    .filter(
+      balance =>
+        balance.stakingType !== GqlPoolStakingType.Gauge &&
+        balance.stakingType !== GqlPoolStakingType.Aura
+    )
     .map(stakedBalance => stakedBalance.balance)
 
-  return Number(safeSum(nonGaugeStakedBalances))
+  return Number(safeSum(nonOnChainFetchedStakedBalances))
 }
 
 type StakedBalance = Omit<GqlUserStakedBalance, '__typename' | 'stakingType' | 'stakingId'>

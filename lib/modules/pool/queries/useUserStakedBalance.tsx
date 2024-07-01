@@ -8,19 +8,19 @@ import { groupBy } from 'lodash'
 import { Address, formatUnits } from 'viem'
 import { useReadContracts } from 'wagmi'
 import { useUserAccount } from '../../web3/UserAccountProvider'
-import { balancerV2GaugeV5Abi } from '../../web3/contracts/abi/generated'
+import { balancerV2GaugeV5Abi, auraBaseRewardPool4626Abi } from '../../web3/contracts/abi/generated'
 import { Pool } from '../PoolProvider'
 import { BPT_DECIMALS } from '../pool.constants'
 import { calcBptPrice } from '../pool.helpers'
 
-export type GaugeStakedBalancesByPoolId = ReturnType<
+export type StakedBalancesByPoolId = ReturnType<
   typeof useUserStakedBalance
->['gaugeStakedBalancesByPoolId']
+>['stakedBalancesByPoolId']
 
 export function useUserStakedBalance(pools: Pool[] = []) {
   const { userAddress, isConnected } = useUserAccount()
-  const poolByGauge = createPoolByGaugeRecord(pools)
-  const contracts = poolContracts(poolByGauge, userAddress)
+  const poolByStaking = createPoolByStakingRecord(pools)
+  const contracts = poolContracts(poolByStaking, userAddress)
 
   const {
     data: stakedPoolBalances = [],
@@ -34,18 +34,23 @@ export function useUserStakedBalance(pools: Pool[] = []) {
   })
 
   // for each pool replicate APIs GqlPoolUserBalance.stakedBalances api's type
-  const gaugeStakedBalances = stakedPoolBalances.map((rawBalance, index) => {
-    const gaugeAddress = contracts[index].address
-    const pool = poolByGauge[contracts[index].address]
+  const stakedBalances = stakedPoolBalances.map((rawBalance, index) => {
+    const stakingAddress = contracts[index].address
+    const pool = poolByStaking[stakingAddress]
     const bptPrice = calcBptPrice(pool.dynamicData.totalLiquidity, pool.dynamicData.totalShares)
     const humanStakedBalance = formatUnits(rawBalance || 0n, BPT_DECIMALS)
 
+    const stakingType =
+      stakingAddress === pool.staking?.aura?.auraPoolAddress
+        ? GqlPoolStakingType.Aura
+        : GqlPoolStakingType.Gauge
+
     const stakedBalance: GqlUserStakedBalance = {
       __typename: 'GqlUserStakedBalance',
-      stakingId: gaugeAddress,
+      stakingId: stakingAddress,
       balance: humanStakedBalance,
       balanceUsd: bn(humanStakedBalance).times(bptPrice).toNumber(),
-      stakingType: GqlPoolStakingType.Gauge,
+      stakingType,
     }
     return {
       poolId: pool.id,
@@ -53,17 +58,17 @@ export function useUserStakedBalance(pools: Pool[] = []) {
     }
   })
 
-  const gaugeStakedBalancesByPoolId = groupBy(gaugeStakedBalances, 'poolId')
+  const stakedBalancesByPoolId = groupBy(stakedBalances, 'poolId')
 
   // return empty results for pools without gauges
   pools.forEach(pool => {
-    if (!gaugeStakedBalancesByPoolId[pool.id]) {
-      gaugeStakedBalancesByPoolId[pool.id] = []
+    if (!stakedBalancesByPoolId[pool.id]) {
+      stakedBalancesByPoolId[pool.id] = []
     }
   })
 
   return {
-    gaugeStakedBalancesByPoolId,
+    stakedBalancesByPoolId,
     isLoading,
     refetch,
     error,
@@ -74,23 +79,25 @@ export function useUserStakedBalance(pools: Pool[] = []) {
   Builds the contracts array for the useReadContracts hook.
   One contract call for each gaugeAddress in a pool.
 */
-function poolContracts(poolByGauge: Record<Address, Pool>, userAddress: Address) {
-  const gaugeAddresses = Object.keys(poolByGauge) as Address[]
+function poolContracts(poolByStaking: Record<Address, Pool>, userAddress: Address) {
+  const gaugeAddresses = Object.keys(poolByStaking) as Address[]
   return gaugeAddresses.map(
     gaugeAddress =>
       ({
-        abi: balancerV2GaugeV5Abi,
+        abi: poolByStaking[gaugeAddress].staking?.aura
+          ? auraBaseRewardPool4626Abi
+          : balancerV2GaugeV5Abi,
         address: gaugeAddress,
         functionName: 'balanceOf',
         args: [userAddress],
-        chainId: getChainId(poolByGauge[gaugeAddress].chain),
+        chainId: getChainId(poolByStaking[gaugeAddress].chain),
       } as const)
   )
 }
 
-function createPoolByGaugeRecord(pools: Pool[]): Record<Address, Pool> {
+function createPoolByStakingRecord(pools: Pool[]): Record<Address, Pool> {
   return pools.reduce((acc, pool) => {
-    const gaugeAddresses = getGaugeAddresses(pool)
+    const gaugeAddresses = getStakingAddresses(pool)
     gaugeAddresses.forEach(gaugeAddress => {
       acc[gaugeAddress] = pool
     })
@@ -98,12 +105,15 @@ function createPoolByGaugeRecord(pools: Pool[]): Record<Address, Pool> {
   }, {} as Record<Address, Pool>)
 }
 
-function getGaugeAddresses(pool: Pool): Address[] {
+function getStakingAddresses(pool: Pool): Address[] {
   const preferentialGaugeAddress = pool.staking?.gauge?.gaugeAddress as Address
+  const auraPoolAddress = pool.staking?.aura?.auraPoolAddress as Address
   const nonPreferentialGaugeAddresses =
     pool.staking?.gauge?.otherGauges?.map(otherGauge => otherGauge.gaugeAddress as Address) || []
-  const gaugeAddresses = [preferentialGaugeAddress, ...nonPreferentialGaugeAddresses].filter(
-    Boolean
-  )
+  const gaugeAddresses = [
+    auraPoolAddress,
+    preferentialGaugeAddress,
+    ...nonPreferentialGaugeAddresses,
+  ].filter(Boolean)
   return gaugeAddresses
 }
