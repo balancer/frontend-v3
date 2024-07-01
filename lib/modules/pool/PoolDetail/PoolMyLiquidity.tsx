@@ -15,7 +15,7 @@ import {
   VStack,
   Tooltip,
 } from '@chakra-ui/react'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { usePool } from '../PoolProvider'
 import { Address } from 'viem'
 import { usePathname, useRouter } from 'next/navigation'
@@ -56,10 +56,6 @@ const TABS = [
     value: 'gauge',
     label: 'Staked',
   },
-  {
-    value: 'aura',
-    label: 'Aura',
-  },
 ]
 
 export default function PoolMyLiquidity() {
@@ -68,9 +64,23 @@ export default function PoolMyLiquidity() {
   const { toCurrency } = useCurrency()
   const { isConnected, isConnecting } = useUserAccount()
   const router = useRouter()
-
   const pathname = usePathname()
+
   const isAddLiquidityBlocked = shouldBlockAddLiquidity(pool)
+
+  useEffect(() => {
+    if (pool.staking?.aura && TABS.findIndex(tab => tab.value === 'aura') === -1) {
+      TABS.push({
+        value: 'aura',
+        label: 'Aura',
+      })
+    } else if (!pool.staking?.aura) {
+      const index = TABS.findIndex(tab => tab.value === 'aura')
+      if (index > -1) {
+        TABS.splice(index, 1)
+      }
+    }
+  }, [pool])
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
