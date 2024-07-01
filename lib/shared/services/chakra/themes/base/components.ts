@@ -157,7 +157,7 @@ export function getComponents(tokens: any, primaryTextColor: string) {
     // Section is a custom component
     Section: {
       baseStyle: {
-        marginBottom: { base: '16', md: '24' },
+        marginBottom: { base: '16', md: '32' },
       },
       variants: {
         subsection: {

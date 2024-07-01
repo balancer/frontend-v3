@@ -1,3 +1,5 @@
+@import './marketing.css';
+
 :root {
   --ease-out-cubic: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
@@ -28,6 +30,23 @@ body {
 .hidden {
   opacity: var(--start-opacity);
   transform: translateY(5px) scale(var(--start-scale));
+}
+
+.balanced {
+  text-wrap: balance;
+}
+
+
+.picture {
+  height: 100%;
+  display: flex;
+  border-radius: "9999px";
+}
+
+.picture img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 
 .fade-in-opacity {
