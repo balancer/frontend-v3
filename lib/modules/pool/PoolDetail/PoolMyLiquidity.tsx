@@ -21,9 +21,9 @@ import { Address } from 'viem'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { keyBy } from 'lodash'
-import { getTotalAprLabel, getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
+import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
 import { useUserAccount } from '../../web3/UserAccountProvider'
-import { bn } from '@/lib/shared/utils/numbers'
+import { bn, fNum } from '@/lib/shared/utils/numbers'
 import {
   getUserTotalBalanceInt,
   getUserWalletBalanceInt,
@@ -34,7 +34,7 @@ import {
   calcStakedBalanceInt,
   calcStakedBalanceUsd,
 } from '../user-balance.helpers'
-import { hasNestedPools, shouldBlockAddLiquidity } from '../pool.helpers'
+import { calcUserShareOfPool, hasNestedPools, shouldBlockAddLiquidity } from '../pool.helpers'
 import {
   hasNonPreferentialStakedBalance,
   migrateStakeTooltipLabel,
@@ -169,7 +169,7 @@ export default function PoolMyLiquidity() {
   const shouldMigrateStake = hasPreferentialGauge(pool) && hasNonPreferentialBalance
   const hasUnstakedBalance = bn(getUserWalletBalance(pool)).gt(0)
   const hasStakedBalance = bn(calcTotalStakedBalance(pool)).gt(0)
-  const aprLabel = getTotalAprLabel(pool.dynamicData.aprItems)
+  const shareofPoolLabel = fNum('sharePercent', calcUserShareOfPool(pool))
 
   const displayTokens = hasNestedPools(pool)
     ? // we don't have the balances for pool.displayTokens for v2 boosted pools so we show bpt tokens balance as a workaround
@@ -207,7 +207,7 @@ export default function PoolMyLiquidity() {
                 {getTitlePrefix()}
               </Heading>
               <Text variant="secondary" fontSize="0.85rem">
-                APR
+                Pool share
               </Text>
             </VStack>
             <VStack alignItems="flex-end">
@@ -219,7 +219,7 @@ export default function PoolMyLiquidity() {
                 </Heading>
               )}
               <Text variant="secondary" fontSize="0.85rem">
-                {aprLabel}
+                {shareofPoolLabel}
               </Text>
             </VStack>
           </HStack>
