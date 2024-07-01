@@ -58,6 +58,7 @@
     "echarts-for-react": "^3.0.2",
     "eslint": "8.43.0",
     "eslint-config-next": "14.0.1",
+    "fathom-client": "^3.7.0",
     "framer-motion": "^10.13.0",
     "graphql": "^16.7.1",
     "graphql-request": "^6.1.0",

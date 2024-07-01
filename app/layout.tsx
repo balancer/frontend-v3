@@ -5,9 +5,9 @@ import { Footer } from '@/lib/shared/components/navs/Footer'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { satoshiFont } from '@/lib/assets/fonts/satoshi/satoshi'
 import NextTopLoader from 'nextjs-toploader'
-import { Container } from '@chakra-ui/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import '@/lib/assets/css/global.css'
+import { Fathom } from '@/lib/shared/services/fathom/Fathom'
 
 const { projectName, projectId } = getProjectConfig()
 const iconUrl = `/images/icons/${projectId}.ico`
@@ -32,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script async src="https://w.appzi.io/w.js?token=8TY8k"></script>
       </head>
       <body className={satoshiFont.className} suppressHydrationWarning>
+        <Fathom />
         <NextTopLoader showSpinner={false} color="#7f6ae8" />
         <Providers>
           <Navbar />

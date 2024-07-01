@@ -86,6 +86,9 @@ importers:
       eslint-config-next:
         specifier: 14.0.1
         version: 14.0.1(eslint@8.43.0)(typescript@5.4.5)
+      fathom-client:
+        specifier: ^3.7.0
+        version: 3.7.0
       framer-motion:
         specifier: ^10.13.0
         version: 10.16.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -5240,6 +5243,9 @@ packages:
 
   fastq@1.15.0:
     resolution: {integrity: sha512-wBrocU2LCXXa+lWBt8RoIRD89Fi8OdABODa/kEnyeyjS5aZO5/GNvI5sEINADqP/h8M29UHTHUb53sUu5Ihqdw==}
+
+  fathom-client@3.7.0:
+    resolution: {integrity: sha512-lMEyR3lSThlkK69+f/16OEyuii743iJGcZ6aIUKT5qYH9lGi7ENTYwuxh5NWWYSO6qs57we01nLxncW8kegJlw==}
 
   fb-watchman@2.0.2:
     resolution: {integrity: sha512-p5161BqbuCaSnB8jIbzQHOlpgsPmK5rJVDfDKO91Axs5NC1uu3HRQm6wt9cd9/+GtQQIO53JdGXXoyDpTAsgYA==}
@@ -15485,6 +15491,8 @@ snapshots:
   fastq@1.15.0:
     dependencies:
       reusify: 1.0.4
+
+  fathom-client@3.7.0: {}
 
   fb-watchman@2.0.2:
     dependencies:
