@@ -3,6 +3,7 @@
 import { load, trackPageview } from 'fathom-client'
 import { useEffect, Suspense } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
+import { isProd } from '@/lib/config/app.config'
 
 function TrackPageView() {
   // Current Path
@@ -13,8 +14,7 @@ function TrackPageView() {
   // Load the Fathom script on mount
   useEffect(() => {
     // Optional: Only track on production; remove these two lines if you want to track other environments
-    const env = process.env.NODE_ENV
-    if (env !== 'production') return
+    if (!isProd) return
 
     load('MKFEFCXC', {
       auto: false,
