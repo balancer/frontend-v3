@@ -109,6 +109,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
@@ -146,6 +147,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
@@ -183,6 +185,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
@@ -222,6 +225,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
@@ -261,6 +265,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
@@ -299,6 +304,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
@@ -354,6 +360,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
@@ -395,6 +402,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
