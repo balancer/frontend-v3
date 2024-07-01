@@ -1,7 +1,6 @@
 import {
   GetPoolQuery,
   GqlChain,
-  GqlPoolAprValue,
   GqlPoolComposableStableNested,
   GqlPoolTokenDetail,
   GqlPoolType,
