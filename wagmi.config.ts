@@ -62,6 +62,10 @@ export default defineConfig(() => {
             name: 'veDelegationProxy',
             address: mainnetNetworkConfig.contracts.veDelegationProxy,
           },
+          {
+            name: 'AuraBaseRewardPool4626',
+            address: '0xCfCA23cA9CA720B6E98E3Eb9B6aa0fFC4a5C08B9',
+          },
         ],
       }),
     ],
