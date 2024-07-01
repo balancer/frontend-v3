@@ -29,6 +29,11 @@ export default defineConfig(() => {
             name: 'BalancerV2Vault',
             address: mainnetNetworkConfig.contracts.balancer.vaultV2,
           },
+          // Uncomment and replace manual abi when vault is deployed in mainnet
+          // {
+          //   name: 'BalancerV3Vault',
+          //   address: mainnetNetworkConfig.contracts.balancer.vaultV3,
+          // },
           {
             name: 'BalancerV2ComposableStablePoolV5',
             address: '0xdacf5fa19b1f720111609043ac67a9818262850c',

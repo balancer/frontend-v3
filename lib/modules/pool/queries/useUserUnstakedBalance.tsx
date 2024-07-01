@@ -16,6 +16,9 @@ export type UnstakedBalanceByPoolId = ReturnType<
 export function useUserUnstakedBalance(pools: Pool[] = []) {
   const { userAddress, isConnected } = useUserAccount()
 
+  // All pools should implement balanceOf so we take this abi that should work for v2 and v3 pools
+  const poolAbi = balancerV2WeightedPoolV4Abi
+
   const {
     data: unstakedPoolBalances = [],
     isLoading,
@@ -29,7 +32,7 @@ export function useUserUnstakedBalance(pools: Pool[] = []) {
     contracts: pools.map(
       pool =>
         ({
-          abi: balancerV2WeightedPoolV4Abi,
+          abi: poolAbi,
           address: pool.address as Address,
           functionName: 'balanceOf',
           args: [userAddress as Address],

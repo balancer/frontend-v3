@@ -47,7 +47,7 @@ const gqlChainToWagmiChainMap = {
   [GqlChain.Optimism]: { iconUrl: '/images/chains/OPTIMISM.svg', ...optimism },
   [GqlChain.Polygon]: { iconUrl: '/images/chains/POLYGON.svg', ...polygon },
   [GqlChain.Zkevm]: { iconUrl: '/images/chains/ZKEVM.svg', ...polygonZkEvm },
-  [GqlChain.Sepolia]: sepolia,
+  [GqlChain.Sepolia]: { iconUrl: '/images/chains/SEPOLIA.svg', ...sepolia },
   [GqlChain.Mode]: { iconUrl: '/images/chains/MODE.svg', ...mode },
   [GqlChain.Fraxtal]: { iconUrl: '/images/chains/FRAXTAL.svg', ...fraxtal },
 } as const satisfies Record<GqlChain, Chain>

@@ -28,7 +28,7 @@ export default async function Pools() {
       <Box>
         <FadeInOnView animateOnce={false}>
           <Box mb={{ base: '2xl', sm: '3xl' }}>
-            <FeaturedPools pools={featuredPools} />
+            <FeaturedPools featuredPools={featuredPools} />
           </Box>
         </FadeInOnView>
         <FadeInOnView animateOnce={false}>

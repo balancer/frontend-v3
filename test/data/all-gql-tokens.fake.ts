@@ -45,12 +45,38 @@ export const allFakeGqlTokens: GqlToken[] = [
   },
   {
     __typename: 'GqlToken',
+    address: '0x7b79995e5f793a07bc00c21412e50ecae098e7f9',
+    name: 'Wrapped Ether',
+    symbol: 'WETH',
+    decimals: 18,
+    chainId: 1,
+    chain: GqlChain.Sepolia,
+    logoURI:
+      'https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
+    priority: 0,
+    tradable: true,
+  },
+  {
+    __typename: 'GqlToken',
     address: '0xba100000625a3754423978a60c9317c58a424e3d',
     name: 'Balancer',
     symbol: 'BAL',
     decimals: 18,
     chainId: 1,
     chain: GqlChain.Mainnet,
+    logoURI:
+      'https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xba100000625a3754423978a60c9317c58a424e3d.png',
+    priority: 0,
+    tradable: true,
+  },
+  {
+    __typename: 'GqlToken',
+    address: '0xb19382073c7a0addbb56ac6af1808fa49e377b75',
+    name: 'Balancer',
+    symbol: 'BAL',
+    decimals: 18,
+    chainId: 1,
+    chain: GqlChain.Sepolia,
     logoURI:
       'https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xba100000625a3754423978a60c9317c58a424e3d.png',
     priority: 0,
