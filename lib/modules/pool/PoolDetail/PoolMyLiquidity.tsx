@@ -14,8 +14,9 @@ import {
   Text,
   VStack,
   Tooltip,
+  Link,
 } from '@chakra-ui/react'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useLayoutEffect } from 'react'
 import { usePool } from '../PoolProvider'
 import { Address } from 'viem'
 import { usePathname, useRouter } from 'next/navigation'
@@ -42,6 +43,9 @@ import {
 } from '../actions/stake.helpers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
+import { ArrowUpRight } from 'react-feather'
+import { useGetAuraPid } from '../../staking/aura/useGetAuraPid'
+import { getChainId } from '@/lib/config/app.config'
 
 const TABS = [
   {
@@ -65,8 +69,20 @@ export default function PoolMyLiquidity() {
   const { isConnected, isConnecting } = useUserAccount()
   const router = useRouter()
   const pathname = usePathname()
+  const [height, setHeight] = useState(0)
+
+  const { data: pid } = useGetAuraPid(
+    getChainId(chain),
+    pool.staking?.aura?.auraPoolAddress as Address
+  )
 
   const isAddLiquidityBlocked = shouldBlockAddLiquidity(pool)
+
+  useLayoutEffect(() => {
+    if (myLiquiditySectionRef && myLiquiditySectionRef.current) {
+      setHeight(myLiquiditySectionRef.current.offsetHeight)
+    }
+  }, [])
 
   useEffect(() => {
     if (pool.staking?.aura && TABS.findIndex(tab => tab.value === 'aura') === -1) {
@@ -169,7 +185,9 @@ export default function PoolMyLiquidity() {
   const shouldMigrateStake = hasPreferentialGauge(pool) && hasNonPreferentialBalance
   const hasUnstakedBalance = bn(getUserWalletBalance(pool)).gt(0)
   const hasStakedBalance = bn(calcTotalStakedBalance(pool)).gt(0)
-  const shareofPoolLabel = fNum('sharePercent', calcUserShareOfPool(pool))
+  const shareOfPool = calcUserShareOfPool(pool)
+  const shareofPoolLabel = bn(shareOfPool).gt(0) ? fNum('sharePercent', shareOfPool) : <>&mdash;</>
+  const chainId = getChainId(chain)
 
   const displayTokens = hasNestedPools(pool)
     ? // we don't have the balances for pool.displayTokens for v2 boosted pools so we show bpt tokens balance as a workaround
@@ -224,19 +242,38 @@ export default function PoolMyLiquidity() {
             </VStack>
           </HStack>
           <Divider />
-          <VStack spacing="md" width="full">
-            {displayTokens.map(token => {
-              return (
-                <TokenRow
-                  chain={chain}
-                  key={`my-liquidity-token-${token.address}`}
-                  address={token.address as Address}
-                  value={tokenBalanceFor(token.address)}
-                  isLoading={isLoadingOnchainUserBalances || isConnecting}
-                  abbreviated={false}
-                />
-              )
-            })}
+          <VStack spacing="md" width="full" alignItems="flex-start" h={`${height - 270}px}`}>
+            {activeTab.value === 'aura' && !totalBalanceUsd ? (
+              <HStack w="full" bg="#A855F7" p="2" rounded="md" mb="3xl">
+                <Text color="white">
+                  Aura APR:{' '}
+                  {fNum('apr', pool.staking?.aura ? bn(pool.staking.aura.apr).div(100) : '0')}
+                </Text>
+                <Text color="white" ml="auto">
+                  Learn more
+                </Text>
+                <Link
+                  href={`https://app.aura.finance/#/${chainId}/pool/${pid}`}
+                  target="_blank"
+                  color="white"
+                >
+                  <ArrowUpRight size={16} />
+                </Link>
+              </HStack>
+            ) : (
+              displayTokens.map(token => {
+                return (
+                  <TokenRow
+                    chain={chain}
+                    key={`my-liquidity-token-${token.address}`}
+                    address={token.address as Address}
+                    value={tokenBalanceFor(token.address)}
+                    isLoading={isLoadingOnchainUserBalances || isConnecting}
+                    abbreviated={false}
+                  />
+                )
+              })
+            )}
           </VStack>
           <Divider />
           <HStack mt="md" width="full" justifyContent="flex-start">
