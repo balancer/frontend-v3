@@ -8,10 +8,10 @@ import { Pool } from '../pool/PoolProvider'
 import { useSwipeable } from 'react-swipeable'
 
 type Props = {
-  pools: GetFeaturedPoolsQuery['featuredPools']
+  featuredPools: GetFeaturedPoolsQuery['featuredPools']
 }
 
-export function PoolCarousel({ pools, ...rest }: Props & BoxProps) {
+export function PoolCarousel({ featuredPools, ...rest }: Props & BoxProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [direction, setDirection] = useState<'left' | 'right'>('left')
   const swipeHandlers = useSwipeable({
@@ -21,12 +21,12 @@ export function PoolCarousel({ pools, ...rest }: Props & BoxProps) {
 
   function next() {
     setDirection('right')
-    setCurrentIndex(prevIndex => (prevIndex + 1 === pools.length ? 0 : prevIndex + 1))
+    setCurrentIndex(prevIndex => (prevIndex + 1 === featuredPools.length ? 0 : prevIndex + 1))
   }
 
   function prev() {
     setDirection('left')
-    setCurrentIndex(prevIndex => (prevIndex - 1 < 0 ? pools.length - 1 : prevIndex - 1))
+    setCurrentIndex(prevIndex => (prevIndex - 1 < 0 ? featuredPools.length - 1 : prevIndex - 1))
   }
 
   function pick(index: number) {
@@ -34,7 +34,7 @@ export function PoolCarousel({ pools, ...rest }: Props & BoxProps) {
     setCurrentIndex(index)
   }
 
-  const currentPool = pools[currentIndex].pool as Pool
+  const currentPool = featuredPools[currentIndex].pool as Pool
 
   return (
     <Box {...swipeHandlers} {...rest}>
@@ -63,13 +63,13 @@ export function PoolCarousel({ pools, ...rest }: Props & BoxProps) {
           isSmall
           carouselIndex={currentIndex}
           carouselDirection={direction}
-          featuredReason="Liquid staked $SOL on an L2" //replace with {currentPool.description} once API is updated
+          featuredReason={featuredPools[currentIndex].description}
         />
       </Card>
       <Center w="full" mt="md">
-        {pools.map((pool, index) => (
+        {featuredPools.map((featured, index) => (
           <Box
-            key={pool.pool.id}
+            key={featured.pool.id}
             w="3"
             h="3"
             bg={index === currentIndex ? 'font.highlight' : 'border.base'}

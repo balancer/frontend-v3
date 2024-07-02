@@ -11,6 +11,7 @@ import { TransactionStateProvider } from '@/lib/modules/transactions/transaction
 import { PropsWithChildren } from 'react'
 import { isHash } from 'viem'
 import { usePoolRedirect } from '@/lib/modules/pool/pool.hooks'
+import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
 
 type Props = PropsWithChildren<{
   params: { txHash?: string[] }
@@ -36,14 +37,16 @@ export default function AddLiquidityLayout({ params: { txHash }, children }: Pro
   }
 
   return (
-    <TransactionStateProvider>
-      <RelayerSignatureProvider>
-        <TokenInputsValidationProvider>
-          <AddLiquidityProvider urlTxHash={urlTxHash}>
-            <PriceImpactProvider>{children}</PriceImpactProvider>
-          </AddLiquidityProvider>
-        </TokenInputsValidationProvider>
-      </RelayerSignatureProvider>
-    </TransactionStateProvider>
+    <DefaultPageContainer>
+      <TransactionStateProvider>
+        <RelayerSignatureProvider>
+          <TokenInputsValidationProvider>
+            <AddLiquidityProvider urlTxHash={urlTxHash}>
+              <PriceImpactProvider>{children}</PriceImpactProvider>
+            </AddLiquidityProvider>
+          </TokenInputsValidationProvider>
+        </RelayerSignatureProvider>
+      </TransactionStateProvider>
+    </DefaultPageContainer>
   )
 }

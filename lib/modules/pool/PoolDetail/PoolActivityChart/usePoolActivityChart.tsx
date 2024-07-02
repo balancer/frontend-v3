@@ -123,7 +123,12 @@ const getDefaultPoolActivityChartOptions = (
       },
     },
     tooltip: {
-      triggerOn: isMobile ? 'mousemove|click' : 'click',
+      triggerOn: 'mousemove|click',
+      enterable: true,
+      hideDelay: 300,
+      position: function (point: number[]) {
+        return [point[0] + 5, point[1] - 5]
+      },
       extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container};pointer-events: auto!important`,
       formatter: (params: any) => {
         const data = Array.isArray(params) ? params[0] : params
@@ -139,21 +144,7 @@ const getDefaultPoolActivityChartOptions = (
         const tx = metaData.tx
         const txLink = getBlockExplorerTxUrl(tx)
         const addressLink = getBlockExplorerAddressUrl(userAddress)
-        const arrow = `<svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="12"
-                          height="12"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        >
-                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                          <polyline points="15 3 21 3 21 9"></polyline>
-                          <line x1="10" y1="14" x2="21" y2="3"></line>
-                      </svg>`
+        const arrow = `<svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" fill="none"><path stroke="#718096" stroke-linecap="round" stroke-linejoin="round" d="M2 1h6v6M1 8l7-7"/></svg>`
 
         return `
           <div style="padding: none; display: flex; flex-direction: column;${
@@ -189,7 +180,9 @@ const getDefaultPoolActivityChartOptions = (
             <a style="display:flex;align-items:center;font-size: 0.85rem; font-weight: 500; color: ${
               toolTipTheme.text
             };" href=${addressLink} target="_blank">
-              <span style="margin-right:4px;">By: ${abbreviateAddress(userAddress)}</span>
+              <span style="font-size: 0.75rem; margin-right:4px;">By: ${abbreviateAddress(
+                userAddress
+              )}</span>
               ${arrow}
             </a>
             <div style="font-size: 0.75rem; line-height:1;font-weight: 500; margin-top:4px; color: ${
@@ -364,6 +357,7 @@ export function usePoolActivityChart(isExpanded: boolean) {
         },
         emphasis: {
           focus: 'self',
+          scale: 1.5,
         },
         symbolSize: getSymbolSize,
         data: chartData.adds,
@@ -385,6 +379,7 @@ export function usePoolActivityChart(isExpanded: boolean) {
         },
         emphasis: {
           focus: 'self',
+          scale: 1.5,
         },
         symbolSize: getSymbolSize,
         data: chartData.removes,
@@ -406,6 +401,7 @@ export function usePoolActivityChart(isExpanded: boolean) {
         },
         emphasis: {
           focus: 'self',
+          scale: 1.5,
         },
         symbolSize: getSymbolSize,
         data: chartData.swaps,

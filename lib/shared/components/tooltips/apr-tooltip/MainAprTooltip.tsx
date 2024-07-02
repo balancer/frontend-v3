@@ -4,7 +4,7 @@ import { Info } from 'react-feather'
 import { getTotalAprLabel } from '@/lib/modules/pool/pool.utils'
 import StarsIcon from '../../icons/StarsIcon'
 import { PoolListItem } from '@/lib/modules/pool/pool.types'
-import { Pool } from '@/lib/modules/pool/PoolProvider'
+import { FeaturedPool, Pool } from '@/lib/modules/pool/PoolProvider'
 import { isLBP } from '@/lib/modules/pool/pool.helpers'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
@@ -18,12 +18,21 @@ interface Props
   aprLabel?: boolean
   apr?: string
   height?: string
-  pool: Pool | PoolListItem
+  pool: Pool | PoolListItem | FeaturedPool
+  id?: string
 }
 
 const hoverColor = 'font.highlight'
 
-export const SparklesIcon = ({ isOpen, pool }: { isOpen: boolean; pool: Pool | PoolListItem }) => {
+export const SparklesIcon = ({
+  isOpen,
+  pool,
+  id,
+}: {
+  isOpen: boolean
+  pool: Pool | PoolListItem | FeaturedPool
+  id?: string
+}) => {
   const theme = useTheme()
   const { corePoolId } = getProjectConfig()
 
@@ -33,8 +42,8 @@ export const SparklesIcon = ({ isOpen, pool }: { isOpen: boolean; pool: Pool | P
   let gradToColor = theme.colors.sparkles.default.to
 
   if (pool.id === corePoolId) {
-    gradFromColor = theme.colors.sparkles.voting.from
-    gradToColor = theme.colors.sparkles.voting.to
+    gradFromColor = theme.colors.sparkles.corePool.from
+    gradToColor = theme.colors.sparkles.corePool.to
   }
 
   if (hasRewardApr) {
@@ -52,6 +61,7 @@ export const SparklesIcon = ({ isOpen, pool }: { isOpen: boolean; pool: Pool | P
             as={StarsIcon}
             gradFrom={isOpen ? 'green' : gradFromColor}
             gradTo={isOpen ? 'green' : gradToColor}
+            id={id || ''}
           />
         )}
       </Center>
@@ -67,6 +77,7 @@ function MainAprTooltip({
   aprLabel,
   height = '16px',
   pool,
+  id,
   ...props
 }: Props) {
   const aprToShow = apr || getTotalAprLabel(pool.dynamicData.aprItems, vebalBoost)
@@ -91,7 +102,7 @@ function MainAprTooltip({
                   {aprLabel ? ' APR' : ''}
                 </Text>
               )}
-              <SparklesIcon isOpen={isOpen} pool={pool} />
+              <SparklesIcon isOpen={isOpen} pool={pool} id={id} />
             </HStack>
           </Button>
         </HStack>
