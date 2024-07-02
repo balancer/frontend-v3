@@ -69,7 +69,7 @@ export default defineConfig(() => {
           },
           {
             name: 'AuraBaseRewardPool4626',
-            address: '0xCfCA23cA9CA720B6E98E3Eb9B6aa0fFC4a5C08B9',
+            address: '0x1204f5060be8b716f5a62b4df4ce32acd01a69f5',
           },
         ],
       }),
