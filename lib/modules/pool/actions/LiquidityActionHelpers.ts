@@ -204,7 +204,7 @@ export function requiresProportionalInput(poolType: GqlPoolType): boolean {
   return isGyro(poolType)
 }
 
-type VaultVersion = PoolState['vaultVersion']
+type ProtocolVersion = PoolState['protocolVersion']
 
 export function toPoolState(pool: Pool): PoolState {
   return {
@@ -212,7 +212,7 @@ export function toPoolState(pool: Pool): PoolState {
     address: pool.address as Address,
     tokens: pool.poolTokens as MinimalToken[],
     type: mapPoolType(pool.type),
-    vaultVersion: pool.protocolVersion as VaultVersion,
+    protocolVersion: pool.protocolVersion as ProtocolVersion,
   }
 }
 
@@ -228,7 +228,7 @@ export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
       decimals: t.decimals,
     })),
     totalShares: pool.dynamicData.totalShares as HumanAmount,
-    vaultVersion: pool.protocolVersion as VaultVersion,
+    protocolVersion: pool.protocolVersion as ProtocolVersion,
   }
 }
 

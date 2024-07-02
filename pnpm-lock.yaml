@@ -12,8 +12,8 @@ importers:
         specifier: 3.8.0-rc.1
         version: 3.8.0-rc.1(graphql-ws@5.14.1(graphql@16.8.1))(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@balancer/sdk':
-        specifier: ^0.15.1
-        version: 0.15.1(bufferutil@4.0.8)(typescript@5.4.5)(zod@3.22.4)
+        specifier: ^0.19.0
+        version: 0.19.0(bufferutil@4.0.8)(typescript@5.4.5)(zod@3.22.4)
       '@chakra-ui/anatomy':
         specifier: ^2.2.2
         version: 2.2.2
@@ -1287,8 +1287,8 @@ packages:
     resolution: {integrity: sha512-+j7a5c253RfKh8iABBhywc8NSfP5LURe7Uh4qpsh6jc+aLJguvmIUBdjSdEMQv2bENrCR5MfRdjGo7vzS/ob7w==}
     engines: {node: '>=6.9.0'}
 
-  '@balancer/sdk@0.15.1':
-    resolution: {integrity: sha512-c1hnUtI71BE2xyBcU43AP9tR1qBreGxeirsH6x2AYyZIpGRzRT7ppbwrfW1/zg1Z47qxvXSM2KaxunOIkn/6oQ==}
+  '@balancer/sdk@0.19.0':
+    resolution: {integrity: sha512-6nxIEzPMIKL1KFtk8Z+pe9B9lOHFRwnvjBCyTf9jlWb88YCf+xqoQASL2D/0o6ifRlJZpQGuRrZp2dUtqNisgQ==}
     engines: {node: '>=18.x'}
 
   '@bcoe/v8-coverage@0.2.3':
@@ -10114,7 +10114,7 @@ snapshots:
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
 
-  '@balancer/sdk@0.15.1(bufferutil@4.0.8)(typescript@5.4.5)(zod@3.22.4)':
+  '@balancer/sdk@0.19.0(bufferutil@4.0.8)(typescript@5.4.5)(zod@3.22.4)':
     dependencies:
       decimal.js-light: 2.5.1
       lodash.clonedeep: 4.5.0
