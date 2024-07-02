@@ -244,7 +244,7 @@ export default function PoolMyLiquidity() {
           <Divider />
           <VStack spacing="md" width="full" alignItems="flex-start" h={`${height - 270}px}`}>
             {activeTab.value === 'aura' && !totalBalanceUsd ? (
-              <HStack w="full" bg="#A855F7" p="2" rounded="md" mb="3xl">
+              <HStack w="full" bg="aura.purple" p="2" rounded="md" mb="3xl">
                 <Text color="white">
                   Aura APR:{' '}
                   {fNum('apr', pool.staking?.aura ? bn(pool.staking.aura.apr).div(100) : '0')}
