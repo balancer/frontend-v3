@@ -1,7 +1,7 @@
 import { captureException } from '@sentry/nextjs'
 import { Extras, ScopeContext } from '@sentry/types'
 import { SentryError, ensureError } from './errors'
-import { shouldIgnoreExecutionError } from './error-filters'
+import { isUserRejectedError, shouldIgnoreExecutionError } from './error-filters'
 import {
   AddLiquidityParams,
   stringifyHumanAmountsIn,
@@ -218,12 +218,15 @@ export function shouldIgnoreError(e: Error) {
     Thrown from useWalletClient() when loading a pool page from scratch.
     It looks like is is caused by the useWalletClient call in AddTokenToWalletButton but it does not affect it's behavior.
   */
-  let ignored = false
-  if (e.message.includes('connector.getAccounts is not a function')) {
-    ignored = true
-  }
-
+  const ignored = shouldIgnore(e)
   if (ignored && !isProd) console.log('Ignoring error with message: ', e.message)
-
   return ignored
+}
+
+function shouldIgnore(e: Error): boolean {
+  if (e.message.includes('connector.getAccounts is not a function')) return true
+
+  if (isUserRejectedError(e)) return true
+
+  return false
 }
