@@ -20,6 +20,25 @@ import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { keyBy } from 'lodash'
 
+/* If a request with the default rpc fails, it will fall back to the next one in the list.
+  https://viem.sh/docs/clients/transports/fallback#fallback-transport
+*/
+export const rpcFallbacks: Record<GqlChain, string | undefined> = {
+  // TODO: chose best public rpc urls
+  [GqlChain.Mainnet]: 'https://eth.llamarpc.com',
+  [GqlChain.Arbitrum]: undefined,
+  [GqlChain.Base]: undefined,
+  [GqlChain.Avalanche]: undefined,
+  [GqlChain.Fantom]: undefined,
+  [GqlChain.Gnosis]: undefined,
+  [GqlChain.Optimism]: undefined,
+  [GqlChain.Polygon]: undefined,
+  [GqlChain.Zkevm]: undefined,
+  [GqlChain.Sepolia]: undefined,
+  [GqlChain.Mode]: undefined,
+  [GqlChain.Fraxtal]: undefined,
+}
+
 // Helpful for injecting fork RPCs for specific chains.
 export const rpcOverrides: Record<GqlChain, string | undefined> = {
   [GqlChain.Mainnet]: undefined,
