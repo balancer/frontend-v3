@@ -8,6 +8,7 @@ import {
 } from '@/lib/modules/pool/actions/add-liquidity/queries/add-liquidity-keys'
 import { RemoveLiquidityParams } from '@/lib/modules/pool/actions/remove-liquidity/queries/remove-liquidity-keys'
 import { SimulateSwapParams } from '@/lib/modules/swap/queries/useSimulateSwapQuery'
+import { isProd } from '@/lib/config/app.config'
 
 /**
  * Metadata to be added to the captured Sentry error
@@ -207,4 +208,22 @@ export function captureSentryError(
 
   // console.error('Sentry error en wagmi react query wrapper 2. Context', sentryError)
   captureException(sentryError, context)
+}
+
+/*
+  Detects common errors that we don't want to capture in Sentry
+*/
+export function shouldIgnoreError(e: Error) {
+  /*
+    Thrown from useWalletClient() when loading a pool page from scratch.
+    It looks like is is caused by the useWalletClient call in AddTokenToWalletButton but it does not affect it's behavior.
+  */
+  let ignored = false
+  if (e.message.includes('connector.getAccounts is not a function')) {
+    ignored = true
+  }
+
+  if (ignored && !isProd) console.log('Ignoring error with message: ', e.message)
+
+  return ignored
 }
