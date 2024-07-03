@@ -33,13 +33,10 @@ import {
   getUserTotalBalanceUsd,
   getUserWalletBalance,
   getUserWalletBalanceUsd,
+  shouldMigrateStake,
 } from '../user-balance.helpers'
 import { hasNestedPools, shouldBlockAddLiquidity } from '../pool.helpers'
-import {
-  hasNonPreferentialStakedBalance,
-  migrateStakeTooltipLabel,
-  hasPreferentialGauge,
-} from '../actions/stake.helpers'
+import { hasNonPreferentialStakedBalance, migrateStakeTooltipLabel } from '../actions/stake.helpers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 
 const TABS = [
@@ -136,7 +133,6 @@ export default function PoolMyLiquidity() {
 
   const hasNonPreferentialBalance = hasNonPreferentialStakedBalance(pool)
   const canStake = pool.staking && !hasNonPreferentialBalance
-  const shouldMigrateStake = hasPreferentialGauge(pool) && hasNonPreferentialBalance
   const hasUnstakedBalance = bn(getUserWalletBalance(pool)).gt(0)
   const hasStakedBalance = bn(calcTotalStakedBalance(pool)).gt(0)
   const aprLabel = getTotalAprLabel(pool.dynamicData.aprItems)
@@ -234,7 +230,7 @@ export default function PoolMyLiquidity() {
             >
               Stake
             </Button>
-            {shouldMigrateStake ? (
+            {shouldMigrateStake(pool) ? (
               <Tooltip label={migrateStakeTooltipLabel}>
                 <Button
                   onClick={() => router.push(`${pathname}/migrate-stake`)}
