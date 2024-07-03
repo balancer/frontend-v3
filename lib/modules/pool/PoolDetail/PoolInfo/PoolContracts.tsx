@@ -1,13 +1,71 @@
 'use client'
 
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
-import { Box, Card, CardProps, HStack, Heading, Link, Text, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  Card,
+  CardProps,
+  Grid,
+  GridItem,
+  HStack,
+  Heading,
+  Icon,
+  Link,
+  Text,
+  Tooltip,
+  VStack,
+} from '@chakra-ui/react'
 import { usePool } from '../../PoolProvider'
 import { ArrowUpRight } from 'react-feather'
 import { useMemo } from 'react'
+import { GqlPriceRateProviderData, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { Address } from 'viem'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
+import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
+import { AlertTriangle, XCircle } from 'react-feather'
+import Image from 'next/image'
+import { RateProviderInfoPopOver } from './RateProviderInfo'
+import { getBlockExplorerAddressUrl } from '@/lib/shared/hooks/useBlockExplorer'
+
+type RateProvider = {
+  tokenAddress: Address
+  priceRateProviderData: GqlPriceRateProviderData
+}
+
+function getRateProviderIcon(data: GqlPriceRateProviderData, token: GqlToken) {
+  let icon
+  let level
+
+  if (data.reviewed && data.summary === 'safe') {
+    if (data.warnings) {
+      icon = <Icon as={AlertTriangle} color="orange.500" size={16} cursor="pointer" />
+      level = 1
+    } else {
+      icon = (
+        <Box as="span" cursor="pointer">
+          <Image src="/images/icons/notes.svg" alt="Notes" width={16} height={16} />
+        </Box>
+      )
+      level = 2
+    }
+  } else {
+    icon = <Icon as={XCircle} color="red.500" size={16} cursor="pointer" />
+    level = 0
+  }
+
+  return (
+    <RateProviderInfoPopOver level={level} token={token} data={data}>
+      {icon}
+    </RateProviderInfoPopOver>
+  )
+}
 
 export function PoolContracts({ ...props }: CardProps) {
-  const { pool, poolExplorerLink, hasGaugeAddress, gaugeAddress, gaugeExplorerLink } = usePool()
+  const { pool, chain, poolExplorerLink, hasGaugeAddress, gaugeAddress, gaugeExplorerLink } =
+    usePool()
+  const { getToken } = useTokens()
+
+  console.log({ pool })
 
   const contracts = useMemo(() => {
     const contracts = [
@@ -30,27 +88,86 @@ export function PoolContracts({ ...props }: CardProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool, hasGaugeAddress])
 
+  const rateProviders = useMemo(() => {
+    return pool.poolTokens
+      .map(token => ({
+        tokenAddress: token.address,
+        priceRateProviderData: token.priceRateProviderData,
+      }))
+      .filter(item => item.priceRateProviderData) as RateProvider[]
+  }, [pool])
+
   return (
     <Card {...props}>
       <VStack alignItems="flex-start" spacing="md" width="full">
         <Heading variant="h4" fontSize="xl">
           Pool contracts
         </Heading>
-        <VStack width="full">
+        <Grid templateColumns="repeat(2, 1fr)" gap="sm">
           {contracts.map(contract => (
-            <HStack key={contract.label} width="full" spacing="xs">
-              <Box minWidth="20">
+            <>
+              <GridItem>
                 <Text variant="secondary">{contract.label}</Text>
-              </Box>
-              <Link target="_blank" href={contract.explorerLink} variant="link">
-                <HStack>
-                  <Text color="link">{abbreviateAddress(contract.address)}</Text>
-                  <ArrowUpRight size={12} />
-                </HStack>
-              </Link>
-            </HStack>
+              </GridItem>
+              <GridItem>
+                <Link target="_blank" href={contract.explorerLink} variant="link">
+                  <HStack>
+                    <Text color="link">{abbreviateAddress(contract.address)}</Text>
+                    <ArrowUpRight size={12} />
+                  </HStack>
+                </Link>
+              </GridItem>
+            </>
           ))}
-        </VStack>
+          <GridItem>
+            <Tooltip
+              // eslint-disable-next-line max-len
+              label="Rate Providers are contracts that provide an exchange rate between two assets. This can come from any on-chain source, including oracles or from other calculations. This introduces risks around the rate provider being able to supply accurate and timely exchange rates."
+              fontSize="sm"
+            >
+              <Text variant="secondary">Rate provider(s)</Text>
+            </Tooltip>
+          </GridItem>
+          <GridItem>
+            <VStack alignItems="flex-start">
+              {rateProviders.map(provider => {
+                const token = getToken(provider.tokenAddress, chain)
+                return (
+                  token && (
+                    <HStack key={provider.tokenAddress}>
+                      <Tooltip label={token.symbol} fontSize="sm" shouldWrapChildren>
+                        <TokenIcon
+                          chain={chain}
+                          address={token.address}
+                          size={16}
+                          alt={token.address}
+                        />
+                      </Tooltip>
+
+                      <Link
+                        key={provider.priceRateProviderData.address}
+                        target="_blank"
+                        href={getBlockExplorerAddressUrl(
+                          provider.priceRateProviderData.address,
+                          chain
+                        )}
+                        variant="link"
+                      >
+                        <HStack>
+                          <Text color="link">
+                            {abbreviateAddress(provider.priceRateProviderData.address)}
+                          </Text>
+                          <ArrowUpRight size={12} />
+                        </HStack>
+                      </Link>
+                      {getRateProviderIcon(provider.priceRateProviderData, token)}
+                    </HStack>
+                  )
+                )
+              })}
+            </VStack>
+          </GridItem>
+        </Grid>
       </VStack>
     </Card>
   )
