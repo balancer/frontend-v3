@@ -270,3 +270,12 @@ export function roundDecimals(humanAmountsIn: HumanTokenAmountWithAddress[], max
 export function emptyTokenAmounts(pool: Pool): TokenAmount[] {
   return pool.poolTokens.map(token => TokenAmount.fromHumanAmount(token as unknown as Token, '0'))
 }
+
+// When the pool has version v2, it adds extra buildCall params (sender and recipient) that must be present only in V2
+export function adaptBuildCallParams<T>(buildCallParams: T, isV3Pool: boolean, account: Address) {
+  // sender must be undefined for v3 pools
+  if (isV3Pool) return buildCallParams
+
+  // sender and recipient must be defined only for v2 pools
+  return { ...buildCallParams, sender: account, recipient: account }
+}
