@@ -56,7 +56,7 @@ export function StakingOptions() {
             <HStack>
               <Text fontWeight="bold" color="font.primary" fontSize="md">
                 {pool.staking?.aura
-                  ? fNum('apr', bn(pool.staking.aura.apr).div(100))
+                  ? fNum('apr', bn(pool.staking.aura.apr).div(100)) // TODO: remove div(100) when API is updated
                   : 'Not available'}
               </Text>
             </HStack>
