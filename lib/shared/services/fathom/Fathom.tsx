@@ -5,6 +5,22 @@ import { useEffect, Suspense } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { isProd } from '@/lib/config/app.config'
 
+export enum AnalyticsEvent {
+  ClickAddLiquidity = 'click: Add liquidity',
+}
+
+/**
+ * Track Fathom events
+ * https://usefathom.com/docs/events/overview
+ *
+ * @param event The event key
+ * @param value Optional value to track, should be in cents (e.g. 1000 for $10)
+ */
+export function trackEvent(event: AnalyticsEvent, value?: number) {
+  if (!window.fathom) return
+  window.fathom.trackEvent(event, { _value: value })
+}
+
 function TrackPageView() {
   // Current Path
   const pathname = usePathname()
@@ -31,7 +47,7 @@ function TrackPageView() {
       url: pathname + searchParams.toString(),
       referrer: document.referrer,
     })
-  }, [pathname, searchParams]) // 👈 Track page views if path or params change
+  }, [pathname, searchParams]) // Track page views if path or params change
 
   return null
 }
