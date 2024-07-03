@@ -40,7 +40,7 @@ export function useSimulateSwapQuery({
     queryFn,
     enabled,
     gcTime: 0,
-    meta: sentryMetaForSwapHandler('Error in add liquidity simulation query', {
+    meta: sentryMetaForSwapHandler('Error in swap simulation query', {
       handler,
       swapInputs: inputs,
       enabled,
