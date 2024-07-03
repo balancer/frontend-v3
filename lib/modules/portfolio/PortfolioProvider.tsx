@@ -1,27 +1,31 @@
 'use client'
 
-import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
-import { useQuery as useApolloQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { createContext, useMemo } from 'react'
-import { useProtocolRewards } from './PortfolioClaim/useProtocolRewards'
-import { ClaimableReward, useClaimableBalances } from './PortfolioClaim/useClaimableBalances'
-import { BalTokenReward, useBalTokenRewards } from './PortfolioClaim/useBalRewards'
-import { bn } from '@/lib/shared/utils/numbers'
-import BigNumber from 'bignumber.js'
-import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { useUserAccount } from '../web3/UserAccountProvider'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import { useOnchainUserPoolBalances } from '../pool/queries/useOnchainUserPoolBalances'
-import { Pool } from '../pool/PoolProvider'
-import { useRecentTransactions } from '../transactions/RecentTransactionsProvider'
-import { millisecondsToSeconds, sub, isAfter } from 'date-fns'
+import {
+  GetPoolsDocument,
+  GetUserVeBalDataDocument,
+  GqlChain,
+} from '@/lib/shared/services/api/generated/graphql'
+import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { bn } from '@/lib/shared/utils/numbers'
+import { getTimestamp } from '@/lib/shared/utils/time'
+import { useQuery as useApolloQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import BigNumber from 'bignumber.js'
+import { isAfter } from 'date-fns'
 import { compact, uniq, uniqBy } from 'lodash'
+import { createContext, useMemo } from 'react'
+import { Pool } from '../pool/PoolProvider'
+import { useOnchainUserPoolBalances } from '../pool/queries/useOnchainUserPoolBalances'
 import {
   calcTotalStakedBalance,
   getUserTotalBalance,
   getUserTotalBalanceUsd,
 } from '../pool/user-balance.helpers'
-import { getTimestamp } from '@/lib/shared/utils/time'
+import { useRecentTransactions } from '../transactions/RecentTransactionsProvider'
+import { useUserAccount } from '../web3/UserAccountProvider'
+import { BalTokenReward, useBalTokenRewards } from './PortfolioClaim/useBalRewards'
+import { ClaimableReward, useClaimableBalances } from './PortfolioClaim/useClaimableBalances'
+import { useProtocolRewards } from './PortfolioClaim/useProtocolRewards'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
@@ -86,6 +90,19 @@ function _usePortfolio() {
     'id'
   )
 
+  const { data: veBalData, loading: isLoadingVeBalData } = useApolloQuery(
+    GetUserVeBalDataDocument,
+    {
+      variables: {
+        address: userAddress,
+        chain: GqlChain.Mainnet,
+      },
+      fetchPolicy: 'no-cache',
+      notifyOnNetworkStatusChange: true,
+      skip: !isConnected || !userAddress,
+    }
+  )
+  console.log('veBalData', veBalData)
   const { data: poolsWithOnchainUserBalances, isLoading: isLoadingOnchainUserBalances } =
     useOnchainUserPoolBalances((poolsData as unknown as Pool[]) || [])
 
@@ -217,6 +234,7 @@ function _usePortfolio() {
 
   return {
     portfolioData,
+    veBalData: veBalData?.veBalGetUser,
     balRewardsData,
     protocolRewardsData,
     claimableRewards,
@@ -229,6 +247,7 @@ function _usePortfolio() {
     isLoadingBalRewards,
     isLoadingProtocolRewards,
     isLoadingClaimableRewards,
+    isLoadingVeBalData,
     isLoadingPortfolio:
       isLoadingPoolsUserAddress || isLoadingOnchainUserBalances || isLoadingPoolsId,
     isLoadingClaimPoolData: isLoadingBalRewards || isLoadingClaimableRewards,

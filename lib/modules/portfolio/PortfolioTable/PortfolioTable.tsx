@@ -68,7 +68,7 @@ const generateStakingWeightForSort = (pool: Pool) => {
 
 export function PortfolioTable() {
   const [shouldFilterTinyBalances, setShouldFilterTinyBalances] = useState(true)
-  const { portfolioData, isLoadingPortfolio } = usePortfolio()
+  const { portfolioData, isLoadingPortfolio, veBalData } = usePortfolio()
 
   // Filter out pools with tiny balances (<0.01 USD)
   const minUsdBalance = 0.01
@@ -153,6 +153,7 @@ export function PortfolioTable() {
                 keyValue={index}
                 pool={item}
                 veBalBoostMap={veBalBoostMap}
+                veBalData={veBalData}
                 {...rowProps}
               />
             )

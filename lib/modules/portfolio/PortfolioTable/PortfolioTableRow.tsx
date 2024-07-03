@@ -16,18 +16,35 @@ import {
 } from '../../pool/user-balance.helpers'
 import { ProtocolIcon } from '@/lib/shared/components/icons/ProtocolIcon'
 import { Protocol } from '../../protocols/useProtocols'
+import { GqlVeBalUserData } from '@/lib/shared/services/api/generated/graphql'
+import { isVebalPool } from '../../pool/pool.helpers'
 
 interface Props extends GridProps {
   pool: PoolListItem
   keyValue: number
   veBalBoostMap: Record<string, string>
+  veBalData?: GqlVeBalUserData
 }
 
 const MemoizedMainAprTooltip = memo(MainAprTooltip)
 
-export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Props) {
+export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, veBalData, ...rest }: Props) {
   const { toCurrency } = useCurrency()
   const vebalBoostValue = veBalBoostMap?.[pool.id]
+
+  const isItVebalPool = isVebalPool(pool.id)
+  const isLocked = isItVebalPool && bn(veBalData?.lockedUsd || 0).isGreaterThan(0)
+
+  function getStakingText() {
+    if (isLocked) return 'Locked'
+    if (bn(calcTotalStakedBalance(pool)).isGreaterThan(0)) return 'Staked'
+    return 'N/A'
+  }
+
+  function getPortfolioPoolTypeLabel() {
+    if (isItVebalPool) return 've8020'
+    return getPoolTypeLabel(pool.type)
+  }
 
   return (
     <Box
@@ -55,16 +72,16 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
             />
           </GridItem>
           <GridItem>
-            <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
-              {getPoolTypeLabel(pool.type)}
+            <Text textAlign="left" fontWeight="medium">
+              {getPortfolioPoolTypeLabel()}
             </Text>
           </GridItem>
           <GridItem display="flex" justifyContent="right">
             <HStack>
               <Text textAlign="right" fontWeight="medium">
-                {bn(calcTotalStakedBalance(pool)).isGreaterThan(0) ? 'Staked' : 'N/A'}{' '}
+                {getStakingText()}{' '}
               </Text>
-              <StakingIcons pool={pool} />
+              <StakingIcons pool={pool} isLocked={isLocked} />
             </HStack>
           </GridItem>
           {/* TO-DO vebal boost */}
@@ -97,11 +114,12 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
   )
 }
 
-function StakingIcons({ pool }: { pool: PoolListItem }) {
+function StakingIcons({ pool, isLocked }: { pool: PoolListItem; isLocked?: boolean }) {
   return (
     <>
       {hasAuraStakedBalance(pool) && <ProtocolIcon protocol={Protocol.Aura} />}
       {hasBalancerStakedBalance(pool) && <ProtocolIcon protocol={Protocol.Balancer} />}
+      {isLocked && <ProtocolIcon protocol={Protocol.Balancer} />}
     </>
   )
 }

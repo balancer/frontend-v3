@@ -1,0 +1,8 @@
+query GetUserVeBalData($address: String!, $chain: GqlChain) {
+  veBalGetUser: veBalGetUser(address: $address, chain: $chain) {
+    balance
+    locked
+    lockedUsd
+    rank
+  }
+}
