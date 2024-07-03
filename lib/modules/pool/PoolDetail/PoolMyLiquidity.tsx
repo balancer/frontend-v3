@@ -22,7 +22,7 @@ import { Address } from 'viem'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { keyBy } from 'lodash'
-import { getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
+import { getAuraPoolLink, getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import {
@@ -243,7 +243,7 @@ export default function PoolMyLiquidity() {
           </HStack>
           <Divider />
           <VStack spacing="md" width="full" alignItems="flex-start" h={`${height - 270}px}`}>
-            {activeTab.value === 'aura' && !totalBalanceUsd ? (
+            {activeTab.value === 'aura' && !totalBalanceUsd && pid ? (
               <HStack w="full" bg="aura.purple" p="2" rounded="md" mb="3xl">
                 <Text color="white">
                   Aura APR:{' '}
@@ -254,11 +254,7 @@ export default function PoolMyLiquidity() {
                 <Text color="white" ml="auto">
                   Learn more
                 </Text>
-                <Link
-                  href={`https://app.aura.finance/#/${chainId}/pool/${pid}`}
-                  target="_blank"
-                  color="white"
-                >
+                <Link href={getAuraPoolLink(chainId, pid)} target="_blank" color="white">
                   <ArrowUpRight size={16} />
                 </Link>
               </HStack>
