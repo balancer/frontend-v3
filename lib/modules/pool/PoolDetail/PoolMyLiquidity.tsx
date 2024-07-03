@@ -247,7 +247,9 @@ export default function PoolMyLiquidity() {
               <HStack w="full" bg="aura.purple" p="2" rounded="md" mb="3xl">
                 <Text color="white">
                   Aura APR:{' '}
-                  {fNum('apr', pool.staking?.aura ? bn(pool.staking.aura.apr).div(100) : '0')}
+                  {
+                    fNum('apr', pool.staking?.aura ? bn(pool.staking.aura.apr).div(100) : '0') // TODO: remove div(100) after API is updated
+                  }
                 </Text>
                 <Text color="white" ml="auto">
                   Learn more
