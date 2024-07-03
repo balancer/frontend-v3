@@ -224,7 +224,7 @@ export function shouldIgnoreError(e: Error) {
 }
 
 function shouldIgnore(e: Error): boolean {
-  if (e.message.includes('connector.getAccounts is not a function')) return true
+  if (e.message.includes('.getAccounts is not a function')) return true
 
   if (isUserRejectedError(e)) return true
 
