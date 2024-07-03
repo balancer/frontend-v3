@@ -7,6 +7,9 @@ import { isProd } from '@/lib/config/app.config'
 
 export enum AnalyticsEvent {
   ClickAddLiquidity = 'click: Add liquidity',
+  TransactionSubmitted = 'transaction: Submitted',
+  TransactionConfirmed = 'transaction: Confirmed',
+  TransactionReverted = 'transaction: Reverted',
 }
 
 /**
